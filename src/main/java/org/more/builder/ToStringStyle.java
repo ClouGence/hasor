@@ -20,9 +20,9 @@ import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 import java.util.WeakHashMap;
+
 import org.more.util.ClassUtils;
 import org.more.util.ObjectUtils;
-import org.more.util.SystemUtils;
 /**
  * <p>Controls <code>String</code> formatting for {@link ToStringBuilder}.
  * The main public interface is always via <code>ToStringBuilder</code>.</p>
@@ -73,7 +73,7 @@ public abstract class ToStringStyle implements Serializable {
      * Person@182f0db[name=John Doe,age=33,smoker=false]
      * </pre>
      */
-    public static final ToStringStyle DEFAULT_STYLE        = new DefaultToStringStyle();
+    public static final  ToStringStyle DEFAULT_STYLE        = new DefaultToStringStyle();
     /**
      * The multi line toString style. Using the Using the <code>Person</code>
      * example from {@link ToStringBuilder}, the output would look like this:
@@ -86,7 +86,7 @@ public abstract class ToStringStyle implements Serializable {
      * ]
      * </pre>
      */
-    public static final ToStringStyle MULTI_LINE_STYLE     = new MultiLineToStringStyle();
+    public static final  ToStringStyle MULTI_LINE_STYLE     = new MultiLineToStringStyle();
     /**
      * The no field names toString style. Using the Using the
      * <code>Person</code> example from {@link ToStringBuilder}, the output
@@ -96,7 +96,7 @@ public abstract class ToStringStyle implements Serializable {
      * Person@182f0db[John Doe,33,false]
      * </pre>
      */
-    public static final ToStringStyle NO_FIELD_NAMES_STYLE = new NoFieldNameToStringStyle();
+    public static final  ToStringStyle NO_FIELD_NAMES_STYLE = new NoFieldNameToStringStyle();
     /**
      * The short prefix toString style. Using the <code>Person</code> example
      * from {@link ToStringBuilder}, the output would look like this:
@@ -107,7 +107,7 @@ public abstract class ToStringStyle implements Serializable {
      *
      * @since 2.1
      */
-    public static final ToStringStyle SHORT_PREFIX_STYLE   = new ShortPrefixToStringStyle();
+    public static final  ToStringStyle SHORT_PREFIX_STYLE   = new ShortPrefixToStringStyle();
     /**
      * The simple toString style. Using the Using the <code>Person</code>
      * example from {@link ToStringBuilder}, the output would look like this:
@@ -116,14 +116,14 @@ public abstract class ToStringStyle implements Serializable {
      * John Doe,33,false
      * </pre>
      */
-    public static final ToStringStyle SIMPLE_STYLE         = new SimpleToStringStyle();
+    public static final  ToStringStyle SIMPLE_STYLE         = new SimpleToStringStyle();
     /**
      * <p>
      * A registry of objects used by <code>reflectionToString</code> methods
      * to detect cyclical object references and avoid infinite loops.
      * </p>
      */
-    private static final ThreadLocal  REGISTRY             = new ThreadLocal();
+    private static final ThreadLocal   REGISTRY             = new ThreadLocal();
     /**
      * <p>
      * Returns the registry of objects being traversed by the <code>reflectionToString</code>
@@ -2006,10 +2006,20 @@ public abstract class ToStringStyle implements Serializable {
          */
         MultiLineToStringStyle() {
             super();
+            String separator = getSystemProperty("line.separator");
             this.setContentStart("[");
-            this.setFieldSeparator(SystemUtils.LINE_SEPARATOR + "  ");
+            this.setFieldSeparator(separator + "  ");
             this.setFieldSeparatorAtStart(true);
-            this.setContentEnd(SystemUtils.LINE_SEPARATOR + "]");
+            this.setContentEnd(separator + "]");
+        }
+        private String getSystemProperty(final String property) {
+            try {
+                return System.getProperty(property);
+            } catch (SecurityException ex) {
+                // we are not allowed to look at this property
+                System.err.println("Caught a SecurityException reading the system property '" + property + "'; the SystemUtils property value will default to null.");
+                return null;
+            }
         }
         /**
          * <p>Ensure <code>Singleton</code> after serialization.</p>

@@ -16,7 +16,8 @@
 package org.more.bizcommon;
 import java.io.Serializable;
 import java.util.List;
-import org.more.datachain.DataFilter;
+
+import org.more.bizcommon.datachain.DataFilter;
 /**
  * 用于封装结果集
  * @version : 2015年1月8日
@@ -25,25 +26,35 @@ import org.more.datachain.DataFilter;
 public interface Result<T> extends Serializable {
     /**返回操作是否成功。*/
     public boolean isSuccess();
+
     /**(如果有)返回如果操作失败反馈的异常信息。*/
     public Throwable getThrowable();
+
     /**获取返回的结果集。*/
     public T getResult();
+
     /**转换结果集类型其它类型。*/
     public <V> Result<V> convertResult(DataFilter<T, V>... filters) throws Throwable;
     //
+
     /**(如果有)返回消息。*/
     public Message firstMessage();
+
     /**(如果有)返回所有消息。*/
     public List<Message> getMessageList();
+
     /**添加一条消息。*/
     public Result<T> addMessage(Message message);
+
     /**添加一条消息。*/
     public Result<T> addMessage(String message, Object... params);
+
     /**添加一条消息。*/
     public Result<T> addMessage(int type, String message, Object... params);
+
     /**添加多条消息。*/
     public Result<T> addMessage(List<Message> msgList);
+
     /**判断消息池是否为空。*/
     public boolean isEmptyMessage();
 }

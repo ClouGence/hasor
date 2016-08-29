@@ -21,7 +21,7 @@ package org.more.util;
  * <p>This class tries to handle <code>null</code> input gracefully.
  * An exception will not be thrown for a <code>null</code> input.
  * Each method documents its behaviour in more detail.</p>
- * 
+ *
  * <p>#ThreadSafe#</p>
  * @author Apache Software Foundation
  * @author Matthew Hawthorne
@@ -44,7 +44,7 @@ public class BooleanUtils {
     //--------------------------------------------------------------------------
     /**
      * <p>Negates the specified boolean.</p>
-     * 
+     *
      * <p>If <code>null</code> is passed in, <code>null</code> will be returned.</p>
      *
      * <pre>
@@ -52,7 +52,7 @@ public class BooleanUtils {
      *   BooleanUtils.negate(Boolean.FALSE) = Boolean.TRUE;
      *   BooleanUtils.negate(null)          = null;
      * </pre>
-     * 
+     *
      * @param bool  the Boolean to negate, may be null
      * @return the negated Boolean, or <code>null</code> if <code>null</code> input
      */
@@ -141,7 +141,7 @@ public class BooleanUtils {
     //-----------------------------------------------------------------------
     /**
      * <p>Boolean factory that avoids creating new Boolean objecs all the time.</p>
-     * 
+     *
      * <p>This method was added to JDK1.4 but is available here for earlier JDKs.</p>
      *
      * <pre>
@@ -177,7 +177,7 @@ public class BooleanUtils {
     }
     /**
      * <p>Converts a Boolean to a boolean handling <code>null</code>.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toBooleanDefaultIfNull(Boolean.TRUE, false) = true
      *   BooleanUtils.toBooleanDefaultIfNull(Boolean.FALSE, true) = false
@@ -199,7 +199,7 @@ public class BooleanUtils {
     /**
      * <p>Converts an int to a boolean using the convention that <code>zero</code>
      * is <code>false</code>.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toBoolean(0) = false
      *   BooleanUtils.toBoolean(1) = true
@@ -216,7 +216,7 @@ public class BooleanUtils {
     /**
      * <p>Converts an int to a Boolean using the convention that <code>zero</code>
      * is <code>false</code>.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toBoolean(0) = Boolean.FALSE
      *   BooleanUtils.toBoolean(1) = Boolean.TRUE
@@ -233,7 +233,7 @@ public class BooleanUtils {
     /**
      * <p>Converts an Integer to a Boolean using the convention that <code>zero</code>
      * is <code>false</code>.</p>
-     * 
+     *
      * <p><code>null</code> will be converted to <code>null</code>.</p>
      *
      * <pre>
@@ -254,7 +254,7 @@ public class BooleanUtils {
     }
     /**
      * <p>Converts an int to a boolean specifying the conversion values.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toBoolean(0, 1, 0) = false
      *   BooleanUtils.toBoolean(1, 1, 0) = true
@@ -279,7 +279,7 @@ public class BooleanUtils {
     }
     /**
      * <p>Converts an Integer to a boolean specifying the conversion values.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toBoolean(new Integer(0), new Integer(1), new Integer(0)) = false
      *   BooleanUtils.toBoolean(new Integer(1), new Integer(1), new Integer(0)) = true
@@ -313,7 +313,7 @@ public class BooleanUtils {
     }
     /**
      * <p>Converts an int to a Boolean specifying the conversion values.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toBooleanObject(0, 0, 2, 3) = Boolean.TRUE
      *   BooleanUtils.toBooleanObject(2, 1, 2, 3) = Boolean.FALSE
@@ -340,7 +340,7 @@ public class BooleanUtils {
     }
     /**
      * <p>Converts an Integer to a Boolean specifying the conversion values.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toBooleanObject(new Integer(0), new Integer(0), new Integer(2), new Integer(3)) = Boolean.TRUE
      *   BooleanUtils.toBooleanObject(new Integer(2), new Integer(1), new Integer(2), new Integer(3)) = Boolean.FALSE
@@ -395,7 +395,7 @@ public class BooleanUtils {
     }
     /**
      * <p>Converts a boolean to an int specifying the conversion values.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toInteger(true, 1, 0)  = 1
      *   BooleanUtils.toInteger(false, 1, 0) = 0
@@ -411,7 +411,7 @@ public class BooleanUtils {
     }
     /**
      * <p>Converts a Boolean to an int specifying the conversion values.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toInteger(Boolean.TRUE, 1, 0, 2)  = 1
      *   BooleanUtils.toInteger(Boolean.FALSE, 1, 0, 2) = 0
@@ -432,7 +432,7 @@ public class BooleanUtils {
     }
     /**
      * <p>Converts a boolean to an Integer specifying the conversion values.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toIntegerObject(true, new Integer(1), new Integer(0))  = new Integer(1)
      *   BooleanUtils.toIntegerObject(false, new Integer(1), new Integer(0)) = new Integer(0)
@@ -450,7 +450,7 @@ public class BooleanUtils {
     }
     /**
      * <p>Converts a Boolean to an Integer specifying the conversion values.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toIntegerObject(Boolean.TRUE, new Integer(1), new Integer(0), new Integer(2))  = new Integer(1)
      *   BooleanUtils.toIntegerObject(Boolean.FALSE, new Integer(1), new Integer(0), new Integer(2)) = new Integer(0)
@@ -476,7 +476,7 @@ public class BooleanUtils {
     //-----------------------------------------------------------------------
     /**
      * <p>Converts a String to a Boolean.</p>
-     * 
+     *
      * <p><code>'true'</code>, <code>'on'</code> or <code>'yes'</code>
      * (case insensitive) will return <code>true</code>.
      * <code>'false'</code>, <code>'off'</code> or <code>'no'</code>
@@ -614,11 +614,11 @@ public class BooleanUtils {
     //-----------------------------------------------------------------------
     /**
      * <p>Converts a String to a boolean (optimised for performance).</p>
-     * 
+     *
      * <p><code>'true'</code>, <code>'on'</code> or <code>'yes'</code>
      * (case insensitive) will return <code>true</code>. Otherwise,
      * <code>false</code> is returned.</p>
-     * 
+     *
      * <p>This method performs 4 times faster (JDK1.4) than
      * <code>Boolean.valueOf(String)</code>. However, this method accepts
      * 'on' and 'yes' as true values.
@@ -642,7 +642,7 @@ public class BooleanUtils {
     }
     /**
      * <p>Converts a String to a Boolean throwing an exception if no match found.</p>
-     * 
+     *
      * <p>null is returned if there is no match.</p>
      *
      * <pre>
@@ -678,7 +678,7 @@ public class BooleanUtils {
     /**
      * <p>Converts a Boolean to a String returning <code>'true'</code>,
      * <code>'false'</code>, or <code>null</code>.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toStringTrueFalse(Boolean.TRUE)  = "true"
      *   BooleanUtils.toStringTrueFalse(Boolean.FALSE) = "false"
@@ -695,7 +695,7 @@ public class BooleanUtils {
     /**
      * <p>Converts a Boolean to a String returning <code>'on'</code>,
      * <code>'off'</code>, or <code>null</code>.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toStringOnOff(Boolean.TRUE)  = "on"
      *   BooleanUtils.toStringOnOff(Boolean.FALSE) = "off"
@@ -712,7 +712,7 @@ public class BooleanUtils {
     /**
      * <p>Converts a Boolean to a String returning <code>'yes'</code>,
      * <code>'no'</code>, or <code>null</code>.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toStringYesNo(Boolean.TRUE)  = "yes"
      *   BooleanUtils.toStringYesNo(Boolean.FALSE) = "no"
@@ -728,7 +728,7 @@ public class BooleanUtils {
     }
     /**
      * <p>Converts a Boolean to a String returning one of the input Strings.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toString(Boolean.TRUE, "true", "false", null)   = "true"
      *   BooleanUtils.toString(Boolean.FALSE, "true", "false", null)  = "false"
@@ -755,7 +755,7 @@ public class BooleanUtils {
     /**
      * <p>Converts a boolean to a String returning <code>'true'</code>
      * or <code>'false'</code>.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toStringTrueFalse(true)   = "true"
      *   BooleanUtils.toStringTrueFalse(false)  = "false"
@@ -771,7 +771,7 @@ public class BooleanUtils {
     /**
      * <p>Converts a boolean to a String returning <code>'on'</code>
      * or <code>'off'</code>.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toStringOnOff(true)   = "on"
      *   BooleanUtils.toStringOnOff(false)  = "off"
@@ -787,7 +787,7 @@ public class BooleanUtils {
     /**
      * <p>Converts a boolean to a String returning <code>'yes'</code>
      * or <code>'no'</code>.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toStringYesNo(true)   = "yes"
      *   BooleanUtils.toStringYesNo(false)  = "no"
@@ -802,7 +802,7 @@ public class BooleanUtils {
     }
     /**
      * <p>Converts a boolean to a String returning one of the input Strings.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.toString(true, "true", "false")   = "true"
      *   BooleanUtils.toString(false, "true", "false")  = "false"
@@ -859,7 +859,7 @@ public class BooleanUtils {
     }
     /**
      * <p>Performs an xor on an array of Booleans.</p>
-     * 
+     *
      * <pre>
      *   BooleanUtils.xor(new Boolean[] { Boolean.TRUE, Boolean.TRUE })   = Boolean.FALSE
      *   BooleanUtils.xor(new Boolean[] { Boolean.FALSE, Boolean.FALSE }) = Boolean.FALSE

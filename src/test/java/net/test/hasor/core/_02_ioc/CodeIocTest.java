@@ -24,7 +24,7 @@ import net.test.hasor.core._01_bean.pojo.PojoBeanFactory;
 import net.test.hasor.core._01_bean.pojo.PojoInfo;
 import net.test.hasor.core._02_ioc.example.IocBean;
 import org.junit.Test;
-import org.more.json.JSON;
+import org.more.bizcommon.json.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**

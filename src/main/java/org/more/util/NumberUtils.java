@@ -44,7 +44,7 @@ public final class NumberUtils {
     /**
      * <p>Convert a <code>String</code> to an <code>int</code>, returning
      * <code>zero</code> if the conversion fails.</p>
-     * 
+     *
      * @param str  the string to convert
      * @return the int represented by the string, or <code>zero</code> if
      *  conversion fails
@@ -55,7 +55,7 @@ public final class NumberUtils {
     /**
      * <p>Convert a <code>String</code> to an <code>int</code>, returning a
      * default value if the conversion fails.</p>
-     * 
+     *
      * @param str  the string to convert
      * @param defaultValue  the default value
      * @return the int represented by the string, or the default if conversion fails
@@ -268,7 +268,7 @@ public final class NumberUtils {
      * <p>Utility method for {@link #createNumber(java.lang.String)}.</p>
      *
      * <p>Returns <code>true</code> if s is <code>null</code>.</p>
-     * 
+     *
      * @param s the String to check
      * @return if it is all zeros or <code>null</code>
      */
@@ -286,7 +286,7 @@ public final class NumberUtils {
     //--------------------------------------------------------------------
     /**
      * <p>Convert a <code>String</code> to a <code>Float</code>.</p>
-     * 
+     *
      * @param val  a <code>String</code> to convert
      * @return converted <code>Float</code>
      * @throws NumberFormatException if the value cannot be converted
@@ -296,7 +296,7 @@ public final class NumberUtils {
     }
     /**
      * <p>Convert a <code>String</code> to a <code>Double</code>.</p>
-     * 
+     *
      * @param val  a <code>String</code> to convert
      * @return converted <code>Double</code>
      * @throws NumberFormatException if the value cannot be converted
@@ -307,7 +307,7 @@ public final class NumberUtils {
     /**
      * <p>Convert a <code>String</code> to a <code>Integer</code>, handling
      * hex and octal notations.</p>
-     * 
+     *
      * @param val  a <code>String</code> to convert
      * @return converted <code>Integer</code>
      * @throws NumberFormatException if the value cannot be converted
@@ -318,7 +318,7 @@ public final class NumberUtils {
     }
     /**
      * <p>Convert a <code>String</code> to a <code>Long</code>.</p>
-     * 
+     *
      * @param val  a <code>String</code> to convert
      * @return converted <code>Long</code>
      * @throws NumberFormatException if the value cannot be converted
@@ -328,7 +328,7 @@ public final class NumberUtils {
     }
     /**
      * <p>Convert a <code>String</code> to a <code>BigInteger</code>.</p>
-     * 
+     *
      * @param val  a <code>String</code> to convert
      * @return converted <code>BigInteger</code>
      * @throws NumberFormatException if the value cannot be converted
@@ -339,7 +339,7 @@ public final class NumberUtils {
     }
     /**
      * <p>Convert a <code>String</code> to a <code>BigDecimal</code>.</p>
-     * 
+     *
      * @param val  a <code>String</code> to convert
      * @return converted <code>BigDecimal</code>
      * @throws NumberFormatException if the value cannot be converted
@@ -351,11 +351,11 @@ public final class NumberUtils {
     //--------------------------------------------------------------------
     /**
      * <p>Gets the minimum of three <code>long</code> values.</p>
-     * 
+     *
      * @param a  value 1
      * @param b  value 2
      * @param c  value 3
-     * @return  the smallest of the values
+     * @return the smallest of the values
      */
     public static long minimum(long a, long b, long c) {
         if (b < a) {
@@ -368,11 +368,11 @@ public final class NumberUtils {
     }
     /**
      * <p>Gets the minimum of three <code>int</code> values.</p>
-     * 
+     *
      * @param a  value 1
      * @param b  value 2
      * @param c  value 3
-     * @return  the smallest of the values
+     * @return the smallest of the values
      */
     public static int minimum(int a, int b, int c) {
         if (b < a) {
@@ -385,11 +385,11 @@ public final class NumberUtils {
     }
     /**
      * <p>Gets the maximum of three <code>long</code> values.</p>
-     * 
+     *
      * @param a  value 1
      * @param b  value 2
      * @param c  value 3
-     * @return  the largest of the values
+     * @return the largest of the values
      */
     public static long maximum(long a, long b, long c) {
         if (b > a) {
@@ -402,11 +402,11 @@ public final class NumberUtils {
     }
     /**
      * <p>Gets the maximum of three <code>int</code> values.</p>
-     * 
+     *
      * @param a  value 1
      * @param b  value 2
      * @param c  value 3
-     * @return  the largest of the values
+     * @return the largest of the values
      */
     public static int maximum(int a, int b, int c) {
         if (b > a) {
@@ -446,7 +446,7 @@ public final class NumberUtils {
      *
      * <p>Comparing <code>NaN</code> with <code>NaN</code> will
      * return <code>0</code>.</p>
-     * 
+     *
      * @param lhs  the first <code>double</code>
      * @param rhs  the second <code>double</code>
      * @return <code>-1</code> if lhs is less, <code>+1</code> if greater,
@@ -506,7 +506,7 @@ public final class NumberUtils {
      *
      * <p>Comparing <code>NaN</code> with <code>NaN</code> will return
      * <code>0</code>.</p>
-     * 
+     *
      * @param lhs  the first <code>float</code>
      * @param rhs  the second <code>float</code>
      * @return <code>-1</code> if lhs is less, <code>+1</code> if greater,
@@ -603,7 +603,7 @@ public final class NumberUtils {
             }
         }
         sz--; // don't want to loop to the last char, check it afterwords
-              // for type qualifiers
+        // for type qualifiers
         int i = start;
         // loop to the next to last char or to the last char if we need another digit to
         // make a valid number (e.g. chars[0..5] = "1234E")

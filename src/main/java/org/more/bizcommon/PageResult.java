@@ -16,16 +16,17 @@
 package org.more.bizcommon;
 import java.util.ArrayList;
 import java.util.List;
-import org.more.datachain.DataChainContext;
-import org.more.datachain.DataFilter;
+
+import org.more.bizcommon.datachain.DataChainContext;
+import org.more.bizcommon.datachain.DataFilter;
 /**
  * 带有翻页信息的结果集
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 public class PageResult<T> extends Paginator implements Result<List<T>> {
-    private static final long serialVersionUID = -4678893554960623786L;
-    private ResultDO<List<T>> result           = new ResultDO<List<T>>();
+    private static final long              serialVersionUID = -4678893554960623786L;
+    private              ResultDO<List<T>> result           = new ResultDO<List<T>>();
     //
     public PageResult(Paginator pageInfo) {
         this(pageInfo, null);
@@ -109,7 +110,8 @@ public class PageResult<T> extends Paginator implements Result<List<T>> {
         return this.result.convertResult(filters);
     }
     public <V> PageResult<V> convertPageResult(DataFilter<T, V>... filters) throws Throwable {
-        DataChainContext<T, V> dataChainContext = new DataChainContext<T, V>() {};
+        DataChainContext<T, V> dataChainContext = new DataChainContext<T, V>() {
+        };
         if (filters != null && filters.length > 0) {
             for (int i = 0; i <= filters.length; i++) {
                 dataChainContext.addDataFilter("dataFilter_" + i, filters[i]);

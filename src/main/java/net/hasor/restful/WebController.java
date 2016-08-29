@@ -18,6 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.restful.api.Produces;
 import net.hasor.web.startup.RuntimeListener;
 import org.more.bizcommon.Message;
+import org.more.fileupload.real.servlet.ServletFileUpload;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -601,59 +602,72 @@ public abstract class WebController {
         this.getInvoker().clearValidErrors(messageKey);
     }
     // --------
-    // private MultipartRequest multipartRequest;
-    // /** Get upload file from multipart request. */
-    // public List<UploadFile> getFiles(String saveDirectory, Integer maxPostSize, String encoding) {
-    // if (multipartRequest == null) {
-    // multipartRequest = new MultipartRequest(request, saveDirectory, maxPostSize, encoding);
-    // request = multipartRequest;
-    // }
-    // return multipartRequest.getFiles();
-    // }
-    // public UploadFile getFile(String parameterName, String saveDirectory, Integer maxPostSize, String encoding) {
-    // getFiles(saveDirectory, maxPostSize, encoding);
-    // return getFile(parameterName);
-    // }
-    // public List<UploadFile> getFiles(String saveDirectory, int maxPostSize) {
-    // if (multipartRequest == null) {
-    // multipartRequest = new MultipartRequest(request, saveDirectory, maxPostSize);
-    // request = multipartRequest;
-    // }
-    // return multipartRequest.getFiles();
-    // }
-    // public UploadFile getFile(String parameterName, String saveDirectory, int maxPostSize) {
-    // getFiles(saveDirectory, maxPostSize);
-    // return getFile(parameterName);
-    // }
-    // public List<UploadFile> getFiles(String saveDirectory) {
-    // if (multipartRequest == null) {
-    // multipartRequest = new MultipartRequest(request, saveDirectory);
-    // request = multipartRequest;
-    // }
-    // return multipartRequest.getFiles();
-    // }
-    // public UploadFile getFile(String parameterName, String saveDirectory) {
-    // getFiles(saveDirectory);
-    // return getFile(parameterName);
-    // }
-    // public List<UploadFile> getFiles() {
-    // if (multipartRequest == null) {
-    // multipartRequest = new MultipartRequest(request);
-    // request = multipartRequest;
-    // }
-    // return multipartRequest.getFiles();
-    // }
-    // public UploadFile getFile() {
-    // List<UploadFile> uploadFiles = getFiles();
-    // return uploadFiles.size() > 0 ? uploadFiles.get(0) : null;
-    // }
-    // public UploadFile getFile(String parameterName) {
-    // List<UploadFile> uploadFiles = getFiles();
-    // for (UploadFile uploadFile : uploadFiles) {
-    // if (uploadFile.getParameterName().equals(parameterName)) {
-    // return uploadFile;
-    // }
-    // }
-    // return null;
-    // }
+    /**
+     * 返回是否包含文件的上传。
+     * @see net.hasor.restful.Validation
+     */
+    protected boolean isMultipart() {
+        return ServletFileUpload.isMultipartContent(this.getRequest());
+    }
+    //    private MultipartRequest multipartRequest;
+    //    /** Get upload file from multipart request. */
+    //    public List<UploadFile> getFiles(String saveDirectory, Integer maxPostSize, String encoding) {
+    //        if (multipartRequest == null) {
+    //            multipartRequest = new MultipartRequest(request, saveDirectory, maxPostSize, encoding);
+    //            request = multipartRequest;
+    //        }
+    //        return multipartRequest.getFiles();
+    //    }
+    //    public UploadFile getFile(String parameterName, String saveDirectory, Integer maxPostSize, String encoding) {
+    //        getFiles(saveDirectory, maxPostSize, encoding);
+    //        return getFile(parameterName);
+    //    }
+    //    public List<UploadFile> getFiles(String saveDirectory, int maxPostSize) {
+    //        if (multipartRequest == null) {
+    //            multipartRequest = new MultipartRequest(request, saveDirectory, maxPostSize);
+    //            request = multipartRequest;
+    //        }
+    //        return multipartRequest.getFiles();
+    //    }
+    //    public UploadFile getFile(String parameterName, String saveDirectory, int maxPostSize) {
+    //        getFiles(saveDirectory, maxPostSize);
+    //        return getFile(parameterName);
+    //    }
+    //    public List<UploadFile> getFiles(String saveDirectory) {
+    //        if (multipartRequest == null) {
+    //            multipartRequest = new MultipartRequest(request, saveDirectory);
+    //            request = multipartRequest;
+    //        }
+    //        return multipartRequest.getFiles();
+    //    }
+    //    public UploadFile getFile(String parameterName, String saveDirectory) {
+    //        getFiles(saveDirectory);
+    //        return getFile(parameterName);
+    //    }
+    //    public List<UploadFile> getFiles() {
+    //        if (multipartRequest == null) {
+    //            multipartRequest = new MultipartRequest(request);
+    //            request = multipartRequest;
+    //        }
+    //        return multipartRequest.getFiles();
+    //    }
+    //    public Iterator<UploadFile> getFileIterator() throws IOException {
+    //        if (isMultipart()) {
+    //            return new ServletFileUpload().getItemIterator(this.getRequest());
+    //        }
+    //        return null;
+    //    }
+    //    public UploadFile getFile() {
+    //        List<UploadFile> uploadFiles = getFiles();
+    //        return uploadFiles.size() > 0 ? uploadFiles.get(0) : null;
+    //    }
+    //    public UploadFile getFile(String parameterName) {
+    //        List<UploadFile> uploadFiles = getFiles();
+    //        for (UploadFile uploadFile : uploadFiles) {
+    //            if (uploadFile.getParameterName().equals(parameterName)) {
+    //                return uploadFile;
+    //            }
+    //        }
+    //        return null;
+    //    }
 }

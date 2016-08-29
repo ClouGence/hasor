@@ -22,10 +22,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
 import org.more.NullArgumentException;
 import org.more.convert.ConverterUtils;
 /**
- * 
+ *
  * @version : 2011-6-3
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -250,7 +251,8 @@ public abstract class BeanUtils {
         for (String m : ms) {
             try {
                 mnames.add(new PropertyDescriptor(m, defineType));
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
         return mnames.toArray(new PropertyDescriptor[mnames.size()]);
     }

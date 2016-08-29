@@ -23,15 +23,16 @@ import java.util.List;
  */
 public class Paginator {
     /**满足条件的总记录数*/
-    private int               totalCount  = 0;
+    private       int         totalCount  = 0;
     /**每页记录数（-1表示无限大）*/
-    private int               pageSize    = 15;
+    private       int         pageSize    = 15;
     /**当前页号*/
-    private int               currentPage = 0;
+    private       int         currentPage = 0;
     /**排序方式 */
     private final List<Order> orderBy     = new ArrayList<Order>(0);
     //
-    public Paginator() {}
+    public Paginator() {
+    }
     public Paginator(Paginator paginator) {
         this.totalCount = paginator.totalCount;
         this.pageSize = paginator.pageSize;
@@ -139,5 +140,6 @@ public class Paginator {
     //
     //
     /**分页排序条件基础接口。*/
-    public static interface Order {}
+    public static interface Order {
+    }
 }

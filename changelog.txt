@@ -1,4 +1,10 @@
-﻿===== Hasor-Core v2.4.3 (2016-08-18)
+﻿===== Hasor-Core v2.4.4 (2016-?)
+* 新增:
+    01.Hasor web部分新增支持文件上传功能(不依赖任何第三方包哦)。上传功能是从 apache fileupload 代码中精简优化得来。
+* 改进:
+    01.otg.more包大瘦身,清理大量没有使用到的类和方法。
+
+===== Hasor-Core v2.4.3 (2016-08-18)
 * 新增:
     01.新增 Htmlspace工具类:StringEscapeUtils、EntitiesUtils。工具来源为:apache-common
 * 改进:

@@ -16,7 +16,7 @@
 package net.test.hasor.more._04_datachain;
 import java.util.Date;
 import org.junit.Test;
-import org.more.datachain.DataChainContext;
+import org.more.bizcommon.datachain.DataChainContext;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.test.hasor.more._04_datachain.datafilter.CloumnFilter;

@@ -16,14 +16,15 @@
 package org.more.bizcommon.paginator;
 import org.more.bizcommon.Paginator.Order;
 /**
- * 
+ *
  * @version : 2015年6月24日
  * @author 赵永春(zyc@hasor.net)
  */
 public class SortFieldOrder implements Order {
     /**排序方式*/
     public static enum OrderBy {
-        ASC, DESC
+        ASC,
+        DESC
     }
     /** 排序字段 */
     private String  sortField = "";

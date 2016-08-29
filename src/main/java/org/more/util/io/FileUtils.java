@@ -14,96 +14,15 @@
  * limitations under the License.
  */
 package org.more.util.io;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import org.more.util.io.filefilter.DirectoryFileFilter;
-import org.more.util.io.filefilter.FalseFileFilter;
 /**
  * 文件工具
  * @version : 2011-6-3
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class FileUtils {
-    /**批量删除目录中的文件*/
-    public static boolean deleteDir(final File dir) {
-        if (dir.isDirectory()) {
-            String[] children = dir.list();
-            children = (children == null) ? new String[0] : children;
-            //递归删除目录中的子目录下
-            for (String element : children) {
-                boolean success = FileUtils.deleteDir(new File(dir, element));
-                if (!success) {
-                    return false;
-                }
-            }
-        }
-        return dir.delete();// 目录此时为空，可以删除
-    }
-    /**
-     * Allows iteration over the files in given directory (and optionally its subdirectories).
-     * <p>
-     * All files found are filtered by an IOFileFilter. This method is
-     * based on {@link #listFiles(File, IOFileFilter, IOFileFilter)},
-     * which supports Iterable ('foreach' loop).
-     * <p>
-     * @param directory  the directory to search in
-     * @param fileFilter  filter to apply when finding files.
-     * @param dirFilter  optional filter to apply when finding subdirectories.
-     * If this parameter is <code>null</code>, subdirectories will not be included in the
-     * search. Use TrueFileFilter.INSTANCE to match all directories.
-     * @return an iterator of java.io.File for the matching files
-     * @see org.more.util.io.FileFilterUtils
-     * @since Commons IO 1.2
-     */
-    public static Iterator<File> iterateFiles(File directory, IOFileFilter fileFilter, IOFileFilter dirFilter) {
-        return listFiles(directory, fileFilter, dirFilter).iterator();
-    }
-    /**
-     * 枚举目录下的文件和目录
-     * @return an collection of java.io.File with the matching files
-     * @see org.more.util.io.FileFilterUtils
-     */
-    public static Collection<File> listFiles(File directory, IOFileFilter fileFilter, IOFileFilter dirFilter) {
-        if (!directory.isDirectory())
-            throw new IllegalArgumentException("Parameter 'directory' is not a directory");
-        if (fileFilter == null)
-            throw new NullPointerException("Parameter 'fileFilter' is null");
-        //
-        //Setup effective file filter
-        IOFileFilter effFileFilter = FileFilterUtils.and(fileFilter, FileFilterUtils.notFileFilter(DirectoryFileFilter.INSTANCE));
-        //Setup effective directory filter
-        IOFileFilter effDirFilter;
-        if (dirFilter == null) {
-            effDirFilter = FalseFileFilter.INSTANCE;
-        } else {
-            effDirFilter = FileFilterUtils.and(dirFilter, DirectoryFileFilter.INSTANCE);
-        }
-        //Find files
-        Collection<File> files = new java.util.LinkedList<File>();
-        innerListFiles(files, directory, FileFilterUtils.or(effFileFilter, effDirFilter));
-        return files;
-    }
-    private static void innerListFiles(Collection<File> files, File directory, IOFileFilter filter) {
-        File[] found = directory.listFiles((FileFilter) filter);
-        if (found == null)
-            return;
-        for (File file : found) {
-            if (file.isDirectory()) {
-                innerListFiles(files, file, filter);
-            } else {
-                files.add(file);
-            }
-        }
-    }
     /**
      * Reads the contents of a file into a String.
      * The file is always closed.
@@ -280,7 +199,7 @@ public abstract class FileUtils {
     }
     /**
      * Writes a String to a file creating the file if it does not exist using the default encoding for the VM.
-     * 
+     *
      * @param file  the file to write
      * @param data  the content to write to the file
      * @throws IOException in case of an I/O error
@@ -290,7 +209,7 @@ public abstract class FileUtils {
     }
     /**
      * Writes a String to a file creating the file if it does not exist using the default encoding for the VM.
-     * 
+     *
      * @param file  the file to write
      * @param data  the content to write to the file
      * @param append if <code>true</code>, then the String will be added to the
@@ -303,7 +222,7 @@ public abstract class FileUtils {
     }
     /**
      * Writes a CharSequence to a file creating the file if it does not exist using the default encoding for the VM.
-     * 
+     *
      * @param file  the file to write
      * @param data  the content to write to the file
      * @throws IOException in case of an I/O error
@@ -314,7 +233,7 @@ public abstract class FileUtils {
     }
     /**
      * Writes a CharSequence to a file creating the file if it does not exist using the default encoding for the VM.
-     * 
+     *
      * @param file  the file to write
      * @param data  the content to write to the file
      * @param append if <code>true</code>, then the data will be added to the
@@ -534,7 +453,7 @@ public abstract class FileUtils {
      * An exception is thrown if the file does not exist.
      * An exception is thrown if the file object exists but is a directory.
      * An exception is thrown if the file exists but cannot be read.
-     * 
+     *
      * @param file  the file to open for input, must not be <code>null</code>
      * @return a new {@link FileInputStream} for the specified file
      * @throws FileNotFoundException if the file does not exist
@@ -568,7 +487,7 @@ public abstract class FileUtils {
      * An exception is thrown if the file object exists but is a directory.
      * An exception is thrown if the file exists but cannot be written to.
      * An exception is thrown if the parent directory cannot be created.
-     * 
+     *
      * @param file  the file to open for output, must not be <code>null</code>
      * @return a new {@link FileOutputStream} for the specified file
      * @throws IOException if the file object is a directory
@@ -591,7 +510,7 @@ public abstract class FileUtils {
      * An exception is thrown if the file object exists but is a directory.
      * An exception is thrown if the file exists but cannot be written to.
      * An exception is thrown if the parent directory cannot be created.
-     * 
+     *
      * @param file  the file to open for output, must not be <code>null</code>
      * @param append if <code>true</code>, then bytes will be added to the
      * end of the file rather than overwriting
@@ -618,5 +537,212 @@ public abstract class FileUtils {
             }
         }
         return new FileOutputStream(file, append);
+    }
+    //-----------------------------------------------------------------------
+    /**
+     * Deletes a directory recursively. 
+     *
+     * @param directory  directory to delete
+     * @throws IOException in case deletion is unsuccessful
+     */
+    public static void deleteDirectory(File directory) throws IOException {
+        if (!directory.exists()) {
+            return;
+        }
+        if (!isSymlink(directory)) {
+            cleanDirectory(directory);
+        }
+        if (!directory.delete()) {
+            String message = "Unable to delete directory " + directory + ".";
+            throw new IOException(message);
+        }
+    }
+    /**
+     * Cleans a directory without deleting it.
+     *
+     * @param directory directory to clean
+     * @throws IOException in case cleaning is unsuccessful
+     */
+    public static void cleanDirectory(File directory) throws IOException {
+        if (!directory.exists()) {
+            String message = directory + " does not exist";
+            throw new IllegalArgumentException(message);
+        }
+        if (!directory.isDirectory()) {
+            String message = directory + " is not a directory";
+            throw new IllegalArgumentException(message);
+        }
+        File[] files = directory.listFiles();
+        if (files == null) {  // null if security restricted
+            throw new IOException("Failed to list contents of " + directory);
+        }
+        IOException exception = null;
+        for (File file : files) {
+            try {
+                forceDelete(file);
+            } catch (IOException ioe) {
+                exception = ioe;
+            }
+        }
+        if (null != exception) {
+            throw exception;
+        }
+    }
+    /**
+     * Deletes a file, never throwing an exception. If file is a directory, delete it and all sub-directories.
+     * <p>
+     * The difference between File.delete() and this method are:
+     * <ul>
+     * <li>A directory to be deleted does not have to be empty.</li>
+     * <li>No exceptions are thrown when a file or directory cannot be deleted.</li>
+     * </ul>
+     *
+     * @param file  file or directory to delete, can be {@code null}
+     * @return {@code true} if the file or directory was deleted, otherwise
+     * {@code false}
+     *
+     * @since 1.4
+     */
+    public static boolean deleteQuietly(File file) {
+        if (file == null) {
+            return false;
+        }
+        try {
+            if (file.isDirectory()) {
+                cleanDirectory(file);
+            }
+        } catch (Exception ignored) {
+        }
+        try {
+            return file.delete();
+        } catch (Exception ignored) {
+            return false;
+        }
+    }
+    /**
+     * Schedules a directory recursively for deletion on JVM exit.
+     *
+     * @param directory  directory to delete, must not be {@code null}
+     * @throws NullPointerException if the directory is {@code null}
+     * @throws IOException in case deletion is unsuccessful
+     */
+    private static void deleteDirectoryOnExit(File directory) throws IOException {
+        if (!directory.exists()) {
+            return;
+        }
+        directory.deleteOnExit();
+        if (!isSymlink(directory)) {
+            cleanDirectoryOnExit(directory);
+        }
+    }
+    /**
+     * Cleans a directory without deleting it.
+     *
+     * @param directory  directory to clean, must not be {@code null}
+     * @throws NullPointerException if the directory is {@code null}
+     * @throws IOException in case cleaning is unsuccessful
+     */
+    private static void cleanDirectoryOnExit(File directory) throws IOException {
+        if (!directory.exists()) {
+            String message = directory + " does not exist";
+            throw new IllegalArgumentException(message);
+        }
+        if (!directory.isDirectory()) {
+            String message = directory + " is not a directory";
+            throw new IllegalArgumentException(message);
+        }
+        File[] files = directory.listFiles();
+        if (files == null) {  // null if security restricted
+            throw new IOException("Failed to list contents of " + directory);
+        }
+        IOException exception = null;
+        for (File file : files) {
+            try {
+                forceDeleteOnExit(file);
+            } catch (IOException ioe) {
+                exception = ioe;
+            }
+        }
+        if (null != exception) {
+            throw exception;
+        }
+    }
+    /**
+     * Determines whether the specified file is a Symbolic Link rather than an actual file.
+     * <p>
+     * Will not return true if there is a Symbolic Link anywhere in the path,
+     * only if the specific file is.
+     * <p>
+     * <b>Note:</b> the current implementation always returns {@code false} if the system
+     * is detected as Windows using {@link FilenameUtils#isSystemWindows()}
+     *
+     * @param file the file to check
+     * @return true if the file is a Symbolic Link
+     * @throws IOException if an IO error occurs while checking the file
+     * @since 2.0
+     */
+    public static boolean isSymlink(File file) throws IOException {
+        if (file == null) {
+            throw new NullPointerException("File must not be null");
+        }
+        if (FilenameUtils.isSystemWindows()) {
+            return false;
+        }
+        File fileInCanonicalDir = null;
+        if (file.getParent() == null) {
+            fileInCanonicalDir = file;
+        } else {
+            File canonicalDir = file.getParentFile().getCanonicalFile();
+            fileInCanonicalDir = new File(canonicalDir, file.getName());
+        }
+        if (fileInCanonicalDir.getCanonicalFile().equals(fileInCanonicalDir.getAbsoluteFile())) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    /**
+     * Deletes a file. If file is a directory, delete it and all sub-directories.
+     * <p>
+     * The difference between File.delete() and this method are:
+     * <ul>
+     * <li>A directory to be deleted does not have to be empty.</li>
+     * <li>You get exceptions when a file or directory cannot be deleted.
+     *      (java.io.File methods returns a boolean)</li>
+     * </ul>
+     *
+     * @param file  file or directory to delete, must not be {@code null}
+     * @throws NullPointerException if the directory is {@code null}
+     * @throws FileNotFoundException if the file was not found
+     * @throws IOException in case deletion is unsuccessful
+     */
+    public static void forceDelete(File file) throws IOException {
+        if (file.isDirectory()) {
+            deleteDirectory(file);
+        } else {
+            boolean filePresent = file.exists();
+            if (!file.delete()) {
+                if (!filePresent) {
+                    throw new FileNotFoundException("File does not exist: " + file);
+                }
+                String message = "Unable to delete file: " + file;
+                throw new IOException(message);
+            }
+        }
+    }
+    /**
+     * Schedules a file to be deleted when JVM exits.
+     * If file is directory delete it and all sub-directories.
+     *
+     * @param file  file or directory to delete, must not be {@code null}
+     * @throws NullPointerException if the file is {@code null}
+     * @throws IOException in case deletion is unsuccessful
+     */
+    public static void forceDeleteOnExit(File file) throws IOException {
+        if (file.isDirectory()) {
+            deleteDirectoryOnExit(file);
+        } else {
+            file.deleteOnExit();
+        }
     }
 }

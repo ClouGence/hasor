@@ -21,40 +21,41 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+
 import org.more.util.ArrayUtils;
 import org.more.util.ClassUtils;
 /**
  * <p>
  * Assists in implementing {@link Object#toString()} methods using reflection.
  * </p>
- * 
+ *
  * <p>
  * This class uses reflection to determine the fields to append. Because these fields are usually private, the class
  * uses {@link java.lang.reflect.AccessibleObject#setAccessible(java.lang.reflect.AccessibleObject[], boolean)} to
  * change the visibility of the fields. This will fail under a security manager, unless the appropriate permissions are
  * set up correctly.
  * </p>
- * 
+ *
  * <p>
  * A typical invocation for this method would look like:
  * </p>
- * 
+ *
  * <pre>
  * public String toString() {
  *   return ReflectionToStringBuilder.toString(this);
  * }</pre>
- * 
- * 
- * 
+ *
+ *
+ *
  * <p>
  * You can also use the builder to debug 3rd party objects:
  * </p>
- * 
+ *
  * <pre>
  * System.out.println("An object: " + ReflectionToStringBuilder.toString(anObject));</pre>
- * 
- * 
- * 
+ *
+ *
+ *
  * <p>
  * A subclass can control field output by overriding the methods:
  * <ul>
@@ -66,7 +67,7 @@ import org.more.util.ClassUtils;
  * For example, this method does <i>not</i> include the <code>password</code> field in the returned
  * <code>String</code>:
  * </p>
- * 
+ *
  * <pre>
  * public String toString() {
  *     return (new ReflectionToStringBuilder(this) {
@@ -75,14 +76,14 @@ import org.more.util.ClassUtils;
  *         }
  *     }).toString();
  * }</pre>
- * 
- * 
- * 
+ *
+ *
+ *
  * <p>
  * The exact format of the <code>toString</code> is determined by the {@link ToStringStyle} passed into the
  * constructor.
  * </p>
- * 
+ *
  * @author Apache Software Foundation
  * @author Gary Gregory
  * @author Pete Gieser
@@ -94,18 +95,18 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <p>
      * Builds a <code>toString</code> value using the default <code>ToStringStyle</code> through reflection.
      * </p>
-     * 
+     *
      * <p>
      * It uses <code>AccessibleObject.setAccessible</code> to gain access to private fields. This means that it will
      * throw a security exception if run under a security manager, if the permissions are not set up correctly. It is
      * also not as efficient as testing explicitly.
      * </p>
-     * 
+     *
      * <p>
      * Transient members will be not be included, as they are likely derived. Static fields will not be included.
      * Superclass fields will be appended.
      * </p>
-     * 
+     *
      * @param object
      *            the Object to be output
      * @return the String result
@@ -119,22 +120,22 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <p>
      * Builds a <code>toString</code> value through reflection.
      * </p>
-     * 
+     *
      * <p>
      * It uses <code>AccessibleObject.setAccessible</code> to gain access to private fields. This means that it will
      * throw a security exception if run under a security manager, if the permissions are not set up correctly. It is
      * also not as efficient as testing explicitly.
      * </p>
-     * 
+     *
      * <p>
      * Transient members will be not be included, as they are likely derived. Static fields will not be included.
      * Superclass fields will be appended.
      * </p>
-     * 
+     *
      * <p>
      * If the style is <code>null</code>, the default <code>ToStringStyle</code> is used.
      * </p>
-     * 
+     *
      * @param object
      *            the Object to be output
      * @param style
@@ -150,26 +151,26 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <p>
      * Builds a <code>toString</code> value through reflection.
      * </p>
-     * 
+     *
      * <p>
      * It uses <code>AccessibleObject.setAccessible</code> to gain access to private fields. This means that it will
      * throw a security exception if run under a security manager, if the permissions are not set up correctly. It is
      * also not as efficient as testing explicitly.
      * </p>
-     * 
+     *
      * <p>
      * If the <code>outputTransients</code> is <code>true</code>, transient members will be output, otherwise they
      * are ignored, as they are likely derived fields, and not part of the value of the Object.
      * </p>
-     * 
+     *
      * <p>
      * Static fields will not be included. Superclass fields will be appended.
      * </p>
-     * 
+     *
      * <p>
      * If the style is <code>null</code>, the default <code>ToStringStyle</code> is used.
      * </p>
-     * 
+     *
      * @param object
      *            the Object to be output
      * @param style
@@ -187,31 +188,31 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <p>
      * Builds a <code>toString</code> value through reflection.
      * </p>
-     * 
+     *
      * <p>
      * It uses <code>AccessibleObject.setAccessible</code> to gain access to private fields. This means that it will
      * throw a security exception if run under a security manager, if the permissions are not set up correctly. It is
      * also not as efficient as testing explicitly.
      * </p>
-     * 
+     *
      * <p>
      * If the <code>outputTransients</code> is <code>true</code>, transient fields will be output, otherwise they
      * are ignored, as they are likely derived fields, and not part of the value of the Object.
      * </p>
-     * 
+     *
      * <p>
      * If the <code>outputStatics</code> is <code>true</code>, static fields will be output, otherwise they are
      * ignored.
      * </p>
-     * 
+     *
      * <p>
      * Static fields will not be included. Superclass fields will be appended.
      * </p>
-     * 
+     *
      * <p>
      * If the style is <code>null</code>, the default <code>ToStringStyle</code> is used.
      * </p>
-     * 
+     *
      * @param object
      *            the Object to be output
      * @param style
@@ -232,32 +233,32 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <p>
      * Builds a <code>toString</code> value through reflection.
      * </p>
-     * 
+     *
      * <p>
      * It uses <code>AccessibleObject.setAccessible</code> to gain access to private fields. This means that it will
      * throw a security exception if run under a security manager, if the permissions are not set up correctly. It is
      * also not as efficient as testing explicitly.
      * </p>
-     * 
+     *
      * <p>
      * If the <code>outputTransients</code> is <code>true</code>, transient fields will be output, otherwise they
      * are ignored, as they are likely derived fields, and not part of the value of the Object.
      * </p>
-     * 
+     *
      * <p>
      * If the <code>outputStatics</code> is <code>true</code>, static fields will be output, otherwise they are
      * ignored.
      * </p>
-     * 
+     *
      * <p>
      * Superclass fields will be appended up to and including the specified superclass. A null superclass is treated as
      * <code>java.lang.Object</code>.
      * </p>
-     * 
+     *
      * <p>
      * If the style is <code>null</code>, the default <code>ToStringStyle</code> is used.
      * </p>
-     * 
+     *
      * @param object
      *            the Object to be output
      * @param style
@@ -278,7 +279,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     }
     /**
      * Builds a String for a toString method excluding the given field name.
-     * 
+     *
      * @param object
      *            The object to "toString".
      * @param excludeFieldName
@@ -286,11 +287,11 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * @return The toString value.
      */
     public static String toStringExclude(Object object, final String excludeFieldName) {
-        return toStringExclude(object, new String[] { excludeFieldName });
+        return toStringExclude(object, new String[] {excludeFieldName});
     }
     /**
      * Builds a String for a toString method excluding the given field names.
-     * 
+     *
      * @param object
      *            The object to "toString".
      * @param excludeFieldNames
@@ -304,7 +305,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * Converts the given Collection into an array of Strings. The returned array does not contain <code>null</code>
      * entries. Note that {@link Arrays#sort(Object[])} will throw an {@link NullPointerException} if an array element 
      * is <code>null</code>.
-     * 
+     *
      * @param collection
      *            The collection to convert
      * @return A new array of Strings.
@@ -317,9 +318,9 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     }
     /**
      * Returns a new array of Strings without null elements. Internal method used to normalize exclude lists
-     * (arrays and collections). Note that {@link Arrays#sort(Object[])} will throw an {@link NullPointerException} 
+     * (arrays and collections). Note that {@link Arrays#sort(Object[])} will throw an {@link NullPointerException}
      * if an array element is <code>null</code>.
-     * 
+     *
      * @param array
      *            The array to check
      * @return The given array or a new array without null.
@@ -336,7 +337,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     }
     /**
      * Builds a String for a toString method excluding the given field names.
-     * 
+     *
      * @param object
      *            The object to "toString".
      * @param excludeFieldNames
@@ -349,11 +350,11 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     /**
      * Whether or not to append static fields.
      */
-    private boolean  appendStatics    = false;
+    private boolean appendStatics    = false;
     /**
      * Whether or not to append transient fields.
      */
-    private boolean  appendTransients = false;
+    private boolean appendTransients = false;
     /**
      * Which field names to exclude from output. Intended for fields like <code>"password"</code>.
      */
@@ -361,16 +362,16 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     /**
      * The last super class to stop appending fields for.
      */
-    private Class<?> upToClass        = null;
+    private Class<?> upToClass = null;
     /**
      * <p>
      * Constructor.
      * </p>
-     * 
+     *
      * <p>
      * This constructor outputs using the default style set with <code>setDefaultStyle</code>.
      * </p>
-     * 
+     *
      * @param object
      *            the Object to build a <code>toString</code> for, must not be <code>null</code>
      * @throws IllegalArgumentException
@@ -383,11 +384,11 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <p>
      * Constructor.
      * </p>
-     * 
+     *
      * <p>
      * If the style is <code>null</code>, the default style is used.
      * </p>
-     * 
+     *
      * @param object
      *            the Object to build a <code>toString</code> for, must not be <code>null</code>
      * @param style
@@ -402,15 +403,15 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <p>
      * Constructor.
      * </p>
-     * 
+     *
      * <p>
      * If the style is <code>null</code>, the default style is used.
      * </p>
-     * 
+     *
      * <p>
      * If the buffer is <code>null</code>, a new one is created.
      * </p>
-     * 
+     *
      * @param object
      *            the Object to build a <code>toString</code> for
      * @param style
@@ -425,7 +426,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     }
     /**
      * Constructor.
-     * 
+     *
      * @param object
      *            the Object to build a <code>toString</code> for
      * @param style
@@ -453,7 +454,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <li>Static fields are appended only if {@link #isAppendStatics()} returns <code>true</code>.
      * <li>Inner class fields are not appened.</li>
      * </ul>
-     * 
+     *
      * @param field
      *            The Field to test.
      * @return Whether or not to append the given <code>Field</code>.
@@ -481,12 +482,12 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <p>
      * Appends the fields and values defined by the given object of the given Class.
      * </p>
-     * 
+     *
      * <p>
      * If a cycle is detected as an object is &quot;toString()'ed&quot;, such an object is rendered as if
      * <code>Object.toString()</code> had been called and not implemented by the object.
      * </p>
-     * 
+     *
      * @param clazz
      *            The class of object parameter
      */
@@ -526,7 +527,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <p>
      * Gets the last super class to stop appending fields for.
      * </p>
-     * 
+     *
      * @return The last super class to stop appending fields for.
      */
     public Class<?> getUpToClass() {
@@ -536,16 +537,16 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <p>
      * Calls <code>java.lang.reflect.Field.get(Object)</code>.
      * </p>
-     * 
+     *
      * @param field
      *            The Field to query.
      * @return The Object from the given Field.
-     * 
+     *
      * @throws IllegalArgumentException
      *             see {@link java.lang.reflect.Field#get(Object)}
      * @throws IllegalAccessException
      *             see {@link java.lang.reflect.Field#get(Object)}
-     * 
+     *
      * @see java.lang.reflect.Field#get(Object)
      */
     protected Object getValue(Field field) throws IllegalArgumentException, IllegalAccessException {
@@ -555,7 +556,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <p>
      * Gets whether or not to append static fields.
      * </p>
-     * 
+     *
      * @return Whether or not to append static fields.
      * @since 2.1
      */
@@ -566,7 +567,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <p>
      * Gets whether or not to append transient fields.
      * </p>
-     * 
+     *
      * @return Whether or not to append transient fields.
      */
     public boolean isAppendTransients() {
@@ -576,7 +577,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <p>
      * Append to the <code>toString</code> an <code>Object</code> array.
      * </p>
-     * 
+     *
      * @param array
      *            the array to add to the <code>toString</code>
      * @return this
@@ -589,7 +590,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <p>
      * Sets whether or not to append static fields.
      * </p>
-     * 
+     *
      * @param appendStatics
      *            Whether or not to append static fields.
      * @since 2.1
@@ -601,7 +602,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <p>
      * Sets whether or not to append transient fields.
      * </p>
-     * 
+     *
      * @param appendTransients
      *            Whether or not to append transient fields.
      */
@@ -610,7 +611,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
     }
     /**
      * Sets the field names to exclude.
-     * 
+     *
      * @param excludeFieldNamesParam
      *            The excludeFieldNames to excluding from toString or <code>null</code>.
      * @return <code>this</code>
@@ -628,7 +629,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <p>
      * Sets the last super class to stop appending fields for.
      * </p>
-     * 
+     *
      * @param clazz
      *            The last super class to stop appending fields for.
      */
@@ -645,7 +646,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * <p>
      * Gets the String built by this builder.
      * </p>
-     * 
+     *
      * @return the built string
      */
     public String toString() {

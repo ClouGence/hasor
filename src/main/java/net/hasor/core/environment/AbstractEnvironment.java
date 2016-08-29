@@ -443,4 +443,16 @@ public abstract class AbstractEnvironment implements Environment {
         }
         return newEvalString;
     }
+    //
+    /* ----------------------------------------------------------------------------------- toos */
+    @Override
+    public String getSystemProperty(String property) {
+        try {
+            return System.getProperty(property);
+        } catch (SecurityException ex) {
+            // we are not allowed to look at this property
+            logger.error("Caught a SecurityException reading the system property '" + property + "'; the SystemUtils property value will default to null.");
+            return null;
+        }
+    }
 }

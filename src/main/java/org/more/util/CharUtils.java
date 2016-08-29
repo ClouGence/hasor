@@ -21,7 +21,7 @@ package org.more.util;
  * <p>This class tries to handle <code>null</code> input gracefully.
  * An exception will not be thrown for a <code>null</code> input.
  * Each method documents its behaviour in more detail.</p>
- * 
+ *
  * <p>#ThreadSafe#</p>
  * @author Apache Software Foundation
  * @since 2.1
@@ -33,28 +33,30 @@ public class CharUtils {
     private static final Character[] CHAR_ARRAY        = new Character[128];
     /**
      * <code>
-    </code> linefeed LF ('\n').
-     * 
+     </code> linefeed LF ('\n').
+     *
      * @see <a href="http://java.sun.com/docs/books/jls/third_edition/html/lexical.html#101089">JLF: Escape Sequences
      *      for Character and String Literals</a>
      * @since 2.2
      */
-    public static final char         LF                = '\n';
+    public static final  char        LF                = '\n';
     /**
      * <code>
-    </code> carriage return CR ('\r').
-     * 
+     </code> carriage return CR ('\r').
+     *
      * @see <a href="http://java.sun.com/docs/books/jls/third_edition/html/lexical.html#101089">JLF: Escape Sequences
      *      for Character and String Literals</a>
      * @since 2.2
      */
-    public static final char         CR                = '\r';
+    public static final  char        CR                = '\r';
+
     static {
         for (int i = 127; i >= 0; i--) {
             CharUtils.CHAR_STRING_ARRAY[i] = CharUtils.CHAR_STRING.substring(i, i + 1);
             CharUtils.CHAR_ARRAY[i] = new Character((char) i);
         }
     }
+
     /**
      * <p><code>CharUtils</code> instances should NOT be constructed in standard programming.
      * Instead, the class should be used as <code>CharUtils.toString('c');</code>.</p>
@@ -68,7 +70,7 @@ public class CharUtils {
     //-----------------------------------------------------------------------
     /**
      * <p>Converts the character to a Character.</p>
-     * 
+     *
      * <p>For ASCII 7 bit characters, this uses a cache that will return the
      * same Character object each time.</p>
      *
@@ -89,10 +91,10 @@ public class CharUtils {
     /**
      * <p>Converts the String to a Character using the first character, returning
      * null for empty Strings.</p>
-     * 
+     *
      * <p>For ASCII 7 bit characters, this uses a cache that will return the
      * same Character object each time.</p>
-     * 
+     *
      * <pre>
      *   CharUtils.toCharacterObject(null) = null
      *   CharUtils.toCharacterObject("")   = null
@@ -112,7 +114,7 @@ public class CharUtils {
     //-----------------------------------------------------------------------
     /**
      * <p>Converts the Character to a char throwing an exception for <code>null</code>.</p>
-     * 
+     *
      * <pre>
      *   CharUtils.toChar(null) = IllegalArgumentException
      *   CharUtils.toChar(' ')  = ' '
@@ -131,7 +133,7 @@ public class CharUtils {
     }
     /**
      * <p>Converts the Character to a char handling <code>null</code>.</p>
-     * 
+     *
      * <pre>
      *   CharUtils.toChar(null, 'X') = 'X'
      *   CharUtils.toChar(' ', 'X')  = ' '
@@ -152,7 +154,7 @@ public class CharUtils {
     /**
      * <p>Converts the String to a char using the first character, throwing
      * an exception on empty Strings.</p>
-     * 
+     *
      * <pre>
      *   CharUtils.toChar(null) = IllegalArgumentException
      *   CharUtils.toChar("")   = IllegalArgumentException
@@ -173,7 +175,7 @@ public class CharUtils {
     /**
      * <p>Converts the String to a char using the first character, defaulting
      * the value on empty Strings.</p>
-     * 
+     *
      * <pre>
      *   CharUtils.toChar(null, 'X') = 'X'
      *   CharUtils.toChar("", 'X')   = 'X'
@@ -195,7 +197,7 @@ public class CharUtils {
     /**
      * <p>Converts the character to the Integer it represents, throwing an
      * exception if the character is not numeric.</p>
-     * 
+     *
      * <p>This method coverts the char '1' to the int 1 and so on.</p>
      *
      * <pre>
@@ -216,7 +218,7 @@ public class CharUtils {
     /**
      * <p>Converts the character to the Integer it represents, throwing an
      * exception if the character is not numeric.</p>
-     * 
+     *
      * <p>This method coverts the char '1' to the int 1 and so on.</p>
      *
      * <pre>
@@ -237,7 +239,7 @@ public class CharUtils {
     /**
      * <p>Converts the character to the Integer it represents, throwing an
      * exception if the character is not numeric.</p>
-     * 
+     *
      * <p>This method coverts the char '1' to the int 1 and so on.</p>
      *
      * <pre>
@@ -259,7 +261,7 @@ public class CharUtils {
     /**
      * <p>Converts the character to the Integer it represents, throwing an
      * exception if the character is not numeric.</p>
-     * 
+     *
      * <p>This method coverts the char '1' to the int 1 and so on.</p>
      *
      * <pre>
@@ -281,7 +283,7 @@ public class CharUtils {
     //-----------------------------------------------------------------------
     /**
      * <p>Converts the character to a String that contains the one character.</p>
-     * 
+     *
      * <p>For ASCII 7 bit characters, this uses a cache that will return the
      * same String object each time.</p>
      *
@@ -297,14 +299,14 @@ public class CharUtils {
         if (ch < 128) {
             return CharUtils.CHAR_STRING_ARRAY[ch];
         }
-        return new String(new char[] { ch });
+        return new String(new char[] {ch});
     }
     /**
      * <p>Converts the character to a String that contains the one character.</p>
-     * 
+     *
      * <p>For ASCII 7 bit characters, this uses a cache that will return the
      * same String object each time.</p>
-     * 
+     *
      * <p>If <code>null</code> is passed in, <code>null</code> will be returned.</p>
      *
      * <pre>
@@ -325,14 +327,14 @@ public class CharUtils {
     //--------------------------------------------------------------------------
     /**
      * <p>Converts the string to the unicode format '\u0020'.</p>
-     * 
+     *
      * <p>This format is the Java source code format.</p>
      *
      * <pre>
      *   CharUtils.unicodeEscaped(' ') = "\u0020"
      *   CharUtils.unicodeEscaped('A') = "\u0041"
      * </pre>
-     * 
+     *
      * @param ch  the character to convert
      * @return the escaped unicode string
      */
@@ -348,9 +350,9 @@ public class CharUtils {
     }
     /**
      * <p>Converts the string to the unicode format '\u0020'.</p>
-     * 
+     *
      * <p>This format is the Java source code format.</p>
-     * 
+     *
      * <p>If <code>null</code> is passed in, <code>null</code> will be returned.</p>
      *
      * <pre>
@@ -358,7 +360,7 @@ public class CharUtils {
      *   CharUtils.unicodeEscaped(' ')  = "\u0020"
      *   CharUtils.unicodeEscaped('A')  = "\u0041"
      * </pre>
-     * 
+     *
      * @param ch  the character to convert, may be null
      * @return the escaped unicode string, null if null input
      */
@@ -380,7 +382,7 @@ public class CharUtils {
      *   CharUtils.isAscii('\n') = true
      *   CharUtils.isAscii('&copy;') = false
      * </pre>
-     * 
+     *
      * @param ch  the character to check
      * @return true if less than 128
      */
@@ -398,7 +400,7 @@ public class CharUtils {
      *   CharUtils.isAsciiPrintable('\n') = false
      *   CharUtils.isAsciiPrintable('&copy;') = false
      * </pre>
-     * 
+     *
      * @param ch  the character to check
      * @return true if between 32 and 126 inclusive
      */
@@ -416,7 +418,7 @@ public class CharUtils {
      *   CharUtils.isAsciiControl('\n') = true
      *   CharUtils.isAsciiControl('&copy;') = false
      * </pre>
-     * 
+     *
      * @param ch  the character to check
      * @return true if less than 32 or equals 127
      */
@@ -434,7 +436,7 @@ public class CharUtils {
      *   CharUtils.isAsciiAlpha('\n') = false
      *   CharUtils.isAsciiAlpha('&copy;') = false
      * </pre>
-     * 
+     *
      * @param ch  the character to check
      * @return true if between 65 and 90 or 97 and 122 inclusive
      */
@@ -452,7 +454,7 @@ public class CharUtils {
      *   CharUtils.isAsciiAlphaUpper('\n') = false
      *   CharUtils.isAsciiAlphaUpper('&copy;') = false
      * </pre>
-     * 
+     *
      * @param ch  the character to check
      * @return true if between 65 and 90 inclusive
      */
@@ -470,7 +472,7 @@ public class CharUtils {
      *   CharUtils.isAsciiAlphaLower('\n') = false
      *   CharUtils.isAsciiAlphaLower('&copy;') = false
      * </pre>
-     * 
+     *
      * @param ch  the character to check
      * @return true if between 97 and 122 inclusive
      */
@@ -488,7 +490,7 @@ public class CharUtils {
      *   CharUtils.isAsciiNumeric('\n') = false
      *   CharUtils.isAsciiNumeric('&copy;') = false
      * </pre>
-     * 
+     *
      * @param ch  the character to check
      * @return true if between 48 and 57 inclusive
      */
@@ -506,7 +508,7 @@ public class CharUtils {
      *   CharUtils.isAsciiAlphanumeric('\n') = false
      *   CharUtils.isAsciiAlphanumeric('&copy;') = false
      * </pre>
-     * 
+     *
      * @param ch  the character to check
      * @return true if between 48 and 57 or 65 and 90 or 97 and 122 inclusive
      */

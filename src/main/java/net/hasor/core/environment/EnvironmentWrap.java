@@ -90,4 +90,8 @@ public class EnvironmentWrap implements Environment {
     public void refreshVariables() {
         this.getEnvironment().refreshVariables();
     }
+    @Override
+    public String getSystemProperty(String property) {
+        return this.getEnvironment().getSystemProperty(property);
+    }
 }

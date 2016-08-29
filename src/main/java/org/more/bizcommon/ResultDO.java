@@ -19,8 +19,8 @@ import java.util.List;
 
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
-import org.more.datachain.DataChainContext;
-import org.more.datachain.DataFilter;
+import org.more.bizcommon.datachain.DataChainContext;
+import org.more.bizcommon.datachain.DataFilter;
 /**
  * 结果集
  * @version : 2014年10月25日

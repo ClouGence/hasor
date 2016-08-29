@@ -97,65 +97,6 @@ public class ArrayUtils {
     public ArrayUtils() {
         super();
     }
-    //    // Basic methods handling multi-dimensional arrays
-    //    //-----------------------------------------------------------------------
-    //    /**
-    //     * <p>Outputs an array as a String, treating <code>null</code> as an empty array.</p>
-    //     *
-    //     * <p>Multi-dimensional arrays are handled correctly, including
-    //     * multi-dimensional primitive arrays.</p>
-    //     *
-    //     * <p>The format is that of Java source code, for example <code>{a,b}</code>.</p>
-    //     *
-    //     * @param array  the array to get a toString for, may be <code>null</code>
-    //     * @return a String representation of the array, '{}' if null array input
-    //     */
-    //    public static String toString(Object array) {
-    //        return toString(array, "{}");
-    //    }
-    //    /**
-    //     * <p>Outputs an array as a String handling <code>null</code>s.</p>
-    //     *
-    //     * <p>Multi-dimensional arrays are handled correctly, including
-    //     * multi-dimensional primitive arrays.</p>
-    //     *
-    //     * <p>The format is that of Java source code, for example <code>{a,b}</code>.</p>
-    //     *
-    //     * @param array  the array to get a toString for, may be <code>null</code>
-    //     * @param stringIfNull  the String to return if the array is <code>null</code>
-    //     * @return a String representation of the array
-    //     */
-    //    public static String toString(Object array, String stringIfNull) {
-    //        if (array == null) {
-    //            return stringIfNull;
-    //        }
-    //        return new ToStringBuilder(array, ToStringStyle.SIMPLE_STYLE).append(array).toString();
-    //    }
-    //    /**
-    //     * <p>Get a hashCode for an array handling multi-dimensional arrays correctly.</p>
-    //     *
-    //     * <p>Multi-dimensional primitive arrays are also handled correctly by this method.</p>
-    //     *
-    //     * @param array  the array to get a hashCode for, may be <code>null</code>
-    //     * @return a hashCode for the array, zero if null array input
-    //     */
-    //    public static int hashCode(Object array) {
-    //        return new HashCodeBuilder().append(array).toHashCode();
-    //    }
-    //    /**
-    //     * <p>Compares two arrays, using equals(), handling multi-dimensional arrays
-    //     * correctly.</p>
-    //     *
-    //     * <p>Multi-dimensional primitive arrays are also handled correctly by this method.</p>
-    //     *
-    //     * @param array1  the left hand array to compare, may be <code>null</code>
-    //     * @param array2  the right hand array to compare, may be <code>null</code>
-    //     * @return <code>true</code> if the arrays are equal
-    //     */
-    //    public static boolean isEquals(Object array1, Object array2) {
-    //        return new EqualsBuilder().append(array1, array2).isEquals();
-    //    }
-    // To map
     //-----------------------------------------------------------------------
     /**
      * <p>Converts the given array into a {@link java.util.Map}. Each element of the array
@@ -351,7 +292,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -370,7 +311,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -389,7 +330,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -408,7 +349,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -427,7 +368,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -446,7 +387,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -465,7 +406,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -484,7 +425,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -503,7 +444,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -522,7 +463,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -541,7 +482,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -560,7 +501,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -579,7 +520,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -598,7 +539,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -617,7 +558,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -636,7 +577,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -655,7 +596,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -674,7 +615,7 @@ public class ArrayUtils {
      * reference to an empty one.</p>
      *
      * <p>This method returns an empty array for a <code>null</code> input array.</p>
-     * 
+     *
      * <p>As a memory optimizing technique an empty array passed in will be overridden with 
      * the empty <code>public static</code> references in this class.</p>
      *
@@ -3715,7 +3656,7 @@ public class ArrayUtils {
         } else if (element != null) {
             clss = element.getClass();
         } else {
-            return new Object[] { null };
+            return new Object[] {null};
         }
         return (Object[]) ArrayUtils.add(array, index, element, clss);
     }

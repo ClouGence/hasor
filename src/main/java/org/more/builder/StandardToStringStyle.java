@@ -33,7 +33,7 @@ package org.more.builder;
 public class StandardToStringStyle extends ToStringStyle {
     /**
      * Required for serialization support.
-     * 
+     *
      * @see java.io.Serializable
      */
     private static final long serialVersionUID = 1L;
@@ -312,7 +312,7 @@ public class StandardToStringStyle extends ToStringStyle {
     /**
      * <p>Gets whether the field separator should be added at the start 
      * of each buffer.</p>
-     * 
+     *
      * @return the fieldSeparatorAtStart flag
      * @since 2.0
      */
@@ -322,7 +322,7 @@ public class StandardToStringStyle extends ToStringStyle {
     /**
      * <p>Sets whether the field separator should be added at the start 
      * of each buffer.</p>
-     * 
+     *
      * @param fieldSeparatorAtStart  the fieldSeparatorAtStart flag
      * @since 2.0
      */
@@ -333,7 +333,7 @@ public class StandardToStringStyle extends ToStringStyle {
     /**
      * <p>Gets whether the field separator should be added at the end 
      * of each buffer.</p>
-     * 
+     *
      * @return fieldSeparatorAtEnd flag
      * @since 2.0
      */
@@ -343,7 +343,7 @@ public class StandardToStringStyle extends ToStringStyle {
     /**
      * <p>Sets whether the field separator should be added at the end 
      * of each buffer.</p>
-     * 
+     *
      * @param fieldSeparatorAtEnd  the fieldSeparatorAtEnd flag
      * @since 2.0
      */

@@ -15,7 +15,7 @@
  */
 package net.test.hasor.core._01_bean;
 import org.junit.Test;
-import org.more.json.JSON;
+import org.more.bizcommon.json.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;

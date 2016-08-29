@@ -18,7 +18,7 @@ package org.more.util;
 import java.io.Serializable;
 /**
  * <p>Operations on <code>Object</code>.</p>
- * 
+ *
  * <p>This class tries to handle <code>null</code> input gracefully.
  * An exception will generally not be thrown for a <code>null</code> input.
  * Each method documents its behaviour in more detail.</p>
@@ -69,7 +69,7 @@ public class ObjectUtils {
     /**
      * <p>Returns a default value if the object passed is
      * <code>null</code>.</p>
-     * 
+     *
      * <pre>
      * ObjectUtils.defaultIfNull(null, null)      = null
      * ObjectUtils.defaultIfNull(null, "")        = ""
@@ -199,47 +199,19 @@ public class ObjectUtils {
         }
         buffer.append(object.getClass().getName()).append('@').append(Integer.toHexString(System.identityHashCode(object)));
     }
-    /**
-     * <p>Appends the toString that would be produced by <code>Object</code>
-     * if a class did not override toString itself. <code>null</code>
-     * will return <code>null</code>.</p>
-     *
-     * <pre>
-     * ObjectUtils.appendIdentityToString(*, null)            = null
-     * ObjectUtils.appendIdentityToString(null, "")           = "java.lang.String@1e23"
-     * ObjectUtils.appendIdentityToString(null, Boolean.TRUE) = "java.lang.Boolean@7fa"
-     * ObjectUtils.appendIdentityToString(buf, Boolean.TRUE)  = buf.append("java.lang.Boolean@7fa")
-     * </pre>
-     *
-     * @param buffer  the buffer to append to, may be <code>null</code>
-     * @param object  the object to create a toString for, may be <code>null</code>
-     * @return the default toString text, or <code>null</code> if
-     *  <code>null</code> passed in
-     * @since 2.0
-     * @deprecated The design of this method is bad - see LANG-360. Instead, use identityToString(StringBuffer, Object).
-     */
-    public static StringBuffer appendIdentityToString(StringBuffer buffer, Object object) {
-        if (object == null) {
-            return null;
-        }
-        if (buffer == null) {
-            buffer = new StringBuffer();
-        }
-        return buffer.append(object.getClass().getName()).append('@').append(Integer.toHexString(System.identityHashCode(object)));
-    }
     // ToString
     //-----------------------------------------------------------------------
     /**
      * <p>Gets the <code>toString</code> of an <code>Object</code> returning
      * an empty string ("") if <code>null</code> input.</p>
-     * 
+     *
      * <pre>
      * ObjectUtils.toString(null)         = ""
      * ObjectUtils.toString("")           = ""
      * ObjectUtils.toString("bat")        = "bat"
      * ObjectUtils.toString(Boolean.TRUE) = "true"
      * </pre>
-     * 
+     *
      * @see StringUtils#defaultString(String)
      * @see String#valueOf(Object)
      * @param obj  the Object to <code>toString</code>, may be null
@@ -252,7 +224,7 @@ public class ObjectUtils {
     /**
      * <p>Gets the <code>toString</code> of an <code>Object</code> returning
      * a specified text if <code>null</code> input.</p>
-     * 
+     *
      * <pre>
      * ObjectUtils.toString(null, null)           = null
      * ObjectUtils.toString(null, "null")         = "null"
@@ -260,8 +232,8 @@ public class ObjectUtils {
      * ObjectUtils.toString("bat", "null")        = "bat"
      * ObjectUtils.toString(Boolean.TRUE, "null") = "true"
      * </pre>
-     * 
-     * @see StringUtils#defaultString(String,String)
+     *
+     * @see StringUtils#defaultString(String, String)
      * @see String#valueOf(Object)
      * @param obj  the Object to <code>toString</code>, may be null
      * @param nullStr  the String to return if <code>null</code> input, may be null
@@ -275,7 +247,7 @@ public class ObjectUtils {
     //-----------------------------------------------------------------------
     /**
      * Null safe comparison of Comparables.
-     * 
+     *
      * @param c1  the first comparable, may be null
      * @param c2  the second comparable, may be null
      * @return
@@ -291,7 +263,7 @@ public class ObjectUtils {
     }
     /**
      * Null safe comparison of Comparables.
-     * 
+     *
      * @param c1  the first comparable, may be null
      * @param c2  the second comparable, may be null
      * @return
@@ -308,7 +280,7 @@ public class ObjectUtils {
     /**
      * Null safe comparison of Comparables.
      * {@code null} is assumed to be less than a non-{@code null} value.
-     * 
+     *
      * @param c1  the first comparable, may be null
      * @param c2  the second comparable, may be null
      * @return a negative value if c1 < c2, zero if c1 = c2
@@ -320,7 +292,7 @@ public class ObjectUtils {
     }
     /**
      * Null safe comparison of Comparables.
-     * 
+     *
      * @param c1  the first comparable, may be null
      * @param c2  the second comparable, may be null
      * @param nullGreater if true <code>null</code> is considered greater
@@ -360,7 +332,7 @@ public class ObjectUtils {
     public static class Null implements Serializable {
         /**
          * Required for serialization support. Declare serialization compatibility with Commons Lang 1.0
-         * 
+         *
          * @see java.io.Serializable
          */
         private static final long serialVersionUID = 7092611880189329093L;
@@ -372,7 +344,7 @@ public class ObjectUtils {
         }
         /**
          * <p>Ensure singleton.</p>
-         * 
+         *
          * @return the singleton value
          */
         private Object readResolve() {

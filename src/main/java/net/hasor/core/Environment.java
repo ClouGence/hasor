@@ -111,4 +111,7 @@ public interface Environment {
 
     /**刷新加载的环境变量*/
     public void refreshVariables();
+
+    /**获取系统属性。*/
+    public String getSystemProperty(String property);
 }

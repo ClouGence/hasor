@@ -15,13 +15,14 @@
  * limitations under the License.
  */
 package org.more.util.reflect;
+import org.more.util.ArrayUtils;
+import org.more.util.ClassUtils;
+import org.more.util.StringUtils;
+
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import org.more.util.ArrayUtils;
-import org.more.util.ClassUtils;
-import org.more.util.SystemUtils;
 /**
  * Contains common code for working with Methods/Constructors, extracted and
  * refactored from <code>MethodUtils</code> when it was imported from Commons
@@ -35,20 +36,74 @@ import org.more.util.SystemUtils;
  */
 abstract class MemberUtils {
     // TODO extract an interface to implement compareParameterSets(...)?
-    private static final int    ACCESS_TEST = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
+    private static final int ACCESS_TEST = Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE;
     private static final Method IS_SYNTHETIC;
+    //
+    public static float toVersionFloat() {
+        int limit = 3;
+        String version = null;
+        try {
+            version = System.getProperty("java.version");
+        } catch (SecurityException ex) {
+            version = null;
+        }
+        int[] javaVersions = null;
+        if (version == null) {
+            javaVersions = ArrayUtils.EMPTY_INT_ARRAY;
+        } else {
+            String[] strings = StringUtils.split(version, "._- ");
+            int[] ints = new int[Math.min(limit, strings.length)];
+            int j = 0;
+            for (int i = 0; i < strings.length && j < limit; i++) {
+                String s = strings[i];
+                if (s.length() > 0) {
+                    try {
+                        ints[j] = Integer.parseInt(s);
+                        j++;
+                    } catch (Exception e) {
+                    }
+                }
+            }
+            if (ints.length > j) {
+                int[] newInts = new int[j];
+                System.arraycopy(ints, 0, newInts, 0, j);
+                ints = newInts;
+            }
+            javaVersions = ints;
+        }
+        //
+        if (javaVersions == null || javaVersions.length == 0) {
+            return 0f;
+        }
+        if (javaVersions.length == 1) {
+            return javaVersions[0];
+        }
+        StringBuffer builder = new StringBuffer();
+        builder.append(javaVersions[0]);
+        builder.append('.');
+        for (int i = 1; i < javaVersions.length; i++) {
+            builder.append(javaVersions[i]);
+        }
+        try {
+            return Float.parseFloat(builder.toString());
+        } catch (Exception ex) {
+            return 0f;
+        }
+    }
     static {
         Method isSynthetic = null;
-        if (SystemUtils.isJavaVersionAtLeast(1.5f)) {
+        if (toVersionFloat() >= 1.5f) {
             // cannot call synthetic methods:
             try {
                 isSynthetic = Member.class.getMethod("isSynthetic", ArrayUtils.EMPTY_CLASS_ARRAY);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
         IS_SYNTHETIC = isSynthetic;
     }
+
     /** Array of primitive number types ordered by "promotability" */
-    private static final Class<?>[] ORDERED_PRIMITIVE_TYPES = { Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE, Long.TYPE, Float.TYPE, Double.TYPE };
+    private static final Class<?>[] ORDERED_PRIMITIVE_TYPES = {Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE, Long.TYPE, Float.TYPE, Double.TYPE};
     /**
      * XXX Default access superclass workaround
      *
@@ -99,7 +154,8 @@ abstract class MemberUtils {
         if (MemberUtils.IS_SYNTHETIC != null) {
             try {
                 return ((Boolean) MemberUtils.IS_SYNTHETIC.invoke(m)).booleanValue();
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
         return false;
     }
