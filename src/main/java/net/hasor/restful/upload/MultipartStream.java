@@ -14,10 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.fileupload;
+package net.hasor.restful.upload;
 import net.hasor.restful.FileUploadException;
-import net.hasor.restful.fileupload.util.Closeable;
-import net.hasor.restful.fileupload.util.Streams;
+import net.hasor.restful.upload.util.Closeable;
+import net.hasor.restful.upload.util.Streams;
 
 import java.io.*;
 
@@ -78,7 +78,7 @@ import static net.hasor.restful.FileUploadException.UploadErrorCodes.*;
  *
  * @version $Id: MultipartStream.java 1745065 2016-05-22 14:56:37Z britter $
  */
-public class MultipartStream {
+class MultipartStream {
     // ----------------------------------------------------- Manifest constants
     /** The Carriage Return ASCII character value. */
     public static final    byte   CR                   = 0x0D;

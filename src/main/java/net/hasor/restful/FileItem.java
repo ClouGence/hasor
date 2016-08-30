@@ -17,6 +17,7 @@
 package net.hasor.restful;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 /**
  * <p> This class represents a file or form item that was received within a
@@ -48,6 +49,21 @@ public interface FileItem extends FileItemStream {
     public void writeTo(File file) throws IOException;
 
     /**
+     * A convenience method to write an uploaded item to disk. The client code
+     * is not concerned with whether or not the item is stored in memory, or on
+     * disk in a temporary location. They just want to write the uploaded item to a file.
+     * <p>
+     * This method is not guaranteed to succeed if called more than once for
+     * the same item. This allows a particular implementation to use, for
+     * example, file renaming, where possible, rather than copying all of the
+     * underlying data, thus gaining a significant performance benefit.
+     *
+     * @param outStream The <code>OutputStream</code> into which the uploaded item should be stored.
+     * @throws Exception if an error occurs.
+     */
+    public void writeTo(OutputStream outStream) throws IOException;
+
+    /**
      * Deletes the underlying storage for a file item, including deleting any
      * associated temporary disk file. Although this storage will be deleted
      * automatically when the <code>FileItem</code> instance is garbage
@@ -60,7 +76,7 @@ public interface FileItem extends FileItemStream {
      * Returns the contents of the file item as an array of bytes.
      * @return The contents of the file item as an array of bytes.
      */
-    public byte[] get();
+    public byte[] get() throws IOException;
 
     /**
      * Returns the contents of the file item as a String, using the specified
@@ -71,7 +87,7 @@ public interface FileItem extends FileItemStream {
      * @return The contents of the item, as a string.
      * @throws UnsupportedEncodingException if the requested character encoding is not available.
      */
-    public String getString(String encoding) throws UnsupportedEncodingException;
+    public String getString(String encoding) throws IOException;
 
     /**
      * Returns the contents of the file item as a String, using the default
@@ -79,5 +95,5 @@ public interface FileItem extends FileItemStream {
      * contents of the item.
      * @return The contents of the item, as a string.
      */
-    public String getString();
+    public String getString() throws IOException;
 }

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.fileupload.util;
+package net.hasor.restful.upload.util;
 import net.hasor.restful.FileItemStream;
 import org.more.FormatException;
 import org.more.util.io.IOUtils;

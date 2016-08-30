@@ -69,9 +69,9 @@ class RenderLayout {
         }
         //
         Settings settings = appContext.getEnvironment().getSettings();
-        this.layoutPath = settings.getString("hasor.restful.layoutPath", "/layout");
-        this.templatePath = settings.getString("hasor.restful.templatePath", "/templates");
-        this.useLayout = settings.getBoolean("hasor.restful.useLayout", true);
+        this.layoutPath = settings.getString("hasor.restful.layout.layoutPath", "/layout");
+        this.templatePath = settings.getString("hasor.restful.layout.templatePath", "/templates");
+        this.useLayout = settings.getBoolean("hasor.restful.layout.enable", true);
         //
         for (RenderEngine engine : this.engineMap.values()) {
             engine.initEngine(appContext);

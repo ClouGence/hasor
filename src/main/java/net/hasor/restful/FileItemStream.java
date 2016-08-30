@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 package net.hasor.restful;
-import net.hasor.restful.fileupload.FileUpload;
+import net.hasor.restful.upload.FileUpload;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;

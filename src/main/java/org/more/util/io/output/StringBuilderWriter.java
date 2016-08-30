@@ -30,7 +30,7 @@ import java.io.Writer;
  * @since 2.0
  */
 public class StringBuilderWriter extends Writer implements Serializable {
-    private static final long   serialVersionUID = 421860127610078572L;
+    private static final long serialVersionUID = 421860127610078572L;
     private final StringBuilder builder;
     /**
      * Construct a new {@link StringBuilder} instance with default capacity.
@@ -93,15 +93,17 @@ public class StringBuilderWriter extends Writer implements Serializable {
      * Closing this writer has no effect. 
      */
     @Override
-    public void close() {}
+    public void close() {
+    }
     /**
      * Flushing this writer has no effect. 
      */
     @Override
-    public void flush() {}
+    public void flush() {
+    }
     /**
      * Write a String to the {@link StringBuilder}.
-     * 
+     *
      * @param value The value to write
      */
     @Override

@@ -65,7 +65,7 @@ public class WriterOutputStream extends OutputStream {
             this.writer.write(new String(b, this.encoding));
         }
     }
-    /** @see java.io.OutputStream#write(byte[],int,int) */
+    /** @see java.io.OutputStream#write(byte[], int, int) */
     @Override
     public void write(final byte[] b, final int off, final int len) throws IOException {
         if (this.encoding == null) {

@@ -14,23 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.fileupload;
-import net.hasor.restful.FileItemHeaders;
-import net.hasor.restful.FileItemStream;
-import net.hasor.restful.FileUploadException;
-import net.hasor.restful.fileupload.util.Closeable;
-import net.hasor.restful.fileupload.util.HeadersSet;
-import net.hasor.restful.fileupload.util.LimitedInputStream;
-import net.hasor.restful.fileupload.util.Streams;
+package net.hasor.restful.upload;
+import net.hasor.core.Settings;
+import net.hasor.restful.*;
+import net.hasor.restful.upload.util.Closeable;
+import net.hasor.restful.upload.util.HeadersSet;
+import net.hasor.restful.upload.util.LimitedInputStream;
+import net.hasor.restful.upload.util.Streams;
 import org.more.FormatException;
+import org.more.util.ExceptionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Locale;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static java.lang.String.format;
 import static net.hasor.restful.FileUploadException.UploadErrorCodes.*;
@@ -92,6 +90,13 @@ public class FileUpload {
     /** The content encoding to use when reading part headers. */
     private String headerEncoding;
     // ----------------------------------------------------- Property accessors
+    public FileUpload() {
+    }
+    public FileUpload(Settings settings) {
+        this.setHeaderEncoding(Settings.DefaultCharset);
+        this.setSizeMax(settings.getInteger("hasor.restful.fileupload.maxRequestSize", -1));
+        this.setFileSizeMax(settings.getInteger("hasor.restful.fileupload.maxFileSize", -1));
+    }
     /**
      * Returns the maximum allowed size of a complete request, as opposed to {@link #getFileSizeMax()}.
      * @return The maximum allowed size, in bytes. The default value of -1 indicates, that there is no limit.
@@ -145,18 +150,44 @@ public class FileUpload {
     // --------------------------------------------------------- Public methods
     /**
      * Processes an <a href="http://www.ietf.org/rfc/rfc1867.txt">RFC 1867</a> compliant <code>multipart/form-data</code> stream.
-     * @param ctx The context for the request to be parsed.
+     * @param request The  request.
      * @return An iterator to instances of <code>FileItemStream</code>
      *         parsed from the request, in the order that they were transmitted.
      * @throws FileUploadException if there are problems reading/parsing the request or storing files.
      * @throws IOException An I/O error occurred. This may be a network
      *   error while communicating with the client or a problem while storing the uploaded content.
      */
-    public FileItemIteratorImpl getItemIterator(ServletRequestContext ctx) throws IOException {
-        return new FileItemIteratorImpl(ctx);
+    public Iterator<FileItemStream> getItemIterator(HttpServletRequest request) throws IOException {
+        return new FileItemIteratorImpl(new ServletRequestContext(request));
     }
-    public FileItemIteratorImpl getItemIterator(HttpServletRequest request) throws IOException {
-        return getItemIterator(new ServletRequestContext(request));
+    /**
+     * Processes an <a href="http://www.ietf.org/rfc/rfc1867.txt">RFC 1867</a> compliant <code>multipart/form-data</code> stream.
+     * @param request the request.
+     * @return A list of <code>FileItem</code> instances parsed from the request, in the order that they were transmitted.
+     * @throws FileUploadException if there are problems reading/parsing the request or storing files.
+     */
+    public List<FileItem> parseRequest(HttpServletRequest request, FileItemFactory factory) throws IOException {
+        List<FileItem> items = new ArrayList<FileItem>();
+        try {
+            Iterator<FileItemStream> fileItems = this.getItemIterator(request);
+            if (factory == null) {
+                throw new NullPointerException("No FileItemFactory has been set.");
+            }
+            while (fileItems.hasNext()) {
+                FileItemStream itemStream = fileItems.next();
+                FileItem fileItem = factory.createItem(itemStream);
+                items.add(fileItem);
+            }
+            return items;
+        } catch (IOException e) {
+            throw e;
+        } finally {
+            for (FileItem fileItem : items) {
+                try {
+                    fileItem.deleteOrSkip();
+                } catch (Throwable e) { /*ignore it*/ }
+            }
+        }
     }
     // ------------------------------------------------------ Protected methods
     /**
@@ -254,7 +285,7 @@ public class FileUpload {
      */
     protected FileItemHeaders getParsedHeaders(String headerPart) {
         final int len = headerPart.length();
-        HeadersSet headers = newFileItemHeaders();
+        HeadersSet headers = new HeadersSet();
         int start = 0;
         for (; ; ) {
             int end = parseEndOfLine(headerPart, start);
@@ -283,13 +314,6 @@ public class FileUpload {
             parseHeaderLine(headers, header.toString());
         }
         return headers;
-    }
-    /**
-     * Creates a new instance of {@link FileItemHeaders}.
-     * @return The new instance.
-     */
-    protected HeadersSet newFileItemHeaders() {
-        return new HeadersSet();
     }
     /**
      * Skips bytes until the end of the current line.
@@ -327,8 +351,8 @@ public class FileUpload {
     }
     //
     //
-    /** The iterator, which is returned by {@link FileUpload#getItemIterator(ServletRequestContext)}. */
-    public class FileItemIteratorImpl {
+    /** The iterator, which is returned by {@link FileUpload#getItemIterator(HttpServletRequest)}. */
+    public class FileItemIteratorImpl implements Iterator<FileItemStream> {
         class FileItemStreamImpl implements FileItemStream {
             /** The file items content type. */
             private final String          contentType;
@@ -574,6 +598,10 @@ public class FileUpload {
                 return -1;
             }
         }
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
         /**
          * Returns, whether another instance of {@link FileItemStream} is available.
          *
@@ -581,14 +609,18 @@ public class FileUpload {
          * @throws IOException Reading the file item failed.
          * @return True, if one or more additional file items are available, otherwise false.
          */
-        public boolean hasNext() throws IOException {
+        public boolean hasNext() {
             if (eof) {
                 return false;
             }
             if (itemValid) {
                 return true;
             }
-            return findNextItem();
+            try {
+                return findNextItem();
+            } catch (IOException e) {
+                throw ExceptionUtils.toRuntimeException(e);
+            }
         }
         /**
          * Returns the next available {@link FileItemStream}.
@@ -599,7 +631,7 @@ public class FileUpload {
          * @throws IOException Reading the file item failed.
          * @return FileItemStream instance, which provides access to the next file item.
          */
-        public FileItemStream next() throws IOException {
+        public FileItemStream next() {
             if (eof || (!itemValid && !hasNext())) {
                 throw new NoSuchElementException();
             }

@@ -23,12 +23,12 @@ import java.io.IOException;
  */
 public class FileUploadException extends IOException {
     public static enum UploadErrorCodes {
+        MalformedStreamException(),
         FileSizeLimitExceededException(),
         FileUploadException(),
         IllegalBoundaryException(),
         InvalidContentTypeException(),
         ItemSkippedException(),
-        MalformedStreamException(),
         SizeLimitExceededException(),;
     }
     //

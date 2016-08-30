@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.fileupload;
-import net.hasor.restful.fileupload.util.MimeUtility;
+package net.hasor.restful.upload;
+import net.hasor.restful.upload.util.MimeUtility;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ import java.util.Map;
  *
  * @version $Id: ParameterParser.java 1565253 2014-02-06 13:48:16Z ggregory $
  */
-public class ParameterParser {
+class ParameterParser {
     /** String to be parsed. */
     private char[]  chars          = null;
     /** Current position in the string. */
