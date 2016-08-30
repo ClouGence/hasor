@@ -14,55 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.fileupload;
+package net.hasor.restful;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 /**
  * <p> This class represents a file or form item that was received within a
  * <code>multipart/form-data</code> POST request.
  *
- * <p> After retrieving an instance of this class from a {@link UploadRequestContext ServletFileUpload}
- * instance (see {@link UploadRequestContext #parseRequest(javax.servlet.http.HttpServletRequest)}),
- * you may either request all contents of the file at once using {@link #get()} or
- * request an {@link InputStream InputStream} with
- * {@link #getInputStream()} and process the file without attempting to load
- * it into memory, which may come handy with large files.
- *
- * <p> While this interface does not extend
- * <code>javax.activation.DataSource</code> per se (to avoid a seldom used
- * dependency), several of the defined methods are specifically defined with
- * the same signatures as methods in that interface. This allows an
- * implementation of this interface to also implement
- * <code>javax.activation.DataSource</code> with minimal additional work.
- *
  * @version $Id: FileItem.java 1454690 2013-03-09 12:08:48Z simonetripodi $
  * @since 1.3 additionally implements FileItemHeadersSupport
  */
-public interface FileItem {
-    /**
-     * Returns the collection of headers defined locally within this item.
-     * @return the {@link FileItemHeaders} present for this item.
-     */
-    public FileItemHeaders getHeaders();
-
-    /**
-     * Returns the content type passed by the browser or <code>null</code> if not defined.
-     * @return The content type passed by the browser or <code>null</code> if not defined.
-     */
-    public String getContentType();
-
-    /**
-     * Returns the original filename in the client's filesystem, as provided by
-     * the browser (or other client software). In most cases, this will be the
-     * base file name, without path information. However, some clients, such as
-     * the Opera browser, do include path information.
-     *
-     * @return The original filename in the client's filesystem.
-     */
-    public String getName();
-
+public interface FileItem extends FileItemStream {
     /**
      * Returns the size of the file item.
      * @return The size of the file item, in bytes.
@@ -92,26 +55,6 @@ public interface FileItem {
      * earlier time, thus preserving system resources.
      */
     public void deleteOrSkip();
-
-    /**
-     * Returns the name of the field in the multipart form corresponding to this file item.
-     * @return The name of the form field.
-     */
-    public String getFieldName();
-
-    /**
-     * Determines whether or not a <code>FileItem</code> instance represents a simple form field.
-     * @return <code>true</code> if the instance represents a simple form
-     *         field; <code>false</code> if it represents an uploaded file.
-     */
-    public boolean isFormField();
-
-    /**
-     * Returns an {@link InputStream InputStream} that can be used to retrieve the contents of the file.
-     * @return An {@link InputStream InputStream} that can be used to retrieve the contents of the file.
-     * @throws IOException if an error occurs.
-     */
-    public InputStream getInputStream() throws IOException;
 
     /**
      * Returns the contents of the file item as an array of bytes.

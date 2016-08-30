@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.fileupload.real;
+package net.hasor.restful.fileupload;
 import net.hasor.restful.fileupload.util.MimeUtility;
 
 import java.io.UnsupportedEncodingException;

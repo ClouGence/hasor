@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.fileupload.real;
-import net.hasor.restful.fileupload.FileItemHeaders;
+package net.hasor.restful;
+import net.hasor.restful.fileupload.FileUpload;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -40,21 +40,13 @@ public interface FileItemStream {
      * Returns the collection of headers defined locally within this item.
      * @return the {@link FileItemHeaders} present for this item.
      */
-    FileItemHeaders getHeaders();
-
-    /**
-     * Creates an {@link InputStream}, which allows to read the items contents.
-     * @return The input stream, from which the items data may be read.
-     * @throws IllegalStateException The method was already invoked on this item. It is not possible to recreate the data stream.
-     * @throws IOException An I/O error occurred.
-     */
-    InputStream openStream() throws IOException;
+    public FileItemHeaders getHeaders();
 
     /**
      * Returns the content type passed by the browser or <code>null</code> if not defined.
      * @return The content type passed by the browser or <code>null</code> if not defined.
      */
-    String getContentType();
+    public String getContentType();
 
     /**
      * Returns the original filename in the client's filesystem, as provided by
@@ -64,18 +56,26 @@ public interface FileItemStream {
      *
      * @return The original filename in the client's filesystem.
      */
-    String getName();
+    public String getName();
 
     /**
      * Returns the name of the field in the multipart form corresponding to this file item.
      * @return The name of the form field.
      */
-    String getFieldName();
+    public String getFieldName();
 
     /**
      * Determines whether or not a <code>FileItem</code> instance represents a simple form field.
      * @return <code>true</code> if the instance represents a simple form
      *         field; <code>false</code> if it represents an uploaded file.
      */
-    boolean isFormField();
+    public boolean isFormField();
+
+    /**
+     * Creates an {@link InputStream}, which allows to read the items contents.
+     * @return The input stream, from which the items data may be read.
+     * @throws IllegalStateException The method was already invoked on this item. It is not possible to recreate the data stream.
+     * @throws IOException An I/O error occurred.
+     */
+    public InputStream openStream() throws IOException;
 }

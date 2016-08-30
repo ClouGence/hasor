@@ -14,11 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.fileupload.real;
-import net.hasor.restful.fileupload.FileItemHeaders;
-import net.hasor.restful.fileupload.FileUploadException;
-import net.hasor.restful.fileupload.UploadErrorCodes;
-import net.hasor.restful.fileupload.UploadRequestContext;
+package net.hasor.restful.fileupload;
+import net.hasor.restful.FileItemHeaders;
+import net.hasor.restful.FileItemStream;
+import net.hasor.restful.FileUploadException;
 import net.hasor.restful.fileupload.util.Closeable;
 import net.hasor.restful.fileupload.util.HeadersSet;
 import net.hasor.restful.fileupload.util.LimitedInputStream;
@@ -34,7 +33,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import static java.lang.String.format;
-import static net.hasor.restful.fileupload.FileUploadConstant.*;
+import static net.hasor.restful.FileUploadException.UploadErrorCodes.*;
 /**
  * <p>High level API for processing file uploads.</p>
  *
@@ -47,8 +46,24 @@ import static net.hasor.restful.fileupload.FileUploadConstant.*;
  * @version $Id: FileUpload.java 1743630 2016-05-13 09:20:45Z jochen $
  */
 public class FileUpload {
+    /** HTTP content type header name. */
+    public static final  String CONTENT_TYPE        = "Content-type";
+    /** HTTP content disposition header name. */
+    public static final  String CONTENT_DISPOSITION = "Content-disposition";
+    /** HTTP content length header name. */
+    public static final  String CONTENT_LENGTH      = "Content-length";
+    /** Content-disposition value for form data. */
+    public static final  String FORM_DATA           = "form-data";
+    /** Content-disposition value for file attachment. */
+    public static final  String ATTACHMENT          = "attachment";
+    /** Part of HTTP content type header. */
+    public static final  String MULTIPART           = "multipart/";
+    /** HTTP content type header for multipart forms. */
+    public static final  String MULTIPART_FORM_DATA = "multipart/form-data";
+    /** HTTP content type header for multiple uploads. */
+    public static final  String MULTIPART_MIXED     = "multipart/mixed";
     /** Constant for HTTP POST method. */
-    private static final String POST_METHOD = "POST";
+    private static final String POST_METHOD         = "POST";
     // ---------------------------------------------------------- Class methods
     /**
      * Utility method that determines whether the request contains multipart content.
@@ -60,18 +75,7 @@ public class FileUpload {
         if (!POST_METHOD.equalsIgnoreCase(request.getMethod())) {
             return false;
         }
-        return FileUpload.isMultipartContent(new ServletRequestContext(request));
-    }
-    /**
-     * <p>Utility method that determines whether the request contains multipart content.</p>
-     * <p><strong>NOTE:</strong>This method will be moved to the <code>ServletFileUpload</code> class after the FileUpload 1.1 release.
-     * Unfortunately, since this method is static, it is not possible to provide its replacement until this method is removed.</p>
-     * @param ctx The request context to be evaluated. Must be non-null.
-     * @return <code>true</code> if the request is multipart;
-     *         <code>false</code> otherwise.
-     */
-    public static final boolean isMultipartContent(UploadRequestContext ctx) {
-        String contentType = ctx.getContentType();
+        String contentType = new ServletRequestContext(request).getContentType();
         if (contentType == null) {
             return false;
         }
@@ -148,7 +152,7 @@ public class FileUpload {
      * @throws IOException An I/O error occurred. This may be a network
      *   error while communicating with the client or a problem while storing the uploaded content.
      */
-    public FileItemIteratorImpl getItemIterator(UploadRequestContext ctx) throws IOException {
+    public FileItemIteratorImpl getItemIterator(ServletRequestContext ctx) throws IOException {
         return new FileItemIteratorImpl(ctx);
     }
     public FileItemIteratorImpl getItemIterator(HttpServletRequest request) throws IOException {
@@ -323,40 +327,25 @@ public class FileUpload {
     }
     //
     //
-    /** The iterator, which is returned by {@link FileUpload#getItemIterator(UploadRequestContext)}. */
+    /** The iterator, which is returned by {@link FileUpload#getItemIterator(ServletRequestContext)}. */
     public class FileItemIteratorImpl {
         class FileItemStreamImpl implements FileItemStream {
-            /**
-             * The file items content type.
-             */
+            /** The file items content type. */
             private final String          contentType;
-            /**
-             * The file items field name.
-             */
+            /** The file items field name. */
             private final String          fieldName;
-            /**
-             * The file items file name.
-             */
+            /** The file items file name. */
             private final String          name;
-            /**
-             * Whether the file item is a form field.
-             */
+            /** Whether the file item is a form field. */
             private final boolean         formField;
-            /**
-             * The file items input stream.
-             */
+            /** The file items input stream. */
             private final InputStream     stream;
-            /**
-             * Whether the file item was already opened.
-             */
+            /** Whether the file item was already opened. */
             private       boolean         opened;
-            /**
-             * The headers, if any.
-             */
+            /** The headers, if any. */
             private       FileItemHeaders headers;
             /**
              * Creates a new instance.
-             *
              * @param pName The items file name, or null.
              * @param pFieldName The items field name.
              * @param pFormField Whether the item is a form field.
@@ -365,27 +354,27 @@ public class FileUpload {
              */
             FileItemStreamImpl(FileItemHeaders headers, String pName, String pFieldName, boolean pFormField, long pContentLength) throws IOException {
                 this.headers = headers;
-                name = pName;
-                fieldName = pFieldName;
-                contentType = headers.getHeader(CONTENT_TYPE);
-                formField = pFormField;
+                this.name = pName;
+                this.fieldName = pFieldName;
+                this.contentType = headers.getHeader(CONTENT_TYPE);
+                this.formField = pFormField;
                 final MultipartStream.ItemInputStream itemStream = multi.newInputStream();
                 InputStream istream = itemStream;
                 if (fileSizeMax != -1) {
                     if (pContentLength != -1 && pContentLength > fileSizeMax) {
                         String logMessage = format("The field %s exceeds its maximum permitted size of %s bytes.", fieldName, fileSizeMax);
-                        throw new FileUploadException(UploadErrorCodes.FileSizeLimitExceededException, logMessage);
+                        throw new FileUploadException(FileSizeLimitExceededException, logMessage);
                     }
                     istream = new LimitedInputStream(istream, fileSizeMax) {
                         @Override
                         protected void raiseError(long pSizeMax, long pCount) throws IOException {
                             itemStream.close(true);
                             String logMessage = format("The field %s exceeds its maximum permitted size of %s bytes.", fieldName, pSizeMax);
-                            throw new FileUploadException(UploadErrorCodes.FileSizeLimitExceededException, logMessage);
+                            throw new FileUploadException(FileSizeLimitExceededException, logMessage);
                         }
                     };
                 }
-                stream = istream;
+                this.stream = istream;
             }
             /**
              * Returns the items content type, or null.
@@ -436,7 +425,7 @@ public class FileUpload {
                     throw new IllegalStateException("The stream was already opened.");
                 }
                 if (((Closeable) stream).isClosed()) {
-                    throw new FileUploadException(UploadErrorCodes.ItemSkippedException);
+                    throw new FileUploadException(ItemSkippedException);
                 }
                 return stream;
             }
@@ -476,14 +465,14 @@ public class FileUpload {
          * @throws FileUploadException An error occurred while parsing the request.
          * @throws IOException An I/O error occurred.
          */
-        FileItemIteratorImpl(UploadRequestContext ctx) throws IOException {
+        FileItemIteratorImpl(ServletRequestContext ctx) throws IOException {
             if (ctx == null) {
                 throw new NullPointerException("ctx parameter");
             }
             String contentType = ctx.getContentType();
             if ((null == contentType) || (!contentType.toLowerCase(Locale.ENGLISH).startsWith(MULTIPART))) {
                 String logMEssage = format("the request doesn't contain a %s or %s stream, content type header is %s", MULTIPART_FORM_DATA, MULTIPART_MIXED, contentType);
-                throw new FileUploadException(UploadErrorCodes.InvalidContentTypeException, logMEssage);
+                throw new FileUploadException(InvalidContentTypeException, logMEssage);
             }
             InputStream input = ctx.getInputStream();
             long requestSize = ctx.contentLength();
@@ -491,13 +480,13 @@ public class FileUpload {
             if (sizeMax >= 0) {
                 if (requestSize != -1 && requestSize > sizeMax) {
                     String logMEssage = format("the request was rejected because its size (%s) exceeds the configured maximum (%s)", requestSize, sizeMax);
-                    throw new FileUploadException(UploadErrorCodes.SizeLimitExceededException, logMEssage);
+                    throw new FileUploadException(SizeLimitExceededException, logMEssage);
                 }
                 input = new LimitedInputStream(input, sizeMax) {
                     @Override
                     protected void raiseError(long pSizeMax, long pCount) throws IOException {
                         String logMEssage = format("the request was rejected because its size (%s) exceeds the configured maximum (%s)", pCount, pSizeMax);
-                        throw new FileUploadException(UploadErrorCodes.SizeLimitExceededException, logMEssage);
+                        throw new FileUploadException(SizeLimitExceededException, logMEssage);
                     }
                 };
             }
@@ -513,7 +502,7 @@ public class FileUpload {
                 multi = new MultipartStream(input, boundary);
             } catch (IllegalArgumentException iae) {
                 String logMessage = format("The boundary specified in the %s header is too long", CONTENT_TYPE);
-                throw new FileUploadException(UploadErrorCodes.InvalidContentTypeException, logMessage);
+                throw new FileUploadException(InvalidContentTypeException, logMessage);
             }
             multi.setHeaderEncoding(charEncoding);
             skipPreamble = true;

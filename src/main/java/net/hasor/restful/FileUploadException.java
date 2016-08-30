@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.fileupload;
+package net.hasor.restful;
 import java.io.IOException;
 /**
  * 文件上传异常。
@@ -22,6 +22,16 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class FileUploadException extends IOException {
+    public static enum UploadErrorCodes {
+        FileSizeLimitExceededException(),
+        FileUploadException(),
+        IllegalBoundaryException(),
+        InvalidContentTypeException(),
+        ItemSkippedException(),
+        MalformedStreamException(),
+        SizeLimitExceededException(),;
+    }
+    //
     private UploadErrorCodes errorCode;
     //
     public FileUploadException(String errorMessage) {

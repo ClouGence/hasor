@@ -14,15 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.fileupload.real;
-import net.hasor.restful.fileupload.FileUploadException;
-import net.hasor.restful.fileupload.UploadErrorCodes;
+package net.hasor.restful.fileupload;
+import net.hasor.restful.FileUploadException;
 import net.hasor.restful.fileupload.util.Closeable;
 import net.hasor.restful.fileupload.util.Streams;
 
 import java.io.*;
 
 import static java.lang.String.format;
+import static net.hasor.restful.FileUploadException.UploadErrorCodes.*;
 /**
  * <p> Low level API for processing file uploads.
  *
@@ -222,7 +222,7 @@ public class MultipartStream {
         } else if (arrayequals(marker, FIELD_SEPARATOR, 2)) {
             nextChunk = true;
         } else {
-            throw new FileUploadException(UploadErrorCodes.MalformedStreamException, "Unexpected characters follow a boundary");
+            throw new FileUploadException(MalformedStreamException, "Unexpected characters follow a boundary");
         }
         return nextChunk;
     }
@@ -236,7 +236,7 @@ public class MultipartStream {
      */
     public void setBoundary(byte[] boundary) throws FileUploadException {
         if (boundary.length != boundaryLength - BOUNDARY_PREFIX.length) {
-            throw new FileUploadException(UploadErrorCodes.IllegalBoundaryException, "The length of a boundary token can not be changed");
+            throw new FileUploadException(IllegalBoundaryException, "The length of a boundary token can not be changed");
         }
         System.arraycopy(boundary, 0, this.boundary, BOUNDARY_PREFIX.length, boundary.length);
     }
@@ -264,7 +264,7 @@ public class MultipartStream {
             }
             if (++size > HEADER_PART_SIZE_MAX) {
                 String logMEssage = format("Header section has more than %s bytes (maybe it is not properly terminated)", Integer.valueOf(HEADER_PART_SIZE_MAX));
-                throw new FileUploadException(UploadErrorCodes.MalformedStreamException, logMEssage);
+                throw new FileUploadException(MalformedStreamException, logMEssage);
             }
             if (b == HEADER_SEPARATOR[i]) {
                 i++;
@@ -334,7 +334,7 @@ public class MultipartStream {
             // Read boundary - if succeeded, the stream contains an encapsulation.
             return readBoundary();
         } catch (FileUploadException e) {
-            if (e.getErrorCode() == UploadErrorCodes.MalformedStreamException) {
+            if (e.getErrorCode() == MalformedStreamException) {
                 return false;
             }
             throw e;
@@ -460,7 +460,7 @@ public class MultipartStream {
         @Override
         public int read() throws IOException {
             if (closed) {
-                throw new FileUploadException(UploadErrorCodes.ItemSkippedException);
+                throw new FileUploadException(ItemSkippedException);
             }
             if (available() == 0 && makeAvailable() == 0) {
                 return -1;
@@ -483,7 +483,7 @@ public class MultipartStream {
         @Override
         public int read(byte[] b, int off, int len) throws IOException {
             if (closed) {
-                throw new FileUploadException(UploadErrorCodes.ItemSkippedException);
+                throw new FileUploadException(ItemSkippedException);
             }
             if (len == 0) {
                 return 0;
@@ -544,7 +544,7 @@ public class MultipartStream {
         @Override
         public long skip(long bytes) throws IOException {
             if (closed) {
-                throw new FileUploadException(UploadErrorCodes.ItemSkippedException);
+                throw new FileUploadException(ItemSkippedException);
             }
             int av = available();
             if (av == 0) {
@@ -577,7 +577,7 @@ public class MultipartStream {
                 if (bytesRead == -1) {
                     // The last pad amount is left in the buffer. Boundary can't be in there so signal an error condition.
                     final String msg = "Stream ended unexpectedly";
-                    throw new FileUploadException(UploadErrorCodes.MalformedStreamException, msg);
+                    throw new FileUploadException(MalformedStreamException, msg);
                 }
                 tail += bytesRead;
                 findSeparator();

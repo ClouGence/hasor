@@ -14,10 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.fileupload.real;
-import net.hasor.restful.fileupload.FileUploadConstant;
-import net.hasor.restful.fileupload.UploadRequestContext;
-
+package net.hasor.restful.fileupload;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +25,7 @@ import static java.lang.String.format;
  * @since FileUpload 1.1
  * @version $Id: ServletRequestContext.java 1564788 2014-02-05 14:36:41Z markt $
  */
-class ServletRequestContext implements UploadRequestContext {
+class ServletRequestContext {
     // ----------------------------------------------------- Instance Variables
     /** The request for which the context is being provided. */
     private final HttpServletRequest request;
@@ -63,7 +60,7 @@ class ServletRequestContext implements UploadRequestContext {
     public long contentLength() {
         long size;
         try {
-            size = Long.parseLong(request.getHeader(FileUploadConstant.CONTENT_LENGTH));
+            size = Long.parseLong(request.getHeader(FileUpload.CONTENT_LENGTH));
         } catch (NumberFormatException e) {
             size = request.getContentLength();
         }

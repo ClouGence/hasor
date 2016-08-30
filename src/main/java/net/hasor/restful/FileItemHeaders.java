@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.fileupload;
+package net.hasor.restful;
 import java.util.Iterator;
 /**
  * <p> This class provides support for accessing the headers for a file or form

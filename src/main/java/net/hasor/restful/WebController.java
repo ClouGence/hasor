@@ -17,8 +17,7 @@ package net.hasor.restful;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.restful.api.Produces;
-import net.hasor.restful.fileupload.FileItem;
-import net.hasor.restful.fileupload.real.FileUpload;
+import net.hasor.restful.fileupload.FileUpload;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.startup.RuntimeListener;
 import org.more.bizcommon.Message;
@@ -75,7 +74,7 @@ public abstract class WebController {
      * @param value 参数值
      * @return 返回this.
      */
-    public WebController setHeader(String key, String value) {
+    protected WebController setHeader(String key, String value) {
         this.getResponse().setHeader(key, value);
         return this;
     }
@@ -85,7 +84,7 @@ public abstract class WebController {
      * @param value 参数值
      * @return 返回this.
      */
-    public WebController addHeader(String key, String value) {
+    protected WebController addHeader(String key, String value) {
         this.getResponse().addHeader(key, value);
         return this;
     }
@@ -100,7 +99,7 @@ public abstract class WebController {
      * @param name a String specifying the name of the parameter
      * @return a String representing the single value of the parameter
      */
-    public String getPara(String name) {
+    protected String getPara(String name) {
         return this.getRequest().getParameter(name);
     }
     /**
@@ -109,7 +108,7 @@ public abstract class WebController {
      * @param defaultValue a String value be returned when the value of parameter is null
      * @return a String representing the single value of the parameter
      */
-    public String getPara(String name, String defaultValue) {
+    protected String getPara(String name, String defaultValue) {
         String result = this.getRequest().getParameter(name);
         return result != null && !"".equals(result) ? result : defaultValue;
     }
@@ -117,14 +116,14 @@ public abstract class WebController {
      * Returns the values of the request parameters as a Map.
      * @return a Map contains all the parameters name and value
      */
-    public Map<String, String[]> getParaMap() {
+    protected Map<String, String[]> getParaMap() {
         return this.getRequest().getParameterMap();
     }
     /**
      * Returns an Enumeration of String objects containing the names of the parameters contained in this request. If the request has no parameters, the method returns an empty Enumeration.
      * @return an Enumeration of String objects, each String containing the name of a request parameter; or an empty Enumeration if the request has no parameters
      */
-    public Enumeration<String> getParaNames() {
+    protected Enumeration<String> getParaNames() {
         return this.getRequest().getParameterNames();
     }
     /**
@@ -132,7 +131,7 @@ public abstract class WebController {
      * @param name a String containing the name of the parameter whose value is requested
      * @return an array of String objects containing the parameter's values
      */
-    public String[] getParaValues(String name) {
+    protected String[] getParaValues(String name) {
         return this.getRequest().getParameterValues(name);
     }
     /**
@@ -140,7 +139,7 @@ public abstract class WebController {
      * @param name a String containing the name of the parameter whose value is requested
      * @return an array of Integer objects containing the parameter's values
      */
-    public Integer[] getParaValuesToInt(String name) {
+    protected Integer[] getParaValuesToInt(String name) {
         String[] values = this.getRequest().getParameterValues(name);
         if (values == null)
             return null;
@@ -156,7 +155,7 @@ public abstract class WebController {
      * @param name a String specifying the name of the parameter
      * @return a Integer representing the single value of the parameter
      */
-    public Integer getParaToInt(String name) {
+    protected Integer getParaToInt(String name) {
         return toInt(this.getRequest().getParameter(name), null);
     }
     /**
@@ -165,7 +164,7 @@ public abstract class WebController {
      * @param defaultValue default value for the parameter
      * @return a Integer representing the single value of the parameter
      */
-    public Integer getParaToInt(String name, Integer defaultValue) {
+    protected Integer getParaToInt(String name, Integer defaultValue) {
         return toInt(this.getRequest().getParameter(name), defaultValue);
     }
     /* 字符串转换为Integer */
@@ -183,7 +182,7 @@ public abstract class WebController {
      * @param name a String specifying the name of the parameter
      * @return a Integer representing the single value of the parameter
      */
-    public Long getParaToLong(String name) {
+    protected Long getParaToLong(String name) {
         return toLong(this.getRequest().getParameter(name), null);
     }
     /**
@@ -192,7 +191,7 @@ public abstract class WebController {
      * @param defaultValue default value for the parameter
      * @return a Integer representing the single value of the parameter
      */
-    public Long getParaToLong(String name, Long defaultValue) {
+    protected Long getParaToLong(String name, Long defaultValue) {
         return toLong(this.getRequest().getParameter(name), defaultValue);
     }
     /* 字符串转换为long */
@@ -210,7 +209,7 @@ public abstract class WebController {
      * @param name a String specifying the name of the parameter
      * @return false if the value of the parameter is "false" or "0", true if it is "true" or "1", null if parameter is not exists
      */
-    public Boolean getParaToBoolean(String name) {
+    protected Boolean getParaToBoolean(String name) {
         String result = this.getRequest().getParameter(name);
         if (result != null) {
             result = result.trim().toLowerCase();
@@ -229,14 +228,14 @@ public abstract class WebController {
      * @param defaultValue default value for the parameter
      * @return false if the value of the parameter is "false" or "0", true if it is "true" or "1", default value if it is null
      */
-    public Boolean getParaToBoolean(String name, Boolean defaultValue) {
+    protected Boolean getParaToBoolean(String name, Boolean defaultValue) {
         Boolean result = getParaToBoolean(name);
         return result != null ? result : defaultValue;
     }
     //
     //------------------------
     /** @return Return HttpSession. */
-    public HttpSession getSession() {
+    protected HttpSession getSession() {
         return getRequest().getSession();
     }
     /**
@@ -244,7 +243,7 @@ public abstract class WebController {
      * @param create a boolean specifying create HttpSession if it not exists
      * @return Return HttpSession.
      */
-    public HttpSession getSession(boolean create) {
+    protected HttpSession getSession(boolean create) {
         return getRequest().getSession(create);
     }
     /**
@@ -252,7 +251,7 @@ public abstract class WebController {
      * @param key a String specifying the key of the Object stored in session
      * @return return session attribute data.
      */
-    public <T> T getSessionAttr(String key) {
+    protected <T> T getSessionAttr(String key) {
         HttpSession session = this.getRequest().getSession(false);
         return session != null ? (T) session.getAttribute(key) : null;
     }
@@ -262,7 +261,7 @@ public abstract class WebController {
      * @param value a Object specifying the value stored in session
      * @return 返回this.
      */
-    public WebController setSessionAttr(String key, Object value) {
+    protected WebController setSessionAttr(String key, Object value) {
         this.getRequest().getSession(true).setAttribute(key, value);
         return this;
     }
@@ -271,7 +270,7 @@ public abstract class WebController {
      * @param key a String specifying the key of the Object stored in session
      * @return 返回this.
      */
-    public WebController removeSessionAttr(String key) {
+    protected WebController removeSessionAttr(String key) {
         HttpSession session = this.getRequest().getSession(false);
         if (session != null) {
             session.removeAttribute(key);
@@ -286,7 +285,7 @@ public abstract class WebController {
      * @param defaultValue default value
      * @return return cookie value or default value.
      */
-    public String getCookie(String name, String defaultValue) {
+    protected String getCookie(String name, String defaultValue) {
         Cookie cookie = getCookieObject(name);
         return cookie != null ? cookie.getValue() : defaultValue;
     }
@@ -295,7 +294,7 @@ public abstract class WebController {
      * @param name cookie name
      * @return return cookie value or null.
      */
-    public String getCookie(String name) {
+    protected String getCookie(String name) {
         return getCookie(name, null);
     }
     /**
@@ -303,7 +302,7 @@ public abstract class WebController {
      * @param name cookie name
      * @return return cookie value or null.
      */
-    public Integer getCookieToInt(String name) {
+    protected Integer getCookieToInt(String name) {
         String result = getCookie(name);
         return result != null ? Integer.parseInt(result) : null;
     }
@@ -313,7 +312,7 @@ public abstract class WebController {
      * @param defaultValue default value
      * @return return cookie value or default value.
      */
-    public Integer getCookieToInt(String name, Integer defaultValue) {
+    protected Integer getCookieToInt(String name, Integer defaultValue) {
         String result = getCookie(name);
         return result != null ? Integer.parseInt(result) : defaultValue;
     }
@@ -322,7 +321,7 @@ public abstract class WebController {
      * @param name cookie name
      * @return return cookie value or null.
      */
-    public Long getCookieToLong(String name) {
+    protected Long getCookieToLong(String name) {
         String result = getCookie(name);
         return result != null ? Long.parseLong(result) : null;
     }
@@ -332,7 +331,7 @@ public abstract class WebController {
      * @param defaultValue default value
      * @return return cookie value or default value.
      */
-    public Long getCookieToLong(String name, Long defaultValue) {
+    protected Long getCookieToLong(String name, Long defaultValue) {
         String result = getCookie(name);
         return result != null ? Long.parseLong(result) : defaultValue;
     }
@@ -341,7 +340,7 @@ public abstract class WebController {
      * @param name cookie name
      * @return Cookie object
      */
-    public Cookie getCookieObject(String name) {
+    protected Cookie getCookieObject(String name) {
         Cookie[] cookies = this.getRequest().getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -353,7 +352,7 @@ public abstract class WebController {
         return null;
     }
     /** @return Get all cookie objects. */
-    public Cookie[] getCookieObjects() {
+    protected Cookie[] getCookieObjects() {
         Cookie[] result = this.getRequest().getCookies();
         return result != null ? result : new Cookie[0];
     }
@@ -362,7 +361,7 @@ public abstract class WebController {
      * @param cookie new cookie.
      * @return 返回this.
      */
-    public WebController setCookie(Cookie cookie) {
+    protected WebController setCookie(Cookie cookie) {
         this.getResponse().addCookie(cookie);
         return this;
     }
@@ -374,7 +373,7 @@ public abstract class WebController {
      * @param path see Cookie.setPath(String)
      * @return 返回this.
      */
-    public WebController setCookie(String name, String value, int maxAgeInSeconds, String path) {
+    protected WebController setCookie(String name, String value, int maxAgeInSeconds, String path) {
         setCookie(name, value, maxAgeInSeconds, path, null);
         return this;
     }
@@ -387,7 +386,7 @@ public abstract class WebController {
      * @param domain the domain name within which this cookie is visible; form is according to RFC 2109
      * @return 返回this.
      */
-    public WebController setCookie(String name, String value, int maxAgeInSeconds, String path, String domain) {
+    protected WebController setCookie(String name, String value, int maxAgeInSeconds, String path, String domain) {
         Cookie cookie = new Cookie(name, value);
         if (domain != null) {
             cookie.setDomain(domain);
@@ -404,7 +403,7 @@ public abstract class WebController {
      * @param maxAgeInSeconds max age
      * @return 返回this.
      */
-    public WebController setCookie(String name, String value, int maxAgeInSeconds) {
+    protected WebController setCookie(String name, String value, int maxAgeInSeconds) {
         setCookie(name, value, maxAgeInSeconds, "/", null);
         return this;
     }
@@ -413,7 +412,7 @@ public abstract class WebController {
      * @param name cookie name
      * @return 返回this.
      */
-    public WebController removeCookie(String name) {
+    protected WebController removeCookie(String name) {
         setCookie(name, null, 0, "/", null);
         return this;
     }
@@ -423,7 +422,7 @@ public abstract class WebController {
      * @param path cookie with path = "/".
      * @return 返回this.
      */
-    public WebController removeCookie(String name, String path) {
+    protected WebController removeCookie(String name, String path) {
         setCookie(name, null, 0, path, null);
         return this;
     }
@@ -434,7 +433,7 @@ public abstract class WebController {
      * @param domain domain
      * @return 返回this.
      */
-    public WebController removeCookie(String name, String path, String domain) {
+    protected WebController removeCookie(String name, String path, String domain) {
         setCookie(name, null, 0, path, domain);
         return this;
     }
@@ -445,7 +444,7 @@ public abstract class WebController {
      * @param name a String specifying the name of the attribute
      * @return an Object containing the value of the attribute, or null if the attribute does not exist
      */
-    public <T> T getAttr(String name) {
+    protected <T> T getAttr(String name) {
         return (T) this.getRequest().getAttribute(name);
     }
     /**
@@ -454,7 +453,7 @@ public abstract class WebController {
      * @param value the Object to be stored
      * @return 返回this.
      */
-    public WebController setAttr(String name, Object value) {
+    protected WebController setAttr(String name, Object value) {
         this.getRequest().setAttribute(name, value);
         return this;
     }
@@ -463,7 +462,7 @@ public abstract class WebController {
      * @param name a String specifying the name of the attribute to remove
      * @return 返回this.
      */
-    public WebController removeAttr(String name) {
+    protected WebController removeAttr(String name) {
         this.getRequest().removeAttribute(name);
         return this;
     }
@@ -472,7 +471,7 @@ public abstract class WebController {
      * @param attrMap key and value as attribute of the map to be stored
      * @return 返回this.
      */
-    public WebController setAttrs(Map<String, Object> attrMap) {
+    protected WebController setAttrs(Map<String, Object> attrMap) {
         for (Map.Entry<String, Object> entry : attrMap.entrySet()) {
             this.getRequest().setAttribute(entry.getKey(), entry.getValue());
         }
@@ -482,7 +481,7 @@ public abstract class WebController {
      * Returns an Enumeration containing the names of the attributes available to this request. This method returns an empty Enumeration if the request has no attributes available to it.
      * @return an Enumeration of strings containing the names of the request's attributes
      */
-    public Enumeration<String> getAttrNames() {
+    protected Enumeration<String> getAttrNames() {
         return this.getRequest().getAttributeNames();
     }
     //
@@ -491,14 +490,14 @@ public abstract class WebController {
      *  返回 RenderData 保存的数据。
      *  @return 返回数据
      */
-    public <T> T getData(String name) {
+    protected <T> T getData(String name) {
         return (T) this.getInvoker().get(name);
     }
     /**
      *  设置 RenderData 保存的数据。
      *  @return 返回 this
      */
-    public WebController putData(String name, Object value) {
+    protected WebController putData(String name, Object value) {
         this.getInvoker().put(name, value);
         return this;
     }
@@ -506,7 +505,7 @@ public abstract class WebController {
      *  删除 RenderData 保存的数据。
      *  @return 返回 this
      */
-    public WebController removeData(String name) {
+    protected WebController removeData(String name) {
         this.getInvoker().remove(name);
         return this;
     }
@@ -514,7 +513,7 @@ public abstract class WebController {
      *  设置 RenderData 保存的数据。
      *  @return 返回 this
      */
-    public WebController setDatas(Map<String, Object> attrMap) {
+    protected WebController setDatas(Map<String, Object> attrMap) {
         for (Map.Entry<String, Object> entry : attrMap.entrySet()) {
             this.getInvoker().put(entry.getKey(), entry.getValue());
         }
@@ -524,7 +523,7 @@ public abstract class WebController {
      *  返回 RenderData 保存的数据keys。
      *  @return 返回数据
      */
-    public Set<String> getDataNames() {
+    protected Set<String> getDataNames() {
         return this.getInvoker().keySet();
     }
     //
@@ -650,6 +649,7 @@ public abstract class WebController {
         if (!this.isMultipart()) {
             return null;
         }
+        //
         //
         return null;// TODO 
     }

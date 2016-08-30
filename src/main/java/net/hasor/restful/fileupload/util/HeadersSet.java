@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 package net.hasor.restful.fileupload.util;
-import net.hasor.restful.fileupload.FileItemHeaders;
+import net.hasor.restful.FileItemHeaders;
 
 import java.util.*;
 /**
