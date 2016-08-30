@@ -699,8 +699,10 @@ public abstract class WebController {
         }
         List<FileItem> resultData = new ArrayList<FileItem>();
         for (FileItem item : itemList) {
-            if (StringUtils.equals(item.getName(), parameterName)) {
+            if (StringUtils.equals(item.getFieldName(), parameterName)) {
                 resultData.add(item);
+            } else {
+                item.deleteOrSkip();
             }
         }
         return resultData;
@@ -741,12 +743,15 @@ public abstract class WebController {
         if (itemList == null || itemList.isEmpty()) {
             return null;
         }
+        FileItem findItem = null;
         for (FileItem item : itemList) {
-            if (StringUtils.equals(item.getName(), parameterName)) {
-                return item;
+            if (findItem == null && StringUtils.equals(item.getFieldName(), parameterName)) {
+                findItem = item;
+            } else {
+                item.deleteOrSkip();
             }
         }
-        return null;
+        return findItem;
     }
     /**
      * 返回流式处理文件上传的迭代器。

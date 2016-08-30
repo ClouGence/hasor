@@ -168,6 +168,7 @@ public class FileUpload {
      */
     public List<FileItem> parseRequest(HttpServletRequest request, FileItemFactory factory) throws IOException {
         List<FileItem> items = new ArrayList<FileItem>();
+        boolean successful = false;
         try {
             Iterator<FileItemStream> fileItems = this.getItemIterator(request);
             if (factory == null) {
@@ -178,14 +179,17 @@ public class FileUpload {
                 FileItem fileItem = factory.createItem(itemStream);
                 items.add(fileItem);
             }
+            successful = true;
             return items;
         } catch (IOException e) {
             throw e;
         } finally {
-            for (FileItem fileItem : items) {
-                try {
-                    fileItem.deleteOrSkip();
-                } catch (Throwable e) { /*ignore it*/ }
+            if (!successful) {
+                for (FileItem fileItem : items) {
+                    try {
+                        fileItem.deleteOrSkip();
+                    } catch (Throwable e) { /*ignore it*/ }
+                }
             }
         }
     }

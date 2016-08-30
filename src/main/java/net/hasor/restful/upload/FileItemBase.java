@@ -106,6 +106,10 @@ public abstract class FileItemBase implements FileItem {
         BufferedInputStream in = null;
         BufferedOutputStream out = null;
         try {
+            File parentFile = outputFile.getParentFile();
+            if (!parentFile.exists()) {
+                parentFile.mkdirs();
+            }
             in = new BufferedInputStream(new AutoCloseInputStream(inStream));
             out = new BufferedOutputStream(new FileOutputStream(outputFile));
             IOUtils.copy(in, out);
