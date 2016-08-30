@@ -31,6 +31,8 @@ import net.hasor.core.Provider;
 public interface WebApiBinder extends ApiBinder {
     /**获取ServletContext对象。*/
     public ServletContext getServletContext();
+    /**获取容器支持的Servlet版本。*/
+    public ServletVersion getServletVersion();
     //
     /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
     public FilterBindingBuilder filter(String urlPattern, String... morePatterns);

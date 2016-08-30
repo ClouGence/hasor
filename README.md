@@ -59,6 +59,11 @@
 &emsp;&emsp; 2016年8月18日，2.4.3版本，经过持续的沉淀、整合、优化。Hasor越来越稳定可靠，基于2.4版本Hasor开始孕育全新的子项目 Hasor-RSF (分布式RPC)。
 
 ----------
+### 最低要求
+* jdk7
+* servlet 2.3
+
+----------
 ### 相关连接
 
 * WebSite：[http://www.hasor.net](http://www.hasor.net)

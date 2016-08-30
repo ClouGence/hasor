@@ -15,6 +15,7 @@
  */
 package net.hasor.web.env;
 import net.hasor.core.environment.StandardEnvironment;
+import net.hasor.web.ServletVersion;
 import net.hasor.web.WebEnvironment;
 
 import javax.servlet.ServletContext;
@@ -33,6 +34,10 @@ public class WebStandardEnvironment extends StandardEnvironment implements WebEn
     @Override
     public ServletContext getServletContext() {
         return (ServletContext) this.getContext();
+    }
+    @Override
+    public ServletVersion getServletVersion() {
+        return (ServletVersion) this.getServletContext().getAttribute(ServletVersion.class.getName());
     }
     @Override
     protected void afterInitEnvironment(Map<String, String> envMap) {

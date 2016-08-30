@@ -22,15 +22,13 @@ import net.hasor.restful.fileupload.real.FileUpload;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.startup.RuntimeListener;
 import org.more.bizcommon.Message;
+import org.more.util.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 /**
  * Controller <br>
  * 昨夜西风凋碧树。独上高楼，望尽天涯路。 <br>
@@ -662,7 +660,7 @@ public abstract class WebController {
      * 缓存目录默认为环境变量:%%。
      * @param parameterName 要获取的制定参数表单名
      */
-    protected FileItem getMultipart(String parameterName) {
+    protected List<FileItem> getMultipart(String parameterName) {
         String cacheDirectory = this.getAppContext().getEnvironment().evalString("%" + Environment.HASOR_TEMP_PATH + "%");
         return this.getMultipart(parameterName, cacheDirectory, -1, Settings.DefaultCharset);
     }
@@ -673,7 +671,7 @@ public abstract class WebController {
      * @param parameterName 要获取的制定参数表单名
      * @param maxPostSize 最大单个 body 大小
      */
-    protected FileItem getMultipart(String parameterName, Integer maxPostSize) {
+    protected List<FileItem> getMultipart(String parameterName, Integer maxPostSize) {
         String cacheDirectory = this.getAppContext().getEnvironment().evalString("%" + Environment.HASOR_TEMP_PATH + "%");
         return this.getMultipart(parameterName, cacheDirectory, maxPostSize, Settings.DefaultCharset);
     }
@@ -683,7 +681,7 @@ public abstract class WebController {
      * @param cacheDirectory 缓存目录
      * @param maxPostSize 最大单个 body 大小
      */
-    protected FileItem getMultipart(String parameterName, String cacheDirectory, Integer maxPostSize) {
+    protected List<FileItem> getMultipart(String parameterName, String cacheDirectory, Integer maxPostSize) {
         return this.getMultipart(parameterName, cacheDirectory, maxPostSize, Settings.DefaultCharset);
     }
     /**
@@ -693,12 +691,69 @@ public abstract class WebController {
      * @param maxPostSize 最大单个 body 大小
      * @param encoding 字符编码。
      */
-    protected FileItem getMultipart(String parameterName, String cacheDirectory, Integer maxPostSize, String encoding) {
-        if (!this.isMultipart()) {
+    protected List<FileItem> getMultipart(String parameterName, String cacheDirectory, Integer maxPostSize, String encoding) {
+        List<FileItem> itemList = this.getMultipartList(cacheDirectory, maxPostSize, encoding);
+        if (itemList == null || itemList.isEmpty()) {
             return null;
         }
-        //
-        return null;// TODO 
+        List<FileItem> resultData = new ArrayList<FileItem>();
+        for (FileItem item : itemList) {
+            if (StringUtils.equals(item.getName(), parameterName)) {
+                resultData.add(item);
+            }
+        }
+        return resultData;
+    }
+    /**
+     * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem。
+     * 不限制 multipart 大小。
+     * 字符编码默认为:{@link Settings#DefaultCharset}。
+     * 缓存目录默认为环境变量:%%。
+     * @param parameterName 要获取的制定参数表单名
+     */
+    protected FileItem getOneMultipart(String parameterName) {
+        String cacheDirectory = this.getAppContext().getEnvironment().evalString("%" + Environment.HASOR_TEMP_PATH + "%");
+        return this.getOneMultipart(parameterName, cacheDirectory, -1, Settings.DefaultCharset);
+    }
+    /**
+     * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem。
+     * 字符编码默认为:{@link Settings#DefaultCharset}。
+     * 缓存目录默认为环境变量:%%。
+     * @param parameterName 要获取的制定参数表单名
+     * @param maxPostSize 最大单个 body 大小
+     */
+    protected FileItem getOneMultipart(String parameterName, Integer maxPostSize) {
+        String cacheDirectory = this.getAppContext().getEnvironment().evalString("%" + Environment.HASOR_TEMP_PATH + "%");
+        return this.getOneMultipart(parameterName, cacheDirectory, maxPostSize, Settings.DefaultCharset);
+    }
+    /**
+     * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem。
+     * 字符编码默认为:{@link Settings#DefaultCharset}。
+     * @param parameterName 要获取的制定参数表单名
+     * @param cacheDirectory 缓存目录
+     * @param maxPostSize 最大单个 body 大小
+     */
+    protected FileItem getOneMultipart(String parameterName, String cacheDirectory, Integer maxPostSize) {
+        return this.getOneMultipart(parameterName, cacheDirectory, maxPostSize, Settings.DefaultCharset);
+    }
+    /**
+     * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem。
+     * @param parameterName 要获取的制定参数表单名
+     * @param cacheDirectory 缓存目录
+     * @param maxPostSize 最大单个 body 大小
+     * @param encoding 字符编码。
+     */
+    protected FileItem getOneMultipart(String parameterName, String cacheDirectory, Integer maxPostSize, String encoding) {
+        List<FileItem> itemList = this.getMultipartList(cacheDirectory, maxPostSize, encoding);
+        if (itemList == null || itemList.isEmpty()) {
+            return null;
+        }
+        for (FileItem item : itemList) {
+            if (StringUtils.equals(item.getName(), parameterName)) {
+                return item;
+            }
+        }
+        return null;
     }
     //    public Iterator<UploadFile> getFileIterator() throws IOException {
     //        if (isMultipart()) {

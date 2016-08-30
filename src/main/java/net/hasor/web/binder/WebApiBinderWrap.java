@@ -17,6 +17,7 @@ package net.hasor.web.binder;
 import javax.servlet.ServletContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.binder.ApiBinderWrap;
+import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
 /**
  * 
@@ -31,6 +32,10 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
     }
     public ServletContext getServletContext() {
         return this.webApiBinder.getServletContext();
+    }
+    @Override
+    public ServletVersion getServletVersion() {
+        return webApiBinder.getServletVersion();
     }
     @Override
     public FilterBindingBuilder filter(String urlPattern, String... morePatterns) {

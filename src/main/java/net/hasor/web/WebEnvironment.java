@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.web;
-import javax.servlet.ServletContext;
 import net.hasor.core.Environment;
+
+import javax.servlet.ServletContext;
 /**
- * 
+ *
  * @version : 2013-11-4
  * @author 赵永春(zyc@hasor.net)
  */
 public interface WebEnvironment extends Environment {
     /**获取ServletContext对象。*/
     public ServletContext getServletContext();
+
+    /**获取容器目前支持的 Servet Api 版本。*/
+    public ServletVersion getServletVersion();
 }

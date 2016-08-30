@@ -21,6 +21,7 @@ import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.BeanContainer;
 import net.hasor.core.context.DataContextCreater;
 import net.hasor.core.context.StatusAppContext;
+import net.hasor.web.ServletVersion;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.WebEnvironment;
 import net.hasor.web.binder.FilterPipeline;
@@ -31,6 +32,7 @@ import net.hasor.web.binder.support.ManagedListenerPipeline;
 import net.hasor.web.binder.support.ManagedServletPipeline;
 import net.hasor.web.env.WebStandardEnvironment;
 import org.more.util.ResourcesUtils;
+
 import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -74,6 +76,11 @@ public class WebTemplateAppContext<C extends BeanContainer> extends StatusAppCon
     public ServletContext getServletContext() {
         return this.servletContext;
     }
+    /**获取容器目前支持的 Servet Api 版本。*/
+    @Override
+    public ServletVersion getServletVersion() {
+        return this.getEnvironment().getServletVersion();
+    }
     /**为模块创建ApiBinder*/
     @Override
     protected AbstractWebApiBinder newApiBinder(final Module forModule) {
@@ -108,10 +115,16 @@ public class WebTemplateAppContext<C extends BeanContainer> extends StatusAppCon
                 return appContet;
             }
         });
-           /*绑定AppContext对象的Provider*/
+        /*绑定AppContext对象的Provider*/
         apiBinder.bindType(WebEnvironment.class).toProvider(new Provider<WebEnvironment>() {
             public WebEnvironment get() {
                 return appContet.getEnvironment();
+            }
+        });
+        /*绑定当前Servlet支持的版本*/
+        apiBinder.bindType(ServletVersion.class).toProvider(new Provider<ServletVersion>() {
+            public ServletVersion get() {
+                return appContet.getEnvironment().getServletVersion();
             }
         });
     }

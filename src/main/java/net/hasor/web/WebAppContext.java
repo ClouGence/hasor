@@ -16,6 +16,7 @@
 package net.hasor.web;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
+
 import javax.servlet.ServletContext;
 /**
  *
@@ -23,8 +24,11 @@ import javax.servlet.ServletContext;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface WebAppContext extends AppContext {
-    /**获取{@link ServletContext}*/
+    /**获取ServletContext对象。*/
     public ServletContext getServletContext();
+
+    /**获取容器目前支持的 Servet Api 版本。*/
+    public ServletVersion getServletVersion();
 
     /** @return 获取 {@link Environment} */
     public WebEnvironment getEnvironment();

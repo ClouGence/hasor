@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * 编码方式注入：
- * 
+ *
  * 1.valueIocTest
  *      值类型的属性注入。
  * 2.beanIocTest
@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  *      Bean的属性注入来自于工厂。
  * 4.annoNameIocTest
  *      当同一个类型声明了不同实例时候，你需要通过名称注入你想要的
- * 
+ *
  * @version : 2015年11月6日
  * @author 赵永春(zyc@hasor.net)
  */

@@ -16,6 +16,7 @@
 package net.hasor.web.startup;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
+import net.hasor.web.ServletVersion;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.ListenerPipeline;
 import net.hasor.web.context.WebTemplateAppContext;
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 /**
@@ -64,15 +66,32 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     //
     @Override
     public void contextInitialized(final ServletContextEvent servletContextEvent) {
+        //1.make sure servlet version
+        ServletContext sc = servletContextEvent.getServletContext();
+        String versionKey = ServletVersion.class.getName();
+        sc.setAttribute(versionKey, ServletVersion.V2_3);
         try {
-            //1.create AppContext
-            final ServletContext sc = servletContextEvent.getServletContext();
+            ServletRequestListener.class.getName();
+            sc.setAttribute(versionKey, ServletVersion.V2_4);
+            //
+            sc.getContextPath();
+            sc.setAttribute(versionKey, ServletVersion.V2_5);
+            //
+            sc.getEffectiveMajorVersion();
+            sc.setAttribute(versionKey, ServletVersion.V3_0);
+            //
+            sc.getVirtualServerName();
+            sc.setAttribute(versionKey, ServletVersion.V3_1);
+            //
+        } catch (Throwable e) { /* 忽略 */ }
+        //
+        //2.create AppContext
+        try {
             this.appContext = this.createAppContext(sc);
             if (!this.appContext.isStart()) {
                 Module startModule = this.getStartModule(sc);
                 this.appContext.start(startModule);
             }
-            //
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
