@@ -531,11 +531,11 @@ public abstract class WebController {
     //
     //------------------------
     /** @return Get model from AppContext. */
-    protected Object getInstance(Class<?> modelClass, String modelName) {
+    protected <T> T getInstance(Class<T> modelClass, String modelName) {
         return this.getAppContext().findBindingBean(modelName, modelClass);
     }
     /** @return Get model from AppContext. */
-    protected Object getInstance(Class<?> modelClass) {
+    protected <T> T getInstance(Class<T> modelClass) {
         return this.getAppContext().getInstance(modelClass);
     }
     /** @return Get model from AppContext. */
@@ -617,14 +617,14 @@ public abstract class WebController {
      * 将 multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表.
      */
     protected List<FileItem> getMultipartList() throws IOException {
-        return this.getMultipartList(null, null, null);
+        return this.getMultipartList((String) null, null, null);
     }
     /**
      * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表.
      * @param maxPostSize 最大单个 body 大小
      */
     protected List<FileItem> getMultipartList(Integer maxPostSize) throws IOException {
-        return this.getMultipartList(null, maxPostSize, null);
+        return this.getMultipartList((String) null, maxPostSize, null);
     }
     /**
      * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表.
@@ -641,23 +641,38 @@ public abstract class WebController {
      * @param encoding 字符编码。
      */
     protected List<FileItem> getMultipartList(String cacheDirectory, Integer maxPostSize, String encoding) throws IOException {
-        if (!this.isMultipart()) {
-            return null;
-        }
-        //
         cacheDirectory = FilenameUtils.normalizeNoEndSeparator(cacheDirectory);
         if (StringUtils.isBlank(cacheDirectory)) {
             Settings settings = this.getAppContext().getEnvironment().getSettings();
             cacheDirectory = settings.getDirectoryPath("hasor.restful.fileupload.cacheDirectory");
         }
-        FileItemFactory factory = new DiskFileItemFactory(cacheDirectory);
-        //
-        FileUpload upload = new FileUpload(this.getAppContext().getEnvironment().getSettings());
-        if (maxPostSize != null) {
-            upload.setSizeMax(maxPostSize);
-        }
-        if (encoding != null) {
-            upload.setHeaderEncoding(encoding);
+        return this.getMultipartList(new DiskFileItemFactory(cacheDirectory), maxPostSize, encoding);
+    }
+    /**
+     * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表。
+     * @param factory 缓存策略
+     */
+    protected List<FileItem> getMultipartList(FileItemFactory factory) throws IOException {
+        return this.getMultipartList(factory, null, null);
+    }
+    /**
+     * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表。
+     * @param factory 缓存策略
+     * @param maxPostSize 最大单个 body 大小
+     */
+    protected List<FileItem> getMultipartList(FileItemFactory factory, Integer maxPostSize) throws IOException {
+        return this.getMultipartList(factory, maxPostSize, null);
+    }
+    /**
+     * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表。
+     * @param factory 缓存策略
+     * @param maxPostSize 最大单个 body 大小
+     * @param encoding 字符编码。
+     */
+    protected List<FileItem> getMultipartList(FileItemFactory factory, Integer maxPostSize, String encoding) throws IOException {
+        FileUpload upload = this.newFileUpload(maxPostSize, encoding);
+        if (upload == null) {
+            return null;
         }
         return upload.parseRequest(this.getRequest(), factory);
     }
@@ -772,6 +787,18 @@ public abstract class WebController {
      * @param encoding 字符编码。
      */
     protected Iterator<FileItemStream> getMultipartIterator(Integer maxPostSize, String encoding) throws IOException {
+        FileUpload upload = this.newFileUpload(maxPostSize, encoding);
+        if (upload == null) {
+            return null;
+        }
+        return upload.getItemIterator(this.getRequest());
+    }
+    /**
+     * 创建原始的FileUpload对象。
+     * @param maxPostSize 最大单个 body 大小
+     * @param encoding 字符编码。
+     */
+    protected FileUpload newFileUpload(Integer maxPostSize, String encoding) {
         if (!this.isMultipart()) {
             return null;
         }
@@ -783,6 +810,6 @@ public abstract class WebController {
         if (encoding != null) {
             upload.setHeaderEncoding(encoding);
         }
-        return null;
+        return upload;
     }
 }

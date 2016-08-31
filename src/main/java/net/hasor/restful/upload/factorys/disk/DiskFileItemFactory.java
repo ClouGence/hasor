@@ -19,7 +19,6 @@ import net.hasor.restful.FileItemFactory;
 import net.hasor.restful.FileItemStream;
 import net.hasor.restful.upload.FileItemBase;
 import org.more.util.io.IOUtils;
-import org.more.util.io.output.DeferredFileOutputStream;
 
 import java.io.*;
 import java.util.UUID;
@@ -29,11 +28,20 @@ import java.util.UUID;
  * @author 赵永春(zyc@hasor.net)
  */
 public class DiskFileItemFactory implements FileItemFactory {
-    /** The default threshold above which uploads will be stored on disk. */
-    public static final int DEFAULT_SIZE_THRESHOLD = 10240;
     private File cacheDirectory;
+    //
+    public DiskFileItemFactory() {
+    }
     public DiskFileItemFactory(String cacheDirectory) {
         this.cacheDirectory = new File(cacheDirectory);
+    }
+    //
+    //
+    public File getCacheDirectory() {
+        return cacheDirectory;
+    }
+    public void setCacheDirectory(File cacheDirectory) {
+        this.cacheDirectory = cacheDirectory;
     }
     @Override
     public FileItem createItem(FileItemStream itemStream) throws IOException {
@@ -42,82 +50,39 @@ public class DiskFileItemFactory implements FileItemFactory {
         if (itemStream.isFormField()) {
             return new MemoryFileItem(itemStream);
         } else {
-            return new DiskFileItem(itemStream, DEFAULT_SIZE_THRESHOLD, new File(cacheDirectory, fid));
+            return createDiskFileItem(itemStream, fid);
         }
     }
-}
-//
-class MemoryFileItem extends FileItemBase {
-    private byte[] cachedContent;
-    public MemoryFileItem(FileItemStream stream) throws IOException {
-        super(stream);
-        ByteArrayOutputStream arrays = new ByteArrayOutputStream();
-        IOUtils.copy(stream.openStream(), arrays);
-        this.cachedContent = arrays.toByteArray();
+    protected FileItem createDiskFileItem(FileItemStream itemStream, String fid) throws IOException {
+        return new DiskFileItem(itemStream, new File(cacheDirectory, fid));
     }
-    @Override
-    public long getSize() {
-        if (this.cachedContent != null) {
-            return this.cachedContent.length;
-        } else {
-            return 0;
+    //
+    //
+    public static class MemoryFileItem extends FileItemBase {
+        private byte[] cachedContent;
+        public MemoryFileItem(FileItemStream stream) throws IOException {
+            super(stream);
+            ByteArrayOutputStream arrays = new ByteArrayOutputStream();
+            IOUtils.copy(stream.openStream(), arrays);
+            this.cachedContent = arrays.toByteArray();
         }
-    }
-    @Override
-    public void deleteOrSkip() {
-    }
-    @Override
-    public InputStream openStream() throws IOException {
-        if (this.cachedContent == null) {
-            return null;
+        @Override
+        public long getSize() {
+            if (this.cachedContent != null) {
+                return this.cachedContent.length;
+            } else {
+                return 0;
+            }
         }
-        return new ByteArrayInputStream(this.cachedContent);
-    }
-}
-class DiskFileItem extends FileItemBase {
-    private DeferredFileOutputStream dfos;
-    private File                     cacheFile;
-    public DiskFileItem(FileItemStream stream, int sizeThreshold, File cacheFile) throws IOException {
-        super(stream);
-        this.init(stream, sizeThreshold, cacheFile);
-    }
-    protected void init(FileItemStream stream, int sizeThreshold, File cacheFile) throws IOException {
-        this.cacheFile = cacheFile;
-        File parent = cacheFile.getParentFile();
-        if (!parent.exists()) {
-            parent.mkdirs();
+        @Override
+        public void deleteOrSkip() {
         }
-        this.dfos = new DeferredFileOutputStream(sizeThreshold, cacheFile);
-        IOUtils.copy(stream.openStream(), this.dfos);
-    }
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            this.deleteOrSkip();
-        } finally {
-            super.finalize();
-        }
-    }
-    @Override
-    public long getSize() {
-        if (this.dfos.isInMemory()) {
-            return this.dfos.getData().length;
-        } else {
-            return this.dfos.getFile().length();
-        }
-    }
-    @Override
-    public void deleteOrSkip() {
-        if (this.cacheFile != null && this.cacheFile.exists()) {
-            this.cacheFile.delete();
-        }
-    }
-    @Override
-    public InputStream openStream() throws IOException {
-        if (this.dfos.isInMemory()) {
-            return new ByteArrayInputStream(this.dfos.getData());
-        } else {
-            return new FileInputStream(this.dfos.getFile());
+        @Override
+        public InputStream openStream() throws IOException {
+            if (this.cachedContent == null) {
+                return null;
+            }
+            return new ByteArrayInputStream(this.cachedContent);
         }
     }
 }

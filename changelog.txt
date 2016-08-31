@@ -1,6 +1,7 @@
 ﻿===== Hasor-Core v2.4.4 (2016-?)
 * 新增:
     01.宽泛的Servlet版本支持 servlet 2.3 到 servlet 3.1。如果容器支持 Servlet 3 那么 Hasor 会自动启用 Servlet 3.0 特性。
+    02.在Servlet3下,启动Servlet3的可插性支持。即不再需要配置Hasor相关的 web.xml 配置。
     02.新增支持文件上传功能支持。
 * 改进:
     01.otg.more包大瘦身,清理大量没有使用到的类和方法。
