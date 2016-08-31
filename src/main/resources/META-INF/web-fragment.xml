@@ -18,6 +18,7 @@
     <filter>
         <filter-name>hasor_root_filter</filter-name>
         <filter-class>net.hasor.web.startup.RuntimeFilter</filter-class>
+        <async-supported>true</async-supported>
     </filter>
 
     <filter-mapping>

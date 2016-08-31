@@ -1,8 +1,11 @@
 ﻿===== Hasor-Core v2.4.4 (2016-?)
 * 新增:
-    01.宽泛的Servlet版本支持 servlet 2.3 到 servlet 3.1。如果容器支持 Servlet 3 那么 Hasor 会自动启用 Servlet 3.0 特性。
-    02.在Servlet3下,启动Servlet3的可插性支持。即不再需要配置Hasor相关的 web.xml 配置。
-    02.新增支持文件上传功能支持。
+    01.宽泛的Servlet版本支持 servlet 2.3 到 servlet 3.1。
+    02.如果容器支持 Servlet 3 那么 Hasor 会自动启用 Servlet 3.0 特性。
+    03.当 web 容器支持 Servlet3 时。您只需要将 web.xml 文件中 web-app 节点上配置 metadata-complete="false" 即可。
+        不再需要配置任何 Hasor 相关的 web.xml 信息,或者您干脆删除 web.xml。
+    04.当 web 容器支持 Servlet3 时,Hasor会自动将您的所有 http 请求优化为异步Servlet请求。
+    02.新增支持文件上传功能支持,结合servlet3的自动异步优化。Hasor会自动为您实现异步文件上传。
 * 改进:
     01.otg.more包大瘦身,清理大量没有使用到的类和方法。
     02.WebController类中方法访问修饰符调整。

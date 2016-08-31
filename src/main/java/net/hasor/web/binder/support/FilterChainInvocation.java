@@ -20,7 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 /**
- * 
+ *
  * @version : 2013-4-13
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -28,7 +28,7 @@ class FilterChainInvocation implements FilterChain {
     private final FilterDefinition[]     filterDefinitions;
     private final FilterChain            proceedingChain;
     private final ManagedServletPipeline servletPipeline;
-    private int                          index = -1;
+    private int index = -1;
     //
     public FilterChainInvocation(final FilterDefinition[] filterDefinitions, final ManagedServletPipeline servletPipeline, final FilterChain proceedingChain) {
         this.filterDefinitions = filterDefinitions;

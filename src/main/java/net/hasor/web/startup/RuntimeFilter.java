@@ -16,6 +16,7 @@
 package net.hasor.web.startup;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.web.AsyncSupported;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.FilterPipeline;
@@ -38,6 +39,7 @@ public class RuntimeFilter implements Filter {
     protected Logger         logger         = LoggerFactory.getLogger(getClass());
     private   WebAppContext  appContext     = null;
     private   FilterPipeline filterPipeline = null;
+    private   AsyncSupported asyncSupported = AsyncSupported.yes;
     //
     /**初始化过滤器，初始化会同时初始化FilterPipeline*/
     @Override
@@ -62,7 +64,7 @@ public class RuntimeFilter implements Filter {
         if (ServletVersion.V2_5.le(this.appContext.getServletVersion())) {
             logger.info("RuntimeFilter started, at {}", filterConfig.getServletContext().getServerInfo());
         } else {
-            logger.info("RuntimeFilter started, context at {}", filterConfig.getServletContext().getServerInfo());
+            logger.info("RuntimeFilter started, context at {}", filterConfig.getServletContext().getContextPath());
         }
     }
     //
@@ -81,6 +83,23 @@ public class RuntimeFilter implements Filter {
         final HttpServletRequest httpReq = (HttpServletRequest) request;
         final HttpServletResponse httpRes = (HttpServletResponse) response;
         //
+        if (appContext.getServletVersion().ge(ServletVersion.V3_0) && this.asyncSupported == AsyncSupported.yes) {
+            try {
+                AsyncContext asyncContext = request.startAsync();
+                asyncContext.start(new AsyncInvocationWorker(asyncContext, httpReq, httpRes) {
+                    public void doWork(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+                        doHttpWork(chain, httpReq, httpRes);
+                    }
+                });
+                return;
+            } catch (Throwable e) {
+                this.asyncSupported = AsyncSupported.no;
+            }
+        }
+        //
+        doHttpWork(chain, httpReq, httpRes);
+    }
+    protected void doHttpWork(FilterChain chain, HttpServletRequest httpReq, HttpServletResponse httpRes) throws IOException, ServletException {
         try {
             this.beforeRequest(this.appContext, httpReq, httpRes);
             this.processFilterPipeline(httpReq, httpRes, chain);

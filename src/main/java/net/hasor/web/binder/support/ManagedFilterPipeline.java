@@ -14,30 +14,31 @@
  * limitations under the License.
  */
 package net.hasor.web.binder.support;
+import net.hasor.web.ServletVersion;
+import net.hasor.web.WebAppContext;
+import net.hasor.web.binder.FilterPipeline;
+
+import javax.servlet.FilterChain;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import javax.servlet.FilterChain;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpServletResponse;
-import net.hasor.web.WebAppContext;
-import net.hasor.web.binder.FilterPipeline;
 /**
- *  
+ *
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ManagedFilterPipeline implements FilterPipeline {
     private final ManagedServletPipeline servletPipeline;
-    private FilterDefinition[]           filterDefinitions;
-    private volatile boolean             initialized = false;
-    private WebAppContext                appContext;
+    private       FilterDefinition[]     filterDefinitions;
+    private volatile boolean initialized = false;
+    private WebAppContext appContext;
     //
     //
     public ManagedFilterPipeline(final ManagedServletPipeline servletPipeline) {
@@ -76,9 +77,11 @@ public class ManagedFilterPipeline implements FilterPipeline {
         if (!this.initialized) {
             this.initPipeline(this.appContext, null);
         }
+        //
         /*执行过滤器链*/
-        ServletRequest dispatcherRequest = this.withDispatcher(request, this.servletPipeline);
-        new FilterChainInvocation(this.filterDefinitions, this.servletPipeline, defaultFilterChain).doFilter(dispatcherRequest, response);
+        HttpServletRequest dispatcherRequest = this.withDispatcher(request, this.servletPipeline);
+        FilterChainInvocation invocation = new FilterChainInvocation(this.filterDefinitions, this.servletPipeline, defaultFilterChain);
+        invocation.doFilter(dispatcherRequest, response);
     }
     @Override
     public void destroyPipeline(final WebAppContext appContext) {
@@ -100,16 +103,15 @@ public class ManagedFilterPipeline implements FilterPipeline {
      * This is not a problem cuz we intend for people to migrate from web.xml to guice-servlet,
      * incrementally, but not the other way around (which, we should actively discourage).
      */
-    private ServletRequest withDispatcher(final ServletRequest servletRequest, final ManagedServletPipeline servletPipeline) {
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
+    private HttpServletRequest withDispatcher(final HttpServletRequest httpRequest, final ManagedServletPipeline servletPipeline) {
         // don't wrap the request if there are no servlets mapped. This prevents us from inserting our
         // wrapper unless it's actually going to be used. This is necessary for compatibility for apps
         // that downcast their HttpServletRequests to a concrete implementation.
         if (!servletPipeline.hasServletsMapped()) {
-            return servletRequest;
+            return httpRequest;
         }
         //noinspection OverlyComplexAnonymousInnerClass
-        return new HttpServletRequestWrapper(request) {
+        return new HttpServletRequestWrapper(httpRequest) {
             @Override
             public RequestDispatcher getRequestDispatcher(final String path) {
                 final RequestDispatcher dispatcher = servletPipeline.getRequestDispatcher(path);
