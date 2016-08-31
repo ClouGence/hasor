@@ -58,11 +58,11 @@ import java.util.WeakHashMap;
  *
  * @since Commons Collections 1.0
  * @version $Revision: 687089 $ $Date: 2008-08-19 17:33:30 +0100 (Tue, 19 Aug 2008) $
- * 
+ *
  * @author Craig R. McClanahan
  * @author Stephen Colebourne
  */
-@SuppressWarnings({ "rawtypes", "serial", "unchecked" })
+@SuppressWarnings({"rawtypes", "serial", "unchecked"})
 class WeakFastHashMap extends HashMap {
     /** The underlying map we are managing. */
     private Map     map  = null;
@@ -141,7 +141,7 @@ class WeakFastHashMap extends HashMap {
     }
     /**
      * Return the number of key-value mappings in this map.
-     * 
+     *
      * @return the current size of the map
      */
     @Override
@@ -156,7 +156,7 @@ class WeakFastHashMap extends HashMap {
     }
     /**
      * Return <code>true</code> if this map contains no mappings.
-     * 
+     *
      * @return is the map currently empty
      */
     @Override
@@ -358,7 +358,7 @@ class WeakFastHashMap extends HashMap {
      * Return the hash code value for this map.  This implementation uses
      * exactly the code that is used to define the list hash function in the
      * documentation for the <code>Map.hashCode</code> method.
-     * 
+     *
      * @return suitable integer hash code
      */
     @Override
@@ -384,7 +384,7 @@ class WeakFastHashMap extends HashMap {
     /**
      * Return a shallow copy of this <code>FastHashMap</code> instance.
      * The keys and values themselves are not copied.
-     * 
+     *
      * @return a clone of this map
      */
     @Override
@@ -450,8 +450,10 @@ class WeakFastHashMap extends HashMap {
      * Abstract collection implementation shared by keySet(), values() and entrySet().
      */
     private abstract class CollectionView implements Collection {
-        public CollectionView() {}
+        public CollectionView() {
+        }
         protected abstract Collection get(Map map);
+
         protected abstract Object iteratorNext(Map.Entry entry);
         @Override
         public void clear() {
@@ -572,7 +574,7 @@ class WeakFastHashMap extends HashMap {
         }
         @Override
         public boolean equals(final Object o) {
-            if (o == this) {
+            if (o.equals(this)) {
                 return true;
             }
             if (WeakFastHashMap.this.fast) {
@@ -606,9 +608,9 @@ class WeakFastHashMap extends HashMap {
             return new CollectionViewIterator();
         }
         private class CollectionViewIterator implements Iterator {
-            private Map       expected;
+            private Map expected;
             private Map.Entry lastReturned = null;
-            private Iterator  iterator;
+            private Iterator iterator;
             public CollectionViewIterator() {
                 this.expected = WeakFastHashMap.this.map;
                 this.iterator = this.expected.entrySet().iterator();

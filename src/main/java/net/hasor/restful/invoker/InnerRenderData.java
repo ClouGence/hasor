@@ -76,6 +76,7 @@ class InnerRenderData implements RenderData {
         this.mimeType = mimeType;
     }
     //
+    //
     /**获取MimeType类型*/
     public String getMimeType(String suffix) {
         if (this.mimeType == null) {

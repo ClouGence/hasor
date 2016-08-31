@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.startup;
+package net.hasor.restful.async;
 import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +24,7 @@ import java.io.IOException;
  * @version : 2013-4-13
  * @author 赵永春 (zyc@hasor.net)
  */
-abstract class AsyncInvocationWorker implements Runnable {
+public abstract class AsyncInvocationWorker implements Runnable {
     private HttpServletRequest  request;
     private HttpServletResponse response;
     private AsyncContext        asyncContext;

@@ -15,6 +15,9 @@
  */
 package net.hasor.restful.invoker;
 import net.hasor.restful.MimeType;
+import net.hasor.restful.async.AsyncInvocationWorker;
+import net.hasor.restful.async.AsyncSupported;
+import net.hasor.web.ServletVersion;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.startup.RuntimeListener;
 import org.more.util.ExceptionUtils;
@@ -42,6 +45,7 @@ class RestfulFilter implements Filter {
     private       MimeType          mimeType       = null;
     private       RenderLayout      renderLayout   = null;
     private       WebAppContext     appContext     = null;
+    private       AsyncSupported    asyncSupported = AsyncSupported.yes;
     //
     public void init(FilterConfig filterConfig) throws ServletException {
         if (!this.inited.compareAndSet(false, true)) {
@@ -138,17 +142,32 @@ class RestfulFilter implements Filter {
         }
     }
     //
-    private void doInvoke(InnerRenderData renderData, MappingToDefine define, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws ServletException, IOException {
+    private void doInvoke(final InnerRenderData renderData, final MappingToDefine define, final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) throws ServletException, IOException {
+        // .要调用的目标是否要求异步执行?
+        String actionMethod = httpRequest.getMethod();
+        String actionPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
+        boolean needAsync = define.isAsync(actionMethod, actionPath) == AsyncSupported.yes;
+        //
+        // .开启异步Servlet ( 必须满足: Servlet3.x、环境支持异步Servlet、目标开启了Servlet3 )
+        if (appContext.getServletVersion().ge(ServletVersion.V3_0) && asyncSupported == AsyncSupported.yes && needAsync) {
+            try {
+                AsyncContext asyncContext = httpRequest.startAsync();
+                asyncContext.start(new AsyncInvocationWorker(asyncContext, httpRequest, httpResponse) {
+                    public void doWork(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+                        _doWork(renderData, define, httpRequest);
+                    }
+                });
+                return;
+            } catch (Throwable e) {
+                this.asyncSupported = AsyncSupported.no;//环境抛错,不支持asyc servlet.
+            }
+        }
+        //
+        _doWork(renderData, define, httpRequest);
+    }
+    private void _doWork(InnerRenderData renderData, MappingToDefine define, HttpServletRequest httpRequest) throws ServletException, IOException {
         try {
             define.invoke(renderData);
-        } catch (Throwable target) {
-            if (target instanceof ServletException)
-                throw (ServletException) target;
-            if (target instanceof IOException)
-                throw (IOException) target;
-            if (target instanceof RuntimeException)
-                throw (RuntimeException) target;
-            throw new ServletException(target);
         } finally {
             httpRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
         }

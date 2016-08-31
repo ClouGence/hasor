@@ -17,20 +17,22 @@ package net.hasor.restful.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
+import net.hasor.restful.api.Async;
 import net.hasor.restful.api.HttpMethod;
 import net.hasor.restful.api.MappingTo;
 import net.hasor.restful.api.Valid;
+import net.hasor.restful.async.AsyncSupported;
 import org.more.UndefinedException;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 
+import javax.servlet.ServletException;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 线程安全
@@ -44,7 +46,9 @@ class MappingToDefine {
     private String                  mappingToMatches;
     private Map<String, Method>     httpMapping;
     private Map<Method, InnerValid> needValid;
-    private AtomicBoolean inited = new AtomicBoolean(false);
+    private Set<Method>             asyncMethod;
+    private AsyncSupported defaultAsync = AsyncSupported.no;
+    private AtomicBoolean  inited       = new AtomicBoolean(false);
     //
     protected MappingToDefine(Class<?> targetType) {
         this.targetType = targetType;
@@ -59,12 +63,16 @@ class MappingToDefine {
         if (!servicePath.matches("/.+")) {
             throw new IllegalStateException("Service path format error");
         }
+        if (targetType.getAnnotation(Async.class) != null) {
+            this.defaultAsync = AsyncSupported.yes;
+        }
         //
         this.httpMapping = new HashMap<String, Method>();
+        this.asyncMethod = new HashSet<Method>();
         List<Method> mList = BeanUtils.getMethods(targetType);
         if (mList != null && !mList.isEmpty()) {
             for (Method targetMethod : mList) {
-                // .HeepMethod
+                // .HttpMethod
                 Annotation[] annos = targetMethod.getAnnotations();
                 if (annos != null) {
                     for (Annotation anno : annos) {
@@ -87,6 +95,8 @@ class MappingToDefine {
         this.needValid = new HashMap<Method, InnerValid>();
         for (String key : this.httpMapping.keySet()) {
             Method targetMethod = this.httpMapping.get(key);
+            //
+            // .@Valid
             Annotation[][] paramAnno = targetMethod.getParameterAnnotations();
             Class<?>[] paramType = targetMethod.getParameterTypes();
             Map<String, Valid> validMap = new HashMap<String, Valid>();
@@ -102,6 +112,11 @@ class MappingToDefine {
                 }
             }
             this.needValid.put(targetMethod, new InnerValid(validMap, paramTypeMap));
+            //
+            // @Async
+            if (targetMethod.getAnnotation(Async.class) != null) {
+                asyncMethod.add(targetMethod);
+            }
         }
         //
         this.mappingTo = servicePath;
@@ -115,6 +130,34 @@ class MappingToDefine {
     }
     public String getMappingToMatches() {
         return this.mappingToMatches;
+    }
+    /**
+     * 判断是否要求异步处理请求。
+     */
+    public AsyncSupported isAsync(String httpMethod, String requestPath) {
+        Hasor.assertIsNotNull(requestPath, "requestPath is null.");
+        if (!requestPath.matches(this.mappingToMatches)) {
+            return this.defaultAsync;
+        }
+        Method targetMethod = null;
+        for (String m : this.httpMapping.keySet()) {
+            if (StringUtils.equals(httpMethod, m)) {
+                targetMethod = this.httpMapping.get(m);
+                break;
+            } else if (StringUtils.equals(m, HttpMethod.ANY)) {
+                targetMethod = this.httpMapping.get(HttpMethod.ANY);
+                break;
+            }
+        }
+        //
+        if (targetMethod == null) {
+            return this.defaultAsync;
+        }
+        if (this.asyncMethod.contains(targetMethod)) {
+            return AsyncSupported.yes;
+        } else {
+            return this.defaultAsync;
+        }
     }
     /**
      * 首先测试路径是否匹配，然后判断Restful实例是否支持这个 请求方法。
@@ -151,16 +194,26 @@ class MappingToDefine {
      * 调用目标
      * @throws Throwable 异常抛出
      */
-    public final void invoke(InnerRenderData renderData) throws Throwable {
+    public final void invoke(InnerRenderData renderData) throws ServletException, IOException {
         String httpMethod = renderData.getHttpRequest().getMethod();
         Method targetMethod = this.httpMapping.get(httpMethod.trim().toUpperCase());
         if (targetMethod == null) {
             targetMethod = this.httpMapping.get(HttpMethod.ANY);
         }
         //
-        Hasor.assertIsNotNull(targetMethod, "not font mapping Method.");
-        InnerValid needValid = this.needValid.get(targetMethod);
-        new Invoker(this, renderData).exeCall(this.targetProvider, targetMethod, needValid);
+        try {
+            Hasor.assertIsNotNull(targetMethod, "not font mapping Method.");
+            InnerValid needValid = this.needValid.get(targetMethod);
+            new Invoker(this, renderData).exeCall(this.targetProvider, targetMethod, needValid);
+        } catch (Throwable target) {
+            if (target instanceof ServletException)
+                throw (ServletException) target;
+            if (target instanceof IOException)
+                throw (IOException) target;
+            if (target instanceof RuntimeException)
+                throw (RuntimeException) target;
+            throw new ServletException(target);
+        }
     }
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);

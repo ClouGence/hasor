@@ -14,23 +14,19 @@
  * limitations under the License.
  */
 package org.more.util;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.WeakHashMap;
-import java.util.concurrent.ConcurrentHashMap;
 import org.more.asm.AnnotationVisitor;
 import org.more.asm.ClassReader;
 import org.more.asm.ClassVisitor;
 import org.more.asm.Opcodes;
 import org.more.util.ResourcesUtils.ScanEvent;
 import org.more.util.ResourcesUtils.ScanItem;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 /**
- * 
+ *
  * @version : 2013-8-13
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -48,10 +44,12 @@ public class ScanClassPath {
     }
     //
     public static ScanClassPath newInstance(final String[] scanPackages) {
-        return new ScanClassPath(scanPackages) {};
+        return new ScanClassPath(scanPackages) {
+        };
     }
     public static ScanClassPath newInstance(final String scanPackages) {
-        return new ScanClassPath(new String[] { scanPackages }) {};
+        return new ScanClassPath(new String[] {scanPackages}) {
+        };
     }
     /**
      * 扫描jar包中凡是匹配compareType参数的类均被返回。（对执行结果不缓存）
@@ -60,7 +58,7 @@ public class ScanClassPath {
      * @return 返回扫描结果。
      */
     public static Set<Class<?>> getClassSet(final String packagePath, final Class<?> compareType) {
-        return ScanClassPath.getClassSet(new String[] { packagePath }, compareType);
+        return ScanClassPath.getClassSet(new String[] {packagePath}, compareType);
     }
     /**
      * 扫描jar包中凡是匹配compareType参数的类均被返回。（对执行结果不缓存）
@@ -147,7 +145,10 @@ public class ScanClassPath {
         try {
             classReader = new ClassReader(inStream);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (e instanceof IOException) {
+                throw (IOException) e;
+            }
+            throw new IOException(e);
         }
         //className = classReader.getClassName().replace('/', '.');
         /*三、读取类的（名称、父类、接口、注解）信息*/

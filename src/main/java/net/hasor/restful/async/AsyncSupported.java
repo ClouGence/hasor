@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
+package net.hasor.restful.async;
 /**
  * servlet是否支持异步。
  * @version : 2013-11-4
