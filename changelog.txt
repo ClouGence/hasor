@@ -2,10 +2,11 @@
 * 新增:
     01.宽泛的Servlet版本支持 servlet 2.3 到 servlet 3.1。
     02.新增支持文件上传功能支持。
-    03.如果容器支持 Servlet 3 那么 Hasor 会自动启用 Servlet 3.0 特性。
-    04.servlet3: 基于 web-fragment 技术,您的 web.xml 中不需要任何配置或者您干脆删除 web.xml。
-    05.servlet3: 支持通过@Async注解开启异步Servlet。
-    06.servlet3: 文件上传共功能可以基于@Async转为异步文件上传(感谢:哎瑞！麓孩 提供的实现思路,这里是他的blog, http://ysj12.lofter.com/)。
+    03.新增 @Async 注解,用于标记 restful 请求是否以 异步 servlet 方式执行。(需要容器支持 servlet 3 ,否则无效)
+    04.如果容器支持 Servlet 3 那么 Hasor 会自动启用 Servlet 3.0 特性。
+    05.servlet3: 基于 web-fragment 技术,您的 web.xml 中不需要任何配置或者您干脆删除 web.xml。
+    06.servlet3: 支持通过@Async注解开启异步Servlet。
+    07.servlet3: 文件上传共功能可以基于@Async转为异步文件上传(感谢:哎瑞！麓孩 提供的实现思路,这里是他的blog, http://ysj12.lofter.com/)。
 * 改进:
     01.otg.more包瘦身前的一些调整。
     02.WebController类中方法访问修饰符调整。
