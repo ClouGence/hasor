@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-rsf">
+<config xmlns="http://project.hasor.net/hasor/schema/hasor-rsf">
     <!-- 框架配置，包扫描范围 -->
     <hasor>
         <loadPackages>net.hasor.rsf.*</loadPackages>
@@ -11,10 +11,21 @@
 
         <!-- RSF框架环境变量 -->
         <environmentVar>
-            <!-- 应用程序代码或应用名称 -->
-            <RSF_APP_CODE>anonymous</RSF_APP_CODE>
-            <!-- 连接注册中心需要的授权码 -->
-            <RSF_AUTH_CODE></RSF_AUTH_CODE>
+            <!-- app_key -->
+            <RSF_APP_KEY></RSF_APP_KEY>
+            <!-- app KeySecret -->
+            <RSF_APP_KEY_SECRET></RSF_APP_KEY_SECRET>
+            <!-- 应用程序所属单元 -->
+            <RSF_APP_UNIT>default</RSF_APP_UNIT>
+
+            <!-- 注册中心(例:rsf://127.0.0.1:2180) -->
+            <RSF_CENTER_URL></RSF_CENTER_URL>
+            <!-- RSF对外提供服务的IP -->
+            <RSF_SERVICE_IP>local</RSF_SERVICE_IP>
+            <!-- RSF对外提供服务的服务端口 -->
+            <RSF_SERVICE_PORT>2180</RSF_SERVICE_PORT>
+            <!-- Telnet 控制台端口 -->
+            <RSF_CONSOLE_PORT>2181</RSF_CONSOLE_PORT>
         </environmentVar>
     </hasor>
 
@@ -27,9 +38,9 @@
                             如果您的部署环境有多张网卡，那么可以通过指定ip地址，来告诉RSF具体工作的网卡地址。
             - port    : RSF对外提供服务的监听端口号。
     -->
-    <hasor.rsfConfig enable="false" address="local" port="2180">
+    <hasor.rsfConfig enable="false" address="${RSF_SERVICE_IP}" port="${RSF_SERVICE_PORT}">
         <!-- 所属单元名称，单元是用来给应用部署划分虚拟机房的。RSF通过单元可以有效控制跨机房调用，从而提升远程调用效率。-->
-        <unitName>default</unitName>
+        <unitName>${RSF_APP_UNIT}</unitName>
 
         <!--
             RSF管理控制台(Telnet)
@@ -38,11 +49,11 @@
                                     默认情况下您必须登录到应用服务器上，才能够访问RSF管理控制台。
                 提示：RSF在启动的时，如果管理控制台的端口被占用，是不会影响到整个RSF启动进程。
         -->
-        <console port="2181" inBound="local,127.0.0.1"/>
+        <console port="${RSF_CONSOLE_PORT}" inBound="local,127.0.0.1"/>
 
         <!--注册中心，用于更新服务列表的配置服务器 -->
         <centerServers timeout="6000" heartbeatTime="15000" automaticOnline="true">
-            <!-- <server>rsf://127.0.0.1:2180</server> -->
+            <server>${RSF_CENTER_URL}</server>
         </centerServers>
 
         <!--用于设置默认情况下RSF服务的一些基本信息。

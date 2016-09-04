@@ -14,25 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.caller;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
-import org.more.future.FutureCallback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
-import net.hasor.rsf.RsfBindInfo;
-import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.RsfFilter;
-import net.hasor.rsf.RsfFilterChain;
-import net.hasor.rsf.RsfFuture;
-import net.hasor.rsf.RsfRequest;
-import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.SendLimitPolicy;
+import net.hasor.rsf.*;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.ProtocolStatus;
@@ -46,13 +32,20 @@ import net.hasor.rsf.serialize.SerializeList;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 import net.hasor.rsf.utils.TimerManager;
+import org.more.future.FutureCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 负责管理所有 RSF 发起的请求，Manager还提供了最大并发上限的配置.
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class RsfRequestManager {
-    protected Logger                             logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     private final ConcurrentMap<Long, RsfFuture> rsfResponse;
     private final RsfContext                     rsfContext;
     private final TimerManager                   timerManager;
@@ -113,7 +106,7 @@ public abstract class RsfRequestManager {
             if (info.getStatus() == ProtocolStatus.OK) {
                 SerializeCoder coder = serializeFactory.getSerializeCoder(serializeType);
                 byte[] returnDataData = info.getReturnData();
-                Object returnObject = coder.decode(returnDataData);
+                Object returnObject = coder.decode(returnDataData, rsfRequest.getMethod().getReturnType());
                 local.sendData(returnObject);
                 return rsfFuture.completed(local);
             } else {
@@ -187,7 +180,8 @@ public abstract class RsfRequestManager {
             }
         };
         this.timerManager.atTime(timeTask, request.getTimeout());
-    };
+    }
+    ;
     /**
      * 发送RSF调用请求。
      * @param rsfRequest rsf请求

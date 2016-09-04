@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
 import org.more.RepeateException;
-import org.more.json.JSON;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +47,8 @@ import net.hasor.rsf.utils.TimerManager;
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody> {
-    public static final String                            CenterUpdate_Event = "CenterUpdate_Event";
-    protected Logger                                      logger             = LoggerFactory.getLogger(getClass());
+    public static final String CenterUpdate_Event = "CenterUpdate_Event";
+    protected           Logger logger             = LoggerFactory.getLogger(getClass());
     private final RsfContext                              rsfContext;
     private final String                                  hostString;
     private final TimerManager                            timerManager;
@@ -235,13 +235,13 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
                             beatAllMap.remove(key);//心跳被注册中心接受，从Map中删除
                         }
                     }
-                    logger.info("publishServiceBeat complete ->{}", JSON.toString(beatResult));
+                    logger.info("publishServiceBeat complete ->{}", mapToLogmessage(beatResult));
                 } else {
                     long realLength = (beatResult == null) ? 0 : beatResult.size();
                     logger.info("publishServiceBeat failed->the beat return value length error ,expect {} but the actual is {}.", beatPMap.size(), realLength);
                 }
             } catch (Exception e) {
-                logger.info("publishServiceBeat failed->services={} ,error={}", new Date(), JSON.toString(beatPMap), e.getMessage());
+                logger.info("publishServiceBeat failed->services={} ,error={}", new Date(), mapToLogmessage(beatPMap), e.getMessage());
                 logger.debug(e.getMessage(), e);
             }
             //-订阅者心跳-
@@ -255,13 +255,13 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
                             beatAllMap.remove(key);//心跳被注册中心接受，从Map中删除
                         }
                     }
-                    logger.info("receiveServiceBeat complete ->{}", JSON.toString(beatResult));
+                    logger.info("receiveServiceBeat complete ->{}", mapToLogmessage(beatResult));
                 } else {
                     long realLength = (beatResult == null) ? 0 : beatResult.size();
                     logger.info("receiveServiceBeat failed->the beat return value length error ,expect {} but the actual is {}.", beatCMap.size(), realLength);
                 }
             } catch (Exception e) {
-                logger.info("receiveServiceBeat failed->services={} ,error={}", new Date(), JSON.toString(beatCMap), e.getMessage());
+                logger.info("receiveServiceBeat failed->services={} ,error={}", new Date(), mapToLogmessage(beatCMap), e.getMessage());
                 logger.debug(e.getMessage(), e);
             }
             //
@@ -272,7 +272,7 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         for (ServiceDomain<?> domain : needRepair) {
             try {
                 String snapshotInfo = null;
-                /*   */if (RsfServiceType.Provider == domain.getServiceType()) {
+                /*   */ if (RsfServiceType.Provider == domain.getServiceType()) {
                     ProviderPublishInfo info = fillTo(domain, new ProviderPublishInfo());
                     info.setQueueMaxSize(this.rsfContext.getSettings().getQueueMaxSize());
                     snapshotInfo = this.centerRegister.publishService(this.hostString, info);
@@ -318,6 +318,32 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         }
         //3.返回注册中心centerSnapshot
         return receiveResult.getCenterSnapshot();
+    }
+    private String mapToLogmessage(Map<String, ?> result) {
+        if (result == null) {
+            return "null";
+        }
+        StringBuilder builder = new StringBuilder("");
+        builder.append("[");
+        int i = 0;
+        for (String key : result.keySet()) {
+            Object val = result.get(key);
+            if (i > 0) {
+                builder.append(", ");
+            }
+            builder.append("'");
+            builder.append(key);
+            if (val == null) {
+                builder.append("' : null");
+            } else {
+                builder.append("' : '");
+                builder.append(val);
+                builder.append("'");
+            }
+            i++;
+        }
+        builder.append("]");
+        return builder.toString();
     }
     private <T extends PublishInfo> T fillTo(ServiceDomain<?> eventData, T info) {
         info.setBindID(eventData.getBindID());

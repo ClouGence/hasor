@@ -14,14 +14,25 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address.route.rule;
-import org.more.json.JSON;
 /**
  * 将参数映射为一个Key.
  * @version : 2015年4月16日
  * @author 赵永春(zyc@hasor.net)
  */
 public class DefaultArgsKey implements ArgsKey {
-    public String eval(String serviceID, String methodName, Object[] args) {
-        return JSON.toString(args);
+    public String eval(final String serviceID, final String methodName, final Object[] args) {
+        if (args == null) {
+            return "null";
+        }
+        StringBuilder strBuilder = new StringBuilder();
+        for (Object obj : args) {
+            if (obj == null) {
+                strBuilder.append("null");
+            } else {
+                strBuilder.append(obj.toString());
+            }
+            strBuilder.append("-");
+        }
+        return strBuilder.toString();
     }
 }

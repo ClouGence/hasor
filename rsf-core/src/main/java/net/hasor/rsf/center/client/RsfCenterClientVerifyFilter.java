@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.client;
+import net.hasor.rsf.*;
+import net.hasor.rsf.center.domain.RsfCenterConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.RsfFilter;
-import net.hasor.rsf.RsfFilterChain;
-import net.hasor.rsf.RsfRequest;
-import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.center.domain.RsfCenterConstants;
 /**
  * 对Center请求的服务接口都加上AppCode和AuthCode隐式参数。
  * @version : 2016年2月18日
@@ -29,21 +25,21 @@ import net.hasor.rsf.center.domain.RsfCenterConstants;
  */
 class RsfCenterClientVerifyFilter implements RsfFilter {
     protected Logger logger     = LoggerFactory.getLogger(getClass());
-    private String   appCode    = null;                               //RSF_AUTH_CODE 授权码
-    private String   authCode   = null;                               //RSF_APP_CODE  应用程序编码
-    private String   rsfVersion = null;                               //客户端版本
+    private   String appKey     = null;                               //key
+    private   String keySecret  = null;                               //keySecret
+    private   String rsfVersion = null;                               //客户端版本
     //
     public RsfCenterClientVerifyFilter(RsfContext rsfContext) throws Throwable {
-        this.appCode = rsfContext.getAppContext().getEnvironment().envVar("RSF_APP_CODE");
-        this.authCode = rsfContext.getAppContext().getEnvironment().envVar("RSF_AUTH_CODE");
+        this.appKey = rsfContext.getAppContext().getEnvironment().evalString("%RSF_APP_KEY%");
+        this.keySecret = rsfContext.getAppContext().getEnvironment().evalString("%RSF_APP_KEY_SECRET%");
         this.rsfVersion = rsfContext.getSettings().getVersion();
     }
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         if (request.isLocal()) {
             //-如果是对外发送请求，则添加请求头参数用于注册中心校验
-            request.addOption(RsfCenterConstants.RSF_APP_CODE, this.appCode);
-            request.addOption(RsfCenterConstants.RSF_AUTH_CODE, this.authCode);
+            request.addOption(RsfCenterConstants.RSF_APP_KEY, this.appKey);
+            request.addOption(RsfCenterConstants.RSF_APP_KEY_SECRET, this.keySecret);
             request.addOption(RsfCenterConstants.RSF_VERSION, this.rsfVersion);
         }
         chain.doFilter(request, response);

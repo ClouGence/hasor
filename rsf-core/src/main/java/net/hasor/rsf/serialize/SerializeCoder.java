@@ -21,7 +21,8 @@ package net.hasor.rsf.serialize;
  */
 public interface SerializeCoder {
     /** decode byte[] to Object */
-    public Object decode(byte[] bytes) throws Throwable;
+    public Object decode(byte[] bytes, Class<?> returnType) throws Throwable;
+
     /** Encode Object to byte[] */
     public byte[] encode(Object object) throws Throwable;
 }

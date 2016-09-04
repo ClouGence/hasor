@@ -14,29 +14,31 @@
  * limitations under the License.
  */
 package net.hasor.rsf.console;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import org.more.RepeateException;
-import org.more.json.JSON;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
+import org.more.RepeateException;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 /**
- * 
+ *
  * @version : 2016年4月7日
  * @author 赵永春(zyc@hasor.net)
  */
 @Singleton
 public class CommandManager {
-    protected Logger                      logger     = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
-    private AppContext                    appContext;
+    private AppContext appContext;
     private final Map<String, RsfCommand> commandMap = new HashMap<String, RsfCommand>();
     //
     @Init
@@ -61,7 +63,7 @@ public class CommandManager {
                     }
                 }
             }
-            this.logger.info("load rsf Console Commands ={}.", JSON.toString(cmdNames));
+            this.logger.info("load rsf Console Commands ={}.", ReflectionToStringBuilder.toString(cmdNames, ToStringStyle.SHORT_PREFIX_STYLE));
         }
         //
     }

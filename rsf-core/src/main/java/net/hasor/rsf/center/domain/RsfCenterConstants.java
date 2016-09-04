@@ -20,7 +20,7 @@ package net.hasor.rsf.center.domain;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfCenterConstants {
-    public static final String RSF_APP_CODE  = "RSF_APP_CODE";  //应用程序编码
-    public static final String RSF_AUTH_CODE = "RSF_AUTH_CODE"; //授权码
-    public static final String RSF_VERSION   = "RSF_VERSION";   //客户端版本
+    public static final String RSF_APP_KEY        = "RSF_APP_KEY";          //key
+    public static final String RSF_APP_KEY_SECRET = "RSF_APP_KEY_SECRET";   //秘钥
+    public static final String RSF_VERSION        = "RSF_VERSION";          //客户端版本
 }

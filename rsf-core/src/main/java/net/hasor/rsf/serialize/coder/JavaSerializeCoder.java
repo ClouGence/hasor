@@ -18,9 +18,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
 import net.hasor.rsf.serialize.SerializeCoder;
 /**
- * 
+ *
  * @version : 2014年9月19日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -35,7 +36,7 @@ public class JavaSerializeCoder implements SerializeCoder {
         return byteArray.toByteArray();
     }
     //
-    public Object decode(byte[] bytes) throws Throwable {
+    public Object decode(byte[] bytes, Class<?> returnType) throws Throwable {
         ObjectInputStream objectIn = new ObjectInputStream(new ByteArrayInputStream(bytes));
         Object resultObject = objectIn.readObject();
         objectIn.close();

@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.caller.remote;
-import java.lang.reflect.Method;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
@@ -32,13 +28,18 @@ import net.hasor.rsf.serialize.SerializeList;
 import net.hasor.rsf.transform.codec.ProtocolUtils;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Method;
+import java.util.List;
 /**
  * 负责处理远程Request对象的请求调用，同时也负责将产生的Response对象写回客户端。
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
 abstract class InvokerProcessing implements Runnable {
-    protected Logger              logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     private final RemoteRsfCaller rsfCaller;
     private final InterAddress    target;
     private final RequestInfo     requestInfo;
@@ -115,7 +116,7 @@ abstract class InvokerProcessing implements Runnable {
                 byte[] paramObjectStr = pObjectList.get(i);
                 //
                 pTypes[i] = RsfRuntimeUtils.getType(paramTypeStr, this.classLoader);
-                pObjects[i] = coder.decode(paramObjectStr);
+                pObjects[i] = coder.decode(paramObjectStr, pTypes[i]);
             }
         } catch (Throwable e) {
             String errorInfo = "do request(" + requestID + ") failed -> serializeType(" + serializeType + ") ,serialize error: " + e.getMessage();

@@ -15,21 +15,22 @@
  */
 package net.hasor.rsf.serialize.coder;
 import java.io.IOException;
+
+import com.alibaba.fastjson.JSON;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.serialize.SerializeCoder;
-import org.more.json.JSON;
 /**
- * 
+ *
  * @version : 2014年9月19日
  * @author 赵永春(zyc@hasor.net)
  */
 public class JsonSerializeCoder implements SerializeCoder {
     public byte[] encode(Object object) throws IOException {
-        String text = JSON.toString(object);
+        String text = JSON.toJSONString(object);
         return text.getBytes(RsfConstants.DEFAULT_CHARSET);
     }
     //
-    public Object decode(byte[] bytes) throws IOException {
-        return JSON.parse(new String(bytes));
+    public Object decode(byte[] bytes, Class<?> returnType) throws IOException {
+        return JSON.parseObject(new String(bytes), returnType);
     }
 }

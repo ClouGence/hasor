@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.rsf.console.commands;
-import org.more.json.JSON;
-import org.more.util.StringUtils;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.console.RsfCmd;
 import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
+import org.more.util.StringUtils;
 /**
- * 
+ *
  * @version : 2016年4月3日
  * @author 赵永春(zyc@hasor.net)
  */
 @Singleton
-@RsfCmd({ "set", "get" })
+@RsfCmd({"set", "get"})
 public class GetSetRsfCommand implements RsfCommand {
     @Override
     public String helpInfo() {
@@ -64,7 +63,7 @@ public class GetSetRsfCommand implements RsfCommand {
                 if (obj == null) {
                     return "";
                 } else {
-                    return JSON.toString(obj);
+                    return obj.toString();
                 }
             }
             //

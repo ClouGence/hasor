@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
 import org.more.util.io.IOUtils;
@@ -35,49 +36,49 @@ import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.transform.protocol.OptionInfo;
 import net.hasor.rsf.utils.NetworkUtils;
 /**
- * 
+ *
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
-    protected Logger        logger               = LoggerFactory.getLogger(getClass());
-    private int             defaultTimeout       = 6000;
-    private String          defaultGroup         = "RSF";
-    private String          defaultVersion       = "1.0.0";
-    private String          defaultSerializeType = "Hessian";
+    protected Logger          logger               = LoggerFactory.getLogger(getClass());
+    private   int             defaultTimeout       = 6000;
+    private   String          defaultGroup         = "RSF";
+    private   String          defaultVersion       = "1.0.0";
+    private   String          defaultSerializeType = "Hessian";
     //
-    private OptionInfo      serverOptionManager  = new OptionInfo();
-    private OptionInfo      clientOptionManager  = new OptionInfo();
+    private   OptionInfo      serverOptionManager  = new OptionInfo();
+    private   OptionInfo      clientOptionManager  = new OptionInfo();
     //
-    private int             networkWorker        = 2;
-    private int             networkListener      = 1;
+    private   int             networkWorker        = 2;
+    private   int             networkListener      = 1;
     //
-    private int             queueMaxSize         = 4096;
-    private int             queueMinPoolSize     = 1;
-    private int             queueMaxPoolSize     = 7;
-    private long            queueKeepAliveTime   = 300L;
+    private   int             queueMaxSize         = 4096;
+    private   int             queueMinPoolSize     = 1;
+    private   int             queueMaxPoolSize     = 7;
+    private   long            queueKeepAliveTime   = 300L;
     //
-    private String          bindAddress          = "local";
-    private int             bindPort             = 2180;
+    private   String          bindAddress          = "local";
+    private   int             bindPort             = 2180;
     //
-    private InterAddress[]  centerServerSet      = new InterAddress[0];
-    private int             centerRsfTimeout     = 6000;
-    private int             centerHeartbeatTime  = 15000;
+    private   InterAddress[]  centerServerSet      = new InterAddress[0];
+    private   int             centerRsfTimeout     = 6000;
+    private   int             centerHeartbeatTime  = 15000;
     //
-    private int             consolePort          = 2181;
-    private String[]        consoleInBound       = null;
+    private   int             consolePort          = 2181;
+    private   String[]        consoleInBound       = null;
     //
-    private int             requestTimeout       = 6000;
-    private int             maximumRequest       = 200;
-    private SendLimitPolicy sendLimitPolicy      = SendLimitPolicy.Reject;
-    private int             connectTimeout       = 100;
-    private String          unitName             = "default";
-    private int             invalidWaitTime      = 30000;
-    private long            refreshCacheTime     = 360000;
-    private boolean         localDiskCache       = true;
-    private boolean         enableCenter         = false;
-    private boolean         automaticOnline      = true;
-    private String          wrapperType          = null;
+    private   int             requestTimeout       = 6000;
+    private   int             maximumRequest       = 200;
+    private   SendLimitPolicy sendLimitPolicy      = SendLimitPolicy.Reject;
+    private   int             connectTimeout       = 100;
+    private   String          unitName             = "default";
+    private   int             invalidWaitTime      = 30000;
+    private   long            refreshCacheTime     = 360000;
+    private   boolean         localDiskCache       = true;
+    private   boolean         enableCenter         = false;
+    private   boolean         automaticOnline      = true;
+    private   String          wrapperType          = null;
     //
     //
     public DefaultRsfSettings(Settings settings) throws IOException {
