@@ -154,36 +154,36 @@ public abstract class AbstractEnvironment implements Environment {
         }
         return lastLong;
     }
-    /**在缓存目录内创建一个不重名的临时文件名。 */
-    public synchronized File uniqueTempFile() throws IOException {
-        long markTime = nextLong();
-        String atPath = this.genPath(markTime, 512);
-        String fileName = atPath.substring(0, atPath.length() - 1) + "_" + String.valueOf(markTime) + ".tmp";
-        File tmpFile = new File(this.evalString(Environment.HASOR_TEMP_PATH), fileName);
-        tmpFile.getParentFile().mkdirs();
-        tmpFile.createNewFile();
-        if (logger.isInfoEnabled()) {
-            logger.info("create Temp File at :" + tmpFile);
-        }
-        return tmpFile;
-    }
-    /**
-     * 生成路径算法生成一个Path
-     * @param number 参考数字
-     * @param size 每个目录下可以拥有的子目录或文件数目。
-     */
-    public String genPath(long number, final int size) {
-        StringBuilder buffer = new StringBuilder();
-        long b = size;
-        long c = number;
-        do {
-            long m = number % b;
-            buffer.append(m + File.separator);
-            c = number / b;
-            number = c;
-        } while (c > 0);
-        return buffer.reverse().toString();
-    }
+    //    /**在缓存目录内创建一个不重名的临时文件名。 */
+    //    public synchronized File uniqueTempFile() throws IOException {
+    //        long markTime = nextLong();
+    //        String atPath = this.genPath(markTime, 512);
+    //        String fileName = atPath.substring(0, atPath.length() - 1) + "_" + String.valueOf(markTime) + ".tmp";
+    //        File tmpFile = new File(this.evalString(Environment.HASOR_TEMP_PATH), fileName);
+    //        tmpFile.getParentFile().mkdirs();
+    //        tmpFile.createNewFile();
+    //        if (logger.isInfoEnabled()) {
+    //            logger.info("create Temp File at :" + tmpFile);
+    //        }
+    //        return tmpFile;
+    //    }
+    //    /**
+    //     * 生成路径算法生成一个Path
+    //     * @param number 参考数字
+    //     * @param size 每个目录下可以拥有的子目录或文件数目。
+    //     */
+    //    public String genPath(long number, final int size) {
+    //        StringBuilder buffer = new StringBuilder();
+    //        long b = size;
+    //        long c = number;
+    //        do {
+    //            long m = number % b;
+    //            buffer.append(m + File.separator);
+    //            c = number / b;
+    //            number = c;
+    //        } while (c > 0);
+    //        return buffer.reverse().toString();
+    //    }
     //
     private String formatMap4log(final int colWidth, final Map<String, String> mapData) {
         /*输出系统环境变量日志*/
