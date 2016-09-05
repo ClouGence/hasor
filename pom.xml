@@ -1,39 +1,49 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>net.hasor</groupId>
-		<artifactId>hasor-parent</artifactId>
-		<version>0.0.6</version>
-	</parent>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>net.hasor</groupId>
+        <artifactId>hasor-parent</artifactId>
+        <version>0.0.6</version>
+    </parent>
 
-	<!-- Maven Info -->
-	<artifactId>rsf-root</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
+    <!-- Maven Info -->
+    <artifactId>rsf-root</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-	<!-- Project Info -->
-	<name>RSF-Root</name>
-	<description>the Hasor Remote Service Framework root project.</description>
+    <!-- Project Info -->
+    <name>RSF-Root</name>
+    <description>the Hasor Remote Service Framework root project.</description>
 
-	<!-- SCM -->
-	<scm>
-		<connection>scm:git:git@git.oschina.net:zycgit/rsf.git</connection>
-		<developerConnection>scm:git:git@git.oschina.net:zycgit/rsf.git</developerConnection>
-		<url>git@git.oschina.net:zycgit/rsf.git</url>
-	</scm>
+    <!-- SCM -->
+    <scm>
+        <connection>scm:git:git@git.oschina.net:zycgit/rsf.git</connection>
+        <developerConnection>scm:git:git@git.oschina.net:zycgit/rsf.git</developerConnection>
+        <url>git@git.oschina.net:zycgit/rsf.git</url>
+    </scm>
 
-	<developers>
-		<developer>
-			<name>赵永春(Mr.Zhao)</name>
-			<email>zyc@hasor.net</email>
-		</developer>
-	</developers>
+    <repositories>
+        <repository>
+            <id>snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
-	<modules>
-		<module>rsf-core</module>
-		<module>rsf-center/rsf-center-manager</module>
-		<module>rsf-center/rsf-center-runtime</module>
-		<module>rsf-demo</module>
-	</modules>
+    <developers>
+        <developer>
+            <name>赵永春(Mr.Zhao)</name>
+            <email>zyc@hasor.net</email>
+        </developer>
+    </developers>
+
+    <modules>
+        <module>rsf-core</module>
+        <module>rsf-center/rsf-center-manager</module>
+        <module>rsf-center/rsf-center-runtime</module>
+        <module>rsf-demo</module>
+    </modules>
 </project>
