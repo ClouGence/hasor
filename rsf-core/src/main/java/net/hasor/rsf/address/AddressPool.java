@@ -14,36 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
-import org.more.builder.ReflectionToStringBuilder;
-import org.more.builder.ToStringStyle;
-import org.more.util.ExceptionUtils;
-import org.more.util.MatchUtils;
-import org.more.util.MatchUtils.MatchTypeEnum;
-import org.more.util.StringUtils;
-import org.more.util.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.RsfUpdater;
@@ -56,6 +26,24 @@ import net.hasor.rsf.address.route.rule.Rule;
 import net.hasor.rsf.address.route.rule.RuleParser;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.utils.ZipUtils;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
+import org.more.util.ExceptionUtils;
+import org.more.util.MatchUtils;
+import org.more.util.MatchUtils.MatchTypeEnum;
+import org.more.util.StringUtils;
+import org.more.util.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 /**
  * 服务地址池
  * <p>路由策略：随机选址
@@ -64,29 +52,29 @@ import net.hasor.rsf.utils.ZipUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressPool implements RsfUpdater {
-    protected final Logger                             logger       = LoggerFactory.getLogger(getClass());
-    private static final String                        CharsetName  = ZipUtils.CharsetName;
-    private static final String                        SnapshotPath = "/snapshot";
-    private static final String                        defaultName  = "default-ruleScript";
-    public static final String                         Dynamic      = AddressBucket.Dynamic;
-    public static final String                         Static       = AddressBucket.Static;
+    protected final      Logger        logger       = LoggerFactory.getLogger(getClass());
+    private static final String        CharsetName  = ZipUtils.CharsetName;
+    private static final String        SnapshotPath = "/snapshot";
+    private static final String        defaultName  = "default-ruleScript";
+    public static final  String        Dynamic      = AddressBucket.Dynamic;
+    public static final  String        Static       = AddressBucket.Static;
     //
-    private final AtomicBoolean                        inited       = new AtomicBoolean(false);
-    private final File                                 rsfHome;
-    private final File                                 indexFile;
-    private final File                                 snapshotHome;
+    private final        AtomicBoolean inited       = new AtomicBoolean(false);
+    private final    File                                 rsfHome;
+    private final    File                                 indexFile;
+    private final    File                                 snapshotHome;
     //
-    private final RsfEnvironment                       rsfEnvironment;
-    private final ConcurrentMap<String, AddressBucket> addressPool;
-    private final String                               unitName;
+    private final    RsfEnvironment                       rsfEnvironment;
+    private final    ConcurrentMap<String, AddressBucket> addressPool;
+    private final    String                               unitName;
     //
-    private final AddressCacheResult                   rulerCache;
-    private final RuleParser                           ruleParser;
-    private final ArgsKey                              argsKey;
-    private volatile FlowControlRef                    flowControlRef;
-    private volatile RuleRef                           ruleRef;
-    private final Object                               poolLock;
-    private final PoolThread                           timer;
+    private final    AddressCacheResult                   rulerCache;
+    private final    RuleParser                           ruleParser;
+    private final    ArgsKey                              argsKey;
+    private volatile FlowControlRef                       flowControlRef;
+    private volatile RuleRef                              ruleRef;
+    private final    Object                               poolLock;
+    private final    PoolThread                           timer;
     //
     private class PoolThread extends Thread {
         private boolean exitThread = false;
@@ -218,8 +206,9 @@ public class AddressPool implements RsfUpdater {
                 }
             }
             //
-            zipStream.flush();
+            zipStream.finish();
             zipStream.close();
+            fos.flush();
             fos.close();
             //
             fw = new FileWriter(this.indexFile, false);
@@ -749,7 +738,8 @@ public class AddressPool implements RsfUpdater {
             }
             String simpleName = rule.getClass().getSimpleName();
             logger.info("setup flowControl type is {}.", simpleName);
-            /*  */if (rule instanceof UnitFlowControl) {
+            /*  */
+            if (rule instanceof UnitFlowControl) {
                 flowControlRef.unitFlowControl = (UnitFlowControl) rule; /*单元规则*/
             } else if (rule instanceof RandomFlowControl) {
                 flowControlRef.randomFlowControl = (RandomFlowControl) rule;/*选址规则*/
@@ -853,7 +843,6 @@ public class AddressPool implements RsfUpdater {
         }
         return getFlowControlByRef(bucket.getFlowControlRef());
     }
-    //
     //
     private static String getFlowControlByRef(FlowControlRef ruleRef) {
         if (ruleRef == null || ruleRef.flowControlScript == null) {

@@ -50,6 +50,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
+
 import groovy.lang.GroovySystem;
 /**
  * A factory class conforming to JSR-223 which is used to instantiate
@@ -166,6 +167,7 @@ public class GroovyScriptEngineFactory implements ScriptEngineFactory {
     private static final List<String> NAMES;
     private static final List<String> EXTENSIONS;
     private static final List<String> MIME_TYPES;
+
     static {
         List<String> n = new ArrayList<String>(2);
         n.add(SHORT_NAME);

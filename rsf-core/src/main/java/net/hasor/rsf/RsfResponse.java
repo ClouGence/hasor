@@ -22,17 +22,23 @@ package net.hasor.rsf;
 public interface RsfResponse extends RsfHeader {
     /**最终结果。*/
     public Object getData();
+
     /**返回的类型信息。*/
     public Class<?> getReturnType();
+
     /**返回状态*/
     public short getStatus();
     //
+
     /**发送最终结果(该方法会导致{@link #isResponse()}状态变为 true)。*/
     public void sendData(Object returnObject);
+
     /**发送最终结果(该方法会导致{@link #isResponse()}状态变为 true)。*/
     public void sendStatus(short status);
+
     /**发送最终结果(该方法会导致{@link #isResponse()}状态变为 true)。*/
     public void sendStatus(short status, String messageBody);
+
     /**调用的结果是否已经写入客户端。*/
     public boolean isResponse();
 }

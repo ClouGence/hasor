@@ -28,11 +28,11 @@ import net.hasor.rsf.transform.protocol.OptionInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfResponseObject extends OptionInfo implements RsfResponse {
-    protected Logger         logger       = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     private final RsfRequest rsfRequest;
-    private short            status       = ProtocolStatus.Unknown;
-    private Object           returnObject = null;
-    private boolean          committed    = false;
+    private short   status       = ProtocolStatus.Unknown;
+    private Object  returnObject = null;
+    private boolean committed    = false;
     //
     public RsfResponseObject(RsfRequest rsfRequest) {
         this.rsfRequest = rsfRequest;

@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
 import org.more.RepeateException;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
@@ -45,19 +46,19 @@ import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.domain.warp.RsfBindInfoWrap;
 /**
- * 
+ *
  * @version : 2015年12月6日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfBeanContainer implements AppContextAware {
-    protected Logger                                           logger;
-    private final static Provider<RsfFilter>[]                 EMPTY_FILTER = new Provider[0];
+    protected Logger logger;
+    private final static Provider<RsfFilter>[] EMPTY_FILTER = new Provider[0];
     private final ConcurrentMap<String, ServiceInfo<?>>        serviceMap;
     private final List<FilterDefine>                           filterList;
     private final Object                                       filterLock;
     private final RsfEnvironment                               environment;
-    private AppContext                                         appContext;
-    private AddressPool                                        addressPool;
+    private       AppContext                                   appContext;
+    private       AddressPool                                  addressPool;
     private final ConcurrentMap<String, Provider<RsfFilter>[]> filterCache;
     //
     public RsfBeanContainer(RsfEnvironment rsfEnvironment) {
@@ -185,13 +186,13 @@ public class RsfBeanContainer implements AppContextAware {
         //覆盖
         RsfService serviceInfo = serviceType.getAnnotation(RsfService.class);
         if (serviceInfo != null) {
-            if (StringUtils.isBlank(serviceInfo.group()) == false) {
+            if (!StringUtils.isBlank(serviceInfo.group())) {
                 serviceGroup = serviceInfo.group();
             }
-            if (StringUtils.isBlank(serviceInfo.name()) == false) {
+            if (!StringUtils.isBlank(serviceInfo.name())) {
                 serviceName = serviceInfo.name();
             }
-            if (StringUtils.isBlank(serviceInfo.version()) == false) {
+            if (!StringUtils.isBlank(serviceInfo.version())) {
                 serviceVersion = serviceInfo.version();
             }
         }

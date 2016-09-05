@@ -15,14 +15,15 @@
  */
 package net.hasor.rsf.transform.netty;
 import io.netty.channel.CombinedChannelDuplexHandler;
+import net.hasor.rsf.transform.protocol.PoolBlock;
 /**
- * 
+ *
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
 public final class RSFCodec extends CombinedChannelDuplexHandler<RSFProtocolDecoder, RSFProtocolEncoder> {
     public RSFCodec() {
-        this(16777216);// 16MB
+        this(PoolBlock.DataMaxSize);// 16MB 
     }
     public RSFCodec(int maxBodyLength) {
         super(new RSFProtocolDecoder(maxBodyLength), new RSFProtocolEncoder());

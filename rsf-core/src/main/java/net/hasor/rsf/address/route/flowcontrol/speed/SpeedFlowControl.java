@@ -16,6 +16,7 @@
 package net.hasor.rsf.address.route.flowcontrol.speed;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
 import net.hasor.core.Settings;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
@@ -34,10 +35,10 @@ import net.hasor.rsf.address.route.rule.AbstractRule;
  * 解释：根据action的配置决定RPC调用速率。
  */
 public class SpeedFlowControl extends AbstractRule {
-    private QoSActionEnum                    action;
-    private int                              rate       = 20;
-    private int                              peak       = 200;
-    private int                              timeWindow = 10;
+    private QoSActionEnum action;
+    private int rate       = 20;
+    private int peak       = 200;
+    private int timeWindow = 10;
     private QoSBucket                        defaultQoSBucket;
     private ConcurrentMap<String, QoSBucket> qosBucketMap;
     //

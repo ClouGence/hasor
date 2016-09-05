@@ -18,6 +18,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
@@ -50,18 +51,18 @@ import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
- * 
+ *
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRsfContext implements RsfContext, AppContextAware {
-    protected Logger            logger           = LoggerFactory.getLogger(getClass());
-    private RsfBeanContainer    rsfBeanContainer = null;                               // 服务管理(含地址管理)
-    private RsfEnvironment      rsfEnvironment   = null;                               // 环境&配置
-    private RemoteRsfCaller     rsfCaller        = null;                               // 调用器
-    private RsfNetManager       rsfNetManager    = null;                               // 网络传输
-    private AddressProvider     poolProvider     = null;
-    private AppContext          appContext       = null;
+    protected Logger           logger           = LoggerFactory.getLogger(getClass());
+    private   RsfBeanContainer rsfBeanContainer = null;                               // 服务管理(含地址管理)
+    private   RsfEnvironment   rsfEnvironment   = null;                               // 环境&配置
+    private   RemoteRsfCaller  rsfCaller        = null;                               // 调用器
+    private   RsfNetManager    rsfNetManager    = null;                               // 网络传输
+    private   AddressProvider  poolProvider     = null;
+    private   AppContext       appContext       = null;
     private final AtomicBoolean onlineStatus;
     //
     public AbstractRsfContext(RsfBeanContainer rsfBeanContainer) {
@@ -104,7 +105,7 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
     /**应用上线*/
     @Override
     public synchronized void online() {
-        if (this.onlineStatus.compareAndSet(false, true) == false) {
+        if (!this.onlineStatus.compareAndSet(false, true)) {
             logger.error("rsfContext -> already online");
             return;
         }
@@ -115,7 +116,7 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
     /**应用下线*/
     @Override
     public synchronized void offline() {
-        if (this.onlineStatus.compareAndSet(true, false) == false) {
+        if (!this.onlineStatus.compareAndSet(true, false)) {
             logger.error("rsfContext -> already offline");
             return;
         }

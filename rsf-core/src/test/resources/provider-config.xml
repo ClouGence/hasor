@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.hasor.net/hasor/schema/main">
 
-	<hasor.rsfConfig enable="true" address="127.0.0.1" port="8100" console.port="2181" />
+    <hasor.rsfConfig enable="true" address="127.0.0.1" port="8100" console.port="2181"/>
 
 </config>

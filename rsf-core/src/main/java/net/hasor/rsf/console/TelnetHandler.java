@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
+
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
@@ -41,14 +42,14 @@ import net.hasor.rsf.utils.NetworkUtils;
  */
 @Sharable
 public class TelnetHandler extends SimpleChannelInboundHandler<String> {
-    protected static Logger                              logger     = LoggerFactory.getLogger(ConsoleRsfPlugin.class);
+    protected static     Logger                          logger     = LoggerFactory.getLogger(ConsoleRsfPlugin.class);
     private static final AttributeKey<RsfCommandRequest> RequestKEY = AttributeKey.newInstance("CommandRequest");
     private static final AttributeKey<RsfCommandSession> SessionKEY = AttributeKey.newInstance("CommandSession");
     private static final String                          CMD        = "rsf>";
-    private RsfContext                                   rsfContext;
-    private CommandManager                               commandManager;
-    private ScheduledExecutorService                     executor;
-    private String[]                                     inBoundAddress;
+    private RsfContext               rsfContext;
+    private CommandManager           commandManager;
+    private ScheduledExecutorService executor;
+    private String[]                 inBoundAddress;
     //
     public TelnetHandler(RsfContext rsfContext) {
         this.rsfContext = rsfContext;
@@ -65,7 +66,7 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         InetSocketAddress inetAddress = (InetSocketAddress) ctx.channel().remoteAddress();
         String remoteAddress = inetAddress.getAddress().getHostAddress();
-        if (ArrayUtils.contains(this.inBoundAddress, remoteAddress) == false) {
+        if (!ArrayUtils.contains(this.inBoundAddress, remoteAddress)) {
             ctx.write("--------------------------------------------\r\n\r\n");
             ctx.write("I'm sorry you are not allowed to connect RSF Console.\r\n\r\n");
             ctx.write("--------------------------------------------\r\n");
@@ -189,7 +190,7 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         if (requestCmd.inputMultiLine()) {
             /*多行模式*/
             if (requestCmd.getStatus() == CommandRequestStatus.Prepare) {
-                if (newCommand == false) {
+                if (!newCommand) {
                     requestCmd.appendRequestBody(inputString);
                 }
                 if (StringUtils.isBlank(inputString)) {

@@ -23,6 +23,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -31,8 +32,8 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ExecutesManager {
-    protected Logger                                        logger = LoggerFactory.getLogger(getClass());
-    private ThreadPoolExecutor                              defaultExecutor;
+    protected Logger logger = LoggerFactory.getLogger(getClass());
+    private       ThreadPoolExecutor                        defaultExecutor;
     private final ConcurrentMap<String, ThreadPoolExecutor> servicePoolCache;
     //
     public ExecutesManager(int minCorePoolSize, int maxCorePoolSize, int queueSize, long keepAliveTime) {
@@ -46,7 +47,7 @@ public class ExecutesManager {
     }
     //
     public Executor getExecute(String serviceUniqueName) {
-        if (this.servicePoolCache.isEmpty() == false && serviceUniqueName != null) {
+        if (!this.servicePoolCache.isEmpty() && serviceUniqueName != null) {
             ThreadPoolExecutor executor = this.servicePoolCache.get(serviceUniqueName);
             if (executor != null) {
                 return executor;
@@ -72,12 +73,12 @@ public class ExecutesManager {
                     break;
                 }
             }
-            if (jump == true) {
+            if (jump) {
                 break;
             }
             try {
                 Thread.sleep(100);
-            } catch (Exception e) {}
+            } catch (Exception e) { /**/ }
         }
     }
 }

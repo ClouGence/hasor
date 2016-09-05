@@ -51,6 +51,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.logging.Level;
+
 import org.slf4j.Logger;
 /**
  * Debugging output stream for Hessian requests.
@@ -101,15 +102,16 @@ public class HessianDebugOutputStream extends OutputStream {
         _state.println();
     }
     static class LogWriter extends Writer {
-        private Logger        _log;
-        private Level         _level;
+        private Logger _log;
+        private Level  _level;
         private StringBuilder _sb = new StringBuilder();
         LogWriter(Logger log, Level level) {
             _log = log;
             _level = level;
         }
         private void write2Log(String msg) {
-            /*  */if (Level.SEVERE.equals(_level)) {
+            /*  */
+            if (Level.SEVERE.equals(_level)) {
                 _log.error(msg);
             } else if (Level.WARNING.equals(_level)) {
                 _log.warn(msg);
@@ -140,7 +142,9 @@ public class HessianDebugOutputStream extends OutputStream {
                     _sb.append((char) ch);
             }
         }
-        public void flush() {}
-        public void close() {}
+        public void flush() {
+        }
+        public void close() {
+        }
     }
 }

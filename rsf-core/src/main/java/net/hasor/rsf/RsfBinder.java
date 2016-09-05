@@ -17,6 +17,7 @@ package net.hasor.rsf;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+
 import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
 import net.hasor.rsf.address.InterAddress;
@@ -28,30 +29,37 @@ import net.hasor.rsf.address.InterAddress;
 public interface RsfBinder {
     /**更新服务地址本计算规则（服务级）*/
     public void updateServiceRoute(String scriptBody);
+
     /**更新本地方法级地址计算脚本。*/
     public void updateMethodRoute(String scriptBody);
+
     /**更新本地参数级地址计算脚本。*/
     public void updateArgsRoute(String scriptBody);
+
     /**更新服务路由策略*/
     public void updateFlowControl(String flowControl);
+
     /**
      * 添加全局的RsfFilter。
      * @param filterID filter ID
      * @param instance 过滤器实例
      */
     public void bindFilter(String filterID, RsfFilter instance);
+
     /**
      * 添加全局的RsfFilter。
      * @param filterID filter ID
      * @param provider provider for RsfFilter
      */
     public void bindFilter(String filterID, Provider<? extends RsfFilter> provider);
+
     /**
      * 绑定一个类型到RSF环境。
      * @param type 服务类型
      * @return 返回细粒度绑定操作接口 - {@link LinkedBuilder}
      */
     public <T> LinkedBuilder<T> rsfService(Class<T> type);
+
     /**
      * 绑定一个类型并且为这个类型指定一个实例。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
      * 该方法相当于“<code>rsfBinder.rsfService(type).toInstance(instance);</code>”
@@ -61,6 +69,7 @@ public interface RsfBinder {
      * @see net.hasor.rsf.RsfBinder.ConfigurationBuilder#rsfService(Class)
      */
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, T instance);
+
     /**
      * 绑定一个类型并且为这个类型指定一个实现类。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
      * 该方法相当于“<code>rsfBinder.rsfService(type).to(implementation);</code>”
@@ -70,6 +79,7 @@ public interface RsfBinder {
      * @see net.hasor.rsf.RsfBinder.ConfigurationBuilder#rsfService(Class)
      */
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, Class<? extends T> implementation);
+
     /**
      * 绑定一个类型并且为这个类型指定一个实现类。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
      * 该方法相当于“<code>rsfBinder.rsfService(type).toInfo(bindInfo);</code>”
@@ -79,6 +89,7 @@ public interface RsfBinder {
      * @see net.hasor.rsf.RsfBinder.ConfigurationBuilder#rsfService(Class)
      */
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, BindInfo<T> bindInfo);
+
     /**
      * 绑定一个类型并且为这个类型指定一个Provider。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
      * 该方法相当于“<code>rsfBinder.rsfService(type).toProvider(provider);</code>”
@@ -99,18 +110,21 @@ public interface RsfBinder {
          * @return 返回 ConfigurationBuilder。
          */
         public ConfigurationBuilder<T> to(Class<? extends T> implementation);
+
         /**
          * 为绑定设置一个实例。
          * @param instance 实例对象
          * @return 返回 ConfigurationBuilder。
          */
         public ConfigurationBuilder<T> toInstance(T instance);
+
         /**
          * 为绑定设置一个 {@link Provider}。
          * @param provider provider
          * @return 返回 ConfigurationBuilder。
          */
         public ConfigurationBuilder<T> toProvider(Provider<T> provider);
+
         /**
          * 为绑定设置一个 {@link BindInfo}。
          * @param bindInfo BindInfo
@@ -126,24 +140,28 @@ public interface RsfBinder {
          * @return 返回ConfigurationBuilder
          */
         public ConfigurationBuilder<T> group(String group);
+
         /**
          * 设置服务名称信息
          * @param name 名称
          * @return 返回ConfigurationBuilder
          */
         public ConfigurationBuilder<T> name(String name);
+
         /**
          * 设置服务版本信息
          * @param version 版本
          * @return 返回ConfigurationBuilder
          */
         public ConfigurationBuilder<T> version(String version);
+
         /**
          * 设置超时时间
          * @param clientTimeout 超时时间
          * @return 返回ConfigurationBuilder。
          */
         public ConfigurationBuilder<T> timeout(int clientTimeout);
+
         /**
          * 设置序列化方式
          * @param serializeType 序列化方式
@@ -161,6 +179,7 @@ public interface RsfBinder {
          * @return 返回ConfigurationBuilder
          */
         public FilterBindBuilder<T> bindFilter(String subFilterID, RsfFilter instance);
+
         /**
          * 为服务添加一个专有的RsfFilter。
          * @param subFilterID filter ID,如果服务专有的filterID和全局RsfFilter出现冲突，那么优先选用该RsfFilter。
@@ -174,52 +193,64 @@ public interface RsfBinder {
     public interface RegisterBuilder<T> {
         /**更新服务地址本计算规则（服务级）*/
         public void updateServiceRoute(String scriptBody);
+
         /**更新本地方法级地址计算脚本。*/
         public void updateMethodRoute(String scriptBody);
+
         /**更新本地参数级地址计算脚本。*/
         public void updateArgsRoute(String scriptBody);
+
         /**更新服务路由策略*/
         public void updateFlowControl(String flowControl);
+
         /**
          * @param rsfHost 远程服务地址
          * @param port 远程服务端口
          */
         public RegisterBuilder<T> bindAddress(String rsfHost, int port) throws URISyntaxException;
+
         /**
          * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
          * @param rsfURI 远程服务地址
          */
         public RegisterBuilder<T> bindAddress(String rsfURI, String... array) throws URISyntaxException;
+
         /**
          * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
          * @param rsfURI 远程服务地址
          */
         public RegisterBuilder<T> bindAddress(URI rsfURI, URI... array);
+
         /**
          * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
          * @param rsfAddress 远程服务地址
          */
         public RegisterBuilder<T> bindAddress(InterAddress rsfAddress, InterAddress... array);
+
         /**
          * @param rsfHost 远程服务地址
          * @param port 远程服务端口
          */
         public RegisterBuilder<T> bindStaticAddress(String rsfHost, int port) throws URISyntaxException;
+
         /**
          * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
          * @param rsfURI 远程服务地址
          */
         public RegisterBuilder<T> bindStaticAddress(String rsfURI, String... array) throws URISyntaxException;
+
         /**
          * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
          * @param rsfURI 远程服务地址
          */
         public RegisterBuilder<T> bindStaticAddress(URI rsfURI, URI... array);
+
         /**
          * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
          * @param rsfAddress 远程服务地址
          */
         public RegisterBuilder<T> bindStaticAddress(InterAddress rsfAddress, InterAddress... array);
+
         /** @return 将服务注册到{@link RsfContext}上。*/
         public RegisterReference<T> register() throws IOException;
     }

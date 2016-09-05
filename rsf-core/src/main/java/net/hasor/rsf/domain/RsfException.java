@@ -15,13 +15,13 @@
  */
 package net.hasor.rsf.domain;
 /**
- * 
+ *
  * @version : 2014年11月14日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfException extends RuntimeException {
-    private static final long serialVersionUID = -2959224725202940531L;
-    private short             status           = ProtocolStatus.Unknown;
+    private static final long  serialVersionUID = -2959224725202940531L;
+    private              short status           = ProtocolStatus.Unknown;
     //
     public RsfException(String string, Throwable e) {
         super(string, e);

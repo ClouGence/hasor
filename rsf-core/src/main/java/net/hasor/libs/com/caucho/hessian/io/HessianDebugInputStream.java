@@ -117,8 +117,8 @@ public class HessianDebugInputStream extends InputStream {
         _state.println();
     }
     static class LogWriter extends Writer {
-        private Logger        _log;
-        private Level         _level;
+        private Logger _log;
+        private Level  _level;
         private StringBuilder _sb = new StringBuilder();
         LogWriter(Logger log, Level level) {
             _log = log;
@@ -141,7 +141,9 @@ public class HessianDebugInputStream extends InputStream {
                     _sb.append((char) ch);
             }
         }
-        public void flush() {}
-        public void close() {}
+        public void flush() {
+        }
+        public void close() {
+        }
     }
 }

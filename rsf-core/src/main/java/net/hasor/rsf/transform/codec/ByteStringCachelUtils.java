@@ -22,10 +22,12 @@ package net.hasor.rsf.transform.codec;
 public class ByteStringCachelUtils {
     private static final LRU<Integer, String> stringCache1;
     private static final LRU<String, byte[]>  stringCache2;
+
     static {
         stringCache1 = new LRU<Integer, String>();
         stringCache2 = new LRU<String, byte[]>();
     }
+
     public static String fromCache(byte[] stringByte) {
         //        if (stringByte == null) {
         //            return null;

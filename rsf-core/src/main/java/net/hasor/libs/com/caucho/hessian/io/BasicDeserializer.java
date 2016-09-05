@@ -78,7 +78,7 @@ public class BasicDeserializer extends AbstractDeserializer {
     public static final int CHARACTER_ARRAY  = BasicSerializer.CHARACTER_ARRAY;
     public static final int STRING_ARRAY     = BasicSerializer.STRING_ARRAY;
     public static final int OBJECT_ARRAY     = BasicSerializer.OBJECT_ARRAY;
-    private int             _code;
+    private int _code;
     public BasicDeserializer(int code) {
         _code = code;
     }

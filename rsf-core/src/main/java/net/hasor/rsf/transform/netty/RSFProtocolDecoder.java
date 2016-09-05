@@ -16,7 +16,9 @@
 package net.hasor.rsf.transform.netty;
 import static net.hasor.rsf.domain.RsfConstants.RSF_Packet_Request;
 import static net.hasor.rsf.domain.RsfConstants.RSF_Packet_Response;
+
 import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.netty.buffer.ByteBuf;

@@ -15,6 +15,7 @@
  */
 package test.net.hasor.rsf.monitor;
 import java.util.concurrent.atomic.AtomicLong;
+
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
@@ -22,15 +23,15 @@ import net.hasor.rsf.RsfResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * 
+ *
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class QpsMonitor implements RsfFilter {
-    protected Logger   logger    = LoggerFactory.getLogger(getClass());
-    private AtomicLong sendCount = new AtomicLong(0);
-    private long       startTime = System.currentTimeMillis();
-    private long       lastTime  = System.currentTimeMillis();
+    protected Logger     logger    = LoggerFactory.getLogger(getClass());
+    private   AtomicLong sendCount = new AtomicLong(0);
+    private   long       startTime = System.currentTimeMillis();
+    private   long       lastTime  = System.currentTimeMillis();
     //
     //
     public void printInfo(long rtTime) {

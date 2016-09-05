@@ -58,6 +58,7 @@ abstract public class AbstractSerializerFactory {
      * @return a serializer object for the serialization.
      */
     abstract public Serializer getSerializer(Class<?> cl) throws HessianProtocolException;
+
     /**
      * Returns the deserializer for a class.
      *

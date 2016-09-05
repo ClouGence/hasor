@@ -19,12 +19,12 @@ import net.hasor.rsf.console.RsfCmd;
 import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
 /**
- * 
+ *
  * @version : 2016年4月3日
  * @author 赵永春(zyc@hasor.net)
  */
 @Singleton
-@RsfCmd({ "quit", "exit" })
+@RsfCmd({"quit", "exit"})
 public class QuitRsfCommand implements RsfCommand {
     @Override
     public String helpInfo() {

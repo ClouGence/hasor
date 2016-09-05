@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.Hasor;
@@ -31,10 +32,10 @@ import net.hasor.rsf.address.route.rule.ArgsKey;
  * @author 赵永春(zyc@hasor.net)
  */
 class AddressCacheResult {
-    protected Logger             logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     //做引用切换
     private volatile CacheResult cacheResultRef;
-    private final AddressPool    addressPool;
+    private final    AddressPool addressPool;
     //
     public AddressCacheResult(AddressPool addressPool) {
         this.addressPool = Hasor.assertIsNotNull(addressPool);
@@ -112,7 +113,7 @@ class AddressCacheResult {
                 logger.debug("eval routeScript [MethodLevel], service {} route undefined.", serviceID);
             } else {
                 Map<String, List<String>> methodLevelResultStr = evalMethodLevel(serviceID, refRule, allStrList);
-                if (methodLevelResultStr != null && methodLevelResultStr.isEmpty() == false) {
+                if (methodLevelResultStr != null && !methodLevelResultStr.isEmpty()) {
                     Map<String, List<InterAddress>> methodLevelResult = convertToAddressMethod(all, methodLevelResultStr);
                     cacheResultRef.methodLevel.put(serviceID, methodLevelResult);/*保存计算结果*/
                 }
@@ -125,7 +126,7 @@ class AddressCacheResult {
                 logger.error("argsKeyBuilder is null , evalArgsLevel failed.");
             } else {
                 Map<String, Map<String, List<String>>> argsLevelResultStr = evalArgsLevel(serviceID, refRule, allStrList);
-                if (argsLevelResultStr != null && argsLevelResultStr.isEmpty() == false) {
+                if (argsLevelResultStr != null && !argsLevelResultStr.isEmpty()) {
                     Map<String, Map<String, List<InterAddress>>> argsLevelResult = convertToAddressArgs(all, argsLevelResultStr);
                     cacheResultRef.argsLevel.put(serviceID, argsLevelResult);/*保存计算结果*/
                 }
@@ -187,7 +188,7 @@ class AddressCacheResult {
      *  allAddress  （List&lt;String&gt;）
      * 返回值
      *  List&lt;String&gt;
-     * 
+     *
      * 样例：
      *  def List&lt;String&gt; evalAddress(String serviceID,List&lt;String&gt; allAddress)  {
      *      //
@@ -222,7 +223,7 @@ class AddressCacheResult {
      *  allAddress  （List&lt;String&gt;）
      * 返回值
      *  Map&lt;String,List&lt;String&gt;&gt;
-     * 
+     *
      * 样例：
      *  def Map&lt;String,List&lt;String&gt;&gt; evalAddress(String serviceID,List&lt;String&gt; allAddress)  {
      *      //
@@ -266,7 +267,7 @@ class AddressCacheResult {
      *  allAddress  （List&lt;String&gt;）
      * 返回值
      *  Map&lt;String, Map&lt;String, List&lt;String&gt;&gt;&gt;
-     * 
+     *
      * 样例：
      *  def Map&lt;String, Map&lt;String, List&lt;String&gt;&gt;&gt; evalAddress(String serviceID,List&lt;String&gt; allAddress)  {
      *      //

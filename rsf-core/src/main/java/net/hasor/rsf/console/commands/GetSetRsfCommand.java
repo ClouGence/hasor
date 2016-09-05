@@ -18,6 +18,7 @@ import net.hasor.core.Singleton;
 import net.hasor.rsf.console.RsfCmd;
 import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
+import net.hasor.rsf.utils.json.JSON;
 import org.more.util.StringUtils;
 /**
  *
@@ -45,12 +46,12 @@ public class GetSetRsfCommand implements RsfCommand {
         argsJoin = argsJoin.replace("\\s+", " ");
         args = argsJoin.split("=");
         //
-        if (args != null && args.length > 0) {
+        if (args.length > 0) {
             String cmd = request.getCommandString();
             String varName = args[0].trim();
             //
             if ("set".equalsIgnoreCase(cmd)) {
-                if (args != null && args.length > 1) {
+                if (args.length > 1) {
                     String varValue = args[1].trim();
                     request.setSessionAttr(varName, varValue);
                     return "[SUCCEED] set the new value.";
@@ -63,7 +64,7 @@ public class GetSetRsfCommand implements RsfCommand {
                 if (obj == null) {
                     return "";
                 } else {
-                    return obj.toString();
+                    return JSON.toString(obj);
                 }
             }
             //

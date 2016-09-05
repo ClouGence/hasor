@@ -23,17 +23,23 @@ import net.hasor.core.BindInfo;
 public interface RsfBindInfo<T> extends BindInfo<T> {
     /** @return 唯一标识（客户端唯一标识）。*/
     public String getBindID();
+
     /** @return 服务名称。*/
     public String getBindName();
+
     /** @return 服务分组。*/
     public String getBindGroup();
+
     /** @return 服务版本。*/
     public String getBindVersion();
+
     /** @return 注册的服务类型。*/
     public Class<T> getBindType();
     //
+
     /** @return 获取客户端调用服务超时时间。*/
     public int getClientTimeout();
+
     /** @return 获取序列化方式*/
     public String getSerializeType();
 }

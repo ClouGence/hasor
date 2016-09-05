@@ -51,6 +51,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.HashMap;
+
 import net.hasor.libs.com.caucho.hessian.util.IdentityIntMap;
 /**
  * Output stream for Hessian 2 requests.
@@ -72,19 +73,19 @@ import net.hasor.libs.com.caucho.hessian.util.IdentityIntMap;
  * </pre>
  */
 public class Hessian2Output extends AbstractHessianOutput implements Hessian2Constants {
-    public final static int          SIZE       = 4096;
+    public final static int SIZE = 4096;
     // the output stream/
-    protected OutputStream           _os;
+    protected OutputStream _os;
     // map of references
-    private final IdentityIntMap     _refs      = new IdentityIntMap(256);
-    private boolean                  _isCloseStreamOnClose;
+    private final IdentityIntMap _refs = new IdentityIntMap(256);
+    private boolean _isCloseStreamOnClose;
     // map of classes
-    private final IdentityIntMap     _classRefs = new IdentityIntMap(256);
+    private final IdentityIntMap _classRefs = new IdentityIntMap(256);
     // map of types
     private HashMap<String, Integer> _typeRefs;
-    private final byte[]             _buffer    = new byte[SIZE];
-    private int                      _offset;
-    private boolean                  _isPacket;
+    private final byte[] _buffer = new byte[SIZE];
+    private int     _offset;
+    private boolean _isPacket;
     /**
      * Creates a new Hessian output stream, initialized with an
      * underlying output stream.
@@ -242,7 +243,8 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
      * z
      * </pre>
      */
-    public void completeReply() throws IOException {}
+    public void completeReply() throws IOException {
+    }
     /**
      * Starts a packet
      *
@@ -436,7 +438,8 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
     /**
      * Writes the tail of the object definition to the stream.
      */
-    public void writeObjectEnd() throws IOException {}
+    public void writeObjectEnd() throws IOException {
+    }
     /**
      * <code><pre>
      * type ::= string
@@ -888,7 +891,8 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
      * <code><pre>
      * </pre></code>
      */
-    public void writeByteBufferStart() throws IOException {}
+    public void writeByteBufferStart() throws IOException {
+    }
     /**
      * Writes a byte buffer to the stream.
      *

@@ -60,7 +60,8 @@ public class ArrayDeserializer extends AbstractListDeserializer {
         if (_componentType != null) {
             try {
                 _type = Array.newInstance(_componentType, 0).getClass();
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
         if (_type == null)
             _type = Object[].class;

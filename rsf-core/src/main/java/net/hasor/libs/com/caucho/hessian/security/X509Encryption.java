@@ -60,18 +60,20 @@ import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+
 import net.hasor.libs.com.caucho.hessian.io.Hessian2Input;
 import net.hasor.libs.com.caucho.hessian.io.Hessian2Output;
 import net.hasor.libs.com.caucho.hessian.io.HessianEnvelope;
 @SuppressWarnings("unused")
 public class X509Encryption extends HessianEnvelope {
-    private String          _algorithm = "AES";
+    private String _algorithm = "AES";
     // certificate for encryption/decryption
     private X509Certificate _cert;
     // private key for decryption
     private PrivateKey      _privateKey;
     private SecureRandom    _secureRandom;
-    public X509Encryption() {}
+    public X509Encryption() {
+    }
     /**
      * Sets the encryption algorithm for the content.
      */

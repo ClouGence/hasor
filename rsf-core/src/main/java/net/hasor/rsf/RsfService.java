@@ -28,12 +28,16 @@ import java.lang.annotation.Target;
 public @interface RsfService {
     /**服务名。*/
     public String name() default "";
+
     /**服务分组。*/
     public String group() default "";
+
     /**服务版本。*/
     public String version() default "";
+
     /**获取客户端调用服务超时时间。*/
     public int clientTimeout() default -1;
+
     /**获取序列化方式*/
     public String serializeType() default "";
 }

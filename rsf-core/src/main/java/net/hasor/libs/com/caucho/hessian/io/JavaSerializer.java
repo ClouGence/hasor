@@ -53,6 +53,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.WeakHashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -61,10 +62,10 @@ import org.slf4j.LoggerFactory;
 public class JavaSerializer extends AbstractSerializer {
     private static final Logger                                               log            = LoggerFactory.getLogger(JavaSerializer.class);
     private static final WeakHashMap<Class<?>, SoftReference<JavaSerializer>> _serializerMap = new WeakHashMap<Class<?>, SoftReference<JavaSerializer>>();
-    private Field[]                                                           _fields;
-    private FieldSerializer[]                                                 _fieldSerializers;
-    private Object                                                            _writeReplaceFactory;
-    private Method                                                            _writeReplace;
+    private Field[]           _fields;
+    private FieldSerializer[] _fieldSerializers;
+    private Object            _writeReplaceFactory;
+    private Method            _writeReplace;
     public JavaSerializer(Class<?> cl) {
         introspect(cl);
         _writeReplace = getWriteReplace(cl);

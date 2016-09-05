@@ -20,6 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.more.FormatException;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
@@ -31,19 +32,19 @@ import net.hasor.core.Hasor;
  * @author 赵永春(zyc@hasor.net)
  */
 public class InterAddress {
-    protected static Logger    logger = LoggerFactory.getLogger(InterAddress.class);
+    protected static    Logger logger = LoggerFactory.getLogger(InterAddress.class);
     public static final String SECHMA = "rsf";
-    private final String       formUnit;                                            //所属单元
-    private final String       hostAddress;                                         //地址
-    private final int          hostAddressData;                                     //地址数值表现形式
-    private final int          hostPort;                                            //端口
-    private final URI          uriFormat;
+    private final String formUnit;                                            //所属单元
+    private final String hostAddress;                                         //地址
+    private final int    hostAddressData;                                     //地址数值表现形式
+    private final int    hostPort;                                            //端口
+    private final URI    uriFormat;
     //
     public InterAddress(String newAddressURL) throws URISyntaxException {
         this(new URI(newAddressURL));
     }
     public InterAddress(URI newAddressURL) {
-        if (checkFormat(newAddressURL) == false) {
+        if (!checkFormat(newAddressURL)) {
             throw new FormatException(newAddressURL + " format error.");
         }
         this.uriFormat = Hasor.assertIsNotNull(newAddressURL, "address URL is null.");
@@ -127,11 +128,13 @@ public class InterAddress {
     }
     /**判断连接地址是否是同一个。判断依据是参数的{@link #getHostPort()}返回值和该对象的{@link #getHostPort()}返回值做比较。*/
     public boolean equalsHost(InterAddress evalResult) {
-        return evalResult == null ? false : equalsHost(evalResult.getHostPort());
+        // return evalResult == null ? false : equalsHost(evalResult.getHostPort());
+        return evalResult != null && equalsHost(evalResult.getHostPort());
     }
     /**判断连接地址是否是同一个。判断依据是参数值和{@link #getHostPort()}返回值做比较。*/
     public boolean equalsHost(String evalResult) {
-        return evalResult == null ? false : this.getHostPort().equals(evalResult);
+        // return evalResult == null ? false : this.getHostPort().equals(evalResult);
+        return evalResult != null && this.getHostPort().equals(evalResult);
     }
     @Override
     public int hashCode() {
@@ -155,8 +158,8 @@ public class InterAddress {
         if (serviceURL == null) {
             return false;
         }
-        if (StringUtils.equalsBlankIgnoreCase(SECHMA, serviceURL.getScheme()) == true) {
-            if (StringUtils.isBlank(serviceURL.getHost()) == false) {
+        if (StringUtils.equalsBlankIgnoreCase(SECHMA, serviceURL.getScheme())) {
+            if (!StringUtils.isBlank(serviceURL.getHost())) {
                 if (serviceURL.getPort() != 0) {
                     if (StringUtils.isBlank(serviceURL.getPath())) {
                         return false;
@@ -165,7 +168,7 @@ public class InterAddress {
                     Matcher mat = Pattern.compile("/(" + REG + ")").matcher(serviceURL.getPath());
                     mat.find();
                     String formUnit = mat.group(1);
-                    if (StringUtils.isBlank(formUnit) == false) {
+                    if (!StringUtils.isBlank(formUnit)) {
                         return Pattern.matches(REG, formUnit);
                     }
                 }

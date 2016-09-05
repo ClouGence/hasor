@@ -16,7 +16,9 @@
 package net.hasor.rsf.transform.codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+
 import java.io.IOException;
+
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.transform.protocol.ResponseBlock;
 /**

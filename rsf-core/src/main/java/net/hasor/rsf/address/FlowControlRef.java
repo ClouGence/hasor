@@ -29,7 +29,8 @@ class FlowControlRef {
     public RandomFlowControl randomFlowControl = null; //地址选取规则
     public SpeedFlowControl  speedFlowControl  = null; //QoS速率规则
     //
-    private FlowControlRef() {}
+    private FlowControlRef() {
+    }
     //
     public static final FlowControlRef newRef() {
         return new FlowControlRef();

@@ -54,9 +54,10 @@ import java.util.GregorianCalendar;
  */
 public class CalendarHandle implements java.io.Serializable, HessianHandle {
     private static final long serialVersionUID = 3950163942337889044L;
-    private Class<?>          type;
-    private Date              date;
-    public CalendarHandle() {}
+    private Class<?> type;
+    private Date     date;
+    public CalendarHandle() {
+    }
     public CalendarHandle(Class<?> type, long time) {
         if (!GregorianCalendar.class.equals(type))
             this.type = type;

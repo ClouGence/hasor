@@ -47,7 +47,7 @@ import org.more.util.ArrayUtils;
  * --------------------------------------------------------bytes =n
  * dataBody                                      数据内容
  *     bytes[...]
- * 
+ *
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */

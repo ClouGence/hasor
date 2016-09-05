@@ -55,13 +55,13 @@ import java.util.Comparator;
 /**
  * Serializing an object for known object types.
  */
-@SuppressWarnings({ "unused" })
+@SuppressWarnings({"unused"})
 public class BeanSerializer extends AbstractSerializer {
     private static final Object[] NULL_ARGS = new Object[0];
-    private Method[]              _methods;
-    private String[]              _names;
-    private Object                _writeReplaceFactory;
-    private Method                _writeReplace;
+    private Method[] _methods;
+    private String[] _names;
+    private Object   _writeReplaceFactory;
+    private Method   _writeReplace;
     public BeanSerializer(Class<?> cl, ClassLoader loader) {
         introspectWriteReplace(cl, loader);
         ArrayList<Method> primitiveMethods = new ArrayList<Method>();
@@ -101,7 +101,8 @@ public class BeanSerializer extends AbstractSerializer {
             String name = _methods[i].getName();
             name = name.substring(3);
             int j = 0;
-            for (; j < name.length() && Character.isUpperCase(name.charAt(j)); j++) {}
+            for (; j < name.length() && Character.isUpperCase(name.charAt(j)); j++) {
+            }
             if (j == 1)
                 name = name.substring(0, j).toLowerCase() + name.substring(j);
             else if (j > 1)

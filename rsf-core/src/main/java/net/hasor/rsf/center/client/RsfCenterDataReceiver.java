@@ -30,10 +30,11 @@ import net.hasor.rsf.domain.RsfCenterException;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfCenterDataReceiver implements RsfCenterListener {
-    protected Logger              logger = LoggerFactory.getLogger(getClass());
-    private final RsfContext      rsfContext;
-    private final EventContext    eventContext;
-    private static final String[] checkServiceEventArrays;
+    protected Logger logger = LoggerFactory.getLogger(getClass());
+    private final        RsfContext   rsfContext;
+    private final        EventContext eventContext;
+    private static final String[]     checkServiceEventArrays;
+
     static {
         checkServiceEventArrays = new String[] { //
                 "AppendAddressEvent", //
@@ -41,8 +42,9 @@ public class RsfCenterDataReceiver implements RsfCenterListener {
                 "UpdateServiceRouteEvent", //
                 "UpdateMethodRouteEvent", //
                 "UpdateArgsRouteEvent", //
-                "UpdateFlowControlEvent" };
+                "UpdateFlowControlEvent"};
     }
+
     //
     //
     public RsfCenterDataReceiver(RsfContext rsfContext) {
@@ -67,8 +69,8 @@ public class RsfCenterDataReceiver implements RsfCenterListener {
         }
         //-发送CenterUpdate_Event事件-
         boolean result = process.processEvent(rsfUpdater, centerEventBody);
-        if (result == true) {
-            if (StringUtils.isBlank(serviceID) == false) {
+        if (result) {
+            if (!StringUtils.isBlank(serviceID)) {
                 this.eventContext.fireSyncEvent(RsfCenterClientManager.CenterUpdate_Event, centerEventBody);//同步更新服务的CenterMarkData
             }
         }

@@ -105,7 +105,7 @@ public class RuleParser {
             //
             ruleObject = (AbstractRule) ruleClass.newInstance();
             ruleObject.setRouteID(ruleID);
-            ruleObject.setRoutebody(ruleSettings.getXmlNode("flowControl").getXmlText());
+            ruleObject.setRouteBody(ruleSettings.getXmlNode("flowControl").getXmlText());
             ruleObject.enable(ruleEnable);
             ruleObject.paserControl(ruleSettings);
             //

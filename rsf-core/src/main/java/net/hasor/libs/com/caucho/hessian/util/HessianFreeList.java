@@ -57,7 +57,7 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
  */
 public final class HessianFreeList<T> {
     private final AtomicReferenceArray<T> _freeStack;
-    private final AtomicInteger           _top = new AtomicInteger();
+    private final AtomicInteger _top = new AtomicInteger();
     /**
      * Create a new free list.
      *

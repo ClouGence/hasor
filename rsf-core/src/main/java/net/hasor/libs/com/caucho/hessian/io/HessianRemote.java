@@ -52,8 +52,8 @@ package net.hasor.libs.com.caucho.hessian.io;
  */
 public class HessianRemote implements java.io.Serializable {
     private static final long serialVersionUID = 1105355127087318847L;
-    private String            type;
-    private String            url;
+    private String type;
+    private String url;
     /**
      * Creates a new Hessian remote object.
      *
@@ -67,7 +67,8 @@ public class HessianRemote implements java.io.Serializable {
     /**
      * Creates an uninitialized Hessian remote.
      */
-    public HessianRemote() {}
+    public HessianRemote() {
+    }
     /**
      * Returns the remote api class name.
      */

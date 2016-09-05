@@ -18,13 +18,14 @@ import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
- * 
+ *
  * @version : 2015年12月10日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface ReceivedListener {
     /**从远端收到Response消息。*/
     public void receivedMessage(InterAddress form, ResponseInfo response);
+
     /**从远端收到RequestInfo消息。*/
     public void receivedMessage(InterAddress form, RequestInfo request);
 }

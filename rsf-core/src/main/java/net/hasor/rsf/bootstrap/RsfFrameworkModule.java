@@ -16,6 +16,7 @@
 package net.hasor.rsf.bootstrap;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
@@ -56,7 +57,7 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
     public final void loadModule(ApiBinder apiBinder) throws Throwable {
         Environment env = apiBinder.getEnvironment();
         boolean enable = env.getSettings().getBoolean("hasor.rsfConfig.enable", false);
-        if (enable == false) {
+        if (!enable) {
             logger.info("rsf framework disable -> 'hasor.rsfConfig.enable' is false");
             return;
         }
@@ -64,7 +65,8 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
         //1.组装 RsfContext 对象
         final RsfEnvironment environment = new DefaultRsfEnvironment(env);
         final RsfBeanContainer rsfContainer = new RsfBeanContainer(environment);
-        final AbstractRsfContext rsfContext = new AbstractRsfContext(rsfContainer) {};
+        final AbstractRsfContext rsfContext = new AbstractRsfContext(rsfContainer) {
+        };
         //
         //2.监听启动和销毁事件
         Hasor.addShutdownListener(environment, new EventListener<AppContext>() {

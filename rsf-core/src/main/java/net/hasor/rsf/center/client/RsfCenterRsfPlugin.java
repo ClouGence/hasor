@@ -52,7 +52,8 @@ public class RsfCenterRsfPlugin implements RsfPlugin {
         int faceTimer = rsfContext.getSettings().getCenterRsfTimeout();
         StringBuilder strBuilder = new StringBuilder("");
         for (InterAddress address : centerList) {
-            strBuilder.append(address.getHostPort() + " ,");
+            strBuilder.append(address.getHostPort());
+            strBuilder.append(" ,");
         }
         if (centerList.length != 0) {
             strBuilder.deleteCharAt(strBuilder.length() - 1);

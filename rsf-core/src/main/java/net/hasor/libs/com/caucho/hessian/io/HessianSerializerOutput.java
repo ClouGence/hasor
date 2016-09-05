@@ -107,7 +107,8 @@ public class HessianSerializerOutput extends Hessian2Output {
             Object repl = method.invoke(obj, new Object[0]);
             writeObject(repl);
             return;
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         try {
             writeMapBegin(cl.getName());
             for (; cl != null; cl = cl.getSuperclass()) {

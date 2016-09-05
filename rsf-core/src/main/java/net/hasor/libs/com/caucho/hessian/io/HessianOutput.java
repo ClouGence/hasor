@@ -71,10 +71,10 @@ import java.util.IdentityHashMap;
  */
 public class HessianOutput extends AbstractHessianOutput {
     // the output stream/
-    protected OutputStream                  os;
+    protected OutputStream                    os;
     // map of references
-    private IdentityHashMap<Object, Object> _refs;
-    private int                             _version = 1;
+    private   IdentityHashMap<Object, Object> _refs;
+    private int _version = 1;
     /**
      * Creates a new Hessian output stream, initialized with an
      * underlying output stream.
@@ -87,7 +87,8 @@ public class HessianOutput extends AbstractHessianOutput {
     /**
      * Creates an uninitialized Hessian output stream.
      */
-    public HessianOutput() {}
+    public HessianOutput() {
+    }
     /**
      * Initializes the output
      */
@@ -586,7 +587,8 @@ public class HessianOutput extends AbstractHessianOutput {
      * <code><pre>
      * </pre></code>
      */
-    public void writeByteBufferStart() throws IOException {}
+    public void writeByteBufferStart() throws IOException {
+    }
     /**
      * Writes a byte buffer to the stream.
      *

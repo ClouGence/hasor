@@ -22,5 +22,6 @@ import net.hasor.rsf.domain.provider.AddressProvider;
  */
 public interface RsfServiceWrapper {
     public AddressProvider getTarget();
+
     public void setTarget(AddressProvider target);
 }

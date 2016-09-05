@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.hasor.net/hasor/schema/main">
-	<!-- 
-		enable		 = true			启用RSF框架。
-		address		 = 127.0.0.1	框架工作在127.0.0.1地址上。
-		port		 = 8001			RSF服务端口
-		console.port = 8002			telnet控制台端口。
-		unitName	 = default		app所属单元
-	 -->
-	<hasor.rsfConfig enable="true" address="127.0.0.1" port="8001" console.port="8002" unitName="default">
-		<!-- 如果要使用注册中心，请打开下面这个配置并且启动注册中心。 -->
-		<!-- <centerServers.server>rsf://127.0.0.1:2180</centerServers.server> -->
-	</hasor.rsfConfig>
+    <!-- 
+        enable		 = true			启用RSF框架。
+        address		 = 127.0.0.1	框架工作在127.0.0.1地址上。
+        port		 = 8001			RSF服务端口
+        console.port = 8002			telnet控制台端口。
+        unitName	 = default		app所属单元
+     -->
+    <hasor.rsfConfig enable="true" address="127.0.0.1" port="8001" console.port="8002" unitName="default">
+        <!-- 如果要使用注册中心，请打开下面这个配置并且启动注册中心。 -->
+        <!-- <centerServers.server>rsf://127.0.0.1:2180</centerServers.server> -->
+    </hasor.rsfConfig>
 
 </config>

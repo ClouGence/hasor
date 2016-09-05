@@ -15,17 +15,20 @@
  */
 package net.hasor.rsf;
 /**
- * 
+ *
  * @version : 2014年11月30日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfOptionSet {
     /**获取选项Key集合。*/
     public String[] getOptionKeys();
+
     /**获取选项数据*/
     public String getOption(String key);
+
     /**设置选项数据*/
     public void addOption(String key, String value);
+
     /**删除选项数据*/
     public void removeOption(String key);
 }

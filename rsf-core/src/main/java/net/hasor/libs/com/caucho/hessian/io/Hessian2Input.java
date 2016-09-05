@@ -55,6 +55,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -73,35 +74,35 @@ import org.slf4j.LoggerFactory;
  * in.completeReply();      // read reply footer
  * </pre>
  */
-@SuppressWarnings({ "rawtypes", "unused" })
+@SuppressWarnings({"rawtypes", "unused"})
 public class Hessian2Input extends AbstractHessianInput implements Hessian2Constants {
-    private static final Logger           log         = LoggerFactory.getLogger(Hessian2Input.class);
-    private static final int              END_OF_DATA = -2;
-    private static Field                  _detailMessageField;
-    private static final int              SIZE        = 256;
-    private static final int              GAP         = 16;
+    private static final Logger log         = LoggerFactory.getLogger(Hessian2Input.class);
+    private static final int    END_OF_DATA = -2;
+    private static Field _detailMessageField;
+    private static final int SIZE = 256;
+    private static final int GAP  = 16;
     // standard, unmodified factory for deserializing objects
-    protected SerializerFactory           _defaultSerializerFactory;
+    protected SerializerFactory _defaultSerializerFactory;
     // factory for deserializing objects in the input stream
-    protected SerializerFactory           _serializerFactory;
-    private boolean                       _isCloseStreamOnClose;
-    protected ArrayList<Object>           _refs       = new ArrayList<Object>();
-    protected ArrayList<ObjectDefinition> _classDefs  = new ArrayList<ObjectDefinition>();
-    protected ArrayList<String>           _types      = new ArrayList<String>();
+    protected SerializerFactory _serializerFactory;
+    private   boolean           _isCloseStreamOnClose;
+    protected ArrayList<Object>           _refs      = new ArrayList<Object>();
+    protected ArrayList<ObjectDefinition> _classDefs = new ArrayList<ObjectDefinition>();
+    protected ArrayList<String>           _types     = new ArrayList<String>();
     // the underlying input stream
-    private InputStream                   _is;
-    private final byte[]                  _buffer     = new byte[SIZE];
+    private InputStream _is;
+    private final byte[] _buffer = new byte[SIZE];
     // a peek character
-    private int                           _offset;
-    private int                           _length;
+    private int       _offset;
+    private int       _length;
     // the method for a call
-    private String                        _method;
-    private Throwable                     _replyFault;
-    private StringBuffer                  _sbuf       = new StringBuffer();
+    private String    _method;
+    private Throwable _replyFault;
+    private StringBuffer _sbuf = new StringBuffer();
     // true if this is the last chunk
-    private boolean                       _isLastChunk;
+    private boolean _isLastChunk;
     // the chunk length
-    private int                           _chunkLength;
+    private int     _chunkLength;
     /**
      * Creates a new Hessian input stream, initialized with an
      * underlying input stream.
@@ -258,7 +259,8 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
      * <pre>
      * </pre>
      */
-    public void completeCall() throws IOException {}
+    public void completeCall() throws IOException {
+    }
     /**
      * Reads a reply as an object.
      * If the reply has a fault, throws the exception.
@@ -309,7 +311,8 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
             if (message != null && _detailMessageField != null) {
                 try {
                     _detailMessageField.set(_replyFault, message);
-                } catch (Throwable e) {}
+                } catch (Throwable e) {
+                }
             }
             return _replyFault;
         } else {
@@ -327,7 +330,8 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
      * z
      * </pre>
      */
-    public void completeReply() throws IOException {}
+    public void completeReply() throws IOException {
+    }
     /**
      * Completes reading the call
      *
@@ -361,7 +365,9 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
      */
     public int startMessage() throws IOException {
         int tag = read();
-        if (tag == 'p') {} else if (tag == 'P') {} else
+        if (tag == 'p') {
+        } else if (tag == 'P') {
+        } else
             throw error("expected Hessian message ('p') at " + codeName(tag));
         int major = read();
         int minor = read();
@@ -3038,9 +3044,11 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
             return len;
         }
         public void close() throws IOException {
-            while (read() >= 0) {}
+            while (read() >= 0) {
+            }
         }
-    };
+    }
+    ;
     final static class ObjectDefinition {
         private final String       _type;
         private final Deserializer _reader;
@@ -3069,6 +3077,7 @@ public class Hessian2Input extends AbstractHessianInput implements Hessian2Const
         try {
             _detailMessageField = Throwable.class.getDeclaredField("detailMessage");
             _detailMessageField.setAccessible(true);
-        } catch (Throwable e) {}
+        } catch (Throwable e) {
+        }
     }
 }

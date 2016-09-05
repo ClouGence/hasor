@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+
 import org.more.util.StringUtils;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
@@ -83,7 +84,8 @@ public class RuleRsfCommand implements RsfCommand {
                 }
             }
             /*执行指令*/
-            /*  */if ("-s".equalsIgnoreCase(mode)) {
+            /*  */
+            if ("-s".equalsIgnoreCase(mode)) {
                 this.showServiceRule(sw, nameArg, rsfContext);//显示服务级路由脚本
             } else if ("-m".equalsIgnoreCase(mode)) {
                 this.showMethodRule(sw, nameArg, rsfContext);//显示方法级路由脚本
@@ -160,7 +162,7 @@ public class RuleRsfCommand implements RsfCommand {
     }
     private void writeBody(StringWriter sw, String body) throws IOException {
         BufferedReader reader = new BufferedReader(new StringReader(body));
-        for (;;) {
+        for (; ; ) {
             String line = reader.readLine();
             if (line == null) {
                 break;

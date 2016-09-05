@@ -16,16 +16,16 @@
 package net.hasor.rsf.center.domain;
 import java.io.Serializable;
 /**
- * 
+ *
  * @version : 2016年3月11日
  * @author 赵永春(zyc@hasor.net)
  */
 public class CenterEventBody implements Serializable {
     private static final long serialVersionUID = 1617451556801258822L;
-    private String            eventType;
-    private String            serviceID;                              //相关服务ID
-    private String            snapshotInfo;                           //服务中心上的快照
-    private String            eventBody;                              //事件内容
+    private String eventType;
+    private String serviceID;                              //相关服务ID
+    private String snapshotInfo;                           //服务中心上的快照
+    private String eventBody;                              //事件内容
     //
     public String getEventType() {
         return this.eventType;

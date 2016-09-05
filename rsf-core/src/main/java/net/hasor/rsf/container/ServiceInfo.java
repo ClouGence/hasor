@@ -16,6 +16,7 @@
 package net.hasor.rsf.container;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.more.util.StringUtils;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
@@ -31,7 +32,7 @@ import net.hasor.rsf.domain.ServiceDomain;
 class ServiceInfo<T> implements CustomerProvider<T> {
     private final ServiceDomain<T>   domain;
     private final List<FilterDefine> filterList;
-    private Provider<T>              customerProvider;
+    private       Provider<T>        customerProvider;
     //
     //
     public ServiceInfo(Class<T> bindType) {
@@ -95,13 +96,14 @@ class ServiceInfo<T> implements CustomerProvider<T> {
     }
     @Override
     public String toString() {
-        StringBuffer buffer = new StringBuffer("");
+        StringBuilder buffer = new StringBuilder("");
         List<FilterDefine> defines = this.filterList;
         if (defines == null) {
             buffer.append(" null");
         } else {
             for (FilterDefine define : defines) {
-                buffer.append(define.filterID() + ",");
+                buffer.append(define.filterID());
+                buffer.append(",");
             }
         }
         return "ServiceDefine[Domain=" + this.domain + ",Filters=" + buffer.toString() + "]";

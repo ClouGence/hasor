@@ -60,16 +60,18 @@ import javax.crypto.CipherInputStream;
 import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
+
 import net.hasor.libs.com.caucho.hessian.io.Hessian2Input;
 import net.hasor.libs.com.caucho.hessian.io.Hessian2Output;
 import net.hasor.libs.com.caucho.hessian.io.HessianEnvelope;
 @SuppressWarnings("unused")
 public class X509Signature extends HessianEnvelope {
-    private String          _algorithm = "HmacSHA256";
+    private String _algorithm = "HmacSHA256";
     private X509Certificate _cert;
     private PrivateKey      _privateKey;
     private SecureRandom    _secureRandom;
-    public X509Signature() {}
+    public X509Signature() {
+    }
     /**
      * Sets the encryption algorithm for the content.
      */

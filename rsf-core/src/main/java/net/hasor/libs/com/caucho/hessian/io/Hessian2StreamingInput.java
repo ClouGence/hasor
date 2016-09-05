@@ -48,13 +48,14 @@
 package net.hasor.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * Input stream for Hessian 2 streaming requests using WebSocket.
  */
 public class Hessian2StreamingInput {
-    private static final Logger  log = LoggerFactory.getLogger(Hessian2StreamingInput.class);
+    private static final Logger log = LoggerFactory.getLogger(Hessian2StreamingInput.class);
     private StreamingInputStream _is;
     private Hessian2Input        _in;
     /**

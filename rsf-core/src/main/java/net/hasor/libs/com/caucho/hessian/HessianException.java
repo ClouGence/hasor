@@ -52,7 +52,8 @@ package net.hasor.libs.com.caucho.hessian;
 public class HessianException extends RuntimeException {
     private static final long serialVersionUID = 7996138227266221241L;
     /** Zero-arg constructor. */
-    public HessianException() {}
+    public HessianException() {
+    }
     /** Create the exception. */
     public HessianException(String message) {
         super(message);

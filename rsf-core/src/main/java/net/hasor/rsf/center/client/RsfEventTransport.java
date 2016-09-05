@@ -27,8 +27,8 @@ import net.hasor.rsf.domain.ServiceDomain;
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfEventTransport implements EventListener<Object> {
-    protected Logger               logger        = LoggerFactory.getLogger(getClass());
-    private RsfCenterClientManager centerManager = null;
+    protected Logger                 logger        = LoggerFactory.getLogger(getClass());
+    private   RsfCenterClientManager centerManager = null;
     public RsfEventTransport(RsfContext rsfContext) {
         this.centerManager = new RsfCenterClientManager(rsfContext);
     }

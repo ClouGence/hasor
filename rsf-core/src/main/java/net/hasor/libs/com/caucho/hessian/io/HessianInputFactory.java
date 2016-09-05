@@ -48,12 +48,13 @@
 package net.hasor.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.io.InputStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 @SuppressWarnings("unused")
 public class HessianInputFactory {
-    public static final Logger log      = LoggerFactory.getLogger(HessianInputFactory.class);
-    private HessianFactory     _factory = new HessianFactory();
+    public static final Logger         log      = LoggerFactory.getLogger(HessianInputFactory.class);
+    private             HessianFactory _factory = new HessianFactory();
     public void setSerializerFactory(SerializerFactory factory) {
         _factory.setSerializerFactory(factory);
     }
@@ -99,7 +100,11 @@ public class HessianInputFactory {
         }
     }
     public enum HeaderType {
-        CALL_1_REPLY_1, CALL_1_REPLY_2, HESSIAN_2, REPLY_1, REPLY_2;
+        CALL_1_REPLY_1,
+        CALL_1_REPLY_2,
+        HESSIAN_2,
+        REPLY_1,
+        REPLY_2;
         public boolean isCall1() {
             switch (this) {
             case CALL_1_REPLY_1:

@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf.domain;
 /**
- * 
+ *
  * @version : 2014年11月14日
  * @author 赵永春(zyc@hasor.net)
  */

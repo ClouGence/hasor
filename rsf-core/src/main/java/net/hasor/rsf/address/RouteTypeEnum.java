@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf.address;
 /**
- * 
+ *
  * @version : 2015年10月20日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -40,7 +40,8 @@ enum RouteTypeEnum {
     }
     //
     static boolean updateScript(RouteTypeEnum routeType, String script, RuleRef ref) {
-        /*  */if (RouteTypeEnum.ServiceLevel.equals(routeType)) {
+        /*  */
+        if (RouteTypeEnum.ServiceLevel.equals(routeType)) {
             return ref.getServiceLevel().update(script);
         } else if (RouteTypeEnum.MethodLevel.equals(routeType)) {
             return ref.getMethodLevel().update(script);

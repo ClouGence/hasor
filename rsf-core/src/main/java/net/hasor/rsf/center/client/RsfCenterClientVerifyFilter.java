@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.client;
+import net.hasor.core.Settings;
 import net.hasor.rsf.*;
 import net.hasor.rsf.center.domain.RsfCenterConstants;
 import org.slf4j.Logger;
@@ -30,8 +31,9 @@ class RsfCenterClientVerifyFilter implements RsfFilter {
     private   String rsfVersion = null;                               //客户端版本
     //
     public RsfCenterClientVerifyFilter(RsfContext rsfContext) throws Throwable {
-        this.appKey = rsfContext.getAppContext().getEnvironment().evalString("%RSF_APP_KEY%");
-        this.keySecret = rsfContext.getAppContext().getEnvironment().evalString("%RSF_APP_KEY_SECRET%");
+        RsfSettings settings = rsfContext.getSettings();
+        this.appKey = settings.getAppKeyID();
+        this.keySecret = settings.getAppKeySecret();
         this.rsfVersion = rsfContext.getSettings().getVersion();
     }
     @Override

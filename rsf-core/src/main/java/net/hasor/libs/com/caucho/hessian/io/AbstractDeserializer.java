@@ -122,5 +122,6 @@ public class AbstractDeserializer implements Deserializer {
      * The NullDeserializer exists as a marker for the factory classes so
      * they save a null result.
      */
-    static final class NullDeserializer extends AbstractDeserializer {}
+    static final class NullDeserializer extends AbstractDeserializer {
+    }
 }

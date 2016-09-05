@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
 import org.more.classcode.delegate.faces.MethodClassConfig;
 import org.more.classcode.delegate.faces.MethodDelegate;
 import org.more.future.FutureCallback;
@@ -152,7 +153,7 @@ public class RsfCaller extends RsfRequestManager {
     public <T> T wrapper(AddressProvider target, RsfBindInfo<?> bindInfo, Class<T> interFace) throws RsfException {
         if (bindInfo == null)
             throw new NullPointerException();
-        if (interFace.isInterface() == false) {
+        if (!interFace.isInterface()) {
             logger.error("interFace {} parameter must be an interFace.", interFace.getName());
             throw new UnsupportedOperationException("interFace " + interFace.getName() + " parameter must be an interFace.");
         }
@@ -166,15 +167,15 @@ public class RsfCaller extends RsfRequestManager {
                     try {
                         RsfSettings rsfSettings = this.rsfBeanContainer.getEnvironment().getSettings();
                         boolean useFast = false;
-                        if (StringUtils.equalsIgnoreCase("fast", rsfSettings.getWrapperType()) == true) {
+                        if (StringUtils.equalsIgnoreCase("fast", rsfSettings.getWrapperType())) {
                             useFast = true;//ByClassCode
-                        } else if (StringUtils.equalsIgnoreCase("proxy", rsfSettings.getWrapperType()) == true) {
+                        } else if (StringUtils.equalsIgnoreCase("proxy", rsfSettings.getWrapperType())) {
                             useFast = false;//ByJavaProxy
                         } else {
                             useFast = false;//default
                         }
                         //
-                        if (useFast == true) {
+                        if (useFast) {
                             //ByClassCode
                             ClassLoader loader = this.getContext().getClassLoader();
                             MethodClassConfig classConfig = new MethodClassConfig(RsfServiceWrapperObject.class, loader);
@@ -183,7 +184,7 @@ public class RsfCaller extends RsfRequestManager {
                         } else {
                             //ByJavaProxy
                             ClassLoader loader = this.getContext().getClassLoader();
-                            wrapperClass = (Class<RsfServiceWrapper>) Proxy.getProxyClass(loader, new Class[] { RsfServiceWrapper.class, interFace });
+                            wrapperClass = (Class<RsfServiceWrapper>) Proxy.getProxyClass(loader, new Class[] {RsfServiceWrapper.class, interFace});
                         }
                         //
                         this.wrapperMap.put(bindID, wrapperClass);
@@ -196,10 +197,10 @@ public class RsfCaller extends RsfRequestManager {
         //
         try {
             RsfServiceWrapper wrapper = null;
-            if (Proxy.isProxyClass(wrapperClass) == true) {
+            if (Proxy.isProxyClass(wrapperClass)) {
                 //ByJavaProxy
-                Constructor<RsfServiceWrapper> constructor = wrapperClass.getConstructor(new Class[] { InvocationHandler.class });
-                wrapper = constructor.newInstance(new Object[] { new ServiceMethodDelegateByProxy(bindInfo) });
+                Constructor<RsfServiceWrapper> constructor = wrapperClass.getConstructor(new Class[] {InvocationHandler.class});
+                wrapper = constructor.newInstance(new Object[] {new ServiceMethodDelegateByProxy(bindInfo)});
                 //
             } else {
                 //ByClassCode
@@ -251,9 +252,9 @@ public class RsfCaller extends RsfRequestManager {
      * @param methodName 远程服务方法名
      * @param parameterTypes 远程方法参数列表。
      * @param parameterObjects 参数值
-     * @throws TimeoutException 
-     * @throws ExecutionException 
-     * @throws InterruptedException 
+     * @throws TimeoutException
+     * @throws ExecutionException
+     * @throws InterruptedException
      */
     public Object syncInvoke(AddressProvider target, RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws InterruptedException, ExecutionException, TimeoutException {
         //1.准备Request

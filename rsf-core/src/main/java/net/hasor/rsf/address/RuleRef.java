@@ -15,12 +15,13 @@
  */
 package net.hasor.rsf.address;
 /**
- * 
+ *
  * @version : 2015年12月3日
  * @author 赵永春(zyc@hasor.net)
  */
 class RuleRef {
-    public RuleRef() {}
+    public RuleRef() {
+    }
     public RuleRef(RuleRef scriptResourcesRef) {
         this.serviceLevel = scriptResourcesRef.serviceLevel;
         this.methodLevel = scriptResourcesRef.methodLevel;

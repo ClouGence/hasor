@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.console;
 import java.net.UnknownHostException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.netty.bootstrap.ServerBootstrap;
@@ -43,12 +44,12 @@ import net.hasor.rsf.utils.NameThreadFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ConsoleRsfPlugin implements RsfPlugin {
-    protected static Logger logger        = LoggerFactory.getLogger(ConsoleRsfPlugin.class);
-    private StringDecoder   stringDecoder = new StringDecoder();
-    private StringEncoder   stringEncoder = new StringEncoder();
-    private TelnetHandler   telnetHandler = null;
-    private InterAddress    bindAddress   = null;
-    private EventLoopGroup  workerGroup   = null;
+    protected static Logger         logger        = LoggerFactory.getLogger(ConsoleRsfPlugin.class);
+    private          StringDecoder  stringDecoder = new StringDecoder();
+    private          StringEncoder  stringEncoder = new StringEncoder();
+    private          TelnetHandler  telnetHandler = null;
+    private          InterAddress   bindAddress   = null;
+    private          EventLoopGroup workerGroup   = null;
     //
     @Override
     public void loadRsf(RsfContext rsfContext) throws Throwable {

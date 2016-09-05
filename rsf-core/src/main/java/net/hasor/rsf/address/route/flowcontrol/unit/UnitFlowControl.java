@@ -17,6 +17,7 @@ package net.hasor.rsf.address.route.flowcontrol.unit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.more.util.MatchUtils;
 import org.more.util.StringUtils;
 import net.hasor.core.Settings;
@@ -78,7 +79,7 @@ public class UnitFlowControl extends AbstractRule {
         for (InterAddress inter : address) {
             boolean appendMark = false;
             //A.如果位于规则排除名单中,则直接标记appendMark为 true
-            if (exclusions != null && exclusions.isEmpty() == false) {
+            if (exclusions != null && !exclusions.isEmpty()) {
                 String hostIP = inter.getHost();
                 for (String ipPattern : exclusions) {
                     if (MatchUtils.matchWild(ipPattern, hostIP)) {
@@ -88,7 +89,7 @@ public class UnitFlowControl extends AbstractRule {
                 }
             }
             //B.如果匹配规则,则直接标记appendMark为 true
-            if (appendMark == false) {
+            if (!appendMark) {
                 appendMark = StringUtils.equalsBlankIgnoreCase(inter.getFormUnit(), unitName);
             }
             //

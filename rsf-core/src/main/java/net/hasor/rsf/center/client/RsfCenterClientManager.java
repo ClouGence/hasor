@@ -69,7 +69,7 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
     public void onEvent(String event, CenterEventBody eventData) throws Throwable {
         String serviceID = eventData.getServiceID();
         String snapshotInfo = eventData.getSnapshotInfo();
-        if (StringUtils.isBlank(serviceID) == true) {
+        if (StringUtils.isBlank(serviceID)) {
             return;
         }
         //
@@ -209,14 +209,15 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         }
         //
         //3.服务心跳
-        if (needBeat.isEmpty() == false) {
+        if (!needBeat.isEmpty()) {
             //-区分提供者和订阅者-
             Map<String, ServiceDomain<?>> beatAllMap = new HashMap<String, ServiceDomain<?>>();
             Map<String, String> beatPMap = new HashMap<String, String>();//提供者
             Map<String, String> beatCMap = new HashMap<String, String>();//消费者
             for (ServiceDomain<?> domain : needBeat) {
                 beatAllMap.put(domain.getBindID(), domain);
-                /*   */if (RsfServiceType.Consumer == domain.getServiceType()) {
+                /*   */
+                if (RsfServiceType.Consumer == domain.getServiceType()) {
                     beatCMap.put(domain.getBindID(), domain.getCenterSnapshot());//心跳的服务ID和其对应的centerMarkData建立一个Map
                     //
                 } else if (RsfServiceType.Provider == domain.getServiceType()) {
@@ -272,7 +273,8 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         for (ServiceDomain<?> domain : needRepair) {
             try {
                 String snapshotInfo = null;
-                /*   */ if (RsfServiceType.Provider == domain.getServiceType()) {
+                /*   */
+                if (RsfServiceType.Provider == domain.getServiceType()) {
                     ProviderPublishInfo info = fillTo(domain, new ProviderPublishInfo());
                     info.setQueueMaxSize(this.rsfContext.getSettings().getQueueMaxSize());
                     snapshotInfo = this.centerRegister.publishService(this.hostString, info);
@@ -300,7 +302,7 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         //1.准备服务提供者列表
         List<InterAddress> newHostSet = new ArrayList<InterAddress>();
         List<String> providerList = receiveResult.getProviderList();
-        if (providerList != null && providerList.isEmpty() == false) {
+        if (providerList != null && !providerList.isEmpty()) {
             for (String providerAddress : providerList) {
                 try {
                     newHostSet.add(new InterAddress(providerAddress));

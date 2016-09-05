@@ -16,6 +16,7 @@
 package net.hasor.rsf.rpc.net;
 import java.net.InetSocketAddress;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,10 +37,10 @@ import net.hasor.rsf.utils.TimerManager;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RpcCodec extends ChannelInboundHandlerAdapter {
-    protected Logger               logger     = LoggerFactory.getLogger(getClass());
-    private final AtomicBoolean    shakeHands = new AtomicBoolean(false);
-    private InterAddress           bindAddress;
-    private InterAddress           targetAddress;
+    protected     Logger        logger     = LoggerFactory.getLogger(getClass());
+    private final AtomicBoolean shakeHands = new AtomicBoolean(false);
+    private       InterAddress     bindAddress;
+    private       InterAddress     targetAddress;
     private final TimerManager     rsfTimerManager;
     private final ChannelRegister  channelRegister;
     private final ReceivedListener rpcEventListener;
@@ -55,7 +56,7 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
     public void handlerAdded(final ChannelHandlerContext ctx) throws Exception {
         this.rsfTimerManager.atTime(new TimerTask() {
             public void run(Timeout timeout) throws Exception {
-                if (shakeHands.get() == false) {
+                if (!shakeHands.get()) {
                     ctx.close();
                 }
             }
@@ -65,7 +66,7 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.info("connected form {}", ctx.channel().remoteAddress());
-        if (this.shakeHands.get() == false) {
+        if (!this.shakeHands.get()) {
             RequestInfo request = new RequestInfo();
             request.setRequestID(-1);
             request.setTargetMethod("ASK_HOST_INFO");
@@ -75,8 +76,9 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
     }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (this.shakeHands.get() == true) {
-            /*   */if (msg instanceof RequestInfo) {
+        if (this.shakeHands.get()) {
+            /*   */
+            if (msg instanceof RequestInfo) {
                 this.rpcEventListener.receivedMessage(this.targetAddress, (RequestInfo) msg);
             } else if (msg instanceof ResponseInfo) {
                 this.rpcEventListener.receivedMessage(this.targetAddress, (ResponseInfo) msg);

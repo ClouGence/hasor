@@ -54,18 +54,19 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import sun.misc.Unsafe;
 /**
  * Serializing an object for known object types.
  */
 @SuppressWarnings("restriction")
 public class UnsafeDeserializer extends AbstractMapDeserializer {
-    private static final Logger                log = Logger.getLogger(JavaDeserializer.class.getName());
-    private static boolean                     _isEnabled;
-    private static Unsafe                      _unsafe;
-    private Class<?>                           _type;
-    private HashMap<String, FieldDeserializer> _fieldMap;
-    private Method                             _readResolve;
+    private static final Logger log = Logger.getLogger(JavaDeserializer.class.getName());
+    private static boolean                            _isEnabled;
+    private static Unsafe                             _unsafe;
+    private        Class<?>                           _type;
+    private        HashMap<String, FieldDeserializer> _fieldMap;
+    private        Method                             _readResolve;
     public UnsafeDeserializer(Class<?> cl) {
         _type = cl;
         _fieldMap = getFieldMap(cl);

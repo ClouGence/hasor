@@ -16,6 +16,7 @@
 package net.hasor.rsf.filters.local;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilter;
@@ -29,7 +30,7 @@ import net.hasor.rsf.RsfResponse;
  */
 public class LocalPref implements RsfFilter {
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
-        if (request.isLocal() == true) {
+        if (request.isLocal()) {
             RsfBindInfo<?> bindInfo = request.getBindInfo();
             Provider<?> provider = request.getContext().getServiceProvider(bindInfo);
             if (provider != null) {
@@ -49,6 +50,5 @@ public class LocalPref implements RsfFilter {
         //
         //
         chain.doFilter(request, response);
-        return;
     }
 }

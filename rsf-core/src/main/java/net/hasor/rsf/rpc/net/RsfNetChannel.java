@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.rpc.net;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import io.netty.channel.Channel;
@@ -27,12 +28,12 @@ import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseBlock;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
- * 
+ *
  * @version : 2015年12月8日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfNetChannel {
-    protected Logger            logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     private final InterAddress  target;
     private final Channel       channel;
     private final AtomicBoolean shakeHands;

@@ -19,16 +19,17 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
+
 import org.more.convert.ConverterUtils;
 import org.more.util.StringUtils;
 import net.hasor.rsf.RsfContext;
 /**
- * 
+ *
  * @version : 2016年4月3日
  * @author 赵永春(zyc@hasor.net)
  */
 public final class RsfCommandRequest {
-    public static final String   WITHOUT_AFTER_CLOSE_SESSION = "WithoutAfterCloseSession";
+    public static final String WITHOUT_AFTER_CLOSE_SESSION = "WithoutAfterCloseSession";
     private RsfCommandSession    rsfSession;                                              //Rsf环境
     private RsfCommand           rsfCommand;                                              //命令执行体
     private String               command;
@@ -55,7 +56,8 @@ public final class RsfCommandRequest {
     }
     void appendRequestBody(String requestBody) {
         if (this.inputMultiLine) {
-            this.bodyBuffer.append(requestBody + "\n");
+            this.bodyBuffer.append(requestBody);
+            this.bodyBuffer.append("\n");
             this.status = CommandRequestStatus.Prepare;
         }
     }
@@ -102,7 +104,7 @@ public final class RsfCommandRequest {
                     withoutAfterClose = false;
                 }
                 boolean withoutAfterCloseBoolean = (Boolean) ConverterUtils.convert(Boolean.TYPE, withoutAfterClose);
-                if (withoutAfterCloseBoolean == false) {
+                if (!withoutAfterCloseBoolean) {
                     Object afterClose = getSessionAttr(RsfCommand.AFTER_CLOSE_SESSION);
                     if (afterClose != null) {
                         doClose = (Boolean) ConverterUtils.convert(Boolean.TYPE, afterClose);

@@ -50,11 +50,12 @@ import java.io.Serializable;
 /**
  * Handle for Java Byte objects.
  */
-@SuppressWarnings({ "unused" })
+@SuppressWarnings({"unused"})
 public class ByteHandle implements Serializable {
     private static final long serialVersionUID = 4441048616155411120L;
-    private byte              _value;
-    private ByteHandle() {}
+    private byte _value;
+    private ByteHandle() {
+    }
     public ByteHandle(byte value) {
         _value = value;
     }

@@ -15,13 +15,13 @@
  */
 package net.hasor.rsf.center.domain;
 /**
- * 
+ *
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ConsumerPublishInfo extends PublishInfo {
     private static final long serialVersionUID = -335204051257003763L;
-    private int               clientMaximumRequest;                   //最大并发请求数
+    private int clientMaximumRequest;                   //最大并发请求数
     //
     public int getClientMaximumRequest() {
         return clientMaximumRequest;

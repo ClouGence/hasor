@@ -51,19 +51,20 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+
 import net.hasor.libs.com.caucho.hessian.HessianException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * Serializing a Java annotation
  */
-@SuppressWarnings({ "unused" })
+@SuppressWarnings({"unused"})
 public class AnnotationSerializer extends AbstractSerializer {
-    private static final Logger log       = LoggerFactory.getLogger(AnnotationSerializer.class);
-    private static Object[]     NULL_ARGS = new Object[0];
-    private Class<?>            _annType;
-    private Method[]            _methods;
-    private MethodSerializer[]  _methodSerializers;
+    private static final Logger   log       = LoggerFactory.getLogger(AnnotationSerializer.class);
+    private static       Object[] NULL_ARGS = new Object[0];
+    private Class<?>           _annType;
+    private Method[]           _methods;
+    private MethodSerializer[] _methodSerializers;
     public AnnotationSerializer(Class<?> annType) {
         if (!Annotation.class.isAssignableFrom(annType)) {
             throw new IllegalStateException(annType.getName() + " is invalid because it is not a java.lang.annotation.Annotation");

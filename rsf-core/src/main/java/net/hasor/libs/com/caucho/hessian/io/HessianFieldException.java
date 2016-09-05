@@ -52,7 +52,8 @@ package net.hasor.libs.com.caucho.hessian.io;
 public class HessianFieldException extends HessianProtocolException {
     private static final long serialVersionUID = 8138661912158796520L;
     /** Zero-arg constructor. */
-    public HessianFieldException() {}
+    public HessianFieldException() {
+    }
     /** Create the exception. */
     public HessianFieldException(String message) {
         super(message);

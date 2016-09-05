@@ -16,6 +16,7 @@
 package net.hasor.rsf.transform.codec;
 import java.io.IOException;
 import java.util.List;
+
 import org.more.util.StringUtils;
 import io.netty.buffer.ByteBuf;
 import net.hasor.rsf.domain.RsfConstants;
@@ -32,6 +33,7 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
 public class ProtocolUtils {
     private static Protocol<RequestBlock>[]  reqProtocolPool = new Protocol[16];
     private static Protocol<ResponseBlock>[] resProtocolPool = new Protocol[16];
+
     //
     static {
         reqProtocolPool[1] = new RpcRequestProtocol();

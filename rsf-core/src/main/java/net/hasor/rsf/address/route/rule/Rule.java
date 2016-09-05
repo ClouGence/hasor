@@ -22,8 +22,10 @@ package net.hasor.rsf.address.route.rule;
 public interface Rule {
     /**路由规则ID*/
     public String routeID();
+
     /**路由规则原文*/
     public String rawRoute();
+
     /**规则是否启用*/
     public boolean enable();
 }

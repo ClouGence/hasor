@@ -16,13 +16,13 @@
 package net.hasor.rsf.address.route.rule;
 import org.more.builder.ToStringStyle;
 /**
- * 
+ *
  * @version : 2015年12月2日
  * @author 赵永春(zyc@hasor.net)
  */
 class RuleToStringStyle extends ToStringStyle {
     private static final long serialVersionUID = 1L;
-    public RuleToStringStyle() {
+    RuleToStringStyle() {
         super();
         this.setUseShortClassName(true);
         this.setUseIdentityHashCode(false);

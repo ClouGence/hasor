@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+
 import org.more.util.StringUtils;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
@@ -71,7 +72,8 @@ public class FlowRsfCommand implements RsfCommand {
                 }
             }
             /*执行指令*/
-            /*  */if ("-s".equalsIgnoreCase(mode)) {
+            /*  */
+            if ("-s".equalsIgnoreCase(mode)) {
                 this.showFlowControl(sw, nameArg, rsfContext);//显示流控规则
             } else if ("-u".equalsIgnoreCase(mode)) {
                 this.updateFlowControl(sw, nameArg, request);//更新流控规则
@@ -102,7 +104,7 @@ public class FlowRsfCommand implements RsfCommand {
             sw.write("[SUCCEED] content is empty.");
         } else {
             BufferedReader reader = new BufferedReader(new StringReader(body));
-            for (;;) {
+            for (; ; ) {
                 String line = reader.readLine();
                 if (line == null) {
                     break;

@@ -61,6 +61,7 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
+
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.runtime.InvokerHelper;
@@ -88,21 +89,23 @@ import groovy.lang.Tuple;
  * @author Jochen Theodorou
  */
 public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Compilable, Invocable {
-    private static boolean                             debug          = false;
+    private static boolean                                    debug          = false;
     // script-string-to-generated Class map
-    private ManagedConcurrentValueMap<String, Class>   classMap       = new ManagedConcurrentValueMap<String, Class>(ReferenceBundle.getSoftBundle());
+    private        ManagedConcurrentValueMap<String, Class>   classMap       = new ManagedConcurrentValueMap<String, Class>(ReferenceBundle.getSoftBundle());
     // global closures map - this is used to simulate a single
     // global functions namespace 
-    private ManagedConcurrentValueMap<String, Closure> globalClosures = new ManagedConcurrentValueMap<String, Closure>(ReferenceBundle.getHardBundle());
+    private        ManagedConcurrentValueMap<String, Closure> globalClosures = new ManagedConcurrentValueMap<String, Closure>(ReferenceBundle.getHardBundle());
     // class loader for Groovy generated classes
-    private GroovyClassLoader                          loader;
+    private          GroovyClassLoader         loader;
     // lazily initialized factory
-    private volatile GroovyScriptEngineFactory         factory;
+    private volatile GroovyScriptEngineFactory factory;
     // counter used to generate unique global Script class names
-    private static int                                 counter;
+    private static   int                       counter;
+
     static {
         counter = 0;
     }
+
     public GroovyScriptEngineImpl() {
         this(new GroovyClassLoader(getParentLoader(), new CompilerConfiguration()));
     }
@@ -284,7 +287,7 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
                         if (args instanceof Object[]) {
                             return invokeMethod(object, name, (Object[]) args);
                         } else {
-                            return invokeMethod(object, name, new Object[] { args });
+                            return invokeMethod(object, name, new Object[] {args});
                         }
                     }
                     @Override
@@ -377,7 +380,7 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
         if (clazz == null || !clazz.isInterface()) {
             throw new IllegalArgumentException("interface Class expected");
         }
-        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] { clazz }, new InvocationHandler() {
+        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {clazz}, new InvocationHandler() {
             public Object invoke(Object proxy, Method m, Object[] args) throws Throwable {
                 return invokeImpl(thiz, m.getName(), args);
             }

@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.more.future.BasicFuture;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -60,8 +61,8 @@ public final class TelnetClient {
             Channel ch = b.connect(host, port).sync().channel();
             ChannelFuture lastWriteFuture = null;
             BufferedReader commandReader = new BufferedReader(new StringReader(commands.toString()));
-            for (;;) {
-                if (atomicBoolean.get() == true) {
+            for (; ; ) {
+                if (atomicBoolean.get()) {
                     String line = commandReader.readLine();
                     if (line == null) {
                         break;

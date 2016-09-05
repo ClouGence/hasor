@@ -20,18 +20,19 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * 
+ *
  * @version : 2014年11月17日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfRuntimeUtils {
-    protected static Logger                        logger      = LoggerFactory.getLogger(RsfRuntimeUtils.class);
-    private static AtomicLong                      requestID   = new AtomicLong(1);
-    private static ConcurrentMap<String, Class<?>> classCache  = new ConcurrentHashMap<String, Class<?>>();
-    private static ConcurrentMap<Integer, Method>  methodCache = new ConcurrentHashMap<Integer, Method>();
+    protected static Logger                          logger      = LoggerFactory.getLogger(RsfRuntimeUtils.class);
+    private static   AtomicLong                      requestID   = new AtomicLong(1);
+    private static   ConcurrentMap<String, Class<?>> classCache  = new ConcurrentHashMap<String, Class<?>>();
+    private static   ConcurrentMap<Integer, Method>  methodCache = new ConcurrentHashMap<Integer, Method>();
     //
     //
     /**生成一个新的RequestID*/
@@ -106,7 +107,7 @@ public class RsfRuntimeUtils {
             return "Z";
         } else if (classType == void.class) {
             return "V";
-        } else if (classType.isArray() == true) {
+        } else if (classType.isArray()) {
             return "[" + toAsmType(classType.getComponentType());
         } else {
             return classType.getName();

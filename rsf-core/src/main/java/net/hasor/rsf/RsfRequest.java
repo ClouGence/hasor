@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf;
 import java.lang.reflect.Method;
+
 import net.hasor.rsf.address.InterAddress;
 /**
  * 调用请求
@@ -24,21 +25,29 @@ import net.hasor.rsf.address.InterAddress;
 public interface RsfRequest extends RsfHeader {
     /**请求是否为本地发起的。*/
     public boolean isLocal();
+
     /**获取要调用的目标方法。*/
     public Method getMethod();
+
     /**获取上下文。*/
     public RsfContext getContext();
+
     /**请求到达时间（如果是本地发起的请求，该值为当前时间）。*/
     public long getReceiveTime();
+
     /**超时时间。*/
     public int getTimeout();
+
     /**获取请求参数类型。*/
     public Class<?>[] getParameterTypes();
+
     /**获取请求参数值。*/
     public Object[] getParameterObject();
     //
+
     /**获取发送请求的远程服务器使用的地址和端口，如果是本地发起的该地址则是本地RSF的地址。*/
     public InterAddress getRemoteAddress();
+
     /**获取请求准备发送的目标地址（如果是分布式调用该方法会返回null）*/
     public InterAddress getTargetAddress();
 }

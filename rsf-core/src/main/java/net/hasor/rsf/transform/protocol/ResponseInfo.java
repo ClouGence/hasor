@@ -27,7 +27,8 @@ public class ResponseInfo extends OptionInfo {
     private byte[] returnData    = null; //返回数据
     //
     //
-    public ResponseInfo() {}
+    public ResponseInfo() {
+    }
     /**获取请求ID。*/
     public long getRequestID() {
         return this.requestID;

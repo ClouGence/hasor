@@ -14,16 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.container;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import org.more.FormatException;
-import org.more.util.StringUtils;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
@@ -38,6 +28,17 @@ import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.InterServiceAddress;
 import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.domain.ServiceDomain;
+import org.more.FormatException;
+import org.more.util.StringUtils;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 /**
  * 服务注册器
  * @version : 2014年11月12日
@@ -109,7 +110,7 @@ abstract class RsfBindBuilder implements RsfBinder {
         @Override
         public ConfigurationBuilder<T> group(String group) {
             Hasor.assertIsNotNull(group, "group is null.");
-            if (group.contains("/") == true) {
+            if (group.contains("/")) {
                 throw new FormatException(group + " contain '/'");
             }
             this.serviceDefine.getDomain().setBindGroup(group);
@@ -119,7 +120,7 @@ abstract class RsfBindBuilder implements RsfBinder {
         @Override
         public ConfigurationBuilder<T> name(String name) {
             Hasor.assertIsNotNull(name, "name is null.");
-            if (name.contains("/") == true) {
+            if (name.contains("/")) {
                 throw new FormatException(name + " contain '/'");
             }
             this.serviceDefine.getDomain().setBindName(name);
@@ -129,7 +130,7 @@ abstract class RsfBindBuilder implements RsfBinder {
         @Override
         public ConfigurationBuilder<T> version(String version) {
             Hasor.assertIsNotNull(version, "version is null.");
-            if (version.contains("/") == true) {
+            if (version.contains("/")) {
                 throw new FormatException(version + " contain '/'");
             }
             this.serviceDefine.getDomain().setBindVersion(version);
@@ -148,7 +149,7 @@ abstract class RsfBindBuilder implements RsfBinder {
         @Override
         public ConfigurationBuilder<T> serialize(String serializeType) {
             Hasor.assertIsNotNull(serializeType, "serializeType is null.");
-            if (serializeType.contains("/") == true) {
+            if (serializeType.contains("/")) {
                 throw new FormatException(serializeType + " contain '/'");
             }
             this.serviceDefine.getDomain().setSerializeType(serializeType);

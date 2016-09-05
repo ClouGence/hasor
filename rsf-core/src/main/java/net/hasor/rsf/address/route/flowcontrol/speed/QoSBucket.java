@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.address.route.flowcontrol.speed;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -26,16 +27,16 @@ import org.slf4j.LoggerFactory;
  * </ol>
  */
 public class QoSBucket {
-    protected Logger         logger             = LoggerFactory.getLogger(getClass());
-    private static final int DEFAULT_RATE       = 50;
-    private static final int DEFAULT_PEAK       = 100;
-    private static final int DEFAULT_TIMEWINDOW = 1000;
-    private int              rate;                                                    // 稳态中，每秒允许的调用次数
-    private int              peak;                                                    // 突发调用峰值的上限，即令牌桶容量
-    private int              timeWindow;                                              // 令牌桶刷新最小间隔，单位毫秒
-    private AtomicInteger    tokens;                                                  // 当前可用令牌数量
-    private volatile long    lastRefreshTime;                                         // 下一次刷新令牌桶的时间
-    private volatile double  leftDouble;
+    protected            Logger logger             = LoggerFactory.getLogger(getClass());
+    private static final int    DEFAULT_RATE       = 50;
+    private static final int    DEFAULT_PEAK       = 100;
+    private static final int    DEFAULT_TIMEWINDOW = 1000;
+    private          int           rate;                                                    // 稳态中，每秒允许的调用次数
+    private          int           peak;                                                    // 突发调用峰值的上限，即令牌桶容量
+    private          int           timeWindow;                                              // 令牌桶刷新最小间隔，单位毫秒
+    private          AtomicInteger tokens;                                                  // 当前可用令牌数量
+    private volatile long          lastRefreshTime;                                         // 下一次刷新令牌桶的时间
+    private volatile double        leftDouble;
     //
     //
     public QoSBucket() {

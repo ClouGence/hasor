@@ -59,10 +59,10 @@ public class IdentityIntMap {
      * it's impossible to distinguish between the two.
      */
     public final static int NULL = 0xdeadbeef; // Integer.MIN_VALUE + 1;
-    private Object[]        _keys;
-    private int[]           _values;
-    private int             _size;
-    private int             _prime;
+    private Object[] _keys;
+    private int[]    _values;
+    private int      _size;
+    private int      _prime;
     /**
      * Create a new IntMap.  Default size is 16.
      */
@@ -181,7 +181,7 @@ public class IdentityIntMap {
         sbuf.append("]");
         return sbuf.toString();
     }
-    public static final int[] PRIMES = { 1, /* 1<< 0 = 1 */
+    public static final int[] PRIMES = {1, /* 1<< 0 = 1 */
             2, /* 1<< 1 = 2 */
             3, /* 1<< 2 = 4 */
             7, /* 1<< 3 = 8 */
@@ -209,8 +209,7 @@ public class IdentityIntMap {
             33554393, /* 1<<25 = 33554432 */
             67108859, /* 1<<26 = 67108864 */
             134217689, /* 1<<27 = 134217728 */
-            268435399, /* 1<<28 = 268435456 */
-    };
+            268435399, /* 1<<28 = 268435456 */};
     public static int getBiggestPrime(int value) {
         for (int i = PRIMES.length - 1; i >= 0; i--) {
             if (PRIMES[i] <= value)

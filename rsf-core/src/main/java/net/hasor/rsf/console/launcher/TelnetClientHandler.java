@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.console.launcher;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.more.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
  */
 @Sharable
 public class TelnetClientHandler extends SimpleChannelInboundHandler<String> {
-    protected static Logger     logger = LoggerFactory.getLogger(TelnetClientHandler.class);
+    protected static Logger logger = LoggerFactory.getLogger(TelnetClientHandler.class);
     private BasicFuture<Object> closeFuture;
     private AtomicBoolean       atomicBoolean;
     public TelnetClientHandler(BasicFuture<Object> closeFuture, AtomicBoolean atomicBoolean) {

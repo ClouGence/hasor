@@ -58,30 +58,31 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import net.hasor.libs.com.caucho.hessian.HessianException;
 /**
  * The classloader-specific Factory for returning serialization
  */
-@SuppressWarnings({ "unused" })
+@SuppressWarnings({"unused"})
 public class ContextSerializerFactory {
-    private static final Logger                                                            log                       = Logger.getLogger(ContextSerializerFactory.class.getName());
-    private static Deserializer                                                            OBJECT_DESERIALIZER       = new BasicDeserializer(BasicDeserializer.OBJECT);
-    private static final WeakHashMap<ClassLoader, SoftReference<ContextSerializerFactory>> _contextRefMap            = new WeakHashMap<ClassLoader, SoftReference<ContextSerializerFactory>>();
-    private static final ClassLoader                                                       _systemClassLoader;
-    private static HashMap<String, Serializer>                                             _staticSerializerMap;
-    private static HashMap<String, Deserializer>                                           _staticDeserializerMap;
-    private static HashMap<String, Deserializer>                                           _staticClassNameMap;
-    private ContextSerializerFactory                                                       _parent;
-    private ClassLoader                                                                    _loader;
-    private final HashSet<String>                                                          _serializerFiles          = new HashSet<String>();
-    private final HashSet<String>                                                          _deserializerFiles        = new HashSet<String>();
-    private final HashMap<String, Serializer>                                              _serializerClassMap       = new HashMap<String, Serializer>();
-    private final ConcurrentHashMap<String, Serializer>                                    _customSerializerMap      = new ConcurrentHashMap<String, Serializer>();
-    private final HashMap<Class<?>, Serializer>                                            _serializerInterfaceMap   = new HashMap<Class<?>, Serializer>();
-    private final HashMap<String, Deserializer>                                            _deserializerClassMap     = new HashMap<String, Deserializer>();
-    private final HashMap<String, Deserializer>                                            _deserializerClassNameMap = new HashMap<String, Deserializer>();
-    private final ConcurrentHashMap<String, Deserializer>                                  _customDeserializerMap    = new ConcurrentHashMap<String, Deserializer>();
-    private final HashMap<Class<?>, Deserializer>                                          _deserializerInterfaceMap = new HashMap<Class<?>, Deserializer>();
+    private static final Logger                                                            log                 = Logger.getLogger(ContextSerializerFactory.class.getName());
+    private static       Deserializer                                                      OBJECT_DESERIALIZER = new BasicDeserializer(BasicDeserializer.OBJECT);
+    private static final WeakHashMap<ClassLoader, SoftReference<ContextSerializerFactory>> _contextRefMap      = new WeakHashMap<ClassLoader, SoftReference<ContextSerializerFactory>>();
+    private static final ClassLoader                   _systemClassLoader;
+    private static       HashMap<String, Serializer>   _staticSerializerMap;
+    private static       HashMap<String, Deserializer> _staticDeserializerMap;
+    private static       HashMap<String, Deserializer> _staticClassNameMap;
+    private              ContextSerializerFactory      _parent;
+    private              ClassLoader                   _loader;
+    private final HashSet<String>                         _serializerFiles          = new HashSet<String>();
+    private final HashSet<String>                         _deserializerFiles        = new HashSet<String>();
+    private final HashMap<String, Serializer>             _serializerClassMap       = new HashMap<String, Serializer>();
+    private final ConcurrentHashMap<String, Serializer>   _customSerializerMap      = new ConcurrentHashMap<String, Serializer>();
+    private final HashMap<Class<?>, Serializer>           _serializerInterfaceMap   = new HashMap<Class<?>, Serializer>();
+    private final HashMap<String, Deserializer>           _deserializerClassMap     = new HashMap<String, Deserializer>();
+    private final HashMap<String, Deserializer>           _deserializerClassNameMap = new HashMap<String, Deserializer>();
+    private final ConcurrentHashMap<String, Deserializer> _customDeserializerMap    = new ConcurrentHashMap<String, Deserializer>();
+    private final HashMap<Class<?>, Deserializer>         _deserializerInterfaceMap = new HashMap<Class<?>, Deserializer>();
     public ContextSerializerFactory(ContextSerializerFactory parent, ClassLoader loader) {
         if (loader == null)
             loader = _systemClassLoader;
@@ -345,7 +346,8 @@ public class ContextSerializerFactory {
         ClassLoader systemClassLoader = null;
         try {
             systemClassLoader = ClassLoader.getSystemClassLoader();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         _systemClassLoader = systemClassLoader;
     }
 }

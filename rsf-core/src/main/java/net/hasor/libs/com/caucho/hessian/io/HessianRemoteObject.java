@@ -51,5 +51,6 @@ package net.hasor.libs.com.caucho.hessian.io;
  */
 public interface HessianRemoteObject {
     public String getHessianType();
+
     public String getHessianURL();
 }

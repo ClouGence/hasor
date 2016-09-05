@@ -33,11 +33,11 @@ import io.netty.buffer.ByteBufAllocator;
  * @author 赵永春(zyc@hasor.net)
  */
 public class PoolBlock {
-    public static final int NULL_MARK   = 0xFFFFFFFF; //表示NULL
-    public static int       DataMaxSize = 0x00FFFFFF; //单条数据最大约16MB
-    public static short     PoolMaxSize = 0x0FFF;     //池上限为 0~4095条
-    private int[]           poolMap     = {};
-    private ByteBuf         poolData    = null;
+    public static final int     NULL_MARK   = 0xFFFFFFFF; //表示NULL
+    public static       int     DataMaxSize = 0x00FFFFFF; //单条数据最大约16MB
+    public static       short   PoolMaxSize = 0x0FFF;     //池上限为 0~4095条
+    private             int[]   poolMap     = {};
+    private             ByteBuf poolData    = null;
     //
     public PoolBlock() {
         poolData = ByteBufAllocator.DEFAULT.heapBuffer();

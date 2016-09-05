@@ -16,7 +16,7 @@
 package net.hasor.rsf.domain.provider;
 import net.hasor.rsf.address.InterAddress;
 /**
- * 
+ *
  * @version : 2015年12月18日
  * @author 赵永春(zyc@hasor.net)
  */

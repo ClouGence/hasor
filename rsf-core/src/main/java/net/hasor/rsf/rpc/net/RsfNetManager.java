@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.more.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,12 +50,12 @@ import net.hasor.rsf.utils.NetworkUtils;
 import net.hasor.rsf.utils.TimerManager;
 /**
  * 维护RSF同其它RSF的连接，并提供数据投递和接收服务。
- * 
+ *
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfNetManager {
-    protected Logger                                                logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     private final RsfEnvironment                                    rsfEnvironment;
     private final TimerManager                                      timerManager;
     private final ConcurrentMap<String, BasicFuture<RsfNetChannel>> channelMapping;
@@ -63,8 +64,8 @@ public class RsfNetManager {
     private final ReceivedListener                                  receivedListener;
     private final ChannelRegister                                   channelRegister;
     //
-    private InterAddress                                            bindAddress;
-    private RsfNetChannel                                           bindListener;
+    private       InterAddress                                      bindAddress;
+    private       RsfNetChannel                                     bindListener;
     //
     //
     public RsfNetManager(RsfEnvironment rsfEnvironment, ReceivedListener receivedListener) {

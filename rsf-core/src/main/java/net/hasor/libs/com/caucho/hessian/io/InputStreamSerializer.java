@@ -52,7 +52,8 @@ import java.io.InputStream;
  * Serializing a stream object.
  */
 public class InputStreamSerializer extends AbstractSerializer {
-    public InputStreamSerializer() {}
+    public InputStreamSerializer() {
+    }
     public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
         InputStream is = (InputStream) obj;
         if (is == null)

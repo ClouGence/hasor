@@ -47,6 +47,7 @@
  */
 package net.hasor.libs.com.caucho.hessian.io;
 import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.libs.com.caucho.hessian.HessianException;
@@ -55,7 +56,7 @@ import net.hasor.libs.com.caucho.hessian.HessianException;
  */
 abstract public class AbstractSerializer implements Serializer {
     public static final NullSerializer NULL = new NullSerializer();
-    protected final Logger             log  = LoggerFactory.getLogger(getClass());
+    protected final     Logger         log  = LoggerFactory.getLogger(getClass());
     @Override
     public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
         if (out.addRef(obj)) {

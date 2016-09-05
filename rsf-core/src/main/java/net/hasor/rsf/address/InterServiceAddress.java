@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import net.hasor.core.Hasor;
 import org.more.FormatException;
 import org.more.util.StringUtils;
@@ -42,7 +43,7 @@ public class InterServiceAddress extends InterAddress {
     }
     public InterServiceAddress(URI serviceURL) {
         super(serviceURL);
-        if (checkFormat(serviceURL) == false) {
+        if (!checkFormat(serviceURL)) {
             throw new FormatException(serviceURL + " format error.");
         }
         String servicePath = serviceURL.getPath();

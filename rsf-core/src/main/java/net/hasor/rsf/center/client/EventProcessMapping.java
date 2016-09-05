@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +56,7 @@ class EventProcessMapping {
     }
     //
     private static final Map<RsfCenterEvent, EventProcess> eventProcessMap;
+
     static {
         eventProcessMap = new HashMap<RsfCenterEvent, EventProcess>();
         eventProcessMap.put(RsfCenterEvent.RsfCenter_AppendAddressEvent, new AppendAddressEvent());
@@ -71,6 +73,7 @@ class EventProcessMapping {
         eventProcessMap.put(RsfCenterEvent.RsfCenter_UpdateDefaultFlowControlEvent, new UpdateDefaultFlowControlEvent());
         eventProcessMap.put(RsfCenterEvent.RsfCenter_UpdateFlowControlEvent, new UpdateFlowControlEvent());
     }
+
     //
     public static EventProcess findEventProcess(String eventType) {
         RsfCenterEvent type = RsfCenterEvent.getEventEnum(eventType);
@@ -90,7 +93,7 @@ class EventProcessMapping {
             String eventBody = centerEventBody.getEventBody();
             //
             List<InterAddress> addressList = convertTo(eventBody);
-            if (addressList != null && addressList.isEmpty() == false) {
+            if (addressList != null && !addressList.isEmpty()) {
                 rsfUpdater.appendAddress(serviceID, addressList);
                 logger.info("receiver Event from RsfCenter , eventType=AppendAddressEvent, serviceID = {} , addressSet = {}.", serviceID, eventBody);
             } else {
@@ -107,7 +110,7 @@ class EventProcessMapping {
             String eventBody = centerEventBody.getEventBody();
             //
             List<InterAddress> addressList = convertTo(eventBody);
-            if (addressList != null && addressList.isEmpty() == false) {
+            if (addressList != null && !addressList.isEmpty()) {
                 rsfUpdater.refreshAddress(serviceID, addressList);
                 logger.info("receiver Event from RsfCenter , eventType=RefreshAddressEvent, serviceID = {} , atTime = {}.", serviceID, nowData());
             } else {
@@ -124,7 +127,7 @@ class EventProcessMapping {
             String eventBody = centerEventBody.getEventBody();
             //
             List<InterAddress> addressList = convertTo(eventBody);
-            if (addressList != null && addressList.isEmpty() == false) {
+            if (addressList != null && !addressList.isEmpty()) {
                 rsfUpdater.removeAddress(serviceID, addressList);
                 logger.info("receiver Event from RsfCenter , eventType=RemoveAddressEvent, serviceID = {} , addressSet = {}.", serviceID, eventBody);
             } else {

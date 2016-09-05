@@ -17,6 +17,7 @@ package net.hasor.rsf.serialize;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.XmlNode;
@@ -29,8 +30,8 @@ import net.hasor.rsf.domain.RsfException;
  * @author 赵永春(zyc@hasor.net)
  */
 public class SerializeFactory implements SerializeList {
-    protected static Logger             logger   = LoggerFactory.getLogger(SerializeFactory.class);
-    private Map<String, SerializeCoder> coderMap = new HashMap<String, SerializeCoder>();
+    protected static Logger                      logger   = LoggerFactory.getLogger(SerializeFactory.class);
+    private          Map<String, SerializeCoder> coderMap = new HashMap<String, SerializeCoder>();
     //
     /**获取序列化（编码/解码）器。*/
     public SerializeCoder getSerializeCoder(String codeName) {

@@ -141,5 +141,14 @@
             <!-- (失效地址重试机制)当地址失效之后要经过多长时间才能被重新列入备选地址。 -时间间隔为(毫秒) 12分钟。 -->
             <invalidWaitTime>720000</invalidWaitTime>
         </addressPool>
+
+        <!-- 安全 -->
+        <security>
+            <!-- app_key -->
+            <appKeyID>${RSF_APP_KEY}</appKeyID>
+            <!-- app KeySecret -->
+            <appKeySecret>${RSF_APP_KEY_SECRET}</appKeySecret>
+        </security>
+
     </hasor.rsfConfig>
 </config>

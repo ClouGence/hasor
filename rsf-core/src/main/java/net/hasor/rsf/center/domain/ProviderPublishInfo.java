@@ -15,13 +15,13 @@
  */
 package net.hasor.rsf.center.domain;
 /**
- * 
+ *
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ProviderPublishInfo extends PublishInfo {
     private static final long serialVersionUID = -6681610352758467621L;
-    private int               queueMaxSize;                            //最大服务处理队列长度
+    private int queueMaxSize;                            //最大服务处理队列长度
     //
     public int getQueueMaxSize() {
         return queueMaxSize;

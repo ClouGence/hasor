@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.container;
 import java.lang.annotation.Annotation;
+
 import org.more.util.StringUtils;
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
@@ -33,16 +34,16 @@ class AnnoRsfServiceValue implements RsfService {
         //1.真实值
         RsfService serviceInfo = serviceType.getAnnotation(RsfService.class);
         if (serviceInfo != null) {
-            if (StringUtils.isBlank(serviceInfo.group()) == false) {
+            if (!StringUtils.isBlank(serviceInfo.group())) {
                 this.serviceGroup = serviceInfo.group();
             }
-            if (StringUtils.isBlank(serviceInfo.name()) == false) {
+            if (!StringUtils.isBlank(serviceInfo.name())) {
                 this.serviceName = serviceInfo.name();
             }
-            if (StringUtils.isBlank(serviceInfo.version()) == false) {
+            if (!StringUtils.isBlank(serviceInfo.version())) {
                 this.serviceVersion = serviceInfo.version();
             }
-            if (StringUtils.isBlank(serviceInfo.serializeType()) == false) {
+            if (!StringUtils.isBlank(serviceInfo.serializeType())) {
                 this.serializeType = serviceInfo.serializeType();
             }
             if (serviceInfo.clientTimeout() > 0) {

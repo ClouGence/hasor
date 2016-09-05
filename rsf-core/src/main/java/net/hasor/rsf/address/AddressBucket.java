@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
+import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
+import net.hasor.rsf.domain.RsfConstants;
+import net.hasor.rsf.utils.ZipUtils;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -26,12 +33,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
-import net.hasor.rsf.domain.RsfConstants;
-import net.hasor.rsf.utils.ZipUtils;
 /**
  * 描述：用于接收地址更新同时也用来计算有效和无效地址。
  * 也负责提供服务地址列表集，负责分类存储和处理同一个服务的各种类型的服务地址数据，比如：
@@ -48,27 +49,29 @@ import net.hasor.rsf.utils.ZipUtils;
  */
 class AddressBucket {
     protected static final Logger logger;
+
     static {
         logger = LoggerFactory.getLogger(AddressBucket.class);
     }
-    private static final String                           D       = "D|";
-    private static final String                           S       = "S|";
-    public static final String                            Dynamic = "dynamic";
-    public static final String                            Static  = "static";
+
+    private static final String D       = "D|";
+    private static final String S       = "S|";
+    public static final  String Dynamic = "dynamic";
+    public static final  String Static  = "static";
     //流控&路由
-    private volatile FlowControlRef                       flowControlRef;     //默认流控规则引用
-    private volatile RuleRef                              ruleRef;
+    private volatile FlowControlRef                                flowControlRef;     //默认流控规则引用
+    private volatile RuleRef                                       ruleRef;
     //原始数据
-    private final String                                  serviceID;          //服务ID
-    private final String                                  unitName;           //服务所属单元
-    private final List<InterAddress>                      allAddressList;     //所有备选地址
-    private final List<InterAddress>                      staticAddressList;  //不会失效的地址（即使是注册中心推送也不会失效）
+    private final    String                                        serviceID;          //服务ID
+    private final    String                                        unitName;           //服务所属单元
+    private final    List<InterAddress>                            allAddressList;     //所有备选地址
+    private final    List<InterAddress>                            staticAddressList;  //不会失效的地址（即使是注册中心推送也不会失效）
     //
     //运行时动态更新的地址
-    private ConcurrentMap<InterAddress, InnerInvalidInfo> invalidAddresses;   //失效状态统计信息
+    private          ConcurrentMap<InterAddress, InnerInvalidInfo> invalidAddresses;   //失效状态统计信息
     //下面时计算出来的数据
-    private List<InterAddress>                            localUnitAddresses; //本单元地址
-    private List<InterAddress>                            availableAddresses; //所有可用地址（包括本地单元）
+    private          List<InterAddress>                            localUnitAddresses; //本单元地址
+    private          List<InterAddress>                            availableAddresses; //所有可用地址（包括本地单元）
     //
     public AddressBucket(String serviceID, String unitName) {
         this.serviceID = serviceID;
@@ -83,7 +86,7 @@ class AddressBucket {
     /**保存地址列表到zip流中。*/
     public void saveToZip(ZipOutputStream outStream) throws IOException {
         //1.服务地址本
-        if (this.allAddressList.isEmpty() == false) {
+        if (!this.allAddressList.isEmpty()) {
             StringBuilder strLogs = new StringBuilder();
             StringWriter strWriter = new StringWriter();
             BufferedWriter bfwriter = new BufferedWriter(strWriter);
@@ -93,7 +96,8 @@ class AddressBucket {
                 } else {
                     strLogs.append(D);
                 }
-                strLogs.append(inter.toString() + " , ");
+                strLogs.append(inter.toString());
+                strLogs.append(" , ");
                 bfwriter.write(inter.toString());
                 bfwriter.newLine();
             }
@@ -157,7 +161,7 @@ class AddressBucket {
         //服务地址本
         String salName = this.serviceID + RsfConstants.ServiceAddressList_ZipEntry;
         List<String> dataBody = ZipUtils.readToList(zipFile, salName);
-        if (dataBody != null && dataBody.isEmpty() == false) {
+        if (dataBody != null && !dataBody.isEmpty()) {
             logger.info("service {} read address form {}", salName, zipFile.getName());
             StringBuilder strBuffer = new StringBuilder();
             ArrayList<InterAddress> staticNewHostSet = new ArrayList<InterAddress>();
@@ -169,10 +173,12 @@ class AddressBucket {
                 try {
                     if (line.startsWith(S)) {
                         staticNewHostSet.add(new InterAddress(line.substring(1)));
-                        strBuffer.append(line + " , ");
+                        strBuffer.append(line);
+                        strBuffer.append(" , ");
                     } else if (line.startsWith(D)) {
                         dynamicNewHostSet.add(new InterAddress(line.substring(1)));
-                        strBuffer.append(line + " , ");
+                        strBuffer.append(line);
+                        strBuffer.append(" , ");
                     }
                 } catch (URISyntaxException e) {
                     logger.info("read address '{}' has URISyntaxException.", line);
@@ -221,14 +227,14 @@ class AddressBucket {
             //1.保证不要重复添加。
             boolean doAdd = true;
             for (InterAddress hasAddress : this.allAddressList) {
-                if (newHost.equals(hasAddress) == true) {
+                if (newHost.equals(hasAddress)) {
                     doAdd = false;
                     break;
                 }
             }
             //2.确定是否需要再次激活。
             for (InterAddress hasAddress : this.invalidAddresses.keySet()) {
-                if (newHost.equals(hasAddress) == true) {
+                if (newHost.equals(hasAddress)) {
                     toAvailable.add(newHost);
                 }
             }
@@ -253,14 +259,14 @@ class AddressBucket {
     //
     /**
      * 将地址置为失效的。
-     * @param address 失效的地址。
+     * @param newInvalid 失效的地址。
      * @param timeout 失效时长
      */
     public void invalidAddress(InterAddress newInvalid, long timeout) {
-        if (this.staticAddressList.contains(newInvalid) == true) {
+        if (this.staticAddressList.contains(newInvalid)) {
             return;
         }
-        if (this.allAddressList.contains(newInvalid) == false) {
+        if (!this.allAddressList.contains(newInvalid)) {
             return;
         }
         InnerInvalidInfo invalidInfo = this.invalidAddresses.get(newInvalid);
@@ -281,7 +287,7 @@ class AddressBucket {
      * @param address 要被删除的地址。
      */
     public void removeAddress(InterAddress address) {
-        if (this.allAddressList.contains(address) == false) {
+        if (!this.allAddressList.contains(address)) {
             return;
         }
         this.allAddressList.remove(address);
@@ -339,7 +345,7 @@ class AddressBucket {
             if (unitList == null || unitList.isEmpty()) {
                 unitList = availableList;
             }
-            if (unitFlowControl.isLocalUnit(availableList.size(), unitList.size()) == false) {
+            if (!unitFlowControl.isLocalUnit(availableList.size(), unitList.size())) {
                 unitList = availableList;
             }
         }

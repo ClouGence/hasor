@@ -16,7 +16,7 @@
 package net.hasor.rsf.transform.group;
 import io.netty.channel.CombinedChannelDuplexHandler;
 /**
- * 
+ *
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */

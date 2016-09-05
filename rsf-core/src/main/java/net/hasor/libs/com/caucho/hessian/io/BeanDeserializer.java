@@ -103,7 +103,7 @@ public class BeanDeserializer extends AbstractMapDeserializer {
                 Method method = (Method) _methodMap.get(key);
                 if (method != null) {
                     Object value = in.readObject(method.getParameterTypes()[0]);
-                    method.invoke(obj, new Object[] { value });
+                    method.invoke(obj, new Object[] {value});
                 } else {
                     Object value = in.readObject();
                 }
@@ -124,7 +124,8 @@ public class BeanDeserializer extends AbstractMapDeserializer {
         try {
             if (_readResolve != null)
                 return _readResolve.invoke(obj, new Object[0]);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         return obj;
     }
     protected Object instantiate() throws Exception {
@@ -173,7 +174,8 @@ public class BeanDeserializer extends AbstractMapDeserializer {
                 }
                 name = name.substring(3);
                 int j = 0;
-                for (; j < name.length() && Character.isUpperCase(name.charAt(j)); j++) {}
+                for (; j < name.length() && Character.isUpperCase(name.charAt(j)); j++) {
+                }
                 if (j == 1)
                     name = name.substring(0, j).toLowerCase() + name.substring(j);
                 else if (j > 1)

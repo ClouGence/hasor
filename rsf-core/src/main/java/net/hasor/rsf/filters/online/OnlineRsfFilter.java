@@ -30,7 +30,7 @@ public class OnlineRsfFilter implements RsfFilter {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
-        if (request.isLocal() == false && request.getContext().isOnline() == false) {
+        if (!request.isLocal() && !request.getContext().isOnline()) {
             response.sendStatus(ProtocolStatus.Forbidden, "the service is not yet ready.");
             return;
         }

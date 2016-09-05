@@ -26,9 +26,9 @@ import net.hasor.rsf.RsfResponse;
  */
 public class RsfFilterHandler implements RsfFilterChain {
     private static final Provider<RsfFilter>[] EMPTY_FILTER = new Provider[0];
-    private final Provider<RsfFilter>[]        rsfFilter;
-    private final RsfFilterChain               rsfChain;
-    private int                                index;
+    private final Provider<RsfFilter>[] rsfFilter;
+    private final RsfFilterChain        rsfChain;
+    private       int                   index;
     //
     public RsfFilterHandler(final Provider<RsfFilter>[] rsfFilter, final RsfFilterChain rsfChain) {
         this.rsfChain = rsfChain;

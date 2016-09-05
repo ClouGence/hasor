@@ -80,6 +80,9 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private   boolean         automaticOnline      = true;
     private   String          wrapperType          = null;
     //
+    private   String          appKeyID             = null;
+    private   String          appKeySecret         = null;
+    //
     //
     public DefaultRsfSettings(Settings settings) throws IOException {
         super(settings);
@@ -218,6 +221,14 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     public String[] getConsoleInBoundAddress() {
         return this.consoleInBound;
     }
+    @Override
+    public String getAppKeyID() {
+        return this.appKeyID;
+    }
+    @Override
+    public String getAppKeySecret() {
+        return this.appKeySecret;
+    }
     //
     public void refresh() throws IOException {
         super.refresh();
@@ -235,7 +246,7 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
                 for (XmlNode opt : optSet.getChildren("option")) {
                     String key = opt.getAttribute("key");
                     String var = opt.getText();
-                    if (StringUtils.isBlank(key) == false) {
+                    if (!StringUtils.isBlank(key)) {
                         this.serverOptionManager.addOption(key, var);
                     }
                 }
@@ -247,7 +258,7 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
                 for (XmlNode opt : optSet.getChildren("option")) {
                     String key = opt.getAttribute("key");
                     String var = opt.getText();
-                    if (StringUtils.isBlank(key) == false) {
+                    if (!StringUtils.isBlank(key)) {
                         this.clientOptionManager.addOption(key, var);
                     }
                 }
@@ -273,15 +284,15 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
                 if (StringUtils.isNotBlank(serverURL)) {
                     serverURL = serverURL.trim();
                     try {
-                        if (InterAddress.checkFormat(new URI(serverURL)) == false) {
+                        if (!InterAddress.checkFormat(new URI(serverURL))) {
                             serverURL = serverURL + "/default";
-                            if (InterAddress.checkFormat(new URI(serverURL)) == false) {
+                            if (!InterAddress.checkFormat(new URI(serverURL))) {
                                 logger.error("centerServer {} format error.", centerServer.getText());
                                 continue;
                             }
                         }
                         InterAddress interAddress = new InterAddress(serverURL);
-                        if (addressArrays.contains(interAddress) == false) {
+                        if (!addressArrays.contains(interAddress)) {
                             addressArrays.add(interAddress);
                         }
                     } catch (Exception e) {
@@ -334,6 +345,9 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         this.enableCenter = this.centerServerSet.length != 0;
         this.automaticOnline = getBoolean("hasor.rsfConfig.centerServers.automaticOnline", true);
         this.wrapperType = getString("hasor.rsfConfig.client.wrapperType", "fast");//默认使用快速的
+        //
+        this.appKeyID = getString("security.appKeyID");
+        this.appKeySecret = getString("security.appKeySecret");
         //
         logger.info("loadRsfConfig complete!");
     }

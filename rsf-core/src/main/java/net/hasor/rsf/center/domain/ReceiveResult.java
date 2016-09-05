@@ -22,9 +22,9 @@ import java.util.List;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ReceiveResult implements Serializable {
-    private static final long serialVersionUID = -8277039265148152750L;
-    private String            centerSnapshot   = null;
-    private List<String>      providerList     = null;
+    private static final long         serialVersionUID = -8277039265148152750L;
+    private              String       centerSnapshot   = null;
+    private              List<String> providerList     = null;
     public String getCenterSnapshot() {
         return centerSnapshot;
     }

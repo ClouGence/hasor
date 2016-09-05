@@ -54,7 +54,8 @@ import net.hasor.libs.com.caucho.hessian.HessianException;
 public class HessianMethodSerializationException extends HessianException {
     private static final long serialVersionUID = 2666434387932585147L;
     /** Zero-arg constructor. */
-    public HessianMethodSerializationException() {}
+    public HessianMethodSerializationException() {
+    }
     /** Create the exception. */
     public HessianMethodSerializationException(String message) {
         super(message);

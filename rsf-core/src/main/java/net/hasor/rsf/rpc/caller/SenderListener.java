@@ -18,7 +18,7 @@ import net.hasor.core.Provider;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 /**
- * 
+ *
  * @version : 2015年12月8日
  * @author 赵永春(zyc@hasor.net)
  */

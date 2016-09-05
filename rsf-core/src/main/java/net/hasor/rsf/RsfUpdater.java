@@ -16,6 +16,7 @@
 package net.hasor.rsf;
 import java.util.Collection;
 import java.util.List;
+
 import net.hasor.rsf.address.InterAddress;
 /**
  * 服务配置更新器。
@@ -25,44 +26,60 @@ import net.hasor.rsf.address.InterAddress;
 public interface RsfUpdater {
     /**更新服务地址本计算规则（服务级）*/
     public boolean updateDefaultServiceRoute(String scriptBody);
+
     /**更新服务地址本计算规则（服务级）*/
     public String defaultServiceRoute();
     //
+
     /**更新本地方法级地址计算脚本。*/
     public boolean updateDefaultMethodRoute(String scriptBody);
+
     /**更新本地方法级地址计算脚本。*/
     public String defaultMethodRoute();
     //
+
     /**更新本地参数级地址计算脚本。*/
     public boolean updateDefaultArgsRoute(String scriptBody);
+
     /**更新本地参数级地址计算脚本。*/
     public String defaultArgsRoute();
     //
+
     /**更新服务路由策略*/
     public boolean updateDefaultFlowControl(String flowControl);
+
     /**更新服务路由策略*/
     public String defaultFlowControl();
     //
+
     /**更新服务地址本计算规则（服务级）*/
     public boolean updateServiceRoute(String serviceID, String scriptBody);
+
     /**更新服务地址本计算规则（服务级）*/
     public String serviceRoute(String serviceID);
     //
+
     /**更新本地方法级地址计算脚本。*/
     public boolean updateMethodRoute(String serviceID, String scriptBody);
+
     /**更新本地方法级地址计算脚本。*/
     public String methodRoute(String serviceID);
     //
+
     /**更新本地参数级地址计算脚本。*/
     public boolean updateArgsRoute(String serviceID, String scriptBody);
+
     /**更新本地参数级地址计算脚本。*/
     public String argsRoute(String serviceID);
     //
+
     /**更新服务路由策略*/
     public boolean updateFlowControl(String serviceID, String flowControl);
+
     /**更新服务路由策略*/
     public String flowControl(String serviceID);
     //
+
     /**
      * 新增或追加更新服务地址信息。<p>
      * 如果追加的地址是已存在的失效地址，那么updateAddress方法将重新激活这些失效地址。
@@ -70,22 +87,27 @@ public interface RsfUpdater {
      * @param newHostSet 追加更新的地址。
      */
     public void appendAddress(String serviceID, Collection<InterAddress> newHostSet);
+
     /**刷新服务的地址本，使其使用全新的地址本。*/
     public void refreshAddress(String serviceID, List<InterAddress> addressList);
+
     /**使用新的地址本替换已有的地址本。*/
     public void refreshAddressCache();
+
     /**
      * 将服务的地址设置成临时失效状态，把地址从服务的地址本中彻底删除。
      * @param serviceID 服务ID。
      * @param invalidAddress 将要删除的地址。
      */
     public void removeAddress(String serviceID, InterAddress invalidAddress);
+
     /**
      * 将服务的地址设置成临时失效状态，把地址从服务的地址本中彻底删除。
      * @param serviceID 服务ID。
      * @param invalidAddressSet 将要删除的地址。
      */
     public void removeAddress(String serviceID, Collection<InterAddress> invalidAddressSet);
+
     /**某一个地址不可用了，从所有服务中删除这个地址*/
     public void removeAddress(InterAddress address);
     //

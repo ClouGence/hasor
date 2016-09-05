@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.console.commands;
 import java.io.StringWriter;
+
 import org.more.util.StringUtils;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
@@ -22,7 +23,7 @@ import net.hasor.rsf.console.RsfCmd;
 import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
 /**
- * 
+ *
  * @version : 2016年4月3日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -49,13 +50,13 @@ public class SwitchRsfCommand implements RsfCommand {
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 0) {
             String todoArg = args[0];
-            if (StringUtils.equalsIgnoreCase("online", todoArg) == true) {
+            if (StringUtils.equalsIgnoreCase("online", todoArg)) {
                 rsfContext.online();
                 sw.write("[SUCCEED] switch to online : " + rsfContext.isOnline());
-            } else if (StringUtils.equalsIgnoreCase("offline", todoArg) == true) {
+            } else if (StringUtils.equalsIgnoreCase("offline", todoArg)) {
                 rsfContext.offline();
                 sw.write("[SUCCEED] switch to offline : " + rsfContext.isOnline());
-            } else if (StringUtils.equalsIgnoreCase("info", todoArg) == true) {
+            } else if (StringUtils.equalsIgnoreCase("info", todoArg)) {
                 String status = rsfContext.isOnline() ? "online" : "offline";
                 sw.write("[SUCCEED] application is " + status);
             } else {

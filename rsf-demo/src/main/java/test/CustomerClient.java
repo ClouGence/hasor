@@ -7,7 +7,7 @@ import net.hasor.rsf.RsfModule;
 import net.hasor.rsf.address.InterAddress;
 import test.services.EchoService;
 /**
- * 
+ *
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -35,7 +35,8 @@ public class CustomerClient {
             try {
                 String res = echoService.sayHello("Hello Word");
                 System.out.println(res);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
     }
 }

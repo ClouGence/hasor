@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
+
 import org.more.util.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ZipUtils {
     protected final static Logger logger      = LoggerFactory.getLogger(ZipUtils.class);
-    public static final String    CharsetName = "UTF-8";
+    public static final    String CharsetName = "UTF-8";
     public static void writeEntry(ZipOutputStream zipStream, String scriptBody, String entryName, String comment) throws IOException, UnsupportedEncodingException {
         ZipEntry entry = new ZipEntry(entryName);
         entry.setComment(comment);
@@ -46,7 +47,7 @@ public class ZipUtils {
             bfwriter.write(scriptBody);
             bfwriter.flush();
             writer.flush();
-            zipStream.flush();
+            zipStream.finish();
         }
         zipStream.closeEntry();
     }

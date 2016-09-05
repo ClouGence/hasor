@@ -22,5 +22,6 @@ import net.hasor.rsf.address.InterAddress;
  */
 interface ChannelRegister {
     void completed(InterAddress targetAddress, RsfNetChannel netChannel);
+
     void failed(InterAddress targetAddress, Throwable cause);
 }

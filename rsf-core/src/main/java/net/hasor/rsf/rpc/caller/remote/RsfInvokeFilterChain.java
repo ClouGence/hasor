@@ -16,6 +16,7 @@
 package net.hasor.rsf.rpc.caller.remote;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
 import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilterChain;
@@ -32,7 +33,7 @@ class RsfInvokeFilterChain implements RsfFilterChain {
     //
     //default invoke
     public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
-        if (response.isResponse() == true)
+        if (response.isResponse())
             return;
         RsfBindInfo<?> bindInfo = request.getBindInfo();
         Provider<?> targetProvider = request.getContext().getServiceProvider(bindInfo);

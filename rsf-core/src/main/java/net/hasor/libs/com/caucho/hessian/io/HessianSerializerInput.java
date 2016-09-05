@@ -128,7 +128,8 @@ public class HessianSerializerInput extends Hessian2Input {
             try {
                 Method method = cl.getMethod("readResolve", new Class[0]);
                 return method.invoke(obj, new Object[0]);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
             return obj;
         } catch (IOException e) {
             throw e;

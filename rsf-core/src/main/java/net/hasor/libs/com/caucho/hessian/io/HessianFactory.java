@@ -49,17 +49,18 @@ package net.hasor.libs.com.caucho.hessian.io;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
+
 import net.hasor.libs.com.caucho.hessian.util.HessianFreeList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * Factory for creating HessianInput and HessianOutput streams.
  */
-@SuppressWarnings({ "unused" })
+@SuppressWarnings({"unused"})
 public class HessianFactory {
-    public static final Logger                    log                 = LoggerFactory.getLogger(HessianFactory.class);
-    private SerializerFactory                     _serializerFactory;
-    private SerializerFactory                     _defaultSerializerFactory;
+    public static final Logger log = LoggerFactory.getLogger(HessianFactory.class);
+    private SerializerFactory _serializerFactory;
+    private SerializerFactory _defaultSerializerFactory;
     private final HessianFreeList<Hessian2Output> _freeHessian2Output = new HessianFreeList<Hessian2Output>(32);
     private final HessianFreeList<HessianOutput>  _freeHessianOutput  = new HessianFreeList<HessianOutput>(32);
     private final HessianFreeList<Hessian2Input>  _freeHessian2Input  = new HessianFreeList<Hessian2Input>(32);
@@ -111,7 +112,8 @@ public class HessianFactory {
     /**
      * Frees a Hessian 2.0 deserializer
      */
-    public void freeHessian2StreamingInput(Hessian2StreamingInput in) {}
+    public void freeHessian2StreamingInput(Hessian2StreamingInput in) {
+    }
     /**
      * Creates a new Hessian 1.0 deserializer.
      */

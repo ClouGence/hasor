@@ -23,6 +23,7 @@ import net.hasor.rsf.domain.RsfException;
 public interface SendCallBack {
     /**发送失败。*/
     public void failed(long requestID, RsfException e);
+
     /**发送成功。*/
     public void complete(long requestID);
 }

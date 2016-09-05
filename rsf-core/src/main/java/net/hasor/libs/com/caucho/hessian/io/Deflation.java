@@ -51,9 +51,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
-@SuppressWarnings({ "unused" })
+@SuppressWarnings({"unused"})
 public class Deflation extends HessianEnvelope {
-    public Deflation() {}
+    public Deflation() {
+    }
     public Hessian2Output wrap(Hessian2Output out) throws IOException {
         OutputStream os = new DeflateOutputStream(out);
         Hessian2Output filterOut = new Hessian2Output(os);

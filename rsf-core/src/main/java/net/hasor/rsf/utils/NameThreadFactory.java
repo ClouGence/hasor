@@ -16,7 +16,7 @@
 package net.hasor.rsf.utils;
 import java.util.concurrent.ThreadFactory;
 /**
- * 
+ *
  * @version : 2015年3月28日
  * @author 赵永春(zyc@hasor.net)
  */

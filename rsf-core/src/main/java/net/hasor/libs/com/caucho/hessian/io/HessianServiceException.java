@@ -52,12 +52,13 @@ package net.hasor.libs.com.caucho.hessian.io;
  */
 public class HessianServiceException extends Exception {
     private static final long serialVersionUID = -4745317939227013095L;
-    private String            code;
-    private Object            detail;
+    private String code;
+    private Object detail;
     /**
      * Zero-arg constructor.
      */
-    public HessianServiceException() {}
+    public HessianServiceException() {
+    }
     /**
      * Create the exception.
      */

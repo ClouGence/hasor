@@ -72,29 +72,30 @@ import java.util.HashMap;
  */
 @SuppressWarnings("unused")
 public class HessianInput extends AbstractHessianInput {
-    private static int          END_OF_DATA = -2;
-    private static Field        _detailMessageField;
+    private static int END_OF_DATA = -2;
+    private static Field             _detailMessageField;
     // factory for deserializing objects in the input stream
-    protected SerializerFactory _serializerFactory;
-    protected ArrayList<Object> _refs;
+    protected      SerializerFactory _serializerFactory;
+    protected      ArrayList<Object> _refs;
     // the underlying input stream
-    private InputStream         _is;
+    private        InputStream       _is;
     // a peek character
-    protected int               _peek       = -1;
+    protected int _peek = -1;
     // the method for a call
-    private String              _method;
-    private Reader              _chunkReader;
-    private InputStream         _chunkInputStream;
-    private Throwable           _replyFault;
-    private StringBuffer        _sbuf       = new StringBuffer();
+    private String      _method;
+    private Reader      _chunkReader;
+    private InputStream _chunkInputStream;
+    private Throwable   _replyFault;
+    private StringBuffer _sbuf = new StringBuffer();
     // true if this is the last chunk
-    private boolean             _isLastChunk;
+    private boolean _isLastChunk;
     // the chunk length
-    private int                 _chunkLength;
+    private int     _chunkLength;
     /**
      * Creates an uninitialized Hessian input stream.
      */
-    public HessianInput() {}
+    public HessianInput() {
+    }
     /**
      * Creates a new Hessian input stream, initialized with an
      * underlying input stream.
@@ -220,7 +221,8 @@ public class HessianInput extends AbstractHessianInput {
      */
     public void completeCall() throws IOException {
         int tag = read();
-        if (tag == 'z') {} else
+        if (tag == 'z') {
+        } else
             throw error("expected end of call ('z') at " + codeName(tag) + ".  Check method arguments and ensure method overloading is enabled if necessary");
     }
     /**
@@ -279,7 +281,8 @@ public class HessianInput extends AbstractHessianInput {
             if (message != null && _detailMessageField != null) {
                 try {
                     _detailMessageField.set(_replyFault, message);
-                } catch (Throwable e) {}
+                } catch (Throwable e) {
+                }
             }
             return _replyFault;
         } else {
@@ -1193,7 +1196,8 @@ public class HessianInput extends AbstractHessianInput {
                 return len;
             }
             public void close() throws IOException {
-                while (read() >= 0) {}
+                while (read() >= 0) {
+                }
                 _isClosed = true;
             }
         };
@@ -1266,6 +1270,7 @@ public class HessianInput extends AbstractHessianInput {
         try {
             _detailMessageField = Throwable.class.getDeclaredField("detailMessage");
             _detailMessageField.setAccessible(true);
-        } catch (Throwable e) {}
+        } catch (Throwable e) {
+        }
     }
 }

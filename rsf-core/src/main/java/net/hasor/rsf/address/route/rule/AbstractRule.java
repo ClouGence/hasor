@@ -30,9 +30,9 @@ import net.hasor.core.Settings;
  */
 public abstract class AbstractRule implements Rule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    private String   routeID;
-    private String   routebody;
-    private boolean  enable;
+    private String  routeID;
+    private String  routebody;
+    private boolean enable;
     //
     /**路由规则ID*/
     public String routeID() {
@@ -52,11 +52,11 @@ public abstract class AbstractRule implements Rule {
         this.enable = enable;
     }
     /**设置规则ID*/
-    protected void setRouteID(String routeID) {
+    void setRouteID(String routeID) {
         this.routeID = routeID;
     }
     /**设置规则内容*/
-    protected void setRoutebody(String routebody) {
+    void setRouteBody(String routebody) {
         this.routebody = routebody;
     }
     @Override

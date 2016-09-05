@@ -54,16 +54,16 @@ import java.util.ArrayList;
  */
 @SuppressWarnings("unused")
 public class HessianDebugState implements Hessian2Constants {
-    private PrintWriter          _dbg;
-    private State                _state;
+    private PrintWriter _dbg;
+    private State       _state;
     private ArrayList<State>     _stateStack    = new ArrayList<State>();
     private ArrayList<ObjectDef> _objectDefList = new ArrayList<ObjectDef>();
     private ArrayList<String>    _typeDefList   = new ArrayList<String>();
-    private int                  _refId;
-    private boolean              _isNewline     = true;
-    private boolean              _isObject      = false;
-    private int                  _column;
-    private int                  _depth         = 0;
+    private int _refId;
+    private boolean _isNewline = true;
+    private boolean _isObject  = false;
+    private int _column;
+    private int _depth = 0;
     /**
      * Creates an uninitialized Hessian input stream.
      */
@@ -249,7 +249,8 @@ public class HessianDebugState implements Hessian2Constants {
     }
     abstract class State {
         State _next;
-        State() {}
+        State() {
+        }
         State(State next) {
             _next = next;
         }
@@ -671,7 +672,8 @@ public class HessianDebugState implements Hessian2Constants {
         }
     }
     abstract class State1 extends State {
-        State1() {}
+        State1() {
+        }
         State1(State next) {
             super(next);
         }
@@ -828,8 +830,8 @@ public class HessianDebugState implements Hessian2Constants {
         }
     }
     class DoubleIntegerState extends State {
-        int     _length;
-        int     _value;
+        int _length;
+        int _value;
         boolean _isFirst = true;
         DoubleIntegerState(State next, int length) {
             super(next);
@@ -978,13 +980,13 @@ public class HessianDebugState implements Hessian2Constants {
         private static final int UTF_2_1 = 1;
         private static final int UTF_3_1 = 2;
         private static final int UTF_3_2 = 3;
-        char                     _typeCode;
-        StringBuilder            _value  = new StringBuilder();
-        int                      _lengthIndex;
-        int                      _length;
-        boolean                  _isLastChunk;
-        int                      _utfState;
-        char                     _ch;
+        char _typeCode;
+        StringBuilder _value = new StringBuilder();
+        int     _lengthIndex;
+        int     _length;
+        boolean _isLastChunk;
+        int     _utfState;
+        char    _ch;
         StringState(State next, char typeCode, boolean isLastChunk) {
             super(next);
             _typeCode = typeCode;
@@ -1166,10 +1168,10 @@ public class HessianDebugState implements Hessian2Constants {
         private static final int TYPE  = 0;
         private static final int KEY   = 1;
         private static final int VALUE = 2;
-        private int              _refId;
-        private int              _state;
-        private int              _valueDepth;
-        private boolean          _hasData;
+        private int     _refId;
+        private int     _state;
+        private int     _valueDepth;
+        private boolean _hasData;
         MapState(State next, int refId) {
             super(next);
             _refId = refId;
@@ -1245,10 +1247,10 @@ public class HessianDebugState implements Hessian2Constants {
         private static final int TYPE  = 0;
         private static final int KEY   = 1;
         private static final int VALUE = 2;
-        private int              _refId;
-        private int              _state;
-        private int              _valueDepth;
-        private boolean          _hasData;
+        private int     _refId;
+        private int     _state;
+        private int     _valueDepth;
+        private boolean _hasData;
         MapState1(State next, int refId) {
             super(next);
             _refId = refId;
@@ -1331,16 +1333,16 @@ public class HessianDebugState implements Hessian2Constants {
         }
     }
     class ObjectDefState extends State {
-        private static final int  TYPE     = 1;
-        private static final int  COUNT    = 2;
-        private static final int  FIELD    = 3;
-        private static final int  COMPLETE = 4;
-        private int               _refId;
-        private int               _state;
-        private boolean           _hasData;
-        private int               _count;
-        private String            _type;
-        private ArrayList<String> _fields  = new ArrayList<String>();
+        private static final int TYPE     = 1;
+        private static final int COUNT    = 2;
+        private static final int FIELD    = 3;
+        private static final int COMPLETE = 4;
+        private int     _refId;
+        private int     _state;
+        private boolean _hasData;
+        private int     _count;
+        private String  _type;
+        private ArrayList<String> _fields = new ArrayList<String>();
         ObjectDefState(State next) {
             super(next);
             _state = TYPE;
@@ -1400,11 +1402,11 @@ public class HessianDebugState implements Hessian2Constants {
     class ObjectState extends State {
         private static final int TYPE  = 0;
         private static final int FIELD = 1;
-        private int              _refId;
-        private int              _state;
-        private ObjectDef        _def;
-        private int              _count;
-        private int              _fieldDepth;
+        private int       _refId;
+        private int       _state;
+        private ObjectDef _def;
+        private int       _count;
+        private int       _fieldDepth;
         ObjectState(State next, int refId) {
             super(next);
             _refId = refId;
@@ -1468,11 +1470,11 @@ public class HessianDebugState implements Hessian2Constants {
         private static final int TYPE   = 0;
         private static final int LENGTH = 1;
         private static final int VALUE  = 2;
-        private int              _refId;
-        private int              _state;
-        private boolean          _hasData;
-        private int              _count;
-        private int              _valueDepth;
+        private int     _refId;
+        private int     _state;
+        private boolean _hasData;
+        private int     _count;
+        private int     _valueDepth;
         ListState1(State next, int refId) {
             super(next);
             _refId = refId;
@@ -1551,11 +1553,11 @@ public class HessianDebugState implements Hessian2Constants {
         private static final int TYPE   = 0;
         private static final int LENGTH = 1;
         private static final int VALUE  = 2;
-        private int              _refId;
-        private int              _state;
-        private boolean          _hasData;
-        private int              _count;
-        private int              _valueDepth;
+        private int     _refId;
+        private int     _state;
+        private boolean _hasData;
+        private int     _count;
+        private int     _valueDepth;
         ListState(State next, int refId, boolean isType) {
             super(next);
             _refId = refId;
@@ -1627,14 +1629,14 @@ public class HessianDebugState implements Hessian2Constants {
         private static final int TYPE   = 0;
         private static final int LENGTH = 1;
         private static final int VALUE  = 2;
-        private int              _refId;
-        private boolean          _isTyped;
-        private boolean          _isLength;
-        private int              _state;
-        private boolean          _hasData;
-        private int              _length;
-        private int              _count;
-        private int              _valueDepth;
+        private int     _refId;
+        private boolean _isTyped;
+        private boolean _isLength;
+        private int     _state;
+        private boolean _hasData;
+        private int     _length;
+        private int     _count;
+        private int     _valueDepth;
         CompactListState(State next, int refId, boolean isTyped) {
             super(next);
             _isTyped = isTyped;
@@ -1727,9 +1729,9 @@ public class HessianDebugState implements Hessian2Constants {
     class Hessian2State extends State {
         private static final int MAJOR = 0;
         private static final int MINOR = 1;
-        private int              _state;
-        private int              _major;
-        private int              _minor;
+        private int _state;
+        private int _major;
+        private int _minor;
         Hessian2State(State next) {
             super(next);
         }
@@ -1758,9 +1760,9 @@ public class HessianDebugState implements Hessian2Constants {
         private static final int METHOD = 3;
         private static final int VALUE  = 4;
         private static final int ARG    = 5;
-        private int              _state;
-        private int              _major;
-        private int              _minor;
+        private int _state;
+        private int _major;
+        private int _minor;
         CallState1(State next) {
             super(next);
         }
@@ -1815,9 +1817,9 @@ public class HessianDebugState implements Hessian2Constants {
         private static final int METHOD = 0;
         private static final int COUNT  = 1;
         private static final int ARG    = 2;
-        private int              _state = METHOD;
-        private int              _i;
-        private int              _count;
+        private              int _state = METHOD;
+        private int _i;
+        private int _count;
         Call2State(State next) {
             super(next);
         }
@@ -1873,9 +1875,9 @@ public class HessianDebugState implements Hessian2Constants {
         private static final int HEADER = 2;
         private static final int VALUE  = 3;
         private static final int END    = 4;
-        private int              _state;
-        private int              _major;
-        private int              _minor;
+        private int _state;
+        private int _major;
+        private int _minor;
         ReplyState1(State next) {
             _next = next;
         }
@@ -1971,9 +1973,9 @@ public class HessianDebugState implements Hessian2Constants {
         private static final int TYPE  = 0;
         private static final int VALUE = 1;
         private static final int END   = 2;
-        private int              _state;
-        private int              _major;
-        private int              _minor;
+        private int _state;
+        private int _major;
+        private int _minor;
         RemoteState(State next) {
             super(next);
         }
@@ -2004,7 +2006,7 @@ public class HessianDebugState implements Hessian2Constants {
         private int     _length;
         private boolean _isLast;
         private boolean _isFirst = true;
-        private State   _childState;
+        private State _childState;
         StreamingState(State next, boolean isLast) {
             super(next);
             _isLast = isLast;

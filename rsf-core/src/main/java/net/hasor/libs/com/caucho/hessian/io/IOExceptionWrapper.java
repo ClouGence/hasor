@@ -52,7 +52,7 @@ import java.io.IOException;
  */
 public class IOExceptionWrapper extends IOException {
     private static final long serialVersionUID = -7110860645460617174L;
-    private Throwable         _cause;
+    private Throwable _cause;
     public IOExceptionWrapper(Throwable cause) {
         super(cause.toString());
         _cause = cause;

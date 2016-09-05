@@ -53,7 +53,7 @@ import java.util.HashMap;
  */
 public class ClassDeserializer extends AbstractMapDeserializer {
     private static final HashMap<String, Class<?>> _primClasses = new HashMap<String, Class<?>>();
-    private ClassLoader                            _loader;
+    private ClassLoader _loader;
     public ClassDeserializer(ClassLoader loader) {
         _loader = loader;
     }
