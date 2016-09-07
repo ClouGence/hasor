@@ -21,7 +21,7 @@ import java.io.IOException;
 import net.hasor.libs.com.caucho.hessian.io.HessianInput;
 import net.hasor.libs.com.caucho.hessian.io.HessianOutput;
 import net.hasor.libs.com.caucho.hessian.io.SerializerFactory;
-import net.hasor.rsf.serialize.SerializeCoder;
+import net.hasor.rsf.SerializeCoder;
 /**
  *
  * @version : 2014年9月19日

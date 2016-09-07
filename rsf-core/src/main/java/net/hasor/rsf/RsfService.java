@@ -19,7 +19,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * Rsf绑定信息。
+ * 宣布该接口是 RSF 接口,该接口会允许远端其它 RSF 客户端发起调用。
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.Provider;
 import net.hasor.rsf.address.InterAddress;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
 /**
  * RSF 环境。
  * @version : 2014年11月18日
@@ -71,7 +71,7 @@ public interface RsfContext {
     public AppContext getAppContext();
 
     /**获取{@link Environment}*/
-    public Environment getEnvironment();
+    public RsfEnvironment getEnvironment();
 
     /**获取地址路由更新接口。*/
     public RsfUpdater getUpdater();

@@ -17,11 +17,12 @@ package net.hasor.rsf.transform.protocol;
 import java.util.ArrayList;
 import java.util.List;
 /**
- * RSF Request 数据对象。
+ * RSF Request 的化身,是封装 Request 的数据对象。
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RequestInfo extends OptionInfo {
+    private byte         version        = 0;    //版本
     private long         requestID      = 0;    //请求ID
     private long         receiveTime    = 0;    //接收请求（本地时间戳）
     private String       serviceName    = null; //远程服务名
@@ -30,13 +31,19 @@ public class RequestInfo extends OptionInfo {
     private String       targetMethod   = null; //远程服务方法名
     private String       serializeType  = null; //序列化策略
     private int          clientTimeout  = 0;    //远程调用时最大忍受等待时间
+    private boolean      isMessage      = false;//是否为消息请求
     private List<String> paramTypes     = null; //参数类型
     private List<byte[]> paramValues    = null; //参数值
     //
     //
-    public RequestInfo() {
+    public RequestInfo(byte version) {
+        this.version = version;
         this.paramTypes = new ArrayList<String>();
         this.paramValues = new ArrayList<byte[]>();
+    }
+    /**获取使用的版本号。*/
+    public byte getVersion() {
+        return version;
     }
     /**获取请求ID。*/
     public long getRequestID() {
@@ -101,6 +108,14 @@ public class RequestInfo extends OptionInfo {
     /**设置远程客户端调用超时时间。*/
     public void setClientTimeout(int clientTimeout) {
         this.clientTimeout = clientTimeout;
+    }
+    /**是否为消息请求*/
+    public boolean isMessage() {
+        return isMessage;
+    }
+    /**设置是否为消息请求*/
+    public void setMessage(boolean message) {
+        isMessage = message;
     }
     //
     /**添加请求参数。*/

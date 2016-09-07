@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.services;
+import net.hasor.rsf.RsfMessage;
 /**
  * 服务接口
  * @version : 2015年11月27日
  * @author 赵永春(zyc@hasor.net)
  */
+@RsfMessage
 public interface EchoService {
     public String sayHello(String echo);
 }

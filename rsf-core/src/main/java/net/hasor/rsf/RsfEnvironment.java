@@ -22,4 +22,6 @@ import net.hasor.core.Environment;
  */
 public interface RsfEnvironment extends Environment {
     public RsfSettings getSettings();
+
+    public SerializeCoder getSerializeCoder(String codeName);
 }

@@ -13,13 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.serialize;
+package net.hasor.rsf;
+import java.io.Serializable;
 /**
- * 序列化名单。
- * @version : 2015年12月13日
+ * 用于RPC消息模式下,消息发送的返回值。
+ * @version : 2015年1月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface SerializeList {
-    /**获取序列化（编码/解码）器。*/
-    public SerializeCoder getSerializeCoder(String codeName);
+public interface RsfResult extends Serializable {
+    /**返回操作是否成功。*/
+    public boolean isSuccess();
+
+    /**获取操作返回码。*/
+    public int getErrorCode();
+
+    /**获取操作状态描述。*/
+    public String getErrorMessage();
+
+    /**获取消息ID*/
+    public long getMessageID();
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.transform.protocol;
+package net.hasor.rsf.transform.protocol.v1;
 import org.more.util.ArrayUtils;
 /**
  * RSF 1.0 Response 二进制传输协议
@@ -49,7 +49,6 @@ public class ResponseBlock extends PoolBlock {
     private short serializeType = 0;  //byte[2]  序列化类型
     private short returnData    = 0;  //byte[2]  返回数据
     private int[] optionMap     = {}; //(attr-index,attr-index)
-    //
     //
     /**获取协议版本。*/
     public byte getVersion() {

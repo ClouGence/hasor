@@ -17,34 +17,43 @@ package net.hasor.rsf.transform.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import net.hasor.rsf.domain.RsfConstants;
-import net.hasor.rsf.transform.codec.ProtocolUtils;
-import net.hasor.rsf.transform.protocol.RequestBlock;
+import net.hasor.rsf.RsfEnvironment;
+import net.hasor.rsf.transform.codec.CodecAdapter;
+import net.hasor.rsf.transform.codec.CodecAdapterFactory;
 import net.hasor.rsf.transform.protocol.RequestInfo;
-import net.hasor.rsf.transform.protocol.ResponseBlock;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
+import net.hasor.rsf.transform.protocol.v1.RequestBlock;
+import net.hasor.rsf.transform.protocol.v1.ResponseBlock;
 /**
  * 编码器，支持将{@link RequestInfo}、{@link RequestBlock}或者{@link ResponseInfo}、{@link ResponseBlock}编码写入Socket
  * @version : 2014年10月10日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RSFProtocolEncoder extends MessageToByteEncoder<Object> {
+    private RsfEnvironment rsfEnvironment;
+    public RSFProtocolEncoder(RsfEnvironment rsfEnvironment) {
+        this.rsfEnvironment = rsfEnvironment;
+    }
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
         if (msg instanceof RequestInfo) {
             RequestInfo info = (RequestInfo) msg;
-            ProtocolUtils.wirteRequestInfo(RsfConstants.Version_1, info, out);
+            CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, info.getVersion());
+            factory.wirteRequestBlock(factory.buildRequestBlock(info), out);
         }
         if (msg instanceof ResponseInfo) {
             ResponseInfo info = (ResponseInfo) msg;
-            ProtocolUtils.wirteResponseInfo(RsfConstants.Version_1, info, out);
+            CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, info.getVersion());
+            factory.wirteResponseBlock(factory.buildResponseBlock(info), out);
         }
         if (msg instanceof RequestBlock) {
             RequestBlock block = (RequestBlock) msg;
-            ProtocolUtils.wirteRequestBlock(RsfConstants.Version_1, block, out);
+            CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, block.getVersion());
+            factory.wirteRequestBlock(block, out);
         }
         if (msg instanceof ResponseBlock) {
             ResponseBlock block = (ResponseBlock) msg;
-            ProtocolUtils.wirteResponseBlock(RsfConstants.Version_1, block, out);
+            CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, block.getVersion());
+            factory.wirteResponseBlock(block, out);
         }
         ctx.flush();
     }

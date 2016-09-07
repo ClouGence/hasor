@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.client;
-import net.hasor.core.Settings;
 import net.hasor.rsf.*;
 import net.hasor.rsf.center.domain.RsfCenterConstants;
 import org.slf4j.Logger;

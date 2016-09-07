@@ -50,6 +50,10 @@ public class RsfBindInfoWrap<T> implements RsfBindInfo<T> {
         return this.target.getBindType();
     }
     @Override
+    public boolean isMessage() {
+        return this.target.isMessage();
+    }
+    @Override
     public int getClientTimeout() {
         return this.target.getClientTimeout();
     }

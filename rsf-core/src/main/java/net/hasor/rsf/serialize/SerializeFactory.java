@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 package net.hasor.rsf.serialize;
+import net.hasor.core.XmlNode;
+import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.SerializeCoder;
+import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RsfException;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import net.hasor.core.XmlNode;
-import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.domain.RsfException;
 /**
  * 序列化工厂
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public class SerializeFactory implements SerializeList {
+public class SerializeFactory {
     protected static Logger                      logger   = LoggerFactory.getLogger(SerializeFactory.class);
     private          Map<String, SerializeCoder> coderMap = new HashMap<String, SerializeCoder>();
     //
@@ -52,8 +54,11 @@ public class SerializeFactory implements SerializeList {
             List<XmlNode> serList = e.getChildren("serialize");
             for (XmlNode s : serList) {
                 initSerialize(factory, s);
-                types += (s.getAttribute("name") + ",");
+                types += ("," + s.getAttribute("name"));
             }
+        }
+        if (!StringUtils.isBlank(types)) {
+            types = types.substring(1);
         }
         logger.info("SerializeFactory init. -> [{}]", types);
         return factory;

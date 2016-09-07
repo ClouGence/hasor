@@ -25,7 +25,7 @@ import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.transform.protocol.RequestInfo;
-import net.hasor.rsf.transform.protocol.ResponseBlock;
+import net.hasor.rsf.transform.protocol.v1.ResponseBlock;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  *

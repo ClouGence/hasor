@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.domain;
-import org.more.builder.ReflectionToStringBuilder;
-import org.more.builder.ToStringStyle;
 import net.hasor.core.info.MetaDataAdapter;
 import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfMessage;
+import org.more.builder.ReflectionToStringBuilder;
+import org.more.builder.ToStringStyle;
 /**
  * 服务的描述信息，包括了服务的发布和订阅信息。
  * @version : 2014年9月12日
@@ -30,12 +31,14 @@ public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> 
     private String         bindGroup      = "default"; //服务分组
     private String         bindVersion    = "1.0.0";   //服务版本
     private Class<T>       bindType       = null;      //服务类型
+    private boolean        isMessage      = false;     //是否为消息接口
     private int            clientTimeout  = 6000;      //调用超时（毫秒）
     private String         serializeType  = null;      //传输序列化类型
     private RsfServiceType serviceType    = null;      //服务类型（提供者 or 消费者）
     //
     public ServiceDomain(Class<T> bindType) {
         this.bindType = bindType;
+        this.isMessage = bindType.isAnnotationPresent(RsfMessage.class);
     }
     /**在注册中心上快照，用于（发布 or 订阅）*/
     public String getCenterSnapshot() {
@@ -78,6 +81,10 @@ public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> 
     /**服务类型*/
     public Class<T> getBindType() {
         return this.bindType;
+    }
+    /**是否为消息接口。*/
+    public boolean isMessage() {
+        return this.isMessage;
     }
     /**获取客户端调用服务超时时间。*/
     public int getClientTimeout() {

@@ -17,29 +17,38 @@ package net.hasor.rsf.domain;
 import java.nio.charset.Charset;
 /**
  * 各种常量
+ * <p>一个RSF数据包头的定义如下:
+ *  <li>第 1 个二进制位:表示是否为 RSF 数据包,合法的数据为 0x80 (1000 0000)<li/>
+ *  <li>第 2 ~ 4 个二进制位:表示数据包的分类,加上包头合法的数据为 0x80 ~ 0xF0 (1000 0000 ~ 1111 0000)<li/>
+ *  <li>最后的 4 个二进制位,用于表示该分类包的版本。可选范围为:0~15 (0000 0000 ~ 0000 1111) <li/>
+ * </p>
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfConstants {
-    // RSF数据包   -（1000 0000）
+    // RSF数据包           -（1000 0000）
     public static final byte    RSF_Packet                  = (byte) (0x80);
-    // RSF心跳包   -（1000 0000）
-    //public static final byte                       RSF_Packet_Heart    = RSF_Packet | 0x00;
-    // RSF请求包   -（1001 0000）
-    public static final byte    RSF_Packet_Request          = RSF_Packet | 0x10;
-    // RSF响应包   -（1010 0000）
-    public static final byte    RSF_Packet_Response         = RSF_Packet | 0x20;
-    // RSF备用包   -（1011 0000）
-    //public static final byte                       RSF_Packet_xxxx     = RSF_Packet | 0x30;
+    //
+    // RSF所有包头分类      -（1000 0000 ~ 1111 0000）
+    public static final byte    RSF_Packet_Heart            = RSF_Packet | 0x00; // 1000
+    public static final byte    RSF_Packet_InvokerRequest   = RSF_Packet | 0x10; // 1001
+    public static final byte    RSF_Packet_MessageRequest   = RSF_Packet | 0x20; // 1010
+    public static final byte    RSF_Packet_Response         = RSF_Packet | 0x30; // 1011
+    public static final byte    RSF_Packet_xxxx4            = RSF_Packet | 0x40; // 1100 (未使用)
+    public static final byte    RSF_Packet_xxxx5            = RSF_Packet | 0x50; // 1101 (未使用)
+    public static final byte    RSF_Packet_xxxx6            = RSF_Packet | 0x60; // 1110 (未使用)
+    public static final byte    RSF_Packet_xxxx7            = RSF_Packet | 0x70; // 1111 (未使用)
     //
     //
-    // 协议1.0
-    public static final byte    Version_1                   = (byte) (0x01);
-    // RSF请求标记（1100 0000）
-    public static final byte    RSF_Request                 = Version_1 | RSF_Packet_Request;
-    // RSF响应标记（1000 0000）
-    public static final byte    RSF_Response                = Version_1 | RSF_Packet_Response;
+    // ---------------------------------------------------------------------------------------------
+    // 协议头1.0
+    public static final byte    Version_1                   = (byte) (0x01);                            // 1000 0001
+    public static final byte    RSF_InvokerRequest          = Version_1 | RSF_Packet_InvokerRequest;    // 1001 0001
+    public static final byte    RSF_MessageRequest          = Version_1 | RSF_Packet_MessageRequest;    // 1010 0001
+    public static final byte    RSF_Response                = Version_1 | RSF_Packet_Response;          // 1011 0001
     //
+    //
+    // ---------------------------------------------------------------------------------------------
     public static final Charset DEFAULT_CHARSET             = Charset.forName("UTF-8");
     public static final boolean DEFAULT_ONLINE_STATUS       = false;
     //

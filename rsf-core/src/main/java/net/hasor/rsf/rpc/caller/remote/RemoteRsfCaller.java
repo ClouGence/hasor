@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.caller.remote;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import org.more.future.BasicFuture;
 import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.rpc.caller.RsfCaller;
-import net.hasor.rsf.transform.codec.ProtocolUtils;
+import net.hasor.rsf.transform.codec.CodecAdapter;
+import net.hasor.rsf.transform.codec.CodecAdapterFactory;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 import net.hasor.rsf.utils.ExecutesManager;
+import org.more.future.BasicFuture;
+
+import java.util.concurrent.*;
 /**
  * 扩展{@link RsfCaller}，用来支持远程机器发来的调用请求。
  * @version : 2015年12月8日
@@ -62,6 +59,8 @@ public class RemoteRsfCaller extends RsfCaller {
      * @param info 请求消息。
      */
     public ResponseInfo doRequest(InterAddress target, RequestInfo info) {
+        RsfEnvironment rsfEnv = this.getContext().getEnvironment();
+        CodecAdapter codecAdapter = CodecAdapterFactory.getCodecAdapterByVersion(rsfEnv, info.getVersion());
         long requestID = info.getRequestID();
         ResponseInfo resp = null;
         try {
@@ -75,16 +74,16 @@ public class RemoteRsfCaller extends RsfCaller {
         } catch (TimeoutException e) {
             String errorInfo = "do request(" + requestID + ") failed -> waiting for response.";
             logger.error(errorInfo);
-            resp = ProtocolUtils.buildStatus(RsfConstants.RSF_Response, requestID, ProtocolStatus.Timeout, errorInfo);
+            resp = codecAdapter.buildResponseStatus(requestID, ProtocolStatus.Timeout, errorInfo);
         } catch (InterruptedException e) {
             String errorInfo = "do request(" + requestID + ") failed -> InterruptedException.";
             logger.error(errorInfo);
-            resp = ProtocolUtils.buildStatus(RsfConstants.RSF_Response, requestID, ProtocolStatus.InvokeError, errorInfo);
+            resp = codecAdapter.buildResponseStatus(requestID, ProtocolStatus.InvokeError, errorInfo);
         } catch (ExecutionException e) {
             Throwable ex = e.getCause();
             String errorInfo = "do request(" + requestID + ") failed -> " + ex.getMessage();
             logger.error(errorInfo);
-            resp = ProtocolUtils.buildStatus(RsfConstants.RSF_Response, requestID, ProtocolStatus.InvokeError, errorInfo);
+            resp = codecAdapter.buildResponseStatus(requestID, ProtocolStatus.InvokeError, errorInfo);
         }
         return resp;
     }
@@ -102,12 +101,12 @@ public class RemoteRsfCaller extends RsfCaller {
         } catch (RejectedExecutionException e) {
             String msgLog = "rejected request, queue is full." + e.getMessage();
             logger.warn(msgLog, e);
-            ResponseInfo resp = ProtocolUtils.buildStatus(RsfConstants.RSF_Response, info.getRequestID(), ProtocolStatus.QueueFull, msgLog);
+            RsfEnvironment rsfEnv = this.getContext().getEnvironment();
+            CodecAdapter codecAdapter = CodecAdapterFactory.getCodecAdapterByVersion(rsfEnv, info.getVersion());
+            ResponseInfo resp = codecAdapter.buildResponseStatus(info.getRequestID(), ProtocolStatus.QueueFull, msgLog);
             this.senderListener.sendResponse(target, resp);
         }
     }
-    //
-    //
     //
     /**获取消息监听器。*/
     RemoteSenderListener getSenderListener() {

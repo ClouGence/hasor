@@ -35,7 +35,12 @@ public interface RsfBindInfo<T> extends BindInfo<T> {
 
     /** @return 注册的服务类型。*/
     public Class<T> getBindType();
-    //
+
+    /**
+     * 返回接口是否为一个 Message 接口。
+     * @see RsfMessage
+     */
+    public boolean isMessage();
 
     /** @return 获取客户端调用服务超时时间。*/
     public int getClientTimeout();

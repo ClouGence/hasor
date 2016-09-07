@@ -13,26 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.transform.codec;
+package net.hasor.rsf.transform.codec.v1;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import net.hasor.rsf.transform.codec.Protocol;
+import net.hasor.rsf.transform.protocol.v1.ResponseBlock;
 
 import java.io.IOException;
-
-import net.hasor.rsf.domain.RsfConstants;
-import net.hasor.rsf.transform.protocol.ResponseBlock;
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RpcResponseProtocol implements Protocol<ResponseBlock> {
+public class RpcResponseProtocolV1 implements Protocol<ResponseBlock> {
     /**encode Message to byte & write to network framework*/
     public void encode(ResponseBlock resMsg, ByteBuf buf) throws IOException {
         //
         //* --------------------------------------------------------bytes =13
         //* byte[1]  version                              RSF版本(0x81)
-        buf.writeByte(RsfConstants.RSF_Response);
+        buf.writeByte(resMsg.getHead());
         //* byte[8]  requestID                            请求ID
         buf.writeLong(resMsg.getRequestID());
         //* byte[1]  keepData                             保留区

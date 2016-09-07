@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
-import java.lang.reflect.Method;
-
 import net.hasor.rsf.address.InterAddress;
+
+import java.lang.reflect.Method;
 /**
  * 调用请求
  * @version : 2014年10月25日
@@ -25,6 +25,9 @@ import net.hasor.rsf.address.InterAddress;
 public interface RsfRequest extends RsfHeader {
     /**请求是否为本地发起的。*/
     public boolean isLocal();
+
+    /** 请求是否为消息类请求,对于消息类请求返回值是无效的。*/
+    public boolean isMessage();
 
     /**获取要调用的目标方法。*/
     public Method getMethod();

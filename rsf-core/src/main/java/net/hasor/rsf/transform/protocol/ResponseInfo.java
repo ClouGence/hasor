@@ -15,11 +15,12 @@
  */
 package net.hasor.rsf.transform.protocol;
 /**
- * RSF Response 数据对象
+ * RSF Response 的化身,是封装 Response 的数据对象。
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ResponseInfo extends OptionInfo {
+    private byte   version       = 0;    //版本
     private long   requestID     = 0;    //请求ID
     private long   receiveTime   = 0;    //数据包到达时间
     private short  status        = 0;    //响应状态
@@ -27,7 +28,12 @@ public class ResponseInfo extends OptionInfo {
     private byte[] returnData    = null; //返回数据
     //
     //
-    public ResponseInfo() {
+    public ResponseInfo(byte version) {
+        this.version = version;
+    }
+    /**获取使用的版本号。*/
+    public byte getVersion() {
+        return version;
     }
     /**获取请求ID。*/
     public long getRequestID() {

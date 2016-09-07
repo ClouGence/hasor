@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net;
-import java.net.InetSocketAddress;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -27,10 +21,17 @@ import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 import net.hasor.rsf.utils.TimerManager;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.InetSocketAddress;
+import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 负责处理两个RSF程序之间的握手。
  * @version : 2014年11月4日
@@ -67,7 +68,7 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         logger.info("connected form {}", ctx.channel().remoteAddress());
         if (!this.shakeHands.get()) {
-            RequestInfo request = new RequestInfo();
+            RequestInfo request = new RequestInfo(RsfConstants.Version_1);
             request.setRequestID(-1);
             request.setTargetMethod("ASK_HOST_INFO");
             ctx.pipeline().writeAndFlush(request);//发送握手数据包
@@ -91,7 +92,7 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
             RequestInfo request = (RequestInfo) msg;
             String cmdType = request.getTargetMethod();
             if (request.getRequestID() == -1 && StringUtils.equals(cmdType, "ASK_HOST_INFO")) {
-                ResponseInfo response = new ResponseInfo();
+                ResponseInfo response = new ResponseInfo(RsfConstants.Version_1);
                 response.setRequestID(-1);
                 response.setStatus(ProtocolStatus.OK);
                 response.addOption("SERVER_INFO", this.bindAddress.toHostSchema());//RSF实例信息。

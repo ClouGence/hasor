@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.transform.codec;
+package net.hasor.rsf.utils;
 /**
- * Protocol Interface,for custom network protocol
+ * 令热策略的,LRU
  * @version : 2014年11月4日
  * @author 赵永春(zyc@hasor.net)
  */

@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.serialize.coder;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import net.hasor.rsf.SerializeCoder;
 
-import net.hasor.rsf.serialize.SerializeCoder;
+import java.io.*;
 /**
  *
  * @version : 2014年9月19日
@@ -27,7 +24,7 @@ import net.hasor.rsf.serialize.SerializeCoder;
  */
 public class JavaSerializeCoder implements SerializeCoder {
     //
-    public byte[] encode(Object object) throws Throwable {
+    public byte[] encode(Object object) throws IOException {
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         ObjectOutputStream output = new ObjectOutputStream(byteArray);
         output.writeObject(object);
@@ -36,10 +33,16 @@ public class JavaSerializeCoder implements SerializeCoder {
         return byteArray.toByteArray();
     }
     //
-    public Object decode(byte[] bytes, Class<?> returnType) throws Throwable {
-        ObjectInputStream objectIn = new ObjectInputStream(new ByteArrayInputStream(bytes));
-        Object resultObject = objectIn.readObject();
-        objectIn.close();
-        return resultObject;
+    public Object decode(byte[] bytes, Class<?> returnType) throws IOException {
+        try {
+            ObjectInputStream objectIn = new ObjectInputStream(new ByteArrayInputStream(bytes));
+            Object resultObject = objectIn.readObject();
+            objectIn.close();
+            return resultObject;
+        } catch (IOException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
     }
 }

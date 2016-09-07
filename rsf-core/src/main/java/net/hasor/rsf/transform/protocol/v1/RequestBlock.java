@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.transform.protocol;
+package net.hasor.rsf.transform.protocol.v1;
 import org.more.util.ArrayUtils;
 /**
  * RSF 1.0 Request 二进制传输协议
@@ -63,6 +63,8 @@ public class RequestBlock extends PoolBlock {
     private int[] paramData      = {}; //(attr-index,attr-index)
     private int[] optionMap      = {}; //(attr-index,attr-index)
     //
+    public RequestBlock() {
+    }
     //
     public byte getVersion() {
         return (byte) (this.rsfHead & 0x0F);

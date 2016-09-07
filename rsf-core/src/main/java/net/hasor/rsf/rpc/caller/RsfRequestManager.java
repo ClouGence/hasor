@@ -22,13 +22,11 @@ import net.hasor.rsf.*;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfException;
-import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.domain.RsfTimeoutException;
 import net.hasor.rsf.domain.provider.AddressProvider;
-import net.hasor.rsf.serialize.SerializeCoder;
-import net.hasor.rsf.serialize.SerializeFactory;
-import net.hasor.rsf.serialize.SerializeList;
+import net.hasor.rsf.transform.codec.CodecAdapterFactory;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 import net.hasor.rsf.utils.TimerManager;
@@ -50,7 +48,6 @@ public abstract class RsfRequestManager {
     private final RsfContext                     rsfContext;
     private final TimerManager                   timerManager;
     private final AtomicInteger                  requestCount;
-    private final SerializeFactory               serializeFactory;
     private final SenderListener                 senderListener;
     //
     public RsfRequestManager(RsfContext rsfContext, SenderListener senderListener) {
@@ -62,7 +59,6 @@ public abstract class RsfRequestManager {
         this.rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
         this.timerManager = new TimerManager(rsfSetting.getDefaultTimeout(), "RsfRequestManager");
         this.requestCount = new AtomicInteger(0);
-        this.serializeFactory = SerializeFactory.createFactory(rsfSetting);
         this.senderListener = senderListener;
     }
     /**获取RSF容器对象。*/
@@ -104,7 +100,7 @@ public abstract class RsfRequestManager {
         logger.debug("received message for requestID:{} -> status is {}", requestID, info.getStatus());
         try {
             if (info.getStatus() == ProtocolStatus.OK) {
-                SerializeCoder coder = serializeFactory.getSerializeCoder(serializeType);
+                SerializeCoder coder = this.getContext().getEnvironment().getSerializeCoder(serializeType);
                 byte[] returnDataData = info.getReturnData();
                 Object returnObject = coder.decode(returnDataData, rsfRequest.getMethod().getReturnType());
                 local.sendData(returnObject);
@@ -194,6 +190,11 @@ public abstract class RsfRequestManager {
         final RsfFuture rsfFuture = new RsfFuture(rsfRequest, listener);
         //
         try {
+            if (bindInfo.isMessage()) {
+                rsfRequest.addOption("RPC_TYPE", "MESSAGE");
+            } else {
+                rsfRequest.addOption("RPC_TYPE", "INVOKER");
+            }
             rsfRequest.addOptionMap(this.getContext().getSettings().getClientOption());//写入客户端选项，并将选项发送到Server。
             Provider<RsfFilter>[] rsfFilterList = this.getContainer().getFilterProviders(serviceID);
             RsfResponseObject res = new RsfResponseObject(rsfRequest);
@@ -246,45 +247,13 @@ public abstract class RsfRequestManager {
                 return;
             }
             Provider<InterAddress> targetProvider = new InstanceProvider<InterAddress>(address);
-            startRequest(rsfFuture);//                  <- 1.计时request。
-            RequestInfo info = buildInfo(rsfRequest);// <- 2.生成RequestInfo
-            sendData(targetProvider, info);//           <- 3.发送数据
+            startRequest(rsfFuture);                 // <- 1.计时request。
+            RequestInfo info = CodecAdapterFactory.getCodecAdapterByVersion(this.getContext().getEnvironment(), RsfConstants.Version_1)//
+                    .buildRequestInfo(rsfRequest);   // <- 2.生成RequestInfo
+            sendData(targetProvider, info);          // <- 3.发送数据
         } catch (Throwable e) {
             logger.error("request(" + rsfRequest.getRequestID() + ") send error, " + e.getMessage(), e);
             putResponse(rsfRequest.getRequestID(), e);
         }
-    }
-    private RequestInfo buildInfo(RsfRequest rsfRequest) throws Throwable {
-        RequestInfo info = new RequestInfo();
-        RsfBindInfo<?> rsfBindInfo = rsfRequest.getBindInfo();
-        String serializeType = rsfRequest.getSerializeType();
-        SerializeCoder coder = serializeFactory.getSerializeCoder(serializeType);
-        //
-        //1.基本信息
-        info.setRequestID(rsfRequest.getRequestID());//请求ID
-        info.setServiceGroup(rsfBindInfo.getBindGroup());//序列化策略
-        info.setServiceName(rsfBindInfo.getBindName());//序列化策略
-        info.setServiceVersion(rsfBindInfo.getBindVersion());//序列化策略
-        info.setTargetMethod(rsfRequest.getMethod().getName());//序列化策略
-        info.setSerializeType(serializeType);//序列化策略
-        info.setClientTimeout(rsfRequest.getTimeout());
-        //
-        //2.params
-        Class<?>[] pTypes = rsfRequest.getParameterTypes();
-        Object[] pObjects = rsfRequest.getParameterObject();
-        for (int i = 0; i < pTypes.length; i++) {
-            String typeByte = RsfRuntimeUtils.toAsmType(pTypes[i]);
-            byte[] paramByte = coder.encode(pObjects[i]);
-            info.addParameter(typeByte, paramByte);
-        }
-        //
-        //3.Opt参数
-        info.addOptionMap(rsfRequest);
-        //
-        return info;
-    }
-    /**获取序列化名单*/
-    public SerializeList getSerializeList() {
-        return this.serializeFactory;
     }
 }

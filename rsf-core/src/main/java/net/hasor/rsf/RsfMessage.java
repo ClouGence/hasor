@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.serialize.coder;
-import java.io.IOException;
-
-import com.alibaba.fastjson.JSON;
-import net.hasor.rsf.domain.RsfConstants;
-import net.hasor.rsf.SerializeCoder;
+package net.hasor.rsf;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
+ * 宣布此接口为消息接口,RSF在处理该接口的 RPC 调用请求时会忽略远程机器的 response 当确认 rpc 数据包投递到远程机器之后方法会立即返回。
  *
- * @version : 2014年9月19日
+ * <p>您可以配合 RSF 的异步调用,使消息发布变为异步消息。从而不再需要等待数据包投递到远端的 ack 确认。</p>
+ * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class JsonSerializeCoder implements SerializeCoder {
-    public byte[] encode(Object object) throws IOException {
-        String text = JSON.toJSONString(object);
-        return text.getBytes(RsfConstants.DEFAULT_CHARSET);
-    }
-    //
-    public Object decode(byte[] bytes, Class<?> returnType) throws IOException {
-        return JSON.parseObject(new String(bytes), returnType);
-    }
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface RsfMessage {
 }

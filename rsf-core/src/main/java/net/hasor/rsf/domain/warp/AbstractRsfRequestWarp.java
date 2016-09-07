@@ -92,4 +92,8 @@ public abstract class AbstractRsfRequestWarp implements RsfRequest {
     public Object[] getParameterObject() {
         return getRsfRequest().getParameterObject();
     }
+    @Override
+    public boolean isMessage() {
+        return getRsfRequest().isMessage();
+    }
 }

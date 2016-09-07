@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.caller;
-import java.lang.reflect.Method;
-
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfRequest;
@@ -23,6 +21,8 @@ import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.domain.provider.AddressProvider;
 import net.hasor.rsf.transform.protocol.OptionInfo;
+
+import java.lang.reflect.Method;
 /**
  * RSF请求
  * @version : 2014年10月25日
@@ -70,6 +70,10 @@ class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
     @Override
     public boolean isLocal() {
         return true;
+    }
+    @Override
+    public boolean isMessage() {
+        return this.bindInfo.isMessage();
     }
     @Override
     public Method getMethod() {

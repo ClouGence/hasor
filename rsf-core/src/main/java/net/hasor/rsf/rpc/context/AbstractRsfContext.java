@@ -14,26 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.context;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
-import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
 import net.hasor.core.Provider;
-import net.hasor.rsf.RsfBindInfo;
-import net.hasor.rsf.RsfBinder;
-import net.hasor.rsf.RsfClient;
-import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.RsfEnvironment;
-import net.hasor.rsf.RsfPlugin;
-import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.RsfUpdater;
+import net.hasor.rsf.*;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
@@ -49,6 +34,13 @@ import net.hasor.rsf.rpc.net.ReceivedListener;
 import net.hasor.rsf.rpc.net.RsfNetManager;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
  *
@@ -56,14 +48,14 @@ import net.hasor.rsf.transform.protocol.ResponseInfo;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRsfContext implements RsfContext, AppContextAware {
-    protected Logger           logger           = LoggerFactory.getLogger(getClass());
-    private   RsfBeanContainer rsfBeanContainer = null;                               // 服务管理(含地址管理)
-    private   RsfEnvironment   rsfEnvironment   = null;                               // 环境&配置
-    private   RemoteRsfCaller  rsfCaller        = null;                               // 调用器
-    private   RsfNetManager    rsfNetManager    = null;                               // 网络传输
-    private   AddressProvider  poolProvider     = null;
-    private   AppContext       appContext       = null;
-    private final AtomicBoolean onlineStatus;
+    protected Logger logger = LoggerFactory.getLogger(getClass());
+    private final RsfBeanContainer rsfBeanContainer; // 服务管理(含地址管理)
+    private final RsfEnvironment   rsfEnvironment;   // 环境&配置
+    private final RemoteRsfCaller  rsfCaller;        // 调用器
+    private final RsfNetManager    rsfNetManager;    // 网络传输
+    private final AddressProvider  poolProvider;
+    private       AppContext       appContext;
+    private final AtomicBoolean    onlineStatus;
     //
     public AbstractRsfContext(RsfBeanContainer rsfBeanContainer) {
         this.onlineStatus = new AtomicBoolean(RsfConstants.DEFAULT_ONLINE_STATUS);
@@ -146,8 +138,8 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         return this.appContext;
     }
     @Override
-    public Environment getEnvironment() {
-        return this.appContext.getEnvironment();
+    public RsfEnvironment getEnvironment() {
+        return this.rsfEnvironment;
     }
     public RsfSettings getSettings() {
         return this.rsfEnvironment.getSettings();

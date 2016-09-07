@@ -14,27 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.more.future.BasicFuture;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import io.netty.bootstrap.AbstractBootstrap;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
@@ -48,6 +32,17 @@ import net.hasor.rsf.transform.netty.RSFCodec;
 import net.hasor.rsf.utils.NameThreadFactory;
 import net.hasor.rsf.utils.NetworkUtils;
 import net.hasor.rsf.utils.TimerManager;
+import org.more.future.BasicFuture;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 维护RSF同其它RSF的连接，并提供数据投递和接收服务。
  *
@@ -105,7 +100,7 @@ public class RsfNetManager {
             RsfNetChannel channel = null;
             try {
                 channel = channelFuture.get();
-                if (channel != null && channel.isActive() == false) {
+                if (channel != null && !channel.isActive()) {
                     this.channelMapping.remove(target.getHostPort());// conect is bad.
                     channelFuture = null;
                 }
@@ -141,7 +136,7 @@ public class RsfNetManager {
             boot.channel(NioSocketChannel.class);
             boot.handler(new ChannelInitializer<SocketChannel>() {
                 public void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(new RSFCodec(), new RpcCodec(RsfNetManager.this));
+                    ch.pipeline().addLast(new RSFCodec(rsfEnvironment), new RpcCodec(RsfNetManager.this));
                 }
             });
             configBoot(boot).connect(hostAddress.toSocketAddress()).addListener(new ConnSocketCallBack(result));
@@ -197,7 +192,7 @@ public class RsfNetManager {
         boot.channel(NioServerSocketChannel.class);
         boot.childHandler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
-                ch.pipeline().addLast(new RSFCodec(), new RpcCodec(RsfNetManager.this));
+                ch.pipeline().addLast(new RSFCodec(rsfEnvironment), new RpcCodec(RsfNetManager.this));
             }
         });
         boot.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
