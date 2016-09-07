@@ -36,7 +36,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.Random;
 /**
  *
  * @version : 2014年9月12日
@@ -131,20 +130,5 @@ public class NetProtocolTest extends ChannelInboundHandlerAdapter {
         }
         //
         System.in.read();
-    }
-}
-class TestChannelInboundHandlerAdapter extends ChannelInboundHandlerAdapter {
-    private final String target;
-    public TestChannelInboundHandlerAdapter() {
-        this(null);
-    }
-    public TestChannelInboundHandlerAdapter(String target) {
-        this.target = target;
-    }
-    //
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println(this.target + " - " + msg);
-        super.channelRead(ctx, msg);
     }
 }

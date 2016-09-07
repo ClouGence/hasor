@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.services;
+import net.hasor.rsf.RsfResult;
 /**
- * 服务接口
+ * 服务实现
  * @version : 2015年11月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface EchoService {
-    public String sayHello(String echo) throws InterruptedException;
+public class MessageServiceImpl implements MessageService {
+    @Override
+    public RsfResult sayHello(String echo) throws InterruptedException {
+        Thread.sleep(100);
+        System.out.println("server : " + echo);
+        return null;
+    }
 }

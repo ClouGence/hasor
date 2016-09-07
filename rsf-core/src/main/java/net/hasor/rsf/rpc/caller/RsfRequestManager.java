@@ -21,10 +21,7 @@ import net.hasor.core.binder.InstanceProvider;
 import net.hasor.rsf.*;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
-import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.domain.RsfConstants;
-import net.hasor.rsf.domain.RsfException;
-import net.hasor.rsf.domain.RsfTimeoutException;
+import net.hasor.rsf.domain.*;
 import net.hasor.rsf.domain.provider.AddressProvider;
 import net.hasor.rsf.transform.codec.CodecAdapterFactory;
 import net.hasor.rsf.transform.protocol.RequestInfo;
@@ -86,19 +83,63 @@ public abstract class RsfRequestManager {
      */
     public boolean putResponse(ResponseInfo info) {
         long requestID = info.getRequestID();
-        String serializeType = info.getSerializeType();
-        RsfFuture rsfFuture = this.removeRsfFuture(requestID);
+        RsfFuture rsfFuture = rsfResponse.get(requestID);
         if (rsfFuture == null) {
             logger.warn("received message for requestID:{} -> maybe is timeout! ", requestID);
             return false;
         }
         //
+        // 1.处理ACK应答 -> (Invoke类型调用,不处理ACK应答)
+        if (info.getStatus() == ProtocolStatus.Processing) {
+            if (!rsfFuture.getRequest().isMessage()) {
+                return true;/* Invoker类型request不处理 ack 应答,只有Message类型请求才会把ACK应答作为response进行处理。 */
+            }
+        }
+        //
+        // 2.处理response
+        rsfFuture = this.removeRsfFuture(requestID);
+        if (rsfFuture == null) {
+            logger.warn("received message for requestID:{} -> maybe is timeout! ", requestID);
+            return false;
+        }
+        //
+        // 3.反序列化
         RsfRequest rsfRequest = rsfFuture.getRequest();
         RsfResponseObject local = new RsfResponseObject(rsfRequest);
         local.addOptionMap(info);
         local.sendStatus(info.getStatus());
         logger.debug("received message for requestID:{} -> status is {}", requestID, info.getStatus());
+        String serializeType = info.getSerializeType();
         try {
+            //
+            // - Message 调用
+            if (rsfFuture.getRequest().isMessage()) {
+                Class<?> returnType = rsfRequest.getMethod().getReturnType();
+                RsfResultDO returnObject = null;
+                if (info.getStatus() == ProtocolStatus.Processing) {
+                    returnObject = new RsfResultDO(requestID, true);
+                } else {
+                    returnObject = new RsfResultDO(requestID, false);
+                    returnObject.setErrorCode(info.getStatus());
+                    returnObject.setErrorMessage(info.getOption("message"));
+                }
+                //
+                if (returnType.isAssignableFrom(RsfResult.class)) {
+                    local.sendData(returnObject);
+                    return rsfFuture.completed(local);
+                }
+                if (returnObject.isSuccess()) {
+                    local.sendData(null);
+                    return rsfFuture.completed(local);
+                }
+                //
+                String bindID = local.getBindInfo().getBindID();
+                String callMethod = rsfRequest.getMethod().getName();
+                String errorInfo = "responseID:" + requestID + " ,status= " + local.getStatus() + " ,bindID= " + bindID + " -> callMethod = " + callMethod;
+                logger.error(errorInfo);
+                return rsfFuture.failed(new RsfException(local.getStatus(), errorInfo));
+            }
+            // - Invoker 调用
             if (info.getStatus() == ProtocolStatus.OK) {
                 SerializeCoder coder = this.getContext().getEnvironment().getSerializeCoder(serializeType);
                 byte[] returnDataData = info.getReturnData();
@@ -116,21 +157,6 @@ public abstract class RsfRequestManager {
             String errorInfo = "decode response for requestID: " + requestID + " failed -> serializeType(" + serializeType + ") ,serialize error: " + e.getMessage();
             logger.error(errorInfo, e);
             return rsfFuture.failed(e);
-        }
-    }
-    /**
-     * 响应挂起的Request请求。
-     * @param response 响应结果
-     */
-    public boolean putResponse(RsfResponse response) {
-        long requestID = response.getRequestID();
-        RsfFuture rsfFuture = this.removeRsfFuture(requestID);
-        if (rsfFuture != null) {
-            logger.debug("received message for requestID: {} -> status is {}", requestID, response.getStatus());
-            return rsfFuture.completed(response);
-        } else {
-            logger.warn("received message for requestID: {} -> maybe is timeout! ", requestID);
-            return false;
         }
     }
     /**

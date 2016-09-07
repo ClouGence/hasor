@@ -13,12 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.services;
 /**
- * 服务接口
- * @version : 2015年11月27日
- * @author 赵永春(zyc@hasor.net)
+ * RSF,分布式调用全链路调用跟踪系统。
  */
-public interface EchoService {
-    public String sayHello(String echo) throws InterruptedException;
-}
+package net.hasor.rsf.filters.trace;

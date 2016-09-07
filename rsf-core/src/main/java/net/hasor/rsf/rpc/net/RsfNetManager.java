@@ -136,7 +136,10 @@ public class RsfNetManager {
             boot.channel(NioSocketChannel.class);
             boot.handler(new ChannelInitializer<SocketChannel>() {
                 public void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(new RSFCodec(rsfEnvironment), new RpcCodec(RsfNetManager.this));
+                    ch.pipeline().addLast(//
+                            new RSFCodec(rsfEnvironment),//
+                            new RpcCodec(RsfNetManager.this)//
+                    );
                 }
             });
             configBoot(boot).connect(hostAddress.toSocketAddress()).addListener(new ConnSocketCallBack(result));
@@ -192,7 +195,10 @@ public class RsfNetManager {
         boot.channel(NioServerSocketChannel.class);
         boot.childHandler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
-                ch.pipeline().addLast(new RSFCodec(rsfEnvironment), new RpcCodec(RsfNetManager.this));
+                ch.pipeline().addLast(//
+                        new RSFCodec(rsfEnvironment),//
+                        new RpcCodec(RsfNetManager.this)//
+                );
             }
         });
         boot.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);

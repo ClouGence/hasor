@@ -24,6 +24,7 @@ import net.hasor.rsf.filters.online.OnlineRsfFilter;
 import net.hasor.rsf.filters.thread.LocalWarpFilter;
 import net.hasor.rsf.filters.thread.RsfRequestLocal;
 import net.hasor.rsf.filters.thread.RsfResponseLocal;
+import net.hasor.rsf.filters.trace.TraceFilter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.web.WebApiBinder;
@@ -103,6 +104,7 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
     public void loadRsf(RsfContext rsfContext) throws Throwable {
         //
         RsfBinder rsfBinder = rsfContext.binder();
+        rsfBinder.bindFilter("TraceFilter", new TraceFilter());
         rsfBinder.bindFilter("LocalPref", new LocalPref());
         rsfBinder.bindFilter("LocalWarpFilter", new LocalWarpFilter());
         rsfBinder.bindFilter("OnlineRsfFilter", new OnlineRsfFilter());

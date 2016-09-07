@@ -20,6 +20,8 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfModule;
 import test.net.hasor.rsf.services.EchoService;
 import test.net.hasor.rsf.services.EchoServiceImpl;
+import test.net.hasor.rsf.services.MessageService;
+import test.net.hasor.rsf.services.MessageServiceImpl;
 /**
  * 启动服务端
  * @version : 2014年9月12日
@@ -33,6 +35,7 @@ public class ProviderServer {
             public void loadRsf(RsfContext rsfContext) throws Throwable {
                 RsfBinder rsfBinder = rsfContext.binder();
                 rsfBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
+                rsfBinder.rsfService(MessageService.class).toInstance(new MessageServiceImpl()).register();
             }
         });
         //

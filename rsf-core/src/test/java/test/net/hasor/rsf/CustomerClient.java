@@ -16,12 +16,10 @@
 package test.net.hasor.rsf;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.RsfBinder;
-import net.hasor.rsf.RsfClient;
-import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.RsfModule;
+import net.hasor.rsf.*;
 import net.hasor.rsf.address.InterAddress;
 import test.net.hasor.rsf.services.EchoService;
+import test.net.hasor.rsf.services.MessageService;
 /**
  *
  * @version : 2014年9月12日
@@ -36,6 +34,7 @@ public class CustomerClient {
                 RsfBinder rsfBinder = rsfContext.binder();
                 InterAddress local = new InterAddress("rsf://127.0.0.1:8100/default");
                 rsfBinder.rsfService(EchoService.class).bindAddress(local).register();
+                rsfBinder.rsfService(MessageService.class).bindAddress(local).register();
             }
         });
         System.out.println("server start.");
@@ -43,10 +42,19 @@ public class CustomerClient {
         //Client -> Server
         RsfClient client = clientContext.getInstance(RsfClient.class);
         EchoService echoService = client.wrapper(EchoService.class);
-        for (int i = 0; i < 208; i++) {
+        for (int i = 0; i < 20; i++) {
             try {
-                String res = echoService.sayHello("Hello Word");
-                System.out.println(res);
+                String res = echoService.sayHello("Hello Word for Invoker");
+                System.out.println("invoker -> " + res);
+            } catch (Exception e) {
+            }
+        }
+        //
+        MessageService messageService = client.wrapper(MessageService.class);
+        for (int i = 0; i < 20; i++) {
+            try {
+                RsfResult res = messageService.sayHello("Hello Word for Message.");
+                System.out.println("message -> " + res.isSuccess());
             } catch (Exception e) {
             }
         }

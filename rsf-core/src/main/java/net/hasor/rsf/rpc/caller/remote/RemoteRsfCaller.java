@@ -26,9 +26,9 @@ import net.hasor.rsf.transform.codec.CodecAdapterFactory;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 import net.hasor.rsf.utils.ExecutesManager;
-import org.more.future.BasicFuture;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.RejectedExecutionException;
 /**
  * 扩展{@link RsfCaller}，用来支持远程机器发来的调用请求。
  * @version : 2015年12月8日
@@ -48,6 +48,7 @@ public class RemoteRsfCaller extends RsfCaller {
         int maxCorePoolSize = rsfSettings.getQueueMaxPoolSize();
         long keepAliveTime = rsfSettings.getQueueKeepAliveTime();
         this.executesManager = new ExecutesManager(minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
+        this.executesManager.init(rsfBeanContainer);
     }
     /**销毁。*/
     public void shutdown() {
@@ -55,54 +56,23 @@ public class RemoteRsfCaller extends RsfCaller {
         this.executesManager.shutdown();
     }
     /**
-     * 收到Request请求直接进行调用，并等待调用结果返回。
-     * @param info 请求消息。
-     */
-    public ResponseInfo doRequest(InterAddress target, RequestInfo info) {
-        RsfEnvironment rsfEnv = this.getContext().getEnvironment();
-        CodecAdapter codecAdapter = CodecAdapterFactory.getCodecAdapterByVersion(rsfEnv, info.getVersion());
-        long requestID = info.getRequestID();
-        ResponseInfo resp = null;
-        try {
-            final BasicFuture<ResponseInfo> future = new BasicFuture<ResponseInfo>();
-            new InvokerProcessing(target, this, info) {
-                protected void sendResponse(ResponseInfo info) {
-                    future.completed(info);
-                }
-            }.run();
-            resp = future.get(info.getClientTimeout(), TimeUnit.MILLISECONDS);
-        } catch (TimeoutException e) {
-            String errorInfo = "do request(" + requestID + ") failed -> waiting for response.";
-            logger.error(errorInfo);
-            resp = codecAdapter.buildResponseStatus(requestID, ProtocolStatus.Timeout, errorInfo);
-        } catch (InterruptedException e) {
-            String errorInfo = "do request(" + requestID + ") failed -> InterruptedException.";
-            logger.error(errorInfo);
-            resp = codecAdapter.buildResponseStatus(requestID, ProtocolStatus.InvokeError, errorInfo);
-        } catch (ExecutionException e) {
-            Throwable ex = e.getCause();
-            String errorInfo = "do request(" + requestID + ") failed -> " + ex.getMessage();
-            logger.error(errorInfo);
-            resp = codecAdapter.buildResponseStatus(requestID, ProtocolStatus.InvokeError, errorInfo);
-        }
-        return resp;
-    }
-    /**
      * 收到Request请求，并将该请求安排进队列，由队列安排方法调用。
      * @param target 目标调用地址。
      * @param info 请求消息。
      */
     public void onRequest(InterAddress target, RequestInfo info) {
+        RsfEnvironment rsfEnv = this.getContext().getEnvironment();
+        CodecAdapter codecAdapter = CodecAdapterFactory.getCodecAdapterByVersion(rsfEnv, info.getVersion());
         try {
             logger.debug("received request({}) full = {}", info.getRequestID());
             String serviceUniqueName = "[" + info.getServiceGroup() + "]" + info.getServiceName() + "-" + info.getServiceVersion();
             Executor executor = executesManager.getExecute(serviceUniqueName);
             executor.execute(new RemoteRsfCallerProcessing(target, this, info));//放入业务线程准备执行
+            ResponseInfo resp = codecAdapter.buildResponseStatus(info.getRequestID(), ProtocolStatus.Processing, null);
+            this.senderListener.sendResponse(target, resp);
         } catch (RejectedExecutionException e) {
             String msgLog = "rejected request, queue is full." + e.getMessage();
             logger.warn(msgLog, e);
-            RsfEnvironment rsfEnv = this.getContext().getEnvironment();
-            CodecAdapter codecAdapter = CodecAdapterFactory.getCodecAdapterByVersion(rsfEnv, info.getVersion());
             ResponseInfo resp = codecAdapter.buildResponseStatus(info.getRequestID(), ProtocolStatus.QueueFull, msgLog);
             this.senderListener.sendResponse(target, resp);
         }

@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.utils;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
+import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.container.RsfBeanContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
 /**
  * 业务线程
  * @version : 2014年11月11日
@@ -54,6 +50,13 @@ public class ExecutesManager {
             }
         }
         return this.defaultExecutor;
+    }
+    /**初始化服务特殊线程*/
+    public void init(RsfBeanContainer rsfBeanContainer) {
+        List<String> serviceList = rsfBeanContainer.getServiceIDs();
+        for (String serviceID : serviceList) {
+            RsfBindInfo<?> rsfServiceInfo = rsfBeanContainer.getRsfBindInfo(serviceID);
+        }
     }
     /**停止应用服务。*/
     public void shutdown() {

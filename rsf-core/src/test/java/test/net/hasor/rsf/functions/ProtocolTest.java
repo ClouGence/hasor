@@ -66,7 +66,6 @@ public class ProtocolTest {
         DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.createAppContext().getEnvironment());
         CodecAdapterForV1 codecAdapter = new CodecAdapterForV1(rsfEnv);
         //
-        //
         ResponseInfo outResponse = new ResponseInfo(RsfConstants.Version_1);
         outResponse.setSerializeType("json");
         outResponse.setRequestID(System.currentTimeMillis());

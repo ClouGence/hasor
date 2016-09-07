@@ -61,6 +61,7 @@ abstract class InvokerProcessing implements Runnable {
     public RemoteRsfCaller getRsfCaller() {
         return this.rsfCaller;
     }
+    //
     public void run() {
         //
         /*正确性检验。*/
@@ -169,6 +170,10 @@ abstract class InvokerProcessing implements Runnable {
         return timeout;
     }
     private void sendResponse(RsfResponseObject rsfResponse) {
+        if (this.requestInfo.isMessage()) {
+            return;/*如果是消息类型调用,则丢弃response*/
+        }
+        //
         String serializeType = this.requestInfo.getSerializeType();
         long requestID = rsfResponse.getRequestID();
         try {
@@ -192,5 +197,11 @@ abstract class InvokerProcessing implements Runnable {
             this.sendResponse(info);
         }
     }
-    protected abstract void sendResponse(ResponseInfo info);
+    protected final void sendResponse(ResponseInfo info) {
+        if (this.requestInfo.isMessage()) {
+            return;/*如果是消息类型调用,则丢弃response*/
+        }
+        doSendResponse(info);
+    }
+    protected abstract void doSendResponse(ResponseInfo info);
 }

@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
@@ -25,8 +21,11 @@ import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.transform.protocol.RequestInfo;
-import net.hasor.rsf.transform.protocol.v1.ResponseBlock;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 /**
  *
  * @version : 2015年12月8日
@@ -53,10 +52,6 @@ public class RsfNetChannel {
     /**将数据写入 Netty。*/
     public void sendData(final ResponseInfo info, final SendCallBack callBack) {
         this.sendData(info.getRequestID(), info, callBack);
-    }
-    /**将数据写入 Netty。*/
-    public void sendData(final ResponseBlock block, final SendCallBack callBack) {
-        this.sendData(block.getRequestID(), block, callBack);
     }
     /**将数据写入 Netty。*/
     private void sendData(final long requestID, Object sendData, final SendCallBack callBack) {
