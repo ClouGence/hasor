@@ -1,5 +1,9 @@
 ﻿===== Hasor-Core v2.4.4 (2016-?)
 * 新增:
+    01.BindInfo 新增 setMetaData 方法以设置元信息。
+
+===== Hasor-Core v2.4.4 (2016-09-05)
+* 新增:
     01.宽泛的Servlet版本支持 servlet 2.3 到 servlet 3.1。
     02.新增支持文件上传功能支持。
     03.新增 @Async 注解,用于标记 restful 请求是否以 异步 servlet 方式执行。(需要容器支持 servlet 3 ,否则无效)

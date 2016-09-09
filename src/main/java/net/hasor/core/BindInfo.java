@@ -22,14 +22,24 @@ package net.hasor.core;
 public interface BindInfo<T> {
     /** @return 绑定的ID */
     public String getBindID();
+
     /** @return 为类型绑定的名称。*/
     public String getBindName();
+
     /** @return 获取注册的类型*/
     public Class<T> getBindType();
+
     /**
      * 获取元信息。
      * @param key 元信息 key
      * @return 返回元信息值
      */
     public Object getMetaData(String key);
+
+    /**
+     * 设置元数据
+     * @param key 元信息 key
+     * @param value 元信息值
+     */
+    public void setMetaData(String key, Object value);
 }
