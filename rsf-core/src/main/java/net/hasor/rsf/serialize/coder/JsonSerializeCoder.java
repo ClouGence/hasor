@@ -17,6 +17,7 @@ package net.hasor.rsf.serialize.coder;
 import java.io.IOException;
 
 import com.alibaba.fastjson.JSON;
+import net.hasor.core.Settings;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.SerializeCoder;
 /**
@@ -27,7 +28,7 @@ import net.hasor.rsf.SerializeCoder;
 public class JsonSerializeCoder implements SerializeCoder {
     public byte[] encode(Object object) throws IOException {
         String text = JSON.toJSONString(object);
-        return text.getBytes(RsfConstants.DEFAULT_CHARSET);
+        return text.getBytes(Settings.DefaultCharset);
     }
     //
     public Object decode(byte[] bytes, Class<?> returnType) throws IOException {

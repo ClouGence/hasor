@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.rsf.utils;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
-
-import org.more.util.io.IOUtils;
+import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 /**
  * 业务线程
  * @version : 2014年11月11日
@@ -37,40 +31,21 @@ import org.slf4j.LoggerFactory;
 public class ZipUtils {
     protected final static Logger logger      = LoggerFactory.getLogger(ZipUtils.class);
     public static final    String CharsetName = "UTF-8";
-    public static void writeEntry(ZipOutputStream zipStream, String scriptBody, String entryName, String comment) throws IOException, UnsupportedEncodingException {
+    public static void writeEntry(ZipOutputStream zipStream, String scriptBody, String entryName, String comment) throws IOException {
         ZipEntry entry = new ZipEntry(entryName);
         entry.setComment(comment);
         zipStream.putNextEntry(entry);
         {
             OutputStreamWriter writer = new OutputStreamWriter(zipStream, CharsetName);
             BufferedWriter bfwriter = new BufferedWriter(writer);
-            bfwriter.write(scriptBody);
+            if (StringUtils.isBlank(scriptBody)) {
+                bfwriter.write("");
+            } else {
+                bfwriter.write(scriptBody);
+            }
             bfwriter.flush();
             writer.flush();
-            zipStream.finish();
         }
         zipStream.closeEntry();
-    }
-    public static String readToString(ZipFile zipFile, String entryName) throws IOException {
-        List<String> readToList = readToList(zipFile, entryName);
-        if (readToList == null || readToList.isEmpty()) {
-            return null;
-        }
-        StringBuilder strBuilder = new StringBuilder();
-        for (String readItem : readToList) {
-            strBuilder.append(readItem).append("\n");
-        }
-        return strBuilder.toString();
-    }
-    public static List<String> readToList(ZipFile zipFile, String entryName) throws IOException {
-        ZipEntry entry = zipFile.getEntry(entryName);
-        if (entry != null) {
-            InputStream inStream = zipFile.getInputStream(entry);
-            InputStreamReader reader = new InputStreamReader(inStream, CharsetName);
-            BufferedReader bfreader = new BufferedReader(reader);
-            return IOUtils.readLines(bfreader);
-        } else {
-            return null;
-        }
     }
 }

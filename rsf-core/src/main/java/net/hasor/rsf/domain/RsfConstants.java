@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.domain;
-import java.nio.charset.Charset;
 /**
  * 各种常量
  * <p>一个RSF数据包头的定义如下:
@@ -40,7 +39,6 @@ public interface RsfConstants {
     public static final byte    RSF_Packet_xxxx7            = RSF_Packet | 0x70; // 1111 (未使用)
     //
     //
-    // ---------------------------------------------------------------------------------------------
     // 协议头1.0
     public static final byte    Version_1                   = (byte) (0x01);                            // 1000 0001
     public static final byte    RSF_InvokerRequest          = Version_1 | RSF_Packet_InvokerRequest;    // 1001 0001
@@ -49,13 +47,18 @@ public interface RsfConstants {
     //
     //
     // ---------------------------------------------------------------------------------------------
-    public static final Charset DEFAULT_CHARSET             = Charset.forName("UTF-8");
     public static final boolean DEFAULT_ONLINE_STATUS       = false;
     //
     //
-    public static final String  ServiceAddressList_ZipEntry = ".sal";
-    public static final String  FlowControlRef_ZipEntry     = ".fcl";
-    public static final String  ServiceLevelScript_ZipEntry = ".sls";
-    public static final String  MethodLevelScript_ZipEntry  = ".mls";
-    public static final String  ArgsLevelScript_ZipEntry    = ".als";
+    // ---------------------------------------------------------------------------------------------
+    public static final String  D                           = "D|";
+    public static final String  S                           = "S|";
+    public static final String  AddressList_ZipEntry        = "address.sal";
+    public static final String  FlowControlRef_ZipEntry     = "flow-control.xml";
+    public static final String  ServiceLevelScript_ZipEntry = "service-level.groovy";
+    public static final String  MethodLevelScript_ZipEntry  = "method-level.groovy";
+    public static final String  ArgsLevelScript_ZipEntry    = "args-level.groovy";
+    //
+    public static final String  SnapshotPath                = "/snapshot";
+    public static final String  SnapshotIndex               = "address.index";
 }

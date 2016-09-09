@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.client;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.RsfCenterEvent;
 import net.hasor.rsf.center.domain.CenterEventBody;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 /**
  * 注册中心事件响应实现
  * @version : 2016年2月18日
@@ -63,14 +58,10 @@ class EventProcessMapping {
         eventProcessMap.put(RsfCenterEvent.RsfCenter_RefreshAddressEvent, new RefreshAddressEvent());
         eventProcessMap.put(RsfCenterEvent.RsfCenter_RemoveAddressEvent, new RemoveAddressEvent());
         //
-        eventProcessMap.put(RsfCenterEvent.RsfCenter_UpdateDefaultServiceRouteEvent, new UpdateDefaultServiceRouteEvent());
         eventProcessMap.put(RsfCenterEvent.RsfCenter_UpdateServiceRouteEvent, new UpdateServiceRouteEvent());
-        eventProcessMap.put(RsfCenterEvent.RsfCenter_UpdateDefaultMethodRouteEvent, new UpdateDefaultMethodRouteEvent());
         eventProcessMap.put(RsfCenterEvent.RsfCenter_UpdateMethodRouteEvent, new UpdateMethodRouteEvent());
-        eventProcessMap.put(RsfCenterEvent.RsfCenter_UpdateDefaultArgsRouteEvent, new UpdateDefaultArgsRouteEvent());
         eventProcessMap.put(RsfCenterEvent.RsfCenter_UpdateArgsRouteEvent, new UpdateArgsRouteEvent());
         //
-        eventProcessMap.put(RsfCenterEvent.RsfCenter_UpdateDefaultFlowControlEvent, new UpdateDefaultFlowControlEvent());
         eventProcessMap.put(RsfCenterEvent.RsfCenter_UpdateFlowControlEvent, new UpdateFlowControlEvent());
     }
 
@@ -136,21 +127,6 @@ class EventProcessMapping {
             return true;
         }
     }
-    /**推送默认服务级路由规则*/
-    private static class UpdateDefaultServiceRouteEvent implements EventProcess {
-        @Override
-        public boolean processEvent(RsfUpdater rsfUpdater, CenterEventBody centerEventBody) {
-            String scriptBody = centerEventBody.getEventBody();
-            //
-            if (StringUtils.isNotBlank(scriptBody)) {
-                logger.info("receiver Event from RsfCenter , eventType=UpdateDefaultServiceRouteEvent -> atTime = {}.", nowData());
-                rsfUpdater.updateDefaultServiceRoute(scriptBody);
-            } else {
-                logger.info("receiver Event from RsfCenter , eventType=UpdateDefaultServiceRouteEvent -> scriptBody is empty , atTime = {}.", nowData());
-            }
-            return true;
-        }
-    }
     /**推送服务级路由规则*/
     private static class UpdateServiceRouteEvent implements EventProcess {
         @Override
@@ -163,21 +139,6 @@ class EventProcessMapping {
                 rsfUpdater.updateServiceRoute(serviceID, scriptBody);
             } else {
                 logger.info("receiver Event from RsfCenter , eventType=UpdateServiceRouteEvent , serviceID = {} -> scriptBody is empty , atTime = {}.", serviceID, nowData());
-            }
-            return true;
-        }
-    }
-    /**推送默认方法级路由规则*/
-    private static class UpdateDefaultMethodRouteEvent implements EventProcess {
-        @Override
-        public boolean processEvent(RsfUpdater rsfUpdater, CenterEventBody centerEventBody) {
-            String scriptBody = centerEventBody.getEventBody();
-            //
-            if (StringUtils.isNotBlank(scriptBody)) {
-                logger.info("receiver Event from RsfCenter , eventType=UpdateDefaultMethodRouteEvent -> atTime = {}.", nowData());
-                rsfUpdater.updateDefaultMethodRoute(scriptBody);
-            } else {
-                logger.info("receiver Event from RsfCenter , eventType=UpdateDefaultMethodRouteEvent -> scriptBody is empty , atTime = {}.", nowData());
             }
             return true;
         }
@@ -198,21 +159,6 @@ class EventProcessMapping {
             return true;
         }
     }
-    /**推送默认参数级路由规则*/
-    private static class UpdateDefaultArgsRouteEvent implements EventProcess {
-        @Override
-        public boolean processEvent(RsfUpdater rsfUpdater, CenterEventBody centerEventBody) {
-            String scriptBody = centerEventBody.getEventBody();
-            //
-            if (StringUtils.isNotBlank(scriptBody)) {
-                logger.info("receiver Event from RsfCenter , eventType=UpdateDefaultArgsRouteEvent -> atTime = {}.", nowData());
-                rsfUpdater.updateDefaultArgsRoute(scriptBody);
-            } else {
-                logger.info("receiver Event from RsfCenter , eventType=UpdateDefaultArgsRouteEvent -> scriptBody is empty , atTime = {}.", nowData());
-            }
-            return true;
-        }
-    }
     /**推送参数级路由规则*/
     private static class UpdateArgsRouteEvent implements EventProcess {
         @Override
@@ -225,21 +171,6 @@ class EventProcessMapping {
                 rsfUpdater.updateArgsRoute(serviceID, scriptBody);
             } else {
                 logger.info("receiver Event from RsfCenter , eventType=UpdateArgsRouteEvent , serviceID = {} -> scriptBody is empty , atTime = {}.", serviceID, nowData());
-            }
-            return true;
-        }
-    }
-    /**推送默认服务流控规则*/
-    private static class UpdateDefaultFlowControlEvent implements EventProcess {
-        @Override
-        public boolean processEvent(RsfUpdater rsfUpdater, CenterEventBody centerEventBody) {
-            String flowControl = centerEventBody.getEventBody();
-            //
-            if (StringUtils.isNotBlank(flowControl)) {
-                logger.info("receiver Event from RsfCenter , eventType=UpdateDefaultFlowControlEvent -> atTime = {}.", nowData());
-                rsfUpdater.updateDefaultFlowControl(flowControl);
-            } else {
-                logger.info("receiver Event from RsfCenter , eventType=UpdateDefaultFlowControlEvent -> flowControl is empty , atTime = {}.", nowData());
             }
             return true;
         }

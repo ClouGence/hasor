@@ -19,34 +19,34 @@ package net.hasor.rsf.address;
  * @version : 2015年12月3日
  * @author 赵永春(zyc@hasor.net)
  */
-class RuleRef {
-    public RuleRef() {
-    }
+public class RuleRef {
     public RuleRef(RuleRef scriptResourcesRef) {
-        this.serviceLevel = scriptResourcesRef.serviceLevel;
-        this.methodLevel = scriptResourcesRef.methodLevel;
-        this.argsLevel = scriptResourcesRef.argsLevel;
+        if (scriptResourcesRef != null) {
+            this.serviceLevel = scriptResourcesRef.serviceLevel;
+            this.methodLevel = scriptResourcesRef.methodLevel;
+            this.argsLevel = scriptResourcesRef.argsLevel;
+        }
     }
-    private RuleEngine serviceLevel = new RuleEngine(); //服务级
-    private RuleEngine methodLevel  = new RuleEngine(); //方法级
-    private RuleEngine argsLevel    = new RuleEngine(); //参数级
+    private InnerRuleEngine serviceLevel = new InnerRuleEngine(); //服务级
+    private InnerRuleEngine methodLevel  = new InnerRuleEngine(); //方法级
+    private InnerRuleEngine argsLevel    = new InnerRuleEngine(); //参数级
     //
-    public RuleEngine getServiceLevel() {
+    public InnerRuleEngine getServiceLevel() {
         return serviceLevel;
     }
-    public void setServiceLevel(RuleEngine serviceLevel) {
+    public void setServiceLevel(InnerRuleEngine serviceLevel) {
         this.serviceLevel = serviceLevel;
     }
-    public RuleEngine getMethodLevel() {
+    public InnerRuleEngine getMethodLevel() {
         return methodLevel;
     }
-    public void setMethodLevel(RuleEngine methodLevel) {
+    public void setMethodLevel(InnerRuleEngine methodLevel) {
         this.methodLevel = methodLevel;
     }
-    public RuleEngine getArgsLevel() {
+    public InnerRuleEngine getArgsLevel() {
         return argsLevel;
     }
-    public void setArgsLevel(RuleEngine argsLevel) {
+    public void setArgsLevel(InnerRuleEngine argsLevel) {
         this.argsLevel = argsLevel;
     }
 }

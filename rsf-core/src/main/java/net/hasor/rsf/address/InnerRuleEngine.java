@@ -29,16 +29,11 @@ import net.hasor.libs.org.codehaus.groovy.jsr223.GroovyScriptEngineImpl;
  * @version : 2015年12月3日
  * @author 赵永春(zyc@hasor.net)
  */
-class RuleEngine {
-    protected static final Logger logger;
-
-    static {
-        logger = LoggerFactory.getLogger(RuleEngine.class);
-    }
-
-    private volatile String                 ruleScript = null; //规则脚本
-    private volatile String                 signature  = null; //脚本内容签名，用于校验是否发生变化
-    private volatile RuleScriptInterface<?> runScript  = null; //调用程序
+class InnerRuleEngine {
+    protected static final Logger                  logger     = LoggerFactory.getLogger(InnerRuleEngine.class);
+    private volatile       String                  ruleScript = null; //规则脚本
+    private volatile       String                  signature  = null; //脚本内容签名，用于校验是否发生变化
+    private volatile       RuleGroovyScriptFace<?> runScript  = null; //调用程序
     //
     //
     public boolean isEnable() {
@@ -73,7 +68,7 @@ class RuleEngine {
             }
             ScriptEngine engine = new GroovyScriptEngineImpl();
             engine.eval(ruleScript);
-            this.runScript = ((Invocable) engine).getInterface(RuleScriptInterface.class);
+            this.runScript = ((Invocable) engine).getInterface(RuleGroovyScriptFace.class);
             logger.info("ruleEngine ruleScript compiler finish.");
             //
             this.ruleScript = ruleScript;

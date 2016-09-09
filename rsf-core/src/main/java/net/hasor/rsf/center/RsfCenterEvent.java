@@ -37,35 +37,17 @@ public enum RsfCenterEvent {
     //
     //
     /**
-     * 推送默认服务级路由规则
-     * 说明：推送服务的路由规则给RSF客户端，该路由策略会影响到RSF客户端上所有订阅的服务。*/
-    RsfCenter_UpdateDefaultServiceRouteEvent("UpdateDefaultServiceRouteEvent"),
-    /**
      * 推送服务级路由规则
      * 说明：推送服务的路由规则给RSF客户端，该路由策略只会影响到特定的服务。*/
     RsfCenter_UpdateServiceRouteEvent("UpdateServiceRouteEvent"),
-    /**
-     * 推送默认方法级路由规则。方法级路由是指：服务的路由策略可以为不同的方法做特殊配置
-     * 说明：推送服务的路由规则给RSF客户端，该路由策略会影响到RSF客户端上所有订阅的服务。*/
-    RsfCenter_UpdateDefaultMethodRouteEvent("UpdateDefaultMethodRouteEvent"),
     /**
      * 推送方法级路由规则。方法级路由是指：服务的路由策略可以为不同的方法做特殊配置
      * 说明：推送服务的路由规则给RSF客户端，该路由策略只会影响到特定的服务。*/
     RsfCenter_UpdateMethodRouteEvent("UpdateMethodRouteEvent"),
     /**
-     * 推送默认参数级路由规则。参数级路由是指：服务的路由策略可以细分到服务方法的参数上，例如根据userID散列不用的服务调用地址
-     * 说明：推送服务的路由规则给RSF客户端，该路由策略会影响到RSF客户端上所有订阅的服务。*/
-    RsfCenter_UpdateDefaultArgsRouteEvent("UpdateDefaultArgsRouteEvent"),
-    /**
      * 推送参数级路由规则。参数级路由是指：服务的路由策略可以细分到服务方法的参数上，例如根据userID散列不用的服务调用地址
      * 说明：推送服务的路由规则给RSF客户端，该路由策略只会影响到特定的服务。*/
     RsfCenter_UpdateArgsRouteEvent("UpdateArgsRouteEvent"),
-    //
-    //
-    /**
-     * 推送默认服务流控规则，流控规则包含了：限流、选址、单元化
-     * 说明：推送服务的路由规则给RSF客户端，该路由策略会影响到RSF客户端上所有订阅的服务。*/
-    RsfCenter_UpdateDefaultFlowControlEvent("UpdateDefaultFlowControlEvent"),
     /**
      * 推送流控流控规则，流控规则包含了：限流、选址、单元化
      * 说明：推送服务的路由规则给RSF客户端，该路由策略只会影响到特定的服务。*/

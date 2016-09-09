@@ -71,22 +71,6 @@ abstract class RsfBindBuilder implements RsfBinder {
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, BindInfo<T> bindInfo) {
         return this.rsfService(type).toInfo(bindInfo);
     }
-    @Override
-    public void updateFlowControl(String flowControl) {
-        this.getAddressPool().updateDefaultFlowControl(flowControl);
-    }
-    @Override
-    public void updateArgsRoute(String scriptBody) {
-        this.getAddressPool().updateDefaultArgsRoute(scriptBody);
-    }
-    @Override
-    public void updateMethodRoute(String scriptBody) {
-        this.getAddressPool().updateDefaultMethodRoute(scriptBody);
-    }
-    @Override
-    public void updateServiceRoute(String scriptBody) {
-        this.getAddressPool().updateDefaultServiceRoute(scriptBody);
-    }
     //
     private class LinkedBuilderImpl<T> implements LinkedBuilder<T> {
         private final ServiceInfo<T>            serviceDefine;

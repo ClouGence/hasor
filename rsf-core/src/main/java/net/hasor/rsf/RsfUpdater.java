@@ -14,40 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
+import net.hasor.rsf.address.InterAddress;
+
 import java.util.Collection;
 import java.util.List;
-
-import net.hasor.rsf.address.InterAddress;
 /**
  * 服务配置更新器。
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfUpdater {
-    /**更新服务地址本计算规则（服务级）*/
-    public boolean updateDefaultServiceRoute(String scriptBody);
-
-    /**更新服务地址本计算规则（服务级）*/
-    public String defaultServiceRoute();
-
-    /**更新本地方法级地址计算脚本。*/
-    public boolean updateDefaultMethodRoute(String scriptBody);
-
-    /**更新本地方法级地址计算脚本。*/
-    public String defaultMethodRoute();
-
-    /**更新本地参数级地址计算脚本。*/
-    public boolean updateDefaultArgsRoute(String scriptBody);
-
-    /**更新本地参数级地址计算脚本。*/
-    public String defaultArgsRoute();
-
-    /**更新服务路由策略*/
-    public boolean updateDefaultFlowControl(String flowControl);
-
-    /**更新服务路由策略*/
-    public String defaultFlowControl();
-
     /**更新服务地址本计算规则（服务级）*/
     public boolean updateServiceRoute(String serviceID, String scriptBody);
 

@@ -36,12 +36,13 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.atomic.AtomicBoolean;
 /**
  *
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class NetProtocolTest extends ChannelInboundHandlerAdapter {
+public class NetworkTest extends ChannelInboundHandlerAdapter {
     //
     private <T extends AbstractBootstrap<?, ?>> T configBoot(T boot) {
         boot.option(ChannelOption.SO_KEEPALIVE, true);
@@ -69,7 +70,7 @@ public class NetProtocolTest extends ChannelInboundHandlerAdapter {
         });
         return configBoot(clientBoot).connect(new InetSocketAddress(local, 8000)).await().channel();
     }
-    @Test
+    //
     public void receivePack() throws IOException, InterruptedException {
         final DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.createAppContext().getEnvironment());
         //
@@ -89,11 +90,31 @@ public class NetProtocolTest extends ChannelInboundHandlerAdapter {
         serverBoot.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
         serverBoot.childOption(ChannelOption.SO_KEEPALIVE, true);
         ChannelFuture future = configBoot(serverBoot).bind(local, 8000);
-        Thread.sleep(5000);
-        System.in.read();
+        future.sync();
     }
     @Test
-    public void sendRequestPack() throws IOException, InterruptedException {
+    public void sendPack() throws IOException, InterruptedException {
+        //
+        final AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+        Thread thread = new Thread() {
+            public void run() {
+                try {
+                    receivePack();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    atomicBoolean.set(true);
+                }
+            }
+        };
+        thread.setDaemon(true);
+        thread.start();
+        while (!atomicBoolean.get()) {
+            Thread.sleep(10);
+        }
+        //
+        //
+        System.out.println(">>>>>>>>> server started. <<<<<<<<<<");
         Channel channel = genChannel();
         //
         for (int i = 0; i <= 10; i++) {
@@ -112,11 +133,6 @@ public class NetProtocolTest extends ChannelInboundHandlerAdapter {
             channel.flush();
         }
         //
-        System.in.read();
-    }
-    @Test
-    public void sendResponsePack() throws IOException, InterruptedException {
-        Channel channel = genChannel();
         //
         for (int i = 0; i <= 10; i++) {
             ResponseInfo outResponse = new ResponseInfo(RsfConstants.Version_1);
@@ -129,6 +145,7 @@ public class NetProtocolTest extends ChannelInboundHandlerAdapter {
             channel.flush();
         }
         //
-        System.in.read();
+        //
+        Thread.sleep(5000);
     }
 }

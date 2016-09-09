@@ -20,6 +20,6 @@ import java.util.List;
  * @version : 2015年12月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RuleScriptInterface<T> {
+public interface RuleGroovyScriptFace<T> {
     public T evalAddress(String serviceID, List<String> allAddress);
 }

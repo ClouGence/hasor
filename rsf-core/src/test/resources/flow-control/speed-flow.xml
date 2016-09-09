@@ -1,0 +1,6 @@
+<flowControl enable="true" type="Speed">
+	<action>service</action>    <!-- 速率控制方式：每服务、每方法、每地址 -->
+	<rate>20</rate>             <!-- 稳态速率 -->
+	<peak>100</peak>            <!-- 峰值速率 -->
+	<timeWindow>10</timeWindow> <!-- 时间窗口 -->
+</flowControl>

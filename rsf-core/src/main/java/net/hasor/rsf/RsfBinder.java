@@ -14,31 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
 import net.hasor.rsf.address.InterAddress;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 /**
  * 服务配置器
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfBinder {
-    /**更新服务地址本计算规则（服务级）*/
-    public void updateServiceRoute(String scriptBody);
-
-    /**更新本地方法级地址计算脚本。*/
-    public void updateMethodRoute(String scriptBody);
-
-    /**更新本地参数级地址计算脚本。*/
-    public void updateArgsRoute(String scriptBody);
-
-    /**更新服务路由策略*/
-    public void updateFlowControl(String flowControl);
-
     /**
      * 添加全局的RsfFilter。
      * @param filterID filter ID

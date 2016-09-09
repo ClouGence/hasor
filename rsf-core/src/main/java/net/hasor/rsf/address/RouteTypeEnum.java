@@ -19,7 +19,7 @@ package net.hasor.rsf.address;
  * @version : 2015年10月20日
  * @author 赵永春(zyc@hasor.net)
  */
-enum RouteTypeEnum {
+public enum RouteTypeEnum {
     /***/
     ServiceLevel(1, "服务级"),
     /***/

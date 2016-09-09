@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
+import net.hasor.core.Settings;
+import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.utils.ZipUtils;
 import org.more.util.StringUtils;
+import org.more.util.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.*;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.zip.ZipFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import static net.hasor.rsf.domain.RsfConstants.*;
 /**
  * 描述：用于接收地址更新同时也用来计算有效和无效地址。
  * 也负责提供服务地址列表集，负责分类存储和处理同一个服务的各种类型的服务地址数据，比如：
@@ -47,18 +48,13 @@ import java.util.zip.ZipOutputStream;
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-class AddressBucket {
-    protected static final Logger logger;
-
-    static {
-        logger = LoggerFactory.getLogger(AddressBucket.class);
-    }
-
-    private static final String D       = "D|";
-    private static final String S       = "S|";
-    public static final  String Dynamic = "dynamic";
-    public static final  String Static  = "static";
+public class AddressBucket extends Observable {
+    protected static final Logger logger  = LoggerFactory.getLogger(AddressBucket.class);
+    public static final    String Dynamic = "dynamic";
+    public static final    String Static  = "static";
+    //
     //流控&路由
+    private final    RsfSettings                                   rsfSettings;        //配置信息
     private volatile FlowControlRef                                flowControlRef;     //默认流控规则引用
     private volatile RuleRef                                       ruleRef;
     //原始数据
@@ -73,9 +69,12 @@ class AddressBucket {
     private          List<InterAddress>                            localUnitAddresses; //本单元地址
     private          List<InterAddress>                            availableAddresses; //所有可用地址（包括本地单元）
     //
-    public AddressBucket(String serviceID, String unitName) {
+    public AddressBucket(String serviceID, RsfSettings rsfSettings) {
+        this.rsfSettings = rsfSettings;
+        this.flowControlRef = FlowControlRef.defaultRef(rsfSettings);
+        this.ruleRef = new RuleRef(null);
         this.serviceID = serviceID;
-        this.unitName = unitName;
+        this.unitName = rsfSettings.getUnitName();
         this.allAddressList = new CopyOnWriteArrayList<InterAddress>();
         this.staticAddressList = new CopyOnWriteArrayList<InterAddress>();
         this.invalidAddresses = new ConcurrentHashMap<InterAddress, InnerInvalidInfo>();
@@ -83,116 +82,17 @@ class AddressBucket {
         this.availableAddresses = new ArrayList<InterAddress>();
         this.refreshAddress();
     }
-    /**保存地址列表到zip流中。*/
-    public void saveToZip(ZipOutputStream outStream) throws IOException {
-        //1.服务地址本
-        if (!this.allAddressList.isEmpty()) {
-            StringBuilder strLogs = new StringBuilder();
-            StringWriter strWriter = new StringWriter();
-            BufferedWriter bfwriter = new BufferedWriter(strWriter);
-            for (InterAddress inter : this.allAddressList) {
-                if (this.staticAddressList.contains(inter)) {
-                    strLogs.append(S);
-                } else {
-                    strLogs.append(D);
-                }
-                strLogs.append(inter.toString());
-                strLogs.append(" , ");
-                bfwriter.write(inter.toString());
-                bfwriter.newLine();
-            }
-            bfwriter.flush();
-            logger.info("bucket save list -> {}", strLogs.toString());
-            String salName = this.serviceID + RsfConstants.ServiceAddressList_ZipEntry;
-            try {
-                String comment = "the address List of [" + salName + "] service.";
-                ZipUtils.writeEntry(outStream, strWriter.toString(), salName, comment);
-                logger.info("bucket save to entry -> {} ,finish.", salName);
-            } catch (Exception e) {
-                logger.error("bucket save to entry -> {} ,error -> {}", salName, e.getMessage(), e);
-            }
-        }
-        //2.保存流控规则
-        FlowControlRef flowControlRef = this.flowControlRef;
-        if (flowControlRef != null && StringUtils.isNotBlank(flowControlRef.flowControlScript)) {
-            String fclName = this.serviceID + RsfConstants.FlowControlRef_ZipEntry;
-            try {
-                String comment = "the flowControlRef of [" + this.serviceID + "] service.";
-                ZipUtils.writeEntry(outStream, flowControlRef.flowControlScript, fclName, comment);
-                logger.info("flowControlRef save to entry -> {} ,finish.", fclName);
-            } catch (Exception e) {
-                logger.error("flowControlRef save to entry -> {} ,error -> {}", fclName, e.getMessage(), e);
-            }
-        }
-        //3.保存路由脚本
-        RuleRef ruleRef = this.ruleRef;
-        if (ruleRef != null) {
-            String slsName = this.serviceID + RsfConstants.ServiceLevelScript_ZipEntry;//服务级路由脚本
-            try {
-                String comment = "the ServiceLevelScript of [" + this.serviceID + "] service.";
-                String script = ruleRef.getServiceLevel().getScript();
-                ZipUtils.writeEntry(outStream, script, slsName, comment);
-                logger.info("ServiceLevelScript save to entry -> {} ,finish.", slsName);
-            } catch (Exception e) {
-                logger.error("ServiceLevelScript save to entry -> {} ,error -> {}", slsName, e.getMessage(), e);
-            }
-            String mlsName = this.serviceID + RsfConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
-            try {
-                String comment = "the MethodLevelScript of [" + this.serviceID + "] service.";
-                String script = ruleRef.getMethodLevel().getScript();
-                ZipUtils.writeEntry(outStream, script, mlsName, comment);
-                logger.info("MethodLevelScript save to entry -> {} ,finish.", mlsName);
-            } catch (Exception e) {
-                logger.error("MethodLevelScript save to entry -> {} ,error -> {}", mlsName, e.getMessage(), e);
-            }
-            String alsName = this.serviceID + RsfConstants.ArgsLevelScript_ZipEntry;//参数级路由脚本
-            try {
-                String comment = "the ArgsLevelScript of [" + this.serviceID + "] service.";
-                String script = ruleRef.getArgsLevel().getScript();
-                ZipUtils.writeEntry(outStream, script, alsName, comment);
-                logger.info("ArgsLevelScript save to entry -> {} ,finish.", alsName);
-            } catch (Exception e) {
-                logger.error("ArgsLevelScript save to entry -> {} ,error -> {}", alsName, e.getMessage(), e);
-            }
-        }
-    }
-    /**保存地址列表到zip流中。*/
-    public void readAddressFromZip(ZipFile zipFile) throws IOException {
-        //服务地址本
-        String salName = this.serviceID + RsfConstants.ServiceAddressList_ZipEntry;
-        List<String> dataBody = ZipUtils.readToList(zipFile, salName);
-        if (dataBody != null && !dataBody.isEmpty()) {
-            logger.info("service {} read address form {}", salName, zipFile.getName());
-            StringBuilder strBuffer = new StringBuilder();
-            ArrayList<InterAddress> staticNewHostSet = new ArrayList<InterAddress>();
-            ArrayList<InterAddress> dynamicNewHostSet = new ArrayList<InterAddress>();
-            for (String line : dataBody) {
-                if (StringUtils.isBlank(line) || line.startsWith("#")) {
-                    continue;
-                }
-                try {
-                    if (line.startsWith(S)) {
-                        staticNewHostSet.add(new InterAddress(line.substring(1)));
-                        strBuffer.append(line);
-                        strBuffer.append(" , ");
-                    } else if (line.startsWith(D)) {
-                        dynamicNewHostSet.add(new InterAddress(line.substring(1)));
-                        strBuffer.append(line);
-                        strBuffer.append(" , ");
-                    }
-                } catch (URISyntaxException e) {
-                    logger.info("read address '{}' has URISyntaxException.", line);
-                }
-            }
-            logger.info("bucket read list -> {}", strBuffer.toString());
-            this.newAddress(staticNewHostSet, Static);
-            this.newAddress(dynamicNewHostSet, Dynamic);
-        }
-    }
     //
     public String getServiceID() {
         return serviceID;
     }
+    FlowControlRef getFlowControlRef() {
+        return this.flowControlRef;
+    }
+    RuleRef getRuleRef() {
+        return this.ruleRef;
+    }
+    //
     /**获取所有地址（包括本地的和无效的）。*/
     public synchronized List<InterAddress> getAllAddresses() {
         return new ArrayList<InterAddress>(this.allAddressList);
@@ -352,71 +252,230 @@ class AddressBucket {
         //
         this.availableAddresses = availableList;
         this.localUnitAddresses = unitList;
+        this.notifyObservers(this);//发出消息通知自己的状态变化了
     }
     //
-    /**获取流控规则*/
-    public FlowControlRef getFlowControlRef() {
-        return this.flowControlRef;
+    /** 更新服务的流控规则。 */
+    public boolean updateFlowControl(String flowControl) {
+        if (StringUtils.isBlank(flowControl)) {
+            return false;
+        }
+        FlowControlRef newRef = FlowControlRef.newRef(this.rsfSettings, this.flowControlRef);
+        newRef.updateFlowControl(flowControl);
+        this.flowControlRef = newRef;
+        this.refreshAddress();
+        return true;
     }
-    /**设置流控规则*/
-    public void setFlowControlRef(FlowControlRef flowControlRef) {
-        this.flowControlRef = flowControlRef;
+    /** 更新服务的路由脚本。 */
+    public boolean updateRoute(RouteTypeEnum routeType, String script) {
+        RuleRef newRuleRef = new RuleRef(this.ruleRef);
+        boolean updated = RouteTypeEnum.updateScript(routeType, script, newRuleRef);
+        if (!updated) {
+            logger.warn("update rules service={} -> no change.", serviceID);
+            return false;
+        } else {
+            logger.info("update rules service={} -> update ok", serviceID);
+            this.ruleRef = newRuleRef;
+            this.refreshAddress();
+            return true;
+        }
     }
-    public RuleRef getRuleRef() {
-        return this.ruleRef;
-    }
-    public void setRuleRef(RuleRef ruleRef) {
-        this.ruleRef = ruleRef;
-    }
+    //
     @Override
     public String toString() {
-        return "AddressBucket - " + this.getServiceID() + ",unit = " + this.unitName + " ,allAddress size = " + this.allAddressList.size();
+        return "AddressBucket - " + this.getServiceID() + //
+                " ,unit = " + this.unitName + //
+                " ,allAddress size = " + this.allAddressList.size();
     }
-    /** 从Zip压缩文件中恢复配置 */
-    protected static void recoveryConfig(ZipFile zipFile, String serviceID, AddressPool pool) {
-        AddressBucket bucker = pool.getBucket(serviceID);
-        //1.恢复地址数据
+    //
+    //
+    // ----------------------------------------- 配置的保存与恢复 -----------------------------------------
+    //
+    //
+    /**保存地址列表到zip流中。*/
+    public void saveToZip(OutputStream outStream) throws IOException {
+        ZipOutputStream zipStream = new ZipOutputStream(outStream);
+        zipStream.setComment("this config of " + this.getServiceID());
+        //
+        //1.服务地址本
+        if (!this.allAddressList.isEmpty()) {
+            StringBuilder strLogs = new StringBuilder();
+            StringWriter strWriter = new StringWriter();
+            BufferedWriter bfwriter = new BufferedWriter(strWriter);
+            for (InterAddress inter : this.allAddressList) {
+                if (this.staticAddressList.contains(inter)) {
+                    strLogs.append(S);
+                    bfwriter.append(S);
+                } else {
+                    strLogs.append(D);
+                    bfwriter.append(D);
+                }
+                strLogs.append(inter.toString());
+                strLogs.append(" , ");
+                bfwriter.write(inter.toString());
+                bfwriter.newLine();
+            }
+            bfwriter.flush();
+            logger.info("bucket save list -> {}", strLogs.toString());
+            try {
+                String comment = "the address List of [" + this.serviceID + "] service.";
+                ZipUtils.writeEntry(zipStream, strWriter.toString(), AddressList_ZipEntry, comment);
+                logger.info("bucket save to entry -> {} ,finish.", this.serviceID);
+            } catch (Exception e) {
+                logger.error("bucket save to entry -> {} ,error -> {}", this.serviceID, e.getMessage(), e);
+            }
+        }
+        //
+        //2.保存流控规则
+        FlowControlRef flowControlRef = this.flowControlRef;
+        if (flowControlRef != null && StringUtils.isNotBlank(flowControlRef.flowControlScript)) {
+            try {
+                String comment = "the flowControlRef of [" + this.serviceID + "] service.";
+                ZipUtils.writeEntry(zipStream, flowControlRef.flowControlScript, FlowControlRef_ZipEntry, comment);
+                logger.info("flowControlRef save to entry -> {} ,finish.", this.serviceID);
+            } catch (Exception e) {
+                logger.error("flowControlRef save to entry -> {} ,error -> {}", this.serviceID, e.getMessage(), e);
+            }
+        }
+        //
+        //3.保存路由脚本
+        RuleRef ruleRef = this.ruleRef;
+        if (ruleRef != null) {
+            // - 服务级路由脚本
+            try {
+                String comment = "the ServiceLevelScript of [" + this.serviceID + "] service.";
+                String script = ruleRef.getServiceLevel().getScript();
+                ZipUtils.writeEntry(zipStream, script, ServiceLevelScript_ZipEntry, comment);
+                logger.info("ServiceLevelScript save to entry -> {} ,finish.", this.serviceID);
+            } catch (Exception e) {
+                logger.error("ServiceLevelScript save to entry -> {} ,error -> {}", this.serviceID, e.getMessage(), e);
+            }
+            // - 方法级路由脚本
+            try {
+                String comment = "the MethodLevelScript of [" + this.serviceID + "] service.";
+                String script = ruleRef.getMethodLevel().getScript();
+                ZipUtils.writeEntry(zipStream, script, MethodLevelScript_ZipEntry, comment);
+                logger.info("MethodLevelScript save to entry -> {} ,finish.", this.serviceID);
+            } catch (Exception e) {
+                logger.error("MethodLevelScript save to entry -> {} ,error -> {}", this.serviceID, e.getMessage(), e);
+            }
+            // - 参数级路由脚本
+            try {
+                String comment = "the ArgsLevelScript of [" + this.serviceID + "] service.";
+                String script = ruleRef.getArgsLevel().getScript();
+                ZipUtils.writeEntry(zipStream, script, ArgsLevelScript_ZipEntry, comment);
+                logger.info("ArgsLevelScript save to entry -> {} ,finish.", this.serviceID);
+            } catch (Exception e) {
+                logger.error("ArgsLevelScript save to entry -> {} ,error -> {}", this.serviceID, e.getMessage(), e);
+            }
+        }
+        //
+        //4.关闭输出
+        zipStream.finish();
+        zipStream.closeEntry();
+    }
+    //
+    /**从流中读取地址列表地址列表到zip流中。*/
+    public void readFromZip(InputStream inStream) throws IOException {
+        ZipInputStream zipStream = new ZipInputStream(inStream);
+        Map<String, byte[]> dataMaps = new HashMap<String, byte[]>();
+        ZipEntry zipEntry = null;
+        while ((zipEntry = zipStream.getNextEntry()) != null) {
+            ByteArrayOutputStream outArray = new ByteArrayOutputStream();
+            IOUtils.copy(zipStream, outArray);
+            dataMaps.put(zipEntry.getName(), outArray.toByteArray());
+        }
+        //
+        //1.服务地址本
         try {
-            bucker.readAddressFromZip(zipFile);
+            if (dataMaps.containsKey(AddressList_ZipEntry)) {                                               // 通
+                InputStream dataIn = new ByteArrayInputStream(dataMaps.get(AddressList_ZipEntry));          // 用
+                List<String> dataBody = IOUtils.readLines(dataIn, Settings.DefaultCharset);                 // 模
+                if (dataBody != null && !dataBody.isEmpty()) {                                              // 式
+                    logger.info("service {} read address form stream", this.serviceID);
+                    StringBuilder strBuffer = new StringBuilder();
+                    ArrayList<InterAddress> staticNewHostSet = new ArrayList<InterAddress>();
+                    ArrayList<InterAddress> dynamicNewHostSet = new ArrayList<InterAddress>();
+                    for (String line : dataBody) {
+                        if (StringUtils.isBlank(line) || line.startsWith("#")) {
+                            continue;
+                        }
+                        try {
+                            if (line.startsWith(S)) {
+                                staticNewHostSet.add(new InterAddress(line.substring(2)));
+                                strBuffer.append(line);
+                                strBuffer.append(" , ");
+                            } else if (line.startsWith(D)) {
+                                dynamicNewHostSet.add(new InterAddress(line.substring(2)));
+                                strBuffer.append(line);
+                                strBuffer.append(" , ");
+                            }
+                        } catch (URISyntaxException e) {
+                            logger.info("read address '{}' has URISyntaxException.", line);
+                        }
+                    }
+                    logger.info("bucket read list -> {}", strBuffer.toString());
+                    this.newAddress(staticNewHostSet, Static);
+                    this.newAddress(dynamicNewHostSet, Dynamic);
+                }
+            }
         } catch (Throwable e) {
             logger.error("recoveryConfig address,failed-> serviceID ={} message={}.", serviceID, e.getMessage(), e);
         }
-        //2.恢复流控规则
+        //
+        //2.流控规则
         try {
-            String fclName = serviceID + RsfConstants.FlowControlRef_ZipEntry;
-            String flowControl = ZipUtils.readToString(zipFile, fclName);
-            if (StringUtils.isNotBlank(flowControl)) {
-                pool.updateFlowControl(serviceID, flowControl);
+            if (dataMaps.containsKey(FlowControlRef_ZipEntry)) {                                            // 通
+                InputStream dataIn = new ByteArrayInputStream(dataMaps.get(FlowControlRef_ZipEntry));       // 用
+                List<String> dataBody = IOUtils.readLines(dataIn, Settings.DefaultCharset);                 // 模
+                if (dataBody != null && !dataBody.isEmpty()) {                                              // 式
+                    String flowControl = StringUtils.join(dataBody.toArray(), "\n");
+                    if (StringUtils.isNotBlank(flowControl)) {
+                        this.updateFlowControl(flowControl);
+                    }
+                }
             }
         } catch (Throwable e) {
             logger.error("recoveryConfig flowControl,failed-> serviceID ={} message={}.", serviceID, e.getMessage(), e);
         }
-        //3.恢复服务级路由脚本策略
+        //
+        //3.服务级路由脚本策略
         try {
-            String slsName = serviceID + RsfConstants.ServiceLevelScript_ZipEntry;//服务级路由脚本
-            String scriptBody = ZipUtils.readToString(zipFile, slsName);
-            if (StringUtils.isNotBlank(scriptBody)) {
-                pool.updateServiceRoute(serviceID, scriptBody);
+            if (dataMaps.containsKey(ServiceLevelScript_ZipEntry)) {                                        // 通
+                InputStream dataIn = new ByteArrayInputStream(dataMaps.get(ServiceLevelScript_ZipEntry));   // 用
+                List<String> dataBody = IOUtils.readLines(dataIn, Settings.DefaultCharset);                 // 模
+                if (dataBody != null && !dataBody.isEmpty()) {                                              // 式
+                    String scriptBody = StringUtils.join(dataBody.toArray(), "\n");
+                    updateRoute(RouteTypeEnum.ServiceLevel, scriptBody);
+                }
             }
         } catch (Throwable e) {
             logger.error("recoveryConfig serviceRoute,failed-> serviceID ={} message={}.", serviceID, e.getMessage(), e);
         }
-        //4.恢复方法级路由脚本策略
+        //
+        //4.方法级路由脚本策略
         try {
-            String mlsName = serviceID + RsfConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
-            String scriptBody = ZipUtils.readToString(zipFile, mlsName);
-            if (StringUtils.isNotBlank(scriptBody)) {
-                pool.updateMethodRoute(serviceID, scriptBody);
+            if (dataMaps.containsKey(MethodLevelScript_ZipEntry)) {                                         // 通
+                InputStream dataIn = new ByteArrayInputStream(dataMaps.get(MethodLevelScript_ZipEntry));    // 用
+                List<String> dataBody = IOUtils.readLines(dataIn, Settings.DefaultCharset);                 // 模
+                if (dataBody != null && !dataBody.isEmpty()) {                                              // 式
+                    String scriptBody = StringUtils.join(dataBody.toArray(), "\n");
+                    updateRoute(RouteTypeEnum.MethodLevel, scriptBody);
+                }
             }
         } catch (Throwable e) {
             logger.error("recoveryConfig methodRoute,failed-> serviceID ={} message={}.", serviceID, e.getMessage(), e);
         }
-        //4.恢复参数级路由脚本策略
+        //
+        //5.参数级路由脚本策略
         try {
-            String mlsName = serviceID + RsfConstants.MethodLevelScript_ZipEntry;//方法级路由脚本
-            String scriptBody = ZipUtils.readToString(zipFile, mlsName);
-            if (StringUtils.isNotBlank(scriptBody)) {
-                pool.updateArgsRoute(serviceID, scriptBody);
+            if (dataMaps.containsKey(ArgsLevelScript_ZipEntry)) {                                           // 通
+                InputStream dataIn = new ByteArrayInputStream(dataMaps.get(ArgsLevelScript_ZipEntry));      // 用
+                List<String> dataBody = IOUtils.readLines(dataIn, Settings.DefaultCharset);                 // 模
+                if (dataBody != null && !dataBody.isEmpty()) {                                              // 式
+                    String scriptBody = StringUtils.join(dataBody.toArray(), "\n");
+                    updateRoute(RouteTypeEnum.ArgsLevel, scriptBody);
+                }
             }
         } catch (Throwable e) {
             logger.error("recoveryConfig argsRoute,failed-> serviceID ={} message={}.", serviceID, e.getMessage(), e);

@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.address.route.rule.ArgsKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.Map.Entry;
 /**
  * 路由计算结果缓存<br/>
  * 接口级    方法级      参数级
@@ -83,7 +79,7 @@ class AddressCacheResult {
     public void reset() {
         this.logger.info("reset addressCache.");
         Map<String, List<InterAddress>> allAddress = this.addressPool.allServiceAddressToSnapshot();
-        Collection<String> allServiceIDs = this.addressPool.listServices();
+        Set<String> allServiceIDs = this.addressPool.getBucketNames();
         CacheResult cacheResultRef = new CacheResult();
         //
         for (String serviceID : allServiceIDs) {
@@ -204,7 +200,7 @@ class AddressCacheResult {
      *  }</pre>
      * */
     private List<String> evalServiceLevel(String serviceID, RuleRef refRule, List<String> all) {
-        RuleEngine serviceLevel = refRule.getServiceLevel();
+        InnerRuleEngine serviceLevel = refRule.getServiceLevel();
         if (serviceLevel == null) {
             return null;
         }
@@ -248,7 +244,7 @@ class AddressCacheResult {
      *  }</pre>
      * */
     private Map<String, List<String>> evalMethodLevel(String serviceID, RuleRef refRule, List<String> all) {
-        RuleEngine methodLevel = refRule.getMethodLevel();
+        InnerRuleEngine methodLevel = refRule.getMethodLevel();
         if (methodLevel == null) {
             return null;
         }
@@ -297,7 +293,7 @@ class AddressCacheResult {
      *  }</pre>
      * */
     private Map<String, Map<String, List<String>>> evalArgsLevel(String serviceID, RuleRef refRule, List<String> all) {
-        RuleEngine argsLevel = refRule.getArgsLevel();
+        InnerRuleEngine argsLevel = refRule.getArgsLevel();
         if (argsLevel == null) {
             return null;
         }
@@ -309,16 +305,16 @@ class AddressCacheResult {
             return null;
         }
     }
-}
-//
-class CacheResult {
-    public final Map<String, List<InterAddress>>                           serviceLevel; //服务接口级
-    public final Map<String, Map<String, List<InterAddress>>>              methodLevel;  //方法级
-    public final Map<String, Map<String, Map<String, List<InterAddress>>>> argsLevel;    //参数级
     //
-    public CacheResult() {
-        this.serviceLevel = new HashMap<String, List<InterAddress>>(); //服务接口级
-        this.methodLevel = new HashMap<String, Map<String, List<InterAddress>>>(); //方法级
-        this.argsLevel = new HashMap<String, Map<String, Map<String, List<InterAddress>>>>(); //参数级
+    private static class CacheResult {
+        public final Map<String, List<InterAddress>>                           serviceLevel; //服务接口级
+        public final Map<String, Map<String, List<InterAddress>>>              methodLevel;  //方法级
+        public final Map<String, Map<String, Map<String, List<InterAddress>>>> argsLevel;    //参数级
+        //
+        public CacheResult() {
+            this.serviceLevel = new HashMap<String, List<InterAddress>>(); //服务接口级
+            this.methodLevel = new HashMap<String, Map<String, List<InterAddress>>>(); //方法级
+            this.argsLevel = new HashMap<String, Map<String, Map<String, List<InterAddress>>>>(); //参数级
+        }
     }
 }
