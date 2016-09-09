@@ -62,7 +62,7 @@ public class InputStreamSettings extends AbstractSettings implements IOSettings 
             //构建装载环境
             InputStreamEntity entity = null;
             try {
-                logger.info("parsing...");
+                logger.debug("parsing...");
                 SAXParserFactory factory = SAXParserFactory.newInstance();
                 factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
                 factory.setFeature("http://xml.org/sax/features/namespaces", true);
@@ -107,9 +107,9 @@ public class InputStreamSettings extends AbstractSettings implements IOSettings 
                 }
             }
         }
-        logger.info("parsing finish.");
+        logger.debug("parsing finish.");
         this.loadFinish();//完成装载
-        logger.info("loadSettings finish.");
+        logger.debug("loadSettings finish.");
     }
     /**准备装载*/
     protected void readyLoad() throws IOException {
