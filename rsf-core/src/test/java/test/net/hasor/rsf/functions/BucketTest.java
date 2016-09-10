@@ -103,5 +103,6 @@ public class BucketTest {
         bucket.invalidAddress(new InterAddress("127.0.0.2", 8000, "etc2"), 500);
         //
         Thread.sleep(2000);
+        watcher.stop();
     }
 }

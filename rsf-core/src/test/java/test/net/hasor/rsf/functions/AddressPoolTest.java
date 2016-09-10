@@ -179,5 +179,6 @@ public class AddressPoolTest {
         pool.updateServiceRoute(serviceID, scriptBody);
         //
         Thread.sleep(5000);
+        thread.stop();
     }
 }

@@ -35,7 +35,7 @@ public class RealCallerTest {
     @Test
     public void realCallerTest() throws Throwable {
         //Server
-        Hasor.createAppContext("provider-config.xml", new RsfModule() {
+        AppContext serverAppContext = Hasor.createAppContext("provider-config.xml", new RsfModule() {
             @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {
                 RsfBinder rsfBinder = rsfContext.binder();
@@ -126,5 +126,8 @@ public class RealCallerTest {
         System.out.print(remote.sayHello("RRRRR"));
         Thread.sleep(2000);
         //
+        //
+        clientContext.shutdown();
+        serverAppContext.shutdown();
     }
 }
