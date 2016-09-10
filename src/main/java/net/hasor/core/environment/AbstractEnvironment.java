@@ -396,18 +396,18 @@ public abstract class AbstractEnvironment implements Environment {
             @Override
             public void update(SettingValue oldValue, Settings context) {
                 ArrayList<Object> varArrays = new ArrayList<Object>(oldValue.getVarList());
-                for (Object var : varArrays) {
+                //
+                for (int index = 0; index < varArrays.size(); index++) {
+                    Object var = varArrays.get(index);
                     if (var instanceof DefaultXmlNode) {
                         // .引用类型-直接更新引用对象的属性值。
                         String val = evalSettingString(((DefaultXmlNode) var).getText());
                         ((DefaultXmlNode) var).setText(val);//引用类型
                     } else if (var instanceof CharSequence) {
                         // .String类型-通过replace替换。
-                        StringBuilder strBuilder = new StringBuilder();
-                        strBuilder.append(var);
-                        String oldVal = strBuilder.toString();
+                        String oldVal = String.valueOf(var);
                         String newVal = evalSettingString(oldVal);
-                        oldValue.replace(var, newVal);//值类型
+                        oldValue.replace(index, var, newVal);//值类型
                     } else {
                         //TODO 
                     }
@@ -415,11 +415,11 @@ public abstract class AbstractEnvironment implements Environment {
             }
         });
     }
-    private final String evalSettingString(String evalString) {
+    private String evalSettingString(String evalString) {
         if (StringUtils.isBlank(evalString)) {
             return "";
         }
-        Pattern keyPattern = Pattern.compile("(?:\\$\\{([\\w\\._-]+)\\}){1,1}");//  (?:\$\{([\w\._-]+)\})
+        Pattern keyPattern = Pattern.compile("(?:\\$\\{([\\w\\._-]+)\\}){1,1}");//  (?:\$\{([\w\._-]+)\}){1,1} -> ${...}
         Matcher keyM = keyPattern.matcher(evalString);
         Map<String, String> data = new HashMap<String, String>();
         while (keyM.find()) {

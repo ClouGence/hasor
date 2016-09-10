@@ -88,6 +88,14 @@ public abstract class AbstractSettings implements Settings {
         String lowerKey = StringUtils.isBlank(key) ? "" : key.toLowerCase();
         this.allSettingValue().remove(namespace, lowerKey);// 所有命名空间的数据
     }
+    /**
+     *  设置参数，如果出现多个值，则会覆盖。(使用默认命名空间 : DefaultNameSpace)
+     * @see #DefaultNameSpace
+     */
+    @Override
+    public void setSetting(String key, Object value) {
+        this.setSetting(key, value, DefaultNameSpace);
+    }
     /** 设置参数，如果出现多个值，则会覆盖。 */
     public void setSetting(final String key, final Object value, final String namespace) {
         String lowerKey = StringUtils.isBlank(key) ? "" : key.toLowerCase();

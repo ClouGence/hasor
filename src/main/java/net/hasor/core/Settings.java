@@ -39,6 +39,9 @@ public interface Settings {
     //
 
     /** 设置参数，如果出现多个值，则会覆盖。 */
+    public void setSetting(String key, Object value);
+
+    /** 设置参数，如果出现多个值，则会覆盖。 */
     public void setSetting(String key, Object value, String namespace);
 
     /** 将整个配置项的多个值全部删除。 */

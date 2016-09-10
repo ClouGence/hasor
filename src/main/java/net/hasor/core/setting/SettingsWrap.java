@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.core.setting;
-import java.io.IOException;
-import java.util.Date;
-import java.util.Set;
-
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
+
+import java.io.IOException;
+import java.util.Date;
 /**
  * Settings接口的抽象实现。
  *
@@ -44,6 +43,10 @@ public class SettingsWrap implements Settings {
     }
     public void refresh() throws IOException {
         this.settings.refresh();
+    }
+    @Override
+    public void setSetting(String key, Object value) {
+        this.settings.setSetting(key, value);
     }
     public void setSetting(String key, Object value, String namespace) {
         this.settings.setSetting(key, value, namespace);

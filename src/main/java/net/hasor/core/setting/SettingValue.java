@@ -50,9 +50,18 @@ public class SettingValue {
         return this.varList;
     }
     //
-    public void replace(Object oldVar, Object newVar) {
-        int index = varList.indexOf(oldVar);
-        varList.set(index, newVar);
+    public void replace(int index, Object oldVar, Object newVar) {
+        if (this.defaultVar == oldVar) {
+            this.defaultVar = newVar;
+        }
+        //
+        if (index >= this.varList.size()) {
+            return;
+        }
+        if (this.varList.get(index) != oldVar) {
+            return;
+        }
+        this.varList.set(index, newVar);
     }
     //
     public String toString() {
