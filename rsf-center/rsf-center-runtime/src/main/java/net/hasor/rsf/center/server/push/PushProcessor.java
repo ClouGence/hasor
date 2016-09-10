@@ -30,7 +30,7 @@ import net.hasor.rsf.rpc.caller.RsfServiceWrapper;
  * @author 赵永春(zyc@hasor.net)
  */
 public class PushProcessor {
-    protected Logger                       logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
     private RsfContext                     rsfContext;
     private ThreadLocal<RsfCenterListener> rsfClientListener;

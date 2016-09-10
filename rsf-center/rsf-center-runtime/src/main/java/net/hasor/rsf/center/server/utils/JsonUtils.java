@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.utils;
-import org.more.json.JSON;
-import org.more.json.JSONEnumConvertor;
 import net.hasor.rsf.center.server.push.RsfCenterEventEnum;
+import net.hasor.rsf.utils.json.JSON;
+import net.hasor.rsf.utils.json.JSONEnumConvertor;
 /**
- * 
+ *
  * @version : 2016年3月25日
  * @author 赵永春(zyc@hasor.net)
  */
 public class JsonUtils {
     private static final Object LOCK = new Object();
-    private static JSON         json;
+    private static JSON json;
     public static String toJsonString(Object object) {
         if (json == null) {
             synchronized (LOCK) {

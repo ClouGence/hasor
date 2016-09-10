@@ -25,7 +25,7 @@ import net.hasor.rsf.RsfModule;
 import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.RsfCenterRegister;
 import net.hasor.rsf.center.server.core.commands.CenterCommandPlugin;
-import net.hasor.rsf.center.server.data.daos.DaoModule;
+import net.hasor.rsf.center.server.core.DaoModule;
 import net.hasor.rsf.center.server.domain.RsfCenterCfg;
 import net.hasor.rsf.center.server.domain.WorkMode;
 import net.hasor.rsf.center.server.push.PushQueue;

@@ -17,7 +17,7 @@ package net.hasor.rsf.center.server.push;
 import net.hasor.rsf.center.RsfCenterEvent;
 /**
  * 注册中心下推送的事件类型，与枚举{@link RsfCenterEvent}为一对一映射关系。映射时增加了处理类。
- * 
+ *
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -36,34 +36,18 @@ public enum RsfCenterEventEnum {
     RemoveAddressEvent(RsfCenterEvent.RsfCenter_RemoveAddressEvent, PushProcessor.class),
     //
     /**
-     * 推送默认服务级路由规则
-     * 说明：推送服务的路由规则给RSF客户端，该路由策略会影响到RSF客户端上所有订阅的服务。*/
-    UpdateDefaultServiceRouteEvent(RsfCenterEvent.RsfCenter_UpdateDefaultServiceRouteEvent, PushProcessor.class),
-    /**
      * 推送服务级路由规则
      * 说明：推送服务的路由规则给RSF客户端，该路由策略只会影响到特定的服务。*/
     UpdateServiceRouteEvent(RsfCenterEvent.RsfCenter_UpdateServiceRouteEvent, PushProcessor.class),
-    /**
-     * 推送默认方法级路由规则。方法级路由是指：服务的路由策略可以为不同的方法做特殊配置
-     * 说明：推送服务的路由规则给RSF客户端，该路由策略会影响到RSF客户端上所有订阅的服务。*/
-    UpdateDefaultMethodRouteEvent(RsfCenterEvent.RsfCenter_UpdateDefaultMethodRouteEvent, PushProcessor.class),
     /**
      * 推送方法级路由规则。方法级路由是指：服务的路由策略可以为不同的方法做特殊配置
      * 说明：推送服务的路由规则给RSF客户端，该路由策略只会影响到特定的服务。*/
     UpdateMethodRouteEvent(RsfCenterEvent.RsfCenter_UpdateMethodRouteEvent, PushProcessor.class),
     /**
-     * 推送默认参数级路由规则。参数级路由是指：服务的路由策略可以细分到服务方法的参数上，例如根据userID散列不用的服务调用地址
-     * 说明：推送服务的路由规则给RSF客户端，该路由策略会影响到RSF客户端上所有订阅的服务。*/
-    UpdateDefaultArgsRouteEvent(RsfCenterEvent.RsfCenter_UpdateDefaultArgsRouteEvent, PushProcessor.class),
-    /**
      * 推送参数级路由规则。参数级路由是指：服务的路由策略可以细分到服务方法的参数上，例如根据userID散列不用的服务调用地址
      * 说明：推送服务的路由规则给RSF客户端，该路由策略只会影响到特定的服务。*/
     UpdateArgsRouteEvent(RsfCenterEvent.RsfCenter_UpdateArgsRouteEvent, PushProcessor.class),
     //
-    /**
-     * 推送默认服务流控规则，流控规则包含了：限流、选址、单元化
-     * 说明：推送服务的路由规则给RSF客户端，该路由策略会影响到RSF客户端上所有订阅的服务。*/
-    UpdateDefaultFlowControlEvent(RsfCenterEvent.RsfCenter_UpdateDefaultFlowControlEvent, PushProcessor.class),
     /**
      * 推送流控流控规则，流控规则包含了：限流、选址、单元化
      * 说明：推送服务的路由规则给RSF客户端，该路由策略只会影响到特定的服务。*/

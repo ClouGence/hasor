@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.push;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import net.hasor.core.AppContext;
-import net.hasor.core.EventListener;
-import net.hasor.core.Init;
-import net.hasor.core.Inject;
-import net.hasor.core.Singleton;
+import net.hasor.core.*;
 import net.hasor.plugins.event.Event;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.center.server.domain.RsfCenterCfg;
 import net.hasor.rsf.center.server.domain.RsfCenterEvent;
 import net.hasor.rsf.center.server.share.SharePushManager;
 import net.hasor.rsf.center.server.utils.JsonUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
 /**
  * 推送服务触发器
  * @version : 2016年3月1日
@@ -39,7 +36,7 @@ import net.hasor.rsf.center.server.utils.JsonUtils;
 @Singleton
 @Event(RsfCenterEvent.PushEvent)
 public class PushQueue implements Runnable, EventListener<PushEvent> {
-    protected Logger                               logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     private LinkedBlockingQueue<PushEvent>         dataQueue;
     private ArrayList<Thread>                      threadPushQueue;
     private Map<RsfCenterEventEnum, PushProcessor> processorMapping;

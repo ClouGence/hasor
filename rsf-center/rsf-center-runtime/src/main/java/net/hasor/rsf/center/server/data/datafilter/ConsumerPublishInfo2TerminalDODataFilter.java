@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.data.datafilter;
-import org.more.datachain.DataFilter;
-import org.more.datachain.DataFilterChain;
-import org.more.datachain.Domain;
 import net.hasor.rsf.center.domain.ConsumerPublishInfo;
 import net.hasor.rsf.center.server.domain.entity.TerminalDO;
+import org.more.bizcommon.datachain.DataFilter;
+import org.more.bizcommon.datachain.DataFilterChain;
+import org.more.bizcommon.datachain.Domain;
 /**
- * 
+ *
  * @version : 2016年5月7日
  * @author 赵永春(zyc@hasor.net)
  */

@@ -35,7 +35,7 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-core</artifactId>
-            <version>2.4.4-SNAPSHOT</version>
+            <version>2.4.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
@@ -51,6 +51,12 @@
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
             <version>3.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>

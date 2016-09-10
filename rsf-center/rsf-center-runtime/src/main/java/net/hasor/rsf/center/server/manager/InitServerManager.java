@@ -15,8 +15,9 @@
  */
 package net.hasor.rsf.center.server.manager;
 import java.util.Date;
+
 import org.more.bizcommon.Result;
-import org.more.datachain.DataChainContext;
+import org.more.bizcommon.datachain.DataChainContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
@@ -36,7 +37,7 @@ import net.hasor.rsf.center.server.utils.DateCenterUtils;
  */
 @Singleton
 public class InitServerManager {
-    protected Logger    logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
     private AppContext  appContext;
     @Inject
@@ -58,7 +59,8 @@ public class InitServerManager {
         }
         //
         // -RsfContext到ServerDO的转换
-        DataChainContext<RsfContext, ServerDO> dataChainContext = new DataChainContext<RsfContext, ServerDO>() {};
+        DataChainContext<RsfContext, ServerDO> dataChainContext = new DataChainContext<RsfContext, ServerDO>() {
+        };
         dataChainContext.addDataFilter("dataFilter", this.appContext.getInstance(RsfContext2ServerDODataFilter.class));
         ServerDO serverDO = dataChainContext.doChain(rsfContext, queryResult.getResult());
         //

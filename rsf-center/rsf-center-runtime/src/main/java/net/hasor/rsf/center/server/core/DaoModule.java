@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.data.daos;
+package net.hasor.rsf.center.server.core;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -37,8 +38,8 @@ import net.hasor.rsf.center.server.domain.WorkMode;
  * @author 赵永春(zyc@hasor.net)
  */
 public class DaoModule implements LifeModule {
-    protected Logger     logger       = LoggerFactory.getLogger(getClass());
-    private RsfCenterCfg rsfCenterCfg = null;
+    protected Logger       logger       = LoggerFactory.getLogger(getClass());
+    private   RsfCenterCfg rsfCenterCfg = null;
     public DaoModule(RsfCenterCfg rsfCenterCfg) {
         this.rsfCenterCfg = rsfCenterCfg;
     }
@@ -58,12 +59,6 @@ public class DaoModule implements LifeModule {
         }
         DataSource dataSource = createDataSource(driverString, urlString, userString, pwdString);
         apiBinder.installModule(new DBModule(dataSource));
-        //
-        // 2.Dao
-        Set<Class<?>> daoSet = apiBinder.getEnvironment().findClass(Dao.class);
-        for (Class<?> daoType : daoSet) {
-            apiBinder.bindType(daoType);
-        }
     }
     public void onStart(AppContext appContext) throws Throwable {
         Environment env = appContext.getEnvironment();

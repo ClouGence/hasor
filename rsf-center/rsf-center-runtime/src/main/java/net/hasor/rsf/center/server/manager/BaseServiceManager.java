@@ -14,44 +14,45 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.manager;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import org.more.bizcommon.PageResult;
-import org.more.bizcommon.Result;
-import org.more.bizcommon.ResultDO;
-import org.more.datachain.DataChainContext;
-import org.more.util.CommonCodeUtils.MD5;
-import org.more.util.ResourcesUtils;
-import org.more.util.StringUtils;
-import org.more.util.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventContext;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.domain.PublishInfo;
+import net.hasor.rsf.center.server.core.ErrorCode;
 import net.hasor.rsf.center.server.data.DataAdapter;
 import net.hasor.rsf.center.server.data.datafilter.PublishInfo2ServiceInfoDODataFilter;
 import net.hasor.rsf.center.server.domain.RsfCenterEvent;
-import net.hasor.rsf.center.server.domain.RsfErrorCode;
 import net.hasor.rsf.center.server.domain.entity.RuleFeatureDO;
 import net.hasor.rsf.center.server.domain.entity.ServiceDO;
 import net.hasor.rsf.center.server.domain.entity.StatusEnum;
 import net.hasor.rsf.center.server.domain.entity.TerminalTypeEnum;
 import net.hasor.rsf.center.server.domain.query.TerminalQuery;
 import net.hasor.rsf.center.server.push.PushEvent;
+import org.more.bizcommon.PageResult;
+import org.more.bizcommon.Result;
+import org.more.bizcommon.ResultDO;
+import org.more.bizcommon.datachain.DataChainContext;
+import org.more.util.CommonCodeUtils.MD5;
+import org.more.util.ResourcesUtils;
+import org.more.util.StringUtils;
+import org.more.util.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 /**
- * 
+ *
  * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
 @Singleton
 public class BaseServiceManager {
-    protected Logger    logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
     private AppContext  appContext;
     @Inject
@@ -71,7 +72,7 @@ public class BaseServiceManager {
         //
         // .根据HashCode查询Service
         Result<ServiceDO> serviceResult = this.dataAdapter.queryServiceByHashCode(hashCode);
-        if (serviceResult == null || serviceResult.isSuccess() == false) {
+        if (serviceResult == null || !serviceResult.isSuccess()) {
             /*查询失败的情况*/
             return new ResultDO<ServiceDO>(serviceResult).setSuccess(false).addMessage(serviceResult.getMessageList());
         }
@@ -81,7 +82,8 @@ public class BaseServiceManager {
         }
         //
         // .转换PublishInfo到ServiceDO
-        DataChainContext<PublishInfo, ServiceDO> dataChainContext = new DataChainContext<PublishInfo, ServiceDO>() {};
+        DataChainContext<PublishInfo, ServiceDO> dataChainContext = new DataChainContext<PublishInfo, ServiceDO>() {
+        };
         dataChainContext.addDataFilter("dataFilter", this.appContext.getInstance(PublishInfo2ServiceInfoDODataFilter.class));
         serviceDO = dataChainContext.doChain(info);
         //
@@ -98,7 +100,7 @@ public class BaseServiceManager {
         //
         // .取得结果
         if (serviceDO == null) {
-            return new ResultDO<ServiceDO>().setSuccess(false).addMessage(RsfErrorCode.ResultEmptyError.getTemplate());
+            return new ResultDO<ServiceDO>().setSuccess(false).addMessage(ErrorCode.ResultEmptyError.getMessageTemplate());
         } else {
             return new ResultDO<ServiceDO>(serviceDO).setSuccess(true);
         }
@@ -160,7 +162,7 @@ public class BaseServiceManager {
     }
     //
     /**处理某一个服务的心跳*/
-    protected Result<Long> serviceBeat(InterAddress rsfHost, String forBindID, String saltValue) throws Throwable {
+    protected Result<Boolean> serviceBeat(InterAddress rsfHost, String forBindID, String saltValue) throws Throwable {
         String hostPort = rsfHost.getHostPort();
         Date beatTime = new Date();
         return this.dataAdapter.beatOfService(forBindID, hostPort, saltValue, beatTime);

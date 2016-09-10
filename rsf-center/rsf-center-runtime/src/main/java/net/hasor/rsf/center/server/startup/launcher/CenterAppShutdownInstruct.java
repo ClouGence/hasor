@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.startup.launcher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
-import net.hasor.rsf.console.RsfCmd;
 import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
+import net.hasor.rsf.console.RsfInstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
- * 
+ *
  * @version : 2016年3月29日
  * @author 赵永春(zyc@hasor.net)
  */
-@RsfCmd("center_app_shutdown_command")
-public class CenterAppShutdownCommand implements RsfCommand {
-    protected static Logger logger = LoggerFactory.getLogger(CenterAppShutdownCommand.class);
+@RsfCommand("center_app_shutdown_command")
+public class CenterAppShutdownInstruct implements RsfInstruct {
+    protected static Logger logger = LoggerFactory.getLogger(CenterAppShutdownInstruct.class);
     @Override
     public String helpInfo() {
         return "shutdown center.";
@@ -41,7 +41,7 @@ public class CenterAppShutdownCommand implements RsfCommand {
         logger.error("A valid shutdown command was received via the shutdown port. Stopping the Server instance.");
         request.writeMessageLine("detail Message:");
         int i = 5;
-        for (;;) {
+        for (; ; ) {
             logger.error("after {} seconds to kill self.", i);
             request.writeMessageLine("after " + i + " seconds to kill self.");
             try {
@@ -61,7 +61,8 @@ public class CenterAppShutdownCommand implements RsfCommand {
                 } catch (Exception e) {/**/}
                 appContext.shutdown();
                 System.exit(1);
-            };
+            }
+            ;
         };
         //
         request.writeMessageLine("shutdown center now.");

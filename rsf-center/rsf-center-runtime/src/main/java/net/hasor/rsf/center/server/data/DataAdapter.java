@@ -15,12 +15,15 @@
  */
 package net.hasor.rsf.center.server.data;
 import java.util.Date;
+
+import net.hasor.rsf.center.server.domain.query.TerminalQuery;
+import org.more.bizcommon.PageResult;
 import org.more.bizcommon.Result;
 import net.hasor.rsf.center.server.domain.entity.ServerDO;
 import net.hasor.rsf.center.server.domain.entity.ServiceDO;
 import net.hasor.rsf.center.server.domain.entity.TerminalDO;
 /**
- * 
+ *
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -28,14 +31,24 @@ public interface DataAdapter {
     //
     //
     public Result<Long> insertService(ServiceDO serviceDO);
+
     public Result<ServiceDO> queryServiceByHashCode(String hashCode);
+
     public Result<Boolean> beatOfService(String forBindID, String hostPort, String saltValue, Date beatTime);
+
     public Result<Boolean> offlineService(String forBindID, String hostPort, String saltValue);
+
     public Result<Boolean> onlineService(TerminalDO terminalDO);
+
     //
     //
     public Result<ServerDO> queryServerByHost(String bindAddress, int bindPort);
+
     public Result<Long> insertServer(ServerDO serverDO);
+
     public Result<Boolean> updateServer(ServerDO serverDO);
+ 
     public Result<Boolean> beatOfServer(long serverID, Date beatTime);
+
+    PageResult<String> queryTerminalByQuery(TerminalQuery query);
 }
