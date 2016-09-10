@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.domain;
+package net.hasor.rsf;
 /**
- * 各种常量
- * @version : 2014年9月20日
+ * 是否在线
+ * @version : 2016年09月09日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfCenterConstants {
-    public static final String RSF_APP_KEY        = "RSF_APP_KEY";          //key
-    public static final String RSF_APP_KEY_SECRET = "RSF_APP_KEY_SECRET";   //秘钥
-    public static final String RSF_VERSION        = "RSF_VERSION";          //客户端版本
+public interface OnlineStatus {
+    /**是否在线*/
+    public boolean isOnline();
 }

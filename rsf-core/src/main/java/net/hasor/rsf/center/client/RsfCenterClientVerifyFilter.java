@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf.center.client;
 import net.hasor.rsf.*;
-import net.hasor.rsf.center.domain.RsfCenterConstants;
+import net.hasor.rsf.domain.RsfConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -39,9 +39,9 @@ class RsfCenterClientVerifyFilter implements RsfFilter {
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         if (request.isLocal()) {
             //-如果是对外发送请求，则添加请求头参数用于注册中心校验
-            request.addOption(RsfCenterConstants.RSF_APP_KEY, this.appKey);
-            request.addOption(RsfCenterConstants.RSF_APP_KEY_SECRET, this.keySecret);
-            request.addOption(RsfCenterConstants.RSF_VERSION, this.rsfVersion);
+            request.addOption(RsfConstants.Center_RSF_APP_KEY, this.appKey);
+            request.addOption(RsfConstants.Center_RSF_APP_KEY_SECRET, this.keySecret);
+            request.addOption(RsfConstants.Center_RSF_VERSION, this.rsfVersion);
         }
         chain.doFilter(request, response);
     }

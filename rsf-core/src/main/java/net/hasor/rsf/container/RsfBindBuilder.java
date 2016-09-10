@@ -46,9 +46,8 @@ import java.util.Set;
  */
 abstract class RsfBindBuilder implements RsfBinder {
     protected abstract RsfBeanContainer getContainer();
-    protected AddressPool getAddressPool() {
-        return getContainer().getAddressPool();
-    }
+
+    protected abstract AddressPool getAddressPool();
     //
     public void bindFilter(String filterID, RsfFilter instance) {
         this.getContainer().addFilter(filterID, instance);
@@ -290,31 +289,31 @@ abstract class RsfBindBuilder implements RsfBinder {
                 }
             }
             //
-            getContainer().getAddressPool().appendStaticAddress(serviceID, staticSet);
-            getContainer().getAddressPool().appendAddress(serviceID, dynamicSet);
+            getAddressPool().appendStaticAddress(serviceID, staticSet);
+            getAddressPool().appendAddress(serviceID, dynamicSet);
             return getContainer().publishService(this.serviceDefine);
         }
         @Override
         public void updateFlowControl(String flowControl) {
-            AddressPool pool = getContainer().getAddressPool();
+            AddressPool pool = getAddressPool();
             String serviceID = this.serviceDefine.getDomain().getBindID();
             pool.updateFlowControl(serviceID, flowControl);
         }
         @Override
         public void updateArgsRoute(String scriptBody) {
-            AddressPool pool = getContainer().getAddressPool();
+            AddressPool pool = getAddressPool();
             String serviceID = this.serviceDefine.getDomain().getBindID();
             pool.updateArgsRoute(serviceID, scriptBody);
         }
         @Override
         public void updateMethodRoute(String scriptBody) {
-            AddressPool pool = getContainer().getAddressPool();
+            AddressPool pool = getAddressPool();
             String serviceID = this.serviceDefine.getDomain().getBindID();
             pool.updateMethodRoute(serviceID, scriptBody);
         }
         @Override
         public void updateServiceRoute(String scriptBody) {
-            AddressPool pool = getContainer().getAddressPool();
+            AddressPool pool = getAddressPool();
             String serviceID = this.serviceDefine.getDomain().getBindID();
             pool.updateServiceRoute(serviceID, scriptBody);
         }

@@ -14,63 +14,49 @@
  * limitations under the License.
  */
 package net.hasor.rsf.container;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import org.more.RepeateException;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
 import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
-import net.hasor.rsf.RsfBindInfo;
-import net.hasor.rsf.RsfBinder;
+import net.hasor.rsf.*;
 import net.hasor.rsf.RsfBinder.RegisterReference;
-import net.hasor.rsf.RsfEnvironment;
-import net.hasor.rsf.RsfFilter;
-import net.hasor.rsf.RsfService;
-import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.domain.warp.RsfBindInfoWrap;
+import org.more.RepeateException;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 /**
  *
  * @version : 2015年12月6日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfBeanContainer implements AppContextAware {
-    protected Logger logger;
+public class RsfBeanContainer {
+    protected            Logger                logger       = LoggerFactory.getLogger(getClass());
     private final static Provider<RsfFilter>[] EMPTY_FILTER = new Provider[0];
     private final ConcurrentMap<String, ServiceInfo<?>>        serviceMap;
     private final List<FilterDefine>                           filterList;
     private final Object                                       filterLock;
     private final RsfEnvironment                               environment;
-    private       AppContext                                   appContext;
-    private       AddressPool                                  addressPool;
     private final ConcurrentMap<String, Provider<RsfFilter>[]> filterCache;
+    private       AppContext                                   appContext;
     //
     public RsfBeanContainer(RsfEnvironment rsfEnvironment) {
-        this.logger = LoggerFactory.getLogger(getClass());
         this.serviceMap = new ConcurrentHashMap<String, ServiceInfo<?>>();
         this.filterList = new ArrayList<FilterDefine>();
         this.filterLock = new Object();
         this.environment = rsfEnvironment;
-        this.addressPool = new AddressPool(rsfEnvironment);
         this.filterCache = new ConcurrentHashMap<String, Provider<RsfFilter>[]>();
     }
-    @Override
     public void setAppContext(AppContext appContext) {
         this.appContext = appContext;
     }
@@ -216,9 +202,9 @@ public class RsfBeanContainer implements AppContextAware {
     public RsfEnvironment getEnvironment() {
         return environment;
     }
-    public AddressPool getAddressPool() {
-        return addressPool;
-    }
+    //    public AddressPool getAddressPool() {
+    //        return addressPool;
+    //    }
     /**
      * 发布服务
      * @param serviceDefine 服务定义。
@@ -226,22 +212,23 @@ public class RsfBeanContainer implements AppContextAware {
     public <T> RegisterReference<T> publishService(ServiceInfo<T> serviceDefine) {
         String serviceID = serviceDefine.getDomain().getBindID();
         if (this.serviceMap.containsKey(serviceID)) {
-            logger.error("service {} is exist.", serviceID);
+            this.logger.error("service {} is exist.", serviceID);
             throw new RepeateException("service " + serviceID + " is exist.");
         }
-        logger.info("service to public, id= {}", serviceID);
+        this.logger.info("service to public, id= {}", serviceID);
         ServiceInfo<?> info = this.serviceMap.putIfAbsent(serviceID, serviceDefine);
+        RsfBindInfo<?> rsfBindInfo = serviceDefine.getDomain();
         //
-        EventContext eventContext = this.getAppContext().getEnvironment().getEventContext();
+        EventContext eventContext = this.environment.getEventContext();
         if (RsfServiceType.Provider == serviceDefine.getDomain().getServiceType()) {
             //服务提供者
             if (serviceDefine.getCustomerProvider() == null) {
                 throw new RsfException(ProtocolStatus.Forbidden, "Provider Not set the implementation class.");
             }
-            eventContext.fireAsyncEvent(RsfEvent.Rsf_ProviderService, serviceDefine.getDomain());
+            eventContext.fireAsyncEvent(RsfEvent.Rsf_ProviderService, rsfBindInfo);
         } else {
             //服务消费者
-            eventContext.fireAsyncEvent(RsfEvent.Rsf_ConsumerService, serviceDefine.getDomain());
+            eventContext.fireAsyncEvent(RsfEvent.Rsf_ConsumerService, rsfBindInfo);
         }
         return new RegisterReferenceInfoWrap<T>(this, serviceDefine);
     }
@@ -250,7 +237,6 @@ public class RsfBeanContainer implements AppContextAware {
      * @param serviceID 服务定义。
      */
     public boolean recoverService(String serviceID) {
-        this.getAddressPool().removeBucket(serviceID);
         if (this.serviceMap.containsKey(serviceID)) {
             this.serviceMap.remove(serviceID);
             return true;
@@ -258,10 +244,15 @@ public class RsfBeanContainer implements AppContextAware {
         return false;
     }
     /**创建{@link RsfBinder}。*/
-    public RsfBinder createBinder() {
+    public RsfBinder createBinder(final AddressPool pool) {
         return new RsfBindBuilder() {
+            @Override
             protected RsfBeanContainer getContainer() {
                 return RsfBeanContainer.this;
+            }
+            @Override
+            protected AddressPool getAddressPool() {
+                return pool;
             }
         };
     }
@@ -276,9 +267,13 @@ class RegisterReferenceInfoWrap<T> extends RsfBindInfoWrap<T> implements Registe
     }
     @Override
     public boolean unRegister() {
-        EventContext eventContext = this.rsfContainer.getAppContext().getEnvironment().getEventContext();
-        eventContext.fireAsyncEvent(RsfEvent.Rsf_DeleteService, this.serviceInfo.getDomain());
         //
+        // .发布删除消息( 1.Center解除注册、2.地址本回收)
+        EventContext eventContext = this.rsfContainer.getEnvironment().getEventContext();
+        RsfBindInfo<?> rsfBindInfo = this.serviceInfo.getDomain();
+        eventContext.fireSyncEvent(RsfEvent.Rsf_DeleteService, rsfBindInfo);
+        //
+        // .回收服务
         String serviceID = this.getBindID();
         return this.rsfContainer.recoverService(serviceID);
     }

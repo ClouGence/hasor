@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
+import net.hasor.core.EventListener;
+import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.address.route.rule.ArgsKey;
 import net.hasor.rsf.address.route.rule.DefaultArgsKey;
+import net.hasor.rsf.domain.RsfEvent;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
 import org.more.util.ExceptionUtils;
@@ -33,7 +36,6 @@ import java.io.OutputStream;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -45,11 +47,10 @@ import java.util.zip.ZipOutputStream;
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressPool implements RsfUpdater {
-    protected final     Logger        logger  = LoggerFactory.getLogger(getClass());
-    public static final String        Dynamic = AddressBucket.Dynamic;
-    public static final String        Static  = AddressBucket.Static;
+    protected final     Logger logger  = LoggerFactory.getLogger(getClass());
+    public static final String Dynamic = AddressBucket.Dynamic;
+    public static final String Static  = AddressBucket.Static;
     //
-    private final       AtomicBoolean inited  = new AtomicBoolean(false);
     private final RsfEnvironment                       rsfEnvironment;
     private final ConcurrentMap<String, AddressBucket> addressPool;
     private final String                               unitName;
@@ -57,26 +58,10 @@ public class AddressPool implements RsfUpdater {
     private final AddressCacheResult                   rulerCache;
     private final ArgsKey                              argsKey;
     private final Object                               poolLock;
-    private final ClearPoolThread                      timer;
-    //
-    //
-    public void startTimer() {
-        if (this.inited.compareAndSet(false, true)) {
-            //  this.timer.restoreConfig();//当启动时，进行一次地址复原。
-            logger.info("startTimer address snapshot Thread[{}].", timer.getName());
-            this.timer.start();
-        }
-    }
-    public void shutdownTimer() {
-        if (this.inited.compareAndSet(true, false)) {
-            logger.info("shutdownTimer address snapshot Thread[{}].", timer.getName());
-            this.timer.stopTimer();
-        }
-    }
     //
     public AddressPool(RsfEnvironment rsfEnvironment) {
         String unitName = rsfEnvironment.getSettings().getUnitName();
-        logger.info("AddressPool unitName at {}", unitName);
+        this.logger.info("AddressPool unitName at {}", unitName);
         //
         this.rsfEnvironment = rsfEnvironment;
         RsfSettings rsfSettings = rsfEnvironment.getSettings();
@@ -84,19 +69,26 @@ public class AddressPool implements RsfUpdater {
         this.unitName = unitName;
         this.rulerCache = new AddressCacheResult(this);
         this.poolLock = new Object();
-        this.timer = new ClearPoolThread(this, rsfEnvironment);
-        this.timer.setName("RSF-AddressPool-RefreshCache-Thread");
-        this.timer.setDaemon(true);
         //
         String argsKeyType = rsfSettings.getString("hasor.rsfConfig.route.argsKey", DefaultArgsKey.class.getName());
-        logger.info("argsKey type is {}", argsKeyType);
+        this.logger.info("argsKey type is {}", argsKeyType);
         try {
             Class<?> type = Class.forName(argsKeyType);
             this.argsKey = (ArgsKey) type.newInstance();
         } catch (Throwable e) {
-            logger.error("create argsKey " + argsKeyType + " , message = " + e.getMessage(), e);
+            this.logger.error("create argsKey " + argsKeyType + " , message = " + e.getMessage(), e);
             throw ExceptionUtils.toRuntimeException(e);
         }
+        //
+        // .接受删除事件,把对应的地址本清除掉。
+        rsfEnvironment.getEventContext().addListener(RsfEvent.Rsf_DeleteService, new EventListener<RsfBindInfo<?>>() {
+            public void onEvent(String event, RsfBindInfo<?> eventData) throws Throwable {
+                if (eventData == null) {
+                    return;
+                }
+                removeBucket(eventData.getBindID());
+            }
+        });
     }
     //
     public AddressBucket getBucket(String serviceID) {
@@ -113,6 +105,12 @@ public class AddressPool implements RsfUpdater {
      */
     public String getUnitName() {
         return this.unitName;
+    }
+    /**
+     * 获取所使用的RsfEnvironment
+     */
+    public RsfEnvironment getRsfEnvironment() {
+        return rsfEnvironment;
     }
     /**
      * 所有服务地址快照功能，该接口获得的数据不可以进行写操作。通过这个接口可以获得到此刻地址池中所有服务的：
@@ -189,7 +187,7 @@ public class AddressPool implements RsfUpdater {
     }
     private void _appendAddress(String serviceID, Collection<InterAddress> newHostSet, String type) {
         String hosts = ReflectionToStringBuilder.toString(newHostSet, ToStringStyle.SIMPLE_STYLE);
-        logger.info("updateAddress of service {} , new Address set = {} ", serviceID, hosts);
+        this.logger.info("updateAddress of service {} , new Address set = {} ", serviceID, hosts);
         //1.AddressBucketd
         AddressBucket bucket = this.addressPool.get(serviceID);
         if (bucket == null) {
@@ -201,7 +199,7 @@ public class AddressPool implements RsfUpdater {
                 if (bucket == null) {
                     bucket = newBucket;
                 }
-                logger.info("newBucket {}", bucket);
+                this.logger.info("newBucket {}", bucket);
             }
         }
         //2.新增服务
@@ -244,10 +242,9 @@ public class AddressPool implements RsfUpdater {
      * @param invalidAddressSet 将要删除的地址。
      */
     public void removeAddress(String serviceID, Collection<InterAddress> invalidAddressSet) {
-        long invalidWaitTime = rsfEnvironment.getSettings().getInvalidWaitTime();
         AddressBucket bucket = this.addressPool.get(serviceID);
         if (bucket == null) {
-            logger.info("serviceID ={} ,bucket is not exist.", serviceID);
+            this.logger.info("serviceID ={} ,bucket is not exist.", serviceID);
             return;
         }
         StringBuilder strBuilder = new StringBuilder("");
@@ -261,14 +258,15 @@ public class AddressPool implements RsfUpdater {
                 this.rulerCache.reset();
             }
         }
-        logger.info("serviceID ={} ,remove invalidAddress = {} ,wait {} -> active.", serviceID, strBuilder.toString(), invalidWaitTime);
+        long invalidWaitTime = rsfEnvironment.getSettings().getInvalidWaitTime();
+        this.logger.info("serviceID ={} ,remove invalidAddress = {} ,wait {} -> active.", serviceID, strBuilder.toString(), invalidWaitTime);
     }
     public void removeAddress(InterAddress address) {
         /*在并发情况下,newAddress和invalidAddress可能正在执行,因此要锁住poolLock*/
         synchronized (this.poolLock) {
             Set<String> keySet = this.addressPool.keySet();
             for (String bucketKey : keySet) {
-                logger.debug("service {} removeAddress.", bucketKey);
+                this.logger.debug("service {} removeAddress.", bucketKey);
                 this.addressPool.get(bucketKey).removeAddress(address);
             }
             this.rulerCache.reset();
@@ -280,7 +278,7 @@ public class AddressPool implements RsfUpdater {
      */
     public boolean removeBucket(String serviceID) {
         if (this.addressPool.containsKey(serviceID)) {
-            logger.info("removeAddressBucket serviceID is {}", serviceID);
+            this.logger.info("removeAddressBucket serviceID is {}", serviceID);
             this.addressPool.remove(serviceID);
             this.rulerCache.reset();
             return true;
@@ -292,7 +290,7 @@ public class AddressPool implements RsfUpdater {
         /*在并发情况下,newAddress和invalidAddress可能正在执行,因此要锁住poolLock*/
         synchronized (this.poolLock) {
             AddressBucket bucket = this.addressPool.get(serviceID);
-            logger.debug("service {} refreshCache.", serviceID);
+            this.logger.debug("service {} refreshCache.", serviceID);
             bucket.refreshAddressToNew(addressList);//刷新地址计算结果
         }
         this.rulerCache.reset();
@@ -303,7 +301,7 @@ public class AddressPool implements RsfUpdater {
         synchronized (this.poolLock) {
             Set<String> keySet = this.addressPool.keySet();
             for (String bucketKey : keySet) {
-                logger.debug("service {} refreshCache.", bucketKey);
+                this.logger.debug("service {} refreshCache.", bucketKey);
                 this.addressPool.get(bucketKey).refreshAddress();//刷新地址计算结果
             }
             this.rulerCache.reset();
@@ -395,10 +393,10 @@ public class AddressPool implements RsfUpdater {
         //
         AddressBucket bucket = this.addressPool.get(serviceID);
         if (bucket == null) {
-            logger.warn("update flowControl service={} -> AddressBucket not exist.", serviceID);
+            this.logger.warn("update flowControl service={} -> AddressBucket not exist.", serviceID);
             return false;
         }
-        logger.info("update flowControl service={} -> update ok", serviceID);
+        this.logger.info("update flowControl service={} -> update ok", serviceID);
         bucket.updateFlowControl(flowControl);
         this.refreshAddressCache();
         return true;
@@ -412,11 +410,11 @@ public class AddressPool implements RsfUpdater {
     public boolean updateRoute(String serviceID, RouteTypeEnum routeType, String script) {
         AddressBucket bucket = this.addressPool.get(serviceID);
         if (bucket == null) {
-            logger.warn("update rules service={} -> AddressBucket not exist.", serviceID);
+            this.logger.warn("update rules service={} -> AddressBucket not exist.", serviceID);
             return false;
         }
         //
-        logger.info("update rules service={} -> update ok", serviceID);
+        this.logger.info("update rules service={} -> update ok", serviceID);
         bucket.updateRoute(routeType, script);
         this.refreshAddressCache();
         return true;
@@ -487,7 +485,7 @@ public class AddressPool implements RsfUpdater {
     //
     /**保存地址列表到zip流中。*/
     public synchronized void storeConfig(OutputStream outStream) throws IOException {
-        logger.info("rsf - saveAddress to stream.");
+        this.logger.info("rsf - saveAddress to stream.");
         ZipOutputStream zipStream = null;
         try {
             zipStream = new ZipOutputStream(outStream);
@@ -495,7 +493,7 @@ public class AddressPool implements RsfUpdater {
                 for (AddressBucket bucket : this.addressPool.values()) {
                     if (bucket != null) {
                         String serviceID = bucket.getServiceID() + ".zip";
-                        logger.debug("rsf - service saveAddress {} storage to snapshot.", serviceID);
+                        this.logger.debug("rsf - service saveAddress {} storage to snapshot.", serviceID);
                         ZipEntry entry = new ZipEntry(serviceID);
                         entry.setComment("service config of " + serviceID);
                         zipStream.putNextEntry(entry);
@@ -505,7 +503,7 @@ public class AddressPool implements RsfUpdater {
                 }
             }
         } catch (IOException e) {
-            logger.error("rsf - saveAddress " + e.getClass().getSimpleName() + " :" + e.getMessage(), e);
+            this.logger.error("rsf - saveAddress " + e.getClass().getSimpleName() + " :" + e.getMessage(), e);
             throw e;
         } finally {
             /*这里进行清理。*/
@@ -533,7 +531,7 @@ public class AddressPool implements RsfUpdater {
                 }
             }
         } catch (Exception e) {
-            logger.error("read the snapshot file error :" + e.getMessage(), e);
+            this.logger.error("read the snapshot file error :" + e.getMessage(), e);
         }
     }
 }

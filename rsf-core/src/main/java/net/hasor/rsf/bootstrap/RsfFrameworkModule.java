@@ -83,7 +83,8 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
         apiBinder.bindType(RsfSettings.class).toInstance(environment.getSettings());
         apiBinder.bindType(RsfEnvironment.class).toInstance(environment);
         apiBinder.bindType(RsfContext.class).toInstance(rsfContext);
-        apiBinder.bindType(RsfUpdater.class).toInstance(rsfContainer.getAddressPool());
+        apiBinder.bindType(OnlineStatus.class).toInstance(rsfContext);
+        apiBinder.bindType(RsfUpdater.class).toInstance(rsfContext.getUpdater());
         apiBinder.bindType(RsfClient.class).toProvider(new Provider<RsfClient>() {
             public RsfClient get() {
                 return rsfContext.getRsfClient();
@@ -98,6 +99,10 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
             //WebApiBinder webApiBinder = (WebApiBinder) apiBinder;
             //webApiBinder.serve("*.rsf").with(RsfServlet.class);
         }
+        //
+        //5.插件
+        apiBinder.installModule(new ConsoleRsfPlugin());
+        //
         logger.info("rsf framework init finish.");
     }
     @Override

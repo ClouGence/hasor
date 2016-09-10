@@ -17,6 +17,7 @@ package test.net.hasor.rsf.functions;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.address.AddressBucket;
 import net.hasor.rsf.address.AddressPool;
+import net.hasor.rsf.address.DiskCacheAddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import org.junit.Test;
@@ -37,6 +38,34 @@ import java.util.Set;
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressPoolTest {
+    protected void configService(AddressPool pool, String service) throws URISyntaxException, IOException {
+        ArrayList<InterAddress> dynamicList = new ArrayList<InterAddress>();
+        dynamicList.add(new InterAddress("127.0.0.1", 8000, "etc2"));
+        dynamicList.add(new InterAddress("127.0.0.2", 8000, "etc2"));
+        dynamicList.add(new InterAddress("127.0.0.3", 8000, "etc2"));
+        dynamicList.add(new InterAddress("127.0.0.4", 8000, "etc2"));
+        pool.appendAddress(service, dynamicList);
+        //
+        ArrayList<InterAddress> staticList = new ArrayList<InterAddress>();
+        staticList.add(new InterAddress("127.0.1.1", 8000, "etc2"));
+        staticList.add(new InterAddress("127.0.2.2", 8000, "etc2"));
+        staticList.add(new InterAddress("127.0.3.3", 8000, "etc2"));
+        staticList.add(new InterAddress("127.0.4.4", 8000, "etc2"));
+        pool.appendStaticAddress(service, staticList);
+        //
+        String flowBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flow-control/full-flow.xml"));
+        pool.updateFlowControl(service, flowBody);
+        //
+        String scriptBody1 = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/service-level.groovy"));
+        pool.updateServiceRoute(service, scriptBody1);
+        //
+        String scriptBody2 = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/method-level.groovy"));
+        pool.updateMethodRoute(service, scriptBody2);
+        //
+        String scriptBody3 = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/args-level.groovy"));
+        pool.updateArgsRoute(service, scriptBody3);
+    }
+    //
     @Test
     public void saveToZipTest() throws URISyntaxException, IOException {
         DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.createAppContext().getEnvironment());
@@ -45,33 +74,7 @@ public class AddressPoolTest {
         //
         for (int i = 0; i < 10; i++) {
             String service = serviceID + i;
-            //
-            ArrayList<InterAddress> dynamicList = new ArrayList<InterAddress>();
-            dynamicList.add(new InterAddress("127.0.0.1", 8000, "etc2"));
-            dynamicList.add(new InterAddress("127.0.0.2", 8000, "etc2"));
-            dynamicList.add(new InterAddress("127.0.0.3", 8000, "etc2"));
-            dynamicList.add(new InterAddress("127.0.0.4", 8000, "etc2"));
-            pool.appendAddress(service, dynamicList);
-            //
-            ArrayList<InterAddress> staticList = new ArrayList<InterAddress>();
-            staticList.add(new InterAddress("127.0.1.1", 8000, "etc2"));
-            staticList.add(new InterAddress("127.0.2.2", 8000, "etc2"));
-            staticList.add(new InterAddress("127.0.3.3", 8000, "etc2"));
-            staticList.add(new InterAddress("127.0.4.4", 8000, "etc2"));
-            pool.appendStaticAddress(service, staticList);
-            //
-            String flowBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flow-control/full-flow.xml"));
-            pool.updateFlowControl(service, flowBody);
-            //
-            String scriptBody1 = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/service-level.groovy"));
-            pool.updateServiceRoute(service, scriptBody1);
-            //
-            String scriptBody2 = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/method-level.groovy"));
-            pool.updateMethodRoute(service, scriptBody2);
-            //
-            String scriptBody3 = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/args-level.groovy"));
-            pool.updateArgsRoute(service, scriptBody3);
-            //
+            configService(pool, service);
         }
         //
         File outFile = new File(rsfEnv.getPluginDir(AddressPoolTest.class), "pool.zip");
@@ -103,6 +106,31 @@ public class AddressPoolTest {
             AddressBucket bucket = pool.getBucket(service);
             System.out.println(bucket.getServiceID() + " - address size = " + bucket.getAllAddresses().size());
         }
+    }
+    @Test
+    public void localDiskCacheTest() throws IOException, URISyntaxException, InterruptedException {
+        //
+        // 1.修改默认配置
+        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.createAppContext().getEnvironment());
+        rsfEnv.getSettings().setSetting("hasor.rsfConfig.addressPool.refreshCacheTime", "1000");
+        rsfEnv.getSettings().setSetting("hasor.rsfConfig.addressPool.diskCacheTimeInterval", "3000");
+        rsfEnv.getSettings().setSetting("hasor.rsfConfig.addressPool.invalidWaitTime", "500");
+        rsfEnv.getSettings().refreshRsfConfig();
+        String serviceID = "HelloWord_";
+        //
+        // 2.测试本地缓存保存
+        DiskCacheAddressPool pool = new DiskCacheAddressPool(rsfEnv);
+        for (int i = 0; i < 10; i++) {
+            configService(pool, serviceID + i);
+        }
+        pool.storeConfig();//保存一次
+        //
+        // 3.测试本地地址缓存加载。
+        pool = new DiskCacheAddressPool(rsfEnv);
+        for (int i = 0; i < 10; i++) {
+            pool.appendAddress(serviceID + i, new InterAddress("192.168.1.1", 8000, "etc2"));
+        }
+        pool.restoreConfig();
     }
     //
     @Test

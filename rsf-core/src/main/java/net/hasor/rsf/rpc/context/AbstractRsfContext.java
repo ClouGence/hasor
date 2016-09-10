@@ -19,7 +19,7 @@ import net.hasor.core.AppContextAware;
 import net.hasor.core.EventContext;
 import net.hasor.core.Provider;
 import net.hasor.rsf.*;
-import net.hasor.rsf.address.AddressPool;
+import net.hasor.rsf.address.DiskCacheAddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.RsfConstants;
@@ -49,23 +49,24 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public abstract class AbstractRsfContext implements RsfContext, AppContextAware {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    private final RsfBeanContainer rsfBeanContainer; // 服务管理(含地址管理)
-    private final RsfEnvironment   rsfEnvironment;   // 环境&配置
-    private final RemoteRsfCaller  rsfCaller;        // 调用器
-    private final RsfNetManager    rsfNetManager;    // 网络传输
-    private final AddressProvider  poolProvider;
-    private       AppContext       appContext;
-    private final AtomicBoolean    onlineStatus;
+    private final RsfBeanContainer     rsfBeanContainer; // 服务管理
+    private final RsfEnvironment       rsfEnvironment;   // 环境&配置
+    private final RemoteRsfCaller      rsfCaller;        // 调用器
+    private final RsfNetManager        rsfNetManager;    // 网络传输
+    private final DiskCacheAddressPool addressPool;      // 地址管理器
+    private final AddressProvider      poolProvider;     // 地址获取接口
+    private final AtomicBoolean        onlineStatus;     // 在线状态
+    private       AppContext           appContext;       // 上下文环境
     //
     public AbstractRsfContext(RsfBeanContainer rsfBeanContainer) {
-        this.onlineStatus = new AtomicBoolean(RsfConstants.DEFAULT_ONLINE_STATUS);
         this.rsfBeanContainer = rsfBeanContainer;
-        Transport transport = new Transport();
         this.rsfEnvironment = this.rsfBeanContainer.getEnvironment();
+        Transport transport = new Transport();
         this.rsfCaller = new RemoteRsfCaller(this, this.rsfBeanContainer, transport);
         this.rsfNetManager = new RsfNetManager(this.rsfEnvironment, transport);
-        AddressPool pool = this.rsfBeanContainer.getAddressPool();
-        this.poolProvider = new PoolAddressProvider(pool);
+        this.addressPool = new DiskCacheAddressPool(this.rsfEnvironment);
+        this.poolProvider = new PoolAddressProvider(this.addressPool);
+        this.onlineStatus = new AtomicBoolean(RsfConstants.DEFAULT_ONLINE_STATUS);
     }
     //
     public synchronized void start(RsfPlugin... plugins) throws Throwable {
@@ -74,7 +75,8 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         ec.fireSyncEvent(RsfEvent.Rsf_Initialized, this);
         logger.info("rsfContext -> doInitializeCompleted");
         //
-        this.rsfBeanContainer.getAddressPool().startTimer();
+        this.addressPool.restoreConfig();/*恢复地址本*/
+        this.addressPool.startTimer();
         //
         String bindAddress = this.rsfEnvironment.getSettings().getBindAddress();
         int bindPort = this.rsfEnvironment.getSettings().getBindPort();
@@ -126,7 +128,7 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         //
         this.rsfCaller.shutdown();
         this.rsfNetManager.shutdown();
-        this.rsfBeanContainer.getAddressPool().shutdownTimer();
+        this.addressPool.shutdownTimer();
     }
     //
     @Override
@@ -145,7 +147,7 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         return this.rsfEnvironment.getSettings();
     }
     public RsfUpdater getUpdater() {
-        return this.rsfBeanContainer.getAddressPool();
+        return this.addressPool;
     }
     public ClassLoader getClassLoader() {
         return this.rsfEnvironment.getClassLoader();
@@ -187,11 +189,11 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         return (Provider<T>) this.rsfBeanContainer.getProvider(bindInfo.getBindID());
     }
     public RsfBinder binder() {
-        return this.rsfBeanContainer.createBinder();
+        return this.rsfBeanContainer.createBinder(this.addressPool);
     }
     //
     //
-    /*接收到网络数据*/
+    /*接收到网络数据 & 发送网络数据*/
     private class Transport implements ReceivedListener, RemoteSenderListener {
         @Override
         public void receivedMessage(InterAddress form, ResponseInfo response) {
@@ -207,8 +209,8 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
             InterAddress target = targetProvider.get();
             try {
                 rsfNetManager.getChannel(target).get().sendData(info, null);
-            } catch (Exception e) {
-                rsfBeanContainer.getAddressPool().invalidAddress(target);//异常地址失效
+            } catch (Throwable e) {
+                addressPool.invalidAddress(target);//异常地址失效
                 rsfCaller.putResponse(info.getRequestID(), e);
                 logger.error("sendRequest - " + e.getMessage());
             }
@@ -217,8 +219,8 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         public void sendResponse(InterAddress target, ResponseInfo info) {
             try {
                 rsfNetManager.getChannel(target).get().sendData(info, null);
-            } catch (Exception e) {
-                rsfBeanContainer.getAddressPool().invalidAddress(target);//异常地址失效
+            } catch (Throwable e) {
+                addressPool.invalidAddress(target);//异常地址失效
                 logger.error("sendResponse - " + e.getMessage(), e);
             }
         }

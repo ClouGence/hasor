@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.utils;
+import net.hasor.core.Settings;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +30,13 @@ import java.util.zip.ZipOutputStream;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ZipUtils {
-    protected final static Logger logger      = LoggerFactory.getLogger(ZipUtils.class);
-    public static final    String CharsetName = "UTF-8";
+    protected final static Logger logger = LoggerFactory.getLogger(ZipUtils.class);
     public static void writeEntry(ZipOutputStream zipStream, String scriptBody, String entryName, String comment) throws IOException {
         ZipEntry entry = new ZipEntry(entryName);
         entry.setComment(comment);
         zipStream.putNextEntry(entry);
         {
-            OutputStreamWriter writer = new OutputStreamWriter(zipStream, CharsetName);
+            OutputStreamWriter writer = new OutputStreamWriter(zipStream, Settings.DefaultCharset);
             BufferedWriter bfwriter = new BufferedWriter(writer);
             if (StringUtils.isBlank(scriptBody)) {
                 bfwriter.write("");

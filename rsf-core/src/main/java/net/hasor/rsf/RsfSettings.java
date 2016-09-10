@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
-import java.io.IOException;
-
 import net.hasor.core.Settings;
 import net.hasor.rsf.address.InterAddress;
+
+import java.io.IOException;
 /**
  * RSF 配置。
  * @version : 2014年11月18日
@@ -41,21 +41,18 @@ public interface RsfSettings extends Settings {
 
     /**获取默认超时时间。*/
     public String getDefaultSerializeType();
-    //
 
     /**获取配置的服务器端选项*/
     public RsfOptionSet getServerOption();
 
     /**获取配置的客户端选项*/
     public RsfOptionSet getClientOption();
-    //
 
     /**处理网络IO数据包的线程数*/
     public int getNetworkWorker();
 
     /**处理网络监听请求的线程数*/
     public int getNetworkListener();
-    //
 
     /**处理任务队列的最大大小，作为服务端当队列满了之后所有新进来的请求都会被回应 ChooseOther*/
     public int getQueueMaxSize();
@@ -68,7 +65,6 @@ public interface RsfSettings extends Settings {
 
     /**(SECONDS),when the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks before terminating.*/
     public long getQueueKeepAliveTime();
-    //
 
     /**客户端请求超时时间*/
     public int getRequestTimeout();
@@ -84,14 +80,12 @@ public interface RsfSettings extends Settings {
 
     /**获取动态代理类的实现方式。*/
     public String getWrapperType();
-    //
 
     /**获取本地服务绑定地址*/
     public String getBindAddress();
 
     /**获取本地服务绑定端口*/
     public int getBindPort();
-    //
 
     /**获取注册中心服务地址*/
     public InterAddress[] getCenterServerSet();
@@ -101,16 +95,18 @@ public interface RsfSettings extends Settings {
 
     /**与注册中心保持状态所用的心跳时间间隔*/
     public int getCenterHeartbeatTime();
-    //
 
     /**获取本机所属单元*/
     public String getUnitName();
 
     /**获取地址失效之后，等待重新尝试连接的时间(毫秒)。默认60秒。*/
-    public int getInvalidWaitTime();
+    public long getInvalidWaitTime();
 
     /**自动刷新地址本缓存的时间，默认6分钟。*/
     public long getRefreshCacheTime();
+
+    /**每次缓存地址本到磁盘时的时间间隔（单位:毫秒）默认:1小时*/
+    public long getDiskCacheTimeInterval();
 
     /**启用磁盘地址本缓存，在refreshCacheTime期间每隔1小时自动写入一次。（被回收的服务不享受此待遇）*/
     public boolean islocalDiskCache();
@@ -120,21 +116,18 @@ public interface RsfSettings extends Settings {
 
     /**应用自动上线*/
     public boolean isAutomaticOnline();
-    //
 
     /**RSF管理控制台监听的端口号（Telnet）*/
     public int getConsolePort();
 
     /**准许的ip地址列表。*/
     public String[] getConsoleInBoundAddress();
-    //
 
     /**获取app key ID*/
     public String getAppKeyID();
 
     /**获取app key 秘钥*/
     public String getAppKeySecret();
-    //
 
     /**重新加载Rsf配置*/
     public void refreshRsfConfig() throws IOException;

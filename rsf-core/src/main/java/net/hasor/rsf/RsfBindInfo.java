@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf;
 import net.hasor.core.BindInfo;
+import net.hasor.rsf.domain.RsfServiceType;
 /**
  * Rsf绑定信息。
  * @version : 2014年11月12日
@@ -36,6 +37,9 @@ public interface RsfBindInfo<T> extends BindInfo<T> {
     /** @return 注册的服务类型。*/
     public Class<T> getBindType();
 
+    /**是提供者还是消费者*/
+    public RsfServiceType getServiceType();
+
     /**
      * 返回接口是否为一个 Message 接口。
      * @see RsfMessage
@@ -47,4 +51,8 @@ public interface RsfBindInfo<T> extends BindInfo<T> {
 
     /** @return 获取序列化方式*/
     public String getSerializeType();
+
+    /** 为了兼容 Hasor 2.4.4 版本 */
+    @Deprecated
+    public void setMetaData(String key, Object value);
 }

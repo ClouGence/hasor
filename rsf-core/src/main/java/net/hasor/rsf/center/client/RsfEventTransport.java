@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.client;
+import net.hasor.rsf.RsfBindInfo;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,7 @@ class RsfEventTransport implements EventListener<Object> {
             return;
         }
         //
-        ServiceDomain<?> domain = (ServiceDomain<?>) eventData;
+        RsfBindInfo<?> domain = (RsfBindInfo<?>) eventData;
         try {
             if (StringUtils.equals(RsfEvent.Rsf_ProviderService, event)) {
                 this.centerManager.newService(domain, RsfEvent.Rsf_ProviderService);

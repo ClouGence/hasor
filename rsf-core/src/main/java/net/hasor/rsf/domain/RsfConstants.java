@@ -58,7 +58,16 @@ public interface RsfConstants {
     public static final String  ServiceLevelScript_ZipEntry = "service-level.groovy";
     public static final String  MethodLevelScript_ZipEntry  = "method-level.groovy";
     public static final String  ArgsLevelScript_ZipEntry    = "args-level.groovy";
+    public static final String  AddrPoolStoreName           = "addr-pool-";
     //
     public static final String  SnapshotPath                = "/snapshot";
     public static final String  SnapshotIndex               = "address.index";
+    //
+    public static final long    OneHourTime                 = 1 * 60 * 60 * 1000;
+    public static final long    SevenDaysTime               = 7 * 24 * OneHourTime;
+    //
+    public static final String  Center_RSF_APP_KEY          = "RSF_APP_KEY";          //key
+    public static final String  Center_RSF_APP_KEY_SECRET   = "RSF_APP_KEY_SECRET";   //秘钥
+    public static final String  Center_RSF_VERSION          = "RSF_VERSION";          //客户端版本
+    public static final String  Center_Snapshot             = "CenterSnapshot";       //注册中心中的注册ID
 }

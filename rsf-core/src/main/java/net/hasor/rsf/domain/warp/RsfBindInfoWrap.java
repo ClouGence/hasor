@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.domain.warp;
 import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.domain.RsfServiceType;
 /**
  * {@link RsfBindInfo}包装形式。
  * @version : 2014年9月12日
@@ -50,6 +51,10 @@ public class RsfBindInfoWrap<T> implements RsfBindInfo<T> {
         return this.target.getBindType();
     }
     @Override
+    public RsfServiceType getServiceType() {
+        return this.target.getServiceType();
+    }
+    @Override
     public boolean isMessage() {
         return this.target.isMessage();
     }
@@ -60,6 +65,10 @@ public class RsfBindInfoWrap<T> implements RsfBindInfo<T> {
     @Override
     public String getSerializeType() {
         return this.target.getSerializeType();
+    }
+    @Override
+    public void setMetaData(String key, Object value) {
+        this.target.setMetaData(key, value);
     }
     @Override
     public String toString() {

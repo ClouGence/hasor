@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.console;
-import java.net.UnknownHostException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -31,19 +27,22 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import net.hasor.core.AppContext;
-import net.hasor.core.EventListener;
-import net.hasor.core.Hasor;
+import net.hasor.core.*;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfPlugin;
 import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.console.commands.*;
 import net.hasor.rsf.utils.NameThreadFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.UnknownHostException;
 /**
  * RSF终端管理器插件。
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ConsoleRsfPlugin implements RsfPlugin {
+public class ConsoleRsfPlugin implements RsfPlugin, Module {
     protected static Logger         logger        = LoggerFactory.getLogger(ConsoleRsfPlugin.class);
     private          StringDecoder  stringDecoder = new StringDecoder();
     private          StringEncoder  stringEncoder = new StringEncoder();
@@ -101,5 +100,15 @@ public class ConsoleRsfPlugin implements RsfPlugin {
             logger.info("console shutdown.");
             this.workerGroup.shutdownGracefully();
         }
+    }
+    @Override
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
+        apiBinder.bindType(RsfCommand.class).uniqueName().to(HelpRsfCommand.class);
+        apiBinder.bindType(RsfCommand.class).uniqueName().to(QuitRsfCommand.class);
+        apiBinder.bindType(RsfCommand.class).uniqueName().to(SwitchRsfCommand.class);
+        apiBinder.bindType(RsfCommand.class).uniqueName().to(GetSetRsfCommand.class);
+        apiBinder.bindType(RsfCommand.class).uniqueName().to(ServiceRsfCommand.class);
+        apiBinder.bindType(RsfCommand.class).uniqueName().to(RuleRsfCommand.class);
+        apiBinder.bindType(RsfCommand.class).uniqueName().to(FlowRsfCommand.class);
     }
 }

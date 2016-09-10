@@ -27,7 +27,7 @@ import java.util.List;
  * @version : 2014年11月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfContext {
+public interface RsfContext extends OnlineStatus {
     /** @return 发起远程调用的客户端接口*/
     public RsfClient getRsfClient();
 
@@ -88,7 +88,4 @@ public interface RsfContext {
 
     /**应用下线（优雅停机）*/
     public void offline();
-
-    /**是否在线*/
-    public boolean isOnline();
 }

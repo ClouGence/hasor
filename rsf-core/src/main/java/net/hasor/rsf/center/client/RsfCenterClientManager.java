@@ -14,33 +14,26 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.client;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
+import io.netty.util.Timeout;
+import io.netty.util.TimerTask;
+import net.hasor.core.EventListener;
+import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.center.RsfCenterRegister;
+import net.hasor.rsf.center.domain.*;
+import net.hasor.rsf.domain.RsfConstants;
+import net.hasor.rsf.domain.RsfServiceType;
+import net.hasor.rsf.utils.TimerManager;
 import org.more.RepeateException;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import io.netty.util.Timeout;
-import io.netty.util.TimerTask;
-import net.hasor.core.EventListener;
-import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.center.RsfCenterRegister;
-import net.hasor.rsf.center.domain.CenterEventBody;
-import net.hasor.rsf.center.domain.ConsumerPublishInfo;
-import net.hasor.rsf.center.domain.ProviderPublishInfo;
-import net.hasor.rsf.center.domain.PublishInfo;
-import net.hasor.rsf.center.domain.ReceiveResult;
-import net.hasor.rsf.domain.RsfServiceType;
-import net.hasor.rsf.domain.ServiceDomain;
-import net.hasor.rsf.utils.TimerManager;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 /**
  * 负责维护RSF客户端服务在注册中心上的信息。
  * @version : 2016年2月18日
@@ -49,11 +42,11 @@ import net.hasor.rsf.utils.TimerManager;
 class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody> {
     public static final String CenterUpdate_Event = "CenterUpdate_Event";
     protected           Logger logger             = LoggerFactory.getLogger(getClass());
-    private final RsfContext                              rsfContext;
-    private final String                                  hostString;
-    private final TimerManager                            timerManager;
-    private final RsfCenterRegister                       centerRegister;
-    private final ConcurrentMap<String, ServiceDomain<?>> serviceMap;
+    private final RsfContext                            rsfContext;
+    private final String                                hostString;
+    private final TimerManager                          timerManager;
+    private final RsfCenterRegister                     centerRegister;
+    private final ConcurrentMap<String, RsfBindInfo<?>> serviceMap;
     //
     public RsfCenterClientManager(RsfContext rsfContext) {
         rsfContext.getAppContext().getEnvironment().getEventContext().addListener(CenterUpdate_Event, this);
@@ -61,7 +54,7 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         this.hostString = rsfContext.bindAddress().toHostSchema();
         this.timerManager = new TimerManager(rsfContext.getSettings().getCenterHeartbeatTime(), "RsfCenterBeatTimer");
         this.centerRegister = rsfContext.getRsfClient().wrapper(RsfCenterRegister.class);
-        this.serviceMap = new ConcurrentHashMap<String, ServiceDomain<?>>();
+        this.serviceMap = new ConcurrentHashMap<String, RsfBindInfo<?>>();
         this.timerManager.atTime(this);
     }
     //
@@ -74,9 +67,9 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         }
         //
         if (this.serviceMap.containsKey(serviceID)) {
-            ServiceDomain<?> domain = this.serviceMap.get(serviceID);
+            RsfBindInfo<?> domain = this.serviceMap.get(serviceID);
             if (domain != null) {
-                domain.setCenterSnapshot(snapshotInfo);
+                domain.setMetaData(RsfConstants.Center_Snapshot, snapshotInfo);
                 logger.info("update CenterSnapshotInfo success -> serviceID={} , snapshotInfo=", serviceID, snapshotInfo);
             } else {
                 logger.error("update CenterSnapshotInfo failed, domain is undefined-> serviceID={} , snapshotInfo=", serviceID, snapshotInfo);
@@ -85,7 +78,7 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
     }
     //
     /**异步注册到注册中心*/
-    public synchronized void newService(ServiceDomain<?> domain, String eventType) {
+    public synchronized void newService(RsfBindInfo<?> domain, String eventType) {
         if (domain == null) {
             return;
         }
@@ -99,7 +92,7 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         }
     }
     /**同步从注册中心解除注册*/
-    public void deleteService(ServiceDomain<?> domain) {
+    public void deleteService(RsfBindInfo<?> domain) {
         if (domain == null) {
             return;
         }
@@ -132,14 +125,14 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         }
     }
     public synchronized void offline() {
-        List<ServiceDomain<?>> serviceList = new ArrayList<ServiceDomain<?>>(this.serviceMap.values());
-        for (ServiceDomain<?> domain : serviceList) {
+        List<RsfBindInfo<?>> serviceList = new ArrayList<RsfBindInfo<?>>(this.serviceMap.values());
+        for (RsfBindInfo<?> domain : serviceList) {
             if (domain != null) {
                 this.offlineService(domain);
             }
         }
     }
-    private void offlineService(ServiceDomain<?> domain) {
+    private void offlineService(RsfBindInfo<?> domain) {
         try {
             String serviceID = domain.getBindID();
             if (StringUtils.isNotBlank(serviceID)) {
@@ -165,15 +158,16 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
     }
     //
     private void run() throws Exception {
-        List<ServiceDomain<?>> needBeat = new ArrayList<ServiceDomain<?>>();//需要心跳
-        List<ServiceDomain<?>> needRegister = new ArrayList<ServiceDomain<?>>();//需要注册
-        List<ServiceDomain<?>> needRepair = new ArrayList<ServiceDomain<?>>();//心跳失败，需要重新注册
+        List<RsfBindInfo<?>> needBeat = new ArrayList<RsfBindInfo<?>>();//需要心跳
+        List<RsfBindInfo<?>> needRegister = new ArrayList<RsfBindInfo<?>>();//需要注册
+        List<RsfBindInfo<?>> needRepair = new ArrayList<RsfBindInfo<?>>();//心跳失败，需要重新注册
         //
         //1.对所有服务进行分类
-        List<ServiceDomain<?>> iterator = new ArrayList<ServiceDomain<?>>(this.serviceMap.values());
-        for (ServiceDomain<?> domain : iterator) {
+        List<RsfBindInfo<?>> iterator = new ArrayList<RsfBindInfo<?>>(this.serviceMap.values());
+        for (RsfBindInfo<?> domain : iterator) {
             if (domain != null) {
-                if (StringUtils.isEmpty(domain.getCenterSnapshot())) {
+                String snapshotInfo = (String) domain.getMetaData(RsfConstants.Center_Snapshot);
+                if (StringUtils.isEmpty(snapshotInfo)) {
                     needRegister.add(domain);//需要新注册
                 } else {
                     needBeat.add(domain);//服务需要进行心跳
@@ -182,7 +176,7 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         }
         //
         //2.服务注册
-        for (ServiceDomain<?> domain : needRegister) {
+        for (RsfBindInfo<?> domain : needRegister) {
             try {
                 String snapshotInfo = null;
                 if (RsfServiceType.Provider == domain.getServiceType()) {
@@ -200,7 +194,7 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
                     logger.info("receiveService service {} register to center -> {}", domain.getBindID(), snapshotInfo);
                 }
                 if (StringUtils.isNotBlank(snapshotInfo)) {
-                    domain.setCenterSnapshot(snapshotInfo);//更新远程信息
+                    domain.setMetaData(RsfConstants.Center_Snapshot, snapshotInfo);//更新远程信息
                 }
             } catch (Exception e) {
                 logger.error("service {} register to center error-> {}", domain.getBindID(), e.getMessage());
@@ -211,17 +205,18 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         //3.服务心跳
         if (!needBeat.isEmpty()) {
             //-区分提供者和订阅者-
-            Map<String, ServiceDomain<?>> beatAllMap = new HashMap<String, ServiceDomain<?>>();
+            Map<String, RsfBindInfo<?>> beatAllMap = new HashMap<String, RsfBindInfo<?>>();
             Map<String, String> beatPMap = new HashMap<String, String>();//提供者
             Map<String, String> beatCMap = new HashMap<String, String>();//消费者
-            for (ServiceDomain<?> domain : needBeat) {
+            for (RsfBindInfo<?> domain : needBeat) {
                 beatAllMap.put(domain.getBindID(), domain);
                 /*   */
+                String snapshotInfo = (String) domain.getMetaData(RsfConstants.Center_Snapshot);
                 if (RsfServiceType.Consumer == domain.getServiceType()) {
-                    beatCMap.put(domain.getBindID(), domain.getCenterSnapshot());//心跳的服务ID和其对应的centerMarkData建立一个Map
+                    beatCMap.put(domain.getBindID(), snapshotInfo);//心跳的服务ID和其对应的centerMarkData建立一个Map
                     //
                 } else if (RsfServiceType.Provider == domain.getServiceType()) {
-                    beatPMap.put(domain.getBindID(), domain.getCenterSnapshot());//心跳的服务ID和其对应的centerMarkData建立一个Map
+                    beatPMap.put(domain.getBindID(), snapshotInfo);//心跳的服务ID和其对应的centerMarkData建立一个Map
                     //
                 }
             }
@@ -270,7 +265,7 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         }
         //
         //4.重新注册服务
-        for (ServiceDomain<?> domain : needRepair) {
+        for (RsfBindInfo<?> domain : needRepair) {
             try {
                 String snapshotInfo = null;
                 /*   */
@@ -289,7 +284,7 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
                     //
                 }
                 if (StringUtils.isNotBlank(snapshotInfo)) {
-                    domain.setCenterSnapshot(snapshotInfo);//更新远程服务信息
+                    domain.setMetaData(RsfConstants.Center_Snapshot, snapshotInfo);//更新远程信息
                 }
             } catch (Exception e) {
                 logger.error("repairService service {} register to center error-> {}", domain.getBindID(), e.getMessage());
@@ -347,7 +342,7 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         builder.append("]");
         return builder.toString();
     }
-    private <T extends PublishInfo> T fillTo(ServiceDomain<?> eventData, T info) {
+    private <T extends PublishInfo> T fillTo(RsfBindInfo<?> eventData, T info) {
         info.setBindID(eventData.getBindID());
         info.setBindGroup(eventData.getBindGroup());
         info.setBindName(eventData.getBindName());
