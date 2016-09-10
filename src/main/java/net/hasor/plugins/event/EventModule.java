@@ -44,7 +44,7 @@ public class EventModule implements Module {
         final Class<?> listenerClass = EventListener.class;
         eventSet.remove(Event.class);
         //
-        if (eventSet == null || eventSet.isEmpty()) {
+        if (eventSet.isEmpty()) {
             if (logger.isWarnEnabled()) {
                 logger.warn("event -> init failed , not found any @Event.");
             }
