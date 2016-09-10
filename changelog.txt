@@ -1,6 +1,9 @@
-﻿===== Hasor-Core v2.4.4 (2016-?)
+﻿===== Hasor-Core v2.4.5 (2016-?)
 * 新增:
     01.BindInfo 新增 setMetaData 方法以设置元信息。
+* 修复:
+    01.Fix RsfSettings 接口的 add & remove & set 系方法,解决 settings key 出现大小写敏感问题。
+    02.Fix AbstractEnvironment 的 refreshVariables 方法,忽略了对默认值的替换,导致了bug出现。
 
 ===== Hasor-Core v2.4.4 (2016-09-05)
 * 新增:

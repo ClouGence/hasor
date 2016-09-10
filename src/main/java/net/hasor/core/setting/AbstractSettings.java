@@ -85,21 +85,23 @@ public abstract class AbstractSettings implements Settings {
     }
     /** 将整个配置项的多个值全部删除。 */
     public void removeSetting(String key, String namespace) {
-        this.allSettingValue().remove(namespace, key);// 所有命名空间的数据
+        String lowerKey = StringUtils.isBlank(key) ? "" : key.toLowerCase();
+        this.allSettingValue().remove(namespace, lowerKey);// 所有命名空间的数据
     }
     /** 设置参数，如果出现多个值，则会覆盖。 */
     public void setSetting(final String key, final Object value, final String namespace) {
-        this.removeSetting(key, namespace);
-        this.addSetting(key, value, namespace);
+        String lowerKey = StringUtils.isBlank(key) ? "" : key.toLowerCase();
+        this.removeSetting(lowerKey, namespace);
+        this.addSetting(lowerKey, value, namespace);
     }
     /** 添加参数，如果参数名称相同则追加一项。 */
     public void addSetting(final String key, final Object value, final String namespace) {
-        //
+        String lowerKey = StringUtils.isBlank(key) ? "" : key.toLowerCase();
         DecSpaceMap<String, SettingValue> dataMap = this.allSettingValue();
-        SettingValue val = dataMap.get(namespace, key);
+        SettingValue val = dataMap.get(namespace, lowerKey);
         if (val == null) {
             val = new SettingValue(namespace);
-            dataMap.put(namespace, key, val);
+            dataMap.put(namespace, lowerKey, val);
         }
         val.newValue(value);
     }

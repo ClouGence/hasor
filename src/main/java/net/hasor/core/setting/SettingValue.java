@@ -43,6 +43,9 @@ public class SettingValue {
     public Object getDefaultVar() {
         return this.defaultVar;
     }
+    public void setDefaultVar(Object defaultVar) {
+        this.defaultVar = defaultVar;
+    }
     public List<Object> getVarList() {
         return this.varList;
     }
