@@ -14,31 +14,32 @@
  * limitations under the License.
  */
 package net.hasor.rsf.console.commands;
-import java.io.StringWriter;
-import java.util.List;
-
-import org.more.util.StringUtils;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.console.RsfCmd;
 import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
+import net.hasor.rsf.console.RsfInstruct;
+import net.hasor.rsf.domain.RsfConstants;
+import org.more.util.StringUtils;
+
+import java.io.StringWriter;
+import java.util.List;
 /**
  *
  * @version : 2016年4月3日
  * @author 赵永春(zyc@hasor.net)
  */
 @Singleton
-@RsfCmd("service")
-public class ServiceRsfCommand implements RsfCommand {
+@RsfCommand("list")
+public class ListRsfInstruct implements RsfInstruct {
     //
     @Override
     public String helpInfo() {
         return "show service info.\r\n"//
-                + " - service      (show help info.)\r\n"// 
-                + " - service -a   (show all service id list.)\r\n"// 
-                + " - service xxxx (show service info of XXXX.)";
+                + " - list      (show all service id list.)\r\n"// 
+                + " - list -h   (show help info.)\r\n"// 
+                + " - list xxxx (show service info of XXXX.)";
     }
     @Override
     public boolean inputMultiLine(RsfCommandRequest request) {
@@ -51,18 +52,8 @@ public class ServiceRsfCommand implements RsfCommand {
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 0) {
             String todoArg = args[0];
-            if (StringUtils.equalsIgnoreCase("-a", todoArg)) {
-                List<String> serviceList = rsfContext.getServiceIDs();
-                int maxLength = 0;
-                for (String serviceID : serviceList) {
-                    maxLength = (maxLength < serviceID.length()) ? serviceID.length() : maxLength;
-                }
-                for (String serviceID : serviceList) {
-                    RsfBindInfo<?> info = rsfContext.getServiceInfo(serviceID);
-                    boolean isProvider = rsfContext.getServiceProvider(info) != null;
-                    String itemStr = StringUtils.rightPad(serviceID, maxLength) + "  -> " + ((isProvider) ? "Provider" : "Consumer");
-                    sw.write(">> " + itemStr + "\r\n");
-                }
+            if (StringUtils.equalsIgnoreCase("-h", todoArg)) {
+                sw.write(helpInfo());
             } else {
                 String serviceID = todoArg;
                 RsfBindInfo<?> info = rsfContext.getServiceInfo(serviceID);
@@ -82,11 +73,25 @@ public class ServiceRsfCommand implements RsfCommand {
                 boolean isProvider = rsfContext.getServiceProvider(info) != null;
                 sw.write(">>          Type :" + ((isProvider) ? "Provider" : "Consumer") + "\r\n");
                 //
+                sw.write(">>\r\n");
+                sw.write(">>------ CenterInfo ------\r\n");
+                sw.write(">>        Ticket :" + info.getMetaData(RsfConstants.Center_Ticket) + "\r\n");
+                //
             }
             //
         } else {
             sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  list  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
-            sw.write(helpInfo());
+            List<String> serviceList = rsfContext.getServiceIDs();
+            int maxLength = 0;
+            for (String serviceID : serviceList) {
+                maxLength = (maxLength < serviceID.length()) ? serviceID.length() : maxLength;
+            }
+            for (String serviceID : serviceList) {
+                RsfBindInfo<?> info = rsfContext.getServiceInfo(serviceID);
+                boolean isProvider = rsfContext.getServiceProvider(info) != null;
+                String itemStr = StringUtils.rightPad(serviceID, maxLength) + "  -> " + ((isProvider) ? "Provider" : "Consumer");
+                sw.write(">> " + itemStr + "\r\n");
+            }
             //
         }
         return sw.toString();

@@ -177,12 +177,12 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
                 requestCMD = inputString.substring(0, cmdIndex);
                 requestArgs = inputString.substring(cmdIndex + 1);
             }
-            RsfCommand rsfCommand = this.commandManager.findCommand(requestCMD);
-            if (rsfCommand == null) {
+            RsfInstruct rsfInstruct = this.commandManager.findCommand(requestCMD);
+            if (rsfInstruct == null) {
                 return new RsfCommandResponse("'" + requestCMD + "' is bad command.", true, false);
             }
             //
-            requestCmd = new RsfCommandRequest(requestCMD, sessionAttr.get(), rsfCommand, requestArgs);
+            requestCmd = new RsfCommandRequest(requestCMD, sessionAttr.get(), rsfInstruct, requestArgs);
             cmdAttr.set(requestCmd);
         }
         //

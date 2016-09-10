@@ -15,6 +15,7 @@
  */
 package test.net.hasor.rsf.functions;
 import net.hasor.rsf.address.AddressBucket;
+import net.hasor.rsf.address.AddressTypeEnum;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 
@@ -44,14 +45,14 @@ public class BuildBucketBuild {
         dynamicList.add(new InterAddress("127.0.0.2", 8000, "etc2"));
         dynamicList.add(new InterAddress("127.0.0.3", 8000, "etc2"));
         dynamicList.add(new InterAddress("127.0.0.4", 8000, "etc2"));
-        bucket.newAddress(dynamicList, AddressBucket.Dynamic);
+        bucket.newAddress(dynamicList, AddressTypeEnum.Dynamic);
         //
         ArrayList<InterAddress> staticList = new ArrayList<InterAddress>();
         staticList.add(new InterAddress("127.0.1.1", 8000, "etc2"));
         staticList.add(new InterAddress("127.0.2.2", 8000, "etc2"));
         staticList.add(new InterAddress("127.0.3.3", 8000, "etc2"));
         staticList.add(new InterAddress("127.0.4.4", 8000, "etc2"));
-        bucket.newAddress(staticList, AddressBucket.Static);
+        bucket.newAddress(staticList, AddressTypeEnum.Static);
         return this;
     }
 }

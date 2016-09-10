@@ -31,7 +31,7 @@ import net.hasor.rsf.RsfContext;
 public final class RsfCommandRequest {
     public static final String WITHOUT_AFTER_CLOSE_SESSION = "WithoutAfterCloseSession";
     private RsfCommandSession    rsfSession;                                              //Rsf环境
-    private RsfCommand           rsfCommand;                                              //命令执行体
+    private RsfInstruct          rsfInstruct;                                              //命令执行体
     private String               command;
     private String[]             requestArgs;                                             //请求参数
     private CommandRequestStatus status;
@@ -43,15 +43,15 @@ public final class RsfCommandRequest {
     private Map<String, Object>  attr;
     //
     RsfCommandRequest(String command, RsfCommandSession rsfSession, //
-            RsfCommand rsfCommand, String requestArgs) {
+            RsfInstruct rsfInstruct, String requestArgs) {
         this.rsfSession = rsfSession;
-        this.rsfCommand = rsfCommand;
+        this.rsfInstruct = rsfInstruct;
         this.command = command;
         this.requestArgs = StringUtils.isBlank(requestArgs) ? new String[0] : requestArgs.split(" ");
         this.bodyBuffer = new StringBuffer("");
         this.doClose = false;
         this.attr = new HashMap<String, Object>();
-        this.inputMultiLine = rsfCommand.inputMultiLine(this);
+        this.inputMultiLine = rsfInstruct.inputMultiLine(this);
         this.status = this.inputMultiLine ? CommandRequestStatus.Prepare : CommandRequestStatus.Ready;
     }
     void appendRequestBody(String requestBody) {
@@ -71,8 +71,8 @@ public final class RsfCommandRequest {
             this.status = CommandRequestStatus.StandBy;
         }
     }
-    RsfCommand getCommand() {
-        return this.rsfCommand;
+    RsfInstruct getCommand() {
+        return this.rsfInstruct;
     }
     CommandRequestStatus getStatus() {
         return this.status;
@@ -92,7 +92,7 @@ public final class RsfCommandRequest {
         public void run() {
             try {
                 doStartTime = System.currentTimeMillis();
-                result = rsfCommand.doCommand(RsfCommandRequest.this);
+                result = rsfInstruct.doCommand(RsfCommandRequest.this);
             } catch (Throwable e) {
                 StringWriter sw = new StringWriter();
                 e.printStackTrace(new PrintWriter(sw));
@@ -105,7 +105,7 @@ public final class RsfCommandRequest {
                 }
                 boolean withoutAfterCloseBoolean = (Boolean) ConverterUtils.convert(Boolean.TYPE, withoutAfterClose);
                 if (!withoutAfterCloseBoolean) {
-                    Object afterClose = getSessionAttr(RsfCommand.AFTER_CLOSE_SESSION);
+                    Object afterClose = getSessionAttr(RsfInstruct.AFTER_CLOSE_SESSION);
                     if (afterClose != null) {
                         doClose = (Boolean) ConverterUtils.convert(Boolean.TYPE, afterClose);
                     }

@@ -40,6 +40,6 @@ public class ProviderServer {
         });
         //
         System.out.println("server start.");
-        Thread.sleep(20000);
+        System.in.read();
     }
 }

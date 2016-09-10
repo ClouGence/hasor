@@ -15,8 +15,8 @@
  */
 package net.hasor.rsf.console.commands;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.console.RsfCmd;
 import net.hasor.rsf.console.RsfCommand;
+import net.hasor.rsf.console.RsfInstruct;
 import net.hasor.rsf.console.RsfCommandRequest;
 import net.hasor.rsf.utils.json.JSON;
 import org.more.util.StringUtils;
@@ -26,8 +26,8 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 @Singleton
-@RsfCmd({"set", "get"})
-public class GetSetRsfCommand implements RsfCommand {
+@RsfCommand({"set", "get"})
+public class GetSetRsfInstruct implements RsfInstruct {
     @Override
     public String helpInfo() {
         return "set/get environment variables of console .\r\n"//

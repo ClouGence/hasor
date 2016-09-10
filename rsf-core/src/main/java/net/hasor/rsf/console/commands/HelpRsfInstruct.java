@@ -21,8 +21,8 @@ import org.more.util.StringUtils;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.console.CommandManager;
-import net.hasor.rsf.console.RsfCmd;
 import net.hasor.rsf.console.RsfCommand;
+import net.hasor.rsf.console.RsfInstruct;
 import net.hasor.rsf.console.RsfCommandRequest;
 /**
  *
@@ -30,8 +30,8 @@ import net.hasor.rsf.console.RsfCommandRequest;
  * @author 赵永春(zyc@hasor.net)
  */
 @Singleton
-@RsfCmd("help")
-public class HelpRsfCommand implements RsfCommand {
+@RsfCommand("help")
+public class HelpRsfInstruct implements RsfInstruct {
     //
     @Override
     public String helpInfo() {
@@ -61,7 +61,7 @@ public class HelpRsfCommand implements RsfCommand {
             if ("-a".equalsIgnoreCase(cmdName)) {
                 showDetail = true;
             } else {
-                RsfCommand cmd = commandManager.findCommand(cmdName);
+                RsfInstruct cmd = commandManager.findCommand(cmdName);
                 if (cmd != null) {
                     sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + cmdName + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
                     sw.write(cmd.helpInfo() + "\r\n");
@@ -77,7 +77,7 @@ public class HelpRsfCommand implements RsfCommand {
         }
         maxLength = maxLength + 2;
         for (String name : cmdNames) {
-            RsfCommand cmd = commandManager.findCommand(name);
+            RsfInstruct cmd = commandManager.findCommand(name);
             if (showDetail) {
                 sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + name + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
                 sw.write(cmd.helpInfo() + "\r\n");

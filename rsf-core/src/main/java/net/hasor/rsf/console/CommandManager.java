@@ -39,23 +39,23 @@ public class CommandManager {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
     private AppContext appContext;
-    private final Map<String, RsfCommand> commandMap = new HashMap<String, RsfCommand>();
+    private final Map<String, RsfInstruct> commandMap = new HashMap<String, RsfInstruct>();
     //
     @Init
     public void initCommand() throws Throwable {
-        List<RsfCommand> cmdSet = appContext.findBindingBean(RsfCommand.class);
+        List<RsfInstruct> cmdSet = appContext.findBindingBean(RsfInstruct.class);
         if (cmdSet == null || cmdSet.isEmpty()) {
             this.logger.warn("load rsf Console Command is empty.");
             return;
         } else {
             ArrayList<String> cmdNames = new ArrayList<String>();
-            for (RsfCommand cmdObject : cmdSet) {
-                RsfCmd cmdInfo = cmdObject.getClass().getAnnotation(RsfCmd.class);
+            for (RsfInstruct cmdObject : cmdSet) {
+                RsfCommand cmdInfo = cmdObject.getClass().getAnnotation(RsfCommand.class);
                 for (String name : cmdInfo.value()) {
                     name = name.toLowerCase();
                     cmdNames.add(name);
                     if (this.commandMap.containsKey(name)) {
-                        RsfCommand conflictCmd = this.commandMap.get(name);
+                        RsfInstruct conflictCmd = this.commandMap.get(name);
                         String types = cmdObject.getClass().getName() + " , " + conflictCmd.getClass().getName();
                         throw new RepeateException("conflict command name '" + name + "' {" + types + "}");
                     } else {
@@ -68,7 +68,7 @@ public class CommandManager {
         //
     }
     /**查找命令。*/
-    public RsfCommand findCommand(String requestCMD) {
+    public RsfInstruct findCommand(String requestCMD) {
         if (StringUtils.isBlank(requestCMD)) {
             return null;
         }

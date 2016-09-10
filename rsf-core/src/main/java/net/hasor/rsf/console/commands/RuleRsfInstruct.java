@@ -16,8 +16,8 @@
 package net.hasor.rsf.console.commands;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.console.RsfCmd;
 import net.hasor.rsf.console.RsfCommand;
+import net.hasor.rsf.console.RsfInstruct;
 import net.hasor.rsf.console.RsfCommandRequest;
 import org.more.util.StringUtils;
 
@@ -31,8 +31,8 @@ import java.io.StringWriter;
  * @author 赵永春(zyc@hasor.net)
  */
 @Singleton
-@RsfCmd("rule")
-public class RuleRsfCommand implements RsfCommand {
+@RsfCommand("rule")
+public class RuleRsfInstruct implements RsfInstruct {
     //
     @Override
     public String helpInfo() {

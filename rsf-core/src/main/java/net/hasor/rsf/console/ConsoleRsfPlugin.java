@@ -31,12 +31,13 @@ import net.hasor.core.*;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfPlugin;
 import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.console.commands.*;
 import net.hasor.rsf.utils.NameThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.UnknownHostException;
+import java.util.HashSet;
+import java.util.Set;
 /**
  * RSF终端管理器插件。
  * @version : 2016年2月18日
@@ -103,12 +104,21 @@ public class ConsoleRsfPlugin implements RsfPlugin, Module {
     }
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        apiBinder.bindType(RsfCommand.class).uniqueName().to(HelpRsfCommand.class);
-        apiBinder.bindType(RsfCommand.class).uniqueName().to(QuitRsfCommand.class);
-        apiBinder.bindType(RsfCommand.class).uniqueName().to(SwitchRsfCommand.class);
-        apiBinder.bindType(RsfCommand.class).uniqueName().to(GetSetRsfCommand.class);
-        apiBinder.bindType(RsfCommand.class).uniqueName().to(ServiceRsfCommand.class);
-        apiBinder.bindType(RsfCommand.class).uniqueName().to(RuleRsfCommand.class);
-        apiBinder.bindType(RsfCommand.class).uniqueName().to(FlowRsfCommand.class);
+        final Set<Class<?>> rsfCommandSet = new HashSet<Class<?>>(apiBinder.getEnvironment().findClass(RsfCommand.class));
+        rsfCommandSet.remove(RsfCommand.class);
+        //
+        if (rsfCommandSet.isEmpty()) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("event -> init failed , not found any @RsfCommand.");
+            }
+            return;
+        }
+        for (final Class<?> commandClass : rsfCommandSet) {
+            if (commandClass == RsfCommand.class || !RsfInstruct.class.isAssignableFrom(commandClass)) {
+                continue;
+            }
+            logger.info("rsf console -> new order {}.", commandClass);
+            apiBinder.bindType(RsfInstruct.class).uniqueName().to((Class<? extends RsfInstruct>) commandClass);
+        }
     }
 }
