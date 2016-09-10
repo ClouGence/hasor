@@ -49,9 +49,7 @@ import static net.hasor.rsf.domain.RsfConstants.*;
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressBucket extends Observable {
-    protected static final Logger logger  = LoggerFactory.getLogger(AddressBucket.class);
-    public static final    String Dynamic = "dynamic";
-    public static final    String Static  = "static";
+    protected static final Logger logger = LoggerFactory.getLogger(AddressBucket.class);
     //
     //流控&路由
     private final    RsfSettings                                   rsfSettings;        //配置信息
@@ -111,7 +109,7 @@ public class AddressBucket extends Observable {
     }
     //
     /**新增地址支持动态新增*/
-    public void newAddress(Collection<InterAddress> newHostSet, String type) {
+    public void newAddress(Collection<InterAddress> newHostSet, AddressTypeEnum type) {
         if (newHostSet == null || newHostSet.isEmpty()) {
             logger.error("{} - newHostList is empty.", serviceID);
             return;
@@ -140,7 +138,7 @@ public class AddressBucket extends Observable {
             }
             //
             if (doAdd) {
-                if (StringUtils.equals(type, Static)) {
+                if (AddressTypeEnum.Static.equals(type)) {
                     newStaticAddress.add(newHost);
                 }
                 newAddress.add(newHost);
@@ -304,11 +302,11 @@ public class AddressBucket extends Observable {
             BufferedWriter bfwriter = new BufferedWriter(strWriter);
             for (InterAddress inter : this.allAddressList) {
                 if (this.staticAddressList.contains(inter)) {
-                    strLogs.append(S);
-                    bfwriter.append(S);
+                    strLogs.append(AddressTypeEnum.Static.getShortType());
+                    bfwriter.append(AddressTypeEnum.Static.getShortType());
                 } else {
-                    strLogs.append(D);
-                    bfwriter.append(D);
+                    strLogs.append(AddressTypeEnum.Dynamic.getShortType());
+                    bfwriter.append(AddressTypeEnum.Dynamic.getShortType());
                 }
                 strLogs.append(inter.toString());
                 strLogs.append(" , ");
@@ -401,11 +399,11 @@ public class AddressBucket extends Observable {
                             continue;
                         }
                         try {
-                            if (line.startsWith(S)) {
+                            if (line.startsWith(AddressTypeEnum.Static.getShortType())) {
                                 staticNewHostSet.add(new InterAddress(line.substring(2)));
                                 strBuffer.append(line);
                                 strBuffer.append(" , ");
-                            } else if (line.startsWith(D)) {
+                            } else if (line.startsWith(AddressTypeEnum.Dynamic.getShortType())) {
                                 dynamicNewHostSet.add(new InterAddress(line.substring(2)));
                                 strBuffer.append(line);
                                 strBuffer.append(" , ");
@@ -415,8 +413,8 @@ public class AddressBucket extends Observable {
                         }
                     }
                     logger.info("bucket read list -> {}", strBuffer.toString());
-                    this.newAddress(staticNewHostSet, Static);
-                    this.newAddress(dynamicNewHostSet, Dynamic);
+                    this.newAddress(staticNewHostSet, AddressTypeEnum.Static);
+                    this.newAddress(dynamicNewHostSet, AddressTypeEnum.Dynamic);
                 }
             }
         } catch (Throwable e) {

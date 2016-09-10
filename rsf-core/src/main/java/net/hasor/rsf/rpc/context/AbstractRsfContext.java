@@ -66,7 +66,7 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         this.rsfNetManager = new RsfNetManager(this.rsfEnvironment, transport);
         this.addressPool = new DiskCacheAddressPool(this.rsfEnvironment);
         this.poolProvider = new PoolAddressProvider(this.addressPool);
-        this.onlineStatus = new AtomicBoolean(RsfConstants.DEFAULT_ONLINE_STATUS);
+        this.onlineStatus = new AtomicBoolean(false);
     }
     //
     public synchronized void start(RsfPlugin... plugins) throws Throwable {

@@ -26,48 +26,42 @@ package net.hasor.rsf.domain;
  */
 public interface RsfConstants {
     // RSF数据包           -（1000 0000）
-    public static final byte    RSF_Packet                  = (byte) (0x80);
+    public static final byte   RSF_Packet                  = (byte) (0x80);
     //
     // RSF所有包头分类      -（1000 0000 ~ 1111 0000）
-    public static final byte    RSF_Packet_Heart            = RSF_Packet | 0x00; // 1000
-    public static final byte    RSF_Packet_InvokerRequest   = RSF_Packet | 0x10; // 1001
-    public static final byte    RSF_Packet_MessageRequest   = RSF_Packet | 0x20; // 1010
-    public static final byte    RSF_Packet_Response         = RSF_Packet | 0x30; // 1011
-    public static final byte    RSF_Packet_xxxx4            = RSF_Packet | 0x40; // 1100 (未使用)
-    public static final byte    RSF_Packet_xxxx5            = RSF_Packet | 0x50; // 1101 (未使用)
-    public static final byte    RSF_Packet_xxxx6            = RSF_Packet | 0x60; // 1110 (未使用)
-    public static final byte    RSF_Packet_xxxx7            = RSF_Packet | 0x70; // 1111 (未使用)
+    public static final byte   RSF_Packet_Heart            = RSF_Packet | 0x00; // 1000
+    public static final byte   RSF_Packet_InvokerRequest   = RSF_Packet | 0x10; // 1001
+    public static final byte   RSF_Packet_MessageRequest   = RSF_Packet | 0x20; // 1010
+    public static final byte   RSF_Packet_Response         = RSF_Packet | 0x30; // 1011
+    public static final byte   RSF_Packet_xxxx4            = RSF_Packet | 0x40; // 1100 (未使用)
+    public static final byte   RSF_Packet_xxxx5            = RSF_Packet | 0x50; // 1101 (未使用)
+    public static final byte   RSF_Packet_xxxx6            = RSF_Packet | 0x60; // 1110 (未使用)
+    public static final byte   RSF_Packet_xxxx7            = RSF_Packet | 0x70; // 1111 (未使用)
     //
     //
     // 协议头1.0
-    public static final byte    Version_1                   = (byte) (0x01);                            // 1000 0001
-    public static final byte    RSF_InvokerRequest          = Version_1 | RSF_Packet_InvokerRequest;    // 1001 0001
-    public static final byte    RSF_MessageRequest          = Version_1 | RSF_Packet_MessageRequest;    // 1010 0001
-    public static final byte    RSF_Response                = Version_1 | RSF_Packet_Response;          // 1011 0001
+    public static final byte   Version_1                   = (byte) (0x01);                            // 1000 0001
+    public static final byte   RSF_InvokerRequest          = Version_1 | RSF_Packet_InvokerRequest;    // 1001 0001
+    public static final byte   RSF_MessageRequest          = Version_1 | RSF_Packet_MessageRequest;    // 1010 0001
+    public static final byte   RSF_Response                = Version_1 | RSF_Packet_Response;          // 1011 0001
     //
     //
     // ---------------------------------------------------------------------------------------------
-    public static final boolean DEFAULT_ONLINE_STATUS       = false;
+    public static final String AddressList_ZipEntry        = "address.sal";
+    public static final String FlowControlRef_ZipEntry     = "flow-control.xml";
+    public static final String ServiceLevelScript_ZipEntry = "service-level.groovy";
+    public static final String MethodLevelScript_ZipEntry  = "method-level.groovy";
+    public static final String ArgsLevelScript_ZipEntry    = "args-level.groovy";
+    public static final String AddrPoolStoreName           = "addr-pool-";
     //
+    public static final String SnapshotPath                = "/snapshot";
+    public static final String SnapshotIndex               = "address.index";
     //
-    // ---------------------------------------------------------------------------------------------
-    public static final String  D                           = "D|";
-    public static final String  S                           = "S|";
-    public static final String  AddressList_ZipEntry        = "address.sal";
-    public static final String  FlowControlRef_ZipEntry     = "flow-control.xml";
-    public static final String  ServiceLevelScript_ZipEntry = "service-level.groovy";
-    public static final String  MethodLevelScript_ZipEntry  = "method-level.groovy";
-    public static final String  ArgsLevelScript_ZipEntry    = "args-level.groovy";
-    public static final String  AddrPoolStoreName           = "addr-pool-";
+    public static final long   OneHourTime                 = 1 * 60 * 60 * 1000;
+    public static final long   SevenDaysTime               = 7 * 24 * OneHourTime;
     //
-    public static final String  SnapshotPath                = "/snapshot";
-    public static final String  SnapshotIndex               = "address.index";
-    //
-    public static final long    OneHourTime                 = 1 * 60 * 60 * 1000;
-    public static final long    SevenDaysTime               = 7 * 24 * OneHourTime;
-    //
-    public static final String  Center_RSF_APP_KEY          = "RSF_APP_KEY";          //key
-    public static final String  Center_RSF_APP_KEY_SECRET   = "RSF_APP_KEY_SECRET";   //秘钥
-    public static final String  Center_RSF_VERSION          = "RSF_VERSION";          //客户端版本
-    public static final String  Center_Snapshot             = "CenterSnapshot";       //注册中心中的注册ID
+    public static final String Center_RSF_APP_KEY          = "RSF_APP_KEY";          //key
+    public static final String Center_RSF_APP_KEY_SECRET   = "RSF_APP_KEY_SECRET";   //秘钥
+    public static final String Center_RSF_VERSION          = "RSF_VERSION";          //客户端版本
+    public static final String Center_Snapshot             = "CenterSnapshot";       //注册中心中的注册ID
 }

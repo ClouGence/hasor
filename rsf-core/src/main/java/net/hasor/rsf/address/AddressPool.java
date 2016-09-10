@@ -47,9 +47,7 @@ import java.util.zip.ZipOutputStream;
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressPool implements RsfUpdater {
-    protected final     Logger logger  = LoggerFactory.getLogger(getClass());
-    public static final String Dynamic = AddressBucket.Dynamic;
-    public static final String Static  = AddressBucket.Static;
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
     //
     private final RsfEnvironment                       rsfEnvironment;
     private final ConcurrentMap<String, AddressBucket> addressPool;
@@ -164,7 +162,7 @@ public class AddressPool implements RsfUpdater {
      * @param newHostSet 追加更新的地址。
      */
     public void appendStaticAddress(String serviceID, Collection<InterAddress> newHostSet) {
-        this._appendAddress(serviceID, newHostSet, Static);
+        this._appendAddress(serviceID, newHostSet, AddressTypeEnum.Static);
     }
     /**
      * 新增或追加更新服务地址信息。<p>
@@ -183,9 +181,9 @@ public class AddressPool implements RsfUpdater {
      * @param newHostSet 追加更新的地址。
      */
     public void appendAddress(String serviceID, Collection<InterAddress> newHostSet) {
-        this._appendAddress(serviceID, newHostSet, Dynamic);
+        this._appendAddress(serviceID, newHostSet, AddressTypeEnum.Dynamic);
     }
-    private void _appendAddress(String serviceID, Collection<InterAddress> newHostSet, String type) {
+    private void _appendAddress(String serviceID, Collection<InterAddress> newHostSet, AddressTypeEnum type) {
         String hosts = ReflectionToStringBuilder.toString(newHostSet, ToStringStyle.SIMPLE_STYLE);
         this.logger.info("updateAddress of service {} , new Address set = {} ", serviceID, hosts);
         //1.AddressBucketd
