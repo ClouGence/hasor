@@ -27,7 +27,7 @@ import net.hasor.rsf.center.server.startup.RsfCenterServerModule;
 public class TestServerSlaveA {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     public static void main(String[] args) throws IOException {
-        Hasor.createAppContext("/center/slave/rsf-server-slave-a.xml", new RsfCenterServerModule());
+        Hasor.createAppContext("/center/rsf-server-slave-a.xml", new RsfCenterServerModule());
         System.in.read();
     }
 }

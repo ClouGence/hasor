@@ -14,15 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.startup.launcher;
-import java.io.File;
-import java.io.InputStream;
-import java.util.List;
-import org.codehaus.plexus.classworlds.ClassWorld;
-import org.more.future.BasicFuture;
-import org.more.util.ResourcesUtils;
-import org.more.util.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
@@ -30,8 +21,18 @@ import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.console.launcher.TelnetClient;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
 import net.hasor.rsf.utils.NetworkUtils;
+import org.codehaus.plexus.classworlds.ClassWorld;
+import org.more.future.BasicFuture;
+import org.more.util.ResourcesUtils;
+import org.more.util.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.List;
 /**
- * 
+ *
  * @version : 2016年3月29日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -40,7 +41,8 @@ public class MainLauncher {
     public static void main(String[] args, ClassWorld world) throws Throwable {
         logger.info(">>>>>>>>>>>>>>>>> MainLauncher <<<<<<<<<<<<<<<<<");
         String action = args[0];
-        /*   */if ("start".equalsIgnoreCase(action)) {
+        /*   */
+        if ("start".equalsIgnoreCase(action)) {
             doStart(args);
         } else if ("stop".equalsIgnoreCase(action)) {
             doStop(args);
@@ -53,7 +55,7 @@ public class MainLauncher {
         logger.info(">>>>>>>>>>>>>>>>> doStart <<<<<<<<<<<<<<<<<");
         final BasicFuture<Object> future = new BasicFuture<Object>();
         final String config = args[1];
-        AppContext app = Hasor.createAppContext(new File(config), new StartupModule());
+        AppContext app = Hasor.createAppContext(new File(config));
         app.getEnvironment().getEventContext().addListener(AppContext.ContextEvent_Shutdown, new EventListener<AppContext>() {
             public void onEvent(String event, AppContext eventData) throws Throwable {
                 future.completed(new Object());//to end

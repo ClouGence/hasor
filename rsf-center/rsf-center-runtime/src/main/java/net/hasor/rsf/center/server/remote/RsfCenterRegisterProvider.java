@@ -17,6 +17,7 @@ package net.hasor.rsf.center.server.remote;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.more.bizcommon.Result;
 import org.more.bizcommon.ResultDO;
 import org.more.util.StringUtils;
@@ -39,7 +40,7 @@ import net.hasor.rsf.domain.RsfServiceType;
  */
 @Singleton
 public class RsfCenterRegisterProvider implements RsfCenterRegister {
-    protected Logger               logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
     private ProviderServiceManager providerServiceManager;
     @Inject
@@ -81,7 +82,8 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     @Override
     public boolean removeReceive(String rsfHostString, String serviceID) {
         try {
-            return this.consumerServiceManager.removeRegister(new InterAddress(rsfHostString), serviceID);
+            return true;
+            // return this.consumerServiceManager.removeRegister(new InterAddress(rsfHostString), serviceID);
         } catch (Throwable e) {
             //虽然数据删除失败，但是客户端不会为其在进行心跳服务。随着leader对数据的清理，注册中心中服务信息的最终一致性可以保障。
             logger.error("removeRegister, error -> " + e.getMessage(), e);
@@ -90,17 +92,17 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     }
     /**服务心跳*/
     @Override
-    public Map<String, String> publishServiceBeat(String rsfHostString, Map<String, String> beatMap) {
+    public Map<String, Boolean> publishServiceBeat(String rsfHostString, Map<String, String> beatMap) {
         return serviceBeat(rsfHostString, beatMap, RsfServiceType.Provider);
     }
     /**订阅心跳*/
     @Override
-    public Map<String, String> receiveServiceBeat(String rsfHostString, Map<String, String> beatMap) {
+    public Map<String, Boolean> receiveServiceBeat(String rsfHostString, Map<String, String> beatMap) {
         return serviceBeat(rsfHostString, beatMap, RsfServiceType.Consumer);
     }
     //
     /* T：成功,F：失败,E：错误 */
-    protected Map<String, String> serviceBeat(String rsfHostString, Map<String, String> beatMap, RsfServiceType rsfServiceType) {
+    protected Map<String, Boolean> serviceBeat(String rsfHostString, Map<String, String> beatMap, RsfServiceType rsfServiceType) {
         if (beatMap == null || StringUtils.isBlank(rsfHostString)) {
             logger.error("serviceBeat failed, hostString or beatMap is empty.");
             return null;
@@ -122,12 +124,13 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
                 } else {
                     resultArrays.put(serviceID, "F:" + beatResult.firstMessage().getMessage());
                 }
-                logger.error("serviceBeat {} -> hostString ={} ,serviceID ={}", ((beatResult == false) ? "failed" : "succeed"), rsfHostString, serviceID);
+                //                logger.error("serviceBeat {} -> hostString ={} ,serviceID ={}", ((beatResult == false) ? "failed" : "succeed"), rsfHostString, serviceID);
             } catch (Throwable e) {
                 resultArrays.put(serviceID, "E:center error -> " + e.getMessage());
                 logger.error("serviceBeat error -> hostString ={} ,serviceID ={}, error ={}", rsfHostString, serviceID, e.getMessage(), e);
             }
         }
-        return resultArrays;
+        return null;
+        // return resultArrays;
     }
 }

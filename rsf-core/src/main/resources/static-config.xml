@@ -10,6 +10,9 @@
 
         <!-- RSF框架环境变量 -->
         <environmentVar>
+            <!-- 是否启用RSF，默认情况启用。启用了RSF之后它会开启相应的端口和线程。 -->
+            <RSF_ENABLE>true</RSF_ENABLE>
+
             <!-- app_key -->
             <RSF_APP_KEY></RSF_APP_KEY>
             <!-- app KeySecret -->
@@ -31,13 +34,13 @@
     <!--
         Hasor-RSF ( 分布式服务框架 )
 
-            - enable  : 是否启用RSF，默认情况不启用。启用了RSF之后它会开启相应的端口和线程。
+            - enable  : 是否启用RSF，默认情况启用。启用了RSF之后它会开启相应的端口和线程。
             - address : RSF，无法在多个网卡上同时对外提供服务，因此您需要指定一个IP地址来告诉RSF工作在哪张网卡上。
                             “local”和“localhost”的区别，local指的是，本地默认网卡的IP地址。“localhost”对应的IP地址是“127.0.0.1”
                             如果您的部署环境有多张网卡，那么可以通过指定ip地址，来告诉RSF具体工作的网卡地址。
             - port    : RSF对外提供服务的监听端口号。
     -->
-    <hasor.rsfConfig enable="false" address="${RSF_SERVICE_IP}" port="${RSF_SERVICE_PORT}">
+    <hasor.rsfConfig enable="${RSF_ENABLE}" address="${RSF_SERVICE_IP}" port="${RSF_SERVICE_PORT}">
         <!-- 所属单元名称，单元是用来给应用部署划分虚拟机房的。RSF通过单元可以有效控制跨机房调用，从而提升远程调用效率。-->
         <unitName>${RSF_APP_UNIT}</unitName>
 

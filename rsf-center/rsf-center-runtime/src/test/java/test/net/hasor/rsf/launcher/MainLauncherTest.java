@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.rsf.center.server.startup.launcher.MainLauncher;
 /**
- * 
+ *
  * @version : 2016年3月29日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -32,7 +32,7 @@ public class MainLauncherTest {
         logger.info(">>>>>>>>>>>>>>>>> doStart <<<<<<<<<<<<<<<<<");
         String[] config = new String[2];
         config[0] = "start";
-        config[1] = ResourcesUtils.getResource("/center/alone/rsf-server-alone.xml").getFile();
+        config[1] = ResourcesUtils.getResource("/center/rsf-server-alone.xml").getFile();
         MainLauncher.doStart(config);
     }
     @Test
@@ -40,7 +40,7 @@ public class MainLauncherTest {
         logger.info(">>>>>>>>>>>>>>>>> doStop <<<<<<<<<<<<<<<<<");
         String[] config = new String[2];
         config[0] = "start";
-        config[1] = ResourcesUtils.getResource("/center/alone/rsf-server-alone.xml").getFile();
+        config[1] = ResourcesUtils.getResource("/center/rsf-server-alone.xml").getFile();
         MainLauncher.doStop(config);
     }
 }

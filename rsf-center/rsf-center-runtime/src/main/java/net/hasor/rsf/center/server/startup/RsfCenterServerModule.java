@@ -38,9 +38,10 @@ import net.hasor.rsf.center.server.remote.RsfCenterServerVerifyFilter;
  * @version : 2015年5月5日
  */
 public class RsfCenterServerModule implements LifeModule {
-    protected Logger     logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     private RsfCenterCfg rsfCenterCfg;
-    public RsfCenterServerModule() {}
+    public RsfCenterServerModule() {
+    }
     public RsfCenterServerModule(RsfCenterCfg rsfCenterCfg) {
         this.rsfCenterCfg = rsfCenterCfg;
     }
@@ -79,9 +80,6 @@ public class RsfCenterServerModule implements LifeModule {
         //
         // 5.注册PushQueue类型，当容器启动之后会启动，注册中心推送线程。
         apiBinder.bindType(PushQueue.class);
-        //
-        // 6.命令集
-        apiBinder.installModule(new CenterCommandPlugin());
     }
     //
     public void onStart(AppContext appContext) throws Throwable {
