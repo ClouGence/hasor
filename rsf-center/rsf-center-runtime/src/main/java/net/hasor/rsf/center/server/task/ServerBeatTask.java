@@ -22,12 +22,12 @@ import net.hasor.core.Inject;
 import net.hasor.rsf.center.server.manager.InitServerManager;
 import net.hasor.rsf.center.server.utils.DateCenterUtils;
 /**
- * 
+ *
  * @version : 2016年5月17日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServerBeatTask implements TimerTask {
-    protected Logger          logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
     private InitServerManager initServerManager;
     @Override

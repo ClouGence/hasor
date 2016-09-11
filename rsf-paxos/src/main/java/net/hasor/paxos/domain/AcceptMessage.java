@@ -13,21 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.center.master;
-import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import net.hasor.core.Hasor;
-import net.hasor.rsf.center.server.core.RsfCenterServerModule;
+package net.hasor.paxos.domain;
 /**
- * 集群模式
- * @version : 2015年8月13日
+ * 决议
+ * @version : 2016年09月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TestServerMasterA {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    public static void main(String[] args) throws IOException {
-        Hasor.createAppContext("/center/rsf-server-master-a.xml", new RsfCenterServerModule());
-        System.in.read();
+public class AcceptMessage {
+    private ProposalID proposalID;  // 提案ID
+    private String     dataSnapshot;// 数据快照
+    //
+    public ProposalID getProposalID() {
+        return proposalID;
+    }
+    public void setProposalID(ProposalID proposalID) {
+        this.proposalID = proposalID;
+    }
+    public String getDataSnapshot() {
+        return dataSnapshot;
+    }
+    public void setDataSnapshot(String dataSnapshot) {
+        this.dataSnapshot = dataSnapshot;
     }
 }

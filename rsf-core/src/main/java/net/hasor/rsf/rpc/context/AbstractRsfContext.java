@@ -22,7 +22,6 @@ import net.hasor.rsf.*;
 import net.hasor.rsf.address.DiskCacheAddressPool;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.rsf.domain.provider.AddressProvider;
 import net.hasor.rsf.domain.provider.InstanceAddressProvider;

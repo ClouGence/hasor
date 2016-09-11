@@ -13,21 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.center.master;
-import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package test.net.hasor.rsf;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.center.server.core.RsfCenterServerModule;
+import net.hasor.rsf.RsfBinder;
+import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.RsfModule;
 /**
- * 集群模式
- * @version : 2015年8月13日
+ * 启动服务端
+ * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TestServerMasterA {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    public static void main(String[] args) throws IOException {
-        Hasor.createAppContext("/center/rsf-server-master-a.xml", new RsfCenterServerModule());
+public class ProviderServer {
+    public static void main(String[] args) throws Throwable {
+        //Server
+        Hasor.createAppContext("provider-config.xml", new RsfModule() {
+            @Override
+            public void loadRsf(RsfContext rsfContext) throws Throwable {
+                RsfBinder rsfBinder = rsfContext.binder();
+            }
+        });
+        //
+        System.out.println("server start.");
         System.in.read();
     }
 }

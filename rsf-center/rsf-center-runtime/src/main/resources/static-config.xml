@@ -5,7 +5,7 @@
         <!-- 包扫描路径 -->
         <loadPackages>net.hasor.rsf.center.server.*</loadPackages>
         <!-- 程序启动入口 -->
-        <startup>net.hasor.rsf.center.server.startup.RsfCenterServerModule</startup>
+        <startup>net.hasor.rsf.center.server.core.RsfCenterServerModule</startup>
 
         <!-- RSF框架环境变量 -->
         <environmentVar>
@@ -24,7 +24,6 @@
                         cluster 集群模式，基数台机器
     -->
     <rsfCenter workAt="${RSF_CENTER_WORK_MODE}">
-
         <!--
             Center工作在集群模式下的时候,集群的机器列表
                 注意:集群中每台机器的对应clusterServers配置都应相同,center在启动时会进行检测
