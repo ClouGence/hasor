@@ -83,8 +83,8 @@ public class EnvironmentWrap implements Environment {
         this.getEnvironment().addEnvVar(varName, value);
     }
     @Override
-    public void remoteEnvVar(String varName) {
-        this.getEnvironment().remoteEnvVar(varName);
+    public void removeEnvVar(String varName) {
+        this.getEnvironment().removeEnvVar(varName);
     }
     @Override
     public void refreshVariables() {

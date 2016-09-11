@@ -107,7 +107,7 @@ public interface Environment {
      * 删除环境变量，该方法从内部Map删除所保存的环境变量，这样做的目的是为了避免影响JVM正常运行。
      * @param varName 环境变量名。
      */
-    public void remoteEnvVar(String varName);
+    public void removeEnvVar(String varName);
 
     /**刷新加载的环境变量*/
     public void refreshVariables();

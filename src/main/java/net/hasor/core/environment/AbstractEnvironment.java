@@ -216,7 +216,7 @@ public abstract class AbstractEnvironment implements Environment {
         this.envMap.put(varName.toUpperCase(), StringUtils.isBlank(varName) ? "" : value);
     }
     @Override
-    public void remoteEnvVar(final String varName) {
+    public void removeEnvVar(final String varName) {
         if (StringUtils.isBlank(varName)) {
             return;
         }
