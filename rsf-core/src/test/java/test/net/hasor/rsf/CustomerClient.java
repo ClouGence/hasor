@@ -32,7 +32,7 @@ public class CustomerClient {
             @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {
                 RsfBinder rsfBinder = rsfContext.binder();
-                InterAddress local = new InterAddress("rsf://127.0.0.1:8100/default");
+                InterAddress local = new InterAddress("rsf://127.0.0.1:2180/default");
                 rsfBinder.rsfService(EchoService.class).bindAddress(local).register();
                 rsfBinder.rsfService(MessageService.class).bindAddress(local).register();
             }
@@ -47,6 +47,7 @@ public class CustomerClient {
                 String res = echoService.sayHello("Hello Word for Invoker");
                 System.out.println("invoker -> " + res);
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         //
@@ -56,6 +57,7 @@ public class CustomerClient {
                 RsfResult res = messageService.sayHello("Hello Word for Message.");
                 System.out.println("message -> " + res.isSuccess());
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

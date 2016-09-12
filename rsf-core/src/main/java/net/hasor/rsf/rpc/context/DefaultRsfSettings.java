@@ -64,6 +64,7 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private   InterAddress[]  centerServerSet       = new InterAddress[0];
     private   int             centerRsfTimeout      = 6000;
     private   int             centerHeartbeatTime   = 15000;
+    private   boolean         enableCenter          = false;
     //
     private   int             consolePort           = 2181;
     private   String[]        consoleInBound        = null;
@@ -77,7 +78,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private   long            refreshCacheTime      = 360000;
     private   boolean         localDiskCache        = true;
     private   long            diskCacheTimeInterval = 3600000;
-    private   boolean         enableCenter          = false;
     private   boolean         automaticOnline       = true;
     private   String          wrapperType           = null;
     //

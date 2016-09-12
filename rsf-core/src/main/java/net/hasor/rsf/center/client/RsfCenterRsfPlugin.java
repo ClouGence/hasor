@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.client;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.EventContext;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfContext;
@@ -24,6 +22,8 @@ import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.RsfCenterRegister;
 import net.hasor.rsf.domain.RsfEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 注册中心插件
  * @version : 2016年2月18日

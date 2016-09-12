@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 package net.hasor.rsf.domain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  *
  * @version : 2014年11月17日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfRuntimeUtils {
-    protected static Logger                          logger      = LoggerFactory.getLogger(RsfRuntimeUtils.class);
-    private static   AtomicLong                      requestID   = new AtomicLong(1);
-    private static   ConcurrentMap<String, Class<?>> classCache  = new ConcurrentHashMap<String, Class<?>>();
-    private static   ConcurrentMap<Integer, Method>  methodCache = new ConcurrentHashMap<Integer, Method>();
+    protected static Logger                                                 logger      = LoggerFactory.getLogger(RsfRuntimeUtils.class);
+    private static   AtomicLong                                             requestID   = new AtomicLong(1);
+    private static   ConcurrentMap<String, Class<?>>                        classCache  = new ConcurrentHashMap<String, Class<?>>();
+    private static   ConcurrentMap<Class<?>, ConcurrentMap<String, Method>> methodCache = new ConcurrentHashMap<Class<?>, ConcurrentMap<String, Method>>();
     //
     //
     /**生成一个新的RequestID*/
@@ -115,13 +114,27 @@ public class RsfRuntimeUtils {
     }
     //
     public static Method getServiceMethod(Class<?> serviceType, String methodName, Class<?>[] parameterTypes) {
-        int hashCode = Arrays.hashCode(parameterTypes);
-        hashCode = 31 * hashCode + methodName.hashCode();
-        Method method = methodCache.get(hashCode);
+        StringBuilder oriStr = new StringBuilder(methodName);
+        if (parameterTypes != null) {
+            for (Class<?> paramType : parameterTypes) {
+                oriStr.append(paramType.getName());
+            }
+        }
+        ConcurrentMap<String, Method> methodMap = methodCache.get(serviceType);
+        if (methodMap == null) {
+            ConcurrentMap<String, Method> newMethodMap = new ConcurrentHashMap<String, Method>();
+            methodMap = methodCache.putIfAbsent(serviceType, newMethodMap);
+            if (methodMap == null) {
+                methodMap = newMethodMap;
+            }
+        }
+        //
+        String finalStr = oriStr.toString();
+        Method method = methodMap.get(finalStr);
         if (method == null) {
             try {
                 Method newMethod = serviceType.getMethod(methodName, parameterTypes);
-                method = methodCache.putIfAbsent(hashCode, newMethod);
+                method = methodMap.putIfAbsent(finalStr, newMethod);
                 if (method == null) {
                     method = newMethod;
                 }

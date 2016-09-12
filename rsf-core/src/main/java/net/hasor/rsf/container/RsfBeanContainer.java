@@ -212,8 +212,10 @@ public class RsfBeanContainer {
     public <T> RegisterReference<T> publishService(ServiceInfo<T> serviceDefine) {
         String serviceID = serviceDefine.getDomain().getBindID();
         if (this.serviceMap.containsKey(serviceID)) {
-            this.logger.error("service {} is exist.", serviceID);
-            throw new RepeateException("service " + serviceID + " is exist.");
+            String serviceType = this.serviceMap.get(serviceID).getDomain().getServiceType().name();
+            String logMessage = "a " + serviceType + " of the same name already exists , serviceID -> " + serviceID;
+            this.logger.error(logMessage);
+            throw new RepeateException(logMessage);
         }
         this.logger.info("service to public, id= {}", serviceID);
         ServiceInfo<?> info = this.serviceMap.putIfAbsent(serviceID, serviceDefine);
