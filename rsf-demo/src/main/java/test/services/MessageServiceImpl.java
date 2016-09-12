@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.center.slave;
-import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import net.hasor.core.Hasor;
-import net.hasor.rsf.center.server.core.RsfCenterServerModule;
+package test.services;
+import net.hasor.rsf.RsfResult;
 /**
- * 从属模式
- * @version : 2015年8月13日
+ * 服务实现
+ * @version : 2015年11月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TestServerSlaveB {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    public static void main(String[] args) throws IOException {
-        Hasor.createAppContext("/center/rsf-server-slave-b.xml", new RsfCenterServerModule());
-        System.in.read();
+public class MessageServiceImpl implements MessageService {
+    @Override
+    public RsfResult sayHello(String echo) throws InterruptedException {
+        Thread.sleep(500);
+        System.out.println("server : " + echo);
+        return null;
     }
 }

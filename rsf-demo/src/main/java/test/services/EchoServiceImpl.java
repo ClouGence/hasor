@@ -21,7 +21,9 @@ package test.services;
  */
 public class EchoServiceImpl implements EchoService {
     @Override
-    public String sayHello(String echo) {
+    public String sayHello(String echo) throws InterruptedException {
+        Thread.sleep(100);
+        System.out.println("server : " + echo);
         return "you say " + echo;
     }
 }

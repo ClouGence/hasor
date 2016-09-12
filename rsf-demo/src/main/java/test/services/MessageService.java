@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.share;
-import net.hasor.rsf.RsfService;
-import net.hasor.rsf.center.server.push.PushEvent;
+package test.services;
+import net.hasor.rsf.RsfMessage;
+import net.hasor.rsf.RsfResult;
 /**
- * 注册中心之间分享事件的远程接口。
- * @version : 2016年4月11日
+ * 消息接口
+ * @version : 2015年11月27日
  * @author 赵永春(zyc@hasor.net)
  */
-@RsfService(group = "RSF", version = "1.0.0")
-public interface ShareEventListener {
-    /**分享事件*/
-    public boolean receiveShareEvent(PushEvent eventData);
+@RsfMessage
+public interface MessageService {
+    public RsfResult sayHello(String echo) throws InterruptedException;
 }

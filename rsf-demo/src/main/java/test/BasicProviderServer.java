@@ -19,18 +19,21 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfModule;
 import test.services.EchoService;
 import test.services.EchoServiceImpl;
+import test.services.MessageService;
+import test.services.MessageServiceImpl;
 /**
  * 启动服务端
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ProviderServer {
+public class BasicProviderServer {
     public static void main(String[] args) throws Throwable {
         //Server
-        Hasor.createAppContext("provider-config.xml", new RsfModule() {
+        Hasor.createAppContext("provider-config-basic.xml", new RsfModule() {
             @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {
                 rsfContext.binder().rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
+                rsfContext.binder().rsfService(MessageService.class).toInstance(new MessageServiceImpl()).register();
             }
         });
         //

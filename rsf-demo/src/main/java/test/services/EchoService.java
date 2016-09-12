@@ -20,5 +20,5 @@ package test.services;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface EchoService {
-    public String sayHello(String echo);
+    public String sayHello(String echo) throws InterruptedException;
 }
