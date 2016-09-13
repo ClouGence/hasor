@@ -42,4 +42,10 @@ public interface BindInfo<T> {
      * @param value 元信息值
      */
     public void setMetaData(String key, Object value);
+
+    /**
+     * 删除元数据
+     * @param key 元信息 key
+     */
+    public void removeMetaData(String key);
 }

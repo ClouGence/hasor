@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
-import java.util.HashMap;
-import java.util.Map;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
+
+import java.util.HashMap;
+import java.util.Map;
 /**
  * 提供metaData。
  * @version : 2014年7月3日
@@ -30,6 +31,9 @@ public class MetaDataAdapter {
     }
     public Object getMetaData(final String key) {
         return this.metaData.get(key);
+    }
+    public void removeMetaData(String key) {
+        this.metaData.remove(key);
     }
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
