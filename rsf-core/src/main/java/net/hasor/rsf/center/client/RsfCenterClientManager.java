@@ -47,7 +47,6 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
     public static final String CenterUpdate_Event = "CenterUpdate_Event";
     protected           Logger logger             = LoggerFactory.getLogger(getClass());
     private final RsfContext                            rsfContext;
-    private final String                                hostString;
     private final TimerManager                          timerManager;
     private final RsfCenterRegister                     centerRegister;
     private final ConcurrentMap<String, RsfBindInfo<?>> serviceMap;
@@ -55,7 +54,6 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
     public RsfCenterClientManager(RsfContext rsfContext) {
         rsfContext.getAppContext().getEnvironment().getEventContext().addListener(CenterUpdate_Event, this);
         this.rsfContext = rsfContext;
-        this.hostString = rsfContext.bindAddress().toHostSchema();
         this.timerManager = new TimerManager(rsfContext.getSettings().getCenterHeartbeatTime(), "RsfCenterBeatTimer");
         this.centerRegister = rsfContext.getRsfClient().wrapper(RsfCenterRegister.class);
         this.serviceMap = new ConcurrentHashMap<String, RsfBindInfo<?>>();
@@ -134,8 +132,8 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         }
     }
     private void offlineService(RsfBindInfo<?> domain) {
-        String registerID = (String) domain.getMetaData(RsfConstants.Center_Ticket);
         String serviceID = domain.getBindID();
+        String registerID = (String) domain.getMetaData(RsfConstants.Center_Ticket);
         try {
             //
             // .解除服务注册
@@ -144,7 +142,7 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
                 return;
             }
             //
-            RsfCenterResult<Boolean> result = this.centerRegister.unRegister(this.hostString, registerID, serviceID);
+            RsfCenterResult<Boolean> result = this.centerRegister.unRegister(registerID, serviceID);
             if (result != null && result.isSuccess()) {
                 logger.info("deleteService -> complete.", serviceID);
             } else {
@@ -188,7 +186,7 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
                 String serviceID = domain.getBindID();
                 String registerID = (String) domain.getMetaData(RsfConstants.Center_Ticket);
                 try {
-                    RsfCenterResult<Boolean> beatResult = this.centerRegister.serviceBeat(this.hostString, registerID, serviceID);
+                    RsfCenterResult<Boolean> beatResult = this.centerRegister.serviceBeat(registerID, serviceID);
                     if (beatResult == null || !beatResult.isSuccess()) {
                         needRepair.add(domain);
                         if (beatResult == null) {
@@ -221,13 +219,13 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
                 //
                 ProviderPublishInfo info = fillTo(domain, new ProviderPublishInfo());
                 info.setQueueMaxSize(this.rsfContext.getSettings().getQueueMaxSize());
-                registerInfo = this.centerRegister.registerProvider(this.hostString, info);
+                registerInfo = this.centerRegister.registerProvider(info);
                 logger.info("publishService service {} register to center -> {}", domain.getBindID(), registerInfo);
             } else if (RsfServiceType.Consumer == domain.getServiceType()) {
                 //
                 ConsumerPublishInfo info = fillTo(domain, new ConsumerPublishInfo());
                 info.setClientMaximumRequest(this.rsfContext.getSettings().getMaximumRequest());
-                registerInfo = this.centerRegister.registerConsumer(this.hostString, info);
+                registerInfo = this.centerRegister.registerConsumer(info);
                 logger.info("receiveService service {} register to center -> {}", domain.getBindID(), registerInfo);
             }
             //
@@ -249,14 +247,15 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
     private void pullAddress(RsfBindInfo<?> domain) {
         // .拉地址3次尝试
         String serviceID = domain.getBindID();
+        String registerID = (String) domain.getMetaData(RsfConstants.Center_Ticket);
         logger.info("pullAddress '{}' 1st.", serviceID);
-        RsfCenterResult<List<String>> providerResult = this.centerRegister.pullProviders(this.hostString, serviceID);
+        RsfCenterResult<List<String>> providerResult = this.centerRegister.pullProviders(registerID, serviceID);
         if (providerResult == null || !providerResult.isSuccess()) {
             logger.warn("pullAddress '{}' 2st.", serviceID);
-            providerResult = this.centerRegister.pullProviders(this.hostString, serviceID);
+            providerResult = this.centerRegister.pullProviders(registerID, serviceID);
             if (providerResult == null || !providerResult.isSuccess()) {
                 logger.error("pullAddress '{}' 3st.", serviceID);
-                providerResult = this.centerRegister.pullProviders(this.hostString, serviceID);
+                providerResult = this.centerRegister.pullProviders(registerID, serviceID);
             }
         }
         //
@@ -268,7 +267,7 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
                         serviceID, providerResult.getErrorCode(), providerResult.getErrorMessage());
             }
             logger.info("pullAddress {} failed try async request pullProviders.", serviceID);
-            RsfCenterResult<Boolean> result = this.centerRegister.requestPushProviders(this.hostString, serviceID);
+            RsfCenterResult<Boolean> result = this.centerRegister.requestPushProviders(registerID, serviceID);
             if (result == null || !result.isSuccess()) {
                 if (result == null) {
                     logger.error("asyncPullAddress {} failed -> result is null.", serviceID);
