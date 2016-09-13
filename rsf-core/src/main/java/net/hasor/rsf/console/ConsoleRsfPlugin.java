@@ -52,6 +52,25 @@ public class ConsoleRsfPlugin implements RsfPlugin, Module {
     private          EventLoopGroup workerGroup   = null;
     //
     @Override
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
+        final Set<Class<?>> rsfCommandSet = new HashSet<Class<?>>(apiBinder.getEnvironment().findClass(RsfCommand.class));
+        rsfCommandSet.remove(RsfCommand.class);
+        if (rsfCommandSet.isEmpty()) {
+            if (logger.isWarnEnabled()) {
+                logger.warn("event -> init failed , not found any @RsfCommand.");
+            }
+            return;
+        }
+        for (final Class<?> commandClass : rsfCommandSet) {
+            if (commandClass == RsfCommand.class || !RsfInstruct.class.isAssignableFrom(commandClass)) {
+                continue;
+            }
+            logger.info("rsf console -> new order {}.", commandClass);
+            apiBinder.bindType(RsfInstruct.class).uniqueName().to((Class<? extends RsfInstruct>) commandClass);
+        }
+        //
+    }
+    @Override
     public void loadRsf(RsfContext rsfContext) throws Throwable {
         //1.初始化常量配置。
         this.workerGroup = new NioEventLoopGroup(1, new NameThreadFactory("RSF-Console"));
@@ -100,25 +119,6 @@ public class ConsoleRsfPlugin implements RsfPlugin, Module {
         if (this.workerGroup != null) {
             logger.info("console shutdown.");
             this.workerGroup.shutdownGracefully();
-        }
-    }
-    @Override
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
-        final Set<Class<?>> rsfCommandSet = new HashSet<Class<?>>(apiBinder.getEnvironment().findClass(RsfCommand.class));
-        rsfCommandSet.remove(RsfCommand.class);
-        //
-        if (rsfCommandSet.isEmpty()) {
-            if (logger.isWarnEnabled()) {
-                logger.warn("event -> init failed , not found any @RsfCommand.");
-            }
-            return;
-        }
-        for (final Class<?> commandClass : rsfCommandSet) {
-            if (commandClass == RsfCommand.class || !RsfInstruct.class.isAssignableFrom(commandClass)) {
-                continue;
-            }
-            logger.info("rsf console -> new order {}.", commandClass);
-            apiBinder.bindType(RsfInstruct.class).uniqueName().to((Class<? extends RsfInstruct>) commandClass);
         }
     }
 }

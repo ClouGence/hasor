@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RsfCenterRsfPlugin implements RsfPlugin {
     protected static Logger logger = LoggerFactory.getLogger(RsfCenterRsfPlugin.class);
+    //
     @Override
     public void loadRsf(RsfContext rsfContext) throws Throwable {
         boolean enable = rsfContext.getSettings().isEnableCenter();

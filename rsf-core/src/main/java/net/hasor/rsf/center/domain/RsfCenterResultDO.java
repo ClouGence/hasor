@@ -13,14 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center;
-import net.hasor.rsf.RsfResult;
+package net.hasor.rsf.center.domain;
+import net.hasor.rsf.center.RsfCenterResult;
+import net.hasor.rsf.domain.RsfResultDO;
 /**
- * 消息发送的返回值。
- * @version : 2015年1月8日
+ * 结果
+ * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfCenterResult<T> extends RsfResult {
-    /***/
-    public T getResult();
+public class RsfCenterResultDO<T> extends RsfResultDO implements RsfCenterResult<T> {
+    private static final long serialVersionUID = -4678893554960623786L;
+    private              T    result           = null;
+    //
+    @Override
+    public T getResult() {
+        return this.result;
+    }
+    public void setResult(T result) {
+        this.result = result;
+    }
 }

@@ -43,7 +43,8 @@ public interface RsfBinder {
 
     /**
      * 绑定一个类型到RSF环境。
-     * @param type 服务类型
+     * @param type 服务类型 
+     *
      * @return 返回细粒度绑定操作接口 - {@link LinkedBuilder}
      */
     public <T> LinkedBuilder<T> rsfService(Class<T> type);

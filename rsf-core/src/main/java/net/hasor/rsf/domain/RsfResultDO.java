@@ -22,13 +22,15 @@ import net.hasor.rsf.RsfResult;
  */
 public class RsfResultDO implements RsfResult {
     private static final long serialVersionUID = -4678893554960623786L;
-    private final long    requestID;
-    private final boolean success;
+    private long    messageID;
+    private boolean success;
     private int    errorCode    = 0;
     private String errorMessage = "";
     //
-    public RsfResultDO(long requestID, boolean success) {
-        this.requestID = requestID;
+    public RsfResultDO() {
+    }
+    public RsfResultDO(long messageID, boolean success) {
+        this.messageID = messageID;
         this.success = success;
     }
     //
@@ -36,9 +38,15 @@ public class RsfResultDO implements RsfResult {
     public boolean isSuccess() {
         return this.success;
     }
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
     @Override
     public long getMessageID() {
-        return this.requestID;
+        return this.messageID;
+    }
+    public void setMessageID(long messageID) {
+        this.messageID = messageID;
     }
     @Override
     public int getErrorCode() {
