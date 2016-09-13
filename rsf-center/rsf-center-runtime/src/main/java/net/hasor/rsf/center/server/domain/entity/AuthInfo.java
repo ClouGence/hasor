@@ -14,39 +14,33 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.domain.entity;
+import java.util.Date;
 /**
- * 应用
+ * 授权信息
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class AppDO {
-    private long   id;       // 应用ID（PK，自增）
-    private String appName;  // 应用名称
-    private String appCode;  // 应用Code（唯一）
-    private String authCode; // 授权码
+public class AuthInfo {
+    private String appKey       = null; // Key
+    private String appKeySecret = null; // Key秘钥
+    private Date   expireTime   = null; // 过期时间
     //
-    public long getId() {
-        return id;
+    public String getAppKey() {
+        return appKey;
     }
-    public void setId(long id) {
-        this.id = id;
+    public void setAppKey(String appKey) {
+        this.appKey = appKey;
     }
-    public String getAppName() {
-        return appName;
+    public String getAppKeySecret() {
+        return appKeySecret;
     }
-    public void setAppName(String appName) {
-        this.appName = appName;
+    public void setAppKeySecret(String appKeySecret) {
+        this.appKeySecret = appKeySecret;
     }
-    public String getAppCode() {
-        return appCode;
+    public Date getExpireTime() {
+        return expireTime;
     }
-    public void setAppCode(String appCode) {
-        this.appCode = appCode;
-    }
-    public String getAuthCode() {
-        return authCode;
-    }
-    public void setAuthCode(String authCode) {
-        this.authCode = authCode;
+    public void setExpireTime(Date expireTime) {
+        this.expireTime = expireTime;
     }
 }

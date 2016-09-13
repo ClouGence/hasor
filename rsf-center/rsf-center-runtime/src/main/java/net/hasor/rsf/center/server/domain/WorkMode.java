@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * 工作模式
- * 
+ *
  * @version : 2015年7月3日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -26,15 +26,17 @@ public enum WorkMode {
     /** 0，单机模式 */
     Alone(0, "alone", "单机模式"),
     /** 1，集群模式 */
-    Master(1, "master", "集群主机模式"),;
+    Master(1, "master", "集群主机模式"),
+    /** 1，集群模式 */
+    Follow(1, "follow", "集群丛属,永远不会被选为Leader"),;
     //
     //
     //
     // ---------------------------------------------
     private static Logger logger = LoggerFactory.getLogger(WorkMode.class);
-    private int           codeType;
-    private String        codeString;
-    private String        message;
+    private int    codeType;
+    private String codeString;
+    private String message;
     WorkMode(int codeType, String codeString, String message) {
         this.codeType = codeType;
         this.codeString = codeString;
