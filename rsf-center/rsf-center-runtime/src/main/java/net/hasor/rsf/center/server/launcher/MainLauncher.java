@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.startup.launcher;
-import net.hasor.core.AppContext;
-import net.hasor.core.EventListener;
-import net.hasor.core.Hasor;
+package net.hasor.rsf.center.server.launcher;
+import net.hasor.core.*;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.console.launcher.TelnetClient;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
@@ -38,6 +36,7 @@ import java.util.List;
  */
 public class MainLauncher {
     protected static Logger logger = LoggerFactory.getLogger(MainLauncher.class);
+    //
     public static void main(String[] args, ClassWorld world) throws Throwable {
         logger.info(">>>>>>>>>>>>>>>>> MainLauncher <<<<<<<<<<<<<<<<<");
         String action = args[0];
@@ -55,7 +54,12 @@ public class MainLauncher {
         logger.info(">>>>>>>>>>>>>>>>> doStart <<<<<<<<<<<<<<<<<");
         final BasicFuture<Object> future = new BasicFuture<Object>();
         final String config = args[1];
-        AppContext app = Hasor.createAppContext(new File(config));
+        AppContext app = Hasor.createAppContext(new File(config), new Module() {
+            public void loadModule(ApiBinder apiBinder) throws Throwable {
+                //仍一个标记类,通过这个标记类可以判断是否以MainLauncher方式启动
+                apiBinder.bindType(MainLauncherBean.class, new MainLauncherBean(true));
+            }
+        });
         app.getEnvironment().getEventContext().addListener(AppContext.ContextEvent_Shutdown, new EventListener<AppContext>() {
             public void onEvent(String event, AppContext eventData) throws Throwable {
                 future.completed(new Object());//to end

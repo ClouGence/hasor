@@ -16,4 +16,4 @@
 /**
  * main方法方式启动RsfCenter的控制台启动器。
  */
-package net.hasor.rsf.center.server.startup.launcher;
+package net.hasor.rsf.center.server.launcher;

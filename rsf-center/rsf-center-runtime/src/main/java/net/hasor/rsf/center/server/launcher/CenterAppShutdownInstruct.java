@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.startup.launcher;
+package net.hasor.rsf.center.server.launcher;
 import net.hasor.core.AppContext;
 import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
@@ -38,6 +38,12 @@ public class CenterAppShutdownInstruct implements RsfInstruct {
     }
     @Override
     public String doCommand(RsfCommandRequest request) throws Throwable {
+        // .危险操作,只有 launcher 形式启动的时候才可以用
+        MainLauncherBean launcherBean = request.getRsfContext().getAppContext().getInstance(MainLauncherBean.class);
+        if (!launcherBean.isStartOnLauncher()) {
+            return "mMust be started for MainLauncher.";
+        }
+        //
         logger.error("A valid shutdown command was received via the shutdown port. Stopping the Server instance.");
         request.writeMessageLine("detail Message:");
         int i = 5;

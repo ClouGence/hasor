@@ -4,7 +4,7 @@
     <hasor>
         <!-- 包扫描路径 -->
         <loadPackages>net.hasor.rsf.center.server.*</loadPackages>
-        <!-- 程序启动入口 -->
+        <!-- RSF-Center 启动入口 -->
         <startup>net.hasor.rsf.center.server.core.RsfCenterServerModule</startup>
 
         <!-- RSF框架环境变量 -->
