@@ -53,8 +53,13 @@
         -->
         <console port="${RSF_CONSOLE_PORT}" inBound="local,127.0.0.1"/>
 
-        <!--注册中心，用于更新服务列表的配置服务器 -->
-        <centerServers timeout="6000" heartbeatTime="15000" automaticOnline="true">
+        <!--
+            注册中心，用于更新服务列表的配置服务器
+                - timeout         : RSF 和 Center 之间发起远程调用超时时间(6秒)
+                - heartbeatTime   : 服务心跳时间(30秒)
+                - automaticOnline : RSF在启动之后是否自动转换为 online 状态。
+        -->
+        <centerServers timeout="6000" heartbeatTime="30000" automaticOnline="true">
             <server>${RSF_CENTER_URL}</server>
         </centerServers>
 
@@ -78,17 +83,20 @@
         -->
         <client defaultTimeout="6000" maximumRequest="200" sendLimitPolicy="Reject" connectTimeout="3000" wrapperType="proxy"/>
 
-        <!--处理队列配置（用于配置ExecutesManager）
-                maxSize     = 处理任务队列的最小大小，作为服务端当队列满了之后所有新进来的请求都会被回应 ChooseOther。
-                minPoolSize = the number of threads to keep in the pool, even if they are idle, unless allowCoreThreadTimeOut is set.
-                maxPoolSize = the maximum number of threads to allow in the pool. keepAliveTime(SECONDS) when the number of threads is greater than the core, 
+        <!--
+            处理队列配置（用于配置ExecutesManager）
+                - maxSize       : 处理任务队列的最小大小，作为服务端当队列满了之后所有新进来的请求都会被回应 ChooseOther。
+                - minPoolSize   : the number of threads to keep in the pool, even if they are idle, unless allowCoreThreadTimeOut is set.
+                - maxPoolSize   : the maximum number of threads to allow in the pool. keepAliveTime(SECONDS) when the number of threads is greater than the core, 
                               this is the maximum time that excess idle threads will wait for new tasks before terminating.
+                - keepAliveTime : 
         -->
         <queue maxSize="4096" minPoolSize="1" maxPoolSize="4" keepAliveTime="300"/>
 
-        <!--网络数据包线程配置
-                workerThread ＝ 处理网络IO数据包的线程数。
-                listenThread ＝ 处理网络监听请求的线程数。
+        <!--
+            网络数据包线程配置
+                workerThread : 处理网络IO数据包的线程数。
+                listenThread : 处理网络监听请求的线程数。
         -->
         <network workerThread="8" listenThread="1"/>
 
@@ -134,7 +142,7 @@
             <argsKey>net.hasor.rsf.address.route.rule.DefaultArgsKey</argsKey>
         </route>
 
-        <!-- 地址本 -->
+        <!-- 地址管理 -->
         <addressPool>
             <!-- 启用磁盘地址本缓存，在refreshCacheTime期间每隔1小时自动写入一次。（被回收的服务不享受此待遇） -->
             <localDiskCache>true</localDiskCache>

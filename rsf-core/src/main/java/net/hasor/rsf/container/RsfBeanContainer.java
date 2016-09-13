@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.container;
-import net.hasor.core.AppContext;
 import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
 import net.hasor.rsf.*;
 import net.hasor.rsf.RsfBinder.RegisterReference;
-import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.rsf.domain.RsfException;
@@ -48,7 +46,6 @@ public class RsfBeanContainer {
     private final Object                                       filterLock;
     private final RsfEnvironment                               environment;
     private final ConcurrentMap<String, Provider<RsfFilter>[]> filterCache;
-    private       AppContext                                   appContext;
     //
     public RsfBeanContainer(RsfEnvironment rsfEnvironment) {
         this.serviceMap = new ConcurrentHashMap<String, ServiceInfo<?>>();
@@ -56,12 +53,6 @@ public class RsfBeanContainer {
         this.filterLock = new Object();
         this.environment = rsfEnvironment;
         this.filterCache = new ConcurrentHashMap<String, Provider<RsfFilter>[]>();
-    }
-    public void setAppContext(AppContext appContext) {
-        this.appContext = appContext;
-    }
-    public AppContext getAppContext() {
-        return appContext;
     }
     //
     /**
@@ -246,37 +237,39 @@ public class RsfBeanContainer {
         return false;
     }
     /**创建{@link RsfBinder}。*/
-    public RsfBinder createBinder(final AddressPool pool) {
+    public RsfBinder createBinder(final RsfBeanContainer container, final RsfContext rsfContext) {
         return new RsfBindBuilder() {
             @Override
             protected RsfBeanContainer getContainer() {
-                return RsfBeanContainer.this;
+                return container;
             }
             @Override
-            protected AddressPool getAddressPool() {
-                return pool;
+            protected RsfContext getRsfContext() {
+                return rsfContext;
             }
         };
     }
-}
-class RegisterReferenceInfoWrap<T> extends RsfBindInfoWrap<T> implements RegisterReference<T> {
-    private RsfBeanContainer rsfContainer;
-    private ServiceInfo<T>   serviceInfo;
-    public RegisterReferenceInfoWrap(RsfBeanContainer rsfContainer, ServiceInfo<T> serviceInfo) {
-        super(serviceInfo.getDomain());
-        this.rsfContainer = rsfContainer;
-        this.serviceInfo = serviceInfo;
-    }
-    @Override
-    public boolean unRegister() {
-        //
-        // .发布删除消息( 1.Center解除注册、2.地址本回收)
-        EventContext eventContext = this.rsfContainer.getEnvironment().getEventContext();
-        RsfBindInfo<?> rsfBindInfo = this.serviceInfo.getDomain();
-        eventContext.fireSyncEvent(RsfEvent.Rsf_DeleteService, rsfBindInfo);
-        //
-        // .回收服务
-        String serviceID = this.getBindID();
-        return this.rsfContainer.recoverService(serviceID);
+    //
+    //
+    private static class RegisterReferenceInfoWrap<T> extends RsfBindInfoWrap<T> implements RegisterReference<T> {
+        private RsfBeanContainer rsfContainer;
+        private ServiceInfo<T>   serviceInfo;
+        public RegisterReferenceInfoWrap(RsfBeanContainer rsfContainer, ServiceInfo<T> serviceInfo) {
+            super(serviceInfo.getDomain());
+            this.rsfContainer = rsfContainer;
+            this.serviceInfo = serviceInfo;
+        }
+        @Override
+        public boolean unRegister() {
+            //
+            // .发布删除消息( 1.Center解除注册、2.地址本回收)
+            EventContext eventContext = this.rsfContainer.getEnvironment().getEventContext();
+            RsfBindInfo<?> rsfBindInfo = this.serviceInfo.getDomain();
+            eventContext.fireSyncEvent(RsfEvent.Rsf_DeleteService, rsfBindInfo);
+            //
+            // .回收服务
+            String serviceID = this.getBindID();
+            return this.rsfContainer.recoverService(serviceID);
+        }
     }
 }

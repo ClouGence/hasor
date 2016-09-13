@@ -71,6 +71,10 @@ public class RsfBindInfoWrap<T> implements RsfBindInfo<T> {
         this.target.setMetaData(key, value);
     }
     @Override
+    public void removeMetaData(String key) {
+        this.target.removeMetaData(key);
+    }
+    @Override
     public String toString() {
         return "Wrap-" + this.target.toString();
     }

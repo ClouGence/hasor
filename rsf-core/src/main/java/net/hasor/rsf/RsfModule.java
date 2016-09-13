@@ -26,4 +26,10 @@ public abstract class RsfModule implements Module, RsfPlugin {
     public final void loadModule(ApiBinder apiBinder) throws Throwable {
         apiBinder.bindType(RsfPlugin.class).uniqueName().toInstance(this);
     }
+    /**
+     * 初始化过程。
+     * @param rsfContext
+     * @throws Throwable init异常抛出
+     */
+    public abstract void loadRsf(RsfContext rsfContext) throws Throwable;
 }

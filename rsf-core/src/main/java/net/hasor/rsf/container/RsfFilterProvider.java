@@ -13,21 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf.center.slave;
-import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import net.hasor.core.Hasor;
-import net.hasor.rsf.center.server.core.RsfCenterServerModule;
+package net.hasor.rsf.container;
+import net.hasor.core.AppContext;
+import net.hasor.core.Provider;
+import net.hasor.rsf.RsfFilter;
 /**
- * 从属模式
- * @version : 2015年8月13日
+ * RsfFilter的{@link Provider}封装形式。
+ * @version : 2014年7月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TestServerSlaveA {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    public static void main(String[] args) throws IOException {
-        Hasor.createAppContext("/center/rsf-server-slave-a.xml", new RsfCenterServerModule());
-        System.in.read();
+public class RsfFilterProvider implements Provider<RsfFilter> {
+    private Class<? extends RsfFilter> rsfFilterType;
+    private AppContext                 appContext;
+    //
+    public RsfFilterProvider(AppContext appContext, Class<? extends RsfFilter> rsfFilterType) {
+        this.appContext = appContext;
+        this.rsfFilterType = rsfFilterType;
+    }
+    public RsfFilter get() {
+        return this.appContext.getInstance(this.rsfFilterType);
     }
 }

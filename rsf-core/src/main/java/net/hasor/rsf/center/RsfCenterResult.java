@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.domain;
+package net.hasor.rsf.center;
+import java.io.Serializable;
 /**
- * 
- * @version : 2016年5月8日
+ * 消息发送的返回值。
+ * @version : 2015年1月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public enum RsfErrorCode {
-    /**/
-    Remove_TerminalTypeError(10, "注册方式不明确。"),
-    /**/
-    Beat_TerminalTypeError(10, "注册方式不明确。"),
-    /**/
-    ResultEmptyError(10, "result is empty."),;
-    //
-    RsfErrorCode(int type, String msgTemp) {}
-    public String getTemplate() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+public interface RsfCenterResult<T> extends Serializable {
+    /**返回操作是否成功。*/
+    public boolean isSuccess();
+
+    /**获取返回值。*/
+    public T getResult();
+
+    /**获取操作返回码。*/
+    public int getErrorCode();
+
+    /**获取操作状态描述。*/
+    public String getErrorMessage();
 }

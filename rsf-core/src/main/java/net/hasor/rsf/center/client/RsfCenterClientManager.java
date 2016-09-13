@@ -21,7 +21,11 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.RsfCenterRegister;
-import net.hasor.rsf.center.domain.*;
+import net.hasor.rsf.center.RsfCenterResult;
+import net.hasor.rsf.center.domain.CenterEventBody;
+import net.hasor.rsf.center.domain.ConsumerPublishInfo;
+import net.hasor.rsf.center.domain.ProviderPublishInfo;
+import net.hasor.rsf.center.domain.PublishInfo;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.utils.TimerManager;
@@ -30,8 +34,8 @@ import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 /**
@@ -76,7 +80,6 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
             }
         }
     }
-    //
     /**异步注册到注册中心*/
     public synchronized void newService(RsfBindInfo<?> domain, String eventType) {
         if (domain == null) {
@@ -101,7 +104,6 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
             this.offlineService(domain);//下线服务应用
         }
     }
-    //
     @Override
     public void run(Timeout timeout) {
         try {
@@ -113,7 +115,6 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         }
         timerManager.atTime(this);
     }
-    //
     public synchronized void online() {
         try {
             if (this.rsfContext.isOnline()) {
@@ -133,30 +134,31 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         }
     }
     private void offlineService(RsfBindInfo<?> domain) {
+        String registerID = (String) domain.getMetaData(RsfConstants.Center_Ticket);
+        String serviceID = domain.getBindID();
         try {
-            String serviceID = domain.getBindID();
-            if (StringUtils.isNotBlank(serviceID)) {
-                //从注册中心删除
-                Boolean res = null;
-                if (RsfServiceType.Provider == domain.getServiceType()) {
-                    res = this.centerRegister.removePublish(this.hostString, serviceID);
-                } else if (RsfServiceType.Consumer == domain.getServiceType()) {
-                    res = this.centerRegister.removeReceive(this.hostString, serviceID);
-                }
-                //打印Log
-                if (res != null && res) {
-                    logger.info("deleteService complete -> serviceID={} ,result={}", serviceID, res);
-                } else {
-                    logger.error("deleteService failed -> serviceID={} ,result={}", serviceID, res);
-                }
+            //
+            // .解除服务注册
+            if (StringUtils.isBlank(registerID)) {
+                logger.warn("deleteService -> service is not registered, serviceID={}", serviceID);
+                return;
+            }
+            //
+            RsfCenterResult<Boolean> result = this.centerRegister.unRegister(this.hostString, registerID, serviceID);
+            if (result != null && result.isSuccess()) {
+                logger.info("deleteService -> complete.", serviceID);
             } else {
-                logger.info("deleteService complete -> serviceID={}", serviceID);
+                if (result == null) {
+                    logger.error("deleteService -> failed , serviceID={} ,result is null.", serviceID);
+                } else {
+                    logger.error("deleteService -> failed , serviceID={} ,errorCode={} ,errorMessage={}.", //
+                            serviceID, result.getErrorCode(), result.getErrorMessage());
+                }
             }
         } catch (Exception e) {
-            logger.error("deleteService error -> serviceID={} ,error={}", domain.getBindID(), e.getMessage(), e);
+            logger.error("deleteService -> failed , serviceID={} ,error={}", domain.getBindID(), e.getMessage(), e);
         }
     }
-    //
     private void run() throws Exception {
         List<RsfBindInfo<?>> needBeat = new ArrayList<RsfBindInfo<?>>();//需要心跳
         List<RsfBindInfo<?>> needRegister = new ArrayList<RsfBindInfo<?>>();//需要注册
@@ -166,8 +168,8 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         List<RsfBindInfo<?>> iterator = new ArrayList<RsfBindInfo<?>>(this.serviceMap.values());
         for (RsfBindInfo<?> domain : iterator) {
             if (domain != null) {
-                String snapshotInfo = (String) domain.getMetaData(RsfConstants.Center_Ticket);
-                if (StringUtils.isEmpty(snapshotInfo)) {
+                String ticketInfo = (String) domain.getMetaData(RsfConstants.Center_Ticket);
+                if (StringUtils.isEmpty(ticketInfo)) {
                     needRegister.add(domain);//需要新注册
                 } else {
                     needBeat.add(domain);//服务需要进行心跳
@@ -177,170 +179,128 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         //
         //2.服务注册
         for (RsfBindInfo<?> domain : needRegister) {
-            try {
-                String snapshotInfo = null;
-                if (RsfServiceType.Provider == domain.getServiceType()) {
-                    //
-                    ProviderPublishInfo info = fillTo(domain, new ProviderPublishInfo());
-                    info.setQueueMaxSize(this.rsfContext.getSettings().getQueueMaxSize());
-                    snapshotInfo = this.centerRegister.publishService(this.hostString, info);
-                    logger.info("publishService service {} register to center -> {}", domain.getBindID(), snapshotInfo);
-                } else if (RsfServiceType.Consumer == domain.getServiceType()) {
-                    //
-                    ConsumerPublishInfo info = fillTo(domain, new ConsumerPublishInfo());
-                    info.setClientMaximumRequest(this.rsfContext.getSettings().getMaximumRequest());
-                    ReceiveResult receiveResult = this.centerRegister.receiveService(this.hostString, info);
-                    snapshotInfo = processResult(domain.getBindID(), receiveResult);
-                    logger.info("receiveService service {} register to center -> {}", domain.getBindID(), snapshotInfo);
-                }
-                if (StringUtils.isNotBlank(snapshotInfo)) {
-                    domain.setMetaData(RsfConstants.Center_Ticket, snapshotInfo);//更新远程信息
-                }
-            } catch (Exception e) {
-                logger.error("service {} register to center error-> {}", domain.getBindID(), e.getMessage());
-                logger.debug(e.getMessage(), e);
-            }
+            registerService(domain);
         }
         //
         //3.服务心跳
         if (!needBeat.isEmpty()) {
-            //-区分提供者和订阅者-
-            Map<String, RsfBindInfo<?>> beatAllMap = new HashMap<String, RsfBindInfo<?>>();
-            Map<String, String> beatPMap = new HashMap<String, String>();//提供者
-            Map<String, String> beatCMap = new HashMap<String, String>();//消费者
             for (RsfBindInfo<?> domain : needBeat) {
-                beatAllMap.put(domain.getBindID(), domain);
-                /*   */
-                String snapshotInfo = (String) domain.getMetaData(RsfConstants.Center_Ticket);
-                if (RsfServiceType.Consumer == domain.getServiceType()) {
-                    beatCMap.put(domain.getBindID(), snapshotInfo);//心跳的服务ID和其对应的centerMarkData建立一个Map
-                    //
-                } else if (RsfServiceType.Provider == domain.getServiceType()) {
-                    beatPMap.put(domain.getBindID(), snapshotInfo);//心跳的服务ID和其对应的centerMarkData建立一个Map
-                    //
-                }
-            }
-            //-提供者心跳-
-            try {
-                Map<String, Boolean> beatResult = this.centerRegister.publishServiceBeat(this.hostString, beatPMap);//进行服务心跳
-                if (beatResult != null && beatResult.size() == beatPMap.size()) {
-                    for (Entry<String, Boolean> beatEnt : beatResult.entrySet()) {
-                        Boolean val = beatEnt.getValue();
-                        if (val != null && val.equals(true)) {
-                            String key = beatEnt.getKey();
-                            beatAllMap.remove(key);//心跳被注册中心接受，从Map中删除
+                String serviceID = domain.getBindID();
+                String registerID = (String) domain.getMetaData(RsfConstants.Center_Ticket);
+                try {
+                    RsfCenterResult<Boolean> beatResult = this.centerRegister.serviceBeat(this.hostString, registerID, serviceID);
+                    if (beatResult == null || !beatResult.isSuccess()) {
+                        needRepair.add(domain);
+                        if (beatResult == null) {
+                            logger.error("serviceBeat failed -> beatResult is null , serviceID ={} ,registerID ={}", serviceID, registerID);
+                        } else {
+                            logger.error("serviceBeat failed -> error , serviceID ={} ,registerID ={} ,errorCode ={} ,errorMessage ={}", //
+                                    serviceID, registerID, beatResult.getErrorCode(), beatResult.getErrorMessage());
                         }
+                        continue;
                     }
-                    logger.info("publishServiceBeat complete ->{}", mapToLogmessage(beatResult));
-                } else {
-                    long realLength = (beatResult == null) ? 0 : beatResult.size();
-                    logger.info("publishServiceBeat failed->the beat return value length error ,expect {} but the actual is {}.", beatPMap.size(), realLength);
+                    //
+                    logger.info("serviceBeat complete -> serviceID ={} ,registerID ={}", serviceID, registerID);
+                } catch (Exception e) {
+                    logger.error("serviceBeat error -> serviceID ={} ,registerID ={} , error = {}", serviceID, registerID, e.getMessage(), e);
                 }
-            } catch (Exception e) {
-                logger.info("publishServiceBeat failed->services={} ,error={}", new Date(), mapToLogmessage(beatPMap), e.getMessage());
-                logger.debug(e.getMessage(), e);
             }
-            //-订阅者心跳-
-            try {
-                Map<String, Boolean> beatResult = this.centerRegister.receiveServiceBeat(this.hostString, beatCMap);//进行服务心跳
-                if (beatResult != null && beatResult.size() == beatCMap.size()) {
-                    for (Entry<String, Boolean> beatEnt : beatResult.entrySet()) {
-                        Boolean val = beatEnt.getValue();
-                        if (val != null && val.equals(true)) {
-                            String key = beatEnt.getKey();
-                            beatAllMap.remove(key);//心跳被注册中心接受，从Map中删除
-                        }
-                    }
-                    logger.info("receiveServiceBeat complete ->{}", mapToLogmessage(beatResult));
-                } else {
-                    long realLength = (beatResult == null) ? 0 : beatResult.size();
-                    logger.info("receiveServiceBeat failed->the beat return value length error ,expect {} but the actual is {}.", beatCMap.size(), realLength);
-                }
-            } catch (Exception e) {
-                logger.info("receiveServiceBeat failed->services={} ,error={}", new Date(), mapToLogmessage(beatCMap), e.getMessage());
-                logger.debug(e.getMessage(), e);
-            }
-            //
-            needRepair.addAll(beatAllMap.values());
         }
         //
         //4.重新注册服务
         for (RsfBindInfo<?> domain : needRepair) {
-            try {
-                String snapshotInfo = null;
-                /*   */
-                if (RsfServiceType.Provider == domain.getServiceType()) {
-                    ProviderPublishInfo info = fillTo(domain, new ProviderPublishInfo());
-                    info.setQueueMaxSize(this.rsfContext.getSettings().getQueueMaxSize());
-                    snapshotInfo = this.centerRegister.publishService(this.hostString, info);
-                    logger.info("repairPublishService service {} register to center -> {}", domain.getBindID(), snapshotInfo);
-                    //
-                } else if (RsfServiceType.Consumer == domain.getServiceType()) {
-                    ConsumerPublishInfo info = fillTo(domain, new ConsumerPublishInfo());
-                    info.setClientMaximumRequest(this.rsfContext.getSettings().getMaximumRequest());
-                    ReceiveResult receiveResult = this.centerRegister.receiveService(this.hostString, info);
-                    snapshotInfo = processResult(domain.getBindID(), receiveResult);
-                    logger.info("repairReceiveService service {} register to center -> {}", domain.getBindID(), snapshotInfo);
-                    //
+            domain.removeMetaData(RsfConstants.Center_Ticket);
+            registerService(domain);
+        }
+    }
+    private void registerService(RsfBindInfo<?> domain) {
+        try {
+            // .注册服务(提供者/消费者)
+            RsfCenterResult<String> registerInfo = null;
+            if (RsfServiceType.Provider == domain.getServiceType()) {
+                //
+                ProviderPublishInfo info = fillTo(domain, new ProviderPublishInfo());
+                info.setQueueMaxSize(this.rsfContext.getSettings().getQueueMaxSize());
+                registerInfo = this.centerRegister.registerProvider(this.hostString, info);
+                logger.info("publishService service {} register to center -> {}", domain.getBindID(), registerInfo);
+            } else if (RsfServiceType.Consumer == domain.getServiceType()) {
+                //
+                ConsumerPublishInfo info = fillTo(domain, new ConsumerPublishInfo());
+                info.setClientMaximumRequest(this.rsfContext.getSettings().getMaximumRequest());
+                registerInfo = this.centerRegister.registerConsumer(this.hostString, info);
+                logger.info("receiveService service {} register to center -> {}", domain.getBindID(), registerInfo);
+            }
+            //
+            // .保存Ticket
+            if (registerInfo != null && registerInfo.isSuccess()) {
+                String ticketInfo = registerInfo.getResult();
+                if (StringUtils.isNotBlank(ticketInfo)) {
+                    domain.setMetaData(RsfConstants.Center_Ticket, ticketInfo);
+                    pullAddress(domain);//更新地址池
                 }
-                if (StringUtils.isNotBlank(snapshotInfo)) {
-                    domain.setMetaData(RsfConstants.Center_Ticket, snapshotInfo);//更新远程信息
-                }
-            } catch (Exception e) {
-                logger.error("repairService service {} register to center error-> {}", domain.getBindID(), e.getMessage());
-                logger.debug(e.getMessage(), e);
+            }
+        } catch (Exception e) {
+            logger.error("service {} register to center error-> {}", domain.getBindID(), e.getMessage());
+            logger.debug(e.getMessage(), e);
+        }
+    }
+    //
+    /** 拉地址 */
+    private void pullAddress(RsfBindInfo<?> domain) {
+        // .拉地址3次尝试
+        String serviceID = domain.getBindID();
+        logger.info("pullAddress '{}' 1st.", serviceID);
+        RsfCenterResult<List<String>> providerResult = this.centerRegister.pullProviders(this.hostString, serviceID);
+        if (providerResult == null || !providerResult.isSuccess()) {
+            logger.warn("pullAddress '{}' 2st.", serviceID);
+            providerResult = this.centerRegister.pullProviders(this.hostString, serviceID);
+            if (providerResult == null || !providerResult.isSuccess()) {
+                logger.error("pullAddress '{}' 3st.", serviceID);
+                providerResult = this.centerRegister.pullProviders(this.hostString, serviceID);
             }
         }
         //
-    }
-    private String processResult(String serviceID, ReceiveResult receiveResult) {
-        //1.准备服务提供者列表
+        if (providerResult == null || !providerResult.isSuccess()) {
+            if (providerResult == null) {
+                logger.error("pullAddress {} failed at 3st. -> result is null.", serviceID);
+            } else {
+                logger.error("pullAddress {} failed at 3st. -> errorCode ={} ,errorMessage = {}", //
+                        serviceID, providerResult.getErrorCode(), providerResult.getErrorMessage());
+            }
+            logger.info("pullAddress {} failed try async request pullProviders.", serviceID);
+            RsfCenterResult<Boolean> result = this.centerRegister.requestPushProviders(this.hostString, serviceID);
+            if (result == null || !result.isSuccess()) {
+                if (result == null) {
+                    logger.error("asyncPullAddress {} failed -> result is null.", serviceID);
+                } else {
+                    logger.error("asyncPullAddress {} failed -> errorCode ={} ,errorMessage = {}", //
+                            serviceID, result.getErrorCode(), result.getErrorMessage());
+                }
+            } else {
+                logger.info("asyncPullAddress {} successful -> waiting for the center pull providers.", serviceID);
+            }
+            return;
+        }
+        //
+        // .准备服务提供者列表
+        List<String> providerList = providerResult.getResult();
         List<InterAddress> newHostSet = new ArrayList<InterAddress>();
-        List<String> providerList = receiveResult.getProviderList();
         if (providerList != null && !providerList.isEmpty()) {
             for (String providerAddress : providerList) {
                 try {
                     newHostSet.add(new InterAddress(providerAddress));
                 } catch (Throwable e) {
-                    logger.error("address '{}' formater error ->{}", providerAddress, e.getMessage());
+                    logger.error("pullAddress '" + providerAddress + "' formater error ->" + e.getMessage(), e);
                 }
             }
         }
-        //2.更新服务提供者地址列表
+        //
+        // .更新服务提供者地址列表
         try {
             this.rsfContext.getUpdater().appendAddress(serviceID, newHostSet);
         } catch (Throwable e) {
-            logger.error("appendAddress failed ,serviceID=" + serviceID + " ,message=" + e.getMessage(), e);
-            logger.debug(e.getMessage(), e);
+            logger.error("pullAddress -> appendAddress failed ,serviceID=" + serviceID + " ,message=" + e.getMessage(), e);
         }
-        //3.返回注册中心centerSnapshot
-        return receiveResult.getCenterSnapshot();
-    }
-    private String mapToLogmessage(Map<String, ?> result) {
-        if (result == null) {
-            return "null";
-        }
-        StringBuilder builder = new StringBuilder("");
-        builder.append("[");
-        int i = 0;
-        for (String key : result.keySet()) {
-            Object val = result.get(key);
-            if (i > 0) {
-                builder.append(", ");
-            }
-            builder.append("'");
-            builder.append(key);
-            if (val == null) {
-                builder.append("' : null");
-            } else {
-                builder.append("' : '");
-                builder.append(val);
-                builder.append("'");
-            }
-            i++;
-        }
-        builder.append("]");
-        return builder.toString();
     }
     private <T extends PublishInfo> T fillTo(RsfBindInfo<?> eventData, T info) {
         info.setBindID(eventData.getBindID());

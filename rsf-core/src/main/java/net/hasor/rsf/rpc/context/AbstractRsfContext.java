@@ -188,7 +188,7 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         return (Provider<T>) this.rsfBeanContainer.getProvider(bindInfo.getBindID());
     }
     public RsfBinder binder() {
-        return this.rsfBeanContainer.createBinder(this.addressPool);
+        return this.rsfBeanContainer.createBinder(this.rsfBeanContainer, this);
     }
     //
     //

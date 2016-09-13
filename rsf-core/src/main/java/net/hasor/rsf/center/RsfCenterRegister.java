@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center;
-import java.util.Map;
-
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.center.domain.ConsumerPublishInfo;
 import net.hasor.rsf.center.domain.ProviderPublishInfo;
-import net.hasor.rsf.center.domain.ReceiveResult;
+
+import java.util.List;
 /**
  * 服务发布接口，该接口需要远端注册中心实现
  * @version : 2016年2月18日
@@ -27,23 +26,21 @@ import net.hasor.rsf.center.domain.ReceiveResult;
  */
 @RsfService(group = "RSF", version = "1.0.0")
 public interface RsfCenterRegister {
-    /**发布服务
-     * @return 返回订阅ID。*/
-    public String publishService(String rsfHostString, ProviderPublishInfo info);
+    /** 发布服务,返回服务注册ID */
+    public RsfCenterResult<String> registerProvider(String rsfAddress, ProviderPublishInfo info);
 
-    /**发布服务心跳*/
-    public Map<String, Boolean> publishServiceBeat(String rsfHostString, Map<String, String> beatMap);
+    /** 订阅服务,返回服务订阅ID */
+    public RsfCenterResult<String> registerConsumer(String rsfAddress, ConsumerPublishInfo info);
 
-    /**删除发布*/
-    public boolean removePublish(String rsfHostString, String serviceID);
+    /** 解除发布或订阅 */
+    public RsfCenterResult<Boolean> unRegister(String rsfAddress, String registerID, String serviceID);
 
-    /** 订阅服务
-     * @return 返回订阅信息。*/
-    public ReceiveResult receiveService(String rsfHostString, ConsumerPublishInfo info);
+    /** 心跳 */
+    public RsfCenterResult<Boolean> serviceBeat(String rsfAddress, String registerID, String serviceID);
 
-    /**订阅服务心跳*/
-    public Map<String, Boolean> receiveServiceBeat(String rsfHostString, Map<String, String> beatMap);
+    /** 拉取服务提供者列表 */
+    public RsfCenterResult<List<String>> pullProviders(String rsfAddress, String serviceID);
 
-    /**删除订阅*/
-    public boolean removeReceive(String rsfHostString, String serviceID);
+    /** 请求远程把服务地址重新推送过来 */
+    public RsfCenterResult<Boolean> requestPushProviders(String rsfAddress, String serviceID);
 }

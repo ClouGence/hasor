@@ -73,7 +73,6 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
                 }
                 pluginList.add(0, RsfFrameworkModule.this);
                 //
-                rsfContainer.setAppContext(eventData);
                 rsfContext.setAppContext(eventData);
                 rsfContext.start(pluginList.toArray(new RsfPlugin[pluginList.size()]));
             }

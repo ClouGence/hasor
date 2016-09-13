@@ -175,6 +175,14 @@ public interface RsfBinder {
          * @return 返回ConfigurationBuilder
          */
         public FilterBindBuilder<T> bindFilter(String subFilterID, Provider<? extends RsfFilter> provider);
+
+        /**
+         * 为服务添加一个专有的RsfFilter。
+         * @param subFilterID filter ID,如果服务专有的filterID和全局RsfFilter出现冲突，那么优先选用该RsfFilter。
+         * @param rsfFilterType Class for Rsffilter.
+         * @return 返回ConfigurationBuilder
+         */
+        public FilterBindBuilder<T> bindFilter(String subFilterID, Class<? extends RsfFilter> rsfFilterType);
     }
     //
     /**发布地址*/

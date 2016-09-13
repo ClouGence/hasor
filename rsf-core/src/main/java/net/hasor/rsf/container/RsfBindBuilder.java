@@ -19,11 +19,7 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
-import net.hasor.rsf.RsfBinder;
-import net.hasor.rsf.RsfFilter;
-import net.hasor.rsf.RsfService;
-import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.address.AddressPool;
+import net.hasor.rsf.*;
 import net.hasor.rsf.address.AddressTypeEnum;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.InterServiceAddress;
@@ -48,7 +44,7 @@ import java.util.Set;
 abstract class RsfBindBuilder implements RsfBinder {
     protected abstract RsfBeanContainer getContainer();
 
-    protected abstract AddressPool getAddressPool();
+    protected abstract RsfContext getRsfContext();
     //
     public void bindFilter(String filterID, RsfFilter instance) {
         this.getContainer().addFilter(filterID, instance);
@@ -79,7 +75,7 @@ abstract class RsfBindBuilder implements RsfBinder {
         protected LinkedBuilderImpl(Class<T> serviceType) {
             this.serviceDefine = new ServiceInfo<T>(serviceType);
             this.addressMap = new HashMap<InterAddress, AddressTypeEnum>();
-            RsfSettings settings = getContainer().getEnvironment().getSettings();
+            RsfSettings settings = getRsfContext().getEnvironment().getSettings();
             //
             RsfService serviceInfo = new AnnoRsfServiceValue(settings, serviceType);
             ServiceDomain<T> domain = this.serviceDefine.getDomain();
@@ -149,11 +145,17 @@ abstract class RsfBindBuilder implements RsfBinder {
             this.serviceDefine.addRsfFilter(filterID, provider);
             return this;
         }
+        @Override
+        public FilterBindBuilder<T> bindFilter(String filterID, Class<? extends RsfFilter> rsfFilterType) {
+            final AppContext appContext = getRsfContext().getAppContext();
+            this.serviceDefine.addRsfFilter(filterID, new RsfFilterProvider(appContext, rsfFilterType));
+            return this;
+        }
         //
         @Override
         public ConfigurationBuilder<T> to(final Class<? extends T> implementation) {
             Hasor.assertIsNotNull(implementation);
-            final AppContext appContext = getContainer().getAppContext();
+            final AppContext appContext = getRsfContext().getAppContext();
             return this.toProvider(new Provider<T>() {
                 public T get() {
                     return appContext.getInstance(implementation);
@@ -163,7 +165,7 @@ abstract class RsfBindBuilder implements RsfBinder {
         @Override
         public ConfigurationBuilder<T> toInfo(final BindInfo<T> bindInfo) {
             Hasor.assertIsNotNull(bindInfo);
-            final AppContext appContext = getContainer().getAppContext();
+            final AppContext appContext = getRsfContext().getAppContext();
             return this.toProvider(new Provider<T>() {
                 public T get() {
                     return appContext.getInstance(bindInfo);
@@ -184,7 +186,7 @@ abstract class RsfBindBuilder implements RsfBinder {
         //
         @Override
         public RegisterBuilder<T> bindAddress(String rsfHost, int port) throws URISyntaxException {
-            String unitName = getContainer().getEnvironment().getSettings().getUnitName();
+            String unitName = getRsfContext().getEnvironment().getSettings().getUnitName();
             return this.bindAddress(new InterAddress(rsfHost, port, unitName));
         }
         @Override
@@ -230,7 +232,7 @@ abstract class RsfBindBuilder implements RsfBinder {
         //
         @Override
         public RegisterBuilder<T> bindStaticAddress(String rsfHost, int port) throws URISyntaxException {
-            String unitName = getContainer().getEnvironment().getSettings().getUnitName();
+            String unitName = getRsfContext().getEnvironment().getSettings().getUnitName();
             return this.bindStaticAddress(new InterAddress(rsfHost, port, unitName));
         }
         @Override
@@ -290,33 +292,30 @@ abstract class RsfBindBuilder implements RsfBinder {
                 }
             }
             //
-            getAddressPool().appendStaticAddress(serviceID, staticSet);
-            getAddressPool().appendAddress(serviceID, dynamicSet);
+            RsfUpdater updater = getRsfContext().getUpdater();
+            updater.appendStaticAddress(serviceID, staticSet);
+            updater.appendAddress(serviceID, dynamicSet);
             return getContainer().publishService(this.serviceDefine);
         }
         @Override
         public void updateFlowControl(String flowControl) {
-            AddressPool pool = getAddressPool();
             String serviceID = this.serviceDefine.getDomain().getBindID();
-            pool.updateFlowControl(serviceID, flowControl);
+            getRsfContext().getUpdater().updateFlowControl(serviceID, flowControl);
         }
         @Override
         public void updateArgsRoute(String scriptBody) {
-            AddressPool pool = getAddressPool();
             String serviceID = this.serviceDefine.getDomain().getBindID();
-            pool.updateArgsRoute(serviceID, scriptBody);
+            getRsfContext().getUpdater().updateArgsRoute(serviceID, scriptBody);
         }
         @Override
         public void updateMethodRoute(String scriptBody) {
-            AddressPool pool = getAddressPool();
             String serviceID = this.serviceDefine.getDomain().getBindID();
-            pool.updateMethodRoute(serviceID, scriptBody);
+            getRsfContext().getUpdater().updateMethodRoute(serviceID, scriptBody);
         }
         @Override
         public void updateServiceRoute(String scriptBody) {
-            AddressPool pool = getAddressPool();
             String serviceID = this.serviceDefine.getDomain().getBindID();
-            pool.updateServiceRoute(serviceID, scriptBody);
+            getRsfContext().getUpdater().updateServiceRoute(serviceID, scriptBody);
         }
     }
 }
