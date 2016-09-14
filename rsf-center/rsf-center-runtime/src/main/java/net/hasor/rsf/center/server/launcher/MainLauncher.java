@@ -15,9 +15,12 @@
  */
 package net.hasor.rsf.center.server.launcher;
 import net.hasor.core.*;
-import net.hasor.core.setting.StandardContextSettings;
+import net.hasor.core.environment.StandardEnvironment;
+import net.hasor.rsf.RsfEnvironment;
+import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.console.RsfInstruct;
 import net.hasor.rsf.console.launcher.TelnetClient;
-import net.hasor.rsf.rpc.context.DefaultRsfSettings;
+import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.rsf.utils.NetworkUtils;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.more.future.BasicFuture;
@@ -28,7 +31,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 /**
  *
  * @version : 2016年3月29日
@@ -56,8 +61,8 @@ public class MainLauncher {
         final String config = args[1];
         AppContext app = Hasor.createAppContext(new File(config), new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
-                //仍一个标记类,通过这个标记类可以判断是否以MainLauncher方式启动
-                apiBinder.bindType(MainLauncherBean.class, new MainLauncherBean(true));
+                /* 特殊 RSF 指令 */
+                apiBinder.bindType(RsfInstruct.class).uniqueName().to(CenterAppShutdownInstruct.class);
             }
         });
         app.getEnvironment().getEventContext().addListener(AppContext.ContextEvent_Shutdown, new EventListener<AppContext>() {
@@ -72,15 +77,16 @@ public class MainLauncher {
         logger.info(">>>>>>>>>>>>>>>>> doStop <<<<<<<<<<<<<<<<<");
         //
         final String config = args[1];
-        StandardContextSettings settings = new StandardContextSettings(new File(config));
-        settings.refresh();
-        DefaultRsfSettings rsfSettings = new DefaultRsfSettings(settings);
+        RsfEnvironment settings = new DefaultRsfEnvironment(new StandardEnvironment(null, new File(config)));
+        RsfSettings rsfSettings = settings.getSettings();
         //
         String addressHost = rsfSettings.getBindAddress();
         addressHost = NetworkUtils.finalBindAddress(addressHost).getHostAddress();
         int consolePort = rsfSettings.getConsolePort();
         //
-        TelnetClient.execCommand(addressHost, consolePort, "center_app_shutdown_command");
+        Map<String, String> envMap = new HashMap<String, String>();
+        envMap.put("open_kill_self", "true");
+        TelnetClient.execCommand(addressHost, consolePort, "center_app_shutdown_command", envMap);
     }
     public static void doVersion(String[] args) {
         try {

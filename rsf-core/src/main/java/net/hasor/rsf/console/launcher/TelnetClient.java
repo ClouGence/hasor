@@ -14,18 +14,8 @@
  * under the License.
  */
 package net.hasor.rsf.console.launcher;
-import java.io.BufferedReader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.more.future.BasicFuture;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.EventLoopGroup;
+import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -33,12 +23,25 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import org.more.future.BasicFuture;
+
+import java.io.BufferedReader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Simplistic telnet client.
  */
 public final class TelnetClient {
-    public static void execCommand(String host, int port, final String command) throws Exception {
+    public static void execCommand(String host, int port, final String command, Map<String, String> envMap) throws Exception {
         StringWriter commands = new StringWriter();
+        if (envMap != null) {
+            for (String key : envMap.keySet()) {
+                String val = envMap.get(key);
+                commands.write("set " + key + " = " + val + " \n");
+            }
+        }
         commands.write("set SESSION_AFTERCLOSE = true \n");
         commands.write(command + "\n");
         //

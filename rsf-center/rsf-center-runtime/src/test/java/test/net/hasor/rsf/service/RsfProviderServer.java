@@ -35,6 +35,6 @@ public class RsfProviderServer {
         });
         //
         System.out.println("server start.");
-        Thread.sleep(100000);
+        System.in.read();
     }
 }

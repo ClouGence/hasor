@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.more.util.ResourcesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.rsf.center.server.startup.launcher.MainLauncher;
+import net.hasor.rsf.center.server.launcher.MainLauncher;
 /**
  *
  * @version : 2016年3月29日
@@ -39,7 +39,7 @@ public class MainLauncherTest {
     public void doStop() throws Throwable {
         logger.info(">>>>>>>>>>>>>>>>> doStop <<<<<<<<<<<<<<<<<");
         String[] config = new String[2];
-        config[0] = "start";
+        config[0] = "stop";
         config[1] = ResourcesUtils.getResource("/center/rsf-server-alone.xml").getFile();
         MainLauncher.doStop(config);
     }

@@ -38,10 +38,9 @@ public class CenterAppShutdownInstruct implements RsfInstruct {
     }
     @Override
     public String doCommand(RsfCommandRequest request) throws Throwable {
-        // .危险操作,只有 launcher 形式启动的时候才可以用
-        MainLauncherBean launcherBean = request.getRsfContext().getAppContext().getInstance(MainLauncherBean.class);
-        if (!launcherBean.isStartOnLauncher()) {
-            return "mMust be started for MainLauncher.";
+        boolean killSelfValue = Boolean.valueOf((String) request.getSessionAttr("open_kill_self"));
+        if (!killSelfValue) {
+            return "center can't quit, please run command.";
         }
         //
         logger.error("A valid shutdown command was received via the shutdown port. Stopping the Server instance.");
