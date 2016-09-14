@@ -16,4 +16,6 @@
 /**
  * Telnet,RSF内置指令集。
  */
+@RsfSearchInclude()
 package net.hasor.rsf.console.commands;
+import net.hasor.rsf.console.RsfSearchInclude;

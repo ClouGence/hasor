@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.launcher;
+package net.hasor.rsf.console;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- *
- * @version : 2016年3月29日
+ * 包含在搜索结果中
+ * @version : 2016年4月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public class MainLauncherBean {
-    private final boolean startOnLauncher;
-    //
-    public MainLauncherBean() {
-        startOnLauncher = false;
-    }
-    MainLauncherBean(boolean startOnLauncher) {
-        this.startOnLauncher = startOnLauncher;
-    }
-    public boolean isStartOnLauncher() {
-        return startOnLauncher;
-    }
+@Target({ElementType.PACKAGE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface RsfSearchInclude {
 }

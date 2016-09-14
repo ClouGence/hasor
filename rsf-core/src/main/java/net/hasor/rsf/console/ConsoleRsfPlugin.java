@@ -65,6 +65,9 @@ public class ConsoleRsfPlugin implements RsfPlugin, Module {
             if (commandClass == RsfCommand.class || !RsfInstruct.class.isAssignableFrom(commandClass)) {
                 continue;
             }
+            if (!commandClass.getPackage().isAnnotationPresent(RsfSearchInclude.class)) {
+                continue;
+            }
             logger.info("rsf console -> new order {}.", commandClass);
             apiBinder.bindType(RsfInstruct.class).uniqueName().to((Class<? extends RsfInstruct>) commandClass);
         }
