@@ -13,13 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.domain;
 /**
- * 事件
- * @version : 2015年7月3日
- * @author 赵永春(zyc@hasor.net)
+ * 向客户单推送数据。
  */
-public interface RsfCenterEvent {
-    /** 推送事件PushEvent，参数为：PushEvent */
-    public static final String PushEvent = "PushEvent";
-}
+package net.hasor.rsf.center.server.pushing;

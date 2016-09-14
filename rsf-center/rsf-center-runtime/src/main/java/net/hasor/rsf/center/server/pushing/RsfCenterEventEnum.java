@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.push;
+package net.hasor.rsf.center.server.pushing;
 import net.hasor.rsf.center.RsfCenterEvent;
 /**
  * 注册中心下推送的事件类型，与枚举{@link RsfCenterEvent}为一对一映射关系。映射时增加了处理类。
@@ -71,8 +71,5 @@ public enum RsfCenterEventEnum {
     }
     public RsfCenterEvent forCenterEvent() {
         return rsfCenterEvent;
-    }
-    public PushEvent newEvent(String serviceID) {
-        return new PushEvent(serviceID, this);
     }
 }

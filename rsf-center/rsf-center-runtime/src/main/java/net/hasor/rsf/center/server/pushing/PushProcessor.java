@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.push;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package net.hasor.rsf.center.server.pushing;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.rsf.RsfContext;
@@ -24,6 +22,12 @@ import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.domain.CenterEventBody;
 import net.hasor.rsf.domain.provider.InstanceAddressProvider;
 import net.hasor.rsf.rpc.caller.RsfServiceWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 /**
  * 执行处理器，该类的作用是将事件推送到指定的客户端中去。
  * @version : 2016年3月23日
@@ -44,44 +48,50 @@ public class PushProcessor {
         };
     }
     //
-    public final void doProcessor(PushEvent event) {
+    public final List<InterAddress> doProcessor(PushEvent event) {
         if (event == null) {
-            return;
+            return Collections.emptyList();
         }
         if (event.getTarget() == null || event.getTarget().isEmpty()) {
             logger.error("target is empty event ->{}", event);
-            return;
+            return Collections.emptyList();
             //
         } else {
-            for (String target : event.getTarget()) {
-                try {
-                    InterAddress rsfAddress = new InterAddress(target);
-                    this.doProcessor(rsfAddress, event);
-                } catch (Throwable e) {
-                    logger.error(e.getMessage(), e);
+            ArrayList<InterAddress> failedAddress = new ArrayList<InterAddress>();
+            for (InterAddress target : event.getTarget()) {
+                boolean res = this.doProcessor(target, event);
+                if (!res) {
+                    failedAddress.add(target);
                 }
             }
-            //
+            return failedAddress;
         }
     }
     //
-    public void doProcessor(InterAddress rsfAddress, PushEvent event) throws Throwable {
+    /**
+     * 向客户端推送数据,3次重试
+     * @param rsfAddress 目标客户端
+     * @param event 数据
+     */
+    private boolean doProcessor(InterAddress rsfAddress, PushEvent event) {
         CenterEventBody eventBody = new CenterEventBody();
         eventBody.setEventType(event.getPushEventType().forCenterEvent().getEventType());
         eventBody.setServiceID(event.getServiceID());
-        eventBody.setSnapshotInfo(event.getSnapshotInfo());
         eventBody.setEventBody(event.getEventBody());
         boolean result = false;
         //
         result = sendEvent(rsfAddress, eventBody);
-        if (result == false) {
+        if (!result) {
             result = sendEvent(rsfAddress, eventBody);
-            if (result == false) {
+            if (!result) {
                 result = sendEvent(rsfAddress, eventBody);
             }
         }
+        //
+        return result;
     }
-    protected boolean sendEvent(InterAddress rsfAddress, CenterEventBody eventBody) {
+    /** 数据推送 */
+    private boolean sendEvent(InterAddress rsfAddress, CenterEventBody eventBody) {
         try {
             RsfCenterListener listener = this.rsfClientListener.get();
             ((RsfServiceWrapper) listener).setTarget(new InstanceAddressProvider(rsfAddress));
