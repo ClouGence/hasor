@@ -11,10 +11,14 @@
 // You may elect to redistribute this code under either of these licenses. 
 // ========================================================================
 package org.more.bizcommon.json;
-import java.util.Map;
 import org.more.bizcommon.json.JSON.Convertor;
 import org.more.bizcommon.json.JSON.Output;
-public class JSONPojoConvertorFactory implements JSON.Convertor {
+
+import java.util.Map;
+/**
+ *
+ */
+public class JSONPojoConvertorFactory implements Convertor {
     private final JSON    _json;
     private final boolean _fromJson;
     public JSONPojoConvertorFactory(JSON json) {
@@ -48,7 +52,7 @@ public class JSONPojoConvertorFactory implements JSON.Convertor {
                 convertor = new JSONPojoConvertor(cls, _fromJson);
                 _json.addConvertorFor(clsName, convertor);
             } catch (ClassNotFoundException e) {
-                JSON.LOG.warn(e);
+                JSON.logger.warn(e.getMessage(), e);
             }
         }
         if (convertor != null) {
@@ -66,7 +70,7 @@ public class JSONPojoConvertorFactory implements JSON.Convertor {
                     convertor = new JSONPojoConvertor(cls, _fromJson);
                     _json.addConvertorFor(clsName, convertor);
                 } catch (ClassNotFoundException e) {
-                    JSON.LOG.warn(e);
+                    JSON.logger.warn(e.getMessage(), e);
                 }
             }
             if (convertor != null) {

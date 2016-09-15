@@ -24,21 +24,21 @@ import java.util.StringTokenizer;
  * Delimiters within quotes are not considered delimiters.
  * Quotes can be escaped with '\'.
  *
- * @see java.util.StringTokenizer
+ * @see StringTokenizer
  *
  */
 class QuotedStringTokenizer extends StringTokenizer {
-    private final static String __delim           = "\t\n\r";
-    private String              _string;
-    private String              _delim            = __delim;
-    private boolean             _returnQuotes     = false;
-    private boolean             _returnDelimiters = false;
-    private StringBuffer        _token;
-    private boolean             _hasToken         = false;
-    private int                 _i                = 0;
-    private int                 _lastStart        = 0;
-    private boolean             _double           = true;
-    private boolean             _single           = true;
+    private final static String __delim = "\t\n\r";
+    private String _string;
+    private String  _delim            = __delim;
+    private boolean _returnQuotes     = false;
+    private boolean _returnDelimiters = false;
+    private StringBuffer _token;
+    private boolean _hasToken  = false;
+    private int     _i         = 0;
+    private int     _lastStart = 0;
+    private boolean _double    = true;
+    private boolean _single    = true;
     /* ------------------------------------------------------------ */
     public QuotedStringTokenizer(String str, String delim, boolean returnDelimiters, boolean returnQuotes) {
         super("");
@@ -229,6 +229,7 @@ class QuotedStringTokenizer extends StringTokenizer {
         return b.toString();
     }
     private static final char[] escapes = new char[32];
+
     static {
         Arrays.fill(escapes, (char) 0xFFFF);
         escapes['\b'] = 'b';

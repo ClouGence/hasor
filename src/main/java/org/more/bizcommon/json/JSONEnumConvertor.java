@@ -11,30 +11,35 @@
 // You may elect to redistribute this code under either of these licenses. 
 // ========================================================================
 package org.more.bizcommon.json;
+import net.hasor.rsf.utils.json.JSON.Output;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Method;
 import java.util.Map;
-import org.more.bizcommon.json.JSON.Output;
 /* ------------------------------------------------------------ */
 /**
  * Convert an {@link Enum} to JSON.
  * If fromJSON is true in the constructor, the JSON generated will
  * be of the form {class="com.acme.TrafficLight",value="Green"}
  * If fromJSON is false, then only the string value of the enum is generated.
- * 
+ *
  *
  */
 public class JSONEnumConvertor implements JSON.Convertor {
-    private static final Logger LOG = Log.getLogger(JSONEnumConvertor.class);
-    private boolean             _fromJSON;
-    private Method              _valueOf;
+    protected final static Logger logger = LoggerFactory.getLogger(JSONEnumConvertor.class);
+    private boolean _fromJSON;
+    private Method  _valueOf;
+
     {
         try {
             Class e = Loader.loadClass(getClass(), "java.lang.Enum");
-            _valueOf = e.getMethod("valueOf", new Class[] { Class.class, String.class });
+            _valueOf = e.getMethod("valueOf", new Class[] {Class.class, String.class});
         } catch (Exception e) {
             throw new RuntimeException("!Enums", e);
         }
     }
+
     public JSONEnumConvertor() {
         this(false);
     }
@@ -46,9 +51,9 @@ public class JSONEnumConvertor implements JSON.Convertor {
             throw new UnsupportedOperationException();
         try {
             Class c = Loader.loadClass(getClass(), (String) map.get("class"));
-            return _valueOf.invoke(null, new Object[] { c, map.get("value") });
+            return _valueOf.invoke(null, new Object[] {c, map.get("value")});
         } catch (Exception e) {
-            LOG.warn(e);
+            logger.warn(e.getMessage(), e);
         }
         return null;
     }

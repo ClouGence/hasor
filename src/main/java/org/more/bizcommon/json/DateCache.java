@@ -31,26 +31,26 @@ import java.util.TimeZone;
  * If consecutive calls are frequently very different, then this
  * may be a little slower than a normal DateFormat.
  *
- * 
- * 
+ *
+ *
  */
 class DateCache {
-    public static String      DEFAULT_FORMAT = "EEE MMM dd HH:mm:ss zzz yyyy";
-    private static long       __hitWindow    = 60 * 60;
-    private String            _formatString;
-    private String            _tzFormatString;
-    private SimpleDateFormat  _tzFormat;
-    private String            _minFormatString;
-    private SimpleDateFormat  _minFormat;
-    private String            _secFormatString;
-    private String            _secFormatString0;
-    private String            _secFormatString1;
-    private long              _lastMinutes   = -1;
-    private long              _lastSeconds   = -1;
-    private int               _lastMs        = -1;
-    private String            _lastResult    = null;
-    private Locale            _locale        = null;
-    private DateFormatSymbols _dfs           = null;
+    public static  String DEFAULT_FORMAT = "EEE MMM dd HH:mm:ss zzz yyyy";
+    private static long   __hitWindow    = 60 * 60;
+    private String           _formatString;
+    private String           _tzFormatString;
+    private SimpleDateFormat _tzFormat;
+    private String           _minFormatString;
+    private SimpleDateFormat _minFormat;
+    private String           _secFormatString;
+    private String           _secFormatString0;
+    private String           _secFormatString1;
+    private long              _lastMinutes = -1;
+    private long              _lastSeconds = -1;
+    private int               _lastMs      = -1;
+    private String            _lastResult  = null;
+    private Locale            _locale      = null;
+    private DateFormatSymbols _dfs         = null;
     /* ------------------------------------------------------------ */
     /** Constructor.
      * Make a DateCache that will use a default format. The default format
@@ -160,7 +160,7 @@ class DateCache {
     }
     /* ------------------------------------------------------------ */
     /** Format a date according to our stored formatter.
-     * @param inDate 
+     * @param inDate
      * @return Formatted date
      */
     public synchronized String format(Date inDate) {
@@ -168,7 +168,7 @@ class DateCache {
     }
     /* ------------------------------------------------------------ */
     /** Format a date according to our stored formatter.
-     * @param inDate 
+     * @param inDate
      * @return Formatted date
      */
     public synchronized String format(long inDate) {

@@ -29,7 +29,7 @@ import java.util.ResourceBundle;
  *          ...
  *     }
  * </PRE>          
- * 
+ *
  */
 class Loader {
     /* ------------------------------------------------------------ */
@@ -57,7 +57,7 @@ class Loader {
     }
     /* ------------------------------------------------------------ */
     /** Load a class.
-     * 
+     *
      * @param loadClass
      * @param name
      * @param checkParents If true, try loading directly from parent classloaders.

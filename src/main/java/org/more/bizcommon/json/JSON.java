@@ -11,15 +11,14 @@
 // You may elect to redistribute this code under either of these licenses.
 // ========================================================================
 package org.more.bizcommon.json;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 /**
  * JSON Parser and Generator.
@@ -54,20 +53,18 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * </p>
  * <p>
- * The interface {@link JSON.Convertible} may be implemented by classes that
+ * The interface {@link org.more.bizcommon.json.JSON.Convertible} may be implemented by classes that
  * wish to externalize and initialize specific fields to and from JSON objects.
  * Only directed acyclic graphs of objects are supported.
  * </p>
  * <p>
- * The interface {@link JSON.Generator} may be implemented by classes that know
+ * The interface {@link org.more.bizcommon.json.JSON.Generator} may be implemented by classes that know
  * how to render themselves as JSON and the {@link #toString(Object)} method
- * will use {@link JSON.Generator#addJSON(Appendable)} to generate the JSON.
- * The class {@link JSON.Literal} may be used to hold pre-generated JSON object.
+ * will use {@link org.more.bizcommon.json.JSON.Generator#addJSON(Appendable)} to generate the JSON.
+ * The class {@link org.more.bizcommon.json.JSON.Literal} may be used to hold pre-generated JSON object.
  * <p>
- * The interface {@link JSON.Convertor} may be implemented to provide static
+ * The interface {@link org.more.bizcommon.json.JSON.Convertor} may be implemented to provide static
  * convertors for objects that may be registered with
- * {@link #registerConvertor(Class, JSON.Convertor)}
- * . These convertors are looked up by class, interface and super class by
  * {@link #getConvertor(Class)}.
  * </p>
  *
@@ -75,37 +72,27 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class JSON {
-    static final        Logger                 LOG               = Log.getLogger(JSON.class);
-    public final static JSON                   DEFAULT           = new JSON();
-    private             Map<String, Convertor> _convertors       = new ConcurrentHashMap<String, Convertor>();
-    private             int                    _stringBufferSize = 1024;
+    protected final static Logger                 logger            = LoggerFactory.getLogger(JSON.class);
+    public final static    JSON                   DEFAULT           = new JSON();
+    private                Map<String, Convertor> _convertors       = new ConcurrentHashMap<String, Convertor>();
+    private                int                    _stringBufferSize = 1024;
     public JSON() {
     }
     /* ------------------------------------------------------------ */
-    /**
-     * @return the initial stringBuffer size to use when creating JSON strings
-     *         (default 1024)
-     */
+    /** @return the initial stringBuffer size to use when creating JSON strings (default 1024) */
     public int getStringBufferSize() {
         return _stringBufferSize;
     }
     /* ------------------------------------------------------------ */
-    /**
-     * @param stringBufferSize
-     *            the initial stringBuffer size to use when creating JSON
-     *            strings (default 1024)
-     */
+    /** @param stringBufferSize the initial stringBuffer size to use when creating JSON strings (default 1024) */
     public void setStringBufferSize(int stringBufferSize) {
         _stringBufferSize = stringBufferSize;
     }
     /* ------------------------------------------------------------ */
     /**
      * Register a {@link Convertor} for a class or interface.
-     *
-     * @param forClass
-     *            The class or interface that the convertor applies to
-     * @param convertor
-     *            the convertor
+     * @param forClass The class or interface that the convertor applies to
+     * @param convertor the convertor
      */
     public static void registerConvertor(Class forClass, Convertor convertor) {
         DEFAULT.addConvertor(forClass, convertor);
@@ -134,8 +121,7 @@ public class JSON {
     }
     /* ------------------------------------------------------------ */
     /**
-     * @param s
-     *            String containing JSON object or array.
+     * @param s String containing JSON object or array.
      * @return A Map, Object array or primitive array parsed from the JSON.
      */
     public static Object parse(String s) {
@@ -143,10 +129,8 @@ public class JSON {
     }
     /* ------------------------------------------------------------ */
     /**
-     * @param s
-     *            String containing JSON object or array.
-     * @param stripOuterComment
-     *            If true, an outer comment around the JSON is ignored.
+     * @param s String containing JSON object or array.
+     * @param stripOuterComment If true, an outer comment around the JSON is ignored.
      * @return A Map, Object array or primitive array parsed from the JSON.
      */
     public static Object parse(String s, boolean stripOuterComment) {
@@ -154,8 +138,7 @@ public class JSON {
     }
     /* ------------------------------------------------------------ */
     /**
-     * @param in
-     *            Reader containing JSON object or array.
+     * @param in Reader containing JSON object or array.
      * @return A Map, Object array or primitive array parsed from the JSON.
      */
     public static Object parse(Reader in) throws IOException {
@@ -163,10 +146,8 @@ public class JSON {
     }
     /* ------------------------------------------------------------ */
     /**
-     * @param in
-     *            Reader containing JSON object or array.
-     * @param stripOuterComment
-     *            If true, an outer comment around the JSON is ignored.
+     * @param in Reader containing JSON object or array.
+     * @param stripOuterComment If true, an outer comment around the JSON is ignored.
      * @return A Map, Object array or primitive array parsed from the JSON.
      */
     public static Object parse(Reader in, boolean stripOuterComment) throws IOException {
@@ -175,9 +156,7 @@ public class JSON {
     /* ------------------------------------------------------------ */
     /**
      * Convert Object to JSON
-     *
-     * @param object
-     *            The object to convert
+     * @param object The object to convert
      * @return The JSON String
      */
     public String toJSON(Object object) {
@@ -188,7 +167,6 @@ public class JSON {
     /* ------------------------------------------------------------ */
     /**
      * Convert JSON to Object
-     *
      * @param json The json to convert
      * @return The object
      */
@@ -199,7 +177,6 @@ public class JSON {
     /* ------------------------------------------------------------ */
     /**
      * Append object as JSON to string buffer.
-     *
      * @param buffer the buffer to append to
      * @param object the object to append
      */
@@ -418,7 +395,7 @@ public class JSON {
      * interfaces are tried recursively.
      *
      * @param forClass The class
-     * @return a {@link JSON.Convertor} or null if none were found.
+     * @return a {@link org.more.bizcommon.json.JSON.Convertor} or null if none were found.
      */
     protected Convertor getConvertor(Class forClass) {
         if (forClass == null) {
@@ -444,7 +421,7 @@ public class JSON {
     }
     /* ------------------------------------------------------------ */
     /**
-     * Register a {@link JSON.Convertor} for a named class or interface.
+     * Register a {@link org.more.bizcommon.json.JSON.Convertor} for a named class or interface.
      *
      * @param name name of a class or an interface that the convertor applies to
      * @param convertor the convertor
@@ -458,7 +435,7 @@ public class JSON {
      *
      * @param name
      *            name of the class
-     * @return a {@link JSON.Convertor} or null if none were found.
+     * @return a {@link org.more.bizcommon.json.JSON.Convertor} or null if none were found.
      */
     public Convertor getConvertorFor(String name) {
         String clsName = name;
@@ -651,7 +628,7 @@ public class JSON {
                 Class c = Loader.loadClass(JSON.class, classname);
                 return convertTo(c, map);
             } catch (ClassNotFoundException e) {
-                LOG.warn(e);
+                logger.warn(e.getMessage(), e);
             }
         }
         return map;
@@ -1144,9 +1121,9 @@ public class JSON {
      * <p>
      * may be implemented to provide static convertors for objects that may be
      * registered with
-     * {@link JSON#registerConvertor(Class, JSON.Convertor)}
+     * {@link org.more.bizcommon.json.JSON#registerConvertor(Class, org.more.bizcommon.json.JSON.Convertor)}
      * . These convertors are looked up by class, interface and super class by
-     * {@link JSON#getConvertor(Class)}. Convertors should be used when the
+     * {@link org.more.bizcommon.json.JSON#getConvertor(Class)}. Convertors should be used when the
      * classes to be converted cannot implement {@link Convertible} or
      * {@link Generator}.
      */
@@ -1166,22 +1143,18 @@ public class JSON {
     }
     /* ------------------------------------------------------------ */
     /**
-     * A Literal JSON generator A utility instance of {@link JSON.Generator}
+     * A Literal JSON generator A utility instance of {@link org.more.bizcommon.json.JSON.Generator}
      * that holds a pre-generated string on JSON text.
      */
     public static class Literal implements Generator {
         private String _json;
         /* ------------------------------------------------------------ */
         /**
-         * Construct a literal JSON instance for use by
-         * {@link JSON#toString(Object)}. If {@link Log#isDebugEnabled()} is
-         * true, the JSON will be parsed to check validity
-         *
-         * @param json
-         *            A literal JSON string.
+         * Construct a literal JSON instance for use by {@link JSON#toString(Object)}.
+         * @param json A literal JSON string.
          */
         public Literal(String json) {
-            if (LOG.isDebugEnabled()) // TODO: Make this a configurable option on JSON instead!
+            if (logger.isDebugEnabled()) // TODO: Make this a configurable option on JSON instead!
                 parse(json);
             _json = json;
         }

@@ -11,23 +11,24 @@
 // You may elect to redistribute this code under either of these licenses. 
 // ========================================================================
 package org.more.bizcommon.json;
+import org.more.bizcommon.json.JSON.Output;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.more.bizcommon.json.JSON.Output;
 /* ------------------------------------------------------------ */
 /**
  * Convert an Object to JSON using reflection on getters methods.
- * 
- * 
+ *
+ *
  *
  */
 public class JSONObjectConvertor implements JSON.Convertor {
     private boolean _fromJSON;
-    private Set     _excluded = null;
+    private Set _excluded = null;
     public JSONObjectConvertor() {
         _fromJSON = false;
     }

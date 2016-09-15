@@ -11,6 +11,9 @@
 // You may elect to redistribute this code under either of these licenses.
 // ========================================================================
 package org.more.bizcommon.json;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -31,93 +34,98 @@ import java.util.List;
  * @since Jetty 4.1
  */
 class TypeUtil {
-    private static final Logger                    LOG        = Log.getLogger(TypeUtil.class);
-    public static int                              CR         = '\015';
-    public static int                              LF         = '\012';
+    protected final static Logger                    logger     = LoggerFactory.getLogger(TypeUtil.class);
+    public static          int                       CR         = '\015';
+    public static          int                       LF         = '\012';
     /* ------------------------------------------------------------ */
-    private static final HashMap<String, Class<?>> name2Class = new HashMap<String, Class<?>>();
+    private static final   HashMap<String, Class<?>> name2Class = new HashMap<String, Class<?>>();
+
     static {
-        name2Class.put("boolean", java.lang.Boolean.TYPE);
-        name2Class.put("byte", java.lang.Byte.TYPE);
-        name2Class.put("char", java.lang.Character.TYPE);
-        name2Class.put("double", java.lang.Double.TYPE);
-        name2Class.put("float", java.lang.Float.TYPE);
-        name2Class.put("int", java.lang.Integer.TYPE);
-        name2Class.put("long", java.lang.Long.TYPE);
-        name2Class.put("short", java.lang.Short.TYPE);
-        name2Class.put("void", java.lang.Void.TYPE);
-        name2Class.put("java.lang.Boolean.TYPE", java.lang.Boolean.TYPE);
-        name2Class.put("java.lang.Byte.TYPE", java.lang.Byte.TYPE);
-        name2Class.put("java.lang.Character.TYPE", java.lang.Character.TYPE);
-        name2Class.put("java.lang.Double.TYPE", java.lang.Double.TYPE);
-        name2Class.put("java.lang.Float.TYPE", java.lang.Float.TYPE);
-        name2Class.put("java.lang.Integer.TYPE", java.lang.Integer.TYPE);
-        name2Class.put("java.lang.Long.TYPE", java.lang.Long.TYPE);
-        name2Class.put("java.lang.Short.TYPE", java.lang.Short.TYPE);
-        name2Class.put("java.lang.Void.TYPE", java.lang.Void.TYPE);
-        name2Class.put("java.lang.Boolean", java.lang.Boolean.class);
-        name2Class.put("java.lang.Byte", java.lang.Byte.class);
-        name2Class.put("java.lang.Character", java.lang.Character.class);
-        name2Class.put("java.lang.Double", java.lang.Double.class);
-        name2Class.put("java.lang.Float", java.lang.Float.class);
-        name2Class.put("java.lang.Integer", java.lang.Integer.class);
-        name2Class.put("java.lang.Long", java.lang.Long.class);
-        name2Class.put("java.lang.Short", java.lang.Short.class);
-        name2Class.put("Boolean", java.lang.Boolean.class);
-        name2Class.put("Byte", java.lang.Byte.class);
-        name2Class.put("Character", java.lang.Character.class);
-        name2Class.put("Double", java.lang.Double.class);
-        name2Class.put("Float", java.lang.Float.class);
-        name2Class.put("Integer", java.lang.Integer.class);
-        name2Class.put("Long", java.lang.Long.class);
-        name2Class.put("Short", java.lang.Short.class);
-        name2Class.put(null, java.lang.Void.TYPE);
-        name2Class.put("string", java.lang.String.class);
-        name2Class.put("String", java.lang.String.class);
-        name2Class.put("java.lang.String", java.lang.String.class);
+        name2Class.put("boolean", Boolean.TYPE);
+        name2Class.put("byte", Byte.TYPE);
+        name2Class.put("char", Character.TYPE);
+        name2Class.put("double", Double.TYPE);
+        name2Class.put("float", Float.TYPE);
+        name2Class.put("int", Integer.TYPE);
+        name2Class.put("long", Long.TYPE);
+        name2Class.put("short", Short.TYPE);
+        name2Class.put("void", Void.TYPE);
+        name2Class.put("java.lang.Boolean.TYPE", Boolean.TYPE);
+        name2Class.put("java.lang.Byte.TYPE", Byte.TYPE);
+        name2Class.put("java.lang.Character.TYPE", Character.TYPE);
+        name2Class.put("java.lang.Double.TYPE", Double.TYPE);
+        name2Class.put("java.lang.Float.TYPE", Float.TYPE);
+        name2Class.put("java.lang.Integer.TYPE", Integer.TYPE);
+        name2Class.put("java.lang.Long.TYPE", Long.TYPE);
+        name2Class.put("java.lang.Short.TYPE", Short.TYPE);
+        name2Class.put("java.lang.Void.TYPE", Void.TYPE);
+        name2Class.put("java.lang.Boolean", Boolean.class);
+        name2Class.put("java.lang.Byte", Byte.class);
+        name2Class.put("java.lang.Character", Character.class);
+        name2Class.put("java.lang.Double", Double.class);
+        name2Class.put("java.lang.Float", Float.class);
+        name2Class.put("java.lang.Integer", Integer.class);
+        name2Class.put("java.lang.Long", Long.class);
+        name2Class.put("java.lang.Short", Short.class);
+        name2Class.put("Boolean", Boolean.class);
+        name2Class.put("Byte", Byte.class);
+        name2Class.put("Character", Character.class);
+        name2Class.put("Double", Double.class);
+        name2Class.put("Float", Float.class);
+        name2Class.put("Integer", Integer.class);
+        name2Class.put("Long", Long.class);
+        name2Class.put("Short", Short.class);
+        name2Class.put(null, Void.TYPE);
+        name2Class.put("string", String.class);
+        name2Class.put("String", String.class);
+        name2Class.put("java.lang.String", String.class);
     }
+
     /* ------------------------------------------------------------ */
     private static final HashMap<Class<?>, String> class2Name = new HashMap<Class<?>, String>();
+
     static {
-        class2Name.put(java.lang.Boolean.TYPE, "boolean");
-        class2Name.put(java.lang.Byte.TYPE, "byte");
-        class2Name.put(java.lang.Character.TYPE, "char");
-        class2Name.put(java.lang.Double.TYPE, "double");
-        class2Name.put(java.lang.Float.TYPE, "float");
-        class2Name.put(java.lang.Integer.TYPE, "int");
-        class2Name.put(java.lang.Long.TYPE, "long");
-        class2Name.put(java.lang.Short.TYPE, "short");
-        class2Name.put(java.lang.Void.TYPE, "void");
-        class2Name.put(java.lang.Boolean.class, "java.lang.Boolean");
-        class2Name.put(java.lang.Byte.class, "java.lang.Byte");
-        class2Name.put(java.lang.Character.class, "java.lang.Character");
-        class2Name.put(java.lang.Double.class, "java.lang.Double");
-        class2Name.put(java.lang.Float.class, "java.lang.Float");
-        class2Name.put(java.lang.Integer.class, "java.lang.Integer");
-        class2Name.put(java.lang.Long.class, "java.lang.Long");
-        class2Name.put(java.lang.Short.class, "java.lang.Short");
+        class2Name.put(Boolean.TYPE, "boolean");
+        class2Name.put(Byte.TYPE, "byte");
+        class2Name.put(Character.TYPE, "char");
+        class2Name.put(Double.TYPE, "double");
+        class2Name.put(Float.TYPE, "float");
+        class2Name.put(Integer.TYPE, "int");
+        class2Name.put(Long.TYPE, "long");
+        class2Name.put(Short.TYPE, "short");
+        class2Name.put(Void.TYPE, "void");
+        class2Name.put(Boolean.class, "java.lang.Boolean");
+        class2Name.put(Byte.class, "java.lang.Byte");
+        class2Name.put(Character.class, "java.lang.Character");
+        class2Name.put(Double.class, "java.lang.Double");
+        class2Name.put(Float.class, "java.lang.Float");
+        class2Name.put(Integer.class, "java.lang.Integer");
+        class2Name.put(Long.class, "java.lang.Long");
+        class2Name.put(Short.class, "java.lang.Short");
         class2Name.put(null, "void");
-        class2Name.put(java.lang.String.class, "java.lang.String");
+        class2Name.put(String.class, "java.lang.String");
     }
+
     /* ------------------------------------------------------------ */
     private static final HashMap<Class<?>, Method> class2Value = new HashMap<Class<?>, Method>();
+
     static {
         try {
-            Class<?>[] s = { java.lang.String.class };
-            class2Value.put(java.lang.Boolean.TYPE, java.lang.Boolean.class.getMethod("valueOf", s));
-            class2Value.put(java.lang.Byte.TYPE, java.lang.Byte.class.getMethod("valueOf", s));
-            class2Value.put(java.lang.Double.TYPE, java.lang.Double.class.getMethod("valueOf", s));
-            class2Value.put(java.lang.Float.TYPE, java.lang.Float.class.getMethod("valueOf", s));
-            class2Value.put(java.lang.Integer.TYPE, java.lang.Integer.class.getMethod("valueOf", s));
-            class2Value.put(java.lang.Long.TYPE, java.lang.Long.class.getMethod("valueOf", s));
-            class2Value.put(java.lang.Short.TYPE, java.lang.Short.class.getMethod("valueOf", s));
-            class2Value.put(java.lang.Boolean.class, java.lang.Boolean.class.getMethod("valueOf", s));
-            class2Value.put(java.lang.Byte.class, java.lang.Byte.class.getMethod("valueOf", s));
-            class2Value.put(java.lang.Double.class, java.lang.Double.class.getMethod("valueOf", s));
-            class2Value.put(java.lang.Float.class, java.lang.Float.class.getMethod("valueOf", s));
-            class2Value.put(java.lang.Integer.class, java.lang.Integer.class.getMethod("valueOf", s));
-            class2Value.put(java.lang.Long.class, java.lang.Long.class.getMethod("valueOf", s));
-            class2Value.put(java.lang.Short.class, java.lang.Short.class.getMethod("valueOf", s));
+            Class<?>[] s = {String.class};
+            class2Value.put(Boolean.TYPE, Boolean.class.getMethod("valueOf", s));
+            class2Value.put(Byte.TYPE, Byte.class.getMethod("valueOf", s));
+            class2Value.put(Double.TYPE, Double.class.getMethod("valueOf", s));
+            class2Value.put(Float.TYPE, Float.class.getMethod("valueOf", s));
+            class2Value.put(Integer.TYPE, Integer.class.getMethod("valueOf", s));
+            class2Value.put(Long.TYPE, Long.class.getMethod("valueOf", s));
+            class2Value.put(Short.TYPE, Short.class.getMethod("valueOf", s));
+            class2Value.put(Boolean.class, Boolean.class.getMethod("valueOf", s));
+            class2Value.put(Byte.class, Byte.class.getMethod("valueOf", s));
+            class2Value.put(Double.class, Double.class.getMethod("valueOf", s));
+            class2Value.put(Float.class, Float.class.getMethod("valueOf", s));
+            class2Value.put(Integer.class, Integer.class.getMethod("valueOf", s));
+            class2Value.put(Long.class, Long.class.getMethod("valueOf", s));
+            class2Value.put(Short.class, Short.class.getMethod("valueOf", s));
         } catch (Exception e) {
             throw new Error(e);
         }
@@ -157,14 +165,14 @@ class TypeUtil {
      */
     public static Object valueOf(Class<?> type, String value) {
         try {
-            if (type.equals(java.lang.String.class))
+            if (type.equals(String.class))
                 return value;
             Method m = class2Value.get(type);
             if (m != null)
                 return m.invoke(null, value);
-            if (type.equals(java.lang.Character.TYPE) || type.equals(java.lang.Character.class))
+            if (type.equals(Character.TYPE) || type.equals(Character.class))
                 return new Character(value.charAt(0));
-            Constructor<?> c = type.getConstructor(java.lang.String.class);
+            Constructor<?> c = type.getConstructor(String.class);
             return c.newInstance(value);
         } catch (NoSuchMethodException e) {
             // LogSupport.ignore(log,e);
@@ -299,7 +307,7 @@ class TypeUtil {
     }
     /* ------------------------------------------------------------ */
     public static String toHexString(byte b) {
-        return toHexString(new byte[] { b }, 0, 1);
+        return toHexString(new byte[] {b}, 0, 1);
     }
     /* ------------------------------------------------------------ */
     public static String toHexString(byte[] b) {
@@ -389,7 +397,7 @@ class TypeUtil {
             if (s.startsWith("jar:file:"))
                 return new URL(s.substring(4, s.indexOf("!/")));
         } catch (Exception e) {
-            LOG.ignore(e);
+            logger.debug(e.getMessage(), e);
         }
         return null;
     }
@@ -408,9 +416,9 @@ class TypeUtil {
             try {
                 return methods[c].invoke(obj, arg);
             } catch (IllegalAccessException e) {
-                LOG.ignore(e);
+                logger.debug(e.getMessage(), e);
             } catch (IllegalArgumentException e) {
-                LOG.ignore(e);
+                logger.debug(e.getMessage(), e);
             }
         }
         throw new NoSuchMethodException(method);

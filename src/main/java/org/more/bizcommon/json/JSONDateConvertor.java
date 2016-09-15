@@ -11,6 +11,9 @@
 // You may elect to redistribute this code under either of these licenses. 
 // ========================================================================
 package org.more.bizcommon.json;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,16 +22,16 @@ import java.util.Map;
 import java.util.TimeZone;
 /* ------------------------------------------------------------ */
 /**
-* Convert a {@link Date} to JSON.
-* If fromJSON is true in the constructor, the JSON generated will
-* be of the form {class="java.util.Date",value="1/1/1970 12:00 GMT"}
-* If fromJSON is false, then only the string value of the date is generated.
-*/
+ * Convert a {@link Date} to JSON.
+ * If fromJSON is true in the constructor, the JSON generated will
+ * be of the form {class="java.util.Date",value="1/1/1970 12:00 GMT"}
+ * If fromJSON is false, then only the string value of the date is generated.
+ */
 public class JSONDateConvertor implements JSON.Convertor {
-    private static final Logger LOG = Log.getLogger(JSONDateConvertor.class);
-    private boolean             _fromJSON;
-    DateCache                   _dateCache;
-    SimpleDateFormat            _format;
+    protected final static Logger logger = LoggerFactory.getLogger(JSONDateConvertor.class);
+    private boolean _fromJSON;
+    DateCache        _dateCache;
+    SimpleDateFormat _format;
     public JSONDateConvertor() {
         this(false);
     }
@@ -57,7 +60,7 @@ public class JSONDateConvertor implements JSON.Convertor {
                 return _format.parseObject((String) map.get("value"));
             }
         } catch (Exception e) {
-            LOG.warn(e);
+            logger.warn(e.getMessage(), e);
         }
         return null;
     }

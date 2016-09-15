@@ -2,6 +2,9 @@
 * 新增:
     01.BindInfo 新增 setMetaData 方法以设置元信息。
     02.BindInfo 新增 removeMetaData 删除元数据的方法。
+    03.BizCommon 包增加 log 工具。
+* 改进:
+    01.JSON 包简化了对 Log 的输出处理,减少了 5 个日志相关类。
 * 修复:
     01.Fix RsfSettings 接口的 add & remove & set 系方法,解决 settings key 出现大小写敏感问题。
     02.Fix AbstractEnvironment 的 refreshVariables 方法,忽略了对默认值的替换,导致了bug出现。

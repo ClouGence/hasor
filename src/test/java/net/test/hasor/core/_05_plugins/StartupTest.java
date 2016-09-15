@@ -15,7 +15,6 @@
  */
 package net.test.hasor.core._05_plugins;
 import org.junit.Test;
-import org.more.bizcommon.json.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;

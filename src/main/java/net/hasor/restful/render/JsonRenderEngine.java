@@ -17,7 +17,6 @@ package net.hasor.restful.render;
 import net.hasor.restful.RenderData;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebAppContext;
-import org.more.bizcommon.json.JSON;
 
 import java.io.IOException;
 import java.io.Writer;
