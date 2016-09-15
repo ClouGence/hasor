@@ -4,6 +4,7 @@ target
 .cache
 .project
 *.iml
+*/*.iml
 .idea
 test-work
 bin
