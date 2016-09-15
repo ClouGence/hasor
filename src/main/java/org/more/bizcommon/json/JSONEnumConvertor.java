@@ -11,7 +11,7 @@
 // You may elect to redistribute this code under either of these licenses. 
 // ========================================================================
 package org.more.bizcommon.json;
-import net.hasor.rsf.utils.json.JSON.Output;
+import org.more.bizcommon.json.JSON.Output;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,8 +23,6 @@ import java.util.Map;
  * If fromJSON is true in the constructor, the JSON generated will
  * be of the form {class="com.acme.TrafficLight",value="Green"}
  * If fromJSON is false, then only the string value of the enum is generated.
- *
- *
  */
 public class JSONEnumConvertor implements JSON.Convertor {
     protected final static Logger logger = LoggerFactory.getLogger(JSONEnumConvertor.class);

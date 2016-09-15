@@ -11,7 +11,7 @@
 // You may elect to redistribute this code under either of these licenses. 
 // ========================================================================
 package org.more.bizcommon.json;
-import net.hasor.rsf.utils.json.JSON.Output;
+import org.more.bizcommon.json.JSON.Output;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

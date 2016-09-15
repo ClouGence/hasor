@@ -18,6 +18,8 @@ import net.hasor.restful.MimeType;
 import net.hasor.restful.RenderData;
 import net.hasor.web.WebAppContext;
 import org.more.bizcommon.Message;
+import org.more.bizcommon.json.JSON;
+import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -115,10 +117,8 @@ class InnerRenderData implements RenderData {
     }
     @Override
     public void put(String key, Object value) {
-        for (String keyItem : LOCK_KEYS) {
-            if (StringUtils.isBlank(key) || StringUtils.equalsIgnoreCase(ROOT_DATA_KEY, key)) {
-                throw new UnsupportedOperationException("the key['" + key + "'] must not in " + JSON.toString(LOCK_KEYS) + " or empty");
-            }
+        if (StringUtils.isBlank(key) || ArrayUtils.contains(LOCK_KEYS, key)) {
+            throw new UnsupportedOperationException("the key['" + key + "'] must not in " + JSON.toString(LOCK_KEYS) + " or empty");
         }
         this.contextMap.put(key, value);
     }
