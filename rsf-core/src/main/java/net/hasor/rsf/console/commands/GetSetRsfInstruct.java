@@ -16,9 +16,9 @@
 package net.hasor.rsf.console.commands;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.console.RsfCommand;
-import net.hasor.rsf.console.RsfInstruct;
 import net.hasor.rsf.console.RsfCommandRequest;
-import net.hasor.rsf.utils.json.JSON;
+import net.hasor.rsf.console.RsfInstruct;
+import org.more.bizcommon.json.JSON;
 import org.more.util.StringUtils;
 /**
  *

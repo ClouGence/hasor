@@ -21,12 +21,19 @@ package net.hasor.rsf.center.domain;
  */
 public class ProviderPublishInfo extends PublishInfo {
     private static final long serialVersionUID = -6681610352758467621L;
-    private int queueMaxSize;                            //最大服务处理队列长度
+    private int     queueMaxSize;                            //最大服务处理队列长度
+    private boolean sharedThreadPool;
     //
     public int getQueueMaxSize() {
         return queueMaxSize;
     }
     public void setQueueMaxSize(int queueMaxSize) {
         this.queueMaxSize = queueMaxSize;
+    }
+    public boolean isSharedThreadPool() {
+        return sharedThreadPool;
+    }
+    public void setSharedThreadPool(boolean sharedThreadPool) {
+        this.sharedThreadPool = sharedThreadPool;
     }
 }

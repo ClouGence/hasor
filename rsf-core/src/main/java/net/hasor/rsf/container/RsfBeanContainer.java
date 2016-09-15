@@ -39,8 +39,8 @@ import java.util.concurrent.ConcurrentMap;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfBeanContainer {
-    protected            Logger                logger       = LoggerFactory.getLogger(getClass());
-    private final static Provider<RsfFilter>[] EMPTY_FILTER = new Provider[0];
+    protected            Logger     logger       = LoggerFactory.getLogger(getClass());
+    private final static Provider[] EMPTY_FILTER = new Provider[0];
     private final ConcurrentMap<String, ServiceInfo<?>>        serviceMap;
     private final List<FilterDefine>                           filterList;
     private final Object                                       filterLock;

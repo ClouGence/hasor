@@ -52,7 +52,6 @@ public interface RsfBindInfo<T> extends BindInfo<T> {
     /** @return 获取序列化方式*/
     public String getSerializeType();
 
-    /** 为了兼容 Hasor 2.4.4 版本 */
-    @Deprecated
-    public void setMetaData(String key, Object value);
+    /** 服务的执行线程池是否为共享线程池。 */
+    public boolean isSharedThreadPool();
 }

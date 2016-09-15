@@ -16,4 +16,4 @@
 /**
  * 客户于注册中心通信接口{@link net.hasor.rsf.center.RsfCenterRegister}的实现。
  */
-package net.hasor.rsf.center.server.remote;
+package net.hasor.rsf.center.server.register;

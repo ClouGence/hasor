@@ -24,6 +24,7 @@ import org.more.builder.ToStringStyle;
 public class ResultDO<T> implements Result<T> {
     private           T         result    = null;
     private transient Throwable throwable = null;
+    private           ErrorCode errorInfo = null;
     private           boolean   success   = true;
     //
     public ResultDO() {
@@ -56,6 +57,13 @@ public class ResultDO<T> implements Result<T> {
     }
     public Throwable getThrowable() {
         return this.throwable;
+    }
+    @Override
+    public ErrorCode getErrorInfo() {
+        return this.errorInfo;
+    }
+    public void setErrorInfo(ErrorCode errorInfo) {
+        this.errorInfo = errorInfo;
     }
     public ResultDO<T> setResult(T result) {
         this.result = result;

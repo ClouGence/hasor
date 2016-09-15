@@ -16,6 +16,7 @@
 package net.hasor.rsf.center.server.utils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -23,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class DateCenterUtils {
-    protected static Logger    logger      = LoggerFactory.getLogger(DateCenterUtils.class);
+    protected static    Logger logger      = LoggerFactory.getLogger(DateCenterUtils.class);
     public static final String DATA_FORMAT = "yyyyMMdd-hhmmss";
     //
     /** 生成RSF-Center服务器心跳数据 */

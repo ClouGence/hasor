@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.remote;
+package net.hasor.rsf.center.server.register;
+import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.*;
+import net.hasor.rsf.RsfFilter;
+import net.hasor.rsf.RsfFilterChain;
+import net.hasor.rsf.RsfRequest;
+import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.center.server.manager.AuthManager;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfConstants;
@@ -29,11 +33,9 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class RsfCenterServerVerifyFilter implements RsfFilter {
     protected Logger logger = LoggerFactory.getLogger(getClass());
+    @Inject
     private AuthManager authManager;
     //
-    public RsfCenterServerVerifyFilter(RsfContext rsfContext) {
-        this.authManager = rsfContext.getAppContext().getInstance(AuthManager.class);
-    }
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         if (!request.isLocal()) {

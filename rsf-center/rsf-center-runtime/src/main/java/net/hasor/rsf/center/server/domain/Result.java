@@ -26,6 +26,8 @@ public interface Result<T> {
     /**(如果有)返回如果操作失败反馈的异常信息。*/
     public Throwable getThrowable();
 
+    public ErrorCode getErrorInfo();
+
     /**获取返回的结果集。*/
     public T getResult();
 }

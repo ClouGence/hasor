@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.utils;
+import org.more.builder.ToStringStyle;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.more.builder.ToStringStyle;
 /**
  * @version : 2015年7月6日
  * @author 赵永春(zyc@hasor.net)

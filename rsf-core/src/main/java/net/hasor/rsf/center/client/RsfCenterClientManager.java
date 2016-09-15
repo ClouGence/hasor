@@ -219,6 +219,7 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
                 //
                 ProviderPublishInfo info = fillTo(domain, new ProviderPublishInfo());
                 info.setQueueMaxSize(this.rsfContext.getSettings().getQueueMaxSize());
+                info.setSharedThreadPool(domain.isSharedThreadPool());
                 registerInfo = this.centerRegister.registerProvider(info);
                 logger.info("publishService service {} register to center -> {}", domain.getBindID(), registerInfo);
             } else if (RsfServiceType.Consumer == domain.getServiceType()) {
