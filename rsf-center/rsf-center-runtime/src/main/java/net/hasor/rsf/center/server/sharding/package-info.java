@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 服务变更消息推送机制。
+ * 多 Rsf-Center,服务信息分片管理功能。
  */
-package net.hasor.rsf.center.server.push;
+package net.hasor.rsf.center.server.sharding;
