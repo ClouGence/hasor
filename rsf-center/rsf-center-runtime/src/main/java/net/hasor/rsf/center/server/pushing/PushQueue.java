@@ -21,7 +21,6 @@ import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.server.domain.RsfCenterSettings;
-import net.hasor.rsf.center.server.utils.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,8 +52,9 @@ public class PushQueue implements Runnable {
         for (RsfCenterEventEnum eventType : RsfCenterEventEnum.values()) {
             PushProcessor processor = app.getInstance(eventType.getProcessorType());
             this.processorMapping.put(eventType, processor);
+            logger.info("pushQueue processor mapping {} -> {}", //
+                    eventType.forCenterEvent().getEventType(), eventType.getProcessorType());
         }
-        logger.info("pushQueue processor mapping ->{}", JsonUtils.toJsonString(this.processorMapping.keySet()));
         //
         this.dataQueue = new LinkedBlockingQueue<PushEvent>();
         this.threadPushQueue = new ArrayList<Thread>();
