@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 package net.test.hasor.core._05_plugins;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.test.hasor.core._01_bean.pojo.PojoBean;
+import org.junit.Test;
+import org.more.bizcommon.json.JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 1.启动模块
  * @version : 2015年11月6日
