@@ -63,7 +63,7 @@ public class RsfCenterRsfPlugin implements RsfPlugin {
         rsfBinder.rsfService(RsfCenterRegister.class)//服务类型
                 .timeout(faceTimer)//服务接口超时时间
                 .bindFilter("AuthFilter", new RsfCenterClientVerifyFilter(rsfContext))//服务安全过滤器
-                .bindStaticAddress(null, centerList)//静态地址，用不失效
+                .bindAddress(null, centerList)//静态地址，用不失效
                 .register();
         //
         // 3.注册RSF事件监听器
