@@ -26,9 +26,9 @@ import net.hasor.rsf.center.domain.PublishInfo;
 import net.hasor.rsf.center.domain.RsfCenterResultDO;
 import net.hasor.rsf.center.server.domain.ErrorCode;
 import net.hasor.rsf.center.server.domain.Result;
-import net.hasor.rsf.center.server.domain.entity.ConsumerInfo;
-import net.hasor.rsf.center.server.domain.entity.ProviderInfo;
-import net.hasor.rsf.center.server.domain.entity.ServiceInfo;
+import net.hasor.rsf.center.server.domain.ConsumerInfo;
+import net.hasor.rsf.center.server.domain.ProviderInfo;
+import net.hasor.rsf.center.server.domain.ServiceInfo;
 import net.hasor.rsf.center.server.manager.ServiceManager;
 import net.hasor.rsf.domain.RsfServiceType;
 import org.more.bizcommon.log.LogUtils;
@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 /**
  * 客户端注册中心接口{@link RsfCenterRegister}实现类，负责接收来自客户端的请求调用。
+ * (这个类做的最多的是输入输出校验)
  * @version : 2015年6月8日
  * @author 赵永春(zyc@hasor.net)
  */

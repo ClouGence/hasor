@@ -14,23 +14,31 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server;
-import net.hasor.rsf.center.server.domain.entity.AuthInfo;
-import net.hasor.rsf.center.server.domain.entity.ConsumerInfo;
-import net.hasor.rsf.center.server.domain.entity.ProviderInfo;
-import net.hasor.rsf.center.server.domain.entity.ServiceInfo;
-import org.more.bizcommon.Result;
+import net.hasor.rsf.center.server.domain.ObjectDO;
+import net.hasor.rsf.center.server.domain.Result;
+
+import java.util.List;
 /**
- *
+ * 服务数据存储检索
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface DataAdapter {
-    /** 存储ServiceInfo 信息,并返回是否成功。*/
-    public Result<Boolean> storeService(AuthInfo authInfo, ServiceInfo serviceDO);
+    /** 查询对象 */
+    public Result<ObjectDO> queryObjectByID(String objectID);
 
-    /** 存储服务提供者并返回标识符。*/
-    public Result<String> storeProvider(AuthInfo authInfo, String serviceID, ProviderInfo serviceDO);
+    /** 删除对象 */
+    public Result<Boolean> removeObjectByID(String objectID);
 
-    /** 存储服务提供者并返回标识符。*/
-    public Result<String> storeConsumer(AuthInfo authInfo, String serviceID, ConsumerInfo serviceDO);
+    /** 保存对象 */
+    public Result<Boolean> storeObject(String objectID, ObjectDO object, String refObjectID);
+
+    /** 检索关联的对象列表 */
+    public Result<List<ObjectDO>> queryObjectListByID(String refObjectID);
+
+    /** 清空对象上的所有关联 */
+    public Result<Boolean> clearRef(String objectID);
+
+    /** 刷新对象的时间(可选支持,如果不支持,center将会采取storeObject方法重新保存) */
+    public Result<Boolean> refreshObject(String objectID);
 }

@@ -156,13 +156,13 @@ public class AddressBucket extends Observable {
     }
     //
     /**
-     * 将地址置为失效的。
+     * 将地址置为失效的(对于静态地址,该方法无效)。
      * @param newInvalid 失效的地址。
      * @param timeout 失效时长
      */
     public void invalidAddress(InterAddress newInvalid, long timeout) {
         if (this.staticAddressList.contains(newInvalid)) {
-            return;
+            return;//对于静态地址,该方法无效
         }
         if (!this.allAddressList.contains(newInvalid)) {
             return;

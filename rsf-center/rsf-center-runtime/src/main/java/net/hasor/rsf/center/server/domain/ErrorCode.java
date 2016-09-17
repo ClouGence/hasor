@@ -27,8 +27,9 @@ import java.util.Set;
  */
 public enum ErrorCode {
     OK(0, "Success"),
-    Exception(1, "异常抛出。"),
+    Exception(1, "异常了。"),
     EmptyResult(2, "结果集为空。"),
+    StoreServiceFailed(3, "登记服务接口信息失败。"),
     //
     //
     //

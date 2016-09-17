@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.domain.entity;
+package net.hasor.rsf.center.server.domain;
 /**
  * 服务信息
  *

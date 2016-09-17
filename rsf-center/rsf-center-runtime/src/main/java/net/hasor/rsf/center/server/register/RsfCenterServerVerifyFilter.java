@@ -20,6 +20,8 @@ import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
+import net.hasor.rsf.center.server.domain.RsfCenterConstants;
+import net.hasor.rsf.center.server.domain.AuthInfo;
 import net.hasor.rsf.center.server.manager.AuthManager;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfConstants;
@@ -42,7 +44,11 @@ public class RsfCenterServerVerifyFilter implements RsfFilter {
             //-如果是来自远程的请求响应，则校验注册中心需要校验应用接入Key
             String appKey = request.getOption(RsfConstants.Center_RSF_APP_KEY);              //appKey 授权码
             String appKeySecret = request.getOption(RsfConstants.Center_RSF_APP_KEY_SECRET); //appKeySecret  应用程序编码
-            boolean authResult = this.authManager.checkAuth(appKey, appKeySecret, request.getBindInfo(), request.getMethod());
+            AuthInfo authInfo = new AuthInfo();
+            authInfo.setAppKey(appKey);
+            authInfo.setAppKeySecret(appKeySecret);
+            request.setAttribute(RsfCenterConstants.Center_Request_AuthInfo, authInfo);
+            boolean authResult = this.authManager.checkAuth(authInfo, request.getBindInfo(), request.getMethod());
             if (!authResult) {
                 response.sendStatus(ProtocolStatus.Unauthorized, "check auth code failed.");
                 return;

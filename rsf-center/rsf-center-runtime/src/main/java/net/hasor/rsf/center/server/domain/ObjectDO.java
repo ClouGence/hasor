@@ -13,34 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.domain.entity;
+package net.hasor.rsf.center.server.domain;
 import java.util.Date;
 /**
- * 授权信息
+ * 对象
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class AuthInfo {
-    private String appKey       = null; // Key
-    private String appKeySecret = null; // Key秘钥
-    private Date   expireTime   = null; // 过期时间
+public class ObjectDO {
+    private String objectID;
+    private String content;
+    private Date   refreshTime;
     //
-    public String getAppKey() {
-        return appKey;
+    public String getObjectID() {
+        return objectID;
     }
-    public void setAppKey(String appKey) {
-        this.appKey = appKey;
+    public void setObjectID(String objectID) {
+        this.objectID = objectID;
     }
-    public String getAppKeySecret() {
-        return appKeySecret;
+    public String getContent() {
+        return content;
     }
-    public void setAppKeySecret(String appKeySecret) {
-        this.appKeySecret = appKeySecret;
+    public void setContent(String content) {
+        this.content = content;
     }
-    public Date getExpireTime() {
-        return expireTime;
+    public Date getRefreshTime() {
+        return refreshTime;
     }
-    public void setExpireTime(Date expireTime) {
-        this.expireTime = expireTime;
+    public void setRefreshTime(Date refreshTime) {
+        this.refreshTime = refreshTime;
     }
 }

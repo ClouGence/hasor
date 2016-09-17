@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server;
-import net.hasor.rsf.center.server.domain.AuthInfo;
-import net.hasor.rsf.center.server.domain.Result;
+package net.hasor.rsf.center.server.domain;
 /**
- * 接口授权查询。
- * @version : 2016年2月22日
+ * 各种常量
+ * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface AuthQuery {
-    /** 发布服务权限检测 */
-    public Result<Boolean> checkPublish(AuthInfo authInfo, String serviceKey);
+public interface RsfCenterConstants {
+    public static final String Center_Request_AuthInfo = "RSF_REQUEST_AUTH";     //远程Request请求携带的验证信息
 }

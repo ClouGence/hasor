@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.domain.entity;
+package net.hasor.rsf.center.server.domain;
 import net.hasor.rsf.address.InterAddress;
 /**
- * 服务提供者信息
+ * 服务消费者信息
  *
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ProviderInfo {
-    /** 服务地址*/
+public class ConsumerInfo {
+    /** 客户端订阅者地址 */
     private InterAddress rsfAddress;
-    /** 获取客户端调用服务超时时间。*/
+    /** 获取客户端调用服务超时时间 */
     private int          clientTimeout;
-    /** 获取序列化方式*/
+    /** 获取序列化方式 */
     private String       serializeType;
-    /** 最大服务处理队列长度 */
-    private int          queueMaxSize;
-    /** 是否是共享处理线程池 */
-    private boolean      sharedThreadPool;
+    /** 最大请求队列长度 */
+    private int          maximumRequestSize;
     //
     public InterAddress getRsfAddress() {
         return rsfAddress;
@@ -51,16 +49,10 @@ public class ProviderInfo {
     public void setSerializeType(String serializeType) {
         this.serializeType = serializeType;
     }
-    public int getQueueMaxSize() {
-        return queueMaxSize;
+    public int getMaximumRequestSize() {
+        return maximumRequestSize;
     }
-    public void setQueueMaxSize(int queueMaxSize) {
-        this.queueMaxSize = queueMaxSize;
-    }
-    public boolean isSharedThreadPool() {
-        return sharedThreadPool;
-    }
-    public void setSharedThreadPool(boolean sharedThreadPool) {
-        this.sharedThreadPool = sharedThreadPool;
+    public void setMaximumRequestSize(int maximumRequestSize) {
+        this.maximumRequestSize = maximumRequestSize;
     }
 }
