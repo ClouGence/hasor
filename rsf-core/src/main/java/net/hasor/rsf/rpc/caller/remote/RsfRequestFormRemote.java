@@ -18,6 +18,7 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.domain.AttributeSet;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 
 import java.lang.reflect.Method;
@@ -26,7 +27,7 @@ import java.lang.reflect.Method;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-class RsfRequestFormRemote implements RsfRequest {
+class RsfRequestFormRemote extends AttributeSet implements RsfRequest {
     private final RequestInfo     requestInfo;
     private final InterAddress    target;
     private final RemoteRsfCaller rsfCaller;

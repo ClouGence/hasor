@@ -20,7 +20,6 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
 import net.hasor.rsf.*;
-import net.hasor.rsf.address.AddressTypeEnum;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.InterServiceAddress;
 import net.hasor.rsf.domain.RsfServiceType;
@@ -31,10 +30,7 @@ import org.more.util.StringUtils;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 /**
  * 服务注册器
@@ -69,12 +65,12 @@ abstract class RsfBindBuilder implements RsfBinder {
     }
     //
     private class LinkedBuilderImpl<T> implements LinkedBuilder<T> {
-        private final ServiceInfo<T>                     serviceDefine;
-        private final Map<InterAddress, AddressTypeEnum> addressMap;
+        private final ServiceInfo<T>    serviceDefine;
+        private final Set<InterAddress> addressSet;
         //
         protected LinkedBuilderImpl(Class<T> serviceType) {
             this.serviceDefine = new ServiceInfo<T>(serviceType);
-            this.addressMap = new HashMap<InterAddress, AddressTypeEnum>();
+            this.addressSet = new HashSet<InterAddress>();
             RsfSettings settings = getRsfContext().getEnvironment().getSettings();
             //
             RsfService serviceInfo = new AnnoRsfServiceValue(settings, serviceType);
@@ -218,59 +214,13 @@ abstract class RsfBindBuilder implements RsfBinder {
         }
         public RegisterBuilder<T> bindAddress(InterAddress rsfAddress, InterAddress... array) {
             if (rsfAddress != null) {
-                this.addressMap.put(rsfAddress, AddressTypeEnum.Dynamic);
+                this.addressSet.add(rsfAddress);
             }
             if (array.length > 0) {
                 for (InterAddress bindItem : array) {
                     if (bindItem == null)
                         continue;
-                    this.addressMap.put(bindItem, AddressTypeEnum.Dynamic);
-                }
-            }
-            return this;
-        }
-        //
-        @Override
-        public RegisterBuilder<T> bindStaticAddress(String rsfHost, int port) throws URISyntaxException {
-            String unitName = getRsfContext().getEnvironment().getSettings().getUnitName();
-            return this.bindStaticAddress(new InterAddress(rsfHost, port, unitName));
-        }
-        @Override
-        public RegisterBuilder<T> bindStaticAddress(String rsfURI, String... array) throws URISyntaxException {
-            if (!StringUtils.isBlank(rsfURI)) {
-                this.bindStaticAddress(new InterAddress(rsfURI));
-            }
-            if (array.length > 0) {
-                for (String bindItem : array) {
-                    this.bindStaticAddress(new InterAddress(bindItem));
-                }
-            }
-            return this;
-        }
-        @Override
-        public RegisterBuilder<T> bindStaticAddress(URI rsfURI, URI... array) {
-            if (rsfURI != null && (InterServiceAddress.checkFormat(rsfURI) || InterAddress.checkFormat(rsfURI))) {
-                this.bindStaticAddress(new InterAddress(rsfURI));
-            }
-            if (array.length > 0) {
-                for (URI bindItem : array) {
-                    if (rsfURI != null && (InterServiceAddress.checkFormat(bindItem) || InterAddress.checkFormat(bindItem))) {
-                        this.bindStaticAddress(new InterAddress(bindItem));
-                    }
-                    throw new FormatException(bindItem + " check fail.");
-                }
-            }
-            return this;
-        }
-        public RegisterBuilder<T> bindStaticAddress(InterAddress rsfAddress, InterAddress... array) {
-            if (rsfAddress != null) {
-                this.addressMap.put(rsfAddress, AddressTypeEnum.Static);
-            }
-            if (array.length > 0) {
-                for (InterAddress bindItem : array) {
-                    if (bindItem == null)
-                        continue;
-                    this.addressMap.put(bindItem, AddressTypeEnum.Static);
+                    this.addressSet.add(rsfAddress);
                 }
             }
             return this;
@@ -278,24 +228,11 @@ abstract class RsfBindBuilder implements RsfBinder {
         //
         public RegisterReference<T> register() throws IOException {
             String serviceID = this.serviceDefine.getDomain().getBindID();
-            Set<InterAddress> staticSet = new HashSet<InterAddress>();
-            Set<InterAddress> dynamicSet = new HashSet<InterAddress>();
-            //
-            for (Entry<InterAddress, AddressTypeEnum> ent : this.addressMap.entrySet()) {
-                if (ent.getKey() == null) {
-                    continue;
-                }
-                if (AddressTypeEnum.Static == ent.getValue()) {
-                    staticSet.add(ent.getKey());
-                } else if (AddressTypeEnum.Dynamic == ent.getValue()) {
-                    dynamicSet.add(ent.getKey());
-                }
-            }
-            //
             RsfUpdater updater = getRsfContext().getUpdater();
-            updater.appendStaticAddress(serviceID, staticSet);
-            updater.appendAddress(serviceID, dynamicSet);
-            return getContainer().publishService(this.serviceDefine);
+            // .先发布服务,避免地址发布成功之后服务发布失败,遗留垃圾数据的问题。
+            RegisterReference<T> ref = getContainer().publishService(this.serviceDefine);
+            updater.appendStaticAddress(serviceID, this.addressSet);
+            return ref;
         }
         @Override
         public void updateFlowControl(String flowControl) {

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.rsf.domain.warp;
-import java.lang.reflect.Method;
-
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.address.InterAddress;
+
+import java.lang.reflect.Method;
+import java.util.Enumeration;
 /**
  * RSF请求
  * @version : 2014年10月25日
@@ -63,6 +64,22 @@ public abstract class AbstractRsfRequestWarp implements RsfRequest {
     @Override
     public void removeOption(String key) {
         getRsfRequest().removeOption(key);
+    }
+    @Override
+    public Object getAttribute(String attrKey) {
+        return getRsfRequest().getAttribute(attrKey);
+    }
+    @Override
+    public void setAttribute(String attrKey, Object attrValue) {
+        getRsfRequest().setAttribute(attrKey, attrValue);
+    }
+    @Override
+    public void removeAttribute(String attrKey) {
+        getRsfRequest().removeAttribute(attrKey);
+    }
+    @Override
+    public Enumeration<String> getAttributeNames() {
+        return getRsfRequest().getAttributeNames();
     }
     @Override
     public boolean isLocal() {

@@ -18,9 +18,9 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.domain.AttributeSet;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.domain.provider.AddressProvider;
-import net.hasor.rsf.transform.protocol.OptionInfo;
 
 import java.lang.reflect.Method;
 /**
@@ -28,7 +28,7 @@ import java.lang.reflect.Method;
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-class RsfRequestFormLocal extends OptionInfo implements RsfRequest {
+class RsfRequestFormLocal extends AttributeSet implements RsfRequest {
     private final RsfCaller       rsfCaller;
     private final AddressProvider target;
     private final long            requestID;

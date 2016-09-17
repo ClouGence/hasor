@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.client;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfContext;
@@ -24,6 +21,9 @@ import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.domain.CenterEventBody;
 import net.hasor.rsf.domain.RsfCenterException;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 注册中心数据接收器，负责更新注册中心推送过来的配置信息。
  * @version : 2016年2月18日
@@ -38,6 +38,7 @@ public class RsfCenterDataReceiver implements RsfCenterListener {
     static {
         checkServiceEventArrays = new String[] { //
                 "AppendAddressEvent", //
+                "RefreshAddressEvent",//
                 "RemoveAddressEvent", //
                 "UpdateServiceRouteEvent", //
                 "UpdateMethodRouteEvent", //

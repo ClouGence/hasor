@@ -67,6 +67,10 @@ public class RsfBindInfoWrap<T> implements RsfBindInfo<T> {
         return this.target.getSerializeType();
     }
     @Override
+    public boolean isSharedThreadPool() {
+        return this.target.isSharedThreadPool();
+    }
+    @Override
     public void setMetaData(String key, Object value) {
         this.target.setMetaData(key, value);
     }

@@ -57,7 +57,7 @@ public interface RsfUpdater {
     public void appendAddress(String serviceID, Collection<InterAddress> newHostSet);
 
     /**
-     * 新增或追加更新服务地址信息。<p>
+     * 新增或追加更新服务静态本信息,静态服务地址是永久'有效'地址。<p>
      * 如果追加的地址是已存在的失效地址，那么updateAddress方法将重新激活这些失效地址。
      * @param serviceID 服务ID。
      * @param newHostSet 追加更新的地址。

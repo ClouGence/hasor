@@ -17,12 +17,25 @@ package net.hasor.rsf;
 import net.hasor.rsf.address.InterAddress;
 
 import java.lang.reflect.Method;
+import java.util.Enumeration;
 /**
  * 调用请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfRequest extends RsfHeader {
+    /**获取属性*/
+    public Object getAttribute(String attrKey);
+
+    /**保存属性,属性会在请求完毕之后丢失。特性和 web 下的 request 属性类似。*/
+    public void setAttribute(String attrKey, Object attrValue);
+
+    /**删除属性*/
+    public void removeAttribute(String attrKey);
+
+    /**获取所有属性名。*/
+    public Enumeration<String> getAttributeNames();
+
     /**请求是否为本地发起的。*/
     public boolean isLocal();
 

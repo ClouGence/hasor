@@ -224,30 +224,6 @@ public interface RsfBinder {
          */
         public RegisterBuilder<T> bindAddress(InterAddress rsfAddress, InterAddress... array);
 
-        /**
-         * @param rsfHost 远程服务地址
-         * @param port 远程服务端口
-         */
-        public RegisterBuilder<T> bindStaticAddress(String rsfHost, int port) throws URISyntaxException;
-
-        /**
-         * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
-         * @param rsfURI 远程服务地址
-         */
-        public RegisterBuilder<T> bindStaticAddress(String rsfURI, String... array) throws URISyntaxException;
-
-        /**
-         * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
-         * @param rsfURI 远程服务地址
-         */
-        public RegisterBuilder<T> bindStaticAddress(URI rsfURI, URI... array);
-
-        /**
-         * 远程地址例:“rsf://127.0.0.1:8000/unit”或“rsf://127.0.0.1:8000/unit/group/name/version”
-         * @param rsfAddress 远程服务地址
-         */
-        public RegisterBuilder<T> bindStaticAddress(InterAddress rsfAddress, InterAddress... array);
-
         /** @return 将服务注册到{@link RsfContext}上。*/
         public RegisterReference<T> register() throws IOException;
     }

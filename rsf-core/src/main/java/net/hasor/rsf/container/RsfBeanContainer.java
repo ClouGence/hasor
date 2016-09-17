@@ -250,7 +250,6 @@ public class RsfBeanContainer {
         };
     }
     //
-    //
     private static class RegisterReferenceInfoWrap<T> extends RsfBindInfoWrap<T> implements RegisterReference<T> {
         private RsfBeanContainer rsfContainer;
         private ServiceInfo<T>   serviceInfo;
