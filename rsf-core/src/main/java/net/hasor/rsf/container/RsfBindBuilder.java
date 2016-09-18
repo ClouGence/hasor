@@ -220,7 +220,7 @@ abstract class RsfBindBuilder implements RsfBinder {
                 for (InterAddress bindItem : array) {
                     if (bindItem == null)
                         continue;
-                    this.addressSet.add(rsfAddress);
+                    this.addressSet.add(bindItem);
                 }
             }
             return this;

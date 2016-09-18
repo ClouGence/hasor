@@ -16,19 +16,27 @@
 package net.hasor.rsf.center.server.manager;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.center.server.domain.RsfCenterCfg;
+import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.center.server.AuthQuery;
+import net.hasor.rsf.center.server.domain.AuthInfo;
+import net.hasor.rsf.center.server.domain.RsfCenterSettings;
+
+import java.lang.reflect.Method;
 /**
- * 
+ *
  * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
 @Singleton
 public class AuthManager {
     @Inject
-    private RsfCenterCfg rsfCenterCfg;
-    public boolean checkAuth(String appCode, String authCode) {
+    private RsfCenterSettings rsfCenterCfg;
+    @Inject
+    private AuthQuery         authQuery;
+    //
+    public boolean checkAuth(AuthInfo requestAuthInfo, RsfBindInfo<?> bindInfo, Method method) {
         // TODO Auto-generated method stub
-        System.out.println("checkAuth -> appCode=" + appCode + " ,authCode=" + authCode);
+        System.out.println("checkAuth -> appCode=" + requestAuthInfo.getAppKey() + " ,authCode=" + requestAuthInfo.getAppKeySecret());
         return true;
     }
 }

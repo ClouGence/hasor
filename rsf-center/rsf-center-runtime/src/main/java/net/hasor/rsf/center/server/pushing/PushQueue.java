@@ -52,25 +52,19 @@ public class PushQueue implements Runnable {
         for (RsfCenterEventEnum eventType : RsfCenterEventEnum.values()) {
             PushProcessor processor = app.getInstance(eventType.getProcessorType());
             this.processorMapping.put(eventType, processor);
-            logger.info("pushQueue processor mapping {} -> {}", //
-                    eventType.forCenterEvent().getEventType(), eventType.getProcessorType());
+            logger.info("pushQueue processor mapping {} -> {}", eventType.forCenterEvent().getEventType(), eventType.getProcessorType());
         }
         //
         this.dataQueue = new LinkedBlockingQueue<PushEvent>();
         this.threadPushQueue = new ArrayList<Thread>();
         for (int i = 1; i <= 3; i++) {
-            Thread pushQueue = this.createPushThread(i);
+            Thread pushQueue = new Thread(this);
+            pushQueue.setDaemon(true);
+            pushQueue.setName("Rsf-Center-PushQueue-" + i);
             pushQueue.start();
             this.threadPushQueue.add(pushQueue);
         }
         logger.info("PushQueue Thread start.");
-    }
-    /**创建推送线程*/
-    private Thread createPushThread(int index) {
-        Thread threadPushQueue = new Thread(this);
-        threadPushQueue.setDaemon(true);
-        threadPushQueue.setName("Rsf-Center-PushQueue-" + index);
-        return threadPushQueue;
     }
     public void run() {
         while (true) {
@@ -98,13 +92,13 @@ public class PushQueue implements Runnable {
     }
     // - 将消息推送交给推送线程,执行异步推送。
     public boolean doPushEvent(PushEvent eventData) {
-        if (this.dataQueue.size() > this.rsfCenterCfg.getPushQueueMaxSize()) {
+        if (this.dataQueue.size() > this.rsfCenterCfg.getQueueMaxSize()) {
             try {
-                Thread.sleep(this.rsfCenterCfg.getPushSleepTime());
+                Thread.sleep(this.rsfCenterCfg.getSleepTime());
             } catch (Exception e) {
                 logger.error("pushQueue - " + e.getMessage(), e);
             }
-            if (this.dataQueue.size() > this.rsfCenterCfg.getPushQueueMaxSize()) {
+            if (this.dataQueue.size() > this.rsfCenterCfg.getQueueMaxSize()) {
                 return false;//资源还是紧张,返回 失败
             }
         }

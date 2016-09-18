@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.domain;
+package net.hasor.rsf.center.server;
 /**
- * 各种常量
- * @version : 2014年9月20日
+ * 提供者Manager
+ * @version : 2016年9月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfCenterConstants {
-    public static final String Center_DataKey_Service  = "S|";                  //服务
-    public static final String Center_DataKey_Provider = "P|";                  //提供者
-    public static final String Center_DataKey_Consumer = "C|";                  //订阅者
-    // ----------------------------------------------------
-    //
-    public static final String Center_Request_AuthInfo = "RSF_REQUEST_AUTH";     //远程Request请求携带的验证信息
+public class QueryOption {
+    private String objectType;
+    public void setType(String objectType) {
+        this.objectType = objectType;
+    }
 }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.domain;
-import net.hasor.rsf.address.InterAddress;
 /**
  * 服务提供者信息
  *
@@ -23,20 +22,20 @@ import net.hasor.rsf.address.InterAddress;
  */
 public class ProviderInfo {
     /** 服务地址*/
-    private InterAddress rsfAddress;
+    private String  rsfAddress;
     /** 获取客户端调用服务超时时间。*/
-    private int          clientTimeout;
+    private int     clientTimeout;
     /** 获取序列化方式*/
-    private String       serializeType;
+    private String  serializeType;
     /** 最大服务处理队列长度 */
-    private int          queueMaxSize;
+    private int     queueMaxSize;
     /** 是否是共享处理线程池 */
-    private boolean      sharedThreadPool;
+    private boolean sharedThreadPool;
     //
-    public InterAddress getRsfAddress() {
+    public String getRsfAddress() {
         return rsfAddress;
     }
-    public void setRsfAddress(InterAddress rsfAddress) {
+    public void setRsfAddress(String rsfAddress) {
         this.rsfAddress = rsfAddress;
     }
     public int getClientTimeout() {

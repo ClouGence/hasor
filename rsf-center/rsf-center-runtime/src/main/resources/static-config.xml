@@ -30,12 +30,28 @@
         -->
         <clusterServers>${RSF_CENTER_SERVERS}</clusterServers>
 
-        <!-- 服务推送配置 -->
-        <polling>
-            <!-- 推送队列最大长度，当待推送服务达到这个阀值之后注册中心就会将新的事件交给集群其它机器去处理。 -->
-            <queueMaxSize>10000</queueMaxSize>
-            <!-- 当遇到推送队列满了之后等待多长时间重试一次，如果重试的时候队列依然满的，那么转发到其它机器上。单位毫秒 -->
-            <sleepTime>1000</sleepTime>
-        </polling>
+        <!--
+            推送配置
+               - threadSize   : 负责执行推送任务的线程数。
+               - queueMaxSize : 推送队列最大长度，当推送处理队列达到这个阀值之后,新的推送任务将不会被接受。受影响Center将会暂定服务。
+               - sleepTime    : 当遇到推送队列满了之后等待多长时间重试一次，如果重试的时候队列依然满的，那么放弃推送。(单位毫秒)
+         -->
+        <polling threadSize="10" queueMaxSize="20000" sleepTime="1000"/>
+
+        <!-- 服务管理 -->
+        <serviceManager>
+            <!-- 服务提供者,心跳过期时间(30秒) -->
+            <providerExpireTime>30000</providerExpireTime>
+            <!-- 服务订阅者,心跳过期时间(30秒) -->
+            <consumerExpireTime>30000</consumerExpireTime>
+
+        </serviceManager>
+
+        <!-- 数据适配器 -->
+        <adapterConfig>
+            <dataAdapter>net.hasor.rsf.center.server.adapter.HashMapDataAdapter</dataAdapter>
+            <authQuery>net.hasor.rsf.center.server.adapter.AuthQueryImpl</authQuery>
+        </adapterConfig>
+
     </rsfCenter>
 </config>

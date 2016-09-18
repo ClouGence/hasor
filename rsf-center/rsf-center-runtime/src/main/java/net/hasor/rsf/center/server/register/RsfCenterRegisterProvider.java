@@ -24,11 +24,7 @@ import net.hasor.rsf.center.domain.ConsumerPublishInfo;
 import net.hasor.rsf.center.domain.ProviderPublishInfo;
 import net.hasor.rsf.center.domain.PublishInfo;
 import net.hasor.rsf.center.domain.RsfCenterResultDO;
-import net.hasor.rsf.center.server.domain.ErrorCode;
-import net.hasor.rsf.center.server.domain.Result;
-import net.hasor.rsf.center.server.domain.ConsumerInfo;
-import net.hasor.rsf.center.server.domain.ProviderInfo;
-import net.hasor.rsf.center.server.domain.ServiceInfo;
+import net.hasor.rsf.center.server.domain.*;
 import net.hasor.rsf.center.server.manager.ServiceManager;
 import net.hasor.rsf.domain.RsfServiceType;
 import org.more.bizcommon.log.LogUtils;
@@ -63,30 +59,29 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     public RsfCenterResult<String> registerProvider(ProviderPublishInfo info) {
         InterAddress rsfAddress = this.rsfRequest.getRemoteAddress();
         ProviderInfo providerInfo = new ProviderInfo();
-        providerInfo.setRsfAddress(rsfAddress);
+        providerInfo.setRsfAddress(rsfAddress.toHostSchema());
         providerInfo.setClientTimeout(info.getClientTimeout());
         providerInfo.setQueueMaxSize(info.getQueueMaxSize());
         providerInfo.setSerializeType(info.getSerializeType());
         providerInfo.setSharedThreadPool(info.isSharedThreadPool());
         ServiceInfo serviceInfo = getServiceInfo(info);
-        return this.register(serviceInfo, providerInfo, RsfServiceType.Provider);
+        return this.register(rsfAddress, serviceInfo, providerInfo, RsfServiceType.Provider);
     }
     /**订阅服务*/
     @Override
     public RsfCenterResult<String> registerConsumer(ConsumerPublishInfo info) {
         InterAddress rsfAddress = this.rsfRequest.getRemoteAddress();
         ConsumerInfo consumerInfo = new ConsumerInfo();
-        consumerInfo.setRsfAddress(rsfAddress);
+        consumerInfo.setRsfAddress(rsfAddress.toHostSchema());
         consumerInfo.setClientTimeout(info.getClientTimeout());
         consumerInfo.setMaximumRequestSize(info.getClientMaximumRequest());
         consumerInfo.setSerializeType(info.getSerializeType());
         ServiceInfo serviceInfo = getServiceInfo(info);
-        return this.register(serviceInfo, consumerInfo, RsfServiceType.Consumer);
+        return this.register(rsfAddress, serviceInfo, consumerInfo, RsfServiceType.Consumer);
     }
     //
-    private RsfCenterResult<String> register(ServiceInfo serviceInfo, Object info, RsfServiceType type) {
+    private RsfCenterResult<String> register(InterAddress rsfAddress, ServiceInfo serviceInfo, Object info, RsfServiceType type) {
         RsfCenterResultDO<String> centerResult = new RsfCenterResultDO<String>();
-        InterAddress rsfAddress = this.rsfRequest.getRemoteAddress();
         centerResult.setMessageID(this.rsfRequest.getRequestID());
         try {
             // .发布服务,并获取结果

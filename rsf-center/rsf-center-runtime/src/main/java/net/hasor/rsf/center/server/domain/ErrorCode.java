@@ -30,6 +30,7 @@ public enum ErrorCode {
     Exception(1, "异常了。"),
     EmptyResult(2, "结果集为空。"),
     StoreServiceFailed(3, "登记服务接口信息失败。"),
+    ServiceUndefined(4, "服务未定义。"),
     //
     //
     //

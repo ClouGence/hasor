@@ -30,11 +30,11 @@ public interface DataAdapter {
     /** 删除对象 */
     public Result<Boolean> removeObjectByID(String objectID);
 
-    /** 保存对象 */
-    public Result<Boolean> storeObject(String objectID, ObjectDO object, String refObjectID);
+    /** 保存对象,并将改对象关联到refObjectID对象上 */
+    public Result<Boolean> storeObject(ObjectDO object);
 
     /** 检索关联的对象列表 */
-    public Result<List<ObjectDO>> queryObjectListByID(String refObjectID);
+    public Result<List<ObjectDO>> queryObjectListByID(String refObjectID, QueryOption option);
 
     /** 清空对象上的所有关联 */
     public Result<Boolean> clearRef(String objectID);

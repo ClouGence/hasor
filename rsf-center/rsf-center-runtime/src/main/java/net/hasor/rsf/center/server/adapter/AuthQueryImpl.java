@@ -13,17 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.domain;
+package net.hasor.rsf.center.server.adapter;
+import net.hasor.rsf.center.server.AuthQuery;
+import net.hasor.rsf.center.server.domain.AuthInfo;
+import net.hasor.rsf.center.server.domain.Result;
+import net.hasor.rsf.center.server.domain.ResultDO;
 /**
- * 各种常量
- * @version : 2014年9月20日
+ * 接口授权查询。
+ * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfCenterConstants {
-    public static final String Center_DataKey_Service  = "S|";                  //服务
-    public static final String Center_DataKey_Provider = "P|";                  //提供者
-    public static final String Center_DataKey_Consumer = "C|";                  //订阅者
-    // ----------------------------------------------------
-    //
-    public static final String Center_Request_AuthInfo = "RSF_REQUEST_AUTH";     //远程Request请求携带的验证信息
+public class AuthQueryImpl implements AuthQuery {
+    @Override
+    public Result<Boolean> checkPublish(AuthInfo authInfo, String serviceKey) {
+        ResultDO<Boolean> result = new ResultDO<Boolean>();
+        result.setSuccess(true);
+        result.setResult(true);
+        return result;
+    }
 }

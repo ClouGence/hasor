@@ -246,6 +246,9 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
     //
     /** 拉地址 */
     private void pullAddress(RsfBindInfo<?> domain) {
+        if (RsfServiceType.Consumer != domain.getServiceType()) {
+            return;/*只有Consumer才需要pull地址*/
+        }
         // .拉地址3次尝试
         String serviceID = domain.getBindID();
         String registerID = (String) domain.getMetaData(RsfConstants.Center_Ticket);

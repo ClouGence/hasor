@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.domain;
+package net.hasor.rsf.center.server.utils;
+import com.alibaba.fastjson.JSON;
 /**
- * 各种常量
- * @version : 2014年9月20日
+ * @version : 2015年7月6日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfCenterConstants {
-    public static final String Center_DataKey_Service  = "S|";                  //服务
-    public static final String Center_DataKey_Provider = "P|";                  //提供者
-    public static final String Center_DataKey_Consumer = "C|";                  //订阅者
-    // ----------------------------------------------------
-    //
-    public static final String Center_Request_AuthInfo = "RSF_REQUEST_AUTH";     //远程Request请求携带的验证信息
+public class JsonUtils {
+    public static String converToString(Object object) {
+        return JSON.toJSONString(object);
+    }
+    public static <T> T converToService(String jsonData, Class<T> targetType) {
+        return JSON.parseObject(jsonData, targetType);
+    }
 }

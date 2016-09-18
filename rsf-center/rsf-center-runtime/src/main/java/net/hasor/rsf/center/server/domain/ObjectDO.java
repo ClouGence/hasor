@@ -21,15 +21,29 @@ import java.util.Date;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ObjectDO {
-    private String objectID;
-    private String content;
-    private Date   refreshTime;
+    private String objectID;    // 对象ID
+    private String type;        // 对象类别
+    private String refObjectID; // 与其它对象建立关系
+    private String content;     // 内容
+    private Date   refreshTime; // 最后刷新时间
     //
     public String getObjectID() {
         return objectID;
     }
     public void setObjectID(String objectID) {
         this.objectID = objectID;
+    }
+    public String getType() {
+        return type;
+    }
+    public void setType(String type) {
+        this.type = type;
+    }
+    public String getRefObjectID() {
+        return refObjectID;
+    }
+    public void setRefObjectID(String refObjectID) {
+        this.refObjectID = refObjectID;
     }
     public String getContent() {
         return content;

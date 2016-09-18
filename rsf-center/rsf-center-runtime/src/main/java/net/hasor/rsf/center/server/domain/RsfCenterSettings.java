@@ -33,32 +33,45 @@ public class RsfCenterSettings {
     private WorkMode workMode;
     private String   workDir;
     //
-    private String   centerVersion;
-    private int      pushQueueMaxSize;
-    private int      pushSleepTime;
-    private String   anonymousAppCode;
+    private String   version;
+    private int      threadSize;
+    private int      queueMaxSize;
+    private int      sleepTime;
     //
-    public RsfCenterSettings(Environment environment) {
+    private int      providerExpireTime;
+    private int      consumerExpireTime;
+    private Class<?> dataAdapterType;
+    private Class<?> authQueryType;
+    //
+    //
+    public RsfCenterSettings(Environment environment) throws ClassNotFoundException {
         Settings settings = environment.getSettings();
         this.workMode = settings.getEnum("rsfCenter.workAt", WorkMode.class, WorkMode.Alone);
         this.workDir = environment.getWorkSpaceDir();
         try {
             InputStream verIns = ResourcesUtils.getResourceAsStream("/META-INF/rsf-center.version");
             List<String> dataLines = IOUtils.readLines(verIns, "UTF-8");
-            this.centerVersion = !dataLines.isEmpty() ? dataLines.get(0) : null;
+            this.version = !dataLines.isEmpty() ? dataLines.get(0) : null;
         } catch (Throwable e) {
             logger.error("read version file:/META-INF/rsf-center.version failed -> {}", e);
-            this.centerVersion = "undefined";
+            this.version = "undefined";
         }
         //
-        this.pushQueueMaxSize = settings.getInteger("rsfCenter.push.queueMaxSize", 100);// 推送队列最大长度，当待推送服务达到这个阀值之后注册中心会做一次推送动作。
-        this.pushSleepTime = settings.getInteger("rsfCenter.push.sleepTime", 1000);// 当遇到推送队列满了之后等待多长时间重试一次，如果重试的时候队列依然满的，那么转发到其它机器上。
-        this.anonymousAppCode = settings.getString("rsfCenter.push.anonymousAppCode", "anonymous");// 默认推送使用的：应用程序代码
+        this.threadSize = settings.getInteger("rsfCenter.polling.threadSize", 10);
+        this.queueMaxSize = settings.getInteger("rsfCenter.polling.queueMaxSize", 20000);
+        this.sleepTime = settings.getInteger("rsfCenter.polling.sleepTime", 1000);
+        //
+        this.providerExpireTime = settings.getInteger("rsfCenter.serviceManager.providerExpireTime", 30000);
+        this.consumerExpireTime = settings.getInteger("rsfCenter.serviceManager.consumerExpireTime", 30000);
+        //
+        ClassLoader classLoader = environment.getClassLoader();
+        this.dataAdapterType = classLoader.loadClass(settings.getString("rsfCenter.adapterConfig.dataAdapter"));
+        this.authQueryType = classLoader.loadClass(settings.getString("rsfCenter.adapterConfig.authQuery"));
     }
     //
     /** 获取RSF-Center服务器版本 */
     public String getVersion() {
-        return this.centerVersion;
+        return this.version;
     }
     public WorkMode getWorkMode() {
         return workMode;
@@ -66,13 +79,27 @@ public class RsfCenterSettings {
     public String getWorkDir() {
         return workDir;
     }
-    public int getPushQueueMaxSize() {
-        return this.pushQueueMaxSize;
+    //
+    public int getThreadSize() {
+        return threadSize;
     }
-    public int getPushSleepTime() {
-        return pushSleepTime;
+    public int getQueueMaxSize() {
+        return queueMaxSize;
     }
-    public String getAnonymousAppCode() {
-        return anonymousAppCode;
+    public int getSleepTime() {
+        return sleepTime;
+    }
+    //
+    public int getProviderExpireTime() {
+        return providerExpireTime;
+    }
+    public int getConsumerExpireTime() {
+        return consumerExpireTime;
+    }
+    public Class<?> getDataAdapterType() {
+        return dataAdapterType;
+    }
+    public Class<?> getAuthQueryType() {
+        return authQueryType;
     }
 }

@@ -23,6 +23,8 @@ import net.hasor.rsf.RsfModule;
 import net.hasor.rsf.RsfPlugin;
 import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.RsfCenterRegister;
+import net.hasor.rsf.center.server.AuthQuery;
+import net.hasor.rsf.center.server.DataAdapter;
 import net.hasor.rsf.center.server.domain.RsfCenterSettings;
 import net.hasor.rsf.center.server.domain.WorkMode;
 import net.hasor.rsf.center.server.register.RsfCenterRegisterProvider;
@@ -49,12 +51,10 @@ public class RsfCenterServerModule implements LifeModule, RsfPlugin {
         // .发布Center启动配置
         apiBinder.installModule(RsfModule.toModule(this));
         //
+        // .adapter
+        apiBinder.bindType(AuthQuery.class).to((Class<? extends AuthQuery>) centerSettings.getAuthQueryType());
+        apiBinder.bindType(DataAdapter.class).to((Class<? extends DataAdapter>) centerSettings.getDataAdapterType());
         //
-        //
-        //        long dataMaxSize = 2 * 1024 * 1024 * 1024 * 1024;//2GB
-        //        DB db = DBMaker.memoryDirectDB().transactionEnable().allocateIncrement(dataMaxSize).make();
-        // 5.注册PushQueue类型，当容器启动之后会启动，注册中心推送线程。
-        //        apiBinder.bindType(PushQueue.class);
     }
     @Override
     public final void loadRsf(RsfContext rsfContext) throws Throwable {
