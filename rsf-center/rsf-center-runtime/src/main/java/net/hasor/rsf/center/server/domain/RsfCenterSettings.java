@@ -58,6 +58,9 @@ public class RsfCenterSettings {
         }
         //
         this.threadSize = settings.getInteger("rsfCenter.polling.threadSize", 10);
+        if (this.threadSize < 1) {
+            this.threadSize = 3;
+        }
         this.queueMaxSize = settings.getInteger("rsfCenter.polling.queueMaxSize", 20000);
         this.sleepTime = settings.getInteger("rsfCenter.polling.sleepTime", 1000);
         //

@@ -57,18 +57,14 @@ public class MainLauncher {
     //
     public static void doStart(String[] args) throws Throwable {
         logger.info(">>>>>>>>>>>>>>>>> doStart <<<<<<<<<<<<<<<<<");
-        final BasicFuture<Object> future = new BasicFuture<Object>();
+        final BasicFuture<Object> future = new BasicFuture<>();
         final String config = args[1];
-        AppContext app = Hasor.createAppContext(new File(config), new Module() {
-            public void loadModule(ApiBinder apiBinder) throws Throwable {
-                /* 特殊 RSF 指令 */
-                apiBinder.bindType(RsfInstruct.class).uniqueName().to(CenterAppShutdownInstruct.class);
-            }
+        AppContext app = Hasor.createAppContext(new File(config), (Module) apiBinder -> {
+            /* 特殊 RSF 指令 */
+            apiBinder.bindType(RsfInstruct.class).uniqueName().to(CenterAppShutdownInstruct.class);
         });
-        app.getEnvironment().getEventContext().addListener(AppContext.ContextEvent_Shutdown, new EventListener<AppContext>() {
-            public void onEvent(String event, AppContext eventData) throws Throwable {
-                future.completed(new Object());//to end
-            }
+        app.getEnvironment().getEventContext().addListener(AppContext.ContextEvent_Shutdown, (EventListener<AppContext>) (event, eventData) -> {
+            future.completed(new Object());//to end
         });
         //
         future.get();
@@ -84,7 +80,7 @@ public class MainLauncher {
         addressHost = NetworkUtils.finalBindAddress(addressHost).getHostAddress();
         int consolePort = rsfSettings.getConsolePort();
         //
-        Map<String, String> envMap = new HashMap<String, String>();
+        Map<String, String> envMap = new HashMap<>();
         envMap.put("open_kill_self", "true");
         TelnetClient.execCommand(addressHost, consolePort, "center_app_shutdown_command", envMap);
     }

@@ -14,14 +14,24 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server;
+import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.server.domain.AuthInfo;
 import net.hasor.rsf.center.server.domain.Result;
+import net.hasor.rsf.center.server.domain.ServiceInfo;
+import net.hasor.rsf.domain.RsfServiceType;
 /**
  * 接口授权查询。
  * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface AuthQuery {
-    /** 发布服务权限检测 */
-    public Result<Boolean> checkPublish(AuthInfo authInfo, String serviceKey);
+    /**
+     * 发布服务权限检测
+     * @param authInfo 授权信息
+     * @param rsfAddress 请求 center 的远程机器
+     * @param serviceInfo 服务信息
+     * @param serviceType 提供者 or 消费者
+     * @return
+     */
+    public Result<Boolean> checkPublish(AuthInfo authInfo, InterAddress rsfAddress, ServiceInfo serviceInfo, RsfServiceType serviceType);
 }

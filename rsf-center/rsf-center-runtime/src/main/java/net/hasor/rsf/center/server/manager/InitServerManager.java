@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
+@Deprecated
 @Singleton
 public class InitServerManager {
     protected Logger logger = LoggerFactory.getLogger(getClass());

@@ -81,7 +81,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     }
     //
     private RsfCenterResult<String> register(InterAddress rsfAddress, ServiceInfo serviceInfo, Object info, RsfServiceType type) {
-        RsfCenterResultDO<String> centerResult = new RsfCenterResultDO<String>();
+        RsfCenterResultDO<String> centerResult = new RsfCenterResultDO<>();
         centerResult.setMessageID(this.rsfRequest.getRequestID());
         try {
             // .发布服务,并获取结果
@@ -135,7 +135,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     /**服务下线*/
     @Override
     public RsfCenterResult<Boolean> unRegister(String registerID, String serviceID) {
-        RsfCenterResultDO<Boolean> centerResult = new RsfCenterResultDO<Boolean>();
+        RsfCenterResultDO<Boolean> centerResult = new RsfCenterResultDO<>();
         centerResult.setMessageID(this.rsfRequest.getRequestID());
         InterAddress rsfAddress = this.rsfRequest.getRemoteAddress();
         try {
@@ -172,7 +172,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     //
     @Override
     public RsfCenterResult<Boolean> serviceBeat(String registerID, String serviceID) {
-        RsfCenterResultDO<Boolean> centerResult = new RsfCenterResultDO<Boolean>();
+        RsfCenterResultDO<Boolean> centerResult = new RsfCenterResultDO<>();
         centerResult.setMessageID(this.rsfRequest.getRequestID());
         InterAddress rsfAddress = this.rsfRequest.getRemoteAddress();
         try {
@@ -208,7 +208,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     }
     @Override
     public RsfCenterResult<List<String>> pullProviders(String registerID, String serviceID) {
-        RsfCenterResultDO<List<String>> centerResult = new RsfCenterResultDO<List<String>>();
+        RsfCenterResultDO<List<String>> centerResult = new RsfCenterResultDO<>();
         centerResult.setMessageID(this.rsfRequest.getRequestID());
         InterAddress rsfAddress = this.rsfRequest.getRemoteAddress();
         try {
@@ -244,7 +244,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     }
     @Override
     public RsfCenterResult<Boolean> requestPushProviders(String registerID, String serviceID) {
-        RsfCenterResultDO<Boolean> centerResult = new RsfCenterResultDO<Boolean>();
+        RsfCenterResultDO<Boolean> centerResult = new RsfCenterResultDO<>();
         centerResult.setMessageID(this.rsfRequest.getRequestID());
         InterAddress rsfAddress = this.rsfRequest.getRemoteAddress();
         try {

@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server;
 /**
- * 提供者Manager
- * @version : 2016年9月18日
- * @author 赵永春(zyc@hasor.net)
+ * 默认数据存取服务。
  */
-public class QueryOption {
-    private String objectType;
-    public String getObjectType() {
-        return objectType;
-    }
-    public void setObjectType(String objectType) {
-        this.objectType = objectType;
-    }
-}
+package net.hasor.rsf.center.server.adapter;

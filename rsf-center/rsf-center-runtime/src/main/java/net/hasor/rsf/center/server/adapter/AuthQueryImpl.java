@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.adapter;
+import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.server.AuthQuery;
 import net.hasor.rsf.center.server.domain.AuthInfo;
 import net.hasor.rsf.center.server.domain.Result;
 import net.hasor.rsf.center.server.domain.ResultDO;
+import net.hasor.rsf.center.server.domain.ServiceInfo;
+import net.hasor.rsf.domain.RsfServiceType;
 /**
  * 接口授权查询。
  * @version : 2016年2月22日
@@ -25,7 +28,7 @@ import net.hasor.rsf.center.server.domain.ResultDO;
  */
 public class AuthQueryImpl implements AuthQuery {
     @Override
-    public Result<Boolean> checkPublish(AuthInfo authInfo, String serviceKey) {
+    public Result<Boolean> checkPublish(AuthInfo authInfo, InterAddress rsfAddress, ServiceInfo serviceInfo, RsfServiceType serviceType) {
         ResultDO<Boolean> result = new ResultDO<Boolean>();
         result.setSuccess(true);
         result.setResult(true);

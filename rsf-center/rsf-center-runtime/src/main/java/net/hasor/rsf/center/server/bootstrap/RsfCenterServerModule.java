@@ -75,6 +75,7 @@ public class RsfCenterServerModule implements LifeModule, RsfPlugin {
             this.logger.warn("this application has been started form the client mode, so rsfCenter cannot be started.");
             return;
         }
+        //
         // .注册 Center提供服务的接口
         RsfCenterSettings centerSettings = rsfContext.getAppContext().getInstance(RsfCenterSettings.class);
         RsfBinder rsfBinder = rsfContext.binder();
@@ -85,9 +86,6 @@ public class RsfCenterServerModule implements LifeModule, RsfPlugin {
                 .bindFilter("VerificationFilter", RsfCenterServerVerifyFilter.class)//
                 .register();
         // .
-        //
-        //
-        //
         //
         // .工作模式
         WorkMode workMode = centerSettings.getWorkMode();

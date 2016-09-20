@@ -26,15 +26,17 @@ import net.hasor.rsf.center.server.QueryOption;
 import net.hasor.rsf.center.server.domain.*;
 import net.hasor.rsf.center.server.pushing.RsfPusher;
 import net.hasor.rsf.center.server.utils.JsonUtils;
+import net.hasor.rsf.domain.RsfServiceType;
 import org.more.bizcommon.log.LogUtils;
 import org.more.util.CommonCodeUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 /**
- * 提供者Manager
+ * Center功能实现
  * @version : 2016年9月18日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -42,26 +44,25 @@ import java.util.*;
 public class ServiceManager {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
-    private RsfRequest        rsfRequest;
+    private RsfRequest        rsfRequest;   // 当前 Rsf 请求
     @Inject
-    private AppContext        appContext;
+    private AppContext        appContext;   // Hasor AppContext
     @Inject
-    private DataAdapter       dataAdapter;
+    private DataAdapter       dataAdapter;  // Center数据读写接口
     @Inject
-    private RsfPusher         rsfPusher;
+    private RsfPusher         rsfPusher;    // 服务推送触发器
     @Inject
-    private AuthQuery         authQuery;
+    private AuthQuery         authQuery;    // 接口权限查询接口
     @Inject
-    private RsfCenterSettings rsfCenterCfg;
+    private EnvironmentConfig envConfig;    // Center配置
     //
-    //
-    /**获取授权信息*/
-    protected AuthInfo getAuthInfo() {
-        return (AuthInfo) rsfRequest.getAttribute(RsfCenterConstants.Center_Request_AuthInfo);
+    /** 获取授权信息 */
+    private AuthInfo getAuthInfo() {
+        return (AuthInfo) this.rsfRequest.getAttribute(RsfCenterConstants.Center_Request_AuthInfo);
     }
-    /**处理失败的情况*/
-    protected Result<String> buildFailedResult(Result<?> resultInfo) {
-        ResultDO<String> result = new ResultDO<String>();
+    /** 处理失败的情况 */
+    private <T> Result<T> buildFailedResult(Result<?> resultInfo) {
+        ResultDO<T> result = new ResultDO<>();
         if (resultInfo == null || resultInfo.getResult() == null) {
             result.setErrorInfo(ErrorCode.EmptyResult);
         } else {
@@ -71,23 +72,107 @@ public class ServiceManager {
         result.setSuccess(false);
         return result;
     }
-    /** 计算registerID */
-    protected Result<String> evalRegisterID(String consumerObjectKey) {
+    private String eval(String objectKey) {
         try {
-            String registerID = CommonCodeUtils.MD5.getMD5(consumerObjectKey);
-            ResultDO<String> resultDO = new ResultDO<String>();
-            resultDO.setSuccess(true);
-            resultDO.setErrorInfo(ErrorCode.OK);
-            resultDO.setResult(registerID);
-            return resultDO;
-        } catch (Exception e) {
-            ResultDO<String> resultDO = new ResultDO<String>();
-            resultDO.setSuccess(false);
-            resultDO.setErrorInfo(ErrorCode.Exception);
-            resultDO.setThrowable(e);
-            return resultDO;
+            return CommonCodeUtils.MD5.getMD5(objectKey + this.envConfig.getSaltValue());//Key要加盐
+        } catch (NoSuchAlgorithmException e) {
+            return null;
         }
     }
+    /** 计算registerID */
+    private Result<String> evalRegisterID(String objectKey, RsfServiceType serviceType) {
+        // .计算registerID( 相同的入参,会产出相同的registerID )
+        String registerID = eval(objectKey);
+        if (StringUtils.isNotBlank(registerID) && RsfServiceType.Provider == serviceType) {
+            registerID = RsfCenterConstants.Center_DataKey_Provider + registerID;
+        } else if (StringUtils.isNotBlank(registerID) && RsfServiceType.Consumer == serviceType) {
+            registerID = RsfCenterConstants.Center_DataKey_Consumer + registerID;
+        } else {
+            ResultDO<String> resultDO = new ResultDO<>();
+            resultDO.setSuccess(false);
+            if (StringUtils.isBlank(registerID)) {
+                resultDO.setErrorInfo(ErrorCode.BuildRegisterIDFailed_Null);
+            } else {
+                resultDO.setErrorInfo(ErrorCode.ServiceTypeFailed_Null);
+            }
+            resultDO.setResult(registerID);
+            return resultDO;
+        }
+        // .返回结果
+        ResultDO<String> resultDO = new ResultDO<>();
+        resultDO.setSuccess(true);
+        resultDO.setErrorInfo(ErrorCode.OK);
+        resultDO.setResult(registerID);
+        return resultDO;
+    }
+    /** 根据信息重新计算ObjectID,并且校验 registerID 是否正确。*/
+    private Result<String> checkAndEvalObjectID(InterAddress rsfAddress, String registerID, String serviceID) {
+        rsfAddress = Hasor.assertIsNotNull(rsfAddress, "param rsfAddress is null.");
+        registerID = Hasor.assertIsNotNull(registerID, "param registerID is null.");
+        serviceID = Hasor.assertIsNotNull(serviceID, "param serviceID is null.");
+        //
+        // .根据传入的参数重新计算registerID
+        String evalRegisterID = null;
+        String oriObjectKey = serviceID + "@" + rsfAddress.getHostPort();
+        String preKey = "";
+        if (StringUtils.startsWith(registerID, RsfCenterConstants.Center_DataKey_Consumer)) {
+            preKey = RsfCenterConstants.Center_DataKey_Consumer;
+        } else if (StringUtils.startsWith(registerID, RsfCenterConstants.Center_DataKey_Provider)) {
+            preKey = RsfCenterConstants.Center_DataKey_Provider;
+        } else {
+            ResultDO<String> result = new ResultDO<>();
+            result.setSuccess(false);
+            result.setErrorInfo(ErrorCode.ServiceTypeFailed_Null);
+            return result;
+        }
+        oriObjectKey = preKey + oriObjectKey;
+        evalRegisterID = preKey + eval(oriObjectKey);
+        //
+        // .验证registerID
+        if (!StringUtils.equals(registerID, evalRegisterID)) {
+            ResultDO<String> result = new ResultDO<>();
+            result.setSuccess(false);
+            result.setErrorInfo(ErrorCode.RegisterCheckInvalid);
+            return result;
+        }
+        //
+        ResultDO<String> result = new ResultDO<>();
+        result.setSuccess(true);
+        result.setResult(oriObjectKey);
+        result.setErrorInfo(ErrorCode.OK);
+        return result;
+    }
+    private List<InterAddress> filterConsumerList(String serviceID, List<ObjectDO> consumerList) {
+        List<InterAddress> targets = new ArrayList<>();
+        if (consumerList != null && !consumerList.isEmpty()) {
+            for (ObjectDO objectDO : consumerList) {
+                // - .过滤数据,只保留订阅者
+                if (!StringUtils.equalsIgnoreCase(objectDO.getType(), RsfCenterConstants.Center_DataKey_Consumer)) {
+                    continue;
+                }
+                // - .过滤长时间没有心跳的订阅者
+                long lastRefreshTime = (objectDO.getRefreshTime() == null) ? System.currentTimeMillis() : objectDO.getRefreshTime().getTime();
+                long overRefreshTime = lastRefreshTime + this.envConfig.getConsumerExpireTime();
+                if (System.currentTimeMillis() >= overRefreshTime) {
+                    continue;/*过期了*/
+                }
+                // - .待推送列表
+                try {
+                    ConsumerInfo consumerInfo = JsonUtils.converToService(objectDO.getContent(), ConsumerInfo.class);
+                    targets.add(new InterAddress(consumerInfo.getRsfAddress()));
+                } catch (Exception e) {
+                    this.logger.error(LogUtils.create("ERROR_200_00402")//
+                            .logException(e)//
+                            .addLog("objectID", objectDO.getObjectID())//
+                            .addLog("serviceID", serviceID)//
+                            .toJson());
+                }
+            }
+        }
+        return targets;
+    }
+    //
+    //
     //
     /**发布服务*/
     public Result<String> publishService(InterAddress rsfAddress, ServiceInfo serviceInfo, ProviderInfo info) {
@@ -101,19 +186,19 @@ public class ServiceManager {
         String providerObjectKey = RsfCenterConstants.Center_DataKey_Provider + serviceID + "@" + rsfAddress.getHostPort();
         //
         // .检查权限
-        //        Result<Boolean> checkResult = this.authQuery.checkPublish(authInfo, serviceInfo);
-        //        if (checkResult == null || !checkResult.isSuccess() || checkResult.getResult() == null) {
-        //            return buildFailedResult(checkResult);
-        //        }
-        //        if (!checkResult.getResult()) {
-        //            ResultDO<String> result = new ResultDO<String>();
-        //            result.setErrorInfo(ErrorCode.EmptyResult);
-        //            result.setSuccess(false);
-        //            return result;
-        //        }
+        Result<Boolean> checkResult = this.authQuery.checkPublish(authInfo, rsfAddress, serviceInfo, RsfServiceType.Provider);
+        if (checkResult == null || !checkResult.isSuccess() || checkResult.getResult() == null) {
+            return buildFailedResult(checkResult);
+        }
+        if (!checkResult.getResult()) {
+            ResultDO<String> result = new ResultDO<>();
+            result.setErrorInfo(ErrorCode.AuthCheckFailed_ResultEmpty);
+            result.setSuccess(false);
+            return result;
+        }
         //
         // .获取保存的服务信息
-        Result<ObjectDO> resultInfo = dataAdapter.queryObjectByID(serviceObjectKey);
+        Result<ObjectDO> resultInfo = this.dataAdapter.queryObjectByID(serviceObjectKey);
         if (resultInfo == null || !resultInfo.isSuccess()) {
             return buildFailedResult(resultInfo);
         }
@@ -126,14 +211,14 @@ public class ServiceManager {
             newObjectDO.setType(RsfCenterConstants.Center_DataKey_Service);
             newObjectDO.setRefreshTime(new Date());
             newObjectDO.setContent(JsonUtils.converToString(serviceInfo));
-            Result<Boolean> storeResult = dataAdapter.storeObject(newObjectDO);
+            Result<Boolean> storeResult = this.dataAdapter.storeObject(newObjectDO);
             if (storeResult == null || !storeResult.isSuccess()) {
                 return buildFailedResult(storeResult);
             }
             if (storeResult.getResult() == null || !storeResult.getResult()) {
-                ResultDO<String> result = new ResultDO<String>();
+                ResultDO<String> result = new ResultDO<>();
                 result.setSuccess(false);
-                result.setErrorInfo(ErrorCode.StoreServiceFailed);
+                result.setErrorInfo(ErrorCode.PublishServiceFailed_StoreInfo);
                 return result;
             }
         } else {
@@ -159,55 +244,29 @@ public class ServiceManager {
         //
         // .查询订阅者列表
         QueryOption opt = new QueryOption();
-        opt.setType(RsfCenterConstants.Center_DataKey_Consumer);//尝试过滤结果,只保留Consumer数据
+        opt.setObjectType(RsfCenterConstants.Center_DataKey_Consumer);//尝试过滤结果,只保留Consumer数据
         Result<List<ObjectDO>> refList = this.dataAdapter.queryObjectListByID(serviceObjectKey, opt);
         if (refList == null || !refList.isSuccess()) {
             return buildFailedResult(refList);
         }
-        List<ObjectDO> consumerList = refList.getResult();
+        List<ObjectDO> allList = refList.getResult();
+        List<InterAddress> consumerList = filterConsumerList(serviceID, allList);
         Collection<InterAddress> newHostSet = Collections.singletonList(rsfAddress);
-        List<InterAddress> targets = new ArrayList<InterAddress>();
-        if (consumerList != null && !consumerList.isEmpty()) {
-            for (ObjectDO objectDO : consumerList) {
-                // - .过滤数据,只保留订阅者
-                if (!StringUtils.equalsIgnoreCase(objectDO.getType(), RsfCenterConstants.Center_DataKey_Consumer)) {
-                    continue;
-                }
-                // - .过滤长时间没有心跳的订阅者
-                long lastRefreshTime = (objectDO.getRefreshTime() == null) ? System.currentTimeMillis() : objectDO.getRefreshTime().getTime();
-                long overRefreshTime = lastRefreshTime + this.rsfCenterCfg.getConsumerExpireTime();
-                if (System.currentTimeMillis() >= overRefreshTime) {
-                    continue;/*过期了*/
-                }
-                // - .待推送列表
-                try {
-                    ConsumerInfo consumerInfo = JsonUtils.converToService(objectDO.getContent(), ConsumerInfo.class);
-                    targets.add(new InterAddress(consumerInfo.getRsfAddress()));
-                } catch (Exception e) {
-                    logger.error(LogUtils.create("ERROR_200_00402")//
-                            .logException(e)//
-                            .addLog("objectID", objectDO.getObjectID())//
-                            .addLog("serviceID", serviceInfo.getBindID())//
-                            .toJson());
-                }
-            }
-        }
         //
-        // .推送新的提供者地址(三次尝试)
-        if (targets != null && !targets.isEmpty()) {
-            boolean result = this.rsfPusher.appendAddress(serviceID, newHostSet, targets);
+        // .推送新的提供者地址
+        if (consumerList != null && !consumerList.isEmpty()) {
+            boolean result = this.rsfPusher.appendAddress(serviceID, newHostSet, consumerList); // 第一次尝试
             if (!result) {
-                result = this.rsfPusher.appendAddress(serviceID, newHostSet, targets);//二次尝试
+                result = this.rsfPusher.appendAddress(serviceID, newHostSet, consumerList);     // 第二次尝试
                 if (!result) {
-                    result = this.rsfPusher.appendAddress(serviceID, newHostSet, targets);//三次尝试
+                    result = this.rsfPusher.appendAddress(serviceID, newHostSet, consumerList); // 第三次尝试
                 }
             }
         }
         //
         // .返回registerID
-        return evalRegisterID(providerObjectKey);
+        return evalRegisterID(providerObjectKey, RsfServiceType.Provider);
     }
-    //
     /**订阅服务*/
     public Result<String> publishConsumer(InterAddress rsfAddress, ServiceInfo serviceInfo, ConsumerInfo info) {
         rsfAddress = Hasor.assertIsNotNull(rsfAddress, "param InterAddress is null.");
@@ -220,27 +279,27 @@ public class ServiceManager {
         String consumerObjectKey = RsfCenterConstants.Center_DataKey_Consumer + serviceID + "@" + rsfAddress.getHostPort();
         //
         // .检查权限
-        //        Result<Boolean> checkResult = this.authQuery.checkPublish(authInfo, serviceInfo);
-        //        if (checkResult == null || !checkResult.isSuccess() || checkResult.getResult() == null) {
-        //            return buildFailedResult(checkResult);
-        //        }
-        //        if (!checkResult.getResult()) {
-        //            ResultDO<String> result = new ResultDO<String>();
-        //            result.setErrorInfo(ErrorCode.EmptyResult);
-        //            result.setSuccess(false);
-        //            return result;
-        //        }
+        Result<Boolean> checkResult = this.authQuery.checkPublish(authInfo, rsfAddress, serviceInfo, RsfServiceType.Consumer);
+        if (checkResult == null || !checkResult.isSuccess() || checkResult.getResult() == null) {
+            return buildFailedResult(checkResult);
+        }
+        if (!checkResult.getResult()) {
+            ResultDO<String> result = new ResultDO<>();
+            result.setErrorInfo(ErrorCode.AuthCheckFailed_ResultEmpty);
+            result.setSuccess(false);
+            return result;
+        }
         //
         // .获取保存的服务信息
-        Result<ObjectDO> resultInfo = dataAdapter.queryObjectByID(serviceObjectKey);
+        Result<ObjectDO> resultInfo = this.dataAdapter.queryObjectByID(serviceObjectKey);
         if (resultInfo == null || !resultInfo.isSuccess()) {
             return buildFailedResult(resultInfo);
         }
         ObjectDO oldServiceInfo = resultInfo.getResult();
         if (oldServiceInfo == null) {
-            ResultDO<String> result = new ResultDO<String>();
+            ResultDO<String> result = new ResultDO<>();
             result.setSuccess(false);
-            result.setErrorInfo(ErrorCode.ServiceUndefined);//服务未定义
+            result.setErrorInfo(ErrorCode.SubscribeServiceFailed_Undefined);//服务未定义
             return result;
         } else {
             String content = oldServiceInfo.getContent();
@@ -264,13 +323,13 @@ public class ServiceManager {
         //
         // .查询提供者列表
         QueryOption opt = new QueryOption();
-        opt.setType(RsfCenterConstants.Center_DataKey_Provider);//尝试过滤结果,只保留Provider数据
+        opt.setObjectType(RsfCenterConstants.Center_DataKey_Provider);//尝试过滤结果,只保留Provider数据
         Result<List<ObjectDO>> refList = this.dataAdapter.queryObjectListByID(serviceObjectKey, opt);
         if (refList == null || !refList.isSuccess()) {
             return buildFailedResult(refList);
         }
         List<ObjectDO> providerDataList = refList.getResult();
-        List<InterAddress> providerList = new ArrayList<InterAddress>();
+        List<InterAddress> providerList = new ArrayList<>();
         if (providerDataList != null && !providerDataList.isEmpty()) {
             for (ObjectDO objectDO : providerDataList) {
                 // - .过滤数据,只保留提供者
@@ -279,7 +338,7 @@ public class ServiceManager {
                 }
                 // - .过滤长时间没有心跳的订阅者
                 long lastRefreshTime = (objectDO.getRefreshTime() == null) ? System.currentTimeMillis() : objectDO.getRefreshTime().getTime();
-                long overRefreshTime = lastRefreshTime + this.rsfCenterCfg.getProviderExpireTime();
+                long overRefreshTime = lastRefreshTime + this.envConfig.getProviderExpireTime();
                 if (System.currentTimeMillis() >= overRefreshTime) {
                     continue;/*过期了*/
                 }
@@ -288,7 +347,7 @@ public class ServiceManager {
                     ProviderInfo providerInfo = JsonUtils.converToService(objectDO.getContent(), ProviderInfo.class);
                     providerList.add(new InterAddress(providerInfo.getRsfAddress()));
                 } catch (Exception e) {
-                    logger.error(LogUtils.create("ERROR_200_00402")//
+                    this.logger.error(LogUtils.create("ERROR_200_00402")//
                             .logException(e)//
                             .addLog("objectID", objectDO.getObjectID())//
                             .addLog("serviceID", serviceInfo.getBindID())//
@@ -297,31 +356,144 @@ public class ServiceManager {
             }
         }
         //
-        // .推送提供者地址(三次尝试)
+        // .推送提供者地址(三次尝试),即使全部失败也不用担心,依靠客户端主动拉取来换的最终成功
         if (providerList != null && !providerList.isEmpty()) {
             List<InterAddress> target = Collections.singletonList(rsfAddress);
-            boolean result = this.rsfPusher.refreshAddress(serviceID, providerList, target);
+            boolean result = this.rsfPusher.refreshAddress(serviceID, providerList, target);    // 第一次尝试
             if (!result) {
-                result = this.rsfPusher.refreshAddress(serviceID, providerList, target);//二次尝试
+                result = this.rsfPusher.refreshAddress(serviceID, providerList, target);        // 第二次尝试
                 if (!result) {
-                    result = this.rsfPusher.refreshAddress(serviceID, providerList, target);//三次尝试
+                    result = this.rsfPusher.refreshAddress(serviceID, providerList, target);    // 第三次尝试
                 }
             }
         }
         //
         // .返回registerID
-        return evalRegisterID(consumerObjectKey);
+        return evalRegisterID(consumerObjectKey, RsfServiceType.Consumer);
     }
-    //
-    /**删除订阅*/
-    public Result<Boolean> removeRegister(InterAddress rsfHost, String registerID, String serviceID) {
-        return null;
-        //  return super.removeTerminal(rsfHost, forBindID, RsfServiceType.Consumer);
-    }
-    //
     /**订阅者心跳*/
     public Result<Boolean> serviceBeat(InterAddress rsfAddress, String registerID, String serviceID) {
-        return null;
+        // .重新计算ObjectID,并且校验registerID有效性。
+        Result<String> objectIDResult = this.checkAndEvalObjectID(rsfAddress, registerID, serviceID);
+        String oriObjectKey = null;/* 提供者 or 订阅者 ObjectID */
+        if (!objectIDResult.isSuccess()) {
+            ResultDO<Boolean> result = new ResultDO<>();
+            result.setSuccess(false);
+            result.setResult(false);
+            result.setErrorInfo(objectIDResult.getErrorInfo());
+            return result;
+        } else {
+            oriObjectKey = objectIDResult.getResult();
+        }
+        //
+        // .获取服务Info
+        Result<ObjectDO> serviceResult = this.dataAdapter.queryObjectByID(RsfCenterConstants.Center_DataKey_Service + serviceID);
+        if (serviceResult == null || !serviceResult.isSuccess() || serviceResult.getResult() == null) {
+            return buildFailedResult(serviceResult);
+        }
+        ServiceInfo serviceInfo = JsonUtils.converToService(serviceResult.getResult().getContent(), ServiceInfo.class);
+        //
+        // .检查权限
+        AuthInfo authInfo = this.getAuthInfo();
+        Result<Boolean> checkResult = this.authQuery.checkPublish(authInfo, rsfAddress, serviceInfo, RsfServiceType.Provider);
+        if (checkResult == null || !checkResult.isSuccess() || checkResult.getResult() == null) {
+            return buildFailedResult(checkResult);
+        }
+        if (!checkResult.getResult()) {
+            ResultDO<Boolean> result = new ResultDO<>();
+            result.setErrorInfo(ErrorCode.AuthCheckFailed_ResultEmpty);
+            result.setSuccess(false);
+            return result;
+        }
+        //
+        // .执行心跳
+        Result<ObjectDO> result = this.dataAdapter.queryObjectByID(oriObjectKey);
+        Result<Boolean> beatResult = null;
+        if (result != null && result.isSuccess() && result.getResult() != null) {
+            beatResult = this.dataAdapter.refreshObject(oriObjectKey);
+        }
+        if (beatResult == null) {
+            ResultDO<Boolean> newResult = new ResultDO<>();
+            newResult.setSuccess(false);
+            newResult.setResult(false);
+            newResult.setErrorInfo(ErrorCode.BeatFailed_RefreshResultNull);
+            beatResult = newResult;
+        }
+        return beatResult;
+    }
+    /**删除订阅*/
+    public Result<Boolean> removeRegister(InterAddress rsfAddress, String registerID, String serviceID) {
+        // .重新计算ObjectID,并且校验registerID有效性。
+        Result<String> objectIDResult = this.checkAndEvalObjectID(rsfAddress, registerID, serviceID);
+        String oriObjectKey = null;
+        if (!objectIDResult.isSuccess()) {
+            ResultDO<Boolean> result = new ResultDO<>();
+            result.setSuccess(false);
+            result.setResult(false);
+            result.setErrorInfo(objectIDResult.getErrorInfo());
+            return result;
+        } else {
+            oriObjectKey = objectIDResult.getResult();
+        }
+        //
+        // .获取服务Info
+        Result<ObjectDO> serviceResult = this.dataAdapter.queryObjectByID(RsfCenterConstants.Center_DataKey_Service + serviceID);
+        if (serviceResult == null || !serviceResult.isSuccess() || serviceResult.getResult() == null) {
+            return buildFailedResult(serviceResult);
+        }
+        ServiceInfo serviceInfo = JsonUtils.converToService(serviceResult.getResult().getContent(), ServiceInfo.class);
+        //
+        // .检查权限
+        AuthInfo authInfo = this.getAuthInfo();
+        Result<Boolean> checkResult = this.authQuery.checkPublish(authInfo, rsfAddress, serviceInfo, RsfServiceType.Provider);
+        if (checkResult == null || !checkResult.isSuccess() || checkResult.getResult() == null) {
+            return buildFailedResult(checkResult);
+        }
+        if (!checkResult.getResult()) {
+            ResultDO<Boolean> result = new ResultDO<>();
+            result.setErrorInfo(ErrorCode.AuthCheckFailed_ResultEmpty);
+            result.setSuccess(false);
+            return result;
+        }
+        //
+        // .删除订阅(订阅者直接返回结果)
+        Result<Boolean> removeResult = this.dataAdapter.removeObjectByID(oriObjectKey);
+        if (!StringUtils.startsWith(oriObjectKey, RsfCenterConstants.Center_DataKey_Provider)) {
+            return removeResult;
+        }
+        //
+        // .查询订阅者列表
+        QueryOption opt = new QueryOption();
+        opt.setObjectType(RsfCenterConstants.Center_DataKey_Consumer);//尝试过滤结果,只保留Consumer数据
+        String serviceObjectKey = RsfCenterConstants.Center_DataKey_Service + serviceID;
+        Result<List<ObjectDO>> refList = this.dataAdapter.queryObjectListByID(serviceObjectKey, opt);
+        if (refList == null || !refList.isSuccess()) {
+            return buildFailedResult(refList);
+        }
+        List<ObjectDO> allList = refList.getResult();
+        List<InterAddress> consumerList = filterConsumerList(serviceID, allList);
+        Collection<InterAddress> newHostSet = Collections.singletonList(rsfAddress);
+        //
+        // .提供者下线通知所有订阅者
+        boolean result = false;
+        if (consumerList != null && !consumerList.isEmpty()) {
+            result = this.rsfPusher.removeAddress(serviceID, newHostSet, consumerList);         // 第一次尝试
+            if (!result) {
+                result = this.rsfPusher.removeAddress(serviceID, newHostSet, consumerList);     // 第二次尝试
+                if (!result) {
+                    result = this.rsfPusher.removeAddress(serviceID, newHostSet, consumerList); // 第三次尝试
+                }
+            }
+        }
+        ResultDO<Boolean> finalResult = new ResultDO<>();
+        finalResult.setSuccess(true);
+        finalResult.setResult(true);
+        if (!result) {
+            finalResult.setSuccess(false);
+            finalResult.setResult(false);
+            finalResult.setErrorInfo(ErrorCode.PushAddressFailed_TooBusy);
+        }
+        return finalResult;
     }
     //
     public Result<List<String>> queryProviders(InterAddress rsfAddress, String registerID, String serviceID) {

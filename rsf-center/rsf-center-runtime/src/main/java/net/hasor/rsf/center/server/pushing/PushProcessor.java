@@ -57,7 +57,7 @@ public class PushProcessor {
             return Collections.emptyList();
             //
         } else {
-            ArrayList<InterAddress> failedAddress = new ArrayList<InterAddress>();
+            ArrayList<InterAddress> failedAddress = new ArrayList<>();
             for (InterAddress target : event.getTarget()) {
                 boolean res = this.doProcessor(target, event);
                 if (!res) {

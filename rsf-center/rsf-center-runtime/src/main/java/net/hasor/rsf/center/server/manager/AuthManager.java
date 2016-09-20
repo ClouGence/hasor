@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
  * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
+@Deprecated
 @Singleton
 public class AuthManager {
     @Inject

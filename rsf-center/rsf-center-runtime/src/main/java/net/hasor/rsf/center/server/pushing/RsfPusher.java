@@ -91,7 +91,7 @@ public class RsfPusher {
         eventData.setEventBody(strBuilder.substring(1));
         return this.pushQueue.doPushEvent(eventData);
     }
-    /** 增量删除服务地址 */
+    /** 删除服务地址 */
     public boolean removeAddress(String serviceID, Collection<InterAddress> invalidAddressSet, List<InterAddress> targets) {
         if (invalidAddressSet == null || invalidAddressSet.isEmpty()) {
             return false;
