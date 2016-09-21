@@ -14,47 +14,21 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.nio.charset.Charset;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.SQLWarning;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import javax.sql.DataSource;
-import org.more.util.ArrayUtils;
-import org.more.util.ResourcesUtils;
-import org.more.util.io.IOUtils;
 import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.BatchPreparedStatementSetter;
-import net.hasor.db.jdbc.CallableStatementCallback;
-import net.hasor.db.jdbc.CallableStatementCreator;
-import net.hasor.db.jdbc.ConnectionCallback;
-import net.hasor.db.jdbc.JdbcOperations;
-import net.hasor.db.jdbc.PreparedStatementCallback;
-import net.hasor.db.jdbc.PreparedStatementCreator;
-import net.hasor.db.jdbc.PreparedStatementSetter;
-import net.hasor.db.jdbc.ResultSetExtractor;
-import net.hasor.db.jdbc.RowCallbackHandler;
-import net.hasor.db.jdbc.RowMapper;
-import net.hasor.db.jdbc.SqlParameterSource;
-import net.hasor.db.jdbc.StatementCallback;
+import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.core.mapper.BeanPropertyRowMapper;
 import net.hasor.db.jdbc.core.mapper.ColumnMapRowMapper;
 import net.hasor.db.jdbc.core.mapper.SingleColumnRowMapper;
+import org.more.util.ArrayUtils;
+import org.more.util.ResourcesUtils;
+import org.more.util.io.IOUtils;
+import org.more.util.map.LinkedCaseInsensitiveMap;
+
+import javax.sql.DataSource;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.sql.*;
+import java.util.*;
 /**
  * 数据库操作模板方法。
  * @version : 2013-10-12
@@ -657,12 +631,12 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
                 } else
                     /*连接不支持批处理*/
                     for (int i = 0; i < sql.length; i++) {
-                    this.currSql = sql[i];
-                    if (!stmt.execute(sql[i])) {
-                    rowsAffected[i] = stmt.getUpdateCount();
-                    } else {
-                    throw new SQLException("Invalid batch SQL statement: " + sql[i]);
-                    }
+                        this.currSql = sql[i];
+                        if (!stmt.execute(sql[i])) {
+                            rowsAffected[i] = stmt.getUpdateCount();
+                        } else {
+                            throw new SQLException("Invalid batch SQL statement: " + sql[i]);
+                        }
                     }
                 return rowsAffected;
             }
@@ -686,7 +660,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     @Override
     public int[] batchUpdate(final String sql, final SqlParameterSource[] batchArgs) throws SQLException {
         if (batchArgs.length <= 0) {
-            return new int[] { 0 };
+            return new int[] {0};
         }
         return this.batchUpdate(sql, new SqlParameterSourceBatchPreparedStatementSetter(sql, batchArgs));
     }

@@ -16,6 +16,7 @@
 package net.hasor.core.setting;
 import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +55,13 @@ public class StandardContextSettings extends InputStreamSettings {
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings() throws IOException, URISyntaxException {
         this(StandardContextSettings.MainSettingName);
+    }
+    /**创建{@link StandardContextSettings}类型对象。*/
+    public StandardContextSettings(InputStream mainSettings, StreamType type) throws IOException, URISyntaxException {
+        if (mainSettings != null) {
+            outInitLog("stream", mainSettings);
+        }
+        this.addStream(mainSettings, type);
     }
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(final String mainSettings) throws IOException, URISyntaxException {

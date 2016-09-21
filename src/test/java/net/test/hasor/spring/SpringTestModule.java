@@ -17,7 +17,7 @@ package net.test.hasor.spring;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 /**
- * 
+ *
  * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -25,6 +25,8 @@ public class SpringTestModule implements Module {
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         System.out.println("SpringTestModule loading ...");
+        System.out.println(apiBinder.getEnvironment().evalString("%MESSAGE%"));
+        System.out.println(apiBinder.getEnvironment().evalString("%message%"));
         //
         apiBinder.bindType(String.class).idWith("helloWord").toInstance("HelloWord");
     }

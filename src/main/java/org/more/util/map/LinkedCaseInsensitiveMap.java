@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.core;
+package org.more.util.map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -31,12 +31,12 @@ import java.util.Map;
  * @since 3.0
  */
 public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
-    private static final long         serialVersionUID = -2744548964742290311L;
+    private static final long serialVersionUID = -2744548964742290311L;
     private final Map<String, String> caseInsensitiveKeys;
     private final Locale              locale;
     /**
      * Create a new LinkedCaseInsensitiveMap for the default Locale.
-     * @see java.lang.String#toLowerCase()
+     * @see String#toLowerCase()
      */
     public LinkedCaseInsensitiveMap() {
         this(null);
@@ -45,7 +45,7 @@ public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
      * Create a new LinkedCaseInsensitiveMap that stores lower-case keys
      * according to the given Locale.
      * @param locale the Locale to use for lower-case conversion
-     * @see java.lang.String#toLowerCase(java.util.Locale)
+     * @see String#toLowerCase(Locale)
      */
     public LinkedCaseInsensitiveMap(final Locale locale) {
         super();
@@ -57,7 +57,7 @@ public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
      * with the given initial capacity and stores lower-case keys according
      * to the default Locale.
      * @param initialCapacity the initial capacity
-     * @see java.lang.String#toLowerCase()
+     * @see String#toLowerCase()
      */
     public LinkedCaseInsensitiveMap(final int initialCapacity) {
         this(initialCapacity, null);
@@ -68,7 +68,7 @@ public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
      * to the given Locale.
      * @param initialCapacity the initial capacity
      * @param locale the Locale to use for lower-case conversion
-     * @see java.lang.String#toLowerCase(java.util.Locale)
+     * @see String#toLowerCase(Locale)
      */
     public LinkedCaseInsensitiveMap(final int initialCapacity, final Locale locale) {
         super(initialCapacity);
@@ -111,7 +111,7 @@ public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
      * to lower-case according to this Map's Locale.
      * @param key the user-specified key
      * @return the key to use for storing
-     * @see java.lang.String#toLowerCase(java.util.Locale)
+     * @see String#toLowerCase(Locale)
      */
     protected String convertKey(final String key) {
         return key.toLowerCase(this.locale);

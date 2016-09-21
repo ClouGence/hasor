@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.plugins.spring.factory;
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.event.EventObject;
 import net.hasor.core.event.StandardEventManager;
+import org.springframework.core.io.Resource;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 /**
  *
  * @version : 2016年2月15日
@@ -27,24 +28,25 @@ import net.hasor.core.event.StandardEventManager;
  */
 class ShareEventStandardEnvironment extends StandardEnvironment {
     private ShareEventListener shareEventListener;
-    public ShareEventStandardEnvironment(ClassLoader classLoader, Object context, String mainSettings, ShareEventListener shareEventListener) throws IOException, URISyntaxException {
-        super(context, mainSettings);
+    public ShareEventStandardEnvironment(ClassLoader classLoader, Object context, Resource mainSettings, ShareEventListener shareEventListener) throws IOException, URISyntaxException {
+        super(context, (mainSettings == null) ? null : mainSettings.getURI(), false);
+        this.setRootLosder(classLoader);
         this.shareEventListener = shareEventListener;
     }
     @Override
     protected StandardEventManager createEventManager(int eventThreadPoolSize) {
         return new ShareEventStandardEventManager(eventThreadPoolSize, this.shareEventListener);
     }
-}
-class ShareEventStandardEventManager extends StandardEventManager {
-    private ShareEventListener shareEventListener;
-    public ShareEventStandardEventManager(int eventThreadPoolSize, ShareEventListener shareEventListener) {
-        super(eventThreadPoolSize);
-        this.shareEventListener = shareEventListener;
-    }
-    @Override
-    protected <T> void executeEvent(final EventObject<T> eventObj) {
-        super.executeEvent(eventObj);
-        this.shareEventListener.fireEvent(eventObj);
+    private static class ShareEventStandardEventManager extends StandardEventManager {
+        private ShareEventListener shareEventListener;
+        public ShareEventStandardEventManager(int eventThreadPoolSize, ShareEventListener shareEventListener) {
+            super(eventThreadPoolSize);
+            this.shareEventListener = shareEventListener;
+        }
+        @Override
+        protected <T> void executeEvent(final EventObject<T> eventObj) {
+            super.executeEvent(eventObj);
+            this.shareEventListener.fireEvent(eventObj);
+        }
     }
 }

@@ -3,12 +3,19 @@
     01.BindInfo 新增 setMetaData 方法以设置元信息。
     02.BindInfo 新增 removeMetaData 删除元数据的方法。
     03.BizCommon 包增加 log 工具。
+    04.Spring 集成插件,新增支持将 Spring 容器中的 属性配置文件导入 Hasor 作为环境变量。
+    05.@InjectSettings 注解支持通过 "${xxx}" 形式解析并注入环境变量了。(至此注入环境变量不再需要通过 hasor 配置文件中转)
 * 改进:
     01.JSON 包简化了对 Log 的输出处理,减少了 5 个日志相关类。
+    02.Spring集成时,支持通过 Spring 方式来指定 Hasor 的配置文件。
+    03.Spring集成下,env.config 将会失效,环境配置属性需要通过 Spring导入。
+    04.AbstractEnvironment 类的 afterInitEnvironment 方法取消参数传入。
+    05.AbstractEnvironment 类的 initEnvironment 方法增加boolean参数来决定是否启用 env.config 配置文件。
+    06.LinkedCaseInsensitiveMap类提升为公共工具类,包位置发生变更。
 * 修复:
     01.Fix RsfSettings 接口的 add & remove & set 系方法,解决 settings key 出现大小写敏感问题。
     02.Fix AbstractEnvironment 的 refreshVariables 方法,忽略了对默认值的替换,导致了bug出现。
-    03.修改 Environment 接口拼写错误的方法名。remoteEnvVar -> removeEnvVar。
+    03.Fix Environment 接口拼写错误的方法名。remoteEnvVar -> removeEnvVar。
 
 ===== Hasor-Core v2.4.4 (2016-09-05)
 * 新增:

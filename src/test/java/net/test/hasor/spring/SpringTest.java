@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 package net.test.hasor.spring;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.plugins.spring.SpringModule;
@@ -25,8 +21,12 @@ import net.test.hasor.spring.bean.HasorBean;
 import net.test.hasor.spring.bean.SpringBean;
 import net.test.hasor.spring.event.tohasor.SpringEventPublisher;
 import net.test.hasor.spring.event.tospring.HasorEventPublisher;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
- * 
+ *
  * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */

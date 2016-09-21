@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.plugins.spring.factory;
+import net.hasor.core.AppContext;
+import net.hasor.core.BindInfo;
+import net.hasor.core.Hasor;
+import net.hasor.core.Provider;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
-import net.hasor.core.AppContext;
-import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
-import net.hasor.core.Provider;
+import org.springframework.core.io.support.PropertiesLoaderSupport;
 /**
  * 在Spring获取Hasor的Bean
  * @version : 2016年2月15日

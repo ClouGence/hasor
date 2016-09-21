@@ -15,6 +15,7 @@
  */
 package net.test.hasor.spring.bean;
 import net.hasor.core.Inject;
+import net.hasor.core.InjectSettings;
 /**
  * 使用Hasor的方式注入Spring的Bean。
  * @version : 2016年2月15日
@@ -23,6 +24,8 @@ import net.hasor.core.Inject;
 public class HasorBean {
     @Inject
     private SpringBean springBean;
+    @InjectSettings("${message}")
+    private String     msgValue;
     //
     public void print() {
         System.out.println(this.springBean);

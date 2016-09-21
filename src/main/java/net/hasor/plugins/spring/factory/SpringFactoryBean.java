@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.plugins.spring.factory;
-import java.util.ArrayList;
-
+import net.hasor.core.*;
+import net.hasor.core.container.BeanContainer;
+import net.hasor.core.context.StatusAppContext;
+import net.hasor.core.context.TemplateAppContext;
+import net.hasor.core.event.EventObject;
+import net.hasor.plugins.spring.event.AsyncSpringHasorEvent;
+import net.hasor.plugins.spring.event.EventType;
 import net.hasor.plugins.spring.event.SpringHasorEvent;
 import net.hasor.plugins.spring.event.SyncSpringHasorEvent;
 import org.more.util.ExceptionUtils;
@@ -25,24 +30,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.context.ApplicationListener;
+import org.springframework.beans.factory.config.PropertyResourceConfigurer;
+import org.springframework.context.*;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PropertiesLoaderSupport;
 import org.springframework.util.SystemPropertyUtils;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import net.hasor.core.EventContext;
-import net.hasor.core.Hasor;
-import net.hasor.core.Module;
-import net.hasor.core.container.BeanContainer;
-import net.hasor.core.context.StatusAppContext;
-import net.hasor.core.context.TemplateAppContext;
-import net.hasor.core.event.EventObject;
-import net.hasor.plugins.spring.event.AsyncSpringHasorEvent;
-import net.hasor.plugins.spring.event.EventType;
+
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Properties;
 /**
  *
  * @version : 2016年2月15日
@@ -58,6 +54,7 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
     private AppContext         appContext;
     private ApplicationContext applicationContext;
     private String             config;
+    private String             refProperties;
     private ArrayList<Module>  modules;
     private boolean shareEvent = false;
     //
@@ -66,6 +63,12 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
     }
     public void setConfig(String config) {
         this.config = config;
+    }
+    public String getRefProperties() {
+        return refProperties;
+    }
+    public void setRefProperties(String refProperties) {
+        this.refProperties = refProperties;
     }
     public ArrayList<Module> getModules() {
         return modules;
@@ -119,19 +122,65 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
         try {
             moduleList.add(this);
             Module[] moduleArrays = moduleList.toArray(new Module[moduleList.size()]);
-            this.appContext = createAppContext(this.applicationContext, config, moduleArrays);
+            Resource resource = this.applicationContext.getResource(config);
+            //
+            PropertiesLoaderSupport propertiesLoaderSupport = null;
+            if (this.applicationContext.containsBean(this.refProperties)) {
+                Object obj = this.applicationContext.getBean(this.refProperties);
+                if (obj instanceof PropertiesLoaderSupport) {
+                    propertiesLoaderSupport = (PropertiesLoaderSupport) obj;
+                }
+            }
+            //
+            this.appContext = createAppContext(this.applicationContext, resource, propertiesLoaderSupport, moduleArrays);
         } catch (Throwable e) {
             if (e instanceof Exception) {
                 throw (Exception) e;
             } else {
-                ExceptionUtils.toRuntimeException(e);
+                throw ExceptionUtils.toRuntimeException(e);
             }
         }
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    protected AppContext createAppContext(ApplicationContext context, final String config, final Module... modules) throws Throwable {
+    protected AppContext createAppContext(ApplicationContext context, Resource resource, final PropertiesLoaderSupport envProperties, final Module... modules) throws Throwable {
+        //
         logger.info("create AppContext ,mainSettings = {} , modules = {}", config, modules);
-        ShareEventStandardEnvironment dev = new ShareEventStandardEnvironment(context.getClassLoader(), context, config, this);
+        ShareEventStandardEnvironment dev = new ShareEventStandardEnvironment(context.getClassLoader(), context, resource, this) {
+            @Override
+            protected void afterInitEnvironment() {
+                super.afterInitEnvironment();
+                if (envProperties == null) {
+                    logger.info("not import any environment variables -> refProperties is null");
+                    return;
+                }
+                //
+                Properties props = null;
+                try {
+                    Method mergeProperties = PropertiesLoaderSupport.class.getDeclaredMethod("mergeProperties");
+                    Method convertProperties = PropertyResourceConfigurer.class.getDeclaredMethod("convertProperties", Properties.class);
+                    mergeProperties.setAccessible(true);
+                    convertProperties.setAccessible(true);
+                    //
+                    props = (Properties) mergeProperties.invoke(envProperties);
+                    convertProperties.invoke(envProperties, props);
+                } catch (Exception e) {
+                    logger.error("import environment variables error -> " + e.getMessage(), e);
+                    throw ExceptionUtils.toRuntimeException(e);
+                }
+                //
+                if (props == null) {
+                    logger.warn("not import any environment variables -> form Spring mergeProperties is null");
+                    return;
+                }
+                for (String keyStr : props.stringPropertyNames()) {
+                    String keyVal = props.getProperty(keyStr);
+                    this.addEnvVar(keyStr, keyVal);
+                }
+                //
+                logger.info("import environment variables ,done. -> import size :" + props.size());
+            }
+        };
+        //
         BeanContainer container = new BeanContainer();
         AppContext appContext = new StatusAppContext<BeanContainer>(dev, container);
         appContext.start(modules);

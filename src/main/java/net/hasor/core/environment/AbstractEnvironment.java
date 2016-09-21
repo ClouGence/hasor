@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 /**
- * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment()}方法以初始化。
+ * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment(boolean)}方法以初始化。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -255,7 +255,7 @@ public abstract class AbstractEnvironment implements Environment {
     //
     /* ------------------------------------------------------------------------------------ init */
     /**初始化方法*/
-    protected final void initEnvironment() throws IOException {
+    protected final void initEnvironment(boolean loadEnvConfig) throws IOException {
         //
         // .load & init
         Map<String, String> envMapData = new ConcurrentHashMap<String, String>();
@@ -335,36 +335,40 @@ public abstract class AbstractEnvironment implements Environment {
             this.logger.info("runPath at {}", runPath);
         }
         //
-        // .after
-        this.afterInitEnvironment(envMapData);
+        // .after ( 使用一个临时的Map作为媒介调用afterInitEnvironment,当处理完毕之后将临时map中的数据回填到envMapData )
+        this.afterInitEnvironment();
         //
         // .外部环境变量属性文件覆盖配置
-        URL inStreamURL = ResourcesUtils.getResource(AbstractEnvironment.EVN_FILE_NAME);
-        this.logger.info("load 'env.config' form classpath -> {}.", (inStreamURL == null) ? "empty." : inStreamURL);
-        InputStream inStream = ResourcesUtils.getResourceAsStream(AbstractEnvironment.EVN_FILE_NAME);
-        if (inStream == null) {
-            String workHome = this.evalString("%" + Environment.WORK_HOME + "%");
-            File envFile = new File(workHome, AbstractEnvironment.EVN_FILE_NAME);
-            String envFileName = envFile.getAbsolutePath();
-            if (envFile.exists()) {
-                if (envFile.isDirectory()) {
-                    this.logger.info("load 'env.config' failed(isDirectory) -> {}.", envFileName);
-                } else if (!envFile.canRead()) {
-                    this.logger.info("load 'env.config' failed(can not read) -> {}.", envFileName);
+        if (!loadEnvConfig) {
+            this.logger.info("load 'env.config' ignore.");
+        } else {
+            URL inStreamURL = ResourcesUtils.getResource(AbstractEnvironment.EVN_FILE_NAME);
+            this.logger.info("load 'env.config' form classpath -> {}.", (inStreamURL == null) ? "empty." : inStreamURL);
+            InputStream inStream = ResourcesUtils.getResourceAsStream(AbstractEnvironment.EVN_FILE_NAME);
+            if (inStream == null) {
+                String workHome = this.evalString("%" + Environment.WORK_HOME + "%");
+                File envFile = new File(workHome, AbstractEnvironment.EVN_FILE_NAME);
+                String envFileName = envFile.getAbsolutePath();
+                if (envFile.exists()) {
+                    if (envFile.isDirectory()) {
+                        this.logger.info("load 'env.config' failed(isDirectory) -> {}.", envFileName);
+                    } else if (!envFile.canRead()) {
+                        this.logger.info("load 'env.config' failed(can not read) -> {}.", envFileName);
+                    } else {
+                        inStream = new FileInputStream(envFile);
+                        this.logger.info("load 'env.config' form file -> {}.", envFileName);
+                    }
                 } else {
-                    inStream = new FileInputStream(envFile);
-                    this.logger.info("load 'env.config' form file -> {}.", envFileName);
+                    this.logger.info("load 'env.config' failed(not exists) -> {}.", envFileName);
                 }
-            } else {
-                this.logger.info("load 'env.config' failed(not exists) -> {}.", envFileName);
             }
-        }
-        if (inStream != null) {
-            Properties properties = new Properties();
-            properties.load(new InputStreamReader(inStream, Settings.DefaultCharset));
-            inStream.close();
-            for (String name : properties.stringPropertyNames()) {
-                envMapData.put(name.toUpperCase(), properties.getProperty(name));
+            if (inStream != null) {
+                Properties properties = new Properties();
+                properties.load(new InputStreamReader(inStream, Settings.DefaultCharset));
+                inStream.close();
+                for (String name : properties.stringPropertyNames()) {
+                    envMapData.put(name.toUpperCase(), properties.getProperty(name));
+                }
             }
         }
         this.refreshVariables();
@@ -386,7 +390,7 @@ public abstract class AbstractEnvironment implements Environment {
         }
     }
     //
-    protected void afterInitEnvironment(Map<String, String> envMap) {
+    protected void afterInitEnvironment() {
     }
     //
     /* ------------------------------------------------------------------------------------ init */

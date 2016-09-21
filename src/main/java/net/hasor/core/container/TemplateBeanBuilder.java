@@ -272,7 +272,14 @@ public class TemplateBeanBuilder implements BeanBuilder {
         if (StringUtils.isBlank(inject.value())) {
             return false;
         } else {
-            String settingValue = appContext.getEnvironment().getSettings().getString(inject.value(), inject.defaultValue());
+            String settingVar = inject.value();
+            String settingValue = null;
+            if (settingVar.startsWith("${") && settingVar.endsWith("}")) {
+                settingVar = settingVar.substring(2, settingVar.length() - 1);
+                settingValue = appContext.getEnvironment().evalString("%" + settingVar + "%");
+            } else {
+                settingValue = appContext.getEnvironment().getSettings().getString(inject.value(), inject.defaultValue());
+            }
             obj = ConverterUtils.convert(settingValue, field.getType());
         }
         if (obj != null) {

@@ -21,7 +21,6 @@ import net.hasor.web.WebEnvironment;
 import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Map;
 /**
  * 负责注册MORE_WEB_ROOT环境变量以及Web环境变量的维护。
  * @version : 2013-7-17
@@ -40,13 +39,13 @@ public class WebStandardEnvironment extends StandardEnvironment implements WebEn
         return (ServletVersion) this.getServletContext().getAttribute(ServletVersion.class.getName());
     }
     @Override
-    protected void afterInitEnvironment(Map<String, String> envMap) {
-        super.afterInitEnvironment(envMap);
+    protected void afterInitEnvironment() {
+        super.afterInitEnvironment();
         ServletContext sc = this.getServletContext();
         if (sc == null) {
             throw new NullPointerException("miss of ServletContext.");
         }
         String webContextDir = sc.getRealPath("/");
-        envMap.put("HASOR_WEBROOT", webContextDir);
+        this.addEnvVar("HASOR_WEBROOT", webContextDir);
     }
 }

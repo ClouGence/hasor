@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.plugins.spring.factory.xml;
-import java.util.ArrayList;
+import net.hasor.plugins.spring.factory.SpringFactoryBean;
 import org.more.util.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -27,9 +27,10 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import net.hasor.plugins.spring.factory.SpringFactoryBean;
+
+import java.util.ArrayList;
 /**
- * 
+ *
  * @version : 2016年2月16日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -66,6 +67,8 @@ class HasorDefinitionParser extends AbstractHasorDefinitionParser {
                 list.add(new BeanDefinitionHolder(startWithDefine, beanName));
             }
         }
+        String refPropertiesBean = revertProperty(attributes, "refProperties");
+        builder.addPropertyValue("refProperties", refPropertiesBean);
         //
         String configFile = null;
         String factoryID = revertProperty(attributes, beanID());
@@ -75,8 +78,8 @@ class HasorDefinitionParser extends AbstractHasorDefinitionParser {
         while (node != null) {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element entry = (Element) node;
-                /*   */if (entry.getLocalName().equals("configFile")) {
-                    configFile = this.revertProperty(node.getAttributes(), "resource");
+                if (entry.getLocalName().equals("configFile")) {
+                    configFile = entry.getFirstChild().getNodeValue();
                     if (StringUtils.isBlank(configFile)) {
                         configFile = node.getNodeValue();
                     }
