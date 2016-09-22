@@ -17,6 +17,49 @@
 ![RsfCenter架构设计](http://project.hasor.net/resources/005201_W9C1_1166271.jpg)
 
 ----------
+### 介绍
+* 特色功能:
+    01.支持服务热插拔：支持服务动态发布、动态卸载
+    02.支持服务分组：支持服务分组、分版本
+    03.支持多种方式调用：同步、异步、回调、接口代理
+    04.支持多种模式调用：RPC模式调用、Message模式调用
+        &emsp;&emsp;RPC     模式: 远程调用会等待并返回执行结果。适用于一般方法。遇到耗时方法会有调用超时风险
+        &emsp;&emsp;Message 模式: 远程调用当作消息投递到远程机器，不会产生等待，可以看作是一个简单的 MQ。适合于繁重的耗时方法
+    05.支持点对点调用。RSF的远程调用可以点对点定向调用，也可以集群大规模部署集中提供同一个服务
+    06.支持虚拟机房。通过配置虚拟机房策略可以降低跨机房远程调用
+    07.支持泛化调用。简单的理解，泛化调用就是不依赖二方包，通过传入方法名，方法签名和参数值，就可以调用服务
+    08.支持隐式传参。可以理解隐式传参的含义为，不需要在接口上明确声明参数。在发起调用的时传递到远端
+    09.内置 Telnet 控制台，可以命令行方式直接管理机器
+    10.支持 offline/online 动作。
+* 扩展性:
+    01.支持第三方集成，可以独立使用,也可以和 Spring、Jfinal等第三方框架整合使用
+    02.支持拦截器RsfFilter，开发者可以通过扩展 Filter 实现更多需求
+    03.支持自定义序列化。默认使用内置 Hessian 4.0.7 序列化库
+    04.支持Telnet控制台自定义指令。通过扩展控制台指令，可以发挥更大想象空间
+* 稳定性(参数可配置):
+    01.最大发并发请求数配置（默认:200）
+    02.最大发起请求超限制策略设置: A-等待1秒重试、B-抛异常（默认:B-抛异常）
+    03.Netty线程数配置（默认: 监听请求线程数: 1，IO线程数: 8）
+    04.提供者调用队列容量配置（默认: 队列容量: 4096）
+    05.Work线程数配置（默认: 处理调用线程数: 4）
+    06.请求超时设置。支持服务提供者，服务订阅者独立配置各自的超时参数（默认 6000毫秒）
+    07.双向通信。RSF会合理利用Socket连接，双向通信是指当A机器发起远程调用请求之后，RSF会建立长连接。
+        &emsp;&emsp;-- 如果B机器有调用A机器的需求则直接使用这个连接不会重新创建新的连接，双向通信会大量降低集群间的连接数。
+    08.支持优雅停机。应用停机，Center会自动通知整个集群。即便所有 Center 离线，RSF也会正确处理失效地址。
+* 健壮性:
+    01.每小时地址本动态备份。当所有注册中心离线，即便在没有注册中心的情况下应用程序重启，也不会导致服务找不到提供者的情况。
+    02.当某个地址失效之后，RSF会冻结一段时间，在这段时间内不会有请求发往这个地址。
+    03.支持请求、响应分别使用不同序列化规则。
+* 可维护性:
+    01.支持QoS流量控制。流控可以精确到：接口、方法、地址。
+    02.支持动态路由脚本。路由可以精确到：接口、方法、参数。
+    03.通过路由脚本可以轻松实现接口灰度发布。
+* 安全性:
+    01.支持发布服务授权。
+    02.支持服务订阅授权。
+    03.支持匿名应用。
+
+----------
 ### Demo
 	<!-- 引入依赖 -->
 	<dependency>
@@ -26,14 +69,27 @@
 	</dependency>
 
 	<!-- 配置文件 -->
-	<!-- server-config.xml or client-config.xml -->
-	<hasor.rsfConfig enable="true" port="9001" console.port="9002" unitName="default">
-		<centerServers>
-			<server>rsf://center-host:2180</server>
-		</centerServers>
-	</hasor.rsfConfig>
+	<!-- server-config.xml and client-config.xml -->
+	<?xml version="1.0" encoding="UTF-8"?>
+    <config xmlns="http://project.hasor.net/hasor/schema/main">
+        <hasor.environmentVar>
+            <RSF_CENTER_URL>rsf://<CenterHostAddress>:2180</RSF_CENTER_URL>
+        </hasor.environmentVar>
+    </config>
 
-	//Server
+    // 服务接口
+    public interface EchoService {
+        public String sayHello(String echo) throws InterruptedException;
+    }
+    
+    // 服务接口实现
+    public class EchoServiceImpl implements EchoService {
+        public String sayHello(String echo) throws InterruptedException {
+            return "you say " + echo;
+        }
+    }
+    
+	// 服务提供者
 	Hasor.createAppContext("server-config.xml", new RsfModule() {
 		public void loadRsf(RsfContext rsfContext) throws Throwable {
 			EchoService echoService = new EchoServiceImpl();
@@ -41,7 +97,7 @@
 		}
 	});
 
-	//Client
+	// 服务消费者
 	AppContext clientContext = Hasor.createAppContext("client-config.xml", new RsfModule() {
 		public void loadRsf(RsfContext rsfContext) throws Throwable {
 			rsfContext.binder().rsfService(EchoService.class).register();

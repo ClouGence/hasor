@@ -28,13 +28,15 @@ public class QosTest {
         QoSBucket qos = new QoSBucket(50, 1000, 10);
         //
         int i = 0;
+        int realLoops = 0;
         long startTime = System.currentTimeMillis() / 1000;
         Thread.sleep(1000);
         while (true) {
+            realLoops++;
             if (qos.check()) {
                 i++;
                 long checkTime = System.currentTimeMillis() / 1000;
-                System.out.println("Count:" + i + "\tSpeed(s):" + (i / (checkTime - startTime)));
+                System.out.println("Count:" + i + "\tSpeed(s):" + (i / (checkTime - startTime)) + "\trealLoops: " + realLoops);
             }
             if (i == 300) {
                 break;
