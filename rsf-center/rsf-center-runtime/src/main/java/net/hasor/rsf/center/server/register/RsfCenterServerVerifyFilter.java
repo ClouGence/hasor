@@ -21,8 +21,11 @@ import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.center.server.domain.AuthInfo;
+import net.hasor.rsf.center.server.domain.ErrorCode;
+import net.hasor.rsf.center.server.domain.Result;
 import net.hasor.rsf.center.server.domain.RsfCenterConstants;
 import net.hasor.rsf.center.server.manager.AuthManager;
+import net.hasor.rsf.center.server.utils.JsonUtils;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfConstants;
 import org.slf4j.Logger;
@@ -41,16 +44,28 @@ public class RsfCenterServerVerifyFilter implements RsfFilter {
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         if (!request.isLocal()) {
-            //-如果是来自远程的请求响应，则校验应用接入Key
+            // .校验应用接入Key
             String appKey = request.getOption(RsfConstants.Center_RSF_APP_KEY);              //appKey 授权码
             String appKeySecret = request.getOption(RsfConstants.Center_RSF_APP_KEY_SECRET); //appKeySecret  应用程序编码
             AuthInfo authInfo = new AuthInfo();
             authInfo.setAppKey(appKey);
             authInfo.setAppKeySecret(appKeySecret);
             request.setAttribute(RsfCenterConstants.Center_Request_AuthInfo, authInfo);
-            boolean authResult = this.authManager.checkAuth(authInfo, request.getBindInfo(), request.getMethod());
-            if (!authResult) {
-                response.sendStatus(ProtocolStatus.Unauthorized, "check auth code failed.");
+            Result<Boolean> authResult = this.authManager.checkAuth(authInfo, request.getBindInfo(), request.getMethod());
+            // .error
+            if (authResult == null || !authResult.isSuccess()) {
+                String errorMessage = "";
+                if (authResult == null || authResult.getResult() == null) {
+                    errorMessage = JsonUtils.converToString(ErrorCode.EmptyResult);
+                } else {
+                    errorMessage = JsonUtils.converToString(authResult.getErrorInfo());
+                }
+                response.sendStatus(ProtocolStatus.Unauthorized, errorMessage);
+                return;
+            }
+            // .failed
+            if (!authResult.getResult()) {
+                response.sendStatus(ProtocolStatus.Unauthorized, "unauthorized.");
                 return;
             }
         }

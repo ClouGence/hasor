@@ -17,6 +17,9 @@ package net.hasor.rsf.center.server.utils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import net.hasor.rsf.center.server.domain.ErrorCode;
+import net.hasor.rsf.center.server.domain.Result;
+import net.hasor.rsf.center.server.domain.ResultDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -36,5 +39,17 @@ public class DateCenterUtils {
     }
     public static String beatData() {
         return DateCenterUtils.timestamp() + "@" + String.valueOf(System.currentTimeMillis());
+    }
+    /* 处理失败的情况 */
+    public static <T> Result<T> buildFailedResult(Result<?> resultInfo) {
+        ResultDO<T> result = new ResultDO<>();
+        if (resultInfo == null || resultInfo.getResult() == null) {
+            result.setErrorInfo(ErrorCode.EmptyResult);
+        } else {
+            result.setErrorInfo(resultInfo.getErrorInfo());
+            result.setThrowable(resultInfo.getThrowable());
+        }
+        result.setSuccess(false);
+        return result;
     }
 }

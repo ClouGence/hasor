@@ -25,6 +25,7 @@ import net.hasor.rsf.center.server.DataAdapter;
 import net.hasor.rsf.center.server.QueryOption;
 import net.hasor.rsf.center.server.domain.*;
 import net.hasor.rsf.center.server.pushing.RsfPusher;
+import net.hasor.rsf.center.server.utils.DateCenterUtils;
 import net.hasor.rsf.center.server.utils.JsonUtils;
 import net.hasor.rsf.domain.RsfServiceType;
 import org.more.bizcommon.log.LogUtils;
@@ -62,15 +63,7 @@ public class ServiceManager {
     }
     /* 处理失败的情况 */
     private <T> Result<T> buildFailedResult(Result<?> resultInfo) {
-        ResultDO<T> result = new ResultDO<>();
-        if (resultInfo == null || resultInfo.getResult() == null) {
-            result.setErrorInfo(ErrorCode.EmptyResult);
-        } else {
-            result.setErrorInfo(resultInfo.getErrorInfo());
-            result.setThrowable(resultInfo.getThrowable());
-        }
-        result.setSuccess(false);
-        return result;
+        return DateCenterUtils.buildFailedResult(resultInfo);
     }
     private String eval(String objectKey) {
         try {
