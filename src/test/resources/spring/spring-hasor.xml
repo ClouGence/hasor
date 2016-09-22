@@ -31,6 +31,12 @@ http://project.hasor.net/hasor/schema/spring http://project.hasor.net/hasor/sche
         </property>
     </bean>
 
+    <bean id="xxx" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>${jdbc.url}</value>
+        </property>
+    </bean>
+
     <h:hasor factoryID="hasor" refProperties="propertyConfigurer" startWith="net.test.hasor.spring.SpringTestModule">
         <h:configFile>classpath:simple-config.xml</h:configFile>
         <!-- 将Hasor中ID为helloWord的Bean导出到Spring中，并定名为helloString -->
