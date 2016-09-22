@@ -25,9 +25,7 @@ import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 import net.hasor.core.AppContext;
 import net.hasor.core.Inject;
-import net.hasor.core.Settings;
 import net.hasor.core.Singleton;
-import net.hasor.core.setting.AbstractSettings;
 import net.hasor.rsf.center.server.domain.RsfCenterSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.util.SortedMap;
 /**
- * JE
+ * JE 内存形 KeyValue 数据库
  * @version : 2016年9月18日
  * @author 赵永春(zyc@hasor.net)
  */

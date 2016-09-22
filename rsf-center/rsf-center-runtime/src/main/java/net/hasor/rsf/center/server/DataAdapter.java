@@ -39,7 +39,7 @@ public interface DataAdapter {
     /**
      * 检索关联的对象列表
      *  <i>核心方法,负责数据查询。</i>
-     *  <i>必须支持: 负责查询服务下的 (提供者 or 消费者) 列表,以及服务路由等信息。</i>
+     *  <i>负责查询服务下的 (提供者 or 消费者) 列表,以及服务路由等信息。</i>
      *  <i>option参数是可选支持: 负责限定查询条件,因为服务提供者和服务消费者都会挂在 refObjectID 下面,因此实现该参数会有助于减轻Center的负担。</i>
      * @param refObjectID 关联的服务ID
      * @param option 查询过滤参数(可选)

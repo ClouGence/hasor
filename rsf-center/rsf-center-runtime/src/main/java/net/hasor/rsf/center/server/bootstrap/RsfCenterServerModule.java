@@ -69,7 +69,7 @@ public class RsfCenterServerModule implements LifeModule, RsfPlugin {
     /** Center启动 */
     protected void doStartCenter(RsfContext rsfContext) throws java.io.IOException {
         //
-        // .判断RSF目前是否配置了启用连接Center,如果是,则不启动 center 服务器,RSF将以客户端形式运行
+        // .判断RSF目前是否配置了启用连接Center,如果是,则不启动 center 服务器。因为RSF将以客户端形式运行
         boolean clientEnableCenter = rsfContext.getEnvironment().getSettings().isEnableCenter();
         if (clientEnableCenter) {
             this.logger.warn("this application has been started form the client mode, so rsfCenter cannot be started.");
@@ -85,7 +85,6 @@ public class RsfCenterServerModule implements LifeModule, RsfPlugin {
         rsfBinder.rsfService(RsfCenterListener.class)// 
                 .bindFilter("VerificationFilter", RsfCenterServerVerifyFilter.class)//
                 .register();
-        // .
         //
         // .工作模式
         WorkMode workMode = centerSettings.getWorkMode();

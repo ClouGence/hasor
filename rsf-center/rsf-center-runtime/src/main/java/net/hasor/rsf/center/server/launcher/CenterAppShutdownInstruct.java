@@ -21,7 +21,7 @@ import net.hasor.rsf.console.RsfInstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- *
+ * Telnet扩展指令,只有通过 start.sh 形式启动时才可以使用这个指令。
  * @version : 2016年3月29日
  * @author 赵永春(zyc@hasor.net)
  */
