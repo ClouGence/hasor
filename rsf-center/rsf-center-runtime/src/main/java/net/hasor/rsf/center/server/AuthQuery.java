@@ -26,12 +26,18 @@ import net.hasor.rsf.domain.RsfServiceType;
  */
 public interface AuthQuery {
     /**
+     *
+     * @param authInfo
+     * @param remoteAddress
+     */
+    public Result<Boolean> checkKeySecret(AuthInfo authInfo, InterAddress remoteAddress);
+
+    /**
      * 发布服务权限检测
      * @param authInfo 授权信息
-     * @param rsfAddress 请求 center 的远程机器
+     * @param remoteAddress 请求 center 的远程机器
      * @param serviceInfo 服务信息
      * @param serviceType 提供者 or 消费者
-     * @return
      */
-    public Result<Boolean> checkPublish(AuthInfo authInfo, InterAddress rsfAddress, ServiceInfo serviceInfo, RsfServiceType serviceType);
+    public Result<Boolean> checkPublish(AuthInfo authInfo, InterAddress remoteAddress, ServiceInfo serviceInfo, RsfServiceType serviceType);
 }

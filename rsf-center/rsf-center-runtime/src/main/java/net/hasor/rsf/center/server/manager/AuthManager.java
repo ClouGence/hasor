@@ -16,11 +16,17 @@
 package net.hasor.rsf.center.server.manager;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.TraceUtil;
+import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.server.AuthQuery;
-import net.hasor.rsf.center.server.domain.*;
-
-import java.lang.reflect.Method;
+import net.hasor.rsf.center.server.domain.AuthInfo;
+import net.hasor.rsf.center.server.domain.Result;
+import net.hasor.rsf.center.server.domain.ResultDO;
+import net.hasor.rsf.center.server.domain.RsfCenterSettings;
+import net.hasor.rsf.center.server.utils.DateCenterUtils;
+import org.more.bizcommon.log.LogUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 权限认证
  * @version : 2016年2月22日
@@ -28,18 +34,31 @@ import java.lang.reflect.Method;
  */
 @Singleton
 public class AuthManager {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
     private RsfCenterSettings rsfCenterCfg;
     @Inject
     private AuthQuery         authQuery;
     //
-    public Result<Boolean> checkAuth(AuthInfo requestAuthInfo, RsfBindInfo<?> bindInfo, Method method) {
-        // TODO Auto-generated method stub
-        System.out.println("checkAuth -> appCode=" + requestAuthInfo.getAppKey() + " ,authCode=" + requestAuthInfo.getAppKeySecret());
-        ResultDO<Boolean> result = new ResultDO<>();
-        result.setResult(true);
+    public Result<Boolean> checkAuth(AuthInfo authInfo, InterAddress remoteAddress) {
+        LogUtils logUtils = LogUtils.create("INFO_200_00002")//
+                .addLog("traceID", TraceUtil.getTraceID())//
+                .addLog("appCode", authInfo.getAppKey())//
+                .addLog("authCode", authInfo.getAppKeySecret())//
+                .addLog("remoteAddress", remoteAddress.toHostSchema());
+        //
+        //
+        Result<Boolean> checkResult = authQuery.checkKeySecret(authInfo, remoteAddress);
+        if (checkResult == null || !checkResult.isSuccess() || checkResult.getResult() == null) {
+            logger.error(logUtils.addLog("result", "failed.").toJson());
+            return DateCenterUtils.buildFailedResult(checkResult);
+        }
+        //
+        //
+        logger.info(logUtils.addLog("result", checkResult.getResult()).toJson());
+        ResultDO<Boolean> result = new ResultDO<Boolean>();
         result.setSuccess(true);
-        result.setErrorInfo(ErrorCode.OK);
+        result.setResult(checkResult.getResult());
         return result;
     }
 }

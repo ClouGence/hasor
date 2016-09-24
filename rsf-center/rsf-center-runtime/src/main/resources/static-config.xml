@@ -44,7 +44,6 @@
             <providerExpireTime>30000</providerExpireTime>
             <!-- 服务订阅者,心跳过期时间(30秒) -->
             <consumerExpireTime>30000</consumerExpireTime>
-
         </serviceManager>
 
         <!-- 数据适配器 -->

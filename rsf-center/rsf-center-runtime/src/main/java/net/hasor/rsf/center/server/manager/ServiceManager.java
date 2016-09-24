@@ -19,6 +19,7 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfRequest;
+import net.hasor.rsf.TraceUtil;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.server.AuthQuery;
 import net.hasor.rsf.center.server.DataAdapter;
@@ -69,11 +70,16 @@ public class ServiceManager {
         try {
             return CommonCodeUtils.MD5.getMD5(objectKey + this.envConfig.getSaltValue());//Key要加盐
         } catch (NoSuchAlgorithmException e) {
+            logger.error(LogUtils.create("ERROR_300_00007")//
+                    .addLog("traceID", TraceUtil.getTraceID())//
+                    .addLog("bodyKey", objectKey)//
+                    .toJson());
             return null;
         }
     }
     /* 计算registerID */
     private Result<String> evalRegisterID(String objectKey, RsfServiceType serviceType) {
+        //
         // .计算registerID( 相同的入参,会产出相同的registerID )
         String registerID = eval(objectKey);
         if (StringUtils.isNotBlank(registerID) && RsfServiceType.Provider == serviceType) {
@@ -89,8 +95,16 @@ public class ServiceManager {
                 resultDO.setErrorInfo(ErrorCode.ServiceTypeFailed_Null);
             }
             resultDO.setResult(registerID);
+            logger.error(LogUtils.create("ERROR_300_00008")//
+                    .addLog("traceID", TraceUtil.getTraceID())//
+                    .addLog("objectKey", objectKey)//
+                    .addLog("serviceType", serviceType.name())//
+                    .addLog("errorCode", resultDO.getErrorInfo().getCodeType())//
+                    .addLog("errorMessage", resultDO.getErrorInfo().getMessage())//
+                    .toJson());
             return resultDO;
         }
+        //
         // .返回结果
         ResultDO<String> resultDO = new ResultDO<>();
         resultDO.setSuccess(true);
@@ -116,6 +130,14 @@ public class ServiceManager {
             ResultDO<String> result = new ResultDO<>();
             result.setSuccess(false);
             result.setErrorInfo(ErrorCode.ServiceTypeFailed_Null);
+            logger.error(LogUtils.create("ERROR_300_00009")//
+                    .addLog("traceID", TraceUtil.getTraceID())//
+                    .addLog("rsfAddress", rsfAddress.toHostSchema())//
+                    .addLog("registerID", registerID)//
+                    .addLog("serviceID", serviceID)//
+                    .addLog("errorCode", result.getErrorInfo().getCodeType())//
+                    .addLog("errorMessage", result.getErrorInfo().getMessage())//
+                    .toJson());
             return result;
         }
         oriObjectKey = preKey + oriObjectKey;
@@ -126,6 +148,14 @@ public class ServiceManager {
             ResultDO<String> result = new ResultDO<>();
             result.setSuccess(false);
             result.setErrorInfo(ErrorCode.RegisterCheckInvalid);
+            logger.error(LogUtils.create("ERROR_300_00010")//
+                    .addLog("traceID", TraceUtil.getTraceID())//
+                    .addLog("rsfAddress", rsfAddress.toHostSchema())//
+                    .addLog("registerID", registerID)//
+                    .addLog("serviceID", serviceID)//
+                    .addLog("errorCode", result.getErrorInfo().getCodeType())//
+                    .addLog("errorMessage", result.getErrorInfo().getMessage())//
+                    .toJson());
             return result;
         }
         //
@@ -274,7 +304,7 @@ public class ServiceManager {
                     ConsumerInfo consumerInfo = JsonUtils.converToService(objectDO.getContent(), ConsumerInfo.class);
                     targets.add(new InterAddress(consumerInfo.getRsfAddress()));
                 } catch (Exception e) {
-                    this.logger.error(LogUtils.create("ERROR_200_00402")//
+                    this.logger.error(LogUtils.create("ERROR_300_00006")//
                             .logException(e)//
                             .addLog("objectID", objectDO.getObjectID())//
                             .addLog("serviceID", serviceID)//
@@ -546,7 +576,7 @@ public class ServiceManager {
                     ProviderInfo providerInfo = JsonUtils.converToService(objectDO.getContent(), ProviderInfo.class);
                     targets.add(new InterAddress(providerInfo.getRsfAddress()));
                 } catch (Exception e) {
-                    this.logger.error(LogUtils.create("ERROR_200_00402")//
+                    this.logger.error(LogUtils.create("ERROR_300_00006")//
                             .logException(e)//
                             .addLog("objectID", objectDO.getObjectID())//
                             .addLog("serviceID", serviceID)//

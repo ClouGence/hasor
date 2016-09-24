@@ -16,10 +16,7 @@
 package net.hasor.rsf.center.server.register;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.RsfFilter;
-import net.hasor.rsf.RsfFilterChain;
-import net.hasor.rsf.RsfRequest;
-import net.hasor.rsf.RsfResponse;
+import net.hasor.rsf.*;
 import net.hasor.rsf.center.server.domain.AuthInfo;
 import net.hasor.rsf.center.server.domain.ErrorCode;
 import net.hasor.rsf.center.server.domain.Result;
@@ -28,6 +25,7 @@ import net.hasor.rsf.center.server.manager.AuthManager;
 import net.hasor.rsf.center.server.utils.JsonUtils;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfConstants;
+import org.more.bizcommon.log.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -51,7 +49,7 @@ public class RsfCenterServerVerifyFilter implements RsfFilter {
             authInfo.setAppKey(appKey);
             authInfo.setAppKeySecret(appKeySecret);
             request.setAttribute(RsfCenterConstants.Center_Request_AuthInfo, authInfo);
-            Result<Boolean> authResult = this.authManager.checkAuth(authInfo, request.getBindInfo(), request.getMethod());
+            Result<Boolean> authResult = this.authManager.checkAuth(authInfo, request.getRemoteAddress());
             // .error
             if (authResult == null || !authResult.isSuccess()) {
                 String errorMessage = "";
@@ -60,6 +58,13 @@ public class RsfCenterServerVerifyFilter implements RsfFilter {
                 } else {
                     errorMessage = JsonUtils.converToString(authResult.getErrorInfo());
                 }
+                logger.error(LogUtils.create("ERROR_300_00001")//
+                        .addLog("traceID", TraceUtil.getTraceID())//
+                        .addLog("rsfAddress", request.getRemoteAddress().toHostSchema())//
+                        .addLog("errorMessage", errorMessage)//
+                        .addLog("appKey", appKey)//
+                        .addLog("appKeySecret", appKeySecret)//
+                        .toJson());
                 response.sendStatus(ProtocolStatus.Unauthorized, errorMessage);
                 return;
             }

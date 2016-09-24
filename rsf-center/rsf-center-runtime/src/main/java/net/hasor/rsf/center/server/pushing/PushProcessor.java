@@ -17,11 +17,13 @@ package net.hasor.rsf.center.server.pushing;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.TraceUtil;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.domain.CenterEventBody;
 import net.hasor.rsf.domain.provider.InstanceAddressProvider;
 import net.hasor.rsf.rpc.caller.RsfServiceWrapper;
+import org.more.bizcommon.log.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +55,11 @@ public class PushProcessor {
             return Collections.emptyList();
         }
         if (event.getTarget() == null || event.getTarget().isEmpty()) {
-            logger.error("target is empty event ->{}", event);
+            logger.error(LogUtils.create("ERROR_300_00003")//
+                    .addLog("traceID", TraceUtil.getTraceID())//
+                    .addLog("serviceID", event.getServiceID())//
+                    .addLog("pushEventType", event.getPushEventType().name())//
+                    .toJson());
             return Collections.emptyList();
             //
         } else {
@@ -80,24 +86,40 @@ public class PushProcessor {
         eventBody.setEventBody(event.getEventBody());
         boolean result = false;
         //
-        result = sendEvent(rsfAddress, eventBody);
+        result = sendEvent(rsfAddress, eventBody, 1);           // 第一次尝试
         if (!result) {
-            result = sendEvent(rsfAddress, eventBody);
+            result = sendEvent(rsfAddress, eventBody, 2);       // 第二次尝试
             if (!result) {
-                result = sendEvent(rsfAddress, eventBody);
+                result = sendEvent(rsfAddress, eventBody, 3);   // 第三次尝试
             }
         }
         //
         return result;
     }
     /** 数据推送 */
-    private boolean sendEvent(InterAddress rsfAddress, CenterEventBody eventBody) {
+    private boolean sendEvent(InterAddress rsfAddress, CenterEventBody eventBody, int times) {
+        //
+        logger.info(LogUtils.create("INFO_200_00001")//
+                .addLog("traceID", TraceUtil.getTraceID())//
+                .addLog("serviceID", eventBody.getServiceID())//
+                .addLog("rsfAddress", rsfAddress)//
+                .addLog("eventType", eventBody.getEventType())//
+                .addLog("times", times)//
+                .toJson());
+        //
         try {
             RsfCenterListener listener = this.rsfClientListener.get();
             ((RsfServiceWrapper) listener).setTarget(new InstanceAddressProvider(rsfAddress));
             return listener.onEvent(eventBody.getEventType(), eventBody);
         } catch (Throwable e) {
-            logger.error("send event to target error:" + e.getMessage(), e);
+            logger.error(LogUtils.create("ERROR_300_00002")//
+                    .addLog("traceID", TraceUtil.getTraceID())//
+                    .logException(e)//
+                    .addLog("rsfAddress", rsfAddress.toHostSchema())//
+                    .addLog("serviceID", eventBody.getServiceID())//
+                    .addLog("eventType", eventBody.getEventType())//
+                    .addLog("eventBody", eventBody.getEventBody())//
+                    .toJson());
             return false;
         }
     }

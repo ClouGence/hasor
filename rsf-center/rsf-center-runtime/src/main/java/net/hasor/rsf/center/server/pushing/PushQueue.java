@@ -19,8 +19,10 @@ import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.TraceUtil;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.server.domain.RsfCenterSettings;
+import org.more.bizcommon.log.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +77,9 @@ public class PushQueue implements Runnable {
                     doPush(pushEvent);
                 }
             } catch (Throwable e) {
-                logger.error("doPushQueue - " + e.getMessage(), e);
+                logger.error(LogUtils.create("ERROR_300_00004")//
+                        .addLog("traceID", TraceUtil.getTraceID())//
+                        .logException(e).toJson());
             }
         }
     }
@@ -84,10 +88,12 @@ public class PushQueue implements Runnable {
     private List<InterAddress> doPush(PushEvent pushEvent) {
         PushProcessor pushProcessor = this.processorMapping.get(pushEvent.getPushEventType());
         if (pushProcessor != null) {
-            logger.info("pushEvent {} -> {}", pushEvent.getPushEventType().name(), pushEvent);
             return pushProcessor.doProcessor(pushEvent);
         } else {
-            logger.error("pushEvent pushProcessor is null. {} -> {}", pushEvent.getPushEventType().name(), pushEvent);
+            logger.error(LogUtils.create("ERROR_300_00005")//
+                    .addLog("traceID", TraceUtil.getTraceID())//
+                    .addLog("pushEventType", pushEvent.getPushEventType().name())//
+                    .toJson());
         }
         return pushEvent.getTarget();
     }
@@ -97,7 +103,9 @@ public class PushQueue implements Runnable {
             try {
                 Thread.sleep(this.rsfCenterCfg.getSleepTime());
             } catch (Exception e) {
-                logger.error("pushQueue - " + e.getMessage(), e);
+                logger.error(LogUtils.create("ERROR_300_00004")//
+                        .addLog("traceID", TraceUtil.getTraceID())//
+                        .logException(e).toJson());
             }
             if (this.dataQueue.size() > this.rsfCenterCfg.getQueueMaxSize()) {
                 return false;//资源还是紧张,返回 失败

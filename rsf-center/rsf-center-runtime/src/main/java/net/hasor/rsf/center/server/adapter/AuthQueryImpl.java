@@ -28,6 +28,13 @@ import net.hasor.rsf.domain.RsfServiceType;
  */
 public class AuthQueryImpl implements AuthQuery {
     @Override
+    public Result<Boolean> checkKeySecret(AuthInfo authInfo, InterAddress remoteAddress) {
+        ResultDO<Boolean> result = new ResultDO<Boolean>();
+        result.setSuccess(true);
+        result.setResult(true);
+        return result;
+    }
+    @Override
     public Result<Boolean> checkPublish(AuthInfo authInfo, InterAddress rsfAddress, ServiceInfo serviceInfo, RsfServiceType serviceType) {
         ResultDO<Boolean> result = new ResultDO<Boolean>();
         result.setSuccess(true);
