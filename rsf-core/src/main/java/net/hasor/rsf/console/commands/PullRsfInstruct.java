@@ -88,17 +88,18 @@ public class PullRsfInstruct implements RsfInstruct {
                 return "[FAILED] no service on this application is registered.";
             }
             for (String serviceID : servicesList) {
+                request.writeMessageLine(" ->");
+                request.writeMessageLine(" ->ServiceID : " + serviceID + "'");
+                //
                 RsfBindInfo<Object> info = rsfContext.getServiceInfo(serviceID);
                 if (info == null) {
-                    request.writeMessageLine(" ->[IGNORE] service '" + serviceID + "' is Undefined.");
+                    request.writeMessageLine(" ->  [IGNORE] service '" + serviceID + "' is Undefined.");
                     continue;
                 }
                 if (info.getServiceType() == RsfServiceType.Provider) {
-                    request.writeMessageLine(" ->[IGNORE] service '" + serviceID + "' is Provider.");
+                    request.writeMessageLine(" ->  [IGNORE] service '" + serviceID + "' is Provider.");
                     continue;
                 }
-                //
-                request.writeMessageLine(" ->");
                 String registerID = (String) info.getMetaData(RsfConstants.Center_Ticket);
                 if (StringUtils.equalsBlankIgnoreCase("request", request.getCommandString())) {
                     // -request
@@ -119,17 +120,17 @@ public class PullRsfInstruct implements RsfInstruct {
     //
     private void processPull(RsfCommandRequest request, RsfCenterRegister register, String serviceID, String registerID) {
         if (StringUtils.isBlank(registerID)) {
-            request.writeMessageLine(" ->[FAILED] the service has not yet registered to the center.");
+            request.writeMessageLine(" ->  [FAILED] the service has not yet registered to the center.");
             return;
         }
         // .1of4
-        request.writeMessageLine(" ->(1of4) request '" + serviceID + "' data form rsfCenter ...");
+        request.writeMessageLine(" ->  (1of4) request '" + serviceID + "' data form rsfCenter ...");
         RsfCenterResult<List<String>> result = register.pullProviders(registerID, serviceID);
         if (result == null || !result.isSuccess() || result.getResult() == null) {
             String failedInfo = (result == null || result.getResult() == null) ?//
                     "EmptyResult." ://
                     "MESSAGE[" + result.getMessageID() + "] - (" + result.getErrorCode() + ")" + result.getErrorMessage();
-            request.writeMessageLine(" ->(4of4) [FAILED] service '" + serviceID + "' -> " + failedInfo);
+            request.writeMessageLine(" ->  (4of4) [FAILED] service '" + serviceID + "' -> " + failedInfo);
             return;
         }
         // .2of4
@@ -143,31 +144,31 @@ public class PullRsfInstruct implements RsfInstruct {
                 finalAddressStrList.add(inter.toHostSchema());
             } catch (Exception e) { /**/ }
         }
-        request.writeMessageLine(String.format(" ->(2of4) pull addressSet is " + JSON.toString(finalAddressStrList)));
+        request.writeMessageLine(String.format(" ->  (2of4) pull addressSet is " + JSON.toString(finalAddressStrList)));
         // .3of4
-        request.writeMessageLine(String.format(" ->(3of4) prepare refreshAddress addressSet."));
+        request.writeMessageLine(String.format(" ->  (3of4) prepare refreshAddress addressSet."));
         // .4of4
         request.getRsfContext().getUpdater().refreshAddress(serviceID, finalAddressList);
-        request.writeMessageLine(String.format(" ->(4of4) done."));
+        request.writeMessageLine(String.format(" ->  (4of4) done."));
     }
     private void processRequest(RsfCommandRequest request, RsfCenterRegister register, String serviceID, String registerID) {
         if (StringUtils.isBlank(registerID)) {
-            request.writeMessageLine(" ->[FAILED] the service has not yet registered to the center.");
+            request.writeMessageLine(" ->  [FAILED] the service has not yet registered to the center.");
             return;
         }
         // .1of2
-        request.writeMessageLine(" ->(1of2) request '" + serviceID + "' data form rsfCenter ...");
+        request.writeMessageLine(" ->  (1of2) request '" + serviceID + "' data form rsfCenter ...");
         RsfCenterResult<Boolean> result = register.requestPushProviders(registerID, serviceID);
         if (result == null || !result.isSuccess() || result.getResult() == null) {
             String failedInfo = (result == null || result.getResult() == null) ?//
                     "EmptyResult." ://
                     "MESSAGE[" + result.getMessageID() + "] - (" + result.getErrorCode() + ")" + result.getErrorMessage();
-            request.writeMessageLine(" ->(2of2) [FAILED] " + failedInfo);
+            request.writeMessageLine(" ->  (2of2) [FAILED] " + failedInfo);
             return;
         }
         // .2of2
         boolean requestResult = result.getResult();
         String mark = requestResult ? "SUCCEED" : "FAILED";
-        request.writeMessageLine(String.format(" ->(2of2) [%s] results is %s.", mark, mark.toLowerCase()));
+        request.writeMessageLine(String.format(" ->  (2of2) [%s] results is %s.", mark, mark.toLowerCase()));
     }
 }
