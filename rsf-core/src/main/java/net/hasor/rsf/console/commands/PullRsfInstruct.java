@@ -89,7 +89,7 @@ public class PullRsfInstruct implements RsfInstruct {
             }
             for (String serviceID : servicesList) {
                 request.writeMessageLine(" ->");
-                request.writeMessageLine(" ->ServiceID : " + serviceID + "'");
+                request.writeMessageLine(" ->ServiceID : " + serviceID);
                 //
                 RsfBindInfo<Object> info = rsfContext.getServiceInfo(serviceID);
                 if (info == null) {
