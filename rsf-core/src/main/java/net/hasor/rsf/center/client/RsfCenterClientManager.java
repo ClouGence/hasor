@@ -63,7 +63,6 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
     @Override
     public void onEvent(String event, CenterEventBody eventData) throws Throwable {
         String serviceID = eventData.getServiceID();
-        String snapshotInfo = eventData.getSnapshotInfo();
         if (StringUtils.isBlank(serviceID)) {
             return;
         }
@@ -71,10 +70,9 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         if (this.serviceMap.containsKey(serviceID)) {
             RsfBindInfo<?> domain = this.serviceMap.get(serviceID);
             if (domain != null) {
-                domain.setMetaData(RsfConstants.Center_Ticket, snapshotInfo);
-                logger.info("update CenterSnapshotInfo success -> serviceID={} , snapshotInfo=", serviceID, snapshotInfo);
+                logger.info("update CenterSnapshotInfo success -> serviceID={}.", serviceID);
             } else {
-                logger.error("update CenterSnapshotInfo failed, domain is undefined-> serviceID={} , snapshotInfo=", serviceID, snapshotInfo);
+                logger.error("update CenterSnapshotInfo failed, domain is undefined-> serviceID={}.", serviceID);
             }
         }
     }

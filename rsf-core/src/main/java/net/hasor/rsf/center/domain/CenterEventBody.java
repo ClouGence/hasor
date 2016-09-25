@@ -24,7 +24,6 @@ public class CenterEventBody implements Serializable {
     private static final long serialVersionUID = 1617451556801258822L;
     private String eventType;
     private String serviceID;                              //相关服务ID
-    private String snapshotInfo;                           //服务中心上的快照
     private String eventBody;                              //事件内容
     //
     public String getEventType() {
@@ -38,12 +37,6 @@ public class CenterEventBody implements Serializable {
     }
     public void setServiceID(String serviceID) {
         this.serviceID = serviceID;
-    }
-    public String getSnapshotInfo() {
-        return this.snapshotInfo;
-    }
-    public void setSnapshotInfo(String snapshotInfo) {
-        this.snapshotInfo = snapshotInfo;
     }
     public String getEventBody() {
         return this.eventBody;

@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.launcher;
-import net.hasor.core.*;
+import net.hasor.core.AppContext;
+import net.hasor.core.EventListener;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
@@ -81,7 +84,7 @@ public class MainLauncher {
         int consolePort = rsfSettings.getConsolePort();
         //
         Map<String, String> envMap = new HashMap<>();
-        envMap.put("open_kill_self", "true");
+        envMap.put("open_kill_self", "true");//设置 open_kill_self 环境变量,该环境变量在执行 center_app_shutdown_command 命令时候可以让应用程序退出。
         TelnetClient.execCommand(addressHost, consolePort, "center_app_shutdown_command", envMap);
     }
     public static void doVersion(String[] args) {

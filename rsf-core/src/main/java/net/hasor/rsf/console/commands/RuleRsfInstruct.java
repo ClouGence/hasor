@@ -17,8 +17,8 @@ package net.hasor.rsf.console.commands;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.console.RsfCommand;
-import net.hasor.rsf.console.RsfInstruct;
 import net.hasor.rsf.console.RsfCommandRequest;
+import net.hasor.rsf.console.RsfInstruct;
 import org.more.util.StringUtils;
 
 import java.io.BufferedReader;
@@ -75,25 +75,24 @@ public class RuleRsfInstruct implements RsfInstruct {
                 }
             }
             /*执行指令*/
-            /*  */
             if ("-s".equalsIgnoreCase(mode)) {
-                this.showServiceRule(sw, nameArg, rsfContext);//显示服务级路由脚本
+                this.showServiceRule(sw, nameArg, rsfContext);  //显示服务级路由脚本
             } else if ("-m".equalsIgnoreCase(mode)) {
-                this.showMethodRule(sw, nameArg, rsfContext);//显示方法级路由脚本
+                this.showMethodRule(sw, nameArg, rsfContext);   //显示方法级路由脚本
             } else if ("-a".equalsIgnoreCase(mode)) {
-                this.showArgsRule(sw, nameArg, rsfContext);//显示参数级路由脚本
+                this.showArgsRule(sw, nameArg, rsfContext);     //显示参数级路由脚本
             } else if ("-us".equalsIgnoreCase(mode)) {
-                this.updateServiceRule(sw, nameArg, request);//更新服务级路由脚本
+                this.updateServiceRule(sw, nameArg, request);   //更新服务级路由脚本
             } else if ("-um".equalsIgnoreCase(mode)) {
-                this.updateMethodRule(sw, nameArg, request);//更新方法级路由脚本
+                this.updateMethodRule(sw, nameArg, request);    //更新方法级路由脚本
             } else if ("-ua".equalsIgnoreCase(mode)) {
-                this.updateArgsRule(sw, nameArg, request);//更新参数级路由脚本
+                this.updateArgsRule(sw, nameArg, request);      //更新参数级路由脚本
             } else if ("-cs".equalsIgnoreCase(mode)) {
-                this.cleanServiceRule(sw, nameArg, request);//清空服务级路由脚本
+                this.cleanServiceRule(sw, nameArg, request);    //清空服务级路由脚本
             } else if ("-cm".equalsIgnoreCase(mode)) {
-                this.cleanMethodRule(sw, nameArg, request);//清空方法级路由脚本
+                this.cleanMethodRule(sw, nameArg, request);     //清空方法级路由脚本
             } else if ("-ca".equalsIgnoreCase(mode)) {
-                this.cleanArgsRule(sw, nameArg, request);//清空参数级别路由脚本
+                this.cleanArgsRule(sw, nameArg, request);       //清空参数级别路由脚本
             } else {
                 sw.write("[ERROR] bad args.");
             }
