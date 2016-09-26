@@ -28,13 +28,13 @@ import java.util.*;
  * @author 赵永春(zyc@hasor.net)
  */
 public class HashMapDataAdapter implements DataAdapter {
-    private Map<String, ObjectDO>    dataPool    = new HashMap<>();
-    private Map<String, Set<String>> refDataPool = new HashMap<>();
+    private Map<String, ObjectDO>    dataPool    = new HashMap<String, ObjectDO>();
+    private Map<String, Set<String>> refDataPool = new HashMap<String, Set<String>>();
     @Override
     public Result<ObjectDO> queryObjectByID(String objectID) {
         ObjectDO data = this.dataPool.get(objectID);
         //
-        ResultDO<ObjectDO> resultDO = new ResultDO<>();
+        ResultDO<ObjectDO> resultDO = new ResultDO<ObjectDO>();
         resultDO.setResult(data);
         resultDO.setSuccess(true);
         //
@@ -45,7 +45,7 @@ public class HashMapDataAdapter implements DataAdapter {
     public Result<Boolean> removeObjectByID(String objectID) {
         this.dataPool.remove(objectID);
         //
-        ResultDO<Boolean> resultDO = new ResultDO<>();
+        ResultDO<Boolean> resultDO = new ResultDO<Boolean>();
         resultDO.setResult(true);
         resultDO.setSuccess(true);
         return resultDO;
@@ -64,13 +64,13 @@ public class HashMapDataAdapter implements DataAdapter {
         if (StringUtils.isNotBlank(refID)) {
             Set<String> refSet = this.refDataPool.get(refID);
             if (refSet == null) {
-                refSet = new HashSet<>();
+                refSet = new HashSet<String>();
                 this.refDataPool.put(refID, refSet);
             }
             refSet.add(objID);
         }
         //
-        ResultDO<Boolean> resultDO = new ResultDO<>();
+        ResultDO<Boolean> resultDO = new ResultDO<Boolean>();
         resultDO.setResult(true);
         resultDO.setSuccess(true);
         return resultDO;
@@ -79,20 +79,20 @@ public class HashMapDataAdapter implements DataAdapter {
     public Result<List<ObjectDO>> queryObjectListByID(String refObjectID, QueryOption option) {
         Set<String> dataSet = this.refDataPool.get(refObjectID);
         if (dataSet == null) {
-            ResultDO<List<ObjectDO>> resultDO = new ResultDO<>();
-            resultDO.setResult(new ArrayList<>(0));
+            ResultDO<List<ObjectDO>> resultDO = new ResultDO<List<ObjectDO>>();
+            resultDO.setResult(Collections.EMPTY_LIST);
             resultDO.setSuccess(true);
             return resultDO;
         }
         //
-        List<ObjectDO> resultList = new ArrayList<>();
+        List<ObjectDO> resultList = new ArrayList<ObjectDO>();
         for (String dataID : dataSet) {
             ObjectDO objectDO = this.dataPool.get(dataID);
             if (objectDO != null) {
                 resultList.add(objectDO);
             }
         }
-        ResultDO<List<ObjectDO>> resultDO = new ResultDO<>();
+        ResultDO<List<ObjectDO>> resultDO = new ResultDO<List<ObjectDO>>();
         resultDO.setResult(resultList);
         resultDO.setSuccess(true);
         return resultDO;
@@ -101,7 +101,7 @@ public class HashMapDataAdapter implements DataAdapter {
     public Result<Boolean> clearRef(String objectID) {
         this.refDataPool.remove(objectID);
         //
-        ResultDO<Boolean> resultDO = new ResultDO<>();
+        ResultDO<Boolean> resultDO = new ResultDO<Boolean>();
         resultDO.setResult(true);
         resultDO.setSuccess(true);
         return resultDO;
@@ -109,7 +109,7 @@ public class HashMapDataAdapter implements DataAdapter {
     @Override
     public Result<Boolean> refreshObject(String objectID) {
         ObjectDO data = this.dataPool.get(objectID);
-        ResultDO<Boolean> resultDO = new ResultDO<>();
+        ResultDO<Boolean> resultDO = new ResultDO<Boolean>();
         if (data != null) {
             data.setRefreshTime(new Date());
             resultDO.setResult(true);

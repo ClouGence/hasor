@@ -42,7 +42,7 @@ public class DateCenterUtils {
     }
     /* 处理失败的情况 */
     public static <T> Result<T> buildFailedResult(Result<?> resultInfo) {
-        ResultDO<T> result = new ResultDO<>();
+        ResultDO<T> result = new ResultDO<T>();
         if (resultInfo == null || resultInfo.getResult() == null) {
             result.setErrorInfo(ErrorCode.EmptyResult);
         } else {

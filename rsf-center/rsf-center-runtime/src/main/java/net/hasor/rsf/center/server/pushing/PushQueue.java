@@ -50,15 +50,15 @@ public class PushQueue implements Runnable {
     @Init
     public void init() {
         AppContext app = this.rsfContext.getAppContext();
-        this.processorMapping = new HashMap<>();
+        this.processorMapping = new HashMap<RsfCenterEventEnum, PushProcessor>();
         for (RsfCenterEventEnum eventType : RsfCenterEventEnum.values()) {
             PushProcessor processor = app.getInstance(eventType.getProcessorType());
             this.processorMapping.put(eventType, processor);
             logger.info("pushQueue processor mapping {} -> {}", eventType.forCenterEvent().getEventType(), eventType.getProcessorType());
         }
         //
-        this.dataQueue = new LinkedBlockingQueue<>();
-        this.threadPushQueue = new ArrayList<>();
+        this.dataQueue = new LinkedBlockingQueue<PushEvent>();
+        this.threadPushQueue = new ArrayList<Thread>();
         int threadSize = rsfCenterCfg.getThreadSize();
         for (int i = 1; i <= threadSize; i++) {
             Thread pushQueue = new Thread(this);

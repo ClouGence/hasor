@@ -87,7 +87,7 @@ public class ServiceManager {
         } else if (StringUtils.isNotBlank(registerID) && RsfServiceType.Consumer == serviceType) {
             registerID = RsfCenterConstants.Center_DataKey_Consumer + registerID;
         } else {
-            ResultDO<String> resultDO = new ResultDO<>();
+            ResultDO<String> resultDO = new ResultDO<String>();
             resultDO.setSuccess(false);
             if (StringUtils.isBlank(registerID)) {
                 resultDO.setErrorInfo(ErrorCode.BuildRegisterIDFailed_Null);
@@ -106,7 +106,7 @@ public class ServiceManager {
         }
         //
         // .返回结果
-        ResultDO<String> resultDO = new ResultDO<>();
+        ResultDO<String> resultDO = new ResultDO<String>();
         resultDO.setSuccess(true);
         resultDO.setErrorInfo(ErrorCode.OK);
         resultDO.setResult(registerID);
@@ -127,7 +127,7 @@ public class ServiceManager {
         } else if (StringUtils.startsWith(registerID, RsfCenterConstants.Center_DataKey_Provider)) {
             preKey = RsfCenterConstants.Center_DataKey_Provider;
         } else {
-            ResultDO<String> result = new ResultDO<>();
+            ResultDO<String> result = new ResultDO<String>();
             result.setSuccess(false);
             result.setErrorInfo(ErrorCode.ServiceTypeFailed_Null);
             logger.error(LogUtils.create("ERROR_300_00009")//
@@ -145,7 +145,7 @@ public class ServiceManager {
         //
         // .验证registerID
         if (!StringUtils.equals(registerID, evalRegisterID)) {
-            ResultDO<String> result = new ResultDO<>();
+            ResultDO<String> result = new ResultDO<String>();
             result.setSuccess(false);
             result.setErrorInfo(ErrorCode.RegisterCheckInvalid);
             logger.error(LogUtils.create("ERROR_300_00010")//
@@ -159,7 +159,7 @@ public class ServiceManager {
             return result;
         }
         //
-        ResultDO<String> result = new ResultDO<>();
+        ResultDO<String> result = new ResultDO<String>();
         result.setSuccess(true);
         result.setResult(oriObjectKey);
         result.setErrorInfo(ErrorCode.OK);
@@ -185,7 +185,7 @@ public class ServiceManager {
             return buildFailedResult(checkResult);
         }
         if (!checkResult.getResult()) {
-            ResultDO<String> result = new ResultDO<>();
+            ResultDO<String> result = new ResultDO<String>();
             result.setErrorInfo(ErrorCode.AuthCheckFailed_ResultEmpty);
             result.setSuccess(false);
             return result;
@@ -198,7 +198,7 @@ public class ServiceManager {
         }
         ObjectDO oldServiceInfo = resultInfo.getResult();
         if (oldServiceInfo == null) {
-            ResultDO<String> result = new ResultDO<>();
+            ResultDO<String> result = new ResultDO<String>();
             result.setSuccess(false);
             result.setErrorInfo(ErrorCode.SubscribeServiceFailed_Undefined);//服务未定义
             return result;
@@ -237,7 +237,7 @@ public class ServiceManager {
         Result<String> objectIDResult = this.checkAndEvalObjectID(rsfAddress, registerID, serviceID);
         String oriObjectKey = null;/* 提供者 or 订阅者 ObjectID */
         if (!objectIDResult.isSuccess()) {
-            ResultDO<Boolean> result = new ResultDO<>();
+            ResultDO<Boolean> result = new ResultDO<Boolean>();
             result.setSuccess(false);
             result.setResult(false);
             result.setErrorInfo(objectIDResult.getErrorInfo());
@@ -260,7 +260,7 @@ public class ServiceManager {
             return buildFailedResult(checkResult);
         }
         if (!checkResult.getResult()) {
-            ResultDO<Boolean> result = new ResultDO<>();
+            ResultDO<Boolean> result = new ResultDO<Boolean>();
             result.setErrorInfo(ErrorCode.AuthCheckFailed_ResultEmpty);
             result.setSuccess(false);
             return result;
@@ -273,7 +273,7 @@ public class ServiceManager {
             beatResult = this.dataAdapter.refreshObject(oriObjectKey);
         }
         if (beatResult == null) {
-            ResultDO<Boolean> newResult = new ResultDO<>();
+            ResultDO<Boolean> newResult = new ResultDO<Boolean>();
             newResult.setSuccess(false);
             newResult.setResult(false);
             newResult.setErrorInfo(ErrorCode.BeatFailed_RefreshResultNull);
@@ -286,7 +286,7 @@ public class ServiceManager {
     //
     /* 过滤出订阅者列表 */
     private List<InterAddress> filterConsumerList(String serviceID, List<ObjectDO> allObjectList) {
-        List<InterAddress> targets = new ArrayList<>();
+        List<InterAddress> targets = new ArrayList<InterAddress>();
         if (allObjectList != null && !allObjectList.isEmpty()) {
             for (ObjectDO objectDO : allObjectList) {
                 // - .过滤数据,只保留订阅者
@@ -331,7 +331,7 @@ public class ServiceManager {
             return buildFailedResult(checkResult);
         }
         if (!checkResult.getResult()) {
-            ResultDO<String> result = new ResultDO<>();
+            ResultDO<String> result = new ResultDO<String>();
             result.setErrorInfo(ErrorCode.AuthCheckFailed_ResultEmpty);
             result.setSuccess(false);
             return result;
@@ -356,7 +356,7 @@ public class ServiceManager {
                 return buildFailedResult(storeResult);
             }
             if (storeResult.getResult() == null || !storeResult.getResult()) {
-                ResultDO<String> result = new ResultDO<>();
+                ResultDO<String> result = new ResultDO<String>();
                 result.setSuccess(false);
                 result.setErrorInfo(ErrorCode.PublishServiceFailed_StoreInfo);
                 return result;
@@ -413,7 +413,7 @@ public class ServiceManager {
         Result<String> objectIDResult = this.checkAndEvalObjectID(rsfAddress, registerID, serviceID);
         String oriObjectKey = null;
         if (!objectIDResult.isSuccess()) {
-            ResultDO<Boolean> result = new ResultDO<>();
+            ResultDO<Boolean> result = new ResultDO<Boolean>();
             result.setSuccess(false);
             result.setResult(false);
             result.setErrorInfo(objectIDResult.getErrorInfo());
@@ -436,7 +436,7 @@ public class ServiceManager {
             return buildFailedResult(checkResult);
         }
         if (!checkResult.getResult()) {
-            ResultDO<Boolean> result = new ResultDO<>();
+            ResultDO<Boolean> result = new ResultDO<Boolean>();
             result.setErrorInfo(ErrorCode.AuthCheckFailed_ResultEmpty);
             result.setSuccess(false);
             return result;
@@ -471,7 +471,7 @@ public class ServiceManager {
                 }
             }
         }
-        ResultDO<Boolean> finalResult = new ResultDO<>();
+        ResultDO<Boolean> finalResult = new ResultDO<Boolean>();
         finalResult.setSuccess(true);
         finalResult.setResult(true);
         if (!result) {
@@ -490,7 +490,7 @@ public class ServiceManager {
         Result<String> objectIDResult = this.checkAndEvalObjectID(rsfAddress, registerID, serviceID);
         String oriObjectKey = null;
         if (!objectIDResult.isSuccess()) {
-            ResultDO<Boolean> result = new ResultDO<>();
+            ResultDO<Boolean> result = new ResultDO<Boolean>();
             result.setSuccess(false);
             result.setResult(false);
             result.setErrorInfo(objectIDResult.getErrorInfo());
@@ -511,7 +511,7 @@ public class ServiceManager {
         Result<String> objectIDResult = this.checkAndEvalObjectID(rsfAddress, registerID, serviceID);
         String oriObjectKey = null;
         if (!objectIDResult.isSuccess()) {
-            ResultDO<List<String>> result = new ResultDO<>();
+            ResultDO<List<String>> result = new ResultDO<List<String>>();
             result.setSuccess(false);
             result.setErrorInfo(objectIDResult.getErrorInfo());
             return result;
@@ -533,21 +533,21 @@ public class ServiceManager {
         List<ObjectDO> providerDataList = refList.getResult();
         List<InterAddress> providerList = this.filterProviderList(serviceID, providerDataList);
         if (providerList == null) {
-            ResultDO<List<String>> result = new ResultDO<>();
+            ResultDO<List<String>> result = new ResultDO<List<String>>();
             result.setSuccess(false);
             result.setErrorInfo(ErrorCode.EmptyResult);//空数据
             return result;
         }
         //
         // .返回提供者列表
-        List<String> allList = new ArrayList<>();
+        List<String> allList = new ArrayList<String>();
         for (InterAddress provider : providerList) {
             if (provider == null) {
                 continue;
             }
             allList.add(provider.toHostSchema());
         }
-        ResultDO<List<String>> result = new ResultDO<>();
+        ResultDO<List<String>> result = new ResultDO<List<String>>();
         result.setSuccess(true);
         result.setResult(allList);
         result.setErrorInfo(ErrorCode.OK);
@@ -558,7 +558,7 @@ public class ServiceManager {
     //
     /* 过滤出提供者列表 */
     private List<InterAddress> filterProviderList(String serviceID, List<ObjectDO> allObjectList) {
-        List<InterAddress> targets = new ArrayList<>();
+        List<InterAddress> targets = new ArrayList<InterAddress>();
         if (allObjectList != null && !allObjectList.isEmpty()) {
             for (ObjectDO objectDO : allObjectList) {
                 // - .过滤数据,只保留订阅者
@@ -614,7 +614,7 @@ public class ServiceManager {
         }
         //
         // .返回结果
-        ResultDO<Boolean> requestResult = new ResultDO<>();
+        ResultDO<Boolean> requestResult = new ResultDO<Boolean>();
         requestResult.setSuccess(true);
         if (!result) {
             requestResult.setResult(false);

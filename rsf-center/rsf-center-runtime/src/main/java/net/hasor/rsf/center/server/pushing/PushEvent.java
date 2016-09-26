@@ -36,7 +36,7 @@ public class PushEvent {
         if (targets != null) {
             this.targetList = targets;
         } else {
-            this.targetList = new ArrayList<>();
+            this.targetList = new ArrayList<InterAddress>();
         }
     }
     //
