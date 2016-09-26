@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.serialize.coder;
-import java.io.IOException;
-
 import com.alibaba.fastjson.JSON;
 import net.hasor.core.Settings;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.SerializeCoder;
+
+import java.io.IOException;
 /**
  *
  * @version : 2014年9月19日
