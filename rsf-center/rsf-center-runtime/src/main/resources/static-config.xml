@@ -13,6 +13,13 @@
             <RSF_CENTER_WORK_MODE>alone</RSF_CENTER_WORK_MODE>
             <!-- Center工作在集群模式下的时候,集群的机器列表,注意:集群中每台机器的对应clusterServers配置都应相同,center在启动时会进行检测 -->
             <RSF_CENTER_SERVERS></RSF_CENTER_SERVERS>
+            <!-- 
+                授权密钥文件名,查找顺序是 WORK_HOME 下第一优先顺序。classpath 第二优先顺序,只加载一个配置文件。
+                    当 "rsfCenter.adapterConfig.authQuery" 配置使用 net.hasor.rsf.center.server.adapter.FileAuthQuery 时有效
+            -->
+            <RSF_CENTER_AUTH_FILE_NAME>auth_keys.xml</RSF_CENTER_AUTH_FILE_NAME>
+            <!-- 是否开启匿名应用连入的请求: 默认开启 -->
+            <RSF_CENTER_AUTH_ANONYMOUS>true</RSF_CENTER_AUTH_ANONYMOUS>
         </environmentVar>
     </hasor>
 
@@ -49,8 +56,10 @@
         <!-- 数据适配器 -->
         <adapterConfig>
             <dataAdapter>net.hasor.rsf.center.server.adapter.HashMapDataAdapter</dataAdapter>
-            <authQuery>net.hasor.rsf.center.server.adapter.HashMapAuthQuery</authQuery>
+            <authQuery>net.hasor.rsf.center.server.adapter.FileAuthQuery</authQuery>
         </adapterConfig>
 
+        <!-- 授权配置 : allowAnonymous 允许匿名应用 -->
+        <auth allowAnonymous="${RSF_CENTER_AUTH_ANONYMOUS}"/>
     </rsfCenter>
 </config>

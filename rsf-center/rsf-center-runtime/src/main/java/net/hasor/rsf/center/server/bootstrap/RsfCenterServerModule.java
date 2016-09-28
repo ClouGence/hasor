@@ -58,6 +58,9 @@ public class RsfCenterServerModule implements LifeModule, RsfPlugin {
     }
     @Override
     public final void loadRsf(RsfContext rsfContext) throws Throwable {
+        rsfContext.getAppContext().getInstance(AuthQuery.class);
+        rsfContext.getAppContext().getInstance(DataAdapter.class);
+        //
         rsfContext.offline();   //切换下线，暂不接收任何Rsf请求
         doStartCenter(rsfContext);
         rsfContext.online();    //切换上线，开始提供服务

@@ -40,6 +40,7 @@ public class RsfCenterSettings {
     //
     private int      providerExpireTime;
     private int      consumerExpireTime;
+    private boolean  allowAnonymous;
     private Class<?> dataAdapterType;
     private Class<?> authQueryType;
     //
@@ -66,6 +67,7 @@ public class RsfCenterSettings {
         //
         this.providerExpireTime = settings.getInteger("rsfCenter.serviceManager.providerExpireTime", 30000);
         this.consumerExpireTime = settings.getInteger("rsfCenter.serviceManager.consumerExpireTime", 30000);
+        this.allowAnonymous = settings.getBoolean("rsfCenter.auth.allowAnonymous", true);
         //
         ClassLoader classLoader = environment.getClassLoader();
         this.dataAdapterType = classLoader.loadClass(settings.getString("rsfCenter.adapterConfig.dataAdapter"));
@@ -98,6 +100,9 @@ public class RsfCenterSettings {
     }
     public int getConsumerExpireTime() {
         return consumerExpireTime;
+    }
+    public boolean isAllowAnonymous() {
+        return allowAnonymous;
     }
     public Class<?> getDataAdapterType() {
         return dataAdapterType;
