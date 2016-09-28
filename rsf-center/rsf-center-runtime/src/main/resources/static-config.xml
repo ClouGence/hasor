@@ -49,7 +49,7 @@
         <!-- 数据适配器 -->
         <adapterConfig>
             <dataAdapter>net.hasor.rsf.center.server.adapter.HashMapDataAdapter</dataAdapter>
-            <authQuery>net.hasor.rsf.center.server.adapter.AuthQueryImpl</authQuery>
+            <authQuery>net.hasor.rsf.center.server.adapter.HashMapAuthQuery</authQuery>
         </adapterConfig>
 
     </rsfCenter>

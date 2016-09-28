@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.adapter;
+import net.hasor.core.Singleton;
 import net.hasor.rsf.center.server.DataAdapter;
 import net.hasor.rsf.center.server.QueryOption;
 import net.hasor.rsf.center.server.domain.ObjectDO;
@@ -27,6 +28,7 @@ import java.util.*;
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
+@Singleton
 public class HashMapDataAdapter implements DataAdapter {
     private Map<String, ObjectDO>    dataPool    = new HashMap<String, ObjectDO>();
     private Map<String, Set<String>> refDataPool = new HashMap<String, Set<String>>();

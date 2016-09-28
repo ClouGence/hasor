@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.adapter;
+import net.hasor.core.Init;
+import net.hasor.core.Singleton;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.server.AuthQuery;
 import net.hasor.rsf.center.server.domain.AuthInfo;
@@ -21,12 +23,23 @@ import net.hasor.rsf.center.server.domain.Result;
 import net.hasor.rsf.center.server.domain.ResultDO;
 import net.hasor.rsf.center.server.domain.ServiceInfo;
 import net.hasor.rsf.domain.RsfServiceType;
+
+import java.util.HashMap;
+import java.util.Map;
 /**
  * 接口授权查询。
  * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class AuthQueryImpl implements AuthQuery {
+@Singleton
+public class HashMapAuthQuery implements AuthQuery {
+    private Map<String, String> dataPool = new HashMap<String, String>();
+    //
+    @Init
+    public void init() {
+        //
+    }
+    //
     @Override
     public Result<Boolean> checkKeySecret(AuthInfo authInfo, InterAddress remoteAddress) {
         ResultDO<Boolean> result = new ResultDO<Boolean>();

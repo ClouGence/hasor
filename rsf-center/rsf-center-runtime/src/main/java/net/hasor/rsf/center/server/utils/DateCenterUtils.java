@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.utils;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import net.hasor.rsf.center.server.domain.ErrorCode;
 import net.hasor.rsf.center.server.domain.Result;
 import net.hasor.rsf.center.server.domain.ResultDO;
@@ -27,19 +24,8 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class DateCenterUtils {
-    protected static    Logger logger      = LoggerFactory.getLogger(DateCenterUtils.class);
-    public static final String DATA_FORMAT = "yyyyMMdd-hhmmss";
+    protected static Logger logger = LoggerFactory.getLogger(DateCenterUtils.class);
     //
-    /** 生成RSF-Center服务器心跳数据 */
-    public static String timestamp(Date atDate) {
-        return new SimpleDateFormat(DATA_FORMAT).format(atDate);
-    }
-    public static String timestamp() {
-        return timestamp(new Date());
-    }
-    public static String beatData() {
-        return DateCenterUtils.timestamp() + "@" + String.valueOf(System.currentTimeMillis());
-    }
     /* 处理失败的情况 */
     public static <T> Result<T> buildFailedResult(Result<?> resultInfo) {
         ResultDO<T> result = new ResultDO<T>();
