@@ -1,4 +1,4 @@
-﻿===== Hasor-Core v2.4.5 (2016-?)
+﻿===== Hasor-Core v2.4.5 (2016-09-29)
 * 新增:
     01.BindInfo 新增 setMetaData 方法以设置元信息。
     02.BindInfo 新增 removeMetaData 删除元数据的方法。
