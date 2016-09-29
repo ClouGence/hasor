@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <title>Blog - ${rootData.pageTitle!}</title>
+    <#include "/control/head.htm"/>
+</head>
+<body>
+    <#include "/control/top.htm"/>
+    <div>
+        <div style="float: left;"><#include "/control/blogList.htm"/></div>
+        <div style="float: left;">${content_placeholder!}</div>
+    </div>
+    <#include "/control/foot.htm"/>
+</body>
+</html>
