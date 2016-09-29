@@ -25,9 +25,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -126,13 +128,21 @@ class Invoker {
         if (paramClass == ServletRequest.class || paramClass == HttpServletRequest.class) {
             return this.renderData.getHttpRequest();
         }
-        if (paramClass == ServletRequest.class || paramClass == HttpServletRequest.class) {
+        if (paramClass == ServletResponse.class || paramClass == HttpServletResponse.class) {
             return this.renderData.getHttpRequest();
         }
+        if (paramClass == HttpSession.class) {
+            return this.renderData.getHttpRequest().getSession(true);
+        }
+        //
         if (paramClass == RenderData.class) {
             return this.renderData;
         }
-        return null;
+        //
+        if (!paramClass.isInterface()) {
+            return null;
+        }
+        return this.renderData.getAppContext().getInstance(paramClass);
     }
     //
     /**/

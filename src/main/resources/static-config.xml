@@ -46,7 +46,7 @@
         <!-- ======================================================================== -->
 
         <!-- web上提供restful风格开发Api (由net.hasor.restful框架提供) -->
-        <restful urlPatterns="htm;html;do;">
+        <restful urlPatterns="htm;html;do;json;">
 
             <!-- 渲染器 -->
             <renderSet>

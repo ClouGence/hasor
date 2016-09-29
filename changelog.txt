@@ -1,4 +1,12 @@
-﻿===== Hasor-Core v2.4.5 (2016-09-29)
+﻿===== Hasor-Core v2.4.6 (2016-?)
+* 改进:
+    01.restful插件增加,json; 拦截。
+    02.WebEnvironment、WebAppContext可以被依赖注入了。
+    03.所有接口类型参数传入,都走 AppContext 获取。
+* 修复:
+    01.fix restful插件,action方法中无法传入 response的问题。
+
+===== Hasor-Core v2.4.5 (2016-09-29)
 * 新增:
     01.BindInfo 新增 setMetaData 方法以设置元信息。
     02.BindInfo 新增 removeMetaData 删除元数据的方法。

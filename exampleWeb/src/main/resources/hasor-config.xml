@@ -6,6 +6,8 @@
         <loadPackages>net.demo.hasor.*</loadPackages>
         <!-- 程序启动入口 -->
         <startup>net.demo.hasor.core.StartModule</startup>
+        
+        <restful urlPatterns="htm;html;do;json;"/>
         <!-- 环境变量 -->
         <environmentVar>
             <!-- Daily -->
@@ -36,47 +38,4 @@
         <userPassword>${jdbc.password}</userPassword>
     </jdbcSettings>
 
-    <!-- ========================================================= -->
-    <!--
-        腾讯产品接入
-        http://connect.qq.com/intro/login 
-    -->
-    <tencent>
-        <!-- QQ登录接入,域名所有权 -->
-        <admins>${tencent.admins}</admins>
-        <!-- 应用ID -->
-        <app_id>${tencent.login.app_id}</app_id>
-        <!-- 应用Key -->
-        <app_key>${tencent.login.app_key}</app_key>
-        <!-- 计划获取的权限 -->
-        <oauth_scope>get_user_info,get_info,add_t,add_pic_t,get_repost_list,get_other_info,get_fanslist,get_idollist,add_idol</oauth_scope>
-    </tencent>
-    <!--
-        GitHub 接入
-        https://developer.github.com/v3/oauth/
-    -->
-    <github>
-        <!-- 应用ID -->
-        <app_id>${github.login.app_id}</app_id>
-        <!-- 应用Key -->
-        <app_key>${github.login.app_key}</app_key>
-        <!-- 计划获取的权限 -->
-        <oauth_scope>user,user:email,user:follow,public_repo,repo,repo:status,notifications,read:org,read:public_key,read:gpg_key</oauth_scope>
-    </github>
-    <!--
-        weibo 接入
-        http://open.weibo.com/apps
-        http://open.weibo.com/wiki/index.php/API%E6%96%87%E6%A1%A3
-        http://open.weibo.com/wiki/2/users/show
-    -->
-    <weibo>
-        <!-- 微博登录接入,域名所有权 -->
-        <admins>${weibo.admins}</admins>
-        <!-- 应用ID -->
-        <app_id>${weibo.login.app_id}</app_id>
-        <!-- 应用Key -->
-        <app_key>${weibo.login.app_key}</app_key>
-        <!-- 计划获取的权限 -->
-        <oauth_scope>email,friendships_groups_read,statuses_to_me_read,follow_app_official_microblog</oauth_scope>
-    </weibo>
 </config>

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.demo.hasor.web.actions;
-import net.demo.hasor.core.Action;
 import net.hasor.restful.RenderData;
 import net.hasor.restful.api.MappingTo;
 /**
@@ -23,9 +22,7 @@ import net.hasor.restful.api.MappingTo;
  * @author 赵永春(zyc@hasor.net)
  */
 @MappingTo("/index.htm")
-public class Index extends Action {
-    //
+public class Index {
     public void execute(RenderData data) {
-        //
     }
 }

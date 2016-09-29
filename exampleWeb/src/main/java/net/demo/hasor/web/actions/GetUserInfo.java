@@ -13,24 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.demo.hasor.core;
-import net.hasor.restful.RenderEngine;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
+package net.demo.hasor.web.actions;
+import net.demo.hasor.domain.UserInfo;
+import net.hasor.restful.RenderData;
+import net.hasor.restful.api.MappingTo;
 /**
  *
- * @version : 2015年12月25日
+ * @version : 2016年1月1日
  * @author 赵永春(zyc@hasor.net)
  */
-public class StartModule extends WebModule {
-    @Override
-    public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        //
-        //        apiBinder.installModule(new DataSourceModule());
-        apiBinder.bindType(RenderEngine.class).uniqueName().toInstance(new FreemarkerRender());
-        //
-        // .Webs
-        apiBinder.filter("/*").through(0, new EncodingFilter());
-        apiBinder.filter("/*").through(0, new JumpFilter());
+@MappingTo("/getUserInfo.json")
+public class GetUserInfo {
+    public UserInfo execute(RenderData data) {
+        return new UserInfo();
     }
 }

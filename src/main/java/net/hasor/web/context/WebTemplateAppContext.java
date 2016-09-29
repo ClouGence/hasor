@@ -95,6 +95,19 @@ public class WebTemplateAppContext<C extends BeanContainer> extends StatusAppCon
         super.doBind(apiBinder);
         final WebAppContext appContet = this;
         //
+        /*绑定Environment对象的Provider*/
+        apiBinder.bindType(WebEnvironment.class).toProvider(new Provider<WebEnvironment>() {
+            public WebEnvironment get() {
+                return appContet.getEnvironment();
+            }
+        });
+        /*绑定AppContext对象的Provider*/
+        apiBinder.bindType(WebAppContext.class).toProvider(new Provider<WebAppContext>() {
+            public WebAppContext get() {
+                return appContet;
+            }
+        });
+        //
         ManagedServletPipeline sPipline = new ManagedServletPipeline();
         ManagedFilterPipeline fPipline = new ManagedFilterPipeline(sPipline);
         ManagedListenerPipeline lPipline = new ManagedListenerPipeline();
