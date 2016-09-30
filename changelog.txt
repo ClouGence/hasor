@@ -21,7 +21,7 @@
     05.AbstractEnvironment 类的 initEnvironment 方法增加boolean参数来决定是否启用 env.config 配置文件。
     06.LinkedCaseInsensitiveMap类提升为公共工具类,包位置发生变更。
 * 修复:
-    01.Fix RsfSettings 接口的 add & remove & set 系方法,解决 settings key 出现大小写敏感问题。
+    01.Fix Settings 接口的 add & remove & set 系方法,解决 settings key 出现大小写敏感问题。
     02.Fix AbstractEnvironment 的 refreshVariables 方法,忽略了对默认值的替换,导致了bug出现。
     03.Fix Environment 接口拼写错误的方法名。remoteEnvVar -> removeEnvVar。
 
