@@ -16,17 +16,15 @@
 package net.demo.hasor.web.actions;
 import net.hasor.restful.api.MappingTo;
 import net.hasor.restful.api.ReqParam;
-
-import java.util.Date;
+import org.more.bizcommon.json.JSON;
 /**
  *
  * @version : 2016年1月1日
  * @author 赵永春(zyc@hasor.net)
  */
-@MappingTo("/index.htm")
-public class Index {
-    public void execute(@ReqParam("name") String name, @ReqParam("age") int age, @ReqParam("date") Date date) {
-        System.out.println("Hello Request ,the name is " + name + ", age is " + age);
-        System.out.println("date is " + date);
+@MappingTo("/arrayParams.htm")
+public class ArrayParams {
+    public void execute(@ReqParam("name") String[] nameArray) {
+        System.out.println("Hello Request ,the name is " + JSON.toString(nameArray));
     }
 }

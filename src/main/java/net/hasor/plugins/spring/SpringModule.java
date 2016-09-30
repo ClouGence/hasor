@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.plugins.spring;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.more.util.StringUtils;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
+import org.more.util.StringUtils;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+
+import java.util.ArrayList;
+import java.util.List;
 /**
  * Hasor集成Spring插件
  *
@@ -87,18 +87,5 @@ public class SpringModule implements Module {
      */
     protected List<String> exportBeanNames(List<String> exportList) {
         return exportList;
-    }
-}
-class SpringBean<T> implements Provider<T> {
-    private String                       beanID;
-    private Provider<ApplicationContext> applicationContext;
-    //
-    public SpringBean(String beanID, Provider<ApplicationContext> applicationContext) {
-        this.beanID = beanID;
-        this.applicationContext = applicationContext;
-    }
-    @Override
-    public T get() {
-        return (T) applicationContext.get().getBean(this.beanID);
     }
 }

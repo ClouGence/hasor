@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 package net.demo.hasor.web.actions;
+import net.demo.hasor.web.forms.LoginForm;
 import net.hasor.restful.api.MappingTo;
-import net.hasor.restful.api.ReqParam;
-
-import java.util.Date;
+import net.hasor.restful.api.Params;
+import org.more.bizcommon.json.JSON;
 /**
  *
  * @version : 2016年1月1日
  * @author 赵永春(zyc@hasor.net)
  */
-@MappingTo("/index.htm")
-public class Index {
-    public void execute(@ReqParam("name") String name, @ReqParam("age") int age, @ReqParam("date") Date date) {
-        System.out.println("Hello Request ,the name is " + name + ", age is " + age);
-        System.out.println("date is " + date);
+@MappingTo("/login.do")
+public class Longin {
+    public void execute(@Params LoginForm loginForm) {
+        System.out.println("login data is " + JSON.toString(loginForm));
     }
 }

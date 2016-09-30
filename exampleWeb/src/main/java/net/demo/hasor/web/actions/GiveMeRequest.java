@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 package net.demo.hasor.web.actions;
+import net.demo.hasor.domain.UserInfo;
+import net.hasor.restful.RenderData;
 import net.hasor.restful.api.MappingTo;
-import net.hasor.restful.api.ReqParam;
 
-import java.util.Date;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @version : 2016年1月1日
  * @author 赵永春(zyc@hasor.net)
  */
-@MappingTo("/index.htm")
-public class Index {
-    public void execute(@ReqParam("name") String name, @ReqParam("age") int age, @ReqParam("date") Date date) {
-        System.out.println("Hello Request ,the name is " + name + ", age is " + age);
-        System.out.println("date is " + date);
+@MappingTo("/givemeRequest.do")
+public class GiveMeRequest {
+    //    public void execute(RenderData data) {
+    //        data.getHttpRequest();
+    //        data.getHttpResponse();
+    //    }
+    // or
+    public void execute(HttpServletRequest request, HttpServletResponse response) {
     }
 }

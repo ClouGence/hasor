@@ -6,29 +6,14 @@
         <loadPackages>net.demo.hasor.*</loadPackages>
         <!-- 程序启动入口 -->
         <startup>net.demo.hasor.core.StartModule</startup>
-        
+        <!-- restful -->
         <restful urlPatterns="htm;html;do;json;"/>
         <!-- 环境变量 -->
         <environmentVar>
-            <!-- Daily -->
-            <!-- 下面环境变量为本机调试的配置,正式环境下由 dockfile 在系统环境中声明,并且覆盖程序中的配置 -->
+            <!-- 导入外部属性文件 -->
             <WORK_HOME>%HASOR_WEBROOT%/WEB-INF/classes/daily_home</WORK_HOME>
-            <APP.HOST>127.0.0.1</APP.HOST>
         </environmentVar>
     </hasor>
-
-    <appExample>
-        <!-- 当前最新版本 -->
-        <curentVersion>2.4.3</curentVersion>
-
-        <!-- 所属环境:daily、online -->
-        <envType>${app.env}</envType>
-        <!-- 主机名称 -->
-        <hostName>${app.host}</hostName>
-
-        <!-- OAuth登录回调地址 -->
-        <redirectURI>http://${app.host}/account/callback.do</redirectURI>
-    </appExample>
 
     <!-- 数据库链接配置,真实配置通过 '${...}' 方式连接到 'env.config' 配置文件 -->
     <jdbcSettings>

@@ -17,6 +17,10 @@ package net.demo.hasor.core;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
+import org.more.convert.ConverterUtils;
+import org.more.convert.convert.DateConverter;
+
+import java.util.Date;
 /**
  *
  * @version : 2015年12月25日
@@ -32,5 +36,9 @@ public class StartModule extends WebModule {
         // .Webs
         apiBinder.filter("/*").through(0, new EncodingFilter());
         apiBinder.filter("/*").through(0, new JumpFilter());
+        //
+        DateConverter converter = new DateConverter();
+        converter.setPattern("yyyy-mm-dd");
+        ConverterUtils.register(converter, Date.class);
     }
 }
