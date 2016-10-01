@@ -1,0 +1,46 @@
+登陆场景
+<form action="/scene/login.do" method="post">
+    <!-- 帐号的验证结果 -->
+    帐号:<input name="account" type="text" value="${loginForm.account}">
+    <#if validData["account"]?? >
+        ${validData["account"]?join(",")}
+    </#if>
+    <br/>
+
+    <!-- 密码的验证结果 -->
+    密码:<input name="password" type="password" value="${loginForm.password}">
+    <#if validData["password"]?? >
+        ${validData["password"]?join(",")}
+    </#if>
+    <br/>
+    <!-- 登陆处理结果 -->
+    <#if validData["login"]?? >
+        ${validData["login"]?join(",")}<br/>
+    </#if>
+
+    <input type="submit" value="登录"/><br/>
+</form>
+<hr/>
+
+注册场景
+<form action="/scene/signup.do" method="post">
+    <!-- 帐号的验证结果 -->
+    帐号:<input name="account" type="text" value="${signupForm.account}">
+    <#if validData["account"]?? >
+        ${validData["account"]?join(",")}
+    </#if>
+    <br/>
+
+    <!-- 密码的验证结果 -->
+    密码:<input name="password" type="password" value="${signupForm.password}">
+    <#if validData["password"]?? >
+        ${validData["password"]?join(",")}
+    </#if>
+    <br/>
+    <!-- 登陆处理结果 -->
+    <#if validData["signup"]?? >
+        ${validData["signup"]?join(",")}<br/>
+    </#if>
+
+    <input type="submit" value="注册"/><br/>
+</form>
