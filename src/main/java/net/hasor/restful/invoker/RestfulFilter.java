@@ -137,7 +137,7 @@ class RestfulFilter implements Filter {
                 }
             }
         } catch (Throwable e) {
-            logger.error("render '" + renderData.viewName() + "' failed -> " + e.getMessage(), e);
+            logger.error("render '" + renderData.renderTo() + "' failed -> " + e.getMessage(), e);
             throw ExceptionUtils.toRuntimeException(e);
         }
     }

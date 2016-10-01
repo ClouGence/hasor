@@ -70,7 +70,7 @@ public class FreemarkerRender implements RenderEngine {
     }
     @Override
     public void process(RenderData renderData, Writer writer) throws Throwable {
-        Template temp = this.configuration.getTemplate(renderData.viewName());
+        Template temp = this.configuration.getTemplate(renderData.renderTo());
         //
         HashMap<String, Object> data = new HashMap<String, Object>();
         for (String key : renderData.keySet()) {

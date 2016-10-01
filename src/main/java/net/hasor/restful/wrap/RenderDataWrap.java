@@ -61,12 +61,16 @@ public class RenderDataWrap implements RenderData {
         this.renderData.put(key, value);
     }
     @Override
-    public String viewName() {
-        return this.renderData.viewName();
+    public String renderTo() {
+        return this.renderData.renderTo();
     }
     @Override
-    public void viewName(String viewName) {
-        this.renderData.viewName(viewName);
+    public void renderTo(String viewName) {
+        this.renderData.renderTo(viewName);
+    }
+    @Override
+    public void renderTo(String viewType, String viewName) {
+        this.renderData.renderTo(viewType, viewName);
     }
     @Override
     public String viewType() {

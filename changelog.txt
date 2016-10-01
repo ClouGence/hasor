@@ -3,6 +3,10 @@
     01.restful插件增加,json; 拦截。
     02.WebEnvironment、WebAppContext可以被依赖注入了。
     03.所有接口类型参数传入,都走 AppContext 获取。
+* 改进:
+    01.改进 RenderData 接口使其更加人性化一点。
+    02.RenderData 的数据不在保存在自己独立的 map 中而是共同 Request Attr。
+    03.@ValidBy 注解支持配置多个表单验证器。
 * 修复:
     01.fix restful插件,action方法中无法传入 response的问题。
 

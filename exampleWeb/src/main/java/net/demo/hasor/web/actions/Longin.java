@@ -15,9 +15,10 @@
  */
 package net.demo.hasor.web.actions;
 import net.demo.hasor.web.forms.LoginForm;
+import net.hasor.restful.RenderData;
 import net.hasor.restful.api.MappingTo;
 import net.hasor.restful.api.Params;
-import org.more.bizcommon.json.JSON;
+import net.hasor.restful.api.Valid;
 /**
  *
  * @version : 2016年1月1日
@@ -25,7 +26,12 @@ import org.more.bizcommon.json.JSON;
  */
 @MappingTo("/login.do")
 public class Longin {
-    public void execute(@Params LoginForm loginForm) {
-        System.out.println("login data is " + JSON.toString(loginForm));
+    public void execute(@Valid() @Params LoginForm loginForm, RenderData data) {
+        if (data.isValid()) {
+            data.renderTo("/userInfo.htm");
+        } else {
+            data.put("loginForm", loginForm);
+            data.renderTo("htm", "/login.htm");//使用 htm 引擎渲染页面。
+        }
     }
 }

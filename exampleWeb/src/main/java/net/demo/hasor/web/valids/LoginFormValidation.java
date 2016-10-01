@@ -26,15 +26,11 @@ import org.more.util.StringUtils;
 public class LoginFormValidation implements Validation<LoginForm> {
     @Override
     public void doValidation(String validType, LoginForm dataForm, ValidErrors errors) {
-        if (StringUtils.equalsIgnoreCase("SignIn", validType)) {
-            if (!StringUtils.equalsIgnoreCase("admin", dataForm.getAccount())) {
-                errors.addError("account", "帐号不是account。");
-            }
-            //
-            //
-        } else if (StringUtils.equalsIgnoreCase("SignUp", validType)) {
-            errors.addError("message", "暂不支持注册功能。");
-            //
+        if (StringUtils.isBlank(dataForm.getAccount())) {
+            errors.addError("account", "帐号为空。");
+        }
+        if (StringUtils.isBlank(dataForm.getPassword())) {
+            errors.addError("password", "密码为空。");
         }
     }
 }

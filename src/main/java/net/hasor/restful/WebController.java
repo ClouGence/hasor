@@ -546,7 +546,7 @@ public abstract class WebController {
     //------------------------
     /** 更新渲染模版。*/
     protected void renderTo(String viewName) {
-        this.getInvoker().viewName(viewName);
+        this.getInvoker().renderTo(viewName);
     }
     /**
      * 更新渲染模版。
@@ -554,8 +554,7 @@ public abstract class WebController {
      * @param viewName 模版名称
      */
     protected void renderTo(String renderType, String viewName) {
-        this.getInvoker().viewType(renderType);
-        this.getInvoker().viewName(viewName);
+        this.getInvoker().renderTo(renderType, viewName);
     }
     //
     //------------------------

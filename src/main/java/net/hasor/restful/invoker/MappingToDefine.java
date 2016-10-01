@@ -104,7 +104,7 @@ class MappingToDefine {
             for (int paramIndex = 0; paramIndex < paramAnno.length; paramIndex++) {
                 Annotation[] annoArrays = paramAnno[paramIndex];
                 for (Annotation anno : annoArrays) {
-                    if (anno == null || anno instanceof Valid == false) {
+                    if (anno == null || !(anno instanceof Valid)) {
                         continue;
                     }
                     validMap.put(String.valueOf(paramIndex), (Valid) anno);

@@ -49,10 +49,13 @@ public interface RenderData {
     // --------------------------------------------------
 
     /**获取需要渲染的视图名称。*/
-    public String viewName();
+    public String renderTo();
 
     /**设置需要渲染的视图名称。*/
-    public void viewName(String viewName);
+    public void renderTo(String viewName);
+
+    /**设置需要渲染的视图名称。*/
+    public void renderTo(String viewType, String viewName);
 
     /**渲染视图时使用的渲染引擎。*/
     public String viewType();

@@ -27,42 +27,33 @@ import java.util.concurrent.ConcurrentMap;
  * @author 赵永春 (zyc@hasor.net)
  */
 class InnerValid {
-    private Map<String, Valid>    validMap     = null;
-    private Map<String, Class<?>> paramTypeMap = null;
-    InnerValid(Map<String, Valid> validMap, Map<String, Class<?>> paramTypeMap) {
-        this.validMap = validMap;
+    private Map<String, Valid>    paramValidMap = null;
+    private Map<String, Class<?>> paramTypeMap  = null;
+    InnerValid(Map<String, Valid> paramValidMap, Map<String, Class<?>> paramTypeMap) {
+        this.paramValidMap = paramValidMap;
         this.paramTypeMap = paramTypeMap;
     }
     //
     Map<String, ValidData> doValid(InnerRenderData renderData, Object[] resolveParams) {
-        final ConcurrentMap<String, ValidData> validDateMap = new ConcurrentHashMap<String, ValidData>();
-        for (String paramIndex : this.validMap.keySet()) {
-            //
-            Valid valid = this.validMap.get(paramIndex);
-            if (valid == null) {
+        ConcurrentMap<String, ValidData> validDateMap = new ConcurrentHashMap<String, ValidData>();
+        for (String paramIndex : this.paramValidMap.keySet()) {
+            Valid paramValid = this.paramValidMap.get(paramIndex);
+            if (paramValid == null) {
                 continue;
             }
-            final String validName = valid.value();
+            final String validName = paramValid.value();
             Class<?> paramType = this.paramTypeMap.get(paramIndex);
             ValidBy validBy = paramType.getAnnotation(ValidBy.class);
             if (validBy == null) {
                 onErrors(validDateMap, new ValidData(validName, "@ValidBy is Undefined."));
                 continue;
             }
-            //
-            Validation validation = renderData.getAppContext().getInstance(validBy.value());
-            if (validation == null) {
-                onErrors(validDateMap, new ValidData(validName, "program is not exist."));
-                continue;
+            Class<? extends Validation>[] validArrays = validBy.value();
+            Validation[] validObjects = new Validation[validArrays.length];
+            for (int i = 0; i < validArrays.length; i++) {
+                validObjects[i] = renderData.getAppContext().getInstance(validArrays[i]);
             }
-            //
-            Object paramObj = resolveParams[Integer.valueOf(paramIndex)];
-            validation.doValidation(validName, paramObj, new InnerValidErrors(renderData) {
-                @Override
-                protected void errors(ValidData messages) {
-                    onErrors(validDateMap, messages);
-                }
-            });
+            valid(renderData, resolveParams[Integer.valueOf(paramIndex)], validDateMap, validName, validObjects);
         }
         return validDateMap;
     }
@@ -75,5 +66,20 @@ class InnerValid {
         if (data != newDate) {
             data.addAll(newDate);
         }
+    }
+    private static void valid(InnerRenderData renderData, Object resolveParam, final ConcurrentMap<String, ValidData> validDateMap, String validName, Validation[] validObjects) {
+        // ---
+        for (Validation valid : validObjects) {
+            if (valid == null) {
+                onErrors(validDateMap, new ValidData(validName, "program is not exist."));
+                continue;
+            }
+            valid.doValidation(validName, resolveParam, new InnerValidErrors(renderData) {
+                protected void errors(ValidData messages) {
+                    onErrors(validDateMap, messages);
+                }
+            });
+        }
+        // ---
     }
 }

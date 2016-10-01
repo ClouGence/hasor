@@ -123,8 +123,8 @@ class RenderLayout {
         }
         //
         //
-        String oriViewName = renderData.viewName();
-        renderData.viewName(fixTempName(this.templatePath, oriViewName));
+        String oriViewName = renderData.renderTo();
+        renderData.renderTo(fixTempName(this.templatePath, oriViewName));
         //
         String layoutFile = null;
         if (this.useLayout && renderData.layout()) {
@@ -134,22 +134,22 @@ class RenderLayout {
         if (layoutFile != null) {
             //先执行目标页面,然后在渲染layout
             StringWriter tmpWriter = new StringWriter();
-            if (engine.exist(renderData.viewName())) {
+            if (engine.exist(renderData.renderTo())) {
                 engine.process(renderData, tmpWriter);
             } else {
                 tmpWriter.write("");
             }
             //渲染layout
             renderData.put("content_placeholder", tmpWriter.toString());
-            renderData.viewName(layoutFile);
-            if (engine.exist(renderData.viewName())) {
+            renderData.renderTo(layoutFile);
+            if (engine.exist(renderData.renderTo())) {
                 engine.process(renderData, renderData.getHttpResponse().getWriter());
                 return true;
             } else {
                 throw new IOException("layout '" + layoutFile + "' file is missing.");//不可能发生这个错误。
             }
         } else {
-            if (engine.exist(renderData.viewName())) {
+            if (engine.exist(renderData.renderTo())) {
                 engine.process(renderData, renderData.getHttpResponse().getWriter());
                 return true;
             } else {

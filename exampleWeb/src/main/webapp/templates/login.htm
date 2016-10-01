@@ -1,0 +1,14 @@
+<form action="/login.do" method="post">
+    <!-- 帐号的验证结果 -->
+    帐号:<input name="account" type="text" value="${loginForm.account}">
+    <#if validData["account"]?? >
+        ${validData["account"]?join(",")}
+    </#if>
+    
+    <!-- 密码的验证结果 -->
+    密码:<input name="password" type="password" value="${loginForm.password}">
+    <#if validData["password"]?? >
+        ${validData["password"]?join(",")}
+    </#if>
+    <input type="submit" value="递交"/>
+</form>

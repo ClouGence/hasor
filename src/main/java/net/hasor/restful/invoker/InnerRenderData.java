@@ -35,7 +35,6 @@ class InnerRenderData implements RenderData {
     private              String                 viewName     = null;//模版名称
     private              String                 viewType     = null;//渲染引擎
     private              boolean                useLayout    = true;//是否渲染布局
-    private              Map<String, Object>    contextMap   = null;//
     private              HttpServletRequest     httpRequest  = null;
     private              HttpServletResponse    httpResponse = null;
     private              Map<String, ValidData> validData    = null;//原始验证数据
@@ -56,7 +55,6 @@ class InnerRenderData implements RenderData {
             this.viewType("default");
         }
         this.viewName = requestPath;
-        this.contextMap = new HashMap<String, Object>();
         this.validData = new HashMap<String, ValidData>();
         this.httpRequest = httpRequest;
         this.httpResponse = httpResponse;
@@ -66,13 +64,13 @@ class InnerRenderData implements RenderData {
             Object paramKey = paramEnum.nextElement();
             String key = paramKey.toString();
             String val = httpRequest.getParameter(key);
-            this.contextMap.put("req_" + key, val);
+            this.httpRequest.setAttribute("req_" + key, val);
         }
-        this.contextMap.put(ROOT_DATA_KEY, this);
-        this.contextMap.put(RETURN_DATA_KEY, null);
-        this.contextMap.put(VALID_DATA_KEY, this.validData);
-        this.contextMap.put(REQUEST_KEY, httpRequest);
-        this.contextMap.put(RESPONSE_KEY, httpResponse);
+        this.httpRequest.setAttribute(ROOT_DATA_KEY, this);
+        this.httpRequest.setAttribute(RETURN_DATA_KEY, null);
+        this.httpRequest.setAttribute(VALID_DATA_KEY, this.validData);
+        this.httpRequest.setAttribute(REQUEST_KEY, httpRequest);
+        this.httpRequest.setAttribute(RESPONSE_KEY, httpResponse);
         this.appContext = appContext;
         this.mimeType = mimeType;
     }
@@ -92,7 +90,7 @@ class InnerRenderData implements RenderData {
     //
     /**设置返回值*/
     public void setReturnData(Object value) {
-        this.contextMap.put(RETURN_DATA_KEY, value);
+        this.httpRequest.setAttribute(RETURN_DATA_KEY, value);
     }
     //
     @Override
@@ -105,31 +103,41 @@ class InnerRenderData implements RenderData {
     }
     @Override
     public Set<String> keySet() {
-        return this.contextMap.keySet();
+        Enumeration<String> names = this.httpRequest.getAttributeNames();
+        HashSet<String> nameSet = new HashSet<String>();
+        while (names.hasMoreElements()) {
+            nameSet.add(names.nextElement());
+        }
+        return nameSet;
     }
     @Override
     public Object get(String key) {
-        return this.contextMap.get(key);
+        return this.httpRequest.getAttribute(key);
     }
     @Override
     public void remove(String key) {
-        this.contextMap.remove(key);
+        this.httpRequest.removeAttribute(key);
     }
     @Override
     public void put(String key, Object value) {
         if (StringUtils.isBlank(key) || ArrayUtils.contains(LOCK_KEYS, key)) {
             throw new UnsupportedOperationException("the key['" + key + "'] must not in " + JSON.toString(LOCK_KEYS) + " or empty");
         }
-        this.contextMap.put(key, value);
+        this.httpRequest.setAttribute(key, value);
     }
     //
     // --------------------------------------------------
     @Override
-    public String viewName() {
+    public String renderTo() {
         return this.viewName;
     }
     @Override
-    public void viewName(String viewName) {
+    public void renderTo(String viewName) {
+        this.viewName = viewName;
+    }
+    @Override
+    public void renderTo(String viewType, String viewName) {
+        this.viewType(viewType);
         this.viewName = viewName;
     }
     @Override
