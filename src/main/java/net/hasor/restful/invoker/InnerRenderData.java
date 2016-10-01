@@ -168,9 +168,8 @@ class InnerRenderData implements RenderData {
     }
     //
     // --------------------------------------------------
-    public void updateValidResult(Map<String, ValidData> validDataMap) {
-        this.validData.clear();
-        this.validData.putAll(validDataMap);
+    public Map<String, ValidData> getValidData() {
+        return validData;
     }
     @Override
     public List<String> validKeys() {

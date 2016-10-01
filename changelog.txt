@@ -8,7 +8,7 @@
     02.RenderData 的数据不在保存在自己独立的 map 中而是共同 Request Attr。
     03.@ValidBy 注解支持配置多个表单验证器。
 * 修复:
-    01.fix restful插件,action方法中无法传入 response的问题。
+    01.fix restful插件,action方法中无法传入 response 的问题。
 
 ===== Hasor-Core v2.4.5 (2016-09-29)
 * 新增:

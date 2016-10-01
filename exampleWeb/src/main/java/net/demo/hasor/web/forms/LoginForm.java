@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.demo.hasor.web.forms;
+import net.demo.hasor.web.valids.DataBaseValidation;
 import net.demo.hasor.web.valids.LoginFormValidation;
 import net.hasor.restful.api.ReqParam;
 import net.hasor.restful.api.ValidBy;
@@ -22,7 +23,7 @@ import net.hasor.restful.api.ValidBy;
  * @version : 2016年1月10日
  * @author 赵永春(zyc@hasor.net)
  */
-@ValidBy(LoginFormValidation.class)
+@ValidBy({LoginFormValidation.class, DataBaseValidation.class})
 public class LoginForm {
     @ReqParam("email")
     private String email;

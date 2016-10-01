@@ -19,8 +19,6 @@ import net.hasor.restful.api.Valid;
 import net.hasor.restful.api.ValidBy;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 /**
  * 线程安全
  * @version : 2016-08-03
@@ -34,8 +32,7 @@ class InnerValid {
         this.paramTypeMap = paramTypeMap;
     }
     //
-    Map<String, ValidData> doValid(InnerRenderData renderData, Object[] resolveParams) {
-        ConcurrentMap<String, ValidData> validDateMap = new ConcurrentHashMap<String, ValidData>();
+    public void doValid(InnerRenderData renderData, Object[] resolveParams) {
         for (String paramIndex : this.paramValidMap.keySet()) {
             Valid paramValid = this.paramValidMap.get(paramIndex);
             if (paramValid == null) {
@@ -45,7 +42,7 @@ class InnerValid {
             Class<?> paramType = this.paramTypeMap.get(paramIndex);
             ValidBy validBy = paramType.getAnnotation(ValidBy.class);
             if (validBy == null) {
-                onErrors(validDateMap, new ValidData(validName, "@ValidBy is Undefined."));
+                onErrors(renderData, new ValidData(validName, "@ValidBy is Undefined."));
                 continue;
             }
             Class<? extends Validation>[] validArrays = validBy.value();
@@ -53,30 +50,30 @@ class InnerValid {
             for (int i = 0; i < validArrays.length; i++) {
                 validObjects[i] = renderData.getAppContext().getInstance(validArrays[i]);
             }
-            valid(renderData, resolveParams[Integer.valueOf(paramIndex)], validDateMap, validName, validObjects);
+            this.valid(renderData, resolveParams[Integer.valueOf(paramIndex)], validName, validObjects);
         }
-        return validDateMap;
     }
-    private static void onErrors(ConcurrentMap<String, ValidData> validDateMap, ValidData newDate) {
-        if (newDate == null) {
+    private static void onErrors(InnerRenderData renderData, ValidData newData) {
+        if (newData == null) {
             return;
         }
-        validDateMap.putIfAbsent(newDate.getKey(), newDate);
-        ValidData data = validDateMap.get(newDate.getKey());
-        if (data != newDate) {
-            data.addAll(newDate);
+        ValidData messages = renderData.getValidData().get(newData.getKey());
+        if (messages == null) {
+            renderData.getValidData().put(newData.getKey(), newData);
+        } else {
+            messages.addAll(newData);
         }
     }
-    private static void valid(InnerRenderData renderData, Object resolveParam, final ConcurrentMap<String, ValidData> validDateMap, String validName, Validation[] validObjects) {
+    private static void valid(final InnerRenderData renderData, Object resolveParam, String validName, Validation[] validObjects) {
         // ---
         for (Validation valid : validObjects) {
             if (valid == null) {
-                onErrors(validDateMap, new ValidData(validName, "program is not exist."));
+                onErrors(renderData, new ValidData(validName, "program is not exist."));
                 continue;
             }
             valid.doValidation(validName, resolveParam, new InnerValidErrors(renderData) {
                 protected void errors(ValidData messages) {
-                    onErrors(validDateMap, messages);
+                    onErrors(renderData, messages);
                 }
             });
         }

@@ -66,10 +66,7 @@ class Invoker {
         //
         Object[] resolveParams = this.resolveParams(targetMethod);
         if (needValid != null) {
-            Map<String, ValidData> validDataMap = needValid.doValid(this.renderData, resolveParams);
-            if (validDataMap != null && !validDataMap.isEmpty()) {
-                this.renderData.updateValidResult(validDataMap);
-            }
+            needValid.doValid(this.renderData, resolveParams);
         }
         Object resultData = this.invoke(targetMethod, targetObject, resolveParams);
         this.renderData.setReturnData(resultData);

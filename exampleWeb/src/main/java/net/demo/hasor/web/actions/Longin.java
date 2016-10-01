@@ -24,14 +24,14 @@ import net.hasor.restful.api.Valid;
  * @version : 2016年1月1日
  * @author 赵永春(zyc@hasor.net)
  */
-@MappingTo("/login.do")
+@MappingTo("/login.htm")
 public class Longin {
     public void execute(@Valid() @Params LoginForm loginForm, RenderData data) {
         if (data.isValid()) {
             data.renderTo("/userInfo.htm");
         } else {
             data.put("loginForm", loginForm);
-            data.renderTo("htm", "/login.htm");//使用 htm 引擎渲染页面。
+            data.renderTo("/login.htm");//使用 htm 引擎渲染页面。
         }
     }
 }
