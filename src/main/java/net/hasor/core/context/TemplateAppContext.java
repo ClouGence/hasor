@@ -19,6 +19,7 @@ import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.binder.BinderHelper;
 import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.BeanContainer;
+import net.hasor.core.container.ScopManager;
 import net.hasor.core.context.listener.ContextShutdownListener;
 import net.hasor.core.context.listener.ContextStartListener;
 import org.more.util.ArrayUtils;
@@ -346,6 +347,9 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
     protected ApiBinder newApiBinder(final Module forModule) {
         return new AbstractBinder(this.getEnvironment()) {
             protected BeanBuilder getBeanBuilder() {
+                return getContainer();
+            }
+            protected ScopManager getScopManager() {
                 return getContainer();
             }
         };

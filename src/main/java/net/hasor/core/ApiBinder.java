@@ -170,6 +170,14 @@ public interface ApiBinder {
      * @see #bindType(Class)
      */
     public <T> LifeBindingBuilder<T> bindType(String withName, Class<T> type, Provider<T> provider);
+
+    /**
+     * 注册作用域。
+     * @param scopeName 作用域名称
+     * @param scope 作用域
+     * @return 成功注册之后返回它自身, 如果存在同名的scope那么会返回第一次注册那个 scope。
+     */
+    public Provider<Scope> registerScope(String scopeName, Provider<Scope> scope);
     //
     /*--------------------------------------------------------------------------------------Faces*/
     /**给绑定起个名字。*/
@@ -312,6 +320,13 @@ public interface ApiBinder {
          * @return 返回 - {@link MetaDataBindingBuilder}。
          */
         public MetaDataBindingBuilder<T> toScope(Provider<Scope> scope);
+
+        /**
+         * 设置Scope。
+         * @param scopeName 作用域名
+         * @return 返回 - {@link MetaDataBindingBuilder}。
+         */
+        public MetaDataBindingBuilder<T> toScope(String scopeName);
     }
     /**绑定元信息*/
     public interface MetaDataBindingBuilder<T> {

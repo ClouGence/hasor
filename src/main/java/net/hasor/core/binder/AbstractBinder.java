@@ -14,27 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.Set;
-import java.util.UUID;
-
+import net.hasor.core.*;
+import net.hasor.core.binder.aop.matcher.AopMatchers;
+import net.hasor.core.container.BeanBuilder;
+import net.hasor.core.container.ScopManager;
+import net.hasor.core.info.AopBindInfoAdapter;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.BindInfo;
-import net.hasor.core.BindInfoBuilder;
-import net.hasor.core.Environment;
-import net.hasor.core.Hasor;
-import net.hasor.core.MethodInterceptor;
-import net.hasor.core.Module;
-import net.hasor.core.Provider;
-import net.hasor.core.Scope;
-import net.hasor.core.binder.aop.matcher.AopMatchers;
-import net.hasor.core.container.BeanBuilder;
-import net.hasor.core.info.AopBindInfoAdapter;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.Set;
+import java.util.UUID;
 /**
  * 标准的 {@link ApiBinder} 接口实现，Hasor 在初始化模块时会为每个模块独立分配一个 ApiBinder 接口实例。
  * <p>抽象方法 {@link #getBeanBuilder()} ,会返回一个类( {@link BeanBuilder} )用于配置Bean信息。
@@ -55,8 +48,7 @@ public abstract class AbstractBinder implements ApiBinder {
         if (featureType == null) {
             return null;
         }
-        Set<Class<?>> res = this.getEnvironment().findClass(featureType);
-        return res;
+        return this.getEnvironment().findClass(featureType);
     }
     public void installModule(final Module module) throws Throwable {
         logger.info("installModule ->" + module);
@@ -67,6 +59,9 @@ public abstract class AbstractBinder implements ApiBinder {
     /*------------------------------------------------------------------------------------Binding*/
     /**注册一个类型*/
     protected abstract BeanBuilder getBeanBuilder();
+
+    /**注册一个类型*/
+    protected abstract ScopManager getScopManager();
     //
     public <T> NamedBindingBuilder<T> bindType(final Class<T> type) {
         BeanBuilder builder = this.getBeanBuilder();
@@ -96,6 +91,9 @@ public abstract class AbstractBinder implements ApiBinder {
         return this.bindType(type).nameWith(withName).toProvider(provider);
     }
     //
+    public Provider<Scope> registerScope(String scopeName, Provider<Scope> scope) {
+        return this.getScopManager().registerScope(scopeName, scope);
+    }
     /*----------------------------------------------------------------------------------------Aop*/
     //    static {
     //        final String tmpWordReg = "[^\\s,]+";
@@ -106,7 +104,6 @@ public abstract class AbstractBinder implements ApiBinder {
     //    }
     //    private static final Pattern InterceptorPattern;
     public void bindInterceptor(final String matcherExpression, final MethodInterceptor interceptor) {
-        //
         //
         Matcher<Class<?>> matcherClass = AopMatchers.expressionClass(matcherExpression);
         Matcher<Method> matcherMethod = AopMatchers.expressionMethod(matcherExpression);
@@ -124,7 +121,7 @@ public abstract class AbstractBinder implements ApiBinder {
     //
     /*------------------------------------------------------------------------------------Binding*/
     /** 一堆接口的实现 */
-    private static class BindingBuilderImpl<T> implements //
+    private class BindingBuilderImpl<T> implements //
             InjectConstructorBindingBuilder<T>, InjectPropertyBindingBuilder<T>, //
             NamedBindingBuilder<T>, LinkedBindingBuilder<T>, LifeBindingBuilder<T>, ScopedBindingBuilder<T>, MetaDataBindingBuilder<T> {
         private BindInfoBuilder<T> typeBuilder = null;
@@ -151,7 +148,7 @@ public abstract class AbstractBinder implements ApiBinder {
             return this;
         }
         public NamedBindingBuilder<T> idWith(String newID) {
-            if (StringUtils.isBlank(newID) == false) {
+            if (!StringUtils.isBlank(newID)) {
                 this.typeBuilder.setBindID(newID);
             }
             return this;
@@ -192,6 +189,9 @@ public abstract class AbstractBinder implements ApiBinder {
         public MetaDataBindingBuilder<T> toScope(final Provider<Scope> scope) {
             this.typeBuilder.setScopeProvider(scope);
             return this;
+        }
+        public MetaDataBindingBuilder<T> toScope(String scopeName) {
+            return this.toScope(getScopManager().findScope(scopeName));
         }
         public LifeBindingBuilder<T> toProvider(final Provider<T> provider) {
             if (provider != null) {

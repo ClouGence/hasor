@@ -19,6 +19,7 @@ import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.BeanContainer;
+import net.hasor.core.container.ScopManager;
 import net.hasor.core.context.DataContextCreater;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.web.ServletVersion;
@@ -86,6 +87,9 @@ public class WebTemplateAppContext<C extends BeanContainer> extends StatusAppCon
     protected AbstractWebApiBinder newApiBinder(final Module forModule) {
         return new AbstractWebApiBinder(this.getEnvironment()) {
             protected BeanBuilder getBeanBuilder() {
+                return getContainer();
+            }
+            protected ScopManager getScopManager() {
                 return getContainer();
             }
         };

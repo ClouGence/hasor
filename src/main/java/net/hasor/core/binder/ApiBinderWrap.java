@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import java.lang.reflect.Method;
-import java.util.Set;
-
+import net.hasor.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.Environment;
-import net.hasor.core.Hasor;
-import net.hasor.core.MethodInterceptor;
-import net.hasor.core.Module;
-import net.hasor.core.Provider;
+
+import java.lang.reflect.Method;
+import java.util.Set;
 /**
  * 标准的 {@link ApiBinder} 接口包装类。
  * @version : 2013-4-12
@@ -75,5 +70,8 @@ public class ApiBinderWrap implements ApiBinder {
     }
     public <T> LifeBindingBuilder<T> bindType(String withName, Class<T> type, Provider<T> provider) {
         return this.apiBinder.bindType(withName, type, provider);
+    }
+    public Provider<Scope> registerScope(String scopeName, Provider<Scope> scope) {
+        return this.apiBinder.registerScope(scopeName, scope);
     }
 }

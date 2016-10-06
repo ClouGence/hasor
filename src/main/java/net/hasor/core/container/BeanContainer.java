@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import net.hasor.core.*;
+import net.hasor.core.binder.InstanceProvider;
+import net.hasor.core.info.AbstractBindInfoProviderAdapter;
+import net.hasor.core.scope.SingletonScope;
+import org.more.RepeateException;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,20 +30,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.more.RepeateException;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import net.hasor.core.AppContext;
-import net.hasor.core.BindInfo;
-import net.hasor.core.Environment;
-import net.hasor.core.EventListener;
-import net.hasor.core.Hasor;
-import net.hasor.core.Provider;
-import net.hasor.core.Scope;
-import net.hasor.core.info.AbstractBindInfoProviderAdapter;
-import net.hasor.core.scope.SingletonScope;
 /**
  * 整个Hasor将围绕这个类构建！！
  * <br/>它，完成了Bean容器的功能。
@@ -46,14 +41,15 @@ import net.hasor.core.scope.SingletonScope;
  * @version : 2015年11月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class BeanContainer extends TemplateBeanBuilder {
-    protected Logger                                  logger           = LoggerFactory.getLogger(getClass());
-    private   AtomicBoolean                           inited           = new AtomicBoolean(false);
-    private   Scope                                   singletonScope   = new SingletonScope();
-    private   List<BindInfo<?>>                       tempBindInfoList = new ArrayList<BindInfo<?>>();
-    private   ConcurrentHashMap<String, List<String>> indexTypeMapping = new ConcurrentHashMap<String, List<String>>();
-    private   ConcurrentHashMap<String, List<String>> indexNameMapping = new ConcurrentHashMap<String, List<String>>();
-    private   ConcurrentHashMap<String, BindInfo<?>>  idDataSource     = new ConcurrentHashMap<String, BindInfo<?>>();
+public class BeanContainer extends TemplateBeanBuilder implements ScopManager {
+    protected Logger                                     logger           = LoggerFactory.getLogger(getClass());
+    private   AtomicBoolean                              inited           = new AtomicBoolean(false);
+    //    private   Scope                                      singletonScope   = new SingletonScope();
+    private   List<BindInfo<?>>                          tempBindInfoList = new ArrayList<BindInfo<?>>();
+    private   ConcurrentHashMap<String, List<String>>    indexTypeMapping = new ConcurrentHashMap<String, List<String>>();
+    private   ConcurrentHashMap<String, List<String>>    indexNameMapping = new ConcurrentHashMap<String, List<String>>();
+    private   ConcurrentHashMap<String, BindInfo<?>>     idDataSource     = new ConcurrentHashMap<String, BindInfo<?>>();
+    private   ConcurrentHashMap<String, Provider<Scope>> scopeMapping     = new ConcurrentHashMap<String, Provider<Scope>>();
     //
     //
     /*-----------------------------------------------------------------------------------BindInfo*/
@@ -124,7 +120,8 @@ public class BeanContainer extends TemplateBeanBuilder {
         //
         if (isSingleton) {
             Object key = (bindInfo != null) ? bindInfo : targetType;
-            return this.singletonScope.scope(key, new Provider<T>() {
+            Provider<Scope> singleton = Hasor.assertIsNotNull(this.scopeMapping.get(ScopManager.SINGLETON_SCOPE));
+            return singleton.get().scope(key, new Provider<T>() {
                 public T get() {
                     return callSuperCreateObject(targetType, bindInfo, appContext);
                 }
@@ -186,6 +183,7 @@ public class BeanContainer extends TemplateBeanBuilder {
             }
         }
         this.tempBindInfoList.clear();
+        this.scopeMapping.put(ScopManager.SINGLETON_SCOPE, new InstanceProvider<Scope>(new SingletonScope()));
     }
     /**
      * 当容器停止运行时，需要做Bean清理工作。
@@ -198,6 +196,19 @@ public class BeanContainer extends TemplateBeanBuilder {
         this.indexTypeMapping.clear();
         this.indexNameMapping.clear();
         this.idDataSource.clear();
-        this.singletonScope = new SingletonScope();
+        this.scopeMapping.clear();
+    }
+    //
+    @Override
+    public Provider<Scope> registerScope(String scopeName, Provider<Scope> scope) {
+        Provider<Scope> oldScope = this.scopeMapping.putIfAbsent(scopeName, scope);
+        if (oldScope == null) {
+            oldScope = scope;
+        }
+        return oldScope;
+    }
+    @Override
+    public Provider<Scope> findScope(String scopeName) {
+        return this.scopeMapping.get(scopeName);
     }
 }

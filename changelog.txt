@@ -5,6 +5,7 @@
     03.所有接口类型参数传入,都走 AppContext 获取。
     04.upload包变更。
     05.新增 WebAppContext.HTTP_BEFORE_REQUEST 和 WebAppContext.HTTP_AFTER_RESPONSE 事件。
+    06.新增了 ScopeManager 接口用于优化 Scope 的注册。
 * 改进:
     01.改进 RenderData 接口使其更加人性化一点。
     02.RenderData 的数据不在保存在自己独立的 map 中而是共同 Request Attr。
