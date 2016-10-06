@@ -177,7 +177,15 @@ public interface ApiBinder {
      * @param scope 作用域
      * @return 成功注册之后返回它自身, 如果存在同名的scope那么会返回第一次注册那个 scope。
      */
-    public Provider<Scope> registerScope(String scopeName, Provider<Scope> scope);
+    public Provider<Scope> registerScope(String scopeName, Scope scope);
+
+    /**
+     * 注册作用域。
+     * @param scopeName 作用域名称
+     * @param scopeProvider 作用域
+     * @return 成功注册之后返回它自身, 如果存在同名的scope那么会返回第一次注册那个 scope。
+     */
+    public Provider<Scope> registerScope(String scopeName, Provider<Scope> scopeProvider);
     //
     /*--------------------------------------------------------------------------------------Faces*/
     /**给绑定起个名字。*/

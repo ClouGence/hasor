@@ -35,6 +35,7 @@ public class StartModule extends WebModule {
         //
         //        apiBinder.installModule(new DataSourceModule());
         apiBinder.bindType(RenderEngine.class).uniqueName().toInstance(new FreemarkerRender());
+        apiBinder.registerScope("session", new SessionScope());
         //
         // .Webs
         apiBinder.filter("/*").through(0, new SessionScope());
@@ -45,6 +46,6 @@ public class StartModule extends WebModule {
         converter.setPattern("yyyy-mm-dd");
         ConverterUtils.register(converter, Date.class);
         //
-        apiBinder.bindType(UserInfo.class).toScope(new SessionScope());
+        apiBinder.bindType(UserInfo.class).toScope("session");
     }
 }

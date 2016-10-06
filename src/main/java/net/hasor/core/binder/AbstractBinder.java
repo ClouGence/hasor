@@ -94,6 +94,9 @@ public abstract class AbstractBinder implements ApiBinder {
     public Provider<Scope> registerScope(String scopeName, Provider<Scope> scope) {
         return this.getScopManager().registerScope(scopeName, scope);
     }
+    public Provider<Scope> registerScope(String scopeName, Scope scope) {
+        return this.registerScope(scopeName, new InstanceProvider<Scope>(scope));
+    }
     /*----------------------------------------------------------------------------------------Aop*/
     //    static {
     //        final String tmpWordReg = "[^\\s,]+";
