@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package net.demo.hasor.core;
+import net.demo.hasor.domain.UserInfo;
+import net.demo.hasor.scope.SessionScope;
+import net.hasor.core.Scope;
 import net.hasor.restful.RenderEngine;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
@@ -34,11 +37,14 @@ public class StartModule extends WebModule {
         apiBinder.bindType(RenderEngine.class).uniqueName().toInstance(new FreemarkerRender());
         //
         // .Webs
+        apiBinder.filter("/*").through(0, new SessionScope());
         apiBinder.filter("/*").through(0, new EncodingFilter());
         apiBinder.filter("/*").through(0, new JumpFilter());
         //
         DateConverter converter = new DateConverter();
         converter.setPattern("yyyy-mm-dd");
         ConverterUtils.register(converter, Date.class);
+        //
+        apiBinder.bindType(UserInfo.class).toScope(new SessionScope());
     }
 }

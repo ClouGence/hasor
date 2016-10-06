@@ -107,6 +107,18 @@ public class WebTemplateAppContext<C extends BeanContainer> extends StatusAppCon
                 return appContet;
             }
         });
+        /*绑定ServletContext对象的Provider*/
+        apiBinder.bindType(ServletContext.class).toProvider(new Provider<ServletContext>() {
+            public ServletContext get() {
+                return getServletContext();
+            }
+        });
+        /*绑定当前Servlet支持的版本*/
+        apiBinder.bindType(ServletVersion.class).toProvider(new Provider<ServletVersion>() {
+            public ServletVersion get() {
+                return appContet.getEnvironment().getServletVersion();
+            }
+        });
         //
         ManagedServletPipeline sPipline = new ManagedServletPipeline();
         ManagedFilterPipeline fPipline = new ManagedFilterPipeline(sPipline);
@@ -116,29 +128,5 @@ public class WebTemplateAppContext<C extends BeanContainer> extends StatusAppCon
         apiBinder.bindType(FilterPipeline.class).toInstance(fPipline);
         apiBinder.bindType(ListenerPipeline.class).toInstance(lPipline);
         //
-        /*绑定ServletContext对象的Provider*/
-        apiBinder.bindType(ServletContext.class).toProvider(new Provider<ServletContext>() {
-            public ServletContext get() {
-                return getServletContext();
-            }
-        });
-        /*绑定AppContext对象的Provider*/
-        apiBinder.bindType(WebAppContext.class).toProvider(new Provider<WebAppContext>() {
-            public WebAppContext get() {
-                return appContet;
-            }
-        });
-        /*绑定AppContext对象的Provider*/
-        apiBinder.bindType(WebEnvironment.class).toProvider(new Provider<WebEnvironment>() {
-            public WebEnvironment get() {
-                return appContet.getEnvironment();
-            }
-        });
-        /*绑定当前Servlet支持的版本*/
-        apiBinder.bindType(ServletVersion.class).toProvider(new Provider<ServletVersion>() {
-            public ServletVersion get() {
-                return appContet.getEnvironment().getServletVersion();
-            }
-        });
     }
 }
