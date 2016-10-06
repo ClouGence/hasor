@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.more.asm.ClassVisitor;
 import org.more.asm.FieldVisitor;
 import org.more.asm.Label;
@@ -36,12 +37,12 @@ import org.more.classcode.ASMEngineTools;
  */
 @SuppressWarnings("deprecation")
 class AopClassAdapter extends ClassVisitor implements Opcodes {
-    public final static String AopPrefix      = "$aopFun"; //生成的Aop方法前缀
-    private String             superClassName = null;      //父类类名
-    private String             thisClassName  = null;      //当前类名
-    private AopClassConfig     classConfig    = null;      //Aop筛选器
-    private List<Method>       aopMethodMap   = null;      //符合Aop的方法
-    private Set<String>        validMethod    = null;      //代理类自身方法
+    public final static String         AopPrefix      = "$aopFun"; //生成的Aop方法前缀
+    private             String         superClassName = null;      //父类类名
+    private             String         thisClassName  = null;      //当前类名
+    private             AopClassConfig classConfig    = null;      //Aop筛选器
+    private             List<Method>   aopMethodMap   = null;      //符合Aop的方法
+    private             Set<String>    validMethod    = null;      //代理类自身方法
     //
     public AopClassAdapter(final ClassVisitor visitor, AopClassConfig classConfig) {
         super(ASM4, visitor);
@@ -325,7 +326,7 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         }
         {//} catch (Exception e) {
             mv.visitLabel(tryCatch);
-            mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] { "java/lang/Throwable" });
+            mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] {"java/lang/Throwable"});
             mv.visitVarInsn(ASTORE, 5);
             mv.visitVarInsn(ALOAD, 5);
             mv.visitTypeInsn(INSTANCEOF, "java/lang/RuntimeException");
@@ -335,7 +336,7 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitTypeInsn(CHECKCAST, "java/lang/RuntimeException");
             mv.visitInsn(ATHROW);
             mv.visitLabel(ifBlock);
-            mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] { "java/lang/Throwable" }, 0, null);
+            mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] {"java/lang/Throwable"}, 0, null);
             mv.visitTypeInsn(NEW, "java/lang/RuntimeException");
             mv.visitInsn(DUP);
             mv.visitVarInsn(ALOAD, 5);

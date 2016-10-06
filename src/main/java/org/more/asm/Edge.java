@@ -30,7 +30,7 @@
 package org.more.asm;
 /**
  * An edge in the control flow graph of a method body. See {@link Label Label}.
- * 
+ *
  * @author Eric Bruneton
  */
 class Edge {
@@ -56,14 +56,14 @@ class Edge {
      * this field is the kind of this control flow graph edge (i.e. NORMAL or
      * EXCEPTION).
      */
-    int              info;
+    int   info;
     /**
      * The successor block of the basic block from which this edge originates.
      */
-    Label            successor;
+    Label successor;
     /**
      * The next edge in the list of successors of the originating basic block.
      * See {@link Label#successors successors}.
      */
-    Edge             next;
+    Edge  next;
 }

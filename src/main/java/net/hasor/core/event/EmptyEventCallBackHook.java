@@ -29,5 +29,6 @@ class EmptyEventCallBackHook implements EventCallBackHook<Object> {
         logger.error("during the execution of Event ‘{}’ throw an error ->{}", eventType, e.getMessage(), e);
     }
     @Override
-    public void handleComplete(final String eventType, Object eventData) {}
+    public void handleComplete(final String eventType, Object eventData) {
+    }
 }

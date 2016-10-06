@@ -17,6 +17,7 @@
 package org.more.convert.convert;
 import java.lang.reflect.Array;
 import java.util.Collection;
+
 import org.more.convert.ConversionException;
 import org.more.convert.Converter;
 /**
@@ -42,7 +43,7 @@ import org.more.convert.Converter;
  * @version $Revision: 640131 $ $Date: 2008-03-23 02:10:31 +0000 (Sun, 23 Mar 2008) $
  * @since 1.8.0
  */
-@SuppressWarnings({ "rawtypes" })
+@SuppressWarnings({"rawtypes"})
 public abstract class AbstractConverter implements Converter {
     /** 当转换出错时是否返回默认值。*/
     private boolean useDefault   = false;
@@ -50,7 +51,8 @@ public abstract class AbstractConverter implements Converter {
     private Object  defaultValue = null;
     // ----------------------------------------------------------- Constructors
     /**创建创造<i>Converter</i>转换器，可能会引发<code>ConversionException</code>异常。*/
-    public AbstractConverter() {}
+    public AbstractConverter() {
+    }
     /**创建创造<i>Converter</i>转换器，可能会引发<code>ConversionException</code>异常。*/
     public AbstractConverter(final Object defaultValue) {
         this.setDefaultValue(defaultValue);

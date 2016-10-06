@@ -15,10 +15,11 @@
  */
 package org.more.classcode.delegate.faces;
 import java.lang.reflect.Method;
+
 import org.more.classcode.AbstractClassConfig;
 import org.more.classcode.MoreClassLoader;
 /**
- * 
+ *
  * @version : 2013-4-13
  * @author 赵永春 (zyc@hasor.net)
  */

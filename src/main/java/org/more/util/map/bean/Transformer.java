@@ -27,10 +27,10 @@ package org.more.util.map.bean;
  * Standard implementations of common transformers are provided by
  * {@link TransformerUtils}. These include method invokation, returning a constant,
  * cloning and returning the string value.
- * 
+ *
  * @since Commons Collections 1.0
  * @version $Revision: 646777 $ $Date: 2008-04-10 13:33:15 +0100 (Thu, 10 Apr 2008) $
- * 
+ *
  * @author James Strachan
  * @author Stephen Colebourne
  */

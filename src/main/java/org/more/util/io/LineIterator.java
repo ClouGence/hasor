@@ -50,9 +50,9 @@ public class LineIterator implements Iterator<String> {
     /** The reader that is being read. */
     private final BufferedReader bufferedReader;
     /** The current line. */
-    private String               cachedLine;
+    private       String         cachedLine;
     /** A flag indicating if the iterator has been fully read. */
-    private boolean              finished = false;
+    private boolean finished = false;
     /**
      * Constructs an iterator of the lines for a <code>Reader</code>.
      *

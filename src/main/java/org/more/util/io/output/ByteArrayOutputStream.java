@@ -24,6 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.more.util.io.input.ClosedInputStream;
 /**
  * This class implements an output stream in which the data is 
@@ -45,22 +46,22 @@ import org.more.util.io.input.ClosedInputStream;
  * the contents don't have to be copied to the new buffer. This class is
  * designed to behave exactly like the original. The only exception is the
  * deprecated toString(int) method that has been ignored.
- * 
+ *
  * @version $Id: ByteArrayOutputStream.java 1304052 2012-03-22 20:55:29Z ggregory $
  */
 public class ByteArrayOutputStream extends OutputStream {
     /** A singleton empty byte array. */
-    private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
+    private static final byte[]       EMPTY_BYTE_ARRAY = new byte[0];
     /** The list of buffers, which grows and never reduces. */
-    private final List<byte[]>  buffers          = new ArrayList<byte[]>();
+    private final        List<byte[]> buffers          = new ArrayList<byte[]>();
     /** The index of the current buffer. */
-    private int                 currentBufferIndex;
+    private int    currentBufferIndex;
     /** The total count of bytes in all the filled buffers. */
-    private int                 filledBufferSum;
+    private int    filledBufferSum;
     /** The current buffer. */
-    private byte[]              currentBuffer;
+    private byte[] currentBuffer;
     /** The total count of bytes written. */
-    private int                 count;
+    private int    count;
     /**
      * Creates a new byte array output stream. The buffer capacity is 
      * initially 1024 bytes, though its size increases if necessary. 
@@ -242,7 +243,7 @@ public class ByteArrayOutputStream extends OutputStream {
      * avoids unnecessary allocation and copy of byte[].<br>
      * This method buffers the input internally, so there is no need to use a
      * <code>BufferedInputStream</code>.
-     * 
+     *
      * @param input Stream to be fully buffered.
      * @return A fully buffered stream.
      * @throws IOException if an I/O error occurs
@@ -257,7 +258,7 @@ public class ByteArrayOutputStream extends OutputStream {
      * Gets the current contents of this byte stream as a Input Stream. The
      * returned stream is backed by buffers of <code>this</code> stream,
      * avoiding memory allocation and copy, thus saving space and time.<br>
-     * 
+     *
      * @return the current contents of this output stream.
      * @see java.io.ByteArrayOutputStream#toByteArray()
      * @see #reset()

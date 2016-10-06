@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import net.hasor.core.Hasor;
 import org.more.UnhandledException;
 import org.more.util.BeanUtils;
@@ -29,12 +30,13 @@ import org.more.util.BeanUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
-    private Class<T>            requiredType;
+    private Class<T> requiredType;
     private boolean             caseInsensitive = false;
     private Map<String, String> columnMapping   = new HashMap<String, String>();
     //
     /** Create a new BeanPropertyRowMapper.*/
-    public BeanPropertyRowMapper() {}
+    public BeanPropertyRowMapper() {
+    }
     /** Create a new BeanPropertyRowMapper.*/
     public BeanPropertyRowMapper(final Class<T> requiredType) {
         Hasor.assertIsNotNull(requiredType, "requiredType is null.");

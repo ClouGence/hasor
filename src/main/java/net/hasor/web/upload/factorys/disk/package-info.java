@@ -17,4 +17,4 @@
 /**
  * FileItemFactory接口实现,提供磁盘缓存。
  */
-package net.hasor.restful.upload.factorys.disk;
+package net.hasor.web.upload.factorys.disk;

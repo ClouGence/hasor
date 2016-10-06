@@ -15,7 +15,7 @@
  */
 package net.hasor.plugins.spring.event;
 /**
- * 
+ *
  * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */

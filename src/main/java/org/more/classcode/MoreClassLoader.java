@@ -19,17 +19,17 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 /**
- * 
+ *
  * @version : 2014年9月7日
  * @author 赵永春(zyc@hasor.net)
  */
 public class MoreClassLoader extends ClassLoader {
     private Map<String, ClassInfo>       classMap  = new ConcurrentHashMap<String, ClassInfo>();
     private ThreadLocal<ClassCodeObject> localLocl = new ThreadLocal<ClassCodeObject>() {
-                                                       protected ClassCodeObject initialValue() {
-                                                           return new ClassCodeObject();
-                                                       }
-                                                   };
+        protected ClassCodeObject initialValue() {
+            return new ClassCodeObject();
+        }
+    };
     //
     public MoreClassLoader() {
         super(Thread.currentThread().getContextClassLoader());

@@ -16,6 +16,7 @@
 package net.hasor.web.binder.support;
 import java.util.HashMap;
 import java.util.Map;
+
 import net.hasor.web.WebAppContext;
 /**
  * Abstract implementation for all servlet module bindings
@@ -23,11 +24,11 @@ import net.hasor.web.WebAppContext;
  * @author 赵永春 (zyc@hasor.net)
  */
 class AbstractServletModuleBinding {
-    private int                       index      = 0;
+    private int index = 0;
     private final Map<String, String> initParams;
     private final String              pattern;
     private final UriPatternMatcher   patternMatcher;
-    private WebAppContext             appContext = null;
+    private WebAppContext appContext = null;
     //
     public AbstractServletModuleBinding(final int index, final Map<String, String> initParams, final String pattern, final UriPatternMatcher patternMatcher) {
         this.index = index;

@@ -15,11 +15,12 @@
  */
 package net.hasor.db;
 import javax.sql.DataSource;
+
 import net.hasor.core.Provider;
 import net.hasor.db.transaction.TranManager;
 import net.hasor.db.transaction.TransactionTemplate;
 /**
- * 
+ *
  * @version : 2015年11月10日
  * @author 赵永春(zyc@hasor.net)
  */

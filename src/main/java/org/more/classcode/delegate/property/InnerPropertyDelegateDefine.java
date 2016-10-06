@@ -16,7 +16,7 @@
 package org.more.classcode.delegate.property;
 import java.lang.reflect.InvocationTargetException;
 /**
- * 
+ *
  * @version : 2014年9月9日
  * @author 赵永春(zyc@hasor.net)
  */

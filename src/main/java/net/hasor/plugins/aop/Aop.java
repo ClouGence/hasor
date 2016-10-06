@@ -18,6 +18,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 import net.hasor.core.MethodInterceptor;
 /**
  * 标记在类或方法上，为类或方法指定拦截器。
@@ -25,7 +26,7 @@ import net.hasor.core.MethodInterceptor;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Aop {
     public Class<? extends MethodInterceptor>[] value();
 }

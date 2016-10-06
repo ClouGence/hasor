@@ -28,6 +28,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+
 import org.more.util.MatchUtils;
 import org.more.xml.stream.TextEvent.Type;
 /**
@@ -90,7 +91,8 @@ public class XmlReader {
     /** 获取Stax阅读器的过滤器，子类可以通过该方法来扩展XmlReader在读取xml期间可以忽略的项目。*/
     protected StreamFilter getXmlStreamFilter() {
         return null;
-    };
+    }
+    ;
     /**
      * 该方法是用于决定两个XPath是否是一个包含的关系，该方法的返回值决定了解析器是否忽略这个xml条目。其子类可以重写它以完成更多的控制。
      * @param currentXPath 当前解析器扫描到的XPath。
@@ -109,7 +111,7 @@ public class XmlReader {
      * 如果配置了ignoreXPath参数则在形成事件流时XmlReader不会发送属于这个xpath的xml事件流。
      * @param accept 指定事件流接收对象。
      * @param ignoreXPath 指定要忽略的XPath路径。
-     * @throws IOException 
+     * @throws IOException
      */
     public synchronized void reader(final XmlAccept accept, final String ignoreXPath) throws XMLStreamException, IOException {
         if (accept == null) {
@@ -236,7 +238,8 @@ public class XmlReader {
     private String getName(final QName qname) {
         String prefix = qname.getPrefix();
         StringBuffer sb = new StringBuffer();
-        if (prefix == null || prefix.equals("") == true) {} else {
+        if (prefix == null || prefix.equals("") == true) {
+        } else {
             sb.append(prefix);
             sb.append(":");
         }

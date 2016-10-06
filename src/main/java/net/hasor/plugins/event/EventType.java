@@ -16,7 +16,7 @@
 package net.hasor.plugins.event;
 /**
  * 事件监听类型。
- * 
+ *
  * @version : 2016年2月7日
  * @author 赵永春(zyc@hasor.net)
  */

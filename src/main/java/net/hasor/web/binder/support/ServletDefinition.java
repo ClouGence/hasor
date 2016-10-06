@@ -26,11 +26,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+
 import net.hasor.core.BindInfo;
 import net.hasor.web.WebAppContext;
 import org.more.util.Iterators;
 /**
- * 
+ *
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -108,11 +109,11 @@ class ServletDefinition extends AbstractServletModuleBinding {
     /**/
     private void doService(final ServletRequest servletRequest, final ServletResponse servletResponse) throws ServletException, IOException {
         HttpServletRequest request = new HttpServletRequestWrapper((HttpServletRequest) servletRequest) {
-            private String  path;
-            private boolean pathComputed     = false;
+            private String path;
+            private boolean pathComputed = false;
             //must use a boolean on the memo field, because null is a legal value (TODO no, it's not)
             private boolean pathInfoComputed = false;
-            private String  pathInfo;
+            private String pathInfo;
             @Override
             public String getPathInfo() {
                 if (!this.isPathInfoComputed()) {

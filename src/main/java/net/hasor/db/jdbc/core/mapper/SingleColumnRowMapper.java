@@ -18,14 +18,15 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 /**
- * 
+ *
  * @version : 2014年5月23日
  * @author 赵永春 (zyc@byshell.org)
  */
 public class SingleColumnRowMapper<T> extends AbstractRowMapper<T> {
     private Class<T> requiredType;
     /** Create a new SingleColumnRowMapper. */
-    public SingleColumnRowMapper() {}
+    public SingleColumnRowMapper() {
+    }
     /**
      * Create a new SingleColumnRowMapper.
      * @param requiredType the type that each result object is expected to match

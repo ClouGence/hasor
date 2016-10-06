@@ -15,6 +15,7 @@
  */
 package org.more.classcode.delegate.faces;
 import java.lang.reflect.Method;
+
 import org.more.classcode.aop.AopClassConfig;
 /**
  * 当使用{@link AopClassConfig}类的addDelegate方法来添加委托，添加的委托处理函数对象就是该接口对象。

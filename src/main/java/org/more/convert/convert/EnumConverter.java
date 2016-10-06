@@ -16,11 +16,11 @@
  */
 package org.more.convert.convert;
 /**
- * 
+ *
  * @version : 2013-8-13
  * @author 赵永春 (zyc@hasor.net)
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({"rawtypes", "unchecked"})
 public final class EnumConverter extends AbstractConverter {
     public EnumConverter() {
         super();

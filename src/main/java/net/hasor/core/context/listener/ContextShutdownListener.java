@@ -23,6 +23,7 @@ import net.hasor.core.AppContext;
 public interface ContextShutdownListener {
     /**开始进入容器销毁过程。*/
     public void doShutdown(AppContext appContext);
+
     /**容器销毁完成。*/
     public void doShutdownCompleted(AppContext appContext);
 }

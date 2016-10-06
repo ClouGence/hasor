@@ -17,7 +17,7 @@ package org.more.util;
 import java.util.Enumeration;
 import java.util.Iterator;
 /**
- * 
+ *
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
  */

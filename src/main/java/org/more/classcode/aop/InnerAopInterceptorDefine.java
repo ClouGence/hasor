@@ -1,7 +1,7 @@
 package org.more.classcode.aop;
 import java.lang.reflect.Method;
 /**
- * 
+ *
  * @version : 2014年9月8日
  * @author 赵永春(zyc@hasor.net)
  */

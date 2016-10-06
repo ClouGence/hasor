@@ -18,6 +18,7 @@ package org.more.util.reflect;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
+
 import org.more.util.ClassUtils;
 /**
  * Utilities for working with fields by reflection. Adapted and refactored
@@ -108,7 +109,7 @@ public class FieldUtils {
         // incase there is a public supersuperclass field hidden by a private/package
         // superclass field.
         Field match = null;
-        for (Iterator<?> intf = ClassUtils.getAllInterfaces(cls).iterator(); intf.hasNext();) {
+        for (Iterator<?> intf = ClassUtils.getAllInterfaces(cls).iterator(); intf.hasNext(); ) {
             try {
                 Field test = ((Class<?>) intf.next()).getField(fieldName);
                 if (match != null) {
@@ -162,7 +163,8 @@ public class FieldUtils {
                 }
             }
             return field;
-        } catch (NoSuchFieldException e) {}
+        } catch (NoSuchFieldException e) {
+        }
         return null;
     }
     /**
@@ -439,7 +441,7 @@ public class FieldUtils {
      *  match public fields.
      * @throws IllegalArgumentException if the field cannot be located or is not static
      * @throws IllegalAccessException if the field is not made accessible or is final
-      */
+     */
     public static void writeDeclaredStaticField(final Class<?> cls, final String fieldName, final Object value, final boolean forceAccess) throws IllegalAccessException {
         Field field = FieldUtils.getDeclaredField(cls, fieldName, forceAccess);
         if (field == null) {

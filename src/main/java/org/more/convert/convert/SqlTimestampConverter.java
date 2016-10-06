@@ -35,7 +35,7 @@ import java.util.TimeZone;
  * @version $Revision: 690380 $ $Date: 2008-08-29 21:04:38 +0100 (Fri, 29 Aug 2008) $
  * @since 1.3
  */
-@SuppressWarnings({ "rawtypes" })
+@SuppressWarnings({"rawtypes"})
 public final class SqlTimestampConverter extends DateTimeConverter {
     /**
      * Construct a <b>java.sql.Timestamp</b> <i>Converter</i> that throws a <code>ConversionException</code> if an error occurs.

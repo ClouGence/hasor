@@ -16,11 +16,12 @@
 package org.more.classcode.delegate.property;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 import org.more.asm.ClassVisitor;
 import org.more.classcode.AbstractClassConfig;
 import org.more.util.BeanUtils;
 /**
- * 
+ *
  * @version : 2014年9月7日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -75,9 +76,9 @@ public class PropertyClassConfig extends AbstractClassConfig {
         this.addProperty(propertyName, delegate, true, true);
     }
     /**
-    * 动态添加一个属性，并且生成可以属性的get/set方法。
-    * @param readOnly 是否为只读属性
-    */
+     * 动态添加一个属性，并且生成可以属性的get/set方法。
+     * @param readOnly 是否为只读属性
+     */
     public void addProperty(final String propertyName, final PropertyDelegate<?> delegate, boolean readOnly) {
         this.addProperty(propertyName, delegate, !readOnly, true);
     }

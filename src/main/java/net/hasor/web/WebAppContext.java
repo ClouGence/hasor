@@ -18,12 +18,22 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 /**
  *
  * @version : 2013-7-16
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface WebAppContext extends AppContext {
+    /** 当处理 request 之前引发。
+     * @see net.hasor.web.startup.RuntimeFilter#beforeRequest(AppContext, HttpServletRequest, HttpServletResponse) */
+    public static final String HTTP_BEFORE_REQUEST = "HTTP_BEFORE_REQUEST";
+    /** 当处理完 request 响应 Response 之后引发。
+     * @see net.hasor.web.startup.RuntimeFilter#afterResponse(AppContext, HttpServletRequest, HttpServletResponse) */
+    public static final String HTTP_AFTER_RESPONSE = "HTTP_AFTER_RESPONSE";
+    //
+
     /**获取ServletContext对象。*/
     public ServletContext getServletContext();
 

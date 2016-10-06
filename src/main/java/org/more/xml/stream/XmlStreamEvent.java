@@ -69,6 +69,7 @@ public abstract class XmlStreamEvent {
     }
     /**是否为一个全局事件，全局事件是指该事件会在所有注册的命名空间解析器上传播。*/
     public abstract boolean isPublicEvent();
+
     /**判断参数中的事件对象是否是与当前事件对象为一个拍档。例如：{@link StartDocumentEvent}和{@link EndDocumentEvent}是一对拍档，同一Xpath的{@link StartElementEvent}和{@link EndElementEvent}是一对拍档*/
     public abstract boolean isPartner(XmlStreamEvent e);
 }

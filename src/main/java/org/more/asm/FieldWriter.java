@@ -30,65 +30,65 @@
 package org.more.asm;
 /**
  * An {@link FieldVisitor} that generates Java fields in bytecode form.
- * 
+ *
  * @author Eric Bruneton
  */
 final class FieldWriter extends FieldVisitor {
     /**
      * The class writer to which this field must be added.
      */
-    private final ClassWriter cw;
+    private final ClassWriter      cw;
     /**
      * Access flags of this field.
      */
-    private final int         access;
+    private final int              access;
     /**
      * The index of the constant pool item that contains the name of this
      * method.
      */
-    private final int         name;
+    private final int              name;
     /**
      * The index of the constant pool item that contains the descriptor of this
      * field.
      */
-    private final int         desc;
+    private final int              desc;
     /**
      * The index of the constant pool item that contains the signature of this
      * field.
      */
-    private int               signature;
+    private       int              signature;
     /**
      * The index of the constant pool item that contains the constant value of
      * this field.
      */
-    private int               value;
+    private       int              value;
     /**
      * The runtime visible annotations of this field. May be <tt>null</tt>.
      */
-    private AnnotationWriter  anns;
+    private       AnnotationWriter anns;
     /**
      * The runtime invisible annotations of this field. May be <tt>null</tt>.
      */
-    private AnnotationWriter  ianns;
+    private       AnnotationWriter ianns;
     /**
      * The runtime visible type annotations of this field. May be <tt>null</tt>.
      */
-    private AnnotationWriter  tanns;
+    private       AnnotationWriter tanns;
     /**
      * The runtime invisible type annotations of this field. May be
      * <tt>null</tt>.
      */
-    private AnnotationWriter  itanns;
+    private       AnnotationWriter itanns;
     /**
      * The non standard attributes of this field. May be <tt>null</tt>.
      */
-    private Attribute         attrs;
+    private       Attribute        attrs;
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
     /**
      * Constructs a new {@link FieldWriter}.
-     * 
+     *
      * @param cw
      *            the class writer to which this field must be added.
      * @param access
@@ -168,13 +168,14 @@ final class FieldWriter extends FieldVisitor {
         attrs = attr;
     }
     @Override
-    public void visitEnd() {}
+    public void visitEnd() {
+    }
     // ------------------------------------------------------------------------
     // Utility methods
     // ------------------------------------------------------------------------
     /**
      * Returns the size of this field.
-     * 
+     *
      * @return the size of this field.
      */
     int getSize() {
@@ -220,7 +221,7 @@ final class FieldWriter extends FieldVisitor {
     }
     /**
      * Puts the content of this field into the given byte vector.
-     * 
+     *
      * @param out
      *            where the content of this field must be put.
      */

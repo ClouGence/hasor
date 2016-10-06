@@ -17,15 +17,15 @@ package net.hasor.web.jstl.taglib;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 /**
- * 
+ *
  * @version : 2013-12-24
  * @author 赵永春(zyc@hasor.net)
  */
 public class DoEventTag extends AbstractTag {
-    private static final long serialVersionUID = -5728789063520917320L;
-    private String            event            = null;
-    private boolean           async            = false;
-    private Object            params           = null;
+    private static final long    serialVersionUID = -5728789063520917320L;
+    private              String  event            = null;
+    private              boolean async            = false;
+    private              Object  params           = null;
     public String getEvent() {
         return this.event;
     }
@@ -58,7 +58,7 @@ public class DoEventTag extends AbstractTag {
         if (this.params.getClass().isArray()) {
             return (Object[]) this.params;
         }
-        return new Object[] { this.params };
+        return new Object[] {this.params};
     }
     @Override
     public int doStartTag() throws JspException {

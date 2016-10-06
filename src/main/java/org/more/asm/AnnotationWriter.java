@@ -30,7 +30,7 @@
 package org.more.asm;
 /**
  * An {@link AnnotationVisitor} that generates annotations in bytecode form.
- * 
+ *
  * @author Eric Bruneton
  * @author Eugene Kuleshov
  */
@@ -42,7 +42,7 @@ final class AnnotationWriter extends AnnotationVisitor {
     /**
      * The number of values in this annotation.
      */
-    private int               size;
+    private       int         size;
     /**
      * <tt>true<tt> if values are named, <tt>false</tt> otherwise. Annotation
      * writers used for annotation default and annotation arrays use unnamed
@@ -68,17 +68,17 @@ final class AnnotationWriter extends AnnotationVisitor {
     /**
      * Next annotation writer. This field is used to store annotation lists.
      */
-    AnnotationWriter          next;
+    AnnotationWriter next;
     /**
      * Previous annotation writer. This field is used to store annotation lists.
      */
-    AnnotationWriter          prev;
+    AnnotationWriter prev;
     // ------------------------------------------------------------------------
     // Constructor
     // ------------------------------------------------------------------------
     /**
      * Constructs a new {@link AnnotationWriter}.
-     * 
+     *
      * @param cw
      *            the class writer to which this annotation must be added.
      * @param named
@@ -215,7 +215,7 @@ final class AnnotationWriter extends AnnotationVisitor {
     // ------------------------------------------------------------------------
     /**
      * Returns the size of this annotation writer list.
-     * 
+     *
      * @return the size of this annotation writer list.
      */
     int getSize() {
@@ -230,7 +230,7 @@ final class AnnotationWriter extends AnnotationVisitor {
     /**
      * Puts the annotations of this annotation writer list into the given byte
      * vector.
-     * 
+     *
      * @param out
      *            where the annotations must be put.
      */
@@ -257,7 +257,7 @@ final class AnnotationWriter extends AnnotationVisitor {
     }
     /**
      * Puts the given annotation lists into the given byte vector.
-     * 
+     *
      * @param panns
      *            an array of annotation writer lists.
      * @param off
@@ -293,7 +293,7 @@ final class AnnotationWriter extends AnnotationVisitor {
     /**
      * Puts the given type reference and type path into the given bytevector.
      * LOCAL_VARIABLE and RESOURCE_VARIABLE target types are not supported.
-     * 
+     *
      * @param typeRef
      *            a reference to the annotated type. See {@link TypeReference}.
      * @param typePath

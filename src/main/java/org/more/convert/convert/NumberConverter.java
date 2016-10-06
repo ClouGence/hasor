@@ -24,6 +24,7 @@ import java.text.ParsePosition;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
 import org.more.convert.ConversionException;
 import org.more.convert.Converter;
 /**
@@ -84,10 +85,10 @@ import org.more.convert.Converter;
 public abstract class NumberConverter extends AbstractConverter {
     private static final Integer ZERO = new Integer(0);
     private static final Integer ONE  = new Integer(1);
-    private String               pattern;
-    private boolean              allowDecimals;
-    private boolean              useLocaleFormat;
-    private Locale               locale;
+    private String  pattern;
+    private boolean allowDecimals;
+    private boolean useLocaleFormat;
+    private Locale  locale;
     // ----------------------------------------------------------- Constructors
     /**
      * Construct a <b>java.lang.Number</b> <i>Converter</i>

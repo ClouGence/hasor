@@ -14,15 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.upload;
-import net.hasor.restful.FileUploadException;
-import net.hasor.restful.upload.util.Closeable;
-import net.hasor.restful.upload.util.Streams;
+package net.hasor.web.upload;
+import net.hasor.web.FileUploadException;
+import net.hasor.web.upload.util.Streams;
 
 import java.io.*;
 
 import static java.lang.String.format;
-import static net.hasor.restful.FileUploadException.UploadErrorCodes.*;
+import static net.hasor.web.FileUploadException.UploadErrorCodes.*;
 /**
  * <p> Low level API for processing file uploads.
  *
@@ -409,7 +408,7 @@ class MultipartStream {
         return -1;
     }
     /** An {@link InputStream} for reading an items contents. */
-    public class ItemInputStream extends InputStream implements Closeable {
+    public class ItemInputStream extends InputStream implements net.hasor.web.upload.util.Closeable {
         /** The number of bytes, which have been read so far. */
         private long    total;
         /** The number of bytes, which must be hold, because they might be a part of the boundary. */

@@ -16,7 +16,7 @@
 package org.more.classcode.aop;
 import java.lang.reflect.Method;
 /**
- * 
+ *
  * @version : 2014-7-17
  * @author 赵永春(zyc@hasor.net)
  */
@@ -26,12 +26,14 @@ public interface AopInvocation {
      * @return the method being called.
      */
     public Method getMethod();
+
     /**
      * Get the arguments as an array object.
      * It is possible to change element values within this array to change the arguments.
      * @return the argument of the invocation
      */
     public Object[] getArguments();
+
     /**
      * Proceeds to the next interceptor in the chain.
      * <p>The implementation and the semantics of this method depends on the actual joinpoint type (see the children interfaces).
@@ -39,6 +41,7 @@ public interface AopInvocation {
      * @throws Throwable if the joinpoint throws an exception.
      */
     public Object proceed() throws Throwable;
+
     /** Returns the object that holds the current joinpoint's static part.
      * <p>For instance, the target object for an invocation.
      * @return the object (can be null if the accessible object is

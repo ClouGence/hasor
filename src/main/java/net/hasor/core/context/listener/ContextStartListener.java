@@ -23,6 +23,7 @@ import net.hasor.core.AppContext;
 public interface ContextStartListener {
     /**开始进入容器启动过程。*/
     public void doStart(AppContext appContext);
+
     /**容器启动完成。*/
     public void doStartCompleted(AppContext appContext);
 }

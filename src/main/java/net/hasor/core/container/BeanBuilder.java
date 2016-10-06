@@ -29,12 +29,14 @@ public interface BeanBuilder {
      * @return 返回容器中新建的{@link AbstractBindInfoProviderAdapter}。
      */
     public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType);
+
     /**
      * 通过{@link BindInfo}创建Bean。
      * @param bindInfo 绑定信息。
      * @return 创建并返回实例
      */
     public <T> T getInstance(BindInfo<T> bindInfo, AppContext appContext);
+
     /**创建一个未绑定过的类型*/
     public <T> T getDefaultInstance(Class<T> bindType, AppContext appContext);
 }

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful;
+package net.hasor.web;
 import java.io.IOException;
 /**
  * <p>A factory interface for creating {@link FileItem} instances. Factories

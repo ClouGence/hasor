@@ -20,13 +20,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
  * 标记在类上，用于简化事件注册。
- * 
+ *
  * @version : 2016年2月7日
  * @author 赵永春(zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
+@Target({ElementType.TYPE})
 public @interface Event {
     public String[] value();
+
     public EventType type() default EventType.Listener;
 }

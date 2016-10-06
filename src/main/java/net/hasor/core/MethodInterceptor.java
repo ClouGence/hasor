@@ -5,7 +5,7 @@ package net.hasor.core;
  * The user should implement the {@link #invoke(MethodInvocation)} method to
  * modify the original behavior. E.g. the following class implements a tracing
  * interceptor (traces all the calls on the intercepted method(s)):
- * 
+ *
  * <pre class=code>
  * class TracingInterceptor implements MethodInterceptor {
  * 	Object invoke(MethodInvocation i) throws Throwable {
@@ -14,7 +14,7 @@ package net.hasor.core;
  * 		Object ret = i.proceed();
  * 		System.out.println(&quot;method &quot; + i.getMethod() + &quot; returns &quot; + ret);
  * 		return ret;
- * 	}
+ *    }
  * }
  * </pre>
  */

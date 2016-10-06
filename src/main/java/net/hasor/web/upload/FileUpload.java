@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.upload;
+package net.hasor.web.upload;
 import net.hasor.core.Settings;
-import net.hasor.restful.*;
-import net.hasor.restful.upload.util.Closeable;
-import net.hasor.restful.upload.util.HeadersSet;
-import net.hasor.restful.upload.util.LimitedInputStream;
-import net.hasor.restful.upload.util.Streams;
+import net.hasor.web.upload.util.Closeable;
+import net.hasor.web.upload.util.HeadersSet;
+import net.hasor.web.upload.util.LimitedInputStream;
+import net.hasor.web.upload.util.Streams;
+import net.hasor.web.*;
 import org.more.FormatException;
 import org.more.util.ExceptionUtils;
 
@@ -31,7 +31,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import static java.lang.String.format;
-import static net.hasor.restful.FileUploadException.UploadErrorCodes.*;
+import static net.hasor.web.FileUploadException.UploadErrorCodes.*;
 /**
  * <p>High level API for processing file uploads.</p>
  *
@@ -153,7 +153,7 @@ public class FileUpload {
      * @param request The  request.
      * @return An iterator to instances of <code>FileItemStream</code>
      *         parsed from the request, in the order that they were transmitted.
-     * @throws FileUploadException if there are problems reading/parsing the request or storing files.
+     * @throws net.hasor.web.FileUploadException if there are problems reading/parsing the request or storing files.
      * @throws IOException An I/O error occurred. This may be a network
      *   error while communicating with the client or a problem while storing the uploaded content.
      */

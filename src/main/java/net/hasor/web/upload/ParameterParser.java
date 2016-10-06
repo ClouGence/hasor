@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.upload;
-import net.hasor.restful.upload.util.MimeUtility;
+package net.hasor.web.upload;
+import net.hasor.web.upload.util.MimeUtility;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;

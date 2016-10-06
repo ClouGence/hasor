@@ -15,6 +15,6 @@
  */
 /**
  * Hasor的数据库操作框架，该框架主要目的是为Hasor提供关系型数据库访问功能。参考了SpringJDB做的设计。
- * 
+ *
  */
 package net.hasor.db.jdbc;

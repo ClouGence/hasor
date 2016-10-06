@@ -26,7 +26,7 @@ import java.util.WeakHashMap;
  */
 public class WeakHashSet<E> extends AbstractSet<E> implements Set<E> {
     private transient WeakHashMap<E, Object> map;
-    private static final Object              PRESENT = new Object();
+    private static final Object PRESENT = new Object();
     public WeakHashSet() {
         this.map = new WeakHashMap<E, Object>();
     }

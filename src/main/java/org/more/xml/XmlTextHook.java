@@ -16,6 +16,7 @@
 package org.more.xml;
 import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
+
 import org.more.xml.stream.TextEvent;
 /**
  * 当遇到字符数据时使用该接口解析，字符数据类型包括了CDATA，Chars，space。

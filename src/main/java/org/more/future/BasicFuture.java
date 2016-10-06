@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
 import net.hasor.core.Hasor;
 /**
  * Basic implementation of the {@link Future} interface. <tt>BasicFuture<tt>
@@ -28,11 +29,11 @@ import net.hasor.core.Hasor;
  * @since 4.2
  */
 public class BasicFuture<T> implements Future<T>, Cancellable {
-    private final FutureCallback<T> callback;
-    private volatile boolean        completed;
-    private volatile boolean        cancelled;
-    private volatile T              result;
-    private volatile Throwable      ex;
+    private final    FutureCallback<T> callback;
+    private volatile boolean           completed;
+    private volatile boolean           cancelled;
+    private volatile T                 result;
+    private volatile Throwable         ex;
     //
     public BasicFuture() {
         super();
@@ -75,7 +76,7 @@ public class BasicFuture<T> implements Future<T>, Cancellable {
         } else if (waitTime <= 0) {
             throw new TimeoutException();
         } else {
-            for (;;) {
+            for (; ; ) {
                 wait(waitTime);
                 if (this.completed) {
                     return getResult();

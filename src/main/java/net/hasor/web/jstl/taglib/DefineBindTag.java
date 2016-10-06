@@ -16,18 +16,19 @@
 package net.hasor.web.jstl.taglib;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
+
 import org.more.util.StringUtils;
 import net.hasor.core.AppContext;
 /**
- * 
+ *
  * @version : 2013-12-24
  * @author 赵永春(zyc@hasor.net)
  */
 public class DefineBindTag extends AbstractTag {
-    private static final long serialVersionUID = -7899624524135156746L;
-    private String            var              = null;
-    private String            name             = null;
-    private String            bindType         = null;
+    private static final long   serialVersionUID = -7899624524135156746L;
+    private              String var              = null;
+    private              String name             = null;
+    private              String bindType         = null;
     public String getVar() {
         return this.var;
     }

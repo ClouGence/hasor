@@ -47,32 +47,32 @@ import java.io.Writer;
  * internal buffer fills.</p> 
  */
 public class Base64OutputStreamWriter extends OutputStream {
-    /** 
+    /**
      * The buffer where data is stored. 
      */
-    private byte[]              buf;
+    private byte[] buf;
     /**
      * <p>The Base64 encoded bytes as chars; essentially the output
      * buffer</p>
      */
-    private char[]              chars;
-    /** 
+    private char[] chars;
+    /**
      * The number of valid bytes in the buffer. 
      */
-    private int                 count;
+    private int    count;
     /**
      * <p>The current position within <code>chars</code>
      */
-    private int                 encCount;
+    private int    encCount;
     /**
      * <p>Tracks the total number of characters written.</p>
      */
-    private int                 totalCharsWritten;
+    private int    totalCharsWritten;
     /**
      * The writer we'll flush the bytes to instead of growing
      * the array.
      */
-    private Writer              writer;
+    private Writer writer;
     private static final char[] CA = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray();
     /**
      * Creates a new byte array output stream, with a buffer capacity of
@@ -134,7 +134,8 @@ public class Base64OutputStreamWriter extends OutputStream {
     }
     /** Closing <tt>Base64OutputStreamWriter</tt> does nothing. */
     @Override
-    public void close() throws IOException {}
+    public void close() throws IOException {
+    }
     /**
      * <p>Encodes the remaining bytes and flushes the <code>char[]</code>
      * to the wrapped <code>Writer</code>.</p>
@@ -160,7 +161,7 @@ public class Base64OutputStreamWriter extends OutputStream {
      */
     private void encodePendingBytes(final boolean pad) throws IOException {
         int eLen = this.count / 3 * 3; // Length of even 24-bits.
-        for (int s = 0; s < eLen;) {
+        for (int s = 0; s < eLen; ) {
             // Copy next three bytes into lower 24 bits of int, paying attension to sign.
             int i = (this.buf[s++] & 0xff) << 16 | (this.buf[s++] & 0xff) << 8 | this.buf[s++] & 0xff;
             if (this.encCount + 4 > this.chars.length) {

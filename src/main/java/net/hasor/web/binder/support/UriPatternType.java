@@ -21,7 +21,8 @@ import java.util.regex.Pattern;
  * @since 3.0
  */
 enum UriPatternType {
-    SERVLET, REGEX;
+    SERVLET,
+    REGEX;
     static UriPatternMatcher get(final UriPatternType type, final String pattern) {
         switch (type) {
         case SERVLET:
@@ -40,7 +41,10 @@ enum UriPatternType {
         private final String pattern;
         private final Kind   patternKind;
         private static enum Kind {
-            PREFIX, SUFFIX, LITERAL, WITHROOT,
+            PREFIX,
+            SUFFIX,
+            LITERAL,
+            WITHROOT,
         }
         public ServletStyleUriPatternMatcher(final String pattern) {
             if (pattern.startsWith("*")) {

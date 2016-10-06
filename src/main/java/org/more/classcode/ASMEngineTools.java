@@ -22,6 +22,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
+
 import org.more.asm.Opcodes;
 import org.more.asm.Type;
 /**
@@ -148,7 +149,8 @@ public class ASMEngineTools implements Opcodes {
         String returnString = "";
         for (Class<?> c : classType) {
             returnString += ASMEngineTools.toAsmType(c);
-        } ;
+        }
+        ;
         return returnString;
     }
     /**获取方法的Signature描述信息。*/
@@ -293,7 +295,8 @@ public class ASMEngineTools implements Opcodes {
     /**判断某个类是否为一个lang包的类。*/
     public static boolean isLangClass(final Class<?> type) {
         return type.getName().startsWith("java.lang.");
-    };
+    }
+    ;
     /** 将IIIILjava/lang/Integer;F形式的ASM类型表述分解为数组。测试字符串IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean; */
     public static String[] splitAsmType(final String asmTypes) {
         class AsmTypeRead {
@@ -360,7 +363,8 @@ public class ASMEngineTools implements Opcodes {
     public static boolean checkIn(final int data, final int check) {
         int or = data | check;
         return or == data;
-    };
+    }
+    ;
     /**检查类型是否为一个基本类型或其包装类型，基本类型包括了boolean, byte, char, short, int, long, float, 和 double*/
     public static boolean isBaseType(final Class<?> type) {
         /*判断是否为基本类型*/

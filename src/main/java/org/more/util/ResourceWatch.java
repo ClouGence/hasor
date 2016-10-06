@@ -9,10 +9,10 @@ import java.util.logging.Logger;
  */
 public abstract class ResourceWatch extends Thread {
     private static Logger logger        = Logger.getLogger(ResourceWatch.class.getName());
-    private URI           resourceURI   = null;                                           //资源地址
+    private        URI    resourceURI   = null;                                           //资源地址
     //
-    private long          lastHashCode  = 0;                                              //上一次检查资源的校验码，两次检查校验码不一致将执行reload
-    private long          checkSeepTime = 0;                                              //检查的时间间隔-15秒
+    private        long   lastHashCode  = 0;                                              //上一次检查资源的校验码，两次检查校验码不一致将执行reload
+    private        long   checkSeepTime = 0;                                              //检查的时间间隔-15秒
     //
     public ResourceWatch() {
         this(null, 15 * 1000);
@@ -26,8 +26,10 @@ public abstract class ResourceWatch extends Thread {
     }
     /**首次启动监听。*/
     public abstract void firstStart(URI resourceURI) throws IOException;
+
     /**当遇到资源改变之后调用。*/
     public abstract void onChange(URI resourceURI) throws IOException;
+
     /**检查资源是否修改，并且返回修改的时间戳。当两次检查不一致时会调用{@link #onChange(URI)}方法。*/
     public abstract long lastModify(URI resourceURI) throws IOException;
     /**首次启动会先执行load然后在启动线程*/
@@ -61,7 +63,8 @@ public abstract class ResourceWatch extends Thread {
                     }
                 }
                 Thread.sleep(this.checkSeepTime);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
     }
     public URI getResourceURI() {

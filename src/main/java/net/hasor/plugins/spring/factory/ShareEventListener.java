@@ -16,7 +16,7 @@
 package net.hasor.plugins.spring.factory;
 import net.hasor.core.event.EventObject;
 /**
- * 
+ *
  * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */

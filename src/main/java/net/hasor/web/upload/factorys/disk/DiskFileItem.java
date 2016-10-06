@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.upload.factorys.disk;
-import net.hasor.restful.FileItemStream;
-import net.hasor.restful.upload.FileItemBase;
+package net.hasor.web.upload.factorys.disk;
+import net.hasor.web.FileItemStream;
+import net.hasor.web.upload.FileItemBase;
 import org.more.util.io.IOUtils;
 import org.more.util.io.output.DeferredFileOutputStream;
 

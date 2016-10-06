@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.upload.util;
+package net.hasor.web.upload.util;
 import java.io.IOException;
 /**
  * Interface of an object, which may be closed.

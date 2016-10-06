@@ -28,10 +28,10 @@ public class TextEvent extends XmlStreamEvent {
         this.type = type;
     }
     /**
-    *
-    * @version 2010-9-11
-    * @author 赵永春 (zyc@hasor.net)
-    */
+     *
+     * @version 2010-9-11
+     * @author 赵永春 (zyc@hasor.net)
+     */
     public enum Type {
         /***/
         CDATA,
@@ -45,19 +45,23 @@ public class TextEvent extends XmlStreamEvent {
     /**如果当前事件是一个CDATA事件则返回true。*/
     public boolean isCDATAEvent() {
         return this.type == Type.CDATA;
-    };
+    }
+    ;
     /**如果当前事件是一个Chars事件则返回true。*/
     public boolean isCharsEvent() {
         return this.type == Type.Chars;
-    };
+    }
+    ;
     /**如果当前事件是一个Space事件则返回true。*/
     public boolean isSpaceEvent() {
         return this.type == Type.Space;
-    };
+    }
+    ;
     /**如果当前事件是一个Comment事件则返回true。*/
     public boolean isCommentEvent() {
         return this.type == Type.Comment;
-    };
+    }
+    ;
     /** 如果光标指向由所有空格组成的字符数据事件，则返回 true。*/
     public boolean isWhiteSpace() {
         return this.getReader().isWhiteSpace();
@@ -80,7 +84,8 @@ public class TextEvent extends XmlStreamEvent {
             this.textData = new String(data);
         }
         return this.textData;
-    };
+    }
+    ;
     public String getOriginalText() {
         String originalText = this.getText();
         if (originalText != null) {
@@ -91,19 +96,23 @@ public class TextEvent extends XmlStreamEvent {
             originalText = originalText.replace("\"", "&quot;");//'双引号
         }
         return originalText;
-    };
+    }
+    ;
     /**返回一个包含此事件中字符的数组。 */
     public char[] getTextCharacters() {
         return this.getReader().getTextCharacters();
-    };
+    }
+    ;
     /**获取与 CHARACTERS、SPACE 或 CDATA 事件关联的文本。 */
     public int getTextCharacters(final int sourceStart, final char[] target, final int targetStart, final int length) throws XMLStreamException {
         return this.getReader().getTextCharacters(sourceStart, target, targetStart, length);
-    };
+    }
+    ;
     /**返回文本字符数组中此文本事件的字符序列长度。*/
     public int getTextLength() {
         return this.getReader().getTextLength();
-    };
+    }
+    ;
     /** 返回存储（此文本事件的）第一个字符位置处的文本字符数组的偏移量。 */
     public int getTextStart() {
         return this.getReader().getTextStart();
@@ -116,7 +125,8 @@ public class TextEvent extends XmlStreamEvent {
         } else {
             return false;
         }
-    };
+    }
+    ;
     /**文本事件，如果文本类型是Comment，则是共有事件。其他为私有事件。*/
     @Override
     public boolean isPublicEvent() {

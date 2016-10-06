@@ -17,17 +17,20 @@ package net.hasor.db.datasource;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 /**
- * 
+ *
  * @version : 2013-10-30
  * @author 赵永春(zyc@hasor.net)
  */
 public interface SavepointManager {
     /**是否支持保存点 */
     public boolean supportSavepoint() throws SQLException;
+
     /**创建事务的保存点，通过<code>releaseSavepoint</code>方法释放这个保存点。SQLException */
     public Savepoint createSavepoint() throws SQLException;
+
     /**回滚事务到一个指定的保存点。*/
     public void rollbackToSavepoint(Savepoint savepoint) throws SQLException;
+
     /**释放某个事务的保存点*/
     public void releaseSavepoint(Savepoint savepoint) throws SQLException;
 }

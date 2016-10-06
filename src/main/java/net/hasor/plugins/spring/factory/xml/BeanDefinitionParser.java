@@ -24,12 +24,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import net.hasor.plugins.spring.factory.HasorBean;
 /**
- * 
+ *
  * @version : 2016年2月16日
  * @author 赵永春(zyc@hasor.net)
  */
 class BeanDefinitionParser extends AbstractHasorDefinitionParser {
-    public BeanDefinitionParser() {}
+    public BeanDefinitionParser() {
+    }
     public BeanDefinitionParser(String factoryID) {
         this.factoryID = factoryID;
     }

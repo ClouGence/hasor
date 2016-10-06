@@ -34,6 +34,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import org.more.util.io.AutoCloseInputStream;
 import org.more.util.map.DecSequenceMap;
 import org.more.util.map.Properties;
@@ -94,7 +95,8 @@ public abstract class ResourcesUtils {
          * @param isInJar 找到的资源是否处在jar文件里。
          */
         public void found(ScanEvent event, boolean isInJar) throws IOException;
-    };
+    }
+    ;
     /*------------------------------------------------------------------------------*/
     private static String formatResource(String resourcePath) {
         if (resourcePath != null && resourcePath.length() > 1) {
@@ -317,7 +319,8 @@ public abstract class ResourcesUtils {
                 scanJar(urlc.getJarFile(), wild, item);
             }
         }
-    };
+    }
+    ;
     private static URL has(final List<URL> dirs, final URL one) {
         for (URL u : dirs) {
             if (one.toString().startsWith(u.toString()) == true) {
@@ -333,7 +336,8 @@ public abstract class ResourcesUtils {
             rootList.add(roote.nextElement());
         }
         return rootList;
-    };
+    }
+    ;
     /**获取所有ClassPath条目*/
     public static Enumeration<URL> findAllClassPath(final String name) throws IOException {
         ClassLoader loader = getCurrentLoader();

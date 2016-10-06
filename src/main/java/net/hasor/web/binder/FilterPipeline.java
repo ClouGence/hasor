@@ -20,6 +20,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import net.hasor.web.WebAppContext;
 import net.hasor.web.WebModule;
 /**
@@ -38,8 +39,10 @@ import net.hasor.web.WebModule;
 public interface FilterPipeline {
     /**初始化管道 F*/
     public void initPipeline(WebAppContext appContext, Map<String, String> filterConfig) throws ServletException;
+
     /**执行请求操作*/
     public void dispatch(HttpServletRequest request, HttpServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException;
+
     /**销毁管道*/
     public void destroyPipeline(WebAppContext appContext);
 }

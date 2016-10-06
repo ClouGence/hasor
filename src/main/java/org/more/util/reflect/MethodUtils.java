@@ -18,6 +18,7 @@ package org.more.util.reflect;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+
 import org.more.util.ArrayUtils;
 import org.more.util.ClassUtils;
 /**
@@ -85,7 +86,7 @@ public class MethodUtils {
      * @throws IllegalAccessException if the requested method is not accessible via reflection
      */
     public static Object invokeMethod(final Object object, final String methodName, final Object arg) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        return MethodUtils.invokeMethod(object, methodName, new Object[] { arg });
+        return MethodUtils.invokeMethod(object, methodName, new Object[] {arg});
     }
     /**
      * <p>Invoke a named method whose parameter type matches the object type.</p>
@@ -97,7 +98,7 @@ public class MethodUtils {
      * would match a <code>boolean</code> primitive.</p>
      *
      * <p> This is a convenient wrapper for
-     * {@link #invokeMethod(Object object,String methodName, Object[] args, Class[] parameterTypes)}.
+     * {@link #invokeMethod(Object object, String methodName, Object[] args, Class[] parameterTypes)}.
      * </p>
      *
      * @param object invoke method on this object
@@ -157,7 +158,7 @@ public class MethodUtils {
      * type.</p>
      *
      * <p> This is a convenient wrapper for
-     * {@link #invokeExactMethod(Object object,String methodName,Object [] args)}.
+     * {@link #invokeExactMethod(Object object, String methodName, Object [] args)}.
      * </p>
      *
      * @param object invoke method on this object
@@ -172,7 +173,7 @@ public class MethodUtils {
      *  via reflection
      */
     public static Object invokeExactMethod(final Object object, final String methodName, final Object arg) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        return MethodUtils.invokeExactMethod(object, methodName, new Object[] { arg });
+        return MethodUtils.invokeExactMethod(object, methodName, new Object[] {arg});
     }
     /**
      * <p>Invoke a method whose parameter types match exactly the object
@@ -277,7 +278,7 @@ public class MethodUtils {
      * would match a <code>boolean</code> primitive.</p>
      *
      * <p> This is a convenient wrapper for
-     * {@link #invokeStaticMethod(Class objectClass,String methodName,Object [] args)}.
+     * {@link #invokeStaticMethod(Class objectClass, String methodName, Object [] args)}.
      * </p>
      *
      * @param cls invoke static method on this class
@@ -292,7 +293,7 @@ public class MethodUtils {
      *  via reflection
      */
     public static Object invokeStaticMethod(final Class<?> cls, final String methodName, final Object arg) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        return MethodUtils.invokeStaticMethod(cls, methodName, new Object[] { arg });
+        return MethodUtils.invokeStaticMethod(cls, methodName, new Object[] {arg});
     }
     /**
      * <p>Invoke a named static method whose parameter type matches the object type.</p>
@@ -304,7 +305,7 @@ public class MethodUtils {
      * would match a <code>boolean</code> primitive.</p>
      *
      * <p> This is a convenient wrapper for
-     * {@link #invokeStaticMethod(Class objectClass,String methodName,Object [] args,Class[] parameterTypes)}.
+     * {@link #invokeStaticMethod(Class objectClass, String methodName, Object [] args, Class[] parameterTypes)}.
      * </p>
      *
      * @param cls invoke static method on this class
@@ -369,7 +370,7 @@ public class MethodUtils {
      * type.</p>
      *
      * <p> This is a convenient wrapper for
-     * {@link #invokeExactStaticMethod(Class objectClass,String methodName,Object [] args)}.
+     * {@link #invokeExactStaticMethod(Class objectClass, String methodName, Object [] args)}.
      * </p>
      *
      * @param cls invoke static method on this class
@@ -384,7 +385,7 @@ public class MethodUtils {
      *  via reflection
      */
     public static Object invokeExactStaticMethod(final Class<?> cls, final String methodName, final Object arg) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        return MethodUtils.invokeExactStaticMethod(cls, methodName, new Object[] { arg });
+        return MethodUtils.invokeExactStaticMethod(cls, methodName, new Object[] {arg});
     }
     /**
      * <p>Invoke a static method whose parameter types match exactly the object
@@ -428,7 +429,7 @@ public class MethodUtils {
      * @return The accessible method
      */
     public static Method getAccessibleMethod(final Class<?> cls, final String methodName, final Class<?> parameterType) {
-        return MethodUtils.getAccessibleMethod(cls, methodName, new Class[] { parameterType });
+        return MethodUtils.getAccessibleMethod(cls, methodName, new Class[] {parameterType});
     }
     /**
      * <p>Return an accessible method (that is, one that can be invoked via
@@ -555,7 +556,7 @@ public class MethodUtils {
      * that will take the parameters given.<p>
      *
      * <p>This method is used by 
-     * {@link 
+     * {@link
      * #invokeMethod(Object object, String methodName, Object[] args, Class[] parameterTypes)}.
      *
      * <p>This method can match primitive parameter by passing in wrapper classes.

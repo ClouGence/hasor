@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.more.NullArgumentException;
 /**
  * <p>Operates on classes without using reflection.</p>
@@ -49,23 +50,24 @@ public class ClassUtils {
     /**
      * <p>The package separator character: <code>'&#x2e;' == {@value}</code>.</p>
      */
-    public static final char                     PACKAGE_SEPARATOR_CHAR     = '.';
+    public static final  char                    PACKAGE_SEPARATOR_CHAR     = '.';
     /**
      * <p>The package separator String: <code>"&#x2e;"</code>.</p>
      */
-    public static final String                   PACKAGE_SEPARATOR          = String.valueOf(ClassUtils.PACKAGE_SEPARATOR_CHAR);
+    public static final  String                  PACKAGE_SEPARATOR          = String.valueOf(ClassUtils.PACKAGE_SEPARATOR_CHAR);
     /**
      * <p>The inner class separator character: <code>'$' == {@value}</code>.</p>
      */
-    public static final char                     INNER_CLASS_SEPARATOR_CHAR = '$';
+    public static final  char                    INNER_CLASS_SEPARATOR_CHAR = '$';
     /**
      * <p>The inner class separator String: <code>"$"</code>.</p>
      */
-    public static final String                   INNER_CLASS_SEPARATOR      = String.valueOf(ClassUtils.INNER_CLASS_SEPARATOR_CHAR);
+    public static final  String                  INNER_CLASS_SEPARATOR      = String.valueOf(ClassUtils.INNER_CLASS_SEPARATOR_CHAR);
     /**
      * Maps primitive <code>Class</code>es to their corresponding wrapper <code>Class</code>.
      */
     private static final Map<Class<?>, Class<?>> primitiveWrapperMap        = new HashMap<Class<?>, Class<?>>();
+
     static {
         ClassUtils.primitiveWrapperMap.put(Boolean.TYPE, Boolean.class);
         ClassUtils.primitiveWrapperMap.put(Byte.TYPE, Byte.class);
@@ -77,12 +79,14 @@ public class ClassUtils {
         ClassUtils.primitiveWrapperMap.put(Float.TYPE, Float.class);
         ClassUtils.primitiveWrapperMap.put(Void.TYPE, Void.TYPE);
     }
+
     /**
      * Maps wrapper <code>Class</code>es to their corresponding primitive types.
      */
     private static final Map<Class<?>, Class<?>> wrapperPrimitiveMap = new HashMap<Class<?>, Class<?>>();
+
     static {
-        for (Iterator<?> it = ClassUtils.primitiveWrapperMap.keySet().iterator(); it.hasNext();) {
+        for (Iterator<?> it = ClassUtils.primitiveWrapperMap.keySet().iterator(); it.hasNext(); ) {
             Class<?> primitiveClass = (Class<?>) it.next();
             Class<?> wrapperClass = ClassUtils.primitiveWrapperMap.get(primitiveClass);
             if (!primitiveClass.equals(wrapperClass)) {
@@ -90,6 +94,7 @@ public class ClassUtils {
             }
         }
     }
+
     /**
      * Maps a primitive class name to its corresponding abbreviation used in array class names.
      */
@@ -121,6 +126,7 @@ public class ClassUtils {
         ClassUtils.addAbbreviation("double", "D");
         ClassUtils.addAbbreviation("char", "C");
     }
+
     /**
      * <p>ClassUtils instances should NOT be constructed in standard programming.
      * Instead, the class should be used as
@@ -330,7 +336,7 @@ public class ClassUtils {
             return null;
         }
         List<Class<?>> classes = new ArrayList<Class<?>>(classNames.size());
-        for (Iterator<String> it = classNames.iterator(); it.hasNext();) {
+        for (Iterator<String> it = classNames.iterator(); it.hasNext(); ) {
             String className = (String) it.next();
             try {
                 classes.add(Class.forName(className));
@@ -357,7 +363,7 @@ public class ClassUtils {
             return null;
         }
         List<String> classNames = new ArrayList<String>(classes.size());
-        for (Iterator<Class<?>> it = classes.iterator(); it.hasNext();) {
+        for (Iterator<Class<?>> it = classes.iterator(); it.hasNext(); ) {
             Class<?> cls = it.next();
             if (cls == null) {
                 classNames.add(null);
@@ -702,7 +708,8 @@ public class ClassUtils {
             if (lastDotIndex != -1) {
                 try {
                     return ClassUtils.getClass(classLoader, className.substring(0, lastDotIndex) + ClassUtils.INNER_CLASS_SEPARATOR_CHAR + className.substring(lastDotIndex + 1), initialize);
-                } catch (ClassNotFoundException ex2) {}
+                } catch (ClassNotFoundException ex2) {
+                }
             }
             throw ex;
         }
@@ -783,7 +790,7 @@ public class ClassUtils {
         List<Class<?>> candidateClasses = new ArrayList<Class<?>>();
         candidateClasses.addAll(ClassUtils.getAllInterfaces(cls));
         candidateClasses.addAll(ClassUtils.getAllSuperclasses(cls));
-        for (Iterator<Class<?>> it = candidateClasses.iterator(); it.hasNext();) {
+        for (Iterator<Class<?>> it = candidateClasses.iterator(); it.hasNext(); ) {
             Class<?> candidateClass = it.next();
             if (!Modifier.isPublic(candidateClass.getModifiers())) {
                 continue;
@@ -985,7 +992,8 @@ public class ClassUtils {
     /**判断某个类是否为一个lang包的类。*/
     public static boolean isLangClass(final Class<?> target) {
         return target.getName().startsWith("java.lang.");
-    };
+    }
+    ;
     /**获取方法的标识代码，在不考虑其所属类的情况下。*/
     public static String getDescName(final Class<?> type) {
         if (type == Void.class) {

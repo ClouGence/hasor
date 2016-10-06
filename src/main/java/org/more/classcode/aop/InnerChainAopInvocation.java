@@ -17,7 +17,7 @@ package org.more.classcode.aop;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 /**
- * 
+ *
  * @version : 2013-4-13
  * @author 赵永春 (zyc@hasor.net)
  */

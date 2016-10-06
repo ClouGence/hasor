@@ -19,6 +19,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 import net.hasor.core.ApiBinder.LinkedBindingBuilder;
 /**
  * 标记接口的默认实现类，如果通过{@link LinkedBindingBuilder}接口也指定了实现，则注解会优先于配置。
@@ -27,7 +28,7 @@ import net.hasor.core.ApiBinder.LinkedBindingBuilder;
  * @author 赵永春(zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
+@Target({ElementType.TYPE})
 @Documented
 public @interface ImplBy {
     /**实现类。*/

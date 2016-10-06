@@ -16,6 +16,7 @@
 package org.more.xml;
 import java.io.IOException;
 import javax.xml.stream.XMLStreamException;
+
 import org.more.xml.stream.EndElementEvent;
 import org.more.xml.stream.StartElementEvent;
 /**
@@ -31,6 +32,7 @@ public interface XmlElementHook extends XmlParserHook {
      * @param event 事件。
      */
     public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) throws XMLStreamException, IOException;
+
     /**
      * 当遇到一个结束标签时。
      * @param context 环境上下文。

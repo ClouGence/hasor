@@ -32,7 +32,7 @@ package org.more.asm;
  * A visitor to visit a Java field. The methods of this class must be called in
  * the following order: ( <tt>visitAnnotation</tt> |
  * <tt>visitTypeAnnotation</tt> | <tt>visitAttribute</tt> )* <tt>visitEnd</tt>.
- * 
+ *
  * @author Eric Bruneton
  */
 public abstract class FieldVisitor {
@@ -40,15 +40,15 @@ public abstract class FieldVisitor {
      * The ASM API version implemented by this visitor. The value of this field
      * must be one of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
      */
-    protected final int    api;
+    protected final int          api;
     /**
      * The field visitor to which this visitor must delegate method calls. May
      * be null.
      */
-    protected FieldVisitor fv;
+    protected       FieldVisitor fv;
     /**
      * Constructs a new {@link FieldVisitor}.
-     * 
+     *
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
@@ -58,7 +58,7 @@ public abstract class FieldVisitor {
     }
     /**
      * Constructs a new {@link FieldVisitor}.
-     * 
+     *
      * @param api
      *            the ASM API version implemented by this visitor. Must be one
      *            of {@link Opcodes#ASM4} or {@link Opcodes#ASM5}.
@@ -75,7 +75,7 @@ public abstract class FieldVisitor {
     }
     /**
      * Visits an annotation of the field.
-     * 
+     *
      * @param desc
      *            the class descriptor of the annotation class.
      * @param visible
@@ -91,7 +91,7 @@ public abstract class FieldVisitor {
     }
     /**
      * Visits an annotation on the type of the field.
-     * 
+     *
      * @param typeRef
      *            a reference to the annotated type. The sort of this type
      *            reference must be {@link TypeReference#FIELD FIELD}. See
@@ -118,7 +118,7 @@ public abstract class FieldVisitor {
     }
     /**
      * Visits a non standard attribute of the field.
-     * 
+     *
      * @param attr
      *            an attribute.
      */

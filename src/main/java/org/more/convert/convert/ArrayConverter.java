@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
 import org.more.convert.ConversionException;
 import org.more.convert.Converter;
 /**
@@ -122,14 +123,14 @@ import org.more.convert.Converter;
  * @version $Revision: 640131 $ $Date: 2008-03-23 02:10:31 +0000 (Sun, 23 Mar 2008) $
  * @since 1.8.0
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class ArrayConverter extends AbstractConverter {
     private Object    defaultTypeInstance;
     private Converter elementConverter;
     private int       defaultSize;
-    private char      delimiter         = ',';
-    private char[]    allowedChars      = new char[] { '.', '-' };
-    private boolean   onlyFirstToString = true;
+    private char    delimiter         = ',';
+    private char[]  allowedChars      = new char[] {'.', '-'};
+    private boolean onlyFirstToString = true;
     // ----------------------------------------------------------- Constructors
     /**
      * Construct an <b>array</b> <code>Converter</code> with the specified
@@ -305,7 +306,7 @@ public class ArrayConverter extends AbstractConverter {
      * </p>
      * <ul>
      *   <li>{@link Collection} values are returned unchanged</li>
-     *   <li>{@link Number}, {@link Boolean}  and {@link java.util.Date} 
+     *   <li>{@link Number}, {@link Boolean}  and {@link java.util.Date}
      *       values returned as a the only element in a List.</li>
      *   <li>All other types are converted to a String and parsed
      *       as a delimited list.</li>

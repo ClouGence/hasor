@@ -28,7 +28,8 @@ public class EndDocumentEvent extends XmlStreamEvent {
     @Override
     public boolean isPartner(final XmlStreamEvent e) {
         return e instanceof StartDocumentEvent;
-    };
+    }
+    ;
     /**文档结束事件，是共有事件。*/
     @Override
     public boolean isPublicEvent() {

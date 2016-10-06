@@ -22,7 +22,7 @@ import org.springframework.context.ApplicationEvent;
  */
 public class SpringHasorEvent extends ApplicationEvent implements EventType {
     private static final long serialVersionUID = 4739385371879985426L;
-    private String            eventType;
+    private String eventType;
     //
     public SpringHasorEvent(Object source) {
         this(null, source);

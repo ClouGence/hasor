@@ -17,10 +17,11 @@ package org.more.classcode.delegate.faces;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 import org.more.asm.ClassVisitor;
 import org.more.classcode.AbstractClassConfig;
 /**
- * 
+ *
  * @version : 2014年9月7日
  * @author 赵永春(zyc@hasor.net)
  */

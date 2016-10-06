@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.web.startup;
-import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.web.HttpInfo;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.FilterPipeline;
@@ -95,12 +95,14 @@ public class RuntimeFilter implements Filter {
     }
     //
     /**在filter请求处理之前，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider更新对象。*/
-    protected void beforeRequest(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
-        //
+    protected void beforeRequest(final WebAppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
+        appContext.getEnvironment().getEventContext().fireSyncEvent(WebAppContext.HTTP_BEFORE_REQUEST,//
+                new HttpInfo(appContext, httpReq, httpRes));
     }
     //
     /**在filter请求处理之后，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider重置对象。*/
-    protected void afterResponse(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
-        //
+    protected void afterResponse(final WebAppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
+        appContext.getEnvironment().getEventContext().fireSyncEvent(WebAppContext.HTTP_AFTER_RESPONSE,//
+                new HttpInfo(appContext, httpReq, httpRes));
     }
 }

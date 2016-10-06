@@ -24,27 +24,34 @@ import java.util.Map;
 public interface XmlNode {
     /** @return 获取Xml节点元素名称。*/
     public String getName();
+
     /** @return 获取Xml节点文本值。*/
     public String getText();
+
     /** @return 获取Xml节点Xml文本值。*/
     public String getXmlText();
+
     /** @return 获取属性集合*/
     public Map<String, String> getAttributeMap();
+
     /** @return 获取Xml子节点。*/
     public List<XmlNode> getChildren();
     //
+
     /**
      * 获取Xml子节点。
      * @param elementName 子节点名称。
      * @return 返回子节点集合
      */
     public List<XmlNode> getChildren(String elementName);
+
     /**
      * 获取Xml子节点，如果有多个返回第一条。
      * @param elementName 子节点名称。
      * @return 返回子节点
      */
     public XmlNode getOneChildren(String elementName);
+
     /**
      * 获取Xml节点上的属性。
      * @param attName 属性名

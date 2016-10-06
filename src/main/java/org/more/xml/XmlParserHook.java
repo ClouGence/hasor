@@ -19,4 +19,5 @@ package org.more.xml;
  * @version 2010-9-13
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface XmlParserHook {}
+public interface XmlParserHook {
+}

@@ -20,14 +20,14 @@ package org.more;
  * not have been.
  * This exception supplements the standard <code>IllegalArgumentException</code>
  * by providing a more semantically rich description of the problem.</p>
- * 
+ *
  * <p><code>NullArgumentException</code> represents the case where a method takes
  * in a parameter that must not be <code>null</code>.
  * Some coding standards would use <code>NullPointerException</code> for this case,
  * others will use <code>IllegalArgumentException</code>.
  * Thus this exception would be used in place of
  * <code>IllegalArgumentException</code>, yet it still extends it.</p>
- * 
+ *
  * <pre>
  * public void foo(String str) {
  *   if (str == null) {
@@ -36,7 +36,7 @@ package org.more;
  *   // do something with the string
  * }
  * </pre>
- * 
+ *
  * @author Apache Software Foundation
  * @author Matthew Hawthorne
  * @since 2.0

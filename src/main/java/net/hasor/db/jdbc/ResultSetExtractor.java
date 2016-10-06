@@ -16,7 +16,7 @@
 package net.hasor.db.jdbc;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-/** 
+/**
  * 回调接口，用于 JDBC 结果集转换。
  * @version : 2013-10-9
  * @author Thomas Risberg

@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.SqlParameterSource;
 /**
@@ -62,11 +63,11 @@ public class ParsedSql {
     //
     //
     /**Set of characters that qualify as parameter separators, indicating that a parameter name in a SQL String has ended. */
-    private static final char[]   PARAMETER_SEPARATORS = new char[] { '"', '\'', ':', '&', ',', ';', '(', ')', '|', '=', '+', '-', '*', '%', '/', '\\', '<', '>', '^' };
+    private static final char[]   PARAMETER_SEPARATORS = new char[] {'"', '\'', ':', '&', ',', ';', '(', ')', '|', '=', '+', '-', '*', '%', '/', '\\', '<', '>', '^'};
     /** Set of characters that qualify as comment or quotes starting characters.*/
-    private static final String[] START_SKIP           = new String[] { "'", "\"", "--", "/*" };
+    private static final String[] START_SKIP           = new String[] {"'", "\"", "--", "/*"};
     /**Set of characters that at are the corresponding comment or quotes ending characters. */
-    private static final String[] STOP_SKIP            = new String[] { "'", "\"", "\n", "*/" };
+    private static final String[] STOP_SKIP            = new String[] {"'", "\"", "\n", "*/"};
     //-------------------------------------------------------------------------
     // Core methods used by NamedParameterJdbcTemplate and SqlQuery/SqlUpdate
     //-------------------------------------------------------------------------
@@ -110,7 +111,7 @@ public class ParsedSql {
                         namedParameterCount++;
                     }
                     parameterNames.add(parameter);
-                    parameterIndexes.add(new int[] { i, j });//startIndex, endIndex
+                    parameterIndexes.add(new int[] {i, j});//startIndex, endIndex
                     totalParameterCount++;
                 }
                 i = j - 1;

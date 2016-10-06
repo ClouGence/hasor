@@ -21,7 +21,7 @@ import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import javax.sql.DataSource;
 /**
- * 
+ *
  * @version : 2013-10-30
  * @author 赵永春(zyc@hasor.net)
  */
@@ -45,13 +45,13 @@ public class DataSourceManager {
     protected static ConnectionProxy newProxyConnection(ConnectionHolder holder) {
         //
         CloseSuppressingInvocationHandler handler = new CloseSuppressingInvocationHandler(holder);
-        return (ConnectionProxy) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] { ConnectionProxy.class }, handler);
+        return (ConnectionProxy) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] {ConnectionProxy.class}, handler);
     }
 }
 /**Connection 接口代理，目的是为了控制一些方法的调用。同时进行一些特殊类型的处理。*/
 class CloseSuppressingInvocationHandler implements InvocationHandler {
     private final ConnectionHolder holder;
-    private Connection             connection;
+    private       Connection       connection;
     public CloseSuppressingInvocationHandler(ConnectionHolder holder) {
         this.holder = holder;
         this.holder.requested();//ref++

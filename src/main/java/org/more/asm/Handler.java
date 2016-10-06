@@ -30,7 +30,7 @@
 package org.more.asm;
 /**
  * Information about an exception handler block.
- * 
+ *
  * @author Eric Bruneton
  */
 class Handler {
@@ -63,7 +63,7 @@ class Handler {
     /**
      * Removes the range between start and end from the given exception
      * handlers.
-     * 
+     *
      * @param h
      *            an exception handler list.
      * @param start

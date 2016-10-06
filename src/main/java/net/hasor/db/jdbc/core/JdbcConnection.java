@@ -22,12 +22,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.sql.DataSource;
+
 import net.hasor.core.Hasor;
 import net.hasor.db.datasource.ConnectionProxy;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.transaction.TranManager;
 /**
- * 
+ *
  * @version : 2013-10-16
  * @author 赵永春(zyc@hasor.net)
  */
@@ -47,7 +48,8 @@ public class JdbcConnection extends JdbcAccessor {
      * <p>Note: The DataSource has to be set before using the instance.
      * @see #setDataSource
      */
-    public JdbcConnection() {}
+    public JdbcConnection() {
+    }
     /**
      * Construct a new JdbcConnection, given a DataSource to obtain connections from.
      * <p>Note: This will not trigger initialization of the exception translator.
@@ -129,7 +131,7 @@ public class JdbcConnection extends JdbcAccessor {
     private ConnectionProxy newProxyConnection(final Connection target, final DataSource targetSource) {
         Hasor.assertIsNotNull(target, "Connection is null.");
         CloseSuppressingInvocationHandler handler = new CloseSuppressingInvocationHandler(target, targetSource);
-        return (ConnectionProxy) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] { ConnectionProxy.class }, handler);
+        return (ConnectionProxy) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] {ConnectionProxy.class}, handler);
     }
     /**Connection 接口代理，目的是为了控制一些方法的调用。同时进行一些特殊类型的处理。*/
     private class CloseSuppressingInvocationHandler implements InvocationHandler {

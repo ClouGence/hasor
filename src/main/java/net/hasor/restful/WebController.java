@@ -16,10 +16,13 @@
 package net.hasor.restful;
 import net.hasor.core.Settings;
 import net.hasor.restful.api.Produces;
-import net.hasor.restful.upload.FileUpload;
-import net.hasor.restful.upload.factorys.disk.DiskFileItemFactory;
+import net.hasor.web.FileItem;
+import net.hasor.web.FileItemFactory;
+import net.hasor.web.FileItemStream;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.startup.RuntimeListener;
+import net.hasor.web.upload.FileUpload;
+import net.hasor.web.upload.factorys.disk.DiskFileItemFactory;
 import org.more.bizcommon.Message;
 import org.more.util.StringUtils;
 import org.more.util.io.FilenameUtils;
@@ -635,7 +638,7 @@ public abstract class WebController {
     }
     /**
      * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表。
-     * @param cacheDirectory 缓存目录
+     * @param cacheDirectory 缓存目录(默认配置位于:"hasor.fileupload.cacheDirectory")
      * @param maxPostSize 最大单个 body 大小
      * @param encoding 字符编码。
      */
@@ -643,7 +646,7 @@ public abstract class WebController {
         cacheDirectory = FilenameUtils.normalizeNoEndSeparator(cacheDirectory);
         if (StringUtils.isBlank(cacheDirectory)) {
             Settings settings = this.getAppContext().getEnvironment().getSettings();
-            cacheDirectory = settings.getDirectoryPath("hasor.restful.fileupload.cacheDirectory");
+            cacheDirectory = settings.getDirectoryPath("hasor.fileupload.cacheDirectory");
         }
         return this.getMultipartList(new DiskFileItemFactory(cacheDirectory), maxPostSize, encoding);
     }

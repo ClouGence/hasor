@@ -18,6 +18,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.UUID;
+
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ import net.hasor.core.info.AopBindInfoAdapter;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractBinder implements ApiBinder {
-    private Logger      logger = LoggerFactory.getLogger(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
     private Environment environment;
     public AbstractBinder(Environment environment) {
         this.environment = Hasor.assertIsNotNull(environment, "environment is null.");

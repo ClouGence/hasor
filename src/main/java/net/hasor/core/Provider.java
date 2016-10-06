@@ -15,7 +15,7 @@
  */
 package net.hasor.core;
 /**
- * 
+ *
  * @version : 2014年5月22日
  * @author 赵永春 (zyc@byshell.org)
  */

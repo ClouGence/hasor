@@ -39,6 +39,7 @@ public interface SqlParameterSource {
      * @return whether there is a value defined
      */
     public boolean hasValue(String paramName);
+
     /**
      * Return the parameter value for the requested named parameter.
      * @param paramName the name of the parameter

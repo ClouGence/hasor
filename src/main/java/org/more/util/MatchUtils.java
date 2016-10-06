@@ -15,7 +15,7 @@
  */
 package org.more.util;
 /**
- * 
+ *
  * @version : 2014年7月8日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -32,7 +32,7 @@ public class MatchUtils {
             throw new NullPointerException("wild param is null");
         }
         StringBuffer result = new StringBuffer("");
-        char metachar[] = { '$', '^', '[', ']', '(', ')', '{', '|', '+', '.', '\\' };
+        char metachar[] = {'$', '^', '[', ']', '(', ')', '{', '|', '+', '.', '\\'};
         for (int i = 0; i < wild.length(); i++) {
             char ch = wild.charAt(i);
             for (char element : metachar) {
@@ -57,7 +57,7 @@ public class MatchUtils {
             throw new NullPointerException("wild param is null");
         }
         StringBuffer result = new StringBuffer("");
-        char metachar[] = { '$', '^', '[', ']', '(', ')', '{', '|', '+', '.', '\\' };
+        char metachar[] = {'$', '^', '[', ']', '(', ')', '{', '|', '+', '.', '\\'};
         for (int i = 0; i < wild.length(); i++) {
             char ch = wild.charAt(i);
             for (char element : metachar) {

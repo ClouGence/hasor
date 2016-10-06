@@ -28,7 +28,7 @@ import org.more.convert.Converter;
  * @version $Revision: 552084 $ $Date: 2007-06-30 04:04:13 +0100 (Sat, 30 Jun 2007) $
  * @since 1.8.0
  */
-@SuppressWarnings({ "rawtypes" })
+@SuppressWarnings({"rawtypes"})
 public final class ConverterFacade implements Converter {
     private final Converter converter;
     /**

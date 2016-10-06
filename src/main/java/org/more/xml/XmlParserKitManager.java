@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
+
 import org.more.RepeateException;
 import org.more.xml.stream.AttributeEvent;
 import org.more.xml.stream.EndElementEvent;
@@ -210,39 +211,39 @@ public class XmlParserKitManager implements XmlAccept {
             }
             return;
         } else
-        //2.处理EndElementEvent
-        if (e instanceof EndElementEvent) {
-            EndElementEvent ee = (EndElementEvent) e;
-            NameSpace ns = this.activateStack.getNameSpace(ee.getPrefix());
-            this.issueEvent(e, this.activateStack);
-            ns.removeXPath();
-            this.activateStack.dropStack();
-            return;
-        } else
-        //3.处理AttributeEvent
-        if (e instanceof AttributeEvent) {
-            this.activateStack.createStack();
-            AttributeEvent ee = (AttributeEvent) e;
-            String prefix = ee.getName().getPrefix();
-            prefix = prefix == null ? "" : prefix;
-            if (prefix.equals("") == true) {
-                prefix = ee.getCurrentElement().getPrefix();
-            }
-            prefix = prefix == null ? "" : prefix;
-            //
-            NameSpace ns = this.activateStack.getNameSpace(prefix);
-            ns.appendXPath(ee.getElementName(), true);
-            this.issueEvent(e, this.activateStack);
-            ns.removeXPath();
-            this.activateStack.dropStack();
-            return;
-        } else
-        //4.处理StartDocumentEvent
-        if (e instanceof StartDocumentEvent) {
-            this.activateStack.createStack();
-            this.issueEvent(e, this.activateStack);
-            return;
-        } //5.处理EndElementEvent
+            //2.处理EndElementEvent
+            if (e instanceof EndElementEvent) {
+                EndElementEvent ee = (EndElementEvent) e;
+                NameSpace ns = this.activateStack.getNameSpace(ee.getPrefix());
+                this.issueEvent(e, this.activateStack);
+                ns.removeXPath();
+                this.activateStack.dropStack();
+                return;
+            } else
+                //3.处理AttributeEvent
+                if (e instanceof AttributeEvent) {
+                    this.activateStack.createStack();
+                    AttributeEvent ee = (AttributeEvent) e;
+                    String prefix = ee.getName().getPrefix();
+                    prefix = prefix == null ? "" : prefix;
+                    if (prefix.equals("") == true) {
+                        prefix = ee.getCurrentElement().getPrefix();
+                    }
+                    prefix = prefix == null ? "" : prefix;
+                    //
+                    NameSpace ns = this.activateStack.getNameSpace(prefix);
+                    ns.appendXPath(ee.getElementName(), true);
+                    this.issueEvent(e, this.activateStack);
+                    ns.removeXPath();
+                    this.activateStack.dropStack();
+                    return;
+                } else
+                    //4.处理StartDocumentEvent
+                    if (e instanceof StartDocumentEvent) {
+                        this.activateStack.createStack();
+                        this.issueEvent(e, this.activateStack);
+                        return;
+                    } //5.处理EndElementEvent
         if (e instanceof EndElementEvent) {
             this.activateStack.dropStack();
             this.issueEvent(e, this.activateStack);

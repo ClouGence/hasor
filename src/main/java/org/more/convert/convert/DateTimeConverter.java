@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+
 import org.more.convert.ConversionException;
 import org.more.convert.Converter;
 /**
@@ -154,7 +155,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @param pattern The format pattern.
      */
     public void setPattern(final String pattern) {
-        this.setPatterns(new String[] { pattern });
+        this.setPatterns(new String[] {pattern});
     }
     /**
      * Return the date format patterns used to convert

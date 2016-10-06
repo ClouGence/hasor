@@ -14,8 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful;
-import net.hasor.restful.upload.FileUpload;
+package net.hasor.web;
+import net.hasor.web.upload.FileUpload;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;

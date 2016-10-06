@@ -122,7 +122,8 @@ public class StartElementEvent extends XmlStreamEvent {
             return false;
         }
         return true;
-    };
+    }
+    ;
     /**元素开始事件，不是共有事件。*/
     @Override
     public boolean isPublicEvent() {

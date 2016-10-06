@@ -50,6 +50,7 @@ import java.util.Arrays;
 public class Base64InputStream extends InputStream {
     private static final int[]  IA = new int[256];
     private static final char[] CA = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray();
+
     static {
         Arrays.fill(Base64InputStream.IA, -1);
         for (int i = 0, iS = Base64InputStream.CA.length; i < iS; i++) {
@@ -57,6 +58,7 @@ public class Base64InputStream extends InputStream {
         }
         Base64InputStream.IA['='] = 0;
     }
+
     /**
      * An array of bytes that was provided
      * by the creator of the stream. Elements <code>buf[0]</code>
@@ -87,7 +89,7 @@ public class Base64InputStream extends InputStream {
      *
      * @since JDK1.1
      */
-    protected int  mark = 0;
+    protected int mark = 0;
     /**
      * The index one greater than the last valid character in the input
      * stream buffer.
@@ -97,7 +99,7 @@ public class Base64InputStream extends InputStream {
      * the last byte within <code>buf</code> that
      * can ever be read  from the input stream buffer.
      */
-    protected int  count;
+    protected int count;
     /**
      * Creates a <code>Base64InputStream</code>.
      *
@@ -255,7 +257,8 @@ public class Base64InputStream extends InputStream {
      * <p/>
      */
     @Override
-    public void close() throws IOException {}
+    public void close() throws IOException {
+    }
     /**
      * <p>Base64 decodes the source string.  NOTE:  This method doesn't
      *  consider line breaks</p>
@@ -285,7 +288,7 @@ public class Base64InputStream extends InputStream {
         byte[] dArr = new byte[len]; // Preallocate byte[] of exact length
         // Decode all but the last 0 - 2 bytes.
         int d = 0;
-        for (int eLen = len / 3 * 3; d < eLen;) {
+        for (int eLen = len / 3 * 3; d < eLen; ) {
             // Assemble three bytes into an int from four "valid" characters.
             int i = Base64InputStream.IA[source.charAt(sIx++)] << 18 | Base64InputStream.IA[source.charAt(sIx++)] << 12 | Base64InputStream.IA[source.charAt(sIx++)] << 6 | Base64InputStream.IA[source.charAt(sIx++)];
             // Add the bytes

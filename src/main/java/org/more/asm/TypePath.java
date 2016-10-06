@@ -31,7 +31,7 @@ package org.more.asm;
 /**
  * The path to a type argument, wildcard bound, array element type, or static
  * inner type within an enclosing type.
- * 
+ *
  * @author Eric Bruneton
  */
 public class TypePath {
@@ -58,14 +58,14 @@ public class TypePath {
     /**
      * The byte array where the path is stored, in Java class file format.
      */
-    byte[]                  b;
+    byte[] b;
     /**
      * The offset of the first byte of the type path in 'b'.
      */
-    int                     offset;
+    int    offset;
     /**
      * Creates a new type path.
-     * 
+     *
      * @param b
      *            the byte array containing the type path in Java class file
      *            format.
@@ -78,7 +78,7 @@ public class TypePath {
     }
     /**
      * Returns the length of this path.
-     * 
+     *
      * @return the length of this path.
      */
     public int getLength() {
@@ -86,7 +86,7 @@ public class TypePath {
     }
     /**
      * Returns the value of the given step of this path.
-     * 
+     *
      * @param index
      *            an index between 0 and {@link #getLength()}, exclusive.
      * @return {@link #ARRAY_ELEMENT ARRAY_ELEMENT}, {@link #INNER_TYPE
@@ -100,7 +100,7 @@ public class TypePath {
      * Returns the index of the type argument that the given step is stepping
      * into. This method should only be used for steps whose value is
      * {@link #TYPE_ARGUMENT TYPE_ARGUMENT}.
-     * 
+     *
      * @param index
      *            an index between 0 and {@link #getLength()}, exclusive.
      * @return the index of the type argument that the given step is stepping
@@ -112,7 +112,7 @@ public class TypePath {
     /**
      * Converts a type path in string form, in the format used by
      * {@link #toString()}, into a TypePath object.
-     * 
+     *
      * @param typePath
      *            a type path in string form, in the format used by
      *            {@link #toString()}. May be null or empty.
@@ -125,7 +125,7 @@ public class TypePath {
         int n = typePath.length();
         ByteVector out = new ByteVector(n);
         out.putByte(0);
-        for (int i = 0; i < n;) {
+        for (int i = 0; i < n; ) {
             char c = typePath.charAt(i++);
             if (c == '[') {
                 out.put11(ARRAY_ELEMENT, 0);

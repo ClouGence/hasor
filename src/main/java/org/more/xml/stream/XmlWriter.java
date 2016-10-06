@@ -71,7 +71,8 @@ public class XmlWriter implements XmlAccept {
         this.writer = factory.createXMLStreamWriter(this.xmlStrema);
     }
     @Override
-    public void endAccept() {}
+    public void endAccept() {
+    }
     @Override
     public void sendEvent(final XmlStreamEvent e) throws XMLStreamException {
         //1.执行忽略。

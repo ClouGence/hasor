@@ -24,6 +24,7 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Collection;
+
 import org.more.convert.convert.ArrayConverter;
 import org.more.convert.convert.BigDecimalConverter;
 import org.more.convert.convert.BigIntegerConverter;
@@ -89,7 +90,7 @@ import org.more.util.ContextClassLoaderLocal;
  *   ConverterUtils.register(myConverter, Integer.TYPE);    // Native type
  *   ConverterUtils.register(myConverter, Integer.class);   // Wrapper class
  * </pre>
- * 
+ *
  * <p>
  * Converters generally treat null input as if it were invalid
  * input, ie they return their default value if one was specified when the
@@ -107,14 +108,14 @@ import org.more.util.ContextClassLoaderLocal;
  * converters have no default (and are therefore somewhat inconsistent
  * with the other numerical converters which all have zero as their default).
  * </p>
- * 
+ *
  * <p>
  * Converters that generate <i>arrays</i> of each of the primitive types are
  * also automatically configured (including String[]). When passed null
  * or invalid input, these return an empty array (not null). See class
  * AbstractArrayConverter for the supported input formats for these converters.
  * </p>
- * 
+ *
  * @author Craig R. McClanahan
  * @author Ralph Schaer
  * @author Chris Audley

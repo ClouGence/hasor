@@ -15,10 +15,11 @@
  */
 package net.hasor.db.jdbc.core;
 import javax.sql.DataSource;
+
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
 /**
- * 
+ *
  * @version : 2014年7月17日
  * @author 赵永春(zyc@hasor.net)
  */

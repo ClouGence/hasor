@@ -26,6 +26,7 @@ public interface LifeModule extends Module {
      * @throws Throwable init异常抛出
      */
     public void onStart(AppContext appContext) throws Throwable;
+
     /**
      * 终止过程。
      * @param appContext appContext

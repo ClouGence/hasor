@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 /**
- * This package contains various IO related utility classes
- * or methods, which are basically reusable and not necessarily
- * restricted to the scope of a file upload.
+ * 文件上传功能实现。
  */
-package net.hasor.restful.upload.util;
+package net.hasor.web.upload;

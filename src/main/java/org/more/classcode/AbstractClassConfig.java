@@ -17,6 +17,7 @@ package org.more.classcode;
 import org.more.asm.ClassReader;
 import org.more.asm.ClassVisitor;
 import org.more.asm.ClassWriter;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Modifier;

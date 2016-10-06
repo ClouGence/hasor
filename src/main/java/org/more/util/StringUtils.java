@@ -139,16 +139,16 @@ public class StringUtils {
      * The empty String <code>""</code>.
      * @since 2.0
      */
-    public static final String EMPTY           = "";
+    public static final  String EMPTY           = "";
     /**
      * Represents a failed index search.
      * @since 2.1
      */
-    public static final int    INDEX_NOT_FOUND = -1;
+    public static final  int    INDEX_NOT_FOUND = -1;
     /**
      * <p>The maximum size to which the padding constant(s) can expand.</p>
      */
-    private static final int   PAD_LIMIT       = 8192;
+    private static final int    PAD_LIMIT       = 8192;
     /**
      * <p><code>StringUtils</code> instances should NOT be constructed in
      * standard programming. Instead, the class should be used as
@@ -1373,12 +1373,12 @@ public class StringUtils {
      * <p>
      * Checks if the String contains any character in the given set of characters.
      * </p>
-     * 
+     *
      * <p>
      * A <code>null</code> String will return <code>false</code>. A <code>null</code> search string will return
      * <code>false</code>.
      * </p>
-     * 
+     *
      * <pre>
      * StringUtils.containsAny(null, *)            = false
      * StringUtils.containsAny("", *)              = false
@@ -1388,7 +1388,7 @@ public class StringUtils {
      * StringUtils.containsAny("zzabyycdxx", "by") = true
      * StringUtils.containsAny("aba","z")          = false
      * </pre>
-     * 
+     *
      * @param str
      *            the String to check, may be null
      * @param searchChars
@@ -1434,7 +1434,8 @@ public class StringUtils {
         int csLast = csLen - 1;
         int searchLen = searchChars.length;
         int searchLast = searchLen - 1;
-        outer: for (int i = 0; i < csLen; i++) {
+        outer:
+        for (int i = 0; i < csLen; i++) {
             char ch = str.charAt(i);
             for (int j = 0; j < searchLen; j++) {
                 if (searchChars[j] == ch) {
@@ -3419,14 +3420,14 @@ public class StringUtils {
      * <p>
      * Replaces all occurrences of Strings within another String.
      * </p>
-     * 
+     *
      * <p>
      * A <code>null</code> reference passed to this method is a no-op, or if
      * any "search string" or "string to replace" is null, that replace will be
      * ignored. This will not repeat. For repeating replaces, call the
      * overloaded method.
      * </p>
-     * 
+     *
      * <pre>
      *  StringUtils.replaceEach(null, *, *)        = null
      *  StringUtils.replaceEach("", *, *)          = ""
@@ -3440,7 +3441,7 @@ public class StringUtils {
      *  (example of how it does not repeat)
      *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"})  = "dcte"
      * </pre>
-     * 
+     *
      * @param text
      *            text to search and replace in, no-op if null
      * @param searchList
@@ -3461,14 +3462,14 @@ public class StringUtils {
      * <p>
      * Replaces all occurrences of Strings within another String.
      * </p>
-     * 
+     *
      * <p>
      * A <code>null</code> reference passed to this method is a no-op, or if
      * any "search string" or "string to replace" is null, that replace will be
      * ignored. This will not repeat. For repeating replaces, call the
      * overloaded method.
      * </p>
-     * 
+     *
      * <pre>
      *  StringUtils.replaceEach(null, *, *, *) = null
      *  StringUtils.replaceEach("", *, *, *) = ""
@@ -3485,7 +3486,7 @@ public class StringUtils {
      *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "ab"}, true) = IllegalArgumentException
      *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "ab"}, false) = "dcabe"
      * </pre>
-     * 
+     *
      * @param text
      *            text to search and replace in, no-op if null
      * @param searchList
@@ -3512,13 +3513,13 @@ public class StringUtils {
      * <p>
      * Replaces all occurrences of Strings within another String.
      * </p>
-     * 
+     *
      * <p>
      * A <code>null</code> reference passed to this method is a no-op, or if
      * any "search string" or "string to replace" is null, that replace will be
      * ignored. 
      * </p>
-     * 
+     *
      * <pre>
      *  StringUtils.replaceEach(null, *, *, *) = null
      *  StringUtils.replaceEach("", *, *, *) = ""
@@ -3534,7 +3535,7 @@ public class StringUtils {
      *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"}, true) = "tcte"
      *  StringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "ab"}, *) = IllegalArgumentException
      * </pre>
-     * 
+     *
      * @param text
      *            text to search and replace in, no-op if null
      * @param searchList
@@ -4272,7 +4273,7 @@ public class StringUtils {
     }
     /**
      * Gets a String's length or <code>0</code> if the String is <code>null</code>.
-     * 
+     *
      * @param str
      *            a String or <code>null</code>
      * @return String length or <code>0</code> if the String is <code>null</code>.
@@ -4745,10 +4746,10 @@ public class StringUtils {
     }
     /**
      * <p>Checks if the string contains only ASCII printable characters.</p>
-     * 
+     *
      * <p><code>null</code> will return <code>false</code>.
      * An empty String (length()=0) will return <code>true</code>.</p>
-     * 
+     *
      * <pre>
      * StringUtils.isAsciiPrintable(null)     = false
      * StringUtils.isAsciiPrintable("")       = true
@@ -4970,7 +4971,7 @@ public class StringUtils {
      * StringUtils.defaultString("bat", "NULL") = "bat"
      * </pre>
      *
-     * @see ObjectUtils#toString(Object,String)
+     * @see ObjectUtils#toString(Object, String)
      * @see String#valueOf(Object)
      * @param str  the String to check, may be null
      * @param defaultStr  the default String to return
@@ -5603,7 +5604,7 @@ public class StringUtils {
     }
     /**
      * <p>Check if a String starts with any of an array of specified strings.</p>
-     * 
+     *
      * <pre>
      * StringUtils.startsWithAny(null, null)      = false
      * StringUtils.startsWithAny(null, new String[] {"abc"})  = false
@@ -5731,7 +5732,7 @@ public class StringUtils {
      *              http://www.w3.org/TR/xpath/#function-normalize-space</a>
      * @param str the source String to normalize whitespaces from, may be null
      * @return the modified string with whitespace normalized, <code>null</code> if null String input
-     * 
+     *
      * @since 2.6
      */
     public static String normalizeSpace(String str) {

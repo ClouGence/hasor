@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import javax.sql.DataSource;
+
 import net.hasor.core.Hasor;
 import net.hasor.db.datasource.ConnectionHolder;
 import net.hasor.db.datasource.DataSourceManager;
@@ -30,6 +31,7 @@ import net.hasor.db.transaction.support.JdbcTransactionManager;
 public class TranManager extends DataSourceManager {
     private final static ThreadLocal<ConcurrentMap<DataSource, DefaultTransactionManager>> managerMap;
     private final static ThreadLocal<ConcurrentMap<DataSource, ConnectionHolder>>          currentMap;
+
     static {
         managerMap = new ThreadLocal<ConcurrentMap<DataSource, DefaultTransactionManager>>() {
             protected ConcurrentMap<DataSource, DefaultTransactionManager> initialValue() {
@@ -42,6 +44,7 @@ public class TranManager extends DataSourceManager {
             }
         };
     }
+
     //
     public static ConnectionHolder currentConnectionHolder(DataSource dataSource) {
         Hasor.assertIsNotNull(dataSource);

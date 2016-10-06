@@ -29,6 +29,7 @@ public interface ConnectionProxy extends Connection {
      * @return the underlying Connection (never <code>null</code>)
      */
     public Connection getTargetConnection();
+
     /**获取目标使用的数据源*/
     public DataSource getTargetSource();
 }

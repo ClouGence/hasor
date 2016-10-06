@@ -19,11 +19,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.more.asm.ClassVisitor;
 import org.more.classcode.ASMEngineTools;
 import org.more.classcode.AbstractClassConfig;
 /**
- * 
+ *
  * @version : 2014年9月7日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -49,7 +50,8 @@ public class AopClassConfig extends AbstractClassConfig {
     @Override
     protected ClassVisitor buildClassVisitor(ClassVisitor parentVisitor) {
         return new AopClassAdapter(parentVisitor, this);
-    };
+    }
+    ;
     //
     /**是否包含改变*/
     public boolean hasChange() {

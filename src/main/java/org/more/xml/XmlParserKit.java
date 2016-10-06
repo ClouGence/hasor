@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.xml.stream.XMLStreamException;
+
 import org.more.RepeateException;
 import org.more.util.MatchUtils;
 import org.more.xml.stream.AttributeEvent;
@@ -56,7 +57,8 @@ public class XmlParserKit implements XmlNamespaceParser {
         }
         arrayList.add(hook);
         this.hooks.put(xpath, arrayList);
-    };
+    }
+    ;
     /**该方法是解除使用regeditHook()方法注册的一组关联。*/
     public void unRegeditHook(final String[] xpath, final XmlParserHook hook) {
         for (String s : xpath) {
@@ -75,9 +77,11 @@ public class XmlParserKit implements XmlNamespaceParser {
     }
     //----------------------------------------------------
     @Override
-    public void beginAccept() {}
+    public void beginAccept() {
+    }
     @Override
-    public void endAccept() {}
+    public void endAccept() {
+    }
     private ArrayList<XmlParserHook> getHooks(final String xpath) {
         String xpath2 = xpath;
         for (String xp : this.hooks.keySet()) {
@@ -87,7 +91,8 @@ public class XmlParserKit implements XmlNamespaceParser {
             }
         }
         return this.hooks.get(xpath2);
-    };
+    }
+    ;
     @Override
     public void sendEvent(final XmlStackDecorator<Object> context, final String xpath, final XmlStreamEvent event) throws XMLStreamException, IOException {
         ArrayList<XmlParserHook> hooks = this.getHooks(xpath);

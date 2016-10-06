@@ -1,8 +1,10 @@
 ﻿===== Hasor-Core v2.4.6 (2016-?)
-* 改进:
+* 新增:
     01.restful插件增加,json; 拦截。
     02.WebEnvironment、WebAppContext可以被依赖注入了。
     03.所有接口类型参数传入,都走 AppContext 获取。
+    04.upload包变更。
+    05.新增 WebAppContext.HTTP_BEFORE_REQUEST 和 WebAppContext.HTTP_AFTER_RESPONSE 事件。
 * 改进:
     01.改进 RenderData 接口使其更加人性化一点。
     02.RenderData 的数据不在保存在自己独立的 map 中而是共同 Request Attr。

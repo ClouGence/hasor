@@ -16,7 +16,7 @@
 package org.more.classcode.delegate.property;
 import org.more.util.BeanUtils;
 /**
- * 
+ *
  * @version : 2014年9月7日
  * @author 赵永春(zyc@hasor.net)
  */

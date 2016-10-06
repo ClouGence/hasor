@@ -31,6 +31,7 @@ public interface ApiBinder {
      * @return return {@link Environment}
      */
     public Environment getEnvironment();
+
     /**
      * 在框架扫描包的范围内查找具有特征类集合（特征可以是继承的类、标记的注解）。<br>
      *  -- 该方法会放弃在匹配的过程中如果类无法被ClassLoader所加载的类。
@@ -38,6 +39,7 @@ public interface ApiBinder {
      * @return 返回匹配的类集合。
      */
     public Set<Class<?>> findClass(Class<?> featureType);
+
     /**
      * 安装其它插件。
      * @param module 新安装的插件
@@ -47,6 +49,7 @@ public interface ApiBinder {
     public void installModule(Module module) throws Throwable;
     //
     /*----------------------------------------------------------------------------------------Aop*/
+
     /**
      * 使用表达式配置Aop。
      * <p>例：<pre>格式：&lt;返回值&gt;&nbsp;&lt;类名&gt;.&lt;方法名&gt;(&lt;参数签名列表&gt;)
@@ -62,6 +65,7 @@ public interface ApiBinder {
      * @param interceptor 拦截器对象
      */
     public void bindInterceptor(String matcherExpression, MethodInterceptor interceptor);
+
     /**
      * 使用匹配器配置Aop。
      * @param matcherClass 类型匹配器
@@ -77,6 +81,7 @@ public interface ApiBinder {
     }
     //
     /*------------------------------------------------------------------------------------Binding*/
+
     /**
      * bind type to context , 通过返回的 Builder 可以对绑定进行后续更加细粒度的配置。<p>
      *  -- {@link NamedBindingBuilder}类型，为绑定起名字。继承自：{@link LinkedBindingBuilder}<br>
@@ -89,6 +94,7 @@ public interface ApiBinder {
      * @return 返回 - {@link NamedBindingBuilder}。
      */
     public <T> NamedBindingBuilder<T> bindType(Class<T> type);
+
     /**
      * 绑定一个类型并且为这个类型指定一个实例。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
      * 该方法相当于“<code>apiBinder.bindType(type).toInstance(instance);</code>”
@@ -98,6 +104,7 @@ public interface ApiBinder {
      * @see #bindType(Class)
      */
     public <T> MetaDataBindingBuilder<T> bindType(Class<T> type, T instance);
+
     /**
      * 绑定一个类型并且为这个类型指定一个实现类。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
      * 该方法相当于“<code>apiBinder.bindType(type).to(implementation);</code>”
@@ -107,6 +114,7 @@ public interface ApiBinder {
      * @see #bindType(Class)
      */
     public <T> InjectPropertyBindingBuilder<T> bindType(Class<T> type, Class<? extends T> implementation);
+
     /**
      * 绑定一个类型并且为这个类型指定一个{@link Provider}，开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
      * 该方法相当于“<code>apiBinder.bindType(type).to(implementation);</code>”
@@ -116,6 +124,7 @@ public interface ApiBinder {
      * @see #bindType(Class)
      */
     public <T> ScopedBindingBuilder<T> bindType(Class<T> type, Provider<T> provider);
+
     /**
      * 为绑定类型配置一个名称，进而基于同一个类型下不同名称的绑定进行差异化配置。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
      * 该方法相当于“<code>apiBinder.bindType(type).nameWith(withName).to(type);</code>”
@@ -125,6 +134,7 @@ public interface ApiBinder {
      * @see #bindType(Class)
      */
     public <T> InjectPropertyBindingBuilder<T> bindType(String withName, Class<T> type);
+
     /**
      * 为绑定类型配置一个名称，进而基于同一个类型下不同名称的绑定进行差异化配置。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
      * 该方法相当于“<code>apiBinder.bindType(type).nameWith(withName).toInstance(instance);</code>”
@@ -136,6 +146,7 @@ public interface ApiBinder {
      * @see #bindType(Class)
      */
     public <T> MetaDataBindingBuilder<T> bindType(String withName, Class<T> type, T instance);
+
     /**
      * 为绑定类型配置一个名称，进而基于同一个类型下不同名称的绑定进行差异化配置。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
      * 该方法相当于“<code>apiBinder.bindType(type).nameWith(withName).to(implementation);</code>”
@@ -147,6 +158,7 @@ public interface ApiBinder {
      * @see #bindType(Class)
      */
     public <T> InjectPropertyBindingBuilder<T> bindType(String withName, Class<T> type, Class<? extends T> implementation);
+
     /**
      * 为绑定类型配置一个名称，进而基于同一个类型下不同名称的绑定进行差异化配置。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
      * 该方法相当于“<code>apiBinder.bindType(type).nameWith(withName).to(implementation);</code>”
@@ -168,11 +180,13 @@ public interface ApiBinder {
          * @return 返回 - {@link LinkedBindingBuilder}。
          */
         public LinkedBindingBuilder<T> nameWith(String name);
+
         /**
          * 随机取一个不重复的名字(并同时设置ID,为随机ID)。
          * @return 返回 - {@link LinkedBindingBuilder}。
          */
         public LinkedBindingBuilder<T> uniqueName();
+
         /**
          * 设置一个ID标识符。
          * @param idString id标识符.
@@ -188,18 +202,21 @@ public interface ApiBinder {
          * @return 返回 - {@link InjectPropertyBindingBuilder}。
          */
         public InjectPropertyBindingBuilder<T> to(Class<? extends T> implementation);
+
         /**
          * 为绑定设置一个实例
          * @param instance 实例对象
          * @return 返回 - {@link MetaDataBindingBuilder}。
          */
         public MetaDataBindingBuilder<T> toInstance(T instance);
+
         /**
          * 为绑定设置一个 {@link Provider}。
          * @param provider provider 可以用来封装类型实例创建的细节。
          * @return 返回 - {@link LifeBindingBuilder}。
          */
         public LifeBindingBuilder<T> toProvider(Provider<T> provider);
+
         /**
          * 为绑定设置一个构造方法。
          * @param constructor 使用的构造方法。
@@ -216,6 +233,7 @@ public interface ApiBinder {
          * @return 返回 - {@link InjectConstructorBindingBuilder}。
          */
         public InjectConstructorBindingBuilder<T> injectValue(int index, Object value);
+
         /**
          * 设置构造方法注入属性。
          * @param index 构造方法参数索引位置。
@@ -223,6 +241,7 @@ public interface ApiBinder {
          * @return 返回 - {@link InjectConstructorBindingBuilder}。
          */
         public InjectConstructorBindingBuilder<T> inject(int index, BindInfo<?> valueInfo);
+
         /**
          * 设置构造方法注入属性。
          * @param index 构造方法参数索引位置。
@@ -240,6 +259,7 @@ public interface ApiBinder {
          * @return 返回属性注入接口，以继续其它属性注入。 - {@link InjectPropertyBindingBuilder}。
          */
         public InjectPropertyBindingBuilder<T> injectValue(String property, Object value);
+
         /**
          * 注入另一个Bean对象。
          * @param property 被注入Bean的属性名
@@ -247,6 +267,7 @@ public interface ApiBinder {
          * @return 返回属性注入接口，以继续其它属性注入。 - {@link InjectPropertyBindingBuilder}。
          */
         public InjectPropertyBindingBuilder<T> inject(String property, BindInfo<?> valueInfo);
+
         /**
          * 工厂方式注入Bean。
          * @param property 被注入Bean的属性名
@@ -269,6 +290,7 @@ public interface ApiBinder {
          * @return 返回 - {@link MetaDataBindingBuilder}。
          */
         public MetaDataBindingBuilder<T> asEagerPrototype();
+
         /**
          * 注册为单例模式。<p>
          * 单列模式：当类型被多个对象注入时，每个注入的类型实例都是同一个对象。
@@ -276,12 +298,14 @@ public interface ApiBinder {
          * @return 返回 - {@link MetaDataBindingBuilder}。
          */
         public MetaDataBindingBuilder<T> asEagerSingleton();
+
         /**
          * 设置Scope。
          * @param scope 作用域
          * @return 返回 - {@link MetaDataBindingBuilder}。
          */
         public MetaDataBindingBuilder<T> toScope(Scope scope);
+
         /**
          * 设置Scope。
          * @param scope 作用域
@@ -298,6 +322,7 @@ public interface ApiBinder {
          * @return 返回 - {@link MetaDataBindingBuilder}。
          */
         public MetaDataBindingBuilder<T> metaData(String key, Object value);
+
         /**
          * 转换为 {@link BindInfo} 接口对象。
          * @return 返回{@link BindInfo}。

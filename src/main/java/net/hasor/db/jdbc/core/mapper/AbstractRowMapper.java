@@ -20,11 +20,12 @@ import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.RowMapper;
 import org.more.util.StringUtils;
 /**
- * 
+ *
  * @version : 2014年5月23日
  */
 public abstract class AbstractRowMapper<T> implements RowMapper<T> {

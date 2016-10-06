@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 class ShutdownHook extends Thread implements Runnable {
-    protected Logger              logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     private TemplateAppContext<?> appContext;
     public ShutdownHook(TemplateAppContext<?> appContext) {
         this.appContext = appContext;

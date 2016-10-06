@@ -62,7 +62,10 @@ public class RestfulModule extends WebModule {
             String type = renderMap.get(key);
             try {
                 Class<?> renderType = apiBinder.getEnvironment().getClassLoader().loadClass(type);
-                apiBinder.bindType(RenderEngine.class).nameWith(key).to((Class<? extends RenderEngine>) renderType).metaData("FORM-XML", true);
+                apiBinder.bindType(RenderEngine.class)//
+                        .nameWith(key)//
+                        .to((Class<? extends RenderEngine>) renderType)//
+                        .metaData("FORM-XML", true);
             } catch (Exception e) {
                 logger.error("restful -> renderType {} load failed {}.", type, e.getMessage(), e);
             }

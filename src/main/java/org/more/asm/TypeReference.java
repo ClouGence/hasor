@@ -34,7 +34,7 @@ package org.more.asm;
  * the referenced type is appearing (e.g. an 'extends', 'implements' or 'throws'
  * clause, a 'new' instruction, a 'catch' clause, a type cast, a local variable
  * declaration, etc).
- * 
+ *
  * @author Eric Bruneton
  */
 public class TypeReference {
@@ -151,10 +151,10 @@ public class TypeReference {
     /**
      * The type reference value in Java class file format.
      */
-    private int             value;
+    private int value;
     /**
      * Creates a new TypeReference.
-     * 
+     *
      * @param typeRef
      *            the int encoded value of the type reference, as received in a
      *            visit method related to type annotations, like
@@ -165,7 +165,7 @@ public class TypeReference {
     }
     /**
      * Returns a type reference of the given sort.
-     * 
+     *
      * @param sort
      *            {@link #FIELD FIELD}, {@link #METHOD_RETURN METHOD_RETURN},
      *            {@link #METHOD_RECEIVER METHOD_RECEIVER},
@@ -181,7 +181,7 @@ public class TypeReference {
     }
     /**
      * Returns a reference to a type parameter of a generic class or method.
-     * 
+     *
      * @param sort
      *            {@link #CLASS_TYPE_PARAMETER CLASS_TYPE_PARAMETER} or
      *            {@link #METHOD_TYPE_PARAMETER METHOD_TYPE_PARAMETER}.
@@ -195,7 +195,7 @@ public class TypeReference {
     /**
      * Returns a reference to a type parameter bound of a generic class or
      * method.
-     * 
+     *
      * @param sort
      *            {@link #CLASS_TYPE_PARAMETER CLASS_TYPE_PARAMETER} or
      *            {@link #METHOD_TYPE_PARAMETER METHOD_TYPE_PARAMETER}.
@@ -212,7 +212,7 @@ public class TypeReference {
     /**
      * Returns a reference to the super class or to an interface of the
      * 'implements' clause of a class.
-     * 
+     *
      * @param itfIndex
      *            the index of an interface in the 'implements' clause of a
      *            class, or -1 to reference the super class of the class.
@@ -224,10 +224,10 @@ public class TypeReference {
     }
     /**
      * Returns a reference to the type of a formal parameter of a method.
-     * 
+     *
      * @param paramIndex
      *            the formal parameter index.
-     * 
+     *
      * @return a reference to the type of the given method formal parameter.
      */
     public static TypeReference newFormalParameterReference(int paramIndex) {
@@ -236,10 +236,10 @@ public class TypeReference {
     /**
      * Returns a reference to the type of an exception, in a 'throws' clause of
      * a method.
-     * 
+     *
      * @param exceptionIndex
      *            the index of an exception in a 'throws' clause of a method.
-     * 
+     *
      * @return a reference to the type of the given exception.
      */
     public static TypeReference newExceptionReference(int exceptionIndex) {
@@ -248,11 +248,11 @@ public class TypeReference {
     /**
      * Returns a reference to the type of the exception declared in a 'catch'
      * clause of a method.
-     * 
+     *
      * @param tryCatchBlockIndex
      *            the index of a try catch block (using the order in which they
      *            are visited with visitTryCatchBlock).
-     * 
+     *
      * @return a reference to the type of the given exception.
      */
     public static TypeReference newTryCatchReference(int tryCatchBlockIndex) {
@@ -261,7 +261,7 @@ public class TypeReference {
     /**
      * Returns a reference to the type of a type argument in a constructor or
      * method call or reference.
-     * 
+     *
      * @param sort
      *            {@link #CAST CAST},
      *            {@link #CONSTRUCTOR_INVOCATION_TYPE_ARGUMENT
@@ -274,7 +274,7 @@ public class TypeReference {
      *            METHOD_REFERENCE_TYPE_ARGUMENT}.
      * @param argIndex
      *            the type argument index.
-     * 
+     *
      * @return a reference to the type of the given type argument.
      */
     public static TypeReference newTypeArgumentReference(int sort, int argIndex) {
@@ -282,7 +282,7 @@ public class TypeReference {
     }
     /**
      * Returns the sort of this type reference.
-     * 
+     *
      * @return {@link #CLASS_TYPE_PARAMETER CLASS_TYPE_PARAMETER},
      *         {@link #METHOD_TYPE_PARAMETER METHOD_TYPE_PARAMETER},
      *         {@link #CLASS_EXTENDS CLASS_EXTENDS},
@@ -316,7 +316,7 @@ public class TypeReference {
      * {@link #METHOD_TYPE_PARAMETER METHOD_TYPE_PARAMETER},
      * {@link #CLASS_TYPE_PARAMETER_BOUND CLASS_TYPE_PARAMETER_BOUND} or
      * {@link #METHOD_TYPE_PARAMETER_BOUND METHOD_TYPE_PARAMETER_BOUND}.
-     * 
+     *
      * @return a type parameter index.
      */
     public int getTypeParameterIndex() {
@@ -328,7 +328,7 @@ public class TypeReference {
      * method must only be used for type references whose sort is
      * {@link #CLASS_TYPE_PARAMETER_BOUND CLASS_TYPE_PARAMETER_BOUND} or
      * {@link #METHOD_TYPE_PARAMETER_BOUND METHOD_TYPE_PARAMETER_BOUND}.
-     * 
+     *
      * @return a type parameter bound index.
      */
     public int getTypeParameterBoundIndex() {
@@ -338,7 +338,7 @@ public class TypeReference {
      * Returns the index of the "super type" of a class that is referenced by
      * this type reference. This method must only be used for type references
      * whose sort is {@link #CLASS_EXTENDS CLASS_EXTENDS}.
-     * 
+     *
      * @return the index of an interface in the 'implements' clause of a class,
      *         or -1 if this type reference references the type of the super
      *         class.
@@ -350,7 +350,7 @@ public class TypeReference {
      * Returns the index of the formal parameter whose type is referenced by
      * this type reference. This method must only be used for type references
      * whose sort is {@link #METHOD_FORMAL_PARAMETER METHOD_FORMAL_PARAMETER}.
-     * 
+     *
      * @return a formal parameter index.
      */
     public int getFormalParameterIndex() {
@@ -360,7 +360,7 @@ public class TypeReference {
      * Returns the index of the exception, in a 'throws' clause of a method,
      * whose type is referenced by this type reference. This method must only be
      * used for type references whose sort is {@link #THROWS THROWS}.
-     * 
+     *
      * @return the index of an exception in the 'throws' clause of a method.
      */
     public int getExceptionIndex() {
@@ -371,7 +371,7 @@ public class TypeReference {
      * are visited with visitTryCatchBlock), whose 'catch' type is referenced by
      * this type reference. This method must only be used for type references
      * whose sort is {@link #EXCEPTION_PARAMETER EXCEPTION_PARAMETER} .
-     * 
+     *
      * @return the index of an exception in the 'throws' clause of a method.
      */
     public int getTryCatchBlockIndex() {
@@ -386,7 +386,7 @@ public class TypeReference {
      * {@link #CONSTRUCTOR_REFERENCE_TYPE_ARGUMENT
      * CONSTRUCTOR_REFERENCE_TYPE_ARGUMENT}, or
      * {@link #METHOD_REFERENCE_TYPE_ARGUMENT METHOD_REFERENCE_TYPE_ARGUMENT}.
-     * 
+     *
      * @return a type parameter index.
      */
     public int getTypeArgumentIndex() {
@@ -395,7 +395,7 @@ public class TypeReference {
     /**
      * Returns the int encoded value of this type reference, suitable for use in
      * visit methods related to type annotations, like visitTypeAnnotation.
-     * 
+     *
      * @return the int encoded value of this type reference.
      */
     public int getValue() {

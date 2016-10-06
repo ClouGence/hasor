@@ -28,11 +28,11 @@ import java.io.Writer;
  * @author 网络收集
  */
 public class ReaderInputStream extends InputStream {
-    private Reader                reader       = null;
-    private ByteArrayOutputStream byteArrayOut = null;
-    private Writer                writer       = null;
-    private char[]                chars        = null;
-    private byte[]                buffer       = null;
+    private Reader                reader        = null;
+    private ByteArrayOutputStream byteArrayOut  = null;
+    private Writer                writer        = null;
+    private char[]                chars         = null;
+    private byte[]                buffer        = null;
     private int                   index, length = 0;
     //========================================================================================
     /**

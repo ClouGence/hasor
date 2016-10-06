@@ -31,11 +31,12 @@ import java.lang.annotation.Target;
  * @author 赵永春(zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD })
+@Target({ElementType.FIELD})
 @Documented
 public @interface Inject {
     /**如果同类型有多个注册可以使用该值进行区分。*/
     public String value() default "";
+
     /**区分注入Bean的方式<ul>
      * <li>“byType=Type.ByID”使用“{@code AppContext.getInstance(String)}”方式进行依赖注入。</li>
      * <li>(默认配置)“byType=Type.ByName”使用“{@code AppContext.findBindingBean(withName, bindType)}”方式进行依赖注入。</li>

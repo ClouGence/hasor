@@ -13,13 +13,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 /**
- * 
+ *
  * @version : 2014-3-29
  * @author 赵永春 (zyc@byshell.org)
  */
 class InnerStatementSetterUtils {
-    public static final int               TYPE_UNKNOWN         = Integer.MIN_VALUE;
-    private static Map<Class<?>, Integer> javaTypeToSqlTypeMap = new HashMap<Class<?>, Integer>(32);
+    public static final int                    TYPE_UNKNOWN         = Integer.MIN_VALUE;
+    private static      Map<Class<?>, Integer> javaTypeToSqlTypeMap = new HashMap<Class<?>, Integer>(32);
+
     static {
         /* JDBC 3.0 only - not compatible with e.g. MySQL at present*/
         javaTypeToSqlTypeMap.put(boolean.class, new Integer(Types.BOOLEAN));

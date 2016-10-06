@@ -15,6 +15,7 @@
  */
 package org.more.classcode.delegate.faces;
 import java.lang.reflect.Method;
+
 import org.more.util.BeanUtils;
 /**
  * 代理方法的空实现。

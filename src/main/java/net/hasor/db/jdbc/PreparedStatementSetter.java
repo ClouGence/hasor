@@ -24,7 +24,7 @@ import java.sql.SQLException;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface PreparedStatementSetter {
-    /** 
+    /**
      * Set parameter values on the given PreparedStatement.
      * @param ps the PreparedStatement to invoke setter methods on
      * @throws SQLException if a SQLException is encountered (i.e. there is no need to catch SQLException)

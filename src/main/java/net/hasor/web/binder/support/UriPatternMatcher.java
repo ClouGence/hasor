@@ -15,16 +15,17 @@
  */
 package net.hasor.web.binder.support;
 /**
-* A general interface for matching a URI against a URI pattern. Guice-servlet provides regex and
-* servlet-style pattern matching out of the box.
-* @author dhanji@gmail.com (Dhanji R. Prasanna)
-*/
+ * A general interface for matching a URI against a URI pattern. Guice-servlet provides regex and
+ * servlet-style pattern matching out of the box.
+ * @author dhanji@gmail.com (Dhanji R. Prasanna)
+ */
 interface UriPatternMatcher {
     /**
      * @param uri A "contextual" (i.e. relative) Request URI, *not* a complete one.
      * @return Returns true if the uri matches the pattern.
      */
     public boolean matches(String uri);
+
     /**
      * @param pattern The Path that this service pattern can match against.
      * @return Returns a canonical servlet path from this pattern. For instance, if the pattern is
@@ -34,6 +35,7 @@ interface UriPatternMatcher {
      *         NOTE(dhanji): This method returns null for the regex pattern matcher.
      */
     public String extractPath(String pattern);
+
     /** Returns the type of pattern this is. */
     public UriPatternType getPatternType();
 }

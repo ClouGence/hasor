@@ -19,6 +19,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 import net.hasor.core.ApiBinder.ScopedBindingBuilder;
 /**
  * 标记类型为单例模式，与{@link Prototype}为互斥关系，注解方式优先于配置。
@@ -29,4 +30,5 @@ import net.hasor.core.ApiBinder.ScopedBindingBuilder;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-public @interface Singleton {}
+public @interface Singleton {
+}

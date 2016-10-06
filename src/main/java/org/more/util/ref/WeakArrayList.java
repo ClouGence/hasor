@@ -26,11 +26,11 @@ import java.util.Collection;
  * @author (网络收集)
  */
 public class WeakArrayList<T> extends AbstractList<T> {
-    private static final Object               NULL_VALUE = new Object();
+    private static final Object NULL_VALUE = new Object();
     private final transient ReferenceQueue<T> queue;
-    private Object[]                          data;
-    private int                               size;
-    private boolean                           enquedElement;
+    private                 Object[]          data;
+    private                 int               size;
+    private                 boolean           enquedElement;
     private static <T> T maskNull(final T value) {
         return (T) (value == null ? WeakArrayList.NULL_VALUE : value);
     }

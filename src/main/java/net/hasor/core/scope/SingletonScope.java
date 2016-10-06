@@ -15,6 +15,7 @@
  */
 package net.hasor.core.scope;
 import java.util.concurrent.ConcurrentHashMap;
+
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 /**

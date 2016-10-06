@@ -15,17 +15,18 @@
  */
 package org.more.classcode.aop;
 import java.lang.reflect.Method;
+
 import org.more.classcode.AbstractClassConfig;
 import org.more.classcode.MoreClassLoader;
 /**
- * 
+ *
  * @version : 2013-4-13
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InnerAopInvocation implements AopInvocation {
     private AopInterceptor[] interceptorDefinitions;
     private AopInvocation    proceedingChain;
-    private int              index = -1;
+    private int index = -1;
     //
     public InnerAopInvocation(String targetMethodDesc, final Method targetMethod, final AopInvocation proceedingChain) {
         Class<?> targetClass = targetMethod.getDeclaringClass();

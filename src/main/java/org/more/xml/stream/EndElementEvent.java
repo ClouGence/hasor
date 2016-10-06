@@ -74,7 +74,8 @@ public class EndElementEvent extends XmlStreamEvent {
             return false;
         }
         return true;
-    };
+    }
+    ;
     /**元素结束事件，不是共有事件。*/
     @Override
     public boolean isPublicEvent() {

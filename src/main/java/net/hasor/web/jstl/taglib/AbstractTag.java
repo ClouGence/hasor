@@ -17,10 +17,11 @@ package net.hasor.web.jstl.taglib;
 import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
+
 import net.hasor.core.AppContext;
 import net.hasor.web.startup.RuntimeListener;
 /**
- * 
+ *
  * @version : 2013-12-23
  * @author 赵永春(zyc@hasor.net)
  */
@@ -38,6 +39,7 @@ public abstract class AbstractTag extends TagSupport {
     //
     @Override
     public abstract int doStartTag() throws JspException;
+
     @Override
     public abstract void release();
 }

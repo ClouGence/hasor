@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.more.asm.ClassVisitor;
 import org.more.asm.FieldVisitor;
 import org.more.asm.Label;
@@ -176,7 +177,7 @@ class MethodDelegateClassAdapter extends ClassVisitor implements Opcodes {
         }
         {//} catch (Exception e) {
             mv.visitLabel(tryCatch);
-            mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] { "java/lang/Throwable" });
+            mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] {"java/lang/Throwable"});
             mv.visitVarInsn(ASTORE, 5);
             mv.visitVarInsn(ALOAD, 5);
             mv.visitTypeInsn(INSTANCEOF, "java/lang/RuntimeException");
@@ -186,7 +187,7 @@ class MethodDelegateClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitTypeInsn(CHECKCAST, "java/lang/RuntimeException");
             mv.visitInsn(ATHROW);
             mv.visitLabel(ifBlock);
-            mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] { "java/lang/Throwable" }, 0, null);
+            mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] {"java/lang/Throwable"}, 0, null);
             mv.visitTypeInsn(NEW, "java/lang/RuntimeException");
             mv.visitInsn(DUP);
             mv.visitVarInsn(ALOAD, 5);

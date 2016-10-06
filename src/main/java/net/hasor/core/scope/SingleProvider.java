@@ -21,9 +21,9 @@ import net.hasor.core.Provider;
  * @author 赵永春(zyc@hasor.net)
  */
 public class SingleProvider<T> implements Provider<T> {
-    private Provider<T>  provider = null;
-    private volatile T   instance = null;
-    private final Object lock     = new Object();
+    private          Provider<T> provider = null;
+    private volatile T           instance = null;
+    private final    Object      lock     = new Object();
     //
     public SingleProvider(Provider<T> provider) {
         this.provider = provider;

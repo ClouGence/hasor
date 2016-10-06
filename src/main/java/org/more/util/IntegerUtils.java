@@ -16,7 +16,7 @@
  */
 package org.more.util;
 /**
- * 
+ *
  * @version : 2014年9月20日
  * @author 赵永春(zyc@hasor.net)
  */

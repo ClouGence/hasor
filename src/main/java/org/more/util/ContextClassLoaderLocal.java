@@ -20,7 +20,7 @@ import java.util.WeakHashMap;
 /**
  * An instance of this class represents a value that is provided per (thread)
  * context classloader.
- * 
+ *
  * <p>Occasionally it is necessary to store data in "global" variables
  * (including uses of the Singleton pattern). In applications which have only
  * a single classloader such data can simply be stored as "static" members on
@@ -93,14 +93,14 @@ import java.util.WeakHashMap;
  * <p><strong>Note:</strong> Of course all of this would be unnecessary if
  * containers required each component to load the full set of classes it
  * needs, ie avoided providing classes loaded via a "shared" classloader.</p>
- * 
- * @see java.lang.Thread#getContextClassLoader  
+ *
+ * @see java.lang.Thread#getContextClassLoader
  * @author Eric Pabst
  */
 public class ContextClassLoaderLocal<T> {
     private Map<ClassLoader, T> valueByClassLoader     = new WeakHashMap<ClassLoader, T>();
     private boolean             globalValueInitialized = false;
-    private T                   globalValue;
+    private T globalValue;
     /** Construct a context classloader instance */
     public ContextClassLoaderLocal() {
         super();
@@ -128,7 +128,7 @@ public class ContextClassLoaderLocal<T> {
     protected T initialValue() {
         return null;
     }
-    /** 
+    /**
      * Gets the instance which provides the functionality for {@link BeanUtils}.
      * This is a pseudo-singleton - an single instance is provided per (thread) context classloader.
      * This mechanism provides isolation for web apps deployed in the same container. 
@@ -158,10 +158,10 @@ public class ContextClassLoaderLocal<T> {
         } //else already set
         return this.globalValue;
     }
-    /** 
+    /**
      * Sets the value - a value is provided per (thread) context classloader.
      * This mechanism provides isolation for web apps deployed in the same container. 
-     * 
+     *
      * @param value the object to be associated with the entrant thread's context classloader
      */
     public synchronized void set(final T value) {
@@ -180,7 +180,7 @@ public class ContextClassLoaderLocal<T> {
         this.globalValue = value;
         this.globalValueInitialized = true;
     }
-    /** 
+    /**
      * Unsets the value associated with the current thread's context classloader
      */
     public synchronized void unset() {
@@ -189,7 +189,7 @@ public class ContextClassLoaderLocal<T> {
             this.unset(contextClassLoader);
         } catch (SecurityException e) { /* SWALLOW - should we log this? */}
     }
-    /** 
+    /**
      * Unsets the value associated with the given classloader
      * @param classLoader The classloader to <i>unset</i> for
      */

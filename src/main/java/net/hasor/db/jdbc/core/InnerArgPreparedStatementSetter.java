@@ -16,6 +16,7 @@
 package net.hasor.db.jdbc.core;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import net.hasor.db.jdbc.PreparedStatementSetter;
 /**
  * Simple adapter for PreparedStatementSetter that applies a given array of arguments.

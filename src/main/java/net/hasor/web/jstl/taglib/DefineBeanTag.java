@@ -16,17 +16,18 @@
 package net.hasor.web.jstl.taglib;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
+
 import org.more.util.StringUtils;
 import net.hasor.core.AppContext;
 /**
- * 
+ *
  * @version : 2013-12-24
  * @author 赵永春(zyc@hasor.net)
  */
 public class DefineBeanTag extends AbstractTag {
-    private static final long serialVersionUID = 8066383523368039588L;
-    private String            var              = null;
-    private String            bean             = null;
+    private static final long   serialVersionUID = 8066383523368039588L;
+    private              String var              = null;
+    private              String bean             = null;
     public String getVar() {
         return this.var;
     }

@@ -16,7 +16,7 @@
 package org.more.classcode.delegate.faces;
 import java.lang.reflect.Method;
 /**
- * 
+ *
  * @version : 2014年9月9日
  * @author 赵永春(zyc@hasor.net)
  */
