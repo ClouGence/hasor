@@ -1,4 +1,4 @@
-﻿===== Hasor-Core v2.4.6 (2016-?)
+﻿===== Hasor-Core v2.4.6 (2016-10-07)
 * 新增:
     01.restful插件增加,json; 拦截。
     02.WebEnvironment、WebAppContext可以被依赖注入了。
