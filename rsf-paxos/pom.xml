@@ -30,10 +30,5 @@
             <artifactId>rsf-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.jgroups</groupId>
-            <artifactId>jgroups</artifactId>
-            <version>3.6.10.Final</version>
-        </dependency>
     </dependencies>
 </project>
