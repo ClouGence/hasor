@@ -4,17 +4,22 @@
     <parent>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-parent</artifactId>
-        <version>0.0.7</version>
+        <version>0.0.8</version>
     </parent>
 
     <!-- Maven Info -->
-    <artifactId>rsf-center-runtime</artifactId>
+    <artifactId>rsf-center</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <!-- Project Info -->
-    <name>RSF-Center-Runtime</name>
+    <name>RSF-Center</name>
     <description>the Hasor Remote Service Framework Center project.</description>
+
+    <!-- 配置属性 -->
+    <properties>
+        <hasor.shortname>RsfCenter-</hasor.shortname>
+    </properties>
 
     <!-- SCM -->
     <scm>
@@ -35,7 +40,7 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>rsf-core</artifactId>
-            <version>${project.version}</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>

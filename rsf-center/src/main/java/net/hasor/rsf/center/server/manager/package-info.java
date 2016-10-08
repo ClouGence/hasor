@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 各种Manager，使用Center的功能应该通过{@link net.hasor.rsf.center.server.RsfCenterConsole}接口。
+ * 各种Manager。
  */
 package net.hasor.rsf.center.server.manager;

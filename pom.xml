@@ -4,7 +4,7 @@
     <parent>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-parent</artifactId>
-        <version>0.0.7</version>
+        <version>0.0.8</version>
     </parent>
 
     <!-- Maven Info -->
@@ -42,9 +42,9 @@
 
     <modules>
         <module>rsf-core</module>
-        <!--<module>rsf-paxos</module>-->
-        <module>rsf-center/rsf-center-runtime</module>
-        <!--<module>rsf-center/rsf-center-manager</module>-->
+        <module>rsf-center</module>
         <module>rsf-demo</module>
+        <!--<module>rsf-paxos</module>-->
+        <!--<module>rsf-center/rsf-center-manager</module>-->
     </modules>
 </project>
