@@ -1,26 +1,31 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-parent</artifactId>
-        <version>0.0.7</version>
+        <version>0.0.8</version>
     </parent>
 
     <!-- Maven Info -->
     <artifactId>rsf-core</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <!-- Project Info -->
     <name>RSF-Core</name>
     <description>the Hasor Remote Service Framework project.</description>
 
+    <!-- 配置属性 -->
+    <properties>
+        <hasor.shortname>RSF-</hasor.shortname>
+    </properties>
+
     <!-- SCM -->
     <scm>
         <connection>scm:git:git@git.oschina.net:zycgit/rsf.git</connection>
         <developerConnection>scm:git:git@git.oschina.net:zycgit/rsf.git</developerConnection>
         <url>git@git.oschina.net:zycgit/rsf.git</url>
+        <tag>HEAD</tag>
     </scm>
 
     <!-- 引用依赖 -->
