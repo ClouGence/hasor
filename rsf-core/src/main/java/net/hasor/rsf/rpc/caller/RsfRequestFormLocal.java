@@ -54,6 +54,10 @@ class RsfRequestFormLocal extends AttributeSet implements RsfRequest {
     public AddressProvider getTarget() {
         return this.target;
     }
+    @Override
+    public boolean isP2PCalls() {
+        return !this.target.isDistributed();
+    }
     //
     @Override
     public RsfBindInfo<?> getBindInfo() {

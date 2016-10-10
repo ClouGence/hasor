@@ -248,6 +248,7 @@ public abstract class RsfRequestManager {
         /*1.远程目标机*/
         final RsfRequestFormLocal rsfRequest = (RsfRequestFormLocal) rsfFuture.getRequest();
         final AddressProvider target = rsfRequest.getTarget();
+        //
         /*2.发送之前的检查（允许的最大并发请求数）*/
         RsfSettings rsfSettings = this.getContainer().getEnvironment().getSettings();
         if (this.requestCount.get() >= rsfSettings.getMaximumRequest()) {
@@ -271,6 +272,9 @@ public abstract class RsfRequestManager {
             if (address == null) {
                 rsfFuture.failed(new RsfException(ProtocolStatus.Forbidden, "Service [" + serviceID + "] Address Unavailable."));
                 return;
+            }
+            if (rsfRequest.isP2PCalls()) {
+                rsfRequest.addOption(OptionKeys.TargetAddress, address.toHostSchema());
             }
             Provider<InterAddress> targetProvider = new InstanceProvider<InterAddress>(address);
             startRequest(rsfFuture);                 // <- 1.计时request。

@@ -86,6 +86,10 @@ public abstract class AbstractRsfRequestWarp implements RsfRequest {
         return getRsfRequest().isLocal();
     }
     @Override
+    public boolean isP2PCalls() {
+        return getRsfRequest().isP2PCalls();
+    }
+    @Override
     public Method getMethod() {
         return getRsfRequest().getMethod();
     }

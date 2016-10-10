@@ -22,6 +22,12 @@ import org.more.util.StringUtils;
  * @author 赵永春(zyc@hasor.net)
  */
 public class TraceFilter implements RsfFilter {
+    private static class InnerTraceUtil extends TraceUtil {
+        public static void updateTraceID(String oldTreaceID) {
+            TraceUtil.updateTraceID(oldTreaceID);
+        }
+    }
+    //
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         String traceID = request.getOption(InnerTraceUtil.KEY);
         if (!StringUtils.isBlank(traceID)) {
@@ -32,10 +38,5 @@ public class TraceFilter implements RsfFilter {
         request.addOption(InnerTraceUtil.KEY, traceID);
         response.addOption(InnerTraceUtil.KEY, traceID);
         chain.doFilter(request, response);
-    }
-}
-class InnerTraceUtil extends TraceUtil {
-    public static void updateTraceID(String oldTreaceID) {
-        TraceUtil.updateTraceID(oldTreaceID);
     }
 }

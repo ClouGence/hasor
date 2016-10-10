@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 package net.hasor.rsf.filters.local;
+import net.hasor.core.Provider;
+import net.hasor.rsf.*;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import net.hasor.core.Provider;
-import net.hasor.rsf.RsfBindInfo;
-import net.hasor.rsf.RsfFilter;
-import net.hasor.rsf.RsfFilterChain;
-import net.hasor.rsf.RsfRequest;
-import net.hasor.rsf.RsfResponse;
 /**
  * 优先检查本地是否有服务提供（优先本地服务提供者的调用）。
+ * 提示:如果是 p2p 调用则本地调用优先失效。
  * @version : 2014年11月30日
  * @author 赵永春(zyc@hasor.net)
  */
 public class LocalPref implements RsfFilter {
+    //
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
-        if (request.isLocal()) {
+        if (request.isLocal() && !request.isP2PCalls()) {
             RsfBindInfo<?> bindInfo = request.getBindInfo();
             Provider<?> provider = request.getContext().getServiceProvider(bindInfo);
             if (provider != null) {
@@ -47,7 +45,6 @@ public class LocalPref implements RsfFilter {
                 return;
             }
         }
-        //
         //
         chain.doFilter(request, response);
     }
