@@ -4,17 +4,17 @@
     <parent>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-parent</artifactId>
-        <version>0.0.6</version>
+        <version>0.0.8</version>
     </parent>
 
     <!-- Maven Info -->
-    <artifactId>rsf-paxos</artifactId>
+    <artifactId>rsf-neuron</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <!-- Project Info -->
-    <name>RSF-Paxos</name>
-    <description>the Paxos Framework project.</description>
+    <name>RSF-Neuron</name>
+    <description>the Neuron Framework project.</description>
 
     <!-- SCM -->
     <scm>
@@ -28,7 +28,7 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>rsf-core</artifactId>
-            <version>${project.version}</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
