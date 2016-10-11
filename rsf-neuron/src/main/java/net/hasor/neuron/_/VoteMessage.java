@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.paxos.vote;
-import net.hasor.paxos.PaxosResult;
-import net.hasor.paxos.domain.AcceptMessage;
-import net.hasor.paxos.domain.ProposalID;
-import net.hasor.paxos.domain.ProposalMessage;
+package net.hasor.neuron._;
+import net.hasor.neuron._.PaxosResult;
+import net.hasor.neuron._.AcceptMessage;
+import net.hasor.neuron._.ProposalID;
+import net.hasor.neuron._.ProposalMessage;
 /**
  * 选举
  *

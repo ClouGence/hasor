@@ -13,23 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.paxos;
+package net.hasor.neuron.domain;
 /**
- * 递交是否被接受
+ * 事件定义
+ *
  * @version : 2016年09月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public enum ResultTypeEnum {
-    /**
-     * 接受
-     *  - 接受发送来的 : 提案、ServerID、决议、Leader的选举。*/
-    Accept,
-    /**
-     * 拒绝
-     *  - 已经接受了其它 : 提案、ServerID、决议、Leader的选举。*/
-    Reject,
-    /**
-     * 无效
-     *  - 递交的请求无效, 通常情况下无效是因为提案 ID 过小。*/
-    Invalid,
+public interface NeuronEvent {
+    public static final String ServerStatus = ServerStatus.class.getName();
 }

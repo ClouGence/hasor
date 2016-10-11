@@ -28,7 +28,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.paxos;
+package net.hasor.neuron._;
 import java.io.Serializable;
 /**
  * 用于封装结果集

@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.paxos.domain;
+package net.hasor.neuron._;
 /**
- * 提案
+ * 决议
  * @version : 2016年09月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ProposalMessage {
+public class AcceptMessage {
     private ProposalID proposalID;  // 提案ID
-    private byte[]     content;     // 数据
     private String     dataSnapshot;// 数据快照
     //
     public ProposalID getProposalID() {
@@ -29,12 +28,6 @@ public class ProposalMessage {
     }
     public void setProposalID(ProposalID proposalID) {
         this.proposalID = proposalID;
-    }
-    public byte[] getContent() {
-        return content;
-    }
-    public void setContent(byte[] content) {
-        this.content = content;
     }
     public String getDataSnapshot() {
         return dataSnapshot;

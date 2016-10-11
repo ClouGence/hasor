@@ -2,7 +2,7 @@
 <config xmlns="http://project.hasor.net/hasor/schema/hasor-rsf">
     <!-- 框架配置，包扫描范围 -->
     <hasor>
-        <loadPackages>net.hasor.paxos.*</loadPackages>
+        <loadPackages>net.hasor.neuron.*</loadPackages>
         <!-- RSF框架启动入口 -->
         <modules>
             <module></module>

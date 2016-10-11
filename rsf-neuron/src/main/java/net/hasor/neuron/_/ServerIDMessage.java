@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.paxos.serverid;
-import net.hasor.paxos.PaxosResult;
+package net.hasor.neuron._;
+import net.hasor.neuron._.PaxosResult;
 /**
  * 确定 ServerID 步骤
  *

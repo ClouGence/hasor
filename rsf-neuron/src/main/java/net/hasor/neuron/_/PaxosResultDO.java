@@ -13,26 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.paxos.domain;
+package net.hasor.neuron._;
 /**
- * 决议
+ * 结果集
  * @version : 2016年09月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public class AcceptMessage {
-    private ProposalID proposalID;  // 提案ID
-    private String     dataSnapshot;// 数据快照
+public class PaxosResultDO<T> implements PaxosResult<T> {
+    private static final long serialVersionUID = -4678893554960623786L;
+    private ResultTypeEnum resultType;
+    private T              result;
     //
-    public ProposalID getProposalID() {
-        return proposalID;
+    public PaxosResultDO(ResultTypeEnum resultType) {
+        this.resultType = resultType;
     }
-    public void setProposalID(ProposalID proposalID) {
-        this.proposalID = proposalID;
+    //
+    @Override
+    public T getResult() {
+        return this.result;
     }
-    public String getDataSnapshot() {
-        return dataSnapshot;
+    public void setResult(T result) {
+        this.result = result;
     }
-    public void setDataSnapshot(String dataSnapshot) {
-        this.dataSnapshot = dataSnapshot;
+    @Override
+    public ResultTypeEnum getResultType() {
+        return this.resultType;
     }
 }

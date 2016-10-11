@@ -1,16 +1,11 @@
-package net.hasor.paxos;
+package net.hasor.neuron;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.paxos.serverid.ServerIDMessage;
+import net.hasor.neuron._.ServerIDMessage;
 import net.hasor.rsf.RsfBinder;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfModule;
 import net.hasor.rsf.utils.TimerManager;
-import org.jgroups.Event;
-import org.jgroups.JChannel;
-import org.jgroups.Message;
-import org.jgroups.stack.Protocol;
-import org.jgroups.util.MessageBatch;
 /**
  * Created by zhaoyongchun on 16/9/10.
  */

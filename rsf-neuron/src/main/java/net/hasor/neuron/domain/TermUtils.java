@@ -13,32 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.paxos.domain;
-import net.hasor.paxos.PaxosResult;
-import net.hasor.paxos.ResultTypeEnum;
+package net.hasor.neuron.domain;
+import java.math.BigInteger;
 /**
- * 结果集
+ * ID 工具
  * @version : 2016年09月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public class PaxosResultDO<T> implements PaxosResult<T> {
-    private static final long serialVersionUID = -4678893554960623786L;
-    private ResultTypeEnum resultType;
-    private T              result;
-    //
-    public PaxosResultDO(ResultTypeEnum resultType) {
-        this.resultType = resultType;
+public class TermUtils {
+    /** +1 */
+    public static String incrementAndGet(String termID) {
+        BigInteger integer = new BigInteger(termID, 16);
+        integer = integer.add(BigInteger.valueOf(1L));
+        return integer.toString(16);
     }
-    //
-    @Override
-    public T getResult() {
-        return this.result;
-    }
-    public void setResult(T result) {
-        this.result = result;
-    }
-    @Override
-    public ResultTypeEnum getResultType() {
-        return this.resultType;
+    /** 第二个比第一个大 */
+    public static boolean gtFirst(String termID_1, String termID_2) {
+        BigInteger integer_1 = new BigInteger(termID_1, 16);
+        BigInteger integer_2 = new BigInteger(termID_2, 16);
+        return integer_1.compareTo(integer_2) < 0;
     }
 }

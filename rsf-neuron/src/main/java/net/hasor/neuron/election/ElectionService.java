@@ -13,26 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.paxos.domain;
+package net.hasor.neuron.election;
+import net.hasor.rsf.RsfMessage;
+import net.hasor.rsf.RsfResult;
 /**
- * 提案ID
+ * 选举接口
+ *
  * @version : 2016年09月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ProposalID {
-    private String serverID;    //服务器ID
-    private long   roundNumber; //round
-    //
-    public String getServerID() {
-        return serverID;
-    }
-    public void setServerID(String serverID) {
-        this.serverID = serverID;
-    }
-    public long getRoundNumber() {
-        return roundNumber;
-    }
-    public void setRoundNumber(long roundNumber) {
-        this.roundNumber = roundNumber;
-    }
+@RsfMessage
+public interface ElectionService {
+    /** 请求选票 */
+    public RsfResult requestVote(CollectVoteData voteData);
+
+    /** 返回投票 */
+    public RsfResult responseVote(CollectVoteResult voteData);
+    
+    
 }
