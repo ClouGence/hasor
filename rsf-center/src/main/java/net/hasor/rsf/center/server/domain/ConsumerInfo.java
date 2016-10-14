@@ -22,13 +22,15 @@ package net.hasor.rsf.center.server.domain;
  */
 public class ConsumerInfo {
     /** 客户端订阅者地址 */
-    private String rsfAddress;
+    private String  rsfAddress;
     /** 获取客户端调用服务超时时间 */
-    private int    clientTimeout;
+    private int     clientTimeout;
     /** 获取序列化方式 */
-    private String serializeType;
+    private String  serializeType;
     /** 最大请求队列长度 */
-    private int    maximumRequestSize;
+    private int     maximumRequestSize;
+    /** 是否为消息模式 */
+    private boolean message;
     //
     public String getRsfAddress() {
         return rsfAddress;
@@ -53,5 +55,11 @@ public class ConsumerInfo {
     }
     public void setMaximumRequestSize(int maximumRequestSize) {
         this.maximumRequestSize = maximumRequestSize;
+    }
+    public boolean isMessage() {
+        return message;
+    }
+    public void setMessage(boolean message) {
+        this.message = message;
     }
 }

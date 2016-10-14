@@ -76,6 +76,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
         consumerInfo.setRsfAddress(rsfAddress.toHostSchema());
         consumerInfo.setClientTimeout(info.getClientTimeout());
         consumerInfo.setMaximumRequestSize(info.getClientMaximumRequest());
+        consumerInfo.setMessage(info.getMessage());
         consumerInfo.setSerializeType(info.getSerializeType());
         ServiceInfo serviceInfo = getServiceInfo(info);
         return this.register(rsfAddress, serviceInfo, consumerInfo, RsfServiceType.Consumer);

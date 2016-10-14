@@ -46,7 +46,7 @@ public class RsfCenterRsfPlugin implements RsfPlugin {
         rsfBinder.rsfService(RsfCenterListener.class)//服务类型
                 .toInstance(new RsfCenterDataReceiver(rsfContext))//服务实现
                 .bindFilter("AuthFilter", new RsfCenterClientVerifyFilter(rsfContext))//服务安全过滤器
-                .register();//注册服务
+                .asShadow().register();//注册服务
         //
         // 2.注册中心消息发送接口
         InterAddress[] centerList = rsfContext.getSettings().getCenterServerSet();
@@ -64,7 +64,7 @@ public class RsfCenterRsfPlugin implements RsfPlugin {
                 .timeout(faceTimer)//服务接口超时时间
                 .bindFilter("AuthFilter", new RsfCenterClientVerifyFilter(rsfContext))//服务安全过滤器
                 .bindAddress(null, centerList)//静态地址，用不失效
-                .register();
+                .asShadow().register();//注册服务
         //
         // 3.注册RSF事件监听器
         EventContext eventContext = rsfContext.getAppContext().getEnvironment().getEventContext();

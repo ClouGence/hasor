@@ -46,6 +46,9 @@ public interface RsfBindInfo<T> extends BindInfo<T> {
      */
     public boolean isMessage();
 
+    /** 接口是否要求工作在隐藏模式下。*/
+    public boolean isShadow();
+
     /** @return 获取客户端调用服务超时时间。*/
     public int getClientTimeout();
 

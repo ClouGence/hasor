@@ -189,16 +189,16 @@ public interface RsfBinder {
     /**发布地址*/
     public interface RegisterBuilder<T> {
         /**更新服务地址本计算规则（服务级）*/
-        public void updateServiceRoute(String scriptBody);
+        public RegisterBuilder updateServiceRoute(String scriptBody);
 
         /**更新本地方法级地址计算脚本。*/
-        public void updateMethodRoute(String scriptBody);
+        public RegisterBuilder updateMethodRoute(String scriptBody);
 
         /**更新本地参数级地址计算脚本。*/
-        public void updateArgsRoute(String scriptBody);
+        public RegisterBuilder updateArgsRoute(String scriptBody);
 
         /**更新服务路由策略*/
-        public void updateFlowControl(String flowControl);
+        public RegisterBuilder updateFlowControl(String flowControl);
 
         /**
          * @param rsfHost 远程服务地址
@@ -223,6 +223,13 @@ public interface RsfBinder {
          * @param rsfAddress 远程服务地址
          */
         public RegisterBuilder<T> bindAddress(InterAddress rsfAddress, InterAddress... array);
+
+        /** @return 将接口的工作模式改为Message模式, 效果等同于加上 {@link RsfMessage}注解。*/
+        public RegisterBuilder<T> asMessage() throws IOException;
+
+        /** @return 隐藏模式, 隐藏模式下的服务无论身份是 提供者还是消费者, 都不会注册到注册中心上。
+         * 如果想要调用隐藏模式的服务必须要通过 P2P 形式进行调用。*/
+        public RegisterBuilder<T> asShadow() throws IOException;
 
         /** @return 将服务注册到{@link RsfContext}上。*/
         public RegisterReference<T> register() throws IOException;

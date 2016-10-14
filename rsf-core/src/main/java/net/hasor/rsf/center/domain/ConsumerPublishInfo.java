@@ -21,12 +21,19 @@ package net.hasor.rsf.center.domain;
  */
 public class ConsumerPublishInfo extends PublishInfo {
     private static final long serialVersionUID = -335204051257003763L;
-    private int clientMaximumRequest;                   //最大并发请求数
+    private int clientMaximumRequest;    //最大并发请求数
+    private boolean message = false;     //是否工作在消息模式
     //
     public int getClientMaximumRequest() {
         return clientMaximumRequest;
     }
     public void setClientMaximumRequest(int clientMaximumRequest) {
         this.clientMaximumRequest = clientMaximumRequest;
+    }
+    public boolean getMessage() {
+        return this.message;
+    }
+    public void setMessage(boolean message) {
+        this.message = message;
     }
 }

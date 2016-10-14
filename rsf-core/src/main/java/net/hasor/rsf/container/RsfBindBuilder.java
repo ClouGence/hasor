@@ -225,6 +225,16 @@ abstract class RsfBindBuilder implements RsfBinder {
             }
             return this;
         }
+        @Override
+        public RegisterBuilder<T> asMessage() throws IOException {
+            this.serviceDefine.getDomain().setMessage(true);
+            return this;
+        }
+        @Override
+        public RegisterBuilder<T> asShadow() throws IOException {
+            this.serviceDefine.getDomain().setShadow(true);
+            return this;
+        }
         //
         public RegisterReference<T> register() throws IOException {
             String serviceID = this.serviceDefine.getDomain().getBindID();
@@ -235,24 +245,28 @@ abstract class RsfBindBuilder implements RsfBinder {
             return ref;
         }
         @Override
-        public void updateFlowControl(String flowControl) {
+        public RegisterBuilder updateFlowControl(String flowControl) {
             String serviceID = this.serviceDefine.getDomain().getBindID();
             getRsfContext().getUpdater().updateFlowControl(serviceID, flowControl);
+            return this;
         }
         @Override
-        public void updateArgsRoute(String scriptBody) {
+        public RegisterBuilder updateArgsRoute(String scriptBody) {
             String serviceID = this.serviceDefine.getDomain().getBindID();
             getRsfContext().getUpdater().updateArgsRoute(serviceID, scriptBody);
+            return this;
         }
         @Override
-        public void updateMethodRoute(String scriptBody) {
+        public RegisterBuilder updateMethodRoute(String scriptBody) {
             String serviceID = this.serviceDefine.getDomain().getBindID();
             getRsfContext().getUpdater().updateMethodRoute(serviceID, scriptBody);
+            return this;
         }
         @Override
-        public void updateServiceRoute(String scriptBody) {
+        public RegisterBuilder updateServiceRoute(String scriptBody) {
             String serviceID = this.serviceDefine.getDomain().getBindID();
             getRsfContext().getUpdater().updateServiceRoute(serviceID, scriptBody);
+            return this;
         }
     }
 }

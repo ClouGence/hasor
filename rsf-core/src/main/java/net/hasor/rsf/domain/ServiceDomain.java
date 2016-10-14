@@ -30,7 +30,8 @@ public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> 
     private String         bindGroup          = "default"; //服务分组
     private String         bindVersion        = "1.0.0";   //服务版本
     private Class<T>       bindType           = null;      //服务类型
-    private boolean        isMessage          = false;     //是否为消息接口
+    private boolean        asMessage          = false;     //是否为消息接口
+    private boolean        asShadow           = false;     //是否为消息接口
     private boolean        isSharedThreadPool = false;     //是否共享调用线程池(提供者)
     private int            clientTimeout      = 6000;      //调用超时（毫秒）
     private String         serializeType      = null;      //传输序列化类型
@@ -38,7 +39,7 @@ public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> 
     //
     public ServiceDomain(Class<T> bindType) {
         this.bindType = bindType;
-        this.isMessage = bindType.isAnnotationPresent(RsfMessage.class);
+        this.asMessage = bindType.isAnnotationPresent(RsfMessage.class);
     }
     public String getBindID() {
         if (bindID == null) {
@@ -76,7 +77,18 @@ public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> 
     }
     /**是否为消息接口。*/
     public boolean isMessage() {
-        return this.isMessage;
+        return this.asMessage || this.bindType.isAnnotationPresent(RsfMessage.class);
+    }
+    /** 设置接口的工作状态,如果接口标记了@RsfMessage,那么无论设置什么值 isMessage 都会返回true。 */
+    public void setMessage(boolean asMessage) {
+        this.asMessage = asMessage;
+    }
+    /** 接口是否要求工作在隐藏模式下。*/
+    public boolean isShadow() {
+        return asShadow;
+    }
+    public void setShadow(boolean asShadow) {
+        this.asShadow = asShadow;
     }
     /**获取客户端调用服务超时时间。*/
     public int getClientTimeout() {

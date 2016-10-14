@@ -163,13 +163,16 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
         //1.对所有服务进行分类
         List<RsfBindInfo<?>> iterator = new ArrayList<RsfBindInfo<?>>(this.serviceMap.values());
         for (RsfBindInfo<?> domain : iterator) {
-            if (domain != null) {
-                String ticketInfo = (String) domain.getMetaData(RsfConstants.Center_Ticket);
-                if (StringUtils.isEmpty(ticketInfo)) {
-                    needRegister.add(domain);//需要新注册
-                } else {
-                    needBeat.add(domain);//服务需要进行心跳
-                }
+            // .如果是工作隐藏模式下那么不参与注册
+            if (domain == null || domain.isShadow()) {
+                continue;
+            }
+            // -
+            String ticketInfo = (String) domain.getMetaData(RsfConstants.Center_Ticket);
+            if (StringUtils.isEmpty(ticketInfo)) {
+                needRegister.add(domain);//需要新注册
+            } else {
+                needBeat.add(domain);//服务需要进行心跳
             }
         }
         //
@@ -224,6 +227,7 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
                 //
                 ConsumerPublishInfo info = fillTo(domain, new ConsumerPublishInfo());
                 info.setClientMaximumRequest(this.rsfContext.getSettings().getMaximumRequest());
+                info.setMessage(domain.isMessage());
                 registerInfo = this.centerRegister.registerConsumer(info);
                 logger.info("receiveService service {} register to center -> {}", domain.getBindID(), registerInfo);
             }
