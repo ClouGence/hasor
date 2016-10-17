@@ -43,9 +43,14 @@
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>rsf-neuron</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.11</version>
+            <version>1.2.17</version>
         </dependency>
         <dependency>
             <artifactId>je</artifactId>
