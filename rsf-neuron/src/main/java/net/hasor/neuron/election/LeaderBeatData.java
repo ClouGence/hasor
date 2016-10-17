@@ -14,24 +14,34 @@
  * limitations under the License.
  */
 package net.hasor.neuron.election;
-import net.hasor.rsf.RsfMessage;
-import net.hasor.rsf.RsfResult;
 /**
- * 选举接口
+ * 服务器心跳数据包
+ *
  * @version : 2016年09月10日
  * @author 赵永春(zyc@hasor.net)
  */
-@RsfMessage
-public interface ElectionService {
-    /** 请求选票 */
-    public RsfResult requestVote(CollectVoteData voteData);
-
-    /** 返回投票 */
-    public RsfResult responseVote(CollectVoteResult voteData);
-
-    /** 接受来自 Leader 的心跳 */
-    public RsfResult heartbeatForLeader(LeaderBeatData leaderBeatData);
-
-    /** 回应 Leader 的心跳 */
-    public RsfResult heartbeatResponse(LeaderBeatResult leaderBeatResult);
+public class LeaderBeatData {
+    private String serverID    = null; //候选人 ServerID
+    private String term        = null; //候选人当前 term 值
+    private String commitIndex = null; //候选人最后日志条目的任期号
+    //
+    //
+    public String getServerID() {
+        return serverID;
+    }
+    public void setServerID(String serverID) {
+        this.serverID = serverID;
+    }
+    public String getTerm() {
+        return term;
+    }
+    public void setTerm(String term) {
+        this.term = term;
+    }
+    public String getCommitIndex() {
+        return commitIndex;
+    }
+    public void setCommitIndex(String commitIndex) {
+        this.commitIndex = commitIndex;
+    }
 }

@@ -21,11 +21,8 @@ package net.hasor.neuron.election;
  * @author 赵永春(zyc@hasor.net)
  */
 public class CollectVoteData {
-    private String term        = null; //候选人的任期号
-    private String serverID    = null; //请求选票的候选人的 Id
-    private String lastApplied = null; //候选人的最后日志条目的索引值
-    private String commitIndex = null; //候选人最后日志条目的任期号
-    //
+    private String serverID = null; //候选人 ServerID
+    private String term     = null; //候选人当前 term 值
     //
     public String getTerm() {
         return term;
@@ -38,17 +35,5 @@ public class CollectVoteData {
     }
     public void setServerID(String serverID) {
         this.serverID = serverID;
-    }
-    public String getLastApplied() {
-        return lastApplied;
-    }
-    public void setLastApplied(String lastApplied) {
-        this.lastApplied = lastApplied;
-    }
-    public String getCommitIndex() {
-        return commitIndex;
-    }
-    public void setCommitIndex(String commitIndex) {
-        this.commitIndex = commitIndex;
     }
 }

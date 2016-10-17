@@ -13,25 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.neuron.election;
-import net.hasor.rsf.RsfMessage;
-import net.hasor.rsf.RsfResult;
+package net.hasor.neuron.bootstrap;
+import net.hasor.rsf.utils.TimerManager;
 /**
- * 选举接口
+ * 定时器
  * @version : 2016年09月10日
  * @author 赵永春(zyc@hasor.net)
  */
-@RsfMessage
-public interface ElectionService {
-    /** 请求选票 */
-    public RsfResult requestVote(CollectVoteData voteData);
-
-    /** 返回投票 */
-    public RsfResult responseVote(CollectVoteResult voteData);
-
-    /** 接受来自 Leader 的心跳 */
-    public RsfResult heartbeatForLeader(LeaderBeatData leaderBeatData);
-
-    /** 回应 Leader 的心跳 */
-    public RsfResult heartbeatResponse(LeaderBeatResult leaderBeatResult);
+public class NeuronTimerManager extends TimerManager {
+    public NeuronTimerManager(int defaultTimeout) {
+        super(defaultTimeout, "RSF-NEURON-");
+    }
 }

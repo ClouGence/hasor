@@ -13,25 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.neuron.election;
-import net.hasor.rsf.RsfMessage;
-import net.hasor.rsf.RsfResult;
+package net.hasor.neuron.domain;
 /**
- * 选举接口
+ * 一条日志数据
+ *
  * @version : 2016年09月10日
  * @author 赵永春(zyc@hasor.net)
  */
-@RsfMessage
-public interface ElectionService {
-    /** 请求选票 */
-    public RsfResult requestVote(CollectVoteData voteData);
-
-    /** 返回投票 */
-    public RsfResult responseVote(CollectVoteResult voteData);
-
-    /** 接受来自 Leader 的心跳 */
-    public RsfResult heartbeatForLeader(LeaderBeatData leaderBeatData);
-
-    /** 回应 Leader 的心跳 */
-    public RsfResult heartbeatResponse(LeaderBeatResult leaderBeatResult);
+public enum NodeStatus {
+    /**在线*/
+    Online(),
+    /**
+     * 不可靠的,可能不在线,可能在线
+     * 心跳包发出后会成为该状态,当收到心跳回应包之后变成为在线状态。*/
+    Uncertainty(),
+    /**不在线*/
+    Offline(),
 }

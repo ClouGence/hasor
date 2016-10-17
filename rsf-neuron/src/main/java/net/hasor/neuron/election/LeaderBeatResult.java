@@ -13,17 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.neuron.rpcs;
-import net.hasor.neuron.domain.NodeData;
-import net.hasor.neuron.election.CollectVoteData;
+package net.hasor.neuron.election;
 /**
- * 负责发起远程调用
+ * 心跳回应包
  *
  * @version : 2016年09月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RemoteCall {
-    /** 收集选票 */
-    public void collectVote(NodeData[] nodes, CollectVoteData voteData) {
+public class LeaderBeatResult {
+    private String  serverID = null;  //服务器ID
+    private boolean accept   = false; //候选人赢得了此张选票时为真
+    //
+    public String getServerID() {
+        return serverID;
+    }
+    public void setServerID(String serverID) {
+        this.serverID = serverID;
+    }
+    public boolean isAccept() {
+        return accept;
+    }
+    public void setAccept(boolean accept) {
+        this.accept = accept;
     }
 }

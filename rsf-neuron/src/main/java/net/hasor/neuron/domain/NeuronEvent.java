@@ -21,5 +21,8 @@ package net.hasor.neuron.domain;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface NeuronEvent {
-    public static final String ServerStatus = ServerStatus.class.getName();
+    //
+    public static final String ServerStatus   = ServerStatus.class.getName();
+    //
+    public static final String VotedFor_Event = "VotedFor_Event";
 }

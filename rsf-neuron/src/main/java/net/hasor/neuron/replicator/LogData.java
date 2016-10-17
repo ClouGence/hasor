@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.neuron.domain;
+package net.hasor.neuron.replicator;
 import java.util.Date;
 /**
  * 一条日志数据

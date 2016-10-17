@@ -1,11 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://project.hasor.net/hasor/schema/hasor-rsf">
+<config xmlns="http://project.hasor.net/hasor/schema/rsf-neuron">
     <!-- 框架配置，包扫描范围 -->
     <hasor>
         <loadPackages>net.hasor.neuron.*</loadPackages>
-        <!-- RSF框架启动入口 -->
+
+        <!-- Neuron框架启动入口 -->
         <modules>
-            <module></module>
+            <module>net.hasor.neuron.bootstrap.RsfNeuronModule</module>
         </modules>
+
+        <!-- Neuron框架环境变量 -->
+        <environmentVar>
+
+            <!-- 数据存放目录 -->
+            <RSF_NEURON_DATA_HOME>%WORK_HOME%/neuron/data</RSF_NEURON_DATA_HOME>
+            <!-- 数据快照目录 -->
+            <RSF_NEURON_SNAPSHOT_HOME>%WORK_HOME%/neuron/snapshot</RSF_NEURON_SNAPSHOT_HOME>
+
+        </environmentVar>
     </hasor>
+
+
+    <!--
+        Hasor-RSF ( 分布式服务框架的注册中心 )
+    -->
+    <hasor.rsfNeuron serviceID="${}">
+
+        <!-- 基准心跳时间 -->
+        <timeout>150</timeout>
+
+    </hasor.rsfNeuron>
+
 </config>

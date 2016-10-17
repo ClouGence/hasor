@@ -45,6 +45,5 @@
         <module>rsf-center</module>
         <module>rsf-demo</module>
         <module>rsf-neuron</module>
-        <!--<module>rsf-center/rsf-center-manager</module>-->
     </modules>
 </project>
