@@ -1,4 +1,8 @@
-﻿===== Hasor-Core v2.4.6 (2016-10-07)
+﻿===== Hasor-Core v2.4.7 (2016-10-?)
+* 改进:
+    01.升级依赖 slf4j-api 到 1.7.21 版本。
+
+===== Hasor-Core v2.4.6 (2016-10-07)
 * 新增:
     01.restful插件增加,json; 拦截。
     02.WebEnvironment、WebAppContext可以被依赖注入了。
