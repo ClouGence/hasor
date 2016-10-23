@@ -1,4 +1,7 @@
 ﻿===== Hasor-Core v2.4.7 (2016-10-?)
+* 新增:
+    01.新增 ClassAwareProvider、InfoAwareProvider 两个工具类。
+    02.Hasor 新增一个 autoAware 方法的重载。
 * 改进:
     01.升级依赖 slf4j-api 到 1.7.21 版本。
 

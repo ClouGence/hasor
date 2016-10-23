@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import static net.hasor.core.AppContext.ContextEvent_Shutdown;
-import static net.hasor.core.AppContext.ContextEvent_Started;
-
-import java.io.File;
-
-import org.more.util.ExceptionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.container.BeanContainer;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
+import org.more.util.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+
+import static net.hasor.core.AppContext.ContextEvent_Shutdown;
+import static net.hasor.core.AppContext.ContextEvent_Started;
 /**
  * Hasor 基础工具包。
  * @version : 2013-4-3
@@ -33,6 +33,23 @@ import net.hasor.core.environment.StandardEnvironment;
  */
 public abstract class Hasor {
     protected static Logger logger = LoggerFactory.getLogger(Hasor.class);
+    /**
+     * 将{@link AppContextAware}接口实现类注册到容器中，Hasor 会在启动的第一时间为这些对象执行注入。
+     * @param awareProvider 需要被注册的 AppContextAware 接口实现对象。
+     * @return 返回 aware 参数本身。
+     */
+    public static <T extends AppContextAware> Provider<T> autoAware(Environment env, final Provider<T> awareProvider) {
+        if (awareProvider == null) {
+            return awareProvider;
+        }
+        Hasor.assertIsNotNull(env, "EventContext is null.");
+        env.getEventContext().pushListener(ContextEvent_Started, new EventListener<AppContext>() {
+            public void onEvent(String event, AppContext eventData) throws Throwable {
+                awareProvider.get().setAppContext(eventData);
+            }
+        });
+        return awareProvider;
+    }
     /**
      * 将{@link AppContextAware}接口实现类注册到容器中，Hasor 会在启动的第一时间为这些对象执行注入。
      * @param aware 需要被注册的 AppContextAware 接口实现对象。
