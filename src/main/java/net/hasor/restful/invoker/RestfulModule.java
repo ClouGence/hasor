@@ -73,9 +73,9 @@ public class RestfulModule extends WebModule {
         //
         // .MappingTo
         Set<Class<?>> serviceSet = apiBinder.findClass(MappingTo.class);
-        serviceSet = new HashSet<Class<?>>(serviceSet);
+        serviceSet = (serviceSet == null) ? new HashSet<Class<?>>() : new HashSet<Class<?>>(serviceSet);
         serviceSet.remove(MappingTo.class);
-        if (serviceSet == null || serviceSet.isEmpty()) {
+        if (serviceSet.isEmpty()) {
             logger.warn("restful -> exit , not found any @MappingTo.");
             return;
         }

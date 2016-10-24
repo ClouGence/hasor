@@ -20,8 +20,6 @@ import net.hasor.core.binder.BinderHelper;
 import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.BeanContainer;
 import net.hasor.core.container.ScopManager;
-import net.hasor.core.context.listener.ContextShutdownListener;
-import net.hasor.core.context.listener.ContextStartListener;
 import org.more.util.ArrayUtils;
 import org.more.util.ClassUtils;
 import org.more.util.StringUtils;
@@ -423,13 +421,15 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
             logger.error("appContext is started.");
             return;
         }
-        /*1.Init*/
-        logger.info("appContext -> doInitialize.");
-        doInitialize();
-        /*2.Bind*/
+        /*1.findModules*/
+        logger.info("appContext -> findModules.");
         ArrayList<Module> findModules = new ArrayList<Module>();
         findModules.addAll(Arrays.asList(this.findModules()));
         findModules.addAll(Arrays.asList(modules));
+        /*2.doInitialize*/
+        logger.info("appContext -> doInitialize.");
+        doInitialize();
+        /*3.Bind*/
         for (Module module : findModules) {
             logger.info("installModule -> {}", module);
             this.installModule(module);
@@ -437,23 +437,21 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         ApiBinder apiBinder = newApiBinder(null);
         logger.info("appContext -> doBind.");
         doBind(apiBinder);
-        /*3.引发事件*/
-        logger.info("appContext -> fireSyncEvent ,eventType = {}", ContextEvent_Initialized);
-        EventContext ec = getEnvironment().getEventContext();
-        ec.fireSyncEvent(ContextEvent_Initialized, apiBinder);
+        /*4.引发事件*/
         logger.info("appContext -> doInitializeCompleted");
         doInitializeCompleted();
         //
-        /*3.Start*/
+        //-------------------------------------------------------------------------------------------
+        /*5.Start*/
         logger.info("appContext -> doStart");
         doStart();
-        /*4.发送启动事件*/
+        /*6.发送启动事件*/
         logger.info("appContext -> fireSyncEvent ,eventType = {}", ContextEvent_Started);
-        ec.fireSyncEvent(ContextEvent_Started, this);
+        getEnvironment().getEventContext().fireSyncEvent(ContextEvent_Started, this);
         logger.info("appContext -> doStartCompleted");
         doStartCompleted();/*用于扩展*/
         //
-        /*5.打印状态*/
+        /*7.打印状态*/
         logger.info("Hasor Started!");
         Runtime.getRuntime().addShutdownHook(shutdownHook);
     }

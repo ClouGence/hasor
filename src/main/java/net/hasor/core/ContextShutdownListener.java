@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.listener;
-import net.hasor.core.AppContext;
+package net.hasor.core;
 /**
  * 用于容器销毁事件接收
  * @version : 2014-5-10

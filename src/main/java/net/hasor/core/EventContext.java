@@ -20,8 +20,6 @@ package net.hasor.core;
  * @author 赵永春 (zyc@byshell.org)
  */
 public interface EventContext {
-    //
-
     /**
      * pushPhaseEvent方法注册的时间监听器当收到一次事件之后会被自动删除。
      * @param eventType 事件类型

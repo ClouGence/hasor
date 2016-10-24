@@ -4,6 +4,9 @@
     02.Hasor 新增一个 autoAware 方法的重载。
 * 改进:
     01.升级依赖 slf4j-api 到 1.7.21 版本。
+    02.删除 ContextEvent_Initialized 事件，该事件等同于 Module 的 loadModule。
+    03.ContextShutdownListener、ContextStartListener两个内部接口提升为 Hasor Api接口。
+    04.findModules 过程提升到 doInitialized 之前。
 
 ===== Hasor-Core v2.4.6 (2016-10-07)
 * 新增:
