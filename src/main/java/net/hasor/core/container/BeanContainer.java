@@ -44,13 +44,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class BeanContainer extends TemplateBeanBuilder implements ScopManager {
     protected Logger                                     logger           = LoggerFactory.getLogger(getClass());
     private   AtomicBoolean                              inited           = new AtomicBoolean(false);
-    //    private   Scope                                      singletonScope   = new SingletonScope();
     private   List<BindInfo<?>>                          tempBindInfoList = new ArrayList<BindInfo<?>>();
     private   ConcurrentHashMap<String, List<String>>    indexTypeMapping = new ConcurrentHashMap<String, List<String>>();
     private   ConcurrentHashMap<String, List<String>>    indexNameMapping = new ConcurrentHashMap<String, List<String>>();
     private   ConcurrentHashMap<String, BindInfo<?>>     idDataSource     = new ConcurrentHashMap<String, BindInfo<?>>();
     private   ConcurrentHashMap<String, Provider<Scope>> scopeMapping     = new ConcurrentHashMap<String, Provider<Scope>>();
-    //
     //
     /*-----------------------------------------------------------------------------------BindInfo*/
     public boolean isInit() {

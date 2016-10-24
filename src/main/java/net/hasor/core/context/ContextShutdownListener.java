@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
+package net.hasor.core.context;
+import net.hasor.core.AppContext;
 /**
- * 用于容器启动事件接收
+ * 用于容器销毁事件接收
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ContextStartListener {
-    /**开始进入容器启动过程。*/
-    public void doStart(AppContext appContext);
+public interface ContextShutdownListener {
+    /**开始进入容器销毁过程。*/
+    public void doShutdown(AppContext appContext);
 
-    /**容器启动完成。*/
-    public void doStartCompleted(AppContext appContext);
+    /**容器销毁完成。*/
+    public void doShutdownCompleted(AppContext appContext);
 }
