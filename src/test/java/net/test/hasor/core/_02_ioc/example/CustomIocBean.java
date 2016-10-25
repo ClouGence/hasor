@@ -26,8 +26,8 @@ import net.test.hasor.core._01_bean.pojo.PojoInfo;
  */
 public class CustomIocBean implements InjectMembers {
     @Inject
-    protected PojoInfo iocBeanTest = null; // <-因为实现了InjectMembers接口，因此@Inject注解将会失效。
-    protected PojoInfo iocBean     = null; //
+    public PojoInfo iocBeanTest = null; // <-因为实现了InjectMembers接口，因此@Inject注解将会失效。
+    public PojoInfo iocBean     = null; //
     //
     public void doInject(AppContext appContext) throws Throwable {
         this.iocBean = new PojoBean();

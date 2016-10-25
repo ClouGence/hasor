@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.test.hasor.db._06_transaction;
-import static net.test.hasor.junit.HasorUnit.newID;
+import static net.hasor.junit.HasorUnit.newID;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -28,8 +28,8 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Inject;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.transaction.Isolation;
-import net.test.hasor.junit.DaemonThread;
-import net.test.hasor.junit.HasorUnit;
+import net.hasor.junit.DaemonThread;
+import net.hasor.junit.HasorUnit;
 /***
  * 数据库测试程序基类，监控线程
  * @version : 2014-1-13

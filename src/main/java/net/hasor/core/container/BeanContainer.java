@@ -15,8 +15,10 @@
  */
 package net.hasor.core.container;
 import net.hasor.core.*;
+import net.hasor.core.EventListener;
 import net.hasor.core.binder.InstanceProvider;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
+import net.hasor.core.info.NotifyData;
 import net.hasor.core.scope.SingletonScope;
 import org.more.RepeateException;
 import org.more.util.StringUtils;
@@ -24,10 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
@@ -41,28 +40,47 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version : 2015年11月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public class BeanContainer extends TemplateBeanBuilder implements ScopManager {
+public class BeanContainer extends TemplateBeanBuilder implements ScopManager, Observer {
     protected Logger                                     logger           = LoggerFactory.getLogger(getClass());
     private   AtomicBoolean                              inited           = new AtomicBoolean(false);
-    private   List<BindInfo<?>>                          tempBindInfoList = new ArrayList<BindInfo<?>>();
+    private   List<BindInfo<?>>                          allBindInfoList  = new ArrayList<BindInfo<?>>();
     private   ConcurrentHashMap<String, List<String>>    indexTypeMapping = new ConcurrentHashMap<String, List<String>>();
-    private   ConcurrentHashMap<String, List<String>>    indexNameMapping = new ConcurrentHashMap<String, List<String>>();
     private   ConcurrentHashMap<String, BindInfo<?>>     idDataSource     = new ConcurrentHashMap<String, BindInfo<?>>();
     private   ConcurrentHashMap<String, Provider<Scope>> scopeMapping     = new ConcurrentHashMap<String, Provider<Scope>>();
     //
     /*-----------------------------------------------------------------------------------BindInfo*/
-    public boolean isInit() {
-        return this.inited.get();
-    }
     /**根据ID查找{@link BindInfo}*/
-    public <T> BindInfo<T> getBindInfoByID(String infoID) {
+    public <T> BindInfo<T> findBindInfoByID(String infoID) {
         return (BindInfo<T>) this.idDataSource.get(infoID);
     }
-    /**根据绑定的类型找到所有类型相同的{@link BindInfo}*/
-    public <T> List<BindInfo<T>> getBindInfoByType(Class<T> targetType) {
-        List<String> idList = this.indexTypeMapping.get(targetType.getName());
+    public <T> BindInfo<T> findBindInfoByType(Class<T> bindType) {
+        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        return findBindInfo(null, bindType);
+    }
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> BindInfo<T> findBindInfo(final String withName, final Class<T> bindType) {
+        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        //
+        List<BindInfo<T>> typeRegisterList = findBindInfoList(bindType);
+        if (typeRegisterList != null && !typeRegisterList.isEmpty()) {
+            for (int i = typeRegisterList.size() - 1; i >= 0; i--) {
+                BindInfo<T> adapter = typeRegisterList.get(i);
+                //
+                if (StringUtils.isBlank(adapter.getBindName()) && StringUtils.isBlank(withName)) {
+                    return adapter;
+                }
+                if (StringUtils.equals(adapter.getBindName(), withName)) {
+                    return adapter;
+                }
+            }
+        }
+        return null;
+    }
+    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
+    public <T> List<BindInfo<T>> findBindInfoList(final Class<T> bindType) {
+        List<String> idList = this.indexTypeMapping.get(bindType.getName());
         if (idList == null || idList.isEmpty()) {
-            logger.debug("getBindInfoByType , never define this type = {}", targetType);
+            logger.debug("getBindInfoByType , never define this type = {}", bindType);
             return Collections.EMPTY_LIST;
         }
         List<BindInfo<T>> resultList = new ArrayList<BindInfo<T>>();
@@ -71,22 +89,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager {
             if (adapter != null) {
                 resultList.add((BindInfo<T>) adapter);
             } else {
-                logger.debug("getBindInfoByType , cannot find {} BindInfo.", infoID);
-            }
-        }
-        return resultList;
-    }
-    /**根据名称找到同名的所有{@link BindInfo}*/
-    public List<BindInfo<?>> getBindInfoByName(String bindName) {
-        List<String> nameList = this.indexNameMapping.get(bindName);
-        if (nameList == null || nameList.isEmpty()) {
-            return Collections.EMPTY_LIST;
-        }
-        List<BindInfo<?>> resultList = new ArrayList<BindInfo<?>>();
-        for (String infoName : nameList) {
-            BindInfo<?> adapter = this.idDataSource.get(infoName);
-            if (adapter != null) {
-                resultList.add(adapter);
+                logger.debug("findBindInfoList , cannot find {} BindInfo.", infoID);
             }
         }
         return resultList;
@@ -101,15 +104,28 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager {
      * @return 返回声明类型下有效的名称。
      */
     public Collection<String> getBindInfoNamesByType(Class<?> targetClass) {
-        return this.indexNameMapping.keySet();
+        List<? extends BindInfo<?>> bindInfoList = this.findBindInfoList(targetClass);
+        ArrayList<String> names = new ArrayList<String>(bindInfoList.size());
+        for (BindInfo<?> info : bindInfoList) {
+            String bindName = info.getBindName();
+            if (StringUtils.isBlank(bindName)) {
+                continue;
+            }
+            names.add(bindName);
+        }
+        return names;
     }
+    //
+    /*-------------------------------------------------------------------------------------------*/
+    //
     /**
      * 创建{@link AbstractBindInfoProviderAdapter}，交给外层用于Bean定义。
      * @param bindType 声明的类型。
      */
     public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType) {
         AbstractBindInfoProviderAdapter<T> adapter = super.createInfoAdapter(bindType);
-        this.tempBindInfoList.add(adapter);
+        adapter.addObserver(this);
+        adapter.setBindID(adapter.getBindID());
         return adapter;
     }
     @Override
@@ -124,7 +140,6 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager {
                     return callSuperCreateObject(targetType, bindInfo, appContext);
                 }
             }).get();
-            //   
         } else {
             return callSuperCreateObject(targetType, bindInfo, appContext);
         }
@@ -132,70 +147,45 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager {
     private <T> T callSuperCreateObject(Class<T> targetType, BindInfo<T> bindInfo, AppContext appContext) {
         return super.createObject(targetType, bindInfo, appContext);
     }
-    /*---------------------------------------------------------------------------------------Life*/
-    /**
-     * 当容器启动时，需要做Bean注册的重复性检查。
-     */
+    //
+    /*-------------------------------------------------------------------------------------------*/
+    //
+    public boolean isInit() {
+        return this.inited.get();
+    }
     public void doInitializeCompleted(Environment env) {
         if (!this.inited.compareAndSet(false, true)) {
             return;/*避免被初始化多次*/
         }
-        //
-        for (BindInfo<?> info : this.tempBindInfoList) {
-            String bindID = info.getBindID();
-            //只有ID做重复检查
-            if (idDataSource.containsKey(info.getBindID())) {
-                throw new RepeateException("duplicate bind id value is " + info.getBindID());
+        this.scopeMapping.put(ScopManager.SINGLETON_SCOPE, new InstanceProvider<Scope>(new SingletonScope()));
+        for (BindInfo<?> info : this.allBindInfoList) {
+            if (info instanceof AbstractBindInfoProviderAdapter == false) {
+                continue;
             }
-            idDataSource.put(bindID, info);
-            //
-            String bindTypeStr = info.getBindType().getName();
-            List<String> newTypeList = new ArrayList<String>();
-            List<String> typeList = indexTypeMapping.putIfAbsent(bindTypeStr, newTypeList);
-            if (typeList == null) {
-                typeList = newTypeList;
-            }
-            typeList.add(bindID);
-            //
-            String bindName = info.getBindName();
-            bindName = StringUtils.isBlank(bindName) ? "" : bindName;
-            List<String> newNameList = new ArrayList<String>();
-            List<String> nameList = indexNameMapping.putIfAbsent(bindName, newNameList);
-            if (nameList == null) {
-                nameList = newNameList;
-            }
-            nameList.add(bindName);
-            //
-            if (info instanceof AbstractBindInfoProviderAdapter) {
-                final AbstractBindInfoProviderAdapter<?> infoAdapter = (AbstractBindInfoProviderAdapter<?>) info;
-                Method initMethod = TemplateBeanBuilder.findInitMethod(info.getBindType(), infoAdapter);
-                boolean singleton = testSingleton(infoAdapter.getBindType(), info, env.getSettings());
-                if (initMethod != null && singleton) {
-                    //
-                    Hasor.pushStartListener(env, new EventListener<AppContext>() {
-                        public void onEvent(String event, AppContext eventData) throws Throwable {
-                            eventData.getInstance(infoAdapter);//执行init
-                        }
-                    });
-                }
+            final AbstractBindInfoProviderAdapter<?> infoAdapter = (AbstractBindInfoProviderAdapter<?>) info;
+            Method initMethod = TemplateBeanBuilder.findInitMethod(infoAdapter.getBindType(), infoAdapter);
+            boolean singleton = testSingleton(infoAdapter.getBindType(), info, env.getSettings());
+            if (initMethod != null && singleton) {
+                //
+                Hasor.pushStartListener(env, new EventListener<AppContext>() {
+                    public void onEvent(String event, AppContext eventData) throws Throwable {
+                        eventData.getInstance(infoAdapter);//执行init
+                    }
+                });
             }
         }
-        this.tempBindInfoList.clear();
-        this.scopeMapping.put(ScopManager.SINGLETON_SCOPE, new InstanceProvider<Scope>(new SingletonScope()));
     }
-    /**
-     * 当容器停止运行时，需要做Bean清理工作。
-     */
+    /** 当容器停止运行时，需要做Bean清理工作。*/
     public void doShutdownCompleted() {
         if (!this.inited.compareAndSet(true, false)) {
             return;/*避免被销毁多次*/
         }
-        this.tempBindInfoList.clear();
         this.indexTypeMapping.clear();
-        this.indexNameMapping.clear();
         this.idDataSource.clear();
         this.scopeMapping.clear();
     }
+    //
+    /*-------------------------------------------------------------------------------------------*/
     //
     @Override
     public Provider<Scope> registerScope(String scopeName, Provider<Scope> scope) {
@@ -208,5 +198,68 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager {
     @Override
     public Provider<Scope> findScope(String scopeName) {
         return this.scopeMapping.get(scopeName);
+    }
+    //
+    /*-------------------------------------------------------------------------------------------*/
+    //
+    @Override
+    public synchronized void update(Observable o, Object arg) {
+        if (arg == null || !(arg instanceof NotifyData)) {
+            return;
+        }
+        if (o == null || !(o instanceof AbstractBindInfoProviderAdapter)) {
+            return;
+        }
+        //
+        AbstractBindInfoProviderAdapter target = (AbstractBindInfoProviderAdapter) o;
+        String bindTypeStr = target.getBindType().getName();
+        String bindID = target.getBindID();
+        //
+        // .新数据初始化
+        boolean hasOld = this.idDataSource.containsKey(bindID);
+        if (!hasOld) {
+            this.allBindInfoList.add(target);
+            this.idDataSource.put(bindID, target);
+            List<String> newTypeList = new ArrayList<String>();
+            List<String> typeList = indexTypeMapping.putIfAbsent(bindTypeStr, newTypeList);
+            if (typeList == null) {
+                typeList = newTypeList;
+            }
+            typeList.add(bindID);
+        }
+        // .
+        NotifyData notifyData = (NotifyData) arg;
+        Object oldValue = notifyData.getOldValue();
+        Object newValue = notifyData.getNewValue();
+        if ((newValue == null && oldValue == null) || (newValue != null && newValue.equals(oldValue))) {
+            return;/*没有变化*/
+        }
+        // .
+        if (StringUtils.equalsBlankIgnoreCase(notifyData.getKey(), "bindID")) {
+            newValue = Hasor.assertIsNotNull(newValue);
+            if (this.idDataSource.containsKey(newValue)) {
+                throw new RepeateException("duplicate bind id value is " + newValue);
+            }
+            this.idDataSource.put((String) newValue, target);
+            this.idDataSource.remove(oldValue);
+            List<String> idList = this.indexTypeMapping.get(target.getBindType().getName());
+            if (idList == null) {
+                throw new IllegalStateException("beans were not registered correctly.");
+            }
+            idList.remove(oldValue);
+            idList.add((String) newValue);
+        }
+        // .
+        if (StringUtils.equalsBlankIgnoreCase(notifyData.getKey(), "bindName")) {
+            newValue = Hasor.assertIsNotNull(newValue);
+            BindInfo bindInfo = this.findBindInfo((String) newValue, target.getBindType());
+            if (bindInfo != null) {
+                throw new RepeateException("bindName '" + newValue + "' conflict with '" + bindInfo + "'");
+            }
+        }
+        // .
+        if (StringUtils.equalsBlankIgnoreCase(notifyData.getKey(), "bindType")) {
+            throw new IllegalStateException("'bindType' are not allowed to be changed");
+        }
     }
 }

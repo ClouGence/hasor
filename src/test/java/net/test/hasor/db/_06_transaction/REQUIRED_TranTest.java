@@ -22,8 +22,8 @@ import net.hasor.db.transaction.TransactionCallbackWithoutResult;
 import net.hasor.db.transaction.TransactionStatus;
 import net.hasor.db.transaction.TransactionTemplate;
 import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
-import net.test.hasor.junit.ContextConfiguration;
-import net.test.hasor.junit.HasorUnitRunner;
+import net.hasor.junit.ContextConfiguration;
+import net.hasor.junit.HasorUnitRunner;
 /**
  * REQUIRED：尝试加入已经存在的事务中，如果没有则开启一个新的事务。
  * @version : 2015年11月10日

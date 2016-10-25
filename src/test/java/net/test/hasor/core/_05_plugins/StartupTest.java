@@ -21,6 +21,8 @@ import org.junit.Test;
 import org.more.bizcommon.json.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 /**
  * 1.启动模块
  * @version : 2015年11月6日
@@ -33,9 +35,11 @@ public class StartupTest {
     public void startupTest() {
         System.out.println("--->>startupTest<<--");
         AppContext appContext = Hasor.createAppContext("startup-config.xml");
+        logger.debug("---------------------------------------------");
         //
         PojoBean myBean = appContext.getInstance(PojoBean.class);
-        //
+        List<String> says = appContext.findBindingBean(String.class);
         logger.debug(JSON.toString(myBean));
+        assert says.size() > 0;
     }
 }

@@ -23,8 +23,10 @@ import net.hasor.core.Singleton;
  */
 @Singleton
 public class StartInitBean extends PojoBean {
+    public static boolean called = false;
     @Init
     public void print(Object testParam) {//方法参数是不会传入的。
+        called = true;
         System.out.println("start on first time. -> " + this.getClass());
     }
 }

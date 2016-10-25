@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 package net.test.hasor.core._06_context;
-import java.util.Date;
-import java.util.Set;
-
+import net.hasor.core.*;
+import net.hasor.core.context.TemplateAppContext;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
-import net.hasor.core.Hasor;
-import net.hasor.core.Module;
-import net.hasor.core.Settings;
-import net.hasor.core.context.TemplateAppContext;
+
+import java.util.Date;
+import java.util.Set;
 /**
  * 1.findClassTest
  *      类扫描
@@ -46,13 +42,16 @@ public class ContextTest {
         System.out.println("--->>findClassTest<<--");
         //1.创建一个标准的 Hasor 容器。
         AppContext appContext = Hasor.createAppContext();
+        logger.debug("---------------------------------------------");
         //
-        //1.查找所有Hasor模块（实现了Module接口的类）。
+        //2.查找所有Hasor模块（实现了Module接口的类）。
         Set<Class<?>> facesFeature = appContext.getEnvironment().findClass(Module.class);
         logger.info("find " + facesFeature);
-        //2.查找AbstractAppContext的子类
+        assert facesFeature.size() > 0;
+        //3.查找AbstractAppContext的子类
         Set<Class<?>> subFeature = appContext.getEnvironment().findClass(TemplateAppContext.class);
         logger.info("find " + subFeature);
+        assert subFeature.size() > 0;
     }
     //
     // - 环境变量的解析
@@ -62,6 +61,7 @@ public class ContextTest {
         System.setProperty("MyVar", "hello");
         AppContext appContext = Hasor.createAppContext();
         Environment env = appContext.getEnvironment();
+        logger.debug("---------------------------------------------");
         //
         //JAVA_HOME
         System.out.println(env.evalString("%JAVA_HOME%"));
@@ -72,6 +72,7 @@ public class ContextTest {
         //系统环境变量属性
         System.out.println(env.evalString("%MyVar%"));
         System.out.println(env.evalString("i say %MyVar%."));
+        assert env.evalString("i say %MyVar%.").equals("i say hello.");
     }
     //
     // - 配置信息读取
@@ -80,27 +81,30 @@ public class ContextTest {
         System.out.println("--->>settingsTest<<--");
         AppContext appContext = Hasor.createAppContext("simple-config.xml");
         Settings settings = appContext.getEnvironment().getSettings();
+        logger.debug("---------------------------------------------");
         //
         String myName = settings.getString("mySelf.myName");
         logger.info("my Name is {}.", myName);
+        assert myName.equals("赵永春");
         //
         Integer myAge = settings.getInteger("mySelf.myAge");
         logger.info("my Age is {}.", myAge);
+        assert myAge.equals(12);
         //
         Date myBirthday = settings.getDate("mySelf.myBirthday", "YYYY-MM-DD hh:mm:ss");
         logger.info("my Birthday is {}.", myBirthday);
         //
         String myWork = settings.getString("mySelf.myWork");
         logger.info("my Work is {}.", myWork);
+        assert myWork.equals("Software Engineer");
         //
         String myProjectURL = settings.getString("mySelf.myProjectURL");
         logger.info("my Project is {}.", myProjectURL);
-        //
-        String[] packages = settings.getStringArray("LoggerHelper.loadPackages");
-        logger.info("my packages is {}.", (Object) packages);
+        assert myProjectURL.equals("http://www.hasor.net/");
         //
         String source = settings.getString("mySelf.source");
         logger.info("form source is {}.", source);
+        assert source.equals("Xml");
     }
     //
     // - 配置信息读取
@@ -109,26 +113,32 @@ public class ContextTest {
         System.out.println("--->>propTest<<--");
         AppContext appContext = Hasor.createAppContext("prop-config.properties");
         Settings settings = appContext.getEnvironment().getSettings();
+        logger.debug("---------------------------------------------");
         //
         String myName = settings.getString("mySelf.myName");
         logger.info("my Name is {}.", myName);
+        assert myName.equals("赵永春");
         //
         Integer myAge = settings.getInteger("mySelf.myAge");
         logger.info("my Age is {}.", myAge);
+        assert myAge.equals(12);
         //
         Date myBirthday = settings.getDate("mySelf.myBirthday", "YYYY-MM-DD hh:mm:ss");
         logger.info("my Birthday is {}.", myBirthday);
         //
         String myWork = settings.getString("mySelf.myWork");
         logger.info("my Work is {}.", myWork);
+        assert myWork.equals("Software Engineer");
         //
         String myProjectURL = settings.getString("mySelf.myProjectURL");
         logger.info("my Project is {}.", myProjectURL);
+        assert myProjectURL.equals("http://www.hasor.net/");
         //
         String[] packages = settings.getStringArray("LoggerHelper.loadPackages");
         logger.info("my packages is {}.", (Object) packages);
         //
         String source = settings.getString("mySelf.source");
         logger.info("form source is {}.", source);
+        assert source.equals("Prop");
     }
 }

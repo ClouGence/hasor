@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._04_scope.myscope;
+package net.test.hasor.core._04_scope;
 import java.util.HashMap;
 import java.util.Map;
+
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.scope.SingleProvider;
@@ -34,7 +35,8 @@ public class MyScope implements Scope {
         Map<Object, Provider<?>> scopeMap = threadSington.get();
         Provider<?> returnData = scopeMap.get(key);
         if (returnData == null) {
-            Provider<T> newSingleProvider = new SingleProvider<T>(provider) {};
+            Provider<T> newSingleProvider = new SingleProvider<T>(provider) {
+            };
             returnData = scopeMap.put(key, newSingleProvider);
             if (returnData == null) {
                 returnData = newSingleProvider;

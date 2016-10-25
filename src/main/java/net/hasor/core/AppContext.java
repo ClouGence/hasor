@@ -27,8 +27,6 @@ public interface AppContext {
     /**容器事件，在所有模块 start 阶段之后引发。
      * @see net.hasor.core.context.TemplateAppContext*/
     public static final String ContextEvent_Shutdown = "ContextEvent_Shutdown";
-    //
-    //
 
     /** @return 获取 {@link Environment} */
     public Environment getEnvironment();
@@ -68,6 +66,9 @@ public interface AppContext {
 
     /**根据ID获取{@link BindInfo}。*/
     public <T> BindInfo<T> getBindInfo(String bindID);
+
+    /**根据ID获取{@link BindInfo}。*/
+    public <T> BindInfo<T> getBindInfo(Class<T> bindType);
 
     /**创建Bean。*/
     public <T> T getInstance(String bindID);

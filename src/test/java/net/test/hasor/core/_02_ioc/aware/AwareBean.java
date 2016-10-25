@@ -19,13 +19,14 @@ import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoAware;
 /**
- * 
+ *
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AwareBean implements AppContextAware, BindInfoAware {
     private AppContext  appContext;
     private BindInfo<?> bindInfo;
+    public boolean called = false;
     public void setAppContext(AppContext appContext) {
         this.appContext = appContext;
     }
@@ -33,6 +34,7 @@ public class AwareBean implements AppContextAware, BindInfoAware {
         this.bindInfo = bindInfo;
     }
     public void foo() {
+        called = true;
         Object sayBody = this.appContext.findBindingBean("say", String.class);
         System.out.println("bindID=" + bindInfo.getBindID() + " -> " + sayBody);
     }

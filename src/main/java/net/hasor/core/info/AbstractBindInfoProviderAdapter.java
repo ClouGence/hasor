@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
-import org.more.util.StringUtils;
 import net.hasor.core.BindInfo;
 import net.hasor.core.BindInfoBuilder;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
+import org.more.util.StringUtils;
 /**
  * 用于定义Bean，实现了Bean配置接口{@link BindInfoBuilder}，配置的信息通过{@link BindInfo}接口展现出来。
  * <p>同时实现了{@link CustomerProvider}和{@link ScopeProvider}接口。表示着这个Bean定义支持自定义{@link Provider}和{@link Scope}。
  * @version : 2014年7月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter implements BindInfoBuilder<T>, BindInfo<T>, CustomerProvider<T>, ScopeProvider {
+public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter implements//
+        BindInfoBuilder<T>, BindInfo<T>, CustomerProvider<T>, ScopeProvider {
     //1.基本属性
     private String             bindID           = null;
     private String             bindName         = null;
@@ -42,50 +43,58 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
         }
         return this.bindID;
     }
-    public void setBindID(String newID) {
-        if (StringUtils.isBlank(newID)) {
-            throw new NullPointerException("newID is null.");
-        }
-        this.bindID = newID;
-    }
-    public void setBindName(final String bindName) {
-        this.bindName = bindName;
-    }
     public String getBindName() {
         return this.bindName;
     }
     public Class<T> getBindType() {
         return this.bindType;
     }
-    public void setBindType(final Class<T> bindType) {
-        this.bindType = bindType;
-    }
-    public void setSourceType(final Class<? extends T> sourceType) {
-        this.sourceType = sourceType;
-    }
     public Class<? extends T> getSourceType() {
         return this.sourceType;
-    }
-    public void setSingleton(boolean singleton) {
-        this.singleton = singleton;
     }
     public Boolean isSingleton() {
         return this.singleton;
     }
-    public void setCustomerProvider(final Provider<T> customerProvider) {
-        this.customerProvider = customerProvider;
-    }
     /**获取 {@link #setCustomerProvider(Provider)} 方法设置的 Provider 对象。*/
     public Provider<T> getCustomerProvider() {
         return this.customerProvider;
-    }
-    public void setScopeProvider(final Provider<Scope> scopeProvider) {
-        this.scopeProvider = scopeProvider;
     }
     public Provider<Scope> getScopeProvider() {
         return this.scopeProvider;
     }
     public BindInfo<T> toInfo() {
         return this;
+    }
+    //
+    public void setBindID(String newID) {
+        if (StringUtils.isBlank(newID)) {
+            throw new NullPointerException("newID is null.");
+        }
+        this.notify(new NotifyData("bindID", this.bindID, newID));
+        this.bindID = newID;
+    }
+    public void setBindName(final String bindName) {
+        this.notify(new NotifyData("bindName", this.bindName, bindName));
+        this.bindName = bindName;
+    }
+    public void setBindType(final Class<T> bindType) {
+        this.notify(new NotifyData("bindType", this.bindType, bindType));
+        this.bindType = bindType;
+    }
+    public void setSourceType(final Class<? extends T> sourceType) {
+        this.notify(new NotifyData("sourceType", this.sourceType, sourceType));
+        this.sourceType = sourceType;
+    }
+    public void setSingleton(boolean singleton) {
+        this.notify(new NotifyData("singleton", this.singleton, singleton));
+        this.singleton = singleton;
+    }
+    public void setCustomerProvider(final Provider<T> customerProvider) {
+        this.notify(new NotifyData("customerProvider", this.customerProvider, customerProvider));
+        this.customerProvider = customerProvider;
+    }
+    public void setScopeProvider(final Provider<Scope> scopeProvider) {
+        this.notify(new NotifyData("scopeProvider", this.scopeProvider, scopeProvider));
+        this.scopeProvider = scopeProvider;
     }
 }

@@ -22,7 +22,9 @@ import net.hasor.core.MethodInvocation;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SimpleInterceptor implements MethodInterceptor {
+    public static boolean called = false;
     public Object invoke(MethodInvocation invocation) throws Throwable {
+        called = true;
         try {
             System.out.println("before... " + invocation.getMethod().getName());
             Object returnData = invocation.proceed();

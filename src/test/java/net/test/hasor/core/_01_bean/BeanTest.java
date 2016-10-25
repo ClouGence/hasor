@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 package net.test.hasor.core._01_bean;
-import org.junit.Test;
-import org.more.bizcommon.json.JSON;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.test.hasor.core._01_bean.pojo.InitBean;
-import net.test.hasor.core._01_bean.pojo.InitBean2;
-import net.test.hasor.core._01_bean.pojo.IntefaceBean;
-import net.test.hasor.core._01_bean.pojo.PojoBean;
-import net.test.hasor.core._01_bean.pojo.PojoBeanFactory;
-import net.test.hasor.core._01_bean.pojo.PojoInfo;
+import net.test.hasor.core._01_bean.pojo.*;
+import org.junit.Test;
+import org.more.bizcommon.json.JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 1.beanTest
  *      基本的Bean用法。
@@ -57,10 +52,12 @@ public class BeanTest {
     public void beanTest() {
         System.out.println("--->>beanTest<<--");
         AppContext appContext = Hasor.createAppContext();
+        logger.debug("---------------------------------------------");
         //
         PojoBean myBean = appContext.getInstance(PojoBean.class);
         //
         logger.debug(JSON.toString(myBean));
+        assert myBean != null;
     }
     //
     /* 为一个类型指定一个实现类。 */
@@ -73,6 +70,7 @@ public class BeanTest {
                 apiBinder.bindType(PojoInfo.class).to(PojoBean.class);
             }
         });
+        logger.debug("---------------------------------------------");
         //
         //通过类型获取实现类实例。
         PojoInfo myBean1 = appContext.getInstance(PojoInfo.class);
@@ -80,6 +78,9 @@ public class BeanTest {
         //
         logger.debug(JSON.toString(myBean1));
         logger.debug(JSON.toString(myBean2));
+        assert myBean1 != null;
+        assert myBean2 != null;
+        assert myBean1 != myBean2;
     }
     //
     /* 根据名字区分同一个类型的两个Bean。 */
@@ -94,12 +95,15 @@ public class BeanTest {
                 apiBinder.bindType(PojoInfo.class).nameWith("UserB").to(PojoBean.class).injectValue("name", "小六");
             }
         });
+        logger.debug("---------------------------------------------");
         //
         PojoInfo userA = appContext.findBindingBean("UserA", PojoInfo.class);
         PojoInfo userB = appContext.findBindingBean("UserB", PojoInfo.class);
         //
         logger.debug("userA :" + JSON.toString(userA));
         logger.debug("userB :" + JSON.toString(userB));
+        assert userA.getName().equals("马A");
+        assert userB.getName().equals("小六");
     }
     //
     /* 单例模式，结果为：true,false,true */
@@ -112,18 +116,22 @@ public class BeanTest {
                 apiBinder.bindType(InitBean.class).asEagerPrototype();//原型模式
             }
         });
+        logger.debug("---------------------------------------------");
         //
         PojoInfo objectA = appContext.getInstance(PojoBean.class);
         PojoInfo objectB = appContext.getInstance(PojoBean.class);
         logger.debug("objectA eq objectB = " + (objectA == objectB));//单例
+        assert objectA == objectB;
         //
         InitBean objectC = appContext.getInstance(InitBean.class);
         InitBean objectD = appContext.getInstance(InitBean.class);
         logger.debug("objectC eq objectD = " + (objectC == objectD));//原型
+        assert objectC != objectD;
         //
         InitBean2 objectE = appContext.getInstance(InitBean2.class);
         InitBean2 objectF = appContext.getInstance(InitBean2.class);
         logger.debug("objectE eq objectF = " + (objectE == objectF));//跟随框架默认配置
+        assert objectE == objectF;// <- 注意这里
     }
     //
     /* 原型模式，结果为：true,false,false */
@@ -136,18 +144,22 @@ public class BeanTest {
                 apiBinder.bindType(InitBean.class).asEagerPrototype();//原型模式
             }
         });
+        logger.debug("---------------------------------------------");
         //
         PojoInfo objectA = appContext.getInstance(PojoBean.class);
         PojoInfo objectB = appContext.getInstance(PojoBean.class);
         logger.debug("objectA eq objectB = " + (objectA == objectB));//单例
+        assert objectA == objectB;
         //
         InitBean objectC = appContext.getInstance(InitBean.class);
         InitBean objectD = appContext.getInstance(InitBean.class);
         logger.debug("objectC eq objectD = " + (objectC == objectD));//原型
+        assert objectC != objectD;
         //
         InitBean2 objectE = appContext.getInstance(InitBean2.class);
         InitBean2 objectF = appContext.getInstance(InitBean2.class);
         logger.debug("objectE eq objectF = " + (objectE == objectF));//跟随框架默认配置
+        assert objectE != objectF; // <- 注意这里
     }
     //
     /* 托管一个自己创建的Bean，被托管的Bean将成为单例。 */
@@ -161,12 +173,15 @@ public class BeanTest {
                 apiBinder.bindType(PojoBean.class).toInstance(pojo);
             }
         });
+        logger.debug("---------------------------------------------");
         //
         PojoInfo objectA = appContext.getInstance(PojoBean.class);
         PojoInfo objectB = appContext.getInstance(PojoBean.class);
         //
         logger.debug("objectBody :" + JSON.toString(objectA));
         logger.debug("objectA eq objectB = " + (objectA == objectB));
+        assert objectA.getName().equals("马大帅");
+        assert objectA == objectB;
     }
     //
     /* 为Bean起一个唯一的名字，然后通过名字获取它。  */
@@ -184,11 +199,15 @@ public class BeanTest {
                 apiBinder.bindType(PojoBean.class).idWith("myBean2").toInstance(pojo);
             }
         });
+        logger.debug("---------------------------------------------");
         //
         PojoBean myBean1 = appContext.getInstance("myBean1");
         PojoBean myBean2 = appContext.getInstance("myBean2");
         logger.debug("myBean1 :" + JSON.toString(myBean1));
         logger.debug("myBean2 :" + JSON.toString(myBean2));
+        assert myBean1 != null && myBean2 != null;
+        assert myBean1 != myBean2;
+        assert myBean2.getName().equals("刘三姐");
     }
     //
     /* 工厂方式创建Bean  */
@@ -200,21 +219,11 @@ public class BeanTest {
                 apiBinder.bindType(PojoInfo.class).toProvider(new PojoBeanFactory());
             }
         });
+        logger.debug("---------------------------------------------");
         //
         PojoInfo myBean = appContext.getInstance(PojoInfo.class);
         logger.debug(JSON.toString(myBean));
-    }
-    //
-    /* @init 注解  */
-    @Test
-    public void initBeanTest() {
-        System.out.println("--->>initBeanTest<<--");
-        AppContext appContext = Hasor.createAppContext();
-        //
-        InitBean myBean1 = appContext.getInstance(InitBean.class);
-        logger.debug(JSON.toString(myBean1));
-        //
-        InitBean2 myBean2 = appContext.getInstance(InitBean2.class);
-        logger.debug(JSON.toString(myBean2));
+        assert PojoBeanFactory.called;
+        PojoBeanFactory.called = false;
     }
 }

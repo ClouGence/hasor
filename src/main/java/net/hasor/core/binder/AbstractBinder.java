@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 /**
@@ -66,7 +67,6 @@ public abstract class AbstractBinder implements ApiBinder {
     public <T> NamedBindingBuilder<T> bindType(final Class<T> type) {
         BeanBuilder builder = this.getBeanBuilder();
         BindInfoBuilder<T> typeBuilder = builder.createInfoAdapter(type);
-        typeBuilder.setBindID(UUID.randomUUID().toString());/*设置唯一ID*/
         return new BindingBuilderImpl<T>(typeBuilder);
     }
     public <T> MetaDataBindingBuilder<T> bindType(final Class<T> type, final T instance) {
@@ -121,6 +121,27 @@ public abstract class AbstractBinder implements ApiBinder {
         aopAdapter = Hasor.autoAware(this.getEnvironment(), aopAdapter);
         this.bindType(AopBindInfoAdapter.class).uniqueName().toInstance(aopAdapter);
     }
+    @Override
+    public <T> List<BindInfo<T>> findBindingRegister(Class<T> bindType) {
+        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        return getBeanBuilder().findBindInfoList(bindType);
+    }
+    @Override
+    public <T> BindInfo<T> findBindingRegister(String withName, Class<T> bindType) {
+        Hasor.assertIsNotNull(withName, "withName is null.");
+        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        return getBeanBuilder().findBindInfo(withName, bindType);
+    }
+    @Override
+    public <T> BindInfo<T> getBindInfo(String bindID) {
+        Hasor.assertIsNotNull(bindID, "bindID is null.");
+        return getBeanBuilder().findBindInfoByID(bindID);
+    }
+    @Override
+    public <T> BindInfo<T> getBindInfo(Class<T> bindType) {
+        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        return getBeanBuilder().findBindInfoByType(bindType);
+    }
     //
     /*------------------------------------------------------------------------------------Binding*/
     /** 一堆接口的实现 */
@@ -153,6 +174,7 @@ public abstract class AbstractBinder implements ApiBinder {
         public NamedBindingBuilder<T> idWith(String newID) {
             if (!StringUtils.isBlank(newID)) {
                 this.typeBuilder.setBindID(newID);
+                this.typeBuilder.setBindName(newID);
             }
             return this;
         }

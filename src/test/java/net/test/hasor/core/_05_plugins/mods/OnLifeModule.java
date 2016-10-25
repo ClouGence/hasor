@@ -25,12 +25,12 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class OnLifeModule implements LifeModule {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected           Logger logger = LoggerFactory.getLogger(getClass());
+    public static final String STR    = "say form Mod_1.";
+    //
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        //
         apiBinder.installModule(new SimpleModule());
-        //
-        apiBinder.bindType(String.class).uniqueName().toInstance("say form Mod_2.");
+        apiBinder.bindType(String.class).uniqueName().toInstance(STR);
     }
     @Override
     public void onStart(AppContext appContext) throws Throwable {

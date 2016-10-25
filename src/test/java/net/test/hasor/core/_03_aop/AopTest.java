@@ -20,6 +20,7 @@ import net.test.hasor.core._03_aop.myaop.MyAopBean;
 import net.test.hasor.core._03_aop.myaop.MyAopSetup;
 import net.test.hasor.core._03_aop.myaop.SuperMyAopBean;
 import net.test.hasor.core._03_aop.simple.AopBean;
+import net.test.hasor.core._03_aop.simple.SimpleInterceptor;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,19 +35,24 @@ public class AopTest {
     public void simpleAopTest() {
         System.out.println("--->>simpleAopTest<<--");
         AppContext appContext = Hasor.createAppContext();
+        logger.debug("---------------------------------------------");
         //
         AopBean fooBean = appContext.getInstance(AopBean.class);
         logger.debug("aopBean : " + fooBean.echo("sayMessage"));
+        assert SimpleInterceptor.called;
+        SimpleInterceptor.called = false;
     }
     //
     @Test
     public void myAopTest() {
-        System.out.println("--->>myaopAopTest<<--");
+        System.out.println("--->>myAopTest<<--");
         AppContext appContext = Hasor.createAppContext(new MyAopSetup());
         //
         MyAopBean myBean = appContext.getInstance(MyAopBean.class);
         logger.debug("opBean : " + myBean.fooCall("sayMessage"));
         SuperMyAopBean superBean = appContext.getInstance(SuperMyAopBean.class);
         logger.debug("superBean : " + superBean.fooCall("sayMessage"));
+        assert SimpleInterceptor.called;
+        SimpleInterceptor.called = false;
     }
 }

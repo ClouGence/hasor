@@ -13,7 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.core.info;
 /**
- * 基于 JUnit4 的测试框架。
+ *
+ * @version : 2016年10月21日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.test.hasor.junit;
+public class NotifyData {
+    private String key      = null;
+    private Object oldValue = null;
+    private Object newValue = null;
+    //
+    public NotifyData(String key, Object oldValue, Object newValue) {
+        this.key = key;
+        this.oldValue = oldValue;
+        this.newValue = newValue;
+    }
+    public String getKey() {
+        return key;
+    }
+    public Object getOldValue() {
+        return oldValue;
+    }
+    public Object getNewValue() {
+        return newValue;
+    }
+}

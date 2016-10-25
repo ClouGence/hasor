@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Set;
 /**
  * 标准的 {@link ApiBinder} 接口包装类。
@@ -46,6 +47,18 @@ public class ApiBinderWrap implements ApiBinder {
     }
     public void bindInterceptor(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor) {
         this.apiBinder.bindInterceptor(matcherClass, matcherMethod, interceptor);
+    }
+    public <T> BindInfo<T> getBindInfo(String bindID) {
+        return this.apiBinder.getBindInfo(bindID);
+    }
+    public <T> BindInfo<T> getBindInfo(Class<T> bindType) {
+        return this.apiBinder.getBindInfo(bindType);
+    }
+    public <T> List<BindInfo<T>> findBindingRegister(Class<T> bindType) {
+        return this.apiBinder.findBindingRegister(bindType);
+    }
+    public <T> BindInfo<T> findBindingRegister(String withName, Class<T> bindType) {
+        return this.apiBinder.findBindingRegister(withName, bindType);
     }
     public <T> NamedBindingBuilder<T> bindType(Class<T> type) {
         return this.apiBinder.bindType(type);

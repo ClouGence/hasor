@@ -21,8 +21,11 @@ import net.hasor.core.Init;
  * @author 赵永春(zyc@hasor.net)
  */
 public class InitBean extends PojoBean {
+    public boolean called = false;
     @Init
-    public void print(Object testParam) {//方法参数是不会传入的。
+    public void print(Object testParam) {
+        //方法参数是不会传入的。
+        called = true;
         System.out.println("hello init method is print. " + this.getClass());
     }
 }

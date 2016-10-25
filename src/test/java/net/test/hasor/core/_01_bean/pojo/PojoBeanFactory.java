@@ -23,9 +23,11 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class PojoBeanFactory implements Provider<PojoInfo> {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected     Logger  logger = LoggerFactory.getLogger(getClass());
+    public static boolean called = false;
     @Override
     public PojoBean get() {
+        called = true;
         logger.debug("create bean.");
         return new PojoBean();
     }

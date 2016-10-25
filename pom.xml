@@ -8,7 +8,7 @@
 
     <!-- Maven Info -->
     <artifactId>hasor-core</artifactId>
-    <version>2.4.7-SNAPSHOT</version>
+    <version>2.5.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <!-- Project Info -->
@@ -57,6 +57,13 @@
             <version>2.2</version>
             <scope>provided</scope>
         </dependency>
+        <!-- 整合 Junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- 整合 Spring 容器时使用,最终由项目环境的 Spring 提供依赖 -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -64,6 +71,7 @@
             <version>2.5.6</version>
             <scope>provided</scope>
         </dependency>
+
 
         <!-- Test -->
         <dependency>
@@ -81,7 +89,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>6.0.4</version>
+            <version>5.1.40</version>
             <scope>test</scope>
         </dependency>
         <dependency>

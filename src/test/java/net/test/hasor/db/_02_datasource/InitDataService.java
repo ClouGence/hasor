@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.test.hasor.db._02_datasource;
-import static net.test.hasor.junit.HasorUnit.newID;
+import static net.hasor.junit.HasorUnit.newID;
 import java.io.IOException;
 import java.sql.SQLException;
 import net.hasor.core.Inject;

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.test.hasor.core._08_event;
-import org.junit.Test;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
+import org.junit.Test;
 /**
  * 异步事件演示
  * @version : 2013-8-11F

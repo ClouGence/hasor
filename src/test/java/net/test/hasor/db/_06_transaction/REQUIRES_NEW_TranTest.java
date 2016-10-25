@@ -22,8 +22,8 @@ import net.hasor.db.transaction.TransactionCallbackWithoutResult;
 import net.hasor.db.transaction.TransactionStatus;
 import net.hasor.db.transaction.TransactionTemplate;
 import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
-import net.test.hasor.junit.ContextConfiguration;
-import net.test.hasor.junit.HasorUnitRunner;
+import net.hasor.junit.ContextConfiguration;
+import net.hasor.junit.HasorUnitRunner;
 /**
  * REQUIRES_NEW：将挂起当前存在的事务挂起（如果存在的话）。 并且开启一个全新的事务，新事务与已存在的事务之间彼此没有关系。
  * @version : 2013-12-10

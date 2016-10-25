@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 package net.test.hasor.core._01_bean;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
+import net.test.hasor.core._01_bean.pojo.InitBean;
+import net.test.hasor.core._01_bean.pojo.InitBean2;
 import net.test.hasor.core._01_bean.pojo.StartInitBean;
+import org.junit.Test;
+import org.more.bizcommon.json.JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 1.initTest
  *      当容器启动自动调用单例Bean的init方法。
@@ -32,6 +35,22 @@ import net.test.hasor.core._01_bean.pojo.StartInitBean;
 public class InitBeanTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     //
+    //
+    /* @init 注解  */
+    @Test
+    public void initBeanTest() {
+        System.out.println("--->>initBeanTest<<--");
+        AppContext appContext = Hasor.createAppContext();
+        logger.debug("---------------------------------------------");
+        //
+        InitBean myBean1 = appContext.getInstance(InitBean.class);
+        logger.debug(JSON.toString(myBean1));
+        assert myBean1.called;
+        //
+        InitBean2 myBean2 = appContext.getInstance(InitBean2.class);
+        logger.debug(JSON.toString(myBean2));
+        assert myBean2.called;
+    }
     /* Bean */
     @Test
     public void initTest() {
@@ -41,6 +60,9 @@ public class InitBeanTest {
                 apiBinder.bindType(StartInitBean.class);
             }
         });
+        logger.debug("---------------------------------------------");
         //
+        assert StartInitBean.called;
+        StartInitBean.called = false;
     }
 }

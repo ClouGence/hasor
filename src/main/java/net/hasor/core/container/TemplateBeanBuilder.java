@@ -32,7 +32,7 @@ import java.util.Map.Entry;
  * @version : 2015年6月26日
  * @author 赵永春(zyc@hasor.net)
  */
-public class TemplateBeanBuilder implements BeanBuilder {
+public abstract class TemplateBeanBuilder implements BeanBuilder {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     /**创建一个AbstractBindInfoProviderAdapter*/
     public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType) {

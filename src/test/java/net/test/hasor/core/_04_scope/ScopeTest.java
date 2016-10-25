@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 package net.test.hasor.core._04_scope;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
-import net.hasor.core.Module;
+import net.hasor.core.*;
 import net.test.hasor.core._01_bean.pojo.PojoBean;
 import net.test.hasor.core._01_bean.pojo.PojoInfo;
-import net.test.hasor.core._04_scope.myscope.MyScope;
 import org.junit.Test;
 import org.more.bizcommon.json.JSON;
 import org.slf4j.Logger;
@@ -39,8 +35,10 @@ public class ScopeTest {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
                 MyScope threadScope = new MyScope();
                 apiBinder.bindType(PojoBean.class).toScope(threadScope);
+                apiBinder.bindType(MyScope.class).toInstance(threadScope);
             }
         });
+        logger.debug("---------------------------------------------");
         //
         //
         PojoInfo objectA = appContext.getInstance(PojoBean.class);
@@ -48,5 +46,11 @@ public class ScopeTest {
         //
         logger.debug("objectBody :" + JSON.toString(objectA));
         logger.debug("objectA eq objectB = " + (objectA == objectB));
+        assert objectA == objectB;
+        //
+        BindInfo<?> info = appContext.getBindInfo(PojoBean.class);
+        MyScope scope = appContext.getInstance(MyScope.class);
+        Provider<Object> provider = scope.scope(info, null);
+        assert provider != null;
     }
 }

@@ -51,12 +51,20 @@ public class AnnoIocTest {
                 apiBinder.bindType(PojoInfo.class).idWith("beanB").to(PojoBean.class).injectValue("name", "花花");
             }
         });
+        logger.debug("---------------------------------------------");
         //
         NameIocBean myBean1 = appContext.getInstance(NameIocBean.class);
         logger.debug("myBean : " + JSON.toString(myBean1));
+        assert myBean1.getIocBeanA().getName().equals("娇娇");
+        assert myBean1.getIocBeanB().getName().equals("花花");
+        //
         CustomIocBean myBean2 = appContext.getInstance(CustomIocBean.class);
         logger.debug("myBean : " + JSON.toString(myBean2));
+        assert myBean2.iocBeanTest == null;
+        assert myBean2.iocBean != null;
+        //
         AnnoIocBean myBean3 = appContext.getInstance(AnnoIocBean.class);
         logger.debug("myBean : " + JSON.toString(myBean3));
+        assert myBean3.getMyName().equals("赵永春"); // <- 来源于 simple-config.xml
     }
 }

@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 package net.test.hasor.core._02_ioc;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
-import net.hasor.core.Module;
+import net.hasor.core.*;
 import net.test.hasor.core._01_bean.pojo.PojoBean;
 import net.test.hasor.core._01_bean.pojo.PojoBeanFactory;
 import net.test.hasor.core._01_bean.pojo.PojoInfo;
@@ -56,9 +52,12 @@ public class CodeIocTest {
                         .injectValue("address", "我的家里");//  <-注入
             }
         });
+        logger.debug("---------------------------------------------");
         //
         PojoInfo myBean = appContext.getInstance(PojoInfo.class);
         logger.debug(JSON.toString(myBean));
+        assert myBean.getName().equals("娇娇");
+        assert myBean.getAddress().equals("我的家里");
     }
     //
     /* 注入另一个Bean对象 */
@@ -67,16 +66,17 @@ public class CodeIocTest {
         System.out.println("--->>beanIocTest<<--");
         AppContext appContext = Hasor.createAppContext(new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
-                //
                 BindInfo<?> info = apiBinder.bindType(PojoInfo.class)//
                         .to(PojoBean.class).injectValue("name", "娇娇").toInfo();
-                //
                 apiBinder.bindType(IocBean.class).inject("iocBean", info);
             }
         });
+        logger.debug("---------------------------------------------");
         //
         IocBean myBean = appContext.getInstance(IocBean.class);
         logger.debug(JSON.toString(myBean));
+        assert myBean.getIocBean() != null;
+        assert myBean.getIocBean().getName().equals("娇娇");
     }
     //
     /* Bean的属性注入来自于工厂。 */
@@ -85,12 +85,15 @@ public class CodeIocTest {
         System.out.println("--->>faceoryIocTest<<--");
         AppContext appContext = Hasor.createAppContext(new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
-                //
                 apiBinder.bindType(IocBean.class).inject("iocBean", new PojoBeanFactory());
             }
         });
+        logger.debug("---------------------------------------------");
         //
         IocBean myBean = appContext.getInstance(IocBean.class);
         logger.debug(JSON.toString(myBean));
+        assert PojoBeanFactory.called;
+        assert myBean.getIocBean() != null;
+        PojoBeanFactory.called = false;
     }
 }

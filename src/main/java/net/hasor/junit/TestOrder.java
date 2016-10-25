@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._01_bean.pojo;
-import net.hasor.core.Init;
+package net.hasor.junit;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 一个Bean
- * @version : 2014-1-3
+ * 用于配置测试用例的启动顺序。
+ * @version : 2014年7月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public class InitBean2 extends PojoBean {
-    public boolean called = false;
-    @Init
-    public void print() {
-        called = true;
-        System.out.println("hello init method is print." + this.getClass());
-    }
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface TestOrder {
+    /**启动顺序，值越小约靠前。*/
+    public int value() default 0;
 }

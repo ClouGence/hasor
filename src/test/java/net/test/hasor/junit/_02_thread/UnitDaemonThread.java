@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package net.test.hasor.junit._02_thread;
-import net.test.hasor.junit.DaemonThread;
-import net.test.hasor.junit.HasorUnitRunner;
-import net.test.hasor.junit.TestOrder;
+import net.hasor.junit.DaemonThread;
+import net.hasor.junit.HasorUnitRunner;
+import net.hasor.junit.TestOrder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 /**
- * 
+ *
  * @version : 2014-7-12
  * @author 赵永春 (zyc@byshell.org)
  */

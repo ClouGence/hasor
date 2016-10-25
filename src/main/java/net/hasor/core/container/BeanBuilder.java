@@ -17,6 +17,8 @@ package net.hasor.core.container;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
+
+import java.util.List;
 /**
  * Bean构建接口，负责创建和定义Bean对象。
  * @version : 2014-3-17
@@ -39,4 +41,32 @@ public interface BeanBuilder {
 
     /**创建一个未绑定过的类型*/
     public <T> T getDefaultInstance(Class<T> bindType, AppContext appContext);
+    //
+    /* ----------------------------------------------------------------------------------------- */
+    //
+
+    /**根据ID获取{@link BindInfo}。*/
+    public <T> BindInfo<T> findBindInfoByID(String bindID);
+
+    /**
+     * 通过一个类型获取所有绑定该类型下的绑定信息。
+     * @param bindType bean type
+     * @return 返回所有符合条件的绑定信息。
+     */
+    public <T> BindInfo<T> findBindInfoByType(Class<T> bindType);
+
+    /**
+     * 通过一个类型获取所有绑定该类型下的绑定信息。
+     * @param bindType bean type
+     * @return 返回所有符合条件的绑定信息。
+     */
+    public <T> List<BindInfo<T>> findBindInfoList(Class<T> bindType);
+
+    /**
+     * 通过一个类型获取所有绑定该类型下的绑定信息。
+     * @param withName 绑定名
+     * @param bindType bean type
+     * @return 返回所有符合条件的绑定信息。
+     */
+    public <T> BindInfo<T> findBindInfo(String withName, Class<T> bindType);
 }

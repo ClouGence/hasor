@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.Map.Entry;
 /**
  *
  * @version : 2014年7月4日
@@ -44,6 +41,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
     }
     public DefaultBindInfoProviderAdapter(Class<T> bindingType) {
         this();
+        this.setBindID(UUID.randomUUID().toString());
         this.setBindType(bindingType);
     }
     @Override

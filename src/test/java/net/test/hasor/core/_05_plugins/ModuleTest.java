@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 package net.test.hasor.core._05_plugins;
-import java.util.List;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.test.hasor.core._05_plugins.mods.OnLifeModule;
+import net.test.hasor.core._05_plugins.mods.SimpleModule;
 import org.junit.Test;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 /**
  * Hasor 添加多个模块的演示程序
  * @version : 2014-1-10
@@ -34,8 +36,11 @@ public class ModuleTest {
     public void loadModuleTest() {
         System.out.println("--->>loadModuleTest<<--");
         AppContext appContext = Hasor.createAppContext(new OnLifeModule());
+        logger.debug("---------------------------------------------");
         //
         List<String> says = appContext.findBindingBean(String.class);
         logger.info("all modules say:{}.", ReflectionToStringBuilder.toString(says, ToStringStyle.SIMPLE_STYLE));
+        assert says.contains(OnLifeModule.STR);
+        assert says.contains(SimpleModule.STR);
     }
 }

@@ -41,4 +41,19 @@ public class AnnoIocBean {
     public void setIocBean(PojoBean iocBean) {
         this.iocBean = iocBean;
     }
+    public void setIocBeanField(PojoBean iocBeanField) {
+        this.iocBeanField = iocBeanField;
+    }
+    public String getMyName() {
+        return myName;
+    }
+    public void setMyName(String myName) {
+        this.myName = myName;
+    }
+    public String getEnvName() {
+        return envName;
+    }
+    public void setEnvName(String envName) {
+        this.envName = envName;
+    }
 }

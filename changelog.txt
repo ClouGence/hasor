@@ -1,7 +1,12 @@
-﻿===== Hasor-Core v2.4.7 (2016-10-?)
+﻿===== Hasor-Core v2.5.0 (2016-10-?)
 * 新增:
     01.新增 ClassAwareProvider、InfoAwareProvider 两个工具类。
     02.Hasor 新增一个 autoAware 方法的重载。
+    03.新增 Hasor 和 Junit 的整合，通过 Junit 做 Hasor 单元测试更加方便了。
+    04.ApiBinder 接口新增 getBindInfo、findBindingRegister 两组共计4个方法，现在 init 期间也可以查询其他模块注册的 Bean 了。
+    05.改进 BeanContainer 使其可以实时检测 ApiBinder 使用期间出现的 id 冲突等问题。而不是等待 init 后期最统一检测。
+    06.BeanBuilder 接口增加 getBindInfo、findBindingRegister 两组共计4个方法。其子类加以实现。
+    07.AppContext 的 getBindInfo、findBindingRegister 方法实现沉降到 BeanBuilder 实现类中。
 * 改进:
     01.升级依赖 slf4j-api 到 1.7.21 版本。
     02.删除 ContextEvent_Initialized 事件，该事件等同于 Module 的 loadModule。

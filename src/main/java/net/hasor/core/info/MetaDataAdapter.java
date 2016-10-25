@@ -19,12 +19,13 @@ import org.more.builder.ToStringStyle;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Observable;
 /**
  * 提供metaData。
  * @version : 2014年7月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public class MetaDataAdapter {
+public class MetaDataAdapter extends Observable {
     private Map<String, Object> metaData = new HashMap<String, Object>();
     public void setMetaData(final String key, final Object value) {
         this.metaData.put(key, value);
@@ -37,5 +38,10 @@ public class MetaDataAdapter {
     }
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+    //
+    protected void notify(NotifyData notifyData) {
+        setChanged();
+        this.notifyObservers(notifyData);
     }
 }

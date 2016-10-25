@@ -16,6 +16,7 @@
 package net.hasor.core;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Set;
 /**
  * Hasor的核心接口，主要用于收集Bean绑定信息。<p>
@@ -79,6 +80,28 @@ public interface ApiBinder {
         /**Returns {@code true} if this matches {@code T}, {@code false} otherwise.*/
         public boolean matches(T target);
     }
+    /*--------------------------------------------------------------------------------------Finds*/
+
+    /**根据ID获取{@link BindInfo}。*/
+    public <T> BindInfo<T> getBindInfo(String bindID);
+
+    /**根据ID获取{@link BindInfo}。*/
+    public <T> BindInfo<T> getBindInfo(Class<T> bindType);
+
+    /**
+     * 通过一个类型获取所有绑定该类型下的绑定信息。
+     * @param withName 绑定名
+     * @param bindType bean type
+     * @return 返回所有符合条件的绑定信息。
+     */
+    public <T> BindInfo<T> findBindingRegister(String withName, Class<T> bindType);
+
+    /**
+     * 通过一个类型获取所有绑定该类型下的绑定信息。
+     * @param bindType bean type
+     * @return 返回所有符合条件的绑定信息。
+     */
+    public <T> List<BindInfo<T>> findBindingRegister(Class<T> bindType);
     //
     /*------------------------------------------------------------------------------------Binding*/
 

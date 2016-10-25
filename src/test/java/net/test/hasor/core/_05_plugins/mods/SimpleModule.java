@@ -22,7 +22,8 @@ import net.hasor.core.Module;
  * @author 赵永春(zyc@hasor.net)
  */
 public class SimpleModule implements Module {
+    public static final String STR = "say form Mod_2.";
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        apiBinder.bindType(String.class).uniqueName().toInstance("say form Mod_1.");
+        apiBinder.bindType(String.class).uniqueName().toInstance(STR);
     }
 }
