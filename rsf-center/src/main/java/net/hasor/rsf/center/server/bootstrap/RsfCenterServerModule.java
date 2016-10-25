@@ -17,10 +17,9 @@ package net.hasor.rsf.center.server.bootstrap;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.LifeModule;
-import net.hasor.rsf.RsfBinder;
+import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfModule;
-import net.hasor.rsf.RsfPlugin;
 import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.RsfCenterRegister;
 import net.hasor.rsf.center.server.AuthQuery;
@@ -81,7 +80,7 @@ public class RsfCenterServerModule implements LifeModule, RsfPlugin {
         //
         // .注册 Center提供服务的接口
         RsfCenterSettings centerSettings = rsfContext.getAppContext().getInstance(RsfCenterSettings.class);
-        RsfBinder rsfBinder = rsfContext.binder();
+        RsfApiBinder rsfBinder = rsfContext.binder();
         rsfBinder.rsfService(RsfCenterRegister.class).to(RsfCenterRegisterProvider.class)//
                 .bindFilter("VerificationFilter", RsfCenterServerVerifyFilter.class)//
                 .register();

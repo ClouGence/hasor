@@ -26,20 +26,23 @@ public class CenterCustomerClient {
         //Client -> Server
         RsfClient client = clientContext.getInstance(RsfClient.class);
         EchoService echoService = client.wrapper(EchoService.class);
-        for (int i = 0; i < 208; i++) {
+        for (int i = 0; i < 2080; i++) {
+            Thread.sleep(500);
             try {
                 String res = echoService.sayHello("Hello Word");
                 System.out.println(res);
             } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
         }
         //
         MessageService messageService = client.wrapper(MessageService.class);
-        for (int i = 0; i < 208; i++) {
+        for (int i = 0; i < 2080; i++) {
             try {
                 RsfResult res = messageService.sayHello("Hello Word");//客户端会瞬间返回,服务端执行一个消息需要 500毫秒。
                 System.out.println(res);
             } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
         }
     }

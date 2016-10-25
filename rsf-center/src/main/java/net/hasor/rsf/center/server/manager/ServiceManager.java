@@ -171,7 +171,7 @@ public class ServiceManager {
     /**订阅服务*/
     public Result<String> publishConsumer(InterAddress rsfAddress, ServiceInfo serviceInfo, ConsumerInfo info) {
         rsfAddress = Hasor.assertIsNotNull(rsfAddress, "param InterAddress is null.");
-        serviceInfo = Hasor.assertIsNotNull(serviceInfo, "param ServiceInfo is null.");
+        serviceInfo = Hasor.assertIsNotNull(serviceInfo, "param ServiceDefine is null.");
         info = Hasor.assertIsNotNull(info, "param ConsumerInfo is null.");
         AuthInfo authInfo = this.getAuthInfo();
         //
@@ -317,7 +317,7 @@ public class ServiceManager {
     /**发布服务*/
     public Result<String> publishService(InterAddress rsfAddress, ServiceInfo serviceInfo, ProviderInfo info) {
         rsfAddress = Hasor.assertIsNotNull(rsfAddress, "param InterAddress is null.");
-        serviceInfo = Hasor.assertIsNotNull(serviceInfo, "param ServiceInfo is null.");
+        serviceInfo = Hasor.assertIsNotNull(serviceInfo, "param ServiceDefine is null.");
         info = Hasor.assertIsNotNull(info, "param ProviderInfo is null.");
         AuthInfo authInfo = this.getAuthInfo();
         //
