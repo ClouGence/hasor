@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.utils;
-import net.hasor.rsf.RsfBindInfo;
-import net.hasor.rsf.container.RsfBeanContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,13 +48,6 @@ public class ExecutesManager {
             }
         }
         return this.defaultExecutor;
-    }
-    /**初始化服务特殊线程*/
-    public void init(RsfBeanContainer rsfBeanContainer) {
-        List<String> serviceList = rsfBeanContainer.getServiceIDs();
-        for (String serviceID : serviceList) {
-            RsfBindInfo<?> rsfServiceInfo = rsfBeanContainer.getRsfBindInfo(serviceID);
-        }
     }
     /**停止应用服务。*/
     public void shutdown() {
