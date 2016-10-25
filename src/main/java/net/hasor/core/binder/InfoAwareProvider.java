@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
-import net.hasor.core.BindInfo;
-import net.hasor.core.Provider;
+import net.hasor.core.*;
 /**
  *
  * @version : 2015年12月18日
@@ -26,8 +23,10 @@ import net.hasor.core.Provider;
 public class InfoAwareProvider<T> implements Provider<T>, AppContextAware {
     private BindInfo<? extends T> info;
     private AppContext            appContext;
-    public InfoAwareProvider(BindInfo<? extends T> info) {
-        this.info = info;
+    public InfoAwareProvider(BindInfo<? extends T> info, Environment env) {
+        this.info = Hasor.assertIsNotNull(info);
+        env = Hasor.assertIsNotNull(env);
+        Hasor.autoAware(env, this);
     }
     @Override
     public void setAppContext(AppContext appContext) {
