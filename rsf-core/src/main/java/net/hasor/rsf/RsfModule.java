@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
 /**
  * Rsf 制定 Hasor Module。
  * @version : 2014年11月12日
@@ -43,17 +44,20 @@ public abstract class RsfModule implements Module {
         this.loadModule(new InnerRsfApiBinder(apiBinder, rsfEnv));
     }
     private synchronized static RsfEnvironment initAntGetEnvironment(ApiBinder apiBinder) throws IOException {
-        BindInfo<RsfEnvironment> rsfEnv = apiBinder.getBindInfo(RsfEnvironment.class);
-        RsfEnvironment environment = null;
-        if (rsfEnv == null) {
-            environment = new DefaultRsfEnvironment(apiBinder.getEnvironment());
-            rsfEnv = apiBinder.bindType(RsfEnvironment.class).toInstance(environment).toInfo();
-            rsfEnv.setMetaData(RsfEnvironment.class.getName(), environment);
-        } else {
-            environment = (RsfEnvironment) rsfEnv.getMetaData(RsfEnvironment.class.getName());
+        List<BindInfo<RsfEnvironment>> rsfEnvList = apiBinder.findBindingRegister(RsfEnvironment.class);
+        RsfEnvironment rsfEnv = null;
+        if (rsfEnvList != null && !rsfEnvList.isEmpty()) {
+            for (BindInfo<RsfEnvironment> info : rsfEnvList) {
+                rsfEnv = (RsfEnvironment) info.getMetaData(RsfEnvironment.class.getName());
+                if (rsfEnv != null) {
+                    return rsfEnv;
+                }
+            }
         }
-        //
-        return environment;
+        rsfEnv = new DefaultRsfEnvironment(apiBinder.getEnvironment());
+        BindInfo<RsfEnvironment> info = apiBinder.bindType(RsfEnvironment.class).toInstance(rsfEnv).toInfo();
+        info.setMetaData(RsfEnvironment.class.getName(), rsfEnv);
+        return rsfEnv;
     }
     public abstract void loadModule(RsfApiBinder apiBinder) throws Throwable;
 }

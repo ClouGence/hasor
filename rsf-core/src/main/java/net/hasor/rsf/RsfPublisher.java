@@ -253,11 +253,6 @@ public interface RsfPublisher {
         public RegisterBuilder<T> asShadow() throws IOException;
 
         /** @return 将服务注册到{@link RsfContext}上。*/
-        public RegisterReference<T> register() throws IOException;
-    }
-    /**接口解除*/
-    public static interface RegisterReference<T> extends RsfBindInfo<T> {
-        /**解除注册。*/
-        public boolean unRegister();
+        public RsfBindInfo<T> register() throws IOException;
     }
 }

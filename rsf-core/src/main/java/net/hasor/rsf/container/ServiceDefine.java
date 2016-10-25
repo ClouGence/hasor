@@ -17,8 +17,10 @@ package net.hasor.rsf.container;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.info.CustomerProvider;
+import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.RouteTypeEnum;
+import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.domain.ServiceDomain;
 import org.more.util.StringUtils;
 
@@ -28,7 +30,7 @@ import java.util.*;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-class ServiceDefine<T> implements CustomerProvider<T> {
+class ServiceDefine<T> implements CustomerProvider<T>, RsfBindInfo<T> {
     private final ServiceDomain<T>           domain;
     private final List<FilterDefine>         filterList;
     private       Provider<T>                customerProvider;
@@ -110,5 +112,61 @@ class ServiceDefine<T> implements CustomerProvider<T> {
             }
         }
         return "ServiceDefine[Domain=" + this.domain + ",Filters=" + buffer.toString() + "]";
+    }
+    //-------------------------------------------------------------------------
+    @Override
+    public String getBindID() {
+        return this.domain.getBindID();
+    }
+    @Override
+    public String getBindName() {
+        return this.domain.getBindName();
+    }
+    @Override
+    public Object getMetaData(String key) {
+        return this.domain.getMetaData(key);
+    }
+    @Override
+    public void setMetaData(String key, Object value) {
+        this.domain.setMetaData(key, value);
+    }
+    @Override
+    public void removeMetaData(String key) {
+    }
+    @Override
+    public String getBindGroup() {
+        return this.domain.getBindGroup();
+    }
+    @Override
+    public String getBindVersion() {
+        return this.domain.getBindVersion();
+    }
+    @Override
+    public Class<T> getBindType() {
+        return this.domain.getBindType();
+    }
+    @Override
+    public RsfServiceType getServiceType() {
+        return this.domain.getServiceType();
+    }
+    @Override
+    public boolean isMessage() {
+        return this.domain.isMessage();
+    }
+    @Override
+    public boolean isShadow() {
+        return this.domain.isShadow();
+    }
+    @Override
+    public int getClientTimeout() {
+        return this.domain.getClientTimeout();
+    }
+    @Override
+    public String getSerializeType() {
+        return this.domain.getSerializeType();
+    }
+    @Override
+    public boolean isSharedThreadPool() {
+        return this.domain.isSharedThreadPool();
     }
 }

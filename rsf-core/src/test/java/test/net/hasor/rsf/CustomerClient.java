@@ -16,7 +16,10 @@
 package test.net.hasor.rsf;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.*;
+import net.hasor.rsf.RsfApiBinder;
+import net.hasor.rsf.RsfClient;
+import net.hasor.rsf.RsfModule;
+import net.hasor.rsf.RsfResult;
 import net.hasor.rsf.address.InterAddress;
 import test.net.hasor.rsf.services.EchoService;
 import test.net.hasor.rsf.services.MessageService;
@@ -30,11 +33,10 @@ public class CustomerClient {
         //Client
         AppContext clientContext = Hasor.createAppContext("customer-config.xml", new RsfModule() {
             @Override
-            public void loadRsf(RsfContext rsfContext) throws Throwable {
-                RsfApiBinder rsfBinder = rsfContext.binder();
+            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
                 InterAddress local = new InterAddress("rsf://127.0.0.1:2180/default");
-                rsfBinder.rsfService(EchoService.class).bindAddress(local).register();
-                rsfBinder.rsfService(MessageService.class).bindAddress(local).register();
+                apiBinder.rsfService(EchoService.class).bindAddress(local).register();
+                apiBinder.rsfService(MessageService.class).bindAddress(local).register();
             }
         });
         System.out.println("server start.");

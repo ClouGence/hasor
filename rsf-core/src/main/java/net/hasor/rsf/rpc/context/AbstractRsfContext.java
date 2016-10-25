@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.rpc.context;
 import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
 import net.hasor.core.EventContext;
 import net.hasor.core.Provider;
 import net.hasor.rsf.*;
@@ -46,7 +45,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractRsfContext implements RsfContext, AppContextAware {
+public abstract class AbstractRsfContext implements RsfContext {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     private final RsfBeanContainer     rsfBeanContainer; // 服务管理
     private final RsfEnvironment       rsfEnvironment;   // 环境&配置
@@ -69,11 +68,14 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         this.onlineStatus = new AtomicBoolean(false);
     }
     //
-    public synchronized void start() throws Throwable {
+    public synchronized void start(AppContext appContext) throws Throwable {
+        this.appContext = appContext;
         EventContext ec = getAppContext().getEnvironment().getEventContext();
         logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Initialized);
         ec.fireSyncEvent(RsfEvent.Rsf_Initialized, this);
         logger.info("rsfContext -> doInitializeCompleted");
+        //
+        this.rsfBeanContainer.lookUp(appContext);
         //
         this.addressPool.restoreConfig();/*恢复地址本*/
         this.addressPool.startTimer();
@@ -125,10 +127,6 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         this.addressPool.shutdownTimer();
     }
     //
-    @Override
-    public void setAppContext(AppContext appContext) {
-        this.appContext = appContext;
-    }
     @Override
     public AppContext getAppContext() {
         return this.appContext;

@@ -17,8 +17,8 @@ package net.hasor.rsf.container;
 import net.hasor.core.*;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.rsf.RsfApiBinder;
+import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfEnvironment;
-import net.hasor.rsf.domain.RsfEvent;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -29,29 +29,31 @@ import java.util.Set;
  * @author 赵永春(zyc@hasor.net)
  */
 public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiBinder {
-    private ApiBinder      apiBinder;
-    private RsfEnvironment rsfEnvironment;
+    private final ApiBinder      apiBinder;
+    private final RsfEnvironment rsfEnvironment;
     public InnerRsfApiBinder(ApiBinder apiBinder, RsfEnvironment rsfEnvironment) {
         super();
         this.apiBinder = new ApiBinderWrap(Hasor.assertIsNotNull(apiBinder));
         this.rsfEnvironment = Hasor.assertIsNotNull(rsfEnvironment);
     }
     @Override
-    protected <T> RegisterReference<T> addService(ServiceDefine<T> serviceDefine) {
-        EventContext ec = getEnvironment().getEventContext();
-        ec.pushListener(RsfEvent.Rsf_Initialized, new EventListener<Object>() {
-        });
-        return null;
-        s
+    protected <T> RsfBindInfo<T> addService(ServiceDefine<T> serviceDefine) {
+        this.bindType(ServiceDefine.class).uniqueName().toInstance(serviceDefine);
+        return serviceDefine;
     }
     @Override
     protected void addShareFilter(FilterDefine filterDefine) {
+        this.bindType(FilterDefine.class).uniqueName().toInstance(filterDefine);
     }
     //
     //
     @Override
     public RsfEnvironment getEnvironment() {
         return this.rsfEnvironment;
+    }
+    @Override
+    public <T> ConfigurationBuilder<T> rsfService(BindInfo<T> bindInfo) {
+        return this.rsfService(bindInfo.getBindType()).toInfo(bindInfo);
     }
     @Override
     public Set<Class<?>> findClass(Class<?> featureType) {

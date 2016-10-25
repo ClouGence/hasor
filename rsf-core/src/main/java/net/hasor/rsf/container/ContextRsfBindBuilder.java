@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.container;
+import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfEnvironment;
 /**
@@ -28,10 +29,11 @@ abstract class ContextRsfBindBuilder extends AbstractRsfBindBuilder {
     public RsfEnvironment getEnvironment() {
         return this.getRsfContext().getEnvironment();
     }
-    protected <T> RegisterReference<T> addService(ServiceDefine<T> serviceDefine) {
-        return getContainer().publishService(serviceDefine);
+    protected <T> RsfBindInfo<T> addService(ServiceDefine<T> serviceDefine) {
+        getContainer().publishService(serviceDefine);
+        return serviceDefine;
     }
     protected void addShareFilter(FilterDefine filterDefine) {
-        this.getContainer().addFilter(filterDefine);
+        this.getContainer().publishFilter(filterDefine);
     }
 }

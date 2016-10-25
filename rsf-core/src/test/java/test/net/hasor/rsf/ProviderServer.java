@@ -16,7 +16,6 @@
 package test.net.hasor.rsf;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfApiBinder;
-import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfModule;
 import test.net.hasor.rsf.services.EchoService;
 import test.net.hasor.rsf.services.EchoServiceImpl;
@@ -32,10 +31,9 @@ public class ProviderServer {
         //Server
         Hasor.createAppContext("provider-config.xml", new RsfModule() {
             @Override
-            public void loadRsf(RsfContext rsfContext) throws Throwable {
-                RsfApiBinder rsfBinder = rsfContext.binder();
-                rsfBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
-                rsfBinder.rsfService(MessageService.class).toInstance(new MessageServiceImpl()).register();
+            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
+                apiBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
+                apiBinder.rsfService(MessageService.class).toInstance(new MessageServiceImpl()).register();
             }
         });
         //

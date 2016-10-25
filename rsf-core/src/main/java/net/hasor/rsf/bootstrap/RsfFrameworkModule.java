@@ -58,14 +58,13 @@ public final class RsfFrameworkModule extends RsfModule {
             @Override
             public void onEvent(String event, AppContext eventData) throws Throwable {
                 logger.info("rsf framework starting.");
-                rsfContext.setAppContext(eventData);
-                rsfContext.start();
+                rsfContext.start(eventData);
             }
         });
         //
         //3.将重要的接口注册到 Hasor
         apiBinder.bindType(RsfSettings.class).toInstance(environment.getSettings());
-        apiBinder.bindType(RsfEnvironment.class).toInstance(environment);
+        //        apiBinder.bindType(RsfEnvironment.class).toInstance(environment);
         apiBinder.bindType(RsfContext.class).toInstance(rsfContext);
         apiBinder.bindType(OnlineStatus.class).toInstance(rsfContext);
         apiBinder.bindType(RsfUpdater.class).toInstance(rsfContext.getUpdater());

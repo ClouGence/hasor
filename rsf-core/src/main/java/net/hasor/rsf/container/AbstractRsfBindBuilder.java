@@ -20,10 +20,7 @@ import net.hasor.core.Provider;
 import net.hasor.core.binder.ClassAwareProvider;
 import net.hasor.core.binder.InfoAwareProvider;
 import net.hasor.core.binder.InstanceProvider;
-import net.hasor.rsf.RsfFilter;
-import net.hasor.rsf.RsfPublisher;
-import net.hasor.rsf.RsfService;
-import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.*;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.InterServiceAddress;
 import net.hasor.rsf.address.RouteTypeEnum;
@@ -41,7 +38,7 @@ import java.net.URISyntaxException;
  * @author 赵永春(zyc@hasor.net)
  */
 abstract class AbstractRsfBindBuilder implements RsfPublisher {
-    protected abstract <T> RegisterReference<T> addService(ServiceDefine<T> serviceDefine);
+    protected abstract <T> RsfBindInfo<T> addService(ServiceDefine<T> serviceDefine);
 
     protected abstract void addShareFilter(FilterDefine filterDefine);
     //
@@ -248,7 +245,7 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
             return this;
         }
         //
-        public RegisterReference<T> register() throws IOException {
+        public RsfBindInfo<T> register() throws IOException {
             return addService(this.serviceDefine);
         }
         @Override

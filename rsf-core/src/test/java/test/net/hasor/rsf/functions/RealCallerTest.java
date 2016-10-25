@@ -37,10 +37,9 @@ public class RealCallerTest {
         //Server
         AppContext serverAppContext = Hasor.createAppContext("provider-config.xml", new RsfModule() {
             @Override
-            public void loadRsf(RsfContext rsfContext) throws Throwable {
-                RsfApiBinder rsfBinder = rsfContext.binder();
-                rsfBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
-                rsfBinder.rsfService(MessageService.class).toInstance(new MessageServiceImpl()).register();
+            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
+                apiBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
+                apiBinder.rsfService(MessageService.class).toInstance(new MessageServiceImpl()).register();
             }
         });
         System.out.println("server start.");
@@ -50,11 +49,10 @@ public class RealCallerTest {
         //Client
         AppContext clientContext = Hasor.createAppContext("customer-config.xml", new RsfModule() {
             @Override
-            public void loadRsf(RsfContext rsfContext) throws Throwable {
-                RsfApiBinder rsfBinder = rsfContext.binder();
+            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
                 InterAddress local = new InterAddress("rsf://127.0.0.1:8100/default");
-                rsfBinder.rsfService(EchoService.class).bindAddress(local).register();
-                rsfBinder.rsfService(MessageService.class).bindAddress(local).register();
+                apiBinder.rsfService(EchoService.class).bindAddress(local).register();
+                apiBinder.rsfService(MessageService.class).bindAddress(local).register();
             }
         });
         System.out.println("client start.");
@@ -84,12 +82,12 @@ public class RealCallerTest {
         RsfContext rsfContext = clientContext.getInstance(RsfContext.class);
         RsfBindInfo<?> echoServiceInfo = rsfContext.getServiceInfo(EchoService.class);
         Method helloMethod = EchoService.class.getMethod("sayHello", String.class);
-        RsfFuture rsfFuture = client.asyncInvoke(echoServiceInfo, helloMethod.getName(), helloMethod.getParameterTypes(), new Object[] {"my name is zyc!"});
+        RsfFuture rsfFuture = client.asyncInvoke(echoServiceInfo, helloMethod.getName(), helloMethod.getParameterTypes(), new Object[] { "my name is zyc!" });
         System.out.println(rsfFuture.get().getStatus());
         System.out.println(rsfFuture.get().getData());
         Thread.sleep(2000);
         //
-        client.callBackInvoke(echoServiceInfo, helloMethod.getName(), helloMethod.getParameterTypes(), new Object[] {"my name is zyc!"}, new FutureCallback<Object>() {
+        client.callBackInvoke(echoServiceInfo, helloMethod.getName(), helloMethod.getParameterTypes(), new Object[] { "my name is zyc!" }, new FutureCallback<Object>() {
             @Override
             public void completed(Object result) {
                 System.out.println("callBackInvoke -> result :" + result);
@@ -105,7 +103,7 @@ public class RealCallerTest {
         });
         Thread.sleep(2000);
         //
-        client.callBackRequest(echoServiceInfo, helloMethod.getName(), helloMethod.getParameterTypes(), new Object[] {"my name is zyc!"}, new FutureCallback<RsfResponse>() {
+        client.callBackRequest(echoServiceInfo, helloMethod.getName(), helloMethod.getParameterTypes(), new Object[] { "my name is zyc!" }, new FutureCallback<RsfResponse>() {
             @Override
             public void completed(RsfResponse result) {
                 System.out.println("callBackRequest -> status :" + result.getStatus());
