@@ -54,6 +54,10 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
         return (WebEnvironment) super.getEnvironment();
     }
     //
+    protected Class<?> getBinderSource() {
+        return WebApiBinder.class;
+    }
+    //
     /*--------------------------------------------------------------------------------------Utils*/
     /***/
     private static List<String> newArrayList(final String[] arr, final String object) {

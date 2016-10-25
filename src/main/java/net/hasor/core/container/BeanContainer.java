@@ -121,9 +121,10 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
     /**
      * 创建{@link AbstractBindInfoProviderAdapter}，交给外层用于Bean定义。
      * @param bindType 声明的类型。
+     * @param binderSource
      */
-    public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType) {
-        AbstractBindInfoProviderAdapter<T> adapter = super.createInfoAdapter(bindType);
+    public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType, Class<?> binderSource) {
+        AbstractBindInfoProviderAdapter<T> adapter = super.createInfoAdapter(bindType, binderSource);
         adapter.addObserver(this);
         adapter.setBindID(adapter.getBindID());
         return adapter;
@@ -159,7 +160,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
         }
         this.scopeMapping.put(ScopManager.SINGLETON_SCOPE, new InstanceProvider<Scope>(new SingletonScope()));
         for (BindInfo<?> info : this.allBindInfoList) {
-            if (info instanceof AbstractBindInfoProviderAdapter == false) {
+            if (!(info instanceof AbstractBindInfoProviderAdapter)) {
                 continue;
             }
             final AbstractBindInfoProviderAdapter<?> infoAdapter = (AbstractBindInfoProviderAdapter<?>) info;

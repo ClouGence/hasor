@@ -28,9 +28,10 @@ public interface BeanBuilder {
     /**
      * 创建{@link AbstractBindInfoProviderAdapter}并注册到容器中。
      * @param bindType 声明的类型。
+     * @param binderSource
      * @return 返回容器中新建的{@link AbstractBindInfoProviderAdapter}。
      */
-    public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType);
+    public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType, Class<?> binderSource);
 
     /**
      * 通过{@link BindInfo}创建Bean。
