@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.rsf.bootstrap;
-import net.hasor.core.*;
+import net.hasor.core.AppContext;
+import net.hasor.core.EventListener;
+import net.hasor.core.Hasor;
+import net.hasor.core.Provider;
 import net.hasor.rsf.*;
 import net.hasor.rsf.center.client.RsfCenterRsfPlugin;
 import net.hasor.rsf.console.ConsoleRsfPlugin;
-import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.filters.local.LocalPref;
 import net.hasor.rsf.filters.online.OnlineRsfFilter;
 import net.hasor.rsf.filters.thread.LocalWarpFilter;
@@ -26,33 +28,22 @@ import net.hasor.rsf.filters.thread.RsfRequestLocal;
 import net.hasor.rsf.filters.thread.RsfResponseLocal;
 import net.hasor.rsf.filters.trace.TraceFilter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
-import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.web.WebApiBinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 /**
  * Rsf 框架启动入口。
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public final class RsfFrameworkModule implements Module, RsfPlugin {
+public final class RsfFrameworkModule extends RsfModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
-    public final void loadModule(ApiBinder apiBinder) throws Throwable {
-        Environment env = apiBinder.getEnvironment();
-        boolean enable = env.getSettings().getBoolean("hasor.rsfConfig.enable", false);
-        if (!enable) {
-            logger.info("rsf framework disable -> 'hasor.rsfConfig.enable' is false");
-            return;
-        }
+    public final void loadModule(RsfApiBinder apiBinder) throws Throwable {
         //
         //1.组装 RsfContext 对象
-        final RsfEnvironment environment = new DefaultRsfEnvironment(env);
-        final RsfBeanContainer rsfContainer = new RsfBeanContainer(environment);
-        final AbstractRsfContext rsfContext = new AbstractRsfContext(rsfContainer) {
+        final RsfEnvironment environment = apiBinder.getEnvironment();
+        final AbstractRsfContext rsfContext = new AbstractRsfContext(environment) {
         };
         //
         //2.监听启动和销毁事件
@@ -67,18 +58,12 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
             @Override
             public void onEvent(String event, AppContext eventData) throws Throwable {
                 logger.info("rsf framework starting.");
-                List<RsfPlugin> pluginList = eventData.findBindingBean(RsfPlugin.class);
-                if (pluginList == null) {
-                    pluginList = new ArrayList<RsfPlugin>(pluginList);
-                }
-                pluginList.add(0, RsfFrameworkModule.this);
-                //
                 rsfContext.setAppContext(eventData);
-                rsfContext.start(pluginList.toArray(new RsfPlugin[pluginList.size()]));
+                rsfContext.start();
             }
         });
         //
-        //3.将重要的接口注册到Hasor
+        //3.将重要的接口注册到 Hasor
         apiBinder.bindType(RsfSettings.class).toInstance(environment.getSettings());
         apiBinder.bindType(RsfEnvironment.class).toInstance(environment);
         apiBinder.bindType(RsfContext.class).toInstance(rsfContext);
@@ -100,19 +85,14 @@ public final class RsfFrameworkModule implements Module, RsfPlugin {
         }
         //
         //5.插件
+        RsfPublisher rsfPublisher = rsfContext.publisher();
+        rsfPublisher.bindFilter("TraceFilter", new TraceFilter());
+        rsfPublisher.bindFilter("LocalPref", new LocalPref());
+        rsfPublisher.bindFilter("LocalWarpFilter", new LocalWarpFilter());
+        rsfPublisher.bindFilter("OnlineRsfFilter", new OnlineRsfFilter());
         apiBinder.installModule(new ConsoleRsfPlugin());
+        apiBinder.installModule(new RsfCenterRsfPlugin());
         //
         logger.info("rsf framework init finish.");
-    }
-    @Override
-    public void loadRsf(RsfContext rsfContext) throws Throwable {
-        //
-        RsfBinder rsfBinder = rsfContext.binder();
-        rsfBinder.bindFilter("TraceFilter", new TraceFilter());
-        rsfBinder.bindFilter("LocalPref", new LocalPref());
-        rsfBinder.bindFilter("LocalWarpFilter", new LocalWarpFilter());
-        rsfBinder.bindFilter("OnlineRsfFilter", new OnlineRsfFilter());
-        new RsfCenterRsfPlugin().loadRsf(rsfContext);
-        new ConsoleRsfPlugin().loadRsf(rsfContext);
     }
 }

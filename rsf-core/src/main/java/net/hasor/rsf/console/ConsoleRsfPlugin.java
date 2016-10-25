@@ -27,9 +27,13 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import net.hasor.core.*;
+import net.hasor.core.AppContext;
+import net.hasor.core.EventListener;
+import net.hasor.core.Hasor;
+import net.hasor.core.LifeModule;
+import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.RsfPlugin;
+import net.hasor.rsf.RsfModule;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.utils.NameThreadFactory;
 import org.slf4j.Logger;
@@ -43,7 +47,7 @@ import java.util.Set;
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ConsoleRsfPlugin implements RsfPlugin, Module {
+public class ConsoleRsfPlugin extends RsfModule implements LifeModule {
     protected static Logger         logger        = LoggerFactory.getLogger(ConsoleRsfPlugin.class);
     private          StringDecoder  stringDecoder = new StringDecoder();
     private          StringEncoder  stringEncoder = new StringEncoder();
@@ -52,7 +56,7 @@ public class ConsoleRsfPlugin implements RsfPlugin, Module {
     private          EventLoopGroup workerGroup   = null;
     //
     @Override
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
+    public void loadModule(RsfApiBinder apiBinder) throws Throwable {
         final Set<Class<?>> rsfCommandSet = new HashSet<Class<?>>(apiBinder.getEnvironment().findClass(RsfCommand.class));
         rsfCommandSet.remove(RsfCommand.class);
         if (rsfCommandSet.isEmpty()) {
@@ -74,7 +78,11 @@ public class ConsoleRsfPlugin implements RsfPlugin, Module {
         //
     }
     @Override
-    public void loadRsf(RsfContext rsfContext) throws Throwable {
+    public void onStart(AppContext appContext) throws Throwable {
+        RsfContext rsfContext = appContext.getInstance(RsfContext.class);
+        if (rsfContext == null) {
+            return;
+        }
         //1.初始化常量配置。
         this.workerGroup = new NioEventLoopGroup(1, new NameThreadFactory("RSF-Console"));
         this.telnetHandler = new TelnetHandler(rsfContext);
@@ -123,5 +131,8 @@ public class ConsoleRsfPlugin implements RsfPlugin, Module {
             logger.info("console shutdown.");
             this.workerGroup.shutdownGracefully();
         }
+    }
+    @Override
+    public void onStop(AppContext appContext) throws Throwable {
     }
 }

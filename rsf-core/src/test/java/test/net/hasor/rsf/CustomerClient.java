@@ -31,7 +31,7 @@ public class CustomerClient {
         AppContext clientContext = Hasor.createAppContext("customer-config.xml", new RsfModule() {
             @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {
-                RsfBinder rsfBinder = rsfContext.binder();
+                RsfApiBinder rsfBinder = rsfContext.binder();
                 InterAddress local = new InterAddress("rsf://127.0.0.1:2180/default");
                 rsfBinder.rsfService(EchoService.class).bindAddress(local).register();
                 rsfBinder.rsfService(MessageService.class).bindAddress(local).register();

@@ -26,24 +26,40 @@ import java.net.URISyntaxException;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfBinder {
+public interface RsfPublisher {
+    public RsfEnvironment getEnvironment();
+
     /**
      * 添加全局的RsfFilter。
      * @param filterID filter ID
      * @param instance 过滤器实例
      */
-    public void bindFilter(String filterID, RsfFilter instance);
+    public RsfPublisher bindFilter(String filterID, RsfFilter instance);
 
     /**
      * 添加全局的RsfFilter。
      * @param filterID filter ID
      * @param provider provider for RsfFilter
      */
-    public void bindFilter(String filterID, Provider<? extends RsfFilter> provider);
+    public RsfPublisher bindFilter(String filterID, Provider<? extends RsfFilter> provider);
+
+    /**
+     * 添加全局的RsfFilter。
+     * @param filterID filter ID
+     * @param filterBindInfo provider for RsfFilter
+     */
+    public RsfPublisher bindFilter(String filterID, BindInfo<RsfFilter> filterBindInfo);
+
+    /**
+     * 添加全局的RsfFilter。
+     * @param filterID filter ID
+     * @param rsfFilterType type for RsfFilter
+     */
+    public RsfPublisher bindFilter(String filterID, Class<? extends RsfFilter> rsfFilterType);
 
     /**
      * 绑定一个类型到RSF环境。
-     * @param type 服务类型 
+     * @param type 服务类型
      *
      * @return 返回细粒度绑定操作接口 - {@link LinkedBuilder}
      */
@@ -55,7 +71,7 @@ public interface RsfBinder {
      * @param type 服务类型
      * @param instance 为绑定指定的实例对象。
      * @return 返回细粒度绑定操作接口 - {@link ConfigurationBuilder}
-     * @see net.hasor.rsf.RsfBinder.ConfigurationBuilder#rsfService(Class)
+     * @see RsfPublisher.ConfigurationBuilder#rsfService(Class)
      */
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, T instance);
 
@@ -65,7 +81,7 @@ public interface RsfBinder {
      * @param type 服务类型
      * @param implementation 为绑定指定的实现类。
      * @return 返回细粒度绑定操作接口 - {@link ConfigurationBuilder}
-     * @see net.hasor.rsf.RsfBinder.ConfigurationBuilder#rsfService(Class)
+     * @see RsfPublisher.ConfigurationBuilder#rsfService(Class)
      */
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, Class<? extends T> implementation);
 
@@ -75,7 +91,7 @@ public interface RsfBinder {
      * @param type 服务类型
      * @param bindInfo 为绑定指定的实现类。
      * @return 返回细粒度绑定操作接口 - {@link ConfigurationBuilder}
-     * @see net.hasor.rsf.RsfBinder.ConfigurationBuilder#rsfService(Class)
+     * @see RsfPublisher.ConfigurationBuilder#rsfService(Class)
      */
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, BindInfo<T> bindInfo);
 
@@ -85,14 +101,13 @@ public interface RsfBinder {
      * @param type 服务类型
      * @param provider 为绑定指定的实现类。
      * @return 返回细粒度绑定操作接口 - {@link ConfigurationBuilder}
-     * @see net.hasor.rsf.RsfBinder.ConfigurationBuilder#rsfService(Class)
+     * @see RsfPublisher.ConfigurationBuilder#rsfService(Class)
      */
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, Provider<T> provider);
     //
     //
-    //
     /**处理类型和实现的绑定。*/
-    public interface LinkedBuilder<T> extends ConfigurationBuilder<T> {
+    public static interface LinkedBuilder<T> extends ConfigurationBuilder<T> {
         /**
          * 为绑定设置一个实现类。
          * @param implementation 实现类
@@ -122,7 +137,7 @@ public interface RsfBinder {
         public ConfigurationBuilder<T> toInfo(BindInfo<T> bindInfo);
     }
     /**设置服务名。*/
-    public interface ConfigurationBuilder<T> extends FilterBindBuilder<T> {
+    public static interface ConfigurationBuilder<T> extends FilterBindBuilder<T> {
         /**
          * 设置服务分组信息
          * @param group 所属分组
@@ -158,9 +173,8 @@ public interface RsfBinder {
          */
         public ConfigurationBuilder<T> serialize(String serializeType);
     }
-    //
     /**设置过滤器*/
-    public interface FilterBindBuilder<T> extends RegisterBuilder<T> {
+    public static interface FilterBindBuilder<T> extends RegisterBuilder<T> {
         /**
          * 为服务添加一个专有的RsfFilter。
          * @param subFilterID filter ID,如果服务专有的filterID和全局RsfFilter出现冲突，那么优先选用该RsfFilter。
@@ -184,10 +198,17 @@ public interface RsfBinder {
          * @return 返回ConfigurationBuilder
          */
         public FilterBindBuilder<T> bindFilter(String subFilterID, Class<? extends RsfFilter> rsfFilterType);
+
+        /**
+         * 为服务添加一个专有的RsfFilter。
+         * @param subFilterID filter ID,如果服务专有的filterID和全局RsfFilter出现冲突，那么优先选用该RsfFilter。
+         * @param rsfFilterInfo Info for Rsffilter.
+         * @return 返回ConfigurationBuilder
+         */
+        public FilterBindBuilder<T> bindFilter(String subFilterID, BindInfo<RsfFilter> rsfFilterInfo);
     }
-    //
     /**发布地址*/
-    public interface RegisterBuilder<T> {
+    public static interface RegisterBuilder<T> {
         /**更新服务地址本计算规则（服务级）*/
         public RegisterBuilder updateServiceRoute(String scriptBody);
 
@@ -234,9 +255,8 @@ public interface RsfBinder {
         /** @return 将服务注册到{@link RsfContext}上。*/
         public RegisterReference<T> register() throws IOException;
     }
-    //
     /**接口解除*/
-    public interface RegisterReference<T> extends RsfBindInfo<T> {
+    public static interface RegisterReference<T> extends RsfBindInfo<T> {
         /**解除注册。*/
         public boolean unRegister();
     }

@@ -57,18 +57,19 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
     private final AtomicBoolean        onlineStatus;     // 在线状态
     private       AppContext           appContext;       // 上下文环境
     //
-    public AbstractRsfContext(RsfBeanContainer rsfBeanContainer) {
-        this.rsfBeanContainer = rsfBeanContainer;
-        this.rsfEnvironment = this.rsfBeanContainer.getEnvironment();
+    public AbstractRsfContext(RsfEnvironment environment) {
+        this.rsfEnvironment = environment;
+        this.addressPool = new DiskCacheAddressPool(this.rsfEnvironment);
+        this.poolProvider = new PoolAddressProvider(this.addressPool);
+        //
+        this.rsfBeanContainer = new RsfBeanContainer(this.addressPool);
         Transport transport = new Transport();
         this.rsfCaller = new RemoteRsfCaller(this, this.rsfBeanContainer, transport);
         this.rsfNetManager = new RsfNetManager(this.rsfEnvironment, transport);
-        this.addressPool = new DiskCacheAddressPool(this.rsfEnvironment);
-        this.poolProvider = new PoolAddressProvider(this.addressPool);
         this.onlineStatus = new AtomicBoolean(false);
     }
     //
-    public synchronized void start(RsfPlugin... plugins) throws Throwable {
+    public synchronized void start() throws Throwable {
         EventContext ec = getAppContext().getEnvironment().getEventContext();
         logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Initialized);
         ec.fireSyncEvent(RsfEvent.Rsf_Initialized, this);
@@ -83,12 +84,6 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
         //
         if (this.rsfEnvironment.getSettings().isAutomaticOnline()) {
             this.online();
-        }
-        //
-        for (RsfPlugin rsfPlugins : plugins) {
-            if (rsfPlugins != null) {
-                rsfPlugins.loadRsf(this);
-            }
         }
         //
         logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Started);
@@ -187,8 +182,8 @@ public abstract class AbstractRsfContext implements RsfContext, AppContextAware 
     public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo) {
         return (Provider<T>) this.rsfBeanContainer.getProvider(bindInfo.getBindID());
     }
-    public RsfBinder binder() {
-        return this.rsfBeanContainer.createBinder(this.rsfBeanContainer, this);
+    public RsfPublisher publisher() {
+        return this.rsfBeanContainer.createPublisher(this.rsfBeanContainer, this);
     }
     //
     //

@@ -29,11 +29,10 @@ class RsfCenterClientVerifyFilter implements RsfFilter {
     private   String keySecret  = null;                               //keySecret
     private   String rsfVersion = null;                               //客户端版本
     //
-    public RsfCenterClientVerifyFilter(RsfContext rsfContext) throws Throwable {
-        RsfSettings settings = rsfContext.getSettings();
+    public RsfCenterClientVerifyFilter(RsfSettings settings) throws Throwable {
         this.appKey = settings.getAppKeyID();
         this.keySecret = settings.getAppKeySecret();
-        this.rsfVersion = rsfContext.getSettings().getVersion();
+        this.rsfVersion = settings.getVersion();
     }
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {

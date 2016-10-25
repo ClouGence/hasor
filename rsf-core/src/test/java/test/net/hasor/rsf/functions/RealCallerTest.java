@@ -38,7 +38,7 @@ public class RealCallerTest {
         AppContext serverAppContext = Hasor.createAppContext("provider-config.xml", new RsfModule() {
             @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {
-                RsfBinder rsfBinder = rsfContext.binder();
+                RsfApiBinder rsfBinder = rsfContext.binder();
                 rsfBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
                 rsfBinder.rsfService(MessageService.class).toInstance(new MessageServiceImpl()).register();
             }
@@ -51,7 +51,7 @@ public class RealCallerTest {
         AppContext clientContext = Hasor.createAppContext("customer-config.xml", new RsfModule() {
             @Override
             public void loadRsf(RsfContext rsfContext) throws Throwable {
-                RsfBinder rsfBinder = rsfContext.binder();
+                RsfApiBinder rsfBinder = rsfContext.binder();
                 InterAddress local = new InterAddress("rsf://127.0.0.1:8100/default");
                 rsfBinder.rsfService(EchoService.class).bindAddress(local).register();
                 rsfBinder.rsfService(MessageService.class).bindAddress(local).register();

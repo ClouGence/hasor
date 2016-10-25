@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
+import net.hasor.core.ApiBinder;
 /**
- * RSF插件。
- * @version : 2014年11月18日
+ * 服务配置器
+ * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfPlugin {
+public interface RsfApiBinder extends RsfPublisher, ApiBinder {
     /**
-     * 初始化过程。
-     * @param rsfContext
-     * @throws Throwable init异常抛出
+     * 获取 {@link RsfEnvironment}
+     * @return return {@link RsfEnvironment}
      */
-    public void loadRsf(RsfContext rsfContext) throws Throwable;
+    public RsfEnvironment getEnvironment();
 }

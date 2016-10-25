@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.rsf.container;
-import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
+import net.hasor.core.binder.ClassAwareProvider;
+import net.hasor.core.binder.InfoAwareProvider;
 import net.hasor.core.binder.InstanceProvider;
-import net.hasor.rsf.*;
+import net.hasor.rsf.RsfFilter;
+import net.hasor.rsf.RsfPublisher;
+import net.hasor.rsf.RsfService;
+import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.InterServiceAddress;
+import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.domain.ServiceDomain;
 import org.more.FormatException;
@@ -30,24 +35,34 @@ import org.more.util.StringUtils;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.Set;
 /**
  * 服务注册器
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-abstract class RsfBindBuilder implements RsfBinder {
-    protected abstract RsfBeanContainer getContainer();
+abstract class AbstractRsfBindBuilder implements RsfPublisher {
+    protected abstract <T> RegisterReference<T> addService(ServiceDefine<T> serviceDefine);
 
-    protected abstract RsfContext getRsfContext();
+    protected abstract void addShareFilter(FilterDefine filterDefine);
     //
-    public void bindFilter(String filterID, RsfFilter instance) {
-        this.getContainer().addFilter(filterID, instance);
+    //
+    public RsfPublisher bindFilter(String filterID, RsfFilter instance) {
+        InstanceProvider<RsfFilter> provider = new InstanceProvider<RsfFilter>(Hasor.assertIsNotNull(instance));
+        return this.bindFilter(filterID, provider);
     }
-    public void bindFilter(String filterID, Provider<? extends RsfFilter> provider) {
-        this.getContainer().addFilter(filterID, provider);
+    public RsfPublisher bindFilter(String filterID, BindInfo<RsfFilter> filterBindInfo) {
+        Provider<RsfFilter> provider = new InfoAwareProvider<RsfFilter>(filterBindInfo, getEnvironment());
+        return this.bindFilter(filterID, provider);
     }
+    public RsfPublisher bindFilter(String filterID, Class<? extends RsfFilter> rsfFilterType) {
+        Provider<RsfFilter> provider = new ClassAwareProvider<RsfFilter>(rsfFilterType, getEnvironment());
+        return this.bindFilter(filterID, provider);
+    }
+    public RsfPublisher bindFilter(String filterID, Provider<? extends RsfFilter> provider) {
+        this.addShareFilter(new FilterDefine(filterID, provider));
+        return this;
+    }
+    //
     public <T> LinkedBuilder<T> rsfService(Class<T> type) {
         return new LinkedBuilderImpl<T>(type);
     }
@@ -65,13 +80,11 @@ abstract class RsfBindBuilder implements RsfBinder {
     }
     //
     private class LinkedBuilderImpl<T> implements LinkedBuilder<T> {
-        private final ServiceInfo<T>    serviceDefine;
-        private final Set<InterAddress> addressSet;
+        private final ServiceDefine<T> serviceDefine;
         //
         protected LinkedBuilderImpl(Class<T> serviceType) {
-            this.serviceDefine = new ServiceInfo<T>(serviceType);
-            this.addressSet = new HashSet<InterAddress>();
-            RsfSettings settings = getRsfContext().getEnvironment().getSettings();
+            this.serviceDefine = new ServiceDefine<T>(serviceType);
+            RsfSettings settings = getEnvironment().getSettings();
             //
             RsfService serviceInfo = new AnnoRsfServiceValue(settings, serviceType);
             ServiceDomain<T> domain = this.serviceDefine.getDomain();
@@ -133,40 +146,39 @@ abstract class RsfBindBuilder implements RsfBinder {
         }
         //
         public ConfigurationBuilder<T> bindFilter(String filterID, RsfFilter instance) {
-            this.serviceDefine.addRsfFilter(filterID, instance);
+            Provider<RsfFilter> provider = new InstanceProvider<RsfFilter>(Hasor.assertIsNotNull(instance));
+            this.serviceDefine.addRsfFilter(new FilterDefine(filterID, provider));
             return this;
         }
         //
         public ConfigurationBuilder<T> bindFilter(String filterID, Provider<? extends RsfFilter> provider) {
-            this.serviceDefine.addRsfFilter(filterID, provider);
+            this.serviceDefine.addRsfFilter(new FilterDefine(filterID, Hasor.assertIsNotNull(provider)));
             return this;
         }
         @Override
         public FilterBindBuilder<T> bindFilter(String filterID, Class<? extends RsfFilter> rsfFilterType) {
-            final AppContext appContext = getRsfContext().getAppContext();
-            this.serviceDefine.addRsfFilter(filterID, new RsfFilterProvider(appContext, rsfFilterType));
+            Provider<RsfFilter> provider = new ClassAwareProvider<RsfFilter>(rsfFilterType, getEnvironment());
+            this.serviceDefine.addRsfFilter(new FilterDefine(filterID, provider));
+            return this;
+        }
+        @Override
+        public FilterBindBuilder<T> bindFilter(String filterID, BindInfo<RsfFilter> rsfFilterInfo) {
+            Provider<RsfFilter> provider = new InfoAwareProvider<RsfFilter>(rsfFilterInfo, getEnvironment());
+            this.serviceDefine.addRsfFilter(new FilterDefine(filterID, provider));
             return this;
         }
         //
         @Override
         public ConfigurationBuilder<T> to(final Class<? extends T> implementation) {
-            Hasor.assertIsNotNull(implementation);
-            final AppContext appContext = getRsfContext().getAppContext();
-            return this.toProvider(new Provider<T>() {
-                public T get() {
-                    return appContext.getInstance(implementation);
-                }
-            });
+            Provider<T> provider = new ClassAwareProvider<T>(implementation, getEnvironment());
+            this.serviceDefine.setCustomerProvider(provider);
+            return this;
         }
         @Override
         public ConfigurationBuilder<T> toInfo(final BindInfo<T> bindInfo) {
-            Hasor.assertIsNotNull(bindInfo);
-            final AppContext appContext = getRsfContext().getAppContext();
-            return this.toProvider(new Provider<T>() {
-                public T get() {
-                    return appContext.getInstance(bindInfo);
-                }
-            });
+            Provider<T> provider = new InfoAwareProvider<T>(bindInfo, getEnvironment());
+            this.serviceDefine.setCustomerProvider(provider);
+            return this;
         }
         @Override
         public ConfigurationBuilder<T> toInstance(T instance) {
@@ -182,7 +194,7 @@ abstract class RsfBindBuilder implements RsfBinder {
         //
         @Override
         public RegisterBuilder<T> bindAddress(String rsfHost, int port) throws URISyntaxException {
-            String unitName = getRsfContext().getEnvironment().getSettings().getUnitName();
+            String unitName = getEnvironment().getSettings().getUnitName();
             return this.bindAddress(new InterAddress(rsfHost, port, unitName));
         }
         @Override
@@ -214,13 +226,13 @@ abstract class RsfBindBuilder implements RsfBinder {
         }
         public RegisterBuilder<T> bindAddress(InterAddress rsfAddress, InterAddress... array) {
             if (rsfAddress != null) {
-                this.addressSet.add(rsfAddress);
+                this.serviceDefine.addAddress(rsfAddress);
             }
             if (array.length > 0) {
                 for (InterAddress bindItem : array) {
                     if (bindItem == null)
                         continue;
-                    this.addressSet.add(bindItem);
+                    this.serviceDefine.addAddress(bindItem);
                 }
             }
             return this;
@@ -237,35 +249,26 @@ abstract class RsfBindBuilder implements RsfBinder {
         }
         //
         public RegisterReference<T> register() throws IOException {
-            String serviceID = this.serviceDefine.getDomain().getBindID();
-            RsfUpdater updater = getRsfContext().getUpdater();
-            // .先发布服务,避免地址发布成功之后服务发布失败,遗留垃圾数据的问题。
-            RegisterReference<T> ref = getContainer().publishService(this.serviceDefine);
-            updater.appendStaticAddress(serviceID, this.addressSet);
-            return ref;
+            return addService(this.serviceDefine);
         }
         @Override
         public RegisterBuilder updateFlowControl(String flowControl) {
-            String serviceID = this.serviceDefine.getDomain().getBindID();
-            getRsfContext().getUpdater().updateFlowControl(serviceID, flowControl);
+            this.serviceDefine.setFlowControl(flowControl);
             return this;
         }
         @Override
         public RegisterBuilder updateArgsRoute(String scriptBody) {
-            String serviceID = this.serviceDefine.getDomain().getBindID();
-            getRsfContext().getUpdater().updateArgsRoute(serviceID, scriptBody);
+            this.serviceDefine.setRouteScript(RouteTypeEnum.ArgsLevel, scriptBody);
             return this;
         }
         @Override
         public RegisterBuilder updateMethodRoute(String scriptBody) {
-            String serviceID = this.serviceDefine.getDomain().getBindID();
-            getRsfContext().getUpdater().updateMethodRoute(serviceID, scriptBody);
+            this.serviceDefine.setRouteScript(RouteTypeEnum.MethodLevel, scriptBody);
             return this;
         }
         @Override
         public RegisterBuilder updateServiceRoute(String scriptBody) {
-            String serviceID = this.serviceDefine.getDomain().getBindID();
-            getRsfContext().getUpdater().updateServiceRoute(serviceID, scriptBody);
+            this.serviceDefine.setRouteScript(RouteTypeEnum.ServiceLevel, scriptBody);
             return this;
         }
     }

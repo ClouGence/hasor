@@ -148,10 +148,10 @@
             <localDiskCache>true</localDiskCache>
             <!-- 每次缓存地址本到磁盘时的时间间隔（单位:毫秒）默认:1小时 -->
             <diskCacheTimeInterval>3600000</diskCacheTimeInterval>
-            <!-- 自动刷新addressPool地址本缓存的时间（单位:毫秒）默认:6分钟 -->
-            <refreshCacheTime>360000</refreshCacheTime>
-            <!-- (失效地址重试机制)当地址失效之后要经过多长时间才能被重新列入备选地址。（单位:毫秒）默认:12分钟 -->
-            <invalidWaitTime>720000</invalidWaitTime>
+            <!-- 自动刷新addressPool地址本缓存的时间（单位:毫秒）默认:1分钟 -->
+            <refreshCacheTime>60000</refreshCacheTime>
+            <!-- (失效地址重试机制)当地址失效之后要经过多长时间才能被重新列入备选地址。（单位:毫秒）默认:2分钟 -->
+            <invalidWaitTime>120000</invalidWaitTime>
         </addressPool>
 
         <!-- 安全 -->

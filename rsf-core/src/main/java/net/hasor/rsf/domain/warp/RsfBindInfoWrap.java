@@ -59,6 +59,10 @@ public class RsfBindInfoWrap<T> implements RsfBindInfo<T> {
         return this.target.isMessage();
     }
     @Override
+    public boolean isShadow() {
+        return this.target.isShadow();
+    }
+    @Override
     public int getClientTimeout() {
         return this.target.getClientTimeout();
     }

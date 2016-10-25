@@ -15,11 +15,11 @@
  */
 package net.hasor.rsf.container;
 import net.hasor.core.EventContext;
-import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
-import net.hasor.core.binder.InstanceProvider;
 import net.hasor.rsf.*;
-import net.hasor.rsf.RsfBinder.RegisterReference;
+import net.hasor.rsf.RsfPublisher.RegisterReference;
+import net.hasor.rsf.address.AddressPool;
+import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.rsf.domain.RsfException;
@@ -41,41 +41,32 @@ import java.util.concurrent.ConcurrentMap;
 public class RsfBeanContainer {
     protected            Logger     logger       = LoggerFactory.getLogger(getClass());
     private final static Provider[] EMPTY_FILTER = new Provider[0];
-    private final ConcurrentMap<String, ServiceInfo<?>>        serviceMap;
+    private final ConcurrentMap<String, ServiceDefine<?>>      serviceMap;
     private final List<FilterDefine>                           filterList;
     private final Object                                       filterLock;
-    private final RsfEnvironment                               environment;
+    private final AddressPool                                  addressPool;
     private final ConcurrentMap<String, Provider<RsfFilter>[]> filterCache;
     //
-    public RsfBeanContainer(RsfEnvironment rsfEnvironment) {
-        this.serviceMap = new ConcurrentHashMap<String, ServiceInfo<?>>();
+    public RsfBeanContainer(AddressPool addressPool) {
+        this.serviceMap = new ConcurrentHashMap<String, ServiceDefine<?>>();
         this.filterList = new ArrayList<FilterDefine>();
         this.filterLock = new Object();
-        this.environment = rsfEnvironment;
+        this.addressPool = addressPool;
         this.filterCache = new ConcurrentHashMap<String, Provider<RsfFilter>[]>();
     }
-    //
     /**
      * 添加一个全局服务过滤器。
-     * @param filterID 过滤器ID，不可重复定义相同id的RsfFilter。
-     * @param instance 过滤器对象。
+     * @param define 过滤器对象。
      */
-    public void addFilter(String filterID, RsfFilter instance) {
-        this.addFilter(filterID, new InstanceProvider<RsfFilter>(Hasor.assertIsNotNull(instance)));
-    }
-    /**
-     * 添加一个全局服务过滤器。
-     * @param filterID 过滤器ID，不可重复定义相同id的RsfFilter。
-     * @param provider 过滤器对象。
-     */
-    public void addFilter(String filterID, Provider<? extends RsfFilter> provider) {
+    public void addFilter(FilterDefine define) {
+        String filterID = define.filterID();
         synchronized (this.filterLock) {
-            for (FilterDefine define : this.filterList) {
-                if (StringUtils.equals(filterID, define.filterID())) {
+            for (FilterDefine filter : this.filterList) {
+                if (StringUtils.equals(filter.filterID(), filterID)) {
                     throw new RepeateException("repeate filterID :" + filterID);
                 }
             }
-            this.filterList.add(new FilterDefine(filterID, provider));
+            this.filterList.add(define);
             this.filterCache.clear();
         }
     }
@@ -86,7 +77,7 @@ public class RsfBeanContainer {
      * @param serviceID 服务ID
      */
     public Provider<RsfFilter>[] getFilterProviders(String serviceID) {
-        ServiceInfo<?> info = this.serviceMap.get(serviceID);
+        ServiceDefine<?> info = this.serviceMap.get(serviceID);
         if (info == null) {
             return EMPTY_FILTER;
         }
@@ -96,7 +87,7 @@ public class RsfBeanContainer {
             Map<String, FilterDefine> cacheFilters = new HashMap<String, FilterDefine>();
             //2.计算最终结果。
             List<FilterDefine> publicList = this.filterList;
-            if (publicList != null && !publicList.isEmpty()) {
+            if (!publicList.isEmpty()) {
                 for (FilterDefine filter : publicList) {
                     String filterID = filter.filterID();
                     cacheFilters.put(filterID, filter);
@@ -114,7 +105,7 @@ public class RsfBeanContainer {
                     cacheIds.add(filterID);
                 }
             }
-            //3.产出最终结果。
+            //3.产出最终结果(过滤器链前端是public，后段是private)。
             List<Provider<RsfFilter>> filterArrays = new ArrayList<Provider<RsfFilter>>(cacheIds.size());
             for (String filterID : cacheIds) {
                 FilterDefine define = cacheFilters.get(filterID);
@@ -131,7 +122,7 @@ public class RsfBeanContainer {
      * @return 服务提供者
      */
     public Provider<?> getProvider(String serviceID) {
-        ServiceInfo<?> info = this.serviceMap.get(serviceID);
+        ServiceDefine<?> info = this.serviceMap.get(serviceID);
         if (info == null)
             return null;
         Provider<?> target = info.getCustomerProvider();
@@ -145,7 +136,7 @@ public class RsfBeanContainer {
      * @param serviceID 服务ID。
      */
     public RsfBindInfo<?> getRsfBindInfo(String serviceID) {
-        ServiceInfo<?> info = this.serviceMap.get(serviceID);
+        ServiceDefine<?> info = this.serviceMap.get(serviceID);
         if (info == null)
             return null;
         return info.getDomain();
@@ -156,7 +147,7 @@ public class RsfBeanContainer {
      * @param serviceType 服务类型。
      */
     public <T> RsfBindInfo<T> getRsfBindInfo(Class<T> serviceType) {
-        RsfSettings rsfSettings = this.environment.getSettings();
+        RsfSettings rsfSettings = this.addressPool.getRsfEnvironment().getSettings();
         String serviceGroup = rsfSettings.getDefaultGroup();
         String serviceName = serviceType.getName();
         String serviceVersion = rsfSettings.getDefaultVersion();
@@ -191,16 +182,13 @@ public class RsfBeanContainer {
     }
     /**获取环境对象。*/
     public RsfEnvironment getEnvironment() {
-        return environment;
+        return this.addressPool.getRsfEnvironment();
     }
-    //    public AddressPool getAddressPool() {
-    //        return addressPool;
-    //    }
     /**
      * 发布服务
      * @param serviceDefine 服务定义。
      */
-    public <T> RegisterReference<T> publishService(ServiceInfo<T> serviceDefine) {
+    public <T> RegisterReference<T> publishService(ServiceDefine<T> serviceDefine) {
         String serviceID = serviceDefine.getDomain().getBindID();
         if (this.serviceMap.containsKey(serviceID)) {
             String serviceType = this.serviceMap.get(serviceID).getDomain().getServiceType().name();
@@ -209,10 +197,10 @@ public class RsfBeanContainer {
             throw new RepeateException(logMessage);
         }
         this.logger.info("service to public, id= {}", serviceID);
-        ServiceInfo<?> info = this.serviceMap.putIfAbsent(serviceID, serviceDefine);
+        ServiceDefine<?> info = this.serviceMap.putIfAbsent(serviceID, serviceDefine);
         RsfBindInfo<?> rsfBindInfo = serviceDefine.getDomain();
         //
-        EventContext eventContext = this.environment.getEventContext();
+        EventContext eventContext = this.addressPool.getRsfEnvironment().getEventContext();
         if (RsfServiceType.Provider == serviceDefine.getDomain().getServiceType()) {
             //服务提供者
             if (serviceDefine.getCustomerProvider() == null) {
@@ -222,6 +210,20 @@ public class RsfBeanContainer {
         } else {
             //服务消费者
             eventContext.fireAsyncEvent(RsfEvent.Rsf_ConsumerService, rsfBindInfo);
+        }
+        // .追加地址
+        this.addressPool.appendStaticAddress(serviceID, serviceDefine.getAddressSet());
+        // .更新流控
+        String flowControl = serviceDefine.getFlowControl();
+        if (StringUtils.isNotBlank(flowControl)) {
+            this.addressPool.updateFlowControl(serviceID, flowControl);
+        }
+        // .更新路由
+        Map<RouteTypeEnum, String> scriptMap = serviceDefine.getRouteScript();
+        if (scriptMap != null && !scriptMap.isEmpty()) {
+            for (Map.Entry<RouteTypeEnum, String> routeEnt : scriptMap.entrySet()) {
+                this.addressPool.updateRoute(serviceID, routeEnt.getKey(), routeEnt.getValue());
+            }
         }
         return new RegisterReferenceInfoWrap<T>(this, serviceDefine);
     }
@@ -236,9 +238,9 @@ public class RsfBeanContainer {
         }
         return false;
     }
-    /**创建{@link RsfBinder}。*/
-    public RsfBinder createBinder(final RsfBeanContainer container, final RsfContext rsfContext) {
-        return new RsfBindBuilder() {
+    /**创建{@link RsfApiBinder}。*/
+    public RsfPublisher createPublisher(final RsfBeanContainer container, final RsfContext rsfContext) {
+        return new ContextRsfBindBuilder() {
             @Override
             protected RsfBeanContainer getContainer() {
                 return container;
@@ -252,8 +254,8 @@ public class RsfBeanContainer {
     //
     private static class RegisterReferenceInfoWrap<T> extends RsfBindInfoWrap<T> implements RegisterReference<T> {
         private RsfBeanContainer rsfContainer;
-        private ServiceInfo<T>   serviceInfo;
-        public RegisterReferenceInfoWrap(RsfBeanContainer rsfContainer, ServiceInfo<T> serviceInfo) {
+        private ServiceDefine<T> serviceInfo;
+        public RegisterReferenceInfoWrap(RsfBeanContainer rsfContainer, ServiceDefine<T> serviceInfo) {
             super(serviceInfo.getDomain());
             this.rsfContainer = rsfContainer;
             this.serviceInfo = serviceInfo;

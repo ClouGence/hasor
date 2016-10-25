@@ -79,9 +79,8 @@ public interface RsfContext extends OnlineStatus {
     /**获取类加载器。*/
     public ClassLoader getClassLoader();
 
-    /**创建{@link RsfBinder}。*/
-    public RsfBinder binder();
-    //
+    /**创建{@link RsfPublisher}。*/
+    public RsfPublisher publisher();
 
     /**应用上线（优雅上线）*/
     public void online();

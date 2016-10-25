@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.client;
+import net.hasor.core.AppContext;
 import net.hasor.core.EventContext;
-import net.hasor.rsf.RsfBinder;
-import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.RsfPlugin;
+import net.hasor.core.LifeModule;
+import net.hasor.rsf.*;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.RsfCenterRegister;
@@ -29,28 +29,36 @@ import org.slf4j.LoggerFactory;
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfCenterRsfPlugin implements RsfPlugin {
+public class RsfCenterRsfPlugin extends RsfModule implements LifeModule {
     protected static Logger logger = LoggerFactory.getLogger(RsfCenterRsfPlugin.class);
     //
     @Override
-    public void loadRsf(RsfContext rsfContext) throws Throwable {
-        boolean enable = rsfContext.getSettings().isEnableCenter();
+    public void loadModule(RsfApiBinder apiBinder) throws Throwable {
+    }
+    @Override
+    public void onStart(AppContext appContext) throws Throwable {
+        RsfContext rsfContext = appContext.getInstance(RsfContext.class);
+        if (rsfContext == null) {
+            return;
+        }
+        //
+        RsfPublisher publisher = rsfContext.publisher();
+        RsfEnvironment environment = publisher.getEnvironment();
+        RsfSettings settings = environment.getSettings();
+        boolean enable = settings.isEnableCenter();
         if (!enable) {
             logger.info("rsf center hostSet is empyt -> center disable.");
             return;
         }
-        //
-        RsfBinder rsfBinder = rsfContext.binder();
-        //
         // 1.注册中心消息接收接口
-        rsfBinder.rsfService(RsfCenterListener.class)//服务类型
+        publisher.rsfService(RsfCenterListener.class)//服务类型
                 .toInstance(new RsfCenterDataReceiver(rsfContext))//服务实现
-                .bindFilter("AuthFilter", new RsfCenterClientVerifyFilter(rsfContext))//服务安全过滤器
+                .bindFilter("AuthFilter", new RsfCenterClientVerifyFilter(settings))//服务安全过滤器
                 .asShadow().register();//注册服务
         //
         // 2.注册中心消息发送接口
-        InterAddress[] centerList = rsfContext.getSettings().getCenterServerSet();
-        int faceTimer = rsfContext.getSettings().getCenterRsfTimeout();
+        InterAddress[] centerList = settings.getCenterServerSet();
+        int faceTimer = settings.getCenterRsfTimeout();
         StringBuilder strBuilder = new StringBuilder("");
         for (InterAddress address : centerList) {
             strBuilder.append(address.getHostPort());
@@ -60,14 +68,13 @@ public class RsfCenterRsfPlugin implements RsfPlugin {
             strBuilder.deleteCharAt(strBuilder.length() - 1);
         }
         logger.info("rsf center hostSet = {}  -> center enable.", strBuilder.toString());
-        rsfBinder.rsfService(RsfCenterRegister.class)//服务类型
+        publisher.rsfService(RsfCenterRegister.class)//服务类型
                 .timeout(faceTimer)//服务接口超时时间
-                .bindFilter("AuthFilter", new RsfCenterClientVerifyFilter(rsfContext))//服务安全过滤器
+                .bindFilter("AuthFilter", new RsfCenterClientVerifyFilter(settings))//服务安全过滤器
                 .bindAddress(null, centerList)//静态地址，用不失效
                 .asShadow().register();//注册服务
-        //
         // 3.注册RSF事件监听器
-        EventContext eventContext = rsfContext.getAppContext().getEnvironment().getEventContext();
+        EventContext eventContext = environment.getEventContext();
         RsfEventTransport transport = new RsfEventTransport(rsfContext);
         eventContext.addListener(RsfEvent.Rsf_ProviderService, transport);
         eventContext.addListener(RsfEvent.Rsf_ConsumerService, transport);
@@ -75,6 +82,8 @@ public class RsfCenterRsfPlugin implements RsfPlugin {
         eventContext.addListener(RsfEvent.Rsf_Started, transport);
         eventContext.addListener(RsfEvent.Rsf_Online, transport);
         eventContext.addListener(RsfEvent.Rsf_Offline, transport);
-        //
+    }
+    @Override
+    public void onStop(AppContext appContext) throws Throwable {
     }
 }

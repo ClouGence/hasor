@@ -344,8 +344,8 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         this.connectTimeout = getInteger("hasor.rsfConfig.client.connectTimeout", 100);
         //
         this.unitName = getString("hasor.rsfConfig.unitName", "local");
-        this.invalidWaitTime = getLong("hasor.rsfConfig.addressPool.invalidWaitTime", 60000L);
-        this.refreshCacheTime = getLong("hasor.rsfConfig.addressPool.refreshCacheTime", 360000L);
+        this.refreshCacheTime = getLong("hasor.rsfConfig.addressPool.refreshCacheTime", 60000L);
+        this.invalidWaitTime = getLong("hasor.rsfConfig.addressPool.invalidWaitTime", 120000L);
         this.localDiskCache = getBoolean("hasor.rsfConfig.addressPool.localDiskCache", true);
         this.diskCacheTimeInterval = getLong("hasor.rsfConfig.addressPool.diskCacheTimeInterval", 3600000L);
         //

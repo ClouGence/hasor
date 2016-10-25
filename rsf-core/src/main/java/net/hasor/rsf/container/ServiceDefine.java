@@ -16,41 +16,34 @@
 package net.hasor.rsf.container;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
-import net.hasor.core.binder.InstanceProvider;
 import net.hasor.core.info.CustomerProvider;
-import net.hasor.rsf.RsfFilter;
+import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.domain.ServiceDomain;
 import org.more.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 /**
  * 服务对象，封装了服务元信息、RsfFilter、服务提供者（如果有）。
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-class ServiceInfo<T> implements CustomerProvider<T> {
-    private final ServiceDomain<T>   domain;
-    private final List<FilterDefine> filterList;
-    private       Provider<T>        customerProvider;
+class ServiceDefine<T> implements CustomerProvider<T> {
+    private final ServiceDomain<T>           domain;
+    private final List<FilterDefine>         filterList;
+    private       Provider<T>                customerProvider;
+    private       String                     oriFlowControl;
+    private final Map<RouteTypeEnum, String> oriRouteScript;
+    private final Set<InterAddress>          oriAddressSet;
     //
-    //
-    public ServiceInfo(Class<T> bindType) {
-        this.domain = new ServiceDomain<T>(Hasor.assertIsNotNull(bindType));
-        this.filterList = new ArrayList<FilterDefine>();
+    public ServiceDefine(Class<T> bindType) {
+        this(new ServiceDomain<T>(Hasor.assertIsNotNull(bindType)));
     }
-    public ServiceInfo(ServiceDomain<T> domain) {
+    public ServiceDefine(ServiceDomain<T> domain) {
         this.domain = Hasor.assertIsNotNull(domain);
         this.filterList = new ArrayList<FilterDefine>();
-    }
-    //
-    /**添加Filter*/
-    public void addRsfFilter(String filterID, RsfFilter rsfFilter) {
-        this.addRsfFilter(filterID, new InstanceProvider<RsfFilter>(Hasor.assertIsNotNull(rsfFilter)));
-    }
-    /**添加Filter*/
-    public void addRsfFilter(String filterID, Provider<? extends RsfFilter> rsfFilter) {
-        this.addRsfFilter(new FilterDefine(filterID, Hasor.assertIsNotNull(rsfFilter)));
+        this.oriRouteScript = new HashMap<RouteTypeEnum, String>();
+        this.oriAddressSet = new HashSet<InterAddress>();
     }
     /**添加Filter*/
     public void addRsfFilter(FilterDefine filterDefine) {
@@ -63,23 +56,7 @@ class ServiceInfo<T> implements CustomerProvider<T> {
     }
     /**获取服务上配置有效的过滤器*/
     public List<FilterDefine> getFilterSnapshots() {
-        return new ArrayList<FilterDefine>(this.filterList);
-    }
-    /**查找注册的Filter*/
-    public RsfFilter getFilter(String filterID) {
-        if (StringUtils.isBlank(filterID)) {
-            return null;
-        }
-        List<FilterDefine> defines = this.filterList;
-        if (defines == null || defines.isEmpty()) {
-            return null;
-        }
-        for (FilterDefine defineProvider : defines) {
-            if (StringUtils.equals(filterID, defineProvider.filterID())) {
-                return defineProvider;
-            }
-        }
-        return null;
+        return Collections.unmodifiableList(this.filterList);
     }
     /**获取服务提供者。*/
     @Override
@@ -88,6 +65,32 @@ class ServiceInfo<T> implements CustomerProvider<T> {
     }
     public void setCustomerProvider(Provider<T> customerProvider) {
         this.customerProvider = customerProvider;
+    }
+    //
+    public void addAddress(InterAddress rsfAddress) {
+        this.oriAddressSet.add(Hasor.assertIsNotNull(rsfAddress));
+    }
+    public Set<InterAddress> getAddressSet() {
+        return Collections.unmodifiableSet(this.oriAddressSet);
+    }
+    //
+    /** 获得流控策略 */
+    public String getFlowControl() {
+        return this.oriFlowControl;
+    }
+    public void setFlowControl(String oriFlowControl) {
+        this.oriFlowControl = oriFlowControl;
+    }
+    //
+    /** 设置路由策略 */
+    public void setRouteScript(RouteTypeEnum routeType, String scriptBody) {
+        if (routeType == null || StringUtils.isBlank(scriptBody)) {
+            return;
+        }
+        this.oriRouteScript.put(routeType, scriptBody);
+    }
+    public Map<RouteTypeEnum, String> getRouteScript() {
+        return Collections.unmodifiableMap(this.oriRouteScript);
     }
     //
     /**获取服务元信息。*/
