@@ -9,12 +9,17 @@
 
     <!-- Maven Info -->
     <artifactId>rsf-root</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <!-- Project Info -->
-    <name>RSF-Root</name>
+    <name>RSF</name>
     <description>the Hasor Remote Service Framework root project.</description>
+
+    <!-- 配置属性 -->
+    <properties>
+        <hasor.shortname>RSF-</hasor.shortname>
+    </properties>
 
     <!-- SCM -->
     <scm>
