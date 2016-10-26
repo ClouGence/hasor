@@ -22,5 +22,5 @@ import net.hasor.core.Provider;
  */
 public interface CustomerProvider<T> {
     /**获取Provider对象，可以直接取得对象实例。*/
-    public Provider<T> getCustomerProvider();
+    public Provider<? extends T> getCustomerProvider();
 }

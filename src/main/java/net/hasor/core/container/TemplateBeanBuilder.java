@@ -40,12 +40,12 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
     }
     /** 通过{@link BindInfo}创建Bean。 */
     public <T> T getInstance(final BindInfo<T> bindInfo, final AppContext appContext) {
-        Provider<T> instanceProvider = null;
+        Provider<? extends T> instanceProvider = null;
         Provider<Scope> scopeProvider = null;
         //
         //可能存在的 CustomerProvider
         if (bindInfo instanceof CustomerProvider) {
-            CustomerProvider<T> adapter = (CustomerProvider<T>) bindInfo;
+            CustomerProvider<? extends T> adapter = (CustomerProvider<T>) bindInfo;
             instanceProvider = adapter.getCustomerProvider();
         }
         //可能存在的 ScopeProvider
