@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import net.hasor.core.*;
+import net.hasor.core.AppContext;
+import net.hasor.core.AppContextAware;
+import net.hasor.core.Hasor;
+import net.hasor.core.Provider;
 /**
  *
  * @version : 2015年12月18日
@@ -23,10 +26,8 @@ import net.hasor.core.*;
 public class ClassAwareProvider<T> implements Provider<T>, AppContextAware {
     private Class<? extends T> implementation;
     private AppContext         appContext;
-    public ClassAwareProvider(Class<? extends T> implementation, Environment env) {
+    public ClassAwareProvider(Class<? extends T> implementation) {
         this.implementation = Hasor.assertIsNotNull(implementation);
-        env = Hasor.assertIsNotNull(env);
-        Hasor.autoAware(env, this);
     }
     @Override
     public void setAppContext(AppContext appContext) {
@@ -37,6 +38,6 @@ public class ClassAwareProvider<T> implements Provider<T>, AppContextAware {
         if (this.appContext != null && this.implementation != null) {
             return this.appContext.getInstance(this.implementation);
         }
-        return null;
+        throw new IllegalStateException("has not been initialized");
     }
 }

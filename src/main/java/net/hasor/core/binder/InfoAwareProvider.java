@@ -23,10 +23,8 @@ import net.hasor.core.*;
 public class InfoAwareProvider<T> implements Provider<T>, AppContextAware {
     private BindInfo<? extends T> info;
     private AppContext            appContext;
-    public InfoAwareProvider(BindInfo<? extends T> info, Environment env) {
+    public InfoAwareProvider(BindInfo<? extends T> info) {
         this.info = Hasor.assertIsNotNull(info);
-        env = Hasor.assertIsNotNull(env);
-        Hasor.autoAware(env, this);
     }
     @Override
     public void setAppContext(AppContext appContext) {
@@ -37,6 +35,6 @@ public class InfoAwareProvider<T> implements Provider<T>, AppContextAware {
         if (this.appContext != null && this.info != null) {
             return this.appContext.getInstance(this.info);
         }
-        return null;
+        throw new IllegalStateException("has not been initialized");
     }
 }
