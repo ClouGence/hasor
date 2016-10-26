@@ -27,10 +27,12 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface WebAppContext extends AppContext {
     /** 当处理 request 之前引发。
-     * @see net.hasor.web.startup.RuntimeFilter#beforeRequest(AppContext, HttpServletRequest, HttpServletResponse) */
+     * @see net.hasor.web.startup.RuntimeFilter#beforeRequest(WebAppContext, HttpServletRequest, HttpServletResponse)
+     */
     public static final String HTTP_BEFORE_REQUEST = "HTTP_BEFORE_REQUEST";
     /** 当处理完 request 响应 Response 之后引发。
-     * @see net.hasor.web.startup.RuntimeFilter#afterResponse(AppContext, HttpServletRequest, HttpServletResponse) */
+     * @see net.hasor.web.startup.RuntimeFilter#afterResponse(WebAppContext, HttpServletRequest, HttpServletResponse)
+     */
     public static final String HTTP_AFTER_RESPONSE = "HTTP_AFTER_RESPONSE";
     //
 

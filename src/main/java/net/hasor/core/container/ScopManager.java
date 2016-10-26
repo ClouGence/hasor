@@ -20,7 +20,6 @@ public interface ScopManager {
     /**
      * 查找某个作用域。
      * @param scopeName 作用域名称
-     * @return
      */
     public Provider<Scope> findScope(String scopeName);
 }
