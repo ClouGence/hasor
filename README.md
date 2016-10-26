@@ -91,16 +91,16 @@
     
 	// 服务提供者
 	Hasor.createAppContext("server-config.xml", new RsfModule() {
-		public void loadRsf(RsfContext rsfContext) throws Throwable {
+        public void loadModule(RsfApiBinder apiBinder) throws Throwable {
 			EchoService echoService = new EchoServiceImpl();
-			rsfContext.binder().rsfService(EchoService.class).toInstance(echoService).register();
+			apiBinder.rsfService(EchoService.class).toInstance(echoService).register();
 		}
 	});
 
 	// 服务消费者
 	AppContext clientContext = Hasor.createAppContext("client-config.xml", new RsfModule() {
-		public void loadRsf(RsfContext rsfContext) throws Throwable {
-			rsfContext.binder().rsfService(EchoService.class).register();
+        public void loadModule(RsfApiBinder apiBinder) throws Throwable {
+			apiBinder.rsfService(EchoService.class).register();
 		}
 	});
 	RsfClient client = clientContext.getInstance(RsfClient.class);

@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>net.hasor</groupId>
@@ -8,13 +7,13 @@
     </parent>
 
     <!-- Maven Info -->
-    <artifactId>rsf-root</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <artifactId>rsf-core</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
 
     <!-- Project Info -->
-    <name>RSF</name>
-    <description>the Hasor Remote Service Framework root project.</description>
+    <name>RSF-Core</name>
+    <description>the Hasor Remote Service Framework project.</description>
 
     <!-- 配置属性 -->
     <properties>
@@ -26,27 +25,108 @@
         <connection>scm:git:git@git.oschina.net:zycgit/rsf.git</connection>
         <developerConnection>scm:git:git@git.oschina.net:zycgit/rsf.git</developerConnection>
         <url>git@git.oschina.net:zycgit/rsf.git</url>
+        <tag>Release.Hasor-RSF-1.0.0</tag>
     </scm>
 
-    <repositories>
-        <repository>
-            <id>snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
+    <!-- 引用依赖 -->
+    <dependencies>
+        <!-- 核心依赖 -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-core</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.5.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>2.4.7</version>
+        </dependency>
 
-    <developers>
-        <developer>
-            <name>赵永春(Mr.Zhao)</name>
-            <email>zyc@hasor.net</email>
-        </developer>
-    </developers>
+        <!-- JSON 序列化 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.17</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Web环境下功能依赖，最终由web容器提供支持 -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- center打包为独立应用 -->
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-classworlds</artifactId>
+            <version>2.5.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- 第三方集成插件,仅当使用时才产生依赖 -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>2.5.6</version>
+            <scope>provided</scope>
+        </dependency>
 
-    <modules>
-        <module>rsf-core</module>
-        <module>rsf-center</module>
-    </modules>
+        <!-- LOGGING begin -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.3</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- LOGGING end -->
+    </dependencies>
+    
+    <!-- 构建描述 -->
+    <profiles>
+        <profile>
+            <id>export</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <configuration>
+                            <finalName>rsf-center-v${project.version}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <outputDirectory>build</outputDirectory>
+                            <descriptors>
+                                <descriptor>src/launcher/assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>make-assembly</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                    <version>2.5</version>
+                </dependency>
+                <dependency>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                    <version>1.1.7</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
 </project>
