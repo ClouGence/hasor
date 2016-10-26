@@ -3,9 +3,15 @@
     <!-- 框架配置，包扫描范围 -->
     <hasor>
         <loadPackages>net.hasor.rsf.*</loadPackages>
-        <!-- RSF框架启动入口 -->
         <modules>
+            <!-- RSF框架本体 -->
             <module>net.hasor.rsf.bootstrap.RsfFrameworkModule</module>
+            <!-- Telnet控制台插件 -->
+            <module>net.hasor.rsf.console.RsfConsoleModule</module>
+            <!-- 注册中心插件 -->
+            <module>net.hasor.rsf.center.client.RsfCenterModule</module>
+            <!-- Web支持插件 -->
+            <module>net.hasor.rsf.web.RsfWebModule</module>
         </modules>
 
         <!-- RSF框架环境变量 -->

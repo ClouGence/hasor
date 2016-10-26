@@ -56,6 +56,10 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
         return this.rsfEnvironment;
     }
     @Override
+    public ApiBinder getSourceBinder() {
+        return this.apiBinder;
+    }
+    @Override
     public <T> ConfigurationBuilder<T> rsfService(BindInfo<T> bindInfo) {
         return this.rsfService(bindInfo.getBindType()).toInfo(bindInfo);
     }

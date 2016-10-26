@@ -44,30 +44,8 @@ public class RsfCenterModule extends RsfModule {
             logger.info("rsf center-client hostSet is empty -> center disable.");
             return;
         }
-        // 1.注册中心消息接收接口
-        apiBinder.rsfService(RsfCenterListener.class)//服务类型
-                .toInfo(apiBinder.bindType(RsfCenterDataReceiver.class).uniqueName().asEagerSingleton().toInfo())//服务实现
-                .bindFilter("AuthFilter", new RsfCenterClientVerifyFilter(settings))//服务安全过滤器
-                .asShadow().register();//注册服务
         //
-        // 2.注册中心消息发送接口
-        InterAddress[] centerList = settings.getCenterServerSet();
-        int faceTimer = settings.getCenterRsfTimeout();
-        StringBuilder strBuilder = new StringBuilder("");
-        for (InterAddress address : centerList) {
-            strBuilder.append(address.getHostPort());
-            strBuilder.append(" ,");
-        }
-        if (centerList.length != 0) {
-            strBuilder.deleteCharAt(strBuilder.length() - 1);
-        }
-        logger.info("rsf center-client hostSet = {}  -> center enable.", strBuilder.toString());
-        apiBinder.rsfService(RsfCenterRegister.class)//服务类型
-                .timeout(faceTimer)//服务接口超时时间
-                .bindFilter("AuthFilter", new RsfCenterClientVerifyFilter(settings))//服务安全过滤器
-                .bindAddress(null, centerList)//静态地址，用不失效
-                .asShadow().register();//注册服务
-        // 3.注册RSF事件监听器
+        // 1.监听RSF中所有服务的相关的消息
         RsfEventTransport transport = new RsfEventTransport();
         eventContext.addListener(RsfEvent.Rsf_ProviderService, transport);
         eventContext.addListener(RsfEvent.Rsf_ConsumerService, transport);
@@ -76,6 +54,32 @@ public class RsfCenterModule extends RsfModule {
         eventContext.addListener(RsfEvent.Rsf_Offline, transport);
         //
         apiBinder.bindType(ContextStartListener.class).toInstance(transport);
+        // 2.接受来自注册中心的消息
+        apiBinder.rsfService(RsfCenterListener.class)//服务类型
+                .toInfo(apiBinder.bindType(RsfCenterDataReceiver.class).uniqueName().asEagerSingleton().toInfo())//服务实现
+                .bindFilter("AuthFilter", new RsfCenterClientVerifyFilter(settings))//服务安全过滤器
+                .asShadow().register();
+        // 3.向注册中心上报服务信息的服务
+        InterAddress[] centerList = settings.getCenterServerSet();
+        StringBuilder strBuilder = buildLog(centerList);
+        logger.info("rsf center-client hostSet = {}  -> center enable.", strBuilder.toString());
+        apiBinder.rsfService(RsfCenterRegister.class)//服务类型
+                .timeout(settings.getCenterRsfTimeout())//服务接口超时时间
+                .bindFilter("AuthFilter", new RsfCenterClientVerifyFilter(settings))//服务安全过滤器
+                .bindAddress(null, centerList)//静态地址，用不失效
+                .asShadow().register();//注册服务
         logger.info("rsf center-client started.");
+    }
+    //
+    private static StringBuilder buildLog(InterAddress[] centerList) {
+        StringBuilder strBuilder = new StringBuilder("");
+        for (InterAddress address : centerList) {
+            strBuilder.append(address.getHostPort());
+            strBuilder.append(" ,");
+        }
+        if (centerList.length != 0) {
+            strBuilder.deleteCharAt(strBuilder.length() - 1);
+        }
+        return strBuilder;
     }
 }

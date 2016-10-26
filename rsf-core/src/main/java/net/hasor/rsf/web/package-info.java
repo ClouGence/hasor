@@ -13,26 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.BindInfo;
 /**
- * 服务配置器
- * @version : 2014年11月12日
- * @author 赵永春(zyc@hasor.net)
+ * Web相关功能扩展，例如：restful,webservice,http
  */
-public interface RsfApiBinder extends RsfPublisher, ApiBinder {
-    /**
-     * 获取 {@link RsfEnvironment}
-     * @return return {@link RsfEnvironment}
-     */
-    public RsfEnvironment getEnvironment();
-
-    public ApiBinder getSourceBinder();
-
-    /**
-     * 绑定一个类型到RSF环境。
-     * @param bindInfo 服务类型
-     */
-    public <T> ConfigurationBuilder<T> rsfService(BindInfo<T> bindInfo);
-}
+package net.hasor.rsf.web;
