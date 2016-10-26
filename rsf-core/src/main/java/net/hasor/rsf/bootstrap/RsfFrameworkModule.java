@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.bootstrap;
-import net.hasor.core.AppContext;
-import net.hasor.core.EventListener;
-import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
+import net.hasor.core.context.ContextShutdownListener;
+import net.hasor.core.context.ContextStartListener;
 import net.hasor.rsf.*;
-import net.hasor.rsf.center.client.RsfCenterRsfPlugin;
-import net.hasor.rsf.console.ConsoleRsfPlugin;
+import net.hasor.rsf.center.client.RsfCenterModule;
+import net.hasor.rsf.console.RsfConsoleModule;
 import net.hasor.rsf.filters.local.LocalPref;
 import net.hasor.rsf.filters.online.OnlineRsfFilter;
 import net.hasor.rsf.filters.thread.LocalWarpFilter;
@@ -40,6 +39,7 @@ public final class RsfFrameworkModule extends RsfModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public final void loadModule(RsfApiBinder apiBinder) throws Throwable {
+        logger.info("rsf framework starting.");
         //
         //1.组装 RsfContext 对象
         final RsfEnvironment environment = apiBinder.getEnvironment();
@@ -47,24 +47,12 @@ public final class RsfFrameworkModule extends RsfModule {
         };
         //
         //2.监听启动和销毁事件
-        Hasor.addShutdownListener(environment, new EventListener<AppContext>() {
-            @Override
-            public void onEvent(String event, AppContext eventData) throws Throwable {
-                logger.info("rsf framework shutdown.");
-                rsfContext.shutdown();
-            }
-        });
-        Hasor.addStartListener(environment, new EventListener<AppContext>() {
-            @Override
-            public void onEvent(String event, AppContext eventData) throws Throwable {
-                logger.info("rsf framework starting.");
-                rsfContext.start(eventData);
-            }
-        });
+        apiBinder.bindType(ContextStartListener.class).toInstance(rsfContext);
+        apiBinder.bindType(ContextShutdownListener.class).toInstance(rsfContext);
         //
         //3.将重要的接口注册到 Hasor
         apiBinder.bindType(RsfSettings.class).toInstance(environment.getSettings());
-        //        apiBinder.bindType(RsfEnvironment.class).toInstance(environment);
+        //        apiBinder.bindType(RsfEnvironment.class).toInstance(environment);//避免重复注册
         apiBinder.bindType(RsfContext.class).toInstance(rsfContext);
         apiBinder.bindType(OnlineStatus.class).toInstance(rsfContext);
         apiBinder.bindType(RsfUpdater.class).toInstance(rsfContext.getUpdater());
@@ -89,8 +77,8 @@ public final class RsfFrameworkModule extends RsfModule {
         rsfPublisher.bindFilter("LocalPref", new LocalPref());
         rsfPublisher.bindFilter("LocalWarpFilter", new LocalWarpFilter());
         rsfPublisher.bindFilter("OnlineRsfFilter", new OnlineRsfFilter());
-        apiBinder.installModule(new ConsoleRsfPlugin());
-        apiBinder.installModule(new RsfCenterRsfPlugin());
+        apiBinder.installModule(new RsfConsoleModule());
+        apiBinder.installModule(new RsfCenterModule());
         //
         logger.info("rsf framework init finish.");
     }

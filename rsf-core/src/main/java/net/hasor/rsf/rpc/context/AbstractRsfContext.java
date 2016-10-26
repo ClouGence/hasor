@@ -17,6 +17,8 @@ package net.hasor.rsf.rpc.context;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventContext;
 import net.hasor.core.Provider;
+import net.hasor.core.context.ContextShutdownListener;
+import net.hasor.core.context.ContextStartListener;
 import net.hasor.rsf.*;
 import net.hasor.rsf.address.DiskCacheAddressPool;
 import net.hasor.rsf.address.InterAddress;
@@ -32,11 +34,13 @@ import net.hasor.rsf.rpc.net.ReceivedListener;
 import net.hasor.rsf.rpc.net.RsfNetManager;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
+import org.more.UnhandledException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
@@ -45,7 +49,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class AbstractRsfContext implements RsfContext {
+public abstract class AbstractRsfContext implements RsfContext, ContextStartListener, ContextShutdownListener {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     private final RsfBeanContainer     rsfBeanContainer; // 服务管理
     private final RsfEnvironment       rsfEnvironment;   // 环境&配置
@@ -68,30 +72,49 @@ public abstract class AbstractRsfContext implements RsfContext {
         this.onlineStatus = new AtomicBoolean(false);
     }
     //
-    public synchronized void start(AppContext appContext) throws Throwable {
+    @Override
+    public synchronized void doStart(AppContext appContext) {
+        //
+        // .枚举 loadModule 期间注册的 Service
         this.appContext = appContext;
-        EventContext ec = getAppContext().getEnvironment().getEventContext();
-        logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Initialized);
-        ec.fireSyncEvent(RsfEvent.Rsf_Initialized, this);
-        logger.info("rsfContext -> doInitializeCompleted");
+        logger.info("rsfContext -> doStart , lookUp services for loadModule phase.");
+        rsfBeanContainer.lookUp(appContext);
         //
-        this.rsfBeanContainer.lookUp(appContext);
-        //
-        this.addressPool.restoreConfig();/*恢复地址本*/
-        this.addressPool.startTimer();
-        //
+        // .启动网络通信（默认为：offline 状态）
         String bindAddress = this.rsfEnvironment.getSettings().getBindAddress();
         int bindPort = this.rsfEnvironment.getSettings().getBindPort();
-        this.rsfNetManager.start(bindAddress, bindPort);
+        logger.info("rsfContext -> doStart , start network. [bindAddress: %s , bindPort: %s]", bindAddress, bindPort);
+        try {
+            this.rsfNetManager.start(bindAddress, bindPort);
+        } catch (UnknownHostException e) {
+            throw new UnhandledException(e);
+        }
+    }
+    @Override
+    public void doStartCompleted(AppContext appContext) {
         //
+        // .启动地址本恢复（after LifeModule.doStart）
+        this.addressPool.restoreConfig();/*恢复地址本*/
+        this.addressPool.startTimer();
+        // .处理是否要自动上线
         if (this.rsfEnvironment.getSettings().isAutomaticOnline()) {
             this.online();
         }
-        //
-        logger.info("rsfContext -> fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Started);
-        ec.fireSyncEvent(RsfEvent.Rsf_Started, this);
-        logger.info("rsfContext -> doStartCompleted");
+        logger.info("rsf framework started.");
     }
+    @Override
+    public void doShutdown(AppContext appContext) {
+        logger.info("rsf framework shutdown.");
+        //
+        this.offline();
+        this.rsfCaller.shutdown();
+        this.rsfNetManager.shutdown();
+        this.addressPool.shutdownTimer();
+    }
+    @Override
+    public void doShutdownCompleted(AppContext appContext) {
+    }
+    //
     /**应用上线*/
     @Override
     public synchronized void online() {
@@ -117,14 +140,6 @@ public abstract class AbstractRsfContext implements RsfContext {
     @Override
     public boolean isOnline() {
         return this.onlineStatus.get();
-    }
-    /** 销毁。 */
-    public synchronized void shutdown() {
-        this.offline();
-        //
-        this.rsfCaller.shutdown();
-        this.rsfNetManager.shutdown();
-        this.addressPool.shutdownTimer();
     }
     //
     @Override

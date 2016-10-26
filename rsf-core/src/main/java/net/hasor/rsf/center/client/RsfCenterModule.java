@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.client;
-import net.hasor.core.AppContext;
 import net.hasor.core.EventContext;
-import net.hasor.core.LifeModule;
-import net.hasor.rsf.*;
+import net.hasor.core.context.ContextStartListener;
+import net.hasor.rsf.RsfApiBinder;
+import net.hasor.rsf.RsfEnvironment;
+import net.hasor.rsf.RsfModule;
+import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.RsfCenterRegister;
@@ -29,30 +31,22 @@ import org.slf4j.LoggerFactory;
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfCenterRsfPlugin extends RsfModule implements LifeModule {
-    protected static Logger logger = LoggerFactory.getLogger(RsfCenterRsfPlugin.class);
+public class RsfCenterModule extends RsfModule {
+    protected static Logger logger = LoggerFactory.getLogger(RsfCenterModule.class);
     //
     @Override
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-    }
-    @Override
-    public void onStart(AppContext appContext) throws Throwable {
-        RsfContext rsfContext = appContext.getInstance(RsfContext.class);
-        if (rsfContext == null) {
-            return;
-        }
-        //
-        RsfPublisher publisher = rsfContext.publisher();
-        RsfEnvironment environment = publisher.getEnvironment();
+        RsfEnvironment environment = apiBinder.getEnvironment();
+        EventContext eventContext = environment.getEventContext();
         RsfSettings settings = environment.getSettings();
         boolean enable = settings.isEnableCenter();
         if (!enable) {
-            logger.info("rsf center hostSet is empyt -> center disable.");
+            logger.info("rsf center-client hostSet is empty -> center disable.");
             return;
         }
         // 1.注册中心消息接收接口
-        publisher.rsfService(RsfCenterListener.class)//服务类型
-                .toInstance(new RsfCenterDataReceiver(rsfContext))//服务实现
+        apiBinder.rsfService(RsfCenterListener.class)//服务类型
+                .toInfo(apiBinder.bindType(RsfCenterDataReceiver.class).uniqueName().asEagerSingleton().toInfo())//服务实现
                 .bindFilter("AuthFilter", new RsfCenterClientVerifyFilter(settings))//服务安全过滤器
                 .asShadow().register();//注册服务
         //
@@ -67,23 +61,21 @@ public class RsfCenterRsfPlugin extends RsfModule implements LifeModule {
         if (centerList.length != 0) {
             strBuilder.deleteCharAt(strBuilder.length() - 1);
         }
-        logger.info("rsf center hostSet = {}  -> center enable.", strBuilder.toString());
-        publisher.rsfService(RsfCenterRegister.class)//服务类型
+        logger.info("rsf center-client hostSet = {}  -> center enable.", strBuilder.toString());
+        apiBinder.rsfService(RsfCenterRegister.class)//服务类型
                 .timeout(faceTimer)//服务接口超时时间
                 .bindFilter("AuthFilter", new RsfCenterClientVerifyFilter(settings))//服务安全过滤器
                 .bindAddress(null, centerList)//静态地址，用不失效
                 .asShadow().register();//注册服务
         // 3.注册RSF事件监听器
-        EventContext eventContext = environment.getEventContext();
-        RsfEventTransport transport = new RsfEventTransport(rsfContext);
+        RsfEventTransport transport = new RsfEventTransport();
         eventContext.addListener(RsfEvent.Rsf_ProviderService, transport);
         eventContext.addListener(RsfEvent.Rsf_ConsumerService, transport);
         eventContext.addListener(RsfEvent.Rsf_DeleteService, transport);
-        eventContext.addListener(RsfEvent.Rsf_Started, transport);
         eventContext.addListener(RsfEvent.Rsf_Online, transport);
         eventContext.addListener(RsfEvent.Rsf_Offline, transport);
-    }
-    @Override
-    public void onStop(AppContext appContext) throws Throwable {
+        //
+        apiBinder.bindType(ContextStartListener.class).toInstance(transport);
+        logger.info("rsf center-client started.");
     }
 }

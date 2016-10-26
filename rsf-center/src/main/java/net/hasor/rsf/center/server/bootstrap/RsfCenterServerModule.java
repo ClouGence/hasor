@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.bootstrap;
-import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.LifeModule;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfModule;
+import net.hasor.rsf.RsfPublisher;
 import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.RsfCenterRegister;
 import net.hasor.rsf.center.server.AuthQuery;
@@ -36,27 +36,24 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2015年5月5日
  */
-public class RsfCenterServerModule implements LifeModule, RsfPlugin {
+public class RsfCenterServerModule extends RsfModule implements LifeModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     //
     @Override
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
+    public void loadModule(RsfApiBinder apiBinder) throws Throwable {
         //
         // .注册中心配置信息
         RsfCenterSettings centerSettings = new RsfCenterSettings(apiBinder.getEnvironment());
         apiBinder.bindType(RsfCenterSettings.class).toInstance(centerSettings);
         apiBinder.bindType(WorkMode.class).toInstance(centerSettings.getWorkMode());
         //
-        // .发布Center启动配置
-        apiBinder.installModule(RsfModule.toModule(this));
-        //
         // .adapter
         apiBinder.bindType(AuthQuery.class).to((Class<? extends AuthQuery>) centerSettings.getAuthQueryType());
         apiBinder.bindType(DataAdapter.class).to((Class<? extends DataAdapter>) centerSettings.getDataAdapterType());
         //
     }
-    @Override
-    public final void loadRsf(RsfContext rsfContext) throws Throwable {
+    public final void onStart(AppContext appContext) throws Throwable {
+        RsfContext rsfContext = appContext.getInstance(RsfContext.class);
         rsfContext.getAppContext().getInstance(AuthQuery.class);
         rsfContext.getAppContext().getInstance(DataAdapter.class);
         //
@@ -64,9 +61,6 @@ public class RsfCenterServerModule implements LifeModule, RsfPlugin {
         doStartCenter(rsfContext);
         rsfContext.online();    //切换上线，开始提供服务
         this.logger.info("rsfCenter online.");
-    }
-    public final void onStart(AppContext appContext) throws Throwable {
-        /* 有了 loadRsf 方法,这个方法就可以省略了 */
     }
     /** Center启动 */
     protected void doStartCenter(RsfContext rsfContext) throws java.io.IOException {
@@ -80,7 +74,7 @@ public class RsfCenterServerModule implements LifeModule, RsfPlugin {
         //
         // .注册 Center提供服务的接口
         RsfCenterSettings centerSettings = rsfContext.getAppContext().getInstance(RsfCenterSettings.class);
-        RsfApiBinder rsfBinder = rsfContext.binder();
+        RsfPublisher rsfBinder = rsfContext.publisher();
         rsfBinder.rsfService(RsfCenterRegister.class).to(RsfCenterRegisterProvider.class)//
                 .bindFilter("VerificationFilter", RsfCenterServerVerifyFilter.class)//
                 .register();

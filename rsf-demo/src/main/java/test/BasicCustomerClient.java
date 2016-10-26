@@ -1,8 +1,8 @@
 package test;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfClient;
-import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfModule;
 import net.hasor.rsf.RsfResult;
 import net.hasor.rsf.address.InterAddress;
@@ -17,14 +17,14 @@ public class BasicCustomerClient {
     public static void main(String[] args) throws Throwable {
         //Client
         AppContext clientContext = Hasor.createAppContext("customer-config-basic.xml", new RsfModule() {
-            public void loadRsf(RsfContext rsfContext) throws Throwable {
+            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
                 //不使用注册中心，需要配置提供者地址（可以是数组列表）
                 InterAddress[] addressArray = new InterAddress[2];
                 addressArray[0] = new InterAddress("rsf://127.0.0.1:2180/default");
                 addressArray[1] = new InterAddress("rsf://127.0.0.1:2180/default");
                 //
-                rsfContext.binder().rsfService(EchoService.class).bindAddress(null, addressArray).register();
-                rsfContext.binder().rsfService(MessageService.class).bindAddress(null, addressArray).register();
+                apiBinder.rsfService(EchoService.class).bindAddress(null, addressArray).register();
+                apiBinder.rsfService(MessageService.class).bindAddress(null, addressArray).register();
             }
         });
         System.out.println("server start.");

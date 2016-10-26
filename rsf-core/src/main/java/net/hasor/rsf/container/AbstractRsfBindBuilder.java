@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.container;
+import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
@@ -41,6 +42,8 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
     protected abstract <T> RsfBindInfo<T> addService(ServiceDefine<T> serviceDefine);
 
     protected abstract void addShareFilter(FilterDefine filterDefine);
+
+    protected abstract void makeSureAware(AppContextAware aware);
     //
     //
     public RsfPublisher bindFilter(String filterID, RsfFilter instance) {
@@ -48,11 +51,13 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         return this.bindFilter(filterID, provider);
     }
     public RsfPublisher bindFilter(String filterID, BindInfo<RsfFilter> filterBindInfo) {
-        Provider<RsfFilter> provider = new InfoAwareProvider<RsfFilter>(filterBindInfo, getEnvironment());
+        InfoAwareProvider<RsfFilter> provider = new InfoAwareProvider<RsfFilter>(filterBindInfo);
+        makeSureAware(provider);
         return this.bindFilter(filterID, provider);
     }
     public RsfPublisher bindFilter(String filterID, Class<? extends RsfFilter> rsfFilterType) {
-        Provider<RsfFilter> provider = new ClassAwareProvider<RsfFilter>(rsfFilterType, getEnvironment());
+        ClassAwareProvider<RsfFilter> provider = new ClassAwareProvider<RsfFilter>(rsfFilterType);
+        makeSureAware(provider);
         return this.bindFilter(filterID, provider);
     }
     public RsfPublisher bindFilter(String filterID, Provider<? extends RsfFilter> provider) {
@@ -154,26 +159,30 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         }
         @Override
         public FilterBindBuilder<T> bindFilter(String filterID, Class<? extends RsfFilter> rsfFilterType) {
-            Provider<RsfFilter> provider = new ClassAwareProvider<RsfFilter>(rsfFilterType, getEnvironment());
+            ClassAwareProvider<RsfFilter> provider = new ClassAwareProvider<RsfFilter>(rsfFilterType);
+            makeSureAware(provider);
             this.serviceDefine.addRsfFilter(new FilterDefine(filterID, provider));
             return this;
         }
         @Override
         public FilterBindBuilder<T> bindFilter(String filterID, BindInfo<RsfFilter> rsfFilterInfo) {
-            Provider<RsfFilter> provider = new InfoAwareProvider<RsfFilter>(rsfFilterInfo, getEnvironment());
+            InfoAwareProvider<RsfFilter> provider = new InfoAwareProvider<RsfFilter>(rsfFilterInfo);
+            makeSureAware(provider);
             this.serviceDefine.addRsfFilter(new FilterDefine(filterID, provider));
             return this;
         }
         //
         @Override
         public ConfigurationBuilder<T> to(final Class<? extends T> implementation) {
-            Provider<T> provider = new ClassAwareProvider<T>(implementation, getEnvironment());
+            ClassAwareProvider<T> provider = new ClassAwareProvider<T>(implementation);
+            makeSureAware(provider);
             this.serviceDefine.setCustomerProvider(provider);
             return this;
         }
         @Override
-        public ConfigurationBuilder<T> toInfo(final BindInfo<T> bindInfo) {
-            Provider<T> provider = new InfoAwareProvider<T>(bindInfo, getEnvironment());
+        public ConfigurationBuilder<T> toInfo(final BindInfo<? extends T> bindInfo) {
+            InfoAwareProvider<T> provider = new InfoAwareProvider<T>(bindInfo);
+            makeSureAware(provider);
             this.serviceDefine.setCustomerProvider(provider);
             return this;
         }
@@ -183,7 +192,7 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         }
         //
         @Override
-        public ConfigurationBuilder<T> toProvider(Provider<T> provider) {
+        public ConfigurationBuilder<T> toProvider(Provider<? extends T> provider) {
             this.serviceDefine.getDomain().setServiceType(RsfServiceType.Provider);
             this.serviceDefine.setCustomerProvider(provider);
             return this;

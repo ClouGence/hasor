@@ -31,11 +31,4 @@ public interface RsfEvent {
     public static final String Rsf_Online          = "RsfEvent_Online";
     /**应用下线*/
     public static final String Rsf_Offline         = "RsfEvent_Offline";
-    //
-    /**Rsf框架事件，当调用start方法开始时触发该事件。
-     * @see net.hasor.rsf.rpc.context.AbstractRsfContext#start(net.hasor.rsf.RsfPlugin...)*/
-    public static final String Rsf_Initialized     = "RsfEvent_Initialized";
-    /**Rsf框架事件，当完成Rsf启动时触发该事件。
-     * @see net.hasor.rsf.rpc.context.AbstractRsfContext#start(net.hasor.rsf.RsfPlugin...)*/
-    public static final String Rsf_Started         = "RsfEvent_Started";
 }

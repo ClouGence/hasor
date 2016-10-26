@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.container;
+import net.hasor.core.AppContextAware;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfEnvironment;
@@ -35,5 +36,9 @@ abstract class ContextRsfBindBuilder extends AbstractRsfBindBuilder {
     }
     protected void addShareFilter(FilterDefine filterDefine) {
         this.getContainer().publishFilter(filterDefine);
+    }
+    @Override
+    protected void makeSureAware(AppContextAware aware) {
+        aware.setAppContext(getRsfContext().getAppContext());
     }
 }

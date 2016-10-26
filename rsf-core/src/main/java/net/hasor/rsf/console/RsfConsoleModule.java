@@ -47,8 +47,8 @@ import java.util.Set;
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ConsoleRsfPlugin extends RsfModule implements LifeModule {
-    protected static Logger         logger        = LoggerFactory.getLogger(ConsoleRsfPlugin.class);
+public class RsfConsoleModule extends RsfModule implements LifeModule {
+    protected static Logger         logger        = LoggerFactory.getLogger(RsfConsoleModule.class);
     private          StringDecoder  stringDecoder = new StringDecoder();
     private          StringEncoder  stringEncoder = new StringEncoder();
     private          TelnetHandler  telnetHandler = null;

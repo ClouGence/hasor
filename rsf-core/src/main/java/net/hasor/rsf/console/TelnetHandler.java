@@ -42,7 +42,7 @@ import net.hasor.rsf.utils.NetworkUtils;
  */
 @Sharable
 public class TelnetHandler extends SimpleChannelInboundHandler<String> {
-    protected static     Logger                          logger     = LoggerFactory.getLogger(ConsoleRsfPlugin.class);
+    protected static     Logger                          logger     = LoggerFactory.getLogger(RsfConsoleModule.class);
     private static final AttributeKey<RsfCommandRequest> RequestKEY = AttributeKey.newInstance("CommandRequest");
     private static final AttributeKey<RsfCommandSession> SessionKEY = AttributeKey.newInstance("CommandSession");
     private static final String                          CMD        = "rsf>";

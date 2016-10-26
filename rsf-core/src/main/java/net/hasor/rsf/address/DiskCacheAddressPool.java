@@ -43,7 +43,7 @@ public class DiskCacheAddressPool extends AddressPool {
     //
     //
     /** 启动定时器,定时进行地址本的磁盘缓存。*/
-    public void startTimer() throws IOException {
+    public void startTimer() {
         if (this.inited.compareAndSet(false, true)) {
             this.logger.info("startTimer address snapshot Thread[{}].", timer.getName());
             this.exitThread = false;
@@ -156,7 +156,7 @@ public class DiskCacheAddressPool extends AddressPool {
         }
     }
     /**从保存的地址本中恢复数据。*/
-    public synchronized void restoreConfig() throws IOException {
+    public synchronized void restoreConfig() {
         //1.校验
         if (!this.indexFile.exists()) {
             this.logger.info("address snapshot index file, undefined.");
@@ -189,7 +189,11 @@ public class DiskCacheAddressPool extends AddressPool {
         } catch (IOException e) {
             this.logger.error("read the snapshot file name error :" + e.getMessage(), e);
             if (inStream != null) {
-                inStream.close();
+                try {
+                    inStream.close();
+                } catch (IOException e1) {
+                    this.logger.error(e1.getMessage(), e1);
+                }
             }
         }
     }

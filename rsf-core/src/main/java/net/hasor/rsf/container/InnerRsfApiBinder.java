@@ -45,6 +45,10 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
     protected void addShareFilter(FilterDefine filterDefine) {
         this.bindType(FilterDefine.class).uniqueName().toInstance(filterDefine);
     }
+    @Override
+    protected void makeSureAware(AppContextAware aware) {
+        Hasor.autoAware(getEnvironment(), aware);
+    }
     //
     //
     @Override

@@ -16,6 +16,7 @@
 package net.hasor.rsf.center.client;
 import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
+import net.hasor.core.Inject;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.center.RsfCenterListener;
@@ -31,8 +32,10 @@ import org.slf4j.LoggerFactory;
  */
 public class RsfCenterDataReceiver implements RsfCenterListener {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    private final        RsfContext   rsfContext;
-    private final        EventContext eventContext;
+    @Inject
+    private              RsfContext   rsfContext;
+    @Inject
+    private              EventContext eventContext;
     private static final String[]     checkServiceEventArrays;
 
     static {
@@ -43,15 +46,11 @@ public class RsfCenterDataReceiver implements RsfCenterListener {
                 "UpdateServiceRouteEvent", //
                 "UpdateMethodRouteEvent", //
                 "UpdateArgsRouteEvent", //
-                "UpdateFlowControlEvent"};
+                "UpdateFlowControlEvent" };
     }
 
     //
     //
-    public RsfCenterDataReceiver(RsfContext rsfContext) {
-        this.rsfContext = rsfContext;
-        this.eventContext = rsfContext.getAppContext().getEnvironment().getEventContext();
-    }
     @Override
     public boolean onEvent(String eventType, CenterEventBody centerEventBody) throws Throwable {
         RsfUpdater rsfUpdater = Hasor.assertIsNotNull(this.rsfContext, " rsfContext is null.").getUpdater();

@@ -127,14 +127,14 @@ public interface RsfPublisher {
          * @param provider provider
          * @return 返回 ConfigurationBuilder。
          */
-        public ConfigurationBuilder<T> toProvider(Provider<T> provider);
+        public ConfigurationBuilder<T> toProvider(Provider<? extends T> provider);
 
         /**
          * 为绑定设置一个 {@link BindInfo}。
          * @param bindInfo BindInfo
          * @return 返回 ConfigurationBuilder。
          */
-        public ConfigurationBuilder<T> toInfo(BindInfo<T> bindInfo);
+        public ConfigurationBuilder<T> toInfo(BindInfo<? extends T> bindInfo);
     }
     /**设置服务名。*/
     public static interface ConfigurationBuilder<T> extends FilterBindBuilder<T> {

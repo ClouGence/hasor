@@ -33,7 +33,7 @@ import java.util.*;
 class ServiceDefine<T> implements CustomerProvider<T>, RsfBindInfo<T> {
     private final ServiceDomain<T>           domain;
     private final List<FilterDefine>         filterList;
-    private       Provider<T>                customerProvider;
+    private       Provider<? extends T>      customerProvider;
     private       String                     oriFlowControl;
     private final Map<RouteTypeEnum, String> oriRouteScript;
     private final Set<InterAddress>          oriAddressSet;
@@ -62,10 +62,10 @@ class ServiceDefine<T> implements CustomerProvider<T>, RsfBindInfo<T> {
     }
     /**获取服务提供者。*/
     @Override
-    public Provider<T> getCustomerProvider() {
+    public Provider<? extends T> getCustomerProvider() {
         return this.customerProvider;
     }
-    public void setCustomerProvider(Provider<T> customerProvider) {
+    public void setCustomerProvider(Provider<? extends T> customerProvider) {
         this.customerProvider = customerProvider;
     }
     //
