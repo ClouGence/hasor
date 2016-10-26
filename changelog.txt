@@ -1,4 +1,4 @@
-﻿===== Hasor-Core v2.5.0 (2016-10-?)
+﻿===== Hasor-Core v2.5.0 (2016-10-26)
 * 新增:
     01.新增 ClassAwareProvider、InfoAwareProvider 两个工具类。
     02.Hasor 新增一个 autoAware 方法的重载。
