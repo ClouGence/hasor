@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">  
+<mapper namespace="sp_rsf_class">
+
+	<resultMap id="terminalDOMap" type="net.hasor.rsf.center.domain.entity.TerminalDO">
+		<result property="terminalID"     column="ter_terminalID" />
+		<result property="terminalSecret" column="ter_terminalSecret" />
+		<result property="remoteIP"       column="ter_remoteIP" />
+		<result property="remotePort"     column="ter_remotePort" />
+		<result property="remoteUnit"     column="ter_remoteUnit" />
+		<result property="remoteVersion"  column="ter_remoteVersion" />
+	</resultMap>
+
+	<sql id="terminalDO_allColumns">
+		ter_terminalID,
+		ter_terminalSecret,
+		ter_remoteIP,
+		ter_remotePort,
+		ter_remoteUnit,
+		ter_remoteVersion
+	</sql>
+
+	<select id="terminalDO_getALL" resultMap="terminalDOMap">
+		select
+			<include refid="terminalDO_allColumns" />
+		from
+			RSF_Terminal
+	</select>
+
+	<select id="queryTerminalByIDAndSecret" resultMap="terminalDOMap">
+		select
+			<include refid="terminalDO_allColumns" />
+		from
+			RSF_Terminal
+		where
+			ter_terminalID     = #{terminalID} and
+			ter_terminalSecret = #{accessKey}
+	</select>
+</mapper>

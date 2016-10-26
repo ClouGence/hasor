@@ -1,0 +1,159 @@
+<div class="ui fixed inverted main menu">
+	<a class="item" href="${ctx_path}"><i class="home icon"></i>RSF</a>
+	<div class="ui dropdown apps item">
+		<span><i class="block layout icon"></i>应用<i class="dropdown icon"></i></span>
+	</div>
+	<div class="ui dropdown service item">
+		<span><i class="cubes icon"></i>服务<i class="dropdown icon"></i></span>
+	</div>
+	<div class="ui dropdown trem item">
+		<span><i class="desktop icon"></i>终端<i class="dropdown icon"></i></span>
+	</div>
+	<div class="ui dropdown toos item">
+		<span><i class="configure icon"></i>工具<i class="dropdown icon"></i></span>
+	</div>
+	<div class="right menu">
+		<a class="item"><i class="settings icon"></i>设置</a>
+		<a class="item"><i class="smile icon"></i>帮助</a>
+	</div>
+</div>
+<!-- Apps 菜单 -->
+<div class="ui flowing left apps popup">
+	<div class="ui grid relaxed divided center aligned">
+		<div class="ten wide column">
+			<h4 class="ui header">应用列表</h4>
+			<div class="ui grid">
+				<a class="four wide column" href="${ctx_path}/search.do?type=apps&mode=owner">
+					<i class="huge icons"><i class="block layout icon"></i><i class="corner spy icon"></i></i>
+					<div class="content">Owner</div>
+				</a>
+				<a class="four wide column" href="${ctx_path}/search.do?type=apps&mode=self">
+					<i class="huge icons"><i class="block layout icon"></i><i class="corner users icon"></i></i>
+					<div class="content">与我相关</div>
+				</a>
+				<a class="four wide column" href="${ctx_path}/search.do?type=apps&mode=query&keys=">
+					<i class="huge block layout icon"></i>
+					<div class="content">所有应用</div>
+				</a>
+				<a class="four wide column" href="${ctx_path}/search/search.htm?type=apps">
+					<i class="huge icons"><i class="block layout icon"></i><i class="corner search icon"></i></i>
+					<div class="content">高级查找</div>
+				</a>
+			</div>
+		</div>
+		<div class="six wide column">
+			<h4 class="ui header">管理</h4>
+			<div class="ui grid">
+				<a class="five wide column" href="${ctx_path}/apps/info.htm">
+					<i class="huge icons"><i class="file text outline icon"></i><i class="corner add icon"></i></i>
+					<div class="content">登记</div>
+				</a>
+				<a class="five wide column" href="#">
+					<i class="huge icons"><i class="file text outline icon"></i><i class="corner check circle outline icon"></i></i>
+					<div class="content">授权</div>
+				</a>
+				<a class="five wide column" href="#">
+					<i class="huge icons"><i class="file text outline icon"></i><i class="corner spy icon"></i></i>
+					<div class="content">匿名</div>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Service菜单 -->
+<div class="ui flowing left service popup">
+	<div class="ui grid relaxed divided center aligned">
+		<div class="eight wide column">
+			<h4 class="ui header">服务列表</h4>
+			<div class="ui grid">
+				<a class="five wide column" href="${ctx_path}/search.do?type=service&mode=owner">
+					<i class="huge icons"><i class="cube icon"></i><i class="corner spy icon"></i></i>
+					<div class="content">Owner</div>
+				</a>
+				<a class="five wide column" href="${ctx_path}/search.do?type=service&mode=self">
+					<i class="huge icons"><i class="cube icon"></i><i class="corner users icon"></i></i>
+					<div class="content">与我相关</div>
+				</a>
+				<a class="five wide column" href="${ctx_path}/search.do?type=service&mode=query&keys=">
+					<i class="huge icons"><i class="cube icon"></i><i class="corner search icon"></i></i>
+					<div class="content">服务搜索</div>
+				</a>
+			</div>
+		</div>
+		<div class="eight wide column">
+			<h4 class="ui header">管理</h4>
+			<div class="ui grid">
+				<a class="four wide column" href="#">
+					<i class="huge icons"><i class="file text outline icon"></i><i class="corner add icon"></i></i>
+					<div class="content">登记</div>
+				</a>
+				<a class="four wide column" href="#">
+					<i class="huge icons"><i class="file text outline icon"></i><i class="corner random icon"></i></i>
+					<div class="content">路由</div>
+				</a>
+				<a class="four wide column" href="#">
+					<i class="huge icons"><i class="file text outline icon"></i><i class="corner edit icon"></i></i>
+					<div class="content">规则</div>
+				</a>
+				<a class="four wide column" href="#">
+					<i class="huge icons"><i class="file text outline icon"></i><i class="corner send outline icon"></i></i>
+					<div class="content">推送</div>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- term 菜单 -->
+<div class="ui flowing left trem popup">
+	<div class="ui grid relaxed divided center aligned">
+		<div class="column">
+			<h4 class="ui header">终端</h4>
+			<div class="ui grid">
+				<a class="five wide column" href="#">
+					<i class="huge certificate icon"></i>
+					<div class="content">应用进程</div>
+				</a>
+				<a class="five wide column" href="#">
+					<i class="huge rain icon"></i>
+					<div class="content">安全</div>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Toos菜单 -->
+<div class="ui flowing left toos popup">
+	<div class="ui grid relaxed divided center aligned">
+		<div class="column">
+			<h4 class="ui header">工具集</h4>
+			<div class="ui grid">
+				<a class="five wide column" href="#">
+					<i class="huge icons"><i class="download icon"></i><i class="corner file text outline icon"></i></i>
+					<div class="content">推送记录</div>
+				</a>
+				<a class="five wide column" href="#">
+					<i class="huge pie chart icon"></i>
+					<div class="content">版本分布</div>
+				</a>
+				<a class="five wide column" href="#">
+					<i class="huge line chart icon"></i>
+					<div class="content">调用统计</div>
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+function initPopup(names){
+	var nameArray=names.split(" "); //字符分割 
+	for (i=0;i<nameArray.length ;i++ ){
+		$(nameArray[i] +'.item').popup({
+			popup : nameArray[i] +'.popup', hoverable : true, position : 'bottom left',
+			delay : { show : 100, hide : 50 }
+		});
+	}
+}
+$(document).ready(function() {
+	initPopup('.term .apps .service .trem .toos');
+});
+</script>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-rsf-manager">
+    <rsfCenter>
+        <!-- 内存数据库Sechma -->
+        <memInitialize>
+            <sqlScript>META-INF/sqlddl/rsf_app_create.sql</sqlScript>
+            <sqlScript>META-INF/sqlddl/rsf_service_info_create.sql</sqlScript>
+            <sqlScript>META-INF/sqlddl/rsf_terminal_create.sql</sqlScript>
+            <sqlScript>META-INF/sqlddl/rsf_service_joinport_create.sql</sqlScript>
+        </memInitialize>
+
+        <!-- 关键数据（内存模式下无效） -->
+        <jdbcConfig>
+            <driver>org.hsqldb.jdbcDriver</driver>
+            <url>jdbc:hsqldb:mem:rsf_memdb</url>
+            <username>sa</username>
+            <password></password>
+        </jdbcConfig>
+    </rsfCenter>
+
+
+</config>

@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>net.hasor</groupId>
+        <artifactId>hasor-parent</artifactId>
+        <version>0.0.8</version>
+    </parent>
+
+    <!-- Maven Info -->
+    <artifactId>land</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <!-- Project Info -->
+    <name>Land</name>
+    <description>the Hasor Remote Service Framework root project.</description>
+
+    <!-- SCM -->
+    <scm>
+        <connection>scm:git:git@git.oschina.net:zycgit/land.git</connection>
+        <developerConnection>scm:git:git@git.oschina.net:zycgit/land.git</developerConnection>
+        <url>git@git.oschina.net:zycgit/land.git</url>
+    </scm>
+
+    <repositories>
+        <repository>
+            <id>snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <developers>
+        <developer>
+            <name>赵永春(Mr.Zhao)</name>
+            <email>zyc@hasor.net</email>
+        </developer>
+    </developers>
+
+    <modules>
+        <module>rsf-neuron</module>
+    </modules>
+</project>
