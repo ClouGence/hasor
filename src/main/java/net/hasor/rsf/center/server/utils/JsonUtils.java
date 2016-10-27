@@ -14,16 +14,44 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.utils;
-import com.alibaba.fastjson.JSON;
+import org.more.bizcommon.json.JSON;
+import org.more.util.BeanUtils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 /**
  * @version : 2015年7月6日
  * @author 赵永春(zyc@hasor.net)
  */
 public class JsonUtils {
     public static String converToString(Object object) {
-        return JSON.toJSONString(object);
+        if (object == null) {
+            return "null";
+        }
+        //
+        List<String> propertys = BeanUtils.getPropertys(object.getClass());
+        Map<String, Object> props = new HashMap<String, Object>();
+        for (String prop : propertys) {
+            Object val = BeanUtils.readProperty(object, prop);
+            if (val == null)
+                continue;
+            if (val instanceof Class) {
+                val = ((Class) val).getName();
+            }
+            if (val instanceof Enum) {
+                val = ((Enum) val).name();
+            }
+            props.put(prop, val);
+        }
+        //
+        return JSON.toString(props);
     }
     public static <T> T converToService(String jsonData, Class<T> targetType) {
-        return JSON.parseObject(jsonData, targetType);
+        Object parse = JSON.parse(jsonData);
+        if (parse.getClass().isAssignableFrom(targetType)) {
+            return (T) parse;
+        }
+        throw new ClassCastException("json convert to " + targetType.getName());
     }
 }

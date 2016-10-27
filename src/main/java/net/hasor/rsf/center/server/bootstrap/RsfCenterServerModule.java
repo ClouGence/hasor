@@ -37,19 +37,21 @@ import org.slf4j.LoggerFactory;
  * @version : 2015年5月5日
  */
 class RsfCenterServerModule extends RsfModule implements LifeModule {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger            logger         = LoggerFactory.getLogger(getClass());
+    protected RsfCenterSettings centerSettings = null;
+    public RsfCenterServerModule(RsfCenterSettings centerSettings) {
+        super();
+        this.centerSettings = centerSettings;
+    }
     //
     @Override
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-        //
-        // .注册中心配置信息
-        RsfCenterSettings centerSettings = new RsfCenterSettings(apiBinder.getEnvironment());
-        apiBinder.bindType(RsfCenterSettings.class).toInstance(centerSettings);
-        apiBinder.bindType(WorkMode.class).toInstance(centerSettings.getWorkMode());
+        apiBinder.bindType(RsfCenterSettings.class).toInstance(this.centerSettings);
+        apiBinder.bindType(WorkMode.class).toInstance(this.centerSettings.getWorkMode());
         //
         // .adapter
-        apiBinder.bindType(AuthQuery.class).to((Class<? extends AuthQuery>) centerSettings.getAuthQueryType());
-        apiBinder.bindType(DataAdapter.class).to((Class<? extends DataAdapter>) centerSettings.getDataAdapterType());
+        apiBinder.bindType(AuthQuery.class).to((Class<? extends AuthQuery>) this.centerSettings.getAuthQueryType());
+        apiBinder.bindType(DataAdapter.class).to((Class<? extends DataAdapter>) this.centerSettings.getDataAdapterType());
         //
     }
     public final void onStart(AppContext appContext) throws Throwable {

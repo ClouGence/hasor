@@ -16,6 +16,8 @@
 package net.hasor.rsf.center.server.bootstrap;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfModule;
+import net.hasor.rsf.center.server.domain.RsfCenterSettings;
+import net.hasor.rsf.center.server.domain.WorkMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -30,13 +32,13 @@ public class RsfCenterFrameworkModule extends RsfModule {
     @Override
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
         //
-        // .判断RSF目前是否配置了启用连接Center,如果是,则不启动 center 服务器。因为RSF将以客户端形式运行
-        boolean clientEnableCenter = apiBinder.getEnvironment().getSettings().isEnableCenter();
-        if (clientEnableCenter) {
+        RsfCenterSettings centerSettings = new RsfCenterSettings(apiBinder.getEnvironment());
+        // .判断RSF目前是否配置了启用Center功能
+        if (centerSettings.getWorkMode() == WorkMode.None) {
             this.logger.warn("this application has been started form the client mode, so rsfCenter cannot be started.");
             return;
         }
         //
-        apiBinder.installModule(new RsfCenterServerModule());
+        apiBinder.installModule(new RsfCenterServerModule(centerSettings));
     }
 }

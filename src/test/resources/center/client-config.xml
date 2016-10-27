@@ -3,7 +3,7 @@
 
     <hasor.environmentVar>
         <!-- 注册中心 -->
-        <RSF_CENTER_URL>rsf://127.0.0.1:2180</RSF_CENTER_URL>
+        <RSF_CENTER_SERVERS>rsf://127.0.0.1:2180</RSF_CENTER_SERVERS>
         <!-- RSF对外提供服务的IP -->
         <RSF_SERVICE_IP>127.0.0.1</RSF_SERVICE_IP>
         <!-- RSF对外提供服务的服务端口 -->

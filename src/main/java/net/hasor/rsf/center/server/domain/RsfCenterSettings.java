@@ -47,7 +47,7 @@ public class RsfCenterSettings {
     //
     public RsfCenterSettings(Environment environment) throws ClassNotFoundException {
         Settings settings = environment.getSettings();
-        this.workMode = settings.getEnum("rsfCenter.workAt", WorkMode.class, WorkMode.Alone);
+        this.workMode = settings.getEnum("hasor.rsfCenter.workAt", WorkMode.class, WorkMode.None);
         this.workDir = environment.getWorkSpaceDir();
         try {
             InputStream verIns = ResourcesUtils.getResourceAsStream("/META-INF/rsf-center.version");
@@ -58,20 +58,20 @@ public class RsfCenterSettings {
             this.version = "undefined";
         }
         //
-        this.threadSize = settings.getInteger("rsfCenter.polling.threadSize", 10);
+        this.threadSize = settings.getInteger("hasor.rsfCenter.polling.threadSize", 10);
         if (this.threadSize < 1) {
             this.threadSize = 3;
         }
-        this.queueMaxSize = settings.getInteger("rsfCenter.polling.queueMaxSize", 20000);
-        this.sleepTime = settings.getInteger("rsfCenter.polling.sleepTime", 1000);
+        this.queueMaxSize = settings.getInteger("hasor.rsfCenter.polling.queueMaxSize", 20000);
+        this.sleepTime = settings.getInteger("hasor.rsfCenter.polling.sleepTime", 1000);
         //
-        this.providerExpireTime = settings.getInteger("rsfCenter.serviceManager.providerExpireTime", 30000);
-        this.consumerExpireTime = settings.getInteger("rsfCenter.serviceManager.consumerExpireTime", 30000);
-        this.allowAnonymous = settings.getBoolean("rsfCenter.auth.allowAnonymous", true);
+        this.providerExpireTime = settings.getInteger("hasor.rsfCenter.serviceManager.providerExpireTime", 30000);
+        this.consumerExpireTime = settings.getInteger("hasor.rsfCenter.serviceManager.consumerExpireTime", 30000);
+        this.allowAnonymous = settings.getBoolean("hasor.rsfCenter.auth.allowAnonymous", true);
         //
         ClassLoader classLoader = environment.getClassLoader();
-        this.dataAdapterType = classLoader.loadClass(settings.getString("rsfCenter.adapterConfig.dataAdapter"));
-        this.authQueryType = classLoader.loadClass(settings.getString("rsfCenter.adapterConfig.authQuery"));
+        this.dataAdapterType = classLoader.loadClass(settings.getString("hasor.rsfCenter.adapterConfig.dataAdapter"));
+        this.authQueryType = classLoader.loadClass(settings.getString("hasor.rsfCenter.adapterConfig.authQuery"));
     }
     //
     /** 获取RSF-Center服务器版本 */

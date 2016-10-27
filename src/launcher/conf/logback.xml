@@ -37,11 +37,14 @@
         </layout>
     </appender>
 
-    <logger name="net.hasor.alone.rpc.caller" additivity="false" level="INFO">
+    <logger name="net.hasor.rsf.rpc.caller" additivity="false" level="INFO">
         <appender-ref ref="caller_filesync"/>
     </logger>
-    <logger name="net.hasor.alone.address" additivity="false" level="INFO">
+    <logger name="net.hasor.rsf.address" additivity="false" level="INFO">
         <appender-ref ref="address_filesync"/>
+    </logger>
+    <logger name="net.hasor.rsf.center" additivity="false" level="INFO">
+        <appender-ref ref="center_filesync"/>
     </logger>
 
     <!-- 日志输出级别 -->

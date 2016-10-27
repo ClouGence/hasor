@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.services;
-import net.hasor.rsf.RsfResult;
+package test;
+import net.hasor.core.Hasor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 /**
- * 服务实现
- * @version : 2015年11月27日
+ * 单机模式
+ * @version : 2015年8月13日
  * @author 赵永春(zyc@hasor.net)
  */
-public class MessageServiceImpl implements MessageService {
-    @Override
-    public RsfResult sayHello(String echo) throws InterruptedException {
-        Thread.sleep(100);
-        System.out.println("server : " + echo);
-        return null;
+public class CenterServerAlone {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
+    public static void main(String[] args) throws IOException {
+        Hasor.createAppContext("center-server-alone.xml");
+        System.in.read();
     }
 }
