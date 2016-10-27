@@ -7,12 +7,12 @@
     </parent>
 
     <!-- Maven Info -->
-    <artifactId>rsf-core</artifactId>
+    <artifactId>hasor-rsf</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <!-- Project Info -->
-    <name>RSF-Core</name>
+    <name>Hasor-RSF</name>
     <description>the Hasor Remote Service Framework project.</description>
 
     <!-- 配置属性 -->
@@ -25,7 +25,6 @@
         <connection>scm:git:git@git.oschina.net:zycgit/rsf.git</connection>
         <developerConnection>scm:git:git@git.oschina.net:zycgit/rsf.git</developerConnection>
         <url>git@git.oschina.net:zycgit/rsf.git</url>
-        <tag>Release.Hasor-RSF-1.0.0</tag>
     </scm>
 
     <!-- 引用依赖 -->
@@ -85,7 +84,7 @@
         </dependency>
         <!-- LOGGING end -->
     </dependencies>
-    
+
     <!-- 构建描述 -->
     <profiles>
         <profile>

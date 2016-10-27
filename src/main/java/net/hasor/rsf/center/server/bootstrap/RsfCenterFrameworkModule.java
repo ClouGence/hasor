@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2015年5月5日
  */
-public class RsfCenterEnterInModule extends RsfModule {
+public class RsfCenterFrameworkModule extends RsfModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     //
     @Override
