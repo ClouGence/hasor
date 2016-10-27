@@ -73,7 +73,7 @@
 	<?xml version="1.0" encoding="UTF-8"?>
     <config xmlns="http://project.hasor.net/hasor/schema/main">
         <hasor.environmentVar>
-            <RSF_CENTER_URL>rsf://<CenterHostAddress>:2180</RSF_CENTER_URL>
+            <RSF_CENTER_SERVERS>rsf://<CenterHostAddress>:2180</RSF_CENTER_SERVERS>
         </hasor.environmentVar>
     </config>
 
