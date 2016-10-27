@@ -3,7 +3,7 @@
     <parent>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-parent</artifactId>
-        <version>0.0.8</version>
+        <version>0.0.9</version>
     </parent>
 
     <!-- Maven Info -->
@@ -14,6 +14,11 @@
     <!-- Project Info -->
     <name>Hasor-Core</name>
     <description>the hasor core project.</description>
+
+    <!-- 配置属性 -->
+    <properties>
+        <hasor.shortname>Hasor-</hasor.shortname>
+    </properties>
 
     <!-- SCM -->
     <scm>
