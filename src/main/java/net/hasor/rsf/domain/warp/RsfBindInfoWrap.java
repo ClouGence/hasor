@@ -26,6 +26,9 @@ public class RsfBindInfoWrap<T> implements RsfBindInfo<T> {
     public RsfBindInfoWrap(RsfBindInfo<T> target) {
         this.target = target;
     }
+    protected RsfBindInfo<T> getTarget() {
+        return this.target;
+    }
     @Override
     public Object getMetaData(String key) {
         return this.target.getMetaData(key);

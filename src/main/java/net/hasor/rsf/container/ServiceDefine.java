@@ -20,8 +20,8 @@ import net.hasor.core.info.CustomerProvider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.RouteTypeEnum;
-import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.domain.ServiceDomain;
+import net.hasor.rsf.domain.warp.RsfBindInfoWrap;
 import org.more.util.StringUtils;
 
 import java.util.*;
@@ -30,8 +30,7 @@ import java.util.*;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-class ServiceDefine<T> implements CustomerProvider<T>, RsfBindInfo<T> {
-    private final ServiceDomain<T>           domain;
+class ServiceDefine<T> extends RsfBindInfoWrap<T> implements CustomerProvider<T>, RsfBindInfo<T> {
     private final List<FilterDefine>         filterList;
     private       Provider<? extends T>      customerProvider;
     private       String                     oriFlowControl;
@@ -42,7 +41,7 @@ class ServiceDefine<T> implements CustomerProvider<T>, RsfBindInfo<T> {
         this(new ServiceDomain<T>(Hasor.assertIsNotNull(bindType)));
     }
     public ServiceDefine(ServiceDomain<T> domain) {
-        this.domain = Hasor.assertIsNotNull(domain);
+        super(Hasor.assertIsNotNull(domain));
         this.filterList = new ArrayList<FilterDefine>();
         this.oriRouteScript = new HashMap<RouteTypeEnum, String>();
         this.oriAddressSet = new HashSet<InterAddress>();
@@ -97,7 +96,7 @@ class ServiceDefine<T> implements CustomerProvider<T>, RsfBindInfo<T> {
     //
     /**获取服务元信息。*/
     public ServiceDomain<T> getDomain() {
-        return this.domain;
+        return (ServiceDomain<T>) this.getTarget();
     }
     @Override
     public String toString() {
@@ -111,62 +110,6 @@ class ServiceDefine<T> implements CustomerProvider<T>, RsfBindInfo<T> {
                 buffer.append(",");
             }
         }
-        return "ServiceDefine[Domain=" + this.domain + ",Filters=" + buffer.toString() + "]";
-    }
-    //-------------------------------------------------------------------------
-    @Override
-    public String getBindID() {
-        return this.domain.getBindID();
-    }
-    @Override
-    public String getBindName() {
-        return this.domain.getBindName();
-    }
-    @Override
-    public Object getMetaData(String key) {
-        return this.domain.getMetaData(key);
-    }
-    @Override
-    public void setMetaData(String key, Object value) {
-        this.domain.setMetaData(key, value);
-    }
-    @Override
-    public void removeMetaData(String key) {
-    }
-    @Override
-    public String getBindGroup() {
-        return this.domain.getBindGroup();
-    }
-    @Override
-    public String getBindVersion() {
-        return this.domain.getBindVersion();
-    }
-    @Override
-    public Class<T> getBindType() {
-        return this.domain.getBindType();
-    }
-    @Override
-    public RsfServiceType getServiceType() {
-        return this.domain.getServiceType();
-    }
-    @Override
-    public boolean isMessage() {
-        return this.domain.isMessage();
-    }
-    @Override
-    public boolean isShadow() {
-        return this.domain.isShadow();
-    }
-    @Override
-    public int getClientTimeout() {
-        return this.domain.getClientTimeout();
-    }
-    @Override
-    public String getSerializeType() {
-        return this.domain.getSerializeType();
-    }
-    @Override
-    public boolean isSharedThreadPool() {
-        return this.domain.isSharedThreadPool();
+        return "ServiceDefine[Domain=" + this.getTarget() + ",Filters=" + buffer.toString() + "]";
     }
 }
