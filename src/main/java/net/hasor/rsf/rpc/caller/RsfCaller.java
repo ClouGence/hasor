@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import net.hasor.rsf.utils.TimerManager;
 import org.more.classcode.delegate.faces.MethodClassConfig;
 import org.more.classcode.delegate.faces.MethodDelegate;
 import org.more.future.FutureCallback;
@@ -45,8 +46,8 @@ import net.hasor.rsf.domain.provider.AddressProvider;
  */
 public class RsfCaller extends RsfRequestManager {
     private RsfBeanContainer rsfBeanContainer = null;
-    public RsfCaller(RsfContext rsfContext, RsfBeanContainer rsfBeanContainer, SenderListener senderListener) {
-        super(rsfContext, senderListener);
+    public RsfCaller(RsfContext rsfContext, TimerManager timerManager, RsfBeanContainer rsfBeanContainer, SenderListener senderListener) {
+        super(rsfContext, timerManager, senderListener);
         this.rsfBeanContainer = rsfBeanContainer;
     }
     @Override
@@ -184,7 +185,7 @@ public class RsfCaller extends RsfRequestManager {
                         } else {
                             //ByJavaProxy
                             ClassLoader loader = this.getContext().getClassLoader();
-                            wrapperClass = (Class<RsfServiceWrapper>) Proxy.getProxyClass(loader, new Class[] {RsfServiceWrapper.class, interFace});
+                            wrapperClass = (Class<RsfServiceWrapper>) Proxy.getProxyClass(loader, new Class[] { RsfServiceWrapper.class, interFace });
                         }
                         //
                         this.wrapperMap.put(bindID, wrapperClass);
@@ -199,8 +200,8 @@ public class RsfCaller extends RsfRequestManager {
             RsfServiceWrapper wrapper = null;
             if (Proxy.isProxyClass(wrapperClass)) {
                 //ByJavaProxy
-                Constructor<RsfServiceWrapper> constructor = wrapperClass.getConstructor(new Class[] {InvocationHandler.class});
-                wrapper = constructor.newInstance(new Object[] {new ServiceMethodDelegateByProxy(bindInfo)});
+                Constructor<RsfServiceWrapper> constructor = wrapperClass.getConstructor(new Class[] { InvocationHandler.class });
+                wrapper = constructor.newInstance(new Object[] { new ServiceMethodDelegateByProxy(bindInfo) });
                 //
             } else {
                 //ByClassCode

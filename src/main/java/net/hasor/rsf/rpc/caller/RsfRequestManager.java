@@ -47,14 +47,13 @@ public abstract class RsfRequestManager {
     private final AtomicInteger                  requestCount;
     private final SenderListener                 senderListener;
     //
-    public RsfRequestManager(RsfContext rsfContext, SenderListener senderListener) {
+    public RsfRequestManager(RsfContext rsfContext, TimerManager timerManager, SenderListener senderListener) {
         if (senderListener == null) {
             throw new NullPointerException("not found SendData.");
         }
         this.rsfContext = rsfContext;
-        RsfSettings rsfSetting = rsfContext.getSettings();
         this.rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
-        this.timerManager = new TimerManager(rsfSetting.getDefaultTimeout(), "RsfRequestManager");
+        this.timerManager = timerManager;
         this.requestCount = new AtomicInteger(0);
         this.senderListener = senderListener;
     }

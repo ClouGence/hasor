@@ -26,6 +26,7 @@ import net.hasor.rsf.transform.codec.CodecAdapterFactory;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 import net.hasor.rsf.utils.ExecutesManager;
+import net.hasor.rsf.utils.TimerManager;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
@@ -38,8 +39,9 @@ public class RemoteRsfCaller extends RsfCaller {
     private final ExecutesManager      executesManager;
     private final RemoteSenderListener senderListener;
     // 
-    public RemoteRsfCaller(RsfContext rsfContext, RsfBeanContainer rsfBeanContainer, RemoteSenderListener senderListener) {
-        super(rsfContext, rsfBeanContainer, senderListener);
+    public RemoteRsfCaller(RsfContext rsfContext, TimerManager timerManager,//
+            RsfBeanContainer rsfBeanContainer, RemoteSenderListener senderListener) {
+        super(rsfContext, timerManager, rsfBeanContainer, senderListener);
         //
         this.senderListener = senderListener;
         RsfSettings rsfSettings = rsfContext.getSettings();

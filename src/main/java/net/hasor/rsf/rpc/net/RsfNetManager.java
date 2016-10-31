@@ -240,7 +240,7 @@ public class RsfNetManager {
     ReceivedListener getReceivedListener() {
         return this.receivedListener;
     }
-    TimerManager getTimerManager() {
+    public TimerManager getTimerManager() {
         return this.timerManager;
     }
     ChannelRegister getChannelRegister() {

@@ -67,8 +67,8 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         //
         this.rsfBeanContainer = new RsfBeanContainer(this.addressPool);
         Transport transport = new Transport();
-        this.rsfCaller = new RemoteRsfCaller(this, this.rsfBeanContainer, transport);
         this.rsfNetManager = new RsfNetManager(this.rsfEnvironment, transport);
+        this.rsfCaller = new RemoteRsfCaller(this, this.rsfNetManager.getTimerManager(), this.rsfBeanContainer, transport);
         this.onlineStatus = new AtomicBoolean(false);
     }
     //
