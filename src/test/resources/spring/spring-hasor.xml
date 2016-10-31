@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:h="http://project.hasor.net/hasor/schema/spring"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:h="http://project.hasor.net/schema/spring/hasor-core"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-http://project.hasor.net/hasor/schema/spring http://project.hasor.net/hasor/schema/spring-hasor-2.4.5.xsd"
+http://project.hasor.net/schema/spring/hasor-core http://project.hasor.net/schema/spring/hasor-core/spring-hasor-2.5.1.xsd"
        default-autowire="byName">
 
     <!-- 
@@ -28,12 +28,6 @@ http://project.hasor.net/hasor/schema/spring http://project.hasor.net/hasor/sche
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location">
             <value>classpath:test-env.config</value>
-        </property>
-    </bean>
-
-    <bean id="xxx" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location">
-            <value>${jdbc.url}</value>
         </property>
     </bean>
 

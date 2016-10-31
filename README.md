@@ -70,6 +70,7 @@
 * Docs : [http://hasor-guide.mydoc.io/](http://hasor-guide.mydoc.io/)
 * Issues：[http://git.oschina.net/teams/hasor/issues](http://git.oschina.net/teams/hasor/issues)
 * Team：[http://team.oschina.net/hasor](http://team.oschina.net/hasor)
+* Demo工程：[http://git.oschina.net/zycgit/hasor-example](http://git.oschina.net/zycgit/hasor-example)
 * QQ群：193943114
 * [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-core)
