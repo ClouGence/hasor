@@ -22,6 +22,7 @@ import net.hasor.rsf.SerializeCoder;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
+import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.rpc.caller.RsfFilterHandler;
 import net.hasor.rsf.rpc.caller.RsfResponseObject;
 import net.hasor.rsf.transform.codec.CodecAdapter;
@@ -70,7 +71,7 @@ abstract class InvokerProcessing implements Runnable {
         String name = this.requestInfo.getServiceName();
         String version = this.requestInfo.getServiceVersion();
         RsfBindInfo<?> bindInfo = this.rsfCaller.getContainer().getRsfBindInfo(group, name, version);
-        if (bindInfo == null) {
+        if (bindInfo == null || RsfServiceType.Provider != bindInfo.getServiceType()) {
             String serviceID = "[" + group + "]" + name + "-" + version;
             String errorInfo = "do request(" + requestID + ") failed -> service " + serviceID + " not exist.";
             logger.error(errorInfo);
