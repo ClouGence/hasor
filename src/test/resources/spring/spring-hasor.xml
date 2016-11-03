@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:h="http://project.hasor.net/schema/spring/hasor-core"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://project.hasor.net/schema/spring/hasor-core http://project.hasor.net/schema/spring/hasor-core/spring-hasor-2.5.1.xsd"
+       default-autowire="byName">
+
+    <h:hasor factoryID="hasor" startWith="net.test.hasor.spring.SpringTestModule">
+        <h:configFile>classpath:simple-config.xml</h:configFile>
+    </h:hasor>
+
+    <bean id="echoServiceImpl" class="test.net.hasor.rsf.services.EchoServiceImpl"/>
+    <bean id="aaa" class="net.hasor.rsf.spring.RsfProviderBean">
+        <property name="bindGroup" value="HSF"/>
+        <property name="bindName" value="test.net.hasor.rsf.services.EchoService"/>
+        <property name="bindVersion" value="1.0.0"/>
+        <property name="bindType" value="test.net.hasor.rsf.services.EchoService"/>
+        <property name="target" ref="echoServiceImpl"/>
+
+        <property name="bindDesc" value="headLineBizSourceAdminService"/>
+        <property name="clientTimeout" value="600000"/>
+        <property name="serializeType" value="hessian"/>
+        <property name="sharedThreadPool" value="true"/>
+        <property name="onShadow" value="false"/>
+    </bean>
+
+
+    <bean id="feedPublishService1" class="net.hasor.rsf.spring.RsfConsumerBean">
+        <property name="bindGroup" value="HSF"/>
+        <property name="bindName" value="headLineBizSourceAdminService"/>
+        <property name="bindVersion" value="${hlservice.fivemin.hsf.provider.version}"/>
+        <property name="bindType" value="com.taobao.hlservice.service.HeadLineBizSourceAdminService"/>
+
+        <property name="target" value="rsf://sssss.ssss.sss"/>
+
+        <property name="bindDesc" value="headLineBizSourceAdminService"/>
+        <property name="clientTimeout" value="600000"/>
+        <property name="serializeType" value="hessian"/>
+        <property name="onMessage" value="false"/>
+        <property name="onShadow" value="false"/>
+    </bean>
+</beans>

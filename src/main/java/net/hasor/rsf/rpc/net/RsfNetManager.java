@@ -29,10 +29,10 @@ import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.transform.netty.RSFCodec;
-import net.hasor.rsf.utils.NameThreadFactory;
 import net.hasor.rsf.utils.NetworkUtils;
 import net.hasor.rsf.utils.TimerManager;
 import org.more.future.BasicFuture;
+import org.more.util.NameThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,13 +66,13 @@ public class RsfNetManager {
     public RsfNetManager(RsfEnvironment rsfEnvironment, ReceivedListener receivedListener) {
         RsfSettings rsfSettings = rsfEnvironment.getSettings();
         int connectTimeout = rsfSettings.getConnectTimeout();
-        this.timerManager = new TimerManager(connectTimeout, "RSF-Network");
+        this.timerManager = new TimerManager(connectTimeout, "RSF-Network", rsfEnvironment.getClassLoader());
         this.channelMapping = new ConcurrentHashMap<String, BasicFuture<RsfNetChannel>>();
         //
         int workerThread = rsfSettings.getNetworkWorker();
         int listenerThread = rsfEnvironment.getSettings().getNetworkListener();
-        this.workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
-        this.listenLoopGroup = new NioEventLoopGroup(listenerThread, new NameThreadFactory("RSF-Listen-%s"));
+        this.workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s", rsfEnvironment.getClassLoader()));
+        this.listenLoopGroup = new NioEventLoopGroup(listenerThread, new NameThreadFactory("RSF-Listen-%s", rsfEnvironment.getClassLoader()));
         logger.info("nioEventLoopGroup, workerThread = {} , listenerThread = {}", workerThread, listenerThread);
         //
         this.rsfEnvironment = rsfEnvironment;

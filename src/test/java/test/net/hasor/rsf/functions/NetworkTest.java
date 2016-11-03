@@ -29,9 +29,9 @@ import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.rsf.transform.netty.RSFCodec;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
-import net.hasor.rsf.utils.NameThreadFactory;
 import net.hasor.rsf.utils.NetworkUtils;
 import org.junit.Test;
+import org.more.util.NameThreadFactory;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -58,7 +58,8 @@ public class NetworkTest extends ChannelInboundHandlerAdapter {
         //
         int workerThread = rsfEnv.getSettings().getNetworkWorker();
         InetAddress local = NetworkUtils.finalBindAddress("local");
-        NioEventLoopGroup workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
+        NioEventLoopGroup workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s",//
+                Thread.currentThread().getContextClassLoader()));
         //
         Bootstrap clientBoot = new Bootstrap();
         clientBoot.group(workLoopGroup);
@@ -77,8 +78,10 @@ public class NetworkTest extends ChannelInboundHandlerAdapter {
         int workerThread = rsfEnv.getSettings().getNetworkWorker();
         int listenerThread = rsfEnv.getSettings().getNetworkListener();
         InetAddress local = NetworkUtils.finalBindAddress("local");
-        NioEventLoopGroup workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s"));
-        NioEventLoopGroup listenLoopGroup = new NioEventLoopGroup(listenerThread, new NameThreadFactory("RSF-Listen-%s"));
+        NioEventLoopGroup workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s",//
+                Thread.currentThread().getContextClassLoader()));
+        NioEventLoopGroup listenLoopGroup = new NioEventLoopGroup(listenerThread, new NameThreadFactory("RSF-Listen-%s",//
+                Thread.currentThread().getContextClassLoader()));
         ServerBootstrap serverBoot = new ServerBootstrap();
         serverBoot.group(listenLoopGroup, workLoopGroup);
         serverBoot.channel(NioServerSocketChannel.class);

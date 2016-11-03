@@ -35,7 +35,7 @@ import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfModule;
 import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.utils.NameThreadFactory;
+import org.more.util.NameThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +84,7 @@ public class RsfConsoleModule extends RsfModule implements LifeModule {
             return;
         }
         //1.初始化常量配置。
-        this.workerGroup = new NioEventLoopGroup(1, new NameThreadFactory("RSF-Console"));
+        this.workerGroup = new NioEventLoopGroup(1, new NameThreadFactory("RSF-Console", appContext.getClassLoader()));
         this.telnetHandler = new TelnetHandler(rsfContext);
         int consolePort = rsfContext.getSettings().getConsolePort();
         InterAddress consoleAddress = rsfContext.bindAddress();

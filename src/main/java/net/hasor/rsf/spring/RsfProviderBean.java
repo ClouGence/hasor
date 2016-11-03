@@ -13,25 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.utils;
-import java.util.concurrent.ThreadFactory;
+package net.hasor.rsf.spring;
+import net.hasor.core.Provider;
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
 /**
+ * 包装来自 Spring 的 Bean。
  *
- * @version : 2015年3月28日
- * @author 赵永春(zyc@hasor.net)
+ * @version : 2013-4-8
+ * @author 赵永春 (zyc@hasor.net)
  */
-public class NameThreadFactory implements ThreadFactory {
-    private String nameSample = "Thread-%s";
-    private int    index      = 1;
-    //
-    public NameThreadFactory(String nameSample) {
-        this.nameSample = nameSample;
+public class RsfProviderBean<T> extends AbstractRsfBean {
+    private String                       interfaceName;
+    private Provider<ApplicationContext> applicationContext;
+    @Override
+    public Object getObject() throws Exception {
+        return null;
     }
     //
-    public Thread newThread(Runnable run) {
-        Thread t = new Thread(run);
-        t.setName(String.format(nameSample, index++));
-        t.setDaemon(true);
-        return t;
-    }
 }

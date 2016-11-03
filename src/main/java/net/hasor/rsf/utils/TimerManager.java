@@ -17,10 +17,10 @@ package net.hasor.rsf.utils;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 import io.netty.util.TimerTask;
+import net.hasor.core.Hasor;
+import org.more.util.NameThreadFactory;
 
 import java.util.concurrent.TimeUnit;
-
-import net.hasor.core.Hasor;
 /**
  *
  * @version : 2015年3月28日
@@ -30,13 +30,13 @@ public class TimerManager {
     private final int   defaultTimeout;
     private final Timer timer;
     //
-    public TimerManager(int defaultTimeout) {
-        this(defaultTimeout, "RSF");
+    public TimerManager(int defaultTimeout, ClassLoader loader) {
+        this(defaultTimeout, "RSF", loader);
     }
-    public TimerManager(int defaultTimeout, String name) {
+    public TimerManager(int defaultTimeout, String name, ClassLoader loader) {
         this.defaultTimeout = defaultTimeout;
         name = Hasor.assertIsNotNull(name);
-        this.timer = new HashedWheelTimer(new NameThreadFactory(name + "-Timer-%s"));
+        this.timer = new HashedWheelTimer(new NameThreadFactory(name + "-Timer-%s", loader));
     }
     public void atTime(TimerTask timeTask) {
         this.atTime(timeTask, this.defaultTimeout);

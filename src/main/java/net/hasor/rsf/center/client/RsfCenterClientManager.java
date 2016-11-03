@@ -54,7 +54,8 @@ class RsfCenterClientManager implements TimerTask, EventListener<CenterEventBody
     public RsfCenterClientManager(RsfContext rsfContext) {
         rsfContext.getAppContext().getEnvironment().getEventContext().addListener(CenterUpdate_Event, this);
         this.rsfContext = rsfContext;
-        this.timerManager = new TimerManager(rsfContext.getSettings().getCenterHeartbeatTime(), "RsfCenterBeatTimer");
+        ClassLoader loader = rsfContext.getClassLoader();
+        this.timerManager = new TimerManager(rsfContext.getSettings().getCenterHeartbeatTime(), "RsfCenterBeatTimer", loader);
         this.centerRegister = rsfContext.getRsfClient().wrapper(RsfCenterRegister.class);
         this.serviceMap = new ConcurrentHashMap<String, RsfBindInfo<?>>();
         this.timerManager.atTime(this);

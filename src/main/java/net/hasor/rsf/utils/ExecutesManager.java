@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.utils;
+import org.more.util.NameThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,13 +31,13 @@ public class ExecutesManager {
     private       ThreadPoolExecutor                        defaultExecutor;
     private final ConcurrentMap<String, ThreadPoolExecutor> servicePoolCache;
     //
-    public ExecutesManager(int minCorePoolSize, int maxCorePoolSize, int queueSize, long keepAliveTime) {
+    public ExecutesManager(int minCorePoolSize, int maxCorePoolSize, int queueSize, long keepAliveTime, ClassLoader loader) {
         logger.info("executesManager init ->> minCorePoolSize ={}, maxCorePoolSize ={}, queueSize ={}, keepAliveTime ={}", minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
         //
         final BlockingQueue<Runnable> inWorkQueue = new LinkedBlockingQueue<Runnable>(queueSize);
         this.defaultExecutor = new ThreadPoolExecutor(minCorePoolSize, maxCorePoolSize, //
                 keepAliveTime, TimeUnit.SECONDS, inWorkQueue, //
-                new NameThreadFactory("RSF-Biz-%s"), new ThreadPoolExecutor.AbortPolicy());
+                new NameThreadFactory("RSF-Biz-%s", loader), new ThreadPoolExecutor.AbortPolicy());
         this.servicePoolCache = new ConcurrentHashMap<String, ThreadPoolExecutor>();
     }
     //
@@ -57,11 +58,16 @@ public class ExecutesManager {
         this.defaultExecutor = null;
         //
         for (ThreadPoolExecutor exec : executorList) {
+            if (exec == null)
+                continue;
             exec.shutdown();
         }
         while (true) {
             boolean jump = true;
             for (ThreadPoolExecutor exec : executorList) {
+                if (exec == null) {
+                    continue;
+                }
                 if (!exec.isShutdown()) {
                     jump = false;
                     break;

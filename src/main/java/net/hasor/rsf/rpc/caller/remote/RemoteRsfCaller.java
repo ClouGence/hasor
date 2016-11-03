@@ -49,7 +49,7 @@ public class RemoteRsfCaller extends RsfCaller {
         int minCorePoolSize = rsfSettings.getQueueMinPoolSize();
         int maxCorePoolSize = rsfSettings.getQueueMaxPoolSize();
         long keepAliveTime = rsfSettings.getQueueKeepAliveTime();
-        this.executesManager = new ExecutesManager(minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
+        this.executesManager = new ExecutesManager(minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime, rsfContext.getClassLoader());
     }
     /**销毁。*/
     public void shutdown() {

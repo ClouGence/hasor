@@ -14,17 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.console;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.util.Date;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-
-import org.more.util.ArrayUtils;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -35,8 +24,19 @@ import io.netty.util.AttributeKey;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.utils.NameThreadFactory;
 import net.hasor.rsf.utils.NetworkUtils;
+import org.more.util.ArrayUtils;
+import org.more.util.NameThreadFactory;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 /**
  * Handles a server-side channel.
  */
@@ -54,7 +54,7 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
     public TelnetHandler(RsfContext rsfContext) {
         this.rsfContext = rsfContext;
         int workSize = 1;
-        this.executor = Executors.newScheduledThreadPool(workSize, new NameThreadFactory("RSF-Console-Work"));
+        this.executor = Executors.newScheduledThreadPool(workSize, new NameThreadFactory("RSF-Console-Work", rsfContext.getClassLoader()));
         ThreadPoolExecutor threadPool = (ThreadPoolExecutor) this.executor;
         threadPool.setCorePoolSize(workSize);
         threadPool.setMaximumPoolSize(workSize);

@@ -58,7 +58,7 @@ public class MainLauncher {
     public static void doStart(String[] args) throws Throwable {
         logger.info(">>>>>>>>>>>>>>>>> doStart <<<<<<<<<<<<<<<<<");
         final String config = args[1];
-        AppContext app = Hasor.createAppContext(new File(config), new Module() {
+        AppContext app = Hasor.createAppContext(new File(config), null, new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
                 /* 特殊 RSF 指令 */
                 apiBinder.bindType(RsfInstruct.class).uniqueName().to(CenterAppShutdownInstruct.class);

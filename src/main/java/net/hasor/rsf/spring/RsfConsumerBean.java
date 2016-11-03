@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.services;
+package net.hasor.rsf.spring;
+import net.hasor.core.Provider;
+import org.springframework.context.ApplicationContext;
 /**
- * 服务实现
- * @version : 2015年11月27日
- * @author 赵永春(zyc@hasor.net)
+ * 包装来自 Spring 的 Bean。
+ *
+ * @version : 2013-4-8
+ * @author 赵永春 (zyc@hasor.net)
  */
-public class EchoServiceImpl implements EchoService {
+public class RsfConsumerBean<T> extends AbstractRsfBean {
+    private String                       beanID;
+    private Provider<ApplicationContext> applicationContext;
+    //
     @Override
-    public String sayHello(String echo) throws InterruptedException {
-        Thread.sleep(100);
-        System.out.println("server : " + echo);
-        return "you say " + echo;
+    public Object getObject() throws Exception {
+        return null;
     }
 }
