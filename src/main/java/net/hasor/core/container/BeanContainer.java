@@ -145,6 +145,11 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
             return callSuperCreateObject(targetType, bindInfo, appContext);
         }
     }
+    /** 仅执行依赖注入 */
+    public <T> T justInject(T object, Class<?> beanType, AppContext appContext) throws IllegalAccessException {
+        super.injectObject(object, appContext, beanType);
+        return object;
+    }
     private <T> T callSuperCreateObject(Class<T> targetType, BindInfo<T> bindInfo, AppContext appContext) {
         return super.createObject(targetType, bindInfo, appContext);
     }

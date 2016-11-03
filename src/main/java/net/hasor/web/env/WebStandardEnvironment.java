@@ -21,14 +21,15 @@ import net.hasor.web.WebEnvironment;
 import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 /**
  * 负责注册MORE_WEB_ROOT环境变量以及Web环境变量的维护。
  * @version : 2013-7-17
  * @author 赵永春 (zyc@hasor.net)
  */
 public class WebStandardEnvironment extends StandardEnvironment implements WebEnvironment {
-    public WebStandardEnvironment(final URI settingURI, final ServletContext servletContext) throws IOException {
-        super(servletContext, settingURI);
+    public WebStandardEnvironment(final URI settingURI, Map<String, String> loadEnvConfig, final ServletContext servletContext) throws IOException {
+        super(servletContext, settingURI, loadEnvConfig);
     }
     @Override
     public ServletContext getServletContext() {

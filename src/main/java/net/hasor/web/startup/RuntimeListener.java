@@ -18,8 +18,8 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebAppContext;
+import net.hasor.web.WebHasor;
 import net.hasor.web.binder.ListenerPipeline;
-import net.hasor.web.context.WebTemplateAppContext;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
@@ -44,8 +44,8 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     /*----------------------------------------------------------------------------------------------------*/
     //
     /**创建{@link WebAppContext}对象*/
-    protected WebAppContext createAppContext(final ServletContext sc) throws Throwable {
-        return WebTemplateAppContext.create("hasor-config.xml", sc);
+    protected WebAppContext createAppContext(final ServletContext sc, Module startModule) throws Throwable {
+        return WebHasor.createWebAppContext(sc, startModule);
     }
     //
     /**获取启动模块*/
@@ -87,11 +87,8 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         //
         //2.create AppContext
         try {
-            this.appContext = this.createAppContext(sc);
-            if (!this.appContext.isStart()) {
-                Module startModule = this.getStartModule(sc);
-                this.appContext.start(startModule);
-            }
+            Module startModule = this.getStartModule(sc);
+            this.appContext = this.createAppContext(sc, startModule);
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }

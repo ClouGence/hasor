@@ -1,6 +1,11 @@
-﻿===== Hasor-Core v2.5.0 (2016-11-?)
+﻿===== Hasor-Core v2.5.1 (2016-11-?)
+* 新增:
+    01.新增 JFina 插件支持。
+    02.AppContext 新增两个 justInject 方法用于对某个标记了 Hasor 注解的对象执行依赖注入。
 * 改进:
     01.Spring sechma 升级到 2.5.1.
+    02.Hasor 在启动的时候可以从外面传递 Map 来指定环境变量了。之前只能通过 env.config 来指定环境变量。
+    03.增加 WebHasor 类，继承自 Hasor 类提供方便的 WebAppContext 初始化入口。
 
 ===== Hasor-Core v2.5.0 (2016-10-26)
 * 新增:

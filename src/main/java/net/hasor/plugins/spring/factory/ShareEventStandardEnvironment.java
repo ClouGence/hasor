@@ -21,6 +21,7 @@ import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 /**
  *
  * @version : 2016年2月15日
@@ -29,7 +30,7 @@ import java.net.URISyntaxException;
 class ShareEventStandardEnvironment extends StandardEnvironment {
     private ShareEventListener shareEventListener;
     public ShareEventStandardEnvironment(ClassLoader classLoader, Object context, Resource mainSettings, ShareEventListener shareEventListener) throws IOException, URISyntaxException {
-        super(context, (mainSettings == null) ? null : mainSettings.getURI(), false);
+        super(context, (mainSettings == null) ? null : mainSettings.getURI(), new HashMap<String, String>());
         this.setRootLosder(classLoader);
         this.shareEventListener = shareEventListener;
     }

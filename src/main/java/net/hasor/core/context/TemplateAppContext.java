@@ -22,6 +22,7 @@ import net.hasor.core.container.BeanContainer;
 import net.hasor.core.container.ScopManager;
 import org.more.util.ArrayUtils;
 import org.more.util.ClassUtils;
+import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,6 +110,24 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
             return provider.get();
         }
         return null;
+    }
+    /**仅仅执行依赖注入。*/
+    public <T> T justInject(T object) {
+        if (object == null) {
+            return null;
+        }
+        return this.justInject(object, object.getClass());
+    }
+    /**仅仅执行依赖注入。*/
+    public <T> T justInject(T object, Class<?> beanType) {
+        if (object == null || beanType == null) {
+            return null;
+        }
+        try {
+            return (T) this.getContainer().justInject(object, beanType, this);
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
     }
     /**创建Bean。*/
     public <T> Provider<T> getProvider(String bindID) {

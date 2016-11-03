@@ -180,11 +180,14 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         //
         return targetBean;
     }
+    protected <T> void injectObject(T targetBean, AppContext appContext, Class<?> targetType) throws IllegalAccessException {
+        this.injectObject(targetBean, null, appContext, targetType);
+    }
     /**/
     private <T> void injectObject(T targetBean, BindInfo<T> bindInfo, AppContext appContext, Class<?> targetType) throws IllegalAccessException {
         Set<String> injectFileds = new HashSet<String>();
         /*a.配置注入*/
-        if (bindInfo instanceof DefaultBindInfoProviderAdapter) {
+        if (bindInfo != null && bindInfo instanceof DefaultBindInfoProviderAdapter) {
             DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
             Map<String, Provider<?>> propMaps = defBinder.getPropertys(appContext);
             for (Entry<String, Provider<?>> propItem : propMaps.entrySet()) {

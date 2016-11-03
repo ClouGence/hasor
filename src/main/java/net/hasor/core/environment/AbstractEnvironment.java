@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 /**
- * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment(boolean)}方法以初始化。
+ * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment(Map)}方法以初始化。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -106,7 +106,7 @@ public abstract class AbstractEnvironment implements Environment {
             return null;
         }
         if (loadPackages == null) {
-            loadPackages = new String[] {""};
+            loadPackages = new String[] { "" };
         }
         if (this.scanUtils == null) {
             this.scanUtils = ScanClassPath.newInstance(loadPackages);
@@ -255,11 +255,10 @@ public abstract class AbstractEnvironment implements Environment {
     //
     /* ------------------------------------------------------------------------------------ init */
     /**初始化方法*/
-    protected final void initEnvironment(boolean loadEnvConfig) throws IOException {
+    protected final void initEnvironment(Map<String, String> loadEnvConfig) throws IOException {
         //
         // .load & init
-        Map<String, String> envMapData = new ConcurrentHashMap<String, String>();
-        this.envMap = envMapData;
+        this.envMap = new ConcurrentHashMap<String, String>();
         if (this.logger.isDebugEnabled()) {
             this.logger.debug("load envVars...");
         }
@@ -290,7 +289,7 @@ public abstract class AbstractEnvironment implements Environment {
         }
         Map<String, String> envMap = System.getenv();
         for (String key : envMap.keySet()) {
-            envMapData.put(key.toUpperCase(), envMap.get(key));
+            this.envMap.put(key.toUpperCase(), envMap.get(key));
         }
         // .Java属性
         if (this.logger.isDebugEnabled()) {
@@ -301,7 +300,7 @@ public abstract class AbstractEnvironment implements Environment {
             String k = propKey.toString();
             Object v = prop.get(propKey);
             if (v != null) {
-                envMapData.put(k.toUpperCase(), v.toString());
+                this.envMap.put(k.toUpperCase(), v.toString());
             }
         }
         //
@@ -318,19 +317,19 @@ public abstract class AbstractEnvironment implements Environment {
             }
         }
         for (String envItem : envNames) {
-            if (envMapData.containsKey(envItem)) {
-                String val = envMapData.get(envItem);
+            if (this.envMap.containsKey(envItem)) {
+                String val = this.envMap.get(envItem);
                 if (StringUtils.isNotBlank(val)) {
                     this.logger.warn("environmentVar {} is define, ignored. value is {}", envItem, val);
                     continue;
                 }
             }
-            envMapData.put(envItem, settings.getString("hasor.environmentVar." + envItem));
+            this.envMap.put(envItem, settings.getString("hasor.environmentVar." + envItem));
         }
         //
         // .单独处理RUN_PATH
         String runPath = new File("").getAbsolutePath();
-        envMapData.put("RUN_PATH", runPath);
+        this.envMap.put("RUN_PATH", runPath);
         if (this.logger.isInfoEnabled()) {
             this.logger.info("runPath at {}", runPath);
         }
@@ -339,11 +338,14 @@ public abstract class AbstractEnvironment implements Environment {
         this.afterInitEnvironment();
         //
         // .外部环境变量属性文件覆盖配置
-        if (!loadEnvConfig) {
-            this.logger.info("load 'env.config' ignore.");
+        if (loadEnvConfig != null) {
+            this.logger.info("load 'env.config' use custom , size = " + loadEnvConfig.size());
+            for (String name : loadEnvConfig.keySet()) {
+                this.envMap.put(name.toUpperCase(), loadEnvConfig.get(name));
+            }
         } else {
             URL inStreamURL = ResourcesUtils.getResource(AbstractEnvironment.EVN_FILE_NAME);
-            this.logger.info("load 'env.config' form classpath -> {}.", (inStreamURL == null) ? "empty." : inStreamURL);
+            this.logger.info("load 'env.config' use classpath -> {}.", (inStreamURL == null) ? "empty." : inStreamURL);
             InputStream inStream = ResourcesUtils.getResourceAsStream(AbstractEnvironment.EVN_FILE_NAME);
             if (inStream == null) {
                 String workHome = this.evalString("%" + Environment.WORK_HOME + "%");
@@ -367,7 +369,7 @@ public abstract class AbstractEnvironment implements Environment {
                 properties.load(new InputStreamReader(inStream, Settings.DefaultCharset));
                 inStream.close();
                 for (String name : properties.stringPropertyNames()) {
-                    envMapData.put(name.toUpperCase(), properties.getProperty(name));
+                    this.envMap.put(name.toUpperCase(), properties.getProperty(name));
                 }
             }
         }
@@ -376,14 +378,14 @@ public abstract class AbstractEnvironment implements Environment {
         // .日志输出
         if (this.logger.isInfoEnabled()) {
             int keyMaxSize = 0;
-            for (String key : envMapData.keySet()) {
+            for (String key : this.envMap.keySet()) {
                 keyMaxSize = key.length() >= keyMaxSize ? key.length() : keyMaxSize;
             }
             keyMaxSize = keyMaxSize + 2;
             StringBuilder sb = new StringBuilder();
             sb.append("EnvVars:");
-            if (!envMapData.isEmpty()) {
-                sb.append("\n").append(this.formatMap4log(keyMaxSize, envMapData));
+            if (!this.envMap.isEmpty()) {
+                sb.append("\n").append(this.formatMap4log(keyMaxSize, this.envMap));
                 sb.append("\n").append(StringUtils.fixedString('-', 50));
             }
             this.logger.info(sb.toString());

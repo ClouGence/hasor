@@ -73,6 +73,12 @@ public interface AppContext {
     /**创建Bean。*/
     public <T> T getInstance(String bindID);
 
+    /**仅仅执行依赖注入。*/
+    public <T> T justInject(T object);
+
+    /**仅仅执行依赖注入。*/
+    public <T> T justInject(T object, Class<?> beanType);
+
     /**创建Bean。*/
     public <T> T getInstance(Class<T> targetClass);
 

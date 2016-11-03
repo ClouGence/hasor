@@ -31,39 +31,20 @@ import net.hasor.web.binder.support.AbstractWebApiBinder;
 import net.hasor.web.binder.support.ManagedFilterPipeline;
 import net.hasor.web.binder.support.ManagedListenerPipeline;
 import net.hasor.web.binder.support.ManagedServletPipeline;
-import net.hasor.web.env.WebStandardEnvironment;
-import org.more.util.ResourcesUtils;
 
 import javax.servlet.ServletContext;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 /**
  *
  * @version : 2013-7-16
  * @author 赵永春 (zyc@hasor.net)
  */
 public class WebTemplateAppContext<C extends BeanContainer> extends StatusAppContext<C> implements WebAppContext {
-    public static WebTemplateAppContext<? extends BeanContainer> create(String settingURI, ServletContext servletContext) throws IOException, URISyntaxException {
-        URL resURL = ResourcesUtils.getResource(settingURI);
-        WebEnvironment webEnv = null;
-        if (resURL != null) {
-            webEnv = new WebStandardEnvironment(resURL.toURI(), servletContext);
-        } else {
-            webEnv = new WebStandardEnvironment(null, servletContext);
-        }
-        BeanContainer container = new BeanContainer();
-        WebTemplateAppContext<?> appContext = new WebTemplateAppContext<BeanContainer>(webEnv, container);
-        return appContext;
-    }
-    //
-    //
     private ServletContext servletContext = null;
-    protected WebTemplateAppContext(WebEnvironment environment, C container) {
+    public WebTemplateAppContext(WebEnvironment environment, C container) {
         super(environment, container);
         this.servletContext = environment.getServletContext();
     }
-    protected WebTemplateAppContext(WebEnvironment environment, DataContextCreater<C> creater) throws Throwable {
+    public WebTemplateAppContext(WebEnvironment environment, DataContextCreater<C> creater) throws Throwable {
         super(environment, creater);
         this.servletContext = environment.getServletContext();
     }

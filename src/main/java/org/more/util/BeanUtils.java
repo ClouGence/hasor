@@ -133,12 +133,12 @@ public abstract class BeanUtils {
             return;
         }
         for (Field field : target.getDeclaredFields()) {
-            if (fList.contains(field) == false) {
+            if (!fList.contains(field)) {
                 fList.add(field);
             }
         }
         for (Field field : target.getFields()) {
-            if (fList.contains(field) == false) {
+            if (!fList.contains(field)) {
                 fList.add(field);
             }
         }
