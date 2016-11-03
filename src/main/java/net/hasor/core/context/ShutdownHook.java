@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.context;
+import net.hasor.core.Hasor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -25,14 +26,19 @@ class ShutdownHook extends Thread implements Runnable {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     private TemplateAppContext<?> appContext;
     public ShutdownHook(TemplateAppContext<?> appContext) {
-        this.appContext = appContext;
+        this.appContext = Hasor.assertIsNotNull(appContext);
     }
     public void run() {
+        ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader newLoader = this.appContext.getClassLoader();
         try {
+            Thread.currentThread().setContextClassLoader(newLoader);
             this.setName("Hasor-ShutdownHook");
             this.appContext.shutdown();
         } catch (Throwable e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldLoader);
         }
     }
 }

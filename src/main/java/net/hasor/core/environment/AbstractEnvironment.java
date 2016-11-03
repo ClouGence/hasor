@@ -127,8 +127,8 @@ public abstract class AbstractEnvironment implements Environment {
         return this.settings;
     }
     /**创建事件管理器*/
-    protected StandardEventManager createEventManager(int eventThreadPoolSize) {
-        return new StandardEventManager(eventThreadPoolSize);
+    protected EventContext createEventManager(int eventThreadPoolSize) {
+        return new StandardEventManager(eventThreadPoolSize, this.getClassLoader());
     }
     //
     /* ------------------------------------------------------------------------------------ Toos */

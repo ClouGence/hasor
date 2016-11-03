@@ -6,6 +6,8 @@
     01.Spring sechma 升级到 2.5.1.
     02.Hasor 在启动的时候可以从外面传递 Map 来指定环境变量了。之前只能通过 env.config 来指定环境变量。
     03.增加 WebHasor 类，继承自 Hasor 类提供方便的 WebAppContext 初始化入口。
+* 修复:
+    01.修复因 ClassLoader 不同而导致的 shutdown 过程中异常的问题。
 
 ===== Hasor-Core v2.5.0 (2016-10-26)
 * 新增:

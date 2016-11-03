@@ -35,13 +35,13 @@ class ShareEventStandardEnvironment extends StandardEnvironment {
         this.shareEventListener = shareEventListener;
     }
     @Override
-    protected StandardEventManager createEventManager(int eventThreadPoolSize) {
-        return new ShareEventStandardEventManager(eventThreadPoolSize, this.shareEventListener);
+    protected ShareEventStandardEventManager createEventManager(int eventThreadPoolSize) {
+        return new ShareEventStandardEventManager(eventThreadPoolSize, this.getClassLoader(), this.shareEventListener);
     }
     private static class ShareEventStandardEventManager extends StandardEventManager {
         private ShareEventListener shareEventListener;
-        public ShareEventStandardEventManager(int eventThreadPoolSize, ShareEventListener shareEventListener) {
-            super(eventThreadPoolSize);
+        public ShareEventStandardEventManager(int eventThreadPoolSize, ClassLoader loader, ShareEventListener shareEventListener) {
+            super(eventThreadPoolSize, loader);
             this.shareEventListener = shareEventListener;
         }
         @Override

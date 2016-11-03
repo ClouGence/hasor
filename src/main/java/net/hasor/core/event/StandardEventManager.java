@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.core.event;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-
-import org.more.util.StringUtils;
 import net.hasor.core.EventCallBackHook;
 import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
+import org.more.util.NameThreadFactory;
+import org.more.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
 /**
  * 标准事件处理器接口的实现类
  * @version : 2013-5-6
@@ -35,13 +30,12 @@ import net.hasor.core.EventListener;
  */
 public class StandardEventManager implements EventContext {
     private static final EmptyEventCallBackHook                   EMPTY_CALLBACK  = new EmptyEventCallBackHook();
-    //
     private              ScheduledExecutorService                 executorService = null;
     private              ConcurrentMap<String, EventListenerPool> listenerMap     = new ConcurrentHashMap<String, EventListenerPool>();
     //
     //
-    public StandardEventManager(int eventThreadPoolSize) {
-        this.executorService = Executors.newScheduledThreadPool(eventThreadPoolSize, new NameThreadFactory("Hasor-EventPool-%s"));
+    public StandardEventManager(int eventThreadPoolSize, ClassLoader classLoader) {
+        this.executorService = Executors.newScheduledThreadPool(eventThreadPoolSize, new NameThreadFactory("Hasor-EventPool-%s", classLoader));
         ThreadPoolExecutor threadPool = (ThreadPoolExecutor) this.executorService;
         threadPool.setCorePoolSize(eventThreadPoolSize);
         threadPool.setMaximumPoolSize(eventThreadPoolSize);
@@ -206,20 +200,5 @@ class EventListenerPool {
     }
     public void removeListener(EventListener<?> eventListener) {
         listenerList.remove(eventListener);
-    }
-}
-class NameThreadFactory implements ThreadFactory {
-    private String nameSample = "Thread-%s";
-    private int    index      = 1;
-    //
-    public NameThreadFactory(String nameSample) {
-        this.nameSample = nameSample;
-    }
-    //
-    public Thread newThread(Runnable run) {
-        Thread t = new Thread(run);
-        t.setName(String.format(nameSample, index++));
-        t.setDaemon(true);
-        return t;
     }
 }
