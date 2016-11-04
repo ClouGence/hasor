@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.plugins.spring.factory;
-import net.hasor.core.*;
-import net.hasor.core.container.BeanContainer;
-import net.hasor.core.context.StatusAppContext;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
 import net.hasor.core.context.TemplateAppContext;
-import net.hasor.core.event.EventObject;
-import net.hasor.plugins.spring.event.AsyncSpringHasorEvent;
-import net.hasor.plugins.spring.event.EventType;
-import net.hasor.plugins.spring.event.SpringHasorEvent;
-import net.hasor.plugins.spring.event.SyncSpringHasorEvent;
+import net.hasor.web.WebHasor;
 import org.more.util.ExceptionUtils;
+import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,13 +29,18 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.config.PropertyResourceConfigurer;
-import org.springframework.context.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PropertiesLoaderSupport;
 import org.springframework.util.SystemPropertyUtils;
+import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.ServletContext;
 import java.lang.reflect.Method;
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 /**
  *
@@ -45,9 +48,7 @@ import java.util.Properties;
  * @author 赵永春(zyc@hasor.net)
  */
 public class SpringFactoryBean implements FactoryBean, InitializingBean, //
-        ApplicationContextAware, //
-        ShareEventListener, ApplicationListener, ApplicationEventPublisherAware, //
-        Module {
+        ApplicationContextAware, Module {
     //
     //
     protected static Logger logger = LoggerFactory.getLogger(Hasor.class);
@@ -56,7 +57,6 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
     private String             config;
     private String             refProperties;
     private ArrayList<Module>  modules;
-    private boolean shareEvent = false;
     //
     public String getConfig() {
         return config;
@@ -75,12 +75,6 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
     }
     public void setModules(ArrayList<Module> modules) {
         this.modules = modules;
-    }
-    public boolean isShareEvent() {
-        return shareEvent;
-    }
-    public void setShareEvent(boolean shareEvent) {
-        this.shareEvent = shareEvent;
     }
     //
     //
@@ -144,95 +138,60 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
     /**用简易的方式创建{@link AppContext}容器。*/
     protected AppContext createAppContext(ApplicationContext context, Resource resource, final PropertiesLoaderSupport envProperties, final Module... modules) throws Throwable {
         //
-        logger.info("create AppContext ,mainSettings = {} , modules = {}", config, modules);
-        ShareEventStandardEnvironment dev = new ShareEventStandardEnvironment(context.getClassLoader(), context, resource, this) {
-            @Override
-            protected void afterInitEnvironment() {
-                super.afterInitEnvironment();
-                if (envProperties == null) {
-                    logger.info("not import any environment variables -> refProperties is null");
-                    return;
-                }
+        // .获取所有 Spring 的属性配置
+        HashMap<String, String> envMap = new HashMap<String, String>();
+        if (envProperties == null) {
+            logger.info("not import any environment variables -> refProperties is null");
+        } else {
+            Properties props = null;
+            try {
+                Method mergeProperties = PropertiesLoaderSupport.class.getDeclaredMethod("mergeProperties");
+                Method convertProperties = PropertyResourceConfigurer.class.getDeclaredMethod("convertProperties", Properties.class);
+                mergeProperties.setAccessible(true);
+                convertProperties.setAccessible(true);
                 //
-                Properties props = null;
-                try {
-                    Method mergeProperties = PropertiesLoaderSupport.class.getDeclaredMethod("mergeProperties");
-                    Method convertProperties = PropertyResourceConfigurer.class.getDeclaredMethod("convertProperties", Properties.class);
-                    mergeProperties.setAccessible(true);
-                    convertProperties.setAccessible(true);
-                    //
-                    props = (Properties) mergeProperties.invoke(envProperties);
-                    convertProperties.invoke(envProperties, props);
-                } catch (Exception e) {
-                    logger.error("import environment variables error -> " + e.getMessage(), e);
-                    throw ExceptionUtils.toRuntimeException(e);
-                }
-                //
-                if (props == null) {
-                    logger.warn("not import any environment variables -> form Spring mergeProperties is null");
-                    return;
-                }
+                props = (Properties) mergeProperties.invoke(envProperties);
+                convertProperties.invoke(envProperties, props);
+            } catch (Exception e) {
+                logger.error("import environment variables error -> " + e.getMessage(), e);
+                throw ExceptionUtils.toRuntimeException(e);
+            }
+            //
+            if (props == null) {
+                logger.warn("not import any environment variables -> form Spring mergeProperties is null");
+            } else {
                 for (String keyStr : props.stringPropertyNames()) {
                     String keyVal = props.getProperty(keyStr);
-                    this.addEnvVar(keyStr, keyVal);
+                    envMap.put(keyStr, keyVal);
                 }
-                //
-                logger.info("import environment variables ,done. -> import size :" + props.size());
             }
-        };
+        }
+        logger.info("import environment variables ,done. -> import size :" + envMap.size());
         //
-        BeanContainer container = new BeanContainer();
-        AppContext appContext = new StatusAppContext<BeanContainer>(dev, container);
-        appContext.start(modules);
+        // .测试 Spring 的上下文是否为 WebApplicationContext
+        boolean testSupportWeb = ResourcesUtils.getResourceAsStream("/org/springframework/web/context/WebApplicationContext.class") != null;
+        if (testSupportWeb) {
+            if (context instanceof WebApplicationContext) {
+                testSupportWeb = true;
+            } else {
+                testSupportWeb = false;
+            }
+        }
+        //
+        // .主配置文件
+        URI mainSettings = (resource == null) ? null : resource.getURI();
+        ClassLoader loader = context.getClassLoader();
+        //
+        // .创建Context
+        AppContext appContext = null;
+        if (testSupportWeb) {
+            ServletContext sc = ((WebApplicationContext) context).getServletContext();
+            appContext = WebHasor.createWebAppContext(sc, mainSettings, envMap, loader, modules);
+        } else {
+            appContext = Hasor.createAppContext(mainSettings, envMap, loader, modules);
+        }
+        logger.info("create AppContext ,mainSettings = {} , modules = {}", mainSettings, modules);
         return appContext;
-    }
-    //
-    //
-    //
-    //- 事件的发布和接收
-    private ApplicationEventPublisher applicationEventPublisher;
-    @Override
-    public final void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-        this.applicationEventPublisher = applicationEventPublisher;
-    }
-    /*负责将Spring的事件转发到Hasor*/
-    @Override
-    public final void onApplicationEvent(ApplicationEvent event) {
-        if (this.appContext == null || !this.shareEvent) {
-            return;
-        }
-        //
-        if (event instanceof InternalHasorEvent) {
-            return;/*如果是由 onEvent 转发过来的事件则忽略*/
-        }
-        //
-        String eventType = null;
-        if (event instanceof EventType) {
-            eventType = ((EventType) event).getEventType();
-        } else {
-            eventType = event.getClass().getSimpleName();
-        }
-        //
-        EventContext eventContext = this.appContext.getEnvironment().getEventContext();
-        /*   */
-        if (event instanceof SyncSpringHasorEvent) {
-            eventContext.fireSyncEvent(eventType, event);
-        } else if (event instanceof AsyncSpringHasorEvent) {
-            eventContext.fireAsyncEvent(eventType, event);
-        } else {
-            eventContext.fireSyncEvent(eventType, event);
-        }
-    }
-    /*负责将Hasor的事件转发到Spring*/
-    @Override
-    public void fireEvent(EventObject<?> eventObj) {
-        this.applicationEventPublisher.publishEvent(new InternalHasorEvent(eventObj.getEventType(), eventObj.getEventData()));
-    }
-    private static class InternalHasorEvent extends SpringHasorEvent {
-        private static final long serialVersionUID = 4716275791429045894L;
-        public InternalHasorEvent(String event, Object source) {
-            super(event, source);
-        }
     }
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {

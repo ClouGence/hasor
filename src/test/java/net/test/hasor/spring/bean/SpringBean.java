@@ -24,9 +24,13 @@ public class SpringBean {
     @Resource
     private HasorBean hasorBean;
     //
-    public void print() {
-        System.out.println(this.hasorBean);
+    public HasorBean getHasorBean() {
+        return hasorBean;
     }
+    public void setHasorBean(HasorBean hasorBean) {
+        this.hasorBean = hasorBean;
+    }
+    //
     @Override
     public String toString() {
         return "SpringBean - [hasorBean:" + this.hasorBean + "]";

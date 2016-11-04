@@ -18,6 +18,7 @@ import com.jfinal.aop.Interceptor;
 import com.jfinal.aop.Invocation;
 import com.jfinal.core.Controller;
 import com.jfinal.core.JFinal;
+import net.hasor.core.Hasor;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.startup.RuntimeListener;
 /**
@@ -31,13 +32,9 @@ public class HasorInterceptor implements Interceptor {
     //
     public HasorInterceptor(final JFinal jFinal) {
         this.webAppContext = RuntimeListener.getAppContext(jFinal.getServletContext());
+        this.webAppContext = Hasor.assertIsNotNull(this.webAppContext, "need HasorPlugin.");
     }
     public void intercept(Invocation inv) {
-        if (this.webAppContext == null) {
-            inv.invoke();
-            return;
-        }
-        //
         Controller controller = inv.getController();
         if (controller != null && this.webAppContext != null) {
             this.webAppContext.justInject(controller);

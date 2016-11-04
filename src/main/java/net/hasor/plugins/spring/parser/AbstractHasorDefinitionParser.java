@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.spring.factory.xml;
+package net.hasor.plugins.spring.parser;
+import net.hasor.core.AppContext;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -32,10 +33,23 @@ import org.w3c.dom.Node;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractHasorDefinitionParser implements BeanDefinitionParser {
+    /** BeanID 属性名 */
+    protected abstract String beanID();
+
+    /** 配置Bean */
+    protected abstract AbstractBeanDefinition parse(Element element, NamedNodeMap attributes, ParserContext parserContext);
+    //
+    /** 属性解析 */
     protected String revertProperty(NamedNodeMap attributes, String attName) {
         Node attNode = attributes.getNamedItem(attName);
         return (attNode != null) ? attNode.getNodeValue() : null;
     }
+    protected String defaultHasorContextBeanName() {
+        return AppContext.class.getName();
+    }
+    //
+    //
+    /** 解析Xml 文件 */
     @Override
     public BeanDefinition parse(Element element, ParserContext parserContext) {
         NamedNodeMap attributes = element.getAttributes();
@@ -47,15 +61,13 @@ public abstract class AbstractHasorDefinitionParser implements BeanDefinitionPar
         //-将Bean注册到容器中
         return registerBean(element, parserContext, attributes, definition);
     }
-    protected abstract AbstractBeanDefinition parse(Element element, NamedNodeMap attributes, ParserContext parserContext);
-    //
     /**摘抄 Spring 源码，将Bean注册到容器中*/
     private BeanDefinition registerBean(Element element, ParserContext parserContext, NamedNodeMap attributes, AbstractBeanDefinition definition) {
         if (!parserContext.isNested()) {
             try {
                 String id = revertProperty(attributes, beanID());
                 if (!StringUtils.hasText(id)) {
-                    parserContext.getReaderContext().error(beanID() + " is required for element '" + element.getLocalName() + "' when used as a top-level tag", element);
+                    parserContext.getReaderContext().error(beanID() + " is undefined. for element '" + element.getLocalName(), element);
                 }
                 BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, id);
                 BeanDefinitionReaderUtils.registerBeanDefinition(holder, parserContext.getRegistry());
@@ -66,8 +78,5 @@ public abstract class AbstractHasorDefinitionParser implements BeanDefinitionPar
             }
         }
         return definition;
-    }
-    protected String beanID() {
-        return "factoryID";
     }
 }

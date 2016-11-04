@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Map;
 
 import static net.hasor.core.AppContext.ContextEvent_Shutdown;
@@ -106,33 +107,49 @@ public abstract class Hasor {
     //
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext() {
-        return Hasor.createAppContext(TemplateAppContext.DefaultSettings, new Module[0]);
+        return Hasor.createAppContext(TemplateAppContext.DefaultSettings, null, null, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final Module... modules) {
-        return Hasor.createAppContext(TemplateAppContext.DefaultSettings, modules);
+    public static AppContext createAppContext(Module... modules) {
+        return Hasor.createAppContext(TemplateAppContext.DefaultSettings, null, null, modules);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final String mainSettings) {
-        return Hasor.createAppContext(mainSettings, new Module[0]);
+    public static AppContext createAppContext(File mainSettings) {
+        return Hasor.createAppContext(mainSettings, null, null, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final File mainSettings) {
-        return Hasor.createAppContext(mainSettings, null, new Module[0]);
+    public static AppContext createAppContext(String mainSettings) {
+        return Hasor.createAppContext(mainSettings, null, null, new Module[0]);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final String mainSettings, final Module... modules) {
-        return Hasor.createAppContext(mainSettings, null, modules);
+    public static AppContext createAppContext(URI mainSettings) {
+        return Hasor.createAppContext(mainSettings, null, null, new Module[0]);
     }
     //
-    //
+    /**用简易的方式创建{@link AppContext}容器。*/
+    public static AppContext createAppContext(File mainSettings, Module... modules) {
+        return Hasor.createAppContext(mainSettings, null, null, modules);
+    }
+    /**用简易的方式创建{@link AppContext}容器。*/
+    public static AppContext createAppContext(String mainSettings, Module... modules) {
+        return Hasor.createAppContext(mainSettings, null, null, modules);
+    }
+    /**用简易的方式创建{@link AppContext}容器。*/
+    public static AppContext createAppContext(URI mainSettings, Module... modules) {
+        return Hasor.createAppContext(mainSettings, null, null, modules);
+    }
     //
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final String mainSettings, Map<String, String> loadEnvConfig, final Module... modules) {
+    public static AppContext createAppContext(File mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader, Module... modules) {
+        return Hasor.createAppContext(mainSettings.toURI(), loadEnvConfig, loader, modules);
+    }
+    /**用简易的方式创建{@link AppContext}容器。*/
+    public static AppContext createAppContext(String mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader, Module... modules) {
+        logger.info("create AppContext ,mainSettings = {} , modules = {}", mainSettings, modules);
+        //
         try {
-            logger.info("create AppContext ,mainSettings = {} , modules = {}", mainSettings, modules);
-            Environment dev = new StandardEnvironment(null, mainSettings, loadEnvConfig);
-            AppContext appContext = new StatusAppContext<BeanContainer>(dev, new BeanContainer());
+            Environment env = new StandardEnvironment(null, mainSettings, loadEnvConfig, loader);
+            AppContext appContext = new StatusAppContext<BeanContainer>(env, new BeanContainer());
             appContext.start(modules);
             return appContext;
         } catch (Throwable e) {
@@ -140,11 +157,12 @@ public abstract class Hasor {
         }
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(final File mainSettings, Map<String, String> loadEnvConfig, final Module... modules) {
+    public static AppContext createAppContext(URI mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader, Module... modules) {
+        logger.info("create AppContext ,mainSettings = {} , modules = {}", mainSettings, modules);
+        //
         try {
-            logger.info("create AppContext ,mainSettings = {} , modules = {}", mainSettings, modules);
-            Environment dev = new StandardEnvironment(null, mainSettings, loadEnvConfig);
-            AppContext appContext = new StatusAppContext<BeanContainer>(dev, new BeanContainer());
+            Environment env = new StandardEnvironment(null, mainSettings, loadEnvConfig, loader);
+            AppContext appContext = new StatusAppContext<BeanContainer>(env, new BeanContainer());
             appContext.start(modules);
             return appContext;
         } catch (Throwable e) {

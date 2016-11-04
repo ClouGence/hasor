@@ -23,6 +23,7 @@ import net.hasor.web.WebAppContext;
 import net.hasor.web.WebHasor;
 import net.hasor.web.startup.RuntimeFilter;
 import net.hasor.web.startup.RuntimeListener;
+import org.more.RepeateException;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 
@@ -44,7 +45,6 @@ public class HasorPlugin implements IPlugin {
     private final RuntimeListener listener;
     private final RuntimeFilter   rootFilter;
     //
-    //
     /***/
     public HasorPlugin(final JFinal jFinal) {
         this(jFinal, TemplateAppContext.DefaultSettings, null);
@@ -60,6 +60,11 @@ public class HasorPlugin implements IPlugin {
     /***/
     public HasorPlugin(final JFinal jFinal, final String mainSettings, final Module module) {
         this.jFinal = Hasor.assertIsNotNull(jFinal, "jFinal Context is null.");
+        WebAppContext webAppContext = RuntimeListener.getAppContext(this.jFinal.getServletContext());
+        if (webAppContext != null) {
+            throw new RepeateException("Hasor WebAppContext already exists , please disable the other.");
+        }
+        //
         this.listener = new RuntimeListener() {
             protected WebAppContext createAppContext(ServletContext sc, Module startModule) throws Throwable {
                 return newAppContext(jFinal, mainSettings, new MergeModule(Arrays.asList(module, startModule)));// 创建WebAppContext
@@ -114,7 +119,7 @@ public class HasorPlugin implements IPlugin {
         // .初始化 Hasor WebAppContext，并且将 JFinal 的配置作为 Hasor 的环境变量
         final InnerMap finalEnvProp = envProp;
         mainSettings = StringUtils.isBlank(mainSettings) ? TemplateAppContext.DefaultSettings : mainSettings;
-        return WebHasor.createWebAppContext(jFinal.getServletContext(), mainSettings, envProp, new Module() {
+        return WebHasor.createWebAppContext(jFinal.getServletContext(), mainSettings, envProp, null, new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
                 // .注册类型
                 apiBinder.bindType(InnerMap.class).toInstance((finalEnvProp != null) ? finalEnvProp : new InnerMap());

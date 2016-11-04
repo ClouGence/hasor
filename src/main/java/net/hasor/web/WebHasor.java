@@ -21,10 +21,10 @@ import net.hasor.core.context.TemplateAppContext;
 import net.hasor.web.context.WebTemplateAppContext;
 import net.hasor.web.env.WebStandardEnvironment;
 import org.more.util.ExceptionUtils;
-import org.more.util.ResourcesUtils;
 
 import javax.servlet.ServletContext;
-import java.net.URL;
+import java.io.File;
+import java.net.URI;
 import java.util.Map;
 /**
  * Hasor 基础工具包。
@@ -34,36 +34,60 @@ import java.util.Map;
 public abstract class WebHasor extends Hasor {
     /**用简易的方式创建{@link WebAppContext}容器。*/
     public static WebAppContext createWebAppContext(ServletContext servletContext) {
-        return WebHasor.createWebAppContext(servletContext, TemplateAppContext.DefaultSettings, null, new Module[0]);
+        return WebHasor.createWebAppContext(servletContext, TemplateAppContext.DefaultSettings, null, null, new Module[0]);
     }
     /**用简易的方式创建{@link WebAppContext}容器。*/
     public static WebAppContext createWebAppContext(ServletContext servletContext, Module... modules) {
-        return WebHasor.createWebAppContext(servletContext, TemplateAppContext.DefaultSettings, null, modules);
+        return WebHasor.createWebAppContext(servletContext, TemplateAppContext.DefaultSettings, null, null, modules);
+    }
+    /**用简易的方式创建{@link WebAppContext}容器。*/
+    public static WebAppContext createWebAppContext(ServletContext servletContext, File mainSettings) {
+        return WebHasor.createWebAppContext(servletContext, mainSettings, null, null, new Module[0]);
     }
     /**用简易的方式创建{@link WebAppContext}容器。*/
     public static WebAppContext createWebAppContext(ServletContext servletContext, String mainSettings) {
-        return WebHasor.createWebAppContext(servletContext, mainSettings, null, new Module[0]);
-    }
-    //
-    //
-    //
-    /**用简易的方式创建{@link WebAppContext}容器。*/
-    public static WebAppContext createWebAppContext(ServletContext servletContext, String mainSettings, final Module... modules) {
-        return WebHasor.createWebAppContext(servletContext, mainSettings, null, modules);
+        return WebHasor.createWebAppContext(servletContext, mainSettings, null, null, new Module[0]);
     }
     /**用简易的方式创建{@link WebAppContext}容器。*/
-    public static WebAppContext createWebAppContext(ServletContext servletContext, String mainSettings, Map<String, String> loadEnvConfig, final Module... modules) {
+    public static WebAppContext createWebAppContext(ServletContext servletContext, URI mainSettings) {
+        return WebHasor.createWebAppContext(servletContext, mainSettings, null, null, new Module[0]);
+    }
+    //
+    /**用简易的方式创建{@link WebAppContext}容器。*/
+    public static WebAppContext createWebAppContext(ServletContext servletContext, File mainSettings, Module... modules) {
+        return WebHasor.createWebAppContext(servletContext, mainSettings, null, null, modules);
+    }
+    /**用简易的方式创建{@link WebAppContext}容器。*/
+    public static WebAppContext createWebAppContext(ServletContext servletContext, String mainSettings, Module... modules) {
+        return WebHasor.createWebAppContext(servletContext, mainSettings, null, null, modules);
+    }
+    /**用简易的方式创建{@link WebAppContext}容器。*/
+    public static WebAppContext createWebAppContext(ServletContext servletContext, URI mainSettings, Module... modules) {
+        return WebHasor.createWebAppContext(servletContext, mainSettings, null, null, modules);
+    }
+    //
+    /**用简易的方式创建{@link WebAppContext}容器。*/
+    public static WebAppContext createWebAppContext(ServletContext servletContext, File mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader, Module... modules) {
+        return WebHasor.createWebAppContext(servletContext, mainSettings.toURI(), loadEnvConfig, loader, modules);
+    }
+    /**用简易的方式创建{@link WebAppContext}容器。*/
+    public static WebAppContext createWebAppContext(ServletContext servletContext, String mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader, Module... modules) {
+        logger.info("create WebAppContext ,mainSettings = {} , modules = {}", mainSettings, modules);
         try {
-            logger.info("create WebAppContext ,mainSettings = {} , modules = {}", mainSettings, modules);
-            URL resURL = ResourcesUtils.getResource(mainSettings);
-            WebEnvironment webEnv = null;
-            if (resURL != null) {
-                webEnv = new WebStandardEnvironment(resURL.toURI(), loadEnvConfig, servletContext);
-            } else {
-                webEnv = new WebStandardEnvironment(null, loadEnvConfig, servletContext);
-            }
-            BeanContainer container = new BeanContainer();
-            WebTemplateAppContext<?> appContext = new WebTemplateAppContext<BeanContainer>(webEnv, container);
+            WebStandardEnvironment env = new WebStandardEnvironment(servletContext, mainSettings, loadEnvConfig, loader);
+            WebTemplateAppContext appContext = new WebTemplateAppContext<BeanContainer>(env, new BeanContainer());
+            appContext.start(modules);
+            return appContext;
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
+    }
+    /**用简易的方式创建{@link WebAppContext}容器。*/
+    public static WebAppContext createWebAppContext(ServletContext servletContext, URI mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader, Module... modules) {
+        logger.info("create WebAppContext ,mainSettings = {} , modules = {}", mainSettings, modules);
+        try {
+            WebStandardEnvironment env = new WebStandardEnvironment(servletContext, mainSettings, loadEnvConfig, loader);
+            WebTemplateAppContext appContext = new WebTemplateAppContext<BeanContainer>(env, new BeanContainer());
             appContext.start(modules);
             return appContext;
         } catch (Throwable e) {

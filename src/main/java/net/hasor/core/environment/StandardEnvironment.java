@@ -16,11 +16,10 @@
 package net.hasor.core.environment;
 import net.hasor.core.Environment;
 import net.hasor.core.setting.StandardContextSettings;
-import net.hasor.core.setting.StreamType;
+import org.more.classcode.MoreClassLoader;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -31,50 +30,71 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  */
 public class StandardEnvironment extends AbstractEnvironment {
-    public StandardEnvironment(Object context, InputStream mainSettings, StreamType type) throws IOException, URISyntaxException {
-        this(context, mainSettings, type, null);
-    }
-    public StandardEnvironment(Object context, String mainSettings) throws IOException, URISyntaxException {
-        this(context, mainSettings, null);
-    }
     public StandardEnvironment(Object context, File mainSettings) throws IOException {
-        this(context, mainSettings, null);
+        this(context, mainSettings, null, null);
     }
     public StandardEnvironment(Object context, URL mainSettings) throws URISyntaxException, IOException {
-        this(context, mainSettings, null);
+        this(context, mainSettings, null, null);
+    }
+    public StandardEnvironment(Object context, String mainSettings) throws IOException, URISyntaxException {
+        this(context, mainSettings, null, null);
     }
     public StandardEnvironment(Object context, URI mainSettings) throws IOException {
-        this(context, mainSettings, null);
+        this(context, mainSettings, null, null);
     }
     //
-    public StandardEnvironment(Object context, InputStream mainSettings, StreamType type, Map<String, String> loadEnvConfig) throws IOException, URISyntaxException {
-        super(context, new StandardContextSettings(mainSettings, type));
-        logger.info("create Environment, type = StandardEnvironment, settingsType is [string] mode, mainSettings = {}", mainSettings);
-        this.getSettings().refresh();
-        this.initEnvironment(loadEnvConfig);
-    }
-    public StandardEnvironment(Object context, String mainSettings, Map<String, String> loadEnvConfig) throws IOException, URISyntaxException {
-        super(context, new StandardContextSettings(mainSettings));
-        logger.info("create Environment, type = StandardEnvironment, settingsType is [string] mode, mainSettings = {}", mainSettings);
-        this.getSettings().refresh();
-        this.initEnvironment(loadEnvConfig);
-    }
+    //
     public StandardEnvironment(Object context, File mainSettings, Map<String, String> loadEnvConfig) throws IOException {
-        super(context, new StandardContextSettings(mainSettings));
-        logger.info("create Environment, type = StandardEnvironment, settingsType is [file] mode, mainSettings = {}", mainSettings);
-        this.getSettings().refresh();
-        this.initEnvironment(loadEnvConfig);
+        this(context, mainSettings, loadEnvConfig, null);
     }
     public StandardEnvironment(Object context, URL mainSettings, Map<String, String> loadEnvConfig) throws URISyntaxException, IOException {
-        super(context, new StandardContextSettings(mainSettings.toURI()));
-        logger.info("create Environment, type = StandardEnvironment, settingsType is [url] mode, mainSettings = {}", mainSettings);
-        this.getSettings().refresh();
-        this.initEnvironment(loadEnvConfig);
+        this(context, mainSettings, loadEnvConfig, null);
+    }
+    public StandardEnvironment(Object context, String mainSettings, Map<String, String> loadEnvConfig) throws IOException, URISyntaxException {
+        this(context, mainSettings, loadEnvConfig, null);
     }
     public StandardEnvironment(Object context, URI mainSettings, Map<String, String> loadEnvConfig) throws IOException {
+        this(context, mainSettings, loadEnvConfig, null);
+    }
+    //
+    //
+    public StandardEnvironment(Object context, File mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader) throws IOException {
+        this(context, (mainSettings != null ? mainSettings.toURI() : null), loadEnvConfig, loader);
+    }
+    public StandardEnvironment(Object context, URL mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader) throws URISyntaxException, IOException {
+        this(context, (mainSettings != null ? mainSettings.toURI() : null), loadEnvConfig, loader);
+    }
+    public StandardEnvironment(Object context, String mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader) throws IOException, URISyntaxException {
         super(context, new StandardContextSettings(mainSettings));
-        logger.info("create Environment, type = StandardEnvironment, settingsType is [uri] mode, mainSettings = {}", mainSettings);
+        logger.info("create Environment, type = StandardEnvironment, mainSettings = {}", mainSettings);
+        if (loader == null) {
+            loader = Thread.currentThread().getContextClassLoader();
+        }
         this.getSettings().refresh();
+        this.setRootLosder(new MoreClassLoader(loader));
         this.initEnvironment(loadEnvConfig);
     }
+    public StandardEnvironment(Object context, URI mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader) throws IOException {
+        super(context, new StandardContextSettings(mainSettings));
+        logger.info("create Environment, type = StandardEnvironment, mainSettings = {}", mainSettings);
+        if (loader == null) {
+            loader = Thread.currentThread().getContextClassLoader();
+        }
+        this.getSettings().refresh();
+        this.setRootLosder(new MoreClassLoader(loader));
+        this.initEnvironment(loadEnvConfig);
+    }
+    //
+    //
+    //    public StandardEnvironment(Object context, InputStream mainSettings, StreamType type) throws IOException, URISyntaxException {
+    //        this(context, mainSettings, type, null);
+    //    }
+    //    public StandardEnvironment(Object context, InputStream mainSettings, StreamType type, Map<String, String> loadEnvConfig) throws IOException, URISyntaxException {
+    //        super(context, new StandardContextSettings(mainSettings, type));
+    //        logger.info("create Environment, type = StandardEnvironment, settingsType is [string] mode, mainSettings = {}", mainSettings);
+    //        this.getSettings().refresh();
+    //        this.initEnvironment(loadEnvConfig);
+    //    }
+    //    public StandardEnvironment(Object context, String mainSettings, Map<String, String> loadEnvConfig) throws IOException, URISyntaxException {
+    //    }
 }

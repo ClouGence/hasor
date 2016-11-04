@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.spring.factory.xml;
+package net.hasor.plugins.spring.parser;
+import net.hasor.plugins.spring.factory.HasorBean;
 import org.more.util.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
@@ -22,7 +23,6 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.ClassUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
-import net.hasor.plugins.spring.factory.HasorBean;
 /**
  *
  * @version : 2016年2月16日
@@ -34,7 +34,6 @@ class BeanDefinitionParser extends AbstractHasorDefinitionParser {
     public BeanDefinitionParser(String factoryID) {
         this.factoryID = factoryID;
     }
-    //
     private String factoryID;
     //
     @Override
@@ -52,11 +51,8 @@ class BeanDefinitionParser extends AbstractHasorDefinitionParser {
         String refType = revertProperty(attributes, "refType");
         String refName = revertProperty(attributes, "refName");
         //
-        if (StringUtils.equals(factoryID, null)) {
-            factoryID = this.factoryID;
-        }
-        if (StringUtils.equals(factoryID, null)) {
-            parserContext.getReaderContext().error("Bean class [" + refType + "] hasorID undefined", element);
+        if (StringUtils.isBlank(factoryID)) {
+            factoryID = StringUtils.isBlank(this.factoryID) ? defaultHasorContextBeanName() : this.factoryID;
         }
         if (org.more.util.StringUtils.isNotBlank(refID) || org.more.util.StringUtils.isNotBlank(refType)) {
             builder.addPropertyReference("factory", factoryID);

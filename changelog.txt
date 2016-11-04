@@ -1,13 +1,14 @@
 ﻿===== Hasor-Core v2.5.1 (2016-11-?)
 * 新增:
-    01.新增 JFina 插件支持。
+    01.新增 JFina 插件支持。HasorPlugin、HasorInterceptor、HasorHandler 三个插件。
     02.AppContext 新增两个 justInject 方法用于对某个标记了 Hasor 注解的对象执行依赖注入。
 * 改进:
-    01.Spring sechma 升级到 2.5.1.
-    02.Hasor 在启动的时候可以从外面传递 Map 来指定环境变量了。之前只能通过 env.config 来指定环境变量。
-    03.增加 WebHasor 类，继承自 Hasor 类提供方便的 WebAppContext 初始化入口。
+    01.Spring sechma 升级到 2.5.1。factoryID 不再是强制输入。如果没有配置 factoryID 会采用 "net.hasor.core.AppContext" 为默认名。
+    02.简化 Spring 集成，取消与 Spring 的 Event 双向打通机制，如果开发者需要该功能可以自行基于 Spring 实现。
+    03.Hasor 在启动的时候可以从外面传递 Map 来指定环境变量了。之前只能通过 env.config 来指定环境变量。
+    04.增加 WebHasor 类，继承自 Hasor 类提供方便的 WebAppContext 初始化入口。
 * 修复:
-    01.修复因 ClassLoader 不同而导致的 shutdown 过程中异常的问题。
+    01.修复因 ClassLoader 不同而导致的 shutdown 过程中可能的异常抛出。
 
 ===== Hasor-Core v2.5.0 (2016-10-26)
 * 新增:

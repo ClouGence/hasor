@@ -1,44 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:h="http://project.hasor.net/schema/spring/hasor-core"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-autowire="byName"
+       xmlns:h="http://project.hasor.net/schema/spring/hasor-core"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-http://project.hasor.net/schema/spring/hasor-core http://project.hasor.net/schema/spring/hasor-core/spring-hasor-2.5.1.xsd"
-       default-autowire="byName">
+http://project.hasor.net/schema/spring/hasor-core http://project.hasor.net/schema/spring/hasor-core/spring-hasor-2.5.1.xsd">
 
-    <!-- 
-        Spring中使用Hasor
-        
-            方式一，让Hasor加载来自Spring中配置的Module
-        
-            <bean id="startWith" class="net.test.hasor.spring.SpringTestModule"></bean>
-            <h:hasor factoryID="hasor" startWithRef="startWith" />
-    
-            方式二，简化配置
-            <h:hasor factoryID="hasor" startWith="net.test.hasor.spring.SpringTestModule" />
-            
-        将Hasor中的Bean导出到Spring中
-        
-            <h:bean id="helloString" refID="helloString" hasorID="hasor" />
-            <h:bean id="helloString" refType="net.test.hasor.spring.bean.HasorBean" hasorID="hasor" />
-            <h:bean id="helloString" refType="" refName="" hasorID="hasor" />
-        
-    -->
-
-    <!-- 配置属性文件 -->
+    <!-- 使用 Spring 的属性文件作为 Hasor 的环境变量配置文件 -->
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="location">
             <value>classpath:test-env.config</value>
         </property>
     </bean>
 
-    <h:hasor factoryID="hasor" refProperties="propertyConfigurer" startWith="net.test.hasor.spring.SpringTestModule">
+    <!-- 创建 Hasor 容器 -->
+    <h:hasor refProperties="propertyConfigurer" startWith="net.test.hasor.spring.SpringTestModule">
+        <!-- (可选) 如果需要指定Hasor配置文件那么在这里指明，否则不需要配置 -->
         <h:configFile>classpath:simple-config.xml</h:configFile>
-        <!-- 将Hasor中ID为helloWord的Bean导出到Spring中，并定名为helloString -->
-        <h:bean id="helloString" refID="helloWord"/>
     </h:hasor>
 
-    <!-- 将Hasor的Bean导出到Spring中。因为在h:hasor标签之外声明，所以需要通过hasorID来指定使用的是哪一个Hasor容器 -->
-    <h:bean id="hasorBean" refType="net.test.hasor.spring.bean.HasorBean" hasorID="hasor"/>
+    <!-- 声明一个 Spring Bean，名称为：helloString。该 Bean 是通过 AppContext.getInstance('helloWord') 获取。 -->
+    <h:bean id="helloString" refID="helloWord"/>
 
+    <!-- 声明一个 Spring Bean，名称为：hasorBean。该 Bean 是通过 AppContext.getInstance(HasorBean.class) 获取。 -->
+    <h:bean id="hasorBean" refType="net.test.hasor.spring.bean.HasorBean"/>
+
+    <!-- 常规的 Spring Bean -->
+    <bean id="springBean" class="net.test.hasor.spring.bean.SpringBean">
+        <property name="hasorBean" ref="hasorBean"/>
+    </bean>
 
 </beans>

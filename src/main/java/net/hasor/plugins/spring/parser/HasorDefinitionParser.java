@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.spring.factory.xml;
+package net.hasor.plugins.spring.parser;
+import net.hasor.core.AppContext;
 import net.hasor.plugins.spring.factory.SpringFactoryBean;
 import org.more.util.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -30,11 +31,27 @@ import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 /**
- *
+ * h:hasor 标签
  * @version : 2016年2月16日
  * @author 赵永春(zyc@hasor.net)
  */
 class HasorDefinitionParser extends AbstractHasorDefinitionParser {
+    @Override
+    protected String beanID() {
+        return "factoryID";
+    }
+    @Override
+    protected String revertProperty(NamedNodeMap attributes, String attName) {
+        String val = super.revertProperty(attributes, attName);
+        if (StringUtils.isNotBlank(val)) {
+            return val;
+        }
+        // 是否为 factoryID 属性（默认值处理）
+        if (StringUtils.equalsIgnoreCase(attName, this.beanID())) {
+            val = this.defaultHasorContextBeanName();
+        }
+        return val;
+    }
     @Override
     protected AbstractBeanDefinition parse(Element element, NamedNodeMap attributes, ParserContext parserContext) {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition();
@@ -72,6 +89,9 @@ class HasorDefinitionParser extends AbstractHasorDefinitionParser {
         //
         String configFile = null;
         String factoryID = revertProperty(attributes, beanID());
+        if (StringUtils.isBlank(factoryID)) {
+            factoryID = AppContext.class.getName();
+        }
         BeanDefinitionParser parser = new BeanDefinitionParser(factoryID);
         //
         Node node = element.getFirstChild();

@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.spring.event.tohasor;
-import net.hasor.core.EventListener;
-import net.hasor.plugins.event.Event;
-import net.hasor.plugins.spring.event.SpringEventEnum;
+package net.hasor.plugins.spring.parser;
+import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 /**
- * 接受来自Spring发送的事件
- * @version : 2016年2月15日
+ *
+ * @version : 2016年2月16日
  * @author 赵永春(zyc@hasor.net)
  */
-@Event(SpringEventEnum.Context_Refreshed_Event)
-public class ReceiveEventListener implements EventListener<Object> {
+public class HasorNamespaceHandler extends NamespaceHandlerSupport {
     @Override
-    public void onEvent(String event, Object eventData) throws Throwable {
-        System.out.println("!!!!!!!!!! \t\tthis Event form Spring -> Type:" + event + ", Source: " + eventData);
+    public void init() {
+        registerBeanDefinitionParser("hasor", new HasorDefinitionParser());
+        registerBeanDefinitionParser("bean", new BeanDefinitionParser());
     }
 }

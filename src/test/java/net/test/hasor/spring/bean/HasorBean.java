@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.test.hasor.spring.bean;
-import net.hasor.core.Inject;
 import net.hasor.core.InjectSettings;
 /**
  * 使用Hasor的方式注入Spring的Bean。
@@ -22,16 +21,11 @@ import net.hasor.core.InjectSettings;
  * @author 赵永春(zyc@hasor.net)
  */
 public class HasorBean {
-    @Inject
-    private SpringBean springBean;
     @InjectSettings("${message}")
-    private String     msgValue;
+    private String msgValue;
     //
-    public void print() {
-        System.out.println(this.springBean);
-    }
     @Override
     public String toString() {
-        return "HasorBean - [springBean:" + this.springBean + "]";
+        return "HasorBean - [msgValue:" + this.msgValue + "]";
     }
 }

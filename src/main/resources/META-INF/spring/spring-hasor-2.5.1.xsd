@@ -5,7 +5,7 @@
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
 
     <xsd:attributeGroup name="beanAttribute">
-        <xsd:attribute name="id" type="xsd:ID" use="required"/>
+        <xsd:attribute name="id" type="xsd:ID"/>
         <xsd:attribute name="refID" type="xsd:string" use="optional"/>
         <xsd:attribute name="refType" type="xsd:string" use="optional"/>
         <xsd:attribute name="refName" type="xsd:string" use="optional"/>
@@ -20,13 +20,13 @@
                     </xsd:simpleContent>
                 </xsd:complexType>
             </xsd:element>
-            <xsd:element name="bean">
+            <xsd:element name="bean" minOccurs="0">
                 <xsd:complexType>
                     <xsd:attributeGroup ref="beanAttribute"/>
                 </xsd:complexType>
             </xsd:element>
         </xsd:all>
-        <xsd:attribute name="factoryID" type="xsd:ID" use="required"/>
+        <xsd:attribute name="factoryID" type="xsd:string" use="optional"/>
         <xsd:attribute name="refProperties" type="xsd:string" use="optional"/>
         <xsd:attribute name="startWith" type="xsd:string" use="optional"/>
         <xsd:attribute name="startWithRef" type="xsd:string" use="optional"/>

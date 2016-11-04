@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 package net.test.hasor.spring;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
-import net.hasor.plugins.spring.SpringModule;
-import net.test.hasor.spring.bean.HasorBean;
-import net.test.hasor.spring.bean.SpringBean;
-import net.test.hasor.spring.event.tohasor.SpringEventPublisher;
-import net.test.hasor.spring.event.tospring.HasorEventPublisher;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
- *
+ * S
  * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -34,40 +27,30 @@ public class SpringTest {
     private ApplicationContext applicationContext;
     @Before
     public void initSpring() {
-        this.applicationContext = new ClassPathXmlApplicationContext("spring/spring-bean.xml");
+        this.applicationContext = new ClassPathXmlApplicationContext("spring/spring-hasor.xml");
     }
     //
     //
-    @Test
-    public void springPublisherEvent() {
-        SpringEventPublisher springPublisher = (SpringEventPublisher) applicationContext.getBean("springEventPublisher");
-        //
-        springPublisher.publishSyncEvent();//通过Spring发送事件给Hasor
-    }
-    @Test
-    public void hasorPublisherEvent() {
-        AppContext appContext = (AppContext) applicationContext.getBean("hasor");
-        //
-        HasorEventPublisher hasorPublisher = appContext.getInstance(HasorEventPublisher.class);
-        hasorPublisher.publishEvent();//通过Hasor发送事件给Spring
-    }
     @Test
     public void springTest() {
-        SpringBean obj1 = (SpringBean) this.applicationContext.getBean("springBean");
+        Object obj1 = this.applicationContext.getBean("springBean");
         System.out.println("@@@@@@@@@@@@@@" + obj1);
         //
         Object obj2 = this.applicationContext.getBean("helloString");
         System.out.println("@@@@@@@@@@@@@@" + obj2);
+        //
+        Object obj3 = this.applicationContext.getBean("hasorBean");
+        System.out.println("@@@@@@@@@@@@@@" + obj3);
     }
     @Test
     public void hasorTest() {
-        AppContext appContext = Hasor.createAppContext(new SpringModule(this.applicationContext) {
-            protected boolean isExportBean(String beanName) {
-                return true;
-            }
-        });
-        //
-        HasorBean hasorBean = appContext.getInstance(HasorBean.class);
-        System.out.println("@@@@@@@@@@@@@@" + hasorBean);
+        //        AppContext appContext = Hasor.createAppContext(new SpringModule(this.applicationContext) {
+        //            protected boolean isExportBean(String beanName) {
+        //                return true;
+        //            }
+        //        });
+        //        //
+        //        HasorBean hasorBean = appContext.getInstance(HasorBean.class);
+        //        System.out.println("@@@@@@@@@@@@@@" + hasorBean);
     }
 }
