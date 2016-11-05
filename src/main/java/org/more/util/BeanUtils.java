@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package org.more.util;
+import org.more.NullArgumentException;
+import org.more.convert.ConverterUtils;
+
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -22,9 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import org.more.NullArgumentException;
-import org.more.convert.ConverterUtils;
 /**
  *
  * @version : 2011-6-3
@@ -53,7 +53,7 @@ public abstract class BeanUtils {
             return false;
         } else if (returnType == void.class || returnType == Void.class) {
             return null;
-        } else if (returnType.isArray() == true) {
+        } else if (returnType.isArray()) {
             return null;
         }
         return null;
@@ -84,7 +84,7 @@ public abstract class BeanUtils {
         Method[] ms = targetType.getMethods();
         for (Method m : ms) {
             //1.名字不相等的忽略
-            if (m.getName().equals(methodName) == false) {
+            if (!m.getName().equals(methodName)) {
                 continue;
             }
             //2.目标方法参数列表个数与types字段中存放的个数不一样的忽略。
@@ -100,7 +100,7 @@ public abstract class BeanUtils {
                     continue;
                 }
                 //
-                if (paramTypes[i].isAssignableFrom(param_object.getClass()) == false) {
+                if (!paramTypes[i].isAssignableFrom(param_object.getClass())) {
                     isFind = false;
                     break;
                 }
@@ -162,12 +162,12 @@ public abstract class BeanUtils {
             return;
         }
         for (Method method : target.getDeclaredMethods()) {
-            if (mList.contains(method) == false) {
+            if (!mList.contains(method)) {
                 mList.add(method);
             }
         }
         for (Method method : target.getMethods()) {
-            if (mList.contains(method) == false) {
+            if (!mList.contains(method)) {
                 mList.add(method);
             }
         }
@@ -192,7 +192,7 @@ public abstract class BeanUtils {
             return null;
         }
         for (Field f : type.getFields()) {
-            if (f.getName().equals(fieldName) == true) {
+            if (f.getName().equals(fieldName)) {
                 return f;
             }
         }
@@ -216,7 +216,7 @@ public abstract class BeanUtils {
         List<Field> fnames = BeanUtils.getFields(target);
         for (Field f : fnames) {
             String fName = f.getName();
-            if (mnames.contains(fName) == false) {
+            if (!mnames.contains(fName)) {
                 mnames.add(fName);
             }
         }
@@ -228,16 +228,16 @@ public abstract class BeanUtils {
         List<Method> ms = BeanUtils.getMethods(target);
         for (Method m : ms) {
             String name = m.getName();
-            if (name.startsWith("get") == true || name.startsWith("set") == true) {
+            if (name.startsWith("get") || name.startsWith("set")) {
                 name = name.substring(3);
-            } else if (name.startsWith("is") == true) {
+            } else if (name.startsWith("is")) {
                 name = name.substring(2);
             } else {
                 continue;
             }
-            if (name.equals("") == false) {
+            if (!name.equals("")) {
                 name = StringUtils.firstCharToLowerCase(name);
-                if (mnames.contains(name) == false) {
+                if (!mnames.contains(name)) {
                     mnames.add(name);
                 }
             }
@@ -267,11 +267,11 @@ public abstract class BeanUtils {
         for (Method m : target.getMethods()) {
             if (m.getParameterTypes().length == 0) {
                 String methodName = m.getName();
-                if (methodName.equals(methodName_1) == true) {
+                if (methodName.equals(methodName_1)) {
                     return m;
                 }
                 /*是否是布尔*/
-                if (methodName.equals(methodName_2) == true) {
+                if (methodName.equals(methodName_2)) {
                     Class<?> t = m.getReturnType();
                     if (t == Boolean.class || t == boolean.class) {
                         return m;
@@ -288,7 +288,7 @@ public abstract class BeanUtils {
         }
         String methodName = "set" + StringUtils.firstCharToUpperCase(property);
         for (Method m : target.getMethods()) {
-            if (m.getName().equals(methodName) == true) {
+            if (m.getName().equals(methodName)) {
                 if (m.getParameterTypes().length == 1) {
                     return m;
                 }
@@ -316,8 +316,8 @@ public abstract class BeanUtils {
     }
     /**测试是否具有name所表示的属性，hasProperty或hasField有一个返回为true则返回true。*/
     public static boolean hasPropertyOrField(final String name, final Class<?> target) {
-        if (BeanUtils.hasProperty(name, target) == false) {
-            if (BeanUtils.hasField(name, target) == false) {
+        if (!BeanUtils.hasProperty(name, target)) {
+            if (!BeanUtils.hasField(name, target)) {
                 return false;
             }
         }
@@ -334,8 +334,8 @@ public abstract class BeanUtils {
     }
     /**测试是否支持readPropertyOrField方法。*/
     public static boolean canReadPropertyOrField(final String propertyName, final Class<?> target) {
-        if (BeanUtils.canReadProperty(propertyName, target) == false) {
-            if (BeanUtils.hasField(propertyName, target) == false) {
+        if (!BeanUtils.canReadProperty(propertyName, target)) {
+            if (!BeanUtils.hasField(propertyName, target)) {
                 return false;
             }
         }
@@ -352,8 +352,8 @@ public abstract class BeanUtils {
     }
     /**测试是否支持writePropertyOrField方法。*/
     public static boolean canWritePropertyOrField(final String propertyName, final Class<?> target) {
-        if (BeanUtils.canWriteProperty(propertyName, target) == false) {
-            if (BeanUtils.hasField(propertyName, target) == false) {
+        if (!BeanUtils.canWriteProperty(propertyName, target)) {
+            if (!BeanUtils.hasField(propertyName, target)) {
                 return false;
             }
         }
@@ -407,10 +407,10 @@ public abstract class BeanUtils {
     /**执行注入，该方法首先会视图执行属性方法注入。如果失败则执行字段注入。注意：该方法会根据属性类型进行尝试类型转换。*/
     public static boolean writePropertyOrField(final Object object, final String attName, final Object value) {
         Class<?> defineType = object.getClass();
-        if (BeanUtils.canWriteProperty(attName, defineType) == true) {
+        if (BeanUtils.canWriteProperty(attName, defineType)) {
             return BeanUtils.writeProperty(object, attName, value);//支持方法写入
         }
-        if (BeanUtils.hasField(attName, defineType) == true) {
+        if (BeanUtils.hasField(attName, defineType)) {
             return BeanUtils.writeField(object, attName, value);//支持字段写入
         }
         return false;
@@ -454,10 +454,10 @@ public abstract class BeanUtils {
     /**执行注入，该方法首先会视图执行属性方法注入。如果失败则执行字段注入。注意：该方法会根据属性类型进行尝试类型转换。*/
     public static Object readPropertyOrField(final Object object, final String attName) {
         Class<?> defineType = object.getClass();
-        if (BeanUtils.canReadProperty(attName, defineType) == true) {
+        if (BeanUtils.canReadProperty(attName, defineType)) {
             return BeanUtils.readProperty(object, attName);//支持方法读取
         }
-        if (BeanUtils.hasField(attName, defineType) == true) {
+        if (BeanUtils.hasField(attName, defineType)) {
             return BeanUtils.readField(object, attName);//支持字段读取
         }
         return null;
@@ -526,25 +526,25 @@ public abstract class BeanUtils {
             throw new NullArgumentException("propertyName");
         }
         //
-        if (orig instanceof Map == false) {
+        if (!(orig instanceof Map)) {
             if (!BeanUtils.canReadPropertyOrField(propertyName, orig.getClass())) {
                 return;
             }
         }
-        if (dest instanceof Map == false) {
+        if (!(dest instanceof Map)) {
             if (!BeanUtils.canWritePropertyOrField(propertyName, dest.getClass())) {
                 return;
             }
         }
         //
         Object val = null;
-        if (orig instanceof Map == false) {
+        if (!(orig instanceof Map)) {
             val = BeanUtils.readPropertyOrField(orig, propertyName);
         } else {
             val = ((Map) orig).get(propertyName);
         }
         //
-        if (dest instanceof Map == false) {
+        if (!(dest instanceof Map)) {
             BeanUtils.writePropertyOrField(dest, propertyName, val);
         } else {
             ((Map) orig).put(propertyName, val);

@@ -18,6 +18,7 @@ import com.jfinal.core.JFinal;
 import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.IPlugin;
 import net.hasor.core.*;
+import net.hasor.core.EventListener;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.WebHasor;
@@ -30,9 +31,7 @@ import org.more.util.StringUtils;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletException;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 /**
  * Jfinal 插件.
  *
@@ -45,29 +44,43 @@ public class HasorPlugin implements IPlugin {
     private final RuntimeListener listener;
     private final RuntimeFilter   rootFilter;
     //
+    /** 从 JFinal 中获取 WebAppContext */
+    public static WebAppContext getAppContext(JFinal jFinal) {
+        return RuntimeListener.getAppContext(Hasor.assertIsNotNull(jFinal, "jFinal Context is null.").getServletContext());
+    }
+    //
     /***/
     public HasorPlugin(final JFinal jFinal) {
-        this(jFinal, TemplateAppContext.DefaultSettings, null);
+        this(jFinal, TemplateAppContext.DefaultSettings, Collections.<Module>emptyList());
     }
     /***/
     public HasorPlugin(final JFinal jFinal, String mainSettings) {
-        this(jFinal, mainSettings, null);
+        this(jFinal, mainSettings, Collections.<Module>emptyList());
     }
     /***/
-    public HasorPlugin(final JFinal jFinal, Module module) {
-        this(jFinal, TemplateAppContext.DefaultSettings, module);
+    public HasorPlugin(final JFinal jFinal, Module... modules) {
+        this(jFinal, TemplateAppContext.DefaultSettings, Arrays.asList(modules));
     }
     /***/
-    public HasorPlugin(final JFinal jFinal, final String mainSettings, final Module module) {
+    public HasorPlugin(final JFinal jFinal, List<Module> moduleList) {
+        this(jFinal, TemplateAppContext.DefaultSettings, moduleList);
+    }
+    /***/
+    public HasorPlugin(final JFinal jFinal, String mainSettings, Module... modules) {
+        this(jFinal, mainSettings, Arrays.asList(modules));
+    }
+    /***/
+    public HasorPlugin(final JFinal jFinal, final String mainSettings, final List<Module> moduleList) {
         this.jFinal = Hasor.assertIsNotNull(jFinal, "jFinal Context is null.");
         WebAppContext webAppContext = RuntimeListener.getAppContext(this.jFinal.getServletContext());
         if (webAppContext != null) {
             throw new RepeateException("Hasor WebAppContext already exists , please disable the other.");
         }
-        //
         this.listener = new RuntimeListener() {
             protected WebAppContext createAppContext(ServletContext sc, Module startModule) throws Throwable {
-                return newAppContext(jFinal, mainSettings, new MergeModule(Arrays.asList(module, startModule)));// 创建WebAppContext
+                ArrayList<Module> modules = new ArrayList<Module>(moduleList);
+                modules.add(startModule);
+                return newAppContext(jFinal, mainSettings, new MergeModule(modules));// 创建WebAppContext
             }
         };
         this.rootFilter = new RuntimeFilter();

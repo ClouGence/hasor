@@ -262,26 +262,6 @@ public abstract class AbstractEnvironment implements Environment {
         if (this.logger.isDebugEnabled()) {
             this.logger.debug("load envVars...");
         }
-        String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.hasor.core.*,net.hasor.plugins.*");
-        Set<String> allPack = new HashSet<String>();
-        for (String packs : spanPackages) {
-            if (StringUtils.isBlank(packs)) {
-                continue;
-            }
-            String[] packArray = packs.split(",");
-            for (String pack : packArray) {
-                if (StringUtils.isBlank(packs)) {
-                    continue;
-                }
-                allPack.add(pack.trim());
-            }
-        }
-        ArrayList<String> spanPackagesArrays = new ArrayList<String>(allPack);
-        Collections.sort(spanPackagesArrays);
-        this.spanPackage = spanPackagesArrays.toArray(new String[spanPackagesArrays.size()]);
-        if (this.logger.isInfoEnabled()) {
-            this.logger.info("loadPackages = " + ReflectionToStringBuilder.toString(this.spanPackage, ToStringStyle.SIMPLE_STYLE));
-        }
         //
         // .系统环境变量 & Java系统属性
         if (this.logger.isDebugEnabled()) {
@@ -374,6 +354,28 @@ public abstract class AbstractEnvironment implements Environment {
             }
         }
         this.refreshVariables();
+        //
+        // .Packages
+        String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.hasor.core.*,net.hasor.plugins.*");
+        Set<String> allPack = new HashSet<String>();
+        for (String packs : spanPackages) {
+            if (StringUtils.isBlank(packs)) {
+                continue;
+            }
+            String[] packArray = packs.split(",");
+            for (String pack : packArray) {
+                if (StringUtils.isBlank(packs)) {
+                    continue;
+                }
+                allPack.add(pack.trim());
+            }
+        }
+        ArrayList<String> spanPackagesArrays = new ArrayList<String>(allPack);
+        Collections.sort(spanPackagesArrays);
+        this.spanPackage = spanPackagesArrays.toArray(new String[spanPackagesArrays.size()]);
+        if (this.logger.isInfoEnabled()) {
+            this.logger.info("loadPackages = " + ReflectionToStringBuilder.toString(this.spanPackage, ToStringStyle.SIMPLE_STYLE));
+        }
         //
         // .日志输出
         if (this.logger.isInfoEnabled()) {

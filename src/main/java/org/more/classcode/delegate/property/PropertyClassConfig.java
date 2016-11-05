@@ -90,7 +90,7 @@ public class PropertyClassConfig extends AbstractClassConfig {
         //如果存在这个属性，则抛出异常
         boolean readMark = BeanUtils.canReadProperty(propertyName, this.getSuperClass());
         boolean writeMark = BeanUtils.canWriteProperty(propertyName, this.getSuperClass());
-        if (readMark == true || writeMark == true) {
+        if (readMark || writeMark) {
             //throw new IllegalStateException(propertyName + " 已存在的属性。"); //TODO
         }
         //
