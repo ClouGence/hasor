@@ -30,7 +30,7 @@ import java.util.List;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class RsfModule implements Module {
+public abstract class RsfModule implements Module, RsfPlugin {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public final void loadModule(final ApiBinder apiBinder) throws Throwable {
@@ -42,6 +42,13 @@ public abstract class RsfModule implements Module {
         }
         RsfEnvironment rsfEnv = initAntGetEnvironment(apiBinder);
         this.loadModule(new InnerRsfApiBinder(apiBinder, rsfEnv));
+    }
+    public static RsfModule toModule(final RsfPlugin rsfPlugin) {
+        return new RsfModule() {
+            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
+                rsfPlugin.loadModule(apiBinder);
+            }
+        };
     }
     private synchronized static RsfEnvironment initAntGetEnvironment(ApiBinder apiBinder) throws IOException {
         List<BindInfo<RsfEnvironment>> rsfEnvList = apiBinder.findBindingRegister(RsfEnvironment.class);

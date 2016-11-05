@@ -5,10 +5,21 @@
 http://project.hasor.net/schema/spring/hasor-core http://project.hasor.net/schema/spring/hasor-core/spring-hasor-2.5.1.xsd"
        default-autowire="byName">
 
-    <h:hasor factoryID="hasor" startWith="net.test.hasor.spring.SpringTestModule">
+
+    <!-- 使用 Spring 的属性文件作为 Hasor 的环境变量配置文件 -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>classpath:test-env.config</value>
+        </property>
+    </bean>
+
+    <!-- 创建 Hasor 容器 -->
+    <h:hasor refProperties="propertyConfigurer" startWith="net.test.hasor.spring.SpringTestModule">
+        <!-- (可选) 如果需要指定Hasor配置文件那么在这里指明，否则不需要配置 -->
         <h:configFile>classpath:simple-config.xml</h:configFile>
     </h:hasor>
 
+    <!-- 服务提供者 -->
     <bean id="echoServiceImpl" class="test.net.hasor.rsf.services.EchoServiceImpl"/>
     <bean id="aaa" class="net.hasor.rsf.spring.RsfProviderBean">
         <property name="bindGroup" value="HSF"/>
@@ -24,7 +35,7 @@ http://project.hasor.net/schema/spring/hasor-core http://project.hasor.net/schem
         <property name="onShadow" value="false"/>
     </bean>
 
-
+    <!-- 服务消费者 -->
     <bean id="feedPublishService1" class="net.hasor.rsf.spring.RsfConsumerBean">
         <property name="bindGroup" value="HSF"/>
         <property name="bindName" value="headLineBizSourceAdminService"/>

@@ -36,7 +36,6 @@
             <!-- Telnet 控制台端口 -->
             <RSF_CONSOLE_PORT>2181</RSF_CONSOLE_PORT>
 
-
             <!-- 注册中心(例:rsf://127.0.0.1:2180) -->
             <!-- Center工作在集群模式下的时候,集群的机器列表,注意:集群中每台机器的对应clusterServers配置都应相同,center在启动时会进行检测 -->
             <RSF_CENTER_SERVERS></RSF_CENTER_SERVERS>
