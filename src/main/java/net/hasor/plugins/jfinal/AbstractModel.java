@@ -32,7 +32,7 @@ public abstract class AbstractModel<M extends AbstractModel<M>> extends Model<M>
     }
     //
     protected Model<M> setup(PersistentFilter filter) {
-        Class<?> oriType = ClassUtils.getSuperClassGenricType(this.getClass(), 1);
+        Class<?> oriType = ClassUtils.getSuperClassGenricType(this.getClass(), 0);
         oriType = (oriType == null) ? this.getClass() : oriType;
         List<Field> allFields = BeanUtils.findALLFields(oriType);
         for (Field field : allFields) {
