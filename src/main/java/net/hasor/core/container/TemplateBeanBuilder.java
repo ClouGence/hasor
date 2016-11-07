@@ -146,30 +146,30 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             //4.创建对象。
             if (paramProviders == null || paramProviders.length == 0) {
                 T targetBean = (T) constructor.newInstance();
-                return doInject(targetBean, bindInfo, appContext);
+                return doInject(targetBean, bindInfo, appContext, newType);
             } else {
                 Object[] paramObjects = new Object[paramProviders.length];
                 for (int i = 0; i < paramProviders.length; i++) {
                     paramObjects[i] = paramProviders[i].get();
                 }
                 T targetBean = (T) constructor.newInstance(paramObjects);
-                return doInject(targetBean, bindInfo, appContext);
+                return doInject(targetBean, bindInfo, appContext, newType);
             }
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
     /**执行依赖注入*/
-    private <T> T doInject(T targetBean, BindInfo<T> bindInfo, AppContext appContext) throws Throwable {
+    protected <T> T doInject(T targetBean, BindInfo<T> bindInfo, AppContext appContext, Class<?> targetType) throws Throwable {
         //1.Aware接口的执行
-        if (targetBean instanceof BindInfoAware) {
+        if (bindInfo != null && targetBean instanceof BindInfoAware) {
             ((BindInfoAware) targetBean).setBindInfo(bindInfo);
         }
         if (targetBean instanceof AppContextAware) {
             ((AppContextAware) targetBean).setAppContext(appContext);
         }
         //2.依赖注入
-        Class<?> targetType = targetBean.getClass();
+        targetType = (targetType == null) ? targetBean.getClass() : targetType;
         if (targetBean instanceof InjectMembers) {
             ((InjectMembers) targetBean).doInject(appContext);
         } else {
@@ -179,9 +179,6 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         initObject(targetBean, bindInfo);
         //
         return targetBean;
-    }
-    protected <T> void injectObject(T targetBean, AppContext appContext, Class<?> targetType) throws IllegalAccessException {
-        this.injectObject(targetBean, null, appContext, targetType);
     }
     /**/
     private <T> void injectObject(T targetBean, BindInfo<T> bindInfo, AppContext appContext, Class<?> targetType) throws IllegalAccessException {
