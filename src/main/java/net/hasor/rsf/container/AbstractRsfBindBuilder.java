@@ -176,15 +176,13 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         public ConfigurationBuilder<T> to(final Class<? extends T> implementation) {
             ClassAwareProvider<T> provider = new ClassAwareProvider<T>(implementation);
             makeSureAware(provider);
-            this.serviceDefine.setCustomerProvider(provider);
-            return this;
+            return this.toProvider(provider);
         }
         @Override
         public ConfigurationBuilder<T> toInfo(final BindInfo<? extends T> bindInfo) {
             InfoAwareProvider<T> provider = new InfoAwareProvider<T>(bindInfo);
             makeSureAware(provider);
-            this.serviceDefine.setCustomerProvider(provider);
-            return this;
+            return this.toProvider(provider);
         }
         @Override
         public ConfigurationBuilder<T> toInstance(T instance) {
