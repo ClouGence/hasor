@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.plugins.spring.parser;
-import net.hasor.core.AppContext;
+import net.hasor.plugins.spring.SpringModule;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -45,7 +45,7 @@ public abstract class AbstractHasorDefinitionParser implements BeanDefinitionPar
         return (attNode != null) ? attNode.getNodeValue() : null;
     }
     protected String defaultHasorContextBeanName() {
-        return AppContext.class.getName();
+        return SpringModule.DefaultHasorBeanName;
     }
     //
     //

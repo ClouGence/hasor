@@ -15,6 +15,7 @@
  */
 package net.hasor.plugins.spring;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
@@ -31,6 +32,8 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SpringModule implements Module {
+    public static final String DefaultHasorBeanName = AppContext.class.getName();
+    //
     private Provider<ApplicationContext> applicationContext;
     public SpringModule(ApplicationContext applicationContext) {
         this.applicationContext = new InstanceProvider<ApplicationContext>(applicationContext);
