@@ -13,7 +13,7 @@
 
     <xsd:complexType name="hasorType">
         <xsd:all>
-            <xsd:element name="configFile" maxOccurs="1">
+            <xsd:element name="configFile" minOccurs="0" maxOccurs="1">
                 <xsd:complexType>
                     <xsd:simpleContent>
                         <xsd:extension base="xsd:string"/>

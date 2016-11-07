@@ -18,7 +18,6 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.core.context.TemplateAppContext;
 import net.hasor.web.WebHasor;
 import org.more.util.ExceptionUtils;
 import org.more.util.ResourcesUtils;
@@ -106,9 +105,9 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
         if (!StringUtils.isBlank(config)) {
             config = SystemPropertyUtils.resolvePlaceholders(config);
         }
-        if (StringUtils.isBlank(config)) {
-            config = TemplateAppContext.DefaultSettings;
-        }
+        //        if (StringUtils.isBlank(config)) {
+        //            config = TemplateAppContext.DefaultSettings;
+        //        }
         if (moduleList == null) {
             moduleList = new ArrayList<Module>();
         }
@@ -116,7 +115,10 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
         try {
             moduleList.add(this);
             Module[] moduleArrays = moduleList.toArray(new Module[moduleList.size()]);
-            Resource resource = this.applicationContext.getResource(config);
+            Resource resource = null;
+            if (StringUtils.isNotBlank(config)) {
+                resource = this.applicationContext.getResource(config);
+            }
             //
             PropertiesLoaderSupport propertiesLoaderSupport = null;
             if (this.applicationContext.containsBean(this.refProperties)) {
