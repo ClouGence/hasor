@@ -105,9 +105,6 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
         if (!StringUtils.isBlank(config)) {
             config = SystemPropertyUtils.resolvePlaceholders(config);
         }
-        //        if (StringUtils.isBlank(config)) {
-        //            config = TemplateAppContext.DefaultSettings;
-        //        }
         if (moduleList == null) {
             moduleList = new ArrayList<Module>();
         }
