@@ -1,4 +1,4 @@
-﻿===== Hasor-Core v2.5.1 (2016-11-?)
+﻿===== Hasor-Core v2.5.1 (2016-11-08)
 * 新增:
     01.新增 JFina 插件支持。HasorPlugin、HasorInterceptor、HasorHandler 三个插件。
     02.AppContext 新增两个 justInject 方法用于对某个标记了 Hasor 注解的对象执行依赖注入。
