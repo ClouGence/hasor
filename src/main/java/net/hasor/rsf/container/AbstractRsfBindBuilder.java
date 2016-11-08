@@ -30,7 +30,6 @@ import net.hasor.rsf.domain.ServiceDomain;
 import org.more.FormatException;
 import org.more.util.StringUtils;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 /**
@@ -242,17 +241,22 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
             return this;
         }
         @Override
-        public RegisterBuilder<T> asMessage() throws IOException {
+        public RegisterBuilder<T> asAloneThreadPool() {
+            this.serviceDefine.getDomain().setSharedThreadPool(false);
+            return this;
+        }
+        @Override
+        public RegisterBuilder<T> asMessage() {
             this.serviceDefine.getDomain().setMessage(true);
             return this;
         }
         @Override
-        public RegisterBuilder<T> asShadow() throws IOException {
+        public RegisterBuilder<T> asShadow() {
             this.serviceDefine.getDomain().setShadow(true);
             return this;
         }
         //
-        public RsfBindInfo<T> register() throws IOException {
+        public RsfBindInfo<T> register() {
             return addService(this.serviceDefine);
         }
         @Override

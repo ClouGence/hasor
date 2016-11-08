@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:h="http://project.hasor.net/schema/spring/hasor-core"
+       xmlns:r="http://project.hasor.net/schema/spring/hasor-rsf"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://project.hasor.net/schema/spring/hasor-core http://project.hasor.net/schema/spring/hasor-core/spring-hasor-2.5.1.xsd
+http://project.hasor.net/schema/spring/hasor-rsf http://project.hasor.net/schema/spring/hasor-core/spring-rsf-1.1.0.xsd
+" default-autowire="byName">
+
+    <!-- 使用 Spring 的属性文件作为 Hasor 的环境变量配置文件 -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location">
+            <value>classpath:spring/test-env.config</value>
+        </property>
+    </bean>
+
+    <!-- 创建 Hasor 容器 -->
+    <h:hasor refProperties="propertyConfigurer"/>
+    <!-- RSF框架引入 -->
+    <r:rsf/>
+
+    <!-- 服务提供者 -->
+    <bean id="echoServiceImpl" class="test.net.hasor.rsf.services.EchoServiceImpl"/>
+    <bean id="echoService" class="net.hasor.rsf.spring.RsfProviderBean" init-method="init">
+        <property name="bindGroup" value="RSF"/>
+        <property name="bindName" value="EchoService"/>
+        <property name="bindVersion" value="1.0.0"/>
+
+        <property name="bindType" value="test.net.hasor.rsf.services.EchoService"/>
+        <property name="target" ref="echoServiceImpl"/>
+
+        <property name="bindDesc" value="headLineBizSourceAdminService"/>
+        <property name="clientTimeout" value="600000"/>
+        <property name="serializeType" value="hessian"/>
+        <property name="sharedThreadPool" value="true"/>
+        <property name="onShadow" value="false"/>
+    </bean>
+</beans>

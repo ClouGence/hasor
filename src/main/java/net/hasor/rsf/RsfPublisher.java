@@ -18,7 +18,6 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
 import net.hasor.rsf.address.InterAddress;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 /**
@@ -245,14 +244,17 @@ public interface RsfPublisher {
          */
         public RegisterBuilder<T> bindAddress(InterAddress rsfAddress, InterAddress... array);
 
+        /** @return 是否使用独立的线程池。*/
+        public RegisterBuilder<T> asAloneThreadPool();
+
         /** @return 将接口的工作模式改为Message模式, 效果等同于加上 {@link RsfMessage}注解。*/
-        public RegisterBuilder<T> asMessage() throws IOException;
+        public RegisterBuilder<T> asMessage();
 
         /** @return 隐藏模式, 隐藏模式下的服务无论身份是 提供者还是消费者, 都不会注册到注册中心上。
          * 如果想要调用隐藏模式的服务必须要通过 P2P 形式进行调用。*/
-        public RegisterBuilder<T> asShadow() throws IOException;
+        public RegisterBuilder<T> asShadow();
 
         /** @return 将服务注册到{@link RsfContext}上。*/
-        public RsfBindInfo<T> register() throws IOException;
+        public RsfBindInfo<T> register();
     }
 }

@@ -14,22 +14,37 @@
  * limitations under the License.
  */
 package net.hasor.rsf.spring;
-import net.hasor.core.Provider;
-import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ApplicationContext;
+import net.hasor.rsf.RsfPublisher;
 /**
- * 包装来自 Spring 的 Bean。
- *
- * @version : 2013-4-8
+ * 服务提供者
+ * @version : 2016-11-08
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RsfProviderBean<T> extends AbstractRsfBean {
-    private String                       interfaceName;
-    private Provider<ApplicationContext> applicationContext;
-    @Override
-    public Object getObject() throws Exception {
-        return null;
+public class RsfProviderBean extends AbstractRsfBean {
+    private Object target;
+    private boolean sharedThreadPool = true;
+    public Object getTarget() {
+        return target;
+    }
+    public void setTarget(Object target) {
+        this.target = target;
+    }
+    public boolean isSharedThreadPool() {
+        return this.sharedThreadPool;
+    }
+    public void setSharedThreadPool(boolean sharedThreadPool) {
+        this.sharedThreadPool = sharedThreadPool;
     }
     //
+    @Override
+    public Object getObject() throws Exception {
+        return this.getTarget();
+    }
+    @Override
+    protected RsfPublisher.RegisterBuilder<?> registerService(RsfPublisher.RegisterBuilder<?> builder) {
+        if (!this.isSharedThreadPool()) {
+            builder = builder.asAloneThreadPool();
+        }
+        return builder;
+    }
 }

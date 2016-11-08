@@ -32,7 +32,7 @@ public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> 
     private Class<T>       bindType           = null;      //服务类型
     private boolean        asMessage          = false;     //是否为消息接口
     private boolean        asShadow           = false;     //是否为消息接口
-    private boolean        isSharedThreadPool = false;     //是否共享调用线程池(提供者)
+    private boolean        isSharedThreadPool = true;     //是否共享调用线程池(提供者)
     private int            clientTimeout      = 6000;      //调用超时（毫秒）
     private String         serializeType      = null;      //传输序列化类型
     private RsfServiceType serviceType        = null;      //服务类型（提供者 or 消费者）
@@ -105,6 +105,9 @@ public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> 
     @Override
     public boolean isSharedThreadPool() {
         return this.isSharedThreadPool;
+    }
+    public void setSharedThreadPool(boolean sharedThreadPool) {
+        this.isSharedThreadPool = sharedThreadPool;
     }
     /**设置客户端使用的对象序列化格式。*/
     public void setSerializeType(String serializeType) {

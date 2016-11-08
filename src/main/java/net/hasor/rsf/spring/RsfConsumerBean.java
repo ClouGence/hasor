@@ -14,20 +14,60 @@
  * limitations under the License.
  */
 package net.hasor.rsf.spring;
-import net.hasor.core.Provider;
-import org.springframework.context.ApplicationContext;
+import net.hasor.rsf.RsfPublisher;
+import net.hasor.rsf.address.InterAddress;
+
+import java.util.List;
 /**
- * 包装来自 Spring 的 Bean。
- *
- * @version : 2013-4-8
+ * 服务消费者
+ * @version : 2016-11-08
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RsfConsumerBean<T> extends AbstractRsfBean {
-    private String                       beanID;
-    private Provider<ApplicationContext> applicationContext;
+public class RsfConsumerBean extends AbstractRsfBean {
+    private InterAddress       target;
+    private List<InterAddress> targetList;
+    private boolean            onMessage;
+    private Object             warpBean;
+    //
+    public boolean isOnMessage() {
+        return onMessage;
+    }
+    public void setOnMessage(boolean onMessage) {
+        this.onMessage = onMessage;
+    }
+    public InterAddress getTarget() {
+        return target;
+    }
+    public void setTarget(InterAddress target) {
+        this.target = target;
+    }
+    public List<InterAddress> getTargetList() {
+        return targetList;
+    }
+    public void setTargetList(List<InterAddress> targetList) {
+        this.targetList = targetList;
+    }
     //
     @Override
     public Object getObject() throws Exception {
-        return null;
+        return this.warpBean;
+    }
+    @Override
+    protected RsfPublisher.RegisterBuilder<?> registerService(RsfPublisher.RegisterBuilder<?> builder) {
+        if (this.isOnMessage()) {
+            builder = builder.asMessage();
+        }
+        // .目标服务地址
+        if (this.getTarget() != null) {
+            builder.bindAddress(this.getTarget());
+        }
+        List<InterAddress> targetList = this.getTargetList();
+        if (targetList != null && !targetList.isEmpty()) {
+            builder.bindAddress(null, targetList.toArray(new InterAddress[targetList.size()]));
+        }
+        //
+        this.warpBean = this.getRsfClient().wrapper(this.getBindType());
+        //
+        return builder;
     }
 }
