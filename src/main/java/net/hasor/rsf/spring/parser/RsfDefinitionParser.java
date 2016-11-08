@@ -26,6 +26,7 @@ import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +36,11 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfDefinitionParser implements BeanDefinitionParser {
+    /** 属性解析 */
+    protected String revertProperty(NamedNodeMap attributes, String attName) {
+        Node attNode = attributes.getNamedItem(attName);
+        return (attNode != null) ? attNode.getNodeValue() : null;
+    }
     /** 解析Xml 文件 */
     @Override
     public BeanDefinition parse(Element element, ParserContext parserContext) {
@@ -54,6 +60,7 @@ public class RsfDefinitionParser implements BeanDefinitionParser {
         //
         //
         NamedNodeMap attributes = element.getAttributes();
+        //
         return null;
     }
 }

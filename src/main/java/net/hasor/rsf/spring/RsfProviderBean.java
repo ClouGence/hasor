@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.spring;
+import net.hasor.core.Provider;
 import net.hasor.rsf.RsfPublisher;
 /**
  * 服务提供者
  * @version : 2016-11-08
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RsfProviderBean extends AbstractRsfBean {
+public class RsfProviderBean extends AbstractRsfBean implements Provider<Object> {
     private Object target;
     private boolean sharedThreadPool = true;
     public Object getTarget() {
@@ -41,7 +42,11 @@ public class RsfProviderBean extends AbstractRsfBean {
         return this.getTarget();
     }
     @Override
-    protected RsfPublisher.RegisterBuilder<?> registerService(RsfPublisher.RegisterBuilder<?> builder) {
+    public Object get() {
+        return this.getTarget();
+    }
+    @Override
+    protected RsfPublisher.RegisterBuilder<?> configService(RsfPublisher.RegisterBuilder<?> builder) {
         if (!this.isSharedThreadPool()) {
             builder = builder.asAloneThreadPool();
         }

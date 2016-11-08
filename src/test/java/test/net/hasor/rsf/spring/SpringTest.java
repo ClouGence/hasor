@@ -29,9 +29,15 @@ public class SpringTest {
     @Test
     public void springConsumerTest() {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("spring/consumer-config.xml");
-        EchoService obj1 = (EchoService) applicationContext.getBean("echoService");
-        System.out.println("@@@@@@@@@@@@@@" + obj1);
-        //
+        EchoService echoService = (EchoService) applicationContext.getBean("echoService");
+        for (int i = 0; i < 20; i++) {
+            try {
+                String res = echoService.sayHello("Hello Word for Invoker");
+                System.out.println("invoker -> " + res);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
     @Test
     public void springProviderTest() throws IOException {

@@ -50,10 +50,13 @@ public class RsfConsumerBean extends AbstractRsfBean {
     //
     @Override
     public Object getObject() throws Exception {
+        if (this.warpBean == null) {
+            this.warpBean = this.getRsfClient().wrapper(this.getBindType());
+        }
         return this.warpBean;
     }
     @Override
-    protected RsfPublisher.RegisterBuilder<?> registerService(RsfPublisher.RegisterBuilder<?> builder) {
+    protected RsfPublisher.RegisterBuilder<?> configService(RsfPublisher.RegisterBuilder<?> builder) {
         if (this.isOnMessage()) {
             builder = builder.asMessage();
         }
@@ -65,8 +68,6 @@ public class RsfConsumerBean extends AbstractRsfBean {
         if (targetList != null && !targetList.isEmpty()) {
             builder.bindAddress(null, targetList.toArray(new InterAddress[targetList.size()]));
         }
-        //
-        this.warpBean = this.getRsfClient().wrapper(this.getBindType());
         //
         return builder;
     }

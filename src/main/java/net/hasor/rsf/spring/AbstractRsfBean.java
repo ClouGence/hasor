@@ -15,11 +15,9 @@
  */
 package net.hasor.rsf.spring;
 import net.hasor.core.AppContext;
+import net.hasor.core.Provider;
 import net.hasor.plugins.spring.SpringModule;
-import net.hasor.rsf.RsfClient;
-import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.RsfFilter;
-import net.hasor.rsf.RsfPublisher;
+import net.hasor.rsf.*;
 import org.more.util.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
@@ -38,14 +36,14 @@ public abstract class AbstractRsfBean implements FactoryBean, ApplicationContext
     private String                 bindName      = null;
     private String                 bindVersion   = null;
     private Class<?>               bindType      = null;
-    private String                 bindDesc      = "";
-    private int                    clientTimeout = 600000;
+    private String                 bindDesc      = null;
+    private int                    clientTimeout = 0;
     private String                 serializeType = null;
     private boolean                onShadow      = false;
     private Map<String, RsfFilter> filters       = null;
     //
     private ApplicationContext springContext;
-    private AppContext         hasorContext;
+    private RsfContext         rsfContext;
     private RsfClient          rsfClient;
     //
     @Override
@@ -121,11 +119,11 @@ public abstract class AbstractRsfBean implements FactoryBean, ApplicationContext
         this.filters = filters;
     }
     //
-    protected ApplicationContext getSpringContext() {
+    protected ApplicationContext getSpring() {
         return this.springContext;
     }
-    protected AppContext getHasorContext() {
-        return this.hasorContext;
+    protected RsfContext getRsfContext() {
+        return this.rsfContext;
     }
     protected RsfClient getRsfClient() {
         return this.rsfClient;
@@ -137,42 +135,66 @@ public abstract class AbstractRsfBean implements FactoryBean, ApplicationContext
         }
         //
         String factoryID = this.getFactoryID();
-        this.hasorContext = (AppContext) this.springContext.getBean(factoryID);
-        if (this.hasorContext == null) {
+        AppContext hasorContext = (AppContext) this.springContext.getBean(factoryID);
+        if (hasorContext == null) {
             throw new NullPointerException("AppContext is null. of beanID '" + factoryID + "'");
         }
-        RsfContext rsfContext = this.hasorContext.getInstance(RsfContext.class);
-        if (rsfContext == null) {
+        this.rsfContext = hasorContext.getInstance(RsfContext.class);
+        if (this.rsfContext == null) {
             throw new NullPointerException("RsfContext is null.");
         }
         //
-        // .注册服务
+        if (this.getBindType() == null) {
+            throw new NullPointerException("bindType is null.");
+        }
+        //
+        // .初始化默认数据
+        loadDefaultValues();
+        //
+        // .服务类型
         RsfPublisher publisher = rsfContext.publisher();
-        RsfPublisher.FilterBindBuilder<?> configBuilder = publisher.rsfService(this.getBindType())//
-                .group(this.getBindGroup())//
-                .name(this.getBindName())//
-                .version(this.getBindVersion())//
-                .timeout(this.getClientTimeout())//
-                .serialize(this.getSerializeType());//
+        RsfPublisher.LinkedBuilder<?> likeBuilder = publisher.rsfService(this.getBindType());
+        //
+        // .提供者
+        RsfPublisher.ConfigurationBuilder<?> configBuilder = likeBuilder;
+        if (this instanceof Provider) {
+            configBuilder = likeBuilder.toProvider((Provider) this);
+        }
+        //
+        // .服务信息
+        configBuilder = configBuilder.group(this.getBindGroup()).name(this.getBindName()).version(this.getBindVersion())//
+                .timeout(this.getClientTimeout()).serialize(this.getSerializeType());
+        //
         // .服务过滤器
         Map<String, RsfFilter> filters = this.getFilters();
+        RsfPublisher.FilterBindBuilder<?> filterBuilder = configBuilder;
         if (filters != null && !filters.isEmpty()) {
             for (Map.Entry<String, RsfFilter> rsfFilter : filters.entrySet()) {
                 String key = rsfFilter.getKey();
                 RsfFilter filter = rsfFilter.getValue();
-                configBuilder = configBuilder.bindFilter(key, filter);
+                filterBuilder = filterBuilder.bindFilter(key, filter);
             }
         }
-        //
-        RsfPublisher.RegisterBuilder<?> builder = configBuilder;
+        // .服务属性
+        RsfPublisher.RegisterBuilder<?> builder = filterBuilder;
         if (this.isOnShadow()) {
             builder = builder.asShadow();
         }
-        //
+        // .定制化属性
         this.rsfClient = rsfContext.getRsfClient();
-        RsfPublisher.RegisterBuilder<?> registerBuilder = this.registerService(builder);
+        RsfPublisher.RegisterBuilder<?> registerBuilder = this.configService(builder);
         registerBuilder.register();
     }
+    //
+    protected void loadDefaultValues() {
+        RsfSettings settings = this.rsfContext.getSettings();
+        this.bindGroup = settings.getDefaultGroup();
+        this.bindName = this.getBindType().getName();
+        this.bindVersion = settings.getDefaultVersion();
+        this.clientTimeout = settings.getDefaultTimeout();
+        this.serializeType = settings.getDefaultSerializeType();
+    }
+    //
     /** 注册服务 */
-    protected abstract RsfPublisher.RegisterBuilder<?> registerService(RsfPublisher.RegisterBuilder<?> builder);
+    protected abstract RsfPublisher.RegisterBuilder<?> configService(RsfPublisher.RegisterBuilder<?> builder);
 }

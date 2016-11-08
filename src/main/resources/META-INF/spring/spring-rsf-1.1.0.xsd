@@ -3,8 +3,5 @@
             targetNamespace="http://project.hasor.net/schema/spring/hasor-rsf" elementFormDefault="qualified">
 
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
-
-    <xsd:element name="rsf">
-
-    </xsd:element>
+    <xsd:element name="rsf"/>
 </xsd:schema>
