@@ -1,4 +1,6 @@
-﻿===== Hasor-RSF v1.1.0 (2016-11-?)
+﻿===== Hasor-RSF v1.0.1 (2016-11-08)
+* 新增:
+    01.Spring 集成。
 * 修复:
     01.修复因 ClassLoader 不同而导致的 shutdown 过程中各种异常的问题。
     02.Fix ApiBinder 在注册 Provider 时部分方法无法将 Provider 识别为 Customer 的情况。
