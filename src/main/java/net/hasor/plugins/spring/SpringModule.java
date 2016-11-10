@@ -18,7 +18,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
-import net.hasor.core.binder.InstanceProvider;
+import net.hasor.core.provider.InstanceProvider;
 import org.more.util.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;

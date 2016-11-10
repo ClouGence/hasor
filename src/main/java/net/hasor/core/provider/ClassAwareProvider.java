@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.binder;
+package net.hasor.core.provider;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 /**
- *
+ * 用法：Hasor.autoAware(env,new ClassAwareProvider(...));
+ * 注意事项：只可以在 AppContext init 期间使用。
  * @version : 2015年12月18日
  * @author 赵永春(zyc@hasor.net)
  */

@@ -17,7 +17,7 @@ package net.hasor.db.jdbc.core;
 import javax.sql.DataSource;
 
 import net.hasor.core.Provider;
-import net.hasor.core.binder.InstanceProvider;
+import net.hasor.core.provider.InstanceProvider;
 /**
  *
  * @version : 2014年7月17日

@@ -19,7 +19,7 @@ import java.util.Map;
 
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
-import net.hasor.core.scope.SingleProvider;
+import net.hasor.core.provider.SingleProvider;
 /**
  * 一个自定义 Scope ，实现了线程间单例化
  * @version : 2015年11月9日

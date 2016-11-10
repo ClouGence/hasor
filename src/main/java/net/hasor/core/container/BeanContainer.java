@@ -16,7 +16,7 @@
 package net.hasor.core.container;
 import net.hasor.core.*;
 import net.hasor.core.EventListener;
-import net.hasor.core.binder.InstanceProvider;
+import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.NotifyData;
 import net.hasor.core.scope.SingletonScope;

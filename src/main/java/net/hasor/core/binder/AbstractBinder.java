@@ -19,6 +19,7 @@ import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.ScopManager;
 import net.hasor.core.info.AopBindInfoAdapter;
+import net.hasor.core.provider.InstanceProvider;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
