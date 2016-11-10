@@ -14,32 +14,30 @@
  * limitations under the License.
  */
 package net.hasor.rsf.container;
+import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
+import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.RsfEnvironment;
 /**
- * 服务注册器
- * @version : 2014年11月12日
+ * RsfFilter的{@link Provider}封装形式。
+ * @version : 2014年7月8日
  * @author 赵永春(zyc@hasor.net)
  */
-abstract class ContextRsfBindBuilder extends AbstractRsfBindBuilder {
-    protected abstract RsfBeanContainer getContainer();
-
-    protected abstract RsfContext getRsfContext();
-    public RsfEnvironment getEnvironment() {
-        return this.getRsfContext().getEnvironment();
-    }
-    protected <T> RsfBindInfo<T> addService(ServiceDefine<T> serviceDefine) {
-        getContainer().publishService(serviceDefine);
-        return serviceDefine;
-    }
-    protected void addShareFilter(FilterDefine filterDefine) {
-        this.getContainer().publishFilter(filterDefine);
+class InnerRsfObjectProvider<T> implements Provider<T>, AppContextAware {
+    private RsfBindInfo<T> bindInfo;
+    private AppContext     appContext;
+    //
+    public InnerRsfObjectProvider(RsfBindInfo<T> bindInfo) {
+        this.bindInfo = bindInfo;
     }
     @Override
-    protected <T extends AppContextAware> T makeSureAware(T aware) {
-        aware.setAppContext(getRsfContext().getAppContext());
-        return aware;
+    public void setAppContext(AppContext appContext) {
+        this.appContext = appContext;
+    }
+    @Override
+    public T get() {
+        RsfContext rsfCenter = this.appContext.getInstance(RsfContext.class);
+        return rsfCenter.getRsfClient().getRemote(this.bindInfo);
     }
 }

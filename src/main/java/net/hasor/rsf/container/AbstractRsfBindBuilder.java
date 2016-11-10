@@ -42,7 +42,7 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
 
     protected abstract void addShareFilter(FilterDefine filterDefine);
 
-    protected abstract void makeSureAware(AppContextAware aware);
+    protected abstract <T extends AppContextAware> T makeSureAware(T aware);
     //
     //
     public RsfPublisher bindFilter(String filterID, RsfFilter instance) {

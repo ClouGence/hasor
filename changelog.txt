@@ -1,4 +1,8 @@
-﻿===== Hasor-RSF v1.0.1 (2016-11-08)
+﻿===== Hasor-RSF v1.0.1 (2016-11-?)
+* 新增:
+    01.RsfApiBinder 新增 converToProvider 方法方便 RSF 服务注册到 Hasor。这样 Hasor 就可以依赖注入一个 RSF 服务。
+
+===== Hasor-RSF v1.0.1 (2016-11-08)
 * 新增:
     01.Spring 集成。
 * 修复:
