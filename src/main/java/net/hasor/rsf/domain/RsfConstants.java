@@ -64,4 +64,9 @@ public interface RsfConstants {
     public static final String Center_RSF_APP_KEY_SECRET   = "RSF_APP_KEY_SECRET";   //秘钥
     public static final String Center_RSF_VERSION          = "RSF_VERSION";          //客户端版本
     public static final String Center_Ticket               = "CenterTicket";         //注册中心中的注册ID
+    //
+    //
+    // ---------------------------------------------------------------------------------------------
+    public static final String LoggerName_Console          = "rsf-console";
+    public static final String LoggerName_ConsoleRXD       = "rsf-console-rtxd";
 }

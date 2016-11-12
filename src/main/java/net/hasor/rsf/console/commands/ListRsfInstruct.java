@@ -59,22 +59,27 @@ public class ListRsfInstruct implements RsfInstruct {
                 RsfBindInfo<?> info = rsfContext.getServiceInfo(serviceID);
                 //
                 sw.write(">>\r\n");
-                sw.write(">>----- Service Info -----\r\n");
-                sw.write(">>            ID :" + info.getBindID() + "\r\n");
-                sw.write(">>         Group :" + info.getBindGroup() + "\r\n");
-                sw.write(">>          Name :" + info.getBindName() + "\r\n");
-                sw.write(">>       Version :" + info.getBindVersion() + "\r\n");
-                sw.write(">> ClientTimeout :" + info.getClientTimeout() + "\r\n");
-                sw.write(">> SerializeType :" + info.getSerializeType() + "\r\n");
-                sw.write(">>      javaType :" + info.getBindType().getName() + "\r\n");
+                sw.write(">>----- Service Info ------\r\n");
+                sw.write(">>        ID :" + info.getBindID() + "\r\n");
+                sw.write(">>     Group :" + info.getBindGroup() + "\r\n");
+                sw.write(">>      Name :" + info.getBindName() + "\r\n");
+                sw.write(">>   Version :" + info.getBindVersion() + "\r\n");
+                sw.write(">>   Timeout :" + info.getClientTimeout() + "\r\n");
+                sw.write(">> Serialize :" + info.getSerializeType() + "\r\n");
+                sw.write(">>  javaType :" + info.getBindType().getName() + "\r\n");
+                sw.write(">>\r\n");
+                sw.write(">>----- Advanced Info -----\r\n");
+                sw.write(">>   Message :" + info.isMessage() + "\r\n");
+                sw.write(">>    Shadow :" + info.isShadow() + "\r\n");
+                sw.write(">> SinglePool :" + info.isSharedThreadPool() + "\r\n");
                 //
                 sw.write(">>\r\n");
-                sw.write(">>---- Subscribe Info ----\r\n");
+                sw.write(">>---- Subscribe Info -----\r\n");
                 boolean isProvider = rsfContext.getServiceProvider(info) != null;
                 sw.write(">>          Type :" + ((isProvider) ? "Provider" : "Consumer") + "\r\n");
                 //
                 sw.write(">>\r\n");
-                sw.write(">>------ CenterInfo ------\r\n");
+                sw.write(">>------ CenterInfo -------\r\n");
                 sw.write(">>        Ticket :" + info.getMetaData(RsfConstants.Center_Ticket) + "\r\n");
                 //
             }

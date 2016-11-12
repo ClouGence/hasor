@@ -35,6 +35,7 @@ import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfModule;
 import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.domain.RsfConstants;
 import org.more.util.NameThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +49,7 @@ import java.util.Set;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfConsoleModule extends RsfModule implements LifeModule {
-    protected static Logger         logger        = LoggerFactory.getLogger(RsfConsoleModule.class);
+    protected static Logger         logger        = LoggerFactory.getLogger(RsfConstants.LoggerName_Console);
     private          StringDecoder  stringDecoder = new StringDecoder();
     private          StringEncoder  stringEncoder = new StringEncoder();
     private          TelnetHandler  telnetHandler = null;
@@ -57,6 +58,8 @@ public class RsfConsoleModule extends RsfModule implements LifeModule {
     //
     @Override
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
+        logger.info("rsfConsole -> init consoleModule.");
+        //
         final Set<Class<?>> rsfCommandSet = new HashSet<Class<?>>(apiBinder.getEnvironment().findClass(RsfCommand.class));
         rsfCommandSet.remove(RsfCommand.class);
         if (rsfCommandSet.isEmpty()) {
@@ -72,7 +75,7 @@ public class RsfConsoleModule extends RsfModule implements LifeModule {
             if (!commandClass.getPackage().isAnnotationPresent(RsfSearchInclude.class)) {
                 continue;
             }
-            logger.info("rsf console -> new order {}.", commandClass);
+            logger.info("rsfConsole -> new order {}.", commandClass);
             apiBinder.bindType(RsfInstruct.class).uniqueName().to((Class<? extends RsfInstruct>) commandClass);
         }
         //
@@ -81,6 +84,7 @@ public class RsfConsoleModule extends RsfModule implements LifeModule {
     public void onStart(AppContext appContext) throws Throwable {
         RsfContext rsfContext = appContext.getInstance(RsfContext.class);
         if (rsfContext == null) {
+            logger.error("rsfConsole -> RsfContext is null.");
             return;
         }
         //1.初始化常量配置。
@@ -93,7 +97,7 @@ public class RsfConsoleModule extends RsfModule implements LifeModule {
         } catch (Throwable e) {
             throw new UnknownHostException(e.getMessage());
         }
-        logger.info("console - starting... at {}", this.bindAddress);
+        logger.info("rsfConsole -> starting... at {}", this.bindAddress);
         //
         //2.启动Telnet。
         try {
@@ -113,10 +117,10 @@ public class RsfConsoleModule extends RsfModule implements LifeModule {
             });
             b.bind(this.bindAddress.getHost(), this.bindAddress.getPort()).sync().await();
         } catch (Throwable e) {
-            logger.error("console start failed. ->" + e.getMessage(), e);
+            logger.error("rsfConsole -> start failed, " + e.getMessage(), e);
             this.shutdown();
         }
-        logger.info("console - bindSocket at {}", this.bindAddress);
+        logger.info("rsfConsole -> - bindSocket at {}", this.bindAddress);
         //
         //3.注册shutdown事件，以保证在shutdown时可以停止Telnet。
         Hasor.addShutdownListener(rsfContext.getEnvironment(), new EventListener<AppContext>() {
@@ -128,7 +132,7 @@ public class RsfConsoleModule extends RsfModule implements LifeModule {
     }
     public void shutdown() {
         if (this.workerGroup != null) {
-            logger.info("console shutdown.");
+            logger.info("rsfConsole -> shutdown.");
             this.workerGroup.shutdownGracefully();
         }
     }

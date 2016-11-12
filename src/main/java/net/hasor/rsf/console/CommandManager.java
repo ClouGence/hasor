@@ -18,6 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
+import net.hasor.rsf.domain.RsfConstants;
 import org.more.RepeateException;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
@@ -36,7 +37,7 @@ import java.util.Map;
  */
 @Singleton
 public class CommandManager {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected static Logger logger = LoggerFactory.getLogger(RsfConstants.LoggerName_Console);
     @Inject
     private AppContext appContext;
     private final Map<String, RsfInstruct> commandMap = new HashMap<String, RsfInstruct>();
@@ -45,26 +46,26 @@ public class CommandManager {
     public void initCommand() throws Throwable {
         List<RsfInstruct> cmdSet = appContext.findBindingBean(RsfInstruct.class);
         if (cmdSet == null || cmdSet.isEmpty()) {
-            this.logger.warn("load rsf Console Command is empty.");
+            logger.warn("rsfConsole -> initCommand is empty.");
             return;
-        } else {
-            ArrayList<String> cmdNames = new ArrayList<String>();
-            for (RsfInstruct cmdObject : cmdSet) {
-                RsfCommand cmdInfo = cmdObject.getClass().getAnnotation(RsfCommand.class);
-                for (String name : cmdInfo.value()) {
-                    name = name.toLowerCase();
-                    cmdNames.add(name);
-                    if (this.commandMap.containsKey(name)) {
-                        RsfInstruct conflictCmd = this.commandMap.get(name);
-                        String types = cmdObject.getClass().getName() + " , " + conflictCmd.getClass().getName();
-                        throw new RepeateException("conflict command name '" + name + "' {" + types + "}");
-                    } else {
-                        this.commandMap.put(name, cmdObject);
-                    }
+        }
+        //
+        ArrayList<String> cmdNames = new ArrayList<String>();
+        for (RsfInstruct cmdObject : cmdSet) {
+            RsfCommand cmdInfo = cmdObject.getClass().getAnnotation(RsfCommand.class);
+            for (String name : cmdInfo.value()) {
+                name = name.toLowerCase();
+                cmdNames.add(name);
+                if (this.commandMap.containsKey(name)) {
+                    RsfInstruct conflictCmd = this.commandMap.get(name);
+                    String types = cmdObject.getClass().getName() + " , " + conflictCmd.getClass().getName();
+                    throw new RepeateException("conflict command name '" + name + "' {" + types + "}");
+                } else {
+                    this.commandMap.put(name, cmdObject);
                 }
             }
-            this.logger.info("load rsf Console Commands ={}.", ReflectionToStringBuilder.toString(cmdNames, ToStringStyle.SHORT_PREFIX_STYLE));
         }
+        logger.info("load rsf Console Commands ={}.", ReflectionToStringBuilder.toString(cmdNames, ToStringStyle.SHORT_PREFIX_STYLE));
         //
     }
     /**查找命令。*/

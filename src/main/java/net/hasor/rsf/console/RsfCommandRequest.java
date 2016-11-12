@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 package net.hasor.rsf.console;
+import net.hasor.rsf.RsfContext;
+import net.hasor.rsf.domain.RsfConstants;
+import org.more.convert.ConverterUtils;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
-
-import org.more.convert.ConverterUtils;
-import org.more.util.StringUtils;
-import net.hasor.rsf.RsfContext;
 /**
  *
  * @version : 2016年4月3日
  * @author 赵永春(zyc@hasor.net)
  */
 public final class RsfCommandRequest {
+    protected static    Logger logger                      = LoggerFactory.getLogger(RsfConstants.LoggerName_Console);
     public static final String WITHOUT_AFTER_CLOSE_SESSION = "WithoutAfterCloseSession";
     private RsfCommandSession    rsfSession;                                              //Rsf环境
     private RsfInstruct          rsfInstruct;                                              //命令执行体
@@ -178,12 +182,16 @@ public final class RsfCommandRequest {
     public void writeMessageLine(String message) {
         try {
             this.rsfSession.writeMessageLine(message);
-        } catch (Exception e) { /**/ }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
     }
     /**输出状态（不带换行）。*/
     public void writeMessage(String message) {
         try {
             this.rsfSession.writeMessage(message);
-        } catch (Exception e) { /**/ }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 }
