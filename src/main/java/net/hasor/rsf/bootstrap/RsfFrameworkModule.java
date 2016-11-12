@@ -63,6 +63,7 @@ public final class RsfFrameworkModule extends RsfModule {
         //
         //4.重要的内置插件
         RsfPublisher rsfPublisher = rsfContext.publisher();
+        apiBinder.bindType(RsfPublisher.class).toInstance(rsfPublisher);
         rsfPublisher.bindFilter("TraceFilter", new TraceFilter());
         rsfPublisher.bindFilter("LocalPref", new LocalPref());
         rsfPublisher.bindFilter("LocalWarpFilter", new LocalWarpFilter());

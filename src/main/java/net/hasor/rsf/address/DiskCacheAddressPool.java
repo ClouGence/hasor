@@ -37,6 +37,7 @@ public class DiskCacheAddressPool extends AddressPool {
                 doWork();
             }
         });
+        this.timer.setContextClassLoader(rsfEnvironment.getClassLoader());
         this.timer.setName("RSF-DiskCacheAddressPool-Timer");
         this.timer.setDaemon(true);
     }

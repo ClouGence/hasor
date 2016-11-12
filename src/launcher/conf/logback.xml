@@ -1,5 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
+    <!-- 控制台输出日志 -->
+    <appender name="console_appender" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </layout>
+    </appender>
+    <!-- Telnet日志 -->
+    <appender name="rsfConsole_appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${app.home:-.}/logs/rsf-console.log.%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
+        <Encoding>UTF-8</Encoding>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
+        </layout>
+    </appender>
+    <appender name="rsfConsoleRTXD_appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${app.home:-.}/logs/rsf-console_rtxd.log.%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
+        <Encoding>UTF-8</Encoding>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
+        </layout>
+    </appender>
+
+
+
     <!-- caller日志 -->
     <appender name="caller_filesync" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -20,22 +48,15 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </layout>
     </appender>
-    <!-- center日志 -->
-    <appender name="center_filesync" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${app.home:-.}/logs/rsf-center.log.%d{yyyy-MM-dd}</fileNamePattern>
-        </rollingPolicy>
-        <Encoding>UTF-8</Encoding>
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </layout>
-    </appender>
-    <!-- 控制台输出日志 -->
-    <appender name="consoleOut" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </layout>
-    </appender>
+
+
+    <logger name="rsf-console" additivity="false" level="INFO">
+        <appender-ref ref="rsfConsole_appender"/>
+    </logger>
+    <logger name="rsf-console-rtxd" additivity="false" level="INFO">
+        <appender-ref ref="rsfConsoleRTXD_appender"/>
+    </logger>
+
 
     <logger name="net.hasor.rsf.rpc.caller" additivity="false" level="INFO">
         <appender-ref ref="caller_filesync"/>
@@ -43,13 +64,10 @@
     <logger name="net.hasor.rsf.address" additivity="false" level="INFO">
         <appender-ref ref="address_filesync"/>
     </logger>
-    <logger name="net.hasor.rsf.center" additivity="false" level="INFO">
-        <appender-ref ref="center_filesync"/>
-    </logger>
 
     <!-- 日志输出级别 -->
     <root level="Info">
-        <appender-ref ref="consoleOut"/>
+        <appender-ref ref="console_appender"/>
         <appender-ref ref="center_filesync"/>
     </root>
 </configuration>  

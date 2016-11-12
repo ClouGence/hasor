@@ -162,7 +162,7 @@ public abstract class AbstractRsfBean implements FactoryBean, ApplicationContext
         }
         //
         // .服务信息
-        configBuilder = configBuilder.group(this.getBindGroup()).name(this.getBindName()).version(this.getBindVersion())//
+        configBuilder = configBuilder.group(this.getBindGroup()).name(this.getBindName()).version(this.getBindVersion())//gnv 信息
                 .timeout(this.getClientTimeout()).serialize(this.getSerializeType());
         //
         // .服务过滤器
@@ -188,11 +188,21 @@ public abstract class AbstractRsfBean implements FactoryBean, ApplicationContext
     //
     protected void loadDefaultValues() {
         RsfSettings settings = this.rsfContext.getSettings();
-        this.bindGroup = settings.getDefaultGroup();
-        this.bindName = this.getBindType().getName();
-        this.bindVersion = settings.getDefaultVersion();
-        this.clientTimeout = settings.getDefaultTimeout();
-        this.serializeType = settings.getDefaultSerializeType();
+        if (StringUtils.isBlank(this.bindGroup)) {
+            this.bindGroup = settings.getDefaultGroup();
+        }
+        if (StringUtils.isBlank(this.bindName)) {
+            this.bindName = this.getBindType().getName();
+        }
+        if (StringUtils.isBlank(this.bindVersion)) {
+            this.bindVersion = settings.getDefaultVersion();
+        }
+        if (this.clientTimeout <= 0) {
+            this.clientTimeout = settings.getDefaultTimeout();
+        }
+        if (StringUtils.isBlank(this.serializeType)) {
+            this.serializeType = settings.getDefaultSerializeType();
+        }
     }
     //
     /** 注册服务 */
