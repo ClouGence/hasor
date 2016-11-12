@@ -39,7 +39,7 @@ public interface ProtocolStatus {
     //-----------------------------------------------------Server(Response)
     //
     /**请求已经被接受,服务端正在处理。*/
-    public static final short Processing         = 102;
+    public static final short Accept             = 102;
     /**内容正确返回。*/
     public static final short OK                 = 200;
     /**服务资源不可用。*/

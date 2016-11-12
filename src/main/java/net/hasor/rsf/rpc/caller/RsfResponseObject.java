@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.caller;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.transform.protocol.OptionInfo;
+import org.more.util.StringUtils;
 /**
  * 调用请求
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfResponseObject extends OptionInfo implements RsfResponse {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
     private final RsfRequest rsfRequest;
     private short   status       = ProtocolStatus.Unknown;
     private Object  returnObject = null;

@@ -69,7 +69,7 @@ public class RemoteRsfCaller extends RsfCaller {
             String serviceUniqueName = "[" + info.getServiceGroup() + "]" + info.getServiceName() + "-" + info.getServiceVersion();
             Executor executor = executesManager.getExecute(serviceUniqueName);
             executor.execute(new RemoteRsfCallerProcessing(target, this, info));//放入业务线程准备执行
-            ResponseInfo resp = codecAdapter.buildResponseStatus(info.getRequestID(), ProtocolStatus.Processing, null);
+            ResponseInfo resp = codecAdapter.buildResponseStatus(info.getRequestID(), ProtocolStatus.Accept, null);
             this.senderListener.sendResponse(target, resp);
         } catch (RejectedExecutionException e) {
             String msgLog = "rejected request, queue is full." + e.getMessage();

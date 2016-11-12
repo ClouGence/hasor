@@ -16,6 +16,7 @@
 package net.hasor.rsf.rpc.caller;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
+import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.InstanceProvider;
 import net.hasor.rsf.*;
@@ -27,10 +28,13 @@ import net.hasor.rsf.transform.codec.CodecAdapterFactory;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 import net.hasor.rsf.utils.TimerManager;
+import org.more.bizcommon.json.JSON;
 import org.more.future.FutureCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -40,7 +44,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class RsfRequestManager {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected static Logger logger    = LoggerFactory.getLogger(RsfRequestManager.class);
+    protected static Logger invLogger = LoggerFactory.getLogger(RsfConstants.LoggerName_Invoker);
     private final ConcurrentMap<Long, RsfFuture> rsfResponse;
     private final RsfContext                     rsfContext;
     private final TimerManager                   timerManager;
@@ -48,9 +53,7 @@ public abstract class RsfRequestManager {
     private final SenderListener                 senderListener;
     //
     public RsfRequestManager(RsfContext rsfContext, TimerManager timerManager, SenderListener senderListener) {
-        if (senderListener == null) {
-            throw new NullPointerException("not found SendData.");
-        }
+        senderListener = Hasor.assertIsNotNull(senderListener, "not found SendData.");
         this.rsfContext = rsfContext;
         this.rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
         this.timerManager = timerManager;
@@ -82,15 +85,18 @@ public abstract class RsfRequestManager {
      */
     public boolean putResponse(ResponseInfo info) {
         long requestID = info.getRequestID();
-        RsfFuture rsfFuture = rsfResponse.get(requestID);
+        invLogger.info("response({}) -> version= {}, receiveTime ={}, serializeType ={}, status ={}.",//
+                requestID, info.getVersion(), info.getReceiveTime(), info.getSerializeType(), info.getStatus());
+        RsfFuture rsfFuture = this.rsfResponse.get(requestID);
         if (rsfFuture == null) {
-            logger.warn("received message for requestID:{} -> maybe is timeout! ", requestID);
+            invLogger.warn("responseFailed({}) -> RsfFuture is not exist. -> maybe is timeout!", requestID);
             return false;
         }
         //
         // 1.处理ACK应答 -> (Invoke类型调用,不处理ACK应答)
-        if (info.getStatus() == ProtocolStatus.Processing) {
+        if (info.getStatus() == ProtocolStatus.Accept) {
             if (!rsfFuture.getRequest().isMessage()) {
+                invLogger.info("responseIgnore({}) -> rpcType = Invoke, status = Accept", requestID);
                 return true;/* Invoker类型request不处理 ack 应答,只有Message类型请求才会把ACK应答作为response进行处理。 */
             }
         }
@@ -98,7 +104,7 @@ public abstract class RsfRequestManager {
         // 2.处理response
         rsfFuture = this.removeRsfFuture(requestID);
         if (rsfFuture == null) {
-            logger.warn("received message for requestID:{} -> maybe is timeout! ", requestID);
+            invLogger.warn("responseFailed({}) -> RsfFuture is not exist. -> maybe is timeout!", requestID);
             return false;
         }
         //
@@ -107,22 +113,24 @@ public abstract class RsfRequestManager {
         RsfResponseObject local = new RsfResponseObject(rsfRequest);
         local.addOptionMap(info);
         local.sendStatus(info.getStatus());
-        logger.debug("received message for requestID:{} -> status is {}", requestID, info.getStatus());
         String serializeType = info.getSerializeType();
-        try {
+        int length = info.getReturnData() == null ? 0 : info.getReturnData().length;
+        invLogger.info("response({}) -> doDeserialize ,type ={} , dataLength ={}.", requestID, serializeType, length);
+        //
+        // - Message 调用
+        if (rsfFuture.getRequest().isMessage()) {
+            Class<?> returnType = rsfRequest.getMethod().getReturnType();
+            RsfResultDO returnObject = null;
+            if (info.getStatus() == ProtocolStatus.Accept) {
+                returnObject = new RsfResultDO(requestID, true);
+            } else {
+                returnObject = new RsfResultDO(requestID, false);
+                returnObject.setErrorCode(info.getStatus());
+                returnObject.setErrorMessage(info.getOption("message"));
+            }
             //
-            // - Message 调用
-            if (rsfFuture.getRequest().isMessage()) {
-                Class<?> returnType = rsfRequest.getMethod().getReturnType();
-                RsfResultDO returnObject = null;
-                if (info.getStatus() == ProtocolStatus.Processing) {
-                    returnObject = new RsfResultDO(requestID, true);
-                } else {
-                    returnObject = new RsfResultDO(requestID, false);
-                    returnObject.setErrorCode(info.getStatus());
-                    returnObject.setErrorMessage(info.getOption("message"));
-                }
-                //
+            if (returnObject.isSuccess()) {
+                invLogger.info("responseSuccessful({}) -> result = {}.", requestID, JSON.toString(returnObject));
                 if (returnType.isAssignableFrom(RsfResult.class)) {
                     local.sendData(returnObject);
                     return rsfFuture.completed(local);
@@ -131,31 +139,39 @@ public abstract class RsfRequestManager {
                     local.sendData(null);
                     return rsfFuture.completed(local);
                 }
-                //
-                String bindID = local.getBindInfo().getBindID();
-                String callMethod = rsfRequest.getMethod().getName();
-                String errorInfo = "responseID:" + requestID + " ,status= " + local.getStatus() + " ,bindID= " + bindID + " -> callMethod = " + callMethod;
-                logger.error(errorInfo);
-                return rsfFuture.failed(new RsfException(local.getStatus(), errorInfo));
             }
-            // - Invoker 调用
-            if (info.getStatus() == ProtocolStatus.OK) {
-                SerializeCoder coder = this.getContext().getEnvironment().getSerializeCoder(serializeType);
+            //
+            String bindID = local.getBindInfo().getBindID();
+            String callMethod = rsfRequest.getMethod().getName();
+            //
+            Map<String, Object> errorObj = new HashMap<String, Object>();
+            errorObj.put("requestID", requestID);
+            errorObj.put("bindID", bindID);
+            errorObj.put("callMethod", callMethod);
+            errorObj.put("status", local.getStatus());
+            String errorInfo = JSON.toString(errorObj);
+            invLogger.error("responseFailed({}) -> bindID ={} , callMethod ={} ,moreInfo ={}.", requestID, bindID, callMethod, errorInfo);
+            return rsfFuture.failed(new RsfException(local.getStatus(), errorInfo));
+        }
+        // - Invoker 调用
+        if (info.getStatus() == ProtocolStatus.OK) {
+            SerializeCoder coder = this.getContext().getEnvironment().getSerializeCoder(serializeType);
+            try {
                 byte[] returnDataData = info.getReturnData();
                 Object returnObject = coder.decode(returnDataData, rsfRequest.getMethod().getReturnType());
                 local.sendData(returnObject);
-                return rsfFuture.completed(local);
-            } else {
-                String bindID = local.getBindInfo().getBindID();
-                String callMethod = rsfRequest.getMethod().getName();
-                String errorInfo = "responseID:" + requestID + " ,status= " + local.getStatus() + " ,bindID= " + bindID + " -> callMethod = " + callMethod;
-                logger.error(errorInfo);
-                return rsfFuture.failed(new RsfException(local.getStatus(), errorInfo));
+            } catch (Throwable e) {
+                String errorInfo = "decode response for requestID: " + requestID + " failed -> serializeType(" + serializeType + ") ,serialize error: " + e.getMessage();
+                logger.error(errorInfo, e);
+                return rsfFuture.failed(e);
             }
-        } catch (Throwable e) {
-            String errorInfo = "decode response for requestID: " + requestID + " failed -> serializeType(" + serializeType + ") ,serialize error: " + e.getMessage();
-            logger.error(errorInfo, e);
-            return rsfFuture.failed(e);
+            return rsfFuture.completed(local);
+        } else {
+            String bindID = local.getBindInfo().getBindID();
+            String callMethod = rsfRequest.getMethod().getName();
+            String errorInfo = "responseID:" + requestID + " ,status= " + local.getStatus() + " ,bindID= " + bindID + " -> callMethod = " + callMethod;
+            logger.error(errorInfo);
+            return rsfFuture.failed(new RsfException(local.getStatus(), errorInfo));
         }
     }
     /**

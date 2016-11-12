@@ -114,6 +114,12 @@
 	System.out.println(echoMessage);
 
 ----------
+### 未来版本计划支持的项目（粗略计划）
+* 1.0.2 版本计划，系统稳定性，BugFix，Log输出优化调整
+* 1.1.0 版本计划，RSF 网络层改造，支持不同协议
+* 1.1.1 版本计划，尝试支持 Hprose
+
+----------
 ### 相关连接
 
 * WebSite：[http://www.hasor.net](http://www.hasor.net)
