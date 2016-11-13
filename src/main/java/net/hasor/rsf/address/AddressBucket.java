@@ -17,6 +17,7 @@ package net.hasor.rsf.address;
 import net.hasor.core.Settings;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.utils.ZipUtils;
 import org.more.util.StringUtils;
 import org.more.util.io.IOUtils;
@@ -49,7 +50,8 @@ import static net.hasor.rsf.domain.RsfConstants.*;
  * @author 赵永春(zyc@hasor.net)
  */
 public class AddressBucket extends Observable {
-    protected static final Logger logger = LoggerFactory.getLogger(AddressBucket.class);
+    protected static final Logger addressLogger = LoggerFactory.getLogger(RsfConstants.LoggerName_Address);
+    protected static final Logger logger        = LoggerFactory.getLogger(AddressBucket.class);
     //
     //流控&路由
     private final    RsfSettings                                   rsfSettings;        //配置信息
@@ -110,8 +112,17 @@ public class AddressBucket extends Observable {
     //
     /**新增地址支持动态新增*/
     public void newAddress(Collection<InterAddress> newHostSet, AddressTypeEnum type) {
+        if (addressLogger.isInfoEnabled()) {
+            StringBuilder strBuffer = new StringBuilder();
+            for (InterAddress addr : newHostSet) {
+                strBuffer.append(addr.toHostSchema());
+                strBuffer.append(",");
+            }
+            addressLogger.info("newAddress({}) -> {}, [{}].", serviceID, type.name(), strBuffer);
+        }
+        //
         if (newHostSet == null || newHostSet.isEmpty()) {
-            logger.error("{} - newHostList is empty.", serviceID);
+            logger.warn("address({}) -> newAddress, newHostList is empty. type is {}", serviceID, type.name());
             return;
         }
         //
@@ -162,13 +173,16 @@ public class AddressBucket extends Observable {
      */
     public void invalidAddress(InterAddress newInvalid, long timeout) {
         if (this.staticAddressList.contains(newInvalid)) {
+            addressLogger.info("invalidAddress({}) -> targetAddress ={} ,addr is static.", serviceID, newInvalid);
             return;//对于静态地址,该方法无效
         }
         if (!this.allAddressList.contains(newInvalid)) {
+            addressLogger.warn("invalidAddress({}) -> targetAddress ={} ,addr is not exist.", serviceID, newInvalid);
             return;
         }
         InnerInvalidInfo invalidInfo = this.invalidAddresses.get(newInvalid);
         if ((invalidInfo = this.invalidAddresses.putIfAbsent(newInvalid, new InnerInvalidInfo(timeout))) != null) {
+            addressLogger.info("invalidAddress({}) -> targetAddress ={} ,timeout ={}.", serviceID, newInvalid, timeout);
             invalidInfo.invalid(timeout);
         } else {
             try {
@@ -176,7 +190,7 @@ public class AddressBucket extends Observable {
                     refreshAvailableAddress();
                 }
             } catch (Exception e) {
-                logger.error("invalid Address error -> {}.", e);
+                logger.error("address({}) -> invalid Address error -> {}.", serviceID, e.getMessage(), e);
             }
         }
     }
@@ -186,7 +200,10 @@ public class AddressBucket extends Observable {
      */
     public void removeAddress(InterAddress address) {
         if (!this.allAddressList.contains(address)) {
+            addressLogger.warn("removeAddress({}) -> targetAddress ={} ,addr is not exist.", serviceID, address);
             return;
+        } else {
+            addressLogger.info("removeAddress({}) -> targetAddress ={}.", serviceID, address);
         }
         this.allAddressList.remove(address);
         this.staticAddressList.remove(address);
@@ -202,7 +219,18 @@ public class AddressBucket extends Observable {
         }
     }
     public void refreshAddressToNew(List<InterAddress> addressList) {
+        if (addressList == null || addressList.isEmpty()) {
+            return;
+        }
         synchronized (this) {
+            if (addressLogger.isInfoEnabled()) {
+                StringBuilder strBuffer = new StringBuilder();
+                for (InterAddress addr : addressList) {
+                    strBuffer.append(addr.toHostSchema());
+                    strBuffer.append(",");
+                }
+                addressLogger.info("refreshAddressToNew({}) -> {}.", serviceID, strBuffer);
+            }
             this.allAddressList.clear();
             this.allAddressList.addAll(addressList);
             this.invalidAddresses.clear();
@@ -212,7 +240,6 @@ public class AddressBucket extends Observable {
     //
     /**刷新地址*/
     private void refreshAvailableAddress() {
-        logger.debug("bucket {} refreshAvailableAddress.", this.getServiceID());
         //
         //1.计算出有效的地址。
         List<InterAddress> availableList = new ArrayList<InterAddress>();
@@ -248,6 +275,24 @@ public class AddressBucket extends Observable {
             }
         }
         //
+        if (addressLogger.isInfoEnabled()) {
+            if (addressLogger.isInfoEnabled()) {
+                //
+                StringBuilder strBuffer1 = new StringBuilder();
+                for (InterAddress addr : availableList) {
+                    strBuffer1.append(addr.toHostSchema());
+                    strBuffer1.append(",");
+                }
+                addressLogger.info("refreshAvailableAddress({}) -> availableList =[{}].", serviceID, strBuffer1);
+                //
+                StringBuilder strBuffer2 = new StringBuilder();
+                for (InterAddress addr : unitList) {
+                    strBuffer2.append(addr.toHostSchema());
+                    strBuffer2.append(",");
+                }
+                addressLogger.info("refreshAvailableAddress({}) -> unitList =[{}].", serviceID, strBuffer2);
+            }
+        }
         this.availableAddresses = availableList;
         this.localUnitAddresses = unitList;
         this.notifyObservers(this);//发出消息通知自己的状态变化了
@@ -269,10 +314,10 @@ public class AddressBucket extends Observable {
         RuleRef newRuleRef = new RuleRef(this.ruleRef);
         boolean updated = RouteTypeEnum.updateScript(routeType, script, newRuleRef);
         if (!updated) {
-            logger.warn("update rules service={} -> no change.", serviceID);
+            logger.warn("address({}) -> update rules -> no change.", serviceID);
             return false;
         } else {
-            logger.info("update rules service={} -> update ok", serviceID);
+            logger.info("address({}) -> update rules -> update ok", serviceID);
             this.ruleRef = newRuleRef;
             this.refreshAddress();
             return true;

@@ -70,4 +70,6 @@ public interface RsfConstants {
     public static final String LoggerName_Console          = "rsf-console";
     public static final String LoggerName_ConsoleRXD       = "rsf-console-rtxd";
     public static final String LoggerName_Invoker          = "rsf-invoker";
+    public static final String LoggerName_Address          = "rsf-address";
+    public static final String LoggerName_CenterReceiver   = "rsf-center-receiver";
 }

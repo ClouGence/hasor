@@ -22,7 +22,7 @@ import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.domain.CenterEventBody;
 import net.hasor.rsf.domain.RsfCenterException;
-import org.more.util.StringUtils;
+import net.hasor.rsf.domain.RsfConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfCenterDataReceiver implements RsfCenterListener {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(RsfConstants.LoggerName_CenterReceiver);
     @Inject
     private              RsfContext   rsfContext;
     @Inject
@@ -67,13 +67,9 @@ public class RsfCenterDataReceiver implements RsfCenterListener {
                 }
             }
         }
-        //-发送CenterUpdate_Event事件-
         boolean result = process.processEvent(rsfUpdater, centerEventBody);
-        if (result) {
-            if (!StringUtils.isBlank(serviceID)) {
-                this.eventContext.fireSyncEvent(RsfCenterClientManager.CenterUpdate_Event, centerEventBody);//同步更新服务的CenterMarkData
-            }
-        }
+        logger.info("center({}) -> serviceID ={}, result ={}, body ={}.", //
+                eventType, centerEventBody.getServiceID(), result, centerEventBody.getEventBody());
         return result;
     }
 }

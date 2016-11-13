@@ -33,8 +33,7 @@ import org.more.future.FutureCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -85,18 +84,16 @@ public abstract class RsfRequestManager {
      */
     public boolean putResponse(ResponseInfo info) {
         long requestID = info.getRequestID();
-        invLogger.info("response({}) -> version= {}, receiveTime ={}, serializeType ={}, status ={}.",//
-                requestID, info.getVersion(), info.getReceiveTime(), info.getSerializeType(), info.getStatus());
         RsfFuture rsfFuture = this.rsfResponse.get(requestID);
         if (rsfFuture == null) {
-            invLogger.warn("responseFailed({}) -> RsfFuture is not exist. -> maybe is timeout!", requestID);
+            invLogger.warn("response({}) -> timeoutFailed, RsfFuture is not exist. -> maybe is timeout!", requestID);
             return false;
         }
         //
         // 1.处理ACK应答 -> (Invoke类型调用,不处理ACK应答)
         if (info.getStatus() == ProtocolStatus.Accept) {
             if (!rsfFuture.getRequest().isMessage()) {
-                invLogger.info("responseIgnore({}) -> rpcType = Invoke, status = Accept", requestID);
+                invLogger.info("response({}) -> ignore, rpcType = Invoke, status = Accept", requestID);
                 return true;/* Invoker类型request不处理 ack 应答,只有Message类型请求才会把ACK应答作为response进行处理。 */
             }
         }
@@ -104,7 +101,7 @@ public abstract class RsfRequestManager {
         // 2.处理response
         rsfFuture = this.removeRsfFuture(requestID);
         if (rsfFuture == null) {
-            invLogger.warn("responseFailed({}) -> RsfFuture is not exist. -> maybe is timeout!", requestID);
+            invLogger.warn("response({}) -> timeoutFailed, RsfFuture is not exist. -> maybe is timeout!", requestID);
             return false;
         }
         //
@@ -114,11 +111,14 @@ public abstract class RsfRequestManager {
         local.addOptionMap(info);
         local.sendStatus(info.getStatus());
         String serializeType = info.getSerializeType();
+        String bindID = local.getBindInfo().getBindID();
+        Method callMethod = rsfRequest.getMethod();
         int length = info.getReturnData() == null ? 0 : info.getReturnData().length;
-        invLogger.info("response({}) -> doDeserialize ,type ={} , dataLength ={}.", requestID, serializeType, length);
+        invLogger.info("response({}) -> version= {}, receiveTime ={}, serializeType ={}, status ={}, dataLength ={}, isMessage ={}, bindID ={}, callMethod ={}.",//
+                requestID, info.getVersion(), info.getReceiveTime(), serializeType, info.getStatus(), length, rsfRequest.isMessage(), bindID, callMethod);
         //
         // - Message 调用
-        if (rsfFuture.getRequest().isMessage()) {
+        if (rsfRequest.isMessage()) {
             Class<?> returnType = rsfRequest.getMethod().getReturnType();
             RsfResultDO returnObject = null;
             if (info.getStatus() == ProtocolStatus.Accept) {
@@ -130,7 +130,7 @@ public abstract class RsfRequestManager {
             }
             //
             if (returnObject.isSuccess()) {
-                invLogger.info("responseSuccessful({}) -> result = {}.", requestID, JSON.toString(returnObject));
+                invLogger.info("response({}) -> successful, result = {}.", requestID, JSON.toString(returnObject));
                 if (returnType.isAssignableFrom(RsfResult.class)) {
                     local.sendData(returnObject);
                     return rsfFuture.completed(local);
@@ -141,37 +141,28 @@ public abstract class RsfRequestManager {
                 }
             }
             //
-            String bindID = local.getBindInfo().getBindID();
-            String callMethod = rsfRequest.getMethod().getName();
-            //
-            Map<String, Object> errorObj = new HashMap<String, Object>();
-            errorObj.put("requestID", requestID);
-            errorObj.put("bindID", bindID);
-            errorObj.put("callMethod", callMethod);
-            errorObj.put("status", local.getStatus());
-            String errorInfo = JSON.toString(errorObj);
-            invLogger.error("responseFailed({}) -> bindID ={} , callMethod ={} ,moreInfo ={}.", requestID, bindID, callMethod, errorInfo);
+            String errorInfo = JSON.toString(returnObject);
+            invLogger.error("response({}) -> invokeFailed, result = {}.", requestID, errorInfo);
             return rsfFuture.failed(new RsfException(local.getStatus(), errorInfo));
         }
         // - Invoker 调用
         if (info.getStatus() == ProtocolStatus.OK) {
             SerializeCoder coder = this.getContext().getEnvironment().getSerializeCoder(serializeType);
+            Class<?> returnType = rsfRequest.getMethod().getReturnType();
             try {
                 byte[] returnDataData = info.getReturnData();
-                Object returnObject = coder.decode(returnDataData, rsfRequest.getMethod().getReturnType());
+                Object returnObject = coder.decode(returnDataData, returnType);
                 local.sendData(returnObject);
             } catch (Throwable e) {
-                String errorInfo = "decode response for requestID: " + requestID + " failed -> serializeType(" + serializeType + ") ,serialize error: " + e.getMessage();
-                logger.error(errorInfo, e);
+                invLogger.error("response({}) -> serializeFailed, bindID ={}, serializeType ={}, callMethod ={}, dataType ={}, message ={}.",//
+                        requestID, bindID, serializeType, callMethod, returnType, e.getMessage(), e);
                 return rsfFuture.failed(e);
             }
             return rsfFuture.completed(local);
         } else {
-            String bindID = local.getBindInfo().getBindID();
-            String callMethod = rsfRequest.getMethod().getName();
-            String errorInfo = "responseID:" + requestID + " ,status= " + local.getStatus() + " ,bindID= " + bindID + " -> callMethod = " + callMethod;
-            logger.error(errorInfo);
-            return rsfFuture.failed(new RsfException(local.getStatus(), errorInfo));
+            invLogger.error("response({}) -> statusFailed, bindID ={}, status ={}.",//
+                    requestID, bindID, local.getStatus());
+            return rsfFuture.failed(new RsfException(local.getStatus(), "status."));
         }
     }
     /**
@@ -182,10 +173,10 @@ public abstract class RsfRequestManager {
     public void putResponse(long requestID, Throwable e) {
         RsfFuture rsfFuture = this.removeRsfFuture(requestID);
         if (rsfFuture != null) {
-            logger.error("received message for requestID: " + requestID + " -> error {}", e.getMessage());
+            invLogger.error("response({}) -> errorFailed, {}", requestID, e.getMessage(), e);
             rsfFuture.failed(e);
         } else {
-            logger.warn("received message for requestID: {} -> maybe is timeout! ", requestID);
+            invLogger.error("response({}) -> errorFailed, RsfFuture is not exist. -> maybe is timeout! ,error= {}.", requestID, e.getMessage(), e);
         }
     }
     private RsfFuture removeRsfFuture(long requestID) {
@@ -210,12 +201,14 @@ public abstract class RsfRequestManager {
                 if (rsfCallBack == null)
                     return;
                 /*异常信息*/
-                String errorInfo = "requestID: " + request.getRequestID() + " timeout for client.";
-                logger.error(errorInfo);
+                String errorInfo = "request(" + request.getRequestID() + ") -> timeout for client.";
+                invLogger.error(errorInfo);
                 /*回应Response*/
                 putResponse(request.getRequestID(), new RsfTimeoutException(errorInfo));
             }
         };
+        invLogger.info("request({}) -> startRequest, timeout at {} ,bindID ={}, callMethod ={}.", //
+                request.getRequestID(), request.getTimeout(), request.getBindInfo().getBindID(), request.getMethod());
         this.timerManager.atTime(timeTask, request.getTimeout());
     }
     ;
@@ -229,31 +222,37 @@ public abstract class RsfRequestManager {
         RsfBindInfo<?> bindInfo = rsfRequest.getBindInfo();
         String serviceID = bindInfo.getBindID();
         final RsfFuture rsfFuture = new RsfFuture(rsfRequest, listener);
+        invLogger.info("request({}) -> doSendRequest, bindID ={}, callMethod ={}, isMessage ={}.", //
+                rsfRequest.getRequestID(), serviceID, rsfRequest.getMethod(), bindInfo.isMessage());
+        //
+        if (bindInfo.isMessage()) {
+            rsfRequest.addOption("RPC_TYPE", "MESSAGE");
+        } else {
+            rsfRequest.addOption("RPC_TYPE", "INVOKER");
+        }
+        rsfRequest.addOptionMap(this.getContext().getSettings().getClientOption());//写入客户端选项，并将选项发送到Server。
+        Provider<RsfFilter>[] rsfFilterList = this.getContainer().getFilterProviders(serviceID);
+        RsfResponseObject res = new RsfResponseObject(rsfRequest);
         //
         try {
-            if (bindInfo.isMessage()) {
-                rsfRequest.addOption("RPC_TYPE", "MESSAGE");
-            } else {
-                rsfRequest.addOption("RPC_TYPE", "INVOKER");
-            }
-            rsfRequest.addOptionMap(this.getContext().getSettings().getClientOption());//写入客户端选项，并将选项发送到Server。
-            Provider<RsfFilter>[] rsfFilterList = this.getContainer().getFilterProviders(serviceID);
-            RsfResponseObject res = new RsfResponseObject(rsfRequest);
             /*下面这段代码要负责 -> 执行rsfFilter过滤器链，并最终调用sendRequest发送请求。*/
             new RsfFilterHandler(rsfFilterList, new RsfFilterChain() {
                 public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
                     if (response.isResponse()) {
+                        invLogger.info("request({}) -> sendRequest, response form local.", request.getRequestID());
                         rsfFuture.completed(response);//如果本地调用链已经做出了响应，那么不在需要发送到远端。
                     } else {
+                        invLogger.info("request({}) -> sendRequest, response wait for remote.", request.getRequestID());
                         sendRequest(rsfFuture);//发送请求到远方
                     }
                 }
             }).doFilter(rsfRequest, res);
         } catch (Throwable e) {
+            invLogger.error("request({}) -> errorFailed, sendRequest, doRsfFilterChain. error ={}.", rsfRequest.getRequestID(), e.getMessage(), e);
             try {
                 rsfFuture.failed(e);
             } catch (Throwable e2) {
-                logger.error("do callback for failed error->" + e.getMessage(), e);
+                logger.error("request({}) -> {}.", rsfRequest.getRequestID(), e2.getMessage(), e2);
             }
         }
         return rsfFuture;
@@ -263,41 +262,54 @@ public abstract class RsfRequestManager {
         /*1.远程目标机*/
         final RsfRequestFormLocal rsfRequest = (RsfRequestFormLocal) rsfFuture.getRequest();
         final AddressProvider target = rsfRequest.getTarget();
+        invLogger.info("request({}) -> bindID ={}, callMethod ={}, serializeType ={}, isMessage ={}, isP2PCalls ={}.",//
+                rsfRequest.getRequestID(), rsfRequest.getBindInfo().getBindID(), rsfRequest.getMethod(), rsfRequest.isMessage(), rsfRequest.isP2PCalls());
         //
         /*2.发送之前的检查（允许的最大并发请求数）*/
         RsfSettings rsfSettings = this.getContainer().getEnvironment().getSettings();
         if (this.requestCount.get() >= rsfSettings.getMaximumRequest()) {
             SendLimitPolicy sendPolicy = rsfSettings.getSendLimitPolicy();
-            String errorMessage = "maximum number of requests, apply SendPolicy = " + sendPolicy.name();
-            logger.warn(errorMessage);
+            String errorMessage = "request(" + rsfRequest.getRequestID() + ") -> sendDataFailed, maximum number of requests, apply SendPolicy = " + sendPolicy.name();
+            invLogger.error(errorMessage);
             if (sendPolicy == SendLimitPolicy.Reject) {
+                // - A.直接抛异常
                 throw new RsfException(ProtocolStatus.SendLimitPolicy, errorMessage);
             } else {
+                // - B.等待1秒之后重新尝试，如果依然资源不足，那么抛异常
                 try {
                     Thread.sleep(1000);/*SendLimitPolicy.WaitSecond*/
-                } catch (InterruptedException e) {/**/}
+                } catch (InterruptedException e) {
+                    logger.error(e.getMessage(), e);
+                }
+                if (this.requestCount.get() >= rsfSettings.getMaximumRequest()) {
+                    invLogger.error(errorMessage);
+                    throw new RsfException(ProtocolStatus.SendLimitPolicy, errorMessage);
+                }
             }
         }
-        /*3.发送请求*/
+        /*3.准备发送数据*/
+        String serviceID = rsfRequest.getBindInfo().getBindID();
+        String methodName = rsfRequest.getMethod().getName();
+        Object[] args = rsfRequest.getParameterObject();
+        InterAddress address = target.get(serviceID, methodName, args);
+        if (address == null) {
+            invLogger.warn("request({}) -> targetAddress Unavailable, bindID ={}.", rsfRequest.getRequestID(), serviceID);
+            rsfFuture.failed(new RsfException(ProtocolStatus.Forbidden, "Service [" + serviceID + "] Address Unavailable."));
+            return;
+        }
+        if (rsfRequest.isP2PCalls()) {
+            rsfRequest.addOption(OptionKeys.TargetAddress, address.toHostSchema());
+        }
+        /*4.发送请求*/
         try {
-            String serviceID = rsfRequest.getBindInfo().getBindID();
-            String methodName = rsfRequest.getMethod().getName();
-            Object[] args = rsfRequest.getParameterObject();
-            InterAddress address = target.get(serviceID, methodName, args);
-            if (address == null) {
-                rsfFuture.failed(new RsfException(ProtocolStatus.Forbidden, "Service [" + serviceID + "] Address Unavailable."));
-                return;
-            }
-            if (rsfRequest.isP2PCalls()) {
-                rsfRequest.addOption(OptionKeys.TargetAddress, address.toHostSchema());
-            }
             Provider<InterAddress> targetProvider = new InstanceProvider<InterAddress>(address);
+            invLogger.warn("request({}) -> pre sendData, bindID ={}, targetAddress ={}.", rsfRequest.getRequestID(), serviceID, address);
             startRequest(rsfFuture);                 // <- 1.计时request。
             RequestInfo info = CodecAdapterFactory.getCodecAdapterByVersion(this.getContext().getEnvironment(), RsfConstants.Version_1)//
                     .buildRequestInfo(rsfRequest);   // <- 2.生成RequestInfo
             sendData(targetProvider, info);          // <- 3.发送数据
         } catch (Throwable e) {
-            logger.error("request(" + rsfRequest.getRequestID() + ") send error, " + e.getMessage(), e);
+            invLogger.error("request(" + rsfRequest.getRequestID() + ") send error, " + e.getMessage(), e);
             putResponse(rsfRequest.getRequestID(), e);
         }
     }

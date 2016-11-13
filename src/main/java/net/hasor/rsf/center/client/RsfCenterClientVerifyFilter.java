@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.client;
+import net.hasor.core.Init;
+import net.hasor.core.Inject;
+import net.hasor.core.Singleton;
 import net.hasor.rsf.*;
 import net.hasor.rsf.domain.RsfConstants;
 import org.slf4j.Logger;
@@ -23,16 +26,21 @@ import org.slf4j.LoggerFactory;
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-class RsfCenterClientVerifyFilter implements RsfFilter {
-    protected Logger logger     = LoggerFactory.getLogger(getClass());
-    private   String appKey     = null;                               //key
-    private   String keySecret  = null;                               //keySecret
-    private   String rsfVersion = null;                               //客户端版本
+@Singleton
+public class RsfCenterClientVerifyFilter implements RsfFilter {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
+    @Inject
+    private RsfSettings rsfSettings;
+    private String appKey     = null;                               //key
+    private String keySecret  = null;                               //keySecret
+    private String rsfVersion = null;                               //客户端版本
     //
-    public RsfCenterClientVerifyFilter(RsfSettings settings) throws Throwable {
-        this.appKey = settings.getAppKeyID();
-        this.keySecret = settings.getAppKeySecret();
-        this.rsfVersion = settings.getVersion();
+    //
+    @Init
+    public void init() {
+        this.appKey = this.rsfSettings.getAppKeyID();
+        this.keySecret = this.rsfSettings.getAppKeySecret();
+        this.rsfVersion = this.rsfSettings.getVersion();
     }
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {

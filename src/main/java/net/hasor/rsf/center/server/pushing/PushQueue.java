@@ -64,6 +64,7 @@ public class PushQueue implements Runnable {
             Thread pushQueue = new Thread(this);
             pushQueue.setDaemon(true);
             pushQueue.setName("Rsf-Center-PushQueue-" + i);
+            pushQueue.setContextClassLoader(this.rsfContext.getClassLoader());
             pushQueue.start();
             this.threadPushQueue.add(pushQueue);
         }

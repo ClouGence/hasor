@@ -115,7 +115,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
     public void doShutdownCompleted(AppContext appContext) {
     }
     //
-    /**应用上线*/
+    /**应用上线(先置为上线，在引发事件)*/
     @Override
     public synchronized void online() {
         if (!this.onlineStatus.compareAndSet(false, true)) {
@@ -126,7 +126,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         EventContext ec = getAppContext().getEnvironment().getEventContext();
         ec.fireSyncEvent(RsfEvent.Rsf_Online, this);
     }
-    /**应用下线*/
+    /**应用下线(先置为下线，在引发事件)*/
     @Override
     public synchronized void offline() {
         if (!this.onlineStatus.compareAndSet(true, false)) {
