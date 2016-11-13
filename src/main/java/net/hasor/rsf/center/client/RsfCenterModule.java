@@ -52,6 +52,7 @@ public class RsfCenterModule extends RsfModule {
         eventContext.addListener(RsfEvent.Rsf_DeleteService, transport);
         eventContext.addListener(RsfEvent.Rsf_Online, transport);
         eventContext.addListener(RsfEvent.Rsf_Offline, transport);
+        apiBinder.bindType(ContextStartListener.class).toInstance(transport);
         //
         // 2.接受来自注册中心的消息
         apiBinder.bindType(ContextStartListener.class).toInstance(transport);
@@ -67,7 +68,6 @@ public class RsfCenterModule extends RsfModule {
         apiBinder.rsfService(RsfCenterRegister.class)//服务类型
                 .timeout(settings.getCenterRsfTimeout())//服务接口超时时间
                 .bindFilter("AuthFilter", RsfCenterClientVerifyFilter.class)//服务安全过滤器
-                .bindFilter("TicketFilter", RsfCenterTicketFilter.class)//负责更新服务的 Center的服务注册ID
                 .bindAddress(null, centerList)//静态地址，用不失效
                 .asShadow().register();//注册服务
         logger.info("rsf center-client started.");

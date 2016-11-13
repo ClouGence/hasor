@@ -41,6 +41,7 @@ class RsfEventTransport implements EventListener<Object>, ContextStartListener {
         // .
         RsfContext rsfContext = appContext.getInstance(RsfContext.class);
         this.centerManager = new RsfCenterClientManager(rsfContext);
+        this.centerManager.run(null);
         this.logger.info("start the registration service processed.");
     }
     @Override

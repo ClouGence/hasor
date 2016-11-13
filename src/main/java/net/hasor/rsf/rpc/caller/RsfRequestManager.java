@@ -187,32 +187,6 @@ public abstract class RsfRequestManager {
         return rsfFuture;
     }
     /**
-     * 负责客户端引发的超时逻辑。
-     * @param rsfFuture 开始计时的请求。
-     */
-    private void startRequest(RsfFuture rsfFuture) {
-        this.requestCount.incrementAndGet();// i++;
-        this.rsfResponse.put(rsfFuture.getRequest().getRequestID(), rsfFuture);
-        final RsfRequestFormLocal request = (RsfRequestFormLocal) rsfFuture.getRequest();
-        TimerTask timeTask = new TimerTask() {
-            public void run(Timeout timeoutObject) throws Exception {
-                RsfFuture rsfCallBack = getRequest(request.getRequestID());
-                /*检测不到说明请求已经被正确响应。*/
-                if (rsfCallBack == null)
-                    return;
-                /*异常信息*/
-                String errorInfo = "request(" + request.getRequestID() + ") -> timeout for client.";
-                invLogger.error(errorInfo);
-                /*回应Response*/
-                putResponse(request.getRequestID(), new RsfTimeoutException(errorInfo));
-            }
-        };
-        invLogger.info("request({}) -> startRequest, timeout at {} ,bindID ={}, callMethod ={}.", //
-                request.getRequestID(), request.getTimeout(), request.getBindInfo().getBindID(), request.getMethod());
-        this.timerManager.atTime(timeTask, request.getTimeout());
-    }
-    ;
-    /**
      * 发送RSF调用请求。
      * @param rsfRequest rsf请求
      * @param listener FutureCallback回调监听器。
@@ -312,5 +286,30 @@ public abstract class RsfRequestManager {
             invLogger.error("request(" + rsfRequest.getRequestID() + ") send error, " + e.getMessage(), e);
             putResponse(rsfRequest.getRequestID(), e);
         }
+    }
+    /**
+     * 负责客户端引发的超时逻辑。
+     * @param rsfFuture 开始计时的请求。
+     */
+    private void startRequest(RsfFuture rsfFuture) {
+        this.requestCount.incrementAndGet();// i++;
+        this.rsfResponse.put(rsfFuture.getRequest().getRequestID(), rsfFuture);
+        final RsfRequestFormLocal request = (RsfRequestFormLocal) rsfFuture.getRequest();
+        TimerTask timeTask = new TimerTask() {
+            public void run(Timeout timeoutObject) throws Exception {
+                RsfFuture rsfCallBack = getRequest(request.getRequestID());
+                /*检测不到说明请求已经被正确响应。*/
+                if (rsfCallBack == null)
+                    return;
+                /*异常信息*/
+                String errorInfo = "request(" + request.getRequestID() + ") -> timeout for client.";
+                invLogger.error(errorInfo);
+                /*回应Response*/
+                putResponse(request.getRequestID(), new RsfTimeoutException(errorInfo));
+            }
+        };
+        invLogger.info("request({}) -> startRequest, timeout at {} ,bindID ={}, callMethod ={}.", //
+                request.getRequestID(), request.getTimeout(), request.getBindInfo().getBindID(), request.getMethod());
+        this.timerManager.atTime(timeTask, request.getTimeout());
     }
 }

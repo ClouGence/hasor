@@ -49,7 +49,7 @@ class RsfCenterClientManager implements TimerTask {
         ClassLoader loader = rsfContext.getClassLoader();
         this.timerManager = new TimerManager(rsfContext.getSettings().getCenterHeartbeatTime(), "RsfCenterBeatTimer", loader);
         this.centerRegister = rsfContext.getRsfClient().wrapper(RsfCenterRegister.class);
-        this.timerManager.atTime(this);
+        // this.timerManager.atTime(this);
     }
     @Override
     public void run(Timeout timeout) {
@@ -202,6 +202,7 @@ class RsfCenterClientManager implements TimerTask {
             //
             // .同步拉取地址数据
             if (registerInfo != null && registerInfo.isSuccess()) {
+                domain.setMetaData(RsfConstants.Center_Ticket, registerInfo.getResult());
                 pullAddress(domain);//更新地址池
             }
         } catch (Exception e) {
