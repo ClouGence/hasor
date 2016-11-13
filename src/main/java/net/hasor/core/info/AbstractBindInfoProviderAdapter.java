@@ -15,9 +15,9 @@
  */
 package net.hasor.core.info;
 import net.hasor.core.BindInfo;
-import net.hasor.core.BindInfoBuilder;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
+import net.hasor.core.binder.BindInfoBuilder;
 import org.more.util.StringUtils;
 /**
  * 用于定义Bean，实现了Bean配置接口{@link BindInfoBuilder}，配置的信息通过{@link BindInfo}接口展现出来。

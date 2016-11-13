@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
+package net.hasor.core.binder;
+import net.hasor.core.BindInfo;
+import net.hasor.core.Provider;
+import net.hasor.core.Scope;
 /**
  * Bean配置接口，用于对Bean信息进行全方面配置。
  * @version : 2014年7月2日

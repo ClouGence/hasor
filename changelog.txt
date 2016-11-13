@@ -1,6 +1,7 @@
-﻿===== Hasor-Core v2.5.1 (2016-11-08)
+﻿===== Hasor-Core v2.5.1 (2016-11-?)
 * 改进:
     01.整理出一个 Provider 实现工具类包。
+    02.BindInfoBuilder 接口迁移位置。
 
 ===== Hasor-Core v2.5.1 (2016-11-08)
 * 新增:
