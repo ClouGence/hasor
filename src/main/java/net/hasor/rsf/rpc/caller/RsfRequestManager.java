@@ -236,8 +236,9 @@ public abstract class RsfRequestManager {
         /*1.远程目标机*/
         final RsfRequestFormLocal rsfRequest = (RsfRequestFormLocal) rsfFuture.getRequest();
         final AddressProvider target = rsfRequest.getTarget();
+        String serviceID = rsfRequest.getBindInfo().getBindID();
         invLogger.info("request({}) -> bindID ={}, callMethod ={}, serializeType ={}, isMessage ={}, isP2PCalls ={}.",//
-                rsfRequest.getRequestID(), rsfRequest.getBindInfo().getBindID(), rsfRequest.getMethod(), rsfRequest.isMessage(), rsfRequest.isP2PCalls());
+                rsfRequest.getRequestID(), serviceID, rsfRequest.getMethod(), rsfRequest.getSerializeType(), rsfRequest.isMessage(), rsfRequest.isP2PCalls());
         //
         /*2.发送之前的检查（允许的最大并发请求数）*/
         RsfSettings rsfSettings = this.getContainer().getEnvironment().getSettings();
@@ -262,7 +263,6 @@ public abstract class RsfRequestManager {
             }
         }
         /*3.准备发送数据*/
-        String serviceID = rsfRequest.getBindInfo().getBindID();
         String methodName = rsfRequest.getMethod().getName();
         Object[] args = rsfRequest.getParameterObject();
         InterAddress address = target.get(serviceID, methodName, args);
