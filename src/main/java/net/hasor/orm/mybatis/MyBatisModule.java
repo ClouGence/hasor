@@ -78,7 +78,13 @@ public class MyBatisModule implements Module {
             }
             // .初始化MyBatis绑定
             Provider<DataSource> dataSource = Hasor.autoAware(apiBinder.getEnvironment(), new InfoAwareProvider<DataSource>(bindInfo));
-            apiBinder.bindType(SqlExecutorTemplate.class).toProvider(new SqlExecutorTemplateProvider(this.sessionFactory, dataSource));
+            final SqlExecutorTemplateProvider templateProvider = new SqlExecutorTemplateProvider(this.sessionFactory, dataSource);
+            apiBinder.bindType(SqlExecutorTemplate.class).toProvider(templateProvider);
+            apiBinder.bindType(SqlExecutorOperations.class).toProvider(new Provider<SqlExecutorOperations>() {
+                public SqlExecutorOperations get() {
+                    return templateProvider.get();
+                }
+            });
         } else {
             // .检测依赖
             BindInfo<DataSource> bindInfo = apiBinder.findBindingRegister(this.dataSourceID, DataSource.class);
@@ -87,7 +93,13 @@ public class MyBatisModule implements Module {
             }
             // .初始化MyBatis绑定
             Provider<DataSource> dataSource = Hasor.autoAware(apiBinder.getEnvironment(), new InfoAwareProvider<DataSource>(bindInfo));
-            apiBinder.bindType(SqlExecutorTemplate.class).nameWith(this.dataSourceID).toProvider(new SqlExecutorTemplateProvider(this.sessionFactory, dataSource));
+            final SqlExecutorTemplateProvider templateProvider = new SqlExecutorTemplateProvider(this.sessionFactory, dataSource);
+            apiBinder.bindType(SqlExecutorTemplate.class).nameWith(this.dataSourceID).toProvider(templateProvider);
+            apiBinder.bindType(SqlExecutorOperations.class).nameWith(this.dataSourceID).toProvider(new Provider<SqlExecutorOperations>() {
+                public SqlExecutorOperations get() {
+                    return templateProvider.get();
+                }
+            });
         }
     }
 }
