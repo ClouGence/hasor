@@ -89,6 +89,13 @@
             <version>2.2</version>
             <scope>provided</scope>
         </dependency>
+        <!-- 整合 MyBatis 提供MyBatis插件, 最终由项目环境的 MyBatis 提供依赖 -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Test -->
         <dependency>

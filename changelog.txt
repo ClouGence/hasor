@@ -1,4 +1,6 @@
-﻿===== Hasor-Core v2.5.1 (2016-11-?)
+﻿===== Hasor-Core v2.5.2 (2016-11-?)
+* 新增:
+    01.新增 MyBatis 插件，该插件会依赖 DBModule。
 * 改进:
     01.整理出一个 Provider 实现工具类包。
     02.BindInfoBuilder 接口迁移位置。
