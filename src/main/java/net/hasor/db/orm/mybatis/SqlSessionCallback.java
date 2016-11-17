@@ -13,7 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.db.orm.mybatis;
+import org.apache.ibatis.session.SqlSession;
 /**
- * mybatis 插件。
+ * @version : 2015年5月27日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.orm.mybatis;
+public interface SqlSessionCallback<T> {
+    public T doSqlSession(SqlSession sqlSession);
+}

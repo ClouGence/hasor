@@ -34,7 +34,6 @@ public interface WebAppContext extends AppContext {
      * @see net.hasor.web.startup.RuntimeFilter#afterResponse(WebAppContext, HttpServletRequest, HttpServletResponse)
      */
     public static final String HTTP_AFTER_RESPONSE = "HTTP_AFTER_RESPONSE";
-    //
 
     /**获取ServletContext对象。*/
     public ServletContext getServletContext();

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.orm.mybatis;
+package net.hasor.db.orm.mybatis;
 import net.hasor.core.Provider;
 import org.apache.ibatis.session.SqlSessionFactory;
 
