@@ -109,7 +109,7 @@ public class DetailRsfInstruct implements RsfInstruct {
             }
             addrList.append(inter.toHostSchema());
         }
-        addrList.insert(0, ']');
+        addrList.insert(0, '[');
         addrList.append(']');
         return addrList.toString();
     }

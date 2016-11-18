@@ -83,7 +83,7 @@ public class InfoRsfInstruct implements RsfInstruct {
             }
             centerList.append(inter.toHostSchema());
         }
-        centerList.insert(0, ']');
+        centerList.insert(0, '[');
         centerList.append(']');
         //
         //
