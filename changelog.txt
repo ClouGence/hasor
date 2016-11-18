@@ -1,10 +1,13 @@
-﻿===== Hasor-RSF v1.0.1 (2016-11-?)
+﻿===== Hasor-RSF v1.1.0 (2016-11-?)
 * 新增:
     01.RsfApiBinder 新增 converToProvider 方法方便 RSF 服务注册到 Hasor。这样 Hasor 就可以依赖注入一个 RSF 服务。
     02.RsfPublisher 接口可以通过 AppContext 直接拿到了，不需要通过 RsContext 接口间接获取。极大的方便了服务注册。
+    03.RsfUpdater 接口可以查询服务的提供者地址列表。
+    04.新增Telent命令， info 用来查看服务器配置信息、detail 用来查看服务的详细信息。
 * 改进:
     01.telnet 的交互信息可以被单独打印到一个日志文件中，另外 telnet 的输出日志更详细了。
     02.RsfCenter 的 client 部分进行重构优化，服务数据和RSF公用一套。降低了设计复杂度，减少了实现代码。
+    03.Telent命令 list 只能用来显示服务列表，不在提供服务信息详情的显示。相关功能交给 detail 指令提供。
 * 修复:
     01.Spring 插件在配置 RSF Bean 时始终使用默认 GNV 数据覆盖用户配置文件。
     02.修复在 tomcat 容器下 DiskCacheAddressPool 在执行地址本缓存时，爆Class找不到的异常。原因是创建的线程 ClassLoader 使用不当。

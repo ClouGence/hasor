@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.rsf.console.commands;
-import java.io.StringWriter;
-import java.util.List;
-
-import org.more.util.StringUtils;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.console.CommandManager;
 import net.hasor.rsf.console.RsfCommand;
-import net.hasor.rsf.console.RsfInstruct;
 import net.hasor.rsf.console.RsfCommandRequest;
+import net.hasor.rsf.console.RsfInstruct;
+import org.more.util.StringUtils;
+
+import java.io.StringWriter;
+import java.util.List;
 /**
- *
+ * 显示所有指令
  * @version : 2016年4月3日
  * @author 赵永春(zyc@hasor.net)
  */

@@ -63,7 +63,7 @@ import net.hasor.libs.com.caucho.hessian.HessianException;
 /**
  * The classloader-specific Factory for returning serialization
  */
-@SuppressWarnings({"unused"})
+@SuppressWarnings({ "unused" })
 public class ContextSerializerFactory {
     private static final Logger                                                            log                 = Logger.getLogger(ContextSerializerFactory.class.getName());
     private static       Deserializer                                                      OBJECT_DESERIALIZER = new BasicDeserializer(BasicDeserializer.OBJECT);
@@ -248,6 +248,8 @@ public class ContextSerializerFactory {
                     for (Map.Entry<Object, Object> entry : props.entrySet()) {
                         String apiName = (String) entry.getKey();
                         String serializerName = (String) entry.getValue();
+                        apiName = apiName.trim();
+                        serializerName = serializerName.trim();
                         Class<?> apiClass = null;
                         Class<?> serializerClass = null;
                         try {

@@ -16,15 +16,15 @@
 package net.hasor.rsf.console.commands;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.console.RsfCommand;
-import net.hasor.rsf.console.RsfInstruct;
 import net.hasor.rsf.console.RsfCommandRequest;
+import net.hasor.rsf.console.RsfInstruct;
 /**
  *
  * @version : 2016年4月3日
  * @author 赵永春(zyc@hasor.net)
  */
 @Singleton
-@RsfCommand({"quit", "exit"})
+@RsfCommand({ "quit", "exit" })
 public class QuitRsfInstruct implements RsfInstruct {
     @Override
     public String helpInfo() {

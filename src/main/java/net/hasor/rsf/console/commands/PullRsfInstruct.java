@@ -39,7 +39,7 @@ import java.util.List;
  * @author 赵永春(zyc@hasor.net)
  */
 @Singleton
-@RsfCommand({"pull", "request"})
+@RsfCommand({ "pull", "request" })
 public class PullRsfInstruct implements RsfInstruct {
     //
     @Override

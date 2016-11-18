@@ -451,6 +451,38 @@ public class AddressPool implements RsfUpdater {
         }
         return getFlowControlByRef(bucket.getFlowControlRef());
     }
+    @Override
+    public List<InterAddress> queryAllAddresses(String serviceID) {
+        AddressBucket bucket = this.addressPool.get(serviceID);
+        if (bucket == null) {
+            return null;
+        }
+        return Collections.unmodifiableList(bucket.getAllAddresses());
+    }
+    @Override
+    public List<InterAddress> queryAvailableAddresses(String serviceID) {
+        AddressBucket bucket = this.addressPool.get(serviceID);
+        if (bucket == null) {
+            return null;
+        }
+        return Collections.unmodifiableList(bucket.getAvailableAddresses());
+    }
+    @Override
+    public List<InterAddress> queryInvalidAddresses(String serviceID) {
+        AddressBucket bucket = this.addressPool.get(serviceID);
+        if (bucket == null) {
+            return null;
+        }
+        return Collections.unmodifiableList(bucket.getInvalidAddresses());
+    }
+    @Override
+    public List<InterAddress> queryLocalUnitAddresses(String serviceID) {
+        AddressBucket bucket = this.addressPool.get(serviceID);
+        if (bucket == null) {
+            return null;
+        }
+        return Collections.unmodifiableList(bucket.getLocalUnitAddresses());
+    }
     private static String getFlowControlByRef(FlowControlRef ruleRef) {
         if (ruleRef == null || ruleRef.flowControlScript == null) {
             return null;
@@ -478,7 +510,6 @@ public class AddressPool implements RsfUpdater {
     //
     //
     // --------------------------------------------------------------------------------------------
-    //
     //
     //
     /**保存地址列表到zip流中。*/

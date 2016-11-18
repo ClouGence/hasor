@@ -18,7 +18,7 @@ import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
-import net.hasor.core.binder.InstanceProvider;
+import net.hasor.core.provider.InstanceProvider;
 import net.hasor.rsf.*;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;

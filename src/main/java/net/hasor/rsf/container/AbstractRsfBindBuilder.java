@@ -18,9 +18,9 @@ import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
-import net.hasor.core.binder.ClassAwareProvider;
-import net.hasor.core.binder.InfoAwareProvider;
-import net.hasor.core.binder.InstanceProvider;
+import net.hasor.core.provider.ClassAwareProvider;
+import net.hasor.core.provider.InfoAwareProvider;
+import net.hasor.core.provider.InstanceProvider;
 import net.hasor.rsf.*;
 import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.InterServiceAddress;
@@ -50,13 +50,11 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         return this.bindFilter(filterID, provider);
     }
     public RsfPublisher bindFilter(String filterID, BindInfo<RsfFilter> filterBindInfo) {
-        InfoAwareProvider<RsfFilter> provider = new InfoAwareProvider<RsfFilter>(filterBindInfo);
-        makeSureAware(provider);
+        InfoAwareProvider<RsfFilter> provider = makeSureAware(new InfoAwareProvider<RsfFilter>(filterBindInfo));
         return this.bindFilter(filterID, provider);
     }
     public RsfPublisher bindFilter(String filterID, Class<? extends RsfFilter> rsfFilterType) {
-        ClassAwareProvider<RsfFilter> provider = new ClassAwareProvider<RsfFilter>(rsfFilterType);
-        makeSureAware(provider);
+        ClassAwareProvider<RsfFilter> provider = makeSureAware(new ClassAwareProvider<RsfFilter>(rsfFilterType));
         return this.bindFilter(filterID, provider);
     }
     public RsfPublisher bindFilter(String filterID, Provider<? extends RsfFilter> provider) {
@@ -158,30 +156,24 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         }
         @Override
         public FilterBindBuilder<T> bindFilter(String filterID, Class<? extends RsfFilter> rsfFilterType) {
-            ClassAwareProvider<RsfFilter> provider = new ClassAwareProvider<RsfFilter>(rsfFilterType);
-            makeSureAware(provider);
+            ClassAwareProvider<RsfFilter> provider = makeSureAware(new ClassAwareProvider<RsfFilter>(rsfFilterType));
             this.serviceDefine.addRsfFilter(new FilterDefine(filterID, provider));
             return this;
         }
         @Override
         public FilterBindBuilder<T> bindFilter(String filterID, BindInfo<RsfFilter> rsfFilterInfo) {
-            InfoAwareProvider<RsfFilter> provider = new InfoAwareProvider<RsfFilter>(rsfFilterInfo);
-            makeSureAware(provider);
+            InfoAwareProvider<RsfFilter> provider = makeSureAware(new InfoAwareProvider<RsfFilter>(rsfFilterInfo));
             this.serviceDefine.addRsfFilter(new FilterDefine(filterID, provider));
             return this;
         }
         //
         @Override
         public ConfigurationBuilder<T> to(final Class<? extends T> implementation) {
-            ClassAwareProvider<T> provider = new ClassAwareProvider<T>(implementation);
-            makeSureAware(provider);
-            return this.toProvider(provider);
+            return this.toProvider(makeSureAware(new ClassAwareProvider<T>(implementation)));
         }
         @Override
         public ConfigurationBuilder<T> toInfo(final BindInfo<? extends T> bindInfo) {
-            InfoAwareProvider<T> provider = new InfoAwareProvider<T>(bindInfo);
-            makeSureAware(provider);
-            return this.toProvider(provider);
+            return this.toProvider(makeSureAware(new InfoAwareProvider<T>(bindInfo)));
         }
         @Override
         public ConfigurationBuilder<T> toInstance(T instance) {

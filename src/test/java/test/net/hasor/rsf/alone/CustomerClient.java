@@ -62,5 +62,6 @@ public class CustomerClient {
                 e.printStackTrace();
             }
         }
+        System.in.read();
     }
 }

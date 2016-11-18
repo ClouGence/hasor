@@ -16,7 +16,7 @@
 package net.hasor.rsf.container;
 import net.hasor.core.*;
 import net.hasor.core.binder.ApiBinderWrap;
-import net.hasor.core.scope.SingleProvider;
+import net.hasor.core.provider.SingleProvider;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfEnvironment;

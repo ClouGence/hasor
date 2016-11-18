@@ -39,7 +39,6 @@ public interface RsfContext extends OnlineStatus {
 
     /** @return 发起远程调用的客户端接口*/
     public RsfClient getRsfClient(InterAddress target);
-    //
 
     /**根据服务名获取服务描述。*/
     public <T> RsfBindInfo<T> getServiceInfo(String serviceID);
@@ -52,15 +51,13 @@ public interface RsfContext extends OnlineStatus {
 
     /**获取已经注册的所有服务名称。*/
     public List<String> getServiceIDs();
-    //
 
     /**
      * 获取元信息所描述的服务对象
      * @param bindInfo 元信息所描述对象
      */
     public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo);
-    //
-
+ 
     /** 获取RSF运行的地址。 */
     public InterAddress bindAddress();
 

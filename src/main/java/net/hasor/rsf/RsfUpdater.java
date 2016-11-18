@@ -48,6 +48,18 @@ public interface RsfUpdater {
     /**更新服务路由策略*/
     public String flowControl(String serviceID);
 
+    /**获取所有地址（包括本地的和无效的）。*/
+    public List<InterAddress> queryAllAddresses(String serviceID);
+
+    /**获取计算之后可用的地址。*/
+    public List<InterAddress> queryAvailableAddresses(String serviceID);
+
+    /**失效地址。*/
+    public List<InterAddress> queryInvalidAddresses(String serviceID);
+
+    /**获取计算之后同一单元地址。*/
+    public List<InterAddress> queryLocalUnitAddresses(String serviceID);
+
     /**
      * 新增或追加更新服务地址信息。<p>
      * 如果追加的地址是已存在的失效地址，那么updateAddress方法将重新激活这些失效地址。
