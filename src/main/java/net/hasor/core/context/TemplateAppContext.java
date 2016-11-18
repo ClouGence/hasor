@@ -424,7 +424,8 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         doInitialize();
         /*3.Bind*/
         for (Module module : findModules) {
-            logger.info("installModule -> {}", module);
+            if (module == null)
+                continue;
             this.installModule(module);
         }
         ApiBinder apiBinder = newApiBinder(null);
