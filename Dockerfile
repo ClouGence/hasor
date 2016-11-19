@@ -20,7 +20,7 @@ EXPOSE 2181
 
 WORKDIR $EXAMPLE_HOME/src
 RUN ./build.sh && \
-RUN cd `find ./build -name 'bin'` && \
+    cd `find ./build -name 'bin'` && \
     cp -R ../* $EXAMPLE_HOME
 
 WORKDIR $EXAMPLE_HOME/bin
