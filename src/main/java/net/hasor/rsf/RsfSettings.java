@@ -87,6 +87,12 @@ public interface RsfSettings extends Settings {
     /**获取本地服务绑定端口*/
     public int getBindPort();
 
+    /**获取网关地址*/
+    public String getGatewayAddress();
+
+    /**获取网关映射的端口*/
+    public int getGatewayPort();
+
     /**获取注册中心服务地址*/
     public InterAddress[] getCenterServerSet();
 

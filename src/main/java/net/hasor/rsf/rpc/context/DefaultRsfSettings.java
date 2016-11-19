@@ -60,6 +60,8 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     //
     private   String          bindAddress           = "local";
     private   int             bindPort              = 2180;
+    private   String          gatewayAddress        = "";
+    private   int             gatewayPort           = 0;
     //
     private   InterAddress[]  centerServerSet       = new InterAddress[0];
     private   int             centerRsfTimeout      = 6000;
@@ -173,6 +175,14 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         return this.bindPort;
     }
     @Override
+    public String getGatewayAddress() {
+        return this.gatewayAddress;
+    }
+    @Override
+    public int getGatewayPort() {
+        return this.gatewayPort;
+    }
+    @Override
     public InterAddress[] getCenterServerSet() {
         return this.centerServerSet.clone();
     }
@@ -280,6 +290,8 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         //
         this.bindAddress = getString("hasor.rsfConfig.address", "local");
         this.bindPort = getInteger("hasor.rsfConfig.port", 2180);
+        this.gatewayAddress = getString("hasor.rsfConfig.gateway.address", "");
+        this.gatewayPort = getInteger("hasor.rsfConfig.gateway.port", 0);
         //
         XmlNode[] centerServerArrays = getXmlNodeArray("hasor.rsfConfig.centerServers.server");
         if (centerServerArrays != null) {

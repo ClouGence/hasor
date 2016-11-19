@@ -163,6 +163,10 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
     public InterAddress bindAddress() {
         return this.rsfNetManager.bindAddress();
     }
+    @Override
+    public InterAddress gatewayAddress() {
+        return this.rsfNetManager.getGatewayAddress();
+    }
     public RemoteRsfCaller getRsfCaller() {
         return this.rsfCaller;
     }

@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.net.URISyntaxException;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 负责处理两个RSF程序之间的握手。
@@ -40,18 +41,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class RpcCodec extends ChannelInboundHandlerAdapter {
     protected     Logger        logger     = LoggerFactory.getLogger(getClass());
     private final AtomicBoolean shakeHands = new AtomicBoolean(false);
+    private final InterAddress     gatewayAddress;
     private       InterAddress     bindAddress;
     private       InterAddress     targetAddress;
     private final TimerManager     rsfTimerManager;
     private final ChannelRegister  channelRegister;
     private final ReceivedListener rpcEventListener;
     //
-    public RpcCodec(RsfNetManager rsfNetManager) {
-        this.logger = LoggerFactory.getLogger(getClass());
+    public RpcCodec(RsfNetManager rsfNetManager) throws URISyntaxException {
         this.bindAddress = rsfNetManager.bindAddress();
         this.rsfTimerManager = rsfNetManager.getTimerManager();
         this.channelRegister = rsfNetManager.getChannelRegister();
         this.rpcEventListener = rsfNetManager.getReceivedListener();
+        this.gatewayAddress = rsfNetManager.getGatewayAddress();
     }
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) throws Exception {
@@ -95,7 +97,11 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
                 ResponseInfo response = new ResponseInfo(RsfConstants.Version_1);
                 response.setRequestID(-1);
                 response.setStatus(ProtocolStatus.OK);
-                response.addOption("SERVER_INFO", this.bindAddress.toHostSchema());//RSF实例信息。
+                if (this.gatewayAddress != null) {
+                    response.addOption("SERVER_INFO", this.gatewayAddress.toHostSchema());//RSF实例信息。
+                } else {
+                    response.addOption("SERVER_INFO", this.bindAddress.toHostSchema());//RSF实例信息。
+                }
                 logger.info("send ack to {}.", remoteAddress);
                 ctx.pipeline().writeAndFlush(response);//发送握手数据包
                 return;

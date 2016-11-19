@@ -33,6 +33,7 @@ import net.hasor.rsf.utils.NetworkUtils;
 import net.hasor.rsf.utils.TimerManager;
 import org.more.future.BasicFuture;
 import org.more.util.NameThreadFactory;
+import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +61,7 @@ public class RsfNetManager {
     private final ChannelRegister                                   channelRegister;
     //
     private       InterAddress                                      bindAddress;
+    private       InterAddress                                      gatewayAddress;
     private       RsfNetChannel                                     bindListener;
     //
     //
@@ -79,7 +81,11 @@ public class RsfNetManager {
         this.receivedListener = receivedListener;
         this.channelRegister = new ManagerChannelRegister();
     }
-    /** 销毁。 */
+    /** 环境对象 */
+    public RsfEnvironment getRsfEnvironment() {
+        return this.rsfEnvironment;
+    }
+    /** 销毁 */
     public void shutdown() {
         logger.info("rsfNetManager, shutdownGracefully.");
         if (bindListener != null) {
@@ -137,8 +143,8 @@ public class RsfNetManager {
             boot.handler(new ChannelInitializer<SocketChannel>() {
                 public void initChannel(SocketChannel ch) throws Exception {
                     ch.pipeline().addLast(//
-                            new RSFCodec(rsfEnvironment),//
-                            new RpcCodec(RsfNetManager.this)//
+                            new RSFCodec(rsfEnvironment),//    RSF协议
+                            new RpcCodec(RsfNetManager.this)// RSF握手协议
                     );
                 }
             });
@@ -185,10 +191,14 @@ public class RsfNetManager {
         }
         try {
             this.bindAddress = new InterAddress(localAddress.getHostAddress(), bindSocket, rsfSettings.getUnitName());
+            logger.info("bindSocket at {}", this.bindAddress);
+            if (StringUtils.isNotBlank(rsfSettings.getGatewayAddress()) && rsfSettings.getGatewayPort() > 0) {
+                this.gatewayAddress = new InterAddress(rsfSettings.getGatewayAddress(), rsfSettings.getGatewayPort(), rsfSettings.getUnitName());
+                logger.info("gatewayBindSocket at {}", this.gatewayAddress);
+            }
         } catch (Throwable e) {
             throw new UnknownHostException(e.getMessage());
         }
-        logger.info("bindSocket at {}", this.bindAddress);
         //
         ServerBootstrap boot = new ServerBootstrap();
         boot.group(this.listenLoopGroup, this.workLoopGroup);
@@ -239,6 +249,9 @@ public class RsfNetManager {
     //
     ReceivedListener getReceivedListener() {
         return this.receivedListener;
+    }
+    public InterAddress getGatewayAddress() {
+        return this.gatewayAddress;
     }
     public TimerManager getTimerManager() {
         return this.timerManager;

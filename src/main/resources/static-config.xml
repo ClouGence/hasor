@@ -10,7 +10,7 @@
             <module>net.hasor.rsf.center.server.bootstrap.RsfCenterFrameworkModule</module>
             <!-- 注册中心插件 -->
             <module>net.hasor.rsf.center.client.RsfCenterModule</module>
-            
+
             <!-- Telnet控制台插件 -->
             <module>net.hasor.rsf.console.RsfConsoleModule</module>
             <!-- Web支持插件 -->
@@ -35,6 +35,11 @@
             <RSF_SERVICE_PORT>2180</RSF_SERVICE_PORT>
             <!-- Telnet 控制台端口 -->
             <RSF_CONSOLE_PORT>2181</RSF_CONSOLE_PORT>
+
+            <!-- 如果RSF是工作在内网，则需要通过网关进行映射将服务暴露到外网，这里填写网关在外网的IP地址 -->
+            <RSF_GATEWAY_IP></RSF_GATEWAY_IP>
+            <!-- 如果RSF是工作在内网，则需要通过网关进行端口映射，这里填写外网端口号 -->
+            <RSF_GATEWAY_PORT></RSF_GATEWAY_PORT>
 
             <!-- 注册中心(例:rsf://127.0.0.1:2180) -->
             <!-- Center工作在集群模式下的时候,集群的机器列表,注意:集群中每台机器的对应clusterServers配置都应相同,center在启动时会进行检测 -->
@@ -73,6 +78,13 @@
                 提示：RSF在启动的时，如果管理控制台的端口被占用，是不会影响到整个RSF启动进程。
         -->
         <console port="${RSF_CONSOLE_PORT}" inBound="local,127.0.0.1"/>
+
+        <!--
+            RSF 网关配置，当 RSF 工作在内网时因为 RSF 是工作在内网环境无法取得公网地址，因此这里需要配置RSF公网地址和端口号。
+                - address  	  : 网关IP地址
+                - port   	  : 网关上RSF的端口号
+        -->
+        <gateway address="${RSF_GATEWAY_IP}" port="${RSF_GATEWAY_PORT}"/>
 
         <!--
             注册中心，用于更新服务列表的配置服务器

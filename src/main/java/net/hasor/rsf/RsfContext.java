@@ -57,9 +57,12 @@ public interface RsfContext extends OnlineStatus {
      * @param bindInfo 元信息所描述对象
      */
     public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo);
- 
+
     /** 获取RSF运行的地址。 */
     public InterAddress bindAddress();
+
+    /** 获取RSF运行的网关地址。 */
+    public InterAddress gatewayAddress();
 
     /**获取RSF配置*/
     public RsfSettings getSettings();
