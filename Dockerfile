@@ -1,4 +1,4 @@
-FROM java:7
+FROM openjdk:7-jdk
 MAINTAINER ZhaoYongChun "zyc@hasor.net"
 
 # maven
@@ -8,22 +8,21 @@ RUN curl -fsSL http://project.hasor.net/hasor/develop/tools/apache/maven/$MAVEN_
         && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
 ENV MAVEN_HOME /usr/share/maven
 RUN mkdir -p "/home/repo" && \
-    sed -i '/<!-- localRepository/i\<localRepository>/home/repo</localRepository>' $MAVEN_HOME/conf/settings.xml # && \
-#    sed -i '/<mirrors>/i\<mirror><id>china-mirror</id><mirrorOf>central</mirrorOf><name>mirror</name><url>http://maven.oschina.net/content/groups/public/</url></mirror>' $MAVEN_HOME/conf/settings.xml
+    sed -i '/<!-- localRepository/i\<localRepository>/home/repo</localRepository>' $MAVEN_HOME/conf/settings.xml
 
 #
 # work
-ENV EXAMPLE_HOME /usr/rsfcenter
-ENV WORK_HOME /usr/rsfcenter/worker
-ADD . /usr/rsfcenter/src
+ENV EXAMPLE_HOME /home/admin/rsfcenter
+ENV WORK_HOME /home/admin/rsfcenter/worker
+ADD . /home/admin/rsfcenter/src
 EXPOSE 2180
 EXPOSE 2181
 
-# === project ===
-WORKDIR /usr/rsfcenter/src
+WORKDIR $EXAMPLE_HOME/src
 RUN ./build.sh && \
-    cd `find ./build -name 'bin'` && \
+RUN cd `find ./build -name 'bin'` && \
     cp -R ../* $EXAMPLE_HOME
 
 WORKDIR $EXAMPLE_HOME/bin
-CMD ["catalina.sh run"]
+
+CMD ["./run.sh"]

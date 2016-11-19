@@ -137,3 +137,4 @@
 
 * mvn release:prepare -P release
 * mvn deploy -P release
+* ./build.sh && docker build -t debug . && docker run debug

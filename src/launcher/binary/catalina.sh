@@ -60,7 +60,7 @@ PRGDIR=`dirname "$PRG"`
 [ -z "$APP_HOME" ] && APP_HOME=`cd "$PRGDIR/.." >/dev/null; pwd`
 
 if [ -r "$APP_HOME/bin/setenv.sh" ]; then
-  source "$APP_HOME/bin/setenv.sh"
+  . "$APP_HOME/bin/setenv.sh"
 fi
 
 if [ "$JPDA_ENABLE" = "jpda" ] ; then
