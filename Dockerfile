@@ -8,7 +8,8 @@ RUN curl -fsSL http://project.hasor.net/hasor/develop/tools/apache/maven/$MAVEN_
         && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
 ENV MAVEN_HOME /usr/share/maven
 RUN mkdir -p "/home/repo" && \
-    sed -i '/<!-- localRepository/i\<localRepository>/home/repo</localRepository>' $MAVEN_HOME/conf/settings.xml
+    sed -i '/<!-- localRepository/i\<localRepository>/home/repo</localRepository>' $MAVEN_HOME/conf/settings.xml # && \
+#    sed -i '/<mirrors>/i\<mirror><id>china-mirror</id><mirrorOf>central</mirrorOf><name>mirror</name><url>http://maven.oschina.net/content/groups/public/</url></mirror>' $MAVEN_HOME/conf/settings.xml
 
 #
 # work
@@ -24,5 +25,5 @@ RUN ./build.sh && \
     cd `find ./build -name 'bin'` && \
     cp -R ../* $EXAMPLE_HOME
 
-WORKDIR $EXAMPLE_HOME
-CMD ["./bin/run.sh"]
+WORKDIR $EXAMPLE_HOME/bin
+CMD ["catalina.sh run"]
