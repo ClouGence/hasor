@@ -25,4 +25,4 @@ RUN ./build.sh && \
     cp -R ../* $EXAMPLE_HOME
 
 WORKDIR $EXAMPLE_HOME
-CMD ["$EXAMPLE_HOME/bin/run.sh"]
+CMD ["./bin/run.sh"]
