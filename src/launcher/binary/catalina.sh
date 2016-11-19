@@ -197,6 +197,13 @@ do_version() {
 }
 
 #start rsfCenter
+do_exec() {
+    exec "$JAVA_CMD" $JAVA_OPTS $JPDA_OPTS -classpath "${APP_HOME}"/boot/plexus-classworlds-*.jar \
+      "-Dclassworlds.conf=${APP_HOME}/bin/app.conf" \
+      "-Dapp.home=${APP_HOME}"  \
+      org.codehaus.plexus.classworlds.launcher.Launcher start ${APP_CONFIG} "$@"
+}
+
 do_start() {
     check_app_pid
     mkdir -p "$(dirname "${CONSOLE_OUT}")" || exit 1
@@ -286,6 +293,10 @@ do_stop() {
 if [ "$1" = "start" ] ; then
   shift
   do_start $@
+
+elif [ "$1" = "run" ] ; then
+  shift
+  do_exec $@
 
 elif [ "$1" = "stop" ] ; then
   shift
