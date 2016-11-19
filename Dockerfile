@@ -21,7 +21,8 @@ EXPOSE 2181
 # === project ===
 WORKDIR /usr/rsfcenter/src
 RUN ./build.sh && \
-    cp -R ./rsf-center-*/* ../rsfcenter
+    cd `find ./build -name 'bin'` && \
+    cp -R ../* $EXAMPLE_HOME
 
 WORKDIR $EXAMPLE_HOME
 CMD ["$EXAMPLE_HOME/bin/run.sh"]
