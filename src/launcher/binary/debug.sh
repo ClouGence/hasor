@@ -59,4 +59,4 @@ else
 fi
 
 export JPDA_ENABLE="jpda"
-exec "$PRGDIR"/"$EXECUTABLE" start "$@"
+exec "$PRGDIR"/"$EXECUTABLE" run "$@"
