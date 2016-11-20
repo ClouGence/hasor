@@ -73,7 +73,8 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
             RequestInfo request = new RequestInfo(RsfConstants.Version_1);
             request.setRequestID(-1);
             request.setTargetMethod("ASK_HOST_INFO");
-            ctx.pipeline().writeAndFlush(request);//发送握手数据包
+            ctx.pipeline().writeAndFlush(request);//发送请求握手数据包
+            logger.info("handshake -> ask, socket : ", ctx.channel());
             super.channelActive(ctx);
         }
     }
@@ -102,7 +103,7 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
                 } else {
                     response.addOption("SERVER_INFO", this.bindAddress.toHostSchema());//RSF实例信息。
                 }
-                logger.info("send ack to {}.", remoteAddress);
+                logger.info("handshake -> send ack to {}.", remoteAddress);
                 ctx.pipeline().writeAndFlush(response);//发送握手数据包
                 return;
             }
@@ -115,7 +116,7 @@ public class RpcCodec extends ChannelInboundHandlerAdapter {
             this.shakeHands.set(true);
             RsfNetChannel netChannel = new RsfNetChannel(this.targetAddress, channel, this.shakeHands);
             this.channelRegister.completed(this.targetAddress, netChannel);
-            logger.info("socket ready for {}.", this.targetAddress);
+            logger.info("handshake -> ready for {}", this.targetAddress);
         }
     }
     //

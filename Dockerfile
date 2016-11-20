@@ -15,14 +15,15 @@ RUN mkdir -p "/home/repo" && \
 ENV EXAMPLE_HOME /home/admin/rsfcenter
 ENV WORK_HOME /home/admin/rsfcenter/worker
 ADD . /home/admin/rsfcenter/src
-EXPOSE 2180
-EXPOSE 2181
 
-WORKDIR $EXAMPLE_HOME/src
-RUN ./build.sh && \
+EXPOSE 2180 #服务端口
+EXPOSE 2181 #Telnet控制台
+EXPOSE 8000 #调试端口
+
+RUN cd $EXAMPLE_HOME/src && \
+    ./build.sh && \
     cd `find ./build -name 'bin'` && \
     cp -R ../* $EXAMPLE_HOME
-
 WORKDIR $EXAMPLE_HOME/bin
 
 CMD ["./run.sh"]
