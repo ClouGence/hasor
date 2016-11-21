@@ -13,6 +13,11 @@
         <!-- Telnet 控制台端口 -->
         <RSF_CONSOLE_PORT>2181</RSF_CONSOLE_PORT>
 
+        <!-- 如果RSF是工作在内网，则需要通过网关进行映射将服务暴露到外网，这里填写网关在外网的IP地址 -->
+        <RSF_GATEWAY_IP>127.0.0.1</RSF_GATEWAY_IP>
+        <!-- 如果RSF是工作在内网，则需要通过网关进行端口映射，这里填写外网端口号 -->
+        <RSF_GATEWAY_PORT>2180</RSF_GATEWAY_PORT>
+
         <!-- 注册中心工作模式,默认:alone -->
         <RSF_CENTER_WORK_MODE>alone</RSF_CENTER_WORK_MODE>
         <!-- Center工作在集群模式下的时候,集群的机器列表,注意:集群中每台机器的对应clusterServers配置都应相同,center在启动时会进行检测 -->
