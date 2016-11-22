@@ -12,19 +12,20 @@ RUN mkdir -p "/home/repo" && \
 
 #
 # work
-ENV EXAMPLE_HOME /home/admin/rsfcenter
-ENV WORK_HOME /home/admin/rsfcenter/worker
-ADD . /home/admin/rsfcenter/src
+ENV WORK_HOME /usr/rsfcenter/worker
+#ENV APP_CONFIG
 
 #各种端口
 EXPOSE 2180
 EXPOSE 2181
 EXPOSE 8000
 
-RUN cd $EXAMPLE_HOME/src && \
+ADD . /usr/rsfcenter/worker/src
+ENV RSF_HOME /usr/rsfcenter
+RUN cd $RSF_HOME/src && \
     ./build.sh && \
     cd `find ./build -name 'bin'` && \
-    cp -R ../* $EXAMPLE_HOME
-WORKDIR $EXAMPLE_HOME/bin
+    cp -R ../* $RSF_HOME
+WORKDIR $RSF_HOME/bin
 
 CMD ["./run.sh"]

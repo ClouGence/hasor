@@ -16,6 +16,7 @@
 package net.hasor.rsf.web;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfModule;
+import net.hasor.rsf.container.InnerRsfApiBinder;
 import net.hasor.web.WebApiBinder;
 /**
  * Web支持
@@ -26,10 +27,14 @@ public class RsfWebModule extends RsfModule {
     @Override
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
         // .只有Web环境才启用该功能
-        if (!(apiBinder.getSourceBinder() instanceof WebApiBinder)) {
+        if (!(apiBinder instanceof InnerRsfApiBinder)) {
             return;
         }
-        WebApiBinder webApiBinder = (WebApiBinder) apiBinder.getSourceBinder();
+        InnerRsfApiBinder innerBinder = (InnerRsfApiBinder) apiBinder;
+        if (!(innerBinder.getSourceBinder() instanceof WebApiBinder)) {
+            return;
+        }
+        WebApiBinder webApiBinder = (WebApiBinder) innerBinder.getSourceBinder();
         //
         logger.info("rsf framework config web.");
         //WebApiBinder webApiBinder = (WebApiBinder) apiBinder;

@@ -32,6 +32,9 @@ import java.util.Set;
 public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiBinder {
     private final ApiBinder      apiBinder;
     private final RsfEnvironment rsfEnvironment;
+    public ApiBinder getSourceBinder() {
+        return this.apiBinder;
+    }
     public InnerRsfApiBinder(ApiBinder apiBinder, RsfEnvironment rsfEnvironment) {
         super();
         this.apiBinder = new ApiBinderWrap(Hasor.assertIsNotNull(apiBinder));
@@ -55,10 +58,6 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
     @Override
     public RsfEnvironment getEnvironment() {
         return this.rsfEnvironment;
-    }
-    @Override
-    public ApiBinder getSourceBinder() {
-        return this.apiBinder;
     }
     @Override
     public <T> ConfigurationBuilder<T> rsfService(BindInfo<T> bindInfo) {

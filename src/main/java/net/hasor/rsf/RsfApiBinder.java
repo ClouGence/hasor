@@ -29,8 +29,6 @@ public interface RsfApiBinder extends RsfPublisher, ApiBinder {
      */
     public RsfEnvironment getEnvironment();
 
-    public ApiBinder getSourceBinder();
-
     /**
      * 绑定一个类型到RSF环境。
      * @param bindInfo 服务类型
