@@ -8,7 +8,7 @@
 
     <!-- Maven Info -->
     <artifactId>hasor-rsf</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <!-- Project Info -->
@@ -25,7 +25,7 @@
         <connection>scm:git:git@git.oschina.net:zycgit/rsf.git</connection>
         <developerConnection>scm:git:git@git.oschina.net:zycgit/rsf.git</developerConnection>
         <url>git@git.oschina.net:zycgit/rsf.git</url>
-        <tag>Release.RSF-1.1.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <developers>
