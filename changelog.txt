@@ -1,4 +1,4 @@
-﻿===== Hasor-RSF v1.1.0 (2016-11-?)
+﻿===== Hasor-RSF v1.1.0 (2016-12-01)
 * 新增:
     01.RsfApiBinder 新增 converToProvider 方法方便 RSF 服务注册到 Hasor。这样 Hasor 就可以依赖注入一个 RSF 服务。
     02.RsfPublisher 接口可以通过 AppContext 直接拿到了，不需要通过 RsContext 接口间接获取。极大的方便了服务注册。
