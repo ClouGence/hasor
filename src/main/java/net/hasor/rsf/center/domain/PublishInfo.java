@@ -16,7 +16,7 @@
 package net.hasor.rsf.center.domain;
 import java.io.Serializable;
 /**
- *
+ * 发布的服务信息
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
