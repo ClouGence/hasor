@@ -3,7 +3,7 @@
     <parent>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-parent</artifactId>
-        <version>0.0.9</version>
+        <version>0.0.10</version>
     </parent>
 
     <!-- Maven Info -->
@@ -17,7 +17,25 @@
 
     <!-- 配置属性 -->
     <properties>
-        <hasor.shortname>Hasor-</hasor.shortname>
+        <project.shortname>Hasor-</project.shortname>
+        <project.website>http://www.hasor.net/</project.website>
+        <project.inceptionYear>2016</project.inceptionYear>
+        <javadocs.bottom><![CDATA[
+            <span id="cnzz_stat_icon_1257358604">
+                <a href="http://www.cnzz.com/stat/website.php?web_id=1257358604" target="_blank" title="站长统计">
+                    <img border="0" hspace="0" vspace="0" src="http://icon.cnzz.com/img/pic.gif">
+                </a>
+            </span>
+            <script src=" http://s11.cnzz.com/z_stat.php?id=1257358604&amp;show=pic" type="text/javascript"></script>
+            <script src="http://c.cnzz.com/core.php?web_id=1257358604&amp;show=pic&amp;t=z" charset="utf-8" type="text/javascript"></script>
+
+            Copyright 2005,
+            <a href="http://www.hasor.net/" target="_blank">Home.<a>$nbsp;$nbsp;
+            (
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">京ICP备13030776号</a>,
+                京公网安备11010802014853
+            )
+        ]]></javadocs.bottom>
     </properties>
 
     <!-- SCM -->
