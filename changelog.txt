@@ -1,4 +1,8 @@
-﻿===== Hasor-Core v2.5.2 (2016-12-01)
+﻿===== Hasor-Core v2.5.3 (2016-12-?)
+* 修复:
+    01.Fix HasorUnitRunner 在 JUnit 4.12 版本上 computeTestMethods 方法出现异常的问题。
+
+===== Hasor-Core v2.5.2 (2016-12-01)
 * 新增:
     01.新增 MyBatis 插件，该插件会依赖 DBModule。
 * 改进:

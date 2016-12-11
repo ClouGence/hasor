@@ -14,15 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.junit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
-import net.hasor.core.Module;
+import net.hasor.core.*;
 import net.hasor.core.context.TemplateAppContext;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
@@ -31,15 +23,20 @@ import org.junit.runners.model.Statement;
 import org.more.util.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 /**
- * 
+ *
  * @version : 2014年7月8日
  * @author 赵永春(zyc@hasor.net)
  */
 public class HasorUnitRunner extends BlockJUnit4ClassRunner {
-    protected static Logger logger       = LoggerFactory.getLogger(HasorUnitRunner.class);
-    private AppContext      appContext   = null;
-    private BindInfo<?>     typeRegister = null;
+    protected static Logger      logger       = LoggerFactory.getLogger(HasorUnitRunner.class);
+    private          AppContext  appContext   = null;
+    private          BindInfo<?> typeRegister = null;
     //
     public HasorUnitRunner(final Class<?> klass) throws InitializationError {
         super(klass);
@@ -83,6 +80,7 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
             }
         }
         //3.获取测试方法上的 @Order 注解，并对所有的测试方法重新排序
+        toRunMethodList = new ArrayList<FrameworkMethod>(toRunMethodList);
         Collections.sort(toRunMethodList, new Comparator<FrameworkMethod>() {
             @Override
             public int compare(final FrameworkMethod m1, final FrameworkMethod m2) {
