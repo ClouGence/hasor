@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.restful.render;
+import net.hasor.core.AppContext;
 import net.hasor.restful.RenderData;
 import net.hasor.restful.RenderEngine;
-import net.hasor.web.WebAppContext;
 import org.more.bizcommon.json.JSON;
 
 import java.io.IOException;
@@ -28,7 +28,7 @@ import java.io.Writer;
  */
 public class JsonRenderEngine implements RenderEngine {
     @Override
-    public void initEngine(WebAppContext appContext) throws IOException {
+    public void initEngine(AppContext appContext) throws IOException {
     }
     @Override
     public void process(RenderData data, Writer writer) throws Throwable {

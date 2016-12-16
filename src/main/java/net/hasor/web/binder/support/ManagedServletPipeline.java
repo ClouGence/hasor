@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.web.binder.support;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import net.hasor.core.AppContext;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-
-import net.hasor.core.AppContext;
-import net.hasor.web.WebAppContext;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 /**
  *
  * @version : 2013-4-12
@@ -37,7 +36,7 @@ public class ManagedServletPipeline {
     private ServletDefinition[] servletDefinitions;
     private volatile boolean initialized = false;
     //
-    public synchronized void initPipeline(final WebAppContext appContext, final Map<String, String> filterConfig) throws ServletException {
+    public synchronized void initPipeline(final AppContext appContext, final Map<String, String> filterConfig) throws ServletException {
         if (this.initialized) {
             return;
         }
@@ -48,7 +47,7 @@ public class ManagedServletPipeline {
         //everything was ok...
         this.initialized = true;
     }
-    private ServletDefinition[] collectServletDefinitions(final WebAppContext appContext) {
+    private ServletDefinition[] collectServletDefinitions(final AppContext appContext) {
         List<ServletDefinition> servletDefinitions = appContext.findBindingBean(ServletDefinition.class);
         Collections.sort(servletDefinitions, new Comparator<ServletDefinition>() {
             @Override

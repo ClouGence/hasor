@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.web.binder.support;
+import net.hasor.core.AppContext;
+import net.hasor.core.BindInfo;
+
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
-
-import net.hasor.core.BindInfo;
-import net.hasor.web.WebAppContext;
 /**
  *
  * @version : 2013-4-11
@@ -27,7 +27,7 @@ import net.hasor.web.WebAppContext;
 class HttpSessionListenerDefinition {
     private BindInfo<HttpSessionListener> listenerRegister = null;
     private HttpSessionListener           listenerInstance = null;
-    private WebAppContext                 appContext       = null;
+    private AppContext                    appContext       = null;
     //
     public HttpSessionListenerDefinition(final BindInfo<HttpSessionListener> listenerRegister) {
         this.listenerRegister = listenerRegister;
@@ -44,7 +44,7 @@ class HttpSessionListenerDefinition {
         return String.format("type %s listenerKey=%s", HttpSessionListenerDefinition.class, this.listenerInstance);
     }
     /**/
-    public void init(final WebAppContext appContext) {
+    public void init(final AppContext appContext) {
         this.appContext = appContext;
         this.getTarget();
     }

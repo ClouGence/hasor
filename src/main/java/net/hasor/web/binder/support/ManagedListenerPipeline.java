@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.web.binder.support;
-import java.util.List;
+import net.hasor.core.AppContext;
+import net.hasor.web.binder.ListenerPipeline;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpSessionEvent;
-
-import net.hasor.web.WebAppContext;
-import net.hasor.web.binder.ListenerPipeline;
+import java.util.List;
 /**
  *
  * @version : 2013-4-12
@@ -32,7 +32,7 @@ public class ManagedListenerPipeline implements ListenerPipeline {
     //
     //
     @Override
-    public void init(final WebAppContext appContext) {
+    public void init(final AppContext appContext) {
         if (this.initialized) {
             return;
         }

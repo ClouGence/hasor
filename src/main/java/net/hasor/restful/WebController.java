@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.restful;
+import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
 import net.hasor.restful.api.Produces;
 import net.hasor.web.FileItem;
 import net.hasor.web.FileItemFactory;
 import net.hasor.web.FileItemStream;
-import net.hasor.web.WebAppContext;
 import net.hasor.web.startup.RuntimeListener;
 import net.hasor.web.upload.FileUpload;
 import net.hasor.web.upload.factorys.disk.DiskFileItemFactory;
@@ -67,7 +67,7 @@ public abstract class WebController {
         return this.getInvoker().getHttpResponse();
     }
     /** @return Return AppContext. */
-    public WebAppContext getAppContext() {
+    public AppContext getAppContext() {
         return RuntimeListener.getAppContext(this.getRequest().getSession().getServletContext());
     }
     //

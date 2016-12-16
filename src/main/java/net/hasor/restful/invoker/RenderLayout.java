@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.restful.invoker;
+import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Settings;
 import net.hasor.restful.Render;
 import net.hasor.restful.RenderData;
 import net.hasor.restful.RenderEngine;
-import net.hasor.web.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +42,7 @@ class RenderLayout {
     private   boolean                   useLayout    = true;
     private   String                    templatePath = null;                    // 页面模版位置
     //
-    public void initEngine(WebAppContext appContext) throws Throwable {
+    public void initEngine(AppContext appContext) throws Throwable {
         if (!this.inited.compareAndSet(false, true)) {
             return;
         }

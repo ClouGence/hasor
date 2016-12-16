@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.restful.invoker;
+import net.hasor.core.AppContext;
 import net.hasor.restful.MimeType;
 import net.hasor.restful.async.AsyncInvocationWorker;
 import net.hasor.restful.async.AsyncSupported;
 import net.hasor.web.ServletVersion;
-import net.hasor.web.WebAppContext;
 import net.hasor.web.startup.RuntimeListener;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
@@ -44,7 +44,7 @@ class RestfulFilter implements Filter {
     private       MappingToDefine[] invokeArray    = new MappingToDefine[0];
     private       MimeType          mimeType       = null;
     private       RenderLayout      renderLayout   = null;
-    private       WebAppContext     appContext     = null;
+    private       AppContext        appContext     = null;
     private       AsyncSupported    asyncSupported = AsyncSupported.yes;
     //
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -149,7 +149,8 @@ class RestfulFilter implements Filter {
         boolean needAsync = define.isAsync(actionMethod, actionPath) == AsyncSupported.yes;
         //
         // .开启异步Servlet ( 必须满足: Servlet3.x、环境支持异步Servlet、目标开启了Servlet3 )
-        if (appContext.getServletVersion().ge(ServletVersion.V3_0) && asyncSupported == AsyncSupported.yes && needAsync) {
+        ServletVersion version = appContext.getInstance(ServletVersion.class);
+        if (version.ge(ServletVersion.V3_0) && asyncSupported == AsyncSupported.yes && needAsync) {
             try {
                 AsyncContext asyncContext = httpRequest.startAsync();
                 asyncContext.start(new AsyncInvocationWorker(asyncContext, httpRequest, httpResponse) {

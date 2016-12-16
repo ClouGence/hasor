@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.web.binder.support;
+import net.hasor.core.AppContext;
+import net.hasor.core.BindInfo;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-
-import net.hasor.core.BindInfo;
-import net.hasor.web.WebAppContext;
 /**
  *
  * @version : 2013-4-11
@@ -27,7 +27,7 @@ import net.hasor.web.WebAppContext;
 class ContextListenerDefinition {
     private BindInfo<ServletContextListener> listenerRegister = null;
     private ServletContextListener           listenerInstance = null;
-    private WebAppContext                    appContext       = null;
+    private AppContext                       appContext       = null;
     //
     //
     public ContextListenerDefinition(final BindInfo<ServletContextListener> listenerRegister) {
@@ -46,7 +46,7 @@ class ContextListenerDefinition {
                 ContextListenerDefinition.class, this.listenerInstance);
     }
     /**/
-    public void init(final WebAppContext appContext) {
+    public void init(final AppContext appContext) {
         this.appContext = appContext;
         this.getTarget();
     }

@@ -143,17 +143,17 @@ public abstract class AbstractEnvironment implements Environment {
         return evalString("%" + WORK_HOME + "%/");
     }
     //
-    private static volatile long lastLong = 0;
-    private static long nextLong() {
-        long lastLongTemp = System.currentTimeMillis();
-        while (true) {
-            if (lastLongTemp != lastLong) {
-                lastLong = lastLongTemp;
-                break;
-            }
-        }
-        return lastLong;
-    }
+    //    private static volatile long lastLong = 0;
+    //    private static long nextLong() {
+    //        long lastLongTemp = System.currentTimeMillis();
+    //        while (true) {
+    //            if (lastLongTemp != lastLong) {
+    //                lastLong = lastLongTemp;
+    //                break;
+    //            }
+    //        }
+    //        return lastLong;
+    //    }
     //    /**在缓存目录内创建一个不重名的临时文件名。 */
     //    public synchronized File uniqueTempFile() throws IOException {
     //        long markTime = nextLong();

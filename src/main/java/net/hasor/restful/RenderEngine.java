@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.restful;
-import net.hasor.web.WebAppContext;
+import net.hasor.core.AppContext;
 
-import javax.servlet.ServletException;
 import java.io.IOException;
 import java.io.Writer;
 /**
@@ -26,7 +25,7 @@ import java.io.Writer;
  */
 public interface RenderEngine {
     /** 初始化引擎 */
-    public void initEngine(WebAppContext appContext) throws Throwable;
+    public void initEngine(AppContext appContext) throws Throwable;
 
     /** 执行模版引擎 */
     public void process(RenderData data, Writer writer) throws Throwable;

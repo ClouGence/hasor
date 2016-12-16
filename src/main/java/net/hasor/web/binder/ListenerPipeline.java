@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.web.binder;
+import net.hasor.core.AppContext;
+
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionListener;
-
-import net.hasor.web.WebAppContext;
 /**
  *
  * @version : 2013-4-17
@@ -25,5 +25,5 @@ import net.hasor.web.WebAppContext;
  */
 public interface ListenerPipeline extends HttpSessionListener, ServletContextListener {
     /**初始化Servlet异常钩子。*/
-    public void init(WebAppContext appContext);
+    public void init(AppContext appContext);
 }

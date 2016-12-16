@@ -84,17 +84,4 @@ public class StandardEnvironment extends AbstractEnvironment {
         this.setRootLosder(new MoreClassLoader(loader));
         this.initEnvironment(loadEnvConfig);
     }
-    //
-    //
-    //    public StandardEnvironment(Object context, InputStream mainSettings, StreamType type) throws IOException, URISyntaxException {
-    //        this(context, mainSettings, type, null);
-    //    }
-    //    public StandardEnvironment(Object context, InputStream mainSettings, StreamType type, Map<String, String> loadEnvConfig) throws IOException, URISyntaxException {
-    //        super(context, new StandardContextSettings(mainSettings, type));
-    //        logger.info("create Environment, type = StandardEnvironment, settingsType is [string] mode, mainSettings = {}", mainSettings);
-    //        this.getSettings().refresh();
-    //        this.initEnvironment(loadEnvConfig);
-    //    }
-    //    public StandardEnvironment(Object context, String mainSettings, Map<String, String> loadEnvConfig) throws IOException, URISyntaxException {
-    //    }
 }

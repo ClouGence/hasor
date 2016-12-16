@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.restful.invoker;
+import net.hasor.core.AppContext;
 import net.hasor.restful.MimeType;
 import net.hasor.restful.RenderData;
-import net.hasor.web.WebAppContext;
 import org.more.bizcommon.Message;
 import org.more.bizcommon.json.JSON;
 import org.more.util.ArrayUtils;
@@ -31,17 +31,17 @@ import java.util.*;
  */
 class InnerRenderData implements RenderData {
     private static final String[]               LOCK_KEYS    = //
-            {ROOT_DATA_KEY, RETURN_DATA_KEY, VALID_DATA_KEY, REQUEST_KEY, RESPONSE_KEY};
+            { ROOT_DATA_KEY, RETURN_DATA_KEY, VALID_DATA_KEY, REQUEST_KEY, RESPONSE_KEY };
     private              String                 viewName     = null;//模版名称
     private              String                 viewType     = null;//渲染引擎
     private              boolean                useLayout    = true;//是否渲染布局
     private              HttpServletRequest     httpRequest  = null;
     private              HttpServletResponse    httpResponse = null;
     private              Map<String, ValidData> validData    = null;//原始验证数据
-    private              WebAppContext          appContext   = null;
+    private              AppContext             appContext   = null;
     private              MimeType               mimeType     = null;
     //
-    public InnerRenderData(WebAppContext appContext, MimeType mimeType, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+    public InnerRenderData(AppContext appContext, MimeType mimeType, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         String contextPath = httpRequest.getContextPath();
         String requestPath = httpRequest.getRequestURI();
         if (requestPath.startsWith(contextPath)) {
@@ -84,7 +84,7 @@ class InnerRenderData implements RenderData {
             return this.mimeType.getMimeType(suffix);
         }
     }
-    public WebAppContext getAppContext() {
+    public AppContext getAppContext() {
         return appContext;
     }
     //

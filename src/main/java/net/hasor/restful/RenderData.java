@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.restful;
-import net.hasor.web.WebAppContext;
+import net.hasor.core.AppContext;
 import org.more.bizcommon.Message;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +33,7 @@ public interface RenderData {
     public static final String RESPONSE_KEY    = "response";//
 
     //
-    public WebAppContext getAppContext();
+    public AppContext getAppContext();
 
     public HttpServletRequest getHttpRequest();
 

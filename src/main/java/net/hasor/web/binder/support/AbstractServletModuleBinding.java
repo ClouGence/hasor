@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.web.binder.support;
+import net.hasor.core.AppContext;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import net.hasor.web.WebAppContext;
 /**
  * Abstract implementation for all servlet module bindings
  * @version : 2013-4-12
@@ -28,7 +28,7 @@ class AbstractServletModuleBinding {
     private final Map<String, String> initParams;
     private final String              pattern;
     private final UriPatternMatcher   patternMatcher;
-    private WebAppContext appContext = null;
+    private AppContext appContext = null;
     //
     public AbstractServletModuleBinding(final int index, final Map<String, String> initParams, final String pattern, final UriPatternMatcher patternMatcher) {
         this.index = index;
@@ -56,12 +56,12 @@ class AbstractServletModuleBinding {
         return this.patternMatcher.matches(uri);
     }
     /**init.*/
-    public void init(WebAppContext appContext) {
+    public void init(AppContext appContext) {
         this.appContext = appContext;
     }
-    /**获取{@link WebAppContext}对象。
-     * @see #init(WebAppContext)*/
-    protected WebAppContext getAppContext() {
+    /**获取{@link AppContext}对象。
+     * @see #init(AppContext)*/
+    protected AppContext getAppContext() {
         return appContext;
     }
 }

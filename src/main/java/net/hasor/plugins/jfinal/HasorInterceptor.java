@@ -18,8 +18,8 @@ import com.jfinal.aop.Interceptor;
 import com.jfinal.aop.Invocation;
 import com.jfinal.core.Controller;
 import com.jfinal.core.JFinal;
+import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.web.WebAppContext;
 import net.hasor.web.startup.RuntimeListener;
 /**
  * Jfinal Interceptor 插件.
@@ -28,7 +28,7 @@ import net.hasor.web.startup.RuntimeListener;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class HasorInterceptor implements Interceptor {
-    private WebAppContext webAppContext;
+    private AppContext webAppContext;
     //
     public HasorInterceptor(final JFinal jFinal) {
         this.webAppContext = RuntimeListener.getAppContext(jFinal.getServletContext());

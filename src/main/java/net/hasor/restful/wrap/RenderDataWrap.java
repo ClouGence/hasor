@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.restful.wrap;
+import net.hasor.core.AppContext;
 import net.hasor.restful.RenderData;
-import net.hasor.web.WebAppContext;
 import org.more.bizcommon.Message;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +33,7 @@ public class RenderDataWrap implements RenderData {
     }
     //
     @Override
-    public WebAppContext getAppContext() {
+    public AppContext getAppContext() {
         return this.renderData.getAppContext();
     }
     @Override

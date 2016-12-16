@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.binder.support;
-import net.hasor.web.WebAppContext;
+import net.hasor.core.AppContext;
 import net.hasor.web.binder.FilterPipeline;
 
 import javax.servlet.FilterChain;
@@ -37,7 +37,7 @@ public class ManagedFilterPipeline implements FilterPipeline {
     private final ManagedServletPipeline servletPipeline;
     private       FilterDefinition[]     filterDefinitions;
     private volatile boolean initialized = false;
-    private WebAppContext appContext;
+    private AppContext appContext;
     //
     //
     public ManagedFilterPipeline(final ManagedServletPipeline servletPipeline) {
@@ -45,7 +45,7 @@ public class ManagedFilterPipeline implements FilterPipeline {
     }
     //
     @Override
-    public synchronized void initPipeline(final WebAppContext appContext, final Map<String, String> filterConfig) throws ServletException {
+    public synchronized void initPipeline(final AppContext appContext, final Map<String, String> filterConfig) throws ServletException {
         if (this.initialized) {
             return;
         }
@@ -59,7 +59,7 @@ public class ManagedFilterPipeline implements FilterPipeline {
         //everything was ok...
         this.initialized = true;
     }
-    private FilterDefinition[] collectFilterDefinitions(final WebAppContext appContext) {
+    private FilterDefinition[] collectFilterDefinitions(final AppContext appContext) {
         List<FilterDefinition> filterDefinitions = appContext.findBindingBean(FilterDefinition.class);
         Collections.sort(filterDefinitions, new Comparator<FilterDefinition>() {
             @Override
@@ -83,7 +83,7 @@ public class ManagedFilterPipeline implements FilterPipeline {
         invocation.doFilter(dispatcherRequest, response);
     }
     @Override
-    public void destroyPipeline(final WebAppContext appContext) {
+    public void destroyPipeline(final AppContext appContext) {
         //destroy servlets first
         this.servletPipeline.destroyPipeline(appContext);
         //go down chain and destroy all our filters

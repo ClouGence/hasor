@@ -16,8 +16,8 @@
 package net.hasor.plugins.jfinal;
 import com.jfinal.core.JFinal;
 import com.jfinal.handler.Handler;
+import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.web.WebAppContext;
 import net.hasor.web.startup.RuntimeFilter;
 import net.hasor.web.startup.RuntimeListener;
 import org.more.util.ExceptionUtils;
@@ -39,7 +39,7 @@ public class HasorHandler extends Handler {
     private RuntimeFilter filter;
     //
     public HasorHandler(final JFinal jFinal) {
-        WebAppContext appContext = RuntimeListener.getAppContext(jFinal.getServletContext());
+        AppContext appContext = RuntimeListener.getAppContext(jFinal.getServletContext());
         appContext = Hasor.assertIsNotNull(appContext, "need HasorPlugin.");
         this.filter = appContext.getInstance(RuntimeFilter.class);
     }

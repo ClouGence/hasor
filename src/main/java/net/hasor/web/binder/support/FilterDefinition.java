@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.web.binder.support;
+import net.hasor.core.AppContext;
+import net.hasor.core.BindInfo;
+import org.more.util.Iterators;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-
-import net.hasor.core.AppContext;
-import net.hasor.core.BindInfo;
-import net.hasor.web.WebAppContext;
-import org.more.util.Iterators;
 /**
  *
  * @version : 2013-4-11
@@ -58,7 +51,7 @@ class FilterDefinition extends AbstractServletModuleBinding {
             }
             @Override
             public ServletContext getServletContext() {
-                return getAppContext().getServletContext();
+                return getAppContext().getInstance(ServletContext.class);
             }
             @Override
             public String getInitParameter(final String s) {
@@ -78,7 +71,7 @@ class FilterDefinition extends AbstractServletModuleBinding {
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
-    public void init(final WebAppContext appContext, final Map<String, String> filterConfig) throws ServletException {
+    public void init(final AppContext appContext, final Map<String, String> filterConfig) throws ServletException {
         super.init(appContext);
         //
         if (filterConfig != null) {

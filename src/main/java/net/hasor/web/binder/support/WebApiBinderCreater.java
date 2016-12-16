@@ -15,17 +15,28 @@
  */
 package net.hasor.web.binder.support;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderCreater;
+import net.hasor.web.ServletVersion;
+import net.hasor.web.WebEnvironment;
 import net.hasor.web.binder.FilterPipeline;
 import net.hasor.web.binder.ListenerPipeline;
+
+import javax.servlet.ServletContext;
 /**
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
 public class WebApiBinderCreater implements ApiBinderCreater {
     @Override
-    public Object createBinder(ApiBinder apiBinder) {
+    public Object createBinder(final ApiBinder apiBinder) {
         //
+        Object context = apiBinder.getEnvironment().getContext();
+        if (!(context instanceof ServletContext)) {
+            return null;
+        }
+        //
+        ServletContext servletContext = (ServletContext) context;
         ManagedServletPipeline sPipline = new ManagedServletPipeline();
         ManagedFilterPipeline fPipline = new ManagedFilterPipeline(sPipline);
         ManagedListenerPipeline lPipline = new ManagedListenerPipeline();
@@ -33,6 +44,29 @@ public class WebApiBinderCreater implements ApiBinderCreater {
         apiBinder.bindType(ManagedServletPipeline.class).toInstance(sPipline);
         apiBinder.bindType(FilterPipeline.class).toInstance(fPipline);
         apiBinder.bindType(ListenerPipeline.class).toInstance(lPipline);
+        //
+        ServletVersion curVersion = ServletVersion.V2_3;
+        try {
+            apiBinder.getEnvironment().getClassLoader().loadClass("javax.servlet.ServletRequestListener");
+            curVersion = ServletVersion.V2_4;
+            servletContext.getContextPath();
+            curVersion = ServletVersion.V2_5;
+            servletContext.getEffectiveMajorVersion();
+            curVersion = ServletVersion.V3_0;
+            servletContext.getVirtualServerName();
+            curVersion = ServletVersion.V3_1;
+        } catch (Throwable e) { /* 忽略 */ }
+        //
+        /*绑定Environment对象的Provider*/
+        apiBinder.bindType(WebEnvironment.class).toProvider(new Provider<WebEnvironment>() {
+            public WebEnvironment get() {
+                return (WebEnvironment) apiBinder.getEnvironment();
+            }
+        });
+        /*绑定ServletContext对象的Provider*/
+        apiBinder.bindType(ServletContext.class).toInstance(servletContext);
+        /*绑定当前Servlet支持的版本*/
+        apiBinder.bindType(ServletVersion.class).toInstance(curVersion);
         //
         return new InnerWebApiBinder(apiBinder);
     }

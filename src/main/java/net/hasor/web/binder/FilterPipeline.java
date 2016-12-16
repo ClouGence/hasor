@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.web.binder;
-import java.io.IOException;
-import java.util.Map;
+import net.hasor.core.AppContext;
+import net.hasor.web.WebModule;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import net.hasor.web.WebAppContext;
-import net.hasor.web.WebModule;
+import java.io.IOException;
+import java.util.Map;
 /**
  * An internal dispatcher for guice-servlet registered servlets and filters.
  * By default, we assume a Guice 1.0 style servlet module is in play. In other
@@ -38,11 +38,11 @@ import net.hasor.web.WebModule;
  */
 public interface FilterPipeline {
     /**初始化管道 F*/
-    public void initPipeline(WebAppContext appContext, Map<String, String> filterConfig) throws ServletException;
+    public void initPipeline(AppContext appContext, Map<String, String> filterConfig) throws ServletException;
 
     /**执行请求操作*/
     public void dispatch(HttpServletRequest request, HttpServletResponse response, FilterChain defaultFilterChain) throws IOException, ServletException;
 
     /**销毁管道*/
-    public void destroyPipeline(WebAppContext appContext);
+    public void destroyPipeline(AppContext appContext);
 }

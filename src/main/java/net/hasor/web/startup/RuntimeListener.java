@@ -16,8 +16,6 @@
 package net.hasor.web.startup;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
-import net.hasor.web.ServletVersion;
-import net.hasor.web.WebAppContext;
 import net.hasor.web.WebHasor;
 import net.hasor.web.binder.ListenerPipeline;
 import org.more.util.ExceptionUtils;
@@ -28,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 /**
@@ -39,12 +36,12 @@ import javax.servlet.http.HttpSessionListener;
 public class RuntimeListener implements ServletContextListener, HttpSessionListener {
     protected           Logger           logger                  = LoggerFactory.getLogger(getClass());
     public static final String           AppContextName          = AppContext.class.getName();
-    private             WebAppContext    appContext              = null;
+    private             AppContext       appContext              = null;
     private             ListenerPipeline sessionListenerPipeline = null;
     /*----------------------------------------------------------------------------------------------------*/
     //
-    /**创建{@link WebAppContext}对象*/
-    protected WebAppContext createAppContext(final ServletContext sc, Module startModule) throws Throwable {
+    /**创建{@link AppContext}对象*/
+    protected AppContext createAppContext(final ServletContext sc, Module startModule) throws Throwable {
         return WebHasor.createWebAppContext(sc, startModule);
     }
     //
@@ -66,27 +63,9 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     //
     @Override
     public void contextInitialized(final ServletContextEvent servletContextEvent) {
-        //1.make sure servlet version
-        ServletContext sc = servletContextEvent.getServletContext();
-        String versionKey = ServletVersion.class.getName();
-        sc.setAttribute(versionKey, ServletVersion.V2_3);
+        //1.create AppContext
         try {
-            ServletRequestListener.class.getName();
-            sc.setAttribute(versionKey, ServletVersion.V2_4);
-            //
-            sc.getContextPath();
-            sc.setAttribute(versionKey, ServletVersion.V2_5);
-            //
-            sc.getEffectiveMajorVersion();
-            sc.setAttribute(versionKey, ServletVersion.V3_0);
-            //
-            sc.getVirtualServerName();
-            sc.setAttribute(versionKey, ServletVersion.V3_1);
-            //
-        } catch (Throwable e) { /* 忽略 */ }
-        //
-        //2.create AppContext
-        try {
+            ServletContext sc = servletContextEvent.getServletContext();
             Module startModule = this.getStartModule(sc);
             this.appContext = this.createAppContext(sc, startModule);
         } catch (Throwable e) {
@@ -122,8 +101,8 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         }
     }
     //
-    /**获取{@link WebAppContext}*/
-    public static WebAppContext getAppContext(ServletContext servletContext) {
-        return (WebAppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
+    /**获取{@link AppContext}*/
+    public static AppContext getAppContext(ServletContext servletContext) {
+        return (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
     }
 }

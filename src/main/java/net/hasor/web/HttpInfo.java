@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.web;
+import net.hasor.core.AppContext;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 /**
@@ -22,12 +24,12 @@ import javax.servlet.http.HttpServletResponse;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class HttpInfo {
-    private WebAppContext       webAppContext;
+    private AppContext          appContext;
     private HttpServletRequest  request;
     private HttpServletResponse response;
     //
-    public HttpInfo(WebAppContext webAppContext, HttpServletRequest request, HttpServletResponse response) {
-        this.webAppContext = webAppContext;
+    public HttpInfo(AppContext appContext, HttpServletRequest request, HttpServletResponse response) {
+        this.appContext = appContext;
         this.request = request;
         this.response = response;
     }
@@ -41,7 +43,7 @@ public class HttpInfo {
         return this.response;
     }
     /** @return Return AppContext. */
-    public WebAppContext getAppContext() {
-        return this.webAppContext;
+    public AppContext getAppContext() {
+        return this.appContext;
     }
 }

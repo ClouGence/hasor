@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.web.startup;
+import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.web.HttpInfo;
 import net.hasor.web.ServletVersion;
-import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.FilterPipeline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,16 +35,25 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RuntimeFilter implements Filter {
-    protected Logger         logger         = LoggerFactory.getLogger(getClass());
-    private   WebAppContext  appContext     = null;
-    private   FilterPipeline filterPipeline = null;
+    /** 当处理 request 之前引发。
+     * @see net.hasor.web.startup.RuntimeFilter#beforeRequest(AppContext, HttpServletRequest, HttpServletResponse)
+     */
+    public static final String         HTTP_BEFORE_REQUEST = "HTTP_BEFORE_REQUEST";
+    /** 当处理完 request 响应 Response 之后引发。
+     * @see net.hasor.web.startup.RuntimeFilter#afterResponse(AppContext, HttpServletRequest, HttpServletResponse)
+     */
+    public static final String         HTTP_AFTER_RESPONSE = "HTTP_AFTER_RESPONSE";
+    //
+    protected           Logger         logger              = LoggerFactory.getLogger(getClass());
+    private             AppContext     appContext          = null;
+    private             FilterPipeline filterPipeline      = null;
     //
     /**初始化过滤器，初始化会同时初始化FilterPipeline*/
     @Override
     public synchronized void init(final FilterConfig filterConfig) throws ServletException {
         if (this.appContext == null) {
             ServletContext servletContext = filterConfig.getServletContext();
-            this.appContext = (WebAppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
+            this.appContext = (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
             Hasor.assertIsNotNull(this.appContext, "AppContext is null.");
             this.filterPipeline = this.appContext.getInstance(FilterPipeline.class);
         }
@@ -59,7 +68,7 @@ public class RuntimeFilter implements Filter {
         }
         this.filterPipeline.initPipeline(this.appContext, filterConfigMap);
         //
-        if (ServletVersion.V2_5.le(this.appContext.getServletVersion())) {
+        if (ServletVersion.V2_5.le(this.appContext.getInstance(ServletVersion.class))) {
             logger.info("RuntimeFilter started, at {}", filterConfig.getServletContext().getServerInfo());
         } else {
             logger.info("RuntimeFilter started, context at {}", filterConfig.getServletContext().getContextPath());
@@ -95,14 +104,14 @@ public class RuntimeFilter implements Filter {
     }
     //
     /**在filter请求处理之前，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider更新对象。*/
-    protected void beforeRequest(final WebAppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
-        appContext.getEnvironment().getEventContext().fireSyncEvent(WebAppContext.HTTP_BEFORE_REQUEST,//
+    protected void beforeRequest(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
+        appContext.getEnvironment().getEventContext().fireSyncEvent(HTTP_BEFORE_REQUEST,//
                 new HttpInfo(appContext, httpReq, httpRes));
     }
     //
     /**在filter请求处理之后，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider重置对象。*/
-    protected void afterResponse(final WebAppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
-        appContext.getEnvironment().getEventContext().fireSyncEvent(WebAppContext.HTTP_AFTER_RESPONSE,//
+    protected void afterResponse(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
+        appContext.getEnvironment().getEventContext().fireSyncEvent(HTTP_AFTER_RESPONSE,//
                 new HttpInfo(appContext, httpReq, httpRes));
     }
 }
