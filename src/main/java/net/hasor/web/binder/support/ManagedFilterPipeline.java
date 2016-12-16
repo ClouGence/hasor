@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web.binder.support;
-import net.hasor.web.ServletVersion;
 import net.hasor.web.WebAppContext;
 import net.hasor.web.binder.FilterPipeline;
 

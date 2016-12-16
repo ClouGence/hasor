@@ -58,6 +58,11 @@
             <module>net.hasor.restful.invoker.RestfulModule</module>
         </modules>
 
+        <!-- Binder扩展 -->
+        <apiBinderSet>
+            <binder type="net.hasor.web.WebApiBinder">net.hasor.web.binder.support.WebApiBinderCreater</binder>
+        </apiBinderSet>
+
         <!-- 默认设置 -->
         <default>
             <!-- 默认不启用单例模式 -->

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.web.binder.support;
+import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Environment;
 import net.hasor.core.Provider;
-import net.hasor.core.binder.AbstractBinder;
+import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebEnvironment;
@@ -37,9 +37,9 @@ import java.util.Map;
  * @version : 2013-4-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractWebApiBinder extends AbstractBinder implements WebApiBinder {
-    public AbstractWebApiBinder(Environment environment) {
-        super(environment);
+class InnerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
+    public InnerWebApiBinder(ApiBinder apiBinder) {
+        super(apiBinder);
     }
     @Override
     public ServletContext getServletContext() {
@@ -52,10 +52,6 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
     @Override
     public WebEnvironment getEnvironment() {
         return (WebEnvironment) super.getEnvironment();
-    }
-    //
-    protected Class<?> getBinderSource() {
-        return WebApiBinder.class;
     }
     //
     /*--------------------------------------------------------------------------------------Utils*/
@@ -76,7 +72,7 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
     /*-------------------------------------------------------------------------------------Filter*/
     @Override
     public FilterBindingBuilder filter(final String urlPattern, final String... morePatterns) {
-        return new FiltersModuleBinder(UriPatternType.SERVLET, AbstractWebApiBinder.newArrayList(morePatterns, urlPattern));
+        return new FiltersModuleBinder(UriPatternType.SERVLET, InnerWebApiBinder.newArrayList(morePatterns, urlPattern));
     }
     @Override
     public FilterBindingBuilder filter(final String[] morePatterns) throws NullPointerException {
@@ -87,7 +83,7 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
     }
     @Override
     public FilterBindingBuilder filterRegex(final String regex, final String... regexes) {
-        return new FiltersModuleBinder(UriPatternType.REGEX, AbstractWebApiBinder.newArrayList(regexes, regex));
+        return new FiltersModuleBinder(UriPatternType.REGEX, InnerWebApiBinder.newArrayList(regexes, regex));
     }
     @Override
     public FilterBindingBuilder filterRegex(final String[] regexes) throws NullPointerException {
@@ -184,7 +180,7 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
     /*------------------------------------------------------------------------------------Servlet*/
     @Override
     public ServletBindingBuilder serve(final String urlPattern, final String... morePatterns) {
-        return new ServletsModuleBuilder(UriPatternType.SERVLET, AbstractWebApiBinder.newArrayList(morePatterns, urlPattern));
+        return new ServletsModuleBuilder(UriPatternType.SERVLET, InnerWebApiBinder.newArrayList(morePatterns, urlPattern));
     }
     @Override
     public ServletBindingBuilder serve(final String[] morePatterns) {
@@ -195,7 +191,7 @@ public abstract class AbstractWebApiBinder extends AbstractBinder implements Web
     }
     @Override
     public ServletBindingBuilder serveRegex(final String regex, final String... regexes) {
-        return new ServletsModuleBuilder(UriPatternType.REGEX, AbstractWebApiBinder.newArrayList(regexes, regex));
+        return new ServletsModuleBuilder(UriPatternType.REGEX, InnerWebApiBinder.newArrayList(regexes, regex));
     }
     @Override
     public ServletBindingBuilder serveRegex(final String[] regexes) {

@@ -1,6 +1,11 @@
 ﻿===== Hasor-Core v2.5.3 (2016-12-?)
+* 新增:
+    01.新增 net.hasor.core.binder.ApiBinderCreater 接口可以自定义 ApiBinder 的扩展。
 * 修复:
     01.Fix HasorUnitRunner 在 JUnit 4.12 版本上 computeTestMethods 方法出现异常的问题。
+* 改进:
+    01.WebApiBinder 使用 ApiBinderCreater 机制提供。
+
 
 ===== Hasor-Core v2.5.2 (2016-12-01)
 * 新增:

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.web;
-import java.util.Map;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.BindInfo;
+import net.hasor.core.Provider;
+
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
-
-import net.hasor.core.ApiBinder;
-import net.hasor.core.BindInfo;
-import net.hasor.core.Provider;
+import java.util.Map;
 /**
  * 提供了注册Servlet和Filter的方法。
  * @version : 2013-4-10
@@ -35,7 +35,6 @@ public interface WebApiBinder extends ApiBinder {
 
     /**获取容器支持的Servlet版本。*/
     public ServletVersion getServletVersion();
-    //
 
     /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
     public FilterBindingBuilder filter(String urlPattern, String... morePatterns);
@@ -60,14 +59,13 @@ public interface WebApiBinder extends ApiBinder {
 
     /**使用正则表达式，创建一个{@link ServletBindingBuilder}。*/
     public ServletBindingBuilder serveRegex(String[] regexes);
-    //
 
     /**注册一个Session监听器。*/
     public SessionListenerBindingBuilder sessionListener();
 
     /**注册一个ServletContextListener监听器。*/
     public ServletContextListenerBindingBuilder contextListener();
-    //
+
     /**负责配置Filter。*/
     public static interface FilterBindingBuilder {
         public void through(Class<? extends Filter> filterKey);

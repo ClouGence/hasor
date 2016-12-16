@@ -16,6 +16,8 @@
 package net.hasor.core.context;
 import net.hasor.core.*;
 import net.hasor.core.binder.AbstractBinder;
+import net.hasor.core.binder.ApiBinderCreater;
+import net.hasor.core.binder.ApiBinderInvocationHandler;
 import net.hasor.core.binder.BinderHelper;
 import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.BeanContainer;
@@ -27,10 +29,8 @@ import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.lang.reflect.Proxy;
+import java.util.*;
 /**
  * 抽象类 AbstractAppContext 是 {@link AppContext} 接口的基础实现。
  * <p>它包装了大量细节代码，可以方便的通过子类来创建独特的上下文支持。<p>
@@ -335,8 +335,33 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
     //
     /*--------------------------------------------------------------------------------------Utils*/
     /**为模块创建ApiBinder。*/
-    protected ApiBinder newApiBinder(final Module forModule) {
-        return new AbstractBinder(this.getEnvironment()) {
+    protected ApiBinder newApiBinder() throws Throwable {
+        // .寻找ApiBinder扩展
+        Map<Class<?>, Class<?>> extBinderMap = new HashMap<Class<?>, Class<?>>();
+        XmlNode[] nodeArray = this.getEnvironment().getSettings().getXmlNodeArray("hasor.apiBinderSet.binder");
+        if (nodeArray != null || nodeArray.length > 0) {
+            for (XmlNode atNode : nodeArray) {
+                if (atNode == null) {
+                    continue;
+                }
+                String binderTypeStr = atNode.getAttribute("type");
+                String binderImplStr = atNode.getText();
+                if (StringUtils.isBlank(binderTypeStr) || StringUtils.isBlank(binderImplStr)) {
+                    continue;
+                }
+                //
+                Class<?> binderType = getEnvironment().getClassLoader().loadClass(binderTypeStr);
+                Class<?> binderImpl = getEnvironment().getClassLoader().loadClass(binderImplStr);
+                if (!binderType.isInterface()) {
+                    continue;
+                }
+                //
+                extBinderMap.put(binderType, binderImpl);
+            }
+        }
+        // .创建扩展
+        Map<Class<?>, Object> supportMap = new HashMap<Class<?>, Object>();
+        AbstractBinder binder = new AbstractBinder(this.getEnvironment()) {
             protected BeanBuilder getBeanBuilder() {
                 return getContainer();
             }
@@ -344,6 +369,19 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
                 return getContainer();
             }
         };
+        supportMap.put(ApiBinder.class, binder);
+        for (Map.Entry<Class<?>, Class<?>> ent : extBinderMap.entrySet()) {
+            ApiBinderCreater creater = (ApiBinderCreater) ent.getValue().newInstance();
+            Object exter = creater.createBinder(binder);
+            //
+            if (exter != null) {
+                supportMap.put(ent.getKey(), exter);
+            }
+        }
+        //
+        // .返回
+        Class<?>[] apiArrays = supportMap.keySet().toArray(new Class<?>[supportMap.size()]);
+        return (ApiBinder) Proxy.newProxyInstance(this.getClassLoader(), apiArrays, new ApiBinderInvocationHandler(supportMap));
     }
     /**当完成所有初始化过程之后调用，负责向 Context 绑定一些预先定义的类型。*/
     protected void doBind(final ApiBinder apiBinder) {
@@ -389,7 +427,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         return this.getEnvironment().getClassLoader();
     }
     /**安装模块的工具方法。*/
-    protected void installModule(Module module) throws Throwable {
+    protected void installModule(ApiBinder apiBinder, Module module) throws Throwable {
         if (this.isStart()) {
             throw new IllegalStateException("AppContent is started.");
         }
@@ -399,9 +437,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         if (logger.isInfoEnabled()) {
             logger.info("loadModule " + module.getClass());
         }
-        ApiBinder apiBinder = this.newApiBinder(module);
         module.loadModule(apiBinder);
-        //
         BinderHelper.onInstall(this.getEnvironment(), module);
     }
     /**
@@ -423,12 +459,12 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         logger.info("appContext -> doInitialize.");
         doInitialize();
         /*3.Bind*/
+        ApiBinder apiBinder = newApiBinder();
         for (Module module : findModules) {
             if (module == null)
                 continue;
-            this.installModule(module);
+            this.installModule(apiBinder, module);
         }
-        ApiBinder apiBinder = newApiBinder(null);
         logger.info("appContext -> doBind.");
         doBind(apiBinder);
         /*4.引发事件*/

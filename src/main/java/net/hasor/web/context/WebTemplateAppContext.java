@@ -15,11 +15,8 @@
  */
 package net.hasor.web.context;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Module;
 import net.hasor.core.Provider;
-import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.BeanContainer;
-import net.hasor.core.container.ScopManager;
 import net.hasor.core.context.DataContextCreater;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.web.ServletVersion;
@@ -27,7 +24,6 @@ import net.hasor.web.WebAppContext;
 import net.hasor.web.WebEnvironment;
 import net.hasor.web.binder.FilterPipeline;
 import net.hasor.web.binder.ListenerPipeline;
-import net.hasor.web.binder.support.AbstractWebApiBinder;
 import net.hasor.web.binder.support.ManagedFilterPipeline;
 import net.hasor.web.binder.support.ManagedListenerPipeline;
 import net.hasor.web.binder.support.ManagedServletPipeline;
@@ -63,18 +59,6 @@ public class WebTemplateAppContext<C extends BeanContainer> extends StatusAppCon
     public ServletVersion getServletVersion() {
         return this.getEnvironment().getServletVersion();
     }
-    /**为模块创建ApiBinder*/
-    @Override
-    protected AbstractWebApiBinder newApiBinder(final Module forModule) {
-        return new AbstractWebApiBinder(this.getEnvironment()) {
-            protected BeanBuilder getBeanBuilder() {
-                return getContainer();
-            }
-            protected ScopManager getScopManager() {
-                return getContainer();
-            }
-        };
-    }
     /**当完成所有初始化过程之后调用，负责向 Context 绑定一些预先定义的类型。*/
     protected void doBind(final ApiBinder apiBinder) {
         super.doBind(apiBinder);
@@ -104,14 +88,6 @@ public class WebTemplateAppContext<C extends BeanContainer> extends StatusAppCon
                 return appContet.getEnvironment().getServletVersion();
             }
         });
-        //
-        ManagedServletPipeline sPipline = new ManagedServletPipeline();
-        ManagedFilterPipeline fPipline = new ManagedFilterPipeline(sPipline);
-        ManagedListenerPipeline lPipline = new ManagedListenerPipeline();
-        //
-        apiBinder.bindType(ManagedServletPipeline.class).toInstance(sPipline);
-        apiBinder.bindType(FilterPipeline.class).toInstance(fPipline);
-        apiBinder.bindType(ListenerPipeline.class).toInstance(lPipline);
         //
     }
 }
