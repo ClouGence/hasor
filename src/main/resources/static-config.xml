@@ -3,6 +3,7 @@
     <!-- 框架配置，包扫描范围 -->
     <hasor>
         <loadPackages>net.hasor.rsf.*</loadPackages>
+
         <modules>
             <!-- RSF框架本体 -->
             <module>net.hasor.rsf.bootstrap.RsfFrameworkModule</module>
@@ -16,6 +17,11 @@
             <!-- Web支持插件 -->
             <module>net.hasor.rsf.web.RsfWebModule</module>
         </modules>
+
+        <!-- Binder扩展 -->
+        <apiBinderSet>
+            <binder type="net.hasor.rsf.RsfApiBinder">net.hasor.rsf.container.RsfApibinerCreater</binder>
+        </apiBinderSet>
 
         <!-- RSF框架环境变量 -->
         <environmentVar>

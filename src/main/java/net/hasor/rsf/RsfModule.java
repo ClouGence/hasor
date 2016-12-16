@@ -15,16 +15,10 @@
  */
 package net.hasor.rsf;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.BindInfo;
 import net.hasor.core.Environment;
 import net.hasor.core.Module;
-import net.hasor.rsf.container.InnerRsfApiBinder;
-import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.List;
 /**
  * Rsf 制定 Hasor Module。
  * @version : 2014年11月12日
@@ -34,14 +28,18 @@ public abstract class RsfModule implements Module, RsfPlugin {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public final void loadModule(final ApiBinder apiBinder) throws Throwable {
+        // .只有Web环境才启用该功能
+        if (!(apiBinder instanceof RsfApiBinder)) {
+            return;
+        }
+        //
         Environment env = apiBinder.getEnvironment();
         boolean enable = env.getSettings().getBoolean("hasor.rsfConfig.enable", false);
         if (!enable) {
             logger.info("rsf framework disable -> 'hasor.rsfConfig.enable' is false");
             return;
         }
-        RsfEnvironment rsfEnv = initAntGetEnvironment(apiBinder);
-        this.loadModule(new InnerRsfApiBinder(apiBinder, rsfEnv));
+        this.loadModule((RsfApiBinder) apiBinder);
     }
     public static RsfModule toModule(final RsfPlugin rsfPlugin) {
         return new RsfModule() {
@@ -49,22 +47,6 @@ public abstract class RsfModule implements Module, RsfPlugin {
                 rsfPlugin.loadModule(apiBinder);
             }
         };
-    }
-    private synchronized static RsfEnvironment initAntGetEnvironment(ApiBinder apiBinder) throws IOException {
-        List<BindInfo<RsfEnvironment>> rsfEnvList = apiBinder.findBindingRegister(RsfEnvironment.class);
-        RsfEnvironment rsfEnv = null;
-        if (rsfEnvList != null && !rsfEnvList.isEmpty()) {
-            for (BindInfo<RsfEnvironment> info : rsfEnvList) {
-                rsfEnv = (RsfEnvironment) info.getMetaData(RsfEnvironment.class.getName());
-                if (rsfEnv != null) {
-                    return rsfEnv;
-                }
-            }
-        }
-        rsfEnv = new DefaultRsfEnvironment(apiBinder.getEnvironment());
-        BindInfo<RsfEnvironment> info = apiBinder.bindType(RsfEnvironment.class).toInstance(rsfEnv).toInfo();
-        info.setMetaData(RsfEnvironment.class.getName(), rsfEnv);
-        return rsfEnv;
     }
     public abstract void loadModule(RsfApiBinder apiBinder) throws Throwable;
 }

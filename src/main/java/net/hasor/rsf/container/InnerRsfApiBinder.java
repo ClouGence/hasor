@@ -29,12 +29,9 @@ import java.util.Set;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiBinder {
+class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiBinder {
     private final ApiBinder      apiBinder;
     private final RsfEnvironment rsfEnvironment;
-    public ApiBinder getSourceBinder() {
-        return this.apiBinder;
-    }
     public InnerRsfApiBinder(ApiBinder apiBinder, RsfEnvironment rsfEnvironment) {
         super();
         this.apiBinder = new ApiBinderWrap(Hasor.assertIsNotNull(apiBinder));
