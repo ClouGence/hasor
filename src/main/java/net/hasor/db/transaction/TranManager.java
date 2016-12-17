@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 package net.hasor.db.transaction;
-import java.sql.Connection;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import javax.sql.DataSource;
-
 import net.hasor.core.Hasor;
 import net.hasor.db.datasource.ConnectionHolder;
 import net.hasor.db.datasource.DataSourceManager;
 import net.hasor.db.transaction.support.JdbcTransactionManager;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 /**
  * 某一个数据源的事务管理器
  * @version : 2013-10-30
  * @author 赵永春(zyc@hasor.net)
  */
 public class TranManager extends DataSourceManager {
-    private final static ThreadLocal<ConcurrentMap<DataSource, DefaultTransactionManager>> managerMap;
-    private final static ThreadLocal<ConcurrentMap<DataSource, ConnectionHolder>>          currentMap;
+    private final static ThreadLocal<ConcurrentMap<DataSource, JdbcTransactionManager>> managerMap;
+    private final static ThreadLocal<ConcurrentMap<DataSource, ConnectionHolder>>       currentMap;
 
     static {
-        managerMap = new ThreadLocal<ConcurrentMap<DataSource, DefaultTransactionManager>>() {
-            protected ConcurrentMap<DataSource, DefaultTransactionManager> initialValue() {
-                return new ConcurrentHashMap<DataSource, DefaultTransactionManager>();
+        managerMap = new ThreadLocal<ConcurrentMap<DataSource, JdbcTransactionManager>>() {
+            protected ConcurrentMap<DataSource, JdbcTransactionManager> initialValue() {
+                return new ConcurrentHashMap<DataSource, JdbcTransactionManager>();
             }
         };
         currentMap = new ThreadLocal<ConcurrentMap<DataSource, ConnectionHolder>>() {
@@ -73,12 +73,13 @@ public class TranManager extends DataSourceManager {
     }
     //
     /**获取事务管理器*/
-    private static synchronized DefaultTransactionManager getTransactionManager(final DataSource dataSource) {
+    private static synchronized JdbcTransactionManager getTransactionManager(final DataSource dataSource) {
         Hasor.assertIsNotNull(dataSource);
-        ConcurrentMap<DataSource, DefaultTransactionManager> localMap = managerMap.get();
-        DefaultTransactionManager manager = localMap.get(dataSource);
+        ConcurrentMap<DataSource, JdbcTransactionManager> localMap = managerMap.get();
+        JdbcTransactionManager manager = localMap.get(dataSource);
         if (manager == null) {
-            manager = localMap.putIfAbsent(dataSource, new DefaultTransactionManager(dataSource));
+            manager = localMap.putIfAbsent(dataSource, new JdbcTransactionManager(dataSource) {
+            });
             manager = localMap.get(dataSource);
         }
         return manager;
@@ -89,15 +90,10 @@ public class TranManager extends DataSourceManager {
     }
     /**获取{@link TransactionTemplate}*/
     public static synchronized TransactionTemplate getTemplate(DataSource dataSource) {
-        DefaultTransactionManager manager = getTransactionManager(dataSource);
+        JdbcTransactionManager manager = getTransactionManager(dataSource);
         if (manager == null) {
             return null;
         }
         return manager.getTransactionTemplate();
-    }
-}
-class DefaultTransactionManager extends JdbcTransactionManager {
-    public DefaultTransactionManager(final DataSource dataSource) {
-        super(dataSource);
     }
 }

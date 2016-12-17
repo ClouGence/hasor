@@ -20,7 +20,6 @@ import net.hasor.core.EventListener;
 import org.more.util.NameThreadFactory;
 import org.more.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 /**
@@ -165,40 +164,5 @@ public class StandardEventManager implements EventContext {
     public void release() {
         this.executorService.shutdownNow();
         this.listenerMap.clear();
-    }
-}
-//
-class EventListenerPool {
-    private final Object ONCE_LOCK = new Object();
-    private       ArrayList<EventListener<?>>            onceListener;
-    private final CopyOnWriteArrayList<EventListener<?>> listenerList;
-    //
-    public EventListenerPool() {
-        onceListener = new ArrayList<EventListener<?>>();
-        listenerList = new CopyOnWriteArrayList<EventListener<?>>();
-    }
-    //
-    public void pushOnceListener(EventListener<?> eventListener) {
-        synchronized (ONCE_LOCK) {
-            onceListener.add(eventListener);
-        }
-    }
-    public void addListener(EventListener<?> eventListener) {
-        listenerList.add(eventListener);
-    }
-    //
-    public List<EventListener<?>> popOnceListener() {
-        List<EventListener<?>> onceList = null;
-        synchronized (ONCE_LOCK) {
-            onceList = this.onceListener;
-            this.onceListener = new ArrayList<EventListener<?>>();
-        }
-        return onceList;
-    }
-    public List<EventListener<?>> getListenerSnapshot() {
-        return new ArrayList<EventListener<?>>(this.listenerList);
-    }
-    public void removeListener(EventListener<?> eventListener) {
-        listenerList.remove(eventListener);
     }
 }

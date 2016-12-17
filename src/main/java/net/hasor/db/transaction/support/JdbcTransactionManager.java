@@ -14,27 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.db.transaction.support;
-import static net.hasor.db.transaction.Propagation.MANDATORY;
-import static net.hasor.db.transaction.Propagation.NESTED;
-import static net.hasor.db.transaction.Propagation.NEVER;
-import static net.hasor.db.transaction.Propagation.NOT_SUPPORTED;
-import static net.hasor.db.transaction.Propagation.REQUIRED;
-import static net.hasor.db.transaction.Propagation.REQUIRES_NEW;
-
-import java.sql.SQLException;
-import java.util.LinkedList;
-import javax.sql.DataSource;
-
 import net.hasor.core.Hasor;
 import net.hasor.db.datasource.ConnectionHolder;
-import net.hasor.db.transaction.Isolation;
-import net.hasor.db.transaction.Propagation;
-import net.hasor.db.transaction.TranManager;
-import net.hasor.db.transaction.TransactionManager;
-import net.hasor.db.transaction.TransactionStatus;
-import net.hasor.db.transaction.TransactionTemplate;
+import net.hasor.db.transaction.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import java.sql.SQLException;
+import java.util.LinkedList;
+
+import static net.hasor.db.transaction.Propagation.*;
 /**
  * 某一个数据源的事务管理器
  *
@@ -376,14 +366,5 @@ public class JdbcTransactionManager implements TransactionManager {
     /**获取对应的{@link TransactionTemplate}。*/
     public TransactionTemplate getTransactionTemplate() {
         return this.transactionTemplate;
-    }
-}
-/** */
-class SyncTransactionManager extends TranManager {
-    public static void setSync(TransactionObject tranConn) {
-        currentConnection(tranConn.getDataSource(), tranConn.getHolder());
-    }
-    public static void clearSync(DataSource dataSource) {
-        currentConnection(dataSource, null);
     }
 }

@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.db.datasource;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import javax.sql.DataSource;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
-import javax.sql.DataSource;
 /**
  *
  * @version : 2013-10-30
@@ -39,46 +36,9 @@ public class DataSourceManager {
         return new ConnectionHolder(dataSource);
     }
     //
-    //
-    //
     /**获取与本地线程绑定的数据库连接，JDBC 框架会维护这个连接的事务。开发者不必关心该连接的事务管理，以及资源释放操作。*/
     protected static ConnectionProxy newProxyConnection(ConnectionHolder holder) {
-        //
         CloseSuppressingInvocationHandler handler = new CloseSuppressingInvocationHandler(holder);
-        return (ConnectionProxy) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] {ConnectionProxy.class}, handler);
-    }
-}
-/**Connection 接口代理，目的是为了控制一些方法的调用。同时进行一些特殊类型的处理。*/
-class CloseSuppressingInvocationHandler implements InvocationHandler {
-    private final ConnectionHolder holder;
-    private       Connection       connection;
-    public CloseSuppressingInvocationHandler(ConnectionHolder holder) {
-        this.holder = holder;
-        this.holder.requested();//ref++
-    }
-    @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-        this.connection = holder.getConnection();
-        //
-        if (method.getName().equals("getTargetConnection"))
-            return this.connection;
-        else if (method.getName().equals("getTargetSource"))
-            return this.holder.getDataSource();
-        else if (method.getName().equals("equals"))
-            return proxy == args[0];
-        else if (method.getName().equals("hashCode"))
-            return System.identityHashCode(proxy);
-        else if (method.getName().equals("close")) {
-            if (holder.isOpen()) {
-                holder.released();//ref--
-            }
-            return null;
-        }
-        //
-        try {
-            return method.invoke(this.connection, args);
-        } catch (InvocationTargetException ex) {
-            throw ex.getTargetException();
-        }
+        return (ConnectionProxy) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] { ConnectionProxy.class }, handler);
     }
 }
