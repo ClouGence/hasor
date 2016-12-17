@@ -60,7 +60,7 @@
 
         <!-- Binder扩展 -->
         <apiBinderSet>
-            <binder type="net.hasor.web.WebApiBinder">net.hasor.web.binder.support.WebApiBinderCreater</binder>
+            <binder type="net.hasor.web.WebApiBinder">net.hasor.web.binder.WebApiBinderCreater</binder>
         </apiBinderSet>
 
         <!-- 默认设置 -->

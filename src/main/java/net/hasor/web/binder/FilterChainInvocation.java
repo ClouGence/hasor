@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.binder.support;
+package net.hasor.web.binder;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

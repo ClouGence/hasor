@@ -13,28 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.binder.support;
+package net.hasor.web.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 /**
  *
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */
-class ContextListenerDefinition {
-    private BindInfo<ServletContextListener> listenerRegister = null;
-    private ServletContextListener           listenerInstance = null;
-    private AppContext                       appContext       = null;
+class HttpSessionListenerDefinition {
+    private BindInfo<HttpSessionListener> listenerRegister = null;
+    private HttpSessionListener           listenerInstance = null;
+    private AppContext                    appContext       = null;
     //
-    //
-    public ContextListenerDefinition(final BindInfo<ServletContextListener> listenerRegister) {
+    public HttpSessionListenerDefinition(final BindInfo<HttpSessionListener> listenerRegister) {
         this.listenerRegister = listenerRegister;
     }
     //
-    protected ServletContextListener getTarget() {
+    protected HttpSessionListener getTarget() {
         if (this.listenerInstance == null) {
             this.listenerInstance = this.appContext.getInstance(this.listenerRegister);
         }
@@ -42,8 +41,7 @@ class ContextListenerDefinition {
     }
     @Override
     public String toString() {
-        return String.format("type %s listenerKey=%s", //
-                ContextListenerDefinition.class, this.listenerInstance);
+        return String.format("type %s listenerKey=%s", HttpSessionListenerDefinition.class, this.listenerInstance);
     }
     /**/
     public void init(final AppContext appContext) {
@@ -52,17 +50,17 @@ class ContextListenerDefinition {
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/
-    public void contextInitialized(final ServletContextEvent event) {
-        ServletContextListener servletContextListener = this.getTarget();
-        if (servletContextListener != null) {
-            servletContextListener.contextInitialized(event);
+    public void sessionCreated(final HttpSessionEvent event) {
+        HttpSessionListener httpSessionListener = this.getTarget();
+        if (httpSessionListener != null) {
+            httpSessionListener.sessionCreated(event);
         }
     }
     /**/
-    public void contextDestroyed(final ServletContextEvent event) {
-        ServletContextListener servletContextListener = this.getTarget();
-        if (servletContextListener != null) {
-            servletContextListener.contextDestroyed(event);
+    public void sessionDestroyed(final HttpSessionEvent event) {
+        HttpSessionListener httpSessionListener = this.getTarget();
+        if (httpSessionListener != null) {
+            httpSessionListener.sessionDestroyed(event);
         }
     }
 }
