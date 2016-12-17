@@ -15,10 +15,8 @@
  */
 package net.hasor.web.binder.support;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.web.ServletVersion;
-import net.hasor.web.WebEnvironment;
 import net.hasor.web.binder.FilterPipeline;
 import net.hasor.web.binder.ListenerPipeline;
 
@@ -57,17 +55,11 @@ public class WebApiBinderCreater implements ApiBinderCreater {
             curVersion = ServletVersion.V3_1;
         } catch (Throwable e) { /* 忽略 */ }
         //
-        /*绑定Environment对象的Provider*/
-        apiBinder.bindType(WebEnvironment.class).toProvider(new Provider<WebEnvironment>() {
-            public WebEnvironment get() {
-                return (WebEnvironment) apiBinder.getEnvironment();
-            }
-        });
         /*绑定ServletContext对象的Provider*/
         apiBinder.bindType(ServletContext.class).toInstance(servletContext);
         /*绑定当前Servlet支持的版本*/
         apiBinder.bindType(ServletVersion.class).toInstance(curVersion);
         //
-        return new InnerWebApiBinder(apiBinder);
+        return new InnerWebApiBinder(curVersion, apiBinder);
     }
 }

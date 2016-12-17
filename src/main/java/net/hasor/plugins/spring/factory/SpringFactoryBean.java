@@ -18,7 +18,6 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.web.WebHasor;
 import org.more.util.ExceptionUtils;
 import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
@@ -185,9 +184,17 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
         AppContext appContext = null;
         if (testSupportWeb) {
             ServletContext sc = ((WebApplicationContext) context).getServletContext();
-            appContext = WebHasor.createWebAppContext(sc, mainSettings, envMap, loader, modules);
+            appContext = Hasor.create(sc)//
+                    .setMainSettings(mainSettings)//
+                    .setLoader(loader)//
+                    .putAllData(envMap)//
+                    .build(modules);//
         } else {
-            appContext = Hasor.createAppContext(mainSettings, envMap, loader, modules);
+            appContext = Hasor.create()//
+                    .setMainSettings(mainSettings)//
+                    .setLoader(loader)//
+                    .putAllData(envMap)//
+                    .build(modules);//
         }
         logger.info("create AppContext ,mainSettings = {} , modules = {}", mainSettings, modules);
         return appContext;

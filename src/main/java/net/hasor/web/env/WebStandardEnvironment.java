@@ -15,12 +15,9 @@
  */
 package net.hasor.web.env;
 import net.hasor.core.environment.StandardEnvironment;
-import net.hasor.web.ServletVersion;
-import net.hasor.web.WebEnvironment;
 
 import javax.servlet.ServletContext;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 /**
@@ -28,26 +25,14 @@ import java.util.Map;
  * @version : 2013-7-17
  * @author 赵永春 (zyc@hasor.net)
  */
-public class WebStandardEnvironment extends StandardEnvironment implements WebEnvironment {
+public class WebStandardEnvironment extends StandardEnvironment {
     public WebStandardEnvironment(ServletContext context, String mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader) throws IOException, URISyntaxException {
         super(context, mainSettings, loadEnvConfig, loader);
-    }
-    public WebStandardEnvironment(ServletContext context, URI mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader) throws IOException {
-        super(context, mainSettings, loadEnvConfig, loader);
-    }
-    //
-    @Override
-    public ServletContext getServletContext() {
-        return (ServletContext) this.getContext();
-    }
-    @Override
-    public ServletVersion getServletVersion() {
-        return (ServletVersion) this.getServletContext().getAttribute(ServletVersion.class.getName());
     }
     @Override
     protected void afterInitEnvironment() {
         super.afterInitEnvironment();
-        ServletContext sc = this.getServletContext();
+        ServletContext sc = (ServletContext) this.getContext();
         if (sc == null) {
             throw new NullPointerException("miss of ServletContext.");
         }

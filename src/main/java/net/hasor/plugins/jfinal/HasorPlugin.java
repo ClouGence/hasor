@@ -20,12 +20,10 @@ import com.jfinal.plugin.IPlugin;
 import net.hasor.core.*;
 import net.hasor.core.EventListener;
 import net.hasor.core.context.TemplateAppContext;
-import net.hasor.web.WebHasor;
 import net.hasor.web.startup.RuntimeFilter;
 import net.hasor.web.startup.RuntimeListener;
 import org.more.RepeateException;
 import org.more.util.ExceptionUtils;
-import org.more.util.StringUtils;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -130,22 +128,24 @@ public class HasorPlugin implements IPlugin {
         //
         // .初始化 Hasor WebAppContext，并且将 JFinal 的配置作为 Hasor 的环境变量
         final InnerMap finalEnvProp = envProp;
-        mainSettings = StringUtils.isBlank(mainSettings) ? TemplateAppContext.DefaultSettings : mainSettings;
-        return WebHasor.createWebAppContext(jFinal.getServletContext(), mainSettings, envProp, null, new Module() {
-            public void loadModule(ApiBinder apiBinder) throws Throwable {
-                // .注册类型
-                apiBinder.bindType(InnerMap.class).toInstance((finalEnvProp != null) ? finalEnvProp : new InnerMap());
-                apiBinder.bindType(JFinal.class).toInstance(jFinal);
-                apiBinder.bindType(RuntimeFilter.class).toProvider(new Provider<RuntimeFilter>() {
-                    public RuntimeFilter get() {
-                        return rootFilter;
+        return Hasor.create(jFinal.getServletContext())//
+                .setMainSettings(mainSettings)//
+                .putAllData(envProp)//
+                .build(new Module() {
+                    public void loadModule(ApiBinder apiBinder) throws Throwable {
+                        // .注册类型
+                        apiBinder.bindType(InnerMap.class).toInstance((finalEnvProp != null) ? finalEnvProp : new InnerMap());
+                        apiBinder.bindType(JFinal.class).toInstance(jFinal);
+                        apiBinder.bindType(RuntimeFilter.class).toProvider(new Provider<RuntimeFilter>() {
+                            public RuntimeFilter get() {
+                                return rootFilter;
+                            }
+                        });
+                        // .容器的StartModule
+                        if (startModule != null) {
+                            apiBinder.installModule(startModule);
+                        }
                     }
                 });
-                // .容器的StartModule
-                if (startModule != null) {
-                    apiBinder.installModule(startModule);
-                }
-            }
-        });
     }
 }

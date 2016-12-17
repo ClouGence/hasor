@@ -16,11 +16,11 @@
 package net.hasor.web.binder.support;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
+import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebEnvironment;
 import org.more.util.ArrayUtils;
 
 import javax.servlet.Filter;
@@ -38,20 +38,18 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 class InnerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
-    public InnerWebApiBinder(ApiBinder apiBinder) {
+    private ServletVersion curVersion;
+    public InnerWebApiBinder(ServletVersion curVersion, ApiBinder apiBinder) {
         super(apiBinder);
+        this.curVersion = Hasor.assertIsNotNull(curVersion);
     }
     @Override
     public ServletContext getServletContext() {
-        return this.getEnvironment().getServletContext();
+        return (ServletContext) this.getEnvironment().getContext();
     }
     @Override
     public ServletVersion getServletVersion() {
-        return this.getEnvironment().getServletVersion();
-    }
-    @Override
-    public WebEnvironment getEnvironment() {
-        return (WebEnvironment) super.getEnvironment();
+        return this.curVersion;
     }
     //
     /*--------------------------------------------------------------------------------------Utils*/

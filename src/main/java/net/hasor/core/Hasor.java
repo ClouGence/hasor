@@ -18,12 +18,16 @@ import net.hasor.core.container.BeanContainer;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
+import net.hasor.web.env.WebStandardEnvironment;
 import org.more.util.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletContext;
 import java.io.File;
 import java.net.URI;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 import static net.hasor.core.AppContext.ContextEvent_Shutdown;
@@ -33,8 +37,74 @@ import static net.hasor.core.AppContext.ContextEvent_Started;
  * @version : 2013-4-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class Hasor {
+public final class Hasor extends HashMap<String, String> {
     protected static Logger logger = LoggerFactory.getLogger(Hasor.class);
+    private final Object context;
+    private Object mainSettings = TemplateAppContext.DefaultSettings;
+    private ClassLoader loader;
+    //
+    Hasor(Object context) {
+        this.context = context;
+    }
+    public Hasor setMainSettings(File mainSettings) {
+        this.mainSettings = mainSettings;
+        return this;
+    }
+    public Hasor setMainSettings(URI mainSettings) {
+        this.mainSettings = mainSettings;
+        return this;
+    }
+    public Hasor setMainSettings(URL mainSettings) {
+        this.mainSettings = mainSettings;
+        return this;
+    }
+    public Hasor setMainSettings(String mainSettings) {
+        this.mainSettings = mainSettings;
+        return this;
+    }
+    public Hasor putAllData(Map<String, String> mapData) {
+        this.putAll(mapData);
+        return this;
+    }
+    public Hasor setLoader(ClassLoader loader) {
+        this.loader = loader;
+        return this;
+    }
+    /**用简易的方式创建{@link AppContext}容器。*/
+    public AppContext build(Module... modules) {
+        try {
+            Environment env = null;
+            if (this.context instanceof ServletContext) {
+                env = new WebStandardEnvironment((ServletContext) this.context, (String) mainSettings, this, loader);
+            } else if (this.mainSettings == null) {
+                logger.info("create AppContext ,mainSettings = {} , modules = {}", TemplateAppContext.DefaultSettings, modules);
+                env = new StandardEnvironment(this.context, TemplateAppContext.DefaultSettings, this, this.loader);
+            } else if (this.mainSettings instanceof String) {
+                logger.info("create AppContext ,mainSettings = {} , modules = {}", this.mainSettings, modules);
+                env = new StandardEnvironment(this.context, (String) this.mainSettings, this, this.loader);
+            } else if (this.mainSettings instanceof File) {
+                logger.info("create AppContext ,mainSettings = {} , modules = {}", this.mainSettings, modules);
+                env = new StandardEnvironment(this.context, (File) this.mainSettings, this, this.loader);
+            } else if (this.mainSettings instanceof URI) {
+                logger.info("create AppContext ,mainSettings = {} , modules = {}", this.mainSettings, modules);
+                env = new StandardEnvironment(this.context, (URI) this.mainSettings, this, this.loader);
+            } else if (this.mainSettings instanceof URL) {
+                logger.info("create AppContext ,mainSettings = {} , modules = {}", this.mainSettings, modules);
+                env = new StandardEnvironment(this.context, (URL) this.mainSettings, this, this.loader);
+            }
+            //
+            //
+            AppContext appContext = new StatusAppContext<BeanContainer>(env, new BeanContainer());
+            appContext.start(modules);
+            return appContext;
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
+    }
+    //
+    //
+    //
+    //
     /**
      * 将{@link AppContextAware}接口实现类注册到容器中，Hasor 会在启动的第一时间为这些对象执行注入。
      * @param awareProvider 需要被注册的 AppContextAware 接口实现对象。
@@ -105,68 +175,48 @@ public abstract class Hasor {
     //
     //
     //
+    /**用Builder的方式创建{@link AppContext}容器。*/
+    public static Hasor create() {
+        return new Hasor(null);
+    }
+    /**用Builder的方式创建{@link AppContext}容器。*/
+    public static Hasor create(Object context) {
+        return new Hasor(context);
+    }
+    //
+    //
+    //
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext() {
-        return Hasor.createAppContext(TemplateAppContext.DefaultSettings, null, null, new Module[0]);
+        return create(null).build();
     }
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext(Module... modules) {
-        return Hasor.createAppContext(TemplateAppContext.DefaultSettings, null, null, modules);
+        return create(null).build(modules);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext(File mainSettings) {
-        return Hasor.createAppContext(mainSettings, null, null, new Module[0]);
+        return create(null).setMainSettings(mainSettings).build();
     }
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext(String mainSettings) {
-        return Hasor.createAppContext(mainSettings, null, null, new Module[0]);
+        return create(null).setMainSettings(mainSettings).build();
     }
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext(URI mainSettings) {
-        return Hasor.createAppContext(mainSettings, null, null, new Module[0]);
+        return create(null).setMainSettings(mainSettings).build();
     }
     //
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext(File mainSettings, Module... modules) {
-        return Hasor.createAppContext(mainSettings, null, null, modules);
+        return create(null).setMainSettings(mainSettings).build(modules);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext(String mainSettings, Module... modules) {
-        return Hasor.createAppContext(mainSettings, null, null, modules);
+        return create(null).setMainSettings(mainSettings).build(modules);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
     public static AppContext createAppContext(URI mainSettings, Module... modules) {
-        return Hasor.createAppContext(mainSettings, null, null, modules);
-    }
-    //
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(File mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader, Module... modules) {
-        return Hasor.createAppContext(mainSettings.toURI(), loadEnvConfig, loader, modules);
-    }
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(String mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader, Module... modules) {
-        logger.info("create AppContext ,mainSettings = {} , modules = {}", mainSettings, modules);
-        //
-        try {
-            Environment env = new StandardEnvironment(null, mainSettings, loadEnvConfig, loader);
-            AppContext appContext = new StatusAppContext<BeanContainer>(env, new BeanContainer());
-            appContext.start(modules);
-            return appContext;
-        } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
-        }
-    }
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(URI mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader, Module... modules) {
-        logger.info("create AppContext ,mainSettings = {} , modules = {}", mainSettings, modules);
-        //
-        try {
-            Environment env = new StandardEnvironment(null, mainSettings, loadEnvConfig, loader);
-            AppContext appContext = new StatusAppContext<BeanContainer>(env, new BeanContainer());
-            appContext.start(modules);
-            return appContext;
-        } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
-        }
+        return create(null).setMainSettings(mainSettings).build(modules);
     }
 }
