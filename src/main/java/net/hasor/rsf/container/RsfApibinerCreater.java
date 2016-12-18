@@ -16,10 +16,13 @@
 package net.hasor.rsf.container;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
+import net.hasor.core.Environment;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,8 +32,16 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfApibinerCreater implements ApiBinderCreater {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public RsfApiBinder createBinder(ApiBinder apiBinder) throws IOException {
+        Environment env = apiBinder.getEnvironment();
+        boolean enable = env.getSettings().getBoolean("hasor.rsfConfig.enable", false);
+        if (!enable) {
+            logger.info("rsf framework disable -> 'hasor.rsfConfig.enable' is false");
+            return null;
+        }
+        //
         RsfEnvironment rsfEnvironment = initAntGetEnvironment(apiBinder);
         return new InnerRsfApiBinder(apiBinder, rsfEnvironment);
     }

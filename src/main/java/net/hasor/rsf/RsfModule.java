@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Environment;
 import net.hasor.core.Module;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,29 +23,13 @@ import org.slf4j.LoggerFactory;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class RsfModule implements Module, RsfPlugin {
+public abstract class RsfModule implements Module {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public final void loadModule(final ApiBinder apiBinder) throws Throwable {
-        // .只有Web环境才启用该功能
-        if (!(apiBinder instanceof RsfApiBinder)) {
-            return;
+        if (apiBinder instanceof RsfApiBinder) {
+            this.loadModule((RsfApiBinder) apiBinder);
         }
-        //
-        Environment env = apiBinder.getEnvironment();
-        boolean enable = env.getSettings().getBoolean("hasor.rsfConfig.enable", false);
-        if (!enable) {
-            logger.info("rsf framework disable -> 'hasor.rsfConfig.enable' is false");
-            return;
-        }
-        this.loadModule((RsfApiBinder) apiBinder);
-    }
-    public static RsfModule toModule(final RsfPlugin rsfPlugin) {
-        return new RsfModule() {
-            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-                rsfPlugin.loadModule(apiBinder);
-            }
-        };
     }
     public abstract void loadModule(RsfApiBinder apiBinder) throws Throwable;
 }
