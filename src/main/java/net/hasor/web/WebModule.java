@@ -27,12 +27,9 @@ public abstract class WebModule implements Module {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public final void loadModule(final ApiBinder apiBinder) throws Throwable {
-        if (!(apiBinder instanceof WebApiBinder)) {
-            logger.warn("need web environment ,WebModule=‘{}’", this.getClass());
-            return;
+        if (apiBinder instanceof WebApiBinder) {
+            this.loadModule((WebApiBinder) apiBinder);
         }
-        this.loadModule((WebApiBinder) apiBinder);
-        logger.info("‘{}’ Plug-in loaded successfully", this.getClass());
     }
     public abstract void loadModule(WebApiBinder apiBinder) throws Throwable;
 }
