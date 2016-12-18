@@ -17,6 +17,14 @@ package net.hasor.core;
 import java.util.Set;
 /**
  * 环境支持
+ *
+ * 环境变量来源以及加载顺序，靠后顺位会覆盖前一顺位的重复配置。
+ * <li>1st，System.getenv()</li>
+ * <li>2st，System.getProperties()</li>
+ * <li>3st，配置文件"hasor.environmentVar"</li>
+ * <li>4st，属性文件"env.config"</li>
+ * <li>5st，"Hasor.put*"的配置</li>
+ *
  * @version : 2013-6-19
  * @author 赵永春 (zyc@hasor.net)
  */

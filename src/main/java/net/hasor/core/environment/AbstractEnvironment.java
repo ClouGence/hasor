@@ -143,48 +143,6 @@ public abstract class AbstractEnvironment implements Environment {
         return evalString("%" + WORK_HOME + "%/");
     }
     //
-    //    private static volatile long lastLong = 0;
-    //    private static long nextLong() {
-    //        long lastLongTemp = System.currentTimeMillis();
-    //        while (true) {
-    //            if (lastLongTemp != lastLong) {
-    //                lastLong = lastLongTemp;
-    //                break;
-    //            }
-    //        }
-    //        return lastLong;
-    //    }
-    //    /**在缓存目录内创建一个不重名的临时文件名。 */
-    //    public synchronized File uniqueTempFile() throws IOException {
-    //        long markTime = nextLong();
-    //        String atPath = this.genPath(markTime, 512);
-    //        String fileName = atPath.substring(0, atPath.length() - 1) + "_" + String.valueOf(markTime) + ".tmp";
-    //        File tmpFile = new File(this.evalString(Environment.HASOR_TEMP_PATH), fileName);
-    //        tmpFile.getParentFile().mkdirs();
-    //        tmpFile.createNewFile();
-    //        if (logger.isInfoEnabled()) {
-    //            logger.info("create Temp File at :" + tmpFile);
-    //        }
-    //        return tmpFile;
-    //    }
-    //    /**
-    //     * 生成路径算法生成一个Path
-    //     * @param number 参考数字
-    //     * @param size 每个目录下可以拥有的子目录或文件数目。
-    //     */
-    //    public String genPath(long number, final int size) {
-    //        StringBuilder buffer = new StringBuilder();
-    //        long b = size;
-    //        long c = number;
-    //        do {
-    //            long m = number % b;
-    //            buffer.append(m + File.separator);
-    //            c = number / b;
-    //            number = c;
-    //        } while (c > 0);
-    //        return buffer.reverse().toString();
-    //    }
-    //
     private String formatMap4log(final int colWidth, final Map<String, String> mapData) {
         /*输出系统环境变量日志*/
         StringBuilder outLog = new StringBuilder("");
@@ -256,103 +214,13 @@ public abstract class AbstractEnvironment implements Environment {
     /* ------------------------------------------------------------------------------------ init */
     /**初始化方法*/
     protected final void initEnvironment(Map<String, String> loadEnvConfig) throws IOException {
-        //
         // .load & init
         this.envMap = new ConcurrentHashMap<String, String>();
         if (this.logger.isDebugEnabled()) {
             this.logger.debug("load envVars...");
         }
-        //
-        // .系统环境变量 & Java系统属性
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug("envVars.reload -> System.getenv().");
-        }
-        Map<String, String> envMap = System.getenv();
-        for (String key : envMap.keySet()) {
-            this.envMap.put(key.toUpperCase(), envMap.get(key));
-        }
-        // .Java属性
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug("envVars.reload -> System.getProperties().");
-        }
-        Properties prop = System.getProperties();
-        for (Object propKey : prop.keySet()) {
-            String k = propKey.toString();
-            Object v = prop.get(propKey);
-            if (v != null) {
-                this.envMap.put(k.toUpperCase(), v.toString());
-            }
-        }
-        //
-        // .内部配置文件配置
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug("envVars.reload -> settings.");
-        }
-        Settings settings = getSettings();
-        XmlNode[] xmlPropArray = settings.getXmlNodeArray("hasor.environmentVar");
-        List<String> envNames = new ArrayList<String>();//用于收集环境变量名称
-        for (XmlNode xmlProp : xmlPropArray) {
-            for (XmlNode envItem : xmlProp.getChildren()) {
-                envNames.add(envItem.getName().toUpperCase());
-            }
-        }
-        for (String envItem : envNames) {
-            if (this.envMap.containsKey(envItem)) {
-                String val = this.envMap.get(envItem);
-                if (StringUtils.isNotBlank(val)) {
-                    this.logger.warn("environmentVar {} is define, ignored. value is {}", envItem, val);
-                    continue;
-                }
-            }
-            this.envMap.put(envItem, settings.getString("hasor.environmentVar." + envItem));
-        }
-        //
-        // .单独处理RUN_PATH
-        String runPath = new File("").getAbsolutePath();
-        this.envMap.put("RUN_PATH", runPath);
-        if (this.logger.isInfoEnabled()) {
-            this.logger.info("runPath at {}", runPath);
-        }
-        //
-        // .after ( 使用一个临时的Map作为媒介调用afterInitEnvironment,当处理完毕之后将临时map中的数据回填到envMapData )
-        this.afterInitEnvironment();
-        //
-        // .外部环境变量属性文件覆盖配置
-        if (loadEnvConfig != null) {
-            this.logger.info("load 'env.config' use custom , size = " + loadEnvConfig.size());
-            for (String name : loadEnvConfig.keySet()) {
-                this.envMap.put(name.toUpperCase(), loadEnvConfig.get(name));
-            }
-        } else {
-            URL inStreamURL = ResourcesUtils.getResource(AbstractEnvironment.EVN_FILE_NAME);
-            this.logger.info("load 'env.config' use classpath -> {}.", (inStreamURL == null) ? "empty." : inStreamURL);
-            InputStream inStream = ResourcesUtils.getResourceAsStream(AbstractEnvironment.EVN_FILE_NAME);
-            if (inStream == null) {
-                String workHome = this.evalString("%" + Environment.WORK_HOME + "%");
-                File envFile = new File(workHome, AbstractEnvironment.EVN_FILE_NAME);
-                String envFileName = envFile.getAbsolutePath();
-                if (envFile.exists()) {
-                    if (envFile.isDirectory()) {
-                        this.logger.info("load 'env.config' failed(isDirectory) -> {}.", envFileName);
-                    } else if (!envFile.canRead()) {
-                        this.logger.info("load 'env.config' failed(can not read) -> {}.", envFileName);
-                    } else {
-                        inStream = new FileInputStream(envFile);
-                        this.logger.info("load 'env.config' form file -> {}.", envFileName);
-                    }
-                } else {
-                    this.logger.info("load 'env.config' failed(not exists) -> {}.", envFileName);
-                }
-            }
-            if (inStream != null) {
-                Properties properties = new Properties();
-                properties.load(new InputStreamReader(inStream, Settings.DefaultCharset));
-                inStream.close();
-                for (String name : properties.stringPropertyNames()) {
-                    this.envMap.put(name.toUpperCase(), properties.getProperty(name));
-                }
-            }
-        }
+        // .vars
+        this.initEnvConfig(loadEnvConfig);
         this.refreshVariables();
         //
         // .Packages
@@ -393,8 +261,89 @@ public abstract class AbstractEnvironment implements Environment {
             this.logger.info(sb.toString());
         }
     }
-    //
-    protected void afterInitEnvironment() {
+    /**
+     * 1st，System.getenv()
+     * 2st，System.getProperties()
+     * 3st，配置文件"hasor.environmentVar"
+     * 4st，外部属性文件"env.config"
+     * 5st，传入的配置
+     */
+    private void initEnvConfig(Map<String, String> loadEnvConfig) throws IOException {
+        // .1st，System.getenv()
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug("envVars.reload -> System.getenv().");
+        }
+        Map<String, String> envMap = System.getenv();
+        for (String key : envMap.keySet()) {
+            this.envMap.put(key.toUpperCase(), envMap.get(key));
+        }
+        // .2st，System.getProperties()
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug("envVars.reload -> System.getProperties().");
+        }
+        Properties prop = System.getProperties();
+        for (Object propKey : prop.keySet()) {
+            String k = propKey.toString();
+            Object v = prop.get(propKey);
+            if (v != null) {
+                this.envMap.put(k.toUpperCase(), v.toString());
+            }
+        }
+        // .3st，配置文件"hasor.environmentVar"
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug("envVars.reload -> settings.");
+        }
+        Settings settings = getSettings();
+        XmlNode[] xmlPropArray = settings.getXmlNodeArray("hasor.environmentVar");
+        List<String> envNames = new ArrayList<String>();//用于收集环境变量名称
+        for (XmlNode xmlProp : xmlPropArray) {
+            for (XmlNode envItem : xmlProp.getChildren()) {
+                envNames.add(envItem.getName().toUpperCase());
+            }
+        }
+        for (String envItem : envNames) {
+            if (this.envMap.containsKey(envItem)) {
+                String val = this.envMap.get(envItem);
+                if (StringUtils.isNotBlank(val)) {
+                    this.logger.warn("environmentVar {} is define, ignored. value is {}", envItem, val);
+                    continue;
+                }
+            }
+            this.envMap.put(envItem, settings.getString("hasor.environmentVar." + envItem));
+        }
+        // .4st，外部属性文件"env.config"
+        URL inStreamURL = ResourcesUtils.getResource(EVN_FILE_NAME);
+        this.logger.info("load 'env.config' use classpath -> {}.", (inStreamURL == null) ? "empty." : inStreamURL);
+        InputStream inStream = ResourcesUtils.getResourceAsStream(EVN_FILE_NAME);
+        if (inStream == null) {
+            String workHome = this.evalString("%" + Environment.WORK_HOME + "%");
+            File envFile = new File(workHome, EVN_FILE_NAME);
+            String envFileName = envFile.getAbsolutePath();
+            if (envFile.exists()) {
+                if (envFile.isDirectory()) {
+                    this.logger.info("load 'env.config' failed(isDirectory) -> {}.", envFileName);
+                } else if (!envFile.canRead()) {
+                    this.logger.info("load 'env.config' failed(can not read) -> {}.", envFileName);
+                } else {
+                    inStream = new FileInputStream(envFile);
+                    this.logger.info("load 'env.config' form file -> {}.", envFileName);
+                }
+            } else {
+                this.logger.info("load 'env.config' failed(not exists) -> {}.", envFileName);
+            }
+        } else {
+            Properties properties = new Properties();
+            properties.load(new InputStreamReader(inStream, Settings.DefaultCharset));
+            inStream.close();
+            for (String name : properties.stringPropertyNames()) {
+                this.envMap.put(name.toUpperCase(), properties.getProperty(name));
+            }
+        }
+        // .5st，传入的配置
+        this.logger.info("load 'env.config' use custom , size = " + loadEnvConfig.size());
+        for (String name : loadEnvConfig.keySet()) {
+            this.envMap.put(name.toUpperCase(), loadEnvConfig.get(name));
+        }
     }
     //
     /* ------------------------------------------------------------------------------------ init */

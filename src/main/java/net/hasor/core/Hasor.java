@@ -76,7 +76,7 @@ public final class Hasor extends HashMap<String, String> {
         return this;
     }
     public Hasor addModules(List<Module> moduleList) {
-        if (moduleList == null) {
+        if (moduleList != null) {
             for (Module mod : moduleList) {
                 this.moduleList.add(mod);
             }
@@ -84,7 +84,7 @@ public final class Hasor extends HashMap<String, String> {
         return this;
     }
     public Hasor addModules(Module... modules) {
-        if (modules == null) {
+        if (modules != null) {
             for (Module mod : modules) {
                 this.moduleList.add(mod);
             }
@@ -97,6 +97,14 @@ public final class Hasor extends HashMap<String, String> {
     }
     /**用简易的方式创建{@link AppContext}容器。*/
     public AppContext build() {
+        //
+        // .单独处理RUN_PATH
+        String runPath = new File("").getAbsolutePath();
+        this.put("RUN_PATH", runPath);
+        if (logger.isInfoEnabled()) {
+            logger.info("runPath at {}", runPath);
+        }
+        //
         try {
             Environment env = null;
             if (this.mainSettings == null) {
