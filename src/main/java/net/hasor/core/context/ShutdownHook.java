@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory;
  */
 class ShutdownHook extends Thread implements Runnable {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    private TemplateAppContext<?> appContext;
-    public ShutdownHook(TemplateAppContext<?> appContext) {
+    private TemplateAppContext appContext;
+    public ShutdownHook(TemplateAppContext appContext) {
         this.appContext = Hasor.assertIsNotNull(appContext);
     }
     public void run() {
