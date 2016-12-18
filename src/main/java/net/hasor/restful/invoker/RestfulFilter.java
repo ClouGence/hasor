@@ -73,10 +73,7 @@ class RestfulFilter implements Filter {
         for (MappingToDefine define : mappingList) {
             define.init(this.appContext);
         }
-        MappingToDefine[] defineArrays = mappingList.toArray(new MappingToDefine[mappingList.size()]);
-        if (defineArrays != null) {
-            this.invokeArray = defineArrays;
-        }
+        this.invokeArray = mappingList.toArray(new MappingToDefine[mappingList.size()]);
         //
         //4.上下文
         try {
@@ -115,8 +112,7 @@ class RestfulFilter implements Filter {
         //
         // .Action 处理
         boolean doAction = false;
-        for (int i = 0; i < this.interceptNames.length; i++) {
-            String name = this.interceptNames[i];
+        for (String name : this.interceptNames) {
             if (actionPath.endsWith(name)) {
                 MappingToDefine define = findMapping(actionMethod, actionPath);
                 if (define != null) {

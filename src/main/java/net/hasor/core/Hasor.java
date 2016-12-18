@@ -15,6 +15,7 @@
  */
 package net.hasor.core;
 import net.hasor.core.container.BeanContainer;
+import net.hasor.core.context.ContainerCreater;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
@@ -42,7 +43,8 @@ public final class Hasor extends HashMap<String, String> {
     private final Object context;
     private       Object       mainSettings = TemplateAppContext.DefaultSettings;
     private final List<Module> moduleList   = new ArrayList<Module>();
-    private ClassLoader loader;
+    private ClassLoader      loader;
+    private ContainerCreater creater;
     //
     Hasor(Object context) {
         this.context = context;
@@ -124,8 +126,15 @@ public final class Hasor extends HashMap<String, String> {
                 env = new StandardEnvironment(this.context, (URL) this.mainSettings, this, this.loader);
             }
             //
-            AppContext appContext = new StatusAppContext<BeanContainer>(env, new BeanContainer());
-            appContext.start(this.moduleList != null ? new Module[0] : this.moduleList.toArray(new Module[this.moduleList.size()]));
+            BeanContainer container = null;
+            if (this.creater != null) {
+                container = this.creater.create(env);
+            } else {
+                container = new BeanContainer();
+            }
+            //
+            AppContext appContext = new StatusAppContext(env, assertIsNotNull(container));
+            appContext.start(this.moduleList.toArray(new Module[this.moduleList.size()]));
             return appContext;
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);

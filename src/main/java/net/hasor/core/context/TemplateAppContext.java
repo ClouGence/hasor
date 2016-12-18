@@ -39,7 +39,7 @@ import java.util.*;
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class TemplateAppContext<C extends BeanContainer> implements AppContext {
+public abstract class TemplateAppContext implements AppContext {
     public static final String       DefaultSettings = "hasor-config.xml";
     protected           Logger       logger          = LoggerFactory.getLogger(getClass());
     private final       ShutdownHook shutdownHook    = new ShutdownHook(this);
@@ -175,7 +175,7 @@ public abstract class TemplateAppContext<C extends BeanContainer> implements App
         return getContainer();
     }
     /**获取用于创建Bean对象的{@link BeanContainer}接口*/
-    protected abstract C getContainer();
+    protected abstract BeanContainer getContainer();
     // 
     /*------------------------------------------------------------------------------------Binding*/
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/

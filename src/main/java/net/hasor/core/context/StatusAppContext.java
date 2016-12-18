@@ -23,20 +23,16 @@ import net.hasor.core.container.BeanContainer;
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
-public class StatusAppContext<C extends BeanContainer> extends TemplateAppContext<C> {
-    private C           container   = null;
-    private Environment environment = null;
+public class StatusAppContext extends TemplateAppContext {
+    private BeanContainer container   = null;
+    private Environment   environment = null;
     //
-    public StatusAppContext(Environment environment, C container) {
+    public StatusAppContext(Environment environment, BeanContainer container) {
         this.environment = environment;
         this.container = Hasor.assertIsNotNull(container);
     }
-    public StatusAppContext(Environment environment, DataContextCreater<C> creater) throws Throwable {
-        this.environment = environment;
-        this.container = Hasor.assertIsNotNull(creater.create(environment));
-    }
     @Override
-    protected C getContainer() {
+    protected BeanContainer getContainer() {
         return this.container;
     }
     @Override

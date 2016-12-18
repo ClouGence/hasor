@@ -57,7 +57,7 @@ public class RuntimeFilter implements Filter {
             Hasor.assertIsNotNull(this.appContext, "AppContext is null.");
             this.filterPipeline = this.appContext.getInstance(FilterPipeline.class);
         }
-        /*1.初始化执行周期管理器。*/
+        /* 初始化执行周期管理器 */
         Map<String, String> filterConfigMap = new HashMap<String, String>();
         Enumeration<?> names = filterConfig.getInitParameterNames();
         if (names != null) {

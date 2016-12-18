@@ -15,11 +15,12 @@
  */
 package net.hasor.core.context;
 import net.hasor.core.Environment;
+import net.hasor.core.container.BeanContainer;
 /**
  *
  * @version : 2015年11月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface DataContextCreater<CD> {
-    public CD create(Environment env) throws Throwable;
+public interface ContainerCreater {
+    public BeanContainer create(Environment env) throws Throwable;
 }

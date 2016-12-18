@@ -33,30 +33,6 @@ public class StandardEnvironment extends AbstractEnvironment {
     public StandardEnvironment(Object context, File mainSettings) throws IOException {
         this(context, mainSettings, null, null);
     }
-    public StandardEnvironment(Object context, URL mainSettings) throws URISyntaxException, IOException {
-        this(context, mainSettings, null, null);
-    }
-    public StandardEnvironment(Object context, String mainSettings) throws IOException, URISyntaxException {
-        this(context, mainSettings, null, null);
-    }
-    public StandardEnvironment(Object context, URI mainSettings) throws IOException {
-        this(context, mainSettings, null, null);
-    }
-    //
-    //
-    public StandardEnvironment(Object context, File mainSettings, Map<String, String> loadEnvConfig) throws IOException {
-        this(context, mainSettings, loadEnvConfig, null);
-    }
-    public StandardEnvironment(Object context, URL mainSettings, Map<String, String> loadEnvConfig) throws URISyntaxException, IOException {
-        this(context, mainSettings, loadEnvConfig, null);
-    }
-    public StandardEnvironment(Object context, String mainSettings, Map<String, String> loadEnvConfig) throws IOException, URISyntaxException {
-        this(context, mainSettings, loadEnvConfig, null);
-    }
-    public StandardEnvironment(Object context, URI mainSettings, Map<String, String> loadEnvConfig) throws IOException {
-        this(context, mainSettings, loadEnvConfig, null);
-    }
-    //
     //
     public StandardEnvironment(Object context, File mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader) throws IOException {
         this(context, (mainSettings != null ? mainSettings.toURI() : null), loadEnvConfig, loader);
