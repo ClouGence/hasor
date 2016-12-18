@@ -331,7 +331,8 @@ public abstract class AbstractEnvironment implements Environment {
             } else {
                 this.logger.info("load 'env.config' failed(not exists) -> {}.", envFileName);
             }
-        } else {
+        }
+        if (inStream != null) {
             Properties properties = new Properties();
             properties.load(new InputStreamReader(inStream, Settings.DefaultCharset));
             inStream.close();
