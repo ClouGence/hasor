@@ -81,7 +81,7 @@ public class PushProcessor {
      */
     private boolean doProcessor(InterAddress rsfAddress, PushEvent event) {
         CenterEventBody eventBody = new CenterEventBody();
-        eventBody.setEventType(event.getPushEventType().forCenterEvent().getEventType());
+        eventBody.setEventType(event.getPushEventType().forCenterEvent());
         eventBody.setServiceID(event.getServiceID());
         eventBody.setEventBody(event.getEventBody());
         boolean result = false;

@@ -23,8 +23,8 @@ import java.io.Serializable;
 public class CenterEventBody implements Serializable {
     private static final long serialVersionUID = 1617451556801258822L;
     private String eventType;
-    private String serviceID = null;//相关服务ID
-    private String eventBody = null;//事件内容
+    private String serviceID = null;    //相关服务ID
+    private String eventBody = null;    //事件内容
     //
     public String getEventType() {
         return this.eventType;

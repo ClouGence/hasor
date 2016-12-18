@@ -50,28 +50,25 @@ class EventProcessMapping {
         return addressList;
     }
     //
-    private static final Map<RsfCenterEvent, EventProcess> eventProcessMap;
+    private static final Map<String, EventProcess> eventProcessMap;
 
     static {
-        eventProcessMap = new HashMap<RsfCenterEvent, EventProcess>();
+        eventProcessMap = new HashMap<String, EventProcess>();
         eventProcessMap.put(RsfCenterEvent.RsfCenter_AppendAddressEvent, new AppendAddressEvent());
         eventProcessMap.put(RsfCenterEvent.RsfCenter_RefreshAddressEvent, new RefreshAddressEvent());
         eventProcessMap.put(RsfCenterEvent.RsfCenter_RemoveAddressEvent, new RemoveAddressEvent());
-        //
         eventProcessMap.put(RsfCenterEvent.RsfCenter_UpdateServiceRouteEvent, new UpdateServiceRouteEvent());
         eventProcessMap.put(RsfCenterEvent.RsfCenter_UpdateMethodRouteEvent, new UpdateMethodRouteEvent());
         eventProcessMap.put(RsfCenterEvent.RsfCenter_UpdateArgsRouteEvent, new UpdateArgsRouteEvent());
-        //
         eventProcessMap.put(RsfCenterEvent.RsfCenter_UpdateFlowControlEvent, new UpdateFlowControlEvent());
     }
 
     //
     public static EventProcess findEventProcess(String eventType) {
-        RsfCenterEvent type = RsfCenterEvent.getEventEnum(eventType);
-        if (type == null) {
+        if (StringUtils.isBlank(eventType)) {
             return null;
         }
-        return eventProcessMap.get(type);
+        return eventProcessMap.get(eventType);
     }
     //
     //

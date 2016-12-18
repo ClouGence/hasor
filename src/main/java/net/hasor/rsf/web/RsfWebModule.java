@@ -30,7 +30,7 @@ public class RsfWebModule extends RsfModule {
             return;
         }
         //
-        WebApiBinder webApiBinder = (WebApiBinder) apiBinder;
+        WebApiBinder webBinder = (WebApiBinder) apiBinder;
         logger.info("rsf framework config web.");
         //WebApiBinder webApiBinder = (WebApiBinder) apiBinder;
         //webApiBinder.serve("*.rsf").with(RsfServlet.class);
