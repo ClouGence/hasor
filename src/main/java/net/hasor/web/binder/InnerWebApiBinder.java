@@ -21,6 +21,7 @@ import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
+import net.hasor.web.encoding.EncodingFilter;
 import org.more.util.ArrayUtils;
 
 import javax.servlet.Filter;
@@ -28,10 +29,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 /**
  * 该类是{@link WebApiBinder}接口实现。
  * @version : 2013-4-10
@@ -39,13 +37,29 @@ import java.util.Map;
  */
 class InnerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     private ServletVersion curVersion;
-    public InnerWebApiBinder(ServletVersion curVersion, ApiBinder apiBinder) {
+    InnerWebApiBinder(ServletVersion curVersion, ApiBinder apiBinder) {
         super(apiBinder);
         this.curVersion = Hasor.assertIsNotNull(curVersion);
     }
     @Override
     public ServletContext getServletContext() {
         return (ServletContext) this.getEnvironment().getContext();
+    }
+    @Override
+    public WebApiBinder setRequestCharacter(String encoding) {
+        BindInfo<EncodingFilter> bindInfo = this.getBindInfo(EncodingFilter.class);
+        bindInfo.setMetaData(HTTP_REQUEST_ENCODING_KEY, encoding);
+        return this;
+    }
+    @Override
+    public WebApiBinder setResponseCharacter(String encoding) {
+        BindInfo<EncodingFilter> bindInfo = this.getBindInfo(EncodingFilter.class);
+        bindInfo.setMetaData(HTTP_RESPONSE_ENCODING_KEY, encoding);
+        return this;
+    }
+    @Override
+    public WebApiBinder setEncodingCharacter(String requestEncoding, String responseEncoding) {
+        return this.setRequestCharacter(requestEncoding).setResponseCharacter(responseEncoding);
     }
     @Override
     public ServletVersion getServletVersion() {
@@ -57,9 +71,7 @@ class InnerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     private static List<String> newArrayList(final String[] arr, final String object) {
         ArrayList<String> list = new ArrayList<String>();
         if (arr != null) {
-            for (String item : arr) {
-                list.add(item);
-            }
+            Collections.addAll(list, arr);
         }
         if (object != null) {
             list.add(object);
@@ -94,7 +106,7 @@ class InnerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         private final UriPatternType uriPatternType;
         private final List<String>   uriPatterns;
         //
-        public FiltersModuleBinder(final UriPatternType uriPatternType, final List<String> uriPatterns) {
+        FiltersModuleBinder(final UriPatternType uriPatternType, final List<String> uriPatterns) {
             this.uriPatternType = uriPatternType;
             this.uriPatterns = uriPatterns;
         }
@@ -107,11 +119,11 @@ class InnerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             this.through(0, filter, null);
         }
         @Override
-        public void through(final Provider<Filter> filterProvider) {
+        public void through(final Provider<? extends Filter> filterProvider) {
             this.through(0, filterProvider, null);
         }
         @Override
-        public void through(BindInfo<Filter> filterRegister) {
+        public void through(BindInfo<? extends Filter> filterRegister) {
             this.through(0, filterRegister, null);
         }
         @Override
@@ -123,11 +135,11 @@ class InnerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             this.through(0, filter, initParams);
         }
         @Override
-        public void through(final Provider<Filter> filterProvider, final Map<String, String> initParams) {
+        public void through(final Provider<? extends Filter> filterProvider, final Map<String, String> initParams) {
             this.through(0, filterProvider, initParams);
         }
         @Override
-        public void through(BindInfo<Filter> filterRegister, Map<String, String> initParams) {
+        public void through(BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
             this.through(0, filterRegister, initParams);
         }
         @Override
@@ -139,11 +151,11 @@ class InnerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             this.through(index, filter, null);
         }
         @Override
-        public void through(final int index, final Provider<Filter> filterProvider) {
+        public void through(final int index, final Provider<? extends Filter> filterProvider) {
             this.through(index, filterProvider, null);
         }
         @Override
-        public void through(int index, BindInfo<Filter> filterRegister) {
+        public void through(int index, BindInfo<? extends Filter> filterRegister) {
             this.through(index, filterRegister, null);
         }
         //
@@ -158,18 +170,18 @@ class InnerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             this.through(index, filterRegister, initParams);
         }
         @Override
-        public void through(final int index, final Provider<Filter> filterProvider, Map<String, String> initParams) {
-            BindInfo<Filter> filterRegister = bindType(Filter.class).uniqueName().toProvider(filterProvider).toInfo();
+        public void through(final int index, final Provider<? extends Filter> filterProvider, Map<String, String> initParams) {
+            BindInfo<Filter> filterRegister = bindType(Filter.class).uniqueName().toProvider((Provider<Filter>) filterProvider).toInfo();
             this.through(index, filterRegister, initParams);
         }
         @Override
-        public void through(int index, BindInfo<Filter> filterRegister, Map<String, String> initParams) {
+        public void through(int index, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
             if (initParams == null) {
                 initParams = new HashMap<String, String>();
             }
             for (String pattern : this.uriPatterns) {
                 UriPatternMatcher matcher = UriPatternType.get(this.uriPatternType, pattern);
-                FilterDefinition define = new FilterDefinition(index, pattern, matcher, filterRegister, initParams);
+                FilterDefinition define = new FilterDefinition(index, pattern, matcher, (BindInfo<Filter>) filterRegister, initParams);
                 bindType(FilterDefinition.class).uniqueName().toInstance(define);
             }
         }
@@ -201,7 +213,7 @@ class InnerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     class ServletsModuleBuilder implements ServletBindingBuilder {
         private final List<String>   uriPatterns;
         private final UriPatternType uriPatternType;
-        public ServletsModuleBuilder(final UriPatternType uriPatternType, final List<String> uriPatterns) {
+        ServletsModuleBuilder(final UriPatternType uriPatternType, final List<String> uriPatterns) {
             this.uriPatterns = uriPatterns;
             this.uriPatternType = uriPatternType;
         }
@@ -214,11 +226,11 @@ class InnerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             this.with(0, servlet, null);
         }
         @Override
-        public void with(final Provider<HttpServlet> servletProvider) {
+        public void with(final Provider<? extends HttpServlet> servletProvider) {
             this.with(0, servletProvider, null);
         }
         @Override
-        public void with(BindInfo<HttpServlet> servletRegister) {
+        public void with(BindInfo<? extends HttpServlet> servletRegister) {
             this.with(0, servletRegister, null);
         }
         @Override
@@ -230,11 +242,11 @@ class InnerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             this.with(0, servlet, initParams);
         }
         @Override
-        public void with(final Provider<HttpServlet> servletProvider, final Map<String, String> initParams) {
+        public void with(final Provider<? extends HttpServlet> servletProvider, final Map<String, String> initParams) {
             this.with(0, servletProvider, initParams);
         }
         @Override
-        public void with(BindInfo<HttpServlet> servletRegister, Map<String, String> initParams) {
+        public void with(BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams) {
             this.with(0, servletRegister, initParams);
         }
         @Override
@@ -246,11 +258,11 @@ class InnerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             this.with(index, servlet, null);
         }
         @Override
-        public void with(final int index, final Provider<HttpServlet> servletProvider) {
+        public void with(final int index, final Provider<? extends HttpServlet> servletProvider) {
             this.with(index, servletProvider, null);
         }
         @Override
-        public void with(int index, BindInfo<HttpServlet> servletRegister) {
+        public void with(int index, BindInfo<? extends HttpServlet> servletRegister) {
             this.with(index, servletRegister, null);
         }
         //
@@ -265,18 +277,18 @@ class InnerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             this.with(index, servletRegister, initParams);
         }
         @Override
-        public void with(final int index, final Provider<HttpServlet> servletProvider, Map<String, String> initParams) {
-            BindInfo<HttpServlet> servletRegister = bindType(HttpServlet.class).uniqueName().toProvider(servletProvider).toInfo();
+        public void with(final int index, final Provider<? extends HttpServlet> servletProvider, Map<String, String> initParams) {
+            BindInfo<HttpServlet> servletRegister = bindType(HttpServlet.class).uniqueName().toProvider((Provider<HttpServlet>) servletProvider).toInfo();
             this.with(index, servletRegister, initParams);
         }
         @Override
-        public void with(int index, BindInfo<HttpServlet> servletRegister, Map<String, String> initParams) {
+        public void with(int index, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams) {
             if (initParams == null) {
                 initParams = new HashMap<String, String>();
             }
             for (String pattern : this.uriPatterns) {
                 UriPatternMatcher matcher = UriPatternType.get(this.uriPatternType, pattern);
-                ServletDefinition define = new ServletDefinition(index, pattern, matcher, servletRegister, initParams);
+                ServletDefinition define = new ServletDefinition(index, pattern, matcher, (BindInfo<HttpServlet>) servletRegister, initParams);
                 bindType(ServletDefinition.class).uniqueName().toInstance(define);/*单列*/
             }
         }
@@ -299,12 +311,12 @@ class InnerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             this.bind(listenerRegister);
         }
         @Override
-        public void bind(final Provider<ServletContextListener> listenerProvider) {
-            BindInfo<ServletContextListener> listenerRegister = bindType(ServletContextListener.class).toProvider(listenerProvider).toInfo();
+        public void bind(final Provider<? extends ServletContextListener> listenerProvider) {
+            BindInfo<ServletContextListener> listenerRegister = bindType(ServletContextListener.class).toProvider((Provider<ServletContextListener>) listenerProvider).toInfo();
             this.bind(listenerRegister);
         }
         @Override
-        public void bind(BindInfo<ServletContextListener> listenerRegister) {
+        public void bind(BindInfo<? extends ServletContextListener> listenerRegister) {
             bindType(ContextListenerDefinition.class).uniqueName().toInstance(new ContextListenerDefinition(listenerRegister));
         }
     }
@@ -326,12 +338,12 @@ class InnerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             this.bind(listenerRegister);
         }
         @Override
-        public void bind(final Provider<HttpSessionListener> listenerProvider) {
-            BindInfo<HttpSessionListener> listenerRegister = bindType(HttpSessionListener.class).toProvider(listenerProvider).toInfo();
+        public void bind(final Provider<? extends HttpSessionListener> listenerProvider) {
+            BindInfo<HttpSessionListener> listenerRegister = bindType(HttpSessionListener.class).toProvider((Provider<HttpSessionListener>) listenerProvider).toInfo();
             this.bind(listenerRegister);
         }
         @Override
-        public void bind(BindInfo<HttpSessionListener> listenerRegister) {
+        public void bind(BindInfo<? extends HttpSessionListener> listenerRegister) {
             bindType(HttpSessionListenerDefinition.class).uniqueName().toInstance(new HttpSessionListenerDefinition(listenerRegister));
         }
     }

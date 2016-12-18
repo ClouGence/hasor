@@ -74,10 +74,8 @@ public class HasorPlugin implements IPlugin {
             throw new RepeateException("Hasor WebAppContext already exists , please disable the other.");
         }
         this.listener = new RuntimeListener() {
-            protected AppContext createAppContext(ServletContext sc, Module startModule) throws Throwable {
-                ArrayList<Module> modules = new ArrayList<Module>(moduleList);
-                modules.add(startModule);
-                return newAppContext(jFinal, mainSettings, new MergeModule(modules));// 创建WebAppContext
+            protected Hasor createAppContext(ServletContext sc) throws Throwable {
+                return newAppContext(jFinal, mainSettings, moduleList);// 创建WebAppContext
             }
         };
         this.rootFilter = new RuntimeFilter();
@@ -110,7 +108,7 @@ public class HasorPlugin implements IPlugin {
         this.listener.contextDestroyed(new ServletContextEvent(jFinal.getServletContext()));
         return true;
     }
-    protected AppContext newAppContext(final JFinal jFinal, String mainSettings, final Module startModule) throws Throwable {
+    protected Hasor newAppContext(final JFinal jFinal, String mainSettings, List<Module> moduleList) throws Throwable {
         //
         // .JFinal 的属性文件(如果没有则为Null)
         InnerMap envProp = null;
@@ -131,7 +129,8 @@ public class HasorPlugin implements IPlugin {
         return Hasor.create(jFinal.getServletContext())//
                 .setMainSettings(mainSettings)//
                 .putAllData(envProp)//
-                .build(new Module() {
+                .addModules(moduleList)//
+                .addModules(new Module() {
                     public void loadModule(ApiBinder apiBinder) throws Throwable {
                         // .注册类型
                         apiBinder.bindType(InnerMap.class).toInstance((finalEnvProp != null) ? finalEnvProp : new InnerMap());
@@ -141,10 +140,6 @@ public class HasorPlugin implements IPlugin {
                                 return rootFilter;
                             }
                         });
-                        // .容器的StartModule
-                        if (startModule != null) {
-                            apiBinder.installModule(startModule);
-                        }
                     }
                 });
     }

@@ -30,8 +30,20 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface WebApiBinder extends ApiBinder {
+    public static final String HTTP_REQUEST_ENCODING_KEY  = "HTTP_REQUEST_ENCODING";
+    public static final String HTTP_RESPONSE_ENCODING_KEY = "HTTP_RESPONSE_ENCODING";
+
     /**获取ServletContext对象。*/
     public ServletContext getServletContext();
+
+    /** 设置请求编码 */
+    public WebApiBinder setRequestCharacter(String encoding);
+
+    /** 设置响应编码 */
+    public WebApiBinder setResponseCharacter(String encoding);
+
+    /** 设置请求响应编码 */
+    public WebApiBinder setEncodingCharacter(String requestEncoding, String responseEncoding);
 
     /**获取容器支持的Servlet版本。*/
     public ServletVersion getServletVersion();
@@ -72,36 +84,36 @@ public interface WebApiBinder extends ApiBinder {
 
         public void through(Filter filter);
 
-        public void through(Provider<Filter> filterProvider);
+        public void through(Provider<? extends Filter> filterProvider);
 
-        public void through(BindInfo<Filter> filterRegister);
+        public void through(BindInfo<? extends Filter> filterRegister);
 
         //
         public void through(Class<? extends Filter> filterKey, Map<String, String> initParams);
 
         public void through(Filter filter, Map<String, String> initParams);
 
-        public void through(Provider<Filter> filterProvider, Map<String, String> initParams);
+        public void through(Provider<? extends Filter> filterProvider, Map<String, String> initParams);
 
-        public void through(BindInfo<Filter> filterRegister, Map<String, String> initParams);
+        public void through(BindInfo<? extends Filter> filterRegister, Map<String, String> initParams);
 
         //
         public void through(int index, Class<? extends Filter> filterKey);
 
         public void through(int index, Filter filter);
 
-        public void through(int index, Provider<Filter> filterProvider);
+        public void through(int index, Provider<? extends Filter> filterProvider);
 
-        public void through(int index, BindInfo<Filter> filterRegister);
+        public void through(int index, BindInfo<? extends Filter> filterRegister);
 
         //
         public void through(int index, Class<? extends Filter> filterKey, Map<String, String> initParams);
 
         public void through(int index, Filter filter, Map<String, String> initParams);
 
-        public void through(int index, Provider<Filter> filterProvider, Map<String, String> initParams);
+        public void through(int index, Provider<? extends Filter> filterProvider, Map<String, String> initParams);
 
-        public void through(int index, BindInfo<Filter> filterRegister, Map<String, String> initParams);
+        public void through(int index, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams);
     }
     /**负责配置Servlet。*/
     public static interface ServletBindingBuilder {
@@ -109,36 +121,36 @@ public interface WebApiBinder extends ApiBinder {
 
         public void with(HttpServlet servlet);
 
-        public void with(Provider<HttpServlet> servletProvider);
+        public void with(Provider<? extends HttpServlet> servletProvider);
 
-        public void with(BindInfo<HttpServlet> servletRegister);
+        public void with(BindInfo<? extends HttpServlet> servletRegister);
 
         //
         public void with(Class<? extends HttpServlet> servletKey, Map<String, String> initParams);
 
         public void with(HttpServlet servlet, Map<String, String> initParams);
 
-        public void with(Provider<HttpServlet> servletProvider, Map<String, String> initParams);
+        public void with(Provider<? extends HttpServlet> servletProvider, Map<String, String> initParams);
 
-        public void with(BindInfo<HttpServlet> servletRegister, Map<String, String> initParams);
+        public void with(BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams);
 
         //
         public void with(int index, Class<? extends HttpServlet> servletKey);
 
         public void with(int index, HttpServlet servlet);
 
-        public void with(int index, Provider<HttpServlet> servletProvider);
+        public void with(int index, Provider<? extends HttpServlet> servletProvider);
 
-        public void with(int index, BindInfo<HttpServlet> servletRegister);
+        public void with(int index, BindInfo<? extends HttpServlet> servletRegister);
 
         //
         public void with(int index, Class<? extends HttpServlet> servletKey, Map<String, String> initParams);
 
         public void with(int index, HttpServlet servlet, Map<String, String> initParams);
 
-        public void with(int index, Provider<HttpServlet> servletProvider, Map<String, String> initParams);
+        public void with(int index, Provider<? extends HttpServlet> servletProvider, Map<String, String> initParams);
 
-        public void with(int index, BindInfo<HttpServlet> servletRegister, Map<String, String> initParams);
+        public void with(int index, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams);
     }
     /**负责配置SessionListener。*/
     public static interface SessionListenerBindingBuilder {
@@ -146,9 +158,9 @@ public interface WebApiBinder extends ApiBinder {
 
         public void bind(HttpSessionListener sessionListener);
 
-        public void bind(Provider<HttpSessionListener> listenerProvider);
+        public void bind(Provider<? extends HttpSessionListener> listenerProvider);
 
-        public void bind(BindInfo<HttpSessionListener> listenerRegister);
+        public void bind(BindInfo<? extends HttpSessionListener> listenerRegister);
     }
     /**负责配置ServletContextListener。*/
     public static interface ServletContextListenerBindingBuilder {
@@ -156,8 +168,8 @@ public interface WebApiBinder extends ApiBinder {
 
         public void bind(ServletContextListener sessionListener);
 
-        public void bind(Provider<ServletContextListener> listenerProvider);
+        public void bind(Provider<? extends ServletContextListener> listenerProvider);
 
-        public void bind(BindInfo<ServletContextListener> listenerRegister);
+        public void bind(BindInfo<? extends ServletContextListener> listenerRegister);
     }
 }

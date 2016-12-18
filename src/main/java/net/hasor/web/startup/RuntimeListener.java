@@ -41,8 +41,9 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     /*----------------------------------------------------------------------------------------------------*/
     //
     /**创建{@link AppContext}对象*/
-    protected AppContext createAppContext(final ServletContext sc, Module startModule) throws Throwable {
-        return Hasor.create(sc).build(startModule);
+    protected Hasor createAppContext(final ServletContext sc) throws Throwable {
+        String webContextDir = sc.getRealPath("/");
+        return Hasor.create(sc).putData("HASOR_WEBROOT", webContextDir);
     }
     //
     /**获取启动模块*/
@@ -67,7 +68,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         try {
             ServletContext sc = servletContextEvent.getServletContext();
             Module startModule = this.getStartModule(sc);
-            this.appContext = this.createAppContext(sc, startModule);
+            this.appContext = this.createAppContext(sc).build(startModule);
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }

@@ -1,6 +1,7 @@
 ﻿===== Hasor-Core v2.6.0 (2016-12-?)
 * 新增:
     01.新增 ApiBinder 扩展机制。开发者可以通过 net.hasor.core.binder.ApiBinderCreater 接口可以自定义 ApiBinder。
+    02.WebApiBinder 新增可以设置(请求/响应)编码方法。
 * 改进:
     01.WebApiBinder 使用 ApiBinderCreater 机制提供。
     02.Web 特性通过 ApiBinder扩展机制融入 AppContext，不在需要继承 AppContext 定制化。

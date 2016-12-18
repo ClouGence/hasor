@@ -18,16 +18,16 @@ import net.hasor.core.container.BeanContainer;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
-import net.hasor.web.env.WebStandardEnvironment;
 import org.more.util.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletContext;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static net.hasor.core.AppContext.ContextEvent_Shutdown;
@@ -40,7 +40,8 @@ import static net.hasor.core.AppContext.ContextEvent_Started;
 public final class Hasor extends HashMap<String, String> {
     protected static Logger logger = LoggerFactory.getLogger(Hasor.class);
     private final Object context;
-    private Object mainSettings = TemplateAppContext.DefaultSettings;
+    private       Object       mainSettings = TemplateAppContext.DefaultSettings;
+    private final List<Module> moduleList   = new ArrayList<Module>();
     private ClassLoader loader;
     //
     Hasor(Object context) {
@@ -62,6 +63,10 @@ public final class Hasor extends HashMap<String, String> {
         this.mainSettings = mainSettings;
         return this;
     }
+    public Hasor putData(String key, String value) {
+        this.put(key, value);
+        return this;
+    }
     public Hasor putAllData(Map<String, String> mapData) {
         this.putAll(mapData);
         return this;
@@ -70,32 +75,49 @@ public final class Hasor extends HashMap<String, String> {
         this.loader = loader;
         return this;
     }
+    public Hasor addModules(List<Module> moduleList) {
+        if (moduleList == null) {
+            for (Module mod : moduleList) {
+                this.moduleList.add(mod);
+            }
+        }
+        return this;
+    }
+    public Hasor addModules(Module... modules) {
+        if (modules == null) {
+            for (Module mod : modules) {
+                this.moduleList.add(mod);
+            }
+        }
+        return this;
+    }
     /**用简易的方式创建{@link AppContext}容器。*/
     public AppContext build(Module... modules) {
+        return this.addModules(modules).build();
+    }
+    /**用简易的方式创建{@link AppContext}容器。*/
+    public AppContext build() {
         try {
             Environment env = null;
-            if (this.context instanceof ServletContext) {
-                env = new WebStandardEnvironment((ServletContext) this.context, (String) mainSettings, this, loader);
-            } else if (this.mainSettings == null) {
-                logger.info("create AppContext ,mainSettings = {} , modules = {}", TemplateAppContext.DefaultSettings, modules);
+            if (this.mainSettings == null) {
+                logger.info("create AppContext ,mainSettings = {}", TemplateAppContext.DefaultSettings);
                 env = new StandardEnvironment(this.context, TemplateAppContext.DefaultSettings, this, this.loader);
             } else if (this.mainSettings instanceof String) {
-                logger.info("create AppContext ,mainSettings = {} , modules = {}", this.mainSettings, modules);
+                logger.info("create AppContext ,mainSettings = {}", this.mainSettings);
                 env = new StandardEnvironment(this.context, (String) this.mainSettings, this, this.loader);
             } else if (this.mainSettings instanceof File) {
-                logger.info("create AppContext ,mainSettings = {} , modules = {}", this.mainSettings, modules);
+                logger.info("create AppContext ,mainSettings = {}", this.mainSettings);
                 env = new StandardEnvironment(this.context, (File) this.mainSettings, this, this.loader);
             } else if (this.mainSettings instanceof URI) {
-                logger.info("create AppContext ,mainSettings = {} , modules = {}", this.mainSettings, modules);
+                logger.info("create AppContext ,mainSettings = {}", this.mainSettings);
                 env = new StandardEnvironment(this.context, (URI) this.mainSettings, this, this.loader);
             } else if (this.mainSettings instanceof URL) {
-                logger.info("create AppContext ,mainSettings = {} , modules = {}", this.mainSettings, modules);
+                logger.info("create AppContext ,mainSettings = {}", this.mainSettings);
                 env = new StandardEnvironment(this.context, (URL) this.mainSettings, this, this.loader);
             }
             //
-            //
             AppContext appContext = new StatusAppContext<BeanContainer>(env, new BeanContainer());
-            appContext.start(modules);
+            appContext.start(this.moduleList != null ? new Module[0] : this.moduleList.toArray(new Module[this.moduleList.size()]));
             return appContext;
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);

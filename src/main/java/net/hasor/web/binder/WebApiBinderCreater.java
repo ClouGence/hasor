@@ -15,8 +15,11 @@
  */
 package net.hasor.web.binder;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.BindInfo;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.web.ServletVersion;
+import net.hasor.web.WebApiBinder;
+import net.hasor.web.encoding.EncodingFilter;
 
 import javax.servlet.ServletContext;
 /**
@@ -57,7 +60,13 @@ public class WebApiBinderCreater implements ApiBinderCreater {
         apiBinder.bindType(ServletContext.class).toInstance(servletContext);
         /*绑定当前Servlet支持的版本*/
         apiBinder.bindType(ServletVersion.class).toInstance(curVersion);
+        /*请求响应编码*/
+        BindInfo<EncodingFilter> bindInfo = apiBinder.bindType(EncodingFilter.class)//
+                .toInstance(new EncodingFilter())//
+                .toInfo();
         //
-        return new InnerWebApiBinder(curVersion, apiBinder);
+        WebApiBinder webApiBinder = new InnerWebApiBinder(curVersion, apiBinder);
+        webApiBinder.filter("/*").through(0, bindInfo);
+        return webApiBinder;
     }
 }

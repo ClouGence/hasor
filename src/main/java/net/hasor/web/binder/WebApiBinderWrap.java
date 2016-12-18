@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.web.binder;
-import javax.servlet.ServletContext;
-
 import net.hasor.core.Hasor;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
+
+import javax.servlet.ServletContext;
 /**
  *
  * @version : 2015年10月26日
@@ -33,6 +33,18 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
     }
     public ServletContext getServletContext() {
         return this.webApiBinder.getServletContext();
+    }
+    @Override
+    public WebApiBinder setRequestCharacter(String encoding) {
+        return this.webApiBinder.setRequestCharacter(encoding);
+    }
+    @Override
+    public WebApiBinder setResponseCharacter(String encoding) {
+        return this.webApiBinder.setResponseCharacter(encoding);
+    }
+    @Override
+    public WebApiBinder setEncodingCharacter(String requestEncoding, String responseEncoding) {
+        return this.webApiBinder.setEncodingCharacter(requestEncoding, responseEncoding);
     }
     @Override
     public ServletVersion getServletVersion() {

@@ -25,11 +25,11 @@ import javax.servlet.http.HttpSessionListener;
  * @author 赵永春 (zyc@hasor.net)
  */
 class HttpSessionListenerDefinition {
-    private BindInfo<HttpSessionListener> listenerRegister = null;
-    private HttpSessionListener           listenerInstance = null;
-    private AppContext                    appContext       = null;
+    private BindInfo<? extends HttpSessionListener> listenerRegister = null;
+    private HttpSessionListener                     listenerInstance = null;
+    private AppContext                              appContext       = null;
     //
-    public HttpSessionListenerDefinition(final BindInfo<HttpSessionListener> listenerRegister) {
+    public HttpSessionListenerDefinition(final BindInfo<? extends HttpSessionListener> listenerRegister) {
         this.listenerRegister = listenerRegister;
     }
     //

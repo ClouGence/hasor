@@ -25,12 +25,12 @@ import javax.servlet.ServletContextListener;
  * @author 赵永春 (zyc@hasor.net)
  */
 class ContextListenerDefinition {
-    private BindInfo<ServletContextListener> listenerRegister = null;
-    private ServletContextListener           listenerInstance = null;
-    private AppContext                       appContext       = null;
+    private BindInfo<? extends ServletContextListener> listenerRegister = null;
+    private ServletContextListener                     listenerInstance = null;
+    private AppContext                                 appContext       = null;
     //
     //
-    public ContextListenerDefinition(final BindInfo<ServletContextListener> listenerRegister) {
+    public ContextListenerDefinition(final BindInfo<? extends ServletContextListener> listenerRegister) {
         this.listenerRegister = listenerRegister;
     }
     //
