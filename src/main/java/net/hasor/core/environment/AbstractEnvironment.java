@@ -265,8 +265,8 @@ public abstract class AbstractEnvironment implements Environment {
      * 1st，System.getenv()
      * 2st，System.getProperties()
      * 3st，配置文件"hasor.environmentVar"
-     * 4st，外部属性文件"env.config"
-     * 5st，传入的配置
+     * 4st，传入的配置
+     * 5st，外部属性文件"env.config"
      */
     private void initEnvConfig(Map<String, String> loadEnvConfig) throws IOException {
         // .1st，System.getenv()
@@ -311,7 +311,12 @@ public abstract class AbstractEnvironment implements Environment {
             }
             this.envMap.put(envItem, settings.getString("hasor.environmentVar." + envItem));
         }
-        // .4st，外部属性文件"env.config"
+        // .4st，传入的配置
+        this.logger.info("load 'env.config' use custom , size = " + loadEnvConfig.size());
+        for (String name : loadEnvConfig.keySet()) {
+            this.envMap.put(name.toUpperCase(), loadEnvConfig.get(name));
+        }
+        // .5st，外部属性文件"env.config"
         URL inStreamURL = ResourcesUtils.getResource(EVN_FILE_NAME);
         this.logger.info("load 'env.config' use classpath -> {}.", (inStreamURL == null) ? "empty." : inStreamURL);
         InputStream inStream = ResourcesUtils.getResourceAsStream(EVN_FILE_NAME);
@@ -339,11 +344,6 @@ public abstract class AbstractEnvironment implements Environment {
             for (String name : properties.stringPropertyNames()) {
                 this.envMap.put(name.toUpperCase(), properties.getProperty(name));
             }
-        }
-        // .5st，传入的配置
-        this.logger.info("load 'env.config' use custom , size = " + loadEnvConfig.size());
-        for (String name : loadEnvConfig.keySet()) {
-            this.envMap.put(name.toUpperCase(), loadEnvConfig.get(name));
         }
     }
     //

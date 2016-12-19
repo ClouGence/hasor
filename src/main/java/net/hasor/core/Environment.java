@@ -22,8 +22,8 @@ import java.util.Set;
  * <li>1st，System.getenv()</li>
  * <li>2st，System.getProperties()</li>
  * <li>3st，配置文件"hasor.environmentVar"</li>
- * <li>4st，属性文件"env.config"</li>
- * <li>5st，"Hasor.put*"的配置</li>
+ * <li>4st，"Hasor.put*"的配置</li>
+ * <li>5st，属性文件"env.config"</li>
  *
  * @version : 2013-6-19
  * @author 赵永春 (zyc@hasor.net)
