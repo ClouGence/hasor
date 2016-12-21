@@ -137,7 +137,7 @@ class RenderLayout {
             if (engine.exist(renderData.renderTo())) {
                 engine.process(renderData, tmpWriter);
             } else {
-                tmpWriter.write("");
+                return false;
             }
             //渲染layout
             renderData.put("content_placeholder", tmpWriter.toString());

@@ -129,7 +129,7 @@ class RestfulFilter implements Filter {
                 return;
             } else {
                 if (!doAction) {
-                    chain.doFilter(httpRequest, httpResponse);
+                    chain.doFilter(req, resp);
                 }
             }
         } catch (Throwable e) {

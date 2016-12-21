@@ -7,6 +7,7 @@
     01.WebApiBinder 使用 ApiBinderCreater 机制提供。
     02.Web 特性通过 ApiBinder扩展机制融入 AppContext，不在需要继承 AppContext 定制化。
     03.受益于 ApiBinder 扩展机制，WebEnvironment、WebAppContext、WebHasor 都不在需要。
+    04.restful框架对于，不存在的模板不在输出layout，而是直接交给后续 Filter 处理.
 * 修复:
     01.Fix HasorUnitRunner 在 JUnit 4.12 版本上 computeTestMethods 方法出现异常的问题。
 
