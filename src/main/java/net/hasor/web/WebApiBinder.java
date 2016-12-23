@@ -29,7 +29,7 @@ import java.util.Map;
  * @version : 2013-4-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface WebApiBinder extends ApiBinder {
+public interface WebApiBinder extends ApiBinder, MimeType {
     public static final String HTTP_REQUEST_ENCODING_KEY  = "HTTP_REQUEST_ENCODING";
     public static final String HTTP_RESPONSE_ENCODING_KEY = "HTTP_RESPONSE_ENCODING";
 

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.restful.invoker;
-import net.hasor.restful.RenderData;
-import net.hasor.restful.ValidErrors;
+import net.hasor.web.RenderData;
+import net.hasor.web.ValidErrors;
 import net.hasor.restful.wrap.RenderDataWrap;
 import org.more.bizcommon.Message;
 import org.more.util.StringUtils;

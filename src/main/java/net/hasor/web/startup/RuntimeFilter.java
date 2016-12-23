@@ -18,7 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.web.HttpInfo;
 import net.hasor.web.ServletVersion;
-import net.hasor.web.binder.FilterPipeline;
+import net.hasor.web.pipeline.FilterPipeline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

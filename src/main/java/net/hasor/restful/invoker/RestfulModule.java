@@ -16,9 +16,8 @@
 package net.hasor.restful.invoker;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
-import net.hasor.restful.MimeType;
-import net.hasor.restful.RenderEngine;
-import net.hasor.restful.api.MappingTo;
+import net.hasor.web.RenderEngine;
+import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import org.more.util.StringUtils;
@@ -92,11 +91,6 @@ public class RestfulModule extends WebModule {
             logger.warn("restful -> exit , not add any @MappingTo.");
         }
         //
-        // .MimeType
-        MimeTypeContext mimeTypeContext = new MimeTypeContext(apiBinder.getServletContext());
-        mimeTypeContext.loadStream("/META-INF/mime.types.xml");
-        mimeTypeContext.loadStream("mime.types.xml");
-        apiBinder.bindType(MimeType.class, mimeTypeContext);
     }
     public boolean loadType(WebApiBinder apiBinder, Class<?> clazz) {
         int modifier = clazz.getModifiers();

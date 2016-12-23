@@ -35,6 +35,10 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
         return this.webApiBinder.getServletContext();
     }
     @Override
+    public String getMimeType(String suffix) {
+        return this.webApiBinder.getMimeType(suffix);
+    }
+    @Override
     public WebApiBinder setRequestCharacter(String encoding) {
         return this.webApiBinder.setRequestCharacter(encoding);
     }

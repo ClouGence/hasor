@@ -15,7 +15,7 @@
  */
 package net.hasor.restful.invoker;
 import net.hasor.core.AppContext;
-import net.hasor.restful.MimeType;
+import net.hasor.web.MimeType;
 import net.hasor.restful.async.AsyncInvocationWorker;
 import net.hasor.restful.async.AsyncSupported;
 import net.hasor.web.ServletVersion;

@@ -15,7 +15,7 @@
  */
 package net.hasor.restful.wrap;
 import net.hasor.core.AppContext;
-import net.hasor.restful.RenderData;
+import net.hasor.web.RenderData;
 import org.more.bizcommon.Message;
 
 import javax.servlet.http.HttpServletRequest;

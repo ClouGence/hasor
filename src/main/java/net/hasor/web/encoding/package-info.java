@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 /**
- * webBinder。
+ * 请求响应编码实现。
  */
-package net.hasor.web.binder;
+package net.hasor.web.encoding;

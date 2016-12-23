@@ -17,33 +17,45 @@ package net.hasor.web.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.binder.ApiBinderCreater;
+import net.hasor.web.MimeType;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.encoding.EncodingFilter;
+import net.hasor.web.mime.MimeTypeContext;
+import net.hasor.web.pipeline.*;
 
 import javax.servlet.ServletContext;
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 /**
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
 public class WebApiBinderCreater implements ApiBinderCreater {
     @Override
-    public Object createBinder(final ApiBinder apiBinder) {
+    public Object createBinder(final ApiBinder apiBinder) throws IOException, XMLStreamException {
         //
         Object context = apiBinder.getEnvironment().getContext();
         if (!(context instanceof ServletContext)) {
             return null;
         }
-        //
         ServletContext servletContext = (ServletContext) context;
+        //
+        // .MimeType
+        MimeTypeContext mimeTypeContext = new MimeTypeContext(servletContext);
+        mimeTypeContext.loadStream("/META-INF/mime.types.xml");
+        mimeTypeContext.loadStream("mime.types.xml");
+        apiBinder.bindType(MimeType.class, mimeTypeContext);
+        //
+        // .Pipeline
         ManagedServletPipeline sPipline = new ManagedServletPipeline();
         ManagedFilterPipeline fPipline = new ManagedFilterPipeline(sPipline);
         ManagedListenerPipeline lPipline = new ManagedListenerPipeline();
-        //
         apiBinder.bindType(ManagedServletPipeline.class).toInstance(sPipline);
         apiBinder.bindType(FilterPipeline.class).toInstance(fPipline);
         apiBinder.bindType(ListenerPipeline.class).toInstance(lPipline);
         //
+        //.ServletVersion
         ServletVersion curVersion = ServletVersion.V2_3;
         try {
             apiBinder.getEnvironment().getClassLoader().loadClass("javax.servlet.ServletRequestListener");
@@ -56,16 +68,17 @@ public class WebApiBinderCreater implements ApiBinderCreater {
             curVersion = ServletVersion.V3_1;
         } catch (Throwable e) { /* 忽略 */ }
         //
-        /*绑定ServletContext对象的Provider*/
+        // .Binder
         apiBinder.bindType(ServletContext.class).toInstance(servletContext);
-        /*绑定当前Servlet支持的版本*/
         apiBinder.bindType(ServletVersion.class).toInstance(curVersion);
-        /*请求响应编码*/
+        //
+        // .Encoding
         BindInfo<EncodingFilter> bindInfo = apiBinder.bindType(EncodingFilter.class)//
                 .toInstance(new EncodingFilter())//
                 .toInfo();
         //
-        WebApiBinder webApiBinder = new InnerWebApiBinder(curVersion, apiBinder);
+        // .WebApiBinder
+        WebApiBinder webApiBinder = new InnerWebApiBinder(curVersion, mimeTypeContext, apiBinder);
         webApiBinder.filter("/*").through(0, bindInfo);
         return webApiBinder;
     }

@@ -17,7 +17,7 @@ package net.hasor.web.startup;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.web.binder.ListenerPipeline;
+import net.hasor.web.pipeline.ListenerPipeline;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;

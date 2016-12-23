@@ -15,8 +15,8 @@
  */
 package net.hasor.restful.invoker;
 import net.hasor.core.AppContext;
-import net.hasor.restful.MimeType;
-import net.hasor.restful.RenderData;
+import net.hasor.web.MimeType;
+import net.hasor.web.RenderData;
 import org.more.bizcommon.Message;
 import org.more.bizcommon.json.JSON;
 import org.more.util.ArrayUtils;

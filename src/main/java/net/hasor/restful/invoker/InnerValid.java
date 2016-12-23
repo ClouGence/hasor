@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.restful.invoker;
-import net.hasor.restful.Validation;
-import net.hasor.restful.api.Valid;
-import net.hasor.restful.api.ValidBy;
+import net.hasor.web.Validation;
+import net.hasor.web.annotation.Valid;
+import net.hasor.web.annotation.ValidBy;
 
 import java.util.Map;
 /**

@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 /**
- * webBinder。
+ * mime接口功能实现。
  */
-package net.hasor.web.binder;
+package net.hasor.web.mime;
