@@ -16,4 +16,6 @@
 /**
  * RSF 分布式RPC框架。
  */
+@AopIgnore
 package net.hasor.rsf;
+import net.hasor.core.container.AopIgnore;
