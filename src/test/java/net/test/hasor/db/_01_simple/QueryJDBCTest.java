@@ -23,7 +23,7 @@ import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.test.hasor.db._01_simple.entity.TB_User;
 import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
-import net.hasor.junit.HasorUnit;
+import net.hasor.plugins.junit.HasorUnit;
 import org.junit.Test;
 /**
  * 

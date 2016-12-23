@@ -20,8 +20,8 @@ import net.hasor.db.transaction.TransactionCallbackWithoutResult;
 import net.hasor.db.transaction.TransactionStatus;
 import net.hasor.db.transaction.TransactionTemplate;
 import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
-import net.hasor.junit.ContextConfiguration;
-import net.hasor.junit.HasorUnitRunner;
+import net.hasor.plugins.junit.ContextConfiguration;
+import net.hasor.plugins.junit.HasorUnitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 /**

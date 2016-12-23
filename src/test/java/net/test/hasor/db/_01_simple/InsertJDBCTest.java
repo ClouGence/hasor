@@ -24,7 +24,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
-import net.hasor.junit.HasorUnit;
+import net.hasor.plugins.junit.HasorUnit;
 /***
  * 批量Insert语句执行
  * @version : 2014-1-13

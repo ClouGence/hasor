@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.test.hasor.junit._02_thread;
-import net.hasor.junit.DaemonThread;
-import net.hasor.junit.HasorUnitRunner;
-import net.hasor.junit.TestOrder;
+import net.hasor.plugins.junit.DaemonThread;
+import net.hasor.plugins.junit.HasorUnitRunner;
+import net.hasor.plugins.junit.TestOrder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

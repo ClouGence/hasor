@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.test.hasor.junit._01_order;
-import net.hasor.junit.HasorUnitRunner;
-import net.hasor.junit.TestOrder;
+import net.hasor.plugins.junit.HasorUnitRunner;
+import net.hasor.plugins.junit.TestOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 /**
