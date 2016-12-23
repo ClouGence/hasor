@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 /**
- * org.more 工具包
+ * Hasor 插件集。
  */
-package org.more;
+@AopIgnore
+package net.hasor.plugins;
+import net.hasor.core.container.AopIgnore;

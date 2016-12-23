@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
 import net.hasor.core.info.AopBindInfoAdapter;
 import org.more.classcode.aop.AopClassConfig;
 import org.more.classcode.aop.AopMatcher;
+import org.more.util.StringUtils;
+
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 /**
  * 负责根据Class或BindInfo创建BeanType。
  *  ** 不支持热部署，该类会造成类型无法被回收。
@@ -33,10 +35,17 @@ class ClassEngine {
         if (!AopClassConfig.isSupport(targetType)) {
             return targetType;
         }
-        //
+        // .动态代理
         Class<?> newType = targetType;
         AopClassConfig engine = buildEngineMap.get(targetType);
         if (engine == null) {
+            // .检查是否忽略Aop
+            boolean aopIgnoreClass = testAopIgnore(targetType, true);
+            boolean aopIgnorePackage = testAopIgnore(targetType.getPackage(), true);
+            if (aopIgnorePackage || aopIgnoreClass) {
+                aopList = Collections.EMPTY_LIST;
+            }
+            //
             engine = new AopClassConfig(targetType, rootLosder);
             for (AopBindInfoAdapter aop : aopList) {
                 if (!aop.getMatcherClass().matches(targetType)) {
@@ -56,5 +65,48 @@ class ClassEngine {
             newType = engine.getSuperClass();
         }
         return newType;
+    }
+    //
+    private static boolean testAopIgnore(Class<?> targetType, boolean isRoot) {
+        AopIgnore aopIgnore = targetType.getAnnotation(AopIgnore.class);
+        if (aopIgnore != null) {
+            if (isRoot) {
+                return true;
+            } else if (aopIgnore.diffuse()) {
+                return true;
+            }
+        }
+        Class<?> superclass = targetType.getSuperclass();
+        if (superclass != null) {
+            return testAopIgnore(superclass, false);
+        }
+        return false;
+    }
+    private static boolean testAopIgnore(Package targetPackage, boolean isRoot) {
+        AopIgnore aopIgnore = targetPackage.getAnnotation(AopIgnore.class);
+        if (aopIgnore != null) {
+            if (isRoot) {
+                return true;
+            } else if (aopIgnore.diffuse()) {
+                return true;
+            }
+        }
+        //
+        String packageName = targetPackage.getName();
+        for (; ; ) {
+            if (packageName.indexOf('.') == -1) {
+                break;
+            }
+            packageName = StringUtils.substringBeforeLast(packageName, ".");
+            if (StringUtils.isBlank(packageName)) {
+                break;
+            }
+            Package supperPackage = Package.getPackage(packageName);
+            if (supperPackage == null) {
+                continue;
+            }
+            return testAopIgnore(supperPackage, false);
+        }
+        return false;
     }
 }

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 /**
- * Hasor的核心软件包，所有Hasor扩展模块都会依赖到它。它提供了：Settings、Environment、Event、IoC、Aop、Scope、Binder、AppContext。
+ * Hasor的DB软件包，提供了数据库事务和JDBC操作能力。
  */
 @AopIgnore
-package net.hasor.core;
+package net.hasor.db;
 import net.hasor.core.container.AopIgnore;

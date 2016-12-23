@@ -110,7 +110,7 @@ public abstract class AbstractClassConfig {
         //1.基本信息
         Class<?> superClass = this.getSuperClass();
         String resName = superClass.getName().replace(".", "/") + ".class";
-        if (isSupport() == false) {
+        if (!isSupport()) {
             throw new IOException("class in package java or javax , does not support.");
         }
         //2.构建visitor环

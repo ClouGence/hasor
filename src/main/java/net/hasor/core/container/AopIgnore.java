@@ -13,9 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.core.container;
+import java.lang.annotation.*;
 /**
- * Hasor的核心软件包，所有Hasor扩展模块都会依赖到它。它提供了：Settings、Environment、Event、IoC、Aop、Scope、Binder、AppContext。
+ * 标记接口或者包上，用于忽略Hasor的Aop动态代理功能。当标记到包上时表示整个包都忽略动态代理。
+ * 该功能可以有效的防止泛滥的全局Aop。
+ * @version : 2016年12月22日
+ * @author 赵永春(zyc@hasor.net)
  */
-@AopIgnore
-package net.hasor.core;
-import net.hasor.core.container.AopIgnore;
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE, ElementType.PACKAGE })
+@Documented
+public @interface AopIgnore {
+    /** 忽略 aop 的行为是否传播给子类和子包 */
+    public boolean diffuse() default true;
+}

@@ -16,4 +16,6 @@
 /**
  * Hasor Web 开发框架。
  */
+@AopIgnore
 package net.hasor.web;
+import net.hasor.core.container.AopIgnore;

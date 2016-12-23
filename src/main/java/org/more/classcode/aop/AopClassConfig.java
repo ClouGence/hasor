@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 package org.more.classcode.aop;
+import org.more.asm.ClassVisitor;
+import org.more.classcode.ASMEngineTools;
+import org.more.classcode.AbstractClassConfig;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.more.asm.ClassVisitor;
-import org.more.classcode.ASMEngineTools;
-import org.more.classcode.AbstractClassConfig;
 /**
  *
  * @version : 2014年9月7日
@@ -55,7 +55,7 @@ public class AopClassConfig extends AbstractClassConfig {
     //
     /**是否包含改变*/
     public boolean hasChange() {
-        return (this.aopList == null) ? false : (!this.aopList.isEmpty());
+        return this.aopList == null || !this.aopList.isEmpty();
     }
     //
     /**添加Aop拦截器。*/

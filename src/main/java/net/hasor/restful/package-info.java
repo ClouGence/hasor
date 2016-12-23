@@ -16,4 +16,6 @@
 /**
  * 带有 Restful 风格的 web mvc 框架。
  */
+@AopIgnore
 package net.hasor.restful;
+import net.hasor.core.container.AopIgnore;

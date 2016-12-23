@@ -16,4 +16,6 @@
 /**
  * 整合 JUnit4 的测试框架。
  */
+@AopIgnore
 package net.hasor.junit;
+import net.hasor.core.container.AopIgnore;
