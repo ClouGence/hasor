@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 提供了一些有用的 {@link net.hasor.db.jdbc.RowMapper}接口实现。
+ * 整合 JUnit4 的测试框架。
  */
-package net.hasor.db.jdbc.core.mapper;
+package net.hasor.plugins.junit;

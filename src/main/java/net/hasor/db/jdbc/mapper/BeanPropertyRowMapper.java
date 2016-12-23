@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.core.mapper;
+package net.hasor.db.jdbc.mapper;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -95,9 +95,9 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
     }
     /**取得指定列的值*/
     protected Object getColumnValue(final ResultSet rs, final int index, final Class<?> requiredType) throws SQLException {
-        Object resultData = AbstractRowMapper.getResultSetValue(rs, index);
+        Object resultData = getResultSetValue(rs, index);
         if (requiredType != null) {
-            return AbstractRowMapper.convertValueToRequiredType(resultData, requiredType);
+            return convertValueToRequiredType(resultData, requiredType);
         } else {
             return resultData;
         }

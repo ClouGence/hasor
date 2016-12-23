@@ -13,22 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.junit;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import net.hasor.core.Module;
 /**
- * 用于指定测试用例使用的配置文件。
- * @version : 2014年7月8日
- * @author 赵永春(zyc@hasor.net)
+ * mybatis 插件。
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ContextConfiguration {
-    /**Hasor的主配置文件.*/
-    public String value() default "";
-    /**要装载的{@link Module}*/
-    public Class<? extends Module>[] loadModules() default {};
-}
+package net.hasor.db.orm.mybatis3;

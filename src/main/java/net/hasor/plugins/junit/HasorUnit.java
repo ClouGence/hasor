@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.junit;
+package net.hasor.plugins.junit;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;

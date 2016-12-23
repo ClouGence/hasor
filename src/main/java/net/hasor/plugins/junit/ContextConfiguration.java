@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.junit;
+package net.hasor.plugins.junit;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import net.hasor.core.Module;
 /**
- * 用于配置测试用例的启动顺序。
+ * 用于指定测试用例使用的配置文件。
  * @version : 2014年7月8日
  * @author 赵永春(zyc@hasor.net)
  */
-@Target(ElementType.METHOD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TestOrder {
-    /**启动顺序，值越小约靠前。*/
-    public int value() default 0;
+public @interface ContextConfiguration {
+    /**Hasor的主配置文件.*/
+    public String value() default "";
+    /**要装载的{@link Module}*/
+    public Class<? extends Module>[] loadModules() default {};
 }

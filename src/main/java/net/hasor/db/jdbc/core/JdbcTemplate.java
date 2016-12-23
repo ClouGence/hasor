@@ -16,9 +16,9 @@
 package net.hasor.db.jdbc.core;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.*;
-import net.hasor.db.jdbc.core.mapper.BeanPropertyRowMapper;
-import net.hasor.db.jdbc.core.mapper.ColumnMapRowMapper;
-import net.hasor.db.jdbc.core.mapper.SingleColumnRowMapper;
+import net.hasor.db.jdbc.mapper.BeanPropertyRowMapper;
+import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
+import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
 import org.more.util.ArrayUtils;
 import org.more.util.ResourcesUtils;
 import org.more.util.io.IOUtils;
@@ -660,7 +660,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     @Override
     public int[] batchUpdate(final String sql, final SqlParameterSource[] batchArgs) throws SQLException {
         if (batchArgs.length <= 0) {
-            return new int[] {0};
+            return new int[] { 0 };
         }
         return this.batchUpdate(sql, new SqlParameterSourceBatchPreparedStatementSetter(sql, batchArgs));
     }

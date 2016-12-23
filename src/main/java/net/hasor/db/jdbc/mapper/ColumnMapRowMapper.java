@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.core.mapper;
+package net.hasor.db.jdbc.mapper;
+import net.hasor.db.jdbc.JdbcOperations;
 import net.hasor.db.jdbc.RowMapper;
-import net.hasor.db.jdbc.core.JdbcTemplate;
 import org.more.util.map.LinkedCaseInsensitiveMap;
 
 import java.sql.ResultSet;
@@ -40,8 +40,8 @@ import java.util.Map;
  *
  * @author Juergen Hoeller
  * @since 1.2
- * @see JdbcTemplate#queryForList(String)
- * @see JdbcTemplate#queryForMap(String)
+ * @see JdbcOperations#queryForList(String)
+ * @see JdbcOperations#queryForMap(String)
  */
 public class ColumnMapRowMapper extends AbstractRowMapper<Map<String, Object>> {
     @Override
@@ -67,7 +67,7 @@ public class ColumnMapRowMapper extends AbstractRowMapper<Map<String, Object>> {
     //
     /**取得指定列的值*/
     protected Object getColumnValue(final ResultSet rs, final int index) throws SQLException {
-        return AbstractRowMapper.getResultSetValue(rs, index);
+        return getResultSetValue(rs, index);
     }
     /**讲列名转换为合理的格式。*/
     protected String getColumnKey(final String columnName) {
