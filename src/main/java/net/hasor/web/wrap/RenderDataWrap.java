@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.wrap;
+package net.hasor.web.wrap;
 import net.hasor.core.AppContext;
 import net.hasor.web.RenderData;
 import org.more.bizcommon.Message;

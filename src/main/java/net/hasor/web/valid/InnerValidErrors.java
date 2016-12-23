@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.invoker;
+package net.hasor.web.valid;
+import net.hasor.web.wrap.RenderDataWrap;
 import net.hasor.web.RenderData;
 import net.hasor.web.ValidErrors;
-import net.hasor.restful.wrap.RenderDataWrap;
 import org.more.bizcommon.Message;
 import org.more.util.StringUtils;
 
@@ -35,23 +35,23 @@ abstract class InnerValidErrors extends RenderDataWrap implements ValidErrors {
         if (StringUtils.isBlank(key)) {
             throw new NullPointerException("valid error message key is null.");
         }
-        errors(new ValidData(key, validString));
+        errors(new InnerValidData(key, validString));
     }
     @Override
     public void addError(String key, Message validMessage) {
         if (StringUtils.isBlank(key)) {
             throw new NullPointerException("valid error message key is null.");
         }
-        errors(new ValidData(key, validMessage));
+        errors(new InnerValidData(key, validMessage));
     }
     @Override
     public void addErrors(String key, List<Message> validMessage) {
         if (StringUtils.isBlank(key)) {
             throw new NullPointerException("valid error message key is null.");
         }
-        ValidData newDate = new ValidData(key);
+        InnerValidData newDate = new InnerValidData(key);
         newDate.addAll(validMessage);
         errors(newDate);
     }
-    protected abstract void errors(ValidData messages);
+    protected abstract void errors(InnerValidData messages);
 }

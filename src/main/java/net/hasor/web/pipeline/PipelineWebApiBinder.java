@@ -18,8 +18,9 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderWrap;
+import net.hasor.core.provider.InstanceProvider;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.encoding.EncodingFilter;
+import net.hasor.web.startup.RuntimeFilter;
 import org.more.util.ArrayUtils;
 
 import javax.servlet.Filter;
@@ -33,8 +34,13 @@ import java.util.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class PipelineWebApiBinder extends ApiBinderWrap implements WebApiBinder {
+    private final InstanceProvider<String> requestEncoding  = new InstanceProvider<String>("");
+    private final InstanceProvider<String> responseEncoding = new InstanceProvider<String>("");
+    //
     protected PipelineWebApiBinder(ApiBinder apiBinder) {
         super(apiBinder);
+        apiBinder.bindType(String.class).nameWith(RuntimeFilter.HTTP_REQUEST_ENCODING_KEY).toProvider(this.requestEncoding);
+        apiBinder.bindType(String.class).nameWith(RuntimeFilter.HTTP_RESPONSE_ENCODING_KEY).toProvider(this.responseEncoding);
     }
     @Override
     public ServletContext getServletContext() {
@@ -42,14 +48,12 @@ public abstract class PipelineWebApiBinder extends ApiBinderWrap implements WebA
     }
     @Override
     public WebApiBinder setRequestCharacter(String encoding) {
-        BindInfo<EncodingFilter> bindInfo = this.getBindInfo(EncodingFilter.class);
-        bindInfo.setMetaData(HTTP_REQUEST_ENCODING_KEY, encoding);
+        this.requestEncoding.set(encoding);
         return this;
     }
     @Override
     public WebApiBinder setResponseCharacter(String encoding) {
-        BindInfo<EncodingFilter> bindInfo = this.getBindInfo(EncodingFilter.class);
-        bindInfo.setMetaData(HTTP_RESPONSE_ENCODING_KEY, encoding);
+        this.responseEncoding.set(encoding);
         return this;
     }
     @Override

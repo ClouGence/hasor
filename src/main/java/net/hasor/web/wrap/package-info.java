@@ -13,23 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.provider;
-import net.hasor.core.Provider;
 /**
- * 对象的{@link Provider}封装形式。
- * @version : 2014年7月8日
- * @author 赵永春(zyc@hasor.net)
+ * 各类接口服务的 wrap。
  */
-public class InstanceProvider<T> implements Provider<T> {
-    private T instance = null;
-    public InstanceProvider(final T instance) {
-        this.instance = instance;
-    }
-    public T get() {
-        return this.instance;
-    }
-    //
-    public void set(T instance) {
-        this.instance = instance;
-    }
-}
+package net.hasor.web.wrap;

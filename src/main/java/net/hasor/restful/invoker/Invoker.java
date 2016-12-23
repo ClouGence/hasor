@@ -17,8 +17,8 @@ package net.hasor.restful.invoker;
 import net.hasor.core.Provider;
 import net.hasor.web.RenderData;
 import net.hasor.web.WebController;
-import net.hasor.restful.api.*;
 import net.hasor.web.annotation.*;
+import net.hasor.web.valid.ValidRule;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
@@ -57,7 +57,7 @@ class Invoker {
     }
     //
     /** 执行调用 */
-    public void exeCall(Provider<?> targetProvider, Method targetMethod, InnerValid needValid) throws Throwable {
+    public void exeCall(Provider<?> targetProvider, Method targetMethod, ValidRule needValid) throws Throwable {
         Object targetObject = targetProvider.get();
         HttpServletRequest httpRequest = this.renderData.getHttpRequest();
         HttpServletResponse httpResponse = this.renderData.getHttpResponse();

@@ -15,12 +15,9 @@
  */
 package net.hasor.web.binder;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.BindInfo;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.web.MimeType;
 import net.hasor.web.ServletVersion;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.encoding.EncodingFilter;
 import net.hasor.web.mime.MimeTypeContext;
 import net.hasor.web.pipeline.*;
 
@@ -72,14 +69,7 @@ public class WebApiBinderCreater implements ApiBinderCreater {
         apiBinder.bindType(ServletContext.class).toInstance(servletContext);
         apiBinder.bindType(ServletVersion.class).toInstance(curVersion);
         //
-        // .Encoding
-        BindInfo<EncodingFilter> bindInfo = apiBinder.bindType(EncodingFilter.class)//
-                .toInstance(new EncodingFilter())//
-                .toInfo();
-        //
         // .WebApiBinder
-        WebApiBinder webApiBinder = new InnerWebApiBinder(curVersion, mimeTypeContext, apiBinder);
-        webApiBinder.filter("/*").through(0, bindInfo);
-        return webApiBinder;
+        return new InnerWebApiBinder(curVersion, mimeTypeContext, apiBinder);
     }
 }

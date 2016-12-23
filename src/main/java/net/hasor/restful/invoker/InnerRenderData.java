@@ -17,29 +17,30 @@ package net.hasor.restful.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.web.MimeType;
 import net.hasor.web.RenderData;
-import org.more.bizcommon.Message;
+import net.hasor.web.valid.ValidRenderData;
 import org.more.bizcommon.json.JSON;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Set;
 /**
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-class InnerRenderData implements RenderData {
-    private static final String[]               LOCK_KEYS    = //
+public class InnerRenderData extends ValidRenderData implements RenderData {
+    private static final String[]            LOCK_KEYS    = //
             { ROOT_DATA_KEY, RETURN_DATA_KEY, VALID_DATA_KEY, REQUEST_KEY, RESPONSE_KEY };
-    private              String                 viewName     = null;//模版名称
-    private              String                 viewType     = null;//渲染引擎
-    private              boolean                useLayout    = true;//是否渲染布局
-    private              HttpServletRequest     httpRequest  = null;
-    private              HttpServletResponse    httpResponse = null;
-    private              Map<String, ValidData> validData    = null;//原始验证数据
-    private              AppContext             appContext   = null;
-    private              MimeType               mimeType     = null;
+    private              String              viewName     = null;//模版名称
+    private              String              viewType     = null;//渲染引擎
+    private              boolean             useLayout    = true;//是否渲染布局
+    private              HttpServletRequest  httpRequest  = null;
+    private              HttpServletResponse httpResponse = null;
+    private              AppContext          appContext   = null;
+    private              MimeType            mimeType     = null;
     //
     public InnerRenderData(AppContext appContext, MimeType mimeType, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         String contextPath = httpRequest.getContextPath();
@@ -55,7 +56,6 @@ class InnerRenderData implements RenderData {
             this.viewType("default");
         }
         this.viewName = requestPath;
-        this.validData = new HashMap<String, ValidData>();
         this.httpRequest = httpRequest;
         this.httpResponse = httpResponse;
         //
@@ -68,7 +68,7 @@ class InnerRenderData implements RenderData {
         }
         this.httpRequest.setAttribute(ROOT_DATA_KEY, this);
         this.httpRequest.setAttribute(RETURN_DATA_KEY, null);
-        this.httpRequest.setAttribute(VALID_DATA_KEY, this.validData);
+        this.httpRequest.setAttribute(VALID_DATA_KEY, this.getValidData());
         this.httpRequest.setAttribute(REQUEST_KEY, httpRequest);
         this.httpRequest.setAttribute(RESPONSE_KEY, httpResponse);
         this.appContext = appContext;
@@ -165,41 +165,5 @@ class InnerRenderData implements RenderData {
     @Override
     public void layoutDisable() {
         this.useLayout = false;
-    }
-    //
-    // --------------------------------------------------
-    public Map<String, ValidData> getValidData() {
-        return validData;
-    }
-    @Override
-    public List<String> validKeys() {
-        return new ArrayList<String>(this.validData.keySet());
-    }
-    @Override
-    public List<Message> validErrors(String messageKey) {
-        ValidData data = this.validData.get(messageKey);
-        return data == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(data);
-    }
-    @Override
-    public boolean isValid() {
-        for (ValidData data : this.validData.values()) {
-            if (data != null && !data.isValid()) {
-                return false;
-            }
-        }
-        return true;
-    }
-    @Override
-    public boolean isValid(String messageKey) {
-        ValidData data = this.validData.get(messageKey);
-        return data == null ? true : data.isValid();
-    }
-    @Override
-    public void clearValidErrors() {
-        this.validData.clear();
-    }
-    @Override
-    public void clearValidErrors(String messageKey) {
-        this.validData.remove(messageKey);
     }
 }

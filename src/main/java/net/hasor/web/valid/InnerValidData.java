@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.invoker;
+package net.hasor.web.valid;
 import org.more.bizcommon.Message;
 
 import java.util.ArrayList;
@@ -22,17 +22,17 @@ import java.util.ArrayList;
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ValidData extends ArrayList<Message> {
+class InnerValidData extends ArrayList<Message> {
     private String key;
     //
-    public ValidData(String key) {
+    public InnerValidData(String key) {
         this.key = key;
     }
-    public ValidData(String key, String error) {
+    public InnerValidData(String key, String error) {
         this(key);
         this.addError(error);
     }
-    public ValidData(String key, Message error) {
+    public InnerValidData(String key, Message error) {
         this(key);
         this.add(error);
     }

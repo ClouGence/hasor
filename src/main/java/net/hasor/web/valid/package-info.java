@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 各类接口服务的 wrap。
+ * 表单验证功能。
  */
-package net.hasor.restful.wrap;
+package net.hasor.web.valid;
