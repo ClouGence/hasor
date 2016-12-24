@@ -18,7 +18,8 @@ import net.hasor.core.Provider;
 import net.hasor.web.RenderData;
 import net.hasor.web.WebController;
 import net.hasor.web.annotation.*;
-import net.hasor.web.valid.ValidRule;
+import net.hasor.web.render.InnerRenderData;
+import net.hasor.web.valid.ValidProcess;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
@@ -57,7 +58,7 @@ class Invoker {
     }
     //
     /** 执行调用 */
-    public void exeCall(Provider<?> targetProvider, Method targetMethod, ValidRule needValid) throws Throwable {
+    public void exeCall(Provider<?> targetProvider, Method targetMethod, ValidProcess needValid) throws Throwable {
         Object targetObject = targetProvider.get();
         HttpServletRequest httpRequest = this.renderData.getHttpRequest();
         HttpServletResponse httpResponse = this.renderData.getHttpResponse();
@@ -67,7 +68,7 @@ class Invoker {
         //
         Object[] resolveParams = this.resolveParams(targetMethod);
         if (needValid != null) {
-            needValid.doValid(this.renderData, resolveParams);
+            needValid.doValid(this.renderData.getAppContext(), this.renderData, resolveParams);
         }
         Object resultData = this.invoke(targetMethod, targetObject, resolveParams);
         this.renderData.setReturnData(resultData);

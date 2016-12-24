@@ -16,7 +16,7 @@
 package net.hasor.web.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.binder.ApiBinderCreater;
-import net.hasor.web.MimeType;
+import net.hasor.web.mime.MimeType;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.mime.MimeTypeContext;
 import net.hasor.web.pipeline.*;

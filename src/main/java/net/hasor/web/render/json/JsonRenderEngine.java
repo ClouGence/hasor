@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.render;
+package net.hasor.web.render.json;
 import net.hasor.core.AppContext;
 import net.hasor.web.RenderData;
 import net.hasor.web.RenderEngine;
@@ -22,7 +22,7 @@ import org.more.bizcommon.json.JSON;
 import java.io.IOException;
 import java.io.Writer;
 /**
- *
+ * Json 渲染器
  * @version : 2016年1月3日
  * @author 赵永春(zyc@hasor.net)
  */

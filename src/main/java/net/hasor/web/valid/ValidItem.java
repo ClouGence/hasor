@@ -18,21 +18,21 @@ import org.more.bizcommon.Message;
 
 import java.util.ArrayList;
 /**
- *
+ * 一个item下的验证信息
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerValidData extends ArrayList<Message> {
+class ValidItem extends ArrayList<Message> {
     private String key;
     //
-    public InnerValidData(String key) {
+    public ValidItem(String key) {
         this.key = key;
     }
-    public InnerValidData(String key, String error) {
+    public ValidItem(String key, String error) {
         this(key);
         this.addError(error);
     }
-    public InnerValidData(String key, Message error) {
+    public ValidItem(String key, Message error) {
         this(key);
         this.add(error);
     }

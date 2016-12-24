@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web.mime;
-import net.hasor.web.MimeType;
 import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
 import org.more.xml.stream.*;

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.invoker;
+package net.hasor.web.render;
 import net.hasor.core.AppContext;
-import net.hasor.web.MimeType;
+import net.hasor.web.mime.MimeType;
 import net.hasor.web.RenderData;
-import net.hasor.web.valid.ValidRenderData;
+import net.hasor.web.valid.ValidItemSet;
 import org.more.bizcommon.json.JSON;
 import org.more.util.ArrayUtils;
 import org.more.util.StringUtils;
@@ -31,7 +31,7 @@ import java.util.Set;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InnerRenderData extends ValidRenderData implements RenderData {
+public class InnerRenderData extends ValidItemSet implements RenderData {
     private static final String[]            LOCK_KEYS    = //
             { ROOT_DATA_KEY, RETURN_DATA_KEY, VALID_DATA_KEY, REQUEST_KEY, RESPONSE_KEY };
     private              String              viewName     = null;//模版名称

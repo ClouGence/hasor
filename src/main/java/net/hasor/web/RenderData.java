@@ -15,20 +15,19 @@
  */
 package net.hasor.web;
 import net.hasor.core.AppContext;
-import org.more.bizcommon.Message;
+import net.hasor.web.mime.MimeType;
+import net.hasor.web.valid.ValidData;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.Set;
 /**
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface RenderData {
+public interface RenderData extends MimeType, ValidData {
     public static final String ROOT_DATA_KEY   = "rootData";//
     public static final String RETURN_DATA_KEY = "resultData";//
-    public static final String VALID_DATA_KEY  = "validData";//
     public static final String REQUEST_KEY     = "request";//
     public static final String RESPONSE_KEY    = "response";//
 
@@ -72,23 +71,4 @@ public interface RenderData {
 
     /**本次禁用 layout (默认值请查看配置文件: hasor.restful.useLayout)。*/
     public void layoutDisable();
-    // --------------------------------------------------
-
-    /**验证失败的验证keys。*/
-    public List<String> validKeys();
-
-    /**获取某个key下验证失败信息。*/
-    public List<Message> validErrors(String messageKey);
-
-    /**是否通过验证。*/
-    public boolean isValid();
-
-    /**某个规则是否通过验证。*/
-    public boolean isValid(String messageKey);
-
-    /**删除某个验证信息。*/
-    public void clearValidErrors();
-
-    /**删除某个验证信息。*/
-    public void clearValidErrors(String messageKey);
 }

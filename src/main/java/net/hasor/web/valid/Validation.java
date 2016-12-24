@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
+package net.hasor.web.valid;
 import net.hasor.web.annotation.Valid;
 /**
  * 对象验证，如果验证失败返回验证消息。

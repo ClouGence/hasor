@@ -17,11 +17,11 @@ package net.hasor.restful.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
-import net.hasor.restful.async.AsyncSupported;
 import net.hasor.web.annotation.Async;
 import net.hasor.web.annotation.HttpMethod;
 import net.hasor.web.annotation.MappingTo;
-import net.hasor.web.valid.ValidRule;
+import net.hasor.web.render.InnerRenderData;
+import net.hasor.web.valid.ValidProcess;
 import org.more.UndefinedException;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
@@ -40,13 +40,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 赵永春 (zyc@hasor.net)
  */
 class MappingToDefine {
-    private Class<?>               targetType;
-    private Provider<?>            targetProvider;
-    private String                 mappingTo;
-    private String                 mappingToMatches;
-    private Map<String, Method>    httpMapping;
-    private Map<Method, ValidRule> needValid;
-    private Set<Method>            asyncMethod;
+    private Class<?>                  targetType;
+    private Provider<?>               targetProvider;
+    private String                    mappingTo;
+    private String                    mappingToMatches;
+    private Map<String, Method>       httpMapping;
+    private Map<Method, ValidProcess> needValid;
+    private Set<Method>               asyncMethod;
     private AsyncSupported defaultAsync = AsyncSupported.no;
     private AtomicBoolean  inited       = new AtomicBoolean(false);
     //
@@ -92,11 +92,11 @@ class MappingToDefine {
         }
         //
         // .执行调用，每个方法的参数都进行判断，一旦查到参数上具有Valid 标签那么就调用doValid进行参数验证。
-        this.needValid = new HashMap<Method, ValidRule>();
+        this.needValid = new HashMap<Method, ValidProcess>();
         for (String key : this.httpMapping.keySet()) {
             Method targetMethod = this.httpMapping.get(key);
             //
-            this.needValid.put(targetMethod, new ValidRule(targetMethod));
+            this.needValid.put(targetMethod, new ValidProcess(targetMethod));
             //
             // @Async
             if (targetMethod.getAnnotation(Async.class) != null) {
@@ -188,7 +188,7 @@ class MappingToDefine {
         //
         try {
             Hasor.assertIsNotNull(targetMethod, "not font mapping Method.");
-            ValidRule needValid = this.needValid.get(targetMethod);
+            ValidProcess needValid = this.needValid.get(targetMethod);
             new Invoker(this, renderData).exeCall(this.targetProvider, targetMethod, needValid);
         } catch (Throwable target) {
             if (target instanceof ServletException)

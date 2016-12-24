@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.async;
+package net.hasor.web.mime;
 /**
- * servlet是否支持异步。
- * @version : 2013-11-4
+ *
+ * @version : 2015年2月11日
  * @author 赵永春(zyc@hasor.net)
  */
-public enum AsyncSupported {
-    yes(),
-    no(),;
+public interface MimeType {
+    /**获取MimeType类型*/
+    public String getMimeType(String suffix);
 }

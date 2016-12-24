@@ -20,6 +20,7 @@ import net.hasor.web.annotation.Produces;
 import net.hasor.web.startup.RuntimeListener;
 import net.hasor.web.upload.FileUpload;
 import net.hasor.web.upload.factorys.disk.DiskFileItemFactory;
+import net.hasor.web.valid.Validation;
 import org.more.bizcommon.Message;
 import org.more.util.StringUtils;
 import org.more.util.io.FilenameUtils;

@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.wrap;
+package net.hasor.web;
 import net.hasor.core.AppContext;
-import net.hasor.web.RenderData;
 import org.more.bizcommon.Message;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +31,10 @@ public class RenderDataWrap implements RenderData {
         this.renderData = renderData;
     }
     //
+    @Override
+    public String getMimeType(String suffix) {
+        return this.renderData.getMimeType(suffix);
+    }
     @Override
     public AppContext getAppContext() {
         return this.renderData.getAppContext();

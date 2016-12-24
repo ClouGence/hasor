@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
+package net.hasor.web.valid;
 import org.more.bizcommon.Message;
 
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.List;
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ValidErrors extends RenderData {
+public interface ValidErrors extends ValidData {
     /**添加验证失败的消息。*/
     public void addError(String key, String validString);
 

@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.restful.invoker;
 /**
- * 内置渲染器。
+ * servlet是否支持异步。
+ * @version : 2013-11-4
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.restful.render;
+public enum AsyncSupported {
+    yes(),
+    no(),;
+}

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 各类接口服务的 wrap。
+ * json渲染器。
  */
-package net.hasor.web.wrap;
+package net.hasor.web.render.json;

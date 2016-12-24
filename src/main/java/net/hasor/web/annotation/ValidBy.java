@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.annotation;
-import net.hasor.web.Validation;
+import net.hasor.web.valid.Validation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -18,6 +18,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
+import net.hasor.web.mime.MimeType;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
