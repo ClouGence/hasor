@@ -18,7 +18,6 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
-import net.hasor.web.mime.MimeType;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
@@ -33,7 +32,7 @@ import java.util.Map;
  * @version : 2013-4-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface WebApiBinder extends ApiBinder, MimeType {
+public interface WebApiBinder extends ApiBinder, MimeTypeContext {
     /** 当处理 request 之前引发。
      * @see net.hasor.web.startup.RuntimeFilter#beforeRequest(AppContext, HttpServletRequest, HttpServletResponse)
      */

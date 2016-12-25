@@ -18,17 +18,27 @@ import org.more.bizcommon.Message;
 
 import java.util.List;
 /**
- * 添加验证错误消息。
- * @version : 2014年8月27日
- * @author 赵永春(zyc@hasor.net)
+ * @version : 2013-6-5
+ * @author 赵永春 (zyc@hasor.net)
  */
-public interface ValidErrors extends ValidContext {
-    /**添加验证失败的消息。*/
-    public void addError(String key, String validString);
+public interface ValidContext {
+    public static final String VALID_DATA_KEY = "validData";//
 
-    /**添加验证失败的消息。*/
-    public void addError(String key, Message validMessage);
+    /**验证失败的验证keys。*/
+    public List<String> validKeys();
 
-    /**添加验证失败的消息。*/
-    public void addErrors(String key, List<Message> validMessage);
+    /**获取某个key下验证失败信息。*/
+    public List<Message> validErrors(String messageKey);
+
+    /**是否通过验证。*/
+    public boolean isValid();
+
+    /**某个规则是否通过验证。*/
+    public boolean isValid(String messageKey);
+
+    /**删除某个验证信息。*/
+    public void clearValidErrors();
+
+    /**删除某个验证信息。*/
+    public void clearValidErrors(String messageKey);
 }

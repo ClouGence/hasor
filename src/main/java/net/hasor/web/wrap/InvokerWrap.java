@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
+package net.hasor.web.wrap;
 import net.hasor.core.AppContext;
+import net.hasor.web.Invoker;
 import org.more.bizcommon.Message;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,9 +26,9 @@ import java.util.Set;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RenderDataWrap implements RenderData {
-    private RenderData renderData;
-    public RenderDataWrap(RenderData renderData) {
+public class InvokerWrap implements Invoker {
+    private Invoker renderData;
+    public InvokerWrap(Invoker renderData) {
         this.renderData = renderData;
     }
     //
@@ -62,6 +63,10 @@ public class RenderDataWrap implements RenderData {
     @Override
     public void put(String key, Object value) {
         this.renderData.put(key, value);
+    }
+    @Override
+    public void lockKey(String key) {
+        this.renderData.lockKey(key);
     }
     @Override
     public String renderTo() {

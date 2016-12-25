@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * @see HttpMethod#HEAD
  * @see HttpMethod#OPTIONS
  */
-@Target({ElementType.ANNOTATION_TYPE})
+@Target({ ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface HttpMethod {

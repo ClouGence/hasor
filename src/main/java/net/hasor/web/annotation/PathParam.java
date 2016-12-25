@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.FIELD})
+@Target({ ElementType.PARAMETER, ElementType.FIELD })
 @Documented
 public @interface PathParam {
     /**参数名称。*/

@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.invoker;
+package net.hasor.web.render;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Settings;
-import net.hasor.web.RenderData;
-import net.hasor.web.RenderEngine;
 import net.hasor.web.annotation.Render;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version : 2015年7月1日
  * @author 赵永春(zyc@hasor.net)
  */
-class RenderLayout {
+public class LayoutProcessor {
     protected Logger                    logger       = LoggerFactory.getLogger(getClass());
     private   AtomicBoolean             inited       = new AtomicBoolean(false);
     private   Map<String, RenderEngine> engineMap    = new HashMap<String, RenderEngine>();
@@ -109,7 +107,7 @@ class RenderLayout {
         }
     }
     //
-    public boolean process(RenderData renderData) throws Throwable {
+    public boolean process(RenderContext renderData) throws Throwable {
         if (renderData == null) {
             return false;
         }

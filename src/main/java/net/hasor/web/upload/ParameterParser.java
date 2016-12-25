@@ -232,11 +232,11 @@ class ParameterParser {
         String paramName = null;
         String paramValue = null;
         while (hasChar()) {
-            paramName = parseToken(new char[] {'=', separator});
+            paramName = parseToken(new char[] { '=', separator });
             paramValue = null;
             if (hasChar() && (charArray[pos] == '=')) {
                 pos++; // skip '='
-                paramValue = parseQuotedToken(new char[] {separator});
+                paramValue = parseQuotedToken(new char[] { separator });
                 if (paramValue != null) {
                     try {
                         paramValue = MimeUtility.decodeText(paramValue);

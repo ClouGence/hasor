@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
+package net.hasor.web.render;
 import net.hasor.core.AppContext;
 
 import java.io.IOException;
@@ -28,7 +28,7 @@ public interface RenderEngine {
     public void initEngine(AppContext appContext) throws Throwable;
 
     /** 执行模版引擎 */
-    public void process(RenderData data, Writer writer) throws Throwable;
+    public void process(RenderContext data, Writer writer) throws Throwable;
 
     /** 获取模版Loader */
     public boolean exist(String template) throws IOException;

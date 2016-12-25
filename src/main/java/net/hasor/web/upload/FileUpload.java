@@ -16,11 +16,12 @@
  */
 package net.hasor.web.upload;
 import net.hasor.core.Settings;
+import net.hasor.web.*;
+import net.hasor.web.FileUploadException;
 import net.hasor.web.upload.util.Closeable;
 import net.hasor.web.upload.util.HeadersSet;
 import net.hasor.web.upload.util.LimitedInputStream;
 import net.hasor.web.upload.util.Streams;
-import net.hasor.web.*;
 import org.more.FormatException;
 import org.more.util.ExceptionUtils;
 
@@ -203,7 +204,7 @@ public class FileUpload {
         ParameterParser parser = new ParameterParser();
         parser.setLowerCaseNames(true);
         // Parameter parser can handle null input
-        Map<String, String> params = parser.parse(contentType, new char[] {';', ','});
+        Map<String, String> params = parser.parse(contentType, new char[] { ';', ',' });
         String boundaryStr = params.get("boundary");
         if (boundaryStr == null) {
             return null;

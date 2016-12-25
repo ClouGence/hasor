@@ -13,39 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
-import net.hasor.core.AppContext;
-import net.hasor.web.mime.MimeType;
-import net.hasor.web.valid.ValidData;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Set;
+package net.hasor.web.render;
+import net.hasor.web.DataContext;
 /**
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface RenderData extends MimeType, ValidData {
-    public static final String ROOT_DATA_KEY   = "rootData";//
+public interface RenderContext extends DataContext {
     public static final String RETURN_DATA_KEY = "resultData";//
-    public static final String REQUEST_KEY     = "request";//
-    public static final String RESPONSE_KEY    = "response";//
-
-    //
-    public AppContext getAppContext();
-
-    public HttpServletRequest getHttpRequest();
-
-    public HttpServletResponse getHttpResponse();
-
-    public Set<String> keySet();
-
-    public Object get(String key);
-
-    void remove(String key);
-
-    public void put(String key, Object value);
-    // --------------------------------------------------
 
     /**获取需要渲染的视图名称。*/
     public String renderTo();
@@ -61,7 +36,6 @@ public interface RenderData extends MimeType, ValidData {
 
     /**设置渲染引擎。*/
     public void viewType(String viewType);
-    // --------------------------------------------------
 
     /**本次视图渲染是否使用 layout。*/
     public boolean layout();

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.binder;
+package net.hasor.web.wrap;
 import net.hasor.core.Hasor;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.web.ServletVersion;

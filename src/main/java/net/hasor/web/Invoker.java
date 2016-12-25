@@ -13,21 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.annotation;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.web;
+import net.hasor.web.render.RenderContext;
+import net.hasor.web.valid.ValidContext;
 /**
- * 请求参数
- * @version : 2015年6月16日
- * @author 赵永春(zyc@hasor.net)
+ * @version : 2013-6-5
+ * @author 赵永春 (zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.PARAMETER, ElementType.FIELD })
-@Documented
-public @interface ReqParam {
-    /**参数名称。*/
-    public String value();
+public interface Invoker extends DataContext,//
+        MimeTypeContext, ValidContext, RenderContext {
 }

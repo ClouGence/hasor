@@ -13,32 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.valid;
-import org.more.bizcommon.Message;
-
-import java.util.List;
+package net.hasor.web.render;
+import net.hasor.web.DataContext;
+import net.hasor.web.InvokerCreater;
 /**
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface ValidData {
-    public static final String VALID_DATA_KEY = "validData";//
-
-    /**验证失败的验证keys。*/
-    public List<String> validKeys();
-
-    /**获取某个key下验证失败信息。*/
-    public List<Message> validErrors(String messageKey);
-
-    /**是否通过验证。*/
-    public boolean isValid();
-
-    /**某个规则是否通过验证。*/
-    public boolean isValid(String messageKey);
-
-    /**删除某个验证信息。*/
-    public void clearValidErrors();
-
-    /**删除某个验证信息。*/
-    public void clearValidErrors(String messageKey);
+public class RanderInvokerCreater implements InvokerCreater {
+    @Override
+    public Object create(DataContext dataContext) {
+        RenderContextSupplier supplier = new RenderContextSupplier(dataContext);
+        supplier.put(RenderContext.RETURN_DATA_KEY, null);
+        supplier.lockKey(RenderContext.RETURN_DATA_KEY);
+        return supplier;
+    }
 }

@@ -42,18 +42,18 @@ import java.util.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class WebController {
-    private ThreadLocal<RenderData> renderData = new ThreadLocal<RenderData>();
+    private ThreadLocal<Invoker> invoker = new ThreadLocal<Invoker>();
     //
-    public void initController(RenderData renderData) {
-        if (this.renderData.get() != null) {
-            this.renderData.remove();
+    public void initController(Invoker renderData) {
+        if (this.invoker.get() != null) {
+            this.invoker.remove();
         }
         if (renderData != null) {
-            this.renderData.set(renderData);
+            this.invoker.set(renderData);
         }
     }
-    protected RenderData getInvoker() {
-        return this.renderData.get();
+    protected Invoker getInvoker() {
+        return this.invoker.get();
     }
     //
     /** @return Return HttpServletRequest. Do not use HttpServletRequest Object in constructor of Controller */
@@ -490,14 +490,14 @@ public abstract class WebController {
     //
     //------------------------
     /**
-     *  返回 RenderData 保存的数据。
+     *  返回 Invoker 保存的数据。
      *  @return 返回数据
      */
     protected <T> T getData(String name) {
         return (T) this.getInvoker().get(name);
     }
     /**
-     *  设置 RenderData 保存的数据。
+     *  设置 Invoker 保存的数据。
      *  @return 返回 this
      */
     protected WebController putData(String name, Object value) {
@@ -505,7 +505,7 @@ public abstract class WebController {
         return this;
     }
     /**
-     *  删除 RenderData 保存的数据。
+     *  删除 Invoker 保存的数据。
      *  @return 返回 this
      */
     protected WebController removeData(String name) {
@@ -513,7 +513,7 @@ public abstract class WebController {
         return this;
     }
     /**
-     *  设置 RenderData 保存的数据。
+     *  设置 Invoker 保存的数据。
      *  @return 返回 this
      */
     protected WebController setDatas(Map<String, Object> attrMap) {
@@ -523,7 +523,7 @@ public abstract class WebController {
         return this;
     }
     /**
-     *  返回 RenderData 保存的数据keys。
+     *  返回 Invoker 保存的数据keys。
      *  @return 返回数据
      */
     protected Set<String> getDataNames() {

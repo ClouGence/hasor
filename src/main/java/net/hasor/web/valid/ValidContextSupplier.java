@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.web.valid;
+import net.hasor.web.DataContext;
+import net.hasor.web.wrap.DataContextWrap;
 import org.more.bizcommon.Message;
 import org.more.util.StringUtils;
 
@@ -22,11 +24,14 @@ import java.util.*;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ValidItemSet implements ValidData, ValidErrors {
-    private Map<String, ValidItem> validData = new HashMap<String, ValidItem>();
+public class ValidContextSupplier extends DataContextWrap implements ValidContext, ValidErrors {
+    private final Map<String, ValidItem> validData = new HashMap<String, ValidItem>();
+    public ValidContextSupplier(DataContext context) {
+        super(context);
+    }
     //
     protected Map<String, ValidItem> getValidData() {
-        return validData;
+        return this.validData;
     }
     @Override
     public List<String> validKeys() {
@@ -87,9 +92,9 @@ public class ValidItemSet implements ValidData, ValidErrors {
         if (validItem == null) {
             return;
         }
-        ValidItem messages = this.getValidData().get(validItem.getKey());
+        ValidItem messages = this.validData.get(validItem.getKey());
         if (messages == null) {
-            this.getValidData().put(validItem.getKey(), validItem);
+            this.validData.put(validItem.getKey(), validItem);
         } else {
             messages.addAll(validItem);
         }

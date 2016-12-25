@@ -58,12 +58,12 @@ public class DoEventTag extends AbstractTag {
         if (this.params.getClass().isArray()) {
             return (Object[]) this.params;
         }
-        return new Object[] {this.params};
+        return new Object[] { this.params };
     }
     @Override
     public int doStartTag() throws JspException {
         try {
-            if (this.async == true) {
+            if (this.async) {
                 this.getAppContext().getEnvironment().getEventContext().fireAsyncEvent(this.event, this.params());
             } else {
                 this.getAppContext().getEnvironment().getEventContext().fireSyncEvent(this.event, this.params());

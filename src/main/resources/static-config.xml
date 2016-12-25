@@ -50,19 +50,6 @@
             <HASOR_PLUGIN_SETTINGS>%WORK_HOME%/settings</HASOR_PLUGIN_SETTINGS>
         </environmentVar>
 
-        <!-- 默认要装载的模块 -->
-        <modules loadModule="${HASOR_LOAD_MODULE}" loadErrorShow="true">
-            <module>net.hasor.plugins.startup.StartupModule</module>
-            <module>net.hasor.plugins.aop.AopModule</module>
-            <module>net.hasor.plugins.event.EventModule</module>
-            <module>net.hasor.restful.invoker.RestfulModule</module>
-        </modules>
-
-        <!-- Binder扩展 -->
-        <apiBinderSet>
-            <binder type="net.hasor.web.WebApiBinder">net.hasor.web.binder.WebApiBinderCreater</binder>
-        </apiBinderSet>
-
         <!-- 默认设置 -->
         <default>
             <!-- 默认不启用单例模式 -->
@@ -71,6 +58,21 @@
 
         <!-- 执行事件的线程池大小 -->
         <eventThreadPoolSize>${HASOR_LOAD_EVENT_POOL}</eventThreadPoolSize>
+
+        <!-- 程序入口模块类名 (由StartupModule插件提供) -->
+        <startup>${HASOR_LOAD_STARTUP}</startup>
+
+        <!-- 默认要装载的模块 -->
+        <modules loadModule="${HASOR_LOAD_MODULE}" loadErrorShow="true">
+            <module>net.hasor.plugins.startup.StartupModule</module>
+            <module>net.hasor.plugins.aop.AopModule</module>
+            <module>net.hasor.plugins.event.EventModule</module>
+        </modules>
+
+        <!-- Binder扩展 -->
+        <apiBinderSet>
+            <binder type="net.hasor.web.WebApiBinder">net.hasor.web.invoker.WebApiBinderCreater</binder>
+        </apiBinderSet>
 
         <!-- web上提供restful风格开发Api (由net.hasor.restful框架提供) -->
         <restful urlPatterns="${HASOR_RESTFUL_PATTERNS}">
@@ -92,6 +94,12 @@
 
         </restful>
 
+        <!-- Context扩展 -->
+        <invokerCreaterSet>
+            <invokerCreater type="net.hasor.web.valid.ValidContext">net.hasor.web.valid.ValidInvokerCreater</invokerCreater>
+            <invokerCreater type="net.hasor.web.render.RenderContext">net.hasor.web.render.RanderInvokerCreater</invokerCreater>
+        </invokerCreaterSet>
+
         <!-- 文件上传 -->
         <fileupload>
             <!-- 上传文件缓存目录 -->
@@ -102,7 +110,5 @@
             <maxFileSize>${HASOR_UPLOAD_MAX_FILE_SIZE}</maxFileSize>
         </fileupload>
 
-        <!-- 程序入口模块类名 (由StartupModule插件提供) -->
-        <startup>${HASOR_LOAD_STARTUP}</startup>
     </hasor>
 </config>

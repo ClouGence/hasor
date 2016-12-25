@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.mime;
+package net.hasor.web;
 /**
  *
  * @version : 2015年2月11日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface MimeType {
+public interface MimeTypeContext {
     /**获取MimeType类型*/
     public String getMimeType(String suffix);
 }

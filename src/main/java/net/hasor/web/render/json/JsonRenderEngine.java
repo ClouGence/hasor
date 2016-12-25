@@ -15,8 +15,9 @@
  */
 package net.hasor.web.render.json;
 import net.hasor.core.AppContext;
-import net.hasor.web.RenderData;
-import net.hasor.web.RenderEngine;
+import net.hasor.web.Invoker;
+import net.hasor.web.render.RenderContext;
+import net.hasor.web.render.RenderEngine;
 import org.more.bizcommon.json.JSON;
 
 import java.io.IOException;
@@ -31,8 +32,8 @@ public class JsonRenderEngine implements RenderEngine {
     public void initEngine(AppContext appContext) throws IOException {
     }
     @Override
-    public void process(RenderData data, Writer writer) throws Throwable {
-        String json = JSON.DEFAULT.toJSON(data.get(RenderData.RETURN_DATA_KEY));
+    public void process(RenderContext data, Writer writer) throws Throwable {
+        String json = JSON.DEFAULT.toJSON(data.get(Invoker.RETURN_DATA_KEY));
         writer.write(json);
     }
     @Override

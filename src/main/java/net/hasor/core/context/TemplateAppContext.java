@@ -339,7 +339,7 @@ public abstract class TemplateAppContext implements AppContext {
         // .寻找ApiBinder扩展
         Map<Class<?>, Class<?>> extBinderMap = new HashMap<Class<?>, Class<?>>();
         XmlNode[] nodeArray = this.getEnvironment().getSettings().getXmlNodeArray("hasor.apiBinderSet.binder");
-        if (nodeArray != null || nodeArray.length > 0) {
+        if (nodeArray != null && nodeArray.length > 0) {
             for (XmlNode atNode : nodeArray) {
                 if (atNode == null) {
                     continue;

@@ -27,12 +27,12 @@ import java.util.Map;
  * @version : 2016-08-03
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ValidProcess<T extends ValidErrors> {
+public class ValidProcessor<T extends ValidErrors> {
     private boolean               enable        = false;
     private Map<String, Valid>    paramValidMap = new HashMap<String, Valid>();
     private Map<String, Class<?>> paramTypeMap  = new HashMap<String, Class<?>>();
     //
-    public ValidProcess(Method targetMethod) {
+    public ValidProcessor(Method targetMethod) {
         // .解析参数
         Annotation[][] paramAnno = targetMethod.getParameterAnnotations();
         Class<?>[] paramType = targetMethod.getParameterTypes();

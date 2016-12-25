@@ -20,11 +20,7 @@ package net.hasor.web;
  * @author 赵永春(zyc@hasor.net)
  */
 public enum ServletVersion {
-    V2_3(23),
-    V2_4(24),
-    V2_5(25),
-    V3_0(30),
-    V3_1(31),;
+    V2_3(23), V2_4(24), V2_5(25), V3_0(30), V3_1(31),;
     //
     private int version;
     ServletVersion(int version) {

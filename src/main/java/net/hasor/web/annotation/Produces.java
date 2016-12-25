@@ -21,7 +21,7 @@ import java.lang.annotation.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Inherited
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Produces {
     /**响应的类型*/

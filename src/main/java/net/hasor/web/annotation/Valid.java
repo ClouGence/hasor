@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
  * @version : 2013-3-26
  * @author 赵永春 (zyc@hasor.net)
  */
-@Target({ElementType.PARAMETER})
+@Target({ ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Valid {
     public String value() default "";
