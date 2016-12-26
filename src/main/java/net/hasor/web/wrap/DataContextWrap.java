@@ -62,4 +62,40 @@ public class DataContextWrap implements DataContext {
     public void lockKey(String key) {
         this.dataContext.lockKey(key);
     }
+    @Override
+    public String getMimeType(String suffix) {
+        return this.dataContext.getMimeType(suffix);
+    }
+    @Override
+    public String renderTo() {
+        return this.dataContext.renderTo();
+    }
+    @Override
+    public void renderTo(String viewName) {
+        this.dataContext.renderTo(viewName);
+    }
+    @Override
+    public void renderTo(String viewType, String viewName) {
+        this.dataContext.renderTo(viewType, viewName);
+    }
+    @Override
+    public String viewType() {
+        return this.dataContext.viewType();
+    }
+    @Override
+    public void viewType(String viewType) {
+        this.dataContext.viewType(viewType);
+    }
+    @Override
+    public boolean layout() {
+        return this.dataContext.layout();
+    }
+    @Override
+    public void layoutEnable() {
+        this.dataContext.layoutEnable();
+    }
+    @Override
+    public void layoutDisable() {
+        this.dataContext.layoutDisable();
+    }
 }

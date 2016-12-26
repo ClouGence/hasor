@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.invoker;
+package net.hasor.web.invoker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +28,7 @@ import java.io.IOException;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AsyncInvocationWorker implements Runnable {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     private HttpServletRequest  request;
     private HttpServletResponse response;
     private AsyncContext        asyncContext;
@@ -38,9 +42,9 @@ public abstract class AsyncInvocationWorker implements Runnable {
         try {
             this.doWork(this.request, this.response);
         } catch (ServletException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
             this.asyncContext.complete();
         }

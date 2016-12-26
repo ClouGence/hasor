@@ -97,7 +97,6 @@
         <!-- Context扩展 -->
         <invokerCreaterSet>
             <invokerCreater type="net.hasor.web.valid.ValidContext">net.hasor.web.valid.ValidInvokerCreater</invokerCreater>
-            <invokerCreater type="net.hasor.web.render.RenderContext">net.hasor.web.render.RanderInvokerCreater</invokerCreater>
         </invokerCreaterSet>
 
         <!-- 文件上传 -->

@@ -19,5 +19,5 @@ package net.hasor.web;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface InvokerCreater {
-    public Object create(DataContext dataContext) throws Throwable;
+    public Object create(DataContext dataContext);
 }

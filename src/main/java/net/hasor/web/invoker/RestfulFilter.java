@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.invoker;
+package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
-import net.hasor.web.mime.MimeType;
+import net.hasor.web.DataContext;
+import net.hasor.web.InvokerCreater;
 import net.hasor.web.ServletVersion;
-import net.hasor.web.render.InnerRenderData;
 import net.hasor.web.startup.RuntimeListener;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
@@ -41,9 +41,9 @@ class RestfulFilter implements Filter {
     private final AtomicBoolean     inited         = new AtomicBoolean(false);
     private       String[]          interceptNames = null;
     private       MappingToDefine[] invokeArray    = new MappingToDefine[0];
-    private       MimeType          mimeType       = null;
-    private       RenderLayout      renderLayout   = null;
     private       AppContext        appContext     = null;
+    private       LayoutProcessor   renderLayout   = null;
+    private       InvokerCreater    invokerCreater = null;
     private       AsyncSupported    asyncSupported = AsyncSupported.yes;
     //
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -76,12 +76,12 @@ class RestfulFilter implements Filter {
         //
         //4.上下文
         try {
-            this.mimeType = this.appContext.getInstance(MimeType.class);
-            this.renderLayout = new RenderLayout();
+            this.renderLayout = new LayoutProcessor();
             this.renderLayout.initEngine(this.appContext);
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
+        this.invokerCreater = this.appContext.getInstance(InvokerCreater.class);
     }
     //
     public void destroy() {
@@ -96,6 +96,9 @@ class RestfulFilter implements Filter {
         }
         return null;
     }
+    private DataContext newInvoker(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+        return (DataContext) this.invokerCreater.create(new DataContextSupplier(this.appContext, httpRequest, httpResponse));
+    }
     //
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = new HttpServletRequestWrapper((HttpServletRequest) req) {
@@ -107,7 +110,7 @@ class RestfulFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) resp;
         String actionPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         String actionMethod = httpRequest.getMethod();
-        InnerRenderData renderData = new InnerRenderData(this.appContext, this.mimeType, httpRequest, httpResponse);
+        DataContext invoker = newInvoker(httpRequest, httpResponse);
         //
         // .Action 处理
         boolean doAction = false;
@@ -115,7 +118,7 @@ class RestfulFilter implements Filter {
             if (actionPath.endsWith(name)) {
                 MappingToDefine define = findMapping(actionMethod, actionPath);
                 if (define != null) {
-                    doInvoke(renderData, define, httpRequest, httpResponse);
+                    doInvoke(invoker, define);
                     doAction = true;
                     break;
                 }
@@ -124,7 +127,7 @@ class RestfulFilter implements Filter {
         //
         // .render
         try {
-            if (this.renderLayout.process(renderData)) {
+            if (this.renderLayout.process(invoker)) {
                 return;
             } else {
                 if (!doAction) {
@@ -132,13 +135,14 @@ class RestfulFilter implements Filter {
                 }
             }
         } catch (Throwable e) {
-            logger.error("render '" + renderData.renderTo() + "' failed -> " + e.getMessage(), e);
+            logger.error("render '" + invoker.renderTo() + "' failed -> " + e.getMessage(), e);
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
     //
-    private void doInvoke(final InnerRenderData renderData, final MappingToDefine define, final HttpServletRequest httpRequest, final HttpServletResponse httpResponse) throws ServletException, IOException {
+    private void doInvoke(final DataContext invoker, final MappingToDefine define) throws ServletException, IOException {
         // .要调用的目标是否要求异步执行?
+        final HttpServletRequest httpRequest = invoker.getHttpRequest();
         String actionMethod = httpRequest.getMethod();
         String actionPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         boolean needAsync = define.isAsync(actionMethod, actionPath) == AsyncSupported.yes;
@@ -148,9 +152,9 @@ class RestfulFilter implements Filter {
         if (version.ge(ServletVersion.V3_0) && asyncSupported == AsyncSupported.yes && needAsync) {
             try {
                 AsyncContext asyncContext = httpRequest.startAsync();
-                asyncContext.start(new AsyncInvocationWorker(asyncContext, httpRequest, httpResponse) {
+                asyncContext.start(new AsyncInvocationWorker(asyncContext, httpRequest, invoker.getHttpResponse()) {
                     public void doWork(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-                        _doWork(renderData, define, httpRequest);
+                        _doWork(invoker, define, httpRequest);
                     }
                 });
                 return;
@@ -159,16 +163,15 @@ class RestfulFilter implements Filter {
             }
         }
         //
-        _doWork(renderData, define, httpRequest);
+        _doWork(invoker, define, httpRequest);
     }
-    private void _doWork(InnerRenderData renderData, MappingToDefine define, HttpServletRequest httpRequest) throws ServletException, IOException {
+    private void _doWork(DataContext invoker, MappingToDefine define, HttpServletRequest httpRequest) throws ServletException, IOException {
         try {
-            define.invoke(renderData);
+            define.invoke(invoker);
         } finally {
             httpRequest.removeAttribute(REQUEST_DISPATCHER_REQUEST);
         }
     }
-    //
     //
     /** 为转发提供支持 */
     private RequestDispatcher getReqDispatcher(final String newRequestUri, final HttpServletRequest request) {
@@ -182,8 +185,8 @@ class RestfulFilter implements Filter {
         return new RequestDispatcher() {
             public void include(ServletRequest request, ServletResponse response) throws ServletException, IOException {
                 request.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);// doInvoke 方法中会删除它。
-                InnerRenderData renderData = new InnerRenderData(appContext, mimeType, (HttpServletRequest) request, (HttpServletResponse) response);
-                doInvoke(renderData, define, (HttpServletRequest) request, (HttpServletResponse) response);
+                DataContext invoker = newInvoker((HttpServletRequest) request, (HttpServletResponse) response);
+                doInvoke(invoker, define);
             }
             public void forward(ServletRequest request, ServletResponse response) throws ServletException, IOException {
                 if (response.isCommitted())
@@ -194,8 +197,8 @@ class RestfulFilter implements Filter {
                 /* 执行转发 */
                 request.setAttribute(REQUEST_DISPATCHER_REQUEST, Boolean.TRUE);// doInvoke 方法中会删除它。
                 HttpServletRequest requestToProcess = new RequestDispatcherRequestWrapper(request, newRequestUri);
-                InnerRenderData renderData = new InnerRenderData(appContext, mimeType, (HttpServletRequest) request, (HttpServletResponse) response);
-                doInvoke(renderData, define, requestToProcess, (HttpServletResponse) response);
+                DataContext invoker = newInvoker(requestToProcess, (HttpServletResponse) response);
+                doInvoke(invoker, define);
             }
         };
     }

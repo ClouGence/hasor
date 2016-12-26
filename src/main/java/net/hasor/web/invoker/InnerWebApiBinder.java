@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.binder;
+package net.hasor.web.invoker;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Hasor;
-import net.hasor.web.mime.MimeType;
+import net.hasor.web.MimeType;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.pipeline.PipelineWebApiBinder;

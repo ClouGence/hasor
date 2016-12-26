@@ -20,8 +20,6 @@ import net.hasor.web.annotation.Produces;
 import net.hasor.web.startup.RuntimeListener;
 import net.hasor.web.upload.FileUpload;
 import net.hasor.web.upload.factorys.disk.DiskFileItemFactory;
-import net.hasor.web.valid.Validation;
-import org.more.bizcommon.Message;
 import org.more.util.StringUtils;
 import org.more.util.io.FilenameUtils;
 
@@ -42,9 +40,9 @@ import java.util.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class WebController {
-    private ThreadLocal<Invoker> invoker = new ThreadLocal<Invoker>();
+    private ThreadLocal<DataContext> invoker = new ThreadLocal<DataContext>();
     //
-    public void initController(Invoker renderData) {
+    public void initController(DataContext renderData) {
         if (this.invoker.get() != null) {
             this.invoker.remove();
         }
@@ -52,7 +50,7 @@ public abstract class WebController {
             this.invoker.set(renderData);
         }
     }
-    protected Invoker getInvoker() {
+    protected DataContext getInvoker() {
         return this.invoker.get();
     }
     //
@@ -556,52 +554,6 @@ public abstract class WebController {
      */
     protected void renderTo(String renderType, String viewName) {
         this.getInvoker().renderTo(renderType, viewName);
-    }
-    //
-    //------------------------
-    /**
-     * 返回是否通过验证。
-     * @see Validation
-     * @return 是否通过验证。
-     */
-    protected boolean isValid() {
-        return this.getInvoker().isValid();
-    }
-    /**
-     * 返回某个 key 下是否通过验证。
-     * @see Validation
-     * @return 某个 key 是否通过验证。
-     */
-    protected boolean isValid(String scene) {
-        return this.getInvoker().isValid(scene);
-    }
-    /**
-     * 验证失败的验证keys。
-     * @see Validation
-     */
-    protected List<String> validKeys() {
-        return this.getInvoker().validKeys();
-    }
-    /**
-     * 获取某个key下验证失败信息。
-     * @see Validation
-     */
-    protected List<Message> validErrors(String messageKey) {
-        return this.getInvoker().validErrors(messageKey);
-    }
-    /**
-     * 删除所有验证信息。
-     * @see Validation
-     */
-    protected void clearValidErrors() {
-        this.getInvoker().clearValidErrors();
-    }
-    /**
-     * 删除某个验证信息。
-     * @see Validation
-     */
-    protected void clearValidErrors(String messageKey) {
-        this.getInvoker().clearValidErrors(messageKey);
     }
     //
     //------------------------

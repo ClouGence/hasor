@@ -32,7 +32,7 @@ import java.util.Map;
  * @version : 2013-4-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface WebApiBinder extends ApiBinder, MimeTypeContext {
+public interface WebApiBinder extends ApiBinder, MimeType {
     /** 当处理 request 之前引发。
      * @see net.hasor.web.startup.RuntimeFilter#beforeRequest(AppContext, HttpServletRequest, HttpServletResponse)
      */

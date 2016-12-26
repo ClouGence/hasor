@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.invoker;
+package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
+import net.hasor.web.DataContext;
 import net.hasor.web.annotation.Async;
 import net.hasor.web.annotation.HttpMethod;
 import net.hasor.web.annotation.MappingTo;
-import net.hasor.web.render.InnerRenderData;
-import net.hasor.web.valid.ValidProcess;
+import net.hasor.web.valid.ValidProcessor;
 import org.more.UndefinedException;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
@@ -40,13 +40,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 赵永春 (zyc@hasor.net)
  */
 class MappingToDefine {
-    private Class<?>                  targetType;
-    private Provider<?>               targetProvider;
-    private String                    mappingTo;
-    private String                    mappingToMatches;
-    private Map<String, Method>       httpMapping;
-    private Map<Method, ValidProcess> needValid;
-    private Set<Method>               asyncMethod;
+    private Class<?>                    targetType;
+    private Provider<?>                 targetProvider;
+    private String                      mappingTo;
+    private String                      mappingToMatches;
+    private Map<String, Method>         httpMapping;
+    private Map<Method, ValidProcessor> needValid;
+    private Set<Method>                 asyncMethod;
     private AsyncSupported defaultAsync = AsyncSupported.no;
     private AtomicBoolean  inited       = new AtomicBoolean(false);
     //
@@ -92,11 +92,11 @@ class MappingToDefine {
         }
         //
         // .执行调用，每个方法的参数都进行判断，一旦查到参数上具有Valid 标签那么就调用doValid进行参数验证。
-        this.needValid = new HashMap<Method, ValidProcess>();
+        this.needValid = new HashMap<Method, ValidProcessor>();
         for (String key : this.httpMapping.keySet()) {
             Method targetMethod = this.httpMapping.get(key);
             //
-            this.needValid.put(targetMethod, new ValidProcess(targetMethod));
+            this.needValid.put(targetMethod, new ValidProcessor(targetMethod));
             //
             // @Async
             if (targetMethod.getAnnotation(Async.class) != null) {
@@ -179,8 +179,8 @@ class MappingToDefine {
      * 调用目标
      * @throws Throwable 异常抛出
      */
-    public final void invoke(InnerRenderData renderData) throws ServletException, IOException {
-        String httpMethod = renderData.getHttpRequest().getMethod();
+    public final void invoke(DataContext dataContext) throws ServletException, IOException {
+        String httpMethod = dataContext.getHttpRequest().getMethod();
         Method targetMethod = this.httpMapping.get(httpMethod.trim().toUpperCase());
         if (targetMethod == null) {
             targetMethod = this.httpMapping.get(HttpMethod.ANY);
@@ -188,8 +188,8 @@ class MappingToDefine {
         //
         try {
             Hasor.assertIsNotNull(targetMethod, "not font mapping Method.");
-            ValidProcess needValid = this.needValid.get(targetMethod);
-            new Invoker(this, renderData).exeCall(this.targetProvider, targetMethod, needValid);
+            ValidProcessor needValid = this.needValid.get(targetMethod);
+            new InvokerSSS(this, dataContext).exeCall(this.targetProvider, targetMethod, needValid);
         } catch (Throwable target) {
             if (target instanceof ServletException)
                 throw (ServletException) target;

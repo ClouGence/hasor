@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.render;
+package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Settings;
+import net.hasor.web.DataContext;
+import net.hasor.web.RenderEngine;
 import net.hasor.web.annotation.Render;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -107,48 +109,48 @@ public class LayoutProcessor {
         }
     }
     //
-    public boolean process(RenderContext renderData) throws Throwable {
-        if (renderData == null) {
+    public boolean process(DataContext dataContext) throws Throwable {
+        if (dataContext == null) {
             return false;
         }
-        String type = renderData.viewType();
+        String type = dataContext.viewType();
         RenderEngine engine = this.engineMap.get(type);
         if (engine == null) {
             return false;
         }
-        if (renderData.getHttpResponse().isCommitted()) {
+        if (dataContext.getHttpResponse().isCommitted()) {
             return false;
         }
         //
         //
-        String oriViewName = renderData.renderTo();
-        renderData.renderTo(fixTempName(this.templatePath, oriViewName));
+        String oriViewName = dataContext.renderTo();
+        dataContext.renderTo(fixTempName(this.templatePath, oriViewName));
         //
         String layoutFile = null;
-        if (this.useLayout && renderData.layout()) {
+        if (this.useLayout && dataContext.layout()) {
             layoutFile = findLayout(engine, oriViewName);
         }
         //
         if (layoutFile != null) {
             //先执行目标页面,然后在渲染layout
             StringWriter tmpWriter = new StringWriter();
-            if (engine.exist(renderData.renderTo())) {
-                engine.process(renderData, tmpWriter);
+            if (engine.exist(dataContext.renderTo())) {
+                engine.process(dataContext, tmpWriter);
             } else {
                 return false;
             }
             //渲染layout
-            renderData.put("content_placeholder", tmpWriter.toString());
-            renderData.renderTo(layoutFile);
-            if (engine.exist(renderData.renderTo())) {
-                engine.process(renderData, renderData.getHttpResponse().getWriter());
+            dataContext.put("content_placeholder", tmpWriter.toString());
+            dataContext.renderTo(layoutFile);
+            if (engine.exist(dataContext.renderTo())) {
+                engine.process(dataContext, dataContext.getHttpResponse().getWriter());
                 return true;
             } else {
                 throw new IOException("layout '" + layoutFile + "' file is missing.");//不可能发生这个错误。
             }
         } else {
-            if (engine.exist(renderData.renderTo())) {
-                engine.process(renderData, renderData.getHttpResponse().getWriter());
+            if (engine.exist(dataContext.renderTo())) {
+                engine.process(dataContext, dataContext.getHttpResponse().getWriter());
                 return true;
             } else {
                 return false;//没有执行模版

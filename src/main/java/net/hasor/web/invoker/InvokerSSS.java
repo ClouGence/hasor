@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.restful.invoker;
+package net.hasor.web.invoker;
 import net.hasor.core.Provider;
-import net.hasor.web.RenderData;
+import net.hasor.web.DataContext;
 import net.hasor.web.WebController;
 import net.hasor.web.annotation.*;
-import net.hasor.web.render.InnerRenderData;
-import net.hasor.web.valid.ValidProcess;
+import net.hasor.web.valid.ValidErrors;
+import net.hasor.web.valid.ValidProcessor;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
@@ -45,45 +45,45 @@ import java.util.regex.Pattern;
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-class Invoker {
+class InvokerSSS {
     protected Logger                    logger          = LoggerFactory.getLogger(getClass());
     private   MappingToDefine           mappingToDefine = null;
     private   Map<String, List<String>> queryParamLocal = null;
     private   Map<String, Object>       pathParamsLocal = null;
-    private   InnerRenderData           renderData      = null;
+    private   DataContext               dataContext     = null;
     //
-    public Invoker(MappingToDefine mappingToDefine, InnerRenderData renderData) {
+    public InvokerSSS(MappingToDefine mappingToDefine, DataContext dataContext) {
         this.mappingToDefine = mappingToDefine;
-        this.renderData = renderData;
+        this.dataContext = dataContext;
     }
     //
     /** 执行调用 */
-    public void exeCall(Provider<?> targetProvider, Method targetMethod, ValidProcess needValid) throws Throwable {
+    public void exeCall(Provider<?> targetProvider, Method targetMethod, ValidProcessor needValid) throws Throwable {
         Object targetObject = targetProvider.get();
-        HttpServletRequest httpRequest = this.renderData.getHttpRequest();
-        HttpServletResponse httpResponse = this.renderData.getHttpResponse();
+        HttpServletRequest httpRequest = this.dataContext.getHttpRequest();
+        HttpServletResponse httpResponse = this.dataContext.getHttpResponse();
         if (targetObject instanceof WebController) {
-            ((WebController) targetObject).initController(this.renderData);
+            ((WebController) targetObject).initController(this.dataContext);
         }
         //
         Object[] resolveParams = this.resolveParams(targetMethod);
-        if (needValid != null) {
-            needValid.doValid(this.renderData.getAppContext(), this.renderData, resolveParams);
+        if (needValid != null && this.dataContext instanceof ValidErrors) {
+            needValid.doValid(this.dataContext.getAppContext(), (ValidErrors) this.dataContext, resolveParams);
         }
         Object resultData = this.invoke(targetMethod, targetObject, resolveParams);
-        this.renderData.setReturnData(resultData);
+        // this.dataContext.setReturnData(resultData);
         //
         if (targetMethod.isAnnotationPresent(Produces.class)) {
             Produces pro = targetMethod.getAnnotation(Produces.class);
             String proValue = pro.value();
             if (!StringUtils.isBlank(proValue)) {
-                String mimeType = this.renderData.getMimeType(proValue);
+                String mimeType = this.dataContext.getMimeType(proValue);
                 if (StringUtils.isBlank(mimeType)) {
                     httpResponse.setContentType(proValue);
-                    this.renderData.viewType(proValue);
+                    this.dataContext.viewType(proValue);
                 } else {
                     httpResponse.setContentType(mimeType);
-                    this.renderData.viewType(mimeType);
+                    this.dataContext.viewType(mimeType);
                 }
             }
         }
@@ -125,23 +125,26 @@ class Invoker {
     }
     private Object resolveSpecialParam(Class<?> paramClass) {
         if (paramClass == ServletRequest.class || paramClass == HttpServletRequest.class) {
-            return this.renderData.getHttpRequest();
+            return this.dataContext.getHttpRequest();
         }
         if (paramClass == ServletResponse.class || paramClass == HttpServletResponse.class) {
-            return this.renderData.getHttpRequest();
+            return this.dataContext.getHttpRequest();
         }
         if (paramClass == HttpSession.class) {
-            return this.renderData.getHttpRequest().getSession(true);
+            return this.dataContext.getHttpRequest().getSession(true);
         }
         //
-        if (paramClass == RenderData.class) {
-            return this.renderData;
+        if (paramClass == DataContext.class) {
+            return this.dataContext;
+        }
+        if (paramClass.isInterface() && paramClass.isInstance(this.dataContext)) {
+            return this.dataContext;
         }
         //
         if (!paramClass.isInterface()) {
             return null;
         }
-        return this.renderData.getAppContext().getInstance(paramClass);
+        return this.dataContext.getAppContext().getInstance(paramClass);
     }
     //
     /**/
@@ -161,7 +164,7 @@ class Invoker {
             } else if (pAnno instanceof PathParam) {
                 atData = this.getPathParam((PathParam) pAnno);
             } else if (pAnno instanceof ReqParam) {
-                atData = this.renderData.getHttpRequest().getParameterValues(((ReqParam) pAnno).value());
+                atData = this.dataContext.getHttpRequest().getParameterValues(((ReqParam) pAnno).value());
             } else if (pAnno instanceof Params) {
                 atData = this.getParamsParam(paramClass);
             }
@@ -193,7 +196,7 @@ class Invoker {
                 Object fieldValue = null;
                 Annotation[] annos = field.getAnnotations();
                 if (annos == null || annos.length == 0) {
-                    fieldValue = this.renderData.getHttpRequest().getParameterValues(field.getName());
+                    fieldValue = this.dataContext.getHttpRequest().getParameterValues(field.getName());
                 } else {
                     fieldValue = resolveParam(field.getType(), annos);
                 }
@@ -226,7 +229,7 @@ class Invoker {
             return null;
         }
         //
-        HttpServletRequest httpRequest = this.renderData.getHttpRequest();
+        HttpServletRequest httpRequest = this.dataContext.getHttpRequest();
         Enumeration<?> e = httpRequest.getHeaderNames();
         while (e.hasMoreElements()) {
             String name = e.nextElement().toString();
@@ -248,7 +251,7 @@ class Invoker {
             return null;
         }
         //
-        HttpServletRequest httpRequest = this.renderData.getHttpRequest();
+        HttpServletRequest httpRequest = this.dataContext.getHttpRequest();
         Cookie[] cookies = httpRequest.getCookies();
         ArrayList<String> cookieList = new ArrayList<String>();
         if (cookies != null) {
@@ -266,7 +269,7 @@ class Invoker {
         if (StringUtils.isBlank(paramName)) {
             return null;
         }
-        HttpServletRequest httpRequest = this.renderData.getHttpRequest();
+        HttpServletRequest httpRequest = this.dataContext.getHttpRequest();
         Enumeration<?> e = httpRequest.getAttributeNames();
         while (e.hasMoreElements()) {
             String name = e.nextElement().toString();
@@ -282,7 +285,7 @@ class Invoker {
             return this.queryParamLocal;
         }
         //
-        HttpServletRequest httpRequest = this.renderData.getHttpRequest();
+        HttpServletRequest httpRequest = this.dataContext.getHttpRequest();
         String queryString = httpRequest.getQueryString();
         if (StringUtils.isBlank(queryString)) {
             return Collections.EMPTY_MAP;
@@ -323,7 +326,7 @@ class Invoker {
             return this.pathParamsLocal;
         }
         //
-        HttpServletRequest httpRequest = this.renderData.getHttpRequest();
+        HttpServletRequest httpRequest = this.dataContext.getHttpRequest();
         String requestPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         String matchVar = this.mappingToDefine.getMappingToMatches();
         String matchKey = "(?:\\{(\\w+)\\}){1,}";//  (?:\{(\w+)\}){1,}

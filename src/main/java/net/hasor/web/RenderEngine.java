@@ -13,19 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.render;
+package net.hasor.web;
+import net.hasor.core.AppContext;
 import net.hasor.web.DataContext;
-import net.hasor.web.InvokerCreater;
+
+import java.io.IOException;
+import java.io.Writer;
 /**
- * @version : 2013-6-5
- * @author 赵永春 (zyc@hasor.net)
+ * 渲染引擎
+ * @version : 2016年1月3日
+ * @author 赵永春(zyc@hasor.net)
  */
-public class RanderInvokerCreater implements InvokerCreater {
-    @Override
-    public Object create(DataContext dataContext) {
-        RenderContextSupplier supplier = new RenderContextSupplier(dataContext);
-        supplier.put(RenderContext.RETURN_DATA_KEY, null);
-        supplier.lockKey(RenderContext.RETURN_DATA_KEY);
-        return supplier;
-    }
+public interface RenderEngine {
+    /** 初始化引擎 */
+    public void initEngine(AppContext appContext) throws Throwable;
+
+    /** 执行模版引擎 */
+    public void process(DataContext data, Writer writer) throws Throwable;
+
+    /** 获取模版Loader */
+    public boolean exist(String template) throws IOException;
 }

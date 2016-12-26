@@ -13,23 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.render;
-import net.hasor.core.AppContext;
-
-import java.io.IOException;
-import java.io.Writer;
+package net.hasor.web.invoker;
 /**
- * 渲染引擎
- * @version : 2016年1月3日
+ * servlet是否支持异步。
+ * @version : 2013-11-4
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RenderEngine {
-    /** 初始化引擎 */
-    public void initEngine(AppContext appContext) throws Throwable;
-
-    /** 执行模版引擎 */
-    public void process(RenderContext data, Writer writer) throws Throwable;
-
-    /** 获取模版Loader */
-    public boolean exist(String template) throws IOException;
+public enum AsyncSupported {
+    yes(), no(),;
 }

@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.mime;
+package net.hasor.web.invoker;
+import net.hasor.web.MimeType;
 import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
 import org.more.xml.stream.*;
@@ -29,10 +30,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version : 2015年2月11日
  * @author 赵永春(zyc@hasor.net)
  */
-public class MimeTypeContext extends ConcurrentHashMap<String, String> implements MimeType {
+class MimeTypeSupplier extends ConcurrentHashMap<String, String> implements MimeType {
     private static final long serialVersionUID = -8955832291109288048L;
     private ServletContext content;
-    public MimeTypeContext(ServletContext content) {
+    public MimeTypeSupplier(ServletContext content) {
         this.content = content;
     }
     //
@@ -77,8 +78,8 @@ public class MimeTypeContext extends ConcurrentHashMap<String, String> implement
                         if (!StringUtils.isBlank(this.extension) && !StringUtils.isBlank(this.mimeType)) {
                             String key = this.extension.trim().toLowerCase();
                             String var = this.mimeType.trim();
-                            if (!MimeTypeContext.this.containsKey(key)) {
-                                MimeTypeContext.this.put(key, var);
+                            if (!MimeTypeSupplier.this.containsKey(key)) {
+                                MimeTypeSupplier.this.put(key, var);
                             }
                         }
                         this.extension = null;
