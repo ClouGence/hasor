@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.web.valid;
-import net.hasor.web.DataContext;
-import net.hasor.web.wrap.DataContextWrap;
+import net.hasor.web.Invoker;
+import net.hasor.web.wrap.InvokerWrap;
 import org.more.bizcommon.Message;
 import org.more.util.StringUtils;
 
@@ -24,9 +24,9 @@ import java.util.*;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ValidContextSupplier extends DataContextWrap implements ValidContext, ValidErrors {
+public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker, ValidErrors {
     private final Map<String, ValidItem> validData = new HashMap<String, ValidItem>();
-    public ValidContextSupplier(DataContext context) {
+    public ValidInvokerSupplier(Invoker context) {
         super(context);
     }
     //

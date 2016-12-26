@@ -15,7 +15,7 @@
  */
 package net.hasor.web.wrap;
 import net.hasor.core.AppContext;
-import net.hasor.web.DataContext;
+import net.hasor.web.Invoker;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,10 +24,10 @@ import java.util.Set;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public class DataContextWrap implements DataContext {
-    private DataContext dataContext;
+public class InvokerWrap implements Invoker {
+    private Invoker dataContext;
     //
-    public DataContextWrap(DataContext dataContext) {
+    public InvokerWrap(Invoker dataContext) {
         this.dataContext = dataContext;
     }
     @Override

@@ -27,12 +27,12 @@ import java.util.Map;
  * @version : 2016-08-03
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ValidProcessor<T extends ValidErrors> {
+class ValidDefinition {
     private boolean               enable        = false;
     private Map<String, Valid>    paramValidMap = new HashMap<String, Valid>();
     private Map<String, Class<?>> paramTypeMap  = new HashMap<String, Class<?>>();
     //
-    public ValidProcessor(Method targetMethod) {
+    public ValidDefinition(Method targetMethod) {
         // .解析参数
         Annotation[][] paramAnno = targetMethod.getParameterAnnotations();
         Class<?>[] paramType = targetMethod.getParameterTypes();
@@ -50,7 +50,12 @@ public class ValidProcessor<T extends ValidErrors> {
         this.enable = !this.paramTypeMap.isEmpty();
     }
     //
-    public void doValid(AppContext appContext, T data, Object[] resolveParams) {
+    public boolean isEnable() {
+        return enable;
+    }
+    //
+    //
+    public void doValid(AppContext appContext, ValidErrors data, Object[] resolveParams) {
         // .启用否
         if (!this.enable) {
             return;
@@ -60,7 +65,7 @@ public class ValidProcessor<T extends ValidErrors> {
             doValidParam(appContext, data, paramIndex, resolveParams[Integer.valueOf(paramIndex)]);
         }
     }
-    private void doValidParam(AppContext appContext, T data, String paramIndex, Object paramObject) {
+    private void doValidParam(AppContext appContext, ValidErrors data, String paramIndex, Object paramObject) {
         Valid paramValid = this.paramValidMap.get(paramIndex);
         if (paramValid == null) {
             return;

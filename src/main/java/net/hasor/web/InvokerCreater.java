@@ -15,9 +15,9 @@
  */
 package net.hasor.web;
 /**
- * @version : 2016-12-24
+ * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface InvokerCreater {
-    public Object create(DataContext dataContext);
+    public Invoker createExt(Invoker dataContext);
 }

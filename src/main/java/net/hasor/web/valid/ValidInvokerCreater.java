@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.valid;
-import net.hasor.web.DataContext;
+import net.hasor.web.Invoker;
 import net.hasor.web.InvokerCreater;
 /**
  * @version : 2013-6-5
@@ -22,10 +22,10 @@ import net.hasor.web.InvokerCreater;
  */
 public class ValidInvokerCreater implements InvokerCreater {
     @Override
-    public Object create(DataContext dataContext) {
-        ValidContextSupplier supplier = new ValidContextSupplier(dataContext);
-        supplier.put(ValidContext.VALID_DATA_KEY, supplier.getValidData());
-        supplier.lockKey(ValidContext.VALID_DATA_KEY);
+    public Invoker createExt(Invoker dataContext) {
+        ValidInvokerSupplier supplier = new ValidInvokerSupplier(dataContext);
+        supplier.put(ValidInvoker.VALID_DATA_KEY, supplier.getValidData());
+        supplier.lockKey(ValidInvoker.VALID_DATA_KEY);
         return supplier;
     }
 }

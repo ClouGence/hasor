@@ -40,9 +40,9 @@ import java.util.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class WebController {
-    private ThreadLocal<DataContext> invoker = new ThreadLocal<DataContext>();
+    private ThreadLocal<Invoker> invoker = new ThreadLocal<Invoker>();
     //
-    public void initController(DataContext renderData) {
+    public void initController(Invoker renderData) {
         if (this.invoker.get() != null) {
             this.invoker.remove();
         }
@@ -50,7 +50,7 @@ public abstract class WebController {
             this.invoker.set(renderData);
         }
     }
-    protected DataContext getInvoker() {
+    protected Invoker getInvoker() {
         return this.invoker.get();
     }
     //

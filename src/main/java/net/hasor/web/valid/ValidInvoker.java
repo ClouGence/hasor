@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.valid;
+import net.hasor.web.Invoker;
 import org.more.bizcommon.Message;
 
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface ValidContext {
+public interface ValidInvoker extends Invoker {
     public static final String VALID_DATA_KEY = "validData";//
 
     /**验证失败的验证keys。*/

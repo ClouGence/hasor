@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.web;
-import net.hasor.core.AppContext;
-
-import java.io.IOException;
-import java.io.Writer;
 /**
- * 渲染引擎
- * @version : 2016年1月3日
- * @author 赵永春(zyc@hasor.net)
+ * @version : 2016-12-26
+ * @author 赵永春 (zyc@hasor.net)
  */
-public interface RenderEngine {
-    /** 初始化引擎 */
-    public void initEngine(AppContext appContext) throws Throwable;
+public interface MappingData {
+    /** 获取映射的地址 */
+    public String getMappingTo();
 
-    /** 执行模版引擎 */
-    public void process(Invoker invoker, Writer writer) throws Throwable;
-
-    /** 获取模版Loader */
-    public boolean exist(String template) throws IOException;
+    /**
+     * 测试路径是否匹配。
+     * @return 返回测试结果。
+     */
+    public boolean matchingMapping(String httpMethod, String actionPath);
 }

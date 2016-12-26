@@ -20,10 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Set;
 /**
- * @version : 2013-6-5
+ * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface DataContext extends MimeType {
+public interface Invoker extends MimeType {
     public static final String RETURN_DATA_KEY = "resultData";//
     public static final String ROOT_DATA_KEY   = "rootData";//
     public static final String REQUEST_KEY     = "request";//
@@ -43,6 +43,7 @@ public interface DataContext extends MimeType {
 
     public void put(String key, Object value);
 
+    /** 锁定某个属性key，让这个key无被 put 或者 remove */
     public void lockKey(String key);
 
     /**获取需要渲染的视图名称。*/
