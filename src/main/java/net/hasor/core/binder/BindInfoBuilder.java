@@ -58,7 +58,7 @@ public interface BindInfoBuilder<T> {
      * 开发者自定义的{@link Provider}。
      * @param customerProvider 设置自定义{@link Provider}
      */
-    public void setCustomerProvider(Provider<T> customerProvider);
+    public void setCustomerProvider(Provider<? extends T> customerProvider);
 
     /**
      * 将类型发布到一个固定的命名空间内。

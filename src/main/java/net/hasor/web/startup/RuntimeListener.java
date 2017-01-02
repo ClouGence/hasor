@@ -34,10 +34,10 @@ import javax.servlet.http.HttpSessionListener;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RuntimeListener implements ServletContextListener, HttpSessionListener {
-    protected           Logger           logger                  = LoggerFactory.getLogger(getClass());
-    public static final String           AppContextName          = AppContext.class.getName();
-    private             AppContext       appContext              = null;
-    private             ListenerPipeline sessionListenerPipeline = null;
+    protected           Logger           logger           = LoggerFactory.getLogger(getClass());
+    public static final String           AppContextName   = AppContext.class.getName();
+    private             AppContext       appContext       = null;
+    private             ListenerPipeline listenerPipeline = null;
     /*----------------------------------------------------------------------------------------------------*/
     //
     /**创建{@link AppContext}对象*/
@@ -73,32 +73,32 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
             throw ExceptionUtils.toRuntimeException(e);
         }
         //2.获取SessionListenerPipeline
-        this.sessionListenerPipeline = this.appContext.getInstance(ListenerPipeline.class);
-        this.sessionListenerPipeline.init(this.appContext);
+        this.listenerPipeline = this.appContext.getInstance(ListenerPipeline.class);
+        this.listenerPipeline.init(this.appContext);
         logger.info("sessionListenerPipeline created.");
         //3.放入ServletContext环境。
         logger.info("ServletContext Attribut is " + RuntimeListener.AppContextName);
         servletContextEvent.getServletContext().setAttribute(RuntimeListener.AppContextName, this.appContext);
-        this.sessionListenerPipeline.contextInitialized(servletContextEvent);
+        this.listenerPipeline.contextInitialized(servletContextEvent);
     }
     @Override
     public void contextDestroyed(final ServletContextEvent servletContextEvent) {
-        if (this.sessionListenerPipeline != null) {
-            this.sessionListenerPipeline.contextDestroyed(servletContextEvent);
+        if (this.listenerPipeline != null) {
+            this.listenerPipeline.contextDestroyed(servletContextEvent);
         }
         this.appContext.shutdown();
         logger.info("shutdown.");
     }
     @Override
     public void sessionCreated(final HttpSessionEvent se) {
-        if (this.sessionListenerPipeline != null) {
-            this.sessionListenerPipeline.sessionCreated(se);
+        if (this.listenerPipeline != null) {
+            this.listenerPipeline.sessionCreated(se);
         }
     }
     @Override
     public void sessionDestroyed(final HttpSessionEvent se) {
-        if (this.sessionListenerPipeline != null) {
-            this.sessionListenerPipeline.sessionDestroyed(se);
+        if (this.listenerPipeline != null) {
+            this.listenerPipeline.sessionDestroyed(se);
         }
     }
     //

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.pipeline;
+package net.hasor.web.invoker;
 /**
  * A general interface for matching a URI against a URI pattern. Guice-servlet provides regex and
  * servlet-style pattern matching out of the box.
  * @author dhanji@gmail.com (Dhanji R. Prasanna)
  */
-interface UriPatternMatcher {
+public interface UriPatternMatcher {
     /**
      * @param uri A "contextual" (i.e. relative) Request URI, *not* a complete one.
      * @return Returns true if the uri matches the pattern.

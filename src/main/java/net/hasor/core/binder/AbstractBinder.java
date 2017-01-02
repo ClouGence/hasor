@@ -222,7 +222,7 @@ public abstract class AbstractBinder implements ApiBinder {
         public MetaDataBindingBuilder<T> toScope(String scopeName) {
             return this.toScope(getScopManager().findScope(scopeName));
         }
-        public LifeBindingBuilder<T> toProvider(final Provider<T> provider) {
+        public LifeBindingBuilder<T> toProvider(final Provider<? extends T> provider) {
             if (provider != null) {
                 this.typeBuilder.setCustomerProvider(provider);
             }

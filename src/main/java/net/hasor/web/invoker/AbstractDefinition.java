@@ -13,11 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.pipeline;
-import net.hasor.core.AppContext;
-import net.hasor.web.invoker.UriPatternMatcher;
-import net.hasor.web.invoker.UriPatternType;
-
+package net.hasor.web.invoker;
 import java.util.HashMap;
 import java.util.Map;
 /**
@@ -25,19 +21,19 @@ import java.util.Map;
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
  */
-class AbstractServletModuleBinding {
-    private int index = 0;
+public abstract class AbstractDefinition {
+    private final int                 index;
     private final Map<String, String> initParams;
     private final String              pattern;
     private final UriPatternMatcher   patternMatcher;
-    private AppContext appContext = null;
     //
-    public AbstractServletModuleBinding(final int index, final Map<String, String> initParams, final String pattern, final UriPatternMatcher patternMatcher) {
+    public AbstractDefinition(int index, String pattern, UriPatternMatcher patternMatcher, Map<String, String> initParams) {
         this.index = index;
         this.initParams = new HashMap<String, String>(initParams);
         this.pattern = pattern;
         this.patternMatcher = patternMatcher;
     }
+    /***/
     public int getIndex() {
         return this.index;
     }
@@ -56,14 +52,5 @@ class AbstractServletModuleBinding {
     /** Returns true if the given URI will match this binding. */
     public boolean matchesUri(final String uri) {
         return this.patternMatcher.matches(uri);
-    }
-    /**init.*/
-    public void init(AppContext appContext) {
-        this.appContext = appContext;
-    }
-    /**获取{@link AppContext}对象。
-     * @see #init(AppContext)*/
-    protected AppContext getAppContext() {
-        return appContext;
     }
 }

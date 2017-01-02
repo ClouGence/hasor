@@ -56,18 +56,33 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /**获取容器支持的Servlet版本。*/
     public ServletVersion getServletVersion();
+    //
 
     /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
-    public FilterBindingBuilder filter(String urlPattern, String... morePatterns);
+    public FilterBindingBuilder<Filter> filter(String urlPattern, String... morePatterns);
 
     /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
-    public FilterBindingBuilder filter(String[] morePatterns);
+    public FilterBindingBuilder<Filter> filter(String[] morePatterns);
 
     /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
-    public FilterBindingBuilder filterRegex(String regex, String... regexes);
+    public FilterBindingBuilder<Filter> filterRegex(String regex, String... regexes);
 
     /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
-    public FilterBindingBuilder filterRegex(String[] regexes);
+    public FilterBindingBuilder<Filter> filterRegex(String[] regexes);
+    //
+
+    /**使用传统表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
+    public FilterBindingBuilder<InvokerFilter> invFilter(String urlPattern, String... morePatterns);
+
+    /**使用传统表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
+    public FilterBindingBuilder<InvokerFilter> invFilter(String[] morePatterns);
+
+    /**使用正则表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
+    public FilterBindingBuilder<InvokerFilter> invFilterRegex(String regex, String... regexes);
+
+    /**使用正则表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
+    public FilterBindingBuilder<InvokerFilter> invFilterRegex(String[] regexes);
+    //
 
     /**使用传统表达式，创建一个{@link ServletBindingBuilder}。*/
     public ServletBindingBuilder serve(String urlPattern, String... morePatterns);
@@ -86,43 +101,56 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /**注册一个ServletContextListener监听器。*/
     public ServletContextListenerBindingBuilder contextListener();
+    //
+
+    /**添加插件*/
+    public WebApiBinder addPlugin(Class<? extends WebPlugin> webPlugin);
+
+    /**添加插件*/
+    public WebApiBinder addPlugin(WebPlugin webPlugin);
+
+    /**添加插件*/
+    public WebApiBinder addPlugin(Provider<? extends WebPlugin> webPlugin);
+
+    /**添加插件*/
+    public WebApiBinder addPlugin(BindInfo<WebPlugin> webPlugin);
 
     /**负责配置Filter。*/
-    public static interface FilterBindingBuilder {
-        public void through(Class<? extends Filter> filterKey);
+    public static interface FilterBindingBuilder<T> {
+        public void through(Class<? extends T> filterKey);
 
-        public void through(Filter filter);
+        public void through(T filter);
 
-        public void through(Provider<? extends Filter> filterProvider);
+        public void through(Provider<? extends T> filterProvider);
 
-        public void through(BindInfo<? extends Filter> filterRegister);
-
-        //
-        public void through(Class<? extends Filter> filterKey, Map<String, String> initParams);
-
-        public void through(Filter filter, Map<String, String> initParams);
-
-        public void through(Provider<? extends Filter> filterProvider, Map<String, String> initParams);
-
-        public void through(BindInfo<? extends Filter> filterRegister, Map<String, String> initParams);
+        public void through(BindInfo<? extends T> filterRegister);
 
         //
-        public void through(int index, Class<? extends Filter> filterKey);
+        public void through(Class<? extends T> filterKey, Map<String, String> initParams);
 
-        public void through(int index, Filter filter);
+        public void through(T filter, Map<String, String> initParams);
 
-        public void through(int index, Provider<? extends Filter> filterProvider);
+        public void through(Provider<? extends T> filterProvider, Map<String, String> initParams);
 
-        public void through(int index, BindInfo<? extends Filter> filterRegister);
+        public void through(BindInfo<? extends T> filterRegister, Map<String, String> initParams);
 
         //
-        public void through(int index, Class<? extends Filter> filterKey, Map<String, String> initParams);
+        public void through(int index, Class<? extends T> filterKey);
 
-        public void through(int index, Filter filter, Map<String, String> initParams);
+        public void through(int index, T filter);
 
-        public void through(int index, Provider<? extends Filter> filterProvider, Map<String, String> initParams);
+        public void through(int index, Provider<? extends T> filterProvider);
 
-        public void through(int index, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams);
+        public void through(int index, BindInfo<? extends T> filterRegister);
+
+        //
+        public void through(int index, Class<? extends T> filterKey, Map<String, String> initParams);
+
+        public void through(int index, T filter, Map<String, String> initParams);
+
+        public void through(int index, Provider<? extends T> filterProvider, Map<String, String> initParams);
+
+        public void through(int index, BindInfo<? extends T> filterRegister, Map<String, String> initParams);
     }
     /**负责配置Servlet。*/
     public static interface ServletBindingBuilder {

@@ -15,11 +15,13 @@
  */
 package net.hasor.web.invoker;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
-import net.hasor.web.MimeType;
-import net.hasor.web.ServletVersion;
-import net.hasor.web.WebApiBinder;
+import net.hasor.core.Provider;
+import net.hasor.web.*;
 import net.hasor.web.pipeline.PipelineWebApiBinder;
+
+import java.util.Map;
 /**
  * 该类是{@link WebApiBinder}接口实现。
  * @version : 2013-4-10
@@ -41,4 +43,38 @@ class InnerWebApiBinder extends PipelineWebApiBinder implements WebApiBinder {
     public ServletVersion getServletVersion() {
         return this.curVersion;
     }
+    //
+    @Override
+    public WebApiBinder addPlugin(Class<? extends WebPlugin> webPlugin) {
+        webPlugin = Hasor.assertIsNotNull(webPlugin);
+        BindInfo<WebPlugin> bindInfo = this.bindType(WebPlugin.class).to(webPlugin).toInfo();
+        this.bindType(WebPluginDefinition.class).toInstance(new WebPluginDefinition(bindInfo));
+        return this;
+    }
+    @Override
+    public WebApiBinder addPlugin(WebPlugin webPlugin) {
+        webPlugin = Hasor.assertIsNotNull(webPlugin);
+        BindInfo<WebPlugin> bindInfo = this.bindType(WebPlugin.class).toInstance(webPlugin).toInfo();
+        this.bindType(WebPluginDefinition.class).toInstance(new WebPluginDefinition(bindInfo));
+        return this;
+    }
+    @Override
+    public WebApiBinder addPlugin(Provider<? extends WebPlugin> webPlugin) {
+        webPlugin = Hasor.assertIsNotNull(webPlugin);
+        BindInfo<WebPlugin> bindInfo = this.bindType(WebPlugin.class).toProvider(webPlugin).toInfo();
+        this.bindType(WebPluginDefinition.class).toInstance(new WebPluginDefinition(bindInfo));
+        return this;
+    }
+    @Override
+    public WebApiBinder addPlugin(BindInfo<WebPlugin> webPlugin) {
+        webPlugin = Hasor.assertIsNotNull(webPlugin);
+        this.bindType(WebPluginDefinition.class).toInstance(new WebPluginDefinition(webPlugin));
+        return this;
+    }
+    @Override
+    protected void throughInvFilter(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
+        InvokeFilterDefinition define = new InvokeFilterDefinition(index, pattern, matcher, filterRegister, initParams);
+        bindType(InvokeFilterDefinition.class).uniqueName().toInstance(define);
+    }
+    //
 }

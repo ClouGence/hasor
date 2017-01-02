@@ -13,15 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
+package net.hasor.web.render;
+import net.hasor.web.Invoker;
 /**
- * @version : 2016-12-26
+ * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface InvokerFilter {
-    public void init(InvokerFilterConfig config);
+public interface RenderInvoker extends Invoker {
+    public String renderTo();
 
-    public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable;
+    public void renderTo(String viewName);
 
-    public void destroy();
+    public void renderTo(String viewType, String viewName);
+
+    public String viewType();
+
+    public void viewType(String viewType);
+
+    public boolean layout();
+
+    public void layoutEnable();
+
+    public void layoutDisable();
 }

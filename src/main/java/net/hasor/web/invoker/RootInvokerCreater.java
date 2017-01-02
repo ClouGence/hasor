@@ -15,10 +15,9 @@
  */
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
-import net.hasor.core.EventListener;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
-import net.hasor.web.DataContext;
+import net.hasor.web.Invoker;
 import net.hasor.web.InvokerCreater;
 import org.more.util.StringUtils;
 
@@ -28,21 +27,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-class RootInvokerCreater implements InvokerCreater, EventListener<AppContext> {
-    private AtomicBoolean                 inited     = new AtomicBoolean(false);
+class RootInvokerCreater implements InvokerCreater {
     private Map<Class<?>, InvokerCreater> createrMap = new HashMap<Class<?>, InvokerCreater>();
-    //
-    @Override
-    public void onEvent(String event, AppContext appContext) throws Throwable {
-        if (!this.inited.compareAndSet(false, true)) {
-            return;/*避免被初始化多次*/
-        }
-        //
+    public RootInvokerCreater(AppContext appContext) throws Exception {
         Settings settings = appContext.getEnvironment().getSettings();
         ClassLoader classLoader = appContext.getClassLoader();
         //
@@ -77,21 +68,21 @@ class RootInvokerCreater implements InvokerCreater, EventListener<AppContext> {
     }
     //
     @Override
-    public Object create(DataContext dataContext) {
+    public Invoker createExt(Invoker dataContext) {
         Map<Class<?>, Object> supportMap = new HashMap<Class<?>, Object>();
         for (Map.Entry<Class<?>, InvokerCreater> ent : this.createrMap.entrySet()) {
             Class<?> extType = ent.getKey();
             InvokerCreater creater = ent.getValue();
-            Object extObject = (creater != null) ? creater.create(dataContext) : null;
+            Object extObject = (creater != null) ? creater.createExt(dataContext) : null;
             if (extType != null && extObject != null) {
                 supportMap.put(extType, extObject);
             }
         }
         //
         ClassLoader classLoader = dataContext.getAppContext().getClassLoader();
-        supportMap.put(DataContext.class, dataContext);
+        supportMap.put(Invoker.class, dataContext);
         Class<?>[] apiArrays = supportMap.keySet().toArray(new Class<?>[supportMap.size()]);
-        return Proxy.newProxyInstance(classLoader, apiArrays, new InvokerCreaterInvocationHandler(supportMap));
+        return (Invoker) Proxy.newProxyInstance(classLoader, apiArrays, new InvokerCreaterInvocationHandler(supportMap));
     }
     private static class InvokerCreaterInvocationHandler implements InvocationHandler {
         private Map<Class<?>, Object> supportMap;

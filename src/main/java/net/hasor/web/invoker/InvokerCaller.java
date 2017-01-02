@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
-import net.hasor.core.Provider;
-import net.hasor.web.DataContext;
-import net.hasor.web.WebController;
+import net.hasor.web.*;
 import net.hasor.web.annotation.*;
-import net.hasor.web.valid.ValidErrors;
-import net.hasor.web.valid.ValidProcessor;
 import org.more.convert.ConverterUtils;
+import org.more.future.BasicFuture;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.AsyncContext;
+import javax.servlet.FilterChain;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
@@ -38,59 +37,109 @@ import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 /**
- * 内置插件，负责处理参数映射。   
+ * 负责解析参数并执行调用。
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-class InvokerSSS {
+class InvokerCaller {
     protected Logger                    logger          = LoggerFactory.getLogger(getClass());
-    private   MappingToDefine           mappingToDefine = null;
+    private   MappingDataInfo           mappingToDefine = null;
+    private   InvokerFilter[]           filterArrays    = null;
+    private   WebPluginCaller           pluginCaller    = null;
     private   Map<String, List<String>> queryParamLocal = null;
     private   Map<String, Object>       pathParamsLocal = null;
-    private   DataContext               dataContext     = null;
     //
-    public InvokerSSS(MappingToDefine mappingToDefine, DataContext dataContext) {
+    public InvokerCaller(MappingDataInfo mappingToDefine, InvokerFilter[] filterArrays, WebPluginCaller pluginCaller) {
         this.mappingToDefine = mappingToDefine;
-        this.dataContext = dataContext;
+        this.filterArrays = (filterArrays == null) ? new InvokerFilter[0] : filterArrays;
+        this.pluginCaller = pluginCaller;
+    }
+    /**
+     * 调用目标
+     * @throws Throwable 异常抛出
+     */
+    public Future<Object> invoke(final Invoker invoker, final FilterChain chain) throws Throwable {
+        final BasicFuture<Object> future = new BasicFuture<Object>();
+        Method targetMethod = this.mappingToDefine.findMethod(invoker);
+        //
+        // .异步调用
+        boolean needAsync = this.mappingToDefine.isAsync(invoker);
+        ServletVersion version = invoker.getAppContext().getInstance(ServletVersion.class);
+        if (version.ge(ServletVersion.V3_0) && needAsync) {
+            // .必须满足: Servlet3.x、环境支持异步Servlet、目标开启了Servlet3
+            try {
+                AsyncContext asyncContext = invoker.getHttpRequest().startAsync();
+                asyncContext.start(new AsyncInvocationWorker(asyncContext, targetMethod) {
+                    public void doWork(Method targetMethod) throws Throwable {
+                        try {
+                            Object invoke = invoke(targetMethod, invoker, chain);
+                            future.completed(invoke);
+                        } catch (Throwable e) {
+                            future.failed(e);
+                        }
+                    }
+                });
+                return future;
+            } catch (Throwable e) { /* 不支持异步 */ }
+        }
+        //
+        // .同步调用
+        try {
+            Object invoke = invoke(targetMethod, invoker, chain);
+            future.completed(invoke);
+        } catch (Throwable e) {
+            future.failed(e);
+        }
+        return future;
+    }
+    /** 执行调用 */
+    private Object invoke(final Method targetMethod, Invoker invoker, FilterChain chain) throws Throwable {
+        //
+        Object targetObject = invoker.getAppContext().getInstance(this.mappingToDefine.getTargetType());
+        if (targetObject != null && targetObject instanceof WebController) {
+            ((WebController) targetObject).initController(invoker);
+        }
+        //
+        final Object[] resolveParams = this.resolveParams(invoker, targetMethod);
+        final AtomicBoolean doNext = new AtomicBoolean(false);
+        InvokerChain finalChain = new InvokerChain() {
+            public void doNext(Invoker invoker) throws Throwable {
+                doNext.set(true);
+            }
+            @Override
+            public Method targetMethod() {
+                return targetMethod;
+            }
+            @Override
+            public Object[] getParameters() {
+                return resolveParams;
+            }
+            @Override
+            public MappingData getMappingTo() {
+                return mappingToDefine;
+            }
+        };
+        Object result = null;
+        try {
+            this.pluginCaller.beforeFilter(invoker, finalChain);
+            result = targetMethod.invoke(targetObject, resolveParams);
+            new InvokerChainInvocation(this.mappingToDefine, this.filterArrays, finalChain).doNext(invoker);
+            if (doNext.get()) {
+                chain.doFilter(invoker.getHttpRequest(), invoker.getHttpResponse());
+            }
+        } finally {
+            this.pluginCaller.afterFilter(invoker, finalChain);
+        }
+        return result;
     }
     //
-    /** 执行调用 */
-    public void exeCall(Provider<?> targetProvider, Method targetMethod, ValidProcessor needValid) throws Throwable {
-        Object targetObject = targetProvider.get();
-        HttpServletRequest httpRequest = this.dataContext.getHttpRequest();
-        HttpServletResponse httpResponse = this.dataContext.getHttpResponse();
-        if (targetObject instanceof WebController) {
-            ((WebController) targetObject).initController(this.dataContext);
-        }
-        //
-        Object[] resolveParams = this.resolveParams(targetMethod);
-        if (needValid != null && this.dataContext instanceof ValidErrors) {
-            needValid.doValid(this.dataContext.getAppContext(), (ValidErrors) this.dataContext, resolveParams);
-        }
-        Object resultData = this.invoke(targetMethod, targetObject, resolveParams);
-        // this.dataContext.setReturnData(resultData);
-        //
-        if (targetMethod.isAnnotationPresent(Produces.class)) {
-            Produces pro = targetMethod.getAnnotation(Produces.class);
-            String proValue = pro.value();
-            if (!StringUtils.isBlank(proValue)) {
-                String mimeType = this.dataContext.getMimeType(proValue);
-                if (StringUtils.isBlank(mimeType)) {
-                    httpResponse.setContentType(proValue);
-                    this.dataContext.viewType(proValue);
-                } else {
-                    httpResponse.setContentType(mimeType);
-                    this.dataContext.viewType(mimeType);
-                }
-            }
-        }
-        //
-    }
-    /**准备参数*/
-    protected final Object[] resolveParams(Method targetMethod) throws Throwable {
+    /**/
+    private Object[] resolveParams(Invoker invoker, Method targetMethod) throws Throwable {
         //
         Class<?>[] targetParamClass = targetMethod.getParameterTypes();
         Annotation[][] targetParamAnno = targetMethod.getParameterAnnotations();
@@ -100,22 +149,21 @@ class InvokerSSS {
         /*准备参数*/
         for (int i = 0; i < targetParamClass.length; i++) {
             Class<?> paramClass = targetParamClass[i];
-            Object paramObject = this.resolveParam(paramClass, targetParamAnno[i]);//获取参数
+            Object paramObject = this.resolveParam(invoker, paramClass, targetParamAnno[i]);//获取参数
             paramsArray.add(paramObject);
         }
         Object[] invokeParams = paramsArray.toArray();
         return invokeParams;
     }
-    /**准备参数*/
-    private final Object resolveParam(Class<?> paramClass, Annotation[] paramAnno) {
+    private Object resolveParam(Invoker invoker, Class<?> paramClass, Annotation[] paramAnno) {
         // .特殊类型参数
-        Object specialParam = resolveSpecialParam(paramClass);
+        Object specialParam = resolveSpecialParam(invoker, paramClass);
         if (specialParam != null) {
             return specialParam;
         }
         // .注解解析
         for (Annotation pAnno : paramAnno) {
-            Object finalValue = resolveParam(paramClass, pAnno);
+            Object finalValue = resolveParam(invoker, paramClass, pAnno);
             finalValue = ConverterUtils.convert(paramClass, finalValue);
             if (finalValue != null) {
                 return finalValue;
@@ -123,57 +171,52 @@ class InvokerSSS {
         }
         return BeanUtils.getDefaultValue(paramClass);
     }
-    private Object resolveSpecialParam(Class<?> paramClass) {
+    private Object resolveSpecialParam(Invoker invoker, Class<?> paramClass) {
         if (paramClass == ServletRequest.class || paramClass == HttpServletRequest.class) {
-            return this.dataContext.getHttpRequest();
+            return invoker.getHttpRequest();
         }
         if (paramClass == ServletResponse.class || paramClass == HttpServletResponse.class) {
-            return this.dataContext.getHttpRequest();
+            return invoker.getHttpRequest();
         }
         if (paramClass == HttpSession.class) {
-            return this.dataContext.getHttpRequest().getSession(true);
+            return invoker.getHttpRequest().getSession(true);
         }
         //
-        if (paramClass == DataContext.class) {
-            return this.dataContext;
+        if (paramClass == Invoker.class) {
+            return invoker;
         }
-        if (paramClass.isInterface() && paramClass.isInstance(this.dataContext)) {
-            return this.dataContext;
+        if (paramClass.isInterface() && paramClass.isInstance(invoker)) {
+            return invoker;
         }
         //
         if (!paramClass.isInterface()) {
             return null;
         }
-        return this.dataContext.getAppContext().getInstance(paramClass);
+        return invoker.getAppContext().getInstance(paramClass);
     }
-    //
-    /**/
-    protected Object resolveParam(Class<?> paramClass, Annotation pAnno) {
+    private Object resolveParam(Invoker invoker, Class<?> paramClass, Annotation pAnno) {
         Object atData = null;
         //
-        if (atData == null) {
-            /*   */
-            if (pAnno instanceof AttributeParam) {
-                atData = this.getAttributeParam((AttributeParam) pAnno);
-            } else if (pAnno instanceof CookieParam) {
-                atData = this.getCookieParam((CookieParam) pAnno);
-            } else if (pAnno instanceof HeaderParam) {
-                atData = this.getHeaderParam((HeaderParam) pAnno);
-            } else if (pAnno instanceof QueryParam) {
-                atData = this.getQueryParam((QueryParam) pAnno);
-            } else if (pAnno instanceof PathParam) {
-                atData = this.getPathParam((PathParam) pAnno);
-            } else if (pAnno instanceof ReqParam) {
-                atData = this.dataContext.getHttpRequest().getParameterValues(((ReqParam) pAnno).value());
-            } else if (pAnno instanceof Params) {
-                atData = this.getParamsParam(paramClass);
-            }
+        if (pAnno instanceof AttributeParam) {
+            atData = this.getAttributeParam(invoker, (AttributeParam) pAnno);
+        } else if (pAnno instanceof CookieParam) {
+            atData = this.getCookieParam(invoker, (CookieParam) pAnno);
+        } else if (pAnno instanceof HeaderParam) {
+            atData = this.getHeaderParam(invoker, (HeaderParam) pAnno);
+        } else if (pAnno instanceof QueryParam) {
+            atData = this.getQueryParam(invoker, (QueryParam) pAnno);
+        } else if (pAnno instanceof PathParam) {
+            atData = this.getPathParam(invoker, (PathParam) pAnno);
+        } else if (pAnno instanceof ReqParam) {
+            atData = invoker.getHttpRequest().getParameterValues(((ReqParam) pAnno).value());
+        } else if (pAnno instanceof Params) {
+            atData = this.getParamsParam(invoker, paramClass);
         }
         //
         return atData;
     }
     /**/
-    private Object getParamsParam(Class<?> paramClass) {
+    private Object getParamsParam(Invoker invoker, Class<?> paramClass) {
         Object paramObject = null;
         try {
             paramObject = paramClass.newInstance();
@@ -196,9 +239,9 @@ class InvokerSSS {
                 Object fieldValue = null;
                 Annotation[] annos = field.getAnnotations();
                 if (annos == null || annos.length == 0) {
-                    fieldValue = this.dataContext.getHttpRequest().getParameterValues(field.getName());
+                    fieldValue = invoker.getHttpRequest().getParameterValues(field.getName());
                 } else {
-                    fieldValue = resolveParam(field.getType(), annos);
+                    fieldValue = resolveParam(invoker, field.getType(), annos);
                 }
                 if (fieldValue == null) {
                     fieldValue = BeanUtils.getDefaultValue(field.getType());
@@ -213,23 +256,23 @@ class InvokerSSS {
         return paramObject;
     }
     /**/
-    private Object getPathParam(PathParam pAnno) {
+    private Object getPathParam(Invoker invoker, PathParam pAnno) {
         String paramName = pAnno.value();
-        return StringUtils.isBlank(paramName) ? null : this.getPathParamMap().get(paramName);
+        return StringUtils.isBlank(paramName) ? null : this.getPathParamMap(invoker).get(paramName);
     }
     /**/
-    private Object getQueryParam(QueryParam pAnno) {
+    private Object getQueryParam(Invoker invoker, QueryParam pAnno) {
         String paramName = pAnno.value();
-        return StringUtils.isBlank(paramName) ? null : this.getQueryParamMap().get(paramName);
+        return StringUtils.isBlank(paramName) ? null : this.getQueryParamMap(invoker).get(paramName);
     }
     /**/
-    private Object getHeaderParam(HeaderParam pAnno) {
+    private Object getHeaderParam(Invoker invoker, HeaderParam pAnno) {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName)) {
             return null;
         }
         //
-        HttpServletRequest httpRequest = this.dataContext.getHttpRequest();
+        HttpServletRequest httpRequest = invoker.getHttpRequest();
         Enumeration<?> e = httpRequest.getHeaderNames();
         while (e.hasMoreElements()) {
             String name = e.nextElement().toString();
@@ -245,13 +288,13 @@ class InvokerSSS {
         return null;
     }
     /**/
-    private Object getCookieParam(CookieParam pAnno) {
+    private Object getCookieParam(Invoker invoker, CookieParam pAnno) {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName)) {
             return null;
         }
         //
-        HttpServletRequest httpRequest = this.dataContext.getHttpRequest();
+        HttpServletRequest httpRequest = invoker.getHttpRequest();
         Cookie[] cookies = httpRequest.getCookies();
         ArrayList<String> cookieList = new ArrayList<String>();
         if (cookies != null) {
@@ -264,12 +307,12 @@ class InvokerSSS {
         return cookieList;
     }
     /**/
-    private Object getAttributeParam(AttributeParam pAnno) {
+    private Object getAttributeParam(Invoker invoker, AttributeParam pAnno) {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName)) {
             return null;
         }
-        HttpServletRequest httpRequest = this.dataContext.getHttpRequest();
+        HttpServletRequest httpRequest = invoker.getHttpRequest();
         Enumeration<?> e = httpRequest.getAttributeNames();
         while (e.hasMoreElements()) {
             String name = e.nextElement().toString();
@@ -280,12 +323,12 @@ class InvokerSSS {
         return null;
     }
     /**/
-    private Map<String, List<String>> getQueryParamMap() {
+    private Map<String, List<String>> getQueryParamMap(Invoker invoker) {
         if (this.queryParamLocal != null) {
             return this.queryParamLocal;
         }
         //
-        HttpServletRequest httpRequest = this.dataContext.getHttpRequest();
+        HttpServletRequest httpRequest = invoker.getHttpRequest();
         String queryString = httpRequest.getQueryString();
         if (StringUtils.isBlank(queryString)) {
             return Collections.EMPTY_MAP;
@@ -321,12 +364,12 @@ class InvokerSSS {
         return this.queryParamLocal;
     }
     /**/
-    private Map<String, Object> getPathParamMap() {
+    private Map<String, Object> getPathParamMap(Invoker invoker) {
         if (this.pathParamsLocal != null) {
             return this.pathParamsLocal;
         }
         //
-        HttpServletRequest httpRequest = this.dataContext.getHttpRequest();
+        HttpServletRequest httpRequest = invoker.getHttpRequest();
         String requestPath = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
         String matchVar = this.mappingToDefine.getMappingToMatches();
         String matchKey = "(?:\\{(\\w+)\\}){1,}";//  (?:\{(\w+)\}){1,}
@@ -360,9 +403,5 @@ class InvokerSSS {
             this.pathParamsLocal.put(k, v.toArray(new String[v.size()]));
         }
         return this.pathParamsLocal;
-    }
-    /**/
-    public Object invoke(Method targetMethod, Object targetObject, Object[] paramArrays) throws Throwable {
-        return targetMethod.invoke(targetObject, paramArrays);
     }
 }

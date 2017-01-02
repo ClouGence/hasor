@@ -13,15 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
+package net.hasor.web.render;
+import net.hasor.core.AppContext;
+import net.hasor.web.Invoker;
+
+import java.io.IOException;
+import java.io.Writer;
 /**
- * @version : 2016-12-26
- * @author 赵永春 (zyc@hasor.net)
+ * 渲染引擎
+ * @version : 2016年1月3日
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface InvokerFilter {
-    public void init(InvokerFilterConfig config);
+public interface RenderEngine {
+    /** 初始化引擎 */
+    public void initEngine(AppContext appContext) throws Throwable;
 
-    public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable;
+    /** 执行模版引擎 */
+    public void process(RenderInvoker invoker, Writer writer) throws Throwable;
 
-    public void destroy();
+    /** 获取模版Loader */
+    public boolean exist(String template) throws IOException;
 }

@@ -18,10 +18,6 @@ package net.hasor.web;
  * @version : 2016-12-24
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface InvokeChain {
-    public Class<?>[] getParamTypes();
-
-    public Object[] getParamObjects();
-
-    public Object doNext() throws Throwable;
+public interface InvokerChain extends InvokerInfo {
+    public void doNext(Invoker invoker) throws Throwable;
 }

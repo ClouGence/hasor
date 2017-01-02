@@ -21,8 +21,6 @@
             <!-- 执行事件的线程池大小 -->
             <HASOR_LOAD_EVENT_POOL>20</HASOR_LOAD_EVENT_POOL>
 
-            <!-- WebMVC 拦截的请求类型 -->
-            <HASOR_RESTFUL_PATTERNS>htm;html;do;json;</HASOR_RESTFUL_PATTERNS>
             <!-- WebMVC 是否启用布局管理器 -->
             <HASOR_RESTFUL_LAYOUT>true</HASOR_RESTFUL_LAYOUT>
             <!-- WebMVC 静态资源位置 -->
@@ -31,6 +29,7 @@
             <HASOR_RESTFUL_LAYOUT_PATH_LAYOUT>/layout</HASOR_RESTFUL_LAYOUT_PATH_LAYOUT>
             <!-- WebMVC 页面模版位置 -->
             <HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES>/templates</HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES>
+
             <!-- fileupload 允许的请求大小 -->
             <HASOR_UPLOAD_MAX_REQUEST_SIZE>-1</HASOR_UPLOAD_MAX_REQUEST_SIZE>
             <!-- fileupload 允许上传的单个文件大小 -->
@@ -67,6 +66,7 @@
             <module>net.hasor.plugins.startup.StartupModule</module>
             <module>net.hasor.plugins.aop.AopModule</module>
             <module>net.hasor.plugins.event.EventModule</module>
+            <module>net.hasor.web.valid.ValidWebPlugin</module>
         </modules>
 
         <!-- Binder扩展 -->
@@ -74,29 +74,10 @@
             <binder type="net.hasor.web.WebApiBinder">net.hasor.web.invoker.WebApiBinderCreater</binder>
         </apiBinderSet>
 
-        <!-- web上提供restful风格开发Api (由net.hasor.restful框架提供) -->
-        <restful urlPatterns="${HASOR_RESTFUL_PATTERNS}">
-
-            <!-- 渲染器 -->
-            <renderSet>
-                <render renderType="json">net.hasor.web.render.json.JsonRenderEngine</render>
-            </renderSet>
-
-            <!-- 布局管理 -->
-            <layout enable="${HASOR_RESTFUL_LAYOUT}">
-                <!-- 静态资源位置 -->
-                <resourcePath>${HASOR_RESTFUL_LAYOUT_PATH_RESOUTCE}</resourcePath>
-                <!-- 布局模版位置 -->
-                <layoutPath>${HASOR_RESTFUL_LAYOUT_PATH_LAYOUT}</layoutPath>
-                <!-- 页面模版位置 -->
-                <templatePath>${HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES}</templatePath>
-            </layout>
-
-        </restful>
-
         <!-- Context扩展 -->
         <invokerCreaterSet>
-            <invokerCreater type="net.hasor.web.valid.ValidContext">net.hasor.web.valid.ValidInvokerCreater</invokerCreater>
+            <invokerCreater type="net.hasor.web.valid.ValidInvoker">net.hasor.web.valid.ValidInvokerCreater</invokerCreater>
+            <invokerCreater type="net.hasor.web.render.RenderInvoker">net.hasor.web.render.RenderInvokerCreater</invokerCreater>
         </invokerCreaterSet>
 
         <!-- 文件上传 -->
@@ -108,6 +89,21 @@
             <!-- 允许上传的单个文件大小( -1 表示不限制) -->
             <maxFileSize>${HASOR_UPLOAD_MAX_FILE_SIZE}</maxFileSize>
         </fileupload>
+
+        <!-- 渲染器 -->
+        <renderSet>
+            <render renderType="json">net.hasor.web.render.json.JsonRenderEngine</render>
+        </renderSet>
+
+        <!-- 布局管理 -->
+        <layout enable="${HASOR_RESTFUL_LAYOUT}">
+            <!-- 静态资源位置 -->
+            <resourcePath>${HASOR_RESTFUL_LAYOUT_PATH_RESOUTCE}</resourcePath>
+            <!-- 布局模版位置 -->
+            <layoutPath>${HASOR_RESTFUL_LAYOUT_PATH_LAYOUT}</layoutPath>
+            <!-- 页面模版位置 -->
+            <templatePath>${HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES}</templatePath>
+        </layout>
 
     </hasor>
 </config>

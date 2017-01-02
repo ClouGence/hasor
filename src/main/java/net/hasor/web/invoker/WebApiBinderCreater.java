@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
-import net.hasor.core.*;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Environment;
 import net.hasor.core.binder.ApiBinderCreater;
-import net.hasor.web.InvokerCreater;
 import net.hasor.web.MimeType;
-import net.hasor.web.RenderEngine;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.pipeline.*;
-import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,9 +28,7 @@ import javax.servlet.ServletContext;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 /**
  * @version : 2016-12-16
@@ -68,40 +64,6 @@ public class WebApiBinderCreater implements ApiBinderCreater {
             curVersion = ServletVersion.V3_1;
         } catch (Throwable e) { /* 忽略 */ }
         //
-        // .Render
-        Settings settings = environment.getSettings();
-        XmlNode[] xmlPropArray = settings.getXmlNodeArray("hasor.restful.renderSet");
-        Map<String, String> renderMap = new HashMap<String, String>();
-        for (XmlNode xmlProp : xmlPropArray) {
-            for (XmlNode envItem : xmlProp.getChildren()) {
-                if (StringUtils.equalsIgnoreCase("render", envItem.getName())) {
-                    String renderTypeStr = envItem.getAttribute("renderType");
-                    String renderClass = envItem.getText();
-                    if (StringUtils.isNotBlank(renderTypeStr)) {
-                        String[] renderTypeArray = renderTypeStr.split(";");
-                        for (String renderType : renderTypeArray) {
-                            if (StringUtils.isNotBlank(renderType)) {
-                                logger.info("restful -> renderType {} mappingTo {}.", renderType, renderClass);
-                                renderMap.put(renderType.toUpperCase(), renderClass);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        for (String key : renderMap.keySet()) {
-            String type = renderMap.get(key);
-            try {
-                Class<?> renderType = environment.getClassLoader().loadClass(type);
-                apiBinder.bindType(RenderEngine.class)//
-                        .nameWith(key)//
-                        .to((Class<? extends RenderEngine>) renderType)//
-                        .metaData("FORM-XML", true);
-            } catch (Exception e) {
-                logger.error("restful -> renderType {} load failed {}.", type, e.getMessage(), e);
-            }
-        }
-        //
         // .Pipeline
         ManagedServletPipeline sPipline = new ManagedServletPipeline();
         ManagedFilterPipeline fPipline = new ManagedFilterPipeline(sPipline);
@@ -133,13 +95,10 @@ public class WebApiBinderCreater implements ApiBinderCreater {
             logger.warn("restful -> exit , not add any @MappingTo.");
         }
         //
-        // .Creater
-        apiBinder.bindType(InvokerCreater.class).toInstance(Hasor.pushStartListener(environment, new RootInvokerCreater()));
-        //
         // .WebApiBinder
         InnerWebApiBinder binder = new InnerWebApiBinder(curVersion, mimeTypeContext, apiBinder);
         //
-        binder.filter("/*").through(Integer.MAX_VALUE, new RestfulFilter());
+        binder.filter("/*").through(Integer.MAX_VALUE, new RootInvokerFilter());
         return binder;
     }
     public boolean loadType(ApiBinder apiBinder, Class<?> clazz) {
@@ -153,8 +112,8 @@ public class WebApiBinderCreater implements ApiBinderCreater {
         //
         MappingTo mto = clazz.getAnnotation(MappingTo.class);
         logger.info("restful -> type ‘{}’ mappingTo: ‘{}’.", clazz.getName(), mto.value());
-        MappingToDefine define = new MappingToDefine(clazz);
-        apiBinder.bindType(MappingToDefine.class).uniqueName().toInstance(define);
+        MappingDataInfo define = new MappingDataInfo(clazz, mto.value());
+        apiBinder.bindType(MappingDataInfo.class).uniqueName().toInstance(define);
         return true;
     }
     //

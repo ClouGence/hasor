@@ -18,10 +18,6 @@ package net.hasor.web;
  * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface InvokerFilter {
-    public void init(InvokerFilterConfig config);
-
-    public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable;
-
-    public void destroy();
+public interface MappingSetup {
+    public void setup(MappingData mappingData);
 }

@@ -14,17 +14,31 @@
  * limitations under the License.
  */
 package net.hasor.web;
+import java.lang.reflect.Method;
 /**
  * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface MappingData {
+    /**
+     * 获取目标类型
+     */
+    public Class<?> getTargetType();
+
     /** 获取映射的地址 */
     public String getMappingTo();
+
+    /** 获取方法 */
+    public Method[] getMethods();
 
     /**
      * 测试路径是否匹配。
      * @return 返回测试结果。
      */
-    public boolean matchingMapping(String httpMethod, String actionPath);
+    public boolean matchingMapping(Invoker invoker);
+    //    public String getMappingToMatches();
+    //    /** 查找调用方法 */
+    //    public Method findMethod(Invoker invoker);
+    //    /** 是否为异步 */
+    //    public boolean isAsync(Invoker invoker);
 }

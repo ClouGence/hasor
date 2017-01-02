@@ -19,7 +19,10 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.core.provider.InstanceProvider;
+import net.hasor.web.InvokerFilter;
 import net.hasor.web.WebApiBinder;
+import net.hasor.web.invoker.UriPatternMatcher;
+import net.hasor.web.invoker.UriPatternType;
 import net.hasor.web.startup.RuntimeFilter;
 import org.more.util.ArrayUtils;
 
@@ -63,7 +66,7 @@ public abstract class PipelineWebApiBinder extends ApiBinderWrap implements WebA
     //
     /*--------------------------------------------------------------------------------------Utils*/
     /***/
-    private static List<String> newArrayList(final String[] arr, final String object) {
+    protected static List<String> newArrayList(final String[] arr, final String object) {
         ArrayList<String> list = new ArrayList<String>();
         if (arr != null) {
             Collections.addAll(list, arr);
@@ -75,111 +78,162 @@ public abstract class PipelineWebApiBinder extends ApiBinderWrap implements WebA
     }
     //
     /*-------------------------------------------------------------------------------------Filter*/
+    protected void throughFilter(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
+        FilterDefinition define = new FilterDefinition(index, pattern, matcher, filterRegister, initParams);
+        bindType(FilterDefinition.class).uniqueName().toInstance(define);
+    }
+    protected abstract void throughInvFilter(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams);
+    //
     @Override
-    public FilterBindingBuilder filter(final String urlPattern, final String... morePatterns) {
-        return new FiltersModuleBinder(UriPatternType.SERVLET, PipelineWebApiBinder.newArrayList(morePatterns, urlPattern));
+    public FilterBindingBuilder<Filter> filter(final String urlPattern, final String... morePatterns) {
+        return new FiltersModuleBinder<Filter>(Filter.class, UriPatternType.SERVLET, PipelineWebApiBinder.newArrayList(morePatterns, urlPattern)) {
+            @Override
+            protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
+                throughFilter(index, pattern, matcher, filterRegister, initParams);
+            }
+        };
     }
     @Override
-    public FilterBindingBuilder filter(final String[] morePatterns) throws NullPointerException {
+    public FilterBindingBuilder<Filter> filter(final String[] morePatterns) throws NullPointerException {
         if (ArrayUtils.isEmpty(morePatterns)) {
             throw new NullPointerException("Filter patterns is empty.");
         }
         return this.filter(null, morePatterns);
     }
     @Override
-    public FilterBindingBuilder filterRegex(final String regex, final String... regexes) {
-        return new FiltersModuleBinder(UriPatternType.REGEX, PipelineWebApiBinder.newArrayList(regexes, regex));
+    public FilterBindingBuilder<Filter> filterRegex(final String regex, final String... regexes) {
+        return new FiltersModuleBinder<Filter>(Filter.class, UriPatternType.REGEX, PipelineWebApiBinder.newArrayList(regexes, regex)) {
+            @Override
+            protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
+                throughFilter(index, pattern, matcher, filterRegister, initParams);
+            }
+        };
     }
     @Override
-    public FilterBindingBuilder filterRegex(final String[] regexes) throws NullPointerException {
+    public FilterBindingBuilder<Filter> filterRegex(final String[] regexes) throws NullPointerException {
         if (ArrayUtils.isEmpty(regexes)) {
             throw new NullPointerException("Filter regexes is empty.");
         }
         return this.filterRegex(null, regexes);
     }
-    class FiltersModuleBinder implements FilterBindingBuilder {
+    @Override
+    public FilterBindingBuilder<InvokerFilter> invFilter(String urlPattern, String... morePatterns) {
+        return new FiltersModuleBinder<InvokerFilter>(InvokerFilter.class, UriPatternType.SERVLET, PipelineWebApiBinder.newArrayList(morePatterns, urlPattern)) {
+            @Override
+            protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
+                throughInvFilter(index, pattern, matcher, filterRegister, initParams);
+            }
+        };
+    }
+    @Override
+    public FilterBindingBuilder<InvokerFilter> invFilter(String[] morePatterns) {
+        if (ArrayUtils.isEmpty(morePatterns)) {
+            throw new NullPointerException("Filter patterns is empty.");
+        }
+        return this.invFilter(null, morePatterns);
+    }
+    @Override
+    public FilterBindingBuilder<InvokerFilter> invFilterRegex(String regex, String... regexes) {
+        return new FiltersModuleBinder<InvokerFilter>(InvokerFilter.class, UriPatternType.REGEX, PipelineWebApiBinder.newArrayList(regexes, regex)) {
+            @Override
+            protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
+                throughInvFilter(index, pattern, matcher, filterRegister, initParams);
+            }
+        };
+    }
+    @Override
+    public FilterBindingBuilder<InvokerFilter> invFilterRegex(String[] regexes) {
+        if (ArrayUtils.isEmpty(regexes)) {
+            throw new NullPointerException("Filter regexes is empty.");
+        }
+        return this.invFilterRegex(null, regexes);
+    }
+    //
+    private abstract class FiltersModuleBinder<T> implements FilterBindingBuilder<T> {
+        private final Class<T>       targetType;
         private final UriPatternType uriPatternType;
         private final List<String>   uriPatterns;
         //
-        FiltersModuleBinder(final UriPatternType uriPatternType, final List<String> uriPatterns) {
+        FiltersModuleBinder(Class<T> targetType, final UriPatternType uriPatternType, final List<String> uriPatterns) {
+            this.targetType = targetType;
             this.uriPatternType = uriPatternType;
             this.uriPatterns = uriPatterns;
         }
         @Override
-        public void through(final Class<? extends Filter> filterKey) {
+        public void through(final Class<? extends T> filterKey) {
             this.through(0, filterKey, null);
         }
         @Override
-        public void through(final Filter filter) {
+        public void through(final T filter) {
             this.through(0, filter, null);
         }
         @Override
-        public void through(final Provider<? extends Filter> filterProvider) {
+        public void through(final Provider<? extends T> filterProvider) {
             this.through(0, filterProvider, null);
         }
         @Override
-        public void through(BindInfo<? extends Filter> filterRegister) {
+        public void through(BindInfo<? extends T> filterRegister) {
             this.through(0, filterRegister, null);
         }
         @Override
-        public void through(final Class<? extends Filter> filterKey, final Map<String, String> initParams) {
+        public void through(final Class<? extends T> filterKey, final Map<String, String> initParams) {
             this.through(0, filterKey, initParams);
         }
         @Override
-        public void through(final Filter filter, final Map<String, String> initParams) {
+        public void through(final T filter, final Map<String, String> initParams) {
             this.through(0, filter, initParams);
         }
         @Override
-        public void through(final Provider<? extends Filter> filterProvider, final Map<String, String> initParams) {
+        public void through(final Provider<? extends T> filterProvider, final Map<String, String> initParams) {
             this.through(0, filterProvider, initParams);
         }
         @Override
-        public void through(BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
+        public void through(BindInfo<? extends T> filterRegister, Map<String, String> initParams) {
             this.through(0, filterRegister, initParams);
         }
         @Override
-        public void through(final int index, final Class<? extends Filter> filterKey) {
+        public void through(final int index, final Class<? extends T> filterKey) {
             this.through(index, filterKey, null);
         }
         @Override
-        public void through(final int index, final Filter filter) {
+        public void through(final int index, final T filter) {
             this.through(index, filter, null);
         }
         @Override
-        public void through(final int index, final Provider<? extends Filter> filterProvider) {
+        public void through(final int index, final Provider<? extends T> filterProvider) {
             this.through(index, filterProvider, null);
         }
         @Override
-        public void through(int index, BindInfo<? extends Filter> filterRegister) {
+        public void through(int index, BindInfo<? extends T> filterRegister) {
             this.through(index, filterRegister, null);
         }
         //
         @Override
-        public void through(final int index, final Class<? extends Filter> filterKey, final Map<String, String> initParams) {
-            BindInfo<Filter> filterRegister = bindType(Filter.class).uniqueName().to(filterKey).toInfo();
+        public void through(final int index, final Class<? extends T> filterKey, final Map<String, String> initParams) {
+            BindInfo<T> filterRegister = bindType(targetType).uniqueName().to(filterKey).toInfo();
             this.through(index, filterRegister, initParams);
         }
         @Override
-        public void through(final int index, final Filter filter, final Map<String, String> initParams) {
-            BindInfo<Filter> filterRegister = bindType(Filter.class).uniqueName().toInstance(filter).toInfo();
+        public void through(final int index, final T filter, final Map<String, String> initParams) {
+            BindInfo<T> filterRegister = bindType(targetType).uniqueName().toInstance(filter).toInfo();
             this.through(index, filterRegister, initParams);
         }
         @Override
-        public void through(final int index, final Provider<? extends Filter> filterProvider, Map<String, String> initParams) {
-            BindInfo<Filter> filterRegister = bindType(Filter.class).uniqueName().toProvider((Provider<Filter>) filterProvider).toInfo();
+        public void through(final int index, final Provider<? extends T> filterProvider, Map<String, String> initParams) {
+            BindInfo<T> filterRegister = bindType(targetType).uniqueName().toProvider((Provider<T>) filterProvider).toInfo();
             this.through(index, filterRegister, initParams);
         }
         @Override
-        public void through(int index, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
+        public void through(int index, BindInfo<? extends T> filterRegister, Map<String, String> initParams) {
             if (initParams == null) {
                 initParams = new HashMap<String, String>();
             }
             for (String pattern : this.uriPatterns) {
                 UriPatternMatcher matcher = UriPatternType.get(this.uriPatternType, pattern);
-                FilterDefinition define = new FilterDefinition(index, pattern, matcher, (BindInfo<Filter>) filterRegister, initParams);
-                bindType(FilterDefinition.class).uniqueName().toInstance(define);
+                this.bindThrough(index, pattern, matcher, filterRegister, initParams);
             }
         }
+        protected abstract void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends T> filterRegister, Map<String, String> initParams);
     }
     //
     /*------------------------------------------------------------------------------------Servlet*/
@@ -205,7 +259,7 @@ public abstract class PipelineWebApiBinder extends ApiBinderWrap implements WebA
         }
         return this.serveRegex(null, regexes);
     }
-    class ServletsModuleBuilder implements ServletBindingBuilder {
+    private class ServletsModuleBuilder implements ServletBindingBuilder {
         private final List<String>   uriPatterns;
         private final UriPatternType uriPatternType;
         ServletsModuleBuilder(final UriPatternType uriPatternType, final List<String> uriPatterns) {
@@ -294,7 +348,7 @@ public abstract class PipelineWebApiBinder extends ApiBinderWrap implements WebA
     public ServletContextListenerBindingBuilder contextListener() {
         return new ServletContextListenerBuilder();
     }
-    class ServletContextListenerBuilder implements ServletContextListenerBindingBuilder {
+    private class ServletContextListenerBuilder implements ServletContextListenerBindingBuilder {
         @Override
         public void bind(final Class<? extends ServletContextListener> listenerKey) {
             BindInfo<ServletContextListener> listenerRegister = bindType(ServletContextListener.class).to(listenerKey).toInfo();
@@ -321,7 +375,7 @@ public abstract class PipelineWebApiBinder extends ApiBinderWrap implements WebA
     public SessionListenerBindingBuilder sessionListener() {
         return new SessionListenerBuilder();
     }
-    class SessionListenerBuilder implements SessionListenerBindingBuilder {
+    private class SessionListenerBuilder implements SessionListenerBindingBuilder {
         @Override
         public void bind(final Class<? extends HttpSessionListener> listenerKey) {
             BindInfo<HttpSessionListener> listenerRegister = bindType(HttpSessionListener.class).to(listenerKey).toInfo();

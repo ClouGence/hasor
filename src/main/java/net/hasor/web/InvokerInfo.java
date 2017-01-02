@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.web;
+import java.lang.reflect.Method;
 /**
- * @version : 2016-12-26
+ * @version : 2016-12-24
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface InvokerFilter {
-    public void init(InvokerFilterConfig config);
+public interface InvokerInfo {
+    /** 查找调用方法 */
+    public Method targetMethod();
 
-    public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable;
+    public Object[] getParameters();
 
-    public void destroy();
+    public MappingData getMappingTo();
 }

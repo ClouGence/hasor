@@ -14,49 +14,35 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
-import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.Provider;
-import net.hasor.web.DataContext;
+import net.hasor.web.Invoker;
+import net.hasor.web.MappingData;
 import net.hasor.web.annotation.Async;
 import net.hasor.web.annotation.HttpMethod;
-import net.hasor.web.annotation.MappingTo;
-import net.hasor.web.valid.ValidProcessor;
-import org.more.UndefinedException;
 import org.more.builder.ReflectionToStringBuilder;
 import org.more.builder.ToStringStyle;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 
-import javax.servlet.ServletException;
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 线程安全
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-class MappingToDefine {
-    private Class<?>                    targetType;
-    private Provider<?>                 targetProvider;
-    private String                      mappingTo;
-    private String                      mappingToMatches;
-    private Map<String, Method>         httpMapping;
-    private Map<Method, ValidProcessor> needValid;
-    private Set<Method>                 asyncMethod;
+class MappingDataInfo implements MappingData {
+    private Class<?>            targetType;
+    private String              mappingTo;
+    private String              mappingToMatches;
+    private Map<String, Method> httpMapping;
+    private Set<Method>         asyncMethod;
     private AsyncSupported defaultAsync = AsyncSupported.no;
-    private AtomicBoolean  inited       = new AtomicBoolean(false);
     //
-    protected MappingToDefine(Class<?> targetType) {
+    protected MappingDataInfo(Class<?> targetType, String mappingTo) {
         this.targetType = targetType;
-        MappingTo pathAnno = targetType.getAnnotation(MappingTo.class);
-        if (pathAnno == null) {
-            throw new UndefinedException("is not a valid Mapping Service.");
-        }
-        String servicePath = pathAnno.value();
+        String servicePath = Hasor.assertIsNotNull(mappingTo);
         if (StringUtils.isBlank(servicePath)) {
             throw new NullPointerException("Service path is empty.");
         }
@@ -91,16 +77,11 @@ class MappingToDefine {
             }
         }
         //
-        // .执行调用，每个方法的参数都进行判断，一旦查到参数上具有Valid 标签那么就调用doValid进行参数验证。
-        this.needValid = new HashMap<Method, ValidProcessor>();
+        // .Async
         for (String key : this.httpMapping.keySet()) {
             Method targetMethod = this.httpMapping.get(key);
-            //
-            this.needValid.put(targetMethod, new ValidProcessor(targetMethod));
-            //
-            // @Async
             if (targetMethod.getAnnotation(Async.class) != null) {
-                asyncMethod.add(targetMethod);
+                this.asyncMethod.add(targetMethod);
             }
         }
         //
@@ -108,47 +89,30 @@ class MappingToDefine {
         this.mappingToMatches = servicePath.replaceAll("\\{\\w{1,}\\}", "([^/]{1,})");
     }
     //
-    //
-    /**@return 获取映射的地址*/
+    @Override
+    public Class<?> getTargetType() {
+        return this.targetType;
+    }
+    /** 获取映射的地址 */
     public String getMappingTo() {
         return this.mappingTo;
     }
     public String getMappingToMatches() {
         return this.mappingToMatches;
     }
-    /**
-     * 判断是否要求异步处理请求。
-     */
-    public AsyncSupported isAsync(String httpMethod, String requestPath) {
-        Hasor.assertIsNotNull(requestPath, "requestPath is null.");
-        if (!requestPath.matches(this.mappingToMatches)) {
-            return this.defaultAsync;
-        }
-        Method targetMethod = null;
-        for (String m : this.httpMapping.keySet()) {
-            if (StringUtils.equals(httpMethod, m)) {
-                targetMethod = this.httpMapping.get(m);
-                break;
-            } else if (StringUtils.equals(m, HttpMethod.ANY)) {
-                targetMethod = this.httpMapping.get(HttpMethod.ANY);
-                break;
-            }
-        }
-        //
-        if (targetMethod == null) {
-            return this.defaultAsync;
-        }
-        if (this.asyncMethod.contains(targetMethod)) {
-            return AsyncSupported.yes;
-        } else {
-            return this.defaultAsync;
-        }
+    //
+    public Method[] getMethods() {
+        return this.httpMapping.values().toArray(new Method[httpMapping.size()]);
     }
+    //
+    //
     /**
      * 首先测试路径是否匹配，然后判断Restful实例是否支持这个 请求方法。
      * @return 返回测试结果。
      */
-    public boolean matchingMapping(String httpMethod, String requestPath) {
+    public boolean matchingMapping(Invoker invoker) {
+        String httpMethod = invoker.getHttpRequest().getMethod();
+        String requestPath = invoker.getRequestPath();
         Hasor.assertIsNotNull(requestPath, "requestPath is null.");
         if (!requestPath.matches(this.mappingToMatches)) {
             return false;
@@ -163,42 +127,31 @@ class MappingToDefine {
         return false;
     }
     //
-    /** 执行初始化 */
-    protected void init(final AppContext appContext) {
-        if (!this.inited.compareAndSet(false, true)) {
-            return;/*避免被初始化多次*/
-        }
-        Hasor.assertIsNotNull(appContext, "appContext is null.");
-        this.targetProvider = new Provider<Object>() {
-            public Object get() {
-                return appContext.getInstance(targetType);
-            }
-        };
-    }
     /**
      * 调用目标
      * @throws Throwable 异常抛出
      */
-    public final void invoke(DataContext dataContext) throws ServletException, IOException {
-        String httpMethod = dataContext.getHttpRequest().getMethod();
+    public final Method findMethod(final Invoker invoker) {
+        String requestPath = invoker.getRequestPath();
+        Hasor.assertIsNotNull(requestPath, "requestPath is null.");
+        if (!requestPath.matches(this.mappingToMatches)) {
+            return null;
+        }
+        //
+        String httpMethod = invoker.getHttpRequest().getMethod();
         Method targetMethod = this.httpMapping.get(httpMethod.trim().toUpperCase());
         if (targetMethod == null) {
             targetMethod = this.httpMapping.get(HttpMethod.ANY);
         }
-        //
-        try {
-            Hasor.assertIsNotNull(targetMethod, "not font mapping Method.");
-            ValidProcessor needValid = this.needValid.get(targetMethod);
-            new InvokerSSS(this, dataContext).exeCall(this.targetProvider, targetMethod, needValid);
-        } catch (Throwable target) {
-            if (target instanceof ServletException)
-                throw (ServletException) target;
-            if (target instanceof IOException)
-                throw (IOException) target;
-            if (target instanceof RuntimeException)
-                throw (RuntimeException) target;
-            throw new ServletException(target);
+        return targetMethod;
+    }
+    public boolean isAsync(Invoker invoker) {
+        Method targetMethod = this.findMethod(invoker);
+        if (targetMethod == null) {
+            return false;
         }
+        AsyncSupported async = this.asyncMethod.contains(targetMethod) ? AsyncSupported.yes : this.defaultAsync;
+        return async == AsyncSupported.yes;
     }
     public String toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);

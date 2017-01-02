@@ -28,14 +28,14 @@ import org.more.util.StringUtils;
 public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter implements//
         BindInfoBuilder<T>, BindInfo<T>, CustomerProvider<T>, ScopeProvider {
     //1.基本属性
-    private String             bindID           = null;
-    private String             bindName         = null;
-    private Class<T>           bindType         = null;
-    private Class<? extends T> sourceType       = null;
-    private Boolean            singleton        = null;
+    private String                bindID           = null;
+    private String                bindName         = null;
+    private Class<T>              bindType         = null;
+    private Class<? extends T>    sourceType       = null;
+    private Boolean               singleton        = null;
     //2.系统属性
-    private Provider<T>        customerProvider = null;
-    private Provider<Scope>    scopeProvider    = null;
+    private Provider<? extends T> customerProvider = null;
+    private Provider<Scope>       scopeProvider    = null;
     //
     public String getBindID() {
         if (this.bindID == null) {
@@ -56,7 +56,7 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
         return this.singleton;
     }
     /**获取 {@link #setCustomerProvider(Provider)} 方法设置的 Provider 对象。*/
-    public Provider<T> getCustomerProvider() {
+    public Provider<? extends T> getCustomerProvider() {
         return this.customerProvider;
     }
     public Provider<Scope> getScopeProvider() {
@@ -89,7 +89,7 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
         this.notify(new NotifyData("singleton", this.singleton, singleton));
         this.singleton = singleton;
     }
-    public void setCustomerProvider(final Provider<T> customerProvider) {
+    public void setCustomerProvider(final Provider<? extends T> customerProvider) {
         this.notify(new NotifyData("customerProvider", this.customerProvider, customerProvider));
         this.customerProvider = customerProvider;
     }

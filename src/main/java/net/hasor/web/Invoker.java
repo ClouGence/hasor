@@ -46,27 +46,28 @@ public interface Invoker extends MimeType {
     /** 锁定某个属性key，让这个key无被 put 或者 remove */
     public void lockKey(String key);
 
-    /**获取需要渲染的视图名称。*/
-    public String renderTo();
-
-    /**设置需要渲染的视图名称。*/
-    public void renderTo(String viewName);
-
-    /**设置需要渲染的视图名称。*/
-    public void renderTo(String viewType, String viewName);
-
-    /**渲染视图时使用的渲染引擎。*/
-    public String viewType();
-
-    /**设置渲染引擎。*/
-    public void viewType(String viewType);
-
-    /**本次视图渲染是否使用 layout。*/
-    public boolean layout();
-
-    /**本次启用 layout (默认值请查看配置文件: hasor.restful.useLayout)。*/
-    public void layoutEnable();
-
-    /**本次禁用 layout (默认值请查看配置文件: hasor.restful.useLayout)。*/
-    public void layoutDisable();
+    public String getRequestPath();
+    //
+    //
+    //
+    //    /**获取需要渲染的视图名称。*/
+    //    public String renderTo();
+    //    /**设置需要渲染的视图名称。*/
+    //    public void renderTo(String viewName);
+    //    /**设置需要渲染的视图名称。*/
+    //    public void renderTo(String viewType, String viewName);
+    //    /**渲染视图时使用的渲染引擎。*/
+    //    public String viewType();
+    //
+    //    /**设置渲染引擎。*/
+    //    public void viewType(String viewType);
+    //
+    //    /**本次视图渲染是否使用 layout。*/
+    //    public boolean layout();
+    //
+    //    /**本次启用 layout (默认值请查看配置文件: hasor.restful.useLayout)。*/
+    //    public void layoutEnable();
+    //
+    //    /**本次禁用 layout (默认值请查看配置文件: hasor.restful.useLayout)。*/
+    //    public void layoutDisable();
 }

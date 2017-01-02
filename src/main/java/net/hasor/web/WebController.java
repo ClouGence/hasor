@@ -17,6 +17,7 @@ package net.hasor.web;
 import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
 import net.hasor.web.annotation.Produces;
+import net.hasor.web.render.RenderInvoker;
 import net.hasor.web.startup.RuntimeListener;
 import net.hasor.web.upload.FileUpload;
 import net.hasor.web.upload.factorys.disk.DiskFileItemFactory;
@@ -545,7 +546,11 @@ public abstract class WebController {
     //------------------------
     /** 更新渲染模版。*/
     protected void renderTo(String viewName) {
-        this.getInvoker().renderTo(viewName);
+        Invoker invoker = getInvoker();
+        if (invoker != null && invoker instanceof RenderInvoker) {
+            RenderInvoker render = (RenderInvoker) invoker;
+            render.renderTo(viewName);
+        }
     }
     /**
      * 更新渲染模版。
@@ -553,7 +558,11 @@ public abstract class WebController {
      * @param viewName 模版名称
      */
     protected void renderTo(String renderType, String viewName) {
-        this.getInvoker().renderTo(renderType, viewName);
+        Invoker invoker = getInvoker();
+        if (invoker != null && invoker instanceof RenderInvoker) {
+            RenderInvoker render = (RenderInvoker) invoker;
+            render.renderTo(renderType, viewName);
+        }
     }
     //
     //------------------------

@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.web.wrap;
+import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
+import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderWrap;
+import net.hasor.web.InvokerFilter;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
+import net.hasor.web.WebPlugin;
 
+import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 /**
  *
@@ -55,20 +60,36 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
         return webApiBinder.getServletVersion();
     }
     @Override
-    public FilterBindingBuilder filter(String urlPattern, String... morePatterns) {
+    public FilterBindingBuilder<Filter> filter(String urlPattern, String... morePatterns) {
         return this.webApiBinder.filter(urlPattern, morePatterns);
     }
     @Override
-    public FilterBindingBuilder filter(String[] morePatterns) {
+    public FilterBindingBuilder<Filter> filter(String[] morePatterns) {
         return this.webApiBinder.filter(morePatterns);
     }
     @Override
-    public FilterBindingBuilder filterRegex(String regex, String... regexes) {
+    public FilterBindingBuilder<Filter> filterRegex(String regex, String... regexes) {
         return this.webApiBinder.filterRegex(regex, regexes);
     }
     @Override
-    public FilterBindingBuilder filterRegex(String[] regexes) {
+    public FilterBindingBuilder<Filter> filterRegex(String[] regexes) {
         return this.webApiBinder.filterRegex(regexes);
+    }
+    @Override
+    public FilterBindingBuilder<InvokerFilter> invFilter(String urlPattern, String... morePatterns) {
+        return this.webApiBinder.invFilter(urlPattern, morePatterns);
+    }
+    @Override
+    public FilterBindingBuilder<InvokerFilter> invFilter(String[] morePatterns) {
+        return this.webApiBinder.invFilter(morePatterns);
+    }
+    @Override
+    public FilterBindingBuilder<InvokerFilter> invFilterRegex(String regex, String... regexes) {
+        return this.webApiBinder.invFilterRegex(regex, regexes);
+    }
+    @Override
+    public FilterBindingBuilder<InvokerFilter> invFilterRegex(String[] regexes) {
+        return this.webApiBinder.invFilterRegex(regexes);
     }
     @Override
     public ServletBindingBuilder serve(String urlPattern, String... morePatterns) {
@@ -93,5 +114,21 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
     @Override
     public ServletContextListenerBindingBuilder contextListener() {
         return this.webApiBinder.contextListener();
+    }
+    @Override
+    public WebApiBinder addPlugin(Class<? extends WebPlugin> webPlugin) {
+        return this.webApiBinder.addPlugin(webPlugin);
+    }
+    @Override
+    public WebApiBinder addPlugin(WebPlugin webPlugin) {
+        return this.webApiBinder.addPlugin(webPlugin);
+    }
+    @Override
+    public WebApiBinder addPlugin(Provider<? extends WebPlugin> webPlugin) {
+        return this.webApiBinder.addPlugin(webPlugin);
+    }
+    @Override
+    public WebApiBinder addPlugin(BindInfo<WebPlugin> webPlugin) {
+        return this.webApiBinder.addPlugin(webPlugin);
     }
 }

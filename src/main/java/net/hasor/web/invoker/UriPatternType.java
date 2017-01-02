@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.pipeline;
+package net.hasor.web.invoker;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 /**
  * An enumeration of the available URI-pattern matching styles
  * @since 3.0
  */
-enum UriPatternType {
+public enum UriPatternType {
     SERVLET, REGEX;
-    static UriPatternMatcher get(final UriPatternType type, final String pattern) {
+    public static UriPatternMatcher get(final UriPatternType type, final String pattern) {
         switch (type) {
         case SERVLET:
             return new ServletStyleUriPatternMatcher(pattern);

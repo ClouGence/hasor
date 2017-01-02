@@ -18,10 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.AsyncContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.lang.reflect.Method;
 /**
  * Servlet 3 异步请求处理
  * @version : 2013-4-13
@@ -29,25 +26,22 @@ import java.io.IOException;
  */
 public abstract class AsyncInvocationWorker implements Runnable {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    private HttpServletRequest  request;
-    private HttpServletResponse response;
-    private AsyncContext        asyncContext;
-    public AsyncInvocationWorker(AsyncContext asyncContext, HttpServletRequest request, HttpServletResponse response) {
+    private AsyncContext asyncContext;
+    private Method       targetMethod;
+    //
+    public AsyncInvocationWorker(AsyncContext asyncContext, Method targetMethod) {
         this.asyncContext = asyncContext;
-        this.request = request;
-        this.response = response;
+        this.targetMethod = targetMethod;
     }
     @Override
     public void run() {
         try {
-            this.doWork(this.request, this.response);
-        } catch (ServletException e) {
-            logger.error(e.getMessage(), e);
-        } catch (IOException e) {
+            this.doWork(this.targetMethod);
+        } catch (Throwable e) {
             logger.error(e.getMessage(), e);
         } finally {
             this.asyncContext.complete();
         }
     }
-    public abstract void doWork(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException;
+    public abstract void doWork(Method targetMethod) throws Throwable;
 }

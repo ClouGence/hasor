@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
+package net.hasor.web.render;
+import net.hasor.web.Invoker;
+import net.hasor.web.InvokerCreater;
 /**
- * @version : 2016-12-26
+ * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface InvokerFilter {
-    public void init(InvokerFilterConfig config);
-
-    public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable;
-
-    public void destroy();
+public class RenderInvokerCreater implements InvokerCreater {
+    @Override
+    public Invoker createExt(Invoker dataContext) {
+        return new RenderInvokerSupplier(dataContext);
+    }
 }

@@ -16,20 +16,18 @@
 package net.hasor.web;
 import net.hasor.core.AppContext;
 
-import java.io.IOException;
-import java.io.Writer;
+import java.util.Map;
 /**
- * 渲染引擎
- * @version : 2016年1月3日
+ * 过滤器链扩展。
+ * @version : 2016年12月30日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RenderEngine {
-    /** 初始化引擎 */
-    public void initEngine(AppContext appContext) throws Throwable;
+public interface WebPlugin {
+    public void initPlugin(AppContext appContext, Map<String, String> configMap);
 
-    /** 执行模版引擎 */
-    public void process(Invoker invoker, Writer writer) throws Throwable;
+    public void beforeFilter(Invoker invoker, InvokerInfo info);
 
-    /** 获取模版Loader */
-    public boolean exist(String template) throws IOException;
+    public void afterFilter(Invoker invoker, InvokerInfo info);
+
+    public void destroy();
 }

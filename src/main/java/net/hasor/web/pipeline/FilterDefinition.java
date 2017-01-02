@@ -16,6 +16,7 @@
 package net.hasor.web.pipeline;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
+import net.hasor.web.invoker.UriPatternMatcher;
 import org.more.util.Iterators;
 
 import javax.servlet.*;
@@ -30,10 +31,10 @@ import java.util.Map.Entry;
  * @author 赵永春 (zyc@hasor.net)
  */
 class FilterDefinition extends AbstractServletModuleBinding {
-    private BindInfo<Filter> filterRegister = null;
-    private Filter           filterInstance = null;
+    private BindInfo<? extends Filter> filterRegister = null;
+    private Filter                     filterInstance = null;
     //
-    public FilterDefinition(final int index, final String pattern, final UriPatternMatcher uriPatternMatcher, final BindInfo<Filter> filterRegister, final Map<String, String> initParams) {
+    public FilterDefinition(final int index, final String pattern, final UriPatternMatcher uriPatternMatcher, final BindInfo<? extends Filter> filterRegister, final Map<String, String> initParams) {
         super(index, initParams, pattern, uriPatternMatcher);
         this.filterRegister = filterRegister;
     }

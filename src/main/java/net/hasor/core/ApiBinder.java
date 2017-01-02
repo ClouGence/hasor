@@ -254,7 +254,7 @@ public interface ApiBinder {
          * @param provider provider 可以用来封装类型实例创建的细节。
          * @return 返回 - {@link LifeBindingBuilder}。
          */
-        public LifeBindingBuilder<T> toProvider(Provider<T> provider);
+        public LifeBindingBuilder<T> toProvider(Provider<? extends T> provider);
 
         /**
          * 为绑定设置一个构造方法。

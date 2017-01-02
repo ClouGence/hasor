@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
+package net.hasor.web.invoker;
+import net.hasor.web.Invoker;
+import net.hasor.web.InvokerInfo;
 /**
- * @version : 2016-12-26
- * @author 赵永春 (zyc@hasor.net)
+ * 过滤器链扩展。
+ * @version : 2016年12月30日
+ * @author 赵永春(zyc@hasor.net)
  */
-public interface InvokerFilter {
-    public void init(InvokerFilterConfig config);
+interface WebPluginCaller {
+    public void beforeFilter(Invoker invoker, InvokerInfo info);
 
-    public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable;
-
-    public void destroy();
+    public void afterFilter(Invoker invoker, InvokerInfo info);
 }
