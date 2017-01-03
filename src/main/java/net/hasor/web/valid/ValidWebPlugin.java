@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web.valid;
-import net.hasor.core.AppContext;
 import net.hasor.web.*;
 
 import java.lang.reflect.Method;
@@ -32,10 +31,6 @@ public class ValidWebPlugin extends WebModule implements WebPlugin, MappingSetup
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         apiBinder.addPlugin(this);
         this.validMapping = new HashMap<Method, ValidDefinition>();
-    }
-    @Override
-    public void initPlugin(AppContext appContext, Map<String, String> configMap) {
-        //
     }
     @Override
     public void setup(MappingData mappingData) {
@@ -58,10 +53,6 @@ public class ValidWebPlugin extends WebModule implements WebPlugin, MappingSetup
     }
     @Override
     public void afterFilter(Invoker invoker, InvokerInfo define) {
-        //
-    }
-    @Override
-    public void destroy() {
         //
     }
 }

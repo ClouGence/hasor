@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version : 2013-5-11
  * @author 赵永春 (zyc@hasor.net)
  */
-class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilter, MappingSetup {
+public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilter, MappingSetup {
     protected Logger                    logger       = LoggerFactory.getLogger(getClass());
     private   AtomicBoolean             inited       = new AtomicBoolean(false);
     private   Map<String, RenderEngine> engineMap    = new HashMap<String, RenderEngine>();
@@ -134,6 +134,35 @@ class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilter, Map
         }
     }
     //
+    //
+    @Override
+    public void beforeFilter(Invoker invoker, InvokerInfo info) {
+        if (!(invoker instanceof RenderInvoker)) {
+            return;
+        }
+        //
+        RenderInvoker render = (RenderInvoker) invoker;
+        HttpServletResponse htttResponse = render.getHttpResponse();
+        Method targetMethod = info.targetMethod();
+        if (targetMethod.isAnnotationPresent(Produces.class)) {
+            Produces pro = targetMethod.getAnnotation(Produces.class);
+            String proValue = pro.value();
+            if (!StringUtils.isBlank(proValue)) {
+                String mimeType = invoker.getMimeType(proValue);
+                if (StringUtils.isBlank(mimeType)) {
+                    htttResponse.setContentType(proValue);
+                    render.viewType(proValue);
+                } else {
+                    htttResponse.setContentType(mimeType);
+                    render.viewType(mimeType);
+                }
+            }
+        }
+    }
+    @Override
+    public void afterFilter(Invoker invoker, InvokerInfo info) {
+    }
+    //
     @Override
     public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
         //
@@ -199,36 +228,6 @@ class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilter, Map
             }
         }
         //
-    }
-    @Override
-    public void initPlugin(AppContext appContext, Map<String, String> configMap) {
-    }
-    @Override
-    public void beforeFilter(Invoker invoker, InvokerInfo info) {
-        if (!(invoker instanceof RenderInvoker)) {
-            return;
-        }
-        //
-        RenderInvoker render = (RenderInvoker) invoker;
-        HttpServletResponse htttResponse = render.getHttpResponse();
-        Method targetMethod = info.targetMethod();
-        if (targetMethod.isAnnotationPresent(Produces.class)) {
-            Produces pro = targetMethod.getAnnotation(Produces.class);
-            String proValue = pro.value();
-            if (!StringUtils.isBlank(proValue)) {
-                String mimeType = invoker.getMimeType(proValue);
-                if (StringUtils.isBlank(mimeType)) {
-                    htttResponse.setContentType(proValue);
-                    render.viewType(proValue);
-                } else {
-                    htttResponse.setContentType(mimeType);
-                    render.viewType(mimeType);
-                }
-            }
-        }
-    }
-    @Override
-    public void afterFilter(Invoker invoker, InvokerInfo info) {
     }
     //
     @Override

@@ -19,8 +19,6 @@ import net.hasor.core.BindInfo;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerInfo;
 import net.hasor.web.WebPlugin;
-
-import java.util.Map;
 /**
  *
  * @version : 2013-4-11
@@ -49,13 +47,9 @@ class WebPluginDefinition implements WebPlugin {
     }
     //
     /*--------------------------------------------------------------------------------------------------------*/
-    @Override
-    public void initPlugin(AppContext appContext, Map<String, String> configMap) {
+    public void initPlugin(AppContext appContext) {
         this.appContext = appContext;
-        WebPlugin plugin = this.getTarget();
-        if (plugin != null) {
-            plugin.initPlugin(appContext, configMap);
-        }
+        this.getTarget();
     }
     @Override
     public void beforeFilter(Invoker invoker, InvokerInfo define) {
@@ -69,13 +63,6 @@ class WebPluginDefinition implements WebPlugin {
         WebPlugin plugin = this.getTarget();
         if (plugin != null) {
             plugin.afterFilter(invoker, define);
-        }
-    }
-    @Override
-    public void destroy() {
-        WebPlugin plugin = this.getTarget();
-        if (plugin != null) {
-            plugin.destroy();
         }
     }
 }

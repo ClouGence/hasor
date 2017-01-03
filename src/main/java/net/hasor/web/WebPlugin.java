@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.web;
-import net.hasor.core.AppContext;
-
-import java.util.Map;
 /**
  * 过滤器链扩展。
  * @version : 2016年12月30日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface WebPlugin {
-    public void initPlugin(AppContext appContext, Map<String, String> configMap);
-
     public void beforeFilter(Invoker invoker, InvokerInfo info);
 
     public void afterFilter(Invoker invoker, InvokerInfo info);
-
-    public void destroy();
 }

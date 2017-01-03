@@ -18,6 +18,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
+import net.hasor.core.provider.InfoAwareProvider;
 import net.hasor.web.*;
 import net.hasor.web.pipeline.PipelineWebApiBinder;
 
@@ -66,9 +67,30 @@ class InnerWebApiBinder extends PipelineWebApiBinder implements WebApiBinder {
         return this;
     }
     @Override
-    public WebApiBinder addPlugin(BindInfo<WebPlugin> webPlugin) {
+    public WebApiBinder addPlugin(BindInfo<? extends WebPlugin> webPlugin) {
         webPlugin = Hasor.assertIsNotNull(webPlugin);
         this.bindType(WebPluginDefinition.class).toInstance(new WebPluginDefinition(webPlugin));
+        return this;
+    }
+    @Override
+    public WebApiBinder addSetup(Class<? extends MappingSetup> setup) {
+        this.bindType(MappingSetup.class).to(Hasor.assertIsNotNull(setup));
+        return this;
+    }
+    @Override
+    public WebApiBinder addSetup(MappingSetup setup) {
+        this.bindType(MappingSetup.class).toInstance(Hasor.assertIsNotNull(setup));
+        return this;
+    }
+    @Override
+    public WebApiBinder addSetup(Provider<? extends MappingSetup> setup) {
+        this.bindType(MappingSetup.class).toProvider(Hasor.assertIsNotNull(setup));
+        return this;
+    }
+    @Override
+    public WebApiBinder addSetup(BindInfo<? extends MappingSetup> setup) {
+        InfoAwareProvider<MappingSetup> provider = new InfoAwareProvider<MappingSetup>(Hasor.assertIsNotNull(setup));
+        this.bindType(MappingSetup.class).toProvider(Hasor.autoAware(this.getEnvironment(), provider));
         return this;
     }
     @Override
@@ -76,5 +98,4 @@ class InnerWebApiBinder extends PipelineWebApiBinder implements WebApiBinder {
         InvokeFilterDefinition define = new InvokeFilterDefinition(index, pattern, matcher, filterRegister, initParams);
         bindType(InvokeFilterDefinition.class).uniqueName().toInstance(define);
     }
-    //
 }

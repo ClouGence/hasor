@@ -72,8 +72,8 @@ class InvokerContext {
         // .WebPlugin
         List<WebPluginDefinition> pluginList = appContext.findBindingBean(WebPluginDefinition.class);
         this.plugins = pluginList.toArray(new WebPlugin[pluginList.size()]);
-        for (WebPlugin plugin : this.plugins) {
-            plugin.initPlugin(appContext, configMap);
+        for (WebPluginDefinition plugin : pluginList) {
+            plugin.initPlugin(appContext);
         }
         //
         // .setup
@@ -118,9 +118,6 @@ class InvokerContext {
     public void destroyContext() {
         for (InvokerFilter filter : this.filters) {
             filter.destroy();
-        }
-        for (WebPlugin plugin : this.plugins) {
-            plugin.destroy();
         }
     }
     //

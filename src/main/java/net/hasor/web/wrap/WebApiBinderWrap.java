@@ -18,10 +18,7 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderWrap;
-import net.hasor.web.InvokerFilter;
-import net.hasor.web.ServletVersion;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebPlugin;
+import net.hasor.web.*;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
@@ -128,7 +125,23 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
         return this.webApiBinder.addPlugin(webPlugin);
     }
     @Override
-    public WebApiBinder addPlugin(BindInfo<WebPlugin> webPlugin) {
+    public WebApiBinder addPlugin(BindInfo<? extends WebPlugin> webPlugin) {
         return this.webApiBinder.addPlugin(webPlugin);
+    }
+    @Override
+    public WebApiBinder addSetup(Class<? extends MappingSetup> setup) {
+        return this.webApiBinder.addSetup(setup);
+    }
+    @Override
+    public WebApiBinder addSetup(MappingSetup setup) {
+        return this.webApiBinder.addSetup(setup);
+    }
+    @Override
+    public WebApiBinder addSetup(Provider<? extends MappingSetup> setup) {
+        return this.webApiBinder.addSetup(setup);
+    }
+    @Override
+    public WebApiBinder addSetup(BindInfo<? extends MappingSetup> setup) {
+        return this.webApiBinder.addSetup(setup);
     }
 }

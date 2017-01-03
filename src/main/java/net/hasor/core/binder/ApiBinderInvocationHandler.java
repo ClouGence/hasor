@@ -38,6 +38,7 @@ public class ApiBinderInvocationHandler implements InvocationHandler {
         }
         //
         try {
+            method.setAccessible(true);
             return method.invoke(target, args);
         } catch (InvocationTargetException ex) {
             throw ex.getTargetException();

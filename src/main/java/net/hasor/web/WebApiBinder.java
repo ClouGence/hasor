@@ -113,7 +113,19 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     public WebApiBinder addPlugin(Provider<? extends WebPlugin> webPlugin);
 
     /**添加插件*/
-    public WebApiBinder addPlugin(BindInfo<WebPlugin> webPlugin);
+    public WebApiBinder addPlugin(BindInfo<? extends WebPlugin> webPlugin);
+
+    /**添加MappingSetup*/
+    public WebApiBinder addSetup(Class<? extends MappingSetup> setup);
+
+    /**添加MappingSetup*/
+    public WebApiBinder addSetup(MappingSetup setup);
+
+    /**添加MappingSetup*/
+    public WebApiBinder addSetup(Provider<? extends MappingSetup> setup);
+
+    /**添加MappingSetup*/
+    public WebApiBinder addSetup(BindInfo<? extends MappingSetup> setup);
 
     /**负责配置Filter。*/
     public static interface FilterBindingBuilder<T> {

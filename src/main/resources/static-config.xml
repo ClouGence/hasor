@@ -67,6 +67,7 @@
             <module>net.hasor.plugins.aop.AopModule</module>
             <module>net.hasor.plugins.event.EventModule</module>
             <module>net.hasor.web.valid.ValidWebPlugin</module>
+            <module>net.hasor.web.render.RenderWebPlugin</module>
         </modules>
 
         <!-- Binder扩展 -->
