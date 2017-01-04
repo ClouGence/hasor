@@ -20,7 +20,8 @@
 
         <!-- Binder扩展 -->
         <apiBinderSet>
-            <binder type="net.hasor.rsf.RsfApiBinder">net.hasor.rsf.container.RsfApibinerCreater</binder>
+            <binder type="net.hasor.rsf.RsfApiBinder">net.hasor.rsf.container.RsfApiBinerCreater</binder>
+            <binder type="net.hasor.rsf.RsfPublisher">net.hasor.rsf.container.RsfApiBinerCreater</binder>
         </apiBinderSet>
 
         <!-- RSF框架环境变量 -->

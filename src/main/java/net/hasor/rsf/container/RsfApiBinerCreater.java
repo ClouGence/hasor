@@ -31,7 +31,7 @@ import java.util.List;
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RsfApibinerCreater implements ApiBinderCreater {
+public class RsfApiBinerCreater implements ApiBinderCreater {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public RsfApiBinder createBinder(ApiBinder apiBinder) throws IOException {
