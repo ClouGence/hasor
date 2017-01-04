@@ -30,7 +30,7 @@ public abstract class AbstractTag extends TagSupport {
     //
     protected AppContext getAppContext() {
         ServletContext sc = this.pageContext.getServletContext();
-        AppContext appContext = (AppContext) sc.getAttribute(RuntimeListener.AppContextName);
+        AppContext appContext = RuntimeListener.getAppContext(sc);
         if (appContext != null) {
             return appContext;
         }

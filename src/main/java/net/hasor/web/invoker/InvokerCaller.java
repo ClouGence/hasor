@@ -38,7 +38,6 @@ import java.net.URLDecoder;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 /**
@@ -66,6 +65,11 @@ class InvokerCaller {
     public Future<Object> invoke(final Invoker invoker, final FilterChain chain) throws Throwable {
         final BasicFuture<Object> future = new BasicFuture<Object>();
         Method targetMethod = this.mappingToDefine.findMethod(invoker);
+        if (targetMethod == null) {
+            chain.doFilter(invoker.getHttpRequest(), invoker.getHttpResponse());
+            future.completed(null);
+            return future;
+        }
         //
         // .异步调用
         boolean needAsync = this.mappingToDefine.isAsync(invoker);
@@ -100,16 +104,19 @@ class InvokerCaller {
     /** 执行调用 */
     private Object invoke(final Method targetMethod, Invoker invoker, FilterChain chain) throws Throwable {
         //
-        Object targetObject = invoker.getAppContext().getInstance(this.mappingToDefine.getTargetType());
+        // .初始化WebController
+        final Object targetObject = invoker.getAppContext().getInstance(this.mappingToDefine.getTargetType());
         if (targetObject != null && targetObject instanceof WebController) {
             ((WebController) targetObject).initController(invoker);
         }
         //
-        final Object[] resolveParams = this.resolveParams(invoker, targetMethod);
-        final AtomicBoolean doNext = new AtomicBoolean(false);
-        InvokerChain finalChain = new InvokerChain() {
+        // .准备过滤器链
+        final ArrayList<Object[]> resolveParams = new ArrayList<Object[]>(1);
+        InvokerChain invokerData = new InvokerChain() {
+            @Override
             public void doNext(Invoker invoker) throws Throwable {
-                doNext.set(true);
+                Object result = targetMethod().invoke(targetObject, getParameters());
+                invoker.put(Invoker.RETURN_DATA_KEY, result);
             }
             @Override
             public Method targetMethod() {
@@ -117,25 +124,27 @@ class InvokerCaller {
             }
             @Override
             public Object[] getParameters() {
-                return resolveParams;
+                return resolveParams.isEmpty() ? new Object[0] : resolveParams.get(0);
             }
             @Override
             public MappingData getMappingTo() {
                 return mappingToDefine;
             }
         };
-        Object result = null;
+        InvokerChainInvocation invocation = new InvokerChainInvocation(this.mappingToDefine, this.filterArrays, invokerData);
+        //
+        // .执行Filters
         try {
-            this.pluginCaller.beforeFilter(invoker, finalChain);
-            result = targetMethod.invoke(targetObject, resolveParams);
-            new InvokerChainInvocation(this.mappingToDefine, this.filterArrays, finalChain).doNext(invoker);
-            if (doNext.get()) {
-                chain.doFilter(invoker.getHttpRequest(), invoker.getHttpResponse());
-            }
+            final Object[] resolveParamsArrays = this.resolveParams(invoker, targetMethod);
+            resolveParams.add(0, resolveParamsArrays);
+            //
+            this.pluginCaller.beforeFilter(invoker, invokerData);
+            invocation.doNext(invoker);
         } finally {
-            this.pluginCaller.afterFilter(invoker, finalChain);
+            this.pluginCaller.afterFilter(invoker, invokerData);
         }
-        return result;
+        //
+        return invoker.get(Invoker.RETURN_DATA_KEY);
     }
     //
     /**/

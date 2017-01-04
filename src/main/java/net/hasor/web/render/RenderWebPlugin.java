@@ -160,18 +160,12 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
     //
     @Override
     public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
+        // .执行过滤器
+        chain.doNext(invoker);
         //
-        if (!(invoker instanceof RenderInvoker)) {
-            chain.doNext(invoker);
-            return;
-        }
-        //
-        // .render
-        if (this.process((RenderInvoker) invoker)) {
-            return;
-        } else {
-            chain.doNext(invoker);
-            return;
+        // .处理渲染
+        if (invoker instanceof RenderInvoker) {
+            this.process((RenderInvoker) invoker);
         }
     }
     //

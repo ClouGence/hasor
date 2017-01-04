@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * action功能的入口。
@@ -110,9 +112,20 @@ class RootInvokerFilter implements Filter {
             Invoker invoker = this.invokerContext.newInvoker(httpReq, httpRes);
             InvokerCaller caller = this.invokerContext.genCaller(invoker);
             if (caller != null) {
-                caller.invoke(invoker, chain);
+                Future<Object> invoke = caller.invoke(invoker, chain);
+                invoke.get();
                 return;
             }
+        } catch (ExecutionException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof IOException)
+                throw (IOException) cause;
+            if (cause instanceof ServletException)
+                throw (ServletException) cause;
+            if (cause instanceof RuntimeException)
+                throw (RuntimeException) cause;
+            throw ExceptionUtils.toRuntimeException(e);
+            //
         } catch (IOException e) {
             throw (IOException) e;
         } catch (ServletException e) {
