@@ -19,13 +19,18 @@ import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerFilter;
 import net.hasor.web.MappingData;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import java.io.IOException;
 import java.lang.reflect.Method;
 /**
  *
  * @version : 2013-4-13
  * @author 赵永春 (zyc@hasor.net)
  */
-class InvokerChainInvocation implements InvokerChain {
+class InvokerChainInvocation implements InvokerChain, FilterChain {
     private final MappingData     mapping;
     private final InvokerFilter[] filters;
     private final InvokerChain    chain;
@@ -48,6 +53,10 @@ class InvokerChainInvocation implements InvokerChain {
         } else {
             this.chain.doNext(invoker);
         }
+    }
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+        //TODO
     }
     @Override
     public Method targetMethod() {

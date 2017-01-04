@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version : 2013-5-11
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilter, MappingSetup {
+public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilter {
     protected Logger                    logger       = LoggerFactory.getLogger(getClass());
     private   AtomicBoolean             inited       = new AtomicBoolean(false);
     private   Map<String, RenderEngine> engineMap    = new HashMap<String, RenderEngine>();
@@ -88,12 +88,7 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
     }
     //
     @Override
-    public void setup(MappingData mappingData) {
-        //
-    }
-    //
-    @Override
-    public void init(InvokerFilterConfig config) {
+    public void init(InvokerConfig config) {
         if (!this.inited.compareAndSet(false, true)) {
             return;
         }
@@ -136,7 +131,7 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
     //
     //
     @Override
-    public void beforeFilter(Invoker invoker, InvokerInfo info) {
+    public void beforeFilter(Invoker invoker, InvokerData info) {
         if (!(invoker instanceof RenderInvoker)) {
             return;
         }
@@ -160,7 +155,7 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
         }
     }
     @Override
-    public void afterFilter(Invoker invoker, InvokerInfo info) {
+    public void afterFilter(Invoker invoker, InvokerData info) {
     }
     //
     @Override

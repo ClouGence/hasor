@@ -18,6 +18,6 @@ package net.hasor.web;
  * @version : 2016-12-24
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface InvokerChain extends InvokerInfo {
+public interface InvokerChain extends InvokerData {
     public void doNext(Invoker invoker) throws Throwable;
 }

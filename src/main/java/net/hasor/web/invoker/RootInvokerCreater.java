@@ -33,6 +33,8 @@ import java.util.Map;
  */
 class RootInvokerCreater implements InvokerCreater {
     private Map<Class<?>, InvokerCreater> createrMap = new HashMap<Class<?>, InvokerCreater>();
+    private Map<Class<?>, Class<?>>       extMapping = new HashMap<Class<?>, Class<?>>();
+    //
     public RootInvokerCreater(AppContext appContext) throws Exception {
         Settings settings = appContext.getEnvironment().getSettings();
         ClassLoader classLoader = appContext.getClassLoader();
@@ -60,27 +62,44 @@ class RootInvokerCreater implements InvokerCreater {
                 extBinderMap.put(binderType, binderImpl);
             }
         }
-        // .创建扩展
+        // .创建扩展(extMapping来建立映射，避免重复创建InvokerCreater)
         for (Map.Entry<Class<?>, Class<?>> ent : extBinderMap.entrySet()) {
-            InvokerCreater creater = (InvokerCreater) ent.getValue().newInstance();
-            this.createrMap.put(ent.getKey(), creater);
+            Class<?> createrType = ent.getValue();
+            this.extMapping.put(ent.getKey(), createrType);
+            //
+            if (this.createrMap.containsKey(createrType)) {
+                continue;
+            }
+            InvokerCreater creater = (InvokerCreater) createrType.newInstance();
+            this.createrMap.put(createrType, creater);
         }
     }
     //
     @Override
     public Invoker createExt(Invoker dataContext) {
-        Map<Class<?>, Object> supportMap = new HashMap<Class<?>, Object>();
+        Map<Class<?>, Object> extMap = new HashMap<Class<?>, Object>();
         for (Map.Entry<Class<?>, InvokerCreater> ent : this.createrMap.entrySet()) {
             Class<?> extType = ent.getKey();
             InvokerCreater creater = ent.getValue();
             Object extObject = (creater != null) ? creater.createExt(dataContext) : null;
             if (extType != null && extObject != null) {
-                supportMap.put(extType, extObject);
+                extMap.put(extType, extObject);
+            }
+        }
+        //
+        Map<Class<?>, Object> supportMap = new HashMap<Class<?>, Object>();
+        supportMap.put(Invoker.class, dataContext);
+        for (Map.Entry<Class<?>, Class<?>> ent : this.extMapping.entrySet()) {
+            Class<?> key = ent.getKey();
+            Class<?> value = ent.getValue();
+            Object obj = extMap.get(value);
+            //
+            if (obj != null) {
+                supportMap.put(key, obj);
             }
         }
         //
         ClassLoader classLoader = dataContext.getAppContext().getClassLoader();
-        supportMap.put(Invoker.class, dataContext);
         Class<?>[] apiArrays = supportMap.keySet().toArray(new Class<?>[supportMap.size()]);
         return (Invoker) Proxy.newProxyInstance(classLoader, apiArrays, new InvokerCreaterInvocationHandler(supportMap));
     }

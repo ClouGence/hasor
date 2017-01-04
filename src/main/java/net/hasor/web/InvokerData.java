@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
  * @version : 2016-12-24
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface InvokerInfo {
+public interface InvokerData {
     /** 查找调用方法 */
     public Method targetMethod();
 

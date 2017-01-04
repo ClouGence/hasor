@@ -63,11 +63,12 @@
 
         <!-- 默认要装载的模块 -->
         <modules loadModule="${HASOR_LOAD_MODULE}" loadErrorShow="true">
+            <module>net.hasor.web.valid.ValidWebPlugin</module>
+            <module>net.hasor.web.render.RenderWebPlugin</module>
+
             <module>net.hasor.plugins.startup.StartupModule</module>
             <module>net.hasor.plugins.aop.AopModule</module>
             <module>net.hasor.plugins.event.EventModule</module>
-            <module>net.hasor.web.valid.ValidWebPlugin</module>
-            <module>net.hasor.web.render.RenderWebPlugin</module>
         </modules>
 
         <!-- Binder扩展 -->
@@ -78,6 +79,7 @@
         <!-- Context扩展 -->
         <invokerCreaterSet>
             <invokerCreater type="net.hasor.web.valid.ValidInvoker">net.hasor.web.valid.ValidInvokerCreater</invokerCreater>
+            <invokerCreater type="net.hasor.web.valid.ValidErrors">net.hasor.web.valid.ValidInvokerCreater</invokerCreater>
             <invokerCreater type="net.hasor.web.render.RenderInvoker">net.hasor.web.render.RenderInvokerCreater</invokerCreater>
         </invokerCreaterSet>
 

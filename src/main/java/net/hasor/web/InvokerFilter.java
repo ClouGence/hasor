@@ -19,7 +19,7 @@ package net.hasor.web;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface InvokerFilter {
-    public void init(InvokerFilterConfig config);
+    public void init(InvokerConfig config);
 
     public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable;
 

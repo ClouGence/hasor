@@ -18,7 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerFilter;
-import net.hasor.web.InvokerFilterConfig;
+import net.hasor.web.InvokerConfig;
 import net.hasor.web.Invoker;
 import org.more.util.Iterators;
 
@@ -54,7 +54,7 @@ class InvokeFilterDefinition extends AbstractDefinition implements InvokerFilter
         //
         final Map<String, String> initParams = this.getInitParams();
         this.instance = this.appContext.getInstance(this.bindInfo);
-        this.instance.init(new InvokerFilterConfig() {
+        this.instance.init(new InvokerConfig() {
             @Override
             public String getInitParameter(String name) {
                 return initParams.get(name);
@@ -73,7 +73,7 @@ class InvokeFilterDefinition extends AbstractDefinition implements InvokerFilter
     //
     /*--------------------------------------------------------------------------------------------------------*/
     @Override
-    public void init(InvokerFilterConfig config) {
+    public void init(InvokerConfig config) {
         this.appContext = config.getAppContext();
         Map<String, String> initParams = new HashMap<String, String>();
         Enumeration<String> names = config.getInitParameterNames();

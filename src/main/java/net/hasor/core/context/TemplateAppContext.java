@@ -336,6 +336,7 @@ public abstract class TemplateAppContext implements AppContext {
     /*--------------------------------------------------------------------------------------Utils*/
     /**为模块创建ApiBinder。*/
     protected ApiBinder newApiBinder() throws Throwable {
+        //
         // .寻找ApiBinder扩展
         Map<Class<?>, Class<?>> extBinderMap = new HashMap<Class<?>, Class<?>>();
         XmlNode[] nodeArray = this.getEnvironment().getSettings().getXmlNodeArray("hasor.apiBinderSet.binder");
@@ -359,8 +360,8 @@ public abstract class TemplateAppContext implements AppContext {
                 extBinderMap.put(binderType, binderImpl);
             }
         }
+        //
         // .创建扩展
-        Map<Class<?>, Object> supportMap = new HashMap<Class<?>, Object>();
         AbstractBinder binder = new AbstractBinder(this.getEnvironment()) {
             protected BeanBuilder getBeanBuilder() {
                 return getContainer();
@@ -369,19 +370,31 @@ public abstract class TemplateAppContext implements AppContext {
                 return getContainer();
             }
         };
+        Map<Class<?>, Object> implMap = new HashMap<Class<?>, Object>();
+        for (Map.Entry<Class<?>, Class<?>> ent : extBinderMap.entrySet()) {
+            Class<?> implKey = ent.getValue();
+            if (implMap.containsKey(implKey)) {
+                continue;
+            }
+            ApiBinderCreater creater = (ApiBinderCreater) implKey.newInstance();
+            Object exter = creater.createBinder(binder);
+            if (exter != null) {
+                implMap.put(implKey, exter);
+            }
+        }
+        //
+        // .扩展的映射（这样做的目的是保证不同key应射了同一个实现之后，实现类避免重复初始化）
+        Map<Class<?>, Object> supportMap = new HashMap<Class<?>, Object>();
         supportMap.put(ApiBinder.class, binder);
         for (Map.Entry<Class<?>, Class<?>> ent : extBinderMap.entrySet()) {
-            ApiBinderCreater creater = (ApiBinderCreater) ent.getValue().newInstance();
-            Object exter = creater.createBinder(binder);
-            //
-            if (exter != null) {
-                supportMap.put(ent.getKey(), exter);
-            }
+            Object supportVal = implMap.get(ent.getValue());
+            supportMap.put(ent.getKey(), supportVal);
         }
         //
         // .返回
         Class<?>[] apiArrays = supportMap.keySet().toArray(new Class<?>[supportMap.size()]);
-        return (ApiBinder) Proxy.newProxyInstance(this.getClassLoader(), apiArrays, new ApiBinderInvocationHandler(supportMap));
+        return (ApiBinder) Proxy.newProxyInstance(this.
+                getClassLoader(), apiArrays, new ApiBinderInvocationHandler(supportMap));
     }
     /**当完成所有初始化过程之后调用，负责向 Context 绑定一些预先定义的类型。*/
     protected void doBind(final ApiBinder apiBinder) {

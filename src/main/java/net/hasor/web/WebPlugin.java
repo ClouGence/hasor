@@ -20,7 +20,7 @@ package net.hasor.web;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface WebPlugin {
-    public void beforeFilter(Invoker invoker, InvokerInfo info);
+    public void beforeFilter(Invoker invoker, InvokerData info);
 
-    public void afterFilter(Invoker invoker, InvokerInfo info);
+    public void afterFilter(Invoker invoker, InvokerData info);
 }

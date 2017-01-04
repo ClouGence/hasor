@@ -43,11 +43,11 @@ class InvokerContext {
             if (define.matchingMapping(invoker)) {
                 return new InvokerCaller(define, this.filters, new WebPluginCaller() {
                     @Override
-                    public void beforeFilter(Invoker invoker, InvokerInfo define) {
+                    public void beforeFilter(Invoker invoker, InvokerData define) {
                         InvokerContext.this.beforeFilter(invoker, define);
                     }
                     @Override
-                    public void afterFilter(Invoker invoker, InvokerInfo define) {
+                    public void afterFilter(Invoker invoker, InvokerData define) {
                         InvokerContext.this.afterFilter(invoker, define);
                     }
                 });
@@ -91,7 +91,7 @@ class InvokerContext {
         }
         //
         // .filters
-        final InvokerFilterConfig filterConfig = new InvokerFilterConfig() {
+        final InvokerConfig filterConfig = new InvokerConfig() {
             @Override
             public String getInitParameter(String name) {
                 return config.get(name);
@@ -121,13 +121,13 @@ class InvokerContext {
         }
     }
     //
-    private void beforeFilter(Invoker invoker, InvokerInfo define) {
+    private void beforeFilter(Invoker invoker, InvokerData define) {
         for (WebPlugin plugin : this.plugins) {
             plugin.beforeFilter(invoker, define);
         }
     }
     //
-    private void afterFilter(Invoker invoker, InvokerInfo define) {
+    private void afterFilter(Invoker invoker, InvokerData define) {
         for (WebPlugin plugin : this.plugins) {
             plugin.afterFilter(invoker, define);
         }

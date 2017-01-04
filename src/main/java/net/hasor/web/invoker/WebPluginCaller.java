@@ -15,14 +15,14 @@
  */
 package net.hasor.web.invoker;
 import net.hasor.web.Invoker;
-import net.hasor.web.InvokerInfo;
+import net.hasor.web.InvokerData;
 /**
  * 过滤器链扩展。
  * @version : 2016年12月30日
  * @author 赵永春(zyc@hasor.net)
  */
 interface WebPluginCaller {
-    public void beforeFilter(Invoker invoker, InvokerInfo info);
+    public void beforeFilter(Invoker invoker, InvokerData info);
 
-    public void afterFilter(Invoker invoker, InvokerInfo info);
+    public void afterFilter(Invoker invoker, InvokerData info);
 }

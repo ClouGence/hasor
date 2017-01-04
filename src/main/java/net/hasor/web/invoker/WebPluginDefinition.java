@@ -17,7 +17,7 @@ package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.web.Invoker;
-import net.hasor.web.InvokerInfo;
+import net.hasor.web.InvokerData;
 import net.hasor.web.WebPlugin;
 /**
  *
@@ -52,14 +52,14 @@ class WebPluginDefinition implements WebPlugin {
         this.getTarget();
     }
     @Override
-    public void beforeFilter(Invoker invoker, InvokerInfo define) {
+    public void beforeFilter(Invoker invoker, InvokerData define) {
         WebPlugin plugin = this.getTarget();
         if (plugin != null) {
             plugin.beforeFilter(invoker, define);
         }
     }
     @Override
-    public void afterFilter(Invoker invoker, InvokerInfo define) {
+    public void afterFilter(Invoker invoker, InvokerData define) {
         WebPlugin plugin = this.getTarget();
         if (plugin != null) {
             plugin.afterFilter(invoker, define);

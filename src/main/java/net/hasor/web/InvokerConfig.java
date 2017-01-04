@@ -21,7 +21,7 @@ import java.util.Enumeration;
  * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface InvokerFilterConfig {
+public interface InvokerConfig {
     /**
      * Returns a <code>String</code> containing the value of the
      * named initialization parameter, or <code>null</code> if

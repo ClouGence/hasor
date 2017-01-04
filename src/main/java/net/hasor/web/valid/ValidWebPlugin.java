@@ -30,6 +30,7 @@ public class ValidWebPlugin extends WebModule implements WebPlugin, MappingSetup
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         apiBinder.addPlugin(this);
+        apiBinder.addSetup(this);
         this.validMapping = new HashMap<Method, ValidDefinition>();
     }
     @Override
@@ -40,7 +41,7 @@ public class ValidWebPlugin extends WebModule implements WebPlugin, MappingSetup
         }
     }
     @Override
-    public void beforeFilter(Invoker invoker, InvokerInfo define) {
+    public void beforeFilter(Invoker invoker, InvokerData define) {
         //
         ValidDefinition valid = this.validMapping.get(define.targetMethod());
         if (valid == null || !valid.isEnable() || !(invoker instanceof ValidErrors)) {
@@ -52,7 +53,7 @@ public class ValidWebPlugin extends WebModule implements WebPlugin, MappingSetup
         valid.doValid(invoker.getAppContext(), errors, resolveParams);
     }
     @Override
-    public void afterFilter(Invoker invoker, InvokerInfo define) {
+    public void afterFilter(Invoker invoker, InvokerData define) {
         //
     }
 }
