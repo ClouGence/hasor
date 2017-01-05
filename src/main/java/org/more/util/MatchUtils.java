@@ -22,8 +22,7 @@ package org.more.util;
 public class MatchUtils {
     public static enum MatchTypeEnum {
         /**通配符：通过：? 和 * 进行匹配。*/
-        Wild,
-        /**正则表达式匹配。*/
+        Wild, /**正则表达式匹配。*/
         Regex
     }
     /**将通配符转换成正则表达式。*/
@@ -32,7 +31,7 @@ public class MatchUtils {
             throw new NullPointerException("wild param is null");
         }
         StringBuffer result = new StringBuffer("");
-        char metachar[] = {'$', '^', '[', ']', '(', ')', '{', '|', '+', '.', '\\'};
+        char metachar[] = { '$', '^', '[', ']', '(', ')', '{', '|', '+', '.', '\\' };
         for (int i = 0; i < wild.length(); i++) {
             char ch = wild.charAt(i);
             for (char element : metachar) {
@@ -49,24 +48,6 @@ public class MatchUtils {
             }
         }
         result.append("$");
-        return result.toString();
-    }
-    /**将字符串转换成成正则表达式。*/
-    public static String stringToRegex(final String wild) {
-        if (wild == null) {
-            throw new NullPointerException("wild param is null");
-        }
-        StringBuffer result = new StringBuffer("");
-        char metachar[] = {'$', '^', '[', ']', '(', ')', '{', '|', '+', '.', '\\'};
-        for (int i = 0; i < wild.length(); i++) {
-            char ch = wild.charAt(i);
-            for (char element : metachar) {
-                if (ch == element) {
-                    result.append("\\");
-                }
-            }
-            result.append(ch);
-        }
         return result.toString();
     }
     /**使用通配符匹配字符串。*/

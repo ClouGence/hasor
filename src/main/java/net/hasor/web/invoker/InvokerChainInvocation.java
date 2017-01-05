@@ -31,12 +31,12 @@ import java.lang.reflect.Method;
  * @author 赵永春 (zyc@hasor.net)
  */
 class InvokerChainInvocation implements InvokerChain, FilterChain {
-    private final MappingData     mapping;
-    private final InvokerFilter[] filters;
-    private final InvokerChain    chain;
+    private final InnerMappingData mapping;
+    private final InvokerFilter[]  filters;
+    private final InvokerChain     chain;
     private int index = -1;
     //
-    public InvokerChainInvocation(final MappingData mapping, final InvokerFilter[] filters, final InvokerChain chain) {
+    public InvokerChainInvocation(final InnerMappingData mapping, final InvokerFilter[] filters, final InvokerChain chain) {
         this.mapping = mapping;
         this.filters = filters;
         this.chain = chain;

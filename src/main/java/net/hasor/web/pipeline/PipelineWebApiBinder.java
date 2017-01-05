@@ -18,52 +18,24 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderWrap;
-import net.hasor.core.provider.InstanceProvider;
 import net.hasor.web.InvokerFilter;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.invoker.UriPatternMatcher;
-import net.hasor.web.invoker.UriPatternType;
-import net.hasor.web.startup.RuntimeFilter;
+import net.hasor.web.definition.UriPatternMatcher;
+import net.hasor.web.definition.UriPatternType;
 import org.more.util.ArrayUtils;
 
 import javax.servlet.Filter;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpSessionListener;
 import java.util.*;
 /**
  * @version : 2013-4-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class PipelineWebApiBinder extends ApiBinderWrap implements WebApiBinder {
-    private final InstanceProvider<String> requestEncoding  = new InstanceProvider<String>("");
-    private final InstanceProvider<String> responseEncoding = new InstanceProvider<String>("");
     //
     protected PipelineWebApiBinder(ApiBinder apiBinder) {
         super(apiBinder);
-        apiBinder.bindType(String.class).nameWith(RuntimeFilter.HTTP_REQUEST_ENCODING_KEY).toProvider(this.requestEncoding);
-        apiBinder.bindType(String.class).nameWith(RuntimeFilter.HTTP_RESPONSE_ENCODING_KEY).toProvider(this.responseEncoding);
     }
-    @Override
-    public ServletContext getServletContext() {
-        return (ServletContext) this.getEnvironment().getContext();
-    }
-    @Override
-    public WebApiBinder setRequestCharacter(String encoding) {
-        this.requestEncoding.set(encoding);
-        return this;
-    }
-    @Override
-    public WebApiBinder setResponseCharacter(String encoding) {
-        this.responseEncoding.set(encoding);
-        return this;
-    }
-    @Override
-    public WebApiBinder setEncodingCharacter(String requestEncoding, String responseEncoding) {
-        return this.setRequestCharacter(requestEncoding).setResponseCharacter(responseEncoding);
-    }
-    //
     /*--------------------------------------------------------------------------------------Utils*/
     /***/
     protected static List<String> newArrayList(final String[] arr, final String object) {
@@ -148,6 +120,8 @@ public abstract class PipelineWebApiBinder extends ApiBinderWrap implements WebA
         }
         return this.invFilterRegex(null, regexes);
     }
+    //
+    /*-------------------------------------------------------------------------------------Filter*/
     //
     private abstract class FiltersModuleBinder<T> implements FilterBindingBuilder<T> {
         private final Class<T>       targetType;
@@ -259,6 +233,7 @@ public abstract class PipelineWebApiBinder extends ApiBinderWrap implements WebA
         }
         return this.serveRegex(null, regexes);
     }
+    //
     private class ServletsModuleBuilder implements ServletBindingBuilder {
         private final List<String>   uriPatterns;
         private final UriPatternType uriPatternType;
@@ -340,60 +315,6 @@ public abstract class PipelineWebApiBinder extends ApiBinderWrap implements WebA
                 ServletDefinition define = new ServletDefinition(index, pattern, matcher, (BindInfo<HttpServlet>) servletRegister, initParams);
                 bindType(ServletDefinition.class).uniqueName().toInstance(define);/*单列*/
             }
-        }
-    }
-    //
-    /*---------------------------------------------------------------------ServletContextListener*/
-    @Override
-    public ServletContextListenerBindingBuilder contextListener() {
-        return new ServletContextListenerBuilder();
-    }
-    private class ServletContextListenerBuilder implements ServletContextListenerBindingBuilder {
-        @Override
-        public void bind(final Class<? extends ServletContextListener> listenerKey) {
-            BindInfo<ServletContextListener> listenerRegister = bindType(ServletContextListener.class).to(listenerKey).toInfo();
-            this.bind(listenerRegister);
-        }
-        @Override
-        public void bind(final ServletContextListener sessionListener) {
-            BindInfo<ServletContextListener> listenerRegister = bindType(ServletContextListener.class).toInstance(sessionListener).toInfo();
-            this.bind(listenerRegister);
-        }
-        @Override
-        public void bind(final Provider<? extends ServletContextListener> listenerProvider) {
-            BindInfo<ServletContextListener> listenerRegister = bindType(ServletContextListener.class).toProvider((Provider<ServletContextListener>) listenerProvider).toInfo();
-            this.bind(listenerRegister);
-        }
-        @Override
-        public void bind(BindInfo<? extends ServletContextListener> listenerRegister) {
-            bindType(ContextListenerDefinition.class).uniqueName().toInstance(new ContextListenerDefinition(listenerRegister));
-        }
-    }
-    //
-    /*------------------------------------------------------------------------HttpSessionListener*/
-    @Override
-    public SessionListenerBindingBuilder sessionListener() {
-        return new SessionListenerBuilder();
-    }
-    private class SessionListenerBuilder implements SessionListenerBindingBuilder {
-        @Override
-        public void bind(final Class<? extends HttpSessionListener> listenerKey) {
-            BindInfo<HttpSessionListener> listenerRegister = bindType(HttpSessionListener.class).to(listenerKey).toInfo();
-            this.bind(listenerRegister);
-        }
-        @Override
-        public void bind(final HttpSessionListener sessionListener) {
-            BindInfo<HttpSessionListener> listenerRegister = bindType(HttpSessionListener.class).toInstance(sessionListener).toInfo();
-            this.bind(listenerRegister);
-        }
-        @Override
-        public void bind(final Provider<? extends HttpSessionListener> listenerProvider) {
-            BindInfo<HttpSessionListener> listenerRegister = bindType(HttpSessionListener.class).toProvider((Provider<HttpSessionListener>) listenerProvider).toInfo();
-            this.bind(listenerRegister);
-        }
-        @Override
-        public void bind(BindInfo<? extends HttpSessionListener> listenerRegister) {
-            bindType(HttpSessionListenerDefinition.class).uniqueName().toInstance(new HttpSessionListenerDefinition(listenerRegister));
         }
     }
 }

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.invoker;
+package net.hasor.web.definition;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.web.InvokerChain;
-import net.hasor.web.InvokerFilter;
-import net.hasor.web.InvokerConfig;
 import net.hasor.web.Invoker;
+import net.hasor.web.InvokerChain;
+import net.hasor.web.InvokerConfig;
+import net.hasor.web.InvokerFilter;
 import org.more.util.Iterators;
 
 import java.util.Enumeration;
@@ -30,7 +30,7 @@ import java.util.Map;
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */
-class InvokeFilterDefinition extends AbstractDefinition implements InvokerFilter {
+public class InvokeFilterDefinition extends AbstractDefinition implements InvokerFilter {
     private BindInfo<? extends InvokerFilter> bindInfo   = null;
     private InvokerFilter                     instance   = null;
     private AppContext                        appContext = null;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.invoker;
+package net.hasor.web.definition;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.web.Invoker;
@@ -24,7 +24,7 @@ import net.hasor.web.WebPlugin;
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */
-class WebPluginDefinition implements WebPlugin {
+public class WebPluginDefinition implements WebPlugin {
     private BindInfo<? extends WebPlugin> bindInfo   = null;
     private WebPlugin                     instance   = null;
     private AppContext                    appContext = null;

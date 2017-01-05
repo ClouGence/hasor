@@ -13,21 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
+package net.hasor.web.invoker;
+import net.hasor.web.Invoker;
+import net.hasor.web.MappingData;
+
 import java.lang.reflect.Method;
 /**
  * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface MappingData {
+interface InnerMappingData extends MappingData {
     /**
-     * 获取目标类型
+     * 首先测试路径是否匹配，然后判断Restful实例是否支持这个 请求方法。
+     * @return 返回测试结果。
      */
-    public Class<?> getTargetType();
+    public boolean matchingMapping(Invoker invoker);
 
-    /** 获取映射的地址 */
-    public String getMappingTo();
+    public String getMappingToMatches();
 
-    /** 获取方法 */
-    public Method[] getMethods();
+    /**
+     * 调用目标
+     * @throws Throwable 异常抛出
+     */
+    public Method findMethod(final Invoker invoker);
+
+    public boolean isAsync(Invoker invoker);
 }

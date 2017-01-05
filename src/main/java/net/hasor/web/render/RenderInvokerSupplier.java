@@ -24,12 +24,12 @@ import java.util.Enumeration;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-class RenderInvokerSupplier extends InvokerWrap implements RenderInvoker {
+public class RenderInvokerSupplier extends InvokerWrap implements RenderInvoker {
     private String  viewName  = null;//模版名称
     private String  viewType  = null;//渲染引擎
     private boolean useLayout = true;//是否渲染布局
     //
-    public RenderInvokerSupplier(Invoker invoker) {
+    protected RenderInvokerSupplier(Invoker invoker) {
         super(invoker);
         //
         HttpServletRequest httpRequest = this.getHttpRequest();

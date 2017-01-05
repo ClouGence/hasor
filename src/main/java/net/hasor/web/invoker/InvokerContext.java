@@ -17,57 +17,37 @@ package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.web.*;
+import net.hasor.web.definition.InvokeFilterDefinition;
+import net.hasor.web.definition.WebPluginDefinition;
 import org.more.util.Iterators;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 /**
- * 上下文参数。
+ * 上下文。
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
 class InvokerContext {
     private AppContext         appContext     = null;
-    private MappingDataInfo[]  invokeArray    = new MappingDataInfo[0];
+    private InnerMappingData[] invokeArray    = new InnerMappingData[0];
     private InvokerFilter[]    filters        = new InvokerFilter[0];
     private WebPlugin[]        plugins        = new WebPlugin[0];
     private RootInvokerCreater invokerCreater = null;
-    //
-    public Invoker newInvoker(HttpServletRequest request, HttpServletResponse response) {
-        return this.invokerCreater.createExt(new InvokerSupplier(this.appContext, request, response));
-    }
-    //
-    public InvokerCaller genCaller(Invoker invoker) {
-        for (MappingDataInfo define : this.invokeArray) {
-            if (define.matchingMapping(invoker)) {
-                return new InvokerCaller(define, this.filters, new WebPluginCaller() {
-                    @Override
-                    public void beforeFilter(Invoker invoker, InvokerData define) {
-                        InvokerContext.this.beforeFilter(invoker, define);
-                    }
-                    @Override
-                    public void afterFilter(Invoker invoker, InvokerData define) {
-                        InvokerContext.this.afterFilter(invoker, define);
-                    }
-                });
-            }
-        }
-        return null;
-    }
     //
     public void initContext(final AppContext appContext, final Map<String, String> configMap) throws Exception {
         this.appContext = Hasor.assertIsNotNull(appContext);
         final Map<String, String> config = Collections.unmodifiableMap(new HashMap<String, String>(configMap));
         //
         // .MappingData
-        List<MappingDataInfo> mappingList = appContext.findBindingBean(MappingDataInfo.class);
-        Collections.sort(mappingList, new Comparator<MappingDataInfo>() {
-            public int compare(MappingDataInfo o1, MappingDataInfo o2) {
+        List<InnerMappingDataDefinition> mappingList = appContext.findBindingBean(InnerMappingDataDefinition.class);
+        Collections.sort(mappingList, new Comparator<InnerMappingDataDefinition>() {
+            public int compare(InnerMappingDataDefinition o1, InnerMappingDataDefinition o2) {
                 return o1.getMappingTo().compareToIgnoreCase(o2.getMappingTo()) * -1;
             }
         });
-        this.invokeArray = mappingList.toArray(new MappingDataInfo[mappingList.size()]);
+        this.invokeArray = mappingList.toArray(new InnerMappingData[mappingList.size()]);
         //
         // .WebPlugin
         List<WebPluginDefinition> pluginList = appContext.findBindingBean(WebPluginDefinition.class);
@@ -121,15 +101,34 @@ class InvokerContext {
         }
     }
     //
-    private void beforeFilter(Invoker invoker, InvokerData define) {
-        for (WebPlugin plugin : this.plugins) {
-            plugin.beforeFilter(invoker, define);
-        }
+    public Invoker newInvoker(HttpServletRequest request, HttpServletResponse response) {
+        return this.invokerCreater.createExt(new InvokerSupplier(this.appContext, request, response));
     }
     //
-    private void afterFilter(Invoker invoker, InvokerData define) {
-        for (WebPlugin plugin : this.plugins) {
-            plugin.afterFilter(invoker, define);
+    public InvokerCaller genCaller(Invoker invoker) {
+        InnerMappingData foundDefine = null;
+        for (InnerMappingData define : this.invokeArray) {
+            if (define.matchingMapping(invoker)) {
+                foundDefine = define;
+                break;
+            }
         }
+        if (foundDefine == null) {
+            return null;
+        }
+        return new InvokerCaller(foundDefine, this.filters, new WebPluginCaller() {
+            @Override
+            public void beforeFilter(Invoker invoker, InvokerData define) {
+                for (WebPlugin plugin : plugins) {
+                    plugin.beforeFilter(invoker, define);
+                }
+            }
+            @Override
+            public void afterFilter(Invoker invoker, InvokerData define) {
+                for (WebPlugin plugin : plugins) {
+                    plugin.afterFilter(invoker, define);
+                }
+            }
+        });
     }
 }

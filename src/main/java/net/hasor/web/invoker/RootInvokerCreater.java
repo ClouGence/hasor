@@ -77,6 +77,7 @@ class RootInvokerCreater implements InvokerCreater {
     //
     @Override
     public Invoker createExt(Invoker dataContext) {
+        //
         Map<Class<?>, Object> extMap = new HashMap<Class<?>, Object>();
         for (Map.Entry<Class<?>, InvokerCreater> ent : this.createrMap.entrySet()) {
             Class<?> extType = ent.getKey();
@@ -93,7 +94,6 @@ class RootInvokerCreater implements InvokerCreater {
             Class<?> key = ent.getKey();
             Class<?> value = ent.getValue();
             Object obj = extMap.get(value);
-            //
             if (obj != null) {
                 supportMap.put(key, obj);
             }

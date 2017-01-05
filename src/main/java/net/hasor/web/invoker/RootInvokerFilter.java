@@ -112,10 +112,14 @@ class RootInvokerFilter implements Filter {
             Invoker invoker = this.invokerContext.newInvoker(httpReq, httpRes);
             InvokerCaller caller = this.invokerContext.genCaller(invoker);
             if (caller != null) {
-                Future<Object> invoke = caller.invoke(invoker, chain);
-                invoke.get();
-                return;
+                Future<Object> resultData = caller.invoke(invoker, chain);
+                if (resultData != null && resultData.isDone()) {
+                    resultData.get();
+                }
+            } else {
+                chain.doFilter(httpReq, httpRes);
             }
+            //
         } catch (ExecutionException e) {
             Throwable cause = e.getCause();
             if (cause instanceof IOException)
@@ -133,10 +137,6 @@ class RootInvokerFilter implements Filter {
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
-        //
-        // .doFilter
-        chain.doFilter(httpReq, httpRes);
-        return;
     }
     //
     /**在filter请求处理之前，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider更新对象。*/

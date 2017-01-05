@@ -22,6 +22,8 @@ import net.hasor.web.*;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletContextListener;
+import javax.servlet.http.HttpSessionListener;
 /**
  *
  * @version : 2015年10月26日
@@ -105,12 +107,36 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
         return this.webApiBinder.serveRegex(regexes);
     }
     @Override
-    public SessionListenerBindingBuilder sessionListener() {
-        return this.webApiBinder.sessionListener();
+    public void addServletListener(Class<? extends ServletContextListener> targetKey) {
+        this.webApiBinder.addServletListener(targetKey);
     }
     @Override
-    public ServletContextListenerBindingBuilder contextListener() {
-        return this.webApiBinder.contextListener();
+    public void addServletListener(ServletContextListener sessionListener) {
+        this.webApiBinder.addServletListener(sessionListener);
+    }
+    @Override
+    public void addServletListener(Provider<? extends ServletContextListener> targetProvider) {
+        this.webApiBinder.addServletListener(targetProvider);
+    }
+    @Override
+    public void addServletListener(BindInfo<? extends ServletContextListener> targetRegister) {
+        this.webApiBinder.addServletListener(targetRegister);
+    }
+    @Override
+    public void addSessionListener(Class<? extends HttpSessionListener> targetKey) {
+        this.webApiBinder.addSessionListener(targetKey);
+    }
+    @Override
+    public void addSessionListener(HttpSessionListener sessionListener) {
+        this.webApiBinder.addSessionListener(sessionListener);
+    }
+    @Override
+    public void addSessionListener(Provider<? extends HttpSessionListener> targetProvider) {
+        this.webApiBinder.addSessionListener(targetProvider);
+    }
+    @Override
+    public void addSessionListener(BindInfo<? extends HttpSessionListener> targetRegister) {
+        this.webApiBinder.addSessionListener(targetRegister);
     }
     @Override
     public WebApiBinder addPlugin(Class<? extends WebPlugin> webPlugin) {

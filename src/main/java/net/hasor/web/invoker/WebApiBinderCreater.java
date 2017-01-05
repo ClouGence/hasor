@@ -20,7 +20,11 @@ import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.web.MimeType;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.annotation.MappingTo;
-import net.hasor.web.pipeline.*;
+import net.hasor.web.listener.ListenerPipeline;
+import net.hasor.web.listener.ManagedListenerPipeline;
+import net.hasor.web.pipeline.FilterPipeline;
+import net.hasor.web.pipeline.ManagedFilterPipeline;
+import net.hasor.web.pipeline.ManagedServletPipeline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,8 +116,8 @@ public class WebApiBinderCreater implements ApiBinderCreater {
         //
         MappingTo mto = clazz.getAnnotation(MappingTo.class);
         logger.info("restful -> type ‘{}’ mappingTo: ‘{}’.", clazz.getName(), mto.value());
-        MappingDataInfo define = new MappingDataInfo(clazz, mto.value());
-        apiBinder.bindType(MappingDataInfo.class).uniqueName().toInstance(define);
+        InnerMappingDataDefinition define = new InnerMappingDataDefinition(clazz, mto.value());
+        apiBinder.bindType(InnerMappingDataDefinition.class).uniqueName().toInstance(define);
         return true;
     }
     //

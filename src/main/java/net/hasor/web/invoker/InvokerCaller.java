@@ -47,13 +47,13 @@ import java.util.regex.Pattern;
  */
 class InvokerCaller {
     protected Logger                    logger          = LoggerFactory.getLogger(getClass());
-    private   MappingDataInfo           mappingToDefine = null;
+    private   InnerMappingData          mappingToDefine = null;
     private   InvokerFilter[]           filterArrays    = null;
     private   WebPluginCaller           pluginCaller    = null;
     private   Map<String, List<String>> queryParamLocal = null;
     private   Map<String, Object>       pathParamsLocal = null;
     //
-    public InvokerCaller(MappingDataInfo mappingToDefine, InvokerFilter[] filterArrays, WebPluginCaller pluginCaller) {
+    public InvokerCaller(InnerMappingData mappingToDefine, InvokerFilter[] filterArrays, WebPluginCaller pluginCaller) {
         this.mappingToDefine = mappingToDefine;
         this.filterArrays = (filterArrays == null) ? new InvokerFilter[0] : filterArrays;
         this.pluginCaller = pluginCaller;
@@ -81,7 +81,7 @@ class InvokerCaller {
                 asyncContext.start(new AsyncInvocationWorker(asyncContext, targetMethod) {
                     public void doWork(Method targetMethod) throws Throwable {
                         try {
-                            Object invoke = invoke(targetMethod, invoker, chain);
+                            Object invoke = invoke(targetMethod, invoker);
                             future.completed(invoke);
                         } catch (Throwable e) {
                             future.failed(e);
@@ -94,7 +94,7 @@ class InvokerCaller {
         //
         // .同步调用
         try {
-            Object invoke = invoke(targetMethod, invoker, chain);
+            Object invoke = invoke(targetMethod, invoker);
             future.completed(invoke);
         } catch (Throwable e) {
             future.failed(e);
@@ -102,7 +102,7 @@ class InvokerCaller {
         return future;
     }
     /** 执行调用 */
-    private Object invoke(final Method targetMethod, Invoker invoker, FilterChain chain) throws Throwable {
+    private Object invoke(final Method targetMethod, Invoker invoker) throws Throwable {
         //
         // .初始化WebController
         final Object targetObject = invoker.getAppContext().getInstance(this.mappingToDefine.getTargetType());

@@ -95,13 +95,31 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /**使用正则表达式，创建一个{@link ServletBindingBuilder}。*/
     public ServletBindingBuilder serveRegex(String[] regexes);
-
-    /**注册一个Session监听器。*/
-    public SessionListenerBindingBuilder sessionListener();
+    //
 
     /**注册一个ServletContextListener监听器。*/
-    public ServletContextListenerBindingBuilder contextListener();
-    //
+    public void addServletListener(Class<? extends ServletContextListener> targetKey);
+
+    /**注册一个ServletContextListener监听器。*/
+    public void addServletListener(ServletContextListener sessionListener);
+
+    /**注册一个ServletContextListener监听器。*/
+    public void addServletListener(Provider<? extends ServletContextListener> targetProvider);
+
+    /**注册一个ServletContextListener监听器。*/
+    public void addServletListener(BindInfo<? extends ServletContextListener> targetRegister);
+
+    /**注册一个HttpSessionListener监听器。*/
+    public void addSessionListener(Class<? extends HttpSessionListener> targetKey);
+
+    /**注册一个HttpSessionListener监听器。*/
+    public void addSessionListener(HttpSessionListener sessionListener);
+
+    /**注册一个HttpSessionListener监听器。*/
+    public void addSessionListener(Provider<? extends HttpSessionListener> targetProvider);
+
+    /**注册一个HttpSessionListener监听器。*/
+    public void addSessionListener(BindInfo<? extends HttpSessionListener> targetRegister);
 
     /**添加插件*/
     public WebApiBinder addPlugin(Class<? extends WebPlugin> webPlugin);
@@ -126,7 +144,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /**添加MappingSetup*/
     public WebApiBinder addSetup(BindInfo<? extends MappingSetup> setup);
-
+    //
     /**负责配置Filter。*/
     public static interface FilterBindingBuilder<T> {
         public void through(Class<? extends T> filterKey);
@@ -200,25 +218,5 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         public void with(int index, Provider<? extends HttpServlet> servletProvider, Map<String, String> initParams);
 
         public void with(int index, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams);
-    }
-    /**负责配置SessionListener。*/
-    public static interface SessionListenerBindingBuilder {
-        public void bind(Class<? extends HttpSessionListener> listenerKey);
-
-        public void bind(HttpSessionListener sessionListener);
-
-        public void bind(Provider<? extends HttpSessionListener> listenerProvider);
-
-        public void bind(BindInfo<? extends HttpSessionListener> listenerRegister);
-    }
-    /**负责配置ServletContextListener。*/
-    public static interface ServletContextListenerBindingBuilder {
-        public void bind(Class<? extends ServletContextListener> listenerKey);
-
-        public void bind(ServletContextListener sessionListener);
-
-        public void bind(Provider<? extends ServletContextListener> listenerProvider);
-
-        public void bind(BindInfo<? extends ServletContextListener> listenerRegister);
     }
 }

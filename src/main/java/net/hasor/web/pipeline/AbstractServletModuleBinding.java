@@ -15,8 +15,8 @@
  */
 package net.hasor.web.pipeline;
 import net.hasor.core.AppContext;
-import net.hasor.web.invoker.UriPatternMatcher;
-import net.hasor.web.invoker.UriPatternType;
+import net.hasor.web.definition.UriPatternMatcher;
+import net.hasor.web.definition.UriPatternType;
 
 import java.util.HashMap;
 import java.util.Map;

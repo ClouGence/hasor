@@ -16,7 +16,7 @@
 package net.hasor.web.pipeline;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.web.invoker.UriPatternMatcher;
+import net.hasor.web.definition.UriPatternMatcher;
 import org.more.util.Iterators;
 
 import javax.servlet.*;

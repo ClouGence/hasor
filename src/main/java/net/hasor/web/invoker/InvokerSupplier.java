@@ -29,7 +29,7 @@ import java.util.Set;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-class InvokerSupplier implements Invoker {
+public class InvokerSupplier implements Invoker {
     private Set<String>         lockKeys     = new HashSet<String>();
     private HttpServletRequest  httpRequest  = null;
     private HttpServletResponse httpResponse = null;
@@ -37,7 +37,7 @@ class InvokerSupplier implements Invoker {
     private MimeType            mimeType     = null;
     private String requestPath;
     //
-    public InvokerSupplier(AppContext appContext, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+    protected InvokerSupplier(AppContext appContext, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         //
         this.appContext = appContext;
         this.httpRequest = httpRequest;
