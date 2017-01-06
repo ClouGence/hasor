@@ -16,28 +16,18 @@
 package net.hasor.web.invoker;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
-import net.hasor.web.InvokerFilter;
-import net.hasor.web.MappingData;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import java.io.IOException;
-import java.lang.reflect.Method;
+import net.hasor.web.definition.AbstractDefinition;
 /**
  *
  * @version : 2013-4-13
  * @author 赵永春 (zyc@hasor.net)
  */
-class InvokerChainInvocation implements InvokerChain, FilterChain {
-    private final InnerMappingData mapping;
-    private final InvokerFilter[]  filters;
-    private final InvokerChain     chain;
+class InvokerChainInvocation implements InvokerChain {
+    private final AbstractDefinition[] filters;
+    private final InvokerChain         chain;
     private int index = -1;
     //
-    public InvokerChainInvocation(final InnerMappingData mapping, final InvokerFilter[] filters, final InvokerChain chain) {
-        this.mapping = mapping;
+    public InvokerChainInvocation(final AbstractDefinition[] filters, final InvokerChain chain) {
         this.filters = filters;
         this.chain = chain;
     }
@@ -45,29 +35,13 @@ class InvokerChainInvocation implements InvokerChain, FilterChain {
     public void doNext(Invoker invoker) throws Throwable {
         this.index++;
         if (this.index < this.filters.length) {
-            if (!this.mapping.matchingMapping(invoker)) {
+            if (this.filters[this.index].matchesInvoker(invoker)) {
+                this.filters[this.index].doInvoke(invoker, this);
+            } else {
                 this.doNext(invoker);
-                return;
             }
-            this.filters[this.index].doInvoke(invoker, this);
         } else {
             this.chain.doNext(invoker);
         }
-    }
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
-        //TODO
-    }
-    @Override
-    public Method targetMethod() {
-        return this.chain.targetMethod();
-    }
-    @Override
-    public Object[] getParameters() {
-        return this.chain.getParameters();
-    }
-    @Override
-    public MappingData getMappingTo() {
-        return this.chain.getMappingTo();
     }
 }

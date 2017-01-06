@@ -15,11 +15,11 @@
  */
 package net.hasor.web.startup;
 import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
-import net.hasor.web.HttpInfo;
+import net.hasor.web.Invoker;
 import net.hasor.web.ServletVersion;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.pipeline.FilterPipeline;
+import net.hasor.web.invoker.ExceuteCaller;
+import net.hasor.web.invoker.InvokerContext;
+import org.more.util.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +30,9 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 入口Filter，同一个应用程序只能实例化一个 RuntimeFilter 对象。
  * @version : 2013-3-25
@@ -37,38 +40,40 @@ import java.util.Map;
  */
 public class RuntimeFilter implements Filter {
     protected           Logger         logger                     = LoggerFactory.getLogger(getClass());
+    private final       AtomicBoolean  inited                     = new AtomicBoolean(false);
     public static final String         HTTP_REQUEST_ENCODING_KEY  = "HTTP_REQUEST_ENCODING";
     public static final String         HTTP_RESPONSE_ENCODING_KEY = "HTTP_RESPONSE_ENCODING";
     private             String         httpRequestEncoding        = null;
     private             String         httpResponseEncoding       = null;
     //
     private             AppContext     appContext                 = null;
-    private             FilterPipeline filterPipeline             = null;
+    private             InvokerContext invokerContext             = null;
     //
-    //
-    /**初始化过滤器，初始化会同时初始化FilterPipeline*/
-    @Override
-    public synchronized void init(final FilterConfig filterConfig) throws ServletException {
-        //
-        this.appContext = Hasor.assertIsNotNull(RuntimeListener.getAppContext(filterConfig.getServletContext()), "AppContext is null.");
-        this.filterPipeline = this.appContext.getInstance(FilterPipeline.class);
-        if (this.filterPipeline == null) {
-            throw new NullPointerException();
+    public void init(FilterConfig filterConfig) throws ServletException {
+        if (!this.inited.compareAndSet(false, true)) {
+            return;
         }
-        // .编码
-        this.httpRequestEncoding = appContext.findBindingBean(HTTP_REQUEST_ENCODING_KEY, String.class);
-        this.httpResponseEncoding = appContext.findBindingBean(HTTP_RESPONSE_ENCODING_KEY, String.class);
-        //
-        // .初始化
-        Map<String, String> filterConfigMap = new HashMap<String, String>();
+        Map<String, String> configMap = new HashMap<String, String>();
         Enumeration<?> names = filterConfig.getInitParameterNames();
         if (names != null) {
             while (names.hasMoreElements()) {
                 String name = names.nextElement().toString();
-                filterConfigMap.put(name, filterConfig.getInitParameter(name));
+                configMap.put(name, filterConfig.getInitParameter(name));
             }
         }
-        this.filterPipeline.initPipeline(this.appContext, filterConfigMap);
+        // .编码
+        AppContext appContext = RuntimeListener.getAppContext(filterConfig.getServletContext());
+        this.httpRequestEncoding = appContext.findBindingBean(HTTP_REQUEST_ENCODING_KEY, String.class);
+        this.httpResponseEncoding = appContext.findBindingBean(HTTP_RESPONSE_ENCODING_KEY, String.class);
+        try {
+            this.appContext = appContext;
+            this.invokerContext = new InvokerContext();
+            this.invokerContext.initContext(appContext, configMap);
+        } catch (ServletException e) {
+            throw (ServletException) e;
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
         //
         // .启动日志
         if (ServletVersion.V2_5.le(this.appContext.getInstance(ServletVersion.class))) {
@@ -77,52 +82,67 @@ public class RuntimeFilter implements Filter {
             logger.info("RuntimeFilter started, context at {}", filterConfig.getServletContext().getContextPath());
         }
     }
-    //
-    /** 销毁 */
     @Override
     public void destroy() {
-        logger.info("executeCycle destroyCycle.");
-        if (this.filterPipeline != null) {
-            this.filterPipeline.destroyPipeline(this.appContext);
-        }
+        this.invokerContext.destroyContext();
     }
     //
-    /** 处理request，响应response */
     @Override
-    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
-        final HttpServletRequest httpReq = (HttpServletRequest) request;
-        final HttpServletResponse httpRes = (HttpServletResponse) response;
-        //
-        try {
-            this.beforeRequest(this.appContext, httpReq, httpRes);
-            this.processFilterPipeline(httpReq, httpRes, chain);
-        } finally {
-            this.afterResponse(this.appContext, httpReq, httpRes);
-        }
-    }
-    //
-    /**执行FilterPipeline*/
-    private void processFilterPipeline(final HttpServletRequest httpReq, final HttpServletResponse httpRes, final FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         //
         // .设置编码
+        HttpServletRequest httpReq = (HttpServletRequest) request;
+        HttpServletResponse httpRes = (HttpServletResponse) response;
         if (this.httpRequestEncoding != null)
             httpReq.setCharacterEncoding(this.httpRequestEncoding);
         if (this.httpResponseEncoding != null)
             httpRes.setCharacterEncoding(this.httpResponseEncoding);
         //
-        // .处理 pipeline
-        this.filterPipeline.dispatch(httpReq, httpRes, chain);
+        // .执行
+        try {
+            this.beforeRequest(this.appContext, httpReq, httpRes);
+            doFilter(chain, httpReq, httpRes);
+        } finally {
+            this.afterResponse(this.appContext, httpReq, httpRes);
+        }
+    }
+    private void doFilter(FilterChain chain, HttpServletRequest httpReq, HttpServletResponse httpRes) throws IOException, ServletException {
+        try {
+            Invoker invoker = this.invokerContext.newInvoker(httpReq, httpRes);
+            ExceuteCaller caller = this.invokerContext.genCaller(invoker);
+            if (caller != null) {
+                Future<Object> resultData = caller.invoke(invoker, chain);
+                if (resultData != null && resultData.isDone()) {
+                    resultData.get();
+                }
+            } else {
+                chain.doFilter(httpReq, httpRes);
+            }
+            //
+        } catch (ExecutionException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof IOException)
+                throw (IOException) cause;
+            if (cause instanceof ServletException)
+                throw (ServletException) cause;
+            if (cause instanceof RuntimeException)
+                throw (RuntimeException) cause;
+            throw ExceptionUtils.toRuntimeException(e);
+            //
+        } catch (IOException e) {
+            throw (IOException) e;
+        } catch (ServletException e) {
+            throw (ServletException) e;
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
     }
     //
-    /**在filter请求处理之前，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider更新对象。*/
+    /**在filter请求处理之前。*/
     protected void beforeRequest(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
-        appContext.getEnvironment().getEventContext().fireSyncEvent(WebApiBinder.HTTP_BEFORE_REQUEST,//
-                new HttpInfo(appContext, httpReq, httpRes));
     }
     //
-    /**在filter请求处理之后，该方法负责通知HttpRequestProvider、HttpResponseProvider、HttpSessionProvider重置对象。*/
+    /**在filter请求处理之后。*/
     protected void afterResponse(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
-        appContext.getEnvironment().getEventContext().fireSyncEvent(WebApiBinder.HTTP_AFTER_RESPONSE,//
-                new HttpInfo(appContext, httpReq, httpRes));
     }
 }

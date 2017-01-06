@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.web.definition;
+import net.hasor.core.AppContext;
+import net.hasor.web.Invoker;
+import net.hasor.web.InvokerConfig;
+import net.hasor.web.InvokerFilter;
+
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 /**
@@ -21,11 +27,12 @@ import java.util.Map;
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AbstractDefinition {
+public abstract class AbstractDefinition implements InvokerFilter {
     private final int                 index;
     private final Map<String, String> initParams;
     private final String              pattern;
     private final UriPatternMatcher   patternMatcher;
+    private AppContext appContext = null;
     //
     public AbstractDefinition(int index, String pattern, UriPatternMatcher patternMatcher, Map<String, String> initParams) {
         this.index = index;
@@ -50,7 +57,28 @@ public abstract class AbstractDefinition {
         return this.patternMatcher.getPatternType();
     }
     /** Returns true if the given URI will match this binding. */
-    public boolean matchesUri(final String uri) {
-        return this.patternMatcher.matches(uri);
+    public boolean matchesInvoker(Invoker invoker) {
+        String url = invoker.getRequestPath();
+        return this.patternMatcher.matches(url);
     }
+    //
+    //
+    @Override
+    public final void init(InvokerConfig config) throws Throwable {
+        this.appContext = config.getAppContext();
+        Map<String, String> initParams = new HashMap<String, String>();
+        Enumeration<String> names = config.getInitParameterNames();
+        while (names.hasMoreElements()) {
+            String key = names.nextElement();
+            String value = config.getInitParameter(key);
+            initParams.put(key, value);
+        }
+        //
+        this.getInitParams().putAll(initParams);
+        this.getTarget();
+    }
+    protected AppContext getAppContext() {
+        return appContext;
+    }
+    protected abstract Object getTarget() throws Throwable;
 }

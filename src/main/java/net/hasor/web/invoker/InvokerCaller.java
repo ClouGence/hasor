@@ -16,6 +16,7 @@
 package net.hasor.web.invoker;
 import net.hasor.web.*;
 import net.hasor.web.annotation.*;
+import net.hasor.web.definition.AbstractDefinition;
 import org.more.convert.ConverterUtils;
 import org.more.future.BasicFuture;
 import org.more.util.BeanUtils;
@@ -45,17 +46,17 @@ import java.util.regex.Pattern;
  * @version : 2014年8月27日
  * @author 赵永春(zyc@hasor.net)
  */
-class InvokerCaller {
+class InvokerCaller implements ExceuteCaller {
     protected Logger                    logger          = LoggerFactory.getLogger(getClass());
     private   InnerMappingData          mappingToDefine = null;
-    private   InvokerFilter[]           filterArrays    = null;
+    private   AbstractDefinition[]      filterArrays    = null;
     private   WebPluginCaller           pluginCaller    = null;
     private   Map<String, List<String>> queryParamLocal = null;
     private   Map<String, Object>       pathParamsLocal = null;
     //
-    public InvokerCaller(InnerMappingData mappingToDefine, InvokerFilter[] filterArrays, WebPluginCaller pluginCaller) {
+    public InvokerCaller(InnerMappingData mappingToDefine, AbstractDefinition[] filterArrays, WebPluginCaller pluginCaller) {
         this.mappingToDefine = mappingToDefine;
-        this.filterArrays = (filterArrays == null) ? new InvokerFilter[0] : filterArrays;
+        this.filterArrays = (filterArrays == null) ? new AbstractDefinition[0] : filterArrays;
         this.pluginCaller = pluginCaller;
     }
     /**
@@ -112,12 +113,14 @@ class InvokerCaller {
         //
         // .准备过滤器链
         final ArrayList<Object[]> resolveParams = new ArrayList<Object[]>(1);
-        InvokerChain invokerData = new InvokerChain() {
+        InvokerChain invokerChain = new InvokerChain() {
             @Override
             public void doNext(Invoker invoker) throws Throwable {
-                Object result = targetMethod().invoke(targetObject, getParameters());
+                Object result = targetMethod.invoke(targetObject, resolveParams.get(0));
                 invoker.put(Invoker.RETURN_DATA_KEY, result);
             }
+        };
+        InvokerData invokerData = new InvokerData() {
             @Override
             public Method targetMethod() {
                 return targetMethod;
@@ -131,7 +134,6 @@ class InvokerCaller {
                 return mappingToDefine;
             }
         };
-        InvokerChainInvocation invocation = new InvokerChainInvocation(this.mappingToDefine, this.filterArrays, invokerData);
         //
         // .执行Filters
         try {
@@ -139,7 +141,7 @@ class InvokerCaller {
             resolveParams.add(0, resolveParamsArrays);
             //
             this.pluginCaller.beforeFilter(invoker, invokerData);
-            invocation.doNext(invoker);
+            new InvokerChainInvocation(this.filterArrays, invokerChain).doNext(invoker);
         } finally {
             this.pluginCaller.afterFilter(invoker, invokerData);
         }

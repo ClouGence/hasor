@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
+package net.hasor.web.invoker;
+import net.hasor.web.Invoker;
+
+import javax.servlet.FilterChain;
+import java.util.concurrent.Future;
 /**
- * @version : 2016-12-24
+ * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface InvokerChain {
-    public void doNext(Invoker invoker) throws Throwable;
+public interface ExceuteCaller {
+    public Future<Object> invoke(Invoker invoker, FilterChain chain) throws Throwable;
 }

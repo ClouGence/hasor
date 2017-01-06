@@ -15,7 +15,6 @@
  */
 package net.hasor.web;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
 
@@ -23,8 +22,6 @@ import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSessionListener;
 import java.util.Map;
 /**
@@ -33,15 +30,6 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface WebApiBinder extends ApiBinder, MimeType {
-    /** 当处理 request 之前引发。
-     * @see net.hasor.web.startup.RuntimeFilter#beforeRequest(AppContext, HttpServletRequest, HttpServletResponse)
-     */
-    public static final String HTTP_BEFORE_REQUEST = "HTTP_BEFORE_REQUEST";
-    /** 当处理完 request 响应 Response 之后引发。
-     * @see net.hasor.web.startup.RuntimeFilter#afterResponse(AppContext, HttpServletRequest, HttpServletResponse)
-     */
-    public static final String HTTP_AFTER_RESPONSE = "HTTP_AFTER_RESPONSE";
-
     /**获取ServletContext对象。*/
     public ServletContext getServletContext();
 

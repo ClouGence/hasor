@@ -18,10 +18,11 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
-import net.hasor.web.InvokerConfig;
-import net.hasor.web.InvokerFilter;
+import org.more.util.ExceptionUtils;
 import org.more.util.Iterators;
 
+import javax.servlet.*;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Map;
 /**
@@ -29,12 +30,12 @@ import java.util.Map;
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InvokeFilterDefinition extends AbstractDefinition {
-    private BindInfo<? extends InvokerFilter> bindInfo = null;
-    private InvokerFilter                     instance = null;
+public class FilterDefinition extends AbstractDefinition {
+    private BindInfo<? extends Filter> bindInfo = null;
+    private Filter                     instance = null;
     //
-    public InvokeFilterDefinition(int index, String pattern, UriPatternMatcher uriPatternMatcher,//
-            BindInfo<? extends InvokerFilter> bindInfo, Map<String, String> initParams) {
+    public FilterDefinition(int index, String pattern, UriPatternMatcher uriPatternMatcher,//
+            BindInfo<? extends Filter> bindInfo, Map<String, String> initParams) {
         super(index, pattern, uriPatternMatcher, initParams);
         this.bindInfo = bindInfo;
     }
@@ -42,10 +43,10 @@ public class InvokeFilterDefinition extends AbstractDefinition {
     @Override
     public String toString() {
         return String.format("type %s pattern=%s ,initParams=%s ,uriPatternType=%s", //
-                InvokeFilterDefinition.class, this.getPattern(), this.getInitParams(), this.getUriPatternType());
+                FilterDefinition.class, this.getPattern(), this.getInitParams(), this.getUriPatternType());
     }
     //
-    protected final InvokerFilter getTarget() throws Throwable {
+    protected final Filter getTarget() throws ServletException {
         if (this.instance != null) {
             return this.instance;
         }
@@ -53,7 +54,15 @@ public class InvokeFilterDefinition extends AbstractDefinition {
         final Map<String, String> initParams = this.getInitParams();
         final AppContext appContext = this.getAppContext();
         this.instance = appContext.getInstance(this.bindInfo);
-        this.instance.init(new InvokerConfig() {
+        this.instance.init(new FilterConfig() {
+            @Override
+            public String getFilterName() {
+                return bindInfo.getBindID();
+            }
+            @Override
+            public ServletContext getServletContext() {
+                return appContext.getInstance(ServletContext.class);
+            }
             @Override
             public String getInitParameter(String name) {
                 return initParams.get(name);
@@ -62,26 +71,36 @@ public class InvokeFilterDefinition extends AbstractDefinition {
             public Enumeration<String> getInitParameterNames() {
                 return Iterators.asEnumeration(initParams.keySet().iterator());
             }
-            @Override
-            public AppContext getAppContext() {
-                return appContext;
-            }
         });
         return this.instance;
     }
     //
     /*--------------------------------------------------------------------------------------------------------*/
-    public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
-        InvokerFilter filter = this.getTarget();
+    public void doInvoke(final Invoker invoker, final InvokerChain chain) throws Throwable {
+        Filter filter = this.getTarget();
         if (filter != null) {
-            filter.doInvoke(invoker, chain);
+            filter.doFilter(invoker.getHttpRequest(), invoker.getHttpResponse(), new FilterChain() {
+                @Override
+                public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+                    try {
+                        chain.doNext(invoker);
+                    } catch (IOException e) {
+                        throw (IOException) e;
+                    } catch (ServletException e) {
+                        throw (ServletException) e;
+                    } catch (Throwable e) {
+                        throw ExceptionUtils.toRuntimeException(e);
+                    }
+                }
+            });
         } else {
             chain.doNext(invoker);
         }
     }
     public void destroy() {
-        if (this.instance != null) {
-            this.instance.destroy();
+        if (this.instance == null) {
+            return;
         }
+        this.instance.destroy();
     }
 }

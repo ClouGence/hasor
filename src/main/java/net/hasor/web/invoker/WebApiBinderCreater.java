@@ -22,9 +22,6 @@ import net.hasor.web.ServletVersion;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.listener.ListenerPipeline;
 import net.hasor.web.listener.ManagedListenerPipeline;
-import net.hasor.web.pipeline.FilterPipeline;
-import net.hasor.web.pipeline.ManagedFilterPipeline;
-import net.hasor.web.pipeline.ManagedServletPipeline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,16 +65,11 @@ public class WebApiBinderCreater implements ApiBinderCreater {
             curVersion = ServletVersion.V3_1;
         } catch (Throwable e) { /* 忽略 */ }
         //
-        // .Pipeline
-        ManagedServletPipeline sPipline = new ManagedServletPipeline();
-        ManagedFilterPipeline fPipline = new ManagedFilterPipeline(sPipline);
         ManagedListenerPipeline lPipline = new ManagedListenerPipeline();
         //
         // .Binder
         apiBinder.bindType(ServletContext.class).toInstance(servletContext);
         apiBinder.bindType(ServletVersion.class).toInstance(curVersion);
-        apiBinder.bindType(ManagedServletPipeline.class).toInstance(sPipline);
-        apiBinder.bindType(FilterPipeline.class).toInstance(fPipline);
         apiBinder.bindType(ListenerPipeline.class).toInstance(lPipline);
         //
         // .MappingTo
@@ -102,7 +94,7 @@ public class WebApiBinderCreater implements ApiBinderCreater {
         // .WebApiBinder
         InnerWebApiBinder binder = new InnerWebApiBinder(curVersion, mimeTypeContext, apiBinder);
         //
-        binder.filter("/*").through(Integer.MAX_VALUE, new RootInvokerFilter());
+        //        binder.filter("/*").through(Integer.MAX_VALUE, new RootInvokerFilter());
         return binder;
     }
     public boolean loadType(ApiBinder apiBinder, Class<?> clazz) {
