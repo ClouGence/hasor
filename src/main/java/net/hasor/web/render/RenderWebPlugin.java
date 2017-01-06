@@ -84,6 +84,10 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
             }
         }
         //
+        for (String key : this.engineMap.keySet()) {
+            //apiBinder.serve("*." + key).with();
+        }
+        //
         apiBinder.addPlugin(this);
         apiBinder.filter("/*").through(Integer.MAX_VALUE, this);
     }
@@ -128,6 +132,7 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
+        //
     }
     //
     //

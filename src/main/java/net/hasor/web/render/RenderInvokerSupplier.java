@@ -41,19 +41,13 @@ public class RenderInvokerSupplier extends InvokerWrap implements RenderInvoker 
             httpRequest.setAttribute("req_" + key, val);
         }
         //
-        String contextPath = this.getHttpRequest().getContextPath();
-        String requestPath = this.getHttpRequest().getRequestURI();
-        if (requestPath.startsWith(contextPath)) {
-            requestPath = requestPath.substring(contextPath.length());
-        }
-        //
-        int lastIndex = requestPath.lastIndexOf(".");
+        this.viewName = this.getRequestPath();
+        int lastIndex = this.viewName.lastIndexOf(".");
         if (lastIndex > 0) {
-            this.viewType(requestPath.substring(lastIndex + 1));
+            this.viewType(this.viewName.substring(lastIndex + 1));
         } else {
             this.viewType("default");
         }
-        this.viewName = requestPath;
     }
     @Override
     public String renderTo() {
