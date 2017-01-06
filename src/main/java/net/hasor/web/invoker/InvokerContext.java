@@ -89,6 +89,13 @@ public class InvokerContext implements WebPluginCaller {
             }
         };
         List<AbstractDefinition> filterList = appContext.findBindingBean(AbstractDefinition.class);
+        Collections.sort(filterList, new Comparator<AbstractDefinition>() {
+            public int compare(AbstractDefinition o1, AbstractDefinition o2) {
+                int o1Index = o1.getIndex();
+                int o2Index = o2.getIndex();
+                return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
+            }
+        });
         this.filters = filterList.toArray(new AbstractDefinition[filterList.size()]);
         for (InvokerFilter filter : filterList) {
             filter.init(filterConfig);
