@@ -46,30 +46,30 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     public ServletVersion getServletVersion();
     //
 
-    /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
-    public FilterBindingBuilder<Filter> filter(String urlPattern, String... morePatterns);
+    /**使用传统表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
+    public FilterBindingBuilder<InvokerFilter> filter(String urlPattern, String... morePatterns);
 
-    /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
-    public FilterBindingBuilder<Filter> filter(String[] morePatterns);
+    /**使用传统表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
+    public FilterBindingBuilder<InvokerFilter> filter(String[] morePatterns);
 
-    /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
-    public FilterBindingBuilder<Filter> filterRegex(String regex, String... regexes);
+    /**使用正则表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
+    public FilterBindingBuilder<InvokerFilter> filterRegex(String regex, String... regexes);
 
-    /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
-    public FilterBindingBuilder<Filter> filterRegex(String[] regexes);
+    /**使用正则表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
+    public FilterBindingBuilder<InvokerFilter> filterRegex(String[] regexes);
     //
 
-    /**使用传统表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
-    public FilterBindingBuilder<InvokerFilter> invFilter(String urlPattern, String... morePatterns);
+    /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
+    public FilterBindingBuilder<Filter> jeeFilter(String urlPattern, String... morePatterns);
 
-    /**使用传统表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
-    public FilterBindingBuilder<InvokerFilter> invFilter(String[] morePatterns);
+    /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
+    public FilterBindingBuilder<Filter> jeeFilter(String[] morePatterns);
 
-    /**使用正则表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
-    public FilterBindingBuilder<InvokerFilter> invFilterRegex(String regex, String... regexes);
+    /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
+    public FilterBindingBuilder<Filter> jeeFilterRegex(String regex, String... regexes);
 
-    /**使用正则表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
-    public FilterBindingBuilder<InvokerFilter> invFilterRegex(String[] regexes);
+    /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
+    public FilterBindingBuilder<Filter> jeeFilterRegex(String[] regexes);
     //
 
     /**使用传统表达式，创建一个{@link ServletBindingBuilder}。*/

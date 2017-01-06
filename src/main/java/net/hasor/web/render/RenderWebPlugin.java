@@ -38,12 +38,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilter {
-    protected Logger                    logger       = LoggerFactory.getLogger(getClass());
-    private   AtomicBoolean             inited       = new AtomicBoolean(false);
-    private   Map<String, RenderEngine> engineMap    = new HashMap<String, RenderEngine>();
-    private   String                    layoutPath   = null;                    // 布局模版位置
-    private   boolean                   useLayout    = true;
-    private   String                    templatePath = null;                    // 页面模版位置
+    private static final String                    FORM_XML     = "FORM-XML";
+    protected            Logger                    logger       = LoggerFactory.getLogger(getClass());
+    private              AtomicBoolean             inited       = new AtomicBoolean(false);
+    private              Map<String, RenderEngine> engineMap    = new HashMap<String, RenderEngine>();
+    private              String                    layoutPath   = null;                    // 布局模版位置
+    private              boolean                   useLayout    = true;
+    private              String                    templatePath = null;                    // 页面模版位置
     //
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
@@ -77,14 +78,14 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
                 apiBinder.bindType(RenderEngine.class)//
                         .nameWith(key)//
                         .to((Class<? extends RenderEngine>) renderType)//
-                        .metaData("FORM-XML", true);
+                        .metaData(FORM_XML, true);
             } catch (Exception e) {
                 logger.error("restful -> renderType {} load failed {}.", type, e.getMessage(), e);
             }
         }
         //
         apiBinder.addPlugin(this);
-        apiBinder.invFilter("/*").through(Integer.MAX_VALUE, this);
+        apiBinder.filter("/*").through(Integer.MAX_VALUE, this);
     }
     //
     @Override
@@ -100,7 +101,7 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
             if (engine == null) {
                 continue;
             }
-            if (info.getMetaData("FORM-XML") != null) {
+            if (info.getMetaData(FORM_XML) != null) {
                 //来自XML
                 this.engineMap.put(info.getBindName(), engine);
             } else {

@@ -175,79 +175,82 @@ public class InnerWebApiBinder extends PipelineWebApiBinder implements WebApiBin
     }
     //
     // ------------------------------------------------------------------------------------------------------
-    protected void throughFilter(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
-        FilterDefinition define = new FilterDefinition(index, pattern, matcher, filterRegister, initParams);
-        bindType(AbstractDefinition.class).uniqueName().toInstance(define);
-    }
-    protected void throughInvFilter(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
-        InvokeFilterDefinition define = new InvokeFilterDefinition(index, pattern, matcher, filterRegister, initParams);
-        bindType(AbstractDefinition.class).uniqueName().toInstance(define);
-    }
-    //
     @Override
-    public FilterBindingBuilder<Filter> filter(final String urlPattern, final String... morePatterns) {
-        return new FiltersModuleBinder<Filter>(Filter.class, UriPatternType.SERVLET, PipelineWebApiBinder.newArrayList(morePatterns, urlPattern)) {
+    public FilterBindingBuilder<InvokerFilter> filter(String urlPattern, String... morePatterns) {
+        return new FiltersModuleBinder<InvokerFilter>(InvokerFilter.class, UriPatternType.SERVLET, PipelineWebApiBinder.newArrayList(morePatterns, urlPattern)) {
             @Override
-            protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
-                throughFilter(index, pattern, matcher, filterRegister, initParams);
+            protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
+                filterThrough(index, pattern, matcher, filterRegister, initParams);
             }
         };
     }
     @Override
-    public FilterBindingBuilder<Filter> filter(final String[] morePatterns) throws NullPointerException {
+    public FilterBindingBuilder<InvokerFilter> filter(String[] morePatterns) {
         if (ArrayUtils.isEmpty(morePatterns)) {
             throw new NullPointerException("Filter patterns is empty.");
         }
         return this.filter(null, morePatterns);
     }
     @Override
-    public FilterBindingBuilder<Filter> filterRegex(final String regex, final String... regexes) {
-        return new FiltersModuleBinder<Filter>(Filter.class, UriPatternType.REGEX, PipelineWebApiBinder.newArrayList(regexes, regex)) {
+    public FilterBindingBuilder<InvokerFilter> filterRegex(String regex, String... regexes) {
+        return new FiltersModuleBinder<InvokerFilter>(InvokerFilter.class, UriPatternType.REGEX, PipelineWebApiBinder.newArrayList(regexes, regex)) {
             @Override
-            protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
-                throughFilter(index, pattern, matcher, filterRegister, initParams);
+            protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
+                filterThrough(index, pattern, matcher, filterRegister, initParams);
             }
         };
     }
     @Override
-    public FilterBindingBuilder<Filter> filterRegex(final String[] regexes) throws NullPointerException {
+    public FilterBindingBuilder<InvokerFilter> filterRegex(String[] regexes) {
         if (ArrayUtils.isEmpty(regexes)) {
             throw new NullPointerException("Filter regexes is empty.");
         }
         return this.filterRegex(null, regexes);
     }
+    //
     @Override
-    public FilterBindingBuilder<InvokerFilter> invFilter(String urlPattern, String... morePatterns) {
-        return new FiltersModuleBinder<InvokerFilter>(InvokerFilter.class, UriPatternType.SERVLET, PipelineWebApiBinder.newArrayList(morePatterns, urlPattern)) {
+    public FilterBindingBuilder<Filter> jeeFilter(final String urlPattern, final String... morePatterns) {
+        return new FiltersModuleBinder<Filter>(Filter.class, UriPatternType.SERVLET, PipelineWebApiBinder.newArrayList(morePatterns, urlPattern)) {
             @Override
-            protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
-                throughInvFilter(index, pattern, matcher, filterRegister, initParams);
+            protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
+                jeeFilterThrough(index, pattern, matcher, filterRegister, initParams);
             }
         };
     }
     @Override
-    public FilterBindingBuilder<InvokerFilter> invFilter(String[] morePatterns) {
+    public FilterBindingBuilder<Filter> jeeFilter(final String[] morePatterns) throws NullPointerException {
         if (ArrayUtils.isEmpty(morePatterns)) {
             throw new NullPointerException("Filter patterns is empty.");
         }
-        return this.invFilter(null, morePatterns);
+        return this.jeeFilter(null, morePatterns);
     }
     @Override
-    public FilterBindingBuilder<InvokerFilter> invFilterRegex(String regex, String... regexes) {
-        return new FiltersModuleBinder<InvokerFilter>(InvokerFilter.class, UriPatternType.REGEX, PipelineWebApiBinder.newArrayList(regexes, regex)) {
+    public FilterBindingBuilder<Filter> jeeFilterRegex(final String regex, final String... regexes) {
+        return new FiltersModuleBinder<Filter>(Filter.class, UriPatternType.REGEX, PipelineWebApiBinder.newArrayList(regexes, regex)) {
             @Override
-            protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
-                throughInvFilter(index, pattern, matcher, filterRegister, initParams);
+            protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
+                jeeFilterThrough(index, pattern, matcher, filterRegister, initParams);
             }
         };
     }
     @Override
-    public FilterBindingBuilder<InvokerFilter> invFilterRegex(String[] regexes) {
+    public FilterBindingBuilder<Filter> jeeFilterRegex(final String[] regexes) throws NullPointerException {
         if (ArrayUtils.isEmpty(regexes)) {
             throw new NullPointerException("Filter regexes is empty.");
         }
-        return this.invFilterRegex(null, regexes);
+        return this.jeeFilterRegex(null, regexes);
     }
+    protected void jeeFilterThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
+        FilterDefinition define = new FilterDefinition(index, pattern, matcher, filterRegister, initParams);
+        bindType(AbstractDefinition.class).uniqueName().toInstance(define);
+    }
+    protected void filterThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
+        InvokeFilterDefinition define = new InvokeFilterDefinition(index, pattern, matcher, filterRegister, initParams);
+        bindType(AbstractDefinition.class).uniqueName().toInstance(define);
+    }
+    //
+    //
+    //
     private abstract class FiltersModuleBinder<T> implements FilterBindingBuilder<T> {
         private final Class<T>       targetType;
         private final UriPatternType uriPatternType;

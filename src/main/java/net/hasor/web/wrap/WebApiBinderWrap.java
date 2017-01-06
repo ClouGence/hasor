@@ -59,36 +59,36 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
         return webApiBinder.getServletVersion();
     }
     @Override
-    public FilterBindingBuilder<Filter> filter(String urlPattern, String... morePatterns) {
+    public FilterBindingBuilder<InvokerFilter> filter(String urlPattern, String... morePatterns) {
         return this.webApiBinder.filter(urlPattern, morePatterns);
     }
     @Override
-    public FilterBindingBuilder<Filter> filter(String[] morePatterns) {
+    public FilterBindingBuilder<InvokerFilter> filter(String[] morePatterns) {
         return this.webApiBinder.filter(morePatterns);
     }
     @Override
-    public FilterBindingBuilder<Filter> filterRegex(String regex, String... regexes) {
+    public FilterBindingBuilder<InvokerFilter> filterRegex(String regex, String... regexes) {
         return this.webApiBinder.filterRegex(regex, regexes);
     }
     @Override
-    public FilterBindingBuilder<Filter> filterRegex(String[] regexes) {
+    public FilterBindingBuilder<InvokerFilter> filterRegex(String[] regexes) {
         return this.webApiBinder.filterRegex(regexes);
     }
     @Override
-    public FilterBindingBuilder<InvokerFilter> invFilter(String urlPattern, String... morePatterns) {
-        return this.webApiBinder.invFilter(urlPattern, morePatterns);
+    public FilterBindingBuilder<Filter> jeeFilter(String urlPattern, String... morePatterns) {
+        return this.webApiBinder.jeeFilter(urlPattern, morePatterns);
     }
     @Override
-    public FilterBindingBuilder<InvokerFilter> invFilter(String[] morePatterns) {
-        return this.webApiBinder.invFilter(morePatterns);
+    public FilterBindingBuilder<Filter> jeeFilter(String[] morePatterns) {
+        return this.webApiBinder.jeeFilter(morePatterns);
     }
     @Override
-    public FilterBindingBuilder<InvokerFilter> invFilterRegex(String regex, String... regexes) {
-        return this.webApiBinder.invFilterRegex(regex, regexes);
+    public FilterBindingBuilder<Filter> jeeFilterRegex(String regex, String... regexes) {
+        return this.webApiBinder.jeeFilterRegex(regex, regexes);
     }
     @Override
-    public FilterBindingBuilder<InvokerFilter> invFilterRegex(String[] regexes) {
-        return this.webApiBinder.invFilterRegex(regexes);
+    public FilterBindingBuilder<Filter> jeeFilterRegex(String[] regexes) {
+        return this.webApiBinder.jeeFilterRegex(regexes);
     }
     @Override
     public ServletBindingBuilder serve(String urlPattern, String... morePatterns) {
