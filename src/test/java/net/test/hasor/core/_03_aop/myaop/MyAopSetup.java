@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 package net.test.hasor.core._03_aop.myaop;
-import java.lang.reflect.Method;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.ApiBinder.Matcher;
+import net.hasor.core.Matcher;
 import net.hasor.core.Module;
 import net.hasor.core.binder.aop.matcher.AopMatchers;
 import net.test.hasor.core._03_aop.simple.SimpleInterceptor;
+
+import java.lang.reflect.Method;
 /**
  * 让自定义MyAop注解生效。
  * @version : 2015年11月9日

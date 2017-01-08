@@ -27,9 +27,11 @@ public abstract class WebModule implements Module {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public final void loadModule(final ApiBinder apiBinder) throws Throwable {
-        if (apiBinder instanceof WebApiBinder) {
-            this.loadModule((WebApiBinder) apiBinder);
+        WebApiBinder webApiBinder = apiBinder.tryCast(WebApiBinder.class);
+        if (webApiBinder == null) {
+            return;
         }
+        this.loadModule(webApiBinder);
     }
     public abstract void loadModule(WebApiBinder apiBinder) throws Throwable;
 }

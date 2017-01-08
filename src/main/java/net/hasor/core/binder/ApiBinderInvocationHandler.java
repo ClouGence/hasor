@@ -37,6 +37,20 @@ public class ApiBinderInvocationHandler implements InvocationHandler {
             throw new UnsupportedOperationException("this method is not support -> " + method);
         }
         //
+        if (method.getName().equals("tryCast")) {
+            Class<?>[] types = method.getParameterTypes();
+            if (types.length == 1 && types[0] == Class.class) {
+                Class<?> castApiBinder = (Class<?>) args[0];
+                if (castApiBinder == null) {
+                    return null;
+                }
+                if (!castApiBinder.isInstance(proxy)) {
+                    return null;
+                }
+                return proxy;
+            }
+        }
+        //
         try {
             return method.invoke(target, args);
         } catch (InvocationTargetException ex) {

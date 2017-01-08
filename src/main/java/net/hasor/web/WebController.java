@@ -16,7 +16,7 @@
 package net.hasor.web;
 import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
-import net.hasor.web.annotation.Produces;
+import net.hasor.web.render.Produces;
 import net.hasor.web.render.RenderInvoker;
 import net.hasor.web.startup.RuntimeListener;
 import net.hasor.web.upload.FileUpload;

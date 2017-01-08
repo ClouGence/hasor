@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.web.render;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServlet;
+import java.io.IOException;
 /**
- * 渲染器,参数为渲染器支持的请求扩展名。
- * @version : 2013-3-26
- * @author 赵永春 (zyc@hasor.net)
+ *
+ * @version : 2016年1月3日
+ * @author 赵永春(zyc@hasor.net)
  */
-@Target({ ElementType.TYPE })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Render {
-    /** 渲染器支持的请求扩展名。 */
-    public String[] value();
+class DefaultServlet extends HttpServlet {
+    @Override
+    public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
+        return;
+    }
 }

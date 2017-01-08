@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web.valid;
-import net.hasor.web.annotation.Valid;
 /**
  * 对象验证，如果验证失败返回验证消息。
  * @version : 2014年8月27日

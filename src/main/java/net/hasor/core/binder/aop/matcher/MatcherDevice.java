@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.binder.aop.matcher;
-import net.hasor.core.ApiBinder.Matcher;
 import net.hasor.core.Hasor;
+import net.hasor.core.Matcher;
 /**
  * 逻辑器
  * @version : 2013-8-20

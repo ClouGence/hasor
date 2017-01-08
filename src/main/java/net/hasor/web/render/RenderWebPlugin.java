@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.web.render;
-import net.hasor.core.*;
+import net.hasor.core.AppContext;
+import net.hasor.core.Settings;
 import net.hasor.web.*;
-import net.hasor.web.annotation.Produces;
-import net.hasor.web.annotation.Render;
-import org.more.util.ExceptionUtils;
+import org.more.bizcommon.json.JSON;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,103 +37,60 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilter {
-    private static final String                    FORM_XML     = "FORM-XML";
-    protected            Logger                    logger       = LoggerFactory.getLogger(getClass());
-    private              AtomicBoolean             inited       = new AtomicBoolean(false);
-    private              Map<String, RenderEngine> engineMap    = new HashMap<String, RenderEngine>();
-    private              String                    layoutPath   = null;                    // 布局模版位置
-    private              boolean                   useLayout    = true;
-    private              String                    templatePath = null;                    // 页面模版位置
+    protected Logger        logger       = LoggerFactory.getLogger(getClass());
+    private   AtomicBoolean inited       = new AtomicBoolean(false);
+    private   String        layoutPath   = null;                    // 布局模版位置
+    private   boolean       useLayout    = true;
+    private   String        templatePath = null;                    // 页面模版位置
+    private Map<String, RenderEngine> engineMap;
     //
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        //
-        // .Render
-        Environment environment = apiBinder.getEnvironment();
-        Settings settings = environment.getSettings();
-        XmlNode[] xmlPropArray = settings.getXmlNodeArray("hasor.renderSet");
-        Map<String, String> renderMap = new HashMap<String, String>();
-        for (XmlNode xmlProp : xmlPropArray) {
-            for (XmlNode envItem : xmlProp.getChildren()) {
-                if (StringUtils.equalsIgnoreCase("render", envItem.getName())) {
-                    String renderTypeStr = envItem.getAttribute("renderType");
-                    String renderClass = envItem.getText();
-                    if (StringUtils.isNotBlank(renderTypeStr)) {
-                        String[] renderTypeArray = renderTypeStr.split(";");
-                        for (String renderType : renderTypeArray) {
-                            if (StringUtils.isNotBlank(renderType)) {
-                                logger.info("restful -> renderType {} mappingTo {}.", renderType, renderClass);
-                                renderMap.put(renderType.toUpperCase(), renderClass);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        for (String key : renderMap.keySet()) {
-            String type = renderMap.get(key);
-            try {
-                Class<?> renderType = environment.getClassLoader().loadClass(type);
-                apiBinder.bindType(RenderEngine.class)//
-                        .nameWith(key)//
-                        .to((Class<? extends RenderEngine>) renderType)//
-                        .metaData(FORM_XML, true);
-            } catch (Exception e) {
-                logger.error("restful -> renderType {} load failed {}.", type, e.getMessage(), e);
-            }
-        }
-        //
-        for (String key : this.engineMap.keySet()) {
-            //apiBinder.serve("*." + key).with();
-        }
-        //
         apiBinder.addPlugin(this);
         apiBinder.filter("/*").through(Integer.MAX_VALUE, this);
     }
     //
     @Override
-    public void init(InvokerConfig config) {
+    public void init(InvokerConfig config) throws Throwable {
         if (!this.inited.compareAndSet(false, true)) {
             return;
         }
         //
         AppContext appContext = config.getAppContext();
-        List<BindInfo<RenderEngine>> engineInfoList = appContext.findBindingRegister(RenderEngine.class);
-        for (BindInfo<RenderEngine> info : engineInfoList) {
-            RenderEngine engine = appContext.getInstance(info);
-            if (engine == null) {
+        Map<String, RenderEngine> engineMap = new HashMap<String, RenderEngine>();
+        Map<String, String> renderMapping = new HashMap<String, String>();
+        List<RenderDefinition> renderInfoList = appContext.findBindingBean(RenderDefinition.class);
+        for (RenderDefinition renderInfo : renderInfoList) {
+            if (renderInfo == null) {
                 continue;
             }
-            if (info.getMetaData(FORM_XML) != null) {
-                //来自XML
-                this.engineMap.put(info.getBindName(), engine);
-            } else {
-                Render renderInfo = engine.getClass().getAnnotation(Render.class);
-                if (renderInfo != null && renderInfo.value().length > 0) {
-                    String[] renderTypeArray = renderInfo.value();
-                    for (String renderType : renderTypeArray) {
-                        logger.info("restful -> renderType {} mappingTo {}.", renderType, engine.getClass());
-                        this.engineMap.put(renderType.toUpperCase(), engine);
-                    }
-                }
+            logger.info("web -> renderType {} mappingTo {}.", JSON.toString(renderInfo.getRenderSet()), renderInfo.toString());
+            String renderInfoID = renderInfo.getID();
+            engineMap.put(renderInfoID, renderInfo.newEngine(appContext));
+            //
+            List<String> renderSet = renderInfo.getRenderSet();
+            for (String renderName : renderSet) {
+                renderMapping.put(renderName.toUpperCase(), renderInfoID);
             }
+        }
+        //
+        this.engineMap = new HashMap<String, RenderEngine>();
+        for (String key : renderMapping.keySet()) {
+            //
+            String keyMapping = renderMapping.get(key);
+            RenderEngine engine = engineMap.get(keyMapping);
+            this.engineMap.put(key, engine);
         }
         //
         Settings settings = appContext.getEnvironment().getSettings();
         this.useLayout = settings.getBoolean("hasor.layout.enable", true);
         this.layoutPath = settings.getString("hasor.layout.layoutPath", "/layout");
         this.templatePath = settings.getString("hasor.layout.templatePath", "/templates");
-        //
-        try {
-            for (RenderEngine engine : this.engineMap.values()) {
-                engine.initEngine(appContext);
-            }
-        } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
-        }
-        //
     }
     //
+    @Override
+    public void destroy() {
+    }
     //
     @Override
     public void beforeFilter(Invoker invoker, InvokerData info) {
@@ -223,10 +179,6 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
             }
         }
         //
-    }
-    //
-    @Override
-    public void destroy() {
     }
     //
     protected String findLayout(RenderEngine engine, String tempFile) throws IOException {

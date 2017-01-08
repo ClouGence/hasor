@@ -42,6 +42,21 @@ public interface ApiBinder {
     public Set<Class<?>> findClass(Class<?> featureType);
 
     /**
+     * 在框架扫描包的范围内查找具有特征类集合（特征可以是继承的类、标记的注解）。<br>
+     *  -- 该方法会放弃在匹配的过程中如果类无法被ClassLoader所加载的类。
+     * @param featureType 特征类型
+     * @param scanPackages 扫描的包范围
+     * @return 返回匹配的类集合。
+     */
+    public Set<Class<?>> findClass(Class<?> featureType, String... scanPackages);
+
+    /**
+     * 尝试把 ApiBinder 转换为另一个 ApiBinder（如果它支持）<br/>
+     * tips： 如果不支持转换则返回空。
+     */
+    public <T extends ApiBinder> T tryCast(Class<T> castApiBinder);
+
+    /**
      * 安装其它插件。
      * @param module 新安装的插件
      * @throws Throwable 在执行loadModule方法期间发生异常的。
@@ -74,12 +89,7 @@ public interface ApiBinder {
      * @param interceptor 拦截器对象
      */
     public void bindInterceptor(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor);
-    //
-    /**Aop匹配器*/
-    public static interface Matcher<T> {
-        /**Returns {@code true} if this matches {@code T}, {@code false} otherwise.*/
-        public boolean matches(T target);
-    }
+
     /*--------------------------------------------------------------------------------------Finds*/
 
     /**根据ID获取{@link BindInfo}。*/

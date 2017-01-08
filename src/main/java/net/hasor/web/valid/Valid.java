@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.annotation;
-import java.lang.annotation.*;
+package net.hasor.web.valid;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- *
- * @version : 2013-8-14
+ * 验证参数
+ * @version : 2013-3-26
  * @author 赵永春 (zyc@hasor.net)
  */
-@Inherited
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Target({ ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Produces {
-    /**响应的类型*/
-    public String value();
+public @interface Valid {
+    public String value() default "";
 }

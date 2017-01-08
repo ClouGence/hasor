@@ -71,12 +71,13 @@
             <module>net.hasor.plugins.event.EventModule</module>
         </modules>
 
-        <!-- Binder扩展 -->
+        <!-- ApiBinder 扩展 -->
         <apiBinderSet>
-            <binder type="net.hasor.web.WebApiBinder">net.hasor.web.invoker.WebApiBinderCreater</binder>
+            <binder type="net.hasor.web.WebApiBinder">net.hasor.web.invoker.InvokerWebApiBinderCreater</binder>
+            <binder type="net.hasor.web.render.RenderApiBinder">net.hasor.web.render.RenderApiBinderCreater</binder>
         </apiBinderSet>
 
-        <!-- Context扩展 -->
+        <!-- Invoker 扩展 -->
         <invokerCreaterSet>
             <invokerCreater type="net.hasor.web.valid.ValidInvoker">net.hasor.web.valid.ValidInvokerCreater</invokerCreater>
             <invokerCreater type="net.hasor.web.valid.ValidErrors">net.hasor.web.valid.ValidInvokerCreater</invokerCreater>

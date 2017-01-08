@@ -43,19 +43,31 @@ public abstract class AbstractBinder implements ApiBinder {
         this.environment = Hasor.assertIsNotNull(environment, "environment is null.");
     }
     //
+    @Override
     public Environment getEnvironment() {
         return this.environment;
     }
+    @Override
     public Set<Class<?>> findClass(final Class<?> featureType) {
-        if (featureType == null) {
+        String[] spanPackage = this.getEnvironment().getSpanPackage();
+        return this.getEnvironment().findClass(featureType, spanPackage);
+    }
+    @Override
+    public Set<Class<?>> findClass(Class<?> featureType, String... scanPackages) {
+        if (featureType == null || scanPackages == null || scanPackages.length == 0) {
             return null;
         }
-        return this.getEnvironment().findClass(featureType);
+        return this.getEnvironment().findClass(featureType, scanPackages);
     }
+    @Override
     public void installModule(final Module module) throws Throwable {
         logger.info("installModule ->" + module);
         module.loadModule(this);
         BinderHelper.onInstall(this.getEnvironment(), module);
+    }
+    @Override
+    public <T extends ApiBinder> T tryCast(Class<T> castApiBinder) {
+        return null; //see : net.hasor.core.binder.ApiBinderInvocationHandler.invoke()
     }
     //
     /*------------------------------------------------------------------------------------Binding*/
@@ -68,36 +80,46 @@ public abstract class AbstractBinder implements ApiBinder {
     /**注册一个类型*/
     protected abstract ScopManager getScopManager();
     //
+    @Override
     public <T> NamedBindingBuilder<T> bindType(final Class<T> type) {
         BeanBuilder builder = this.getBeanBuilder();
         BindInfoBuilder<T> typeBuilder = builder.createInfoAdapter(type, this.getBinderSource());
         return new BindingBuilderImpl<T>(typeBuilder);
     }
+    @Override
     public <T> MetaDataBindingBuilder<T> bindType(final Class<T> type, final T instance) {
         return this.bindType(type).toInstance(instance);
     }
+    @Override
     public <T> InjectPropertyBindingBuilder<T> bindType(final Class<T> type, final Class<? extends T> implementation) {
         return this.bindType(type).to(implementation);
     }
+    @Override
     public <T> ScopedBindingBuilder<T> bindType(final Class<T> type, final Provider<T> provider) {
         return this.bindType(type).toProvider(provider);
     }
+    @Override
     public <T> InjectPropertyBindingBuilder<T> bindType(final String withName, final Class<T> type) {
         return this.bindType(type).nameWith(withName).to(type);
     }
+    @Override
     public <T> MetaDataBindingBuilder<T> bindType(final String withName, final Class<T> type, final T instance) {
         return this.bindType(type).nameWith(withName).toInstance(instance);
     }
+    @Override
     public <T> InjectPropertyBindingBuilder<T> bindType(final String withName, final Class<T> type, final Class<? extends T> implementation) {
         return this.bindType(type).nameWith(withName).to(implementation);
     }
+    @Override
     public <T> LifeBindingBuilder<T> bindType(final String withName, final Class<T> type, final Provider<T> provider) {
         return this.bindType(type).nameWith(withName).toProvider(provider);
     }
     //
+    @Override
     public Provider<Scope> registerScope(String scopeName, Provider<Scope> scope) {
         return this.getScopManager().registerScope(scopeName, scope);
     }
+    @Override
     public Provider<Scope> registerScope(String scopeName, Scope scope) {
         return this.registerScope(scopeName, new InstanceProvider<Scope>(scope));
     }
@@ -110,12 +132,14 @@ public abstract class AbstractBinder implements ApiBinder {
     //        InterceptorPattern = java.util.regex.Pattern.compile(methodReg);
     //    }
     //    private static final Pattern InterceptorPattern;
+    @Override
     public void bindInterceptor(final String matcherExpression, final MethodInterceptor interceptor) {
         //
         Matcher<Class<?>> matcherClass = AopMatchers.expressionClass(matcherExpression);
         Matcher<Method> matcherMethod = AopMatchers.expressionMethod(matcherExpression);
         this.bindInterceptor(matcherClass, matcherMethod, interceptor);
     }
+    @Override
     public void bindInterceptor(final Matcher<Class<?>> matcherClass, final Matcher<Method> matcherMethod, final MethodInterceptor interceptor) {
         Hasor.assertIsNotNull(matcherClass, "matcherClass is null.");
         Hasor.assertIsNotNull(matcherMethod, "matcherMethod is null.");
@@ -163,18 +187,22 @@ public abstract class AbstractBinder implements ApiBinder {
             this.typeBuilder.initMethod(methodName);
             return this;
         }
+        @Override
         public MetaDataBindingBuilder<T> metaData(final String key, final Object value) {
             this.typeBuilder.setMetaData(key, value);
             return this;
         }
+        @Override
         public MetaDataBindingBuilder<T> asEagerPrototype() {
             this.typeBuilder.setSingleton(false);
             return this;
         }
+        @Override
         public MetaDataBindingBuilder<T> asEagerSingleton() {
             this.typeBuilder.setSingleton(true);
             return this;
         }
+        @Override
         public NamedBindingBuilder<T> idWith(String newID) {
             if (!StringUtils.isBlank(newID)) {
                 this.typeBuilder.setBindID(newID);
@@ -182,24 +210,30 @@ public abstract class AbstractBinder implements ApiBinder {
             }
             return this;
         }
+        @Override
         public LinkedBindingBuilder<T> nameWith(final String name) {
             this.typeBuilder.setBindName(name);
             return this;
         }
+        @Override
         public LinkedBindingBuilder<T> uniqueName() {
             this.typeBuilder.setBindName(UUID.randomUUID().toString());
             return this;
         }
+        @Override
         public MetaDataBindingBuilder<T> toScope(final Scope scope) {
             return this.toScope(new InstanceProvider<Scope>(scope));
         }
+        @Override
         public MetaDataBindingBuilder<T> toInstance(final T instance) {
             return this.toProvider(new InstanceProvider<T>(instance));
         }
+        @Override
         public InjectPropertyBindingBuilder<T> to(final Class<? extends T> implementation) {
             this.typeBuilder.setSourceType(implementation);
             return this;
         }
+        @Override
         public InjectConstructorBindingBuilder<T> toConstructor(final Constructor<? extends T> constructor) {
             Class<? extends T> targetType = constructor.getDeclaringClass();
             //因为设置了构造方法因此重新设置SourceTypeF
@@ -215,13 +249,16 @@ public abstract class AbstractBinder implements ApiBinder {
             }
             return this;
         }
+        @Override
         public MetaDataBindingBuilder<T> toScope(final Provider<Scope> scope) {
             this.typeBuilder.setScopeProvider(scope);
             return this;
         }
+        @Override
         public MetaDataBindingBuilder<T> toScope(String scopeName) {
             return this.toScope(getScopManager().findScope(scopeName));
         }
+        @Override
         public LifeBindingBuilder<T> toProvider(final Provider<? extends T> provider) {
             if (provider != null) {
                 this.typeBuilder.setCustomerProvider(provider);
@@ -229,20 +266,25 @@ public abstract class AbstractBinder implements ApiBinder {
             return this;
         }
         //
+        @Override
         public InjectPropertyBindingBuilder<T> injectValue(final String property, final Object value) {
             return this.inject(property, new InstanceProvider<Object>(value));
         }
+        @Override
         public InjectPropertyBindingBuilder<T> inject(final String property, final BindInfo<?> valueInfo) {
             this.typeBuilder.addInject(property, valueInfo);
             return this;
         }
+        @Override
         public InjectPropertyBindingBuilder<T> inject(final String property, final Provider<?> valueProvider) {
             this.typeBuilder.addInject(property, valueProvider);
             return this;
         }
+        @Override
         public InjectConstructorBindingBuilder<T> injectValue(final int index, final Object value) {
             return this.inject(index, new InstanceProvider<Object>(value));
         }
+        @Override
         public InjectConstructorBindingBuilder<T> inject(final int index, final BindInfo<?> valueInfo) {
             if (index >= this.initParams.length) {
                 throw new IndexOutOfBoundsException("index out of bounds.");
@@ -250,6 +292,7 @@ public abstract class AbstractBinder implements ApiBinder {
             this.typeBuilder.setConstructor(index, this.initParams[index], valueInfo);
             return this;
         }
+        @Override
         public InjectConstructorBindingBuilder<T> inject(final int index, final Provider<?> valueProvider) {
             if (index >= this.initParams.length) {
                 throw new IndexOutOfBoundsException("index out of bounds.");
@@ -257,6 +300,7 @@ public abstract class AbstractBinder implements ApiBinder {
             this.typeBuilder.setConstructor(index, this.initParams[index], valueProvider);
             return this;
         }
+        @Override
         public BindInfo<T> toInfo() {
             return this.typeBuilder.toInfo();
         }

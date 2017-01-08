@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.annotation;
+package net.hasor.web.render;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 验证参数
+ * 渲染器,参数为渲染器支持的请求扩展名。
  * @version : 2013-3-26
  * @author 赵永春 (zyc@hasor.net)
  */
-@Target({ ElementType.PARAMETER })
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Valid {
-    public String value() default "";
+public @interface Render {
+    /** 渲染器支持的请求扩展名。 */
+    public String[] value();
 }

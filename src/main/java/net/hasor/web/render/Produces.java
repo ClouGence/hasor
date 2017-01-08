@@ -13,7 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.web.render;
+import java.lang.annotation.*;
 /**
- * 提供了 Hasor-Web 的绑定机制。
+ *
+ * @version : 2013-8-14
+ * @author 赵永春 (zyc@hasor.net)
  */
-package net.hasor.web.pipeline;
+@Inherited
+@Target({ ElementType.TYPE, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Produces {
+    /**响应的类型*/
+    public String value();
+}

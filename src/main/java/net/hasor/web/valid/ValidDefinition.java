@@ -15,8 +15,6 @@
  */
 package net.hasor.web.valid;
 import net.hasor.core.AppContext;
-import net.hasor.web.annotation.Valid;
-import net.hasor.web.annotation.ValidBy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import java.lang.reflect.Method;
-
-import net.hasor.core.ApiBinder.Matcher;
+import net.hasor.core.Matcher;
 import org.more.classcode.aop.AopMatcher;
+
+import java.lang.reflect.Method;
 /**
  * 负责根据Class或BindInfo创建Bean。
  * @version : 2015年6月26日

@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.binder;
-import net.hasor.core.ApiBinder;
+package net.hasor.core;
 /**
- * Binder 扩展接口
- * @version : 2016-12-16
+ * 匹配器
+ * @version : 2013-7-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface ApiBinderCreater {
-    /**
-     * 创建Beander 扩展接口实现类 {@link ApiBinder}
-     * @return return {@link ApiBinder}
-     */
-    public <T extends ApiBinder> T createBinder(ApiBinder apiBinder) throws Throwable;
+public interface Matcher<T> {
+    /**Returns {@code true} if this matches {@code T}, {@code false} otherwise.*/
+    public boolean matches(T target);
 }

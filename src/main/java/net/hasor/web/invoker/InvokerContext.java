@@ -18,6 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.web.*;
 import net.hasor.web.definition.AbstractDefinition;
+import net.hasor.web.definition.ServletDefinition;
 import net.hasor.web.definition.WebPluginDefinition;
 import org.more.future.BasicFuture;
 import org.more.util.Iterators;
@@ -73,7 +74,7 @@ public class InvokerContext implements WebPluginCaller {
             }
         }
         //
-        // .filters
+        // .Filter Config
         final InvokerConfig filterConfig = new InvokerConfig() {
             @Override
             public String getInitParameter(String name) {
@@ -88,6 +89,9 @@ public class InvokerContext implements WebPluginCaller {
                 return appContext;
             }
         };
+        //
+        // .Filters
+        ArrayList<AbstractDefinition> finalList = new ArrayList<AbstractDefinition>();
         List<AbstractDefinition> filterList = appContext.findBindingBean(AbstractDefinition.class);
         Collections.sort(filterList, new Comparator<AbstractDefinition>() {
             public int compare(AbstractDefinition o1, AbstractDefinition o2) {
@@ -96,10 +100,24 @@ public class InvokerContext implements WebPluginCaller {
                 return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
             }
         });
-        this.filters = filterList.toArray(new AbstractDefinition[filterList.size()]);
-        for (InvokerFilter filter : filterList) {
+        finalList.addAll(filterList);
+        //
+        // .Servlets
+        List<ServletDefinition> servletList = appContext.findBindingBean(ServletDefinition.class);
+        Collections.sort(servletList, new Comparator<AbstractDefinition>() {
+            public int compare(AbstractDefinition o1, AbstractDefinition o2) {
+                int o1Index = o1.getIndex();
+                int o2Index = o2.getIndex();
+                return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
+            }
+        });
+        finalList.addAll(servletList);
+        //
+        // .init
+        for (InvokerFilter filter : finalList) {
             filter.init(filterConfig);
         }
+        this.filters = finalList.toArray(new AbstractDefinition[finalList.size()]);
         //
         // .creater
         this.invokerCreater = new RootInvokerCreater(appContext);

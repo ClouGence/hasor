@@ -35,10 +35,10 @@ import java.util.Set;
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class WebApiBinderCreater implements ApiBinderCreater {
+public class InvokerWebApiBinderCreater implements ApiBinderCreater {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
-    public Object createBinder(final ApiBinder apiBinder) throws IOException, XMLStreamException {
+    public ApiBinder createBinder(final ApiBinder apiBinder) throws IOException, XMLStreamException {
         Environment environment = apiBinder.getEnvironment();
         Object context = environment.getContext();
         if (!(context instanceof ServletContext)) {
@@ -92,10 +92,7 @@ public class WebApiBinderCreater implements ApiBinderCreater {
         }
         //
         // .WebApiBinder
-        InnerWebApiBinder binder = new InnerWebApiBinder(curVersion, mimeTypeContext, apiBinder);
-        //
-        //        binder.filter("/*").through(Integer.MAX_VALUE, new RootInvokerFilter());
-        return binder;
+        return new InvokerWebApiBinder(curVersion, mimeTypeContext, apiBinder);
     }
     public boolean loadType(ApiBinder apiBinder, Class<?> clazz) {
         int modifier = clazz.getModifiers();

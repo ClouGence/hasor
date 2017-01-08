@@ -4,6 +4,7 @@
     02.WebApiBinder 新增可以设置(请求/响应)编码方法。
     03.通过 ContainerCreater 可以扩展 Hasor 的上帝类了。
     04.新增 @AopIgnore 注解，用于忽略Hasor的Aop动态代理功能。当标记到包上时表示整个包都忽略动态代理。该功能可以有效的防止泛滥的全局Aop。
+    05.新增 ApiBinder 接口新增 tryCase 方法用于将 ApiBinder 转换为支持的另外一种接口。
 * 改进:
     01.WebApiBinder 使用 ApiBinderCreater 机制提供。
     02.Web 特性通过 ApiBinder扩展机制融入 AppContext，不在需要继承 AppContext 定制化。
