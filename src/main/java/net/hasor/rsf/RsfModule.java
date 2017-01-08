@@ -27,9 +27,11 @@ public abstract class RsfModule implements Module {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public final void loadModule(final ApiBinder apiBinder) throws Throwable {
-        if (apiBinder instanceof RsfApiBinder) {
-            this.loadModule((RsfApiBinder) apiBinder);
+        RsfApiBinder rsfApiBinder = apiBinder.tryCast(RsfApiBinder.class);
+        if (rsfApiBinder == null) {
+            return;
         }
+        this.loadModule(rsfApiBinder);
     }
     public abstract void loadModule(RsfApiBinder apiBinder) throws Throwable;
 }

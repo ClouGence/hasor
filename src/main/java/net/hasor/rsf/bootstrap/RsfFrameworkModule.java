@@ -36,6 +36,7 @@ public final class RsfFrameworkModule extends RsfModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public final void loadModule(RsfApiBinder apiBinder) throws Throwable {
+        //
         logger.info("rsf framework starting.");
         //
         //1.组装 RsfContext 对象

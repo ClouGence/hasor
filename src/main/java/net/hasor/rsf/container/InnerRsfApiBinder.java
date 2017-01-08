@@ -69,6 +69,14 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
         return this.apiBinder.findClass(featureType);
     }
     @Override
+    public Set<Class<?>> findClass(Class<?> featureType, String... scanPackages) {
+        return this.apiBinder.findClass(featureType, scanPackages);
+    }
+    @Override
+    public <T extends ApiBinder> T tryCast(Class<T> castApiBinder) {
+        return this.apiBinder.tryCast(castApiBinder);
+    }
+    @Override
     public void installModule(Module module) throws Throwable {
         this.apiBinder.installModule(module);
     }
