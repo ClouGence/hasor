@@ -13,18 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.render;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServlet;
-import java.io.IOException;
+package net.hasor.web;
 /**
- * @version : 2017-01-08
+ * 提供了注册Servlet和Filter的方法。
+ * @version : 2013-4-10
  * @author 赵永春 (zyc@hasor.net)
  */
-class DefaultRenderHttpServlet extends HttpServlet {
-    @Override
-    public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
-    }
+public interface Controller {
+    public void initController(Invoker renderData);
 }

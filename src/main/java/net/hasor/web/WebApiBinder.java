@@ -46,6 +46,13 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     public ServletVersion getServletVersion();
     //
 
+    /**使用传统表达式，创建一个{@link ServletBindingBuilder}。*/
+    public ServletBindingBuilder jeeServlet(String urlPattern, String... morePatterns);
+
+    /**使用传统表达式，创建一个{@link ServletBindingBuilder}。*/
+    public ServletBindingBuilder jeeServlet(String[] morePatterns);
+    //
+
     /**使用传统表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
     public FilterBindingBuilder<InvokerFilter> filter(String urlPattern, String... morePatterns);
 
@@ -70,18 +77,6 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
     public FilterBindingBuilder<Filter> jeeFilterRegex(String[] regexes);
-
-    /**使用传统表达式，创建一个{@link ServletBindingBuilder}。*/
-    public ServletBindingBuilder jeeServlet(String urlPattern, String... morePatterns);
-
-    /**使用传统表达式，创建一个{@link ServletBindingBuilder}。*/
-    public ServletBindingBuilder jeeServlet(String[] morePatterns);
-
-    /**使用正则表达式，创建一个{@link ServletBindingBuilder}。*/
-    public ServletBindingBuilder jeeServletRegex(String regex, String... regexes);
-
-    /**使用正则表达式，创建一个{@link ServletBindingBuilder}。*/
-    public ServletBindingBuilder jeeServletRegex(String[] regexes);
     //
 
     /**注册一个ServletContextListener监听器。*/

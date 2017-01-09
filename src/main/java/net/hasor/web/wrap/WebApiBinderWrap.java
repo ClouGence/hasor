@@ -91,20 +91,12 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
         return this.webApiBinder.jeeFilterRegex(regexes);
     }
     @Override
-    public ServletBindingBuilder jeeServlet(String urlPattern, String... morePatterns) {
-        return this.webApiBinder.jeeServlet(urlPattern, morePatterns);
+    public ServletBindingBuilder jeeServlet(String mappingTo, String... moreMappingTo) {
+        return this.webApiBinder.jeeServlet(mappingTo, moreMappingTo);
     }
     @Override
-    public ServletBindingBuilder jeeServlet(String[] morePatterns) {
-        return this.webApiBinder.jeeServlet(morePatterns);
-    }
-    @Override
-    public ServletBindingBuilder jeeServletRegex(String regex, String... regexes) {
-        return this.webApiBinder.jeeServletRegex(regex, regexes);
-    }
-    @Override
-    public ServletBindingBuilder jeeServletRegex(String[] regexes) {
-        return this.webApiBinder.jeeServletRegex(regexes);
+    public ServletBindingBuilder jeeServlet(String[] moreMappingTo) {
+        return this.webApiBinder.jeeServlet(moreMappingTo);
     }
     @Override
     public void addServletListener(Class<? extends ServletContextListener> targetKey) {

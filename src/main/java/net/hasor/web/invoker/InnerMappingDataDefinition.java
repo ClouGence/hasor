@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
+import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Async;
 import net.hasor.web.annotation.HttpMethod;
 import org.more.bizcommon.json.JSON;
-import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 
 import java.lang.annotation.Annotation;
@@ -30,15 +30,17 @@ import java.util.*;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-class InnerMappingDataDefinition implements InnerMappingData {
-    private Class<?>            targetType;
-    private String              mappingTo;
-    private String              mappingToMatches;
-    private Map<String, Method> httpMapping;
-    private Set<Method>         asyncMethod;
+public class InnerMappingDataDefinition implements InnerMappingData {
+    private final long                index;
+    private       BindInfo<?>         targetType;
+    private       String              mappingTo;
+    private       String              mappingToMatches;
+    private       Map<String, Method> httpMapping;
+    private       Set<Method>         asyncMethod;
     private AsyncSupported defaultAsync = AsyncSupported.no;
     //
-    protected InnerMappingDataDefinition(Class<?> targetType, String mappingTo) {
+    private InnerMappingDataDefinition(long index, BindInfo<?> targetType, String mappingTo) {
+        this.index = index;
         this.targetType = targetType;
         String servicePath = Hasor.assertIsNotNull(mappingTo);
         if (StringUtils.isBlank(servicePath)) {
@@ -47,51 +49,70 @@ class InnerMappingDataDefinition implements InnerMappingData {
         if (!servicePath.matches("/.+")) {
             throw new IllegalStateException("Service path format error");
         }
-        if (targetType.getAnnotation(Async.class) != null) {
+        if (targetType.getBindType().getAnnotation(Async.class) != null) {
             this.defaultAsync = AsyncSupported.yes;
-        }
-        //
-        this.httpMapping = new HashMap<String, Method>();
-        this.asyncMethod = new HashSet<Method>();
-        List<Method> mList = BeanUtils.getMethods(targetType);
-        if (mList != null && !mList.isEmpty()) {
-            for (Method targetMethod : mList) {
-                // .HttpMethod
-                Annotation[] annos = targetMethod.getAnnotations();
-                if (annos != null) {
-                    for (Annotation anno : annos) {
-                        HttpMethod httpMethodAnno = anno.annotationType().getAnnotation(HttpMethod.class);
-                        if (httpMethodAnno != null) {
-                            String bindMethod = httpMethodAnno.value();
-                            if (!StringUtils.isBlank(bindMethod)) {
-                                this.httpMapping.put(bindMethod.toUpperCase(), targetMethod);
-                            }
-                        }
-                    }
-                }
-                if (targetMethod.getName().equals("execute") && !this.httpMapping.containsKey("execute")) {
-                    this.httpMapping.put(HttpMethod.ANY, targetMethod);
-                }
-            }
-        }
-        //
-        // .Async
-        for (String key : this.httpMapping.keySet()) {
-            Method targetMethod = this.httpMapping.get(key);
-            if (targetMethod.getAnnotation(Async.class) != null) {
-                this.asyncMethod.add(targetMethod);
-            }
         }
         //
         this.mappingTo = servicePath;
         this.mappingToMatches = wildToRegex(servicePath).replaceAll("\\{\\w{1,}\\}", "([^/]{1,})");
-    }
-    private static String wildToRegex(final String wild) {
-        return wild.replace(".", "\\.");
+        this.httpMapping = new HashMap<String, Method>();
+        this.asyncMethod = new HashSet<Method>();
     }
     //
+    public InnerMappingDataDefinition(long index, BindInfo<?> targetType, String mappingTo, List<Method> methodList, boolean force) {
+        this(index, targetType, mappingTo);
+        if (methodList == null || methodList.isEmpty()) {
+            return;
+        }
+        //
+        for (Method targetMethod : methodList) {
+            // .HttpMethod
+            Annotation[] annos = targetMethod.getAnnotations();
+            if (annos != null) {
+                for (Annotation anno : annos) {
+                    HttpMethod httpMethodAnno = anno.annotationType().getAnnotation(HttpMethod.class);
+                    if (httpMethodAnno != null) {
+                        String bindMethod = httpMethodAnno.value();
+                        if (!StringUtils.isBlank(bindMethod)) {
+                            this.httpMapping.put(bindMethod.toUpperCase(), targetMethod);
+                        }
+                    }
+                }
+            }
+            if (targetMethod.getName().equals("execute") && !this.httpMapping.containsKey("execute")) {
+                this.httpMapping.put(HttpMethod.ANY, targetMethod);
+            }
+            // .Async
+            if (targetMethod.getAnnotation(Async.class) != null) {
+                this.asyncMethod.add(targetMethod);
+            }
+            //
+            if (!this.httpMapping.containsValue(targetMethod) && force) {
+                this.httpMapping.put(HttpMethod.ANY, targetMethod);
+            }
+        }
+    }
+    private static String wildToRegex(String wild) {
+        //'\\', '$', '^', '[', ']', '(', ')', '{', '|', '+', '.'
+        wild = wild.replace("\\", "\\\\"); // <-- 必须放在前面
+        wild = wild.replace("$", "\\$");
+        wild = wild.replace("^", "\\^");
+        wild = wild.replace("[", "\\[");
+        wild = wild.replace("]", "\\]");
+        wild = wild.replace("(", "\\(");
+        wild = wild.replace(")", "\\)");
+        wild = wild.replace("|", "\\|");
+        wild = wild.replace("+", "\\+");
+        wild = wild.replace(".", "\\.");
+        //
+        wild = wild.replace("*", ".*");
+        wild = wild.replace("?", ".");
+        return wild;
+    }
+    //
+    //
     @Override
-    public Class<?> getTargetType() {
+    public BindInfo<?> getTargetType() {
         return this.targetType;
     }
     /** 获取映射的地址 */
@@ -101,7 +122,9 @@ class InnerMappingDataDefinition implements InnerMappingData {
     public String getMappingToMatches() {
         return this.mappingToMatches;
     }
-    //
+    public long getIndex() {
+        return index;
+    }
     public Method[] getMethods() {
         return this.httpMapping.values().toArray(new Method[httpMapping.size()]);
     }

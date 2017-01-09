@@ -25,14 +25,15 @@ import net.hasor.web.*;
 import net.hasor.web.definition.*;
 import net.hasor.web.listener.ContextListenerDefinition;
 import net.hasor.web.listener.HttpSessionListenerDefinition;
+import net.hasor.web.render.DefaultServlet;
 import net.hasor.web.startup.RuntimeFilter;
 import org.more.util.ArrayUtils;
+import org.more.util.ExceptionUtils;
 
-import javax.servlet.Filter;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextListener;
+import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
+import java.lang.reflect.Method;
 import java.util.*;
 /**
  * 该类是{@link WebApiBinder}接口实现。
@@ -340,13 +341,18 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     //
     // ------------------------------------------------------------------------------------------------------
-    protected void jeeServlet(long index, String pattern, UriPatternMatcher matcher, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams) {
-        ServletDefinition define = new ServletDefinition(index, pattern, matcher, servletRegister, initParams);
-        bindType(ServletDefinition.class).uniqueName().toInstance(define);/*单例*/
+    protected void jeeServlet(long index, String pattern, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams) {
+        try {
+            Method serviceMethod = DefaultServlet.class.getMethod("service", new Class[] { ServletRequest.class, ServletResponse.class });
+            InnerMappingDataDefinition define = new InnerMappingDataDefinition(index, servletRegister, pattern, Arrays.asList(serviceMethod), false);
+            bindType(InnerMappingDataDefinition.class).uniqueName().toInstance(define);/*单例*/
+        } catch (NoSuchMethodException e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
     }
     @Override
     public ServletBindingBuilder jeeServlet(final String urlPattern, final String... morePatterns) {
-        return new ServletsModuleBuilder(UriPatternType.SERVLET, newArrayList(morePatterns, urlPattern));
+        return new ServletsModuleBuilder(newArrayList(morePatterns, urlPattern));
     }
     @Override
     public ServletBindingBuilder jeeServlet(final String[] morePatterns) {
@@ -355,24 +361,11 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         }
         return this.jeeServlet(null, morePatterns);
     }
-    @Override
-    public ServletBindingBuilder jeeServletRegex(final String regex, final String... regexes) {
-        return new ServletsModuleBuilder(UriPatternType.REGEX, newArrayList(regexes, regex));
-    }
-    @Override
-    public ServletBindingBuilder jeeServletRegex(final String[] regexes) {
-        if (ArrayUtils.isEmpty(regexes)) {
-            throw new NullPointerException("Servlet regexes is empty.");
-        }
-        return this.jeeServletRegex(null, regexes);
-    }
     //
     private class ServletsModuleBuilder implements ServletBindingBuilder {
-        private final List<String>   uriPatterns;
-        private final UriPatternType uriPatternType;
-        ServletsModuleBuilder(final UriPatternType uriPatternType, final List<String> uriPatterns) {
+        private final List<String> uriPatterns;
+        ServletsModuleBuilder(final List<String> uriPatterns) {
             this.uriPatterns = uriPatterns;
-            this.uriPatternType = uriPatternType;
         }
         @Override
         public void with(final Class<? extends HttpServlet> servletKey) {
@@ -435,7 +428,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         }
         @Override
         public void with(final int index, final Provider<? extends HttpServlet> servletProvider, Map<String, String> initParams) {
-            BindInfo<HttpServlet> servletRegister = bindType(HttpServlet.class).uniqueName().toProvider((Provider<HttpServlet>) servletProvider).toInfo();
+            BindInfo<HttpServlet> servletRegister = bindType(HttpServlet.class).uniqueName().toProvider(servletProvider).toInfo();
             this.with(index, servletRegister, initParams);
         }
         @Override
@@ -444,8 +437,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
                 initParams = new HashMap<String, String>();
             }
             for (String pattern : this.uriPatterns) {
-                UriPatternMatcher matcher = UriPatternType.get(this.uriPatternType, pattern);
-                jeeServlet(index, pattern, matcher, (BindInfo<HttpServlet>) servletRegister, initParams);
+                jeeServlet(index, pattern, servletRegister, initParams);
             }
         }
     }

@@ -40,7 +40,7 @@ import java.util.*;
  * @author JFinal
  * @author 赵永春 (zyc@hasor.net)
  */
-public class WebController {
+public class WebController implements Controller {
     private ThreadLocal<Invoker> invoker = new ThreadLocal<Invoker>();
     //
     public void initController(Invoker renderData) {

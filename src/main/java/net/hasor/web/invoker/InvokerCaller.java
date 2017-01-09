@@ -107,8 +107,8 @@ class InvokerCaller implements ExceuteCaller {
         //
         // .初始化WebController
         final Object targetObject = invoker.getAppContext().getInstance(this.mappingToDefine.getTargetType());
-        if (targetObject != null && targetObject instanceof WebController) {
-            ((WebController) targetObject).initController(invoker);
+        if (targetObject != null && targetObject instanceof Controller) {
+            ((Controller) targetObject).initController(invoker);
         }
         //
         // .准备过滤器链
@@ -183,11 +183,14 @@ class InvokerCaller implements ExceuteCaller {
         return BeanUtils.getDefaultValue(paramClass);
     }
     private Object resolveSpecialParam(Invoker invoker, Class<?> paramClass) {
+        if (!paramClass.isInterface()) {
+            return null;
+        }
         if (paramClass == ServletRequest.class || paramClass == HttpServletRequest.class) {
             return invoker.getHttpRequest();
         }
         if (paramClass == ServletResponse.class || paramClass == HttpServletResponse.class) {
-            return invoker.getHttpRequest();
+            return invoker.getHttpResponse();
         }
         if (paramClass == HttpSession.class) {
             return invoker.getHttpRequest().getSession(true);
@@ -200,9 +203,6 @@ class InvokerCaller implements ExceuteCaller {
             return invoker;
         }
         //
-        if (!paramClass.isInterface()) {
-            return null;
-        }
         return invoker.getAppContext().getInstance(paramClass);
     }
     private Object resolveParam(Invoker invoker, Class<?> paramClass, Annotation pAnno) {

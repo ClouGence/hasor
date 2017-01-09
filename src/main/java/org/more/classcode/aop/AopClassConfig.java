@@ -55,7 +55,7 @@ public class AopClassConfig extends AbstractClassConfig {
     //
     /**是否包含改变*/
     public boolean hasChange() {
-        return this.aopList == null || !this.aopList.isEmpty();
+        return this.aopList != null && !this.aopList.isEmpty();
     }
     //
     /**添加Aop拦截器。*/

@@ -18,7 +18,6 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.web.*;
 import net.hasor.web.definition.AbstractDefinition;
-import net.hasor.web.definition.ServletDefinition;
 import net.hasor.web.definition.WebPluginDefinition;
 import org.more.future.BasicFuture;
 import org.more.util.Iterators;
@@ -51,18 +50,14 @@ public class InvokerContext implements WebPluginCaller {
                 return o1.getMappingTo().compareToIgnoreCase(o2.getMappingTo()) * -1;
             }
         });
+        Collections.sort(mappingList, new Comparator<InnerMappingDataDefinition>() {
+            public int compare(InnerMappingDataDefinition o1, InnerMappingDataDefinition o2) {
+                long o1Index = o1.getIndex();
+                long o2Index = o2.getIndex();
+                return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
+            }
+        });
         this.invokeArray = mappingList.toArray(new InnerMappingData[mappingList.size()]);
-        //
-//        // .Servlets
-//        List<ServletDefinition> servletList = appContext.findBindingBean(ServletDefinition.class);
-//        Collections.sort(servletList, new Comparator<AbstractDefinition>() {
-//            public int compare(AbstractDefinition o1, AbstractDefinition o2) {
-//                long o1Index = o1.getIndex();
-//                long o2Index = o2.getIndex();
-//                return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
-//            }
-//        });
-//        finalList.addAll(servletList);
         //
         // .WebPlugin
         List<WebPluginDefinition> pluginList = appContext.findBindingBean(WebPluginDefinition.class);

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.web;
+import net.hasor.core.BindInfo;
+
 import java.lang.reflect.Method;
 /**
  * @version : 2016-12-26
@@ -23,7 +25,7 @@ public interface MappingData {
     /**
      * 获取目标类型
      */
-    public Class<?> getTargetType();
+    public BindInfo<?> getTargetType();
 
     /** 获取映射的地址 */
     public String getMappingTo();

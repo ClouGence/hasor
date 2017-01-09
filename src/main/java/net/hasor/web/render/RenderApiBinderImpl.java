@@ -16,12 +16,13 @@
 package net.hasor.web.render;
 import net.hasor.core.*;
 import net.hasor.core.binder.ApiBinderWrap;
-import net.hasor.web.definition.ServletDefinition;
-import net.hasor.web.definition.UriPatternMatcher;
-import net.hasor.web.definition.UriPatternType;
+import net.hasor.web.invoker.InnerMappingDataDefinition;
+import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 
-import javax.servlet.http.HttpServlet;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import java.lang.reflect.Method;
 import java.util.*;
 /**
  * 该类是{@link RenderApiBinder}接口实现。
@@ -76,19 +77,24 @@ public class RenderApiBinderImpl extends ApiBinderWrap implements RenderApiBinde
     }
     private void bindSuffix(List<String> suffixList, BindInfo<? extends RenderEngine> bindInfo) {
         suffixList = Collections.unmodifiableList(suffixList);
-        this.bindType(RenderDefinition.class).toInstance(new RenderDefinition(suffixList, bindInfo));
+        this.bindType(RenderDefinition.class).toInstance(new RenderDefinition(suffixList, bindInfo)).toInfo();
+        BindInfo<DefaultServlet> defaultServletBindInfo = findBindingRegister(DefaultServlet.DEFAULT_NAME, DefaultServlet.class);
         //
+        Method serviceMethod = null;
+        try {
+            serviceMethod = DefaultServlet.class.getMethod("service", new Class[] { ServletRequest.class, ServletResponse.class });
+        } catch (NoSuchMethodException e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
         for (String suffix : suffixList) {
             if (suffix.equals("*"))
                 continue;
             if (StringUtils.isBlank(suffix))
                 continue;
             //
-            String pattern = "*." + suffix.toLowerCase();
-            BindInfo<HttpServlet> servletInfo = bindType(HttpServlet.class).uniqueName().toInstance(new DefaultRenderHttpServlet()).toInfo();
-            UriPatternMatcher matcher = UriPatternType.get(UriPatternType.SERVLET, pattern);
-            ServletDefinition define = new ServletDefinition(Long.MAX_VALUE, pattern, matcher, servletInfo, null);
-            bindType(ServletDefinition.class).uniqueName().toInstance(define);/*单例*/
+            String pattern = "/*." + suffix.toLowerCase();
+            InnerMappingDataDefinition define = new InnerMappingDataDefinition(Long.MAX_VALUE, defaultServletBindInfo, pattern, Arrays.asList(serviceMethod), false);
+            bindType(InnerMappingDataDefinition.class).uniqueName().toInstance(define);/*单例*/
         }
     }
     //

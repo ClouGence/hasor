@@ -15,6 +15,7 @@
  */
 package net.hasor.web.invoker;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.BindInfo;
 import net.hasor.core.Environment;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.web.MimeType;
@@ -22,14 +23,17 @@ import net.hasor.web.ServletVersion;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.listener.ListenerPipeline;
 import net.hasor.web.listener.ManagedListenerPipeline;
+import org.more.util.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 /**
  * @version : 2016-12-16
@@ -105,7 +109,9 @@ public class InvokerWebApiBinderCreater implements ApiBinderCreater {
         //
         MappingTo mto = clazz.getAnnotation(MappingTo.class);
         logger.info("restful -> type ‘{}’ mappingTo: ‘{}’.", clazz.getName(), mto.value());
-        InnerMappingDataDefinition define = new InnerMappingDataDefinition(clazz, mto.value());
+        List<Method> methodList = BeanUtils.getMethods(clazz);
+        BindInfo<?> bindInfo = apiBinder.bindType(clazz).uniqueName().toInfo();
+        InnerMappingDataDefinition define = new InnerMappingDataDefinition(0, bindInfo, mto.value(), methodList, false);
         apiBinder.bindType(InnerMappingDataDefinition.class).uniqueName().toInstance(define);
         return true;
     }
