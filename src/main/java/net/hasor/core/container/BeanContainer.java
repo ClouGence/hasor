@@ -16,9 +16,9 @@
 package net.hasor.core.container;
 import net.hasor.core.*;
 import net.hasor.core.EventListener;
-import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.NotifyData;
+import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.scope.SingletonScope;
 import org.more.RepeateException;
 import org.more.util.StringUtils;
@@ -124,6 +124,10 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
      * @param binderSource
      */
     public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType, Class<?> binderSource) {
+        if (this.inited.get()) {
+            throw new java.lang.IllegalStateException("container has been started.");
+        }
+        //
         AbstractBindInfoProviderAdapter<T> adapter = super.createInfoAdapter(bindType, binderSource);
         adapter.addObserver(this);
         adapter.setBindID(adapter.getBindID());

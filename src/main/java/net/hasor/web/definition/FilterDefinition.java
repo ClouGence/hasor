@@ -34,16 +34,10 @@ public class FilterDefinition extends AbstractDefinition {
     private BindInfo<? extends Filter> bindInfo = null;
     private Filter                     instance = null;
     //
-    public FilterDefinition(int index, String pattern, UriPatternMatcher uriPatternMatcher,//
+    public FilterDefinition(long index, String pattern, UriPatternMatcher uriPatternMatcher,//
             BindInfo<? extends Filter> bindInfo, Map<String, String> initParams) {
         super(index, pattern, uriPatternMatcher, initParams);
         this.bindInfo = bindInfo;
-    }
-    //
-    @Override
-    public String toString() {
-        return String.format("type %s pattern=%s ,initParams=%s ,uriPatternType=%s", //
-                FilterDefinition.class, this.getPattern(), this.getInitParams(), this.getUriPatternType());
     }
     //
     protected final Filter getTarget() throws ServletException {

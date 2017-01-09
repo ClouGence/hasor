@@ -28,20 +28,24 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractDefinition implements InvokerFilter {
-    private final int                 index;
+    private final long                index;
     private final Map<String, String> initParams;
     private final String              pattern;
     private final UriPatternMatcher   patternMatcher;
     private AppContext appContext = null;
     //
-    public AbstractDefinition(int index, String pattern, UriPatternMatcher patternMatcher, Map<String, String> initParams) {
+    public AbstractDefinition(long index, String pattern, UriPatternMatcher patternMatcher, Map<String, String> initParams) {
         this.index = index;
-        this.initParams = new HashMap<String, String>(initParams);
+        if (initParams != null) {
+            this.initParams = new HashMap<String, String>(initParams);
+        } else {
+            this.initParams = new HashMap<String, String>();
+        }
         this.pattern = pattern;
         this.patternMatcher = patternMatcher;
     }
     /***/
-    public int getIndex() {
+    public long getIndex() {
         return this.index;
     }
     /** Returns any context params supplied when creating the binding. */
@@ -60,6 +64,12 @@ public abstract class AbstractDefinition implements InvokerFilter {
     public boolean matchesInvoker(Invoker invoker) {
         String url = invoker.getRequestPath();
         return this.patternMatcher.matches(url);
+    }
+    //
+    @Override
+    public String toString() {
+        return String.format("pattern=%s ,uriPatternType=%s ,type %s ,initParams=%s ", //
+                this.getPattern(), this.getUriPatternType(), this.getClass(), this.getInitParams());
     }
     //
     //

@@ -35,16 +35,10 @@ public class ServletDefinition extends AbstractDefinition {
     private BindInfo<? extends HttpServlet> bindInfo = null;
     private HttpServlet                     instance = null;
     //
-    public ServletDefinition(int index, String pattern, UriPatternMatcher uriPatternMatcher,//
+    public ServletDefinition(long index, String pattern, UriPatternMatcher uriPatternMatcher,//
             BindInfo<? extends HttpServlet> bindInfo, Map<String, String> initParams) {
         super(index, pattern, uriPatternMatcher, initParams);
         this.bindInfo = bindInfo;
-    }
-    //
-    @Override
-    public String toString() {
-        return String.format("type %s pattern=%s ,initParams=%s ,uriPatternType=%s", //
-                ServletDefinition.class, this.getPattern(), this.getInitParams(), this.getUriPatternType());
     }
     //
     protected final HttpServlet getTarget() throws ServletException {

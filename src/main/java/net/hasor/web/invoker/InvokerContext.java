@@ -53,6 +53,17 @@ public class InvokerContext implements WebPluginCaller {
         });
         this.invokeArray = mappingList.toArray(new InnerMappingData[mappingList.size()]);
         //
+//        // .Servlets
+//        List<ServletDefinition> servletList = appContext.findBindingBean(ServletDefinition.class);
+//        Collections.sort(servletList, new Comparator<AbstractDefinition>() {
+//            public int compare(AbstractDefinition o1, AbstractDefinition o2) {
+//                long o1Index = o1.getIndex();
+//                long o2Index = o2.getIndex();
+//                return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
+//            }
+//        });
+//        finalList.addAll(servletList);
+        //
         // .WebPlugin
         List<WebPluginDefinition> pluginList = appContext.findBindingBean(WebPluginDefinition.class);
         this.plugins = pluginList.toArray(new WebPlugin[pluginList.size()]);
@@ -95,23 +106,12 @@ public class InvokerContext implements WebPluginCaller {
         List<AbstractDefinition> filterList = appContext.findBindingBean(AbstractDefinition.class);
         Collections.sort(filterList, new Comparator<AbstractDefinition>() {
             public int compare(AbstractDefinition o1, AbstractDefinition o2) {
-                int o1Index = o1.getIndex();
-                int o2Index = o2.getIndex();
+                long o1Index = o1.getIndex();
+                long o2Index = o2.getIndex();
                 return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
             }
         });
         finalList.addAll(filterList);
-        //
-        // .Servlets
-        List<ServletDefinition> servletList = appContext.findBindingBean(ServletDefinition.class);
-        Collections.sort(servletList, new Comparator<AbstractDefinition>() {
-            public int compare(AbstractDefinition o1, AbstractDefinition o2) {
-                int o1Index = o1.getIndex();
-                int o2Index = o2.getIndex();
-                return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
-            }
-        });
-        finalList.addAll(servletList);
         //
         // .init
         for (InvokerFilter filter : finalList) {

@@ -33,16 +33,10 @@ public class InvokeFilterDefinition extends AbstractDefinition {
     private BindInfo<? extends InvokerFilter> bindInfo = null;
     private InvokerFilter                     instance = null;
     //
-    public InvokeFilterDefinition(int index, String pattern, UriPatternMatcher uriPatternMatcher,//
+    public InvokeFilterDefinition(long index, String pattern, UriPatternMatcher uriPatternMatcher,//
             BindInfo<? extends InvokerFilter> bindInfo, Map<String, String> initParams) {
         super(index, pattern, uriPatternMatcher, initParams);
         this.bindInfo = bindInfo;
-    }
-    //
-    @Override
-    public String toString() {
-        return String.format("type %s pattern=%s ,initParams=%s ,uriPatternType=%s", //
-                InvokeFilterDefinition.class, this.getPattern(), this.getInitParams(), this.getUriPatternType());
     }
     //
     protected final InvokerFilter getTarget() throws Throwable {

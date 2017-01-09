@@ -16,8 +16,12 @@
 package net.hasor.web.render;
 import net.hasor.core.*;
 import net.hasor.core.binder.ApiBinderWrap;
+import net.hasor.web.definition.ServletDefinition;
+import net.hasor.web.definition.UriPatternMatcher;
+import net.hasor.web.definition.UriPatternType;
 import org.more.util.StringUtils;
 
+import javax.servlet.http.HttpServlet;
 import java.util.*;
 /**
  * 该类是{@link RenderApiBinder}接口实现。
@@ -40,7 +44,7 @@ public class RenderApiBinderImpl extends ApiBinderWrap implements RenderApiBinde
         private List<String> suffixList = new ArrayList<String>();
         private boolean      enable     = false;
         public RenderEngineBindingBuilderImpl(List<String> suffixList) {
-            Set<String> suffixSet = new LinkedHashSet<String>(suffixList);
+            Set<String> suffixSet = new LinkedHashSet<String>();
             for (String str : suffixList) {
                 if (StringUtils.isNotBlank(str)) {
                     suffixSet.add(str.toUpperCase());
@@ -73,6 +77,19 @@ public class RenderApiBinderImpl extends ApiBinderWrap implements RenderApiBinde
     private void bindSuffix(List<String> suffixList, BindInfo<? extends RenderEngine> bindInfo) {
         suffixList = Collections.unmodifiableList(suffixList);
         this.bindType(RenderDefinition.class).toInstance(new RenderDefinition(suffixList, bindInfo));
+        //
+        for (String suffix : suffixList) {
+            if (suffix.equals("*"))
+                continue;
+            if (StringUtils.isBlank(suffix))
+                continue;
+            //
+            String pattern = "*." + suffix.toLowerCase();
+            BindInfo<HttpServlet> servletInfo = bindType(HttpServlet.class).uniqueName().toInstance(new DefaultRenderHttpServlet()).toInfo();
+            UriPatternMatcher matcher = UriPatternType.get(UriPatternType.SERVLET, pattern);
+            ServletDefinition define = new ServletDefinition(Long.MAX_VALUE, pattern, matcher, servletInfo, null);
+            bindType(ServletDefinition.class).uniqueName().toInstance(define);/*单例*/
+        }
     }
     //
     @Override

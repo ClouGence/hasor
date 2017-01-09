@@ -18,8 +18,7 @@ import net.hasor.core.Hasor;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Async;
 import net.hasor.web.annotation.HttpMethod;
-import org.more.builder.ReflectionToStringBuilder;
-import org.more.builder.ToStringStyle;
+import org.more.bizcommon.json.JSON;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
 
@@ -155,7 +154,10 @@ class InnerMappingDataDefinition implements InnerMappingData {
         AsyncSupported async = this.asyncMethod.contains(targetMethod) ? AsyncSupported.yes : this.defaultAsync;
         return async == AsyncSupported.yes;
     }
+    //
+    @Override
     public String toString() {
-        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        return String.format("pattern=%s ,methodSet=%s ,type %s", //
+                this.mappingTo, JSON.toString(this.httpMapping.keySet()), this.getTargetType());
     }
 }

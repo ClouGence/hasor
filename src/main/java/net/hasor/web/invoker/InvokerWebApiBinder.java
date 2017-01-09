@@ -340,9 +340,9 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     //
     // ------------------------------------------------------------------------------------------------------
-    protected void jeeServlet(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams) {
+    protected void jeeServlet(long index, String pattern, UriPatternMatcher matcher, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams) {
         ServletDefinition define = new ServletDefinition(index, pattern, matcher, servletRegister, initParams);
-        bindType(ServletDefinition.class).uniqueName().toInstance(define);/*单列*/
+        bindType(ServletDefinition.class).uniqueName().toInstance(define);/*单例*/
     }
     @Override
     public ServletBindingBuilder jeeServlet(final String urlPattern, final String... morePatterns) {
