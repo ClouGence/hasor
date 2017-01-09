@@ -41,11 +41,12 @@ public class RenderApiBinderImpl extends ApiBinderWrap implements RenderApiBinde
         private boolean      enable     = false;
         public RenderEngineBindingBuilderImpl(List<String> suffixList) {
             Set<String> suffixSet = new LinkedHashSet<String>(suffixList);
-            for (String str : suffixSet) {
+            for (String str : suffixList) {
                 if (StringUtils.isNotBlank(str)) {
-                    this.suffixList.add(str);
+                    suffixSet.add(str.toUpperCase());
                 }
             }
+            this.suffixList = new ArrayList<String>(suffixSet);
             this.enable = !this.suffixList.isEmpty();
         }
         @Override
@@ -70,9 +71,9 @@ public class RenderApiBinderImpl extends ApiBinderWrap implements RenderApiBinde
         }
     }
     private void bindSuffix(List<String> suffixList, BindInfo<? extends RenderEngine> bindInfo) {
+        suffixList = Collections.unmodifiableList(suffixList);
         this.bindType(RenderDefinition.class).toInstance(new RenderDefinition(suffixList, bindInfo));
     }
-    //
     //
     @Override
     public void scanAnnoRender() {

@@ -67,7 +67,8 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     @Override
     public <T extends ApiBinder> T tryCast(Class<T> castApiBinder) {
-        return null; //see : net.hasor.core.binder.ApiBinderInvocationHandler.invoke()
+        //see : net.hasor.core.binder.ApiBinderInvocationHandler.invoke()
+        throw new IllegalStateException("current state is not allowed.");
     }
     //
     /*------------------------------------------------------------------------------------Binding*/

@@ -117,10 +117,6 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
         }
     }
     @Override
-    public void afterFilter(Invoker invoker, InvokerData info) {
-    }
-    //
-    @Override
     public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
         // .执行过滤器
         chain.doNext(invoker);
@@ -129,6 +125,9 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
         if (invoker instanceof RenderInvoker) {
             this.process((RenderInvoker) invoker);
         }
+    }
+    @Override
+    public void afterFilter(Invoker invoker, InvokerData info) {
     }
     //
     public boolean process(RenderInvoker render) throws Throwable {

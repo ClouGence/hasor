@@ -32,7 +32,7 @@ import java.util.Map;
 public class RenderApiBinderCreater implements ApiBinderCreater {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
-    public ApiBinder createBinder(final ApiBinder apiBinder) {
+    public ApiBinder createBinder(final ApiBinder apiBinder) throws ClassNotFoundException {
         RenderApiBinder binder = new RenderApiBinderImpl(apiBinder);
         //
         Environment environment = apiBinder.getEnvironment();
@@ -59,12 +59,8 @@ public class RenderApiBinderCreater implements ApiBinderCreater {
         //
         for (String key : renderMap.keySet()) {
             String type = renderMap.get(key);
-            try {
-                Class<?> renderType = environment.getClassLoader().loadClass(type);
-                binder.suffix(key).bind((Class<? extends RenderEngine>) renderType);
-            } catch (Exception e) {
-                logger.error("web -> renderType {} load failed {}.", type, e.getMessage(), e);
-            }
+            Class<?> renderType = environment.getClassLoader().loadClass(type);
+            binder.suffix(key).bind((Class<? extends RenderEngine>) renderType);
         }
         //
         return binder;
