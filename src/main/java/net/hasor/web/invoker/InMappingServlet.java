@@ -14,28 +14,27 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
+import net.hasor.core.BindInfo;
 import net.hasor.web.Invoker;
-import net.hasor.web.MappingData;
 
+import javax.servlet.http.HttpServlet;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
 /**
- * @version : 2016-12-26
+ * 线程安全
+ * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-interface InnerMappingData extends MappingData {
-    /**
-     * 首先测试路径是否匹配，然后判断Restful实例是否支持这个 请求方法。
-     * @return 返回测试结果。
-     */
-    public boolean matchingMapping(Invoker invoker);
-
-    public String getMappingToMatches();
-
-    /**
-     * 调用目标
-     * @throws Throwable 异常抛出
-     */
-    public Method findMethod(final Invoker invoker);
-
-    public boolean isAsync(Invoker invoker);
+public class InMappingServlet extends InMappingDef {
+    private Map<String, String> initParams;
+    public InMappingServlet(long index, BindInfo<? extends HttpServlet> targetType, String mappingTo, List<Method> methodList, boolean force, Map<String, String> initParams) {
+        super(index, targetType, mappingTo, methodList, force);
+        this.initParams = initParams;
+    }
+    //
+    @Override
+    public Object newInstance(Invoker invoker) {
+        return super.newInstance(invoker);
+    }
 }

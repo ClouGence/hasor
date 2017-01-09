@@ -34,7 +34,7 @@ import java.util.concurrent.Future;
  */
 public class InvokerContext implements WebPluginCaller {
     private AppContext           appContext     = null;
-    private InnerMappingData[]   invokeArray    = new InnerMappingData[0];
+    private InMapping[]          invokeArray    = new InMapping[0];
     private AbstractDefinition[] filters        = new AbstractDefinition[0];
     private WebPlugin[]          plugins        = new WebPlugin[0];
     private RootInvokerCreater   invokerCreater = null;
@@ -44,20 +44,20 @@ public class InvokerContext implements WebPluginCaller {
         final Map<String, String> config = Collections.unmodifiableMap(new HashMap<String, String>(configMap));
         //
         // .MappingData
-        List<InnerMappingDataDefinition> mappingList = appContext.findBindingBean(InnerMappingDataDefinition.class);
-        Collections.sort(mappingList, new Comparator<InnerMappingDataDefinition>() {
-            public int compare(InnerMappingDataDefinition o1, InnerMappingDataDefinition o2) {
+        List<InMappingDef> mappingList = appContext.findBindingBean(InMappingDef.class);
+        Collections.sort(mappingList, new Comparator<InMappingDef>() {
+            public int compare(InMappingDef o1, InMappingDef o2) {
                 return o1.getMappingTo().compareToIgnoreCase(o2.getMappingTo()) * -1;
             }
         });
-        Collections.sort(mappingList, new Comparator<InnerMappingDataDefinition>() {
-            public int compare(InnerMappingDataDefinition o1, InnerMappingDataDefinition o2) {
+        Collections.sort(mappingList, new Comparator<InMappingDef>() {
+            public int compare(InMappingDef o1, InMappingDef o2) {
                 long o1Index = o1.getIndex();
                 long o2Index = o2.getIndex();
                 return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
             }
         });
-        this.invokeArray = mappingList.toArray(new InnerMappingData[mappingList.size()]);
+        this.invokeArray = mappingList.toArray(new InMapping[mappingList.size()]);
         //
         // .WebPlugin
         List<WebPluginDefinition> pluginList = appContext.findBindingBean(WebPluginDefinition.class);
@@ -129,8 +129,8 @@ public class InvokerContext implements WebPluginCaller {
     }
     //
     public ExceuteCaller genCaller(Invoker invoker) {
-        InnerMappingData foundDefine = null;
-        for (InnerMappingData define : this.invokeArray) {
+        InMapping foundDefine = null;
+        for (InMapping define : this.invokeArray) {
             if (define.matchingMapping(invoker)) {
                 foundDefine = define;
                 break;

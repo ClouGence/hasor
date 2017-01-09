@@ -344,8 +344,8 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     protected void jeeServlet(long index, String pattern, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams) {
         try {
             Method serviceMethod = DefaultServlet.class.getMethod("service", new Class[] { ServletRequest.class, ServletResponse.class });
-            InnerMappingDataDefinition define = new InnerMappingDataDefinition(index, servletRegister, pattern, Arrays.asList(serviceMethod), false);
-            bindType(InnerMappingDataDefinition.class).uniqueName().toInstance(define);/*单例*/
+            InMappingServlet define = new InMappingServlet(index, servletRegister, pattern, Arrays.asList(serviceMethod), false, initParams);
+            bindType(InMappingDef.class).uniqueName().toInstance(define);/*单例*/
         } catch (NoSuchMethodException e) {
             throw ExceptionUtils.toRuntimeException(e);
         }

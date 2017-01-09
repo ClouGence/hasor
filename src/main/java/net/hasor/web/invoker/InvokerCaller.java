@@ -48,13 +48,13 @@ import java.util.regex.Pattern;
  */
 class InvokerCaller implements ExceuteCaller {
     protected Logger                    logger          = LoggerFactory.getLogger(getClass());
-    private   InnerMappingData          mappingToDefine = null;
+    private   InMapping                 mappingToDefine = null;
     private   AbstractDefinition[]      filterArrays    = null;
     private   WebPluginCaller           pluginCaller    = null;
     private   Map<String, List<String>> queryParamLocal = null;
     private   Map<String, Object>       pathParamsLocal = null;
     //
-    public InvokerCaller(InnerMappingData mappingToDefine, AbstractDefinition[] filterArrays, WebPluginCaller pluginCaller) {
+    public InvokerCaller(InMapping mappingToDefine, AbstractDefinition[] filterArrays, WebPluginCaller pluginCaller) {
         this.mappingToDefine = mappingToDefine;
         this.filterArrays = (filterArrays == null) ? new AbstractDefinition[0] : filterArrays;
         this.pluginCaller = pluginCaller;
@@ -106,7 +106,7 @@ class InvokerCaller implements ExceuteCaller {
     private Object invoke(final Method targetMethod, Invoker invoker) throws Throwable {
         //
         // .初始化WebController
-        final Object targetObject = invoker.getAppContext().getInstance(this.mappingToDefine.getTargetType());
+        final Object targetObject = this.mappingToDefine.newInstance(invoker);
         if (targetObject != null && targetObject instanceof Controller) {
             ((Controller) targetObject).initController(invoker);
         }

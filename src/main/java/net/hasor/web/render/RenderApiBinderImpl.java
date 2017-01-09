@@ -16,7 +16,7 @@
 package net.hasor.web.render;
 import net.hasor.core.*;
 import net.hasor.core.binder.ApiBinderWrap;
-import net.hasor.web.invoker.InnerMappingDataDefinition;
+import net.hasor.web.invoker.InMappingDef;
 import org.more.util.ExceptionUtils;
 import org.more.util.StringUtils;
 
@@ -93,8 +93,8 @@ public class RenderApiBinderImpl extends ApiBinderWrap implements RenderApiBinde
                 continue;
             //
             String pattern = "/*." + suffix.toLowerCase();
-            InnerMappingDataDefinition define = new InnerMappingDataDefinition(Long.MAX_VALUE, defaultServletBindInfo, pattern, Arrays.asList(serviceMethod), false);
-            bindType(InnerMappingDataDefinition.class).uniqueName().toInstance(define);/*单例*/
+            InMappingDef define = new InMappingDef(Long.MAX_VALUE, defaultServletBindInfo, pattern, Arrays.asList(serviceMethod), false);
+            bindType(InMappingDef.class).uniqueName().toInstance(define);/*单例*/
         }
     }
     //

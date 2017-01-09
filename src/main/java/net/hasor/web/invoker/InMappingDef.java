@@ -30,7 +30,7 @@ import java.util.*;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InnerMappingDataDefinition implements InnerMappingData {
+public class InMappingDef implements InMapping {
     private final long                index;
     private       BindInfo<?>         targetType;
     private       String              mappingTo;
@@ -39,7 +39,7 @@ public class InnerMappingDataDefinition implements InnerMappingData {
     private       Set<Method>         asyncMethod;
     private AsyncSupported defaultAsync = AsyncSupported.no;
     //
-    private InnerMappingDataDefinition(long index, BindInfo<?> targetType, String mappingTo) {
+    private InMappingDef(long index, BindInfo<?> targetType, String mappingTo) {
         this.index = index;
         this.targetType = targetType;
         String servicePath = Hasor.assertIsNotNull(mappingTo);
@@ -47,7 +47,7 @@ public class InnerMappingDataDefinition implements InnerMappingData {
             throw new NullPointerException("Service path is empty.");
         }
         if (!servicePath.matches("/.+")) {
-            throw new IllegalStateException("Service path format error");
+            throw new IllegalStateException("Service path format error, must be a '/' at the start.");
         }
         if (targetType.getBindType().getAnnotation(Async.class) != null) {
             this.defaultAsync = AsyncSupported.yes;
@@ -59,7 +59,7 @@ public class InnerMappingDataDefinition implements InnerMappingData {
         this.asyncMethod = new HashSet<Method>();
     }
     //
-    public InnerMappingDataDefinition(long index, BindInfo<?> targetType, String mappingTo, List<Method> methodList, boolean force) {
+    public InMappingDef(long index, BindInfo<?> targetType, String mappingTo, List<Method> methodList, boolean force) {
         this(index, targetType, mappingTo);
         if (methodList == null || methodList.isEmpty()) {
             return;
@@ -176,6 +176,11 @@ public class InnerMappingDataDefinition implements InnerMappingData {
         }
         AsyncSupported async = this.asyncMethod.contains(targetMethod) ? AsyncSupported.yes : this.defaultAsync;
         return async == AsyncSupported.yes;
+    }
+    //
+    @Override
+    public Object newInstance(Invoker invoker) {
+        return invoker.getAppContext().getInstance(getTargetType());
     }
     //
     @Override

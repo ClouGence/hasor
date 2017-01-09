@@ -111,8 +111,8 @@ public class InvokerWebApiBinderCreater implements ApiBinderCreater {
         logger.info("restful -> type ‘{}’ mappingTo: ‘{}’.", clazz.getName(), mto.value());
         List<Method> methodList = BeanUtils.getMethods(clazz);
         BindInfo<?> bindInfo = apiBinder.bindType(clazz).uniqueName().toInfo();
-        InnerMappingDataDefinition define = new InnerMappingDataDefinition(0, bindInfo, mto.value(), methodList, false);
-        apiBinder.bindType(InnerMappingDataDefinition.class).uniqueName().toInstance(define);
+        InMappingDef define = new InMappingDef(0, bindInfo, mto.value(), methodList, false);
+        apiBinder.bindType(InMappingDef.class).uniqueName().toInstance(define);
         return true;
     }
     //
