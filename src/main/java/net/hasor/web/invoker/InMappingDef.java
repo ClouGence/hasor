@@ -179,7 +179,7 @@ public class InMappingDef implements InMapping {
     }
     //
     @Override
-    public Object newInstance(Invoker invoker) {
+    public Object newInstance(Invoker invoker) throws Throwable {
         return invoker.getAppContext().getInstance(getTargetType());
     }
     //

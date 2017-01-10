@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
+import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.web.Invoker;
+import org.more.util.ExceptionUtils;
+import org.more.util.Iterators;
 
+import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 /**
@@ -28,13 +34,50 @@ import java.util.Map;
  */
 public class InMappingServlet extends InMappingDef {
     private Map<String, String> initParams;
-    public InMappingServlet(long index, BindInfo<? extends HttpServlet> targetType, String mappingTo, List<Method> methodList, boolean force, Map<String, String> initParams) {
-        super(index, targetType, mappingTo, methodList, force);
+    private Object              servlet;
+    public InMappingServlet(long index, BindInfo<? extends HttpServlet> targetType, String mappingTo, Map<String, String> initParams) {
+        super(index, targetType, mappingTo, findMethod(), true);
         this.initParams = initParams;
+    }
+    private static List<Method> findMethod() {
+        try {
+            Method serviceMethod = HttpServlet.class.getMethod("service", new Class[] { ServletRequest.class, ServletResponse.class });
+            return Arrays.asList(serviceMethod);
+        } catch (NoSuchMethodException e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
     }
     //
     @Override
-    public Object newInstance(Invoker invoker) {
-        return super.newInstance(invoker);
+    public Object newInstance(Invoker invoker) throws Throwable {
+        if (this.servlet != null) {
+            return this.servlet;
+        }
+        synchronized (this) {
+            if (this.servlet != null) {
+                return this.servlet;
+            }
+            final AppContext appContext = invoker.getAppContext();
+            this.servlet = super.newInstance(invoker);
+            ((Servlet) this.servlet).init(new ServletConfig() {
+                @Override
+                public String getServletName() {
+                    return getTargetType().toString();
+                }
+                @Override
+                public ServletContext getServletContext() {
+                    return appContext.getInstance(ServletContext.class);
+                }
+                @Override
+                public String getInitParameter(String name) {
+                    return initParams.get(name);
+                }
+                @Override
+                public Enumeration<String> getInitParameterNames() {
+                    return Iterators.asEnumeration(initParams.keySet().iterator());
+                }
+            });
+        }
+        return this.servlet;
     }
 }

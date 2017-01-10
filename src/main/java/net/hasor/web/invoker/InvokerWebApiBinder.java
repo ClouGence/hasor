@@ -25,15 +25,14 @@ import net.hasor.web.*;
 import net.hasor.web.definition.*;
 import net.hasor.web.listener.ContextListenerDefinition;
 import net.hasor.web.listener.HttpSessionListenerDefinition;
-import net.hasor.web.render.DefaultServlet;
 import net.hasor.web.startup.RuntimeFilter;
 import org.more.util.ArrayUtils;
-import org.more.util.ExceptionUtils;
 
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
-import java.lang.reflect.Method;
 import java.util.*;
 /**
  * 该类是{@link WebApiBinder}接口实现。
@@ -342,13 +341,8 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     //
     // ------------------------------------------------------------------------------------------------------
     protected void jeeServlet(long index, String pattern, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams) {
-        try {
-            Method serviceMethod = DefaultServlet.class.getMethod("service", new Class[] { ServletRequest.class, ServletResponse.class });
-            InMappingServlet define = new InMappingServlet(index, servletRegister, pattern, Arrays.asList(serviceMethod), false, initParams);
-            bindType(InMappingDef.class).uniqueName().toInstance(define);/*单例*/
-        } catch (NoSuchMethodException e) {
-            throw ExceptionUtils.toRuntimeException(e);
-        }
+        InMappingServlet define = new InMappingServlet(index, servletRegister, pattern, initParams);
+        bindType(InMappingDef.class).uniqueName().toInstance(define);/*单例*/
     }
     @Override
     public ServletBindingBuilder jeeServlet(final String urlPattern, final String... morePatterns) {
