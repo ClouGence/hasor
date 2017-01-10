@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Module;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,6 +40,11 @@ public class ApiBinderInvocationHandler implements InvocationHandler {
             throw new UnsupportedOperationException("this method is not support -> " + method);
         }
         //
+        if (method.getName().equals("installModule")) {
+            if (args[0] != null)
+                ((Module) args[0]).loadModule((ApiBinder) proxy);
+            return null;
+        }
         if (method.getName().equals("tryCast")) {
             Class<?>[] types = method.getParameterTypes();
             if (types.length == 1 && types[0] == Class.class) {

@@ -35,6 +35,12 @@ public class RenderApiBinderCreater implements ApiBinderCreater {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public ApiBinder createBinder(final ApiBinder apiBinder) throws ClassNotFoundException {
+        try {
+            apiBinder.getEnvironment().getClassLoader().loadClass("javax.servlet.http.HttpServlet");
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+        //
         apiBinder.bindType(DefaultServlet.class).nameWith(DefaultServlet.DEFAULT_NAME);// see: net.hasor.web.render.RenderApiBinderImpl.bindSuffix()
         //
         RenderApiBinder binder = new RenderApiBinderImpl(apiBinder);

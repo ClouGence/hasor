@@ -37,7 +37,23 @@ import java.io.IOException;
 public class InvokerWebApiBinderCreater implements ApiBinderCreater {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
-    public WebApiBinder createBinder(final ApiBinder apiBinder) throws IOException, XMLStreamException {
+    public ApiBinder createBinder(final ApiBinder apiBinder) throws IOException, XMLStreamException {
+        Environment environment = apiBinder.getEnvironment();
+        Object context = environment.getContext();
+        //
+        try {
+            apiBinder.getEnvironment().getClassLoader().loadClass("javax.servlet.ServletContext");
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+        //
+        if (!(context instanceof ServletContext))
+            return null;
+        return Creater.newBinder(apiBinder);
+    }
+}
+class Creater {
+    public static ApiBinder newBinder(ApiBinder apiBinder) throws XMLStreamException, IOException {
         Environment environment = apiBinder.getEnvironment();
         Object context = environment.getContext();
         if (!(context instanceof ServletContext)) {
