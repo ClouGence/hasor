@@ -1,16 +1,19 @@
-﻿===== Hasor-Core v2.6.0 (2016-12-?)
+﻿===== Hasor-Core v3.0.0 (2017-01-10)
 * 新增:
     01.新增 ApiBinder 扩展机制。开发者可以通过 net.hasor.core.binder.ApiBinderCreater 接口可以自定义 ApiBinder。
     02.WebApiBinder 新增可以设置(请求/响应)编码方法。
     03.通过 ContainerCreater 可以扩展 Hasor 的上帝类了。
     04.新增 @AopIgnore 注解，用于忽略Hasor的Aop动态代理功能。当标记到包上时表示整个包都忽略动态代理。该功能可以有效的防止泛滥的全局Aop。
     05.新增 ApiBinder 接口新增 tryCase 方法用于将 ApiBinder 转换为支持的另外一种接口。
+    06.新增 InvokerFilter 接口，该接口功能等同于 Filter。
+    07.新增 Invoker 接口取代之前的 RenderData 接口，同时 Invoker 可以像 ApiBinder 一样支持扩展。
+    08.新增 MappingSetup 接口，当发现一个控制器时会通过该接口通知给开发者。
+    09.新增 WebPlugin 接口，用来扩展过滤器链的开始调用，和调用结束。
 * 改进:
-    01.WebApiBinder 使用 ApiBinderCreater 机制提供。
-    02.Web 特性通过 ApiBinder扩展机制融入 AppContext，不在需要继承 AppContext 定制化。
-    03.受益于 ApiBinder 扩展机制，WebEnvironment、WebAppContext、WebHasor 都不在需要。
-    04.restful框架对于，不存在的模板不在输出layout，而是直接交给后续 Filter 处理。
-    05.restful 框架全面于 web 框架融合，功能不变。
+    01.受益于 ApiBinder 扩展机制，WebEnvironment、WebAppContext、WebHasor 都不在需要。
+    02.Web 框架通过 ApiBinder扩展机制融入 AppContext，不在需要 AppContext 的定制化。
+    03.restful 框架和 web 框架。在功能不变的前提下全面融合，代码重构接近90%。
+    04.2.4.4版本中添加的 web-fragment 特性不在支持，原因很容易引起重复配置。
 * 修复:
     01.Fix HasorUnitRunner 在 JUnit 4.12 版本上 computeTestMethods 方法出现异常的问题。
 

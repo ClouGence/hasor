@@ -388,7 +388,9 @@ public abstract class TemplateAppContext implements AppContext {
         supportMap.put(ApiBinder.class, binder);
         for (Map.Entry<Class<?>, Class<?>> ent : extBinderMap.entrySet()) {
             Object supportVal = implMap.get(ent.getValue());
-            supportMap.put(ent.getKey(), supportVal);
+            if (supportVal != null) {
+                supportMap.put(ent.getKey(), supportVal);
+            }
         }
         //
         // .返回

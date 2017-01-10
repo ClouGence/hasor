@@ -34,7 +34,7 @@ import java.util.Map;
 public class RenderApiBinderCreater implements ApiBinderCreater {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
-    public RenderApiBinder createBinder(final ApiBinder apiBinder) throws ClassNotFoundException {
+    public ApiBinder createBinder(final ApiBinder apiBinder) throws ClassNotFoundException {
         apiBinder.bindType(DefaultServlet.class).nameWith(DefaultServlet.DEFAULT_NAME);// see: net.hasor.web.render.RenderApiBinderImpl.bindSuffix()
         //
         RenderApiBinder binder = new RenderApiBinderImpl(apiBinder);
