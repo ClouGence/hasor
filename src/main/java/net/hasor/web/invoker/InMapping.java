@@ -40,5 +40,5 @@ interface InMapping extends MappingData {
     public boolean isAsync(Invoker invoker);
 
     /**创建对象*/
-    public Object newInstance(Invoker invoker);
+    public Object newInstance(Invoker invoker) throws Throwable;
 }
