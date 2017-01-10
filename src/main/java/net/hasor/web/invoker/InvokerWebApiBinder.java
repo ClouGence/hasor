@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
-import net.hasor.core.Provider;
+import net.hasor.core.*;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.core.provider.InfoAwareProvider;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.web.*;
+import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.definition.*;
 import net.hasor.web.listener.ContextListenerDefinition;
 import net.hasor.web.listener.HttpSessionListenerDefinition;
 import net.hasor.web.startup.RuntimeFilter;
 import org.more.util.ArrayUtils;
+import org.more.util.BeanUtils;
+import org.more.util.StringUtils;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.*;
 /**
  * 该类是{@link WebApiBinder}接口实现。
@@ -249,9 +251,6 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         InvokeFilterDefinition define = new InvokeFilterDefinition(index, pattern, matcher, filterRegister, initParams);
         bindType(AbstractDefinition.class).uniqueName().toInstance(define);
     }
-    //
-    //
-    //
     private abstract class FiltersModuleBinder<T> implements FilterBindingBuilder<T> {
         private final Class<T>       targetType;
         private final UriPatternType uriPatternType;
@@ -356,26 +355,9 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         return this.jeeServlet(null, morePatterns);
     }
     //
-    private class ServletsModuleBuilder implements ServletBindingBuilder {
-        private final List<String> uriPatterns;
+    private class ServletsModuleBuilder extends MappingToBuilder<HttpServlet> implements ServletBindingBuilder {
         ServletsModuleBuilder(final List<String> uriPatterns) {
-            this.uriPatterns = uriPatterns;
-        }
-        @Override
-        public void with(final Class<? extends HttpServlet> servletKey) {
-            this.with(0, servletKey, null);
-        }
-        @Override
-        public void with(final HttpServlet servlet) {
-            this.with(0, servlet, null);
-        }
-        @Override
-        public void with(final Provider<? extends HttpServlet> servletProvider) {
-            this.with(0, servletProvider, null);
-        }
-        @Override
-        public void with(BindInfo<? extends HttpServlet> servletRegister) {
-            this.with(0, servletRegister, null);
+            super(HttpServlet.class, uriPatterns);
         }
         @Override
         public void with(final Class<? extends HttpServlet> servletKey, final Map<String, String> initParams) {
@@ -392,18 +374,6 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         @Override
         public void with(BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams) {
             this.with(0, servletRegister, initParams);
-        }
-        @Override
-        public void with(final int index, final Class<? extends HttpServlet> servletKey) {
-            this.with(index, servletKey, null);
-        }
-        @Override
-        public void with(final int index, final HttpServlet servlet) {
-            this.with(index, servlet, null);
-        }
-        @Override
-        public void with(final int index, final Provider<? extends HttpServlet> servletProvider) {
-            this.with(index, servletProvider, null);
         }
         @Override
         public void with(int index, BindInfo<? extends HttpServlet> servletRegister) {
@@ -430,10 +400,116 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             if (initParams == null) {
                 initParams = new HashMap<String, String>();
             }
-            for (String pattern : this.uriPatterns) {
+            for (String pattern : this.getUriPatterns()) {
                 jeeServlet(index, pattern, servletRegister, initParams);
             }
         }
+    }
+    //
+    // ------------------------------------------------------------------------------------------------------
+    @Override
+    public MappingToBindingBuilder<Object> mappingTo(String urlPattern, String... morePatterns) {
+        return new MappingToBuilder<Object>(Object.class, newArrayList(morePatterns, urlPattern)) {
+            @Override
+            public void with(int index, BindInfo<? extends Object> targetInfo) {
+                List<Method> methodList = BeanUtils.getMethods(targetInfo.getBindType());
+                for (String pattern : this.getUriPatterns()) {
+                    if (StringUtils.isBlank(pattern))
+                        continue;
+                    //
+                    InMappingDef define = new InMappingDef(index, targetInfo, pattern, methodList, false);
+                    bindType(InMappingDef.class).uniqueName().toInstance(define);
+                }
+            }
+        };
+    }
+    @Override
+    public MappingToBindingBuilder<Object> mappingTo(String[] morePatterns) {
+        if (ArrayUtils.isEmpty(morePatterns)) {
+            throw new NullPointerException("mappingTo patterns is empty.");
+        }
+        return this.mappingTo(null, morePatterns);
+    }
+    //
+    @Override
+    public void scanMappingTo() {
+        this.scanMappingTo(new Matcher<Class<?>>() {
+            @Override
+            public boolean matches(Class<?> target) {
+                return true;
+            }
+        });
+    }
+    @Override
+    public void scanMappingTo(String... packages) {
+        this.scanMappingTo(new Matcher<Class<?>>() {
+            @Override
+            public boolean matches(Class<?> target) {
+                return true;
+            }
+        });
+    }
+    @Override
+    public void scanMappingTo(Matcher<Class<?>> matcher, String... packages) {
+        String[] defaultPackages = this.getEnvironment().getSpanPackage();
+        String[] scanPackages = (packages == null || packages.length == 0) ? defaultPackages : packages;
+        //
+        Set<Class<?>> serviceSet = this.findClass(MappingTo.class, scanPackages);
+        serviceSet = (serviceSet == null) ? new HashSet<Class<?>>() : new HashSet<Class<?>>(serviceSet);
+        serviceSet.remove(MappingTo.class);
+        if (serviceSet.isEmpty()) {
+            logger.warn("mapingTo -> exit , not found any @MappingTo.");
+        }
+        for (Class<?> type : serviceSet) {
+            loadType(this, type);
+        }
+    }
+    //
+    private abstract class MappingToBuilder<T> implements MappingToBindingBuilder<T> {
+        private       Class<T>     targetClass;
+        private final List<String> uriPatterns;
+        MappingToBuilder(Class<T> targetClass, List<String> uriPatterns) {
+            this.targetClass = targetClass;
+            this.uriPatterns = uriPatterns;
+        }
+        @Override
+        public void with(final Class<? extends T> targetKey) {
+            this.with(0, targetKey);
+        }
+        @Override
+        public void with(final T target) {
+            this.with(0, target);
+        }
+        @Override
+        public void with(final Provider<? extends T> targetProvider) {
+            this.with(0, targetProvider);
+        }
+        @Override
+        public void with(BindInfo<? extends T> targetInfo) {
+            this.with(0, targetInfo);
+        }
+        @Override
+        public void with(final int index, final Class<? extends T> targetKey) {
+            Hasor.assertIsNotNull(targetKey);
+            BindInfo<? extends T> info = bindType(this.targetClass).uniqueName().to(targetKey).toInfo();
+            this.with(index, info);
+        }
+        @Override
+        public void with(final int index, final T target) {
+            Hasor.assertIsNotNull(target);
+            BindInfo<? extends T> info = bindType(this.targetClass).uniqueName().toInstance(target).toInfo();
+            this.with(index, info);
+        }
+        @Override
+        public void with(final int index, final Provider<? extends T> targetProvider) {
+            Hasor.assertIsNotNull(targetProvider);
+            BindInfo<? extends T> info = bindType(this.targetClass).uniqueName().toProvider(targetProvider).toInfo();
+            this.with(index, info);
+        }
+        public List<String> getUriPatterns() {
+            return this.uriPatterns;
+        }
+        public abstract void with(int index, BindInfo<? extends T> targetInfo);
     }
     //
     // ------------------------------------------------------------------------------------------------------
@@ -446,5 +522,25 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             list.add(object);
         }
         return list;
+    }
+    public boolean loadType(WebApiBinder apiBinder, Class<?> clazz) {
+        int modifier = clazz.getModifiers();
+        if (checkIn(modifier, Modifier.INTERFACE) || checkIn(modifier, Modifier.ABSTRACT)) {
+            return false;
+        }
+        if (!clazz.isAnnotationPresent(MappingTo.class)) {
+            return false;
+        }
+        //
+        MappingTo mto = clazz.getAnnotation(MappingTo.class);
+        logger.info("mapingTo[init] -> type ‘{}’ mappingTo: ‘{}’.", clazz.getName(), mto.value());
+        apiBinder.mappingTo(mto.value()).with(clazz);
+        return true;
+    }
+    //
+    /** 通过位运算决定check是否在data里。 */
+    private boolean checkIn(final int data, final int check) {
+        int or = data | check;
+        return or == data;
     }
 }

@@ -16,6 +16,7 @@
 package net.hasor.web;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
+import net.hasor.core.Matcher;
 import net.hasor.core.Provider;
 
 import javax.servlet.Filter;
@@ -46,11 +47,24 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     public ServletVersion getServletVersion();
     //
 
-    /**使用传统表达式，创建一个{@link ServletBindingBuilder}。*/
+    /**使用 MappingTo 表达式，创建一个{@link ServletBindingBuilder}。*/
     public ServletBindingBuilder jeeServlet(String urlPattern, String... morePatterns);
 
-    /**使用传统表达式，创建一个{@link ServletBindingBuilder}。*/
+    /**使用 MappingTo 表达式，创建一个{@link ServletBindingBuilder}。*/
     public ServletBindingBuilder jeeServlet(String[] morePatterns);
+
+    /**使用 MappingTo 表达式，创建一个{@link MappingToBindingBuilder}。*/
+    public MappingToBindingBuilder<Object> mappingTo(String urlPattern, String... morePatterns);
+
+    /**使用 MappingTo 表达式，创建一个{@link MappingToBindingBuilder}。*/
+    public MappingToBindingBuilder<Object> mappingTo(String[] morePatterns);
+
+    //
+    public void scanMappingTo();
+
+    public void scanMappingTo(String... packages);
+
+    public void scanMappingTo(Matcher<Class<?>> matcher, String... packages);
     //
 
     /**使用传统表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
@@ -165,15 +179,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         public void through(int index, BindInfo<? extends T> filterRegister, Map<String, String> initParams);
     }
     /**负责配置Servlet。*/
-    public static interface ServletBindingBuilder {
-        public void with(Class<? extends HttpServlet> servletKey);
-
-        public void with(HttpServlet servlet);
-
-        public void with(Provider<? extends HttpServlet> servletProvider);
-
-        public void with(BindInfo<? extends HttpServlet> servletRegister);
-
+    public static interface ServletBindingBuilder extends MappingToBindingBuilder<HttpServlet> {
         //
         public void with(Class<? extends HttpServlet> servletKey, Map<String, String> initParams);
 
@@ -184,15 +190,6 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         public void with(BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams);
 
         //
-        public void with(int index, Class<? extends HttpServlet> servletKey);
-
-        public void with(int index, HttpServlet servlet);
-
-        public void with(int index, Provider<? extends HttpServlet> servletProvider);
-
-        public void with(int index, BindInfo<? extends HttpServlet> servletRegister);
-
-        //
         public void with(int index, Class<? extends HttpServlet> servletKey, Map<String, String> initParams);
 
         public void with(int index, HttpServlet servlet, Map<String, String> initParams);
@@ -200,5 +197,24 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         public void with(int index, Provider<? extends HttpServlet> servletProvider, Map<String, String> initParams);
 
         public void with(int index, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams);
+    }
+    /**负责配置Servlet。*/
+    public static interface MappingToBindingBuilder<T> {
+        public void with(Class<? extends T> targetKey);
+
+        public void with(T target);
+
+        public void with(Provider<? extends T> targetProvider);
+
+        public void with(BindInfo<? extends T> targetInfo);
+
+        //
+        public void with(int index, Class<? extends T> targetKey);
+
+        public void with(int index, T target);
+
+        public void with(int index, Provider<? extends T> targetProvider);
+
+        public void with(int index, BindInfo<? extends T> targetInfo);
     }
 }

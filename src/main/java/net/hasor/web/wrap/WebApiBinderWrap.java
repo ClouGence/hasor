@@ -16,6 +16,7 @@
 package net.hasor.web.wrap;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
+import net.hasor.core.Matcher;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.web.*;
@@ -97,6 +98,26 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
     @Override
     public ServletBindingBuilder jeeServlet(String[] moreMappingTo) {
         return this.webApiBinder.jeeServlet(moreMappingTo);
+    }
+    @Override
+    public MappingToBindingBuilder<Object> mappingTo(String urlPattern, String... morePatterns) {
+        return this.webApiBinder.mappingTo(urlPattern, morePatterns);
+    }
+    @Override
+    public MappingToBindingBuilder<Object> mappingTo(String[] morePatterns) {
+        return this.webApiBinder.mappingTo(morePatterns);
+    }
+    @Override
+    public void scanMappingTo() {
+        this.webApiBinder.scanMappingTo();
+    }
+    @Override
+    public void scanMappingTo(String... packages) {
+        this.webApiBinder.scanMappingTo(packages);
+    }
+    @Override
+    public void scanMappingTo(Matcher<Class<?>> matcher, String... packages) {
+        this.webApiBinder.scanMappingTo(matcher, packages);
     }
     @Override
     public void addServletListener(Class<? extends ServletContextListener> targetKey) {
