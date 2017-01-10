@@ -533,8 +533,13 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         }
         //
         MappingTo mto = clazz.getAnnotation(MappingTo.class);
-        logger.info("mapingTo[init] -> type ‘{}’ mappingTo: ‘{}’.", clazz.getName(), mto.value());
-        apiBinder.mappingTo(mto.value()).with(clazz);
+        if (HttpServlet.class.isAssignableFrom(clazz)) {
+            apiBinder.jeeServlet(mto.value()).with((Class<? extends HttpServlet>) clazz);
+            logger.info("mapingTo[Servlet] -> type ‘{}’ mappingTo: ‘{}’.", clazz.getName(), mto.value());
+        } else {
+            apiBinder.mappingTo(mto.value()).with(clazz);
+            logger.info("mapingTo[Object] -> type ‘{}’ mappingTo: ‘{}’.", clazz.getName(), mto.value());
+        }
         return true;
     }
     //
