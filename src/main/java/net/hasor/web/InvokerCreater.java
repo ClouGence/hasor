@@ -15,9 +15,14 @@
  */
 package net.hasor.web;
 /**
+ * invoker 扩展接口。
  * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface InvokerCreater {
-    public Invoker createExt(Invoker dataContext);
+    /**
+     * 创建 {@link Invoker} 扩展
+     * @param invoker 原始的 Invoker
+     */
+    public Invoker createExt(Invoker invoker);
 }

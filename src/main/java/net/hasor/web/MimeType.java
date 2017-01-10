@@ -15,7 +15,7 @@
  */
 package net.hasor.web;
 /**
- *
+ * MimeType类型查询接口。
  * @version : 2015年2月11日
  * @author 赵永春(zyc@hasor.net)
  */

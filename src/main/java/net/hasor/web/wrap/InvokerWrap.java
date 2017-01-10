@@ -21,7 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Set;
 /**
- * @version : 2013-6-5
+ * {@link Invoker} 接口包装器
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InvokerWrap implements Invoker {

@@ -25,8 +25,8 @@ import org.more.util.Iterators;
 import java.util.Enumeration;
 import java.util.Map;
 /**
- *
- * @version : 2013-4-11
+ * InvokerFilter 定义
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InvokeFilterDefinition extends AbstractDefinition {

@@ -28,7 +28,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 /**
- * @version : 2013-6-5
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 class RootInvokerCreater implements InvokerCreater {

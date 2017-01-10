@@ -20,7 +20,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
  * 验证参数
- * @version : 2013-3-26
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 @Target({ ElementType.PARAMETER })

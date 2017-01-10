@@ -50,7 +50,7 @@ class InvokerCaller implements ExceuteCaller {
     protected Logger                    logger          = LoggerFactory.getLogger(getClass());
     private   InMapping                 mappingToDefine = null;
     private   AbstractDefinition[]      filterArrays    = null;
-    private   WebPluginCaller           pluginCaller    = null;
+    private WebPluginCaller           pluginCaller    = null;
     private   Map<String, List<String>> queryParamLocal = null;
     private   Map<String, Object>       pathParamsLocal = null;
     //

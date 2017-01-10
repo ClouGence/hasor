@@ -20,6 +20,7 @@ import net.hasor.core.Environment;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.web.MimeType;
 import net.hasor.web.ServletVersion;
+import net.hasor.web.WebApiBinder;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.listener.ListenerPipeline;
 import net.hasor.web.listener.ManagedListenerPipeline;
@@ -36,13 +37,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 /**
+ * 渲染插件，的ApiBinder扩展器。
+ * 让 {@link ApiBinder} 支持 {@link WebApiBinder} 类型
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InvokerWebApiBinderCreater implements ApiBinderCreater {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
-    public ApiBinder createBinder(final ApiBinder apiBinder) throws IOException, XMLStreamException {
+    public WebApiBinder createBinder(final ApiBinder apiBinder) throws IOException, XMLStreamException {
         Environment environment = apiBinder.getEnvironment();
         Object context = environment.getContext();
         if (!(context instanceof ServletContext)) {

@@ -19,7 +19,7 @@ import net.hasor.web.InvokerChain;
 import net.hasor.web.definition.AbstractDefinition;
 /**
  *
- * @version : 2013-4-13
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 class InvokerChainInvocation implements InvokerChain {

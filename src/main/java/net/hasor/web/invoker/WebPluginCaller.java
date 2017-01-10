@@ -16,9 +16,10 @@
 package net.hasor.web.invoker;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerData;
+import net.hasor.web.WebPlugin;
 /**
- * 过滤器链扩展。
- * @version : 2016年12月30日
+ * {@link WebPlugin}，插件调用器。
+ * @version : 2017-01-10
  * @author 赵永春(zyc@hasor.net)
  */
 interface WebPluginCaller {

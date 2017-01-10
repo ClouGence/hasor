@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 表单验证功能。
+ * hasor-web 框架的表单验证功能。
  */
 package net.hasor.web.valid;

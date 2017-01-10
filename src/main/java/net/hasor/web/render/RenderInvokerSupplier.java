@@ -21,7 +21,7 @@ import org.more.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 /**
- * @version : 2013-6-5
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RenderInvokerSupplier extends InvokerWrap implements RenderInvoker {

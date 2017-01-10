@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
- * action功能的入口。
- * @version : 2013-5-11
+ * 渲染器插件。
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilter {

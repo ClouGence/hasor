@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Restful 风格 MVC 开发提供支持。
+ * hasor-web 框架中用到的各种wrap。
  */
-package net.hasor.web.annotation;
+package net.hasor.web.wrap;

@@ -17,7 +17,8 @@ package net.hasor.web.valid;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerCreater;
 /**
- * @version : 2013-6-5
+ * 表单验证器，Invoker扩展。
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ValidInvokerCreater implements InvokerCreater {

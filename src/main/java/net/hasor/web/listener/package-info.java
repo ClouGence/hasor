@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Restful 风格 MVC 开发提供支持。
+ * Servlet监听器。
  */
-package net.hasor.web.annotation;
+package net.hasor.web.listener;

@@ -19,7 +19,8 @@ import org.more.bizcommon.Message;
 
 import java.util.List;
 /**
- * @version : 2013-6-5
+ * 表单验证框架Api接口
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface ValidInvoker extends Invoker {

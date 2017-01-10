@@ -19,8 +19,8 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.Matcher;
 import net.hasor.core.Provider;
 /**
- * 渲染引擎
- * @version : 2016年1月3日
+ * 渲染引擎，Api接口。
+ * @version : 2017-01-10
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RenderApiBinder extends ApiBinder {
@@ -41,12 +41,16 @@ public interface RenderApiBinder extends ApiBinder {
     //
     /**负责配置RenderEngine。*/
     public static interface RenderEngineBindingBuilder<T> {
+        /**绑定实现。*/
         public void bind(Class<? extends T> filterKey);
 
+        /**绑定实现。*/
         public void bind(T filter);
 
+        /**绑定实现。*/
         public void bind(Provider<? extends T> filterProvider);
 
+        /**绑定实现。*/
         public void bind(BindInfo<? extends T> filterRegister);
     }
 }

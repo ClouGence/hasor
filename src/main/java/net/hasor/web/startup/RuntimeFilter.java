@@ -35,7 +35,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 入口Filter，同一个应用程序只能实例化一个 RuntimeFilter 对象。
- * @version : 2013-3-25
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RuntimeFilter implements Filter {

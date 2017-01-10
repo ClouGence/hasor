@@ -19,7 +19,7 @@ import org.more.bizcommon.Message;
 import java.util.List;
 /**
  * 添加验证错误消息。
- * @version : 2014年8月27日
+ * @version : 2017-01-10
  * @author 赵永春(zyc@hasor.net)
  */
 public interface ValidErrors extends ValidInvoker {

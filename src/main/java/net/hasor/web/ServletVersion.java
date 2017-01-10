@@ -16,7 +16,7 @@
 package net.hasor.web;
 /**
  * servlet版本
- * @version : 2013-11-4
+ * @version : 2016-12-26
  * @author 赵永春(zyc@hasor.net)
  */
 public enum ServletVersion {

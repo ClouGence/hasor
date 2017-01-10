@@ -26,7 +26,7 @@ import javax.servlet.http.HttpSessionListener;
 import java.util.Map;
 /**
  * 提供了注册Servlet和Filter的方法。
- * @version : 2013-4-10
+ * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface WebApiBinder extends ApiBinder, MimeType {

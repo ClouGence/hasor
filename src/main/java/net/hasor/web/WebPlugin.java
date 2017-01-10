@@ -20,7 +20,17 @@ package net.hasor.web;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface WebPlugin {
+    /**
+     * 在执行过滤器链之前。
+     * @param invoker 当前请求对象
+     * @param info 执行控制器的数据。
+     */
     public void beforeFilter(Invoker invoker, InvokerData info);
 
+    /**
+     * 在执行过滤器链之后。
+     * @param invoker 当前请求对象
+     * @param info 执行控制器的数据。
+     */
     public void afterFilter(Invoker invoker, InvokerData info);
 }

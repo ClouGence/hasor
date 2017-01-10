@@ -17,7 +17,8 @@ package net.hasor.web.render;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerCreater;
 /**
- * @version : 2013-6-5
+ *
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RenderInvokerCreater implements InvokerCreater {

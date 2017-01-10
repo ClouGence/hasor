@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 /**
- * 文件上传功能实现。
+ * hasor-web 框架中文件上传功能实现。
  */
 package net.hasor.web.upload;

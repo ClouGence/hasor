@@ -25,8 +25,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionListener;
 /**
- *
- * @version : 2015年10月26日
+ * {@link WebApiBinder} 接口包装器
+ * @version : 2017-01-10
  * @author 赵永春(zyc@hasor.net)
  */
 public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {

@@ -17,7 +17,6 @@ package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.web.Invoker;
 import net.hasor.web.MimeType;
-import org.more.bizcommon.json.JSON;
 import org.more.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +25,8 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 /**
- * @version : 2013-6-5
+ * {@link Invoker} 接口实现类。
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InvokerSupplier implements Invoker {
@@ -59,7 +59,7 @@ public class InvokerSupplier implements Invoker {
         this.lockKey(REQUEST_KEY);  // response
         this.lockKey(RESPONSE_KEY); // request
     }
-    //
+    @Override
     public AppContext getAppContext() {
         return appContext;
     }
@@ -88,14 +88,14 @@ public class InvokerSupplier implements Invoker {
     @Override
     public void put(String key, Object value) {
         if (StringUtils.isBlank(key) || this.lockKeys.contains(key)) {
-            throw new UnsupportedOperationException("the key['" + key + "'] must not in " + JSON.toString(this.lockKeys) + " or empty");
+            throw new UnsupportedOperationException("the key '" + key + "' is lock key.");
         }
         this.httpRequest.setAttribute(key, value);
     }
     @Override
     public void remove(String key) {
         if (StringUtils.isBlank(key) || this.lockKeys.contains(key)) {
-            throw new UnsupportedOperationException("the key['" + key + "'] must not in " + JSON.toString(this.lockKeys) + " or empty");
+            throw new UnsupportedOperationException("the key '" + key + "' is lock key.");
         }
         this.httpRequest.removeAttribute(key);
     }

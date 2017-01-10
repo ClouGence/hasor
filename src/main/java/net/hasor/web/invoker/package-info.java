@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Restful 框架功能实现。
+ * hasor-web 框架功能实现。
  */
 package net.hasor.web.invoker;

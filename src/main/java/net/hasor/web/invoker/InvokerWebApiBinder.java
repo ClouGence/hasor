@@ -36,7 +36,7 @@ import javax.servlet.http.HttpSessionListener;
 import java.util.*;
 /**
  * 该类是{@link WebApiBinder}接口实现。
- * @version : 2013-4-10
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {

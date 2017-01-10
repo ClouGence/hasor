@@ -20,8 +20,8 @@ import net.hasor.web.Invoker;
 import net.hasor.web.InvokerData;
 import net.hasor.web.WebPlugin;
 /**
- *
- * @version : 2013-4-11
+ * WebPlugin 定义
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public class WebPluginDefinition implements WebPlugin {

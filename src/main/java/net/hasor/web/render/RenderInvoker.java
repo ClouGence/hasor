@@ -16,23 +16,32 @@
 package net.hasor.web.render;
 import net.hasor.web.Invoker;
 /**
- * @version : 2013-6-5
+ * 渲染插件 Api
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface RenderInvoker extends Invoker {
+    /**要渲染的资源。*/
     public String renderTo();
 
+    /**指定要渲染的资源。*/
     public void renderTo(String viewName);
 
+    /**指定要渲染的资源，并指定渲染器。*/
     public void renderTo(String viewType, String viewName);
 
+    /**当前使用的渲染器。*/
     public String viewType();
 
+    /**指定渲染器。*/
     public void viewType(String viewType);
 
+    /**是否启用布局功能。*/
     public boolean layout();
 
+    /**启用布局功能。*/
     public void layoutEnable();
 
+    /**禁用布局功能。*/
     public void layoutDisable();
 }

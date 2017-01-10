@@ -18,6 +18,7 @@ import net.hasor.core.BindInfo;
 
 import java.lang.reflect.Method;
 /**
+ * 控制器映射信息
  * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
  */

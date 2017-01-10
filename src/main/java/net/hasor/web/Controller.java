@@ -15,10 +15,11 @@
  */
 package net.hasor.web;
 /**
- * 提供了注册Servlet和Filter的方法。
- * @version : 2013-4-10
+ * Controller 的初始化调用接口。
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface Controller {
+    /**在处理新请求之前，初始化这个控制器。*/
     public void initController(Invoker renderData);
 }

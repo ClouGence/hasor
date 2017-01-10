@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Map;
 /**
- *
+ * Filter 定义
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */

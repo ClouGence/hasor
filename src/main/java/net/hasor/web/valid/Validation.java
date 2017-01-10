@@ -16,7 +16,7 @@
 package net.hasor.web.valid;
 /**
  * 对象验证，如果验证失败返回验证消息。
- * @version : 2014年8月27日
+ * @version : 2017-01-10
  * @author 赵永春(zyc@hasor.net)
  */
 public interface Validation<T> {

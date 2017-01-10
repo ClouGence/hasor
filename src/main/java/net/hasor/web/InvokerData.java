@@ -16,6 +16,7 @@
 package net.hasor.web;
 import java.lang.reflect.Method;
 /**
+ * 调用信息
  * @version : 2016-12-24
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -23,7 +24,9 @@ public interface InvokerData {
     /** 查找调用方法 */
     public Method targetMethod();
 
+    /** 方法参数 */
     public Object[] getParameters();
 
+    /** 控制器 */
     public MappingData getMappingTo();
 }

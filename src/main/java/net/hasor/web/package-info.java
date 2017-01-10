@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Hasor Web 开发框架。
+ * hasor-web 开发框架。
  */
 @AopIgnore
 package net.hasor.web;

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * <p>Hasor Web 的启动入口。</p>
+ * hasor-web 的启动入口。
  */
 package net.hasor.web.startup;

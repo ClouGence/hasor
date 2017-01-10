@@ -26,7 +26,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 /**
- *
+ * {@link MimeType} 接口实现。
  * @version : 2015年2月11日
  * @author 赵永春(zyc@hasor.net)
  */

@@ -25,7 +25,7 @@ import javax.servlet.ServletResponse;
 import java.lang.reflect.Method;
 import java.util.*;
 /**
- * 该类是{@link RenderApiBinder}接口实现。
+ * {@link RenderApiBinder}接口实现。
  * @version : 2017-01-08
  * @author 赵永春 (zyc@hasor.net)
  */

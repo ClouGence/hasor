@@ -21,7 +21,8 @@ import org.more.util.StringUtils;
 
 import java.util.*;
 /**
- * @version : 2013-6-5
+ * 表单验证器，Invoker 扩展实现类。
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker, ValidErrors {

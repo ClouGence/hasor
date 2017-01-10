@@ -29,7 +29,7 @@ import java.util.*;
 import java.util.concurrent.Future;
 /**
  * 上下文。
- * @version : 2014年8月27日
+ * @version : 2017-01-10
  * @author 赵永春(zyc@hasor.net)
  */
 public class InvokerContext implements WebPluginCaller {

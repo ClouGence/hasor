@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 /**
- * 表单验证器
+ * 表单验证器插件
  * @version : 2016-08-03
  * @author 赵永春 (zyc@hasor.net)
  */

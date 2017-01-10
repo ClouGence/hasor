@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 /**
  * 验证执行器,线程安全
- * @version : 2016-08-03
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 class ValidDefinition {

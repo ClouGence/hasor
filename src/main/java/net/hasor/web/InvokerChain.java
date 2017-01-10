@@ -15,9 +15,15 @@
  */
 package net.hasor.web;
 /**
+ * 请求调用链
  * @version : 2016-12-24
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface InvokerChain {
+    /**
+     * 继续执行后续的请求过滤器链。
+     * @param invoker 当前请求对象
+     * @throws Throwable 请求过程中抛出的异常。
+     */
     public void doNext(Invoker invoker) throws Throwable;
 }

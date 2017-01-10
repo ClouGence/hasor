@@ -20,8 +20,8 @@ import org.more.bizcommon.json.JSON;
 
 import java.util.List;
 /**
- *
- * @version : 2013-4-11
+ * 渲染引擎定义。
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 class RenderDefinition {

@@ -30,7 +30,7 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 /**
  *
- * @version : 2013-3-25
+ * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RuntimeListener implements ServletContextListener, HttpSessionListener {
