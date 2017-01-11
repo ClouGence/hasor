@@ -46,17 +46,17 @@
  * @author Scott Ferguson
  */
 package net.hasor.libs.com.caucho.hessian.io;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.logging.Level;
-
 import net.hasor.libs.com.caucho.hessian.util.HessianFreeList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.logging.Level;
 /**
  * Factory for creating HessianInput and HessianOutput streams.
  */
-@SuppressWarnings({"unused"})
+@SuppressWarnings({ "unused" })
 public class HessianFactory {
     public static final Logger log = LoggerFactory.getLogger(HessianFactory.class);
     private SerializerFactory _serializerFactory;

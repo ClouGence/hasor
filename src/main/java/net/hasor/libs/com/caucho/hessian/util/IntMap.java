@@ -174,7 +174,7 @@ public class IntMap {
         sbuf.append("]");
         return sbuf.toString();
     }
-    public static final int[] PRIMES = {1, /* 1<< 0 = 1 */
+    public static final int[] PRIMES = { 1, /* 1<< 0 = 1 */
             2, /* 1<< 1 = 2 */
             3, /* 1<< 2 = 4 */
             7, /* 1<< 3 = 8 */
@@ -202,7 +202,7 @@ public class IntMap {
             33554393, /* 1<<25 = 33554432 */
             67108859, /* 1<<26 = 67108864 */
             134217689, /* 1<<27 = 134217728 */
-            268435399, /* 1<<28 = 268435456 */};
+            268435399, /* 1<<28 = 268435456 */ };
     public static int getBiggestPrime(int value) {
         for (int i = PRIMES.length - 1; i >= 0; i--) {
             if (PRIMES[i] <= value)

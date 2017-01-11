@@ -52,7 +52,7 @@ import java.lang.reflect.Method;
 /**
  * Serializing an object for known object types.
  */
-@SuppressWarnings({"unused"})
+@SuppressWarnings({ "unused" })
 public class WriteReplaceSerializer extends AbstractSerializer {
     private static Object[] NULL_ARGS = new Object[0];
     private Object     _writeReplaceFactory;

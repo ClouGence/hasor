@@ -103,7 +103,7 @@ public class BeanDeserializer extends AbstractMapDeserializer {
                 Method method = (Method) _methodMap.get(key);
                 if (method != null) {
                     Object value = in.readObject(method.getParameterTypes()[0]);
-                    method.invoke(obj, new Object[] {value});
+                    method.invoke(obj, new Object[] { value });
                 } else {
                     Object value = in.readObject();
                 }

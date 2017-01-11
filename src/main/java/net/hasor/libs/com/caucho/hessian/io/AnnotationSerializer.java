@@ -46,19 +46,19 @@
  * @author Scott Ferguson
  */
 package net.hasor.libs.com.caucho.hessian.io;
+import net.hasor.libs.com.caucho.hessian.HessianException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-
-import net.hasor.libs.com.caucho.hessian.HessianException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * Serializing a Java annotation
  */
-@SuppressWarnings({"unused"})
+@SuppressWarnings({ "unused" })
 public class AnnotationSerializer extends AbstractSerializer {
     private static final Logger   log       = LoggerFactory.getLogger(AnnotationSerializer.class);
     private static       Object[] NULL_ARGS = new Object[0];

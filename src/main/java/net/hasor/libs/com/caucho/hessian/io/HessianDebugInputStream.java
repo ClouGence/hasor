@@ -46,11 +46,7 @@
  * @author Scott Ferguson
  */
 package net.hasor.libs.com.caucho.hessian.io;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.Writer;
+import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 /**

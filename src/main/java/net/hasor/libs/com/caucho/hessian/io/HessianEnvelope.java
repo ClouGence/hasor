@@ -46,7 +46,7 @@
  * @author Scott Ferguson
  */
 package net.hasor.libs.com.caucho.hessian.io;
-import java.io.*;
+import java.io.IOException;
 /**
  * Factory class for wrapping and unwrapping hessian streams.
  */

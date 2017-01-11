@@ -46,6 +46,8 @@
  * @author Scott Ferguson
  */
 package net.hasor.libs.com.caucho.hessian.io;
+import sun.misc.Unsafe;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -54,8 +56,6 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import sun.misc.Unsafe;
 /**
  * Serializing an object for known object types.
  */

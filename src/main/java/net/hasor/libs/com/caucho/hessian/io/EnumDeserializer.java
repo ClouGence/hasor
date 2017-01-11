@@ -63,7 +63,7 @@ public class EnumDeserializer extends AbstractDeserializer {
         else
             throw new RuntimeException("Class " + cl.getName() + " is not an enum");
         try {
-            _valueOf = _enumType.getMethod("valueOf", new Class[] {Class.class, String.class});
+            _valueOf = _enumType.getMethod("valueOf", new Class[] { Class.class, String.class });
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

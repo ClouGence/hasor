@@ -46,20 +46,15 @@
  * @author Scott Ferguson
  */
 package net.hasor.libs.com.caucho.hessian.io;
+import net.hasor.libs.com.caucho.hessian.HessianException;
+
 import java.io.InputStream;
 import java.lang.ref.SoftReference;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Properties;
-import java.util.WeakHashMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import net.hasor.libs.com.caucho.hessian.HessianException;
 /**
  * The classloader-specific Factory for returning serialization
  */

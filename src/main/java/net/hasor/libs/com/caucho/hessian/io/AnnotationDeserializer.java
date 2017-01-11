@@ -46,17 +46,17 @@
  * @author Scott Ferguson
  */
 package net.hasor.libs.com.caucho.hessian.io;
-import java.io.IOException;
-import java.lang.reflect.Proxy;
-import java.util.HashMap;
-
 import net.hasor.libs.com.caucho.hessian.HessianException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.lang.reflect.Proxy;
+import java.util.HashMap;
 /**
  * Deserializing a java annotation for known object types.
  */
-@SuppressWarnings({"unused"})
+@SuppressWarnings({ "unused" })
 public class AnnotationDeserializer extends AbstractMapDeserializer {
     private static final Logger log = LoggerFactory.getLogger(AnnotationDeserializer.class);
     private Class<?> _annType;
@@ -76,7 +76,7 @@ public class AnnotationDeserializer extends AbstractMapDeserializer {
                 valueMap.put(key, value);
             }
             in.readMapEnd();
-            return Proxy.newProxyInstance(_annType.getClassLoader(), new Class[] {_annType}, new AnnotationInvocationHandler(_annType, valueMap));
+            return Proxy.newProxyInstance(_annType.getClassLoader(), new Class[] { _annType }, new AnnotationInvocationHandler(_annType, valueMap));
         } catch (IOException e) {
             throw e;
         } catch (Exception e) {
@@ -92,7 +92,7 @@ public class AnnotationDeserializer extends AbstractMapDeserializer {
                 String name = fieldNames[i];
                 valueMap.put(name, in.readObject());
             }
-            return Proxy.newProxyInstance(_annType.getClassLoader(), new Class[] {_annType}, new AnnotationInvocationHandler(_annType, valueMap));
+            return Proxy.newProxyInstance(_annType.getClassLoader(), new Class[] { _annType }, new AnnotationInvocationHandler(_annType, valueMap));
         } catch (IOException e) {
             throw e;
         } catch (Exception e) {

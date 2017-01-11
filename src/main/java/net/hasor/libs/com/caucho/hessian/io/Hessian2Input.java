@@ -46,18 +46,14 @@
  * @author Scott Ferguson
  */
 package net.hasor.libs.com.caucho.hessian.io;
-import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * Input stream for Hessian requests.
  *
@@ -74,7 +70,7 @@ import org.slf4j.LoggerFactory;
  * in.completeReply();      // read reply footer
  * </pre>
  */
-@SuppressWarnings({"rawtypes", "unused"})
+@SuppressWarnings({ "rawtypes", "unused" })
 public class Hessian2Input extends AbstractHessianInput implements Hessian2Constants {
     private static final Logger log         = LoggerFactory.getLogger(Hessian2Input.class);
     private static final int    END_OF_DATA = -2;

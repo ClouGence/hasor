@@ -47,12 +47,15 @@
  */
 package net.hasor.libs.com.caucho.hessian.io;
 import java.io.IOException;
-import java.util.*;
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 /**
  * Deserializing a JDK 1.2 Map.
  */
-@SuppressWarnings({"unused", "unchecked"})
+@SuppressWarnings({ "unused", "unchecked" })
 public class MapDeserializer extends AbstractMapDeserializer {
     private Class<?>       _type;
     private Constructor<?> _ctor;

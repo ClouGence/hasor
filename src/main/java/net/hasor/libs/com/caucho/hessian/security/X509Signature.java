@@ -46,24 +46,16 @@
  * @author Scott Ferguson
  */
 package net.hasor.libs.com.caucho.hessian.security;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.Key;
-import java.security.MessageDigest;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-import javax.crypto.Cipher;
-import javax.crypto.CipherInputStream;
-import javax.crypto.KeyGenerator;
-import javax.crypto.Mac;
-import javax.crypto.SecretKey;
-
 import net.hasor.libs.com.caucho.hessian.io.Hessian2Input;
 import net.hasor.libs.com.caucho.hessian.io.Hessian2Output;
 import net.hasor.libs.com.caucho.hessian.io.HessianEnvelope;
+
+import javax.crypto.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.security.*;
+import java.security.cert.X509Certificate;
 @SuppressWarnings("unused")
 public class X509Signature extends HessianEnvelope {
     private String _algorithm = "HmacSHA256";

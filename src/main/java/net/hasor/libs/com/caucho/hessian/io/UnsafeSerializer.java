@@ -46,20 +46,20 @@
  * @author Scott Ferguson
  */
 package net.hasor.libs.com.caucho.hessian.io;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sun.misc.Unsafe;
+
 import java.io.IOException;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.WeakHashMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import sun.misc.Unsafe;
 /**
  * Serializing an object for known object types.
  */
-@SuppressWarnings({"restriction", "unused"})
+@SuppressWarnings({ "restriction", "unused" })
 public class UnsafeSerializer extends AbstractSerializer {
     private static final Logger log = LoggerFactory.getLogger(UnsafeSerializer.class);
     private static boolean _isEnabled;

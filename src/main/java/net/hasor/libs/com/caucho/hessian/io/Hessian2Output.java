@@ -46,13 +46,13 @@
  * @author Scott Ferguson
  */
 package net.hasor.libs.com.caucho.hessian.io;
+import net.hasor.libs.com.caucho.hessian.util.IdentityIntMap;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.HashMap;
-
-import net.hasor.libs.com.caucho.hessian.util.IdentityIntMap;
 /**
  * Output stream for Hessian 2 requests.
  *

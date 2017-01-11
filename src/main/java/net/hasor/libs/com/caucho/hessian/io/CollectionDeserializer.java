@@ -51,7 +51,7 @@ import java.util.*;
 /**
  * Deserializing a JDK 1.2 Collection.
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class CollectionDeserializer extends AbstractListDeserializer {
     private Class<?> _type;
     public CollectionDeserializer(Class<?> type) {

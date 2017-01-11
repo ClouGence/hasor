@@ -46,10 +46,10 @@
  * @author Scott Ferguson
  */
 package net.hasor.libs.com.caucho.hessian.io;
+import net.hasor.libs.com.caucho.hessian.HessianException;
+
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-
-import net.hasor.libs.com.caucho.hessian.HessianException;
 /**
  * Deserializing a string valued object
  */
@@ -59,7 +59,7 @@ public class StringValueDeserializer extends AbstractStringValueDeserializer {
     public StringValueDeserializer(Class<?> cl) {
         try {
             _cl = cl;
-            _constructor = cl.getConstructor(new Class[] {String.class});
+            _constructor = cl.getConstructor(new Class[] { String.class });
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -73,7 +73,7 @@ public class StringValueDeserializer extends AbstractStringValueDeserializer {
         if (value == null)
             throw new IOException(_cl.getName() + " expects name.");
         try {
-            return _constructor.newInstance(new Object[] {value});
+            return _constructor.newInstance(new Object[] { value });
         } catch (Exception e) {
             throw new HessianException(_cl.getName() + ": value=" + value + "\n" + e, e);
         }

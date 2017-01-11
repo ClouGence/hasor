@@ -46,10 +46,10 @@
  * @author Scott Ferguson
  */
 package net.hasor.libs.com.caucho.hessian.io;
+import net.hasor.libs.com.caucho.hessian.HessianException;
+
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-
-import net.hasor.libs.com.caucho.hessian.HessianException;
 /**
  * Deserializing a string valued object
  */
@@ -59,7 +59,7 @@ public class SqlDateDeserializer extends AbstractDeserializer {
     public SqlDateDeserializer(Class<?> cl) {
         try {
             _cl = cl;
-            _constructor = cl.getConstructor(new Class<?>[] {long.class});
+            _constructor = cl.getConstructor(new Class<?>[] { long.class });
         } catch (NoSuchMethodException e) {
             throw new HessianException(e);
         }
@@ -101,7 +101,7 @@ public class SqlDateDeserializer extends AbstractDeserializer {
         if (initValue == Long.MIN_VALUE)
             throw new IOException(_cl.getName() + " expects name.");
         try {
-            return _constructor.newInstance(new Object[] {new Long(initValue)});
+            return _constructor.newInstance(new Object[] { new Long(initValue) });
         } catch (Exception e) {
             throw new IOExceptionWrapper(e);
         }
