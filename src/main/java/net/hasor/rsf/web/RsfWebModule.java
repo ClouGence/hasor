@@ -26,11 +26,11 @@ public class RsfWebModule extends RsfModule {
     @Override
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
         // .只有Web环境才启用该功能
-        if (!(apiBinder instanceof WebApiBinder)) {
+        WebApiBinder webBinder = apiBinder.tryCast(WebApiBinder.class);
+        if (webBinder == null) {
             return;
         }
         //
-        WebApiBinder webBinder = (WebApiBinder) apiBinder;
         logger.info("rsf framework config web.");
         //WebApiBinder webApiBinder = (WebApiBinder) apiBinder;
         //webApiBinder.serve("*.rsf").with(RsfServlet.class);

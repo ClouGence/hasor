@@ -78,12 +78,12 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         // .枚举 loadModule 期间注册的 Service
         this.appContext = appContext;
         logger.info("rsfContext -> doStart , lookUp services for loadModule phase.");
-        rsfBeanContainer.lookUp(appContext);
+        this.rsfBeanContainer.lookUp(appContext);
         //
         // .启动网络通信（默认为：offline 状态）
         String bindAddress = this.rsfEnvironment.getSettings().getBindAddress();
         int bindPort = this.rsfEnvironment.getSettings().getBindPort();
-        logger.info("rsfContext -> doStart , start network. [bindAddress: %s , bindPort: %s]", bindAddress, bindPort);
+        logger.info("rsfContext -> doStart , start network. [bindAddress: {} , bindPort: {}]", bindAddress, bindPort);
         try {
             this.rsfNetManager.start(bindAddress, bindPort);
         } catch (UnknownHostException e) {

@@ -18,7 +18,6 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Environment;
 import net.hasor.core.binder.ApiBinderCreater;
-import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import org.slf4j.Logger;
@@ -34,7 +33,7 @@ import java.util.List;
 public class RsfApiBinerCreater implements ApiBinderCreater {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
-    public RsfApiBinder createBinder(ApiBinder apiBinder) throws IOException {
+    public ApiBinder createBinder(ApiBinder apiBinder) throws IOException {
         Environment env = apiBinder.getEnvironment();
         boolean enable = env.getSettings().getBoolean("hasor.rsfConfig.enable", false);
         if (!enable) {

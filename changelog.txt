@@ -1,4 +1,4 @@
-﻿===== Hasor-RSF v1.1.0 (2016-12-01)
+﻿===== Hasor-RSF v1.1.1 (2017-01-10)
 * 改进:
     01.使用 Hasor 最新的ApiBinder扩展机制提供 RsfApiBinder，受此影响 RsfModule 不在是必需品。
     02.RsfPlugin 接口不在需要。
