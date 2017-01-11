@@ -45,23 +45,7 @@
  *  under the License.
  */
 package net.hasor.libs.org.codehaus.groovy.jsr223;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.Writer;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import javax.script.AbstractScriptEngine;
-import javax.script.Bindings;
-import javax.script.Compilable;
-import javax.script.CompiledScript;
-import javax.script.Invocable;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngineFactory;
-import javax.script.ScriptException;
-import javax.script.SimpleBindings;
-
+import groovy.lang.*;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.runtime.InvokerHelper;
@@ -70,15 +54,15 @@ import org.codehaus.groovy.runtime.MethodClosure;
 import org.codehaus.groovy.syntax.SyntaxException;
 import org.codehaus.groovy.util.ManagedConcurrentValueMap;
 import org.codehaus.groovy.util.ReferenceBundle;
-import groovy.lang.Binding;
-import groovy.lang.Closure;
-import groovy.lang.DelegatingMetaClass;
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.MetaClass;
-import groovy.lang.MissingMethodException;
-import groovy.lang.MissingPropertyException;
-import groovy.lang.Script;
-import groovy.lang.Tuple;
+
+import javax.script.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 /**
  * JSR-223 Engine implementation.
  *
@@ -287,7 +271,7 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
                         if (args instanceof Object[]) {
                             return invokeMethod(object, name, (Object[]) args);
                         } else {
-                            return invokeMethod(object, name, new Object[] {args});
+                            return invokeMethod(object, name, new Object[] { args });
                         }
                     }
                     @Override
@@ -380,7 +364,7 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
         if (clazz == null || !clazz.isInterface()) {
             throw new IllegalArgumentException("interface Class expected");
         }
-        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {clazz}, new InvocationHandler() {
+        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] { clazz }, new InvocationHandler() {
             public Object invoke(Object proxy, Method m, Object[] args) throws Throwable {
                 return invokeImpl(thiz, m.getName(), args);
             }

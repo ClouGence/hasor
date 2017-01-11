@@ -20,7 +20,6 @@ package net.hasor.rsf;
  * @author 赵永春(zyc@hasor.net)
  */
 public enum SendLimitPolicy {
-    Reject,
-    // Reject send request and throw exception
+    Reject, // Reject send request and throw exception
     WaitSecond // Wait 1 second then retry,if failed again,then throw exception
 }

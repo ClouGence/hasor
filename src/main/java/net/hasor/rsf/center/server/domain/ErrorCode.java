@@ -26,17 +26,7 @@ import java.util.Set;
  * @author 赵永春(zyc@hasor.net)
  */
 public enum ErrorCode {
-    OK(0, "Success"),
-    Exception(1, "Center 出现内部错误。"),
-    EmptyResult(2, "结果集为空。"),
-    ServiceTypeFailed_Null(3, "服务类型不清楚。"),
-    BuildRegisterIDFailed_Null(4, "registerID计算失败。"),
-    AuthCheckFailed_ResultEmpty(5, "授权检查失败,检测结果为空。"),
-    PublishServiceFailed_StoreInfo(6, "发布服务失败,保存服务信息错误。"),
-    SubscribeServiceFailed_Undefined(7, "订阅服务失败,服务未定义。"),
-    RegisterCheckInvalid(8, "RegisterID验证错误。"),
-    BeatFailed_RefreshResultNull(9, "心跳失败,刷新对象无返回值。"),
-    PushAddressFailed_TooBusy(10, "地址推送失败,服务器繁忙。"),
+    OK(0, "Success"), Exception(1, "Center 出现内部错误。"), EmptyResult(2, "结果集为空。"), ServiceTypeFailed_Null(3, "服务类型不清楚。"), BuildRegisterIDFailed_Null(4, "registerID计算失败。"), AuthCheckFailed_ResultEmpty(5, "授权检查失败,检测结果为空。"), PublishServiceFailed_StoreInfo(6, "发布服务失败,保存服务信息错误。"), SubscribeServiceFailed_Undefined(7, "订阅服务失败,服务未定义。"), RegisterCheckInvalid(8, "RegisterID验证错误。"), BeatFailed_RefreshResultNull(9, "心跳失败,刷新对象无返回值。"), PushAddressFailed_TooBusy(10, "地址推送失败,服务器繁忙。"),
     //
     ;
     private static Logger logger = LoggerFactory.getLogger(ErrorCode.class);

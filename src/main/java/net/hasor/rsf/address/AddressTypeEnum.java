@@ -21,8 +21,7 @@ package net.hasor.rsf.address;
  */
 public enum AddressTypeEnum {
     /***/
-    Dynamic(1, "dynamic", "D|"),
-    /***/
+    Dynamic(1, "dynamic", "D|"), /***/
     Static(2, "static", "S|"),;
     //
     //

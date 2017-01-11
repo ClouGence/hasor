@@ -21,9 +21,7 @@ package net.hasor.rsf.address.route.flowcontrol.speed;
  */
 public enum QoSActionEnum {
     /**限制接口所有方法的总调用速率。*/
-    Service,
-    /**限制接口某一个方法的调用速率。*/
-    Method,
-    /**限制对某一个远程服务机器的调用速率。*/
+    Service, /**限制接口某一个方法的调用速率。*/
+    Method, /**限制对某一个远程服务机器的调用速率。*/
     Address
 }

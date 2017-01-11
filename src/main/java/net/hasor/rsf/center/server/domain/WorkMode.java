@@ -24,12 +24,9 @@ import org.slf4j.LoggerFactory;
  */
 public enum WorkMode {
     /** 0，禁止模式 */
-    None(0, "none", "禁止模式"),
-    /** 1，单机模式 */
-    Alone(1, "alone", "单机模式"),
-    /** 2，集群模式 */
-    Master(2, "master", "集群主机模式"),
-    /** 3，集群模式 */
+    None(0, "none", "禁止模式"), /** 1，单机模式 */
+    Alone(1, "alone", "单机模式"), /** 2，集群模式 */
+    Master(2, "master", "集群主机模式"), /** 3，集群模式 */
     Follow(3, "follow", "集群丛属,永远不会被选为Leader"),;
     //
     //

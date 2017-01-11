@@ -53,7 +53,6 @@
             <RSF_CENTER_SERVERS></RSF_CENTER_SERVERS>
             <!-- 注册中心工作模式,默认:none -->
             <RSF_CENTER_WORK_MODE>none</RSF_CENTER_WORK_MODE>
-
             <!--
                 授权密钥文件名,查找顺序是 WORK_HOME 下第一优先顺序。classpath 第二优先顺序,只加载一个配置文件。
                     当 "rsfCenter.adapterConfig.authQuery" 配置使用 net.hasor.rsf.center.server.adapter.FileAuthQuery 时有效

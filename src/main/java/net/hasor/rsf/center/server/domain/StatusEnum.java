@@ -20,6 +20,5 @@ package net.hasor.rsf.center.server.domain;
  * @author 赵永春(zyc@hasor.net)
  */
 public enum StatusEnum {
-    online,
-    offline,
+    online, offline,
 }

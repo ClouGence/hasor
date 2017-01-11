@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
  * @version : 2016年4月3日
  * @author 赵永春(zyc@hasor.net)
  */
-@Target({ElementType.PACKAGE})
+@Target({ ElementType.PACKAGE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RsfSearchInclude {
 }
