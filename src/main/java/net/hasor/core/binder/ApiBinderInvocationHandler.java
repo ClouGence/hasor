@@ -15,7 +15,10 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.Environment;
 import net.hasor.core.Module;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -26,6 +29,7 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ApiBinderInvocationHandler implements InvocationHandler {
+    private Logger logger = LoggerFactory.getLogger(getClass());
     private Map<Class<?>, Object> supportMap;
     //
     public ApiBinderInvocationHandler(Map<Class<?>, Object> supportMap) {
@@ -41,8 +45,14 @@ public class ApiBinderInvocationHandler implements InvocationHandler {
         }
         //
         if (method.getName().equals("installModule")) {
-            if (args[0] != null)
-                ((Module) args[0]).loadModule((ApiBinder) proxy);
+            if (args[0] != null) {
+                ApiBinder apiBinder = (ApiBinder) this.supportMap.get(ApiBinder.class);
+                Environment environment = apiBinder.getEnvironment();
+                Module module = (Module) args[0];
+                logger.info("installModule ->" + module);
+                module.loadModule((ApiBinder) proxy);
+                BinderHelper.onInstall(environment, module);
+            }
             return null;
         }
         if (method.getName().equals("tryCast")) {

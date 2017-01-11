@@ -67,16 +67,16 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     public void scanMappingTo(Matcher<Class<?>> matcher, String... packages);
     //
 
-    /**使用传统表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
+    /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
     public FilterBindingBuilder<InvokerFilter> filter(String urlPattern, String... morePatterns);
 
-    /**使用传统表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
+    /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
     public FilterBindingBuilder<InvokerFilter> filter(String[] morePatterns);
 
-    /**使用正则表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
+    /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
     public FilterBindingBuilder<InvokerFilter> filterRegex(String regex, String... regexes);
 
-    /**使用正则表达式，创建一个{@link FilterBindingBuilder<InvokerFilter>}。*/
+    /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
     public FilterBindingBuilder<InvokerFilter> filterRegex(String[] regexes);
     //
 

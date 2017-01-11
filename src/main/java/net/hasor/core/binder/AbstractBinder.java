@@ -22,8 +22,6 @@ import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.provider.InstanceProvider;
 import org.more.util.BeanUtils;
 import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -37,7 +35,6 @@ import java.util.UUID;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractBinder implements ApiBinder {
-    private Logger logger = LoggerFactory.getLogger(getClass());
     private Environment environment;
     public AbstractBinder(Environment environment) {
         this.environment = Hasor.assertIsNotNull(environment, "environment is null.");
@@ -61,9 +58,8 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     @Override
     public void installModule(final Module module) throws Throwable {
-        logger.info("installModule ->" + module);
-        module.loadModule(this);
-        BinderHelper.onInstall(this.getEnvironment(), module);
+        //see : net.hasor.core.binder.ApiBinderInvocationHandler.invoke()
+        throw new IllegalStateException("current state is not allowed.");
     }
     @Override
     public <T extends ApiBinder> T tryCast(Class<T> castApiBinder) {
