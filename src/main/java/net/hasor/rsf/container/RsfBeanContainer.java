@@ -264,7 +264,7 @@ public class RsfBeanContainer {
     /* ----------------------------------------------------------------------------------------- */
     //
     /**
-     * 回收发布的服务
+     * 发布的服务
      * @param appContext 用于查找服务的容器上下文。
      */
     public void lookUp(AppContext appContext) {

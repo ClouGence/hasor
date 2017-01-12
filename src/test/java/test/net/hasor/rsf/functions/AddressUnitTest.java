@@ -28,6 +28,16 @@ import net.hasor.rsf.address.InterServiceAddress;
  */
 public class AddressUnitTest {
     @Test
+    public void protocol() throws URISyntaxException {
+        ConcurrentMap<InterAddress, String> concurrentMap = new ConcurrentHashMap<InterAddress, String>();
+        //
+        concurrentMap.put(new InterAddress("127.0.0.1", 8000, "etc2"), "123");
+        concurrentMap.put(new InterAddress("127.0.0.1", 8000, "etc2"), "123");
+        //
+        assert concurrentMap.size() == 1;
+        System.out.println(concurrentMap.size());
+    }
+    @Test
     public void test() throws URISyntaxException {
         ConcurrentMap<InterAddress, String> concurrentMap = new ConcurrentHashMap<InterAddress, String>();
         //

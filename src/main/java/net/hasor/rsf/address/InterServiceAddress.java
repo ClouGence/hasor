@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
+import net.hasor.core.Hasor;
+import org.more.FormatException;
+import org.more.util.StringUtils;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.hasor.core.Hasor;
-import org.more.FormatException;
-import org.more.util.StringUtils;
 /**
  * 服务地址例：“rsf://127.0.0.1:8000/unit/group/name/version” <br/>
  * --unit   :单元名称<br/>
@@ -61,6 +61,10 @@ public class InterServiceAddress extends InterAddress {
         this.name = Hasor.assertIsNotNull(name, "name is null.");
         this.version = Hasor.assertIsNotNull(version, "version is null.");
     }
+    public URI toURI() throws URISyntaxException {
+        String path = String.format("/%s/%s/%s/%s", this.getFormUnit(), this.getGroup(), this.getName(), this.getVersion());
+        return new URI(this.getSechma(), null, this.getHost(), this.getPort(), path, null, null);
+    }
     //
     /** @return 服务分组*/
     public String getGroup() {
@@ -85,7 +89,7 @@ public class InterServiceAddress extends InterAddress {
      * @return 返回结果。
      */
     public boolean equals(Object obj) {
-        if (super.equals(obj) == false)
+        if (!super.equals(obj))
             return false;
         String diffURI = "";
         if (obj instanceof InterServiceAddress) {
@@ -106,10 +110,6 @@ public class InterServiceAddress extends InterAddress {
     }
     public String toString() {
         return toServiceSchema();
-    }
-    protected URI createURL() throws URISyntaxException {
-        String path = String.format("/%s/%s/%s/%s", this.getFormUnit(), this.getGroup(), this.getName(), this.getVersion());
-        return new URI(SECHMA, null, this.getHost(), this.getPort(), "/" + path, null, null);
     }
     public static boolean checkFormat(URI serviceURL) {
         if (serviceURL == null) {

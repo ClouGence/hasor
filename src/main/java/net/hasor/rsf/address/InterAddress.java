@@ -14,31 +14,32 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
+import net.hasor.core.Hasor;
+import org.more.FormatException;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.more.FormatException;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import net.hasor.core.Hasor;
 /**
  * 服务地址例：“rsf://127.0.0.1:8000/unit”
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class InterAddress {
-    protected static    Logger logger = LoggerFactory.getLogger(InterAddress.class);
-    public static final String SECHMA = "rsf";
+    protected static    Logger logger         = LoggerFactory.getLogger(InterAddress.class);
+    public static final String DEFAULT_SECHMA = "rsf";
+    private final String sechma;                                              //协议
     private final String formUnit;                                            //所属单元
     private final String hostAddress;                                         //地址
     private final int    hostAddressData;                                     //地址数值表现形式
     private final int    hostPort;                                            //端口
-    private final URI    uriFormat;
+    private final String hostSchema;
     //
     public InterAddress(String newAddressURL) throws URISyntaxException {
         this(new URI(newAddressURL));
@@ -47,22 +48,27 @@ public class InterAddress {
         if (!checkFormat(newAddressURL)) {
             throw new FormatException(newAddressURL + " format error.");
         }
-        this.uriFormat = Hasor.assertIsNotNull(newAddressURL, "address URL is null.");
-        this.hostAddress = newAddressURL.getHost();
-        this.hostPort = newAddressURL.getPort();
         String formPath = newAddressURL.getPath();
         if (formPath.startsWith("/")) {
             formPath = formPath.substring(1);
         }
+        this.sechma = newAddressURL.getScheme();
         this.formUnit = formPath.split("/")[0];
+        this.hostAddress = newAddressURL.getHost();
         this.hostAddressData = this.initIP(this.hostAddress);
+        this.hostPort = newAddressURL.getPort();
+        this.hostSchema = String.format("%s://%s:%s/%s", this.sechma, this.hostAddress, this.hostPort, this.formUnit);
     }
-    public InterAddress(String hostAddress, int hostPort, String formUnit) throws URISyntaxException {
-        this.hostAddress = Hasor.assertIsNotNull(hostAddress, "hostAddress is null.");
-        this.hostPort = hostPort;
+    public InterAddress(String hostAddress, int hostPort, String formUnit) {
+        this(DEFAULT_SECHMA, hostAddress, hostPort, formUnit);
+    }
+    public InterAddress(String sechma, String hostAddress, int hostPort, String formUnit) {
+        this.sechma = Hasor.assertIsNotNull(sechma, "sechma is null.");
         this.formUnit = Hasor.assertIsNotNull(formUnit, "formUnit is null.");
-        this.uriFormat = this.createURL();
+        this.hostAddress = Hasor.assertIsNotNull(hostAddress, "hostAddress is null.");
         this.hostAddressData = this.initIP(this.hostAddress);
+        this.hostPort = hostPort;
+        this.hostSchema = String.format("%s://%s:%s/%s", this.sechma, this.hostAddress, this.hostPort, this.formUnit);
     }
     private int initIP(String hostIP) {
         int ipInt = 0;
@@ -74,6 +80,10 @@ public class InterAddress {
         return ipInt;
     }
     //
+    /** 返回协议头*/
+    public String getSechma() {
+        return this.sechma;
+    }
     /** 返回目标IP地址*/
     public String getHost() {
         return this.hostAddress;
@@ -96,15 +106,11 @@ public class InterAddress {
         return this.hostAddressData;
     }
     /**转换地址为URL形式*/
-    public URI toURI() {
-        return this.uriFormat;
+    public URI toURI() throws URISyntaxException {
+        return new URI(this.getSechma(), null, this.getHost(), this.getPort(), "/" + this.formUnit, null, null);
     }
-    private String hostSchema;
     /**返回RSF协议形式表述的主机地址。格式为：“rsf://127.0.0.1:8000/unit”*/
     public String toHostSchema() {
-        if (hostSchema == null) {
-            return String.format("rsf://%s:%s/%s", this.hostAddress, this.hostPort, this.formUnit);
-        }
         return this.hostSchema;
     }
     /**转换成{@link SocketAddress}类型对象。*/
@@ -128,12 +134,10 @@ public class InterAddress {
     }
     /**判断连接地址是否是同一个。判断依据是参数的{@link #getHostPort()}返回值和该对象的{@link #getHostPort()}返回值做比较。*/
     public boolean equalsHost(InterAddress evalResult) {
-        // return evalResult == null ? false : equalsHost(evalResult.getHostPort());
         return evalResult != null && equalsHost(evalResult.getHostPort());
     }
     /**判断连接地址是否是同一个。判断依据是参数值和{@link #getHostPort()}返回值做比较。*/
     public boolean equalsHost(String evalResult) {
-        // return evalResult == null ? false : this.getHostPort().equals(evalResult);
         return evalResult != null && this.getHostPort().equals(evalResult);
     }
     @Override
@@ -141,39 +145,36 @@ public class InterAddress {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((formUnit == null) ? 0 : formUnit.hashCode());
+        result = prime * result + ((formUnit == null) ? 0 : formUnit.hashCode());
         result = prime * result + ((hostAddress == null) ? 0 : hostAddress.hashCode());
         result = prime * result + hostAddressData;
         result = prime * result + hostPort;
-        result = prime * result + ((uriFormat == null) ? 0 : uriFormat.hashCode());
         return result;
     }
     //
     public String toString() {
         return toHostSchema();
     }
-    protected URI createURL() throws URISyntaxException {
-        return new URI(SECHMA, null, this.getHost(), this.getPort(), "/" + this.formUnit, null, null);
-    }
     public static boolean checkFormat(URI serviceURL) {
         if (serviceURL == null) {
             return false;
         }
-        if (StringUtils.equalsBlankIgnoreCase(SECHMA, serviceURL.getScheme())) {
-            if (!StringUtils.isBlank(serviceURL.getHost())) {
-                if (serviceURL.getPort() != 0) {
-                    if (StringUtils.isBlank(serviceURL.getPath())) {
-                        return false;
-                    }
-                    String REG = "[A-Za-z0-9_\\.]+";
-                    Matcher mat = Pattern.compile("/(" + REG + ")").matcher(serviceURL.getPath());
-                    mat.find();
-                    String formUnit = mat.group(1);
-                    if (!StringUtils.isBlank(formUnit)) {
-                        return Pattern.matches(REG, formUnit);
-                    }
+        //        if (StringUtils.equalsBlankIgnoreCase(SECHMA, serviceURL.getScheme())) {
+        if (!StringUtils.isBlank(serviceURL.getHost())) {
+            if (serviceURL.getPort() != 0) {
+                if (StringUtils.isBlank(serviceURL.getPath())) {
+                    return false;
+                }
+                String REG = "[A-Za-z0-9_\\.]+";
+                Matcher mat = Pattern.compile("/(" + REG + ")").matcher(serviceURL.getPath());
+                mat.find();
+                String formUnit = mat.group(1);
+                if (!StringUtils.isBlank(formUnit)) {
+                    return Pattern.matches(REG, formUnit);
                 }
             }
         }
+        //        }
         if (logger.isDebugEnabled()) {
             logger.debug("'{}' rsfAddress format error.", serviceURL);
         }

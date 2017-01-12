@@ -34,7 +34,7 @@ public class DefaultRsfEnvironment extends EnvironmentWrap implements RsfEnviron
     public DefaultRsfEnvironment(Environment environment) throws IOException {
         super(environment);
         this.rsfSettings = new DefaultRsfSettings(environment.getSettings());
-        this.factory = SerializeFactory.createFactory(this.rsfSettings);
+        this.factory = SerializeFactory.createFactory(this);
     }
     @Override
     public RsfSettings getSettings() {

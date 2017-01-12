@@ -16,7 +16,7 @@
 package net.hasor.rsf.address;
 import java.util.List;
 /**
- *
+ * 路由策略脚本接口
  * @version : 2015年12月3日
  * @author 赵永春(zyc@hasor.net)
  */
