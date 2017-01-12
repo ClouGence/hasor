@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
+import net.hasor.core.Environment;
+
 import java.io.IOException;
 /**
  * 序列化（编码/解码）器
@@ -21,6 +23,9 @@ import java.io.IOException;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface SerializeCoder {
+    /**初始化*/
+    public void initCoder(Environment environment);
+
     /** decode byte[] to Object */
     public Object decode(byte[] bytes, Class<?> returnType) throws IOException;
 

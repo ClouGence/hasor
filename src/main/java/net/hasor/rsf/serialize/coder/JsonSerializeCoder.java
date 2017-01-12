@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.serialize.coder;
 import com.alibaba.fastjson.JSON;
+import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.rsf.SerializeCoder;
 
@@ -25,6 +26,9 @@ import java.io.IOException;
  * @author 赵永春(zyc@hasor.net)
  */
 public class JsonSerializeCoder implements SerializeCoder {
+    @Override
+    public void initCoder(Environment environment) {
+    }
     public byte[] encode(Object object) throws IOException {
         String text = JSON.toJSONString(object);
         return text.getBytes(Settings.DefaultCharset);

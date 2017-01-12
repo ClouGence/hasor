@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.rsf.serialize.coder;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
+import net.hasor.core.Environment;
 import net.hasor.libs.com.caucho.hessian.io.HessianInput;
 import net.hasor.libs.com.caucho.hessian.io.HessianOutput;
 import net.hasor.libs.com.caucho.hessian.io.SerializerFactory;
 import net.hasor.rsf.SerializeCoder;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 /**
  *
  * @version : 2014年9月19日
@@ -30,11 +31,12 @@ import net.hasor.rsf.SerializeCoder;
 public class HessianSerializeCoder implements SerializeCoder {
     private SerializerFactory serializerFactory = null;
     //
-    public HessianSerializeCoder() {
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        this.serializerFactory = new SerializerFactory(loader);
+    @Override
+    public void initCoder(Environment environment) {
+        this.serializerFactory = new SerializerFactory(environment.getClassLoader());
     }
     //
+    @Override
     public byte[] encode(Object object) throws IOException {
         ByteArrayOutputStream binary = new ByteArrayOutputStream();
         HessianOutput hout = new HessianOutput(binary);
@@ -43,6 +45,7 @@ public class HessianSerializeCoder implements SerializeCoder {
         return binary.toByteArray();
     }
     //
+    @Override
     public Object decode(byte[] bytes, Class<?> returnType) throws IOException {
         if (bytes == null)
             return null;

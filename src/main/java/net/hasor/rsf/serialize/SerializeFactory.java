@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.serialize;
+import net.hasor.core.Environment;
 import net.hasor.core.XmlNode;
-import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.SerializeCoder;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
@@ -45,15 +46,15 @@ public class SerializeFactory {
     }
     //
     //
-    public static SerializeFactory createFactory(RsfSettings settings) {
+    public static SerializeFactory createFactory(RsfEnvironment environment) {
         SerializeFactory factory = new SerializeFactory();
-        XmlNode[] atNode = settings.getXmlNodeArray("hasor.rsfConfig.serializeType");
+        XmlNode[] atNode = environment.getSettings().getXmlNodeArray("hasor.rsfConfig.serializeType");
         //
         String types = "";
         for (XmlNode e : atNode) {
             List<XmlNode> serList = e.getChildren("serialize");
             for (XmlNode s : serList) {
-                initSerialize(factory, s);
+                initSerialize(factory, s, environment);
                 types += ("," + s.getAttribute("name"));
             }
         }
@@ -63,12 +64,14 @@ public class SerializeFactory {
         logger.info("SerializeFactory init. -> [{}]", types);
         return factory;
     }
-    private static void initSerialize(SerializeFactory factory, XmlNode atNode) {
+    private static void initSerialize(SerializeFactory factory, XmlNode atNode, Environment environment) {
         String serializeType = atNode.getAttribute("name");
         String serializeCoder = atNode.getText().trim();
         //
         try {
-            SerializeCoder coder = (SerializeCoder) Class.forName(serializeCoder).newInstance();
+            Class<?> aClass = environment.getClassLoader().loadClass(serializeCoder);
+            SerializeCoder coder = (SerializeCoder) aClass.newInstance();
+            coder.initCoder(environment);
             factory.registerSerializeCoder(serializeType, coder);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

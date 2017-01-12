@@ -15,38 +15,34 @@
  */
 package net.hasor.rsf.serialize.coder;
 import net.hasor.core.Environment;
+import net.hasor.libs.com.hprose.io.HproseReader;
+import net.hasor.libs.com.hprose.io.HproseWriter;
 import net.hasor.rsf.SerializeCoder;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 /**
  *
- * @version : 2014年9月19日
+ * @version : 2017年1月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class JavaSerializeCoder implements SerializeCoder {
+public class HproseSerializeCoder implements SerializeCoder {
+    //
     @Override
     public void initCoder(Environment environment) {
     }
     //
     public byte[] encode(Object object) throws IOException {
-        ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-        ObjectOutputStream output = new ObjectOutputStream(byteArray);
-        output.writeObject(object);
-        output.flush();
-        output.close();
-        return byteArray.toByteArray();
+        ByteArrayOutputStream binary = new ByteArrayOutputStream();
+        HproseWriter writer = new HproseWriter(binary);
+        writer.writeObject(object);
+        return binary.toByteArray();
     }
     //
     public Object decode(byte[] bytes, Class<?> returnType) throws IOException {
-        try {
-            ObjectInputStream objectIn = new ObjectInputStream(new ByteArrayInputStream(bytes));
-            Object resultObject = objectIn.readObject();
-            objectIn.close();
-            return resultObject;
-        } catch (IOException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new IOException(e);
-        }
+        if (bytes == null)
+            return null;
+        HproseReader reader = new HproseReader(bytes);
+        return reader.readObjectWithoutTag(returnType);
     }
 }
