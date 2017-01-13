@@ -18,7 +18,7 @@ import net.hasor.core.Hasor;
 import net.hasor.rsf.address.AddressBucket;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.DiskCacheAddressPool;
-import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import org.junit.Test;
 import org.more.util.ResourcesUtils;

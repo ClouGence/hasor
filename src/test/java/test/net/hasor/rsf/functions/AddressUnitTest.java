@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.junit.Test;
-import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.address.InterServiceAddress;
 /**
  *

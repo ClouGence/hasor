@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.more.util.ResourcesUtils;
 import org.more.util.io.IOUtils;
 import net.hasor.core.setting.StandardContextSettings;
-import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.address.route.flowcontrol.random.RandomFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;

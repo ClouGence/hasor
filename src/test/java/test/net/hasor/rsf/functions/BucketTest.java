@@ -16,7 +16,7 @@
 package test.net.hasor.rsf.functions;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.address.AddressBucket;
-import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import org.junit.Test;
@@ -28,7 +28,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 /**
  *
  * @version : 2014年9月12日
