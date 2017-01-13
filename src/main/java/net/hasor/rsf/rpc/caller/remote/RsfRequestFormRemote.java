@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.caller.remote;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfRequest;
-import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.AttributeSet;
 import net.hasor.rsf.domain.OptionKeys;
 import net.hasor.rsf.transform.protocol.RequestInfo;

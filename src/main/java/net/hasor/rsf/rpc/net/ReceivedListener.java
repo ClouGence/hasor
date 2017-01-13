@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net;
-import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**

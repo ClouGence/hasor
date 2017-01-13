@@ -20,7 +20,6 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.rsf.*;
-import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.*;
 import net.hasor.rsf.domain.provider.AddressProvider;

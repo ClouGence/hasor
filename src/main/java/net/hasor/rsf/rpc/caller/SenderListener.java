@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf.rpc.caller;
 import net.hasor.core.Provider;
-import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.transform.protocol.RequestInfo;
 /**
  *
