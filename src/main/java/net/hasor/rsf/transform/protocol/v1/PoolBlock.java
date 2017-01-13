@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.transform.protocol.v1;
-import org.more.util.ArrayUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import org.more.util.ArrayUtils;
 /**
  * 池上限为 0~4095条数据，单条数据最大约16MB。
  * 下面是数据格式：<pre>

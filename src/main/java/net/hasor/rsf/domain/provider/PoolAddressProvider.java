@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.domain.provider;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.address.AddressPool;
-import net.hasor.rsf.address.InterAddress;
 /**
  *
  * @version : 2015年12月18日

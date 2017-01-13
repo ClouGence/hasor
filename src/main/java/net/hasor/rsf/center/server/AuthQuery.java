@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server;
-import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.center.server.domain.AuthInfo;
 import net.hasor.rsf.center.server.domain.Result;
 import net.hasor.rsf.center.server.domain.ServiceInfo;

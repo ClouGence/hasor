@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
-import net.hasor.rsf.address.InterAddress;
-
 import java.lang.reflect.Method;
 import java.util.Enumeration;
 /**

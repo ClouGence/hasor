@@ -22,7 +22,6 @@ import net.hasor.core.provider.ClassAwareProvider;
 import net.hasor.core.provider.InfoAwareProvider;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.rsf.*;
-import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.address.InterServiceAddress;
 import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.domain.RsfServiceType;

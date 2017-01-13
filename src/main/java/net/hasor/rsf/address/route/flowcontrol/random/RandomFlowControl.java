@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address.route.flowcontrol.random;
+import net.hasor.core.Settings;
+import net.hasor.rsf.InterAddress;
+import net.hasor.rsf.address.route.rule.AbstractRule;
+
 import java.util.List;
 import java.util.Random;
-
-import net.hasor.core.Settings;
-import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.address.route.rule.AbstractRule;
 /**
  * 对于一组备选地址，通过随机的方式选取其中一个地址。
  * <pre>

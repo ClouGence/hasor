@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address.route.flowcontrol.speed;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 描述：线程安全的令牌桶限流器，时间窗刷新误差为毫秒级。 定义有效的限流器需要满足：
  * <ol>

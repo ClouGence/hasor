@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address.route.flowcontrol.speed;
+import net.hasor.core.Settings;
+import net.hasor.rsf.InterAddress;
+import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.address.route.rule.AbstractRule;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import net.hasor.core.Settings;
-import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.address.route.rule.AbstractRule;
 /**
  * 基于QoS的速率控制规则。
  * <pre>

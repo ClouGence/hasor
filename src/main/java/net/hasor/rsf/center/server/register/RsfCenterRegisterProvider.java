@@ -16,9 +16,9 @@
 package net.hasor.rsf.center.server.register;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.TraceUtil;
-import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.RsfCenterRegister;
 import net.hasor.rsf.center.RsfCenterResult;
 import net.hasor.rsf.center.domain.ConsumerPublishInfo;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.address;
+package net.hasor.rsf;
 import net.hasor.core.Hasor;
 import org.more.FormatException;
 import org.more.util.StringUtils;

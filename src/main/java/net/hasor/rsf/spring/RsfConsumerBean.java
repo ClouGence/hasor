@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.spring;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfPublisher;
-import net.hasor.rsf.address.InterAddress;
 
 import java.util.List;
 /**

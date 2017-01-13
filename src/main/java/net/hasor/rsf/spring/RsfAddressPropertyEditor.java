@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.spring;
-import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.InterAddress;
 
 import java.beans.PropertyEditorSupport;
 import java.net.URISyntaxException;

@@ -21,11 +21,10 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.domain.RsfConstants;
-import net.hasor.rsf.utils.NetworkUtils;
 import org.more.bizcommon.json.JSON;
 import org.more.util.ArrayUtils;
 import org.more.util.NameThreadFactory;
@@ -35,7 +34,8 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.Date;
+import java.net.UnknownHostException;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -86,15 +86,8 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
             logger.info("rsfConsole -> accept inBound socket ,remoteAddress = {}.", remoteAddress);
         }
         //
-        String hostSchema = null;
-        try {
-            RsfSettings settings = this.rsfContext.getSettings();
-            InetAddress hostInetAddress = NetworkUtils.finalBindAddress(settings.getBindAddress());
-            InterAddress addr = new InterAddress(hostInetAddress.getHostAddress(), settings.getBindPort(), settings.getUnitName());
-            hostSchema = addr.toHostSchema();
-        } catch (Exception e) {
-            hostSchema = InetAddress.getLocalHost().getHostAddress();
-        }
+        RsfSettings settings = this.rsfContext.getSettings();
+        List<String> rsfAddressList = getStrings(settings.getBindAddress());
         //
         Attribute<RsfCommandSession> attr = ctx.attr(SessionKEY);
         if (attr.get() == null) {
@@ -108,13 +101,34 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         ctx.write("\r\n");
         ctx.write("     login : " + new Date() + " now. form " + ctx.channel().remoteAddress() + "\r\n");
         ctx.write("    workAt : " + ctx.channel().localAddress() + "\r\n");
-        ctx.write("rsfAddress : " + hostSchema + "\r\n");
+        for (int i = 0; i < rsfAddressList.size(); i++) {
+            if (i == 0) {
+                ctx.write("rsfAddress : " + rsfAddressList.get(i) + "\r\n");
+            } else {
+                ctx.write("           : " + rsfAddressList.get(i) + "\r\n");
+            }
+        }
         ctx.write("  unitName : " + this.rsfContext.getSettings().getUnitName() + "\r\n\r\n");
         ctx.write("Tips: You can enter a 'help' or 'help -a' for more information.\r\n");
         ctx.write("use the 'exit' or 'quit' out of the console.\r\n");
         ctx.write("--------------------------------------------\r\n");
         ctx.write(CMD);
         ctx.flush();
+    }
+    private List<String> getStrings(Map<String, InterAddress> bindPortMap) throws UnknownHostException {
+        List<String> hostSchema = new ArrayList<String>();
+        List<String> portType = new ArrayList<String>(bindPortMap.keySet());
+        Collections.sort(portType);
+        //
+        for (String key : portType) {
+            try {
+                InterAddress addr = bindPortMap.get(key);
+                hostSchema.add(addr.toHostSchema());
+            } catch (Exception e) {
+                hostSchema.add(InetAddress.getLocalHost().getHostAddress());
+            }
+        }
+        return hostSchema;
     }
     @Override
     public void channelRead0(ChannelHandlerContext ctx, String request) throws Exception {

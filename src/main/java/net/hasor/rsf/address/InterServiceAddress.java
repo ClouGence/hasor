@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.address;
 import net.hasor.core.Hasor;
+import net.hasor.rsf.InterAddress;
 import org.more.FormatException;
 import org.more.util.StringUtils;
 

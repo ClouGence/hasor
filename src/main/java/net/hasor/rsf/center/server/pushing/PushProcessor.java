@@ -16,9 +16,9 @@
 package net.hasor.rsf.center.server.pushing;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.TraceUtil;
-import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.domain.CenterEventBody;
 import net.hasor.rsf.domain.provider.InstanceAddressProvider;

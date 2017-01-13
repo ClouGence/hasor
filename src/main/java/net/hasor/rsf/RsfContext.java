@@ -17,7 +17,6 @@ package net.hasor.rsf;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.Provider;
-import net.hasor.rsf.address.InterAddress;
 
 import java.net.URI;
 import java.net.URISyntaxException;

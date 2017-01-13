@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.domain.warp;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfRequest;
-import net.hasor.rsf.address.InterAddress;
 
 import java.lang.reflect.Method;
 import java.util.Enumeration;

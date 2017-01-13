@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.transform.protocol;
+import net.hasor.rsf.RsfOptionSet;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import net.hasor.rsf.RsfOptionSet;
 /**
  *
  * @version : 2015年1月24日

@@ -15,9 +15,9 @@
  */
 package net.hasor.rsf.console.commands;
 import net.hasor.core.Singleton;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.RsfCenterRegister;
 import net.hasor.rsf.center.RsfCenterResult;
 import net.hasor.rsf.console.RsfCommand;

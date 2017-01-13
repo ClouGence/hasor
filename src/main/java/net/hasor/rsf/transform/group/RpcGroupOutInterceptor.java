@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.transform.group;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 截获：传出的数据包
  * @version : 2014年10月10日

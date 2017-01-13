@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.address;
 import net.hasor.core.Settings;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 import net.hasor.rsf.domain.RsfConstants;

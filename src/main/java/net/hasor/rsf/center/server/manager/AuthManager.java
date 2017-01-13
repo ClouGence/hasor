@@ -16,8 +16,8 @@
 package net.hasor.rsf.center.server.manager;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.TraceUtil;
-import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.server.AuthQuery;
 import net.hasor.rsf.center.server.domain.AuthInfo;
 import net.hasor.rsf.center.server.domain.Result;

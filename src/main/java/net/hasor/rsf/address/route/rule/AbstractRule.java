@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address.route.rule;
+import net.hasor.core.Settings;
 import org.more.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.Settings;
 /**
  * 路由规则，配置模版实例：
  * <pre>

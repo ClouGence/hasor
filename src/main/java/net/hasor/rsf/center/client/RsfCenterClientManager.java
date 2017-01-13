@@ -16,9 +16,9 @@
 package net.hasor.rsf.center.client;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.center.RsfCenterRegister;
 import net.hasor.rsf.center.RsfCenterResult;
 import net.hasor.rsf.center.domain.ConsumerPublishInfo;

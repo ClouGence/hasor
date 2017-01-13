@@ -16,7 +16,7 @@
 package net.hasor.rsf.center.server.pushing;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.InterAddress;
 
 import java.util.Collection;
 import java.util.List;

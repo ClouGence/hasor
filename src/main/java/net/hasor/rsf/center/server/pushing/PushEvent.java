@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.pushing;
-import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.InterAddress;
 
 import java.util.ArrayList;
 import java.util.List;

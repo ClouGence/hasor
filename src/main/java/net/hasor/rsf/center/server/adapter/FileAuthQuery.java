@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf.center.server.adapter;
 import net.hasor.core.*;
-import net.hasor.rsf.address.InterAddress;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.center.server.AuthQuery;
 import net.hasor.rsf.center.server.domain.*;
 import net.hasor.rsf.domain.RsfServiceType;
