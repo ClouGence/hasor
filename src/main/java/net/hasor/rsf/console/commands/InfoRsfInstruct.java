@@ -60,7 +60,7 @@ public class InfoRsfInstruct implements RsfInstruct {
             }
         }
         //
-        InterAddress address = rsfContext.bindAddress();
+        InterAddress address = rsfContext.bindAddress(null);
         RsfSettings settings = rsfContext.getSettings();
         int providerCount = 0;
         int customerCount = 0;

@@ -17,13 +17,13 @@ package net.hasor.rsf.rpc.context;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.core.setting.SettingsWrap;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
-import net.hasor.rsf.address.InterAddress;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.transform.protocol.OptionInfo;
 import net.hasor.rsf.utils.NetworkUtils;
+import org.more.convert.ConverterUtils;
 import org.more.util.ResourcesUtils;
 import org.more.util.StringUtils;
 import org.more.util.io.IOUtils;
@@ -32,59 +32,58 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 /**
  *
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
-    protected Logger          logger                = LoggerFactory.getLogger(getClass());
-    private   int             defaultTimeout        = 6000;
-    private   String          defaultGroup          = "RSF";
-    private   String          defaultVersion        = "1.0.0";
-    private   String          defaultSerializeType  = "Hessian";
+    protected Logger                    logger                = LoggerFactory.getLogger(getClass());
+    private   int                       defaultTimeout        = 6000;
+    private   String                    defaultGroup          = "RSF";
+    private   String                    defaultVersion        = "1.0.0";
+    private   String                    defaultSerializeType  = "Hessian";
     //
-    private   OptionInfo      serverOptionManager   = new OptionInfo();
-    private   OptionInfo      clientOptionManager   = new OptionInfo();
+    private   OptionInfo                serverOptionManager   = new OptionInfo();
+    private   OptionInfo                clientOptionManager   = new OptionInfo();
     //
-    private   int             networkWorker         = 2;
-    private   int             networkListener       = 1;
+    private   int                       networkWorker         = 2;
+    private   int                       networkListener       = 1;
     //
-    private   int             queueMaxSize          = 4096;
-    private   int             queueMinPoolSize      = 1;
-    private   int             queueMaxPoolSize      = 7;
-    private   long            queueKeepAliveTime    = 300L;
+    private   int                       queueMaxSize          = 4096;
+    private   int                       queueMinPoolSize      = 1;
+    private   int                       queueMaxPoolSize      = 7;
+    private   long                      queueKeepAliveTime    = 300L;
     //
-    private   String          bindAddress           = "local";
-    private   int             bindPort              = 2180;
-    private   String          gatewayAddress        = "";
-    private   int             gatewayPort           = 0;
+    private   String                    bindAddress           = "local";
+    private   Map<String, InterAddress> connectorSet          = null;
+    private   Map<String, InterAddress> gatewayAddressMap     = null;
     //
-    private   InterAddress[]  centerServerSet       = new InterAddress[0];
-    private   int             centerRsfTimeout      = 6000;
-    private   int             centerHeartbeatTime   = 15000;
-    private   boolean         enableCenter          = false;
+    private   InterAddress[]            centerServerSet       = new InterAddress[0];
+    private   int                       centerRsfTimeout      = 6000;
+    private   int                       centerHeartbeatTime   = 15000;
+    private   boolean                   enableCenter          = false;
     //
-    private   int             consolePort           = 2181;
-    private   String[]        consoleInBound        = null;
+    private   int                       consolePort           = 2181;
+    private   String[]                  consoleInBound        = null;
     //
-    private   int             requestTimeout        = 6000;
-    private   int             maximumRequest        = 200;
-    private   SendLimitPolicy sendLimitPolicy       = SendLimitPolicy.Reject;
-    private   int             connectTimeout        = 100;
-    private   String          unitName              = "default";
-    private   long            invalidWaitTime       = 30000;
-    private   long            refreshCacheTime      = 360000;
-    private   boolean         localDiskCache        = true;
-    private   long            diskCacheTimeInterval = 3600000;
-    private   boolean         automaticOnline       = true;
-    private   String          wrapperType           = null;
+    private   int                       requestTimeout        = 6000;
+    private   int                       maximumRequest        = 200;
+    private   SendLimitPolicy           sendLimitPolicy       = SendLimitPolicy.Reject;
+    private   int                       connectTimeout        = 100;
+    private   String                    unitName              = "default";
+    private   long                      invalidWaitTime       = 30000;
+    private   long                      refreshCacheTime      = 360000;
+    private   boolean                   localDiskCache        = true;
+    private   long                      diskCacheTimeInterval = 3600000;
+    private   boolean                   automaticOnline       = true;
+    private   String                    wrapperType           = null;
     //
-    private   String          appKeyID              = null;
-    private   String          appKeySecret          = null;
+    private   String                    appKeyID              = null;
+    private   String                    appKeySecret          = null;
     //
     //
     public DefaultRsfSettings(Settings settings) throws IOException {
@@ -113,10 +112,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         } catch (Throwable e) {
             return null;
         }
-    }
-    @Override
-    public byte getProtocolVersion() {
-        return RsfConstants.Version_1;
     }
     @Override
     public String getDefaultGroup() {
@@ -167,22 +162,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         return this.sendLimitPolicy;
     }
     @Override
-    public String getBindAddress() {
-        return this.bindAddress;
-    }
-    @Override
-    public int getBindPort() {
-        return this.bindPort;
-    }
-    @Override
-    public String getGatewayAddress() {
-        return this.gatewayAddress;
-    }
-    @Override
-    public int getGatewayPort() {
-        return this.gatewayPort;
-    }
-    @Override
     public InterAddress[] getCenterServerSet() {
         return this.centerServerSet.clone();
     }
@@ -199,6 +178,18 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     @Override
     public String getWrapperType() {
         return this.wrapperType;
+    }
+    @Override
+    public String getBindAddress() {
+        return this.bindAddress;
+    }
+    @Override
+    public Map<String, InterAddress> getConnectorSet() {
+        return Collections.unmodifiableMap(this.connectorSet);
+    }
+    @Override
+    public Map<String, InterAddress> getGatewaySet() {
+        return Collections.unmodifiableMap(this.gatewayAddressMap);
     }
     @Override
     public String getUnitName() {
@@ -288,10 +279,49 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         this.queueMaxPoolSize = getInteger("hasor.rsfConfig.queue.maxPoolSize", 7);
         this.queueKeepAliveTime = getLong("hasor.rsfConfig.queue.keepAliveTime", 300L);
         //
-        this.bindAddress = getString("hasor.rsfConfig.address", "local");
-        this.bindPort = getInteger("hasor.rsfConfig.port", 2180);
-        this.gatewayAddress = getString("hasor.rsfConfig.gateway.address", "");
-        this.gatewayPort = getInteger("hasor.rsfConfig.gateway.port", 0);
+        String bindAddress = getString("hasor.rsfConfig.address", "local");
+        InetAddress inetAddress = NetworkUtils.finalBindAddress(bindAddress);
+        this.bindAddress = inetAddress.getHostAddress();
+        //
+        this.connectorSet = new HashMap<String, InterAddress>();
+        this.gatewayAddressMap = new HashMap<String, InterAddress>();
+        //
+        Properties protocolSchemas = new Properties();
+        List<InputStream> streamList = ResourcesUtils.getResourcesAsStream("/META-INF/rsf-protocol.schemas");
+        if (streamList != null) {
+            for (InputStream inStream : streamList)
+                protocolSchemas.load(inStream);
+        }
+        XmlNode[] connectorArrays = getXmlNodeArray("hasor.rsfConfig.connectorSet.connector");
+        if (connectorArrays != null) {
+            for (XmlNode connectorNode : connectorArrays) {
+                String protocol = connectorNode.getAttribute("protocol");
+                String localPort = connectorNode.getAttribute("localPort");
+                String gatewayHost = connectorNode.getAttribute("gatewayAddress");
+                String gatewayPort = connectorNode.getAttribute("gatewayPort");
+                //
+                String sechma = (String) protocolSchemas.get(protocol);
+                if (StringUtils.isBlank(sechma))
+                    continue;
+                int localPortInt = 0;
+                int gatewayPortInt = 0;
+                if (StringUtils.isNotBlank(localPort))
+                    localPortInt = (Integer) ConverterUtils.convert(Integer.TYPE, localPort);
+                if (StringUtils.isNotBlank(gatewayPort))
+                    gatewayPortInt = (Integer) ConverterUtils.convert(Integer.TYPE, gatewayPort);
+                //
+                if (localPortInt <= 0)
+                    continue;
+                InterAddress localAddress = new InterAddress(sechma, this.bindAddress, localPortInt, this.unitName);
+                this.connectorSet.put(protocol, localAddress);
+                //
+                if (gatewayPortInt <= 0 || StringUtils.isBlank(gatewayHost))
+                    continue;
+                InetAddress gatewayInetAddress = NetworkUtils.finalBindAddress(gatewayHost);
+                InterAddress gatewayAddress = new InterAddress(sechma, gatewayInetAddress.getHostAddress(), gatewayPortInt, this.unitName);
+                this.gatewayAddressMap.put(protocol, gatewayAddress);
+            }
+        }
         //
         XmlNode[] centerServerArrays = getXmlNodeArray("hasor.rsfConfig.centerServers.server");
         if (centerServerArrays != null) {

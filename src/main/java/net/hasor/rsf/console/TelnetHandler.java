@@ -87,7 +87,7 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         }
         //
         RsfSettings settings = this.rsfContext.getSettings();
-        List<String> rsfAddressList = getStrings(settings.getBindAddress());
+        List<String> rsfAddressList = getStrings(settings.getConnectorSet());
         //
         Attribute<RsfCommandSession> attr = ctx.attr(SessionKEY);
         if (attr.get() == null) {

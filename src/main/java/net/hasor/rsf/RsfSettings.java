@@ -15,18 +15,15 @@
  */
 package net.hasor.rsf;
 import net.hasor.core.Settings;
-import net.hasor.rsf.address.InterAddress;
 
 import java.io.IOException;
+import java.util.Map;
 /**
  * RSF 配置。
  * @version : 2014年11月18日
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfSettings extends Settings {
-    /**获取当发起请求的时候所使用的RSF协议版本。*/
-    public byte getProtocolVersion();
-
     /**获取RSF框架版本。*/
     public String getVersion(); //
 
@@ -84,14 +81,11 @@ public interface RsfSettings extends Settings {
     /**获取本地服务绑定地址*/
     public String getBindAddress();
 
-    /**获取本地服务绑定端口*/
-    public int getBindPort();
+    /**获取本地服务绑定地址*/
+    public Map<String, InterAddress> getConnectorSet();
 
     /**获取网关地址*/
-    public String getGatewayAddress();
-
-    /**获取网关映射的端口*/
-    public int getGatewayPort();
+    public Map<String, InterAddress> getGatewaySet();
 
     /**获取注册中心服务地址*/
     public InterAddress[] getCenterServerSet();
