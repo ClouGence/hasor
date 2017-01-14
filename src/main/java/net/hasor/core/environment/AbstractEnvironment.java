@@ -358,16 +358,22 @@ public abstract class AbstractEnvironment implements Environment {
                 for (int index = 0; index < varArrays.size(); index++) {
                     Object var = varArrays.get(index);
                     if (var instanceof DefaultXmlNode) {
+                        DefaultXmlNode xmlVar = (DefaultXmlNode) var;
                         // .引用类型-直接更新引用对象的属性值。
-                        String val = evalSettingString(((DefaultXmlNode) var).getText());
-                        ((DefaultXmlNode) var).setText(val);//引用类型
+                        String val = evalSettingString(xmlVar.getText());
+                        xmlVar.setText(val);//引用类型
+                        Map<String, String> attributeMap = xmlVar.getAttributeMap();
+                        for (String attrKey : attributeMap.keySet()) {
+                            String newValue = evalSettingString(attributeMap.get(attrKey));
+                            attributeMap.put(attrKey, newValue);
+                        }
                     } else if (var instanceof CharSequence) {
                         // .String类型-通过replace替换。
                         String oldVal = String.valueOf(var);
                         String newVal = evalSettingString(oldVal);
                         oldValue.replace(index, var, newVal);//值类型
                     } else {
-                        //TODO 
+                        //TODO
                     }
                 }
             }
