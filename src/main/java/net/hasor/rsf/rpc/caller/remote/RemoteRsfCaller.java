@@ -20,12 +20,11 @@ import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.protocol.rsf.codec.CodecAdapter;
-import net.hasor.rsf.protocol.rsf.codec.CodecAdapterFactory;
-import net.hasor.rsf.protocol.rsf.protocol.RequestInfo;
-import net.hasor.rsf.protocol.rsf.protocol.ResponseInfo;
+import net.hasor.rsf.domain.RequestInfo;
+import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.rpc.caller.RsfCaller;
 import net.hasor.rsf.utils.ExecutesManager;
+import net.hasor.rsf.utils.ProtocolUtils;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
@@ -61,7 +60,6 @@ public class RemoteRsfCaller extends RsfCaller {
      */
     public void onRequest(InterAddress target, RequestInfo info) {
         RsfEnvironment rsfEnv = this.getContext().getEnvironment();
-        CodecAdapter codecAdapter = CodecAdapterFactory.getCodecAdapterByVersion(rsfEnv, info.getVersion());
         String serviceUniqueName = "[" + info.getServiceGroup() + "]" + info.getServiceName() + "-" + info.getServiceVersion();
         try {
             invLogger.info("request({}) -> received, bindID ={}, targetMethod ={}, remoteAddress ={}.", //
@@ -69,7 +67,7 @@ public class RemoteRsfCaller extends RsfCaller {
             //
             Executor executor = executesManager.getExecute(serviceUniqueName);
             executor.execute(new RemoteRsfCallerProcessing(target, this, info));//放入业务线程准备执行
-            ResponseInfo resp = codecAdapter.buildResponseStatus(info.getRequestID(), ProtocolStatus.Accept, null);
+            ResponseInfo resp = ProtocolUtils.buildResponseStatus(rsfEnv, info.getRequestID(), ProtocolStatus.Accept, null);
             this.senderListener.sendResponse(target, resp);
         } catch (RejectedExecutionException e) {
             invLogger.info("request({}) -> rejected request, queue is full. -> bindID ={}, targetMethod ={}, remoteAddress ={}.", //
@@ -77,7 +75,7 @@ public class RemoteRsfCaller extends RsfCaller {
             //
             String msgLog = "rejected request, queue is full." + e.getMessage();
             logger.warn(msgLog, e);
-            ResponseInfo resp = codecAdapter.buildResponseStatus(info.getRequestID(), ProtocolStatus.QueueFull, msgLog);
+            ResponseInfo resp = ProtocolUtils.buildResponseStatus(rsfEnv, info.getRequestID(), ProtocolStatus.QueueFull, msgLog);
             this.senderListener.sendResponse(target, resp);
         }
     }

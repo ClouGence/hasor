@@ -15,18 +15,16 @@
  */
 package net.hasor.rsf.protocol.rsf.codec.v1;
 import io.netty.buffer.ByteBuf;
-import net.hasor.rsf.*;
+import net.hasor.rsf.RsfEnvironment;
+import net.hasor.rsf.domain.RequestInfo;
+import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.domain.RsfConstants;
-import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.protocol.rsf.codec.CodecAdapter;
 import net.hasor.rsf.protocol.rsf.codec.Protocol;
-import net.hasor.rsf.protocol.rsf.protocol.RequestInfo;
-import net.hasor.rsf.protocol.rsf.protocol.ResponseInfo;
 import net.hasor.rsf.protocol.rsf.protocol.v1.PoolBlock;
 import net.hasor.rsf.protocol.rsf.protocol.v1.RequestBlock;
 import net.hasor.rsf.protocol.rsf.protocol.v1.ResponseBlock;
 import net.hasor.rsf.utils.ByteStringCachelUtils;
-import org.more.util.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -43,37 +41,6 @@ public class CodecAdapterForV1 implements CodecAdapter {
         this.rsfEnvironment = rsfEnvironment;
     }
     //
-    @Override
-    public RequestInfo buildRequestInfo(RsfRequest rsfRequest) throws IOException {
-        RequestInfo info = new RequestInfo(Version_1);
-        RsfBindInfo<?> rsfBindInfo = rsfRequest.getBindInfo();
-        String serializeType = rsfRequest.getSerializeType();
-        SerializeCoder coder = rsfEnvironment.getSerializeCoder(serializeType);
-        //
-        //1.基本信息
-        info.setRequestID(rsfRequest.getRequestID());//请求ID
-        info.setServiceGroup(rsfBindInfo.getBindGroup());//序列化策略
-        info.setServiceName(rsfBindInfo.getBindName());//序列化策略
-        info.setServiceVersion(rsfBindInfo.getBindVersion());//序列化策略
-        info.setTargetMethod(rsfRequest.getMethod().getName());//序列化策略
-        info.setSerializeType(serializeType);//序列化策略
-        info.setClientTimeout(rsfRequest.getTimeout());
-        info.setMessage(rsfRequest.isMessage());
-        //
-        //2.params
-        Class<?>[] pTypes = rsfRequest.getParameterTypes();
-        Object[] pObjects = rsfRequest.getParameterObject();
-        for (int i = 0; i < pTypes.length; i++) {
-            String typeByte = RsfRuntimeUtils.toAsmType(pTypes[i]);
-            byte[] paramByte = coder.encode(pObjects[i]);
-            info.addParameter(typeByte, paramByte);
-        }
-        //
-        //3.Opt参数
-        info.addOptionMap(rsfRequest);
-        //
-        return info;
-    }
     @Override
     public RequestBlock buildRequestBlock(RequestInfo info) {
         RequestBlock block = new RequestBlock();
@@ -117,29 +84,6 @@ public class CodecAdapterForV1 implements CodecAdapter {
         }
         //
         return block;
-    }
-    @Override
-    public ResponseInfo buildResponseStatus(long requestID, short status, String errorInfo) {
-        ResponseInfo info = new ResponseInfo(Version_1);
-        info.setRequestID(requestID);
-        info.setStatus(status);
-        if (StringUtils.isNotBlank(errorInfo)) {
-            info.addOption("message", errorInfo);
-        }
-        return info;
-    }
-    @Override
-    public ResponseInfo buildResponseInfo(RsfResponse rsfResponse) throws IOException {
-        ResponseInfo info = new ResponseInfo(Version_1);
-        String serializeType = rsfResponse.getSerializeType();
-        SerializeCoder coder = rsfEnvironment.getSerializeCoder(serializeType);
-        byte[] returnData = coder.encode(rsfResponse.getData());
-        info.setRequestID(rsfResponse.getRequestID());
-        info.setStatus(rsfResponse.getStatus());
-        info.setSerializeType(serializeType);
-        info.setReturnData(returnData);
-        info.addOptionMap(rsfResponse);
-        return info;
     }
     @Override
     public ResponseBlock buildResponseBlock(ResponseInfo info) {

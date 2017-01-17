@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.rsf.protocol;
+package net.hasor.rsf.domain;
 import java.util.ArrayList;
 import java.util.List;
 /**

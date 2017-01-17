@@ -21,7 +21,7 @@ import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
-import net.hasor.rsf.protocol.rsf.protocol.OptionInfo;
+import net.hasor.rsf.domain.OptionInfo;
 import net.hasor.rsf.utils.NetworkUtils;
 import org.more.convert.ConverterUtils;
 import org.more.util.ResourcesUtils;

@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf;
 import io.netty.buffer.ByteBuf;
-import net.hasor.rsf.protocol.rsf.protocol.OptionInfo;
+import net.hasor.rsf.domain.OptionInfo;
 /**
  * RPC 协议解析。
  * @version : 2014年11月18日

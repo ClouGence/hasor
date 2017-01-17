@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.rsf.protocol;
+package net.hasor.rsf.domain;
 /**
  * RSF Response 的化身,是封装 Response 的数据对象。
  * @version : 2014年10月25日

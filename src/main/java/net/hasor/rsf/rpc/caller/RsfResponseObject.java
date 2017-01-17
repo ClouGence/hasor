@@ -17,8 +17,8 @@ package net.hasor.rsf.rpc.caller;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
+import net.hasor.rsf.domain.OptionInfo;
 import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.protocol.rsf.protocol.OptionInfo;
 import org.more.util.StringUtils;
 /**
  * 调用请求

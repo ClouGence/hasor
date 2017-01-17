@@ -15,10 +15,8 @@
  */
 package net.hasor.rsf.protocol.rsf.codec;
 import io.netty.buffer.ByteBuf;
-import net.hasor.rsf.RsfRequest;
-import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.protocol.rsf.protocol.RequestInfo;
-import net.hasor.rsf.protocol.rsf.protocol.ResponseInfo;
+import net.hasor.rsf.domain.RequestInfo;
+import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.protocol.rsf.protocol.v1.RequestBlock;
 import net.hasor.rsf.protocol.rsf.protocol.v1.ResponseBlock;
 
@@ -29,9 +27,6 @@ import java.io.IOException;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface CodecAdapter {
-    /**将{@link RsfRequest},转换为{@link RequestInfo}。*/
-    RequestInfo buildRequestInfo(RsfRequest rsfRequest) throws IOException;
-
     /**将{@link RequestInfo},转换为{@link RequestBlock}。*/
     RequestBlock buildRequestBlock(RequestInfo info);
 
@@ -41,9 +36,6 @@ public interface CodecAdapter {
     /**将{@link ByteBuf} 中读取{@link RequestInfo}信息。*/
     RequestInfo readRequestInfo(ByteBuf frame) throws IOException;
 
-    /**将{@link RsfResponse},转换为{@link ResponseInfo}。*/
-    ResponseInfo buildResponseInfo(RsfResponse rsfResponse) throws IOException;
-
     /**将{@link ResponseInfo},转换为{@link ResponseBlock}。*/
     ResponseBlock buildResponseBlock(ResponseInfo info);
 
@@ -52,6 +44,4 @@ public interface CodecAdapter {
 
     /**将{@link ByteBuf} 中读取{@link ResponseInfo}信息。*/
     ResponseInfo readResponseInfo(ByteBuf frame) throws IOException;
-
-    ResponseInfo buildResponseStatus(long requestID, short notFound, String errorInfo);
 }

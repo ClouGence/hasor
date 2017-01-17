@@ -20,8 +20,8 @@ import net.hasor.core.Hasor;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.rsf.protocol.rsf.codec.v1.CodecAdapterForV1;
-import net.hasor.rsf.protocol.rsf.protocol.RequestInfo;
-import net.hasor.rsf.protocol.rsf.protocol.ResponseInfo;
+import net.hasor.rsf.domain.RequestInfo;
+import net.hasor.rsf.domain.ResponseInfo;
 import org.junit.Test;
 
 import java.io.IOException;

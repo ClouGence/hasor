@@ -15,8 +15,8 @@
  */
 package net.hasor.rsf.rpc.net;
 import net.hasor.rsf.InterAddress;
-import net.hasor.rsf.protocol.rsf.protocol.RequestInfo;
-import net.hasor.rsf.protocol.rsf.protocol.ResponseInfo;
+import net.hasor.rsf.domain.RequestInfo;
+import net.hasor.rsf.domain.ResponseInfo;
 /**
  *
  * @version : 2015年12月10日

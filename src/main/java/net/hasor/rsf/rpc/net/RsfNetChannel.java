@@ -19,9 +19,9 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RequestInfo;
+import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.domain.RsfException;
-import net.hasor.rsf.protocol.rsf.protocol.RequestInfo;
-import net.hasor.rsf.protocol.rsf.protocol.ResponseInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

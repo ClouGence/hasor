@@ -23,9 +23,7 @@ import net.hasor.rsf.*;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.*;
 import net.hasor.rsf.domain.provider.AddressProvider;
-import net.hasor.rsf.protocol.rsf.codec.CodecAdapterFactory;
-import net.hasor.rsf.protocol.rsf.protocol.RequestInfo;
-import net.hasor.rsf.protocol.rsf.protocol.ResponseInfo;
+import net.hasor.rsf.utils.ProtocolUtils;
 import org.more.bizcommon.json.JSON;
 import org.more.future.FutureCallback;
 import org.slf4j.Logger;
@@ -274,10 +272,10 @@ public abstract class RsfRequestManager {
         try {
             Provider<InterAddress> targetProvider = new InstanceProvider<InterAddress>(address);
             invLogger.warn("request({}) -> pre sendData, bindID ={}, targetAddress ={}.", rsfRequest.getRequestID(), serviceID, address);
-            startRequest(rsfFuture);                 // <- 1.计时request。
-            RequestInfo info = CodecAdapterFactory.getCodecAdapterByVersion(this.getContext().getEnvironment(), RsfConstants.Version_1)//
-                    .buildRequestInfo(rsfRequest);   // <- 2.生成RequestInfo
-            sendData(targetProvider, info);          // <- 3.发送数据
+            RsfEnvironment environment = this.getContext().getEnvironment();
+            startRequest(rsfFuture);                                                    // <- 1.计时request。
+            RequestInfo info = ProtocolUtils.buildRequestInfo(environment, rsfRequest); // <- 2.生成RequestInfo
+            sendData(targetProvider, info);                                             // <- 3.发送数据
         } catch (Throwable e) {
             invLogger.error("request(" + rsfRequest.getRequestID() + ") send error, " + e.getMessage(), e);
             putResponse(rsfRequest.getRequestID(), e);

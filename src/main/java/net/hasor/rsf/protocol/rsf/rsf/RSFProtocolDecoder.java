@@ -19,10 +19,11 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RequestInfo;
+import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.protocol.rsf.codec.CodecAdapter;
 import net.hasor.rsf.protocol.rsf.codec.CodecAdapterFactory;
-import net.hasor.rsf.protocol.rsf.protocol.RequestInfo;
-import net.hasor.rsf.protocol.rsf.protocol.ResponseInfo;
+import net.hasor.rsf.utils.ProtocolUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,8 +60,7 @@ public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
         if (status != ProtocolStatus.OK) {
             frame = frame.resetReaderIndex().skipBytes(1);
             long requestID = frame.readLong();
-            CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, (byte) (rsfHead & 0x0F));
-            ResponseInfo info = factory.buildResponseStatus(requestID, status, null);
+            ResponseInfo info = ProtocolUtils.buildResponseStatus(this.rsfEnvironment, requestID, status, null);
             ctx.pipeline().writeAndFlush(info);
         }
         return null;

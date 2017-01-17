@@ -18,10 +18,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import net.hasor.rsf.RsfEnvironment;
+import net.hasor.rsf.domain.RequestInfo;
+import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.protocol.rsf.codec.CodecAdapter;
 import net.hasor.rsf.protocol.rsf.codec.CodecAdapterFactory;
-import net.hasor.rsf.protocol.rsf.protocol.RequestInfo;
-import net.hasor.rsf.protocol.rsf.protocol.ResponseInfo;
 import net.hasor.rsf.protocol.rsf.protocol.v1.RequestBlock;
 import net.hasor.rsf.protocol.rsf.protocol.v1.ResponseBlock;
 /**

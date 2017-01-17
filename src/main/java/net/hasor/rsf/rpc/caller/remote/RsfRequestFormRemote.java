@@ -20,7 +20,7 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.domain.AttributeSet;
 import net.hasor.rsf.domain.OptionKeys;
-import net.hasor.rsf.protocol.rsf.protocol.RequestInfo;
+import net.hasor.rsf.domain.RequestInfo;
 import org.more.util.StringUtils;
 
 import java.lang.reflect.Method;
