@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.functions;
+import net.hasor.rsf.InterAddress;
+import net.hasor.rsf.address.InterServiceAddress;
+import org.junit.Test;
+
 import java.net.URISyntaxException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import org.junit.Test;
-import net.hasor.rsf.InterAddress;
-import net.hasor.rsf.address.InterServiceAddress;
 /**
  *
  * @version : 2015年4月5日

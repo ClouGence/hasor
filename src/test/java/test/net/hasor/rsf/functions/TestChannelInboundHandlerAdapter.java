@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.functions;
-import io.netty.channel.*;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 /**
  *
  * @version : 2014年9月12日

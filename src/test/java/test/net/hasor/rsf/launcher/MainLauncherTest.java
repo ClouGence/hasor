@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.launcher;
+import net.hasor.rsf.center.server.launcher.MainLauncher;
 import org.junit.Test;
 import org.more.util.ResourcesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.rsf.center.server.launcher.MainLauncher;
 /**
  *
  * @version : 2016年3月29日

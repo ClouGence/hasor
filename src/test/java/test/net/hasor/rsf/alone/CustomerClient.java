@@ -16,11 +16,7 @@
 package test.net.hasor.rsf.alone;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.RsfApiBinder;
-import net.hasor.rsf.RsfClient;
-import net.hasor.rsf.RsfModule;
-import net.hasor.rsf.RsfResult;
-import net.hasor.rsf.InterAddress;
+import net.hasor.rsf.*;
 import test.net.hasor.rsf.services.EchoService;
 import test.net.hasor.rsf.services.MessageService;
 /**

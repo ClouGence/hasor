@@ -15,8 +15,8 @@
  */
 package test.net.hasor.rsf.functions;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.address.AddressBucket;
 import net.hasor.rsf.InterAddress;
+import net.hasor.rsf.address.AddressBucket;
 import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import org.junit.Test;

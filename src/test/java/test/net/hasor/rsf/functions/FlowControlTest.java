@@ -14,14 +14,6 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.functions;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Test;
-import org.more.util.ResourcesUtils;
-import org.more.util.io.IOUtils;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.address.route.flowcontrol.random.RandomFlowControl;
@@ -29,6 +21,14 @@ import net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 import net.hasor.rsf.address.route.rule.RuleParser;
 import net.hasor.rsf.rpc.context.DefaultRsfSettings;
+import org.junit.Test;
+import org.more.util.ResourcesUtils;
+import org.more.util.io.IOUtils;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 /**
  *
  * @version : 2015年4月5日

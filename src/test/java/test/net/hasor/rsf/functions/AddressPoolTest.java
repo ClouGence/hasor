@@ -15,10 +15,10 @@
  */
 package test.net.hasor.rsf.functions;
 import net.hasor.core.Hasor;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.address.AddressBucket;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.DiskCacheAddressPool;
-import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import org.junit.Test;
 import org.more.util.ResourcesUtils;
@@ -158,7 +158,7 @@ public class AddressPoolTest {
             public void run() {
                 Random random = new Random(System.currentTimeMillis());
                 while (true) {
-                    InterAddress address = pool.nextAddress(serviceID, "sayHello", new Object[] {"hello"});
+                    InterAddress address = pool.nextAddress(serviceID, "sayHello", new Object[] { "hello" });
                     System.out.println(Long.toHexString(random.nextLong()).toUpperCase() + "\t" + address);
                     try {
                         Thread.sleep(10);
