@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF 协议的编码/解码器，具体实现。
+ * 基于Netty 的 RSF 数据包编码器和解码器。
  */
-package net.hasor.rsf.transform.codec;
+package net.hasor.rsf.protocol.rsf.rsf;

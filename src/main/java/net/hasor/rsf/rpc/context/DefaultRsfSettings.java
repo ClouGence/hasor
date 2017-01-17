@@ -21,7 +21,7 @@ import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
-import net.hasor.rsf.transform.protocol.OptionInfo;
+import net.hasor.rsf.protocol.rsf.protocol.OptionInfo;
 import net.hasor.rsf.utils.NetworkUtils;
 import org.more.convert.ConverterUtils;
 import org.more.util.ResourcesUtils;
@@ -59,6 +59,7 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private   long                      queueKeepAliveTime    = 300L;
     //
     private   String                    bindAddress           = "local";
+    private   String                    defaultProtocol       = null;
     private   Map<String, InterAddress> connectorSet          = null;
     private   Map<String, InterAddress> gatewayAddressMap     = null;
     //
@@ -184,6 +185,10 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         return this.bindAddress;
     }
     @Override
+    public String getDefaultProtocol() {
+        return this.defaultProtocol;
+    }
+    @Override
     public Map<String, InterAddress> getConnectorSet() {
         return Collections.unmodifiableMap(this.connectorSet);
     }
@@ -282,6 +287,7 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         String bindAddress = getString("hasor.rsfConfig.address", "local");
         InetAddress inetAddress = NetworkUtils.finalBindAddress(bindAddress);
         this.bindAddress = inetAddress.getHostAddress();
+        this.defaultProtocol = getString("hasor.rsfConfig.connectorSet.default", "RSF/1.0");
         //
         this.connectorSet = new HashMap<String, InterAddress>();
         this.gatewayAddressMap = new HashMap<String, InterAddress>();

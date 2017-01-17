@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.transform.codec;
+package net.hasor.rsf.protocol.rsf.codec;
 import io.netty.buffer.ByteBuf;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
-import net.hasor.rsf.transform.protocol.RequestInfo;
-import net.hasor.rsf.transform.protocol.ResponseInfo;
-import net.hasor.rsf.transform.protocol.v1.RequestBlock;
-import net.hasor.rsf.transform.protocol.v1.ResponseBlock;
+import net.hasor.rsf.protocol.rsf.protocol.RequestInfo;
+import net.hasor.rsf.protocol.rsf.protocol.ResponseInfo;
+import net.hasor.rsf.protocol.rsf.protocol.v1.RequestBlock;
+import net.hasor.rsf.protocol.rsf.protocol.v1.ResponseBlock;
 
 import java.io.IOException;
 /**

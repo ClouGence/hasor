@@ -23,10 +23,9 @@ import net.hasor.rsf.*;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.*;
 import net.hasor.rsf.domain.provider.AddressProvider;
-import net.hasor.rsf.transform.codec.CodecAdapterFactory;
-import net.hasor.rsf.transform.protocol.RequestInfo;
-import net.hasor.rsf.transform.protocol.ResponseInfo;
-import net.hasor.rsf.utils.TimerManager;
+import net.hasor.rsf.protocol.rsf.codec.CodecAdapterFactory;
+import net.hasor.rsf.protocol.rsf.protocol.RequestInfo;
+import net.hasor.rsf.protocol.rsf.protocol.ResponseInfo;
 import org.more.bizcommon.json.JSON;
 import org.more.future.FutureCallback;
 import org.slf4j.Logger;
@@ -46,15 +45,13 @@ public abstract class RsfRequestManager {
     protected static Logger invLogger = LoggerFactory.getLogger(RsfConstants.LoggerName_Invoker);
     private final ConcurrentMap<Long, RsfFuture> rsfResponse;
     private final RsfContext                     rsfContext;
-    private final TimerManager                   timerManager;
     private final AtomicInteger                  requestCount;
     private final SenderListener                 senderListener;
     //
-    public RsfRequestManager(RsfContext rsfContext, TimerManager timerManager, SenderListener senderListener) {
+    public RsfRequestManager(RsfContext rsfContext, SenderListener senderListener) {
         senderListener = Hasor.assertIsNotNull(senderListener, "not found SendData.");
         this.rsfContext = rsfContext;
         this.rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
-        this.timerManager = timerManager;
         this.requestCount = new AtomicInteger(0);
         this.senderListener = senderListener;
     }
@@ -309,6 +306,6 @@ public abstract class RsfRequestManager {
         };
         invLogger.info("request({}) -> startRequest, timeout at {} ,bindID ={}, callMethod ={}.", //
                 request.getRequestID(), request.getTimeout(), request.getBindInfo().getBindID(), request.getMethod());
-        this.timerManager.atTime(timeTask, request.getTimeout());
+        this.getContext().getEnvironment().atTime(timeTask, request.getTimeout());
     }
 }

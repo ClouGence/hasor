@@ -13,15 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.transform.group;
-import io.netty.channel.CombinedChannelDuplexHandler;
 /**
- *
- * @version : 2014年11月4日
- * @author 赵永春(zyc@hasor.net)
+ * RSF 协议的编码/解码器，具体实现。
  */
-public class RpcGroup extends CombinedChannelDuplexHandler<RpcGroupInInterceptor, RpcGroupOutInterceptor> {
-    public RpcGroup() {
-        super(new RpcGroupInInterceptor(), new RpcGroupOutInterceptor());
-    }
-}
+package net.hasor.rsf.protocol.rsf.codec;

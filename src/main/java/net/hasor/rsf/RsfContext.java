@@ -57,11 +57,14 @@ public interface RsfContext extends OnlineStatus {
      */
     public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo);
 
+    /** 获取RSF默认运行地址(使用默认协议)。 */
+    public InterAddress localAddress();
+
     /** 获取RSF运行的地址。 */
-    public InterAddress bindAddress();
+    public InterAddress bindAddress(String protocol);
 
     /** 获取RSF运行的网关地址。 */
-    public InterAddress gatewayAddress();
+    public InterAddress gatewayAddress(String protocol);
 
     /**获取RSF配置*/
     public RsfSettings getSettings();

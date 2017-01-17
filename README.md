@@ -69,8 +69,8 @@
 	<!-- 引入依赖 -->
 	<dependency>
 		<groupId>net.hasor</groupId>
-		<artifactId>rsf-core</artifactId>
-		<version>1.0.0</version>
+		<artifactId>hasor-rsf</artifactId>
+		<version>1.1.0</version>
 	</dependency>
 
 	<!-- 配置文件 -->

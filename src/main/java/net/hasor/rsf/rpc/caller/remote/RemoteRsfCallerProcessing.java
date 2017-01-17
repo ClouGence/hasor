@@ -15,8 +15,8 @@
  */
 package net.hasor.rsf.rpc.caller.remote;
 import net.hasor.rsf.InterAddress;
-import net.hasor.rsf.transform.protocol.RequestInfo;
-import net.hasor.rsf.transform.protocol.ResponseInfo;
+import net.hasor.rsf.protocol.rsf.protocol.RequestInfo;
+import net.hasor.rsf.protocol.rsf.protocol.ResponseInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**

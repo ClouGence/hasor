@@ -20,12 +20,12 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.domain.AttributeSet;
 import net.hasor.rsf.domain.OptionKeys;
-import net.hasor.rsf.transform.protocol.RequestInfo;
+import net.hasor.rsf.protocol.rsf.protocol.RequestInfo;
 import org.more.util.StringUtils;
 
 import java.lang.reflect.Method;
 /**
- * RSF请求
+ * RSF请求(远程发起调用)
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -123,6 +123,8 @@ class RsfRequestFormRemote extends AttributeSet implements RsfRequest {
     }
     @Override
     public InterAddress getTargetAddress() {
-        return rsfCaller.getContext().bindAddress();
+        //根据远程来的请求协议，来从本地获取对应的地址端口
+        String remoteSechma = this.target.getSechma();
+        return this.rsfCaller.getContext().bindAddress(remoteSechma);
     }
 }

@@ -81,6 +81,9 @@ public interface RsfSettings extends Settings {
     /**获取本地服务绑定地址*/
     public String getBindAddress();
 
+    /**获取默认传输协议*/
+    public String getDefaultProtocol();
+
     /**获取本地服务绑定地址*/
     public Map<String, InterAddress> getConnectorSet();
 

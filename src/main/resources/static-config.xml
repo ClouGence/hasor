@@ -94,6 +94,8 @@
                 RSF/1.0     原生的内置协议，也是默认协议。
                 Hprose/1.0  see：http://www.hprose.com/
 
+            default
+                - 默认RPC协议，RSF 在启动的时必须有一个默认RPC协议
             protocol
                 - 连接器运行的RPC协议
             localPort
@@ -103,7 +105,7 @@
                 - gatewayAddress : 网关IP地址
                 - gatewayPort    : 网关上RSF的端口号
         -->
-        <connectorSet>
+        <connectorSet default="RSF/1.0">
             <connector protocol="RSF/1.0" localPort="${RSF_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${RSF_GATEWAY_PORT}"/>
             <connector protocol="Hprose/1.0" localPort="${HPROSE_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${HPROSE_GATEWAY_PORT}"/>
         </connectorSet>

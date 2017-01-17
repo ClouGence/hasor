@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.transform.codec;
+package net.hasor.rsf.protocol.rsf.codec;
 import net.hasor.rsf.RsfEnvironment;
-import net.hasor.rsf.transform.codec.v1.CodecAdapterForV1;
+import net.hasor.rsf.protocol.rsf.codec.v1.CodecAdapterForV1;
 
 import static net.hasor.rsf.domain.RsfConstants.Version_1;
 /**

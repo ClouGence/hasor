@@ -15,8 +15,8 @@
  */
 package net.hasor.rsf.rpc.caller.remote;
 import net.hasor.rsf.InterAddress;
+import net.hasor.rsf.protocol.rsf.protocol.ResponseInfo;
 import net.hasor.rsf.rpc.caller.SenderListener;
-import net.hasor.rsf.transform.protocol.ResponseInfo;
 /**
  * 可以提供向远端响应Response的能力。
  * @version : 2015年12月8日

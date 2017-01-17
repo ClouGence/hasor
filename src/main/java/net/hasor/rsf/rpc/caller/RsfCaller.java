@@ -19,7 +19,6 @@ import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.domain.provider.AddressProvider;
-import net.hasor.rsf.utils.TimerManager;
 import org.more.classcode.delegate.faces.MethodClassConfig;
 import org.more.classcode.delegate.faces.MethodDelegate;
 import org.more.future.FutureCallback;
@@ -37,8 +36,8 @@ import java.util.concurrent.*;
  */
 public class RsfCaller extends RsfRequestManager {
     private RsfBeanContainer rsfBeanContainer = null;
-    public RsfCaller(RsfContext rsfContext, TimerManager timerManager, RsfBeanContainer rsfBeanContainer, SenderListener senderListener) {
-        super(rsfContext, timerManager, senderListener);
+    public RsfCaller(RsfContext rsfContext, RsfBeanContainer rsfBeanContainer, SenderListener senderListener) {
+        super(rsfContext, senderListener);
         this.rsfBeanContainer = rsfBeanContainer;
     }
     @Override

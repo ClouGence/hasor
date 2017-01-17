@@ -13,7 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.rsf.protocol.rsf.codec;
+import io.netty.buffer.ByteBuf;
+
+import java.io.IOException;
 /**
- * RSF 协议的底层Socket传输数据结构，封装RSF数据包的数据结构，最终在网络上进行传输。
+ * Protocol Interface,for custom network protocol
+ * @version : 2014年11月4日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.rsf.transform.protocol;
+public interface Protocol<T> {
+    /**encode Message to byte & write to network framework*/
+    public void encode(T message, ByteBuf buf) throws IOException;
+
+    /**decode stream to object*/
+    public T decode(ByteBuf buf) throws IOException;
+}

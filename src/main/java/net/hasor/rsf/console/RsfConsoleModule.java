@@ -91,9 +91,10 @@ public class RsfConsoleModule extends RsfModule implements LifeModule {
         this.workerGroup = new NioEventLoopGroup(1, new NameThreadFactory("RSF-Console", appContext.getClassLoader()));
         this.telnetHandler = new TelnetHandler(rsfContext);
         int consolePort = rsfContext.getSettings().getConsolePort();
-        InterAddress consoleAddress = rsfContext.bindAddress();
+        String consoleAddress = rsfContext.getSettings().getBindAddress();
+        String formUnit = rsfContext.getSettings().getUnitName();
         try {
-            this.bindAddress = new InterAddress(consoleAddress.getHost(), consolePort, consoleAddress.getFormUnit());
+            this.bindAddress = new InterAddress(consoleAddress, consolePort, formUnit);
         } catch (Throwable e) {
             throw new UnknownHostException(e.getMessage());
         }

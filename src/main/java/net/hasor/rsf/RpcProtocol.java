@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.net;
-import net.hasor.rsf.InterAddress;
+package net.hasor.rsf;
+import io.netty.buffer.ByteBuf;
+import net.hasor.rsf.protocol.rsf.protocol.OptionInfo;
 /**
- * 包内，用于类解耦的接口。
- * @version : 2015年12月8日
+ * RPC 协议解析。
+ * @version : 2014年11月18日
  * @author 赵永春(zyc@hasor.net)
  */
-interface ChannelRegister {
-    void completed(InterAddress targetAddress, RsfNetChannel netChannel);
+public interface RpcProtocol {
+    /** */
+    public OptionInfo read(ByteBuf in);
 
-    void failed(InterAddress targetAddress, Throwable cause);
+    /** */
+    public ByteBuf write(OptionInfo data);
 }

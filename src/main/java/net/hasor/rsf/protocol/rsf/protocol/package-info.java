@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF 协议第一版,底层传输数据结构。
+ * RSF 协议的底层Socket传输数据结构，封装RSF数据包的数据结构，最终在网络上进行传输。
  */
-package net.hasor.rsf.transform.protocol.v1;
+package net.hasor.rsf.protocol.rsf.protocol;

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
+import io.netty.util.TimerTask;
 import net.hasor.core.Environment;
 /**
  * RSF 配置。
@@ -24,4 +25,8 @@ public interface RsfEnvironment extends Environment {
     public RsfSettings getSettings();
 
     public SerializeCoder getSerializeCoder(String codeName);
+
+    public void atTime(TimerTask timeTask, int timeout);
+
+    public void atTime(TimerTask timerTask);
 }

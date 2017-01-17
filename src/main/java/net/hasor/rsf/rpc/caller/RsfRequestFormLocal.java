@@ -24,7 +24,7 @@ import net.hasor.rsf.domain.provider.AddressProvider;
 
 import java.lang.reflect.Method;
 /**
- * RSF请求
+ * RSF请求(本地发起调用)
  * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -105,7 +105,12 @@ class RsfRequestFormLocal extends AttributeSet implements RsfRequest {
     }
     @Override
     public InterAddress getRemoteAddress() {
-        return this.rsfCaller.getContext().bindAddress();
+        if (this.getTargetAddress() == null) {
+            return this.rsfCaller.getContext().localAddress();
+        } else {
+            String sechma = getTargetAddress().getSechma();
+            return this.rsfCaller.getContext().bindAddress(sechma);
+        }
     }
     @Override
     public InterAddress getTargetAddress() {

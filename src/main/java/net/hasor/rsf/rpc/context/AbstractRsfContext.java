@@ -21,27 +21,28 @@ import net.hasor.core.context.ContextShutdownListener;
 import net.hasor.core.context.ContextStartListener;
 import net.hasor.rsf.*;
 import net.hasor.rsf.address.DiskCacheAddressPool;
-import net.hasor.rsf.address.InterAddress;
 import net.hasor.rsf.container.RsfBeanContainer;
+import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfEvent;
+import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.provider.AddressProvider;
 import net.hasor.rsf.domain.provider.InstanceAddressProvider;
 import net.hasor.rsf.domain.provider.PoolAddressProvider;
+import net.hasor.rsf.protocol.rsf.protocol.RequestInfo;
+import net.hasor.rsf.protocol.rsf.protocol.ResponseInfo;
 import net.hasor.rsf.rpc.caller.remote.RemoteRsfCaller;
 import net.hasor.rsf.rpc.caller.remote.RemoteSenderListener;
 import net.hasor.rsf.rpc.client.RpcRsfClient;
 import net.hasor.rsf.rpc.net.ReceivedListener;
+import net.hasor.rsf.rpc.net.RsfNetChannel;
 import net.hasor.rsf.rpc.net.RsfNetManager;
-import net.hasor.rsf.transform.protocol.RequestInfo;
-import net.hasor.rsf.transform.protocol.ResponseInfo;
-import org.more.UnhandledException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
@@ -68,7 +69,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         this.rsfBeanContainer = new RsfBeanContainer(this.addressPool);
         Transport transport = new Transport();
         this.rsfNetManager = new RsfNetManager(this.rsfEnvironment, transport);
-        this.rsfCaller = new RemoteRsfCaller(this, this.rsfNetManager.getTimerManager(), this.rsfBeanContainer, transport);
+        this.rsfCaller = new RemoteRsfCaller(this, this.rsfBeanContainer, transport);
         this.onlineStatus = new AtomicBoolean(false);
     }
     //
@@ -77,17 +78,19 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         //
         // .枚举 loadModule 期间注册的 Service
         this.appContext = appContext;
-        logger.info("rsfContext -> doStart , lookUp services for loadModule phase.");
+        this.logger.info("rsfContext -> doStart , lookUp services for loadModule phase.");
         this.rsfBeanContainer.lookUp(appContext);
         //
         // .启动网络通信（默认为：offline 状态）
-        String bindAddress = this.rsfEnvironment.getSettings().getBindAddress();
-        int bindPort = this.rsfEnvironment.getSettings().getBindPort();
-        logger.info("rsfContext -> doStart , start network. [bindAddress: {} , bindPort: {}]", bindAddress, bindPort);
-        try {
-            this.rsfNetManager.start(bindAddress, bindPort);
-        } catch (UnknownHostException e) {
-            throw new UnhandledException(e);
+        this.rsfNetManager.start();
+        //
+        Set<String> protocols = this.rsfNetManager.runProtocols();
+        if (protocols == null || protocols.isEmpty()) {
+            throw new IllegalStateException("not running any protocol, please check the configuration.");
+        }
+        for (String protocol : protocols) {
+            InterAddress interAddress = this.rsfNetManager.bindAddress(protocol);
+            this.logger.info("rsfContext -> doStart , bindAddress : ", interAddress.toHostSchema());
         }
     }
     @Override
@@ -100,11 +103,11 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         if (this.rsfEnvironment.getSettings().isAutomaticOnline()) {
             this.online();
         }
-        logger.info("rsf framework started.");
+        this.logger.info("rsf framework started.");
     }
     @Override
     public void doShutdown(AppContext appContext) {
-        logger.info("rsf framework shutdown.");
+        this.logger.info("rsf framework shutdown.");
         //
         this.offline();
         this.rsfCaller.shutdown();
@@ -119,10 +122,10 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
     @Override
     public synchronized void online() {
         if (!this.onlineStatus.compareAndSet(false, true)) {
-            logger.error("rsfContext -> already online");
+            this.logger.error("rsfContext -> already online");
             return;
         }
-        logger.info("rsfContext -> already online , fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Online);
+        this.logger.info("rsfContext -> already online , fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Online);
         EventContext ec = getAppContext().getEnvironment().getEventContext();
         ec.fireSyncEvent(RsfEvent.Rsf_Online, this);
     }
@@ -130,10 +133,10 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
     @Override
     public synchronized void offline() {
         if (!this.onlineStatus.compareAndSet(true, false)) {
-            logger.error("rsfContext -> already offline");
+            this.logger.error("rsfContext -> already offline");
             return;
         }
-        logger.info("rsfContext -> already offline , fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Online);
+        this.logger.info("rsfContext -> already offline , fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Online);
         EventContext ec = getAppContext().getEnvironment().getEventContext();
         ec.fireSyncEvent(RsfEvent.Rsf_Offline, this);
     }
@@ -160,12 +163,18 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         return this.rsfEnvironment.getClassLoader();
     }
     /** 获取RSF运行的地址。 */
-    public InterAddress bindAddress() {
-        return this.rsfNetManager.bindAddress();
+    @Override
+    public InterAddress localAddress() {
+        String sechma = this.getEnvironment().getSettings().getDefaultProtocol();
+        return this.bindAddress(sechma);
     }
     @Override
-    public InterAddress gatewayAddress() {
-        return this.rsfNetManager.getGatewayAddress();
+    public InterAddress bindAddress(String protocol) {
+        return this.rsfNetManager.bindAddress(protocol);
+    }
+    @Override
+    public InterAddress gatewayAddress(String protocol) {
+        return this.rsfNetManager.getGatewayAddress(protocol);
     }
     public RemoteRsfCaller getRsfCaller() {
         return this.rsfCaller;
@@ -219,7 +228,12 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         public void sendRequest(Provider<InterAddress> targetProvider, RequestInfo info) {
             InterAddress target = targetProvider.get();
             try {
-                rsfNetManager.getChannel(target).get().sendData(info, null);
+                RsfNetChannel channel = rsfNetManager.getChannel(target);
+                if (channel != null) {
+                    channel.sendData(info, null);
+                } else {
+                    throw new RsfException(ProtocolStatus.NetworkError, "Invalid address ->" + target.toHostSchema());
+                }
             } catch (Throwable e) {
                 addressPool.invalidAddress(target);//异常地址失效
                 rsfCaller.putResponse(info.getRequestID(), e);
@@ -229,7 +243,12 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         @Override
         public void sendResponse(InterAddress target, ResponseInfo info) {
             try {
-                rsfNetManager.getChannel(target).get().sendData(info, null);
+                RsfNetChannel channel = rsfNetManager.getChannel(target);
+                if (channel != null) {
+                    channel.sendData(info, null);
+                } else {
+                    throw new RsfException(ProtocolStatus.NetworkError, "Invalid address ->" + target.toHostSchema());
+                }
             } catch (Throwable e) {
                 addressPool.invalidAddress(target);//异常地址失效
                 logger.error("sendResponse - " + e.getMessage(), e);
