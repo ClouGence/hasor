@@ -31,20 +31,26 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version : 2015年12月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfNetChannel {
+public class RsfChannel {
     protected Logger logger = LoggerFactory.getLogger(getClass());
+    private       String        protocolKey;
     private final InterAddress  target;
     private final Channel       channel;
     private final AtomicBoolean shakeHands;
     //
-    RsfNetChannel(InterAddress target, Channel channel, AtomicBoolean shakeHands) {
+    RsfChannel(String protocolKey, InterAddress target, Channel channel, LinkType linkType) {
+        this.protocolKey = protocolKey;
         this.target = target;
         this.channel = channel;
-        this.shakeHands = shakeHands;
+        this.shakeHands = new AtomicBoolean(true);
+        //
+        if (!LinkType.In.equals(linkType)) {
+            this.shakeHands.set(true);//连入的连接，需要进行握手之后才能使用
+        }
+        //
     }
-    public InterAddress getTarget() {
-        return target;
-    }
+    //
+    //
     /**将数据写入 Netty。*/
     public void sendData(final RequestInfo info, final SendCallBack callBack) {
         this.sendData(info.getRequestID(), info, callBack);
@@ -98,10 +104,20 @@ public class RsfNetChannel {
         });
     }
     //
+    //
     /**测定连接是否处于激活的。*/
     public boolean isActive() {
         return this.channel.isActive() && this.shakeHands.get();
     }
+    /**获取远程连接的地址*/
+    public InterAddress getTarget() {
+        if (this.target != null) {
+            return this.target;
+        }
+        return target;
+    }
+    //
+    //
     /**关闭连接。*/
     public void close() {
         if (this.channel != null && this.channel.isActive()) {

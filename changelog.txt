@@ -1,4 +1,7 @@
-﻿===== Hasor-RSF v1.1.1 (2017-01-10)
+﻿===== Hasor-RSF v1.2.0 (2017-01-?)
+* 新增:
+    01.RSF支持多协议，第一个加入的协议是 Hprose RPC。
+    02.通过 Hprose RSF可以支持多达 25 种编程语言
 * 改进:
     01.使用 Hasor 最新的ApiBinder扩展机制提供 RsfApiBinder，受此影响 RsfModule 不在是必需品。
     02.RsfPlugin 接口不在需要。

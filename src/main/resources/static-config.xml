@@ -142,7 +142,7 @@
 
         <!--
             处理队列配置（用于配置ExecutesManager）
-                - maxSize       : 处理任务队列的最小大小，作为服务端当队列满了之后所有新进来的请求都会被回应 ChooseOther。
+                - maxSize       : 处理任务队列的最大大小，作为服务端当队列满了之后所有新进来的请求都会被回应 拒绝。
                 - minPoolSize   : the number of threads to keep in the pool, even if they are idle, unless allowCoreThreadTimeOut is set.
                 - maxPoolSize   : the maximum number of threads to allow in the pool. keepAliveTime(SECONDS) when the number of threads is greater than the core, 
                               this is the maximum time that excess idle threads will wait for new tasks before terminating.
@@ -228,7 +228,7 @@
             workAt  : 注册中心工作模式，可选的配置有
                         none    禁止模式，不启动
                         alone   单机模式，一台机器
-                        cluster 集群模式，基数台机器
+                        cluster 集群模式，任意台机器
     -->
     <hasor.rsfCenter workAt="${RSF_CENTER_WORK_MODE}">
         <!--

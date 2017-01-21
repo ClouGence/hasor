@@ -114,7 +114,7 @@ public class InterAddress {
         return this.hostSchema;
     }
     /**转换成{@link SocketAddress}类型对象。*/
-    public SocketAddress toSocketAddress() {
+    public InetSocketAddress toSocketAddress() {
         return new InetSocketAddress(getHost(), getPort());
     }
     //

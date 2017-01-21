@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.functions;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import net.hasor.core.*;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
@@ -21,19 +24,22 @@ import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
+import net.hasor.rsf.rpc.net.LinkPool;
+import net.hasor.rsf.rpc.net.Connector;
 import net.hasor.rsf.rpc.net.ReceivedListener;
 import net.hasor.rsf.rpc.net.RsfChannel;
-import net.hasor.rsf.rpc.net.RsfNetManager;
 import org.junit.Test;
+import org.more.future.BasicFuture;
+import org.more.util.NameThreadFactory;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 /**
- *
+ *  在 Connector 层面上测试，启动本地监听服务，并且连接到远程连接器上进行数据发送和接收。
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class NetworkTest implements Provider<RsfEnvironment>, ReceivedListener {
+public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provider<RsfEnvironment>, ReceivedListener {
     private RsfEnvironment rsfEnv;
     @Override
     public RsfEnvironment get() {
@@ -44,18 +50,25 @@ public class NetworkTest implements Provider<RsfEnvironment>, ReceivedListener {
         AppContext appContext = Hasor.create().putData("RSF_ENABLE", "false").build(new Module() {
             @Override
             public void loadModule(ApiBinder apiBinder) throws Throwable {
-                apiBinder.bindType(RsfEnvironment.class).toProvider(NetworkTest.this);//
+                apiBinder.bindType(RsfEnvironment.class).toProvider(ConnectorTest.this);
             }
         });
         this.rsfEnv = new DefaultRsfEnvironment(appContext.getEnvironment());
-        RsfNetManager rsfNetManager = new RsfNetManager(this.rsfEnv, this);
-        rsfNetManager.start(appContext);
+        String protocolKey = "RSF/1.0";
+        InterAddress local = rsfEnv.getSettings().getBindAddressSet().get(protocolKey);
+        InterAddress gateway = rsfEnv.getSettings().getGatewaySet().get(protocolKey);
+        EventLoopGroup workLoopGroup = new NioEventLoopGroup(10, new NameThreadFactory("RSF-Nio-%s", appContext.getClassLoader()));
+        NioEventLoopGroup listenLoopGroup = new NioEventLoopGroup(10, new NameThreadFactory("RSF-Listen-%s", appContext.getClassLoader()));
+        LinkPool pool = new LinkPool();
+        Connector connector = new Connector(appContext, protocolKey, local, gateway, this, pool, workLoopGroup);
+        connector.startListener(listenLoopGroup);
         System.out.println(">>>>>>>>> server started. <<<<<<<<<<");
         //
         Thread.sleep(2000);
-        InterAddress local = rsfNetManager.findConnectorBySechma("rsf").getBindAddress();
-        RsfChannel channel = rsfNetManager.getChannel(local).get();
+        BasicFuture<RsfChannel> result = new BasicFuture<RsfChannel>();
+        connector.connectionTo(local, result);
         for (int i = 0; i <= 10; i++) {
+            Thread.sleep(1);
             RequestInfo outRequest = new RequestInfo(RsfConstants.Version_1);
             outRequest.setMessage(i % 2 == 0);
             outRequest.setClientTimeout(1000);
@@ -68,10 +81,13 @@ public class NetworkTest implements Provider<RsfEnvironment>, ReceivedListener {
             outRequest.setTargetMethod("add");
             outRequest.addParameter("java.lang.Object", "aaaa".getBytes());
             System.out.println("sendData[Request] >>>>>>>>> " + outRequest.getRequestID());
-            channel.sendData(outRequest, null);
+            result.get().sendData(outRequest, null);
         }
         //
-        rsfNetManager.shutdown();
+        Thread.sleep(2000);
+        System.out.println(">>>>>>>>> stop. <<<<<<<<<<");
+        pool.closeConnection(result.get().getTarget().getHostPort());
+        connector.shutdown();
     }
     @Override
     public void receivedMessage(InterAddress form, ResponseInfo response) {

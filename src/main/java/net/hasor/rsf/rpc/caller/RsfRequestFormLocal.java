@@ -109,7 +109,7 @@ class RsfRequestFormLocal extends AttributeSet implements RsfRequest {
             return this.rsfCaller.getContext().localAddress();
         } else {
             String sechma = getTargetAddress().getSechma();
-            return this.rsfCaller.getContext().bindAddress(sechma);
+            return this.rsfCaller.getContext().bindAddressForSechma(sechma);
         }
     }
     @Override

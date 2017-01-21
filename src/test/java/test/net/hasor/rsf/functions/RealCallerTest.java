@@ -32,6 +32,38 @@ import java.lang.reflect.Method;
  */
 public class RealCallerTest {
     @Test
+    public void realCallOnce() throws Throwable {
+        //Server
+        AppContext serverAppContext = Hasor.createAppContext("alone/provider-config.xml", new RsfModule() {
+            @Override
+            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
+                apiBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
+                apiBinder.rsfService(MessageService.class).toInstance(new MessageServiceImpl()).register();
+            }
+        });
+        System.out.println("server start.");
+        Thread.sleep(2000);
+        //
+        //
+        //Client
+        AppContext clientContext = Hasor.createAppContext("alone/customer-config.xml", new RsfModule() {
+            @Override
+            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
+                InterAddress local = new InterAddress("rsf://127.0.0.1:2180/default");
+                apiBinder.rsfService(EchoService.class).bindAddress(local).register();
+                apiBinder.rsfService(MessageService.class).bindAddress(local).register();
+            }
+        });
+        System.out.println("client start.");
+        Thread.sleep(2000);
+        //
+        RsfClient client = clientContext.getInstance(RsfClient.class);
+        EchoService echoService = client.wrapper(EchoService.class);
+        String res = echoService.sayHello("Hello Word for Invoker");
+        System.out.println("invoker -> " + res);
+        //
+    }
+    @Test
     public void realCallerTest() throws Throwable {
         //Server
         AppContext serverAppContext = Hasor.createAppContext("alone/provider-config.xml", new RsfModule() {
@@ -49,7 +81,7 @@ public class RealCallerTest {
         AppContext clientContext = Hasor.createAppContext("alone/customer-config.xml", new RsfModule() {
             @Override
             public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-                InterAddress local = new InterAddress("rsf://127.0.0.1:8100/default");
+                InterAddress local = new InterAddress("rsf://127.0.0.1:2180/default");
                 apiBinder.rsfService(EchoService.class).bindAddress(local).register();
                 apiBinder.rsfService(MessageService.class).bindAddress(local).register();
             }

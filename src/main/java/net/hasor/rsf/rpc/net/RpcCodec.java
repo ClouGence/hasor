@@ -112,7 +112,7 @@
 //            Channel channel = ctx.pipeline().channel();
 //            this.targetAddress = new InterAddress(serverInfo);
 //            this.shakeHands.set(true);
-//            RsfNetChannel netChannel = new RsfNetChannel(this.targetAddress, channel, this.shakeHands);
+//            RsfChannel netChannel = new RsfChannel(this.targetAddress, channel, this.shakeHands);
 //            this.channelRegister.completed(this.targetAddress, netChannel);
 //            logger.info("handshake -> ready for {}", this.targetAddress);
 //        }

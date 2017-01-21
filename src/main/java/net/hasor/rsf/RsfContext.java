@@ -63,8 +63,14 @@ public interface RsfContext extends OnlineStatus {
     /** 获取RSF运行的地址。 */
     public InterAddress bindAddress(String protocol);
 
+    /** 获取RSF运行的地址。 */
+    public InterAddress bindAddressForSechma(String sechma);
+
     /** 获取RSF运行的网关地址。 */
     public InterAddress gatewayAddress(String protocol);
+
+    /** 获取RSF运行的网关地址。 */
+    public InterAddress gatewayAddressForSechma(String sechma);
 
     /**获取RSF配置*/
     public RsfSettings getSettings();

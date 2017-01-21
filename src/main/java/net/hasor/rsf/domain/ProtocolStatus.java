@@ -31,7 +31,7 @@ public interface ProtocolStatus {
     public static final short ProtocolError      = 506;
     /**序列化异常。*/
     public static final short SerializeError     = 511;
-    /**客户端错误。*/
+    /**网络错误。*/
     public static final short NetworkError       = 600;
     /**试图调用受保护的服务。*/
     public static final short Unauthorized       = 401;

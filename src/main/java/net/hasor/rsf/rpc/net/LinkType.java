@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf;
-import io.netty.buffer.ByteBuf;
-import net.hasor.rsf.domain.OptionInfo;
+package net.hasor.rsf.rpc.net;
 /**
- * RPC 协议解析。
- * @version : 2014年11月18日
+ * 用于描述网络连接的输入输出特性。
+ * 区分为：传入连接、传出连接、双向连接
+ * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RpcProtocol {
-    /** */
-    public OptionInfo read(ByteBuf in);
-
-    /** */
-    public ByteBuf write(OptionInfo data);
+public enum LinkType {
+    /**传入*/
+    In,//
+    /**传出*/
+    Out, //
+    /**监听器*/
+    Listener
 }

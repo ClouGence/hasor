@@ -85,7 +85,13 @@ public interface RsfSettings extends Settings {
     public String getDefaultProtocol();
 
     /**获取本地服务绑定地址*/
-    public Map<String, InterAddress> getConnectorSet();
+    public Map<String, InterAddress> getBindAddressSet();
+
+    /**协议和sechma的关系*/
+    public Map<String, String> getProtocolSechmaMapping();
+
+    /**通过 sechma 查找最新的协议版本*/
+    public String findProtocolBySechma(String sechma);
 
     /**获取网关地址*/
     public Map<String, InterAddress> getGatewaySet();

@@ -60,7 +60,9 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     //
     private   String                    bindAddress           = "local";
     private   String                    defaultProtocol       = null;
-    private   Map<String, InterAddress> connectorSet          = null;
+    private   Map<String, InterAddress> bindAddressSet        = null;
+    private   Map<String, String>       protocolSechmaMap     = null;
+    private   Map<String, List<String>> sechmaProtocolMap     = null;
     private   Map<String, InterAddress> gatewayAddressMap     = null;
     //
     private   InterAddress[]            centerServerSet       = new InterAddress[0];
@@ -189,8 +191,20 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         return this.defaultProtocol;
     }
     @Override
-    public Map<String, InterAddress> getConnectorSet() {
-        return Collections.unmodifiableMap(this.connectorSet);
+    public Map<String, InterAddress> getBindAddressSet() {
+        return Collections.unmodifiableMap(this.bindAddressSet);
+    }
+    @Override
+    public Map<String, String> getProtocolSechmaMapping() {
+        return Collections.unmodifiableMap(this.protocolSechmaMap);
+    }
+    @Override
+    public String findProtocolBySechma(String sechma) {
+        List<String> list = this.sechmaProtocolMap.get(sechma);
+        if (list != null && !list.isEmpty()) {
+            return list.get(0);
+        }
+        return null;
     }
     @Override
     public Map<String, InterAddress> getGatewaySet() {
@@ -289,8 +303,10 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         this.bindAddress = inetAddress.getHostAddress();
         this.defaultProtocol = getString("hasor.rsfConfig.connectorSet.default", "RSF/1.0");
         //
-        this.connectorSet = new HashMap<String, InterAddress>();
+        this.bindAddressSet = new HashMap<String, InterAddress>();
         this.gatewayAddressMap = new HashMap<String, InterAddress>();
+        this.protocolSechmaMap = new HashMap<String, String>();
+        this.sechmaProtocolMap = new HashMap<String, List<String>>();
         //
         Properties protocolSchemas = new Properties();
         List<InputStream> streamList = ResourcesUtils.getResourcesAsStream("/META-INF/rsf-protocol.schemas");
@@ -319,7 +335,14 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
                 if (localPortInt <= 0)
                     continue;
                 InterAddress localAddress = new InterAddress(sechma, this.bindAddress, localPortInt, this.unitName);
-                this.connectorSet.put(protocol, localAddress);
+                this.bindAddressSet.put(protocol, localAddress);
+                this.protocolSechmaMap.put(protocol, sechma);
+                List<String> protocolList = this.sechmaProtocolMap.get(sechma);
+                if (protocolList == null) {
+                    protocolList = new ArrayList<String>(0);
+                    this.sechmaProtocolMap.put(sechma, protocolList);
+                }
+                protocolList.add(protocol);
                 //
                 if (gatewayPortInt <= 0 || StringUtils.isBlank(gatewayHost))
                     continue;
@@ -328,6 +351,15 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
                 this.gatewayAddressMap.put(protocol, gatewayAddress);
             }
         }
+        for (Map.Entry<String, List<String>> entry : this.sechmaProtocolMap.entrySet()) {
+            Collections.sort(entry.getValue(), new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    return -o1.compareTo(o2);
+                }
+            });
+        }
+        //
         //
         XmlNode[] centerServerArrays = getXmlNodeArray("hasor.rsfConfig.centerServers.server");
         if (centerServerArrays != null) {
