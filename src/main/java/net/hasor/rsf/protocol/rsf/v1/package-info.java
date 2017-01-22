@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF 协议的编码/解码器，具体实现。
+ * RSF 协议第一版,底层传输数据结构。
  */
-package net.hasor.rsf.protocol.rsf.codec;
+package net.hasor.rsf.protocol.rsf.v1;

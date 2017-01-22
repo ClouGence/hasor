@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.rsf.rsf;
+package net.hasor.rsf.protocol.rsf;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
@@ -21,8 +21,6 @@ import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
-import net.hasor.rsf.protocol.rsf.codec.CodecAdapter;
-import net.hasor.rsf.protocol.rsf.codec.CodecAdapterFactory;
 import net.hasor.rsf.utils.ProtocolUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

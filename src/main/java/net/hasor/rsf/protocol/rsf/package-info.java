@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF 协议的底层Socket传输数据结构，封装RSF数据包的数据结构，最终在网络上进行传输。
+ * 基于Netty 的 RSF 数据包编码器和解码器。
  */
-package net.hasor.rsf.protocol.rsf.protocol;
+package net.hasor.rsf.protocol.rsf;
