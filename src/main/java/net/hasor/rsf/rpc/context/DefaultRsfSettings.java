@@ -61,9 +61,11 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private   String                    bindAddress           = "local";
     private   String                    defaultProtocol       = null;
     private   Map<String, InterAddress> bindAddressSet        = null;
-    private   Map<String, String>       protocolSechmaMap     = null;
-    private   Map<String, List<String>> sechmaProtocolMap     = null;
     private   Map<String, InterAddress> gatewayAddressMap     = null;
+    //
+    private   Map<String, String>       protocolSechmaMap     = null;
+    private   Map<String, String>       protocolHandlerMap    = null;
+    private   Map<String, List<String>> sechmaProtocolMap     = null;
     //
     private   InterAddress[]            centerServerSet       = new InterAddress[0];
     private   int                       centerRsfTimeout      = 6000;
@@ -199,6 +201,10 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         return Collections.unmodifiableMap(this.protocolSechmaMap);
     }
     @Override
+    public Map<String, String> getProtocolHandlerMapping() {
+        return Collections.unmodifiableMap(this.protocolHandlerMap);
+    }
+    @Override
     public String findProtocolBySechma(String sechma) {
         List<String> list = this.sechmaProtocolMap.get(sechma);
         if (list != null && !list.isEmpty()) {
@@ -303,17 +309,37 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         this.bindAddress = inetAddress.getHostAddress();
         this.defaultProtocol = getString("hasor.rsfConfig.connectorSet.default", "RSF/1.0");
         //
+        //
+        this.protocolSechmaMap = new HashMap<String, String>();
+        this.protocolHandlerMap = new HashMap<String, String>();
+        this.sechmaProtocolMap = new HashMap<String, List<String>>();
+        XmlNode[] protocolSetNode = getXmlNodeArray("hasor.rsfConfig.protocolSet");
+        if (protocolSetNode != null) {
+            for (XmlNode protocolNode : protocolSetNode)
+                this.parseProtocol(this.protocolSechmaMap, this.protocolHandlerMap, protocolNode);
+        }
+        this.parseProtocol(this.protocolSechmaMap, this.protocolHandlerMap, getXmlNode("hasor.rsfConfig.protocolSet"));
+        for (Map.Entry<String, String> ent : this.protocolSechmaMap.entrySet()) {
+            String sechma = ent.getValue();
+            List<String> protocolList = this.sechmaProtocolMap.get(sechma);
+            if (protocolList == null) {
+                protocolList = new ArrayList<String>(0);
+                this.sechmaProtocolMap.put(sechma, protocolList);
+            }
+            protocolList.add(ent.getKey());
+        }
+        for (Map.Entry<String, List<String>> entry : this.sechmaProtocolMap.entrySet()) {
+            Collections.sort(entry.getValue(), new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    return -o1.compareTo(o2);
+                }
+            });
+        }
+        //
+        //
         this.bindAddressSet = new HashMap<String, InterAddress>();
         this.gatewayAddressMap = new HashMap<String, InterAddress>();
-        this.protocolSechmaMap = new HashMap<String, String>();
-        this.sechmaProtocolMap = new HashMap<String, List<String>>();
-        //
-        Properties protocolSchemas = new Properties();
-        List<InputStream> streamList = ResourcesUtils.getResourcesAsStream("/META-INF/rsf-protocol.schemas");
-        if (streamList != null) {
-            for (InputStream inStream : streamList)
-                protocolSchemas.load(inStream);
-        }
         XmlNode[] connectorArrays = getXmlNodeArray("hasor.rsfConfig.connectorSet.connector");
         if (connectorArrays != null) {
             for (XmlNode connectorNode : connectorArrays) {
@@ -322,7 +348,7 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
                 String gatewayHost = connectorNode.getAttribute("gatewayAddress");
                 String gatewayPort = connectorNode.getAttribute("gatewayPort");
                 //
-                String sechma = (String) protocolSchemas.get(protocol);
+                String sechma = this.protocolSechmaMap.get(protocol);
                 if (StringUtils.isBlank(sechma))
                     continue;
                 int localPortInt = 0;
@@ -336,13 +362,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
                     continue;
                 InterAddress localAddress = new InterAddress(sechma, this.bindAddress, localPortInt, this.unitName);
                 this.bindAddressSet.put(protocol, localAddress);
-                this.protocolSechmaMap.put(protocol, sechma);
-                List<String> protocolList = this.sechmaProtocolMap.get(sechma);
-                if (protocolList == null) {
-                    protocolList = new ArrayList<String>(0);
-                    this.sechmaProtocolMap.put(sechma, protocolList);
-                }
-                protocolList.add(protocol);
                 //
                 if (gatewayPortInt <= 0 || StringUtils.isBlank(gatewayHost))
                     continue;
@@ -350,14 +369,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
                 InterAddress gatewayAddress = new InterAddress(sechma, gatewayInetAddress.getHostAddress(), gatewayPortInt, this.unitName);
                 this.gatewayAddressMap.put(protocol, gatewayAddress);
             }
-        }
-        for (Map.Entry<String, List<String>> entry : this.sechmaProtocolMap.entrySet()) {
-            Collections.sort(entry.getValue(), new Comparator<String>() {
-                @Override
-                public int compare(String o1, String o2) {
-                    return -o1.compareTo(o2);
-                }
-            });
         }
         //
         //
@@ -436,6 +447,22 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         this.appKeyID = getString("security.appKeyID");
         this.appKeySecret = getString("security.appKeySecret");
         //
-        logger.info("loadRsfConfig complete!");
+        this.logger.info("loadRsfConfig complete!");
+    }
+    private void parseProtocol(Map<String, String> schemaMap, Map<String, String> implementorMap, XmlNode protocolSetNode) {
+        List<XmlNode> protocolSet = protocolSetNode.getChildren("protocol");
+        if (protocolSet == null) {
+            return;
+        }
+        for (XmlNode protocolNode : protocolSet) {
+            String name = protocolNode.getAttribute("name");
+            String sechma = protocolNode.getAttribute("sechma");
+            String implementor = protocolNode.getAttribute("implementor");
+            if (StringUtils.isBlank(name) || StringUtils.isBlank(sechma) || StringUtils.isBlank(implementor))
+                continue;
+            //
+            schemaMap.put(name, sechma);
+            implementorMap.put(name, implementor);
+        }
     }
 }

@@ -24,8 +24,8 @@ import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
-import net.hasor.rsf.rpc.net.LinkPool;
 import net.hasor.rsf.rpc.net.Connector;
+import net.hasor.rsf.rpc.net.LinkPool;
 import net.hasor.rsf.rpc.net.ReceivedListener;
 import net.hasor.rsf.rpc.net.RsfChannel;
 import org.junit.Test;
@@ -46,7 +46,7 @@ public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provi
         return this.rsfEnv;
     }
     @Test
-    public void sendPack() throws IOException, InterruptedException, ExecutionException {
+    public void sendPack() throws IOException, InterruptedException, ExecutionException, ClassNotFoundException {
         AppContext appContext = Hasor.create().putData("RSF_ENABLE", "false").build(new Module() {
             @Override
             public void loadModule(ApiBinder apiBinder) throws Throwable {
@@ -59,7 +59,7 @@ public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provi
         InterAddress gateway = rsfEnv.getSettings().getGatewaySet().get(protocolKey);
         EventLoopGroup workLoopGroup = new NioEventLoopGroup(10, new NameThreadFactory("RSF-Nio-%s", appContext.getClassLoader()));
         NioEventLoopGroup listenLoopGroup = new NioEventLoopGroup(10, new NameThreadFactory("RSF-Listen-%s", appContext.getClassLoader()));
-        LinkPool pool = new LinkPool();
+        LinkPool pool = new LinkPool(appContext.getInstance(RsfEnvironment.class));
         Connector connector = new Connector(appContext, protocolKey, local, gateway, this, pool, workLoopGroup);
         connector.startListener(listenLoopGroup);
         System.out.println(">>>>>>>>> server started. <<<<<<<<<<");

@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF 1.0协议 数据包编码器和解码器。
+ * Hprose RPC协议 数据包编码器和解码器。
  */
-package net.hasor.rsf.protocol.rsf;
+package net.hasor.rsf.protocol.hprose;

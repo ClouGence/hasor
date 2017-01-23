@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 /**
- * 负责处理RSF节点间的连接和握手，并保障一条连接上进行双向通信。<br>
- * 双向通信：简单来说当客户端连接到远程Server之后，远端的Server也可以利用这条连接反向发起服务调用请求。双向通信会大大减少Socket连接数。
+ * 负责处理RSF节点间的连接并保障网络通信。<br>
+ * 例如：双向通信、自定义RPC协议、IP连入策略 都是在该层上提供支持。依赖 net 包的直接上层是 caller 包。
+ * 它们以 {@link net.hasor.rsf.rpc.net.ReceivedListener} 接口作为交流媒介。
+ * 开发者扩展自定义RPC协议需要通过{@link net.hasor.rsf.rpc.net.ProtocolHandler}接口
+ * <br>tips：双向通信：简单来说当客户端连接到远程Server之后，远端的Server也可以利用这条连接反向发起服务调用请求。双向通信会大大减少Socket连接数。
  */
 package net.hasor.rsf.rpc.net;

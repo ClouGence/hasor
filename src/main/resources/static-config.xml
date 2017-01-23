@@ -48,7 +48,7 @@
             <!-- 如果RSF是工作在内网，则需要通过网关进行端口映射，这里填写外网端口号 -->
             <RSF_GATEWAY_PORT></RSF_GATEWAY_PORT>
             <!-- Hprose对外提供服务的服务端口（可以配置 0 用来关闭 Hprose连接器） -->
-            <HPROSE_SERVICE_PORT>0</HPROSE_SERVICE_PORT>
+            <HPROSE_SERVICE_PORT>2190</HPROSE_SERVICE_PORT>
             <!-- 如果Hprose是工作在内网，则需要通过网关进行端口映射，这里填写外网端口号 -->
             <HPROSE_GATEWAY_PORT></HPROSE_GATEWAY_PORT>
 
@@ -90,7 +90,39 @@
         <console port="${RSF_CONSOLE_PORT}" inBound="local,127.0.0.1"/>
 
         <!--
+            注册中心，用于更新服务列表的配置服务器
+                - timeout         : RSF 和 Center 之间发起远程调用超时时间(6秒)
+                - heartbeatTime   : 服务心跳时间(30秒)
+                - automaticOnline : RSF在启动之后是否自动转换为 online 状态。
+        -->
+        <centerServers timeout="6000" heartbeatTime="30000" automaticOnline="true">
+            <server>${RSF_CENTER_SERVERS}</server>
+        </centerServers>
+
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!--用于设置默认情况下RSF服务的一些(不重要)的选项。
+                version = 在未指定注册服务的版本信息时使用的版本号。
+                group   = 在未指定注册服务的分组信息时使用的分组名称。
+                timeout = 在未指定注册服务的超时时间情况下 6000 毫秒超时。
+         -->
+        <defaultServiceValue version="1.0.0" group="RSF" timeout="6000"/>
+
+        <!-- 作为服务端向客户端响应时携带的选项（demo） -->
+        <serverOptionSet>
+            <option key="identity">Response</option>
+        </serverOptionSet>
+
+        <!-- 作为客户端向服务端发送调用请求时携带的选项（demo） -->
+        <clientOptionSet>
+            <option key="identity">Request</option>
+        </clientOptionSet>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!--
             RSF 支持多种 RPC 协议共存，这里是配置 RPC 协议连接器的地方。
+                连接器的作用是为不同协议提供网络数据包编码解码的功能，RSF 内置了两种RPC协议。
+
                 RSF/1.0     原生的内置协议，也是默认协议。
                 Hprose/1.0  see：http://www.hprose.com/
 
@@ -109,25 +141,18 @@
             <connector protocol="RSF/1.0" localPort="${RSF_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${RSF_GATEWAY_PORT}"/>
             <connector protocol="Hprose/1.0" localPort="${HPROSE_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${HPROSE_GATEWAY_PORT}"/>
         </connectorSet>
-
         <!--
-            注册中心，用于更新服务列表的配置服务器
-                - timeout         : RSF 和 Center 之间发起远程调用超时时间(6秒)
-                - heartbeatTime   : 服务心跳时间(30秒)
-                - automaticOnline : RSF在启动之后是否自动转换为 online 状态。
-        -->
-        <centerServers timeout="6000" heartbeatTime="30000" automaticOnline="true">
-            <server>${RSF_CENTER_SERVERS}</server>
-        </centerServers>
-
-        <!--用于设置默认情况下RSF服务的一些基本信息。
-                version = 在未指定注册服务的版本信息时使用的版本号。
-                group   = 在未指定注册服务的分组信息时使用的分组名称。
-                timeout = 在未指定注册服务的超时时间情况下 6000 毫秒超时。
+            这里配置 RSF 中支持的 RPC协议，但是要让协议生效必须配置对应的连接器。
+                如果您需要覆盖默认协议的实现类，请在 hasor-config.xml 主配置文件中覆盖它。
          -->
-        <defaultServiceValue version="1.0.0" group="RSF" timeout="6000"/>
+        <protocolSet>
+            <protocol name="RSF/1.0" sechma="rsf" implementor="net.hasor.rsf.protocol.rsf.RsfProtocolHandler"/>
+            <protocol name="Hprose/1.0" sechma="hprose" implementor="net.hasor.rsf.protocol.hprose.HproseProtocolHandler"/>
+        </protocolSet>
 
-        <!--通用配置
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!--
+            作为 Client 的配置
                 defaultTimeout  = 客户端RPC发起请求超时时间
                 maximumRequest  = 最大允许的并发请求数
                 sendLimitPolicy = 并发调用请求限制策略，当并发调用达到限制值后的策略（Reject 抛出异常，WaitSecond 等待1秒重试）
@@ -138,7 +163,7 @@
                                     proxy	java原生的动态代理，理论上性能会稍微低一些，但是不会有兼容性问题。
                 
         -->
-        <client defaultTimeout="6000" maximumRequest="200" sendLimitPolicy="Reject" connectTimeout="3000" wrapperType="proxy"/>
+        <client defaultTimeout="6000" maximumRequest="200" sendLimitPolicy="Reject" connectTimeout="10000" wrapperType="proxy"/>
 
         <!--
             处理队列配置（用于配置ExecutesManager）
@@ -157,16 +182,7 @@
         -->
         <network workerThread="8" listenThread="1"/>
 
-        <!-- 作为服务端向客户端响应时携带的选项（demo） -->
-        <serverOptionSet>
-            <option key="identity">Response</option>
-        </serverOptionSet>
-
-        <!-- 作为客户端向服务端发送调用请求时携带的选项（demo） -->
-        <clientOptionSet>
-            <option key="identity">Request</option>
-        </clientOptionSet>
-
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
         <!-- 序列器（在修改序列化方式时，需要确保远程和本地都支持） -->
         <serializeType default="Hessian">
             <!-- JSON-格式序列化 -->
@@ -179,6 +195,7 @@
             <serialize name="Hprose">net.hasor.rsf.serialize.coder.HproseSerializeCoder</serialize>
         </serializeType>
 
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
         <!-- 默认QoS流控规则,该配置仅当没有配置任何QoS规则时才启用 -->
         <defaultSpeedFlowControl>
             <action>service</action>    <!-- 速率控制方式：每服务、每方法、每地址 -->
@@ -213,6 +230,7 @@
             <invalidWaitTime>120000</invalidWaitTime>
         </addressPool>
 
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
         <!-- 安全 -->
         <security>
             <!-- app_key -->

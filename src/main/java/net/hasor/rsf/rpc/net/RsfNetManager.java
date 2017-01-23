@@ -51,7 +51,7 @@ public class RsfNetManager {
     public RsfNetManager(RsfEnvironment rsfEnvironment, ReceivedListener receivedListener) {
         RsfSettings rsfSettings = rsfEnvironment.getSettings();
         this.bindListener = new HashMap<String, Connector>();
-        this.linkPool = new LinkPool();
+        this.linkPool = new LinkPool(rsfEnvironment);
         //
         int workerThread = rsfSettings.getNetworkWorker();
         int listenerThread = rsfEnvironment.getSettings().getNetworkListener();
@@ -125,6 +125,7 @@ public class RsfNetManager {
                 listener.shutdown();
             }
         }
+        this.linkPool.shutdown();
         this.listenLoopGroup.shutdownGracefully();
         this.workLoopGroup.shutdownGracefully();
     }

@@ -27,27 +27,38 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
- *
+ * 封装网络连接，并且提供网络数据收发统计。
  * @version : 2015年12月8日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfChannel {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    private       String        protocolKey;
-    private final InterAddress  target;
-    private final Channel       channel;
-    private final AtomicBoolean shakeHands;
+    private          String        protocolKey;
+    private final    InterAddress  target;
+    private final    Channel       channel;
+    private final    AtomicBoolean shakeHands;
+    private final    LinkType      linkType;
+    private volatile long          lastSendTime;   //最后数据发送时间
+    private volatile long          sendPackets;    //发送的数据包总数
     //
     RsfChannel(String protocolKey, InterAddress target, Channel channel, LinkType linkType) {
         this.protocolKey = protocolKey;
         this.target = target;
         this.channel = channel;
-        this.shakeHands = new AtomicBoolean(true);
+        this.shakeHands = new AtomicBoolean(false);
+        this.linkType = linkType;
         //
         if (!LinkType.In.equals(linkType)) {
             this.shakeHands.set(true);//连入的连接，需要进行握手之后才能使用
         }
-        //
+    }
+    @Override
+    public String toString() {
+        return "RsfChannel{" + "protocolKey=" + protocolKey +//
+                ", linkType=" + linkType.name() + //
+                ", shakeHands=" + shakeHands + //
+                ", channel=" + channel +//
+                '}';
     }
     //
     //
@@ -69,6 +80,7 @@ public class RsfChannel {
             return;
         }
         /*发送数据*/
+        this.sendPackets++;
         ChannelFuture future = this.channel.writeAndFlush(sendData);
         /*为sendData添加侦听器，负责处理意外情况。*/
         future.addListener(new ChannelFutureListener() {
@@ -79,6 +91,7 @@ public class RsfChannel {
                     }
                     return;
                 }
+                lastSendTime = System.currentTimeMillis();
                 RsfException e = null;
                 if (future.isCancelled()) {
                     //用户取消
@@ -105,6 +118,22 @@ public class RsfChannel {
     }
     //
     //
+    /**运行的协议*/
+    public String getProtocol() {
+        return this.protocolKey;
+    }
+    /**连接方向*/
+    public LinkType getLinkType() {
+        return this.linkType;
+    }
+    /**最后发送数据时间*/
+    public long getLastSendTime() {
+        return this.lastSendTime;
+    }
+    /**发送的数据包总数。*/
+    public long getSendPackets() {
+        return this.sendPackets;
+    }
     /**测定连接是否处于激活的。*/
     public boolean isActive() {
         return this.channel.isActive() && this.shakeHands.get();
@@ -114,14 +143,22 @@ public class RsfChannel {
         if (this.target != null) {
             return this.target;
         }
-        return target;
+        return this.target;
     }
     //
     //
+    /**激活这个连接服务*/
+    public boolean activeIn() {
+        this.shakeHands.set(true);
+        return this.shakeHands.get();
+    }
     /**关闭连接。*/
-    public void close() {
+    void close() {
         if (this.channel != null && this.channel.isActive()) {
             this.channel.close();
         }
+    }
+    boolean isSame(RsfChannel channel) {
+        return this.channel == channel.channel;
     }
 }

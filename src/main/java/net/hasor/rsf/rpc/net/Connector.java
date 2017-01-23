@@ -28,9 +28,6 @@ import net.hasor.core.Hasor;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.*;
-import net.hasor.rsf.protocol.rsf.protocol.v1.PoolBlock;
-import net.hasor.rsf.protocol.rsf.rsf.RSFProtocolDecoder;
-import net.hasor.rsf.protocol.rsf.rsf.RSFProtocolEncoder;
 import org.more.future.BasicFuture;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
@@ -56,9 +53,10 @@ public class Connector extends ChannelInboundHandlerAdapter {
     private final LinkPool         linkPool;
     private final ReceivedListener receivedListener;
     private final EventLoopGroup   workLoopGroup;
+    private final ProtocolHandler  handler;
     public Connector(AppContext appContext, String protocolKey,//
             InterAddress local, InterAddress gateway,//
-            ReceivedListener receivedListener, LinkPool linkPool, EventLoopGroup workLoopGroup) {
+            ReceivedListener receivedListener, LinkPool linkPool, EventLoopGroup workLoopGroup) throws ClassNotFoundException {
         //
         this.protocolKey = protocolKey;
         this.appContext = appContext;
@@ -71,6 +69,12 @@ public class Connector extends ChannelInboundHandlerAdapter {
         this.protocolSechma = sechmaMap.get(protocolKey);
         if (StringUtils.isBlank(this.protocolSechma))
             throw new NullPointerException(protocolKey + " protocolSechma is unknown.");
+        //
+        RsfEnvironment env = this.appContext.getInstance(RsfEnvironment.class);
+        Map<String, String> protocolHandlerMapping = env.getSettings().getProtocolHandlerMapping();
+        String handlerName = protocolHandlerMapping.get(this.protocolKey);
+        Class<?> handlerType = appContext.getClassLoader().loadClass(handlerName);
+        this.handler = (ProtocolHandler) appContext.getInstance(handlerType);
     }
     @Override
     public String toString() {
@@ -84,10 +88,20 @@ public class Connector extends ChannelInboundHandlerAdapter {
         InterAddress dataForm = null;
         if (msg instanceof OptionInfo) {
             String hostPort = converToHostProt(ctx);
-            dataForm = this.linkPool.findChannel(hostPort).get().getTarget();
+            BasicFuture<RsfChannel> channel = this.linkPool.findChannel(hostPort);
+            if (channel == null || !channel.isDone()) {
+                this.exceptionCaught(ctx, new RsfException(ProtocolStatus.NetworkError, "the " + hostPort + " connection is not in the pool."));
+                return;
+            }
+            RsfChannel rsfChannel = channel.get();
+            dataForm = rsfChannel.getTarget();
             if (dataForm == null) {
                 this.exceptionCaught(ctx, new RsfException(ProtocolStatus.NetworkError, "the " + hostPort + " Connection is not management."));
                 return;
+            }
+            //
+            if (!rsfChannel.isActive()) {
+                return;/*只有活动的连接才能接收数据*/
             }
         }
         //
@@ -101,29 +115,31 @@ public class Connector extends ChannelInboundHandlerAdapter {
         }
     }
     @Override
-    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
         InetSocketAddress socketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
         if (socketAddress == null) {
-            super.handlerAdded(ctx);
+            super.channelActive(ctx);
             return;
         }
         String hostAddress = socketAddress.getAddress().getHostAddress();
         int port = socketAddress.getPort();
         String hostPort = hostAddress + ":" + port;
         this.logger.info("connected form {}", hostPort);
-        InterAddress target = new InterAddress(this.protocolSechma, hostAddress, port, "unknown");
-        this.linkPool.newConnection(hostPort, new RsfChannel(this.protocolKey, target, ctx.channel(), LinkType.In));
+        //
+        Channel channel = ctx.channel();
+        boolean accept = this.handler.acceptIn(this, channel);
+        if (accept) {
+            InterAddress target = new InterAddress(this.protocolSechma, hostAddress, port, "unknown");
+            RsfChannel rsfChannel = new RsfChannel(this.protocolKey, target, channel, LinkType.In);
+            this.linkPool.newConnection(hostPort, rsfChannel);
+            this.handler.active(rsfChannel);
+        } else {
+            this.logger.warn("connection refused form {} ,", hostPort);
+            this.linkPool.closeConnection(hostPort);
+            ctx.close();
+        }
+        //
     }
-    //    @Override
-    //    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    //        InetSocketAddress socketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
-    //        String hostAddress = socketAddress.getAddress().getHostAddress();
-    //        int port = socketAddress.getPort();
-    //        String hostPort = hostAddress + ":" + port;
-    //        this.logger.info("connected form {}", hostPort);
-    //        InterAddress target = new InterAddress(this.protocolSechma, hostAddress, port, "unknown");
-    //        this.linkPool.newConnection(hostPort, new RsfChannel(this.protocolKey, target, ctx.channel(), LinkType.In));
-    //    }
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         this.exceptionCaught(ctx, null);
@@ -132,7 +148,7 @@ public class Connector extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         String hostPort = converToHostProt(ctx);
         if (cause == null) {
-            this.logger.error("close socket=" + hostPort + "channel Inactive.");
+            this.logger.warn("close socket=" + hostPort + " channel Inactive.");
         } else {
             this.logger.error("close socket=" + hostPort + " with error -> " + cause.getMessage(), cause);
         }
@@ -229,7 +245,7 @@ public class Connector extends ChannelInboundHandlerAdapter {
             logger.info("rsf Server started at {}", this.bindAddress.getHostPort());
         } catch (Exception e) {
             logger.error("rsf start listener error: " + e.getMessage(), e);
-            throw new RsfException(ProtocolStatus.NetworkError, e);
+            throw new RsfException(ProtocolStatus.NetworkError, this.bindAddress.toString() + " -> " + e);
         }
         //
     }
@@ -253,11 +269,9 @@ public class Connector extends ChannelInboundHandlerAdapter {
         return socketAddress.getAddress().getHostAddress() + ":" + socketAddress.getPort();
     }
     private ChannelInboundHandler newDecoder() {
-        RsfEnvironment env = this.appContext.getInstance(RsfEnvironment.class);
-        return new RSFProtocolDecoder(env, PoolBlock.DataMaxSize);
+        return this.handler.decoder(this.appContext);
     }
     private ChannelOutboundHandler newEncoder() {
-        RsfEnvironment env = this.appContext.getInstance(RsfEnvironment.class);
-        return new RSFProtocolEncoder(env);
+        return this.handler.encoder(this.appContext);
     }
 }

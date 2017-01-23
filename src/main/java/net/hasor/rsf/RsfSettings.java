@@ -87,6 +87,9 @@ public interface RsfSettings extends Settings {
     /**获取本地服务绑定地址*/
     public Map<String, InterAddress> getBindAddressSet();
 
+    /**协议和提供者的关系*/
+    public Map<String, String> getProtocolHandlerMapping();
+
     /**协议和sechma的关系*/
     public Map<String, String> getProtocolSechmaMapping();
 

@@ -27,7 +27,10 @@ import org.more.bizcommon.json.JSON;
 import org.more.util.StringUtils;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 /**
  * RSF框架工作信息。
  * @version : 2016年4月3日
@@ -60,7 +63,9 @@ public class InfoRsfInstruct implements RsfInstruct {
             }
         }
         //
-        InterAddress address = rsfContext.bindAddress("");
+        Map<String, InterAddress> bindAddressSet = rsfContext.getSettings().getBindAddressSet();
+        List<String> arrays = new ArrayList<String>(bindAddressSet.keySet());
+        Collections.sort(arrays);
         RsfSettings settings = rsfContext.getSettings();
         int providerCount = 0;
         int customerCount = 0;
@@ -89,8 +94,12 @@ public class InfoRsfInstruct implements RsfInstruct {
         //
         sw.write(">>\r\n");
         sw.write(">>----- Server Info ------\r\n");
-        sw.write(">>        bindAddress :" + address.toHostSchema() + "\r\n");
-        sw.write(">>           unitName :" + address.getFormUnit() + "\r\n");
+        sw.write(">>        bindAddress : [\r\n");
+        for (String key : arrays) {
+            InterAddress interAddress = bindAddressSet.get(key);
+            sw.write(">>            bindAddress :(" + key + ")" + interAddress.toHostSchema() + "\r\n");
+        }
+        sw.write(">> ]\r\n");
         sw.write(">>           isOnline :" + rsfContext.isOnline() + "\r\n");
         sw.write(">>    automaticOnline :" + settings.isAutomaticOnline() + "\r\n");
         sw.write(">>           appKeyID :" + settings.getAppKeyID() + "\r\n");
@@ -99,9 +108,7 @@ public class InfoRsfInstruct implements RsfInstruct {
         sw.write(">>     provider Count :" + providerCount + "\r\n");
         sw.write(">>     customer Count :" + customerCount + "\r\n");
         sw.write(">>\r\n");
-        sw.write(">>----- Socket Info ------\r\n");
-        sw.write(">>             bindIP :" + address.getHost() + "\r\n");
-        sw.write(">>           bindPort :" + address.getPort() + "\r\n");
+        sw.write(">>----- Console Info ------\r\n");
         sw.write(">>        consolePort :" + settings.getConsolePort() + "\r\n");
         sw.write(">>     consoleInBound :" + JSON.toString(settings.getConsoleInBoundAddress()) + "\r\n");
         sw.write(">>\r\n");
