@@ -27,9 +27,9 @@ import net.hasor.rsf.protocol.rsf.v1.ResponseBlock;
  * @version : 2014年10月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RSFProtocolEncoder extends MessageToByteEncoder<Object> {
+public class RsfEncoder extends MessageToByteEncoder<Object> {
     private RsfEnvironment rsfEnvironment;
-    public RSFProtocolEncoder(RsfEnvironment rsfEnvironment) {
+    public RsfEncoder(RsfEnvironment rsfEnvironment) {
         this.rsfEnvironment = rsfEnvironment;
     }
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {

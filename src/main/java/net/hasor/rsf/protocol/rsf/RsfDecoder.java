@@ -33,11 +33,11 @@ import static net.hasor.rsf.domain.RsfConstants.*;
  * @version : 2014年10月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RSFProtocolDecoder extends LengthFieldBasedFrameDecoder {
+public class RsfDecoder extends LengthFieldBasedFrameDecoder {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     private RsfEnvironment rsfEnvironment;
     //
-    public RSFProtocolDecoder(RsfEnvironment rsfEnvironment, int maxBodyLength) {
+    public RsfDecoder(RsfEnvironment rsfEnvironment, int maxBodyLength) {
         // lengthFieldOffset   = 10
         // lengthFieldLength   = 3
         // lengthAdjustment    = 0

@@ -19,8 +19,8 @@ import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.ChannelOutboundHandler;
 import net.hasor.core.AppContext;
 import net.hasor.rsf.RsfEnvironment;
-import net.hasor.rsf.protocol.rsf.RSFProtocolDecoder;
-import net.hasor.rsf.protocol.rsf.RSFProtocolEncoder;
+import net.hasor.rsf.protocol.rsf.RsfDecoder;
+import net.hasor.rsf.protocol.rsf.RsfEncoder;
 import net.hasor.rsf.protocol.rsf.v1.PoolBlock;
 import net.hasor.rsf.rpc.net.Connector;
 import net.hasor.rsf.rpc.net.ProtocolHandler;
@@ -40,13 +40,17 @@ public class HproseProtocolHandler implements ProtocolHandler {
         rsfChannel.activeIn();
     }
     @Override
-    public ChannelInboundHandler decoder(AppContext appContext) {
+    public ChannelInboundHandler[] decoder(Connector connector, AppContext appContext) {
         RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);
-        return new RSFProtocolDecoder(env, PoolBlock.DataMaxSize);
+        return new ChannelInboundHandler[] {//
+                new RsfDecoder(env, PoolBlock.DataMaxSize)//
+        };
     }
     @Override
-    public ChannelOutboundHandler encoder(AppContext appContext) {
+    public ChannelOutboundHandler[] encoder(Connector connector, AppContext appContext) {
         RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);
-        return new RSFProtocolEncoder(env);
+        return new ChannelOutboundHandler[] {//
+                new RsfEncoder(env)//
+        };
     }
 }

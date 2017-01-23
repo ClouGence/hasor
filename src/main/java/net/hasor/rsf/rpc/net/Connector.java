@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Map;
 /**
  * RPC协议连接器，负责创建某个特定RPC协议的网络事件。
@@ -170,20 +171,21 @@ public class Connector extends ChannelInboundHandlerAdapter {
     /** 连接到远程机器 */
     public void connectionTo(final InterAddress hostAddress, final BasicFuture<RsfChannel> result) {
         //
-        final ChannelDuplexHandler protocolHandler = new CombinedChannelDuplexHandler<ChannelInboundHandler, ChannelOutboundHandler>(//
-                Hasor.assertIsNotNull(this.newDecoder()),//
-                Hasor.assertIsNotNull(this.newEncoder())//
-        );
+        ChannelInboundHandler[] inBoundArrays = Hasor.assertIsNotNull(this.newDecoder());
+        ChannelOutboundHandler[] outBoundArrays = Hasor.assertIsNotNull(this.newEncoder());
+        final ArrayList<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
+        for (ChannelInboundHandler inbound : inBoundArrays)
+            handlers.add(Hasor.assertIsNotNull(inbound));
+        for (ChannelOutboundHandler outbound : outBoundArrays)
+            handlers.add(Hasor.assertIsNotNull(outbound));
+        handlers.add(this); // 转发RequestInfo、ResponseInfo到RSF
         //
         Bootstrap boot = new Bootstrap();
         boot.group(this.workLoopGroup);
         boot.channel(NioSocketChannel.class);
         boot.handler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
-                ch.pipeline().addLast(//
-                        protocolHandler,// 负责协议解析
-                        Connector.this  // 转发RequestInfo、ResponseInfo到RSF
-                );
+                ch.pipeline().addLast(handlers.toArray(new ChannelHandler[handlers.size()]));
             }
         });
         ChannelFuture future = configBoot(boot).connect(hostAddress.toSocketAddress());
@@ -208,20 +210,21 @@ public class Connector extends ChannelInboundHandlerAdapter {
      */
     public void startListener(NioEventLoopGroup listenLoopGroup) {
         //
-        final ChannelDuplexHandler protocolHandler = new CombinedChannelDuplexHandler<ChannelInboundHandler, ChannelOutboundHandler>(//
-                Hasor.assertIsNotNull(this.newDecoder()),//
-                Hasor.assertIsNotNull(this.newEncoder())//
-        );
+        ChannelInboundHandler[] inBoundArrays = Hasor.assertIsNotNull(this.newDecoder());
+        ChannelOutboundHandler[] outBoundArrays = Hasor.assertIsNotNull(this.newEncoder());
+        final ArrayList<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
+        for (ChannelInboundHandler inbound : inBoundArrays)
+            handlers.add(Hasor.assertIsNotNull(inbound));
+        for (ChannelOutboundHandler outbound : outBoundArrays)
+            handlers.add(Hasor.assertIsNotNull(outbound));
+        handlers.add(this); // 转发RequestInfo、ResponseInfo到RSF
         //
         ServerBootstrap boot = new ServerBootstrap();
         boot.group(listenLoopGroup, this.workLoopGroup);
         boot.channel(NioServerSocketChannel.class);
         boot.childHandler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
-                ch.pipeline().addLast(//
-                        protocolHandler,// 负责协议解析
-                        Connector.this  // 转发RequestInfo、ResponseInfo到RSF
-                );
+                ch.pipeline().addLast(handlers.toArray(new ChannelHandler[handlers.size()]));
             }
         });
         boot.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
@@ -268,10 +271,10 @@ public class Connector extends ChannelInboundHandlerAdapter {
         InetSocketAddress socketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
         return socketAddress.getAddress().getHostAddress() + ":" + socketAddress.getPort();
     }
-    private ChannelInboundHandler newDecoder() {
-        return this.handler.decoder(this.appContext);
+    private ChannelInboundHandler[] newDecoder() {
+        return this.handler.decoder(this, this.appContext);
     }
-    private ChannelOutboundHandler newEncoder() {
-        return this.handler.encoder(this.appContext);
+    private ChannelOutboundHandler[] newEncoder() {
+        return this.handler.encoder(this, this.appContext);
     }
 }

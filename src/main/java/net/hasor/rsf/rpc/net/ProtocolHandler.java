@@ -32,11 +32,17 @@ public interface ProtocolHandler {
      */
     public boolean acceptIn(Connector connector, Channel channel);
 
+    /**
+     * 连接已经准备好，请激活{@link RsfChannel#activeIn()}。
+     * 如果没有激活这个连接，所有接收的数据包都会被忽略，同时当试图往这个连接中发数据时也会引发异常导致关闭这个连接。
+     * tips：手动执行激活，可以让 开发者在 RPC 调用之前有机会实现握手协议。
+     * @param rsfChannel
+     */
     public void active(RsfChannel rsfChannel);
 
     /** 解码器 */
-    public ChannelInboundHandler decoder(AppContext appContext);
+    public ChannelInboundHandler[] decoder(Connector connector, AppContext appContext);
 
     /** 编码器 */
-    public ChannelOutboundHandler encoder(AppContext appContext);
+    public ChannelOutboundHandler[] encoder(Connector connector, AppContext appContext);
 }

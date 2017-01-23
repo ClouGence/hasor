@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.spring.parser;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.spring.RsfAddressPropertyEditor;
+import org.more.util.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.CustomEditorConfigurer;
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionReaderUtils;
 import org.springframework.beans.factory.xml.BeanDefinitionParser;
 import org.springframework.beans.factory.xml.ParserContext;
+import org.springframework.core.SpringVersion;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -44,13 +47,24 @@ public class RsfDefinitionParser implements BeanDefinitionParser {
     /** 解析Xml 文件 */
     @Override
     public BeanDefinition parse(Element element, ParserContext parserContext) {
+        // Spring 版本兼容
+        String version = SpringVersion.getVersion();
+        version = StringUtils.isBlank(version) ? "?" : version;
+        Map customEditors = null;
+        if (version.charAt(0) == '4' || version.charAt(0) == '5') {
+            customEditors = new HashMap<Class<?>, Class<? extends java.beans.PropertyEditor>>();
+            customEditors.put(InterAddress.class, RsfAddressPropertyEditor.class);
+        } else {
+            customEditors = new HashMap();
+            customEditors.put("net.hasor.rsf.InterAddress", new RsfAddressPropertyEditor());
+        }
+        //
         // .属性编辑器 Bean 定义
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition();
         builder.getRawBeanDefinition().setBeanClass(CustomEditorConfigurer.class);
         builder.setScope(BeanDefinition.SCOPE_SINGLETON);//单例
-        Map customEditors = new HashMap();
-        customEditors.put("net.hasor.rsf.address.InterAddress", new RsfAddressPropertyEditor());
         builder.addPropertyValue("customEditors", customEditors);
+        //
         //  .注册这个属性编辑器,BeanID 为：net.hasor.rsf.spring.RsfAddressPropertyEditor
         AbstractBeanDefinition propEditors = builder.getBeanDefinition();
         String beanID = RsfAddressPropertyEditor.class.getName();

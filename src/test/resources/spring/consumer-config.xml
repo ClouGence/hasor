@@ -18,8 +18,9 @@ http://project.hasor.net/schema/spring/hasor-rsf http://project.hasor.net/schema
                 <entry key="RSF_SERVICE_IP" value="127.0.0.1"/>
                 <!-- RSF对外提供服务的服务端口 -->
                 <entry key="RSF_SERVICE_PORT" value="2170"/>
+                <entry key="HPROSE_SERVICE_PORT" value="2171"/>
                 <!-- Telnet 控制台端口 -->
-                <entry key="RSF_CONSOLE_PORT" value="2171"/>
+                <entry key="RSF_CONSOLE_PORT" value="2172"/>
             </map>
         </property>
     </bean>

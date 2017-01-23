@@ -18,6 +18,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.ChannelOutboundHandler;
 import net.hasor.core.AppContext;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.protocol.rsf.v1.PoolBlock;
 import net.hasor.rsf.rpc.net.Connector;
@@ -38,13 +39,22 @@ public class RsfProtocolHandler implements ProtocolHandler {
         rsfChannel.activeIn();
     }
     @Override
-    public ChannelInboundHandler decoder(AppContext appContext) {
+    public ChannelInboundHandler[] decoder(Connector connector, AppContext appContext) {
+        InterAddress bindAddress = connector.getGatewayAddress();
+        if (bindAddress == null)
+            bindAddress = connector.getBindAddress();
+        //
         RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);
-        return new RSFProtocolDecoder(env, PoolBlock.DataMaxSize);
+        return new ChannelInboundHandler[] {//
+                new RsfDecoder(env, PoolBlock.DataMaxSize)//, // .协议解析
+                //                new RpcShakeHands(bindAddress, env)         // .握手协议
+        };
     }
     @Override
-    public ChannelOutboundHandler encoder(AppContext appContext) {
+    public ChannelOutboundHandler[] encoder(Connector connector, AppContext appContext) {
         RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);
-        return new RSFProtocolEncoder(env);
+        return new ChannelOutboundHandler[] {//
+                new RsfEncoder(env)//
+        };
     }
 }
