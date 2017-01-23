@@ -48,7 +48,7 @@
             <!-- 如果RSF是工作在内网，则需要通过网关进行端口映射，这里填写外网端口号 -->
             <RSF_GATEWAY_PORT></RSF_GATEWAY_PORT>
             <!-- Hprose对外提供服务的服务端口（可以配置 0 用来关闭 Hprose连接器） -->
-            <HPROSE_SERVICE_PORT>2190</HPROSE_SERVICE_PORT>
+            <HPROSE_SERVICE_PORT>0</HPROSE_SERVICE_PORT>
             <!-- 如果Hprose是工作在内网，则需要通过网关进行端口映射，这里填写外网端口号 -->
             <HPROSE_GATEWAY_PORT></HPROSE_GATEWAY_PORT>
 
