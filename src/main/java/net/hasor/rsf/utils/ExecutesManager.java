@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.utils;
+import net.hasor.core.Provider;
 import org.more.util.NameThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,16 +29,24 @@ import java.util.concurrent.*;
  */
 public class ExecutesManager {
     protected Logger logger = LoggerFactory.getLogger(getClass());
+    private       Provider<ThreadPoolExecutor>              defaultExecutorProvider;
     private       ThreadPoolExecutor                        defaultExecutor;
     private final ConcurrentMap<String, ThreadPoolExecutor> servicePoolCache;
     //
-    public ExecutesManager(int minCorePoolSize, int maxCorePoolSize, int queueSize, long keepAliveTime, ClassLoader loader) {
-        logger.info("executesManager init ->> minCorePoolSize ={}, maxCorePoolSize ={}, queueSize ={}, keepAliveTime ={}", minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
+    public ExecutesManager(final int minCorePoolSize, final int maxCorePoolSize, final int queueSize, final long keepAliveTime, final ClassLoader loader) {
+        logger.info("executesManager init ->> minCorePoolSize ={}, maxCorePoolSize ={}, queueSize ={}, keepAliveTime ={}",//
+                minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
         //
         final BlockingQueue<Runnable> inWorkQueue = new LinkedBlockingQueue<Runnable>(queueSize);
-        this.defaultExecutor = new ThreadPoolExecutor(minCorePoolSize, maxCorePoolSize, //
-                keepAliveTime, TimeUnit.SECONDS, inWorkQueue, //
-                new NameThreadFactory("RSF-Biz-%s", loader), new ThreadPoolExecutor.AbortPolicy());
+        this.defaultExecutorProvider = new Provider<ThreadPoolExecutor>() {
+            @Override
+            public ThreadPoolExecutor get() {
+                return new ThreadPoolExecutor(minCorePoolSize, maxCorePoolSize, //
+                        keepAliveTime, TimeUnit.SECONDS, inWorkQueue, //
+                        new NameThreadFactory("RSF-Biz-%s", loader), new ThreadPoolExecutor.AbortPolicy());
+            }
+        };
+        this.defaultExecutor = this.defaultExecutorProvider.get();
         this.servicePoolCache = new ConcurrentHashMap<String, ThreadPoolExecutor>();
     }
     //
@@ -55,7 +64,7 @@ public class ExecutesManager {
         List<ThreadPoolExecutor> executorList = new ArrayList<ThreadPoolExecutor>(this.servicePoolCache.values());
         executorList.add(this.defaultExecutor);
         this.servicePoolCache.clear();
-        this.defaultExecutor = null;
+        this.defaultExecutor = this.defaultExecutorProvider.get();
         //
         for (ThreadPoolExecutor exec : executorList) {
             if (exec == null)

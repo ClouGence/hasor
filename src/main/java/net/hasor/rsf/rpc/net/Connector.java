@@ -90,7 +90,7 @@ public class Connector extends ChannelInboundHandlerAdapter {
             RsfChannel rsfChannel = channel.get();
             dataForm = rsfChannel.getTarget();
             if (dataForm == null) {
-                this.exceptionCaught(ctx, new RsfException(ProtocolStatus.NetworkError, "the " + hostPort + " Connection is not management."));
+                this.exceptionCaught(ctx, new RsfException(ProtocolStatus.NetworkError, "the " + hostPort + " connection is not management."));
                 return;
             }
             //

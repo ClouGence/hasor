@@ -80,6 +80,8 @@ public class RsfNetManager {
     //
     /** 启动RSF上配置的所有连接器。*/
     public void start(AppContext appContext) {
+        //
+        this.linkPool.initPool();
         RsfSettings settings = this.getRsfEnvironment().getSettings();
         String defaultProtocol = settings.getDefaultProtocol();
         Map<String, InterAddress> connectorSet = settings.getBindAddressSet();
@@ -116,8 +118,9 @@ public class RsfNetManager {
             for (Connector listener : this.bindListener.values()) {
                 listener.shutdown();
             }
+            this.bindListener.clear();
         }
-        this.linkPool.shutdown();
+        this.linkPool.destroyPool();
         this.listenLoopGroup.shutdownGracefully();
         this.workLoopGroup.shutdownGracefully();
     }

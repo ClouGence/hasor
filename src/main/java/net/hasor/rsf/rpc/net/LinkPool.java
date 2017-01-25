@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 维护RSF同其它RSF的连接。
  * tips：主要数据结构为 hostPort 和 RsfChannel 的映射关系。另外还维护了一个 别名关系，通过别名关系实现双向通信上的连接复用问题。
@@ -35,11 +36,12 @@ import java.util.concurrent.ConcurrentMap;
  * @author 赵永春(zyc@hasor.net)
  */
 public class LinkPool {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected     Logger        logger = LoggerFactory.getLogger(getClass());
+    private final AtomicBoolean inited = new AtomicBoolean(false);
+    private final RsfEnvironment                                 environment;
     private final ConcurrentMap<String, BasicFuture<RsfChannel>> channelMap;
     private final ConcurrentMap<String, String>                  channelAlias;
     private final Set<String>                                    outLinks;
-    private final RsfEnvironment                                 environment;
     //
     public LinkPool(RsfEnvironment environment) {
         this.environment = environment;
@@ -48,13 +50,36 @@ public class LinkPool {
         this.outLinks = new ConcurrentSet<String>();
     }
     //
-    //
-    public void shutdown() {
-        // TODO shutdown
+    /** 初始化连接池。*/
+    public void initPool() {
+        if (this.inited.compareAndSet(false, true)) {
+            this.logger.info("init LinkPool.");
+        }
+    }
+    /** 销毁连接池。*/
+    public void destroyPool() {
+        if (this.inited.compareAndSet(true, false)) {
+            this.logger.info("destroy LinkPool.");
+            for (BasicFuture<RsfChannel> future : channelMap.values()) {
+                if (future == null)
+                    continue;
+                if (!future.isDone()) {
+                    future.failed(new IllegalStateException("the pool destroy."));
+                } else {
+                    try {
+                        future.get().close();
+                    } catch (Exception e) { /**/ }
+                }
+            }
+        }
     }
     //
     //
     public synchronized BasicFuture<RsfChannel> preConnection(String hostPortKey) {
+        if (!this.inited.get()) {
+            throw new IllegalStateException("LinkPool not inited.");
+        }
+        //
         //创建一个Future，并开始计时，在规定时间内没有连接成功则反馈失败（目的防止其它线程在Future的get上被锁死）
         final BasicFuture<RsfChannel> channel = new BasicFuture<RsfChannel>();
         BasicFuture<RsfChannel> oldFuture = this.channelMap.putIfAbsent(hostPortKey, channel);
@@ -74,6 +99,9 @@ public class LinkPool {
         return channel;
     }
     public void newConnection(String hostPortKey, RsfChannel channel) {
+        if (!this.inited.get()) {
+            throw new IllegalStateException("LinkPool not inited.");
+        }
         BasicFuture<RsfChannel> future = this.findChannel(hostPortKey);
         if (future == null) {
             future = this.preConnection(hostPortKey);
@@ -103,7 +131,6 @@ public class LinkPool {
             } catch (Exception e) { /**/ }
         }
     }
-    //
     //
     /**
      * 查找连接
