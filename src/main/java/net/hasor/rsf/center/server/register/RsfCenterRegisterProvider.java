@@ -28,7 +28,7 @@ import net.hasor.rsf.center.domain.RsfCenterResultDO;
 import net.hasor.rsf.center.server.domain.*;
 import net.hasor.rsf.center.server.manager.ServiceManager;
 import net.hasor.rsf.domain.RsfServiceType;
-import org.more.bizcommon.log.LogUtils;
+import net.hasor.rsf.utils.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -233,7 +233,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
         InterAddress remoteRsfAddress = this.rsfRequest.getRemoteAddress();
         try {
             // .判断异常
-            Result<List<String>> result = this.serviceManager.queryProviders(registerID, serviceID);
+            Result<List<String>> result = this.serviceManager.queryProviders(registerID, serviceID, protocol);
             if (!result.isSuccess()) {
                 centerResult.setSuccess(false);
                 ErrorCode errorInfo = result.getErrorInfo();
@@ -272,7 +272,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
         try {
             // .判断异常
             InterAddress callBack = new InterAddress(callBackRsfAddress);
-            Result<Boolean> result = this.serviceManager.requestProviders(callBack, registerID, serviceID);
+            Result<Boolean> result = this.serviceManager.requestProviders(callBack, registerID, serviceID, protocol);
             if (!result.isSuccess()) {
                 centerResult.setSuccess(false);
                 ErrorCode errorInfo = result.getErrorInfo();

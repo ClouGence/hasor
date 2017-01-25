@@ -28,6 +28,8 @@
         <environmentVar>
             <!-- 是否启用RSF，默认情况启用。启用了RSF之后它会开启相应的端口和线程。 -->
             <RSF_ENABLE>true</RSF_ENABLE>
+            <!-- 启用磁盘地址本缓存，在refreshCacheTime期间每隔1小时自动写入一次。 -->
+            <RSF_DISK_CACHE_ENABLE>true</RSF_DISK_CACHE_ENABLE>
 
             <!-- app_key -->
             <RSF_APP_KEY></RSF_APP_KEY>
@@ -122,7 +124,6 @@
         <!--
             RSF 支持多种 RPC 协议共存，这里是配置 RPC 协议连接器的地方。
                 连接器的作用是为不同协议提供网络数据包编码解码的功能，RSF 内置了两种RPC协议。
-
                 RSF/1.0     原生的内置协议，也是默认协议。
                 Hprose/1.0  see：http://www.hprose.com/
 
@@ -220,8 +221,8 @@
 
         <!-- 地址管理 -->
         <addressPool>
-            <!-- 启用磁盘地址本缓存，在refreshCacheTime期间每隔1小时自动写入一次。（被回收的服务不享受此待遇） -->
-            <localDiskCache>true</localDiskCache>
+            <!-- 启用磁盘地址本缓存，在refreshCacheTime期间每隔1小时自动写入一次。 -->
+            <localDiskCache>${RSF_DISK_CACHE_ENABLE}</localDiskCache>
             <!-- 每次缓存地址本到磁盘时的时间间隔（单位:毫秒）默认:1小时 -->
             <diskCacheTimeInterval>3600000</diskCacheTimeInterval>
             <!-- 自动刷新addressPool地址本缓存的时间（单位:毫秒）默认:1分钟 -->
@@ -265,10 +266,10 @@
 
         <!-- 服务管理 -->
         <serviceManager>
-            <!-- 服务提供者,心跳过期时间(30秒) -->
-            <providerExpireTime>30000</providerExpireTime>
-            <!-- 服务订阅者,心跳过期时间(30秒) -->
-            <consumerExpireTime>30000</consumerExpireTime>
+            <!-- 服务提供者,心跳过期时间(60秒) -->
+            <providerExpireTime>60000</providerExpireTime>
+            <!-- 服务订阅者,心跳过期时间(60秒) -->
+            <consumerExpireTime>60000</consumerExpireTime>
         </serviceManager>
 
         <!-- 数据适配器 -->

@@ -25,7 +25,7 @@ import net.hasor.rsf.center.server.manager.AuthManager;
 import net.hasor.rsf.center.server.utils.JsonUtils;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfConstants;
-import org.more.bizcommon.log.LogUtils;
+import net.hasor.rsf.utils.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**

@@ -267,6 +267,8 @@ class RsfCenterClientManager implements TimerTask {
                     logger.error("pullAddress[{}] '" + providerAddress + "' formater error ->" + e.getMessage(), protocol, e);
                 }
             }
+        } else {
+            logger.warn("pullAddress[{}] already up-to-date. pull empty.", protocol);
         }
         //
         // .更新服务提供者地址列表

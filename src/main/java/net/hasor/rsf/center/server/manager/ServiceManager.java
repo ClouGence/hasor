@@ -27,7 +27,7 @@ import net.hasor.rsf.center.server.pushing.RsfPusher;
 import net.hasor.rsf.center.server.utils.DateCenterUtils;
 import net.hasor.rsf.center.server.utils.JsonUtils;
 import net.hasor.rsf.domain.RsfServiceType;
-import org.more.bizcommon.log.LogUtils;
+import net.hasor.rsf.utils.LogUtils;
 import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +93,7 @@ public class ServiceManager {
         return targets;
     }
     /* 过滤出提供者列表 */
-    private List<InterAddress> filterProviderList(List<ObjectDO> allObjectList) {
+    private List<InterAddress> filterProviderList(List<ObjectDO> allObjectList, String protocol) {
         List<InterAddress> targets = new ArrayList<InterAddress>();
         if (allObjectList != null && !allObjectList.isEmpty()) {
             for (ObjectDO objectDO : allObjectList) {
@@ -112,7 +112,14 @@ public class ServiceManager {
                     ProviderInfo providerInfo = JsonUtils.converToService(objectDO.getContent(), ProviderInfo.class);
                     List<String> rsfAddressList = providerInfo.getRsfAddress();
                     for (String host : rsfAddressList) {
-                        targets.add(new InterAddress(host));
+                        if (StringUtils.isBlank(host)) {
+                            continue;
+                        }
+                        InterAddress interAddress = new InterAddress(host);
+                        if (!StringUtils.equalsBlankIgnoreCase(interAddress.getSechma(), protocol)) {
+                            continue;
+                        }
+                        targets.add(interAddress);
                     }
                 } catch (Exception e) {
                     this.logger.error(LogUtils.create("ERROR_300_00006")//
@@ -193,9 +200,8 @@ public class ServiceManager {
         // .登记服务消费者
         ObjectDO consumerObject = new ObjectDO();
         consumerObject.setType(RsfCenterConstants.Center_DataKey_Consumer);
-        String serviceObjectID = saveResult.getResult();
         consumerObject.setObjectID(UUID.randomUUID().toString().replace("-", "").toUpperCase());
-        consumerObject.setRefObjectID(serviceObjectID);
+        consumerObject.setRefObjectID(saveResult.getResult());
         consumerObject.setRefreshTime(new Date());
         consumerObject.setContent(JsonUtils.converToString(info));
         Result<Boolean> consumerResult = this.dataAdapter.storeObject(consumerObject);
@@ -205,8 +211,8 @@ public class ServiceManager {
         //
         // .请求推送服务提供者列表()
         InterAddress interAddress = new InterAddress(info.getRsfAddress());
-        Result<Boolean> requestResult = requestProviders(interAddress, serviceInfo.getBindID());
-        if (requestResult == null || !requestResult.isSuccess()) {
+        Result<Boolean> requestResult = requestProviders(interAddress, serviceInfo.getBindID(), interAddress.getSechma());
+        if (requestResult == null || !requestResult.isSuccess() || !requestResult.getResult()) {
             return buildFailedResult(requestResult);
         }
         //
@@ -223,11 +229,12 @@ public class ServiceManager {
         //
         // .获取服务Info
         Result<ObjectDO> objResult = this.dataAdapter.queryObjectByID(registerID);
-        if (objResult == null || !objResult.isSuccess() || objResult.getResult() == null) {
+        ObjectDO registerObj = objResult.getResult();
+        if (objResult == null || !objResult.isSuccess() || registerObj == null) {
             return buildFailedResult(objResult);
         }
-        boolean testC = StringUtils.equals(RsfCenterConstants.Center_DataKey_Consumer, objResult.getResult().getType());
-        boolean testP = StringUtils.equals(RsfCenterConstants.Center_DataKey_Provider, objResult.getResult().getType());
+        boolean testC = StringUtils.equals(RsfCenterConstants.Center_DataKey_Consumer, registerObj.getType());
+        boolean testP = StringUtils.equals(RsfCenterConstants.Center_DataKey_Provider, registerObj.getType());
         if (!(testC || testP)) {
             ResultDO<Boolean> result = new ResultDO<Boolean>();
             result.setErrorInfo(ErrorCode.ServiceTypeFailed_Error);
@@ -235,7 +242,7 @@ public class ServiceManager {
             return result;
         }
         //
-        String serviceObjectID = objResult.getResult().getRefObjectID();
+        String serviceObjectID = registerObj.getRefObjectID();
         Result<ObjectDO> serviceResult = this.dataAdapter.queryObjectByID(serviceObjectID);
         if (serviceResult == null || !serviceResult.isSuccess() || serviceResult.getResult() == null) {
             return buildFailedResult(serviceResult);
@@ -432,7 +439,7 @@ public class ServiceManager {
     }
     //
     /** 请求Center做一次全量推送 */
-    public Result<Boolean> requestProviders(InterAddress rsfAddress, String registerID, String serviceID) {
+    public Result<Boolean> requestProviders(InterAddress rsfAddress, String registerID, String serviceID, String protocol) {
         //
         // .检查registerID是否为订阅者
         Result<ObjectDO> consumerResult = this.dataAdapter.queryObjectByID(registerID);
@@ -448,11 +455,11 @@ public class ServiceManager {
         this.dataAdapter.refreshObject(registerID);
         //
         // .向目标请求推送地址
-        return requestProviders(rsfAddress, serviceID);
+        return requestProviders(rsfAddress, serviceID, protocol);
     }
     //
     /** 查询提供者列表 */
-    public Result<List<String>> queryProviders(String registerID, String serviceID) {
+    public Result<List<String>> queryProviders(String registerID, String serviceID, String protocol) {
         //
         // .检查registerID是否为订阅者
         Result<ObjectDO> consumerResult = this.dataAdapter.queryObjectByID(registerID);
@@ -476,7 +483,7 @@ public class ServiceManager {
             return buildFailedResult(refList);
         }
         List<ObjectDO> providerDataList = refList.getResult();
-        List<InterAddress> providerList = this.filterProviderList(providerDataList);
+        List<InterAddress> providerList = this.filterProviderList(providerDataList, protocol);
         if (providerList == null) {
             ResultDO<List<String>> result = new ResultDO<List<String>>();
             result.setSuccess(false);
@@ -490,7 +497,6 @@ public class ServiceManager {
             if (provider == null) {
                 continue;
             }
-            allList.add(provider.toHostSchema());
         }
         ResultDO<List<String>> result = new ResultDO<List<String>>();
         result.setSuccess(true);
@@ -499,7 +505,7 @@ public class ServiceManager {
         return result;
     }
     /* 对订阅做请求全量推送提供者列表 */
-    private Result<Boolean> requestProviders(InterAddress targetRsfAddress, String serviceID) {
+    private Result<Boolean> requestProviders(InterAddress targetRsfAddress, String serviceID, String protocol) {
         //
         // .查询提供者列表
         QueryOption opt = new QueryOption();
@@ -510,7 +516,7 @@ public class ServiceManager {
             return buildFailedResult(refList);
         }
         List<ObjectDO> providerDataList = refList.getResult();
-        List<InterAddress> providerList = this.filterProviderList(providerDataList);
+        List<InterAddress> providerList = this.filterProviderList(providerDataList, protocol);
         //
         // .推送提供者地址(三次尝试),即使全部失败也不用担心,依靠客户端主动拉取来换的最终成功
         boolean result = false;

@@ -23,7 +23,7 @@ import net.hasor.rsf.center.RsfCenterListener;
 import net.hasor.rsf.center.domain.CenterEventBody;
 import net.hasor.rsf.domain.provider.InstanceAddressProvider;
 import net.hasor.rsf.rpc.caller.RsfServiceWrapper;
-import org.more.bizcommon.log.LogUtils;
+import net.hasor.rsf.utils.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

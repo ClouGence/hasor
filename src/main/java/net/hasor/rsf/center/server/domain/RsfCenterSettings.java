@@ -65,8 +65,8 @@ public class RsfCenterSettings {
         this.queueMaxSize = settings.getInteger("hasor.rsfCenter.polling.queueMaxSize", 20000);
         this.sleepTime = settings.getInteger("hasor.rsfCenter.polling.sleepTime", 1000);
         //
-        this.providerExpireTime = settings.getInteger("hasor.rsfCenter.serviceManager.providerExpireTime", 30000);
-        this.consumerExpireTime = settings.getInteger("hasor.rsfCenter.serviceManager.consumerExpireTime", 30000);
+        this.providerExpireTime = settings.getInteger("hasor.rsfCenter.serviceManager.providerExpireTime", 60000);
+        this.consumerExpireTime = settings.getInteger("hasor.rsfCenter.serviceManager.consumerExpireTime", 60000);
         this.allowAnonymous = settings.getBoolean("hasor.rsfCenter.auth.allowAnonymous", true);
         //
         ClassLoader classLoader = environment.getClassLoader();

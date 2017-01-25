@@ -26,7 +26,7 @@ public class DiskCacheAddressPool extends AddressPool {
     private final File   indexFile;
     private boolean exitThread = false;
     //
-    public DiskCacheAddressPool(RsfEnvironment rsfEnvironment) {
+    public DiskCacheAddressPool(final RsfEnvironment rsfEnvironment) {
         super(rsfEnvironment);
         File rsfHome = new File(rsfEnvironment.evalString("%" + RsfEnvironment.WORK_HOME + "%/rsf/"));
         this.snapshotHome = new File(rsfHome, RsfConstants.SnapshotPath);
@@ -34,7 +34,9 @@ public class DiskCacheAddressPool extends AddressPool {
         //
         this.timer = new Thread(new Runnable() {
             public void run() {
-                doWork();
+                if (rsfEnvironment.getSettings().islocalDiskCache()) {
+                    doWork();
+                }
             }
         });
         this.timer.setContextClassLoader(rsfEnvironment.getClassLoader());
