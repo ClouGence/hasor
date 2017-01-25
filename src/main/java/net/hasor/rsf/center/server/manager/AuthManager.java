@@ -48,7 +48,7 @@ public class AuthManager {
                 .addLog("remoteAddress", remoteAddress.toHostSchema());
         //
         //
-        Result<Boolean> checkResult = authQuery.checkKeySecret(authInfo, remoteAddress);
+        Result<Boolean> checkResult = authQuery.checkKeySecret(authInfo);
         if (checkResult == null || !checkResult.isSuccess() || checkResult.getResult() == null) {
             logger.error(logUtils.addLog("result", "failed.").toJson());
             return DateCenterUtils.buildFailedResult(checkResult);

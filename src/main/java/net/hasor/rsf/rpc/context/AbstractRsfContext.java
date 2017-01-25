@@ -149,6 +149,15 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
     public AppContext getAppContext() {
         return this.appContext;
     }
+    /**获取运行着哪些协议*/
+    @Override
+    public Set<String> runProtocols() {
+        return this.rsfNetManager.runProtocols();
+    }
+    @Override
+    public String getDefaultProtocol() {
+        return this.rsfEnvironment.getSettings().getDefaultProtocol();
+    }
     @Override
     public RsfEnvironment getEnvironment() {
         return this.rsfEnvironment;
@@ -161,13 +170,6 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
     }
     public ClassLoader getClassLoader() {
         return this.rsfEnvironment.getClassLoader();
-    }
-    /** 获取RSF运行的地址。 */
-    @Override
-    public InterAddress localAddress() {
-        RsfSettings settings = this.getEnvironment().getSettings();
-        String protocol = settings.getDefaultProtocol();
-        return this.bindAddress(protocol);
     }
     @Override
     public InterAddress bindAddress(String protocol) {
@@ -184,20 +186,16 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         return connector.getGatewayAddress();
     }
     @Override
-    public InterAddress bindAddressForSechma(String sechma) {
-        Connector connector = this.rsfNetManager.findConnectorBySechma(sechma);
+    public InterAddress publishAddress(String protocol) {
+        Connector connector = this.rsfNetManager.findConnector(protocol);
         if (connector == null)
             return null;
-        return connector.getBindAddress();
+        InterAddress address = connector.getGatewayAddress();
+        if (address == null) {
+            address = connector.getBindAddress();
+        }
+        return address;
     }
-    @Override
-    public InterAddress gatewayAddressForSechma(String sechma) {
-        Connector connector = this.rsfNetManager.findConnectorBySechma(sechma);
-        if (connector == null)
-            return null;
-        return connector.getGatewayAddress();
-    }
-    //
     //
     public RsfClient getRsfClient() {
         return new RpcRsfClient(this.poolProvider, this.rsfCaller);

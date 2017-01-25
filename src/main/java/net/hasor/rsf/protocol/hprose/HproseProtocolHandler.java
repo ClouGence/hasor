@@ -40,17 +40,13 @@ public class HproseProtocolHandler implements ProtocolHandler {
         rsfChannel.activeIn();
     }
     @Override
-    public ChannelInboundHandler[] decoder(Connector connector, AppContext appContext) {
+    public ChannelInboundHandler decoder(Connector connector, AppContext appContext) {
         RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);
-        return new ChannelInboundHandler[] {//
-                new RsfDecoder(env, PoolBlock.DataMaxSize)//
-        };
+        return new RsfDecoder(env, PoolBlock.DataMaxSize);
     }
     @Override
-    public ChannelOutboundHandler[] encoder(Connector connector, AppContext appContext) {
+    public ChannelOutboundHandler encoder(Connector connector, AppContext appContext) {
         RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);
-        return new ChannelOutboundHandler[] {//
-                new RsfEncoder(env)//
-        };
+        return new RsfEncoder(env);//
     }
 }

@@ -124,8 +124,10 @@ public class PullRsfInstruct implements RsfInstruct {
             return;
         }
         // .1of4
-        request.writeMessageLine(" ->  (1of4) pull data form rsfCenter ...");
-        RsfCenterResult<List<String>> result = register.pullProviders(registerID, serviceID);
+        String protocol = request.getRsfContext().getDefaultProtocol();
+        request.writeMessageLine(" ->  this machine is the default protocol is " + protocol);
+        request.writeMessageLine(" ->  (1of4) pull address form rsfCenter ...");
+        RsfCenterResult<List<String>> result = register.pullProviders(registerID, serviceID, protocol);
         if (result == null || !result.isSuccess() || result.getResult() == null) {
             String failedInfo = (result == null || result.getResult() == null) ?//
                     "EmptyResult." ://
@@ -156,9 +158,15 @@ public class PullRsfInstruct implements RsfInstruct {
             request.writeMessageLine(" ->  [FAILED] the service has not yet registered to the center.");
             return;
         }
+        RsfContext rsfContext = request.getRsfContext();
+        String protocol = rsfContext.getDefaultProtocol();
+        InterAddress callBackAddress = rsfContext.publishAddress(protocol);
+        String callBackTo = callBackAddress.toHostSchema();
+        //
         // .1of2
-        request.writeMessageLine(" ->  (1of2) request data form rsfCenter ...");
-        RsfCenterResult<Boolean> result = register.requestPushProviders(registerID, serviceID);
+        request.writeMessageLine(" ->  this machine is the default protocol is " + protocol);
+        request.writeMessageLine(" ->  (1of2) request data form rsfCenter ,callBack is " + callBackTo);
+        RsfCenterResult<Boolean> result = register.requestPushProviders(registerID, serviceID, protocol, callBackTo);
         if (result == null || !result.isSuccess() || result.getResult() == null) {
             String failedInfo = (result == null || result.getResult() == null) ?//
                     "EmptyResult." ://

@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class RsfChannel {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    private          String        protocolKey;
+    private          String        protocol;
     private final    InterAddress  target;
     private final    Channel       channel;
     private final    AtomicBoolean shakeHands;
@@ -41,8 +41,8 @@ public class RsfChannel {
     private volatile long          lastSendTime;   //最后数据发送时间
     private volatile long          sendPackets;    //发送的数据包总数
     //
-    RsfChannel(String protocolKey, InterAddress target, Channel channel, LinkType linkType) {
-        this.protocolKey = protocolKey;
+    RsfChannel(String protocol, InterAddress target, Channel channel, LinkType linkType) {
+        this.protocol = protocol;
         this.target = target;
         this.channel = channel;
         this.shakeHands = new AtomicBoolean(false);
@@ -54,7 +54,7 @@ public class RsfChannel {
     }
     @Override
     public String toString() {
-        return "RsfChannel{" + "protocolKey=" + protocolKey +//
+        return "RsfChannel{" + "protocol=" + protocol +//
                 ", linkType=" + linkType.name() + //
                 ", shakeHands=" + shakeHands + //
                 ", channel=" + channel +//
@@ -120,7 +120,7 @@ public class RsfChannel {
     //
     /**运行的协议*/
     public String getProtocol() {
-        return this.protocolKey;
+        return this.protocol;
     }
     /**连接方向*/
     public LinkType getLinkType() {

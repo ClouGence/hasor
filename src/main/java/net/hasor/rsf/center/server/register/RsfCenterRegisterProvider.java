@@ -32,6 +32,7 @@ import org.more.bizcommon.log.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.List;
 /**
  * 客户端注册中心接口{@link RsfCenterRegister}实现类，负责接收来自客户端的请求调用。
@@ -47,7 +48,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     @Inject
     private ServiceManager serviceManager;
     //
-    protected ServiceInfo getServiceInfo(PublishInfo info) {
+    private ServiceInfo getServiceInfo(PublishInfo info) {
         ServiceInfo serviceInfo = new ServiceInfo();
         serviceInfo.setBindID(info.getBindID());
         serviceInfo.setBindGroup(info.getBindGroup());
@@ -55,50 +56,60 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
         serviceInfo.setBindVersion(info.getBindVersion());
         return serviceInfo;
     }
+    private RsfCenterResult<String> errorCenterResult(RsfCenterResult<?> result) {
+        RsfCenterResultDO<String> centerResult = new RsfCenterResultDO<String>();
+        centerResult.setSuccess(result.isSuccess());
+        centerResult.setMessageID(result.getMessageID());
+        centerResult.setErrorCode(result.getErrorCode());
+        centerResult.setErrorMessage(result.getErrorMessage());
+        return centerResult;
+    }
+    //
     /**发布服务*/
     @Override
     public RsfCenterResult<String> registerProvider(ProviderPublishInfo info) {
-        InterAddress rsfAddress = this.rsfRequest.getRemoteAddress();
+        //
         ProviderInfo providerInfo = new ProviderInfo();
-        providerInfo.setRsfAddress(rsfAddress.toHostSchema());
         providerInfo.setClientTimeout(info.getClientTimeout());
         providerInfo.setQueueMaxSize(info.getQueueMaxSize());
         providerInfo.setSerializeType(info.getSerializeType());
         providerInfo.setSharedThreadPool(info.isSharedThreadPool());
+        providerInfo.setRsfAddress(Arrays.asList(info.getTargetList().split(",")));
         ServiceInfo serviceInfo = getServiceInfo(info);
-        return this.register(rsfAddress, serviceInfo, providerInfo, RsfServiceType.Provider);
+        return this.register(serviceInfo, providerInfo, RsfServiceType.Provider);
     }
     /**订阅服务*/
     @Override
     public RsfCenterResult<String> registerConsumer(ConsumerPublishInfo info) {
-        InterAddress rsfAddress = this.rsfRequest.getRemoteAddress();
         ConsumerInfo consumerInfo = new ConsumerInfo();
-        consumerInfo.setRsfAddress(rsfAddress.toHostSchema());
         consumerInfo.setClientTimeout(info.getClientTimeout());
         consumerInfo.setMaximumRequestSize(info.getClientMaximumRequest());
         consumerInfo.setMessage(info.getMessage());
         consumerInfo.setSerializeType(info.getSerializeType());
+        consumerInfo.setRsfAddress(info.getTargetList());
         ServiceInfo serviceInfo = getServiceInfo(info);
-        return this.register(rsfAddress, serviceInfo, consumerInfo, RsfServiceType.Consumer);
+        return this.register(serviceInfo, consumerInfo, RsfServiceType.Consumer);
     }
     //
-    private RsfCenterResult<String> register(InterAddress rsfAddress, ServiceInfo serviceInfo, Object info, RsfServiceType type) {
+    private RsfCenterResult<String> register(ServiceInfo serviceInfo, Object info, RsfServiceType type) {
+        //
         RsfCenterResultDO<String> centerResult = new RsfCenterResultDO<String>();
         centerResult.setMessageID(this.rsfRequest.getRequestID());
+        InterAddress remoteRsfAddress = this.rsfRequest.getRemoteAddress();
         try {
             // .发布服务,并获取结果
             Result<String> result = null;
             if (RsfServiceType.Provider == type && info instanceof ProviderInfo) {
-                result = this.serviceManager.publishService(rsfAddress, serviceInfo, (ProviderInfo) info);
+                result = this.serviceManager.publishService(serviceInfo, (ProviderInfo) info);
             } else if (RsfServiceType.Consumer == type && info instanceof ConsumerInfo) {
-                result = this.serviceManager.publishConsumer(rsfAddress, serviceInfo, (ConsumerInfo) info);
+                result = this.serviceManager.publishConsumer(serviceInfo, (ConsumerInfo) info);
             } else {
                 centerResult.setErrorCode(ErrorCode.EmptyResult.getCodeType());
                 centerResult.setErrorMessage("registerType mast in Provider or Consumer.");
                 logger.error(LogUtils.create("ERROR_100_00001")//
                         .addLog("traceID", TraceUtil.getTraceID())//
                         .addLog("errorCode", centerResult.getErrorCode())//
-                        .addLog("rsfAddress", rsfAddress.toHostSchema())//
+                        .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                         .addLog("serviceID", serviceInfo.getBindID())//
                         .addLog("registerType", type)//
                         .toJson());
@@ -113,7 +124,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
                 logger.error(LogUtils.create("ERROR_100_00002")//
                         .addLog("traceID", TraceUtil.getTraceID())//
                         .addLog("errorCode", centerResult.getErrorCode())//
-                        .addLog("rsfAddress", rsfAddress.toHostSchema())//
+                        .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                         .addLog("serviceID", serviceInfo.getBindID())//
                         .addLog("registerType", type)//
                         .toJson());
@@ -129,11 +140,11 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
             logger.error(LogUtils.create("ERROR_100_00003")//
                     .addLog("traceID", TraceUtil.getTraceID())//
                     .addLog("errorCode", centerResult.getErrorCode())//
-                    .addLog("rsfAddress", rsfAddress.toHostSchema())//
+                    .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                     .addLog("serviceID", serviceInfo.getBindID())//
                     .addLog("registerType", type)//
-                    .logException(e)//
-                    .toJson());
+                    .addLog("error", e.getMessage())//
+                    .toJson(), e);
         }
         return centerResult;
     }
@@ -142,10 +153,10 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     public RsfCenterResult<Boolean> unRegister(String registerID, String serviceID) {
         RsfCenterResultDO<Boolean> centerResult = new RsfCenterResultDO<Boolean>();
         centerResult.setMessageID(this.rsfRequest.getRequestID());
-        InterAddress rsfAddress = this.rsfRequest.getRemoteAddress();
+        InterAddress remoteRsfAddress = this.rsfRequest.getRemoteAddress();
         try {
             // .判断异常
-            Result<Boolean> result = this.serviceManager.removeRegister(rsfAddress, registerID, serviceID);
+            Result<Boolean> result = this.serviceManager.removeRegister(registerID, serviceID);
             if (!result.isSuccess()) {
                 centerResult.setSuccess(false);
                 ErrorCode errorInfo = result.getErrorInfo();
@@ -154,7 +165,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
                 logger.error(LogUtils.create("ERROR_100_00101")//
                         .addLog("traceID", TraceUtil.getTraceID())//
                         .addLog("errorCode", centerResult.getErrorCode())//
-                        .addLog("rsfAddress", rsfAddress.toHostSchema())//
+                        .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                         .addLog("serviceID", serviceID)//
                         .toJson());
             } else {
@@ -169,10 +180,10 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
             logger.error(LogUtils.create("ERROR_100_00102")//
                     .addLog("traceID", TraceUtil.getTraceID())//
                     .addLog("errorCode", centerResult.getErrorCode())//
-                    .addLog("rsfAddress", rsfAddress.toHostSchema())//
+                    .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                     .addLog("serviceID", serviceID)//
-                    .logException(e)//
-                    .toJson());
+                    .addLog("error", e.getMessage())//
+                    .toJson(), e);
         }
         return centerResult;
     }
@@ -181,10 +192,10 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     public RsfCenterResult<Boolean> serviceBeat(String registerID, String serviceID) {
         RsfCenterResultDO<Boolean> centerResult = new RsfCenterResultDO<Boolean>();
         centerResult.setMessageID(this.rsfRequest.getRequestID());
-        InterAddress rsfAddress = this.rsfRequest.getRemoteAddress();
+        InterAddress remoteRsfAddress = this.rsfRequest.getRemoteAddress();
         try {
             // .判断异常
-            Result<Boolean> result = this.serviceManager.serviceBeat(rsfAddress, registerID, serviceID);
+            Result<Boolean> result = this.serviceManager.serviceBeat(registerID, serviceID);
             if (!result.isSuccess()) {
                 centerResult.setSuccess(false);
                 ErrorCode errorInfo = result.getErrorInfo();
@@ -193,7 +204,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
                 logger.error(LogUtils.create("ERROR_100_00201")//
                         .addLog("traceID", TraceUtil.getTraceID())//
                         .addLog("errorCode", centerResult.getErrorCode())//
-                        .addLog("rsfAddress", rsfAddress.toHostSchema())//
+                        .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                         .addLog("serviceID", serviceID)//
                         .toJson());
             } else {
@@ -208,21 +219,21 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
             logger.error(LogUtils.create("ERROR_100_00202")//
                     .addLog("traceID", TraceUtil.getTraceID())//
                     .addLog("errorCode", centerResult.getErrorCode())//
-                    .addLog("rsfAddress", rsfAddress.toHostSchema())//
+                    .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                     .addLog("serviceID", serviceID)//
-                    .logException(e)//
-                    .toJson());
+                    .addLog("error", e.getMessage())//
+                    .toJson(), e);
         }
         return centerResult;
     }
     @Override
-    public RsfCenterResult<List<String>> pullProviders(String registerID, String serviceID) {
+    public RsfCenterResult<List<String>> pullProviders(String registerID, String serviceID, String protocol) {
         RsfCenterResultDO<List<String>> centerResult = new RsfCenterResultDO<List<String>>();
         centerResult.setMessageID(this.rsfRequest.getRequestID());
-        InterAddress rsfAddress = this.rsfRequest.getRemoteAddress();
+        InterAddress remoteRsfAddress = this.rsfRequest.getRemoteAddress();
         try {
             // .判断异常
-            Result<List<String>> result = this.serviceManager.queryProviders(rsfAddress, registerID, serviceID);
+            Result<List<String>> result = this.serviceManager.queryProviders(registerID, serviceID);
             if (!result.isSuccess()) {
                 centerResult.setSuccess(false);
                 ErrorCode errorInfo = result.getErrorInfo();
@@ -231,7 +242,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
                 logger.error(LogUtils.create("ERROR_100_00301")//
                         .addLog("traceID", TraceUtil.getTraceID())//
                         .addLog("errorCode", centerResult.getErrorCode())//
-                        .addLog("rsfAddress", rsfAddress.toHostSchema())//
+                        .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                         .addLog("serviceID", serviceID)//
                         .toJson());
             } else {
@@ -246,21 +257,22 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
             logger.error(LogUtils.create("ERROR_100_00302")//
                     .addLog("traceID", TraceUtil.getTraceID())//
                     .addLog("errorCode", centerResult.getErrorCode())//
-                    .addLog("rsfAddress", rsfAddress.toHostSchema())//
+                    .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                     .addLog("serviceID", serviceID)//
-                    .logException(e)//
-                    .toJson());
+                    .addLog("error", e.getMessage())//
+                    .toJson(), e);
         }
         return centerResult;
     }
     @Override
-    public RsfCenterResult<Boolean> requestPushProviders(String registerID, String serviceID) {
+    public RsfCenterResult<Boolean> requestPushProviders(String registerID, String serviceID, String protocol, String callBackRsfAddress) {
         RsfCenterResultDO<Boolean> centerResult = new RsfCenterResultDO<Boolean>();
         centerResult.setMessageID(this.rsfRequest.getRequestID());
-        InterAddress rsfAddress = this.rsfRequest.getRemoteAddress();
+        InterAddress remoteRsfAddress = this.rsfRequest.getRemoteAddress();
         try {
             // .判断异常
-            Result<Boolean> result = this.serviceManager.requestProviders(rsfAddress, registerID, serviceID);
+            InterAddress callBack = new InterAddress(callBackRsfAddress);
+            Result<Boolean> result = this.serviceManager.requestProviders(callBack, registerID, serviceID);
             if (!result.isSuccess()) {
                 centerResult.setSuccess(false);
                 ErrorCode errorInfo = result.getErrorInfo();
@@ -269,7 +281,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
                 logger.error(LogUtils.create("ERROR_100_00401")//
                         .addLog("traceID", TraceUtil.getTraceID())//
                         .addLog("errorCode", centerResult.getErrorCode())//
-                        .addLog("rsfAddress", rsfAddress.toHostSchema())//
+                        .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                         .addLog("serviceID", serviceID)//
                         .toJson());
             } else {
@@ -284,10 +296,10 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
             logger.error(LogUtils.create("ERROR_100_00402")//
                     .addLog("traceID", TraceUtil.getTraceID())//
                     .addLog("errorCode", centerResult.getErrorCode())//
-                    .addLog("rsfAddress", rsfAddress.toHostSchema())//
+                    .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                     .addLog("serviceID", serviceID)//
-                    .logException(e)//
-                    .toJson());
+                    .addLog("error", e.getMessage())//
+                    .toJson(), e);
         }
         return centerResult;
     }

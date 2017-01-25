@@ -52,7 +52,7 @@ public class InterAddress {
         if (formPath.startsWith("/")) {
             formPath = formPath.substring(1);
         }
-        this.sechma = newAddressURL.getScheme();
+        this.sechma = newAddressURL.getScheme().toLowerCase();
         this.formUnit = formPath.split("/")[0];
         this.hostAddress = newAddressURL.getHost();
         this.hostAddressData = this.initIP(this.hostAddress);
@@ -63,7 +63,7 @@ public class InterAddress {
         this(DEFAULT_SECHMA, hostAddress, hostPort, formUnit);
     }
     public InterAddress(String sechma, String hostAddress, int hostPort, String formUnit) {
-        this.sechma = Hasor.assertIsNotNull(sechma, "sechma is null.");
+        this.sechma = Hasor.assertIsNotNull(sechma, "sechma is null.").toLowerCase();
         this.formUnit = Hasor.assertIsNotNull(formUnit, "formUnit is null.");
         this.hostAddress = Hasor.assertIsNotNull(hostAddress, "hostAddress is null.");
         this.hostAddressData = this.initIP(this.hostAddress);

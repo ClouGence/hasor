@@ -124,7 +124,7 @@ class RsfRequestFormRemote extends AttributeSet implements RsfRequest {
     @Override
     public InterAddress getTargetAddress() {
         //根据远程来的请求协议，来从本地获取对应的地址端口
-        String remoteSechma = this.target.getSechma();
-        return this.rsfCaller.getContext().bindAddressForSechma(remoteSechma);
+        String protocol = this.target.getSechma();
+        return this.rsfCaller.getContext().bindAddress(protocol);
     }
 }

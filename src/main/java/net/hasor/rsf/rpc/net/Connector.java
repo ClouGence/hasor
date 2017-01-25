@@ -29,7 +29,6 @@ import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.*;
 import org.more.future.BasicFuture;
-import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,8 +44,7 @@ import java.util.Map;
 @ChannelHandler.Sharable
 public class Connector extends ChannelInboundHandlerAdapter {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    private final String           protocolKey;
-    private final String           protocolSechma;
+    private final String           protocol;
     private final AppContext       appContext;
     private final InterAddress     bindAddress;
     private final InterAddress     gatewayAddress;
@@ -55,31 +53,26 @@ public class Connector extends ChannelInboundHandlerAdapter {
     private final ReceivedListener receivedListener;
     private final EventLoopGroup   workLoopGroup;
     private final ProtocolHandler  handler;
-    public Connector(AppContext appContext, String protocolKey,//
-            InterAddress local, InterAddress gateway,//
+    public Connector(AppContext appContext, String protocol, InterAddress local, InterAddress gateway,//
             ReceivedListener receivedListener, LinkPool linkPool, EventLoopGroup workLoopGroup) throws ClassNotFoundException {
         //
-        this.protocolKey = protocolKey;
+        this.protocol = protocol;
         this.appContext = appContext;
         this.bindAddress = local;
         this.gatewayAddress = gateway;
         this.receivedListener = receivedListener;
         this.linkPool = linkPool;
         this.workLoopGroup = workLoopGroup;
-        Map<String, String> sechmaMap = appContext.getInstance(RsfEnvironment.class).getSettings().getProtocolSechmaMapping();
-        this.protocolSechma = sechmaMap.get(protocolKey);
-        if (StringUtils.isBlank(this.protocolSechma))
-            throw new NullPointerException(protocolKey + " protocolSechma is unknown.");
         //
         RsfEnvironment env = this.appContext.getInstance(RsfEnvironment.class);
         Map<String, String> protocolHandlerMapping = env.getSettings().getProtocolHandlerMapping();
-        String handlerName = protocolHandlerMapping.get(this.protocolKey);
+        String handlerName = protocolHandlerMapping.get(this.protocol);
         Class<?> handlerType = appContext.getClassLoader().loadClass(handlerName);
         this.handler = (ProtocolHandler) appContext.getInstance(handlerType);
     }
     @Override
     public String toString() {
-        return "Connector{ protocol='" + protocolKey + "'}";
+        return "Connector{ protocol='" + this.protocol + "'}";
     }
     //
     //
@@ -130,8 +123,8 @@ public class Connector extends ChannelInboundHandlerAdapter {
         Channel channel = ctx.channel();
         boolean accept = this.handler.acceptIn(this, channel);
         if (accept) {
-            InterAddress target = new InterAddress(this.protocolSechma, hostAddress, port, "unknown");
-            RsfChannel rsfChannel = new RsfChannel(this.protocolKey, target, channel, LinkType.In);
+            InterAddress target = new InterAddress(this.protocol, hostAddress, port, "unknown");
+            RsfChannel rsfChannel = new RsfChannel(this.protocol, target, channel, LinkType.In);
             this.linkPool.newConnection(hostPort, rsfChannel);
             this.handler.active(rsfChannel);
         } else {
@@ -171,14 +164,13 @@ public class Connector extends ChannelInboundHandlerAdapter {
     /** 连接到远程机器 */
     public void connectionTo(final InterAddress hostAddress, final BasicFuture<RsfChannel> result) {
         //
-        ChannelInboundHandler[] inBoundArrays = Hasor.assertIsNotNull(this.newDecoder());
-        ChannelOutboundHandler[] outBoundArrays = Hasor.assertIsNotNull(this.newEncoder());
+        RsfDuplexHandler duplexHandler = new RsfDuplexHandler(//
+                Hasor.assertIsNotNull(this.newDecoder()),//
+                Hasor.assertIsNotNull(this.newEncoder())//
+        );
         final ArrayList<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
-        for (ChannelInboundHandler inbound : inBoundArrays)
-            handlers.add(Hasor.assertIsNotNull(inbound));
-        for (ChannelOutboundHandler outbound : outBoundArrays)
-            handlers.add(Hasor.assertIsNotNull(outbound));
-        handlers.add(this); // 转发RequestInfo、ResponseInfo到RSF
+        handlers.add(duplexHandler);// 编码解码器
+        handlers.add(this);         // 转发RequestInfo、ResponseInfo到RSF
         //
         Bootstrap boot = new Bootstrap();
         boot.group(this.workLoopGroup);
@@ -199,7 +191,7 @@ public class Connector extends ChannelInboundHandlerAdapter {
                 } else {
                     Channel channel = future.channel();
                     logger.info("connect to {} Success.", hostAddress);
-                    result.completed(new RsfChannel(protocolKey, bindAddress, channel, LinkType.Out));
+                    result.completed(new RsfChannel(protocol, bindAddress, channel, LinkType.Out));
                 }
             }
         });
@@ -210,14 +202,13 @@ public class Connector extends ChannelInboundHandlerAdapter {
      */
     public void startListener(NioEventLoopGroup listenLoopGroup) {
         //
-        ChannelInboundHandler[] inBoundArrays = Hasor.assertIsNotNull(this.newDecoder());
-        ChannelOutboundHandler[] outBoundArrays = Hasor.assertIsNotNull(this.newEncoder());
+        RsfDuplexHandler duplexHandler = new RsfDuplexHandler(//
+                Hasor.assertIsNotNull(this.newDecoder()),//
+                Hasor.assertIsNotNull(this.newEncoder())//
+        );
         final ArrayList<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
-        for (ChannelInboundHandler inbound : inBoundArrays)
-            handlers.add(Hasor.assertIsNotNull(inbound));
-        for (ChannelOutboundHandler outbound : outBoundArrays)
-            handlers.add(Hasor.assertIsNotNull(outbound));
-        handlers.add(this); // 转发RequestInfo、ResponseInfo到RSF
+        handlers.add(duplexHandler);// 编码解码器
+        handlers.add(this);         // 转发RequestInfo、ResponseInfo到RSF
         //
         ServerBootstrap boot = new ServerBootstrap();
         boot.group(listenLoopGroup, this.workLoopGroup);
@@ -239,7 +230,7 @@ public class Connector extends ChannelInboundHandlerAdapter {
                     result.failed(future.cause());
                 } else {
                     Channel channel = future.channel();
-                    result.completed(new RsfChannel(protocolKey, bindAddress, channel, LinkType.Listener));
+                    result.completed(new RsfChannel(protocol, bindAddress, channel, LinkType.Listener));
                 }
             }
         });
@@ -271,10 +262,10 @@ public class Connector extends ChannelInboundHandlerAdapter {
         InetSocketAddress socketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
         return socketAddress.getAddress().getHostAddress() + ":" + socketAddress.getPort();
     }
-    private ChannelInboundHandler[] newDecoder() {
+    private ChannelInboundHandler newDecoder() {
         return this.handler.decoder(this, this.appContext);
     }
-    private ChannelOutboundHandler[] newEncoder() {
+    private ChannelOutboundHandler newEncoder() {
         return this.handler.encoder(this, this.appContext);
     }
 }

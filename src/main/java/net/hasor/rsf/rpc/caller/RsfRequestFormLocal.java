@@ -105,12 +105,14 @@ class RsfRequestFormLocal extends AttributeSet implements RsfRequest {
     }
     @Override
     public InterAddress getRemoteAddress() {
+        RsfContext rsfContext = this.rsfCaller.getContext();
+        String protocol = null;
         if (this.getTargetAddress() == null) {
-            return this.rsfCaller.getContext().localAddress();
+            protocol = rsfContext.getSettings().getDefaultProtocol();
         } else {
-            String sechma = getTargetAddress().getSechma();
-            return this.rsfCaller.getContext().bindAddressForSechma(sechma);
+            protocol = getTargetAddress().getSechma();
         }
+        return rsfContext.publishAddress(protocol);
     }
     @Override
     public InterAddress getTargetAddress() {

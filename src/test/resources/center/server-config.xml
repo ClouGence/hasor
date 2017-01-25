@@ -8,8 +8,9 @@
         <RSF_SERVICE_IP>127.0.0.1</RSF_SERVICE_IP>
         <!-- RSF对外提供服务的服务端口 -->
         <RSF_SERVICE_PORT>2160</RSF_SERVICE_PORT>
+        <HPROSE_SERVICE_PORT>2161</HPROSE_SERVICE_PORT>
         <!-- Telnet 控制台端口 -->
-        <RSF_CONSOLE_PORT>2161</RSF_CONSOLE_PORT>
+        <RSF_CONSOLE_PORT>2162</RSF_CONSOLE_PORT>
     </hasor.environmentVar>
 
 </config>

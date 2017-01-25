@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.utils;
-import org.more.bizcommon.json.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.more.util.BeanUtils;
 
 import java.util.HashMap;
@@ -45,13 +45,9 @@ public class JsonUtils {
             props.put(prop, val);
         }
         //
-        return JSON.toString(props);
+        return JSONObject.toJSONString(props);
     }
     public static <T> T converToService(String jsonData, Class<T> targetType) {
-        Object parse = JSON.parse(jsonData);
-        if (parse.getClass().isAssignableFrom(targetType)) {
-            return (T) parse;
-        }
-        throw new ClassCastException("json convert to " + targetType.getName());
+        return JSONObject.parseObject(jsonData, targetType);
     }
 }

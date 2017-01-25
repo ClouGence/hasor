@@ -145,7 +145,7 @@ abstract class InvokerProcessing implements Runnable {
             this.sendResponse(rsfResponse);//将Response写入客户端。
         } catch (Throwable e) {
             String msgLog = "do request(" + requestID + ") failed -> service " + bindInfo.getBindID() + "," + e.getMessage();
-            logger.error(msgLog);
+            logger.error(msgLog, e);
             ResponseInfo info = ProtocolUtils.buildResponseStatus(this.rsfEnv, requestID, ProtocolStatus.InvokeError, msgLog);
             this.sendResponse(info);
         }

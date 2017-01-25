@@ -36,6 +36,8 @@ public class PublishInfo implements Serializable {
     private int    clientTimeout;
     /** 获取序列化方式*/
     private String serializeType;
+    /** 服务地址'逗号分割'*/
+    private String targetList;
     //
     public String getBindID() {
         return bindID;
@@ -78,5 +80,11 @@ public class PublishInfo implements Serializable {
     }
     public void setSerializeType(String serializeType) {
         this.serializeType = serializeType;
+    }
+    public String getTargetList() {
+        return targetList;
+    }
+    public void setTargetList(String targetList) {
+        this.targetList = targetList;
     }
 }

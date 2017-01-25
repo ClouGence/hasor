@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.center.server.adapter;
 import net.hasor.core.*;
-import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.center.server.AuthQuery;
 import net.hasor.rsf.center.server.domain.*;
 import net.hasor.rsf.domain.RsfServiceType;
@@ -98,7 +97,7 @@ public class FileAuthQuery implements AuthQuery {
     }
     //
     @Override
-    public Result<Boolean> checkKeySecret(AuthInfo authInfo, InterAddress remoteAddress) {
+    public Result<Boolean> checkKeySecret(AuthInfo authInfo) {
         authInfo = Hasor.assertIsNotNull(authInfo);
         ResultDO<Boolean> result = new ResultDO<Boolean>();
         result.setSuccess(true);
@@ -119,7 +118,7 @@ public class FileAuthQuery implements AuthQuery {
         return result;
     }
     @Override
-    public Result<Boolean> checkPublish(AuthInfo authInfo, InterAddress remoteAddress, ServiceInfo serviceInfo, RsfServiceType serviceType) {
-        return this.checkKeySecret(authInfo, remoteAddress);
+    public Result<Boolean> checkPublish(AuthInfo authInfo, ServiceInfo serviceInfo, RsfServiceType serviceType) {
+        return this.checkKeySecret(authInfo);
     }
 }

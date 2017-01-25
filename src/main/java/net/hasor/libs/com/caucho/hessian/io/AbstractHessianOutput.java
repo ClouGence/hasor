@@ -119,7 +119,6 @@ abstract public class AbstractHessianOutput {
      * C
      * </pre></code>
      *
-     * @param method the method name to call.
      */
     abstract public void startCall() throws IOException;
 
@@ -133,14 +132,7 @@ abstract public class AbstractHessianOutput {
      * @param method the method name to call.
      */
     abstract public void startCall(String method, int length) throws IOException;
-    /**
-     * For Hessian 2.0, use the Header envelope instead
-     *
-     * @deprecated
-     */
-    public void writeHeader(String name) throws IOException {
-        throw new UnsupportedOperationException(getClass().getSimpleName());
-    }
+
     /**
      * Writes the method tag.
      *
@@ -227,8 +219,6 @@ abstract public class AbstractHessianOutput {
      * <code><pre>
      * N
      * </pre></code>
-     *
-     * @param value the string value to write.
      */
     abstract public void writeNull() throws IOException;
 
@@ -263,8 +253,6 @@ abstract public class AbstractHessianOutput {
      * <code><pre>
      * N
      * </pre></code>
-     *
-     * @param value the string value to write.
      */
     abstract public void writeString(char[] buffer, int offset, int length) throws IOException;
 
@@ -281,8 +269,6 @@ abstract public class AbstractHessianOutput {
      * <code><pre>
      * N
      * </pre></code>
-     *
-     * @param value the string value to write.
      */
     abstract public void writeBytes(byte[] buffer) throws IOException;
 
@@ -299,8 +285,6 @@ abstract public class AbstractHessianOutput {
      * <code><pre>
      * N
      * </pre></code>
-     *
-     * @param value the string value to write.
      */
     abstract public void writeBytes(byte[] buffer, int offset, int length) throws IOException;
 
@@ -315,8 +299,6 @@ abstract public class AbstractHessianOutput {
      * <code><pre>
      * b b16 b18 bytes
      * </pre></code>
-     *
-     * @param value the string value to write.
      */
     abstract public void writeByteBufferPart(byte[] buffer, int offset, int length) throws IOException;
 
@@ -326,8 +308,6 @@ abstract public class AbstractHessianOutput {
      * <code><pre>
      * b b16 b18 bytes
      * </pre></code>
-     *
-     * @param value the string value to write.
      */
     abstract public void writeByteBufferEnd(byte[] buffer, int offset, int length) throws IOException;
     /**

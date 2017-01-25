@@ -90,12 +90,6 @@ public interface RsfSettings extends Settings {
     /**协议和提供者的关系*/
     public Map<String, String> getProtocolHandlerMapping();
 
-    /**协议和sechma的关系*/
-    public Map<String, String> getProtocolSechmaMapping();
-
-    /**通过 sechma 查找最新的协议版本*/
-    public String findProtocolBySechma(String sechma);
-
     /**获取网关地址*/
     public Map<String, InterAddress> getGatewaySet();
 

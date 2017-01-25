@@ -143,8 +143,6 @@ public class HessianOutput extends AbstractHessianOutput {
      * <code><pre>
      * c major minor
      * </pre></code>
-     *
-     * @param method the method name to call.
      */
     public void startCall() throws IOException {
         os.write('c');
@@ -202,20 +200,6 @@ public class HessianOutput extends AbstractHessianOutput {
      */
     public void completeReply() throws IOException {
         os.write('z');
-    }
-    /**
-     * Writes a header name.  The header value must immediately follow.
-     *
-     * <code><pre>
-     * H b16 b8 foo <em>value</em>
-     * </pre></code>
-     */
-    public void writeHeader(String name) throws IOException {
-        int len = name.length();
-        os.write('H');
-        os.write(len >> 8);
-        os.write(len);
-        printString(name);
     }
     /**
      * Writes a fault.  The fault will be written
@@ -438,8 +422,6 @@ public class HessianOutput extends AbstractHessianOutput {
      * <code><pre>
      * N
      * </pre></code>
-     *
-     * @param value the string value to write.
      */
     public void writeNull() throws IOException {
         os.write('N');
@@ -498,8 +480,6 @@ public class HessianOutput extends AbstractHessianOutput {
      * <code><pre>
      * N
      * </pre></code>
-     *
-     * @param value the string value to write.
      */
     public void writeString(char[] buffer, int offset, int length) throws IOException {
         if (buffer == null) {
@@ -537,8 +517,6 @@ public class HessianOutput extends AbstractHessianOutput {
      * <code><pre>
      * N
      * </pre></code>
-     *
-     * @param value the string value to write.
      */
     public void writeBytes(byte[] buffer) throws IOException {
         if (buffer == null)
@@ -560,7 +538,6 @@ public class HessianOutput extends AbstractHessianOutput {
      * N
      * </pre></code>
      *
-     * @param value the string value to write.
      */
     public void writeBytes(byte[] buffer, int offset, int length) throws IOException {
         if (buffer == null) {

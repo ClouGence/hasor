@@ -76,14 +76,6 @@ public class RsfNetManager {
     public Connector findConnector(String protocol) {
         return this.bindListener.get(protocol);
     }
-    /**
-     * 根据 sechma 查找RPC连接器。如果 sechma 存在多个版本则取最新版本的。
-     *  tips：版本大小判断依照字符串排序的倒序。
-     */
-    public Connector findConnectorBySechma(String sechma) {
-        String protocol = this.rsfEnvironment.getSettings().findProtocolBySechma(sechma);
-        return this.findConnector(protocol);
-    }
     //
     //
     /** 启动RSF上配置的所有连接器。*/
@@ -160,12 +152,11 @@ public class RsfNetManager {
                 return channelFuture;
             }
             channelFuture = this.linkPool.preConnection(hostPort);
-            String sechma = target.getSechma();
-            String protocol = this.rsfEnvironment.getSettings().findProtocolBySechma(sechma);
+            String protocol = target.getSechma();
             Connector connector = this.findConnector(protocol);// tips：例如：如果本地都不支持 rsf 协议，那么也没有必要连接远程的 rsf 协议。
             if (connector == null) {
                 this.logger.error("connect to {} failed. ", hostPort);
-                channelFuture.failed(new RsfException(ProtocolStatus.ProtocolUndefined, "Connector Undefined for sechma " + sechma));
+                channelFuture.failed(new RsfException(ProtocolStatus.ProtocolUndefined, "Connector Undefined for protocol " + protocol));
             } else {
                 logger.info("connect to {} ...", hostPort);
                 connector.connectionTo(target, channelFuture);

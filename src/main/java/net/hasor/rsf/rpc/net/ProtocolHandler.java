@@ -41,8 +41,8 @@ public interface ProtocolHandler {
     public void active(RsfChannel rsfChannel);
 
     /** 解码器 */
-    public ChannelInboundHandler[] decoder(Connector connector, AppContext appContext);
+    public ChannelInboundHandler decoder(Connector connector, AppContext appContext);
 
     /** 编码器 */
-    public ChannelOutboundHandler[] encoder(Connector connector, AppContext appContext);
+    public ChannelOutboundHandler encoder(Connector connector, AppContext appContext);
 }

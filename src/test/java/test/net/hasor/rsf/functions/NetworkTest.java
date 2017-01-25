@@ -53,7 +53,7 @@ public class NetworkTest implements Provider<RsfEnvironment>, ReceivedListener {
         System.out.println(">>>>>>>>> server started. <<<<<<<<<<");
         //
         Thread.sleep(2000);
-        InterAddress local = rsfNetManager.findConnectorBySechma("rsf").getBindAddress();
+        InterAddress local = rsfNetManager.findConnector("rsf").getBindAddress();
         RsfChannel channel = rsfNetManager.getChannel(local).get();
         for (int i = 0; i <= 10; i++) {
             RequestInfo outRequest = new RequestInfo(RsfConstants.Version_1);

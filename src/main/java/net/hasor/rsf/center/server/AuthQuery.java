@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server;
-import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.center.server.domain.AuthInfo;
 import net.hasor.rsf.center.server.domain.Result;
 import net.hasor.rsf.center.server.domain.ServiceInfo;
@@ -28,16 +27,14 @@ public interface AuthQuery {
     /**
      *
      * @param authInfo
-     * @param remoteAddress
      */
-    public Result<Boolean> checkKeySecret(AuthInfo authInfo, InterAddress remoteAddress);
+    public Result<Boolean> checkKeySecret(AuthInfo authInfo);
 
     /**
      * 发布服务权限检测
      * @param authInfo 授权信息
-     * @param remoteAddress 请求 center 的远程机器
      * @param serviceInfo 服务信息
      * @param serviceType 提供者 or 消费者
      */
-    public Result<Boolean> checkPublish(AuthInfo authInfo, InterAddress remoteAddress, ServiceInfo serviceInfo, RsfServiceType serviceType);
+    public Result<Boolean> checkPublish(AuthInfo authInfo, ServiceInfo serviceInfo, RsfServiceType serviceType);
 }

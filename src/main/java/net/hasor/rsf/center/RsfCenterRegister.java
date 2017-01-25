@@ -26,10 +26,16 @@ import java.util.List;
  */
 @RsfService(group = "RSF", version = "1.0.0")
 public interface RsfCenterRegister {
-    /** 发布服务,返回服务注册ID */
+    /**
+     * 发布服务,返回服务注册ID
+     * @param info 服务信息
+     */
     public RsfCenterResult<String> registerProvider(ProviderPublishInfo info);
 
-    /** 订阅服务,返回服务订阅ID */
+    /**
+     * 订阅服务,返回服务订阅ID
+     * @param info 服务信息
+     */
     public RsfCenterResult<String> registerConsumer(ConsumerPublishInfo info);
 
     /** 解除发布或订阅 */
@@ -39,8 +45,8 @@ public interface RsfCenterRegister {
     public RsfCenterResult<Boolean> serviceBeat(String registerID, String serviceID);
 
     /** 拉取服务提供者列表 */
-    public RsfCenterResult<List<String>> pullProviders(String registerID, String serviceID);
+    public RsfCenterResult<List<String>> pullProviders(String registerID, String serviceID, String protocol);
 
     /** 请求远程把服务地址重新推送过来(如果远程服务器繁忙,那么可能返回失败) */
-    public RsfCenterResult<Boolean> requestPushProviders(String registerID, String serviceID);
+    public RsfCenterResult<Boolean> requestPushProviders(String registerID, String serviceID, String protocol, String callBackRsfAddress);
 }

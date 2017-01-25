@@ -137,17 +137,17 @@
                 - gatewayAddress : 网关IP地址
                 - gatewayPort    : 网关上RSF的端口号
         -->
-        <connectorSet default="RSF/1.0">
-            <connector protocol="RSF/1.0" localPort="${RSF_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${RSF_GATEWAY_PORT}"/>
-            <connector protocol="Hprose/1.0" localPort="${HPROSE_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${HPROSE_GATEWAY_PORT}"/>
+        <connectorSet default="rsf">
+            <connector protocol="rsf" localPort="${RSF_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${RSF_GATEWAY_PORT}"/>
+            <connector protocol="hprose" localPort="${HPROSE_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${HPROSE_GATEWAY_PORT}"/>
         </connectorSet>
         <!--
             这里配置 RSF 中支持的 RPC协议，但是要让协议生效必须配置对应的连接器。
                 如果您需要覆盖默认协议的实现类，请在 hasor-config.xml 主配置文件中覆盖它。
          -->
         <protocolSet>
-            <protocol name="RSF/1.0" sechma="rsf" implementor="net.hasor.rsf.protocol.rsf.RsfProtocolHandler"/>
-            <protocol name="Hprose/1.0" sechma="hprose" implementor="net.hasor.rsf.protocol.hprose.HproseProtocolHandler"/>
+            <protocol name="rsf" implementor="net.hasor.rsf.protocol.rsf.RsfProtocolHandler"/>
+            <protocol name="hprose" implementor="net.hasor.rsf.protocol.hprose.HproseProtocolHandler"/>
         </protocolSet>
 
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

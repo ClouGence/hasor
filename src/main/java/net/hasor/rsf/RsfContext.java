@@ -21,6 +21,7 @@ import net.hasor.core.Provider;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Set;
 /**
  * RSF 环境。
  * @version : 2014年11月18日
@@ -57,20 +58,20 @@ public interface RsfContext extends OnlineStatus {
      */
     public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo);
 
-    /** 获取RSF默认运行地址(使用默认协议)。 */
-    public InterAddress localAddress();
+    /**获取运行着的协议*/
+    public Set<String> runProtocols();
+
+    /**获取默认协议*/
+    public String getDefaultProtocol();
 
     /** 获取RSF运行的地址。 */
     public InterAddress bindAddress(String protocol);
 
-    /** 获取RSF运行的地址。 */
-    public InterAddress bindAddressForSechma(String sechma);
-
     /** 获取RSF运行的网关地址。 */
     public InterAddress gatewayAddress(String protocol);
 
-    /** 获取RSF运行的网关地址。 */
-    public InterAddress gatewayAddressForSechma(String sechma);
+    /** 获取RSF运行的网关地址（如果有）或者本地绑定地址。 */
+    public InterAddress publishAddress(String protocol);
 
     /**获取RSF配置*/
     public RsfSettings getSettings();

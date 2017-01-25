@@ -39,22 +39,17 @@ public class RsfProtocolHandler implements ProtocolHandler {
         rsfChannel.activeIn();
     }
     @Override
-    public ChannelInboundHandler[] decoder(Connector connector, AppContext appContext) {
+    public ChannelInboundHandler decoder(Connector connector, AppContext appContext) {
         InterAddress bindAddress = connector.getGatewayAddress();
         if (bindAddress == null)
             bindAddress = connector.getBindAddress();
         //
         RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);
-        return new ChannelInboundHandler[] {//
-                new RsfDecoder(env, PoolBlock.DataMaxSize)//, // .协议解析
-                //                new RpcShakeHands(bindAddress, env)         // .握手协议
-        };
+        return new RsfDecoder(env, PoolBlock.DataMaxSize);
     }
     @Override
-    public ChannelOutboundHandler[] encoder(Connector connector, AppContext appContext) {
+    public ChannelOutboundHandler encoder(Connector connector, AppContext appContext) {
         RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);
-        return new ChannelOutboundHandler[] {//
-                new RsfEncoder(env)//
-        };
+        return new RsfEncoder(env);//
     }
 }

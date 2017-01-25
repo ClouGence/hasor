@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.domain;
+import java.util.List;
 /**
  * 服务提供者信息
  *
@@ -21,23 +22,17 @@ package net.hasor.rsf.center.server.domain;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ProviderInfo {
-    /** 服务地址*/
-    private String  rsfAddress;
     /** 获取客户端调用服务超时时间。*/
-    private int     clientTimeout;
+    private int          clientTimeout;
     /** 获取序列化方式*/
-    private String  serializeType;
+    private String       serializeType;
     /** 最大服务处理队列长度 */
-    private int     queueMaxSize;
+    private int          queueMaxSize;
     /** 是否是共享处理线程池 */
-    private boolean sharedThreadPool;
+    private boolean      sharedThreadPool;
+    /** 服务地址*/
+    private List<String> rsfAddress;
     //
-    public String getRsfAddress() {
-        return rsfAddress;
-    }
-    public void setRsfAddress(String rsfAddress) {
-        this.rsfAddress = rsfAddress;
-    }
     public int getClientTimeout() {
         return clientTimeout;
     }
@@ -61,5 +56,11 @@ public class ProviderInfo {
     }
     public void setSharedThreadPool(boolean sharedThreadPool) {
         this.sharedThreadPool = sharedThreadPool;
+    }
+    public List<String> getRsfAddress() {
+        return rsfAddress;
+    }
+    public void setRsfAddress(List<String> rsfAddress) {
+        this.rsfAddress = rsfAddress;
     }
 }
