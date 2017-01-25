@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
+import net.hasor.core.Hasor;
+import net.hasor.db.jdbc.ResultSetExtractor;
+import net.hasor.db.jdbc.RowMapper;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.ResultSetExtractor;
-import net.hasor.db.jdbc.RowMapper;
 /**
  * {@link ResultSetExtractor} 接口实现类，该类会将结果集中的每一行进行处理，并返回一个 List 用以封装处理结果集。
  *

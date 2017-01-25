@@ -19,7 +19,7 @@ import net.hasor.plugins.junit.TestOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 /**
- * 
+ *
  * @version : 2014-7-12
  * @author 赵永春 (zyc@byshell.org)
  */

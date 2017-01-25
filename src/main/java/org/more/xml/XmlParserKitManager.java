@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 package org.more.xml;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import org.more.RepeateException;
+import org.more.xml.stream.*;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
-
-import org.more.RepeateException;
-import org.more.xml.stream.AttributeEvent;
-import org.more.xml.stream.EndElementEvent;
-import org.more.xml.stream.StartDocumentEvent;
-import org.more.xml.stream.StartElementEvent;
-import org.more.xml.stream.XmlAccept;
-import org.more.xml.stream.XmlStreamEvent;
+import java.io.IOException;
+import java.util.*;
 /**
  * <b>Level 2</b>：该级别的xml访问策略关注于xml元素或属性与命名空间的对应性，使用XmlParserKitManager
  * 可以专门用于访问某个命名空间下的元素。每个命名空间的解析器都是一个{@link XmlParserKit}类型对象。

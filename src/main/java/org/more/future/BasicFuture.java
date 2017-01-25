@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package org.more.future;
+import net.hasor.core.Hasor;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import net.hasor.core.Hasor;
 /**
  * Basic implementation of the {@link Future} interface. <tt>BasicFuture<tt>
  * can be put into a completed state by invoking any of the following methods:

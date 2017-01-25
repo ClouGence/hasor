@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 package org.more.util.reflect;
+import org.more.util.ArrayUtils;
+import org.more.util.ClassUtils;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-
-import org.more.util.ArrayUtils;
-import org.more.util.ClassUtils;
 /**
  * <p> Utility reflection methods focused on methods, originally from Commons BeanUtils.
  * Differences from the BeanUtils version may be noted, especially where similar functionality
@@ -86,7 +86,7 @@ public class MethodUtils {
      * @throws IllegalAccessException if the requested method is not accessible via reflection
      */
     public static Object invokeMethod(final Object object, final String methodName, final Object arg) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        return MethodUtils.invokeMethod(object, methodName, new Object[] {arg});
+        return MethodUtils.invokeMethod(object, methodName, new Object[] { arg });
     }
     /**
      * <p>Invoke a named method whose parameter type matches the object type.</p>
@@ -173,7 +173,7 @@ public class MethodUtils {
      *  via reflection
      */
     public static Object invokeExactMethod(final Object object, final String methodName, final Object arg) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        return MethodUtils.invokeExactMethod(object, methodName, new Object[] {arg});
+        return MethodUtils.invokeExactMethod(object, methodName, new Object[] { arg });
     }
     /**
      * <p>Invoke a method whose parameter types match exactly the object
@@ -293,7 +293,7 @@ public class MethodUtils {
      *  via reflection
      */
     public static Object invokeStaticMethod(final Class<?> cls, final String methodName, final Object arg) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        return MethodUtils.invokeStaticMethod(cls, methodName, new Object[] {arg});
+        return MethodUtils.invokeStaticMethod(cls, methodName, new Object[] { arg });
     }
     /**
      * <p>Invoke a named static method whose parameter type matches the object type.</p>
@@ -385,7 +385,7 @@ public class MethodUtils {
      *  via reflection
      */
     public static Object invokeExactStaticMethod(final Class<?> cls, final String methodName, final Object arg) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        return MethodUtils.invokeExactStaticMethod(cls, methodName, new Object[] {arg});
+        return MethodUtils.invokeExactStaticMethod(cls, methodName, new Object[] { arg });
     }
     /**
      * <p>Invoke a static method whose parameter types match exactly the object
@@ -429,7 +429,7 @@ public class MethodUtils {
      * @return The accessible method
      */
     public static Method getAccessibleMethod(final Class<?> cls, final String methodName, final Class<?> parameterType) {
-        return MethodUtils.getAccessibleMethod(cls, methodName, new Class[] {parameterType});
+        return MethodUtils.getAccessibleMethod(cls, methodName, new Class[] { parameterType });
     }
     /**
      * <p>Return an accessible method (that is, one that can be invoked via

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 package net.test.hasor.more._04_datachain.dao;
+import net.test.hasor.more._04_datachain.domain.dto.NewsImagesDO;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import net.test.hasor.more._04_datachain.domain.dto.NewsImagesDO;
 /**
- * 
+ *
  * @version : 2016年5月7日
  * @author 赵永春(zyc@hasor.net)
  */

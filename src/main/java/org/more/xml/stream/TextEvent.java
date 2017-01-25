@@ -34,12 +34,9 @@ public class TextEvent extends XmlStreamEvent {
      */
     public enum Type {
         /***/
-        CDATA,
-        /***/
-        Chars,
-        /***/
-        Comment,
-        /***/
+        CDATA, /***/
+        Chars, /***/
+        Comment, /***/
         Space,
     }
     /**如果当前事件是一个CDATA事件则返回true。*/

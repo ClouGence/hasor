@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 package org.more.convert.convert;
+import org.more.convert.ConversionException;
+import org.more.convert.Converter;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
@@ -24,9 +27,6 @@ import java.text.ParsePosition;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import org.more.convert.ConversionException;
-import org.more.convert.Converter;
 /**
  * {@link Converter} implementaion that handles conversion
  * to and from <b>java.lang.Number</b> objects.

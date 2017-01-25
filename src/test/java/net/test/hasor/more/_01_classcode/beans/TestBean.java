@@ -15,7 +15,7 @@
  */
 package net.test.hasor.more._01_classcode.beans;
 /**
- * 
+ *
  * @version 2011-6-22
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -29,7 +29,8 @@ public class TestBean {
     //    };
     public void setLong(Long p_long) {
         this.p_long = p_long;
-    };
+    }
+    ;
     //    public void setDouble(int p_double) {
     //        this.p_double = p_double;
     //    };
@@ -40,5 +41,6 @@ class TB extends TestBean {
     //    }
     public void setLong(long p_long) {
         super.setLong(p_long);
-    };
+    }
+    ;
 }

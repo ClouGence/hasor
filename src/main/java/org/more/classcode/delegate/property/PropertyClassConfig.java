@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package org.more.classcode.delegate.property;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.more.asm.ClassVisitor;
 import org.more.classcode.AbstractClassConfig;
 import org.more.util.BeanUtils;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 /**
  *
  * @version : 2014年9月7日

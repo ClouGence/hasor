@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package org.more.xml;
-import java.io.IOException;
-import javax.xml.stream.XMLStreamException;
-
 import org.more.xml.stream.EndDocumentEvent;
 import org.more.xml.stream.StartDocumentEvent;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 /**
  * 该钩子用于处理文档开始和文档结束事件。
  * @version 2010-9-13

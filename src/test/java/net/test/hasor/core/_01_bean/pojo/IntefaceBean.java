@@ -23,5 +23,6 @@ import net.hasor.core.ImplBy;
 @ImplBy(PojoBean.class)
 public interface IntefaceBean {
     public String getName();
+
     public String getAddress();
 }

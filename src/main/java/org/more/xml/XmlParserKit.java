@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 package org.more.xml;
+import org.more.RepeateException;
+import org.more.util.MatchUtils;
+import org.more.xml.stream.*;
+
+import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import javax.xml.stream.XMLStreamException;
-
-import org.more.RepeateException;
-import org.more.util.MatchUtils;
-import org.more.xml.stream.AttributeEvent;
-import org.more.xml.stream.EndDocumentEvent;
-import org.more.xml.stream.EndElementEvent;
-import org.more.xml.stream.StartDocumentEvent;
-import org.more.xml.stream.StartElementEvent;
-import org.more.xml.stream.TextEvent;
-import org.more.xml.stream.XmlStreamEvent;
 /**
  *  <b>Level 3</b>：该级别是基于级别2的增强，该级别的特点是可以将某个xpath所表示元素与其处理器{@link XmlParserHook}进行绑定。
  *  这个绑定由于是基于Level 2因此不会与其他命名空间的同名元素相混淆。

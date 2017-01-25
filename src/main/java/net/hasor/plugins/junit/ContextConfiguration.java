@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.plugins.junit;
+import net.hasor.core.Module;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import net.hasor.core.Module;
 /**
  * 用于指定测试用例使用的配置文件。
  * @version : 2014年7月8日
@@ -29,6 +30,7 @@ import net.hasor.core.Module;
 public @interface ContextConfiguration {
     /**Hasor的主配置文件.*/
     public String value() default "";
+
     /**要装载的{@link Module}*/
     public Class<? extends Module>[] loadModules() default {};
 }

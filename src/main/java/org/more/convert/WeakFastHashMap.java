@@ -15,13 +15,7 @@
  * limitations under the License.
  */
 package org.more.convert;
-import java.util.Collection;
-import java.util.ConcurrentModificationException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.util.*;
 /**
  * <p>A customized implementation of <code>java.util.HashMap</code> designed
  * to operate in a multithreaded environment where the large majority of
@@ -62,7 +56,7 @@ import java.util.WeakHashMap;
  * @author Craig R. McClanahan
  * @author Stephen Colebourne
  */
-@SuppressWarnings({"rawtypes", "serial", "unchecked"})
+@SuppressWarnings({ "rawtypes", "serial", "unchecked" })
 class WeakFastHashMap extends HashMap {
     /** The underlying map we are managing. */
     private Map     map  = null;

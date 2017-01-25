@@ -23,8 +23,7 @@ import org.more.bizcommon.Paginator.Order;
 public class SortFieldOrder implements Order {
     /**排序方式*/
     public static enum OrderBy {
-        ASC,
-        DESC
+        ASC, DESC
     }
     /** 排序字段 */
     private String  sortField = "";

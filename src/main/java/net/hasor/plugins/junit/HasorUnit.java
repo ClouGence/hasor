@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.plugins.junit;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
 import org.more.convert.ConverterUtils;
 import org.more.util.BeanUtils;
 import org.more.util.CharUtils;
 import org.more.util.StringUtils;
+
+import java.io.PrintStream;
+import java.util.*;
+import java.util.Map.Entry;
 /**
- * 
+ *
  * @version : 2014年7月11日
  * @author 赵永春(zyc@hasor.net)
  */

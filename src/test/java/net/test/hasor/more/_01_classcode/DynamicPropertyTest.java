@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 package net.test.hasor.more._01_classcode;
-import java.lang.reflect.Method;
-import java.rmi.Remote;
-import java.util.HashMap;
-import java.util.Map;
-import javax.xml.bind.PropertyException;
+import net.test.hasor.more._01_classcode.beans.TestBean2;
+import net.test.hasor.more._01_classcode.beans.TestBean2_Face;
 import org.junit.Test;
 import org.more.classcode.delegate.faces.MethodClassConfig;
 import org.more.classcode.delegate.faces.MethodDelegate;
 import org.more.classcode.delegate.property.PropertyClassConfig;
 import org.more.classcode.delegate.property.PropertyDelegate;
-import net.test.hasor.more._01_classcode.beans.TestBean2;
-import net.test.hasor.more._01_classcode.beans.TestBean2_Face;
+
+import javax.xml.bind.PropertyException;
+import java.lang.reflect.Method;
+import java.rmi.Remote;
+import java.util.HashMap;
+import java.util.Map;
 /**
  *
  * @version 2010-8-25
@@ -60,7 +61,8 @@ public class DynamicPropertyTest {
         System.out.println(rm.invoke(obj));
         wm.invoke(obj, new Object[] { "affa" });
         System.out.println(rm.invoke(obj));
-    };
+    }
+    ;
     @Test
     public void addPropertyDelegate() throws Exception {
         PropertyClassConfig ce = new PropertyClassConfig();
@@ -73,7 +75,8 @@ public class DynamicPropertyTest {
         System.out.println(rm.invoke(obj));
         wm.invoke(obj, new Object[] { "affa" });
         System.out.println(rm.invoke(obj));
-    };
+    }
+    ;
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInterface() throws Exception {

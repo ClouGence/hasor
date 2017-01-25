@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.classcode.delegate.faces;
-import java.lang.reflect.Method;
-
 import org.more.classcode.aop.AopClassConfig;
+
+import java.lang.reflect.Method;
 /**
  * 当使用{@link AopClassConfig}类的addDelegate方法来添加委托，添加的委托处理函数对象就是该接口对象。
  * 被委托的方法将会采用注册委托时传递的{@link MethodDelegate}接口对象作为回调对象。

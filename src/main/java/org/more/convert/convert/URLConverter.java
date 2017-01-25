@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 package org.more.convert.convert;
-import java.net.URL;
-
 import org.more.convert.Converter;
+
+import java.net.URL;
 /**
  * {@link Converter} implementaion that handles conversion
  * to and from <b>java.net.URL</b> objects.
@@ -28,7 +28,7 @@ import org.more.convert.Converter;
  * @version $Revision: 690380 $ $Date: 2008-08-29 21:04:38 +0100 (Fri, 29 Aug 2008) $
  * @since 1.3
  */
-@SuppressWarnings({"rawtypes"})
+@SuppressWarnings({ "rawtypes" })
 public final class URLConverter extends AbstractConverter {
     /**
      * Construct a <b>java.net.URL</b> <i>Converter</i> that throws a <code>ConversionException</code> if an error occurs.

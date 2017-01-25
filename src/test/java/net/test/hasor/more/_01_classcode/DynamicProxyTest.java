@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.test.hasor.more._01_classcode;
+import net.test.hasor.more._01_classcode.beans.TestBean;
+import net.test.hasor.more._01_classcode.beans.TestBean2;
+import net.test.hasor.more._01_classcode.beans.TestBean2_Face;
 import org.junit.Test;
 import org.more.classcode.aop.AopClassConfig;
 import org.more.classcode.aop.AopInterceptor;
 import org.more.classcode.aop.AopInvocation;
-import net.test.hasor.more._01_classcode.beans.TestBean;
-import net.test.hasor.more._01_classcode.beans.TestBean2;
-import net.test.hasor.more._01_classcode.beans.TestBean2_Face;
 /**
  *
  * @version 2010-8-25
@@ -41,7 +41,8 @@ public class DynamicProxyTest {
         TestBean obj = (TestBean) ce.toClass().newInstance();
         obj.setLong(123l);
         System.out.println(obj.p_long);
-    };
+    }
+    ;
     @Test
     public void test_2() throws Exception {
         AopClassConfig ce = new AopClassConfig(TestBean2.class);
@@ -63,7 +64,8 @@ public class DynamicProxyTest {
         //
         //
         System.out.println(face.getP_long());
-    };
+    }
+    ;
     public void print() {
         System.out.println("print method");
     }

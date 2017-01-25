@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 package net.test.hasor.more._03_xml;
-import java.io.IOException;
-import java.io.InputStream;
-import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
 import org.more.util.ResourcesUtils;
 import org.more.xml.stream.XmlAccept;
 import org.more.xml.stream.XmlReader;
 import org.more.xml.stream.XmlStreamEvent;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
+import java.io.InputStream;
 /**
  *
  * @version 2010-9-8

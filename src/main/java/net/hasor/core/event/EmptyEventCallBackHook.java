@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.event;
+import net.hasor.core.EventCallBackHook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import net.hasor.core.EventCallBackHook;
 /**
  * 异步事件回调接口。
  * @version : 2013-4-12

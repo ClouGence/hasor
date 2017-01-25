@@ -133,11 +133,11 @@ public final class BooleanConverter extends AbstractConverter {
     /**
      * The set of strings that are known to map to Boolean.TRUE.
      */
-    private String[] trueStrings  = {"true", "yes", "y", "on", "1"};
+    private String[] trueStrings  = { "true", "yes", "y", "on", "1" };
     /**
      * The set of strings that are known to map to Boolean.FALSE.
      */
-    private String[] falseStrings = {"false", "no", "n", "off", "0"};
+    private String[] falseStrings = { "false", "no", "n", "off", "0" };
     // --------------------------------------------------------- Protected Methods
     /**
      * Return the default type this <code>Converter</code> handles.

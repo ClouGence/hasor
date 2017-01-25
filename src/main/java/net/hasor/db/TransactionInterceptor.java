@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.db;
-import java.lang.reflect.Method;
-import javax.sql.DataSource;
-
 import net.hasor.core.Hasor;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
 import net.hasor.core.Provider;
-import net.hasor.db.transaction.Isolation;
-import net.hasor.db.transaction.Propagation;
-import net.hasor.db.transaction.TranManager;
-import net.hasor.db.transaction.TransactionManager;
-import net.hasor.db.transaction.TransactionStatus;
+import net.hasor.db.transaction.*;
+
+import javax.sql.DataSource;
+import java.lang.reflect.Method;
 /**
  * 某一个数据源的事务管理器
  * @version : 2015年11月10日

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.db.datasource;
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Savepoint;
-import javax.sql.DataSource;
 /**
  *
  * @version : 2014-3-29

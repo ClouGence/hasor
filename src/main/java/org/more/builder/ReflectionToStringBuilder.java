@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 package org.more.builder;
+import org.more.util.ArrayUtils;
+import org.more.util.ClassUtils;
+
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-
-import org.more.util.ArrayUtils;
-import org.more.util.ClassUtils;
 /**
  * <p>
  * Assists in implementing {@link Object#toString()} methods using reflection.
@@ -287,7 +287,7 @@ public class ReflectionToStringBuilder extends ToStringBuilder {
      * @return The toString value.
      */
     public static String toStringExclude(Object object, final String excludeFieldName) {
-        return toStringExclude(object, new String[] {excludeFieldName});
+        return toStringExclude(object, new String[] { excludeFieldName });
     }
     /**
      * Builds a String for a toString method excluding the given field names.

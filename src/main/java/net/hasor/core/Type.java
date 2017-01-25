@@ -21,7 +21,6 @@ package net.hasor.core;
  */
 public enum Type {
     /**AppContext.getInstance(bindID)方式*/
-    ByID,
-    /**（默认）AppContext.findBindingBean(withName, bindType)方式*/
+    ByID, /**（默认）AppContext.findBindingBean(withName, bindType)方式*/
     ByName
 }

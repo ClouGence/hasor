@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.annotation;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 /**
  * Associates the name of a HTTP method with an annotation. A Java method annotated
  * with a runtime annotation that is itself annotated with this annotation will

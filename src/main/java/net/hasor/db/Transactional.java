@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.db;
+import net.hasor.db.transaction.Isolation;
+import net.hasor.db.transaction.Propagation;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import net.hasor.db.transaction.Isolation;
-import net.hasor.db.transaction.Propagation;
 /**
  *
  * @author 赵永春(zyc@hasor.net)

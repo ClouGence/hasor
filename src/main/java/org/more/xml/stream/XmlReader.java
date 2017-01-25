@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 package org.more.xml.stream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import javax.xml.namespace.QName;
-import javax.xml.stream.StreamFilter;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-
 import org.more.util.MatchUtils;
 import org.more.xml.stream.TextEvent.Type;
+
+import javax.xml.namespace.QName;
+import javax.xml.stream.*;
+import java.io.*;
 /**
  * <b>Level 1</b>：数据访问策略。该类的功能是将xml数据流转换成为xml事件流。并且可以在扫描xml时执行xml的忽略策略。
  * @version 2010-9-8

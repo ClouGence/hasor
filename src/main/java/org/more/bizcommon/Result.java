@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.more.bizcommon;
+import org.more.bizcommon.datachain.DataFilter;
+
 import java.io.Serializable;
 import java.util.List;
-
-import org.more.bizcommon.datachain.DataFilter;
 /**
  * 用于封装结果集
  * @version : 2015年1月8日

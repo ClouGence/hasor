@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 package org.more.convert;
+import org.more.convert.convert.*;
+import org.more.util.ContextClassLoaderLocal;
+
 import java.io.File;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
@@ -24,31 +27,6 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Collection;
-
-import org.more.convert.convert.ArrayConverter;
-import org.more.convert.convert.BigDecimalConverter;
-import org.more.convert.convert.BigIntegerConverter;
-import org.more.convert.convert.BooleanConverter;
-import org.more.convert.convert.ByteConverter;
-import org.more.convert.convert.CalendarConverter;
-import org.more.convert.convert.CharacterConverter;
-import org.more.convert.convert.ClassConverter;
-import org.more.convert.convert.ConverterFacade;
-import org.more.convert.convert.DateConverter;
-import org.more.convert.convert.DoubleConverter;
-import org.more.convert.convert.EnumConverter;
-import org.more.convert.convert.FileConverter;
-import org.more.convert.convert.FloatConverter;
-import org.more.convert.convert.IntegerConverter;
-import org.more.convert.convert.LongConverter;
-import org.more.convert.convert.ShortConverter;
-import org.more.convert.convert.SqlDateConverter;
-import org.more.convert.convert.SqlTimeConverter;
-import org.more.convert.convert.SqlTimestampConverter;
-import org.more.convert.convert.StringConverter;
-import org.more.convert.convert.URIConverter;
-import org.more.convert.convert.URLConverter;
-import org.more.util.ContextClassLoaderLocal;
 /**
  * <p>Utility methods for converting String scalar values to objects of the
  * specified Class, String arrays to arrays of the specified Class.  The

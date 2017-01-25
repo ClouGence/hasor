@@ -14,7 +14,15 @@
  * limitations under the License.
  */
 package net.test.hasor.db._06_transaction;
-import static net.hasor.plugins.junit.HasorUnit.newID;
+import net.hasor.core.AppContext;
+import net.hasor.core.Inject;
+import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.transaction.Isolation;
+import net.hasor.plugins.junit.DaemonThread;
+import net.hasor.plugins.junit.HasorUnit;
+import org.junit.Before;
+
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -22,14 +30,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.sql.DataSource;
-import org.junit.Before;
-import net.hasor.core.AppContext;
-import net.hasor.core.Inject;
-import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.transaction.Isolation;
-import net.hasor.plugins.junit.DaemonThread;
-import net.hasor.plugins.junit.HasorUnit;
+
+import static net.hasor.plugins.junit.HasorUnit.newID;
 /***
  * 数据库测试程序基类，监控线程
  * @version : 2014-1-13
@@ -37,9 +39,9 @@ import net.hasor.plugins.junit.HasorUnit;
  */
 public abstract class AbstractNativesJDBCTest {
     @Inject
-    protected AppContext               appContext   = null;
+    protected            AppContext    appContext   = null;
     @Inject
-    protected DataSource               dataSource   = null;
+    protected            DataSource    dataSource   = null;
     private static final AtomicInteger signalObject = new AtomicInteger(0);
     //
     @Before

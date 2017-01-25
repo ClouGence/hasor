@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.plugins.startup;
-import org.more.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 import net.hasor.core.Settings;
+import org.more.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 简化“modules.module”的配置，提供整个应用程序的一个唯一入口 Module。
  * 该模块只会加载一个Module，如果要加载多个module建议使用原生。<br>

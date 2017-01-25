@@ -70,7 +70,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  *
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class JSON {
     protected final static Logger                 logger            = LoggerFactory.getLogger(JSON.class);
     public final static    JSON                   DEFAULT           = new JSON();

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.bizcommon.resource.loader;
+import org.more.bizcommon.resource.ResourceLoader;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,8 +25,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
-
-import org.more.bizcommon.resource.ResourceLoader;
 /**
  * 用于创建一个可以从classpath中获取资源的ResourceLoader。
  * @version : 2013-6-6

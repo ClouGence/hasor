@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 package org.more.classcode;
-import java.io.IOException;
-import java.io.StringReader;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.TypeVariable;
-import java.lang.reflect.WildcardType;
-import java.util.ArrayList;
-
 import org.more.asm.Opcodes;
 import org.more.asm.Type;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.lang.reflect.*;
+import java.util.ArrayList;
 /**
  * 生成字节码时候使用的工具类。
  * @version 2009-10-16

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.more.xml;
-import java.io.IOException;
-import javax.xml.stream.XMLStreamException;
-
 import org.more.xml.stream.AttributeEvent;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 /**
  * 当遇到一个属性需要解析时使用该接口，使用该接口可以用于解析特定的属性。
  * @version 2010-9-13

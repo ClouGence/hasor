@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.db.datasource;
-import java.sql.Connection;
 import javax.sql.DataSource;
+import java.sql.Connection;
 /**
  * Connection 连接代理。
  * @version : 2013-12-3

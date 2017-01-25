@@ -22,6 +22,5 @@ package net.hasor.core.setting;
  * @author 赵永春 (zyc@byshell.org)
  */
 public enum StreamType {
-    Xml,
-    Properties
+    Xml, Properties
 }

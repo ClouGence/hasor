@@ -43,7 +43,7 @@ public class StringEscapeUtils {
     private static final char   CSV_DELIMITER    = ',';
     private static final char   CSV_QUOTE        = '"';
     private static final String CSV_QUOTE_STR    = String.valueOf(CSV_QUOTE);
-    private static final char[] CSV_SEARCH_CHARS = new char[] {CSV_DELIMITER, CSV_QUOTE, CharUtils.CR, CharUtils.LF};
+    private static final char[] CSV_SEARCH_CHARS = new char[] { CSV_DELIMITER, CSV_QUOTE, CharUtils.CR, CharUtils.LF };
     /**
      * <p><code>StringEscapeUtils</code> instances should NOT be constructed in
      * standard programming.</p>

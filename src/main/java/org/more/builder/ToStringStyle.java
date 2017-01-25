@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 package org.more.builder;
+import org.more.util.ClassUtils;
+import org.more.util.ObjectUtils;
+
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Map;
 import java.util.WeakHashMap;
-
-import org.more.util.ClassUtils;
-import org.more.util.ObjectUtils;
 /**
  * <p>Controls <code>String</code> formatting for {@link ToStringBuilder}.
  * The main public interface is always via <code>ToStringBuilder</code>.</p>

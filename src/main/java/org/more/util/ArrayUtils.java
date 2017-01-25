@@ -3656,7 +3656,7 @@ public class ArrayUtils {
         } else if (element != null) {
             clss = element.getClass();
         } else {
-            return new Object[] {null};
+            return new Object[] { null };
         }
         return (Object[]) ArrayUtils.add(array, index, element, clss);
     }

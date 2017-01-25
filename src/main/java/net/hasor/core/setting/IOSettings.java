@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.setting;
-import java.io.IOException;
-
 import net.hasor.core.Settings;
+
+import java.io.IOException;
 /**
  * 需要经过解析读取配置文件资源的{@link Settings}
  * @version : 2013-9-9

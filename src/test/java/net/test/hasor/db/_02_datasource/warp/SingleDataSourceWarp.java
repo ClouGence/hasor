@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 package net.test.hasor.db._02_datasource.warp;
-import javax.sql.DataSource;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 import net.hasor.core.Settings;
 import net.hasor.db.DBModule;
+
+import javax.sql.DataSource;
 /***
  * 创建JDBC环境
  * @version : 2014-1-13

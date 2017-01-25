@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 package org.more.bizcommon.datachain;
+import org.more.util.ClassUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.more.util.ClassUtils;
 /**
  * 数据对象转换工具，提供 A 类型对象到 B 类型对象转换功能。并使开发者在转换过程中可以实现更加高级别的控制协调能力。
  * 使用场景：

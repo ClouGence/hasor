@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
+import net.hasor.db.jdbc.PreparedStatementSetter;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
-import net.hasor.db.jdbc.PreparedStatementSetter;
 /**
  * Simple adapter for PreparedStatementSetter that applies a given array of arguments.
  * @author Juergen Hoeller

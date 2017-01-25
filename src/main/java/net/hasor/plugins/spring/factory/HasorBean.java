@@ -23,7 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.core.io.support.PropertiesLoaderSupport;
 /**
  * 在Spring获取Hasor的Bean
  * @version : 2016年2月15日

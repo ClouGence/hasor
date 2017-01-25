@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 package org.more.convert.convert;
-import java.io.File;
-
 import org.more.convert.Converter;
+
+import java.io.File;
 /**
  * {@link Converter} implementaion that handles conversion
  * to and from <b>java.io.File</b> objects.

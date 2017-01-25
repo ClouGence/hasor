@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
-import javax.sql.DataSource;
-
 import net.hasor.core.Provider;
 import net.hasor.core.provider.InstanceProvider;
+
+import javax.sql.DataSource;
 /**
  *
  * @version : 2014年7月17日

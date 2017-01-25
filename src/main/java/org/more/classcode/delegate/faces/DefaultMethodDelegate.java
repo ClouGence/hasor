@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.classcode.delegate.faces;
-import java.lang.reflect.Method;
-
 import org.more.util.BeanUtils;
+
+import java.lang.reflect.Method;
 /**
  * 代理方法的空实现。
  * @version 2010-9-3

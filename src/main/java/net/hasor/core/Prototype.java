@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import net.hasor.core.ApiBinder.ScopedBindingBuilder;
+
+import java.lang.annotation.*;
 /**
  * 标记类型为原型模式，与{@link Singleton}为互斥关系，注解方式优先于配置。
  * @see ScopedBindingBuilder#asEagerPrototype()

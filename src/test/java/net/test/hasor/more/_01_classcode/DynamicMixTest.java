@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package net.test.hasor.more._01_classcode;
-import java.beans.PropertyDescriptor;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.List;
+import net.test.hasor.more._01_classcode.beans.Bean;
 import org.more.classcode.AbstractClassConfig;
 import org.more.classcode.aop.AopClassConfig;
 import org.more.classcode.aop.AopInterceptor;
@@ -26,9 +23,13 @@ import org.more.classcode.delegate.faces.DefaultMethodDelegate;
 import org.more.classcode.delegate.faces.MethodClassConfig;
 import org.more.classcode.delegate.property.PropertyClassConfig;
 import org.more.classcode.delegate.property.SimplePropertyDelegate;
-import net.test.hasor.more._01_classcode.beans.Bean;
+
+import java.beans.PropertyDescriptor;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
 /**
- * 
+ *
  * @version : 2014年9月7日
  * @author 赵永春(zyc@hasor.net)
  */

@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 /**
  * 依赖注入。请注意{@link InjectMembers}接口方式与注解方式互斥，且接口方式优先于注解方式。
  * <p>如果没有配置“value”参数那么将会使用“{@code AppContext.getInstance(class)}”方式进行依赖注入。</p>
@@ -31,7 +27,7 @@ import java.lang.annotation.Target;
  * @author 赵永春(zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
+@Target({ ElementType.FIELD })
 @Documented
 public @interface Inject {
     /**如果同类型有多个注册可以使用该值进行区分。*/

@@ -15,18 +15,14 @@
  * limitations under the License.
  */
 package org.more.convert.convert;
+import org.more.convert.ConversionException;
+import org.more.convert.Converter;
+
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
-import org.more.convert.ConversionException;
-import org.more.convert.Converter;
+import java.util.*;
 /**
  * Generic {@link Converter} implementaion that handles conversion
  * to and from <b>array</b> objects.
@@ -123,13 +119,13 @@ import org.more.convert.Converter;
  * @version $Revision: 640131 $ $Date: 2008-03-23 02:10:31 +0000 (Sun, 23 Mar 2008) $
  * @since 1.8.0
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class ArrayConverter extends AbstractConverter {
     private Object    defaultTypeInstance;
     private Converter elementConverter;
     private int       defaultSize;
     private char    delimiter         = ',';
-    private char[]  allowedChars      = new char[] {'.', '-'};
+    private char[]  allowedChars      = new char[] { '.', '-' };
     private boolean onlyFirstToString = true;
     // ----------------------------------------------------------- Constructors
     /**

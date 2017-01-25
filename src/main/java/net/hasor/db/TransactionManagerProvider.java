@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.db;
-import javax.sql.DataSource;
-
 import net.hasor.core.Provider;
 import net.hasor.db.transaction.TranManager;
 import net.hasor.db.transaction.TransactionManager;
+
+import javax.sql.DataSource;
 /**
  *
  * @version : 2015年11月10日

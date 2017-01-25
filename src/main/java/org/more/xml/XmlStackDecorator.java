@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package org.more.xml;
-import java.util.HashMap;
-
 import org.more.util.map.DecStackMap;
+
+import java.util.HashMap;
 /**
  * 该类继承自{@link DecStackMap}装饰器，作用是提供了一个context对象的支持。
  * @version 2010-9-23

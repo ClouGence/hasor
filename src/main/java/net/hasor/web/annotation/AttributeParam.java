@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.annotation;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 /**
  * Request中的属性值
  * @version : 2013-5-9

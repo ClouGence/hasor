@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 package net.test.hasor.db._01_simple;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Types;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
 import org.junit.Test;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Types;
 /**
  * 存储过程调用
  * @version : 2013-12-10

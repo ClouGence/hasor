@@ -16,7 +16,7 @@
 package net.test.hasor.db._01_simple.entity;
 import java.util.Date;
 /**
- * 
+ *
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */

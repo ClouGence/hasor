@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 package org.more.util.reflect;
+import org.more.util.ArrayUtils;
+import org.more.util.ClassUtils;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-
-import org.more.util.ArrayUtils;
-import org.more.util.ClassUtils;
 /**
  * <p> Utility reflection methods focussed on constructors, modelled after
  * {@link MethodUtils}. </p>
@@ -83,7 +83,7 @@ public class ConstructorUtils {
      * @see #invokeConstructor(java.lang.Class, java.lang.Object[], java.lang.Class[])
      */
     public static Object invokeConstructor(final Class<?> cls, final Object arg) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        return ConstructorUtils.invokeConstructor(cls, new Object[] {arg});
+        return ConstructorUtils.invokeConstructor(cls, new Object[] { arg });
     }
     /**
      * <p>Returns new instance of <code>klazz</code> created using the actual
@@ -168,7 +168,7 @@ public class ConstructorUtils {
      * @see #invokeExactConstructor(java.lang.Class, java.lang.Object[], java.lang.Class[])
      */
     public static Object invokeExactConstructor(final Class<?> cls, final Object arg) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        return ConstructorUtils.invokeExactConstructor(cls, new Object[] {arg});
+        return ConstructorUtils.invokeExactConstructor(cls, new Object[] { arg });
     }
     /**
      * <p>Returns new instance of <code>klazz</code> created using the actual
@@ -243,7 +243,7 @@ public class ConstructorUtils {
      * @see #getAccessibleConstructor(java.lang.reflect.Constructor)
      */
     public static Constructor<?> getAccessibleConstructor(final Class<?> cls, final Class<?> parameterType) {
-        return ConstructorUtils.getAccessibleConstructor(cls, new Class[] {parameterType});
+        return ConstructorUtils.getAccessibleConstructor(cls, new Class[] { parameterType });
     }
     /**
      * Returns a constructor given a class and signature.

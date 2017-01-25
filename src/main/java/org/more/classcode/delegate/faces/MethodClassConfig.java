@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package org.more.classcode.delegate.faces;
+import org.more.asm.ClassVisitor;
+import org.more.classcode.AbstractClassConfig;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import org.more.asm.ClassVisitor;
-import org.more.classcode.AbstractClassConfig;
 /**
  *
  * @version : 2014年9月7日

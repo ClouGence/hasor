@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package org.more.util.map.bean;
+import org.more.util.map.AbstractMapEntry;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -22,17 +24,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.AbstractMap;
-import java.util.AbstractSet;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import org.more.util.map.AbstractMapEntry;
+import java.util.*;
 /**
  * An implementation of Map for JavaBeans which uses introspection to
  * get and put properties in the bean.
@@ -556,7 +548,7 @@ public class BeanMap extends AbstractMap<String, Object> implements Cloneable {
                     }
                 }
             }
-            Object[] answer = {value};
+            Object[] answer = { value };
             return answer;
         } catch (InvocationTargetException e) {
             logInfo(e);
@@ -598,10 +590,10 @@ public class BeanMap extends AbstractMap<String, Object> implements Cloneable {
      */
     protected Object convertType(Class<?> newType, Object value) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         // try call constructor
-        Class<?>[] types = {value.getClass()};
+        Class<?>[] types = { value.getClass() };
         try {
             Constructor<?> constructor = newType.getConstructor(types);
-            Object[] arguments = {value};
+            Object[] arguments = { value };
             return constructor.newInstance(arguments);
         } catch (NoSuchMethodException e) {
             // try using the transformers

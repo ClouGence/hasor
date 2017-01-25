@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 package net.test.hasor.db._01_simple;
-import java.sql.SQLException;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
 import org.junit.Test;
+
+import java.sql.SQLException;
 /**
  * 基本的update操作语句执行
  * @version : 2014-1-13

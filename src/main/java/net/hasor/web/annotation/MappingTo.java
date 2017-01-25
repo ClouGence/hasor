@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 /**
  * 控制器映射的地址。
  * @version : 2013-3-26

@@ -299,7 +299,7 @@ public class CharUtils {
         if (ch < 128) {
             return CharUtils.CHAR_STRING_ARRAY[ch];
         }
-        return new String(new char[] {ch});
+        return new String(new char[] { ch });
     }
     /**
      * <p>Converts the character to a String that contains the one character.</p>

@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 package net.test.hasor.more._01_classcode;
-import java.lang.reflect.Method;
-import java.rmi.Remote;
-import java.util.Map;
+import net.test.hasor.more._01_classcode.beans.TestBean2;
+import net.test.hasor.more._01_classcode.beans.TestBean2_Face;
 import org.junit.Test;
 import org.more.classcode.delegate.faces.MethodClassConfig;
 import org.more.classcode.delegate.property.PropertyClassConfig;
-import net.test.hasor.more._01_classcode.beans.TestBean2;
-import net.test.hasor.more._01_classcode.beans.TestBean2_Face;
+
+import java.lang.reflect.Method;
+import java.rmi.Remote;
+import java.util.Map;
 /**
  *
  * @version 2010-8-25
@@ -56,7 +57,8 @@ public class DynamicInterfaceTest {
         System.out.println(rm.invoke(obj));
         wm.invoke(obj, new Object[] { "affa" });
         System.out.println(rm.invoke(obj));
-    };
+    }
+    ;
     @Test
     public void addPropertyDelegate() throws Exception {
         PropertyClassConfig ce = new PropertyClassConfig();
@@ -69,7 +71,8 @@ public class DynamicInterfaceTest {
         System.out.println(rm.invoke(obj));
         wm.invoke(obj, new Object[] { "affa" });
         System.out.println(rm.invoke(obj));
-    };
+    }
+    ;
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInterface() throws Exception {

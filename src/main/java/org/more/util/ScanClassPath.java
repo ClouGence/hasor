@@ -48,7 +48,7 @@ public class ScanClassPath {
         };
     }
     public static ScanClassPath newInstance(final String scanPackages) {
-        return new ScanClassPath(new String[] {scanPackages}) {
+        return new ScanClassPath(new String[] { scanPackages }) {
         };
     }
     /**
@@ -58,7 +58,7 @@ public class ScanClassPath {
      * @return 返回扫描结果。
      */
     public static Set<Class<?>> getClassSet(final String packagePath, final Class<?> compareType) {
-        return ScanClassPath.getClassSet(new String[] {packagePath}, compareType);
+        return ScanClassPath.getClassSet(new String[] { packagePath }, compareType);
     }
     /**
      * 扫描jar包中凡是匹配compareType参数的类均被返回。（对执行结果不缓存）

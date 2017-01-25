@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 package net.test.hasor.more._03_xml;
-import java.io.IOException;
-import javax.xml.stream.XMLStreamException;
 import org.more.xml.XmlElementHook;
 import org.more.xml.XmlStackDecorator;
 import org.more.xml.stream.EndElementEvent;
 import org.more.xml.stream.StartElementEvent;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 /**
- * 
+ *
  * @version : 2011-11-8
  * @author 赵永春 (zyc@hasor.net)
  */

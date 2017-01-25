@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 package net.test.hasor.more._04_datachain;
-import java.util.Date;
-import org.junit.Test;
-import org.more.bizcommon.datachain.DataChainContext;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.test.hasor.more._04_datachain.datafilter.CloumnFilter;
@@ -24,6 +21,10 @@ import net.test.hasor.more._04_datachain.datafilter.ContentFilter;
 import net.test.hasor.more._04_datachain.datafilter.ImagesFilter;
 import net.test.hasor.more._04_datachain.domain.dto.NewsContentDO;
 import net.test.hasor.more._04_datachain.domain.vo.NewsContentVO;
+import org.junit.Test;
+import org.more.bizcommon.datachain.DataChainContext;
+
+import java.util.Date;
 /**
  * 数据对象转换工具，提供 A 类型对象到 B 类型对象转换功能。并使开发者在转换过程中可以实现更加高级别的控制协调能力。
  * 使用场景：
@@ -36,7 +37,8 @@ public class DataChainTest {
     @Test
     public void dataChainTest() throws Throwable {
         AppContext app = Hasor.createAppContext();
-        DataChainContext<NewsContentDO, NewsContentVO> dataChain = new DataChainContext<NewsContentDO, NewsContentVO>() {};
+        DataChainContext<NewsContentDO, NewsContentVO> dataChain = new DataChainContext<NewsContentDO, NewsContentVO>() {
+        };
         //
         dataChain.addDataFilter("body", app.getInstance(ContentFilter.class));
         dataChain.addDataFilter("image", app.getInstance(ImagesFilter.class));

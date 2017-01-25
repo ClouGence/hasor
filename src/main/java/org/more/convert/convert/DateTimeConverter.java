@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 package org.more.convert.convert;
+import org.more.convert.ConversionException;
+import org.more.convert.Converter;
+
 import java.text.DateFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -22,9 +25,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import org.more.convert.ConversionException;
-import org.more.convert.Converter;
 /**
  * {@link Converter} implementaion
  * that handles conversion to and from <b>date/time</b> objects.
@@ -155,7 +155,7 @@ public abstract class DateTimeConverter extends AbstractConverter {
      * @param pattern The format pattern.
      */
     public void setPattern(final String pattern) {
-        this.setPatterns(new String[] {pattern});
+        this.setPatterns(new String[] { pattern });
     }
     /**
      * Return the date format patterns used to convert

@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
+import net.hasor.core.Hasor;
+import net.hasor.db.datasource.ConnectionProxy;
+import net.hasor.db.jdbc.ConnectionCallback;
+import net.hasor.db.transaction.TranManager;
+
+import javax.sql.DataSource;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -21,12 +27,6 @@ import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.sql.DataSource;
-
-import net.hasor.core.Hasor;
-import net.hasor.db.datasource.ConnectionProxy;
-import net.hasor.db.jdbc.ConnectionCallback;
-import net.hasor.db.transaction.TranManager;
 /**
  *
  * @version : 2013-10-16
@@ -131,7 +131,7 @@ public class JdbcConnection extends JdbcAccessor {
     private ConnectionProxy newProxyConnection(final Connection target, final DataSource targetSource) {
         Hasor.assertIsNotNull(target, "Connection is null.");
         CloseSuppressingInvocationHandler handler = new CloseSuppressingInvocationHandler(target, targetSource);
-        return (ConnectionProxy) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] {ConnectionProxy.class}, handler);
+        return (ConnectionProxy) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] { ConnectionProxy.class }, handler);
     }
     /**Connection 接口代理，目的是为了控制一些方法的调用。同时进行一些特殊类型的处理。*/
     private class CloseSuppressingInvocationHandler implements InvocationHandler {

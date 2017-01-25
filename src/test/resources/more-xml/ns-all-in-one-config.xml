@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns:mod1="http://mode1.myProject.net" xmlns:mod2="http://mode2.myProject.net" xmlns="http://project.xdf.cn/program">
-	<!-- mode1 配置 -->
-	<mod1:config>
-		<mod1:appSettings>
-			<mod1:serverLocal mod1:url="www.126.com" />
-		</mod1:appSettings>
-	</mod1:config>
-	<!-- mode2 配置 -->
-	<mod2:config>
-		<mod2:appSettings>
-			<mod2:serverLocal mod2:url="www.souhu.com" />
-		</mod2:appSettings>
-	</mod2:config>
+    <!-- mode1 配置 -->
+    <mod1:config>
+        <mod1:appSettings>
+            <mod1:serverLocal mod1:url="www.126.com"/>
+        </mod1:appSettings>
+    </mod1:config>
+    <!-- mode2 配置 -->
+    <mod2:config>
+        <mod2:appSettings>
+            <mod2:serverLocal mod2:url="www.souhu.com"/>
+        </mod2:appSettings>
+    </mod2:config>
 
-	<program>
-		<echoPath />
-		<function />
-		<if enable="true">
-			<function />
-		</if>
-		<if enable="false">
-			<function />
-		</if>
-	</program>
+    <program>
+        <echoPath/>
+        <function/>
+        <if enable="true">
+            <function/>
+        </if>
+        <if enable="false">
+            <function/>
+        </if>
+    </program>
 </config>

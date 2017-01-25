@@ -111,7 +111,7 @@ class TypeUtil {
 
     static {
         try {
-            Class<?>[] s = {String.class};
+            Class<?>[] s = { String.class };
             class2Value.put(Boolean.TYPE, Boolean.class.getMethod("valueOf", s));
             class2Value.put(Byte.TYPE, Byte.class.getMethod("valueOf", s));
             class2Value.put(Double.TYPE, Double.class.getMethod("valueOf", s));
@@ -307,7 +307,7 @@ class TypeUtil {
     }
     /* ------------------------------------------------------------ */
     public static String toHexString(byte b) {
-        return toHexString(new byte[] {b}, 0, 1);
+        return toHexString(new byte[] { b }, 0, 1);
     }
     /* ------------------------------------------------------------ */
     public static String toHexString(byte[] b) {

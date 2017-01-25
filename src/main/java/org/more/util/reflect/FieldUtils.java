@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 package org.more.util.reflect;
+import org.more.util.ClassUtils;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
-
-import org.more.util.ClassUtils;
 /**
  * Utilities for working with fields by reflection. Adapted and refactored
  * from the dormant [reflect] Commons sandbox component.

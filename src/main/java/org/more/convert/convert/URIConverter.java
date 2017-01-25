@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 package org.more.convert.convert;
-import java.net.URI;
-
 import org.more.convert.Converter;
+
+import java.net.URI;
 /**
  * {@link Converter} implementaion that handles conversion
  * to and from <b>java.net.URL</b> objects.

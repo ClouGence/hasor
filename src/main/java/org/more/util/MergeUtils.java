@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 package org.more.util;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 /**
  * 合并两个同类型对象的工具类。
  * @version : 2012-2-10

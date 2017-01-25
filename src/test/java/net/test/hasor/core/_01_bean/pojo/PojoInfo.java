@@ -21,5 +21,6 @@ package net.test.hasor.core._01_bean.pojo;
  */
 public interface PojoInfo {
     public String getName();
+
     public String getAddress();
 }

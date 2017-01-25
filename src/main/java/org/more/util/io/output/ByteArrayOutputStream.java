@@ -15,17 +15,12 @@
  * limitations under the License.
  */
 package org.more.util.io.output;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.SequenceInputStream;
-import java.io.UnsupportedEncodingException;
+import org.more.util.io.input.ClosedInputStream;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.more.util.io.input.ClosedInputStream;
 /**
  * This class implements an output stream in which the data is 
  * written into a byte array. The buffer automatically grows as data 

@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 package org.more.util.ref;
-import java.util.AbstractSet;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.util.*;
 /**
  * 参照{@link java.util.HashSet}实现的WeakHashSet.详细介绍参看{@link java.util.Set}和{@link java.util.WeakHashMap}功能
  * @version : 2013-11-8

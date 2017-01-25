@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package org.more.bizcommon.resource.loader;
+import org.more.bizcommon.resource.ResourceLoader;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
-import org.more.bizcommon.resource.ResourceLoader;
 /**
  * 将一个File对象所代表的路径作为根路径，资源获取相对于该路径下。
  * @version : 2011-9-17

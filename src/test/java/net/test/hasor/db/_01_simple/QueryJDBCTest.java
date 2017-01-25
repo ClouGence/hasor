@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 package net.test.hasor.db._01_simple;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.plugins.junit.HasorUnit;
+import net.test.hasor.db._01_simple.entity.TB_User;
+import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
+import org.junit.Test;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.test.hasor.db._01_simple.entity.TB_User;
-import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
-import net.hasor.plugins.junit.HasorUnit;
-import org.junit.Test;
 /**
- * 
+ *
  * @version : 2013-12-10
  * @author 赵永春(zyc@hasor.net)
  */

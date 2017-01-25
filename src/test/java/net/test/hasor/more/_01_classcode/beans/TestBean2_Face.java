@@ -15,15 +15,20 @@
  */
 package net.test.hasor.more._01_classcode.beans;
 /**
- * 
+ *
  * @version 2011-6-22
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface TestBean2_Face {
     public long getP_long();
+
     public void setP_long(long p_long);
+
     public float getP_float();
+
     public void setP_float(float p_float);
+
     public int getP_double();
+
     public void setP_double(int p_double);
 }

@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.core.setting.xml;
+import net.hasor.core.Settings;
+import net.hasor.core.XmlNode;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-import net.hasor.core.Settings;
-import net.hasor.core.XmlNode;
 /**
  * @version : 2013-7-13
  * @author 赵永春 (zyc@byshell.org)

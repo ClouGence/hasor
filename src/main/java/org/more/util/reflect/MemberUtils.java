@@ -103,7 +103,7 @@ abstract class MemberUtils {
     }
 
     /** Array of primitive number types ordered by "promotability" */
-    private static final Class<?>[] ORDERED_PRIMITIVE_TYPES = {Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE, Long.TYPE, Float.TYPE, Double.TYPE};
+    private static final Class<?>[] ORDERED_PRIMITIVE_TYPES = { Byte.TYPE, Short.TYPE, Character.TYPE, Integer.TYPE, Long.TYPE, Float.TYPE, Double.TYPE };
     /**
      * XXX Default access superclass workaround
      *

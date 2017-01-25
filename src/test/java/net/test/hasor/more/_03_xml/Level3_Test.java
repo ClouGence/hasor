@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.test.hasor.more._03_xml;
-import java.io.IOException;
-import javax.xml.stream.XMLStreamException;
 import org.junit.Test;
 import org.more.util.ResourcesUtils;
 import org.more.xml.XmlElementHook;
@@ -25,6 +23,9 @@ import org.more.xml.XmlStackDecorator;
 import org.more.xml.stream.EndElementEvent;
 import org.more.xml.stream.StartElementEvent;
 import org.more.xml.stream.XmlReader;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 /**
  *
  * @version 2010-9-8
@@ -59,7 +60,8 @@ class Tag_echoPath implements XmlElementHook {
     public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) throws XMLStreamException, IOException {
         System.out.println("\t-----" + xpath);
     }
-    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) throws XMLStreamException, IOException {}
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) throws XMLStreamException, IOException {
+    }
 }
 class Tag_if implements XmlElementHook {
     public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) throws XMLStreamException, IOException {
@@ -77,5 +79,6 @@ class Tag_function implements XmlElementHook {
     public void beginElement(XmlStackDecorator<Object> context, String xpath, StartElementEvent event) throws XMLStreamException, IOException {
         System.out.println("callFun\t" + xpath);
     }
-    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) throws XMLStreamException, IOException {}
+    public void endElement(XmlStackDecorator<Object> context, String xpath, EndElementEvent event) throws XMLStreamException, IOException {
+    }
 }

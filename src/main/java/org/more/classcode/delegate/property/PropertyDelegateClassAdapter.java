@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 package org.more.classcode.delegate.property;
+import org.more.asm.*;
+import org.more.classcode.ASMEngineTools;
+import org.more.util.StringUtils;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.more.asm.ClassVisitor;
-import org.more.asm.FieldVisitor;
-import org.more.asm.Label;
-import org.more.asm.MethodVisitor;
-import org.more.asm.Opcodes;
-import org.more.classcode.ASMEngineTools;
-import org.more.util.StringUtils;
 /**
  * 该类负责输出代理属性。
  * @version : 2014年9月8日
@@ -142,7 +138,7 @@ class PropertyDelegateClassAdapter extends ClassVisitor implements Opcodes {
         }
         {//} catch (Exception e) {
             mv.visitLabel(tryCatch);
-            mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] {"java/lang/Throwable"});
+            mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] { "java/lang/Throwable" });
             mv.visitVarInsn(ASTORE, 5);
             mv.visitVarInsn(ALOAD, 5);
             mv.visitTypeInsn(INSTANCEOF, "java/lang/RuntimeException");
@@ -152,7 +148,7 @@ class PropertyDelegateClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitTypeInsn(CHECKCAST, "java/lang/RuntimeException");
             mv.visitInsn(ATHROW);
             mv.visitLabel(ifBlock);
-            mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] {"java/lang/Throwable"}, 0, null);
+            mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] { "java/lang/Throwable" }, 0, null);
             mv.visitTypeInsn(NEW, "java/lang/RuntimeException");
             mv.visitInsn(DUP);
             mv.visitVarInsn(ALOAD, 5);
@@ -200,7 +196,7 @@ class PropertyDelegateClassAdapter extends ClassVisitor implements Opcodes {
         }
         {//} catch (Exception e) {
             mv.visitLabel(tryCatch);
-            mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] {"java/lang/Throwable"});
+            mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] { "java/lang/Throwable" });
             mv.visitVarInsn(ASTORE, 5);
             mv.visitVarInsn(ALOAD, 5);
             mv.visitTypeInsn(INSTANCEOF, "java/lang/RuntimeException");
@@ -210,7 +206,7 @@ class PropertyDelegateClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitTypeInsn(CHECKCAST, "java/lang/RuntimeException");
             mv.visitInsn(ATHROW);
             mv.visitLabel(ifBlock);
-            mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] {"java/lang/Throwable"}, 0, null);
+            mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] { "java/lang/Throwable" }, 0, null);
             mv.visitTypeInsn(NEW, "java/lang/RuntimeException");
             mv.visitInsn(DUP);
             mv.visitVarInsn(ALOAD, 5);

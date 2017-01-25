@@ -30,7 +30,7 @@ import java.util.*;
  */
 public class JSONPojoConvertor implements JSON.Convertor {
     protected final static Logger   logger     = LoggerFactory.getLogger(JSONPojoConvertor.class);
-    public static final    Object[] GETTER_ARG = new Object[] {}, NULL_ARG = new Object[] {null};
+    public static final    Object[] GETTER_ARG = new Object[] {}, NULL_ARG = new Object[] { null };
     private static final Map<Class<?>, NumberType> __numberTypes = new HashMap<Class<?>, NumberType>();
     public static NumberType getNumberType(Class<?> clazz) {
         return __numberTypes.get(clazz);
@@ -222,13 +222,13 @@ public class JSONPojoConvertor implements JSON.Convertor {
         protected void invokeObject(Object obj, Object value) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
             if (_type.isEnum()) {
                 if (value instanceof Enum)
-                    _setter.invoke(obj, new Object[] {value});
+                    _setter.invoke(obj, new Object[] { value });
                 else
-                    _setter.invoke(obj, new Object[] {Enum.valueOf((Class<? extends Enum>) _type, value.toString())});
+                    _setter.invoke(obj, new Object[] { Enum.valueOf((Class<? extends Enum>) _type, value.toString()) });
             } else if (_numberType != null && value instanceof Number) {
-                _setter.invoke(obj, new Object[] {_numberType.getActualValue((Number) value)});
+                _setter.invoke(obj, new Object[] { _numberType.getActualValue((Number) value) });
             } else if (Character.TYPE.equals(_type) || Character.class.equals(_type)) {
-                _setter.invoke(obj, new Object[] {String.valueOf(value).charAt(0)});
+                _setter.invoke(obj, new Object[] { String.valueOf(value).charAt(0) });
             } else if (_componentType != null && value.getClass().isArray()) {
                 if (_numberType == null) {
                     int len = Array.getLength(value);
@@ -238,10 +238,10 @@ public class JSONPojoConvertor implements JSON.Convertor {
                     } catch (Exception e) {
                         // unusual array with multiple types
                         logger.debug(e.getMessage(), e);
-                        _setter.invoke(obj, new Object[] {value});
+                        _setter.invoke(obj, new Object[] { value });
                         return;
                     }
-                    _setter.invoke(obj, new Object[] {array});
+                    _setter.invoke(obj, new Object[] { array });
                 } else {
                     Object[] old = (Object[]) value;
                     Object array = Array.newInstance(_componentType, old.length);
@@ -251,13 +251,13 @@ public class JSONPojoConvertor implements JSON.Convertor {
                     } catch (Exception e) {
                         // unusual array with multiple types
                         logger.debug(e.getMessage(), e);
-                        _setter.invoke(obj, new Object[] {value});
+                        _setter.invoke(obj, new Object[] { value });
                         return;
                     }
-                    _setter.invoke(obj, new Object[] {array});
+                    _setter.invoke(obj, new Object[] { array });
                 }
             } else
-                _setter.invoke(obj, new Object[] {value});
+                _setter.invoke(obj, new Object[] { value });
         }
     }
     public interface NumberType {

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package org.more.bizcommon.resource.loader;
+import org.more.bizcommon.resource.ResourceLoader;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -21,8 +23,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import org.more.bizcommon.resource.ResourceLoader;
 /**
  *
  * @version : 2015年7月1日

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package org.more.xml;
-import java.io.IOException;
-import javax.xml.stream.XMLStreamException;
-
 import org.more.xml.stream.XmlStreamEvent;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 /**
  * Level 2：级别的事件接收者。经过{@link XmlParserKitManager}工具进行细分的xml事件分流之后都发送到了该接口中。
  * @version 2010-9-13

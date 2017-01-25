@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 package net.test.hasor.db._02_datasource;
-import java.io.IOException;
-import java.sql.SQLException;
-import org.junit.Test;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.test.hasor.db._02_datasource.warp.MultipleDataSourceWarp;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.sql.SQLException;
 /**
  * 使用多数据源例子
  * @version : 2014年7月23日

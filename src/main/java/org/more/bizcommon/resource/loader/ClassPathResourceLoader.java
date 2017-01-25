@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package org.more.bizcommon.resource.loader;
+import org.more.bizcommon.resource.ResourceLoader;
+import org.more.util.StringUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
-import org.more.bizcommon.resource.ResourceLoader;
-import org.more.util.StringUtils;
 /**
  * 用于创建一个可以从classpath中获取资源的ResourceLoader。
  * @version : 2013-6-6

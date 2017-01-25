@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 package net.test.hasor.more._04_datachain.datafilter;
-import java.util.Arrays;
-import org.more.bizcommon.datachain.DataFilter;
-import org.more.bizcommon.datachain.DataFilterChain;
-import org.more.bizcommon.datachain.Domain;
-import org.more.util.StringUtils;
 import net.hasor.core.Inject;
 import net.test.hasor.more._04_datachain.dao.CloumnDao;
 import net.test.hasor.more._04_datachain.domain.dto.NewsContentDO;
 import net.test.hasor.more._04_datachain.domain.vo.NewsContentVO;
+import org.more.bizcommon.datachain.DataFilter;
+import org.more.bizcommon.datachain.DataFilterChain;
+import org.more.bizcommon.datachain.Domain;
+import org.more.util.StringUtils;
+
+import java.util.Arrays;
 /**
  * 内容本身转换
  * @version : 2016年5月7日

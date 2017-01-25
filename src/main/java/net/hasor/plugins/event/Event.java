@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * @author 赵永春(zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 public @interface Event {
     public String[] value();
 

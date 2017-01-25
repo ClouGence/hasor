@@ -15,7 +15,7 @@
  */
 package net.test.hasor.more._01_classcode.beans;
 /**
- * 
+ *
  * @version 2011-6-22
  * @author 赵永春 (zyc@hasor.net)
  */

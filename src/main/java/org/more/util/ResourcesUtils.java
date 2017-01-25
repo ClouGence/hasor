@@ -14,30 +14,17 @@
  * limitations under the License.
  */
 package org.more.util;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.JarURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import org.more.util.io.AutoCloseInputStream;
+import org.more.util.map.DecSequenceMap;
+import org.more.util.map.Properties;
+
+import java.io.*;
+import java.net.*;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import org.more.util.io.AutoCloseInputStream;
-import org.more.util.map.DecSequenceMap;
-import org.more.util.map.Properties;
 /**
  * 资源加载工具类，所有方法均是程序级优先。
  * @version 2010-9-24

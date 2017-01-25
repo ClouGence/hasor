@@ -22,7 +22,6 @@ package net.hasor.plugins.event;
  */
 public enum EventType {
     /** 注册一个常规的事件监听器，当遇到该事件则会调用事件监听器代码。 */
-    Listener,
-    /** 注册一个特殊的事件监听器，该监听器只会响应一次事件调用。 */
+    Listener, /** 注册一个特殊的事件监听器，该监听器只会响应一次事件调用。 */
     Once
 }
