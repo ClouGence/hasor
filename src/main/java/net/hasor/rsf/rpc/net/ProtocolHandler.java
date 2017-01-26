@@ -15,8 +15,7 @@
  */
 package net.hasor.rsf.rpc.net;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelInboundHandler;
-import io.netty.channel.ChannelOutboundHandler;
+import io.netty.channel.ChannelHandler;
 import net.hasor.core.AppContext;
 /**
  * RSF协议扩展
@@ -40,9 +39,6 @@ public interface ProtocolHandler {
      */
     public void active(RsfChannel rsfChannel);
 
-    /** 解码器 */
-    public ChannelInboundHandler decoder(Connector connector, AppContext appContext);
-
-    /** 编码器 */
-    public ChannelOutboundHandler encoder(Connector connector, AppContext appContext);
+    /** 编码器 & 解码器 */
+    public ChannelHandler[] channelHandler(Connector connector, AppContext appContext);
 }

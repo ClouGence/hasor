@@ -23,7 +23,7 @@ import io.netty.channel.CombinedChannelDuplexHandler;
  * @author 赵永春(zyc@hasor.net)
  */
 @ChannelHandler.Sharable
-class RsfDuplexHandler extends CombinedChannelDuplexHandler {
+public final class RsfDuplexHandler extends CombinedChannelDuplexHandler {
     public RsfDuplexHandler(ChannelInboundHandler inBoundArray, ChannelOutboundHandler outBoundArray) {
         super(inBoundArray, outBoundArray);
     }

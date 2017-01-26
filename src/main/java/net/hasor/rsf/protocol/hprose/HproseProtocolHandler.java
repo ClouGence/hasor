@@ -15,8 +15,7 @@
  */
 package net.hasor.rsf.protocol.hprose;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelInboundHandler;
-import io.netty.channel.ChannelOutboundHandler;
+import io.netty.channel.ChannelHandler;
 import net.hasor.core.AppContext;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.protocol.rsf.RsfDecoder;
@@ -25,6 +24,7 @@ import net.hasor.rsf.protocol.rsf.v1.PoolBlock;
 import net.hasor.rsf.rpc.net.Connector;
 import net.hasor.rsf.rpc.net.ProtocolHandler;
 import net.hasor.rsf.rpc.net.RsfChannel;
+import net.hasor.rsf.rpc.net.RsfDuplexHandler;
 /**
  * Hprose 解码器
  * @version : 2014年10月10日
@@ -40,13 +40,14 @@ public class HproseProtocolHandler implements ProtocolHandler {
         rsfChannel.activeIn();
     }
     @Override
-    public ChannelInboundHandler decoder(Connector connector, AppContext appContext) {
+    public ChannelHandler[] channelHandler(Connector connector, AppContext appContext) {
         RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);
-        return new RsfDecoder(env, PoolBlock.DataMaxSize);
-    }
-    @Override
-    public ChannelOutboundHandler encoder(Connector connector, AppContext appContext) {
-        RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);
-        return new RsfEncoder(env);//
+        RsfDuplexHandler duplexHandler = new RsfDuplexHandler(  //
+                new RsfDecoder(env, PoolBlock.DataMaxSize),     //
+                new RsfEncoder(env)                             //
+        );
+        return new ChannelHandler[] {                           //
+                duplexHandler                                   //
+        };
     }
 }

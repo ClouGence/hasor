@@ -24,7 +24,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.*;
@@ -34,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 /**
  * RPC协议连接器，负责创建某个特定RPC协议的网络事件。
@@ -76,6 +76,21 @@ public class Connector extends ChannelInboundHandlerAdapter {
     }
     //
     //
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        this.exceptionCaught(ctx, null);
+    }
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        String hostPort = converToHostProt(ctx);
+        if (cause == null) {
+            this.logger.warn("close socket=" + hostPort + " channel Inactive.");
+        } else {
+            this.logger.error("close socket=" + hostPort + " with error -> " + cause.getMessage(), cause);
+        }
+        this.linkPool.closeConnection(hostPort);
+        ctx.close();
+    }
     /** 接收解析好的 RequestInfo、ResponseInfo 对象，并将它们转发到 {@link ReceivedListener}接口中。 */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -134,43 +149,25 @@ public class Connector extends ChannelInboundHandlerAdapter {
         }
         //
     }
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        this.exceptionCaught(ctx, null);
-    }
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        String hostPort = converToHostProt(ctx);
-        if (cause == null) {
-            this.logger.warn("close socket=" + hostPort + " channel Inactive.");
-        } else {
-            this.logger.error("close socket=" + hostPort + " with error -> " + cause.getMessage(), cause);
-        }
-        this.linkPool.closeConnection(hostPort);
-        ctx.close();
-    }
     //
     //
     /** 监听的本地端口号 */
     public InterAddress getBindAddress() {
-        return bindAddress;
+        return this.bindAddress;
     }
     /** 如果工作在内网，这里返回配置的外网映射地址 */
     public InterAddress getGatewayAddress() {
-        return gatewayAddress;
+        return this.gatewayAddress;
     }
     //
     //
     /** 连接到远程机器 */
     public void connectionTo(final InterAddress hostAddress, final BasicFuture<RsfChannel> result) {
         //
-        RsfDuplexHandler duplexHandler = new RsfDuplexHandler(//
-                Hasor.assertIsNotNull(this.newDecoder()),//
-                Hasor.assertIsNotNull(this.newEncoder())//
-        );
+        ChannelHandler[] handlerArrays = this.channelHandler();
         final ArrayList<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
-        handlers.add(duplexHandler);// 编码解码器
-        handlers.add(this);         // 转发RequestInfo、ResponseInfo到RSF
+        handlers.addAll(Arrays.asList(handlerArrays));  // 编码解码器
+        handlers.add(this);                             // 转发RequestInfo、ResponseInfo到RSF
         //
         Bootstrap boot = new Bootstrap();
         boot.group(this.workLoopGroup);
@@ -202,13 +199,10 @@ public class Connector extends ChannelInboundHandlerAdapter {
      */
     public void startListener(NioEventLoopGroup listenLoopGroup) {
         //
-        RsfDuplexHandler duplexHandler = new RsfDuplexHandler(//
-                Hasor.assertIsNotNull(this.newDecoder()),//
-                Hasor.assertIsNotNull(this.newEncoder())//
-        );
+        ChannelHandler[] handlerArrays = this.channelHandler();
         final ArrayList<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
-        handlers.add(duplexHandler);// 编码解码器
-        handlers.add(this);         // 转发RequestInfo、ResponseInfo到RSF
+        handlers.addAll(Arrays.asList(handlerArrays));  // 编码解码器
+        handlers.add(this);                             // 转发RequestInfo、ResponseInfo到RSF
         //
         ServerBootstrap boot = new ServerBootstrap();
         boot.group(listenLoopGroup, this.workLoopGroup);
@@ -239,7 +233,7 @@ public class Connector extends ChannelInboundHandlerAdapter {
             logger.info("rsf Server started at {}", this.bindAddress.getHostPort());
         } catch (Exception e) {
             logger.error("rsf start listener error: " + e.getMessage(), e);
-            throw new RsfException(ProtocolStatus.NetworkError, this.bindAddress.toString() + " -> " + e);
+            throw new RsfException(ProtocolStatus.NetworkError, this.bindAddress.toString() + " -> " + e.getMessage());
         }
         //
     }
@@ -262,10 +256,7 @@ public class Connector extends ChannelInboundHandlerAdapter {
         InetSocketAddress socketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
         return socketAddress.getAddress().getHostAddress() + ":" + socketAddress.getPort();
     }
-    private ChannelInboundHandler newDecoder() {
-        return this.handler.decoder(this, this.appContext);
-    }
-    private ChannelOutboundHandler newEncoder() {
-        return this.handler.encoder(this, this.appContext);
+    private ChannelHandler[] channelHandler() {
+        return this.handler.channelHandler(this, this.appContext);
     }
 }

@@ -15,41 +15,54 @@
  */
 package net.hasor.rsf.protocol.rsf;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelInboundHandler;
-import io.netty.channel.ChannelOutboundHandler;
+import io.netty.channel.ChannelHandler;
 import net.hasor.core.AppContext;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
+import net.hasor.rsf.domain.RequestInfo;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.protocol.rsf.v1.PoolBlock;
 import net.hasor.rsf.rpc.net.Connector;
 import net.hasor.rsf.rpc.net.ProtocolHandler;
 import net.hasor.rsf.rpc.net.RsfChannel;
+import net.hasor.rsf.rpc.net.RsfDuplexHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * RSF 解码器
  * @version : 2014年10月10日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfProtocolHandler implements ProtocolHandler {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public boolean acceptIn(Connector connector, Channel channel) {
         return true;
     }
     @Override
     public void active(RsfChannel rsfChannel) {
+        RequestInfo request = new RequestInfo(RsfConstants.Version_1);
+        request.setRequestID(-1);
+        request.setTargetMethod("ASK_HOST_INFO");
+        rsfChannel.sendData(request, null);//发送请求握手数据包
+        //
         rsfChannel.activeIn();
     }
     @Override
-    public ChannelInboundHandler decoder(Connector connector, AppContext appContext) {
-        InterAddress bindAddress = connector.getGatewayAddress();
-        if (bindAddress == null)
-            bindAddress = connector.getBindAddress();
+    public ChannelHandler[] channelHandler(Connector connector, AppContext appContext) {
+        RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);
+        InterAddress publishAddress = connector.getGatewayAddress();
+        if (publishAddress == null) {
+            publishAddress = connector.getBindAddress();
+        }
         //
-        RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);
-        return new RsfDecoder(env, PoolBlock.DataMaxSize);
-    }
-    @Override
-    public ChannelOutboundHandler encoder(Connector connector, AppContext appContext) {
-        RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);
-        return new RsfEncoder(env);//
+        RsfDuplexHandler duplexHandler = new RsfDuplexHandler(  //
+                new RsfDecoder(env, PoolBlock.DataMaxSize),     //
+                new RsfEncoder(env)                             //
+        );
+        return new ChannelHandler[] {                           //
+                duplexHandler//,                                  //
+                //                new RpcShakeHands(publishAddress, env)         //
+        };
     }
 }
