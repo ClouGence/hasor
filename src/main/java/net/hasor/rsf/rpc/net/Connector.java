@@ -44,7 +44,7 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  */
 @ChannelHandler.Sharable
-public class Connector extends ChannelInboundHandlerAdapter {
+public class Connector extends ChannelInboundHandlerAdapter implements ReceivedListener {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     private final String           protocol;
     private final AppContext       appContext;
@@ -109,9 +109,6 @@ public class Connector extends ChannelInboundHandlerAdapter {
                 return;
             }
             //
-            if (!rsfChannel.isActive()) {
-                return;
-            }
             rsfChannel.receivedData((OptionInfo) msg);
             return;
         }
@@ -141,13 +138,20 @@ public class Connector extends ChannelInboundHandlerAdapter {
         //
         boolean accept = this.handler.acceptIn(this, rsfChannel);
         if (accept) {
-            rsfChannel.addListener(this.receivedListener);
+            rsfChannel.addListener(this);
         } else {
             this.logger.warn("connection refused form {} ,", hostPort);
             this.linkPool.closeConnection(hostPort);
             ctx.close();
         }
         //
+    }
+    @Override
+    public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) {
+        if (!rsfChannel.isActive()) {
+            return;
+        }
+        this.receivedListener.receivedMessage(rsfChannel, info);
     }
     //
     //

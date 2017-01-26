@@ -1,0 +1,3 @@
+1.双向通信 LinkPool 机制的支持，通过别名系统进行映射。
+2.RsfFilter 中 response 一个数据 似乎有问题。
+3.Hprose协议支持
