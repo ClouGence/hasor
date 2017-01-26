@@ -8,6 +8,7 @@
     02.RsfPlugin 接口不在需要。
     03.RsfCenterEvent 枚举形式改为字符串形式。
     04.兼容 Spring 4.x，和 Spring Boot。
+    05.简化设计，取消RSF握手机制、取消 A->B,B->A 双向共享连接机制，保留单向方向请求连接复用机制。
 
 ===== Hasor-RSF v1.1.0 (2016-12-01)
 * 新增:

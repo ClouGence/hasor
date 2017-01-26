@@ -30,7 +30,7 @@ public interface ProtocolHandler {
      * @param rsfChannel 连接对象
      * @return 返回值决定了是否拒绝该连接。
      */
-    public boolean acceptIn(Connector connector, RsfChannel rsfChannel);
+    public boolean acceptIn(Connector connector, RsfChannel rsfChannel) throws Exception;
 
     /** 编码器 & 解码器 */
     public ChannelHandler[] channelHandler(Connector connector, AppContext appContext);

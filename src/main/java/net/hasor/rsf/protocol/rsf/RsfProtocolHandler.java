@@ -18,13 +18,17 @@ import io.netty.channel.ChannelHandler;
 import net.hasor.core.AppContext;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
+import net.hasor.rsf.domain.OptionInfo;
+import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.ResponseInfo;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.protocol.rsf.v1.PoolBlock;
-import net.hasor.rsf.rpc.net.Connector;
-import net.hasor.rsf.rpc.net.ProtocolHandler;
-import net.hasor.rsf.rpc.net.RsfChannel;
-import net.hasor.rsf.rpc.net.RsfDuplexHandler;
+import net.hasor.rsf.rpc.net.*;
+import org.more.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 /**
  * RSF 解码器
  * @version : 2014年10月10日
@@ -33,29 +37,54 @@ import org.slf4j.LoggerFactory;
 public class RsfProtocolHandler implements ProtocolHandler {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
-    public boolean acceptIn(Connector connector, RsfChannel rsfChannel) {
-        //        RequestInfo request = new RequestInfo(RsfConstants.Version_1);
-        //        request.setRequestID(-1);
-        //        request.setTargetMethod("ASK_HOST_INFO");
-        //        rsfChannel.sendData(request, null);//发送请求握手数据包
+    public boolean acceptIn(final Connector connector, RsfChannel rsfChannel) throws Exception {
+        //
+        // .添加数据接收监听器，获取握手数据
+        final BasicFuture<Boolean> future = new BasicFuture<Boolean>();
+        rsfChannel.addListener(new ReceivedListener() {
+            @Override
+            public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) throws IOException {
+                if (future.isDone()) {
+                    return;
+                }
+                //
+                if (info instanceof ResponseInfo) {
+                    ResponseInfo response = (ResponseInfo) info;
+                    String serverInfo = response.getOption("SERVER_INFO");
+                    try {
+                        if (LinkType.In == rsfChannel.getLinkType()) {
+                            connector.mappingTo(rsfChannel, new InterAddress(serverInfo));
+                        }
+                    } catch (Exception e) { /**/ }
+                    future.completed(true);
+                    logger.info("handshake -> ready for {}", serverInfo);
+                }
+            }
+        });
+        //
+        // .发送RSF实例信息
+        InterAddress interAddress = connector.getGatewayAddress();
+        if (interAddress == null) {
+            interAddress = connector.getBindAddress();
+        }
+        InterAddress publishAddress = interAddress;
+        ResponseInfo options = new ResponseInfo(RsfConstants.Version_1);
+        options.setRequestID(-1);
+        options.setStatus(ProtocolStatus.OK);
+        options.addOption("SERVER_INFO", publishAddress.toHostSchema());
+        rsfChannel.sendData(options, null);
         //
         return rsfChannel.activeIn();
     }
     @Override
     public ChannelHandler[] channelHandler(Connector connector, AppContext appContext) {
         RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);
-        InterAddress publishAddress = connector.getGatewayAddress();
-        if (publishAddress == null) {
-            publishAddress = connector.getBindAddress();
-        }
-        //
         RsfDuplexHandler duplexHandler = new RsfDuplexHandler(  //
                 new RsfDecoder(env, PoolBlock.DataMaxSize),     //
                 new RsfEncoder(env)                             //
         );
         return new ChannelHandler[] {                           //
-                duplexHandler//,                                  //
-                //                new RpcShakeHands(publishAddress, env)         //
+                duplexHandler                                   //
         };
     }
 }

@@ -27,11 +27,17 @@ public abstract class RsfReceivedListener implements ReceivedListener {
     @Override
     public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) {
         if (info instanceof RequestInfo) {
-            this.receivedMessage(rsfChannel.getTarget(), (RequestInfo) info);
+            RequestInfo request = (RequestInfo) info;
+            if (request.getRequestID() > 0) {
+                this.receivedMessage(rsfChannel.getTarget(), request);
+            }
             return;
         }
         if (info instanceof ResponseInfo) {
-            this.receivedMessage(rsfChannel.getTarget(), (ResponseInfo) info);
+            ResponseInfo response = (ResponseInfo) info;
+            if (response.getRequestID() > 0) {
+                this.receivedMessage(rsfChannel.getTarget(), response);
+            }
             return;
         }
     }

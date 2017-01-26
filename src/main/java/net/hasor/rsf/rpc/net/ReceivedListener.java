@@ -15,6 +15,8 @@
  */
 package net.hasor.rsf.rpc.net;
 import net.hasor.rsf.domain.OptionInfo;
+
+import java.io.IOException;
 /**
  *
  * @version : 2015年12月10日
@@ -22,5 +24,5 @@ import net.hasor.rsf.domain.OptionInfo;
  */
 public interface ReceivedListener {
     /**从远端收到Response消息。*/
-    public void receivedMessage(RsfChannel rsfChannel, OptionInfo info);
+    public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) throws IOException;
 }

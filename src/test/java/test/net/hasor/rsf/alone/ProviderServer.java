@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.alone;
+import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfApiBinder;
+import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfModule;
 import test.net.hasor.rsf.services.EchoService;
 import test.net.hasor.rsf.services.EchoServiceImpl;
@@ -29,7 +31,7 @@ import test.net.hasor.rsf.services.MessageServiceImpl;
 public class ProviderServer {
     public static void main(String[] args) throws Throwable {
         //Server
-        Hasor.createAppContext("/alone/provider-config.xml", new RsfModule() {
+        AppContext appContext = Hasor.createAppContext("/alone/provider-config.xml", new RsfModule() {
             @Override
             public void loadModule(RsfApiBinder apiBinder) throws Throwable {
                 apiBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
@@ -38,6 +40,7 @@ public class ProviderServer {
         });
         //
         System.out.println("server start.");
+        RsfContext rsf = appContext.getInstance(RsfContext.class);
         System.in.read();
     }
 }

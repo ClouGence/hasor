@@ -33,6 +33,7 @@ import org.more.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +75,9 @@ public class Connector extends ChannelInboundHandlerAdapter implements ReceivedL
     }
     @Override
     public String toString() {
-        return "Connector{ protocol='" + this.protocol + "'}";
+        InterAddress local = this.gatewayAddress;
+        local = (local == null) ? this.bindAddress : local;
+        return "Connector{ protocol='" + protocol + "', bindAddress=" + local + '}';
     }
     //
     //
@@ -110,7 +113,6 @@ public class Connector extends ChannelInboundHandlerAdapter implements ReceivedL
             }
             //
             rsfChannel.receivedData((OptionInfo) msg);
-            return;
         }
         super.channelRead(ctx, msg);
     }
@@ -147,7 +149,7 @@ public class Connector extends ChannelInboundHandlerAdapter implements ReceivedL
         //
     }
     @Override
-    public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) {
+    public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) throws IOException {
         if (!rsfChannel.isActive()) {
             return;
         }
@@ -253,6 +255,11 @@ public class Connector extends ChannelInboundHandlerAdapter implements ReceivedL
     /**停止监听器*/
     public void shutdown() {
         this.localListener.close();
+    }
+    public void mappingTo(RsfChannel rsfChannel, InterAddress interAddress) {
+        //
+        rsfChannel.inverseMappingTo(interAddress);
+        this.linkPool.mappingTo(rsfChannel, interAddress.getHostPort());
     }
     //
     private static String converToHostProt(ChannelHandlerContext ctx) {

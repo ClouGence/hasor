@@ -22,6 +22,7 @@ import net.hasor.rsf.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,6 +35,7 @@ public class RsfChannel {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     private          String                 protocol;
     private final    InterAddress           target;
+    private          InterAddress           inverseMappingTo;
     private final    Channel                channel;
     private final    AtomicBoolean          shakeHands;
     private final    LinkType               linkType;
@@ -70,7 +72,7 @@ public class RsfChannel {
         }
     }
     /**接收到数据*/
-    void receivedData(OptionInfo object) {
+    void receivedData(OptionInfo object) throws IOException {
         for (ReceivedListener listener : this.listenerList) {
             listener.receivedMessage(this, object);
         }
@@ -171,7 +173,7 @@ public class RsfChannel {
             this.channel.close();
         }
     }
-    boolean isSame(RsfChannel channel) {
-        return this.channel == channel.channel;
+    void inverseMappingTo(InterAddress interAddress) {
+        this.inverseMappingTo = interAddress;
     }
 }

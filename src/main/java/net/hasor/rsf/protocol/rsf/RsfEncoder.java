@@ -33,26 +33,33 @@ public class RsfEncoder extends MessageToByteEncoder<Object> {
         this.rsfEnvironment = rsfEnvironment;
     }
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
-        if (msg instanceof RequestInfo) {
-            RequestInfo info = (RequestInfo) msg;
-            CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, info.getVersion());
-            factory.wirteRequestBlock(factory.buildRequestBlock(info), out);
+        try {
+            if (msg instanceof RequestInfo) {
+                RequestInfo info = (RequestInfo) msg;
+                CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, info.getVersion());
+                factory.wirteRequestBlock(factory.buildRequestBlock(info), out);
+                return;
+            }
+            if (msg instanceof ResponseInfo) {
+                ResponseInfo info = (ResponseInfo) msg;
+                CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, info.getVersion());
+                factory.wirteResponseBlock(factory.buildResponseBlock(info), out);
+                return;
+            }
+            if (msg instanceof RequestBlock) {
+                RequestBlock block = (RequestBlock) msg;
+                CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, block.getVersion());
+                factory.wirteRequestBlock(block, out);
+                return;
+            }
+            if (msg instanceof ResponseBlock) {
+                ResponseBlock block = (ResponseBlock) msg;
+                CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, block.getVersion());
+                factory.wirteResponseBlock(block, out);
+                return;
+            }
+        } finally {
+            ctx.flush();
         }
-        if (msg instanceof ResponseInfo) {
-            ResponseInfo info = (ResponseInfo) msg;
-            CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, info.getVersion());
-            factory.wirteResponseBlock(factory.buildResponseBlock(info), out);
-        }
-        if (msg instanceof RequestBlock) {
-            RequestBlock block = (RequestBlock) msg;
-            CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, block.getVersion());
-            factory.wirteRequestBlock(block, out);
-        }
-        if (msg instanceof ResponseBlock) {
-            ResponseBlock block = (ResponseBlock) msg;
-            CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, block.getVersion());
-            factory.wirteResponseBlock(block, out);
-        }
-        ctx.flush();
     }
 }

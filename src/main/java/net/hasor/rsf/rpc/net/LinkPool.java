@@ -16,16 +16,13 @@
 package net.hasor.rsf.rpc.net;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
-import io.netty.util.internal.ConcurrentSet;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
-import org.more.RepeateException;
 import org.more.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -40,14 +37,12 @@ public class LinkPool {
     private final AtomicBoolean inited = new AtomicBoolean(false);
     private final RsfEnvironment                                 environment;
     private final ConcurrentMap<String, BasicFuture<RsfChannel>> channelMap;
-    private final ConcurrentMap<String, String>                  channelAlias;
-    private final Set<String>                                    outLinks;
+    //private final ConcurrentMap<String, String>                  channelAlias;
     //
     public LinkPool(RsfEnvironment environment) {
         this.environment = environment;
         this.channelMap = new ConcurrentHashMap<String, BasicFuture<RsfChannel>>();
-        this.channelAlias = new ConcurrentHashMap<String, String>();
-        this.outLinks = new ConcurrentSet<String>();
+        //this.channelAlias = new ConcurrentHashMap<String, String>();
     }
     //
     /** 初始化连接池。*/
@@ -98,27 +93,6 @@ public class LinkPool {
         }, timeout);
         return channel;
     }
-    public void newConnection(String hostPortKey, RsfChannel channel) {
-        if (!this.inited.get()) {
-            throw new IllegalStateException("LinkPool not inited.");
-        }
-        BasicFuture<RsfChannel> future = this.findChannel(hostPortKey);
-        if (future == null) {
-            future = this.preConnection(hostPortKey);
-        }
-        if (future.isDone()) {
-            RsfChannel futureChannel = null;
-            try {
-                futureChannel = future.get();
-            } catch (Exception e) {
-                /* 不会有错 */
-            }
-            if (!channel.isSame(futureChannel)) {
-                throw new RepeateException("socket -> " + hostPortKey);
-            }
-        }
-        future.completed(channel);
-    }
     public void closeConnection(String hostPortKey) {
         BasicFuture<RsfChannel> future = this.findChannel(hostPortKey);
         if (future == null) {
@@ -130,6 +104,14 @@ public class LinkPool {
                 future.get().close();
             } catch (Exception e) { /**/ }
         }
+    }
+    public void mappingTo(RsfChannel rsfChannel, String hostPort) {
+        //        String address = rsfChannel.getTarget().getHostPort();
+        //        BasicFuture<RsfChannel> channel = this.findChannel(address);
+        //        if (channel == null || !channel.isDone()) {
+        //            return;
+        //        }
+        //        this.channelAlias.put(hostPort, address);
     }
     //
     /**
