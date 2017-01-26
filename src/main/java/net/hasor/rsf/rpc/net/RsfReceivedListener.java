@@ -14,13 +14,30 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.domain.OptionInfo;
+import net.hasor.rsf.domain.RequestInfo;
+import net.hasor.rsf.domain.ResponseInfo;
 /**
  *
  * @version : 2015年12月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ReceivedListener {
+public abstract class RsfReceivedListener implements ReceivedListener {
+    @Override
+    public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) {
+        if (info instanceof RequestInfo) {
+            this.receivedMessage(rsfChannel.getTarget(), (RequestInfo) info);
+            return;
+        }
+        if (info instanceof ResponseInfo) {
+            this.receivedMessage(rsfChannel.getTarget(), (ResponseInfo) info);
+            return;
+        }
+    }
     /**从远端收到Response消息。*/
-    public void receivedMessage(RsfChannel rsfChannel, OptionInfo info);
+    public abstract void receivedMessage(InterAddress form, ResponseInfo response);
+
+    /**从远端收到RequestInfo消息。*/
+    public abstract void receivedMessage(InterAddress form, RequestInfo request);
 }

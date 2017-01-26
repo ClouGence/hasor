@@ -18,13 +18,12 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import net.hasor.rsf.InterAddress;
-import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.domain.RequestInfo;
-import net.hasor.rsf.domain.ResponseInfo;
-import net.hasor.rsf.domain.RsfException;
+import net.hasor.rsf.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 封装网络连接，并且提供网络数据收发统计。
@@ -33,13 +32,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class RsfChannel {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    private          String        protocol;
-    private final    InterAddress  target;
-    private final    Channel       channel;
-    private final    AtomicBoolean shakeHands;
-    private final    LinkType      linkType;
-    private volatile long          lastSendTime;   //最后数据发送时间
-    private volatile long          sendPackets;    //发送的数据包总数
+    private          String                 protocol;
+    private final    InterAddress           target;
+    private final    Channel                channel;
+    private final    AtomicBoolean          shakeHands;
+    private final    LinkType               linkType;
+    private volatile long                   lastSendTime;   //最后数据发送时间
+    private volatile long                   sendPackets;    //发送的数据包总数
+    private          List<ReceivedListener> listenerList;
     //
     RsfChannel(String protocol, InterAddress target, Channel channel, LinkType linkType) {
         this.protocol = protocol;
@@ -47,6 +47,7 @@ public class RsfChannel {
         this.channel = channel;
         this.shakeHands = new AtomicBoolean(false);
         this.linkType = linkType;
+        this.listenerList = new CopyOnWriteArrayList<ReceivedListener>();
         //
         if (!LinkType.In.equals(linkType)) {
             this.shakeHands.set(true);//连入的连接，需要进行握手之后才能使用
@@ -62,6 +63,18 @@ public class RsfChannel {
     }
     //
     //
+    /**接收到数据*/
+    public void addListener(ReceivedListener receivedListener) {
+        if (!this.listenerList.contains(receivedListener)) {
+            this.listenerList.add(receivedListener);
+        }
+    }
+    /**接收到数据*/
+    void receivedData(OptionInfo object) {
+        for (ReceivedListener listener : this.listenerList) {
+            listener.receivedMessage(this, object);
+        }
+    }
     /**将数据写入 Netty。*/
     public void sendData(final RequestInfo info, final SendCallBack callBack) {
         this.sendData(info.getRequestID(), info, callBack);

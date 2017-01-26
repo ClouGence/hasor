@@ -20,6 +20,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import net.hasor.core.*;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
+import net.hasor.rsf.domain.OptionInfo;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.domain.RsfConstants;
@@ -89,14 +90,14 @@ public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provi
         pool.closeConnection(result.get().getTarget().getHostPort());
         connector.shutdown();
     }
+    //
     @Override
-    public void receivedMessage(InterAddress form, ResponseInfo response) {
-        //
-        System.out.println("receivedMessage[Response] >>>>>>>>> " + response.getRequestID());
-    }
-    @Override
-    public void receivedMessage(InterAddress form, RequestInfo request) {
-        //
-        System.out.println("receivedMessage[Request] >>>>>>>>> " + request.getRequestID());
+    public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) {
+        if (info instanceof RequestInfo) {
+            System.out.println("receivedMessage[Request] >>>>>>>>> " + ((RequestInfo) info).getRequestID());
+        }
+        if (info instanceof ResponseInfo) {
+            System.out.println("receivedMessage[Response] >>>>>>>>> " + ((ResponseInfo) info).getRequestID());
+        }
     }
 }

@@ -26,7 +26,9 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import net.hasor.core.AppContext;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
-import net.hasor.rsf.domain.*;
+import net.hasor.rsf.domain.OptionInfo;
+import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RsfException;
 import org.more.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +56,7 @@ public class Connector extends ChannelInboundHandlerAdapter {
     private final EventLoopGroup   workLoopGroup;
     private final ProtocolHandler  handler;
     public Connector(AppContext appContext, String protocol, InterAddress local, InterAddress gateway,//
-            ReceivedListener receivedListener, LinkPool linkPool, EventLoopGroup workLoopGroup) throws ClassNotFoundException {
+            final ReceivedListener receivedListener, LinkPool linkPool, EventLoopGroup workLoopGroup) throws ClassNotFoundException {
         //
         this.protocol = protocol;
         this.appContext = appContext;
@@ -91,10 +93,9 @@ public class Connector extends ChannelInboundHandlerAdapter {
         this.linkPool.closeConnection(hostPort);
         ctx.close();
     }
-    /** 接收解析好的 RequestInfo、ResponseInfo 对象，并将它们转发到 {@link ReceivedListener}接口中。 */
+    /** 接收解析好的 RequestInfo、ResponseInfo 对象，并将它们转发到 {@link RsfChannel}接收事件中。 */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        InterAddress dataForm = null;
         if (msg instanceof OptionInfo) {
             String hostPort = converToHostProt(ctx);
             BasicFuture<RsfChannel> channel = this.linkPool.findChannel(hostPort);
@@ -103,25 +104,18 @@ public class Connector extends ChannelInboundHandlerAdapter {
                 return;
             }
             RsfChannel rsfChannel = channel.get();
-            dataForm = rsfChannel.getTarget();
-            if (dataForm == null) {
+            if (rsfChannel.getTarget() == null) {
                 this.exceptionCaught(ctx, new RsfException(ProtocolStatus.NetworkError, "the " + hostPort + " connection is not management."));
                 return;
             }
             //
             if (!rsfChannel.isActive()) {
-                return;/*只有活动的连接才能接收数据*/
+                return;
             }
-        }
-        //
-        if (msg instanceof RequestInfo) {
-            this.receivedListener.receivedMessage(dataForm, (RequestInfo) msg);
+            rsfChannel.receivedData((OptionInfo) msg);
             return;
         }
-        if (msg instanceof ResponseInfo) {
-            this.receivedListener.receivedMessage(dataForm, (ResponseInfo) msg);
-            return;
-        }
+        super.channelRead(ctx, msg);
     }
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -135,13 +129,19 @@ public class Connector extends ChannelInboundHandlerAdapter {
         String hostPort = hostAddress + ":" + port;
         this.logger.info("connected form {}", hostPort);
         //
-        Channel channel = ctx.channel();
-        boolean accept = this.handler.acceptIn(this, channel);
+        InterAddress target = new InterAddress(this.protocol, hostAddress, port, "unknown");
+        BasicFuture<RsfChannel> future = this.linkPool.preConnection(hostPort);
+        RsfChannel rsfChannel = null;
+        if (future.isDone()) {
+            rsfChannel = future.get();
+        } else {
+            rsfChannel = new RsfChannel(this.protocol, target, ctx.channel(), LinkType.In);
+            future.completed(rsfChannel);
+        }
+        //
+        boolean accept = this.handler.acceptIn(this, rsfChannel);
         if (accept) {
-            InterAddress target = new InterAddress(this.protocol, hostAddress, port, "unknown");
-            RsfChannel rsfChannel = new RsfChannel(this.protocol, target, channel, LinkType.In);
-            this.linkPool.newConnection(hostPort, rsfChannel);
-            this.handler.active(rsfChannel);
+            rsfChannel.addListener(this.receivedListener);
         } else {
             this.logger.warn("connection refused form {} ,", hostPort);
             this.linkPool.closeConnection(hostPort);
@@ -250,7 +250,6 @@ public class Connector extends ChannelInboundHandlerAdapter {
     public void shutdown() {
         this.localListener.close();
     }
-    //
     //
     private static String converToHostProt(ChannelHandlerContext ctx) {
         InetSocketAddress socketAddress = (InetSocketAddress) ctx.channel().remoteAddress();

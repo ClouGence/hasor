@@ -45,10 +45,10 @@ public class RsfNetManager {
     private final LinkPool               linkPool;          // 网络连接池，负责管理所有网络连接
     private final EventLoopGroup         workLoopGroup;     // I/O线程
     private final NioEventLoopGroup      listenLoopGroup;   // 监听线程
-    private final ReceivedListener       receivedListener;  // 负责汇总所有来自底层网络的 RequestInfo、ResponseInfo消息
+    private final RsfReceivedListener    receivedListener;  // 负责汇总所有来自底层网络的 RequestInfo、ResponseInfo消息
     private final Map<String, Connector> bindListener;      // 不同协议都有自己独立的‘RPC协议连接器’
     //
-    public RsfNetManager(RsfEnvironment rsfEnvironment, ReceivedListener receivedListener) {
+    public RsfNetManager(RsfEnvironment rsfEnvironment, RsfReceivedListener receivedListener) {
         RsfSettings rsfSettings = rsfEnvironment.getSettings();
         this.bindListener = new HashMap<String, Connector>();
         this.linkPool = new LinkPool(rsfEnvironment);

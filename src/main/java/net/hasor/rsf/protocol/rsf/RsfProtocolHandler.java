@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.protocol.rsf;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import net.hasor.core.AppContext;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
-import net.hasor.rsf.domain.RequestInfo;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.protocol.rsf.v1.PoolBlock;
 import net.hasor.rsf.rpc.net.Connector;
 import net.hasor.rsf.rpc.net.ProtocolHandler;
@@ -36,17 +33,13 @@ import org.slf4j.LoggerFactory;
 public class RsfProtocolHandler implements ProtocolHandler {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
-    public boolean acceptIn(Connector connector, Channel channel) {
-        return true;
-    }
-    @Override
-    public void active(RsfChannel rsfChannel) {
-        RequestInfo request = new RequestInfo(RsfConstants.Version_1);
-        request.setRequestID(-1);
-        request.setTargetMethod("ASK_HOST_INFO");
-        rsfChannel.sendData(request, null);//发送请求握手数据包
+    public boolean acceptIn(Connector connector, RsfChannel rsfChannel) {
+        //        RequestInfo request = new RequestInfo(RsfConstants.Version_1);
+        //        request.setRequestID(-1);
+        //        request.setTargetMethod("ASK_HOST_INFO");
+        //        rsfChannel.sendData(request, null);//发送请求握手数据包
         //
-        rsfChannel.activeIn();
+        return rsfChannel.activeIn();
     }
     @Override
     public ChannelHandler[] channelHandler(Connector connector, AppContext appContext) {

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.protocol.hprose;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import net.hasor.core.AppContext;
 import net.hasor.rsf.RsfEnvironment;
@@ -32,12 +31,8 @@ import net.hasor.rsf.rpc.net.RsfDuplexHandler;
  */
 public class HproseProtocolHandler implements ProtocolHandler {
     @Override
-    public boolean acceptIn(Connector connector, Channel channel) {
-        return true;
-    }
-    @Override
-    public void active(RsfChannel rsfChannel) {
-        rsfChannel.activeIn();
+    public boolean acceptIn(Connector connector, RsfChannel rsfChannel) {
+        return rsfChannel.activeIn();
     }
     @Override
     public ChannelHandler[] channelHandler(Connector connector, AppContext appContext) {

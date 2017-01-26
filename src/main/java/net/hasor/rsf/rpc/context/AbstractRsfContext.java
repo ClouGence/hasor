@@ -30,9 +30,9 @@ import net.hasor.rsf.rpc.caller.remote.RemoteRsfCaller;
 import net.hasor.rsf.rpc.caller.remote.RemoteSenderListener;
 import net.hasor.rsf.rpc.client.RpcRsfClient;
 import net.hasor.rsf.rpc.net.Connector;
-import net.hasor.rsf.rpc.net.ReceivedListener;
 import net.hasor.rsf.rpc.net.RsfChannel;
 import net.hasor.rsf.rpc.net.RsfNetManager;
+import net.hasor.rsf.rpc.net.RsfReceivedListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -231,7 +231,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
     //
     //
     /*接收到网络数据 & 发送网络数据*/
-    private class Transport implements ReceivedListener, RemoteSenderListener {
+    private class Transport extends RsfReceivedListener implements RemoteSenderListener {
         @Override
         public void receivedMessage(InterAddress form, ResponseInfo response) {
             rsfCaller.putResponse(response);

@@ -21,9 +21,9 @@ import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
-import net.hasor.rsf.rpc.net.ReceivedListener;
 import net.hasor.rsf.rpc.net.RsfChannel;
 import net.hasor.rsf.rpc.net.RsfNetManager;
+import net.hasor.rsf.rpc.net.RsfReceivedListener;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ import java.util.concurrent.ExecutionException;
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class NetworkTest implements Provider<RsfEnvironment>, ReceivedListener {
+public class NetworkTest extends RsfReceivedListener implements Provider<RsfEnvironment> {
     private RsfEnvironment rsfEnv;
     @Override
     public RsfEnvironment get() {
