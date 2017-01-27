@@ -21,7 +21,6 @@ import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.OptionInfo;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.ResponseInfo;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.protocol.rsf.v1.PoolBlock;
 import net.hasor.rsf.rpc.net.*;
 import org.more.future.BasicFuture;
@@ -68,7 +67,7 @@ public class RsfProtocolHandler implements ProtocolHandler {
             interAddress = connector.getBindAddress();
         }
         InterAddress publishAddress = interAddress;
-        ResponseInfo options = new ResponseInfo(RsfConstants.Version_1);
+        ResponseInfo options = new ResponseInfo();
         options.setRequestID(-1);
         options.setStatus(ProtocolStatus.OK);
         options.addOption("SERVER_INFO", publishAddress.toHostSchema());

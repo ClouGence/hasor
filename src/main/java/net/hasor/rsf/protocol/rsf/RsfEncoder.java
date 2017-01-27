@@ -20,6 +20,7 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
+import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.protocol.rsf.v1.RequestBlock;
 import net.hasor.rsf.protocol.rsf.v1.ResponseBlock;
 /**
@@ -36,25 +37,25 @@ public class RsfEncoder extends MessageToByteEncoder<Object> {
         try {
             if (msg instanceof RequestInfo) {
                 RequestInfo info = (RequestInfo) msg;
-                CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, info.getVersion());
+                CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, RsfConstants.Version_1);
                 factory.wirteRequestBlock(factory.buildRequestBlock(info), out);
                 return;
             }
             if (msg instanceof ResponseInfo) {
                 ResponseInfo info = (ResponseInfo) msg;
-                CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, info.getVersion());
+                CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, RsfConstants.Version_1);
                 factory.wirteResponseBlock(factory.buildResponseBlock(info), out);
                 return;
             }
             if (msg instanceof RequestBlock) {
                 RequestBlock block = (RequestBlock) msg;
-                CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, block.getVersion());
+                CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, RsfConstants.Version_1);
                 factory.wirteRequestBlock(block, out);
                 return;
             }
             if (msg instanceof ResponseBlock) {
                 ResponseBlock block = (ResponseBlock) msg;
-                CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, block.getVersion());
+                CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, RsfConstants.Version_1);
                 factory.wirteResponseBlock(block, out);
                 return;
             }

@@ -15,7 +15,6 @@
  */
 package test.net.hasor.rsf.functions;
 import net.hasor.rsf.InterAddress;
-import net.hasor.rsf.address.InterServiceAddress;
 import org.junit.Test;
 
 import java.net.URISyntaxException;
@@ -58,25 +57,6 @@ public class AddressUnitTest {
         InterAddress interAddress2 = new InterAddress("127.0.0.1", 8000, "etc2");
         InterAddress interAddress3 = new InterAddress("rsf://127.0.0.1:8000/etc2");
         InterAddress interAddress4 = new InterAddress("RSF://127.0.0.1:8000/etc2");
-        //
-        boolean eq1 = interAddress1.equals(interAddress2);
-        boolean eq2 = interAddress1.equals(interAddress3);
-        boolean eq3 = interAddress1.equals(interAddress4);
-        //
-        assert eq1 && eq2 && eq3;
-        //
-        System.out.println(eq1 + "\t" + eq2 + "\t" + eq3);
-        //
-        System.out.println(interAddress1);
-        System.out.println(interAddress3);
-        System.out.println(interAddress4);
-    }
-    @Test
-    public void serviceAddress() throws URISyntaxException {
-        InterServiceAddress interAddress1 = new InterServiceAddress("127.0.0.1", 8000, "etc2", "RSF", "net.rsf.MyService", "1.0.0");
-        InterServiceAddress interAddress2 = new InterServiceAddress("127.0.0.1", 8000, "etc2", "RSF", "net.rsf.MyService", "1.0.0");
-        InterServiceAddress interAddress3 = new InterServiceAddress("rsf://127.0.0.1:8000/etc2/RSF/net.rsf.MyService/1.0.0");
-        InterServiceAddress interAddress4 = new InterServiceAddress("RSF://127.0.0.1:8000/etc2/RSF/net.rsf.MyService/1.0.0");
         //
         boolean eq1 = interAddress1.equals(interAddress2);
         boolean eq2 = interAddress1.equals(interAddress3);

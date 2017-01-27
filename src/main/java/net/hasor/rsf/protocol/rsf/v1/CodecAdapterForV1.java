@@ -25,8 +25,6 @@ import net.hasor.rsf.utils.ByteStringCachelUtils;
 
 import java.io.IOException;
 import java.util.List;
-
-import static net.hasor.rsf.domain.RsfConstants.Version_1;
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年11月4日
@@ -133,7 +131,7 @@ public class CodecAdapterForV1 implements CodecAdapter {
     @Override
     public RequestInfo readRequestInfo(ByteBuf frame) throws IOException {
         RequestBlock rsfBlock = this.requestProtocol.decode(frame);
-        RequestInfo info = new RequestInfo(Version_1);
+        RequestInfo info = new RequestInfo();
         //
         //1.基本数据
         info.setRequestID(rsfBlock.getRequestID());
@@ -183,7 +181,7 @@ public class CodecAdapterForV1 implements CodecAdapter {
                 byte[] valData = rsfBlock.readPool(paramVal);
                 //
                 String paramType = ByteStringCachelUtils.fromCache(keyData);
-                info.addParameter(paramType, valData);
+                info.addParameter(paramType, valData, null);
             }
         }
         //
@@ -196,7 +194,7 @@ public class CodecAdapterForV1 implements CodecAdapter {
     @Override
     public ResponseInfo readResponseInfo(ByteBuf frame) throws IOException {
         ResponseBlock rsfBlock = this.responseProtocol.decode(frame);
-        ResponseInfo info = new ResponseInfo(Version_1);
+        ResponseInfo info = new ResponseInfo();
         //
         //1.基本数据
         info.setRequestID(rsfBlock.getRequestID());

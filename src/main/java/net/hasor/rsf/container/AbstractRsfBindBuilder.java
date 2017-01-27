@@ -22,7 +22,6 @@ import net.hasor.core.provider.ClassAwareProvider;
 import net.hasor.core.provider.InfoAwareProvider;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.rsf.*;
-import net.hasor.rsf.address.InterServiceAddress;
 import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.domain.ServiceDomain;
@@ -205,12 +204,12 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         }
         @Override
         public RegisterBuilder<T> bindAddress(URI rsfURI, URI... array) {
-            if (rsfURI != null && (InterServiceAddress.checkFormat(rsfURI) || InterAddress.checkFormat(rsfURI))) {
+            if (rsfURI != null && InterAddress.checkFormat(rsfURI)) {
                 this.bindAddress(new InterAddress(rsfURI));
             }
             if (array.length > 0) {
                 for (URI bindItem : array) {
-                    if (rsfURI != null && (InterServiceAddress.checkFormat(bindItem) || InterAddress.checkFormat(bindItem))) {
+                    if (rsfURI != null && InterAddress.checkFormat(bindItem)) {
                         this.bindAddress(new InterAddress(bindItem));
                     }
                     throw new FormatException(bindItem + " check fail.");

@@ -108,8 +108,8 @@ public abstract class RsfRequestManager {
         String bindID = local.getBindInfo().getBindID();
         Method callMethod = rsfRequest.getMethod();
         int length = info.getReturnData() == null ? 0 : info.getReturnData().length;
-        invLogger.info("response({}) -> version= {}, receiveTime ={}, serializeType ={}, status ={}, dataLength ={}, isMessage ={}, bindID ={}, callMethod ={}.",//
-                requestID, info.getVersion(), info.getReceiveTime(), serializeType, info.getStatus(), length, rsfRequest.isMessage(), bindID, callMethod);
+        invLogger.info("response({}) -> receiveTime ={}, serializeType ={}, status ={}, dataLength ={}, isMessage ={}, bindID ={}, callMethod ={}.",//
+                requestID, info.getReceiveTime(), serializeType, info.getStatus(), length, rsfRequest.isMessage(), bindID, callMethod);
         //
         // - Message 调用
         if (rsfRequest.isMessage()) {

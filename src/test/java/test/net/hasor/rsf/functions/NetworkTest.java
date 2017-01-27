@@ -19,7 +19,6 @@ import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.rsf.rpc.net.RsfChannel;
 import net.hasor.rsf.rpc.net.RsfNetManager;
@@ -56,7 +55,7 @@ public class NetworkTest extends RsfReceivedListener implements Provider<RsfEnvi
         InterAddress local = rsfNetManager.findConnector("rsf").getBindAddress();
         RsfChannel channel = rsfNetManager.getChannel(local).get();
         for (int i = 0; i <= 10; i++) {
-            RequestInfo outRequest = new RequestInfo(RsfConstants.Version_1);
+            RequestInfo outRequest = new RequestInfo();
             outRequest.setMessage(i % 2 == 0);
             outRequest.setClientTimeout(1000);
             outRequest.setReceiveTime(System.nanoTime());
@@ -66,7 +65,7 @@ public class NetworkTest extends RsfReceivedListener implements Provider<RsfEnvi
             outRequest.setServiceName("java.util.List");
             outRequest.setServiceVersion("1.0.0");
             outRequest.setTargetMethod("add");
-            outRequest.addParameter("java.lang.Object", "aaaa".getBytes());
+            outRequest.addParameter("java.lang.Object", "aaaa".getBytes(), null);
             System.out.println("sendData[Request] >>>>>>>>> " + outRequest.getRequestID());
             channel.sendData(outRequest, null);
         }

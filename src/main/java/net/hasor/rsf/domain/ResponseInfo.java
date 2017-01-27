@@ -20,7 +20,6 @@ package net.hasor.rsf.domain;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ResponseInfo extends OptionInfo {
-    private byte   version       = 0;    //版本
     private long   requestID     = 0;    //请求ID
     private long   receiveTime   = 0;    //数据包到达时间
     private short  status        = 0;    //响应状态
@@ -28,13 +27,6 @@ public class ResponseInfo extends OptionInfo {
     private byte[] returnData    = null; //返回数据
     //
     //
-    public ResponseInfo(byte version) {
-        this.version = version;
-    }
-    /**获取使用的版本号。*/
-    public byte getVersion() {
-        return version;
-    }
     /**获取请求ID。*/
     public long getRequestID() {
         return this.requestID;

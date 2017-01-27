@@ -23,7 +23,6 @@ import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.OptionInfo;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.rsf.rpc.net.Connector;
 import net.hasor.rsf.rpc.net.LinkPool;
@@ -70,7 +69,7 @@ public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provi
         connector.connectionTo(local, result);
         for (int i = 0; i <= 10; i++) {
             Thread.sleep(1);
-            RequestInfo outRequest = new RequestInfo(RsfConstants.Version_1);
+            RequestInfo outRequest = new RequestInfo();
             outRequest.setMessage(i % 2 == 0);
             outRequest.setClientTimeout(1000);
             outRequest.setReceiveTime(System.nanoTime());
@@ -80,7 +79,7 @@ public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provi
             outRequest.setServiceName("java.util.List");
             outRequest.setServiceVersion("1.0.0");
             outRequest.setTargetMethod("add");
-            outRequest.addParameter("java.lang.Object", "aaaa".getBytes());
+            outRequest.addParameter("java.lang.Object", "aaaa".getBytes(), null);
             System.out.println("sendData[Request] >>>>>>>>> " + outRequest.getRequestID());
             result.get().sendData(outRequest, null);
         }

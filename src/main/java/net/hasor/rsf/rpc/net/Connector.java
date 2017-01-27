@@ -236,7 +236,7 @@ public class Connector extends ChannelInboundHandlerAdapter implements ReceivedL
         });
         try {
             this.localListener = result.get();
-            logger.info("rsf Server started at {}", this.bindAddress.getHostPort());
+            logger.info("rsf Server started at {}", this.bindAddress);
         } catch (Exception e) {
             logger.error("rsf start listener error: " + e.getMessage(), e);
             throw new RsfException(ProtocolStatus.NetworkError, this.bindAddress.toString() + " -> " + e.getMessage());
@@ -257,7 +257,6 @@ public class Connector extends ChannelInboundHandlerAdapter implements ReceivedL
         this.localListener.close();
     }
     public void mappingTo(RsfChannel rsfChannel, InterAddress interAddress) {
-        //
         rsfChannel.inverseMappingTo(interAddress);
         this.linkPool.mappingTo(rsfChannel, interAddress.getHostPort());
     }

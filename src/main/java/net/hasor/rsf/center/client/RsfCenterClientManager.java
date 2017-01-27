@@ -290,7 +290,7 @@ class RsfCenterClientManager implements TimerTask {
             for (String protocol : protocols) {
                 InterAddress interAddress = this.rsfContext.publishAddress(protocol);
                 String rsfURL = interAddress.toHostSchema();
-                this.logger.info("rsfContext -> doStart , bindAddress : ", rsfURL);
+                this.logger.info("rsfContext -> doStart , bindAddress : {}", rsfURL);
                 if (addressList.length() > 0) {
                     addressList.append(',');
                 }

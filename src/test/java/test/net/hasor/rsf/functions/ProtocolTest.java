@@ -19,7 +19,6 @@ import io.netty.buffer.ByteBufAllocator;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.protocol.rsf.v1.CodecAdapterForV1;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import org.junit.Test;
@@ -37,7 +36,7 @@ public class ProtocolTest {
         CodecAdapterForV1 codecAdapter = new CodecAdapterForV1(rsfEnv);
         //
         //
-        RequestInfo outRequest = new RequestInfo(RsfConstants.Version_1);
+        RequestInfo outRequest = new RequestInfo();
         outRequest.setMessage(true);
         outRequest.setClientTimeout(1000);
         outRequest.setReceiveTime(System.nanoTime());
@@ -47,7 +46,7 @@ public class ProtocolTest {
         outRequest.setServiceName("java.util.List");
         outRequest.setServiceVersion("1.0.0");
         outRequest.setTargetMethod("add");
-        outRequest.addParameter("java.lang.Object", "aaaa".getBytes());
+        outRequest.addParameter("java.lang.Object", "aaaa".getBytes(), null);
         //
         ByteBuf outBuf = ByteBufAllocator.DEFAULT.heapBuffer();
         codecAdapter.wirteRequestBlock(codecAdapter.buildRequestBlock(outRequest), outBuf);
@@ -66,7 +65,7 @@ public class ProtocolTest {
         DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.createAppContext().getEnvironment());
         CodecAdapterForV1 codecAdapter = new CodecAdapterForV1(rsfEnv);
         //
-        ResponseInfo outResponse = new ResponseInfo(RsfConstants.Version_1);
+        ResponseInfo outResponse = new ResponseInfo();
         outResponse.setSerializeType("json");
         outResponse.setRequestID(System.currentTimeMillis());
         outResponse.setReceiveTime(System.currentTimeMillis());

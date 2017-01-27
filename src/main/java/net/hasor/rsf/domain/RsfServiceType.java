@@ -21,6 +21,7 @@ package net.hasor.rsf.domain;
  */
 public enum RsfServiceType {
     /**提供者*/
-    Provider, /**消费者*/
+    Provider,//
+    /**消费者*/
     Consumer
 }

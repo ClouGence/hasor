@@ -87,8 +87,8 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
             throw new IllegalStateException("not running any protocol, please check the configuration.");
         }
         for (String protocol : protocols) {
-            InterAddress interAddress = this.bindAddress(protocol);
-            this.logger.info("rsfContext -> doStart , bindAddress : ", interAddress.toHostSchema());
+            InterAddress interAddress = this.publishAddress(protocol);
+            this.logger.info("rsfContext -> doStart , bindAddress : {}", interAddress.toHostSchema());
         }
     }
     @Override

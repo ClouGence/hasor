@@ -21,8 +21,6 @@ import net.hasor.rsf.domain.RsfRuntimeUtils;
 import org.more.util.StringUtils;
 
 import java.io.IOException;
-
-import static net.hasor.rsf.domain.RsfConstants.Version_1;
 /**
  *
  * @version : 2015年3月28日
@@ -31,7 +29,7 @@ import static net.hasor.rsf.domain.RsfConstants.Version_1;
 public class ProtocolUtils {
     /**将{@link RsfRequest},转换为{@link RequestInfo}。*/
     public static RequestInfo buildRequestInfo(RsfEnvironment env, RsfRequest rsfRequest) throws IOException {
-        RequestInfo info = new RequestInfo(Version_1);
+        RequestInfo info = new RequestInfo();
         RsfBindInfo<?> rsfBindInfo = rsfRequest.getBindInfo();
         String serializeType = rsfRequest.getSerializeType();
         SerializeCoder coder = env.getSerializeCoder(serializeType);
@@ -52,7 +50,7 @@ public class ProtocolUtils {
         for (int i = 0; i < pTypes.length; i++) {
             String typeByte = RsfRuntimeUtils.toAsmType(pTypes[i]);
             byte[] paramByte = coder.encode(pObjects[i]);
-            info.addParameter(typeByte, paramByte);
+            info.addParameter(typeByte, paramByte, pObjects[i]);
         }
         //
         //3.Opt参数
@@ -61,7 +59,7 @@ public class ProtocolUtils {
         return info;
     }
     public static ResponseInfo buildResponseStatus(RsfEnvironment env, long requestID, short status, String errorInfo) {
-        ResponseInfo info = new ResponseInfo(Version_1);
+        ResponseInfo info = new ResponseInfo();
         info.setRequestID(requestID);
         info.setStatus(status);
         if (StringUtils.isNotBlank(errorInfo)) {
@@ -71,7 +69,7 @@ public class ProtocolUtils {
     }
     /**将{@link RsfResponse},转换为{@link ResponseInfo}。*/
     public static ResponseInfo buildResponseInfo(RsfEnvironment env, RsfResponse rsfResponse) throws IOException {
-        ResponseInfo info = new ResponseInfo(Version_1);
+        ResponseInfo info = new ResponseInfo();
         String serializeType = rsfResponse.getSerializeType();
         SerializeCoder coder = env.getSerializeCoder(serializeType);
         byte[] returnData = coder.encode(rsfResponse.getData());

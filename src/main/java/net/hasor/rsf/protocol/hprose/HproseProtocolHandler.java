@@ -16,10 +16,7 @@
 package net.hasor.rsf.protocol.hprose;
 import io.netty.channel.ChannelHandler;
 import net.hasor.core.AppContext;
-import net.hasor.rsf.RsfEnvironment;
-import net.hasor.rsf.protocol.rsf.RsfDecoder;
-import net.hasor.rsf.protocol.rsf.RsfEncoder;
-import net.hasor.rsf.protocol.rsf.v1.PoolBlock;
+import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.rpc.net.Connector;
 import net.hasor.rsf.rpc.net.ProtocolHandler;
 import net.hasor.rsf.rpc.net.RsfChannel;
@@ -36,13 +33,16 @@ public class HproseProtocolHandler implements ProtocolHandler {
     }
     @Override
     public ChannelHandler[] channelHandler(Connector connector, AppContext appContext) {
-        RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);
+        RsfContext rsfContext = appContext.getInstance(RsfContext.class);
         RsfDuplexHandler duplexHandler = new RsfDuplexHandler(  //
-                new RsfDecoder(env, PoolBlock.DataMaxSize),     //
-                new RsfEncoder(env)                             //
+                new HproseDecoder(rsfContext),//
+                new HproseEncoder(rsfContext) //
         );
-        return new ChannelHandler[] {                           //
-                duplexHandler                                   //
-        };
+        return new ChannelHandler[] {
+                //                p.addLast(new ProtobufVarint32FrameDecoder());
+                //        43          p.addLast(new ProtobufDecoder(WorldClockProtocol.Locations.getDefaultInstance()));
+                //        44
+                //        45          p.addLast(new ProtobufVarint32LengthFieldPrepender());
+                duplexHandler };
     }
 }

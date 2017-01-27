@@ -22,7 +22,6 @@ import java.util.List;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RequestInfo extends OptionInfo {
-    private byte         version        = 0;    //版本
     private long         requestID      = 0;    //请求ID
     private long         receiveTime    = 0;    //接收请求（本地时间戳）
     private String       serviceName    = null; //远程服务名
@@ -36,14 +35,9 @@ public class RequestInfo extends OptionInfo {
     private List<byte[]> paramValues    = null; //参数值
     //
     //
-    public RequestInfo(byte version) {
-        this.version = version;
+    public RequestInfo() {
         this.paramTypes = new ArrayList<String>();
         this.paramValues = new ArrayList<byte[]>();
-    }
-    /**获取使用的版本号。*/
-    public byte getVersion() {
-        return version;
     }
     /**获取请求ID。*/
     public long getRequestID() {
@@ -119,7 +113,7 @@ public class RequestInfo extends OptionInfo {
     }
     //
     /**添加请求参数。*/
-    public void addParameter(String paramType, byte[] paramData) {
+    public void addParameter(String paramType, byte[] paramData, Object oriObject) {
         this.paramTypes.add(paramType);
         this.paramValues.add(paramData);
     }
