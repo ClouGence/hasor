@@ -46,7 +46,7 @@ public class RpcResponseProtocolV1 implements Protocol<ResponseBlock> {
     }
     //
     private ByteBuf encodeResponse(ResponseBlock resMsg) {
-        ByteBuf bodyBuf = ByteBufAllocator.DEFAULT.heapBuffer();
+        ByteBuf bodyBuf = ByteBufAllocator.DEFAULT.directBuffer();
         //
         //* --------------------------------------------------------bytes =8
         //* byte[2]  status                               响应状态

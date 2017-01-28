@@ -40,7 +40,7 @@ public class PoolBlock {
     private             ByteBuf poolData    = null;
     //
     public PoolBlock() {
-        poolData = ByteBufAllocator.DEFAULT.heapBuffer();
+        poolData = ByteBufAllocator.DEFAULT.directBuffer();
         //poolData = PooledByteBufAllocator.DEFAULT.heapBuffer();
     }
     public void fillFrom(ByteBuf formData) {

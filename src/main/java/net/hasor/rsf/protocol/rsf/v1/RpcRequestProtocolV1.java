@@ -44,7 +44,7 @@ public class RpcRequestProtocolV1 implements Protocol<RequestBlock> {
     }
     //
     private ByteBuf encodeRequest(RequestBlock reqMsg) {
-        ByteBuf bodyBuf = ByteBufAllocator.DEFAULT.heapBuffer();
+        ByteBuf bodyBuf = ByteBufAllocator.DEFAULT.directBuffer();
         //* --------------------------------------------------------bytes =14
         //* byte[2]  servicesName-(attr-index)            远程服务名
         bodyBuf.writeShort(reqMsg.getServiceName());

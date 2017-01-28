@@ -33,10 +33,16 @@ public interface RsfResponse extends RsfHeader {
     /**发送最终结果(该方法会导致{@link #isResponse()}状态变为 true)。*/
     public void sendData(Object returnObject);
 
-    /**发送最终结果(该方法会导致{@link #isResponse()}状态变为 true)。*/
+    /**
+     * 发送最终结果(该方法会导致{@link #isResponse()}状态变为 true)。
+     * @see net.hasor.rsf.domain.ProtocolStatus
+     */
     public void sendStatus(short status);
 
-    /**发送最终结果(该方法会导致{@link #isResponse()}状态变为 true)。*/
+    /**
+     * 发送最终结果(该方法会导致{@link #isResponse()}状态变为 true)。
+     * @see net.hasor.rsf.domain.ProtocolStatus
+     */
     public void sendStatus(short status, String messageBody);
 
     /**调用的结果是否已经写入客户端。*/

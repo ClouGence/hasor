@@ -42,11 +42,17 @@ public class ResponseInfo extends OptionInfo {
     public long getReceiveTime() {
         return this.receiveTime;
     }
-    /**获取响应状态*/
+    /**
+     * 获取响应状态
+     * @see net.hasor.rsf.domain.ProtocolStatus
+     */
     public short getStatus() {
         return this.status;
     }
-    /**设置响应状态*/
+    /**
+     * 设置响应状态
+     * @see net.hasor.rsf.domain.ProtocolStatus
+     */
     public void setStatus(short status) {
         this.status = status;
     }

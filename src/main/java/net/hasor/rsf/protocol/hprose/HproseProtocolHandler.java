@@ -15,6 +15,10 @@
  */
 package net.hasor.rsf.protocol.hprose;
 import io.netty.channel.ChannelHandler;
+import io.netty.handler.codec.http.HttpRequestDecoder;
+import io.netty.handler.codec.http.HttpRequestEncoder;
+import io.netty.handler.codec.http.HttpResponseDecoder;
+import io.netty.handler.codec.http.HttpResponseEncoder;
 import net.hasor.core.AppContext;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.rpc.net.Connector;
@@ -34,15 +38,17 @@ public class HproseProtocolHandler implements ProtocolHandler {
     @Override
     public ChannelHandler[] channelHandler(Connector connector, AppContext appContext) {
         RsfContext rsfContext = appContext.getInstance(RsfContext.class);
-        RsfDuplexHandler duplexHandler = new RsfDuplexHandler(  //
-                new HproseDecoder(rsfContext),//
-                new HproseEncoder(rsfContext) //
+        RsfDuplexHandler inHandler = new RsfDuplexHandler(  //
+                new HttpRequestDecoder(),   //
+                new HttpResponseEncoder()   //
         );
-        return new ChannelHandler[] {
-                //                p.addLast(new ProtobufVarint32FrameDecoder());
-                //        43          p.addLast(new ProtobufDecoder(WorldClockProtocol.Locations.getDefaultInstance()));
-                //        44
-                //        45          p.addLast(new ProtobufVarint32LengthFieldPrepender());
-                duplexHandler };
+        RsfDuplexHandler outHandler = new RsfDuplexHandler( //
+                new HttpResponseDecoder(),  //
+                new HttpRequestEncoder()    //
+        );
+        return new ChannelHandler[] {           //
+                inHandler,                      //
+                new HproseHttpCoder(rsfContext) //
+        };
     }
 }
