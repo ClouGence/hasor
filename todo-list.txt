@@ -1,3 +1,1 @@
 1.RsfFilter 中 response 一个数据 似乎有问题。
-2.Hprose协议支持
-3.握手机制。

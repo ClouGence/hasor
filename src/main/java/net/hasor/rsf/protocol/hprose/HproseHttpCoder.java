@@ -34,7 +34,7 @@ import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 /**
- * Hprose ResponseInfo -> FullHttpResponse
+ * Hprose
  * @version : 2017年1月26日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -67,7 +67,7 @@ public class HproseHttpCoder extends ChannelDuplexHandler {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof HttpContent) {
-            long requestID = 12345L;
+            long requestID = 12345L;// todo 确定新的 requestID
             HttpContent http = (HttpContent) msg;
             RequestInfo info = HproseUtils.doCall(this.rsfContext, requestID, http.content());
             super.channelRead(ctx, info);

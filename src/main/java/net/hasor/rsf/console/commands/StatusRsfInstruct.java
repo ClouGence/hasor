@@ -49,18 +49,18 @@ public class StatusRsfInstruct implements RsfInstruct {
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 0) {
-            String todoArg = args[0];
-            if (StringUtils.equalsIgnoreCase("on", todoArg)) {
+            String doArg = args[0];
+            if (StringUtils.equalsIgnoreCase("on", doArg)) {
                 rsfContext.online();
                 sw.write("[SUCCEED] switch to online -> Current Status isOnline : " + rsfContext.isOnline());
-            } else if (StringUtils.equalsIgnoreCase("off", todoArg)) {
+            } else if (StringUtils.equalsIgnoreCase("off", doArg)) {
                 rsfContext.offline();
                 sw.write("[SUCCEED] switch to offline -> Current Status isOnline : " + rsfContext.isOnline());
-            } else if (StringUtils.equalsIgnoreCase("info", todoArg)) {
+            } else if (StringUtils.equalsIgnoreCase("info", doArg)) {
                 String status = rsfContext.isOnline() ? "online" : "offline";
                 sw.write("[SUCCEED] application is " + status);
             } else {
-                sw.write("[ERROR] bad args '" + todoArg + "' switch command need 'online' or 'offline'.");
+                sw.write("[ERROR] bad args '" + doArg + "' switch command need 'online' or 'offline'.");
             }
             //
         } else {

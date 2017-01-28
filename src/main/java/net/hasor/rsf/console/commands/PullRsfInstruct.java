@@ -60,23 +60,23 @@ public class PullRsfInstruct implements RsfInstruct {
         if (args != null && args.length > 0) {
             //
             // .准备参数
-            String todoArg = args[0];
+            String doArg = args[0];
             RsfContext rsfContext = request.getRsfContext();
             List<String> servicesList = Collections.emptyList();
             //
             // .确定拉取地址的服务列表
-            if (StringUtils.equalsIgnoreCase("-all", todoArg)) {
+            if (StringUtils.equalsIgnoreCase("-all", doArg)) {
                 //
                 request.writeMessageLine("detail Message:");
                 servicesList = rsfContext.getServiceIDs();
             } else {
                 //
-                RsfBindInfo<Object> info = rsfContext.getServiceInfo(todoArg);
+                RsfBindInfo<Object> info = rsfContext.getServiceInfo(doArg);
                 if (info == null) {
-                    return "[ERROR] the service '" + todoArg + "' is Undefined.";
+                    return "[ERROR] the service '" + doArg + "' is Undefined.";
                 } else {
                     if (info.getServiceType() == RsfServiceType.Provider) {
-                        return "[FAILED] the service '" + todoArg + "' is Provider.";
+                        return "[FAILED] the service '" + doArg + "' is Provider.";
                     }
                     servicesList = Arrays.asList(info.getBindID());
                 }

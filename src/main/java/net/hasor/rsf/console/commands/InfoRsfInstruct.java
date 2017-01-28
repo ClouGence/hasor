@@ -56,8 +56,8 @@ public class InfoRsfInstruct implements RsfInstruct {
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 0) {
-            String todoArg = args[0];
-            if (StringUtils.equalsIgnoreCase("-h", todoArg)) {
+            String doArg = args[0];
+            if (StringUtils.equalsIgnoreCase("-h", doArg)) {
                 sw.write(helpInfo());
                 return sw.toString();
             }
