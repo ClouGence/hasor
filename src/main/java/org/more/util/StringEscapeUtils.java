@@ -142,7 +142,6 @@ public class StringEscapeUtils {
      *
      * @param str String to escape values in, may be null
      * @param escapeSingleQuotes escapes single quotes if <code>true</code>
-     * @param escapeForwardSlash TODO
      * @return the escaped string
      */
     private static String escapeJavaStyleString(String str, boolean escapeSingleQuotes, boolean escapeForwardSlash) {
@@ -164,7 +163,6 @@ public class StringEscapeUtils {
      * @param out write to receieve the escaped string
      * @param str String to escape values in, may be null
      * @param escapeSingleQuote escapes single quotes if <code>true</code>
-     * @param escapeForwardSlash TODO
      * @throws IOException if an IOException occurs
      */
     private static void escapeJavaStyleString(Writer out, String str, boolean escapeSingleQuote, boolean escapeForwardSlash) throws IOException {

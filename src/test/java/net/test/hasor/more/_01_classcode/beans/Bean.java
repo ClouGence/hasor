@@ -30,7 +30,7 @@ public class Bean {
     //    public native long add(int abc, Long lon);
     //    //
     //    public <T extends List<Map<Integer, X>>, Y> void rem(T aa, Y abc) {
-    //        // TODO Auto-generated method stub
+    //       //
     //    }
 }
 // <T::Ljava/util/List<Ljava/util/Map<Ljava/lang/Integer;TX;>;>;>(TT;Ljava/lang/Long;)V

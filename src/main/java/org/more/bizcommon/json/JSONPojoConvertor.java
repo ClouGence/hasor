@@ -135,7 +135,6 @@ public class JSONPojoConvertor implements JSON.Convertor {
         try {
             obj = _pojoClass.newInstance();
         } catch (Exception e) {
-            // TODO return Map instead?
             throw new RuntimeException(e);
         }
         setProps(obj, object);
@@ -152,7 +151,6 @@ public class JSONPojoConvertor implements JSON.Convertor {
                     setter.invoke(obj, entry.getValue());
                     count++;
                 } catch (Exception e) {
-                    // TODO throw exception?
                     logger.warn(_pojoClass.getName() + "#" + setter.getPropertyName() + " not set from " + (entry.getValue().getClass().getName()) + "=" + entry.getValue().toString());
                     log(e);
                 }
@@ -168,7 +166,6 @@ public class JSONPojoConvertor implements JSON.Convertor {
             try {
                 out.add(entry.getKey(), entry.getValue().invoke(obj, GETTER_ARG));
             } catch (Exception e) {
-                // TODO throw exception?
                 logger.warn("{} property '{}' excluded. (errors)", _pojoClass.getName(), entry.getKey());
                 log(e);
             }

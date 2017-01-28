@@ -62,8 +62,8 @@ public final class SqlTimeConverter extends DateTimeConverter {
     }
     /**
      * Return a <code>DateFormat<code> for the Locale.
-     * @param locale TODO
-     * @param timeZone TODO
+     * @param locale local
+     * @param timeZone time zone
      * @return The DateFormat.
      * @since 1.8.0
      */
