@@ -69,17 +69,18 @@ public class HproseUtils {
         }
         // 确定方法
         Method atMethod = null;
+        Class<?>[] parameterTypes = null;
         Object[] args = null;
         try {
             String methodName = request.getTargetMethod();
-            //int argsCount = reader.readInt(HproseTags.TagOpenbrace);
             args = reader.readObjectArray();
             args = (args == null) ? new Object[0] : args;
             Method[] allMethods = serviceInfo.getBindType().getMethods();
             for (Method method : allMethods) {
                 if (!method.getName().equals(methodName))
                     continue;
-                if (args.length != method.getParameterTypes().length)
+                parameterTypes = method.getParameterTypes();
+                if (args.length != parameterTypes.length)
                     continue;
                 atMethod = method;
                 break;
@@ -93,9 +94,11 @@ public class HproseUtils {
             throw new RsfException(ProtocolStatus.Unknown, "error(" + e.getClass() + ") -> " + e.getMessage());
         }
         //
-        for (Class<?> paramType : atMethod.getParameterTypes()) {
-            byte[] paramData = null;
-            request.addParameter(paramType.getName(), paramData);
+        for (int i = 0; i < parameterTypes.length; i++) {
+            Class<?> paramType = parameterTypes[i];
+            byte[] paramBytes = new byte[0];
+            Object paramData = (args.length >= i) ? args[i] : null;
+            request.addParameter(paramType.getName(), paramBytes, paramData);
         }
         //
         return request;

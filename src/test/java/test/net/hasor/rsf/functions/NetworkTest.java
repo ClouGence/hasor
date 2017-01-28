@@ -65,7 +65,7 @@ public class NetworkTest extends RsfReceivedListener implements Provider<RsfEnvi
             outRequest.setServiceName("java.util.List");
             outRequest.setServiceVersion("1.0.0");
             outRequest.setTargetMethod("add");
-            outRequest.addParameter("java.lang.Object", "aaaa".getBytes());
+            outRequest.addParameter("java.lang.Object", "aaaa".getBytes(), null);
             System.out.println("sendData[Request] >>>>>>>>> " + outRequest.getRequestID());
             channel.sendData(outRequest, null);
         }

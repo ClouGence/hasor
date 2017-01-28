@@ -79,7 +79,7 @@ public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provi
             outRequest.setServiceName("java.util.List");
             outRequest.setServiceVersion("1.0.0");
             outRequest.setTargetMethod("add");
-            outRequest.addParameter("java.lang.Object", "aaaa".getBytes());
+            outRequest.addParameter("java.lang.Object", "aaaa".getBytes(), null);
             System.out.println("sendData[Request] >>>>>>>>> " + outRequest.getRequestID());
             result.get().sendData(outRequest, null);
         }

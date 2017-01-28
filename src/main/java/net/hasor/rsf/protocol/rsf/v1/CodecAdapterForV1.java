@@ -56,7 +56,7 @@ public class CodecAdapterForV1 implements CodecAdapter {
         //
         //2.params
         List<String> pTypes = info.getParameterTypes();
-        List<byte[]> pValues = info.getParameterValues();
+        List<byte[]> pValues = info.getParameterBytes();
         if ((pTypes != null && !pTypes.isEmpty()) && (pValues != null && !pValues.isEmpty())) {
             for (int i = 0; i < pTypes.size(); i++) {
                 String typeKey = pTypes.get(i);
@@ -181,7 +181,7 @@ public class CodecAdapterForV1 implements CodecAdapter {
                 byte[] valData = rsfBlock.readPool(paramVal);
                 //
                 String paramType = ByteStringCachelUtils.fromCache(keyData);
-                info.addParameter(paramType, valData);
+                info.addParameter(paramType, valData, null);
             }
         }
         //

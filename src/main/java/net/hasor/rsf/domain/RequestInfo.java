@@ -22,22 +22,24 @@ import java.util.List;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RequestInfo extends OptionInfo {
-    private long         requestID      = 0;    //请求ID
-    private long         receiveTime    = 0;    //接收请求（本地时间戳）
-    private String       serviceName    = null; //远程服务名
-    private String       serviceGroup   = null; //远程服务分组
-    private String       serviceVersion = null; //远程服务版本
-    private String       targetMethod   = null; //远程服务方法名
-    private String       serializeType  = null; //序列化策略
-    private int          clientTimeout  = 0;    //远程调用时最大忍受等待时间
-    private boolean      isMessage      = false;//是否为消息请求
-    private List<String> paramTypes     = null; //参数类型
-    private List<byte[]> paramValues    = null; //参数值
+    private long         requestID       = 0;    //请求ID
+    private long         receiveTime     = 0;    //接收请求（本地时间戳）
+    private String       serviceName     = null; //远程服务名
+    private String       serviceGroup    = null; //远程服务分组
+    private String       serviceVersion  = null; //远程服务版本
+    private String       targetMethod    = null; //远程服务方法名
+    private String       serializeType   = null; //序列化策略
+    private int          clientTimeout   = 0;    //远程调用时最大忍受等待时间
+    private boolean      isMessage       = false;//是否为消息请求
+    private List<String> paramTypes      = null; //参数类型
+    private List<byte[]> paramValueBytes = null; //参数值
+    private List<Object> paramValues     = null; //参数值
     //
     //
     public RequestInfo() {
         this.paramTypes = new ArrayList<String>();
-        this.paramValues = new ArrayList<byte[]>();
+        this.paramValueBytes = new ArrayList<byte[]>();
+        this.paramValues = new ArrayList<Object>();
     }
     /**获取请求ID。*/
     public long getRequestID() {
@@ -113,24 +115,30 @@ public class RequestInfo extends OptionInfo {
     }
     //
     /**添加请求参数。*/
-    public void addParameter(String paramType, byte[] paramData) {
+    public void addParameter(String paramType, byte[] paramByte, Object paramValue) {
         this.paramTypes.add(paramType);
-        this.paramValues.add(paramData);
+        this.paramValues.add(paramValue);
+        this.paramValueBytes.add(paramByte);
     }
     /**添加请求参数。*/
-    public void updateParameter(int index, String paramType, byte[] paramData) {
+    public void updateParameter(int index, String paramType, byte[] paramByte, Object paramValue) {
         if (index < 0 || index > this.paramTypes.size()) {
             throw new IndexOutOfBoundsException("index out of range 0~" + this.paramTypes.size());
         }
         this.paramTypes.set(index, paramType);
-        this.paramValues.set(index, paramData);
+        this.paramValues.set(index, paramValue);
+        this.paramValueBytes.set(index, paramByte);
     }
     /**获取请求参数类型列表。*/
     public List<String> getParameterTypes() {
         return this.paramTypes;
     }
     /**获取请求参数值列表。*/
-    public List<byte[]> getParameterValues() {
+    public List<Object> getParameterValues() {
         return this.paramValues;
+    }
+    /**获取请求参数值列表。*/
+    public List<byte[]> getParameterBytes() {
+        return this.paramValueBytes;
     }
 }
