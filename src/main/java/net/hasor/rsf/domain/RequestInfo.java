@@ -113,7 +113,7 @@ public class RequestInfo extends OptionInfo {
     }
     //
     /**添加请求参数。*/
-    public void addParameter(String paramType, byte[] paramData, Object oriObject) {
+    public void addParameter(String paramType, byte[] paramData) {
         this.paramTypes.add(paramType);
         this.paramValues.add(paramData);
     }

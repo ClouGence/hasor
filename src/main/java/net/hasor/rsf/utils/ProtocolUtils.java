@@ -50,7 +50,7 @@ public class ProtocolUtils {
         for (int i = 0; i < pTypes.length; i++) {
             String typeByte = RsfRuntimeUtils.toAsmType(pTypes[i]);
             byte[] paramByte = coder.encode(pObjects[i]);
-            info.addParameter(typeByte, paramByte, pObjects[i]);
+            info.addParameter(typeByte, paramByte);
         }
         //
         //3.Opt参数

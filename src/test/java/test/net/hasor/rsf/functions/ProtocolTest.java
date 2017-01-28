@@ -46,7 +46,7 @@ public class ProtocolTest {
         outRequest.setServiceName("java.util.List");
         outRequest.setServiceVersion("1.0.0");
         outRequest.setTargetMethod("add");
-        outRequest.addParameter("java.lang.Object", "aaaa".getBytes(), null);
+        outRequest.addParameter("java.lang.Object", "aaaa".getBytes());
         //
         ByteBuf outBuf = ByteBufAllocator.DEFAULT.heapBuffer();
         codecAdapter.wirteRequestBlock(codecAdapter.buildRequestBlock(outRequest), outBuf);

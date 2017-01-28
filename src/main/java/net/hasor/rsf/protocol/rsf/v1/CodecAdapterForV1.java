@@ -181,7 +181,7 @@ public class CodecAdapterForV1 implements CodecAdapter {
                 byte[] valData = rsfBlock.readPool(paramVal);
                 //
                 String paramType = ByteStringCachelUtils.fromCache(keyData);
-                info.addParameter(paramType, valData, null);
+                info.addParameter(paramType, valData);
             }
         }
         //

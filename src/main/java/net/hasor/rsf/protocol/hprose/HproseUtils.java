@@ -72,7 +72,7 @@ public class HproseUtils {
         Object[] args = null;
         try {
             String methodName = request.getTargetMethod();
-            //            int argsCount = reader.readInt(HproseTags.TagOpenbrace);
+            //int argsCount = reader.readInt(HproseTags.TagOpenbrace);
             args = reader.readObjectArray();
             args = (args == null) ? new Object[0] : args;
             Method[] allMethods = serviceInfo.getBindType().getMethods();
@@ -95,7 +95,7 @@ public class HproseUtils {
         //
         for (Class<?> paramType : atMethod.getParameterTypes()) {
             byte[] paramData = null;
-            request.addParameter(paramType.getName(), paramData, null);
+            request.addParameter(paramType.getName(), paramData);
         }
         //
         return request;
