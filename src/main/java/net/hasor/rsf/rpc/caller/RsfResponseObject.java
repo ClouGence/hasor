@@ -49,7 +49,7 @@ public class RsfResponseObject extends OptionInfo implements RsfResponse {
     }
     @Override
     public String getSerializeType() {
-        return this.rsfRequest.getBindInfo().getSerializeType();
+        return this.rsfRequest.getSerializeType();
     }
     @Override
     public Object getData() {

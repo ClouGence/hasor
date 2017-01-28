@@ -104,7 +104,8 @@ public class HproseUtils {
         ByteBuf outBuf = ByteBufAllocator.DEFAULT.directBuffer();
         if (response.getStatus() == ProtocolStatus.OK) {
             outBuf.writeByte((byte) 'R');
-            outBuf.writeBytes("s12\"Hello world!\"z".getBytes());
+            outBuf.writeBytes(response.getReturnData());
+            outBuf.writeByte((byte) 'z');
             //
         } else {
             Map<String, String> errorMsg = new HashMap<String, String>();

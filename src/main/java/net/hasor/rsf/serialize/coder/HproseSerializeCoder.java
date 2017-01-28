@@ -35,7 +35,7 @@ public class HproseSerializeCoder implements SerializeCoder {
     public byte[] encode(Object object) throws IOException {
         ByteArrayOutputStream binary = new ByteArrayOutputStream();
         HproseWriter writer = new HproseWriter(binary);
-        writer.writeObject(object);
+        writer.serialize(object);
         return binary.toByteArray();
     }
     //
@@ -43,6 +43,6 @@ public class HproseSerializeCoder implements SerializeCoder {
         if (bytes == null)
             return null;
         HproseReader reader = new HproseReader(bytes);
-        return reader.readObjectWithoutTag(returnType);
+        return reader.unserialize(returnType);
     }
 }
