@@ -34,7 +34,7 @@ public class HproseUtils {
             throw new RsfException(ProtocolStatus.ProtocolError, "decode callName error -> " + e.getMessage());
         }
         if (!StringUtils.startsWithIgnoreCase(callName, "call://")) {
-            throw new RsfException(ProtocolStatus.ProtocolError, "serviceID format error. for example : call://<服务ID>/<方法名>?<选项参数>");
+            throw new RsfException(ProtocolStatus.ProtocolError, "serviceID format error. for example : call://<服务ID>/<方法名>?<选项参数> ,but ->" + callName);
         }
         // 创建 RequestInfo 对象
         RsfBindInfo<?> serviceInfo = null;
@@ -51,7 +51,7 @@ public class HproseUtils {
             String options = lastParams.length == 2 ? lastParams[1] : null;
             serviceInfo = rsfContext.getServiceInfo(serviceID);
             if (serviceInfo == null) {
-                throw new RsfException(ProtocolStatus.NotFound, "serviceID format error. for example : call://<服务ID>/<方法名>?<选项参数>");
+                throw new RsfException(ProtocolStatus.NotFound, "serviceID format error. for example : call://<服务ID>/<方法名>?<选项参数> ,but ->" + callName);
             }
             //
             request.setServiceGroup(serviceInfo.getBindGroup());
