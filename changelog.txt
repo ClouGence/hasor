@@ -1,4 +1,11 @@
-﻿===== Hasor-Core v3.0.1 (2017-01-29)
+﻿===== Hasor-Core v3.0.2 (2017-01-30)
+* 新增:
+    01.新增 ProviderType 接口，用于确定 Provider 接口的返回值类型。
+    02.MappingToBuilder 新增 3 个 findBindType 方法用于确定 bindType 类型。
+* 修复:
+    01.Fix RuntimeFilter入口类，当没有配置 request/ressponse 编码时引发的异常。
+
+===== Hasor-Core v3.0.1 (2017-01-29)
 * 修复:
     01.Fix DefaultXmlNode在执行配置替换时，属性没有被替换的问题。
 * 改进:

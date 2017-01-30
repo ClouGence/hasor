@@ -421,6 +421,26 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
                     bindType(InMappingDef.class).uniqueName().toInstance(define);
                 }
             }
+            @Override
+            protected Class<Object> findBindType(Class<Object> targetClass, Object target) {
+                if (target instanceof ProviderType) {
+                    return ((ProviderType) target).getType();
+                } else {
+                    return (Class<Object>) target.getClass();
+                }
+            }
+            @Override
+            protected Class<Object> findBindType(Class<Object> targetClass, Class<?> targetKey) {
+                return (Class<Object>) targetKey;
+            }
+            @Override
+            protected Class<Object> findBindType(Class<Object> targetClass, Provider<?> targetProvider) {
+                if (targetProvider instanceof ProviderType) {
+                    return ((ProviderType) targetProvider).getType();
+                } else {
+                    return (Class<Object>) targetProvider.get().getClass();
+                }
+            }
         };
     }
     @Override
@@ -491,23 +511,37 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         @Override
         public void with(final int index, final Class<? extends T> targetKey) {
             Hasor.assertIsNotNull(targetKey);
-            BindInfo<? extends T> info = bindType(this.targetClass).uniqueName().to(targetKey).toInfo();
+            Class<T> bindType = this.findBindType(this.targetClass, targetKey);
+            BindInfo<? extends T> info = bindType(bindType).uniqueName().to(targetKey).toInfo();
             this.with(index, info);
         }
         @Override
         public void with(final int index, final T target) {
             Hasor.assertIsNotNull(target);
-            BindInfo<? extends T> info = bindType(this.targetClass).uniqueName().toInstance(target).toInfo();
+            Class<T> bindType = this.findBindType(this.targetClass, target);
+            BindInfo<? extends T> info = bindType(bindType).uniqueName().toInstance(target).toInfo();
             this.with(index, info);
         }
         @Override
         public void with(final int index, final Provider<? extends T> targetProvider) {
             Hasor.assertIsNotNull(targetProvider);
-            BindInfo<? extends T> info = bindType(this.targetClass).uniqueName().toProvider(targetProvider).toInfo();
+            Class<T> bindType = this.findBindType(this.targetClass, targetProvider);
+            BindInfo<? extends T> info = bindType(bindType).uniqueName().toProvider(targetProvider).toInfo();
             this.with(index, info);
         }
         public List<String> getUriPatterns() {
             return this.uriPatterns;
+        }
+        //
+        //
+        protected Class<T> findBindType(Class<T> targetClass, T target) {
+            return targetClass;
+        }
+        protected Class<T> findBindType(Class<T> targetClass, Class<? extends T> targetKey) {
+            return targetClass;
+        }
+        protected Class<T> findBindType(Class<T> targetClass, Provider<? extends T> targetProvider) {
+            return targetClass;
         }
         public abstract void with(int index, BindInfo<? extends T> targetInfo);
     }

@@ -20,6 +20,7 @@ import net.hasor.web.ServletVersion;
 import net.hasor.web.invoker.ExceuteCaller;
 import net.hasor.web.invoker.InvokerContext;
 import org.more.util.ExceptionUtils;
+import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,9 +94,9 @@ public class RuntimeFilter implements Filter {
         // .设置编码
         HttpServletRequest httpReq = (HttpServletRequest) request;
         HttpServletResponse httpRes = (HttpServletResponse) response;
-        if (this.httpRequestEncoding != null)
+        if (StringUtils.isNotBlank(this.httpRequestEncoding))
             httpReq.setCharacterEncoding(this.httpRequestEncoding);
-        if (this.httpResponseEncoding != null)
+        if (StringUtils.isNotBlank(this.httpResponseEncoding))
             httpRes.setCharacterEncoding(this.httpResponseEncoding);
         //
         // .执行
