@@ -1,4 +1,8 @@
-﻿===== Hasor-Core v3.0.2 (2017-01-30)
+﻿===== Hasor-Core v3.0.3 (2017-02-03)
+* 修复:
+    01.Fix ClassEngine 类在判断 @AopIgnore 时，潜在的一个空指针 bug。该问题会导致启动失败。
+
+===== Hasor-Core v3.0.2 (2017-01-30)
 * 新增:
     01.新增 ProviderType 接口，用于确定 Provider 接口的返回值类型。
     02.MappingToBuilder 新增 3 个 findBindType 方法用于确定 bindType 类型。

@@ -83,6 +83,9 @@ class ClassEngine {
         return false;
     }
     private static boolean testAopIgnore(Package targetPackage, boolean isRoot) {
+        if (targetPackage == null) {
+            return false;
+        }
         AopIgnore aopIgnore = targetPackage.getAnnotation(AopIgnore.class);
         if (aopIgnore != null) {
             if (isRoot) {
