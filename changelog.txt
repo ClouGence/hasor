@@ -1,4 +1,4 @@
-﻿===== Hasor-Core v3.0.3 (2017-02-03)
+﻿===== Hasor-Core v3.0.3 (2017-02-07)
 * 修复:
     01.Fix ClassEngine 类在判断 @AopIgnore 时，潜在的一个空指针 bug。该问题会导致启动失败。
 
@@ -160,11 +160,9 @@
 
 ===== Hasor-Core v2.3.3 (2016-06-16)
 * 新增:
-    01.新增@ImplBy接口，用于方便接口注入。
+    01.新增@ImplBy注解，用于方便接口注入
 
 ===== Hasor-Core v2.3.2 (2016-05-29)
-* 新增:
-    01.新增@ImplBy接口，用于简化接口类型Bind。
 * 改进:
     01.事件机制，callBack.handleComplete的调用实际改为，事件处理结束。
     02.一些方法的注释进行更正。
@@ -193,7 +191,7 @@
 
 ===== Hasor-Core v2.2.0 (2016-02-23)
 * 新增:
-    01.增加Event事件注册插件，简化时间的注册机制。
+    01.增加Event事件注册插件，简化事件的注册机制。
     02.Settings接口增加 addSetting方法和clearSetting方法用来增加和删除配置项。
     03.新增Spring插件，完美与Spring整合。同时支持与Spring的双向事件通知。
         - 支持Hasor的Bean通过Spring获取、支持SpringBean通过Hasor获取。
