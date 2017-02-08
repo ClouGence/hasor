@@ -19,12 +19,13 @@ import java.util.Set;
  * 环境支持
  *
  * 环境变量来源以及加载顺序，靠后顺位会覆盖前一顺位的重复配置。
- * <li>1st，System.getenv()</li>
- * <li>2st，System.getProperties()</li>
- * <li>3st，配置文件"hasor.environmentVar"</li>
- * <li>4st，"Hasor.put*"的配置</li>
- * <li>5st，属性文件"env.config"</li>
+ * <li>1st，配置文件"hasor.environmentVar"</li>
+ * <li>2st，"Hasor.put*"的配置</li>
+ * <li>3st，属性文件"env.config"</li>
+ * <li>4st，System.getProperties()</li>
+ * <li>5st，System.getenv()</li>
  *
+ * 属性文件可以存在下面两个位置：1.%WORK_HOME% 下、2.classpath路径。 WORK_HOME优先classpath。
  * @version : 2013-6-19
  * @author 赵永春 (zyc@hasor.net)
  */
