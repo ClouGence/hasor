@@ -262,14 +262,34 @@ public abstract class AbstractEnvironment implements Environment {
         }
     }
     /**
-     * 1st，配置文件"hasor.environmentVar"
-     * 2st，"Hasor.put*"的配置
-     * 3st，System.getProperties()
-     * 4st，System.getenv()
+     * 1st，System.getProperties()
+     * 2st，System.getenv()
+     * 3st，配置文件"hasor.environmentVar"
+     * 4st，传入的配置
      * 5st，属性文件"env.config"
      */
     private void initEnvConfig(Map<String, String> loadEnvConfig) throws IOException {
-        // .1st，配置文件"hasor.environmentVar"
+        // .1st，System.getProperties()
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug("envVars.reload -> System.getProperties().");
+        }
+        Properties prop = System.getProperties();
+        for (Object propKey : prop.keySet()) {
+            String k = propKey.toString();
+            Object v = prop.get(propKey);
+            if (v != null) {
+                this.envMap.put(k.toUpperCase(), v.toString());
+            }
+        }
+        // .2st，System.getenv()
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug("envVars.reload -> System.getenv().");
+        }
+        Map<String, String> envMap = System.getenv();
+        for (String key : envMap.keySet()) {
+            this.envMap.put(key.toUpperCase(), envMap.get(key));
+        }
+        // .3st，配置文件"hasor.environmentVar"
         if (this.logger.isDebugEnabled()) {
             this.logger.debug("envVars.reload -> settings.");
         }
@@ -291,30 +311,10 @@ public abstract class AbstractEnvironment implements Environment {
             }
             this.envMap.put(envItem.toUpperCase(), settings.getString("hasor.environmentVar." + envItem));
         }
-        // .2st，传入的配置
+        // .4st，传入的配置
         this.logger.info("load 'env.config' use custom , size = " + loadEnvConfig.size());
         for (String name : loadEnvConfig.keySet()) {
             this.envMap.put(name.toUpperCase(), loadEnvConfig.get(name));
-        }
-        // .3st，System.getProperties()
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug("envVars.reload -> System.getProperties().");
-        }
-        Properties prop = System.getProperties();
-        for (Object propKey : prop.keySet()) {
-            String k = propKey.toString();
-            Object v = prop.get(propKey);
-            if (v != null) {
-                this.envMap.put(k.toUpperCase(), v.toString());
-            }
-        }
-        // .4st，System.getenv()
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug("envVars.reload -> System.getenv().");
-        }
-        Map<String, String> envMap = System.getenv();
-        for (String key : envMap.keySet()) {
-            this.envMap.put(key.toUpperCase(), envMap.get(key));
         }
         //
         // .5st，外部属性文件"env.config"
