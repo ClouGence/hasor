@@ -221,7 +221,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             }
             boolean hasInjected = injectFileds.contains(name);
             if (hasInjected) {
-                String logMsg = "doInject, property " + name + " duplicate.";
+                String logMsg = "doInject , " + targetType + " , property " + name + " duplicate.";
                 logger.warn(logMsg);
                 throw new IllegalStateException(logMsg);
             }
