@@ -342,7 +342,10 @@ public abstract class AbstractEnvironment implements Environment {
             properties.load(new InputStreamReader(inStream, Settings.DefaultCharset));
             inStream.close();
             for (String name : properties.stringPropertyNames()) {
-                this.envMap.put(name.toUpperCase(), properties.getProperty(name));
+                String argKey = name.toUpperCase();
+                String argVal = properties.getProperty(name);
+                this.logger.info("load 'env.config' {} -> {}.", argKey, argVal);
+                this.envMap.put(argKey, argVal);
             }
         }
     }
