@@ -289,7 +289,7 @@ public abstract class AbstractEnvironment implements Environment {
                     continue;
                 }
             }
-            this.envMap.put(envItem, settings.getString("hasor.environmentVar." + envItem));
+            this.envMap.put(envItem.toUpperCase(), settings.getString("hasor.environmentVar." + envItem));
         }
         // .2st，传入的配置
         this.logger.info("load 'env.config' use custom , size = " + loadEnvConfig.size());
