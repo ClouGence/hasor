@@ -264,9 +264,9 @@ public abstract class AbstractEnvironment implements Environment {
     /**
      * 1st，配置文件"hasor.environmentVar"
      * 2st，"Hasor.put*"的配置
-     * 3st，属性文件"env.config"
-     * 4st，System.getProperties()
-     * 5st，System.getenv()
+     * 3st，System.getProperties()
+     * 4st，System.getenv()
+     * 5st，属性文件"env.config"
      */
     private void initEnvConfig(Map<String, String> loadEnvConfig) throws IOException {
         // .1st，配置文件"hasor.environmentVar"
@@ -296,7 +296,28 @@ public abstract class AbstractEnvironment implements Environment {
         for (String name : loadEnvConfig.keySet()) {
             this.envMap.put(name.toUpperCase(), loadEnvConfig.get(name));
         }
-        // .3st，外部属性文件"env.config"
+        // .3st，System.getProperties()
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug("envVars.reload -> System.getProperties().");
+        }
+        Properties prop = System.getProperties();
+        for (Object propKey : prop.keySet()) {
+            String k = propKey.toString();
+            Object v = prop.get(propKey);
+            if (v != null) {
+                this.envMap.put(k.toUpperCase(), v.toString());
+            }
+        }
+        // .4st，System.getenv()
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug("envVars.reload -> System.getenv().");
+        }
+        Map<String, String> envMap = System.getenv();
+        for (String key : envMap.keySet()) {
+            this.envMap.put(key.toUpperCase(), envMap.get(key));
+        }
+        //
+        // .5st，外部属性文件"env.config"
         InputStream inStream = null;
         String workHome = this.evalString("%" + Environment.WORK_HOME + "%");
         File envFile = new File(workHome, EVN_FILE_NAME);
@@ -323,26 +344,6 @@ public abstract class AbstractEnvironment implements Environment {
             for (String name : properties.stringPropertyNames()) {
                 this.envMap.put(name.toUpperCase(), properties.getProperty(name));
             }
-        }
-        // .4st，System.getProperties()
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug("envVars.reload -> System.getProperties().");
-        }
-        Properties prop = System.getProperties();
-        for (Object propKey : prop.keySet()) {
-            String k = propKey.toString();
-            Object v = prop.get(propKey);
-            if (v != null) {
-                this.envMap.put(k.toUpperCase(), v.toString());
-            }
-        }
-        // .5st，System.getenv()
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug("envVars.reload -> System.getenv().");
-        }
-        Map<String, String> envMap = System.getenv();
-        for (String key : envMap.keySet()) {
-            this.envMap.put(key.toUpperCase(), envMap.get(key));
         }
     }
     //
