@@ -1,4 +1,11 @@
-﻿===== Hasor-Core v3.0.3 (2017-02-07)
+﻿===== Hasor-Core v3.0.4 (2017-02-?)
+* 改进:
+    01.当依赖注入遇到父子类重名字段引发，duplicate异常时候，打印出冲突的字段名。
+    02.环境变量名不区分大小写。
+    03.AbstractEnvironment，改进“env.config”配置文件的加载改为：先在WORK_HOME下查找，找不到在加载classpath下的。
+    04.启动日志中，打印出“env.config”中所加载的所有信息。
+
+===== Hasor-Core v3.0.3 (2017-02-07)
 * 修复:
     01.Fix ClassEngine 类在判断 @AopIgnore 时，潜在的一个空指针 bug。该问题会导致启动失败。
 
