@@ -121,7 +121,8 @@ abstract class InvokerProcessing implements Runnable {
                 //
             }
         } catch (Throwable e) {
-            String errorInfo = "do request(" + requestID + ") failed -> serializeType(" + serializeType + ") ,serialize error: " + e.getMessage();
+            String errorMessage = "(" + e.getClass().getName() + ")" + e.getMessage();
+            String errorInfo = "do request(" + requestID + ") failed -> serializeType(" + serializeType + ") ,serialize error: " + errorMessage;
             logger.error(errorInfo, e);
             ResponseInfo info = ProtocolUtils.buildResponseStatus(this.rsfEnv, requestID, ProtocolStatus.SerializeError, errorInfo);
             this.sendResponse(info);
@@ -133,7 +134,8 @@ abstract class InvokerProcessing implements Runnable {
             String methodName = this.requestInfo.getTargetMethod();
             targetMethod = bindInfo.getBindType().getMethod(methodName, pTypes);
         } catch (Throwable e) {
-            String errorInfo = "do request(" + requestID + ") failed -> lookup service method error " + e.getMessage();
+            String errorMessage = "(" + e.getClass().getName() + ")" + e.getMessage();
+            String errorInfo = "do request(" + requestID + ") failed -> lookup service method error : " + errorMessage;
             logger.error(errorInfo, e);
             ResponseInfo info = ProtocolUtils.buildResponseStatus(this.rsfEnv, requestID, ProtocolStatus.Forbidden, errorInfo);
             this.sendResponse(info);
@@ -151,7 +153,8 @@ abstract class InvokerProcessing implements Runnable {
             //
             this.sendResponse(rsfResponse);//将Response写入客户端。
         } catch (Throwable e) {
-            String msgLog = "do request(" + requestID + ") failed -> service " + bindInfo.getBindID() + "," + e.getMessage();
+            String errorMessage = "(" + e.getClass().getName() + ")" + e.getMessage();
+            String msgLog = "do request(" + requestID + ") failed -> service " + bindInfo.getBindID() + ", error :" + errorMessage;
             logger.error(msgLog, e);
             ResponseInfo info = ProtocolUtils.buildResponseStatus(this.rsfEnv, requestID, ProtocolStatus.InvokeError, msgLog);
             this.sendResponse(info);
@@ -173,24 +176,28 @@ abstract class InvokerProcessing implements Runnable {
         //
         String serializeType = this.requestInfo.getSerializeType();
         long requestID = rsfResponse.getRequestID();
+        ResponseInfo info = null;
         try {
+            //
             //1.确定序列化器
             SerializeCoder coder = this.rsfEnv.getSerializeCoder(serializeType);
+            //
+            //2.Response对象
             if (coder == null) {
                 String errorInfo = "do request(" + requestID + ") failed -> serializeType(" + serializeType + ") is undefined.";
                 logger.error(errorInfo);
-                ResponseInfo info = ProtocolUtils.buildResponseStatus(this.rsfEnv, requestID, ProtocolStatus.SerializeForbidden, errorInfo);
-                this.sendResponse(info);
-                return;
+                info = ProtocolUtils.buildResponseStatus(this.rsfEnv, requestID, ProtocolStatus.SerializeForbidden, errorInfo);
+            } else {
+                info = ProtocolUtils.buildResponseInfo(this.rsfEnv, rsfResponse);
             }
-            //2.Response对象
-            ResponseInfo info = ProtocolUtils.buildResponseInfo(this.rsfEnv, rsfResponse);
             //
-            this.sendResponse(info);
         } catch (Throwable e) {
-            String errorInfo = "do request(" + requestID + ") failed -> serializeType(" + serializeType + ") ,serialize error: " + e.getMessage();
+            info = null;
+            String errorMessage = "(" + e.getClass().getName() + ")" + e.getMessage();
+            String errorInfo = "do request(" + requestID + ") failed -> serializeType(" + serializeType + ") ,serialize error: " + errorMessage;
             logger.error(errorInfo, e);
-            ResponseInfo info = ProtocolUtils.buildResponseStatus(this.rsfEnv, requestID, ProtocolStatus.SerializeError, errorInfo);
+            info = ProtocolUtils.buildResponseStatus(this.rsfEnv, requestID, ProtocolStatus.SerializeError, errorInfo);
+        } finally {
             this.sendResponse(info);
         }
     }

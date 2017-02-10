@@ -4,10 +4,7 @@ import io.netty.buffer.ByteBufAllocator;
 import net.hasor.libs.com.hprose.io.HproseReader;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.domain.RequestInfo;
-import net.hasor.rsf.domain.ResponseInfo;
-import net.hasor.rsf.domain.RsfException;
+import net.hasor.rsf.domain.*;
 import org.more.bizcommon.json.JSON;
 import org.more.util.StringUtils;
 
@@ -65,7 +62,7 @@ public class HproseUtils {
         } catch (Exception e) {
             if (e instanceof RsfException)
                 throw (RsfException) e;
-            throw new RsfException(ProtocolStatus.Unknown, "error(" + e.getClass() + ") -> " + e.getMessage());
+            throw new RsfException(ProtocolStatus.Unknown, e);
         }
         // 确定方法
         Method atMethod = null;
@@ -91,14 +88,15 @@ public class HproseUtils {
         } catch (Exception e) {
             if (e instanceof RsfException)
                 throw (RsfException) e;
-            throw new RsfException(ProtocolStatus.Unknown, "error(" + e.getClass() + ") -> " + e.getMessage());
+            throw new RsfException(ProtocolStatus.Unknown, e);
         }
         //
         for (int i = 0; i < parameterTypes.length; i++) {
             Class<?> paramType = parameterTypes[i];
             byte[] paramBytes = new byte[0];
             Object paramData = (args.length >= i) ? args[i] : null;
-            request.addParameter(paramType.getName(), paramBytes, paramData);
+            String typeByte = RsfRuntimeUtils.toAsmType(paramType);
+            request.addParameter(typeByte, paramBytes, paramData);
         }
         //
         return request;

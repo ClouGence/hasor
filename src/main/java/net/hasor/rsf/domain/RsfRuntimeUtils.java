@@ -142,7 +142,8 @@ public class RsfRuntimeUtils {
                 logger.error("find method {} of type {} fail -> {}", methodName, serviceType, e);
                 if (e instanceof RuntimeException)
                     throw (RuntimeException) e;
-                throw new RsfException(e.getMessage(), e);
+                String errorMessage = "(" + e.getClass().getName() + ") - " + e.getMessage();
+                throw new RsfException(errorMessage, e);
             }
         }
         return method;
@@ -161,7 +162,8 @@ public class RsfRuntimeUtils {
                 logger.error("find of type {} fail -> {}", typeName, e);
                 if (e instanceof RuntimeException)
                     throw (RuntimeException) e;
-                throw new RsfException(e.getMessage(), e);
+                String errorMessage = "(" + e.getClass().getName() + ") - " + e.getMessage();
+                throw new RsfException(errorMessage, e);
             }
         }
         return type;

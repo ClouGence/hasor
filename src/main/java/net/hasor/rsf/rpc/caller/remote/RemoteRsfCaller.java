@@ -73,7 +73,8 @@ public class RemoteRsfCaller extends RsfCaller {
             invLogger.info("request({}) -> rejected request, queue is full. -> bindID ={}, targetMethod ={}, remoteAddress ={}.", //
                     info.getRequestID(), serviceUniqueName, info.getTargetMethod(), target);
             //
-            String msgLog = "rejected request, queue is full." + e.getMessage();
+            String errorMessage = "(" + e.getClass().getName() + ")" + e.getMessage();
+            String msgLog = "rejected request, queue is full." + errorMessage;
             logger.warn(msgLog, e);
             ResponseInfo resp = ProtocolUtils.buildResponseStatus(rsfEnv, info.getRequestID(), ProtocolStatus.QueueFull, msgLog);
             this.senderListener.sendResponse(target, resp);

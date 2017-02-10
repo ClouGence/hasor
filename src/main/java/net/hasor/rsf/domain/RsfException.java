@@ -31,8 +31,7 @@ public class RsfException extends RuntimeException {
         this.status = status;
     }
     public RsfException(short status, Throwable e) {
-        super(e);
-        this.status = status;
+        this(status, e.getMessage(), e);
     }
     public RsfException(short status, String string, Throwable e) {
         super("(" + status + ") - " + string, e);
