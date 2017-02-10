@@ -185,7 +185,7 @@
 
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
         <!-- 序列器（在修改序列化方式时，需要确保远程和本地都支持） -->
-        <serializeType default="Hessian">
+        <serializeType default="Hprose">
             <!-- JSON-格式序列化 -->
             <serialize name="Json">net.hasor.rsf.serialize.coder.JsonSerializeCoder</serialize>
             <!-- Java-原生序列化 -->
