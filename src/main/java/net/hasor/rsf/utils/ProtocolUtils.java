@@ -47,6 +47,8 @@ public class ProtocolUtils {
         //2.params
         Class<?>[] pTypes = rsfRequest.getParameterTypes();
         Object[] pObjects = rsfRequest.getParameterObject();
+        pTypes = (pTypes == null) ? new Class[0] : pTypes;
+        pObjects = (pObjects == null) ? new Object[0] : pObjects;
         for (int i = 0; i < pTypes.length; i++) {
             String typeByte = RsfRuntimeUtils.toAsmType(pTypes[i]);
             byte[] paramByte = coder.encode(pObjects[i]);

@@ -97,11 +97,11 @@ class RsfRequestFormLocal extends AttributeSet implements RsfRequest {
     }
     @Override
     public Class<?>[] getParameterTypes() {
-        return this.parameterTypes.clone();
+        return this.parameterTypes == null ? new Class[0] : this.parameterTypes.clone();
     }
     @Override
     public Object[] getParameterObject() {
-        return this.parameterObjects.clone();
+        return this.parameterObjects == null ? new Object[0] : this.parameterObjects.clone();
     }
     @Override
     public InterAddress getRemoteAddress() {
