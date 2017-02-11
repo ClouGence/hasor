@@ -1,11 +1,11 @@
 package net.hasor.rsf.protocol.hprose;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import net.hasor.libs.com.hprose.io.HproseReader;
 import net.hasor.libs.com.hprose.io.HproseTags;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.domain.*;
+import net.hasor.rsf.utils.ProtocolUtils;
 import org.more.bizcommon.json.JSON;
 import org.more.util.StringUtils;
 
@@ -25,7 +25,6 @@ import java.util.Map;
 public class HproseUtils implements HproseConstants {
     public static RequestInfo[] doCall(RsfContext rsfContext, ByteBuf content) throws RsfException {
         // call://<服务ID>/<方法名>?<选项参数> 例：call://[RSF]servicename-version/hello
-        byte aByte = content.readByte();
         HproseReader reader = new HproseReader(content.nioBuffer());
         List<RequestInfo> infoArrays = new ArrayList<RequestInfo>();
         //
@@ -155,7 +154,7 @@ public class HproseUtils implements HproseConstants {
         }
     }
     public static ByteBuf doResult(long requestID, ResponseInfo response) {
-        ByteBuf outBuf = ByteBufAllocator.DEFAULT.directBuffer();
+        ByteBuf outBuf = ProtocolUtils.newByteBuf();
         if (response.getStatus() == ProtocolStatus.OK) {
             outBuf.writeByte((byte) 'R');
             outBuf.writeBytes(response.getReturnData());

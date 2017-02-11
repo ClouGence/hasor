@@ -15,8 +15,8 @@
  */
 package net.hasor.rsf.protocol.rsf.v1;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import net.hasor.rsf.protocol.rsf.Protocol;
+import net.hasor.rsf.utils.ProtocolUtils;
 
 import java.io.IOException;
 /**
@@ -46,7 +46,7 @@ public class RpcResponseProtocolV1 implements Protocol<ResponseBlock> {
     }
     //
     private ByteBuf encodeResponse(ResponseBlock resMsg) {
-        ByteBuf bodyBuf = ByteBufAllocator.DEFAULT.directBuffer();
+        ByteBuf bodyBuf = ProtocolUtils.newByteBuf();
         //
         //* --------------------------------------------------------bytes =8
         //* byte[2]  status                               响应状态

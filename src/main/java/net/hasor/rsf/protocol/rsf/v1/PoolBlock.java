@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf.protocol.rsf.v1;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
+import net.hasor.rsf.utils.ProtocolUtils;
 import org.more.util.ArrayUtils;
 /**
  * 池上限为 0~4095条数据，单条数据最大约16MB。
@@ -40,8 +40,7 @@ public class PoolBlock {
     private             ByteBuf poolData    = null;
     //
     public PoolBlock() {
-        poolData = ByteBufAllocator.DEFAULT.directBuffer();
-        //poolData = PooledByteBufAllocator.DEFAULT.heapBuffer();
+        this.poolData = ProtocolUtils.newByteBuf();
     }
     public void fillFrom(ByteBuf formData) {
         if (formData == null) {

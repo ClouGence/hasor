@@ -22,14 +22,19 @@ import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpContent;
+import net.hasor.libs.com.hprose.io.HproseWriter;
+import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.domain.RequestInfo;
-import net.hasor.rsf.domain.ResponseInfo;
-import net.hasor.rsf.domain.RsfException;
+import net.hasor.rsf.domain.*;
 import net.hasor.rsf.utils.ProtocolUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.lang.reflect.Method;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
@@ -67,9 +72,47 @@ public class HproseHttpCoder extends ChannelDuplexHandler {
         try {
             if (msg instanceof HttpContent) {
                 HttpContent http = (HttpContent) msg;
-                RequestInfo[] info = HproseUtils.doCall(this.rsfContext, http.content());
-                if (info != null && info.length > 0) {
-                    super.channelRead(ctx, info[0]);
+                ByteBuf content = http.content();
+                byte aByte = content.readByte();
+                if ((char) aByte == 'z') {
+                    //
+                    Set<String> allMethod = new LinkedHashSet<String>();
+                    allMethod.add("*");
+                    //
+                    // .请求函数列表
+                    List<String> serviceIDs = this.rsfContext.getServiceIDs();
+                    for (String serviceID : serviceIDs) {
+                        RsfBindInfo<?> serviceInfo = this.rsfContext.getServiceInfo(serviceID);
+                        if (serviceInfo.isShadow() || RsfServiceType.Provider == serviceInfo.getServiceType())
+                            continue;
+                        //
+                        Method[] methodArrays = serviceInfo.getBindType().getMethods();
+                        for (Method method : methodArrays) {
+                            StringBuilder define = new StringBuilder("call://");
+                            define = define.append(serviceID).append("/").append(method.getName());
+                            define = define.append("?");
+                            define = define.append("clientTimeout=").append(serviceInfo.getClientTimeout());
+                            allMethod.add(define.toString());
+                        }
+                        //
+                    }
+                    //
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    HproseWriter writer = new HproseWriter(out);
+                    writer.writeArray(allMethod.toArray(new String[allMethod.size()]));
+                    //
+                    ByteBuf outBuf = ProtocolUtils.newByteBuf();
+                    outBuf.writeChar('F');
+                    outBuf.writeBytes(out.toByteArray());
+                    outBuf.writeChar('z');
+                    FullHttpResponse fullHttpResponse = this.newResponse(outBuf);
+                    ctx.writeAndFlush(fullHttpResponse);
+                    //
+                } else if ((char) aByte == 'C') {
+                    // .请求
+                    RequestInfo[] info = HproseUtils.doCall(this.rsfContext, content);
+                    if (info != null && info.length > 0)
+                        super.channelRead(ctx, info[0]);
                 }
                 return;
             }
@@ -86,9 +129,13 @@ public class HproseHttpCoder extends ChannelDuplexHandler {
             ctx.writeAndFlush(fullHttpResponse);
         }
     }
+    //
     private FullHttpResponse newResponse(ResponseInfo response) {
         long requestID = response.getRequestID();
         ByteBuf result = HproseUtils.doResult(requestID, response);
+        return newResponse(result);
+    }
+    private FullHttpResponse newResponse(ByteBuf result) {
         FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1, OK, result);
         httpResponse.headers().set(CONTENT_TYPE, "application/hprose");
         httpResponse.headers().set(CONTENT_LENGTH, result.readableBytes());

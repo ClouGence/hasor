@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.utils;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import net.hasor.rsf.*;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
@@ -82,5 +84,9 @@ public class ProtocolUtils {
         info.addOptionMap(rsfResponse);
         //
         return info;
+    }
+    /**创建ByteBuf*/
+    public static ByteBuf newByteBuf() {
+        return ByteBufAllocator.DEFAULT.heapBuffer();
     }
 }

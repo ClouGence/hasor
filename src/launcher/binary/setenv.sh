@@ -33,6 +33,7 @@ JPDA_SUSPEND="n"
 
 # JVM opts
 JAVA_OPTS="-server"
+JAVA_OPTS="${JAVA_OPTS} -noverify"
 JAVA_OPTS="${JAVA_OPTS} -Xloggc:${LOGS}/gc.log -XX:+PrintGCDetails -XX:+PrintGCDateStamps"
 JAVA_OPTS="${JAVA_OPTS} -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${LOGS}/java.hprof"
 JAVA_OPTS="${JAVA_OPTS} -Djava.awt.headless=true"

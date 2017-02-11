@@ -15,8 +15,8 @@
  */
 package net.hasor.rsf.protocol.rsf.v1;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import net.hasor.rsf.protocol.rsf.Protocol;
+import net.hasor.rsf.utils.ProtocolUtils;
 
 import java.io.IOException;
 /**
@@ -44,7 +44,7 @@ public class RpcRequestProtocolV1 implements Protocol<RequestBlock> {
     }
     //
     private ByteBuf encodeRequest(RequestBlock reqMsg) {
-        ByteBuf bodyBuf = ByteBufAllocator.DEFAULT.directBuffer();
+        ByteBuf bodyBuf = ProtocolUtils.newByteBuf();
         //* --------------------------------------------------------bytes =14
         //* byte[2]  servicesName-(attr-index)            远程服务名
         bodyBuf.writeShort(reqMsg.getServiceName());
