@@ -22,14 +22,16 @@ import java.util.Map;
  * @version : 2017年1月28日
  * @author 赵永春(zyc@hasor.net)
  */
-public class HproseUtils implements HproseTags {
+public class HproseUtils implements HproseConstants {
     public static RequestInfo[] doCall(RsfContext rsfContext, ByteBuf content) throws RsfException {
-        // call://<服务ID>/<方法名>?<选项参数>   例：call://[RSF]servicename-version/hello
+        // call://<服务ID>/<方法名>?<选项参数> 例：call://[RSF]servicename-version/hello
         byte aByte = content.readByte();
         HproseReader reader = new HproseReader(content.nioBuffer());
         List<RequestInfo> infoArrays = new ArrayList<RequestInfo>();
         //
         parseRequest(rsfContext, reader, infoArrays);
+        content.skipBytes(content.readableBytes());
+        //
         return infoArrays.toArray(new RequestInfo[infoArrays.size()]);
     }
     private static void parseRequest(RsfContext rsfContext, HproseReader reader, List<RequestInfo> infoArrays) {
@@ -149,7 +151,7 @@ public class HproseUtils implements HproseTags {
         }
         // .表示是参数引用调用，面对参数引用时候在响应时需要讲参数一同响应给客户端
         if (lastTag == TagTrue) {
-            request.addOption("ref", "true");
+            throw new RsfException(ProtocolStatus.ProtocolError, "hprose ref param, is not support.");
         }
     }
     public static ByteBuf doResult(long requestID, ResponseInfo response) {

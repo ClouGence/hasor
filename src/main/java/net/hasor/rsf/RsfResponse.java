@@ -28,7 +28,6 @@ public interface RsfResponse extends RsfHeader {
 
     /**返回状态*/
     public short getStatus();
-    //
 
     /**发送最终结果(该方法会导致{@link #isResponse()}状态变为 true)。*/
     public void sendData(Object returnObject);

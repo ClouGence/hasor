@@ -26,6 +26,8 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
+import net.hasor.rsf.domain.RsfException;
+import net.hasor.rsf.utils.ProtocolUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,15 +52,11 @@ public class HproseHttpCoder extends ChannelDuplexHandler {
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof ResponseInfo) {
             ResponseInfo response = (ResponseInfo) msg;
-            long requestID = response.getRequestID();
             if (response.getStatus() == ProtocolStatus.Accept) {
                 return;
             }
             //
-            ByteBuf result = HproseUtils.doResult(requestID, response);
-            FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1, OK, result);
-            httpResponse.headers().set(CONTENT_TYPE, "application/hprose");
-            httpResponse.headers().set(CONTENT_LENGTH, result.readableBytes());
+            FullHttpResponse httpResponse = newResponse(response);
             super.write(ctx, httpResponse, promise);
             return;
         }
@@ -66,14 +64,34 @@ public class HproseHttpCoder extends ChannelDuplexHandler {
     }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof HttpContent) {
-            HttpContent http = (HttpContent) msg;
-            RequestInfo[] info = HproseUtils.doCall(this.rsfContext, http.content());
-            if (info != null && info.length > 0) {
-                super.channelRead(ctx, info[0]);
+        try {
+            if (msg instanceof HttpContent) {
+                HttpContent http = (HttpContent) msg;
+                RequestInfo[] info = HproseUtils.doCall(this.rsfContext, http.content());
+                if (info != null && info.length > 0) {
+                    super.channelRead(ctx, info[0]);
+                }
+                return;
             }
-            return;
+            super.channelRead(ctx, msg);
+        } catch (Exception e) {
+            short errorCode = ProtocolStatus.Unknown;
+            String errorMessage = e.getMessage();
+            if (e instanceof RsfException) {
+                errorCode = ((RsfException) e).getStatus();
+                errorMessage = e.getMessage();
+            }
+            ResponseInfo info = ProtocolUtils.buildResponseStatus(rsfContext.getEnvironment(), 0, errorCode, errorMessage);
+            FullHttpResponse fullHttpResponse = this.newResponse(info);
+            ctx.writeAndFlush(fullHttpResponse);
         }
-        super.channelRead(ctx, msg);
+    }
+    private FullHttpResponse newResponse(ResponseInfo response) {
+        long requestID = response.getRequestID();
+        ByteBuf result = HproseUtils.doResult(requestID, response);
+        FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1, OK, result);
+        httpResponse.headers().set(CONTENT_TYPE, "application/hprose");
+        httpResponse.headers().set(CONTENT_LENGTH, result.readableBytes());
+        return httpResponse;
     }
 }

@@ -80,6 +80,7 @@ public class ProtocolUtils {
         info.setSerializeType(serializeType);
         info.setReturnData(returnData);
         info.addOptionMap(rsfResponse);
+        //
         return info;
     }
 }
