@@ -2,6 +2,7 @@ package net.hasor.rsf.protocol.hprose;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import net.hasor.libs.com.hprose.io.HproseReader;
+import net.hasor.libs.com.hprose.io.HproseTags;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.domain.*;
@@ -18,14 +19,15 @@ import java.util.Map;
  * @version : 2017年1月28日
  * @author 赵永春(zyc@hasor.net)
  */
-public class HproseUtils {
-    public static RequestInfo doCall(RsfContext rsfContext, long requestID, ByteBuf content) throws RsfException {
+public class HproseUtils implements HproseTags {
+    public static RequestInfo[] doCall(RsfContext rsfContext, long requestID, ByteBuf content) throws RsfException {
         // call://<服务ID>/<方法名>?<选项参数>   例：call://[RSF]servicename-version/hello
         byte aByte = content.readByte();
         HproseReader reader = new HproseReader(content.nioBuffer());
         String callName = null;
         try {
             callName = reader.readString();
+            reader.reset();
             callName = URLDecoder.decode(callName, "UTF-8");
         } catch (IOException e) {
             throw new RsfException(ProtocolStatus.ProtocolError, "decode callName error -> " + e.getMessage());
@@ -70,7 +72,12 @@ public class HproseUtils {
         Object[] args = null;
         try {
             String methodName = request.getTargetMethod();
-            args = reader.readObjectArray();
+            int tag = reader.checkTags(new StringBuilder().append((char) TagList).append((char) TagEnd).append((char) TagCall).toString());
+            if (tag == HproseTags.TagList) {
+                reader.reset();
+                int count = reader.readInt(HproseTags.TagOpenbrace);
+                args = reader.readArray(count);
+            }
             args = (args == null) ? new Object[0] : args;
             Method[] allMethods = serviceInfo.getBindType().getMethods();
             for (Method method : allMethods) {
@@ -85,11 +92,15 @@ public class HproseUtils {
             if (atMethod == null) {
                 throw new RsfException(ProtocolStatus.NotFound, "serviceID : " + serviceInfo.getBindID() + " ,not found method " + methodName);
             }
+            //
+            tag = reader.checkTags(new StringBuilder().append((char) TagTrue).append((char) TagEnd).append((char) TagCall).toString());
+            //
         } catch (Exception e) {
             if (e instanceof RsfException)
                 throw (RsfException) e;
             throw new RsfException(ProtocolStatus.Unknown, "error(" + e.getClass() + ") -> " + e.getMessage());
         }
+        //
         //
         for (int i = 0; i < parameterTypes.length; i++) {
             Class<?> paramType = parameterTypes[i];
@@ -99,7 +110,7 @@ public class HproseUtils {
             request.addParameter(typeByte, paramBytes, paramData);
         }
         //
-        return request;
+        return new RequestInfo[] { request };
     }
     public static ByteBuf doResult(long requestID, ResponseInfo response) {
         ByteBuf outBuf = ByteBufAllocator.DEFAULT.directBuffer();
