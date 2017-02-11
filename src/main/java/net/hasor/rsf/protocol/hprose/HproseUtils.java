@@ -62,7 +62,7 @@ public class HproseUtils {
         } catch (Exception e) {
             if (e instanceof RsfException)
                 throw (RsfException) e;
-            throw new RsfException(ProtocolStatus.Unknown, e);
+            throw new RsfException(ProtocolStatus.Unknown, "error(" + e.getClass() + ") -> " + e.getMessage());
         }
         // 确定方法
         Method atMethod = null;
@@ -88,7 +88,7 @@ public class HproseUtils {
         } catch (Exception e) {
             if (e instanceof RsfException)
                 throw (RsfException) e;
-            throw new RsfException(ProtocolStatus.Unknown, e);
+            throw new RsfException(ProtocolStatus.Unknown, "error(" + e.getClass() + ") -> " + e.getMessage());
         }
         //
         for (int i = 0; i < parameterTypes.length; i++) {
