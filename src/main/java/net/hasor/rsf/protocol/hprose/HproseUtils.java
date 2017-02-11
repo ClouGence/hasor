@@ -9,6 +9,7 @@ import net.hasor.rsf.domain.*;
 import org.more.bizcommon.json.JSON;
 import org.more.util.StringUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
@@ -79,22 +80,29 @@ public class HproseUtils implements HproseTags {
         int lastTag = 0;
         Method atMethod = null;
         Class<?>[] parameterTypes = null;
-        Object[] args = null;
+        byte[][] args = null;
         try {
+            int argCount = 0;
             String methodName = request.getTargetMethod();
             lastTag = reader.checkTags(new StringBuilder().append((char) TagList).append((char) TagEnd).append((char) TagCall).toString());
             if (lastTag == HproseTags.TagList) {
                 reader.reset();
-                int count = reader.readInt(HproseTags.TagOpenbrace);
-                args = reader.readArray(count);
+                argCount = reader.readInt(HproseTags.TagOpenbrace);
+                args = new byte[argCount][];
+                for (int i = 0; i < argCount; i++) {
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    reader.readRaw(out);
+                    args[i] = out.toByteArray();
+                }
+                reader.readInt(HproseTags.TagClosebrace);
             }
-            args = (args == null) ? new Object[0] : args;
+            args = (args == null) ? new byte[0][] : args;
             Method[] allMethods = serviceInfo.getBindType().getMethods();
             for (Method method : allMethods) {
                 if (!method.getName().equals(methodName))
                     continue;
                 parameterTypes = method.getParameterTypes();
-                if (args.length != parameterTypes.length)
+                if (argCount != parameterTypes.length)
                     continue;
                 atMethod = method;
                 break;
@@ -111,10 +119,10 @@ public class HproseUtils implements HproseTags {
         // .参数处理(isRef是否为引用参数调用 (遇到引用参数方法，会在response时将请求参数一同返回给客户端)
         for (int i = 0; i < parameterTypes.length; i++) {
             Class<?> paramType = parameterTypes[i];
-            byte[] paramBytes = new byte[0];
-            Object paramData = (args.length >= i) ? args[i] : null;
+            byte[] paramBytes = args[i];
+            //Object paramData = (args.length >= i) ? args[i] : null;
             String typeByte = RsfRuntimeUtils.toAsmType(paramType);
-            request.addParameter(typeByte, paramBytes, paramData);
+            request.addParameter(typeByte, paramBytes, null);
         }
         // .请求参数
         infoArrays.add(request);
