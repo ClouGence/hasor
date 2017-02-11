@@ -67,10 +67,11 @@ public class HproseHttpCoder extends ChannelDuplexHandler {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof HttpContent) {
-            long requestID = 12345L;// todo 确定新的 requestID
             HttpContent http = (HttpContent) msg;
-            RequestInfo[] info = HproseUtils.doCall(this.rsfContext, requestID, http.content());
-            super.channelRead(ctx, info);
+            RequestInfo[] info = HproseUtils.doCall(this.rsfContext, http.content());
+            if (info != null && info.length > 0) {
+                super.channelRead(ctx, info[0]);
+            }
             return;
         }
         super.channelRead(ctx, msg);

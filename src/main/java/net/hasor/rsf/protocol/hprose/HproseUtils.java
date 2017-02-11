@@ -12,7 +12,9 @@ import org.more.util.StringUtils;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 /**
  * Hprose 工具
@@ -20,10 +22,17 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  */
 public class HproseUtils implements HproseTags {
-    public static RequestInfo[] doCall(RsfContext rsfContext, long requestID, ByteBuf content) throws RsfException {
+    public static RequestInfo[] doCall(RsfContext rsfContext, ByteBuf content) throws RsfException {
         // call://<服务ID>/<方法名>?<选项参数>   例：call://[RSF]servicename-version/hello
         byte aByte = content.readByte();
         HproseReader reader = new HproseReader(content.nioBuffer());
+        List<RequestInfo> infoArrays = new ArrayList<RequestInfo>();
+        //
+        parseRequest(rsfContext, reader, infoArrays);
+        return infoArrays.toArray(new RequestInfo[infoArrays.size()]);
+    }
+    private static void parseRequest(RsfContext rsfContext, HproseReader reader, List<RequestInfo> infoArrays) {
+        long requestID = 12345;
         String callName = null;
         try {
             callName = reader.readString();
@@ -67,13 +76,14 @@ public class HproseUtils implements HproseTags {
             throw new RsfException(ProtocolStatus.Unknown, "error(" + e.getClass() + ") -> " + e.getMessage());
         }
         // 确定方法
+        int lastTag = 0;
         Method atMethod = null;
         Class<?>[] parameterTypes = null;
         Object[] args = null;
         try {
             String methodName = request.getTargetMethod();
-            int tag = reader.checkTags(new StringBuilder().append((char) TagList).append((char) TagEnd).append((char) TagCall).toString());
-            if (tag == HproseTags.TagList) {
+            lastTag = reader.checkTags(new StringBuilder().append((char) TagList).append((char) TagEnd).append((char) TagCall).toString());
+            if (lastTag == HproseTags.TagList) {
                 reader.reset();
                 int count = reader.readInt(HproseTags.TagOpenbrace);
                 args = reader.readArray(count);
@@ -93,15 +103,12 @@ public class HproseUtils implements HproseTags {
                 throw new RsfException(ProtocolStatus.NotFound, "serviceID : " + serviceInfo.getBindID() + " ,not found method " + methodName);
             }
             //
-            tag = reader.checkTags(new StringBuilder().append((char) TagTrue).append((char) TagEnd).append((char) TagCall).toString());
-            //
         } catch (Exception e) {
             if (e instanceof RsfException)
                 throw (RsfException) e;
             throw new RsfException(ProtocolStatus.Unknown, "error(" + e.getClass() + ") -> " + e.getMessage());
         }
-        //
-        //
+        // .参数处理(isRef是否为引用参数调用 (遇到引用参数方法，会在response时将请求参数一同返回给客户端)
         for (int i = 0; i < parameterTypes.length; i++) {
             Class<?> paramType = parameterTypes[i];
             byte[] paramBytes = new byte[0];
@@ -109,8 +116,33 @@ public class HproseUtils implements HproseTags {
             String typeByte = RsfRuntimeUtils.toAsmType(paramType);
             request.addParameter(typeByte, paramBytes, paramData);
         }
+        // .请求参数
+        infoArrays.add(request);
         //
-        return new RequestInfo[] { request };
+        // .如果最后一个读取到的标签是结束标签那么结束整个解析，否则在读取一个标签。
+        try {
+            if (lastTag == TagEnd)
+                return;
+            lastTag = reader.checkTags(new StringBuilder().append((char) TagTrue).append((char) TagEnd).append((char) TagCall).toString());
+        } catch (Exception e) {
+            if (e instanceof RsfException)
+                throw (RsfException) e;
+            throw new RsfException(ProtocolStatus.SerializeError, "error(" + e.getClass() + ") reader.checkTags -> " + e.getMessage());
+        }
+        //
+        // .当读取的最后一个标签不是结束标签那么继续处理直到遇到结束标签
+        if (lastTag == TagEnd) {
+            return;
+        }
+        // .如果下一个标签还是一个call，表示当前请求是批量调用。
+        if (lastTag == TagCall) {
+            throw new RsfException(ProtocolStatus.ProtocolError, "hprose batch calls, is not support.");
+            //parseRequest(rsfContext, reader, infoArrays);
+        }
+        // .表示是参数引用调用，面对参数引用时候在响应时需要讲参数一同响应给客户端
+        if (lastTag == TagTrue) {
+            request.addOption("ref", "true");
+        }
     }
     public static ByteBuf doResult(long requestID, ResponseInfo response) {
         ByteBuf outBuf = ByteBufAllocator.DEFAULT.directBuffer();
