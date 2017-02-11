@@ -116,7 +116,7 @@ public class HproseHttpCoder extends ChannelDuplexHandler {
         List<String> serviceIDs = this.rsfContext.getServiceIDs();
         for (String serviceID : serviceIDs) {
             RsfBindInfo<?> serviceInfo = this.rsfContext.getServiceInfo(serviceID);
-            if (serviceInfo.isShadow() || RsfServiceType.Provider == serviceInfo.getServiceType())
+            if (serviceInfo.isShadow() || RsfServiceType.Provider != serviceInfo.getServiceType())
                 continue;
             //
             Method[] methodArrays = serviceInfo.getBindType().getMethods();
