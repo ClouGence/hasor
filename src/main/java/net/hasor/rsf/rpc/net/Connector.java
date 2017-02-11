@@ -170,16 +170,17 @@ public class Connector extends ChannelInboundHandlerAdapter implements ReceivedL
     /** 连接到远程机器 */
     public void connectionTo(final InterAddress hostAddress, final BasicFuture<RsfChannel> result) {
         //
-        ChannelHandler[] handlerArrays = this.channelHandler();
-        final ArrayList<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
-        handlers.addAll(Arrays.asList(handlerArrays));  // 编码解码器
-        handlers.add(this);                             // 转发RequestInfo、ResponseInfo到RSF
         //
         Bootstrap boot = new Bootstrap();
         boot.group(this.workLoopGroup);
         boot.channel(NioSocketChannel.class);
         boot.handler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
+                ChannelHandler[] handlerArrays = channelHandler();
+                ArrayList<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
+                handlers.addAll(Arrays.asList(handlerArrays));            // 编码解码器
+                handlers.add(Connector.this);                             // 转发RequestInfo、ResponseInfo到RSF
+                //
                 ch.pipeline().addLast(handlers.toArray(new ChannelHandler[handlers.size()]));
             }
         });
@@ -205,16 +206,16 @@ public class Connector extends ChannelInboundHandlerAdapter implements ReceivedL
      */
     public void startListener(NioEventLoopGroup listenLoopGroup) {
         //
-        ChannelHandler[] handlerArrays = this.channelHandler();
-        final ArrayList<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
-        handlers.addAll(Arrays.asList(handlerArrays));  // 编码解码器
-        handlers.add(this);                             // 转发RequestInfo、ResponseInfo到RSF
-        //
         ServerBootstrap boot = new ServerBootstrap();
         boot.group(listenLoopGroup, this.workLoopGroup);
         boot.channel(NioServerSocketChannel.class);
         boot.childHandler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
+                ChannelHandler[] handlerArrays = channelHandler();
+                ArrayList<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
+                handlers.addAll(Arrays.asList(handlerArrays));            // 编码解码器
+                handlers.add(Connector.this);                             // 转发RequestInfo、ResponseInfo到RSF
+                //
                 ch.pipeline().addLast(handlers.toArray(new ChannelHandler[handlers.size()]));
             }
         });
