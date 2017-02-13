@@ -15,14 +15,14 @@
  */
 package net.test.hasor.more._01_classcode;
 import net.test.hasor.more._01_classcode.beans.Bean;
-import org.more.classcode.AbstractClassConfig;
-import org.more.classcode.aop.AopClassConfig;
-import org.more.classcode.aop.AopInterceptor;
-import org.more.classcode.aop.AopInvocation;
-import org.more.classcode.delegate.faces.DefaultMethodDelegate;
-import org.more.classcode.delegate.faces.MethodClassConfig;
-import org.more.classcode.delegate.property.PropertyClassConfig;
-import org.more.classcode.delegate.property.SimplePropertyDelegate;
+import net.hasor.core.classcode.AbstractClassConfig;
+import net.hasor.core.classcode.aop.AopClassConfig;
+import net.hasor.core.classcode.aop.AopInterceptor;
+import net.hasor.core.classcode.aop.AopInvocation;
+import net.hasor.core.classcode.delegate.faces.DefaultMethodDelegate;
+import net.hasor.core.classcode.delegate.faces.MethodClassConfig;
+import net.hasor.core.classcode.delegate.property.PropertyClassConfig;
+import net.hasor.core.classcode.delegate.property.SimplePropertyDelegate;
 
 import java.beans.PropertyDescriptor;
 import java.io.FileOutputStream;

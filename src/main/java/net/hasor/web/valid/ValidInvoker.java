@@ -15,7 +15,6 @@
  */
 package net.hasor.web.valid;
 import net.hasor.web.Invoker;
-import org.more.bizcommon.Message;
 
 import java.util.List;
 /**
@@ -30,7 +29,7 @@ public interface ValidInvoker extends Invoker {
     public List<String> validKeys();
 
     /**获取某个key下验证失败信息。*/
-    public List<Message> validErrors(String messageKey);
+    public List<String> validErrors(String messageKey);
 
     /**是否通过验证。*/
     public boolean isValid();

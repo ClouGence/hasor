@@ -22,6 +22,7 @@ import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.listener.ListenerPipeline;
 import net.hasor.web.listener.ManagedListenerPipeline;
+import net.hasor.web.mime.MimeTypeSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

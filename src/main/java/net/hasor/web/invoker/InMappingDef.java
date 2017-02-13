@@ -16,11 +16,10 @@
 package net.hasor.web.invoker;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
+import net.hasor.core.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Async;
 import net.hasor.web.annotation.HttpMethod;
-import org.more.bizcommon.json.JSON;
-import org.more.util.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -186,6 +185,6 @@ public class InMappingDef implements InMapping {
     @Override
     public String toString() {
         return String.format("pattern=%s ,methodSet=%s ,type %s", //
-                this.mappingTo, JSON.toString(this.httpMapping.keySet()), this.getTargetType());
+                this.mappingTo, StringUtils.join(this.httpMapping.keySet().toArray(), ","), this.getTargetType());
     }
 }

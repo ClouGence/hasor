@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.plugins.spring.parser;
+import net.hasor.core.utils.StringUtils;
 import net.hasor.plugins.spring.factory.HasorBean;
-import org.more.util.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -54,7 +54,7 @@ class BeanDefinitionParser extends AbstractHasorDefinitionParser {
         if (StringUtils.isBlank(factoryID)) {
             factoryID = StringUtils.isBlank(this.factoryID) ? defaultHasorContextBeanName() : this.factoryID;
         }
-        if (org.more.util.StringUtils.isNotBlank(refID) || org.more.util.StringUtils.isNotBlank(refType)) {
+        if (StringUtils.isNotBlank(refID) || StringUtils.isNotBlank(refType)) {
             builder.addPropertyReference("factory", factoryID);
             builder.addPropertyValue("refID", refID);
             //

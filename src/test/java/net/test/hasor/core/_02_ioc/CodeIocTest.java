@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.test.hasor.core._02_ioc;
+import com.alibaba.fastjson.JSON;
 import net.hasor.core.*;
 import net.test.hasor.core._01_bean.pojo.PojoBean;
 import net.test.hasor.core._01_bean.pojo.PojoBeanFactory;
 import net.test.hasor.core._01_bean.pojo.PojoInfo;
 import net.test.hasor.core._02_ioc.example.IocBean;
 import org.junit.Test;
-import org.more.bizcommon.json.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -55,7 +55,7 @@ public class CodeIocTest {
         logger.debug("---------------------------------------------");
         //
         PojoInfo myBean = appContext.getInstance(PojoInfo.class);
-        logger.debug(JSON.toString(myBean));
+        logger.debug(JSON.toJSONString(myBean));
         assert myBean.getName().equals("娇娇");
         assert myBean.getAddress().equals("我的家里");
     }
@@ -74,7 +74,7 @@ public class CodeIocTest {
         logger.debug("---------------------------------------------");
         //
         IocBean myBean = appContext.getInstance(IocBean.class);
-        logger.debug(JSON.toString(myBean));
+        logger.debug(JSON.toJSONString(myBean));
         assert myBean.getIocBean() != null;
         assert myBean.getIocBean().getName().equals("娇娇");
     }
@@ -91,7 +91,7 @@ public class CodeIocTest {
         logger.debug("---------------------------------------------");
         //
         IocBean myBean = appContext.getInstance(IocBean.class);
-        logger.debug(JSON.toString(myBean));
+        logger.debug(JSON.toJSONString(myBean));
         assert PojoBeanFactory.called;
         assert myBean.getIocBean() != null;
         PojoBeanFactory.called = false;

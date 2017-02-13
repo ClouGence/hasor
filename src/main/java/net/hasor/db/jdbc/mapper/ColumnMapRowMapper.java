@@ -16,7 +16,7 @@
 package net.hasor.db.jdbc.mapper;
 import net.hasor.db.jdbc.JdbcOperations;
 import net.hasor.db.jdbc.RowMapper;
-import org.more.util.map.LinkedCaseInsensitiveMap;
+import net.hasor.db.jdbc.result.LinkedCaseInsensitiveMap;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;

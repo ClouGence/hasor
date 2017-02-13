@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.test.hasor.core._02_ioc;
+import com.alibaba.fastjson.JSON;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
@@ -24,7 +25,6 @@ import net.test.hasor.core._02_ioc.example.AnnoIocBean;
 import net.test.hasor.core._02_ioc.example.CustomIocBean;
 import net.test.hasor.core._02_ioc.example.NameIocBean;
 import org.junit.Test;
-import org.more.bizcommon.json.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -54,17 +54,17 @@ public class AnnoIocTest {
         logger.debug("---------------------------------------------");
         //
         NameIocBean myBean1 = appContext.getInstance(NameIocBean.class);
-        logger.debug("myBean : " + JSON.toString(myBean1));
+        logger.debug("myBean : " + JSON.toJSONString(myBean1));
         assert myBean1.getIocBeanA().getName().equals("娇娇");
         assert myBean1.getIocBeanB().getName().equals("花花");
         //
         CustomIocBean myBean2 = appContext.getInstance(CustomIocBean.class);
-        logger.debug("myBean : " + JSON.toString(myBean2));
+        logger.debug("myBean : " + JSON.toJSONString(myBean2));
         assert myBean2.iocBeanTest == null;
         assert myBean2.iocBean != null;
         //
         AnnoIocBean myBean3 = appContext.getInstance(AnnoIocBean.class);
-        logger.debug("myBean : " + JSON.toString(myBean3));
+        logger.debug("myBean : " + JSON.toJSONString(myBean3));
         assert myBean3.getMyName().equals("赵永春"); // <- 来源于 simple-config.xml
     }
 }

@@ -18,9 +18,9 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import org.more.util.ExceptionUtils;
-import org.more.util.ResourcesUtils;
-import org.more.util.StringUtils;
+import net.hasor.core.utils.ExceptionUtils;
+import net.hasor.core.utils.ResourcesUtils;
+import net.hasor.core.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -108,33 +108,25 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, //
             moduleList = new ArrayList<Module>();
         }
         // - AppContext
-        try {
-            moduleList.add(this);
-            Module[] moduleArrays = moduleList.toArray(new Module[moduleList.size()]);
-            Resource resource = null;
-            if (StringUtils.isNotBlank(config)) {
-                resource = this.applicationContext.getResource(config);
-            }
-            //
-            PropertiesLoaderSupport propertiesLoaderSupport = null;
-            if (this.applicationContext.containsBean(this.refProperties)) {
-                Object obj = this.applicationContext.getBean(this.refProperties);
-                if (obj instanceof PropertiesLoaderSupport) {
-                    propertiesLoaderSupport = (PropertiesLoaderSupport) obj;
-                }
-            }
-            //
-            this.appContext = createAppContext(this.applicationContext, resource, propertiesLoaderSupport, moduleArrays);
-        } catch (Throwable e) {
-            if (e instanceof Exception) {
-                throw (Exception) e;
-            } else {
-                throw ExceptionUtils.toRuntimeException(e);
+        moduleList.add(this);
+        Module[] moduleArrays = moduleList.toArray(new Module[moduleList.size()]);
+        Resource resource = null;
+        if (StringUtils.isNotBlank(config)) {
+            resource = this.applicationContext.getResource(config);
+        }
+        //
+        PropertiesLoaderSupport propertiesLoaderSupport = null;
+        if (this.applicationContext.containsBean(this.refProperties)) {
+            Object obj = this.applicationContext.getBean(this.refProperties);
+            if (obj instanceof PropertiesLoaderSupport) {
+                propertiesLoaderSupport = (PropertiesLoaderSupport) obj;
             }
         }
+        //
+        this.appContext = createAppContext(this.applicationContext, resource, propertiesLoaderSupport, moduleArrays);
     }
     /**用简易的方式创建{@link AppContext}容器。*/
-    protected AppContext createAppContext(ApplicationContext context, Resource resource, final PropertiesLoaderSupport envProperties, final Module... modules) throws Throwable {
+    protected AppContext createAppContext(ApplicationContext context, Resource resource, final PropertiesLoaderSupport envProperties, final Module... modules) throws Exception {
         //
         // .获取所有 Spring 的属性配置
         HashMap<String, String> envMap = new HashMap<String, String>();

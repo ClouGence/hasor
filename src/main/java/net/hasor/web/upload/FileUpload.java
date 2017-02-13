@@ -16,14 +16,14 @@
  */
 package net.hasor.web.upload;
 import net.hasor.core.Settings;
+import net.hasor.core.utils.ExceptionUtils;
+import net.hasor.core.utils.errors.FormatException;
 import net.hasor.web.*;
 import net.hasor.web.FileUploadException;
 import net.hasor.web.upload.util.Closeable;
 import net.hasor.web.upload.util.HeadersSet;
 import net.hasor.web.upload.util.LimitedInputStream;
 import net.hasor.web.upload.util.Streams;
-import org.more.FormatException;
-import org.more.util.ExceptionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;

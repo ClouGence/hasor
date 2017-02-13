@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.test.hasor.core._01_bean;
+import com.alibaba.fastjson.JSON;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
@@ -22,7 +23,6 @@ import net.test.hasor.core._01_bean.pojo.InitBean;
 import net.test.hasor.core._01_bean.pojo.InitBean2;
 import net.test.hasor.core._01_bean.pojo.StartInitBean;
 import org.junit.Test;
-import org.more.bizcommon.json.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -44,11 +44,11 @@ public class InitBeanTest {
         logger.debug("---------------------------------------------");
         //
         InitBean myBean1 = appContext.getInstance(InitBean.class);
-        logger.debug(JSON.toString(myBean1));
+        logger.debug(JSON.toJSONString(myBean1));
         assert myBean1.called;
         //
         InitBean2 myBean2 = appContext.getInstance(InitBean2.class);
-        logger.debug(JSON.toString(myBean2));
+        logger.debug(JSON.toJSONString(myBean2));
         assert myBean2.called;
     }
     /* Bean */

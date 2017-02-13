@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.web.render;
+import net.hasor.core.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.wrap.InvokerWrap;
-import org.more.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;

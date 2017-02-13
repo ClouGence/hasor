@@ -16,9 +16,8 @@
 package net.hasor.web.render;
 import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
+import net.hasor.core.utils.StringUtils;
 import net.hasor.web.*;
-import org.more.bizcommon.json.JSON;
-import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +63,7 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
             if (renderInfo == null) {
                 continue;
             }
-            logger.info("web -> renderType {} mappingTo {}.", JSON.toString(renderInfo.getRenderSet()), renderInfo.toString());
+            logger.info("web -> renderType {} mappingTo {}.", StringUtils.join(renderInfo.getRenderSet().toArray(), ","), renderInfo.toString());
             String renderInfoID = renderInfo.getID();
             engineMap.put(renderInfoID, renderInfo.newEngine(appContext));
             //

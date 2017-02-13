@@ -18,9 +18,9 @@ import net.test.hasor.more._01_classcode.beans.TestBean;
 import net.test.hasor.more._01_classcode.beans.TestBean2;
 import net.test.hasor.more._01_classcode.beans.TestBean2_Face;
 import org.junit.Test;
-import org.more.classcode.aop.AopClassConfig;
-import org.more.classcode.aop.AopInterceptor;
-import org.more.classcode.aop.AopInvocation;
+import net.hasor.core.classcode.aop.AopClassConfig;
+import net.hasor.core.classcode.aop.AopInterceptor;
+import net.hasor.core.classcode.aop.AopInvocation;
 /**
  *
  * @version 2010-8-25

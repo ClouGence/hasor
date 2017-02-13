@@ -15,14 +15,13 @@
  */
 package net.hasor.db.jdbc.core;
 import net.hasor.core.Hasor;
+import net.hasor.core.utils.IOUtils;
+import net.hasor.core.utils.ResourcesUtils;
 import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.mapper.BeanPropertyRowMapper;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
-import org.more.util.ArrayUtils;
-import org.more.util.ResourcesUtils;
-import org.more.util.io.IOUtils;
-import org.more.util.map.LinkedCaseInsensitiveMap;
+import net.hasor.db.jdbc.result.LinkedCaseInsensitiveMap;
 
 import javax.sql.DataSource;
 import java.io.*;
@@ -608,7 +607,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     //
     @Override
     public int[] batchUpdate(final String[] sql) throws SQLException {
-        if (ArrayUtils.isEmpty(sql)) {
+        if (sql == null || sql.length == 0) {
             throw new NullPointerException("SQL array must not be empty");
         }
         if (logger.isDebugEnabled()) {

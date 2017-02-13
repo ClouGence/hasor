@@ -18,15 +18,14 @@ import net.hasor.core.*;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.core.provider.InfoAwareProvider;
 import net.hasor.core.provider.InstanceProvider;
+import net.hasor.core.utils.BeanUtils;
+import net.hasor.core.utils.StringUtils;
 import net.hasor.web.*;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.definition.*;
 import net.hasor.web.listener.ContextListenerDefinition;
 import net.hasor.web.listener.HttpSessionListenerDefinition;
 import net.hasor.web.startup.RuntimeFilter;
-import org.more.util.ArrayUtils;
-import org.more.util.BeanUtils;
-import org.more.util.StringUtils;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
@@ -189,7 +188,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     @Override
     public FilterBindingBuilder<InvokerFilter> filter(String[] morePatterns) {
-        if (ArrayUtils.isEmpty(morePatterns)) {
+        if (StringUtils.isEmptyArray(morePatterns)) {
             throw new NullPointerException("Filter patterns is empty.");
         }
         return this.filter(null, morePatterns);
@@ -205,7 +204,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     @Override
     public FilterBindingBuilder<InvokerFilter> filterRegex(String[] regexes) {
-        if (ArrayUtils.isEmpty(regexes)) {
+        if (StringUtils.isEmptyArray(regexes)) {
             throw new NullPointerException("Filter regexes is empty.");
         }
         return this.filterRegex(null, regexes);
@@ -222,7 +221,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     @Override
     public FilterBindingBuilder<Filter> jeeFilter(final String[] morePatterns) throws NullPointerException {
-        if (ArrayUtils.isEmpty(morePatterns)) {
+        if (StringUtils.isEmptyArray(morePatterns)) {
             throw new NullPointerException("Filter patterns is empty.");
         }
         return this.jeeFilter(null, morePatterns);
@@ -238,7 +237,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     @Override
     public FilterBindingBuilder<Filter> jeeFilterRegex(final String[] regexes) throws NullPointerException {
-        if (ArrayUtils.isEmpty(regexes)) {
+        if (StringUtils.isEmptyArray(regexes)) {
             throw new NullPointerException("Filter regexes is empty.");
         }
         return this.jeeFilterRegex(null, regexes);
@@ -349,7 +348,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     @Override
     public ServletBindingBuilder jeeServlet(final String[] morePatterns) {
-        if (ArrayUtils.isEmpty(morePatterns)) {
+        if (StringUtils.isEmptyArray(morePatterns)) {
             throw new NullPointerException("Servlet patterns is empty.");
         }
         return this.jeeServlet(null, morePatterns);
@@ -445,7 +444,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     @Override
     public MappingToBindingBuilder<Object> mappingTo(String[] morePatterns) {
-        if (ArrayUtils.isEmpty(morePatterns)) {
+        if (StringUtils.isEmptyArray(morePatterns)) {
             throw new NullPointerException("mappingTo patterns is empty.");
         }
         return this.mappingTo(null, morePatterns);

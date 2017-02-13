@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 package net.test.hasor.core._08_event.listener;
+import com.alibaba.fastjson.JSON;
 import net.hasor.core.EventListener;
-import org.more.builder.ReflectionToStringBuilder;
-import org.more.builder.ToStringStyle;
 /**
  * 收到事件，同时线程沉睡500毫秒延迟。
  * @version : 2014-1-11
@@ -25,6 +24,6 @@ import org.more.builder.ToStringStyle;
 public class MyListener implements EventListener<Object> {
     public void onEvent(String event, Object eventData) throws InterruptedException {
         Thread.sleep(500);
-        System.out.println("Receive Message:" + ReflectionToStringBuilder.toString(eventData, ToStringStyle.SIMPLE_STYLE));
+        System.out.println("Receive Message:" + JSON.toJSONString(eventData));
     }
 };

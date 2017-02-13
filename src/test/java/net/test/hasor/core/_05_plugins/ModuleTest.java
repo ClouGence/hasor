@@ -16,11 +16,10 @@
 package net.test.hasor.core._05_plugins;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.core.utils.StringUtils;
 import net.test.hasor.core._05_plugins.mods.OnLifeModule;
 import net.test.hasor.core._05_plugins.mods.SimpleModule;
 import org.junit.Test;
-import org.more.builder.ReflectionToStringBuilder;
-import org.more.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +38,7 @@ public class ModuleTest {
         logger.debug("---------------------------------------------");
         //
         List<String> says = appContext.findBindingBean(String.class);
-        logger.info("all modules say:{}.", ReflectionToStringBuilder.toString(says, ToStringStyle.SIMPLE_STYLE));
+        logger.info("all modules say:{}.", StringUtils.join(says.toArray(), ","));
         assert says.contains(OnLifeModule.STR);
         assert says.contains(SimpleModule.STR);
     }

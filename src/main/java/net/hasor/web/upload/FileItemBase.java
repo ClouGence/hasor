@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 package net.hasor.web.upload;
+import net.hasor.core.utils.AutoCloseInputStream;
+import net.hasor.core.utils.IOUtils;
 import net.hasor.web.FileItem;
 import net.hasor.web.FileItemHeaders;
 import net.hasor.web.FileItemStream;
 import net.hasor.web.upload.util.Streams;
-import org.more.util.io.AutoCloseInputStream;
-import org.more.util.io.IOUtils;
 
 import java.io.*;
 /**

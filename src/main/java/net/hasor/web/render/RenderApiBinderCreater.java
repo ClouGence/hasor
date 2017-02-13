@@ -19,7 +19,7 @@ import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.core.binder.ApiBinderCreater;
-import org.more.util.StringUtils;
+import net.hasor.core.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

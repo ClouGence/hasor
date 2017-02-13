@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.test.hasor.core._01_bean;
+import com.alibaba.fastjson.JSON;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.test.hasor.core._01_bean.pojo.*;
 import org.junit.Test;
-import org.more.bizcommon.json.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -56,7 +56,7 @@ public class BeanTest {
         //
         PojoBean myBean = appContext.getInstance(PojoBean.class);
         //
-        logger.debug(JSON.toString(myBean));
+        logger.debug(JSON.toJSONString(myBean));
         assert myBean != null;
     }
     //
@@ -76,8 +76,8 @@ public class BeanTest {
         PojoInfo myBean1 = appContext.getInstance(PojoInfo.class);
         IntefaceBean myBean2 = appContext.getInstance(IntefaceBean.class);
         //
-        logger.debug(JSON.toString(myBean1));
-        logger.debug(JSON.toString(myBean2));
+        logger.debug(JSON.toJSONString(myBean1));
+        logger.debug(JSON.toJSONString(myBean2));
         assert myBean1 != null;
         assert myBean2 != null;
         assert myBean1 != myBean2;
@@ -100,8 +100,8 @@ public class BeanTest {
         PojoInfo userA = appContext.findBindingBean("UserA", PojoInfo.class);
         PojoInfo userB = appContext.findBindingBean("UserB", PojoInfo.class);
         //
-        logger.debug("userA :" + JSON.toString(userA));
-        logger.debug("userB :" + JSON.toString(userB));
+        logger.debug("userA :" + JSON.toJSONString(userA));
+        logger.debug("userB :" + JSON.toJSONString(userB));
         assert userA.getName().equals("马A");
         assert userB.getName().equals("小六");
     }
@@ -178,7 +178,7 @@ public class BeanTest {
         PojoInfo objectA = appContext.getInstance(PojoBean.class);
         PojoInfo objectB = appContext.getInstance(PojoBean.class);
         //
-        logger.debug("objectBody :" + JSON.toString(objectA));
+        logger.debug("objectBody :" + JSON.toJSONString(objectA));
         logger.debug("objectA eq objectB = " + (objectA == objectB));
         assert objectA.getName().equals("马大帅");
         assert objectA == objectB;
@@ -203,8 +203,8 @@ public class BeanTest {
         //
         PojoBean myBean1 = appContext.getInstance("myBean1");
         PojoBean myBean2 = appContext.getInstance("myBean2");
-        logger.debug("myBean1 :" + JSON.toString(myBean1));
-        logger.debug("myBean2 :" + JSON.toString(myBean2));
+        logger.debug("myBean1 :" + JSON.toJSONString(myBean1));
+        logger.debug("myBean2 :" + JSON.toJSONString(myBean2));
         assert myBean1 != null && myBean2 != null;
         assert myBean1 != myBean2;
         assert myBean2.getName().equals("刘三姐");
@@ -222,7 +222,7 @@ public class BeanTest {
         logger.debug("---------------------------------------------");
         //
         PojoInfo myBean = appContext.getInstance(PojoInfo.class);
-        logger.debug(JSON.toString(myBean));
+        logger.debug(JSON.toJSONString(myBean));
         assert PojoBeanFactory.called;
         PojoBeanFactory.called = false;
     }

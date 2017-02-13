@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.test.hasor.core._04_scope;
+import com.alibaba.fastjson.JSON;
 import net.hasor.core.*;
 import net.test.hasor.core._01_bean.pojo.PojoBean;
 import net.test.hasor.core._01_bean.pojo.PojoInfo;
 import org.junit.Test;
-import org.more.bizcommon.json.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -44,7 +44,7 @@ public class ScopeTest {
         PojoInfo objectA = appContext.getInstance(PojoBean.class);
         PojoInfo objectB = appContext.getInstance(PojoBean.class);
         //
-        logger.debug("objectBody :" + JSON.toString(objectA));
+        logger.debug("objectBody :" + JSON.toJSONString(objectA));
         logger.debug("objectA eq objectB = " + (objectA == objectB));
         assert objectA == objectB;
         //

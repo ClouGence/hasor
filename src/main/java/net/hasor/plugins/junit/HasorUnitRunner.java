@@ -16,11 +16,11 @@
 package net.hasor.plugins.junit;
 import net.hasor.core.*;
 import net.hasor.core.context.TemplateAppContext;
+import net.hasor.core.utils.BeanUtils;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
-import org.more.util.BeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

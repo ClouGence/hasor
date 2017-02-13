@@ -15,8 +15,8 @@
  */
 package net.hasor.plugins.spring.parser;
 import net.hasor.core.AppContext;
+import net.hasor.core.utils.StringUtils;
 import net.hasor.plugins.spring.factory.SpringFactoryBean;
-import org.more.util.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
@@ -59,18 +59,18 @@ class HasorDefinitionParser extends AbstractHasorDefinitionParser {
         builder.setScope(BeanDefinition.SCOPE_SINGLETON);//单例
         //
         String shareEvent = revertProperty(attributes, "shareEvent");
-        if (org.more.util.StringUtils.isNotBlank(shareEvent)) {
+        if (StringUtils.isNotBlank(shareEvent)) {
             builder.addPropertyValue("shareEvent", Boolean.parseBoolean(shareEvent));
         }
         //
         String startWith = revertProperty(attributes, "startWith");
         String startWithRef = revertProperty(attributes, "startWithRef");
-        if (org.more.util.StringUtils.isNotBlank(startWith) || org.more.util.StringUtils.isNotBlank(startWithRef)) {
+        if (StringUtils.isNotBlank(startWith) || StringUtils.isNotBlank(startWithRef)) {
             ManagedList list = new ManagedList();
             list.setSource(ArrayList.class);
             list.setMergeEnabled(false);
             builder.addPropertyValue("modules", list);
-            if (org.more.util.StringUtils.isNotBlank(startWithRef)) {
+            if (StringUtils.isNotBlank(startWithRef)) {
                 //-startWithRef
                 String[] refs = startWithRef.split(",");
                 for (String refName : refs) {

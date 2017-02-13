@@ -16,8 +16,7 @@
 package net.hasor.core.setting;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.xml.SaxXmlParser;
-import org.more.util.StringUtils;
-import org.more.util.map.Properties;
+import net.hasor.core.utils.StringUtils;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -26,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Properties;
 /***
  * 传入{@link InputStream}的方式获取{@link Settings}接口的支持。
  * @version : 2013-9-8
@@ -81,13 +81,13 @@ public class InputStreamSettings extends AbstractSettings implements IOSettings 
                         entity.inStream.close();
                         if (!properties.isEmpty()) {
                             //
-                            String namespace = properties.get("namespace");
+                            String namespace = (String) properties.get("namespace");
                             if (StringUtils.isBlank(namespace)) {
                                 namespace = Settings.DefaultNameSpace;
                             }
-                            for (Map.Entry<String, String> propEnt : properties.entrySet()) {
-                                String propKey = propEnt.getKey();
-                                String propVal = propEnt.getValue();
+                            for (Map.Entry<Object, Object> propEnt : properties.entrySet()) {
+                                String propKey = (String) propEnt.getKey();
+                                String propVal = (String) propEnt.getValue();
                                 if (StringUtils.isNotBlank(propVal)) {
                                     this.addSetting(propKey, propVal, namespace);
                                 }

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.setting;
-import org.more.util.ResourcesUtils;
-import org.more.util.StringUtils;
+import net.hasor.core.utils.ResourcesUtils;
+import net.hasor.core.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web.valid;
-import org.more.bizcommon.Message;
-
 import java.util.ArrayList;
 /**
  * 一个item下的验证信息

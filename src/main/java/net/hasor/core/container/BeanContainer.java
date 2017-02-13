@@ -20,8 +20,8 @@ import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.NotifyData;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.scope.SingletonScope;
-import org.more.RepeateException;
-import org.more.util.StringUtils;
+import net.hasor.core.utils.errors.RepeateException;
+import net.hasor.core.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

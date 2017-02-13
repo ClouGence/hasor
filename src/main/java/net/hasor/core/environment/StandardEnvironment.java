@@ -15,8 +15,8 @@
  */
 package net.hasor.core.environment;
 import net.hasor.core.Environment;
+import net.hasor.core.classcode.MoreClassLoader;
 import net.hasor.core.setting.StandardContextSettings;
-import org.more.classcode.MoreClassLoader;
 
 import java.io.File;
 import java.io.IOException;

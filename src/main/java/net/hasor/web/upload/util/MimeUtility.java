@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 package net.hasor.web.upload.util;
-import org.more.FormatException;
+import net.hasor.core.utils.errors.FormatException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

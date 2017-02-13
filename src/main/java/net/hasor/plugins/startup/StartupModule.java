@@ -17,7 +17,7 @@ package net.hasor.plugins.startup;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 import net.hasor.core.Settings;
-import org.more.util.StringUtils;
+import net.hasor.core.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**

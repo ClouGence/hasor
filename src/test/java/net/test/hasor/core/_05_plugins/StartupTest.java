@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.test.hasor.core._05_plugins;
+import com.alibaba.fastjson.JSON;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.test.hasor.core._01_bean.pojo.PojoBean;
 import org.junit.Test;
-import org.more.bizcommon.json.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ public class StartupTest {
         //
         PojoBean myBean = appContext.getInstance(PojoBean.class);
         List<String> says = appContext.findBindingBean(String.class);
-        logger.debug(JSON.toString(myBean));
+        logger.debug(JSON.toJSONString(myBean));
         assert says.size() > 0;
     }
 }

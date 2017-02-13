@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.web.upload.factorys.disk;
+import net.hasor.core.utils.IOUtils;
 import net.hasor.web.FileItemStream;
 import net.hasor.web.upload.FileItemBase;
-import org.more.util.io.IOUtils;
-import org.more.util.io.output.DeferredFileOutputStream;
+import net.hasor.web.upload.util.DeferredFileOutputStream;
 
 import java.io.*;
 /**

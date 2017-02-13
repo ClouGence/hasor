@@ -18,17 +18,15 @@ import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
+import net.hasor.core.classcode.MoreClassLoader;
 import net.hasor.core.event.StandardEventManager;
 import net.hasor.core.setting.AbstractSettings;
 import net.hasor.core.setting.SettingValue;
 import net.hasor.core.setting.UpdateValue;
 import net.hasor.core.setting.xml.DefaultXmlNode;
-import org.more.builder.ReflectionToStringBuilder;
-import org.more.builder.ToStringStyle;
-import org.more.classcode.MoreClassLoader;
-import org.more.util.ResourcesUtils;
-import org.more.util.ScanClassPath;
-import org.more.util.StringUtils;
+import net.hasor.core.utils.ResourcesUtils;
+import net.hasor.core.utils.ScanClassPath;
+import net.hasor.core.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -171,7 +169,7 @@ public abstract class AbstractEnvironment implements Environment {
         if (logger.isInfoEnabled()) {
             logger.info("var -> {} = {}.", varName, value);
         }
-        this.envMap.put(varName.toUpperCase(), StringUtils.isBlank(varName) ? "" : value);
+        this.envMap.put(varName.toUpperCase(), value);
     }
     @Override
     public void removeEnvVar(final String varName) {
@@ -242,7 +240,14 @@ public abstract class AbstractEnvironment implements Environment {
         Collections.sort(spanPackagesArrays);
         this.spanPackage = spanPackagesArrays.toArray(new String[spanPackagesArrays.size()]);
         if (this.logger.isInfoEnabled()) {
-            this.logger.info("loadPackages = " + ReflectionToStringBuilder.toString(this.spanPackage, ToStringStyle.SIMPLE_STYLE));
+            StringBuilder packages = new StringBuilder("");
+            for (int i = 0; i < this.spanPackage.length; i++) {
+                if (i > 0) {
+                    packages.append(", ");
+                }
+                packages.append(this.spanPackage[i]);
+            }
+            this.logger.info("loadPackages = " + packages);
         }
         //
         // .日志输出

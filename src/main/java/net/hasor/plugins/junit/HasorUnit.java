@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.plugins.junit;
-import org.more.convert.ConverterUtils;
-import org.more.util.BeanUtils;
-import org.more.util.CharUtils;
-import org.more.util.StringUtils;
+import net.hasor.core.utils.BeanUtils;
+import net.hasor.core.utils.StringUtils;
+import net.hasor.core.utils.convert.ConverterUtils;
 
 import java.io.PrintStream;
 import java.util.*;
@@ -122,7 +121,7 @@ public abstract class HasorUnit {
     private static int stringLength(final String str) {
         int length = 0;
         for (char c : str.toCharArray())
-            if (CharUtils.isAscii(c))
+            if (StringUtils.isAscii(c))
                 length++;
             else
                 length = length + 2;
@@ -131,7 +130,7 @@ public abstract class HasorUnit {
     /*修正长度*/
     private static int fixLength(final String str, int length) {
         for (char c : str.toCharArray())
-            if (CharUtils.isAscii(c) == false)
+            if (!StringUtils.isAscii(c))
                 length--;
         return length;
     }

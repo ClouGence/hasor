@@ -22,10 +22,8 @@ import net.hasor.core.binder.BinderHelper;
 import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.BeanContainer;
 import net.hasor.core.container.ScopManager;
-import org.more.util.ArrayUtils;
-import org.more.util.ClassUtils;
-import org.more.util.ExceptionUtils;
-import org.more.util.StringUtils;
+import net.hasor.core.utils.ExceptionUtils;
+import net.hasor.core.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +64,7 @@ public abstract class TemplateAppContext implements AppContext {
         BeanContainer container = getContainer();
         Collection<String> nameList = container.getBindInfoIDs();
         if (nameList == null || !nameList.isEmpty()) {
-            return ArrayUtils.EMPTY_STRING_ARRAY;
+            return StringUtils.EMPTY_STRING_ARRAY;
         }
         return nameList.toArray(new String[nameList.size()]);
     }
@@ -76,7 +74,7 @@ public abstract class TemplateAppContext implements AppContext {
         BeanContainer container = getContainer();
         Collection<String> nameList = container.getBindInfoNamesByType(targetClass);
         if (nameList == null || !nameList.isEmpty()) {
-            return ArrayUtils.EMPTY_STRING_ARRAY;
+            return StringUtils.EMPTY_STRING_ARRAY;
         }
         return nameList.toArray(new String[nameList.size()]);
     }
@@ -283,8 +281,8 @@ public abstract class TemplateAppContext implements AppContext {
         boolean loadErrorShow = this.getEnvironment().getSettings().getBoolean("hasor.modules.loadErrorShow", true);
         for (String modStr : moduleTyleList) {
             try {
-                ClassLoader loader = Thread.currentThread().getContextClassLoader();
-                Class<?> moduleType = ClassUtils.getClass(loader, modStr);
+                ClassLoader loader = this.getClassLoader();
+                Class<?> moduleType = loader.loadClass(modStr);
                 moduleList.add((Module) moduleType.newInstance());
             } catch (Throwable e) {
                 logger.warn("load module Type {} is failure. -> {}:{}", modStr, e.getClass(), e.getMessage());

@@ -96,7 +96,7 @@
 
         <!-- 渲染器 -->
         <renderSet>
-            <render renderType="json">net.hasor.web.render.json.JsonRenderEngine</render>
+            <!--<render renderType="json">net.hasor.web.render.json.JsonRenderEngine</render>-->
         </renderSet>
 
         <!-- 布局管理 -->

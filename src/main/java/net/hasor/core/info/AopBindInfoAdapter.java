@@ -15,7 +15,8 @@
  */
 package net.hasor.core.info;
 import net.hasor.core.*;
-import org.more.classcode.aop.AopInvocation;
+import net.hasor.core.classcode.aop.AopInterceptor;
+import net.hasor.core.classcode.aop.AopInvocation;
 
 import java.lang.reflect.Method;
 /**
@@ -23,7 +24,7 @@ import java.lang.reflect.Method;
  * @version : 2014年5月22日
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AopBindInfoAdapter implements MethodInterceptor, org.more.classcode.aop.AopInterceptor, AppContextAware {
+public class AopBindInfoAdapter implements MethodInterceptor, AopInterceptor, AppContextAware {
     private Matcher<Class<?>> matcherClass  = null;
     private Matcher<Method>   matcherMethod = null;
     private MethodInterceptor interceptor   = null;

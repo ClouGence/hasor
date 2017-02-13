@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.web.valid;
+import net.hasor.core.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.wrap.InvokerWrap;
-import org.more.bizcommon.Message;
-import org.more.util.StringUtils;
 
 import java.util.*;
 /**
@@ -39,7 +38,7 @@ public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker, V
         return new ArrayList<String>(this.validData.keySet());
     }
     @Override
-    public List<Message> validErrors(String messageKey) {
+    public List<String> validErrors(String messageKey) {
         ValidItem data = this.validData.get(messageKey);
         return data == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(data);
     }

@@ -14,30 +14,22 @@
  * limitations under the License.
  */
 package net.hasor.web.render.json;
-import net.hasor.core.AppContext;
-import net.hasor.web.Invoker;
-import net.hasor.web.render.RenderEngine;
-import net.hasor.web.render.RenderInvoker;
-import org.more.bizcommon.json.JSON;
-
-import java.io.IOException;
-import java.io.Writer;
 /**
  * Json 渲染器
  * @version : 2016年1月3日
  * @author 赵永春(zyc@hasor.net)
  */
-public class JsonRenderEngine implements RenderEngine {
-    @Override
-    public void initEngine(AppContext appContext) throws IOException {
-    }
-    @Override
-    public void process(RenderInvoker data, Writer writer) throws Throwable {
-        String json = JSON.DEFAULT.toJSON(data.get(Invoker.RETURN_DATA_KEY));
-        writer.write(json);
-    }
-    @Override
-    public boolean exist(String template) throws IOException {
-        return true;
-    }
-}
+//public class JsonRenderEngine implements RenderEngine {
+//    @Override
+//    public void initEngine(AppContext appContext) throws IOException {
+//    }
+//    @Override
+//    public void process(RenderInvoker data, Writer writer) throws Throwable {
+//        String json = JSON.DEFAULT.toJSON(data.get(Invoker.RETURN_DATA_KEY));
+//        writer.write(json);
+//    }
+//    @Override
+//    public boolean exist(String template) throws IOException {
+//        return true;
+//    }
+//}

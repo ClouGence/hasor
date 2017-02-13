@@ -17,8 +17,8 @@ package net.test.hasor.more._01_classcode;
 import net.test.hasor.more._01_classcode.beans.TestBean2;
 import net.test.hasor.more._01_classcode.beans.TestBean2_Face;
 import org.junit.Test;
-import org.more.classcode.delegate.faces.MethodClassConfig;
-import org.more.classcode.delegate.property.PropertyClassConfig;
+import net.hasor.core.classcode.delegate.faces.MethodClassConfig;
+import net.hasor.core.classcode.delegate.property.PropertyClassConfig;
 
 import java.lang.reflect.Method;
 import java.rmi.Remote;

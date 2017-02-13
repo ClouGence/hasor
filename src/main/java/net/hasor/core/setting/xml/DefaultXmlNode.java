@@ -16,8 +16,8 @@
 package net.hasor.core.setting.xml;
 import net.hasor.core.XmlNode;
 import net.hasor.core.setting.FieldProperty;
-import org.more.convert.ConverterUtils;
-import org.more.util.StringUtils;
+import net.hasor.core.utils.StringUtils;
+import net.hasor.core.utils.convert.ConverterUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

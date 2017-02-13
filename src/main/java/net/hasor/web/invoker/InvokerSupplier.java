@@ -15,9 +15,9 @@
  */
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
+import net.hasor.core.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.MimeType;
-import org.more.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

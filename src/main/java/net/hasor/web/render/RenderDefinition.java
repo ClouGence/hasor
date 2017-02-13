@@ -16,7 +16,7 @@
 package net.hasor.web.render;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import org.more.bizcommon.json.JSON;
+import net.hasor.core.utils.StringUtils;
 
 import java.util.List;
 /**
@@ -36,7 +36,7 @@ class RenderDefinition {
     @Override
     public String toString() {
         return String.format("type %s pattern=%s ,uriPatternType=%s", //
-                RenderDefinition.class, JSON.toString(this.renderSet), this.bindInfo.toString());
+                RenderDefinition.class, StringUtils.join(this.renderSet.toArray(), ","), this.bindInfo.toString());
     }
     //
     public String getID() {

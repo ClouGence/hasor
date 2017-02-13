@@ -15,7 +15,7 @@
  */
 package net.hasor.web.jstl.taglib;
 import net.hasor.core.AppContext;
-import org.more.util.StringUtils;
+import net.hasor.core.utils.StringUtils;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;

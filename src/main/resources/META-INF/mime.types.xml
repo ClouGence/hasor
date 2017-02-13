@@ -1,3683 +1,918 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mimeConfig xmlns="http://project.hasor.net/hasor/schema/mime-mapping">
-    <mime-mapping>
-        <extension>123</extension>
-        <mime-type>application/vnd.lotus-1-2-3</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>3dml</extension>
-        <mime-type>text/vnd.in3d.3dml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>3g2</extension>
-        <mime-type>video/3gpp2</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>3gp</extension>
-        <mime-type>video/3gpp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>7z</extension>
-        <mime-type>application/x-7z-compressed</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>aab</extension>
-        <mime-type>application/x-authorware-bin</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>aac</extension>
-        <mime-type>audio/x-aac</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>aam</extension>
-        <mime-type>application/x-authorware-map</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>aas</extension>
-        <mime-type>application/x-authorware-seg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>abs</extension>
-        <mime-type>audio/x-mpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>abw</extension>
-        <mime-type>application/x-abiword</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ac</extension>
-        <mime-type>application/pkix-attr-cert</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>acc</extension>
-        <mime-type>application/vnd.americandynamics.acc</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ace</extension>
-        <mime-type>application/x-ace-compressed</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>acu</extension>
-        <mime-type>application/vnd.acucobol</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>acutc</extension>
-        <mime-type>application/vnd.acucorp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>adp</extension>
-        <mime-type>audio/adpcm</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>aep</extension>
-        <mime-type>application/vnd.audiograph</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>afm</extension>
-        <mime-type>application/x-font-type1</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>afp</extension>
-        <mime-type>application/vnd.ibm.modcap</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ahead</extension>
-        <mime-type>application/vnd.ahead.space</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ai</extension>
-        <mime-type>application/postscript</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>aif</extension>
-        <mime-type>audio/x-aiff</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>aifc</extension>
-        <mime-type>audio/x-aiff</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>aiff</extension>
-        <mime-type>audio/x-aiff</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>aim</extension>
-        <mime-type>application/x-aim</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>air</extension>
-        <mime-type>application/vnd.adobe.air-application-installer-package+zip</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ait</extension>
-        <mime-type>application/vnd.dvb.ait</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ami</extension>
-        <mime-type>application/vnd.amiga.ami</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>anx</extension>
-        <mime-type>application/annodex</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>apk</extension>
-        <mime-type>application/vnd.android.package-archive</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>application</extension>
-        <mime-type>application/x-ms-application</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>apr</extension>
-        <mime-type>application/vnd.lotus-approach</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>art</extension>
-        <mime-type>image/x-jg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>asc</extension>
-        <mime-type>application/pgp-signature</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>asf</extension>
-        <mime-type>video/x-ms-asf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>asm</extension>
-        <mime-type>text/x-asm</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>aso</extension>
-        <mime-type>application/vnd.accpac.simply.aso</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>asx</extension>
-        <mime-type>video/x-ms-asf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>atc</extension>
-        <mime-type>application/vnd.acucorp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>atom</extension>
-        <mime-type>application/atom+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>atomcat</extension>
-        <mime-type>application/atomcat+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>atomsvc</extension>
-        <mime-type>application/atomsvc+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>atx</extension>
-        <mime-type>application/vnd.antix.game-component</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>au</extension>
-        <mime-type>audio/basic</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>avi</extension>
-        <mime-type>video/x-msvideo</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>avx</extension>
-        <mime-type>video/x-rad-screenplay</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>aw</extension>
-        <mime-type>application/applixware</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>axa</extension>
-        <mime-type>audio/annodex</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>axv</extension>
-        <mime-type>video/annodex</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>azf</extension>
-        <mime-type>application/vnd.airzip.filesecure.azf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>azs</extension>
-        <mime-type>application/vnd.airzip.filesecure.azs</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>azw</extension>
-        <mime-type>application/vnd.amazon.ebook</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>bat</extension>
-        <mime-type>application/x-msdownload</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>bcpio</extension>
-        <mime-type>application/x-bcpio</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>bdf</extension>
-        <mime-type>application/x-font-bdf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>bdm</extension>
-        <mime-type>application/vnd.syncml.dm+wbxml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>bed</extension>
-        <mime-type>application/vnd.realvnc.bed</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>bh2</extension>
-        <mime-type>application/vnd.fujitsu.oasysprs</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>bin</extension>
-        <mime-type>application/octet-stream</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>bmi</extension>
-        <mime-type>application/vnd.bmi</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>bmp</extension>
-        <mime-type>image/bmp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>body</extension>
-        <mime-type>text/html</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>book</extension>
-        <mime-type>application/vnd.framemaker</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>box</extension>
-        <mime-type>application/vnd.previewsystems.box</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>boz</extension>
-        <mime-type>application/x-bzip2</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>bpk</extension>
-        <mime-type>application/octet-stream</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>btif</extension>
-        <mime-type>image/prs.btif</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>bz</extension>
-        <mime-type>application/x-bzip</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>bz2</extension>
-        <mime-type>application/x-bzip2</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>c</extension>
-        <mime-type>text/x-c</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>c11amc</extension>
-        <mime-type>application/vnd.cluetrust.cartomobile-config</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>c11amz</extension>
-        <mime-type>application/vnd.cluetrust.cartomobile-config-pkg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>c4d</extension>
-        <mime-type>application/vnd.clonk.c4group</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>c4f</extension>
-        <mime-type>application/vnd.clonk.c4group</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>c4g</extension>
-        <mime-type>application/vnd.clonk.c4group</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>c4p</extension>
-        <mime-type>application/vnd.clonk.c4group</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>c4u</extension>
-        <mime-type>application/vnd.clonk.c4group</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cab</extension>
-        <mime-type>application/vnd.ms-cab-compressed</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>car</extension>
-        <mime-type>application/vnd.curl.car</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cat</extension>
-        <mime-type>application/vnd.ms-pki.seccat</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cc</extension>
-        <mime-type>text/x-c</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cct</extension>
-        <mime-type>application/x-director</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ccxml</extension>
-        <mime-type>application/ccxml+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cdbcmsg</extension>
-        <mime-type>application/vnd.contact.cmsg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cdf</extension>
-        <mime-type>application/x-cdf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cdkey</extension>
-        <mime-type>application/vnd.mediastation.cdkey</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cdmia</extension>
-        <mime-type>application/cdmi-capability</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cdmic</extension>
-        <mime-type>application/cdmi-container</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cdmid</extension>
-        <mime-type>application/cdmi-domain</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cdmio</extension>
-        <mime-type>application/cdmi-object</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cdmiq</extension>
-        <mime-type>application/cdmi-queue</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cdx</extension>
-        <mime-type>chemical/x-cdx</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cdxml</extension>
-        <mime-type>application/vnd.chemdraw+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cdy</extension>
-        <mime-type>application/vnd.cinderella</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cer</extension>
-        <mime-type>application/pkix-cert</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cgm</extension>
-        <mime-type>image/cgm</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>chat</extension>
-        <mime-type>application/x-chat</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>chm</extension>
-        <mime-type>application/vnd.ms-htmlhelp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>chrt</extension>
-        <mime-type>application/vnd.kde.kchart</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cif</extension>
-        <mime-type>chemical/x-cif</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cii</extension>
-        <mime-type>application/vnd.anser-web-certificate-issue-initiation</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cil</extension>
-        <mime-type>application/vnd.ms-artgalry</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cla</extension>
-        <mime-type>application/vnd.claymore</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>class</extension>
-        <mime-type>application/java</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>clkk</extension>
-        <mime-type>application/vnd.crick.clicker.keyboard</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>clkp</extension>
-        <mime-type>application/vnd.crick.clicker.palette</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>clkt</extension>
-        <mime-type>application/vnd.crick.clicker.template</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>clkw</extension>
-        <mime-type>application/vnd.crick.clicker.wordbank</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>clkx</extension>
-        <mime-type>application/vnd.crick.clicker</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>clp</extension>
-        <mime-type>application/x-msclip</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cmc</extension>
-        <mime-type>application/vnd.cosmocaller</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cmdf</extension>
-        <mime-type>chemical/x-cmdf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cml</extension>
-        <mime-type>chemical/x-cml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cmp</extension>
-        <mime-type>application/vnd.yellowriver-custom-menu</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cmx</extension>
-        <mime-type>image/x-cmx</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cod</extension>
-        <mime-type>application/vnd.rim.cod</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>com</extension>
-        <mime-type>application/x-msdownload</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>conf</extension>
-        <mime-type>text/plain</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cpio</extension>
-        <mime-type>application/x-cpio</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cpp</extension>
-        <mime-type>text/x-c</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cpt</extension>
-        <mime-type>application/mac-compactpro</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>crd</extension>
-        <mime-type>application/x-mscardfile</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>crl</extension>
-        <mime-type>application/pkix-crl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>crt</extension>
-        <mime-type>application/x-x509-ca-cert</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cryptonote</extension>
-        <mime-type>application/vnd.rig.cryptonote</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>csh</extension>
-        <mime-type>application/x-csh</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>csml</extension>
-        <mime-type>chemical/x-csml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>csp</extension>
-        <mime-type>application/vnd.commonspace</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>css</extension>
-        <mime-type>text/css</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cst</extension>
-        <mime-type>application/x-director</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>csv</extension>
-        <mime-type>text/csv</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cu</extension>
-        <mime-type>application/cu-seeme</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>curl</extension>
-        <mime-type>text/vnd.curl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cww</extension>
-        <mime-type>application/prs.cww</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cxt</extension>
-        <mime-type>application/x-director</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>cxx</extension>
-        <mime-type>text/x-c</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dae</extension>
-        <mime-type>model/vnd.collada+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>daf</extension>
-        <mime-type>application/vnd.mobius.daf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dataless</extension>
-        <mime-type>application/vnd.fdsn.seed</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>davmount</extension>
-        <mime-type>application/davmount+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dcr</extension>
-        <mime-type>application/x-director</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dcurl</extension>
-        <mime-type>text/vnd.curl.dcurl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dd2</extension>
-        <mime-type>application/vnd.oma.dd2+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ddd</extension>
-        <mime-type>application/vnd.fujixerox.ddd</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>deb</extension>
-        <mime-type>application/x-debian-package</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>def</extension>
-        <mime-type>text/plain</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>deploy</extension>
-        <mime-type>application/octet-stream</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>der</extension>
-        <mime-type>application/x-x509-ca-cert</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dfac</extension>
-        <mime-type>application/vnd.dreamfactory</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dib</extension>
-        <mime-type>image/bmp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dic</extension>
-        <mime-type>text/x-c</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dir</extension>
-        <mime-type>application/x-director</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dis</extension>
-        <mime-type>application/vnd.mobius.dis</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dist</extension>
-        <mime-type>application/octet-stream</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>distz</extension>
-        <mime-type>application/octet-stream</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>djv</extension>
-        <mime-type>image/vnd.djvu</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>djvu</extension>
-        <mime-type>image/vnd.djvu</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dll</extension>
-        <mime-type>application/x-msdownload</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dmg</extension>
-        <mime-type>application/octet-stream</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dms</extension>
-        <mime-type>application/octet-stream</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dna</extension>
-        <mime-type>application/vnd.dna</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>doc</extension>
-        <mime-type>application/msword</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>docm</extension>
-        <mime-type>application/vnd.ms-word.document.macroenabled.12</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>docx</extension>
-        <mime-type>application/vnd.openxmlformats-officedocument.wordprocessingml.document</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dot</extension>
-        <mime-type>application/msword</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dotm</extension>
-        <mime-type>application/vnd.ms-word.template.macroenabled.12</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dotx</extension>
-        <mime-type>application/vnd.openxmlformats-officedocument.wordprocessingml.template</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dp</extension>
-        <mime-type>application/vnd.osgi.dp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dpg</extension>
-        <mime-type>application/vnd.dpgraph</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dra</extension>
-        <mime-type>audio/vnd.dra</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dsc</extension>
-        <mime-type>text/prs.lines.tag</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dssc</extension>
-        <mime-type>application/dssc+der</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dtb</extension>
-        <mime-type>application/x-dtbook+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dtd</extension>
-        <mime-type>application/xml-dtd</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dts</extension>
-        <mime-type>audio/vnd.dts</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dtshd</extension>
-        <mime-type>audio/vnd.dts.hd</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dump</extension>
-        <mime-type>application/octet-stream</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dv</extension>
-        <mime-type>video/x-dv</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dvi</extension>
-        <mime-type>application/x-dvi</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dwf</extension>
-        <mime-type>model/vnd.dwf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dwg</extension>
-        <mime-type>image/vnd.dwg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dxf</extension>
-        <mime-type>image/vnd.dxf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dxp</extension>
-        <mime-type>application/vnd.spotfire.dxp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>dxr</extension>
-        <mime-type>application/x-director</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ecelp4800</extension>
-        <mime-type>audio/vnd.nuera.ecelp4800</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ecelp7470</extension>
-        <mime-type>audio/vnd.nuera.ecelp7470</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ecelp9600</extension>
-        <mime-type>audio/vnd.nuera.ecelp9600</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ecma</extension>
-        <mime-type>application/ecmascript</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>edm</extension>
-        <mime-type>application/vnd.novadigm.edm</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>edx</extension>
-        <mime-type>application/vnd.novadigm.edx</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>efif</extension>
-        <mime-type>application/vnd.picsel</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ei6</extension>
-        <mime-type>application/vnd.pg.osasli</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>elc</extension>
-        <mime-type>application/octet-stream</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>eml</extension>
-        <mime-type>message/rfc822</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>emma</extension>
-        <mime-type>application/emma+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>eol</extension>
-        <mime-type>audio/vnd.digital-winds</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>eot</extension>
-        <mime-type>application/vnd.ms-fontobject</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>eps</extension>
-        <mime-type>application/postscript</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>epub</extension>
-        <mime-type>application/epub+zip</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>es3</extension>
-        <mime-type>application/vnd.eszigno3+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>esf</extension>
-        <mime-type>application/vnd.epson.esf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>et3</extension>
-        <mime-type>application/vnd.eszigno3+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>etx</extension>
-        <mime-type>text/x-setext</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>exe</extension>
-        <mime-type>application/octet-stream</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>exi</extension>
-        <mime-type>application/exi</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ext</extension>
-        <mime-type>application/vnd.novadigm.ext</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ez</extension>
-        <mime-type>application/andrew-inset</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ez2</extension>
-        <mime-type>application/vnd.ezpix-album</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ez3</extension>
-        <mime-type>application/vnd.ezpix-package</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>f</extension>
-        <mime-type>text/x-fortran</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>f4v</extension>
-        <mime-type>video/x-f4v</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>f77</extension>
-        <mime-type>text/x-fortran</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>f90</extension>
-        <mime-type>text/x-fortran</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fbs</extension>
-        <mime-type>image/vnd.fastbidsheet</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fcs</extension>
-        <mime-type>application/vnd.isac.fcs</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fdf</extension>
-        <mime-type>application/vnd.fdf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fe_launch</extension>
-        <mime-type>application/vnd.denovo.fcselayout-link</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fg5</extension>
-        <mime-type>application/vnd.fujitsu.oasysgp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fgd</extension>
-        <mime-type>application/x-director</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fh</extension>
-        <mime-type>image/x-freehand</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fh4</extension>
-        <mime-type>image/x-freehand</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fh5</extension>
-        <mime-type>image/x-freehand</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fh7</extension>
-        <mime-type>image/x-freehand</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fhc</extension>
-        <mime-type>image/x-freehand</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fig</extension>
-        <mime-type>application/x-xfig</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>flac</extension>
-        <mime-type>audio/flac</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fli</extension>
-        <mime-type>video/x-fli</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>flo</extension>
-        <mime-type>application/vnd.micrografx.flo</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>flv</extension>
-        <mime-type>video/x-flv</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>flw</extension>
-        <mime-type>application/vnd.kde.kivio</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>flx</extension>
-        <mime-type>text/vnd.fmi.flexstor</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fly</extension>
-        <mime-type>text/vnd.fly</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fm</extension>
-        <mime-type>application/vnd.framemaker</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fnc</extension>
-        <mime-type>application/vnd.frogans.fnc</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>for</extension>
-        <mime-type>text/x-fortran</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fpx</extension>
-        <mime-type>image/vnd.fpx</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>frame</extension>
-        <mime-type>application/vnd.framemaker</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fsc</extension>
-        <mime-type>application/vnd.fsc.weblaunch</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fst</extension>
-        <mime-type>image/vnd.fst</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ftc</extension>
-        <mime-type>application/vnd.fluxtime.clip</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fti</extension>
-        <mime-type>application/vnd.anser-web-funds-transfer-initiation</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fvt</extension>
-        <mime-type>video/vnd.fvt</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fxp</extension>
-        <mime-type>application/vnd.adobe.fxp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fxpl</extension>
-        <mime-type>application/vnd.adobe.fxp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>fzs</extension>
-        <mime-type>application/vnd.fuzzysheet</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>g2w</extension>
-        <mime-type>application/vnd.geoplan</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>g3</extension>
-        <mime-type>image/g3fax</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>g3w</extension>
-        <mime-type>application/vnd.geospace</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gac</extension>
-        <mime-type>application/vnd.groove-account</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gdl</extension>
-        <mime-type>model/vnd.gdl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>geo</extension>
-        <mime-type>application/vnd.dynageo</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gex</extension>
-        <mime-type>application/vnd.geometry-explorer</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ggb</extension>
-        <mime-type>application/vnd.geogebra.file</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ggt</extension>
-        <mime-type>application/vnd.geogebra.tool</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ghf</extension>
-        <mime-type>application/vnd.groove-help</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gif</extension>
-        <mime-type>image/gif</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gim</extension>
-        <mime-type>application/vnd.groove-identity-message</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gmx</extension>
-        <mime-type>application/vnd.gmx</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gnumeric</extension>
-        <mime-type>application/x-gnumeric</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gph</extension>
-        <mime-type>application/vnd.flographit</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gqf</extension>
-        <mime-type>application/vnd.grafeq</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gqs</extension>
-        <mime-type>application/vnd.grafeq</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gram</extension>
-        <mime-type>application/srgs</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gre</extension>
-        <mime-type>application/vnd.geometry-explorer</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>grv</extension>
-        <mime-type>application/vnd.groove-injector</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>grxml</extension>
-        <mime-type>application/srgs+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gsf</extension>
-        <mime-type>application/x-font-ghostscript</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gtar</extension>
-        <mime-type>application/x-gtar</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gtm</extension>
-        <mime-type>application/vnd.groove-tool-message</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gtw</extension>
-        <mime-type>model/vnd.gtw</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gv</extension>
-        <mime-type>text/vnd.graphviz</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gxt</extension>
-        <mime-type>application/vnd.geonext</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>gz</extension>
-        <mime-type>application/x-gzip</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>h</extension>
-        <mime-type>text/x-c</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>h261</extension>
-        <mime-type>video/h261</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>h263</extension>
-        <mime-type>video/h263</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>h264</extension>
-        <mime-type>video/h264</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>hal</extension>
-        <mime-type>application/vnd.hal+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>hbci</extension>
-        <mime-type>application/vnd.hbci</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>hdf</extension>
-        <mime-type>application/x-hdf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>hh</extension>
-        <mime-type>text/x-c</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>hlp</extension>
-        <mime-type>application/winhlp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>hpgl</extension>
-        <mime-type>application/vnd.hp-hpgl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>hpid</extension>
-        <mime-type>application/vnd.hp-hpid</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>hps</extension>
-        <mime-type>application/vnd.hp-hps</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>hqx</extension>
-        <mime-type>application/mac-binhex40</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>htc</extension>
-        <mime-type>text/x-component</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>htke</extension>
-        <mime-type>application/vnd.kenameaapp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>htm</extension>
-        <mime-type>text/html</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>html</extension>
-        <mime-type>text/html</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>hvd</extension>
-        <mime-type>application/vnd.yamaha.hv-dic</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>hvp</extension>
-        <mime-type>application/vnd.yamaha.hv-voice</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>hvs</extension>
-        <mime-type>application/vnd.yamaha.hv-script</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>i2g</extension>
-        <mime-type>application/vnd.intergeo</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>icc</extension>
-        <mime-type>application/vnd.iccprofile</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ice</extension>
-        <mime-type>x-conference/x-cooltalk</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>icm</extension>
-        <mime-type>application/vnd.iccprofile</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ico</extension>
-        <mime-type>image/x-icon</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ics</extension>
-        <mime-type>text/calendar</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ief</extension>
-        <mime-type>image/ief</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ifb</extension>
-        <mime-type>text/calendar</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ifm</extension>
-        <mime-type>application/vnd.shana.informed.formdata</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>iges</extension>
-        <mime-type>model/iges</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>igl</extension>
-        <mime-type>application/vnd.igloader</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>igm</extension>
-        <mime-type>application/vnd.insors.igm</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>igs</extension>
-        <mime-type>model/iges</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>igx</extension>
-        <mime-type>application/vnd.micrografx.igx</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>iif</extension>
-        <mime-type>application/vnd.shana.informed.interchange</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>imp</extension>
-        <mime-type>application/vnd.accpac.simply.imp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ims</extension>
-        <mime-type>application/vnd.ms-ims</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>in</extension>
-        <mime-type>text/plain</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ipfix</extension>
-        <mime-type>application/ipfix</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ipk</extension>
-        <mime-type>application/vnd.shana.informed.package</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>irm</extension>
-        <mime-type>application/vnd.ibm.rights-management</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>irp</extension>
-        <mime-type>application/vnd.irepository.package+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>iso</extension>
-        <mime-type>application/octet-stream</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>itp</extension>
-        <mime-type>application/vnd.shana.informed.formtemplate</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ivp</extension>
-        <mime-type>application/vnd.immervision-ivp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ivu</extension>
-        <mime-type>application/vnd.immervision-ivu</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>jad</extension>
-        <mime-type>text/vnd.sun.j2me.app-descriptor</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>jam</extension>
-        <mime-type>application/vnd.jam</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>jar</extension>
-        <mime-type>application/java-archive</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>java</extension>
-        <mime-type>text/x-java-source</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>jisp</extension>
-        <mime-type>application/vnd.jisp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>jlt</extension>
-        <mime-type>application/vnd.hp-jlyt</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>jnlp</extension>
-        <mime-type>application/x-java-jnlp-file</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>joda</extension>
-        <mime-type>application/vnd.joost.joda-archive</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>jpe</extension>
-        <mime-type>image/jpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>jpeg</extension>
-        <mime-type>image/jpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>jpg</extension>
-        <mime-type>image/jpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>jpgm</extension>
-        <mime-type>video/jpm</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>jpgv</extension>
-        <mime-type>video/jpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>jpm</extension>
-        <mime-type>video/jpm</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>js</extension>
-        <mime-type>application/javascript</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>jsf</extension>
-        <mime-type>text/plain</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>json</extension>
-        <mime-type>application/json</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>jspf</extension>
-        <mime-type>text/plain</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>kar</extension>
-        <mime-type>audio/midi</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>karbon</extension>
-        <mime-type>application/vnd.kde.karbon</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>kfo</extension>
-        <mime-type>application/vnd.kde.kformula</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>kia</extension>
-        <mime-type>application/vnd.kidspiration</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>kml</extension>
-        <mime-type>application/vnd.google-earth.kml+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>kmz</extension>
-        <mime-type>application/vnd.google-earth.kmz</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>kne</extension>
-        <mime-type>application/vnd.kinar</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>knp</extension>
-        <mime-type>application/vnd.kinar</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>kon</extension>
-        <mime-type>application/vnd.kde.kontour</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>kpr</extension>
-        <mime-type>application/vnd.kde.kpresenter</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>kpt</extension>
-        <mime-type>application/vnd.kde.kpresenter</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ksp</extension>
-        <mime-type>application/vnd.kde.kspread</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ktr</extension>
-        <mime-type>application/vnd.kahootz</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ktx</extension>
-        <mime-type>image/ktx</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ktz</extension>
-        <mime-type>application/vnd.kahootz</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>kwd</extension>
-        <mime-type>application/vnd.kde.kword</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>kwt</extension>
-        <mime-type>application/vnd.kde.kword</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>lasxml</extension>
-        <mime-type>application/vnd.las.las+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>latex</extension>
-        <mime-type>application/x-latex</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>lbd</extension>
-        <mime-type>application/vnd.llamagraphics.life-balance.desktop</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>lbe</extension>
-        <mime-type>application/vnd.llamagraphics.life-balance.exchange+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>les</extension>
-        <mime-type>application/vnd.hhe.lesson-player</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>lha</extension>
-        <mime-type>application/octet-stream</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>link66</extension>
-        <mime-type>application/vnd.route66.link66+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>list</extension>
-        <mime-type>text/plain</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>list3820</extension>
-        <mime-type>application/vnd.ibm.modcap</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>listafp</extension>
-        <mime-type>application/vnd.ibm.modcap</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>log</extension>
-        <mime-type>text/plain</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>lostxml</extension>
-        <mime-type>application/lost+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>lrf</extension>
-        <mime-type>application/octet-stream</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>lrm</extension>
-        <mime-type>application/vnd.ms-lrm</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ltf</extension>
-        <mime-type>application/vnd.frogans.ltf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>lvp</extension>
-        <mime-type>audio/vnd.lucent.voice</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>lwp</extension>
-        <mime-type>application/vnd.lotus-wordpro</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>lzh</extension>
-        <mime-type>application/octet-stream</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>m13</extension>
-        <mime-type>application/x-msmediaview</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>m14</extension>
-        <mime-type>application/x-msmediaview</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>m1v</extension>
-        <mime-type>video/mpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>m21</extension>
-        <mime-type>application/mp21</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>m2a</extension>
-        <mime-type>audio/mpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>m2v</extension>
-        <mime-type>video/mpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>m3a</extension>
-        <mime-type>audio/mpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>m3u</extension>
-        <mime-type>audio/x-mpegurl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>m3u8</extension>
-        <mime-type>application/vnd.apple.mpegurl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>m4a</extension>
-        <mime-type>audio/mp4</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>m4b</extension>
-        <mime-type>audio/mp4</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>m4r</extension>
-        <mime-type>audio/mp4</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>m4u</extension>
-        <mime-type>video/vnd.mpegurl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>m4v</extension>
-        <mime-type>video/mp4</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ma</extension>
-        <mime-type>application/mathematica</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mac</extension>
-        <mime-type>image/x-macpaint</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mads</extension>
-        <mime-type>application/mads+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mag</extension>
-        <mime-type>application/vnd.ecowin.chart</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>maker</extension>
-        <mime-type>application/vnd.framemaker</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>man</extension>
-        <mime-type>text/troff</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mathml</extension>
-        <mime-type>application/mathml+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mb</extension>
-        <mime-type>application/mathematica</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mbk</extension>
-        <mime-type>application/vnd.mobius.mbk</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mbox</extension>
-        <mime-type>application/mbox</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mc1</extension>
-        <mime-type>application/vnd.medcalcdata</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mcd</extension>
-        <mime-type>application/vnd.mcd</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mcurl</extension>
-        <mime-type>text/vnd.curl.mcurl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mdb</extension>
-        <mime-type>application/x-msaccess</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mdi</extension>
-        <mime-type>image/vnd.ms-modi</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>me</extension>
-        <mime-type>text/troff</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mesh</extension>
-        <mime-type>model/mesh</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>meta4</extension>
-        <mime-type>application/metalink4+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mets</extension>
-        <mime-type>application/mets+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mfm</extension>
-        <mime-type>application/vnd.mfmp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mgp</extension>
-        <mime-type>application/vnd.osgeo.mapguide.package</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mgz</extension>
-        <mime-type>application/vnd.proteus.magazine</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mid</extension>
-        <mime-type>audio/midi</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>midi</extension>
-        <mime-type>audio/midi</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mif</extension>
-        <mime-type>application/x-mif</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mime</extension>
-        <mime-type>message/rfc822</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mj2</extension>
-        <mime-type>video/mj2</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mjp2</extension>
-        <mime-type>video/mj2</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mlp</extension>
-        <mime-type>application/vnd.dolby.mlp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mmd</extension>
-        <mime-type>application/vnd.chipnuts.karaoke-mmd</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mmf</extension>
-        <mime-type>application/vnd.smaf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mmr</extension>
-        <mime-type>image/vnd.fujixerox.edmics-mmr</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mny</extension>
-        <mime-type>application/x-msmoney</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mobi</extension>
-        <mime-type>application/x-mobipocket-ebook</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mods</extension>
-        <mime-type>application/mods+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mov</extension>
-        <mime-type>video/quicktime</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>movie</extension>
-        <mime-type>video/x-sgi-movie</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mp1</extension>
-        <mime-type>audio/mpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mp2</extension>
-        <mime-type>audio/mpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mp21</extension>
-        <mime-type>application/mp21</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mp2a</extension>
-        <mime-type>audio/mpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mp3</extension>
-        <mime-type>audio/mpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mp4</extension>
-        <mime-type>video/mp4</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mp4a</extension>
-        <mime-type>audio/mp4</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mp4s</extension>
-        <mime-type>application/mp4</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mp4v</extension>
-        <mime-type>video/mp4</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mpa</extension>
-        <mime-type>audio/mpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mpc</extension>
-        <mime-type>application/vnd.mophun.certificate</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mpe</extension>
-        <mime-type>video/mpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mpeg</extension>
-        <mime-type>video/mpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mpega</extension>
-        <mime-type>audio/x-mpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mpg</extension>
-        <mime-type>video/mpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mpg4</extension>
-        <mime-type>video/mp4</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mpga</extension>
-        <mime-type>audio/mpeg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mpkg</extension>
-        <mime-type>application/vnd.apple.installer+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mpm</extension>
-        <mime-type>application/vnd.blueice.multipass</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mpn</extension>
-        <mime-type>application/vnd.mophun.application</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mpp</extension>
-        <mime-type>application/vnd.ms-project</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mpt</extension>
-        <mime-type>application/vnd.ms-project</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mpv2</extension>
-        <mime-type>video/mpeg2</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mpy</extension>
-        <mime-type>application/vnd.ibm.minipay</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mqy</extension>
-        <mime-type>application/vnd.mobius.mqy</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mrc</extension>
-        <mime-type>application/marc</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mrcx</extension>
-        <mime-type>application/marcxml+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ms</extension>
-        <mime-type>text/troff</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mscml</extension>
-        <mime-type>application/mediaservercontrol+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mseed</extension>
-        <mime-type>application/vnd.fdsn.mseed</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mseq</extension>
-        <mime-type>application/vnd.mseq</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>msf</extension>
-        <mime-type>application/vnd.epson.msf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>msh</extension>
-        <mime-type>model/mesh</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>msi</extension>
-        <mime-type>application/x-msdownload</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>msl</extension>
-        <mime-type>application/vnd.mobius.msl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>msty</extension>
-        <mime-type>application/vnd.muvee.style</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mts</extension>
-        <mime-type>model/vnd.mts</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mus</extension>
-        <mime-type>application/vnd.musician</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>musicxml</extension>
-        <mime-type>application/vnd.recordare.musicxml+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mvb</extension>
-        <mime-type>application/x-msmediaview</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mwf</extension>
-        <mime-type>application/vnd.mfer</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mxf</extension>
-        <mime-type>application/mxf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mxl</extension>
-        <mime-type>application/vnd.recordare.musicxml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mxml</extension>
-        <mime-type>application/xv+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mxs</extension>
-        <mime-type>application/vnd.triscape.mxs</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>mxu</extension>
-        <mime-type>video/vnd.mpegurl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>n-gage</extension>
-        <mime-type>application/vnd.nokia.n-gage.symbian.install</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>n3</extension>
-        <mime-type>text/n3</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>nb</extension>
-        <mime-type>application/mathematica</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>nbp</extension>
-        <mime-type>application/vnd.wolfram.player</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>nc</extension>
-        <mime-type>application/x-netcdf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ncx</extension>
-        <mime-type>application/x-dtbncx+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ngdat</extension>
-        <mime-type>application/vnd.nokia.n-gage.data</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>nlu</extension>
-        <mime-type>application/vnd.neurolanguage.nlu</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>nml</extension>
-        <mime-type>application/vnd.enliven</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>nnd</extension>
-        <mime-type>application/vnd.noblenet-directory</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>nns</extension>
-        <mime-type>application/vnd.noblenet-sealer</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>nnw</extension>
-        <mime-type>application/vnd.noblenet-web</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>npx</extension>
-        <mime-type>image/vnd.net-fpx</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>nsf</extension>
-        <mime-type>application/vnd.lotus-notes</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>oa2</extension>
-        <mime-type>application/vnd.fujitsu.oasys2</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>oa3</extension>
-        <mime-type>application/vnd.fujitsu.oasys3</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>oas</extension>
-        <mime-type>application/vnd.fujitsu.oasys</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>obd</extension>
-        <mime-type>application/x-msbinder</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>oda</extension>
-        <mime-type>application/oda</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- OpenDocument Database -->
-        <extension>odb</extension>
-        <mime-type>application/vnd.oasis.opendocument.database</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- OpenDocument Chart -->
-        <extension>odc</extension>
-        <mime-type>application/vnd.oasis.opendocument.chart</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- OpenDocument Formula -->
-        <extension>odf</extension>
-        <mime-type>application/vnd.oasis.opendocument.formula</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>odft</extension>
-        <mime-type>application/vnd.oasis.opendocument.formula-template</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- OpenDocument Drawing -->
-        <extension>odg</extension>
-        <mime-type>application/vnd.oasis.opendocument.graphics</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- OpenDocument Image -->
-        <extension>odi</extension>
-        <mime-type>application/vnd.oasis.opendocument.image</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- OpenDocument Master Document -->
-        <extension>odm</extension>
-        <mime-type>application/vnd.oasis.opendocument.text-master</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- OpenDocument Presentation -->
-        <extension>odp</extension>
-        <mime-type>application/vnd.oasis.opendocument.presentation</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- OpenDocument Spreadsheet -->
-        <extension>ods</extension>
-        <mime-type>application/vnd.oasis.opendocument.spreadsheet</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- OpenDocument Text -->
-        <extension>odt</extension>
-        <mime-type>application/vnd.oasis.opendocument.text</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>oga</extension>
-        <mime-type>audio/ogg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ogg</extension>
-        <mime-type>audio/ogg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ogv</extension>
-        <mime-type>video/ogg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- xiph mime types -->
-        <extension>ogx</extension>
-        <mime-type>application/ogg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>onepkg</extension>
-        <mime-type>application/onenote</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>onetmp</extension>
-        <mime-type>application/onenote</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>onetoc</extension>
-        <mime-type>application/onenote</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>onetoc2</extension>
-        <mime-type>application/onenote</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>opf</extension>
-        <mime-type>application/oebps-package+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>oprc</extension>
-        <mime-type>application/vnd.palm</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>org</extension>
-        <mime-type>application/vnd.lotus-organizer</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>osf</extension>
-        <mime-type>application/vnd.yamaha.openscoreformat</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>osfpvg</extension>
-        <mime-type>application/vnd.yamaha.openscoreformat.osfpvg+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>otc</extension>
-        <mime-type>application/vnd.oasis.opendocument.chart-template</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>otf</extension>
-        <mime-type>application/x-font-otf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- OpenDocument Drawing Template -->
-        <extension>otg</extension>
-        <mime-type>application/vnd.oasis.opendocument.graphics-template</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- HTML Document Template -->
-        <extension>oth</extension>
-        <mime-type>application/vnd.oasis.opendocument.text-web</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>oti</extension>
-        <mime-type>application/vnd.oasis.opendocument.image-template</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- OpenDocument Presentation Template -->
-        <extension>otp</extension>
-        <mime-type>application/vnd.oasis.opendocument.presentation-template</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- OpenDocument Spreadsheet Template -->
-        <extension>ots</extension>
-        <mime-type>application/vnd.oasis.opendocument.spreadsheet-template</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- OpenDocument Text Template -->
-        <extension>ott</extension>
-        <mime-type>application/vnd.oasis.opendocument.text-template</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>oxt</extension>
-        <mime-type>application/vnd.openofficeorg.extension</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>p</extension>
-        <mime-type>text/x-pascal</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>p10</extension>
-        <mime-type>application/pkcs10</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>p12</extension>
-        <mime-type>application/x-pkcs12</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>p7b</extension>
-        <mime-type>application/x-pkcs7-certificates</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>p7c</extension>
-        <mime-type>application/pkcs7-mime</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>p7m</extension>
-        <mime-type>application/pkcs7-mime</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>p7r</extension>
-        <mime-type>application/x-pkcs7-certreqresp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>p7s</extension>
-        <mime-type>application/pkcs7-signature</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>p8</extension>
-        <mime-type>application/pkcs8</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pas</extension>
-        <mime-type>text/x-pascal</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>paw</extension>
-        <mime-type>application/vnd.pawaafile</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pbd</extension>
-        <mime-type>application/vnd.powerbuilder6</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pbm</extension>
-        <mime-type>image/x-portable-bitmap</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pcf</extension>
-        <mime-type>application/x-font-pcf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pcl</extension>
-        <mime-type>application/vnd.hp-pcl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pclxl</extension>
-        <mime-type>application/vnd.hp-pclxl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pct</extension>
-        <mime-type>image/pict</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pcurl</extension>
-        <mime-type>application/vnd.curl.pcurl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pcx</extension>
-        <mime-type>image/x-pcx</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pdb</extension>
-        <mime-type>application/vnd.palm</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pdf</extension>
-        <mime-type>application/pdf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pfa</extension>
-        <mime-type>application/x-font-type1</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pfb</extension>
-        <mime-type>application/x-font-type1</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pfm</extension>
-        <mime-type>application/x-font-type1</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pfr</extension>
-        <mime-type>application/font-tdpfr</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pfx</extension>
-        <mime-type>application/x-pkcs12</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pgm</extension>
-        <mime-type>image/x-portable-graymap</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pgn</extension>
-        <mime-type>application/x-chess-pgn</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pgp</extension>
-        <mime-type>application/pgp-encrypted</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pic</extension>
-        <mime-type>image/pict</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pict</extension>
-        <mime-type>image/pict</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pkg</extension>
-        <mime-type>application/octet-stream</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pki</extension>
-        <mime-type>application/pkixcmp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pkipath</extension>
-        <mime-type>application/pkix-pkipath</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>plb</extension>
-        <mime-type>application/vnd.3gpp.pic-bw-large</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>plc</extension>
-        <mime-type>application/vnd.mobius.plc</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>plf</extension>
-        <mime-type>application/vnd.pocketlearn</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pls</extension>
-        <mime-type>audio/x-scpls</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pml</extension>
-        <mime-type>application/vnd.ctc-posml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>png</extension>
-        <mime-type>image/png</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pnm</extension>
-        <mime-type>image/x-portable-anymap</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pnt</extension>
-        <mime-type>image/x-macpaint</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>portpkg</extension>
-        <mime-type>application/vnd.macports.portpkg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pot</extension>
-        <mime-type>application/vnd.ms-powerpoint</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>potm</extension>
-        <mime-type>application/vnd.ms-powerpoint.template.macroenabled.12</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>potx</extension>
-        <mime-type>application/vnd.openxmlformats-officedocument.presentationml.template</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ppam</extension>
-        <mime-type>application/vnd.ms-powerpoint.addin.macroenabled.12</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ppd</extension>
-        <mime-type>application/vnd.cups-ppd</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ppm</extension>
-        <mime-type>image/x-portable-pixmap</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pps</extension>
-        <mime-type>application/vnd.ms-powerpoint</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ppsm</extension>
-        <mime-type>application/vnd.ms-powerpoint.slideshow.macroenabled.12</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ppsx</extension>
-        <mime-type>application/vnd.openxmlformats-officedocument.presentationml.slideshow</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ppt</extension>
-        <mime-type>application/vnd.ms-powerpoint</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pptm</extension>
-        <mime-type>application/vnd.ms-powerpoint.presentation.macroenabled.12</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pptx</extension>
-        <mime-type>application/vnd.openxmlformats-officedocument.presentationml.presentation</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pqa</extension>
-        <mime-type>application/vnd.palm</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>prc</extension>
-        <mime-type>application/x-mobipocket-ebook</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pre</extension>
-        <mime-type>application/vnd.lotus-freelance</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>prf</extension>
-        <mime-type>application/pics-rules</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ps</extension>
-        <mime-type>application/postscript</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>psb</extension>
-        <mime-type>application/vnd.3gpp.pic-bw-small</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>psd</extension>
-        <mime-type>image/vnd.adobe.photoshop</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>psf</extension>
-        <mime-type>application/x-font-linux-psf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pskcxml</extension>
-        <mime-type>application/pskc+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ptid</extension>
-        <mime-type>application/vnd.pvi.ptid1</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pub</extension>
-        <mime-type>application/x-mspublisher</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pvb</extension>
-        <mime-type>application/vnd.3gpp.pic-bw-var</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pwn</extension>
-        <mime-type>application/vnd.3m.post-it-notes</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pya</extension>
-        <mime-type>audio/vnd.ms-playready.media.pya</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>pyv</extension>
-        <mime-type>video/vnd.ms-playready.media.pyv</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>qam</extension>
-        <mime-type>application/vnd.epson.quickanime</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>qbo</extension>
-        <mime-type>application/vnd.intu.qbo</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>qfx</extension>
-        <mime-type>application/vnd.intu.qfx</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>qps</extension>
-        <mime-type>application/vnd.publishare-delta-tree</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>qt</extension>
-        <mime-type>video/quicktime</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>qti</extension>
-        <mime-type>image/x-quicktime</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>qtif</extension>
-        <mime-type>image/x-quicktime</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>qwd</extension>
-        <mime-type>application/vnd.quark.quarkxpress</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>qwt</extension>
-        <mime-type>application/vnd.quark.quarkxpress</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>qxb</extension>
-        <mime-type>application/vnd.quark.quarkxpress</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>qxd</extension>
-        <mime-type>application/vnd.quark.quarkxpress</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>qxl</extension>
-        <mime-type>application/vnd.quark.quarkxpress</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>qxt</extension>
-        <mime-type>application/vnd.quark.quarkxpress</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ra</extension>
-        <mime-type>audio/x-pn-realaudio</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ram</extension>
-        <mime-type>audio/x-pn-realaudio</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rar</extension>
-        <mime-type>application/x-rar-compressed</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ras</extension>
-        <mime-type>image/x-cmu-raster</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rcprofile</extension>
-        <mime-type>application/vnd.ipunplugged.rcprofile</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rdf</extension>
-        <mime-type>application/rdf+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rdz</extension>
-        <mime-type>application/vnd.data-vision.rdz</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rep</extension>
-        <mime-type>application/vnd.businessobjects</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>res</extension>
-        <mime-type>application/x-dtbresource+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rgb</extension>
-        <mime-type>image/x-rgb</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rif</extension>
-        <mime-type>application/reginfo+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rip</extension>
-        <mime-type>audio/vnd.rip</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rl</extension>
-        <mime-type>application/resource-lists+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rlc</extension>
-        <mime-type>image/vnd.fujixerox.edmics-rlc</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rld</extension>
-        <mime-type>application/resource-lists-diff+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rm</extension>
-        <mime-type>application/vnd.rn-realmedia</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rmi</extension>
-        <mime-type>audio/midi</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rmp</extension>
-        <mime-type>audio/x-pn-realaudio-plugin</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rms</extension>
-        <mime-type>application/vnd.jcp.javame.midlet-rms</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rnc</extension>
-        <mime-type>application/relax-ng-compact-syntax</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>roff</extension>
-        <mime-type>text/troff</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rp9</extension>
-        <mime-type>application/vnd.cloanto.rp9</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rpss</extension>
-        <mime-type>application/vnd.nokia.radio-presets</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rpst</extension>
-        <mime-type>application/vnd.nokia.radio-preset</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rq</extension>
-        <mime-type>application/sparql-query</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rs</extension>
-        <mime-type>application/rls-services+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rsd</extension>
-        <mime-type>application/rsd+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rss</extension>
-        <mime-type>application/rss+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rtf</extension>
-        <mime-type>application/rtf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>rtx</extension>
-        <mime-type>text/richtext</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>s</extension>
-        <mime-type>text/x-asm</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>saf</extension>
-        <mime-type>application/vnd.yamaha.smaf-audio</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sbml</extension>
-        <mime-type>application/sbml+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sc</extension>
-        <mime-type>application/vnd.ibm.secure-container</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>scd</extension>
-        <mime-type>application/x-msschedule</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>scm</extension>
-        <mime-type>application/vnd.lotus-screencam</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>scq</extension>
-        <mime-type>application/scvp-cv-request</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>scs</extension>
-        <mime-type>application/scvp-cv-response</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>scurl</extension>
-        <mime-type>text/vnd.curl.scurl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sda</extension>
-        <mime-type>application/vnd.stardivision.draw</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sdc</extension>
-        <mime-type>application/vnd.stardivision.calc</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sdd</extension>
-        <mime-type>application/vnd.stardivision.impress</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sdkd</extension>
-        <mime-type>application/vnd.solent.sdkm+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sdkm</extension>
-        <mime-type>application/vnd.solent.sdkm+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sdp</extension>
-        <mime-type>application/sdp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sdw</extension>
-        <mime-type>application/vnd.stardivision.writer</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>see</extension>
-        <mime-type>application/vnd.seemail</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>seed</extension>
-        <mime-type>application/vnd.fdsn.seed</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sema</extension>
-        <mime-type>application/vnd.sema</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>semd</extension>
-        <mime-type>application/vnd.semd</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>semf</extension>
-        <mime-type>application/vnd.semf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ser</extension>
-        <mime-type>application/java-serialized-object</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>setpay</extension>
-        <mime-type>application/set-payment-initiation</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>setreg</extension>
-        <mime-type>application/set-registration-initiation</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sfd-hdstx</extension>
-        <mime-type>application/vnd.hydrostatix.sof-data</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sfs</extension>
-        <mime-type>application/vnd.spotfire.sfs</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sgl</extension>
-        <mime-type>application/vnd.stardivision.writer-global</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sgm</extension>
-        <mime-type>text/sgml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sgml</extension>
-        <mime-type>text/sgml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sh</extension>
-        <mime-type>application/x-sh</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>shar</extension>
-        <mime-type>application/x-shar</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>shf</extension>
-        <mime-type>application/shf+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sig</extension>
-        <mime-type>application/pgp-signature</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>silo</extension>
-        <mime-type>model/mesh</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sis</extension>
-        <mime-type>application/vnd.symbian.install</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sisx</extension>
-        <mime-type>application/vnd.symbian.install</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sit</extension>
-        <mime-type>application/x-stuffit</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sitx</extension>
-        <mime-type>application/x-stuffitx</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>skd</extension>
-        <mime-type>application/vnd.koan</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>skm</extension>
-        <mime-type>application/vnd.koan</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>skp</extension>
-        <mime-type>application/vnd.koan</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>skt</extension>
-        <mime-type>application/vnd.koan</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sldm</extension>
-        <mime-type>application/vnd.ms-powerpoint.slide.macroenabled.12</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sldx</extension>
-        <mime-type>application/vnd.openxmlformats-officedocument.presentationml.slide</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>slt</extension>
-        <mime-type>application/vnd.epson.salt</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sm</extension>
-        <mime-type>application/vnd.stepmania.stepchart</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>smf</extension>
-        <mime-type>application/vnd.stardivision.math</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>smi</extension>
-        <mime-type>application/smil+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>smil</extension>
-        <mime-type>application/smil+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>snd</extension>
-        <mime-type>audio/basic</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>snf</extension>
-        <mime-type>application/x-font-snf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>so</extension>
-        <mime-type>application/octet-stream</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>spc</extension>
-        <mime-type>application/x-pkcs7-certificates</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>spf</extension>
-        <mime-type>application/vnd.yamaha.smaf-phrase</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>spl</extension>
-        <mime-type>application/x-futuresplash</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>spot</extension>
-        <mime-type>text/vnd.in3d.spot</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>spp</extension>
-        <mime-type>application/scvp-vp-response</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>spq</extension>
-        <mime-type>application/scvp-vp-request</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>spx</extension>
-        <mime-type>audio/ogg</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>src</extension>
-        <mime-type>application/x-wais-source</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sru</extension>
-        <mime-type>application/sru+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>srx</extension>
-        <mime-type>application/sparql-results+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sse</extension>
-        <mime-type>application/vnd.kodak-descriptor</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ssf</extension>
-        <mime-type>application/vnd.epson.ssf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ssml</extension>
-        <mime-type>application/ssml+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>st</extension>
-        <mime-type>application/vnd.sailingtracker.track</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>stc</extension>
-        <mime-type>application/vnd.sun.xml.calc.template</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>std</extension>
-        <mime-type>application/vnd.sun.xml.draw.template</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>stf</extension>
-        <mime-type>application/vnd.wt.stf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sti</extension>
-        <mime-type>application/vnd.sun.xml.impress.template</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>stk</extension>
-        <mime-type>application/hyperstudio</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>stl</extension>
-        <mime-type>application/vnd.ms-pki.stl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>str</extension>
-        <mime-type>application/vnd.pg.format</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>stw</extension>
-        <mime-type>application/vnd.sun.xml.writer.template</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sub</extension>
-        <mime-type>image/vnd.dvb.subtitle</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sus</extension>
-        <mime-type>application/vnd.sus-calendar</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>susp</extension>
-        <mime-type>application/vnd.sus-calendar</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sv4cpio</extension>
-        <mime-type>application/x-sv4cpio</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sv4crc</extension>
-        <mime-type>application/x-sv4crc</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>svc</extension>
-        <mime-type>application/vnd.dvb.service</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>svd</extension>
-        <mime-type>application/vnd.svd</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>svg</extension>
-        <mime-type>image/svg+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>svgz</extension>
-        <mime-type>image/svg+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>swa</extension>
-        <mime-type>application/x-director</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>swf</extension>
-        <mime-type>application/x-shockwave-flash</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>swi</extension>
-        <mime-type>application/vnd.aristanetworks.swi</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sxc</extension>
-        <mime-type>application/vnd.sun.xml.calc</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sxd</extension>
-        <mime-type>application/vnd.sun.xml.draw</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sxg</extension>
-        <mime-type>application/vnd.sun.xml.writer.global</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sxi</extension>
-        <mime-type>application/vnd.sun.xml.impress</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sxm</extension>
-        <mime-type>application/vnd.sun.xml.math</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>sxw</extension>
-        <mime-type>application/vnd.sun.xml.writer</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>t</extension>
-        <mime-type>text/troff</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>tao</extension>
-        <mime-type>application/vnd.tao.intent-module-archive</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>tar</extension>
-        <mime-type>application/x-tar</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>tcap</extension>
-        <mime-type>application/vnd.3gpp2.tcap</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>tcl</extension>
-        <mime-type>application/x-tcl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>teacher</extension>
-        <mime-type>application/vnd.smart.teacher</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>tei</extension>
-        <mime-type>application/tei+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>teicorpus</extension>
-        <mime-type>application/tei+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>tex</extension>
-        <mime-type>application/x-tex</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>texi</extension>
-        <mime-type>application/x-texinfo</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>texinfo</extension>
-        <mime-type>application/x-texinfo</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>text</extension>
-        <mime-type>text/plain</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>tfi</extension>
-        <mime-type>application/thraud+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>tfm</extension>
-        <mime-type>application/x-tex-tfm</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>thmx</extension>
-        <mime-type>application/vnd.ms-officetheme</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>tif</extension>
-        <mime-type>image/tiff</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>tiff</extension>
-        <mime-type>image/tiff</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>tmo</extension>
-        <mime-type>application/vnd.tmobile-livetv</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>torrent</extension>
-        <mime-type>application/x-bittorrent</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>tpl</extension>
-        <mime-type>application/vnd.groove-tool-template</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>tpt</extension>
-        <mime-type>application/vnd.trid.tpt</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>tr</extension>
-        <mime-type>text/troff</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>tra</extension>
-        <mime-type>application/vnd.trueapp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>trm</extension>
-        <mime-type>application/x-msterminal</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>tsd</extension>
-        <mime-type>application/timestamped-data</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>tsv</extension>
-        <mime-type>text/tab-separated-values</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ttc</extension>
-        <mime-type>application/x-font-ttf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ttf</extension>
-        <mime-type>application/x-font-ttf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ttl</extension>
-        <mime-type>text/turtle</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>twd</extension>
-        <mime-type>application/vnd.simtech-mindmapper</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>twds</extension>
-        <mime-type>application/vnd.simtech-mindmapper</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>txd</extension>
-        <mime-type>application/vnd.genomatix.tuxedo</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>txf</extension>
-        <mime-type>application/vnd.mobius.txf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>txt</extension>
-        <mime-type>text/plain</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>u32</extension>
-        <mime-type>application/x-authorware-bin</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>udeb</extension>
-        <mime-type>application/x-debian-package</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ufd</extension>
-        <mime-type>application/vnd.ufdl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ufdl</extension>
-        <mime-type>application/vnd.ufdl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ulw</extension>
-        <mime-type>audio/basic</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>umj</extension>
-        <mime-type>application/vnd.umajin</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>unityweb</extension>
-        <mime-type>application/vnd.unity</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uoml</extension>
-        <mime-type>application/vnd.uoml+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uri</extension>
-        <mime-type>text/uri-list</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uris</extension>
-        <mime-type>text/uri-list</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>urls</extension>
-        <mime-type>text/uri-list</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>ustar</extension>
-        <mime-type>application/x-ustar</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>utz</extension>
-        <mime-type>application/vnd.uiq.theme</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uu</extension>
-        <mime-type>text/x-uuencode</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uva</extension>
-        <mime-type>audio/vnd.dece.audio</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvd</extension>
-        <mime-type>application/vnd.dece.data</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvf</extension>
-        <mime-type>application/vnd.dece.data</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvg</extension>
-        <mime-type>image/vnd.dece.graphic</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvh</extension>
-        <mime-type>video/vnd.dece.hd</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvi</extension>
-        <mime-type>image/vnd.dece.graphic</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvm</extension>
-        <mime-type>video/vnd.dece.mobile</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvp</extension>
-        <mime-type>video/vnd.dece.pd</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvs</extension>
-        <mime-type>video/vnd.dece.sd</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvt</extension>
-        <mime-type>application/vnd.dece.ttml+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvu</extension>
-        <mime-type>video/vnd.uvvu.mp4</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvv</extension>
-        <mime-type>video/vnd.dece.video</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvva</extension>
-        <mime-type>audio/vnd.dece.audio</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvvd</extension>
-        <mime-type>application/vnd.dece.data</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvvf</extension>
-        <mime-type>application/vnd.dece.data</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvvg</extension>
-        <mime-type>image/vnd.dece.graphic</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvvh</extension>
-        <mime-type>video/vnd.dece.hd</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvvi</extension>
-        <mime-type>image/vnd.dece.graphic</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvvm</extension>
-        <mime-type>video/vnd.dece.mobile</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvvp</extension>
-        <mime-type>video/vnd.dece.pd</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvvs</extension>
-        <mime-type>video/vnd.dece.sd</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvvt</extension>
-        <mime-type>application/vnd.dece.ttml+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvvu</extension>
-        <mime-type>video/vnd.uvvu.mp4</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvvv</extension>
-        <mime-type>video/vnd.dece.video</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvvx</extension>
-        <mime-type>application/vnd.dece.unspecified</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>uvx</extension>
-        <mime-type>application/vnd.dece.unspecified</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>vcd</extension>
-        <mime-type>application/x-cdlink</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>vcf</extension>
-        <mime-type>text/x-vcard</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>vcg</extension>
-        <mime-type>application/vnd.groove-vcard</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>vcs</extension>
-        <mime-type>text/x-vcalendar</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>vcx</extension>
-        <mime-type>application/vnd.vcx</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>vis</extension>
-        <mime-type>application/vnd.visionary</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>viv</extension>
-        <mime-type>video/vnd.vivo</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>vor</extension>
-        <mime-type>application/vnd.stardivision.writer</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>vox</extension>
-        <mime-type>application/x-authorware-bin</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>vrml</extension>
-        <mime-type>model/vrml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>vsd</extension>
-        <mime-type>application/vnd.visio</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>vsf</extension>
-        <mime-type>application/vnd.vsf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>vss</extension>
-        <mime-type>application/vnd.visio</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>vst</extension>
-        <mime-type>application/vnd.visio</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>vsw</extension>
-        <mime-type>application/vnd.visio</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>vtu</extension>
-        <mime-type>model/vnd.vtu</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>vxml</extension>
-        <mime-type>application/voicexml+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>w3d</extension>
-        <mime-type>application/x-director</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wad</extension>
-        <mime-type>application/x-doom</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wav</extension>
-        <mime-type>audio/x-wav</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wax</extension>
-        <mime-type>audio/x-ms-wax</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- Wireless Bitmap -->
-        <extension>wbmp</extension>
-        <mime-type>image/vnd.wap.wbmp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wbs</extension>
-        <mime-type>application/vnd.criticaltools.wbs+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wbxml</extension>
-        <mime-type>application/vnd.wap.wbxml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wcm</extension>
-        <mime-type>application/vnd.ms-works</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wdb</extension>
-        <mime-type>application/vnd.ms-works</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>weba</extension>
-        <mime-type>audio/webm</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>webm</extension>
-        <mime-type>video/webm</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>webp</extension>
-        <mime-type>image/webp</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wg</extension>
-        <mime-type>application/vnd.pmi.widget</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wgt</extension>
-        <mime-type>application/widget</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wks</extension>
-        <mime-type>application/vnd.ms-works</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wm</extension>
-        <mime-type>video/x-ms-wm</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wma</extension>
-        <mime-type>audio/x-ms-wma</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wmd</extension>
-        <mime-type>application/x-ms-wmd</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wmf</extension>
-        <mime-type>application/x-msmetafile</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- WML Source -->
-        <extension>wml</extension>
-        <mime-type>text/vnd.wap.wml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- Compiled WML -->
-        <extension>wmlc</extension>
-        <mime-type>application/vnd.wap.wmlc</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- WML Script Source -->
-        <extension>wmls</extension>
-        <mime-type>text/vnd.wap.wmlscript</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <!-- Compiled WML Script -->
-        <extension>wmlsc</extension>
-        <mime-type>application/vnd.wap.wmlscriptc</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wmv</extension>
-        <mime-type>video/x-ms-wmv</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wmx</extension>
-        <mime-type>video/x-ms-wmx</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wmz</extension>
-        <mime-type>application/x-ms-wmz</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>woff</extension>
-        <mime-type>application/x-font-woff</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wpd</extension>
-        <mime-type>application/vnd.wordperfect</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wpl</extension>
-        <mime-type>application/vnd.ms-wpl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wps</extension>
-        <mime-type>application/vnd.ms-works</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wqd</extension>
-        <mime-type>application/vnd.wqd</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wri</extension>
-        <mime-type>application/x-mswrite</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wrl</extension>
-        <mime-type>model/vrml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wsdl</extension>
-        <mime-type>application/wsdl+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wspolicy</extension>
-        <mime-type>application/wspolicy+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wtb</extension>
-        <mime-type>application/vnd.webturbo</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>wvx</extension>
-        <mime-type>video/x-ms-wvx</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>x32</extension>
-        <mime-type>application/x-authorware-bin</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>x3d</extension>
-        <mime-type>application/vnd.hzn-3d-crossword</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xap</extension>
-        <mime-type>application/x-silverlight-app</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xar</extension>
-        <mime-type>application/vnd.xara</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xbap</extension>
-        <mime-type>application/x-ms-xbap</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xbd</extension>
-        <mime-type>application/vnd.fujixerox.docuworks.binder</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xbm</extension>
-        <mime-type>image/x-xbitmap</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xdf</extension>
-        <mime-type>application/xcap-diff+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xdm</extension>
-        <mime-type>application/vnd.syncml.dm+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xdp</extension>
-        <mime-type>application/vnd.adobe.xdp+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xdssc</extension>
-        <mime-type>application/dssc+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xdw</extension>
-        <mime-type>application/vnd.fujixerox.docuworks</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xenc</extension>
-        <mime-type>application/xenc+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xer</extension>
-        <mime-type>application/patch-ops-error+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xfdf</extension>
-        <mime-type>application/vnd.adobe.xfdf</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xfdl</extension>
-        <mime-type>application/vnd.xfdl</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xht</extension>
-        <mime-type>application/xhtml+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xhtml</extension>
-        <mime-type>application/xhtml+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xhvml</extension>
-        <mime-type>application/xv+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xif</extension>
-        <mime-type>image/vnd.xiff</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xla</extension>
-        <mime-type>application/vnd.ms-excel</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xlam</extension>
-        <mime-type>application/vnd.ms-excel.addin.macroenabled.12</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xlc</extension>
-        <mime-type>application/vnd.ms-excel</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xlm</extension>
-        <mime-type>application/vnd.ms-excel</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xls</extension>
-        <mime-type>application/vnd.ms-excel</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xlsb</extension>
-        <mime-type>application/vnd.ms-excel.sheet.binary.macroenabled.12</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xlsm</extension>
-        <mime-type>application/vnd.ms-excel.sheet.macroenabled.12</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xlsx</extension>
-        <mime-type>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xlt</extension>
-        <mime-type>application/vnd.ms-excel</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xltm</extension>
-        <mime-type>application/vnd.ms-excel.template.macroenabled.12</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xltx</extension>
-        <mime-type>application/vnd.openxmlformats-officedocument.spreadsheetml.template</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xlw</extension>
-        <mime-type>application/vnd.ms-excel</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xml</extension>
-        <mime-type>application/xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xo</extension>
-        <mime-type>application/vnd.olpc-sugar</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xop</extension>
-        <mime-type>application/xop+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xpi</extension>
-        <mime-type>application/x-xpinstall</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xpm</extension>
-        <mime-type>image/x-xpixmap</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xpr</extension>
-        <mime-type>application/vnd.is-xpr</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xps</extension>
-        <mime-type>application/vnd.ms-xpsdocument</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xpw</extension>
-        <mime-type>application/vnd.intercon.formnet</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xpx</extension>
-        <mime-type>application/vnd.intercon.formnet</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xsl</extension>
-        <mime-type>application/xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xslt</extension>
-        <mime-type>application/xslt+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xsm</extension>
-        <mime-type>application/vnd.syncml+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xspf</extension>
-        <mime-type>application/xspf+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xul</extension>
-        <mime-type>application/vnd.mozilla.xul+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xvm</extension>
-        <mime-type>application/xv+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xvml</extension>
-        <mime-type>application/xv+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xwd</extension>
-        <mime-type>image/x-xwindowdump</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>xyz</extension>
-        <mime-type>chemical/x-xyz</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>yang</extension>
-        <mime-type>application/yang</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>yin</extension>
-        <mime-type>application/yin+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>z</extension>
-        <mime-type>application/x-compress</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>Z</extension>
-        <mime-type>application/x-compress</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>zaz</extension>
-        <mime-type>application/vnd.zzazz.deck+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>zip</extension>
-        <mime-type>application/zip</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>zir</extension>
-        <mime-type>application/vnd.zul</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>zirz</extension>
-        <mime-type>application/vnd.zul</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>zmm</extension>
-        <mime-type>application/vnd.handheld-entertainment+xml</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>woff</extension>
-        <mime-type>application/x-font-woff</mime-type>
-    </mime-mapping>
-    <mime-mapping>
-        <extension>woff2</extension>
-        <mime-type>font/woff2</mime-type>
-    </mime-mapping>
+    <mime-mapping extension="123" mimeType="application/vnd.lotus-1-2-3"/>
+    <mime-mapping extension="3dml" mimeType="text/vnd.in3d.3dml"/>
+    <mime-mapping extension="3g2" mimeType="video/3gpp2"/>
+    <mime-mapping extension="3gp" mimeType="video/3gpp"/>
+    <mime-mapping extension="7z" mimeType="application/x-7z-compressed"/>
+    <mime-mapping extension="aab" mimeType="application/x-authorware-bin"/>
+    <mime-mapping extension="aac" mimeType="audio/x-aac"/>
+    <mime-mapping extension="aam" mimeType="application/x-authorware-map"/>
+    <mime-mapping extension="aas" mimeType="application/x-authorware-seg"/>
+    <mime-mapping extension="abs" mimeType="audio/x-mpeg"/>
+    <mime-mapping extension="abw" mimeType="application/x-abiword"/>
+    <mime-mapping extension="ac" mimeType="application/pkix-attr-cert"/>
+    <mime-mapping extension="acc" mimeType="application/vnd.americandynamics.acc"/>
+    <mime-mapping extension="ace" mimeType="application/x-ace-compressed"/>
+    <mime-mapping extension="acu" mimeType="application/vnd.acucobol"/>
+    <mime-mapping extension="acutc" mimeType="application/vnd.acucorp"/>
+    <mime-mapping extension="adp" mimeType="audio/adpcm"/>
+    <mime-mapping extension="aep" mimeType="application/vnd.audiograph"/>
+    <mime-mapping extension="afm" mimeType="application/x-font-type1"/>
+    <mime-mapping extension="afp" mimeType="application/vnd.ibm.modcap"/>
+    <mime-mapping extension="ahead" mimeType="application/vnd.ahead.space"/>
+    <mime-mapping extension="ai" mimeType="application/postscript"/>
+    <mime-mapping extension="aif" mimeType="audio/x-aiff"/>
+    <mime-mapping extension="aifc" mimeType="audio/x-aiff"/>
+    <mime-mapping extension="aiff" mimeType="audio/x-aiff"/>
+    <mime-mapping extension="aim" mimeType="application/x-aim"/>
+    <mime-mapping extension="air" mimeType="application/vnd.adobe.air-application-installer-package+zip"/>
+    <mime-mapping extension="ait" mimeType="application/vnd.dvb.ait"/>
+    <mime-mapping extension="ami" mimeType="application/vnd.amiga.ami"/>
+    <mime-mapping extension="anx" mimeType="application/annodex"/>
+    <mime-mapping extension="apk" mimeType="application/vnd.android.package-archive"/>
+    <mime-mapping extension="application" mimeType="application/x-ms-application"/>
+    <mime-mapping extension="apr" mimeType="application/vnd.lotus-approach"/>
+    <mime-mapping extension="art" mimeType="image/x-jg"/>
+    <mime-mapping extension="asc" mimeType="application/pgp-signature"/>
+    <mime-mapping extension="asf" mimeType="video/x-ms-asf"/>
+    <mime-mapping extension="asm" mimeType="text/x-asm"/>
+    <mime-mapping extension="aso" mimeType="application/vnd.accpac.simply.aso"/>
+    <mime-mapping extension="asx" mimeType="video/x-ms-asf"/>
+    <mime-mapping extension="atc" mimeType="application/vnd.acucorp"/>
+    <mime-mapping extension="atom" mimeType="application/atom+xml"/>
+    <mime-mapping extension="atomcat" mimeType="application/atomcat+xml"/>
+    <mime-mapping extension="atomsvc" mimeType="application/atomsvc+xml"/>
+    <mime-mapping extension="atx" mimeType="application/vnd.antix.game-component"/>
+    <mime-mapping extension="au" mimeType="audio/basic"/>
+    <mime-mapping extension="avi" mimeType="video/x-msvideo"/>
+    <mime-mapping extension="avx" mimeType="video/x-rad-screenplay"/>
+    <mime-mapping extension="aw" mimeType="application/applixware"/>
+    <mime-mapping extension="axa" mimeType="audio/annodex"/>
+    <mime-mapping extension="axv" mimeType="video/annodex"/>
+    <mime-mapping extension="azf" mimeType="application/vnd.airzip.filesecure.azf"/>
+    <mime-mapping extension="azs" mimeType="application/vnd.airzip.filesecure.azs"/>
+    <mime-mapping extension="azw" mimeType="application/vnd.amazon.ebook"/>
+    <mime-mapping extension="bat" mimeType="application/x-msdownload"/>
+    <mime-mapping extension="bcpio" mimeType="application/x-bcpio"/>
+    <mime-mapping extension="bdf" mimeType="application/x-font-bdf"/>
+    <mime-mapping extension="bdm" mimeType="application/vnd.syncml.dm+wbxml"/>
+    <mime-mapping extension="bed" mimeType="application/vnd.realvnc.bed"/>
+    <mime-mapping extension="bh2" mimeType="application/vnd.fujitsu.oasysprs"/>
+    <mime-mapping extension="bin" mimeType="application/octet-stream"/>
+    <mime-mapping extension="bmi" mimeType="application/vnd.bmi"/>
+    <mime-mapping extension="bmp" mimeType="image/bmp"/>
+    <mime-mapping extension="body" mimeType="text/html"/>
+    <mime-mapping extension="book" mimeType="application/vnd.framemaker"/>
+    <mime-mapping extension="box" mimeType="application/vnd.previewsystems.box"/>
+    <mime-mapping extension="boz" mimeType="application/x-bzip2"/>
+    <mime-mapping extension="bpk" mimeType="application/octet-stream"/>
+    <mime-mapping extension="btif" mimeType="image/prs.btif"/>
+    <mime-mapping extension="bz" mimeType="application/x-bzip"/>
+    <mime-mapping extension="bz2" mimeType="application/x-bzip2"/>
+    <mime-mapping extension="c" mimeType="text/x-c"/>
+    <mime-mapping extension="c11amc" mimeType="application/vnd.cluetrust.cartomobile-config"/>
+    <mime-mapping extension="c11amz" mimeType="application/vnd.cluetrust.cartomobile-config-pkg"/>
+    <mime-mapping extension="c4d" mimeType="application/vnd.clonk.c4group"/>
+    <mime-mapping extension="c4f" mimeType="application/vnd.clonk.c4group"/>
+    <mime-mapping extension="c4g" mimeType="application/vnd.clonk.c4group"/>
+    <mime-mapping extension="c4p" mimeType="application/vnd.clonk.c4group"/>
+    <mime-mapping extension="c4u" mimeType="application/vnd.clonk.c4group"/>
+    <mime-mapping extension="cab" mimeType="application/vnd.ms-cab-compressed"/>
+    <mime-mapping extension="car" mimeType="application/vnd.curl.car"/>
+    <mime-mapping extension="cat" mimeType="application/vnd.ms-pki.seccat"/>
+    <mime-mapping extension="cc" mimeType="text/x-c"/>
+    <mime-mapping extension="cct" mimeType="application/x-director"/>
+    <mime-mapping extension="ccxml" mimeType="application/ccxml+xml"/>
+    <mime-mapping extension="cdbcmsg" mimeType="application/vnd.contact.cmsg"/>
+    <mime-mapping extension="cdf" mimeType="application/x-cdf"/>
+    <mime-mapping extension="cdkey" mimeType="application/vnd.mediastation.cdkey"/>
+    <mime-mapping extension="cdmia" mimeType="application/cdmi-capability"/>
+    <mime-mapping extension="cdmic" mimeType="application/cdmi-container"/>
+    <mime-mapping extension="cdmid" mimeType="application/cdmi-domain"/>
+    <mime-mapping extension="cdmio" mimeType="application/cdmi-object"/>
+    <mime-mapping extension="cdmiq" mimeType="application/cdmi-queue"/>
+    <mime-mapping extension="cdx" mimeType="chemical/x-cdx"/>
+    <mime-mapping extension="cdxml" mimeType="application/vnd.chemdraw+xml"/>
+    <mime-mapping extension="cdy" mimeType="application/vnd.cinderella"/>
+    <mime-mapping extension="cer" mimeType="application/pkix-cert"/>
+    <mime-mapping extension="cgm" mimeType="image/cgm"/>
+    <mime-mapping extension="chat" mimeType="application/x-chat"/>
+    <mime-mapping extension="chm" mimeType="application/vnd.ms-htmlhelp"/>
+    <mime-mapping extension="chrt" mimeType="application/vnd.kde.kchart"/>
+    <mime-mapping extension="cif" mimeType="chemical/x-cif"/>
+    <mime-mapping extension="cii" mimeType="application/vnd.anser-web-certificate-issue-initiation"/>
+    <mime-mapping extension="cil" mimeType="application/vnd.ms-artgalry"/>
+    <mime-mapping extension="cla" mimeType="application/vnd.claymore"/>
+    <mime-mapping extension="class" mimeType="application/java"/>
+    <mime-mapping extension="clkk" mimeType="application/vnd.crick.clicker.keyboard"/>
+    <mime-mapping extension="clkp" mimeType="application/vnd.crick.clicker.palette"/>
+    <mime-mapping extension="clkt" mimeType="application/vnd.crick.clicker.template"/>
+    <mime-mapping extension="clkw" mimeType="application/vnd.crick.clicker.wordbank"/>
+    <mime-mapping extension="clkx" mimeType="application/vnd.crick.clicker"/>
+    <mime-mapping extension="clp" mimeType="application/x-msclip"/>
+    <mime-mapping extension="cmc" mimeType="application/vnd.cosmocaller"/>
+    <mime-mapping extension="cmdf" mimeType="chemical/x-cmdf"/>
+    <mime-mapping extension="cml" mimeType="chemical/x-cml"/>
+    <mime-mapping extension="cmp" mimeType="application/vnd.yellowriver-custom-menu"/>
+    <mime-mapping extension="cmx" mimeType="image/x-cmx"/>
+    <mime-mapping extension="cod" mimeType="application/vnd.rim.cod"/>
+    <mime-mapping extension="com" mimeType="application/x-msdownload"/>
+    <mime-mapping extension="conf" mimeType="text/plain"/>
+    <mime-mapping extension="cpio" mimeType="application/x-cpio"/>
+    <mime-mapping extension="cpp" mimeType="text/x-c"/>
+    <mime-mapping extension="cpt" mimeType="application/mac-compactpro"/>
+    <mime-mapping extension="crd" mimeType="application/x-mscardfile"/>
+    <mime-mapping extension="crl" mimeType="application/pkix-crl"/>
+    <mime-mapping extension="crt" mimeType="application/x-x509-ca-cert"/>
+    <mime-mapping extension="cryptonote" mimeType="application/vnd.rig.cryptonote"/>
+    <mime-mapping extension="csh" mimeType="application/x-csh"/>
+    <mime-mapping extension="csml" mimeType="chemical/x-csml"/>
+    <mime-mapping extension="csp" mimeType="application/vnd.commonspace"/>
+    <mime-mapping extension="css" mimeType="text/css"/>
+    <mime-mapping extension="cst" mimeType="application/x-director"/>
+    <mime-mapping extension="csv" mimeType="text/csv"/>
+    <mime-mapping extension="cu" mimeType="application/cu-seeme"/>
+    <mime-mapping extension="curl" mimeType="text/vnd.curl"/>
+    <mime-mapping extension="cww" mimeType="application/prs.cww"/>
+    <mime-mapping extension="cxt" mimeType="application/x-director"/>
+    <mime-mapping extension="cxx" mimeType="text/x-c"/>
+    <mime-mapping extension="dae" mimeType="model/vnd.collada+xml"/>
+    <mime-mapping extension="daf" mimeType="application/vnd.mobius.daf"/>
+    <mime-mapping extension="dataless" mimeType="application/vnd.fdsn.seed"/>
+    <mime-mapping extension="davmount" mimeType="application/davmount+xml"/>
+    <mime-mapping extension="dcr" mimeType="application/x-director"/>
+    <mime-mapping extension="dcurl" mimeType="text/vnd.curl.dcurl"/>
+    <mime-mapping extension="dd2" mimeType="application/vnd.oma.dd2+xml"/>
+    <mime-mapping extension="ddd" mimeType="application/vnd.fujixerox.ddd"/>
+    <mime-mapping extension="deb" mimeType="application/x-debian-package"/>
+    <mime-mapping extension="def" mimeType="text/plain"/>
+    <mime-mapping extension="deploy" mimeType="application/octet-stream"/>
+    <mime-mapping extension="der" mimeType="application/x-x509-ca-cert"/>
+    <mime-mapping extension="dfac" mimeType="application/vnd.dreamfactory"/>
+    <mime-mapping extension="dib" mimeType="image/bmp"/>
+    <mime-mapping extension="dic" mimeType="text/x-c"/>
+    <mime-mapping extension="dir" mimeType="application/x-director"/>
+    <mime-mapping extension="dis" mimeType="application/vnd.mobius.dis"/>
+    <mime-mapping extension="dist" mimeType="application/octet-stream"/>
+    <mime-mapping extension="distz" mimeType="application/octet-stream"/>
+    <mime-mapping extension="djv" mimeType="image/vnd.djvu"/>
+    <mime-mapping extension="djvu" mimeType="image/vnd.djvu"/>
+    <mime-mapping extension="dll" mimeType="application/x-msdownload"/>
+    <mime-mapping extension="dmg" mimeType="application/octet-stream"/>
+    <mime-mapping extension="dms" mimeType="application/octet-stream"/>
+    <mime-mapping extension="dna" mimeType="application/vnd.dna"/>
+    <mime-mapping extension="doc" mimeType="application/msword"/>
+    <mime-mapping extension="docm" mimeType="application/vnd.ms-word.document.macroenabled.12"/>
+    <mime-mapping extension="docx" mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+    <mime-mapping extension="dot" mimeType="application/msword"/>
+    <mime-mapping extension="dotm" mimeType="application/vnd.ms-word.template.macroenabled.12"/>
+    <mime-mapping extension="dotx" mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.template"/>
+    <mime-mapping extension="dp" mimeType="application/vnd.osgi.dp"/>
+    <mime-mapping extension="dpg" mimeType="application/vnd.dpgraph"/>
+    <mime-mapping extension="dra" mimeType="audio/vnd.dra"/>
+    <mime-mapping extension="dsc" mimeType="text/prs.lines.tag"/>
+    <mime-mapping extension="dssc" mimeType="application/dssc+der"/>
+    <mime-mapping extension="dtb" mimeType="application/x-dtbook+xml"/>
+    <mime-mapping extension="dtd" mimeType="application/xml-dtd"/>
+    <mime-mapping extension="dts" mimeType="audio/vnd.dts"/>
+    <mime-mapping extension="dtshd" mimeType="audio/vnd.dts.hd"/>
+    <mime-mapping extension="dump" mimeType="application/octet-stream"/>
+    <mime-mapping extension="dv" mimeType="video/x-dv"/>
+    <mime-mapping extension="dvi" mimeType="application/x-dvi"/>
+    <mime-mapping extension="dwf" mimeType="model/vnd.dwf"/>
+    <mime-mapping extension="dwg" mimeType="image/vnd.dwg"/>
+    <mime-mapping extension="dxf" mimeType="image/vnd.dxf"/>
+    <mime-mapping extension="dxp" mimeType="application/vnd.spotfire.dxp"/>
+    <mime-mapping extension="dxr" mimeType="application/x-director"/>
+    <mime-mapping extension="ecelp4800" mimeType="audio/vnd.nuera.ecelp4800"/>
+    <mime-mapping extension="ecelp7470" mimeType="audio/vnd.nuera.ecelp7470"/>
+    <mime-mapping extension="ecelp9600" mimeType="audio/vnd.nuera.ecelp9600"/>
+    <mime-mapping extension="ecma" mimeType="application/ecmascript"/>
+    <mime-mapping extension="edm" mimeType="application/vnd.novadigm.edm"/>
+    <mime-mapping extension="edx" mimeType="application/vnd.novadigm.edx"/>
+    <mime-mapping extension="efif" mimeType="application/vnd.picsel"/>
+    <mime-mapping extension="ei6" mimeType="application/vnd.pg.osasli"/>
+    <mime-mapping extension="elc" mimeType="application/octet-stream"/>
+    <mime-mapping extension="eml" mimeType="message/rfc822"/>
+    <mime-mapping extension="emma" mimeType="application/emma+xml"/>
+    <mime-mapping extension="eol" mimeType="audio/vnd.digital-winds"/>
+    <mime-mapping extension="eot" mimeType="application/vnd.ms-fontobject"/>
+    <mime-mapping extension="eps" mimeType="application/postscript"/>
+    <mime-mapping extension="epub" mimeType="application/epub+zip"/>
+    <mime-mapping extension="es3" mimeType="application/vnd.eszigno3+xml"/>
+    <mime-mapping extension="esf" mimeType="application/vnd.epson.esf"/>
+    <mime-mapping extension="et3" mimeType="application/vnd.eszigno3+xml"/>
+    <mime-mapping extension="etx" mimeType="text/x-setext"/>
+    <mime-mapping extension="exe" mimeType="application/octet-stream"/>
+    <mime-mapping extension="exi" mimeType="application/exi"/>
+    <mime-mapping extension="ext" mimeType="application/vnd.novadigm.ext"/>
+    <mime-mapping extension="ez" mimeType="application/andrew-inset"/>
+    <mime-mapping extension="ez2" mimeType="application/vnd.ezpix-album"/>
+    <mime-mapping extension="ez3" mimeType="application/vnd.ezpix-package"/>
+    <mime-mapping extension="f" mimeType="text/x-fortran"/>
+    <mime-mapping extension="f4v" mimeType="video/x-f4v"/>
+    <mime-mapping extension="f77" mimeType="text/x-fortran"/>
+    <mime-mapping extension="f90" mimeType="text/x-fortran"/>
+    <mime-mapping extension="fbs" mimeType="image/vnd.fastbidsheet"/>
+    <mime-mapping extension="fcs" mimeType="application/vnd.isac.fcs"/>
+    <mime-mapping extension="fdf" mimeType="application/vnd.fdf"/>
+    <mime-mapping extension="fe_launch" mimeType="application/vnd.denovo.fcselayout-link"/>
+    <mime-mapping extension="fg5" mimeType="application/vnd.fujitsu.oasysgp"/>
+    <mime-mapping extension="fgd" mimeType="application/x-director"/>
+    <mime-mapping extension="fh" mimeType="image/x-freehand"/>
+    <mime-mapping extension="fh4" mimeType="image/x-freehand"/>
+    <mime-mapping extension="fh5" mimeType="image/x-freehand"/>
+    <mime-mapping extension="fh7" mimeType="image/x-freehand"/>
+    <mime-mapping extension="fhc" mimeType="image/x-freehand"/>
+    <mime-mapping extension="fig" mimeType="application/x-xfig"/>
+    <mime-mapping extension="flac" mimeType="audio/flac"/>
+    <mime-mapping extension="fli" mimeType="video/x-fli"/>
+    <mime-mapping extension="flo" mimeType="application/vnd.micrografx.flo"/>
+    <mime-mapping extension="flv" mimeType="video/x-flv"/>
+    <mime-mapping extension="flw" mimeType="application/vnd.kde.kivio"/>
+    <mime-mapping extension="flx" mimeType="text/vnd.fmi.flexstor"/>
+    <mime-mapping extension="fly" mimeType="text/vnd.fly"/>
+    <mime-mapping extension="fm" mimeType="application/vnd.framemaker"/>
+    <mime-mapping extension="fnc" mimeType="application/vnd.frogans.fnc"/>
+    <mime-mapping extension="for" mimeType="text/x-fortran"/>
+    <mime-mapping extension="fpx" mimeType="image/vnd.fpx"/>
+    <mime-mapping extension="frame" mimeType="application/vnd.framemaker"/>
+    <mime-mapping extension="fsc" mimeType="application/vnd.fsc.weblaunch"/>
+    <mime-mapping extension="fst" mimeType="image/vnd.fst"/>
+    <mime-mapping extension="ftc" mimeType="application/vnd.fluxtime.clip"/>
+    <mime-mapping extension="fti" mimeType="application/vnd.anser-web-funds-transfer-initiation"/>
+    <mime-mapping extension="fvt" mimeType="video/vnd.fvt"/>
+    <mime-mapping extension="fxp" mimeType="application/vnd.adobe.fxp"/>
+    <mime-mapping extension="fxpl" mimeType="application/vnd.adobe.fxp"/>
+    <mime-mapping extension="fzs" mimeType="application/vnd.fuzzysheet"/>
+    <mime-mapping extension="g2w" mimeType="application/vnd.geoplan"/>
+    <mime-mapping extension="g3" mimeType="image/g3fax"/>
+    <mime-mapping extension="g3w" mimeType="application/vnd.geospace"/>
+    <mime-mapping extension="gac" mimeType="application/vnd.groove-account"/>
+    <mime-mapping extension="gdl" mimeType="model/vnd.gdl"/>
+    <mime-mapping extension="geo" mimeType="application/vnd.dynageo"/>
+    <mime-mapping extension="gex" mimeType="application/vnd.geometry-explorer"/>
+    <mime-mapping extension="ggb" mimeType="application/vnd.geogebra.file"/>
+    <mime-mapping extension="ggt" mimeType="application/vnd.geogebra.tool"/>
+    <mime-mapping extension="ghf" mimeType="application/vnd.groove-help"/>
+    <mime-mapping extension="gif" mimeType="image/gif"/>
+    <mime-mapping extension="gim" mimeType="application/vnd.groove-identity-message"/>
+    <mime-mapping extension="gmx" mimeType="application/vnd.gmx"/>
+    <mime-mapping extension="gnumeric" mimeType="application/x-gnumeric"/>
+    <mime-mapping extension="gph" mimeType="application/vnd.flographit"/>
+    <mime-mapping extension="gqf" mimeType="application/vnd.grafeq"/>
+    <mime-mapping extension="gqs" mimeType="application/vnd.grafeq"/>
+    <mime-mapping extension="gram" mimeType="application/srgs"/>
+    <mime-mapping extension="gre" mimeType="application/vnd.geometry-explorer"/>
+    <mime-mapping extension="grv" mimeType="application/vnd.groove-injector"/>
+    <mime-mapping extension="grxml" mimeType="application/srgs+xml"/>
+    <mime-mapping extension="gsf" mimeType="application/x-font-ghostscript"/>
+    <mime-mapping extension="gtar" mimeType="application/x-gtar"/>
+    <mime-mapping extension="gtm" mimeType="application/vnd.groove-tool-message"/>
+    <mime-mapping extension="gtw" mimeType="model/vnd.gtw"/>
+    <mime-mapping extension="gv" mimeType="text/vnd.graphviz"/>
+    <mime-mapping extension="gxt" mimeType="application/vnd.geonext"/>
+    <mime-mapping extension="gz" mimeType="application/x-gzip"/>
+    <mime-mapping extension="h" mimeType="text/x-c"/>
+    <mime-mapping extension="h261" mimeType="video/h261"/>
+    <mime-mapping extension="h263" mimeType="video/h263"/>
+    <mime-mapping extension="h264" mimeType="video/h264"/>
+    <mime-mapping extension="hal" mimeType="application/vnd.hal+xml"/>
+    <mime-mapping extension="hbci" mimeType="application/vnd.hbci"/>
+    <mime-mapping extension="hdf" mimeType="application/x-hdf"/>
+    <mime-mapping extension="hh" mimeType="text/x-c"/>
+    <mime-mapping extension="hlp" mimeType="application/winhlp"/>
+    <mime-mapping extension="hpgl" mimeType="application/vnd.hp-hpgl"/>
+    <mime-mapping extension="hpid" mimeType="application/vnd.hp-hpid"/>
+    <mime-mapping extension="hps" mimeType="application/vnd.hp-hps"/>
+    <mime-mapping extension="hqx" mimeType="application/mac-binhex40"/>
+    <mime-mapping extension="htc" mimeType="text/x-component"/>
+    <mime-mapping extension="htke" mimeType="application/vnd.kenameaapp"/>
+    <mime-mapping extension="htm" mimeType="text/html"/>
+    <mime-mapping extension="html" mimeType="text/html"/>
+    <mime-mapping extension="hvd" mimeType="application/vnd.yamaha.hv-dic"/>
+    <mime-mapping extension="hvp" mimeType="application/vnd.yamaha.hv-voice"/>
+    <mime-mapping extension="hvs" mimeType="application/vnd.yamaha.hv-script"/>
+    <mime-mapping extension="i2g" mimeType="application/vnd.intergeo"/>
+    <mime-mapping extension="icc" mimeType="application/vnd.iccprofile"/>
+    <mime-mapping extension="ice" mimeType="x-conference/x-cooltalk"/>
+    <mime-mapping extension="icm" mimeType="application/vnd.iccprofile"/>
+    <mime-mapping extension="ico" mimeType="image/x-icon"/>
+    <mime-mapping extension="ics" mimeType="text/calendar"/>
+    <mime-mapping extension="ief" mimeType="image/ief"/>
+    <mime-mapping extension="ifb" mimeType="text/calendar"/>
+    <mime-mapping extension="ifm" mimeType="application/vnd.shana.informed.formdata"/>
+    <mime-mapping extension="iges" mimeType="model/iges"/>
+    <mime-mapping extension="igl" mimeType="application/vnd.igloader"/>
+    <mime-mapping extension="igm" mimeType="application/vnd.insors.igm"/>
+    <mime-mapping extension="igs" mimeType="model/iges"/>
+    <mime-mapping extension="igx" mimeType="application/vnd.micrografx.igx"/>
+    <mime-mapping extension="iif" mimeType="application/vnd.shana.informed.interchange"/>
+    <mime-mapping extension="imp" mimeType="application/vnd.accpac.simply.imp"/>
+    <mime-mapping extension="ims" mimeType="application/vnd.ms-ims"/>
+    <mime-mapping extension="in" mimeType="text/plain"/>
+    <mime-mapping extension="ipfix" mimeType="application/ipfix"/>
+    <mime-mapping extension="ipk" mimeType="application/vnd.shana.informed.package"/>
+    <mime-mapping extension="irm" mimeType="application/vnd.ibm.rights-management"/>
+    <mime-mapping extension="irp" mimeType="application/vnd.irepository.package+xml"/>
+    <mime-mapping extension="iso" mimeType="application/octet-stream"/>
+    <mime-mapping extension="itp" mimeType="application/vnd.shana.informed.formtemplate"/>
+    <mime-mapping extension="ivp" mimeType="application/vnd.immervision-ivp"/>
+    <mime-mapping extension="ivu" mimeType="application/vnd.immervision-ivu"/>
+    <mime-mapping extension="jad" mimeType="text/vnd.sun.j2me.app-descriptor"/>
+    <mime-mapping extension="jam" mimeType="application/vnd.jam"/>
+    <mime-mapping extension="jar" mimeType="application/java-archive"/>
+    <mime-mapping extension="java" mimeType="text/x-java-source"/>
+    <mime-mapping extension="jisp" mimeType="application/vnd.jisp"/>
+    <mime-mapping extension="jlt" mimeType="application/vnd.hp-jlyt"/>
+    <mime-mapping extension="jnlp" mimeType="application/x-java-jnlp-file"/>
+    <mime-mapping extension="joda" mimeType="application/vnd.joost.joda-archive"/>
+    <mime-mapping extension="jpe" mimeType="image/jpeg"/>
+    <mime-mapping extension="jpeg" mimeType="image/jpeg"/>
+    <mime-mapping extension="jpg" mimeType="image/jpeg"/>
+    <mime-mapping extension="jpgm" mimeType="video/jpm"/>
+    <mime-mapping extension="jpgv" mimeType="video/jpeg"/>
+    <mime-mapping extension="jpm" mimeType="video/jpm"/>
+    <mime-mapping extension="js" mimeType="application/javascript"/>
+    <mime-mapping extension="jsf" mimeType="text/plain"/>
+    <mime-mapping extension="json" mimeType="application/json"/>
+    <mime-mapping extension="jspf" mimeType="text/plain"/>
+    <mime-mapping extension="kar" mimeType="audio/midi"/>
+    <mime-mapping extension="karbon" mimeType="application/vnd.kde.karbon"/>
+    <mime-mapping extension="kfo" mimeType="application/vnd.kde.kformula"/>
+    <mime-mapping extension="kia" mimeType="application/vnd.kidspiration"/>
+    <mime-mapping extension="kml" mimeType="application/vnd.google-earth.kml+xml"/>
+    <mime-mapping extension="kmz" mimeType="application/vnd.google-earth.kmz"/>
+    <mime-mapping extension="kne" mimeType="application/vnd.kinar"/>
+    <mime-mapping extension="knp" mimeType="application/vnd.kinar"/>
+    <mime-mapping extension="kon" mimeType="application/vnd.kde.kontour"/>
+    <mime-mapping extension="kpr" mimeType="application/vnd.kde.kpresenter"/>
+    <mime-mapping extension="kpt" mimeType="application/vnd.kde.kpresenter"/>
+    <mime-mapping extension="ksp" mimeType="application/vnd.kde.kspread"/>
+    <mime-mapping extension="ktr" mimeType="application/vnd.kahootz"/>
+    <mime-mapping extension="ktx" mimeType="image/ktx"/>
+    <mime-mapping extension="ktz" mimeType="application/vnd.kahootz"/>
+    <mime-mapping extension="kwd" mimeType="application/vnd.kde.kword"/>
+    <mime-mapping extension="kwt" mimeType="application/vnd.kde.kword"/>
+    <mime-mapping extension="lasxml" mimeType="application/vnd.las.las+xml"/>
+    <mime-mapping extension="latex" mimeType="application/x-latex"/>
+    <mime-mapping extension="lbd" mimeType="application/vnd.llamagraphics.life-balance.desktop"/>
+    <mime-mapping extension="lbe" mimeType="application/vnd.llamagraphics.life-balance.exchange+xml"/>
+    <mime-mapping extension="les" mimeType="application/vnd.hhe.lesson-player"/>
+    <mime-mapping extension="lha" mimeType="application/octet-stream"/>
+    <mime-mapping extension="link66" mimeType="application/vnd.route66.link66+xml"/>
+    <mime-mapping extension="list" mimeType="text/plain"/>
+    <mime-mapping extension="list3820" mimeType="application/vnd.ibm.modcap"/>
+    <mime-mapping extension="listafp" mimeType="application/vnd.ibm.modcap"/>
+    <mime-mapping extension="log" mimeType="text/plain"/>
+    <mime-mapping extension="lostxml" mimeType="application/lost+xml"/>
+    <mime-mapping extension="lrf" mimeType="application/octet-stream"/>
+    <mime-mapping extension="lrm" mimeType="application/vnd.ms-lrm"/>
+    <mime-mapping extension="ltf" mimeType="application/vnd.frogans.ltf"/>
+    <mime-mapping extension="lvp" mimeType="audio/vnd.lucent.voice"/>
+    <mime-mapping extension="lwp" mimeType="application/vnd.lotus-wordpro"/>
+    <mime-mapping extension="lzh" mimeType="application/octet-stream"/>
+    <mime-mapping extension="m13" mimeType="application/x-msmediaview"/>
+    <mime-mapping extension="m14" mimeType="application/x-msmediaview"/>
+    <mime-mapping extension="m1v" mimeType="video/mpeg"/>
+    <mime-mapping extension="m21" mimeType="application/mp21"/>
+    <mime-mapping extension="m2a" mimeType="audio/mpeg"/>
+    <mime-mapping extension="m2v" mimeType="video/mpeg"/>
+    <mime-mapping extension="m3a" mimeType="audio/mpeg"/>
+    <mime-mapping extension="m3u" mimeType="audio/x-mpegurl"/>
+    <mime-mapping extension="m3u8" mimeType="application/vnd.apple.mpegurl"/>
+    <mime-mapping extension="m4a" mimeType="audio/mp4"/>
+    <mime-mapping extension="m4b" mimeType="audio/mp4"/>
+    <mime-mapping extension="m4r" mimeType="audio/mp4"/>
+    <mime-mapping extension="m4u" mimeType="video/vnd.mpegurl"/>
+    <mime-mapping extension="m4v" mimeType="video/mp4"/>
+    <mime-mapping extension="ma" mimeType="application/mathematica"/>
+    <mime-mapping extension="mac" mimeType="image/x-macpaint"/>
+    <mime-mapping extension="mads" mimeType="application/mads+xml"/>
+    <mime-mapping extension="mag" mimeType="application/vnd.ecowin.chart"/>
+    <mime-mapping extension="maker" mimeType="application/vnd.framemaker"/>
+    <mime-mapping extension="man" mimeType="text/troff"/>
+    <mime-mapping extension="mathml" mimeType="application/mathml+xml"/>
+    <mime-mapping extension="mb" mimeType="application/mathematica"/>
+    <mime-mapping extension="mbk" mimeType="application/vnd.mobius.mbk"/>
+    <mime-mapping extension="mbox" mimeType="application/mbox"/>
+    <mime-mapping extension="mc1" mimeType="application/vnd.medcalcdata"/>
+    <mime-mapping extension="mcd" mimeType="application/vnd.mcd"/>
+    <mime-mapping extension="mcurl" mimeType="text/vnd.curl.mcurl"/>
+    <mime-mapping extension="mdb" mimeType="application/x-msaccess"/>
+    <mime-mapping extension="mdi" mimeType="image/vnd.ms-modi"/>
+    <mime-mapping extension="me" mimeType="text/troff"/>
+    <mime-mapping extension="mesh" mimeType="model/mesh"/>
+    <mime-mapping extension="meta4" mimeType="application/metalink4+xml"/>
+    <mime-mapping extension="mets" mimeType="application/mets+xml"/>
+    <mime-mapping extension="mfm" mimeType="application/vnd.mfmp"/>
+    <mime-mapping extension="mgp" mimeType="application/vnd.osgeo.mapguide.package"/>
+    <mime-mapping extension="mgz" mimeType="application/vnd.proteus.magazine"/>
+    <mime-mapping extension="mid" mimeType="audio/midi"/>
+    <mime-mapping extension="midi" mimeType="audio/midi"/>
+    <mime-mapping extension="mif" mimeType="application/x-mif"/>
+    <mime-mapping extension="mime" mimeType="message/rfc822"/>
+    <mime-mapping extension="mj2" mimeType="video/mj2"/>
+    <mime-mapping extension="mjp2" mimeType="video/mj2"/>
+    <mime-mapping extension="mlp" mimeType="application/vnd.dolby.mlp"/>
+    <mime-mapping extension="mmd" mimeType="application/vnd.chipnuts.karaoke-mmd"/>
+    <mime-mapping extension="mmf" mimeType="application/vnd.smaf"/>
+    <mime-mapping extension="mmr" mimeType="image/vnd.fujixerox.edmics-mmr"/>
+    <mime-mapping extension="mny" mimeType="application/x-msmoney"/>
+    <mime-mapping extension="mobi" mimeType="application/x-mobipocket-ebook"/>
+    <mime-mapping extension="mods" mimeType="application/mods+xml"/>
+    <mime-mapping extension="mov" mimeType="video/quicktime"/>
+    <mime-mapping extension="movie" mimeType="video/x-sgi-movie"/>
+    <mime-mapping extension="mp1" mimeType="audio/mpeg"/>
+    <mime-mapping extension="mp2" mimeType="audio/mpeg"/>
+    <mime-mapping extension="mp21" mimeType="application/mp21"/>
+    <mime-mapping extension="mp2a" mimeType="audio/mpeg"/>
+    <mime-mapping extension="mp3" mimeType="audio/mpeg"/>
+    <mime-mapping extension="mp4" mimeType="video/mp4"/>
+    <mime-mapping extension="mp4a" mimeType="audio/mp4"/>
+    <mime-mapping extension="mp4s" mimeType="application/mp4"/>
+    <mime-mapping extension="mp4v" mimeType="video/mp4"/>
+    <mime-mapping extension="mpa" mimeType="audio/mpeg"/>
+    <mime-mapping extension="mpc" mimeType="application/vnd.mophun.certificate"/>
+    <mime-mapping extension="mpe" mimeType="video/mpeg"/>
+    <mime-mapping extension="mpeg" mimeType="video/mpeg"/>
+    <mime-mapping extension="mpega" mimeType="audio/x-mpeg"/>
+    <mime-mapping extension="mpg" mimeType="video/mpeg"/>
+    <mime-mapping extension="mpg4" mimeType="video/mp4"/>
+    <mime-mapping extension="mpga" mimeType="audio/mpeg"/>
+    <mime-mapping extension="mpkg" mimeType="application/vnd.apple.installer+xml"/>
+    <mime-mapping extension="mpm" mimeType="application/vnd.blueice.multipass"/>
+    <mime-mapping extension="mpn" mimeType="application/vnd.mophun.application"/>
+    <mime-mapping extension="mpp" mimeType="application/vnd.ms-project"/>
+    <mime-mapping extension="mpt" mimeType="application/vnd.ms-project"/>
+    <mime-mapping extension="mpv2" mimeType="video/mpeg2"/>
+    <mime-mapping extension="mpy" mimeType="application/vnd.ibm.minipay"/>
+    <mime-mapping extension="mqy" mimeType="application/vnd.mobius.mqy"/>
+    <mime-mapping extension="mrc" mimeType="application/marc"/>
+    <mime-mapping extension="mrcx" mimeType="application/marcxml+xml"/>
+    <mime-mapping extension="ms" mimeType="text/troff"/>
+    <mime-mapping extension="mscml" mimeType="application/mediaservercontrol+xml"/>
+    <mime-mapping extension="mseed" mimeType="application/vnd.fdsn.mseed"/>
+    <mime-mapping extension="mseq" mimeType="application/vnd.mseq"/>
+    <mime-mapping extension="msf" mimeType="application/vnd.epson.msf"/>
+    <mime-mapping extension="msh" mimeType="model/mesh"/>
+    <mime-mapping extension="msi" mimeType="application/x-msdownload"/>
+    <mime-mapping extension="msl" mimeType="application/vnd.mobius.msl"/>
+    <mime-mapping extension="msty" mimeType="application/vnd.muvee.style"/>
+    <mime-mapping extension="mts" mimeType="model/vnd.mts"/>
+    <mime-mapping extension="mus" mimeType="application/vnd.musician"/>
+    <mime-mapping extension="musicxml" mimeType="application/vnd.recordare.musicxml+xml"/>
+    <mime-mapping extension="mvb" mimeType="application/x-msmediaview"/>
+    <mime-mapping extension="mwf" mimeType="application/vnd.mfer"/>
+    <mime-mapping extension="mxf" mimeType="application/mxf"/>
+    <mime-mapping extension="mxl" mimeType="application/vnd.recordare.musicxml"/>
+    <mime-mapping extension="mxml" mimeType="application/xv+xml"/>
+    <mime-mapping extension="mxs" mimeType="application/vnd.triscape.mxs"/>
+    <mime-mapping extension="mxu" mimeType="video/vnd.mpegurl"/>
+    <mime-mapping extension="n-gage" mimeType="application/vnd.nokia.n-gage.symbian.install"/>
+    <mime-mapping extension="n3" mimeType="text/n3"/>
+    <mime-mapping extension="nb" mimeType="application/mathematica"/>
+    <mime-mapping extension="nbp" mimeType="application/vnd.wolfram.player"/>
+    <mime-mapping extension="nc" mimeType="application/x-netcdf"/>
+    <mime-mapping extension="ncx" mimeType="application/x-dtbncx+xml"/>
+    <mime-mapping extension="ngdat" mimeType="application/vnd.nokia.n-gage.data"/>
+    <mime-mapping extension="nlu" mimeType="application/vnd.neurolanguage.nlu"/>
+    <mime-mapping extension="nml" mimeType="application/vnd.enliven"/>
+    <mime-mapping extension="nnd" mimeType="application/vnd.noblenet-directory"/>
+    <mime-mapping extension="nns" mimeType="application/vnd.noblenet-sealer"/>
+    <mime-mapping extension="nnw" mimeType="application/vnd.noblenet-web"/>
+    <mime-mapping extension="npx" mimeType="image/vnd.net-fpx"/>
+    <mime-mapping extension="nsf" mimeType="application/vnd.lotus-notes"/>
+    <mime-mapping extension="oa2" mimeType="application/vnd.fujitsu.oasys2"/>
+    <mime-mapping extension="oa3" mimeType="application/vnd.fujitsu.oasys3"/>
+    <mime-mapping extension="oas" mimeType="application/vnd.fujitsu.oasys"/>
+    <mime-mapping extension="obd" mimeType="application/x-msbinder"/>
+    <mime-mapping extension="oda" mimeType="application/oda"/>
+    <mime-mapping extension="odb" mimeType="application/vnd.oasis.opendocument.database"/>
+    <mime-mapping extension="odc" mimeType="application/vnd.oasis.opendocument.chart"/>
+    <mime-mapping extension="odf" mimeType="application/vnd.oasis.opendocument.formula"/>
+    <mime-mapping extension="odft" mimeType="application/vnd.oasis.opendocument.formula-template"/>
+    <mime-mapping extension="odg" mimeType="application/vnd.oasis.opendocument.graphics"/>
+    <mime-mapping extension="odi" mimeType="application/vnd.oasis.opendocument.image"/>
+    <mime-mapping extension="odm" mimeType="application/vnd.oasis.opendocument.text-master"/>
+    <mime-mapping extension="odp" mimeType="application/vnd.oasis.opendocument.presentation"/>
+    <mime-mapping extension="ods" mimeType="application/vnd.oasis.opendocument.spreadsheet"/>
+    <mime-mapping extension="odt" mimeType="application/vnd.oasis.opendocument.text"/>
+    <mime-mapping extension="oga" mimeType="audio/ogg"/>
+    <mime-mapping extension="ogg" mimeType="audio/ogg"/>
+    <mime-mapping extension="ogv" mimeType="video/ogg"/>
+    <mime-mapping extension="ogx" mimeType="application/ogg"/>
+    <mime-mapping extension="onepkg" mimeType="application/onenote"/>
+    <mime-mapping extension="onetmp" mimeType="application/onenote"/>
+    <mime-mapping extension="onetoc" mimeType="application/onenote"/>
+    <mime-mapping extension="onetoc2" mimeType="application/onenote"/>
+    <mime-mapping extension="opf" mimeType="application/oebps-package+xml"/>
+    <mime-mapping extension="oprc" mimeType="application/vnd.palm"/>
+    <mime-mapping extension="org" mimeType="application/vnd.lotus-organizer"/>
+    <mime-mapping extension="osf" mimeType="application/vnd.yamaha.openscoreformat"/>
+    <mime-mapping extension="osfpvg" mimeType="application/vnd.yamaha.openscoreformat.osfpvg+xml"/>
+    <mime-mapping extension="otc" mimeType="application/vnd.oasis.opendocument.chart-template"/>
+    <mime-mapping extension="otf" mimeType="application/x-font-otf"/>
+    <mime-mapping extension="otg" mimeType="application/vnd.oasis.opendocument.graphics-template"/>
+    <mime-mapping extension="oth" mimeType="application/vnd.oasis.opendocument.text-web"/>
+    <mime-mapping extension="oti" mimeType="application/vnd.oasis.opendocument.image-template"/>
+    <mime-mapping extension="otp" mimeType="application/vnd.oasis.opendocument.presentation-template"/>
+    <mime-mapping extension="ots" mimeType="application/vnd.oasis.opendocument.spreadsheet-template"/>
+    <mime-mapping extension="ott" mimeType="application/vnd.oasis.opendocument.text-template"/>
+    <mime-mapping extension="oxt" mimeType="application/vnd.openofficeorg.extension"/>
+    <mime-mapping extension="p" mimeType="text/x-pascal"/>
+    <mime-mapping extension="p10" mimeType="application/pkcs10"/>
+    <mime-mapping extension="p12" mimeType="application/x-pkcs12"/>
+    <mime-mapping extension="p7b" mimeType="application/x-pkcs7-certificates"/>
+    <mime-mapping extension="p7c" mimeType="application/pkcs7-mime"/>
+    <mime-mapping extension="p7m" mimeType="application/pkcs7-mime"/>
+    <mime-mapping extension="p7r" mimeType="application/x-pkcs7-certreqresp"/>
+    <mime-mapping extension="p7s" mimeType="application/pkcs7-signature"/>
+    <mime-mapping extension="p8" mimeType="application/pkcs8"/>
+    <mime-mapping extension="pas" mimeType="text/x-pascal"/>
+    <mime-mapping extension="paw" mimeType="application/vnd.pawaafile"/>
+    <mime-mapping extension="pbd" mimeType="application/vnd.powerbuilder6"/>
+    <mime-mapping extension="pbm" mimeType="image/x-portable-bitmap"/>
+    <mime-mapping extension="pcf" mimeType="application/x-font-pcf"/>
+    <mime-mapping extension="pcl" mimeType="application/vnd.hp-pcl"/>
+    <mime-mapping extension="pclxl" mimeType="application/vnd.hp-pclxl"/>
+    <mime-mapping extension="pct" mimeType="image/pict"/>
+    <mime-mapping extension="pcurl" mimeType="application/vnd.curl.pcurl"/>
+    <mime-mapping extension="pcx" mimeType="image/x-pcx"/>
+    <mime-mapping extension="pdb" mimeType="application/vnd.palm"/>
+    <mime-mapping extension="pdf" mimeType="application/pdf"/>
+    <mime-mapping extension="pfa" mimeType="application/x-font-type1"/>
+    <mime-mapping extension="pfb" mimeType="application/x-font-type1"/>
+    <mime-mapping extension="pfm" mimeType="application/x-font-type1"/>
+    <mime-mapping extension="pfr" mimeType="application/font-tdpfr"/>
+    <mime-mapping extension="pfx" mimeType="application/x-pkcs12"/>
+    <mime-mapping extension="pgm" mimeType="image/x-portable-graymap"/>
+    <mime-mapping extension="pgn" mimeType="application/x-chess-pgn"/>
+    <mime-mapping extension="pgp" mimeType="application/pgp-encrypted"/>
+    <mime-mapping extension="pic" mimeType="image/pict"/>
+    <mime-mapping extension="pict" mimeType="image/pict"/>
+    <mime-mapping extension="pkg" mimeType="application/octet-stream"/>
+    <mime-mapping extension="pki" mimeType="application/pkixcmp"/>
+    <mime-mapping extension="pkipath" mimeType="application/pkix-pkipath"/>
+    <mime-mapping extension="plb" mimeType="application/vnd.3gpp.pic-bw-large"/>
+    <mime-mapping extension="plc" mimeType="application/vnd.mobius.plc"/>
+    <mime-mapping extension="plf" mimeType="application/vnd.pocketlearn"/>
+    <mime-mapping extension="pls" mimeType="audio/x-scpls"/>
+    <mime-mapping extension="pml" mimeType="application/vnd.ctc-posml"/>
+    <mime-mapping extension="png" mimeType="image/png"/>
+    <mime-mapping extension="pnm" mimeType="image/x-portable-anymap"/>
+    <mime-mapping extension="pnt" mimeType="image/x-macpaint"/>
+    <mime-mapping extension="portpkg" mimeType="application/vnd.macports.portpkg"/>
+    <mime-mapping extension="pot" mimeType="application/vnd.ms-powerpoint"/>
+    <mime-mapping extension="potm" mimeType="application/vnd.ms-powerpoint.template.macroenabled.12"/>
+    <mime-mapping extension="potx" mimeType="application/vnd.openxmlformats-officedocument.presentationml.template"/>
+    <mime-mapping extension="ppam" mimeType="application/vnd.ms-powerpoint.addin.macroenabled.12"/>
+    <mime-mapping extension="ppd" mimeType="application/vnd.cups-ppd"/>
+    <mime-mapping extension="ppm" mimeType="image/x-portable-pixmap"/>
+    <mime-mapping extension="pps" mimeType="application/vnd.ms-powerpoint"/>
+    <mime-mapping extension="ppsm" mimeType="application/vnd.ms-powerpoint.slideshow.macroenabled.12"/>
+    <mime-mapping extension="ppsx" mimeType="application/vnd.openxmlformats-officedocument.presentationml.slideshow"/>
+    <mime-mapping extension="ppt" mimeType="application/vnd.ms-powerpoint"/>
+    <mime-mapping extension="pptm" mimeType="application/vnd.ms-powerpoint.presentation.macroenabled.12"/>
+    <mime-mapping extension="pptx" mimeType="application/vnd.openxmlformats-officedocument.presentationml.presentation"/>
+    <mime-mapping extension="pqa" mimeType="application/vnd.palm"/>
+    <mime-mapping extension="prc" mimeType="application/x-mobipocket-ebook"/>
+    <mime-mapping extension="pre" mimeType="application/vnd.lotus-freelance"/>
+    <mime-mapping extension="prf" mimeType="application/pics-rules"/>
+    <mime-mapping extension="ps" mimeType="application/postscript"/>
+    <mime-mapping extension="psb" mimeType="application/vnd.3gpp.pic-bw-small"/>
+    <mime-mapping extension="psd" mimeType="image/vnd.adobe.photoshop"/>
+    <mime-mapping extension="psf" mimeType="application/x-font-linux-psf"/>
+    <mime-mapping extension="pskcxml" mimeType="application/pskc+xml"/>
+    <mime-mapping extension="ptid" mimeType="application/vnd.pvi.ptid1"/>
+    <mime-mapping extension="pub" mimeType="application/x-mspublisher"/>
+    <mime-mapping extension="pvb" mimeType="application/vnd.3gpp.pic-bw-var"/>
+    <mime-mapping extension="pwn" mimeType="application/vnd.3m.post-it-notes"/>
+    <mime-mapping extension="pya" mimeType="audio/vnd.ms-playready.media.pya"/>
+    <mime-mapping extension="pyv" mimeType="video/vnd.ms-playready.media.pyv"/>
+    <mime-mapping extension="qam" mimeType="application/vnd.epson.quickanime"/>
+    <mime-mapping extension="qbo" mimeType="application/vnd.intu.qbo"/>
+    <mime-mapping extension="qfx" mimeType="application/vnd.intu.qfx"/>
+    <mime-mapping extension="qps" mimeType="application/vnd.publishare-delta-tree"/>
+    <mime-mapping extension="qt" mimeType="video/quicktime"/>
+    <mime-mapping extension="qti" mimeType="image/x-quicktime"/>
+    <mime-mapping extension="qtif" mimeType="image/x-quicktime"/>
+    <mime-mapping extension="qwd" mimeType="application/vnd.quark.quarkxpress"/>
+    <mime-mapping extension="qwt" mimeType="application/vnd.quark.quarkxpress"/>
+    <mime-mapping extension="qxb" mimeType="application/vnd.quark.quarkxpress"/>
+    <mime-mapping extension="qxd" mimeType="application/vnd.quark.quarkxpress"/>
+    <mime-mapping extension="qxl" mimeType="application/vnd.quark.quarkxpress"/>
+    <mime-mapping extension="qxt" mimeType="application/vnd.quark.quarkxpress"/>
+    <mime-mapping extension="ra" mimeType="audio/x-pn-realaudio"/>
+    <mime-mapping extension="ram" mimeType="audio/x-pn-realaudio"/>
+    <mime-mapping extension="rar" mimeType="application/x-rar-compressed"/>
+    <mime-mapping extension="ras" mimeType="image/x-cmu-raster"/>
+    <mime-mapping extension="rcprofile" mimeType="application/vnd.ipunplugged.rcprofile"/>
+    <mime-mapping extension="rdf" mimeType="application/rdf+xml"/>
+    <mime-mapping extension="rdz" mimeType="application/vnd.data-vision.rdz"/>
+    <mime-mapping extension="rep" mimeType="application/vnd.businessobjects"/>
+    <mime-mapping extension="res" mimeType="application/x-dtbresource+xml"/>
+    <mime-mapping extension="rgb" mimeType="image/x-rgb"/>
+    <mime-mapping extension="rif" mimeType="application/reginfo+xml"/>
+    <mime-mapping extension="rip" mimeType="audio/vnd.rip"/>
+    <mime-mapping extension="rl" mimeType="application/resource-lists+xml"/>
+    <mime-mapping extension="rlc" mimeType="image/vnd.fujixerox.edmics-rlc"/>
+    <mime-mapping extension="rld" mimeType="application/resource-lists-diff+xml"/>
+    <mime-mapping extension="rm" mimeType="application/vnd.rn-realmedia"/>
+    <mime-mapping extension="rmi" mimeType="audio/midi"/>
+    <mime-mapping extension="rmp" mimeType="audio/x-pn-realaudio-plugin"/>
+    <mime-mapping extension="rms" mimeType="application/vnd.jcp.javame.midlet-rms"/>
+    <mime-mapping extension="rnc" mimeType="application/relax-ng-compact-syntax"/>
+    <mime-mapping extension="roff" mimeType="text/troff"/>
+    <mime-mapping extension="rp9" mimeType="application/vnd.cloanto.rp9"/>
+    <mime-mapping extension="rpss" mimeType="application/vnd.nokia.radio-presets"/>
+    <mime-mapping extension="rpst" mimeType="application/vnd.nokia.radio-preset"/>
+    <mime-mapping extension="rq" mimeType="application/sparql-query"/>
+    <mime-mapping extension="rs" mimeType="application/rls-services+xml"/>
+    <mime-mapping extension="rsd" mimeType="application/rsd+xml"/>
+    <mime-mapping extension="rss" mimeType="application/rss+xml"/>
+    <mime-mapping extension="rtf" mimeType="application/rtf"/>
+    <mime-mapping extension="rtx" mimeType="text/richtext"/>
+    <mime-mapping extension="s" mimeType="text/x-asm"/>
+    <mime-mapping extension="saf" mimeType="application/vnd.yamaha.smaf-audio"/>
+    <mime-mapping extension="sbml" mimeType="application/sbml+xml"/>
+    <mime-mapping extension="sc" mimeType="application/vnd.ibm.secure-container"/>
+    <mime-mapping extension="scd" mimeType="application/x-msschedule"/>
+    <mime-mapping extension="scm" mimeType="application/vnd.lotus-screencam"/>
+    <mime-mapping extension="scq" mimeType="application/scvp-cv-request"/>
+    <mime-mapping extension="scs" mimeType="application/scvp-cv-response"/>
+    <mime-mapping extension="scurl" mimeType="text/vnd.curl.scurl"/>
+    <mime-mapping extension="sda" mimeType="application/vnd.stardivision.draw"/>
+    <mime-mapping extension="sdc" mimeType="application/vnd.stardivision.calc"/>
+    <mime-mapping extension="sdd" mimeType="application/vnd.stardivision.impress"/>
+    <mime-mapping extension="sdkd" mimeType="application/vnd.solent.sdkm+xml"/>
+    <mime-mapping extension="sdkm" mimeType="application/vnd.solent.sdkm+xml"/>
+    <mime-mapping extension="sdp" mimeType="application/sdp"/>
+    <mime-mapping extension="sdw" mimeType="application/vnd.stardivision.writer"/>
+    <mime-mapping extension="see" mimeType="application/vnd.seemail"/>
+    <mime-mapping extension="seed" mimeType="application/vnd.fdsn.seed"/>
+    <mime-mapping extension="sema" mimeType="application/vnd.sema"/>
+    <mime-mapping extension="semd" mimeType="application/vnd.semd"/>
+    <mime-mapping extension="semf" mimeType="application/vnd.semf"/>
+    <mime-mapping extension="ser" mimeType="application/java-serialized-object"/>
+    <mime-mapping extension="setpay" mimeType="application/set-payment-initiation"/>
+    <mime-mapping extension="setreg" mimeType="application/set-registration-initiation"/>
+    <mime-mapping extension="sfd-hdstx" mimeType="application/vnd.hydrostatix.sof-data"/>
+    <mime-mapping extension="sfs" mimeType="application/vnd.spotfire.sfs"/>
+    <mime-mapping extension="sgl" mimeType="application/vnd.stardivision.writer-global"/>
+    <mime-mapping extension="sgm" mimeType="text/sgml"/>
+    <mime-mapping extension="sgml" mimeType="text/sgml"/>
+    <mime-mapping extension="sh" mimeType="application/x-sh"/>
+    <mime-mapping extension="shar" mimeType="application/x-shar"/>
+    <mime-mapping extension="shf" mimeType="application/shf+xml"/>
+    <mime-mapping extension="sig" mimeType="application/pgp-signature"/>
+    <mime-mapping extension="silo" mimeType="model/mesh"/>
+    <mime-mapping extension="sis" mimeType="application/vnd.symbian.install"/>
+    <mime-mapping extension="sisx" mimeType="application/vnd.symbian.install"/>
+    <mime-mapping extension="sit" mimeType="application/x-stuffit"/>
+    <mime-mapping extension="sitx" mimeType="application/x-stuffitx"/>
+    <mime-mapping extension="skd" mimeType="application/vnd.koan"/>
+    <mime-mapping extension="skm" mimeType="application/vnd.koan"/>
+    <mime-mapping extension="skp" mimeType="application/vnd.koan"/>
+    <mime-mapping extension="skt" mimeType="application/vnd.koan"/>
+    <mime-mapping extension="sldm" mimeType="application/vnd.ms-powerpoint.slide.macroenabled.12"/>
+    <mime-mapping extension="sldx" mimeType="application/vnd.openxmlformats-officedocument.presentationml.slide"/>
+    <mime-mapping extension="slt" mimeType="application/vnd.epson.salt"/>
+    <mime-mapping extension="sm" mimeType="application/vnd.stepmania.stepchart"/>
+    <mime-mapping extension="smf" mimeType="application/vnd.stardivision.math"/>
+    <mime-mapping extension="smi" mimeType="application/smil+xml"/>
+    <mime-mapping extension="smil" mimeType="application/smil+xml"/>
+    <mime-mapping extension="snd" mimeType="audio/basic"/>
+    <mime-mapping extension="snf" mimeType="application/x-font-snf"/>
+    <mime-mapping extension="so" mimeType="application/octet-stream"/>
+    <mime-mapping extension="spc" mimeType="application/x-pkcs7-certificates"/>
+    <mime-mapping extension="spf" mimeType="application/vnd.yamaha.smaf-phrase"/>
+    <mime-mapping extension="spl" mimeType="application/x-futuresplash"/>
+    <mime-mapping extension="spot" mimeType="text/vnd.in3d.spot"/>
+    <mime-mapping extension="spp" mimeType="application/scvp-vp-response"/>
+    <mime-mapping extension="spq" mimeType="application/scvp-vp-request"/>
+    <mime-mapping extension="spx" mimeType="audio/ogg"/>
+    <mime-mapping extension="src" mimeType="application/x-wais-source"/>
+    <mime-mapping extension="sru" mimeType="application/sru+xml"/>
+    <mime-mapping extension="srx" mimeType="application/sparql-results+xml"/>
+    <mime-mapping extension="sse" mimeType="application/vnd.kodak-descriptor"/>
+    <mime-mapping extension="ssf" mimeType="application/vnd.epson.ssf"/>
+    <mime-mapping extension="ssml" mimeType="application/ssml+xml"/>
+    <mime-mapping extension="st" mimeType="application/vnd.sailingtracker.track"/>
+    <mime-mapping extension="stc" mimeType="application/vnd.sun.xml.calc.template"/>
+    <mime-mapping extension="std" mimeType="application/vnd.sun.xml.draw.template"/>
+    <mime-mapping extension="stf" mimeType="application/vnd.wt.stf"/>
+    <mime-mapping extension="sti" mimeType="application/vnd.sun.xml.impress.template"/>
+    <mime-mapping extension="stk" mimeType="application/hyperstudio"/>
+    <mime-mapping extension="stl" mimeType="application/vnd.ms-pki.stl"/>
+    <mime-mapping extension="str" mimeType="application/vnd.pg.format"/>
+    <mime-mapping extension="stw" mimeType="application/vnd.sun.xml.writer.template"/>
+    <mime-mapping extension="sub" mimeType="image/vnd.dvb.subtitle"/>
+    <mime-mapping extension="sus" mimeType="application/vnd.sus-calendar"/>
+    <mime-mapping extension="susp" mimeType="application/vnd.sus-calendar"/>
+    <mime-mapping extension="sv4cpio" mimeType="application/x-sv4cpio"/>
+    <mime-mapping extension="sv4crc" mimeType="application/x-sv4crc"/>
+    <mime-mapping extension="svc" mimeType="application/vnd.dvb.service"/>
+    <mime-mapping extension="svd" mimeType="application/vnd.svd"/>
+    <mime-mapping extension="svg" mimeType="image/svg+xml"/>
+    <mime-mapping extension="svgz" mimeType="image/svg+xml"/>
+    <mime-mapping extension="swa" mimeType="application/x-director"/>
+    <mime-mapping extension="swf" mimeType="application/x-shockwave-flash"/>
+    <mime-mapping extension="swi" mimeType="application/vnd.aristanetworks.swi"/>
+    <mime-mapping extension="sxc" mimeType="application/vnd.sun.xml.calc"/>
+    <mime-mapping extension="sxd" mimeType="application/vnd.sun.xml.draw"/>
+    <mime-mapping extension="sxg" mimeType="application/vnd.sun.xml.writer.global"/>
+    <mime-mapping extension="sxi" mimeType="application/vnd.sun.xml.impress"/>
+    <mime-mapping extension="sxm" mimeType="application/vnd.sun.xml.math"/>
+    <mime-mapping extension="sxw" mimeType="application/vnd.sun.xml.writer"/>
+    <mime-mapping extension="t" mimeType="text/troff"/>
+    <mime-mapping extension="tao" mimeType="application/vnd.tao.intent-module-archive"/>
+    <mime-mapping extension="tar" mimeType="application/x-tar"/>
+    <mime-mapping extension="tcap" mimeType="application/vnd.3gpp2.tcap"/>
+    <mime-mapping extension="tcl" mimeType="application/x-tcl"/>
+    <mime-mapping extension="teacher" mimeType="application/vnd.smart.teacher"/>
+    <mime-mapping extension="tei" mimeType="application/tei+xml"/>
+    <mime-mapping extension="teicorpus" mimeType="application/tei+xml"/>
+    <mime-mapping extension="tex" mimeType="application/x-tex"/>
+    <mime-mapping extension="texi" mimeType="application/x-texinfo"/>
+    <mime-mapping extension="texinfo" mimeType="application/x-texinfo"/>
+    <mime-mapping extension="text" mimeType="text/plain"/>
+    <mime-mapping extension="tfi" mimeType="application/thraud+xml"/>
+    <mime-mapping extension="tfm" mimeType="application/x-tex-tfm"/>
+    <mime-mapping extension="thmx" mimeType="application/vnd.ms-officetheme"/>
+    <mime-mapping extension="tif" mimeType="image/tiff"/>
+    <mime-mapping extension="tiff" mimeType="image/tiff"/>
+    <mime-mapping extension="tmo" mimeType="application/vnd.tmobile-livetv"/>
+    <mime-mapping extension="torrent" mimeType="application/x-bittorrent"/>
+    <mime-mapping extension="tpl" mimeType="application/vnd.groove-tool-template"/>
+    <mime-mapping extension="tpt" mimeType="application/vnd.trid.tpt"/>
+    <mime-mapping extension="tr" mimeType="text/troff"/>
+    <mime-mapping extension="tra" mimeType="application/vnd.trueapp"/>
+    <mime-mapping extension="trm" mimeType="application/x-msterminal"/>
+    <mime-mapping extension="tsd" mimeType="application/timestamped-data"/>
+    <mime-mapping extension="tsv" mimeType="text/tab-separated-values"/>
+    <mime-mapping extension="ttc" mimeType="application/x-font-ttf"/>
+    <mime-mapping extension="ttf" mimeType="application/x-font-ttf"/>
+    <mime-mapping extension="ttl" mimeType="text/turtle"/>
+    <mime-mapping extension="twd" mimeType="application/vnd.simtech-mindmapper"/>
+    <mime-mapping extension="twds" mimeType="application/vnd.simtech-mindmapper"/>
+    <mime-mapping extension="txd" mimeType="application/vnd.genomatix.tuxedo"/>
+    <mime-mapping extension="txf" mimeType="application/vnd.mobius.txf"/>
+    <mime-mapping extension="txt" mimeType="text/plain"/>
+    <mime-mapping extension="u32" mimeType="application/x-authorware-bin"/>
+    <mime-mapping extension="udeb" mimeType="application/x-debian-package"/>
+    <mime-mapping extension="ufd" mimeType="application/vnd.ufdl"/>
+    <mime-mapping extension="ufdl" mimeType="application/vnd.ufdl"/>
+    <mime-mapping extension="ulw" mimeType="audio/basic"/>
+    <mime-mapping extension="umj" mimeType="application/vnd.umajin"/>
+    <mime-mapping extension="unityweb" mimeType="application/vnd.unity"/>
+    <mime-mapping extension="uoml" mimeType="application/vnd.uoml+xml"/>
+    <mime-mapping extension="uri" mimeType="text/uri-list"/>
+    <mime-mapping extension="uris" mimeType="text/uri-list"/>
+    <mime-mapping extension="urls" mimeType="text/uri-list"/>
+    <mime-mapping extension="ustar" mimeType="application/x-ustar"/>
+    <mime-mapping extension="utz" mimeType="application/vnd.uiq.theme"/>
+    <mime-mapping extension="uu" mimeType="text/x-uuencode"/>
+    <mime-mapping extension="uva" mimeType="audio/vnd.dece.audio"/>
+    <mime-mapping extension="uvd" mimeType="application/vnd.dece.data"/>
+    <mime-mapping extension="uvf" mimeType="application/vnd.dece.data"/>
+    <mime-mapping extension="uvg" mimeType="image/vnd.dece.graphic"/>
+    <mime-mapping extension="uvh" mimeType="video/vnd.dece.hd"/>
+    <mime-mapping extension="uvi" mimeType="image/vnd.dece.graphic"/>
+    <mime-mapping extension="uvm" mimeType="video/vnd.dece.mobile"/>
+    <mime-mapping extension="uvp" mimeType="video/vnd.dece.pd"/>
+    <mime-mapping extension="uvs" mimeType="video/vnd.dece.sd"/>
+    <mime-mapping extension="uvt" mimeType="application/vnd.dece.ttml+xml"/>
+    <mime-mapping extension="uvu" mimeType="video/vnd.uvvu.mp4"/>
+    <mime-mapping extension="uvv" mimeType="video/vnd.dece.video"/>
+    <mime-mapping extension="uvva" mimeType="audio/vnd.dece.audio"/>
+    <mime-mapping extension="uvvd" mimeType="application/vnd.dece.data"/>
+    <mime-mapping extension="uvvf" mimeType="application/vnd.dece.data"/>
+    <mime-mapping extension="uvvg" mimeType="image/vnd.dece.graphic"/>
+    <mime-mapping extension="uvvh" mimeType="video/vnd.dece.hd"/>
+    <mime-mapping extension="uvvi" mimeType="image/vnd.dece.graphic"/>
+    <mime-mapping extension="uvvm" mimeType="video/vnd.dece.mobile"/>
+    <mime-mapping extension="uvvp" mimeType="video/vnd.dece.pd"/>
+    <mime-mapping extension="uvvs" mimeType="video/vnd.dece.sd"/>
+    <mime-mapping extension="uvvt" mimeType="application/vnd.dece.ttml+xml"/>
+    <mime-mapping extension="uvvu" mimeType="video/vnd.uvvu.mp4"/>
+    <mime-mapping extension="uvvv" mimeType="video/vnd.dece.video"/>
+    <mime-mapping extension="uvvx" mimeType="application/vnd.dece.unspecified"/>
+    <mime-mapping extension="uvx" mimeType="application/vnd.dece.unspecified"/>
+    <mime-mapping extension="vcd" mimeType="application/x-cdlink"/>
+    <mime-mapping extension="vcf" mimeType="text/x-vcard"/>
+    <mime-mapping extension="vcg" mimeType="application/vnd.groove-vcard"/>
+    <mime-mapping extension="vcs" mimeType="text/x-vcalendar"/>
+    <mime-mapping extension="vcx" mimeType="application/vnd.vcx"/>
+    <mime-mapping extension="vis" mimeType="application/vnd.visionary"/>
+    <mime-mapping extension="viv" mimeType="video/vnd.vivo"/>
+    <mime-mapping extension="vor" mimeType="application/vnd.stardivision.writer"/>
+    <mime-mapping extension="vox" mimeType="application/x-authorware-bin"/>
+    <mime-mapping extension="vrml" mimeType="model/vrml"/>
+    <mime-mapping extension="vsd" mimeType="application/vnd.visio"/>
+    <mime-mapping extension="vsf" mimeType="application/vnd.vsf"/>
+    <mime-mapping extension="vss" mimeType="application/vnd.visio"/>
+    <mime-mapping extension="vst" mimeType="application/vnd.visio"/>
+    <mime-mapping extension="vsw" mimeType="application/vnd.visio"/>
+    <mime-mapping extension="vtu" mimeType="model/vnd.vtu"/>
+    <mime-mapping extension="vxml" mimeType="application/voicexml+xml"/>
+    <mime-mapping extension="w3d" mimeType="application/x-director"/>
+    <mime-mapping extension="wad" mimeType="application/x-doom"/>
+    <mime-mapping extension="wav" mimeType="audio/x-wav"/>
+    <mime-mapping extension="wax" mimeType="audio/x-ms-wax"/>
+    <mime-mapping extension="wbmp" mimeType="image/vnd.wap.wbmp"/>
+    <mime-mapping extension="wbs" mimeType="application/vnd.criticaltools.wbs+xml"/>
+    <mime-mapping extension="wbxml" mimeType="application/vnd.wap.wbxml"/>
+    <mime-mapping extension="wcm" mimeType="application/vnd.ms-works"/>
+    <mime-mapping extension="wdb" mimeType="application/vnd.ms-works"/>
+    <mime-mapping extension="weba" mimeType="audio/webm"/>
+    <mime-mapping extension="webm" mimeType="video/webm"/>
+    <mime-mapping extension="webp" mimeType="image/webp"/>
+    <mime-mapping extension="wg" mimeType="application/vnd.pmi.widget"/>
+    <mime-mapping extension="wgt" mimeType="application/widget"/>
+    <mime-mapping extension="wks" mimeType="application/vnd.ms-works"/>
+    <mime-mapping extension="wm" mimeType="video/x-ms-wm"/>
+    <mime-mapping extension="wma" mimeType="audio/x-ms-wma"/>
+    <mime-mapping extension="wmd" mimeType="application/x-ms-wmd"/>
+    <mime-mapping extension="wmf" mimeType="application/x-msmetafile"/>
+    <mime-mapping extension="wml" mimeType="text/vnd.wap.wml"/>
+    <mime-mapping extension="wmlc" mimeType="application/vnd.wap.wmlc"/>
+    <mime-mapping extension="wmls" mimeType="text/vnd.wap.wmlscript"/>
+    <mime-mapping extension="wmlsc" mimeType="application/vnd.wap.wmlscriptc"/>
+    <mime-mapping extension="wmv" mimeType="video/x-ms-wmv"/>
+    <mime-mapping extension="wmx" mimeType="video/x-ms-wmx"/>
+    <mime-mapping extension="wmz" mimeType="application/x-ms-wmz"/>
+    <mime-mapping extension="woff" mimeType="application/x-font-woff"/>
+    <mime-mapping extension="wpd" mimeType="application/vnd.wordperfect"/>
+    <mime-mapping extension="wpl" mimeType="application/vnd.ms-wpl"/>
+    <mime-mapping extension="wps" mimeType="application/vnd.ms-works"/>
+    <mime-mapping extension="wqd" mimeType="application/vnd.wqd"/>
+    <mime-mapping extension="wri" mimeType="application/x-mswrite"/>
+    <mime-mapping extension="wrl" mimeType="model/vrml"/>
+    <mime-mapping extension="wsdl" mimeType="application/wsdl+xml"/>
+    <mime-mapping extension="wspolicy" mimeType="application/wspolicy+xml"/>
+    <mime-mapping extension="wtb" mimeType="application/vnd.webturbo"/>
+    <mime-mapping extension="wvx" mimeType="video/x-ms-wvx"/>
+    <mime-mapping extension="x32" mimeType="application/x-authorware-bin"/>
+    <mime-mapping extension="x3d" mimeType="application/vnd.hzn-3d-crossword"/>
+    <mime-mapping extension="xap" mimeType="application/x-silverlight-app"/>
+    <mime-mapping extension="xar" mimeType="application/vnd.xara"/>
+    <mime-mapping extension="xbap" mimeType="application/x-ms-xbap"/>
+    <mime-mapping extension="xbd" mimeType="application/vnd.fujixerox.docuworks.binder"/>
+    <mime-mapping extension="xbm" mimeType="image/x-xbitmap"/>
+    <mime-mapping extension="xdf" mimeType="application/xcap-diff+xml"/>
+    <mime-mapping extension="xdm" mimeType="application/vnd.syncml.dm+xml"/>
+    <mime-mapping extension="xdp" mimeType="application/vnd.adobe.xdp+xml"/>
+    <mime-mapping extension="xdssc" mimeType="application/dssc+xml"/>
+    <mime-mapping extension="xdw" mimeType="application/vnd.fujixerox.docuworks"/>
+    <mime-mapping extension="xenc" mimeType="application/xenc+xml"/>
+    <mime-mapping extension="xer" mimeType="application/patch-ops-error+xml"/>
+    <mime-mapping extension="xfdf" mimeType="application/vnd.adobe.xfdf"/>
+    <mime-mapping extension="xfdl" mimeType="application/vnd.xfdl"/>
+    <mime-mapping extension="xht" mimeType="application/xhtml+xml"/>
+    <mime-mapping extension="xhtml" mimeType="application/xhtml+xml"/>
+    <mime-mapping extension="xhvml" mimeType="application/xv+xml"/>
+    <mime-mapping extension="xif" mimeType="image/vnd.xiff"/>
+    <mime-mapping extension="xla" mimeType="application/vnd.ms-excel"/>
+    <mime-mapping extension="xlam" mimeType="application/vnd.ms-excel.addin.macroenabled.12"/>
+    <mime-mapping extension="xlc" mimeType="application/vnd.ms-excel"/>
+    <mime-mapping extension="xlm" mimeType="application/vnd.ms-excel"/>
+    <mime-mapping extension="xls" mimeType="application/vnd.ms-excel"/>
+    <mime-mapping extension="xlsb" mimeType="application/vnd.ms-excel.sheet.binary.macroenabled.12"/>
+    <mime-mapping extension="xlsm" mimeType="application/vnd.ms-excel.sheet.macroenabled.12"/>
+    <mime-mapping extension="xlsx" mimeType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+    <mime-mapping extension="xlt" mimeType="application/vnd.ms-excel"/>
+    <mime-mapping extension="xltm" mimeType="application/vnd.ms-excel.template.macroenabled.12"/>
+    <mime-mapping extension="xltx" mimeType="application/vnd.openxmlformats-officedocument.spreadsheetml.template"/>
+    <mime-mapping extension="xlw" mimeType="application/vnd.ms-excel"/>
+    <mime-mapping extension="xml" mimeType="application/xml"/>
+    <mime-mapping extension="xo" mimeType="application/vnd.olpc-sugar"/>
+    <mime-mapping extension="xop" mimeType="application/xop+xml"/>
+    <mime-mapping extension="xpi" mimeType="application/x-xpinstall"/>
+    <mime-mapping extension="xpm" mimeType="image/x-xpixmap"/>
+    <mime-mapping extension="xpr" mimeType="application/vnd.is-xpr"/>
+    <mime-mapping extension="xps" mimeType="application/vnd.ms-xpsdocument"/>
+    <mime-mapping extension="xpw" mimeType="application/vnd.intercon.formnet"/>
+    <mime-mapping extension="xpx" mimeType="application/vnd.intercon.formnet"/>
+    <mime-mapping extension="xsl" mimeType="application/xml"/>
+    <mime-mapping extension="xslt" mimeType="application/xslt+xml"/>
+    <mime-mapping extension="xsm" mimeType="application/vnd.syncml+xml"/>
+    <mime-mapping extension="xspf" mimeType="application/xspf+xml"/>
+    <mime-mapping extension="xul" mimeType="application/vnd.mozilla.xul+xml"/>
+    <mime-mapping extension="xvm" mimeType="application/xv+xml"/>
+    <mime-mapping extension="xvml" mimeType="application/xv+xml"/>
+    <mime-mapping extension="xwd" mimeType="image/x-xwindowdump"/>
+    <mime-mapping extension="xyz" mimeType="chemical/x-xyz"/>
+    <mime-mapping extension="yang" mimeType="application/yang"/>
+    <mime-mapping extension="yin" mimeType="application/yin+xml"/>
+    <mime-mapping extension="z" mimeType="application/x-compress"/>
+    <mime-mapping extension="Z" mimeType="application/x-compress"/>
+    <mime-mapping extension="zaz" mimeType="application/vnd.zzazz.deck+xml"/>
+    <mime-mapping extension="zip" mimeType="application/zip"/>
+    <mime-mapping extension="zir" mimeType="application/vnd.zul"/>
+    <mime-mapping extension="zirz" mimeType="application/vnd.zul"/>
+    <mime-mapping extension="zmm" mimeType="application/vnd.handheld-entertainment+xml"/>
+    <mime-mapping extension="woff" mimeType="application/x-font-woff"/>
+    <mime-mapping extension="woff2" mimeType="font/woff2"/>
 </mimeConfig>

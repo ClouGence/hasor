@@ -1,5 +1,5 @@
 package net.hasor.db.jdbc.core;
-import org.more.util.ClassUtils;
+import net.hasor.core.utils.ClassUtils;
 
 import java.sql.CallableStatement;
 import java.sql.SQLException;

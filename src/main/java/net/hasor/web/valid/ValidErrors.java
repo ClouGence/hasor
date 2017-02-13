@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web.valid;
-import org.more.bizcommon.Message;
-
 import java.util.List;
 /**
  * 添加验证错误消息。
