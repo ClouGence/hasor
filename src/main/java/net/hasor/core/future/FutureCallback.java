@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.utils;
+package net.hasor.core.future;
 /**
- * 异常工具类
- * @version : 2014年9月25日
+ *
+ * @version : 2014年11月15日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ExceptionUtils {
-    /**将异常包装为 {@link RuntimeException}*/
-    public static RuntimeException toRuntimeException(Throwable proxy) {
-        if (proxy instanceof RuntimeException) {
-            return (RuntimeException) proxy;
-        }
-        return new UnhandledException(proxy.getClass().getName() + " - " + proxy.getMessage(), proxy);
-    }
+public interface FutureCallback<T> {
+    /**执行完毕。*/
+    public void completed(T result);
+
+    /**执行过程出错*/
+    public void failed(Throwable ex);
+
+    /**执行被取消。*/
+    public void cancelled();
 }

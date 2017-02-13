@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.core.utils;
-import net.hasor.core.utils.convert.ConverterUtils;
+import net.hasor.core.convert.ConverterUtils;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 /**
  *
  * @version : 2011-6-3
@@ -65,6 +67,56 @@ public abstract class BeanUtils {
         }
         return objs;
     }
+    /**
+     * 该方法的作用是反射的形式调用目标的方法。
+     * @param target 被调用的对象
+     * @param methodName 要调用的反射方法名。
+     * @param objects 参数列表
+     */
+    public static Object invokeMethod(final Object target, final String methodName, final Object... objects) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        if (target == null) {
+            return null;
+        }
+        Class<?> targetType = target.getClass();
+        Method invokeMethod = null;
+        //反射调用方法
+        Method[] ms = targetType.getMethods();
+        for (Method m : ms) {
+            //1.名字不相等的忽略
+            if (!m.getName().equals(methodName)) {
+                continue;
+            }
+            //2.目标方法参数列表个数与types字段中存放的个数不一样的忽略。
+            Class<?>[] paramTypes = m.getParameterTypes();
+            if (paramTypes.length != objects.length) {
+                continue;
+            }
+            //3.如果有参数类型不一样的也忽略---1
+            boolean isFind = true;
+            for (int i = 0; i < paramTypes.length; i++) {
+                Object param_object = objects[i];
+                if (param_object == null) {
+                    continue;
+                }
+                //
+                if (!paramTypes[i].isAssignableFrom(param_object.getClass())) {
+                    isFind = false;
+                    break;
+                }
+            }
+            //5.如果有参数类型不一样的也忽略---2
+            if (isFind == false) {
+                continue;
+            }
+            //符合条件执行调用
+            invokeMethod = m;
+        }
+        if (invokeMethod == null) {
+            throw new NullPointerException(methodName + " invokeMethod is null.");
+        } else {
+            return invokeMethod.invoke(target, objects);
+        }
+    }
     /*----------------------------------------------------------------------------------------*/
     /**获取类定义的字段和继承父类中定义的字段以及父类的父类（子类重新定义同名字段也会被列入集合）。*/
     public static List<Field> findALLFields(final Class<?> target) {
@@ -94,6 +146,35 @@ public abstract class BeanUtils {
             return;
         }
         BeanUtils.findALLFields(superType, fList);
+    }
+    /**获取类定义的方法和继承父类中定义的方法以及父类的父类（子类的重写方法也会被返回）。*/
+    public static List<Method> findALLMethods(final Class<?> target) {
+        if (target == null) {
+            return null;
+        }
+        ArrayList<Method> mList = new ArrayList<Method>();
+        BeanUtils.findALLMethods(target, mList);
+        return mList;
+    }
+    private static void findALLMethods(final Class<?> target, final ArrayList<Method> mList) {
+        if (target == null) {
+            return;
+        }
+        for (Method method : target.getDeclaredMethods()) {
+            if (!mList.contains(method)) {
+                mList.add(method);
+            }
+        }
+        for (Method method : target.getMethods()) {
+            if (!mList.contains(method)) {
+                mList.add(method);
+            }
+        }
+        Class<?> superType = target.getSuperclass();
+        if (superType == null || superType == target) {
+            return;
+        }
+        BeanUtils.findALLMethods(superType, mList);
     }
     /*----------------------------------------------------------------------------------------*/
     /**查找一个可操作的字段列表。*/
@@ -162,6 +243,18 @@ public abstract class BeanUtils {
         }
         return mnames;
     }
+    /**获取属性名集合，被包含的属性可能有些只是只读属性，有些是只写属性。也有读写属性。*/
+    public static PropertyDescriptor[] getPropertyDescriptors(final Class<?> defineType) {
+        List<PropertyDescriptor> mnames = new ArrayList<PropertyDescriptor>();
+        List<String> ms = BeanUtils.getPropertys(defineType);
+        for (String m : ms) {
+            try {
+                mnames.add(new PropertyDescriptor(m, defineType));
+            } catch (Exception e) {
+            }
+        }
+        return mnames.toArray(new PropertyDescriptor[mnames.size()]);
+    }
     /**获取一个属性的读取方法。*/
     public static Method getReadMethod(final String property, final Class<?> target) {
         if (property == null || target == null) {
@@ -202,6 +295,16 @@ public abstract class BeanUtils {
         }
         return null;
     }
+    /**测试是否具有propertyName所表示的属性，无论是读或写方法只要存在一个就表示存在该属性。*/
+    public static boolean hasProperty(final String propertyName, final Class<?> target) {
+        //get、set方法
+        if (BeanUtils.getReadMethod(propertyName, target) == null) {
+            if (BeanUtils.getWriteMethod(propertyName, target) == null) {
+                return false;
+            }
+        }
+        return true;
+    }
     /**测试是否具有fieldName所表示的字段，无论是读或写方法只要存在一个就表示存在该属性。*/
     public static boolean hasField(final String propertyName, final Class<?> target) {
         if (BeanUtils.getField(propertyName, target) == null) {
@@ -209,6 +312,15 @@ public abstract class BeanUtils {
         } else {
             return true;
         }
+    }
+    /**测试是否具有name所表示的属性，hasProperty或hasField有一个返回为true则返回true。*/
+    public static boolean hasPropertyOrField(final String name, final Class<?> target) {
+        if (!BeanUtils.hasProperty(name, target)) {
+            if (!BeanUtils.hasField(name, target)) {
+                return false;
+            }
+        }
+        return true;
     }
     /**测试是否支持readProperty方法。返回true表示可以进行读取操作。*/
     public static boolean canReadProperty(final String propertyName, final Class<?> target) {
@@ -219,6 +331,15 @@ public abstract class BeanUtils {
             return false;
         }
     }
+    /**测试是否支持readPropertyOrField方法。*/
+    public static boolean canReadPropertyOrField(final String propertyName, final Class<?> target) {
+        if (!BeanUtils.canReadProperty(propertyName, target)) {
+            if (!BeanUtils.hasField(propertyName, target)) {
+                return false;
+            }
+        }
+        return true;
+    }
     /**测试是否支持writeProperty方法。返回true表示可以进行写入操作。*/
     public static boolean canWriteProperty(final String propertyName, final Class<?> target) {
         Method writeMethod = BeanUtils.getWriteMethod(propertyName, target);
@@ -227,6 +348,15 @@ public abstract class BeanUtils {
         } else {
             return false;
         }
+    }
+    /**测试是否支持writePropertyOrField方法。*/
+    public static boolean canWritePropertyOrField(final String propertyName, final Class<?> target) {
+        if (!BeanUtils.canWriteProperty(propertyName, target)) {
+            if (!BeanUtils.hasField(propertyName, target)) {
+                return false;
+            }
+        }
+        return true;
     }
     /*----------------------------------------------------------------------------------------*/
     /**执行属性注入，除了注入int,short,long,等基本类型之外该方法还支持注入枚举类型。返回值表示执行是否成功。注意：该方法会根据属性类型进行尝试类型转换。*/
@@ -361,5 +491,62 @@ public abstract class BeanUtils {
             return propType;
         }
         return null;
+    }
+    /***/
+    public static void copyProperties(final Object dest, final Object orig) {
+        if (dest == null) {
+            throw new IllegalArgumentException("dest is null");
+        }
+        if (orig == null) {
+            throw new IllegalArgumentException("orig is null");
+        }
+        //
+        List<String> propNames = new ArrayList<String>();
+        if (orig instanceof Map) {
+            for (Object key : ((Map) orig).keySet()) {
+                propNames.add(key.toString());
+            }
+        } else {
+            propNames = BeanUtils.getPropertys(orig.getClass());
+        }
+        for (String prop : propNames) {
+            BeanUtils.copyProperty(dest, orig, prop);
+        }
+    }
+    /***/
+    public static void copyProperty(final Object dest, final Object orig, final String propertyName) {
+        if (dest == null) {
+            throw new IllegalArgumentException("dest is null");
+        }
+        if (orig == null) {
+            throw new IllegalArgumentException("orig is null");
+        }
+        if (StringUtils.isBlank(propertyName)) {
+            throw new IllegalArgumentException("propertyName is null");
+        }
+        //
+        if (!(orig instanceof Map)) {
+            if (!BeanUtils.canReadPropertyOrField(propertyName, orig.getClass())) {
+                return;
+            }
+        }
+        if (!(dest instanceof Map)) {
+            if (!BeanUtils.canWritePropertyOrField(propertyName, dest.getClass())) {
+                return;
+            }
+        }
+        //
+        Object val = null;
+        if (!(orig instanceof Map)) {
+            val = BeanUtils.readPropertyOrField(orig, propertyName);
+        } else {
+            val = ((Map) orig).get(propertyName);
+        }
+        //
+        if (!(dest instanceof Map)) {
+            BeanUtils.writePropertyOrField(dest, propertyName, val);
+        } else {
+            ((Map) orig).put(propertyName, val);
+        }
     }
 }

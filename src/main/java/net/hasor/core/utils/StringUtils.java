@@ -115,7 +115,6 @@ package net.hasor.core.utils;
  * @since 1.0
  * @version $Id: StringUtils.java 1058365 2011-01-13 00:04:49Z niallp $
  */
-//@Immutable
 public class StringUtils {
     public static final  String[] EMPTY_STRING_ARRAY = new String[0];
     /**
@@ -264,38 +263,12 @@ public class StringUtils {
     //-----------------------------------------------------------------------
     /**
      * <p>Removes control characters (char &lt;= 32) from both
-     * ends of this String, handling <code>null</code> by returning
-     * <code>null</code>.</p>
-     *
-     * <p>The String is trimmed using {@link String#trim()}.
-     * Trim removes start and end characters &lt;= 32.
-     * To strip whitespace use {@link #strip(String)}.</p>
-     *
-     * <p>To trim your choice of characters, use the
-     * {@link #strip(String, String)} methods.</p>
-     *
-     * <pre>
-     * StringUtils.trim(null)          = null
-     * StringUtils.trim("")            = ""
-     * StringUtils.trim("     ")       = ""
-     * StringUtils.trim("abc")         = "abc"
-     * StringUtils.trim("    abc    ") = "abc"
-     * </pre>
-     *
-     * @param str  the String to be trimmed, may be null
-     * @return the trimmed string, <code>null</code> if null String input
-     */
-    public static String trim(final String str) {
-        return str == null ? null : str.trim();
-    }
-    /**
-     * <p>Removes control characters (char &lt;= 32) from both
      * ends of this String returning an empty String ("") if the String
      * is empty ("") after the trim or if it is <code>null</code>.
      *
      * <p>The String is trimmed using {@link String#trim()}.
      * Trim removes start and end characters &lt;= 32.
-     * To strip whitespace use {@link #stripToEmpty(String)}.</p>
+     * To strip whitespace use {@link #trimToEmpty(String)}.</p>
      *
      * <pre>
      * StringUtils.trimToEmpty(null)          = ""

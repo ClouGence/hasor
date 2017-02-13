@@ -104,7 +104,7 @@ public class FilenameUtils {
      *
      * @return true if the system is Windows
      */
-    static boolean isSystemWindows() {
+    public static boolean isSystemWindows() {
         return SYSTEM_SEPARATOR == WINDOWS_SEPARATOR;
     }
     //-----------------------------------------------------------------------

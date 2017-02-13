@@ -17,7 +17,6 @@
 package net.hasor.core.utils;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 /**
  * <p>Operates on classes without using reflection.</p>
@@ -41,50 +40,15 @@ import java.util.Map;
  */
 public class ClassUtils {
     /** <p>The package separator character: <code>'&#x2e;' == {@value}</code>.</p> */
-    public static final  char                    PACKAGE_SEPARATOR_CHAR     = '.';
+    public static final  char                PACKAGE_SEPARATOR_CHAR     = '.';
     /** <p>The inner class separator character: <code>'$' == {@value}</code>.</p> */
-    public static final  char                    INNER_CLASS_SEPARATOR_CHAR = '$';
-    /** Maps primitive <code>Class</code>es to their corresponding wrapper <code>Class</code>. */
-    private static final Map<Class<?>, Class<?>> primitiveWrapperMap        = new HashMap<Class<?>, Class<?>>();
-
-    static {
-        ClassUtils.primitiveWrapperMap.put(Boolean.TYPE, Boolean.class);
-        ClassUtils.primitiveWrapperMap.put(Byte.TYPE, Byte.class);
-        ClassUtils.primitiveWrapperMap.put(Character.TYPE, Character.class);
-        ClassUtils.primitiveWrapperMap.put(Short.TYPE, Short.class);
-        ClassUtils.primitiveWrapperMap.put(Integer.TYPE, Integer.class);
-        ClassUtils.primitiveWrapperMap.put(Long.TYPE, Long.class);
-        ClassUtils.primitiveWrapperMap.put(Double.TYPE, Double.class);
-        ClassUtils.primitiveWrapperMap.put(Float.TYPE, Float.class);
-        ClassUtils.primitiveWrapperMap.put(Void.TYPE, Void.TYPE);
-    }
-
-    /**
-     * Maps wrapper <code>Class</code>es to their corresponding primitive types.
-     */
-    private static final Map<Class<?>, Class<?>> wrapperPrimitiveMap = new HashMap<Class<?>, Class<?>>();
-
-    static {
-        for (Iterator<?> it = ClassUtils.primitiveWrapperMap.keySet().iterator(); it.hasNext(); ) {
-            Class<?> primitiveClass = (Class<?>) it.next();
-            Class<?> wrapperClass = ClassUtils.primitiveWrapperMap.get(primitiveClass);
-            if (!primitiveClass.equals(wrapperClass)) {
-                ClassUtils.wrapperPrimitiveMap.put(wrapperClass, primitiveClass);
-            }
-        }
-    }
-
-    /**
-     * Maps a primitive class name to its corresponding abbreviation used in array class names.
-     */
-    private static final Map<String, String> abbreviationMap        = new HashMap<String, String>();
-    /**
-     * Maps an abbreviation used in array class names to corresponding primitive class name.
-     */
-    private static final Map<String, String> reverseAbbreviationMap = new HashMap<String, String>();
+    public static final  char                INNER_CLASS_SEPARATOR_CHAR = '$';
+    /** Maps a primitive class name to its corresponding abbreviation used in array class names. */
+    private static final Map<String, String> abbreviationMap            = new HashMap<String, String>();
+    /** Maps an abbreviation used in array class names to corresponding primitive class name. */
+    private static final Map<String, String> reverseAbbreviationMap     = new HashMap<String, String>();
     /**
      * Add primitive type abbreviation to maps of abbreviations.
-     *
      * @param primitive Canonical name of primitive type
      * @param abbreviation Corresponding abbreviation of primitive type
      */
@@ -92,9 +56,7 @@ public class ClassUtils {
         ClassUtils.abbreviationMap.put(primitive, abbreviation);
         ClassUtils.reverseAbbreviationMap.put(abbreviation, primitive);
     }
-    /**
-     * Feed abbreviation maps
-     */
+    /** Feed abbreviation maps. */
     static {
         ClassUtils.addAbbreviation("int", "I");
         ClassUtils.addAbbreviation("boolean", "Z");
@@ -121,7 +83,6 @@ public class ClassUtils {
     // ----------------------------------------------------------------------
     /**
      * <p>Gets the class name minus the package name from a String.</p>
-     *
      * <p>The string passed in is assumed to be a class name - it is not checked.</p>
      *
      * @param className  the className to get the short name for
@@ -157,27 +118,6 @@ public class ClassUtils {
         }
         return out + arrayPrefix;
     }
-    // Package name
-    // ----------------------------------------------------------------------
-    /**
-     * <p>Converts the specified primitive Class object to its corresponding
-     * wrapper Class object.</p>
-     *
-     * <p>NOTE: From v2.2, this method handles <code>Void.TYPE</code>,
-     * returning <code>Void.TYPE</code>.</p>
-     *
-     * @param cls  the class to convert, may be null
-     * @return the wrapper class for <code>cls</code> or <code>cls</code> if
-     * <code>cls</code> is not a primitive. <code>null</code> if null input.
-     * @since 2.1
-     */
-    public static Class<?> primitiveToWrapper(final Class<?> cls) {
-        Class<?> convertedClass = cls;
-        if (cls != null && cls.isPrimitive()) {
-            convertedClass = ClassUtils.primitiveWrapperMap.get(cls);
-        }
-        return convertedClass;
-    }
     // ----------------------------------------------------------------------
     /**
      * <p>Gets the canonical name minus the package name from a <code>Class</code>.</p>
@@ -194,7 +134,6 @@ public class ClassUtils {
     }
     /**
      * <p>Gets the canonical name minus the package name from a String.</p>
-     *
      * <p>The string passed in is assumed to be a canonical name - it is not checked.</p>
      *
      * @param canonicalName  the class name to get the short name for
@@ -208,8 +147,7 @@ public class ClassUtils {
     // ----------------------------------------------------------------------
     /**
      * <p>Converts a given name of class into canonical format.
-     * If name of class is not a name of array class it returns
-     * unchanged name.</p>
+     * If name of class is not a name of array class it returns unchanged name.</p>
      * <p>Example:
      * <ul>
      * <li><code>getCanonicalName("[I") = "int[]"</code></li>

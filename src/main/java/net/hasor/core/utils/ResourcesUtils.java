@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core.utils;
-import net.hasor.core.utils.map.DecSequenceMap;
-
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -103,15 +101,15 @@ public abstract class ResourcesUtils {
             return null;
         }
         //
-        DecSequenceMap<String, String> iatt = new DecSequenceMap<String, String>();
+        Map<String, String> fullData = new HashMap<String, String>();
         while (iterator.hasNext()) {
             String str = iterator.next();
             Map<String, String> att = getPropertys(str);
             if (att != null) {
-                iatt.addMap(att);
+                fullData.putAll(att);
             }
         }
-        return iatt;
+        return fullData;
     }
     /**读取一个属性文件，并且以{@link Map}接口的形式返回。*/
     public static Map<String, String> getPropertys(final String resourcePath) throws IOException {

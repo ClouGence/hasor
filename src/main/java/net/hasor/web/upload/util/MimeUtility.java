@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 package net.hasor.web.upload.util;
-import net.hasor.core.utils.errors.FormatException;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -149,7 +147,7 @@ public final class MimeUtility {
                         // we continue parsing from here...we allow parsing errors to fall through
                         // and get handled as normal text.
                         continue;
-                    } catch (FormatException e) {
+                    } catch (IllegalArgumentException e) {
                         // just ignore it, skip to next word
                     }
                 }
@@ -181,24 +179,24 @@ public final class MimeUtility {
         // encoded words start with the characters "=?".  If this not an encoded word, we throw a
         // ParseException for the caller.
         if (!word.startsWith(ENCODED_TOKEN_MARKER)) {
-            throw new FormatException("Invalid RFC 2047 encoded-word: " + word);
+            throw new UnsupportedEncodingException("Invalid RFC 2047 encoded-word: " + word);
         }
         int charsetPos = word.indexOf('?', 2);
         if (charsetPos == -1) {
-            throw new FormatException("Missing charset in RFC 2047 encoded-word: " + word);
+            throw new UnsupportedEncodingException("Missing charset in RFC 2047 encoded-word: " + word);
         }
         // pull out the character set information (this is the MIME name at this point).
         String charset = word.substring(2, charsetPos).toLowerCase();
         // now pull out the encoding token the same way.
         int encodingPos = word.indexOf('?', charsetPos + 1);
         if (encodingPos == -1) {
-            throw new FormatException("Missing encoding in RFC 2047 encoded-word: " + word);
+            throw new UnsupportedEncodingException("Missing encoding in RFC 2047 encoded-word: " + word);
         }
         String encoding = word.substring(charsetPos + 1, encodingPos);
         // and finally the encoded text.
         int encodedTextPos = word.indexOf(ENCODED_TOKEN_FINISHER, encodingPos + 1);
         if (encodedTextPos == -1) {
-            throw new FormatException("Missing encoded text in RFC 2047 encoded-word: " + word);
+            throw new UnsupportedEncodingException("Missing encoded text in RFC 2047 encoded-word: " + word);
         }
         String encodedText = word.substring(encodingPos + 1, encodedTextPos);
         // seems a bit silly to encode a null string, but easy to deal with.

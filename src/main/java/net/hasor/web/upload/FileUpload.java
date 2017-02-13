@@ -17,7 +17,6 @@
 package net.hasor.web.upload;
 import net.hasor.core.Settings;
 import net.hasor.core.utils.ExceptionUtils;
-import net.hasor.core.utils.errors.FormatException;
 import net.hasor.web.*;
 import net.hasor.web.FileUploadException;
 import net.hasor.web.upload.util.Closeable;
@@ -425,7 +424,7 @@ public class FileUpload {
              * Returns the items file name.
              *
              * @return File name, if known, or null.
-             * @throws FormatException The file name contains a NUL character,
+             * @throws IllegalArgumentException The file name contains a NUL character,
              *   which might be an indicator of a security attack. If you intend to
              *   use the file name anyways, catch the exception and use
              *   InvalidFileNameException#getName().

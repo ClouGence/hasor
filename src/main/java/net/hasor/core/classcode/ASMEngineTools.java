@@ -21,12 +21,43 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 /**
  * 生成字节码时候使用的工具类。
  * @version 2009-10-16
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ASMEngineTools implements Opcodes {
+    /** <p>The package separator character: <code>'&#x2e;' == {@value}</code>.</p> */
+    public static final  char                PACKAGE_SEPARATOR_CHAR     = '.';
+    /** <p>The inner class separator character: <code>'$' == {@value}</code>.</p> */
+    public static final  char                INNER_CLASS_SEPARATOR_CHAR = '$';
+    /** Maps a primitive class name to its corresponding abbreviation used in array class names. */
+    private static final Map<String, String> abbreviationMap            = new HashMap<String, String>();
+    /** Maps an abbreviation used in array class names to corresponding primitive class name. */
+    private static final Map<String, String> reverseAbbreviationMap     = new HashMap<String, String>();
+    /**
+     * Add primitive type abbreviation to maps of abbreviations.
+     * @param primitive Canonical name of primitive type
+     * @param abbreviation Corresponding abbreviation of primitive type
+     */
+    private static void addAbbreviation(final String primitive, final String abbreviation) {
+        abbreviationMap.put(primitive, abbreviation);
+        reverseAbbreviationMap.put(abbreviation, primitive);
+    }
+    /** Feed abbreviation maps */
+    static {
+        addAbbreviation("int", "I");
+        addAbbreviation("boolean", "Z");
+        addAbbreviation("float", "F");
+        addAbbreviation("long", "J");
+        addAbbreviation("short", "S");
+        addAbbreviation("byte", "B");
+        addAbbreviation("double", "D");
+        addAbbreviation("char", "C");
+    }
+    //=======================================================================================================================
     /**根据类型获取其Return指令。*/
     public static int getReturn(final String asmType) {
         char t = asmType.charAt(0);
@@ -134,7 +165,7 @@ public class ASMEngineTools implements Opcodes {
             return "Z";
         } else if (classType == void.class) {
             return "V";
-        } else if (classType.isArray() == true) {
+        } else if (classType.isArray()) {
             return "[" + ASMEngineTools.toAsmType(classType.getComponentType());
         } else {
             return "L" + Type.getInternalName(classType) + ";";
@@ -294,8 +325,11 @@ public class ASMEngineTools implements Opcodes {
         }
         return str.toString();
     }
-    ;
-    /** 将IIIILjava/lang/Integer;F形式的ASM类型表述分解为数组。测试字符串IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean; */
+    /**
+     * 将IIIILjava/lang/Integer;F形式的ASM类型表述分解为数组。
+     * 测试字符串IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean; ->
+     *      ["I", "I", "I", "I", "Ljava/lang/Integer;", "F", "[[[I", "Ljava/lang.Boolean"]
+     *  */
     public static String[] splitAsmType(final String asmTypes) {
         class AsmTypeRead {
             StringReader sread = null;
@@ -336,7 +370,7 @@ public class ASMEngineTools implements Opcodes {
                 ArrayList<String> ss = new ArrayList<String>(0);
                 while (true) {
                     String s = this.readType();
-                    if (s.equals("") == true) {
+                    if ("".equals(s)) {
                         break;
                     } else {
                         ss.add(s);
@@ -353,6 +387,7 @@ public class ASMEngineTools implements Opcodes {
             throw new RuntimeException("不合法的ASM类型desc。");
         }
     }
+    //=======================================================================================================================
     /**将类名转换为asm类名。*/
     public static String replaceClassName(final Class<?> targetClass) {
         return targetClass.getName().replace(".", "/");
@@ -370,5 +405,4 @@ public class ASMEngineTools implements Opcodes {
             return asmType;
         }
     }
-    //
 }

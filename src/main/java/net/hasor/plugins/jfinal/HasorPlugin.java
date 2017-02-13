@@ -21,7 +21,6 @@ import net.hasor.core.*;
 import net.hasor.core.EventListener;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.utils.ExceptionUtils;
-import net.hasor.core.utils.errors.RepeateException;
 import net.hasor.web.startup.RuntimeFilter;
 import net.hasor.web.startup.RuntimeListener;
 
@@ -71,7 +70,7 @@ public class HasorPlugin implements IPlugin {
         this.jFinal = Hasor.assertIsNotNull(jFinal, "jFinal Context is null.");
         AppContext webAppContext = RuntimeListener.getAppContext(this.jFinal.getServletContext());
         if (webAppContext != null) {
-            throw new RepeateException("Hasor WebAppContext already exists , please disable the other.");
+            throw new IllegalStateException("Hasor WebAppContext already exists , please disable the other.");
         }
         this.listener = new RuntimeListener() {
             protected Hasor createAppContext(ServletContext sc) throws Throwable {

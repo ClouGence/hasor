@@ -15,8 +15,8 @@
  */
 package net.hasor.plugins.event;
 import net.hasor.core.*;
+import net.hasor.core.future.BasicFuture;
 import net.hasor.core.utils.StringUtils;
-import net.hasor.core.utils.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

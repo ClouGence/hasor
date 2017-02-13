@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 package net.hasor.web.upload;
-import net.hasor.core.utils.AutoCloseInputStream;
 import net.hasor.core.utils.IOUtils;
 import net.hasor.web.FileItem;
 import net.hasor.web.FileItemHeaders;
@@ -78,7 +77,8 @@ public abstract class FileItemBase implements FileItem {
             throw new IOException("openStream result is null.");
         }
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-        IOUtils.copy(new AutoCloseInputStream(inStream), outStream);
+        IOUtils.copy(inStream, outStream);
+        IOUtils.closeQuietly(inStream);
         return outStream.toByteArray();
     }
     @Override
@@ -87,7 +87,9 @@ public abstract class FileItemBase implements FileItem {
         if (inStream == null) {
             throw new IOException("openStream result is null.");
         }
-        return Streams.asString(new AutoCloseInputStream(inStream), encoding);
+        String asString = Streams.asString(inStream, encoding);
+        IOUtils.closeQuietly(inStream);
+        return asString;
     }
     @Override
     public String getString() throws IOException {
@@ -95,7 +97,9 @@ public abstract class FileItemBase implements FileItem {
         if (inStream == null) {
             throw new IOException("openStream result is null.");
         }
-        return Streams.asString(new AutoCloseInputStream(inStream));
+        String asString = Streams.asString(inStream);
+        IOUtils.closeQuietly(inStream);
+        return asString;
     }
     @Override
     public void writeTo(File outputFile) throws IOException {
@@ -110,20 +114,12 @@ public abstract class FileItemBase implements FileItem {
             if (!parentFile.exists()) {
                 parentFile.mkdirs();
             }
-            in = new BufferedInputStream(new AutoCloseInputStream(inStream));
+            in = new BufferedInputStream(inStream);
             out = new BufferedOutputStream(new FileOutputStream(outputFile));
             IOUtils.copy(in, out);
         } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) { /*ignore*/}
-            }
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) { /*ignore*/}
-            }
+            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly(out);
         }
     }
     @Override
@@ -132,6 +128,7 @@ public abstract class FileItemBase implements FileItem {
         if (inStream == null) {
             throw new IOException("openStream result is null.");
         }
-        IOUtils.copy(new AutoCloseInputStream(inStream), outStream);
+        IOUtils.copy(inStream, outStream);
+        IOUtils.closeQuietly(inStream);
     }
 }

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 package net.hasor.web.upload.util;
-import net.hasor.core.utils.errors.FormatException;
 import net.hasor.core.utils.IOUtils;
 import net.hasor.web.FileItemStream;
 
@@ -141,11 +140,11 @@ public final class Streams {
     }
     /**
      * Checks, whether the given file name is valid in the sense, that it doesn't contain any NUL characters.
-     * If the file name is valid, it will be returned without any modifications. Otherwise, an {@link FormatException} is raised.
+     * If the file name is valid, it will be returned without any modifications. Otherwise, an {@link IllegalArgumentException} is raised.
      *
      * @param fileName The file name to check
      * @return Unmodified file name, if valid.
-     * @throws FormatException The file name was found to be invalid.
+     * @throws IllegalArgumentException The file name was found to be invalid.
      */
     public static String checkFileName(String fileName) {
         if (fileName != null && fileName.indexOf('\u0000') != -1) {
@@ -162,7 +161,7 @@ public final class Streams {
                     break;
                 }
             }
-            throw new FormatException("Invalid file [ " + fileName + "] , Invalid file name: " + sb);
+            throw new IllegalArgumentException("Invalid file [ " + fileName + "] , Invalid file name: " + sb);
         }
         return fileName;
     }

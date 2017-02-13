@@ -20,7 +20,6 @@ import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.NotifyData;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.scope.SingletonScope;
-import net.hasor.core.utils.errors.RepeateException;
 import net.hasor.core.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -247,7 +246,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
         if (StringUtils.equalsBlankIgnoreCase(notifyData.getKey(), "bindID")) {
             newValue = Hasor.assertIsNotNull(newValue);
             if (this.idDataSource.containsKey(newValue)) {
-                throw new RepeateException("duplicate bind id value is " + newValue);
+                throw new IllegalStateException("duplicate bind -> id value is " + newValue);
             }
             this.idDataSource.put((String) newValue, target);
             this.idDataSource.remove(oldValue);
@@ -263,7 +262,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
             newValue = Hasor.assertIsNotNull(newValue);
             BindInfo bindInfo = this.findBindInfo((String) newValue, target.getBindType());
             if (bindInfo != null) {
-                throw new RepeateException("bindName '" + newValue + "' conflict with '" + bindInfo + "'");
+                throw new IllegalStateException("duplicate bind -> bindName '" + newValue + "' conflict with '" + bindInfo + "'");
             }
         }
         // .

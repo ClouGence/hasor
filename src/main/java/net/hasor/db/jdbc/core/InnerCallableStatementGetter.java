@@ -1,21 +1,55 @@
 package net.hasor.db.jdbc.core;
-import net.hasor.core.utils.ClassUtils;
-
 import java.sql.CallableStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 /**
  *
  * @version : 2014-3-31
  * @author 赵永春(zyc@hasor.net)
  */
 class InnerCallableStatementGetter {
+    /** Maps primitive <code>Class</code>es to their corresponding wrapper <code>Class</code>. */
+    private static final Map<Class<?>, Class<?>> primitiveWrapperMap = new HashMap<Class<?>, Class<?>>();
+    /** Maps wrapper <code>Class</code>es to their corresponding primitive types. */
+    private static final Map<Class<?>, Class<?>> wrapperPrimitiveMap = new HashMap<Class<?>, Class<?>>();
+
+    static {
+        primitiveWrapperMap.put(Boolean.TYPE, Boolean.class);
+        primitiveWrapperMap.put(Byte.TYPE, Byte.class);
+        primitiveWrapperMap.put(Character.TYPE, Character.class);
+        primitiveWrapperMap.put(Short.TYPE, Short.class);
+        primitiveWrapperMap.put(Integer.TYPE, Integer.class);
+        primitiveWrapperMap.put(Long.TYPE, Long.class);
+        primitiveWrapperMap.put(Double.TYPE, Double.class);
+        primitiveWrapperMap.put(Float.TYPE, Float.class);
+        primitiveWrapperMap.put(Void.TYPE, Void.TYPE);
+        //
+        for (Iterator<?> it = primitiveWrapperMap.keySet().iterator(); it.hasNext(); ) {
+            Class<?> primitiveClass = (Class<?>) it.next();
+            Class<?> wrapperClass = primitiveWrapperMap.get(primitiveClass);
+            if (!primitiveClass.equals(wrapperClass)) {
+                wrapperPrimitiveMap.put(wrapperClass, primitiveClass);
+            }
+        }
+    }
+
+    public static Class<?> primitiveToWrapper(final Class<?> cls) {
+        Class<?> convertedClass = cls;
+        if (cls != null && cls.isPrimitive()) {
+            convertedClass = primitiveWrapperMap.get(cls);
+        }
+        return convertedClass;
+    }
+    //
     public static Object getValue(final CallableStatement cs, final int index, Class<?> requiredType) throws SQLException {
         Object value = null;
         boolean wasNullCheck = false;
         if (requiredType == null) {
             return cs.getObject(index);
         }
-        requiredType = ClassUtils.primitiveToWrapper(requiredType);
+        requiredType = primitiveToWrapper(requiredType);
         // Explicitly extract typed value, as far as possible.
         if (String.class.equals(requiredType)) {
             value = cs.getString(index);
