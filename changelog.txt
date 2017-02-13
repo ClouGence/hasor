@@ -5,7 +5,7 @@
     03.AbstractEnvironment，改进“env.config”配置文件的加载改为：先在WORK_HOME下查找，找不到在加载classpath下的。
     04.启动日志中，打印出“env.config”中所加载的所有信息。
     05.原 org.more 包内的工具仅保留使用到的工具类，同时移动到net.hasor.core包中，力争减少 Hasor 产出 jar 包的体积。
-    06.ASM降级为4.0。
+    06.classcode 成为 Hasor 的一部分。
 
 ===== Hasor-Core v3.0.3 (2017-02-07)
 * 修复:

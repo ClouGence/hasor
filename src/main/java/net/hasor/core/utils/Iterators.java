@@ -22,7 +22,7 @@ import java.util.Iterator;
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
  */
-public final class Iterators {
+public class Iterators {
     /**用于迭代器类型转换*/
     public static interface Converter<T, O> {
         public O converter(T target);

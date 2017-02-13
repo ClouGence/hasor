@@ -80,3 +80,5 @@
 
 * mvn release:prepare -P release
 * mvn deploy -P release
+
+### 偶尔启动需要增加 -noverify 参数
