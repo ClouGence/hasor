@@ -13,13 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.more.future;
+package net.hasor.core.utils;
+import net.hasor.core.utils.errors.UnhandledException;
 /**
- *
- * @version : 2014年11月15日
+ * 异常工具类
+ * @version : 2014年9月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface Cancellable {
-    /**取消调用。*/
-    public boolean cancel();
+public class ExceptionUtils {
+    /**将异常包装为 {@link RuntimeException}*/
+    public static RuntimeException toRuntimeException(Throwable proxy) {
+        if (proxy instanceof RuntimeException) {
+            return (RuntimeException) proxy;
+        }
+        return new UnhandledException(proxy.getClass().getName() + " - " + proxy.getMessage(), proxy);
+    }
 }
