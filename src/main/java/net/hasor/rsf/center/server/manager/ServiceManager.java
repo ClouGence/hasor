@@ -17,7 +17,6 @@ package net.hasor.rsf.center.server.manager;
 import net.hasor.core.AppContext;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.center.server.AuthQuery;
@@ -27,8 +26,9 @@ import net.hasor.rsf.center.server.domain.*;
 import net.hasor.rsf.center.server.pushing.RsfPusher;
 import net.hasor.rsf.center.server.utils.DateCenterUtils;
 import net.hasor.rsf.center.server.utils.JsonUtils;
-import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.center.server.utils.LogUtils;
+import net.hasor.rsf.domain.RsfServiceType;
+import net.hasor.rsf.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -322,23 +322,36 @@ public class ServiceManager {
         }
         List<ObjectDO> allList = refList.getResult();
         List<InterAddress> consumerList = filterConsumerList(allList);
-        List<String> newHosts = info.getRsfAddress();
-        List<InterAddress> newHostSet = new ArrayList<InterAddress>();
-        if (newHosts != null) {
-            for (String host : newHosts) {
-                newHostSet.add(new InterAddress(host));
+        //
+        // .因为多协议关系，需要为每个服务订阅者建立一个可推送的地址列表
+        Map<InterAddress, List<InterAddress>> readyToPushMap = new HashMap<InterAddress, List<InterAddress>>();
+        for (InterAddress consumer : consumerList) {
+            List<String> newHosts = info.getRsfAddress();
+            List<InterAddress> newHostSet = new ArrayList<InterAddress>();
+            if (newHosts != null) {
+                for (String host : newHosts) {
+                    InterAddress interAddress = new InterAddress(host);
+                    if (consumer.getSechma().equalsIgnoreCase(interAddress.getSechma())) {
+                        newHostSet.add(interAddress);
+                    }
+                }
             }
+            readyToPushMap.put(consumer, newHostSet);
         }
         //
         // .推送新的提供者地址
-        if (consumerList != null && !consumerList.isEmpty()) {
+        if (!readyToPushMap.isEmpty()) {
             String serviceID = serviceInfo.getBindID();
-            boolean result = this.rsfPusher.appendAddress(serviceID, newHostSet, consumerList); // 第一次尝试
-            if (!result) {
-                result = this.rsfPusher.appendAddress(serviceID, newHostSet, consumerList);     // 第二次尝试
+            for (InterAddress toPush : readyToPushMap.keySet()) {
+                List<InterAddress> pushData = readyToPushMap.get(toPush);
+                boolean result = this.rsfPusher.appendAddress(serviceID, pushData, Arrays.asList(toPush)); // 第一次尝试
                 if (!result) {
-                    result = this.rsfPusher.appendAddress(serviceID, newHostSet, consumerList); // 第三次尝试
+                    result = this.rsfPusher.appendAddress(serviceID, pushData, Arrays.asList(toPush));     // 第二次尝试
+                    if (!result) {
+                        result = this.rsfPusher.appendAddress(serviceID, pushData, Arrays.asList(toPush)); // 第三次尝试
+                    }
                 }
+                //
             }
         }
         //
