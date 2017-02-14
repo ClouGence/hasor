@@ -20,7 +20,7 @@ import net.hasor.rsf.center.server.QueryOption;
 import net.hasor.rsf.center.server.domain.ObjectDO;
 import net.hasor.rsf.center.server.domain.Result;
 import net.hasor.rsf.center.server.domain.ResultDO;
-import org.more.util.StringUtils;
+import net.hasor.rsf.utils.StringUtils;
 
 import java.util.*;
 /**

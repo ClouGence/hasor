@@ -17,12 +17,12 @@ package net.hasor.rsf.container;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.info.CustomerProvider;
+import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.domain.ServiceDomain;
 import net.hasor.rsf.domain.warp.RsfBindInfoWrap;
-import org.more.util.StringUtils;
 
 import java.util.*;
 /**

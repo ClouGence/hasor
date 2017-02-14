@@ -38,7 +38,7 @@ public class BuildBucketBuild {
         return bucket;
     }
     public BuildBucketBuild invoke() throws URISyntaxException {
-        bucket = new AddressBucket(serviceID, rsfEnv.getSettings());
+        bucket = new AddressBucket(serviceID, rsfEnv);
         //
         ArrayList<InterAddress> dynamicList = new ArrayList<InterAddress>();
         dynamicList.add(new InterAddress("127.0.0.1", 8000, "etc2"));

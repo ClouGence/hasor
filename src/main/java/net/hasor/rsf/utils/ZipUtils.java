@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.utils;
 import net.hasor.core.Settings;
-import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

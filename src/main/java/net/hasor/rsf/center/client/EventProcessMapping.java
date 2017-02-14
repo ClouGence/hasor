@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.client;
+import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.center.RsfCenterEvent;
 import net.hasor.rsf.center.domain.CenterEventBody;
-import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

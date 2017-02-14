@@ -16,17 +16,17 @@
 package net.hasor.rsf.rpc.context;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
+import net.hasor.core.convert.ConverterUtils;
 import net.hasor.core.setting.SettingsWrap;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
 import net.hasor.rsf.domain.OptionInfo;
+import net.hasor.rsf.utils.IOUtils;
 import net.hasor.rsf.utils.NetworkUtils;
-import org.more.convert.ConverterUtils;
-import org.more.util.ResourcesUtils;
-import org.more.util.StringUtils;
-import org.more.util.io.IOUtils;
+import net.hasor.rsf.utils.ResourcesUtils;
+import net.hasor.rsf.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +82,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private   boolean                   localDiskCache        = true;
     private   long                      diskCacheTimeInterval = 3600000;
     private   boolean                   automaticOnline       = true;
-    private   String                    wrapperType           = null;
     //
     private   String                    appKeyID              = null;
     private   String                    appKeySecret          = null;
@@ -109,7 +108,7 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     public String getVersion() {
         try {
             InputStream verIns = ResourcesUtils.getResourceAsStream("/META-INF/rsf-core.version");
-            List<String> dataLines = IOUtils.readLines(verIns, "UTF-8");
+            List<String> dataLines = IOUtils.readLines(verIns);
             return !dataLines.isEmpty() ? dataLines.get(0) : null;
         } catch (Throwable e) {
             return null;
@@ -176,10 +175,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     @Override
     public int getConnectTimeout() {
         return this.connectTimeout;
-    }
-    @Override
-    public String getWrapperType() {
-        return this.wrapperType;
     }
     @Override
     public String getBindAddress() {
@@ -406,7 +401,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         //
         this.enableCenter = this.centerServerSet.length != 0;
         this.automaticOnline = getBoolean("hasor.rsfConfig.centerServers.automaticOnline", true);
-        this.wrapperType = getString("hasor.rsfConfig.client.wrapperType", "fast");//默认使用快速的
         //
         this.appKeyID = getString("security.appKeyID");
         this.appKeySecret = getString("security.appKeySecret");

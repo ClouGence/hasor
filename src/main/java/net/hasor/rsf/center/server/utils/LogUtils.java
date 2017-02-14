@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.utils;
+package net.hasor.rsf.center.server.utils;
 import com.alibaba.fastjson.JSONObject;
-import org.more.bizcommon.Message;
-import org.more.builder.ToStringBuilder;
-import org.more.builder.ToStringStyle;
-import org.more.util.io.IOUtils;
+import net.hasor.rsf.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,16 +99,6 @@ public class LogUtils {
         put(key, value);
         return this;
     }
-    public LogUtils addMessage(Message errorMsg) {
-        if (errorMsg == null) {
-            put("messageCode", 0);
-            put("messageDesc", "errorMsg is null.");
-        } else {
-            put("messageCode", errorMsg.getType());
-            put("messageDesc", errorMsg.getMessage());
-        }
-        return this;
-    }
     public LogUtils logException(Throwable ex) {
         if (ex != null) {
             put("exceptionMsg", ex.getMessage());
@@ -123,28 +110,5 @@ public class LogUtils {
      */
     public String toJson() {
         return JSONObject.toJSONString(map);
-    }
-    /**
-     * 对于Json转换出的异常, 需要使用此方法. 以避免死循环
-     */
-    public String toStringBuilder() {
-        StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, Object> kv : map.entrySet()) {
-            if (sb.length() > 0) {
-                sb.append(",");
-            }
-            String s = null;
-            if (kv.getValue() == null) {
-                s = "null";
-            } else {
-                if (kv.getValue() instanceof String || kv.getValue() instanceof Long || kv.getValue() instanceof Integer || kv.getValue() instanceof Double) {
-                    s = String.valueOf(kv.getValue());
-                } else {
-                    s = ToStringBuilder.reflectionToString(kv.getValue(), ToStringStyle.SHORT_PREFIX_STYLE);
-                }
-            }
-            sb.append("[" + kv.getKey() + "]=[" + s + "]");
-        }
-        return sb.toString();
     }
 }

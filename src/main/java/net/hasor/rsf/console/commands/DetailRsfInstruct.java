@@ -23,7 +23,6 @@ import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
 import net.hasor.rsf.console.RsfInstruct;
 import net.hasor.rsf.domain.RsfConstants;
-import org.more.util.StringUtils;
 
 import java.io.StringWriter;
 import java.util.List;
@@ -53,7 +52,7 @@ public class DetailRsfInstruct implements RsfInstruct {
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();
         // .help
-        if (args == null || args.length == 0 || (args.length > 0 && StringUtils.equalsIgnoreCase("-h", args[0]))) {
+        if (args == null || args.length == 0 || (args.length > 0 && "-h".equalsIgnoreCase(args[0]))) {
             //
             sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + request.getCommandString() + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
             sw.write(helpInfo());
@@ -86,7 +85,7 @@ public class DetailRsfInstruct implements RsfInstruct {
         sw.write(">>------ CenterInfo -------\r\n");
         sw.write(">>     Ticket : " + info.getMetaData(RsfConstants.Center_Ticket) + "\r\n");
         //
-        if (!isProvider && (args.length == 2 && StringUtils.equalsIgnoreCase("-a", args[0]))) {
+        if (!isProvider && (args.length == 2 && "-a".equalsIgnoreCase(args[0]))) {
             RsfUpdater updater = rsfContext.getUpdater();
             List<InterAddress> allList = updater.queryAllAddresses(serviceID);
             List<InterAddress> availableList = updater.queryAvailableAddresses(serviceID);

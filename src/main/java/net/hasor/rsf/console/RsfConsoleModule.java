@@ -36,7 +36,7 @@ import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfModule;
 import net.hasor.rsf.domain.RsfConstants;
-import org.more.util.NameThreadFactory;
+import net.hasor.rsf.utils.NameThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.utils;
-import org.more.util.StringUtils;
-
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;

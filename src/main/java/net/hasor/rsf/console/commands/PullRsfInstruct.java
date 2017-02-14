@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.console.commands;
 import net.hasor.core.Singleton;
+import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
@@ -25,8 +26,6 @@ import net.hasor.rsf.console.RsfCommandRequest;
 import net.hasor.rsf.console.RsfInstruct;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfServiceType;
-import org.more.bizcommon.json.JSON;
-import org.more.util.StringUtils;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -65,7 +64,7 @@ public class PullRsfInstruct implements RsfInstruct {
             List<String> servicesList = Collections.emptyList();
             //
             // .确定拉取地址的服务列表
-            if (StringUtils.equalsIgnoreCase("-all", doArg)) {
+            if ("-all".equalsIgnoreCase(doArg)) {
                 //
                 request.writeMessageLine("detail Message:");
                 servicesList = rsfContext.getServiceIDs();
@@ -101,7 +100,7 @@ public class PullRsfInstruct implements RsfInstruct {
                     continue;
                 }
                 String registerID = (String) info.getMetaData(RsfConstants.Center_Ticket);
-                if (StringUtils.equalsBlankIgnoreCase("request", request.getCommandString())) {
+                if ("request".equalsIgnoreCase(request.getCommandString())) {
                     // -request
                     processRequest(request, register, serviceID, registerID);
                 } else {
@@ -146,7 +145,7 @@ public class PullRsfInstruct implements RsfInstruct {
                 finalAddressStrList.add(inter.toHostSchema());
             } catch (Exception e) { /**/ }
         }
-        request.writeMessageLine(String.format(" ->  (2of4) pull addressSet is " + JSON.toString(finalAddressStrList)));
+        request.writeMessageLine(String.format(" ->  (2of4) pull addressSet is " + StringUtils.join(finalAddressStrList.toArray(), ", ")));
         // .3of4
         request.writeMessageLine(String.format(" ->  (3of4) prepare refreshAddress addressSet."));
         // .4of4

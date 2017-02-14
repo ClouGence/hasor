@@ -19,10 +19,7 @@ import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.domain.RsfConstants;
-import org.more.RepeateException;
-import org.more.builder.ReflectionToStringBuilder;
-import org.more.builder.ToStringStyle;
-import org.more.util.StringUtils;
+import net.hasor.rsf.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,13 +56,13 @@ public class CommandManager {
                 if (this.commandMap.containsKey(name)) {
                     RsfInstruct conflictCmd = this.commandMap.get(name);
                     String types = cmdObject.getClass().getName() + " , " + conflictCmd.getClass().getName();
-                    throw new RepeateException("conflict command name '" + name + "' {" + types + "}");
+                    throw new IllegalStateException("conflict command name '" + name + "' {" + types + "}");
                 } else {
                     this.commandMap.put(name, cmdObject);
                 }
             }
         }
-        logger.info("load rsf Console Commands ={}.", ReflectionToStringBuilder.toString(cmdNames, ToStringStyle.SHORT_PREFIX_STYLE));
+        logger.info("load rsf Console Commands ={}.", StringUtils.join(cmdNames.toArray(), ", "));
         //
     }
     /**查找命令。*/

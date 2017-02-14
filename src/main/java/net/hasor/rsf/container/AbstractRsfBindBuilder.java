@@ -25,8 +25,7 @@ import net.hasor.rsf.*;
 import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.domain.ServiceDomain;
-import org.more.FormatException;
-import org.more.util.StringUtils;
+import net.hasor.rsf.utils.StringUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -97,7 +96,7 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         public ConfigurationBuilder<T> group(String group) {
             Hasor.assertIsNotNull(group, "group is null.");
             if (group.contains("/")) {
-                throw new FormatException(group + " contain '/'");
+                throw new IllegalStateException(group + " contain '/'");
             }
             this.serviceDefine.getDomain().setBindGroup(group);
             return this;
@@ -107,7 +106,7 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         public ConfigurationBuilder<T> name(String name) {
             Hasor.assertIsNotNull(name, "name is null.");
             if (name.contains("/")) {
-                throw new FormatException(name + " contain '/'");
+                throw new IllegalStateException(name + " contain '/'");
             }
             this.serviceDefine.getDomain().setBindName(name);
             return this;
@@ -117,7 +116,7 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         public ConfigurationBuilder<T> version(String version) {
             Hasor.assertIsNotNull(version, "version is null.");
             if (version.contains("/")) {
-                throw new FormatException(version + " contain '/'");
+                throw new IllegalStateException(version + " contain '/'");
             }
             this.serviceDefine.getDomain().setBindVersion(version);
             return this;
@@ -126,7 +125,7 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         @Override
         public ConfigurationBuilder<T> timeout(int clientTimeout) {
             if (clientTimeout < 1) {
-                throw new FormatException("clientTimeout must be greater than 0");
+                throw new IllegalStateException("clientTimeout must be greater than 0");
             }
             this.serviceDefine.getDomain().setClientTimeout(clientTimeout);
             return this;
@@ -136,7 +135,7 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         public ConfigurationBuilder<T> serialize(String serializeType) {
             Hasor.assertIsNotNull(serializeType, "serializeType is null.");
             if (serializeType.contains("/")) {
-                throw new FormatException(serializeType + " contain '/'");
+                throw new IllegalStateException(serializeType + " contain '/'");
             }
             this.serviceDefine.getDomain().setSerializeType(serializeType);
             return this;
@@ -212,7 +211,7 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
                     if (rsfURI != null && InterAddress.checkFormat(bindItem)) {
                         this.bindAddress(new InterAddress(bindItem));
                     }
-                    throw new FormatException(bindItem + " check fail.");
+                    throw new IllegalStateException(bindItem + " check fail.");
                 }
             }
             return this;

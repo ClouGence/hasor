@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.console.commands;
 import net.hasor.core.Singleton;
+import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
@@ -23,8 +24,6 @@ import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
 import net.hasor.rsf.console.RsfInstruct;
 import net.hasor.rsf.domain.RsfServiceType;
-import org.more.bizcommon.json.JSON;
-import org.more.util.StringUtils;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -57,7 +56,7 @@ public class InfoRsfInstruct implements RsfInstruct {
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 0) {
             String doArg = args[0];
-            if (StringUtils.equalsIgnoreCase("-h", doArg)) {
+            if ("-h".equalsIgnoreCase(doArg)) {
                 sw.write(helpInfo());
                 return sw.toString();
             }
@@ -110,7 +109,7 @@ public class InfoRsfInstruct implements RsfInstruct {
         sw.write(">>\r\n");
         sw.write(">>----- Console Info ------\r\n");
         sw.write(">>        consolePort :" + settings.getConsolePort() + "\r\n");
-        sw.write(">>     consoleInBound :" + JSON.toString(settings.getConsoleInBoundAddress()) + "\r\n");
+        sw.write(">>     consoleInBound :" + StringUtils.join(settings.getConsoleInBoundAddress(), ", ") + "\r\n");
         sw.write(">>\r\n");
         sw.write(">>----- Center Info ------\r\n");
         sw.write(">>             enable :" + settings.isEnableCenter() + "\r\n");

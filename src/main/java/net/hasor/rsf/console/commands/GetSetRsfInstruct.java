@@ -15,11 +15,10 @@
  */
 package net.hasor.rsf.console.commands;
 import net.hasor.core.Singleton;
+import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
 import net.hasor.rsf.console.RsfInstruct;
-import org.more.bizcommon.json.JSON;
-import org.more.util.StringUtils;
 /**
  * 在本次Telnet中设置环境变量，当Telnet连接断开变量失效
  * @version : 2016年4月3日
@@ -42,7 +41,7 @@ public class GetSetRsfInstruct implements RsfInstruct {
     public String doCommand(RsfCommandRequest request) throws Throwable {
         request.setAttr(RsfCommandRequest.WITHOUT_AFTER_CLOSE_SESSION, true);//不关闭Session
         String[] args = request.getRequestArgs();
-        String argsJoin = StringUtils.join(args);
+        String argsJoin = StringUtils.join(args, "");
         argsJoin = argsJoin.replace("\\s+", " ");
         args = argsJoin.split("=");
         //
@@ -64,7 +63,7 @@ public class GetSetRsfInstruct implements RsfInstruct {
                 if (obj == null) {
                     return "";
                 } else {
-                    return JSON.toString(obj);
+                    return obj.toString();//TODO may be is object
                 }
             }
             //

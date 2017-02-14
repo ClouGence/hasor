@@ -16,16 +16,16 @@
 package net.hasor.rsf.center.server.launcher;
 import net.hasor.core.*;
 import net.hasor.core.environment.StandardEnvironment;
+import net.hasor.core.future.BasicFuture;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.console.RsfInstruct;
 import net.hasor.rsf.console.launcher.TelnetClient;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
+import net.hasor.rsf.utils.IOUtils;
 import net.hasor.rsf.utils.NetworkUtils;
+import net.hasor.rsf.utils.ResourcesUtils;
 import org.codehaus.plexus.classworlds.ClassWorld;
-import org.more.future.BasicFuture;
-import org.more.util.ResourcesUtils;
-import org.more.util.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,7 +91,7 @@ public class MainLauncher {
     public static void doVersion(String[] args) {
         try {
             InputStream verIns = ResourcesUtils.getResourceAsStream("/META-INF/rsf-center.version");
-            List<String> dataLines = IOUtils.readLines(verIns, "UTF-8");
+            List<String> dataLines = IOUtils.readLines(verIns);
             System.out.println(!dataLines.isEmpty() ? dataLines.get(0) : null);
         } catch (Throwable e) {
             logger.error("read version file:/META-INF/rsf-center.version failed -> {}", e);

@@ -24,7 +24,7 @@ import net.hasor.rsf.center.server.domain.Result;
 import net.hasor.rsf.center.server.domain.ResultDO;
 import net.hasor.rsf.center.server.domain.RsfCenterSettings;
 import net.hasor.rsf.center.server.utils.DateCenterUtils;
-import net.hasor.rsf.utils.LogUtils;
+import net.hasor.rsf.center.server.utils.LogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**

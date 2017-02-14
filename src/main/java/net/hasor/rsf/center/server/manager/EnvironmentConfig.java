@@ -18,9 +18,9 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
+import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.center.server.domain.RsfCenterSettings;
-import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

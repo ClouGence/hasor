@@ -19,9 +19,9 @@ import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.address.AddressBucket;
 import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
+import net.hasor.rsf.utils.IOUtils;
+import net.hasor.rsf.utils.ResourcesUtils;
 import org.junit.Test;
-import org.more.util.ResourcesUtils;
-import org.more.util.io.IOUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,16 +41,16 @@ public class BucketTest {
         BuildBucketBuild buildBucket = new BuildBucketBuild(serviceID, rsfEnv).invoke();
         AddressBucket bucket = buildBucket.getBucket();
         //
-        String flowBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flow-control/full-flow.xml"));
+        String flowBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/flow-control/full-flow.xml"));
         bucket.updateFlowControl(flowBody);
         //
-        String scriptBody1 = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/service-level.groovy"));
+        String scriptBody1 = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/rule-script/service-level.groovy"));
         bucket.updateRoute(RouteTypeEnum.ServiceLevel, scriptBody1);
         //
-        String scriptBody2 = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/method-level.groovy"));
+        String scriptBody2 = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/rule-script/method-level.groovy"));
         bucket.updateRoute(RouteTypeEnum.MethodLevel, scriptBody2);
         //
-        String scriptBody3 = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/args-level.groovy"));
+        String scriptBody3 = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/rule-script/args-level.groovy"));
         bucket.updateRoute(RouteTypeEnum.ArgsLevel, scriptBody3);
         //
         File outFile = new File(rsfEnv.getPluginDir(BucketTest.class), serviceID + ".zip");

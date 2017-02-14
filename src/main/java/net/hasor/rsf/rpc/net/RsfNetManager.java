@@ -17,14 +17,13 @@ package net.hasor.rsf.rpc.net;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import net.hasor.core.AppContext;
+import net.hasor.core.future.BasicFuture;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
-import org.more.future.BasicFuture;
-import org.more.util.NameThreadFactory;
-import org.more.util.StringUtils;
+import net.hasor.rsf.utils.NameThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,7 +103,7 @@ public class RsfNetManager {
                 this.bindListener.put(protocolKey, connector);
             } catch (Throwable e) {
                 this.logger.error("connector[{}] failed -> {}", protocolKey, e.getMessage(), e);
-                if (StringUtils.equals(defaultProtocol, protocolKey)) {
+                if (defaultProtocol.equals(protocolKey)) {
                     throw new IllegalStateException("default connector start failed.", e);//默认连接器启动失败
                 }
             }
@@ -124,7 +123,6 @@ public class RsfNetManager {
         this.listenLoopGroup.shutdownGracefully();
         this.workLoopGroup.shutdownGracefully();
     }
-    //
     //
     /** 建立或获取和远程的连接(异步+回调) */
     public Future<RsfChannel> getChannel(InterAddress target) throws InterruptedException {

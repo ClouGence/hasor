@@ -19,11 +19,9 @@ import net.hasor.rsf.*;
 import net.hasor.rsf.address.route.rule.ArgsKey;
 import net.hasor.rsf.address.route.rule.DefaultArgsKey;
 import net.hasor.rsf.domain.RsfEvent;
-import org.more.builder.ReflectionToStringBuilder;
-import org.more.builder.ToStringStyle;
-import org.more.util.ExceptionUtils;
-import org.more.util.StringUtils;
-import org.more.util.io.FilenameUtils;
+import net.hasor.rsf.utils.ExceptionUtils;
+import net.hasor.rsf.utils.FilenameUtils;
+import net.hasor.rsf.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,14 +179,14 @@ public class AddressPool implements RsfUpdater {
         this._appendAddress(serviceID, newHostSet, AddressTypeEnum.Dynamic);
     }
     private void _appendAddress(String serviceID, Collection<InterAddress> newHostSet, AddressTypeEnum type) {
-        String hosts = ReflectionToStringBuilder.toString(newHostSet, ToStringStyle.SIMPLE_STYLE);
+        String hosts = StringUtils.join(newHostSet.toArray(), ", ");
         this.logger.info("updateAddress of service {} , new Address set = {} ", serviceID, hosts);
         //1.AddressBucketd
         AddressBucket bucket = this.addressPool.get(serviceID);
         if (bucket == null) {
             /*在并发情况下,invalidAddress可能正打算读取AddressBucket,因此要锁住poolLock*/
             synchronized (this.poolLock) {
-                AddressBucket newBucket = new AddressBucket(serviceID, this.rsfEnvironment.getSettings());
+                AddressBucket newBucket = new AddressBucket(serviceID, this.rsfEnvironment);
                 //newBucket.addObserver(this.refreshCacheNotify);
                 bucket = this.addressPool.putIfAbsent(serviceID, newBucket);
                 if (bucket == null) {

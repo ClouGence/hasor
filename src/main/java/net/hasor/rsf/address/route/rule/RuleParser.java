@@ -18,10 +18,10 @@ import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.core.setting.InputStreamSettings;
 import net.hasor.core.setting.StreamType;
+import net.hasor.rsf.utils.StringUtils;
+import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
-import org.more.util.ClassUtils;
-import org.more.util.StringUtils;
-import org.more.util.io.input.ReaderInputStream;
+import net.hasor.rsf.utils.ReaderInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,8 +38,9 @@ import java.util.Map;
 public class RuleParser {
     protected Logger                logger      = LoggerFactory.getLogger(getClass());
     private   Map<String, Class<?>> ruleTypeMap = null;
-    public RuleParser(RsfSettings rsfSettings) {
+    public RuleParser(RsfEnvironment rsfEnvironment) {
         this.ruleTypeMap = new HashMap<String, Class<?>>();
+        RsfSettings rsfSettings = rsfEnvironment.getSettings();
         XmlNode[] flowcontrolNodes = rsfSettings.getXmlNodeArray("hasor.rsfConfig.route.flowcontrol");
         if (flowcontrolNodes != null) {
             for (XmlNode node : flowcontrolNodes) {
@@ -49,7 +50,7 @@ public class RuleParser {
                     String ruleID = ruleType.getName().trim().toLowerCase();
                     String ruleClassName = ruleType.getText().trim();
                     try {
-                        Class<?> ruleClass = ClassUtils.getClass(ruleClassName);
+                        Class<?> ruleClass = rsfEnvironment.getClassLoader().loadClass(ruleClassName);
                         ruleTypeMap.put(ruleID, ruleClass);
                     } catch (Throwable e) {
                         logger.error("rule {} load type error -> {}", ruleID, e.getMessage());
@@ -62,7 +63,7 @@ public class RuleParser {
     //
     /**解析规则文本为{@link Settings}*/
     public Rule ruleSettings(String rawRoute) {
-        if (StringUtils.isBlank(rawRoute) || !StringUtils.startsWithIgnoreCase(rawRoute, "<flowControl") || !StringUtils.endsWithIgnoreCase(rawRoute, "</flowControl>")) {
+        if (StringUtils.isBlank(rawRoute) || !rawRoute.startsWith("<flowControl") || !rawRoute.endsWith("</flowControl>")) {
             logger.info("rule raw format error.");
             return null;
         }

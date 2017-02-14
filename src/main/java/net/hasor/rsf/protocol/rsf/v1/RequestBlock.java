@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.protocol.rsf.v1;
-import org.more.util.ArrayUtils;
 /**
  * RSF 1.0 Request 二进制传输协议
  * --------------------------------------------------------bytes =13

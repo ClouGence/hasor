@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
-import net.hasor.core.Settings;
 import net.hasor.rsf.InterAddress;
+import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 import net.hasor.rsf.domain.RsfConstants;
+import net.hasor.rsf.utils.IOUtils;
+import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.utils.ZipUtils;
-import org.more.util.StringUtils;
-import org.more.util.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +56,7 @@ public class AddressBucket extends Observable {
     //
     //流控&路由
     private final    RsfSettings                                   rsfSettings;        //配置信息
+    private final    RsfEnvironment                                rsfEnvironment;     //环境信息
     private volatile FlowControlRef                                flowControlRef;     //默认流控规则引用
     private volatile RuleRef                                       ruleRef;
     //原始数据
@@ -70,9 +71,10 @@ public class AddressBucket extends Observable {
     private          List<InterAddress>                            localUnitAddresses; //本单元地址
     private          List<InterAddress>                            availableAddresses; //所有可用地址（包括本地单元）
     //
-    public AddressBucket(String serviceID, RsfSettings rsfSettings) {
-        this.rsfSettings = rsfSettings;
-        this.flowControlRef = FlowControlRef.defaultRef(rsfSettings);
+    public AddressBucket(String serviceID, RsfEnvironment rsfEnvironment) {
+        this.rsfSettings = rsfEnvironment.getSettings();
+        this.rsfEnvironment = rsfEnvironment;
+        this.flowControlRef = FlowControlRef.defaultRef(rsfEnvironment);
         this.ruleRef = new RuleRef(null);
         this.serviceID = serviceID;
         this.unitName = rsfSettings.getUnitName();
@@ -304,7 +306,7 @@ public class AddressBucket extends Observable {
         if (StringUtils.isBlank(flowControl)) {
             return false;
         }
-        FlowControlRef newRef = FlowControlRef.newRef(this.rsfSettings, this.flowControlRef);
+        FlowControlRef newRef = FlowControlRef.newRef(this.rsfEnvironment, this.flowControlRef);
         newRef.updateFlowControl(flowControl);
         this.flowControlRef = newRef;
         this.refreshAddress();
@@ -434,7 +436,7 @@ public class AddressBucket extends Observable {
         try {
             if (dataMaps.containsKey(AddressList_ZipEntry)) {                                               // 通
                 InputStream dataIn = new ByteArrayInputStream(dataMaps.get(AddressList_ZipEntry));          // 用
-                List<String> dataBody = IOUtils.readLines(dataIn, Settings.DefaultCharset);                 // 模
+                List<String> dataBody = IOUtils.readLines(dataIn);                                          // 模
                 if (dataBody != null && !dataBody.isEmpty()) {                                              // 式
                     logger.info("service {} read address form stream", this.serviceID);
                     StringBuilder strBuffer = new StringBuilder();
@@ -471,7 +473,7 @@ public class AddressBucket extends Observable {
         try {
             if (dataMaps.containsKey(FlowControlRef_ZipEntry)) {                                            // 通
                 InputStream dataIn = new ByteArrayInputStream(dataMaps.get(FlowControlRef_ZipEntry));       // 用
-                List<String> dataBody = IOUtils.readLines(dataIn, Settings.DefaultCharset);                 // 模
+                List<String> dataBody = IOUtils.readLines(dataIn);                                          // 模
                 if (dataBody != null && !dataBody.isEmpty()) {                                              // 式
                     String flowControl = StringUtils.join(dataBody.toArray(), "\n");
                     if (StringUtils.isNotBlank(flowControl)) {
@@ -487,7 +489,7 @@ public class AddressBucket extends Observable {
         try {
             if (dataMaps.containsKey(ServiceLevelScript_ZipEntry)) {                                        // 通
                 InputStream dataIn = new ByteArrayInputStream(dataMaps.get(ServiceLevelScript_ZipEntry));   // 用
-                List<String> dataBody = IOUtils.readLines(dataIn, Settings.DefaultCharset);                 // 模
+                List<String> dataBody = IOUtils.readLines(dataIn);                                          // 模
                 if (dataBody != null && !dataBody.isEmpty()) {                                              // 式
                     String scriptBody = StringUtils.join(dataBody.toArray(), "\n");
                     updateRoute(RouteTypeEnum.ServiceLevel, scriptBody);
@@ -501,7 +503,7 @@ public class AddressBucket extends Observable {
         try {
             if (dataMaps.containsKey(MethodLevelScript_ZipEntry)) {                                         // 通
                 InputStream dataIn = new ByteArrayInputStream(dataMaps.get(MethodLevelScript_ZipEntry));    // 用
-                List<String> dataBody = IOUtils.readLines(dataIn, Settings.DefaultCharset);                 // 模
+                List<String> dataBody = IOUtils.readLines(dataIn);                                          // 模
                 if (dataBody != null && !dataBody.isEmpty()) {                                              // 式
                     String scriptBody = StringUtils.join(dataBody.toArray(), "\n");
                     updateRoute(RouteTypeEnum.MethodLevel, scriptBody);
@@ -515,7 +517,7 @@ public class AddressBucket extends Observable {
         try {
             if (dataMaps.containsKey(ArgsLevelScript_ZipEntry)) {                                           // 通
                 InputStream dataIn = new ByteArrayInputStream(dataMaps.get(ArgsLevelScript_ZipEntry));      // 用
-                List<String> dataBody = IOUtils.readLines(dataIn, Settings.DefaultCharset);                 // 模
+                List<String> dataBody = IOUtils.readLines(dataIn);                                          // 模
                 if (dataBody != null && !dataBody.isEmpty()) {                                              // 式
                     String scriptBody = StringUtils.join(dataBody.toArray(), "\n");
                     updateRoute(RouteTypeEnum.ArgsLevel, scriptBody);

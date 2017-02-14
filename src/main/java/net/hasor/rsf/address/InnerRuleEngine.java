@@ -15,8 +15,8 @@
  */
 package net.hasor.rsf.address;
 import net.hasor.libs.org.codehaus.groovy.jsr223.GroovyScriptEngineImpl;
-import org.more.util.CommonCodeUtils.MD5;
-import org.more.util.StringUtils;
+import net.hasor.rsf.utils.CommonCodeUtils;
+import net.hasor.rsf.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +50,7 @@ class InnerRuleEngine {
         //2.内容签名
         String signature = null;
         try {
-            signature = MD5.getMD5(ruleScript);
+            signature = CommonCodeUtils.MD5.getMD5(ruleScript);
         } catch (Throwable e) {
             logger.error("eval ruleScript signature error ->" + e.getMessage(), e);
             signature = ruleScript;

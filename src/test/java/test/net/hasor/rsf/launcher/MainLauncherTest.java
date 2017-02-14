@@ -15,8 +15,8 @@
  */
 package test.net.hasor.rsf.launcher;
 import net.hasor.rsf.center.server.launcher.MainLauncher;
+import net.hasor.rsf.utils.ResourcesUtils;
 import org.junit.Test;
-import org.more.util.ResourcesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**

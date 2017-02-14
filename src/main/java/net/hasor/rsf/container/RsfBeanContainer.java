@@ -25,8 +25,7 @@ import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.domain.RsfServiceType;
-import org.more.RepeateException;
-import org.more.util.StringUtils;
+import net.hasor.rsf.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -193,7 +192,7 @@ public class RsfBeanContainer {
         synchronized (this.filterLock) {
             for (FilterDefine filter : this.filterList) {
                 if (StringUtils.equals(filter.filterID(), filterID)) {
-                    throw new RepeateException("repeate filterID :" + filterID);
+                    throw new IllegalStateException("repeate filterID :" + filterID);
                 }
             }
             this.filterList.add(define);
@@ -210,7 +209,7 @@ public class RsfBeanContainer {
             String serviceType = this.serviceMap.get(serviceID).getDomain().getServiceType().name();
             String logMessage = "a " + serviceType + " of the same name already exists , serviceID -> " + serviceID;
             this.logger.error(logMessage);
-            throw new RepeateException(logMessage);
+            throw new IllegalStateException(logMessage);
         }
         this.logger.info("service to public, id= {}", serviceID);
         ServiceDefine<?> info = this.serviceMap.putIfAbsent(serviceID, serviceDefine);

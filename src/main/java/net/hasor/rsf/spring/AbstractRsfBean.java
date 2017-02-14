@@ -18,7 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Provider;
 import net.hasor.plugins.spring.SpringModule;
 import net.hasor.rsf.*;
-import org.more.util.StringUtils;
+import net.hasor.rsf.utils.StringUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.ApplicationContext;

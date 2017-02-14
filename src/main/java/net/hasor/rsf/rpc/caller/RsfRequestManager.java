@@ -18,14 +18,13 @@ import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
+import net.hasor.core.future.FutureCallback;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.rsf.*;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.*;
 import net.hasor.rsf.domain.provider.AddressProvider;
 import net.hasor.rsf.utils.ProtocolUtils;
-import org.more.bizcommon.json.JSON;
-import org.more.future.FutureCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -124,7 +123,7 @@ public abstract class RsfRequestManager {
             }
             //
             if (returnObject.isSuccess()) {
-                invLogger.info("response({}) -> successful, result = {}.", requestID, JSON.toString(returnObject));
+                invLogger.info("response({}) -> successful.", requestID);
                 if (returnType.isAssignableFrom(RsfResult.class)) {
                     local.sendData(returnObject);
                     return rsfFuture.completed(local);
@@ -135,8 +134,8 @@ public abstract class RsfRequestManager {
                 }
             }
             //
-            String errorInfo = JSON.toString(returnObject);
-            invLogger.error("response({}) -> invokeFailed, result = {}.", requestID, errorInfo);
+            String errorInfo = "errorCode = " + returnObject.getErrorCode() + ", errorMessage=" + returnObject.getErrorMessage();
+            invLogger.error("response({}) -> invokeFailed, {}", requestID, errorInfo);
             return rsfFuture.failed(new RsfException(local.getStatus(), errorInfo));
         }
         // - Invoker 调用

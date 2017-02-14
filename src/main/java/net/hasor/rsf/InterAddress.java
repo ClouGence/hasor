@@ -15,8 +15,7 @@
  */
 package net.hasor.rsf;
 import net.hasor.core.Hasor;
-import org.more.FormatException;
-import org.more.util.StringUtils;
+import net.hasor.rsf.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +45,7 @@ public class InterAddress {
     }
     public InterAddress(URI newAddressURL) {
         if (!checkFormat(newAddressURL)) {
-            throw new FormatException(newAddressURL + " format error.");
+            throw new IllegalStateException(newAddressURL + " format error.");
         }
         String formPath = newAddressURL.getPath();
         if (formPath.startsWith("/")) {
@@ -127,7 +126,7 @@ public class InterAddress {
         String diffURI = "";
         if (obj instanceof InterAddress) {
             diffURI = ((InterAddress) obj).toHostSchema();
-            return StringUtils.equalsBlankIgnoreCase(diffURI, this.toHostSchema());
+            return diffURI.equalsIgnoreCase(this.toHostSchema());
         } else {
             return false;
         }

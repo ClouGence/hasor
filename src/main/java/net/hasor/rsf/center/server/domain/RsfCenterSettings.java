@@ -16,8 +16,8 @@
 package net.hasor.rsf.center.server.domain;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
-import org.more.util.ResourcesUtils;
-import org.more.util.io.IOUtils;
+import net.hasor.rsf.utils.IOUtils;
+import net.hasor.rsf.utils.ResourcesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +51,7 @@ public class RsfCenterSettings {
         this.workDir = environment.getWorkSpaceDir();
         try {
             InputStream verIns = ResourcesUtils.getResourceAsStream("/META-INF/rsf-center.version");
-            List<String> dataLines = IOUtils.readLines(verIns, "UTF-8");
+            List<String> dataLines = IOUtils.readLines(verIns);
             this.version = !dataLines.isEmpty() ? dataLines.get(0) : null;
         } catch (Throwable e) {
             logger.error("read version file:/META-INF/rsf-center.version failed -> {}", e);

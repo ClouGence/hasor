@@ -17,10 +17,10 @@ package net.hasor.rsf.center.client;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.context.ContextStartListener;
+import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.domain.RsfEvent;
-import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**

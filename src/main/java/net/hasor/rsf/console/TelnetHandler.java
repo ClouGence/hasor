@@ -25,10 +25,8 @@ import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.domain.RsfConstants;
-import org.more.bizcommon.json.JSON;
-import org.more.util.ArrayUtils;
-import org.more.util.NameThreadFactory;
-import org.more.util.StringUtils;
+import net.hasor.rsf.utils.NameThreadFactory;
+import net.hasor.rsf.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,14 +64,20 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         //
         this.inBoundAddress = rsfContext.getSettings().getConsoleInBoundAddress();
         this.commandManager = rsfContext.getAppContext().getInstance(CommandManager.class);
-        logger.info("rsfConsole -> inBoundAddress is :{}.", JSON.toString(this.inBoundAddress));
+        logger.info("rsfConsole -> inBoundAddress is :{}.", StringUtils.join(this.inBoundAddress, ","));
     }
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         InetSocketAddress inetAddress = (InetSocketAddress) ctx.channel().remoteAddress();
         String remoteAddress = inetAddress.getAddress().getHostAddress();
         //
-        if (!ArrayUtils.contains(this.inBoundAddress, remoteAddress)) {
+        boolean contains = false;
+        for (String addr : this.inBoundAddress) {
+            if (addr.equals(remoteAddress))
+                contains = true;
+        }
+        //
+        if (!contains) {
             logger.warn("rsfConsole -> reject inBound socket ,remoteAddress = {}.", remoteAddress);
             ctx.write("--------------------------------------------\r\n\r\n");
             ctx.write("I'm sorry you are not allowed to connect RSF Console.\r\n\r\n");

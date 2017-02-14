@@ -16,7 +16,6 @@
 package net.hasor.rsf.protocol.rsf.v1;
 import io.netty.buffer.ByteBuf;
 import net.hasor.rsf.utils.ProtocolUtils;
-import org.more.util.ArrayUtils;
 /**
  * 池上限为 0~4095条数据，单条数据最大约16MB。
  * 下面是数据格式：<pre>

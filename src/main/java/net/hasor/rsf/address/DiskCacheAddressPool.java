@@ -1,11 +1,9 @@
 package net.hasor.rsf.address;
-import net.hasor.core.Settings;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.domain.RsfConstants;
-import org.more.util.MatchUtils;
-import org.more.util.StringUtils;
-import org.more.util.io.FileUtils;
+import net.hasor.rsf.utils.IOUtils;
+import net.hasor.rsf.utils.MatchUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -172,9 +170,11 @@ public class DiskCacheAddressPool extends AddressPool {
         //2.确定要读取的文件。
         File readFile = null;
         try {
-            String index = FileUtils.readFileToString(this.indexFile, Settings.DefaultCharset);
+            FileReader reader = new FileReader(this.indexFile);
+            List<String> bodyList = IOUtils.readLines(reader);
+            String index = bodyList.isEmpty() ? "" : bodyList.get(0);
             readFile = new File(this.snapshotHome, index);
-            if (StringUtils.equals(index, "") || !readFile.exists()) {
+            if ("".equals(index) || !readFile.exists()) {
                 this.logger.error("address snapshot file is not exist.", readFile);
                 return;
             }

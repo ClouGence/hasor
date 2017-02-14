@@ -6,13 +6,13 @@
         <RSF_CENTER_SERVERS>rsf://127.0.0.1:2180</RSF_CENTER_SERVERS>
         <!-- RSF对外提供服务的IP -->
         <RSF_SERVICE_IP>127.0.0.1</RSF_SERVICE_IP>
-        <!-- RSF对外提供服务的服务端口 -->
-        <RSF_SERVICE_PORT>2160</RSF_SERVICE_PORT>
         <!-- Telnet 控制台端口 -->
-        <RSF_CONSOLE_PORT>2161</RSF_CONSOLE_PORT>
+        <RSF_CONSOLE_PORT>2160</RSF_CONSOLE_PORT>
+        <!-- RSF对外提供服务的服务端口 -->
+        <RSF_SERVICE_PORT>2161</RSF_SERVICE_PORT>
+        <HPROSE_SERVICE_PORT>2162</HPROSE_SERVICE_PORT>
 
         <WORK_HOME>%USER.HOME%/hasor-work/rsf-center-server</WORK_HOME>
-        <HPROSE_SERVICE_PORT>2162</HPROSE_SERVICE_PORT>
         <RSF_DISK_CACHE_ENABLE>false</RSF_DISK_CACHE_ENABLE>
     </hasor.environmentVar>
 

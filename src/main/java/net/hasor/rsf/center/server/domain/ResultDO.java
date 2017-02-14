@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.center.server.domain;
-import org.more.builder.ReflectionToStringBuilder;
-import org.more.builder.ToStringStyle;
 /**
  * 结果集
  * @version : 2014年10月25日
@@ -43,9 +41,6 @@ public class ResultDO<T> implements Result<T> {
     public ResultDO(Throwable throwable) {
         this.success = false;
         this.throwable = throwable;
-    }
-    public String toString() {
-        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
     //
     /**获取分页结果集。*/

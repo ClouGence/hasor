@@ -23,7 +23,7 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import org.more.future.BasicFuture;
+import net.hasor.core.future.BasicFuture;
 
 import java.io.BufferedReader;
 import java.io.StringReader;

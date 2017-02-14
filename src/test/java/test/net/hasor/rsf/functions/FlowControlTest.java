@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.functions;
-import net.hasor.core.setting.StandardContextSettings;
+import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.rsf.InterAddress;
+import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.address.route.flowcontrol.random.RandomFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 import net.hasor.rsf.address.route.rule.RuleParser;
-import net.hasor.rsf.rpc.context.DefaultRsfSettings;
+import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
+import net.hasor.rsf.utils.IOUtils;
+import net.hasor.rsf.utils.ResourcesUtils;
 import org.junit.Test;
-import org.more.util.ResourcesUtils;
-import org.more.util.io.IOUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -44,16 +45,15 @@ public class FlowControlTest {
         return addresses;
     }
     private RuleParser getRuleParser() throws IOException, URISyntaxException {
-        DefaultRsfSettings rsfSettings = new DefaultRsfSettings(new StandardContextSettings());
-        rsfSettings.refresh();
-        RuleParser parser = new RuleParser(rsfSettings);
+        RsfEnvironment settings = new DefaultRsfEnvironment(new StandardEnvironment(null, null));
+        RuleParser parser = new RuleParser(settings);
         return parser;
     }
     //
     @Test
     public void randomTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
-        String randomBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flow-control/random-flow.xml"));
+        String randomBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/flow-control/random-flow.xml"));
         RandomFlowControl rule = (RandomFlowControl) ruleParser.ruleSettings(randomBody);
         //
         List<InterAddress> address = addressList();
@@ -66,7 +66,7 @@ public class FlowControlTest {
     @Test
     public void unitTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
-        String roomBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flow-control/unit-flow.xml"));
+        String roomBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/flow-control/unit-flow.xml"));
         //
         UnitFlowControl rule = (UnitFlowControl) ruleParser.ruleSettings(roomBody);
         List<InterAddress> address = addressList();
@@ -77,7 +77,7 @@ public class FlowControlTest {
     @Test
     public void speedTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
-        String speedBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flow-control/speed-flow.xml"));
+        String speedBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/flow-control/speed-flow.xml"));
         //
         SpeedFlowControl rule = (SpeedFlowControl) ruleParser.ruleSettings(speedBody);
         InterAddress doCallAddress = addressList().get(0);

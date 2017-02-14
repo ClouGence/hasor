@@ -18,7 +18,6 @@ import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timer;
 import io.netty.util.TimerTask;
 import net.hasor.core.Hasor;
-import org.more.util.NameThreadFactory;
 
 import java.util.concurrent.TimeUnit;
 /**

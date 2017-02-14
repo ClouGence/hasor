@@ -17,8 +17,6 @@ package net.hasor.rsf.domain;
 import net.hasor.core.info.MetaDataAdapter;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfMessage;
-import org.more.builder.ReflectionToStringBuilder;
-import org.more.builder.ToStringStyle;
 /**
  * 服务的描述信息，包括了服务的发布和订阅信息。
  * @version : 2014年9月12日
@@ -122,7 +120,13 @@ public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> 
         this.serviceType = serviceType;
     }
     //
+    @Override
     public String toString() {
-        return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        return "ServiceDomain{" + "bindID='" + bindID + '\'' +//
+                ", bindName='" + bindName + '\'' + //
+                ", bindGroup='" + bindGroup + '\'' +//
+                ", bindVersion='" + bindVersion + '\'' + //
+                ", bindType=" + bindType + //
+                '}';
     }
 }

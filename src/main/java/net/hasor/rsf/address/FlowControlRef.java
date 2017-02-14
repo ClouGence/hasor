@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
-import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.utils.StringUtils;
+import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.address.route.flowcontrol.random.RandomFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 import net.hasor.rsf.address.route.rule.Rule;
 import net.hasor.rsf.address.route.rule.RuleParser;
-import org.more.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,9 +39,9 @@ public class FlowControlRef {
     public RandomFlowControl randomFlowControl = null; //地址选取规则
     public SpeedFlowControl  speedFlowControl  = null; //QoS速率规则
     //
-    private FlowControlRef(RsfSettings rsfSettings) {
+    private FlowControlRef(RsfEnvironment rsfEnvironment) {
         if (ruleParser == null) {
-            ruleParser = new RuleParser(rsfSettings);
+            ruleParser = new RuleParser(rsfEnvironment);
         }
     }
     /**解析路由规则*/
@@ -99,8 +99,8 @@ public class FlowControlRef {
     }
     //
     //
-    public static final FlowControlRef newRef(RsfSettings rsfSettings, FlowControlRef ref) {
-        FlowControlRef newRef = defaultRef(rsfSettings);
+    public static final FlowControlRef newRef(RsfEnvironment rsfEnvironment, FlowControlRef ref) {
+        FlowControlRef newRef = defaultRef(rsfEnvironment);
         if (!StringUtils.isBlank(ref.flowControlScript)) {
             newRef.flowControlScript = ref.flowControlScript;
         }
@@ -115,10 +115,10 @@ public class FlowControlRef {
         }
         return newRef;
     }
-    public static final FlowControlRef defaultRef(RsfSettings rsfSettings) {
-        FlowControlRef flowControlRef = new FlowControlRef(rsfSettings);
+    public static final FlowControlRef defaultRef(RsfEnvironment rsfEnvironment) {
+        FlowControlRef flowControlRef = new FlowControlRef(rsfEnvironment);
         flowControlRef.randomFlowControl = new RandomFlowControl();
-        flowControlRef.speedFlowControl = SpeedFlowControl.defaultControl(rsfSettings);
+        flowControlRef.speedFlowControl = SpeedFlowControl.defaultControl(rsfEnvironment);
         return flowControlRef;
     }
 }

@@ -15,12 +15,12 @@
  */
 package net.hasor.rsf.console.commands;
 import net.hasor.core.Singleton;
+import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.console.CommandManager;
 import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
 import net.hasor.rsf.console.RsfInstruct;
-import org.more.util.StringUtils;
 
 import java.io.StringWriter;
 import java.util.List;
@@ -82,7 +82,7 @@ public class HelpRsfInstruct implements RsfInstruct {
                 sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + name + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
                 sw.write(cmd.helpInfo() + "\r\n");
             } else {
-                sw.write(" - " + StringUtils.rightPad(name, maxLength) + cmd.helpInfo().split("\r\n")[0]);
+                sw.write(" - " + StringUtils.rightPad(name, maxLength, " ") + cmd.helpInfo().split("\r\n")[0]);
             }
             if (cmdNames.size() > 1) {
                 sw.write("\r\n");

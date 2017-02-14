@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.filters.trace;
+import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.*;
-import org.more.util.StringUtils;
 /**
  * 优先检查本地是否有服务提供（优先本地服务提供者的调用）。
  * @version : 2014年11月30日

@@ -15,13 +15,13 @@
  */
 package net.hasor.rsf.center.server.commands;
 import net.hasor.core.Singleton;
+import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
 import net.hasor.rsf.console.RsfInstruct;
 import net.hasor.rsf.domain.RsfConstants;
-import org.more.util.StringUtils;
 
 import java.io.StringWriter;
 import java.util.List;
@@ -52,7 +52,7 @@ public class CListRsfInstruct implements RsfInstruct {
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 0) {
             String doArg = args[0];
-            if (StringUtils.equalsIgnoreCase("-h", doArg)) {
+            if ("-h".equalsIgnoreCase(doArg)) {
                 sw.write(helpInfo());
             } else {
                 String serviceID = doArg;
@@ -94,7 +94,7 @@ public class CListRsfInstruct implements RsfInstruct {
             for (String serviceID : serviceList) {
                 RsfBindInfo<?> info = rsfContext.getServiceInfo(serviceID);
                 boolean isProvider = rsfContext.getServiceProvider(info) != null;
-                String itemStr = StringUtils.rightPad(serviceID, maxLength) + "  -> " + ((isProvider) ? "Provider" : "Consumer");
+                String itemStr = StringUtils.rightPad(serviceID, maxLength, " ") + "  -> " + ((isProvider) ? "Provider" : "Consumer");
                 sw.write(">> " + itemStr + "\r\n");
             }
             //

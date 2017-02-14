@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.spring.parser;
+import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.spring.RsfAddressPropertyEditor;
-import org.more.util.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.CustomEditorConfigurer;

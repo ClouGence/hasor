@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf.center.server.utils;
 import com.alibaba.fastjson.JSONObject;
-import org.more.util.BeanUtils;
+import net.hasor.rsf.utils.BeanUtils;
 
 import java.util.HashMap;
 import java.util.List;

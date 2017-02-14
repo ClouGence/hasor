@@ -15,22 +15,26 @@
  */
 package net.hasor.rsf.center.server.adapter;
 import net.hasor.core.*;
+import net.hasor.core.utils.IOUtils;
 import net.hasor.rsf.center.server.AuthQuery;
 import net.hasor.rsf.center.server.domain.*;
 import net.hasor.rsf.domain.RsfServiceType;
-import org.more.util.StringUtils;
-import org.more.util.io.AutoCloseInputStream;
-import org.more.xml.stream.StartElementEvent;
-import org.more.xml.stream.XmlAccept;
-import org.more.xml.stream.XmlReader;
-import org.more.xml.stream.XmlStreamEvent;
+import net.hasor.rsf.utils.AutoCloseInputStream;
+import net.hasor.rsf.utils.StringUtils;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 /**
@@ -64,36 +68,37 @@ public class FileAuthQuery implements AuthQuery {
         if (inStream == null) {
             return;
         }
-        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        new XmlReader(inStream).reader(new XmlAccept() {
-            public void beginAccept() throws XMLStreamException {
-            }
-            public void sendEvent(XmlStreamEvent e) throws XMLStreamException, IOException {
-                try {
-                    if (e instanceof StartElementEvent) {
-                        StartElementEvent event = (StartElementEvent) e;
-                        if (!StringUtils.equalsIgnoreCase(e.getXpath(), "/auth_keys/appKey")) {
-                            return;
-                        }
-                        //
-                        String appKey = event.getAttributeValue("appKey");
-                        String keySecret = event.getAttributeValue("keySecret");
-                        String expireTime = event.getAttributeValue("expireTime");
-                        //
-                        AuthInfo authInfo = new AuthInfo();
-                        authInfo.setAppKey(appKey);
-                        authInfo.setExpireTime(formatter.parse(expireTime));
-                        String putKey = appKey + "-" + keySecret;
-                        keyPool.put(putKey, authInfo);
-                    }
-                } catch (Exception ex) {
-                    throw new XMLStreamException(ex);
-                }
-            }
-            public void endAccept() throws XMLStreamException {
-            }
-        }, null);//最后一个参数为空,表示不忽略任何xml节点。
         //
+        try {
+            final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+            factory.setFeature("http://xml.org/sax/features/namespaces", true);
+            SAXParser parser = factory.newSAXParser();
+            DefaultHandler handler = new DefaultHandler() {
+                public void startElement(final String uri, final String localName, final String qName, final Attributes attributes) throws SAXException {
+                    if (!"appKey".equalsIgnoreCase(localName))
+                        return;
+                    String appKey = attributes.getValue("appKey");
+                    String keySecret = attributes.getValue("keySecret");
+                    String expireTime = attributes.getValue("expireTime");
+                    //
+                    AuthInfo authInfo = new AuthInfo();
+                    authInfo.setAppKey(appKey);
+                    try {
+                        authInfo.setExpireTime(formatter.parse(expireTime));
+                    } catch (ParseException e) {
+                        authInfo.setExpireTime(new Date());
+                    }
+                    String putKey = appKey + "-" + keySecret;
+                    keyPool.put(putKey, authInfo);
+                }
+            };
+            parser.parse(inStream, handler);
+            IOUtils.closeQuietly(inStream);
+        } catch (Exception e) {
+            throw new IOException(e);
+        }
     }
     //
     @Override

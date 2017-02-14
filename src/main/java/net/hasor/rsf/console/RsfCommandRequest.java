@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.console;
+import net.hasor.core.convert.ConverterUtils;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.domain.RsfConstants;
-import org.more.convert.ConverterUtils;
-import org.more.util.StringUtils;
+import net.hasor.rsf.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

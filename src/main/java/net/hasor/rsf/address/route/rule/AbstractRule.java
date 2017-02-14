@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.address.route.rule;
 import net.hasor.core.Settings;
-import org.more.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -61,7 +60,7 @@ public abstract class AbstractRule implements Rule {
     }
     @Override
     public String toString() {
-        return ReflectionToStringBuilder.toString(this, new RuleToStringStyle());
+        return "AbstractRule{" + "routeID=" + routeID + "', enable=" + enable + '}';
     }
     //
     //

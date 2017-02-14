@@ -16,6 +16,7 @@
 package net.hasor.rsf.address.route.flowcontrol.speed;
 import net.hasor.core.Settings;
 import net.hasor.rsf.InterAddress;
+import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.route.rule.AbstractRule;
 
@@ -102,8 +103,9 @@ public class SpeedFlowControl extends AbstractRule {
         return qosBucket;
     }
     //
-    public static SpeedFlowControl defaultControl(RsfSettings rsfSettings) {
+    public static SpeedFlowControl defaultControl(RsfEnvironment rsfEnvironment) {
         SpeedFlowControl flowControl = new SpeedFlowControl();
+        RsfSettings rsfSettings = rsfEnvironment.getSettings();
         flowControl.action = rsfSettings.getEnum("hasor.rsfConfig.defaultSpeedFlowControl.action", QoSActionEnum.class);
         flowControl.rate = rsfSettings.getInteger("hasor.rsfConfig.defaultSpeedFlowControl.rate");
         flowControl.peak = rsfSettings.getInteger("hasor.rsfConfig.defaultSpeedFlowControl.peak");

@@ -5,9 +5,8 @@ import net.hasor.libs.com.hprose.io.HproseTags;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.domain.*;
+import net.hasor.rsf.json.JSON;
 import net.hasor.rsf.utils.ProtocolUtils;
-import org.more.bizcommon.json.JSON;
-import org.more.util.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -43,7 +42,7 @@ public class HproseUtils implements HproseConstants {
         } catch (IOException e) {
             throw new RsfException(ProtocolStatus.ProtocolError, "decode callName error -> " + e.getMessage());
         }
-        if (!StringUtils.startsWithIgnoreCase(callName, "call://")) {
+        if (!callName.toLowerCase().equalsIgnoreCase("call://")) {
             throw new RsfException(ProtocolStatus.ProtocolError, "serviceID format error. for example : call://<服务ID>/<方法名>?<选项参数> ,but ->" + callName);
         }
         // 创建 RequestInfo 对象

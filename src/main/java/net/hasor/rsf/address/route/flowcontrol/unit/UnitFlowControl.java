@@ -17,8 +17,7 @@ package net.hasor.rsf.address.route.flowcontrol.unit;
 import net.hasor.core.Settings;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.address.route.rule.AbstractRule;
-import org.more.util.MatchUtils;
-import org.more.util.StringUtils;
+import net.hasor.rsf.utils.MatchUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,7 +89,7 @@ public class UnitFlowControl extends AbstractRule {
             }
             //B.如果匹配规则,则直接标记appendMark为 true
             if (!appendMark) {
-                appendMark = StringUtils.equalsBlankIgnoreCase(inter.getFormUnit(), unitName);
+                appendMark = unitName.equalsIgnoreCase(inter.getFormUnit());
             }
             //
             if (appendMark) {

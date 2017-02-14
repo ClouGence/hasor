@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
-import org.more.util.StringUtils;
+import net.hasor.rsf.utils.StringUtils;
 import org.slf4j.MDC;
 
 import java.util.UUID;

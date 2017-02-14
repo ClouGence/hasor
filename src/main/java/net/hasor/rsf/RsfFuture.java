@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf;
-import org.more.future.BasicFuture;
-import org.more.future.FutureCallback;
+import net.hasor.core.future.BasicFuture;
+import net.hasor.core.future.FutureCallback;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;

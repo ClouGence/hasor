@@ -20,9 +20,9 @@ import net.hasor.rsf.address.AddressBucket;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.DiskCacheAddressPool;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
+import net.hasor.rsf.utils.IOUtils;
+import net.hasor.rsf.utils.ResourcesUtils;
 import org.junit.Test;
-import org.more.util.ResourcesUtils;
-import org.more.util.io.IOUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,16 +53,16 @@ public class AddressPoolTest {
         staticList.add(new InterAddress("127.0.4.4", 8000, "etc2"));
         pool.appendStaticAddress(service, staticList);
         //
-        String flowBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flow-control/full-flow.xml"));
+        String flowBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/flow-control/full-flow.xml"));
         pool.updateFlowControl(service, flowBody);
         //
-        String scriptBody1 = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/service-level.groovy"));
+        String scriptBody1 = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/rule-script/service-level.groovy"));
         pool.updateServiceRoute(service, scriptBody1);
         //
-        String scriptBody2 = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/method-level.groovy"));
+        String scriptBody2 = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/rule-script/method-level.groovy"));
         pool.updateMethodRoute(service, scriptBody2);
         //
-        String scriptBody3 = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/args-level.groovy"));
+        String scriptBody3 = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/rule-script/args-level.groovy"));
         pool.updateArgsRoute(service, scriptBody3);
     }
     //
@@ -149,7 +149,7 @@ public class AddressPoolTest {
         staticList.add(new InterAddress("127.0.4.4", 8000, "etc2"));
         pool.appendStaticAddress(serviceID, staticList);
         //
-        String flowBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flow-control/full-performance-flow.xml"));
+        String flowBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/flow-control/full-performance-flow.xml"));
         pool.updateFlowControl(serviceID, flowBody);
         //
         //
@@ -171,11 +171,11 @@ public class AddressPoolTest {
         thread.start();
         //
         Thread.sleep(5000);
-        flowBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/flow-control/full-flow.xml"));
+        flowBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/flow-control/full-flow.xml"));
         pool.updateFlowControl(serviceID, flowBody);
         //
         Thread.sleep(5000);
-        String scriptBody = IOUtils.toString(ResourcesUtils.getResourceAsStream("/rule-script/service-level.groovy"));
+        String scriptBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/rule-script/service-level.groovy"));
         pool.updateServiceRoute(serviceID, scriptBody);
         //
         Thread.sleep(5000);
