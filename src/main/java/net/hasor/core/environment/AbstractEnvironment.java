@@ -340,7 +340,9 @@ public abstract class AbstractEnvironment implements Environment {
         if (inStream == null) {
             URL inStreamURL = ResourcesUtils.getResource(EVN_FILE_NAME);
             this.logger.info("load 'env.config' use classpath -> {}.", (inStreamURL == null) ? "empty." : inStreamURL);
-            inStream = ResourcesUtils.getResourceAsStream(inStreamURL);
+            if (inStreamURL != null) {
+                inStream = ResourcesUtils.getResourceAsStream(inStreamURL);
+            }
         }
         if (inStream != null) {
             Properties properties = new Properties();
