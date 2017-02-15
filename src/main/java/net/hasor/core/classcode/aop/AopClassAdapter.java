@@ -16,6 +16,7 @@
 package net.hasor.core.classcode.aop;
 import net.hasor.core.classcode.ASMEngineTools;
 import net.hasor.core.classcode.asm.*;
+import net.hasor.core.utils.ExceptionUtils;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -284,6 +285,7 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         Label tryBegin = new Label();
         Label tryEnd = new Label();
         Label tryCatch = new Label();
+        Label lastReturn = new Label();
         mv.visitTryCatchBlock(tryBegin, tryEnd, tryCatch, "java/lang/Throwable");
         {//try {
             mv.visitLabel(tryBegin);
@@ -324,18 +326,7 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
             mv.visitFrame(Opcodes.F_SAME1, 0, null, 1, new Object[] { "java/lang/Throwable" });
             mv.visitVarInsn(ASTORE, 5);
             mv.visitVarInsn(ALOAD, 5);
-            mv.visitTypeInsn(INSTANCEOF, "java/lang/RuntimeException");
-            Label ifBlock = new Label();
-            mv.visitJumpInsn(IFEQ, ifBlock);
-            mv.visitVarInsn(ALOAD, 5);
-            mv.visitTypeInsn(CHECKCAST, "java/lang/RuntimeException");
-            mv.visitInsn(ATHROW);
-            mv.visitLabel(ifBlock);
-            mv.visitFrame(Opcodes.F_APPEND, 1, new Object[] { "java/lang/Throwable" }, 0, null);
-            mv.visitTypeInsn(NEW, "java/lang/RuntimeException");
-            mv.visitInsn(DUP);
-            mv.visitVarInsn(ALOAD, 5);
-            mv.visitMethodInsn(INVOKESPECIAL, "java/lang/RuntimeException", "<init>", "(Ljava/lang/Throwable;)V");
+            mv.visitMethodInsn(INVOKESTATIC, ASMEngineTools.replaceClassName(ExceptionUtils.class), "toRuntimeException", "(Ljava/lang/Throwable;)Ljava/lang/RuntimeException;", false);
             mv.visitInsn(ATHROW);
         } // }
         mv.visitMaxs(maxStack, maxLocals);

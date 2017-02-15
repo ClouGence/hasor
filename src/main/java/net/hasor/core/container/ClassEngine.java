@@ -71,7 +71,7 @@ class ClassEngine {
                 try {
                     File outFile = new File(cacheDir, fileName + ".class");
                     outFile.getParentFile().mkdirs();
-                    fos = new FileOutputStream(outFile);
+                    fos = new FileOutputStream(outFile, false);
                     byte[] buildBytes = engine.buildBytes();
                     fos.write(buildBytes);
                     fos.flush();

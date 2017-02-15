@@ -1,4 +1,4 @@
-﻿===== Hasor-Core v3.0.4 (2017-02-?)
+﻿===== Hasor-Core v3.1.0 (2017-02-?)
 * 改进:
     01.当依赖注入遇到父子类重名字段引发，duplicate异常时候，打印出冲突的字段名。
     02.环境变量名不区分大小写。
@@ -7,6 +7,8 @@
     05.原 org.more 包内的工具仅保留使用到的工具类，同时移动到net.hasor.core包中，力争减少 Hasor 产出 jar 包的体积。
     06.classcode 成为 Hasor 的一部分。
     07.增加 debug 模式，debug 模式下会保存 动态代理生成的字节码文件。
+* 修复:
+    01.fix 当在 jdk8 下使用 hasor aop 功能时出现 VerifyError 错误的问题，3.1.0版本开始不在需要通过 -noverify 参数压制异常。
 
 ===== Hasor-Core v3.0.3 (2017-02-07)
 * 修复:
