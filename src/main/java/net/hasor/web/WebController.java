@@ -17,7 +17,7 @@ package net.hasor.web;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
-import net.hasor.core.utils.FilenameUtils;
+import net.hasor.core.utils.IOUtils;
 import net.hasor.core.utils.StringUtils;
 import net.hasor.web.render.Produces;
 import net.hasor.web.render.RenderInvoker;
@@ -603,7 +603,7 @@ public class WebController implements Controller {
      * @param encoding 字符编码。
      */
     protected List<FileItem> getMultipartList(String cacheDirectory, Integer maxPostSize, String encoding) throws IOException {
-        cacheDirectory = FilenameUtils.normalizeNoEndSeparator(cacheDirectory);
+        cacheDirectory = IOUtils.normalizeNoEndSeparator(cacheDirectory);
         if (StringUtils.isBlank(cacheDirectory)) {
             Settings settings = this.getAppContext().getEnvironment().getSettings();
             cacheDirectory = settings.getDirectoryPath("hasor.fileupload.cacheDirectory");

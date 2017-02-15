@@ -21,7 +21,7 @@ import java.io.InputStream;
  * @version 2009-5-13
  * @author 赵永春 (zyc@hasor.net)
  */
-public class AutoCloseInputStream extends InputStream {
+class AutoCloseInputStream extends InputStream {
     /** 目标读取的流 */
     private InputStream in    = null;
     /** 目标读取的流 */

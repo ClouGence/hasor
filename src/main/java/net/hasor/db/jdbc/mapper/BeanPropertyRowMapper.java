@@ -16,7 +16,6 @@
 package net.hasor.db.jdbc.mapper;
 import net.hasor.core.Hasor;
 import net.hasor.core.utils.BeanUtils;
-import net.hasor.core.utils.UnhandledException;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -70,9 +69,9 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
             targetObject = this.requiredType.newInstance();
             return this.tranResultSet(rs, targetObject);
         } catch (InstantiationException e) {
-            throw new UnhandledException(e);
+            throw new SQLException(e);
         } catch (IllegalAccessException e) {
-            throw new UnhandledException(e);
+            throw new SQLException(e);
         }
     }
     private T tranResultSet(final ResultSet rs, final T targetObject) throws SQLException {

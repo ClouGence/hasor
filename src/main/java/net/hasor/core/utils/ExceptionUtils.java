@@ -25,6 +25,6 @@ public class ExceptionUtils {
         if (proxy instanceof RuntimeException) {
             return (RuntimeException) proxy;
         }
-        return new UnhandledException(proxy.getClass().getName() + " - " + proxy.getMessage(), proxy);
+        return new RuntimeException(proxy.getClass().getName() + " - " + proxy.getMessage(), proxy);
     }
 }
