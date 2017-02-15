@@ -18,7 +18,7 @@ package net.hasor.rsf.utils;
 /**
  * General filename and filepath manipulation utilities.
  */
-public class FilenameUtils extends net.hasor.core.utils.FilenameUtils {
+public class FilenameUtils extends net.hasor.core.utils.IOUtils {
     /** The extension separator character. */
     public static final  char EXTENSION_SEPARATOR = '.';
     /** The Unix separator character. */
