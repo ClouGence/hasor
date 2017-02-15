@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.console.commands;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
@@ -50,13 +49,13 @@ public class StatusRsfInstruct implements RsfInstruct {
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 0) {
             String doArg = args[0];
-            if (StringUtils.equalsIgnoreCase("on", doArg)) {
+            if ("on".equalsIgnoreCase(doArg)) {
                 rsfContext.online();
                 sw.write("[SUCCEED] switch to online -> Current Status isOnline : " + rsfContext.isOnline());
-            } else if (StringUtils.equalsIgnoreCase("off", doArg)) {
+            } else if ("off".equalsIgnoreCase(doArg)) {
                 rsfContext.offline();
                 sw.write("[SUCCEED] switch to offline -> Current Status isOnline : " + rsfContext.isOnline());
-            } else if (StringUtils.equalsIgnoreCase("info", doArg)) {
+            } else if ("info".equalsIgnoreCase(doArg)) {
                 String status = rsfContext.isOnline() ? "online" : "offline";
                 sw.write("[SUCCEED] application is " + status);
             } else {

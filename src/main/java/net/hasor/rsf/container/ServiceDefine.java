@@ -17,12 +17,12 @@ package net.hasor.rsf.container;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.info.CustomerProvider;
-import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.domain.ServiceDomain;
 import net.hasor.rsf.domain.warp.RsfBindInfoWrap;
+import net.hasor.rsf.utils.StringUtils;
 
 import java.util.*;
 /**
@@ -48,8 +48,12 @@ class ServiceDefine<T> extends RsfBindInfoWrap<T> implements CustomerProvider<T>
     }
     /**添加Filter*/
     public void addRsfFilter(FilterDefine filterDefine) {
+        Hasor.assertIsNotNull(filterDefine.filterID());
         for (FilterDefine filterDef : this.filterList) {
-            if (StringUtils.equals(filterDef.filterID(), filterDefine.filterID())) {
+            String defFilterID = filterDef.filterID();
+            String filterID = filterDefine.filterID();
+            //
+            if (filterID.equals(defFilterID)) {
                 return;
             }
         }

@@ -42,7 +42,7 @@ public class HproseUtils implements HproseConstants {
         } catch (IOException e) {
             throw new RsfException(ProtocolStatus.ProtocolError, "decode callName error -> " + e.getMessage());
         }
-        if (!callName.toLowerCase().equalsIgnoreCase("call://")) {
+        if (!callName.toLowerCase().startsWith("call://")) {
             throw new RsfException(ProtocolStatus.ProtocolError, "serviceID format error. for example : call://<服务ID>/<方法名>?<选项参数> ,but ->" + callName);
         }
         // 创建 RequestInfo 对象

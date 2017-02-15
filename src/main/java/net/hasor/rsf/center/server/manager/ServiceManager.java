@@ -34,6 +34,8 @@ import org.slf4j.LoggerFactory;
 
 import java.net.URISyntaxException;
 import java.util.*;
+
+import static net.hasor.rsf.center.server.domain.RsfCenterConstants.*;
 /**
  * Center功能实现
  * @version : 2016年9月18日
@@ -69,7 +71,7 @@ public class ServiceManager {
         if (allObjectList != null && !allObjectList.isEmpty()) {
             for (ObjectDO objectDO : allObjectList) {
                 // - .过滤数据,只保留订阅者
-                if (!StringUtils.equalsIgnoreCase(objectDO.getType(), RsfCenterConstants.Center_DataKey_Consumer)) {
+                if (!RsfCenterConstants.Center_DataKey_Consumer.equalsIgnoreCase(objectDO.getType())) {
                     continue;
                 }
                 // - .过滤长时间没有心跳的订阅者
@@ -98,7 +100,7 @@ public class ServiceManager {
         if (allObjectList != null && !allObjectList.isEmpty()) {
             for (ObjectDO objectDO : allObjectList) {
                 // - .过滤数据,只保留订阅者
-                if (!StringUtils.equalsIgnoreCase(objectDO.getType(), RsfCenterConstants.Center_DataKey_Provider)) {
+                if (!RsfCenterConstants.Center_DataKey_Provider.equalsIgnoreCase(objectDO.getType())) {
                     continue;
                 }
                 // - .过滤长时间没有心跳的订阅者
@@ -116,7 +118,8 @@ public class ServiceManager {
                             continue;
                         }
                         InterAddress interAddress = new InterAddress(host);
-                        if (!StringUtils.equalsBlankIgnoreCase(interAddress.getSechma(), protocol)) {
+                        String sechma = interAddress.getSechma();
+                        if (sechma == null || !sechma.equalsIgnoreCase(protocol)) {
                             continue;
                         }
                         targets.add(interAddress);
@@ -137,7 +140,7 @@ public class ServiceManager {
     private Result<String> saveService(ServiceInfo serviceInfo) {
         //
         // .获取保存的服务信息
-        String serviceObjectKey = RsfCenterConstants.Center_DataKey_Service + serviceInfo.getBindID();
+        String serviceObjectKey = Center_DataKey_Service + serviceInfo.getBindID();
         Result<ObjectDO> resultInfo = this.dataAdapter.queryObjectByID(serviceObjectKey);
         if (resultInfo == null || !resultInfo.isSuccess()) {
             return buildFailedResult(resultInfo);
@@ -148,7 +151,7 @@ public class ServiceManager {
         if (serviceObjectDO == null) {
             serviceObjectDO = new ObjectDO();//服务对象
             serviceObjectDO.setObjectID(serviceObjectKey);
-            serviceObjectDO.setType(RsfCenterConstants.Center_DataKey_Service);
+            serviceObjectDO.setType(Center_DataKey_Service);
             serviceObjectDO.setRefreshTime(new Date());
             serviceObjectDO.setContent(JsonUtils.converToString(serviceInfo));
             Result<Boolean> storeResult = this.dataAdapter.storeObject(serviceObjectDO);
@@ -199,7 +202,7 @@ public class ServiceManager {
         //
         // .登记服务消费者
         ObjectDO consumerObject = new ObjectDO();
-        consumerObject.setType(RsfCenterConstants.Center_DataKey_Consumer);
+        consumerObject.setType(Center_DataKey_Consumer);
         consumerObject.setObjectID(UUID.randomUUID().toString().replace("-", "").toUpperCase());
         consumerObject.setRefObjectID(saveResult.getResult());
         consumerObject.setRefreshTime(new Date());
@@ -233,8 +236,8 @@ public class ServiceManager {
         if (objResult == null || !objResult.isSuccess() || registerObj == null) {
             return buildFailedResult(objResult);
         }
-        boolean testC = StringUtils.equals(RsfCenterConstants.Center_DataKey_Consumer, registerObj.getType());
-        boolean testP = StringUtils.equals(RsfCenterConstants.Center_DataKey_Provider, registerObj.getType());
+        boolean testC = Center_DataKey_Consumer.equals(registerObj.getType());
+        boolean testP = Center_DataKey_Provider.equals(registerObj.getType());
         if (!(testC || testP)) {
             ResultDO<Boolean> result = new ResultDO<Boolean>();
             result.setErrorInfo(ErrorCode.ServiceTypeFailed_Error);
@@ -303,7 +306,7 @@ public class ServiceManager {
         //
         // .登记服务提供者
         ObjectDO providerObject = new ObjectDO();
-        providerObject.setType(RsfCenterConstants.Center_DataKey_Provider);
+        providerObject.setType(Center_DataKey_Provider);
         providerObject.setObjectID(UUID.randomUUID().toString().replace("-", "").toUpperCase());
         providerObject.setRefObjectID(objID);
         providerObject.setRefreshTime(new Date());
@@ -315,7 +318,7 @@ public class ServiceManager {
         //
         // .查询订阅者列表
         QueryOption opt = new QueryOption();
-        opt.setObjectType(RsfCenterConstants.Center_DataKey_Consumer);//尝试过滤结果,只保留Consumer数据
+        opt.setObjectType(Center_DataKey_Consumer);//尝试过滤结果,只保留Consumer数据
         Result<List<ObjectDO>> refList = this.dataAdapter.queryObjectListByID(objID, opt);
         if (refList == null || !refList.isSuccess()) {
             return buildFailedResult(refList);
@@ -371,8 +374,8 @@ public class ServiceManager {
         if (objResult == null || !objResult.isSuccess() || objResult.getResult() == null) {
             return buildFailedResult(objResult);
         }
-        boolean testC = StringUtils.equals(RsfCenterConstants.Center_DataKey_Consumer, objResult.getResult().getType());
-        boolean testP = StringUtils.equals(RsfCenterConstants.Center_DataKey_Provider, objResult.getResult().getType());
+        boolean testC = Center_DataKey_Consumer.equals(objResult.getResult().getType());
+        boolean testP = Center_DataKey_Provider.equals(objResult.getResult().getType());
         if (!(testC || testP)) {
             ResultDO<Boolean> result = new ResultDO<Boolean>();
             result.setErrorInfo(ErrorCode.ServiceTypeFailed_Error);
@@ -411,7 +414,7 @@ public class ServiceManager {
         //
         // .查询订阅者列表
         QueryOption opt = new QueryOption();
-        opt.setObjectType(RsfCenterConstants.Center_DataKey_Consumer);//尝试过滤结果,只保留Consumer数据
+        opt.setObjectType(Center_DataKey_Consumer);//尝试过滤结果,只保留Consumer数据
         Result<List<ObjectDO>> refList = this.dataAdapter.queryObjectListByID(serviceObjectID, opt);
         if (refList == null || !refList.isSuccess()) {
             return buildFailedResult(refList);
@@ -459,7 +462,7 @@ public class ServiceManager {
         if (consumerResult == null || !consumerResult.isSuccess() || consumerResult.getResult() == null) {
             return buildFailedResult(consumerResult);
         }
-        if (!StringUtils.equals(RsfCenterConstants.Center_DataKey_Consumer, consumerResult.getResult().getType())) {
+        if (!Center_DataKey_Consumer.equals(consumerResult.getResult().getType())) {
             ResultDO<Boolean> result = new ResultDO<Boolean>();
             result.setErrorInfo(ErrorCode.ServiceTypeFailed_Error);
             result.setSuccess(false);
@@ -479,7 +482,7 @@ public class ServiceManager {
         if (consumerResult == null || !consumerResult.isSuccess() || consumerResult.getResult() == null) {
             return buildFailedResult(consumerResult);
         }
-        if (!StringUtils.equals(RsfCenterConstants.Center_DataKey_Consumer, consumerResult.getResult().getType())) {
+        if (!Center_DataKey_Consumer.equals(consumerResult.getResult().getType())) {
             ResultDO<List<String>> result = new ResultDO<List<String>>();
             result.setErrorInfo(ErrorCode.ServiceTypeFailed_Error);
             result.setSuccess(false);
@@ -489,8 +492,8 @@ public class ServiceManager {
         //
         // .查询提供者列表
         QueryOption opt = new QueryOption();
-        opt.setObjectType(RsfCenterConstants.Center_DataKey_Provider);//尝试过滤结果,只保留Provider数据
-        String serviceObjectID = RsfCenterConstants.Center_DataKey_Service + serviceID;
+        opt.setObjectType(Center_DataKey_Provider);//尝试过滤结果,只保留Provider数据
+        String serviceObjectID = Center_DataKey_Service + serviceID;
         Result<List<ObjectDO>> refList = this.dataAdapter.queryObjectListByID(serviceObjectID, opt);
         if (refList == null || !refList.isSuccess()) {
             return buildFailedResult(refList);
@@ -522,8 +525,8 @@ public class ServiceManager {
         //
         // .查询提供者列表
         QueryOption opt = new QueryOption();
-        opt.setObjectType(RsfCenterConstants.Center_DataKey_Provider);//尝试过滤结果,只保留Provider数据
-        String serviceObjectID = RsfCenterConstants.Center_DataKey_Service + serviceID;
+        opt.setObjectType(Center_DataKey_Provider);//尝试过滤结果,只保留Provider数据
+        String serviceObjectID = Center_DataKey_Service + serviceID;
         Result<List<ObjectDO>> refList = this.dataAdapter.queryObjectListByID(serviceObjectID, opt);
         if (refList == null || !refList.isSuccess()) {
             return buildFailedResult(refList);

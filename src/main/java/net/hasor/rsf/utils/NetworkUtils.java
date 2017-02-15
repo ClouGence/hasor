@@ -41,7 +41,7 @@ public class NetworkUtils {
     }
     /**根据名字获取地址，local代表本机（如果本机有多网卡那么请明确指定ip）*/
     public static InetAddress finalBindAddress(String hostString) throws UnknownHostException {
-        return StringUtils.equalsIgnoreCase("local", hostString) ? InetAddress.getLocalHost() : InetAddress.getByName(hostString);
+        return "local".equalsIgnoreCase(hostString) ? InetAddress.getLocalHost() : InetAddress.getByName(hostString);
     }
     //
     /**根据掩码长度获取掩码字符串形式.*/

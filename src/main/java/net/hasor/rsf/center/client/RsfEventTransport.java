@@ -17,12 +17,12 @@ package net.hasor.rsf.center.client;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.context.ContextStartListener;
-import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.domain.RsfEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static net.hasor.rsf.domain.RsfEvent.*;
 /**
  * 负责侦听RSF框架发出的事件，并将事件转发到RsfCenter。
  * @version : 2016年2月18日
@@ -50,24 +50,24 @@ class RsfEventTransport implements EventListener<Object>, ContextStartListener {
             return;/* 在没有正式启动之前，所有消息都丢弃。然后在 doStartCompleted 时候统一做一次收集 */
         }
         this.logger.info("rsfEventTransport -> eventType = {}.", event);
-        if (StringUtils.equals(RsfEvent.Rsf_Online, event)) {
+        if (Rsf_Online.equals(event)) {
             this.centerManager.online();
             return;
         }
-        if (StringUtils.equals(RsfEvent.Rsf_Offline, event)) {
+        if (Rsf_Offline.equals(event)) {
             this.centerManager.offline();
             return;
         }
         //
         RsfBindInfo<?> domain = (RsfBindInfo<?>) eventData;
         try {
-            if (StringUtils.equals(RsfEvent.Rsf_ProviderService, event)) {
+            if (Rsf_ProviderService.equals(event)) {
                 this.centerManager.onlineService(domain);
                 //
-            } else if (StringUtils.equals(RsfEvent.Rsf_ConsumerService, event)) {
+            } else if (Rsf_ConsumerService.equals(event)) {
                 this.centerManager.onlineService(domain);
                 //
-            } else if (StringUtils.equals(RsfEvent.Rsf_DeleteService, event)) {
+            } else if (Rsf_DeleteService.equals(event)) {
                 this.centerManager.offlineService(domain);
                 //
             }

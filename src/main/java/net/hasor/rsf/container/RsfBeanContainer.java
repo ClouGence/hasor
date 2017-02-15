@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.container;
-import net.hasor.core.AppContext;
-import net.hasor.core.BindInfo;
-import net.hasor.core.EventContext;
-import net.hasor.core.Provider;
+import net.hasor.core.*;
 import net.hasor.rsf.*;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.RouteTypeEnum;
@@ -188,10 +185,10 @@ public class RsfBeanContainer {
      * @param define 过滤器对象。
      */
     public void publishFilter(FilterDefine define) {
-        String filterID = define.filterID();
+        String filterID = Hasor.assertIsNotNull(define.filterID());
         synchronized (this.filterLock) {
             for (FilterDefine filter : this.filterList) {
-                if (StringUtils.equals(filter.filterID(), filterID)) {
+                if (filterID.equals(filter.filterID())) {
                     throw new IllegalStateException("repeate filterID :" + filterID);
                 }
             }

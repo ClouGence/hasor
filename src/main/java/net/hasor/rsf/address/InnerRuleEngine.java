@@ -56,7 +56,7 @@ class InnerRuleEngine {
             signature = ruleScript;
         }
         //2.内容是否变化
-        if (StringUtils.equalsIgnoreCase(signature, this.signature)) {
+        if (signature.equalsIgnoreCase(this.signature)) {
             return false;/*无变化*/
         }
         //

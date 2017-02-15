@@ -368,7 +368,7 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
                 String itemTrim = item.trim();
                 if (StringUtils.isNotBlank(itemTrim)) {
                     try {
-                        if (StringUtils.equalsIgnoreCase("local", itemTrim)) {
+                        if ("local".equalsIgnoreCase(itemTrim)) {
                             addressList.add(NetworkUtils.finalBindAddress("local").getHostAddress());
                         } else {
                             addressList.add(itemTrim);
