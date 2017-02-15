@@ -122,7 +122,7 @@ class ClassEngine {
             if (packageName.indexOf('.') == -1) {
                 break;
             }
-            packageName = StringUtils.substringBeforeLast(packageName, ".");
+            packageName = substringBeforeLast(packageName, ".");
             if (StringUtils.isBlank(packageName)) {
                 break;
             }
@@ -133,5 +133,15 @@ class ClassEngine {
             return testAopIgnore(supperPackage, false);
         }
         return false;
+    }
+    private static String substringBeforeLast(final String str, final String separator) {
+        if (StringUtils.isEmpty(str) || StringUtils.isEmpty(separator)) {
+            return str;
+        }
+        int pos = str.lastIndexOf(separator);
+        if (pos == StringUtils.INDEX_NOT_FOUND) {
+            return str;
+        }
+        return str.substring(0, pos);
     }
 }

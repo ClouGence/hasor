@@ -129,8 +129,8 @@ public abstract class AbstractSettings implements Settings {
         Collections.sort(svList, new Comparator<SettingValue>() {
             @Override
             public int compare(SettingValue o1, SettingValue o2) {
-                int o1Index = StringUtils.equalsBlankIgnoreCase(o1.getSpace(), DefaultNameSpace) ? 0 : 1;
-                int o2Index = StringUtils.equalsBlankIgnoreCase(o2.getSpace(), DefaultNameSpace) ? 0 : 1;
+                int o1Index = DefaultNameSpace.equalsIgnoreCase(o1.getSpace()) ? 0 : 1;
+                int o2Index = DefaultNameSpace.equalsIgnoreCase(o2.getSpace()) ? 0 : 1;
                 return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
             }
         });

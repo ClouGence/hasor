@@ -15,7 +15,6 @@
  */
 package net.hasor.db.jdbc.mapper;
 import net.hasor.core.Hasor;
-import net.hasor.core.utils.StringUtils;
 import net.hasor.db.jdbc.RowMapper;
 
 import java.math.BigDecimal;
@@ -96,7 +95,7 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
     private static Number parseNumber(final String text, final Class<?> targetClass) {
         Hasor.assertIsNotNull(text, "Text must not be null");
         Hasor.assertIsNotNull(targetClass, "Target class must not be null");
-        String trimmed = StringUtils.trimToEmpty(text);
+        String trimmed = text.trim();
         if (targetClass.equals(Byte.class)) {
             return AbstractRowMapper.isHexNumber(trimmed) ? Byte.decode(trimmed) : Byte.valueOf(trimmed);
         } else if (targetClass.equals(Short.class)) {

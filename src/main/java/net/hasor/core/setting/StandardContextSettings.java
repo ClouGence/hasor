@@ -15,7 +15,6 @@
  */
 package net.hasor.core.setting;
 import net.hasor.core.utils.ResourcesUtils;
-import net.hasor.core.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -140,7 +139,7 @@ public class StandardContextSettings extends InputStreamSettings {
         }
     }
     private void _addStream(InputStream stream, String suffix) {
-        if (StringUtils.endsWithIgnoreCase(suffix, ".xml")) {
+        if (suffix != null && suffix.toLowerCase().endsWith(".xml")) {
             this.addStream(stream, StreamType.Xml);
         } else {
             this.addStream(stream, StreamType.Properties);

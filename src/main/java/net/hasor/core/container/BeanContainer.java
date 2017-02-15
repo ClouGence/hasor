@@ -64,11 +64,14 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
         if (typeRegisterList != null && !typeRegisterList.isEmpty()) {
             for (int i = typeRegisterList.size() - 1; i >= 0; i--) {
                 BindInfo<T> adapter = typeRegisterList.get(i);
-                //
-                if (StringUtils.isBlank(adapter.getBindName()) && StringUtils.isBlank(withName)) {
+                if (adapter == null) {
+                    continue;
+                }
+                String bindName = adapter.getBindName();
+                if (StringUtils.isBlank(bindName) && StringUtils.isBlank(withName)) {
                     return adapter;
                 }
-                if (StringUtils.equals(adapter.getBindName(), withName)) {
+                if (bindName != null && bindName.equals(withName)) {
                     return adapter;
                 }
             }
@@ -243,7 +246,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
             return;/*没有变化*/
         }
         // .
-        if (StringUtils.equalsBlankIgnoreCase(notifyData.getKey(), "bindID")) {
+        if ("bindID".equalsIgnoreCase(notifyData.getKey())) {
             newValue = Hasor.assertIsNotNull(newValue);
             if (this.idDataSource.containsKey(newValue)) {
                 throw new IllegalStateException("duplicate bind -> id value is " + newValue);
@@ -258,7 +261,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
             idList.add((String) newValue);
         }
         // .
-        if (StringUtils.equalsBlankIgnoreCase(notifyData.getKey(), "bindName")) {
+        if ("bindName".equalsIgnoreCase(notifyData.getKey())) {
             newValue = Hasor.assertIsNotNull(newValue);
             BindInfo bindInfo = this.findBindInfo((String) newValue, target.getBindType());
             if (bindInfo != null) {
@@ -266,7 +269,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
             }
         }
         // .
-        if (StringUtils.equalsBlankIgnoreCase(notifyData.getKey(), "bindType")) {
+        if ("bindType".equalsIgnoreCase(notifyData.getKey())) {
             throw new IllegalStateException("'bindType' are not allowed to be changed");
         }
     }

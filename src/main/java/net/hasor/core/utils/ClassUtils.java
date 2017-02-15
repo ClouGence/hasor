@@ -161,7 +161,21 @@ public class ClassUtils {
      * @since 2.4
      */
     private static String getCanonicalName(String className) {
-        className = StringUtils.deleteWhitespace(className);
+        //
+        if (!StringUtils.isEmpty(className)) {
+            int sz = className.length();
+            char[] chs = new char[sz];
+            int count = 0;
+            for (int i = 0; i < sz; i++) {
+                if (!Character.isWhitespace(className.charAt(i))) {
+                    chs[count++] = className.charAt(i);
+                }
+            }
+            if (count != sz) {
+                className = new String(chs, 0, count);
+            }
+        }
+        //
         if (className == null) {
             return null;
         } else {

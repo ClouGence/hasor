@@ -141,9 +141,9 @@ public class InMappingDef implements InMapping {
             return false;
         }
         for (String m : this.httpMapping.keySet()) {
-            if (StringUtils.equals(httpMethod, m)) {
+            if (httpMethod.equals(m)) {
                 return true;
-            } else if (StringUtils.equals(m, HttpMethod.ANY)) {
+            } else if (HttpMethod.ANY.equals(m)) {
                 return true;
             }
         }

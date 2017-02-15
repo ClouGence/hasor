@@ -15,6 +15,7 @@
  */
 package net.hasor.web;
 import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.core.utils.FilenameUtils;
 import net.hasor.core.utils.StringUtils;
@@ -669,13 +670,14 @@ public class WebController implements Controller {
      * @param encoding 字符编码。
      */
     protected List<FileItem> getMultipart(String parameterName, String cacheDirectory, Integer maxPostSize, String encoding) throws IOException {
+        Hasor.assertIsNotNull(parameterName);
         List<FileItem> itemList = this.getMultipartList(cacheDirectory, maxPostSize, encoding);
         if (itemList == null || itemList.isEmpty()) {
             return null;
         }
         List<FileItem> resultData = new ArrayList<FileItem>();
         for (FileItem item : itemList) {
-            if (StringUtils.equals(item.getFieldName(), parameterName)) {
+            if (parameterName.equals(item.getFieldName())) {
                 resultData.add(item);
             } else {
                 item.deleteOrSkip();
@@ -715,13 +717,14 @@ public class WebController implements Controller {
      * @param encoding 字符编码。
      */
     protected FileItem getOneMultipart(String parameterName, String cacheDirectory, Integer maxPostSize, String encoding) throws IOException {
+        Hasor.assertIsNotNull(parameterName);
         List<FileItem> itemList = this.getMultipartList(cacheDirectory, maxPostSize, encoding);
         if (itemList == null || itemList.isEmpty()) {
             return null;
         }
         FileItem findItem = null;
         for (FileItem item : itemList) {
-            if (findItem == null && StringUtils.equals(item.getFieldName(), parameterName)) {
+            if (findItem == null && parameterName.equals(item.getFieldName())) {
                 findItem = item;
             } else {
                 item.deleteOrSkip();

@@ -50,7 +50,7 @@ public class RenderApiBinderCreater implements ApiBinderCreater {
         Map<String, String> renderMap = new HashMap<String, String>();
         for (XmlNode xmlProp : xmlPropArray) {
             for (XmlNode envItem : xmlProp.getChildren()) {
-                if (StringUtils.equalsIgnoreCase("render", envItem.getName())) {
+                if ("render".equalsIgnoreCase(envItem.getName())) {
                     String renderTypeStr = envItem.getAttribute("renderType");
                     String renderClass = envItem.getText();
                     if (StringUtils.isNotBlank(renderTypeStr)) {

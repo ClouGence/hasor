@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.core.setting.xml;
+import net.hasor.core.Hasor;
 import net.hasor.core.XmlNode;
 import net.hasor.core.convert.ConverterUtils;
 import net.hasor.core.setting.FieldProperty;
-import net.hasor.core.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,9 +60,10 @@ public class DefaultXmlNode implements XmlNode, FieldProperty, Cloneable {
     }
     @Override
     public List<XmlNode> getChildren(final String elementName) {
+        Hasor.assertIsNotNull(elementName);
         List<XmlNode> children = new ArrayList<XmlNode>();
         for (XmlNode xmlItem : this.children) {
-            if (StringUtils.equalsIgnoreCase(xmlItem.getName(), elementName)) {
+            if (elementName.equalsIgnoreCase(xmlItem.getName())) {
                 children.add(xmlItem);
             }
         }

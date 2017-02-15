@@ -47,7 +47,7 @@ class HasorDefinitionParser extends AbstractHasorDefinitionParser {
             return val;
         }
         // 是否为 factoryID 属性（默认值处理）
-        if (StringUtils.equalsIgnoreCase(attName, this.beanID())) {
+        if (attName.equalsIgnoreCase(this.beanID())) {
             val = this.defaultHasorContextBeanName();
         }
         return val;

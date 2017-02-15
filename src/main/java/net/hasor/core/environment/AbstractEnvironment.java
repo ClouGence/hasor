@@ -206,7 +206,7 @@ public abstract class AbstractEnvironment implements Environment {
         }
         String newEvalString = evalString;
         for (String key : data.keySet()) {
-            newEvalString = StringUtils.replace(newEvalString, key, data.get(key));
+            newEvalString = newEvalString.replace(key, data.get(key));
         }
         if (logger.isInfoEnabled()) {
             logger.info("evalString '{}' eval to '{}'.", evalString, newEvalString);
@@ -406,7 +406,7 @@ public abstract class AbstractEnvironment implements Environment {
             String varKeyOri = keyM.group(1);
             String envKey = "%" + varKeyOri.toUpperCase() + "%";
             String var = this.evalString(envKey);
-            if (StringUtils.equalsIgnoreCase(envKey, var)) {
+            if (envKey.equalsIgnoreCase(var)) {
                 data.put("${" + varKeyOri + "}", envKey);
             } else {
                 data.put("${" + varKeyOri + "}", var);
@@ -414,10 +414,10 @@ public abstract class AbstractEnvironment implements Environment {
         }
         String newEvalString = evalString;
         for (String key : data.keySet()) {
-            newEvalString = StringUtils.replace(newEvalString, key, data.get(key));
+            newEvalString = newEvalString.replace(key, data.get(key));
         }
         if (this.logger.isInfoEnabled()) {
-            if (!StringUtils.equalsIgnoreCase(evalString, newEvalString)) {
+            if (!evalString.equalsIgnoreCase(newEvalString)) {
                 this.logger.info("replace settingValue '{}' to '{}'.", evalString, newEvalString);
             }
         }

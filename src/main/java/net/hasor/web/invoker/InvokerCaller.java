@@ -287,7 +287,7 @@ class InvokerCaller implements ExceuteCaller {
         Enumeration<?> e = httpRequest.getHeaderNames();
         while (e.hasMoreElements()) {
             String name = e.nextElement().toString();
-            if (StringUtils.equalsIgnoreCase(name, paramName)) {
+            if (name.equalsIgnoreCase(paramName)) {
                 ArrayList<Object> headerList = new ArrayList<Object>();
                 Enumeration<?> v = httpRequest.getHeaders(paramName);
                 while (v.hasMoreElements()) {
@@ -310,7 +310,11 @@ class InvokerCaller implements ExceuteCaller {
         ArrayList<String> cookieList = new ArrayList<String>();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (StringUtils.equalsIgnoreCase(cookie.getName(), paramName)) {
+                String cookieName = cookie.getName();
+                if (cookieName == null) {
+                    continue;
+                }
+                if (cookieName.equalsIgnoreCase(paramName)) {
                     cookieList.add(cookie.getValue());
                 }
             }
@@ -327,7 +331,7 @@ class InvokerCaller implements ExceuteCaller {
         Enumeration<?> e = httpRequest.getAttributeNames();
         while (e.hasMoreElements()) {
             String name = e.nextElement().toString();
-            if (StringUtils.equalsIgnoreCase(name, paramName)) {
+            if (name.equalsIgnoreCase(paramName)) {
                 return httpRequest.getAttribute(paramName);
             }
         }
