@@ -14,11 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import net.hasor.core.AppContext;
 import net.hasor.core.classcode.aop.AopClassConfig;
 import net.hasor.core.classcode.aop.AopMatcher;
 import net.hasor.core.info.AopBindInfoAdapter;
+import net.hasor.core.utils.IOUtils;
 import net.hasor.core.utils.StringUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -31,7 +35,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 class ClassEngine {
     private static ConcurrentHashMap<Class<?>, AopClassConfig> buildEngineMap = new ConcurrentHashMap<Class<?>, AopClassConfig>();
-    public static Class<?> buildType(Class<?> targetType, ClassLoader rootLosder, List<AopBindInfoAdapter> aopList) throws ClassNotFoundException, IOException {
+    public static Class<?> buildType(Class<?> targetType, ClassLoader rootLosder, List<AopBindInfoAdapter> aopList,//
+            AppContext appContext) throws ClassNotFoundException, IOException {
         if (!AopClassConfig.isSupport(targetType)) {
             return targetType;
         }
@@ -58,12 +63,29 @@ class ClassEngine {
             if (engine == null) {
                 engine = buildEngineMap.get(targetType);
             }
+            String workMode = appContext.getEnvironment().getWorkMode();
+            if ("debug".equalsIgnoreCase(workMode) && engine.hasChange()) {
+                String fileName = engine.getClassName();
+                String cacheDir = appContext.getEnvironment().evalString("%HASOR_TEMP_PATH%/debug/aopclasses");
+                FileOutputStream fos = null;
+                try {
+                    File outFile = new File(cacheDir, fileName + ".class");
+                    outFile.getParentFile().mkdirs();
+                    fos = new FileOutputStream(outFile);
+                    byte[] buildBytes = engine.buildBytes();
+                    fos.write(buildBytes);
+                    fos.flush();
+                } finally {
+                    IOUtils.closeQuietly(fos);
+                }
+            }
         }
         if (engine.hasChange()) {
             newType = engine.toClass();
         } else {
             newType = engine.getSuperClass();
         }
+        //
         return newType;
     }
     //

@@ -39,6 +39,10 @@ public class EnvironmentWrap implements Environment {
         return this.getEnvironment().getSpanPackage();
     }
     @Override
+    public String getWorkMode() {
+        return this.getEnvironment().getWorkMode();
+    }
+    @Override
     public Set<Class<?>> findClass(Class<?> featureType) {
         return this.getEnvironment().findClass(featureType);
     }

@@ -6,6 +6,7 @@
     04.启动日志中，打印出“env.config”中所加载的所有信息。
     05.原 org.more 包内的工具仅保留使用到的工具类，同时移动到net.hasor.core包中，力争减少 Hasor 产出 jar 包的体积。
     06.classcode 成为 Hasor 的一部分。
+    07.增加 debug 模式，debug 模式下会保存 动态代理生成的字节码文件。
 
 ===== Hasor-Core v3.0.3 (2017-02-07)
 * 修复:

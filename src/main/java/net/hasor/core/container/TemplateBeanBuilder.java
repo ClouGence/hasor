@@ -129,7 +129,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             //
             //2.动态代理
             ClassLoader rootLosder = appContext.getClassLoader();
-            Class<?> newType = ClassEngine.buildType(targetType, rootLosder, aopList);
+            Class<?> newType = ClassEngine.buildType(targetType, rootLosder, aopList, appContext);
             //
             //3.确定要调用的构造方法。
             Constructor<?> constructor = null;
