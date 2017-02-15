@@ -70,7 +70,6 @@
 
             <module>net.hasor.plugins.startup.StartupModule</module>
             <module>net.hasor.plugins.aop.AopModule</module>
-            <module>net.hasor.plugins.event.EventModule</module>
         </modules>
 
         <!-- ApiBinder 扩展 -->

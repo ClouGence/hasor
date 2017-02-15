@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._08_event.listener;
+package net.test.hasor.core._08_event;
 import com.alibaba.fastjson.JSON;
 import net.hasor.core.EventListener;
 /**

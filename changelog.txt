@@ -7,6 +7,7 @@
     05.原 org.more 包内的工具仅保留使用到的工具类，同时移动到net.hasor.core包中，力争减少 Hasor 产出 jar 包的体积。
     06.classcode 成为 Hasor 的一部分。
     07.增加 debug 模式，debug 模式下会保存 动态代理生成的字节码文件。
+    08.删除不常用的 Event插件，由于再有没有任何内置插件在启动时扫描类，因此 Hasor 启动速度飞快。
 * 修复:
     01.fix 当在 jdk8 下使用 hasor aop 功能时出现 VerifyError 错误的问题，3.1.0版本开始不在需要通过 -noverify 参数压制异常。
 

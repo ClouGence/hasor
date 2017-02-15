@@ -17,7 +17,6 @@ package net.test.hasor.core._08_event;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
-import net.test.hasor.core._08_event.listener.MyListener;
 import org.junit.Test;
 /**
  * 异步事件演示

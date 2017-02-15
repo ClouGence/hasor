@@ -18,7 +18,6 @@ import net.hasor.core.AppContext;
 import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
-import net.test.hasor.core._08_event.listener.MyListener;
 import org.junit.Test;
 /**
  * 该例子演示了事件链。及由事件引发的事件。
