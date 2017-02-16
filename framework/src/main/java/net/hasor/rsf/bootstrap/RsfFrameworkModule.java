@@ -66,7 +66,7 @@ public final class RsfFrameworkModule extends RsfModule {
         apiBinder.bindType(RsfPublisher.class).toInstance(rsfPublisher);
         rsfPublisher.bindFilter("LocalPref", new LocalPref());
         rsfPublisher.bindFilter("LocalWarpFilter", new LocalWarpFilter());
-        rsfPublisher.bindFilter("OnlineRsfFilter", new OnlineRsfFilter());
+        rsfPublisher.bindFilter("SecurityRsfFilter", new OnlineRsfFilter());
         //
         logger.info("rsf framework init finish.");
     }

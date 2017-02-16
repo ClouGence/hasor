@@ -26,10 +26,6 @@
             <!-- 启用磁盘地址本缓存，在refreshCacheTime期间每隔1小时自动写入一次。 -->
             <RSF_DISK_CACHE_ENABLE>true</RSF_DISK_CACHE_ENABLE>
 
-            <!-- app_key -->
-            <RSF_APP_KEY></RSF_APP_KEY>
-            <!-- app KeySecret -->
-            <RSF_APP_KEY_SECRET></RSF_APP_KEY_SECRET>
             <!-- 应用程序所属单元 -->
             <RSF_APP_UNIT>default</RSF_APP_UNIT>
 
@@ -58,11 +54,13 @@
             - address : RSF，无法在多个网卡上同时对外提供服务，因此您需要指定一个IP地址来告诉RSF工作在哪张网卡上。
                             “local”和“localhost”的区别，local指的是，本地默认网卡的IP地址。“localhost”对应的IP地址是“127.0.0.1”
                             如果您的部署环境有多张网卡，那么可以通过指定ip地址，来告诉RSF具体工作的网卡地址。
-            - port    : RSF对外提供服务的监听端口号。
     -->
     <hasor.rsfConfig enable="${RSF_ENABLE}" address="${RSF_SERVICE_IP}">
         <!-- 所属单元名称，单元是用来给应用部署划分虚拟机房的。RSF通过单元可以有效控制跨机房调用，从而提升远程调用效率。-->
         <unitName>${RSF_APP_UNIT}</unitName>
+
+        <!-- automaticOnline : RSF在启动之后是否自动转换为 online 状态。 -->
+        <automaticOnline>true</automaticOnline>
 
         <!--
             RSF管理控制台(Telnet)
@@ -72,17 +70,6 @@
                 提示：RSF在启动的时，如果管理控制台的端口被占用，是不会影响到整个RSF启动进程。
         -->
         <console port="${RSF_CONSOLE_PORT}" inBound="local,127.0.0.1"/>
-
-        <!--
-            注册中心，用于更新服务列表的配置服务器
-                - timeout         : RSF 和 Center 之间发起远程调用超时时间(6秒)
-                - heartbeatTime   : 服务心跳时间(30秒)
-                - automaticOnline : RSF在启动之后是否自动转换为 online 状态。
-        -->
-        <centerServers timeout="6000" heartbeatTime="30000" automaticOnline="true">
-            <server>${RSF_CENTER_SERVERS}</server>
-        </centerServers>
-
 
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
         <!--用于设置默认情况下RSF服务的一些(不重要)的选项。
@@ -147,9 +134,9 @@
             处理队列配置（用于配置ExecutesManager）
                 - maxSize       : 处理任务队列的最大大小，作为服务端当队列满了之后所有新进来的请求都会被回应 拒绝。
                 - minPoolSize   : the number of threads to keep in the pool, even if they are idle, unless allowCoreThreadTimeOut is set.
-                - maxPoolSize   : the maximum number of threads to allow in the pool. keepAliveTime(SECONDS) when the number of threads is greater than the core, 
+                - maxPoolSize   : the maximum number of threads to allow in the pool. keepAliveTime(SECONDS) when the number of threads is greater than the core,
                               this is the maximum time that excess idle threads will wait for new tasks before terminating.
-                - keepAliveTime : 
+                - keepAliveTime :
         -->
         <queue maxSize="4096" minPoolSize="1" maxPoolSize="4" keepAliveTime="300"/>
 
@@ -207,15 +194,6 @@
             <!-- (失效地址重试机制)当地址失效之后要经过多长时间才能被重新列入备选地址。（单位:毫秒）默认:2分钟 -->
             <invalidWaitTime>120000</invalidWaitTime>
         </addressPool>
-
-        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-        <!-- 安全 -->
-        <security>
-            <!-- app_key -->
-            <appKeyID>${RSF_APP_KEY}</appKeyID>
-            <!-- app KeySecret -->
-            <appKeySecret>${RSF_APP_KEY_SECRET}</appKeySecret>
-        </security>
 
     </hasor.rsfConfig>
 </config>

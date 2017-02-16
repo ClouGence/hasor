@@ -87,15 +87,6 @@ public interface RsfSettings extends Settings {
     /**获取网关地址*/
     public Map<String, InterAddress> getGatewaySet();
 
-    /**获取注册中心服务地址*/
-    public InterAddress[] getCenterServerSet();
-
-    /**与注册中心之间接口调用所使用的超时时间（一般不需要配置，除非发生注册中心接口调用超时异常）*/
-    public int getCenterRsfTimeout();
-
-    /**与注册中心保持状态所用的心跳时间间隔*/
-    public int getCenterHeartbeatTime();
-
     /**获取本机所属单元*/
     public String getUnitName();
 
@@ -111,9 +102,6 @@ public interface RsfSettings extends Settings {
     /**启用磁盘地址本缓存，在refreshCacheTime期间每隔1小时自动写入一次。（被回收的服务不享受此待遇）*/
     public boolean islocalDiskCache();
 
-    /**是否启用注册中心功能。*/
-    public boolean isEnableCenter();
-
     /**应用自动上线*/
     public boolean isAutomaticOnline();
 
@@ -122,12 +110,6 @@ public interface RsfSettings extends Settings {
 
     /**准许的ip地址列表。*/
     public String[] getConsoleInBoundAddress();
-
-    /**获取app key ID*/
-    public String getAppKeyID();
-
-    /**获取app key 秘钥*/
-    public String getAppKeySecret();
 
     /**重新加载Rsf配置*/
     public void refreshRsfConfig() throws IOException;

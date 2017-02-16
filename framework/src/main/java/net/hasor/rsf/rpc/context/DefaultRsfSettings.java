@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.URI;
 import java.util.*;
 /**
  *
@@ -61,11 +60,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private   Map<String, InterAddress> gatewayAddressMap     = null;
     private   Map<String, String>       protocolHandlerMap    = null;
     //
-    private   InterAddress[]            centerServerSet       = new InterAddress[0];
-    private   int                       centerRsfTimeout      = 6000;
-    private   int                       centerHeartbeatTime   = 15000;
-    private   boolean                   enableCenter          = false;
-    //
     private   int                       consolePort           = 2180;
     private   String[]                  consoleInBound        = null;
     //
@@ -79,9 +73,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private   boolean                   localDiskCache        = true;
     private   long                      diskCacheTimeInterval = 3600000;
     private   boolean                   automaticOnline       = true;
-    //
-    private   String                    appKeyID              = null;
-    private   String                    appKeySecret          = null;
     //
     //
     public DefaultRsfSettings(Settings settings) throws IOException {
@@ -150,16 +141,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         return this.sendLimitPolicy;
     }
     @Override
-    public InterAddress[] getCenterServerSet() {
-        return this.centerServerSet.clone();
-    }
-    public int getCenterRsfTimeout() {
-        return this.centerRsfTimeout;
-    }
-    public int getCenterHeartbeatTime() {
-        return this.centerHeartbeatTime;
-    }
-    @Override
     public int getConnectTimeout() {
         return this.connectTimeout;
     }
@@ -204,10 +185,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         return this.localDiskCache;
     }
     @Override
-    public boolean isEnableCenter() {
-        return this.enableCenter;
-    }
-    @Override
     public boolean isAutomaticOnline() {
         return this.automaticOnline;
     }
@@ -218,14 +195,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     @Override
     public String[] getConsoleInBoundAddress() {
         return this.consoleInBound;
-    }
-    @Override
-    public String getAppKeyID() {
-        return this.appKeyID;
-    }
-    @Override
-    public String getAppKeySecret() {
-        return this.appKeySecret;
     }
     //
     public void refresh() throws IOException {
@@ -317,36 +286,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
             }
         }
         //
-        //
-        XmlNode[] centerServerArrays = getXmlNodeArray("hasor.rsfConfig.centerServers.server");
-        if (centerServerArrays != null) {
-            ArrayList<InterAddress> addressArrays = new ArrayList<InterAddress>();
-            for (XmlNode centerServer : centerServerArrays) {
-                String serverURL = centerServer.getText();
-                if (StringUtils.isNotBlank(serverURL)) {
-                    serverURL = serverURL.trim();
-                    try {
-                        if (!InterAddress.checkFormat(new URI(serverURL))) {
-                            serverURL = serverURL + "/default";
-                            if (!InterAddress.checkFormat(new URI(serverURL))) {
-                                logger.error("centerServer {} format error.", centerServer.getText());
-                                continue;
-                            }
-                        }
-                        InterAddress interAddress = new InterAddress(serverURL);
-                        if (!addressArrays.contains(interAddress)) {
-                            addressArrays.add(interAddress);
-                        }
-                    } catch (Exception e) {
-                        logger.error("centerServer {} format error -> {}.", centerServer.getText(), e.getMessage());
-                    }
-                }
-            }
-            this.centerServerSet = addressArrays.toArray(new InterAddress[addressArrays.size()]);
-        }
-        this.centerRsfTimeout = getInteger("hasor.rsfConfig.centerServers.timeout", 6000);
-        this.centerHeartbeatTime = getInteger("hasor.rsfConfig.centerServers.heartbeatTime", 15000);
-        //
         this.consolePort = getInteger("hasor.rsfConfig.console.port", 2180);
         String consoleInBoundStr = getString("hasor.rsfConfig.console.inBound", "local");
         ArrayList<String> addressList = new ArrayList<String>();
@@ -386,12 +325,7 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         this.localDiskCache = getBoolean("hasor.rsfConfig.addressPool.localDiskCache", true);
         this.diskCacheTimeInterval = getLong("hasor.rsfConfig.addressPool.diskCacheTimeInterval", 3600000L);
         //
-        this.enableCenter = this.centerServerSet.length != 0;
-        this.automaticOnline = getBoolean("hasor.rsfConfig.centerServers.automaticOnline", true);
-        //
-        this.appKeyID = getString("security.appKeyID");
-        this.appKeySecret = getString("security.appKeySecret");
-        //
+        this.automaticOnline = getBoolean("hasor.rsfConfig.automaticOnline", true);
         this.logger.info("loadRsfConfig complete!");
     }
     private void parseProtocol(Map<String, String> implementorMap, XmlNode protocolSetNode) {

@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.console.commands;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
@@ -24,6 +23,7 @@ import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
 import net.hasor.rsf.console.RsfInstruct;
 import net.hasor.rsf.domain.RsfServiceType;
+import net.hasor.rsf.utils.StringUtils;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -77,18 +77,6 @@ public class InfoRsfInstruct implements RsfInstruct {
                 customerCount++;
             }
         }
-        StringBuffer centerList = new StringBuffer("");
-        InterAddress[] centerServerSet = settings.getCenterServerSet();
-        for (InterAddress inter : centerServerSet) {
-            if (inter == null)
-                continue;
-            if (centerList.length() > 0) {
-                centerList.append(" , ");
-            }
-            centerList.append(inter.toHostSchema());
-        }
-        centerList.insert(0, '[');
-        centerList.append(']');
         //
         //
         sw.write(">>\r\n");
@@ -110,12 +98,6 @@ public class InfoRsfInstruct implements RsfInstruct {
         sw.write(">>----- Console Info ------\r\n");
         sw.write(">>        consolePort :" + settings.getConsolePort() + "\r\n");
         sw.write(">>     consoleInBound :" + StringUtils.join(settings.getConsoleInBoundAddress(), ", ") + "\r\n");
-        sw.write(">>\r\n");
-        sw.write(">>----- Center Info ------\r\n");
-        sw.write(">>             enable :" + settings.isEnableCenter() + "\r\n");
-        sw.write(">>         rsfTimeout :" + settings.getCenterRsfTimeout() + "\r\n");
-        sw.write(">>      heartbeatTime :" + settings.getCenterHeartbeatTime() + "\r\n");
-        sw.write(">>         centerList :" + centerList.toString() + "\r\n");
         sw.write(">>\r\n");
         sw.write(">>----- Default Info ------\r\n");
         sw.write(">>            timeout :" + settings.getDefaultTimeout() + "\r\n");

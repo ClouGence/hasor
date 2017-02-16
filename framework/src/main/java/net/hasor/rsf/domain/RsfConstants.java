@@ -61,9 +61,6 @@ public interface RsfConstants {
     public static final long   OneHourTime                 = 1 * 60 * 60 * 1000;
     public static final long   SevenDaysTime               = 7 * 24 * OneHourTime;
     //
-    public static final String Center_RSF_APP_KEY          = "RSF_APP_KEY";          //key
-    public static final String Center_RSF_APP_KEY_SECRET   = "RSF_APP_KEY_SECRET";   //秘钥
-    public static final String Center_RSF_VERSION          = "RSF_VERSION";          //客户端版本
     public static final String Center_Ticket               = "CenterTicket";         //注册中心中的注册ID
     //
     //
@@ -72,5 +69,4 @@ public interface RsfConstants {
     public static final String LoggerName_ConsoleRXD       = "rsf-console-rtxd";
     public static final String LoggerName_Invoker          = "rsf-invoker";
     public static final String LoggerName_Address          = "rsf-address";
-    public static final String LoggerName_CenterReceiver   = "rsf-center-receiver";
 }
