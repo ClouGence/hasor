@@ -24,9 +24,6 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfSettings extends Settings {
-    /**获取RSF框架版本。*/
-    public String getVersion(); //
-
     /**获取默认超时时间。*/
     public int getDefaultTimeout();
 

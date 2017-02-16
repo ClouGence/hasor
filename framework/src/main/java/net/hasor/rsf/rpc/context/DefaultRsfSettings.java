@@ -23,15 +23,12 @@ import net.hasor.rsf.RsfOptionSet;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.SendLimitPolicy;
 import net.hasor.rsf.domain.OptionInfo;
-import net.hasor.rsf.utils.IOUtils;
 import net.hasor.rsf.utils.NetworkUtils;
-import net.hasor.rsf.utils.ResourcesUtils;
 import net.hasor.rsf.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.*;
@@ -45,7 +42,7 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private   int                       defaultTimeout        = 6000;
     private   String                    defaultGroup          = "RSF";
     private   String                    defaultVersion        = "1.0.0";
-    private   String                    defaultSerializeType  = "Hessian";
+    private   String                    defaultSerializeType  = "Hprose";
     //
     private   OptionInfo                serverOptionManager   = new OptionInfo();
     private   OptionInfo                clientOptionManager   = new OptionInfo();
@@ -69,7 +66,7 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private   int                       centerHeartbeatTime   = 15000;
     private   boolean                   enableCenter          = false;
     //
-    private   int                       consolePort           = 2181;
+    private   int                       consolePort           = 2180;
     private   String[]                  consoleInBound        = null;
     //
     private   int                       requestTimeout        = 6000;
@@ -103,16 +100,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     @Override
     public RsfOptionSet getClientOption() {
         return this.clientOptionManager;
-    }
-    @Override
-    public String getVersion() {
-        try {
-            InputStream verIns = ResourcesUtils.getResourceAsStream("/META-INF/rsf-core.version");
-            List<String> dataLines = IOUtils.readLines(verIns);
-            return !dataLines.isEmpty() ? dataLines.get(0) : null;
-        } catch (Throwable e) {
-            return null;
-        }
     }
     @Override
     public String getDefaultGroup() {
@@ -360,7 +347,7 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         this.centerRsfTimeout = getInteger("hasor.rsfConfig.centerServers.timeout", 6000);
         this.centerHeartbeatTime = getInteger("hasor.rsfConfig.centerServers.heartbeatTime", 15000);
         //
-        this.consolePort = getInteger("hasor.rsfConfig.console.port", 2181);
+        this.consolePort = getInteger("hasor.rsfConfig.console.port", 2180);
         String consoleInBoundStr = getString("hasor.rsfConfig.console.inBound", "local");
         ArrayList<String> addressList = new ArrayList<String>();
         if (StringUtils.isNotBlank(consoleInBoundStr)) {

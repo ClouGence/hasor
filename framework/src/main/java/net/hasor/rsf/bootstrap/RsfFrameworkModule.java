@@ -23,7 +23,6 @@ import net.hasor.rsf.filters.online.OnlineRsfFilter;
 import net.hasor.rsf.filters.thread.LocalWarpFilter;
 import net.hasor.rsf.filters.thread.RsfRequestLocal;
 import net.hasor.rsf.filters.thread.RsfResponseLocal;
-import net.hasor.rsf.filters.trace.TraceFilter;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +64,6 @@ public final class RsfFrameworkModule extends RsfModule {
         //4.重要的内置插件
         RsfPublisher rsfPublisher = rsfContext.publisher();
         apiBinder.bindType(RsfPublisher.class).toInstance(rsfPublisher);
-        rsfPublisher.bindFilter("TraceFilter", new TraceFilter());
         rsfPublisher.bindFilter("LocalPref", new LocalPref());
         rsfPublisher.bindFilter("LocalWarpFilter", new LocalWarpFilter());
         rsfPublisher.bindFilter("OnlineRsfFilter", new OnlineRsfFilter());
