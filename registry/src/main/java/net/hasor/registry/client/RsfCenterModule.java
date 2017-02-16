@@ -13,33 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.client;
+package net.hasor.registry.client;
 import net.hasor.core.EventContext;
+import net.hasor.core.Hasor;
 import net.hasor.core.context.ContextStartListener;
-import net.hasor.rsf.*;
-import net.hasor.rsf.center.RsfCenterListener;
-import net.hasor.rsf.center.RsfCenterRegister;
+import net.hasor.registry.RsfCenterListener;
+import net.hasor.registry.RsfCenterRegister;
+import net.hasor.registry.RsfCenterSettings;
+import net.hasor.rsf.InterAddress;
+import net.hasor.rsf.RsfApiBinder;
+import net.hasor.rsf.RsfEnvironment;
+import net.hasor.rsf.RsfModule;
 import net.hasor.rsf.domain.RsfEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * 注册中心插件
+ * Client模式
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfCenterModule extends RsfModule {
     protected static Logger logger = LoggerFactory.getLogger(RsfCenterModule.class);
+    private RsfCenterSettings centerSettings;
+    //
+    public RsfCenterModule(RsfCenterSettings centerSettings) {
+        this.centerSettings = Hasor.assertIsNotNull(centerSettings);
+    }
     //
     @Override
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
         RsfEnvironment environment = apiBinder.getEnvironment();
         EventContext eventContext = environment.getEventContext();
-        RsfSettings settings = environment.getSettings();
-        boolean enable = settings.isEnableCenter();
-        if (!enable) {
-            logger.info("rsf center-client hostSet is empty -> center disable.");
-            return;
-        }
         //
         // 1.监听RSF中所有服务的相关的消息
         RsfEventTransport transport = new RsfEventTransport();
@@ -58,11 +62,11 @@ public class RsfCenterModule extends RsfModule {
                 .asShadow().register();
         //
         // 3.向注册中心上报服务信息的服务
-        InterAddress[] centerList = settings.getCenterServerSet();
+        InterAddress[] centerList = this.centerSettings.getCenterServerSet();
         StringBuilder strBuilder = buildLog(centerList);
         logger.info("rsf center-client hostSet = {}  -> center enable.", strBuilder.toString());
         apiBinder.rsfService(RsfCenterRegister.class)//服务类型
-                .timeout(settings.getCenterRsfTimeout())//服务接口超时时间
+                .timeout(this.centerSettings.getCenterRsfTimeout())//服务接口超时时间
                 .bindFilter("AuthFilter", RsfCenterClientVerifyFilter.class)//服务安全过滤器
                 .bindAddress(null, centerList)//静态地址，用不失效
                 .asShadow().register();//注册服务

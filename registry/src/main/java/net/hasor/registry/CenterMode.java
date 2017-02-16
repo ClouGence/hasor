@@ -13,7 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.registry;
 /**
- * 与注册中心通信的功能，所需要的domain数据模型。
+ * center工作模式
+ * @version : 2017年2月16日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.rsf.center.domain;
+public enum CenterMode {
+    None("none", "禁用"),//
+    Client("client", "客户端"),//
+    Server("server", "服务器"),//
+    Cluster("cluster", "服务器集群"),//
+    ;
+    //
+    private String workType;
+    private String desc;
+    CenterMode(String workType, String desc) {
+        this.workType = workType;
+        this.desc = desc;
+    }
+    public String getWorkType() {
+        return workType;
+    }
+    public String getDesc() {
+        return desc;
+    }
+}

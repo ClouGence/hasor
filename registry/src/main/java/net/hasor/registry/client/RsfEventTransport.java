@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.client;
+package net.hasor.registry.client;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventListener;
 import net.hasor.core.context.ContextStartListener;
@@ -34,7 +34,7 @@ class RsfEventTransport implements EventListener<Object>, ContextStartListener {
     //
     @Override
     public void doStart(AppContext appContext) {
-        // TODO 不需要该方法
+        //
     }
     @Override
     public void doStartCompleted(AppContext appContext) {
@@ -63,13 +63,10 @@ class RsfEventTransport implements EventListener<Object>, ContextStartListener {
         try {
             if (Rsf_ProviderService.equals(event)) {
                 this.centerManager.onlineService(domain);
-                //
             } else if (Rsf_ConsumerService.equals(event)) {
                 this.centerManager.onlineService(domain);
-                //
             } else if (Rsf_DeleteService.equals(event)) {
                 this.centerManager.offlineService(domain);
-                //
             }
             //
             this.logger.info("eventType = {} ,serviceID ={} , events have been processed.", event, domain.getBindID());

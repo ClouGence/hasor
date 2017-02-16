@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.client;
+package net.hasor.registry.client;
 import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Inject;
+import net.hasor.registry.RsfCenterListener;
+import net.hasor.registry.RegistryConstants;
+import net.hasor.registry.domain.CenterEventBody;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfUpdater;
-import net.hasor.rsf.center.RsfCenterListener;
-import net.hasor.rsf.center.domain.CenterEventBody;
 import net.hasor.rsf.domain.RsfCenterException;
-import net.hasor.rsf.domain.RsfConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 public class RsfCenterDataReceiver implements RsfCenterListener {
-    protected Logger logger = LoggerFactory.getLogger(RsfConstants.LoggerName_CenterReceiver);
+    protected Logger logger = LoggerFactory.getLogger(RegistryConstants.LoggerName_CenterReceiver);
     @Inject
     private              RsfContext   rsfContext;
     @Inject

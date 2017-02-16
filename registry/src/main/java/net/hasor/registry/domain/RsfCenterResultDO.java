@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center;
-import net.hasor.rsf.RsfService;
-import net.hasor.rsf.center.domain.CenterEventBody;
+package net.hasor.registry.domain;
+import net.hasor.registry.RsfCenterResult;
+import net.hasor.rsf.domain.RsfResultDO;
 /**
- * 接收来自注册中心的消息。
- * @version : 2016年2月18日
+ * 结果
+ * @version : 2014年10月25日
  * @author 赵永春(zyc@hasor.net)
  */
-@RsfService(group = "RSF", version = "1.0.0")
-public interface RsfCenterListener {
-    /**
-     * 接收来自注册中心的消息
-     * @param eventType 事件类型
-     * @param centerEventBody 内容
-     * @return 返回事件处理是否成功
-     * @throws Throwable 如果事件处理失败则引发的错误。
-     */
-    public boolean onEvent(String eventType, CenterEventBody centerEventBody) throws Throwable;
+public class RsfCenterResultDO<T> extends RsfResultDO implements RsfCenterResult<T> {
+    private static final long serialVersionUID = -4678893554960623786L;
+    private              T    result           = null;
+    //
+    @Override
+    public T getResult() {
+        return this.result;
+    }
+    public void setResult(T result) {
+        this.result = result;
+    }
 }

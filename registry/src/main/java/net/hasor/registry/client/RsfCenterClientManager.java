@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.client;
+package net.hasor.registry.client;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
-import net.hasor.rsf.utils.StringUtils;
+import net.hasor.registry.RsfCenterRegister;
+import net.hasor.registry.RsfCenterResult;
+import net.hasor.registry.RsfCenterSettings;
+import net.hasor.registry.domain.ConsumerPublishInfo;
+import net.hasor.registry.domain.ProviderPublishInfo;
+import net.hasor.registry.domain.PublishInfo;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.center.RsfCenterRegister;
-import net.hasor.rsf.center.RsfCenterResult;
-import net.hasor.rsf.center.domain.ConsumerPublishInfo;
-import net.hasor.rsf.center.domain.ProviderPublishInfo;
-import net.hasor.rsf.center.domain.PublishInfo;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.domain.RsfServiceType;
+import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.utils.TimerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +34,8 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import static net.hasor.registry.RegistryConstants.Center_Ticket;
 /**
  * 负责维护RSF客户端服务在注册中心上的信息。
  * @version : 2016年2月18日
@@ -47,10 +49,10 @@ class RsfCenterClientManager implements TimerTask {
     //
     public RsfCenterClientManager(RsfContext rsfContext) {
         this.rsfContext = rsfContext;
+        RsfCenterSettings settings = this.rsfContext.getAppContext().getInstance(RsfCenterSettings.class);
         ClassLoader loader = rsfContext.getClassLoader();
-        this.timerManager = new TimerManager(rsfContext.getSettings().getCenterHeartbeatTime(), "RsfCenterBeatTimer", loader);
+        this.timerManager = new TimerManager(settings.getHeartbeatTime(), "RsfCenterBeatTimer", loader);
         this.centerRegister = rsfContext.getRsfClient().wrapper(RsfCenterRegister.class);
-        // this.timerManager.atTime(this);
     }
     @Override
     public void run(Timeout timeout) {
@@ -81,7 +83,7 @@ class RsfCenterClientManager implements TimerTask {
                 continue;
             }
             // -
-            String ticketInfo = (String) domain.getMetaData(RsfConstants.Center_Ticket);
+            String ticketInfo = (String) domain.getMetaData(Center_Ticket);
             if (StringUtils.isEmpty(ticketInfo)) {
                 needRegister.add(domain);//需要新注册
             } else {
@@ -98,7 +100,7 @@ class RsfCenterClientManager implements TimerTask {
         if (!needBeat.isEmpty()) {
             for (RsfBindInfo<?> domain : needBeat) {
                 String serviceID = domain.getBindID();
-                String registerID = (String) domain.getMetaData(RsfConstants.Center_Ticket);
+                String registerID = (String) domain.getMetaData(Center_Ticket);
                 try {
                     RsfCenterResult<Boolean> beatResult = this.centerRegister.serviceBeat(registerID, serviceID);
                     if (beatResult == null || !beatResult.isSuccess()) {
@@ -121,7 +123,7 @@ class RsfCenterClientManager implements TimerTask {
         //
         //4.重新注册服务
         for (RsfBindInfo<?> domain : needRepair) {
-            domain.removeMetaData(RsfConstants.Center_Ticket);
+            domain.removeMetaData(Center_Ticket);
             onlineService(domain);
         }
     }
@@ -141,7 +143,7 @@ class RsfCenterClientManager implements TimerTask {
     /**解除服务注册*/
     public void offlineService(RsfBindInfo<?> domain) {
         String serviceID = domain.getBindID();
-        String registerID = (String) domain.getMetaData(RsfConstants.Center_Ticket);
+        String registerID = (String) domain.getMetaData(Center_Ticket);
         try {
             //
             // .解除服务注册
@@ -203,7 +205,7 @@ class RsfCenterClientManager implements TimerTask {
             //
             // .同步拉取地址数据
             if (registerInfo != null && registerInfo.isSuccess()) {
-                domain.setMetaData(RsfConstants.Center_Ticket, registerInfo.getResult());
+                domain.setMetaData(Center_Ticket, registerInfo.getResult());
                 pullAddress(domain);//更新地址池
             }
         } catch (Exception e) {
@@ -218,7 +220,7 @@ class RsfCenterClientManager implements TimerTask {
         }
         // .拉地址3次尝试
         String serviceID = domain.getBindID();
-        String registerID = (String) domain.getMetaData(RsfConstants.Center_Ticket);
+        String registerID = (String) domain.getMetaData(Center_Ticket);
         String protocol = this.rsfContext.getDefaultProtocol();
         logger.info("pullAddress[{}] '{}' 1st.", protocol, serviceID);
         RsfCenterResult<List<String>> providerResult = this.centerRegister.pullProviders(registerID, serviceID, protocol);

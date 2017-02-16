@@ -13,7 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.registry;
 /**
- * RSF注册中心相关功能。
+ * 各种常量
+ * @version : 2014年9月20日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.rsf.center;
+public interface RegistryConstants {
+    /**注册中心中的注册ID*/
+    public static final String Center_Ticket             = "CenterTicket";
+    public static final String Center_RSF_APP_KEY        = "RSF_APP_KEY";          //key
+    public static final String Center_RSF_APP_KEY_SECRET = "RSF_APP_KEY_SECRET";   //秘钥
+    public static final String LoggerName_CenterReceiver = "rsf-center-receiver";
+}

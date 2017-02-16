@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.client;
+package net.hasor.registry.client;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.*;
-import net.hasor.rsf.domain.RsfConstants;
+import net.hasor.registry.RegistryConstants;
+import net.hasor.registry.RsfCenterSettings;
+import net.hasor.rsf.RsfFilter;
+import net.hasor.rsf.RsfFilterChain;
+import net.hasor.rsf.RsfRequest;
+import net.hasor.rsf.RsfResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -30,25 +34,22 @@ import org.slf4j.LoggerFactory;
 public class RsfCenterClientVerifyFilter implements RsfFilter {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
-    private RsfSettings rsfSettings;
-    private String appKey     = null;                               //key
-    private String keySecret  = null;                               //keySecret
-    private String rsfVersion = null;                               //客户端版本
+    private RsfCenterSettings centerSettings;
+    private String appKey    = null;    //key
+    private String keySecret = null;    //keySecret
     //
     //
     @Init
     public void init() {
-        this.appKey = this.rsfSettings.getAppKeyID();
-        this.keySecret = this.rsfSettings.getAppKeySecret();
-        this.rsfVersion = this.rsfSettings.getVersion();
+        this.appKey = this.centerSettings.getAppKeyID();
+        this.keySecret = this.centerSettings.getAppKeySecret();
     }
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         if (request.isLocal()) {
             //-如果是对外发送请求，则添加请求头参数用于注册中心校验
-            request.addOption(RsfConstants.Center_RSF_APP_KEY, this.appKey);
-            request.addOption(RsfConstants.Center_RSF_APP_KEY_SECRET, this.keySecret);
-            request.addOption(RsfConstants.Center_RSF_VERSION, this.rsfVersion);
+            request.addOption(RegistryConstants.Center_RSF_APP_KEY, this.appKey);
+            request.addOption(RegistryConstants.Center_RSF_APP_KEY_SECRET, this.keySecret);
         }
         chain.doFilter(request, response);
     }

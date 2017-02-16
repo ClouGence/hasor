@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.client;
-import net.hasor.rsf.utils.StringUtils;
+package net.hasor.registry.client;
+import net.hasor.registry.RsfCenterEvent;
+import net.hasor.registry.domain.CenterEventBody;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfUpdater;
-import net.hasor.rsf.center.RsfCenterEvent;
-import net.hasor.rsf.center.domain.CenterEventBody;
+import net.hasor.rsf.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
