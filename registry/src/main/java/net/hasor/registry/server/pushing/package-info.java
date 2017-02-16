@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 多 Rsf-Center,服务信息分片管理功能。
+ * 向客户端单向推送数据。
  */
-package net.hasor.rsf.center.server.sharding;
+package net.hasor.registry.server.pushing;

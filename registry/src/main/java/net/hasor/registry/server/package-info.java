@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 向客户单推送数据。
+ * RSF 分布式RPC框架的注册中心。
  */
-package net.hasor.rsf.center.server.pushing;
+package net.hasor.registry.server;
