@@ -22,7 +22,6 @@ import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
 import net.hasor.rsf.console.RsfInstruct;
-import net.hasor.rsf.domain.RsfConstants;
 
 import java.io.StringWriter;
 import java.util.List;
@@ -81,9 +80,6 @@ public class DetailRsfInstruct implements RsfInstruct {
         sw.write(">>     Shadow : " + info.isShadow() + "\r\n");
         sw.write(">> SinglePool : " + info.isSharedThreadPool() + "\r\n");
         sw.write(">>       Type : " + ((isProvider) ? "Provider" : "Consumer") + "\r\n");
-        sw.write(">>\r\n");
-        sw.write(">>------ CenterInfo -------\r\n");
-        sw.write(">>     Ticket : " + info.getMetaData(RsfConstants.Center_Ticket) + "\r\n");
         //
         if (!isProvider && (args.length == 2 && "-a".equalsIgnoreCase(args[0]))) {
             RsfUpdater updater = rsfContext.getUpdater();

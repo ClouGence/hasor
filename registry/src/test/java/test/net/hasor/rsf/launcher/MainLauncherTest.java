@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.launcher;
-import net.hasor.rsf.center.server.launcher.MainLauncher;
+import net.hasor.registry.boot.launcher.MainLauncher;
 import net.hasor.rsf.utils.ResourcesUtils;
 import org.junit.Test;
 import org.slf4j.Logger;

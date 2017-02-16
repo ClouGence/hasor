@@ -1,58 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://project.hasor.net/hasor/schema/hasor-rsf">
-    <!-- 框架配置，包扫描范围 -->
+<config xmlns="http://project.hasor.net/hasor/schema/hasor-registry">
     <hasor>
-        <loadPackages>net.hasor.rsf.*</loadPackages>
+        <!-- 框架配置，包扫描范围 -->
+        <loadPackages>net.hasor.rsf.registry.*</loadPackages>
+        <!-- 启动入口 -->
+        <modules.module>net.hasor.registry.boot.RegistryBootModule</modules.module>
 
-        <modules>
-            <!-- RSF框架本体 -->
-            <module>net.hasor.rsf.bootstrap.RsfFrameworkModule</module>
-            <!-- Telnet控制台插件 -->
-            <module>net.hasor.rsf.console.RsfConsoleModule</module>
-            <!-- Web支持插件 -->
-            <module>net.hasor.rsf.web.RsfWebModule</module>
-
-            <!-- RSF-Center 启动入口 -->
-            <module>net.hasor.rsf.center.server.bootstrap.RsfCenterFrameworkModule</module>
-            <!-- 注册中心插件 -->
-            <module>net.hasor.rsf.center.client.RsfCenterModule</module>
-        </modules>
-
-        <!-- Binder扩展 -->
-        <apiBinderSet>
-            <binder type="net.hasor.rsf.RsfApiBinder">net.hasor.rsf.container.RsfApiBinerCreater</binder>
-            <binder type="net.hasor.rsf.RsfPublisher">net.hasor.rsf.container.RsfApiBinerCreater</binder>
-        </apiBinderSet>
-
-        <!-- RSF框架环境变量 -->
+        <!-- Registry 框架环境变量 -->
         <environmentVar>
-            <!-- 是否启用RSF，默认情况启用。启用了RSF之后它会开启相应的端口和线程。 -->
-            <RSF_ENABLE>true</RSF_ENABLE>
-            <!-- 启用磁盘地址本缓存，在refreshCacheTime期间每隔1小时自动写入一次。 -->
-            <RSF_DISK_CACHE_ENABLE>true</RSF_DISK_CACHE_ENABLE>
-
             <!-- app_key -->
             <RSF_APP_KEY></RSF_APP_KEY>
             <!-- app KeySecret -->
             <RSF_APP_KEY_SECRET></RSF_APP_KEY_SECRET>
-            <!-- 应用程序所属单元 -->
-            <RSF_APP_UNIT>default</RSF_APP_UNIT>
-
-            <!-- RSF对外提供服务的IP -->
-            <RSF_SERVICE_IP>local</RSF_SERVICE_IP>
-            <!-- 如果RSF是工作在内网，则需要通过网关进行映射将服务暴露到外网，这里填写网关在外网的IP地址 -->
-            <RSF_GATEWAY_IP></RSF_GATEWAY_IP>
-            <!-- Telnet 控制台端口 -->
-            <RSF_CONSOLE_PORT>2181</RSF_CONSOLE_PORT>
-
-            <!-- RSF对外提供服务的服务端口（可以配置 0 用来关闭 RSF连接器） -->
-            <RSF_SERVICE_PORT>2180</RSF_SERVICE_PORT>
-            <!-- 如果RSF是工作在内网，则需要通过网关进行端口映射，这里填写外网端口号 -->
-            <RSF_GATEWAY_PORT></RSF_GATEWAY_PORT>
-            <!-- Hprose对外提供服务的服务端口（可以配置 0 用来关闭 Hprose连接器） -->
-            <HPROSE_SERVICE_PORT>0</HPROSE_SERVICE_PORT>
-            <!-- 如果Hprose是工作在内网，则需要通过网关进行端口映射，这里填写外网端口号 -->
-            <HPROSE_GATEWAY_PORT></HPROSE_GATEWAY_PORT>
 
             <!-- 注册中心(例:rsf://127.0.0.1:2180) -->
             <!-- Center工作在集群模式下的时候,集群的机器列表,注意:集群中每台机器的对应clusterServers配置都应相同,center在启动时会进行检测 -->
@@ -68,165 +27,27 @@
             <RSF_CENTER_AUTH_ANONYMOUS>true</RSF_CENTER_AUTH_ANONYMOUS>
         </environmentVar>
     </hasor>
-
     <!--
-        Hasor-RSF ( 分布式服务框架 )
-
-            - enable  : 是否启用RSF，默认情况启用。启用了RSF之后它会开启相应的端口和线程。
-            - address : RSF，无法在多个网卡上同时对外提供服务，因此您需要指定一个IP地址来告诉RSF工作在哪张网卡上。
-                            “local”和“localhost”的区别，local指的是，本地默认网卡的IP地址。“localhost”对应的IP地址是“127.0.0.1”
-                            如果您的部署环境有多张网卡，那么可以通过指定ip地址，来告诉RSF具体工作的网卡地址。
-            - port    : RSF对外提供服务的监听端口号。
+        Hasor-RSF ( 分布式服务框架的注册中心 )
+            workAt  : 注册中心工作模式，可选的配置有
+                        none    禁用模式，不启动
+                        client  客户端模式，将本地服务注册到center
+                        server  服务器模式，center服务器
+                        cluster 集群模式，center为集群状态，当前节点为集群中的一个节点
     -->
-    <hasor.rsfConfig enable="${RSF_ENABLE}" address="${RSF_SERVICE_IP}">
-        <!-- 所属单元名称，单元是用来给应用部署划分虚拟机房的。RSF通过单元可以有效控制跨机房调用，从而提升远程调用效率。-->
-        <unitName>${RSF_APP_UNIT}</unitName>
-
-        <!--
-            RSF管理控制台(Telnet)
-                - telnet  	  : 监听端口号。
-                - inBound 	  : 可以使用RSF管理控制台的IP地址列表，默认是“127.0.0.1”。
-                                    默认情况下您必须登录到应用服务器上，才能够访问RSF管理控制台。
-                提示：RSF在启动的时，如果管理控制台的端口被占用，是不会影响到整个RSF启动进程。
-        -->
-        <console port="${RSF_CONSOLE_PORT}" inBound="local,127.0.0.1"/>
-
+    <hasor.registry workAt="${RSF_CENTER_WORK_MODE}">
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
         <!--
             注册中心，用于更新服务列表的配置服务器
                 - timeout         : RSF 和 Center 之间发起远程调用超时时间(6秒)
                 - heartbeatTime   : 服务心跳时间(30秒)
-                - automaticOnline : RSF在启动之后是否自动转换为 online 状态。
+            Center工作在集群模式下的时候,集群的机器列表
+                注意:集群中每台机器的对应clusterServers配置都应相同,center在启动时会进行检测
         -->
-        <centerServers timeout="6000" heartbeatTime="30000" automaticOnline="true">
-            <server>${RSF_CENTER_SERVERS}</server>
-        </centerServers>
+        <servers timeout="6000" heartbeatTime="15000">
+            ${RSF_CENTER_SERVERS}
+        </servers>
 
-
-        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-        <!--用于设置默认情况下RSF服务的一些(不重要)的选项。
-                version = 在未指定注册服务的版本信息时使用的版本号。
-                group   = 在未指定注册服务的分组信息时使用的分组名称。
-                timeout = 在未指定注册服务的超时时间情况下 6000 毫秒超时。
-         -->
-        <defaultServiceValue version="1.0.0" group="RSF" timeout="6000"/>
-
-        <!-- 作为服务端向客户端响应时携带的选项（demo） -->
-        <serverOptionSet>
-            <option key="identity">Response</option>
-        </serverOptionSet>
-
-        <!-- 作为客户端向服务端发送调用请求时携带的选项（demo） -->
-        <clientOptionSet>
-            <option key="identity">Request</option>
-        </clientOptionSet>
-
-        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-        <!--
-            RSF 支持多种 RPC 协议共存，这里是配置 RPC 协议连接器的地方。
-                连接器的作用是为不同协议提供网络数据包编码解码的功能，RSF 内置了两种RPC协议。
-                RSF/1.0     原生的内置协议，也是默认协议。
-                Hprose/1.0  see：http://www.hprose.com/
-
-            default
-                - 默认RPC协议，RSF 在启动的时必须有一个默认RPC协议
-            protocol
-                - 连接器运行的RPC协议
-            localPort
-                - 连接器使用的端口（如果端口配置为「0」表示禁用该协议。）
-            gateway :
-                网关配置，当 RSF 工作在内网时因为 RSF 是工作在内网环境无法取得公网地址，因此这里需要配置RSF公网地址和端口号。
-                - gatewayAddress : 网关IP地址
-                - gatewayPort    : 网关上RSF的端口号
-        -->
-        <connectorSet default="rsf">
-            <connector protocol="rsf" localPort="${RSF_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${RSF_GATEWAY_PORT}"/>
-            <connector protocol="hprose" localPort="${HPROSE_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${HPROSE_GATEWAY_PORT}"/>
-        </connectorSet>
-        <!--
-            这里配置 RSF 中支持的 RPC协议，但是要让协议生效必须配置对应的连接器。
-                如果您需要覆盖默认协议的实现类，请在 hasor-config.xml 主配置文件中覆盖它。
-         -->
-        <protocolSet>
-            <protocol name="rsf" implementor="net.hasor.rsf.protocol.rsf.RsfProtocolHandler"/>
-            <protocol name="hprose" implementor="net.hasor.rsf.protocol.hprose.HproseProtocolHandler"/>
-        </protocolSet>
-
-        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-        <!--
-            作为 Client 的配置
-                defaultTimeout  = 客户端RPC发起请求超时时间
-                maximumRequest  = 最大允许的并发请求数
-                sendLimitPolicy = 并发调用请求限制策略，当并发调用达到限制值后的策略（Reject 抛出异常，WaitSecond 等待1秒重试）
-                connectTimeout  = 客户端发起一个连接到完成RSF协议握手所允许的最大耗时（单位毫秒）。
-        -->
-        <client defaultTimeout="6000" maximumRequest="200" sendLimitPolicy="Reject" connectTimeout="10000"/>
-
-        <!--
-            处理队列配置（用于配置ExecutesManager）
-                - maxSize       : 处理任务队列的最大大小，作为服务端当队列满了之后所有新进来的请求都会被回应 拒绝。
-                - minPoolSize   : the number of threads to keep in the pool, even if they are idle, unless allowCoreThreadTimeOut is set.
-                - maxPoolSize   : the maximum number of threads to allow in the pool. keepAliveTime(SECONDS) when the number of threads is greater than the core, 
-                              this is the maximum time that excess idle threads will wait for new tasks before terminating.
-                - keepAliveTime : 
-        -->
-        <queue maxSize="4096" minPoolSize="1" maxPoolSize="4" keepAliveTime="300"/>
-
-        <!--
-            网络数据包线程配置
-                workerThread : 处理网络IO数据包的线程数。
-                listenThread : 处理网络监听请求的线程数。
-        -->
-        <network workerThread="8" listenThread="1"/>
-
-        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-        <!-- 序列器（在修改序列化方式时，需要确保远程和本地都支持） -->
-        <serializeType default="Hprose">
-            <!-- JSON-格式序列化 -->
-            <serialize name="Json">net.hasor.rsf.serialize.coder.JsonSerializeCoder</serialize>
-            <!-- Java-原生序列化 -->
-            <serialize name="Java">net.hasor.rsf.serialize.coder.JavaSerializeCoder</serialize>
-            <!-- Hessian-格式序列化 -->
-            <serialize name="Hessian">net.hasor.rsf.serialize.coder.HessianSerializeCoder</serialize>
-            <!-- Hprose-格式序列化 -->
-            <serialize name="Hprose">net.hasor.rsf.serialize.coder.HproseSerializeCoder</serialize>
-        </serializeType>
-
-        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-        <!-- 默认QoS流控规则,该配置仅当没有配置任何QoS规则时才启用 -->
-        <defaultSpeedFlowControl>
-            <action>service</action>    <!-- 速率控制方式：每服务、每方法、每地址 -->
-            <rate>2000</rate>           <!-- 稳态速率 -->
-            <peak>5000</peak>           <!-- 峰值速率 -->
-            <timeWindow>10</timeWindow> <!-- 时间窗口 -->
-        </defaultSpeedFlowControl>
-
-        <!-- 流控 & 路由 -->
-        <route>
-            <flowcontrol>
-                <!-- 随机选址 -->
-                <random>net.hasor.rsf.address.route.flowcontrol.random.RandomFlowControl</random>
-                <!-- QoS速率 -->
-                <speed>net.hasor.rsf.address.route.flowcontrol.speed.SpeedFlowControl</speed>
-                <!-- 单元化地址本计算 -->
-                <unit>net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl</unit>
-            </flowcontrol>
-            <!-- 参数级路由计算，参数key生成器 -->
-            <argsKey>net.hasor.rsf.address.route.rule.DefaultArgsKey</argsKey>
-        </route>
-
-        <!-- 地址管理 -->
-        <addressPool>
-            <!-- 启用磁盘地址本缓存，在refreshCacheTime期间每隔1小时自动写入一次。 -->
-            <localDiskCache>${RSF_DISK_CACHE_ENABLE}</localDiskCache>
-            <!-- 每次缓存地址本到磁盘时的时间间隔（单位:毫秒）默认:1小时 -->
-            <diskCacheTimeInterval>3600000</diskCacheTimeInterval>
-            <!-- 自动刷新addressPool地址本缓存的时间（单位:毫秒）默认:1分钟 -->
-            <refreshCacheTime>60000</refreshCacheTime>
-            <!-- (失效地址重试机制)当地址失效之后要经过多长时间才能被重新列入备选地址。（单位:毫秒）默认:2分钟 -->
-            <invalidWaitTime>120000</invalidWaitTime>
-        </addressPool>
-
-        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
         <!-- 安全 -->
         <security>
             <!-- app_key -->
@@ -235,22 +56,7 @@
             <appKeySecret>${RSF_APP_KEY_SECRET}</appKeySecret>
         </security>
 
-    </hasor.rsfConfig>
-
-    <!--
-        Hasor-RSF ( 分布式服务框架的注册中心 )
-            workAt  : 注册中心工作模式，可选的配置有
-                        none    禁止模式，不启动
-                        alone   单机模式，一台机器
-                        cluster 集群模式，任意台机器
-    -->
-    <hasor.rsfCenter workAt="${RSF_CENTER_WORK_MODE}">
-        <!--
-            Center工作在集群模式下的时候,集群的机器列表
-                注意:集群中每台机器的对应clusterServers配置都应相同,center在启动时会进行检测
-        -->
-        <clusterServers>${RSF_CENTER_SERVERS}</clusterServers>
-
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
         <!--
             推送配置
                - threadSize   : 负责执行推送任务的线程数。
@@ -269,11 +75,12 @@
 
         <!-- 数据适配器 -->
         <adapterConfig>
-            <dataAdapter>net.hasor.rsf.center.server.adapter.HashMapDataAdapter</dataAdapter>
-            <authQuery>net.hasor.rsf.center.server.adapter.FileAuthQuery</authQuery>
+            <dataAdapter>net.hasor.registry.server.adapter.HashMapDataAdapter</dataAdapter>
+            <authQuery>net.hasor.registry.server.adapter.FileAuthQuery</authQuery>
         </adapterConfig>
 
         <!-- 授权配置 : allowAnonymous 允许匿名应用 -->
         <auth allowAnonymous="${RSF_CENTER_AUTH_ANONYMOUS}"/>
-    </hasor.rsfCenter>
+
+    </hasor.registry>
 </config>

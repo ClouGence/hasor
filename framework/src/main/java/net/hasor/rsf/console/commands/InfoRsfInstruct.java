@@ -89,8 +89,6 @@ public class InfoRsfInstruct implements RsfInstruct {
         sw.write(">> ]\r\n");
         sw.write(">>           isOnline :" + rsfContext.isOnline() + "\r\n");
         sw.write(">>    automaticOnline :" + settings.isAutomaticOnline() + "\r\n");
-        sw.write(">>           appKeyID :" + settings.getAppKeyID() + "\r\n");
-        sw.write(">>       appKeySecret :" + (StringUtils.isBlank(settings.getAppKeySecret()) ? "null" : "******") + "\r\n");
         sw.write(">>      service Count :" + serviceIDs.size() + "\r\n");
         sw.write(">>     provider Count :" + providerCount + "\r\n");
         sw.write(">>     customer Count :" + customerCount + "\r\n");

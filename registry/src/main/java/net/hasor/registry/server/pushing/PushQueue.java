@@ -18,7 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.registry.server.manager.RsfCenterSettings;
+import net.hasor.registry.server.manager.ServerSettings;
 import net.hasor.registry.trace.TraceUtil;
 import net.hasor.registry.server.domain.LogUtils;
 import net.hasor.rsf.InterAddress;
@@ -45,7 +45,7 @@ public class PushQueue implements Runnable {
     @Inject
     private RsfContext                             rsfContext;
     @Inject
-    private RsfCenterSettings                      rsfCenterCfg;
+    private ServerSettings                         rsfCenterCfg;
     //
     @Init
     public void init() {

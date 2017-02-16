@@ -17,8 +17,9 @@ package net.hasor.registry.boot;
 import net.hasor.registry.CenterMode;
 import net.hasor.registry.RsfCenterSettings;
 import net.hasor.registry.client.RegistryClientModule;
-import net.hasor.registry.server.RegistryServerModule;
+import net.hasor.registry.server.manager.RegistryServerModule;
 import net.hasor.rsf.RsfApiBinder;
+import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +34,9 @@ public class RegistryBootModule extends RsfModule {
     //
     @Override
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-        RsfCenterSettings settings = new RsfCenterSettingsImpl(apiBinder.getEnvironment().getSettings());
+        RsfEnvironment rsfEnvironment = apiBinder.getEnvironment();
+        RsfCenterSettings settings = new RsfCenterSettingsImpl(rsfEnvironment.getSettings());
+        apiBinder.bindType(RsfCenterSettings.class).toInstance(settings);
         //
         if (CenterMode.None.equals(settings.getMode())) {
             this.logger.warn("registry workAt None mode, so registry cannot be started.");
@@ -48,8 +51,7 @@ public class RegistryBootModule extends RsfModule {
         //
         if (CenterMode.Server.equals(settings.getMode())) {
             this.logger.warn("registry workAt Server mode, so registry will managing all service info.");
-            net.hasor.registry.server.RsfCenterSettings centerSettings = new net.hasor.registry.server.RsfCenterSettings(apiBinder.getEnvironment());
-            apiBinder.installModule(new RegistryServerModule(centerSettings));
+            apiBinder.installModule(new RegistryServerModule(rsfEnvironment, settings));
             return;
         }
         //

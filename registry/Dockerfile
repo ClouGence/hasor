@@ -17,9 +17,10 @@ ENV RSF_HOME  /usr/rsfcenter
 #ENV APP_CONFIG
 
 #各种端口
+EXPOSE 8000
 EXPOSE 2180
 EXPOSE 2181
-EXPOSE 8000
+EXPOSE 2182
 
 ADD . /usr/rsfcenter/src
 RUN cd $RSF_HOME/src && \

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.registry;
+import net.hasor.core.Settings;
 import net.hasor.rsf.InterAddress;
 /**
  *
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfCenterSettings {
+public interface RsfCenterSettings extends Settings {
     /** 工作模式 */
     public CenterMode getMode();
 

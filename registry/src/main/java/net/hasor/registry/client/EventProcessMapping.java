@@ -15,7 +15,7 @@
  */
 package net.hasor.registry.client;
 import net.hasor.registry.RsfCenterEvent;
-import net.hasor.registry.domain.CenterEventBody;
+import net.hasor.registry.domain.client.CenterEventBody;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.utils.StringUtils;

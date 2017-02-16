@@ -13,14 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.client;
-import net.hasor.registry.domain.client.CenterEventBody;
-import net.hasor.rsf.RsfUpdater;
+package net.hasor.registry.server.domain;
 /**
- * 注册中心事件处理器接口
- * @version : 2016年2月18日
+ * 用于封装结果集
+ * @version : 2015年1月8日
  * @author 赵永春(zyc@hasor.net)
  */
-interface EventProcess {
-    public boolean processEvent(RsfUpdater rsfUpdater, CenterEventBody centerEventBody);
+public interface Result<T> {
+    /**返回操作是否成功。*/
+    public boolean isSuccess();
+
+    /**(如果有)返回如果操作失败反馈的异常信息。*/
+    public Throwable getThrowable();
+
+    public ErrorCode getErrorInfo();
+
+    /**获取返回的结果集。*/
+    public T getResult();
 }

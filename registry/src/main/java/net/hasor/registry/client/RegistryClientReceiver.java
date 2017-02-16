@@ -19,7 +19,7 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Inject;
 import net.hasor.registry.RegistryConstants;
 import net.hasor.registry.RsfCenterListener;
-import net.hasor.registry.domain.CenterEventBody;
+import net.hasor.registry.domain.client.CenterEventBody;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.domain.RsfCenterException;

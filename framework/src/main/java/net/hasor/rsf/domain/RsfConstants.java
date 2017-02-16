@@ -61,9 +61,6 @@ public interface RsfConstants {
     public static final long   OneHourTime                 = 1 * 60 * 60 * 1000;
     public static final long   SevenDaysTime               = 7 * 24 * OneHourTime;
     //
-    public static final String Center_Ticket               = "CenterTicket";         //注册中心中的注册ID
-    //
-    //
     // ---------------------------------------------------------------------------------------------
     public static final String LoggerName_Console          = "rsf-console";
     public static final String LoggerName_ConsoleRXD       = "rsf-console-rtxd";
