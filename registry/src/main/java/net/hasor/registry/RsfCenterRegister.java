@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.registry;
-import net.hasor.registry.domain.ConsumerPublishInfo;
-import net.hasor.registry.domain.ProviderPublishInfo;
+import net.hasor.registry.domain.client.ConsumerPublishInfo;
+import net.hasor.registry.domain.client.ProviderPublishInfo;
 import net.hasor.rsf.RsfService;
 
 import java.util.List;

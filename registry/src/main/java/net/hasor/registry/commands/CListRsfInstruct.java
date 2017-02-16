@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.commands;
+package net.hasor.registry.commands;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.utils.StringUtils;
+import net.hasor.registry.RegistryConstants;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
 import net.hasor.rsf.console.RsfInstruct;
-import net.hasor.rsf.domain.RsfConstants;
+import net.hasor.rsf.utils.StringUtils;
 
 import java.io.StringWriter;
 import java.util.List;
@@ -80,7 +80,7 @@ public class CListRsfInstruct implements RsfInstruct {
                 //
                 sw.write(">>\r\n");
                 sw.write(">>------ CenterInfo -------\r\n");
-                sw.write(">>        Ticket :" + info.getMetaData(RsfConstants.Center_Ticket) + "\r\n");
+                sw.write(">>        Ticket :" + info.getMetaData(RegistryConstants.Center_Ticket) + "\r\n");
                 //
             }
             //

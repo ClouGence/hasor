@@ -13,9 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.registry.server.domain;
+import net.hasor.registry.RsfCenterResult;
+import net.hasor.rsf.domain.RsfResultDO;
 /**
- * Center,指令集。
+ * 结果
+ * @version : 2014年10月25日
+ * @author 赵永春(zyc@hasor.net)
  */
-@RsfSearchInclude()
-package net.hasor.rsf.center.server.commands;
-import net.hasor.rsf.console.RsfSearchInclude;
+public class RsfCenterResultDO<T> extends RsfResultDO implements RsfCenterResult<T> {
+    private static final long serialVersionUID = -4678893554960623786L;
+    private              T    result           = null;
+    //
+    @Override
+    public T getResult() {
+        return this.result;
+    }
+    public void setResult(T result) {
+        this.result = result;
+    }
+}

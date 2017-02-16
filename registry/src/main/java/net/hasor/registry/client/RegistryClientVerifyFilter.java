@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春(zyc@hasor.net)
  */
 @Singleton
-public class RsfCenterClientVerifyFilter implements RsfFilter {
+public class RegistryClientVerifyFilter implements RsfFilter {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
     private RsfCenterSettings centerSettings;

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 /**
- * main方法方式启动RsfCenter的控制台启动器。
+ * Center,指令集。
  */
-package net.hasor.rsf.center.server.launcher;
+@RsfSearchInclude()
+package net.hasor.registry.commands;
+import net.hasor.rsf.console.RsfSearchInclude;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.launcher;
+package net.hasor.registry.boot.launcher;
 import net.hasor.core.*;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.future.BasicFuture;

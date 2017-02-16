@@ -16,7 +16,8 @@
 package net.hasor.registry.boot;
 import net.hasor.registry.CenterMode;
 import net.hasor.registry.RsfCenterSettings;
-import net.hasor.registry.client.RsfCenterModule;
+import net.hasor.registry.client.RegistryClientModule;
+import net.hasor.registry.server.RegistryServerModule;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfModule;
 import org.slf4j.Logger;
@@ -33,17 +34,28 @@ public class RegistryBootModule extends RsfModule {
     @Override
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
         RsfCenterSettings settings = new RsfCenterSettingsImpl(apiBinder.getEnvironment().getSettings());
-        this.logger.warn("registry workAt {}.", settings.getMode());
         //
         if (CenterMode.None.equals(settings.getMode())) {
-            this.logger.warn("registry workAt none mode, so registry cannot be started.");
+            this.logger.warn("registry workAt None mode, so registry cannot be started.");
             return;
         }
         //
         if (CenterMode.Client.equals(settings.getMode())) {
-            apiBinder.installModule(new RsfCenterModule(settings));
+            this.logger.warn("registry workAt Client mode, so registry will maintain your service info.");
+            apiBinder.installModule(new RegistryClientModule(settings));
+            return;
         }
         //
+        if (CenterMode.Server.equals(settings.getMode())) {
+            this.logger.warn("registry workAt Server mode, so registry will managing all service info.");
+            net.hasor.registry.server.RsfCenterSettings centerSettings = new net.hasor.registry.server.RsfCenterSettings(apiBinder.getEnvironment());
+            apiBinder.installModule(new RegistryServerModule(centerSettings));
+            return;
+        }
         //
+        if (CenterMode.Cluster.equals(settings.getMode())) {
+            this.logger.warn("registry workAt Cluster mode, Temporary does not support.");
+            throw new UnsupportedOperationException("Temporary does not support");
+        }
     }
 }

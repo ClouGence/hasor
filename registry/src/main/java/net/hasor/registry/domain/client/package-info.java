@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RsfCenter注册中心需要用到的domain数据模型。
+ * 与注册中心通信的功能，所需要的domain数据模型。
  */
-package net.hasor.rsf.center.server.domain;
+package net.hasor.registry.domain.client;

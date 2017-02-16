@@ -29,8 +29,8 @@ import static net.hasor.rsf.domain.RsfEvent.*;
  * @author 赵永春(zyc@hasor.net)
  */
 class RsfEventTransport implements EventListener<Object>, ContextStartListener {
-    protected Logger                 logger        = LoggerFactory.getLogger(getClass());
-    private   RsfCenterClientManager centerManager = null;
+    protected Logger                logger        = LoggerFactory.getLogger(getClass());
+    private   RegistryClientManager centerManager = null;
     //
     @Override
     public void doStart(AppContext appContext) {
@@ -40,7 +40,7 @@ class RsfEventTransport implements EventListener<Object>, ContextStartListener {
     public void doStartCompleted(AppContext appContext) {
         // .
         RsfContext rsfContext = appContext.getInstance(RsfContext.class);
-        this.centerManager = new RsfCenterClientManager(rsfContext);
+        this.centerManager = new RegistryClientManager(rsfContext);
         this.centerManager.run(null);
         this.logger.info("start the registration service processed.");
     }

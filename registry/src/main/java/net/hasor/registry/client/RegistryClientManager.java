@@ -41,13 +41,13 @@ import static net.hasor.registry.RegistryConstants.Center_Ticket;
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-class RsfCenterClientManager implements TimerTask {
+class RegistryClientManager implements TimerTask {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     private final RsfContext        rsfContext;
     private final TimerManager      timerManager;
     private final RsfCenterRegister centerRegister;
     //
-    public RsfCenterClientManager(RsfContext rsfContext) {
+    public RegistryClientManager(RsfContext rsfContext) {
         this.rsfContext = rsfContext;
         RsfCenterSettings settings = this.rsfContext.getAppContext().getInstance(RsfCenterSettings.class);
         ClassLoader loader = rsfContext.getClassLoader();

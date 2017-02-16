@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 与注册中心通信的功能，所需要的domain数据模型。
+ * main方法方式启动RsfCenter的控制台启动器。
  */
-package net.hasor.registry.domain;
+package net.hasor.registry.boot.launcher;

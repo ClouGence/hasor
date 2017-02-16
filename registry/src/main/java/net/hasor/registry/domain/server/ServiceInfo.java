@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.domain;
-import java.io.Serializable;
+package net.hasor.registry.domain.server;
 /**
- * 发布的服务信息
- * @version : 2016年2月18日
+ * 服务信息
+ *
+ * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class PublishInfo implements Serializable {
-    private static final long serialVersionUID = -7962837923093982098L;
-    /** 唯一标识（客户端唯一标识）。*/
+public class ServiceInfo {
+    /** 唯一标识*/
     private String bindID;
     /** 服务名称。*/
     private String bindName;
@@ -30,14 +29,14 @@ public class PublishInfo implements Serializable {
     private String bindGroup;
     /** 服务版本。*/
     private String bindVersion;
-    /** 注册的服务类型。*/
-    private String bindType;
-    /** 获取客户端调用服务超时时间。*/
-    private int    clientTimeout;
-    /** 获取序列化方式*/
-    private String serializeType;
-    /** 服务地址'逗号分割'*/
-    private String targetList;
+    /** 流控规则 */
+    private String flowControl;
+    /** 服务路由(服务级) */
+    private String serviceLevelRule;
+    /** 服务路由(方法级) */
+    private String methodLevelRule;
+    /** 服务路由(参数级) */
+    private String argsLevelRule;
     //
     public String getBindID() {
         return bindID;
@@ -63,28 +62,28 @@ public class PublishInfo implements Serializable {
     public void setBindVersion(String bindVersion) {
         this.bindVersion = bindVersion;
     }
-    public String getBindType() {
-        return bindType;
+    public String getFlowControl() {
+        return flowControl;
     }
-    public void setBindType(String bindType) {
-        this.bindType = bindType;
+    public void setFlowControl(String flowControl) {
+        this.flowControl = flowControl;
     }
-    public int getClientTimeout() {
-        return clientTimeout;
+    public String getServiceLevelRule() {
+        return serviceLevelRule;
     }
-    public void setClientTimeout(int clientTimeout) {
-        this.clientTimeout = clientTimeout;
+    public void setServiceLevelRule(String serviceLevelRule) {
+        this.serviceLevelRule = serviceLevelRule;
     }
-    public String getSerializeType() {
-        return serializeType;
+    public String getMethodLevelRule() {
+        return methodLevelRule;
     }
-    public void setSerializeType(String serializeType) {
-        this.serializeType = serializeType;
+    public void setMethodLevelRule(String methodLevelRule) {
+        this.methodLevelRule = methodLevelRule;
     }
-    public String getTargetList() {
-        return targetList;
+    public String getArgsLevelRule() {
+        return argsLevelRule;
     }
-    public void setTargetList(String targetList) {
-        this.targetList = targetList;
+    public void setArgsLevelRule(String argsLevelRule) {
+        this.argsLevelRule = argsLevelRule;
     }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.center.server.domain;
+package net.hasor.registry.domain.server;
 import java.util.List;
 /**
  * 服务提供者信息

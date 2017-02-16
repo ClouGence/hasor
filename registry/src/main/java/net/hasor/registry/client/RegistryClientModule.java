@@ -32,11 +32,11 @@ import org.slf4j.LoggerFactory;
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfCenterModule extends RsfModule {
-    protected static Logger logger = LoggerFactory.getLogger(RsfCenterModule.class);
+public class RegistryClientModule extends RsfModule {
+    protected static Logger logger = LoggerFactory.getLogger(RegistryClientModule.class);
     private RsfCenterSettings centerSettings;
     //
-    public RsfCenterModule(RsfCenterSettings centerSettings) {
+    public RegistryClientModule(RsfCenterSettings centerSettings) {
         this.centerSettings = Hasor.assertIsNotNull(centerSettings);
     }
     //
@@ -57,8 +57,8 @@ public class RsfCenterModule extends RsfModule {
         // 2.接受来自注册中心的消息
         apiBinder.bindType(ContextStartListener.class).toInstance(transport);
         apiBinder.rsfService(RsfCenterListener.class)//服务类型
-                .toInfo(apiBinder.bindType(RsfCenterDataReceiver.class).uniqueName().asEagerSingleton().toInfo())//服务实现
-                .bindFilter("AuthFilter", RsfCenterClientVerifyFilter.class)//服务安全过滤器
+                .toInfo(apiBinder.bindType(RegistryClientReceiver.class).uniqueName().asEagerSingleton().toInfo())//服务实现
+                .bindFilter("AuthFilter", RegistryClientVerifyFilter.class)//服务安全过滤器
                 .asShadow().register();
         //
         // 3.向注册中心上报服务信息的服务
@@ -67,7 +67,7 @@ public class RsfCenterModule extends RsfModule {
         logger.info("rsf center-client hostSet = {}  -> center enable.", strBuilder.toString());
         apiBinder.rsfService(RsfCenterRegister.class)//服务类型
                 .timeout(this.centerSettings.getCenterRsfTimeout())//服务接口超时时间
-                .bindFilter("AuthFilter", RsfCenterClientVerifyFilter.class)//服务安全过滤器
+                .bindFilter("AuthFilter", RegistryClientVerifyFilter.class)//服务安全过滤器
                 .bindAddress(null, centerList)//静态地址，用不失效
                 .asShadow().register();//注册服务
         logger.info("rsf center-client started.");

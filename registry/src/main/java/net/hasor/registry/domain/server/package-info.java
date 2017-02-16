@@ -13,23 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.domain;
-import net.hasor.registry.RsfCenterResult;
-import net.hasor.rsf.domain.RsfResultDO;
 /**
- * 结果
- * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * RsfCenter注册中心需要用到的domain数据模型。
  */
-public class RsfCenterResultDO<T> extends RsfResultDO implements RsfCenterResult<T> {
-    private static final long serialVersionUID = -4678893554960623786L;
-    private              T    result           = null;
-    //
-    @Override
-    public T getResult() {
-        return this.result;
-    }
-    public void setResult(T result) {
-        this.result = result;
-    }
-}
+package net.hasor.registry.domain.server;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.domain;
+package net.hasor.registry.domain.client;
 import java.io.Serializable;
 /**
  * center下发的事件

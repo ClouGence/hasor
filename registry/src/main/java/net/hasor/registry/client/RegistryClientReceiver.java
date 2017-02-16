@@ -17,8 +17,8 @@ package net.hasor.registry.client;
 import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Inject;
-import net.hasor.registry.RsfCenterListener;
 import net.hasor.registry.RegistryConstants;
+import net.hasor.registry.RsfCenterListener;
 import net.hasor.registry.domain.CenterEventBody;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfUpdater;
@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfCenterDataReceiver implements RsfCenterListener {
+public class RegistryClientReceiver implements RsfCenterListener {
     protected Logger logger = LoggerFactory.getLogger(RegistryConstants.LoggerName_CenterReceiver);
     @Inject
     private              RsfContext   rsfContext;
@@ -49,8 +49,6 @@ public class RsfCenterDataReceiver implements RsfCenterListener {
                 "UpdateFlowControlEvent" };
     }
 
-    //
-    //
     @Override
     public boolean onEvent(String eventType, CenterEventBody centerEventBody) throws Throwable {
         RsfUpdater rsfUpdater = Hasor.assertIsNotNull(this.rsfContext, " rsfContext is null.").getUpdater();
