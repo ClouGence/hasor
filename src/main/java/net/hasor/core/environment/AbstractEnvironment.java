@@ -280,6 +280,7 @@ public abstract class AbstractEnvironment implements Environment {
      * 5st，属性文件"env.config"
      */
     private void initEnvConfig(Map<String, String> loadEnvConfig) throws IOException {
+        //
         // .1st，System.getProperties()
         if (this.logger.isDebugEnabled()) {
             this.logger.debug("envVars.reload -> System.getProperties().");
@@ -323,9 +324,12 @@ public abstract class AbstractEnvironment implements Environment {
             this.envMap.put(envItem.toUpperCase(), settings.getString("hasor.environmentVar." + envItem));
         }
         // .4st，传入的配置
-        this.logger.info("load 'env.config' use custom , size = " + loadEnvConfig.size());
-        for (String name : loadEnvConfig.keySet()) {
-            this.envMap.put(name.toUpperCase(), loadEnvConfig.get(name));
+        if (loadEnvConfig != null) {
+            this.logger.info("ignore 'env.config' use custom map, size = " + loadEnvConfig.size());
+            for (String name : loadEnvConfig.keySet()) {
+                this.envMap.put(name.toUpperCase(), loadEnvConfig.get(name));
+            }
+            return;
         }
         //
         // .5st，外部属性文件"env.config"
