@@ -278,6 +278,7 @@ public abstract class AbstractEnvironment implements Environment {
      * 3st，配置文件"hasor.environmentVar"
      * 4st，传入的配置
      * 5st，属性文件"env.config"
+     * tips：如果指定了loadEnvConfig参数，那么将会忽略"env.config"配置文件。
      */
     private void initEnvConfig(Map<String, String> loadEnvConfig) throws IOException {
         //
@@ -324,7 +325,7 @@ public abstract class AbstractEnvironment implements Environment {
             this.envMap.put(envItem.toUpperCase(), settings.getString("hasor.environmentVar." + envItem));
         }
         // .4st，传入的配置
-        if (loadEnvConfig != null) {
+        if (loadEnvConfig != null && !loadEnvConfig.isEmpty()) {
             this.logger.info("ignore 'env.config' use custom map, size = " + loadEnvConfig.size());
             for (String name : loadEnvConfig.keySet()) {
                 this.envMap.put(name.toUpperCase(), loadEnvConfig.get(name));
