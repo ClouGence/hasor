@@ -115,8 +115,6 @@
 
 ----------
 ### 未来版本计划支持的项目（粗略计划）
-* 1.2.0 版本计划，RSF 网络层改造，支持不同协议，尝试支持 Hprose
-* 1.3.0 版本计划，分离 Center 为独立的项目，让RSF更纯粹。
 * 细节优化
 - 整个 static-config.xml 的配置都可以被主配置文件进行覆盖。
 - RsfCenter 数据订阅，方便不同版本Center之间数据同步。为Hasor版本升级可能存在的不兼容性考虑。
@@ -138,5 +136,5 @@
 ### 正式发布
 
 * mvn release:prepare -P release
-* mvn deploy -P release
+* ./deploy.sh -P release
 * ./build.sh && docker build -t debug . && docker run debug
