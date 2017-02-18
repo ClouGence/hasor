@@ -18,7 +18,7 @@ import net.hasor.core.*;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.core.utils.ExceptionUtils;
 import net.hasor.core.utils.StringUtils;
-import net.hasor.web.Render;
+import net.hasor.web.annotation.Render;
 import net.hasor.web.RenderEngine;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.invoker.InMappingDef;
