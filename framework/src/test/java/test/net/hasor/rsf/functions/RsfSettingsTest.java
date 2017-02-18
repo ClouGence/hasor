@@ -34,6 +34,7 @@ public class RsfSettingsTest {
                 null, //
                 "/center/client-config.xml",//
                 new HashMap<String, String>(), //
+                new HashMap<String, String>(), //
                 null);
         env.refreshVariables();
         DefaultRsfSettings rsfSettings = new DefaultRsfSettings(env.getSettings());
