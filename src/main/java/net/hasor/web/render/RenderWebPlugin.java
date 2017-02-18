@@ -142,9 +142,10 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
             return false;
         }
         //
-        //
         String oriViewName = render.renderTo();
-        render.renderTo(fixTempName(this.templatePath, oriViewName));
+        if (this.useLayout) {
+            render.renderTo(fixTempName(this.templatePath, oriViewName));
+        }
         //
         String layoutFile = null;
         if (this.useLayout && render.layout()) {

@@ -38,15 +38,15 @@ public class InMappingDef implements InMapping {
     private       Set<Method>         asyncMethod;
     private AsyncSupported defaultAsync = AsyncSupported.no;
     //
-    private InMappingDef(long index, BindInfo<?> targetType, String mappingTo) {
+    public InMappingDef(long index, BindInfo<?> targetType, String mappingTo, List<Method> methodList, boolean force) {
         this.index = index;
-        this.targetType = targetType;
+        this.targetType = Hasor.assertIsNotNull(targetType);
         String servicePath = Hasor.assertIsNotNull(mappingTo);
         if (StringUtils.isBlank(servicePath)) {
-            throw new NullPointerException("Service path is empty.");
+            throw new NullPointerException("'" + targetType.getBindType() + "' Service path is empty.");
         }
         if (!servicePath.matches("/.+")) {
-            throw new IllegalStateException("Service path format error, must be a '/' at the start.");
+            throw new IllegalStateException("'" + targetType.getBindType() + "' Service path format error, must be a '/' at the start.");
         }
         if (targetType.getBindType().getAnnotation(Async.class) != null) {
             this.defaultAsync = AsyncSupported.yes;
@@ -56,10 +56,7 @@ public class InMappingDef implements InMapping {
         this.mappingToMatches = wildToRegex(servicePath).replaceAll("\\{\\w{1,}\\}", "([^/]{1,})");
         this.httpMapping = new HashMap<String, Method>();
         this.asyncMethod = new HashSet<Method>();
-    }
-    //
-    public InMappingDef(long index, BindInfo<?> targetType, String mappingTo, List<Method> methodList, boolean force) {
-        this(index, targetType, mappingTo);
+        //
         if (methodList == null || methodList.isEmpty()) {
             return;
         }

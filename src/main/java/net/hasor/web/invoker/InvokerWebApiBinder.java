@@ -25,6 +25,7 @@ import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.definition.*;
 import net.hasor.web.listener.ContextListenerDefinition;
 import net.hasor.web.listener.HttpSessionListenerDefinition;
+import net.hasor.web.render.RenderApiBinderImpl;
 import net.hasor.web.startup.RuntimeFilter;
 
 import javax.servlet.Filter;
@@ -43,8 +44,9 @@ import java.util.*;
 public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     private final InstanceProvider<String> requestEncoding  = new InstanceProvider<String>("");
     private final InstanceProvider<String> responseEncoding = new InstanceProvider<String>("");
-    private ServletVersion curVersion;
-    private MimeType       mimeType;
+    private ServletVersion      curVersion;
+    private MimeType            mimeType;
+    private RenderApiBinderImpl renderBinder;
     //
     // ------------------------------------------------------------------------------------------------------
     protected InvokerWebApiBinder(ServletVersion curVersion, MimeType mimeType, ApiBinder apiBinder) {
@@ -53,6 +55,8 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         apiBinder.bindType(String.class).nameWith(RuntimeFilter.HTTP_RESPONSE_ENCODING_KEY).toProvider(this.responseEncoding);
         this.curVersion = Hasor.assertIsNotNull(curVersion);
         this.mimeType = Hasor.assertIsNotNull(mimeType);
+        this.renderBinder = new RenderApiBinderImpl(apiBinder) {
+        };
     }
     //
     // ------------------------------------------------------------------------------------------------------
@@ -483,6 +487,40 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             loadType(this, type);
         }
     }
+    //
+    // ------------------------------------------------------------------------------------------------------
+    /**拦截这些后缀的请求，这些请求会被渲染器渲染。*/
+    public RenderEngineBindingBuilder<RenderEngine> suffix(String urlPattern, String... morePatterns) {
+        return this.renderBinder.suffix(urlPattern, morePatterns);
+    }
+    /**拦截这些后缀的请求，这些请求会被渲染器渲染。*/
+    public RenderEngineBindingBuilder<RenderEngine> suffix(String[] morePatterns) {
+        return this.renderBinder.suffix(morePatterns);
+    }
+    /**扫描Render注解配置的渲染器。*/
+    public void scanAnnoRender() {
+        this.scanAnnoRender(new Matcher<Class<? extends RenderEngine>>() {
+            @Override
+            public boolean matches(Class<? extends RenderEngine> target) {
+                return true;
+            }
+        });
+    }
+    /**扫描Render注解配置的渲染器。*/
+    public void scanAnnoRender(String... packages) {
+        this.scanAnnoRender(new Matcher<Class<? extends RenderEngine>>() {
+            @Override
+            public boolean matches(Class<? extends RenderEngine> target) {
+                return true;
+            }
+        });
+    }
+    /**扫描Render注解配置的渲染器。*/
+    public void scanAnnoRender(Matcher<Class<? extends RenderEngine>> matcher, String... packages) {
+        this.renderBinder.scanAnnoRender(matcher, packages);
+    }
+    //
+    // ------------------------------------------------------------------------------------------------------
     //
     private abstract class MappingToBuilder<T> implements MappingToBindingBuilder<T> {
         private       Class<T>     targetClass;

@@ -217,4 +217,36 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
         public void with(int index, BindInfo<? extends T> targetInfo);
     }
+    //
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    /**拦截这些后缀的请求，这些请求会被渲染器渲染。*/
+    public RenderEngineBindingBuilder<RenderEngine> suffix(String urlPattern, String... morePatterns);
+
+    /**拦截这些后缀的请求，这些请求会被渲染器渲染。*/
+    public RenderEngineBindingBuilder<RenderEngine> suffix(String[] morePatterns);
+
+    /**扫描Render注解配置的渲染器。*/
+    public void scanAnnoRender();
+
+    /**扫描Render注解配置的渲染器。*/
+    public void scanAnnoRender(String... packages);
+
+    /**扫描Render注解配置的渲染器。*/
+    public void scanAnnoRender(Matcher<Class<? extends RenderEngine>> matcher, String... packages);
+    //
+    /**负责配置RenderEngine。*/
+    public static interface RenderEngineBindingBuilder<T> {
+        /**绑定实现。*/
+        public void bind(Class<? extends T> filterKey);
+
+        /**绑定实现。*/
+        public void bind(T filter);
+
+        /**绑定实现。*/
+        public void bind(Provider<? extends T> filterProvider);
+
+        /**绑定实现。*/
+        public void bind(BindInfo<? extends T> filterRegister);
+    }
 }

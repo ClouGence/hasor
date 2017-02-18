@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.render.json;
+package net.hasor.web;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * Json 渲染器
- * @version : 2016年1月3日
- * @author 赵永春(zyc@hasor.net)
+ * 渲染器,参数为渲染器支持的请求扩展名。
+ * @version : 2017-01-10
+ * @author 赵永春 (zyc@hasor.net)
  */
-//public class JsonRenderEngine implements RenderEngine {
-//    @Override
-//    public void initEngine(AppContext appContext) throws IOException {
-//    }
-//    @Override
-//    public void process(RenderInvoker data, Writer writer) throws Throwable {
-//        String json = JSON.DEFAULT.toJSON(data.get(Invoker.RETURN_DATA_KEY));
-//        writer.write(json);
-//    }
-//    @Override
-//    public boolean exist(String template) throws IOException {
-//        return true;
-//    }
-//}
+@Target({ ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Render {
+    /** 渲染器支持的请求扩展名。 */
+    public String[] value();
+}

@@ -18,6 +18,9 @@ import net.hasor.core.*;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.core.utils.ExceptionUtils;
 import net.hasor.core.utils.StringUtils;
+import net.hasor.web.Render;
+import net.hasor.web.RenderEngine;
+import net.hasor.web.WebApiBinder;
 import net.hasor.web.invoker.InMappingDef;
 
 import javax.servlet.ServletRequest;
@@ -25,23 +28,23 @@ import javax.servlet.ServletResponse;
 import java.lang.reflect.Method;
 import java.util.*;
 /**
- * {@link RenderApiBinder}接口实现。
  * @version : 2017-01-08
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RenderApiBinderImpl extends ApiBinderWrap implements RenderApiBinder {
+public class RenderApiBinderImpl extends ApiBinderWrap {
+    private BindInfo<DefaultServlet> defaultServletBindInfo;
     protected RenderApiBinderImpl(ApiBinder apiBinder) {
         super(apiBinder);
+        this.defaultServletBindInfo = apiBinder.bindType(DefaultServlet.class).toInfo();
     }
-    @Override
-    public RenderEngineBindingBuilder<RenderEngine> suffix(String suffix, String... moreSuffix) {
+    //
+    public WebApiBinder.RenderEngineBindingBuilder<RenderEngine> suffix(String suffix, String... moreSuffix) {
         return new RenderEngineBindingBuilderImpl(newArrayList(moreSuffix, suffix));
     }
-    @Override
-    public RenderEngineBindingBuilder<RenderEngine> suffix(String[] suffixArrays) {
+    public WebApiBinder.RenderEngineBindingBuilder<RenderEngine> suffix(String[] suffixArrays) {
         return new RenderEngineBindingBuilderImpl(newArrayList(suffixArrays, null));
     }
-    private class RenderEngineBindingBuilderImpl implements RenderEngineBindingBuilder<RenderEngine> {
+    private class RenderEngineBindingBuilderImpl implements WebApiBinder.RenderEngineBindingBuilder<RenderEngine> {
         private List<String> suffixList = new ArrayList<String>();
         private boolean      enable     = false;
         public RenderEngineBindingBuilderImpl(List<String> suffixList) {
@@ -78,7 +81,6 @@ public class RenderApiBinderImpl extends ApiBinderWrap implements RenderApiBinde
     private void bindSuffix(List<String> suffixList, BindInfo<? extends RenderEngine> bindInfo) {
         suffixList = Collections.unmodifiableList(suffixList);
         this.bindType(RenderDefinition.class).toInstance(new RenderDefinition(suffixList, bindInfo)).toInfo();
-        BindInfo<DefaultServlet> defaultServletBindInfo = findBindingRegister(DefaultServlet.DEFAULT_NAME, DefaultServlet.class);
         //
         Method serviceMethod = null;
         try {
@@ -93,30 +95,11 @@ public class RenderApiBinderImpl extends ApiBinderWrap implements RenderApiBinde
                 continue;
             //
             String pattern = "/*." + suffix.toLowerCase();
-            InMappingDef define = new InMappingDef(Long.MAX_VALUE, defaultServletBindInfo, pattern, Arrays.asList(serviceMethod), false);
+            InMappingDef define = new InMappingDef(Long.MAX_VALUE, this.defaultServletBindInfo, pattern, Arrays.asList(serviceMethod), false);
             bindType(InMappingDef.class).uniqueName().toInstance(define);/*单例*/
         }
     }
     //
-    @Override
-    public void scanAnnoRender() {
-        this.scanAnnoRender(new Matcher<Class<? extends RenderEngine>>() {
-            @Override
-            public boolean matches(Class<? extends RenderEngine> target) {
-                return true;
-            }
-        });
-    }
-    @Override
-    public void scanAnnoRender(String... packages) {
-        this.scanAnnoRender(new Matcher<Class<? extends RenderEngine>>() {
-            @Override
-            public boolean matches(Class<? extends RenderEngine> target) {
-                return true;
-            }
-        });
-    }
-    @Override
     public void scanAnnoRender(Matcher<Class<? extends RenderEngine>> matcher, String... packages) {
         String[] defaultPackages = this.getEnvironment().getSpanPackage();
         String[] scanPackages = (packages == null || packages.length == 0) ? defaultPackages : packages;

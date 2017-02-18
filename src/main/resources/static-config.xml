@@ -22,7 +22,7 @@
             <HASOR_LOAD_EVENT_POOL>20</HASOR_LOAD_EVENT_POOL>
 
             <!-- WebMVC 是否启用布局管理器 -->
-            <HASOR_RESTFUL_LAYOUT>true</HASOR_RESTFUL_LAYOUT>
+            <HASOR_RESTFUL_LAYOUT>false</HASOR_RESTFUL_LAYOUT>
             <!-- WebMVC 静态资源位置 -->
             <HASOR_RESTFUL_LAYOUT_PATH_RESOUTCE>/static</HASOR_RESTFUL_LAYOUT_PATH_RESOUTCE>
             <!-- WebMVC 布局模版位置 -->
@@ -75,14 +75,13 @@
         <!-- ApiBinder 扩展 -->
         <apiBinderSet>
             <binder type="net.hasor.web.WebApiBinder">net.hasor.web.invoker.InvokerWebApiBinderCreater</binder>
-            <binder type="net.hasor.web.render.RenderApiBinder">net.hasor.web.render.RenderApiBinderCreater</binder>
         </apiBinderSet>
 
         <!-- Invoker 扩展 -->
         <invokerCreaterSet>
             <invokerCreater type="net.hasor.web.valid.ValidInvoker">net.hasor.web.valid.ValidInvokerCreater</invokerCreater>
             <invokerCreater type="net.hasor.web.valid.ValidErrors">net.hasor.web.valid.ValidInvokerCreater</invokerCreater>
-            <invokerCreater type="net.hasor.web.render.RenderInvoker">net.hasor.web.render.RenderInvokerCreater</invokerCreater>
+            <invokerCreater type="net.hasor.web.RenderInvoker">net.hasor.web.render.RenderInvokerCreater</invokerCreater>
         </invokerCreaterSet>
 
         <!-- 文件上传 -->
@@ -94,11 +93,6 @@
             <!-- 允许上传的单个文件大小( -1 表示不限制) -->
             <maxFileSize>${HASOR_UPLOAD_MAX_FILE_SIZE}</maxFileSize>
         </fileupload>
-
-        <!-- 渲染器 -->
-        <renderSet>
-            <!--<render renderType="json">net.hasor.web.render.json.JsonRenderEngine</render>-->
-        </renderSet>
 
         <!-- 布局管理 -->
         <layout enable="${HASOR_RESTFUL_LAYOUT}">

@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.render;
-import net.hasor.core.AppContext;
-
-import java.io.IOException;
-import java.io.Writer;
+package net.hasor.web;
+import java.lang.annotation.*;
 /**
- * 渲染引擎
- * @version : 2016年1月3日
- * @author 赵永春(zyc@hasor.net)
+ *
+ * @version : 2013-8-14
+ * @author 赵永春 (zyc@hasor.net)
  */
-public interface RenderEngine {
-    /** 初始化引擎 */
-    public void initEngine(AppContext appContext) throws Throwable;
-
-    /** 执行模版引擎 */
-    public void process(RenderInvoker invoker, Writer writer) throws Throwable;
-
-    /** 获取模版Loader */
-    public boolean exist(String template) throws IOException;
+@Inherited
+@Target({ ElementType.TYPE, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Produces {
+    /**响应的类型*/
+    public String value();
 }
