@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * json渲染器。
+ * 提供了一些有用的 {@link net.hasor.db.jdbc.SqlParameterSource}接口实现。
  */
-package net.hasor.web.render.json;
+package net.hasor.db.jdbc.paramer;

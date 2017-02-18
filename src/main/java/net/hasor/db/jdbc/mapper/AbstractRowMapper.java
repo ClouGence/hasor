@@ -15,6 +15,7 @@
  */
 package net.hasor.db.jdbc.mapper;
 import net.hasor.core.Hasor;
+import net.hasor.core.convert.ConverterUtils;
 import net.hasor.db.jdbc.RowMapper;
 
 import java.math.BigDecimal;
@@ -35,6 +36,7 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
         if (obj != null) {
             className = obj.getClass().getName();
         }
+        //
         if (obj instanceof Blob) {
             /*Blob 转换为 Bytes*/
             obj = rs.getBytes(index);
@@ -64,17 +66,23 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
     protected static Object convertValueToRequiredType(final Object value, final Class<?> requiredType) {
         if (String.class.equals(requiredType)) {
             return value.toString();
-        } else if (Number.class.isAssignableFrom(requiredType)) {
-            if (value instanceof Number) {
-                // Convert original Number to target Number class.
+        } else if (Number.class.isAssignableFrom(requiredType) || isNumberPrimitive(requiredType)) {
+            if (value instanceof Number || isNumberPrimitive(requiredType)) {
                 return AbstractRowMapper.convertNumberToTargetClass((Number) value, requiredType);
             } else {
-                // Convert stringified value to target Number class.
                 return AbstractRowMapper.parseNumber(value.toString(), requiredType);
             }
         } else {
-            throw new IllegalArgumentException("Value [" + value + "] is of type [" + value.getClass().getName() + "] and cannot be converted to required type [" + requiredType.getName() + "]");
+            return ConverterUtils.convert(requiredType, value);
         }
+    }
+    private static boolean isNumberPrimitive(Class<?> requiredType) {
+        return Byte.TYPE == requiredType ||//
+                Short.TYPE == requiredType ||//
+                Integer.TYPE == requiredType ||//
+                Long.TYPE == requiredType ||//
+                Float.TYPE == requiredType ||//
+                Double.TYPE == requiredType;
     }
     /**
      * Parse the given text into a number instance of the given target class, using the corresponding <code>decode</code> / <code>valueOf</code> methods.
@@ -136,27 +144,27 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
         Hasor.assertIsNotNull(targetClass, "Target class must not be null");
         if (targetClass.isInstance(number)) {
             return number;
-        } else if (targetClass.equals(Byte.class)) {
+        } else if (targetClass.equals(Byte.class) || targetClass.equals(Byte.TYPE)) {
             long value = number.longValue();
             if (value < Byte.MIN_VALUE || value > Byte.MAX_VALUE) {
                 AbstractRowMapper.raiseOverflowException(number, targetClass);
             }
             return new Byte(number.byteValue());
-        } else if (targetClass.equals(Short.class)) {
+        } else if (targetClass.equals(Short.class) || targetClass.equals(Short.TYPE)) {
             long value = number.longValue();
             if (value < Short.MIN_VALUE || value > Short.MAX_VALUE) {
                 AbstractRowMapper.raiseOverflowException(number, targetClass);
             }
             return new Short(number.shortValue());
-        } else if (targetClass.equals(Integer.class)) {
+        } else if (targetClass.equals(Integer.class) || targetClass.equals(Integer.TYPE)) {
             long value = number.longValue();
             if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
                 AbstractRowMapper.raiseOverflowException(number, targetClass);
             }
             return new Integer(number.intValue());
-        } else if (targetClass.equals(Long.class))
+        } else if (targetClass.equals(Long.class) || targetClass.equals(Long.TYPE)) {
             return new Long(number.longValue());
-        else if (targetClass.equals(BigInteger.class)) {
+        } else if (targetClass.equals(BigInteger.class)) {
             if (number instanceof BigDecimal) {
                 // do not lose precision - use BigDecimal's own conversion
                 return ((BigDecimal) number).toBigInteger();
@@ -164,9 +172,9 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
                 // original value is not a Big* number - use standard long conversion
                 return BigInteger.valueOf(number.longValue());
             }
-        } else if (targetClass.equals(Float.class)) {
+        } else if (targetClass.equals(Float.class) || targetClass.equals(Float.TYPE)) {
             return new Float(number.floatValue());
-        } else if (targetClass.equals(Double.class)) {
+        } else if (targetClass.equals(Double.class) || targetClass.equals(Double.TYPE)) {
             return new Double(number.doubleValue());
         } else if (targetClass.equals(BigDecimal.class)) {
             // always use BigDecimal(String) here to avoid unpredictability of BigDecimal(double)

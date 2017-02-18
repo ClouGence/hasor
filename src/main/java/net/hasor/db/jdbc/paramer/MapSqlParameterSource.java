@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db.jdbc.core;
+package net.hasor.db.jdbc.paramer;
 import net.hasor.db.jdbc.SqlParameterSource;
+import net.hasor.db.jdbc.core.ParameterDisposer;
 
 import java.util.Map;
 /**
@@ -22,9 +23,9 @@ import java.util.Map;
  * @version : 2014-3-31
  * @author 赵永春(zyc@hasor.net)
  */
-class InnerMapSqlParameterSource implements SqlParameterSource, ParameterDisposer {
+public class MapSqlParameterSource implements SqlParameterSource, ParameterDisposer {
     private Map<String, ?> values;
-    public InnerMapSqlParameterSource(final Map<String, ?> values) {
+    public MapSqlParameterSource(final Map<String, ?> values) {
         this.values = values;
     }
     @Override

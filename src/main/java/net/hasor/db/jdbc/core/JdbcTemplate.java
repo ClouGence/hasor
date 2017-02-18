@@ -21,6 +21,7 @@ import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.mapper.BeanPropertyRowMapper;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
+import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
 import net.hasor.db.jdbc.result.LinkedCaseInsensitiveMap;
 
 import javax.sql.DataSource;
@@ -114,6 +115,9 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
                     JdbcTemplate.this.handleWarnings(stmt);
                     return result;
                 } catch (SQLException ex) {
+                    if (stmt != null) {
+                        logger.error(stmt.toString());
+                    }
                     throw ex;
                 } finally {
                     if (stmt != null) {
@@ -143,6 +147,9 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
                     JdbcTemplate.this.handleWarnings(ps);
                     return result;
                 } catch (SQLException ex) {
+                    if (ps != null) {
+                        logger.error(ps.toString());
+                    }
                     throw ex;
                 } finally {
                     if (psc instanceof ParameterDisposer) {
@@ -175,7 +182,8 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
                     JdbcTemplate.this.handleWarnings(cs);
                     return result;
                 } catch (SQLException ex) {
-                    throw new SQLException("CallableStatementCallback SQL :" + JdbcTemplate.getSql(action), ex);
+                    String sqlString = JdbcTemplate.getSql(action);
+                    throw new SQLException("CallableStatementCallback SQL :" + sqlString, ex);
                 } finally {
                     if (csc instanceof ParameterDisposer) {
                         ((ParameterDisposer) csc).cleanupParameters();
@@ -201,7 +209,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
     @Override
     public <T> T execute(final String sql, final Map<String, ?> paramMap, final PreparedStatementCallback<T> action) throws SQLException {
-        return this.execute(this.getPreparedStatementCreator(sql, new InnerMapSqlParameterSource(paramMap)), action);
+        return this.execute(this.getPreparedStatementCreator(sql, new MapSqlParameterSource(paramMap)), action);
     }
     //
     //
@@ -303,7 +311,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
     @Override
     public <T> T query(final String sql, final Map<String, ?> paramMap, final ResultSetExtractor<T> rse) throws SQLException {
-        return this.query(this.getPreparedStatementCreator(sql, new InnerMapSqlParameterSource(paramMap)), rse);
+        return this.query(this.getPreparedStatementCreator(sql, new MapSqlParameterSource(paramMap)), rse);
     }
     //
     //
@@ -334,7 +342,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
     @Override
     public void query(final String sql, final Map<String, ?> paramMap, final RowCallbackHandler rch) throws SQLException {
-        this.query(this.getPreparedStatementCreator(sql, new InnerMapSqlParameterSource(paramMap)), rch);
+        this.query(this.getPreparedStatementCreator(sql, new MapSqlParameterSource(paramMap)), rch);
     }
     //
     //
@@ -365,7 +373,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
     @Override
     public <T> List<T> query(final String sql, final Map<String, ?> paramMap, final RowMapper<T> rowMapper) throws SQLException {
-        return this.query(this.getPreparedStatementCreator(sql, new InnerMapSqlParameterSource(paramMap)), rowMapper);
+        return this.query(this.getPreparedStatementCreator(sql, new MapSqlParameterSource(paramMap)), rowMapper);
     }
     //
     //
@@ -415,7 +423,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
     @Override
     public <T> T queryForObject(final String sql, final Map<String, ?> paramMap, final RowMapper<T> rowMapper) throws SQLException {
-        return this.queryForObject(sql, new InnerMapSqlParameterSource(paramMap), rowMapper);
+        return this.queryForObject(sql, new MapSqlParameterSource(paramMap), rowMapper);
     }
     @Override
     public <T> T queryForObject(final String sql, final Class<T> requiredType) throws SQLException {
@@ -457,7 +465,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
     @Override
     public long queryForLong(final String sql, final Map<String, ?> paramMap) throws SQLException {
-        return this.queryForLong(sql, new InnerMapSqlParameterSource(paramMap));
+        return this.queryForLong(sql, new MapSqlParameterSource(paramMap));
     }
     @Override
     public int queryForInt(final String sql) throws SQLException {
@@ -476,7 +484,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
     @Override
     public int queryForInt(final String sql, final Map<String, ?> paramMap) throws SQLException {
-        return this.queryForInt(sql, new InnerMapSqlParameterSource(paramMap));
+        return this.queryForInt(sql, new MapSqlParameterSource(paramMap));
     }
     //
     //
@@ -511,7 +519,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
     @Override
     public List<Map<String, Object>> queryForList(final String sql, final Map<String, ?> paramMap) throws SQLException {
-        return this.queryForList(sql, new InnerMapSqlParameterSource(paramMap));
+        return this.queryForList(sql, new MapSqlParameterSource(paramMap));
     }
     //
     //
@@ -600,7 +608,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
     @Override
     public int update(final String sql, final Map<String, ?> paramMap) throws SQLException {
-        return this.update(this.getPreparedStatementCreator(sql, new InnerMapSqlParameterSource(paramMap)));
+        return this.update(this.getPreparedStatementCreator(sql, new MapSqlParameterSource(paramMap)));
     }
     //
     //
@@ -651,7 +659,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
         SqlParameterSource[] batchArgs = new SqlParameterSource[batchValues.length];
         int i = 0;
         for (Map<String, ?> values : batchValues) {
-            batchArgs[i] = new InnerMapSqlParameterSource(values);
+            batchArgs[i] = new MapSqlParameterSource(values);
             i++;
         }
         return this.batchUpdate(sql, batchArgs);
