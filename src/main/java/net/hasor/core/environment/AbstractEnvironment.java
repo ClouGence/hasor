@@ -216,14 +216,14 @@ public abstract class AbstractEnvironment implements Environment {
     //
     /* ------------------------------------------------------------------------------------ init */
     /**初始化方法*/
-    protected final void initEnvironment(Map<String, String> loadEnvConfig) throws IOException {
+    protected final void initEnvironment(Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig) throws IOException {
         // .load & init
         this.envMap = new ConcurrentHashMap<String, String>();
         if (this.logger.isDebugEnabled()) {
             this.logger.debug("load envVars...");
         }
         // .vars
-        this.initEnvConfig(loadEnvConfig);
+        this.initEnvConfig(frameworkEnvConfig, customEnvConfig);
         this.refreshVariables();
         //
         // .Packages
@@ -280,7 +280,7 @@ public abstract class AbstractEnvironment implements Environment {
      * 5st，属性文件"env.config"
      * tips：如果指定了loadEnvConfig参数，那么将会忽略"env.config"配置文件。
      */
-    private void initEnvConfig(Map<String, String> loadEnvConfig) throws IOException {
+    private void initEnvConfig(Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig) throws IOException {
         //
         // .1st，System.getProperties()
         if (this.logger.isDebugEnabled()) {
@@ -325,10 +325,16 @@ public abstract class AbstractEnvironment implements Environment {
             this.envMap.put(envItem.toUpperCase(), settings.getString("hasor.environmentVar." + envItem));
         }
         // .4st，传入的配置
-        if (loadEnvConfig != null && !loadEnvConfig.isEmpty()) {
-            this.logger.info("ignore 'env.config' use custom map, size = " + loadEnvConfig.size());
-            for (String name : loadEnvConfig.keySet()) {
-                this.envMap.put(name.toUpperCase(), loadEnvConfig.get(name));
+        if (frameworkEnvConfig != null && !frameworkEnvConfig.isEmpty()) {
+            this.logger.info("ignore 'env.config' use framework map, size = " + frameworkEnvConfig.size());
+            for (String name : frameworkEnvConfig.keySet()) {
+                this.envMap.put(name.toUpperCase(), frameworkEnvConfig.get(name));
+            }
+        }
+        if (customEnvConfig != null && !customEnvConfig.isEmpty()) {
+            this.logger.info("ignore 'env.config' use custom map, size = " + customEnvConfig.size());
+            for (String name : customEnvConfig.keySet()) {
+                this.envMap.put(name.toUpperCase(), customEnvConfig.get(name));
             }
             return;
         }

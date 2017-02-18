@@ -42,8 +42,14 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     //
     /**创建{@link AppContext}对象*/
     protected Hasor createAppContext(final ServletContext sc) throws Throwable {
+        final class WebHasor extends Hasor {
+            protected WebHasor(Object context) {
+                super(context);
+            }
+        }
+        //
         String webContextDir = sc.getRealPath("/");
-        return Hasor.create(sc).putData("HASOR_WEBROOT", webContextDir);
+        return WebHasor.create(sc).putFrameworkData("HASOR_WEBROOT", webContextDir);
     }
     //
     /**获取启动模块*/

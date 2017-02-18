@@ -31,16 +31,16 @@ import java.util.Map;
  */
 public class StandardEnvironment extends AbstractEnvironment {
     public StandardEnvironment(Object context, File mainSettings) throws IOException {
-        this(context, mainSettings, null, null);
+        this(context, mainSettings, null, null, null);
     }
     //
-    public StandardEnvironment(Object context, File mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader) throws IOException {
-        this(context, (mainSettings != null ? mainSettings.toURI() : null), loadEnvConfig, loader);
+    public StandardEnvironment(Object context, File mainSettings, Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig, ClassLoader loader) throws IOException {
+        this(context, (mainSettings != null ? mainSettings.toURI() : null), frameworkEnvConfig, customEnvConfig, loader);
     }
-    public StandardEnvironment(Object context, URL mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader) throws URISyntaxException, IOException {
-        this(context, (mainSettings != null ? mainSettings.toURI() : null), loadEnvConfig, loader);
+    public StandardEnvironment(Object context, URL mainSettings, Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig, ClassLoader loader) throws URISyntaxException, IOException {
+        this(context, (mainSettings != null ? mainSettings.toURI() : null), frameworkEnvConfig, customEnvConfig, loader);
     }
-    public StandardEnvironment(Object context, String mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader) throws IOException, URISyntaxException {
+    public StandardEnvironment(Object context, String mainSettings, Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig, ClassLoader loader) throws IOException, URISyntaxException {
         super(context, new StandardContextSettings(mainSettings));
         logger.info("create Environment, type = StandardEnvironment, mainSettings = {}", mainSettings);
         if (loader == null) {
@@ -48,9 +48,9 @@ public class StandardEnvironment extends AbstractEnvironment {
         }
         this.getSettings().refresh();
         this.setRootLosder(new MoreClassLoader(loader));
-        this.initEnvironment(loadEnvConfig);
+        this.initEnvironment(frameworkEnvConfig, customEnvConfig);
     }
-    public StandardEnvironment(Object context, URI mainSettings, Map<String, String> loadEnvConfig, ClassLoader loader) throws IOException {
+    public StandardEnvironment(Object context, URI mainSettings, Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig, ClassLoader loader) throws IOException {
         super(context, new StandardContextSettings(mainSettings));
         logger.info("create Environment, type = StandardEnvironment, mainSettings = {}", mainSettings);
         if (loader == null) {
@@ -58,6 +58,6 @@ public class StandardEnvironment extends AbstractEnvironment {
         }
         this.getSettings().refresh();
         this.setRootLosder(new MoreClassLoader(loader));
-        this.initEnvironment(loadEnvConfig);
+        this.initEnvironment(frameworkEnvConfig, customEnvConfig);
     }
 }
