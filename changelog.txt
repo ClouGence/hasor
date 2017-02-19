@@ -9,7 +9,6 @@
     02.提升表单验证功能开发体验，表单验证接口 net.hasor.web.valid.ValidErrors 合并到 net.hasor.web.valid.ValidInvoker 接口。
     03.HASOR_RESTFUL_LAYOUT环境变量默认值从 true 改为 false。站点文件布局本身是一个极具个性色彩的功能，不应该强行加给开发者。
 
-
 ===== Hasor-Core v3.1.1 (2017-02-16)
 * 修复:
     01.当Hasor通过 Hasor.create 创建容器之后，如果开发者设置了环境参数。那么Hasor将放弃加载 env.config。
