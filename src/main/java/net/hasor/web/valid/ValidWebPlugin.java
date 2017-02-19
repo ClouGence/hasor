@@ -44,11 +44,11 @@ public class ValidWebPlugin extends WebModule implements WebPlugin, MappingSetup
     public void beforeFilter(Invoker invoker, InvokerData define) {
         //
         ValidDefinition valid = this.validMapping.get(define.targetMethod());
-        if (valid == null || !valid.isEnable() || !(invoker instanceof ValidErrors)) {
+        if (valid == null || !valid.isEnable() || !(invoker instanceof ValidInvoker)) {
             return;
         }
         //
-        ValidErrors errors = (ValidErrors) invoker;
+        ValidInvoker errors = (ValidInvoker) invoker;
         Object[] resolveParams = define.getParameters();
         valid.doValid(invoker.getAppContext(), errors, resolveParams);
     }

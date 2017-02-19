@@ -80,7 +80,6 @@
         <!-- Invoker 扩展 -->
         <invokerCreaterSet>
             <invokerCreater type="net.hasor.web.valid.ValidInvoker">net.hasor.web.valid.ValidInvokerCreater</invokerCreater>
-            <invokerCreater type="net.hasor.web.valid.ValidErrors">net.hasor.web.valid.ValidInvokerCreater</invokerCreater>
             <invokerCreater type="net.hasor.web.RenderInvoker">net.hasor.web.render.RenderInvokerCreater</invokerCreater>
         </invokerCreaterSet>
 

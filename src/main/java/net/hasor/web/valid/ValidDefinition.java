@@ -53,7 +53,7 @@ class ValidDefinition {
     }
     //
     //
-    public void doValid(AppContext appContext, ValidErrors data, Object[] resolveParams) {
+    public void doValid(AppContext appContext, ValidInvoker data, Object[] resolveParams) {
         // .启用否
         if (!this.enable) {
             return;
@@ -63,7 +63,7 @@ class ValidDefinition {
             doValidParam(appContext, data, paramIndex, resolveParams[Integer.valueOf(paramIndex)]);
         }
     }
-    private void doValidParam(AppContext appContext, ValidErrors data, String paramIndex, Object paramObject) {
+    private void doValidParam(AppContext appContext, ValidInvoker data, String paramIndex, Object paramObject) {
         Valid paramValid = this.paramValidMap.get(paramIndex);
         if (paramValid == null) {
             return;

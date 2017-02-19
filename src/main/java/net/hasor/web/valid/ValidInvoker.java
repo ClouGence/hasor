@@ -42,4 +42,13 @@ public interface ValidInvoker extends Invoker {
 
     /**删除某个验证信息。*/
     public void clearValidErrors(String messageKey);
+
+    /**添加验证失败的消息。*/
+    public void addError(String key, String validString);
+
+    /**添加验证失败的消息。*/
+    public void addError(String key, Message validMessage);
+
+    /**添加验证失败的消息。*/
+    public void addErrors(String key, List<Message> validMessage);
 }

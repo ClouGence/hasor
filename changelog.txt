@@ -6,6 +6,7 @@
     02.db框架支持 Bean 类型的 SqlParameterSource。
 * 改进:
     01.render 框架以及RenderApiBinder接口功能融入 hasor-web 框架。
+    02.提升表单验证功能开发体验，表单验证接口 net.hasor.web.valid.ValidErrors 合并到 net.hasor.web.valid.ValidInvoker 接口
 
 ===== Hasor-Core v3.1.1 (2017-02-16)
 * 修复:

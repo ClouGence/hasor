@@ -24,7 +24,7 @@ import java.util.*;
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker, ValidErrors {
+public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker {
     private final Map<String, ValidItem> validData = new HashMap<String, ValidItem>();
     protected ValidInvokerSupplier(Invoker context) {
         super(context);
