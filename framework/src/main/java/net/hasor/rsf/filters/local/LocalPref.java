@@ -36,7 +36,7 @@ public class LocalPref implements RsfFilter {
                 Class<?>[] rParams = request.getParameterTypes();
                 Object[] rObjects = request.getParameterObject();
                 //
-                Method m = provider.getClass().getMethod(method, rParams);
+                Method m = provider.get().getClass().getMethod(method, rParams);
                 try {
                     response.sendData(m.invoke(provider.get(), rObjects));
                 } catch (InvocationTargetException e) {

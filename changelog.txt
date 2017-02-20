@@ -1,4 +1,8 @@
-﻿===== Hasor-RSF v1.3.0 (2017-02-17)
+﻿===== Hasor-RSF v1.3.1 (2017-02-?)
+* 修复:
+    01.修复 LocalPref 在寻找 provider Method 时用错对象导致找不到方法的异常。
+
+===== Hasor-RSF v1.3.0 (2017-02-17)
 * 新增:
     01.RSF项目拆分成 framework 和 registry 两个部分。
     02.framework 项目是 RSF 的核心实现了 P2P 模式下的 RPC 调用以及流量控路由等功能。
