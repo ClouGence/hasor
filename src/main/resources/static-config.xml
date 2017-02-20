@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/land">
+    <!-- 框架配置，包扫描范围 -->
+    <hasor>
+        <loadPackages>net.hasor.land.*</loadPackages>
+
+        <!-- Neuron框架启动入口 -->
+        <modules>
+            <module>net.hasor.land.bootstrap.RsfLandModule</module>
+        </modules>
+
+        <!-- Neuron框架环境变量 -->
+        <environmentVar>
+            <!-- 服务器ID -->
+            <LAND_SERVER_ID>local</LAND_SERVER_ID>
+            <!-- 集群服务器列表 -->
+            <LAND_SERVERS></LAND_SERVERS>
+
+            <!-- 数据存放目录 -->
+            <LAND_DATA_HOME>%WORK_HOME%/land/data</LAND_DATA_HOME>
+            <!-- 数据快照目录 -->
+            <LAND_SNAPSHOT_HOME>%WORK_HOME%/land/snapshot</LAND_SNAPSHOT_HOME>
+
+        </environmentVar>
+    </hasor>
+
+    <!-- Neuron (分布式协调框架) -->
+    <hasor.land serviceID="${LAND_SERVER_ID}">
+        <!-- 集群服务器列表 -->
+        <servers>${LAND_SERVERS}</servers>
+        <!-- 基准心跳时间 -->
+        <timeout>150</timeout>
+    </hasor.land>
+
+</config>
