@@ -19,7 +19,7 @@ import org.springframework.context.ApplicationContext;
 /**
  * 包装来自 Spring 的 Bean。
  *
- * @version : 2013-4-8
+ * @version : 2016年2月15日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SpringBean<T> implements Provider<T> {
