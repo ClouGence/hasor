@@ -1,6 +1,6 @@
 #Hasor
 
-&emsp;&emsp;Hasor 是一款基于 Java 语言的应用程序开发框架，它的核心设计目标是提供一个简单、切必要的环境给开发者。开发者可以在此基础上，通过Hasor强有力的粘合机制，构建出更加完善的应用场景。同时Hasor的各种内置插件也会帮助开发者进行快速开发。
+&emsp;&emsp;Hasor 是一款基于 Java 语言的应用程序开发框架，它的核心设计目标是提供一个简单、且必要的环境给开发者。开发者可以在此基础上，通过Hasor强有力的粘合机制，构建出更加完善的应用场景。同时Hasor的各种内置插件也会帮助开发者进行快速开发。
 
 &emsp;&emsp;基于目前 Hasor 内核上已经发展出 DB、Web、RSF 三大独立的基础框架。
 
@@ -39,7 +39,7 @@
 ### 集成
 01. 支持与 Spring 紧密集成
 02. 支持与 JFinal 紧密集成
-
+03. 支持与 [Nutz 紧密集成](https://github.com/nutzam/nutzmore/tree/master/nutz-integration-hasor)
 ----------
 ### 发展状况
 
