@@ -131,7 +131,7 @@ public abstract class AbstractEnvironment implements Environment {
     }
     /**创建事件管理器*/
     protected EventContext createEventManager(int eventThreadPoolSize) {
-        return new StandardEventManager(eventThreadPoolSize, this.getClassLoader());
+        return new StandardEventManager(eventThreadPoolSize, "Hasor", this.getClassLoader());
     }
     //
     /* ------------------------------------------------------------------------------------ Toos */

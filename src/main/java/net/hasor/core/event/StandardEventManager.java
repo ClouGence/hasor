@@ -32,8 +32,8 @@ public class StandardEventManager implements EventContext {
     private              ConcurrentMap<String, EventListenerPool> listenerMap     = new ConcurrentHashMap<String, EventListenerPool>();
     //
     //
-    public StandardEventManager(int eventThreadPoolSize, ClassLoader classLoader) {
-        this.executorService = Executors.newScheduledThreadPool(eventThreadPoolSize, new NameThreadFactory("Hasor-EventPool-%s", classLoader));
+    public StandardEventManager(int eventThreadPoolSize, String name, ClassLoader classLoader) {
+        this.executorService = Executors.newScheduledThreadPool(eventThreadPoolSize, new NameThreadFactory(name + "-EventPool-%s", classLoader));
         ThreadPoolExecutor threadPool = (ThreadPoolExecutor) this.executorService;
         threadPool.setCorePoolSize(eventThreadPoolSize);
         threadPool.setMaximumPoolSize(eventThreadPoolSize);
