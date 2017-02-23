@@ -30,7 +30,7 @@ import java.util.*;
  * @version : 2014年11月12日
  * @author 赵永春(zyc@hasor.net)
  */
-class ServiceDefine<T> extends RsfBindInfoWrap<T> implements CustomerProvider<T>, RsfBindInfo<T> {
+class ServiceDefine<T> extends RsfBindInfoWrap<T> implements CustomerProvider<T>, RsfBindInfo<T>, RsfDomainProvider<T> {
     private final List<FilterDefine>         filterList;
     private       Provider<? extends T>      customerProvider;
     private       String                     oriFlowControl;

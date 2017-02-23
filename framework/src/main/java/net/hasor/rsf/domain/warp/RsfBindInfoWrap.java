@@ -16,6 +16,8 @@
 package net.hasor.rsf.domain.warp;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.domain.RsfServiceType;
+
+import java.util.Set;
 /**
  * {@link RsfBindInfo}包装形式。
  * @version : 2014年9月12日
@@ -40,6 +42,14 @@ public class RsfBindInfoWrap<T> implements RsfBindInfo<T> {
     @Override
     public String getBindName() {
         return this.target.getBindName();
+    }
+    @Override
+    public Set<String> getAliasTypes() {
+        return this.target.getAliasTypes();
+    }
+    @Override
+    public String getAliasName(String aliasType) {
+        return this.target.getAliasName(aliasType);
     }
     @Override
     public String getBindGroup() {

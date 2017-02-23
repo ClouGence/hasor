@@ -37,14 +37,16 @@ import java.util.concurrent.ConcurrentMap;
 public class RsfBeanContainer {
     protected            Logger     logger       = LoggerFactory.getLogger(getClass());
     private final static Provider[] EMPTY_FILTER = new Provider[0];
-    private final ConcurrentMap<String, ServiceDefine<?>>      serviceMap;
-    private final List<FilterDefine>                           filterList;
-    private final Object                                       filterLock;
-    private final AddressPool                                  addressPool;
-    private final ConcurrentMap<String, Provider<RsfFilter>[]> filterCache;
+    private final ConcurrentMap<String, ServiceDefine<?>>              serviceMap;
+    private final ConcurrentMap<String, ConcurrentMap<String, String>> aliasNameMap;
+    private final List<FilterDefine>                                   filterList;
+    private final Object                                               filterLock;
+    private final AddressPool                                          addressPool;
+    private final ConcurrentMap<String, Provider<RsfFilter>[]>         filterCache;
     //
     public RsfBeanContainer(AddressPool addressPool) {
         this.serviceMap = new ConcurrentHashMap<String, ServiceDefine<?>>();
+        this.aliasNameMap = new ConcurrentHashMap<String, ConcurrentMap<String, String>>();
         this.filterList = new ArrayList<FilterDefine>();
         this.filterLock = new Object();
         this.addressPool = addressPool;
@@ -98,16 +100,16 @@ public class RsfBeanContainer {
     }
     /**
      * 根据服务id获取服务对象。如果服务未定义或者服务未声明提供者，则返回null。
-     * @param serviceID 服务ID。
+     * @param rsfBindInfo 服务ID。
      * @return 服务提供者
      */
-    public Provider<?> getProvider(String serviceID) {
-        ServiceDefine<?> info = this.serviceMap.get(serviceID);
+    public <T> Provider<T> getProvider(RsfBindInfo<T> rsfBindInfo) {
+        ServiceDefine<?> info = this.serviceMap.get(rsfBindInfo.getBindID());
         if (info == null)
             return null;
         Provider<?> target = info.getCustomerProvider();
         if (target != null) {
-            return target;
+            return (Provider<T>) target;
         }
         return null;
     }
@@ -120,6 +122,22 @@ public class RsfBeanContainer {
         if (info == null)
             return null;
         return info.getDomain();
+    }
+    /**
+     * 根据服务id获取服务元信息。
+     * @param aliasType 名字分类。
+     * @param aliasName 别名。
+     */
+    public RsfBindInfo<?> getRsfBindInfo(String aliasType, String aliasName) {
+        ConcurrentMap<String, String> aliasNameMaps = this.aliasNameMap.get(aliasType);
+        if (aliasNameMaps == null) {
+            return null;
+        }
+        String serviceID = aliasNameMaps.get(aliasName);
+        if (serviceID == null) {
+            return null;
+        }
+        return this.serviceMap.get(serviceID);
     }
     /**
      * 根据类型获取服务元信息。如果类型上配置了{@link RsfService @RsfService}注解，则使用该注解的配置信息。
@@ -159,6 +177,14 @@ public class RsfBeanContainer {
     /**获取所有已经注册的服务名称。*/
     public List<String> getServiceIDs() {
         return new ArrayList<String>(this.serviceMap.keySet());
+    }
+    /**根据别名系统获取所有已经注册的服务名称。*/
+    public List<String> getServiceIDs(String category) {
+        ConcurrentMap<String, String> aliasNameMaps = this.aliasNameMap.get(category);
+        if (aliasNameMaps == null) {
+            return Collections.EMPTY_LIST;
+        }
+        return new ArrayList<String>(aliasNameMaps.keySet());
     }
     /**获取环境对象。*/
     public RsfEnvironment getEnvironment() {
@@ -200,7 +226,7 @@ public class RsfBeanContainer {
      * 发布服务
      * @param serviceDefine 服务定义。
      */
-    public <T> boolean publishService(ServiceDefine<T> serviceDefine) {
+    public synchronized <T> boolean publishService(ServiceDefine<T> serviceDefine) {
         String serviceID = serviceDefine.getDomain().getBindID();
         if (this.serviceMap.containsKey(serviceID)) {
             String serviceType = this.serviceMap.get(serviceID).getDomain().getServiceType().name();
@@ -217,11 +243,26 @@ public class RsfBeanContainer {
             if (serviceDefine.getCustomerProvider() == null) {
                 throw new RsfException(ProtocolStatus.Forbidden, "Provider Not set the implementation class.");
             }
-            eventContext.fireAsyncEvent(RsfEvent.Rsf_ProviderService, serviceDefine);
+            eventContext.fireSyncEvent(RsfEvent.Rsf_ProviderService, serviceDefine);
         } else {
             //服务消费者
-            eventContext.fireAsyncEvent(RsfEvent.Rsf_ConsumerService, serviceDefine);
+            eventContext.fireSyncEvent(RsfEvent.Rsf_ConsumerService, serviceDefine);
         }
+        // .收录别名
+        Set<String> aliasTypes = serviceDefine.getAliasTypes();
+        for (String aliasType : aliasTypes) {
+            ConcurrentMap<String, String> aliasMap = this.aliasNameMap.get(aliasType);
+            if (aliasMap == null) {
+                aliasMap = new ConcurrentHashMap<String, String>();
+                this.aliasNameMap.putIfAbsent(aliasType, aliasMap);
+            }
+            String aliasName = serviceDefine.getAliasName(aliasType);
+            if (StringUtils.isBlank(aliasName)) {
+                continue;
+            }
+            aliasMap.putIfAbsent(aliasName, serviceID);
+        }
+        //
         // .追加地址
         this.addressPool.appendStaticAddress(serviceID, serviceDefine.getAddressSet());
         // .更新流控
@@ -236,13 +277,14 @@ public class RsfBeanContainer {
                 this.addressPool.updateRoute(serviceID, routeEnt.getKey(), routeEnt.getValue());
             }
         }
+        //
         return true;
     }
     /**
      * 回收发布的服务
      * @param serviceID 服务定义。
      */
-    public boolean recoverService(String serviceID) {
+    public synchronized boolean recoverService(String serviceID) {
         if (this.serviceMap.containsKey(serviceID)) {
             //
             // .发布删除消息( 1.Center解除注册、2.地址本回收)
@@ -252,6 +294,21 @@ public class RsfBeanContainer {
             //
             // .回收服务
             this.serviceMap.remove(serviceID);
+            //
+            for (Map.Entry<String, ConcurrentMap<String, String>> aliasEntry : this.aliasNameMap.entrySet()) {
+                ConcurrentMap<String, String> aliasSet = aliasEntry.getValue();
+                ArrayList<String> toRemove = new ArrayList<String>();
+                for (Map.Entry<String, String> entry : aliasSet.entrySet()) {
+                    if (serviceID.equals(entry.getValue())) {
+                        toRemove.add(entry.getKey());
+                    }
+                }
+                //
+                for (String key : toRemove) {
+                    aliasSet.remove(key);
+                }
+            }
+            //
             return true;
         }
         return false;

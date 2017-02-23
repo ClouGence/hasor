@@ -43,6 +43,9 @@ public interface RsfContext extends OnlineStatus {
     /**根据服务名获取服务描述。*/
     public <T> RsfBindInfo<T> getServiceInfo(String serviceID);
 
+    /**根据别名系统来查找服务。*/
+    public <T> RsfBindInfo<T> getServiceInfo(String aliasType, String aliasName);
+
     /**根据服务名获取服务描述。*/
     public <T> RsfBindInfo<T> getServiceInfo(Class<T> serviceType);
 
@@ -51,6 +54,9 @@ public interface RsfContext extends OnlineStatus {
 
     /**获取已经注册的所有服务名称。*/
     public List<String> getServiceIDs();
+
+    /**根据别名系统来获取该别名系统下所有服务ID。*/
+    public List<String> getServiceIDs(String aliasType);
 
     /**
      * 获取元信息所描述的服务对象

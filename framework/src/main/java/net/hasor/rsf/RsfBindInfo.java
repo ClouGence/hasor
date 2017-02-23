@@ -16,6 +16,8 @@
 package net.hasor.rsf;
 import net.hasor.core.BindInfo;
 import net.hasor.rsf.domain.RsfServiceType;
+
+import java.util.Set;
 /**
  * Rsf绑定信息。
  * @version : 2014年11月12日
@@ -27,6 +29,12 @@ public interface RsfBindInfo<T> extends BindInfo<T> {
 
     /** @return 服务名称。*/
     public String getBindName();
+
+    /** @return 获取已经定义的别名 */
+    public Set<String> getAliasTypes();
+
+    /** @return 别名 */
+    public String getAliasName(String aliasType);
 
     /** @return 服务分组。*/
     public String getBindGroup();

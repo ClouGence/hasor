@@ -19,20 +19,14 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.*;
-import net.hasor.libs.com.hprose.io.HproseWriter;
-import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.domain.*;
+import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RequestInfo;
+import net.hasor.rsf.domain.ResponseInfo;
+import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.utils.ProtocolUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
@@ -75,10 +69,11 @@ public class HproseHttpCoder extends ChannelDuplexHandler {
                 byte aByte = content.readByte();
                 if ((char) aByte == 'z') {
                     // .函数列表
-                    ctx.writeAndFlush(parseFunctionList());
+                    FullHttpResponse response = this.newResponse(HproseUtils.doFunction(this.rsfContext), this.origin);
+                    ctx.writeAndFlush(response);
                 } else if ((char) aByte == 'C') {
                     // .请求
-                    RequestInfo[] info = HproseUtils.doCall(this.rsfContext, content);
+                    RequestInfo[] info = HproseUtils.doCall(this.rsfContext, content, this.requestURI, this.origin);
                     if (info != null && info.length > 0)
                         super.channelRead(ctx, info[0]);
                 }
@@ -108,50 +103,17 @@ public class HproseHttpCoder extends ChannelDuplexHandler {
     }
     //
     //
-    private FullHttpResponse parseFunctionList() throws IOException {
-        Set<String> allMethod = new LinkedHashSet<String>();
-        allMethod.add("*");
-        //
-        // .请求函数列表
-        List<String> serviceIDs = this.rsfContext.getServiceIDs();
-        for (String serviceID : serviceIDs) {
-            RsfBindInfo<?> serviceInfo = this.rsfContext.getServiceInfo(serviceID);
-            if (serviceInfo.isShadow() || RsfServiceType.Provider != serviceInfo.getServiceType())
-                continue;
-            //
-            Method[] methodArrays = serviceInfo.getBindType().getMethods();
-            for (Method method : methodArrays) {
-                StringBuilder define = new StringBuilder("call://");
-                define = define.append(serviceID).append("/").append(method.getName());
-                define = define.append("?");
-                define = define.append("clientTimeout=").append(serviceInfo.getClientTimeout());
-                allMethod.add(define.toString());
-            }
-            //
-        }
-        //
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        HproseWriter writer = new HproseWriter(out);
-        String[] array = allMethod.toArray(new String[allMethod.size()]);
-        writer.writeArray(array);
-        //
-        ByteBuf outBuf = ProtocolUtils.newByteBuf();
-        outBuf.writeByte('F');
-        outBuf.writeBytes(out.toByteArray());
-        outBuf.writeByte('z');
-        return this.newResponse(outBuf);
-    }
     private FullHttpResponse newResponse(ResponseInfo response) {
         long requestID = response.getRequestID();
         ByteBuf result = HproseUtils.doResult(requestID, response);
-        return newResponse(result);
+        return newResponse(result, response.getOption(ORIGIN));
     }
-    private FullHttpResponse newResponse(ByteBuf result) {
+    private FullHttpResponse newResponse(ByteBuf result, String origin) {
         FullHttpResponse httpResponse = new DefaultFullHttpResponse(HTTP_1_1, OK, result);
         httpResponse.headers().set(CONTENT_TYPE, "application/hprose");
         httpResponse.headers().set(CONTENT_LENGTH, result.readableBytes());
         //
-        if (this.origin != null && !this.origin.equals("null")) {
+        if (origin != null && !origin.equals("null")) {
             httpResponse.headers().set(ACCESS_CONTROL_ALLOW_ORIGIN, origin);
             httpResponse.headers().set(ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
         } else {

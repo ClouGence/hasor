@@ -151,6 +151,14 @@ public interface RsfPublisher {
         public ConfigurationBuilder<T> name(String name);
 
         /**
+         * 设置服务别名
+         * @param aliasType 分类
+         * @param aliasName 别名
+         * @return 返回ConfigurationBuilder
+         */
+        public ConfigurationBuilder<T> aliasName(String aliasType, String aliasName);
+
+        /**
          * 设置服务版本信息
          * @param version 版本
          * @return 返回ConfigurationBuilder

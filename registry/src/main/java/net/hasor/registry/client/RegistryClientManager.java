@@ -142,6 +142,10 @@ class RegistryClientManager implements TimerTask {
     }
     /**解除服务注册*/
     public void offlineService(RsfBindInfo<?> domain) {
+        if (domain == null || !this.rsfContext.isOnline()) {
+            return;
+        }
+        //
         String serviceID = domain.getBindID();
         String registerID = (String) domain.getMetaData(Center_Ticket);
         try {
@@ -181,7 +185,7 @@ class RegistryClientManager implements TimerTask {
     }
     /**注册服务到中心*/
     public void onlineService(RsfBindInfo<?> domain) {
-        if (domain == null) {
+        if (domain == null || !this.rsfContext.isOnline()) {
             return;
         }
         try {

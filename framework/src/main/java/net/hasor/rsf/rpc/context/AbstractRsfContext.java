@@ -213,8 +213,11 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
     public <T> RsfBindInfo<T> getServiceInfo(String serviceID) {
         return (RsfBindInfo<T>) this.rsfBeanContainer.getRsfBindInfo(serviceID);
     }
+    public <T> RsfBindInfo<T> getServiceInfo(String aliasType, String aliasName) {
+        return (RsfBindInfo<T>) this.rsfBeanContainer.getRsfBindInfo(aliasType, aliasName);
+    }
     public <T> RsfBindInfo<T> getServiceInfo(Class<T> serviceType) {
-        return (RsfBindInfo<T>) this.rsfBeanContainer.getRsfBindInfo(serviceType);
+        return this.rsfBeanContainer.getRsfBindInfo(serviceType);
     }
     public <T> RsfBindInfo<T> getServiceInfo(String group, String name, String version) {
         return (RsfBindInfo<T>) this.rsfBeanContainer.getRsfBindInfo(group, name, version);
@@ -222,8 +225,11 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
     public List<String> getServiceIDs() {
         return this.rsfBeanContainer.getServiceIDs();
     }
+    public List<String> getServiceIDs(String aliasType) {
+        return this.rsfBeanContainer.getServiceIDs(aliasType);
+    }
     public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo) {
-        return (Provider<T>) this.rsfBeanContainer.getProvider(bindInfo.getBindID());
+        return this.rsfBeanContainer.getProvider(bindInfo);
     }
     public RsfPublisher publisher() {
         return this.rsfBeanContainer.createPublisher(this.rsfBeanContainer, this);

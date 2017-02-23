@@ -113,6 +113,14 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         }
         //
         @Override
+        public ConfigurationBuilder<T> aliasName(String aliasType, String aliasName) {
+            aliasType = Hasor.assertIsNotNull(aliasType, "aliasType is null.");
+            aliasName = Hasor.assertIsNotNull(aliasName, "aliasName is null.");
+            this.serviceDefine.getDomain().putAliasName(aliasType, aliasName);
+            return this;
+        }
+        //
+        @Override
         public ConfigurationBuilder<T> version(String version) {
             Hasor.assertIsNotNull(version, "version is null.");
             if (version.contains("/")) {
