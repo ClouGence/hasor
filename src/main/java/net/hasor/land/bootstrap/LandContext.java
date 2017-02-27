@@ -4,6 +4,7 @@ import net.hasor.core.*;
 import net.hasor.core.event.StandardEventManager;
 import net.hasor.land.domain.LandEvent;
 import net.hasor.land.domain.ServerStatus;
+import net.hasor.land.domain.WorkMode;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.utils.NetworkUtils;
@@ -16,11 +17,12 @@ import java.net.UnknownHostException;
  * Created by yongchun.zyc on 2017/2/22.
  */
 public class LandContext {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    private String       serverID;      // 当前服务器ID
-    private int          baseTimeout;   // 基准心跳时间
-    private EventContext eventContext;
-    private TimerManager timerManager;
+    protected Logger       logger       = LoggerFactory.getLogger(getClass());
+    private   String       serverID     = null; // 当前服务器ID
+    private   WorkMode     workMode     = null; //
+    private   int          baseTimeout  = 0;    // 基准心跳时间
+    private   EventContext eventContext = null;
+    private   TimerManager timerManager = null;
     @Inject
     private RsfContext   rsfContext;
     private InterAddress workAddress;
@@ -34,6 +36,7 @@ public class LandContext {
         //
         Settings settings = rsfContext.getSettings();
         this.serverID = settings.getString("hasor.land.serviceID", "local");
+        this.workMode = settings.getEnum("hasor.land.workAt", WorkMode.class, WorkMode.None);
         this.baseTimeout = settings.getInteger("hasor.land.timeout", 500);
         //
         // .基础属性初始化

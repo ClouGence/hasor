@@ -17,9 +17,12 @@
         </layout>
     </appender>
 
-    <root>
-        <level>INFO</level>
-        <appender-ref ref="consoleOut"/>
+    <logger name="net.hasor.rsf" additivity="false" level="INFO">
         <appender-ref ref="fileOut"/>
-    </root>
+    </logger>
+
+    <logger name="net.hasor.land" additivity="false" level="INFO">
+        <appender-ref ref="consoleOut"/>
+    </logger>
+
 </configuration>  

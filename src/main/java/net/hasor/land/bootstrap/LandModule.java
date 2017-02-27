@@ -19,6 +19,7 @@ import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.core.context.ContextStartListener;
+import net.hasor.land.domain.WorkMode;
 import net.hasor.land.election.ElectionService;
 import net.hasor.land.election.ElectionServiceManager;
 import net.hasor.land.node.ServerNode;
@@ -33,7 +34,12 @@ import net.hasor.rsf.RsfModule;
 public class LandModule extends RsfModule implements ContextStartListener {
     @Override
     public void loadModule(final RsfApiBinder apiBinder) throws Throwable {
-        final Environment env = apiBinder.getEnvironment();
+        Environment env = apiBinder.getEnvironment();
+        WorkMode workMode = env.getSettings().getEnum("hasor.land.workAt", WorkMode.class, WorkMode.None);
+        if (WorkMode.None == workMode) {
+            this.logger.warn("land workAt None mode, so land cannot be started.");
+            return;
+        }
         //
         // .注册Bean
         apiBinder.bindType(LandContext.class).asEagerSingleton();

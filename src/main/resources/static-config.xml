@@ -9,6 +9,8 @@
 
         <!-- Land 框架环境变量 -->
         <environmentVar>
+            <!-- 工作模式,默认:none -->
+            <LAND_WORK_MODE>none</LAND_WORK_MODE>
             <!-- 服务器ID -->
             <LAND_SERVER_ID>local</LAND_SERVER_ID>
             <!-- 集群服务器列表 -->
@@ -19,11 +21,11 @@
     </hasor>
 
     <!-- Land (分布式协调框架) -->
-    <hasor.land serviceID="${LAND_SERVER_ID}">
+    <hasor.land serviceID="${LAND_SERVER_ID}" workAt="${LAND_WORK_MODE}">
         <!-- 集群服务器列表 -->
         <servers>${LAND_SERVERS}</servers>
         <!-- 基准心跳时间 -->
-        <timeout>150</timeout>
+        <timeout>500</timeout>
     </hasor.land>
 
 </config>

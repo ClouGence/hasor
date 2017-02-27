@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.rsf;
+package test.net.hasor.land;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfModule;
 /**
- * 启动服务端
+ *
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServerB {
+public class ServerA {
     public static void main(String[] args) throws Throwable {
-        Hasor.createAppContext("server2-config.xml", new RsfModule() {
+        Hasor.createAppContext("server1-config.xml", new RsfModule() {
             public void loadModule(RsfApiBinder apiBinder) throws Throwable {
             }
         });
-        System.out.println("server B start.");
+        System.out.println("server A start.");
         System.in.read();
         //
     }
