@@ -19,13 +19,9 @@ import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
 import net.hasor.core.context.ContextStartListener;
-import net.hasor.land.domain.LandEvent;
-import net.hasor.land.domain.ServerStatus;
 import net.hasor.land.election.ElectionService;
 import net.hasor.land.election.ElectionServiceManager;
-import net.hasor.land.node.AskNameService;
 import net.hasor.land.node.ServerNode;
-import net.hasor.land.utils.LandTimerManager;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfModule;
 /**
@@ -34,22 +30,20 @@ import net.hasor.rsf.RsfModule;
  * @version : 2016年10月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfLandModule extends RsfModule implements ContextStartListener {
+public class LandModule extends RsfModule implements ContextStartListener {
     @Override
     public void loadModule(final RsfApiBinder apiBinder) throws Throwable {
+        final Environment env = apiBinder.getEnvironment();
         //
         // .注册Bean
+        apiBinder.bindType(LandContext.class).asEagerSingleton();
         apiBinder.bindType(ServerNode.class).asEagerSingleton();
         apiBinder.bindType(ElectionService.class).to(ElectionServiceManager.class).asEagerSingleton();
-        ClassLoader classLoader = apiBinder.getEnvironment().getClassLoader();
-        apiBinder.bindType(LandTimerManager.class).toInstance(new LandTimerManager(500, classLoader));
         //
         // .注册选举服务(隐藏的消息服务)
         apiBinder.rsfService(apiBinder.getBindInfo(ElectionService.class)).asShadow().asMessage().register();
-        apiBinder.rsfService(AskNameService.class).toInfo(apiBinder.getBindInfo(ServerNode.class)).asShadow().register();
         //
         // .消息监听器
-        final Environment env = apiBinder.getEnvironment();
         Hasor.pushShutdownListener(env, new EventListener<Object>() {
             public void onEvent(String event, Object eventData) throws Throwable {
                 //
@@ -60,6 +54,8 @@ public class RsfLandModule extends RsfModule implements ContextStartListener {
                 //
             }
         });
+        apiBinder.bindType(ContextStartListener.class).toInstance(this);
+        //
     }
     @Override
     public void doStart(AppContext appContext) {
@@ -67,7 +63,8 @@ public class RsfLandModule extends RsfModule implements ContextStartListener {
     }
     @Override
     public void doStartCompleted(AppContext appContext) {
-        // .异步方式触发事件,让节点进入 Follower 状态
-        appContext.getEnvironment().getEventContext().fireAsyncEvent(LandEvent.ServerStatus, ServerStatus.Follower);
+        //
+        appContext.getInstance(LandContext.class);
+        appContext.getInstance(ElectionService.class);
     }
 }

@@ -16,18 +16,20 @@
 package net.hasor.land.election;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
-import net.hasor.core.*;
-import net.hasor.land.domain.LandEvent;
+import net.hasor.core.EventListener;
+import net.hasor.core.Init;
+import net.hasor.core.Inject;
+import net.hasor.land.bootstrap.LandContext;
 import net.hasor.land.domain.NodeStatus;
 import net.hasor.land.domain.ServerStatus;
-import net.hasor.land.node.ClusterManager;
 import net.hasor.land.node.NodeData;
 import net.hasor.land.node.ServerNode;
-import net.hasor.land.utils.LandTimerManager;
 import net.hasor.land.utils.StringUtils;
 import net.hasor.land.utils.TermUtils;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Random;
@@ -37,23 +39,20 @@ import java.util.Random;
  * @version : 2016年09月10日
  * @author 赵永春(zyc@hasor.net)
  */
-@Singleton
 public class ElectionServiceManager implements ElectionService, EventListener<ServerStatus> {
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
-    private ServerNode       server;
+    private ServerNode  server;
     @Inject
-    private ClusterManager   clusterManager;
+    private LandContext landContext;
     @Inject
-    private LandTimerManager timerManager;
-    @Inject
-    private EventContext     eventContext;
-    @Inject
-    private RsfContext       rsfContext;
+    private RsfContext  rsfContext;
     //
     //
     @Init
     public void init() {
-        this.eventContext.addListener(LandEvent.ServerStatus, this);
+        this.landContext.addStatusListener(this);
+        this.landContext.fireStatus(ServerStatus.Follower);
     }
     /** 状态切换事件 */
     public void onEvent(String event, ServerStatus eventData) throws Throwable {
@@ -77,7 +76,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
     private void processForFollower() {
         // .要想维持追随者状态,必须要在定时超时之前收到来自 Leader 的心跳
         final long lastLeaderHeartbeat = this.server.getLastLeaderHeartbeat();
-        this.timerManager.atTime(new TimerTask() {
+        this.landContext.atTime(new TimerTask() {
             public void run(Timeout timeout) throws Exception {
                 //
                 // .定时器超时,如果已经不在处于追随者,那么放弃后续处理
@@ -93,7 +92,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
                 //
                 // .确保状态从 Follower 切换到 Candidate
                 if (server.getStatus() == ServerStatus.Follower) {
-                    eventContext.fireSyncEvent(LandEvent.ServerStatus, ServerStatus.Candidate);
+                    landContext.fireStatus(ServerStatus.Candidate);
                 }
             }
         }, this.genTimeout());
@@ -105,11 +104,11 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         this.server.incrementAndGetTerm();
         //
         // .发起选举
-        this.eventContext.fireSyncEvent(LandEvent.VotedFor_Event, null);//清空投票
+        this.landContext.fireVotedFor(null);//清空投票
         CollectVoteData voteData = new CollectVoteData();
-        voteData.setServerID(this.server.getServerID());
+        voteData.setServerID(this.landContext.getServerID());
         voteData.setTerm(this.server.getCurrentTerm());
-        List<NodeData> nodeList = this.clusterManager.getAllServiceNodes();
+        List<NodeData> nodeList = this.server.getAllServiceNodes();
         for (NodeData nodeData : nodeList) {
             //
             // -依次征集选票(Message模式RPC)
@@ -125,7 +124,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         }
         //
         // .启动定时器等待定时器超时,以便判断是否继续维持在 Candidate 状态
-        this.timerManager.atTime(new TimerTask() {
+        this.landContext.atTime(new TimerTask() {
             public void run(Timeout timeout) throws Exception {
                 // .候选人会继续保持着当前状态直到以下三件事情之一发生：
                 //  (a) 他自己赢得了这次的选举，    -> 成为 Leader
@@ -143,19 +142,19 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         }, this.genTimeout());
         //
     }
-    /** 生成最长 timeout + (150 ~ 300) 的一个随机数,用作超时时间 */
+    /** 生成最长 (150 ~ 300) 的一个随机数,用作超时时间 */
     public int genTimeout() {
-        return this.server.getTimeout() + new Random(System.currentTimeMillis()).nextInt(150) + 150;
+        return new Random(System.currentTimeMillis()).nextInt(150) + 150;
     }
     /** 尝试成为 Leader */
     private void tryToLeader() {
         // .只有候选人状态才会统计选票尝试成为leader
-        if (server.getStatus() != ServerStatus.Candidate) {
+        if (this.server.getStatus() != ServerStatus.Candidate) {
             return;
         }
         // .计票
         int voteGrantedCount = 0;
-        List<NodeData> nodeList = this.clusterManager.getAllServiceNodes();
+        List<NodeData> nodeList = this.server.getAllServiceNodes();
         for (NodeData nodeData : nodeList) {
             if (nodeData.isVoteGranted()) {
                 voteGrantedCount++;
@@ -163,19 +162,19 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         }
         // .判断是否赢得了多数派投票,如果赢得了多数派投票那么转换为 Leader
         if (voteGrantedCount * 2 > nodeList.size()) {
-            eventContext.fireSyncEvent(LandEvent.ServerStatus, ServerStatus.Leader);
+            this.landContext.fireStatus(ServerStatus.Leader);
         }
     }
     /** 维持 Leader 状态 */
     private void processForLeader() {
         //
         LeaderBeatData leaderData = new LeaderBeatData();
-        leaderData.setServerID(this.server.getServerID());
+        leaderData.setServerID(this.landContext.getServerID());
         leaderData.setTerm(this.server.getCurrentTerm());
         leaderData.setCommitIndex(this.server.getCommitTerm());
         //
         // .发送心跳log以维持 Leader 权威
-        List<NodeData> nodeList = this.clusterManager.getAllServiceNodes();
+        List<NodeData> nodeList = this.server.getAllServiceNodes();
         for (NodeData nodeData : nodeList) {
             //
             ElectionService electionService = nodeData.getElectionService(this.rsfContext);
@@ -196,7 +195,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         }
         //
         // .启动心跳定时器
-        this.timerManager.atTime(new TimerTask() {
+        this.landContext.atTime(new TimerTask() {
             public void run(Timeout timeout) throws Exception {
                 //
                 // .定时器超时,如果已经不在处于 Leader 那么,那么放弃后续处理
@@ -207,10 +206,8 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
                 // .重新激活定时器
                 processForLeader();
             }
-        }, this.server.getTimeout());
+        });
     }
-    //
-    //
     //
     /** 其它候选人发来的,拉票请求 */
     public RsfResult requestVote(CollectVoteData voteData) {
@@ -218,7 +215,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         String remoteTerm = voteData.getTerm();
         String targetServerID = voteData.getServerID();
         CollectVoteResult voteResult = new CollectVoteResult();
-        voteResult.setServerID(this.server.getServerID());
+        voteResult.setServerID(this.landContext.getServerID());
         voteResult.setRemoteTerm(selfTerm);
         //
         // .如果当前服务器比请求者的大那么,拒绝
@@ -237,7 +234,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         boolean votedUnchanged = targetServerID.equalsIgnoreCase(this.server.getVotedFor());
         boolean freshThenMe = TermUtils.gtFirst(selfTerm, remoteTerm) || selfTerm.equalsIgnoreCase(remoteTerm);
         if (votedForStatus || (votedUnchanged && freshThenMe)) {
-            this.eventContext.fireSyncEvent(LandEvent.VotedFor_Event, voteData.getServerID());
+            this.landContext.fireVotedFor(voteData.getServerID());
             voteResult.setVoteGranted(true);
         } else {
             voteResult.setVoteGranted(false);
@@ -248,7 +245,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         return null;
     }
     private NodeData findTargetServer(String targetServerID) {
-        List<NodeData> nodeList = this.clusterManager.getAllServiceNodes();
+        List<NodeData> nodeList = this.server.getAllServiceNodes();
         for (NodeData nodeData : nodeList) {
             if (nodeData.getServerID().equalsIgnoreCase(targetServerID)) {
                 return nodeData;
@@ -295,7 +292,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         //      - 追随 Leader 会更新 自己的 term 和 Leader 一样
         boolean toFollower = false;
         if (this.server.updateTermTo(remoteTerm) || selfTerm.equalsIgnoreCase(remoteTerm)) {
-            this.eventContext.fireSyncEvent(LandEvent.VotedFor_Event, targetServerID);
+            this.landContext.fireVotedFor(targetServerID);
             this.server.newLastLeaderHeartbeat();
             toFollower = true;
         }
@@ -303,7 +300,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         // .处理拒绝 Leader 的心跳包
         ElectionService electionService = data.getElectionService(this.rsfContext);
         LeaderBeatResult leaderBeatResult = new LeaderBeatResult();
-        leaderBeatResult.setServerID(this.server.getServerID());
+        leaderBeatResult.setServerID(this.landContext.getServerID());
         if (!toFollower) {
             try {
                 leaderBeatResult.setAccept(false);
@@ -316,7 +313,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         //
         // .转换为 Follower 身份,并响应心跳包
         if (this.server.getStatus() != ServerStatus.Follower) {
-            this.eventContext.fireSyncEvent(LandEvent.ServerStatus, ServerStatus.Follower);
+            this.landContext.fireStatus(ServerStatus.Follower);
         }
         try {
             leaderBeatResult.setAccept(true);

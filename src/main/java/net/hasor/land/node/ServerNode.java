@@ -14,64 +14,99 @@
  * limitations under the License.
  */
 package net.hasor.land.node;
-import net.hasor.core.*;
+import net.hasor.core.EventListener;
+import net.hasor.core.Init;
+import net.hasor.core.Inject;
+import net.hasor.land.bootstrap.LandContext;
 import net.hasor.land.domain.LandEvent;
 import net.hasor.land.domain.ServerStatus;
 import net.hasor.land.utils.TermUtils;
 import net.hasor.rsf.InterAddress;
-import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.utils.NetworkUtils;
 import net.hasor.rsf.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URISyntaxException;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 /**
  * 当前服务器节点信息
  *
  * @version : 2016年09月10日
  * @author 赵永春(zyc@hasor.net)
  */
-@Singleton
-public class ServerNode implements EventListener<Object>, AskNameService {
-    @InjectSettings(value = "hasor.rsfNeuron.serviceID", defaultValue = "local")
-    private String         serverID            = null; //当前服务器ID
-    @InjectSettings(value = "rsfNeuron.timeout", defaultValue = "500")
-    private int            timeout             = 1000; //基准心跳时间
+public class ServerNode implements EventListener<Object> {
+    protected Logger         logger              = LoggerFactory.getLogger(getClass());
     @Inject
-    private RsfContext     rsfContext          = null;
-    @Inject
-    private ClusterManager clusterManager      = null; //所有服务器节点
-    private String         currentTerm         = null; //服务器最后一次知道的LogID（初始化为 0，持续递增）
-    private String         votedFor            = null; //当前获得选票的候选人的 ID
-    private ServerStatus   status              = null; //当前服务器节点状态
-    private long           lastLeaderHeartbeat = 0;    //最后一次接收到来自Leader的心跳时间
-    private String         commitTerm          = null; //已知的,最大的,已经被提交的日志条目的termID
+    private   LandContext    landContext         = null;
+    private   List<NodeData> allServiceNodes     = null; //所有服务器节点
+    private   String         currentTerm         = null; //服务器最后一次知道的LogID（初始化为 0，持续递增）
+    private   String         votedFor            = null; //当前获得选票的候选人的 ID
+    private   ServerStatus   status              = null; //当前服务器节点状态
+    private   long           lastLeaderHeartbeat = 0;    //最后一次接收到来自Leader的心跳时间
+    private   String         commitTerm          = null; //已知的,最大的,已经被提交的日志条目的termID
+    //
+    /** 当前条目ID(已递交，已生效) */
+    public String getCurrentTerm() {
+        return currentTerm;
+    }
+    /** 当前服务器的选票投给了谁 */
+    public String getVotedFor() {
+        return votedFor;
+    }
+    /** 已知的最大提交日志条目的termID */
+    public String getCommitTerm() {
+        return commitTerm;
+    }
+    /** 当前服务器节点状态 */
+    public ServerStatus getStatus() {
+        return status;
+    }
+    /** 最后一次 Leader 发来的心跳时间 */
+    public long getLastLeaderHeartbeat() {
+        return lastLeaderHeartbeat;
+    }
+    /** 获取所有配置的集群节点 */
+    public List<NodeData> getAllServiceNodes() {
+        return allServiceNodes;
+    }
     //
     @Init
-    public void init() throws UnknownHostException, URISyntaxException {
-        // .基础属性初始化
-        if ("local".equalsIgnoreCase(this.serverID)) {
-            this.serverID = NetworkUtils.finalBindAddress(this.serverID).getHostAddress();
-        }
+    public void init() throws URISyntaxException {
+        //
         this.currentTerm = "0";
         this.votedFor = null;
         this.status = ServerStatus.Follower;
-        this.rsfContext.getEnvironment().getEventContext().addListener(LandEvent.ServerStatus, this);
+        this.landContext.addStatusListener(this);
+        //
         // .集群信息
-        String serverSetting = this.rsfContext.getEnvironment().getSettings().getString("hasor.land.servers");
-        String[] serverArrays = null;
-        if (StringUtils.isBlank(serverSetting)) {
-            serverArrays = new String[0];
-        } else {
-            serverArrays = serverSetting.split(",");
+        String services = this.landContext.getSettings("hasor.land.servers");
+        Map<String, InterAddress> servers = new HashMap<String, InterAddress>();
+        if (StringUtils.isNotBlank(services)) {
+            String[] serverArrays = services.split(",");
+            for (String serverInfo : serverArrays) {
+                serverInfo = serverInfo.trim();
+                String[] infos = serverInfo.split(":");
+                if (infos.length != 3) {
+                    continue;
+                }
+                String serverID = serverInfo.substring(0, infos[0].length());
+                String serverTarget = serverInfo.substring(serverID.length() + 1);
+                servers.put(serverID, new InterAddress("rsf://" + serverTarget + "/default"));
+            }
         }
         // .添加节点
-        String defaultProtocol = this.rsfContext.getDefaultProtocol();
-        this.clusterManager.addNode(this.rsfContext.bindAddress(defaultProtocol));
-        for (String server : serverArrays) {
-            this.clusterManager.addNode(new InterAddress((server)));
+        this.allServiceNodes = new ArrayList<NodeData>();
+        for (Map.Entry<String, InterAddress> entry : servers.entrySet()) {
+            String serverID = entry.getKey();
+            InterAddress serverAddress = entry.getValue();
+            NodeData serverNode = new NodeData(serverID, serverAddress);
+            this.allServiceNodes.add(serverNode);
         }
     }
+    //
     //
     @Override
     public void onEvent(String event, Object eventData) throws Throwable {
@@ -99,37 +134,5 @@ public class ServerNode implements EventListener<Object>, AskNameService {
     }
     public void newLastLeaderHeartbeat() {
         this.lastLeaderHeartbeat = System.currentTimeMillis();
-    }
-    //
-    //
-    @Override
-    public String askServerID() {
-        return this.getServerID();
-    }
-    public String getServerID() {
-        return serverID;
-    }
-    public String getCurrentTerm() {
-        return currentTerm;
-    }
-    public String getVotedFor() {
-        return votedFor;
-    }
-    public String getCommitTerm() {
-        return commitTerm;
-    }
-    public ServerStatus getStatus() {
-        return status;
-    }
-    public int getTimeout() {
-        return timeout;
-    }
-    public long getLastLeaderHeartbeat() {
-        return lastLeaderHeartbeat;
-    }
-    //
-    //
-    public void setCommitTerm(String commitTerm) {
-        this.commitTerm = commitTerm;
     }
 }
