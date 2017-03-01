@@ -18,4 +18,6 @@
         </LAND_SERVERS>
 
     </hasor.environmentVar>
+
+    <test.curTerm>3</test.curTerm>
 </config>

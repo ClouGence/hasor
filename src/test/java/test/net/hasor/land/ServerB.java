@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.land.voted_s1;
+package test.net.hasor.land;
 import net.hasor.core.Hasor;
-import net.hasor.land.election.ElectionService;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfModule;
 /**
- * 启动服务端
+ *
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
 public class ServerB {
     public static void main(String[] args) throws Throwable {
-        Hasor.createAppContext("/none/server2-config.xml", new RsfModule() {
+        Hasor.createAppContext("server2-config.xml", new RsfModule() {
             public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-                apiBinder.installModule(new ElectionServiceVoted_S1());
-                apiBinder.bindType(ElectionServiceVoted_S1.class).asEagerSingleton();
-                apiBinder.rsfService(ElectionService.class).to(ElectionServiceVoted_S1.class).register();
             }
         });
         System.out.println("server B start.");

@@ -1,10 +1,11 @@
-package test.net.hasor.land.voted_s1;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.Init;
-import net.hasor.core.Inject;
-import net.hasor.core.Module;
+package test.net.hasor.land.election;
+import net.hasor.core.*;
 import net.hasor.land.bootstrap.LandContext;
-import net.hasor.land.election.*;
+import net.hasor.land.election.CollectVoteResult;
+import net.hasor.land.election.ElectionService;
+import net.hasor.land.election.LeaderBeatData;
+import net.hasor.land.election.LeaderBeatResult;
+import net.hasor.land.utils.TermUtils;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
@@ -16,13 +17,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 /**
+ * 投票测试基类
  * Created by yongchun.zyc on 2017/2/27.
  */
-public class ElectionServiceVoted_S1 implements ElectionService, Module {
+public abstract class AbstractElectionServiceVoted implements ElectionService, Module {
     @Inject
     private LandContext               landContext;
     @Inject
     private RsfContext                rsfContext;
+    @InjectSettings("test.curTerm")
+    private String                    curTerm;
     private Map<String, InterAddress> allServiceNodes;
     //
     //
@@ -46,16 +50,10 @@ public class ElectionServiceVoted_S1 implements ElectionService, Module {
         }
     }
     //
-    @Override
-    public RsfResult requestVote(CollectVoteData voteData) {
-        if ("server_1".equalsIgnoreCase(voteData.getServerID())) {
-            // 投票给 A
-            return voteOK(voteData.getServerID());
-        } else {
-            // 只能投 A
-            return voteFailed(voteData.getServerID());
-        }
+    protected boolean testTerm(String testTerm) {
+        return TermUtils.gtFirst(this.curTerm, testTerm);
     }
+    //
     @Override
     public RsfResult responseVote(CollectVoteResult voteData) {
         return null;
@@ -71,7 +69,7 @@ public class ElectionServiceVoted_S1 implements ElectionService, Module {
     //
     //
     //
-    private RsfResult voteOK(String serviceID) {
+    protected RsfResult voteOK(String serviceID) {
         InterAddress interAddress = this.allServiceNodes.get(serviceID);
         RsfClient rsfClient = this.rsfContext.getRsfClient(interAddress);
         ElectionService wrapper = rsfClient.wrapper(ElectionService.class);
@@ -88,7 +86,7 @@ public class ElectionServiceVoted_S1 implements ElectionService, Module {
         wrapper.responseVote(voteResult);
         return null;
     }
-    private RsfResult voteFailed(String serviceID) {
+    protected RsfResult voteFailed(String serviceID) {
         InterAddress interAddress = this.allServiceNodes.get(serviceID);
         RsfClient rsfClient = this.rsfContext.getRsfClient(interAddress);
         ElectionService wrapper = rsfClient.wrapper(ElectionService.class);

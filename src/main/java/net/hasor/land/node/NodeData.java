@@ -65,4 +65,6 @@ public class NodeData {
     public void setNodeStatus(NodeStatus nodeStatus) {
         this.nodeStatus = nodeStatus;
     }
+    //
+    //
 }

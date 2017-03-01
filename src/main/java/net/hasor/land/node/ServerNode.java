@@ -46,7 +46,6 @@ public class ServerNode implements EventListener<Object> {
     private   String         votedFor            = null; //当前获得选票的候选人的 ID
     private   ServerStatus   status              = null; //当前服务器节点状态
     private   long           lastLeaderHeartbeat = 0;    //最后一次接收到来自Leader的心跳时间
-    private   String         commitTerm          = null; //已知的,最大的,已经被提交的日志条目的termID
     //
     /** 当前条目ID(已递交，已生效) */
     public String getCurrentTerm() {
@@ -55,10 +54,6 @@ public class ServerNode implements EventListener<Object> {
     /** 当前服务器的选票投给了谁 */
     public String getVotedFor() {
         return votedFor;
-    }
-    /** 已知的最大提交日志条目的termID */
-    public String getCommitTerm() {
-        return commitTerm;
     }
     /** 当前服务器节点状态 */
     public ServerStatus getStatus() {
@@ -79,6 +74,7 @@ public class ServerNode implements EventListener<Object> {
         this.currentTerm = "0";
         this.votedFor = null;
         this.status = ServerStatus.Follower;
+        this.landContext.addVotedListener(this);
         this.landContext.addStatusListener(this);
         //
         // .集群信息

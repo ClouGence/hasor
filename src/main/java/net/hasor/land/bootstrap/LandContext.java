@@ -55,6 +55,9 @@ public class LandContext {
     public void addStatusListener(EventListener<?> listener) {
         this.eventContext.addListener(LandEvent.ServerStatus, listener);
     }
+    public void addVotedListener(EventListener<?> listener) {
+        this.eventContext.addListener(LandEvent.VotedFor_Event, listener);
+    }
     /** 定时器，使用基准心跳时间 */
     public void atTime(TimerTask timerTask) {
         this.atTime(timerTask, 0);

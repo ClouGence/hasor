@@ -24,16 +24,17 @@ import net.hasor.land.domain.NodeStatus;
 import net.hasor.land.domain.ServerStatus;
 import net.hasor.land.node.NodeData;
 import net.hasor.land.node.ServerNode;
+import net.hasor.land.replicator.LogDataContext;
 import net.hasor.land.utils.StringUtils;
 import net.hasor.land.utils.TermUtils;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfResult;
-import net.hasor.rsf.domain.RsfResultDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 选举服务,负责选出 Leader
  *
@@ -43,167 +44,248 @@ import java.util.Random;
 public class ElectionServiceManager implements ElectionService, EventListener<ServerStatus> {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
-    private ServerNode  server;
+    private ServerNode     server;
     @Inject
-    private LandContext landContext;
+    private LogDataContext dataContext;
     @Inject
-    private RsfContext  rsfContext;
-    private long        lastPrintLeaderLog;
+    private LandContext    landContext;
+    @Inject
+    private RsfContext     rsfContext;
+    private AtomicBoolean  landStatus;          // 在线状态
+    private AtomicBoolean  followerTimer;       // follower 定时器
+    private AtomicBoolean  candidateTimer;      // candidate定时器
+    private AtomicBoolean  leaderTimer;         // leader   定时器
     //
     //
     @Init
-    public void init() {
+    public void start() {
+        this.landStatus = new AtomicBoolean(true);
+        this.followerTimer = new AtomicBoolean(false);
+        this.candidateTimer = new AtomicBoolean(false);
+        this.leaderTimer = new AtomicBoolean(false);
+        //
         this.landContext.addStatusListener(this);
+        //
+        this.startFollowerTimer();
+        this.startCandidateTimer();
+        this.startLeaderTimer();
+        //
         this.landContext.fireStatus(ServerStatus.Follower);
     }
-    /** 状态切换事件 */
-    public void onEvent(String event, ServerStatus eventData) throws Throwable {
+    //
+    // --------------------------------------------------------------------------------------------
+    // .状态切换事件
+    //      当发生角色转换，负责更新各个定时器状态
+    public void onEvent(String event, ServerStatus eventData) {
+        this.followerTimer.set(false);
+        this.candidateTimer.set(false);
+        this.leaderTimer.set(false);
+        //
         logger.info("Land[Status] - switchTo -> {}.", eventData);
-        // .一旦进入追随者状态,那么马上启动定时器,等待定时器超时之后进行选举
         if (eventData == ServerStatus.Follower) {
-            this.processForFollower();
+            this.followerTimer.set(true);
             return;
         }
         // .一旦成为候选人那么马上进行选举
         if (eventData == ServerStatus.Candidate) {
-            this.processForCandidate();
+            this.candidateTimer.set(true);
             return;
         }
         // .一旦成为 Leader 马上发送一个 term 以建立权威,然后通过心跳维持权威
         if (eventData == ServerStatus.Leader) {
-            this.processForLeader();
+            this.leaderTimer.set(true);
             return;
         }
     }
-    /** 维持 Follower 状态 */
-    private void processForFollower() {
-        // .要想维持追随者状态,必须要在定时超时之前收到来自 Leader 的心跳
+    // --------------------------------------------------------------------------------------------
+    // .follower
+    //      startFollowerTimer      启动定时器
+    //      processFollowerTimer    定时器的循环调用
+    //      processFollower         follower 逻辑代码
+    private void startFollowerTimer() {
+        if (!this.followerTimer.compareAndSet(false, true)) {
+            this.logger.error("Land[Follower] - followerTimer -> already started");
+            return;
+        }
+        this.logger.info("Land[Follower] - start followerTimer.");
         final long lastLeaderHeartbeat = this.server.getLastLeaderHeartbeat();
         this.landContext.atTime(new TimerTask() {
             public void run(Timeout timeout) throws Exception {
-                //
-                // .定时器超时,如果已经不在处于追随者,那么放弃后续处理
-                if (server.getStatus() != ServerStatus.Follower) {
-                    logger.info("Land[Follower] -> server mast be Follower, but ->" + server.getStatus());
-                    return;
-                }
-                // .判断启动定时器之后是否收到最新的 Leader 心跳 ,如果收到了心跳,那么放弃后续处理维持 Follower 状态
-                //      (新的Leader心跳时间比启动定时器之前心跳时间要新,即为收到了心跳)
-                boolean leaderHeartbeat = server.getLastLeaderHeartbeat() > lastLeaderHeartbeat;
-                if (leaderHeartbeat) {
-                    logger.info("Land[Follower] -> received the leader a heartbeat. at -> " + lastLeaderHeartbeat);
-                    return;
-                }
-                //
-                // .确保状态从 Follower 切换到 Candidate
-                if (server.getStatus() == ServerStatus.Follower) {
-                    logger.info("Land[Follower] -> switch to Candidate.");
-                    landContext.fireStatus(ServerStatus.Candidate);
-                }
+                processFollowerTimer(lastLeaderHeartbeat);
             }
-        }, this.genTimeout());
+        });
     }
-    /** 维持 Candidate 状态 */
-    private void processForCandidate() {
+    private void processFollowerTimer(long lastLeaderHeartbeat) {
+        // .如果系统退出，那么结束定时器循环
+        if (!this.landStatus.get()) {
+            return;
+        }
+        // .执行 Follower 任务
+        try {
+            this.processFollower(lastLeaderHeartbeat);
+        } catch (Exception e) {
+            logger.error("Land[Follower] - " + e.getMessage(), e);
+        }
+        // .重启定时器
+        final long curLeaderHeartbeat = this.server.getLastLeaderHeartbeat();
+        this.landContext.atTime(new TimerTask() {
+            @Override
+            public void run(Timeout timeout) throws Exception {
+                processFollowerTimer(curLeaderHeartbeat);
+            }
+        });
+    }
+    private void processFollower(long lastLeaderHeartbeat) {
+        if (!this.followerTimer.get()) {
+            return;
+        }
+        //
+        // .如果已经不在处于追随者,那么放弃后续处理
+        if (this.server.getStatus() != ServerStatus.Follower) {
+            this.logger.info("Land[Follower] -> server mast be Follower, but ->" + this.server.getStatus());
+            return;
+        }
+        // .判断启动定时器之后是否收到最新的 Leader 心跳 ,如果收到了心跳,那么放弃后续处理维持 Follower 状态
+        //      (新的Leader心跳时间比启动定时器之前心跳时间要新,即为收到了心跳)
+        boolean leaderHeartbeat = this.server.getLastLeaderHeartbeat() > lastLeaderHeartbeat;
+        if (leaderHeartbeat) {
+            printLeader();
+            return;
+        }
+        //
+        // .确保状态从 Follower 切换到 Candidate
+        this.logger.info("Land[Follower] -> initiate the election.");
+        if (this.server.getStatus() == ServerStatus.Follower) {
+            this.landContext.fireStatus(ServerStatus.Candidate);
+        }
+    }
+    // --------------------------------------------------------------------------------------------
+    // .candidate
+    //      startCandidateTimer     启动定时器
+    //      processCandidateTimer   定时器的循环调用
+    //      processCandidate        candidate 逻辑代码
+    private void startCandidateTimer() {
+        if (!this.candidateTimer.compareAndSet(false, true)) {
+            this.logger.error("Land[Candidate] - candidateTimer -> already started");
+            return;
+        }
+        this.logger.info("Land[Candidate] - start candidateTimer.");
+        this.landContext.atTime(new TimerTask() {
+            public void run(Timeout timeout) throws Exception {
+                processCandidateTimer();
+            }
+        });
+    }
+    private void processCandidateTimer() {
+        // .如果系统退出，那么结束定时器循环
+        if (!this.landStatus.get()) {
+            return;
+        }
+        // .执行 Candidate 任务
+        try {
+            this.processCandidate();
+        } catch (Exception e) {
+            logger.error("Land[Candidate] - " + e.getMessage(), e);
+        }
+        // .重启定时器
+        this.landContext.atTime(new TimerTask() {
+            @Override
+            public void run(Timeout timeout) throws Exception {
+                processCandidateTimer();
+            }
+        }, genTimeout());
+    }
+    private void processCandidate() {
+        // .候选人会继续保持着当前状态直到以下三件事情之一发生：
+        //  (a) 他自己赢得了这次的选举，    -> 成为 Leader
+        //  (b) 其他的服务器成为领导者，    -> 成为 Follower
+        //  (c) 一段时间之后没有任何获胜的， -> 重新开始选举
+        if (!this.candidateTimer.get()) {
+            return;
+        }
+        //
+        // .尝试成为 Leader( 返回true表示赢得了这次的选举 )
+        boolean tryToLeader = this.testToLeader();
+        if (tryToLeader) {
+            logger.info("Land[Candidate] -> {} server was elected leader.", this.landContext.getServerID());
+            this.landContext.fireStatus(ServerStatus.Leader);
+            return;
+        }
         //
         // .term自增
         this.server.incrementAndGetTerm();
+        this.logger.info("Land[Candidate] -> solicit votes , current Trem is {}", this.server.getCurrentTerm());
         //
-        // .发起选举
-        this.landContext.fireVotedFor(null);//清空投票
+        // .清空当前投票、发起选举,征集选票
+        this.landContext.fireVotedFor(null);
         CollectVoteData voteData = new CollectVoteData();
         voteData.setServerID(this.landContext.getServerID());
         voteData.setTerm(this.server.getCurrentTerm());
         List<NodeData> nodeList = this.server.getAllServiceNodes();
         for (NodeData nodeData : nodeList) {
-            nodeData.setVoteGranted(false);// -清空计票,重新赢的选票
+            nodeData.setVoteGranted(false);// -清空计票,重新拉票
             //
-            // .如果拉票的目标是自己，那么直接投给自己选票
-            if (landContext.getServerID().equalsIgnoreCase(nodeData.getServerID())) {
+            // .如果目标是自己，那么直接投给自己
+            if (this.landContext.getServerID().equalsIgnoreCase(nodeData.getServerID())) {
                 this.landContext.fireVotedFor(voteData.getServerID());
                 nodeData.setVoteGranted(true);
                 continue;
             }
             //
-            // .依次征集选票(Message模式RPC)
-            logger.info("Land[Candidate] -> request the votes from {} , current Trem is {}", nodeData.getServerID(), this.server.getCurrentTerm());
+            // .征集选票(Message模式RPC)
             ElectionService electionService = nodeData.getElectionService(this.rsfContext);
-            RsfResult result = doRequestVote(voteData, electionService);   // 第一次拉票
-            if (result == null || !result.isSuccess()) {
-                result = doRequestVote(voteData, electionService);         // 第二次拉票
-                if (result == null || !result.isSuccess()) {
-                    result = doRequestVote(voteData, electionService);     // 第三次拉票
-                }
-            }
+            doRequestVote(voteData, electionService);
             //
-            if (!result.isSuccess()) {
-                logger.error("Land[Candidate] -> request the votes error({}) form : " + nodeData.getServerID(), result.getErrorCode());
-            }
         }
         //
-        // .启动定时器等待定时器超时,以便判断是否继续维持在 Candidate 状态
-        this.landContext.atTime(new TimerTask() {
-            public void run(Timeout timeout) throws Exception {
-                // .候选人会继续保持着当前状态直到以下三件事情之一发生：
-                //  (a) 他自己赢得了这次的选举，    -> 成为 Leader
-                //  (b) 其他的服务器成为领导者，    -> 成为 Follower
-                //  (c) 一段时间之后没有任何获胜的， -> 重新开始选举
-                //
-                // .尝试成为 Leader
-                tryToLeader();
-                //
-                // . 如果当前仍然是 Candidate 那么重新激活选举
-                if (server.getStatus() == ServerStatus.Candidate) {
-                    processForCandidate();
-                }
-            }
-        }, this.genTimeout());
-        //
     }
-    private RsfResult doRequestVote(CollectVoteData voteData, ElectionService electionService) {
-        try {
-            return electionService.requestVote(voteData);
-        } catch (Throwable e) {
-            logger.error(e.getMessage(), e);
-            return new RsfResultDO(0, false);
-        }
-    }
-    /** 生成最长 (150 ~ 300) 的一个随机数,用作超时时间 */
-    public int genTimeout() {
-        return new Random(System.currentTimeMillis()).nextInt(150) + 150;
-    }
-    /** 尝试成为 Leader */
-    private void tryToLeader() {
-        // .只有候选人状态才会统计选票尝试成为leader
-        if (this.server.getStatus() != ServerStatus.Candidate) {
+    // --------------------------------------------------------------------------------------------
+    // .leader
+    //      startLeaderTimer        启动定时器
+    //      processLeaderTimer      定时器的循环调用
+    //      processLeader           leader 逻辑代码
+    private void startLeaderTimer() {
+        if (!this.leaderTimer.compareAndSet(false, true)) {
+            this.logger.error("Land[Leader] - leaderTimer -> already started");
             return;
         }
-        // .计票
-        int voteGrantedCount = 0;
-        List<NodeData> nodeList = this.server.getAllServiceNodes();
-        for (NodeData nodeData : nodeList) {
-            if (nodeData.isVoteGranted()) {
-                voteGrantedCount++;
+        this.logger.info("Land[Leader] - start leaderTimer.");
+        this.landContext.atTime(new TimerTask() {
+            public void run(Timeout timeout) throws Exception {
+                processLeaderTimer();
             }
-        }
-        // .判断是否赢得了多数派投票,如果赢得了多数派投票那么转换为 Leader
-        if (voteGrantedCount * 2 > nodeList.size()) {
-            logger.info("Land[Vote] -> most chose this server {} of {}, elected leader.", voteGrantedCount, nodeList.size());
-            this.landContext.fireStatus(ServerStatus.Leader);
-        } else {
-            logger.info("Land[Vote] -> less than half of the votes {} of {}", voteGrantedCount, nodeList.size());
-        }
+        });
     }
-    /** 维持 Leader 状态 */
-    private void processForLeader() {
+    private void processLeaderTimer() {
+        // .如果系统退出，那么结束定时器循环
+        if (!this.landStatus.get()) {
+            return;
+        }
+        // .执行 Leader 任务
+        try {
+            this.processLeader();
+        } catch (Exception e) {
+            logger.error("Land[Leader] - " + e.getMessage(), e);
+        }
+        // .重启定时器
+        this.landContext.atTime(new TimerTask() {
+            @Override
+            public void run(Timeout timeout) throws Exception {
+                processLeaderTimer();
+            }
+        });
+    }
+    private void processLeader() {
+        if (!this.leaderTimer.get()) {
+            return;
+        }
         //
         LeaderBeatData leaderData = new LeaderBeatData();
         leaderData.setServerID(this.landContext.getServerID());
         leaderData.setTerm(this.server.getCurrentTerm());
-        leaderData.setCommitIndex(this.server.getCommitTerm());
+        leaderData.setCommitIndex(this.dataContext.getCommitTerm());
         //
-        // .10秒打印一次 Leader 的心跳
-        boolean printLeaderLog = lastPrintLeaderLog + 10000L < System.currentTimeMillis();
+        printLeader();
         //
         // .发送心跳log以维持 Leader 权威
         List<NodeData> nodeList = this.server.getAllServiceNodes();
@@ -214,45 +296,16 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
                 this.server.newLastLeaderHeartbeat();
                 continue;
             }
-            //
-            if (printLeaderLog) {
-                lastPrintLeaderLog = System.currentTimeMillis();
-                logger.info("Land[Leader] -> leader heartbeat to {}", nodeData.getServerID());
-            }
-            //
+            // .发送Leader心跳包
             ElectionService electionService = nodeData.getElectionService(this.rsfContext);
-            RsfResult result = electionService.heartbeatForLeader(leaderData);   // 第一次心跳
-            if (result == null || !result.isSuccess()) {
-                result = electionService.heartbeatForLeader(leaderData);         // 第二次重试
-                if (result == null || !result.isSuccess()) {
-                    result = electionService.heartbeatForLeader(leaderData);     // 第三次重试
-                }
-            }
-            // .目标节点状态
-            if (nodeData.getNodeStatus() == NodeStatus.Online) {
-                nodeData.setNodeStatus(NodeStatus.Uncertainty);
-            }
-            if (nodeData.getNodeStatus() == NodeStatus.Uncertainty) {
-                nodeData.setNodeStatus(NodeStatus.Offline);
-            }
+            doHeartBeet(leaderData, electionService);
         }
         //
-        // .启动心跳定时器
-        this.landContext.atTime(new TimerTask() {
-            public void run(Timeout timeout) throws Exception {
-                //
-                // .定时器超时,如果已经不在处于 Leader 那么,那么放弃后续处理
-                if (server.getStatus() != ServerStatus.Leader) {
-                    return;
-                }
-                //
-                // .重新激活定时器
-                processForLeader();
-            }
-        });
     }
-    //
-    /** 其它候选人发来的,拉票请求 */
+    // --------------------------------------------------------------------------------------------
+    // .拉选票
+    //      requestVote             收到拉票请求，做出回应
+    //      responseVote            收到拉票结果，尝试成为Leader
     public RsfResult requestVote(CollectVoteData voteData) {
         String selfTerm = this.server.getCurrentTerm();
         String remoteTerm = voteData.getTerm();
@@ -263,9 +316,10 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         //
         // .如果当前服务器比请求者的大那么,拒绝
         if (TermUtils.gtFirst(remoteTerm, selfTerm)) {
+            logger.info("Land[Vote] -> reject to {} votes. cause: currentTerm({}) > remoteTerm({})", //
+                    targetServerID, selfTerm, remoteTerm);
             voteResult.setVoteGranted(false);
-            // .向目标发送结果数据(RpC 接口在 Message 模式下不需要返回值)
-            pushVoteResult(targetServerID, voteResult);
+            pushVoteResult(targetServerID, voteResult);// .发送结果消息
             return null;
         }
         // .如果 votedFor 为空或者就是 candidateId，并且候选人的日志也自己一样新，那么就投票给他
@@ -277,16 +331,133 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         boolean votedUnchanged = targetServerID.equalsIgnoreCase(this.server.getVotedFor());
         boolean freshThenMe = TermUtils.gtFirst(selfTerm, remoteTerm) || selfTerm.equalsIgnoreCase(remoteTerm);
         if (votedForStatus || (votedUnchanged && freshThenMe)) {
+            logger.info("Land[Vote] -> accept votes from {} votes.", //
+                    targetServerID, selfTerm, remoteTerm);
             this.landContext.fireVotedFor(voteData.getServerID());
             voteResult.setVoteGranted(true);
         } else {
+            logger.info("Land[Vote] -> reject votes from {} votes. cause: votedUnchanged:{} ,freshThenMe:{}", //
+                    targetServerID, votedUnchanged, freshThenMe);
             voteResult.setVoteGranted(false);
         }
         //
-        // .向目标发送结果数据(RpC 接口在 Message 模式下不需要返回值)
-        pushVoteResult(targetServerID, voteResult);
+        pushVoteResult(targetServerID, voteResult);// .发送结果消息
         return null;
     }
+    public RsfResult responseVote(CollectVoteResult voteData) {
+        NodeData data = this.findTargetServer(voteData.getServerID());
+        if (data == null) {
+            return null;
+        }
+        //
+        if (ServerStatus.Candidate != this.server.getStatus()) {
+            logger.info("Land[Vote] -> received {} of the vote({}), but status is invalid.", data.getServerID(), voteData.isVoteGranted());
+            return null;
+        }
+        //
+        // .回填选票结果，重新计票，然后 确定是否得到了多数派的确认,如果得到多数派投票,立刻成为 leader。
+        boolean voteGranted = voteData.isVoteGranted();
+        logger.info("Land[Vote] -> received {} of the vote, voteGranted is {}.", data.getServerID(), voteGranted);
+        data.setVoteGranted(voteGranted);
+        if (voteGranted) {
+            boolean tryToLeader = this.testToLeader();
+            if (tryToLeader) {
+                logger.info("Land[Vote] -> {} server was elected leader.", this.landContext.getServerID());
+                this.landContext.fireStatus(ServerStatus.Leader);
+            }
+        }
+        return null;
+    }
+    // --------------------------------------------------------------------------------------------
+    // .来自 Leader 的心跳
+    //      heartbeatForLeader
+    //      heartbeatResponse       接受心跳回应的结果
+    public RsfResult heartbeatForLeader(LeaderBeatData leaderBeatData) {
+        String selfTerm = this.server.getCurrentTerm();
+        String remoteTerm = leaderBeatData.getTerm();
+        String targetServerID = leaderBeatData.getServerID();
+        NodeData data = this.findTargetServer(targetServerID);
+        if (data == null) {
+            return null;
+        }
+        //
+        // .如果收到 Leader 的心跳中 term 比自己高,或者和自己相等。那么就追随这个 Leader
+        //      - 追随 Leader 会更新 自己的 term 和 Leader 一样
+        boolean toFollower = false;
+        if (this.server.updateTermTo(remoteTerm) || selfTerm.equalsIgnoreCase(remoteTerm)) {
+            this.server.newLastLeaderHeartbeat();
+            toFollower = true;
+        }
+        //
+        // .处理拒绝 Leader 的心跳包
+        ElectionService electionService = data.getElectionService(this.rsfContext);
+        LeaderBeatResult leaderBeatResult = new LeaderBeatResult();
+        leaderBeatResult.setServerID(this.landContext.getServerID());
+        if (!toFollower) {
+            leaderBeatResult.setAccept(false);
+            doHeardBeetResponse(electionService, leaderBeatResult);
+            return null;
+        }
+        //
+        // .转换为 Follower 身份,并响应心跳包
+        if (ServerStatus.Follower != this.server.getStatus()) {
+            this.landContext.fireStatus(ServerStatus.Follower);
+        }
+        //
+        this.landContext.fireVotedFor(targetServerID);
+        leaderBeatResult.setAccept(true);
+        doHeardBeetResponse(electionService, leaderBeatResult);
+        return null;
+    }
+    public RsfResult heartbeatResponse(LeaderBeatResult leaderBeatResult) {
+        String targetServerID = leaderBeatResult.getServerID();
+        NodeData data = this.findTargetServer(targetServerID);
+        if (data == null) {
+            return null;
+        }
+        data.setNodeStatus(NodeStatus.Online);
+        data.setVoteGranted(leaderBeatResult.isAccept()); //可能失去了这个选票
+        //        this.tryToLeader();
+        return null;
+    }
+    //
+    //
+    //
+    //
+    // --------------------------------------------------------------------------------------------
+    /** 测试选票是否够得上成为Leader */
+    private boolean testToLeader() {
+        // .计票
+        int voteGrantedCount = 0;
+        List<NodeData> nodeList = this.server.getAllServiceNodes();
+        for (NodeData nodeData : nodeList) {
+            if (nodeData.isVoteGranted()) {
+                voteGrantedCount++;
+            }
+        }
+        return voteGrantedCount * 2 > nodeList.size();
+    }
+    /** 打印 Leader 信息 */
+    private long lastPrintLeaderLog;
+    private void printLeader() {
+        //
+        // .10秒打印一次 Leader 的心跳
+        boolean printLeaderLog = this.lastPrintLeaderLog + 10000L < System.currentTimeMillis();
+        if (printLeaderLog) {
+            this.lastPrintLeaderLog = System.currentTimeMillis();
+            this.logger.info("Land[Leader] -> leader is {}", this.server.getVotedFor());
+        }
+    }
+    /** 生成最长 (150 ~ 300) 的一个随机数,用作超时时间 */
+    public int genTimeout() {
+        return new Random(System.currentTimeMillis()).nextInt(150) + 150;
+    }
+    //
+    //
+    //
+    //
+    //
+    // --------------------------------------------------------------------------------------------
     private NodeData findTargetServer(String targetServerID) {
         List<NodeData> nodeList = this.server.getAllServiceNodes();
         for (NodeData nodeData : nodeList) {
@@ -301,83 +472,42 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         if (nodeData == null) {
             return;
         }
-        logger.info("Land[Vote] -> {} request vote ,but vote to the {}.", targetServerID, this.server.getVotedFor());
         //
         // .数据响应如果失败不进行重试,由请求拉票的候选人 的超时机制保证重新拉票
         try {
             nodeData.getElectionService(this.rsfContext).responseVote(voteResult);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
-    /** 收到集群对于拉票的响应结果 */
-    public RsfResult responseVote(CollectVoteResult voteData) {
-        NodeData data = this.findTargetServer(voteData.getServerID());
-        if (data == null) {
-            return null;
-        }
-        //
-        logger.info("Land[Vote] -> request {} vote ,result is {}.", data.getServerID(), voteData.isVoteGranted());
-        // .回填选票结果
-        data.setVoteGranted(voteData.isVoteGranted());
-        // .计票 & 确定是否得到了多数派的确认,如果得到多数派投票,立刻成为 leader。
-        tryToLeader();
-        return null;
-    }
-    /** 接受来自 Leader 的心跳 */
-    public RsfResult heartbeatForLeader(LeaderBeatData leaderBeatData) {
-        String selfTerm = this.server.getCurrentTerm();
-        String remoteTerm = leaderBeatData.getTerm();
-        String targetServerID = leaderBeatData.getServerID();
-        NodeData data = this.findTargetServer(targetServerID);
-        if (data == null) {
-            return null;
-        }
-        //
-        // .如果收到 Leader 的心跳中 term 比自己高,或者和自己相等。那么就追随这个 Leader
-        //      - 追随 Leader 会更新 自己的 term 和 Leader 一样
-        boolean toFollower = false;
-        if (this.server.updateTermTo(remoteTerm) || selfTerm.equalsIgnoreCase(remoteTerm)) {
-            this.landContext.fireVotedFor(targetServerID);
-            this.server.newLastLeaderHeartbeat();
-            toFollower = true;
-        }
-        //
-        // .处理拒绝 Leader 的心跳包
-        ElectionService electionService = data.getElectionService(this.rsfContext);
-        LeaderBeatResult leaderBeatResult = new LeaderBeatResult();
-        leaderBeatResult.setServerID(this.landContext.getServerID());
-        if (!toFollower) {
-            try {
-                leaderBeatResult.setAccept(false);
-                electionService.heartbeatResponse(leaderBeatResult);
-            } catch (Exception e) {
-            /* */
+        } catch (Throwable e) {
+            if (e.getCause() != null) {
+                e = e.getCause();
             }
-            return null;
+            logger.error(e.getMessage());
         }
-        //
-        // .转换为 Follower 身份,并响应心跳包
-        if (this.server.getStatus() != ServerStatus.Follower) {
-            this.landContext.fireStatus(ServerStatus.Follower);
-        }
+    }
+    private void doHeartBeet(LeaderBeatData leaderData, ElectionService electionService) {
         try {
-            leaderBeatResult.setAccept(true);
+            electionService.heartbeatForLeader(leaderData);
+        } catch (Throwable e) {
+            if (e.getCause() != null) {
+                e = e.getCause();
+            }
+            logger.error(e.getMessage());
+        }
+    }
+    private void doRequestVote(CollectVoteData voteData, ElectionService electionService) {
+        try {
+            electionService.requestVote(voteData);
+        } catch (Throwable e) {
+            if (e.getCause() != null) {
+                e = e.getCause();
+            }
+            logger.error(e.getMessage());
+        }
+    }
+    private void doHeardBeetResponse(ElectionService electionService, LeaderBeatResult leaderBeatResult) {
+        try {
             electionService.heartbeatResponse(leaderBeatResult);
         } catch (Exception e) {
             /* */
         }
-        return null;
-    }
-    /** 接受心跳回应的结果 */
-    public RsfResult heartbeatResponse(LeaderBeatResult leaderBeatResult) {
-        String targetServerID = leaderBeatResult.getServerID();
-        NodeData data = this.findTargetServer(targetServerID);
-        if (data == null) {
-            return null;
-        }
-        data.setNodeStatus(NodeStatus.Online);
-        data.setVoteGranted(leaderBeatResult.isAccept()); //可能失去了这个选票
-        return null;
     }
 }
