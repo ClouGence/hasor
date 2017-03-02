@@ -52,6 +52,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
     @Inject
     private RsfContext     rsfContext;
     private AtomicBoolean  landStatus;          // 在线状态
+    //
     private AtomicBoolean  followerTimer;       // follower 定时器
     private AtomicBoolean  candidateTimer;      // candidate定时器
     private AtomicBoolean  leaderTimer;         // leader   定时器
@@ -145,6 +146,12 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
             this.logger.info("Land[Follower] -> server mast be Follower, but ->" + this.server.getStatus());
             return;
         }
+        // .清空计票(Follower不需要计票)
+        List<NodeData> nodeList = this.server.getAllServiceNodes();
+        for (NodeData nodeData : nodeList) {
+            nodeData.setVoteGranted(false);
+        }
+        //
         // .判断启动定时器之后是否收到最新的 Leader 心跳 ,如果收到了心跳,那么放弃后续处理维持 Follower 状态
         //      (新的Leader心跳时间比启动定时器之前心跳时间要新,即为收到了心跳)
         boolean leaderHeartbeat = this.server.getLastLeaderHeartbeat() > lastLeaderHeartbeat;
@@ -223,8 +230,6 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         voteData.setTerm(this.server.getCurrentTerm());
         List<NodeData> nodeList = this.server.getAllServiceNodes();
         for (NodeData nodeData : nodeList) {
-            nodeData.setVoteGranted(false);// -清空计票,重新拉票
-            //
             // .如果目标是自己，那么直接投给自己
             if (this.landContext.getServerID().equalsIgnoreCase(nodeData.getServerID())) {
                 this.landContext.fireVotedFor(voteData.getServerID());
@@ -336,8 +341,8 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
             this.landContext.fireVotedFor(voteData.getServerID());
             voteResult.setVoteGranted(true);
         } else {
-            logger.info("Land[Vote] -> reject votes from {} votes. cause: votedUnchanged:{} ,freshThenMe:{}", //
-                    targetServerID, votedUnchanged, freshThenMe);
+            logger.info("Land[Vote] -> reject votes from {} votes. cause : remote is {} ,local is {}", //
+                    targetServerID, remoteTerm, selfTerm);
             voteResult.setVoteGranted(false);
         }
         //
@@ -370,11 +375,10 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
     }
     // --------------------------------------------------------------------------------------------
     // .来自 Leader 的心跳
-    //      heartbeatForLeader
+    //      heartbeatForLeader      Leader心跳
     //      heartbeatResponse       接受心跳回应的结果
     public RsfResult heartbeatForLeader(LeaderBeatData leaderBeatData) {
         String selfTerm = this.server.getCurrentTerm();
-        String remoteTerm = leaderBeatData.getTerm();
         String targetServerID = leaderBeatData.getServerID();
         NodeData data = this.findTargetServer(targetServerID);
         if (data == null) {
@@ -384,6 +388,8 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         // .如果收到 Leader 的心跳中 term 比自己高,或者和自己相等。那么就追随这个 Leader
         //      - 追随 Leader 会更新 自己的 term 和 Leader 一样
         boolean toFollower = false;
+        String remoteCommitIndex = leaderBeatData.getCommitIndex();
+        String remoteTerm = leaderBeatData.getTerm();
         if (this.server.updateTermTo(remoteTerm) || selfTerm.equalsIgnoreCase(remoteTerm)) {
             this.server.newLastLeaderHeartbeat();
             toFollower = true;
@@ -416,8 +422,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
             return null;
         }
         data.setNodeStatus(NodeStatus.Online);
-        data.setVoteGranted(leaderBeatResult.isAccept()); //可能失去了这个选票
-        //        this.tryToLeader();
+        data.setVoteGranted(leaderBeatResult.isAccept());//可能失去了这个选票
         return null;
     }
     //

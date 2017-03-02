@@ -25,7 +25,7 @@
         <!-- 集群服务器列表 -->
         <servers>${LAND_SERVERS}</servers>
         <!-- 基准心跳时间 -->
-        <timeout>500</timeout>
+        <timeout>150</timeout>
     </hasor.land>
 
 </config>
