@@ -30,7 +30,6 @@ public class LandContext {
     private   Map<String, InterAddress> servers         = null;
     private   RsfBindInfo<?>            electionService = null;
     private   WorkMode                  workMode        = null; //
-    private   int                       baseTimeout     = 0;    // 基准心跳时间
     private   EventContext              eventContext    = null;
     private   TimerManager              timerManager    = null;
     @Inject
@@ -47,7 +46,6 @@ public class LandContext {
         Settings settings = rsfContext.getSettings();
         this.serverID = settings.getString("hasor.land.serviceID", "local");
         this.workMode = settings.getEnum("hasor.land.workAt", WorkMode.class, WorkMode.None);
-        this.baseTimeout = settings.getInteger("hasor.land.timeout", 500);
         //
         // .基础属性初始化
         if ("local".equalsIgnoreCase(this.serverID)) {
@@ -100,13 +98,8 @@ public class LandContext {
     public void addVotedListener(EventListener<?> listener) {
         this.eventContext.addListener(LandEvent.VotedFor_Event, listener);
     }
-    /** 定时器，使用基准心跳时间 */
-    public void atTime(TimerTask timerTask) {
-        this.atTime(timerTask, 0);
-    }
-    /** 定时器，使用基准心跳时间 + timeout */
+    /** 定时器 */
     public void atTime(TimerTask timerTask, int timeout) {
-        timeout = timeout + this.baseTimeout;
         this.timerManager.atTime(timerTask, timeout);
     }
     //

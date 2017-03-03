@@ -21,8 +21,10 @@ package net.hasor.land.election;
  * @author 赵永春(zyc@hasor.net)
  */
 public class LeaderBeatData {
-    private String serverID = null; //候选人 ServerID
-    private String term     = null; //候选人当前 term 值
+    private String serverID    = null; //候选人 ServerID
+    private String currentTerm = null; //当前任期
+    private String commitIndex = null; //已知的,最大的,已经被提交的日志条目的termID
+    private String lastApplied = null; //已知的,最大的,已经被提交的日志条目的termID
     //
     public String getServerID() {
         return serverID;
@@ -30,10 +32,22 @@ public class LeaderBeatData {
     public void setServerID(String serverID) {
         this.serverID = serverID;
     }
-    public String getTerm() {
-        return term;
+    public String getCurrentTerm() {
+        return currentTerm;
     }
-    public void setTerm(String term) {
-        this.term = term;
+    public void setCurrentTerm(String currentTerm) {
+        this.currentTerm = currentTerm;
+    }
+    public String getCommitIndex() {
+        return commitIndex;
+    }
+    public void setCommitIndex(String commitIndex) {
+        this.commitIndex = commitIndex;
+    }
+    public String getLastApplied() {
+        return lastApplied;
+    }
+    public void setLastApplied(String lastApplied) {
+        this.lastApplied = lastApplied;
     }
 }

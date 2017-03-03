@@ -26,8 +26,16 @@ public class DataContext {
     //nextIndex[]
     //matchIndex
     //
-    /** 已知的最大提交日志条目的termID */
-    public String getCommitTerm() {
+    public String getCommitIndex() {
         return commitIndex;
+    }
+    public void setCommitIndex(String commitIndex) {
+        this.commitIndex = commitIndex;
+    }
+    public String getLastApplied() {
+        return lastApplied;
+    }
+    public void setLastApplied(String lastApplied) {
+        this.lastApplied = lastApplied;
     }
 }

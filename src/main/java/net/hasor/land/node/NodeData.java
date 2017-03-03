@@ -83,7 +83,9 @@ public class NodeData {
     public void leaderHeartbeat(Server server, DataContext data, final FutureCallback<LeaderBeatResult> callBack) {
         LeaderBeatData leaderData = new LeaderBeatData();
         leaderData.setServerID(this.landContext.getServerID());
-        leaderData.setTerm(server.getCurrentTerm());
+        leaderData.setCurrentTerm(server.getCurrentTerm());
+        leaderData.setLastApplied(data.getLastApplied());
+        leaderData.setCommitIndex(data.getCommitIndex());
         //
         this.rsfClient.callBackInvoke(this.bindInfo, "leaderHeartbeat",//
                 new Class[] { LeaderBeatData.class },//

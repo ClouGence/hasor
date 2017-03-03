@@ -24,8 +24,10 @@
     <hasor.land serviceID="${LAND_SERVER_ID}" workAt="${LAND_WORK_MODE}">
         <!-- 集群服务器列表 -->
         <servers>${LAND_SERVERS}</servers>
-        <!-- 基准心跳时间 -->
-        <timeout>150</timeout>
+        <!-- 基准超时时间（选举、维持Follower） -->
+        <timeout>300</timeout>
+        <!-- Leader心跳时间 -->
+        <leaderHeartbeat>150</leaderHeartbeat>
     </hasor.land>
 
 </config>
