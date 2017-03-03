@@ -406,19 +406,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
             this.server.lockRun(new RunLock() {
                 public void run(Operation object) {
                     // .计票，尝试成为 Leader( 返回true表示赢得了这次的选举 )
-                    List<NodeData> nodeList = object.getAllNodes();
-                    int grantedCount = nodeList.size();
-                    int serverCount = 0;
-                    for (NodeData nodeData : nodeList) {
-                        //                        if (nodeData.getStatus()) {
-                        //                        }
-                        serverCount++;
-                        if (object.testVote(nodeData.getServerID())) {
-                            grantedCount++;
-                        }
-                    }
-                    boolean testToLeader = grantedCount * 2 > serverCount;
-                    if (!testToLeader)
+                    if (!isTestToLeader(object))
                         return;
                     //
                     landContext.fireVotedFor(landContext.getServerID());
@@ -494,25 +482,26 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         //
         return result;
     }
-    public void doHeartbeat(LeaderBeatResult leaderBeatResult) {
+    public void doHeartbeat(final LeaderBeatResult leaderBeatResult) {
         //
-        // .心跳被拒绝，重新发起投票
+        // .更新自己的支持者列表
+        this.server.lockRun(new RunLock() {
+            public void run(Operation object) {
+                object.applyVoted(leaderBeatResult.getServerID(), leaderBeatResult.isAccept());
+            }
+        });
+        // .如果出现拒绝者，那么测试自己是否还有足够的支持者支持自己成为 Leader，如果支持者足够，那么自增 term。
         if (!leaderBeatResult.isAccept()) {
-            //            this.server.lockRun(new RunLock() {
-            //                public void run(Operation object) {
-            //                    landContext.fireVotedFor(null);
-            //                    landContext.fireStatus(ServerStatus.Candidate);
-            //                }
-            //            });
-            return;
+            this.server.lockRun(new RunLock() {
+                public void run(Operation object) {
+                    if (isTestToLeader(object)) {
+                        object.incrementAndGetTerm();
+                        logger.info("Land[Beat] -> [{},{}] leader conflict, strengthen shelf. term update to {}",//
+                                leaderBeatResult.getServerID(), landContext.getServerID(), object.getCurrentTerm());
+                    }
+                }
+            });
         }
-        //        String targetServerID = leaderBeatResult.getServerID();
-        //        NodeData data = this.findTargetServer(targetServerID);
-        //        if (data == null) {
-        //            return null;
-        //        }
-        //        data.setNodeStatus(NodeStatus.Online);
-        //        data.setVoteGranted(leaderBeatResult.isAccept());//可能失去了这个选票
         return;
     }
     // --------------------------------------------------------------------------------------------
@@ -531,5 +520,19 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
     /** 生成最长：“n ~ n + (150 ~ 300)” 的一个随机数。用作超时时间 */
     public int genTimeout() {
         return this.baseTimeout + new Random(System.currentTimeMillis()).nextInt(150) + 300;
+    }
+    private boolean isTestToLeader(Operation object) {
+        List<NodeData> nodeList = object.getAllNodes();
+        int grantedCount = nodeList.size();
+        int serverCount = 0;
+        for (NodeData nodeData : nodeList) {
+            //                        if (nodeData.getStatus()) {
+            //                        }
+            serverCount++;
+            if (object.testVote(nodeData.getServerID())) {
+                grantedCount++;
+            }
+        }
+        return grantedCount * 2 > serverCount;
     }
 }
