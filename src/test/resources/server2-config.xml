@@ -15,7 +15,10 @@
         <LAND_SERVERS>
             server_1:127.0.0.1:7001,
             server_2:127.0.0.1:7002,
-            server_3:127.0.0.1:7003
+            server_3:127.0.0.1:7003,
+            server_4:127.0.0.1:7004,
+            server_5:127.0.0.1:7005,
+            server_6:127.0.0.1:7006
         </LAND_SERVERS>
 
     </hasor.environmentVar>

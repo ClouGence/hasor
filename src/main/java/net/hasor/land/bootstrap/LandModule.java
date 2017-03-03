@@ -22,6 +22,7 @@ import net.hasor.core.context.ContextStartListener;
 import net.hasor.land.domain.WorkMode;
 import net.hasor.land.election.ElectionService;
 import net.hasor.land.election.ElectionServiceManager;
+import net.hasor.land.node.Server;
 import net.hasor.land.node.ServerNode;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfModule;
@@ -43,11 +44,11 @@ public class LandModule extends RsfModule implements ContextStartListener {
         //
         // .注册Bean
         apiBinder.bindType(LandContext.class).asEagerSingleton();
-        apiBinder.bindType(ServerNode.class).asEagerSingleton();
+        apiBinder.bindType(Server.class).to(ServerNode.class).asEagerSingleton();
         apiBinder.bindType(ElectionService.class).to(ElectionServiceManager.class).asEagerSingleton();
         //
         // .注册选举服务(隐藏的消息服务)
-        apiBinder.rsfService(apiBinder.getBindInfo(ElectionService.class)).asShadow().asMessage().register();
+        apiBinder.rsfService(apiBinder.getBindInfo(ElectionService.class)).asShadow().register();
         //
         // .消息监听器
         Hasor.pushShutdownListener(env, new EventListener<Object>() {

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.land.node;
+import io.netty.util.internal.ConcurrentSet;
 import net.hasor.core.EventListener;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
@@ -21,31 +22,34 @@ import net.hasor.land.bootstrap.LandContext;
 import net.hasor.land.domain.LandEvent;
 import net.hasor.land.domain.ServerStatus;
 import net.hasor.land.utils.TermUtils;
-import net.hasor.rsf.InterAddress;
-import net.hasor.rsf.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 /**
  * 当前服务器节点信息
  *
  * @version : 2016年09月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ServerNode implements EventListener<Object> {
-    protected Logger         logger              = LoggerFactory.getLogger(getClass());
+public class ServerNode implements EventListener<Object>, Operation {
+    protected     Logger         logger        = LoggerFactory.getLogger(getClass());
     @Inject
-    private   LandContext    landContext         = null;
-    private   List<NodeData> allServiceNodes     = null; //所有服务器节点
-    private   String         currentTerm         = null; //服务器最后一次知道的LogID（初始化为 0，持续递增）
-    private   String         votedFor            = null; //当前获得选票的候选人的 ID
-    private   ServerStatus   status              = null; //当前服务器节点状态
-    private   long           lastLeaderHeartbeat = 0;    //最后一次接收到来自Leader的心跳时间
+    private       LandContext    landContext   = null;
+    private       List<NodeData> allNodes      = null; //所有服务器节点
+    private       Set<String>    supporterVote = null; //支持者的选票
+    //
+    private final Object         lock          = new Object();
+    private       ServerStatus   status        = null; //当前状态
+    private       String         currentTerm   = null; //当前任期
+    private       String         votedFor      = null; //得票候选人ID
+    private       long           lastHeartbeat = 0;    //最后一次来自Leader的心跳时间
+    //
+    //
     //
     /** 当前条目ID(已递交，已生效) */
     public String getCurrentTerm() {
@@ -60,13 +64,15 @@ public class ServerNode implements EventListener<Object> {
         return status;
     }
     /** 最后一次 Leader 发来的心跳时间 */
-    public long getLastLeaderHeartbeat() {
-        return lastLeaderHeartbeat;
+    public long getLastHeartbeat() {
+        return lastHeartbeat;
     }
     /** 获取所有配置的集群节点 */
-    public List<NodeData> getAllServiceNodes() {
-        return allServiceNodes;
+    public List<NodeData> getAllNodes() {
+        return allNodes;
     }
+    //
+    //
     //
     @Init
     public void init() throws URISyntaxException {
@@ -77,31 +83,16 @@ public class ServerNode implements EventListener<Object> {
         this.landContext.addVotedListener(this);
         this.landContext.addStatusListener(this);
         //
-        // .集群信息
-        String services = this.landContext.getSettings("hasor.land.servers");
-        Map<String, InterAddress> servers = new HashMap<String, InterAddress>();
-        if (StringUtils.isNotBlank(services)) {
-            String[] serverArrays = services.split(",");
-            for (String serverInfo : serverArrays) {
-                serverInfo = serverInfo.trim();
-                String[] infos = serverInfo.split(":");
-                if (infos.length != 3) {
-                    continue;
-                }
-                String serverID = serverInfo.substring(0, infos[0].length());
-                String serverTarget = serverInfo.substring(serverID.length() + 1);
-                servers.put(serverID, new InterAddress("rsf://" + serverTarget + "/default"));
-            }
-        }
         // .添加节点
-        this.allServiceNodes = new ArrayList<NodeData>();
-        for (Map.Entry<String, InterAddress> entry : servers.entrySet()) {
-            String serverID = entry.getKey();
-            InterAddress serverAddress = entry.getValue();
-            NodeData serverNode = new NodeData(serverID, serverAddress);
-            this.allServiceNodes.add(serverNode);
+        this.allNodes = new ArrayList<NodeData>();
+        Collection<String> serverIDs = this.landContext.getServerIDs();
+        for (String serverID : serverIDs) {
+            this.allNodes.add(new NodeData(serverID, this.landContext));
         }
+        //
+        this.supporterVote = new ConcurrentSet<String>();
     }
+    //
     //
     //
     @Override
@@ -116,19 +107,44 @@ public class ServerNode implements EventListener<Object> {
             this.votedFor = (String) eventData;
         }
     }
+    public void lockRun(RunLock runnable) {
+        synchronized (this.lock) {
+            runnable.run(this);
+        }
+    }
+    @Override
+    public boolean testVote(String serverID) {
+        return this.supporterVote.contains(serverID);
+    }
+    //
+    //
+    //
     /** Term 自增 */
-    public synchronized void incrementAndGetTerm() {
+    public void incrementAndGetTerm() {
         this.currentTerm = TermUtils.incrementAndGet(this.currentTerm);
     }
     /** Term 更新成比自己大的那个 */
-    public synchronized boolean updateTermTo(String remoteTerm) {
+    public boolean updateTermTo(String remoteTerm) {
         if (TermUtils.gtFirst(this.currentTerm, remoteTerm)) {
             this.currentTerm = remoteTerm;
             return true;
         }
         return false;
     }
+    /** 更新最后一次收到 Leader 的心跳时间 */
     public void newLastLeaderHeartbeat() {
-        this.lastLeaderHeartbeat = System.currentTimeMillis();
+        this.lastHeartbeat = System.currentTimeMillis();
+    }
+    @Override
+    public void applyVoted(String serverID, boolean voteGranted) {
+        if (voteGranted) {
+            this.supporterVote.add(serverID);
+        } else {
+            this.supporterVote.remove(serverID);
+        }
+    }
+    @Override
+    public void clearVoted() {
+        this.supporterVote.clear();
     }
 }

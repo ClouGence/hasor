@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.land.replicator;
-import net.hasor.land.election.CollectVoteData;
-import net.hasor.land.election.CollectVoteResult;
-import net.hasor.rsf.RsfMessage;
-import net.hasor.rsf.RsfResult;
+package test.net.hasor.land;
+import net.hasor.core.Hasor;
+import net.hasor.rsf.RsfApiBinder;
+import net.hasor.rsf.RsfModule;
 /**
- * 选举接口
  *
- * @version : 2016年09月10日
+ * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-@RsfMessage
-public interface ElectionService {
-    /** 请求选票 */
-    public RsfResult requestVote(CollectVoteData voteData);
-
-    /** 返回投票 */
-    public RsfResult responseVote(CollectVoteResult voteData);
+public class ServerE {
+    public static void main(String[] args) throws Throwable {
+        Hasor.createAppContext("server5-config.xml", new RsfModule() {
+            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
+            }
+        });
+        System.out.println("server E start.");
+        System.in.read();
+        //
+    }
 }

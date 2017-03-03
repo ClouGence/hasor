@@ -29,6 +29,8 @@ public class TermUtils {
     }
     /** 第二个比第一个大 */
     public static boolean gtFirst(String termID_1, String termID_2) {
+        if (termID_1.equalsIgnoreCase(termID_2))
+            return false;
         BigInteger integer_1 = new BigInteger(termID_1, 16);
         BigInteger integer_2 = new BigInteger(termID_2, 16);
         return integer_1.compareTo(integer_2) < 0;

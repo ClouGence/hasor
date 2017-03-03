@@ -14,57 +14,94 @@
  * limitations under the License.
  */
 package net.hasor.land.node;
+import net.hasor.core.future.FutureCallback;
+import net.hasor.land.bootstrap.LandContext;
 import net.hasor.land.domain.NodeStatus;
-import net.hasor.land.election.ElectionService;
-import net.hasor.rsf.InterAddress;
-import net.hasor.rsf.RsfContext;
+import net.hasor.land.election.CollectVoteData;
+import net.hasor.land.election.CollectVoteResult;
+import net.hasor.land.election.LeaderBeatData;
+import net.hasor.land.election.LeaderBeatResult;
+import net.hasor.land.replicator.DataContext;
+import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfClient;
 /**
  * 集群中服务器节点信息
- *
  * @version : 2016年09月10日
  * @author 赵永春(zyc@hasor.net)
  */
 public class NodeData {
-    private String          serverID        = null; //服务器ID
-    private InterAddress    interAddress    = null; //服务器地址
-    private boolean         voteGranted     = false;//是否赢得了这台服务器的选票
-    private NodeStatus      nodeStatus      = NodeStatus.Offline; //节点状态
-    private ElectionService electionService = null;
+    private String         serverID    = null; //服务器ID
+    private NodeStatus     nodeStatus  = null; //节点状态
+    private LandContext    landContext = null;
+    private RsfBindInfo<?> bindInfo    = null;
+    private RsfClient      rsfClient   = null;
     //
-    //
-    public NodeData(String targetServerID, InterAddress target) {
-        this.serverID = targetServerID;
-        this.interAddress = target;
-        this.voteGranted = false;
+    protected NodeData(String serverID, LandContext landContext) {
+        this.serverID = serverID;
         this.nodeStatus = NodeStatus.Offline;
+        this.landContext = landContext;
+        this.bindInfo = landContext.getElectionService();
+        this.rsfClient = landContext.wrapperApi(serverID);
     }
     //
-    public ElectionService getElectionService(RsfContext rsfContext) {
-        if (this.electionService == null) {
-            this.electionService = rsfContext.getRsfClient(this.interAddress).wrapper(ElectionService.class);
-        }
-        return this.electionService;
-    }
-    //
+    /** 获取集群节点名称 */
     public String getServerID() {
         return serverID;
     }
-    public InterAddress getInterAddress() {
-        return interAddress;
-    }
-    public NodeStatus getNodeStatus() {
-        return nodeStatus;
-    }
-    public boolean isVoteGranted() {
-        return voteGranted;
-    }
-    //
-    public void setVoteGranted(boolean voteGranted) {
-        this.voteGranted = voteGranted;
-    }
-    public void setNodeStatus(NodeStatus nodeStatus) {
-        this.nodeStatus = nodeStatus;
+    /** 集群节点是否为当前服务器节点 */
+    public boolean isSelf() {
+        return this.serverID.equalsIgnoreCase(this.landContext.getServerID());
     }
     //
     //
+    /** 请求选票，并获得选票结果(异步) */
+    public void collectVote(Server server, DataContext data, final FutureCallback<CollectVoteResult> callBack) {
+        CollectVoteData voteData = new CollectVoteData();
+        voteData.setServerID(this.landContext.getServerID());
+        voteData.setTerm(server.getCurrentTerm());
+        //
+        this.rsfClient.callBackInvoke(this.bindInfo, "collectVote",//
+                new Class[] { CollectVoteData.class },//
+                new Object[] { voteData }, //
+                new FutureCallback<Object>() {
+                    @Override
+                    public void completed(Object result) {
+                        callBack.completed((CollectVoteResult) result);
+                    }
+                    @Override
+                    public void failed(Throwable ex) {
+                        callBack.failed(ex);
+                    }
+                    @Override
+                    public void cancelled() {
+                        callBack.cancelled();
+                    }
+                });
+        //
+    }
+    /** leader心跳(异步) */
+    public void leaderHeartbeat(Server server, DataContext data, final FutureCallback<LeaderBeatResult> callBack) {
+        LeaderBeatData leaderData = new LeaderBeatData();
+        leaderData.setServerID(this.landContext.getServerID());
+        leaderData.setTerm(server.getCurrentTerm());
+        //
+        this.rsfClient.callBackInvoke(this.bindInfo, "leaderHeartbeat",//
+                new Class[] { LeaderBeatData.class },//
+                new Object[] { leaderData }, //
+                new FutureCallback<Object>() {
+                    @Override
+                    public void completed(Object result) {
+                        callBack.completed((LeaderBeatResult) result);
+                    }
+                    @Override
+                    public void failed(Throwable ex) {
+                        callBack.failed(ex);
+                    }
+                    @Override
+                    public void cancelled() {
+                        callBack.cancelled();
+                    }
+                });
+        //
+    }
 }

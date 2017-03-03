@@ -20,11 +20,14 @@ package net.hasor.land.replicator;
  * @version : 2016年09月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public class LogDataContext {
-    private String commitTerm = null; //已知的,最大的,已经被提交的日志条目的termID
+public class DataContext {
+    private String commitIndex = null; //已知的,最大的,已经被提交的日志条目的termID
+    private String lastApplied = null; //已知的,最大的,已经被提交的日志条目的termID
+    //nextIndex[]
+    //matchIndex
     //
     /** 已知的最大提交日志条目的termID */
     public String getCommitTerm() {
-        return commitTerm;
+        return commitIndex;
     }
 }

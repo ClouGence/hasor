@@ -14,24 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.land.election;
-import net.hasor.rsf.RsfMessage;
-import net.hasor.rsf.RsfResult;
 /**
  * 选举接口
  * @version : 2016年09月10日
  * @author 赵永春(zyc@hasor.net)
  */
-@RsfMessage
 public interface ElectionService {
     /** 请求选票 */
-    public RsfResult requestVote(CollectVoteData voteData);
+    public CollectVoteResult collectVote(CollectVoteData voteData);
 
-    /** 返回投票 */
-    public RsfResult responseVote(CollectVoteResult voteData);
-
-    /** 接受来自 Leader 的心跳 */
-    public RsfResult heartbeatForLeader(LeaderBeatData leaderBeatData);
-
-    /** 回应 Leader 的心跳 */
-    public RsfResult heartbeatResponse(LeaderBeatResult leaderBeatResult);
+    /** Leader 的心跳 */
+    public LeaderBeatResult leaderHeartbeat(LeaderBeatData beatResult);
 }

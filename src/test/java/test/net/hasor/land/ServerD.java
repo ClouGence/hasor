@@ -13,27 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.land.election;
+package test.net.hasor.land;
+import net.hasor.core.Hasor;
+import net.hasor.rsf.RsfApiBinder;
+import net.hasor.rsf.RsfModule;
 /**
- * 服务器心跳数据包
  *
- * @version : 2016年09月10日
+ * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class LeaderBeatData {
-    private String serverID = null; //候选人 ServerID
-    private String term     = null; //候选人当前 term 值
-    //
-    public String getServerID() {
-        return serverID;
-    }
-    public void setServerID(String serverID) {
-        this.serverID = serverID;
-    }
-    public String getTerm() {
-        return term;
-    }
-    public void setTerm(String term) {
-        this.term = term;
+public class ServerD {
+    public static void main(String[] args) throws Throwable {
+        Hasor.createAppContext("server4-config.xml", new RsfModule() {
+            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
+            }
+        });
+        System.out.println("server D start.");
+        System.in.read();
+        //
     }
 }

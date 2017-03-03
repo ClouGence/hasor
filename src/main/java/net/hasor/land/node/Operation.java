@@ -13,27 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.land.election;
+package net.hasor.land.node;
 /**
- * 服务器心跳数据包
+ * 服务器操作
  *
  * @version : 2016年09月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public class LeaderBeatData {
-    private String serverID = null; //候选人 ServerID
-    private String term     = null; //候选人当前 term 值
-    //
-    public String getServerID() {
-        return serverID;
-    }
-    public void setServerID(String serverID) {
-        this.serverID = serverID;
-    }
-    public String getTerm() {
-        return term;
-    }
-    public void setTerm(String term) {
-        this.term = term;
-    }
+public interface Operation extends Server {
+    /** Term 自增 */
+    public void incrementAndGetTerm();
+
+    /** Term 更新成比自己大的那个 */
+    public boolean updateTermTo(String remoteTerm);
+
+    /** 更新最后一次收到 Leader 的心跳时间 */
+    public void newLastLeaderHeartbeat();
+
+    /** 应用选票 */
+    public void applyVoted(String remoteServerID, boolean voteGranted);
+
+    /** 清空所有选票 */
+    public void clearVoted();
 }
