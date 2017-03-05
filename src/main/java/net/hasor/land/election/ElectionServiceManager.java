@@ -78,8 +78,9 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         //
         this.server.lockRun(new RunLock() {
             public void run(Operation object) {
-                landContext.fireStatus(ServerStatus.Follower);
-                object.newLastLeaderHeartbeat();
+                String selfServerID = landContext.getServerID();
+                String selfTerm = object.getCurrentTerm();
+                switchToFollow(object, selfServerID, selfTerm);
             }
         });
     }
@@ -140,7 +141,6 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         // .重启定时器
         final long curLeaderHeartbeat = this.server.getLastHeartbeat();
         this.landContext.atTime(new TimerTask() {
-            @Override
             public void run(Timeout timeout) throws Exception {
                 processFollowerTimer(curLeaderHeartbeat);
             }
@@ -206,7 +206,6 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         }
         // .重启定时器
         this.landContext.atTime(new TimerTask() {
-            @Override
             public void run(Timeout timeout) throws Exception {
                 processCandidateTimer();
             }
@@ -234,7 +233,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
                 logger.info("Land[Candidate] -> solicit votes , current Trem is {}", object.getCurrentTerm());
                 //
                 // .发起选举然后收集选票
-                List<NodeData> nodeList = object.getAllNodes();
+                List<NodeData> nodeList = object.getOnlineNodes();
                 for (NodeData nodeData : nodeList) {
                     // .如果目标是自己，那么直接投给自己
                     if (nodeData.isSelf()) {
@@ -248,10 +247,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
                             doVote(result);
                         }
                         public void failed(Throwable ex) {
-                            if (ex.getCause() != null) {
-                                ex = ex.getCause();
-                            }
-                            logger.error(ex.getMessage());
+                            doFailed(ex);
                         }
                         public void cancelled() {
                         }
@@ -309,7 +305,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
                 printLeader();
                 //
                 // .发送心跳log以维持 Leader 权威
-                List<NodeData> nodeList = object.getAllNodes();
+                List<NodeData> nodeList = object.getOnlineNodes();
                 for (NodeData nodeData : nodeList) {
                     //
                     // .如果心跳目标是自己，那么直接更新心跳时间
@@ -323,10 +319,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
                             doHeartbeat(result);
                         }
                         public void failed(Throwable ex) {
-                            if (ex.getCause() != null) {
-                                ex = ex.getCause();
-                            }
-                            logger.error(ex.getMessage());
+                            doFailed(ex);
                         }
                         public void cancelled() {
                         }
@@ -364,9 +357,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
                 if (TermUtils.gtFirst(selfTerm, remoteTerm)) {
                     logger.info("Land[Vote] -> accept votes from {}.", remoteServerID);
                     voteResult.setVoteGranted(true);
-                    object.updateTermTo(remoteTerm);
-                    landContext.fireVotedFor(remoteServerID);
-                    landContext.fireStatus(ServerStatus.Follower);
+                    switchToFollow(object, remoteServerID, remoteTerm);
                     return;
                 }
                 // .拒绝投给他
@@ -390,10 +381,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
                 boolean gtFirst = TermUtils.gtFirst(localTerm, remoteTerm);
                 if (!granted && gtFirst) {
                     logger.info("Land[Vote] -> this server follower to {}. L:R is {}:{}", remoteServerID, localTerm, remoteTerm);
-                    object.updateTermTo(remoteTerm);
-                    landContext.fireVotedFor(remoteServerID);
-                    landContext.fireStatus(ServerStatus.Follower);
-                    object.newLastLeaderHeartbeat();
+                    switchToFollow(object, remoteServerID, remoteTerm);
                 }
                 //
                 // .记录选票结果
@@ -446,7 +434,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
         }
         //
         // .确定是否是已知的Leader
-        List<NodeData> allNodes = this.server.getAllNodes();
+        List<NodeData> allNodes = this.server.getOnlineNodes();
         NodeData atNode = null;
         for (NodeData nodeData : allNodes) {
             if (nodeData.getServerID().equalsIgnoreCase(remoteServerID)) {
@@ -466,10 +454,7 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
             public void run(Operation object) {
                 String selfTerm = server.getCurrentTerm();
                 if (TermUtils.gtFirst(selfTerm, remoteTerm)) {
-                    object.updateTermTo(remoteTerm);
-                    object.newLastLeaderHeartbeat();
-                    landContext.fireVotedFor(remoteServerID);
-                    landContext.fireStatus(ServerStatus.Follower);
+                    switchToFollow(object, remoteServerID, remoteTerm);
                     logger.info("Land[Beat] -> follow the new leader {} , new term is {}", remoteServerID, remoteTerm);
                     result.setAccept(true);
                 } else {
@@ -506,33 +491,44 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
     }
     // --------------------------------------------------------------------------------------------
     //
-    /** 打印 Leader 信息 */
+    /** 10秒打印一次 Leader 的心跳 */
     private long lastPrintLeaderLog;
     private void printLeader() {
-        //
-        // .10秒打印一次 Leader 的心跳
         boolean printLeaderLog = this.lastPrintLeaderLog + 5000L < System.currentTimeMillis();
         if (printLeaderLog) {
             this.lastPrintLeaderLog = System.currentTimeMillis();
             this.logger.info("Land[Leader] -> leader is {} , term is {}", this.server.getVotedFor(), this.server.getCurrentTerm());
         }
     }
+    /** 处理异常信息的打印 */
+    private void doFailed(Throwable ex) {
+        if (ex.getCause() != null) {
+            ex = ex.getCause();
+        }
+        logger.error(ex.getMessage());
+    }
     /** 生成最长：“n ~ n + (150 ~ 300)” 的一个随机数。用作超时时间 */
     public int genTimeout() {
         return this.baseTimeout + new Random(System.currentTimeMillis()).nextInt(150) + 300;
     }
+    /** 测试当前服务器是否可以成为 Leader，成为 Leader 的条件是得到半数选票。 */
     private boolean isTestToLeader(Operation object) {
-        List<NodeData> nodeList = object.getAllNodes();
+        List<NodeData> nodeList = object.getOnlineNodes();
         int grantedCount = nodeList.size();
         int serverCount = 0;
         for (NodeData nodeData : nodeList) {
-            //                        if (nodeData.getStatus()) {
-            //                        }
             serverCount++;
             if (object.testVote(nodeData.getServerID())) {
                 grantedCount++;
             }
         }
         return grantedCount * 2 > serverCount;
+    }
+    /** 成为 Follower 并追随一个 Leader */
+    public void switchToFollow(Operation object, String targetServer, String remoteTerm) {
+        object.updateTermTo(remoteTerm);
+        landContext.fireVotedFor(targetServer);
+        landContext.fireStatus(ServerStatus.Follower);
+        object.newLastLeaderHeartbeat();
     }
 }

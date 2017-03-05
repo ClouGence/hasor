@@ -36,8 +36,8 @@ public interface Server {
     /** 最后一次 Leader 发来的心跳时间 */
     public long getLastHeartbeat();
 
-    /** 获取所有配置的集群节点 */
-    public List<NodeData> getAllNodes();
+    /** 获取所有在线状态的节点 */
+    public List<NodeData> getOnlineNodes();
 
     /** 同步执行server的修改 */
     public void lockRun(RunLock runnable);

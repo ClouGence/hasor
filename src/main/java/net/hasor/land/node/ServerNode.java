@@ -67,8 +67,8 @@ public class ServerNode implements EventListener<Object>, Operation {
     public long getLastHeartbeat() {
         return lastHeartbeat;
     }
-    /** 获取所有配置的集群节点 */
-    public List<NodeData> getAllNodes() {
+    /** 获取所有在线状态的节点 */
+    public List<NodeData> getOnlineNodes() {
         return allNodes;
     }
     //

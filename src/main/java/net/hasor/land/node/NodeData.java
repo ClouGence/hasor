@@ -38,7 +38,7 @@ public class NodeData {
     //
     protected NodeData(String serverID, LandContext landContext) {
         this.serverID = serverID;
-        this.nodeStatus = NodeStatus.Offline;
+        this.nodeStatus = NodeStatus.Online;
         this.landContext = landContext;
         this.bindInfo = landContext.getElectionService();
         this.rsfClient = landContext.wrapperApi(serverID);
@@ -52,6 +52,10 @@ public class NodeData {
     public boolean isSelf() {
         return this.serverID.equalsIgnoreCase(this.landContext.getServerID());
     }
+    /** 集群节点是否在线 */
+    public boolean isOnline() {
+        return this.nodeStatus == NodeStatus.Online;
+    }
     //
     //
     /** 请求选票，并获得选票结果(异步) */
@@ -64,15 +68,12 @@ public class NodeData {
                 new Class[] { CollectVoteData.class },//
                 new Object[] { voteData }, //
                 new FutureCallback<Object>() {
-                    @Override
                     public void completed(Object result) {
                         callBack.completed((CollectVoteResult) result);
                     }
-                    @Override
                     public void failed(Throwable ex) {
                         callBack.failed(ex);
                     }
-                    @Override
                     public void cancelled() {
                         callBack.cancelled();
                     }
@@ -91,15 +92,12 @@ public class NodeData {
                 new Class[] { LeaderBeatData.class },//
                 new Object[] { leaderData }, //
                 new FutureCallback<Object>() {
-                    @Override
                     public void completed(Object result) {
                         callBack.completed((LeaderBeatResult) result);
                     }
-                    @Override
                     public void failed(Throwable ex) {
                         callBack.failed(ex);
                     }
-                    @Override
                     public void cancelled() {
                         callBack.cancelled();
                     }

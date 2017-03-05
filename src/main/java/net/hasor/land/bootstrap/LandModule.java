@@ -18,7 +18,6 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.EventListener;
 import net.hasor.core.Hasor;
-import net.hasor.core.context.ContextStartListener;
 import net.hasor.land.domain.WorkMode;
 import net.hasor.land.election.ElectionService;
 import net.hasor.land.election.ElectionServiceManager;
@@ -28,11 +27,10 @@ import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfModule;
 /**
  * 启动入口
- *
  * @version : 2016年10月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class LandModule extends RsfModule implements ContextStartListener {
+public class LandModule extends RsfModule {
     @Override
     public void loadModule(final RsfApiBinder apiBinder) throws Throwable {
         Environment env = apiBinder.getEnvironment();
@@ -48,30 +46,13 @@ public class LandModule extends RsfModule implements ContextStartListener {
         apiBinder.bindType(ElectionService.class).to(ElectionServiceManager.class).asEagerSingleton();
         //
         // .注册选举服务(隐藏的消息服务)
-        apiBinder.rsfService(apiBinder.getBindInfo(ElectionService.class)).asShadow().register();
+        apiBinder.rsfService(apiBinder.getBindInfo(ElectionService.class))//
+                .asAloneThreadPool().asShadow().register();
         //
-        // .消息监听器
-        Hasor.pushShutdownListener(env, new EventListener<Object>() {
-            public void onEvent(String event, Object eventData) throws Throwable {
-                //
+        Hasor.addStartListener(apiBinder.getEnvironment(), new EventListener<AppContext>() {
+            public void onEvent(String event, AppContext eventData) throws Throwable {
+                eventData.getInstance(ElectionService.class);
             }
         });
-        Hasor.pushStartListener(env, new EventListener<Object>() {
-            public void onEvent(String event, Object eventData) throws Throwable {
-                //
-            }
-        });
-        apiBinder.bindType(ContextStartListener.class).toInstance(this);
-        //
-    }
-    @Override
-    public void doStart(AppContext appContext) {
-        //
-    }
-    @Override
-    public void doStartCompleted(AppContext appContext) {
-        //
-        appContext.getInstance(LandContext.class);
-        appContext.getInstance(ElectionService.class);
     }
 }
