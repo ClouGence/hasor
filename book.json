@@ -19,6 +19,9 @@
     }
   },
   "styles": {
-        "website": "website/styles/site.css"
-   }
+    "website": "website/styles/site.css"
+  },
+  "variables": {
+    "hasor_version": "3.1.3"
+  }
 }

@@ -1,6 +1,6 @@
 # Summary
 
-* [第一章 介绍](docs/README.md)
+* [第一章 介绍](README.md)
   * [1. 约定优于配置](docs/chapter-01/about_coc.md)
   * [2. 相关连接](docs/chapter-01/resources.md)
 * [第二章 快速上手](docs/chapter-02/QuickStart.md)
@@ -12,8 +12,8 @@
   * [6. 读写数据库](docs/chapter-02/ReadDataBase.md)
   * [7. 数据库事务](docs/chapter-02/DataBaseTransaction.md)
   * [8. 配置文件](docs/chapter-02/ReadSettingsFile.md)
-* 第三章 Hasor基础
-  * [第一节 启动Hasor](docs/chapter-03/subject-02/hasor.md)
+* [第三章 Hasor基础](docs/chapter-03/subject-01/CreateHasor.md)
+  * [第一节 启动Hasor](docs/chapter-03/subject-01/CreateHasor.md)
     * [1. 创建容器](docs/chapter-03/subject-01/CreateHasor.md)
     * [2. 程序入口](docs/chapter-03/subject-01/AppEnterIn.md)
   * [第二节 生命周期](docs/chapter-03/subject-02/Overview.md)
@@ -92,4 +92,3 @@
   * 第二节 服务治理（未完成）
 * 第七章 分布式一致性（未完成）
 * 第十一章 FAQ（未完成）
-

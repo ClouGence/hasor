@@ -1,4 +1,4 @@
-* WebSite：[http://www.hasor.net](http://www.hasor.net)
-* Issues：[http://git.oschina.net/zycgit/hasor/issues](http://git.oschina.net/zycgit/hasor/issues)
-* Team：[http://team.oschina.net/hasor](http://team.oschina.net/hasor)
+* Issues：[http://git.oschina.net/teams/hasor/issues](http://git.oschina.net/teams/hasor/issues)
+* Demo工程：[http://git.oschina.net/zycgit/hasor-example](http://git.oschina.net/zycgit/hasor-example)
+* GitBook教程：[http://www.chengweiyang.cn/gitbook/](http://www.chengweiyang.cn/gitbook/)
 * QQ群：193943114
