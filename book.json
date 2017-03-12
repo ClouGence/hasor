@@ -1,0 +1,24 @@
+{
+  "title": "Hasor 开发指南",
+  "description": "Hasor 开发指南。",
+  "language": "zh-cn",
+  "gitbook": "3.x.x",
+  "plugins": [
+    "splitter",
+    "-search",
+    "github",
+    "ace",
+    "ad"
+  ],
+  "pluginsConfig": {
+    "github": {
+      "url": "https://github.com/zycgit/hasor"
+    },
+    "ad": {
+      "contentBottom": "%3Cscript%20src%3D%27http%3A//s11.cnzz.com/z_stat.php%3Fid%3D1257358604%26web_id%3D1257358604%27%20language%3D%27JavaScript%27%3E%3C/script%3E"
+    }
+  },
+  "styles": {
+        "website": "website/styles/site.css"
+   }
+}
