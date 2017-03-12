@@ -16,6 +16,7 @@
  */
 package net.hasor.core.convert;
 import net.hasor.core.convert.convert.*;
+import net.hasor.core.utils.ContextClassLoaderLocal;
 
 import java.io.File;
 import java.lang.reflect.Array;

@@ -15,7 +15,6 @@
  */
 package net.test.hasor.core._07_binder;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Environment;
 import net.hasor.core.binder.ApiBinderWrap;
 /**
  * @version : 2016-12-16
@@ -24,10 +23,6 @@ import net.hasor.core.binder.ApiBinderWrap;
 public class TestBinderImpl extends ApiBinderWrap implements TestBinder {
     public TestBinderImpl(ApiBinder apiBinder) {
         super(apiBinder);
-    }
-    @Override
-    public Environment getEnvironment() {
-        return super.getEnvironment();
     }
     @Override
     public void hello() {

@@ -30,6 +30,8 @@ public interface RenderEngine {
     /** 执行模版引擎 */
     public void process(RenderInvoker invoker, Writer writer) throws Throwable;
 
-    /** 获取模版Loader */
+    /**
+     * exist 的作用是用来在 process 执行之前，让渲染器检查一下，要执行的 模板是否存在。如果不存在就不会执行 process。
+     */
     public boolean exist(String template) throws IOException;
 }

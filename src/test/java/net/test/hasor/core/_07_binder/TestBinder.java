@@ -15,18 +15,10 @@
  */
 package net.test.hasor.core._07_binder;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Environment;
 /**
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface TestBinder extends ApiBinder {
-    /**
-     * 获取 {@link Environment}
-     * @return return {@link Environment}
-     */
-    public Environment getEnvironment();
-
-    //
     public void hello();
 }
