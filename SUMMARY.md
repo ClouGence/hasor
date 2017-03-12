@@ -3,6 +3,7 @@
 * [第一章 介绍](README.md)
   * [1. 约定优于配置](docs/chapter-01/about_coc.md)
   * [2. 相关连接](docs/chapter-01/resources.md)
+  * [3. 参与Hasor开发](docs/chapter-01/resources.md)
 * [第二章 快速上手](docs/chapter-02/QuickStart.md)
   * [1. 配置Web工程](docs/chapter-02/ConfigWebApps.md)
   * [2. 接收Request请求](docs/chapter-02/ProseccRequest.md)
