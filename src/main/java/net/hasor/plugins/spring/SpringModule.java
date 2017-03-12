@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Hasor集成Spring插件
  *
- * @version : 2013-4-8
+ * @version : 2016年2月15日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SpringModule implements Module {

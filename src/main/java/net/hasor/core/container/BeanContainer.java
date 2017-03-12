@@ -174,7 +174,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
                 continue;
             }
             final AbstractBindInfoProviderAdapter<?> infoAdapter = (AbstractBindInfoProviderAdapter<?>) info;
-            Method initMethod = TemplateBeanBuilder.findInitMethod(infoAdapter.getBindType(), infoAdapter);
+            Method initMethod = findInitMethod(infoAdapter.getBindType(), infoAdapter);
             boolean singleton = testSingleton(infoAdapter.getBindType(), info, env.getSettings());
             if (initMethod != null && singleton) {
                 //

@@ -63,7 +63,7 @@ public abstract class TemplateAppContext implements AppContext {
     public String[] getBindIDs() {
         BeanContainer container = getContainer();
         Collection<String> nameList = container.getBindInfoIDs();
-        if (nameList == null || !nameList.isEmpty()) {
+        if (nameList == null || nameList.isEmpty()) {
             return StringUtils.EMPTY_STRING_ARRAY;
         }
         return nameList.toArray(new String[nameList.size()]);
@@ -73,7 +73,7 @@ public abstract class TemplateAppContext implements AppContext {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
         BeanContainer container = getContainer();
         Collection<String> nameList = container.getBindInfoNamesByType(targetClass);
-        if (nameList == null || !nameList.isEmpty()) {
+        if (nameList == null || nameList.isEmpty()) {
             return StringUtils.EMPTY_STRING_ARRAY;
         }
         return nameList.toArray(new String[nameList.size()]);
