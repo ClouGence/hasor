@@ -7,22 +7,22 @@
 ----------
 ### 特点
 
-- “微内核+插件” 简单、小巧、功能强大、使用简单
-- COC原则的最佳实践，‘零’配置文件
-- 合理的整体架构规划，即是小框架也是大平台
-- 各部分全部独立，按需使用，绝不臃肿
-- 体积小，无依赖
+- “微内核+插件” 简单、小巧、功能强大、使用简单。
+- COC原则的最佳实践，‘零’配置文件。
+- 合理的整体架构规划，即是小框架也是大平台。
+- 各部分全部独立，按需使用，绝不臃肿。
+- 体积小，无依赖。
 
 ----------
 ### 架构
 ![架构](http://files.hasor.net/uploader/20170225/025145/CC2_58F9_847F_B06E.png "架构")
 
-- Core 职责是提供Bean容器、Module机制
-- DB 提供了JDBC操作、事务管理
-- RSF 是一个完备的分布式 RPC 服务框架
-- Web 是一个吸收了百家所长的 Web MVC框架
-- Land 它类似于 Zookeeper 负责提供分布式一致性的支持
-- Center 它是 RSF 的服务治理中心
+- Core 职责是提供Bean容器、Module机制。
+- DB 提供了JDBC操作、事务管理。
+- RSF 是一个完备的分布式 RPC 服务框架。
+- Web 是一个吸收了百家所长的 Web MVC框架。
+- Land 它类似于 Zookeeper 负责提供分布式一致性的支持。
+- Center 它是 RSF 的服务治理中心。
 
 ----------
 ### 总体功能
@@ -69,6 +69,7 @@
 [![Build Status](https://travis-ci.org/zycgit/hasor.svg?branch=master)](https://travis-ci.org/zycgit/hasor)
 [![Build Status](https://travis-ci.org/zycgit/hasor.svg?branch=dev)](https://travis-ci.org/zycgit/hasor)
 
+----------
 ### 正式发布
 
 * mvn release:prepare -P release
