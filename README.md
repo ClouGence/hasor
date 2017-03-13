@@ -69,8 +69,3 @@
 [![Build Status](https://travis-ci.org/zycgit/hasor.svg?branch=master)](https://travis-ci.org/zycgit/hasor)
 [![Build Status](https://travis-ci.org/zycgit/hasor.svg?branch=dev)](https://travis-ci.org/zycgit/hasor)
 
-----------
-### 正式发布
-
-* mvn release:prepare -P release
-* mvn deploy -P release
