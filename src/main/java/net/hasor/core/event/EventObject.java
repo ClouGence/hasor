@@ -15,6 +15,7 @@
  */
 package net.hasor.core.event;
 import net.hasor.core.EventCallBackHook;
+import net.hasor.core.FireType;
 /**
  * 用于封装事件对象。
  * @version : 2014-3-13
@@ -22,20 +23,23 @@ import net.hasor.core.EventCallBackHook;
  */
 public class EventObject<T> {
     private String               eventType = null;
-    private boolean              sync      = true; //默认是同步的
+    private FireType             fireType  = null;
     private T                    eventData = null;
     private EventCallBackHook<T> callBack  = null;
     //
-    public EventObject(final String eventType, final boolean sync) {
+    public EventObject(final String eventType, final FireType fireType) {
         this.eventType = eventType;
-        this.sync = sync;
+        this.fireType = fireType;
     }
     /**获得事件类型。*/
     public String getEventType() {
         return this.eventType;
     }
-    public boolean isSync() {
-        return this.sync;
+    public FireType getFireType() {
+        return this.fireType;
+    }
+    public void setFireType(FireType fireType) {
+        this.fireType = fireType;
     }
     public void setCallBack(final EventCallBackHook<T> callBack) {
         this.callBack = callBack;

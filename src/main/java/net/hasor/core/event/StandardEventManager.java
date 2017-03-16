@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.event;
-import net.hasor.core.EventCallBackHook;
-import net.hasor.core.EventContext;
-import net.hasor.core.EventListener;
+import net.hasor.core.*;
+import net.hasor.core.future.BasicFuture;
 import net.hasor.core.utils.StringUtils;
 
 import java.util.List;
@@ -78,69 +77,81 @@ public class StandardEventManager implements EventContext {
     }
     //
     @Override
-    public final <T> void fireSyncEvent(final String eventType, final T eventData) {
-        this.fireSyncEvent(eventType, null, eventData);
+    public final <T> void fireSyncEvent(final String eventType, final T eventData) throws Throwable {
+        try {
+            this.fireEvent(eventType, FireType.Interrupt, null, true, eventData).get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
     }
     @Override
-    public final <T> void fireSyncEvent(final String eventType, final EventCallBackHook<T> callBack, final T eventData) {
-        this.fireEvent(eventType, true, callBack, eventData);
+    public final <T> void fireSyncEventWithEspecial(final String eventType, final T eventData) throws Throwable {
+        try {
+            this.fireEvent(eventType, FireType.Interrupt, null, false, eventData).get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
     }
     @Override
-    public final <T> void fireAsyncEvent(final String eventType, final T eventData) {
-        this.fireAsyncEvent(eventType, null, eventData);
+    public final <T> void fireAsyncEvent(String eventType, T eventData) {
+        this.fireEvent(eventType, FireType.Interrupt, null, false, eventData);
     }
     @Override
-    public final <T> void fireAsyncEvent(final String eventType, final EventCallBackHook<T> callBack, final T eventData) {
-        this.fireEvent(eventType, false, callBack, eventData);
+    public final <T> void fireAsyncEvent(String eventType, T eventData, FireType fireType) {
+        this.fireEvent(eventType, fireType, null, false, eventData);
     }
-    private final <T> void fireEvent(final String eventType, final boolean sync, final EventCallBackHook<T> callBack, final T eventData) {
-        EventObject<T> event = this.createEvent(eventType, sync);
+    @Override
+    public final <T> void fireAsyncEvent(String eventType, T eventData, FireType fireType, EventCallBackHook<T> callBack) {
+        this.fireEvent(eventType, fireType, callBack, false, eventData);
+    }
+    //
+    //
+    private <T> Future<Boolean> fireEvent(String eventType, FireType fireType, EventCallBackHook<T> callBack, boolean atCurrentThread, T eventData) {
+        EventObject<T> event = this.createEvent(eventType, Hasor.assertIsNotNull(fireType));
         event.setCallBack(callBack);
         event.setEventData(eventData);
-        this.fireEvent(event);
+        return this.fireEvent(event, atCurrentThread);
     }
     /**创建事件对象*/
-    protected <T> EventObject<T> createEvent(final String eventType, final boolean sync) {
-        return new EventObject<T>(eventType, sync);
+    protected <T> EventObject<T> createEvent(String eventType, FireType fireType) {
+        return new EventObject<T>(eventType, fireType);
     }
-    ;
-    /**引发事件*/
-    protected <T> void fireEvent(final EventObject<T> event) {
-        if (event.isSync()) {
-            //同步的
-            this.executeEvent(event);
+    /**引发事件，无论*/
+    protected <T> Future<Boolean> fireEvent(final EventObject<T> event, boolean atCurrentThread) {
+        final BasicFuture<Boolean> future = new BasicFuture<Boolean>();
+        if (atCurrentThread) {
+            this.executeEvent(event, future);
         } else {
-            //异步的
             this.executorService.submit(new Runnable() {
                 public void run() {
-                    StandardEventManager.this.executeEvent(event);
+                    StandardEventManager.this.executeEvent(event, future);
                 }
             });
         }
+        //
+        return future;
     }
-    ;
     /**引发事件*/
-    protected <T> void executeEvent(final EventObject<T> eventObj) {
+    protected <T> void executeEvent(final EventObject<T> eventObj, BasicFuture<Boolean> future) {
         String eventType = eventObj.getEventType();
         T eventData = eventObj.getEventData();
         EventCallBackHook<T> callBack = eventObj.getCallBack();
-        callBack = (callBack != null ? callBack : (EventCallBackHook<T>) StandardEventManager.EMPTY_CALLBACK);
         if (StringUtils.isBlank(eventType)) {
+            future.failed(new NullPointerException("eventType is empty."));
             return;
         }
         //
         //1.引发事件.
         EventListenerPool listenerPool = this.getListenerPool(eventType);
         if (listenerPool != null) {
-            List<EventListener<?>> snapshot = (List<EventListener<?>>) listenerPool.getListenerSnapshot();
+            List<EventListener<?>> snapshot = listenerPool.getListenerSnapshot();
             for (EventListener<?> listenerItem : snapshot) {
-                try {
-                    EventListener<Object> listener = (EventListener<Object>) listenerItem;
-                    listener.onEvent(eventType, eventData);
-                    callBack.handleComplete(eventType, eventData);
-                } catch (Throwable e) {
-                    callBack.handleException(eventType, eventData, e);
+                Throwable doListener = doListener(eventObj, eventType, eventData, callBack, (EventListener<T>) listenerItem);
+                if (doListener == null) {
+                    continue;
                 }
+                future.failed(doListener);
+                return;
             }
         }
         //
@@ -148,17 +159,34 @@ public class StandardEventManager implements EventContext {
         List<EventListener<?>> onceList = listenerPool.popOnceListener();
         if (onceList != null) {
             for (EventListener<?> listenerItem : onceList) {
-                try {
-                    EventListener<Object> listener = (EventListener<Object>) listenerItem;
-                    listener.onEvent(eventType, eventData);
-                    callBack.handleComplete(eventType, eventData);
-                } catch (Throwable e) {
-                    callBack.handleException(eventType, eventData, e);
+                Throwable doListener = doListener(eventObj, eventType, eventData, callBack, (EventListener<T>) listenerItem);
+                if (doListener == null) {
+                    continue;
                 }
+                future.failed(doListener);
+                return;
             }
         }
+        //
+        future.completed(true);
+        return;
     }
-    ;
+    private <T> Throwable doListener(EventObject<T> eventObj, String eventType, T eventData, EventCallBackHook<T> callBack, EventListener<T> listener) {
+        try {
+            listener.onEvent(eventType, eventData);
+            if (callBack != null) {
+                callBack.handleComplete(eventType, eventData);
+            }
+        } catch (Throwable e) {
+            if (callBack != null) {
+                callBack.handleException(eventType, eventData, e);
+            }
+            if (FireType.Interrupt == eventObj.getFireType()) {
+                return e;
+            }
+        }
+        return null;
+    }
     //
     public void release() {
         this.executorService.shutdownNow();

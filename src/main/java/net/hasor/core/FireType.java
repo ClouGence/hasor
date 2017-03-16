@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._08_event;
-import com.alibaba.fastjson.JSON;
-import net.hasor.core.EventListener;
+package net.hasor.core;
 /**
- * 收到事件，同时线程沉睡500毫秒延迟。
- * @version : 2014-1-11
+ *
+ * @version : 2017年3月16日
  * @author 赵永春 (zyc@byshell.org)
  */
-public class MyListener implements EventListener<Object> {
-    public void onEvent(String event, Object eventData) throws InterruptedException {
-        Thread.sleep(500);
-        System.out.println("Receive Message:" + JSON.toJSONString(eventData));
-        throw new NullPointerException();
-    }
+public enum FireType {
+    /**当遇到异常时，中断调用其它事件监听器。*/
+    Interrupt,//
+    /**当遇到异常时，继续调用其它事件监听器。*/
+    Continue
 }

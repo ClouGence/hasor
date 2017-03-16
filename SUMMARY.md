@@ -59,14 +59,12 @@
     * [1. 单例](docs/chapter-03/subject-07/Singleton.md)
     * [2. 原型](docs/chapter-03/subject-07/Prototype.md)
     * [3. 自定义作用域](docs/chapter-03/subject-07/CustomScope.md)
-  * 第八节 事件（未完成）
-    * 发送事件
-    * 接收事件
-    * 同步事件
-    * 异步事件
-    * 只会触发一次的事件
-    * 异步事件线程池设置
-    * [2. 深度解耦](chapter-03/subject-08/深度解耦.md)
+  * [第八节 事件](docs/chapter-03/subject-08/Event.md)
+    * [1. 同步事件](docs/chapter-03/subject-08/SyncEvent.md)
+    * [2. 异步事件](docs/chapter-03/subject-08/AsyncEvent.md)
+    * [3. 只执行一次的监听器](docs/chapter-03/subject-08/OnesEvent.md)
+    * [4. 事件链](docs/chapter-03/subject-08/EventChain.md)
+    * [5. 异步事件线程池设置](docs/chapter-03/subject-08/EventSettins.md)
   * 第九节 配置文件（未完成）
     * 读取配置文件
     * 配置规则
@@ -99,7 +97,7 @@
   * 第二节 事务控制（未完成）
     * 数据库事务
     * 高级事务控制
-* 第六章 RPC（未完成）
-  * 第二节 服务治理（未完成）
-* 第七章 分布式一致性（未完成）
-* 第十一章 FAQ（未完成）
+* 第六章 构建生产环境（未完成）
+* 第七章 默认配置详解（未完成）
+* 第八章 FAQ（未完成）
+* 第九章 API指引（未完成）

@@ -509,7 +509,11 @@ public abstract class TemplateAppContext implements AppContext {
         doShutdown();
         /*2.引发事件*/
         logger.info("shutdown - fireSyncEvent.");
-        ec.fireSyncEvent(ContextEvent_Shutdown, this);
+        try {
+            ec.fireSyncEvent(ContextEvent_Shutdown, this);
+        } catch (Throwable throwable) {
+            /**/
+        }
         logger.info("shutdown - doShutdownCompleted..");
         doShutdownCompleted();
         logger.info("shutdown - finish.");

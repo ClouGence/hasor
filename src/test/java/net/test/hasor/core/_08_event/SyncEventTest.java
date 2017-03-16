@@ -25,7 +25,7 @@ import org.junit.Test;
  */
 public class SyncEventTest {
     @Test
-    public void syncEventTest() throws InterruptedException {
+    public void syncEventTest() throws Throwable {
         System.out.println("--->>syncEventTest<<--");
         AppContext appContext = Hasor.createAppContext();
         EventContext ec = appContext.getEnvironment().getEventContext();
