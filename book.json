@@ -5,21 +5,52 @@
   "gitbook": "3.x.x",
   "plugins": [
     "splitter",
+    "-lunr",
     "-search",
-    "github",
     "ace",
-    "ad"
+    "expandable-chapters-small",
+    "ga",
+    "3-ba",
+    "tbfed-pagefooter",
+    "-sharing",
+    "favicon",
+    "github-buttons",
+    "duoshuo"
   ],
   "pluginsConfig": {
-    "github": {
-      "url": "https://github.com/zycgit/hasor"
+    "ga": {
+      "token": "UA-88648560-1"
     },
-    "ad": {
-      "contentBottom": "%3Cscript%20src%3D%27http%3A//s11.cnzz.com/z_stat.php%3Fid%3D1257358604%26web_id%3D1257358604%27%20language%3D%27JavaScript%27%3E%3C/script%3E"
+    "3-ba": {
+      "token": "8d5f7a839f4f8fee4eefbeac046d05cc"
+    },
+    "tbfed-pagefooter": {
+      "copyright": "Copyright &copy zyc@hasor.net 2017",
+      "modify_label": "该文件修订时间：",
+      "modify_format": "YYYY-MM-DD HH:mm:ss"
+    },
+    "favicon": {
+      "shortcut": "assets/images/favicon.ico",
+      "bookmark": "assets/images/favicon.ico",
+      "appleTouch": "assets/images/apple-touch-icon.png",
+      "appleTouchMore": {
+        "120x120": "assets/images/apple-touch-icon-120x120.png",
+        "180x180": "assets/images/apple-touch-icon-180x180.png"
+      }
+    },
+    "github-buttons": {
+      "repo": "zycgit/hasor",
+      "types": [
+        "star",
+        "watch",
+        "fork"
+      ],
+      "size": "small"
+    },
+    "duoshuo": {
+      "short_name": "hasor",
+      "theme": "default"
     }
-  },
-  "styles": {
-    "website": "website/styles/site.css"
   },
   "variables": {
     "hasor_version": "3.1.3"

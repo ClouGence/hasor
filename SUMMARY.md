@@ -72,12 +72,12 @@
     * [4. 命名空间](docs/chapter-03/subject-09/NameSpace.md)
     * [5. 加载顺序](docs/chapter-03/subject-09/LoadSequence.md)
     * [6. 解析Xml](docs/chapter-03/subject-09/ParserXml.md)
-  * 第十节 环境变量（未完成）
-    * 配置环境变量
-    * 配置文件引用环境变量
-    * env.config
-    * 模版化配置文件
-    * 实践多环境
+  * [第十节 环境变量](docs/chapter-03/subject-10/Environment.md)
+    * [配置环境变量](docs/chapter-03/subject-10/.md)
+    * [配置文件引用环境变量](docs/chapter-03/subject-10/.md)
+    * [env.config](docs/chapter-03/subject-10/.md)
+    * [模版化配置文件](docs/chapter-03/subject-10/.md)
+    * [实践多环境](docs/chapter-03/subject-10/.md)
 * 第四章 Web开发（未完成）
   * Web工程配置
   * 处理Web请求
