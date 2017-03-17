@@ -41,7 +41,7 @@
 ----------
 ### 发展状况
 
-&emsp;&emsp; Hasor起源于2012年。当时尚未开源，并被应用到公司个大项目中。当时基于Guice构建，并且整合了Spring JDBC、Guice等大量三方框架。
+&emsp;&emsp; Hasor起源于2012年。当时尚未开源，并被应用到公司各大项目中。当时基于Guice构建，并且整合了Spring JDBC、Guice等大量三方框架。
 
 &emsp;&emsp; 2013年9月15日，第一个Hasor版本发布。Module化的插件概念被提出，同时依赖大量减少，成为一个开源的java开发框架。
 

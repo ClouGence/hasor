@@ -1,7 +1,7 @@
 {
   "title": "Hasor 开发指南",
   "description": "Hasor 开发指南。",
-  "language": "zh-cn",
+  "language": "zh-hans",
   "gitbook": "3.x.x",
   "plugins": [
     "splitter",
