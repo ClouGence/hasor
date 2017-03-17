@@ -258,34 +258,25 @@ public abstract class TemplateAppContext implements AppContext {
     /*------------------------------------------------------------------------------------Process*/
     /**查找Module（由Module初始化的子Module不再查找范围内）。*/
     protected Module[] findModules() {
-        ArrayList<String> moduleTyleList = new ArrayList<String>();
         Environment env = this.getEnvironment();
+        boolean loadErrorShow = env.getSettings().getBoolean("hasor.modules.loadErrorShow", true);
         boolean loadModule = env.getSettings().getBoolean("hasor.modules.loadModule", true);
-        if (loadModule) {
-            XmlNode[] allModules = env.getSettings().getXmlNodeArray("hasor.modules.module");
-            for (XmlNode module : allModules) {
-                if (module == null) {
-                    continue;
-                }
-                String moduleTypeString = module.getText();
-                if (StringUtils.isBlank(moduleTypeString)) {
-                    continue;
-                }
-                if (!moduleTyleList.contains(moduleTypeString)) {
-                    moduleTyleList.add(moduleTypeString);
-                }
-            }
+        if (!loadModule) {
+            return new Module[0];
         }
         //
         ArrayList<Module> moduleList = new ArrayList<Module>();
-        boolean loadErrorShow = this.getEnvironment().getSettings().getBoolean("hasor.modules.loadErrorShow", true);
-        for (String modStr : moduleTyleList) {
+        String[] allModules = env.getSettings().getStringArray("hasor.modules.module");
+        Set<String> moduleTypeSet = new LinkedHashSet<String>(Arrays.asList(allModules));
+        for (String moduleType : moduleTypeSet) {
+            if (StringUtils.isBlank(moduleType))
+                continue;
+            //
             try {
-                ClassLoader loader = this.getClassLoader();
-                Class<?> moduleType = loader.loadClass(modStr);
-                moduleList.add((Module) moduleType.newInstance());
+                Class<?> moduleClass = this.getClassLoader().loadClass(moduleType);
+                moduleList.add((Module) moduleClass.newInstance());
             } catch (Throwable e) {
-                logger.warn("load module Type {} is failure. -> {}:{}", modStr, e.getClass(), e.getMessage());
+                logger.warn("load module Type {} is failure. -> {}:{}", moduleType, e.getClass(), e.getMessage());
                 if (loadErrorShow) {
                     logger.error(e.getMessage(), e);
                 }
