@@ -80,7 +80,7 @@ public class ContextTest {
     public void settingsTest() {
         System.out.println("--->>settingsTest<<--");
         AppContext appContext = Hasor.createAppContext("simple-config.xml");
-        Settings settings = appContext.getEnvironment().getSettings();
+        Settings settings = appContext.getInstance(Settings.class);
         logger.debug("---------------------------------------------");
         //
         String myName = settings.getString("mySelf.myName");

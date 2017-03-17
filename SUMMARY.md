@@ -65,14 +65,13 @@
     * [3. 只执行一次的监听器](docs/chapter-03/subject-08/OnesEvent.md)
     * [4. 事件链](docs/chapter-03/subject-08/EventChain.md)
     * [5. 异步事件线程池设置](docs/chapter-03/subject-08/EventSettins.md)
-  * 第九节 配置文件（未完成）
-    * 读取配置文件
-    * 配置规则
-    * 静态配置文件
-    * 加载顺序
-    * [5. 命名空间](chapter-03/subject-09/多项目.md)
-    * 配置文件解析机制
-    * Xml解析
+  * [第九节 配置文件](docs/chapter-03/subject-09/Settings.md)
+    * [1. 文件格式](docs/chapter-03/subject-09/FileFormat.md)
+    * [2. 读取配置文件](docs/chapter-03/subject-09/ReadSettings.md)
+    * [3. static-config](docs/chapter-03/subject-09/StaticSettings.md)
+    * [4. 命名空间](docs/chapter-03/subject-09/NameSpace.md)
+    * [5. 加载顺序](docs/chapter-03/subject-09/LoadSequence.md)
+    * [6. 解析Xml](docs/chapter-03/subject-09/ParserXml.md)
   * 第十节 环境变量（未完成）
     * 配置环境变量
     * 配置文件引用环境变量
