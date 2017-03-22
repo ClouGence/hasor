@@ -1,7 +1,8 @@
 ﻿
 ### Hasor-Core v3.1.4 (2017-03-?)
 **改进**
-    ...
+    01. EventContext 接口增加 fireSyncEventWithEspecial 方法，可以用于指定同步事件是否以独立线程运行。
+    02. ContextClassLoaderLocal 类移动位置。
 **修复**
     01. 修复当 aop 类中出现静态代码块，静态方法时。生成了错误的动态字节码。
 ---
