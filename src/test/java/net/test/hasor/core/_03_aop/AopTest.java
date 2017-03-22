@@ -16,10 +16,10 @@
 package net.test.hasor.core._03_aop;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.plugins.aop.Aop;
 import net.test.hasor.core._03_aop.myaop.MyAopBean;
 import net.test.hasor.core._03_aop.myaop.MyAopSetup;
 import net.test.hasor.core._03_aop.myaop.SuperMyAopBean;
-import net.test.hasor.core._03_aop.simple.AopBean;
 import net.test.hasor.core._03_aop.simple.SimpleInterceptor;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -29,15 +29,18 @@ import org.slf4j.LoggerFactory;
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
+@Aop(SimpleInterceptor.class)
 public class AopTest {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    @Test
-    public void simpleAopTest() {
+    public String echo(String sayMessage) {
+        return "echo :" + sayMessage;
+    }
+    protected static Logger logger = LoggerFactory.getLogger(AopTest.class);
+    public static void main(String[] args) {
         System.out.println("--->>simpleAopTest<<--");
         AppContext appContext = Hasor.createAppContext();
         logger.debug("---------------------------------------------");
         //
-        AopBean fooBean = appContext.getInstance(AopBean.class);
+        AopTest fooBean = appContext.getInstance(AopTest.class);
         logger.debug("aopBean : " + fooBean.echo("sayMessage"));
         assert SimpleInterceptor.called;
         SimpleInterceptor.called = false;

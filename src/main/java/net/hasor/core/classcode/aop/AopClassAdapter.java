@@ -65,7 +65,8 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
             String tmDesc = ASMEngineTools.toAsmFullDesc(targetMethod);
             int dataModifiers = targetMethod.getModifiers();
             if (/**/ASMEngineTools.checkIn(dataModifiers, Modifier.PRIVATE) || //
-                    ASMEngineTools.checkIn(dataModifiers, Modifier.FINAL)) {
+                    ASMEngineTools.checkIn(dataModifiers, Modifier.FINAL) || //
+                    ASMEngineTools.checkIn(dataModifiers, Modifier.STATIC)) {
                 continue;
             }
             //
@@ -122,6 +123,10 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
     }
     /**处理构造方法*/
     public MethodVisitor visitMethod(final int access, final String name, final String desc, final String signature, final String[] exceptions) {
+        if ("<clinit>".equals(name)) {
+            return null;
+        }
+        //
         //1.准备输出方法数据，该方法的主要目的是从desc中拆分出参数表和返回值。
         Pattern p = Pattern.compile("\\((.*)\\)(.*)");
         Matcher m = p.matcher(desc);
@@ -130,7 +135,7 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         asmReturns = asmReturns.charAt(0) == 'L' ? asmReturns.substring(1, asmReturns.length() - 1) : asmReturns;
         //
         //2.忽略构造方法，aop包装不会考虑构造方法。
-        if (name.equals("<init>")) {
+        if ("<init>".equals(name)) {
             MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
             mv.visitCode();
             this.visitConstruction(mv, name, desc);
