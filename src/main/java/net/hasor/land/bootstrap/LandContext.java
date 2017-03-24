@@ -111,10 +111,18 @@ public class LandContext {
     }
     /** 进行投票 */
     public void fireVotedFor(String votedTo) {
-        this.eventContext.fireSyncEvent(LandEvent.VotedFor_Event, votedTo);
+        try {
+            this.eventContext.fireSyncEvent(LandEvent.VotedFor_Event, votedTo);
+        } catch (Throwable e) {
+            logger.error(e.getMessage(), e);
+        }
     }
     /** 服务器状态变化 */
     public void fireStatus(ServerStatus toStatus) {
-        this.eventContext.fireSyncEvent(LandEvent.ServerStatus, toStatus);
+        try {
+            this.eventContext.fireSyncEvent(LandEvent.ServerStatus, toStatus);
+        } catch (Throwable e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 }
