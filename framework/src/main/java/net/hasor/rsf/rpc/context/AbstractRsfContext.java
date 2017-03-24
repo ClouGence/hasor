@@ -126,7 +126,11 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         }
         this.logger.info("rsfContext -> already online , fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Online);
         EventContext ec = getAppContext().getEnvironment().getEventContext();
-        ec.fireSyncEvent(RsfEvent.Rsf_Online, this);
+        try {
+            ec.fireSyncEvent(RsfEvent.Rsf_Online, this);
+        } catch (Throwable e) {
+            logger.error(e.getMessage(), e);
+        }
     }
     /**应用下线(先置为下线，在引发事件)*/
     @Override
@@ -137,7 +141,11 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         }
         this.logger.info("rsfContext -> already offline , fireSyncEvent ,eventType = {}", RsfEvent.Rsf_Online);
         EventContext ec = getAppContext().getEnvironment().getEventContext();
-        ec.fireSyncEvent(RsfEvent.Rsf_Offline, this);
+        try {
+            ec.fireSyncEvent(RsfEvent.Rsf_Offline, this);
+        } catch (Throwable e) {
+            logger.error(e.getMessage(), e);
+        }
     }
     @Override
     public boolean isOnline() {

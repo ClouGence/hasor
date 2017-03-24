@@ -11,6 +11,7 @@
 // You may elect to redistribute this code under either of these licenses.
 // ========================================================================
 package net.hasor.rsf.json;
+import net.hasor.rsf.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -252,7 +253,7 @@ public class JSON {
             Iterator<?> iter = map.entrySet().iterator();
             while (iter.hasNext()) {
                 Map.Entry<?, ?> entry = (Map.Entry<?, ?>) iter.next();
-                QuotedStringTokenizer.quote(buffer, entry.getKey().toString());
+                StringUtils.quote(buffer, entry.getKey().toString());
                 buffer.append(':');
                 append(buffer, entry.getValue());
                 if (iter.hasNext())
@@ -333,7 +334,7 @@ public class JSON {
             appendNull(buffer);
             return;
         }
-        QuotedStringTokenizer.quote(buffer, string);
+        StringUtils.quote(buffer, string);
     }
     // Parsing utilities
     /* ------------------------------------------------------------ */
@@ -947,7 +948,7 @@ public class JSON {
                 if (c == 0)
                     throw new IllegalStateException();
                 _buffer.append(c);
-                QuotedStringTokenizer.quote(_buffer, name);
+                StringUtils.quote(_buffer, name);
                 _buffer.append(':');
                 append(_buffer, value);
                 c = ',';
@@ -960,7 +961,7 @@ public class JSON {
                 if (c == 0)
                     throw new IllegalStateException();
                 _buffer.append(c);
-                QuotedStringTokenizer.quote(_buffer, name);
+                StringUtils.quote(_buffer, name);
                 _buffer.append(':');
                 appendNumber(_buffer, new Double(value));
                 c = ',';
@@ -973,7 +974,7 @@ public class JSON {
                 if (c == 0)
                     throw new IllegalStateException();
                 _buffer.append(c);
-                QuotedStringTokenizer.quote(_buffer, name);
+                StringUtils.quote(_buffer, name);
                 _buffer.append(':');
                 appendNumber(_buffer, value);
                 c = ',';
@@ -986,7 +987,7 @@ public class JSON {
                 if (c == 0)
                     throw new IllegalStateException();
                 _buffer.append(c);
-                QuotedStringTokenizer.quote(_buffer, name);
+                StringUtils.quote(_buffer, name);
                 _buffer.append(':');
                 appendBoolean(_buffer, value ? Boolean.TRUE : Boolean.FALSE);
                 c = ',';

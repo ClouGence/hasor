@@ -243,10 +243,18 @@ public class RsfBeanContainer {
             if (serviceDefine.getCustomerProvider() == null) {
                 throw new RsfException(ProtocolStatus.Forbidden, "Provider Not set the implementation class.");
             }
-            eventContext.fireSyncEvent(RsfEvent.Rsf_ProviderService, serviceDefine);
+            try {
+                eventContext.fireSyncEvent(RsfEvent.Rsf_ProviderService, serviceDefine);
+            } catch (Throwable e) {
+                logger.error(e.getMessage(), e);
+            }
         } else {
             //服务消费者
-            eventContext.fireSyncEvent(RsfEvent.Rsf_ConsumerService, serviceDefine);
+            try {
+                eventContext.fireSyncEvent(RsfEvent.Rsf_ConsumerService, serviceDefine);
+            } catch (Throwable e) {
+                logger.error(e.getMessage(), e);
+            }
         }
         // .收录别名
         Set<String> aliasTypes = serviceDefine.getAliasTypes();
@@ -290,7 +298,11 @@ public class RsfBeanContainer {
             // .发布删除消息( 1.Center解除注册、2.地址本回收)
             EventContext eventContext = this.getEnvironment().getEventContext();
             RsfBindInfo<?> rsfBindInfo = this.serviceMap.get(serviceID);
-            eventContext.fireSyncEvent(RsfEvent.Rsf_DeleteService, rsfBindInfo);
+            try {
+                eventContext.fireSyncEvent(RsfEvent.Rsf_DeleteService, rsfBindInfo);
+            } catch (Throwable e) {
+                logger.error(e.getMessage(), e);
+            }
             //
             // .回收服务
             this.serviceMap.remove(serviceID);
