@@ -1,0 +1,69 @@
+<functionName> ( ..... ) {
+    name,
+    age,
+    nick
+}
+
+<functionName> ( ..... ) [
+    {
+        name,
+        age,
+        nick
+    }
+]
+
+<functionName> ( "userID" = userID, ... ) {
+    userID,
+    name,
+    age,
+    nick,
+    orderList : <functionName>( "accountID" = userInfo.userAccount , ... ) [
+        {
+            orderID,
+            itemID,
+            itemName
+        }
+    ]
+}
+
+<functionName> ( "userID" = foo( ... ), ... ) {
+    ...
+}
+
+
+{
+    user : <functionName>( "userID" = userID ,... ) {
+        uid : "userID",
+        name,
+        age,
+        nick,
+    },
+    orderList : <functionName>( "accountID" = user.userID , ... ) [
+        {
+            orderID,
+            itemID,
+            itemName
+        }
+    ]
+}
+
+
+fragment "fUser" on <functionName>( "userID" ,... ) {
+    userID,
+    name,
+    age,
+    nick,
+}
+// 查询片段的参数 accountID ，更换参数名称：userAccount
+fragment fOrder on <functionName>( "accountID" = "userAccount", ... ) [
+    {
+        orderID,
+        itemID,
+        itemName
+    }
+]
+// 组合
+{
+    user      : fUser,
+    orderList : fOrder,
+}

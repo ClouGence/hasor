@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package net.hasor.core.utils;
+import java.io.IOException;
+import java.util.Arrays;
 /**
  * <p>Operations on {@link java.lang.String} that are <code>null</code> safe.</p>
  */
@@ -498,4 +500,53 @@ public class StringUtils {
     public static boolean isEmptyArray(final Object[] array) {
         return array == null || array.length == 0;
     }
+    /* ------------------------------------------------------------ */
+    private static final char[] escapes = new char[32];
+
+    static {
+        Arrays.fill(escapes, (char) 0xFFFF);
+        escapes['\b'] = 'b';
+        escapes['\t'] = 't';
+        escapes['\n'] = 'n';
+        escapes['\f'] = 'f';
+        escapes['\r'] = 'r';
+    }
+
+    /** Quote a string into an Appendable.
+     * The characters ", \, \n, \r, \t, \f and \b are escaped
+     * @param input The String to quote.
+     */
+    public static String quote(String input) {
+        StringBuilder buffer = new StringBuilder();
+        quote(buffer, input);
+        return buffer.toString();
+    }
+    public static void quote(Appendable buffer, String input) {
+        try {
+            buffer.append('"');
+            for (int i = 0; i < input.length(); ++i) {
+                char c = input.charAt(i);
+                if (c >= 32) {
+                    if (c == '"' || c == '\\')
+                        buffer.append('\\');
+                    buffer.append(c);
+                } else {
+                    char escape = escapes[c];
+                    if (escape == 0xFFFF) {
+                        // Unicode escape
+                        buffer.append('\\').append('u').append('0').append('0');
+                        if (c < 0x10)
+                            buffer.append('0');
+                        buffer.append(Integer.toString(c, 16));
+                    } else {
+                        buffer.append('\\').append(escape);
+                    }
+                }
+            }
+            buffer.append('"');
+        } catch (IOException x) {
+            throw new RuntimeException(x);
+        }
+    }
+    //
 }
