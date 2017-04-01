@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.graphql.dsl;
-import net.hasor.graphql.domain.ValueType;
+import net.hasor.graphql.dsl.domain.ValueType;
 /**
  *
  * @author 赵永春(zyc@hasor.net)

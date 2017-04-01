@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * GraphQL，API DSL
+ * Simple GraphQL，DSL
  */
 @AopIgnore
 package net.hasor.graphql.dsl;

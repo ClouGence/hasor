@@ -15,7 +15,7 @@
  */
 package net.hasor.graphql.dsl;
 import net.hasor.core.utils.StringUtils;
-import net.hasor.graphql.domain.*;
+import net.hasor.graphql.dsl.domain.*;
 
 import java.util.List;
 /**

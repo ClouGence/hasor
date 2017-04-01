@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * GraphQL，String DSL。
+ * DSL Parser
  */
 @AopIgnore
 package net.hasor.graphql.dsl.parser;

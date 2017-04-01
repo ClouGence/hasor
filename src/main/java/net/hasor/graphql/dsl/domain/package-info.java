@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.domain;
 /**
- *
- * @author 赵永春(zyc@hasor.net)
- * @version : 2017-03-23
+ * DSL Domain
  */
-public abstract class GraphValue {
-}
+@AopIgnore
+package net.hasor.graphql.dsl.domain;
+import net.hasor.core.container.AopIgnore;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.domain;
+package net.hasor.graphql.dsl.domain;
 import net.hasor.core.utils.StringUtils;
 
 import java.util.ArrayList;

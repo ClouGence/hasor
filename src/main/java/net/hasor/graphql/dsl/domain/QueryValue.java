@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.domain;
+package net.hasor.graphql.dsl.domain;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class RouteValue extends GraphValue {
-    private String routeExpression;
-    public RouteValue(String routeExpression) {
-        this.routeExpression = routeExpression;
+public class QueryValue extends GraphValue {
+    private QueryDomain queryDomain;
+    public QueryValue(QueryDomain queryDomain) {
+        this.queryDomain = queryDomain;
     }
-    public String getRouteExpression() {
-        return this.routeExpression;
+    public QueryDomain getQueryDomain() {
+        return queryDomain;
     }
 }

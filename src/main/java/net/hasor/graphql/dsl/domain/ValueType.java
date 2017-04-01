@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.domain;
+package net.hasor.graphql.dsl.domain;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public enum ReturnType {
-    Object, ListObject, ListValue, Original
+public enum ValueType {
+    Boolean, Number, String, Null
 }

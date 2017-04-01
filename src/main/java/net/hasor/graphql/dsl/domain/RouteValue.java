@@ -13,9 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.graphql.dsl.domain;
 /**
- * GraphQL，查询模型。
+ *
+ * @author 赵永春(zyc@hasor.net)
+ * @version : 2017-03-23
  */
-@AopIgnore
-package net.hasor.graphql.domain;
-import net.hasor.core.container.AopIgnore;
+public class RouteValue extends GraphValue {
+    private String routeExpression;
+    public RouteValue(String routeExpression) {
+        this.routeExpression = routeExpression;
+    }
+    public String getRouteExpression() {
+        return this.routeExpression;
+    }
+}

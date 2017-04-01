@@ -13,24 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.domain;
+package net.hasor.graphql.dsl.domain;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class FixedValue extends GraphValue {
-    private Object    value;
-    private ValueType valueType;
-    //
-    public FixedValue(Object value, ValueType valueType) {
-        this.value = value;
-        this.valueType = valueType;
-    }
-    public Object getValue() {
-        return this.value;
-    }
-    public ValueType getValueType() {
-        return this.valueType;
-    }
+public enum ReturnType {
+    Object, ListObject, ListValue, Original
 }

@@ -1,5 +1,5 @@
 package net.hasor.graphql.dsl;
-import net.hasor.graphql.domain.ValueType;
+import net.hasor.graphql.dsl.domain.ValueType;
 /**
  * Created by yongchun.zyc on 2017/3/23.
  */

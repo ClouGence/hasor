@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.graphql.dsl;
-import net.hasor.graphql.domain.QueryDomain;
+import net.hasor.graphql.dsl.domain.QueryDomain;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
