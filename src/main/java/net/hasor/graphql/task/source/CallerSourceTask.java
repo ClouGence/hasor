@@ -15,6 +15,7 @@
  */
 package net.hasor.graphql.task.source;
 import net.hasor.graphql.task.AbstractQueryTask;
+import net.hasor.graphql.task.TaskContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,19 +25,24 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 public class CallerSourceTask extends SourceQueryTask {
-    private String                         callName   = null;
+    private String                         callerName = null;
     private Map<String, AbstractQueryTask> callParams = new HashMap<String, AbstractQueryTask>();
     //
-    public CallerSourceTask(String callerName) {
-        this.callName = callName;
+    public CallerSourceTask(TaskContext taskContext, String callerName) {
+        super(taskContext);
+        this.callerName = callerName;
     }
     //
     public void addParam(String paramName, AbstractQueryTask dataSource) {
         this.callParams.put(paramName, dataSource);
         super.addSubTask(dataSource);
     }
+    public String getCallerName() {
+        return this.callerName;
+    }
     //
-    public String getCallName() {
-        return this.callName;
+    @Override
+    protected Object doTask(TaskContext taskContext) throws Throwable {
+        return null;
     }
 }

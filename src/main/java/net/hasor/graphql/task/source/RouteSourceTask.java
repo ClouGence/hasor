@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.graphql.task.source;
+import net.hasor.graphql.task.TaskContext;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
@@ -21,8 +22,8 @@ package net.hasor.graphql.task.source;
  */
 public class RouteSourceTask extends SourceQueryTask {
     private String routeExpression;
-    public RouteSourceTask(SourceQueryTask dataSource, String routeExpression) {
-        super();
+    public RouteSourceTask(TaskContext taskContext, SourceQueryTask dataSource, String routeExpression) {
+        super(taskContext);
         if (dataSource != null) {
             super.addSubTask(dataSource);
         }
@@ -31,5 +32,10 @@ public class RouteSourceTask extends SourceQueryTask {
     //
     public String getRouteExpression() {
         return this.routeExpression;
+    }
+    //
+    @Override
+    protected Object doTask(TaskContext taskContext) throws Throwable {
+        return null;
     }
 }

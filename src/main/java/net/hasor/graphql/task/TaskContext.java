@@ -13,23 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.task.struts;
-import net.hasor.graphql.task.TaskContext;
+package net.hasor.graphql.task;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ValueStrutsTask extends StrutsQueryTask {
-    private FieldStrutsTask dataSource;
-    public ValueStrutsTask(TaskContext taskContext, FieldStrutsTask dataSource) {
-        super(taskContext);
-        this.dataSource = dataSource;
-        super.addSubTask(dataSource);
-    }
-    //
-    @Override
-    protected Object doTask(TaskContext taskContext) throws Throwable {
-        return null;
-    }
+public interface TaskContext {
 }

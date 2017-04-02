@@ -15,6 +15,7 @@
  */
 package net.hasor.graphql.task.source;
 import net.hasor.graphql.dsl.domain.ValueType;
+import net.hasor.graphql.task.TaskContext;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
@@ -23,13 +24,14 @@ import net.hasor.graphql.dsl.domain.ValueType;
 public class ValueSourceTask extends SourceQueryTask {
     private Object    value;
     private ValueType valueType;
-    public ValueSourceTask(Object value, ValueType valueType) {
-        super();
+    public ValueSourceTask(TaskContext taskContext, Object value, ValueType valueType) {
+        super(taskContext);
         this.value = value;
         this.valueType = valueType;
     }
     //
-    public Object getValue() {
+    @Override
+    protected Object doTask(TaskContext taskContext) throws Throwable {
         return this.value;
     }
 }

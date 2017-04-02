@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.graphql.task.struts;
+import net.hasor.graphql.task.TaskContext;
 import net.hasor.graphql.task.source.SourceQueryTask;
 /**
  *
@@ -22,9 +23,14 @@ import net.hasor.graphql.task.source.SourceQueryTask;
  */
 public class OriginalStrutsTask extends StrutsQueryTask {
     private SourceQueryTask dataSource;
-    public OriginalStrutsTask(SourceQueryTask dataSource) {
-        super();
+    public OriginalStrutsTask(TaskContext taskContext, SourceQueryTask dataSource) {
+        super(taskContext);
         super.addSubTask(dataSource);
         this.dataSource = dataSource;
+    }
+    //
+    @Override
+    protected Object doTask(TaskContext taskContext) throws Throwable {
+        return null;
     }
 }

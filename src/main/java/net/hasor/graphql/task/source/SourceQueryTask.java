@@ -15,10 +15,14 @@
  */
 package net.hasor.graphql.task.source;
 import net.hasor.graphql.task.AbstractQueryTask;
+import net.hasor.graphql.task.TaskContext;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public abstract class SourceQueryTask extends AbstractQueryTask {
+    public SourceQueryTask(TaskContext taskContext) {
+        super(taskContext);
+    }
 }

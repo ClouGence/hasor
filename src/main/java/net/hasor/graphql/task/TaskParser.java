@@ -25,9 +25,16 @@ import java.util.List;
  * @version : 2017-03-23
  */
 public class TaskParser {
+    private TaskContext taskContext;
+    public TaskParser(TaskContext taskContext) {
+        this.taskContext = taskContext;
+    }
+    //
     /** 解析查询模型，将其转换成为执行任务树 */
     public QueryTask doParser(QueryDomain domain) {
-        return doParser(null, domain).fixRouteDep();
+        AbstractQueryTask task = doParser(null, domain).fixRouteDep();
+        task.initTask();
+        return task;
     }
     private AbstractQueryTask doParser(SourceQueryTask parentSource, QueryDomain domain) {
         if (domain.getGraphUDF() != null) {
@@ -38,7 +45,7 @@ public class TaskParser {
         switch (returnType) {
         case Object: {
             List<String> fieldNames = domain.getFieldNames();
-            ObjectStrutsTask ost = new ObjectStrutsTask();
+            ObjectStrutsTask ost = new ObjectStrutsTask(this.taskContext);
             for (String name : fieldNames) {
                 GraphValue domainField = domain.getField(name);
                 SourceQueryTask sourceTask = this.parserSource(parentSource, domainField);
@@ -48,24 +55,24 @@ public class TaskParser {
         }
         case ListObject: {
             List<String> fieldNames = domain.getFieldNames();
-            ObjectStrutsTask ost = new ObjectStrutsTask();
+            ObjectStrutsTask ost = new ObjectStrutsTask(this.taskContext);
             for (String name : fieldNames) {
                 GraphValue domainField = domain.getField(name);
                 SourceQueryTask sourceTask = this.parserSource(parentSource, domainField);
                 ost.addField(name, sourceTask);
             }
-            return new ListStrutsTask(ost);
+            return new ListStrutsTask(this.taskContext, ost);
         }
         case ListValue: {
             List<String> fieldNames = domain.getFieldNames();
             String fieldName = fieldNames.get(0);
             GraphValue domainField = domain.getField(fieldName);
             SourceQueryTask sourceTask = this.parserSource(parentSource, domainField);
-            FieldStrutsTask fst = new FieldStrutsTask(fieldName, sourceTask);
-            return new ListStrutsTask(new ValueStrutsTask(fst));
+            FieldStrutsTask fst = new FieldStrutsTask(this.taskContext, fieldName, sourceTask);
+            return new ListStrutsTask(this.taskContext, new ValueStrutsTask(this.taskContext, fst));
         }
         case Original:
-            return new OriginalStrutsTask(parentSource);
+            return new OriginalStrutsTask(this.taskContext, parentSource);
         default:
             throw new RuntimeException("");
         }
@@ -75,7 +82,7 @@ public class TaskParser {
         if (graphUDF == null) {
             return null;
         }
-        CallerSourceTask caller = new CallerSourceTask(graphUDF.getName());
+        CallerSourceTask caller = new CallerSourceTask(this.taskContext, graphUDF.getName());
         List<String> paramNames = graphUDF.getParamNames();
         for (String name : paramNames) {
             GraphValue field = graphUDF.getParam(name);
@@ -89,17 +96,17 @@ public class TaskParser {
             QueryValue queryValue = (QueryValue) defSource;
             QueryDomain queryDomain = queryValue.getQueryDomain();
             AbstractQueryTask queryTask = this.doParser(parentSource, queryDomain);
-            return new QuerySourceTask(queryTask);
+            return new QuerySourceTask(this.taskContext, queryTask);
         } else if (defSource instanceof FixedValue) {
             //
             FixedValue varValue = (FixedValue) defSource;
             Object value = varValue.getValue();
             ValueType valueType = varValue.getValueType();
-            return new ValueSourceTask(value, valueType);
+            return new ValueSourceTask(this.taskContext, value, valueType);
         } else if (defSource instanceof RouteValue) {
             //
             RouteValue routeValue = (RouteValue) defSource;
-            return new RouteSourceTask(parentSource, routeValue.getRouteExpression());
+            return new RouteSourceTask(this.taskContext, parentSource, routeValue.getRouteExpression());
         }
         throw new RuntimeException("");
     }

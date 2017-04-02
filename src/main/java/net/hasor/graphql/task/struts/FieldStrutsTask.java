@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.graphql.task.struts;
+import net.hasor.graphql.task.TaskContext;
 import net.hasor.graphql.task.source.SourceQueryTask;
 /**
  *
@@ -24,8 +25,8 @@ public class FieldStrutsTask extends StrutsQueryTask {
     private String          fieldName;
     private SourceQueryTask fieldData;
     //
-    public FieldStrutsTask(String name, SourceQueryTask dataSource) {
-        super();
+    public FieldStrutsTask(TaskContext taskContext, String name, SourceQueryTask dataSource) {
+        super(taskContext);
         this.addSubTask(dataSource);
         this.fieldName = name;
         this.fieldData = dataSource;
@@ -33,5 +34,10 @@ public class FieldStrutsTask extends StrutsQueryTask {
     //
     public String getFieldName() {
         return this.fieldName;
+    }
+    //
+    @Override
+    protected Object doTask(TaskContext taskContext) throws Throwable {
+        return null;
     }
 }

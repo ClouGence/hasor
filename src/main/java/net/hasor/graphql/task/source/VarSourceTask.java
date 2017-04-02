@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.graphql.task.source;
+import net.hasor.graphql.task.TaskContext;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
@@ -21,8 +22,16 @@ package net.hasor.graphql.task.source;
  */
 public class VarSourceTask extends SourceQueryTask {
     private String varName;
-    //
     public String getVarName() {
         return this.varName;
+    }
+    //
+    public VarSourceTask(TaskContext taskContext) {
+        super(taskContext);
+    }
+    //
+    @Override
+    protected Object doTask(TaskContext taskContext) throws Throwable {
+        return null;
     }
 }

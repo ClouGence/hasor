@@ -15,6 +15,7 @@
  */
 package net.hasor.graphql.task.struts;
 import net.hasor.graphql.task.QueryTask;
+import net.hasor.graphql.task.TaskContext;
 import net.hasor.graphql.task.source.SourceQueryTask;
 
 import java.util.ArrayList;
@@ -30,11 +31,20 @@ public class ObjectStrutsTask extends StrutsQueryTask {
     private List<String>           fieldList = new ArrayList<String>();
     private Map<String, QueryTask> dataMap   = new HashMap<String, QueryTask>();
     //
+    public ObjectStrutsTask(TaskContext taskContext) {
+        super(taskContext);
+    }
+    //
     public void addField(String name, SourceQueryTask dataSource) {
-        FieldStrutsTask fieldStrutsTask = new FieldStrutsTask(name, dataSource);
+        FieldStrutsTask fieldStrutsTask = new FieldStrutsTask(this.getTaskContext(), name, dataSource);
         //
         this.fieldList.add(name);
         this.dataMap.put(name, fieldStrutsTask);
         super.addSubTask(fieldStrutsTask);
+    }
+    //
+    @Override
+    protected Object doTask(TaskContext taskContext) throws Throwable {
+        return null;
     }
 }

@@ -20,7 +20,6 @@ package net.hasor.graphql.task;
  * @version : 2017-03-23
  */
 public enum TaskStatus {
-    Plan,       // 计划的
     Prepare,    // 准备阶段
     //
     Waiting,    // 等待调度

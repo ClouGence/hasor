@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.graphql.task.struts;
+import net.hasor.graphql.task.TaskContext;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
@@ -21,13 +22,18 @@ package net.hasor.graphql.task.struts;
  */
 public class ListStrutsTask extends StrutsQueryTask {
     private StrutsQueryTask listBody;
-    public ListStrutsTask(StrutsQueryTask listBody) {
-        super();
+    public ListStrutsTask(TaskContext taskContext, StrutsQueryTask listBody) {
+        super(taskContext);
         super.addSubTask(listBody);
         this.listBody = listBody;
     }
     //
     public StrutsQueryTask getListBody() {
         return this.listBody;
+    }
+    //
+    @Override
+    protected Object doTask(TaskContext taskContext) throws Throwable {
+        return null;
     }
 }
