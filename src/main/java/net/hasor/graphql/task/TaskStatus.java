@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.domain;
+package net.hasor.graphql.task;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface QueryBuild {
-    public String buildQuery(StringBuilder builder);
+public enum TaskStatus {
+    Plan,       // 计划的
+    //
+    Waiting,    // 等待调度
+    Prepare,    // 准备阶段
+    Running,    // 执行中
+    //
+    Complete,   // 执行成功
+    Failed,     // 执行失败
 }

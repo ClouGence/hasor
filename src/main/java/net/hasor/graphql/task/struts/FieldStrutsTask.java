@@ -13,9 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.graphql.task.struts;
+import net.hasor.graphql.task.source.SourceQueryTask;
 /**
- * GraphQL，的执行计划。
+ *
+ * @author 赵永春(zyc@hasor.net)
+ * @version : 2017-03-23
  */
-@AopIgnore
-package net.hasor.graphql.explan;
-import net.hasor.core.container.AopIgnore;
+public class FieldStrutsTask extends StrutsQueryTask {
+    private String          fieldName;
+    private SourceQueryTask fieldData;
+    //
+    public FieldStrutsTask(String name, SourceQueryTask dataSource) {
+        super();
+        this.addSubTask(dataSource);
+        this.fieldName = name;
+        this.fieldData = dataSource;
+    }
+    //
+    public String getFieldName() {
+        return this.fieldName;
+    }
+}
