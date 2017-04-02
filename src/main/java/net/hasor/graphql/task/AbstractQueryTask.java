@@ -28,10 +28,9 @@ import java.util.concurrent.ExecutionException;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public abstract class AbstractQueryTask implements QueryTask {
+public abstract class AbstractQueryTask extends Observable implements QueryTask {
     private List<AbstractQueryTask> subList     = new ArrayList<AbstractQueryTask>();
     private TaskStatus              taskStatus  = TaskStatus.Prepare;
-    private Observable              observable  = new Observable();
     private BasicFuture<Object>     result      = new BasicFuture<Object>();
     private TaskContext             taskContext = null;
     //
@@ -43,7 +42,7 @@ public abstract class AbstractQueryTask implements QueryTask {
     }
     //
     public void addSubTask(AbstractQueryTask subTask) {
-        subTask.observable.addObserver(new Observer() {
+        subTask.addObserver(new Observer() {
             public void update(Observable o, Object arg) {
                 // .子任务执行失败，整体失败
                 if (TaskStatus.Failed.equals(arg)) {
@@ -101,7 +100,8 @@ public abstract class AbstractQueryTask implements QueryTask {
                 this.updateStatus(TaskStatus.Waiting);
             }
         } finally {
-            this.observable.notifyObservers(this.taskStatus);
+            this.setChanged();
+            this.notifyObservers(this.taskStatus);
         }
     }
     //

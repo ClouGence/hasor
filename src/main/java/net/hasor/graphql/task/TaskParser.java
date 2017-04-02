@@ -20,7 +20,7 @@ import net.hasor.graphql.task.struts.*;
 
 import java.util.List;
 /**
- *
+ * 解析查询模型，将其转换成为执行任务树
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
