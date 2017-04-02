@@ -8,8 +8,7 @@ import org.junit.Test;
  * Created by yongchun.zyc on 2017/3/21.
  */
 public class GraphQLTest {
-    @Test
-    public void main1() {
+    public GraphQuery main1() {
 
     /*
 -- 查询服务，并返回查询一条结果（如果服务返回一个List，那么取第一个元素）
@@ -40,10 +39,9 @@ findUserByID ( userID = 12345 , status = false) {
                 )//----------------------------------------------------------------------
                 .buildQuery();
         //
-        printQuery(graphQuery);
+        return printQuery(graphQuery);
     }
-    @Test
-    public void main2() {
+    public GraphQuery main2() {
     /*
 -- 查询服务，并返回查询一条结果（如果服务返回一个List，那么取第一个元素）
 {
@@ -94,10 +92,9 @@ findUserByID ( userID = 12345 , status = false) {
                 //----------------------------------------------------------------------
                 .buildQuery();
         //
-        printQuery(graphQuery);
+        return printQuery(graphQuery);
     }
-    @Test
-    public void main3() {
+    public GraphQuery main3() {
     /*
 -- 查询服务，并返回一组结果（如果服务只返回一个对象，那么以 List 形式返回）
 findUserByID ( userID = 12345 ) [
@@ -126,10 +123,9 @@ findUserByID ( userID = 12345 ) [
                 )//----------------------------------------------------------------------
                 .buildQuery();
         //
-        printQuery(graphQuery);
+        return printQuery(graphQuery);
     }
-    @Test
-    public void main4() {
+    public GraphQuery main4() {
     /*
 -- 查询服务，并返回所有名称集合
 findUserByID ( userID = 12345 ) [
@@ -148,10 +144,9 @@ findUserByID ( userID = 12345 ) [
                 )//
                 .buildQuery();
         //
-        printQuery(graphQuery);
+        return printQuery(graphQuery);
     }
-    @Test
-    public void main5() {
+    public GraphQuery main5() {
     /*
 -- 查询服务的同时构造另两个 orderList 属性，属性来源是另一个服务，另外参数 userID、status 也可以使用引号阔起来
 findUserByIDAndType ( "userID" = uid, "status" = 1 ) {
@@ -200,10 +195,9 @@ findUserByIDAndType ( "userID" = uid, "status" = 1 ) {
                 )//
                 .buildQuery();
         //
-        printQuery(graphQuery);
+        return printQuery(graphQuery);
     }
-    @Test
-    public void main6() {
+    public GraphQuery main6() {
     /*
 -- 参数可以是另一个函数的返回值
 findUserByID ( "userID" = foo( "sessionID" = sid ), "status" = 1 ) {
@@ -236,10 +230,9 @@ findUserByID ( "userID" = foo( "sessionID" = sid ), "status" = 1 ) {
                 )//
                 .buildQuery();
         //
-        printQuery(graphQuery);
+        return printQuery(graphQuery);
     }
-    @Test
-    public void main7() {
+    public GraphQuery main7() {
     /*
 {
     user : findUserByID( "userID" = uid ,... ) {
@@ -261,7 +254,7 @@ findUserByID ( "userID" = foo( "sessionID" = sid ), "status" = 1 ) {
                 .asObject()//
                 .addField(//
                         GraphQL.createField("user")//
-                                .withUDF("findUserByID")//
+                                .withUDF("userManager.findUserByID")//
                                 .addParam(//
                                         GraphQL.createParam("userID").withParam("uid")//
                                 )//
@@ -300,10 +293,9 @@ findUserByID ( "userID" = foo( "sessionID" = sid ), "status" = 1 ) {
                 )//
                 .buildQuery();
         //
-        printQuery(graphQuery);
+        return printQuery(graphQuery);
     }
-    @Test
-    public void main8() {
+    public GraphQuery main8() {
     /*
 -- 使用查询片段优化 GraphQL 语句结构，以便于阅读
 fragment fUser on findUserByID( "userID" = uid ) {
@@ -371,10 +363,9 @@ fragment fOrder on queryOrder( "accountID" = uid , ... ) [
                 )//
                 .buildQuery();
         //
-        printQuery(graphQuery);
+        return printQuery(graphQuery);
     }
-    @Test
-    public void main9() {
+    public GraphQuery main9() {
     /*
 -- 查询片段的集中样式
 fragment fUser on {
@@ -437,9 +428,9 @@ fragment fOrder on queryOrder( "accountID" = uid , ... ) [
                 )//
                 .buildQuery();
         //
-        printQuery(graphQuery);
+        return printQuery(graphQuery);
     }
-    private void printQuery(GraphQuery graphQL1) {
+    private GraphQuery printQuery(GraphQuery graphQL1) {
         try {
             String query1 = graphQL1.buildQuery();
             System.out.println(query1);
@@ -448,8 +439,46 @@ fragment fOrder on queryOrder( "accountID" = uid , ... ) [
             String query2 = graphQL2.buildQuery();
             System.out.println(query2);
             System.out.println("EQ:" + query1.equals(query2));
+            assert query1.equals(query2);
+            return graphQL2;
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+    @Test
+    public void _main1() {
+        main1();
+    }
+    @Test
+    public void _main2() {
+        main2();
+    }
+    @Test
+    public void _main3() {
+        main3();
+    }
+    @Test
+    public void _main4() {
+        main4();
+    }
+    @Test
+    public void _main5() {
+        main5();
+    }
+    @Test
+    public void _main6() {
+        main6();
+    }
+    @Test
+    public void _main7() {
+        main7();
+    }
+    @Test
+    public void _main8() {
+        main8();
+    }
+    @Test
+    public void _main9() {
+        main9();
     }
 }
