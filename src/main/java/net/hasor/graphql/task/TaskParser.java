@@ -25,8 +25,9 @@ import java.util.List;
  * @version : 2017-03-23
  */
 public class TaskParser {
+    /** 解析查询模型，将其转换成为执行任务树 */
     public QueryTask doParser(QueryDomain domain) {
-        return doParser(null, domain);
+        return doParser(null, domain).fixRouteDep();
     }
     private AbstractQueryTask doParser(SourceQueryTask parentSource, QueryDomain domain) {
         if (domain.getGraphUDF() != null) {
@@ -61,7 +62,7 @@ public class TaskParser {
             GraphValue domainField = domain.getField(fieldName);
             SourceQueryTask sourceTask = this.parserSource(parentSource, domainField);
             FieldStrutsTask fst = new FieldStrutsTask(fieldName, sourceTask);
-            return new ValueStrutsTask(fst);
+            return new ListStrutsTask(new ValueStrutsTask(fst));
         }
         case Original:
             return new OriginalStrutsTask(parentSource);
@@ -70,7 +71,6 @@ public class TaskParser {
         }
         //
     }
-    //
     private SourceQueryTask parserUDF(SourceQueryTask parentSource, GraphUDF graphUDF) {
         if (graphUDF == null) {
             return null;
@@ -83,7 +83,6 @@ public class TaskParser {
         }
         return caller;
     }
-    //
     private SourceQueryTask parserSource(SourceQueryTask parentSource, GraphValue defSource) {
         if (defSource instanceof QueryValue) {
             //

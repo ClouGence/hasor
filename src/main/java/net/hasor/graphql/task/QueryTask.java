@@ -20,5 +20,12 @@ package net.hasor.graphql.task;
  * @version : 2017-03-23
  */
 public interface QueryTask {
-    public void printDetailTaskTree(StringBuilder builder);
+    /** 打印执行任务树 */
+    public String printTaskTree(boolean detail);
+
+    /** 任务节点是否执行完毕 */
+    public boolean isComplete();
+
+    /** 任务是否准备就绪，以等待分配执行资源 */
+    public boolean isWaiting();
 }

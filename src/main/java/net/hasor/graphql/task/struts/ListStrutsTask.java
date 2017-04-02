@@ -20,14 +20,14 @@ package net.hasor.graphql.task.struts;
  * @version : 2017-03-23
  */
 public class ListStrutsTask extends StrutsQueryTask {
-    private ObjectStrutsTask listBody;
-    public ListStrutsTask(ObjectStrutsTask listBody) {
+    private StrutsQueryTask listBody;
+    public ListStrutsTask(StrutsQueryTask listBody) {
         super();
         super.addSubTask(listBody);
         this.listBody = listBody;
     }
     //
-    public ObjectStrutsTask getListBody() {
+    public StrutsQueryTask getListBody() {
         return this.listBody;
     }
 }

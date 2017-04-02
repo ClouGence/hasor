@@ -64,8 +64,8 @@ public class TaskTest {
     //
     private void printTaskTree(QueryTask queryTask) {
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        StringBuilder builder = new StringBuilder();
-        queryTask.printDetailTaskTree(builder);
-        System.out.println(builder.toString());
+        System.out.println(queryTask.printTaskTree(true));
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.out.println(queryTask.printTaskTree(false));
     }
 }
