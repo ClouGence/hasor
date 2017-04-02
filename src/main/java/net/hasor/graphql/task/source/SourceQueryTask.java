@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.graphql.task.source;
+import net.hasor.graphql.TaskContext;
 import net.hasor.graphql.task.AbstractQueryTask;
-import net.hasor.graphql.task.TaskContext;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public abstract class SourceQueryTask extends AbstractQueryTask {
-    public SourceQueryTask(TaskContext taskContext) {
+    private String nameOfParent;
+    public SourceQueryTask(TaskContext taskContext, String nameOfParent) {
         super(taskContext);
+        this.nameOfParent = nameOfParent;
+    }
+    public String getNameOfParent() {
+        return nameOfParent;
     }
 }

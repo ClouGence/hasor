@@ -1,12 +1,15 @@
 package net.test.hasor.graphql;
+import net.hasor.graphql.TaskContext;
+import net.hasor.graphql.UDF;
 import net.hasor.graphql.dsl.GraphQuery;
 import net.hasor.graphql.task.AbstractQueryTask;
 import net.hasor.graphql.task.QueryTask;
-import net.hasor.graphql.task.TaskContext;
 import net.hasor.graphql.task.TaskParser;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 /**
  * Created by yongchun.zyc on 2017/3/21.
  */
@@ -67,18 +70,57 @@ public class TaskTest {
     }
     //
     private TaskContext newTaskContext() {
-        return null;
+        final HashMap<String, Object> udfData = new HashMap<String, Object>();
+        final HashMap<String, Object> data = new HashMap<String, Object>();
+        data.put("userID", 12345);
+        data.put("status", true);
+        udfData.put("name2", "this is name2.");
+        udfData.put("age", 31);
+        udfData.put("nick", "my name is nick.");
+        //
+        return new TaskContext() {
+            @Override
+            public UDF findUDF(String udfName) {
+                return new UDF() {
+                    @Override
+                    public Object call(Map<String, Object> values) {
+                        return udfData;
+                    }
+                };
+            }
+            @Override
+            public Object get(String name) {
+                return data.get(name);
+            }
+        };
     }
     private void printTaskTree(QueryTask queryTask) {
         AbstractQueryTask task = (AbstractQueryTask) queryTask;
         List<AbstractQueryTask> allTask = task.getAllTask();
-        for (AbstractQueryTask t : allTask) {
-            t.run();
-        }
+        int runCount = 0;
+        do {
+            runCount = 0;
+            for (AbstractQueryTask t : allTask) {
+                if (t.isWaiting()) {
+                    t.run();
+                    runCount++;
+                }
+            }
+        } while (runCount != 0);
         //
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         System.out.println(queryTask.printTaskTree(true));
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         System.out.println(queryTask.printTaskTree(false));
+        //
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        Object value = null;
+        try {
+            value = queryTask.getValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //
+        System.out.println(value);
     }
 }

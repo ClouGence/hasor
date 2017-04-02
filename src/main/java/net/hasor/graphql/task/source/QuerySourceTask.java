@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.graphql.task.source;
+import net.hasor.graphql.TaskContext;
 import net.hasor.graphql.task.AbstractQueryTask;
 import net.hasor.graphql.task.QueryTask;
-import net.hasor.graphql.task.TaskContext;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
@@ -24,14 +24,14 @@ import net.hasor.graphql.task.TaskContext;
  */
 public class QuerySourceTask extends SourceQueryTask {
     private QueryTask dataSource;
-    public QuerySourceTask(TaskContext taskContext, AbstractQueryTask dataSource) {
-        super(taskContext);
+    public QuerySourceTask(String nameOfParent, TaskContext taskContext, AbstractQueryTask dataSource) {
+        super(taskContext, nameOfParent);
         super.addSubTask(dataSource);
         this.dataSource = dataSource;
     }
     //
     @Override
     protected Object doTask(TaskContext taskContext) throws Throwable {
-        return null;
+        return this.dataSource.getValue();
     }
 }

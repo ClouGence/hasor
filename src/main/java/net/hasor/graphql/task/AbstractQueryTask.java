@@ -16,12 +16,10 @@
 package net.hasor.graphql.task;
 import net.hasor.core.future.BasicFuture;
 import net.hasor.core.utils.StringUtils;
+import net.hasor.graphql.TaskContext;
 import net.hasor.graphql.task.source.RouteSourceTask;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 /**
  * 任务
@@ -39,6 +37,9 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
     }
     protected TaskContext getTaskContext() {
         return this.taskContext;
+    }
+    protected List<AbstractQueryTask> getSubList() {
+        return Collections.unmodifiableList(this.subList);
     }
     //
     public void addSubTask(AbstractQueryTask subTask) {

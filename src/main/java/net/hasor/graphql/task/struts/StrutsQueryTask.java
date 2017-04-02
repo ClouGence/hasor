@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.graphql.task.struts;
+import net.hasor.graphql.TaskContext;
 import net.hasor.graphql.task.AbstractQueryTask;
-import net.hasor.graphql.task.TaskContext;
 /**
  *
  * @author 赵永春(zyc@hasor.net)

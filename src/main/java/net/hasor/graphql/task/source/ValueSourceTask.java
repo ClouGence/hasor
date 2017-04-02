@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.graphql.task.source;
+import net.hasor.graphql.TaskContext;
 import net.hasor.graphql.dsl.domain.ValueType;
-import net.hasor.graphql.task.TaskContext;
 /**
- *
+ * 固定值，任务。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class ValueSourceTask extends SourceQueryTask {
     private Object    value;
     private ValueType valueType;
-    public ValueSourceTask(TaskContext taskContext, Object value, ValueType valueType) {
-        super(taskContext);
+    public ValueSourceTask(String nameOfParent, TaskContext taskContext, Object value, ValueType valueType) {
+        super(taskContext, nameOfParent);
         this.value = value;
         this.valueType = valueType;
     }

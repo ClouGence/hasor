@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.graphql.task.struts;
-import net.hasor.graphql.task.QueryTask;
-import net.hasor.graphql.task.TaskContext;
+import net.hasor.graphql.ObjectResult;
+import net.hasor.graphql.TaskContext;
+import net.hasor.graphql.result.ObjectModel;
 import net.hasor.graphql.task.source.SourceQueryTask;
 
 import java.util.ArrayList;
@@ -28,23 +29,27 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 public class ObjectStrutsTask extends StrutsQueryTask {
-    private List<String>           fieldList = new ArrayList<String>();
-    private Map<String, QueryTask> dataMap   = new HashMap<String, QueryTask>();
+    private List<String>                 fieldList = new ArrayList<String>();
+    private Map<String, SourceQueryTask> dataMap   = new HashMap<String, SourceQueryTask>();
     //
     public ObjectStrutsTask(TaskContext taskContext) {
         super(taskContext);
     }
     //
     public void addField(String name, SourceQueryTask dataSource) {
-        FieldStrutsTask fieldStrutsTask = new FieldStrutsTask(this.getTaskContext(), name, dataSource);
-        //
         this.fieldList.add(name);
-        this.dataMap.put(name, fieldStrutsTask);
-        super.addSubTask(fieldStrutsTask);
+        this.dataMap.put(name, dataSource);
+        super.addSubTask(dataSource);
     }
     //
     @Override
-    protected Object doTask(TaskContext taskContext) throws Throwable {
-        return null;
+    protected ObjectResult doTask(TaskContext taskContext) throws Throwable {
+        Map<String, Object> objectData = new HashMap<String, Object>();
+        for (String fieldName : this.fieldList) {
+            SourceQueryTask task = this.dataMap.get(fieldName);
+            Object taskValue = task.getValue();
+            objectData.put(fieldName, taskValue);
+        }
+        return new ObjectModel(this.fieldList, objectData);
     }
 }

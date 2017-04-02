@@ -14,22 +14,62 @@
  * limitations under the License.
  */
 package net.hasor.graphql.task.struts;
-import net.hasor.graphql.task.TaskContext;
+import net.hasor.graphql.QueryResult;
+import net.hasor.graphql.TaskContext;
+import net.hasor.graphql.result.ValueModel;
+import net.hasor.graphql.task.TaskUtils;
+import net.hasor.graphql.task.source.SourceQueryTask;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class ValueStrutsTask extends StrutsQueryTask {
-    private FieldStrutsTask dataSource;
-    public ValueStrutsTask(TaskContext taskContext, FieldStrutsTask dataSource) {
+    private String          fieldName;
+    private SourceQueryTask dataSource;
+    public ValueStrutsTask(TaskContext taskContext, String fieldName, SourceQueryTask dataSource) {
         super(taskContext);
+        this.fieldName = fieldName;
         this.dataSource = dataSource;
         super.addSubTask(dataSource);
     }
     //
     @Override
-    protected Object doTask(TaskContext taskContext) throws Throwable {
-        return null;
+    protected QueryResult doTask(TaskContext taskContext) throws Throwable {
+        Object val = this.dataSource.getValue();
+        if (isBasicType(val) || val.getClass() == String.class) {
+            //
+        } else {
+            val = TaskUtils.readProperty(val, this.fieldName);
+        }
+        //
+        return new ValueModel(val);
+    }
+    private boolean isBasicType(Object val) {
+        if (val == null) {
+            return true;
+        }
+        Class<?> aClass = val.getClass();
+        if (aClass.isPrimitive() || aClass == String.class) {
+            return true;
+        }
+        if (aClass == Boolean.class || aClass == Boolean.TYPE) {
+            return true;
+        } else if (aClass == Byte.class || aClass == Byte.TYPE) {
+            return true;
+        } else if (aClass == Short.class || aClass == Short.TYPE) {
+            return true;
+        } else if (aClass == Integer.class || aClass == Integer.TYPE) {
+            return true;
+        } else if (aClass == Long.class || aClass == Long.TYPE) {
+            return true;
+        } else if (aClass == Float.class || aClass == Float.TYPE) {
+            return true;
+        } else if (aClass == Double.class || aClass == Double.TYPE) {
+            return true;
+        } else if (aClass == Character.class || aClass == Character.TYPE) {
+            return true;
+        }
+        return false;
     }
 }

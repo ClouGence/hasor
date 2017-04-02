@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.graphql.task.struts;
-import net.hasor.graphql.task.TaskContext;
+import net.hasor.graphql.ListResult;
+import net.hasor.graphql.TaskContext;
+import net.hasor.graphql.result.ListModel;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
@@ -28,12 +34,26 @@ public class ListStrutsTask extends StrutsQueryTask {
         this.listBody = listBody;
     }
     //
-    public StrutsQueryTask getListBody() {
-        return this.listBody;
-    }
-    //
     @Override
-    protected Object doTask(TaskContext taskContext) throws Throwable {
-        return null;
+    protected ListResult doTask(TaskContext taskContext) throws Throwable {
+        Object value = this.listBody.getValue();
+        Collection<Object> listData = null;
+        if (value == null) {
+            listData = new ArrayList<Object>();
+        } else {
+            if (!(value instanceof Collection)) {
+                if (value.getClass().isArray()) {
+                    listData = new ArrayList<Object>();
+                    for (Object obj : (Object[]) value) {
+                        listData.add(obj);
+                    }
+                } else {
+                    listData = Arrays.asList(value);
+                }
+            } else {
+                listData = (Collection<Object>) value;
+            }
+        }
+        return new ListModel(listData);
     }
 }
