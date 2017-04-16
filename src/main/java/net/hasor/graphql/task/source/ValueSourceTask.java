@@ -16,22 +16,24 @@
 package net.hasor.graphql.task.source;
 import net.hasor.graphql.TaskContext;
 import net.hasor.graphql.dsl.domain.ValueType;
+import net.hasor.graphql.result.ValueModel;
+import net.hasor.graphql.task.AbstractQueryTask;
+import net.hasor.graphql.task.TaskType;
 /**
  * 固定值，任务。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ValueSourceTask extends SourceQueryTask {
+public class ValueSourceTask extends AbstractQueryTask {
     private Object    value;
     private ValueType valueType;
-    public ValueSourceTask(String nameOfParent, TaskContext taskContext, Object value, ValueType valueType) {
-        super(taskContext, nameOfParent);
+    public ValueSourceTask(String nameOfParent, Object value, ValueType valueType) {
+        super(nameOfParent, TaskType.V, null);
         this.value = value;
         this.valueType = valueType;
     }
-    //
     @Override
-    protected Object doTask(TaskContext taskContext) throws Throwable {
-        return this.value;
+    public Object doTask(TaskContext taskContext, Object inData) throws Throwable {
+        return new ValueModel(this.value);
     }
 }

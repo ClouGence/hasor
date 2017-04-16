@@ -3,17 +3,17 @@ import net.hasor.graphql.ListResult;
 import net.hasor.graphql.ObjectResult;
 import net.hasor.graphql.ValueResult;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 /**
  * Created by yongchun.zyc on 2017/3/29.
  */
-public class ObjectModel implements ObjectResult {
+public class ObjectModel extends HashMap<String, Object> implements ObjectResult {
     private List<String>        sortList;
     private Map<String, Object> objectData;
-    public ObjectModel(List<String> sortList, Map<String, Object> objectData) {
+    public ObjectModel(List<String> sortList) {
         this.sortList = sortList;
-        this.objectData = objectData;
     }
     @Override
     public int getFieldSize() {

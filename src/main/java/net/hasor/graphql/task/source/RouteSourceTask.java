@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.graphql.task.source;
-import net.hasor.core.utils.BeanUtils;
 import net.hasor.graphql.TaskContext;
 import net.hasor.graphql.task.AbstractQueryTask;
+import net.hasor.graphql.task.TaskType;
 import net.hasor.graphql.task.TaskUtils;
 
 import java.util.Arrays;
@@ -26,42 +26,38 @@ import java.util.List;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class RouteSourceTask extends SourceQueryTask {
-    private String            routeExpression;
-    private AbstractQueryTask dataSource;
-    public RouteSourceTask(String nameOfParent, TaskContext taskContext, AbstractQueryTask dataSource, String routeExpression) {
-        super(taskContext, nameOfParent);
-        if (dataSource != null) {
-            super.addSubTask(dataSource);
-        }
-        this.routeExpression = routeExpression;
-        this.dataSource = dataSource;
+public class RouteSourceTask extends AbstractQueryTask {
+    private String routeExpression;
+    public RouteSourceTask(String nameOfParent, AbstractQueryTask dataSource, boolean isFormater) {
+        super(nameOfParent, (isFormater ? TaskType.F : TaskType.V), dataSource);
     }
     //
-    public String getRouteExpression() {
-        return this.routeExpression;
+    //
+    //
+    public void setRouteExpression(String routeExpression) {
+        this.routeExpression = routeExpression;
     }
     //
     @Override
-    protected Object doTask(TaskContext taskContext) throws Throwable {
-        String routeExpression = this.getRouteExpression();
-        String[] routePath = routeExpression.split("\\.");
-        if (this.dataSource == null) {
-            // 利用 nameOfParent 处理 同级别字段引用
+    public Object doTask(TaskContext taskContext, Object inData) throws Throwable {
+        String[] routePath = this.routeExpression.split("\\.");
+        //
+        Object dataSource = null;
+        if (inData == null) {
             List<AbstractQueryTask> subList = super.getSubList();
             for (AbstractQueryTask task : subList) {
                 if (!task.isFinish()) {
                     continue;
                 }
-                String nameOfParent = (String) BeanUtils.readPropertyOrField(task, "nameOfParent");
+                String nameOfParent = task.getNameOfParent();
                 if (routePath[0].equals(nameOfParent)) {
                     routePath = Arrays.copyOfRange(routePath, 1, routePath.length);
                     return evalRoute(task.getValue(), routePath);
                 }
             }
-            return taskContext.get(routeExpression);
+            return taskContext.get(this.routeExpression);
         }
-        return evalRoute(this.dataSource.getValue(), routePath);
+        return this.evalRoute(inData, routePath);
     }
     private Object evalRoute(final Object data, final String[] routePath) throws Exception {
         // demo : aaa.bbb.name

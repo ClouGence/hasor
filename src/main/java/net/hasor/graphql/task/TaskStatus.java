@@ -15,7 +15,7 @@
  */
 package net.hasor.graphql.task;
 /**
- *
+ * 任务状态（取值 和 结构 类型的节点才会有效）
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

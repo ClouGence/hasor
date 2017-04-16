@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.task.struts;
-import net.hasor.graphql.TaskContext;
-import net.hasor.graphql.task.AbstractQueryTask;
+package net.hasor.graphql.task;
 /**
- *
+ * 任务类型
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public abstract class StrutsQueryTask extends AbstractQueryTask {
-    public StrutsQueryTask(TaskContext taskContext) {
-        super(taskContext);
-    }
+public enum TaskType {
+    /**结构*/S,//
+    /**取值*/V,//
+    /**格式*/F
 }

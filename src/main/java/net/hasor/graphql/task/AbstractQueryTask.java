@@ -22,89 +22,67 @@ import net.hasor.graphql.task.source.RouteSourceTask;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 /**
- * 任务
+ * QL String：
+ * <pre>
+ {
+ "userInfo" :  {
+ "info" : findUserByID ("userID" = 12345) {
+ "name",
+ "age",
+ "nick"
+ },
+ "nick" : info.nick
+ },
+ "source" : "GraphQL"
+ }
+ </pre>
+ * Task Tree :
+ * <pre>
+ [ S ] ObjectStrutsTask           | {
+ [ S ]  -> ObjectStrutsTask       |     "userInfo" :  {
+ [ S ]    -> ObjectStrutsTask     |         "info" : \
+ [ V ]      -> CallerSourceTask   |                  findUserByID \
+ [ V ]        -> ValueSourceTask  |                               ("userID" = 12345) {
+ [ F ]      -> RouteSourceTask    |           "name",
+ [ F ]      -> RouteSourceTask    |           "age",
+ [ F ]      -> RouteSourceTask    |           "nick"
+ |                                |         },
+ [ V ]    -> RouteSourceTask      |         "nick" : info.nick
+ [ S ]      -> ObjectStrutsTask   |           "info" : findUserByID("userID" = 12345) { ......
+ |                                |            ......
+ |                                |     },
+ [ V ]  -> ValueSourceTask        |     "source" : "GraphQL"
+ |                                | }
+ </pre>
+ * 任务结构特点：
+ *  1. 任何一个节点都可以有多个子节点。
+ *  2. 任何一个节点的执行(可执行节点)，在执行前都必须依赖所有子节点(可执行节点)的顺利执行完毕。
+ *  3. 节点分为三种类型 -> S：结构节点、F：格式化、V：取值。
+ *  4. S结构性节点，可以依赖一另一个 S 节点，或者 V 节点。用作结构的数据源 DataSource。
+ *  5. F 节点的初始状态为：Complete、其它类型节点初始状态为：Prepare
+ *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public abstract class AbstractQueryTask extends Observable implements QueryTask {
-    private List<AbstractQueryTask> subList     = new ArrayList<AbstractQueryTask>();
-    private TaskStatus              taskStatus  = TaskStatus.Prepare;
-    private BasicFuture<Object>     result      = new BasicFuture<Object>();
-    private TaskContext             taskContext = null;
+    protected List<AbstractQueryTask> subList      = new ArrayList<AbstractQueryTask>();
+    private   String                  nameOfParent = null;
+    private   TaskStatus              taskStatus   = null;
+    private   TaskType                taskType     = null;
+    private   BasicFuture<Object>     result       = new BasicFuture<Object>();
+    private   AbstractQueryTask       dataSource   = null;
     //
-    public AbstractQueryTask(TaskContext taskContext) {
-        this.taskContext = taskContext;
-    }
-    protected TaskContext getTaskContext() {
-        return this.taskContext;
-    }
-    protected List<AbstractQueryTask> getSubList() {
-        return Collections.unmodifiableList(this.subList);
-    }
-    //
-    public void addSubTask(AbstractQueryTask subTask) {
-        subTask.addObserver(new Observer() {
-            public void update(Observable o, Object arg) {
-                // .子任务执行失败，整体失败
-                if (TaskStatus.Failed.equals(arg)) {
-                    updateStatus(TaskStatus.Failed);
-                    return;
-                }
-                // .尝试跳入 Waiting 阶段
-                if (TaskStatus.Complete.equals(arg)) {
-                    for (AbstractQueryTask task : subList) {
-                        if (!task.isFinish()) {
-                            return;
-                        }
-                    }
-                    updateStatus(TaskStatus.Waiting);//所有子任务Finish，那么进入 Waiting
-                }
-            }
-        });
-        this.subList.add(subTask);
-    }
-    /* 子节点中如果存在 Routel类型的任务，自动让其它非 Route 类型的任务作为自己的子任务（因为 Route 需要依赖到当前节点） */
-    AbstractQueryTask fixRouteDep() {
-        List<AbstractQueryTask> routeList = new ArrayList<AbstractQueryTask>();
-        List<AbstractQueryTask> nonRouteList = new ArrayList<AbstractQueryTask>();
-        for (AbstractQueryTask task : this.subList) {
-            task.fixRouteDep();
-            if (task instanceof RouteSourceTask) {
-                routeList.add(task);
-            } else {
-                nonRouteList.add(task);
-            }
-        }
-        for (AbstractQueryTask task : routeList) {
-            for (AbstractQueryTask subTask : nonRouteList) {
-                task.addSubTask(subTask);
-            }
-        }
-        return this;
-    }
-    //
-    public boolean isWaiting() {
-        return TaskStatus.Waiting.equals(this.taskStatus);
-    }
-    public boolean isFinish() {
-        return TaskStatus.Complete.equals(this.taskStatus) || TaskStatus.Failed.equals(this.taskStatus);
-    }
-    private void updateStatus(TaskStatus taskStatus) {
-        try {
-            this.taskStatus = taskStatus;
-            if (taskStatus == TaskStatus.Prepare) {
-                for (AbstractQueryTask task : this.subList) {
-                    if (!task.isFinish()) {
-                        return;/* 所有子任务都完成，才进入 Waiting */
-                    }
-                }
-                this.updateStatus(TaskStatus.Waiting);
-            }
-        } finally {
-            this.setChanged();
-            this.notifyObservers(this.taskStatus);
+    public AbstractQueryTask(String nameOfParent, TaskType taskType, AbstractQueryTask dataSource) {
+        this.nameOfParent = nameOfParent;
+        this.taskType = taskType;
+        this.taskStatus = TaskStatus.Prepare;
+        if (dataSource != null) {
+            this.addSubTask(dataSource);
+            this.dataSource = dataSource;
         }
     }
+    //
+    //
     //
     /** 打印执行任务树 */
     public String printTaskTree(boolean detail) {
@@ -117,7 +95,6 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
         }
         return builder.toString();
     }
-    //
     private static String genDepthStr(int depth) {
         return StringUtils.leftPad("", depth * 2, " ");
     }
@@ -151,8 +128,8 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
         }
         return result;
     }
-    private static String taskStatus(AbstractQueryTask abstractQueryTask) {
-        return StringUtils.center(abstractQueryTask.taskStatus.name(), maxStatusStringLength, " ");
+    private static String taskStatus(AbstractQueryTask task) {
+        return task.getTaskType().name() + ":" + StringUtils.center(task.getTaskStatus().name(), maxStatusStringLength, " ");
     }
     private static int maxStatusStringLength = 0;
 
@@ -166,6 +143,16 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
         maxStatusStringLength = maxStatusStringLength + 2;
     }
     //
+    //
+    //
+    /** 节点在父关系中的名称。 */
+    public String getNameOfParent() {
+        return nameOfParent;
+    }
+    /** 获取所有子任务 */
+    protected List<AbstractQueryTask> getSubList() {
+        return Collections.unmodifiableList(this.subList);
+    }
     /** 获取所有待执行的任务列表。 */
     public List<AbstractQueryTask> getAllTask() {
         return addToAllTask(this, new ArrayList<AbstractQueryTask>());
@@ -183,24 +170,129 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
         return allTask;
     }
     //
+    //
+    //
+    /** 添加子任务 */
+    public void addSubTask(AbstractQueryTask subTask) {
+        if (this.subList.contains(subTask)) {
+            return;
+        }
+        subTask.addObserver(new Observer() {
+            public void update(Observable o, Object arg) {
+                // .子任务执行失败，整体失败
+                if (TaskStatus.Failed.equals(arg)) {
+                    updateStatus(TaskStatus.Failed);
+                    return;
+                }
+                // .尝试跳入 Waiting 阶段
+                if (TaskStatus.Complete.equals(arg)) {
+                    for (AbstractQueryTask task : subList) {
+                        if (!task.isFinish()) {
+                            return;
+                        }
+                    }
+                    updateStatus(TaskStatus.Waiting);//所有子任务Finish，那么进入 Waiting
+                }
+            }
+        });
+        this.subList.add(subTask);
+    }
+    /** 节点类型，SVF（S：结构，V：取值，F：格式） */
+    public boolean isRunTask() {
+        return TaskType.S.equals(this.taskType) || TaskType.V.equals(this.taskType);
+    }
+    /** 是否等待调度：status = Waiting */
+    public boolean isWaiting() {
+        return TaskStatus.Waiting.equals(this.taskStatus);
+    }
+    /** 节点是否执行完毕：status = Complete | Failed */
+    public boolean isFinish() {
+        return TaskStatus.Complete.equals(this.taskStatus) || TaskStatus.Failed.equals(this.taskStatus);
+    }
+    /** 任务类型，任务创建之后不可改变。 */
+    public TaskType getTaskType() {
+        return this.taskType;
+    }
+    public TaskStatus getTaskStatus() {
+        return this.taskStatus;
+    }
+    protected void updateStatus(TaskStatus taskStatus) {
+        try {
+            this.taskStatus = taskStatus;
+            if (taskStatus == TaskStatus.Prepare) {
+                for (AbstractQueryTask task : this.subList) {
+                    if (!task.isFinish()) {
+                        return;/* 所有子任务都完成，才进入 Waiting */
+                    }
+                }
+                this.updateStatus(TaskStatus.Waiting);
+            }
+        } finally {
+            this.setChanged();
+            this.notifyObservers(this.taskStatus);
+        }
+    }
+    //
+    //
+    //
     @Override
     public final Object getValue() throws ExecutionException, InterruptedException {
-        return this.result.get();
+        if (this.result.isDone() && !TaskType.F.equals(this.taskType)) {
+            return this.result.get();
+        }
+        throw new IllegalStateException("result is not ready.");
     }
-    @Override
-    public final void run() {
+    public void run(TaskContext taskContext, Object inData) {
+        //
+        // 1.格式化节点：只更新状态。
+        if (TaskType.F.equals(this.getTaskType())) {
+            this.updateStatus(TaskStatus.Complete);
+            return;
+        }
+        //
         if (!this.isWaiting()) {
             return;
         }
-        try {
-            this.updateStatus(TaskStatus.Running);
-            Object taskResult = this.doTask(this.taskContext);
-            this.result.completed(taskResult);
-            this.updateStatus(TaskStatus.Complete);
-        } catch (Throwable e) {
-            this.updateStatus(TaskStatus.Failed);
-            this.result.failed(e);
+        synchronized (this) {
+            try {
+                if (this.dataSource != null) {
+                    inData = this.dataSource.getValue();
+                }
+                //
+                this.updateStatus(TaskStatus.Running);
+                Object taskResult = this.doTask(taskContext, inData);
+                this.result.completed(taskResult);
+                this.updateStatus(TaskStatus.Complete);
+            } catch (Throwable e) {
+                this.updateStatus(TaskStatus.Failed);
+                this.result.failed(e);
+            }
         }
+        return;
+    }
+    /** 执行任务*/
+    public abstract Object doTask(TaskContext taskContext, Object inData) throws Throwable;
+    //
+    //
+    //
+    /* 子节点中如果存在 Routel类型的任务，自动让其它非 Route 类型的任务作为自己的子任务（因为 Route 需要依赖到当前节点） */
+    AbstractQueryTask fixRouteDep() {
+        List<AbstractQueryTask> routeList = new ArrayList<AbstractQueryTask>();
+        List<AbstractQueryTask> nonRouteList = new ArrayList<AbstractQueryTask>();
+        for (AbstractQueryTask task : this.subList) {
+            task.fixRouteDep();
+            if (task instanceof RouteSourceTask) {
+                routeList.add(task);
+            } else {
+                nonRouteList.add(task);
+            }
+        }
+        for (AbstractQueryTask task : routeList) {
+            for (AbstractQueryTask subTask : nonRouteList) {
+                task.addSubTask(subTask);
+            }
+        }
+        return this;
     }
     /** 叶子节点的任务，跳入 Waiting 阶段 */
     public final void initTask() {
@@ -211,6 +303,5 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
             }
         }
     }
-    /** 执行任务*/
-    protected abstract Object doTask(TaskContext taskContext) throws Throwable;
+    //
 }

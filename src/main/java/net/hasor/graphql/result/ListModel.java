@@ -4,15 +4,11 @@ import net.hasor.graphql.ObjectResult;
 import net.hasor.graphql.QueryResult;
 import net.hasor.graphql.ValueResult;
 
-import java.util.Collection;
+import java.util.ArrayList;
 /**
  * Created by yongchun.zyc on 2017/3/29.
  */
-public class ListModel implements ListResult {
-    private Collection<Object> dataList;
-    public ListModel(Collection<Object> dataList) {
-        this.dataList = dataList;
-    }
+public class ListModel extends ArrayList<Object> implements ListResult {
     @Override
     public int getSize() {
         return 0;

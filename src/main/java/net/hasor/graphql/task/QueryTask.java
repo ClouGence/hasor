@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutionException;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface QueryTask extends Runnable {
+public interface QueryTask {
     /** 打印执行任务树 */
     public String printTaskTree(boolean detail);
 

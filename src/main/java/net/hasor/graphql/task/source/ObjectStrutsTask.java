@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.task.struts;
-import net.hasor.graphql.ObjectResult;
+package net.hasor.graphql.task.source;
 import net.hasor.graphql.TaskContext;
 import net.hasor.graphql.result.ObjectModel;
-import net.hasor.graphql.task.source.SourceQueryTask;
+import net.hasor.graphql.task.AbstractQueryTask;
+import net.hasor.graphql.task.TaskType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,28 +28,35 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ObjectStrutsTask extends StrutsQueryTask {
-    private List<String>                 fieldList = new ArrayList<String>();
-    private Map<String, SourceQueryTask> dataMap   = new HashMap<String, SourceQueryTask>();
-    //
-    public ObjectStrutsTask(TaskContext taskContext) {
-        super(taskContext);
+public class ObjectStrutsTask extends AbstractQueryTask {
+    private List<String>                   fieldList = new ArrayList<String>();
+    private Map<String, AbstractQueryTask> dataMap   = new HashMap<String, AbstractQueryTask>();
+    public ObjectStrutsTask(String nameOfParent, TaskType taskType, AbstractQueryTask dataSource) {
+        super(nameOfParent, taskType, dataSource);
     }
     //
-    public void addField(String name, SourceQueryTask dataSource) {
+    //
+    //
+    public void addField(String name, AbstractQueryTask dataSource) {
         this.fieldList.add(name);
         this.dataMap.put(name, dataSource);
         super.addSubTask(dataSource);
     }
     //
     @Override
-    protected ObjectResult doTask(TaskContext taskContext) throws Throwable {
-        Map<String, Object> objectData = new HashMap<String, Object>();
+    public Object doTask(TaskContext taskContext, Object inData) throws Throwable {
+        ObjectModel objectData = new ObjectModel(this.fieldList);
         for (String fieldName : this.fieldList) {
-            SourceQueryTask task = this.dataMap.get(fieldName);
-            Object taskValue = task.getValue();
+            AbstractQueryTask task = this.dataMap.get(fieldName);
+            Object taskValue = null;
+            if (TaskType.F.equals(task.getTaskType())) {
+                taskValue = task.doTask(taskContext, inData);
+            } else {
+                taskValue = task.getValue();
+            }
             objectData.put(fieldName, taskValue);
         }
-        return new ObjectModel(this.fieldList, objectData);
+        //
+        return objectData;
     }
 }

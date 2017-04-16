@@ -13,31 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.task.struts;
-import net.hasor.graphql.QueryResult;
+package net.hasor.graphql.task.source;
 import net.hasor.graphql.TaskContext;
 import net.hasor.graphql.result.ValueModel;
 import net.hasor.graphql.task.AbstractQueryTask;
+import net.hasor.graphql.task.TaskType;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class OriginalStrutsTask extends StrutsQueryTask {
-    private AbstractQueryTask dataSource;
-    private String            nameOfParent;
-    public OriginalStrutsTask(String nameOfParent, TaskContext taskContext, AbstractQueryTask dataSource) {
-        super(taskContext);
-        super.addSubTask(dataSource);
-        this.dataSource = dataSource;
-        this.nameOfParent = nameOfParent;
+public class OriginalSourceTask extends AbstractQueryTask {
+    public OriginalSourceTask(String nameOfParent, AbstractQueryTask dataSource) {
+        super(nameOfParent, TaskType.V, dataSource);
     }
-    public String getNameOfParent() {
-        return nameOfParent;
-    }
-    //
     @Override
-    protected QueryResult doTask(TaskContext taskContext) throws Throwable {
-        return new ValueModel(dataSource.getValue());
+    public Object doTask(TaskContext taskContext, Object inData) throws Throwable {
+        return new ValueModel(inData);
     }
 }

@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.graphql.task;
-import net.hasor.graphql.TaskContext;
 import net.hasor.graphql.dsl.domain.*;
 import net.hasor.graphql.task.source.*;
-import net.hasor.graphql.task.struts.ListStrutsTask;
-import net.hasor.graphql.task.struts.ObjectStrutsTask;
-import net.hasor.graphql.task.struts.OriginalStrutsTask;
-import net.hasor.graphql.task.struts.ValueStrutsTask;
 
 import java.util.List;
 /**
@@ -29,10 +24,6 @@ import java.util.List;
  * @version : 2017-03-23
  */
 public class TaskParser {
-    private TaskContext taskContext;
-    public TaskParser(TaskContext taskContext) {
-        this.taskContext = taskContext;
-    }
     //
     /** 解析查询模型，将其转换成为执行任务树 */
     public QueryTask doParser(QueryDomain domain) {
@@ -49,43 +40,49 @@ public class TaskParser {
         switch (returnType) {
         case Object: {
             List<String> fieldNames = domain.getFieldNames();
-            ObjectStrutsTask ost = new ObjectStrutsTask(this.taskContext);
+            ObjectStrutsTask ost = new ObjectStrutsTask(nameOfParent, TaskType.S, parentSource);
             for (String name : fieldNames) {
                 GraphValue domainField = domain.getField(name);
-                SourceQueryTask sourceTask = this.parserSource(name, parentSource, domainField);
+                AbstractQueryTask sourceTask = this.parserSource(name, parentSource, domainField);
                 ost.addField(name, sourceTask);
             }
             return ost;
         }
         case ListObject: {
             List<String> fieldNames = domain.getFieldNames();
-            ObjectStrutsTask ost = new ObjectStrutsTask(this.taskContext);
+            ObjectStrutsTask ost = new ObjectStrutsTask(nameOfParent, TaskType.F, parentSource);
             for (String name : fieldNames) {
                 GraphValue domainField = domain.getField(name);
-                SourceQueryTask sourceTask = this.parserSource(name, parentSource, domainField);
+                AbstractQueryTask sourceTask = this.parserSource(name, parentSource, domainField);
                 ost.addField(name, sourceTask);
             }
-            return new ListStrutsTask(this.taskContext, ost);
+            //
+            ListStrutsTask lst = new ListStrutsTask(nameOfParent, parentSource);
+            lst.setListBody(ost);
+            return lst;
         }
         case ListValue: {
             List<String> fieldNames = domain.getFieldNames();
             String fieldName = fieldNames.get(0);
             GraphValue domainField = domain.getField(fieldName);
-            SourceQueryTask sourceTask = this.parserSource(fieldName, parentSource, domainField);
-            return new ListStrutsTask(this.taskContext, new ValueStrutsTask(this.taskContext, fieldName, sourceTask));
+            AbstractQueryTask sourceTask = this.parserSource(fieldName, parentSource, domainField);
+            //
+            ListStrutsTask lst = new ListStrutsTask(nameOfParent, parentSource);
+            lst.setListBody(sourceTask);
+            return lst;
         }
         case Original:
-            return new OriginalStrutsTask(nameOfParent, this.taskContext, parentSource);
+            return new OriginalSourceTask(nameOfParent, parentSource);
         default:
             throw new RuntimeException("");
         }
         //
     }
-    private SourceQueryTask parserUDF(String nameOfParent, AbstractQueryTask parentSource, GraphUDF graphUDF) {
+    private AbstractQueryTask parserUDF(String nameOfParent, AbstractQueryTask parentSource, GraphUDF graphUDF) {
         if (graphUDF == null) {
             return null;
         }
-        CallerSourceTask caller = new CallerSourceTask(nameOfParent, this.taskContext, graphUDF.getName());
+        CallerSourceTask caller = new CallerSourceTask(nameOfParent, graphUDF.getName());
         List<String> paramNames = graphUDF.getParamNames();
         for (String name : paramNames) {
             GraphValue field = graphUDF.getParam(name);
@@ -93,23 +90,24 @@ public class TaskParser {
         }
         return caller;
     }
-    private SourceQueryTask parserSource(String nameOfParent, AbstractQueryTask parentSource, GraphValue defSource) {
+    private AbstractQueryTask parserSource(String nameOfParent, AbstractQueryTask parentSource, GraphValue defSource) {
         if (defSource instanceof QueryValue) {
             //
             QueryValue queryValue = (QueryValue) defSource;
             QueryDomain queryDomain = queryValue.getQueryDomain();
-            AbstractQueryTask queryTask = this.doParser(nameOfParent, parentSource, queryDomain);
-            return new QuerySourceTask(nameOfParent, this.taskContext, queryTask);
+            return this.doParser(nameOfParent, parentSource, queryDomain);
         } else if (defSource instanceof FixedValue) {
             //
             FixedValue varValue = (FixedValue) defSource;
             Object value = varValue.getValue();
             ValueType valueType = varValue.getValueType();
-            return new ValueSourceTask(nameOfParent, this.taskContext, value, valueType);
+            return new ValueSourceTask(nameOfParent, value, valueType);
         } else if (defSource instanceof RouteValue) {
             //
-            RouteValue routeValue = (RouteValue) defSource;
-            return new RouteSourceTask(nameOfParent, this.taskContext, parentSource, routeValue.getRouteExpression());
+            boolean isFormater = parentSource != null;
+            RouteSourceTask rst = new RouteSourceTask(nameOfParent, parentSource, isFormater);
+            rst.setRouteExpression(((RouteValue) defSource).getRouteExpression());
+            return rst;
         }
         throw new RuntimeException("");
     }
