@@ -13,22 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.task.source;
+package net.hasor.graphql.runtime.task;
 import net.hasor.graphql.TaskContext;
+import net.hasor.graphql.dsl.domain.ValueType;
 import net.hasor.graphql.result.ValueModel;
-import net.hasor.graphql.task.AbstractQueryTask;
-import net.hasor.graphql.task.TaskType;
+import net.hasor.graphql.runtime.AbstractQueryTask;
+import net.hasor.graphql.runtime.TaskType;
 /**
- *
+ * 固定值，任务。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class OriginalSourceTask extends AbstractQueryTask {
-    public OriginalSourceTask(String nameOfParent, AbstractQueryTask dataSource) {
-        super(nameOfParent, TaskType.V, dataSource);
+public class ValueSourceTask extends AbstractQueryTask {
+    private Object    value;
+    private ValueType valueType;
+    public ValueSourceTask(String nameOfParent, Object value, ValueType valueType) {
+        super(nameOfParent, TaskType.V, null);
+        this.value = value;
+        this.valueType = valueType;
     }
     @Override
     public Object doTask(TaskContext taskContext, Object inData) throws Throwable {
-        return new ValueModel(inData);
+        return new ValueModel(this.value);
     }
 }

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.task;
+package net.hasor.graphql.runtime;
 import net.hasor.core.future.BasicFuture;
 import net.hasor.core.utils.StringUtils;
 import net.hasor.graphql.TaskContext;
-import net.hasor.graphql.task.source.RouteSourceTask;
+import net.hasor.graphql.runtime.task.RouteSourceTask;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;

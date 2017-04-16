@@ -2,9 +2,9 @@ package net.test.hasor.graphql;
 import net.hasor.graphql.TaskContext;
 import net.hasor.graphql.UDF;
 import net.hasor.graphql.dsl.GraphQuery;
-import net.hasor.graphql.task.AbstractQueryTask;
-import net.hasor.graphql.task.QueryTask;
-import net.hasor.graphql.task.TaskParser;
+import net.hasor.graphql.runtime.AbstractQueryTask;
+import net.hasor.graphql.runtime.QueryTask;
+import net.hasor.graphql.runtime.TaskParser;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Created by yongchun.zyc on 2017/3/21.
  */
-public class TaskTest {
+public class CallTaskTest {
     @Test
     public void main1() {
         GraphQuery graphQuery = new GraphQLTest().main1();

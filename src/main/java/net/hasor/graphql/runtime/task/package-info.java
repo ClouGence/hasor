@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 /**
- * Simple GraphQL，执行模型。
+ * 可以提供查询结构关系组织的，Simple GraphQL 任务。
  */
 @AopIgnore
-package net.hasor.graphql.task;
+package net.hasor.graphql.runtime.task;
 import net.hasor.core.container.AopIgnore;

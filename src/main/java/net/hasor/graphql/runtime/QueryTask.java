@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.task;
+package net.hasor.graphql.runtime;
+import java.util.concurrent.ExecutionException;
 /**
- * 任务状态（取值 和 结构 类型的节点才会有效）
+ *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public enum TaskStatus {
-    Prepare,    // 准备阶段
-    //
-    Waiting,    // 等待调度
-    Running,    // 执行中
-    //
-    Complete,   // 执行成功
-    Failed,     // 执行失败
+public interface QueryTask {
+    /** 打印执行任务树 */
+    public String printTaskTree(boolean detail);
+
+    /**获取执行结果，如果任务尚未调度，那么会抛出异常。*/
+    public Object getValue() throws ExecutionException, InterruptedException;
+
+    /** 任务节点是否执行完毕(包含成功和失败) */
+    public boolean isFinish();
+
+    /** 任务是否准备就绪，以等待分配执行资源 */
+    public boolean isWaiting();
 }

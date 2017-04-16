@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.task;
+package net.hasor.graphql.runtime;
 /**
  * 任务类型
  * @author 赵永春(zyc@hasor.net)

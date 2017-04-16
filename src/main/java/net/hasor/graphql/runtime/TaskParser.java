@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.task;
+package net.hasor.graphql.runtime;
 import net.hasor.graphql.dsl.domain.*;
-import net.hasor.graphql.task.source.*;
+import net.hasor.graphql.runtime.task.*;
 
 import java.util.List;
 /**

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.task;
+package net.hasor.graphql.runtime;
 import net.hasor.core.utils.BeanUtils;
 import net.hasor.graphql.ObjectResult;
 

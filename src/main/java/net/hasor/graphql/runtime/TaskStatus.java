@@ -13,9 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.graphql.runtime;
 /**
- * 可以提供查询结构关系组织的，Simple GraphQL 任务。
+ * 任务状态（取值 和 结构 类型的节点才会有效）
+ * @author 赵永春(zyc@hasor.net)
+ * @version : 2017-03-23
  */
-@AopIgnore
-package net.hasor.graphql.task.source;
-import net.hasor.core.container.AopIgnore;
+public enum TaskStatus {
+    Prepare,    // 准备阶段
+    //
+    Waiting,    // 等待调度
+    Running,    // 执行中
+    //
+    Complete,   // 执行成功
+    Failed,     // 执行失败
+}

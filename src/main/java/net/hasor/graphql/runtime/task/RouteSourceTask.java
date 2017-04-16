@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.task.source;
+package net.hasor.graphql.runtime.task;
 import net.hasor.graphql.TaskContext;
-import net.hasor.graphql.task.AbstractQueryTask;
-import net.hasor.graphql.task.TaskType;
-import net.hasor.graphql.task.TaskUtils;
+import net.hasor.graphql.runtime.AbstractQueryTask;
+import net.hasor.graphql.runtime.TaskType;
+import net.hasor.graphql.runtime.TaskUtils;
 
 import java.util.Arrays;
 import java.util.List;
