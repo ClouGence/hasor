@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.graphql.runtime.task;
-import net.hasor.graphql.TaskContext;
-import net.hasor.graphql.result.ValueModel;
+import net.hasor.graphql.QueryContext;
 import net.hasor.graphql.runtime.AbstractQueryTask;
 import net.hasor.graphql.runtime.TaskType;
 /**
@@ -28,7 +27,7 @@ public class OriginalSourceTask extends AbstractQueryTask {
         super(nameOfParent, TaskType.V, dataSource);
     }
     @Override
-    public Object doTask(TaskContext taskContext, Object inData) throws Throwable {
-        return new ValueModel(inData);
+    public Object doTask(QueryContext taskContext, Object inData) throws Throwable {
+        return inData;
     }
 }

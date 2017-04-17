@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.graphql;
-import java.util.List;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface ObjectResult extends QueryResult {
-    public int getFieldSize();
+public interface QueryContext {
+    public UDF findUDF(String udfName);
 
-    public List<String> getFieldNames();
-
-    public boolean hasField(String fieldName);
-
-    public Object getOriResult(String fieldName);
-
-    public ValueResult getValueResult(String fieldName);
-
-    public ListResult getListResult(String fieldName);
-
-    public ObjectResult getObjectResult(String fieldName);
+    public Object get(String name);
 }

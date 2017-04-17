@@ -80,8 +80,8 @@ class BindingBuilderImpl implements BindingBuilder {
         return new QueryParam(this.getName(), this.queryDomain);
     }
     @Override
-    public GraphQuery buildQuery() {
-        return new GraphQueryImpl(this.queryDomain);
+    public QueryModel buildQuery() {
+        return new QueryModelImpl(this.queryDomain);
     }
     @Override
     public String getName() {

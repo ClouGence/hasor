@@ -16,7 +16,7 @@
 package net.hasor.graphql.runtime;
 import net.hasor.core.future.BasicFuture;
 import net.hasor.core.utils.StringUtils;
-import net.hasor.graphql.TaskContext;
+import net.hasor.graphql.QueryContext;
 import net.hasor.graphql.runtime.task.RouteSourceTask;
 
 import java.util.*;
@@ -24,17 +24,17 @@ import java.util.concurrent.ExecutionException;
 /**
  * QL String：
  * <pre>
- {
- "userInfo" :  {
- "info" : findUserByID ("userID" = 12345) {
- "name",
- "age",
- "nick"
- },
- "nick" : info.nick
- },
- "source" : "GraphQL"
- }
+ | {
+ |    "userInfo" :  {
+ |    "info" : findUserByID ("userID" = 12345) {
+ |            "name",
+ |            "age",
+ |             "nick"
+ |         },
+ |        "nick" : info.nick
+ |    },
+ |    "source" : "GraphQL"
+ | }
  </pre>
  * Task Tree :
  * <pre>
@@ -46,20 +46,26 @@ import java.util.concurrent.ExecutionException;
  [ F ]      -> RouteSourceTask    |           "name",
  [ F ]      -> RouteSourceTask    |           "age",
  [ F ]      -> RouteSourceTask    |           "nick"
- |                                |         },
+ .                                |         },
  [ V ]    -> RouteSourceTask      |         "nick" : info.nick
  [ S ]      -> ObjectStrutsTask   |           "info" : findUserByID("userID" = 12345) { ......
- |                                |            ......
- |                                |     },
+ .                                |            ......
+ .                                |     },
  [ V ]  -> ValueSourceTask        |     "source" : "GraphQL"
- |                                | }
+ .                                | }
  </pre>
  * 任务结构特点：
  *  1. 任何一个节点都可以有多个子节点。
- *  2. 任何一个节点的执行(可执行节点)，在执行前都必须依赖所有子节点(可执行节点)的顺利执行完毕。
- *  3. 节点分为三种类型 -> S：结构节点、F：格式化、V：取值。
- *  4. S结构性节点，可以依赖一另一个 S 节点，或者 V 节点。用作结构的数据源 DataSource。
- *  5. F 节点的初始状态为：Complete、其它类型节点初始状态为：Prepare
+ *  2. 任何一个节点的执行时都必须要求子节点全部 Complete。
+ *  3. 任何一个节点出现 Failed 其父节点，到根节点全部 Failed。
+ *  3. 节点分为三种类型 -> S：结构、F：格式、V：取值。
+ *       S 节点：用于处理数据结构，例如：Object、List、ListObject。一般情况下 S 节点都会涉及到一个数据源。
+ *       F 格式：用于处理 Object、List 中的数据元素。 F 节点的依赖节点是其所属 S 节点的数据源。
+ *       V 取值：用于处理 UDF 调用、固定值、取值操作。
+ *  4. S结构性节点，可以（但不是必须）依赖另一个 S 节点，或者 V 节点用作结构的数据源 DataSource。
+ *  5. F 节点在执行 run 方法时，只更新 Status -> Complete。
+ *  6. F 节点在执行 getValue 方法时会抛异常。
+ *  7. 任何一个节点开始的状态都是 Prepare，最末端的叶子节点为 Waiting
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
@@ -75,7 +81,7 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
     public AbstractQueryTask(String nameOfParent, TaskType taskType, AbstractQueryTask dataSource) {
         this.nameOfParent = nameOfParent;
         this.taskType = taskType;
-        this.taskStatus = TaskStatus.Prepare;
+        this.taskStatus = TaskStatus.Waiting;
         if (dataSource != null) {
             this.addSubTask(dataSource);
             this.dataSource = dataSource;
@@ -196,10 +202,7 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
             }
         });
         this.subList.add(subTask);
-    }
-    /** 节点类型，SVF（S：结构，V：取值，F：格式） */
-    public boolean isRunTask() {
-        return TaskType.S.equals(this.taskType) || TaskType.V.equals(this.taskType);
+        this.taskStatus = TaskStatus.Prepare;
     }
     /** 是否等待调度：status = Waiting */
     public boolean isWaiting() {
@@ -242,7 +245,7 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
         }
         throw new IllegalStateException("result is not ready.");
     }
-    public void run(TaskContext taskContext, Object inData) {
+    public void run(QueryContext taskContext, Object inData) {
         //
         // 1.格式化节点：只更新状态。
         if (TaskType.F.equals(this.getTaskType())) {
@@ -271,7 +274,7 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
         return;
     }
     /** 执行任务*/
-    public abstract Object doTask(TaskContext taskContext, Object inData) throws Throwable;
+    public abstract Object doTask(QueryContext taskContext, Object inData) throws Throwable;
     //
     //
     //
@@ -294,14 +297,4 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
         }
         return this;
     }
-    /** 叶子节点的任务，跳入 Waiting 阶段 */
-    public final void initTask() {
-        List<AbstractQueryTask> allTask = this.getAllTask();
-        for (AbstractQueryTask task : allTask) {
-            if (task.subList.isEmpty()) {
-                task.updateStatus(TaskStatus.Waiting);
-            }
-        }
-    }
-    //
 }

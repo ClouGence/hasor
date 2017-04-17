@@ -17,8 +17,8 @@ class FieldBindingBuilderImpl implements FieldBindingBuilder {
         return new RouteField(this.inQuery.getName(), fieldName);
     }
     @Override
-    public GraphField withFragment(GraphQuery graphQuery) {
-        return new QueryField(this.inQuery.getName(), graphQuery.getDomain());
+    public GraphField withFragment(QueryModel queryModel) {
+        return new QueryField(this.inQuery.getName(), queryModel.getDomain());
     }
     @Override
     public GraphField withNull() {

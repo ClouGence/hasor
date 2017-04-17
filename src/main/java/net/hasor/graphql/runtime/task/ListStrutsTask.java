@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.graphql.runtime.task;
-import net.hasor.graphql.TaskContext;
+import net.hasor.graphql.QueryContext;
 import net.hasor.graphql.result.ListModel;
 import net.hasor.graphql.runtime.AbstractQueryTask;
 import net.hasor.graphql.runtime.TaskType;
@@ -41,7 +41,7 @@ public class ListStrutsTask extends AbstractQueryTask {
     }
     //
     @Override
-    public Object doTask(TaskContext taskContext, Object inData) throws Throwable {
+    public Object doTask(QueryContext taskContext, Object inData) throws Throwable {
         //
         Collection<Object> listData = null;
         if (inData == null) {

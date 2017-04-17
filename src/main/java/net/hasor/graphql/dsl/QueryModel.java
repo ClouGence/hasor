@@ -13,25 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql;
-import java.util.List;
+package net.hasor.graphql.dsl;
+import net.hasor.graphql.dsl.domain.QueryDomain;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface ObjectResult extends QueryResult {
-    public int getFieldSize();
+public interface QueryModel {
+    public String buildQuery();
 
-    public List<String> getFieldNames();
+    public String buildQueryWithoutFragment();
 
-    public boolean hasField(String fieldName);
-
-    public Object getOriResult(String fieldName);
-
-    public ValueResult getValueResult(String fieldName);
-
-    public ListResult getListResult(String fieldName);
-
-    public ObjectResult getObjectResult(String fieldName);
+    public QueryDomain getDomain();
 }

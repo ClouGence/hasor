@@ -24,7 +24,7 @@ public interface FieldBindingBuilder {
 
     public GraphField withMapping(String fieldName);
 
-    public GraphField withFragment(GraphQuery graphQuery);
+    public GraphField withFragment(QueryModel queryModel);
 
     public GraphField withNull();
 

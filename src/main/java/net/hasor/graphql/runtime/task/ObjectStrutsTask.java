@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.graphql.runtime.task;
-import net.hasor.graphql.TaskContext;
+import net.hasor.graphql.QueryContext;
 import net.hasor.graphql.result.ObjectModel;
 import net.hasor.graphql.runtime.AbstractQueryTask;
 import net.hasor.graphql.runtime.TaskType;
@@ -44,7 +44,7 @@ public class ObjectStrutsTask extends AbstractQueryTask {
     }
     //
     @Override
-    public Object doTask(TaskContext taskContext, Object inData) throws Throwable {
+    public Object doTask(QueryContext taskContext, Object inData) throws Throwable {
         ObjectModel objectData = new ObjectModel(this.fieldList);
         for (String fieldName : this.fieldList) {
             AbstractQueryTask task = this.dataMap.get(fieldName);

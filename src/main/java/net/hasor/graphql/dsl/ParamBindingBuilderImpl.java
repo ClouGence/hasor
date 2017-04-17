@@ -47,8 +47,8 @@ class ParamBindingBuilderImpl implements ParamBindingBuilder {
         return new RouteParam(this.inQuery.getName(), paramExpression);
     }
     @Override
-    public GraphParam withFragment(GraphQuery graphQuery) {
-        return new QueryParam(this.inQuery.getName(), graphQuery.getDomain());
+    public GraphParam withFragment(QueryModel queryModel) {
+        return new QueryParam(this.inQuery.getName(), queryModel.getDomain());
     }
     @Override
     public UDFBindingBuilder withUDF(String udfName) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.graphql.runtime.task;
-import net.hasor.graphql.TaskContext;
+import net.hasor.graphql.QueryContext;
 import net.hasor.graphql.runtime.AbstractQueryTask;
 import net.hasor.graphql.runtime.TaskType;
 import net.hasor.graphql.runtime.TaskUtils;
@@ -39,10 +39,9 @@ public class RouteSourceTask extends AbstractQueryTask {
     }
     //
     @Override
-    public Object doTask(TaskContext taskContext, Object inData) throws Throwable {
+    public Object doTask(QueryContext taskContext, Object inData) throws Throwable {
         String[] routePath = this.routeExpression.split("\\.");
         //
-        Object dataSource = null;
         if (inData == null) {
             List<AbstractQueryTask> subList = super.getSubList();
             for (AbstractQueryTask task : subList) {

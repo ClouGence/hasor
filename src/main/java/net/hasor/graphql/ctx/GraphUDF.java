@@ -13,14 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql;
+package net.hasor.graphql.ctx;
+import net.hasor.core.Provider;
+import net.hasor.graphql.UDF;
+
+import java.lang.reflect.Method;
+import java.util.Map;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface TaskContext {
-    public UDF findUDF(String udfName);
-
-    public Object get(String name);
+public class GraphUDF implements UDF {
+    private Provider<?>              targetService; // 目标服务
+    private Method                   targetMethod;  // 目标方法
+    //
+    private Map<String, Integer>     paramIndex;    // 参数索引
+    private Map<String, Class<?>>    paramType;     // 参数类型
+    private Map<String, Provider<?>> paramDefault;  // 参数默认值
+    //
+    @Override
+    public Object call(Map<String, Object> values) {
+        return null;
+    }
 }

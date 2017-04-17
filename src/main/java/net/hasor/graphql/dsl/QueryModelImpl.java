@@ -23,9 +23,9 @@ import java.util.List;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-class GraphQueryImpl implements GraphQuery {
+class QueryModelImpl implements QueryModel {
     private QueryDomain queryDomain;
-    public GraphQueryImpl(QueryDomain queryDomain) {
+    public QueryModelImpl(QueryDomain queryDomain) {
         this.queryDomain = queryDomain;
     }
     @Override

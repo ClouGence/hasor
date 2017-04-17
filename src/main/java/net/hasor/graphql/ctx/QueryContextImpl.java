@@ -13,17 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.dsl;
-import net.hasor.graphql.dsl.domain.QueryDomain;
+package net.hasor.graphql.ctx;
+import net.hasor.graphql.QueryContext;
+
+import java.util.HashMap;
+import java.util.Map;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface GraphQuery {
-    public String buildQuery();
-
-    public String buildQueryWithoutFragment();
-
-    public QueryDomain getDomain();
+abstract class QueryContextImpl extends HashMap<String, Object> implements QueryContext {
+    public QueryContextImpl(Map<String, Object> queryContext) {
+        super(queryContext);
+    }
+    @Override
+    public Object get(String name) {
+        return super.get(name);
+    }
 }

@@ -41,7 +41,7 @@ class BindingBuilderWraper implements BindingBuilder {
         return this.wraper.asParam();
     }
     @Override
-    public GraphQuery buildQuery() {
+    public QueryModel buildQuery() {
         return this.wraper.buildQuery();
     }
     @Override

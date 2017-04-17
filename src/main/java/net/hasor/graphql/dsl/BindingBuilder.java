@@ -36,7 +36,7 @@ public interface BindingBuilder {
 
     public GraphParam asParam();
 
-    public GraphQuery buildQuery();
+    public QueryModel buildQuery();
 
     public String getName();
 }

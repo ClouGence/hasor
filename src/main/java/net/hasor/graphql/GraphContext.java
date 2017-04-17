@@ -14,24 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.graphql;
-import java.util.List;
+import java.util.Map;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface ObjectResult extends QueryResult {
-    public int getFieldSize();
+public interface GraphContext {
+    public QueryResult query(Map<String, Object> queryContext);
 
-    public List<String> getFieldNames();
+    public <T> T query(Map<String, Object> queryContext, Class<?> toType);
 
-    public boolean hasField(String fieldName);
-
-    public Object getOriResult(String fieldName);
-
-    public ValueResult getValueResult(String fieldName);
-
-    public ListResult getListResult(String fieldName);
-
-    public ObjectResult getObjectResult(String fieldName);
+    public String getQueryString(boolean useFragment);
 }

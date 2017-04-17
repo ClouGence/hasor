@@ -28,15 +28,15 @@ import java.util.Map;
  * @version : 2017-03-28
  */
 public class GraphParser implements GraphParserConstants {
-    private Map<String, GraphQuery> queryMap = new HashMap<String, GraphQuery>();
+    private Map<String, QueryModel> queryMap = new HashMap<String, QueryModel>();
     private GraphParser() {
     }
     //
-    public static GraphQuery parserGraphQL(String queryString) throws ParseException {
+    public static QueryModel parserGraphQL(String queryString) throws ParseException {
         GraphParser parser = new GraphParser(new ByteArrayInputStream(queryString.getBytes()));
         return parser.grapthQL();
     }
-    public static GraphQuery parserGraphQL(InputStream inputStream, String encoding) throws ParseException {
+    public static QueryModel parserGraphQL(InputStream inputStream, String encoding) throws ParseException {
         GraphParser parser = new GraphParser(inputStream, encoding);
         return parser.grapthQL();
     }
@@ -88,15 +88,15 @@ public class GraphParser implements GraphParserConstants {
     }
     private Object buildValueToQuery(Object builder, Object oriValue, GraphQLToType toType) throws ParseException {
         if (builder instanceof FieldBindingBuilder) {
-            return ((FieldBindingBuilder) builder).withFragment((GraphQuery) oriValue);
+            return ((FieldBindingBuilder) builder).withFragment((QueryModel) oriValue);
         }
         if (builder instanceof ParamBindingBuilder) {
-            return ((ParamBindingBuilder) builder).withFragment((GraphQuery) oriValue);
+            return ((ParamBindingBuilder) builder).withFragment((QueryModel) oriValue);
         }
         throw new ParseException("missing return statement in function");
     }
     // GrapthQL
-    final public GraphQuery grapthQL() throws ParseException {
+    final public QueryModel grapthQL() throws ParseException {
         String tempName = null;
         BindingBuilder tempQuery = null;
         BindingBuilder rootQuery = null;

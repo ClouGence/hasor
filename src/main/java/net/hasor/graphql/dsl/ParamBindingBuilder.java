@@ -30,7 +30,7 @@ public interface ParamBindingBuilder {
 
     public GraphParam withParam(String paramExpression);
 
-    public GraphParam withFragment(GraphQuery graphQuery);
+    public GraphParam withFragment(QueryModel queryModel);
 
     public UDFBindingBuilder withUDF(String udfName);
 }
