@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 /**
- *
+ * UDF
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

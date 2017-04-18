@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 /**
- *
+ * GraphQL 插件上下文，提供 UDF 发现和管理以及 QL 执行任务调度协助线程的。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

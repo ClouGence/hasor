@@ -19,7 +19,6 @@ import net.hasor.graphql.dsl.domain.*;
 
 import java.util.List;
 /**
- *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

@@ -16,7 +16,7 @@
 package net.hasor.graphql;
 import java.lang.annotation.*;
 /**
- *
+ * 声明为一个 UDF，但该类同时还需要实现 UDF 接口才有效。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
@@ -24,5 +24,6 @@ import java.lang.annotation.*;
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Documented
 public @interface GraphUDF {
+    /**UDF 名称，如果没有设置，那么使用完整类名作为 UDF 名称。*/
     public String value() default "";
 }

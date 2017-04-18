@@ -16,7 +16,7 @@
 package net.hasor.graphql;
 import java.util.Map;
 /**
- *
+ * UDF
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

@@ -16,7 +16,7 @@
 package net.hasor.graphql.runtime;
 import net.hasor.graphql.UDF;
 /**
- *
+ * 执行QL 的查询上下文，用于提供 UDF 和 环境参数查询。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

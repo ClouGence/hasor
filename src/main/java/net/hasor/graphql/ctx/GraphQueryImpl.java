@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 /**
- *
+ * 用于封装 QL 查询接口。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
@@ -54,11 +54,11 @@ class GraphQueryImpl implements GraphQuery {
         }
     }
     //
-    @Override
-    public <T> T query(Map<String, Object> queryContext, Class<?> toType) {
-        QueryResult result = this.query(queryContext);
-        return null;
-    }
+    //    @Override
+    //    public <T> T query(Map<String, Object> queryContext, Class<?> toType) {
+    //        QueryResult result = this.query(queryContext);
+    //        return null;
+    //    }
     @Override
     public QueryResult query(Map<String, Object> queryContext) {
         AbstractQueryTask queryTask = new TaskParser().doParser(this.queryModel.getDomain());

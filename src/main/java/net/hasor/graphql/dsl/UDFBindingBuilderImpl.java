@@ -16,7 +16,6 @@
 package net.hasor.graphql.dsl;
 import net.hasor.graphql.dsl.domain.*;
 /**
- *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

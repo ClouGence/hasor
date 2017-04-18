@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashSet;
 import java.util.Set;
 /**
- *
+ * GraphQL 扩展接口。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

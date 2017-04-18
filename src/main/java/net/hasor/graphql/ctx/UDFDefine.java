@@ -21,7 +21,7 @@ import net.hasor.graphql.UDF;
 
 import java.util.Map;
 /**
- *
+ * UDF 函数定义
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

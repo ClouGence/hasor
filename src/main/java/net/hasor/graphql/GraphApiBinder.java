@@ -19,24 +19,32 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.Matcher;
 import net.hasor.core.Provider;
 /**
- *
+ * QL 扩展，用于注册 UDF。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public interface GraphApiBinder extends ApiBinder {
+    /**添加 UDF。*/
     public GraphApiBinder addUDF(String name, Class<? extends UDF> udfType);
 
+    /**添加 UDF。*/
     public GraphApiBinder addUDF(String name, UDF udfObject);
 
+    /**添加 UDF。*/
     public GraphApiBinder addUDF(String name, Provider<? extends UDF> udfProvider);
 
+    /**添加 UDF。*/
     public GraphApiBinder addUDF(String name, BindInfo<? extends UDF> udfInfo);
 
+    /**添加 UDF。*/
     public GraphApiBinder addUDF(Class<? extends UDF> udfType);
 
+    /**扫描 UDF。*/
     public void scanUDF();
 
+    /**扫描 UDF。*/
     public void scanUDF(String... packages);
 
+    /**扫描 UDF。*/
     public void scanUDF(Matcher<Class<?>> matcher, String... packages);
 }

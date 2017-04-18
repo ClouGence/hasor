@@ -16,14 +16,17 @@
 package net.hasor.graphql.dsl;
 import net.hasor.graphql.dsl.domain.QueryDomain;
 /**
- *
+ * 查询模型
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public interface QueryModel {
+    /** 查询字符串，部分 QL 使用片段形式表达便于阅读。 */
     public String buildQuery();
 
+    /** 查询字符串，不使用片段形式表达。 */
     public String buildQueryWithoutFragment();
 
+    /**查询模型对象*/
     public QueryDomain getDomain();
 }

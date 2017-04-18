@@ -21,7 +21,7 @@ import net.hasor.graphql.GraphApiBinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * 提供 <code>GraphQL</code> 功能支持。
+ * 提供 <code>Simple GraphQL</code> 功能支持。
  * @version : 2013-9-13
  * @author 赵永春 (zyc@byshell.org)
  */
@@ -31,7 +31,7 @@ public class GraphQLModule implements Module {
         //
         GraphApiBinder graphApiBinder = apiBinder.tryCast(GraphApiBinder.class);
         if (graphApiBinder == null) {
-            logger.error("GraphQL support failed.");
+            logger.error("Simple GraphQL support failed.");
             return;
         }
         apiBinder.bindType(GraphContext.class).toInstance(//

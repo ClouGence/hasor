@@ -16,7 +16,7 @@
 package net.hasor.graphql.runtime;
 import java.util.concurrent.ExecutionException;
 /**
- *
+ * QL查询的执行任务
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

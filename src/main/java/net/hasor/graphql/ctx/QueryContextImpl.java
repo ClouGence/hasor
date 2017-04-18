@@ -19,7 +19,7 @@ import net.hasor.graphql.runtime.QueryContext;
 import java.util.HashMap;
 import java.util.Map;
 /**
- *
+ * QL 查询上下文，一个扩展的 Map 对象。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

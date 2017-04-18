@@ -72,7 +72,7 @@ public class TaskParser {
         case Original:
             return new OriginalSourceTask(nameOfParent, parentSource);
         default:
-            throw new RuntimeException("");
+            throw new UnsupportedOperationException("unsupported ReturnType.");
         }
         //
     }
@@ -107,6 +107,6 @@ public class TaskParser {
             rst.setRouteExpression(((RouteValue) defSource).getRouteExpression());
             return rst;
         }
-        throw new RuntimeException("");
+        throw new UnsupportedOperationException("unsupported GraphValue. type is = " + defSource.getClass());
     }
 }

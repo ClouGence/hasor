@@ -15,7 +15,7 @@
  */
 package net.hasor.graphql.dsl.domain;
 /**
- *
+ * 查询
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
