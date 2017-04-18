@@ -54,6 +54,7 @@ public class GraphContext implements AppContextAware {
     protected UDF findUDF(String udfName) {
         return this.udfMap.get(udfName);
     }
+    //
     public GraphQuery createQuery(String graphQL) throws ParseException {
         QueryModel queryModel = GraphParser.parserGraphQL(graphQL);
         return new GraphQueryImpl(this.appContext, queryModel);

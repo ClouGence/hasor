@@ -8,6 +8,8 @@ import net.hasor.graphql.GraphQuery;
 import net.hasor.graphql.QueryResult;
 import net.hasor.graphql.ctx.GraphContext;
 import net.hasor.graphql.dsl.QueryModel;
+import net.hasor.graphql.runtime.QueryTask;
+import net.hasor.graphql.runtime.TaskParser;
 import net.test.hasor.graphql.udfs.FindUserByID;
 import net.test.hasor.graphql.udfs.Foo;
 import net.test.hasor.graphql.udfs.QueryOrder;
@@ -18,89 +20,79 @@ import org.junit.Test;
  * Created by yongchun.zyc on 2017/3/21.
  */
 public class CallTaskTest implements Module {
-    private AppContext appContext;
+    private static AppContext appContext;
     @Before
     public void before() {
-        this.appContext = Hasor.createAppContext(this);
+        if (appContext == null) {
+            appContext = Hasor.createAppContext(this);
+        }
     }
     @Test
     public void main1() {
-        QueryModel queryModel = new GraphQLTest().main1();
-        String buildQuery = queryModel.buildQuery();
-        this.printTaskTree(buildQuery);
+        this.printTaskTree(new GraphQLTest().main1());
     }
     @Test
     public void main2() {
-        QueryModel queryModel = new GraphQLTest().main2();
-        String buildQuery = queryModel.buildQuery();
-        this.printTaskTree(buildQuery);
+        this.printTaskTree(new GraphQLTest().main2());
     }
     @Test
     public void main3() {
-        QueryModel queryModel = new GraphQLTest().main3();
-        String buildQuery = queryModel.buildQuery();
-        this.printTaskTree(buildQuery);
+        this.printTaskTree(new GraphQLTest().main3());
     }
     @Test
     public void main4() {
-        QueryModel queryModel = new GraphQLTest().main4();
-        String buildQuery = queryModel.buildQuery();
-        this.printTaskTree(buildQuery);
+        this.printTaskTree(new GraphQLTest().main4());
     }
     @Test
     public void main5() {
-        QueryModel queryModel = new GraphQLTest().main5();
-        String buildQuery = queryModel.buildQuery();
-        this.printTaskTree(buildQuery);
+        this.printTaskTree(new GraphQLTest().main5());
     }
     @Test
     public void main6() {
-        QueryModel queryModel = new GraphQLTest().main6();
-        String buildQuery = queryModel.buildQuery();
-        this.printTaskTree(buildQuery);
+        this.printTaskTree(new GraphQLTest().main6());
     }
     @Test
     public void main7() {
-        QueryModel queryModel = new GraphQLTest().main7();
-        String buildQuery = queryModel.buildQuery();
-        this.printTaskTree(buildQuery);
+        this.printTaskTree(new GraphQLTest().main7());
     }
     @Test
     public void main8() {
-        QueryModel queryModel = new GraphQLTest().main8();
-        String buildQuery = queryModel.buildQuery();
-        this.printTaskTree(buildQuery);
+        this.printTaskTree(new GraphQLTest().main8());
     }
     @Test
     public void main9() {
-        QueryModel queryModel = new GraphQLTest().main9();
-        String buildQuery = queryModel.buildQuery();
-        this.printTaskTree(buildQuery);
+        this.printTaskTree(new GraphQLTest().main9());
     }
     //
+    // --------------------------------------------------------------------------------------------
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
+        // - UDF
         GraphApiBinder binder = apiBinder.tryCast(GraphApiBinder.class);
         binder.addUDF(FindUserByID.class);
         binder.addUDF(QueryOrder.class);
         binder.addUDF(UserManager.class);
         binder.addUDF(Foo.class);
     }
-    private void printTaskTree(String buildQuery) {
+    private void printTaskTree(QueryModel queryModel) {
+        QueryTask queryTask = new TaskParser().doParser(queryModel.getDomain());
+        String buildQuery = queryModel.buildQuery();
         //
-        GraphContext gc = this.appContext.getInstance(GraphContext.class);
-        GraphQuery query = null;
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.out.println(queryTask.printTaskTree(true));
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.out.println(queryTask.printTaskTree(false));
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        // - exec QL
         try {
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            System.out.println(buildQuery);
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            query = gc.createQuery(buildQuery);
+            GraphContext gc = appContext.getInstance(GraphContext.class);
+            GraphQuery query = gc.createQuery(buildQuery);
+            //
+            QueryResult result = query.query(null);
+            System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
             return;
         }
-        //
-        QueryResult result = query.query(null);
-        System.out.println(result);
     }
 }
