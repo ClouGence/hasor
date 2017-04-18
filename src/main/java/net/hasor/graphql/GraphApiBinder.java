@@ -13,27 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.ctx;
+package net.hasor.graphql;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.BindInfo;
+import net.hasor.core.Matcher;
 import net.hasor.core.Provider;
-import net.hasor.graphql.UDF;
-
-import java.lang.reflect.Method;
-import java.util.Map;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class GraphUDF implements UDF {
-    private Provider<?>              targetService; // 目标服务
-    private Method                   targetMethod;  // 目标方法
-    //
-    private Map<String, Integer>     paramIndex;    // 参数索引
-    private Map<String, Class<?>>    paramType;     // 参数类型
-    private Map<String, Provider<?>> paramDefault;  // 参数默认值
-    //
-    @Override
-    public Object call(Map<String, Object> values) {
-        return null;
-    }
+public interface GraphApiBinder extends ApiBinder {
+    public GraphApiBinder addUDF(String name, Class<? extends UDF> udfType);
+
+    public GraphApiBinder addUDF(String name, UDF udfObject);
+
+    public GraphApiBinder addUDF(String name, Provider<? extends UDF> udfProvider);
+
+    public GraphApiBinder addUDF(String name, BindInfo<? extends UDF> udfInfo);
+
+    public GraphApiBinder addUDF(Class<? extends UDF> udfType);
+
+    public void scanUDF();
+
+    public void scanUDF(String... packages);
+
+    public void scanUDF(Matcher<Class<?>> matcher, String... packages);
 }

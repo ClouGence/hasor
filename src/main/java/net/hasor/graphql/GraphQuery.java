@@ -21,9 +21,12 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 public interface GraphQuery {
+    /**执行查询*/
     public QueryResult query(Map<String, Object> queryContext);
 
+    /**执行查询*/
     public <T> T query(Map<String, Object> queryContext, Class<?> toType);
 
+    /**执行的QL语句*/
     public String getQueryString(boolean useFragment);
 }

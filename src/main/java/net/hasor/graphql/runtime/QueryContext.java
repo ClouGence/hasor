@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql;
-import java.util.Map;
+package net.hasor.graphql.runtime;
+import net.hasor.graphql.UDF;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface GraphContext {
-    public QueryResult query(Map<String, Object> queryContext);
+public interface QueryContext {
+    public UDF findUDF(String udfName);
 
-    public <T> T query(Map<String, Object> queryContext, Class<?> toType);
-
-    public String getQueryString(boolean useFragment);
+    public Object get(String name);
 }

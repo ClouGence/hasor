@@ -16,7 +16,6 @@
 package net.hasor.graphql.runtime;
 import net.hasor.core.future.BasicFuture;
 import net.hasor.core.utils.StringUtils;
-import net.hasor.graphql.QueryContext;
 import net.hasor.graphql.runtime.task.RouteSourceTask;
 
 import java.util.*;
@@ -187,8 +186,15 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
             public void update(Observable o, Object arg) {
                 // .子任务执行失败，整体失败
                 if (TaskStatus.Failed.equals(arg)) {
-                    updateStatus(TaskStatus.Failed);
-                    return;
+                    try {
+                        ((AbstractQueryTask) o).getValue();
+                    } catch (ExecutionException e) {
+                        updateStatus(TaskStatus.Failed, e.getCause());
+                    } catch (Throwable e) {
+                        updateStatus(TaskStatus.Failed, e);
+                    } finally {
+                        return;
+                    }
                 }
                 // .尝试跳入 Waiting 阶段
                 if (TaskStatus.Complete.equals(arg)) {
@@ -197,7 +203,7 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
                             return;
                         }
                     }
-                    updateStatus(TaskStatus.Waiting);//所有子任务Finish，那么进入 Waiting
+                    updateStatus(TaskStatus.Waiting, null);//所有子任务Finish，那么进入 Waiting
                 }
             }
         });
@@ -219,7 +225,10 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
     public TaskStatus getTaskStatus() {
         return this.taskStatus;
     }
-    protected void updateStatus(TaskStatus taskStatus) {
+    protected void updateStatus(TaskStatus taskStatus, Throwable e) {
+        if (taskStatus == TaskStatus.Failed) {
+            this.result.failed(e);
+        }
         try {
             this.taskStatus = taskStatus;
             if (taskStatus == TaskStatus.Prepare) {
@@ -228,7 +237,7 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
                         return;/* 所有子任务都完成，才进入 Waiting */
                     }
                 }
-                this.updateStatus(TaskStatus.Waiting);
+                this.updateStatus(TaskStatus.Waiting, null);
             }
         } finally {
             this.setChanged();
@@ -243,13 +252,16 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
         if (this.result.isDone() && !TaskType.F.equals(this.taskType)) {
             return this.result.get();
         }
-        throw new IllegalStateException("result is not ready.");
+        if (this.result.isDone()) {
+            return this.result.get();
+        }
+        throw new IllegalStateException("result is not ready or task is does support run.");
     }
     public void run(QueryContext taskContext, Object inData) {
         //
         // 1.格式化节点：只更新状态。
         if (TaskType.F.equals(this.getTaskType())) {
-            this.updateStatus(TaskStatus.Complete);
+            this.updateStatus(TaskStatus.Complete, null);
             return;
         }
         //
@@ -262,13 +274,12 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
                     inData = this.dataSource.getValue();
                 }
                 //
-                this.updateStatus(TaskStatus.Running);
+                this.updateStatus(TaskStatus.Running, null);
                 Object taskResult = this.doTask(taskContext, inData);
                 this.result.completed(taskResult);
-                this.updateStatus(TaskStatus.Complete);
+                this.updateStatus(TaskStatus.Complete, null);
             } catch (Throwable e) {
-                this.updateStatus(TaskStatus.Failed);
-                this.result.failed(e);
+                this.updateStatus(TaskStatus.Failed, e);
             }
         }
         return;

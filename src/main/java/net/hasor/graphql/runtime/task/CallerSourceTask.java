@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.graphql.runtime.task;
-import net.hasor.graphql.QueryContext;
 import net.hasor.graphql.UDF;
 import net.hasor.graphql.runtime.AbstractQueryTask;
+import net.hasor.graphql.runtime.QueryContext;
 import net.hasor.graphql.runtime.TaskType;
 
 import java.util.HashMap;
@@ -48,6 +48,9 @@ public class CallerSourceTask extends AbstractQueryTask {
             values.put(ent.getKey(), taskValue);
         }
         UDF udf = taskContext.findUDF(this.callerName);
+        if (udf == null) {
+            throw new NullPointerException("udf '" + this.callerName + "' is not found.");
+        }
         return udf.call(values);
     }
     public void addParam(String paramName, AbstractQueryTask dataSource) {

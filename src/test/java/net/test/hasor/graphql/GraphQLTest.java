@@ -1,6 +1,6 @@
 package net.test.hasor.graphql;
 import net.hasor.graphql.dsl.GraphQL;
-import net.hasor.graphql.dsl.GraphQuery;
+import net.hasor.graphql.dsl.QueryModel;
 import net.hasor.graphql.dsl.parser.GraphParser;
 import net.hasor.graphql.dsl.parser.ParseException;
 import org.junit.Test;
@@ -8,7 +8,7 @@ import org.junit.Test;
  * Created by yongchun.zyc on 2017/3/21.
  */
 public class GraphQLTest {
-    public GraphQuery main1() {
+    public QueryModel main1() {
 
     /*
 -- 查询服务，并返回查询一条结果（如果服务返回一个List，那么取第一个元素）
@@ -18,7 +18,7 @@ findUserByID ( userID = 12345 , status = false) {
     nick
 }
     */
-        GraphQuery graphQuery = GraphQL.createQuery()//
+        QueryModel queryModel = GraphQL.createQuery()//
                 .byUDF("findUserByID")//
                 .addParam(//
                         GraphQL.createParam("userID").withNumber(12345)//
@@ -39,9 +39,9 @@ findUserByID ( userID = 12345 , status = false) {
                 )//----------------------------------------------------------------------
                 .buildQuery();
         //
-        return printQuery(graphQuery);
+        return printQuery(queryModel);
     }
-    public GraphQuery main2() {
+    public QueryModel main2() {
     /*
 -- 查询服务，并返回查询一条结果（如果服务返回一个List，那么取第一个元素）
 {
@@ -56,7 +56,7 @@ findUserByID ( userID = 12345 , status = false) {
     source : "GraphQL"
 }
     */
-        GraphQuery graphQuery = GraphQL.createQuery()//
+        QueryModel queryModel = GraphQL.createQuery()//
                 //-----------------------------------------------------------------------
                 .asObject()//
                 .addField(//
@@ -92,9 +92,9 @@ findUserByID ( userID = 12345 , status = false) {
                 //----------------------------------------------------------------------
                 .buildQuery();
         //
-        return printQuery(graphQuery);
+        return printQuery(queryModel);
     }
-    public GraphQuery main3() {
+    public QueryModel main3() {
     /*
 -- 查询服务，并返回一组结果（如果服务只返回一个对象，那么以 List 形式返回）
 findUserByID ( userID = 12345 ) [
@@ -105,7 +105,7 @@ findUserByID ( userID = 12345 ) [
     }
 ]
     */
-        GraphQuery graphQuery = GraphQL.createQuery()//
+        QueryModel queryModel = GraphQL.createQuery()//
                 .byUDF("findUserByID")//
                 .addParam(//
                         GraphQL.createParam("userID").withNumber(12345)//
@@ -123,16 +123,16 @@ findUserByID ( userID = 12345 ) [
                 )//----------------------------------------------------------------------
                 .buildQuery();
         //
-        return printQuery(graphQuery);
+        return printQuery(queryModel);
     }
-    public GraphQuery main4() {
+    public QueryModel main4() {
     /*
 -- 查询服务，并返回所有名称集合
 findUserByID ( userID = 12345 ) [
     name
 ]
     */
-        GraphQuery graphQuery = GraphQL.createQuery()//
+        QueryModel queryModel = GraphQL.createQuery()//
                 .byUDF("findUserByID")//
                 .addParam(//
                         GraphQL.createParam("userID").withNumber(12345)//
@@ -144,9 +144,9 @@ findUserByID ( userID = 12345 ) [
                 )//
                 .buildQuery();
         //
-        return printQuery(graphQuery);
+        return printQuery(queryModel);
     }
-    public GraphQuery main5() {
+    public QueryModel main5() {
     /*
 -- 查询服务的同时构造另两个 orderList 属性，属性来源是另一个服务，另外参数 userID、status 也可以使用引号阔起来
 findUserByIDAndType ( "userID" = uid, "status" = 1 ) {
@@ -161,7 +161,7 @@ findUserByIDAndType ( "userID" = uid, "status" = 1 ) {
     ]
 }
     */
-        GraphQuery graphQuery = GraphQL.createQuery()//
+        QueryModel queryModel = GraphQL.createQuery()//
                 .byUDF("findUserByID")//
                 .addParam(//
                         GraphQL.createParam("userID").withParam("uid")//
@@ -195,9 +195,9 @@ findUserByIDAndType ( "userID" = uid, "status" = 1 ) {
                 )//
                 .buildQuery();
         //
-        return printQuery(graphQuery);
+        return printQuery(queryModel);
     }
-    public GraphQuery main6() {
+    public QueryModel main6() {
     /*
 -- 参数可以是另一个函数的返回值
 findUserByID ( "userID" = foo( "sessionID" = sid ), "status" = 1 ) {
@@ -205,7 +205,7 @@ findUserByID ( "userID" = foo( "sessionID" = sid ), "status" = 1 ) {
     "nick"
 }
     */
-        GraphQuery graphQuery = GraphQL.createQuery()//
+        QueryModel queryModel = GraphQL.createQuery()//
                 .byUDF("findUserByID")//
                 .addParam(//
                         GraphQL.createParam("userID")//
@@ -230,9 +230,9 @@ findUserByID ( "userID" = foo( "sessionID" = sid ), "status" = 1 ) {
                 )//
                 .buildQuery();
         //
-        return printQuery(graphQuery);
+        return printQuery(queryModel);
     }
-    public GraphQuery main7() {
+    public QueryModel main7() {
     /*
 {
     user : findUserByID( "userID" = uid ,... ) {
@@ -250,7 +250,7 @@ findUserByID ( "userID" = foo( "sessionID" = sid ), "status" = 1 ) {
     ]
 }
     */
-        GraphQuery graphQuery = GraphQL.createQuery()//
+        QueryModel queryModel = GraphQL.createQuery()//
                 .asObject()//
                 .addField(//
                         GraphQL.createField("user")//
@@ -293,9 +293,9 @@ findUserByID ( "userID" = foo( "sessionID" = sid ), "status" = 1 ) {
                 )//
                 .buildQuery();
         //
-        return printQuery(graphQuery);
+        return printQuery(queryModel);
     }
-    public GraphQuery main8() {
+    public QueryModel main8() {
     /*
 -- 使用查询片段优化 GraphQL 语句结构，以便于阅读
 fragment fUser on findUserByID( "userID" = uid ) {
@@ -317,7 +317,7 @@ fragment fOrder on queryOrder( "accountID" = uid , ... ) [
     orderList : fOrder{},
 }
     */
-        GraphQuery fUserQL = GraphQL.createQuery("fUserQL")//
+        QueryModel fUserQL = GraphQL.createQuery("fUserQL")//
                 .byUDF("findUserByID")//
                 .addParam(//
                         GraphQL.createParam("userID").withParam("uid")//
@@ -337,7 +337,7 @@ fragment fOrder on queryOrder( "accountID" = uid , ... ) [
                 )//
                 .buildQuery();
         //
-        GraphQuery fOrderQL = GraphQL.createQuery("fOrderQL")//
+        QueryModel fOrderQL = GraphQL.createQuery("fOrderQL")//
                 .byUDF("queryOrder")//
                 .addParam(//
                         GraphQL.createParam("accountID").withParam("uid")//
@@ -354,7 +354,7 @@ fragment fOrder on queryOrder( "accountID" = uid , ... ) [
                 )//
                 .buildQuery();
         //
-        GraphQuery graphQuery = GraphQL.createQuery()//
+        QueryModel queryModel = GraphQL.createQuery()//
                 .asObject()//
                 .addField(//
                         GraphQL.createField("user").withFragment(fUserQL)//
@@ -363,9 +363,9 @@ fragment fOrder on queryOrder( "accountID" = uid , ... ) [
                 )//
                 .buildQuery();
         //
-        return printQuery(graphQuery);
+        return printQuery(queryModel);
     }
-    public GraphQuery main9() {
+    public QueryModel main9() {
     /*
 -- 查询片段的集中样式
 fragment fUser on {
@@ -389,7 +389,7 @@ fragment fOrder on queryOrder( "accountID" = uid , ... ) [
     orderList : fOrder,
 }
     */
-        GraphQuery fUserQL = GraphQL.createQuery("fUser")//
+        QueryModel fUserQL = GraphQL.createQuery("fUser")//
                 .asObject()//
                 .addField(GraphQL.createField("userInfo")//
                         .withUDF("findUserByID")//
@@ -402,7 +402,7 @@ fragment fOrder on queryOrder( "accountID" = uid , ... ) [
                 )//
                 .buildQuery();
         //
-        GraphQuery fOrder = GraphQL.createQuery("fOrder")//
+        QueryModel fOrder = GraphQL.createQuery("fOrder")//
                 .byUDF("queryOrder")//
                 .addParam(//
                         GraphQL.createParam("accountID").withParam("uid")//
@@ -419,7 +419,7 @@ fragment fOrder on queryOrder( "accountID" = uid , ... ) [
                 )//
                 .buildQuery();
         //
-        GraphQuery graphQuery = GraphQL.createQuery()//
+        QueryModel queryModel = GraphQL.createQuery()//
                 .asObject()//
                 .addField(//
                         GraphQL.createField("user").withFragment(fUserQL)//
@@ -428,14 +428,14 @@ fragment fOrder on queryOrder( "accountID" = uid , ... ) [
                 )//
                 .buildQuery();
         //
-        return printQuery(graphQuery);
+        return printQuery(queryModel);
     }
-    private GraphQuery printQuery(GraphQuery graphQL1) {
+    private QueryModel printQuery(QueryModel graphQL1) {
         try {
             String query1 = graphQL1.buildQuery();
             System.out.println(query1);
             System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            GraphQuery graphQL2 = GraphParser.parserGraphQL(query1);
+            QueryModel graphQL2 = GraphParser.parserGraphQL(query1);
             String query2 = graphQL2.buildQuery();
             System.out.println(query2);
             System.out.println("EQ:" + query1.equals(query2));

@@ -14,21 +14,35 @@
  * limitations under the License.
  */
 package net.hasor.graphql.ctx;
-import net.hasor.graphql.runtime.QueryContext;
+import net.hasor.core.AppContext;
+import net.hasor.core.AppContextAware;
+import net.hasor.core.BindInfo;
+import net.hasor.graphql.UDF;
 
-import java.util.HashMap;
 import java.util.Map;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-abstract class QueryContextImpl extends HashMap<String, Object> implements QueryContext {
-    public QueryContextImpl(Map<String, Object> queryContext) {
-        super(queryContext);
+class UDFDefine implements UDF, AppContextAware {
+    private String                  name;
+    private BindInfo<? extends UDF> udfInfo;
+    private UDF                     target;
+    //
+    public UDFDefine(String name, BindInfo<? extends UDF> udfInfo) {
+        this.name = name;
+        this.udfInfo = udfInfo;
     }
     @Override
-    public Object get(String name) {
-        return super.get(name);
+    public void setAppContext(AppContext appContext) {
+        this.target = appContext.getInstance(this.udfInfo);
+    }
+    public String getName() {
+        return name;
+    }
+    @Override
+    public Object call(final Map<String, Object> values) {
+        return this.target.call(values);
     }
 }

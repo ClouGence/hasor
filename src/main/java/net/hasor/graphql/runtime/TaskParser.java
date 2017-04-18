@@ -27,7 +27,7 @@ public class TaskParser {
     //
     /** 解析查询模型，将其转换成为执行任务树 */
     public AbstractQueryTask doParser(QueryDomain domain) {
-        return doParser(null, null, domain);//.fixRouteDep();
+        return doParser(null, null, domain).fixRouteDep();
     }
     private AbstractQueryTask doParser(String nameOfParent, AbstractQueryTask parentSource, QueryDomain domain) {
         if (domain.getGraphUDF() != null) {

@@ -16,13 +16,17 @@
 package net.hasor.graphql.ctx;
 import net.hasor.core.AppContext;
 import net.hasor.graphql.GraphQuery;
-import net.hasor.graphql.QueryContext;
 import net.hasor.graphql.QueryResult;
 import net.hasor.graphql.UDF;
 import net.hasor.graphql.dsl.QueryModel;
+import net.hasor.graphql.result.ValueModel;
 import net.hasor.graphql.runtime.AbstractQueryTask;
+import net.hasor.graphql.runtime.QueryContext;
 import net.hasor.graphql.runtime.TaskParser;
+import net.hasor.graphql.runtime.TaskStatus;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 /**
@@ -30,12 +34,15 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class GraphQueryImpl implements GraphQuery {
-    private AppContext appContext;
-    private QueryModel queryModel;
+class GraphQueryImpl implements GraphQuery {
+    private final GraphContext     graphContext;
+    private final QueryModel       queryModel;
+    private final Map<String, UDF> temporaryUDF;
     //
-    public GraphQueryImpl(QueryModel queryModel) {
+    public GraphQueryImpl(AppContext appContext, QueryModel queryModel) {
+        this.graphContext = appContext.getInstance(GraphContext.class);
         this.queryModel = queryModel;
+        this.temporaryUDF = new HashMap<String, UDF>();
     }
     //
     @Override
@@ -55,13 +62,25 @@ public class GraphQueryImpl implements GraphQuery {
     @Override
     public QueryResult query(Map<String, Object> queryContext) {
         AbstractQueryTask queryTask = new TaskParser().doParser(this.queryModel.getDomain());
+        if (queryContext == null) {
+            queryContext = Collections.EMPTY_MAP;
+        }
         this.runTasks(new QueryContextImpl(queryContext) {
             @Override
             public UDF findUDF(String udfName) {
-                return GraphQueryImpl.this.findUDF(udfName);
+                if (temporaryUDF.containsKey(udfName)) {
+                    return temporaryUDF.get(udfName);
+                }
+                return graphContext.findUDF(udfName);
             }
         }, queryTask);
-        return null;
+        //
+        try {
+            Object value = queryTask.getValue();
+            return new ValueModel(value);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     private void runTasks(QueryContext context, AbstractQueryTask queryTask) {
         List<AbstractQueryTask> allTask = queryTask.getAllTask();
@@ -69,16 +88,15 @@ public class GraphQueryImpl implements GraphQuery {
         do {
             runCount = 0;
             for (AbstractQueryTask t : allTask) {
+                if (TaskStatus.Failed.equals(queryTask.getTaskStatus())) {
+                    return;
+                }
+                //
                 if (t.isWaiting()) {
                     t.run(context, null);
                     runCount++;
                 }
             }
         } while (runCount != 0);
-    }
-    //
-    //
-    private UDF findUDF(String udfName) {
-        return this.appContext.findBindingBean(udfName, GraphUDF.class);
     }
 }

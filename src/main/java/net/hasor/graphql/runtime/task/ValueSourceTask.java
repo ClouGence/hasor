@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.graphql.runtime.task;
-import net.hasor.graphql.QueryContext;
 import net.hasor.graphql.dsl.domain.ValueType;
 import net.hasor.graphql.runtime.AbstractQueryTask;
+import net.hasor.graphql.runtime.QueryContext;
 import net.hasor.graphql.runtime.TaskType;
 /**
  * 固定值，任务。
