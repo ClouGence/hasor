@@ -14,8 +14,7 @@
 		"tbfed-pagefooter",
 		"-sharing",
 		"favicon",
-		"github-buttons",
-		"duoshuo"
+		"github-buttons"
 	],
 	"pluginsConfig": {
 		"ga": {
