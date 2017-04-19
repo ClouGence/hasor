@@ -46,10 +46,6 @@
 				"fork"
 			],
 			"size": "small"
-		},
-		"duoshuo": {
-			"short_name": "hasor",
-			"theme": "default"
 		}
 	},
 	"variables": {
