@@ -75,24 +75,25 @@ public class CallTaskTest implements Module {
         binder.addUDF(Foo.class);
     }
     private void printTaskTree(QueryModel queryModel) {
-        QueryTask queryTask = new TaskParser().doParser(queryModel.getDomain());
         String buildQuery = queryModel.buildQuery();
-        //
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        System.out.println(queryTask.printTaskTree(true));
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        System.out.println(queryTask.printTaskTree(false));
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        // - exec QL
+        // - 执行计划
+        {
+            QueryTask queryTask = new TaskParser().doParser(queryModel.getDomain());
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            System.out.println(queryTask.printTaskTree(true));
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            System.out.println(queryTask.printTaskTree(false));
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        }
+        // - 执行 QL
         try {
             GraphContext gc = appContext.getInstance(GraphContext.class);
             GraphQuery query = gc.createQuery(buildQuery);
-            //
             QueryResult result = query.query(null);
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();
-            return;
+            throw new RuntimeException(e);
         }
     }
 }

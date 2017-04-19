@@ -22,6 +22,7 @@ import net.hasor.web.annotation.Produces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
@@ -123,7 +124,14 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
         //
         // .处理渲染
         if (invoker instanceof RenderInvoker) {
-            this.process((RenderInvoker) invoker);
+            boolean process = this.process((RenderInvoker) invoker);
+            if (process) {
+                return;
+            }
+            RenderInvoker renderInvoker = (RenderInvoker) invoker;
+            HttpServletRequest httpRequest = renderInvoker.getHttpRequest();
+            HttpServletResponse httpResponse = renderInvoker.getHttpResponse();
+            httpRequest.getRequestDispatcher(renderInvoker.renderTo()).forward(httpRequest, httpResponse);
         }
     }
     @Override
