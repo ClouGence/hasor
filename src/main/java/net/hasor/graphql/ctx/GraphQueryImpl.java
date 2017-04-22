@@ -55,12 +55,12 @@ class GraphQueryImpl implements GraphQuery {
     }
     //
     //    @Override
-    //    public <T> T query(Map<String, Object> queryContext, Class<?> toType) {
+    //    public <T> T doQuery(Map<String, Object> queryContext, Class<?> toType) {
     //        QueryResult result = this.query(queryContext);
     //        return null;
     //    }
     @Override
-    public QueryResult query(Map<String, Object> queryContext) {
+    public QueryResult doQuery(Map<String, Object> queryContext) {
         AbstractQueryTask queryTask = new TaskParser().doParser(this.queryModel.getDomain());
         if (queryContext == null) {
             queryContext = Collections.EMPTY_MAP;

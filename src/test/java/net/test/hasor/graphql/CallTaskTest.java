@@ -89,7 +89,7 @@ public class CallTaskTest implements Module {
         try {
             GraphContext gc = appContext.getInstance(GraphContext.class);
             GraphQuery query = gc.createQuery(buildQuery);
-            QueryResult result = query.query(null);
+            QueryResult result = query.doQuery(null);
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();

@@ -67,19 +67,3 @@ fragment fOrder on <functionName>( "accountID" = "userAccount", ... ) [
     user      : fUser,
     orderList : fOrder,
 }
-
-
-
-
-
-findUserByID ("userID" = uid or ("status" = 1)  ) {
-    "userID",
-    "nick",
-    "orderList" : queryOrder ("accountID" = uid) [
-        {
-            "orderID",
-            "itemID",
-            "itemName"
-        }
-    ]
-}
