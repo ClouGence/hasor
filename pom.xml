@@ -98,6 +98,7 @@
             <version>2.2</version>
             <scope>provided</scope>
         </dependency>
+
         <!-- 整合 Junit -->
         <dependency>
             <groupId>junit</groupId>
@@ -132,6 +133,38 @@
             <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
+        <!-- 整合 json 提供渲染器插件, 最终由项目环境的 json 提供依赖 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.23</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20160810</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.6.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- 整合 freemarker 提供渲染器插件, 最终由项目环境的 freemarker 提供依赖 -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.23</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- Test -->
         <dependency>
@@ -156,12 +189,6 @@
             <groupId>c3p0</groupId>
             <artifactId>c3p0</artifactId>
             <version>0.9.1.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.23</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

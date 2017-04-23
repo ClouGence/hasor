@@ -106,13 +106,12 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
             Produces pro = targetMethod.getAnnotation(Produces.class);
             String proValue = pro.value();
             if (!StringUtils.isBlank(proValue)) {
+                render.viewType(proValue);
                 String mimeType = invoker.getMimeType(proValue);
                 if (StringUtils.isBlank(mimeType)) {
-                    htttResponse.setContentType(proValue);
-                    render.viewType(proValue);
+                    htttResponse.setContentType(proValue);//用原始配置
                 } else {
-                    htttResponse.setContentType(mimeType);
-                    render.viewType(mimeType);
+                    htttResponse.setContentType(mimeType);//用定义的配置
                 }
             }
         }
