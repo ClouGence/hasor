@@ -94,11 +94,8 @@
             <!-- 允许上传的单个文件大小( -1 表示不限制) -->
             <maxFileSize>${HASOR_UPLOAD_MAX_FILE_SIZE}</maxFileSize>
         </fileupload>
-
         <!-- 布局管理 -->
         <layout enable="${HASOR_RESTFUL_LAYOUT}">
-            <!-- 静态资源位置 -->
-            <resourcePath>${HASOR_RESTFUL_LAYOUT_PATH_RESOUTCE}</resourcePath>
             <!-- 布局模版位置 -->
             <layoutPath>${HASOR_RESTFUL_LAYOUT_PATH_LAYOUT}</layoutPath>
             <!-- 页面模版位置 -->

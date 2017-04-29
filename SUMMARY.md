@@ -101,13 +101,10 @@
     * [2. 使用 Filter](docs/chapter-04/subject-05/Filter.md)
     * [3. 使用 HttpSessionListener](docs/chapter-04/subject-05/HttpSessionListener.md)
     * [4. 使用 ServletContextListener](docs/chapter-04/subject-05/ServletContextListener.md)
-  * [第六节 装饰器（文档编写中...）](.md)
-    * [1. 工作原理](.md)
-    * [2. 文件布局](.md)
-    * [3. 使用装饰器](.md)
-  * [第七节 文件上传（文档编写中...）](.md)
-    * [1. 缓存设置](.md)
-    * [2. 流式上传](.md)
+  * [第六节 装饰器](docs/chapter-04/subject-06/Decorator.md)
+    * [1. 文件布局](docs/chapter-04/subject-06/WebSite.md)
+  * [第七节 文件上传](docs/chapter-04/subject-07/Fileupload.md)
+    * [1. 流式上传](docs/chapter-04/subject-07/StreamFileupload.md)
 * 第五章 数据库（文档编写中...）
   * 第一节 数据源
     * 设置数据源
@@ -126,7 +123,7 @@
     * 数据库事务
     * 高级事务控制
 * 第六章 GraphQL（文档编写中...）
-* 第七章 插件集（文档编写中...）
+* 第七章 第三方集成（文档编写中...）
     * JFinal
     * Nutz
     * Spring
