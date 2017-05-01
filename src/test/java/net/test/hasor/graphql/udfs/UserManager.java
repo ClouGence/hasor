@@ -1,14 +1,12 @@
 package net.test.hasor.graphql.udfs;
 import net.hasor.graphql.GraphUDF;
-import net.hasor.graphql.UDF;
 
 import java.util.HashMap;
 import java.util.Map;
 /**
  * Created by yongchun.zyc on 2017/4/18.
  */
-@GraphUDF("userManager.findUserByID")
-public class UserManager implements UDF {
+public class UserManager implements GraphUDF {
     @Override
     public Object call(Map<String, Object> values) {
         HashMap<String, Object> udfData = new HashMap<String, Object>();

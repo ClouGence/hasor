@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.graphql.ctx;
-import net.hasor.core.*;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.BindInfo;
+import net.hasor.core.Hasor;
+import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderWrap;
-import net.hasor.core.utils.StringUtils;
 import net.hasor.graphql.GraphApiBinder;
 import net.hasor.graphql.GraphUDF;
-import net.hasor.graphql.UDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashSet;
-import java.util.Set;
 /**
  * GraphQL 扩展接口。
  * @author 赵永春(zyc@hasor.net)
@@ -37,81 +35,29 @@ public class GraphQLApiBinderCreater implements ApiBinderCreater {
     public ApiBinder createBinder(final ApiBinder apiBinder) {
         return new GraphApiBinderImpl(apiBinder);
     }
-}
-class GraphApiBinderImpl extends ApiBinderWrap implements GraphApiBinder {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    public GraphApiBinderImpl(ApiBinder apiBinder) {
-        super(apiBinder);
-    }
-    //
-    //
-    //
-    @Override
-    public GraphApiBinder addUDF(String name, Class<? extends UDF> udfType) {
-        return this.addUDF(name, bindType(UDF.class).uniqueName().to(udfType).toInfo());
-    }
-    @Override
-    public GraphApiBinder addUDF(String name, UDF udf) {
-        return this.addUDF(name, bindType(UDF.class).uniqueName().toInstance(udf).toInfo());
-    }
-    @Override
-    public GraphApiBinder addUDF(String name, Provider<? extends UDF> udfProvider) {
-        return this.addUDF(name, bindType(UDF.class).uniqueName().toProvider(udfProvider).toInfo());
-    }
-    @Override
-    public GraphApiBinder addUDF(String name, BindInfo<? extends UDF> udfInfo) {
-        UDFDefine define = Hasor.autoAware(getEnvironment(), new UDFDefine(name, udfInfo));
-        this.bindType(UDFDefine.class).uniqueName().toInstance(define);
-        return this;
-    }
-    @Override
-    public GraphApiBinder addUDF(Class<? extends UDF> udfType) {
-        this.loadUDF(this, udfType);
-        return this;
-    }
-    //
-    @Override
-    public void scanUDF() {
-        this.scanUDF(new Matcher<Class<?>>() {
-            @Override
-            public boolean matches(Class<?> target) {
-                return true;
-            }
-        });
-    }
-    @Override
-    public void scanUDF(String... packages) {
-        this.scanUDF(new Matcher<Class<?>>() {
-            @Override
-            public boolean matches(Class<?> target) {
-                return true;
-            }
-        });
-    }
-    @Override
-    public void scanUDF(Matcher<Class<?>> matcher, String... packages) {
-        String[] defaultPackages = this.getEnvironment().getSpanPackage();
-        String[] scanPackages = (packages == null || packages.length == 0) ? defaultPackages : packages;
+    private static class GraphApiBinderImpl extends ApiBinderWrap implements GraphApiBinder {
+        protected Logger logger = LoggerFactory.getLogger(getClass());
+        public GraphApiBinderImpl(ApiBinder apiBinder) {
+            super(apiBinder);
+        }
         //
-        Set<Class<?>> serviceSet = this.findClass(UDF.class, scanPackages);
-        serviceSet = (serviceSet == null) ? new HashSet<Class<?>>() : new HashSet<Class<?>>(serviceSet);
-        serviceSet.remove(UDF.class);
-        if (serviceSet.isEmpty()) {
-            logger.warn("scanUDF -> exit , not found any @GraphUDF.");
+        @Override
+        public GraphApiBinder addUDF(String name, Class<? extends GraphUDF> udfType) {
+            return this.addUDF(name, bindType(GraphUDF.class).uniqueName().to(udfType).toInfo());
         }
-        for (Class<?> type : serviceSet) {
-            loadUDF(this, type);
+        @Override
+        public GraphApiBinder addUDF(String name, GraphUDF graphUdf) {
+            return this.addUDF(name, bindType(GraphUDF.class).uniqueName().toInstance(graphUdf).toInfo());
         }
-    }
-    private void loadUDF(GraphApiBinder apiBinder, Class<?> udfType) {
-        GraphUDF udfAnno = udfType.getAnnotation(GraphUDF.class);
-        if (udfAnno == null) {
-            return;
+        @Override
+        public GraphApiBinder addUDF(String name, Provider<? extends GraphUDF> udfProvider) {
+            return this.addUDF(name, bindType(GraphUDF.class).uniqueName().toProvider(udfProvider).toInfo());
         }
-        String udfName = udfAnno.value();
-        if (StringUtils.isBlank(udfName)) {
-            udfName = udfType.getName();
+        @Override
+        public GraphApiBinder addUDF(String name, BindInfo<? extends GraphUDF> udfInfo) {
+            UDFDefine define = Hasor.autoAware(getEnvironment(), new UDFDefine(name, udfInfo));
+            this.bindType(UDFDefine.class).uniqueName().toInstance(define);
+            return this;
         }
-        apiBinder.addUDF(udfName, (BindInfo<? extends UDF>) apiBinder.bindType(udfType).toInfo());
     }
 }

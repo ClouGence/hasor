@@ -1,6 +1,5 @@
 package net.test.hasor.graphql.udfs;
 import net.hasor.graphql.GraphUDF;
-import net.hasor.graphql.UDF;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,8 +7,7 @@ import java.util.Map;
 /**
  * Created by yongchun.zyc on 2017/4/18.
  */
-@GraphUDF("queryOrder")
-public class QueryOrder implements UDF {
+public class QueryOrder implements GraphUDF {
     @Override
     public Object call(Map<String, Object> values) {
         ArrayList<Object> orderList = new ArrayList<Object>();

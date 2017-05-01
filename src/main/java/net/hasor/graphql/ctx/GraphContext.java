@@ -17,7 +17,7 @@ package net.hasor.graphql.ctx;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.graphql.GraphQuery;
-import net.hasor.graphql.UDF;
+import net.hasor.graphql.GraphUDF;
 import net.hasor.graphql.dsl.QueryModel;
 import net.hasor.graphql.dsl.parser.GraphParser;
 import net.hasor.graphql.dsl.parser.ParseException;
@@ -26,13 +26,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 /**
- * GraphQL 插件上下文，提供 UDF 发现和管理以及 QL 执行任务调度协助线程的。
+ * GraphQL 插件上下文，提供 GraphUDF 发现和管理以及 QL 执行任务调度协助线程的。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class GraphContext implements AppContextAware {
-    private AppContext       appContext;
-    private Map<String, UDF> udfMap;
+    private AppContext            appContext;
+    private Map<String, GraphUDF> udfMap;
     protected GraphContext() {
     }
     //
@@ -40,7 +40,7 @@ public class GraphContext implements AppContextAware {
     @Override
     public void setAppContext(AppContext appContext) {
         this.appContext = appContext;
-        this.udfMap = new HashMap<String, UDF>();
+        this.udfMap = new HashMap<String, GraphUDF>();
         List<UDFDefine> udfList = appContext.findBindingBean(UDFDefine.class);
         for (UDFDefine define : udfList) {
             String defineName = define.getName();
@@ -51,7 +51,7 @@ public class GraphContext implements AppContextAware {
         }
     }
     //
-    protected UDF findUDF(String udfName) {
+    protected GraphUDF findUDF(String udfName) {
         return this.udfMap.get(udfName);
     }
     //

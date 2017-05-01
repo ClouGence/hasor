@@ -60,7 +60,7 @@ import java.util.concurrent.ExecutionException;
  *  3. 节点分为三种类型 -> S：结构、F：格式、V：取值。
  *       S 节点：用于处理数据结构，例如：Object、List、ListObject。一般情况下 S 节点都会涉及到一个数据源。
  *       F 格式：用于处理 Object、List 中的数据元素。 F 节点的依赖节点是其所属 S 节点的数据源。
- *       V 取值：用于处理 UDF 调用、固定值、取值操作。
+ *       V 取值：用于处理 GraphUDF 调用、固定值、取值操作。
  *  4. S结构性节点，可以（但不是必须）依赖另一个 S 节点，或者 V 节点用作结构的数据源 DataSource。
  *  5. F 节点在执行 run 方法时，只更新 Status -> Complete。
  *  6. F 节点在执行 getValue 方法时会抛异常。

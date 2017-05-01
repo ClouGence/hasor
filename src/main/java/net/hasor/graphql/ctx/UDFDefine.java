@@ -17,20 +17,20 @@ package net.hasor.graphql.ctx;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
-import net.hasor.graphql.UDF;
+import net.hasor.graphql.GraphUDF;
 
 import java.util.Map;
 /**
- * UDF 函数定义
+ * GraphUDF 函数定义
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-class UDFDefine implements UDF, AppContextAware {
-    private String                  name;
-    private BindInfo<? extends UDF> udfInfo;
-    private UDF                     target;
+class UDFDefine implements GraphUDF, AppContextAware {
+    private String                       name;
+    private BindInfo<? extends GraphUDF> udfInfo;
+    private GraphUDF                     target;
     //
-    public UDFDefine(String name, BindInfo<? extends UDF> udfInfo) {
+    public UDFDefine(String name, BindInfo<? extends GraphUDF> udfInfo) {
         this.name = name;
         this.udfInfo = udfInfo;
     }

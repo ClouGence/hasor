@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.graphql.runtime;
-import net.hasor.graphql.UDF;
+import net.hasor.graphql.GraphUDF;
 /**
- * 执行QL 的查询上下文，用于提供 UDF 和 环境参数查询。
+ * 执行QL 的查询上下文，用于提供 GraphUDF 和 环境参数查询。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public interface QueryContext {
-    public UDF findUDF(String udfName);
+    public GraphUDF findUDF(String udfName);
 
     public Object get(String name);
 }

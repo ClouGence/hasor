@@ -67,12 +67,12 @@ public class CallTaskTest implements Module {
     // --------------------------------------------------------------------------------------------
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        // - UDF
+        // - GraphUDF
         GraphApiBinder binder = apiBinder.tryCast(GraphApiBinder.class);
-        binder.addUDF(FindUserByID.class);
-        binder.addUDF(QueryOrder.class);
-        binder.addUDF(UserManager.class);
-        binder.addUDF(Foo.class);
+        binder.addUDF("findUserByID", FindUserByID.class);
+        binder.addUDF("queryOrder", QueryOrder.class);
+        binder.addUDF("userManager.findUserByID", UserManager.class);
+        binder.addUDF("foo", Foo.class);
     }
     private void printTaskTree(QueryModel queryModel) {
         String buildQuery = queryModel.buildQuery();

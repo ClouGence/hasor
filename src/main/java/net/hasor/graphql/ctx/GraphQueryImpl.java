@@ -16,8 +16,8 @@
 package net.hasor.graphql.ctx;
 import net.hasor.core.AppContext;
 import net.hasor.graphql.GraphQuery;
+import net.hasor.graphql.GraphUDF;
 import net.hasor.graphql.QueryResult;
-import net.hasor.graphql.UDF;
 import net.hasor.graphql.dsl.QueryModel;
 import net.hasor.graphql.result.ValueModel;
 import net.hasor.graphql.runtime.AbstractQueryTask;
@@ -35,14 +35,14 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 class GraphQueryImpl implements GraphQuery {
-    private final GraphContext     graphContext;
-    private final QueryModel       queryModel;
-    private final Map<String, UDF> temporaryUDF;
+    private final GraphContext          graphContext;
+    private final QueryModel            queryModel;
+    private final Map<String, GraphUDF> temporaryUDF;
     //
     public GraphQueryImpl(AppContext appContext, QueryModel queryModel) {
         this.graphContext = appContext.getInstance(GraphContext.class);
         this.queryModel = queryModel;
-        this.temporaryUDF = new HashMap<String, UDF>();
+        this.temporaryUDF = new HashMap<String, GraphUDF>();
     }
     //
     @Override
@@ -67,7 +67,7 @@ class GraphQueryImpl implements GraphQuery {
         }
         this.runTasks(new QueryContextImpl(queryContext) {
             @Override
-            public UDF findUDF(String udfName) {
+            public GraphUDF findUDF(String udfName) {
                 if (temporaryUDF.containsKey(udfName)) {
                     return temporaryUDF.get(udfName);
                 }
