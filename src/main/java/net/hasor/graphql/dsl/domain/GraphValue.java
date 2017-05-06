@@ -19,4 +19,12 @@ package net.hasor.graphql.dsl.domain;
  * @version : 2017-03-23
  */
 public abstract class GraphValue {
+    private EqType eqType;
+    public GraphValue(EqType eqType) {
+        this.eqType = eqType;
+    }
+    //
+    public EqType getEqType() {
+        return eqType;
+    }
 }

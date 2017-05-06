@@ -15,23 +15,35 @@
  */
 package net.hasor.graphql.dsl.domain;
 /**
- * 固定值
+ *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class FixedValue extends GraphValue {
-    private Object    value;
-    private ValueType valueType;
+public enum EqType {
+    /** = */
+    EQ("="), //
+    /** != */
+    NE("!="),//
+    /** > */
+    GT(">"),//
+    /** >= */
+    GTE(">="),//
+    /** < */
+    LT("<"),//
+    /** <= */
+    LTE("<="),//
+    /** like */
+    Like("like"),;//
     //
-    public FixedValue(EqType eqType, Object value, ValueType valueType) {
-        super(eqType);
-        this.value = value;
-        this.valueType = valueType;
+    private String typeString;
+    EqType(String type) {
+        this.typeString = type;
     }
-    public Object getValue() {
-        return this.value;
-    }
-    public ValueType getValueType() {
-        return this.valueType;
+    public static EqType paserType(String typeString) {
+        for (EqType et : EqType.values()) {
+            if (et.typeString.equalsIgnoreCase(typeString))
+                return et;
+        }
+        return EQ;
     }
 }

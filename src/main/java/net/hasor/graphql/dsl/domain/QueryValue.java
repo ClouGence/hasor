@@ -21,7 +21,8 @@ package net.hasor.graphql.dsl.domain;
  */
 public class QueryValue extends GraphValue {
     private QueryDomain queryDomain;
-    public QueryValue(QueryDomain queryDomain) {
+    public QueryValue(EqType eqType, QueryDomain queryDomain) {
+        super(eqType);
         this.queryDomain = queryDomain;
     }
     public QueryDomain getQueryDomain() {

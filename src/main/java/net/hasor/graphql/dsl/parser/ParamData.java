@@ -13,25 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.graphql.dsl.domain;
+package net.hasor.graphql.dsl.parser;
+import net.hasor.graphql.dsl.GraphParam;
+import net.hasor.graphql.dsl.domain.EqType;
 /**
- * 固定值
+ *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class FixedValue extends GraphValue {
-    private Object    value;
-    private ValueType valueType;
+class ParamData {
+    private GraphParam graphParam = null;
+    private EqType     eqType     = null;
+    public ParamData(GraphParam graphParam, EqType eqType) {
+        this.graphParam = graphParam;
+        this.eqType = eqType;
+    }
     //
-    public FixedValue(EqType eqType, Object value, ValueType valueType) {
-        super(eqType);
-        this.value = value;
-        this.valueType = valueType;
+    public GraphParam getGraphParam() {
+        return graphParam;
     }
-    public Object getValue() {
-        return this.value;
-    }
-    public ValueType getValueType() {
-        return this.valueType;
+    public EqType getEqType() {
+        return eqType;
     }
 }

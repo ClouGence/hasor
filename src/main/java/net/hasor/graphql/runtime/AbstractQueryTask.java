@@ -70,6 +70,7 @@ import java.util.concurrent.ExecutionException;
  * @version : 2017-03-23
  */
 public abstract class AbstractQueryTask extends Observable implements QueryTask {
+    protected List<AbstractQueryTask> parentList   = new ArrayList<AbstractQueryTask>();
     protected List<AbstractQueryTask> subList      = new ArrayList<AbstractQueryTask>();
     private   String                  nameOfParent = null;
     private   TaskStatus              taskStatus   = null;
@@ -208,6 +209,7 @@ public abstract class AbstractQueryTask extends Observable implements QueryTask 
             }
         });
         this.subList.add(subTask);
+        subTask.parentList.add(this);
         this.taskStatus = TaskStatus.Prepare;
     }
     /** 是否等待调度：status = Waiting */

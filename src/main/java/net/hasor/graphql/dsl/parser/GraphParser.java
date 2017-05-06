@@ -17,6 +17,7 @@
  */
 package net.hasor.graphql.dsl.parser;
 import net.hasor.graphql.dsl.*;
+import net.hasor.graphql.dsl.domain.EqType;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -150,7 +151,7 @@ public class GraphParser implements GraphParserConstants {
     final public UDFBindingBuilder udf(Object builder) throws ParseException {
         String udfName = null;
         UDFBindingBuilder udfBuilder = null;
-        GraphParam udfParam = null;
+        ParamData udfParam = null;
         udfName = name();
         if (builder instanceof BindingBuilder) {
             udfBuilder = ((BindingBuilder) builder).byUDF(udfName);
@@ -168,7 +169,7 @@ public class GraphParser implements GraphParserConstants {
         case STRING_SINGLE_NONEMPTY:
         case STRING_DOUBLE_NONEMPTY: {
             udfParam = queryParam();
-            udfBuilder.addParam(udfParam);
+            udfBuilder.addParam(udfParam.getGraphParam(), udfParam.getEqType());
             label_2:
             while (true) {
                 switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
@@ -182,7 +183,7 @@ public class GraphParser implements GraphParserConstants {
                 }
                 jj_consume_token(COMMA);
                 udfParam = queryParam();
-                udfBuilder.addParam(udfParam);
+                udfBuilder.addParam(udfParam.getGraphParam(), udfParam.getEqType());
             }
             break;
         }
@@ -198,12 +199,13 @@ public class GraphParser implements GraphParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
-    final public GraphParam queryParam() throws ParseException {
+    final public ParamData queryParam() throws ParseException {
         String paramName = null;
+        Token paramEqToken = null;
         ParamBindingBuilder paramBuilder = null;
         Object graphParam = null;
         paramName = stringValue();
-        jj_consume_token(EQ);
+        paramEqToken = jj_consume_token(EQ);
         paramBuilder = GraphQL.createParam(paramName);
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
         case OBRA:
@@ -256,9 +258,10 @@ public class GraphParser implements GraphParserConstants {
         if (graphParam == null && !queryMap.containsKey(paramName)) {
             graphParam = paramBuilder.withParam(paramName);
         }
+        EqType eqType = EqType.paserType(paramEqToken.image);
         {
             if ("" != null)
-                return (GraphParam) graphParam;
+                return new ParamData((GraphParam) graphParam, eqType);
         }
         throw new Error("Missing return statement in function");
     }
@@ -687,16 +690,6 @@ public class GraphParser implements GraphParserConstants {
             jj_save(4, xla);
         }
     }
-    private boolean jj_3R_14() {
-        if (jj_3R_22())
-            return true;
-        return false;
-    }
-    private boolean jj_3R_13() {
-        if (jj_3R_21())
-            return true;
-        return false;
-    }
     private boolean jj_3R_12() {
         if (jj_3R_20())
             return true;
@@ -816,6 +809,15 @@ public class GraphParser implements GraphParserConstants {
             return true;
         return false;
     }
+    private boolean jj_3R_39() {
+        if (jj_3R_22())
+            return true;
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_43())
+            jj_scanpos = xsp;
+        return false;
+    }
     private boolean jj_3R_35() {
         Token xsp;
         xsp = jj_scanpos;
@@ -829,15 +831,6 @@ public class GraphParser implements GraphParserConstants {
     private boolean jj_3_1() {
         if (jj_3R_4())
             return true;
-        return false;
-    }
-    private boolean jj_3R_39() {
-        if (jj_3R_22())
-            return true;
-        Token xsp;
-        xsp = jj_scanpos;
-        if (jj_3R_43())
-            jj_scanpos = xsp;
         return false;
     }
     private boolean jj_3R_40() {
@@ -894,6 +887,11 @@ public class GraphParser implements GraphParserConstants {
             return true;
         return false;
     }
+    private boolean jj_3R_37() {
+        if (jj_3R_41())
+            return true;
+        return false;
+    }
     private boolean jj_3R_23() {
         if (jj_3R_30())
             return true;
@@ -905,11 +903,6 @@ public class GraphParser implements GraphParserConstants {
                 break;
             }
         }
-        return false;
-    }
-    private boolean jj_3R_37() {
-        if (jj_3R_41())
-            return true;
         return false;
     }
     private boolean jj_3R_29() {
@@ -1021,15 +1014,6 @@ public class GraphParser implements GraphParserConstants {
             return true;
         return false;
     }
-    private boolean jj_3R_5() {
-        Token xsp;
-        xsp = jj_scanpos;
-        if (jj_3R_9())
-            jj_scanpos = xsp;
-        if (jj_3R_10())
-            return true;
-        return false;
-    }
     private boolean jj_3R_18() {
         if (jj_3R_25())
             return true;
@@ -1037,6 +1021,15 @@ public class GraphParser implements GraphParserConstants {
     }
     private boolean jj_3R_17() {
         if (jj_3R_24())
+            return true;
+        return false;
+    }
+    private boolean jj_3R_5() {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_9())
+            jj_scanpos = xsp;
+        if (jj_3R_10())
             return true;
         return false;
     }
@@ -1056,6 +1049,16 @@ public class GraphParser implements GraphParserConstants {
                     return true;
             }
         }
+        return false;
+    }
+    private boolean jj_3R_14() {
+        if (jj_3R_22())
+            return true;
+        return false;
+    }
+    private boolean jj_3R_13() {
+        if (jj_3R_21())
+            return true;
         return false;
     }
     /** Generated Token Manager. */

@@ -34,15 +34,15 @@ class BindingBuilderImpl implements BindingBuilder {
         //    ---------------------------------------------------------------------
         if (graphField instanceof RouteField) {
             String routeValue = ((RouteField) graphField).getRouteExpression();
-            this.queryDomain.addField(graphField.getName(), new RouteValue(routeValue));
+            this.queryDomain.addField(graphField.getName(), new RouteValue(EqType.EQ, routeValue));
             //---------------------------------------------------------------------
         } else if (graphField instanceof ValueField) {
             ValueField valueGraphField = (ValueField) graphField;
-            this.queryDomain.addField(valueGraphField.getName(), new FixedValue(valueGraphField.getValue(), valueGraphField.getValueType()));
+            this.queryDomain.addField(valueGraphField.getName(), new FixedValue(EqType.EQ, valueGraphField.getValue(), valueGraphField.getValueType()));
             //---------------------------------------------------------------------
         } else if (graphField instanceof QueryField) {
             QueryDomain subQuery = ((QueryField) graphField).getQueryDomain();
-            this.queryDomain.addField(graphField.getName(), new QueryValue(subQuery));
+            this.queryDomain.addField(graphField.getName(), new QueryValue(EqType.EQ, subQuery));
         }
         return this;
     }

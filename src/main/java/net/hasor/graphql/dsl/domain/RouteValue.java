@@ -21,7 +21,8 @@ package net.hasor.graphql.dsl.domain;
  */
 public class RouteValue extends GraphValue {
     private String routeExpression;
-    public RouteValue(String routeExpression) {
+    public RouteValue(EqType eqType, String routeExpression) {
+        super(eqType);
         this.routeExpression = routeExpression;
     }
     public String getRouteExpression() {

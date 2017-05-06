@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.graphql.dsl;
+import net.hasor.graphql.dsl.domain.EqType;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
@@ -30,7 +31,11 @@ class ParamUDFBindingBuilderImpl extends BindingBuilderWraper implements UDFBind
     //
     @Override
     public UDFBindingBuilder addParam(GraphParam graphParam) {
-        this.udfBuilder.addParam(graphParam);
+        return this.addParam(graphParam, EqType.EQ);
+    }
+    @Override
+    public UDFBindingBuilder addParam(GraphParam graphParam, EqType eqType) {
+        this.udfBuilder.addParam(graphParam, eqType);
         return this;
     }
     @Override

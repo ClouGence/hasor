@@ -28,21 +28,25 @@ class UDFBindingBuilderImpl extends BindingBuilderWraper implements UDFBindingBu
     //
     @Override
     public UDFBindingBuilder addParam(GraphParam graphParam) {
+        return this.addParam(graphParam, EqType.EQ);
+    }
+    @Override
+    public UDFBindingBuilder addParam(GraphParam graphParam, EqType eqType) {
         if (graphParam == null) {
             return this;
         }
         //    ---------------------------------------------------------------------
         if (graphParam instanceof RouteParam) {
             String routeValue = ((RouteParam) graphParam).getRouteExpression();
-            this.graphUDF.addParam(graphParam.getName(), new RouteValue(routeValue));
+            this.graphUDF.addParam(graphParam.getName(), new RouteValue(eqType, routeValue));
             //---------------------------------------------------------------------
         } else if (graphParam instanceof ValueParam) {
             ValueParam valueGraphParam = (ValueParam) graphParam;
-            this.graphUDF.addParam(valueGraphParam.getName(), new FixedValue(valueGraphParam.getValue(), valueGraphParam.getValueType()));
+            this.graphUDF.addParam(valueGraphParam.getName(), new FixedValue(eqType, valueGraphParam.getValue(), valueGraphParam.getValueType()));
             //---------------------------------------------------------------------
         } else if (graphParam instanceof QueryParam) {
             QueryDomain subQuery = ((QueryParam) graphParam).getQueryDomain();
-            this.graphUDF.addParam(graphParam.getName(), new QueryValue(subQuery));
+            this.graphUDF.addParam(graphParam.getName(), new QueryValue(eqType, subQuery));
         }
         return this;
     }

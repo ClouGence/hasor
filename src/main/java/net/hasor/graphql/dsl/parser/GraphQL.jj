@@ -22,6 +22,7 @@ PARSER_BEGIN(GraphParser)
  */
 package net.hasor.graphql.dsl.parser;
 import net.hasor.graphql.dsl.*;
+import net.hasor.graphql.dsl.domain.EqType;
 import java.util.*;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
@@ -120,7 +121,7 @@ TOKEN: {
     | < OCBR                    : "{" >
     | < CCBR                    : "}" >
     | < COLON                   : ":" >
-    | < EQ                      : "=" >
+    | < EQ                      : "=" | "!=" | ">" | ">=" | "<" | "<=" | "like" >
     | < ELLIPSIS                : "..." >
     | < QUOTE_SINGLE            : "'" >
     | < QUOTE_DOUBLE            : "\"" >
@@ -201,7 +202,7 @@ BindingBuilder grapthQuery(String queryName) :{
 UDFBindingBuilder udf(Object builder) :{
                                                                   String            udfName    = null;
                                                                   UDFBindingBuilder udfBuilder = null;
-                                                                  GraphParam        udfParam   = null;
+                                                                  ParamData         udfParam   = null;
 }{
     udfName = name()                                            {
                                                                   if (builder instanceof BindingBuilder)
@@ -213,10 +214,10 @@ UDFBindingBuilder udf(Object builder) :{
                                                                 }
     <OPAR>
     (
-        udfParam = queryParam()                                 { udfBuilder.addParam(udfParam); }
+        udfParam = queryParam()                                 { udfBuilder.addParam(udfParam.getGraphParam(),udfParam.getEqType()); }
         (
             <COMMA>
-            udfParam = queryParam()                             { udfBuilder.addParam(udfParam); }
+            udfParam = queryParam()                             { udfBuilder.addParam(udfParam.getGraphParam(),udfParam.getEqType()); }
         )*
     )?
     <CPAR>                                                      {
@@ -225,12 +226,13 @@ UDFBindingBuilder udf(Object builder) :{
                                                                 }
 }
 
-GraphParam queryParam() :{
+ParamData queryParam() :{
                                                                   String              paramName    = null;
+                                                                  Token               paramEqToken = null;
                                                                   ParamBindingBuilder paramBuilder = null;
                                                                   Object              graphParam   = null;
 }{
-    paramName = stringValue() <EQ>                              { paramBuilder = GraphQL.createParam(paramName); }
+    paramName = stringValue() paramEqToken = <EQ>               { paramBuilder = GraphQL.createParam(paramName); }
     (
           LOOKAHEAD(2) graphParam = udf(paramBuilder)           { graphParam = ((UDFBindingBuilder)graphParam).asParam(); }
         | graphParam = value(paramName,paramBuilder,GraphQLToType.ToParam)
@@ -240,7 +242,8 @@ GraphParam queryParam() :{
                                                                       { graphParam = null;/*paramBuilder.withParam(paramName);*/ }
                                                                   if (graphParam == null && !queryMap.containsKey(paramName))
                                                                       { graphParam = paramBuilder.withParam(paramName); }
-                                                                  return (GraphParam)graphParam;
+                                                                  EqType eqType = EqType.paserType(paramEqToken.image);
+                                                                  return new ParamData((GraphParam)graphParam,eqType);
                                                                 }
 }
 

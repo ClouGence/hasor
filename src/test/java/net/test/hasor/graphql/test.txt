@@ -38,7 +38,7 @@
         age,
         nick,
     },
-    orderList : <functionName>( "accountID" = user.userID , ... ) [
+    orderList : <functionName>( "accountID" = user.uid , ... ) [
         {
             orderID,
             itemID,

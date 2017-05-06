@@ -49,7 +49,7 @@ TOKEN: {
     | < OCBR                    : "{" >
     | < CCBR                    : "}" >
     | < COLON                   : ":" >
-    | < EQ                      : "=" >
+    | < EQ                      : "=" | "!=" | ">" | ">=" | "<" | "<=" | "like" >
     | < ELLIPSIS                : "..." >
     | < QUOTE_SINGLE            : "'" >
     | < QUOTE_DOUBLE            : "\"" >
