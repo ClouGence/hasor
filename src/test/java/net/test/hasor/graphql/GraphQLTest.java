@@ -1,6 +1,7 @@
 package net.test.hasor.graphql;
 import net.hasor.graphql.dsl.GraphQL;
 import net.hasor.graphql.dsl.QueryModel;
+import net.hasor.graphql.dsl.domain.EqType;
 import net.hasor.graphql.dsl.parser.GraphParser;
 import net.hasor.graphql.dsl.parser.ParseException;
 import org.junit.Test;
@@ -12,7 +13,7 @@ public class GraphQLTest {
 
     /*
 -- 查询服务，并返回查询一条结果（如果服务返回一个List，那么取第一个元素）
-findUserByID ( userID = 12345 , status = false) {
+findUserByID ( userID = 12345 , status > 2) {
     name,
     age,
     nick
@@ -24,7 +25,7 @@ findUserByID ( userID = 12345 , status = false) {
                         GraphQL.createParam("userID").withNumber(12345)//
                 )//
                 .addParam(//
-                        GraphQL.createParam("status").withBoolean(true)//
+                        GraphQL.createParam("status").withNumber(2), EqType.GT//
                 )//
                 //-----------------------------------------------------------------------
                 .asObject()//

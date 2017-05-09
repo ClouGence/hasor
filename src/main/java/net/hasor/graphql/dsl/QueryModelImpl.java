@@ -59,10 +59,12 @@ class QueryModelImpl implements QueryModel {
                     builder.append(", ");
                 }
                 String name = paramNames.get(i);
+                GraphValue atParam = graphUDF.getParam(name);
                 builder.append("\"");
                 builder.append(name);
-                builder.append("\" = ");
-                buildParam(builder, useFragment, graphUDF.getParam(name), depth);
+                builder.append("\" ");
+                builder.append(" " + atParam.getEqType().getTypeString() + " ");
+                buildParam(builder, useFragment, atParam, depth);
             }
             builder.append(")");
         }

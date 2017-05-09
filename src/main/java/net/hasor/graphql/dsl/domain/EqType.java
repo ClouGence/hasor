@@ -39,6 +39,9 @@ public enum EqType {
     EqType(String type) {
         this.typeString = type;
     }
+    public String getTypeString() {
+        return typeString;
+    }
     public static EqType paserType(String typeString) {
         for (EqType et : EqType.values()) {
             if (et.typeString.equalsIgnoreCase(typeString))
