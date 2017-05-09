@@ -27,4 +27,8 @@ public abstract class GraphValue {
     public EqType getEqType() {
         return eqType;
     }
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName().substring(0, 2) + " - " + this.getEqType() + " ";
+    }
 }

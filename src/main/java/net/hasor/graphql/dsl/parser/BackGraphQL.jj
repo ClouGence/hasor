@@ -97,9 +97,8 @@ TOKEN:{
         )+>
     | <STRING_SINGLE_NONEMPTY: <QUOTE_SINGLE> <STRING_SINGLE_BODY> <QUOTE_SINGLE>>
     | <STRING_DOUBLE_NONEMPTY: <QUOTE_DOUBLE> <STRING_DOUBLE_BODY> <QUOTE_DOUBLE>>
-    | <NAME_LITERAL          : ( "_" | ["A"-"Z"] | ["a"-"z"] ) ( "." | "-" | "_" | ["0"-"9"] | ["A"-"Z"] | ["a"-"z"] )* >
+    | <NAME_LITERAL          :   ("$" | "~" | "_" | ["A"-"Z"] | ["a"-"z"] ) ( "." | "-" | "_" | ["0"-"9"] | ["A"-"Z"] | ["a"-"z"] )* >
 }
-
 
 
 // GrapthQL

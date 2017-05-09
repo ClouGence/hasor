@@ -28,4 +28,8 @@ public class RouteValue extends GraphValue {
     public String getRouteExpression() {
         return this.routeExpression;
     }
+    @Override
+    public String toString() {
+        return super.toString() + "'" + this.routeExpression + "'";
+    }
 }

@@ -149,14 +149,20 @@ findUserByID ( userID = 12345 ) [
     public QueryModel main5() {
     /*
 -- 查询服务的同时构造另两个 orderList 属性，属性来源是另一个服务，另外参数 userID、status 也可以使用引号阔起来
-findUserByIDAndType ( "userID" = uid, "status" = 1 ) {
-    userID,
-    nick,
-    orderList : queryOrder ( "accountID" = uid) [
+findUserByID ("userID" = uid, "status" = 1, "oriData" =  {
+        "self" : true,
+        "testID" : 222
+    }) {
+    "info" :  {
+        "userID" : ~.userID,
+        "nick" : ~.nick
+    },
+    "orderList" : queryOrder ("accountID" = $.info.userID) [
         {
-            orderID,
-            itemID,
-            itemName
+            "orderID",
+            "itemID",
+            "itemName",
+            "nick" : $.nick
         }
     ]
 }
@@ -167,19 +173,34 @@ findUserByIDAndType ( "userID" = uid, "status" = 1 ) {
                         GraphQL.createParam("userID").withParam("uid")//
                 ).addParam(//
                         GraphQL.createParam("status").withNumber(1)//
+                ).addParam(//
+                        GraphQL.createParam("oriData").withFragment(//
+                                GraphQL.createQuery()//
+                                        .asObject()//
+                                        .addField(//
+                                                GraphQL.createField("self").withBoolean(true)//
+                                        )//
+                                        .addField(//
+                                                GraphQL.createField("testID").withNumber(222)//
+                                        ).buildQuery()//
+                        )//
                 )//----------------------------------------------------------------------
                 .asObject()//
-                .addField(//
-                        GraphQL.createField("userID").withMapping("userID")//
-                )//
-                .addField(//
-                        GraphQL.createField("nick").withMapping("nick")//
+                .addField(
+                        //
+                        GraphQL.createField("info")//
+                                .asObject()//
+                                .addField(//
+                                        GraphQL.createField("userID").withMapping("userID")//
+                                ).addField(//
+                                GraphQL.createField("nick").withMapping("~.nick")//
+                        ).asField()//
                 )//
                 .addField(//
                         GraphQL.createField("orderList")//
                                 .withUDF("queryOrder")//
                                 .addParam(//
-                                        GraphQL.createParam("accountID").withParam("uid")//
+                                        GraphQL.createParam("accountID").withParam("$.info.userID")//
                                 )//--------------------------------------------------------------------------
                                 .asListObject()//
                                 .addField(//
@@ -190,6 +211,9 @@ findUserByIDAndType ( "userID" = uid, "status" = 1 ) {
                                 )//
                                 .addField(//
                                         GraphQL.createField("itemName").withMapping("itemName")//
+                                )//
+                                .addField(//
+                                        GraphQL.createField("nick").withMapping("$.nick")//
                                 )//--------------------------------------------------------------------------
                                 .asField()//
                 )//

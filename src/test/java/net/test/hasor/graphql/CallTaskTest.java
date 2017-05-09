@@ -16,6 +16,9 @@ import net.test.hasor.graphql.udfs.QueryOrder;
 import net.test.hasor.graphql.udfs.UserManager;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.Map;
 /**
  * Created by yongchun.zyc on 2017/3/21.
  */
@@ -80,16 +83,20 @@ public class CallTaskTest implements Module {
         {
             QueryTask queryTask = new TaskParser().doParser(queryModel.getDomain());
             System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            System.out.println(queryTask.printTaskTree(true));
+            System.out.println(queryTask.printStrutsTree());
             System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            System.out.println(queryTask.printTaskTree(false));
+            System.out.println(queryTask.printTaskTree());
             System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
         // - 执行 QL
         try {
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("uid", "uid form env");
+            params.put("sid", "sid form env");
+            //
             GraphContext gc = appContext.getInstance(GraphContext.class);
             GraphQuery query = gc.createQuery(buildQuery);
-            QueryResult result = query.doQuery(null);
+            QueryResult result = query.doQuery(params);
             System.out.println(result);
         } catch (Exception e) {
             e.printStackTrace();

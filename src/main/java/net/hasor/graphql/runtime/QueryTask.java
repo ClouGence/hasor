@@ -21,8 +21,11 @@ import java.util.concurrent.ExecutionException;
  * @version : 2017-03-23
  */
 public interface QueryTask {
+    /** 打印结构任务树 */
+    public String printStrutsTree();
+
     /** 打印执行任务树 */
-    public String printTaskTree(boolean detail);
+    public String printTaskTree();
 
     /**获取执行结果，如果任务尚未调度，那么会抛出异常。*/
     public Object getValue() throws ExecutionException, InterruptedException;

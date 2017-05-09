@@ -28,4 +28,8 @@ public class QueryValue extends GraphValue {
     public QueryDomain getQueryDomain() {
         return queryDomain;
     }
+    @Override
+    public String toString() {
+        return super.toString() + "query...";
+    }
 }

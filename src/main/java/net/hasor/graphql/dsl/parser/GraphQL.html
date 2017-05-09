@@ -110,7 +110,7 @@
 | &lt;#STRING_DOUBLE_BODY: (~["\"","\\","\r","\n","\f","\t"] | "\\" ("r" | "n" | "f" | "\\" | "/" | "\"" | "b" | "t"))+&gt;
 | &lt;STRING_SINGLE_NONEMPTY: &lt;QUOTE_SINGLE&gt; &lt;STRING_SINGLE_BODY&gt; &lt;QUOTE_SINGLE&gt;&gt;
 | &lt;STRING_DOUBLE_NONEMPTY: &lt;QUOTE_DOUBLE&gt; &lt;STRING_DOUBLE_BODY&gt; &lt;QUOTE_DOUBLE&gt;&gt;
-| &lt;NAME_LITERAL: ("_" | ["A"-"Z"] | ["a"-"z"]) ("." | "-" | "_" | ["0"-"9"] | ["A"-"Z"] | ["a"-"z"])*&gt;
+| &lt;NAME_LITERAL: ("$" | "~" | "_" | ["A"-"Z"] | ["a"-"z"]) ("." | "-" | "_" | ["0"-"9"] | ["A"-"Z"] | ["a"-"z"])*&gt;
 }
 
    </PRE>

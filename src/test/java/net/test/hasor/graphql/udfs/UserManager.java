@@ -13,7 +13,7 @@ public class UserManager implements GraphUDF {
         udfData.put("userID", 12345);
         udfData.put("age", 31);
         udfData.put("nick", "my name is nick.");
-        udfData.put("name", "this is name2.");
+        udfData.put("name", "this is name.");
         udfData.put("status", true);
         return udfData;
     }

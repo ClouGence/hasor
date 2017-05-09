@@ -15,7 +15,6 @@
  */
 package net.hasor.graphql.runtime.task;
 import net.hasor.graphql.result.ListModel;
-import net.hasor.graphql.runtime.AbstractQueryTask;
 import net.hasor.graphql.runtime.QueryContext;
 import net.hasor.graphql.runtime.TaskType;
 
@@ -27,19 +26,17 @@ import java.util.Collection;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ListStrutsTask extends AbstractQueryTask {
-    private AbstractQueryTask listBody;
-    public ListStrutsTask(String nameOfParent, AbstractQueryTask dataSource) {
-        super(nameOfParent, TaskType.S, dataSource);
+public class ListTask extends AbstractPrintTask {
+    private AbstractPrintTask bodyTask;
+    public ListTask(String nameOfParent, AbstractTask parentTask, AbstractTask dataSource) {
+        super(nameOfParent, parentTask, dataSource);
     }
     //
     //
-    //
-    public void setListBody(AbstractQueryTask listBody) {
-        this.listBody = listBody;
-        this.addSubTask(listBody);
+    public void setListBody(AbstractPrintTask bodyTask) {
+        this.bodyTask = bodyTask;
+        this.addFieldTask("", bodyTask);
     }
-    //
     @Override
     public Object doTask(QueryContext taskContext, Object inData) throws Throwable {
         //
@@ -64,10 +61,10 @@ public class ListStrutsTask extends AbstractQueryTask {
         ListModel listModel = new ListModel();
         for (Object listItem : listData) {
             Object taskValue = null;
-            if (TaskType.F.equals(this.listBody.getTaskType())) {
-                taskValue = this.listBody.doTask(taskContext, listItem);
+            if (TaskType.F.equals(this.bodyTask.getTaskType())) {
+                taskValue = this.bodyTask.doTask(taskContext, listItem);
             } else {
-                taskValue = this.listBody.getValue();
+                taskValue = this.bodyTask.getValue();
             }
             listModel.add(taskValue);
         }

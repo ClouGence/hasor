@@ -20,7 +20,6 @@ package net.hasor.graphql.runtime;
  * @version : 2017-03-23
  */
 public enum TaskType {
-    /**结构*/S,//
-    /**取值*/V,//
-    /**格式*/F
+    D,// DataSource
+    F // Field
 }

@@ -65,9 +65,9 @@ public class TaskTreeTest {
     private void printTaskTree(QueryTask queryTask) {
         //
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        System.out.println(queryTask.printTaskTree(true));
+        System.out.println(queryTask.printStrutsTree());
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        System.out.println(queryTask.printTaskTree(false));
+        System.out.println(queryTask.printTaskTree());
         //
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }

@@ -20,15 +20,13 @@ import net.hasor.graphql.GraphUDF;
 import net.hasor.graphql.QueryResult;
 import net.hasor.graphql.dsl.QueryModel;
 import net.hasor.graphql.result.ValueModel;
-import net.hasor.graphql.runtime.AbstractQueryTask;
 import net.hasor.graphql.runtime.QueryContext;
 import net.hasor.graphql.runtime.TaskParser;
 import net.hasor.graphql.runtime.TaskStatus;
+import net.hasor.graphql.runtime.task.AbstractPrintTask;
+import net.hasor.graphql.runtime.task.AbstractTask;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 /**
  * 用于封装 QL 查询接口。
  * @author 赵永春(zyc@hasor.net)
@@ -61,7 +59,7 @@ class GraphQueryImpl implements GraphQuery {
     //    }
     @Override
     public QueryResult doQuery(Map<String, Object> queryContext) {
-        AbstractQueryTask queryTask = new TaskParser().doParser(this.queryModel.getDomain());
+        AbstractPrintTask queryTask = new TaskParser().doParser(this.queryModel.getDomain());
         if (queryContext == null) {
             queryContext = Collections.EMPTY_MAP;
         }
@@ -82,21 +80,26 @@ class GraphQueryImpl implements GraphQuery {
             throw new RuntimeException(e);
         }
     }
-    private void runTasks(QueryContext context, AbstractQueryTask queryTask) {
-        List<AbstractQueryTask> allTask = queryTask.getAllTask();
-        int runCount = 0;
-        do {
-            runCount = 0;
-            for (AbstractQueryTask t : allTask) {
+    private void runTasks(QueryContext context, AbstractTask queryTask) {
+        List<AbstractTask> allTask = queryTask.getAllTask();
+        while (true) {
+            List<AbstractTask> toTask = new ArrayList<AbstractTask>();
+            for (AbstractTask t : allTask) {
                 if (TaskStatus.Failed.equals(queryTask.getTaskStatus())) {
                     return;
                 }
                 //
                 if (t.isWaiting()) {
-                    t.run(context, null);
-                    runCount++;
+                    toTask.add(t);
                 }
             }
-        } while (runCount != 0);
+            //
+            if (toTask.isEmpty()) {
+                return;
+            }
+            //
+            toTask.get(new Random(System.currentTimeMillis()).nextInt(toTask.size())).run(context, null);
+            //
+        }
     }
 }

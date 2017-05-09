@@ -15,39 +15,32 @@
  */
 package net.hasor.graphql.runtime.task;
 import net.hasor.graphql.result.ObjectModel;
-import net.hasor.graphql.runtime.AbstractQueryTask;
 import net.hasor.graphql.runtime.QueryContext;
 import net.hasor.graphql.runtime.TaskType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 /**
  *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ObjectStrutsTask extends AbstractQueryTask {
-    private List<String>                   fieldList = new ArrayList<String>();
-    private Map<String, AbstractQueryTask> dataMap   = new HashMap<String, AbstractQueryTask>();
-    public ObjectStrutsTask(String nameOfParent, TaskType taskType, AbstractQueryTask dataSource) {
-        super(nameOfParent, taskType, dataSource);
+public class ObjectTask extends AbstractPrintTask {
+    private List<String> fieldList = new ArrayList<String>();
+    public ObjectTask(String nameOfParent, AbstractTask parentTask, AbstractTask dataSource) {
+        super(nameOfParent, parentTask, dataSource);
     }
     //
     //
-    //
-    public void addField(String name, AbstractQueryTask dataSource) {
+    public void addField(String name, AbstractPrintTask dataSource) {
         this.fieldList.add(name);
-        this.dataMap.put(name, dataSource);
-        super.addSubTask(dataSource);
+        super.addFieldTask(name, dataSource);
     }
-    //
     @Override
     public Object doTask(QueryContext taskContext, Object inData) throws Throwable {
         ObjectModel objectData = new ObjectModel(this.fieldList);
         for (String fieldName : this.fieldList) {
-            AbstractQueryTask task = this.dataMap.get(fieldName);
+            AbstractPrintTask task = (AbstractPrintTask) super.findFieldTask(fieldName);
             Object taskValue = null;
             if (TaskType.F.equals(task.getTaskType())) {
                 taskValue = task.doTask(taskContext, inData);

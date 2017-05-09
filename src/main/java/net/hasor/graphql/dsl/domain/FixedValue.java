@@ -34,4 +34,8 @@ public class FixedValue extends GraphValue {
     public ValueType getValueType() {
         return this.valueType;
     }
+    @Override
+    public String toString() {
+        return super.toString() + "'" + this.value + "'";
+    }
 }

@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 package net.hasor.graphql.runtime.task;
-import net.hasor.graphql.runtime.AbstractQueryTask;
+import net.hasor.graphql.dsl.domain.ValueType;
 import net.hasor.graphql.runtime.QueryContext;
-import net.hasor.graphql.runtime.TaskType;
 /**
- *
+ * 固定值，任务。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class OriginalSourceTask extends AbstractQueryTask {
-    public OriginalSourceTask(String nameOfParent, AbstractQueryTask dataSource) {
-        super(nameOfParent, TaskType.V, dataSource);
+public class ValueTask extends AbstractPrintTask {
+    private Object    value;
+    private ValueType valueType;
+    public ValueTask(String nameOfParent, AbstractTask parentTask, Object value, ValueType valueType) {
+        super(nameOfParent, parentTask, null);
+        this.value = value;
+        this.valueType = valueType;
     }
     @Override
     public Object doTask(QueryContext taskContext, Object inData) throws Throwable {
-        return inData;
+        return this.value;
     }
 }

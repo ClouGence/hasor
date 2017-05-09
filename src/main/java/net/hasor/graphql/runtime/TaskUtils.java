@@ -16,6 +16,7 @@
 package net.hasor.graphql.runtime;
 import net.hasor.core.utils.BeanUtils;
 import net.hasor.graphql.ObjectResult;
+import net.hasor.graphql.runtime.task.AbstractTask;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -44,5 +45,30 @@ public class TaskUtils {
             }
         }
         return BeanUtils.readPropertyOrField(object, fieldName);
+    }
+    /** 最近的带有DS的Task */
+    public static AbstractTask nearData(AbstractTask atTask) {
+        if (TaskType.D == atTask.getTaskType()) {
+            return atTask;
+        } else {
+            while (atTask.getDataSource() == null) {
+                atTask = atTask.getParent();
+                if (atTask == null) {
+                    break;
+                }
+                if (atTask.getDataSource() != null) {
+                    return atTask;
+                }
+            }
+        }
+        return null;
+    }
+    /** 最近的DS */
+    public static AbstractTask nearDS(AbstractTask atTask) {
+        AbstractTask nearTask = TaskUtils.nearData(atTask);
+        if (nearTask != null) {
+            return nearTask.getDataSource();
+        }
+        return null;
     }
 }

@@ -15,7 +15,6 @@
  */
 package net.hasor.graphql.runtime.task;
 import net.hasor.graphql.GraphUDF;
-import net.hasor.graphql.runtime.AbstractQueryTask;
 import net.hasor.graphql.runtime.QueryContext;
 import net.hasor.graphql.runtime.TaskType;
 
@@ -26,19 +25,25 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class CallerSourceTask extends AbstractQueryTask {
+public class CallerTask extends AbstractPrintTask {
     private String                         callerName = null;
-    private Map<String, AbstractQueryTask> callParams = new HashMap<String, AbstractQueryTask>();
-    public CallerSourceTask(String nameOfParent, String callerName) {
-        super(nameOfParent, TaskType.V, null);
+    private Map<String, AbstractPrintTask> callParams = new HashMap<String, AbstractPrintTask>();
+    public CallerTask(String nameOfParent, AbstractTask parentTask, String callerName) {
+        super(nameOfParent, parentTask, null);
         this.callerName = callerName;
+    }
+    //
+    //
+    public void addParam(String paramName, AbstractPrintTask paramSource) {
+        this.callParams.put(paramName, paramSource);
+        super.addFieldTask(paramName, paramSource);
     }
     @Override
     public Object doTask(QueryContext taskContext, Object inData) throws Throwable {
         //
         Map<String, Object> values = new HashMap<String, Object>();
-        for (Map.Entry<String, AbstractQueryTask> ent : this.callParams.entrySet()) {
-            AbstractQueryTask task = ent.getValue();
+        for (Map.Entry<String, AbstractPrintTask> ent : this.callParams.entrySet()) {
+            AbstractPrintTask task = ent.getValue();
             Object taskValue = null;
             if (TaskType.F.equals(task.getTaskType())) {
                 taskValue = task.doTask(taskContext, inData);
@@ -49,12 +54,8 @@ public class CallerSourceTask extends AbstractQueryTask {
         }
         GraphUDF graphUdf = taskContext.findUDF(this.callerName);
         if (graphUdf == null) {
-            throw new NullPointerException("graphUdf '" + this.callerName + "' is not found.");
+            throw new NullPointerException("graphUDF '" + this.callerName + "' is not found.");
         }
         return graphUdf.call(values);
-    }
-    public void addParam(String paramName, AbstractQueryTask dataSource) {
-        this.callParams.put(paramName, dataSource);
-        super.addSubTask(dataSource);
     }
 }
