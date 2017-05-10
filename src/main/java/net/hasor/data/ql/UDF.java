@@ -21,5 +21,5 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 public interface UDF {
-    public Object call(Map<String, Object> values);
+    public Object call(Map<String, Var> values);
 }

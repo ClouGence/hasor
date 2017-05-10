@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.graphql;
+package net.test.hasor.db._07_ql;
 import com.alibaba.fastjson.JSON;
 import net.hasor.data.ql.Query;
 import net.hasor.data.ql.QueryResult;

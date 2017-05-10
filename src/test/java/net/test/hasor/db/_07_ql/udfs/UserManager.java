@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.graphql.udfs;
+package net.test.hasor.db._07_ql.udfs;
 import net.hasor.data.ql.UDF;
+import net.hasor.data.ql.Var;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +25,7 @@ import java.util.Map;
  */
 public class UserManager implements UDF {
     @Override
-    public Object call(Map<String, Object> values) {
+    public Object call(Map<String, Var> values) {
         HashMap<String, Object> udfData = new HashMap<String, Object>();
         udfData.put("userID", 1234567890);
         udfData.put("age", 31);

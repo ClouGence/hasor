@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.runtime.task;
+import net.hasor.core.Hasor;
 import net.hasor.data.ql.UDF;
+import net.hasor.data.ql.Var;
+import net.hasor.data.ql.dsl.domain.EqType;
 import net.hasor.data.ql.runtime.QueryContext;
 import net.hasor.data.ql.runtime.TaskType;
 
@@ -27,6 +30,7 @@ import java.util.Map;
  */
 public class CallerTask extends AbstractPrintTask {
     private String                         callerName = null;
+    private Map<String, EqType>            varEqTypes = new HashMap<String, EqType>();
     private Map<String, AbstractPrintTask> callParams = new HashMap<String, AbstractPrintTask>();
     public CallerTask(String nameOfParent, AbstractTask parentTask, String callerName) {
         super(nameOfParent, parentTask, null);
@@ -34,14 +38,18 @@ public class CallerTask extends AbstractPrintTask {
     }
     //
     //
-    public void addParam(String paramName, AbstractPrintTask paramSource) {
+    public void addParam(String paramName, EqType eqType, AbstractPrintTask paramSource) {
+        eqType = Hasor.assertIsNotNull(eqType);
+        paramSource = Hasor.assertIsNotNull(paramSource);
+        //
+        this.varEqTypes.put(paramName, eqType);
         this.callParams.put(paramName, paramSource);
         super.addFieldTask(paramName, paramSource);
     }
     @Override
     public Object doTask(QueryContext taskContext, Object inData) throws Throwable {
         //
-        Map<String, Object> values = new HashMap<String, Object>();
+        Map<String, Var> values = new HashMap<String, Var>();
         for (Map.Entry<String, AbstractPrintTask> ent : this.callParams.entrySet()) {
             AbstractPrintTask task = ent.getValue();
             Object taskValue = null;
@@ -50,7 +58,8 @@ public class CallerTask extends AbstractPrintTask {
             } else {
                 taskValue = task.getValue();
             }
-            values.put(ent.getKey(), taskValue);
+            EqType eqType = this.varEqTypes.get(ent.getKey());
+            values.put(ent.getKey(), new Var(eqType, taskValue));
         }
         UDF dataUDF = taskContext.findUDF(this.callerName);
         if (dataUDF == null) {

@@ -13,17 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.graphql.udfs;
-import net.hasor.data.ql.UDF;
-
-import java.util.Map;
+package net.hasor.data.ql;
+import net.hasor.data.ql.dsl.domain.EqType;
 /**
- * @version : 2014-7-12
- * @author 赵永春 (zyc@byshell.org)
+ * UDF 参数
+ * @author 赵永春(zyc@hasor.net)
+ * @version : 2017-03-23
  */
-public class Foo implements UDF {
-    @Override
-    public Object call(Map<String, Object> values) {
-        return 54321;
+public class Var {
+    private final EqType eqType;
+    private final Object value;
+    //
+    public Var(EqType eqType, Object value) {
+        this.eqType = eqType;
+        this.value = value;
+    }
+    //
+    public EqType getEqType() {
+        return eqType;
+    }
+    public Object getValue() {
+        return value;
     }
 }

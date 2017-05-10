@@ -13,25 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.graphql.udfs;
+package net.test.hasor.db._07_ql.udfs;
 import net.hasor.data.ql.UDF;
+import net.hasor.data.ql.Var;
 
-import java.util.HashMap;
 import java.util.Map;
 /**
  * @version : 2014-7-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public class FindUserByID implements UDF {
+public class Foo implements UDF {
     @Override
-    public Object call(Map<String, Object> values) {
-        HashMap<String, Object> udfData = new HashMap<String, Object>();
-        udfData.put("name", "this is name.");
-        udfData.put("name2", "this is name2.");
-        udfData.put("age", 31);
-        udfData.put("nick", "this is nick.");
-        udfData.put("userID", 1111111);
-        udfData.put("status", true);
-        return udfData;
+    public Object call(Map<String, Var> values) {
+        return 54321;
     }
 }

@@ -90,7 +90,7 @@ public class TaskParser {
         List<String> paramNames = graphUDF.getParamNames();
         for (String name : paramNames) {
             DValue field = graphUDF.getParam(name);
-            caller.addParam(name, parseField(name, parent, field));
+            caller.addParam(name, field.getEqType(), parseField(name, parent, field));
         }
         return caller;
     }

@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.graphql;
+package net.test.hasor.db._07_ql;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.data.ql.GraphApiBinder;
-import net.test.hasor.graphql.udfs.FindUserByID;
-import net.test.hasor.graphql.udfs.Foo;
-import net.test.hasor.graphql.udfs.QueryOrder;
-import net.test.hasor.graphql.udfs.UserManager;
+import net.test.hasor.db._07_ql.udfs.UserManager;
+import net.test.hasor.db._07_ql.udfs.FindUserByID;
+import net.test.hasor.db._07_ql.udfs.Foo;
+import net.test.hasor.db._07_ql.udfs.QueryOrder;
 import org.junit.Before;
 /**
  * @author 赵永春(zyc@hasor.net)
