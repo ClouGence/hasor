@@ -1,18 +1,19 @@
-fragment fUser on findUserByID( "userID" = uid ) {
-    userID,
-    name,
-    age,
-    nick,
-}
-fragment fOrder on queryOrder( "accountID" = uid , ... ) [
+fragment fOrderQL on queryOrder ("accountID"  = uid) [
     {
-        orderID,
-        itemID,
-        itemName
+        "orderID",
+        "itemID",
+        "itemName"
     }
 ]
 
+fragment fUserQL on findUserByID ("userID"  = uid) {
+    "userID",
+    "name",
+    "age",
+    "nick"
+}
+
 {
-    user      : fUser{},
-    orderList : fOrder{},
+    "user" : fUserQL,
+    "orderList" : fOrderQL
 }

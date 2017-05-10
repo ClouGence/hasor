@@ -1,7 +1,7 @@
-findUserByID ( userID = 12345 ) [
+findUserByID ("userID"  = 12345) [
     {
-        name,
-        age,
-        nick
+        "name",
+        "age",
+        "nick"
     }
 ]

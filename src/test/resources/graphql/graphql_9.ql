@@ -1,20 +1,19 @@
-fragment fUser on {
-    userInfo : findUserByID ( userID = uid ) {
-        name,
-        age,
-        nick
-    },
-    source : "GraphQL"
-}
-fragment fOrder on queryOrder( "accountID" = uid , ... ) [
+fragment fOrder on queryOrder ("accountID"  = uid) [
     {
-        orderID,
-        itemID,
-        itemName
+        "orderID",
+        "itemID",
+        "itemName"
     }
 ]
 
+fragment fUser on  {
+    "userInfo" : findUserByID ("userID"  = uid) {
+
+    },
+    "source" : "GraphQL"
+}
+
 {
-    user      : fUser,
-    orderList : fOrder,
+    "user" : fUser,
+    "orderList" : fOrder
 }

@@ -1,11 +1,11 @@
 {
-    userInfo : {
-        info :findUserByID ( userID = 12345 ) {
-            name,
-            age,
-            nick
+    "userInfo" :  {
+        "info" : findUserByID ("userID"  = 12345) {
+            "name",
+            "age",
+            "nick"
         },
-        nick : info.nick
+        "nick" : info.nick
     },
-    source : "GraphQL"
+    "source" : "GraphQL"
 }

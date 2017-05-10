@@ -98,7 +98,8 @@ class GraphQueryImpl implements GraphQuery {
                 return;
             }
             //
-            toTask.get(new Random(System.currentTimeMillis()).nextInt(toTask.size())).run(context, null);
+            toTask.get(0).run(context, null);
+            //            toTask.get(new Random(System.currentTimeMillis()).nextInt(toTask.size())).run(context, null);
             //
         }
     }

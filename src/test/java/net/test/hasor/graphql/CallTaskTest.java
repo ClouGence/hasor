@@ -1,35 +1,35 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.test.hasor.graphql;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
-import net.hasor.core.Module;
-import net.hasor.graphql.GraphApiBinder;
+import com.alibaba.fastjson.JSON;
 import net.hasor.graphql.GraphQuery;
 import net.hasor.graphql.QueryResult;
 import net.hasor.graphql.ctx.GraphContext;
 import net.hasor.graphql.dsl.QueryModel;
 import net.hasor.graphql.runtime.QueryTask;
 import net.hasor.graphql.runtime.TaskParser;
-import net.test.hasor.graphql.udfs.FindUserByID;
-import net.test.hasor.graphql.udfs.Foo;
-import net.test.hasor.graphql.udfs.QueryOrder;
-import net.test.hasor.graphql.udfs.UserManager;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 /**
- * Created by yongchun.zyc on 2017/3/21.
+ * @version : 2014-7-12
+ * @author 赵永春 (zyc@byshell.org)
  */
-public class CallTaskTest implements Module {
-    private static AppContext appContext;
-    @Before
-    public void before() {
-        if (appContext == null) {
-            appContext = Hasor.createAppContext(this);
-        }
-    }
+public class CallTaskTest extends AbstractTaskTest {
     @Test
     public void main1() {
         this.printTaskTree(new GraphQLTest().main1());
@@ -68,15 +68,6 @@ public class CallTaskTest implements Module {
     }
     //
     // --------------------------------------------------------------------------------------------
-    @Override
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
-        // - GraphUDF
-        GraphApiBinder binder = apiBinder.tryCast(GraphApiBinder.class);
-        binder.addUDF("findUserByID", FindUserByID.class);
-        binder.addUDF("queryOrder", QueryOrder.class);
-        binder.addUDF("userManager.findUserByID", UserManager.class);
-        binder.addUDF("foo", Foo.class);
-    }
     private void printTaskTree(QueryModel queryModel) {
         String buildQuery = queryModel.buildQuery();
         // - 执行计划
@@ -97,7 +88,7 @@ public class CallTaskTest implements Module {
             GraphContext gc = appContext.getInstance(GraphContext.class);
             GraphQuery query = gc.createQuery(buildQuery);
             QueryResult result = query.doQuery(params);
-            System.out.println(result);
+            System.out.println(JSON.toJSON(result).toString());
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);

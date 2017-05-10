@@ -48,7 +48,7 @@ public abstract class AbstractTask extends Observable implements QueryTask {
         this.dataSource = dataSource;
         this.addDepTask(dataSource);
         //
-        this.taskStatus = TaskStatus.Waiting;
+        this.taskStatus = TaskStatus.Prepare;
         this.taskType = initTaskType();// 默认为 dataSource
         this.result = new BasicFuture<Object>();
     }
@@ -194,6 +194,13 @@ public abstract class AbstractTask extends Observable implements QueryTask {
             this.result.failed(e);
         }
         try {
+            if (taskStatus == TaskStatus.Waiting) {
+                for (AbstractTask task : this.depTaskList) {
+                    if (!task.isFinish()) {
+                        return;/* 所有子任务都完成，才进入 Waiting */
+                    }
+                }
+            }
             this.taskStatus = taskStatus;
             if (taskStatus == TaskStatus.Prepare) {
                 for (AbstractTask task : this.depTaskList) {
@@ -216,8 +223,12 @@ public abstract class AbstractTask extends Observable implements QueryTask {
         for (AbstractTask task : this.depTaskList) {
             task.fixRouteDep();
         }
-        if (TaskType.F == this.taskType && this.depTaskList.isEmpty()) {
-            this.updateStatus(TaskStatus.Complete, null);
+        if (this.depTaskList.isEmpty()) {
+            if (TaskType.F == this.taskType) {
+                this.updateStatus(TaskStatus.Complete, null);
+            } else {
+                this.updateStatus(TaskStatus.Waiting, null);
+            }
         }
         return this;
     }

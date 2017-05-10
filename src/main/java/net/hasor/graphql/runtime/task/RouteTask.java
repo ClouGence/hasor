@@ -115,7 +115,7 @@ public class RouteTask extends AbstractPrintTask {
         //
         if (TaskType.F == atTask.getTaskType()) {
             RouteTask routeAtTask = (RouteTask) atTask;
-            return routeAtTask.doTask(taskContext, inData);
+            return routeAtTask.doTask(taskContext, inData);//如果找到的目标节点是一个 F 节点，那么继续递归求值
         }
         return taskContext.get(this.routeExpression);
         // throw new IllegalStateException("result is not ready or task is does support run.");

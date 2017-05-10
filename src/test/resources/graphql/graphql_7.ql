@@ -1,15 +1,15 @@
 {
-    user : findUserByID( "userID" = uid ,... ) {
-        uid : "userID",
-        name,
-        age,
-        nick
+    "user" : userManager.findUserByID ("userID"  = uid) {
+        "uid" : userID,
+        "name",
+        "age",
+        "nick"
     },
-    orderList : queryOrder( "accountID" = user.uid , ... ) [
+    "orderList" : queryOrder ("accountID"  = user.uid) [
         {
-            orderID,
-            itemID,
-            itemName
+            "orderID",
+            "itemID",
+            "itemName"
         }
     ]
 }

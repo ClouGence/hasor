@@ -112,11 +112,15 @@ public class TaskParser {
             String routeExpression = ((RouteValue) defSource).getRouteExpression();
             rst.setRouteExpression(routeExpression);
             //
+            // - 解析路由表达式，定位到必要的 DS，依赖它。
             if (routeExpression.contains(".")) {
                 AbstractTask fieldTask = findRouteDSTask(routeExpression, rst);
                 if (fieldTask != null) {
                     rst.addDepTask(fieldTask);
                 }
+            } else {
+                AbstractTask dataSource = TaskUtils.nearDS(rst); //先找到根节点，然后定位根节点的数据源
+                rst.addDepTask(dataSource);
             }
             //
             return rst;
@@ -126,31 +130,37 @@ public class TaskParser {
     //
     //
     /** 带有路径的路由解析，需要找到路由对应数据的那个 DS */
-    private AbstractTask findRouteDSTask(String routeExpression, AbstractTask atTask) {
+    private AbstractTask findRouteDSTask(final String routeExpression, final AbstractTask atTask) {
+        AbstractTask dataTask = atTask;
+        AbstractTask dataSource = atTask.getDataSource();
+        //
         // - 根节点
         if (routeExpression.charAt(0) == '$') {
-            while (atTask.getParent() != null) {
-                atTask = atTask.getParent();
+            while (dataTask.getParent() != null) {
+                dataTask = dataTask.getParent();
             }
-            return TaskUtils.nearDS(atTask);//先找到根节点，然后定位根节点的数据源
+            dataSource = TaskUtils.nearDS(dataTask); //先找到根节点，然后定位根节点的数据源
         }
         // - 最近的DS
         if (routeExpression.charAt(0) == '~') {
-            return TaskUtils.nearDS(atTask);//最近的数据源
+            dataSource = TaskUtils.nearDS(dataTask);//最近的数据源
+        }
+        // - 其它
+        if (dataSource == null) {
+            AbstractTask tempTask = dataTask;
+            while (tempTask != null) {
+                dataSource = tempTask.findFieldTask(routeExpression.split("\\.")[0]);
+                if (dataSource != null) {
+                    if (TaskType.F == dataSource.getTaskType()) {
+                        return dataSource;
+                    }
+                    dataSource = TaskUtils.nearDS(dataSource);
+                    break;
+                }
+                tempTask = tempTask.getParent();
+            }
         }
         //
-        String firstNode = routeExpression.split("\\.")[0];
-        AbstractTask searchParent = atTask.getParent();
-        while (searchParent != null) {
-            if (firstNode.equals(searchParent.getNameOfParent())) {
-                return TaskUtils.nearDS(searchParent);
-            }
-            AbstractTask fieldTask = searchParent.findFieldTask(firstNode);
-            if (fieldTask != null) {
-                return TaskUtils.nearDS(fieldTask);
-            }
-            searchParent = searchParent.getParent();
-        }
-        return null;
+        return dataSource;
     }
 }
