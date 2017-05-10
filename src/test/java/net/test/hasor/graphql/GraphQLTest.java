@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.test.hasor.graphql;
-import net.hasor.graphql.dsl.GraphQL;
-import net.hasor.graphql.dsl.QueryModel;
-import net.hasor.graphql.dsl.domain.EqType;
-import net.hasor.graphql.dsl.parser.GraphParser;
-import net.hasor.graphql.dsl.parser.ParseException;
+import net.hasor.data.ql.dsl.DataQL;
+import net.hasor.data.ql.dsl.QueryModel;
+import net.hasor.data.ql.dsl.domain.EqType;
+import net.hasor.data.ql.dsl.parser.DataQLParser;
+import net.hasor.data.ql.dsl.parser.ParseException;
 import org.junit.Test;
 /**
  * @version : 2014-7-12
@@ -35,24 +35,24 @@ findUserByID ( userID = 12345 , status > 2) {
     nick
 }
     */
-        QueryModel queryModel = GraphQL.createQuery()//
+        QueryModel queryModel = DataQL.createQuery()//
                 .byUDF("findUserByID")//
                 .addParam(//
-                        GraphQL.createParam("userID").withNumber(12345)//
+                        DataQL.createParam("userID").withNumber(12345)//
                 )//
                 .addParam(//
-                        GraphQL.createParam("status").withNumber(2), EqType.GT//
+                        DataQL.createParam("status").withNumber(2), EqType.GT//
                 )//
                 //-----------------------------------------------------------------------
                 .asObject()//
                 .addField(//
-                        GraphQL.createField("name").withMapping("name2")//
+                        DataQL.createField("name").withMapping("name2")//
                 )//
                 .addField(//
-                        GraphQL.createField("age").withMapping("age")//
+                        DataQL.createField("age").withMapping("age")//
                 )//
                 .addField(//
-                        GraphQL.createField("nick").withMapping("nick")//
+                        DataQL.createField("nick").withMapping("nick")//
                 )//----------------------------------------------------------------------
                 .buildQuery();
         //
@@ -70,41 +70,41 @@ findUserByID ( userID = 12345 , status > 2) {
         },
         nick : info.nick
     },
-    source : "GraphQL"
+    source : "DataQL"
 }
     */
-        QueryModel queryModel = GraphQL.createQuery()//
+        QueryModel queryModel = DataQL.createQuery()//
                 //-----------------------------------------------------------------------
                 .asObject()//
                 .addField(//
-                        GraphQL.createField("userInfo")//
+                        DataQL.createField("userInfo")//
                                 //---------------------------------------------------------------------------
                                 .asObject()//
                                 .addField(//
-                                        GraphQL.createField("info")//
+                                        DataQL.createField("info")//
                                                 .withUDF("findUserByID")//
                                                 .addParam(//
-                                                        GraphQL.createParam("userID").withNumber(12345)//
+                                                        DataQL.createParam("userID").withNumber(12345)//
                                                 )//------------------------------------------------------------------------------
                                                 .asObject()//
                                                 .addField(//
-                                                        GraphQL.createField("name").withMapping("name")//
+                                                        DataQL.createField("name").withMapping("name")//
                                                 )//
                                                 .addField(//
-                                                        GraphQL.createField("age").withMapping("age")//
+                                                        DataQL.createField("age").withMapping("age")//
                                                 )//
                                                 .addField(//
-                                                        GraphQL.createField("nick").withMapping("nick")//
+                                                        DataQL.createField("nick").withMapping("nick")//
                                                 )//------------------------------------------------------------------------------
                                                 .asField()//
                                 )//
                                 .addField(//
-                                        GraphQL.createField("nick").withMapping("info.nick")//
+                                        DataQL.createField("nick").withMapping("info.nick")//
                                 )//--------------------------------------------------------------------------
                                 .asField()//
                 )//
                 .addField(//
-                        GraphQL.createField("source").withString("GraphQL")//
+                        DataQL.createField("source").withString("DataQL")//
                 )
                 //----------------------------------------------------------------------
                 .buildQuery();
@@ -122,21 +122,21 @@ findUserByID ( userID = 12345 ) [
     }
 ]
     */
-        QueryModel queryModel = GraphQL.createQuery()//
+        QueryModel queryModel = DataQL.createQuery()//
                 .byUDF("findUserByID")//
                 .addParam(//
-                        GraphQL.createParam("userID").withNumber(12345)//
+                        DataQL.createParam("userID").withNumber(12345)//
                 )//----------------------------------------------------------------------
                 .asListObject()//
                 //
                 .addField(//
-                        GraphQL.createField("name").withMapping("name")//
+                        DataQL.createField("name").withMapping("name")//
                 )//
                 .addField(//
-                        GraphQL.createField("age").withMapping("age")//
+                        DataQL.createField("age").withMapping("age")//
                 )//
                 .addField(//
-                        GraphQL.createField("nick").withMapping("nick")//
+                        DataQL.createField("nick").withMapping("nick")//
                 )//----------------------------------------------------------------------
                 .buildQuery();
         //
@@ -149,15 +149,15 @@ findUserByID ( userID = 12345 ) [
     name
 ]
     */
-        QueryModel queryModel = GraphQL.createQuery()//
+        QueryModel queryModel = DataQL.createQuery()//
                 .byUDF("findUserByID")//
                 .addParam(//
-                        GraphQL.createParam("userID").withNumber(12345)//
+                        DataQL.createParam("userID").withNumber(12345)//
                 )//----------------------------------------------------------------------
                 .asListValue()//
                 //
                 .addField(//
-                        GraphQL.createField("name").withMapping("name2")//
+                        DataQL.createField("name").withMapping("name2")//
                 )//
                 .buildQuery();
         //
@@ -184,53 +184,53 @@ findUserByID ("userID" = uid, "status" = 1, "oriData" =  {
     ]
 }
     */
-        QueryModel queryModel = GraphQL.createQuery()//
+        QueryModel queryModel = DataQL.createQuery()//
                 .byUDF("findUserByID")//
                 .addParam(//
-                        GraphQL.createParam("userID").withParam("uid")//
+                        DataQL.createParam("userID").withParam("uid")//
                 ).addParam(//
-                        GraphQL.createParam("status").withNumber(1)//
+                        DataQL.createParam("status").withNumber(1)//
                 ).addParam(//
-                        GraphQL.createParam("oriData").withFragment(//
-                                GraphQL.createQuery()//
+                        DataQL.createParam("oriData").withFragment(//
+                                DataQL.createQuery()//
                                         .asObject()//
                                         .addField(//
-                                                GraphQL.createField("self").withBoolean(true)//
+                                                DataQL.createField("self").withBoolean(true)//
                                         )//
                                         .addField(//
-                                                GraphQL.createField("testID").withNumber(222)//
+                                                DataQL.createField("testID").withNumber(222)//
                                         ).buildQuery()//
                         )//
                 )//----------------------------------------------------------------------
                 .asObject()//
                 .addField(
                         //
-                        GraphQL.createField("info")//
+                        DataQL.createField("info")//
                                 .asObject()//
                                 .addField(//
-                                        GraphQL.createField("userID").withMapping("userID")//
+                                        DataQL.createField("userID").withMapping("userID")//
                                 ).addField(//
-                                GraphQL.createField("nick").withMapping("~.nick")//
+                                DataQL.createField("nick").withMapping("~.nick")//
                         ).asField()//
                 )//
                 .addField(//
-                        GraphQL.createField("orderList")//
+                        DataQL.createField("orderList")//
                                 .withUDF("queryOrder")//
                                 .addParam(//
-                                        GraphQL.createParam("accountID").withParam("$.info.userID")//
+                                        DataQL.createParam("accountID").withParam("$.info.userID")//
                                 )//--------------------------------------------------------------------------
                                 .asListObject()//
                                 .addField(//
-                                        GraphQL.createField("orderID").withMapping("orderID")//
+                                        DataQL.createField("orderID").withMapping("orderID")//
                                 )//
                                 .addField(//
-                                        GraphQL.createField("itemID").withMapping("itemID")//
+                                        DataQL.createField("itemID").withMapping("itemID")//
                                 )//
                                 .addField(//
-                                        GraphQL.createField("itemName").withMapping("itemName")//
+                                        DataQL.createField("itemName").withMapping("itemName")//
                                 )//
                                 .addField(//
-                                        GraphQL.createField("nick").withMapping("$.nick")//
+                                        DataQL.createField("nick").withMapping("$.nick")//
                                 )//--------------------------------------------------------------------------
                                 .asField()//
                 )//
@@ -246,28 +246,28 @@ findUserByID ( "userID" = foo( "sessionID" = sid ), "status" = 1 ) {
     "nick"
 }
     */
-        QueryModel queryModel = GraphQL.createQuery()//
+        QueryModel queryModel = DataQL.createQuery()//
                 .byUDF("findUserByID")//
                 .addParam(//
-                        GraphQL.createParam("userID")//
+                        DataQL.createParam("userID")//
                                 .withUDF("foo")//
                                 .addParam(//
-                                        GraphQL.createParam("sessionID").withParam("sid")//
+                                        DataQL.createParam("sessionID").withParam("sid")//
                                 )//
                                 //----------------------------------------------------------------------
                                 .asOriginal()//
                                 .asParam()//
                 )//
                 .addParam(//
-                        GraphQL.createParam("status").withNumber(1) //
+                        DataQL.createParam("status").withNumber(1) //
                 )//
                 //----------------------------------------------------------------------
                 .asObject()//
                 .addField(//
-                        GraphQL.createField("userID").withMapping("userID")//
+                        DataQL.createField("userID").withMapping("userID")//
                 )//
                 .addField(//
-                        GraphQL.createField("nick").withMapping("nick")//
+                        DataQL.createField("nick").withMapping("nick")//
                 )//
                 .buildQuery();
         //
@@ -291,44 +291,44 @@ findUserByID ( "userID" = foo( "sessionID" = sid ), "status" = 1 ) {
     ]
 }
     */
-        QueryModel queryModel = GraphQL.createQuery()//
+        QueryModel queryModel = DataQL.createQuery()//
                 .asObject()//
                 .addField(//
-                        GraphQL.createField("user")//
+                        DataQL.createField("user")//
                                 .withUDF("userManager.findUserByID")//
                                 .addParam(//
-                                        GraphQL.createParam("userID").withParam("uid")//
+                                        DataQL.createParam("userID").withParam("uid")//
                                 )//
                                 .asObject()//
                                 .addField(//
-                                        GraphQL.createField("uid").withMapping("userID")//
+                                        DataQL.createField("uid").withMapping("userID")//
                                 )//
                                 .addField(//
-                                        GraphQL.createField("name").withMapping("name")//
+                                        DataQL.createField("name").withMapping("name")//
                                 )//
                                 .addField(//
-                                        GraphQL.createField("age").withMapping("age")//
+                                        DataQL.createField("age").withMapping("age")//
                                 )//
                                 .addField(//
-                                        GraphQL.createField("nick").withMapping("nick")//
+                                        DataQL.createField("nick").withMapping("nick")//
                                 )//
                                 .asField()//
                 )//
                 .addField(//
-                        GraphQL.createField("orderList")//
+                        DataQL.createField("orderList")//
                                 .withUDF("queryOrder")//
                                 .addParam(//
-                                        GraphQL.createParam("accountID").withParam("user.uid")//
+                                        DataQL.createParam("accountID").withParam("user.uid")//
                                 )//
                                 .asListObject()//
                                 .addField(//
-                                        GraphQL.createField("orderID").withMapping("orderID")//
+                                        DataQL.createField("orderID").withMapping("orderID")//
                                 )//
                                 .addField(//
-                                        GraphQL.createField("itemID").withMapping("itemID")//
+                                        DataQL.createField("itemID").withMapping("itemID")//
                                 )//
                                 .addField(//
-                                        GraphQL.createField("itemName").withMapping("itemName")//
+                                        DataQL.createField("itemName").withMapping("itemName")//
                                 )//
                                 .asField()//
                 )//
@@ -338,7 +338,7 @@ findUserByID ( "userID" = foo( "sessionID" = sid ), "status" = 1 ) {
     }
     public QueryModel main8() {
     /*
--- 使用查询片段优化 GraphQL 语句结构，以便于阅读
+-- 使用查询片段优化 DataQL 语句结构，以便于阅读
 fragment fUser on findUserByID( "userID" = uid ) {
     userID,
     name,
@@ -358,49 +358,49 @@ fragment fOrder on queryOrder( "accountID" = uid , ... ) [
     orderList : fOrder{},
 }
     */
-        QueryModel fUserQL = GraphQL.createQuery("fUserQL")//
+        QueryModel fUserQL = DataQL.createQuery("fUserQL")//
                 .byUDF("findUserByID")//
                 .addParam(//
-                        GraphQL.createParam("userID").withParam("uid")//
+                        DataQL.createParam("userID").withParam("uid")//
                 )//
                 .asObject()//
                 .addField(//
-                        GraphQL.createField("userID").withMapping("userID")//
+                        DataQL.createField("userID").withMapping("userID")//
                 )//
                 .addField(//
-                        GraphQL.createField("name").withMapping("name")//
+                        DataQL.createField("name").withMapping("name")//
                 )//
                 .addField(//
-                        GraphQL.createField("age").withMapping("age")//
+                        DataQL.createField("age").withMapping("age")//
                 )//
                 .addField(//
-                        GraphQL.createField("nick").withMapping("nick")//
+                        DataQL.createField("nick").withMapping("nick")//
                 )//
                 .buildQuery();
         //
-        QueryModel fOrderQL = GraphQL.createQuery("fOrderQL")//
+        QueryModel fOrderQL = DataQL.createQuery("fOrderQL")//
                 .byUDF("queryOrder")//
                 .addParam(//
-                        GraphQL.createParam("accountID").withParam("uid")//
+                        DataQL.createParam("accountID").withParam("uid")//
                 )//
                 .asListObject()//
                 .addField(//
-                        GraphQL.createField("orderID").withMapping("orderID")//
+                        DataQL.createField("orderID").withMapping("orderID")//
                 )//
                 .addField(//
-                        GraphQL.createField("itemID").withMapping("itemID")//
+                        DataQL.createField("itemID").withMapping("itemID")//
                 )//
                 .addField(//
-                        GraphQL.createField("itemName").withMapping("itemName")//
+                        DataQL.createField("itemName").withMapping("itemName")//
                 )//
                 .buildQuery();
         //
-        QueryModel queryModel = GraphQL.createQuery()//
+        QueryModel queryModel = DataQL.createQuery()//
                 .asObject()//
                 .addField(//
-                        GraphQL.createField("user").withFragment(fUserQL)//
+                        DataQL.createField("user").withFragment(fUserQL)//
                 ).addField(//
-                        GraphQL.createField("orderList").withFragment(fOrderQL)//
+                        DataQL.createField("orderList").withFragment(fOrderQL)//
                 )//
                 .buildQuery();
         //
@@ -415,7 +415,7 @@ fragment fUser on {
         age,
         nick
     },
-    source : "GraphQL"
+    source : "DataQL"
 }
 fragment fOrder on queryOrder( "accountID" = uid , ... ) [
     {
@@ -430,42 +430,42 @@ fragment fOrder on queryOrder( "accountID" = uid , ... ) [
     orderList : fOrder,
 }
     */
-        QueryModel fUserQL = GraphQL.createQuery("fUser")//
+        QueryModel fUserQL = DataQL.createQuery("fUser")//
                 .asObject()//
-                .addField(GraphQL.createField("userInfo")//
+                .addField(DataQL.createField("userInfo")//
                         .withUDF("findUserByID")//
                         .addParam(//
-                                GraphQL.createParam("userID").withParam("uid")//
+                                DataQL.createParam("userID").withParam("uid")//
                         )//
                         .asField()//
                 ).addField(//
-                        GraphQL.createField("source").withString("GraphQL")//
+                        DataQL.createField("source").withString("DataQL")//
                 )//
                 .buildQuery();
         //
-        QueryModel fOrder = GraphQL.createQuery("fOrder")//
+        QueryModel fOrder = DataQL.createQuery("fOrder")//
                 .byUDF("queryOrder")//
                 .addParam(//
-                        GraphQL.createParam("accountID").withParam("uid")//
+                        DataQL.createParam("accountID").withParam("uid")//
                 )//
                 .asListObject()//
                 .addField(//
-                        GraphQL.createField("orderID").withMapping("orderID")//
+                        DataQL.createField("orderID").withMapping("orderID")//
                 )//
                 .addField(//
-                        GraphQL.createField("itemID").withMapping("itemID")//
+                        DataQL.createField("itemID").withMapping("itemID")//
                 )//
                 .addField(//
-                        GraphQL.createField("itemName").withMapping("itemName")//
+                        DataQL.createField("itemName").withMapping("itemName")//
                 )//
                 .buildQuery();
         //
-        QueryModel queryModel = GraphQL.createQuery()//
+        QueryModel queryModel = DataQL.createQuery()//
                 .asObject()//
                 .addField(//
-                        GraphQL.createField("user").withFragment(fUserQL)//
+                        DataQL.createField("user").withFragment(fUserQL)//
                 ).addField(//
-                        GraphQL.createField("orderList").withFragment(fOrder)//
+                        DataQL.createField("orderList").withFragment(fOrder)//
                 )//
                 .buildQuery();
         //
@@ -476,7 +476,7 @@ fragment fOrder on queryOrder( "accountID" = uid , ... ) [
             String query1 = graphQL1.buildQuery();
             System.out.println(query1);
             System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            QueryModel graphQL2 = GraphParser.parserGraphQL(query1);
+            QueryModel graphQL2 = DataQLParser.parserQL(query1);
             String query2 = graphQL2.buildQuery();
             System.out.println(query2);
             System.out.println("EQ:" + query1.equals(query2));

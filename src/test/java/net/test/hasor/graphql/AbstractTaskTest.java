@@ -18,7 +18,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.graphql.GraphApiBinder;
+import net.hasor.data.ql.GraphApiBinder;
 import net.test.hasor.graphql.udfs.FindUserByID;
 import net.test.hasor.graphql.udfs.Foo;
 import net.test.hasor.graphql.udfs.QueryOrder;
@@ -40,7 +40,7 @@ public class AbstractTaskTest implements Module {
     // --------------------------------------------------------------------------------------------
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        // - GraphUDF
+        // - DataUDF
         GraphApiBinder binder = apiBinder.tryCast(GraphApiBinder.class);
         binder.addUDF("findUserByID", FindUserByID.class);
         binder.addUDF("queryOrder", QueryOrder.class);

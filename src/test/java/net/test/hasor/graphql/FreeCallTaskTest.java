@@ -18,14 +18,14 @@ import com.alibaba.fastjson.JSON;
 import net.hasor.core.Settings;
 import net.hasor.core.utils.IOUtils;
 import net.hasor.core.utils.ResourcesUtils;
-import net.hasor.graphql.GraphQuery;
-import net.hasor.graphql.QueryResult;
-import net.hasor.graphql.ctx.GraphContext;
-import net.hasor.graphql.dsl.QueryModel;
-import net.hasor.graphql.dsl.parser.GraphParser;
-import net.hasor.graphql.dsl.parser.ParseException;
-import net.hasor.graphql.runtime.QueryTask;
-import net.hasor.graphql.runtime.TaskParser;
+import net.hasor.data.ql.Query;
+import net.hasor.data.ql.QueryResult;
+import net.hasor.data.ql.ctx.GraphContext;
+import net.hasor.data.ql.dsl.QueryModel;
+import net.hasor.data.ql.dsl.parser.DataQLParser;
+import net.hasor.data.ql.dsl.parser.ParseException;
+import net.hasor.data.ql.runtime.QueryTask;
+import net.hasor.data.ql.runtime.TaskParser;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -100,7 +100,7 @@ public class FreeCallTaskTest extends AbstractTaskTest {
         //
         // - 执行计划
         {
-            QueryModel graphPlan = GraphParser.parserGraphQL(buildQuery);
+            QueryModel graphPlan = DataQLParser.parserQL(buildQuery);
             QueryTask queryTask = new TaskParser().doParser(graphPlan.getDomain());
             System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             System.out.println(queryTask.printStrutsTree());
@@ -115,7 +115,7 @@ public class FreeCallTaskTest extends AbstractTaskTest {
             params.put("sid", "sid form env");
             //
             GraphContext gc = appContext.getInstance(GraphContext.class);
-            GraphQuery query = gc.createQuery(buildQuery);
+            Query query = gc.createQuery(buildQuery);
             QueryResult result = query.doQuery(params);
             System.out.println(JSON.toJSON(result).toString());
         } catch (Exception e) {

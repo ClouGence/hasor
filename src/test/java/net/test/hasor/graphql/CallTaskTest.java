@@ -15,12 +15,12 @@
  */
 package net.test.hasor.graphql;
 import com.alibaba.fastjson.JSON;
-import net.hasor.graphql.GraphQuery;
-import net.hasor.graphql.QueryResult;
-import net.hasor.graphql.ctx.GraphContext;
-import net.hasor.graphql.dsl.QueryModel;
-import net.hasor.graphql.runtime.QueryTask;
-import net.hasor.graphql.runtime.TaskParser;
+import net.hasor.data.ql.Query;
+import net.hasor.data.ql.QueryResult;
+import net.hasor.data.ql.ctx.GraphContext;
+import net.hasor.data.ql.dsl.QueryModel;
+import net.hasor.data.ql.runtime.QueryTask;
+import net.hasor.data.ql.runtime.TaskParser;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -86,7 +86,7 @@ public class CallTaskTest extends AbstractTaskTest {
             params.put("sid", "sid form env");
             //
             GraphContext gc = appContext.getInstance(GraphContext.class);
-            GraphQuery query = gc.createQuery(buildQuery);
+            Query query = gc.createQuery(buildQuery);
             QueryResult result = query.doQuery(params);
             System.out.println(JSON.toJSON(result).toString());
         } catch (Exception e) {

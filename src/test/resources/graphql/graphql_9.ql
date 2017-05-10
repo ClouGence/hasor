@@ -10,7 +10,7 @@ fragment fUser on  {
     "userInfo" : findUserByID ("userID"  = uid) {
 
     },
-    "source" : "GraphQL"
+    "source" : "DataQL"
 }
 
 {

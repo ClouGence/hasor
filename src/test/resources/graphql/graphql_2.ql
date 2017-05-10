@@ -7,5 +7,5 @@
         },
         "nick" : info.nick
     },
-    "source" : "GraphQL"
+    "source" : "DataQL"
 }

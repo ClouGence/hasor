@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.test.hasor.graphql.udfs;
-import net.hasor.graphql.GraphUDF;
+import net.hasor.data.ql.UDF;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import java.util.Map;
  * @version : 2014-7-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public class QueryOrder implements GraphUDF {
+public class QueryOrder implements UDF {
     @Override
     public Object call(Map<String, Object> values) {
         ArrayList<Object> orderList = new ArrayList<Object>();

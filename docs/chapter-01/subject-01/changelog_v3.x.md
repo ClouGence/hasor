@@ -2,12 +2,13 @@
 ### Hasor-Core v3.1.4 (2017-03-?)
 **新增**
     01. 新增内置 Freemarker 渲染器。
-    02. 新增内置 Simple GraphQL，简版的 GraphQL 服务查询引擎（试用）
+    02. 新增内置 DataQL，服务查询引擎，语法上参考了 GraphQL 并做了适量的减法和语法改造形成 Hasor 特有的服务查询引擎
     03. 新增内置 Json 渲染器，JSON 渲染引擎会按照下面顺序尝试寻找可用的json库：fastjson、Gson、Json-lib
     04. 内置JSON渲染引擎，可以通过 apiBinder.bind(JsonRenderEngine.class) 方式绕过内部查找机制直接使用用户自定义的json渲染器。
 **改进**
     01. EventContext 接口增加 fireSyncEventWithEspecial 方法，可以用于指定同步事件是否以独立线程运行。
     02. ContextClassLoaderLocal 类移动位置。
+    03. 已有 DB 框架更名为 Data框架，全面提供 “数据库 + 服务” 整合查询，并为查询结果提供全面的数据整合能力。
 **修复**
     01. 修复当 aop 类中出现静态代码块，静态方法时。生成了错误的动态字节码。
     02. Fix @Produces 注解工作时的一些问题。

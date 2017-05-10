@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.test.hasor.graphql;
-import net.hasor.graphql.dsl.QueryModel;
-import net.hasor.graphql.runtime.QueryTask;
-import net.hasor.graphql.runtime.TaskParser;
+import net.hasor.data.ql.dsl.QueryModel;
+import net.hasor.data.ql.runtime.QueryTask;
+import net.hasor.data.ql.runtime.TaskParser;
 import org.junit.Test;
 /**
  * @version : 2014-7-12
