@@ -17,7 +17,7 @@ package net.test.hasor.db._02_datasource.warp;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 import net.hasor.core.Settings;
-import net.hasor.db.DBModule;
+import net.hasor.data.DataModule;
 
 import javax.sql.DataSource;
 /***
@@ -52,6 +52,6 @@ public class MultipleDataSourceWarp implements Module {
     }
     protected void configDataSource(ApiBinder apiBinder, DataSource dataSource, String dsName) throws Throwable {
         //3.启用默认事务拦截器
-        apiBinder.installModule(new DBModule(dsName, dataSource));
+        apiBinder.installModule(new DataModule(dsName, dataSource));
     }
 }

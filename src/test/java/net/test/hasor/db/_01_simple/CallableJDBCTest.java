@@ -16,8 +16,8 @@
 package net.test.hasor.db._01_simple;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.db.jdbc.ConnectionCallback;
-import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.data.jdbc.ConnectionCallback;
+import net.hasor.data.jdbc.core.JdbcTemplate;
 import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
 import org.junit.Test;
 

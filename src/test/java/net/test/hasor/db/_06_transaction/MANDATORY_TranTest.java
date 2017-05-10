@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.test.hasor.db._06_transaction;
-import net.hasor.db.Transactional;
-import net.hasor.db.transaction.Propagation;
-import net.hasor.db.transaction.TransactionCallbackWithoutResult;
-import net.hasor.db.transaction.TransactionStatus;
-import net.hasor.db.transaction.TransactionTemplate;
+import net.hasor.data.Transactional;
+import net.hasor.data.transaction.Propagation;
+import net.hasor.data.transaction.TransactionCallbackWithoutResult;
+import net.hasor.data.transaction.TransactionStatus;
+import net.hasor.data.transaction.TransactionTemplate;
 import net.hasor.plugins.junit.ContextConfiguration;
 import net.hasor.plugins.junit.HasorUnitRunner;
 import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;

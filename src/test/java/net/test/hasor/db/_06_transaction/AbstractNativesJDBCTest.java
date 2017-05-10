@@ -16,8 +16,8 @@
 package net.test.hasor.db._06_transaction;
 import net.hasor.core.AppContext;
 import net.hasor.core.Inject;
-import net.hasor.db.jdbc.core.JdbcTemplate;
-import net.hasor.db.transaction.Isolation;
+import net.hasor.data.jdbc.core.JdbcTemplate;
+import net.hasor.data.transaction.Isolation;
 import net.hasor.plugins.junit.DaemonThread;
 import net.hasor.plugins.junit.HasorUnit;
 import org.junit.Before;

@@ -15,7 +15,7 @@
  */
 package net.test.hasor.db._02_datasource;
 import net.hasor.core.Inject;
-import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.data.jdbc.core.JdbcTemplate;
 
 import java.io.IOException;
 import java.sql.SQLException;

@@ -17,8 +17,8 @@ package net.hasor.plugins.jfinal;
 import com.jfinal.plugin.activerecord.IDataSourceProvider;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
-import net.hasor.db.DBModule;
-import net.hasor.db.transaction.TranManager;
+import net.hasor.data.DataModule;
+import net.hasor.data.transaction.TranManager;
 
 import javax.sql.DataSource;
 import java.lang.reflect.InvocationHandler;
@@ -49,7 +49,7 @@ public class HasorDataSourceProxy implements IDataSourceProvider, Module {
     //
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        apiBinder.installModule(new DBModule(this.name, this.dataSourceProxy));
+        apiBinder.installModule(new DataModule(this.name, this.dataSourceProxy));
     }
     //
     /** 代理DataSource */
@@ -74,6 +74,4 @@ public class HasorDataSourceProxy implements IDataSourceProvider, Module {
             }
         }
     }
-    //
-    //
 }
