@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://project.hasor.net/schema/spring/hasor-rsf" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://project.hasor.net/schema/spring/hasor-rsf" elementFormDefault="qualified">
+
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="rsf"/>
+</xsd:schema>

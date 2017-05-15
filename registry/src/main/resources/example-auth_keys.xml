@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<auth_keys xmlns="http://project.hasor.net/hasor/schema/rsf/auth-keys">
+    <!--
+        <appKey appKey="" keySecret="" expireTime="2999-12-12 23:59:59"/>
+    -->
+</auth_keys>

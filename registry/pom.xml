@@ -1,0 +1,163 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>net.hasor</groupId>
+        <artifactId>hasor-parent</artifactId>
+        <version>0.0.10</version>
+    </parent>
+
+    <!-- Maven Info -->
+    <artifactId>hasor-registry</artifactId>
+    <version>1.3.2-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <!-- Project Info -->
+    <name>Hasor-Registry</name>
+    <description>the Hasor Remote Service Framework project.</description>
+
+    <!-- 配置属性 -->
+    <properties>
+        <hasor.shortname>RSF-</hasor.shortname>
+        <project.website>http://www.hasor.net/</project.website>
+        <project.inceptionYear>2016</project.inceptionYear>
+        <javadocs.bottom><![CDATA[
+<!-- CNZZ -->
+<script type="text/javascript">
+    var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+    document.write(unescape("%3Cspan id='cnzz_stat_icon_1257358604'%3E%3C/span%3E%3Cscript src='" +
+        cnzz_protocol + "s11.cnzz.com/z_stat.php%3Fid%3D1257358604%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<!-- Google -->
+<script>
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+    ga('create', 'UA-88648560-1', 'auto');
+    ga('send', 'pageview');
+</script>
+<!-- 百度统计 -->
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?8d5f7a839f4f8fee4eefbeac046d05cc";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+        ]]></javadocs.bottom>
+    </properties>
+
+    <!-- SCM -->
+    <scm>
+        <connection>scm:git:git@git.oschina.net:zycgit/rsf.git</connection>
+        <developerConnection>scm:git:git@git.oschina.net:zycgit/rsf.git</developerConnection>
+        <url>git@git.oschina.net:zycgit/rsf.git</url>
+        <tag>Release.RSF-1.3.0</tag>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>赵永春(Mr.Zhao)</name>
+            <email>zyc@hasor.net</email>
+        </developer>
+    </developers>
+
+    <repositories>
+        <repository>
+            <id>snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <!-- 引用依赖 -->
+    <dependencies>
+        <!-- 核心依赖 -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-rsf</artifactId>
+            <version>1.3.2-SNAPSHOT</version>
+        </dependency>
+
+        <!-- JSON 序列化 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.23</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- center打包为独立应用 -->
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-classworlds</artifactId>
+            <version>2.5.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- logger -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.3</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <!-- 构建描述 -->
+    <profiles>
+        <profile>
+            <id>export</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <configuration>
+                            <finalName>rsf-center-v${project.version}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <outputDirectory>build</outputDirectory>
+                            <descriptors>
+                                <descriptor>src/launcher/assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>make-assembly</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.logging.log4j</groupId>
+                    <artifactId>log4j-to-slf4j</artifactId>
+                    <version>2.5</version>
+                </dependency>
+                <dependency>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                    <version>1.1.7</version>
+                </dependency>
+                <dependency>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>fastjson</artifactId>
+                    <version>1.2.23</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+</project>

@@ -1,0 +1,55 @@
+<assembly xmlns="http://maven.apache.org/POM/4.0.0">
+
+    <id>build</id>
+    <formats>
+        <format>dir</format>
+        <format>zip</format>
+        <format>tar.gz</format>
+    </formats>
+
+    <fileSets>
+        <fileSet>
+            <directory>src/launcher/binary</directory>
+            <outputDirectory>bin</outputDirectory>
+            <fileMode>0755</fileMode>
+        </fileSet>
+        <fileSet>
+            <directory>src/launcher/conf</directory>
+            <outputDirectory>conf</outputDirectory>
+        </fileSet>
+    </fileSets>
+
+    <files>
+        <file>
+            <source>src/launcher/LICENSE</source>
+            <outputDirectory>/</outputDirectory>
+            <destName>LICENSE</destName>
+        </file>
+    </files>
+
+    <dependencySets>
+        <dependencySet>
+            <scope>provided</scope>
+            <outputDirectory>boot</outputDirectory>
+            <useStrictFiltering>true</useStrictFiltering>
+            <includes>
+                <include>*:plexus-classworlds*</include>
+            </includes>
+        </dependencySet>
+
+        <dependencySet>
+            <scope>runtime</scope>
+            <useProjectArtifact>true</useProjectArtifact>
+            <outputDirectory>lib</outputDirectory>
+            <useStrictFiltering>false</useStrictFiltering>
+            <excludes>
+                <exclude>*:plexus-classworlds*</exclude>
+            </excludes>
+        </dependencySet>
+
+        <dependencySet>
+            <scope>runtime</scope>
+            <outputDirectory>lib</outputDirectory>
+        </dependencySet>
+    </dependencySets>
+</assembly>

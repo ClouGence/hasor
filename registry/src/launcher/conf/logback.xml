@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+    <!-- 控制台输出 -->
+    <appender name="console_appender" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
+        </layout>
+    </appender>
+    <!-- 文件输出 -->
+    <appender name="file_appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${app.home:-.}/logs/rsf-console.log.%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
+        <Encoding>UTF-8</Encoding>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <!-- Telnet日志 -->
+    <appender name="rsfTelnet_appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${app.home:-.}/logs/rsf-telnet.log.%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
+        <Encoding>UTF-8</Encoding>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
+        </layout>
+    </appender>
+    <appender name="rsfTelnetRTXD_appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${app.home:-.}/logs/rsf-telnet-rtxd.log.%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
+        <Encoding>UTF-8</Encoding>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
+        </layout>
+    </appender>
+    <!-- Invoker日志 -->
+    <appender name="rsfInvoker_appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${app.home:-.}/logs/rsf-invoker.log.%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
+        <Encoding>UTF-8</Encoding>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
+        </layout>
+    </appender>
+    <!-- 地址本更新日志 -->
+    <appender name="rsfAddress_appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${app.home:-.}/logs/rsf-address.log.%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
+        <Encoding>UTF-8</Encoding>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
+        </layout>
+    </appender>
+    <!-- 注册中心数据接收器日志 -->
+    <appender name="rsfCenterReceiver_appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${app.home:-.}/logs/rsf-center-receiver.log.%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
+        <Encoding>UTF-8</Encoding>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
+        </layout>
+    </appender>
+
+
+    <logger name="rsf-console" additivity="false" level="INFO">
+        <appender-ref ref="rsfTelnet_appender"/>
+    </logger>
+    <logger name="rsf-console-rtxd" additivity="false" level="INFO">
+        <appender-ref ref="rsfTelnetRTXD_appender"/>
+    </logger>
+    <logger name="rsf-invoker" additivity="false" level="INFO">
+        <appender-ref ref="rsfInvoker_appender"/>
+    </logger>
+    <logger name="rsf-address" additivity="false" level="INFO">
+        <appender-ref ref="rsfAddress_appender"/>
+    </logger>
+    <logger name="rsf-center-receiver" additivity="false" level="INFO">
+        <appender-ref ref="rsfCenterReceiver_appender"/>
+    </logger>
+
+
+    <!-- 日志输出级别 -->
+    <root level="Info">
+        <appender-ref ref="console_appender"/>
+        <appender-ref ref="file_appender"/>
+    </root>
+</configuration>  
