@@ -1,4 +1,4 @@
-#Hasor
+# Hasor
 
 &emsp;&emsp; Hasor是一套基于 Java 语言的应用程序开发框架，它的核心设计目标是提供一个简单、且必要的环境给开发者。开发者可以在此基础上快速进行软件开发。
 
@@ -69,8 +69,11 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-core)
 [![Build Status](https://travis-ci.org/zycgit/hasor.svg?branch=master)](https://travis-ci.org/zycgit/hasor)
 [![Build Status](https://travis-ci.org/zycgit/hasor.svg?branch=dev)](https://travis-ci.org/zycgit/hasor)
+* Demo工程：[http://git.oschina.net/zycgit/hasor-example](http://git.oschina.net/zycgit/hasor-example)
+* Docs : [http://www.hasor.net/docs/hasor/guide/](http://www.hasor.net/docs/hasor/guide/)
 
-### RSF正式发布
+
+### 正式发布
 
 * mvn release:prepare -P release
 * ./deploy.sh -P release
