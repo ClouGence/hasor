@@ -1,6 +1,6 @@
 # Hasor
 
-&emsp;&emsp; Hasor是一套基于 Java 语言的应用程序开发框架，它的核心设计目标是提供一个简单、且必要的环境给开发者。开发者可以在此基础上快速进行软件开发。
+&emsp;&emsp; 以学习、总结、分享为动力，面向生产环境而设计的 Java 应用开发框架。它的核心设计目标是提供一个简单、且必要的环境给开发者。开发者可以在此基础上快速进行软件开发。
 
 &emsp;&emsp; 区别于其它框架的是 Hasor 有着自己一套完整的体系，无论您是一般的Web项目，还是几百人团队中复杂的分布式系统。Hasor都会给予你最有力的支持。
 
@@ -12,6 +12,10 @@
 - 合理的整体架构规划，即是小框架也是大平台。
 - 各部分全部独立，按需使用，绝不臃肿。
 - 体积小，无依赖。
+
+----------
+### 面向人群
+* 学习者、开发者
 
 ----------
 ### 架构
@@ -28,15 +32,16 @@
 ### 总体功能
 01. 支持IoC、Aop、模块化（Hasor-Core）
 02. 支持模版化配置文件，让您程序打包之后通吃各种环境（Hasor-Core）
-03. 提供JDBC操作接口，支持 Result -> Object 映射（Hasor-DB）
-04. 完备的数据库事务控制能力，支持 7 种事务传播属性（Hasor-DB）
-05. 支持传统 Web MVC 开发，也支持  restful 方式（Hasor-Web）
-06. 提供Form表单验证、验证支持场景化（Hasor-Web）
-07. 开放的模版渲染接口，支持各种类型的模版引擎（Hasor-Web）
-08. 分布式 RPC 服务，支持容灾、负载均衡、集群（Hasor-RSF）
-09. 通过 Hprose 支持多协议、跨语言的 RPC 调用（Hasor-RSF）
-10. 通过服务注册中心，支持分布式服务统一治理（Hasor-RSF）
-11. 提供对某一个状态提供分布式下状态一致性支持（Hasor-Land）
+03. 提供JDBC操作接口，支持 Result -> Object 映射（Hasor-Data）
+04. 完备的数据库事务控制能力，支持 7 种事务传播属性（Hasor-Data）
+05. 服务查询引擎，语法上参考了 GraphQL（Hasor-Data）[实验]
+06. 支持传统 Web MVC 开发，也支持  restful 方式（Hasor-Web）
+07. 提供Form表单验证、验证支持场景化（Hasor-Web）
+08. 开放的模版渲染接口，支持各种类型的模版引擎（Hasor-Web）
+09. 分布式 RPC 服务，支持容灾、负载均衡、集群（Hasor-RSF）
+10. 通过 Hprose 支持多协议、跨语言的 RPC 调用（Hasor-RSF）
+11. 通过服务注册中心，支持分布式服务统一治理（Hasor-RSF）
+12. 提供对某一个状态提供分布式下状态一致性支持（Hasor-Land）[研发]
 
 ----------
 ### 发展状况
@@ -73,8 +78,24 @@
 * 参考手册(WiKi版)：[点这里(Click Me)](SUMMARY.md)
 * Docs : [http://www.hasor.net/docs/hasor/guide/](http://www.hasor.net/docs/hasor/guide/)
 
+----------
+### QA
+* Q：优秀项目千千万，为何要选择重复造轮子？
+* A：Hasor 的初衷是 “学习、总结、分享”，因此拿来主义并不是 Hasor 的发展策略。
+* 
+* Q：Hasor每个模块项目都很庞大，为什么没有分项目？
+* A：项目的分分合合做过很多次。目前最优的形态就是放到一个代码库中统一代码版本管理，同时各个项目保持相互独立。
+* 
+* Q：Hasor用到了哪些外部依赖？
+* A：slf4j、asm、JavaCC、netty4、groovy、hessian、hprose。其中：slf4j(必选)、netty4(可选)、groovy(可选)会以依赖形式存在，其它全部内置。
+* 
+* Q：准备造自己的小闭环么？
+* A：Hasor是开放的，它的核心只有 “net.hasor.core” 一个包，共计 177 个类，约占整体代码的 10%。其它 90% 的代码都是扩展。
+* 
+* Q：Hasor 功能是很好，但是我想和其它框架合用可以么？
+* A：可以的，目前 Hasor 已经内置了 Spring、JFinal、Nutz 三款框架的整合。您也可以自己的实际情况进行整合。启动 Hasor 只需要一行代码，相信整合不会耗费您太多精力。
 
-### 正式发布
+### 小备注
 
 * mvn release:prepare -P release
 * ./deploy.sh -P release
