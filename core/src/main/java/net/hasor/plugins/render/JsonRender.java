@@ -23,13 +23,12 @@ import net.hasor.core.BindInfo;
 import net.hasor.web.Invoker;
 import net.hasor.web.RenderEngine;
 import net.hasor.web.RenderInvoker;
-import net.sf.json.JSONObject;
 
 import java.io.IOException;
 import java.io.Writer;
 /**
  * JSON 渲染器，您可以通过 apiBinder.bind(JsonRenderEngine.class).... 来设置您自定义的渲染方式。
- * 默认情况下，JsonRender会自动按照下面顺序尝试寻找可以使用的 JSON 库：fastjson、Gson、Json-lib
+ * 默认情况下，JsonRender会自动按照下面顺序尝试寻找可以使用的 JSON 库：fastjson、Gson
  * @version : 2016年1月3日
  * @author 赵永春(zyc@hasor.net)
  */
@@ -47,12 +46,12 @@ public class JsonRender implements RenderEngine {
                     Class.forName("com.google.gson.Gson");
                     this.jsonRenderEngine = new GsonRenderEngine();
                 } catch (Exception e2) {
-                    try {
-                        Class.forName("net.sf.json.JSONObject");
-                        this.jsonRenderEngine = new JsonLibRenderEngine();
-                    } catch (Exception e3) {
-                        throw new ClassNotFoundException("Did not find any of the following set up (Json-lib、Gson、Fastjson)");
-                    }
+                    //                    try {
+                    //                        Class.forName("net.sf.json.JSONObject");
+                    //                        this.jsonRenderEngine = new JsonLibRenderEngine();
+                    //                    } catch (Exception e3) {
+                    throw new ClassNotFoundException("Did not find any of the following set up (Fastjson、Gson)");
+                    //                    }
                 }
             }
         } else {
@@ -88,12 +87,12 @@ public class JsonRender implements RenderEngine {
             this.gson.toJson(renderData, renderData.getClass(), jsonWriter);
         }
     }
-    /** JsonLib渲染器 */
-    public static class JsonLibRenderEngine implements JsonRenderEngine {
-        @Override
-        public void writerJson(Object renderData, Writer writerTo) throws Throwable {
-            JSONObject jsonObject = JSONObject.fromObject(renderData);
-            jsonObject.write(writerTo);
-        }
-    }
+    //    /** JsonLib渲染器 */
+    //    public static class JsonLibRenderEngine implements JsonRenderEngine {
+    //        @Override
+    //        public void writerJson(Object renderData, Writer writerTo) throws Throwable {
+    //            JSONObject jsonObject = JSONObject.fromObject(renderData);
+    //            jsonObject.write(writerTo);
+    //        }
+    //    }
 }
