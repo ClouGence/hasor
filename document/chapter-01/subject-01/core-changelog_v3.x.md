@@ -3,7 +3,7 @@
 **新增**
     01. 新增内置 Freemarker 渲染器。
     02. 新增内置 DataQL，服务查询引擎，语法上参考了 GraphQL 并做了适量的减法和语法改造形成 Hasor 特有的服务查询引擎
-    03. 新增内置 Json 渲染器，JSON 渲染引擎会按照下面顺序尝试寻找可用的json库：fastjson、Gson、Json-lib
+    03. 新增内置 Json 渲染器，JSON 渲染引擎会按照下面顺序尝试寻找可用的json库：fastjson、Gson
     04. 内置JSON渲染引擎，可以通过 apiBinder.bind(JsonRenderEngine.class) 方式绕过内部查找机制直接使用用户自定义的json渲染器。
 **改进**
     01. EventContext 接口增加 fireSyncEventWithEspecial 方法，可以用于指定同步事件是否以独立线程运行。
