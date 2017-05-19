@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/main">
+    <hasor.environmentVar>
+
+        <!-- RSF对外提供服务的IP -->
+        <RSF_SERVICE_IP>127.0.0.1</RSF_SERVICE_IP>
+        <!-- RSF对外提供服务的服务端口 -->
+        <RSF_SERVICE_PORT>7006</RSF_SERVICE_PORT>
+
+        <!-- 工作模式,默认:Candidate -->
+        <LAND_WORK_MODE>candidate</LAND_WORK_MODE>
+        <!-- 服务器ID -->
+        <LAND_SERVER_ID>server_6</LAND_SERVER_ID>
+        <!-- 集群服务器列表 -->
+        <LAND_SERVERS>
+            server_1:127.0.0.1:7001,
+            server_2:127.0.0.1:7002,
+            server_3:127.0.0.1:7003,
+            server_4:127.0.0.1:7004,
+            server_5:127.0.0.1:7005,
+            server_6:127.0.0.1:7006
+        </LAND_SERVERS>
+
+    </hasor.environmentVar>
+</config>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/hasor-land">
+    <!-- 框架配置，包扫描范围 -->
+    <hasor>
+        <loadPackages>net.hasor.land.*</loadPackages>
+
+        <!-- Land 框架启动入口 -->
+        <modules.module>net.hasor.land.bootstrap.LandModule</modules.module>
+
+        <!-- Land 框架环境变量 -->
+        <environmentVar>
+            <!-- 服务器ID -->
+            <LAND_SERVER_ID>local</LAND_SERVER_ID>
+            <!-- 集群服务器列表 -->
+            <LAND_SERVERS></LAND_SERVERS>
+            <!-- 组成集群最小要求机器在线数 ,minimum number of clusters -->
+            <LAND_SERVERS_MINIMUM>2</LAND_SERVERS_MINIMUM>
+
+            <!-- 工作模式,默认:none -->
+            <LAND_WORK_MODE>none</LAND_WORK_MODE>
+            <!-- 数据存放目录 -->
+            <LAND_DATA_HOME>%WORK_HOME%/land/</LAND_DATA_HOME>
+        </environmentVar>
+    </hasor>
+
+    <!-- Land (分布式协调框架) -->
+    <hasor.land serviceID="${LAND_SERVER_ID}" workAt="${LAND_WORK_MODE}">
+        <!-- 集群服务器列表 -->
+        <servers>${LAND_SERVERS}</servers>
+
+        <!-- 集群配置 -->
+        <clusters>
+            <!-- minimum number of clusters -->
+            <minimum>${LAND_SERVERS_MINIMUM}</minimum>
+        </clusters>
+
+        <!-- 基准超时时间（选举、维持Follower） -->
+        <timeout>300</timeout>
+        <!-- Leader心跳时间 -->
+        <leaderHeartbeat>150</leaderHeartbeat>
+    </hasor.land>
+
+</config>
