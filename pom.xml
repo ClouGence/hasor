@@ -76,6 +76,7 @@
         <module>core</module>
         <module>rsf</module>
         <module>registry</module>
+        <module>land</module>
     </modules>
 
     <!-- maven deploy插件，当在deploy时忽略-->
