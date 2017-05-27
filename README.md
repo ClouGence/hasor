@@ -4,6 +4,8 @@
 
 &emsp;&emsp; 区别于其它框架的是 Hasor 有着自己一套完整的体系，无论您是一般的Web项目，还是几百人团队中复杂的分布式系统。Hasor都会给予你最有力的支持。
 
+&emsp;&emsp; 支持的功能有(J2EE、WebMVC、Restful、RPC、IoC、Aop、Xml Reader、Event、J2EE、Form、JDBC、数据库事务)。
+
 ----------
 ### 特点
 
