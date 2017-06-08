@@ -26,7 +26,7 @@ public class TaskParser {
     //
     /** 解析查询模型，将其转换成为执行任务树 */
     public AbstractPrintTask doParser(QueryDomain domain) {
-        return (AbstractPrintTask) doParser("$", null, domain);//.fixRouteDep();
+        return doParser("$", null, domain);
     }
     private AbstractPrintTask doParser(String nameOfParent, AbstractPrintTask parent, QueryDomain domain) {
         AbstractPrintTask dataSource = null;

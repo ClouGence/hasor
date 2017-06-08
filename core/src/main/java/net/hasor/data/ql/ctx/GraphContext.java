@@ -17,7 +17,6 @@ package net.hasor.data.ql.ctx;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.data.ql.Query;
-import net.hasor.data.ql.QueryUDF;
 import net.hasor.data.ql.UDF;
 import net.hasor.data.ql.dsl.QueryModel;
 import net.hasor.data.ql.dsl.parser.DataQLParser;

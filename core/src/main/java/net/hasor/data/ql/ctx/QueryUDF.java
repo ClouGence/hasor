@@ -13,28 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql;
+package net.hasor.data.ql.ctx;
+import net.hasor.data.ql.UDF;
 /**
- * 执行QL 的查询上下文，用于提供 DataUDF 和 环境参数查询。
+ * 用于提供 UDF 的查询。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface QueryContext extends QueryUDF {
-    public String getPath();
+public interface QueryUDF {
+    /** 判断 UDF 是否存在。*/
+    public boolean containsUDF(String udfName);
 
-    public String getName();
-
-    public QueryContext getParent();
-
-    public Object getInput();
-
-    public void setInput(Object input);
-
-    public Object getOutput();
-
-    public void setOutput(Object result);
-
-    public QueryContext newStack(String pathKey, Object input);
-
-    public Object get(String keyName);
+    /** 取得 UDF 对象。*/
+    public UDF findUDF(String udfName);
 }

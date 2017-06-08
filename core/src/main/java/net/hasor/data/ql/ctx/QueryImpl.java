@@ -17,7 +17,6 @@ package net.hasor.data.ql.ctx;
 import net.hasor.core.AppContext;
 import net.hasor.core.utils.ExceptionUtils;
 import net.hasor.data.ql.Query;
-import net.hasor.data.ql.QueryContext;
 import net.hasor.data.ql.QueryResult;
 import net.hasor.data.ql.UDF;
 import net.hasor.data.ql.dsl.QueryModel;
@@ -63,7 +62,7 @@ class QueryImpl implements Query {
         if (queryContext == null) {
             queryContext = Collections.EMPTY_MAP;
         }
-        QueryContext taskContext = new QueryContextImpl(this.graphContext, queryContext) {
+        QueryContext taskContext = new QueryContext(this.graphContext, queryContext) {
             @Override
             public UDF findUDF(String udfName) {
                 if (temporaryUDF.containsKey(udfName)) {

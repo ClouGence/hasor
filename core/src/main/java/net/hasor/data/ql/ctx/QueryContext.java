@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.ctx;
-import net.hasor.data.ql.QueryContext;
-import net.hasor.data.ql.QueryUDF;
 import net.hasor.data.ql.UDF;
 
 import java.util.HashMap;
@@ -25,7 +23,7 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-class QueryContextImpl implements QueryContext {
+public class QueryContext implements QueryUDF {
     private String              pathName   = null;
     private QueryContext        parent     = null;
     private Object              input      = null;
@@ -33,12 +31,12 @@ class QueryContextImpl implements QueryContext {
     private Map<String, Object> contextMap = null;
     private QueryUDF            queryUDF   = null;
     //
-    public QueryContextImpl(QueryUDF queryUDF, Map<String, Object> contextMap) {
+    public QueryContext(QueryUDF queryUDF, Map<String, Object> contextMap) {
         this.pathName = "$";
         this.contextMap = new HashMap<String, Object>(contextMap);
         this.queryUDF = queryUDF;
     }
-    private QueryContextImpl(String pathName, QueryContextImpl parent, Object input) {
+    private QueryContext(String pathName, QueryContext parent, Object input) {
         //
         this.pathName = pathName;
         this.parent = parent;
@@ -55,35 +53,29 @@ class QueryContextImpl implements QueryContext {
     public UDF findUDF(String udfName) {
         return this.queryUDF.findUDF(udfName);
     }
-    @Override
+    //
     public Object get(String name) {
         return this.contextMap.get(name);
     }
-    @Override
     public String getName() {
         return this.pathName;
     }
-    @Override
     public QueryContext getParent() {
         return this.parent;
     }
-    @Override
     public Object getInput() {
         return this.input;
     }
-    @Override
     public void setInput(Object input) {
         this.input = input;
     }
-    @Override
     public Object getOutput() {
         return this.output;
     }
-    @Override
     public void setOutput(Object output) {
         this.output = output;
     }
-    @Override
+    //
     public String getPath() {
         StringBuilder strBuild = new StringBuilder();
         QueryContext attr = this;
@@ -93,8 +85,7 @@ class QueryContextImpl implements QueryContext {
         } while (attr.getParent() != null);
         return strBuild.toString();
     }
-    @Override
     public QueryContext newStack(String pathName, Object input) {
-        return new QueryContextImpl(pathName, this, input);
+        return new QueryContext(pathName, this, input);
     }
 }
