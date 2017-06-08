@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.runtime;
-import net.hasor.data.ql.ctx.QueryContext;
 import net.hasor.data.ql.dsl.domain.ValueType;
 /**
  * 固定值，任务。

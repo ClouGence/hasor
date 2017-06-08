@@ -22,6 +22,7 @@ import net.hasor.data.ql.UDF;
 import net.hasor.data.ql.dsl.QueryModel;
 import net.hasor.data.ql.result.ValueModel;
 import net.hasor.data.ql.runtime.AbstractTask;
+import net.hasor.data.ql.runtime.QueryContext;
 import net.hasor.data.ql.runtime.TaskParser;
 
 import java.util.Collections;

@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.runtime;
-import net.hasor.data.ql.ctx.QueryContext;
-
 import java.util.Arrays;
 /**
- *
+ * 取值，任务。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

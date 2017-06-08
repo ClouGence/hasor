@@ -17,7 +17,6 @@ package net.hasor.data.ql.runtime;
 import net.hasor.core.Hasor;
 import net.hasor.data.ql.UDF;
 import net.hasor.data.ql.Var;
-import net.hasor.data.ql.ctx.QueryContext;
 import net.hasor.data.ql.dsl.domain.EqType;
 
 import java.util.HashMap;

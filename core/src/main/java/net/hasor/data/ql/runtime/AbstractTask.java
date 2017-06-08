@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.runtime;
-import net.hasor.data.ql.ctx.QueryContext;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
