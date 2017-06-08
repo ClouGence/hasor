@@ -17,25 +17,58 @@ package net.hasor.data.ql.result;
 import net.hasor.data.ql.QueryResult;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 /**
  * 集合类型结果集
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class ListModel extends ArrayList<Object> implements QueryResult {
-    public int getSize() {
-        return this.size();
+    public ListModel() {
     }
-    public QueryResult getOriResult(int index) {
-        return null;
+    public ListModel(Object dataItem) {
+        this.initData(dataItem);
     }
-    public ValueModel getValueResult(int index) {
-        return null;
+    public ListModel(Collection<Object> dataItem) {
+        this.initData(dataItem);
     }
-    public ListModel getListResult(int index) {
-        return null;
+    private void initData(Object dataItem) {
+        if (dataItem == null) {
+            return;
+        }
+        if (!(dataItem instanceof Collection)) {
+            if (dataItem.getClass().isArray()) {
+                for (Object obj : (Object[]) dataItem) {
+                    super.add(obj);
+                }
+            } else {
+                super.addAll(Arrays.asList(dataItem));
+            }
+        } else {
+            super.addAll((Collection<Object>) dataItem);
+        }
     }
-    public ObjectModel getObjectResult(int index) {
-        return null;
+    //
+    public ValueModel asValueModel(int index) {
+        Object dataItem = super.get(index);
+        if (dataItem instanceof ValueModel) {
+            return (ValueModel) dataItem;
+        }
+        return new ValueModel(dataItem);
+    }
+    public ListModel asListModel(int index) {
+        Object dataItem = super.get(index);
+        if (dataItem instanceof ListModel) {
+            return (ListModel) dataItem;
+        }
+        return new ListModel(dataItem);
+    }
+    public ObjectModel asObjectModel(int index) {
+        Object dataItem = super.get(index);
+        if (dataItem instanceof ObjectModel) {
+            return (ObjectModel) dataItem;
+        }
+        return new ObjectModel(dataItem);
     }
 }

@@ -14,42 +14,77 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.result;
+import net.hasor.core.utils.StringUtils;
 import net.hasor.data.ql.QueryResult;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 /**
  * 对象结果
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class ObjectModel extends HashMap<String, Object> implements QueryResult {
-    private List<String>        sortList;
-    private Map<String, Object> objectData;
+    private List<String> sortList;
     //
-    public ObjectModel(List<String> sortList) {
-        this.sortList = sortList;
+    //
+    public ObjectModel(Object dataItem) {
+        InterBeanMap beanMap = new InterBeanMap(dataItem);
+        this.sortList = new ArrayList<String>(beanMap.keySet());
+        this.putAll(beanMap);
     }
+    public ObjectModel(Collection<String> sortList) {
+        this.sortList = new ArrayList<String>(sortList);
+    }
+    //
+    @Override
+    public Object put(String key, Object value) {
+        if (StringUtils.isBlank(key) || !this.hasField(key)) {
+            return null;
+        }
+        return super.put(key, value);
+    }
+    @Override
+    public void putAll(Map<? extends String, ?> m) {
+        if (m == null || m.isEmpty()) {
+            return;
+        }
+        for (Map.Entry<? extends String, ?> ent : m.entrySet()) {
+            this.put(ent.getKey(), ent.getValue());
+        }
+    }
+    //
     public int getFieldSize() {
         return this.sortList.size();
     }
     public List<String> getFieldNames() {
-        return null;
+        return Collections.unmodifiableList(this.sortList);
     }
     public boolean hasField(String fieldName) {
-        return false;
+        return this.sortList.contains(fieldName);
     }
     public Object getOriResult(String fieldName) {
-        return this.objectData.get(fieldName);
+        return super.get(fieldName);
     }
-    public ValueModel getValueResult(String fieldName) {
-        return null;
+    //
+    public ValueModel asValueModel(String fieldName) {
+        Object dataItem = super.get(fieldName);
+        if (dataItem instanceof ValueModel) {
+            return (ValueModel) dataItem;
+        }
+        return new ValueModel(dataItem);
     }
-    public ListModel getListResult(String fieldName) {
-        return null;
+    public ListModel asListModel(String fieldName) {
+        Object dataItem = super.get(fieldName);
+        if (dataItem instanceof ListModel) {
+            return (ListModel) dataItem;
+        }
+        return new ListModel(dataItem);
     }
-    public ObjectModel getObjectResult(String fieldName) {
-        return null;
+    public ObjectModel asObjectModel(String fieldName) {
+        Object dataItem = super.get(fieldName);
+        if (dataItem instanceof ObjectModel) {
+            return (ObjectModel) dataItem;
+        }
+        return new ObjectModel(dataItem);
     }
 }

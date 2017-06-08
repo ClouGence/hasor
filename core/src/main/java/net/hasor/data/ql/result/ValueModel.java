@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.result;
+import net.hasor.core.convert.ConverterUtils;
 import net.hasor.data.ql.QueryResult;
 /**
  * 值类型结果
@@ -25,31 +26,32 @@ public class ValueModel implements QueryResult {
     public ValueModel(Object value) {
         this.value = value;
     }
+    //
     public Object getOriValue() {
-        return null;
+        return this.value;
     }
     public boolean getBoolean() {
-        return false;
+        return (Boolean) ConverterUtils.convert(Boolean.TYPE, this.value);
     }
     public String getString() {
-        return null;
+        return this.value == null ? null : this.value.toString();
     }
     public byte getByte() {
-        return 0;
+        return (Byte) ConverterUtils.convert(Short.TYPE, this.value);
     }
     public short getShort() {
-        return 0;
+        return (Short) ConverterUtils.convert(Short.TYPE, this.value);
     }
     public int getInt() {
-        return 0;
+        return (Integer) ConverterUtils.convert(Integer.TYPE, this.value);
     }
     public long getLong() {
-        return 0;
+        return (Long) ConverterUtils.convert(Long.TYPE, this.value);
     }
     public float getFloat() {
-        return 0;
+        return (Float) ConverterUtils.convert(Float.TYPE, this.value);
     }
     public double getDouble() {
-        return 0;
+        return (Double) ConverterUtils.convert(Double.TYPE, this.value);
     }
 }
