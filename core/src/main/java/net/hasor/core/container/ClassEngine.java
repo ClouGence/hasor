@@ -35,8 +35,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 class ClassEngine {
     private static ConcurrentHashMap<Class<?>, AopClassConfig> buildEngineMap = new ConcurrentHashMap<Class<?>, AopClassConfig>();
-    public static Class<?> buildType(Class<?> targetType, ClassLoader rootLosder, List<AopBindInfoAdapter> aopList,//
-            AppContext appContext) throws ClassNotFoundException, IOException {
+    public static Class<?> buildType(Class<?> targetType, ClassLoader rootLoader,//
+            List<AopBindInfoAdapter> aopList, AppContext appContext) throws ClassNotFoundException, IOException {
+        //
         if (!AopClassConfig.isSupport(targetType)) {
             return targetType;
         }
@@ -51,7 +52,7 @@ class ClassEngine {
                 aopList = Collections.EMPTY_LIST;
             }
             //
-            engine = new AopClassConfig(targetType, rootLosder);
+            engine = new AopClassConfig(targetType, rootLoader);
             for (AopBindInfoAdapter aop : aopList) {
                 if (!aop.getMatcherClass().matches(targetType)) {
                     continue;

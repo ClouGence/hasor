@@ -235,7 +235,7 @@ ParamData queryParam() :{
     paramName = stringValue() paramEqToken = <EQ>               { paramBuilder = DataQL.createParam(paramName); }
     (
           LOOKAHEAD(2) dataParam = udf(paramBuilder)            { dataParam = ((UDFBindingBuilder)dataParam).asParam(); }
-        | dataParam = DValue(paramName,paramBuilder,DataQLToType.ToParam)
+        | dataParam = dValue(paramName,paramBuilder,DataQLToType.ToParam)
     )?
                                                                 {
                                                                   if (dataParam == null && queryMap.containsKey(paramName) )
@@ -247,7 +247,7 @@ ParamData queryParam() :{
                                                                 }
 }
 
-Object DValue(String pName,Object builder,DataQLToType toType) : {
+Object dValue(String pName,Object builder,DataQLToType toType) : {
                                                                   Object result = null;
 }{
     LOOKAHEAD(2)
@@ -337,7 +337,7 @@ DataField queryField() : {
 }{
     fieldName = stringValue()                                   { builder = DataQL.createField(fieldName); }
     (
-        <COLON> dataField = DValue(fieldName,builder,DataQLToType.ToField)
+        <COLON> dataField = dValue(fieldName,builder,DataQLToType.ToField)
     )?
                                                                 {
                                                                   if (dataField == null)
@@ -356,8 +356,14 @@ String name() : {
     )
 }
 
-String keyString() : {}{
-    <NAME_LITERAL>                                              { return token.image; }
+String keyString() : {
+                                                                  Token t = null;
+ }{
+    (
+        "%{" t = <NAME_LITERAL> "}"                                 { return "%{" + t.image + "}"; }
+    ) | (
+        t = <NAME_LITERAL>                                          { return t.image; }
+    )
 }
 
 String stringValue() : {

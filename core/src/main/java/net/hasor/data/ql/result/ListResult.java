@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql;
-import java.util.List;
+package net.hasor.data.ql.result;
+import net.hasor.data.ql.QueryResult;
 /**
- * 对象类型结果集
+ * 集合类型结果集
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface ObjectResult extends QueryResult {
-    public int getFieldSize();
+public interface ListResult extends QueryResult {
+    public int getSize();
 
-    public List<String> getFieldNames();
+    public QueryResult getOriResult(int index);
 
-    public boolean hasField(String fieldName);
+    public ValueResult getValueResult(int index);
 
-    public Object getOriResult(String fieldName);
+    public ListResult getListResult(int index);
 
-    public ValueResult getValueResult(String fieldName);
-
-    public ListResult getListResult(String fieldName);
-
-    public ObjectResult getObjectResult(String fieldName);
+    public ObjectResult getObjectResult(int index);
 }

@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.result;
-import net.hasor.data.ql.ListResult;
-import net.hasor.data.ql.ObjectResult;
 import net.hasor.data.ql.QueryResult;
-import net.hasor.data.ql.ValueResult;
 
 import java.util.ArrayList;
 /**

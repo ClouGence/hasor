@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.runtime.task;
+package net.hasor.data.ql.runtime;
+import net.hasor.data.ql.QueryContext;
 import net.hasor.data.ql.result.ListModel;
-import net.hasor.data.ql.runtime.QueryContext;
-import net.hasor.data.ql.runtime.TaskType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,36 +37,37 @@ public class ListTask extends AbstractPrintTask {
         this.addFieldTask("", bodyTask);
     }
     @Override
-    public Object doTask(QueryContext taskContext, Object inData) throws Throwable {
+    public void doExceute(QueryContext taskContext) throws Throwable {
         //
+        // .数据准备
+        Object curData = taskContext.getInput();
         Collection<Object> listData = null;
-        if (inData == null) {
+        if (curData == null) {
             listData = new ArrayList<Object>();
         } else {
-            if (!(inData instanceof Collection)) {
-                if (inData.getClass().isArray()) {
+            if (!(curData instanceof Collection)) {
+                if (curData.getClass().isArray()) {
                     listData = new ArrayList<Object>();
-                    for (Object obj : (Object[]) inData) {
+                    for (Object obj : (Object[]) curData) {
                         listData.add(obj);
                     }
                 } else {
-                    listData = Arrays.asList(inData);
+                    listData = Arrays.asList(curData);
                 }
             } else {
-                listData = (Collection<Object>) inData;
+                listData = (Collection<Object>) curData;
             }
         }
         //
+        // .执行
         ListModel listModel = new ListModel();
+        taskContext.setOutput(listModel);
+        int index = 0;
         for (Object listItem : listData) {
-            Object taskValue = null;
-            if (TaskType.F.equals(this.bodyTask.getTaskType())) {
-                taskValue = this.bodyTask.doTask(taskContext, listItem);
-            } else {
-                taskValue = this.bodyTask.getValue();
-            }
-            listModel.add(taskValue);
+            QueryContext itemContext = taskContext.newStack("[" + (index++) + "]", listItem);
+            this.bodyTask.doTask(itemContext);
+            listModel.add(itemContext.getOutput());
         }
-        return listModel;
+        //
     }
 }

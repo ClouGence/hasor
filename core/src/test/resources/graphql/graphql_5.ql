@@ -4,7 +4,7 @@ findUserByID ("userID"  = uid, "status"  = 1, "oriData"  =  {
     }) {
     "info" :  {
         "userID",
-        "nick" : ~.nick
+        "nick" : nick
     },
     "orderList" : queryOrder ("accountID"  = $.info.userID) [
         {

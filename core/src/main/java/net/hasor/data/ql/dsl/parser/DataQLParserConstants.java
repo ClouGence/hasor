@@ -93,5 +93,5 @@ public interface DataQLParserConstants {
     /** Lexical state. */
     int      DEFAULT                = 0;
     /** Literal token values. */
-    String[] tokenImage             = { "<EOF>", "<C_SINGLE_COMMENT>", "<C_MULTILINE_COMMENT>", "<SH_SINGLE_COMMENT>", "<WHITESPACE>", "<EOL>", "\",\"", "\"(\"", "\")\"", "\"[\"", "\"]\"", "\"{\"", "\"}\"", "\":\"", "<EQ>", "\"...\"", "\"\\\'\"", "\"\\\"\"", "\"fragment\"", "\"on\"", "\"true\"", "\"false\"", "\"null\"", "\"0\"", "<DIGIT_NONZERO>", "<DIGIT>", "<NUMBER_INTEGER>", "<NUMBER_DECIMAL>", "\"\\\'\\\'\"", "\"\\\"\\\"\"", "<STRING_SINGLE_BODY>", "<STRING_DOUBLE_BODY>", "<STRING_SINGLE_NONEMPTY>", "<STRING_DOUBLE_NONEMPTY>", "<NAME_LITERAL>", };
+    String[] tokenImage             = { "<EOF>", "<C_SINGLE_COMMENT>", "<C_MULTILINE_COMMENT>", "<SH_SINGLE_COMMENT>", "<WHITESPACE>", "<EOL>", "\",\"", "\"(\"", "\")\"", "\"[\"", "\"]\"", "\"{\"", "\"}\"", "\":\"", "<EQ>", "\"...\"", "\"\\\'\"", "\"\\\"\"", "\"fragment\"", "\"on\"", "\"true\"", "\"false\"", "\"null\"", "\"0\"", "<DIGIT_NONZERO>", "<DIGIT>", "<NUMBER_INTEGER>", "<NUMBER_DECIMAL>", "\"\\\'\\\'\"", "\"\\\"\\\"\"", "<STRING_SINGLE_BODY>", "<STRING_DOUBLE_BODY>", "<STRING_SINGLE_NONEMPTY>", "<STRING_DOUBLE_NONEMPTY>", "<NAME_LITERAL>", "\"%{\"", };
 }

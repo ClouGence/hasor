@@ -13,24 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.runtime.task;
-import net.hasor.data.ql.dsl.domain.ValueType;
-import net.hasor.data.ql.runtime.QueryContext;
+package net.hasor.data.ql.result;
+import net.hasor.data.ql.QueryResult;
 /**
- * 固定值，任务。
+ * 值类型结果集
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ValueTask extends AbstractPrintTask {
-    private Object    value;
-    private ValueType valueType;
-    public ValueTask(String nameOfParent, AbstractTask parentTask, Object value, ValueType valueType) {
-        super(nameOfParent, parentTask, null);
-        this.value = value;
-        this.valueType = valueType;
-    }
-    @Override
-    public Object doTask(QueryContext taskContext, Object inData) throws Throwable {
-        return this.value;
-    }
+public interface ValueResult extends QueryResult {
+    public Object getOriValue();
+
+    public boolean getBoolean();
+
+    public String getString();
+
+    public byte getByte();
+
+    public short getShort();
+
+    public int getInt();
+
+    public long getLong();
+
+    public float getFloat();
+
+    public double getDouble();
 }

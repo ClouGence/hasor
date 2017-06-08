@@ -15,18 +15,19 @@
  */
 package net.hasor.data.ql.ctx;
 import net.hasor.core.AppContext;
-import net.hasor.data.ql.UDF;
+import net.hasor.core.utils.ExceptionUtils;
 import net.hasor.data.ql.Query;
+import net.hasor.data.ql.QueryContext;
 import net.hasor.data.ql.QueryResult;
+import net.hasor.data.ql.UDF;
 import net.hasor.data.ql.dsl.QueryModel;
 import net.hasor.data.ql.result.ValueModel;
-import net.hasor.data.ql.runtime.QueryContext;
+import net.hasor.data.ql.runtime.AbstractTask;
 import net.hasor.data.ql.runtime.TaskParser;
-import net.hasor.data.ql.runtime.TaskStatus;
-import net.hasor.data.ql.runtime.task.AbstractPrintTask;
-import net.hasor.data.ql.runtime.task.AbstractTask;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 /**
  * 用于封装 QL 查询接口。
  * @author 赵永春(zyc@hasor.net)
@@ -59,11 +60,11 @@ class QueryImpl implements Query {
     //    }
     @Override
     public QueryResult doQuery(Map<String, Object> queryContext) {
-        AbstractPrintTask queryTask = new TaskParser().doParser(this.queryModel.getDomain());
+        AbstractTask queryTask = new TaskParser().doParser(this.queryModel.getDomain());
         if (queryContext == null) {
             queryContext = Collections.EMPTY_MAP;
         }
-        this.runTasks(new QueryContextImpl(queryContext) {
+        QueryContext taskContext = new QueryContextImpl(this.graphContext, queryContext) {
             @Override
             public UDF findUDF(String udfName) {
                 if (temporaryUDF.containsKey(udfName)) {
@@ -71,36 +72,18 @@ class QueryImpl implements Query {
                 }
                 return graphContext.findUDF(udfName);
             }
-        }, queryTask);
+        };
         //
         try {
-            Object value = queryTask.getValue();
-            return new ValueModel(value);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    private void runTasks(QueryContext context, AbstractTask queryTask) {
-        List<AbstractTask> allTask = queryTask.getAllTask();
-        while (true) {
-            List<AbstractTask> toTask = new ArrayList<AbstractTask>();
-            for (AbstractTask t : allTask) {
-                if (TaskStatus.Failed.equals(queryTask.getTaskStatus())) {
-                    return;
-                }
-                //
-                if (t.isWaiting()) {
-                    toTask.add(t);
-                }
+            queryTask.doTask(taskContext);
+            Object output = taskContext.getOutput();
+            if (output instanceof QueryResult) {
+                return (QueryResult) output;
+            } else {
+                return new ValueModel(output);
             }
-            //
-            if (toTask.isEmpty()) {
-                return;
-            }
-            //
-            toTask.get(0).run(context, null);
-            //            toTask.get(new Random(System.currentTimeMillis()).nextInt(toTask.size())).run(context, null);
-            //
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
         }
     }
 }

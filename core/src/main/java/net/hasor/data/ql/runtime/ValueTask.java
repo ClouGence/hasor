@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.runtime;
-import java.util.concurrent.ExecutionException;
+import net.hasor.data.ql.QueryContext;
+import net.hasor.data.ql.dsl.domain.ValueType;
 /**
- * QL查询的执行任务
+ * 固定值，任务。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface QueryTask {
-    /** 打印结构任务树 */
-    public String printStrutsTree();
-
-    /** 打印执行任务树 */
-    public String printTaskTree();
-
-    /**获取执行结果，如果任务尚未调度，那么会抛出异常。*/
-    public Object getValue() throws ExecutionException, InterruptedException;
-
-    /** 任务节点是否执行完毕(包含成功和失败) */
-    public boolean isFinish();
-
-    /** 任务是否准备就绪，以等待分配执行资源 */
-    public boolean isWaiting();
+public class ValueTask extends AbstractPrintTask {
+    private Object    value;
+    private ValueType valueType;
+    public ValueTask(String nameOfParent, AbstractTask parentTask, Object value, ValueType valueType) {
+        super(nameOfParent, parentTask, null);
+        this.value = value;
+        this.valueType = valueType;
+    }
+    @Override
+    public void doExceute(QueryContext taskContext) throws Throwable {
+        taskContext.setOutput(this.value);
+    }
 }

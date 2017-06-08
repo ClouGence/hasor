@@ -15,26 +15,28 @@
  */
 package net.hasor.data.ql;
 /**
- * 值类型结果集
+ * 执行QL 的查询上下文，用于提供 DataUDF 和 环境参数查询。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface ValueResult extends QueryResult {
-    public Object getOriValue();
+public interface QueryContext extends QueryUDF {
+    public String getPath();
 
-    public boolean getBoolean();
+    public String getName();
 
-    public String getString();
+    public QueryContext getParent();
 
-    public byte getByte();
+    public Object getInput();
 
-    public short getShort();
+    public void setInput(Object input);
 
-    public int getInt();
+    public Object getOutput();
 
-    public long getLong();
+    public void setOutput(Object result);
 
-    public float getFloat();
+    public QueryContext newStack(String pathKey);
 
-    public double getDouble();
+    public QueryContext newStack(String pathKey, Object input);
+
+    public Object get(String keyName);
 }

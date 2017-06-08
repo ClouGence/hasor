@@ -8,7 +8,14 @@ fragment fOrder on queryOrder ("accountID"  = uid) [
 
 fragment fUser on  {
     "userInfo" : findUserByID ("userID"  = uid) {
-
+        "userID",
+        "status",
+        "addressList" : foreach( "list" = addressList ) [
+            {
+                "zip",
+                "address"
+            }
+        ]
     },
     "source" : "DataQL"
 }

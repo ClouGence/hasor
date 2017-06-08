@@ -102,6 +102,8 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         case 34:
             jjmatchedKind = 17;
             return jjMoveStringLiteralDfa1_0(0x20000000L);
+        case 37:
+            return jjMoveStringLiteralDfa1_0(0x800000000L);
         case 39:
             jjmatchedKind = 16;
             return jjMoveStringLiteralDfa1_0(0x10000000L);
@@ -163,6 +165,10 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
             return jjMoveStringLiteralDfa2_0(active0, 0x140000L);
         case 117:
             return jjMoveStringLiteralDfa2_0(active0, 0x400000L);
+        case 123:
+            if ((active0 & 0x800000000L) != 0L)
+                return jjStopAtPos(1, 35);
+            break;
         default:
             break;
         }
@@ -760,7 +766,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
     }
     static final        int[]    jjnextStates       = { 20, 21, 23, 37, 45, 39, 35, 38, 39, 35, 36, 38, 44, 27, 30, 15, 16, 18, 1, 2, 28, 29, 31, 33, 42, 43, };
     /** Token literal values. */
-    public static final String[] jjstrLiteralImages = { "", null, null, null, null, null, "\54", "\50", "\51", "\133", "\135", "\173", "\175", "\72", null, "\56\56\56", "\47", "\42", "\146\162\141\147\155\145\156\164", "\157\156", "\164\162\165\145", "\146\141\154\163\145", "\156\165\154\154", null, null, null, null, null, "\47\47", "\42\42", null, null, null, null, null, };
+    public static final String[] jjstrLiteralImages = { "", null, null, null, null, null, "\54", "\50", "\51", "\133", "\135", "\173", "\175", "\72", null, "\56\56\56", "\47", "\42", "\146\162\141\147\155\145\156\164", "\157\156", "\164\162\165\145", "\146\141\154\163\145", "\156\165\154\154", null, null, null, null, null, "\47\47", "\42\42", null, null, null, null, null, "\45\173", };
     protected Token jjFillToken() {
         final Token t;
         final String curTokenImage;
@@ -895,7 +901,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
     }
     /** Lexer state names. */
     public static final String[] lexStateNames = { "DEFAULT", };
-    static final        long[]   jjtoToken     = { 0x73c7fffc1L, };
+    static final        long[]   jjtoToken     = { 0xf3c7fffc1L, };
     static final        long[]   jjtoSkip      = { 0x3eL, };
     protected SimpleCharStream input_stream;
     private final int[] jjrounds   = new int[48];

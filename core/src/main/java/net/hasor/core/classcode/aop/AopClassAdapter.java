@@ -274,7 +274,7 @@ class AopClassAdapter extends ClassVisitor implements Opcodes {
         //            Object obj = new InnerAopInvocation(m, chain).proceed();
         //            return ((Integer) obj).intValue();
         //        } catch (Throwable e) {
-        //            throw new RuntimeException(e);
+        //            throw ExceptionUtils.toRuntimeException(e);
         //        }
         //    }
         //1.准备输出方法数据

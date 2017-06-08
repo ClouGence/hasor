@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.runtime.task;
+package net.hasor.data.ql.runtime;
 import net.hasor.core.Hasor;
+import net.hasor.data.ql.QueryContext;
 import net.hasor.data.ql.UDF;
 import net.hasor.data.ql.Var;
 import net.hasor.data.ql.dsl.domain.EqType;
-import net.hasor.data.ql.runtime.QueryContext;
-import net.hasor.data.ql.runtime.TaskType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,16 +28,16 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 public class CallerTask extends AbstractPrintTask {
-    private String                         callerName = null;
-    private Map<String, EqType>            varEqTypes = new HashMap<String, EqType>();
-    private Map<String, AbstractPrintTask> callParams = new HashMap<String, AbstractPrintTask>();
+    private String                    callerName = null;
+    private Map<String, EqType>       varEqTypes = new HashMap<String, EqType>();
+    private Map<String, AbstractTask> callParams = new HashMap<String, AbstractTask>();
     public CallerTask(String nameOfParent, AbstractTask parentTask, String callerName) {
         super(nameOfParent, parentTask, null);
         this.callerName = callerName;
     }
     //
     //
-    public void addParam(String paramName, EqType eqType, AbstractPrintTask paramSource) {
+    public void addParam(String paramName, EqType eqType, AbstractTask paramSource) {
         eqType = Hasor.assertIsNotNull(eqType);
         paramSource = Hasor.assertIsNotNull(paramSource);
         //
@@ -47,24 +46,25 @@ public class CallerTask extends AbstractPrintTask {
         super.addFieldTask(paramName, paramSource);
     }
     @Override
-    public Object doTask(QueryContext taskContext, Object inData) throws Throwable {
+    protected void doExceute(QueryContext taskContext) throws Throwable {
         //
+        Object inData = taskContext.getInput();
         Map<String, Var> values = new HashMap<String, Var>();
-        for (Map.Entry<String, AbstractPrintTask> ent : this.callParams.entrySet()) {
-            AbstractPrintTask task = ent.getValue();
-            Object taskValue = null;
-            if (TaskType.F.equals(task.getTaskType())) {
-                taskValue = task.doTask(taskContext, inData);
-            } else {
-                taskValue = task.getValue();
-            }
-            EqType eqType = this.varEqTypes.get(ent.getKey());
-            values.put(ent.getKey(), new Var(eqType, taskValue));
+        for (Map.Entry<String, AbstractTask> ent : this.callParams.entrySet()) {
+            String keyName = ent.getKey();
+            QueryContext paramContext = taskContext.newStack(keyName, inData);
+            //
+            ent.getValue().doTask(paramContext);
+            Object paramValue = paramContext.getOutput();
+            //
+            EqType eqType = this.varEqTypes.get(keyName);
+            values.put(keyName, new Var(eqType, paramValue));
         }
         UDF dataUDF = taskContext.findUDF(this.callerName);
         if (dataUDF == null) {
             throw new NullPointerException("dataUDF '" + this.callerName + "' is not found.");
         }
-        return dataUDF.call(values);
+        Object callData = dataUDF.call(values);
+        taskContext.setOutput(callData);
     }
 }

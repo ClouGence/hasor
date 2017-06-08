@@ -17,6 +17,7 @@ package net.test.hasor.db._07_ql.udfs;
 import net.hasor.data.ql.UDF;
 import net.hasor.data.ql.Var;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 /**
@@ -26,6 +27,15 @@ import java.util.Map;
 public class FindUserByID implements UDF {
     @Override
     public Object call(Map<String, Var> values) {
+        ArrayList<Map<String, Object>> addressSet = new ArrayList<Map<String, Object>>();
+        for (int i = 0; i < 5; i++) {
+            HashMap<String, Object> udfData = new HashMap<String, Object>();
+            udfData.put("zip", "1234" + i);
+            udfData.put("code", "c_" + i);
+            udfData.put("address", "this is detail address info.");
+            addressSet.add(udfData);
+        }
+        //
         HashMap<String, Object> udfData = new HashMap<String, Object>();
         udfData.put("name", "this is name.");
         udfData.put("name2", "this is name2.");
@@ -33,6 +43,7 @@ public class FindUserByID implements UDF {
         udfData.put("nick", "this is nick.");
         udfData.put("userID", 1111111);
         udfData.put("status", true);
+        udfData.put("addressList", addressSet);
         return udfData;
     }
 }

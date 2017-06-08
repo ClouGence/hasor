@@ -53,6 +53,7 @@ public class DataModule implements Module {
         this.dataSource = dataSource;
     }
     //
+    @Override
     public void loadModule(ApiBinder apiBinder) {
         Provider<TransactionManager> managerProvider = new TransactionManagerProvider(this.dataSource);
         Provider<TransactionTemplate> templateProvider = new TransactionTemplateProvider(this.dataSource);

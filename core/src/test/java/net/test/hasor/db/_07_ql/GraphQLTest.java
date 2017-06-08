@@ -29,10 +29,10 @@ public class GraphQLTest {
 
     /*
 -- 查询服务，并返回查询一条结果（如果服务返回一个List，那么取第一个元素）
-findUserByID ( userID = 12345 , status > 2) {
-    name,
-    age,
-    nick
+findUserByID ("userID"  = 12345, "status"  > 2) {
+    "name" : name2,
+    "age",
+    "nick"
 }
     */
         QueryModel queryModel = DataQL.createQuery()//
@@ -62,15 +62,15 @@ findUserByID ( userID = 12345 , status > 2) {
     /*
 -- 查询服务，并返回查询一条结果（如果服务返回一个List，那么取第一个元素）
 {
-    userInfo : {
-        info :findUserByID ( userID = 12345 ) {
-            name,
-            age,
-            nick
+    "userInfo" :  {
+        "info" : findUserByID ("userID"  = 12345) {
+            "name",
+            "age",
+            "nick"
         },
-        nick : info.nick
+        "nick" : info.nick
     },
-    source : "DataQL"
+    "source" : "DataQL"
 }
     */
         QueryModel queryModel = DataQL.createQuery()//
@@ -114,11 +114,11 @@ findUserByID ( userID = 12345 , status > 2) {
     public QueryModel main3() {
     /*
 -- 查询服务，并返回一组结果（如果服务只返回一个对象，那么以 List 形式返回）
-findUserByID ( userID = 12345 ) [
+findUserByID ("userID"  = 12345) [
     {
-        name,
-        age,
-        nick
+        "name",
+        "age",
+        "nick"
     }
 ]
     */
@@ -145,8 +145,8 @@ findUserByID ( userID = 12345 ) [
     public QueryModel main4() {
     /*
 -- 查询服务，并返回所有名称集合
-findUserByID ( userID = 12345 ) [
-    name
+findUserByID ("userID"  = 12345) [
+    name2
 ]
     */
         QueryModel queryModel = DataQL.createQuery()//
@@ -166,20 +166,20 @@ findUserByID ( userID = 12345 ) [
     public QueryModel main5() {
     /*
 -- 查询服务的同时构造另两个 orderList 属性，属性来源是另一个服务，另外参数 userID、status 也可以使用引号阔起来
-findUserByID ("userID" = uid, "status" = 1, "oriData" =  {
+findUserByID ("userID"  = uid, "status"  = 1, "oriData"  =  {
         "self" : true,
         "testID" : 222
     }) {
     "info" :  {
-        "userID" : ~.userID,
-        "nick" : ~.nick
+        "userID",
+        "nick"
     },
-    "orderList" : queryOrder ("accountID" = $.info.userID) [
+    "orderList" : queryOrder ("accountID"  = %{$.info.userID}) [
         {
             "orderID",
             "itemID",
             "itemName",
-            "nick" : $.nick
+            "nick" : %{~.nick}
         }
     ]
 }
@@ -210,14 +210,14 @@ findUserByID ("userID" = uid, "status" = 1, "oriData" =  {
                                 .addField(//
                                         DataQL.createField("userID").withMapping("userID")//
                                 ).addField(//
-                                DataQL.createField("nick").withMapping("~.nick")//
+                                DataQL.createField("nick").withMapping("nick")//
                         ).asField()//
                 )//
                 .addField(//
                         DataQL.createField("orderList")//
                                 .withUDF("queryOrder")//
                                 .addParam(//
-                                        DataQL.createParam("accountID").withParam("$.info.userID")//
+                                        DataQL.createParam("accountID").withParam("%{$.info.userID}")//
                                 )//--------------------------------------------------------------------------
                                 .asListObject()//
                                 .addField(//
@@ -230,7 +230,7 @@ findUserByID ("userID" = uid, "status" = 1, "oriData" =  {
                                         DataQL.createField("itemName").withMapping("itemName")//
                                 )//
                                 .addField(//
-                                        DataQL.createField("nick").withMapping("$.nick")//
+                                        DataQL.createField("nick").withMapping("%{~.nick}")//
                                 )//--------------------------------------------------------------------------
                                 .asField()//
                 )//
@@ -241,7 +241,7 @@ findUserByID ("userID" = uid, "status" = 1, "oriData" =  {
     public QueryModel main6() {
     /*
 -- 参数可以是另一个函数的返回值
-findUserByID ( "userID" = foo( "sessionID" = sid ), "status" = 1 ) {
+findUserByID ("userID"  = foo ("sessionID"  = sid) , "status"  = 1) {
     "userID",
     "nick"
 }
@@ -276,17 +276,17 @@ findUserByID ( "userID" = foo( "sessionID" = sid ), "status" = 1 ) {
     public QueryModel main7() {
     /*
 {
-    user : findUserByID( "userID" = uid ,... ) {
-        uid : "userID",
-        name,
-        age,
-        nick
+    "user" : userManager.findUserByID ("userID"  = uid) {
+        "uid" : userID,
+        "name",
+        "age",
+        "nick"
     },
-    orderList : queryOrder( "accountID" = user.uid , ... ) [
+    "orderList" : queryOrder ("accountID"  = user.uid) [
         {
-            orderID,
-            itemID,
-            itemName
+            "orderID",
+            "itemID",
+            "itemName"
         }
     ]
 }
@@ -339,23 +339,24 @@ findUserByID ( "userID" = foo( "sessionID" = sid ), "status" = 1 ) {
     public QueryModel main8() {
     /*
 -- 使用查询片段优化 DataQL 语句结构，以便于阅读
-fragment fUser on findUserByID( "userID" = uid ) {
-    userID,
-    name,
-    age,
-    nick,
-}
-fragment fOrder on queryOrder( "accountID" = uid , ... ) [
+fragment fOrderQL on queryOrder ("accountID"  = uid) [
     {
-        orderID,
-        itemID,
-        itemName
+        "orderID",
+        "itemID",
+        "itemName"
     }
 ]
 
+fragment fUserQL on findUserByID ("userID"  = uid) {
+    "userID",
+    "name",
+    "age",
+    "nick"
+}
+
 {
-    user      : fUser{},
-    orderList : fOrder{},
+    "user" : fUserQL,
+    "orderList" : fOrderQL
 }
     */
         QueryModel fUserQL = DataQL.createQuery("fUserQL")//
@@ -409,25 +410,24 @@ fragment fOrder on queryOrder( "accountID" = uid , ... ) [
     public QueryModel main9() {
     /*
 -- 查询片段的集中样式
-fragment fUser on {
-    userInfo : findUserByID ( userID = uid ) {
-        name,
-        age,
-        nick
-    },
-    source : "DataQL"
-}
-fragment fOrder on queryOrder( "accountID" = uid , ... ) [
+fragment fOrder on queryOrder ("accountID"  = uid) [
     {
-        orderID,
-        itemID,
-        itemName
+        "orderID",
+        "itemID",
+        "itemName"
     }
 ]
 
+fragment fUser on  {
+    "userInfo" : findUserByID ("userID"  = uid) {
+
+    },
+    "source" : "DataQL"
+}
+
 {
-    user      : fUser,
-    orderList : fOrder,
+    "user" : fUser,
+    "orderList" : fOrder
 }
     */
         QueryModel fUserQL = DataQL.createQuery("fUser")//

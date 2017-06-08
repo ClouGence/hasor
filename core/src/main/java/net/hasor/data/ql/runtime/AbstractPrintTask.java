@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.runtime.task;
+package net.hasor.data.ql.runtime;
 import net.hasor.core.utils.StringUtils;
-import net.hasor.data.ql.runtime.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,18 +46,12 @@ public abstract class AbstractPrintTask extends AbstractTask {
     }
     //
     //
-    private static String taskStatus(AbstractPrintTask task) {
-        return task.getTaskType().name() + ":" + StringUtils.center(task.getTaskStatus().name(), maxStatusStringLength, " ");
-    }
     private static String genDepthStr(int depth) {
         return StringUtils.leftPad("", depth * 2, " ");
     }
     private boolean printTaskTree(StringBuilder builder, int depth, List<AbstractPrintTask> depList, PrintType printType) {
         boolean result = !depList.contains(this);
         if (result) {
-            if (depth == 0) {
-                builder.append("[" + taskStatus(this) + "] ");
-            }
             builder.append(this.getClass().getSimpleName());
         }
         //        depList.add(this);
@@ -73,22 +66,11 @@ public abstract class AbstractPrintTask extends AbstractTask {
         for (AbstractTask task : taskSet) {
             AbstractPrintTask printTask = (AbstractPrintTask) task;
             if (!depList.contains(task)) {
-                builder.append("\n[" + taskStatus(printTask) + "] " + genDepthStr(depth) + " -> ");
+                builder.append("\n" + genDepthStr(depth) + " -> ");
             }
             int nextDepth = (result) ? (depth + 1) : depth;
             printTask.printTaskTree(builder, nextDepth, depList, printType);
         }
         return result;
-    }
-    private static int maxStatusStringLength = 0;
-
-    static {
-        for (TaskStatus ts : TaskStatus.values()) {
-            int length = ts.name().length();
-            if (maxStatusStringLength <= length) {
-                maxStatusStringLength = length;
-            }
-        }
-        maxStatusStringLength = maxStatusStringLength + 2;
     }
 }

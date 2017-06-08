@@ -15,7 +15,6 @@
  */
 package net.hasor.data.ql.runtime;
 import net.hasor.data.ql.dsl.domain.*;
-import net.hasor.data.ql.runtime.task.*;
 
 import java.util.List;
 /**
@@ -27,7 +26,7 @@ public class TaskParser {
     //
     /** 解析查询模型，将其转换成为执行任务树 */
     public AbstractPrintTask doParser(QueryDomain domain) {
-        return (AbstractPrintTask) doParser("$", null, domain).fixRouteDep();
+        return (AbstractPrintTask) doParser("$", null, domain);//.fixRouteDep();
     }
     private AbstractPrintTask doParser(String nameOfParent, AbstractPrintTask parent, QueryDomain domain) {
         AbstractPrintTask dataSource = null;
@@ -111,56 +110,8 @@ public class TaskParser {
             RouteTask rst = new RouteTask(nameOfParent, parent, null);
             String routeExpression = ((RouteValue) defSource).getRouteExpression();
             rst.setRouteExpression(routeExpression);
-            //
-            // - 解析路由表达式，定位到必要的 DS，依赖它。
-            if (routeExpression.contains(".")) {
-                AbstractTask fieldTask = findRouteDSTask(routeExpression, rst);
-                if (fieldTask != null) {
-                    rst.addDepTask(fieldTask);
-                }
-            } else {
-                AbstractTask dataSource = TaskUtils.nearDS(rst); //先找到根节点，然后定位根节点的数据源
-                rst.addDepTask(dataSource);
-            }
-            //
             return rst;
         }
         throw new UnsupportedOperationException("unsupported DValue. type is = " + defSource.getClass());
-    }
-    //
-    //
-    /** 带有路径的路由解析，需要找到路由对应数据的那个 DS */
-    private AbstractTask findRouteDSTask(final String routeExpression, final AbstractTask atTask) {
-        AbstractTask dataTask = atTask;
-        AbstractTask dataSource = atTask.getDataSource();
-        //
-        // - 根节点
-        if (routeExpression.charAt(0) == '$') {
-            while (dataTask.getParent() != null) {
-                dataTask = dataTask.getParent();
-            }
-            dataSource = TaskUtils.nearDS(dataTask); //先找到根节点，然后定位根节点的数据源
-        }
-        // - 最近的DS
-        if (routeExpression.charAt(0) == '~') {
-            dataSource = TaskUtils.nearDS(dataTask);//最近的数据源
-        }
-        // - 其它
-        if (dataSource == null) {
-            AbstractTask tempTask = dataTask;
-            while (tempTask != null) {
-                dataSource = tempTask.findFieldTask(routeExpression.split("\\.")[0]);
-                if (dataSource != null) {
-                    if (TaskType.F == dataSource.getTaskType()) {
-                        return dataSource;
-                    }
-                    dataSource = TaskUtils.nearDS(dataSource);
-                    break;
-                }
-                tempTask = tempTask.getParent();
-            }
-        }
-        //
-        return dataSource;
     }
 }

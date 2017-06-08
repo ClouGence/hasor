@@ -17,6 +17,7 @@ package net.hasor.data.ql.ctx;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.data.ql.Query;
+import net.hasor.data.ql.QueryUDF;
 import net.hasor.data.ql.UDF;
 import net.hasor.data.ql.dsl.QueryModel;
 import net.hasor.data.ql.dsl.parser.DataQLParser;
@@ -30,7 +31,7 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class GraphContext implements AppContextAware {
+public class GraphContext implements AppContextAware, QueryUDF {
     private AppContext       appContext;
     private Map<String, UDF> udfMap;
     protected GraphContext() {
@@ -51,7 +52,8 @@ public class GraphContext implements AppContextAware {
         }
     }
     //
-    protected UDF findUDF(String udfName) {
+    @Override
+    public UDF findUDF(String udfName) {
         return this.udfMap.get(udfName);
     }
     //

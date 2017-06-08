@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.result;
-import net.hasor.data.ql.ValueResult;
 /**
  *
  * @author 赵永春(zyc@hasor.net)

@@ -18,6 +18,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.data.ql.GraphApiBinder;
+import net.hasor.data.ql.udfs.Foreach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -37,5 +38,7 @@ public class GraphQLModule implements Module {
         apiBinder.bindType(GraphContext.class).toInstance(//
                 Hasor.autoAware(apiBinder.getEnvironment(), new GraphContext())//
         );
+        //
+        graphApiBinder.addUDF("foreach", Foreach.class);
     }
 }

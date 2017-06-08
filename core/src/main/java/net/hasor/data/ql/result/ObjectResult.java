@@ -13,9 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.data.ql.result;
+import net.hasor.data.ql.QueryResult;
+
+import java.util.List;
 /**
- * 可以提供查询结构关系组织的，DataQL 任务。
+ * 对象类型结果集
+ * @author 赵永春(zyc@hasor.net)
+ * @version : 2017-03-23
  */
-@AopIgnore
-package net.hasor.data.ql.runtime.task;
-import net.hasor.core.container.AopIgnore;
+public interface ObjectResult extends QueryResult {
+    public int getFieldSize();
+
+    public List<String> getFieldNames();
+
+    public boolean hasField(String fieldName);
+
+    public Object getOriResult(String fieldName);
+
+    public ValueResult getValueResult(String fieldName);
+
+    public ListResult getListResult(String fieldName);
+
+    public ObjectResult getObjectResult(String fieldName);
+}

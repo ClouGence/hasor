@@ -127,11 +127,11 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
                 aopList.add(this.getInstance(info, appContext));
             }
             //
-            //2.动态代理
-            ClassLoader rootLosder = appContext.getClassLoader();
-            Class<?> newType = ClassEngine.buildType(targetType, rootLosder, aopList, appContext);
+            //3.动态代理
+            ClassLoader rootLoader = appContext.getClassLoader();
+            Class<?> newType = ClassEngine.buildType(targetType, rootLoader, aopList, appContext);
             //
-            //3.确定要调用的构造方法。
+            //4.确定要调用的构造方法。
             Constructor<?> constructor = null;
             Provider<?>[] paramProviders = null;
             if (bindInfo != null && bindInfo instanceof DefaultBindInfoProviderAdapter) {
@@ -143,7 +143,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
                 paramProviders = new Provider<?>[0];
             }
             //
-            //4.创建对象。
+            //5.创建对象。
             if (paramProviders == null || paramProviders.length == 0) {
                 T targetBean = (T) constructor.newInstance();
                 return doInject(targetBean, bindInfo, appContext, newType);

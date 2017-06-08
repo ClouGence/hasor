@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.runtime.task;
+package net.hasor.data.ql.runtime;
+import net.hasor.data.ql.QueryContext;
 import net.hasor.data.ql.result.ObjectModel;
-import net.hasor.data.ql.runtime.QueryContext;
-import net.hasor.data.ql.runtime.TaskType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,19 +36,19 @@ public class ObjectTask extends AbstractPrintTask {
         super.addFieldTask(name, dataSource);
     }
     @Override
-    public Object doTask(QueryContext taskContext, Object inData) throws Throwable {
+    public void doExceute(QueryContext taskContext) throws Throwable {
+        //
+        Object inData = taskContext.getInput();
         ObjectModel objectData = new ObjectModel(this.fieldList);
+        taskContext.setOutput(objectData);
         for (String fieldName : this.fieldList) {
-            AbstractPrintTask task = (AbstractPrintTask) super.findFieldTask(fieldName);
-            Object taskValue = null;
-            if (TaskType.F.equals(task.getTaskType())) {
-                taskValue = task.doTask(taskContext, inData);
-            } else {
-                taskValue = task.getValue();
-            }
+            //
+            QueryContext fieldContext = taskContext.newStack(fieldName, inData);
+            super.findFieldTask(fieldName).doTask(fieldContext);
+            //
+            Object taskValue = fieldContext.getOutput();
             objectData.put(fieldName, taskValue);
         }
         //
-        return objectData;
     }
 }

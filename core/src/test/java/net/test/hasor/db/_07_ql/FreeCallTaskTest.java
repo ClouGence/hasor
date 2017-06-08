@@ -24,7 +24,7 @@ import net.hasor.data.ql.ctx.GraphContext;
 import net.hasor.data.ql.dsl.QueryModel;
 import net.hasor.data.ql.dsl.parser.DataQLParser;
 import net.hasor.data.ql.dsl.parser.ParseException;
-import net.hasor.data.ql.runtime.QueryTask;
+import net.hasor.data.ql.runtime.AbstractPrintTask;
 import net.hasor.data.ql.runtime.TaskParser;
 import org.junit.Test;
 
@@ -101,7 +101,7 @@ public class FreeCallTaskTest extends AbstractTaskTest {
         // - 执行计划
         {
             QueryModel graphPlan = DataQLParser.parserQL(buildQuery);
-            QueryTask queryTask = new TaskParser().doParser(graphPlan.getDomain());
+            AbstractPrintTask queryTask = new TaskParser().doParser(graphPlan.getDomain());
             System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             System.out.println(queryTask.printStrutsTree());
             System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");

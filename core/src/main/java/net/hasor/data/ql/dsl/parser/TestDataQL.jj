@@ -97,7 +97,7 @@ TOKEN:{
         )+>
     | <STRING_SINGLE_NONEMPTY: <QUOTE_SINGLE> <STRING_SINGLE_BODY> <QUOTE_SINGLE>>
     | <STRING_DOUBLE_NONEMPTY: <QUOTE_DOUBLE> <STRING_DOUBLE_BODY> <QUOTE_DOUBLE>>
-    | <NAME_LITERAL          :   ("$" | "~" | "_" | ["A"-"Z"] | ["a"-"z"] ) ( "." | "-" | "_" | ["0"-"9"] | ["A"-"Z"] | ["a"-"z"] )* >
+    | <NAME_LITERAL          :   ("$" | "#" | "_" | ["A"-"Z"] | ["a"-"z"] ) ( "." | "-" | "_" | ["0"-"9"] | ["A"-"Z"] | ["a"-"z"] )* >
 }
 
 
@@ -136,11 +136,11 @@ void udf() : { }{
 void queryParam() : { }{
     stringValue() <EQ>
     (
-            LOOKAHEAD(2) udf() | DValue()
+            LOOKAHEAD(2) udf() | dValue()
     )?
 }
 
-void DValue() : { }{
+void dValue() : { }{
     LOOKAHEAD(2)
     (
         valueForBase()
@@ -197,7 +197,7 @@ void queryFields() : {}{
 void queryField() : {}{
     stringValue()
     (
-        <COLON> DValue()
+        <COLON> dValue()
     )?
 }
 
@@ -212,7 +212,11 @@ String name() : {
 }
 
 String keyString() : {}{
-    <NAME_LITERAL>                                              { return token.image; }
+    (
+        "%{" <NAME_LITERAL> "}"                                 { return token.image; }
+    ) | (
+        <NAME_LITERAL>                                          { return token.image; }
+    )
 }
 
 String stringValue() : {
