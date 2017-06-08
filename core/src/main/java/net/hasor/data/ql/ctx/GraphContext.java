@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 /**
- * DataQL 插件上下文，提供 DataUDF 发现和管理以及 QL 执行任务调度协助线程的。
+ * DataQL 上下文.
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
@@ -50,6 +50,10 @@ public class GraphContext implements AppContextAware, QueryUDF {
             }
             this.udfMap.put(defineName, define);
         }
+    }
+    @Override
+    public boolean containsUDF(String udfName) {
+        return this.udfMap.containsKey(udfName);
     }
     //
     @Override

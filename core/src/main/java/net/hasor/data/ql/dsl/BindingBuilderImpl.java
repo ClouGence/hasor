@@ -16,7 +16,7 @@
 package net.hasor.data.ql.dsl;
 import net.hasor.data.ql.dsl.domain.*;
 /**
- *
+ * {@link BindingBuilder} 接口实现类，用于协助构造 DataQL 查询模型。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

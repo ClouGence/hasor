@@ -15,6 +15,7 @@
  */
 package net.hasor.data.ql.dsl;
 /**
+ * 寻值，作为字段
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

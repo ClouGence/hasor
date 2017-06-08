@@ -190,7 +190,7 @@ QueryModel dataQL() :{
 }
 
 BindingBuilder grapthQuery(String queryName) :{
-                                                                  BindingBuilder builder = DataQL.createQuery(queryName);
+                                                                  BindingBuilder builder = DslUtils.createQuery(queryName);
 }{
     (
         udf(builder)
@@ -232,7 +232,7 @@ ParamData queryParam() :{
                                                                   ParamBindingBuilder paramBuilder = null;
                                                                   Object              dataParam   = null;
 }{
-    paramName = stringValue() paramEqToken = <EQ>               { paramBuilder = DataQL.createParam(paramName); }
+    paramName = stringValue() paramEqToken = <EQ>               { paramBuilder = DslUtils.createParam(paramName); }
     (
           LOOKAHEAD(2) dataParam = udf(paramBuilder)            { dataParam = ((UDFBindingBuilder)dataParam).asParam(); }
         | dataParam = dValue(paramName,paramBuilder,DataQLToType.ToParam)
@@ -306,7 +306,7 @@ void queryArrayValueBody(BindingBuilder builder) : {
                                                                 { builder.addField((DataField)oriValue); }
          ) | (
              oriValue = keyString()                             {
-                                                                  DataField field = DataQL.createField((String)oriValue)
+                                                                  DataField field = DslUtils.createField((String)oriValue)
                                                                                             .withMapping((String)oriValue);
                                                                   builder.addField(field);
                                                                 }
@@ -335,7 +335,7 @@ DataField queryField() : {
                                                                   String              fieldName  = null;
                                                                   FieldBindingBuilder builder    = null;
 }{
-    fieldName = stringValue()                                   { builder = DataQL.createField(fieldName); }
+    fieldName = stringValue()                                   { builder = DslUtils.createField(fieldName); }
     (
         <COLON> dataField = dValue(fieldName,builder,DataQLToType.ToField)
     )?

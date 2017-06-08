@@ -15,7 +15,7 @@
  */
 package net.hasor.data.ql.dsl.domain;
 /**
- *
+ * 参数操作符
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

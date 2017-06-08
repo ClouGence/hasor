@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * DataQL，上下文、外壳支持。
+ * DataQL，上下文。
  */
 @AopIgnore
 package net.hasor.data.ql.ctx;

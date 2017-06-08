@@ -21,7 +21,7 @@ import net.hasor.data.ql.UDF;
 import java.util.HashMap;
 import java.util.Map;
 /**
- * QL 查询上下文，一个扩展的 Map 对象。
+ * QL 查询上下文，用于查询引擎调度时使用。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
@@ -47,6 +47,10 @@ class QueryContextImpl implements QueryContext {
         this.queryUDF = parent.queryUDF;
     }
     //
+    @Override
+    public boolean containsUDF(String udfName) {
+        return this.queryUDF.containsUDF(udfName);
+    }
     @Override
     public UDF findUDF(String udfName) {
         return this.queryUDF.findUDF(udfName);
@@ -88,10 +92,6 @@ class QueryContextImpl implements QueryContext {
             attr = attr.getParent();
         } while (attr.getParent() != null);
         return strBuild.toString();
-    }
-    @Override
-    public QueryContext newStack(String pathName) {
-        return this.newStack(pathName, this.input);
     }
     @Override
     public QueryContext newStack(String pathName, Object input) {

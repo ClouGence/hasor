@@ -16,11 +16,14 @@
 package net.hasor.data.ql.dsl;
 import net.hasor.data.ql.dsl.domain.EqType;
 /**
+ * UDF调用，用于协助构造 DataQL 查询模型。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public interface UDFBindingBuilder extends BindingBuilder {
+    /** 添加 UDF 参数 */
     public UDFBindingBuilder addParam(DataParam dataParam);
 
+    /** 添加 UDF 参数 */
     public UDFBindingBuilder addParam(DataParam dataParam, EqType eqType);
 }

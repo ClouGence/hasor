@@ -15,12 +15,11 @@
  */
 package net.hasor.data.ql.runtime;
 import net.hasor.core.utils.BeanUtils;
-import net.hasor.data.ql.result.ObjectResult;
+import net.hasor.data.ql.result.ObjectModel;
 
 import java.lang.reflect.Method;
 import java.util.Map;
 /**
- * 任务
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
@@ -32,8 +31,8 @@ public class TaskUtils {
         if (object instanceof Map) {
             return ((Map) object).get(fieldName);
         }
-        if (object instanceof ObjectResult) {
-            return ((ObjectResult) object).getOriResult(fieldName);
+        if (object instanceof ObjectModel) {
+            return ((ObjectModel) object).getOriResult(fieldName);
         }
         //
         Method[] allMethod = object.getClass().getMethods();

@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 /**
- * DataQL，数据服务查询语言，DataQL 参考了 DataQL 服务查询语言。
- * 并删减了许多不必要的特性，它的语法更加倾向于 JSON 格式。
+ * DataQL，数据服务查询语言，DataQL 参考了 GraphQL 查询语言。
  * 包含如下特性：
  *  1.API DSL ，DataQL DSL 两种查询 DSL。
  *  2.内置查询计划优化，可以有效的通过并行查询来提升查询性能。

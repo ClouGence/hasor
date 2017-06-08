@@ -16,6 +16,7 @@
 package net.hasor.data.ql.dsl;
 import net.hasor.data.ql.dsl.domain.ValueType;
 /**
+ * 值，作为参数
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

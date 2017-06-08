@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.test.hasor.db._07_ql;
-import net.hasor.data.ql.dsl.DataQL;
+import net.hasor.data.ql.dsl.DslUtils;
 import net.hasor.data.ql.dsl.QueryModel;
 import net.hasor.data.ql.dsl.domain.EqType;
 import net.hasor.data.ql.dsl.parser.DataQLParser;
@@ -35,24 +35,24 @@ findUserByID ("userID"  = 12345, "status"  > 2) {
     "nick"
 }
     */
-        QueryModel queryModel = DataQL.createQuery()//
+        QueryModel queryModel = DslUtils.createQuery()//
                 .byUDF("findUserByID")//
                 .addParam(//
-                        DataQL.createParam("userID").withNumber(12345)//
+                        DslUtils.createParam("userID").withNumber(12345)//
                 )//
                 .addParam(//
-                        DataQL.createParam("status").withNumber(2), EqType.GT//
+                        DslUtils.createParam("status").withNumber(2), EqType.GT//
                 )//
                 //-----------------------------------------------------------------------
                 .asObject()//
                 .addField(//
-                        DataQL.createField("name").withMapping("name2")//
+                        DslUtils.createField("name").withMapping("name2")//
                 )//
                 .addField(//
-                        DataQL.createField("age").withMapping("age")//
+                        DslUtils.createField("age").withMapping("age")//
                 )//
                 .addField(//
-                        DataQL.createField("nick").withMapping("nick")//
+                        DslUtils.createField("nick").withMapping("nick")//
                 )//----------------------------------------------------------------------
                 .buildQuery();
         //
@@ -73,38 +73,38 @@ findUserByID ("userID"  = 12345, "status"  > 2) {
     "source" : "DataQL"
 }
     */
-        QueryModel queryModel = DataQL.createQuery()//
+        QueryModel queryModel = DslUtils.createQuery()//
                 //-----------------------------------------------------------------------
                 .asObject()//
                 .addField(//
-                        DataQL.createField("userInfo")//
+                        DslUtils.createField("userInfo")//
                                 //---------------------------------------------------------------------------
                                 .asObject()//
                                 .addField(//
-                                        DataQL.createField("info")//
+                                        DslUtils.createField("info")//
                                                 .withUDF("findUserByID")//
                                                 .addParam(//
-                                                        DataQL.createParam("userID").withNumber(12345)//
+                                                        DslUtils.createParam("userID").withNumber(12345)//
                                                 )//------------------------------------------------------------------------------
                                                 .asObject()//
                                                 .addField(//
-                                                        DataQL.createField("name").withMapping("name")//
+                                                        DslUtils.createField("name").withMapping("name")//
                                                 )//
                                                 .addField(//
-                                                        DataQL.createField("age").withMapping("age")//
+                                                        DslUtils.createField("age").withMapping("age")//
                                                 )//
                                                 .addField(//
-                                                        DataQL.createField("nick").withMapping("nick")//
+                                                        DslUtils.createField("nick").withMapping("nick")//
                                                 )//------------------------------------------------------------------------------
                                                 .asField()//
                                 )//
                                 .addField(//
-                                        DataQL.createField("nick").withMapping("info.nick")//
+                                        DslUtils.createField("nick").withMapping("info.nick")//
                                 )//--------------------------------------------------------------------------
                                 .asField()//
                 )//
                 .addField(//
-                        DataQL.createField("source").withString("DataQL")//
+                        DslUtils.createField("source").withString("DataQL")//
                 )
                 //----------------------------------------------------------------------
                 .buildQuery();
@@ -122,21 +122,21 @@ findUserByID ("userID"  = 12345) [
     }
 ]
     */
-        QueryModel queryModel = DataQL.createQuery()//
+        QueryModel queryModel = DslUtils.createQuery()//
                 .byUDF("findUserByID")//
                 .addParam(//
-                        DataQL.createParam("userID").withNumber(12345)//
+                        DslUtils.createParam("userID").withNumber(12345)//
                 )//----------------------------------------------------------------------
                 .asListObject()//
                 //
                 .addField(//
-                        DataQL.createField("name").withMapping("name")//
+                        DslUtils.createField("name").withMapping("name")//
                 )//
                 .addField(//
-                        DataQL.createField("age").withMapping("age")//
+                        DslUtils.createField("age").withMapping("age")//
                 )//
                 .addField(//
-                        DataQL.createField("nick").withMapping("nick")//
+                        DslUtils.createField("nick").withMapping("nick")//
                 )//----------------------------------------------------------------------
                 .buildQuery();
         //
@@ -149,15 +149,15 @@ findUserByID ("userID"  = 12345) [
     name2
 ]
     */
-        QueryModel queryModel = DataQL.createQuery()//
+        QueryModel queryModel = DslUtils.createQuery()//
                 .byUDF("findUserByID")//
                 .addParam(//
-                        DataQL.createParam("userID").withNumber(12345)//
+                        DslUtils.createParam("userID").withNumber(12345)//
                 )//----------------------------------------------------------------------
                 .asListValue()//
                 //
                 .addField(//
-                        DataQL.createField("name").withMapping("name2")//
+                        DslUtils.createField("name").withMapping("name2")//
                 )//
                 .buildQuery();
         //
@@ -184,53 +184,53 @@ findUserByID ("userID"  = uid, "status"  = 1, "oriData"  =  {
     ]
 }
     */
-        QueryModel queryModel = DataQL.createQuery()//
+        QueryModel queryModel = DslUtils.createQuery()//
                 .byUDF("findUserByID")//
                 .addParam(//
-                        DataQL.createParam("userID").withParam("uid")//
+                        DslUtils.createParam("userID").withParam("uid")//
                 ).addParam(//
-                        DataQL.createParam("status").withNumber(1)//
+                        DslUtils.createParam("status").withNumber(1)//
                 ).addParam(//
-                        DataQL.createParam("oriData").withFragment(//
-                                DataQL.createQuery()//
+                        DslUtils.createParam("oriData").withFragment(//
+                                DslUtils.createQuery()//
                                         .asObject()//
                                         .addField(//
-                                                DataQL.createField("self").withBoolean(true)//
+                                                DslUtils.createField("self").withBoolean(true)//
                                         )//
                                         .addField(//
-                                                DataQL.createField("testID").withNumber(222)//
+                                                DslUtils.createField("testID").withNumber(222)//
                                         ).buildQuery()//
                         )//
                 )//----------------------------------------------------------------------
                 .asObject()//
                 .addField(
                         //
-                        DataQL.createField("info")//
+                        DslUtils.createField("info")//
                                 .asObject()//
                                 .addField(//
-                                        DataQL.createField("userID").withMapping("userID")//
+                                        DslUtils.createField("userID").withMapping("userID")//
                                 ).addField(//
-                                DataQL.createField("nick").withMapping("nick")//
+                                DslUtils.createField("nick").withMapping("nick")//
                         ).asField()//
                 )//
                 .addField(//
-                        DataQL.createField("orderList")//
+                        DslUtils.createField("orderList")//
                                 .withUDF("queryOrder")//
                                 .addParam(//
-                                        DataQL.createParam("accountID").withParam("%{$.info.userID}")//
+                                        DslUtils.createParam("accountID").withParam("%{$.info.userID}")//
                                 )//--------------------------------------------------------------------------
                                 .asListObject()//
                                 .addField(//
-                                        DataQL.createField("orderID").withMapping("orderID")//
+                                        DslUtils.createField("orderID").withMapping("orderID")//
                                 )//
                                 .addField(//
-                                        DataQL.createField("itemID").withMapping("itemID")//
+                                        DslUtils.createField("itemID").withMapping("itemID")//
                                 )//
                                 .addField(//
-                                        DataQL.createField("itemName").withMapping("itemName")//
+                                        DslUtils.createField("itemName").withMapping("itemName")//
                                 )//
                                 .addField(//
-                                        DataQL.createField("nick").withMapping("%{~.nick}")//
+                                        DslUtils.createField("nick").withMapping("%{~.nick}")//
                                 )//--------------------------------------------------------------------------
                                 .asField()//
                 )//
@@ -246,28 +246,28 @@ findUserByID ("userID"  = foo ("sessionID"  = sid) , "status"  = 1) {
     "nick"
 }
     */
-        QueryModel queryModel = DataQL.createQuery()//
+        QueryModel queryModel = DslUtils.createQuery()//
                 .byUDF("findUserByID")//
                 .addParam(//
-                        DataQL.createParam("userID")//
+                        DslUtils.createParam("userID")//
                                 .withUDF("foo")//
                                 .addParam(//
-                                        DataQL.createParam("sessionID").withParam("sid")//
+                                        DslUtils.createParam("sessionID").withParam("sid")//
                                 )//
                                 //----------------------------------------------------------------------
                                 .asOriginal()//
                                 .asParam()//
                 )//
                 .addParam(//
-                        DataQL.createParam("status").withNumber(1) //
+                        DslUtils.createParam("status").withNumber(1) //
                 )//
                 //----------------------------------------------------------------------
                 .asObject()//
                 .addField(//
-                        DataQL.createField("userID").withMapping("userID")//
+                        DslUtils.createField("userID").withMapping("userID")//
                 )//
                 .addField(//
-                        DataQL.createField("nick").withMapping("nick")//
+                        DslUtils.createField("nick").withMapping("nick")//
                 )//
                 .buildQuery();
         //
@@ -291,44 +291,44 @@ findUserByID ("userID"  = foo ("sessionID"  = sid) , "status"  = 1) {
     ]
 }
     */
-        QueryModel queryModel = DataQL.createQuery()//
+        QueryModel queryModel = DslUtils.createQuery()//
                 .asObject()//
                 .addField(//
-                        DataQL.createField("user")//
+                        DslUtils.createField("user")//
                                 .withUDF("userManager.findUserByID")//
                                 .addParam(//
-                                        DataQL.createParam("userID").withParam("uid")//
+                                        DslUtils.createParam("userID").withParam("uid")//
                                 )//
                                 .asObject()//
                                 .addField(//
-                                        DataQL.createField("uid").withMapping("userID")//
+                                        DslUtils.createField("uid").withMapping("userID")//
                                 )//
                                 .addField(//
-                                        DataQL.createField("name").withMapping("name")//
+                                        DslUtils.createField("name").withMapping("name")//
                                 )//
                                 .addField(//
-                                        DataQL.createField("age").withMapping("age")//
+                                        DslUtils.createField("age").withMapping("age")//
                                 )//
                                 .addField(//
-                                        DataQL.createField("nick").withMapping("nick")//
+                                        DslUtils.createField("nick").withMapping("nick")//
                                 )//
                                 .asField()//
                 )//
                 .addField(//
-                        DataQL.createField("orderList")//
+                        DslUtils.createField("orderList")//
                                 .withUDF("queryOrder")//
                                 .addParam(//
-                                        DataQL.createParam("accountID").withParam("user.uid")//
+                                        DslUtils.createParam("accountID").withParam("user.uid")//
                                 )//
                                 .asListObject()//
                                 .addField(//
-                                        DataQL.createField("orderID").withMapping("orderID")//
+                                        DslUtils.createField("orderID").withMapping("orderID")//
                                 )//
                                 .addField(//
-                                        DataQL.createField("itemID").withMapping("itemID")//
+                                        DslUtils.createField("itemID").withMapping("itemID")//
                                 )//
                                 .addField(//
-                                        DataQL.createField("itemName").withMapping("itemName")//
+                                        DslUtils.createField("itemName").withMapping("itemName")//
                                 )//
                                 .asField()//
                 )//
@@ -359,49 +359,49 @@ fragment fUserQL on findUserByID ("userID"  = uid) {
     "orderList" : fOrderQL
 }
     */
-        QueryModel fUserQL = DataQL.createQuery("fUserQL")//
+        QueryModel fUserQL = DslUtils.createQuery("fUserQL")//
                 .byUDF("findUserByID")//
                 .addParam(//
-                        DataQL.createParam("userID").withParam("uid")//
+                        DslUtils.createParam("userID").withParam("uid")//
                 )//
                 .asObject()//
                 .addField(//
-                        DataQL.createField("userID").withMapping("userID")//
+                        DslUtils.createField("userID").withMapping("userID")//
                 )//
                 .addField(//
-                        DataQL.createField("name").withMapping("name")//
+                        DslUtils.createField("name").withMapping("name")//
                 )//
                 .addField(//
-                        DataQL.createField("age").withMapping("age")//
+                        DslUtils.createField("age").withMapping("age")//
                 )//
                 .addField(//
-                        DataQL.createField("nick").withMapping("nick")//
+                        DslUtils.createField("nick").withMapping("nick")//
                 )//
                 .buildQuery();
         //
-        QueryModel fOrderQL = DataQL.createQuery("fOrderQL")//
+        QueryModel fOrderQL = DslUtils.createQuery("fOrderQL")//
                 .byUDF("queryOrder")//
                 .addParam(//
-                        DataQL.createParam("accountID").withParam("uid")//
+                        DslUtils.createParam("accountID").withParam("uid")//
                 )//
                 .asListObject()//
                 .addField(//
-                        DataQL.createField("orderID").withMapping("orderID")//
+                        DslUtils.createField("orderID").withMapping("orderID")//
                 )//
                 .addField(//
-                        DataQL.createField("itemID").withMapping("itemID")//
+                        DslUtils.createField("itemID").withMapping("itemID")//
                 )//
                 .addField(//
-                        DataQL.createField("itemName").withMapping("itemName")//
+                        DslUtils.createField("itemName").withMapping("itemName")//
                 )//
                 .buildQuery();
         //
-        QueryModel queryModel = DataQL.createQuery()//
+        QueryModel queryModel = DslUtils.createQuery()//
                 .asObject()//
                 .addField(//
-                        DataQL.createField("user").withFragment(fUserQL)//
+                        DslUtils.createField("user").withFragment(fUserQL)//
                 ).addField(//
-                        DataQL.createField("orderList").withFragment(fOrderQL)//
+                        DslUtils.createField("orderList").withFragment(fOrderQL)//
                 )//
                 .buildQuery();
         //
@@ -430,42 +430,42 @@ fragment fUser on  {
     "orderList" : fOrder
 }
     */
-        QueryModel fUserQL = DataQL.createQuery("fUser")//
+        QueryModel fUserQL = DslUtils.createQuery("fUser")//
                 .asObject()//
-                .addField(DataQL.createField("userInfo")//
+                .addField(DslUtils.createField("userInfo")//
                         .withUDF("findUserByID")//
                         .addParam(//
-                                DataQL.createParam("userID").withParam("uid")//
+                                DslUtils.createParam("userID").withParam("uid")//
                         )//
                         .asField()//
                 ).addField(//
-                        DataQL.createField("source").withString("DataQL")//
+                        DslUtils.createField("source").withString("DataQL")//
                 )//
                 .buildQuery();
         //
-        QueryModel fOrder = DataQL.createQuery("fOrder")//
+        QueryModel fOrder = DslUtils.createQuery("fOrder")//
                 .byUDF("queryOrder")//
                 .addParam(//
-                        DataQL.createParam("accountID").withParam("uid")//
+                        DslUtils.createParam("accountID").withParam("uid")//
                 )//
                 .asListObject()//
                 .addField(//
-                        DataQL.createField("orderID").withMapping("orderID")//
+                        DslUtils.createField("orderID").withMapping("orderID")//
                 )//
                 .addField(//
-                        DataQL.createField("itemID").withMapping("itemID")//
+                        DslUtils.createField("itemID").withMapping("itemID")//
                 )//
                 .addField(//
-                        DataQL.createField("itemName").withMapping("itemName")//
+                        DslUtils.createField("itemName").withMapping("itemName")//
                 )//
                 .buildQuery();
         //
-        QueryModel queryModel = DataQL.createQuery()//
+        QueryModel queryModel = DslUtils.createQuery()//
                 .asObject()//
                 .addField(//
-                        DataQL.createField("user").withFragment(fUserQL)//
+                        DslUtils.createField("user").withFragment(fUserQL)//
                 ).addField(//
-                        DataQL.createField("orderList").withFragment(fOrder)//
+                        DslUtils.createField("orderList").withFragment(fOrder)//
                 )//
                 .buildQuery();
         //

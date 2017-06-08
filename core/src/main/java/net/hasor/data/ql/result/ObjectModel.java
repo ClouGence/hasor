@@ -14,46 +14,42 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.result;
+import net.hasor.data.ql.QueryResult;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 /**
- *
+ * 对象结果
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ObjectModel extends HashMap<String, Object> implements ObjectResult {
+public class ObjectModel extends HashMap<String, Object> implements QueryResult {
     private List<String>        sortList;
     private Map<String, Object> objectData;
+    //
     public ObjectModel(List<String> sortList) {
         this.sortList = sortList;
     }
-    @Override
     public int getFieldSize() {
         return this.sortList.size();
     }
-    @Override
     public List<String> getFieldNames() {
         return null;
     }
-    @Override
     public boolean hasField(String fieldName) {
         return false;
     }
-    @Override
     public Object getOriResult(String fieldName) {
         return this.objectData.get(fieldName);
     }
-    @Override
-    public ValueResult getValueResult(String fieldName) {
+    public ValueModel getValueResult(String fieldName) {
         return null;
     }
-    @Override
-    public ListResult getListResult(String fieldName) {
+    public ListModel getListResult(String fieldName) {
         return null;
     }
-    @Override
-    public ObjectResult getObjectResult(String fieldName) {
+    public ObjectModel getObjectResult(String fieldName) {
         return null;
     }
 }

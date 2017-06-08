@@ -15,10 +15,11 @@
  */
 package net.hasor.data.ql.dsl;
 /**
- *
+ * 参数
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public interface DataParam {
+    /** 获取参数名称 */
     public String getName();
 }

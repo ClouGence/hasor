@@ -16,6 +16,7 @@
 package net.hasor.data.ql.dsl;
 import net.hasor.data.ql.dsl.domain.QueryDomain;
 /**
+ * 结果，作为字段
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

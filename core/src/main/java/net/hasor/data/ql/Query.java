@@ -23,8 +23,9 @@ import java.util.Map;
 public interface Query {
     /**执行查询*/
     public QueryResult doQuery(Map<String, Object> queryContext);
-    //    /**执行查询*/
-    //    public <T> T doQuery(Map<String, Object> queryContext, Class<?> toType);
+
+    /**执行查询*/
+    public <T> T doQuery(Map<String, Object> queryContext, Class<?> toType);
 
     /**执行的QL语句*/
     public String getQueryString(boolean useFragment);

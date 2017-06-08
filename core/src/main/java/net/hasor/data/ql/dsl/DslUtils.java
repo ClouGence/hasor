@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.result;
-import net.hasor.data.ql.QueryResult;
+package net.hasor.data.ql.dsl;
 /**
- * 值类型结果集
+ *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface ValueResult extends QueryResult {
-    public Object getOriValue();
-
-    public boolean getBoolean();
-
-    public String getString();
-
-    public byte getByte();
-
-    public short getShort();
-
-    public int getInt();
-
-    public long getLong();
-
-    public float getFloat();
-
-    public double getDouble();
+public class DslUtils {
+    public static BindingBuilder createQuery() {
+        return createQuery(null);
+    }
+    public static BindingBuilder createQuery(String queryName) {
+        return new BindingBuilderImpl(queryName);
+    }
+    public static ParamBindingBuilder createParam(String name) {
+        return new ParamBindingBuilderImpl(createQuery(name));
+    }
+    public static FieldBindingBuilder createField(String name) {
+        return new FieldBindingBuilderImpl(createQuery(name));
+    }
 }

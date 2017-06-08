@@ -127,7 +127,7 @@ public class DataQLParser implements DataQLParserConstants {
         throw new Error("Missing return statement in function");
     }
     final public BindingBuilder grapthQuery(String queryName) throws ParseException {
-        BindingBuilder builder = DataQL.createQuery(queryName);
+        BindingBuilder builder = DslUtils.createQuery(queryName);
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
         case STRING_SINGLE_EMPTY:
         case STRING_DOUBLE_EMPTY:
@@ -206,7 +206,7 @@ public class DataQLParser implements DataQLParserConstants {
         Object dataParam = null;
         paramName = stringValue();
         paramEqToken = jj_consume_token(EQ);
-        paramBuilder = DataQL.createParam(paramName);
+        paramBuilder = DslUtils.createParam(paramName);
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
         case OBRA:
         case OCBR:
@@ -435,7 +435,7 @@ public class DataQLParser implements DataQLParserConstants {
                 case NAME_LITERAL:
                 case 35: {
                     oriValue = keyString();
-                    DataField field = DataQL.createField((String) oriValue).withMapping((String) oriValue);
+                    DataField field = DslUtils.createField((String) oriValue).withMapping((String) oriValue);
                     builder.addField(field);
                     break;
                 }
@@ -495,7 +495,7 @@ public class DataQLParser implements DataQLParserConstants {
         String fieldName = null;
         FieldBindingBuilder builder = null;
         fieldName = stringValue();
-        builder = DataQL.createField(fieldName);
+        builder = DslUtils.createField(fieldName);
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
         case COLON: {
             jj_consume_token(COLON);

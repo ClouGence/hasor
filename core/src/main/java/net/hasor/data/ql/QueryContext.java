@@ -34,8 +34,6 @@ public interface QueryContext extends QueryUDF {
 
     public void setOutput(Object result);
 
-    public QueryContext newStack(String pathKey);
-
     public QueryContext newStack(String pathKey, Object input);
 
     public Object get(String keyName);

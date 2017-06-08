@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 /**
- * 用于封装 QL 查询接口。
+ * 用于封装和引发 QL 查询执行。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
@@ -53,11 +53,10 @@ class QueryImpl implements Query {
         }
     }
     //
-    //    @Override
-    //    public <T> T doQuery(Map<String, Object> queryContext, Class<?> toType) {
-    //        QueryResult result = this.query(queryContext);
-    //        return null;
-    //    }
+    @Override
+    public <T> T doQuery(Map<String, Object> queryContext, Class<?> toType) {
+        throw new UnsupportedOperationException();  // TODO
+    }
     @Override
     public QueryResult doQuery(Map<String, Object> queryContext) {
         AbstractTask queryTask = new TaskParser().doParser(this.queryModel.getDomain());
@@ -70,7 +69,10 @@ class QueryImpl implements Query {
                 if (temporaryUDF.containsKey(udfName)) {
                     return temporaryUDF.get(udfName);
                 }
-                return graphContext.findUDF(udfName);
+                if (graphContext.containsUDF(udfName)) {
+                    return graphContext.findUDF(udfName);
+                }
+                throw new UnsupportedOperationException("‘" + udfName + "’ udf is undefined.");
             }
         };
         //

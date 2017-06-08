@@ -15,10 +15,11 @@
  */
 package net.hasor.data.ql.dsl;
 /**
- *
+ * 字段
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public interface DataField {
+    /** 获取字段名 */
     public String getName();
 }

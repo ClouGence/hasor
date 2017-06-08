@@ -16,10 +16,11 @@
 package net.hasor.data.ql;
 import java.util.Map;
 /**
- * DataUDF
+ * UDF
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public interface UDF {
+    /** 执行服务调用 */
     public Object call(Map<String, Var> values);
 }

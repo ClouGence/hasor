@@ -15,22 +15,29 @@
  */
 package net.hasor.data.ql.dsl;
 /**
- *
+ * 用于协助构造 DataQL 查询模型。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public interface ParamBindingBuilder {
+    /** 参数值为空 */
     public DataParam withNull();
 
+    /** 参数值为 boolean 值 */
     public DataParam withBoolean(boolean value);
 
+    /** 参数值为数值 */
     public DataParam withNumber(Number value);
 
+    /** 参数值为字符串 */
     public DataParam withString(String value);
 
+    /** 参数值为寻值 */
     public DataParam withParam(String paramExpression);
 
+    /** 参数值为另一个查询 */
     public DataParam withFragment(QueryModel queryModel);
 
+    /** 参数值来源为服务调用 */
     public UDFBindingBuilder withUDF(String udfName);
 }

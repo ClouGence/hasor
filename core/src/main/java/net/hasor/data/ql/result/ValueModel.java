@@ -14,49 +14,41 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.result;
+import net.hasor.data.ql.QueryResult;
 /**
- *
+ * 值类型结果
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ValueModel implements ValueResult {
+public class ValueModel implements QueryResult {
     private Object value = null;
     public ValueModel(Object value) {
         this.value = value;
     }
-    @Override
     public Object getOriValue() {
         return null;
     }
-    @Override
     public boolean getBoolean() {
         return false;
     }
-    @Override
     public String getString() {
         return null;
     }
-    @Override
     public byte getByte() {
         return 0;
     }
-    @Override
     public short getShort() {
         return 0;
     }
-    @Override
     public int getInt() {
         return 0;
     }
-    @Override
     public long getLong() {
         return 0;
     }
-    @Override
     public float getFloat() {
         return 0;
     }
-    @Override
     public double getDouble() {
         return 0;
     }

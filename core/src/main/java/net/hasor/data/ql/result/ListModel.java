@@ -18,29 +18,24 @@ import net.hasor.data.ql.QueryResult;
 
 import java.util.ArrayList;
 /**
- *
+ * 集合类型结果集
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ListModel extends ArrayList<Object> implements ListResult {
-    @Override
+public class ListModel extends ArrayList<Object> implements QueryResult {
     public int getSize() {
         return this.size();
     }
-    @Override
     public QueryResult getOriResult(int index) {
         return null;
     }
-    @Override
-    public ValueResult getValueResult(int index) {
+    public ValueModel getValueResult(int index) {
         return null;
     }
-    @Override
-    public ListResult getListResult(int index) {
+    public ListModel getListResult(int index) {
         return null;
     }
-    @Override
-    public ObjectResult getObjectResult(int index) {
+    public ObjectModel getObjectResult(int index) {
         return null;
     }
 }

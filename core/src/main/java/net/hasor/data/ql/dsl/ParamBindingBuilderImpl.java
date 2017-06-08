@@ -16,7 +16,7 @@
 package net.hasor.data.ql.dsl;
 import net.hasor.data.ql.dsl.domain.ValueType;
 /**
- *
+ * {@link ParamBindingBuilder} 接口实现，协助 DSL 构造查询模型。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */

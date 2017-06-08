@@ -19,6 +19,7 @@ import net.hasor.data.ql.dsl.domain.*;
 
 import java.util.List;
 /**
+ * {@link QueryModel} 接口实现类，用于表示查询模型。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
