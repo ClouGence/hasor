@@ -13,9 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.plugins.udfs.collection;
+import net.hasor.data.ql.UDF;
+import net.hasor.data.ql.Var;
+
+import java.util.Collection;
+import java.util.Map;
 /**
- * DataQL，内置函数库。
+ * 取第一个元素。
+ * @author 赵永春(zyc@hasor.net)
+ * @version : 2017-06-09
  */
-@AopIgnore
-package net.hasor.data.ql.udfs;
-import net.hasor.core.container.AopIgnore;
+public class First extends AbstractCollectionUDF implements UDF {
+    @Override
+    public Object call(Map<String, Var> values) {
+        Var var = values.get("list");
+        Collection<Object> objects = super.toCollection(var.getValue());
+        if (objects.isEmpty()) {
+            return null;
+        }
+        //
+        return objects.iterator().next();
+    }
+}

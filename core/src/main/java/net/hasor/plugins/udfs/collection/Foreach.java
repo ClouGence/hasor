@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.udfs.collection;
+package net.hasor.plugins.udfs.collection;
 import net.hasor.data.ql.UDF;
 import net.hasor.data.ql.Var;
 
