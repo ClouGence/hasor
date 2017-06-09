@@ -17,7 +17,7 @@ package net.hasor.plugins.jfinal;
 import com.jfinal.plugin.activerecord.IDataSourceProvider;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
-import net.hasor.data.DataModule;
+import net.hasor.data.DataApiBinder;
 import net.hasor.data.transaction.TranManager;
 
 import javax.sql.DataSource;
@@ -49,7 +49,7 @@ public class HasorDataSourceProxy implements IDataSourceProvider, Module {
     //
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        apiBinder.installModule(new DataModule(this.name, this.dataSourceProxy));
+        apiBinder.tryCast(DataApiBinder.class).addDataSource(this.name, this.dataSourceProxy);
     }
     //
     /** 代理DataSource */

@@ -74,7 +74,7 @@ public class MyBatisModule implements Module {
             // .检测依赖
             BindInfo<DataSource> bindInfo = apiBinder.getBindInfo(DataSource.class);
             if (bindInfo == null) {
-                throw new IllegalStateException("need to rely on DataModule plug-in.");
+                throw new IllegalStateException("need DataSource.");
             }
             // .初始化MyBatis绑定
             Provider<DataSource> dataSource = Hasor.autoAware(apiBinder.getEnvironment(), new InfoAwareProvider<DataSource>(bindInfo));
@@ -89,7 +89,7 @@ public class MyBatisModule implements Module {
             // .检测依赖
             BindInfo<DataSource> bindInfo = apiBinder.findBindingRegister(this.dataSourceID, DataSource.class);
             if (bindInfo == null) {
-                throw new IllegalStateException("need to rely on DataModule plug-in.");
+                throw new IllegalStateException("need DataSource.");
             }
             // .初始化MyBatis绑定
             Provider<DataSource> dataSource = Hasor.autoAware(apiBinder.getEnvironment(), new InfoAwareProvider<DataSource>(bindInfo));

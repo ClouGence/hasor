@@ -2,7 +2,7 @@
 
 ![Module集](http://files.hasor.net/uploader/20170310/114317/CC2_C40A_FE51_98E3.jpg "Module集")
 
-&emsp;&emsp;这是早期的 Hasor 模块，用的频率比较高的有：Module、WebModule、RsfModule。而例如：DBModule、MyBatisModule、SpringModule 这些则是一些插件。下面我们看看下面这三兄弟怎么使用。
+&emsp;&emsp;这是早期的 Hasor 模块，用的频率比较高的有：Module、WebModule、RsfModule。而例如：MyBatisModule、SpringModule 这些则是一些插件。下面我们看看下面这三兄弟怎么使用。
 
 - Module，标准模块
 ```java

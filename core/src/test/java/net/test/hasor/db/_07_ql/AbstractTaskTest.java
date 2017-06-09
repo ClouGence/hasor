@@ -19,10 +19,10 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.data.DataApiBinder;
-import net.test.hasor.db._07_ql.udfs.UserManager;
 import net.test.hasor.db._07_ql.udfs.FindUserByID;
 import net.test.hasor.db._07_ql.udfs.Foo;
 import net.test.hasor.db._07_ql.udfs.QueryOrder;
+import net.test.hasor.db._07_ql.udfs.UserManager;
 import org.junit.Before;
 /**
  * @author 赵永春(zyc@hasor.net)
