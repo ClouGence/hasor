@@ -5,7 +5,7 @@
         "age",
         "nick"
     },
-    "orderList" : queryOrder ("accountID"  = user.uid) [
+    "orderList" : queryOrder ("accountID"  = %{$.user.uid}) [
         {
             "orderID",
             "itemID",

@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql;
+package net.hasor.data.ql.ctx;
 import net.hasor.core.*;
-import net.hasor.data.ql.ctx.DataQLFactory;
-import net.hasor.data.ql.ctx.UDFDefine;
-import net.hasor.data.ql.udfs.Foreach;
+import net.hasor.data.ql.DataQL;
+import net.hasor.data.ql.udfs.collection.First;
+import net.hasor.data.ql.udfs.collection.Foreach;
+import net.hasor.data.ql.udfs.collection.Last;
+import net.hasor.data.ql.udfs.collection.Limit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +51,11 @@ public class DataQLModule implements Module {
             }
         });
         //
-        // .内置 QL 函数
+        // .内置集合函数
         qlFactory.addUDF("foreach", new Foreach());
+        qlFactory.addUDF("first", new First());
+        qlFactory.addUDF("last", new Last());
+        qlFactory.addUDF("limit", new Limit());
+        //
     }
 }

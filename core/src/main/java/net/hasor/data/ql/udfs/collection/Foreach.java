@@ -13,31 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql;
-import net.hasor.data.ql.dsl.domain.EqType;
+package net.hasor.data.ql.udfs.collection;
+import net.hasor.data.ql.UDF;
+import net.hasor.data.ql.Var;
+
+import java.util.Map;
 /**
- * UDF 参数
+ * 循环遍历函数
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class Var {
-    private final EqType eqType;
-    private final Object value;
-    //
-    public Var(EqType eqType, Object value) {
-        this.eqType = eqType;
-        this.value = value;
-    }
-    //
-    public EqType getEqType() {
-        return eqType;
-    }
-    public Object getValue() {
-        return value;
-    }
-    //
+public class Foreach extends AbstractCollectionUDF implements UDF {
     @Override
-    public String toString() {
-        return eqType.getTypeString() + " " + this.value;
+    public Object call(Map<String, Var> values) {
+        Var var = values.get("list");
+        return super.toCollection(var.getValue());
     }
 }
