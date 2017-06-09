@@ -26,7 +26,7 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-class UDFDefine implements UDF, AppContextAware {
+public class UDFDefine implements UDF, AppContextAware {
     private String                  name;
     private BindInfo<? extends UDF> udfInfo;
     private UDF                     target;
@@ -40,7 +40,7 @@ class UDFDefine implements UDF, AppContextAware {
         this.target = appContext.getInstance(this.udfInfo);
     }
     public String getName() {
-        return name;
+        return this.name;
     }
     @Override
     public Object call(final Map<String, Var> values) {

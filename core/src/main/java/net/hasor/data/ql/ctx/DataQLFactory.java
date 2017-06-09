@@ -29,14 +29,14 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class DataQLImpl implements DataQL, QueryUDF {
+public class DataQLFactory implements DataQL, QueryUDF {
     private Map<String, UDF> udfMap;
-    protected DataQLImpl() {
+    protected DataQLFactory() {
         this.udfMap = new HashMap<String, UDF>();
     }
     /** 新实例 */
-    public static final DataQLImpl newInstance() {
-        return new DataQLImpl();
+    public static final DataQLFactory newInstance() {
+        return new DataQLFactory();
     }
     /** 添加 UDF */
     public void addUDF(String udfName, UDF udf) {

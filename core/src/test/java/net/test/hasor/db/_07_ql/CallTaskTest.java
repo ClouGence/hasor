@@ -17,7 +17,7 @@ package net.test.hasor.db._07_ql;
 import com.alibaba.fastjson.JSON;
 import net.hasor.data.ql.Query;
 import net.hasor.data.ql.QueryResult;
-import net.hasor.data.ql.ctx.DataQLImpl;
+import net.hasor.data.ql.ctx.DataQLFactory;
 import net.hasor.data.ql.dsl.QueryModel;
 import net.hasor.data.ql.runtime.AbstractPrintTask;
 import net.hasor.data.ql.runtime.TaskParser;
@@ -85,7 +85,7 @@ public class CallTaskTest extends AbstractTaskTest {
             params.put("uid", "uid form env");
             params.put("sid", "sid form env");
             //
-            DataQLImpl gc = appContext.getInstance(DataQLImpl.class);
+            DataQLFactory gc = appContext.getInstance(DataQLFactory.class);
             Query query = gc.createQuery(buildQuery);
             QueryResult result = query.doQuery(params);
             System.out.println(JSON.toJSON(result).toString());

@@ -18,7 +18,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.data.ql._.DataApiBinder;
+import net.hasor.data.DataApiBinder;
 import net.test.hasor.db._07_ql.udfs.UserManager;
 import net.test.hasor.db._07_ql.udfs.FindUserByID;
 import net.test.hasor.db._07_ql.udfs.Foo;
