@@ -21,11 +21,7 @@ import net.hasor.core.utils.ResourcesUtils;
 import net.hasor.data.ql.DataQL;
 import net.hasor.data.ql.Query;
 import net.hasor.data.ql.QueryResult;
-import net.hasor.data.ql.dsl.QueryModel;
-import net.hasor.data.ql.dsl.parser.DataQLParser;
 import net.hasor.data.ql.dsl.parser.ParseException;
-import net.hasor.data.ql.runtime.AbstractPrintTask;
-import net.hasor.data.ql.runtime.TaskParser;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -98,16 +94,6 @@ public class FreeCallTaskTest extends AbstractTaskTest {
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         System.out.println(buildQuery);
         //
-        // - 执行计划
-        {
-            QueryModel graphPlan = DataQLParser.parserQL(buildQuery);
-            AbstractPrintTask queryTask = new TaskParser().doParser(graphPlan.getDomain());
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            System.out.println(queryTask.printStrutsTree());
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            System.out.println(queryTask.printTaskTree());
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        }
         // - 执行 QL
         try {
             Map<String, Object> params = new HashMap<String, Object>();
