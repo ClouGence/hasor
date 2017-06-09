@@ -13,17 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.ctx;
-import net.hasor.data.ql.UDF;
-/**
- * 用于提供 UDF 的查询。
- * @author 赵永春(zyc@hasor.net)
- * @version : 2017-03-23
- */
-public interface QueryUDF {
-    /** 判断 UDF 是否存在。*/
-    public boolean containsUDF(String udfName);
+package net.hasor.data.transaction.provider;
+import net.hasor.core.Provider;
+import net.hasor.data.transaction.TranManager;
+import net.hasor.data.transaction.TransactionManager;
 
-    /** 取得 UDF 对象。*/
-    public UDF findUDF(String udfName);
+import javax.sql.DataSource;
+/**
+ *
+ * @version : 2015年11月10日
+ * @author 赵永春(zyc@hasor.net)
+ */
+public class TransactionManagerProvider implements Provider<TransactionManager> {
+    private Provider<DataSource> dataSource;
+    public TransactionManagerProvider(Provider<DataSource> dataSource) {
+        this.dataSource = dataSource;
+    }
+    public TransactionManager get() {
+        return TranManager.getManager(this.dataSource.get());
+    }
 }

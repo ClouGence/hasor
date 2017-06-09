@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.ctx;
-import net.hasor.core.AppContext;
 import net.hasor.core.utils.ExceptionUtils;
 import net.hasor.data.ql.Query;
 import net.hasor.data.ql.QueryResult;
+import net.hasor.data.ql.QueryUDF;
 import net.hasor.data.ql.UDF;
 import net.hasor.data.ql.dsl.QueryModel;
 import net.hasor.data.ql.result.ValueModel;
@@ -26,7 +26,6 @@ import net.hasor.data.ql.runtime.QueryContext;
 import net.hasor.data.ql.runtime.TaskParser;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 /**
  * 用于封装和引发 QL 查询执行。
@@ -34,14 +33,14 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 class QueryImpl implements Query {
-    private final GraphContext     graphContext;
-    private final QueryModel       queryModel;
-    private final Map<String, UDF> temporaryUDF;
+    private final QueryUDF   dataQL;
+    private final QueryModel queryModel;
+    private final QueryUDF   temporaryUDF;
     //
-    public QueryImpl(AppContext appContext, QueryModel queryModel) {
-        this.graphContext = appContext.getInstance(GraphContext.class);
+    public QueryImpl(QueryUDF dataQL, QueryModel queryModel, QueryUDF temporaryUDF) {
+        this.dataQL = dataQL;
         this.queryModel = queryModel;
-        this.temporaryUDF = new HashMap<String, UDF>();
+        this.temporaryUDF = temporaryUDF;
     }
     //
     @Override
@@ -63,14 +62,14 @@ class QueryImpl implements Query {
         if (queryContext == null) {
             queryContext = Collections.EMPTY_MAP;
         }
-        QueryContext taskContext = new QueryContext(this.graphContext, queryContext) {
+        QueryContext taskContext = new QueryContext(this.dataQL, queryContext) {
             @Override
             public UDF findUDF(String udfName) {
-                if (temporaryUDF.containsKey(udfName)) {
-                    return temporaryUDF.get(udfName);
+                if (temporaryUDF.containsUDF(udfName)) {
+                    return temporaryUDF.findUDF(udfName);
                 }
-                if (graphContext.containsUDF(udfName)) {
-                    return graphContext.findUDF(udfName);
+                if (dataQL.containsUDF(udfName)) {
+                    return dataQL.findUDF(udfName);
                 }
                 throw new UnsupportedOperationException("‘" + udfName + "’ udf is undefined.");
             }

@@ -14,54 +14,58 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.ctx;
-import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
+import net.hasor.data.ql.DataQL;
 import net.hasor.data.ql.Query;
+import net.hasor.data.ql.QueryUDF;
 import net.hasor.data.ql.UDF;
 import net.hasor.data.ql.dsl.QueryModel;
 import net.hasor.data.ql.dsl.parser.DataQLParser;
 import net.hasor.data.ql.dsl.parser.ParseException;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 /**
- * DataQL 上下文.
+ * DataQL 上下文。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class GraphContext implements AppContextAware, QueryUDF {
-    private AppContext       appContext;
+public class DataQLImpl implements DataQL, QueryUDF {
     private Map<String, UDF> udfMap;
-    protected GraphContext() {
-    }
-    //
-    //
-    @Override
-    public void setAppContext(AppContext appContext) {
-        this.appContext = appContext;
+    protected DataQLImpl() {
         this.udfMap = new HashMap<String, UDF>();
-        List<UDFDefine> udfList = appContext.findBindingBean(UDFDefine.class);
-        for (UDFDefine define : udfList) {
-            String defineName = define.getName();
-            if (this.udfMap.containsKey(defineName)) {
-                throw new IllegalStateException("udf name ‘" + defineName + "’ already exist.");
-            }
-            this.udfMap.put(defineName, define);
-        }
     }
+    /** 新实例 */
+    public static final DataQLImpl newInstance() {
+        return new DataQLImpl();
+    }
+    /** 添加 UDF */
+    public void addUDF(String udfName, UDF udf) {
+        if (this.udfMap.containsKey(udfName)) {
+            throw new IllegalStateException("udf name ‘" + udfName + "’ already exist.");
+        }
+        this.udfMap.put(udfName, udf);
+    }
+    //
     @Override
     public boolean containsUDF(String udfName) {
         return this.udfMap.containsKey(udfName);
     }
-    //
     @Override
     public UDF findUDF(String udfName) {
         return this.udfMap.get(udfName);
     }
     //
-    public Query createQuery(String graphQL) throws ParseException {
-        QueryModel queryModel = DataQLParser.parserQL(graphQL);
-        return new QueryImpl(this.appContext, queryModel);
+    @Override
+    public Query createQuery(String qlString) throws ParseException {
+        return this.createQuery(qlString, null);
+    }
+    @Override
+    public Query createQuery(String qlString, QueryUDF temporaryUDF) throws ParseException {
+        if (temporaryUDF == null) {
+            temporaryUDF = EmptyQueryUDF.Instance;
+        }
+        //
+        QueryModel queryModel = DataQLParser.parserQL(qlString);
+        return new QueryImpl(this, queryModel, temporaryUDF);
     }
 }

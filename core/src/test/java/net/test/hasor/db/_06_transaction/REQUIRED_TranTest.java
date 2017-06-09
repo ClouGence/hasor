@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.test.hasor.db._06_transaction;
-import net.hasor.data.Transactional;
+import net.hasor.data.transaction.interceptor.Transactional;
 import net.hasor.data.transaction.Propagation;
 import net.hasor.data.transaction.TransactionCallbackWithoutResult;
 import net.hasor.data.transaction.TransactionStatus;

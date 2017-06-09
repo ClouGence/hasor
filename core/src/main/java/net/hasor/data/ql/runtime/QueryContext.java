@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.runtime;
+import net.hasor.data.ql.QueryUDF;
 import net.hasor.data.ql.UDF;
-import net.hasor.data.ql.ctx.QueryUDF;
 
 import java.util.HashMap;
 import java.util.Map;

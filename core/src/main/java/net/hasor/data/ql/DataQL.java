@@ -13,23 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data;
-import net.hasor.core.Provider;
-import net.hasor.data.transaction.TranManager;
-import net.hasor.data.transaction.TransactionTemplate;
-
-import javax.sql.DataSource;
+package net.hasor.data.ql;
+import net.hasor.data.ql.dsl.parser.ParseException;
 /**
- *
- * @version : 2015年11月10日
+ * DataQL 上下文。
  * @author 赵永春(zyc@hasor.net)
+ * @version : 2017-03-23
  */
-class TransactionTemplateProvider implements Provider<TransactionTemplate> {
-    private Provider<DataSource> dataSource;
-    public TransactionTemplateProvider(Provider<DataSource> dataSource) {
-        this.dataSource = dataSource;
-    }
-    public TransactionTemplate get() {
-        return TranManager.getTemplate(this.dataSource.get());
-    }
+public interface DataQL {
+    public Query createQuery(String qlString) throws ParseException;
+
+    public Query createQuery(String qlString, QueryUDF temporaryUDF) throws ParseException;
 }

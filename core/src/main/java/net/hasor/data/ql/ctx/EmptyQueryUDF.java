@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data;
-import net.hasor.core.Provider;
-import net.hasor.data.transaction.TranManager;
-import net.hasor.data.transaction.TransactionManager;
-
-import javax.sql.DataSource;
+package net.hasor.data.ql.ctx;
+import net.hasor.data.ql.QueryUDF;
+import net.hasor.data.ql.UDF;
 /**
- *
- * @version : 2015年11月10日
+ * 一个永久为空的 QueryUDF 接口实现。
  * @author 赵永春(zyc@hasor.net)
+ * @version : 2017-03-23
  */
-class TransactionManagerProvider implements Provider<TransactionManager> {
-    private Provider<DataSource> dataSource;
-    public TransactionManagerProvider(Provider<DataSource> dataSource) {
-        this.dataSource = dataSource;
+public class EmptyQueryUDF implements QueryUDF {
+    public static final QueryUDF Instance = new EmptyQueryUDF();
+    @Override
+    public boolean containsUDF(String udfName) {
+        return false;
     }
-    public TransactionManager get() {
-        return TranManager.getManager(this.dataSource.get());
+    @Override
+    public UDF findUDF(String udfName) {
+        return null;
     }
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data;
+package net.hasor.data.transaction.interceptor;
 import net.hasor.core.Hasor;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
@@ -27,7 +27,7 @@ import java.lang.reflect.Method;
  * @version : 2015年11月10日
  * @author 赵永春(zyc@hasor.net)
  */
-class TransactionInterceptor implements MethodInterceptor {
+public class TransactionInterceptor implements MethodInterceptor {
     private Provider<DataSource> dataSource = null;
     public TransactionInterceptor(Provider<DataSource> dataSource) {
         this.dataSource = Hasor.assertIsNotNull(dataSource, "dataSource Provider is null.");

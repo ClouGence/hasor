@@ -25,6 +25,10 @@ import net.hasor.data.jdbc.core.JdbcTemplate;
 import net.hasor.data.jdbc.core.JdbcTemplateProvider;
 import net.hasor.data.transaction.TransactionManager;
 import net.hasor.data.transaction.TransactionTemplate;
+import net.hasor.data.transaction.interceptor.TransactionInterceptor;
+import net.hasor.data.transaction.interceptor.Transactional;
+import net.hasor.data.transaction.provider.TransactionManagerProvider;
+import net.hasor.data.transaction.provider.TransactionTemplateProvider;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
