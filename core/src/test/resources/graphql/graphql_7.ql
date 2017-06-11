@@ -1,11 +1,11 @@
-{
-    "user" : userManager.findUserByID ("userID"  = uid) {
+return {
+    "user" : userManager.findUserByID (uid) {
         "uid" : userID,
         "name",
         "age",
         "nick"
     },
-    "orderList" : queryOrder ("accountID"  = %{$.user.uid}) [
+    "orderList" : queryOrder ( %{$.user.uid} ) [
         {
             "orderID",
             "itemID",

@@ -1,4 +1,4 @@
-fragment fOrderQL on queryOrder ("accountID"  = uid) [
+var fOrderQL = queryOrder (uid) [
     {
         "orderID",
         "itemID",
@@ -6,14 +6,14 @@ fragment fOrderQL on queryOrder ("accountID"  = uid) [
     }
 ]
 
-fragment fUserQL on findUserByID ("userID"  = uid) {
+var fUserQL = findUserByID (uid) {
     "userID",
     "name",
     "age",
     "nick"
 }
 
-{
+return {
     "user" : fUserQL,
     "orderList" : fOrderQL
 }

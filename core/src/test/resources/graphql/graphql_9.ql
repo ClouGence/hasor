@@ -1,16 +1,16 @@
-fragment fOrder on queryOrder ("accountID"  = uid) [
+var fOrder = queryOrder (uid) [
     {
         "orderID",
         "itemID",
         "itemName"
     }
-]
+];
 
-fragment fUser on  {
-    "userInfo" : findUserByID ("userID"  = uid) {
+var fUser = {
+    "userInfo" : findUserByID (uid) {
         "userID",
         "status",
-        "addressList" : foreach( "list" = addressList ) [
+        "addressList" : foreach( addressList ) [
             {
                 "zip",
                 "address"
@@ -18,9 +18,9 @@ fragment fUser on  {
         ]
     },
     "source" : "DataQL"
-}
+};
 
-{
+return {
     "user" : fUser,
     "orderList" : fOrder
-}
+};

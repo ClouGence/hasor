@@ -1,30 +1,29 @@
 options {
     STATIC=false;
+//    LOOKAHEAD = 2;
 //    FORCE_LA_CHECK=true;
 }
 
 // ------------------------------------------------------------------------------------------------
 
 PARSER_BEGIN(GraphParser)
-package net.hasor.data.graphql.dsl.parser;
-import net.hasor.data.graphql.dsl.*;
+package net.hasor.data.ql.dsl.parser;
+import net.hasor.data.ql.dsl.*;
+import net.hasor.data.ql.dsl.domain.EqType;
 import java.util.*;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 
 public class GraphParser {
-    private Map<String,QueryModel> queryMap = new HashMap<String, QueryModel>();
     private GraphParser (){}
     //
-    public static QueryModel parserGraphQL(String queryString) throws ParseException {
+    public static void parserGraphQL(String queryString) throws ParseException {
         GraphParser parser = new GraphParser(new ByteArrayInputStream(queryString.getBytes()));
-        parser.grapthQL();
-        return null;
+        parser.rootBlock();
     }
-    public static QueryModel parserGraphQL(InputStream inputStream,String encoding) throws ParseException {
+    public static void parserGraphQL(InputStream inputStream,String encoding) throws ParseException {
         GraphParser parser = new GraphParser(inputStream,encoding);
-        parser.grapthQL();
-        return null;
+        parser.rootBlock();
     }
 }
 PARSER_END(GraphParser)
@@ -35,33 +34,11 @@ PARSER_END(GraphParser)
 SKIP: {
     <C_SINGLE_COMMENT: "//" (~["\n","\r","\f"])* <EOL>> |
     <C_MULTILINE_COMMENT: "/*" (~[])* "*/"> |
-    <SH_SINGLE_COMMENT: "#" (~["\n","\r","\f"])* <EOL>> |
+
     <WHITESPACE: " " | "\t"> |
     <EOL: "\n" | "\r" | "\f">
 }
-/* IDENTIFIERS */
-TOKEN: {
-      < COMMA                   : "," >
-    | < OPAR                    : "(" >
-    | < CPAR                    : ")" >
-    | < OBRA                    : "[" >
-    | < CBRA                    : "]" >
-    | < OCBR                    : "{" >
-    | < CCBR                    : "}" >
-    | < COLON                   : ":" >
-    | < EQ                      : "=" | "!=" | ">" | ">=" | "<" | "<=" | "like" >
-    | < ELLIPSIS                : "..." >
-    | < QUOTE_SINGLE            : "'" >
-    | < QUOTE_DOUBLE            : "\"" >
-}
 
-TOKEN: {
-      < FRAGMENT                : "fragment" >
-    | < ON                      : "on" >
-    | < TRUE                    : "true" >
-    | < FALSE                   : "false" >
-    | < NULL                    : "null" >
-}
 // Number token
 TOKEN:{
 	<#ZERO: "0"> |
@@ -97,165 +74,278 @@ TOKEN:{
         )+>
     | <STRING_SINGLE_NONEMPTY: <QUOTE_SINGLE> <STRING_SINGLE_BODY> <QUOTE_SINGLE>>
     | <STRING_DOUBLE_NONEMPTY: <QUOTE_DOUBLE> <STRING_DOUBLE_BODY> <QUOTE_DOUBLE>>
-    | <NAME_LITERAL          :   ("$" | "#" | "_" | ["A"-"Z"] | ["a"-"z"] ) ( "." | "-" | "_" | ["0"-"9"] | ["A"-"Z"] | ["a"-"z"] )* >
 }
 
+/* IDENTIFIERS */
+TOKEN: {
+      < COMMA                   : "," >
+    | < COLON                   : ":" >
+    | < QUEM                    : "?" >
+    | < SEMI                    : ";" >
+    | < EQ                      : "=">
+    | < QUOTE_SINGLE            : "'" >
+    | < QUOTE_DOUBLE            : "\"" >
+    | < LAMBDAB                 : "->" >
 
-// GrapthQL
-void grapthQL() : {
-}{
-    (
-        <FRAGMENT> name() <ON>
-        grapthQuery()
-    )*
-    grapthQuery()
-    <EOF>
+    | < OPAR                    : "(" >
+    | < CPAR                    : ")" >
+    | < OBRA                    : "[" >
+    | < CBRA                    : "]" >
+    | < ORI                     : "~" >
 
+    | < OCBRR                   : "%{" >
+    | < OCBR                    : "{" >
+    | < CCBR                    : "}" >
+
+    | <#SPIN                    : ( "++" | "--" ) >
+    | < B_O_OP                  : ( <SPIN> | "!" ) >
+    | < A_O_OP                  : <SPIN> >
+    | < TO_OP                   : ( "+" | "-" | "*" | "/" | "%" | "\\"      |
+                                    ">" | ">=" | "<" | "<=" | "==" | "!="   |
+                                    "&" | "|" | "^"                         |
+                                    "<<" | ">>" | ">>>"                     |
+                                    "&&" | "||" )
+      >
 }
 
-void grapthQuery() : {}{
-    (
-        udf()
-    )?
-    queryBody()
+TOKEN: {
+	<#JOIN: "join">
+    | < IF                      : "if" >
+    | < ELSEIF                  : "elseif" >
+    | < ELSE                    : "else" >
+    | < END                     : "end" >
+    | < RETURN                  : "return" >
+    | < VAR                     : "var" >
+    | < LAMBDA                  : "lambda" >
+    | < TRUE                    : "true" >
+    | < FALSE                   : "false" >
+    | < NULL                    : "null" >
+    | <NAME_LITERAL             : ("$" | "#" | "_" | ["A"-"Z"] | ["a"-"z"] ) ( "." | "_" | ["0"-"9"] | ["A"-"Z"] | ["a"-"z"] )* >
 }
 
-void udf() : { }{
-    name()
-    <OPAR>
-    (
-        queryParam()
-        (
-            <COMMA>
-            queryParam()
-        )*
-    )?
-    <CPAR>
-}
+//-----------------------------------------------------------------------------
 
-void queryParam() : { }{
-    stringValue() <EQ>
+// .标识符
+void identifier() : {}{
     (
-            LOOKAHEAD(2) udf() | dValue()
-    )?
-}
-
-void dValue() : { }{
-    LOOKAHEAD(2)
-    (
-        valueForBase()
+        <NAME_LITERAL>
     ) | (
-        LOOKAHEAD(grapthQuery())  grapthQuery() |
-        keyString()
+        <OCBRR> <NAME_LITERAL> <CCBR>
     )
 }
 
-void valueForBase() : { }{
-    nullValue() |
-    booleanValue() |
-    numberValue() |
-    stringValue()
-}
-
-void queryBody() : {}{
+// .带引号的字符串
+void stringValue() : {}{
     (
-        LOOKAHEAD(2) queryArrayListBody() |
-        LOOKAHEAD(1) queryArrayValueBody() |
-        LOOKAHEAD(1) queryObjectBody()
+        <STRING_DOUBLE_EMPTY>       |
+        <STRING_DOUBLE_NONEMPTY>    |
+        <STRING_SINGLE_EMPTY>       |
+        <STRING_SINGLE_NONEMPTY>
     )
 }
 
-void queryArrayListBody() : {}{
+// .空值
+void nullValue() : {}{
+	<NULL>
+}
+
+// .布尔
+void booleanValue() : {}{
+    (
+        <TRUE>                      |
+        <FALSE>
+    )
+}
+
+// .数字
+void numberValue() : {}{
+	(
+		<NUMBER_DECIMAL>            |
+		<NUMBER_INTEGER>
+	)
+}
+
+// .列表：[ ... ]
+void list() : {}{
     <OBRA>
-        <OCBR> (queryFields())? <CCBR>
+        expression()
+        (
+            <COMMA> expression()
+        )*
     <CBRA>
 }
 
-void queryArrayValueBody() : {}{
-    <OBRA> [
-         LOOKAHEAD(2)
-         (
-             valueForBase()
-         ) | (
-             keyString()
-         )
-    ] <CBRA>
+// .对象：
+void object() : {} {
+    <OCBR>
+        stringValue() ( <COLON> expression() )?
+        (
+            <COMMA> stringValue() ( <COLON> expression() )?
+        )*
+    <CCBR>
 }
 
-void queryObjectBody() : { }{
-    <OCBR> (queryFields())? <CCBR>
-}
+//-----------------------------------------------------------------------------
 
-void queryFields() : {}{
-    queryField()
+// .表达式 =   表达式 or 表达式 + 运算符
+void expression() : {} {
+[
     (
-        <COMMA>
-        queryField()
-    )*
-}
+        // 优先级
+        <OPAR> expression() <CPAR>
+    ) | (
+        // 一元运算(前)
+        <B_O_OP> basicValue()
+    ) | (
+        basicValue()
+    )
+]
 
-void queryField() : {}{
-    stringValue()
     (
-        <COLON> dValue()
+        afterExpression()
     )?
 }
 
-String name() : {
-                                                                  String stringObj;
-}{
-    (
-         <NAME_LITERAL>                                         { return token.image; }
-    ) | (
-         stringObj = stringValue()                              { return stringObj; }
-    )
+void afterExpression() :{} {
+                (
+                    // 一元运算(后)
+                    <A_O_OP>
+                ) | (
+                    // 二元运算
+                    <TO_OP> expression()
+                ) | (
+                    // 三元运算
+                    <QUEM> expression() <COLON> expression()
+                )
 }
 
-String keyString() : {}{
-    (
-        "%{" <NAME_LITERAL> "}"                                 { return token.image; }
-    ) | (
-        <NAME_LITERAL>                                          { return token.image; }
-    )
-}
 
-String stringValue() : {
-                                                                  Token t = null;
-}{
+
+// .值
+void basicValue() : {} {
     (
+        nullValue()                 |
+        booleanValue()              |
+        numberValue()               |
         (
-            t = <STRING_DOUBLE_EMPTY>
+            identifier()
+            (
+                funCall()
+            )?
+
+        )                           |
+        stringValue()               |
+        list()                      |
+        object()
+    )
+}
+
+//-----------------------------------------------------------------------------
+// .参数集：(xx , xx , xx)
+void paramSet() : {} {
+    LOOKAHEAD(2)
+    (
+        <OPAR> <CPAR>
+    ) | (
+        <OPAR>
+            paramItem()
+            (
+                <COMMA> paramItem()
+            )*
+        <CPAR>
+    )
+}
+
+// .函数参数
+void paramItem() : {} {
+    (
+        lambdaCall()
+    ) | (
+        expression()
+    )
+}
+
+// .函数调用
+void funCall() : {} {
+    paramSet()
+    (
+        list()      |
+        object()    |
+        <ORI>
+    )
+}
+
+// .Lambda函数： lambda : (obj,obj2) -> {}
+void lambdaCall() : {} {
+    <LAMBDA> <COLON>
+    (
+        LOOKAHEAD(2)
+        (
+            <OPAR><CPAR>
         ) | (
-            t = <STRING_DOUBLE_NONEMPTY>
-        ) | (
-            t = <STRING_SINGLE_EMPTY>
-        ) | (
-            t = <STRING_SINGLE_NONEMPTY>
+            <OPAR>
+                <NAME_LITERAL>
+                (
+                    <COMMA> <NAME_LITERAL>
+                )*
+            <CPAR>
         )
     )
-                                                                {
-                                                                    String image = t.image;
-                                                                    return image.substring(1, image.length()-1);
-                                                                }
-}
-
-Object nullValue() : {}{
-	<NULL>                                                      { return null; }
-}
-
-Boolean booleanValue() : {}{
+    <LAMBDAB>
     (
-        <TRUE>                                                  { return Boolean.TRUE; }
-    ) | (
-        <FALSE>                                                 { return Boolean.FALSE; }
+        (
+            <OCBR> blockSet() <CCBR>
+        ) | LOOKAHEAD(block()) (
+            block()
+        )
     )
-
 }
 
-Number numberValue() : {}{
-	(
-		<NUMBER_DECIMAL>                                        { return new Double(token.image); }
-	) | (
-		<NUMBER_INTEGER>                                        { return new Long(token.image); }
-	)
+//-----------------------------------------------------------------------------
+// .函数
+void varBlock() : {} {
+    <VAR> identifier() <EQ>
+    (
+        lambdaCall()    |
+        expression()
+    )
+}
+
+// .判断
+void ifBlock() : {} {
+        <IF> <OPAR> expression() <CPAR>     blockSet()
+    (
+        <ELSEIF> <OPAR> expression() <CPAR> blockSet()
+    )*
+    (
+        <ELSE>                              blockSet()
+    )?
+        <END>
+}
+
+// .反回
+void returnBlock() : {} {
+    <RETURN> expression()
+}
+
+// .块
+void block() : {} {
+    (
+        varBlock()                  |
+        ifBlock()                   |
+        returnBlock()
+    )
+}
+
+// .块
+void blockSet() : {} {
+    (
+        block() ( <SEMI> )?
+    )*
+}
+
+
+// 入口
+void rootBlock() : {} {
+    blockSet() <EOF>
 }

@@ -1,4 +1,4 @@
-findUserByID ("userID"  = foo ("sessionID"  = sid) , "status"  = 1) {
+return findUserByID ({"userID" : foo (sid)~ , "status" : 1}) {
     "userID",
     "nick"
 }

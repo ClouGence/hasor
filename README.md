@@ -4,7 +4,7 @@
 
 &emsp;&emsp; 区别于其它框架的是 Hasor 有着自己一套完整的体系，无论您是一般的Web项目，还是几百人团队中复杂的分布式系统。Hasor都会给予你最有力的支持。
 
-&emsp;&emsp; 支持的功能有(J2EE、WebMVC、Restful、RPC、IoC、Aop、Xml Reader、Event、J2EE、Form、JDBC、数据库事务)。
+&emsp;&emsp; 支持的功能有(J2EE、WebMVC、Restful、RPC、Simple GraphQL、IoC、Aop、Xml Reader、Event、J2EE、Form、JDBC、数据库事务)。
 
 ----------
 ### 特点
@@ -13,6 +13,7 @@
 - COC原则的最佳实践，‘零’配置文件。
 - 合理的整体架构规划，即是小框架也是大平台。
 - 各部分全部独立，按需使用，绝不臃肿。
+- 提供 “数据库 + 服务” 整合查询，并提供数据整合能力。
 - 体积小，无依赖。
 
 ----------
@@ -21,10 +22,10 @@
 
 ----------
 ### 架构
-![架构](http://files.hasor.net/uploader/20170225/025145/CC2_58F9_847F_B06E.png "架构")
+![架构](http://files.hasor.net/uploader/20170609/155318/CC2_403A_3BD5_D581.jpg "架构")
 
 - Core 职责是提供Bean容器、Module机制。
-- DB 提供了JDBC操作、事务管理。
+- Data 提供了JDBC操作、事务管理、DataQL。
 - RSF 是一个完备的分布式 RPC 服务框架。
 - Web 是一个吸收了百家所长的 Web MVC框架。
 - Land 它类似于 Zookeeper 负责提供分布式一致性的支持。
@@ -36,7 +37,7 @@
 02. 支持模版化配置文件，让您程序打包之后通吃各种环境（Hasor-Core）
 03. 提供JDBC操作接口，支持 Result -> Object 映射（Hasor-Data）
 04. 完备的数据库事务控制能力，支持 7 种事务传播属性（Hasor-Data）
-05. 服务查询引擎，语法上参考了 GraphQL（Hasor-Data）[实验]
+05. DataQL 服务查询引擎，语法上参考了 GraphQL（Hasor-Data）
 06. 支持传统 Web MVC 开发，也支持  restful 方式（Hasor-Web）
 07. 提供Form表单验证、验证支持场景化（Hasor-Web）
 08. 开放的模版渲染接口，支持各种类型的模版引擎（Hasor-Web）
@@ -56,7 +57,7 @@
 
 &emsp;&emsp; 2016年8月18日，2.4.3版本发布，基于2.4版本Hasor开始孕育全新的子项目 RSF。当时 Hasor 的版图还没有这么大。
 
-&emsp;&emsp; 2017年2月21日，RSF 和 Land 被并入 Hasor 体系，同时首次公开了 Hasor 大版图的想法。
+&emsp;&emsp; 2017年2月21日，RSF 和 Land 被并入 Hasor 体系，同时首次公开了 Hasor 大版图的想法。同年 DataQL 问世。
 
 ----------
 ### 集成
