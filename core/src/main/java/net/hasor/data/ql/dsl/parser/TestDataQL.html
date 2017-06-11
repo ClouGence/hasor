@@ -1,0 +1,420 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>BNF for TestDataQL.jj</TITLE>
+</HEAD>
+<BODY>
+<H1 ALIGN=CENTER>BNF for TestDataQL.jj</H1>
+<H2 ALIGN=CENTER>TOKENS</H2>
+<TABLE>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// ------------------------------------------------------------------------------------------------
+
+// Ignore comments
+</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; SKIP : {
+&lt;C_SINGLE_COMMENT: "//" (~["\n","\r","\f"])* &lt;EOL&gt;&gt;
+| &lt;C_MULTILINE_COMMENT: "/*" (~[])* "*/"&gt;
+| &lt;WHITESPACE: " " | "\t"&gt;
+| &lt;EOL: "\n" | "\r" | "\f"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// Number token
+</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;#ZERO: "0"&gt;
+| &lt;#DIGIT_NONZERO: ["1"-"9"]&gt;
+| &lt;#DIGIT: &lt;DIGIT_NONZERO&gt; | &lt;ZERO&gt;&gt;
+| &lt;NUMBER_INTEGER: ("-")? ((&lt;ZERO&gt;)+ | &lt;DIGIT_NONZERO&gt; (&lt;DIGIT&gt;)*)&gt;
+| &lt;NUMBER_DECIMAL: ("-")? ((&lt;ZERO&gt;)+ | &lt;DIGIT_NONZERO&gt; (&lt;DIGIT&gt;)*) "." (&lt;DIGIT&gt;)+ (["e","E"] ("+" | "-")? (&lt;DIGIT&gt;)+)?&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;STRING_SINGLE_EMPTY: "\'\'"&gt;
+| &lt;STRING_DOUBLE_EMPTY: "\"\""&gt;
+| &lt;#STRING_SINGLE_BODY: (~["\'","\\","\r","\n","\f","\t"] | "\\" ("r" | "n" | "f" | "\\" | "/" | "\'" | "b" | "t"))+&gt;
+| &lt;#STRING_DOUBLE_BODY: (~["\"","\\","\r","\n","\f","\t"] | "\\" ("r" | "n" | "f" | "\\" | "/" | "\"" | "b" | "t"))+&gt;
+| &lt;STRING_SINGLE_NONEMPTY: &lt;QUOTE_SINGLE&gt; &lt;STRING_SINGLE_BODY&gt; &lt;QUOTE_SINGLE&gt;&gt;
+| &lt;STRING_DOUBLE_NONEMPTY: &lt;QUOTE_DOUBLE&gt; &lt;STRING_DOUBLE_BODY&gt; &lt;QUOTE_DOUBLE&gt;&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* IDENTIFIERS */</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;COMMA: ","&gt;
+| &lt;COLON: ":"&gt;
+| &lt;QUEM: "?"&gt;
+| &lt;SEMI: ";"&gt;
+| &lt;EQ: "="&gt;
+| &lt;QUOTE_SINGLE: "\'"&gt;
+| &lt;QUOTE_DOUBLE: "\""&gt;
+| &lt;LAMBDAB: "-&gt;"&gt;
+| &lt;OPAR: "("&gt;
+| &lt;CPAR: ")"&gt;
+| &lt;OBRA: "["&gt;
+| &lt;CBRA: "]"&gt;
+| &lt;ORI: "~"&gt;
+| &lt;OCBRR: "%{"&gt;
+| &lt;OCBR: "{"&gt;
+| &lt;CCBR: "}"&gt;
+| &lt;#SPIN: "++" | "--"&gt;
+| &lt;B_O_OP: &lt;SPIN&gt; | "!"&gt;
+| &lt;A_O_OP: &lt;SPIN&gt;&gt;
+| &lt;TO_OP: "+" | "-" | "*" | "/" | "%" | "\\" | "&gt;" | "&gt;=" | "&lt;" | "&lt;=" | "==" | "!=" | "&amp;" | "|" | "^" | "&lt;&lt;" | "&gt;&gt;" | "&gt;&gt;&gt;" | "&amp;&amp;" | "||"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;#JOIN: "join"&gt;
+| &lt;IF: "if"&gt;
+| &lt;ELSEIF: "elseif"&gt;
+| &lt;ELSE: "else"&gt;
+| &lt;END: "end"&gt;
+| &lt;RETURN: "return"&gt;
+| &lt;VAR: "var"&gt;
+| &lt;LAMBDA: "lambda"&gt;
+| &lt;TRUE: "true"&gt;
+| &lt;FALSE: "false"&gt;
+| &lt;NULL: "null"&gt;
+| &lt;NAME_LITERAL: ("$" | "#" | "_" | ["A"-"Z"] | ["a"-"z"]) ("." | "_" | ["0"-"9"] | ["A"-"Z"] | ["a"-"z"])*&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+</TABLE>
+<H2 ALIGN=CENTER>NON-TERMINALS</H2>
+<TABLE>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+//-----------------------------------------------------------------------------
+
+// .标识符
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod1">identifier</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;NAME_LITERAL&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;OCBRR&gt; &lt;NAME_LITERAL&gt; &lt;CCBR&gt; )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// .带引号的字符串
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod2">stringValue</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;STRING_DOUBLE_EMPTY&gt; | &lt;STRING_DOUBLE_NONEMPTY&gt; | &lt;STRING_SINGLE_EMPTY&gt; | &lt;STRING_SINGLE_NONEMPTY&gt; )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// .空值
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod3">nullValue</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;NULL&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// .布尔
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod4">booleanValue</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;TRUE&gt; | &lt;FALSE&gt; )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// .数字
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod5">numberValue</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;NUMBER_DECIMAL&gt; | &lt;NUMBER_INTEGER&gt; )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// .列表：[ ... ]
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod6">list</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;OBRA&gt; <A HREF="#prod7">expression</A> ( &lt;COMMA&gt; <A HREF="#prod7">expression</A> )* &lt;CBRA&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// .对象：
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod8">object</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;OCBR&gt; <A HREF="#prod2">stringValue</A> ( &lt;COLON&gt; <A HREF="#prod7">expression</A> )? ( &lt;COMMA&gt; <A HREF="#prod2">stringValue</A> ( &lt;COLON&gt; <A HREF="#prod7">expression</A> )? )* &lt;CCBR&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+//-----------------------------------------------------------------------------
+
+// .表达式 =   表达式 or 表达式 + 运算符
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod7">expression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;OPAR&gt; <A HREF="#prod7">expression</A> &lt;CPAR&gt; ) | ( &lt;B_O_OP&gt; <A HREF="#prod9">basicValue</A> ) | ( <A HREF="#prod9">basicValue</A> ) )? ( <A HREF="#prod10">afterExpression</A> )?</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod10">afterExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;A_O_OP&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;TO_OP&gt; <A HREF="#prod7">expression</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;QUEM&gt; <A HREF="#prod7">expression</A> &lt;COLON&gt; <A HREF="#prod7">expression</A> )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// .值
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod9">basicValue</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod3">nullValue</A> | <A HREF="#prod4">booleanValue</A> | <A HREF="#prod5">numberValue</A> | ( <A HREF="#prod1">identifier</A> ( <A HREF="#prod11">funCall</A> )? ) | <A HREF="#prod2">stringValue</A> | <A HREF="#prod6">list</A> | <A HREF="#prod8">object</A> )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+//-----------------------------------------------------------------------------
+// .参数集：(xx , xx , xx)
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod12">paramSet</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;OPAR&gt; &lt;CPAR&gt; )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;OPAR&gt; <A HREF="#prod13">paramItem</A> ( &lt;COMMA&gt; <A HREF="#prod13">paramItem</A> )* &lt;CPAR&gt; )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// .函数参数
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod13">paramItem</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod14">lambdaCall</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod7">expression</A> )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// .函数调用
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod11">funCall</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod12">paramSet</A> ( <A HREF="#prod6">list</A> | <A HREF="#prod8">object</A> | &lt;ORI&gt; )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// .Lambda函数： lambda : (obj,obj2) -> {}
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod14">lambdaCall</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LAMBDA&gt; &lt;COLON&gt; ( ( &lt;OPAR&gt; &lt;CPAR&gt; ) | ( &lt;OPAR&gt; &lt;NAME_LITERAL&gt; ( &lt;COMMA&gt; &lt;NAME_LITERAL&gt; )* &lt;CPAR&gt; ) ) &lt;LAMBDAB&gt; ( ( &lt;OCBR&gt; <A HREF="#prod15">blockSet</A> &lt;CCBR&gt; ) | ( <A HREF="#prod16">block</A> ) )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+//-----------------------------------------------------------------------------
+// .函数
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod17">varBlock</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;VAR&gt; <A HREF="#prod1">identifier</A> &lt;EQ&gt; ( <A HREF="#prod14">lambdaCall</A> | <A HREF="#prod7">expression</A> )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// .判断
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod18">ifBlock</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IF&gt; &lt;OPAR&gt; <A HREF="#prod7">expression</A> &lt;CPAR&gt; <A HREF="#prod15">blockSet</A> ( &lt;ELSEIF&gt; &lt;OPAR&gt; <A HREF="#prod7">expression</A> &lt;CPAR&gt; <A HREF="#prod15">blockSet</A> )* ( &lt;ELSE&gt; <A HREF="#prod15">blockSet</A> )? &lt;END&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// .反回
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod19">returnBlock</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;RETURN&gt; <A HREF="#prod7">expression</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// .块
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod16">block</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod17">varBlock</A> | <A HREF="#prod18">ifBlock</A> | <A HREF="#prod19">returnBlock</A> )</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// .块
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod15">blockSet</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod16">block</A> ( &lt;SEMI&gt; )? )*</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// 入口
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod20">rootBlock</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod15">blockSet</A> &lt;EOF&gt;</TD>
+</TR>
+</TABLE>
+</BODY>
+</HTML>
