@@ -80,6 +80,7 @@ TOKEN:{
 TOKEN: {
       < COMMA                   : "," >
     | < COLON                   : ":" >
+    | < DOT                     : "." >
     | < QUEM                    : "?" >
     | < SEMI                    : ";" >
     | < EQ                      : "=">
@@ -120,15 +121,15 @@ TOKEN: {
     | < TRUE                    : "true" >
     | < FALSE                   : "false" >
     | < NULL                    : "null" >
-    | <NAME_LITERAL             : ("$" | "#" | "_" | ["A"-"Z"] | ["a"-"z"] ) ( "." | "_" | ["0"-"9"] | ["A"-"Z"] | ["a"-"z"] )* >
+    | < OPTION                  : "option" >
+    | <NAME_LITERAL             : ("$" | "#" | "_" | ["A"-"Z"] | ["a"-"z"] ) ( "." | "_" | "[" | "]" | ["0"-"9"] | ["A"-"Z"] | ["a"-"z"] )* >
 }
-
 //-----------------------------------------------------------------------------
 
 // .标识符
 void identifier() : {}{
     (
-        <NAME_LITERAL>
+    <NAME_LITERAL>
     ) | (
         <OCBRR> <NAME_LITERAL> <CCBR>
     )
@@ -167,66 +168,71 @@ void numberValue() : {}{
 
 // .列表：[ ... ]
 void list() : {}{
-    <OBRA>
-        expression()
-        (
-            <COMMA> expression()
-        )*
-    <CBRA>
+    LOOKAHEAD(2)
+    (
+        <OBRA> <CBRA>
+    ) | (
+        <OBRA>
+            expression()
+            (
+                <COMMA> expression()
+            )*
+        <CBRA>
+    )
 }
 
 // .对象：
 void object() : {} {
-    <OCBR>
-        stringValue() ( <COLON> expression() )?
-        (
-            <COMMA> stringValue() ( <COLON> expression() )?
-        )*
-    <CCBR>
+    LOOKAHEAD(2)
+    (
+        <OCBR> <CCBR>
+    ) | (
+        <OCBR>
+            stringValue() ( <COLON> expression() )?
+            (
+                <COMMA> stringValue() ( <COLON> expression() )?
+            )*
+        <CCBR>
+    )
 }
 
 //-----------------------------------------------------------------------------
 
 // .表达式 =   表达式 or 表达式 + 运算符
 void expression() : {} {
-[
     (
-        // 优先级
-        <OPAR> expression() <CPAR>
-    ) | (
-        // 一元运算(前)
-        <B_O_OP> basicValue()
-    ) | (
-        basicValue()
+        (
+            // 优先级
+            <OPAR> expression() <CPAR>
+        ) | (
+            // 一元运算(前)
+            <B_O_OP> basicValue()
+        ) | (
+            basicValue()
+        )
     )
-]
-
     (
         afterExpression()
     )?
 }
 
 void afterExpression() :{} {
-                (
-                    // 一元运算(后)
-                    <A_O_OP>
-                ) | (
-                    // 二元运算
-                    <TO_OP> expression()
-                ) | (
-                    // 三元运算
-                    <QUEM> expression() <COLON> expression()
-                )
+    (
+        // 一元运算(后)
+        <A_O_OP>
+    ) | (
+        // 二元运算
+        <TO_OP> expression()
+    ) | (
+        // 三元运算
+        <QUEM> expression() <COLON> expression()
+    )
 }
-
-
 
 // .值
 void basicValue() : {} {
     (
-        nullValue()                 |
-        booleanValue()              |
-        numberValue()               |
+        primitiveValue()            |
         (
             identifier()
             (
@@ -234,9 +240,17 @@ void basicValue() : {} {
             )?
 
         )                           |
-        stringValue()               |
         list()                      |
         object()
+    )
+}
+
+void primitiveValue() : {} {
+    (
+        stringValue()               |
+        nullValue()                 |
+        booleanValue()              |
+        numberValue()
     )
 }
 
@@ -328,12 +342,18 @@ void returnBlock() : {} {
     <RETURN> expression()
 }
 
+// .选项指令
+void optionBlock() : {} {
+    <OPTION> identifier() <EQ> primitiveValue()
+}
+
 // .块
 void block() : {} {
     (
         varBlock()                  |
         ifBlock()                   |
-        returnBlock()
+        returnBlock()               |
+        optionBlock()
     )
 }
 

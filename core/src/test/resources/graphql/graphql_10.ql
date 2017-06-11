@@ -18,10 +18,10 @@ var dat2 = readTxt("Client.txt") [
 
 var merageData = mapJoin( dat1, dat2, [ "clientID", "id" ] ) [
     {
-        "clientID"  : $0.clientID ,
-        "amount"    : $0.amount ,
-        "year"      : $0.year ,
-        "name"      : $1.name
+        "clientID"  : this[0].clientID ,
+        "amount"    : this[0].amount ,
+        "year"      : this[0].year ,
+        "name"      : this[1].name
     }
 ]
 

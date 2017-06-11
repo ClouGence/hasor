@@ -45,65 +45,69 @@ public interface GraphParserConstants {
   /** RegularExpression Id. */
   int COLON = 17;
   /** RegularExpression Id. */
-  int QUEM = 18;
+  int DOT = 18;
   /** RegularExpression Id. */
-  int SEMI = 19;
+  int QUEM = 19;
   /** RegularExpression Id. */
-  int EQ = 20;
+  int SEMI = 20;
   /** RegularExpression Id. */
-  int QUOTE_SINGLE = 21;
+  int EQ = 21;
   /** RegularExpression Id. */
-  int QUOTE_DOUBLE = 22;
+  int QUOTE_SINGLE = 22;
   /** RegularExpression Id. */
-  int LAMBDAB = 23;
+  int QUOTE_DOUBLE = 23;
   /** RegularExpression Id. */
-  int OPAR = 24;
+  int LAMBDAB = 24;
   /** RegularExpression Id. */
-  int CPAR = 25;
+  int OPAR = 25;
   /** RegularExpression Id. */
-  int OBRA = 26;
+  int CPAR = 26;
   /** RegularExpression Id. */
-  int CBRA = 27;
+  int OBRA = 27;
   /** RegularExpression Id. */
-  int ORI = 28;
+  int CBRA = 28;
   /** RegularExpression Id. */
-  int OCBRR = 29;
+  int ORI = 29;
   /** RegularExpression Id. */
-  int OCBR = 30;
+  int OCBRR = 30;
   /** RegularExpression Id. */
-  int CCBR = 31;
+  int OCBR = 31;
   /** RegularExpression Id. */
-  int SPIN = 32;
+  int CCBR = 32;
   /** RegularExpression Id. */
-  int B_O_OP = 33;
+  int SPIN = 33;
   /** RegularExpression Id. */
-  int A_O_OP = 34;
+  int B_O_OP = 34;
   /** RegularExpression Id. */
-  int TO_OP = 35;
+  int A_O_OP = 35;
   /** RegularExpression Id. */
-  int JOIN = 36;
+  int TO_OP = 36;
   /** RegularExpression Id. */
-  int IF = 37;
+  int JOIN = 37;
   /** RegularExpression Id. */
-  int ELSEIF = 38;
+  int IF = 38;
   /** RegularExpression Id. */
-  int ELSE = 39;
+  int ELSEIF = 39;
   /** RegularExpression Id. */
-  int END = 40;
+  int ELSE = 40;
   /** RegularExpression Id. */
-  int RETURN = 41;
+  int END = 41;
   /** RegularExpression Id. */
-  int VAR = 42;
+  int RETURN = 42;
   /** RegularExpression Id. */
-  int LAMBDA = 43;
+  int VAR = 43;
   /** RegularExpression Id. */
-  int TRUE = 44;
+  int LAMBDA = 44;
   /** RegularExpression Id. */
-  int FALSE = 45;
+  int TRUE = 45;
   /** RegularExpression Id. */
-  int NULL = 46;
+  int FALSE = 46;
   /** RegularExpression Id. */
-  int NAME_LITERAL = 47;
+  int NULL = 47;
+  /** RegularExpression Id. */
+  int OPTION = 48;
+  /** RegularExpression Id. */
+  int NAME_LITERAL = 49;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -128,6 +132,7 @@ public interface GraphParserConstants {
     "<STRING_DOUBLE_NONEMPTY>",
     "\",\"",
     "\":\"",
+    "\".\"",
     "\"?\"",
     "\";\"",
     "\"=\"",
@@ -157,6 +162,7 @@ public interface GraphParserConstants {
     "\"true\"",
     "\"false\"",
     "\"null\"",
+    "\"option\"",
     "<NAME_LITERAL>",
   };
 
