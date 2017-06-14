@@ -11,103 +11,107 @@ public interface GraphParserConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int C_SINGLE_COMMENT = 1;
+  int C_SINGLE_COMMENT = 6;
   /** RegularExpression Id. */
-  int C_MULTILINE_COMMENT = 2;
+  int C_MULTILINE_COMMENT = 7;
   /** RegularExpression Id. */
-  int WHITESPACE = 3;
+  int EOL = 8;
   /** RegularExpression Id. */
-  int EOL = 4;
+  int ZERO = 9;
   /** RegularExpression Id. */
-  int ZERO = 5;
+  int SYMBOL = 10;
   /** RegularExpression Id. */
-  int DIGIT_NONZERO = 6;
+  int DIGIT = 11;
   /** RegularExpression Id. */
-  int DIGIT = 7;
+  int INTEGER_NUM = 12;
   /** RegularExpression Id. */
-  int NUMBER_INTEGER = 8;
+  int HEX_NUM = 13;
   /** RegularExpression Id. */
-  int NUMBER_DECIMAL = 9;
+  int OCTAL_NUM = 14;
   /** RegularExpression Id. */
-  int STRING_SINGLE_EMPTY = 10;
+  int BINARY_NUM = 15;
   /** RegularExpression Id. */
-  int STRING_DOUBLE_EMPTY = 11;
+  int DECIMAL_NUM = 16;
   /** RegularExpression Id. */
-  int STRING_SINGLE_BODY = 12;
+  int LETTER = 17;
   /** RegularExpression Id. */
-  int STRING_DOUBLE_BODY = 13;
+  int STR_UNICODE = 18;
   /** RegularExpression Id. */
-  int STRING_SINGLE_NONEMPTY = 14;
+  int STR_DOUBLE_BODY = 19;
   /** RegularExpression Id. */
-  int STRING_DOUBLE_NONEMPTY = 15;
+  int STR_DOUBLE_QUOTED = 20;
   /** RegularExpression Id. */
-  int COMMA = 16;
+  int STR_SINGLE_BODY = 21;
   /** RegularExpression Id. */
-  int COLON = 17;
+  int STR_SINGLE_QUOTED = 22;
   /** RegularExpression Id. */
-  int DOT = 18;
+  int STR_EMPTY = 23;
   /** RegularExpression Id. */
-  int QUEM = 19;
+  int COMMA = 24;
   /** RegularExpression Id. */
-  int SEMI = 20;
+  int COLON = 25;
   /** RegularExpression Id. */
-  int EQ = 21;
+  int DOT = 26;
   /** RegularExpression Id. */
-  int QUOTE_SINGLE = 22;
+  int QUEM = 27;
   /** RegularExpression Id. */
-  int QUOTE_DOUBLE = 23;
+  int SEMI = 28;
   /** RegularExpression Id. */
-  int LAMBDAB = 24;
+  int EQ = 29;
   /** RegularExpression Id. */
-  int OPAR = 25;
+  int QUOTE_SINGLE = 30;
   /** RegularExpression Id. */
-  int CPAR = 26;
+  int QUOTE_DOUBLE = 31;
   /** RegularExpression Id. */
-  int OBRA = 27;
+  int LAMBDAB = 32;
   /** RegularExpression Id. */
-  int CBRA = 28;
+  int OPAR = 33;
   /** RegularExpression Id. */
-  int ORI = 29;
+  int CPAR = 34;
   /** RegularExpression Id. */
-  int OCBRR = 30;
+  int OBRA = 35;
   /** RegularExpression Id. */
-  int OCBR = 31;
+  int CBRA = 36;
   /** RegularExpression Id. */
-  int CCBR = 32;
+  int ORI = 37;
   /** RegularExpression Id. */
-  int SPIN = 33;
+  int OCBRR = 38;
   /** RegularExpression Id. */
-  int B_O_OP = 34;
+  int OCBR = 39;
   /** RegularExpression Id. */
-  int A_O_OP = 35;
+  int CCBR = 40;
   /** RegularExpression Id. */
-  int TO_OP = 36;
+  int B_O_OP = 41;
   /** RegularExpression Id. */
-  int JOIN = 37;
+  int A_O_OP = 42;
   /** RegularExpression Id. */
-  int IF = 38;
+  int TO_OP = 43;
   /** RegularExpression Id. */
-  int ELSEIF = 39;
+  int JOIN = 44;
   /** RegularExpression Id. */
-  int ELSE = 40;
+  int IF = 45;
   /** RegularExpression Id. */
-  int END = 41;
+  int ELSEIF = 46;
   /** RegularExpression Id. */
-  int RETURN = 42;
+  int ELSE = 47;
   /** RegularExpression Id. */
-  int VAR = 43;
+  int END = 48;
   /** RegularExpression Id. */
-  int LAMBDA = 44;
+  int RETURN = 49;
   /** RegularExpression Id. */
-  int TRUE = 45;
+  int VAR = 50;
   /** RegularExpression Id. */
-  int FALSE = 46;
+  int LAMBDA = 51;
   /** RegularExpression Id. */
-  int NULL = 47;
+  int TRUE = 52;
   /** RegularExpression Id. */
-  int OPTION = 48;
+  int FALSE = 53;
   /** RegularExpression Id. */
-  int NAME_LITERAL = 49;
+  int NULL = 54;
+  /** RegularExpression Id. */
+  int OPTION = 55;
+  /** RegularExpression Id. */
+  int NAME_LITERAL = 56;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -115,21 +119,29 @@ public interface GraphParserConstants {
   /** Literal token values. */
   String[] tokenImage = {
     "<EOF>",
+    "\" \"",
+    "\"\\t\"",
+    "\"\\n\"",
+    "\"\\r\"",
+    "\"\\f\"",
     "<C_SINGLE_COMMENT>",
     "<C_MULTILINE_COMMENT>",
-    "<WHITESPACE>",
     "<EOL>",
     "\"0\"",
-    "<DIGIT_NONZERO>",
+    "<SYMBOL>",
     "<DIGIT>",
-    "<NUMBER_INTEGER>",
-    "<NUMBER_DECIMAL>",
-    "\"\\\'\\\'\"",
-    "\"\\\"\\\"\"",
-    "<STRING_SINGLE_BODY>",
-    "<STRING_DOUBLE_BODY>",
-    "<STRING_SINGLE_NONEMPTY>",
-    "<STRING_DOUBLE_NONEMPTY>",
+    "<INTEGER_NUM>",
+    "<HEX_NUM>",
+    "<OCTAL_NUM>",
+    "<BINARY_NUM>",
+    "<DECIMAL_NUM>",
+    "<LETTER>",
+    "<STR_UNICODE>",
+    "<STR_DOUBLE_BODY>",
+    "<STR_DOUBLE_QUOTED>",
+    "<STR_SINGLE_BODY>",
+    "<STR_SINGLE_QUOTED>",
+    "<STR_EMPTY>",
     "\",\"",
     "\":\"",
     "\".\"",
@@ -147,7 +159,6 @@ public interface GraphParserConstants {
     "\"%{\"",
     "\"{\"",
     "\"}\"",
-    "<SPIN>",
     "<B_O_OP>",
     "<A_O_OP>",
     "<TO_OP>",

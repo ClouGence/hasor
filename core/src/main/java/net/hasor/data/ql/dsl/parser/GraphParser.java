@@ -44,20 +44,16 @@ public class GraphParser implements GraphParserConstants {
 // .带引号的字符串
   final public void stringValue() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case STRING_DOUBLE_EMPTY:{
-      jj_consume_token(STRING_DOUBLE_EMPTY);
+    case STR_DOUBLE_QUOTED:{
+      jj_consume_token(STR_DOUBLE_QUOTED);
       break;
       }
-    case STRING_DOUBLE_NONEMPTY:{
-      jj_consume_token(STRING_DOUBLE_NONEMPTY);
+    case STR_SINGLE_QUOTED:{
+      jj_consume_token(STR_SINGLE_QUOTED);
       break;
       }
-    case STRING_SINGLE_EMPTY:{
-      jj_consume_token(STRING_SINGLE_EMPTY);
-      break;
-      }
-    case STRING_SINGLE_NONEMPTY:{
-      jj_consume_token(STRING_SINGLE_NONEMPTY);
+    case STR_EMPTY:{
+      jj_consume_token(STR_EMPTY);
       break;
       }
     default:
@@ -93,12 +89,24 @@ public class GraphParser implements GraphParserConstants {
 // .数字
   final public void numberValue() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case NUMBER_DECIMAL:{
-      jj_consume_token(NUMBER_DECIMAL);
+    case DECIMAL_NUM:{
+      jj_consume_token(DECIMAL_NUM);
       break;
       }
-    case NUMBER_INTEGER:{
-      jj_consume_token(NUMBER_INTEGER);
+    case INTEGER_NUM:{
+      jj_consume_token(INTEGER_NUM);
+      break;
+      }
+    case HEX_NUM:{
+      jj_consume_token(HEX_NUM);
+      break;
+      }
+    case OCTAL_NUM:{
+      jj_consume_token(OCTAL_NUM);
+      break;
+      }
+    case BINARY_NUM:{
+      jj_consume_token(BINARY_NUM);
       break;
       }
     default:
@@ -214,12 +222,14 @@ public class GraphParser implements GraphParserConstants {
       basicValue();
       break;
       }
-    case NUMBER_INTEGER:
-    case NUMBER_DECIMAL:
-    case STRING_SINGLE_EMPTY:
-    case STRING_DOUBLE_EMPTY:
-    case STRING_SINGLE_NONEMPTY:
-    case STRING_DOUBLE_NONEMPTY:
+    case INTEGER_NUM:
+    case HEX_NUM:
+    case OCTAL_NUM:
+    case BINARY_NUM:
+    case DECIMAL_NUM:
+    case STR_DOUBLE_QUOTED:
+    case STR_SINGLE_QUOTED:
+    case STR_EMPTY:
     case OBRA:
     case OCBRR:
     case OCBR:
@@ -276,12 +286,14 @@ public class GraphParser implements GraphParserConstants {
 // .值
   final public void basicValue() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case NUMBER_INTEGER:
-    case NUMBER_DECIMAL:
-    case STRING_SINGLE_EMPTY:
-    case STRING_DOUBLE_EMPTY:
-    case STRING_SINGLE_NONEMPTY:
-    case STRING_DOUBLE_NONEMPTY:
+    case INTEGER_NUM:
+    case HEX_NUM:
+    case OCTAL_NUM:
+    case BINARY_NUM:
+    case DECIMAL_NUM:
+    case STR_DOUBLE_QUOTED:
+    case STR_SINGLE_QUOTED:
+    case STR_EMPTY:
     case TRUE:
     case FALSE:
     case NULL:{
@@ -319,10 +331,9 @@ public class GraphParser implements GraphParserConstants {
 
   final public void primitiveValue() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk_f():jj_ntk) {
-    case STRING_SINGLE_EMPTY:
-    case STRING_DOUBLE_EMPTY:
-    case STRING_SINGLE_NONEMPTY:
-    case STRING_DOUBLE_NONEMPTY:{
+    case STR_DOUBLE_QUOTED:
+    case STR_SINGLE_QUOTED:
+    case STR_EMPTY:{
       stringValue();
       break;
       }
@@ -335,8 +346,11 @@ public class GraphParser implements GraphParserConstants {
       booleanValue();
       break;
       }
-    case NUMBER_INTEGER:
-    case NUMBER_DECIMAL:{
+    case INTEGER_NUM:
+    case HEX_NUM:
+    case OCTAL_NUM:
+    case BINARY_NUM:
+    case DECIMAL_NUM:{
       numberValue();
       break;
       }
@@ -390,12 +404,14 @@ public class GraphParser implements GraphParserConstants {
       lambdaCall();
       break;
       }
-    case NUMBER_INTEGER:
-    case NUMBER_DECIMAL:
-    case STRING_SINGLE_EMPTY:
-    case STRING_DOUBLE_EMPTY:
-    case STRING_SINGLE_NONEMPTY:
-    case STRING_DOUBLE_NONEMPTY:
+    case INTEGER_NUM:
+    case HEX_NUM:
+    case OCTAL_NUM:
+    case BINARY_NUM:
+    case DECIMAL_NUM:
+    case STR_DOUBLE_QUOTED:
+    case STR_SINGLE_QUOTED:
+    case STR_EMPTY:
     case OPAR:
     case OBRA:
     case OCBRR:
@@ -503,12 +519,14 @@ public class GraphParser implements GraphParserConstants {
       lambdaCall();
       break;
       }
-    case NUMBER_INTEGER:
-    case NUMBER_DECIMAL:
-    case STRING_SINGLE_EMPTY:
-    case STRING_DOUBLE_EMPTY:
-    case STRING_SINGLE_NONEMPTY:
-    case STRING_DOUBLE_NONEMPTY:
+    case INTEGER_NUM:
+    case HEX_NUM:
+    case OCTAL_NUM:
+    case BINARY_NUM:
+    case DECIMAL_NUM:
+    case STR_DOUBLE_QUOTED:
+    case STR_SINGLE_QUOTED:
+    case STR_EMPTY:
     case OPAR:
     case OBRA:
     case OCBRR:
@@ -680,128 +698,6 @@ public class GraphParser implements GraphParserConstants {
     finally { jj_save(4, xla); }
   }
 
-  private boolean jj_3R_53()
- {
-    if (jj_scan_token(OBRA)) return true;
-    if (jj_3R_19()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_58()) { jj_scanpos = xsp; break; }
-    }
-    if (jj_scan_token(CBRA)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_30()
- {
-    if (jj_3R_7()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(20)) jj_scanpos = xsp;
-    return false;
-  }
-
-  private boolean jj_3_1()
- {
-    if (jj_scan_token(OBRA)) return true;
-    if (jj_scan_token(CBRA)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_50()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_1()) {
-    jj_scanpos = xsp;
-    if (jj_3R_53()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_20()
- {
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_30()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_11()
- {
-    if (jj_3R_15()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_10()
- {
-    if (jj_3R_14()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_41()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(9)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(8)) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_9()
- {
-    if (jj_3R_13()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_8()
- {
-    if (jj_3R_12()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_7()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_8()) {
-    jj_scanpos = xsp;
-    if (jj_3R_9()) {
-    jj_scanpos = xsp;
-    if (jj_3R_10()) {
-    jj_scanpos = xsp;
-    if (jj_3R_11()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_15()
- {
-    if (jj_scan_token(OPTION)) return true;
-    if (jj_3R_16()) return true;
-    if (jj_scan_token(EQ)) return true;
-    if (jj_3R_23()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_40()
- {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(45)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(46)) return true;
-    }
-    return false;
-  }
-
   private boolean jj_3R_14()
  {
     if (jj_scan_token(RETURN)) return true;
@@ -813,6 +709,20 @@ public class GraphParser implements GraphParserConstants {
  {
     if (jj_scan_token(ELSE)) return true;
     if (jj_3R_20()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_39()
+ {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(20)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(22)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(23)) return true;
+    }
+    }
     return false;
   }
 
@@ -844,20 +754,11 @@ public class GraphParser implements GraphParserConstants {
     return false;
   }
 
-  private boolean jj_3R_39()
+  private boolean jj_3R_24()
  {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(11)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(15)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(10)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(14)) return true;
-    }
-    }
-    }
+    if (jj_scan_token(OCBRR)) return true;
+    if (jj_scan_token(NAME_LITERAL)) return true;
+    if (jj_scan_token(CCBR)) return true;
     return false;
   }
 
@@ -867,23 +768,9 @@ public class GraphParser implements GraphParserConstants {
     return false;
   }
 
-  private boolean jj_3R_24()
- {
-    if (jj_scan_token(OCBRR)) return true;
-    if (jj_scan_token(NAME_LITERAL)) return true;
-    if (jj_scan_token(CCBR)) return true;
-    return false;
-  }
-
   private boolean jj_3R_18()
  {
     if (jj_3R_19()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_17()
- {
-    if (jj_3R_25()) return true;
     return false;
   }
 
@@ -891,10 +778,16 @@ public class GraphParser implements GraphParserConstants {
  {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(49)) {
+    if (jj_scan_token(56)) {
     jj_scanpos = xsp;
     if (jj_3R_24()) return true;
     }
+    return false;
+  }
+
+  private boolean jj_3R_17()
+ {
+    if (jj_3R_25()) return true;
     return false;
   }
 
@@ -993,7 +886,7 @@ public class GraphParser implements GraphParserConstants {
     jj_scanpos = xsp;
     if (jj_3R_57()) {
     jj_scanpos = xsp;
-    if (jj_scan_token(29)) return true;
+    if (jj_scan_token(37)) return true;
     }
     }
     return false;
@@ -1090,7 +983,7 @@ public class GraphParser implements GraphParserConstants {
     xsp = jj_scanpos;
     if (jj_3R_31()) {
     jj_scanpos = xsp;
-    if (jj_scan_token(47)) {
+    if (jj_scan_token(54)) {
     jj_scanpos = xsp;
     if (jj_3R_32()) {
     jj_scanpos = xsp;
@@ -1172,7 +1065,7 @@ public class GraphParser implements GraphParserConstants {
  {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(35)) {
+    if (jj_scan_token(42)) {
     jj_scanpos = xsp;
     if (jj_3R_47()) {
     jj_scanpos = xsp;
@@ -1282,9 +1175,140 @@ public class GraphParser implements GraphParserConstants {
     return false;
   }
 
+  private boolean jj_3R_53()
+ {
+    if (jj_scan_token(OBRA)) return true;
+    if (jj_3R_19()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_58()) { jj_scanpos = xsp; break; }
+    }
+    if (jj_scan_token(CBRA)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_30()
+ {
+    if (jj_3R_7()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(28)) jj_scanpos = xsp;
+    return false;
+  }
+
+  private boolean jj_3_1()
+ {
+    if (jj_scan_token(OBRA)) return true;
+    if (jj_scan_token(CBRA)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_50()
+ {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_1()) {
+    jj_scanpos = xsp;
+    if (jj_3R_53()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_20()
+ {
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_30()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_11()
+ {
+    if (jj_3R_15()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_10()
+ {
+    if (jj_3R_14()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_9()
+ {
+    if (jj_3R_13()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_8()
+ {
+    if (jj_3R_12()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_41()
+ {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(16)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(12)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(13)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(14)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(15)) return true;
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_7()
+ {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_8()) {
+    jj_scanpos = xsp;
+    if (jj_3R_9()) {
+    jj_scanpos = xsp;
+    if (jj_3R_10()) {
+    jj_scanpos = xsp;
+    if (jj_3R_11()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_40()
+ {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(52)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(53)) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_15()
+ {
+    if (jj_scan_token(OPTION)) return true;
+    if (jj_3R_16()) return true;
+    if (jj_scan_token(EQ)) return true;
+    if (jj_3R_23()) return true;
+    return false;
+  }
+
   /** Generated Token Manager. */
   public GraphParserTokenManager token_source;
-  SimpleCharStream jj_input_stream;
+  JavaCharStream jj_input_stream;
   /** Current token. */
   public Token token;
   /** Next token. */
@@ -1301,10 +1325,10 @@ public class GraphParser implements GraphParserConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x40000000,0xcc00,0x0,0x300,0x10000,0x8000000,0x20000,0x10000,0x20000,0x80000000,0xca00cf00,0x80000,0x80000,0x2000000,0xc800cf00,0xcf00,0x10000,0x2000000,0xca00cf00,0xa8000000,0x10000,0x2000000,0x80000000,0xca00cf00,0x0,0x0,0x0,0x0,0x100000,};
+      jj_la1_0 = new int[] {0x0,0xd00000,0x0,0x1f000,0x1000000,0x0,0x2000000,0x1000000,0x2000000,0x0,0xd1f000,0x8000000,0x8000000,0x0,0xd1f000,0xd1f000,0x1000000,0x0,0xd1f000,0x0,0x1000000,0x0,0x0,0xd1f000,0x0,0x0,0x0,0x0,0x10000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x20000,0x0,0x6000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2e004,0x18,0x18,0x0,0x2e000,0xe000,0x0,0x0,0x2f004,0x0,0x0,0x0,0x0,0x2f004,0x80,0x100,0x10c40,0x10c40,0x0,};
+      jj_la1_1 = new int[] {0x1000040,0x0,0x300000,0x0,0x0,0x8,0x0,0x0,0x0,0x80,0x17002ca,0xc00,0xc00,0x2,0x17000c8,0x700000,0x0,0x2,0x17802ca,0xa8,0x0,0x2,0x80,0x17802ca,0x4000,0x8000,0x862000,0x862000,0x0,};
    }
   final private JJCalls[] jj_2_rtns = new JJCalls[5];
   private boolean jj_rescan = false;
@@ -1316,7 +1340,7 @@ public class GraphParser implements GraphParserConstants {
   }
   /** Constructor with InputStream and supplied encoding */
   public GraphParser(java.io.InputStream stream, String encoding) {
-    try { jj_input_stream = new SimpleCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
+    try { jj_input_stream = new JavaCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source = new GraphParserTokenManager(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
@@ -1342,7 +1366,7 @@ public class GraphParser implements GraphParserConstants {
 
   /** Constructor. */
   public GraphParser(java.io.Reader stream) {
-    jj_input_stream = new SimpleCharStream(stream, 1, 1);
+    jj_input_stream = new JavaCharStream(stream, 1, 1);
     token_source = new GraphParserTokenManager(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
@@ -1491,7 +1515,7 @@ public class GraphParser implements GraphParserConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[50];
+    boolean[] la1tokens = new boolean[57];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -1508,7 +1532,7 @@ public class GraphParser implements GraphParserConstants {
         }
       }
     }
-    for (int i = 0; i < 50; i++) {
+    for (int i = 0; i < 57; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

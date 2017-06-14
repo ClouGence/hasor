@@ -1,5 +1,7 @@
 options {
-    STATIC=false;
+    STATIC              = false;
+    JAVA_UNICODE_ESCAPE = true; // 支持中文必须
+    UNICODE_INPUT       = true; // 支持中文必须
 //    LOOKAHEAD = 2;
 //    FORCE_LA_CHECK=true;
 }
@@ -31,49 +33,86 @@ PARSER_END(GraphParser)
 // ------------------------------------------------------------------------------------------------
 
 // Ignore comments
-SKIP: {
-    <C_SINGLE_COMMENT: "//" (~["\n","\r","\f"])* <EOL>> |
+SKIP : {
+      " "   // 空格
+    | "\t"  // 水平制表符  (垂直制表符 \v)
+    | "\n"  // 换行
+    | "\r"  // 回车
+    | "\f"  // 换页
+}
+
+MORE: {
+    <C_SINGLE_COMMENT   : "//" (~["\n","\r","\f"])* <EOL>> |
     <C_MULTILINE_COMMENT: "/*" (~[])* "*/"> |
-
-    <WHITESPACE: " " | "\t"> |
-    <EOL: "\n" | "\r" | "\f">
+    <EOL                : "\n" | "\r" | "\f">
 }
 
-// Number token
+// number token
 TOKEN:{
-	<#ZERO: "0"> |
-	<#DIGIT_NONZERO: ["1"-"9"]> |
-	<#DIGIT: (<DIGIT_NONZERO> | <ZERO>) > |
-	<NUMBER_INTEGER:
-		("-")?
-		( (<ZERO>)+ | ( <DIGIT_NONZERO> (<DIGIT>)* ) )
-	> |
-	<NUMBER_DECIMAL:
-		("-")?
-		( (<ZERO>)+ | ( <DIGIT_NONZERO> (<DIGIT>)* ) )
-		("."
-			(<DIGIT>)+
-			(
-				["e","E"]
-				("+" | "-")?
-				(<DIGIT>)+
-			)?
-		)
-	>
+	  <#ZERO       :  "0" >
+	| <#SYMBOL     : ["+","-"] >
+    | <#DIGIT      : ["0"-"9"] >
+	| <INTEGER_NUM : (<SYMBOL>)?                     (<DIGIT>)+ >                   // 十进制数：-0000234 or 123
+    | <HEX_NUM     :             (<ZERO> ["x","X"]) (["0"-"9","a"-"f","A"-"F"])+ >  // 十六进制：0x12345
+    | <OCTAL_NUM   :             (<ZERO> ["o","O"]) (["0"-"7"])+ >                  // 八 进 制：0o1234567
+    | <BINARY_NUM  :             (<ZERO> ["b","B"]) (["0"-"7"])+ >                  // 二 进 制：0b01010101100
+	| <DECIMAL_NUM : (<SYMBOL>)? (<DIGIT>)+ "." (<DIGIT>)*
+	                             (["e","E"] (<SYMBOL>)? (<DIGIT>)+ )? >             // 浮点数，包含科学计数法
 }
+
 TOKEN:{
-      <STRING_SINGLE_EMPTY: "''">
-    | <STRING_DOUBLE_EMPTY: "\"\"">
-    | <#STRING_SINGLE_BODY: (
-            (~["'","\\","\r","\n","\f","\t"]) |
-            ( "\\" ( "r" | "n" | "f" | "\\" | "/" | "'" | "b" | "t" ) )
-        )+>
-    | <#STRING_DOUBLE_BODY: (
-            (~["\"","\\","\r","\n","\f","\t"]) |
-            ( "\\" ( "r" | "n" | "f" | "\\" | "/" | "\"" | "b" | "t" ) )
-        )+>
-    | <STRING_SINGLE_NONEMPTY: <QUOTE_SINGLE> <STRING_SINGLE_BODY> <QUOTE_SINGLE>>
-    | <STRING_DOUBLE_NONEMPTY: <QUOTE_DOUBLE> <STRING_DOUBLE_BODY> <QUOTE_DOUBLE>>
+    <#LETTER: [
+            //Unicode "LETTER" characters - as of Javase 6, Unicode 4 is supported
+            //http://www.unicode.org/Public/4.1.0/ucd/NamesList.txt
+            //more inclusive than Character.isLetter
+           "$",          //DOLLAR SIGN: milreis, escudo
+           "A"-"Z", //LATIN CAPITAL LETTER A - LATIN CAPITAL LETTER Z
+           "_",          //LOW LINE: spacing underscore
+           "a"-"z", //LATIN SMALL LETTER A - LATIN SMALL LETTER Z
+           "\u00aa"-"\u00ad", //  00AA FEMININE ORDINAL INDICATOR: spanish
+                              //  00AB LEFT-POINTING DOUBLE ANGLE QUOTATION MARK: left guillemet
+                              //  00AC NOT SIGN: angled dash
+                              //  00AD SOFT HYPHEN: discretionary hyphen
+           "\u00b5"-"\u00b6", //  00B5 MICRO SIGN: greek small letter mu
+                              //  00B6 PILCROW SIGN: paragraph sign
+           "\u00ba"-"\u00bb", //  00BA MASCULINE ORDINAL INDICATOR: spanish
+                              //  00BB RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK : right guillemet
+           "\u00c0"-"\u00d6", //LATIN CAPITAL LETTER A WITH GRAVE - LATIN CAPITAL LETTER O WITH DIAERESIS
+           "\u00d8"-"\u00f6", //LATIN CAPITAL LETTER O WITH STROKE - LATIN SMALL LETTER O WITH DIAERESIS
+           "\u00f8"-"\u00ff", //LATIN SMALL LETTER O WITH STROKE - LATIN SMALL LETTER Y WITH DIAERESIS
+           "\u0100"-"\u1fff", //LATIN CAPITAL LETTER A WITH MACRON - GREEK DASIA:reversed comma
+           "\u3040"-"\u318f", //Hiragana - Hangul
+           "\u3300"-"\u337f", //Squared Katakana
+           "\u3400"-"\u3d2d", //CJK Unified Ideographs Extension A
+           "\u4e00"-"\u9fff", //CJK Unified Ideographs
+           "\uf900"-"\ufaff", //CJK Compatibility Ideographs
+           "\ufb00"-"\ufb06", //LATIN SMALL LIGATURE FF -LATIN SMALL LIGATURE ST
+           "\ufb13"-"\ufb17", //ARMENIAN SMALL LIGATURE MEN NOW - ARMENIAN SMALL LIGATURE MEN XEH
+           "\ufb1f"-"\ufb28", //HEBREW LIGATURE YIDDISH YOD YOD PATAH -HEBREW LETTER WIDE TAV
+           "\ufb2a"-"\ufb36", //HEBREW LETTER SHIN WITH SHIN DOT - HEBREW LETTER ZAYIN WITH DAGESH
+           "\ufb38"-"\ufb3e", //HEBREW LETTER TET WITH DAGESH - HEBREW LETTER MEM WITH DAGESH
+           "\ufb40"-"\ufb41", //HEBREW LETTER NUN WITH DAGESH - HEBREW LETTER SAMEKH WITH DAGESH
+           "\ufb43"-"\ufb44", //HEBREW LETTER FINAL PE WITH DAGESH - HEBREW LETTER PE WITH DAGESH
+           "\ufb46"-"\ufb4f", //HEBREW LETTER TSADI WITH DAGESH - HEBREW LIGATURE ALEF LAMED
+           "\ufb50"-"\ufdd7", //Arabic Presentation Forms(A) - ARABIC LIGATURE BISMILLAH AR-RAHMAN AR-RAHEEM
+           "\ufdf0"-"\ufdfd", //ARABIC LIGATURE SALLA USED AS KORANIC STOP SIGN ISOLATED FORM -ARABIC LIGATURE BISMILLAH AR-RAHMAN AR-RAHEEM
+           "\ufe70"-"\ufefc", //Arabic Presentation Forms(B) - ARABIC LIGATURE LAM WITH ALEF FINAL FORM
+           "\uff1f"-"\uff3a", //FULLWIDTH QUESTION MARK - FULLWIDTH LATIN CAPITAL LETTER Z
+           "\uff3f"-"\uff5e", //FULLWIDTH LOW LINE - FULLWIDTH TILDE
+           "\uff61"-"\uffbe", //Halfwidth CJK punctuation:HALFWIDTH IDEOGRAPHIC FULL STOP - HALFWIDTH HANGUL LETTER HIEUH
+           "\uffc2"-"\uffc7", //HALFWIDTH HANGUL LETTER A - HALFWIDTH HANGUL LETTER E
+           "\uffca"-"\uffcf", //HALFWIDTH HANGUL LETTER YEO - HALFWIDTH HANGUL LETTER OE
+           "\uffd2"-"\uffd7", //HALFWIDTH HANGUL LETTER YO - HALFWIDTH HANGUL LETTER YU
+           "\uffda"-"\uffdc"  //HALFWIDTH HANGUL LETTER EU - HALFWIDTH HANGUL LETTER I
+    ] >                                                                             // 各类字符集
+    | <#STR_UNICODE     : "\\u" (["0"-"9","a"-"f","A"-"F"]){4}>                     // Unicode字符表示法
+    | <#STR_DOUBLE_BODY : (~["\"","\\","\r","\n","\f","\t"]) |
+                          ("\\"["r","n","f","t","\\","b","\"","'"]) >               // 双引号字符串（body部分）
+    | <STR_DOUBLE_QUOTED: <QUOTE_DOUBLE> (<STR_DOUBLE_BODY>)* <QUOTE_DOUBLE>>       // 双引号的字符串（整体）
+    | <#STR_SINGLE_BODY : (~["'","\\","\r","\n","\f","\t"]) |
+                          ("\\"["r","n","f","t","\\","b","\"","'"]) >               // 单引号字符串（body部分）
+    | <STR_SINGLE_QUOTED: <QUOTE_SINGLE> (<STR_SINGLE_BODY>)* <QUOTE_SINGLE> >      // 单引号的字符串（整体）
+    | <STR_EMPTY        : ("\"\"" | "''")>                                          // 空字符串
 }
 
 /* IDENTIFIERS */
@@ -98,12 +137,11 @@ TOKEN: {
     | < OCBR                    : "{" >
     | < CCBR                    : "}" >
 
-    | <#SPIN                    : ( "++" | "--" ) >
-    | < B_O_OP                  : ( <SPIN> | "!" ) >
-    | < A_O_OP                  : <SPIN> >
-    | < TO_OP                   : ( "+" | "-" | "*" | "/" | "%" | "\\"      |
-                                    ">" | ">=" | "<" | "<=" | "==" | "!="   |
-                                    "&" | "|" | "^"                         |
+    | < B_O_OP                  : ( "++" | "--" | "!" ) >
+    | < A_O_OP                  : ( "++" | "--") >
+    | < TO_OP                   : ( "+"  | "-"  | "*" | "/" | "%" | "\\"    |
+                                    ">"  | ">=" | "<" | "<=" | "==" | "!="  |
+                                    "&"  | "|"  | "^"                       |
                                     "<<" | ">>" | ">>>"                     |
                                     "&&" | "||" )
       >
@@ -137,12 +175,9 @@ void identifier() : {}{
 
 // .带引号的字符串
 void stringValue() : {}{
-    (
-        <STRING_DOUBLE_EMPTY>       |
-        <STRING_DOUBLE_NONEMPTY>    |
-        <STRING_SINGLE_EMPTY>       |
-        <STRING_SINGLE_NONEMPTY>
-    )
+    <STR_DOUBLE_QUOTED> |
+    <STR_SINGLE_QUOTED> |
+    <STR_EMPTY>
 }
 
 // .空值
@@ -152,18 +187,16 @@ void nullValue() : {}{
 
 // .布尔
 void booleanValue() : {}{
-    (
-        <TRUE>                      |
-        <FALSE>
-    )
+    <TRUE> | <FALSE>
 }
 
 // .数字
 void numberValue() : {}{
-	(
-		<NUMBER_DECIMAL>            |
-		<NUMBER_INTEGER>
-	)
+    <DECIMAL_NUM> |
+    <INTEGER_NUM> |
+    <HEX_NUM>     |
+    <OCTAL_NUM>   |
+    <BINARY_NUM>
 }
 
 // .列表：[ ... ]

@@ -22,9 +22,23 @@
   <TD>
    <PRE>
 &lt;DEFAULT&gt; SKIP : {
+" "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; MORE : {
 &lt;C_SINGLE_COMMENT: "//" (~["\n","\r","\f"])* &lt;EOL&gt;&gt;
 | &lt;C_MULTILINE_COMMENT: "/*" (~[])* "*/"&gt;
-| &lt;WHITESPACE: " " | "\t"&gt;
 | &lt;EOL: "\n" | "\r" | "\f"&gt;
 }
 
@@ -35,7 +49,7 @@
  <TR>
   <TD>
 <PRE>
-// Number token
+// number token
 </PRE>
   </TD>
  </TR>
@@ -45,10 +59,13 @@
    <PRE>
 &lt;DEFAULT&gt; TOKEN : {
 &lt;#ZERO: "0"&gt;
-| &lt;#DIGIT_NONZERO: ["1"-"9"]&gt;
-| &lt;#DIGIT: &lt;DIGIT_NONZERO&gt; | &lt;ZERO&gt;&gt;
-| &lt;NUMBER_INTEGER: ("-")? ((&lt;ZERO&gt;)+ | &lt;DIGIT_NONZERO&gt; (&lt;DIGIT&gt;)*)&gt;
-| &lt;NUMBER_DECIMAL: ("-")? ((&lt;ZERO&gt;)+ | &lt;DIGIT_NONZERO&gt; (&lt;DIGIT&gt;)*) "." (&lt;DIGIT&gt;)+ (["e","E"] ("+" | "-")? (&lt;DIGIT&gt;)+)?&gt;
+| &lt;#SYMBOL: ["+","-"]&gt;
+| &lt;#DIGIT: ["0"-"9"]&gt;
+| &lt;INTEGER_NUM: (&lt;SYMBOL&gt;)? (&lt;DIGIT&gt;)+&gt;
+| &lt;HEX_NUM: &lt;ZERO&gt; ["x","X"] (["0"-"9","a"-"f","A"-"F"])+&gt;
+| &lt;OCTAL_NUM: &lt;ZERO&gt; ["o","O"] (["0"-"7"])+&gt;
+| &lt;BINARY_NUM: &lt;ZERO&gt; ["b","B"] (["0"-"7"])+&gt;
+| &lt;DECIMAL_NUM: (&lt;SYMBOL&gt;)? (&lt;DIGIT&gt;)+ "." (&lt;DIGIT&gt;)* (["e","E"] (&lt;SYMBOL&gt;)? (&lt;DIGIT&gt;)+)?&gt;
 }
 
    </PRE>
@@ -59,12 +76,13 @@
   <TD>
    <PRE>
 &lt;DEFAULT&gt; TOKEN : {
-&lt;STRING_SINGLE_EMPTY: "\'\'"&gt;
-| &lt;STRING_DOUBLE_EMPTY: "\"\""&gt;
-| &lt;#STRING_SINGLE_BODY: (~["\'","\\","\r","\n","\f","\t"] | "\\" ("r" | "n" | "f" | "\\" | "/" | "\'" | "b" | "t"))+&gt;
-| &lt;#STRING_DOUBLE_BODY: (~["\"","\\","\r","\n","\f","\t"] | "\\" ("r" | "n" | "f" | "\\" | "/" | "\"" | "b" | "t"))+&gt;
-| &lt;STRING_SINGLE_NONEMPTY: &lt;QUOTE_SINGLE&gt; &lt;STRING_SINGLE_BODY&gt; &lt;QUOTE_SINGLE&gt;&gt;
-| &lt;STRING_DOUBLE_NONEMPTY: &lt;QUOTE_DOUBLE&gt; &lt;STRING_DOUBLE_BODY&gt; &lt;QUOTE_DOUBLE&gt;&gt;
+&lt;#LETTER: ["$","A"-"Z","_","a"-"z","\u00aa"-"\u00ad","\u00b5"-"\u00b6","\u00ba"-"\u00bb","\u00c0"-"\u00d6","\u00d8"-"\u00f6","\u00f8"-"\u00ff","\u0100"-"\u1fff","\u3040"-"\u318f","\u3300"-"\u337f","\u3400"-"\u3d2d","\u4e00"-"\u9fff","\uf900"-"\ufaff","\ufb00"-"\ufb06","\ufb13"-"\ufb17","\ufb1f"-"\ufb28","\ufb2a"-"\ufb36","\ufb38"-"\ufb3e","\ufb40"-"\ufb41","\ufb43"-"\ufb44","\ufb46"-"\ufb4f","\ufb50"-"\ufdd7","\ufdf0"-"\ufdfd","\ufe70"-"\ufefc","\uff1f"-"\uff3a","\uff3f"-"\uff5e","\uff61"-"\uffbe","\uffc2"-"\uffc7","\uffca"-"\uffcf","\uffd2"-"\uffd7","\uffda"-"\uffdc"]&gt;
+| &lt;#STR_UNICODE: "\\u" (["0"-"9","a"-"f","A"-"F"]){4}&gt;
+| &lt;#STR_DOUBLE_BODY: ~["\"","\\","\r","\n","\f","\t"] | "\\" ["r","n","f","t","\\","b","\"","\'"]&gt;
+| &lt;STR_DOUBLE_QUOTED: &lt;QUOTE_DOUBLE&gt; (&lt;STR_DOUBLE_BODY&gt;)* &lt;QUOTE_DOUBLE&gt;&gt;
+| &lt;#STR_SINGLE_BODY: ~["\'","\\","\r","\n","\f","\t"] | "\\" ["r","n","f","t","\\","b","\"","\'"]&gt;
+| &lt;STR_SINGLE_QUOTED: &lt;QUOTE_SINGLE&gt; (&lt;STR_SINGLE_BODY&gt;)* &lt;QUOTE_SINGLE&gt;&gt;
+| &lt;STR_EMPTY: "\"\"" | "\'\'"&gt;
 }
 
    </PRE>
@@ -99,9 +117,8 @@
 | &lt;OCBRR: "%{"&gt;
 | &lt;OCBR: "{"&gt;
 | &lt;CCBR: "}"&gt;
-| &lt;#SPIN: "++" | "--"&gt;
-| &lt;B_O_OP: &lt;SPIN&gt; | "!"&gt;
-| &lt;A_O_OP: &lt;SPIN&gt;&gt;
+| &lt;B_O_OP: "++" | "--" | "!"&gt;
+| &lt;A_O_OP: "++" | "--"&gt;
 | &lt;TO_OP: "+" | "-" | "*" | "/" | "%" | "\\" | "&gt;" | "&gt;=" | "&lt;" | "&lt;=" | "==" | "!=" | "&amp;" | "|" | "^" | "&lt;&lt;" | "&gt;&gt;" | "&gt;&gt;&gt;" | "&amp;&amp;" | "||"&gt;
 }
 
@@ -165,7 +182,17 @@
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod2">stringValue</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;STRING_DOUBLE_EMPTY&gt; | &lt;STRING_DOUBLE_NONEMPTY&gt; | &lt;STRING_SINGLE_EMPTY&gt; | &lt;STRING_SINGLE_NONEMPTY&gt; )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;STR_DOUBLE_QUOTED&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;STR_SINGLE_QUOTED&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;STR_EMPTY&gt;</TD>
 </TR>
  <!-- Special token -->
  <TR>
@@ -191,7 +218,12 @@
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod4">booleanValue</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;TRUE&gt; | &lt;FALSE&gt; )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;TRUE&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;FALSE&gt;</TD>
 </TR>
  <!-- Special token -->
  <TR>
@@ -204,7 +236,27 @@
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod5">numberValue</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;NUMBER_DECIMAL&gt; | &lt;NUMBER_INTEGER&gt; )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;DECIMAL_NUM&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;INTEGER_NUM&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;HEX_NUM&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;OCTAL_NUM&gt;</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;BINARY_NUM&gt;</TD>
 </TR>
  <!-- Special token -->
  <TR>

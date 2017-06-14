@@ -18,20 +18,40 @@ var a = 1.23e234
 var a = -1.23e234
 var a = 1.234E-2345
 var a = -1.234E+2345
-
-
+var a = 0X0123456789abcdefABCDEF
+var a = 0X0123456789abcdefABCDEF;
+var a = 0O01234567
+var a = 0O01234567;
+var a = 0b1010100101
+var a = 0B1010100101
+var a = 0b1010100101;
+var a = 0B1010100101;
 
 var a = "aaaa";
 var a = "cn lang";
 var a = 'sas as ';
-// var a = "ss \n\r\t\w sss";
-// var a = 'var a = \"abc\"';
-// var a = 'var a = \"';
-// var a = "\'";
+var a = ""
+var a =''
+var a ="\uffc7\uffc7\uffc7\uffc7\uffc7\uffc7\uffc7\uffc7\uffc7";
+var a = "\t\f\\'adsfasf'\r\b\n\r\t\b\\'\n\r\t\f"
+var a = '\n\t\f\\"adsfasf"\r\b\n\r\t\b\\"\n\r\t\f'
+var a = "var a = \"sdf\""
+var a = "var a = 'sdf'"
+var a = 'var a = \"sdf\"';
+var a = 'var a = \'sdf\'';
+var a = 'var a = "sdf"';
+var a = "\uffc7\n\t\f\\'adsfasf\'\r\b\"";
 var a = "aaaa"
 var a = "cn lang"
 var a = 'sas as '
+var a = '中文'
 
+//  test test 中午呢
+/* test 中文 test*/
+/*
+test  var a = '
+ teest asfasfsds
+*/
 
 var a = abc
 var a = abccccccccccccccccccccccccccccccccccccccccccccccccc
@@ -228,3 +248,23 @@ var f = fun(fun1()~     ,fun2()~    )~ ;
 var f = fun(fun1(){}    ,fun2()[]   ){};
 var f = fun(fun1(){}    ,fun2()[]   )[];
 
+var f = lambda : () -> return ""
+var f = lambda : () -> return true;
+var f = lambda : () -> { return true }
+var f = lambda : () -> { return true };
+var f = lambda : () -> {
+    var a = true;
+    return a;
+}
+var f = lambda : (obj) -> {
+    var a = true;
+    return a;
+};
+var f = f("")~;
+
+var f = a + ++0xb
+var f = a + b;
+var f = '' + '';
+var f = '' + "";
+var f = '' + "ssfdsf"
+var f = 'sdfsdf' + "ssfdsf";
