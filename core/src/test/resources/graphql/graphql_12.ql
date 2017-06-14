@@ -97,7 +97,7 @@ return {
             "2017/05/25 08:01:55",
             "2017/05/31 23:59:00"
         ],
-        "auditRemark": "xxxxxxx"
+        "auditRemark": "中文中文"
     },
     "auditTagInfo": [
         {

@@ -262,9 +262,18 @@ var f = lambda : (obj) -> {
 };
 var f = f("")~;
 
+throw 1;
+throw 1,1;
+throw 1,"ssss";
+throw 0xffff,"ssss";
+throw 0b1001001, 1 + -2;
+throw 0b1001001, ["",""]
+
 var f = a + ++0xb
 var f = a + b;
 var f = '' + '';
 var f = '' + "";
 var f = '' + "ssfdsf"
 var f = 'sdfsdf' + "ssfdsf";
+var a = ++i
+var a = i++

@@ -136,6 +136,7 @@
 | &lt;ELSE: "else"&gt;
 | &lt;END: "end"&gt;
 | &lt;RETURN: "return"&gt;
+| &lt;THROW: "throw"&gt;
 | &lt;VAR: "var"&gt;
 | &lt;LAMBDA: "lambda"&gt;
 | &lt;TRUE: "true"&gt;
@@ -436,12 +437,30 @@
  <TR>
   <TD>
 <PRE>
+// .异常
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod20">throwBlock</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;THROW&gt; ( ( <A HREF="#prod21">throwBlockStatus</A> <A HREF="#prod7">expression</A> ) | ( <A HREF="#prod7">expression</A> ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod21">throwBlockStatus</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod5">numberValue</A> &lt;COMMA&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
 // .反回
 </PRE>
   </TD>
  </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod20">returnBlock</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod22">returnBlock</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
 <TD ALIGN=LEFT VALIGN=BASELINE>&lt;RETURN&gt; <A HREF="#prod7">expression</A></TD>
 </TR>
@@ -454,7 +473,7 @@
   </TD>
  </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod21">optionBlock</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod23">optionBlock</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
 <TD ALIGN=LEFT VALIGN=BASELINE>&lt;OPTION&gt; <A HREF="#prod1">identifier</A> &lt;EQ&gt; <A HREF="#prod11">primitiveValue</A></TD>
 </TR>
@@ -469,7 +488,7 @@
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod17">block</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod18">varBlock</A> | <A HREF="#prod19">ifBlock</A> | <A HREF="#prod20">returnBlock</A> | <A HREF="#prod21">optionBlock</A> )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod18">varBlock</A> | <A HREF="#prod19">ifBlock</A> | <A HREF="#prod22">returnBlock</A> | <A HREF="#prod23">optionBlock</A> | <A HREF="#prod20">throwBlock</A> )</TD>
 </TR>
  <!-- Special token -->
  <TR>
@@ -493,7 +512,7 @@
   </TD>
  </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod22">rootBlock</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod24">rootBlock</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
 <TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod16">blockSet</A> &lt;EOF&gt;</TD>
 </TR>

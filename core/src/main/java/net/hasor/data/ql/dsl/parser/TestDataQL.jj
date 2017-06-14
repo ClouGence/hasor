@@ -154,6 +154,7 @@ TOKEN: {
     | < ELSE                    : "else" >
     | < END                     : "end" >
     | < RETURN                  : "return" >
+    | < THROW                   : "throw" >
     | < VAR                     : "var" >
     | < LAMBDA                  : "lambda" >
     | < TRUE                    : "true" >
@@ -370,6 +371,25 @@ void ifBlock() : {} {
         <END>
 }
 
+// .异常
+void throwBlock() : {} {
+    <THROW>
+    (
+        LOOKAHEAD(throwBlockStatus())
+        (
+            throwBlockStatus() expression()
+        ) | (
+            expression()
+        )
+    )
+}
+void throwBlockStatus() : {} {
+    numberValue() <COMMA>
+}
+
+
+
+
 // .反回
 void returnBlock() : {} {
     <RETURN> expression()
@@ -383,10 +403,11 @@ void optionBlock() : {} {
 // .块
 void block() : {} {
     (
-        varBlock()                  |
-        ifBlock()                   |
-        returnBlock()               |
-        optionBlock()
+        varBlock()      |
+        ifBlock()       |
+        returnBlock()   |
+        optionBlock()   |
+        throwBlock()
     )
 }
 

@@ -99,19 +99,21 @@ public interface GraphParserConstants {
   /** RegularExpression Id. */
   int RETURN = 49;
   /** RegularExpression Id. */
-  int VAR = 50;
+  int THROW = 50;
   /** RegularExpression Id. */
-  int LAMBDA = 51;
+  int VAR = 51;
   /** RegularExpression Id. */
-  int TRUE = 52;
+  int LAMBDA = 52;
   /** RegularExpression Id. */
-  int FALSE = 53;
+  int TRUE = 53;
   /** RegularExpression Id. */
-  int NULL = 54;
+  int FALSE = 54;
   /** RegularExpression Id. */
-  int OPTION = 55;
+  int NULL = 55;
   /** RegularExpression Id. */
-  int NAME_LITERAL = 56;
+  int OPTION = 56;
+  /** RegularExpression Id. */
+  int NAME_LITERAL = 57;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -168,6 +170,7 @@ public interface GraphParserConstants {
     "\"else\"",
     "\"end\"",
     "\"return\"",
+    "\"throw\"",
     "\"var\"",
     "\"lambda\"",
     "\"true\"",
