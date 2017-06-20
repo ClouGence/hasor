@@ -33,8 +33,10 @@ var evalChagre = lambda : (dat) -> {
         return rule.cost * dat.weight
     end
 
-    return error("没有匹配到邮费规则")~;
+    throw "没有匹配到邮费规则";
 }
+
+
 
 // 循环订单并计算运费，新的运费结果在循环数据时输出
 return readTxt("orderSet.txt") [

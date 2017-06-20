@@ -31,8 +31,7 @@ public class GraphParser {
 PARSER_END(GraphParser)
 
 // ------------------------------------------------------------------------------------------------
-
-// Ignore comments
+/* Ignore Comments */
 SKIP : {
       " "   // 空格
     | "\t"  // 水平制表符  (垂直制表符 \v)
@@ -40,14 +39,13 @@ SKIP : {
     | "\r"  // 回车
     | "\f"  // 换页
 }
-
-MORE: {
+SPECIAL_TOKEN: {
     <C_SINGLE_COMMENT   : "//" (~["\n","\r","\f"])* <EOL>> |
     <C_MULTILINE_COMMENT: "/*" (~[])* "*/"> |
     <EOL                : "\n" | "\r" | "\f">
 }
 
-// number token
+/* Number */
 TOKEN:{
 	  <#ZERO       :  "0" >
 	| <#SYMBOL     : ["+","-"] >
@@ -60,15 +58,81 @@ TOKEN:{
 	                             (["e","E"] (<SYMBOL>)? (<DIGIT>)+ )? >             // 浮点数，包含科学计数法
 }
 
+/* key words */
+TOKEN: {
+      < IF                      : "if" >
+    | < ELSEIF                  : "elseif" >
+    | < ELSE                    : "else" >
+    | < END                     : "end" >
+    | < RETURN                  : "return" >
+    | < THROW                   : "throw" >
+    | < VAR                     : "var" >
+    | < LAMBDA                  : "lambda" >
+    | < TRUE                    : "true" >
+    | < FALSE                   : "false" >
+    | < NULL                    : "null" >
+    | < OPTION                  : "option" >
+}
+
+/* OPERATORS */
+TOKEN: {
+      < COMMA               : "," >
+    | < COLON               : ":" >
+    | < QUEM                : "?" >
+    | < SEMI                : ";" >
+    | < ASS                 : "=">
+    | < QUOTE_SINGLE        : "'" >
+    | < QUOTE_DOUBLE        : "\"" >
+
+    | < OPAR                : "(" >
+    | < CPAR                : ")" >
+    | < OBRA                : "[" >
+    | < CBRA                : "]" >
+
+    | < OCBRR               : "%{" >
+    | < OCBR                : "{" >
+    | < CCBR                : "}" >
+
+    | < BANG                : "!" >
+    | < INCR                : "++" >
+    | < DECR                : "--" >
+
+    | < PLUS                : "+" >
+    | < MINUS               : "-" >
+    | < STAR                : "*" >
+    | < SLASH               : "/" >
+    | < REM                 : "%" >
+    | < ALI                 : "\\" >
+
+    | < GT                  : ">" >
+    | < GE                  : ">=" >
+    | < LT                  : "<" >
+    | < LE                  : "<=" >
+    | < EQ                  : "==" >
+    | < NE                  : "!=" >
+
+    | < BIT_AND             : "&" >
+    | < BIT_OR              : "|" >
+    | < XOR                 : "^" >
+
+    | < LSHIFT              : "<<" >
+    | < RSIGNEDSHIFT        : ">>" >
+    | < RUNSIGNEDSHIFT      : ">>>" >
+
+    | < SC_OR               : "||" >
+    | < SC_AND              : "&&" >
+}
+
+/* IDENTIFIERS */
 TOKEN:{
-    <#LETTER: [
-            //Unicode "LETTER" characters - as of Javase 6, Unicode 4 is supported
-            //http://www.unicode.org/Public/4.1.0/ucd/NamesList.txt
-            //more inclusive than Character.isLetter
-           "$",          //DOLLAR SIGN: milreis, escudo
-           "A"-"Z", //LATIN CAPITAL LETTER A - LATIN CAPITAL LETTER Z
-           "_",          //LOW LINE: spacing underscore
-           "a"-"z", //LATIN SMALL LETTER A - LATIN SMALL LETTER Z
+    <#LETTER: [               //Unicode "LETTER" characters - as of Javase 6, Unicode 4 is supported
+                              //http://www.unicode.org/Public/4.1.0/ucd/NamesList.txt
+                              //more inclusive than Character.isLetter
+           "$",               //DOLLAR SIGN: milreis, escudo
+           "#",               //DOLLAR SIGN: milreis, escudo
+           "A"-"Z",           //LATIN CAPITAL LETTER A - LATIN CAPITAL LETTER Z
+           "_",               //LOW LINE: spacing underscore
+           "a"-"z",           //LATIN SMALL LETTER A - LATIN SMALL LETTER Z
            "\u00aa"-"\u00ad", //  00AA FEMININE ORDINAL INDICATOR: spanish
                               //  00AB LEFT-POINTING DOUBLE ANGLE QUOTATION MARK: left guillemet
                               //  00AC NOT SIGN: angled dash
@@ -105,72 +169,27 @@ TOKEN:{
            "\uffd2"-"\uffd7", //HALFWIDTH HANGUL LETTER YO - HALFWIDTH HANGUL LETTER YU
            "\uffda"-"\uffdc"  //HALFWIDTH HANGUL LETTER EU - HALFWIDTH HANGUL LETTER I
     ] >                                                                             // 各类字符集
-    | <#STR_UNICODE     : "\\u" (["0"-"9","a"-"f","A"-"F"]){4}>                     // Unicode字符表示法
-    | <#STR_DOUBLE_BODY : (~["\"","\\","\r","\n","\f","\t"]) |
-                          ("\\"["r","n","f","t","\\","b","\"","'"]) >               // 双引号字符串（body部分）
-    | <STR_DOUBLE_QUOTED: <QUOTE_DOUBLE> (<STR_DOUBLE_BODY>)* <QUOTE_DOUBLE>>       // 双引号的字符串（整体）
-    | <#STR_SINGLE_BODY : (~["'","\\","\r","\n","\f","\t"]) |
-                          ("\\"["r","n","f","t","\\","b","\"","'"]) >               // 单引号字符串（body部分）
-    | <STR_SINGLE_QUOTED: <QUOTE_SINGLE> (<STR_SINGLE_BODY>)* <QUOTE_SINGLE> >      // 单引号的字符串（整体）
-    | <STR_EMPTY        : ("\"\"" | "''")>                                          // 空字符串
+    | <#STR_UNICODE     :   "\\u" (["0"-"9","a"-"f","A"-"F"]){4}>                   // Unicode字符表示法
+    | <#STR_DOUBLE_BODY : ( ~["\"","\\","\r","\n","\f","\t"]) |
+                          ( "\\"["r","n","f","t","\\","b","\"","'"]) >              // 双引号字符串（body部分）
+    | <STR_DOUBLE_QUOTED:   <QUOTE_DOUBLE> (<STR_DOUBLE_BODY>)* <QUOTE_DOUBLE>>     // 双引号的字符串（整体）
+    | <#STR_SINGLE_BODY : ( ~["'","\\","\r","\n","\f","\t"]) |
+                          ( "\\"["r","n","f","t","\\","b","\"","'"]) >              // 单引号字符串（body部分）
+    | <STR_SINGLE_QUOTED:   <QUOTE_SINGLE> (<STR_SINGLE_BODY>)* <QUOTE_SINGLE> >    // 单引号的字符串（整体）
+    | <STR_EMPTY        : ( "\"\"" | "''")>                                         // 空字符串
+    | <#IDENTIFIER_S    : ( <LETTER> ) ( ["0"-"9"] | <LETTER> )* >                  // 标识符
+    | <#IDENTIFIER_A    : ( "[" ( ["0"-"9"] )+ "]")+ >                              // 表示数组
+    | <IDENTIFIER       : <IDENTIFIER_S> ( ("." <IDENTIFIER_S>) | <IDENTIFIER_A> )* >// 组合的标识符，例： abc.aa[2][2]
 }
 
-/* IDENTIFIERS */
-TOKEN: {
-      < COMMA                   : "," >
-    | < COLON                   : ":" >
-    | < DOT                     : "." >
-    | < QUEM                    : "?" >
-    | < SEMI                    : ";" >
-    | < EQ                      : "=">
-    | < QUOTE_SINGLE            : "'" >
-    | < QUOTE_DOUBLE            : "\"" >
-    | < LAMBDAB                 : "->" >
-
-    | < OPAR                    : "(" >
-    | < CPAR                    : ")" >
-    | < OBRA                    : "[" >
-    | < CBRA                    : "]" >
-    | < ORI                     : "~" >
-
-    | < OCBRR                   : "%{" >
-    | < OCBR                    : "{" >
-    | < CCBR                    : "}" >
-
-    | < B_O_OP                  : ( "++" | "--" | "!" ) >
-    | < A_O_OP                  : ( "++" | "--") >
-    | < TO_OP                   : ( "+"  | "-"  | "*" | "/" | "%" | "\\"    |
-                                    ">"  | ">=" | "<" | "<=" | "==" | "!="  |
-                                    "&"  | "|"  | "^"                       |
-                                    "<<" | ">>" | ">>>"                     |
-                                    "&&" | "||" )
-      >
-}
-
-TOKEN: {
-	<#JOIN: "join">
-    | < IF                      : "if" >
-    | < ELSEIF                  : "elseif" >
-    | < ELSE                    : "else" >
-    | < END                     : "end" >
-    | < RETURN                  : "return" >
-    | < THROW                   : "throw" >
-    | < VAR                     : "var" >
-    | < LAMBDA                  : "lambda" >
-    | < TRUE                    : "true" >
-    | < FALSE                   : "false" >
-    | < NULL                    : "null" >
-    | < OPTION                  : "option" >
-    | <NAME_LITERAL             : ("$" | "#" | "_" | ["A"-"Z"] | ["a"-"z"] ) ( "." | "_" | "[" | "]" | ["0"-"9"] | ["A"-"Z"] | ["a"-"z"] )* >
-}
 //-----------------------------------------------------------------------------
 
 // .标识符
 void identifier() : {}{
     (
-    <NAME_LITERAL>
+        <IDENTIFIER>
     ) | (
-        <OCBRR> <NAME_LITERAL> <CCBR>
+        <OCBRR> <IDENTIFIER> <CCBR>
     )
 }
 
@@ -235,33 +254,48 @@ void object() : {} {
 // .表达式 =   表达式 or 表达式 + 运算符
 void expression() : {} {
     (
+        // 优先级
+        <OPAR> expression() <CPAR>
         (
-            // 优先级
-            <OPAR> expression() <CPAR>
-        ) | (
-            // 一元运算(前)
-            <B_O_OP> basicValue()
-        ) | (
-            basicValue()
-        )
+            extExpression()
+        )?
+    ) | LOOKAHEAD(oneExpression())(
+        oneExpression()
+    ) | (
+        basicValue()
+        (
+            extExpression()
+        )?
     )
+}
+void oneExpression() : {} {
     (
-        afterExpression()
-    )?
+        ( <BANG> | <INCR> | <DECR> ) basicValue()
+    ) | (
+        basicValue() ( <INCR> | <DECR> )
+    )
+}
+void extExpression() : {} {
+    (
+        twoExpression()
+    ) | (
+        threeExpression()
+    )
+}
+void twoExpression() : {} {
+    (
+        <PLUS> | <MINUS> | <STAR> | <SLASH> | <REM> | <ALI> |
+        <GT>   | <GE>    | <LT>   | <LE>    | <EQ>  | <NE>  |
+        <BIT_AND> | <BIT_OR> | <XOR> |
+        <LSHIFT> | <RSIGNEDSHIFT>    | <RUNSIGNEDSHIFT>   |
+        <SC_OR> | <SC_AND>
+    )
+    expression()
+}
+void threeExpression() :{} {
+    <QUEM> expression() <COLON> expression()
 }
 
-void afterExpression() :{} {
-    (
-        // 一元运算(后)
-        <A_O_OP>
-    ) | (
-        // 二元运算
-        <TO_OP> expression()
-    ) | (
-        // 三元运算
-        <QUEM> expression() <COLON> expression()
-    )
-}
 
 // .值
 void basicValue() : {} {
@@ -319,27 +353,27 @@ void funCall() : {} {
     (
         list()      |
         object()    |
-        <ORI>
+        "~"
     )
 }
 
 // .Lambda函数： lambda : (obj,obj2) -> {}
 void lambdaCall() : {} {
-    <LAMBDA> <COLON>
+    <LAMBDA> ":"
     (
         LOOKAHEAD(2)
         (
             <OPAR><CPAR>
         ) | (
             <OPAR>
-                <NAME_LITERAL>
+                <IDENTIFIER>
                 (
-                    <COMMA> <NAME_LITERAL>
+                    <COMMA> <IDENTIFIER>
                 )*
             <CPAR>
         )
     )
-    <LAMBDAB>
+    "->"
     (
         (
             <OCBR> blockSet() <CCBR>
@@ -352,11 +386,21 @@ void lambdaCall() : {} {
 //-----------------------------------------------------------------------------
 // .函数
 void varBlock() : {} {
-    <VAR> identifier() <EQ>
+    <VAR> identifier() <ASS>
     (
         lambdaCall()    |
         expression()
     )
+}
+
+// .反回
+void returnBlock() : {} {
+    <RETURN> expression()
+}
+
+// .选项指令
+void optionBlock() : {} {
+    <OPTION> identifier() <ASS> primitiveValue()
 }
 
 // .判断
@@ -387,26 +431,12 @@ void throwBlockStatus() : {} {
     numberValue() <COMMA>
 }
 
-
-
-
-// .反回
-void returnBlock() : {} {
-    <RETURN> expression()
-}
-
-// .选项指令
-void optionBlock() : {} {
-    <OPTION> identifier() <EQ> primitiveValue()
-}
-
 // .块
 void block() : {} {
     (
         varBlock()      |
         ifBlock()       |
         returnBlock()   |
-        optionBlock()   |
         throwBlock()
     )
 }
@@ -421,5 +451,8 @@ void blockSet() : {} {
 
 // 入口
 void rootBlock() : {} {
+    (
+        optionBlock() ( <SEMI> )?
+    )*
     blockSet() <EOF>
 }

@@ -1,4 +1,3 @@
-
 var bool = true;
 var bool = false;
 var bool = true
@@ -69,10 +68,10 @@ var a = %{$1234}
 var a = %{#1234}
 var a = #123
 var a = #123
-var a = %{s.1.2}
+var a = %{s.a1.a2}
 
-var a = this[0].sss.1.2.3_1qw
-var a = this[0].sss.1.2.3_1qw
+var a = this[0].sss.a1.a2.a3_1qw
+var a = this[0].sss.a1.$2.#3_1qw
 var a = $[0][1][1][1]
 var a = #[0][1][1][1];
 var a = a[0][1][1][1]
@@ -269,11 +268,112 @@ throw 0xffff,"ssss";
 throw 0b1001001, 1 + -2;
 throw 0b1001001, ["",""]
 
-var f = a + ++0xb
-var f = a + b;
+// 一元表达式
+var a = ++10
+var a = ++0x10
+var a = ++0o10
+var a = ++0b10
+var a = ++0b10
+var a = ++abc.das.eqw
+var a = ++a[0][0][0][9]
+var a = !abc
+var a = !true
+var a = ++false
+var a = 10++
+var a = 0x10++
+var a = 0o10++
+var a = 0b10++
+var a = 0b10++
+var a = abc.das.eqw++
+var a = a[0][0][0][9]++
+var a = true++
+var a = false++
+var a = --10
+var a = --0x10
+var a = --0o10
+var a = --0b10
+var a = --0b10
+var a = --abc.das.eqw
+var a = --a[0][0][0][9]
+var a = !abc
+var a = !true
+var a = --false
+var a = 10--
+var a = 0x10--
+var a = 0o10--
+var a = 0b10--
+var a = 0b10--
+var a = abc.das.eqw--
+var a = a[0][0][0][9]--
+var a = true--
+var a = false--
+
+// 二元运算符
 var f = '' + '';
 var f = '' + "";
 var f = '' + "ssfdsf"
 var f = 'sdfsdf' + "ssfdsf";
-var a = ++i
-var a = i++
+var f = 123 + 456 + 0x234 + 0b11100101;
+var f = '' - '';
+var f = '' - "";
+var f = '' - "ssfdsf"
+var f = 'sdfsdf' - "ssfdsf";
+var f = 123 - 456 + 0x234 - 0b11100101;
+
+var f = a + b * c / d % e \ f
+var f = a > b >= c < d <= e == f != g
+var f = a & b | c ^ d
+var f = a << b >> c >>> d
+var f = a && b || c
+
+var f = a({"abc":cc})~ && b([1,2,3,4])~ || c(d()~)~
+var f = (obj.amount > markAmount) && (markAmount > 0)
+
+return f
+var a = lambda: -> (agr) {};
+return lambda: -> (agr) {};
+
+
+/*
+
+NO      // new Object
+NA      // new Array
+NT      // new UserType
+
+LDC_D   // 数字（例：INSN_D 1234）
+LDC_B   // 布尔（例：INSN_B true）
+LDC_S   // 字符串
+LDC_N   // Null（例：INSN_N）
+
+LOAD    // 从本地变量表加载
+STORE   // 存储到本地变量表
+
+ASM     // 结果作为对象
+ASO     // 结果作为原始对象
+ASA     // 结果作为数组
+ASE     // 结果结束
+
+PUT     // 加到对象结果集中
+PUSH    // 加到 Array 结果集中
+
+ROU     // 寻值
+CALL    // 发起服务调用
+LAMBDA  // Lambda调用入口
+
+
+IF_E    // if
+IF_DEF  // if ... else ...
+IF_ELSE // elseif
+FRAME_S // 片段开始
+FRAME_E // 片段结束
+
+END     // 结束指令序列并返回值
+ERR     // 结束指令序列并抛出异常
+
+UO      // 一元运算
+DO      // 二元运算
+TO      // 三元运算
+
+LINE    // 行号
+LOCAL   // 本地变量表名称
+*/

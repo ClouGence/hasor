@@ -12,9 +12,7 @@
   <TD>
 <PRE>
 // ------------------------------------------------------------------------------------------------
-
-// Ignore comments
-</PRE>
+/* Ignore Comments */</PRE>
   </TD>
  </TR>
  <!-- Token -->
@@ -36,7 +34,7 @@
  <TR>
   <TD>
    <PRE>
-&lt;DEFAULT&gt; MORE : {
+&lt;DEFAULT&gt; SPECIAL : {
 &lt;C_SINGLE_COMMENT: "//" (~["\n","\r","\f"])* &lt;EOL&gt;&gt;
 | &lt;C_MULTILINE_COMMENT: "/*" (~[])* "*/"&gt;
 | &lt;EOL: "\n" | "\r" | "\f"&gt;
@@ -49,8 +47,7 @@
  <TR>
   <TD>
 <PRE>
-// number token
-</PRE>
+/* Number */</PRE>
   </TD>
  </TR>
  <!-- Token -->
@@ -71,18 +68,84 @@
    </PRE>
   </TD>
  </TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* key words */</PRE>
+  </TD>
+ </TR>
  <!-- Token -->
  <TR>
   <TD>
    <PRE>
 &lt;DEFAULT&gt; TOKEN : {
-&lt;#LETTER: ["$","A"-"Z","_","a"-"z","\u00aa"-"\u00ad","\u00b5"-"\u00b6","\u00ba"-"\u00bb","\u00c0"-"\u00d6","\u00d8"-"\u00f6","\u00f8"-"\u00ff","\u0100"-"\u1fff","\u3040"-"\u318f","\u3300"-"\u337f","\u3400"-"\u3d2d","\u4e00"-"\u9fff","\uf900"-"\ufaff","\ufb00"-"\ufb06","\ufb13"-"\ufb17","\ufb1f"-"\ufb28","\ufb2a"-"\ufb36","\ufb38"-"\ufb3e","\ufb40"-"\ufb41","\ufb43"-"\ufb44","\ufb46"-"\ufb4f","\ufb50"-"\ufdd7","\ufdf0"-"\ufdfd","\ufe70"-"\ufefc","\uff1f"-"\uff3a","\uff3f"-"\uff5e","\uff61"-"\uffbe","\uffc2"-"\uffc7","\uffca"-"\uffcf","\uffd2"-"\uffd7","\uffda"-"\uffdc"]&gt;
-| &lt;#STR_UNICODE: "\\u" (["0"-"9","a"-"f","A"-"F"]){4}&gt;
-| &lt;#STR_DOUBLE_BODY: ~["\"","\\","\r","\n","\f","\t"] | "\\" ["r","n","f","t","\\","b","\"","\'"]&gt;
-| &lt;STR_DOUBLE_QUOTED: &lt;QUOTE_DOUBLE&gt; (&lt;STR_DOUBLE_BODY&gt;)* &lt;QUOTE_DOUBLE&gt;&gt;
-| &lt;#STR_SINGLE_BODY: ~["\'","\\","\r","\n","\f","\t"] | "\\" ["r","n","f","t","\\","b","\"","\'"]&gt;
-| &lt;STR_SINGLE_QUOTED: &lt;QUOTE_SINGLE&gt; (&lt;STR_SINGLE_BODY&gt;)* &lt;QUOTE_SINGLE&gt;&gt;
-| &lt;STR_EMPTY: "\"\"" | "\'\'"&gt;
+&lt;IF: "if"&gt;
+| &lt;ELSEIF: "elseif"&gt;
+| &lt;ELSE: "else"&gt;
+| &lt;END: "end"&gt;
+| &lt;RETURN: "return"&gt;
+| &lt;THROW: "throw"&gt;
+| &lt;VAR: "var"&gt;
+| &lt;LAMBDA: "lambda"&gt;
+| &lt;TRUE: "true"&gt;
+| &lt;FALSE: "false"&gt;
+| &lt;NULL: "null"&gt;
+| &lt;OPTION: "option"&gt;
+}
+
+   </PRE>
+  </TD>
+ </TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+/* OPERATORS */</PRE>
+  </TD>
+ </TR>
+ <!-- Token -->
+ <TR>
+  <TD>
+   <PRE>
+&lt;DEFAULT&gt; TOKEN : {
+&lt;COMMA: ","&gt;
+| &lt;COLON: ":"&gt;
+| &lt;QUEM: "?"&gt;
+| &lt;SEMI: ";"&gt;
+| &lt;ASS: "="&gt;
+| &lt;QUOTE_SINGLE: "\'"&gt;
+| &lt;QUOTE_DOUBLE: "\""&gt;
+| &lt;OPAR: "("&gt;
+| &lt;CPAR: ")"&gt;
+| &lt;OBRA: "["&gt;
+| &lt;CBRA: "]"&gt;
+| &lt;OCBRR: "%{"&gt;
+| &lt;OCBR: "{"&gt;
+| &lt;CCBR: "}"&gt;
+| &lt;BANG: "!"&gt;
+| &lt;INCR: "++"&gt;
+| &lt;DECR: "--"&gt;
+| &lt;PLUS: "+"&gt;
+| &lt;MINUS: "-"&gt;
+| &lt;STAR: "*"&gt;
+| &lt;SLASH: "/"&gt;
+| &lt;REM: "%"&gt;
+| &lt;ALI: "\\"&gt;
+| &lt;GT: "&gt;"&gt;
+| &lt;GE: "&gt;="&gt;
+| &lt;LT: "&lt;"&gt;
+| &lt;LE: "&lt;="&gt;
+| &lt;EQ: "=="&gt;
+| &lt;NE: "!="&gt;
+| &lt;BIT_AND: "&amp;"&gt;
+| &lt;BIT_OR: "|"&gt;
+| &lt;XOR: "^"&gt;
+| &lt;LSHIFT: "&lt;&lt;"&gt;
+| &lt;RSIGNEDSHIFT: "&gt;&gt;"&gt;
+| &lt;RUNSIGNEDSHIFT: "&gt;&gt;&gt;"&gt;
+| &lt;SC_OR: "||"&gt;
+| &lt;SC_AND: "&amp;&amp;"&gt;
 }
 
    </PRE>
@@ -100,50 +163,16 @@
   <TD>
    <PRE>
 &lt;DEFAULT&gt; TOKEN : {
-&lt;COMMA: ","&gt;
-| &lt;COLON: ":"&gt;
-| &lt;DOT: "."&gt;
-| &lt;QUEM: "?"&gt;
-| &lt;SEMI: ";"&gt;
-| &lt;EQ: "="&gt;
-| &lt;QUOTE_SINGLE: "\'"&gt;
-| &lt;QUOTE_DOUBLE: "\""&gt;
-| &lt;LAMBDAB: "-&gt;"&gt;
-| &lt;OPAR: "("&gt;
-| &lt;CPAR: ")"&gt;
-| &lt;OBRA: "["&gt;
-| &lt;CBRA: "]"&gt;
-| &lt;ORI: "~"&gt;
-| &lt;OCBRR: "%{"&gt;
-| &lt;OCBR: "{"&gt;
-| &lt;CCBR: "}"&gt;
-| &lt;B_O_OP: "++" | "--" | "!"&gt;
-| &lt;A_O_OP: "++" | "--"&gt;
-| &lt;TO_OP: "+" | "-" | "*" | "/" | "%" | "\\" | "&gt;" | "&gt;=" | "&lt;" | "&lt;=" | "==" | "!=" | "&amp;" | "|" | "^" | "&lt;&lt;" | "&gt;&gt;" | "&gt;&gt;&gt;" | "&amp;&amp;" | "||"&gt;
-}
-
-   </PRE>
-  </TD>
- </TR>
- <!-- Token -->
- <TR>
-  <TD>
-   <PRE>
-&lt;DEFAULT&gt; TOKEN : {
-&lt;#JOIN: "join"&gt;
-| &lt;IF: "if"&gt;
-| &lt;ELSEIF: "elseif"&gt;
-| &lt;ELSE: "else"&gt;
-| &lt;END: "end"&gt;
-| &lt;RETURN: "return"&gt;
-| &lt;THROW: "throw"&gt;
-| &lt;VAR: "var"&gt;
-| &lt;LAMBDA: "lambda"&gt;
-| &lt;TRUE: "true"&gt;
-| &lt;FALSE: "false"&gt;
-| &lt;NULL: "null"&gt;
-| &lt;OPTION: "option"&gt;
-| &lt;NAME_LITERAL: ("$" | "#" | "_" | ["A"-"Z"] | ["a"-"z"]) ("." | "_" | "[" | "]" | ["0"-"9"] | ["A"-"Z"] | ["a"-"z"])*&gt;
+&lt;#LETTER: ["$","#","A"-"Z","_","a"-"z","\u00aa"-"\u00ad","\u00b5"-"\u00b6","\u00ba"-"\u00bb","\u00c0"-"\u00d6","\u00d8"-"\u00f6","\u00f8"-"\u00ff","\u0100"-"\u1fff","\u3040"-"\u318f","\u3300"-"\u337f","\u3400"-"\u3d2d","\u4e00"-"\u9fff","\uf900"-"\ufaff","\ufb00"-"\ufb06","\ufb13"-"\ufb17","\ufb1f"-"\ufb28","\ufb2a"-"\ufb36","\ufb38"-"\ufb3e","\ufb40"-"\ufb41","\ufb43"-"\ufb44","\ufb46"-"\ufb4f","\ufb50"-"\ufdd7","\ufdf0"-"\ufdfd","\ufe70"-"\ufefc","\uff1f"-"\uff3a","\uff3f"-"\uff5e","\uff61"-"\uffbe","\uffc2"-"\uffc7","\uffca"-"\uffcf","\uffd2"-"\uffd7","\uffda"-"\uffdc"]&gt;
+| &lt;#STR_UNICODE: "\\u" (["0"-"9","a"-"f","A"-"F"]){4}&gt;
+| &lt;#STR_DOUBLE_BODY: ~["\"","\\","\r","\n","\f","\t"] | "\\" ["r","n","f","t","\\","b","\"","\'"]&gt;
+| &lt;STR_DOUBLE_QUOTED: &lt;QUOTE_DOUBLE&gt; (&lt;STR_DOUBLE_BODY&gt;)* &lt;QUOTE_DOUBLE&gt;&gt;
+| &lt;#STR_SINGLE_BODY: ~["\'","\\","\r","\n","\f","\t"] | "\\" ["r","n","f","t","\\","b","\"","\'"]&gt;
+| &lt;STR_SINGLE_QUOTED: &lt;QUOTE_SINGLE&gt; (&lt;STR_SINGLE_BODY&gt;)* &lt;QUOTE_SINGLE&gt;&gt;
+| &lt;STR_EMPTY: "\"\"" | "\'\'"&gt;
+| &lt;#IDENTIFIER_S: &lt;LETTER&gt; (["0"-"9"] | &lt;LETTER&gt;)*&gt;
+| &lt;#IDENTIFIER_A: ("[" (["0"-"9"])+ "]")+&gt;
+| &lt;IDENTIFIER: &lt;IDENTIFIER_S&gt; ("." &lt;IDENTIFIER_S&gt; | &lt;IDENTIFIER_A&gt;)*&gt;
 }
 
    </PRE>
@@ -165,12 +194,12 @@
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod1">identifier</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;NAME_LITERAL&gt; )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;IDENTIFIER&gt; )</TD>
 </TR>
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;OCBRR&gt; &lt;NAME_LITERAL&gt; &lt;CCBR&gt; )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;OCBRR&gt; &lt;IDENTIFIER&gt; &lt;CCBR&gt; )</TD>
 </TR>
  <!-- Special token -->
  <TR>
@@ -308,22 +337,47 @@
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod7">expression</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;OPAR&gt; <A HREF="#prod7">expression</A> &lt;CPAR&gt; ) | ( &lt;B_O_OP&gt; <A HREF="#prod9">basicValue</A> ) | ( <A HREF="#prod9">basicValue</A> ) ) ( <A HREF="#prod10">afterExpression</A> )?</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;OPAR&gt; <A HREF="#prod7">expression</A> &lt;CPAR&gt; ( <A HREF="#prod9">extExpression</A> )? )</TD>
 </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod10">afterExpression</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod10">oneExpression</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod11">basicValue</A> ( <A HREF="#prod9">extExpression</A> )? )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod10">oneExpression</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;A_O_OP&gt; )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;BANG&gt; | &lt;INCR&gt; | &lt;DECR&gt; ) <A HREF="#prod11">basicValue</A> )</TD>
 </TR>
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;TO_OP&gt; <A HREF="#prod7">expression</A> )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod11">basicValue</A> ( &lt;INCR&gt; | &lt;DECR&gt; ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod9">extExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod12">twoExpression</A> )</TD>
 </TR>
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;QUEM&gt; <A HREF="#prod7">expression</A> &lt;COLON&gt; <A HREF="#prod7">expression</A> )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod13">threeExpression</A> )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod12">twoExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;PLUS&gt; | &lt;MINUS&gt; | &lt;STAR&gt; | &lt;SLASH&gt; | &lt;REM&gt; | &lt;ALI&gt; | &lt;GT&gt; | &lt;GE&gt; | &lt;LT&gt; | &lt;LE&gt; | &lt;EQ&gt; | &lt;NE&gt; | &lt;BIT_AND&gt; | &lt;BIT_OR&gt; | &lt;XOR&gt; | &lt;LSHIFT&gt; | &lt;RSIGNEDSHIFT&gt; | &lt;RUNSIGNEDSHIFT&gt; | &lt;SC_OR&gt; | &lt;SC_AND&gt; ) <A HREF="#prod7">expression</A></TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod13">threeExpression</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;QUEM&gt; <A HREF="#prod7">expression</A> &lt;COLON&gt; <A HREF="#prod7">expression</A></TD>
 </TR>
  <!-- Special token -->
  <TR>
@@ -334,12 +388,12 @@
   </TD>
  </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod9">basicValue</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod11">basicValue</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod11">primitiveValue</A> | ( <A HREF="#prod1">identifier</A> ( <A HREF="#prod12">funCall</A> )? ) | <A HREF="#prod6">list</A> | <A HREF="#prod8">object</A> )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod14">primitiveValue</A> | ( <A HREF="#prod1">identifier</A> ( <A HREF="#prod15">funCall</A> )? ) | <A HREF="#prod6">list</A> | <A HREF="#prod8">object</A> )</TD>
 </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod11">primitiveValue</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod14">primitiveValue</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
 <TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod2">stringValue</A> | <A HREF="#prod3">nullValue</A> | <A HREF="#prod4">booleanValue</A> | <A HREF="#prod5">numberValue</A> )</TD>
 </TR>
@@ -353,14 +407,14 @@
   </TD>
  </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod13">paramSet</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod16">paramSet</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
 <TD ALIGN=LEFT VALIGN=BASELINE>( &lt;OPAR&gt; &lt;CPAR&gt; )</TD>
 </TR>
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;OPAR&gt; <A HREF="#prod14">paramItem</A> ( &lt;COMMA&gt; <A HREF="#prod14">paramItem</A> )* &lt;CPAR&gt; )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;OPAR&gt; <A HREF="#prod17">paramItem</A> ( &lt;COMMA&gt; <A HREF="#prod17">paramItem</A> )* &lt;CPAR&gt; )</TD>
 </TR>
  <!-- Special token -->
  <TR>
@@ -371,9 +425,9 @@
   </TD>
  </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod14">paramItem</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod17">paramItem</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod15">lambdaCall</A> )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod18">lambdaCall</A> )</TD>
 </TR>
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE></TD>
@@ -389,9 +443,9 @@
   </TD>
  </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod12">funCall</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod15">funCall</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod13">paramSet</A> ( <A HREF="#prod6">list</A> | <A HREF="#prod8">object</A> | &lt;ORI&gt; )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod16">paramSet</A> ( <A HREF="#prod6">list</A> | <A HREF="#prod8">object</A> | "~" )</TD>
 </TR>
  <!-- Special token -->
  <TR>
@@ -402,9 +456,9 @@
   </TD>
  </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod15">lambdaCall</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod18">lambdaCall</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LAMBDA&gt; &lt;COLON&gt; ( ( &lt;OPAR&gt; &lt;CPAR&gt; ) | ( &lt;OPAR&gt; &lt;NAME_LITERAL&gt; ( &lt;COMMA&gt; &lt;NAME_LITERAL&gt; )* &lt;CPAR&gt; ) ) &lt;LAMBDAB&gt; ( ( &lt;OCBR&gt; <A HREF="#prod16">blockSet</A> &lt;CCBR&gt; ) | ( <A HREF="#prod17">block</A> ) )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;LAMBDA&gt; ":" ( ( &lt;OPAR&gt; &lt;CPAR&gt; ) | ( &lt;OPAR&gt; &lt;IDENTIFIER&gt; ( &lt;COMMA&gt; &lt;IDENTIFIER&gt; )* &lt;CPAR&gt; ) ) "-&gt;" ( ( &lt;OCBR&gt; <A HREF="#prod19">blockSet</A> &lt;CCBR&gt; ) | ( <A HREF="#prod20">block</A> ) )</TD>
 </TR>
  <!-- Special token -->
  <TR>
@@ -416,40 +470,9 @@
   </TD>
  </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod18">varBlock</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod21">varBlock</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>&lt;VAR&gt; <A HREF="#prod1">identifier</A> &lt;EQ&gt; ( <A HREF="#prod15">lambdaCall</A> | <A HREF="#prod7">expression</A> )</TD>
-</TR>
- <!-- Special token -->
- <TR>
-  <TD>
-<PRE>
-// .判断
-</PRE>
-  </TD>
- </TR>
-<TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod19">ifBlock</A></TD>
-<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IF&gt; &lt;OPAR&gt; <A HREF="#prod7">expression</A> &lt;CPAR&gt; <A HREF="#prod16">blockSet</A> ( &lt;ELSEIF&gt; &lt;OPAR&gt; <A HREF="#prod7">expression</A> &lt;CPAR&gt; <A HREF="#prod16">blockSet</A> )* ( &lt;ELSE&gt; <A HREF="#prod16">blockSet</A> )? &lt;END&gt;</TD>
-</TR>
- <!-- Special token -->
- <TR>
-  <TD>
-<PRE>
-// .异常
-</PRE>
-  </TD>
- </TR>
-<TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod20">throwBlock</A></TD>
-<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>&lt;THROW&gt; ( ( <A HREF="#prod21">throwBlockStatus</A> <A HREF="#prod7">expression</A> ) | ( <A HREF="#prod7">expression</A> ) )</TD>
-</TR>
-<TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod21">throwBlockStatus</A></TD>
-<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod5">numberValue</A> &lt;COMMA&gt;</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;VAR&gt; <A HREF="#prod1">identifier</A> &lt;ASS&gt; ( <A HREF="#prod18">lambdaCall</A> | <A HREF="#prod7">expression</A> )</TD>
 </TR>
  <!-- Special token -->
  <TR>
@@ -475,7 +498,38 @@
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod23">optionBlock</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>&lt;OPTION&gt; <A HREF="#prod1">identifier</A> &lt;EQ&gt; <A HREF="#prod11">primitiveValue</A></TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;OPTION&gt; <A HREF="#prod1">identifier</A> &lt;ASS&gt; <A HREF="#prod14">primitiveValue</A></TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// .判断
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod24">ifBlock</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;IF&gt; &lt;OPAR&gt; <A HREF="#prod7">expression</A> &lt;CPAR&gt; <A HREF="#prod19">blockSet</A> ( &lt;ELSEIF&gt; &lt;OPAR&gt; <A HREF="#prod7">expression</A> &lt;CPAR&gt; <A HREF="#prod19">blockSet</A> )* ( &lt;ELSE&gt; <A HREF="#prod19">blockSet</A> )? &lt;END&gt;</TD>
+</TR>
+ <!-- Special token -->
+ <TR>
+  <TD>
+<PRE>
+// .异常
+</PRE>
+  </TD>
+ </TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod25">throwBlock</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>&lt;THROW&gt; ( ( <A HREF="#prod26">throwBlockStatus</A> <A HREF="#prod7">expression</A> ) | ( <A HREF="#prod7">expression</A> ) )</TD>
+</TR>
+<TR>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod26">throwBlockStatus</A></TD>
+<TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod5">numberValue</A> &lt;COMMA&gt;</TD>
 </TR>
  <!-- Special token -->
  <TR>
@@ -486,9 +540,9 @@
   </TD>
  </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod17">block</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod20">block</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod18">varBlock</A> | <A HREF="#prod19">ifBlock</A> | <A HREF="#prod22">returnBlock</A> | <A HREF="#prod23">optionBlock</A> | <A HREF="#prod20">throwBlock</A> )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod21">varBlock</A> | <A HREF="#prod24">ifBlock</A> | <A HREF="#prod22">returnBlock</A> | <A HREF="#prod25">throwBlock</A> )</TD>
 </TR>
  <!-- Special token -->
  <TR>
@@ -499,9 +553,9 @@
   </TD>
  </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod16">blockSet</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod19">blockSet</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod17">block</A> ( &lt;SEMI&gt; )? )*</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod20">block</A> ( &lt;SEMI&gt; )? )*</TD>
 </TR>
  <!-- Special token -->
  <TR>
@@ -512,9 +566,9 @@
   </TD>
  </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod24">rootBlock</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod27">rootBlock</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod16">blockSet</A> &lt;EOF&gt;</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod23">optionBlock</A> ( &lt;SEMI&gt; )? )* <A HREF="#prod19">blockSet</A> &lt;EOF&gt;</TD>
 </TR>
 </TABLE>
 </BODY>
