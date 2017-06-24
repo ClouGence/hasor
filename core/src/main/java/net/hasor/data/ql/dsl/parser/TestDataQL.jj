@@ -11,7 +11,7 @@ options {
 PARSER_BEGIN(GraphParser)
 package net.hasor.data.ql.dsl.parser;
 import net.hasor.data.ql.dsl.*;
-import net.hasor.data.ql.dsl.domain.EqType;
+import net.hasor.data.ql.dsl.visitor.*;
 import java.util.*;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
@@ -60,18 +60,18 @@ TOKEN:{
 
 /* key words */
 TOKEN: {
-      < IF                      : "if" >
-    | < ELSEIF                  : "elseif" >
-    | < ELSE                    : "else" >
-    | < END                     : "end" >
-    | < RETURN                  : "return" >
-    | < THROW                   : "throw" >
-    | < VAR                     : "var" >
-    | < LAMBDA                  : "lambda" >
-    | < TRUE                    : "true" >
-    | < FALSE                   : "false" >
-    | < NULL                    : "null" >
-    | < OPTION                  : "option" >
+      < IF                  : "if" >
+    | < ELSEIF              : "elseif" >
+    | < ELSE                : "else" >
+    | < END                 : "end" >
+    | < RETURN              : "return" >
+    | < THROW               : "throw" >
+    | < VAR                 : "var" >
+    | < LAMBDA              : "lambda" >
+    | < TRUE                : "true" >
+    | < FALSE               : "false" >
+    | < NULL                : "null" >
+    | < OPTION              : "option" >
 }
 
 /* OPERATORS */
@@ -185,38 +185,55 @@ TOKEN:{
 //-----------------------------------------------------------------------------
 
 // .标识符
-void identifier() : {}{
+String identifier() : {                              Token dataToken = null;
+}{
     (
-        <IDENTIFIER>
+        dataToken = <IDENTIFIER>                    {return dataToken.image;}
     ) | (
-        <OCBRR> <IDENTIFIER> <CCBR>
+        <OCBRR> dataToken = <IDENTIFIER> <CCBR>     {return "%{" + dataToken.image + "}";}
     )
 }
 
 // .带引号的字符串
-void stringValue() : {}{
-    <STR_DOUBLE_QUOTED> |
-    <STR_SINGLE_QUOTED> |
-    <STR_EMPTY>
+String stringValue() : {                             Token dataToken = null;
+}{
+    (
+        (
+            dataToken = <STR_DOUBLE_QUOTED>
+        ) | (
+            dataToken = <STR_SINGLE_QUOTED>
+        ) | (
+            dataToken = <STR_EMPTY>
+        )
+    )
+                                                    {
+                                                     String image = dataToken.image;
+                                                     return image.substring(1, image.length()-1);
+                                                    }
 }
 
 // .空值
-void nullValue() : {}{
-	<NULL>
+Object nullValue() : {}{
+	<NULL>                                          {return null;}
 }
 
 // .布尔
-void booleanValue() : {}{
-    <TRUE> | <FALSE>
+Boolean booleanValue() : {}{
+    (
+        <TRUE>                                      {return Boolean.TRUE;}
+    ) | (
+        <FALSE>                                     {return Boolean.FALSE;}
+    )
 }
 
 // .数字
-void numberValue() : {}{
+Number numberValue() : {}{
     <DECIMAL_NUM> |
     <INTEGER_NUM> |
     <HEX_NUM>     |
     <OCTAL_NUM>   |
     <BINARY_NUM>
+                                                    {return 0;}
 }
 
 // .列表：[ ... ]
@@ -282,13 +299,29 @@ void extExpression() : {} {
         threeExpression()
     )
 }
-void twoExpression() : {} {
+void twoExpression() : {            Token o = null;
+} {
     (
-        <PLUS> | <MINUS> | <STAR> | <SLASH> | <REM> | <ALI> |
-        <GT>   | <GE>    | <LT>   | <LE>    | <EQ>  | <NE>  |
-        <BIT_AND> | <BIT_OR> | <XOR> |
-        <LSHIFT> | <RSIGNEDSHIFT>    | <RUNSIGNEDSHIFT>   |
-        <SC_OR> | <SC_AND>
+          o = <PLUS>
+        | o = <MINUS>
+        | o = <STAR>
+        | o = <SLASH>
+        | o = <REM>
+        | o = <ALI>
+        | o = <GT>
+        | o = <GE>
+        | o = <LT>
+        | o = <LE>
+        | o = <EQ>
+        | o = <NE>
+        | o = <BIT_AND>
+        | o = <BIT_OR>
+        | o = <XOR>
+        | o = <LSHIFT>
+        | o = <RSIGNEDSHIFT>
+        | o = <RUNSIGNEDSHIFT>
+        | o = <SC_OR>
+        | o = <SC_AND>
     )
     expression()
 }
@@ -315,9 +348,12 @@ void basicValue() : {} {
 
 void primitiveValue() : {} {
     (
-        stringValue()               |
-        nullValue()                 |
-        booleanValue()              |
+        stringValue()
+    ) | (
+        nullValue()
+    ) | (
+        booleanValue()
+    ) | (
         numberValue()
     )
 }
@@ -388,8 +424,11 @@ void lambdaCall() : {} {
 void varBlock() : {} {
     <VAR> identifier() <ASS>
     (
-        lambdaCall()    |
-        expression()
+        (
+            lambdaCall()
+        ) | (
+            expression()
+        )
     )
 }
 
@@ -427,8 +466,9 @@ void throwBlock() : {} {
         )
     )
 }
-void throwBlockStatus() : {} {
-    numberValue() <COMMA>
+Number throwBlockStatus() : {                        Number errorCode = null;
+} {
+    errorCode = numberValue() <COMMA>               {return errorCode;}
 }
 
 // .块
