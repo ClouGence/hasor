@@ -15,21 +15,9 @@
  */
 package net.hasor.data.ql.dsl.domain;
 /**
- * 值路由
+ * 表达式，基类
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class RouteValue extends DValue {
-    private String routeExpression;
-    public RouteValue(EqType eqType, String routeExpression) {
-        super(eqType);
-        this.routeExpression = routeExpression;
-    }
-    public String getRouteExpression() {
-        return this.routeExpression;
-    }
-    @Override
-    public String toString() {
-        return super.toString() + "'" + this.routeExpression + "'";
-    }
+public abstract class Expression implements Variable {
 }

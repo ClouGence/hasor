@@ -13,24 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.dsl;
+package net.hasor.data.ql.dsl.domain;
 /**
- * 寻值，作为字段
+ * 基础类型值，用于表示【String、Number、Null、Boolean】四种基本类型
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-class RouteField implements DataField {
-    private String name;
-    private String routeExpression;
-    public RouteField(String name, String routeExpression) {
-        this.name = name;
-        this.routeExpression = routeExpression;
+public class PrimitiveExpression extends Expression {
+    public static enum ValueType {
+        Boolean, Number, String, Null
+    }
+    //
+    private Object    value;
+    private ValueType valueType;
+    //
+    public PrimitiveExpression(Object value, ValueType valueType) {
+        this.value = value;
+        this.valueType = valueType;
+    }
+    public Object getValue() {
+        return this.value;
+    }
+    public ValueType getValueType() {
+        return this.valueType;
     }
     @Override
-    public String getName() {
-        return this.name;
-    }
-    public String getRouteExpression() {
-        return this.routeExpression;
+    public String toString() {
+        return super.toString() + "'" + this.value + "'";
     }
 }

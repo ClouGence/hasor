@@ -14,39 +14,32 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.dsl.domain;
+import java.util.ArrayList;
+import java.util.List;
 /**
- * 参数操作符
+ * 函数调用
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public enum EqType {
-    /** = */
-    EQ("="), //
-    /** != */
-    NE("!="),//
-    /** > */
-    GT(">"),//
-    /** >= */
-    GTE(">="),//
-    /** < */
-    LT("<"),//
-    /** <= */
-    LTE("<="),//
-    /** like */
-    Like("like"),;//
+public class CallerExpression extends Expression {
+    private String         callName     = null;
+    private List<Variable> varList      = null;
+    private Format         resultFormat = null;
+    public CallerExpression(String callName) {
+        super();
+        this.callName = callName;
+        this.varList = new ArrayList<Variable>();
+    }
     //
-    private String typeString;
-    EqType(String type) {
-        this.typeString = type;
+    //
+    /** 设置返回值处理格式 */
+    public void setResultFormat(Format resultFormat) {
+        this.resultFormat = resultFormat;
     }
-    public String getTypeString() {
-        return typeString;
-    }
-    public static EqType paserType(String typeString) {
-        for (EqType et : EqType.values()) {
-            if (et.typeString.equalsIgnoreCase(typeString))
-                return et;
+    /** 添加参数 */
+    public void addParam(Variable paramValue) {
+        if (paramValue != null) {
+            this.varList.add(paramValue);
         }
-        return EQ;
     }
 }

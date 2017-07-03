@@ -13,24 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.dsl;
+package net.hasor.data.ql.dsl.domain;
 /**
- * 寻值，作为参数
+ * 函数调用的返回值处理格式，List格式。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-class RouteParam implements DataParam {
-    private String name;
-    private String routeExpression;
-    public RouteParam(String name, String routeExpression) {
-        this.name = name;
-        this.routeExpression = routeExpression;
-    }
-    @Override
-    public String getName() {
-        return this.name;
-    }
-    public String getRouteExpression() {
-        return this.routeExpression;
+public class ListFormat extends Format {
+    private ListExpression format;
+    public ListFormat(ListExpression format) {
+        super();
+        this.format = format;
     }
 }

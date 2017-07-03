@@ -13,25 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.dsl;
-import net.hasor.data.ql.dsl.domain.QueryDomain;
+package net.hasor.data.ql.dsl.domain;
+import java.util.ArrayList;
+import java.util.List;
 /**
- * 结果，作为字段
+ * 指令序列
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-class QueryField implements DataField {
-    private String      name;
-    private QueryDomain queryDomain;
-    public QueryField(String name, QueryDomain queryDomain) {
-        this.name = name;
-        this.queryDomain = queryDomain;
+public class BlockSet {
+    protected List<Inst> instList = new ArrayList<Inst>();
+    public BlockSet() {
     }
-    @Override
-    public String getName() {
-        return this.name;
+    public BlockSet(List<Inst> instList) {
+        if (instList != null && !instList.isEmpty()) {
+            for (Inst inst : instList) {
+                this.addInst(inst);
+            }
+        }
     }
-    public QueryDomain getQueryDomain() {
-        return queryDomain;
+    //
+    //
+    /** 添加一条指令 */
+    public void addInst(Inst inst) {
+        if (inst != null) {
+            this.instList.add(inst);
+        }
+    }
+    /** 获取指令列表 */
+    public List<Inst> getInstList() {
+        return this.instList;
     }
 }

@@ -13,20 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.dsl;
-import net.hasor.data.ql.dsl.domain.QueryDomain;
+package net.hasor.data.ql.dsl.domain;
 /**
- * 查询模型
+ * 函数调用的返回值处理格式，原始格式
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface QueryModel {
-    /** 查询字符串，部分 QL 使用片段形式表达便于阅读。 */
-    public String buildQuery();
-
-    /** 查询字符串，不使用片段形式表达。 */
-    public String buildQueryWithoutFragment();
-
-    /**查询模型对象*/
-    public QueryDomain getDomain();
+public class RawFormat extends Format {
 }

@@ -13,31 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.dsl;
-import net.hasor.data.ql.dsl.domain.ValueType;
+package net.hasor.data.ql.dsl.domain;
 /**
- * 值，作为字段
+ * 值路由
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-class ValueField implements DataField {
-    private String    name;
-    private Object    value;
-    private ValueType valueType;
-    //
-    public ValueField(String name, Object value, ValueType valueType) {
-        this.name = name;
-        this.value = value;
-        this.valueType = valueType;
-    }
-    @Override
-    public String getName() {
-        return this.name;
-    }
-    public Object getValue() {
-        return value;
-    }
-    public ValueType getValueType() {
-        return this.valueType;
+public class RouteExpression extends Expression {
+    private String routeExpression;
+    public RouteExpression(String routeExpression) {
+        super();
+        this.routeExpression = routeExpression;
     }
 }

@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.dsl.domain;
 /**
- * 返回值类型
- * @author 赵永春(zyc@hasor.net)
- * @version : 2017-03-23
+ * DataQL，执行模型，指令
  */
-public enum ReturnType {
-    Object, ListObject, ListValue, Original
-}
+@AopIgnore
+package net.hasor.data.ql.runtime.domain;
+import net.hasor.core.container.AopIgnore;

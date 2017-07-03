@@ -13,23 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.dsl;
+package net.hasor.data.ql.dsl.domain;
 /**
- *
+ * 指令，基类
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class DslUtils {
-    public static BindingBuilder createQuery() {
-        return createQuery(null);
-    }
-    public static BindingBuilder createQuery(String queryName) {
-        return new BindingBuilderImpl(queryName);
-    }
-    public static ParamBindingBuilder createParam(String name) {
-        return new ParamBindingBuilderImpl(createQuery(name));
-    }
-    public static FieldBindingBuilder createField(String name) {
-        return new FieldBindingBuilderImpl(createQuery(name));
-    }
+public abstract class Inst {
 }

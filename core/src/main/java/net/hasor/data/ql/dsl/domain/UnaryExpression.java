@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.dsl;
+package net.hasor.data.ql.dsl.domain;
 /**
- * 字段
+ * 一元运算表达式
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface DataField {
-    /** 获取字段名 */
-    public String getName();
+public class UnaryExpression extends Expression {
+    private Expression    target;      //表达式
+    private String        dyadicSymbol;//操作符
+    private UnaryLocation location;    //操作符位置（B or A）
+    public UnaryExpression(Expression target, String dyadicSymbol, UnaryLocation location) {
+        super();
+        this.target = target;
+        this.dyadicSymbol = dyadicSymbol;
+        this.location = location;
+    }
 }

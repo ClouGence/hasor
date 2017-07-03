@@ -15,10 +15,18 @@
  */
 package net.hasor.data.ql.dsl.domain;
 /**
- * 值类型
+ * 三元运算表达式
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public enum ValueType {
-    Boolean, Number, String, Null
+public class TernaryExpression extends Expression {
+    private Expression testExpression;  //三元运算符，条件表达式
+    private Expression thenExpression;  //第一个表达式
+    private Expression elseExpression;  //第二个表达式
+    public TernaryExpression(Expression testExp, Expression thenExp, Expression elseExp) {
+        super();
+        this.testExpression = testExp;
+        this.testExpression = thenExp;
+        this.elseExpression = elseExp;
+    }
 }

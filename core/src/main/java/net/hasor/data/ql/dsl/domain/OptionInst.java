@@ -13,25 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.dsl;
-import net.hasor.data.ql.dsl.domain.QueryDomain;
+package net.hasor.data.ql.dsl.domain;
 /**
- * 结果，作为参数
+ * 查询选项
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-class QueryParam implements DataParam {
-    private String      name;
-    private QueryDomain queryDomain;
-    public QueryParam(String name, QueryDomain queryDomain) {
-        this.name = name;
-        this.queryDomain = queryDomain;
-    }
-    @Override
-    public String getName() {
-        return this.name;
-    }
-    public QueryDomain getQueryDomain() {
-        return queryDomain;
+public class OptionInst extends Inst {
+    private String              optKey;
+    private PrimitiveExpression expression;
+    public OptionInst(String optKey, PrimitiveExpression expression) {
+        super();
+        this.optKey = optKey;
+        this.expression = expression;
     }
 }

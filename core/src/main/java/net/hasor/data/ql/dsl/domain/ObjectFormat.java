@@ -13,26 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.dsl.parser;
-import net.hasor.data.ql.dsl.DataParam;
-import net.hasor.data.ql.dsl.domain.EqType;
+package net.hasor.data.ql.dsl.domain;
 /**
- *
+ * 函数调用的返回值处理格式，Object格式。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-class ParamData {
-    private DataParam dataParam = null;
-    private EqType    eqType    = null;
-    public ParamData(DataParam dataParam, EqType eqType) {
-        this.dataParam = dataParam;
-        this.eqType = eqType;
-    }
-    //
-    public DataParam getDataParam() {
-        return dataParam;
-    }
-    public EqType getEqType() {
-        return eqType;
+public class ObjectFormat extends Format {
+    private ObjectExpression format;
+    public ObjectFormat(ObjectExpression format) {
+        super();
+        this.format = format;
     }
 }

@@ -15,27 +15,15 @@
  */
 package net.hasor.data.ql.dsl.domain;
 /**
- * 固定值
+ * throw指令
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class FixedValue extends DValue {
-    private Object    value;
-    private ValueType valueType;
-    //
-    public FixedValue(EqType eqType, Object value, ValueType valueType) {
-        super(eqType);
-        this.value = value;
-        this.valueType = valueType;
-    }
-    public Object getValue() {
-        return this.value;
-    }
-    public ValueType getValueType() {
-        return this.valueType;
-    }
-    @Override
-    public String toString() {
-        return super.toString() + "'" + this.value + "'";
+public class ThrowInst extends Inst {
+    private Number     errorCode;
+    private Expression throwData;
+    public ThrowInst(Number errorCode, Expression throwData) {
+        this.errorCode = errorCode;
+        this.throwData = throwData;
     }
 }

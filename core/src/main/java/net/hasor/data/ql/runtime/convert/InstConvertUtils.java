@@ -13,31 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.dsl;
-import net.hasor.data.ql.dsl.domain.ValueType;
+package net.hasor.data.ql.runtime.convert;
+import net.hasor.data.ql.dsl.domain.BlockSet;
+import net.hasor.data.ql.dsl.domain.Inst;
+import net.hasor.data.ql.runtime.domain.QueryInst;
+
+import java.util.List;
 /**
- * 值，作为参数
+ * 解析查询模型，将其转换成为执行任务树
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-class ValueParam implements DataParam {
-    private String    name;
-    private Object    value;
-    private ValueType valueType;
+public class InstConvertUtils {
     //
-    public ValueParam(String name, Object value, ValueType valueType) {
-        this.name = name;
-        this.value = value;
-        this.valueType = valueType;
-    }
-    @Override
-    public String getName() {
-        return this.name;
-    }
-    public Object getValue() {
-        return value;
-    }
-    public ValueType getValueType() {
-        return this.valueType;
+    /** 解析查询模型，将其转换成为执行任务树 */
+    public QueryInst doParser(BlockSet blockSet) {
+        QueryInst queryInst = new QueryInst();
+        //
+        List<Inst> instList = blockSet.getInstList();
+        //
+        //
+        return queryInst;
     }
 }

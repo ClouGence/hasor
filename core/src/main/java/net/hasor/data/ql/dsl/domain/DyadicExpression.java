@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.dsl;
-import net.hasor.data.ql.dsl.domain.EqType;
+package net.hasor.data.ql.dsl.domain;
 /**
- * UDF调用，用于协助构造 DataQL 查询模型。
+ * 二元运算表达式
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface UDFBindingBuilder extends BindingBuilder {
-    /** 添加 UDF 参数 */
-    public UDFBindingBuilder addParam(DataParam dataParam);
-
-    /** 添加 UDF 参数 */
-    public UDFBindingBuilder addParam(DataParam dataParam, EqType eqType);
+public class DyadicExpression extends Expression {
+    private Expression fstExpression;   //第一个表达式
+    private String     dyadicSymbol;    //运算符
+    private Expression secExpression;   //第二个表达式
+    public DyadicExpression(Expression fstExpression, String dyadicSymbol, Expression secExpression) {
+        super();
+        this.fstExpression = fstExpression;
+        this.dyadicSymbol = dyadicSymbol;
+        this.secExpression = secExpression;
+    }
 }

@@ -1,408 +1,579 @@
 options {
-    STATIC=false;
+    STATIC              = false;
+    JAVA_UNICODE_ESCAPE = true; // 支持中文必须
+    UNICODE_INPUT       = true; // 支持中文必须
+//    LOOKAHEAD = 2;
 //    FORCE_LA_CHECK=true;
 }
 
 // ------------------------------------------------------------------------------------------------
+
 PARSER_BEGIN(DataQLParser)
-/*
- * Copyright 2008-2009 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package net.hasor.data.ql.dsl.parser;
 import net.hasor.data.ql.dsl.*;
-import net.hasor.data.ql.dsl.domain.EqType;
+import net.hasor.data.ql.dsl.domain.*;
+import net.hasor.data.ql.dsl.domain.PrimitiveExpression.*;
 import java.util.*;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
-/**
- * DataQL DSL Parser
- * @author zyc@hasor.net
- * @version : 2017-03-28
- */
+
 public class DataQLParser {
-    private Map<String,QueryModel> queryMap = new HashMap<String, QueryModel>();
     private DataQLParser (){}
     //
-    public static QueryModel parserQL(String queryString) throws ParseException {
+    public static BlockSet parserDataQL(String queryString) throws ParseException {
         DataQLParser parser = new DataQLParser(new ByteArrayInputStream(queryString.getBytes()));
-        return parser.dataQL();
+        return parser.rootBlock();
     }
-    public static QueryModel parserQL(InputStream inputStream,String encoding) throws ParseException {
+    public static BlockSet parserDataQL(InputStream inputStream,String encoding) throws ParseException {
         DataQLParser parser = new DataQLParser(inputStream,encoding);
-        return parser.dataQL();
-    }
-    //
-    private Object buildValueToNull(Object builder,Object oriValue, DataQLToType toType) throws ParseException {
-        if (builder instanceof FieldBindingBuilder){
-            return ((FieldBindingBuilder)builder).withNull();
-        }
-        if (builder instanceof ParamBindingBuilder){
-            return ((ParamBindingBuilder)builder).withNull();
-        }
-        throw new ParseException("missing return statement in function");
-    }
-    private Object buildValueToBoolean(Object builder,Object oriValue, DataQLToType toType) throws ParseException {
-        if (builder instanceof FieldBindingBuilder){
-            return ((FieldBindingBuilder)builder).withBoolean((Boolean)oriValue);
-        }
-        if (builder instanceof ParamBindingBuilder){
-            return ((ParamBindingBuilder)builder).withBoolean((Boolean)oriValue);
-        }
-        throw new ParseException("missing return statement in function");
-    }
-    private Object buildValueToNumber(Object builder,Object oriValue, DataQLToType toType) throws ParseException {
-        if (builder instanceof FieldBindingBuilder){
-            return ((FieldBindingBuilder)builder).withNumber((Number)oriValue);
-        }
-        if (builder instanceof ParamBindingBuilder){
-            return ((ParamBindingBuilder)builder).withNumber((Number)oriValue);
-        }
-        throw new ParseException("missing return statement in function");
-    }
-    private Object buildValueToStrig(Object builder,Object oriValue, DataQLToType toType) throws ParseException {
-        if (builder instanceof FieldBindingBuilder){
-            return ((FieldBindingBuilder)builder).withString((String)oriValue);
-        }
-        if (builder instanceof ParamBindingBuilder){
-            return ((ParamBindingBuilder)builder).withString((String)oriValue);
-        }
-        throw new ParseException("missing return statement in function");
-    }
-    private Object buildValueToMapping(Object builder,Object oriValue, DataQLToType toType) throws ParseException {
-        if (builder instanceof FieldBindingBuilder){
-            return ((FieldBindingBuilder)builder).withMapping((String)oriValue);
-        }
-        if (builder instanceof ParamBindingBuilder){
-            return ((ParamBindingBuilder)builder).withParam((String)oriValue);
-        }
-        throw new ParseException("missing return statement in function");
-    }
-    private Object buildValueToQuery(Object builder,Object oriValue, DataQLToType toType) throws ParseException {
-        if (builder instanceof FieldBindingBuilder){
-            return ((FieldBindingBuilder)builder).withFragment((QueryModel)oriValue);
-        }
-        if (builder instanceof ParamBindingBuilder) {
-            return ((ParamBindingBuilder) builder).withFragment((QueryModel) oriValue);
-        }
-        throw new ParseException("missing return statement in function");
+        return parser.rootBlock();
     }
 }
 PARSER_END(DataQLParser)
 
 // ------------------------------------------------------------------------------------------------
-
-// Ignore comments
-SKIP: {
-    <C_SINGLE_COMMENT: "//" (~["\n","\r","\f"])* <EOL>> |
+/* Ignore Comments */
+SKIP : {
+      " "   // 空格
+    | "\t"  // 水平制表符  (垂直制表符 \v)
+    | "\n"  // 换行
+    | "\r"  // 回车
+    | "\f"  // 换页
+}
+SPECIAL_TOKEN: {
+    <C_SINGLE_COMMENT   : "//" (~["\n","\r","\f"])* <EOL>> |
     <C_MULTILINE_COMMENT: "/*" (~[])* "*/"> |
-    <SH_SINGLE_COMMENT: "#" (~["\n","\r","\f"])* <EOL>> |
-    <WHITESPACE: " " | "\t"> |
-    <EOL: "\n" | "\r" | "\f">
+    <EOL                : "\n" | "\r" | "\f">
 }
+
+/* Number */
+TOKEN:{
+	  <#ZERO       :  "0" >
+	| <#SYMBOL     : ["+","-"] >
+    | <#DIGIT      : ["0"-"9"] >
+	| <INTEGER_NUM : (<SYMBOL>)?                     (<DIGIT>)+ >                   // 十进制数：-0000234 or 123
+    | <HEX_NUM     :             (<ZERO> ["x","X"]) (["0"-"9","a"-"f","A"-"F"])+ >  // 十六进制：0x12345
+    | <OCTAL_NUM   :             (<ZERO> ["o","O"]) (["0"-"7"])+ >                  // 八 进 制：0o1234567
+    | <BINARY_NUM  :             (<ZERO> ["b","B"]) (["0"-"7"])+ >                  // 二 进 制：0b01010101100
+	| <DECIMAL_NUM : (<SYMBOL>)? (<DIGIT>)+ "." (<DIGIT>)*
+	                             (["e","E"] (<SYMBOL>)? (<DIGIT>)+ )? >             // 浮点数，包含科学计数法
+}
+
+/* key words */
+TOKEN: {
+      < IF                  : "if" >
+    | < ELSEIF              : "elseif" >
+    | < ELSE                : "else" >
+    | < END                 : "end" >
+    | < RETURN              : "return" >
+    | < THROW               : "throw" >
+    | < VAR                 : "var" >
+    | < LAMBDA              : "lambda" >
+    | < TRUE                : "true" >
+    | < FALSE               : "false" >
+    | < NULL                : "null" >
+    | < OPTION              : "option" >
+}
+
+/* OPERATORS */
+TOKEN: {
+      < COMMA               : "," >
+    | < COLON               : ":" >
+    | < QUEM                : "?" >
+    | < SEMI                : ";" >
+    | < ASS                 : "=">
+    | < QUOTE_SINGLE        : "'" >
+    | < QUOTE_DOUBLE        : "\"" >
+
+    | < OPAR                : "(" >
+    | < CPAR                : ")" >
+    | < OBRA                : "[" >
+    | < CBRA                : "]" >
+
+    | < OCBRR               : "%{" >
+    | < OCBR                : "{" >
+    | < CCBR                : "}" >
+
+    | < BANG                : "!" >
+    | < INCR                : "++" >
+    | < DECR                : "--" >
+
+    | < PLUS                : "+" >
+    | < MINUS               : "-" >
+    | < STAR                : "*" >
+    | < SLASH               : "/" >
+    | < REM                 : "%" >
+    | < ALI                 : "\\" >
+
+    | < GT                  : ">" >
+    | < GE                  : ">=" >
+    | < LT                  : "<" >
+    | < LE                  : "<=" >
+    | < EQ                  : "==" >
+    | < NE                  : "!=" >
+
+    | < BIT_AND             : "&" >
+    | < BIT_OR              : "|" >
+    | < XOR                 : "^" >
+
+    | < LSHIFT              : "<<" >
+    | < RSIGNEDSHIFT        : ">>" >
+    | < RUNSIGNEDSHIFT      : ">>>" >
+
+    | < SC_OR               : "||" >
+    | < SC_AND              : "&&" >
+}
+
 /* IDENTIFIERS */
-TOKEN: {
-      < COMMA                   : "," >
-    | < OPAR                    : "(" >
-    | < CPAR                    : ")" >
-    | < OBRA                    : "[" >
-    | < CBRA                    : "]" >
-    | < OCBR                    : "{" >
-    | < CCBR                    : "}" >
-    | < COLON                   : ":" >
-    | < EQ                      : "=" | "!=" | ">" | ">=" | "<" | "<=" | "like" >
-    | < ELLIPSIS                : "..." >
-    | < QUOTE_SINGLE            : "'" >
-    | < QUOTE_DOUBLE            : "\"" >
-}
-
-TOKEN: {
-      < FRAGMENT                : "fragment" >
-    | < ON                      : "on" >
-    | < TRUE                    : "true" >
-    | < FALSE                   : "false" >
-    | < NULL                    : "null" >
-}
-// Number token
 TOKEN:{
-	<#ZERO: "0"> |
-	<#DIGIT_NONZERO: ["1"-"9"]> |
-	<#DIGIT: (<DIGIT_NONZERO> | <ZERO>) > |
-	<NUMBER_INTEGER:
-		("-")?
-		( (<ZERO>)+ | ( <DIGIT_NONZERO> (<DIGIT>)* ) )
-	> |
-	<NUMBER_DECIMAL:
-		("-")?
-		( (<ZERO>)+ | ( <DIGIT_NONZERO> (<DIGIT>)* ) )
-		("."
-			(<DIGIT>)+
-			(
-				["e","E"]
-				("+" | "-")?
-				(<DIGIT>)+
-			)?
-		)
-	>
+    <#LETTER: [               //Unicode "LETTER" characters - as of Javase 6, Unicode 4 is supported
+                              //http://www.unicode.org/Public/4.1.0/ucd/NamesList.txt
+                              //more inclusive than Character.isLetter
+           "$",               //DOLLAR SIGN: milreis, escudo
+           "#",               //DOLLAR SIGN: milreis, escudo
+           "A"-"Z",           //LATIN CAPITAL LETTER A - LATIN CAPITAL LETTER Z
+           "_",               //LOW LINE: spacing underscore
+           "a"-"z",           //LATIN SMALL LETTER A - LATIN SMALL LETTER Z
+           "\u00aa"-"\u00ad", //  00AA FEMININE ORDINAL INDICATOR: spanish
+                              //  00AB LEFT-POINTING DOUBLE ANGLE QUOTATION MARK: left guillemet
+                              //  00AC NOT SIGN: angled dash
+                              //  00AD SOFT HYPHEN: discretionary hyphen
+           "\u00b5"-"\u00b6", //  00B5 MICRO SIGN: greek small letter mu
+                              //  00B6 PILCROW SIGN: paragraph sign
+           "\u00ba"-"\u00bb", //  00BA MASCULINE ORDINAL INDICATOR: spanish
+                              //  00BB RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK : right guillemet
+           "\u00c0"-"\u00d6", //LATIN CAPITAL LETTER A WITH GRAVE - LATIN CAPITAL LETTER O WITH DIAERESIS
+           "\u00d8"-"\u00f6", //LATIN CAPITAL LETTER O WITH STROKE - LATIN SMALL LETTER O WITH DIAERESIS
+           "\u00f8"-"\u00ff", //LATIN SMALL LETTER O WITH STROKE - LATIN SMALL LETTER Y WITH DIAERESIS
+           "\u0100"-"\u1fff", //LATIN CAPITAL LETTER A WITH MACRON - GREEK DASIA:reversed comma
+           "\u3040"-"\u318f", //Hiragana - Hangul
+           "\u3300"-"\u337f", //Squared Katakana
+           "\u3400"-"\u3d2d", //CJK Unified Ideographs Extension A
+           "\u4e00"-"\u9fff", //CJK Unified Ideographs
+           "\uf900"-"\ufaff", //CJK Compatibility Ideographs
+           "\ufb00"-"\ufb06", //LATIN SMALL LIGATURE FF -LATIN SMALL LIGATURE ST
+           "\ufb13"-"\ufb17", //ARMENIAN SMALL LIGATURE MEN NOW - ARMENIAN SMALL LIGATURE MEN XEH
+           "\ufb1f"-"\ufb28", //HEBREW LIGATURE YIDDISH YOD YOD PATAH -HEBREW LETTER WIDE TAV
+           "\ufb2a"-"\ufb36", //HEBREW LETTER SHIN WITH SHIN DOT - HEBREW LETTER ZAYIN WITH DAGESH
+           "\ufb38"-"\ufb3e", //HEBREW LETTER TET WITH DAGESH - HEBREW LETTER MEM WITH DAGESH
+           "\ufb40"-"\ufb41", //HEBREW LETTER NUN WITH DAGESH - HEBREW LETTER SAMEKH WITH DAGESH
+           "\ufb43"-"\ufb44", //HEBREW LETTER FINAL PE WITH DAGESH - HEBREW LETTER PE WITH DAGESH
+           "\ufb46"-"\ufb4f", //HEBREW LETTER TSADI WITH DAGESH - HEBREW LIGATURE ALEF LAMED
+           "\ufb50"-"\ufdd7", //Arabic Presentation Forms(A) - ARABIC LIGATURE BISMILLAH AR-RAHMAN AR-RAHEEM
+           "\ufdf0"-"\ufdfd", //ARABIC LIGATURE SALLA USED AS KORANIC STOP SIGN ISOLATED FORM -ARABIC LIGATURE BISMILLAH AR-RAHMAN AR-RAHEEM
+           "\ufe70"-"\ufefc", //Arabic Presentation Forms(B) - ARABIC LIGATURE LAM WITH ALEF FINAL FORM
+           "\uff1f"-"\uff3a", //FULLWIDTH QUESTION MARK - FULLWIDTH LATIN CAPITAL LETTER Z
+           "\uff3f"-"\uff5e", //FULLWIDTH LOW LINE - FULLWIDTH TILDE
+           "\uff61"-"\uffbe", //Halfwidth CJK punctuation:HALFWIDTH IDEOGRAPHIC FULL STOP - HALFWIDTH HANGUL LETTER HIEUH
+           "\uffc2"-"\uffc7", //HALFWIDTH HANGUL LETTER A - HALFWIDTH HANGUL LETTER E
+           "\uffca"-"\uffcf", //HALFWIDTH HANGUL LETTER YEO - HALFWIDTH HANGUL LETTER OE
+           "\uffd2"-"\uffd7", //HALFWIDTH HANGUL LETTER YO - HALFWIDTH HANGUL LETTER YU
+           "\uffda"-"\uffdc"  //HALFWIDTH HANGUL LETTER EU - HALFWIDTH HANGUL LETTER I
+    ] >                                                                             // 各类字符集
+    | <#STR_UNICODE     :   "\\u" (["0"-"9","a"-"f","A"-"F"]){4}>                   // Unicode字符表示法
+    | <#STR_DOUBLE_BODY : ( ~["\"","\\","\r","\n","\f","\t"]) |
+                          ( "\\"["r","n","f","t","\\","b","\"","'"]) >              // 双引号字符串（body部分）
+    | <STR_DOUBLE_QUOTED:   <QUOTE_DOUBLE> (<STR_DOUBLE_BODY>)* <QUOTE_DOUBLE>>     // 双引号的字符串（整体）
+    | <#STR_SINGLE_BODY : ( ~["'","\\","\r","\n","\f","\t"]) |
+                          ( "\\"["r","n","f","t","\\","b","\"","'"]) >              // 单引号字符串（body部分）
+    | <STR_SINGLE_QUOTED:   <QUOTE_SINGLE> (<STR_SINGLE_BODY>)* <QUOTE_SINGLE> >    // 单引号的字符串（整体）
+    | <STR_EMPTY        : ( "\"\"" | "''")>                                         // 空字符串
+    | <#IDENTIFIER_S    : ( <LETTER> ) ( ["0"-"9"] | <LETTER> )* >                  // 标识符
+    | <#IDENTIFIER_A    : ( "[" ( ["0"-"9"] )+ "]")+ >                              // 表示数组
+    | <IDENTIFIER       : <IDENTIFIER_S> ( ("." <IDENTIFIER_S>) | <IDENTIFIER_A> )* >// 组合的标识符，例： abc.aa[2][2]
 }
-TOKEN:{
-      <STRING_SINGLE_EMPTY: "''">
-    | <STRING_DOUBLE_EMPTY: "\"\"">
-    | <#STRING_SINGLE_BODY: (
-            (~["'","\\","\r","\n","\f","\t"]) |
-            ( "\\" ( "r" | "n" | "f" | "\\" | "/" | "'" | "b" | "t" ) )
-        )+>
-    | <#STRING_DOUBLE_BODY: (
-            (~["\"","\\","\r","\n","\f","\t"]) |
-            ( "\\" ( "r" | "n" | "f" | "\\" | "/" | "\"" | "b" | "t" ) )
-        )+>
-    | <STRING_SINGLE_NONEMPTY: <QUOTE_SINGLE> <STRING_SINGLE_BODY> <QUOTE_SINGLE>>
-    | <STRING_DOUBLE_NONEMPTY: <QUOTE_DOUBLE> <STRING_DOUBLE_BODY> <QUOTE_DOUBLE>>
-    | <NAME_LITERAL          :   ("$" | "~" | "_" | ["A"-"Z"] | ["a"-"z"] ) ( "." | "-" | "_" | ["0"-"9"] | ["A"-"Z"] | ["a"-"z"] )* >
-}
 
+//-----------------------------------------------------------------------------
 
-
-// dataQL
-QueryModel dataQL() :{
-                                                                  String         tempName  = null;
-                                                                  BindingBuilder tempQuery = null;
-                                                                  BindingBuilder rootQuery = null;
+// .标识符
+String identifier() : {                              Token dataToken = null;
 }{
     (
-        <FRAGMENT> tempName = name() <ON>
-        tempQuery = grapthQuery(tempName)                       { queryMap.put(tempName,tempQuery.buildQuery()); }
-    )*
-    rootQuery = grapthQuery(null)
-    <EOF>
-                                                                { return rootQuery.buildQuery();}
-}
-
-BindingBuilder grapthQuery(String queryName) :{
-                                                                  BindingBuilder builder = DslUtils.createQuery(queryName);
-}{
-    (
-        udf(builder)
-    )?
-    queryBody(builder)
-                                                                { return builder; }
-}
-
-UDFBindingBuilder udf(Object builder) :{
-                                                                  String            udfName    = null;
-                                                                  UDFBindingBuilder udfBuilder = null;
-                                                                  ParamData         udfParam   = null;
-}{
-    udfName = name()                                            {
-                                                                  if (builder instanceof BindingBuilder)
-                                                                      { udfBuilder = ((BindingBuilder)builder).byUDF(udfName); }
-                                                                  if (builder instanceof FieldBindingBuilder)
-                                                                      { udfBuilder = ((FieldBindingBuilder)builder).withUDF(udfName); }
-                                                                  if (builder instanceof ParamBindingBuilder)
-                                                                      { udfBuilder = ((ParamBindingBuilder)builder).withUDF(udfName); }
-                                                                }
-    <OPAR>
-    (
-        udfParam = queryParam()                                 { udfBuilder.addParam(udfParam.getDataParam(),udfParam.getEqType()); }
-        (
-            <COMMA>
-            udfParam = queryParam()                             { udfBuilder.addParam(udfParam.getDataParam(),udfParam.getEqType()); }
-        )*
-    )?
-    <CPAR>                                                      {
-                                                                  udfBuilder.asOriginal();
-                                                                  return udfBuilder;
-                                                                }
-}
-
-ParamData queryParam() :{
-                                                                  String              paramName    = null;
-                                                                  Token               paramEqToken = null;
-                                                                  ParamBindingBuilder paramBuilder = null;
-                                                                  Object              dataParam   = null;
-}{
-    paramName = stringValue() paramEqToken = <EQ>               { paramBuilder = DslUtils.createParam(paramName); }
-    (
-          LOOKAHEAD(2) dataParam = udf(paramBuilder)            { dataParam = ((UDFBindingBuilder)dataParam).asParam(); }
-        | dataParam = dValue(paramName,paramBuilder,DataQLToType.ToParam)
-    )?
-                                                                {
-                                                                  if (dataParam == null && queryMap.containsKey(paramName) )
-                                                                      { dataParam = null;/*paramBuilder.withParam(paramName);*/ }
-                                                                  if (dataParam == null && !queryMap.containsKey(paramName))
-                                                                      { dataParam = paramBuilder.withParam(paramName); }
-                                                                  EqType eqType = EqType.paserType(paramEqToken.image);
-                                                                  return new ParamData((DataParam)dataParam,eqType);
-                                                                }
-}
-
-Object dValue(String pName,Object builder,DataQLToType toType) : {
-                                                                  Object result = null;
-}{
-    LOOKAHEAD(2)
-    (
-        result = valueForBase(pName,builder,toType)             { return result; }
+        dataToken = <IDENTIFIER>                    {return dataToken.image;}
     ) | (
-        LOOKAHEAD(grapthQuery()) result = grapthQuery(pName)    {
-                                                                  if (builder instanceof FieldBindingBuilder)
-                                                                      { result = ((BindingBuilder)result).asField(); }
-                                                                  if (builder instanceof ParamBindingBuilder)
-                                                                      { result = ((BindingBuilder)result).asParam(); }
-                                                                }
-        | result = keyString()                                  {
-                                                                  if (queryMap.containsKey(result))
-                                                                      { result = buildValueToQuery(builder,queryMap.get(result),toType); }
-                                                                  else
-                                                                      { result = buildValueToMapping(builder,result,toType); }
-                                                                }
-    )
-                                                                { return result; }
-}
-
-Object valueForBase(String pName, Object builder, DataQLToType toType) : {
-                                                                  Object oriValue = null;
-}{
-      oriValue = nullValue()                                    { return buildValueToNull(builder,oriValue,toType); }
-    | oriValue = booleanValue()                                 { return buildValueToBoolean(builder,oriValue,toType); }
-    | oriValue = numberValue()                                  { return buildValueToNumber(builder,oriValue,toType); }
-    | oriValue = stringValue()                                  { return buildValueToStrig(builder,oriValue,toType); }
-}
-
-void queryBody(BindingBuilder builder) : {}{
-    (
-          LOOKAHEAD(2) queryArrayListBody(builder)
-        | LOOKAHEAD(1) queryArrayValueBody(builder)
-        | LOOKAHEAD(1) queryObjectBody(builder)
+        <OCBRR> dataToken = <IDENTIFIER> <CCBR>     {return "%{" + dataToken.image + "}";}
     )
 }
 
-void queryArrayListBody(BindingBuilder builder) : {
-                                                                  builder = builder.asListObject();
-}{
-    <OBRA>
-        <OCBR> (queryFields(builder))? <CCBR>
-    <CBRA>
-}
-
-void queryArrayValueBody(BindingBuilder builder) : {
-                                                                  builder = builder.asListValue();
-                                                                  Object oriValue = null;
-}{
-    <OBRA> [
-         LOOKAHEAD(2)
-         (
-             oriValue = valueForBase(null,builder,DataQLToType.ToField)
-                                                                { builder.addField((DataField)oriValue); }
-         ) | (
-             oriValue = keyString()                             {
-                                                                  DataField field = DslUtils.createField((String)oriValue)
-                                                                                            .withMapping((String)oriValue);
-                                                                  builder.addField(field);
-                                                                }
-         )
-    ] <CBRA>
-}
-
-void queryObjectBody(BindingBuilder builder) : {
-                                                                  builder = builder.asObject();
-}{
-    <OCBR> (queryFields(builder))? <CCBR>
-}
-
-void queryFields(BindingBuilder builder) : {
-                                                                  DataField dataField = null;
-}{
-    dataField = queryField()                                    { builder.addField(dataField); }
-    (
-        <COMMA>
-        dataField = queryField()                                { builder.addField(dataField); }
-    )*
-}
-
-DataField queryField() : {
-                                                                  Object              dataField = null;
-                                                                  String              fieldName  = null;
-                                                                  FieldBindingBuilder builder    = null;
-}{
-    fieldName = stringValue()                                   { builder = DslUtils.createField(fieldName); }
-    (
-        <COLON> dataField = dValue(fieldName,builder,DataQLToType.ToField)
-    )?
-                                                                {
-                                                                  if (dataField == null)
-                                                                      { dataField = builder.withMapping(fieldName); }
-                                                                  return (DataField)dataField;
-                                                                }
-}
-
-String name() : {
-                                                                  String stringObj;
-}{
-    (
-         <NAME_LITERAL>                                         { return token.image; }
-    ) | (
-         stringObj = stringValue()                              { return stringObj; }
-    )
-}
-
-String keyString() : {
-                                                                  Token t = null;
- }{
-    (
-        "%{" t = <NAME_LITERAL> "}"                                 { return "%{" + t.image + "}"; }
-    ) | (
-        t = <NAME_LITERAL>                                          { return t.image; }
-    )
-}
-
-String stringValue() : {
-                                                                  Token t = null;
+// .带引号的字符串
+String stringValue() : {                             Token dataToken = null;
 }{
     (
         (
-            t = <STRING_DOUBLE_EMPTY>
+            dataToken = <STR_DOUBLE_QUOTED>
         ) | (
-            t = <STRING_DOUBLE_NONEMPTY>
+            dataToken = <STR_SINGLE_QUOTED>
         ) | (
-            t = <STRING_SINGLE_EMPTY>
-        ) | (
-            t = <STRING_SINGLE_NONEMPTY>
+            dataToken = <STR_EMPTY>
         )
     )
-                                                                {
-                                                                  String image = t.image;
-                                                                  return image.substring(1, image.length()-1);
-                                                                }
+                                                    {String image = dataToken.image;}
+                                                    {return image.substring(1, image.length()-1);}
 }
 
+// .空值
 Object nullValue() : {}{
-	<NULL>                                                      { return null; }
+	<NULL>                                          {return null;}
 }
 
+// .布尔
 Boolean booleanValue() : {}{
     (
-        <TRUE>                                                  { return Boolean.TRUE; }
+        <TRUE>                                      {return Boolean.TRUE;}
     ) | (
-        <FALSE>                                                 { return Boolean.FALSE; }
+        <FALSE>                                     {return Boolean.FALSE;}
     )
-
 }
 
+// .数字
 Number numberValue() : {}{
-	(
-		<NUMBER_DECIMAL>                                        { return new Double(token.image); }
-	) | (
-		<NUMBER_INTEGER>                                        { return new Long(token.image); }
-	)
+    <DECIMAL_NUM> |
+    <INTEGER_NUM> |
+    <HEX_NUM>     |
+    <OCTAL_NUM>   |
+    <BINARY_NUM>
+                                                    {return 0;}
+}
+
+// .列表：[ ... ]
+ListExpression list() : {                            ListExpression listExp  = new ListExpression();
+                                                     Expression     valueExp = null;
+}{
+    (
+        LOOKAHEAD(2)
+        (
+            <OBRA> <CBRA>
+        ) | (
+            <OBRA>
+                valueExp = expression()             {listExp.addItem(valueExp);}
+                                                    {valueExp = null;}
+                (
+                    <COMMA> valueExp = expression() {listExp.addItem(valueExp);}
+                                                    {valueExp = null;}
+                )*
+            <CBRA>
+        )
+    )                                               {return listExp;}
+}
+
+// .对象：
+ObjectExpression object() : {                        ObjectExpression objExp    = new ObjectExpression();
+                                                     String           fieldName = null;
+                                                     Expression       valueExp  = null;
+} {
+    (
+        LOOKAHEAD(2)
+        (
+            <OCBR> <CCBR>
+        ) | (
+            <OCBR>
+                fieldName = stringValue()           {valueExp = new RouteExpression(fieldName);}
+                (<COLON> valueExp = expression())?  {objExp.addField(fieldName,valueExp);}
+                                                    {fieldName = null;valueExp=null;}
+                (
+                    <COMMA> fieldName = stringValue()
+                                                    {valueExp = new RouteExpression(fieldName);}
+                    ( <COLON> valueExp = expression())?
+                                                    {objExp.addField(fieldName,valueExp);}
+                                                    {fieldName = null;valueExp=null;}
+                )*
+            <CCBR>
+        )
+    )                                               {return objExp;}
+}
+
+//-----------------------------------------------------------------------------
+
+// .表达式 =   表达式 or 表达式 + 运算符
+Expression expression() : {                          Expression exp;
+} {
+    (
+        // 优先级
+        <OPAR> exp = expression() <CPAR>
+        (
+            exp = extExpression(exp)
+        )?                                          {return exp;}
+    ) | LOOKAHEAD(unaryExpression())(
+        exp = unaryExpression()                     {return exp;}
+    ) | (
+        exp = basicValue()
+        (
+            exp = extExpression(exp)
+        )?                                          {return exp;}
+    )
+}
+Expression unaryExpression() : {                     Token      symbol = null;
+                                                     Expression target = null;
+} {
+    (
+        ( symbol = <BANG> | symbol = <INCR> | symbol = <DECR> )
+        target = basicValue()                       {return new UnaryExpression(target,symbol.image,UnaryLocation.Before);}
+    ) | (
+        target = basicValue()
+        ( symbol = <INCR> | symbol = <DECR> )       {return new UnaryExpression(target,symbol.image,UnaryLocation.After);}
+    )
+}
+Expression extExpression(Expression fstExp) : {      Expression resultExp = null;
+} {
+    (
+        (
+            resultExp = dyadicExpression(fstExp)
+        ) | (
+            resultExp = ternaryExpression(fstExp)
+        )
+    )                                               {return resultExp;}
+}
+DyadicExpression dyadicExpression(Expression fstExp) : {
+                                                     Token      symbol = null;
+                                                     Expression secExp = null;
+} {
+    (
+          symbol = <PLUS>
+        | symbol = <MINUS>
+        | symbol = <STAR>
+        | symbol = <SLASH>
+        | symbol = <REM>
+        | symbol = <ALI>
+        | symbol = <GT>
+        | symbol = <GE>
+        | symbol = <LT>
+        | symbol = <LE>
+        | symbol = <EQ>
+        | symbol = <NE>
+        | symbol = <BIT_AND>
+        | symbol = <BIT_OR>
+        | symbol = <XOR>
+        | symbol = <LSHIFT>
+        | symbol = <RSIGNEDSHIFT>
+        | symbol = <RUNSIGNEDSHIFT>
+        | symbol = <SC_OR>
+        | symbol = <SC_AND>
+    )
+    secExp = expression()                           {return new DyadicExpression(fstExp,symbol.image,secExp);}
+}
+Expression ternaryExpression(Expression testExp) :{  Expression thenExp = null;
+                                                     Expression elseExp = null;
+} {
+    <QUEM> thenExp = expression() <COLON> elseExp = expression()
+                                                    {return new TernaryExpression(testExp,thenExp,elseExp);}
+}
+
+// .值
+Expression basicValue() : {                          Expression finalExp = null;
+} {
+    (
+        (
+            finalExp = primitiveValue()
+        ) | (
+            (
+                                                    {String mabeCallerName = null;}
+                mabeCallerName = identifier()       {finalExp = new RouteExpression(mabeCallerName);}
+                (
+                    finalExp = funCall(mabeCallerName)
+                )?
+            )
+        ) | (
+            finalExp =list()
+        ) | (
+            finalExp = object()
+        )
+    )                                               {return finalExp;}
+}
+
+PrimitiveExpression primitiveValue() : {            Object    value     = null;
+} {
+
+    (
+        value = stringValue()                       {return new PrimitiveExpression(value,ValueType.String);}
+    ) | (
+        value = nullValue()                         {return new PrimitiveExpression(value,ValueType.Null);}
+    ) | (
+        value = booleanValue()                      {return new PrimitiveExpression(value,ValueType.Boolean);}
+    ) | (
+        value = numberValue()                       {return new PrimitiveExpression(value,ValueType.Number);}
+    )
+}
+
+//-----------------------------------------------------------------------------
+// .函数参数
+Variable callerParamItem() : {                       Variable value = null;
+} {
+    (
+        (
+            value = lambdaDef()
+        ) | (
+            value = expression()
+        )
+    )                                               {return value;}
+}
+
+// .参数集：(xx , xx , xx)
+void callerParamSet(CallerExpression callerExp) : {  Variable atParam = null;
+} {
+    LOOKAHEAD(2)
+    (
+        <OPAR> <CPAR>
+    ) | (
+        <OPAR>
+            atParam = callerParamItem()             {callerExp.addParam(atParam);atParam = null;}
+            (
+                <COMMA> atParam = callerParamItem() {callerExp.addParam(atParam);atParam = null;}
+            )*
+        <CPAR>
+    )
+}
+
+// .函数调用
+CallerExpression funCall(String callName) : {        CallerExpression callerExp   = new CallerExpression(callName);
+                                                     Format           finalFormat = null;
+} {
+    callerParamSet(callerExp)
+    (
+        (
+                                                    {ListExpression listExp = null;}
+            listExp = list()                        {finalFormat = new ListFormat(listExp);}
+        ) | (
+                                                    {ObjectExpression objectExp = null;}
+            objectExp = object()                    {finalFormat = new ObjectFormat(objectExp);}
+        ) | (
+            "~"                                     {finalFormat = new RawFormat();}
+        )
+    )                                               {callerExp.setResultFormat(finalFormat);}
+                                                    {return callerExp;}
+}
+
+// .Lambda函数： lambda : (obj,obj2) -> {}
+LambdaBlockSet lambdaDef() : {                       LambdaBlockSet lambdaBlockSet = new LambdaBlockSet();
+                                                     Token          paramName      = null;
+                                                     BlockSet       scriptBodys    = null;
+} {
+    <LAMBDA> ":"
+    (
+        LOOKAHEAD(2)
+        (
+            <OPAR><CPAR>
+        ) | (
+            <OPAR>
+                paramName = <IDENTIFIER>            {lambdaBlockSet.addParam(paramName.image);}
+                (
+                    <COMMA> paramName = <IDENTIFIER>{lambdaBlockSet.addParam(paramName.image);}
+                )*
+            <CPAR>
+        )
+    )
+    "->"
+    (
+        (
+            <OCBR> scriptBodys = blockSet() <CCBR>
+        ) | LOOKAHEAD(block()) (
+                                                    {Inst inst = null;}
+            inst = block()                          {scriptBodys = new BlockSet(Arrays.asList(inst));}
+        )
+    )                                               {lambdaBlockSet.addToBody(scriptBodys);}
+                                                    {return lambdaBlockSet;}
+}
+
+//-----------------------------------------------------------------------------
+// .函数
+VariableInst varBlock() : {                          String varName = null;
+                                                     Variable value = null;
+} {
+    <VAR> varName = identifier() <ASS>
+    (
+        (
+            value = lambdaDef()
+        ) | (
+            value = expression()
+        )
+    )                                               {return new VariableInst(varName,value);}
+}
+
+// .反回
+ReturnInst returnBlock() : {                         Expression result = null;
+} {
+    <RETURN> result = expression()                  {return new ReturnInst(result);}
+}
+
+// .判断
+SwitchInst ifBlock() : {                             SwitchInst switchInst = new SwitchInst();
+                                                     Expression testExp;
+                                                     BlockSet   instBlockSet;
+} {
+        <IF> <OPAR> testExp = expression() <CPAR>
+            instBlockSet = blockSet()               {switchInst.addBlockSet(testExp,instBlockSet);}
+                                                    {testExp = null; instBlockSet = null;}
+    (
+        <ELSEIF> <OPAR> testExp = expression() <CPAR>
+            instBlockSet = blockSet()               {switchInst.addBlockSet(testExp,instBlockSet);}
+                                                    {testExp = null; instBlockSet = null;}
+    )*
+    (
+        <ELSE>
+            instBlockSet = blockSet()               {switchInst.setElseBlockSet(instBlockSet);}
+    )?
+        <END>
+                                                    {return switchInst;}
+}
+
+// .异常
+ThrowInst throwBlock() : {                           Number     throwStatus = null;
+                                                     Expression throwData   = null;
+} {
+    <THROW>
+    (
+        LOOKAHEAD(throwBlockStatus())
+        (
+            throwStatus = throwBlockStatus()
+            throwData = expression()
+        ) | (
+            throwData = expression()
+        )
+    )                                               {return new ThrowInst(throwStatus,throwData);}
+}
+Number throwBlockStatus() : {                        Number errorCode = null;
+} {
+    errorCode = numberValue() <COMMA>               {return errorCode;}
+}
+
+// .选项指令
+Inst optionBlock() : {                               String              optKey     = null;
+                                                     PrimitiveExpression optValue   = null;
+} {
+    <OPTION> optKey = identifier() <ASS> optValue = primitiveValue()
+                                                    {return new OptionInst(optKey,optValue);}
+}
+
+// .块
+Inst block() : {                                     Inst inst = null;
+} {
+    (
+        inst = varBlock()
+    ) | (
+        inst = ifBlock()
+    ) | (
+        inst = returnBlock()
+    ) | (
+        inst = throwBlock()
+    )                                               {return inst;}
+}
+
+// .块
+BlockSet blockSet() : {                              BlockSet blockSet = new BlockSet();
+                                                     Inst inst         = null;
+} {
+    (
+        inst = block() ( <SEMI> )?                  {blockSet.addInst(inst);}
+                                                    {inst = null;}
+    )*                                              {return blockSet;}
+}
+
+// 入口
+BlockSet rootBlock() : {                             BlockSet rootBlockSet = new BlockSet();
+                                                     Inst     optionInst   = null;
+} {
+    (
+        optionInst = optionBlock() ( <SEMI> )?      {rootBlockSet.addInst(optionInst);}
+                                                    {optionInst = null;}
+    )*
+    blockSet() <EOF>                                {return rootBlockSet;}
 }

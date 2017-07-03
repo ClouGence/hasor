@@ -15,21 +15,16 @@
  */
 package net.hasor.data.ql.dsl.domain;
 /**
- * 查询
+ * var指令
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class QueryValue extends DValue {
-    private QueryDomain queryDomain;
-    public QueryValue(EqType eqType, QueryDomain queryDomain) {
-        super(eqType);
-        this.queryDomain = queryDomain;
-    }
-    public QueryDomain getQueryDomain() {
-        return queryDomain;
-    }
-    @Override
-    public String toString() {
-        return super.toString() + "query...";
+public class VariableInst extends Inst {
+    private String   varName; //变量名
+    private Variable value;   //变量表达式
+    public VariableInst(String varName, Variable value) {
+        super();
+        this.varName = varName;
+        this.value = value;
     }
 }

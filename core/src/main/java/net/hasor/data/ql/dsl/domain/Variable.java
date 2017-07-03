@@ -15,20 +15,9 @@
  */
 package net.hasor.data.ql.dsl.domain;
 /**
+ * 变量，用于表示一切 QL 中的表达式，可定义序列块（序列块 = BlockSet，可定义 = 使用 var 指令定义 lambda）
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public abstract class DValue {
-    private EqType eqType;
-    public DValue(EqType eqType) {
-        this.eqType = eqType;
-    }
-    //
-    public EqType getEqType() {
-        return eqType;
-    }
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName().substring(0, 2) + " - " + this.getEqType() + " ";
-    }
+public interface Variable {
 }

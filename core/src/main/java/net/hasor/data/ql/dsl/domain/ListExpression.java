@@ -13,13 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.dsl;
+package net.hasor.data.ql.dsl.domain;
+import java.util.ArrayList;
+import java.util.List;
 /**
- * 参数
+ * 列表
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface DataParam {
-    /** 获取参数名称 */
-    public String getName();
+public class ListExpression extends Expression {
+    private Class<?>         listType;
+    private List<Expression> expressionList;
+    public ListExpression() {
+        this.listType = ArrayList.class;
+        this.expressionList = new ArrayList<Expression>();
+    }
+    //
+    //
+    /** 添加元素 */
+    public void addItem(Expression valueExp) {
+        if (valueExp != null) {
+            this.expressionList.add(valueExp);
+        }
+    }
 }

@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.data.ql.dsl.domain;
 /**
- * DataQL，DSL
+ * 函数调用的返回值处理格式，基类
+ * @author 赵永春(zyc@hasor.net)
+ * @version : 2017-03-23
  */
-@AopIgnore
-package net.hasor.data.ql.dsl;
-import net.hasor.core.container.AopIgnore;
+public abstract class Format {
+}

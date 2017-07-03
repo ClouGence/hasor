@@ -8,27 +8,28 @@ options {
 
 // ------------------------------------------------------------------------------------------------
 
-PARSER_BEGIN(GraphParser)
+PARSER_BEGIN(DataQLParser)
 package net.hasor.data.ql.dsl.parser;
 import net.hasor.data.ql.dsl.*;
-import net.hasor.data.ql.dsl.visitor.*;
+import net.hasor.data.ql.dsl.domain.*;
+import net.hasor.data.ql.dsl.domain.PrimitiveExpression.*;
 import java.util.*;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 
-public class GraphParser {
-    private GraphParser (){}
+public class DataQLParser {
+    private DataQLParser (){}
     //
-    public static void parserGraphQL(String queryString) throws ParseException {
-        GraphParser parser = new GraphParser(new ByteArrayInputStream(queryString.getBytes()));
-        parser.rootBlock();
+    public static BlockSet parserDataQL(String queryString) throws ParseException {
+        DataQLParser parser = new DataQLParser(new ByteArrayInputStream(queryString.getBytes()));
+        return parser.rootBlock();
     }
-    public static void parserGraphQL(InputStream inputStream,String encoding) throws ParseException {
-        GraphParser parser = new GraphParser(inputStream,encoding);
-        parser.rootBlock();
+    public static BlockSet parserDataQL(InputStream inputStream,String encoding) throws ParseException {
+        DataQLParser parser = new DataQLParser(inputStream,encoding);
+        return parser.rootBlock();
     }
 }
-PARSER_END(GraphParser)
+PARSER_END(DataQLParser)
 
 // ------------------------------------------------------------------------------------------------
 /* Ignore Comments */
@@ -206,10 +207,8 @@ String stringValue() : {                             Token dataToken = null;
             dataToken = <STR_EMPTY>
         )
     )
-                                                    {
-                                                     String image = dataToken.image;
-                                                     return image.substring(1, image.length()-1);
-                                                    }
+                                                    {String image = dataToken.image;}
+                                                    {return image.substring(1, image.length()-1);}
 }
 
 // .空值
@@ -237,164 +236,217 @@ Number numberValue() : {}{
 }
 
 // .列表：[ ... ]
-void list() : {}{
-    LOOKAHEAD(2)
+ListExpression list() : {                            ListExpression listExp  = new ListExpression();
+                                                     Expression     valueExp = null;
+}{
     (
-        <OBRA> <CBRA>
-    ) | (
-        <OBRA>
-            expression()
-            (
-                <COMMA> expression()
-            )*
-        <CBRA>
-    )
+        LOOKAHEAD(2)
+        (
+            <OBRA> <CBRA>
+        ) | (
+            <OBRA>
+                valueExp = expression()             {listExp.addItem(valueExp);}
+                                                    {valueExp = null;}
+                (
+                    <COMMA> valueExp = expression() {listExp.addItem(valueExp);}
+                                                    {valueExp = null;}
+                )*
+            <CBRA>
+        )
+    )                                               {return listExp;}
 }
 
 // .对象：
-void object() : {} {
-    LOOKAHEAD(2)
+ObjectExpression object() : {                        ObjectExpression objExp    = new ObjectExpression();
+                                                     String           fieldName = null;
+                                                     Expression       valueExp  = null;
+} {
     (
-        <OCBR> <CCBR>
-    ) | (
-        <OCBR>
-            stringValue() ( <COLON> expression() )?
-            (
-                <COMMA> stringValue() ( <COLON> expression() )?
-            )*
-        <CCBR>
-    )
+        LOOKAHEAD(2)
+        (
+            <OCBR> <CCBR>
+        ) | (
+            <OCBR>
+                fieldName = stringValue()           {valueExp = new RouteExpression(fieldName);}
+                (<COLON> valueExp = expression())?  {objExp.addField(fieldName,valueExp);}
+                                                    {fieldName = null;valueExp=null;}
+                (
+                    <COMMA> fieldName = stringValue()
+                                                    {valueExp = new RouteExpression(fieldName);}
+                    ( <COLON> valueExp = expression())?
+                                                    {objExp.addField(fieldName,valueExp);}
+                                                    {fieldName = null;valueExp=null;}
+                )*
+            <CCBR>
+        )
+    )                                               {return objExp;}
 }
 
 //-----------------------------------------------------------------------------
 
 // .表达式 =   表达式 or 表达式 + 运算符
-void expression() : {} {
-    (
-        // 优先级
-        <OPAR> expression() <CPAR>
-        (
-            extExpression()
-        )?
-    ) | LOOKAHEAD(oneExpression())(
-        oneExpression()
-    ) | (
-        basicValue()
-        (
-            extExpression()
-        )?
-    )
-}
-void oneExpression() : {} {
-    (
-        ( <BANG> | <INCR> | <DECR> ) basicValue()
-    ) | (
-        basicValue() ( <INCR> | <DECR> )
-    )
-}
-void extExpression() : {} {
-    (
-        twoExpression()
-    ) | (
-        threeExpression()
-    )
-}
-void twoExpression() : {            Token o = null;
+Expression expression() : {                          Expression exp;
 } {
     (
-          o = <PLUS>
-        | o = <MINUS>
-        | o = <STAR>
-        | o = <SLASH>
-        | o = <REM>
-        | o = <ALI>
-        | o = <GT>
-        | o = <GE>
-        | o = <LT>
-        | o = <LE>
-        | o = <EQ>
-        | o = <NE>
-        | o = <BIT_AND>
-        | o = <BIT_OR>
-        | o = <XOR>
-        | o = <LSHIFT>
-        | o = <RSIGNEDSHIFT>
-        | o = <RUNSIGNEDSHIFT>
-        | o = <SC_OR>
-        | o = <SC_AND>
+        // 优先级
+        <OPAR> exp = expression() <CPAR>
+        (
+            exp = extExpression(exp)
+        )?                                          {return exp;}
+    ) | LOOKAHEAD(unaryExpression())(
+        exp = unaryExpression()                     {return exp;}
+    ) | (
+        exp = basicValue()
+        (
+            exp = extExpression(exp)
+        )?                                          {return exp;}
     )
-    expression()
 }
-void threeExpression() :{} {
-    <QUEM> expression() <COLON> expression()
+Expression unaryExpression() : {                     Token      symbol = null;
+                                                     Expression target = null;
+} {
+    (
+        ( symbol = <BANG> | symbol = <INCR> | symbol = <DECR> )
+        target = basicValue()                       {return new UnaryExpression(target,symbol.image,UnaryLocation.Before);}
+    ) | (
+        target = basicValue()
+        ( symbol = <INCR> | symbol = <DECR> )       {return new UnaryExpression(target,symbol.image,UnaryLocation.After);}
+    )
 }
-
+Expression extExpression(Expression fstExp) : {      Expression resultExp = null;
+} {
+    (
+        (
+            resultExp = dyadicExpression(fstExp)
+        ) | (
+            resultExp = ternaryExpression(fstExp)
+        )
+    )                                               {return resultExp;}
+}
+DyadicExpression dyadicExpression(Expression fstExp) : {
+                                                     Token      symbol = null;
+                                                     Expression secExp = null;
+} {
+    (
+          symbol = <PLUS>
+        | symbol = <MINUS>
+        | symbol = <STAR>
+        | symbol = <SLASH>
+        | symbol = <REM>
+        | symbol = <ALI>
+        | symbol = <GT>
+        | symbol = <GE>
+        | symbol = <LT>
+        | symbol = <LE>
+        | symbol = <EQ>
+        | symbol = <NE>
+        | symbol = <BIT_AND>
+        | symbol = <BIT_OR>
+        | symbol = <XOR>
+        | symbol = <LSHIFT>
+        | symbol = <RSIGNEDSHIFT>
+        | symbol = <RUNSIGNEDSHIFT>
+        | symbol = <SC_OR>
+        | symbol = <SC_AND>
+    )
+    secExp = expression()                           {return new DyadicExpression(fstExp,symbol.image,secExp);}
+}
+Expression ternaryExpression(Expression testExp) :{  Expression thenExp = null;
+                                                     Expression elseExp = null;
+} {
+    <QUEM> thenExp = expression() <COLON> elseExp = expression()
+                                                    {return new TernaryExpression(testExp,thenExp,elseExp);}
+}
 
 // .值
-void basicValue() : {} {
+Expression basicValue() : {                          Expression finalExp = null;
+} {
     (
-        primitiveValue()            |
         (
-            identifier()
+            finalExp = primitiveValue()
+        ) | (
             (
-                funCall()
-            )?
-
-        )                           |
-        list()                      |
-        object()
-    )
+                                                    {String mabeCallerName = null;}
+                mabeCallerName = identifier()       {finalExp = new RouteExpression(mabeCallerName);}
+                (
+                    finalExp = funCall(mabeCallerName)
+                )?
+            )
+        ) | (
+            finalExp =list()
+        ) | (
+            finalExp = object()
+        )
+    )                                               {return finalExp;}
 }
 
-void primitiveValue() : {} {
+PrimitiveExpression primitiveValue() : {            Object    value     = null;
+} {
+
     (
-        stringValue()
+        value = stringValue()                       {return new PrimitiveExpression(value,ValueType.String);}
     ) | (
-        nullValue()
+        value = nullValue()                         {return new PrimitiveExpression(value,ValueType.Null);}
     ) | (
-        booleanValue()
+        value = booleanValue()                      {return new PrimitiveExpression(value,ValueType.Boolean);}
     ) | (
-        numberValue()
+        value = numberValue()                       {return new PrimitiveExpression(value,ValueType.Number);}
     )
 }
 
 //-----------------------------------------------------------------------------
+// .函数参数
+Variable callerParamItem() : {                       Variable value = null;
+} {
+    (
+        (
+            value = lambdaDef()
+        ) | (
+            value = expression()
+        )
+    )                                               {return value;}
+}
+
 // .参数集：(xx , xx , xx)
-void paramSet() : {} {
+void callerParamSet(CallerExpression callerExp) : {  Variable atParam = null;
+} {
     LOOKAHEAD(2)
     (
         <OPAR> <CPAR>
     ) | (
         <OPAR>
-            paramItem()
+            atParam = callerParamItem()             {callerExp.addParam(atParam);atParam = null;}
             (
-                <COMMA> paramItem()
+                <COMMA> atParam = callerParamItem() {callerExp.addParam(atParam);atParam = null;}
             )*
         <CPAR>
     )
 }
 
-// .函数参数
-void paramItem() : {} {
-    (
-        lambdaCall()
-    ) | (
-        expression()
-    )
-}
-
 // .函数调用
-void funCall() : {} {
-    paramSet()
+CallerExpression funCall(String callName) : {        CallerExpression callerExp   = new CallerExpression(callName);
+                                                     Format           finalFormat = null;
+} {
+    callerParamSet(callerExp)
     (
-        list()      |
-        object()    |
-        "~"
-    )
+        (
+                                                    {ListExpression listExp = null;}
+            listExp = list()                        {finalFormat = new ListFormat(listExp);}
+        ) | (
+                                                    {ObjectExpression objectExp = null;}
+            objectExp = object()                    {finalFormat = new ObjectFormat(objectExp);}
+        ) | (
+            "~"                                     {finalFormat = new RawFormat();}
+        )
+    )                                               {callerExp.setResultFormat(finalFormat);}
+                                                    {return callerExp;}
 }
 
 // .Lambda函数： lambda : (obj,obj2) -> {}
-void lambdaCall() : {} {
+LambdaBlockSet lambdaDef() : {                       LambdaBlockSet lambdaBlockSet = new LambdaBlockSet();
+                                                     Token          paramName      = null;
+                                                     BlockSet       scriptBodys    = null;
+} {
     <LAMBDA> ":"
     (
         LOOKAHEAD(2)
@@ -402,9 +454,9 @@ void lambdaCall() : {} {
             <OPAR><CPAR>
         ) | (
             <OPAR>
-                <IDENTIFIER>
+                paramName = <IDENTIFIER>            {lambdaBlockSet.addParam(paramName.image);}
                 (
-                    <COMMA> <IDENTIFIER>
+                    <COMMA> paramName = <IDENTIFIER>{lambdaBlockSet.addParam(paramName.image);}
                 )*
             <CPAR>
         )
@@ -412,87 +464,116 @@ void lambdaCall() : {} {
     "->"
     (
         (
-            <OCBR> blockSet() <CCBR>
+            <OCBR> scriptBodys = blockSet() <CCBR>
         ) | LOOKAHEAD(block()) (
-            block()
+                                                    {Inst inst = null;}
+            inst = block()                          {scriptBodys = new BlockSet(Arrays.asList(inst));}
         )
-    )
+    )                                               {lambdaBlockSet.addToBody(scriptBodys);}
+                                                    {return lambdaBlockSet;}
 }
 
 //-----------------------------------------------------------------------------
 // .函数
-void varBlock() : {} {
-    <VAR> identifier() <ASS>
+VariableInst varBlock() : {                          String varName = null;
+                                                     Variable value = null;
+} {
+    <VAR> varName = identifier() <ASS>
     (
         (
-            lambdaCall()
+            value = lambdaDef()
         ) | (
-            expression()
+            value = expression()
         )
-    )
+    )                                               {return new VariableInst(varName,value);}
 }
 
 // .反回
-void returnBlock() : {} {
-    <RETURN> expression()
-}
-
-// .选项指令
-void optionBlock() : {} {
-    <OPTION> identifier() <ASS> primitiveValue()
+ReturnInst returnBlock() : {                         Expression result = null;
+} {
+    <RETURN> result = expression()                  {return new ReturnInst(result);}
 }
 
 // .判断
-void ifBlock() : {} {
-        <IF> <OPAR> expression() <CPAR>     blockSet()
+SwitchInst ifBlock() : {                             SwitchInst switchInst = new SwitchInst();
+                                                     Expression testExp;
+                                                     BlockSet   instBlockSet;
+} {
+        <IF> <OPAR> testExp = expression() <CPAR>
+            instBlockSet = blockSet()               {switchInst.addBlockSet(testExp,instBlockSet);}
+                                                    {testExp = null; instBlockSet = null;}
     (
-        <ELSEIF> <OPAR> expression() <CPAR> blockSet()
+        <ELSEIF> <OPAR> testExp = expression() <CPAR>
+            instBlockSet = blockSet()               {switchInst.addBlockSet(testExp,instBlockSet);}
+                                                    {testExp = null; instBlockSet = null;}
     )*
     (
-        <ELSE>                              blockSet()
+        <ELSE>
+            instBlockSet = blockSet()               {switchInst.setElseBlockSet(instBlockSet);}
     )?
         <END>
+                                                    {return switchInst;}
 }
 
 // .异常
-void throwBlock() : {} {
+ThrowInst throwBlock() : {                           Number     throwStatus = null;
+                                                     Expression throwData   = null;
+} {
     <THROW>
     (
         LOOKAHEAD(throwBlockStatus())
         (
-            throwBlockStatus() expression()
+            throwStatus = throwBlockStatus()
+            throwData = expression()
         ) | (
-            expression()
+            throwData = expression()
         )
-    )
+    )                                               {return new ThrowInst(throwStatus,throwData);}
 }
 Number throwBlockStatus() : {                        Number errorCode = null;
 } {
     errorCode = numberValue() <COMMA>               {return errorCode;}
 }
 
-// .块
-void block() : {} {
-    (
-        varBlock()      |
-        ifBlock()       |
-        returnBlock()   |
-        throwBlock()
-    )
+// .选项指令
+Inst optionBlock() : {                               String              optKey     = null;
+                                                     PrimitiveExpression optValue   = null;
+} {
+    <OPTION> optKey = identifier() <ASS> optValue = primitiveValue()
+                                                    {return new OptionInst(optKey,optValue);}
 }
 
 // .块
-void blockSet() : {} {
+Inst block() : {                                     Inst inst = null;
+} {
     (
-        block() ( <SEMI> )?
-    )*
+        inst = varBlock()
+    ) | (
+        inst = ifBlock()
+    ) | (
+        inst = returnBlock()
+    ) | (
+        inst = throwBlock()
+    )                                               {return inst;}
 }
 
+// .块
+BlockSet blockSet() : {                              BlockSet blockSet = new BlockSet();
+                                                     Inst inst         = null;
+} {
+    (
+        inst = block() ( <SEMI> )?                  {blockSet.addInst(inst);}
+                                                    {inst = null;}
+    )*                                              {return blockSet;}
+}
 
 // 入口
-void rootBlock() : {} {
+BlockSet rootBlock() : {                             BlockSet rootBlockSet = new BlockSet();
+                                                     Inst     optionInst   = null;
+} {
     (
-        optionBlock() ( <SEMI> )?
+        optionInst = optionBlock() ( <SEMI> )?      {rootBlockSet.addInst(optionInst);}
+                                                    {optionInst = null;}
     )*
-    blockSet() <EOF>
+    blockSet() <EOF>                                {return rootBlockSet;}
 }
