@@ -15,16 +15,13 @@
  */
 package net.test.hasor.db._07_ql.udfs;
 import net.hasor.data.ql.UDF;
-import net.hasor.data.ql.Var;
-
-import java.util.Map;
 /**
  * @version : 2014-7-12
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Foo implements UDF {
     @Override
-    public Object call(Map<String, Var> values) {
+    public Object call(Object[] values) {
         return 54321;
     }
 }

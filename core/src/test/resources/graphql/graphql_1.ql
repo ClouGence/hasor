@@ -6,9 +6,9 @@ return findUserByID ({"userID" : 12345, "status" : 2}) {
 
 /*
     NO
-    INSN_N  12345
+    LDC_D   12345
     PUT     "userID"
-    INSN_N  2
+    LDC_D   2
     PUT     "status"
     CALL    "findUserByID",1
     ASM

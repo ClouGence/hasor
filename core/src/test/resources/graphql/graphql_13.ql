@@ -333,9 +333,76 @@ return f
 var a = lambda: -> (agr) {};
 return lambda: -> (agr) {};
 
+var f = lambda: -> (arg) {
+    var b = false;
+    var a = lambda : -> (arg){
+        return count(arg)~;
+    };
+    return a;
+};
+/*
+LAMBDA          1
+LABEL           1,"arg"
+FRAME_S
+    LDC_B       false
+    STORE       1
+    LAMBDA      1
+    LABEL       1,"arg"
+    FRAME_S
+        LOAD    1
+        CALL    "count",1
+        ASO
+        ASE
+        END
+    FRAME_E
+    STORE       2
+    LOAD        2
+    END
+FRAME_E
+STORE           1
+*/
+
+
+
+if (a == b)
+    var a = b
+elseif (a == null)
+    var b = a
+else
+    var c = a
+end
+
 
 /*
+    -----               // if (a == b)
+    LOAD    1
+    LOAD    2
+    DO      "eq"
+    IF      "label_1"
+    -----               // elseif (a == null)
+    LOAD    1
+    LDC_N
+    DO      "eq"
+    IF_ELE  "label_2"
+    -----               // else
+    GOTO    "label_3"
+    -----
 
+    GOTO    "label_4"
+    LABEL   "label_1"
+    ...
+    GOTO    "label_4"
+    LABEL   "label_2"
+    ...
+    GOTO    "label_4"
+    LABEL   "label_3"
+    ...
+    LABEL   "label_4"
+*/
+
+
+
+/*
 NO      // new Object
 NA      // new Array
 NT      // new UserType
@@ -345,25 +412,24 @@ LDC_B   // 布尔（例：INSN_B true）
 LDC_S   // 字符串
 LDC_N   // Null（例：INSN_N）
 
-LOAD    // 从本地变量表加载
-STORE   // 存储到本地变量表
+LOAD    // 从本地变量表加载（例：LOAD，1）
+STORE   // 存储到本地变量表（例：STORE，2）
 
-ASM     // 结果作为对象
-ASO     // 结果作为原始对象
-ASA     // 结果作为数组
-ASE     // 结果结束
+ASM     // 结果作为对象（例：ASA，"type"）
+ASO     // 结果作为原始对象（例：ASO）
+ASA     // 结果作为数组（例：ASA，"type"）
+ASE     // 结果结束（例：ASA）
 
-PUT     // 加到对象结果集中
-PUSH    // 加到 Array 结果集中
+PUT     // 加到对象结果集中（例：PUT,"xxxx"）
+PUSH    // 加到 Array 结果集中（例：PUSH）
 
-ROU     // 寻值
-CALL    // 发起服务调用
+ROU     // 寻值（例：ROU,"xxxxx"）
+CALL    // 发起服务调用（例：CALL,"xxxxx",2）
 LAMBDA  // Lambda调用入口
 
-
-IF_E    // if
-IF_DEF  // if ... else ...
-IF_ELSE // elseif
+IF      // if（条件判断成功，执行GOTO，否则执行下一条指令）
+IF_ELE  // if ... else ...（条件判断失败，执行GOTO）
+GOTO    // 执行跳转
 FRAME_S // 片段开始
 FRAME_E // 片段结束
 
@@ -372,8 +438,8 @@ ERR     // 结束指令序列并抛出异常
 
 UO      // 一元运算
 DO      // 二元运算
-TO      // 三元运算
 
+OPT     // 环境配置
 LINE    // 行号
-LOCAL   // 本地变量表名称
+LOCAL   // 用在 LAMBDA 指令后面，用来标明变量名称。
 */

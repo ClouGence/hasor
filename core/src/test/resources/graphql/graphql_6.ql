@@ -10,7 +10,7 @@ return findUserByID ({"userID" : foo (sid)~ , "status" : 1}) {
     ASO
     ASE
     PUT     "userID"
-    INSN_N  1
+    LDC_D   1
     PUT     "status"
     CALL    "findUserByID",1
     ASO

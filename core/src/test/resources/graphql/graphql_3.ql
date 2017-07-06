@@ -7,8 +7,8 @@ return findUserByID (12345) [
 ]
 
 /*
-    INSN_D  12345
-    CALL    findUserByID,1
+    LDC_D  12345
+    CALL    "findUserByID",1
     ASA
     NO
     ROU     "name"

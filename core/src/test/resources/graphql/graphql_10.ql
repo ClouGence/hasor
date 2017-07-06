@@ -28,6 +28,23 @@ var merageData = mapJoin( dat1, dat2, [ "clientID", "id" ] ) [
 
 // 过滤 1998 年的数据
 var meraged = filter( merageData , lambda : (obj) -> return obj.year == 1998 )~
+/*
+    LOAD    3
+    LAMBDA  1
+    LOCAL   1,"obj"
+    FRAME_S
+    ROU     "obj.year"
+    LDC_D   1998
+    DO      "=="
+    END
+    FRAME_E
+    CALL    "filter",2
+    ASO
+    ASE
+    STORE   4
+    ...
+*/
+
 
 // 按照 name 将 data 数据集合进行分组，最终数据格式为： { "name" : "xxx" , "amount" : 12345 }
 var groupDs = group(meraged , [ "name" ] , { "amount" : "sum"} )~

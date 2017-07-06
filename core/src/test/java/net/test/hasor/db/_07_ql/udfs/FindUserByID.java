@@ -15,7 +15,6 @@
  */
 package net.test.hasor.db._07_ql.udfs;
 import net.hasor.data.ql.UDF;
-import net.hasor.data.ql.Var;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +25,7 @@ import java.util.Map;
  */
 public class FindUserByID implements UDF {
     @Override
-    public Object call(Map<String, Var> values) {
+    public Object call(Object[] values) {
         ArrayList<Map<String, Object>> addressSet = new ArrayList<Map<String, Object>>();
         for (int i = 0; i < 5; i++) {
             HashMap<String, Object> udfData = new HashMap<String, Object>();

@@ -20,12 +20,12 @@ return findUserByID ({"userID" : uid, "status" : 1, "oriData" : {
     NO
     ROU     "uid"
     PUT     "userID"
-    INSN_N  1
+    LDC_D   1
     PUT     "status"
     NO
-    INSN_B  true
+    LDC_B   true
     PUT     "self"
-    INSN_N  222
+    LDC_D   222
     PUT     "testID"
     PUT     "oriData"
     CALL    "findUserByID",1
@@ -40,9 +40,9 @@ return findUserByID ({"userID" : uid, "status" : 1, "oriData" : {
     ROU     "%{$.info.userID}"
     PUT     "accountID"
     NA
-    INSN_S  "self"
+    LDC_S   "self"
     PUSH
-    INSN_S  "testID"
+    LDC_S   "testID"
     PUSH
     PUT     "oriList"
     CALL    "queryOrder",1

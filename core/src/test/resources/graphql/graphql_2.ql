@@ -13,7 +13,7 @@ return {
 /*
     NO
     NO
-    INSN_N  12345
+    LDC_D   12345
     CALL    "findUserByID",1
     ASM
     ROU     "name"
@@ -27,7 +27,7 @@ return {
     ROU     "info.nick"
     PUT     "nick"
     PUT     "userInfo"
-    INSN_S  "DataQL"
+    LDC_S   "DataQL"
     PUT     "source"
     END
 */

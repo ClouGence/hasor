@@ -21,7 +21,7 @@ import net.hasor.core.utils.ResourcesUtils;
 import net.hasor.data.ql.DataQL;
 import net.hasor.data.ql.Query;
 import net.hasor.data.ql.QueryResult;
-import net.hasor.data.ql.dsl.parser.ParseException;
+import net.hasor.data.ql.domain.parser.ParseException;
 import org.junit.Test;
 
 import java.io.IOException;

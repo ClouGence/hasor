@@ -3,7 +3,7 @@ return findUserByID (12345) [
 ]
 
 /*
-    INSN_N  12345
+    LDC_D   12345
     CALL    "findUserByID",1
     ASA
     ROU     "name2"
