@@ -44,4 +44,4 @@ public class RootModule implements Module {
 }
 ```
 
-&emsp;&emsp;在第二种方式中我们看到一个 Module 可以被另外一个 Module 所安装。这就是 Hasor Module 提供的全新的一种方式来处理模块的依赖配置，这种方式会大大降低我们对配置文件的依赖程度，并且有助于模块配置的搞内聚。
+&emsp;&emsp;在第二种方式中我们看到一个 Module 可以被另外一个 Module 所安装。这就是 Hasor Module 提供的全新的一种方式来处理模块的依赖配置，这种方式会大大降低我们对配置文件的依赖程度，并且有助于模块配置的高内聚。
