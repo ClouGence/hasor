@@ -13,32 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.udfs.collection;
+package net.hasor.plugins.dataql.collection;
+import net.hasor.core.convert.ConverterUtils;
 import net.hasor.data.ql.UDF;
-import net.hasor.data.ql.Var;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 /**
- * 取最后一个元素。
+ * 截取一部分，返回一个集合。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-06-09
  */
-public class Last extends AbstractCollectionUDF implements UDF {
+public class Limit extends AbstractCollectionUDF implements UDF {
     @Override
-    public Object call(Map<String, Var> values) {
-        Var var = values.get("list");
-        Collection<Object> objects = super.toCollection(var.getValue());
+    public Object call(Object[] values) {
+        Collection<Object> objects = super.toCollection(values[0]);
         if (objects.isEmpty()) {
             return null;
         }
         //
-        Iterator<Object> iterator = objects.iterator();
-        Object curData = null;
-        while (iterator.hasNext()) {
-            curData = iterator.next();
+        Object start = values[1];
+        Object limit = values[2];
+        int startInt = (Integer) ConverterUtils.convert(Integer.TYPE, start);
+        int limitInt = (Integer) ConverterUtils.convert(Integer.TYPE, limit);
+        if (limitInt <= 0) {
+            limitInt = Integer.MAX_VALUE;
         }
-        return curData;
+        //
+        int curIndex = 0;
+        Iterator<Object> iterator = objects.iterator();
+        ArrayList<Object> finalList = new ArrayList<Object>();
+        while (iterator.hasNext()) {
+            Object curData = iterator.next();
+            curIndex++;
+            if (startInt <= curIndex && curIndex <= limitInt) {
+                finalList.add(curData);
+            }
+        }
+        return finalList;
     }
 }

@@ -13,20 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.udfs.collection;
+package net.hasor.plugins.dataql.collection;
 import net.hasor.data.ql.UDF;
-import net.hasor.data.ql.Var;
 
-import java.util.Map;
+import java.util.Collection;
 /**
- * 循环遍历函数
+ * 取第一个元素。
  * @author 赵永春(zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2017-06-09
  */
-public class Foreach extends AbstractCollectionUDF implements UDF {
+public class First extends AbstractCollectionUDF implements UDF {
     @Override
-    public Object call(Map<String, Var> values) {
-        Var var = values.get("list");
-        return super.toCollection(var.getValue());
+    public Object call(Object[] values) {
+        if (values == null || values.length < 1) {
+            return null;
+        }
+        //
+        Collection<Object> objects = super.toCollection(values[0]);
+        if (objects.isEmpty()) {
+            return null;
+        }
+        //
+        return objects.iterator().next();
     }
 }
