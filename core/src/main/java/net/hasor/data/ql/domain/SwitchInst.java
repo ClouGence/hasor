@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.domain;
-import net.hasor.data.ql.domain.inst.InstCompilerStack;
+import net.hasor.data.ql.domain.inst.CompilerStack;
 import net.hasor.data.ql.domain.inst.InstQueue;
 import net.hasor.data.ql.domain.inst.Label;
 
@@ -51,7 +51,7 @@ public class SwitchInst extends Inst {
     //
     //
     @Override
-    public void doCompiler(InstQueue queue, InstCompilerStack stackTree) {
+    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         if (this.testBlockSet.isEmpty()) {
             queue.inst(LDC_N, 0);
             queue.inst(LDC_S, "inst if -> error.");

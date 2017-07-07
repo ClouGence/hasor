@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.domain;
-import net.hasor.data.ql.domain.inst.InstCompilerStack;
+import net.hasor.data.ql.domain.inst.CompilerStack;
 import net.hasor.data.ql.domain.inst.InstQueue;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class BlockSet implements InstCompiler {
     //
     //
     @Override
-    public void doCompiler(InstQueue queue, InstCompilerStack stackTree) {
+    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         if (this.instList == null || this.instList.isEmpty()) {
             return;
         }

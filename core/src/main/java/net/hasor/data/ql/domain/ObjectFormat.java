@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.domain;
-import net.hasor.data.ql.domain.inst.InstCompilerStack;
+import net.hasor.data.ql.domain.inst.CompilerStack;
 import net.hasor.data.ql.domain.inst.InstQueue;
 /**
  * 函数调用的返回值处理格式，Object格式。
@@ -30,7 +30,7 @@ public class ObjectFormat extends Format {
     //
     //
     @Override
-    public void doCompiler(InstQueue queue, InstCompilerStack stackTree) {
+    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         queue.inst(ASM);
         this.format.doCompiler(queue, stackTree);
         queue.inst(ASE);

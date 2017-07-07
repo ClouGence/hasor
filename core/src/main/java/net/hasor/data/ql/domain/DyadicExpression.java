@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.domain;
-import net.hasor.data.ql.domain.inst.InstCompilerStack;
+import net.hasor.data.ql.domain.inst.CompilerStack;
 import net.hasor.data.ql.domain.inst.InstQueue;
 /**
  * 二元运算表达式
@@ -34,7 +34,7 @@ public class DyadicExpression extends Expression {
     //
     //
     @Override
-    public void doCompiler(InstQueue queue, InstCompilerStack stackTree) {
+    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         //
         this.fstExpression.doCompiler(queue, stackTree);
         this.secExpression.doCompiler(queue, stackTree);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.domain;
-import net.hasor.data.ql.domain.inst.InstCompilerStack;
+import net.hasor.data.ql.domain.inst.CompilerStack;
 import net.hasor.data.ql.domain.inst.InstQueue;
 /**
  * 基础类型值，用于表示【String、Number、Null、Boolean】四种基本类型
@@ -45,7 +45,7 @@ public class PrimitiveExpression extends Expression {
     }
     //
     //
-    public void doCompiler(InstQueue queue, InstCompilerStack stackTree) {
+    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         if (this.valueType == ValueType.Boolean) {
             queue.inst(LDC_B, this.value);
         }

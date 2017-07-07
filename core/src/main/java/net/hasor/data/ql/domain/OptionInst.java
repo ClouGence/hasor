@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.domain;
-import net.hasor.data.ql.domain.inst.InstCompilerStack;
+import net.hasor.data.ql.domain.inst.CompilerStack;
 import net.hasor.data.ql.domain.inst.InstQueue;
 /**
  * 查询选项
@@ -32,7 +32,7 @@ public class OptionInst extends Inst {
     //
     //
     @Override
-    public void doCompiler(InstQueue queue, InstCompilerStack stackTree) {
+    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         queue.inst(LDC_S, this.optKey);
         this.expression.doCompiler(queue, stackTree);
         queue.inst(OPT);

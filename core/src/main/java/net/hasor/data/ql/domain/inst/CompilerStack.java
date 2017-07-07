@@ -18,11 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 /**
- * 内存数据结构。
+ * 编译器用到的栈结构。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class InstCompilerStack {
+public class CompilerStack {
     private Stack<List<String>> dataStack = new Stack<List<String>>();
     //
     public void newFrame() {
