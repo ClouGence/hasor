@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.domain.inst;
+import net.hasor.core.utils.StringUtils;
+
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -32,21 +34,36 @@ public class Instruction implements InstOpcodes {
     //
     @Override
     public String toString() {
-        String codeName = null;
+        StringBuilder codeName = new StringBuilder();
         try {
             //
             Field[] fields = InstOpcodes.class.getFields();
             for (Field field : fields) {
                 byte aByte = field.getByte(null);
                 if (aByte == this.instCode) {
-                    codeName = field.getName();
+                    codeName.append(field.getName());
                     break;
                 }
             }
             //
         } catch (IllegalAccessException e) {
-            codeName = "error : " + e.getMessage();
+            codeName.append("error : ");
+            codeName.append(e.getMessage());
+            return codeName.toString();
         }
-        return codeName;
+        //
+        int needSpace = 10 - codeName.length();
+        if (needSpace > 0) {
+            codeName.append(StringUtils.leftPad("", needSpace, ' '));
+        }
+        for (int i = 0; i < this.instParam.size(); i++) {
+            if (i > 0) {
+                codeName.append(", ");
+            }
+            Object obj = this.instParam.get(i);
+            codeName.append(obj);
+        }
+        //
+        return codeName.toString();
     }
 }

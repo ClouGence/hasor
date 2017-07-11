@@ -31,6 +31,15 @@ public class RouteExpression extends Expression {
     //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
+        // .方法区中
+        int index = stackTree.contains(this.routeExpression);
+        if (index >= 0) {
+            queue.inst(LOAD, index);
+            return;
+        }
+        // .整个堆栈
+        //
+        // .路由数据
         queue.inst(ROU, this.routeExpression);
     }
 }

@@ -24,6 +24,9 @@ import java.util.Stack;
  */
 public class CompilerStack {
     private Stack<List<String>> dataStack = new Stack<List<String>>();
+    public CompilerStack() {
+        this.dataStack.push(new ArrayList<String>());
+    }
     //
     public void newFrame() {
         this.dataStack.push(new ArrayList<String>());

@@ -55,7 +55,18 @@ public class CallerExpression extends Expression {
             var.doCompiler(queue, stackTree);
         }
         // .CALL指令
-        queue.inst(CALL, this.callName, this.varList.size());
+        {
+            int index = stackTree.contains(this.callName);
+            if (index > 0) {
+                // .存在函数定义
+                queue.inst(LOAD, index);
+                queue.inst(LCALL, this.varList.size());
+            } else {
+                // .使用UDF进行调用
+                queue.inst(CALL, this.callName, this.varList.size());
+            }
+        }
+        //
         this.resultFormat.doCompiler(queue, stackTree);
     }
 }

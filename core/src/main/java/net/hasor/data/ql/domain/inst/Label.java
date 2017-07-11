@@ -20,12 +20,24 @@ package net.hasor.data.ql.domain.inst;
  * @version : 2017-03-23
  */
 public class Label {
-    private int index;
-    Label(int index) {
-        this.index = index;
+    private String  labelID;
+    private Integer index;
+    Label(int labelID) {
+        this.labelID = "label_" + labelID;
     }
     //
     public String getID() {
-        return "label_" + this.index;
+        return this.labelID;
+    }
+    public Integer getIndex() {
+        return this.index;
+    }
+    //
+    @Override
+    public String toString() {
+        return this.index == null ? "null" : this.index.toString();
+    }
+    void updateIndex(int index) {
+        this.index = index;
     }
 }

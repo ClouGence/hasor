@@ -15,58 +15,56 @@
  */
 package net.hasor.data.ql.domain.inst;
 /**
- * QL 指令集
+ * QL 指令集，共计29条指令
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-03
  */
 public interface InstOpcodes {
     //
     // -------------------------------------------------------------- 构造指令
-    public static final byte NO      = 11; // new Object
-    public static final byte NA      = 12; // new Array
+    public static final byte NO     = 11; // new Object
+    public static final byte NA     = 12; // new Array
     //
     // -------------------------------------------------------------- 数据指令
-    public static final byte LDC_D   = 21; // 数字（例：INSN_D 1234）
-    public static final byte LDC_B   = 22; // 布尔（例：INSN_B true）
-    public static final byte LDC_S   = 23; // 字符串
-    public static final byte LDC_N   = 24; // Null（例：INSN_N）
+    public static final byte LDC_D  = 21; // 数字（例：INSN_D 1234）
+    public static final byte LDC_B  = 22; // 布尔（例：INSN_B true）
+    public static final byte LDC_S  = 23; // 字符串
+    public static final byte LDC_N  = 24; // Null（例：INSN_N）
     //
-    // -------------------------------------------------------------- 栈的载人和存储指令
-    public static final byte LOAD    = 31; // 从堆中加载数据到栈（例：LOAD，1）
-    public static final byte STORE   = 32; // 将栈中的数据存储到堆（例：STORE，2）
+    // -------------------------------------------------------------- 存储指令
+    public static final byte LOAD   = 31; // 从堆中加载数据到栈（例：LOAD，1）
+    public static final byte STORE  = 32; // 将栈中的数据存储到堆（例：STORE，2）
     //
-    // -------------------------------------------------------------- 结果处理指令
-    public static final byte ASM     = 41; // 结果作为对象（例：ASA，"type"）
-    public static final byte ASO     = 42; // 结果作为原始对象（例：ASO）
-    public static final byte ASA     = 43; // 结果作为数组（例：ASA，"type"）
-    public static final byte ASE     = 44; // 结果结束（例：ASA）
+    // -------------------------------------------------------------- 结果指令
+    public static final byte ASM    = 41; // 结果作为对象（例：ASA，"type"）
+    public static final byte ASO    = 42; // 结果作为原始对象（例：ASO）
+    public static final byte ASA    = 43; // 结果作为数组（例：ASA，"type"）
+    public static final byte ASE    = 44; // 结果结束（例：ASA）
     //
-    // -------------------------------------------------------------- 数据操作指令
-    public static final byte PUT     = 51; // 加到对象结果集中（例：PUT,"xxxx"）
-    public static final byte PUSH    = 52; // 加到 Array 结果集中（例：PUSH）
-    public static final byte ROU     = 53; // 寻值（例：ROU,"xxxxx"）
-    public static final byte UO      = 54; // 一元运算
-    public static final byte DO      = 55; // 二元运算
+    // -------------------------------------------------------------- 操作指令
+    public static final byte PUT    = 51; // 加到对象结果集中（例：PUT,"xxxx"）
+    public static final byte PUSH   = 52; // 加到 Array 结果集中（例：PUSH）
+    public static final byte ROU    = 53; // 寻值（例：ROU,"xxxxx"）
+    public static final byte UO     = 54; // 一元运算
+    public static final byte DO     = 55; // 二元运算
     //
-    // -------------------------------------------------------------- 方法调用指令
-    public static final byte CALL    = 61; // 发起服务调用（例：CALL,"xxxxx",2）
+    // -------------------------------------------------------------- 调用指令
+    public static final byte CALL   = 61; // 发起服务调用（例：CALL,"xxxxx",2）
+    public static final byte LCALL  = 62; // 调用内置函数
     //
-    // -------------------------------------------------------------- 函数定义指令
-    public static final byte LAMBDA  = 71; // Lambda调用入口（消耗：0个元素，产出：0个元素）
-    public static final byte FRAME_S = 72; // 片段开始（消耗：0个元素，产出：0个元素）
-    public static final byte FRAME_E = 73; // 片段结束（消耗：0个元素，产出：0个元素）
+    // -------------------------------------------------------------- 函数指令
+    public static final byte METHOD = 71; // 函数定义
+    public static final byte M_REF  = 72; // 函数引用
     //
-    // -------------------------------------------------------------- 条件判断指令
-    public static final byte IF      = 81; // if（条件判断成功，执行下一条指令。否则执行 GOTO跳转。）
-    public static final byte GOTO    = 82; // 执行跳转
-    //
-    // -------------------------------------------------------------- 结束指令
-    public static final byte END     = 91; // 结束指令序列并返回值（消耗：1个元素，产出：0个元素）
-    public static final byte ERR     = 92; // 结束指令序列并抛出异常（消耗：2个元素，产出：0个元素）
+    // -------------------------------------------------------------- 控制指令
+    public static final byte IF     = 81; // if（条件判断成功，执行下一条指令。否则执行 GOTO跳转。）
+    public static final byte GOTO   = 82; // 执行跳转
+    public static final byte END    = 83; // 结束指令序列并返回值（消耗：1个元素，产出：0个元素）
+    public static final byte ERR    = 84; // 结束指令序列并抛出异常（消耗：2个元素，产出：0个元素）
     //
     // -------------------------------------------------------------- 辅助指令
-    public static final byte OPT     = 1; // 选项参数（消耗：2个元素，产出：0个元素）
-    public static final byte LINE    = 2; // 行号
-    public static final byte LABEL   = 3; // 定位行，无实际作用
-    public static final byte LOCAL   = 4; // 本地变量表名称
+    public static final byte OPT    = 1; // 选项参数（消耗：2个元素，产出：0个元素）
+    public static final byte LINE   = 2; // 行号
+    public static final byte LABEL  = 3; // 协助GOTO定位用，无实际作用
+    public static final byte LOCAL  = 4; // 本地变量表名称
 }

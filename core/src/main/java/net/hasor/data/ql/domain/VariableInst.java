@@ -35,7 +35,14 @@ public class VariableInst extends Inst {
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         // .表达式指令
         this.value.doCompiler(queue, stackTree);
-        // .存储数据到堆中
-        queue.inst(STORE, this.varName);
+        //
+        // .如果当前堆栈中存在该变量的定义，那么直接覆盖
+        int index = stackTree.contains(this.varName);
+        if (index >= 0) {
+            queue.inst(STORE, index);
+        } else {
+            index = stackTree.push(this.varName);
+            queue.inst(STORE, index);
+        }
     }
 }

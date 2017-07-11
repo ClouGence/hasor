@@ -40,8 +40,6 @@ public class TernaryExpression extends Expression {
         //
         // .测试表达式
         this.testExpression.doCompiler(queue, stackTree);
-        queue.inst(LDC_B, true);
-        queue.inst(DO, "==");
         queue.inst(IF, elseEnterIn);//如果判断失败，跳转到下一个Label
         //
         // .第一个表达式

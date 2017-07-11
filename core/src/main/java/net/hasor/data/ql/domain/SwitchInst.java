@@ -92,8 +92,8 @@ public class SwitchInst extends Inst {
         //
         // .if 和 elseif
         //
-        Label lastEnterIn = queue.labelDef(); // 最后一个入口 Label（随着if分支发生变化）
         Label finalLabel = queue.labelDef();  // else出口 Label
+        Label lastEnterIn = queue.labelDef(); // 最后一个入口 Label（随着if分支发生变化）
         //
         for (SwitchExpression switchExp : this.testBlockSet) {
             //
@@ -106,8 +106,6 @@ public class SwitchInst extends Inst {
             // .条件判断
             Expression testExpression = switchExp.testExpression;
             testExpression.doCompiler(queue, stackTree);
-            queue.inst(LDC_B, true);
-            queue.inst(DO, "==");
             queue.inst(IF, lastEnterIn);//如果判断失败，跳转到下一个Label
             //
             // .if的body

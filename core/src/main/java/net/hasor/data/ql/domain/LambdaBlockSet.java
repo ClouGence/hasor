@@ -48,24 +48,29 @@ public class LambdaBlockSet extends BlockSet implements Variable {
     //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
+        //
+        int size = this.paramList.size();
+        int methodAddress = 0;
         stackTree.newFrame();
         {
+            // .输出 lambda 到一个新的函数中
+            InstQueue instQueue = queue.newMethodInst();
+            methodAddress = instQueue.getName();
             //
-            // .LAMBDA，指令
-            int size = this.paramList.size();
-            queue.inst(LAMBDA, size);
+            // .函数定义
+            instQueue.inst(METHOD, size);
             //
             // .声明函数参数的变量位置
             for (String name : this.paramList) {
                 int index = stackTree.push(name);//将变量名压栈，并返回栈中的位置
-                queue.inst(LOCAL, index, name);  //为栈中某个位置的变量命名
+                instQueue.inst(LOCAL, index, name);  //为栈中某个位置的变量命名
             }
-            //
             // .函数体
-            queue.inst(FRAME_S);
-            super.doCompiler(queue, stackTree);
-            queue.inst(FRAME_E);
+            super.doCompiler(instQueue, stackTree);
         }
         stackTree.dropFrame();
+        //
+        // .指向函数的指针
+        queue.inst(M_REF, methodAddress, size);
     }
 }

@@ -447,19 +447,14 @@ LambdaBlockSet lambdaDef() : {                       LambdaBlockSet lambdaBlockS
                                                      BlockSet       scriptBodys    = null;
 } {
     <LAMBDA> ":"
-    (
-        LOOKAHEAD(2)
+    <OPAR>
         (
-            <OPAR><CPAR>
-        ) | (
-            <OPAR>
-                paramName = <IDENTIFIER>            {lambdaBlockSet.addParam(paramName.image);}
-                (
-                    <COMMA> paramName = <IDENTIFIER>{lambdaBlockSet.addParam(paramName.image);}
-                )*
-            <CPAR>
-        )
-    )
+            paramName = <IDENTIFIER>        {lambdaBlockSet.addParam(paramName.image);}
+        )?
+        (
+            <COMMA> paramName = <IDENTIFIER>{lambdaBlockSet.addParam(paramName.image);}
+        )*
+    <CPAR>
     "->"
     (
         (
