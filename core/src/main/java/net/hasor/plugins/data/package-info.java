@@ -17,5 +17,5 @@
  * DataQL，内置函数库。
  */
 @AopIgnore
-package net.hasor.plugins.dataql;
+package net.hasor.plugins.data;
 import net.hasor.core.container.AopIgnore;

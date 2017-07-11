@@ -13,26 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.db;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.Provider;
-
-import javax.sql.DataSource;
+package net.hasor.plugins.data.collection;
+import net.hasor.dataql.UDF;
 /**
- * 数据库框架，提供了JDBC操作接口，和全面的事务管理功能。
+ * 循环遍历函数
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface DBApiBinder extends ApiBinder {
-    /** 添加数据源 */
-    public void addDataSource(DataSource dataSource);
-
-    /** 添加数据源 */
-    public void addDataSource(Provider<DataSource> dataSource);
-
-    /** 添加数据源 */
-    public void addDataSource(String name, DataSource dataSource);
-
-    /** 添加数据源 */
-    public void addDataSource(String name, Provider<DataSource> dataSource);
+public class Foreach extends AbstractCollectionUDF implements UDF {
+    @Override
+    public Object call(Object[] values) {
+        if (values == null || values.length < 1) {
+            return null;
+        }
+        //
+        return super.toCollection(values[0]);
+    }
 }

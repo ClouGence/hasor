@@ -13,27 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.dataql.collection;
-import net.hasor.db.ql.UDF;
-
-import java.util.Collection;
 /**
- * 取第一个元素。
- * @author 赵永春(zyc@hasor.net)
- * @version : 2017-06-09
+ * DataQL，集合函数库。
  */
-public class First extends AbstractCollectionUDF implements UDF {
-    @Override
-    public Object call(Object[] values) {
-        if (values == null || values.length < 1) {
-            return null;
-        }
-        //
-        Collection<Object> objects = super.toCollection(values[0]);
-        if (objects.isEmpty()) {
-            return null;
-        }
-        //
-        return objects.iterator().next();
-    }
-}
+@AopIgnore
+package net.hasor.plugins.data.collection;
+import net.hasor.core.container.AopIgnore;

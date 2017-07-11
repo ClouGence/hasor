@@ -18,7 +18,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.db.DataApiBinder;
+import net.hasor.db.DBApiBinder;
 import net.test.hasor.db._07_ql.udfs.FindUserByID;
 import net.test.hasor.db._07_ql.udfs.Foo;
 import net.test.hasor.db._07_ql.udfs.QueryOrder;
@@ -41,7 +41,7 @@ public class AbstractTaskTest implements Module {
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         // - DataUDF
-        DataApiBinder binder = apiBinder.tryCast(DataApiBinder.class);
+        DBApiBinder binder = apiBinder.tryCast(DBApiBinder.class);
         binder.addUDF("findUserByID", FindUserByID.class);
         binder.addUDF("queryOrder", QueryOrder.class);
         binder.addUDF("userManager.findUserByID", UserManager.class);

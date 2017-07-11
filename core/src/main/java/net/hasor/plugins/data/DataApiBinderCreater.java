@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.plugins.data;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
-import net.hasor.core.Provider;
+import net.hasor.core.*;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.dataql.UDF;
 import net.hasor.db.DBModule;
-import net.hasor.db.ql.ctx.UDFDefine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +34,34 @@ public class DataApiBinderCreater implements ApiBinderCreater {
     @Override
     public ApiBinder createBinder(final ApiBinder apiBinder) {
         return new DataApiBinderImpl(apiBinder);
+    }
+    //
+    //
+    private static class UDFDefine implements AppContextAware, UDF {
+        private String                  udfName;
+        private BindInfo<? extends UDF> udfInfo;
+        private AppContext              appContext;
+        private UDF                     target;
+        //
+        public UDFDefine(String udfName, BindInfo<? extends UDF> udfInfo) {
+            this.udfName = udfName;
+            this.udfInfo = udfInfo;
+        }
+        @Override
+        public void setAppContext(AppContext appContext) {
+            this.appContext = appContext;
+        }
+        @Override
+        public Object call(Object[] values) {
+            if (this.target == null) {
+                synchronized (this) {
+                    if (this.target == null) {
+                        this.target = this.appContext.getInstance(this.udfInfo);
+                    }
+                }
+            }
+            return this.target;
+        }
     }
     //
     private static class DataApiBinderImpl extends ApiBinderWrap implements DataApiBinder {
@@ -72,7 +96,6 @@ public class DataApiBinderCreater implements ApiBinderCreater {
             this.addDataSource(dataSourceID, new InstanceProvider<DataSource>(dataSource));
         }
         //
-        //
         @Override
         public void addUDF(String name, BindInfo<? extends UDF> udfInfo) {
             UDFDefine define = Hasor.autoAware(getEnvironment(), new UDFDefine(name, udfInfo));
@@ -83,4 +106,5 @@ public class DataApiBinderCreater implements ApiBinderCreater {
             this.installModule(new DBModule(dataSourceID, dataSource));
         }
     }
+    //
 }

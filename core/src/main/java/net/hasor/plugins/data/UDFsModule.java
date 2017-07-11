@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.dataql;
+package net.hasor.plugins.data;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
-import net.hasor.db.DataApiBinder;
-import net.hasor.plugins.dataql.collection.First;
-import net.hasor.plugins.dataql.collection.Foreach;
-import net.hasor.plugins.dataql.collection.Last;
-import net.hasor.plugins.dataql.collection.Limit;
+import net.hasor.db.DBApiBinder;
+import net.hasor.plugins.data.collection.First;
+import net.hasor.plugins.data.collection.Foreach;
+import net.hasor.plugins.data.collection.Last;
+import net.hasor.plugins.data.collection.Limit;
 /**
  * 提供内置 <code>DataQL</code> UDF 函数。
  * @version : 2017-6-08
@@ -29,7 +29,7 @@ import net.hasor.plugins.dataql.collection.Limit;
 public class UDFsModule implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //
-        DataApiBinder dataBinder = apiBinder.tryCast(DataApiBinder.class);
+        DBApiBinder dataBinder = apiBinder.tryCast(DBApiBinder.class);
         if (dataBinder == null) {
             return;
         }

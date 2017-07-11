@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.dataql.collection;
+package net.hasor.plugins.data.collection;
 import net.hasor.core.convert.ConverterUtils;
-import net.hasor.db.ql.UDF;
+import net.hasor.dataql.UDF;
 
 import java.util.ArrayList;
 import java.util.Collection;
