@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/hasor-web">
+    <hasor>
+        <!-- 包扫描覆盖范围，逗号间隔 -->
+        <loadPackages>net.hasor.web.*</loadPackages>
+
+        <environmentVar>
+            <!-- WebMVC 是否启用布局管理器 -->
+            <HASOR_RESTFUL_LAYOUT>false</HASOR_RESTFUL_LAYOUT>
+            <!-- WebMVC 布局模版位置 -->
+            <HASOR_RESTFUL_LAYOUT_PATH_LAYOUT>/layout</HASOR_RESTFUL_LAYOUT_PATH_LAYOUT>
+            <!-- WebMVC 页面模版位置 -->
+            <HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES>/templates</HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES>
+
+            <!-- fileupload 允许的请求大小 -->
+            <HASOR_UPLOAD_MAX_REQUEST_SIZE>-1</HASOR_UPLOAD_MAX_REQUEST_SIZE>
+            <!-- fileupload 允许上传的单个文件大小 -->
+            <HASOR_UPLOAD_MAX_FILE_SIZE>-1</HASOR_UPLOAD_MAX_FILE_SIZE>
+
+        </environmentVar>
+
+        <!-- 默认要装载的模块 -->
+        <modules>
+            <module>net.hasor.web.valid.ValidWebPlugin</module>
+            <module>net.hasor.web.render.RenderWebPlugin</module>
+        </modules>
+
+        <!-- ApiBinder 扩展（多个 type 可以指定同一个实现类，Hasor 会自动映射到同一个实例对象上） -->
+        <apiBinderSet>
+            <binder type="net.hasor.web.WebApiBinder">net.hasor.web.invoker.InvokerWebApiBinderCreater</binder>
+        </apiBinderSet>
+
+        <!-- Invoker 扩展（多个 type 可以指定同一个实现类，Hasor 会自动映射到同一个实例对象上） -->
+        <invokerCreaterSet>
+            <invokerCreater type="net.hasor.web.valid.ValidInvoker">net.hasor.web.valid.ValidInvokerCreater</invokerCreater>
+            <invokerCreater type="net.hasor.web.RenderInvoker">net.hasor.web.render.RenderInvokerCreater</invokerCreater>
+        </invokerCreaterSet>
+
+        <!-- 文件上传 -->
+        <fileupload>
+            <!-- 上传文件缓存目录 -->
+            <cacheDirectory>${HASOR_TEMP_PATH}/fragment</cacheDirectory>
+            <!-- 允许的请求大小 ( -1 表示不限制)-->
+            <maxRequestSize>${HASOR_UPLOAD_MAX_REQUEST_SIZE}</maxRequestSize>
+            <!-- 允许上传的单个文件大小( -1 表示不限制) -->
+            <maxFileSize>${HASOR_UPLOAD_MAX_FILE_SIZE}</maxFileSize>
+        </fileupload>
+
+        <!-- 布局管理 -->
+        <layout enable="${HASOR_RESTFUL_LAYOUT}">
+            <!-- 布局模版位置 -->
+            <layoutPath>${HASOR_RESTFUL_LAYOUT_PATH_LAYOUT}</layoutPath>
+            <!-- 页面模版位置 -->
+            <templatePath>${HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES}</templatePath>
+        </layout>
+
+    </hasor>
+</config>

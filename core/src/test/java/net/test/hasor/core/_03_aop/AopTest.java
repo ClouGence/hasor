@@ -16,7 +16,7 @@
 package net.test.hasor.core._03_aop;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.plugins.aop.Aop;
+import net.hasor.core.exts.aop.Aop;
 import net.test.hasor.core._03_aop.myaop.MyAopBean;
 import net.test.hasor.core._03_aop.myaop.MyAopSetup;
 import net.test.hasor.core._03_aop.myaop.SuperMyAopBean;

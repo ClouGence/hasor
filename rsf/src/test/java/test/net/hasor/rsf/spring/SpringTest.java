@@ -28,7 +28,7 @@ import java.io.IOException;
 public class SpringTest {
     @Test
     public void springConsumerTest() {
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("spring/consumer-config.xml");
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("net/test/hasor/core/spring/consumer-config.xml");
         EchoService echoService = (EchoService) applicationContext.getBean("echoService");
         for (int i = 0; i < 20; i++) {
             try {
@@ -41,7 +41,7 @@ public class SpringTest {
     }
     @Test
     public void springProviderTest() throws IOException {
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("spring/provider-config.xml");
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("net/test/hasor/core/spring/provider-config.xml");
         Object obj1 = applicationContext.getBean("echoService");
         System.out.println("@@@@@@@@@@@@@@" + obj1);
         //

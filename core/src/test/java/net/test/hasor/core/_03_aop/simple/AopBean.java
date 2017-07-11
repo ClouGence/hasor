@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.test.hasor.core._03_aop.simple;
-import net.hasor.plugins.aop.Aop;
+import net.hasor.core.exts.aop.Aop;
 /**
  * Bean测试
  * @version : 2015年1月12日

@@ -18,10 +18,10 @@ import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.core.setting.InputStreamSettings;
 import net.hasor.core.setting.StreamType;
-import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.utils.ReaderInputStream;
+import net.hasor.rsf.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

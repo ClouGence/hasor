@@ -15,10 +15,10 @@
  */
 package net.hasor.rsf.console.commands;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
 import net.hasor.rsf.console.RsfInstruct;
+import net.hasor.rsf.utils.StringUtils;
 /**
  * 在本次Telnet中设置环境变量，当Telnet连接断开变量失效
  * @version : 2016年4月3日

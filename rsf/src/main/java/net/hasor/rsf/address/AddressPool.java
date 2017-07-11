@@ -266,7 +266,7 @@ public class AddressPool implements RsfUpdater {
             Set<String> keySet = this.addressPool.keySet();
             for (String bucketKey : keySet) {
                 AddressBucket bucket = this.addressPool.get(bucketKey);
-                if (bucket==null){
+                if (bucket == null) {
                     return;
                 }
                 this.logger.debug("service {} removeAddress.", bucketKey);
@@ -294,7 +294,7 @@ public class AddressPool implements RsfUpdater {
         /*在并发情况下,newAddress和invalidAddress可能正在执行,因此要锁住poolLock*/
         synchronized (this.poolLock) {
             AddressBucket bucket = this.addressPool.get(serviceID);
-            if (bucket==null){
+            if (bucket == null) {
                 return;
             }
             this.logger.debug("service {} refreshCache.", serviceID);
@@ -310,7 +310,7 @@ public class AddressPool implements RsfUpdater {
             Set<String> keySet = this.addressPool.keySet();
             for (String bucketKey : keySet) {
                 AddressBucket bucket = this.addressPool.get(bucketKey);
-                if (bucket==null){
+                if (bucket == null) {
                     return;
                 }
                 this.logger.debug("service {} refreshCache.", bucketKey);

@@ -16,11 +16,11 @@
 package net.hasor.rsf.serialize;
 import net.hasor.core.Environment;
 import net.hasor.core.XmlNode;
-import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.SerializeCoder;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
+import net.hasor.rsf.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

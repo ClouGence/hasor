@@ -12,7 +12,7 @@ http://project.hasor.net/schema/spring/hasor-core http://project.hasor.net/schem
     </bean>
 
     <!-- 创建 Hasor 容器 -->
-    <h:hasor refProperties="propertyConfigurer" startWith="net.test.hasor.spring.SpringTestModule">
+    <h:hasor refProperties="propertyConfigurer" startWith="net.test.hasor.core.spring.SpringTestModule">
         <!-- (可选) 如果需要指定Hasor配置文件那么在这里指明，否则不需要配置 -->
         <h:configFile>classpath:simple-config.xml</h:configFile>
     </h:hasor>
@@ -21,10 +21,10 @@ http://project.hasor.net/schema/spring/hasor-core http://project.hasor.net/schem
     <h:bean id="helloString" refID="helloWord"/>
 
     <!-- 声明一个 Spring Bean，名称为：hasorBean。该 Bean 是通过 AppContext.getInstance(HasorBean.class) 获取。 -->
-    <h:bean id="hasorBean" refType="net.test.hasor.spring.bean.HasorBean"/>
+    <h:bean id="hasorBean" refType="net.test.hasor.core.spring.bean.HasorBean"/>
 
     <!-- 常规的 Spring Bean -->
-    <bean id="springBean" class="net.test.hasor.spring.bean.SpringBean">
+    <bean id="springBean" class="net.test.hasor.core.spring.bean.SpringBean">
         <property name="hasorBean" ref="hasorBean"/>
     </bean>
 

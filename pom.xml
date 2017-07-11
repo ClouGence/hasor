@@ -1,26 +1,24 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>net.hasor</groupId>
-        <artifactId>hasor-parent</artifactId>
-        <version>0.0.10</version>
-    </parent>
 
-    <!-- Maven Info -->
     <groupId>net.hasor</groupId>
-    <artifactId>hasor-root</artifactId>
-    <version>3.2.0-SNAPSHOT</version>
+    <artifactId>hasor-parent</artifactId>
+    <version>0.0.11-SNAPSHOT</version>
     <packaging>pom</packaging>
-
-    <!-- Project Info -->
-    <name>Hasor</name>
-    <description>the hasor core project.</description>
 
     <!-- 配置属性 -->
     <properties>
-        <project.shortname>Hasor-</project.shortname>
+        <wtpversion>2.0</wtpversion>
+        <downloadSources>true</downloadSources>
+        <downloadJavadocs>true</downloadJavadocs>
+        <gpg.executable>gpg2</gpg.executable>
+        <gpg.passphrase>fubing220106</gpg.passphrase>
+        <maven.test.skip>true</maven.test.skip>
+
+        <project.shortname></project.shortname>
         <project.website>http://www.hasor.net/</project.website>
-        <project.inceptionYear>2016</project.inceptionYear>
+        <project.inceptionYear>2017</project.inceptionYear>
         <javadocs.bottom><![CDATA[
 <!-- CNZZ -->
 <script type="text/javascript">
@@ -57,14 +55,28 @@
         ]]></javadocs.bottom>
     </properties>
 
+    <!-- 项目信息 -->
+    <name>Root</name>
+    <description>master POM</description>
+    <url>${project.website}</url>
+    <inceptionYear>${project.inceptionYear}</inceptionYear>
+
+    <!-- 授权协议 -->
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
     <!-- SCM -->
     <scm>
-        <connection>scm:git:git@git.oschina.net:zycgit/hasor.git</connection>
-        <developerConnection>scm:git:git@git.oschina.net:zycgit/hasor.git</developerConnection>
-        <url>git@git.oschina.net:zycgit/hasor.git</url>
-        <tag>HEAD</tag>
+        <connection>scm:git@git.oschina.net:zycgit/hasor-configuration.git</connection>
+        <developerConnection>scm:git@git.oschina.net:zycgit/hasor-configuration.git</developerConnection>
+        <url>git@git.oschina.net:zycgit/hasor-configuration.git</url>
     </scm>
 
+    <!-- 开发者 -->
     <developers>
         <developer>
             <name>赵永春(Mr.Zhao)</name>
@@ -74,48 +86,189 @@
 
     <modules>
         <module>core</module>
+        <module>db</module>
+        <module>web</module>
+        <module>dataql</module>
         <module>rsf</module>
         <module>registry</module>
         <module>land</module>
+        <module>plugins</module>
     </modules>
 
-    <!-- maven deploy插件，当在deploy时忽略-->
+    <!-- 构建描述 -->
     <build>
         <plugins>
+            <!-- Compile -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.2</version>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
                 <configuration>
-                    <skip>true</skip>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>UTF8</encoding>
                 </configuration>
             </plugin>
+            <!-- Source -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5</version>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
                 <configuration>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <useReleaseProfile>false</useReleaseProfile>
-                    <releaseProfiles>release</releaseProfiles>
-                    <tagNameFormat>Release.RSF-@{project.version}</tagNameFormat>
-                    <goals>deploy</goals>
+                    <aggregate>true</aggregate>
+                    <additionalparam>${java_doc_additionalparam}</additionalparam>
+                    <excludePackageNames>net.hasor.libs.*,org.*,</excludePackageNames>
+                    <encoding>UTF-8</encoding>
+                    <docencoding>UTF-8</docencoding>
+                    <bottom>${inner.javadocs_bottom}</bottom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- resources -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+            <!-- eclipse 插件 -->
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.2</version>
-                <extensions>true</extensions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.9</version>
                 <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
-                    <skipLocalStaging>true</skipLocalStaging>
-                    <skipStaging>true</skipStaging>
-                    <skipRemoteStaging>true</skipRemoteStaging>
+                    <workspace>${basedir}</workspace>
+                    <downloadSources>${downloadSources}</downloadSources>
+                    <downloadJavadocs>${downloadJavadocs}</downloadJavadocs>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>snapshots</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <!-- 发布使用的版本库 -->
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <!-- 使用“-P release”启用下面配置 -->
+    <profiles>
+        <profile>
+            <activation>
+                <jdk>1.8</jdk>
+            </activation>
+            <properties>
+                <java_doc_additionalparam>-Xdoclint:none</java_doc_additionalparam>
+            </properties>
+        </profile>
+        <profile>
+            <id>release</id>
+            <properties>
+                <inner.javadocs_bottom>${javadocs.bottom}</inner.javadocs_bottom>
+            </properties>
+            <build>
+                <plugins>
+                    <!-- GPG -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.2</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-release-plugin</artifactId>
+                        <version>2.5</version>
+                        <configuration>
+                            <autoVersionSubmodules>true</autoVersionSubmodules>
+                            <useReleaseProfile>false</useReleaseProfile>
+                            <releaseProfiles>release</releaseProfiles>
+                            <tagNameFormat>Release.${project.shortname}@{project.version}</tagNameFormat>
+                            <goals>deploy</goals>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <!-- 公共依赖 -->
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.23</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

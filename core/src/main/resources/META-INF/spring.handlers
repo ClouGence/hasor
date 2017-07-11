@@ -1,1 +1,1 @@
-http\://project.hasor.net/schema/spring/hasor-core=net.hasor.plugins.spring.parser.HasorNamespaceHandler
+http\://project.hasor.net/schema/spring/hasor-core=net.hasor.core.exts.spring.parser.HasorNamespaceHandler
