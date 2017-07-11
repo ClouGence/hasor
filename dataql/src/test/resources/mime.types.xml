@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mimeConfig xmlns="http://project.hasor.net/hasor/schema/mime-mapping">
+    <mime-mapping>
+        <extension>test</extension>
+        <mime-type>测试类型测试类型</mime-type>
+    </mime-mapping>
+</mimeConfig>
