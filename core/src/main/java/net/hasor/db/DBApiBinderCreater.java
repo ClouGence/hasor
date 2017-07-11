@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.db;
-import net.hasor.core.*;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Hasor;
+import net.hasor.core.Matcher;
+import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.core.classcode.matcher.AopMatchers;
@@ -25,8 +28,6 @@ import net.hasor.db.jdbc.JdbcOperations;
 import net.hasor.db.jdbc.core.JdbcOperationsProvider;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.core.JdbcTemplateProvider;
-import net.hasor.db.ql.UDF;
-import net.hasor.db.ql.ctx.UDFDefine;
 import net.hasor.db.transaction.TransactionManager;
 import net.hasor.db.transaction.TransactionTemplate;
 import net.hasor.db.transaction.interceptor.TransactionInterceptor;
@@ -39,34 +40,21 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
 /**
- * DataQL 扩展接口。
+ * DB 扩展接口。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class DataApiBinderCreater implements ApiBinderCreater {
+public class DBApiBinderCreater implements ApiBinderCreater {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public ApiBinder createBinder(final ApiBinder apiBinder) {
-        return new DataApiBinderImpl(apiBinder);
+        return new DBApiBinderImpl(apiBinder);
     }
     //
-    private static class DataApiBinderImpl extends ApiBinderWrap implements DataApiBinder {
+    private static class DBApiBinderImpl extends ApiBinderWrap implements DBApiBinder {
         protected Logger logger = LoggerFactory.getLogger(getClass());
-        public DataApiBinderImpl(ApiBinder apiBinder) {
+        public DBApiBinderImpl(ApiBinder apiBinder) {
             super(apiBinder);
-        }
-        //
-        @Override
-        public void addUDF(String name, Class<? extends UDF> udfType) {
-            this.addUDF(name, bindType(UDF.class).uniqueName().to(udfType).toInfo());
-        }
-        @Override
-        public void addUDF(String name, UDF dataUDF) {
-            this.addUDF(name, bindType(UDF.class).uniqueName().toInstance(dataUDF).toInfo());
-        }
-        @Override
-        public void addUDF(String name, Provider<? extends UDF> udfProvider) {
-            this.addUDF(name, bindType(UDF.class).uniqueName().toProvider(udfProvider).toInfo());
         }
         //
         @Override
@@ -83,11 +71,6 @@ public class DataApiBinderCreater implements ApiBinderCreater {
         }
         //
         //
-        @Override
-        public void addUDF(String name, BindInfo<? extends UDF> udfInfo) {
-            UDFDefine define = Hasor.autoAware(getEnvironment(), new UDFDefine(name, udfInfo));
-            this.bindType(UDFDefine.class).uniqueName().toInstance(define);
-        }
         @Override
         public void addDataSource(String dataSourceID, Provider<DataSource> dataSource) {
             Hasor.assertIsNotNull(dataSource, "dataSource is null.");

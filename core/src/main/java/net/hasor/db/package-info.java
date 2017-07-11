@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 /**
- * 全面提供 “数据库 + 服务” 整合查询，并为查询结果提供全面的数据整合能力。您甚至可以通过一条 QL 混合 RPC 和数据库的查询结果。
- * 除此之外，Data 软件包，还为您提供全面的数据库事务控制能力，在底层上 Data 还为您提供了 DataSource、JDBC操作接口、等常见的功能。
- * 无论您是简单使用数据库查询，还是要整合数据库 + 服务。 Data 都将会您最有力的帮手。
- *
- * Data 提供的 DataQL
+ * 数据库框架，提供了JDBC操作接口，和全面的事务管理功能。
+ * @author 赵永春(zyc@hasor.net)
+ * @version : 2017-03-23
  */
 @AopIgnore
 package net.hasor.db;
