@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.plugins.dataql.collection;
-import net.hasor.data.ql.UDF;
+import net.hasor.db.ql.UDF;
 /**
  * 循环遍历函数
  * @author 赵永春(zyc@hasor.net)

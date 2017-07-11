@@ -15,7 +15,7 @@
  */
 package net.hasor.plugins.dataql.collection;
 import net.hasor.core.convert.ConverterUtils;
-import net.hasor.data.ql.UDF;
+import net.hasor.db.ql.UDF;
 
 import java.util.ArrayList;
 import java.util.Collection;

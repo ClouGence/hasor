@@ -17,7 +17,7 @@ package net.test.hasor.db._02_datasource.warp;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 import net.hasor.core.Settings;
-import net.hasor.data.DataApiBinder;
+import net.hasor.db.DataApiBinder;
 
 import javax.sql.DataSource;
 /***

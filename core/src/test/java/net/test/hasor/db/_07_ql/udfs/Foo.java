@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.test.hasor.db._07_ql.udfs;
-import net.hasor.data.ql.UDF;
+import net.hasor.db.ql.UDF;
 /**
  * @version : 2014-7-12
  * @author 赵永春 (zyc@byshell.org)

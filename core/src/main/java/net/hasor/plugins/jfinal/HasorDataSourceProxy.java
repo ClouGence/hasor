@@ -17,8 +17,8 @@ package net.hasor.plugins.jfinal;
 import com.jfinal.plugin.activerecord.IDataSourceProvider;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
-import net.hasor.data.DataApiBinder;
-import net.hasor.data.transaction.TranManager;
+import net.hasor.db.DataApiBinder;
+import net.hasor.db.transaction.TranManager;
 
 import javax.sql.DataSource;
 import java.lang.reflect.InvocationHandler;

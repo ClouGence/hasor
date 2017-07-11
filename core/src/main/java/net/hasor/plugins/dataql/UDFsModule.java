@@ -16,7 +16,7 @@
 package net.hasor.plugins.dataql;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
-import net.hasor.data.DataApiBinder;
+import net.hasor.db.DataApiBinder;
 import net.hasor.plugins.dataql.collection.First;
 import net.hasor.plugins.dataql.collection.Foreach;
 import net.hasor.plugins.dataql.collection.Last;

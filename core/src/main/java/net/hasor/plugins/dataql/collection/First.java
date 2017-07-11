@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.plugins.dataql.collection;
-import net.hasor.data.ql.UDF;
+import net.hasor.db.ql.UDF;
 
 import java.util.Collection;
 /**

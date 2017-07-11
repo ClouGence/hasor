@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.test.hasor.db._07_ql.udfs;
-import net.hasor.data.ql.UDF;
+import net.hasor.db.ql.UDF;
 
 import java.util.HashMap;
 /**

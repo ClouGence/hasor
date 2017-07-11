@@ -18,10 +18,10 @@ import com.alibaba.fastjson.JSON;
 import net.hasor.core.Settings;
 import net.hasor.core.utils.IOUtils;
 import net.hasor.core.utils.ResourcesUtils;
-import net.hasor.data.ql.DataQL;
-import net.hasor.data.ql.Query;
-import net.hasor.data.ql.QueryResult;
-import net.hasor.data.ql.domain.parser.ParseException;
+import net.hasor.db.ql.DataQL;
+import net.hasor.db.ql.Query;
+import net.hasor.db.ql.QueryResult;
+import net.hasor.db.ql.domain.parser.ParseException;
 import org.junit.Test;
 
 import java.io.IOException;
