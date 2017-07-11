@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 package net.hasor.core.utils;
-import net.hasor.core.utils.BeanUtils;
-
 import java.util.Map;
 import java.util.WeakHashMap;
 /**

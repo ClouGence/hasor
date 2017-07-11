@@ -67,7 +67,7 @@
         <modules loadModule="${HASOR_LOAD_MODULE}" loadErrorShow="true">
             <module>net.hasor.web.valid.ValidWebPlugin</module>
             <module>net.hasor.web.render.RenderWebPlugin</module>
-            <module>net.hasor.data.ql.ctx.DataQLModule</module>
+            <module>net.hasor.db.ql.ctx.DataQLModule</module>
 
             <module>net.hasor.plugins.startup.StartupModule</module>
             <module>net.hasor.plugins.aop.AopModule</module>
@@ -77,7 +77,7 @@
         <!-- ApiBinder 扩展（多个 type 可以指定同一个实现类，Hasor 会自动映射到同一个实例对象上） -->
         <apiBinderSet>
             <binder type="net.hasor.web.WebApiBinder">net.hasor.web.invoker.InvokerWebApiBinderCreater</binder>
-            <binder type="net.hasor.data.DataApiBinder">net.hasor.data.DataApiBinderCreater</binder>
+            <binder type="net.hasor.db.DataApiBinder">net.hasor.db.DataApiBinderCreater</binder>
         </apiBinderSet>
 
         <!-- Invoker 扩展（多个 type 可以指定同一个实现类，Hasor 会自动映射到同一个实例对象上） -->
