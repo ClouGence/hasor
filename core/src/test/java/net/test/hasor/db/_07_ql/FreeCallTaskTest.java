@@ -74,7 +74,7 @@ public class FreeCallTaskTest extends AbstractTaskTest {
     }
     @Test
     public void mainALL() throws Exception {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 14; i < 100; i++) {
             this.printTaskTree("/graphql/graphql_" + i + ".ql");
         }
     }

@@ -71,7 +71,7 @@
 
             <module>net.hasor.plugins.startup.StartupModule</module>
             <module>net.hasor.plugins.aop.AopModule</module>
-            <module>net.hasor.plugins.udfs.UDFsModule</module>
+            <module>net.hasor.plugins.dataql.UDFsModule</module>
         </modules>
 
         <!-- ApiBinder 扩展（多个 type 可以指定同一个实现类，Hasor 会自动映射到同一个实例对象上） -->
