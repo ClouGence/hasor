@@ -16,7 +16,6 @@
 package net.hasor.plugins.data;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
-import net.hasor.db.DBApiBinder;
 import net.hasor.plugins.data.collection.First;
 import net.hasor.plugins.data.collection.Foreach;
 import net.hasor.plugins.data.collection.Last;
@@ -29,7 +28,7 @@ import net.hasor.plugins.data.collection.Limit;
 public class UDFsModule implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //
-        DBApiBinder dataBinder = apiBinder.tryCast(DBApiBinder.class);
+        DataApiBinder dataBinder = apiBinder.tryCast(DataApiBinder.class);
         if (dataBinder == null) {
             return;
         }
