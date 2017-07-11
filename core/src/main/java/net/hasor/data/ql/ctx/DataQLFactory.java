@@ -16,11 +16,10 @@
 package net.hasor.data.ql.ctx;
 import net.hasor.data.ql.DataQL;
 import net.hasor.data.ql.Query;
-import net.hasor.data.ql.QueryUDF;
 import net.hasor.data.ql.UDF;
-import net.hasor.data.ql.dsl.QueryModel;
-import net.hasor.data.ql.dsl.parser.DataQLParser;
-import net.hasor.data.ql.dsl.parser.ParseException;
+import net.hasor.data.ql.domain.BlockSet;
+import net.hasor.data.ql.domain.parser.DataQLParser;
+import net.hasor.data.ql.domain.parser.ParseException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +28,7 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class DataQLFactory implements DataQL, QueryUDF {
+public class DataQLFactory implements DataQL {
     private Map<String, UDF> udfMap;
     protected DataQLFactory() {
         this.udfMap = new HashMap<String, UDF>();
@@ -46,26 +45,11 @@ public class DataQLFactory implements DataQL, QueryUDF {
         this.udfMap.put(udfName, udf);
     }
     //
-    @Override
-    public boolean containsUDF(String udfName) {
-        return this.udfMap.containsKey(udfName);
-    }
-    @Override
-    public UDF findUDF(String udfName) {
-        return this.udfMap.get(udfName);
-    }
     //
     @Override
     public Query createQuery(String qlString) throws ParseException {
-        return this.createQuery(qlString, null);
-    }
-    @Override
-    public Query createQuery(String qlString, QueryUDF temporaryUDF) throws ParseException {
-        if (temporaryUDF == null) {
-            temporaryUDF = EmptyQueryUDF.Instance;
-        }
         //
-        QueryModel queryModel = DataQLParser.parserQL(qlString);
-        return new QueryImpl(this, queryModel, temporaryUDF);
+        BlockSet queryModel = DataQLParser.parserDataQL(qlString);
+        return new QueryImpl(this, queryModel);
     }
 }

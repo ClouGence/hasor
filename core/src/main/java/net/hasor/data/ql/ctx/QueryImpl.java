@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.data.ql.ctx;
-import net.hasor.core.utils.ExceptionUtils;
 import net.hasor.data.ql.Query;
 import net.hasor.data.ql.QueryResult;
-import net.hasor.data.ql.QueryUDF;
-import net.hasor.data.ql.UDF;
-import net.hasor.data.ql.dsl.QueryModel;
-import net.hasor.data.ql.result.ValueModel;
-import net.hasor.data.ql.runtime.AbstractTask;
-import net.hasor.data.ql.runtime.QueryContext;
-import net.hasor.data.ql.runtime.TaskParser;
+import net.hasor.data.ql.domain.BlockSet;
+import net.hasor.data.ql.domain.inst.CompilerStack;
+import net.hasor.data.ql.domain.inst.InstQueue;
+import net.hasor.data.ql.domain.result.ObjectModel;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 /**
  * 用于封装和引发 QL 查询执行。
@@ -33,24 +29,12 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 class QueryImpl implements Query {
-    private final QueryUDF   dataQL;
-    private final QueryModel queryModel;
-    private final QueryUDF   temporaryUDF;
+    private final BlockSet queryModel;
     //
-    public QueryImpl(QueryUDF dataQL, QueryModel queryModel, QueryUDF temporaryUDF) {
-        this.dataQL = dataQL;
+    public QueryImpl(DataQLFactory dataQL, BlockSet queryModel) {
         this.queryModel = queryModel;
-        this.temporaryUDF = temporaryUDF;
     }
     //
-    @Override
-    public String getQueryString(boolean useFragment) {
-        if (useFragment) {
-            return this.queryModel.buildQuery();
-        } else {
-            return this.queryModel.buildQueryWithoutFragment();
-        }
-    }
     //
     @Override
     public <T> T doQuery(Map<String, Object> queryContext, Class<?> toType) {
@@ -58,33 +42,9 @@ class QueryImpl implements Query {
     }
     @Override
     public QueryResult doQuery(Map<String, Object> queryContext) {
-        AbstractTask queryTask = new TaskParser().doParser(this.queryModel.getDomain());
-        if (queryContext == null) {
-            queryContext = Collections.EMPTY_MAP;
-        }
-        QueryContext taskContext = new QueryContext(this.dataQL, queryContext) {
-            @Override
-            public UDF findUDF(String udfName) {
-                if (temporaryUDF.containsUDF(udfName)) {
-                    return temporaryUDF.findUDF(udfName);
-                }
-                if (dataQL.containsUDF(udfName)) {
-                    return dataQL.findUDF(udfName);
-                }
-                throw new UnsupportedOperationException("‘" + udfName + "’ udf is undefined.");
-            }
-        };
+        InstQueue queue = new InstQueue();
+        this.queryModel.doCompiler(queue, new CompilerStack());
         //
-        try {
-            queryTask.doTask(taskContext);
-            Object output = taskContext.getOutput();
-            if (output instanceof QueryResult) {
-                return (QueryResult) output;
-            } else {
-                return new ValueModel(output);
-            }
-        } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
-        }
+        return new ObjectModel(new HashMap<String, Object>());
     }
 }

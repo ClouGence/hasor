@@ -18,9 +18,6 @@ import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.data.ql.UDF;
-import net.hasor.data.ql.Var;
-
-import java.util.Map;
 /**
  * DataUDF 函数定义
  * @author 赵永春(zyc@hasor.net)
@@ -43,7 +40,7 @@ public class UDFDefine implements UDF, AppContextAware {
         return this.name;
     }
     @Override
-    public Object call(final Map<String, Var> values) {
+    public Object call(Object[] values) {
         return this.target.call(values);
     }
 }

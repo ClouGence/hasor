@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.data.ql.ctx;
-import net.hasor.data.ql.QueryUDF;
-import net.hasor.data.ql.UDF;
+package net.hasor.data.ql.runtime;
+import java.util.ArrayList;
+import java.util.List;
 /**
- * 一个永久为空的 QueryUDF 接口实现。
+ * 内存数据结构。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class EmptyQueryUDF implements QueryUDF {
-    public static final QueryUDF Instance = new EmptyQueryUDF();
-    @Override
-    public boolean containsUDF(String udfName) {
-        return false;
-    }
-    @Override
-    public UDF findUDF(String udfName) {
-        return null;
+public class MethodDataStack {
+    private int          entryAddress = 0; // 函数，指令入口地址
+    private int          exitAddress  = 0; // 函数，指令出口地址
+    private List<Object> dataList     = null;// 数据
+    //
+    public MethodDataStack() {
+        this.dataList = new ArrayList<Object>();
     }
 }
