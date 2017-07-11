@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 /**
- * DataQL，数据模型。
+ * DataQL，结果模型。
+ * @author 赵永春(zyc@hasor.net)
+ * @version : 2017-03-23
  */
 @AopIgnore
 package net.hasor.data.ql.domain.result;

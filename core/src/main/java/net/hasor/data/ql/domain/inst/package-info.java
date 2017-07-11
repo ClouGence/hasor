@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * 指令序列数据模型
+ * 指令序列模型。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-03
  */
