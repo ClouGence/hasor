@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 /**
- * DataQL，数据服务查询语言，DataQL 参考了 GraphQL 查询语言。
- * 包含如下特性：
- *  1.API DSL ，DataQL DSL 两种查询 DSL。
- *  2.内置查询计划优化，可以有效的通过并行查询来提升查询性能。
+ * DataQL，数据服务查询语言。DataQL 参考了 GraphQL 查询语言的设计思想，并加入了 Script 的特性。整体实现采用了编译方式。
+ * @author 赵永春(zyc@hasor.net)
+ * @version : 2017-03-23
  */
 @AopIgnore
 package net.hasor.data.ql;

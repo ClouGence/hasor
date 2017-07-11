@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.data.ql;
-import net.hasor.data.ql.dsl.parser.ParseException;
+import net.hasor.data.ql.domain.parser.ParseException;
 /**
  * DataQL 上下文。
  * @author 赵永春(zyc@hasor.net)
@@ -22,6 +22,4 @@ import net.hasor.data.ql.dsl.parser.ParseException;
  */
 public interface DataQL {
     public Query createQuery(String qlString) throws ParseException;
-
-    public Query createQuery(String qlString, QueryUDF temporaryUDF) throws ParseException;
 }

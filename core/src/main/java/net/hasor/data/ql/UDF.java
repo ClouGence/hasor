@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.data.ql;
-import java.util.Map;
 /**
  * UDF
  * @author 赵永春(zyc@hasor.net)
@@ -22,5 +21,5 @@ import java.util.Map;
  */
 public interface UDF {
     /** 执行服务调用 */
-    public Object call(Map<String, Var> values);
+    public Object call(Object[] values);
 }
