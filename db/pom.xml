@@ -8,7 +8,7 @@
 
     <!-- Maven Info -->
     <artifactId>hasor-db</artifactId>
-    <version>3.2.0-SNAPSHOT</version>
+    <version>${hasor.version}</version>
     <packaging>jar</packaging>
 
     <!-- Project Info -->
@@ -41,7 +41,7 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-core</artifactId>
-            <version>3.2.0-SNAPSHOT</version>
+            <version>${hasor.version}</version>
         </dependency>
 
         <!-- 整合 MyBatis 提供MyBatis插件, 最终由项目环境的 MyBatis 提供依赖 -->

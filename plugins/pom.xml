@@ -8,7 +8,7 @@
 
     <!-- Maven Info -->
     <artifactId>hasor-plugins</artifactId>
-    <version>3.2.0-SNAPSHOT</version>
+    <version>${hasor.version}</version>
     <packaging>jar</packaging>
 
     <!-- Project Info -->
@@ -41,27 +41,27 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-core</artifactId>
-            <version>3.2.0-SNAPSHOT</version>
+            <version>${hasor.version}</version>
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-dataql</artifactId>
-            <version>3.2.0-SNAPSHOT</version>
+            <version>${hasor.version}</version>
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-db</artifactId>
-            <version>3.2.0-SNAPSHOT</version>
+            <version>${hasor.version}</version>
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-web</artifactId>
-            <version>3.2.0-SNAPSHOT</version>
+            <version>${hasor.version}</version>
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-rsf</artifactId>
-            <version>1.3.2-SNAPSHOT</version>
+            <version>${hasor.version}</version>
         </dependency>
 
 

@@ -8,7 +8,7 @@
 
     <!-- Maven Info -->
     <artifactId>hasor-registry</artifactId>
-    <version>1.3.2-SNAPSHOT</version>
+    <version>${hasor.version}</version>
     <packaging>jar</packaging>
 
     <!-- Project Info -->
@@ -41,7 +41,7 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-rsf</artifactId>
-            <version>1.3.2-SNAPSHOT</version>
+            <version>${hasor.version}</version>
         </dependency>
 
         <!-- JSON 序列化 -->
