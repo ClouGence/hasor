@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+[<a href="/">首页</a>]
+[<a href="add_user.htm">添加用户</a>]
+[<a href="list">用户列表</a>]
+<br/><br/>
+<table border="1">
+    <thead>
+    <tr>
+        <th>UserID</th>
+        <th>帐号</th>
+        <th>Email</th>
+        <th>密码</th>
+        <th>昵称</th>
+        <th>创建时间</th>
+        <th>修改时间</th>
+    </tr>
+    </thead>
+    <tbody>
+    <#list userList as user>
+        <tr>
+            <td>&nbsp;${user.id}</td>
+            <td>&nbsp;${user.account}</td>
+            <td>&nbsp;${user.email}</td>
+            <td>&nbsp;${user.password}</td>
+            <td>&nbsp;${user.nick}</td>
+            <td>&nbsp;${user.create_time?string("yyyy-MM-dd HH:mm:ss")}</td>
+            <td>&nbsp;${user.modify_time?string("yyyy-MM-dd HH:mm:ss")}</td>
+        </tr>
+    </#list>
+    </tbody>
+</table>
+<br/>
+response at : ${responseTime?string("yyyy-MM-dd HH:mm:ss")}
+</body>
+</html>

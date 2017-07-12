@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+[<a href="${ctx_path}/index.htm">首页</a>]
+[<a href="${ctx_path}/login.htm">登录</a>]
+[<a href="${ctx_path}/add_user.htm">添加用户</a>]
+[<a href="${ctx_path}/user_list.htm">用户列表</a>]
+<br/><br/>
+<!-- 帐号的验证结果 -->
+<#if validData["loginMessage"]?? >
+    ${validData["loginMessage"]?join(",<br/>")}<br/>
+</#if>
+<form action="${ctx_path}/login.do" method="post">
+    账号：<input name="account" type="text" value="${loginForm.account}"/></br>
+    密码：<input name="password" type="text" value="${loginForm.password}"/></br>
+    <input type="submit" value="登录"/>
+</form>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/main">
+    <hasor.environmentVar>
+
+        <!-- 注册中心地址 -->
+        <RSF_CENTER_SERVERS>rsf://127.0.0.1:2181/default</RSF_CENTER_SERVERS>
+        <!-- 注册中心工作模式 -->
+        <RSF_CENTER_WORK_MODE>client</RSF_CENTER_WORK_MODE>
+
+        <!-- RSF对外提供服务的IP -->
+        <RSF_SERVICE_IP>127.0.0.1</RSF_SERVICE_IP>
+        <!-- Telnet 控制台端口 -->
+        <RSF_CONSOLE_PORT>2140</RSF_CONSOLE_PORT>
+        <!-- RSF 协议服务端口（可以配置 0 用来关闭 RSF 连接器） -->
+        <RSF_SERVICE_PORT>2141</RSF_SERVICE_PORT>
+        <!-- Hprose 协议服务端口（可以配置 0 用来关闭 Hprose 连接器） -->
+        <HPROSE_SERVICE_PORT>2142</HPROSE_SERVICE_PORT>
+
+    </hasor.environmentVar>
+</config>

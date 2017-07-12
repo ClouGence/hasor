@@ -1,0 +1,78 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>net.hasor</groupId>
+        <artifactId>example-root</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <!-- Maven Info -->
+    <groupId>net.hasor</groupId>
+    <artifactId>example-hasor</artifactId>
+    <version>1.0</version>
+    <packaging>war</packaging>
+
+    <!-- 引用依赖 -->
+    <dependencies>
+        <!-- RPC 例子接口定义 -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>example-rpc-domain</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <!-- Hasor -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-core</artifactId>
+        </dependency>
+
+        <!-- RPC框架 -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-rsf</artifactId>
+        </dependency>
+
+        <!-- 分布式PRC扩展 -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-registry</artifactId>
+        </dependency>
+
+        <!-- freemarker -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+        </dependency>
+
+        <!-- servlet -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- DB begin -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+        </dependency>
+        <!-- DB end -->
+
+        <!-- apache begin -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+        </dependency>
+        <!-- apache end -->
+    </dependencies>
+</project>

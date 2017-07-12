@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+[<a href="${ctx_path}/index.htm">首页</a>]
+[<a href="${ctx_path}/login.htm">登录</a>]
+[<a href="${ctx_path}/add_user.htm">添加用户</a>]
+[<a href="${ctx_path}/user_list.htm">用户列表</a>]
+<br/><br/>
+<form action="${ctx_path}/addUser.do" method="post">
+    账号：<input name="account" type="text" value=""/></br>
+    Email：<input name="email" type="text" value=""/></br>
+    密码：<input name="password" type="text" value=""/></br>
+    昵称：<input name="nick" type="text" value=""/></br>
+    <input type="submit" value="添加用户"/>
+</form>
+</body>
+</html>
