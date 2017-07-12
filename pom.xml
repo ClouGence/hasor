@@ -86,14 +86,15 @@
     </developers>
 
     <modules>
-        <module>core</module>
-        <module>db</module>
-        <module>web</module>
-        <module>dataql</module>
-        <module>rsf</module>
-        <module>registry</module>
-        <module>land</module>
-        <module>plugins</module>
+        <module>hasor-core</module>
+        <module>hasor-db</module>
+        <module>hasor-web</module>
+        <module>hasor-dataql</module>
+        <module>hasor-rsf</module>
+        <module>hasor-registry</module>
+        <module>hasor-plugins</module>
+        <module>hasor-land</module>
+        <module>example</module>
     </modules>
 
     <!-- 构建描述 -->
