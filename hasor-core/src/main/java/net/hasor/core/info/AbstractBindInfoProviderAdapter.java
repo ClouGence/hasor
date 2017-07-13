@@ -70,30 +70,37 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
         if (StringUtils.isBlank(newID)) {
             throw new NullPointerException("newID is null.");
         }
+        // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("bindID", this.bindID, newID));
         this.bindID = newID;
     }
     public void setBindName(final String bindName) {
+        // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("bindName", this.bindName, bindName));
         this.bindName = bindName;
     }
     public void setBindType(final Class<T> bindType) {
+        // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("bindType", this.bindType, bindType));
         this.bindType = bindType;
     }
     public void setSourceType(final Class<? extends T> sourceType) {
+        // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("sourceType", this.sourceType, sourceType));
         this.sourceType = sourceType;
     }
     public void setSingleton(boolean singleton) {
+        // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("singleton", this.singleton, singleton));
         this.singleton = singleton;
     }
     public void setCustomerProvider(final Provider<? extends T> customerProvider) {
+        // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("customerProvider", this.customerProvider, customerProvider));
         this.customerProvider = customerProvider;
     }
     public void setScopeProvider(final Provider<Scope> scopeProvider) {
+        // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("scopeProvider", this.scopeProvider, scopeProvider));
         this.scopeProvider = scopeProvider;
     }

@@ -26,10 +26,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static net.hasor.core.AppContext.ContextEvent_Shutdown;
 import static net.hasor.core.AppContext.ContextEvent_Started;
@@ -88,17 +85,13 @@ public class Hasor extends HashMap<String, String> {
     }
     public Hasor addModules(List<Module> moduleList) {
         if (moduleList != null) {
-            for (Module mod : moduleList) {
-                this.moduleList.add(mod);
-            }
+            this.moduleList.addAll(moduleList);
         }
         return this;
     }
     public Hasor addModules(Module... modules) {
         if (modules != null) {
-            for (Module mod : modules) {
-                this.moduleList.add(mod);
-            }
+            this.moduleList.addAll(Arrays.asList(modules));
         }
         return this;
     }

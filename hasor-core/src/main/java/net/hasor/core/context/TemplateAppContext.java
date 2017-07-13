@@ -465,8 +465,9 @@ public abstract class TemplateAppContext implements AppContext {
         /*3.Bind*/
         ApiBinder apiBinder = newApiBinder();
         for (Module module : findModules) {
-            if (module == null)
+            if (module == null) {
                 continue;
+            }
             this.installModule(apiBinder, module);
         }
         logger.info("appContext -> doBind.");
