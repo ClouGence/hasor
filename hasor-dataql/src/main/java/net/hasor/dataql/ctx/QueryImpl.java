@@ -19,7 +19,7 @@ import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.BlockSet;
 import net.hasor.dataql.domain.inst.CompilerStack;
 import net.hasor.dataql.domain.inst.InstQueue;
-import net.hasor.dataql.domain.result.ObjectModel;
+import net.hasor.dataql.result.ObjectModel;
 
 import java.util.HashMap;
 import java.util.Map;

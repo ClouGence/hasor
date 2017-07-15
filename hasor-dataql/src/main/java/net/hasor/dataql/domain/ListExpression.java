@@ -25,10 +25,10 @@ import java.util.List;
  * @version : 2017-03-23
  */
 public class ListExpression extends Expression {
-    private Class<?>         listType;
+    private String           listType;
     private List<Expression> expressionList;
     public ListExpression() {
-        this.listType = ArrayList.class;
+        this.listType = "";
         this.expressionList = new ArrayList<Expression>();
     }
     //

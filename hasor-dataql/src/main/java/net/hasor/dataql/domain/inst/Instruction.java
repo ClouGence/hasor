@@ -17,20 +17,45 @@ package net.hasor.dataql.domain.inst;
 import net.hasor.core.utils.StringUtils;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
 /**
  * QL 指令
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-03
  */
 public class Instruction implements InstOpcodes {
-    private byte         instCode  = 0;
-    private List<Object> instParam = null;
+    private byte     instCode  = 0;
+    private Object[] instParam = null;
     public Instruction(byte instCode, Object[] instParam) {
         this.instCode = instCode;
-        this.instParam = Arrays.asList(instParam);
+        this.instParam = instParam == null ? new Object[0] : instParam;
     }
+    //
+    //
+    /**获取指令码。*/
+    public byte getInstCode() {
+        return this.instCode;
+    }
+    /**获取 字符串数据*/
+    public String getString(int index) {
+        return (String) this.instParam[index];
+    }
+    /**获取 布尔数据*/
+    public Boolean getBoolean(int index) {
+        return (Boolean) this.instParam[index];
+    }
+    /**获取 数字数据*/
+    public Number getNumber(int index) {
+        return (Number) this.instParam[index];
+    }
+    /**获取 数字数据*/
+    public int getInt(int index) {
+        return (Integer) this.instParam[index];
+    }
+    /**获取 字符串数据*/
+    public Object[] getArrays() {
+        return this.instParam;
+    }
+    //
     //
     @Override
     public String toString() {
@@ -56,12 +81,11 @@ public class Instruction implements InstOpcodes {
         if (needSpace > 0) {
             codeName.append(StringUtils.leftPad("", needSpace, ' '));
         }
-        for (int i = 0; i < this.instParam.size(); i++) {
+        for (int i = 0; i < this.instParam.length; i++) {
             if (i > 0) {
                 codeName.append(", ");
             }
-            Object obj = this.instParam.get(i);
-            codeName.append(obj);
+            codeName.append(this.instParam[i]);
         }
         //
         return codeName.toString();

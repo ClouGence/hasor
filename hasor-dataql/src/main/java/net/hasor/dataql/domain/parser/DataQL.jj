@@ -242,20 +242,22 @@ Boolean booleanValue() : {}{
 }
 
 // .数字
-Number numberValue() : {}{
+Number numberValue() : {                             Number number = null;
+                                                     Token  t      = null;
+}{
     (
         (
-            <DECIMAL_NUM>
+            t = <DECIMAL_NUM>                       {number = new java.math.BigDecimal(t.image);}
         ) | (
-            <INTEGER_NUM>
+            t = <INTEGER_NUM>                       {number = new java.math.BigInteger(t.image);}
         ) | (
-            <HEX_NUM>
+            t = <HEX_NUM>                           {number = new java.math.BigInteger(t.image,16);}
         ) | (
-            <OCTAL_NUM>
+            t = <OCTAL_NUM>                         {number = new java.math.BigInteger(t.image,8);}
         ) | (
-            <BINARY_NUM>
+            t = <BINARY_NUM>                        {number = new java.math.BigInteger(t.image,2);}
         )
-    )                                               {return 0;}
+    )                                               {return number;}
 }
 
 // .列表：[ ... ]

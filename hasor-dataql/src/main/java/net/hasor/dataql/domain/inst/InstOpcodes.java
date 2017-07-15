@@ -36,7 +36,7 @@ public interface InstOpcodes {
     public static final byte STORE  = 32; // 将栈中的数据存储到堆（例：STORE，2）
     //
     // -------------------------------------------------------------- 结果指令
-    public static final byte ASM    = 41; // 结果作为对象（例：ASA，"type"）
+    public static final byte ASM    = 41; // 结果作为对象（例：ASM，"type"）
     public static final byte ASO    = 42; // 结果作为原始对象（例：ASO）
     public static final byte ASA    = 43; // 结果作为数组（例：ASA，"type"）
     public static final byte ASE    = 44; // 结果结束（例：ASA）

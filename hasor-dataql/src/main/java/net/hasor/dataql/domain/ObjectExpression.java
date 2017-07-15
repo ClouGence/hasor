@@ -29,11 +29,11 @@ import java.util.Map;
  */
 public class ObjectExpression extends Expression {
     private List<String>            fieldSort;
-    private Class<?>                objectType;
+    private String                  objectType;
     private Map<String, Expression> objectData;
     public ObjectExpression() {
         this.fieldSort = new ArrayList<String>();
-        this.objectType = HashMap.class;
+        this.objectType = "";
         this.objectData = new HashMap<String, Expression>();
     }
     //

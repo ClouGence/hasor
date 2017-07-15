@@ -13,11 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.dataql.runtime;
+import net.hasor.dataql.domain.inst.InstOpcodes;
+import net.hasor.dataql.domain.inst.Instruction;
+import net.hasor.dataql.runtime.struts.MemStack;
 /**
- * DataQL，结果模型。
+ * 指令执行器接口
  * @author 赵永春(zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2017-07-14
  */
-@AopIgnore
-package net.hasor.dataql.domain.result;
-import net.hasor.core.container.AopIgnore;
+public interface InsetProcess extends InstOpcodes {
+    //
+    public int getOpcode();
+
+    //
+    public void doWork(Instruction inst, MemStack memStack, ProcessContet context) throws ProcessException;
+}
+

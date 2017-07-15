@@ -1,4 +1,4 @@
-var a = true;
+var a = {};
 var a = false;
 
 var foo = lambda : (arg1,arg2) -> {

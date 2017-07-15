@@ -14,7 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package net.hasor.dataql.domain.result;
+package net.hasor.dataql.result;
 import java.util.Map;
 /**
  * Abstract pair class to assist with creating <code>KeyValue</code>

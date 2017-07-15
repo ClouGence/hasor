@@ -13,26 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
-import net.hasor.dataql.domain.inst.CompilerStack;
-import net.hasor.dataql.domain.inst.InstQueue;
 /**
- * 函数调用的返回值处理格式，Object格式。
+ * DataQL，结果模型。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ObjectFormat extends Format {
-    private ObjectExpression format;
-    public ObjectFormat(ObjectExpression format) {
-        super();
-        this.format = format;
-    }
-    //
-    //
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        queue.inst(ASM, "");
-        this.format.doCompiler(queue, stackTree);
-        queue.inst(ASE);
-    }
-}
+@AopIgnore
+package net.hasor.dataql.result;
+import net.hasor.core.container.AopIgnore;

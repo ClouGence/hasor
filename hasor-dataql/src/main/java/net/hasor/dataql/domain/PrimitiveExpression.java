@@ -45,6 +45,7 @@ public class PrimitiveExpression extends Expression {
     }
     //
     //
+    @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         if (this.valueType == ValueType.Boolean) {
             queue.inst(LDC_B, this.value);

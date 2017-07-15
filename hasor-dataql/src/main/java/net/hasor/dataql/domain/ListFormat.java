@@ -32,7 +32,7 @@ public class ListFormat extends Format {
     //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        queue.inst(InstOpcodes.ASA);
+        queue.inst(InstOpcodes.ASA, "");
         this.format.doCompiler(queue, stackTree);
         queue.inst(InstOpcodes.ASE);
     }

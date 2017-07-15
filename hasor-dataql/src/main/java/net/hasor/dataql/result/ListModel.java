@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain.result;
+package net.hasor.dataql.result;
 import net.hasor.dataql.QueryResult;
 
 import java.util.ArrayList;
