@@ -35,6 +35,9 @@ public class OpcodesPool {
             pool.addInsetProcess(new ROU());
             pool.addInsetProcess(new UO());
             pool.addInsetProcess(new DO());
+            //
+            pool.addInsetProcess(new CALL());
+            pool.addInsetProcess(new LCALL());
         }
         return pool;
     }
