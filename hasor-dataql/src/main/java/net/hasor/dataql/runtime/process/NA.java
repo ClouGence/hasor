@@ -1,8 +1,8 @@
 package net.hasor.dataql.runtime.process;
 import net.hasor.core.utils.StringUtils;
-import net.hasor.dataql.domain.inst.Instruction;
 import net.hasor.dataql.result.ListModel;
 import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.struts.MemStack;
@@ -17,8 +17,8 @@ class NA implements InsetProcess {
         return NA;
     }
     @Override
-    public void doWork(Instruction inst, MemStack memStack, ProcessContet context) throws ProcessException {
-        String typeString = inst.getString(0);
+    public void doWork(InstSequence sequence, MemStack memStack, ProcessContet context) throws ProcessException {
+        String typeString = sequence.currentInst().getString(0);
         Class<?> listType = null;
         if (StringUtils.isNotBlank(typeString)) {
             listType = context.loadType(typeString);
@@ -26,7 +26,7 @@ class NA implements InsetProcess {
             listType = ListModel.class;
         }
         //
-        if (!listType.isAssignableFrom(Collection.class)) {
+        if (!Collection.class.isAssignableFrom(listType)) {
             throw new ProcessException("NA -> type " + listType + " is not Collection");
         }
         //

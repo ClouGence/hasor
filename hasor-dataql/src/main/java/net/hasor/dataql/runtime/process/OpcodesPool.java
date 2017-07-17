@@ -1,6 +1,6 @@
 package net.hasor.dataql.runtime.process;
-import net.hasor.dataql.domain.inst.Instruction;
 import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.struts.MemStack;
@@ -13,6 +13,7 @@ public class OpcodesPool {
     public static OpcodesPool newPool() {
         OpcodesPool pool = new OpcodesPool();
         {
+            //
             pool.addInsetProcess(new NO());
             pool.addInsetProcess(new NA());
             //
@@ -28,6 +29,12 @@ public class OpcodesPool {
             pool.addInsetProcess(new ASO());
             pool.addInsetProcess(new ASA());
             pool.addInsetProcess(new ASE());
+            //
+            pool.addInsetProcess(new PUT());
+            pool.addInsetProcess(new PUSH());
+            pool.addInsetProcess(new ROU());
+            pool.addInsetProcess(new UO());
+            pool.addInsetProcess(new DO());
         }
         return pool;
     }
@@ -35,8 +42,11 @@ public class OpcodesPool {
         this.processes[inst.getOpcode()] = inst;
     }
     //
-    public void doWork(Instruction inst, MemStack memStack, ProcessContet context) throws ProcessException {
-        InsetProcess process = this.processes[inst.getInstCode()];
-        process.doWork(inst, memStack, context);
+    public void doWork(InstSequence sequence, MemStack memStack, ProcessContet context) throws ProcessException {
+        InsetProcess process = this.processes[sequence.currentInst().getInstCode()];
+        if (process == null) {
+            return;
+        }
+        process.doWork(sequence, memStack, context);
     }
 }

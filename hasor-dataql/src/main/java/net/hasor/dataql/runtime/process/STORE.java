@@ -1,6 +1,6 @@
 package net.hasor.dataql.runtime.process;
-import net.hasor.dataql.domain.inst.Instruction;
 import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.struts.MemStack;
@@ -13,8 +13,8 @@ class STORE implements InsetProcess {
         return STORE;
     }
     @Override
-    public void doWork(Instruction inst, MemStack memStack, ProcessContet context) throws ProcessException {
-        int position = inst.getInt(0);
+    public void doWork(InstSequence sequence, MemStack memStack, ProcessContet context) throws ProcessException {
+        int position = sequence.currentInst().getInt(0);
         Object data = memStack.pop();
         context.storeData(position, data);
     }

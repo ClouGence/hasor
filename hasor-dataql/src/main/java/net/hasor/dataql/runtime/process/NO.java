@@ -1,8 +1,8 @@
 package net.hasor.dataql.runtime.process;
 import net.hasor.core.utils.StringUtils;
-import net.hasor.dataql.domain.inst.Instruction;
 import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.struts.MemStack;
@@ -15,8 +15,8 @@ class NO implements InsetProcess {
         return NO;
     }
     @Override
-    public void doWork(Instruction inst, MemStack memStack, ProcessContet context) throws ProcessException {
-        String typeString = inst.getString(0);
+    public void doWork(InstSequence sequence, MemStack memStack, ProcessContet context) throws ProcessException {
+        String typeString = sequence.currentInst().getString(0);
         Class<?> objectType = null;
         if (StringUtils.isNotBlank(typeString)) {
             objectType = context.loadType(typeString);
