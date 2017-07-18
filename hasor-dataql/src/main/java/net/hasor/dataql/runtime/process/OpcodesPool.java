@@ -17,10 +17,10 @@ public class OpcodesPool {
             pool.addInsetProcess(new NO());
             pool.addInsetProcess(new NA());
             //
-            pool.addInsetProcess(new LDCB());
-            pool.addInsetProcess(new LDCD());
-            pool.addInsetProcess(new LDCS());
-            pool.addInsetProcess(new LDCN());
+            pool.addInsetProcess(new LDC_B());
+            pool.addInsetProcess(new LDC_D());
+            pool.addInsetProcess(new LDC_S());
+            pool.addInsetProcess(new LDC_N());
             //
             pool.addInsetProcess(new LOAD());
             pool.addInsetProcess(new STORE());
@@ -38,6 +38,9 @@ public class OpcodesPool {
             //
             pool.addInsetProcess(new CALL());
             pool.addInsetProcess(new LCALL());
+            //
+            pool.addInsetProcess(new METHOD());
+            pool.addInsetProcess(new M_REF());
         }
         return pool;
     }

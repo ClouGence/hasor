@@ -27,6 +27,9 @@ public class ObjectModel extends HashMap<String, Object> implements QueryResult 
     private List<String> sortList;
     //
     //
+    public ObjectModel() {
+        this.sortList = new ArrayList<String>();
+    }
     public ObjectModel(Object dataItem) {
         InterBeanMap beanMap = new InterBeanMap(dataItem);
         this.sortList = new ArrayList<String>(beanMap.keySet());
@@ -36,6 +39,12 @@ public class ObjectModel extends HashMap<String, Object> implements QueryResult 
         this.sortList = new ArrayList<String>(sortList);
     }
     //
+    public void addField(String field) {
+        if (this.sortList.contains(field)) {
+            return;
+        }
+        this.sortList.add(field);
+    }
     @Override
     public Object put(String key, Object value) {
         if (StringUtils.isBlank(key) || !this.hasField(key)) {

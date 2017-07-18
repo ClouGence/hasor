@@ -7,7 +7,7 @@ import net.hasor.dataql.runtime.struts.MemStack;
 /**
  * Created by yongchun.zyc on 2017/7/13.
  */
-class LDCS implements InsetProcess {
+class LDC_S implements InsetProcess {
     @Override
     public int getOpcode() {
         return LDC_S;

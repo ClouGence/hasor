@@ -7,14 +7,14 @@ import net.hasor.dataql.runtime.struts.MemStack;
 /**
  * Created by yongchun.zyc on 2017/7/13.
  */
-class LDCD implements InsetProcess {
+class LDC_B implements InsetProcess {
     @Override
     public int getOpcode() {
-        return LDC_D;
+        return LDC_B;
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, ProcessContet context) throws ProcessException {
-        Number number = sequence.currentInst().getNumber(0);
-        memStack.push(number);
+        Boolean value = sequence.currentInst().getBoolean(0);
+        memStack.push(value);
     }
 }
