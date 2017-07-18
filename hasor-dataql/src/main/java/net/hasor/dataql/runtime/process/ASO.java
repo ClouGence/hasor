@@ -3,6 +3,7 @@ import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.ProcessException;
+import net.hasor.dataql.runtime.struts.LocalData;
 import net.hasor.dataql.runtime.struts.MemStack;
 import net.hasor.dataql.runtime.struts.OriResultStruts;
 /**
@@ -14,7 +15,7 @@ class ASO implements InsetProcess {
         return ASO;
     }
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
         Object result = memStack.pop();
         memStack.push(new OriResultStruts(result));
     }

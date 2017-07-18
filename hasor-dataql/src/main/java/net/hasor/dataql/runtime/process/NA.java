@@ -5,6 +5,7 @@ import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.ProcessException;
+import net.hasor.dataql.runtime.struts.LocalData;
 import net.hasor.dataql.runtime.struts.MemStack;
 
 import java.util.Collection;
@@ -17,7 +18,7 @@ class NA implements InsetProcess {
         return NA;
     }
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
         String typeString = sequence.currentInst().getString(0);
         Class<?> listType = null;
         if (StringUtils.isNotBlank(typeString)) {

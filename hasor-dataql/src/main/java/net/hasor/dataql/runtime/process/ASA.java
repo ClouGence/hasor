@@ -4,6 +4,7 @@ import net.hasor.dataql.domain.inst.Instruction;
 import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.runtime.*;
 import net.hasor.dataql.runtime.struts.ListResultStruts;
+import net.hasor.dataql.runtime.struts.LocalData;
 import net.hasor.dataql.runtime.struts.MemStack;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ class ASA implements InsetProcess {
         return ASA;
     }
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
         //
         // .读取返回值并包装成 ResultStruts
         String typeString = sequence.currentInst().getString(0);

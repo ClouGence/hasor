@@ -5,6 +5,7 @@ import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.struts.ListResultStruts;
+import net.hasor.dataql.runtime.struts.LocalData;
 import net.hasor.dataql.runtime.struts.MemStack;
 
 import java.util.Collection;
@@ -17,7 +18,7 @@ class PUSH implements InsetProcess {
         return PUSH;
     }
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
         Object data = memStack.pop();
         Object ors = memStack.peek();
         //

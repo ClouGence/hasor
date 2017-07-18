@@ -1,6 +1,7 @@
 package net.hasor.dataql.runtime.process;
 import net.hasor.dataql.OperatorProcess;
 import net.hasor.dataql.runtime.*;
+import net.hasor.dataql.runtime.struts.LocalData;
 import net.hasor.dataql.runtime.struts.MemStack;
 /**
  * Created by yongchun.zyc on 2017/7/13.
@@ -11,7 +12,7 @@ class DO implements InsetProcess {
         return DO;
     }
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
         String dyadicSymbol = sequence.currentInst().getString(0);
         Object secExpData = memStack.pop();
         Object fstExpData = memStack.pop();

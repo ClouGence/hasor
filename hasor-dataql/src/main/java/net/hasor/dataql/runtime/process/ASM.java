@@ -3,6 +3,7 @@ import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.domain.inst.Instruction;
 import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.runtime.*;
+import net.hasor.dataql.runtime.struts.LocalData;
 import net.hasor.dataql.runtime.struts.MemStack;
 import net.hasor.dataql.runtime.struts.ObjectResultStruts;
 
@@ -16,7 +17,7 @@ class ASM implements InsetProcess {
         return ASM;
     }
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
         //
         // .读取返回值并包装成 ResultStruts
         String typeString = sequence.currentInst().getString(0);
