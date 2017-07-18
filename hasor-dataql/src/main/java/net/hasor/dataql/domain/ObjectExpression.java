@@ -17,6 +17,7 @@ package net.hasor.dataql.domain;
 import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.domain.inst.CompilerStack;
 import net.hasor.dataql.domain.inst.InstQueue;
+import net.hasor.dataql.domain.inst.Instruction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +51,11 @@ public class ObjectExpression extends Expression {
     //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        queue.inst(NO, this.objectType);
+        Instruction instruction = queue.lastInst();
+        if (instruction == null || ASM != instruction.getInstCode()) {
+            queue.inst(NO, this.objectType);
+        }
+        //
         for (String fieldName : this.fieldSort) {
             //
             Expression expression = this.objectData.get(fieldName);

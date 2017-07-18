@@ -16,6 +16,7 @@
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.inst.CompilerStack;
 import net.hasor.dataql.domain.inst.InstQueue;
+import net.hasor.dataql.domain.inst.Instruction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,11 @@ public class ListExpression extends Expression {
     //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        queue.inst(NA, this.listType);
+        Instruction instruction = queue.lastInst();
+        if (instruction == null || ASA != instruction.getInstCode()) {
+            queue.inst(NA, this.listType);
+        }
+        //
         for (Expression exp : this.expressionList) {
             exp.doCompiler(queue, stackTree);
             queue.inst(PUSH);

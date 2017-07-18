@@ -49,6 +49,7 @@ public class InstQueue {
     }
     //
     //
+    /** 添加指令 */
     public int inst(byte inst, Object... param) {
         //
         // .加入到指令集
@@ -66,6 +67,11 @@ public class InstQueue {
             }
         }
         return index;
+    }
+    /** 最后加入的那条指令 */
+    public Instruction lastInst() {
+        LinkedList<Instruction> instList = this.instSet.get(this.name);
+        return instList.isEmpty() ? null : instList.getLast();
     }
     //
     /**新函数指令集*/
@@ -109,5 +115,14 @@ public class InstQueue {
             strBuffer.append("\n");
         }
         strBuffer.append("\n");
+    }
+    public Instruction[][] buildArrays() {
+        Instruction[][] buildDatas = new Instruction[this.instSet.size()][];
+        for (int i = 0; i < this.instSet.size(); i++) {
+            LinkedList<Instruction> instList = this.instSet.get(i);
+            Instruction[] instSet = instList.toArray(new Instruction[instList.size()]);
+            buildDatas[i] = instSet;
+        }
+        return buildDatas;
     }
 }
