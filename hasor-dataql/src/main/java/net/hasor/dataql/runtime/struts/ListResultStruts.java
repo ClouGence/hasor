@@ -13,20 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime;
+package net.hasor.dataql.runtime.struts;
 import java.util.ArrayList;
 import java.util.List;
 /**
- * 内存数据结构。
+ * 用于 ASA 指令在处理方法返回值时。对数据的封装。
  * @author 赵永春(zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2017-07-19
  */
-public class MethodDataStack {
-    private int          entryAddress = 0; // 函数，指令入口地址
-    private int          exitAddress  = 0; // 函数，指令出口地址
-    private List<Object> dataList     = null;// 数据
+public class ListResultStruts implements ResultStruts {
+    private List<Object> dataResult = null;
     //
-    public MethodDataStack() {
-        this.dataList = new ArrayList<Object>();
+    public ListResultStruts(Object toType) {
+        this.dataResult = new ArrayList<Object>();
+    }
+    //
+    /**添加结果*/
+    public void addResult(Object data) {
+        this.dataResult.add(data);
+    }
+    //
+    @Override
+    public Object getResult() {
+        return this.dataResult;
     }
 }
