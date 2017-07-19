@@ -55,6 +55,23 @@ public class Instruction implements InstOpcodes {
     public Object[] getArrays() {
         return this.instParam;
     }
+    /**
+     * 将 Label 替换为本身标记的行号。
+     * 如果出现 Label 未插入情况，则返回false。
+     * （每个Label 都要通过 InstQueue.inst方法插入到指令序列中，一个被使用的 Label 如果没有插入到序列中的情况被成为，Label未插入）
+     * */
+    public boolean replaceLabel() {
+        for (int i = 0; i < this.instParam.length; i++) {
+            if (this.instParam[i] instanceof Label) {
+                Label label = (Label) this.instParam[i];
+                if (label.getIndex() == null) {
+                    return false;
+                }
+                this.instParam[i] = label.getIndex();
+            }
+        }
+        return true;
+    }
     //
     //
     @Override
