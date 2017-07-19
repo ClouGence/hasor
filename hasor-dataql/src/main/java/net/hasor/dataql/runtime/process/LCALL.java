@@ -20,7 +20,7 @@ class LCALL implements InsetProcess {
         //
         LambdaCallStruts callStruts = (LambdaCallStruts) memStack.pop();
         int address = callStruts.getMethod();
-        int paramCount = callStruts.getParamCount();
+        int paramCount = sequence.currentInst().getInt(0);
         //
         // .参数准备
         Object[] paramArrays = new Object[paramCount];
