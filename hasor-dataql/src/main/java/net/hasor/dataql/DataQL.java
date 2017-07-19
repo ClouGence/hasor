@@ -21,5 +21,9 @@ import net.hasor.dataql.domain.parser.ParseException;
  * @version : 2017-03-23
  */
 public interface DataQL {
+    /** 在执行 put 时，如果不能 put 是否引发异常（默认为 true：安全的，不引发异常） */
+    public static final String SAFE_PUT = "SAFE_PUT";
+
+    //
     public Query createQuery(String qlString) throws ParseException;
 }
