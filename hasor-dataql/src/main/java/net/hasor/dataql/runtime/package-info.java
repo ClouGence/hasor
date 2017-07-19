@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * DataQL，执行模型。
+ * DataQL，执行运行时。
  */
 @AopIgnore
 package net.hasor.dataql.runtime;

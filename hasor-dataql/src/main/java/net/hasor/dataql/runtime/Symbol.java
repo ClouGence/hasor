@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import net.hasor.dataql.domain.inst.InstOpcodes;
-import net.hasor.dataql.runtime.struts.LocalData;
-import net.hasor.dataql.runtime.struts.MemStack;
 /**
- * 指令执行器接口
+ * 运算符类型
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-14
  */
-public interface InsetProcess extends InstOpcodes {
-    /**执行器，用于处理的指令 Code */
-    public int getOpcode();
-
-    /**执行指令*/
-    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException;
+public enum Symbol {
+    /** 一元运算符 */
+    Unary,//
+    /** 二元运算符 */
+    Dyadic,//
 }

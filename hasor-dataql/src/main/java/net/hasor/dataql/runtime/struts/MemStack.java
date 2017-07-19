@@ -38,6 +38,7 @@ public class MemStack {
         return new MemStack(this);
     }
     //
+    //
     public void push(Object data) {
         this.stackData.push(data);
     }
@@ -48,12 +49,14 @@ public class MemStack {
         return this.stackData.peek();
     }
     //
+    //
     public void storeData(int position, Object data) {
         this.heapData.put(position, data);
     }
     public Object loadData(int position) {
         return this.heapData.get(position);
     }
+    //
     //
     public void setResult(Object result) {
         this.resultData = result;
