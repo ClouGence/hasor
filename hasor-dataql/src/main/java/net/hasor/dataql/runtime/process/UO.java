@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.process;
-import net.hasor.dataql.OperatorProcess;
+import net.hasor.dataql.runtime.OperatorProcess;
 import net.hasor.dataql.runtime.*;
 import net.hasor.dataql.runtime.struts.LocalData;
 import net.hasor.dataql.runtime.struts.MemStack;
