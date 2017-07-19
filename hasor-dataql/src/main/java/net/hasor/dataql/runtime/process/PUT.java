@@ -15,7 +15,6 @@
  */
 package net.hasor.dataql.runtime.process;
 import net.hasor.core.utils.BeanUtils;
-import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.Options;
 import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.runtime.InsetProcess;
@@ -57,8 +56,8 @@ class PUT implements InsetProcess {
             return;
         }
         //
-        String safePut = context.getOption(Options.SAFE_PUT);
-        boolean safeput = StringUtils.isBlank(safePut) || "true".equalsIgnoreCase(safePut.trim());
+        Object optionValue = context.getOption(Options.SAFE_PUT);
+        boolean safeput = Boolean.TRUE.equals(optionValue);
         if (!safeput && !BeanUtils.canWriteProperty(filedName, ors.getClass())) {
             throw new ProcessException("output data eror, target type must be 'ListResultStruts or ListModel or Collection.'");
         }
