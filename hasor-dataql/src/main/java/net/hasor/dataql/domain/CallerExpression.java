@@ -57,7 +57,7 @@ public class CallerExpression extends Expression {
         // .CALL指令
         {
             int index = stackTree.contains(this.callName);
-            if (index > 0) {
+            if (index > -1) {
                 // .存在函数定义
                 queue.inst(LOAD, index);
                 queue.inst(LCALL, this.varList.size());

@@ -43,7 +43,11 @@ public class OpcodesPool {
             pool.addInsetProcess(new METHOD());
             pool.addInsetProcess(new M_REF());
             //
+            pool.addInsetProcess(new IF());
+            pool.addInsetProcess(new GOTO());
             pool.addInsetProcess(new END());
+            pool.addInsetProcess(new ERR());
+            //
         }
         return pool;
     }

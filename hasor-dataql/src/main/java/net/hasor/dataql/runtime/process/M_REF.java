@@ -1,3 +1,18 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.hasor.dataql.runtime.process;
 import net.hasor.dataql.domain.inst.Instruction;
 import net.hasor.dataql.runtime.InsetProcess;
@@ -8,7 +23,9 @@ import net.hasor.dataql.runtime.struts.LambdaCallStruts;
 import net.hasor.dataql.runtime.struts.LocalData;
 import net.hasor.dataql.runtime.struts.MemStack;
 /**
- * Created by yongchun.zyc on 2017/7/13.
+ * M_REF，定义一个 lambda 函数指针。（产生一个LambdaCallStruts）
+ * @author 赵永春(zyc@hasor.net)
+ * @version : 2017-07-19
  */
 class M_REF implements InsetProcess {
     @Override
@@ -20,9 +37,8 @@ class M_REF implements InsetProcess {
         //
         Instruction inst = sequence.currentInst();
         int address = inst.getInt(0);
-        int paramCount = inst.getInt(1);
         //
         // .前把函数入口定义，打包成一个 LambdaCallStruts
-        memStack.push(new LambdaCallStruts(address, paramCount));
+        memStack.push(new LambdaCallStruts(address));
     }
 }

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.hasor.dataql.runtime.process;
 import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.domain.inst.Instruction;
@@ -9,7 +24,14 @@ import net.hasor.dataql.runtime.struts.ObjectResultStruts;
 
 import java.util.concurrent.atomic.AtomicInteger;
 /**
- * Created by yongchun.zyc on 2017/7/13.
+ * ASM，指令处理器。用于将结果作为对象进行处理。如果结果是集合，那么按照对象处理。
+ *
+ * 与 ASM 指令配对的还有一个对应的 ASE，在这一对 ASM -> ASE 范围内的指令。
+ *
+ * TODO 后续可以考虑优化这个代码，让对象的每个字段的处理做成并发。
+ *
+ * @author 赵永春(zyc@hasor.net)
+ * @version : 2017-07-19
  */
 class ASM implements InsetProcess {
     @Override

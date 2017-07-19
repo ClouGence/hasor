@@ -71,6 +71,6 @@ public class LambdaBlockSet extends BlockSet implements Variable {
         stackTree.dropFrame();
         //
         // .指向函数的指针
-        queue.inst(M_REF, methodAddress, size);
+        queue.inst(M_REF, methodAddress);
     }
 }
