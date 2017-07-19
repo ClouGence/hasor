@@ -57,10 +57,10 @@ class ASM implements InsetProcess {
         });
         //
         // .对结果集进行迭代处理
-        subSequence.reset();                        // 重置执行序列
-        memStack.pushData(result);                  // 设置DS
-        context.processInset(subSequence, memStack);// 执行序列
-        memStack.popData();                         // 销毁DS
+        subSequence.reset();    // 重置执行序列
+        local.pushData(result); // 设置DS
+        context.processInset(subSequence, memStack, local);// 执行序列
+        local.popData();        // 销毁DS
         //
         // .处理完毕跳到出口
         sequence.jumpTo(subSequence.exitPosition() - 1);

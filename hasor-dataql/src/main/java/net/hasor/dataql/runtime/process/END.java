@@ -8,15 +8,15 @@ import net.hasor.dataql.runtime.struts.MemStack;
 /**
  * Created by yongchun.zyc on 2017/7/13.
  */
-class LOAD implements InsetProcess {
+class END implements InsetProcess {
     @Override
     public int getOpcode() {
-        return LOAD;
+        return END;
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
-        int position = sequence.currentInst().getInt(0);
-        Object data = memStack.loadData(position);
-        memStack.push(data);
+        Object result = memStack.pop();
+        memStack.setResult(result);
+        sequence.jumpTo(sequence.exitPosition());
     }
 }

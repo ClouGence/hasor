@@ -17,6 +17,6 @@ class STORE implements InsetProcess {
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
         int position = sequence.currentInst().getInt(0);
         Object data = memStack.pop();
-        local.storeData(position, data);
+        memStack.storeData(position, data);
     }
 }

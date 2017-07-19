@@ -62,10 +62,10 @@ class ASA implements InsetProcess {
         // .对结果集进行迭代处理
         Collection<Object> dataSet = toCollection(result);
         for (Object obj : dataSet) {
-            subSequence.reset();                        // 重置执行序列
-            memStack.pushData(obj);                     // 设置DS
-            context.processInset(subSequence, memStack);// 执行序列
-            memStack.popData();                         // 销毁DS
+            subSequence.reset();    // 重置执行序列
+            local.pushData(obj);    // 设置DS
+            context.processInset(subSequence, memStack, local);// 执行序列
+            local.popData();        // 销毁DS
         }
         //
         // .处理完毕跳到出口
