@@ -23,7 +23,7 @@ class METHOD implements InsetProcess {
             Object[] finalParamArray = new Object[paramCount];
             Object[] inParams = result.getArrays();
             for (int i = 0; i < paramCount; i++) {
-                if (i > inParams.length) {
+                if (i > (inParams.length - 1)) {
                     break;
                 }
                 finalParamArray[i] = inParams[i];
