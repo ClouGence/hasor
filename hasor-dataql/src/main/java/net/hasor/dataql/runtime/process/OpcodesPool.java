@@ -48,6 +48,12 @@ public class OpcodesPool {
             pool.addInsetProcess(new END());
             pool.addInsetProcess(new ERR());
             //
+            pool.addInsetProcess(new ERR());
+            pool.addInsetProcess(new ERR());
+            //
+            pool.addInsetProcess(new OPT());
+            pool.addInsetProcess(new LINE());
+            pool.addInsetProcess(new LOCAL());
         }
         return pool;
     }
