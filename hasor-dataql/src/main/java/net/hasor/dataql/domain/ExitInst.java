@@ -22,20 +22,21 @@ import net.hasor.dataql.domain.inst.InstQueue;
  * @version : 2017-03-23
  */
 public class ExitInst extends Inst {
-    private int        errorCode;
-    private Expression throwData;
-    public ExitInst(Number errorCode, Expression throwData) {
-        if (errorCode == null)
-            errorCode = 0;
-        this.errorCode = errorCode.intValue();
-        this.throwData = throwData;
+    private int        exitCode;
+    private Expression exitData;
+    public ExitInst(Number exitCode, Expression exitData) {
+        if (exitCode == null) {
+            exitCode = 0;
+        }
+        this.exitCode = exitCode.intValue();
+        this.exitData = exitData;
     }
     //
     //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        queue.inst(LDC_D, this.errorCode);
-        this.throwData.doCompiler(queue, stackTree);
+        queue.inst(LDC_D, this.exitCode);
+        this.exitData.doCompiler(queue, stackTree);
         queue.inst(EXIT);
     }
 }

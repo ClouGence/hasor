@@ -223,8 +223,7 @@ String stringValue() : {                             Token dataToken = null;
         ) | (
             dataToken = <STR_EMPTY>
         )
-    )
-                                                    {String image = dataToken.image;}
+    )                                               {String image = dataToken.image;}
                                                     {return image.substring(1, image.length()-1);}
 }
 
@@ -568,7 +567,7 @@ Inst optionBlock() : {                               String              optKey 
                                                     {return new OptionInst(optKey,optValue);}
 }
 
-// .块
+// .指令
 Inst block() : {                                     Inst inst = null;
 } {
     (

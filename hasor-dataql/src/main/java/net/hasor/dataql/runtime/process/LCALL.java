@@ -52,7 +52,7 @@ class LCALL implements InsetProcess {
         if (methodSeq == null) {
             throw new ProcessException("LCALL -> InstSequence '" + address + "' is not found.");
         }
-        // .执行调用，调用前把所有入惨打包成一个 Array，交给 METHOD 指令去处理。
+        // .执行调用，调用前把所有入参打包成一个 Array，交给 METHOD 指令去处理。
         {
             MemStack sub = memStack.create();
             sub.push(callInfo);
