@@ -13,19 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime;
-import net.hasor.dataql.domain.inst.InstOpcodes;
-import net.hasor.dataql.runtime.mem.LocalData;
-import net.hasor.dataql.runtime.mem.MemStack;
 /**
- * 指令执行器接口
- * @author 赵永春(zyc@hasor.net)
- * @version : 2017-07-14
+ * 内存数据结构。
  */
-public interface InsetProcess extends InstOpcodes {
-    /**执行器，用于处理的指令 Code */
-    public int getOpcode();
-
-    /**执行指令*/
-    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException;
-}
+@AopIgnore
+package net.hasor.dataql.runtime.mem;
+import net.hasor.core.container.AopIgnore;

@@ -19,8 +19,8 @@ import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.struts.LambdaCall;
-import net.hasor.dataql.runtime.struts.LocalData;
-import net.hasor.dataql.runtime.struts.MemStack;
+import net.hasor.dataql.runtime.mem.LocalData;
+import net.hasor.dataql.runtime.mem.MemStack;
 /**
  * LOCAL，紧跟在 METHOD 指令后面可以有多个组成。
  * 作用是 将 METHOD 指令中纠正的参数数组存储到堆内存中。它的工作性质有点类似 STORE。

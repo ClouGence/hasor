@@ -19,8 +19,8 @@ import net.hasor.dataql.domain.inst.Instruction;
 import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.runtime.*;
 import net.hasor.dataql.runtime.struts.ListResultStruts;
-import net.hasor.dataql.runtime.struts.LocalData;
-import net.hasor.dataql.runtime.struts.MemStack;
+import net.hasor.dataql.runtime.mem.LocalData;
+import net.hasor.dataql.runtime.mem.MemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;

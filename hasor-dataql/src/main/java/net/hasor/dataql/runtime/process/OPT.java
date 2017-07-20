@@ -18,8 +18,8 @@ import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.ProcessException;
-import net.hasor.dataql.runtime.struts.LocalData;
-import net.hasor.dataql.runtime.struts.MemStack;
+import net.hasor.dataql.runtime.mem.LocalData;
+import net.hasor.dataql.runtime.mem.MemStack;
 /**
  * OPT，更新选项参数。
  * @author 赵永春(zyc@hasor.net)

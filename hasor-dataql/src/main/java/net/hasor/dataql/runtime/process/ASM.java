@@ -18,8 +18,8 @@ import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.domain.inst.Instruction;
 import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.runtime.*;
-import net.hasor.dataql.runtime.struts.LocalData;
-import net.hasor.dataql.runtime.struts.MemStack;
+import net.hasor.dataql.runtime.mem.LocalData;
+import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.struts.ObjectResultStruts;
 
 import java.util.concurrent.atomic.AtomicInteger;

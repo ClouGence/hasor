@@ -16,8 +16,8 @@
 package net.hasor.dataql.runtime.process;
 import net.hasor.dataql.runtime.OperatorProcess;
 import net.hasor.dataql.runtime.*;
-import net.hasor.dataql.runtime.struts.LocalData;
-import net.hasor.dataql.runtime.struts.MemStack;
+import net.hasor.dataql.runtime.mem.LocalData;
+import net.hasor.dataql.runtime.mem.MemStack;
 /**
  * DO 指令是用于进行 二元运算。
  * 该指令会通过运算符和被计算的表达式来寻找 OperatorProcess 运算实现类进行运算。
