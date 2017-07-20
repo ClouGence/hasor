@@ -15,7 +15,7 @@
  */
 package net.hasor.dataql.domain.compiler;
 import net.hasor.core.utils.StringUtils;
-import net.hasor.dataql.runtime.ProcessException;
+import net.hasor.dataql.domain.parser.ParseException;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -93,6 +93,24 @@ public class InstQueue {
         return new Label(this.labelIndex.incrementAndGet());
     }
     //
+    public Instruction[][] buildArrays() throws ParseException {
+        for (LinkedList<Instruction> instList : this.instSet) {
+            for (Instruction inst : instList) {
+                if (!inst.replaceLabel()) {
+                    throw new ParseException("compiler error -> inst(" + inst.getInstCode() + ") encounter not insert Label.");
+                }
+            }
+        }
+        //
+        Instruction[][] buildDatas = new Instruction[this.instSet.size()][];
+        for (int i = 0; i < this.instSet.size(); i++) {
+            LinkedList<Instruction> instList = this.instSet.get(i);
+            Instruction[] instSet = instList.toArray(new Instruction[instList.size()]);
+            buildDatas[i] = instSet;
+        }
+        return buildDatas;
+    }
+    //
     @Override
     public String toString() {
         StringBuilder strBuffer = new StringBuilder();
@@ -116,23 +134,5 @@ public class InstQueue {
             strBuffer.append("\n");
         }
         strBuffer.append("\n");
-    }
-    //
-    public Instruction[][] buildArrays() throws ProcessException {
-        for (LinkedList<Instruction> instList : this.instSet) {
-            for (Instruction inst : instList) {
-                if (!inst.replaceLabel()) {
-                    throw new ProcessException("compiler error -> inst(" + inst.getInstCode() + ") encounter not insert Label.");
-                }
-            }
-        }
-        //
-        Instruction[][] buildDatas = new Instruction[this.instSet.size()][];
-        for (int i = 0; i < this.instSet.size(); i++) {
-            LinkedList<Instruction> instList = this.instSet.get(i);
-            Instruction[] instSet = instList.toArray(new Instruction[instList.size()]);
-            buildDatas[i] = instSet;
-        }
-        return buildDatas;
     }
 }

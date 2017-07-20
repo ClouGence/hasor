@@ -13,17 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql;
+package net.hasor.dataql.domain.compiler;
+import net.hasor.dataql.domain.BlockSet;
+import net.hasor.dataql.domain.parser.DataQLParser;
 import net.hasor.dataql.domain.parser.ParseException;
 /**
- * DataQL 上下文。
+ * DataQL 编译器。
  * @author 赵永春(zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2017-07-03
  */
-public interface DataQL {
-    /** 在执行 put 时，如果不能 put 是否引发异常（默认为 true：安全的，不引发异常） */
-    public static final String SAFE_PUT = "SAFE_PUT";
-
+public class QueryCompiler {
     //
-    public Query createQuery(String qlString) throws ParseException;
+    public static QueryType compilerQuery(String queryString) throws ParseException {
+        //
+        BlockSet queryModel = DataQLParser.parserDataQL(queryString);
+        InstQueue queue = new InstQueue();
+        queryModel.doCompiler(queue, new CompilerStack());
+        Instruction[][] queueSet = queue.buildArrays();
+        //
+        return new QueryType(queueSet);
+    }
 }

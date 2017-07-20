@@ -15,8 +15,11 @@
  */
 package net.hasor.dataql.binder;
 import net.hasor.core.*;
-import net.hasor.dataql.DataQL;
-import net.hasor.dataql.runtime.DataQLFactory;
+import net.hasor.dataql.Query;
+import net.hasor.dataql.domain.compiler.QueryCompiler;
+import net.hasor.dataql.domain.compiler.QueryType;
+import net.hasor.dataql.domain.parser.ParseException;
+import net.hasor.dataql.runtime.QueryRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,8 +34,14 @@ public class DataQLModule implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //
         // .初始化 DataQL
-        final DataQLFactory qlFactory = DataQLFactory.newInstance();
-        apiBinder.bindType(DataQL.class).toInstance(qlFactory);
+        final QueryRuntime runtime = new QueryRuntime();
+        apiBinder.bindType(DataQL.class).toInstance(new DataQL() {
+            @Override
+            public Query createQuery(String qlString) throws ParseException {
+                QueryType queryType = QueryCompiler.compilerQuery(qlString);
+                return runtime.createEngine(queryType);
+            }
+        });
         //
         // .启动过程
         Hasor.addStartListener(apiBinder.getEnvironment(), new EventListener() {
@@ -43,7 +52,7 @@ public class DataQLModule implements Module {
                 List<DefineUDF> udfList = appContext.findBindingBean(DefineUDF.class);
                 for (DefineUDF define : udfList) {
                     String defineName = define.getName();
-                    qlFactory.addShareUDF(defineName, define);
+                    runtime.addShareUDF(defineName, define);
                 }
             }
         });
