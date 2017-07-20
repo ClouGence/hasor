@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 /**
- * DataQL，上下文。
+ * DataQL，Hasor 专用扩展。
  */
 @AopIgnore
-package net.hasor.dataql.ctx;
+package net.hasor.dataql.binder;
 import net.hasor.core.container.AopIgnore;
