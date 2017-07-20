@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime;
-import net.hasor.dataql.domain.compiler.Instruction;
+package net.hasor.dataql.runtime.process;
+import net.hasor.dataql.domain.compiler.InstOpcodes;
+import net.hasor.dataql.runtime.ProcessException;
+import net.hasor.dataql.runtime.mem.LocalData;
+import net.hasor.dataql.runtime.mem.MemStack;
 /**
- * 用于圈定执行序列，当isExit返回 true 之后。表示圈定结束。
+ * 指令执行器接口
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-14
  */
-public interface InstFilter {
-    /**测试该指令是否作为圈定的结束位置。*/
-    public boolean isExit(Instruction inst);
+public interface InsetProcess extends InstOpcodes {
+    /**执行器，用于处理的指令 Code */
+    public int getOpcode();
+
+    /**执行指令*/
+    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException;
 }

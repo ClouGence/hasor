@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.runtime.InsetProcess;
-import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.process.InsetProcess;
+import net.hasor.dataql.runtime.process.InstSequence;
+import net.hasor.dataql.runtime.process.ProcessContet;
 /**
  * LDC_D，输出一个 数值 到栈。
  * @author 赵永春(zyc@hasor.net)

@@ -51,4 +51,7 @@ public class QueryType {
         }
         strBuffer.append("\n");
     }
+    public Instruction[][] getArrays() {
+        return this.queueSet;
+    }
 }

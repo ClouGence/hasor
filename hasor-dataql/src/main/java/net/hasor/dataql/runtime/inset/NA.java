@@ -16,12 +16,12 @@
 package net.hasor.dataql.runtime.inset;
 import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.result.ListModel;
-import net.hasor.dataql.runtime.InsetProcess;
-import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.process.InsetProcess;
+import net.hasor.dataql.runtime.process.InstSequence;
+import net.hasor.dataql.runtime.process.ProcessContet;
 
 import java.util.Collection;
 /**
