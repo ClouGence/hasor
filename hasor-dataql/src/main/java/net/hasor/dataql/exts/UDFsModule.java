@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.udfs;
+package net.hasor.dataql.exts;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
-import net.hasor.dataql.ctx.DataApiBinder;
-import net.hasor.dataql.udfs.collection.First;
-import net.hasor.dataql.udfs.collection.Foreach;
-import net.hasor.dataql.udfs.collection.Last;
-import net.hasor.dataql.udfs.collection.Limit;
+import net.hasor.dataql.binder.DataApiBinder;
+import net.hasor.dataql.exts.collection.First;
+import net.hasor.dataql.exts.collection.Foreach;
+import net.hasor.dataql.exts.collection.Last;
+import net.hasor.dataql.exts.collection.Limit;
 /**
  * 提供内置 <code>DataQL</code> UDF 函数。
  * @version : 2017-6-08

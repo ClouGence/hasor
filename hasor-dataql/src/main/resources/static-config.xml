@@ -6,13 +6,13 @@
 
         <!-- 默认要装载的模块 -->
         <modules>
-            <module>net.hasor.dataql.ctx.DataQLModule</module>
-            <module>net.hasor.dataql.udfs.UDFsModule</module>
+            <module>net.hasor.dataql.binder.DataQLModule</module>
+            <module>net.hasor.dataql.exts.UDFsModule</module>
         </modules>
 
         <!-- ApiBinder 扩展（多个 type 可以指定同一个实现类，Hasor 会自动映射到同一个实例对象上） -->
         <apiBinderSet>
-            <binder type="net.hasor.dataql.ctx.DataApiBinder">net.hasor.dataql.ctx.DataApiBinderCreater</binder>
+            <binder type="net.hasor.dataql.binder.DataApiBinder">net.hasor.dataql.binder.DataApiBinderCreater</binder>
         </apiBinderSet>
 
     </hasor>

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 /**
- * DataQL，内置函数库。
+ * DataQL，集合函数库。
  */
 @AopIgnore
-package net.hasor.dataql.udfs;
+package net.hasor.dataql.exts.collection;
 import net.hasor.core.container.AopIgnore;
