@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.domain.inst.Instruction;
+import net.hasor.dataql.domain.compiler.Instruction;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;

@@ -15,7 +15,7 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.core.utils.BeanUtils;
-import net.hasor.dataql.DataQL;
+import net.hasor.dataql.binder.DataQL;
 import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;

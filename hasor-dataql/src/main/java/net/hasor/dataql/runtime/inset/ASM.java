@@ -15,7 +15,7 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.core.utils.StringUtils;
-import net.hasor.dataql.domain.inst.Instruction;
+import net.hasor.dataql.domain.compiler.Instruction;
 import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.runtime.*;
 import net.hasor.dataql.runtime.mem.LocalData;
