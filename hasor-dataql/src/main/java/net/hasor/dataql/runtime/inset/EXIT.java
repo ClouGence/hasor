@@ -13,26 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.process;
-import net.hasor.dataql.runtime.InsetProcess;
-import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.ProcessException;
+package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.runtime.*;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 /**
- * LDC_D，输出一个 数值 到栈。
+ * EXIT，退出指令，当执行该指令时，会将栈顶的两个元素作为整个查询退出的返回值。
+ * 退出的实现机制和 ERR 指令相似，不同的是开发者不会得到异常抛出。
+ * 提示：
+ * 区别于 END 指令的是，EXIT 指令将会终结整个查询的执行。而 END 指令只会终止当前指令序列的执行。同时有别于 ERR 指令的是，开发者不会得到异常抛出。
+ * @see net.hasor.dataql.runtime.inset.ERR
+ * @see net.hasor.dataql.runtime.inset.EXIT
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-class LDC_D implements InsetProcess {
+class EXIT implements InsetProcess {
     @Override
     public int getOpcode() {
-        return LDC_D;
+        return EXIT;
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
-        Number number = sequence.currentInst().getNumber(0);
-        memStack.push(number);
+        Object exitData = memStack.pop();
+        int exitCode = (Integer) memStack.pop();
+        throw new InvokerProcessException(this.getOpcode(), exitCode, exitData);
     }
 }

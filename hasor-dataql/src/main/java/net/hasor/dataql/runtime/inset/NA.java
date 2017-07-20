@@ -13,28 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.process;
+package net.hasor.dataql.runtime.inset;
+import net.hasor.core.utils.StringUtils;
+import net.hasor.dataql.result.ListModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+
+import java.util.Collection;
 /**
- * STORE，将栈顶的数据保存到堆。与其对应的指令为 LOAD
- * @see net.hasor.dataql.runtime.process.LOAD
+ * NO，创建一个集合对象
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-class STORE implements InsetProcess {
+class NA implements InsetProcess {
     @Override
     public int getOpcode() {
-        return STORE;
+        return NA;
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
-        int position = sequence.currentInst().getInt(0);
-        Object data = memStack.pop();
-        memStack.storeData(position, data);
+        String typeString = sequence.currentInst().getString(0);
+        Class<?> listType = null;
+        if (StringUtils.isNotBlank(typeString)) {
+            listType = context.loadType(typeString);
+        } else {
+            listType = ListModel.class;
+        }
+        //
+        if (!Collection.class.isAssignableFrom(listType)) {
+            throw new ProcessException("NA -> type " + listType + " is not Collection");
+        }
+        //
+        try {
+            memStack.push(listType.newInstance());
+        } catch (Exception e) {
+            throw new ProcessException("NA -> " + e.getMessage(), e);
+        }
     }
 }

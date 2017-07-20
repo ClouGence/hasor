@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.process;
+package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
@@ -21,22 +21,18 @@ import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 /**
- * END，正常结束指令，当执行该指令时，会将栈顶的元素作为 result。
- * 并且将执行指针设置到执行序列的末尾。
- * @see net.hasor.dataql.runtime.process.ERR
- * @see net.hasor.dataql.runtime.process.EXIT
+ * LDC_S，输出一个字符串到栈。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-class END implements InsetProcess {
+class LDC_S implements InsetProcess {
     @Override
     public int getOpcode() {
-        return END;
+        return LDC_S;
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
-        Object result = memStack.pop();
-        memStack.setResult(result);
-        sequence.jumpTo(sequence.exitPosition());
+        String value = sequence.currentInst().getString(0);
+        memStack.push(value);
     }
 }

@@ -13,42 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.process;
-import net.hasor.dataql.UDF;
-import net.hasor.dataql.domain.inst.Instruction;
-import net.hasor.dataql.runtime.InsetProcess;
-import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.ProcessException;
+package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.runtime.*;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 /**
- * CALL，指令是用于发起对 UDF 的调用。
+ * DO 指令是用于进行 二元运算。
+ * 该指令会通过运算符和被计算的表达式来寻找 OperatorProcess 运算实现类，进行运算。
+ * 开发者可以通过实现 OperatorProcess 接口，覆盖某个运算符实现 运算符重载功能。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-class CALL implements InsetProcess {
+class DO implements InsetProcess {
     @Override
     public int getOpcode() {
-        return CALL;
+        return DO;
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
-        Instruction instruction = sequence.currentInst();
-        String udfName = instruction.getString(0);
-        int paramCount = instruction.getInt(1);
+        String dyadicSymbol = sequence.currentInst().getString(0);
+        Object secExpData = memStack.pop();
+        Object fstExpData = memStack.pop();
         //
-        Object[] paramArrays = new Object[paramCount];
-        for (int i = 0; i < paramCount; i++) {
-            paramArrays[paramCount - 1 - i] = memStack.pop();
+        Class<?> fstType = (fstExpData == null) ? Void.class : fstExpData.getClass();
+        Class<?> secType = (secExpData == null) ? Void.class : secExpData.getClass();
+        OperatorProcess process = context.findOperator(Symbol.Dyadic, dyadicSymbol, fstType, secType);
+        //
+        if (process == null) {
+            throw new ProcessException("DO -> " + dyadicSymbol + " OperatorProcess is Undefined");
         }
         //
-        UDF udf = context.findUDF(udfName);
-        if (udf == null) {
-            throw new ProcessException("CALL -> udf '" + udfName + "' is not found");
-        }
-        //
-        Object result = udf.call(paramArrays);
+        Object result = process.doProcess(dyadicSymbol, new Object[] { fstExpData, secExpData });
         memStack.push(result);
     }
 }

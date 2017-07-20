@@ -13,38 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.process;
-import net.hasor.dataql.runtime.OperatorProcess;
+package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.runtime.*;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 /**
- * DO 指令是用于进行 二元运算。
- * 该指令会通过运算符和被计算的表达式来寻找 OperatorProcess 运算实现类，进行运算。
+ * UO 指令是用于进行 一元运算。
+ * 该指令会通过运算符和被计算的表达式来寻找 OperatorProcess 运算实现类进行运算。
  * 开发者可以通过实现 OperatorProcess 接口，覆盖某个运算符实现 运算符重载功能。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-class DO implements InsetProcess {
+class UO implements InsetProcess {
     @Override
     public int getOpcode() {
-        return DO;
+        return UO;
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
         String dyadicSymbol = sequence.currentInst().getString(0);
-        Object secExpData = memStack.pop();
-        Object fstExpData = memStack.pop();
+        Object expData = memStack.pop();
         //
-        Class<?> fstType = (fstExpData == null) ? Void.class : fstExpData.getClass();
-        Class<?> secType = (secExpData == null) ? Void.class : secExpData.getClass();
-        OperatorProcess process = context.findOperator(Symbol.Dyadic, dyadicSymbol, fstType, secType);
+        Class<?> expType = (expData == null) ? Void.class : expData.getClass();
+        OperatorProcess process = context.findOperator(Symbol.Unary, dyadicSymbol, expType, null);
         //
         if (process == null) {
-            throw new ProcessException("DO -> " + dyadicSymbol + " OperatorProcess is Undefined");
+            throw new ProcessException("UO -> " + dyadicSymbol + " OperatorProcess is Undefined");
         }
         //
-        Object result = process.doProcess(dyadicSymbol, new Object[] { fstExpData, secExpData });
+        Object result = process.doProcess(dyadicSymbol, new Object[] { expData });
         memStack.push(result);
     }
 }

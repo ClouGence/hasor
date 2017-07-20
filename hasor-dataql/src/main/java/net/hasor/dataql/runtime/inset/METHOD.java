@@ -13,39 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.process;
-import net.hasor.core.utils.StringUtils;
-import net.hasor.dataql.result.ObjectModel;
+package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.struts.LambdaCall;
 /**
- * NO，创建一个对象 or Map。
+ * METHOD，位于定义 lambda 函数的执行序列头部。该指令的目的是对发起调用的入参参数个数进行规整化。
+ * 例：<pre>
+ *  var foo = lambda : (a,b,c) -> {
+ *       return a+b+c;
+ *   }
+ *   return foo(1,2,3,4,5)~;
+ * <pre/>
+ * 例子中，foo 方法定义了 3个参数，但是当发起调用 foo 时实际传入了 5 个参数。METHOD，指令的目的就是为了纠正入参个数的不一致。
+ *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-class NO implements InsetProcess {
+class METHOD implements InsetProcess {
     @Override
     public int getOpcode() {
-        return NO;
+        return METHOD;
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
-        String typeString = sequence.currentInst().getString(0);
-        Class<?> objectType = null;
-        if (StringUtils.isNotBlank(typeString)) {
-            objectType = context.loadType(typeString);
-        } else {
-            objectType = ObjectModel.class;
+        int paramCount = sequence.currentInst().getInt(0);
+        LambdaCall result = (LambdaCall) memStack.peek();
+        //
+        if (result.getArrays() == null || paramCount != result.getArrays().length) {
+            Object[] finalParamArray = new Object[paramCount];
+            Object[] inParams = result.getArrays();
+            for (int i = 0; i < paramCount; i++) {
+                if (i > (inParams.length - 1)) {
+                    break;
+                }
+                finalParamArray[i] = inParams[i];
+            }
+            result.updateArrays(finalParamArray);
         }
         //
-        try {
-            memStack.push(objectType.newInstance());
-        } catch (Exception e) {
-            throw new ProcessException("NO -> " + e.getMessage(), e);
-        }
     }
 }

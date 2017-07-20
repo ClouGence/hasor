@@ -13,44 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.process;
-import net.hasor.dataql.result.ListModel;
+package net.hasor.dataql.runtime.inset;
+import net.hasor.core.utils.BeanUtils;
+import net.hasor.dataql.DataQL;
+import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.ProcessException;
-import net.hasor.dataql.runtime.struts.ListResultStruts;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.struts.ObjectResultStruts;
 
-import java.util.Collection;
+import java.util.Map;
 /**
- * PUSH，将栈顶的数据 put 到结果集中。
+ * PUT，将栈顶的数据 set 到结果集中。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-class PUSH implements InsetProcess {
+class PUT implements InsetProcess {
     @Override
     public int getOpcode() {
-        return PUSH;
+        return PUT;
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
+        String filedName = sequence.currentInst().getString(0);
         Object data = memStack.pop();
-        Object ors = memStack.peek();
         //
-        if (ors instanceof ListResultStruts) {
-            ((ListResultStruts) ors).addResult(data);
+        Object ors = memStack.peek();
+        if (ors instanceof ObjectResultStruts) {
+            ((ObjectResultStruts) ors).addResultField(filedName, data);
             return;
         }
-        if (ors instanceof ListModel) {
-            ((ListModel) ors).add(data);
+        if (ors instanceof ObjectModel) {
+            ((ObjectModel) ors).addField(filedName);
+            ((ObjectModel) ors).put(filedName, data);
             return;
         }
-        if (ors instanceof Collection) {
-            ((Collection) ors).add(data);
+        if (ors instanceof Map) {
+            ((Map) ors).put(filedName, data);
             return;
         }
-        throw new ProcessException("output data eror, target type must be 'ListResultStruts or ListModel or Collection.'");
+        //
+        Object optionValue = context.getOption(DataQL.SAFE_PUT);
+        boolean safeput = Boolean.TRUE.equals(optionValue);
+        if (!safeput && !BeanUtils.canWriteProperty(filedName, ors.getClass())) {
+            throw new ProcessException("output data eror, target type must be 'ListResultStruts or ListModel or Collection.'");
+        }
+        //
+        BeanUtils.writePropertyOrField(ors, filedName, data);
     }
 }

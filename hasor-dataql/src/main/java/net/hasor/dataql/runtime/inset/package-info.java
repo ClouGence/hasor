@@ -17,5 +17,5 @@
  * DataQL，执行指令集。
  */
 @AopIgnore
-package net.hasor.dataql.runtime.process;
+package net.hasor.dataql.runtime.inset;
 import net.hasor.core.container.AopIgnore;

@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.process;
+package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.UDF;
+import net.hasor.dataql.domain.inst.Instruction;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
@@ -21,17 +23,32 @@ import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 /**
- * LDC_N，输出一个 null 到栈。
+ * CALL，指令是用于发起对 UDF 的调用。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-class LDC_N implements InsetProcess {
+class CALL implements InsetProcess {
     @Override
     public int getOpcode() {
-        return LDC_N;
+        return CALL;
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
-        memStack.push(null);
+        Instruction instruction = sequence.currentInst();
+        String udfName = instruction.getString(0);
+        int paramCount = instruction.getInt(1);
+        //
+        Object[] paramArrays = new Object[paramCount];
+        for (int i = 0; i < paramCount; i++) {
+            paramArrays[paramCount - 1 - i] = memStack.pop();
+        }
+        //
+        UDF udf = context.findUDF(udfName);
+        if (udf == null) {
+            throw new ProcessException("CALL -> udf '" + udfName + "' is not found");
+        }
+        //
+        Object result = udf.call(paramArrays);
+        memStack.push(result);
     }
 }

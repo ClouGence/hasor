@@ -13,36 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.process;
-import net.hasor.dataql.runtime.OperatorProcess;
+package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.runtime.*;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 /**
- * UO 指令是用于进行 一元运算。
- * 该指令会通过运算符和被计算的表达式来寻找 OperatorProcess 运算实现类进行运算。
- * 开发者可以通过实现 OperatorProcess 接口，覆盖某个运算符实现 运算符重载功能。
+ * ERR，异常结束指令，当执行该指令时，会将栈顶的两个元素作为 异常信息抛出。
+ * DataQL 在抛出异常时允许携带一个对象类型的返回值。
+ * 区别于 END 指令的是，EXIT 指令将会终结整个查询的执行。而 END 指令只会终止当前指令序列的执行。同时有别于 ERR 指令的是，开发者不会得到异常抛出。
+ * @see net.hasor.dataql.runtime.inset.END
+ * @see net.hasor.dataql.runtime.inset.EXIT
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-class UO implements InsetProcess {
+class ERR implements InsetProcess {
     @Override
     public int getOpcode() {
-        return UO;
+        return ERR;
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
-        String dyadicSymbol = sequence.currentInst().getString(0);
-        Object expData = memStack.pop();
-        //
-        Class<?> expType = (expData == null) ? Void.class : expData.getClass();
-        OperatorProcess process = context.findOperator(Symbol.Unary, dyadicSymbol, expType, null);
-        //
-        if (process == null) {
-            throw new ProcessException("UO -> " + dyadicSymbol + " OperatorProcess is Undefined");
-        }
-        //
-        Object result = process.doProcess(dyadicSymbol, new Object[] { expData });
-        memStack.push(result);
+        Object errorMsg = memStack.pop();
+        int errorCode = (Integer) memStack.pop();
+        throw new InvokerProcessException(this.getOpcode(), errorCode, errorMsg);
     }
 }

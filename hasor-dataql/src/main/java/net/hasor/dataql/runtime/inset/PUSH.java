@@ -13,36 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.process;
+package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.result.ListModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.struts.ListResultStruts;
+
+import java.util.Collection;
 /**
- * IF，当前栈顶的表达式如果为 false，则跳转到 IF 指令上指定的位置上去。
+ * PUSH，将栈顶的数据 put 到结果集中。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-class IF implements InsetProcess {
+class PUSH implements InsetProcess {
     @Override
     public int getOpcode() {
-        return IF;
+        return PUSH;
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
-        Object test = memStack.pop();
-        int jumpLabel = sequence.currentInst().getInt(0);
+        Object data = memStack.pop();
+        Object ors = memStack.peek();
         //
-        boolean testFailed = (test == null || Boolean.FALSE.equals(test));
-        if (!testFailed) {
-            String testStr = test.toString();
-            testFailed = ("false".equalsIgnoreCase(testStr) || "off".equalsIgnoreCase(testStr) || "0".equalsIgnoreCase(testStr));
+        if (ors instanceof ListResultStruts) {
+            ((ListResultStruts) ors).addResult(data);
+            return;
         }
-        //
-        if (testFailed) {
-            sequence.jumpTo(jumpLabel);
+        if (ors instanceof ListModel) {
+            ((ListModel) ors).add(data);
+            return;
         }
+        if (ors instanceof Collection) {
+            ((Collection) ors).add(data);
+            return;
+        }
+        throw new ProcessException("output data eror, target type must be 'ListResultStruts or ListModel or Collection.'");
     }
 }

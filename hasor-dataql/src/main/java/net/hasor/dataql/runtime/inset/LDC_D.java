@@ -13,32 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.process;
-import net.hasor.dataql.domain.inst.Instruction;
+package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.ProcessException;
-import net.hasor.dataql.runtime.struts.LambdaCallStruts;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 /**
- * M_REF，定义一个 lambda 函数指针。（产生一个LambdaCallStruts）
+ * LDC_D，输出一个 数值 到栈。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-class M_REF implements InsetProcess {
+class LDC_D implements InsetProcess {
     @Override
     public int getOpcode() {
-        return M_REF;
+        return LDC_D;
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
-        //
-        Instruction inst = sequence.currentInst();
-        int address = inst.getInt(0);
-        //
-        // .前把函数入口定义，打包成一个 LambdaCallStruts
-        memStack.push(new LambdaCallStruts(address));
+        Number number = sequence.currentInst().getNumber(0);
+        memStack.push(number);
     }
 }

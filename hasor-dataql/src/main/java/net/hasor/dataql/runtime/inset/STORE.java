@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.process;
+package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
@@ -21,18 +21,20 @@ import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 /**
- * LDC_B，输出一个 boolean 到栈。
+ * STORE，将栈顶的数据保存到堆。与其对应的指令为 LOAD
+ * @see net.hasor.dataql.runtime.inset.LOAD
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-class LDC_B implements InsetProcess {
+class STORE implements InsetProcess {
     @Override
     public int getOpcode() {
-        return LDC_B;
+        return STORE;
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
-        Boolean value = sequence.currentInst().getBoolean(0);
-        memStack.push(value);
+        int position = sequence.currentInst().getInt(0);
+        Object data = memStack.pop();
+        memStack.storeData(position, data);
     }
 }
