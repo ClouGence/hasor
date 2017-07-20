@@ -59,10 +59,5 @@
         <apiBinderSet>
             <!--<binder type="net.hasor.plugins.data.DataApiBinder">net.hasor.plugins.data.DataApiBinderCreater</binder>-->
         </apiBinderSet>
-
-        <!-- Invoker 扩展（多个 type 可以指定同一个实现类，Hasor 会自动映射到同一个实例对象上） -->
-        <invokerCreaterSet>
-            <!-- <invokerCreater type="net.hasor.web.RenderInvoker">net.hasor.web.render.RenderInvokerCreater</invokerCreater> -->
-        </invokerCreaterSet>
     </hasor>
 </config>
