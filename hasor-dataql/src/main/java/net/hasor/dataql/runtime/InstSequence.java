@@ -15,7 +15,6 @@
  */
 package net.hasor.dataql.runtime;
 import net.hasor.core.utils.StringUtils;
-import net.hasor.dataql.domain.inst.InstQueue;
 import net.hasor.dataql.domain.inst.Instruction;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,10 +31,7 @@ public class InstSequence {
     private final AtomicInteger   sequenceIndex;// 当前指令指针指向的序列位置
     private boolean jumpMark = false;
     //
-    public InstSequence(int name, InstQueue queue) throws ProcessException {
-        this(name, queue.buildArrays());
-    }
-    private InstSequence(int name, Instruction[][] queueSet) {
+    public InstSequence(int name, Instruction[][] queueSet) {
         this.name = name;
         this.queueSet = queueSet;
         this.startPosition = 0;

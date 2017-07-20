@@ -117,8 +117,8 @@ public class InstQueue {
         }
         strBuffer.append("\n");
     }
+    //
     public Instruction[][] buildArrays() throws ProcessException {
-        //
         for (LinkedList<Instruction> instList : this.instSet) {
             for (Instruction inst : instList) {
                 if (!inst.replaceLabel()) {
