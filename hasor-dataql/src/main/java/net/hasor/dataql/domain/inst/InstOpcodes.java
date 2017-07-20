@@ -15,7 +15,7 @@
  */
 package net.hasor.dataql.domain.inst;
 /**
- * QL 指令集，共计29条指令
+ * QL 指令集，共计 30 条指令
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-03
  */
@@ -60,7 +60,8 @@ public interface InstOpcodes {
     public static final byte IF     = 81; // if（条件判断成功，执行下一条指令。否则执行 GOTO跳转。）
     public static final byte GOTO   = 82; // 执行跳转
     public static final byte END    = 83; // 结束指令序列并返回值（消耗：1个元素，产出：0个元素）
-    public static final byte ERR    = 84; // 结束指令序列并抛出异常（消耗：2个元素，产出：0个元素）
+    public static final byte EXIT   = 84; // 结束指令序列并抛出异常（消耗：2个元素，产出：0个元素）
+    public static final byte ERR    = 85; // 结束指令序列并抛出异常（消耗：2个元素，产出：0个元素）
     //
     // -------------------------------------------------------------- 辅助指令
     public static final byte OPT    = 1; // 选项参数（消耗：2个元素，产出：0个元素）

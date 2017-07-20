@@ -86,6 +86,7 @@
 | &lt;END: "end"&gt;
 | &lt;RETURN: "return"&gt;
 | &lt;THROW: "throw"&gt;
+| &lt;EXIT: "exit"&gt;
 | &lt;VAR: "var"&gt;
 | &lt;LAMBDA: "lambda"&gt;
 | &lt;TRUE: "true"&gt;
@@ -462,17 +463,17 @@
  <TR>
   <TD>
 <PRE>
-// .异常
+// .异常 or 中断
 </PRE>
   </TD>
  </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod24">throwBlock</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod24">breakBlock</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>&lt;THROW&gt; ( ( <A HREF="#prod25">throwBlockStatus</A> <A HREF="#prod7">expression</A> ) | ( <A HREF="#prod7">expression</A> ) )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;EXIT&gt; ) | ( &lt;THROW&gt; ) ) ( ( <A HREF="#prod25">breakBlockStatus</A> <A HREF="#prod7">expression</A> ) | ( <A HREF="#prod7">expression</A> ) )</TD>
 </TR>
 <TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod25">throwBlockStatus</A></TD>
+<TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod25">breakBlockStatus</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
 <TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod5">numberValue</A> &lt;COMMA&gt;</TD>
 </TR>
@@ -500,7 +501,7 @@
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod20">block</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( ( <A HREF="#prod21">varBlock</A> ) | ( <A HREF="#prod23">ifBlock</A> ) | ( <A HREF="#prod22">returnBlock</A> ) | ( <A HREF="#prod24">throwBlock</A> ) )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( <A HREF="#prod21">varBlock</A> ) | ( <A HREF="#prod23">ifBlock</A> ) | ( <A HREF="#prod22">returnBlock</A> ) | ( <A HREF="#prod24">breakBlock</A> ) )</TD>
 </TR>
  <!-- Special token -->
  <TR>

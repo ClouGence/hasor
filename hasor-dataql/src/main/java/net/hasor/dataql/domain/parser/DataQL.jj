@@ -85,6 +85,7 @@ TOKEN: {
     | < END                 : "end" >
     | < RETURN              : "return" >
     | < THROW               : "throw" >
+    | < EXIT                : "exit" >
     | < VAR                 : "var" >
     | < LAMBDA              : "lambda" >
     | < TRUE                : "true" >
@@ -530,22 +531,31 @@ SwitchInst ifBlock() : {                             SwitchInst switchInst = new
                                                     {return switchInst;}
 }
 
-// .异常
-ThrowInst throwBlock() : {                           Number     throwStatus = null;
+// .异常 or 中断
+Inst breakBlock() : {                                String     typeClass   = null;
+                                                     Number     throwStatus = null;
                                                      Expression throwData   = null;
 } {
-    <THROW>
     (
-        LOOKAHEAD(throwBlockStatus())
         (
-            throwStatus = throwBlockStatus()
+            <EXIT>                                  {typeClass = "ExitInst";}
+        ) | (
+            <THROW>                                 {typeClass = "ThrowInst";}
+        )
+    )
+    (
+        LOOKAHEAD(breakBlockStatus())
+        (
+            throwStatus = breakBlockStatus()
             throwData = expression()
         ) | (
             throwData = expression()
         )
-    )                                               {return new ThrowInst(throwStatus,throwData);}
+    )                                               {return "ThrowInst".equals(typeClass)?
+                                                            new ThrowInst(throwStatus,throwData):
+                                                            new ExitInst(throwStatus,throwData);}
 }
-Number throwBlockStatus() : {                        Number errorCode = null;
+Number breakBlockStatus() : {                        Number errorCode = null;
 } {
     errorCode = numberValue() <COMMA>               {return errorCode;}
 }
@@ -569,7 +579,7 @@ Inst block() : {                                     Inst inst = null;
         ) | (
             inst = returnBlock()
         ) | (
-            inst = throwBlock()
+            inst = breakBlock()
         )
     )                                               {return inst;}
 }
