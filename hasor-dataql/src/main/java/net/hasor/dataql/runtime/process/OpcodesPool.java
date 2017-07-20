@@ -46,9 +46,7 @@ public class OpcodesPool {
             pool.addInsetProcess(new IF());
             pool.addInsetProcess(new GOTO());
             pool.addInsetProcess(new END());
-            pool.addInsetProcess(new ERR());
-            //
-            pool.addInsetProcess(new ERR());
+            pool.addInsetProcess(new EXIT());
             pool.addInsetProcess(new ERR());
             //
             pool.addInsetProcess(new OPT());

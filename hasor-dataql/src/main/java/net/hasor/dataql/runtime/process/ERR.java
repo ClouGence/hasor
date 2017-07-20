@@ -14,29 +14,27 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.process;
-import net.hasor.dataql.runtime.InsetProcess;
-import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.ProcessException;
+import net.hasor.dataql.runtime.*;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 /**
- * END，正常结束指令，当执行该指令时，会将栈顶的元素作为 result。
- * 并且将执行指针设置到执行序列的末尾。
- * @see net.hasor.dataql.runtime.process.ERR
+ * ERR，异常结束指令，当执行该指令时，会将栈顶的两个元素作为 异常信息抛出。
+ * DataQL 在抛出异常时允许携带一个对象类型的返回值。
+ * 区别于 END 指令的是，EXIT 指令将会终结整个查询的执行。而 END 指令只会终止当前指令序列的执行。同时有别于 ERR 指令的是，开发者不会得到异常抛出。
+ * @see net.hasor.dataql.runtime.process.END
  * @see net.hasor.dataql.runtime.process.EXIT
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-class END implements InsetProcess {
+class ERR implements InsetProcess {
     @Override
     public int getOpcode() {
-        return END;
+        return ERR;
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
-        Object result = memStack.pop();
-        memStack.setResult(result);
-        sequence.jumpTo(sequence.exitPosition());
+        Object errorMsg = memStack.pop();
+        int errorCode = (Integer) memStack.pop();
+        throw new InvokerProcessException(this.getOpcode(), errorCode, errorMsg);
     }
 }
