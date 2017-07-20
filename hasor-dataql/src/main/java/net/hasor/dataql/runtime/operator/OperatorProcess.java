@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime;
+package net.hasor.dataql.runtime.operator;
 /**
  * 一元或二元运算
  * @author 赵永春(zyc@hasor.net)
