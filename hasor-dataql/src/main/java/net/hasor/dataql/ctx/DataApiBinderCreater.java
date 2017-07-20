@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.dataql.ctx;
-import net.hasor.core.*;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.BindInfo;
+import net.hasor.core.Hasor;
+import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.dataql.UDF;
@@ -32,33 +35,6 @@ public class DataApiBinderCreater implements ApiBinderCreater {
         return new DataApiBinderImpl(apiBinder);
     }
     //
-    //
-    private static class UDFDefine implements AppContextAware, UDF {
-        private String                  udfName;
-        private BindInfo<? extends UDF> udfInfo;
-        private AppContext              appContext;
-        private UDF                     target;
-        //
-        public UDFDefine(String udfName, BindInfo<? extends UDF> udfInfo) {
-            this.udfName = udfName;
-            this.udfInfo = udfInfo;
-        }
-        @Override
-        public void setAppContext(AppContext appContext) {
-            this.appContext = appContext;
-        }
-        @Override
-        public Object call(Object[] values) {
-            if (this.target == null) {
-                synchronized (this) {
-                    if (this.target == null) {
-                        this.target = this.appContext.getInstance(this.udfInfo);
-                    }
-                }
-            }
-            return this.target;
-        }
-    }
     //
     private static class DataApiBinderImpl extends ApiBinderWrap implements DataApiBinder {
         protected Logger logger = LoggerFactory.getLogger(getClass());
@@ -81,8 +57,8 @@ public class DataApiBinderCreater implements ApiBinderCreater {
         //
         @Override
         public void addUDF(String name, BindInfo<? extends UDF> udfInfo) {
-            UDFDefine define = Hasor.autoAware(getEnvironment(), new UDFDefine(name, udfInfo));
-            this.bindType(UDFDefine.class).uniqueName().toInstance(define);
+            DefineUDF define = Hasor.autoAware(getEnvironment(), new DefineUDF(name, udfInfo));
+            this.bindType(DefineUDF.class).uniqueName().toInstance(define);
         }
     }
     //

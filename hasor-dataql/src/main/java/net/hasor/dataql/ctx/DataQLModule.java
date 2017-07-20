@@ -39,10 +39,10 @@ public class DataQLModule implements Module {
             public void onEvent(String event, Object eventData) throws Throwable {
                 AppContext appContext = (AppContext) eventData;
                 //
-                List<UDFDefine> udfList = appContext.findBindingBean(UDFDefine.class);
-                for (UDFDefine define : udfList) {
+                List<DefineUDF> udfList = appContext.findBindingBean(DefineUDF.class);
+                for (DefineUDF define : udfList) {
                     String defineName = define.getName();
-                    qlFactory.addUDF(defineName, define);
+                    qlFactory.addShareUDF(defineName, define);
                 }
             }
         });

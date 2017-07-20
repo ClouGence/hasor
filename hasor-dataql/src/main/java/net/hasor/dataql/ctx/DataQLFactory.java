@@ -15,10 +15,10 @@
  */
 package net.hasor.dataql.ctx;
 import net.hasor.dataql.DataQL;
-import net.hasor.dataql.UDF;
-import net.hasor.dataql.domain.parser.DataQLParser;
 import net.hasor.dataql.Query;
+import net.hasor.dataql.UDF;
 import net.hasor.dataql.domain.BlockSet;
+import net.hasor.dataql.domain.parser.DataQLParser;
 import net.hasor.dataql.domain.parser.ParseException;
 
 import java.util.HashMap;
@@ -38,7 +38,7 @@ public class DataQLFactory implements DataQL {
         return new DataQLFactory();
     }
     /** 添加 UDF */
-    public void addUDF(String udfName, UDF udf) {
+    public void addShareUDF(String udfName, UDF udf) {
         if (this.udfMap.containsKey(udfName)) {
             throw new IllegalStateException("udf name ‘" + udfName + "’ already exist.");
         }
