@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain;
-import net.hasor.dataql.domain.inst.CompilerStack;
-import net.hasor.dataql.domain.inst.InstQueue;
+import net.hasor.dataql.domain.compiler.CompilerStack;
+import net.hasor.dataql.domain.compiler.InstQueue;
 /**
  * exit指令
  * @author 赵永春(zyc@hasor.net)

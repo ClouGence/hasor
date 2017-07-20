@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain.inst;
+package net.hasor.dataql.domain.compiler;
 /**
  * QL 指令集，共计 30 条指令
  * @author 赵永春(zyc@hasor.net)

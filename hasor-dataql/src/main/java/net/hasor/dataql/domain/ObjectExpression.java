@@ -15,9 +15,9 @@
  */
 package net.hasor.dataql.domain;
 import net.hasor.core.utils.StringUtils;
-import net.hasor.dataql.domain.inst.CompilerStack;
-import net.hasor.dataql.domain.inst.InstQueue;
-import net.hasor.dataql.domain.inst.Instruction;
+import net.hasor.dataql.domain.compiler.CompilerStack;
+import net.hasor.dataql.domain.compiler.InstQueue;
+import net.hasor.dataql.domain.compiler.Instruction;
 
 import java.util.ArrayList;
 import java.util.HashMap;

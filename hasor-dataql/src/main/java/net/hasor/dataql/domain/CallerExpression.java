@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain;
-import net.hasor.dataql.domain.inst.CompilerStack;
-import net.hasor.dataql.domain.inst.InstQueue;
+import net.hasor.dataql.domain.compiler.CompilerStack;
+import net.hasor.dataql.domain.compiler.InstQueue;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain.inst;
+package net.hasor.dataql.domain.compiler;
 import net.hasor.core.utils.StringUtils;
 
 import java.lang.reflect.Field;

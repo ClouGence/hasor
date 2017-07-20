@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain;
-import net.hasor.dataql.domain.inst.CompilerStack;
-import net.hasor.dataql.domain.inst.InstQueue;
+import net.hasor.dataql.domain.compiler.CompilerStack;
+import net.hasor.dataql.domain.compiler.InstQueue;
 /**
  * 基础类型值，用于表示【String、Number、Null、Boolean】四种基本类型
  * @author 赵永春(zyc@hasor.net)
