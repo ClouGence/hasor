@@ -23,7 +23,4 @@ import java.util.Map;
 public interface Query extends Option {
     /**执行查询*/
     public QueryResult execute(Map<String, Object> queryData) throws InvokerProcessException, BreakProcessException;
-
-    /**执行查询*/
-    public <T> T execute(Map<String, Object> queryData, Class<?> toType) throws InvokerProcessException, BreakProcessException;
 }
