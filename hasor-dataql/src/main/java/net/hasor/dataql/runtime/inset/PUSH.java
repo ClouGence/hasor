@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.InvokerProcessException;
+import net.hasor.dataql.Option;
+import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.result.ListModel;
-import net.hasor.dataql.runtime.ProcessException;
-import net.hasor.dataql.runtime.inset.struts.ListResultStruts;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
 import net.hasor.dataql.runtime.process.InstSequence;
 import net.hasor.dataql.runtime.process.ProcessContet;
+import net.hasor.dataql.runtime.struts.ListResultStruts;
 
 import java.util.Collection;
 /**
@@ -51,6 +53,10 @@ class PUSH implements InsetProcess {
             ((Collection) ors).add(data);
             return;
         }
-        throw new ProcessException("output data eror, target type must be 'ListResultStruts or ListModel or Collection.'");
+        //
+        Object optionValue = context.getOption(Option.SAFE_PUT);
+        if (Boolean.TRUE.equals(optionValue)) {
+            throw new InvokerProcessException(getOpcode(), "output data eror, target type must be 'ListResultStruts or ListModel or Collection.'");
+        }
     }
 }

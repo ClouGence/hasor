@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.runtime.ProcessException;
-import net.hasor.dataql.runtime.inset.struts.LambdaCall;
+import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
 import net.hasor.dataql.runtime.process.InstSequence;
 import net.hasor.dataql.runtime.process.ProcessContet;
+import net.hasor.dataql.runtime.struts.LambdaCall;
 /**
  * LOCAL，紧跟在 METHOD 指令后面可以有多个组成。
  * 作用是 将 METHOD 指令中纠正的参数数组存储到堆内存中。它的工作性质有点类似 STORE。

@@ -15,8 +15,9 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.core.utils.StringUtils;
+import net.hasor.dataql.InvokerProcessException;
+import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.result.ListModel;
-import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
@@ -45,13 +46,13 @@ class NA implements InsetProcess {
         }
         //
         if (!Collection.class.isAssignableFrom(listType)) {
-            throw new ProcessException("NA -> type " + listType + " is not Collection");
+            throw new InvokerProcessException(getOpcode(), "NA -> type " + listType + " is not Collection");
         }
         //
         try {
             memStack.push(listType.newInstance());
         } catch (Exception e) {
-            throw new ProcessException("NA -> " + e.getMessage(), e);
+            throw new InvokerProcessException(getOpcode(), "NA -> " + e.getMessage(), e);
         }
     }
 }

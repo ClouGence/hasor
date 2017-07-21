@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.InvokerProcessException;
+import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.UDF;
 import net.hasor.dataql.domain.compiler.Instruction;
-import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
@@ -45,7 +46,7 @@ class CALL implements InsetProcess {
         //
         UDF udf = context.findUDF(udfName);
         if (udf == null) {
-            throw new ProcessException("CALL -> udf '" + udfName + "' is not found");
+            throw new InvokerProcessException(getOpcode(), "CALL -> udf '" + udfName + "' is not found");
         }
         //
         Object result = udf.call(paramArrays);

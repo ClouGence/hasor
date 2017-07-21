@@ -15,8 +15,9 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.core.utils.StringUtils;
+import net.hasor.dataql.InvokerProcessException;
+import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.result.ObjectModel;
-import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
@@ -45,7 +46,7 @@ class NO implements InsetProcess {
         try {
             memStack.push(objectType.newInstance());
         } catch (Exception e) {
-            throw new ProcessException("NO -> " + e.getMessage(), e);
+            throw new InvokerProcessException(getOpcode(), "NO -> " + e.getMessage(), e);
         }
     }
 }

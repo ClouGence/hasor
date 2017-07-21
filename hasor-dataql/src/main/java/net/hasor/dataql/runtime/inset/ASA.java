@@ -15,9 +15,10 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.core.utils.StringUtils;
+import net.hasor.dataql.InvokerProcessException;
+import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.domain.compiler.Instruction;
 import net.hasor.dataql.result.ObjectModel;
-import net.hasor.dataql.runtime.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
@@ -60,7 +61,7 @@ class ASA implements InsetProcess {
         try {
             toType = objectType.newInstance();
         } catch (Exception e) {
-            throw new ProcessException("ASA -> " + e.getMessage(), e);
+            throw new InvokerProcessException(getOpcode(), "ASA -> " + e.getMessage(), e);
         }
         Object result = memStack.pop();
         memStack.push(new ListResultStruts(toType));

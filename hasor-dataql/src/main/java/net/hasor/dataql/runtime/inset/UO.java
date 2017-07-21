@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.runtime.ProcessException;
+import net.hasor.dataql.InvokerProcessException;
+import net.hasor.dataql.OperatorProcess;
+import net.hasor.dataql.ProcessException;
+import net.hasor.dataql.runtime.Symbol;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.operator.OperatorProcess;
-import net.hasor.dataql.runtime.operator.Symbol;
 import net.hasor.dataql.runtime.process.InsetProcess;
 import net.hasor.dataql.runtime.process.InstSequence;
 import net.hasor.dataql.runtime.process.ProcessContet;
@@ -43,7 +44,7 @@ class UO implements InsetProcess {
         OperatorProcess process = context.findOperator(Symbol.Unary, dyadicSymbol, expType, null);
         //
         if (process == null) {
-            throw new ProcessException("UO -> " + dyadicSymbol + " OperatorProcess is Undefined");
+            throw new InvokerProcessException(getOpcode(), "UO -> " + dyadicSymbol + " OperatorProcess is Undefined");
         }
         //
         Object result = process.doProcess(dyadicSymbol, new Object[] { expData });

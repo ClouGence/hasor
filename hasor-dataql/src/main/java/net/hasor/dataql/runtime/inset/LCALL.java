@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.runtime.ProcessException;
+import net.hasor.dataql.InvokerProcessException;
+import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
@@ -50,7 +51,7 @@ class LCALL implements InsetProcess {
         // .查找方法指令序列
         InstSequence methodSeq = sequence.methodSet(address);
         if (methodSeq == null) {
-            throw new ProcessException("LCALL -> InstSequence '" + address + "' is not found.");
+            throw new InvokerProcessException(getOpcode(), "LCALL -> InstSequence '" + address + "' is not found.");
         }
         // .执行调用，调用前把所有入参打包成一个 Array，交给 METHOD 指令去处理。
         {

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.runtime.InvokerProcessException;
-import net.hasor.dataql.runtime.ProcessException;
+import net.hasor.dataql.BreakProcessException;
+import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
@@ -40,6 +40,6 @@ class EXIT implements InsetProcess {
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
         Object exitData = memStack.pop();
         int exitCode = (Integer) memStack.pop();
-        throw new InvokerProcessException(this.getOpcode(), exitCode, exitData);
+        throw new BreakProcessException(this.getOpcode(), exitCode, exitData);
     }
 }

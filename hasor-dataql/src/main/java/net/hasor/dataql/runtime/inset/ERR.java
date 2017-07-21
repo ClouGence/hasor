@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.dataql.runtime.InvokerProcessException;
-import net.hasor.dataql.runtime.ProcessException;
+import net.hasor.dataql.BreakProcessException;
+import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
@@ -39,6 +39,6 @@ class ERR implements InsetProcess {
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
         Object errorMsg = memStack.pop();
         int errorCode = (Integer) memStack.pop();
-        throw new InvokerProcessException(this.getOpcode(), errorCode, errorMsg);
+        throw new BreakProcessException(this.getOpcode(), errorCode, errorMsg);
     }
 }

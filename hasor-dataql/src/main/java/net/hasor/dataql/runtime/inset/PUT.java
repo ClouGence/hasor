@@ -15,15 +15,16 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.core.utils.BeanUtils;
-import net.hasor.dataql.binder.DataQL;
+import net.hasor.dataql.InvokerProcessException;
+import net.hasor.dataql.Option;
+import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.result.ObjectModel;
-import net.hasor.dataql.runtime.ProcessException;
-import net.hasor.dataql.runtime.inset.struts.ObjectResultStruts;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
 import net.hasor.dataql.runtime.process.InstSequence;
 import net.hasor.dataql.runtime.process.ProcessContet;
+import net.hasor.dataql.runtime.struts.ObjectResultStruts;
 
 import java.util.Map;
 /**
@@ -56,10 +57,10 @@ class PUT implements InsetProcess {
             return;
         }
         //
-        Object optionValue = context.getOption(DataQL.SAFE_PUT);
+        Object optionValue = context.getOption(Option.SAFE_PUT);
         boolean safeput = Boolean.TRUE.equals(optionValue);
         if (!safeput && !BeanUtils.canWriteProperty(filedName, ors.getClass())) {
-            throw new ProcessException("output data eror, target type must be 'ListResultStruts or ListModel or Collection.'");
+            throw new InvokerProcessException(getOpcode(), "output data eror, unable to write property");
         }
         //
         BeanUtils.writePropertyOrField(ors, filedName, data);
