@@ -20,8 +20,8 @@ import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.process.InsetProcess;
-import net.hasor.dataql.runtime.process.InstSequence;
+import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 /**
  * NO，创建一个对象 or Map。

@@ -17,8 +17,8 @@ package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.process.InsetProcess;
-import net.hasor.dataql.runtime.process.InstSequence;
+import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 /**
  * END，正常结束指令，当执行该指令时，会将栈顶的元素作为 result。

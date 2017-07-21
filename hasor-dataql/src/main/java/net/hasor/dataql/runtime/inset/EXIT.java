@@ -18,8 +18,8 @@ import net.hasor.dataql.BreakProcessException;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.process.InsetProcess;
-import net.hasor.dataql.runtime.process.InstSequence;
+import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 /**
  * EXIT，退出指令，当执行该指令时，会将栈顶的两个元素作为整个查询退出的返回值。

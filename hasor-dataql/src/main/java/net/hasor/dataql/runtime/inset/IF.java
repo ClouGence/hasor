@@ -17,8 +17,8 @@ package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.process.InsetProcess;
-import net.hasor.dataql.runtime.process.InstSequence;
+import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 /**
  * IF，当前栈顶的表达式如果为 false，则跳转到 IF 指令上指定的位置上去。

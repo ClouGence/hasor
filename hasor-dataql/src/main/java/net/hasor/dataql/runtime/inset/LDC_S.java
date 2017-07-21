@@ -17,8 +17,8 @@ package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.process.InsetProcess;
-import net.hasor.dataql.runtime.process.InstSequence;
+import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 /**
  * LDC_S，输出一个字符串到栈。
