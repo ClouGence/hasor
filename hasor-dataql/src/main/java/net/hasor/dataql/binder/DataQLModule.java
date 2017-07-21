@@ -39,7 +39,7 @@ public class DataQLModule implements Module {
             @Override
             public Query createQuery(String qlString) throws ParseException {
                 QueryType queryType = QueryCompiler.compilerQuery(qlString);
-                return runtime.createEngine(queryType);
+                return runtime.createEngine(queryType).newQuery();
             }
         });
         //
