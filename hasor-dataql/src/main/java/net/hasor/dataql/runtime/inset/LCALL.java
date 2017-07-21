@@ -15,13 +15,13 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.runtime.ProcessException;
-import net.hasor.dataql.runtime.inset.struts.LambdaCall;
-import net.hasor.dataql.runtime.inset.struts.LambdaCallStruts;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
 import net.hasor.dataql.runtime.process.InstSequence;
 import net.hasor.dataql.runtime.process.ProcessContet;
+import net.hasor.dataql.runtime.struts.LambdaCall;
+import net.hasor.dataql.runtime.struts.LambdaCallStruts;
 /**
  * LCALL，发起一个 lambda 的调用，调用会在一个全新的堆栈上运行。
  * 当执行该指令时，栈顶必须是一个 LambdaCallStruts ，而 LambdaCallStruts 是通过 M_REF 定义的。

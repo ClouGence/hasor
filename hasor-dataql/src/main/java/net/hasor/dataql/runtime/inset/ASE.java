@@ -15,12 +15,12 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.runtime.ProcessException;
-import net.hasor.dataql.runtime.inset.struts.ResultStruts;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
 import net.hasor.dataql.runtime.process.InstSequence;
 import net.hasor.dataql.runtime.process.ProcessContet;
+import net.hasor.dataql.runtime.struts.ResultStruts;
 /**
  * ASA、ASM、ASO 三个指令在处理数据时都是用 ResultStruts 进行封装。
  * ASE 指令的目的是拆除 ResultStruts 封装，还原真实结果。

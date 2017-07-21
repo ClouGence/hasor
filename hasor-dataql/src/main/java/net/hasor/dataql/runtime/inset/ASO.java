@@ -15,12 +15,12 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.runtime.ProcessException;
-import net.hasor.dataql.runtime.inset.struts.OriResultStruts;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
 import net.hasor.dataql.runtime.process.InstSequence;
 import net.hasor.dataql.runtime.process.ProcessContet;
+import net.hasor.dataql.runtime.struts.OriResultStruts;
 /**
  * ASO，指令处理器。用于将结果作为原封不动的进行返回。
  *
