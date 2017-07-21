@@ -14,16 +14,27 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
-import java.util.Map;
 /**
- * 查询
+ * 用于封装 Option。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface Query extends Option {
-    /**执行查询*/
-    public QueryResult execute(Map<String, Object> queryData) throws InvokerProcessException, BreakProcessException;
+public interface Option {
+    /** 在执行 put 时，如果不能 put 是否引发异常（默认为 true：安全的，不引发异常） */
+    public static final String SAFE_PUT = "SAFE_PUT";
 
-    /**执行查询*/
-    public <T> T execute(Map<String, Object> queryData, Class<?> toType) throws InvokerProcessException, BreakProcessException;
+    /** 获取选项参数 */
+    public Object getOption(String optionKey);
+
+    /** 删除选项参数 */
+    public void removeOption(String key);
+
+    /** 设置选项参数 */
+    public void setOption(String key, String value);
+
+    /** 设置选项参数 */
+    public void setOption(String key, Number value);
+
+    /** 设置选项参数 */
+    public void setOption(String key, boolean value);
 }

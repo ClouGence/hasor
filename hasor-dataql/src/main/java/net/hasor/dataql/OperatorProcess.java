@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
-import java.util.Map;
 /**
- * 查询
+ * 一元或二元运算
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface Query extends Option {
-    /**执行查询*/
-    public QueryResult execute(Map<String, Object> queryData) throws InvokerProcessException, BreakProcessException;
-
-    /**执行查询*/
-    public <T> T execute(Map<String, Object> queryData, Class<?> toType) throws InvokerProcessException, BreakProcessException;
+public interface OperatorProcess {
+    /**执行运算*/
+    public Object doProcess(String operator, Object[] args);
 }

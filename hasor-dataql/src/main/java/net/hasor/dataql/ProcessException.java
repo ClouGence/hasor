@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.operator;
+package net.hasor.dataql;
 /**
- * 一元或二元运算
+ * DataQL 异常
  * @author 赵永春(zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2017-07-14
  */
-public interface OperatorProcess {
-    /**执行运算*/
-    public Object doProcess(String operator, Object[] args);
+public class ProcessException extends Exception {
+    public ProcessException(String msg) {
+        super(msg);
+    }
+    public ProcessException(String msg, Throwable e) {
+        super(msg, e);
+    }
 }
