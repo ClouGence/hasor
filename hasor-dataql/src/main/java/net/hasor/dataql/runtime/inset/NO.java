@@ -18,11 +18,11 @@ import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.result.ObjectModel;
-import net.hasor.dataql.runtime.mem.LocalData;
-import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
+import net.hasor.dataql.runtime.mem.LocalData;
+import net.hasor.dataql.runtime.mem.MemStack;
 /**
  * NO，创建一个对象 or Map。
  * @author 赵永春(zyc@hasor.net)
@@ -38,7 +38,11 @@ class NO implements InsetProcess {
         String typeString = sequence.currentInst().getString(0);
         Class<?> objectType = null;
         if (StringUtils.isNotBlank(typeString)) {
-            objectType = context.loadType(typeString);
+            try {
+                objectType = context.loadType(typeString);
+            } catch (Exception e) {
+                throw new InvokerProcessException(getOpcode(), "load type failed -> " + typeString, e);
+            }
         } else {
             objectType = ObjectModel.class;
         }

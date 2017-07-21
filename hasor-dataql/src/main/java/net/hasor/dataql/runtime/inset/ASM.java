@@ -19,12 +19,12 @@ import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.domain.compiler.Instruction;
 import net.hasor.dataql.result.ObjectModel;
-import net.hasor.dataql.runtime.mem.LocalData;
-import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstFilter;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
+import net.hasor.dataql.runtime.mem.LocalData;
+import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.struts.ObjectResultStruts;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -50,7 +50,11 @@ class ASM implements InsetProcess {
         String typeString = sequence.currentInst().getString(0);
         Class<?> objectType = null;
         if (StringUtils.isNotBlank(typeString)) {
-            objectType = context.loadType(typeString);
+            try {
+                objectType = context.loadType(typeString);
+            } catch (Exception e) {
+                throw new InvokerProcessException(getOpcode(), "load type failed -> " + typeString, e);
+            }
         } else {
             objectType = ObjectModel.class;
         }
@@ -58,7 +62,7 @@ class ASM implements InsetProcess {
         try {
             toType = objectType.newInstance();
         } catch (Exception e) {
-            throw new InvokerProcessException(getOpcode(), "ASM -> " + e.getMessage(), e);
+            throw new InvokerProcessException(getOpcode(), "newInstance -> " + objectType.getName(), e);
         }
         Object result = memStack.pop();
         memStack.push(new ObjectResultStruts(toType));

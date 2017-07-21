@@ -22,19 +22,23 @@ package net.hasor.dataql;
 public interface Option {
     /** 在执行 put 时，如果不能 put 是否引发异常（默认为 true：安全的，不引发异常） */
     public static final String SAFE_PUT = "SAFE_PUT";
+    //
+
+    /** 获取选项参数 */
+    public String[] getOptionNames();
 
     /** 获取选项参数 */
     public Object getOption(String optionKey);
 
     /** 删除选项参数 */
-    public void removeOption(String key);
+    public void removeOption(String optionKey);
 
     /** 设置选项参数 */
-    public void setOption(String key, String value);
+    public void setOption(String optionKey, String value);
 
     /** 设置选项参数 */
-    public void setOption(String key, Number value);
+    public void setOption(String optionKey, Number value);
 
     /** 设置选项参数 */
-    public void setOption(String key, boolean value);
+    public void setOption(String optionKey, boolean value);
 }
