@@ -19,7 +19,7 @@ import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
 import net.hasor.dataql.runtime.process.InstSequence;
-import net.hasor.dataql.runtime.process.ProcessContet;
+import net.hasor.dataql.runtime.ProcessContet;
 /**
  * GOTO，跳转当前指令的执行指针到新的位置。
  * @author 赵永春(zyc@hasor.net)

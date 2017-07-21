@@ -15,8 +15,8 @@
  */
 package net.hasor.dataql.runtime.process;
 import net.hasor.core.utils.StringUtils;
+import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.domain.compiler.Instruction;
-import net.hasor.dataql.runtime.ProcessException;
 
 import java.util.concurrent.atomic.AtomicInteger;
 /**

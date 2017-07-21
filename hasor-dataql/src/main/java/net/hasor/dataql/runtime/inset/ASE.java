@@ -19,7 +19,7 @@ import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
 import net.hasor.dataql.runtime.process.InstSequence;
-import net.hasor.dataql.runtime.process.ProcessContet;
+import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.struts.ResultStruts;
 /**
  * ASA、ASM、ASO 三个指令在处理数据时都是用 ResultStruts 进行封装。

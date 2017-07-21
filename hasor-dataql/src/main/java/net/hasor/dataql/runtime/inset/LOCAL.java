@@ -19,7 +19,7 @@ import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
 import net.hasor.dataql.runtime.process.InstSequence;
-import net.hasor.dataql.runtime.process.ProcessContet;
+import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.struts.LambdaCall;
 /**
  * LOCAL，紧跟在 METHOD 指令后面可以有多个组成。

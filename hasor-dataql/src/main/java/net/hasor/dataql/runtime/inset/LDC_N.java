@@ -19,7 +19,7 @@ import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
 import net.hasor.dataql.runtime.process.InstSequence;
-import net.hasor.dataql.runtime.process.ProcessContet;
+import net.hasor.dataql.runtime.ProcessContet;
 /**
  * LDC_N，输出一个 null 到栈。
  * @author 赵永春(zyc@hasor.net)

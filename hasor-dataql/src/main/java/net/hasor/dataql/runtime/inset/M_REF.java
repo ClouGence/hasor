@@ -20,7 +20,7 @@ import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.process.InsetProcess;
 import net.hasor.dataql.runtime.process.InstSequence;
-import net.hasor.dataql.runtime.process.ProcessContet;
+import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.struts.LambdaCallStruts;
 /**
  * M_REF，定义一个 lambda 函数指针。（产生一个LambdaCallStruts）
