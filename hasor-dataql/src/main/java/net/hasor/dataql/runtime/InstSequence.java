@@ -15,7 +15,7 @@
  */
 package net.hasor.dataql.runtime;
 import net.hasor.core.utils.StringUtils;
-import net.hasor.dataql.ProcessException;
+import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.domain.compiler.Instruction;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -84,13 +84,13 @@ public class InstSequence {
         return this.sequenceIndex.get() < this.endPosition;
     }
     /** 移动指令序列指针，到下一个位置。 */
-    public boolean doNext(int nextSkip) throws ProcessException {
+    public boolean doNext(int nextSkip) throws InvokerProcessException {
         if (this.jumpMark) {
             this.jumpMark = false;
             return true;
         }
         if (nextSkip < 0) {
-            throw new ProcessException("nextSkip must be > 0");
+            throw new InvokerProcessException(0, "nextSkip must be > 0");
         }
         int newPosition = this.sequenceIndex.get() + nextSkip;
         if (newPosition > this.endPosition) {

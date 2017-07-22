@@ -17,31 +17,25 @@ package net.hasor.dataql.runtime;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
 import net.hasor.dataql.domain.compiler.QueryType;
-
-import java.util.HashMap;
-import java.util.Map;
 /**
  * DataQL 运行时。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class QueryRuntime extends ClassLoader implements Option {
-    private final Option option = new OptionSet();
-    private final Map<String, UDF> udfMap;
+    private final Option     option     = new OptionSet();
+    private final UdfManager udfManager = new UdfManager();
     //
     public QueryRuntime() {
-        this.udfMap = new HashMap<String, UDF>();
+        this(Thread.currentThread().getContextClassLoader());
+    }
+    public QueryRuntime(ClassLoader loader) {
+        super(loader);
     }
     //
     /** 添加 UDF */
     public void addShareUDF(String udfName, UDF udf) {
-        if (this.udfMap.containsKey(udfName)) {
-            throw new IllegalStateException("udf name ‘" + udfName + "’ already exist.");
-        }
-        this.udfMap.put(udfName, udf);
-    }
-    UDF findUDF(String udfName) {
-        return this.udfMap.get(udfName);
+        this.udfManager.addUDF(udfName, udf);
     }
     //
     /** 根据编译出来的 QueryType，创建对应的执行引擎。 */
@@ -49,6 +43,10 @@ public class QueryRuntime extends ClassLoader implements Option {
         return new QueryEngine(this, queryType);
     }
     //
+    //
+    UDF findUDF(String udfName) {
+        return this.udfManager.findUDF(udfName);
+    }
     //
     public Class<?> loadType(String type) throws ClassNotFoundException {
         return super.loadClass(type);
