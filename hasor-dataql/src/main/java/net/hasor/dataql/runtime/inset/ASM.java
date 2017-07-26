@@ -94,6 +94,6 @@ class ASM implements InsetProcess {
         local.popData();        // 销毁DS
         //
         // .处理完毕跳到出口
-        sequence.jumpTo(subSequence.exitPosition() - 1);
+        sequence.jumpTo(subSequence.exitPosition());
     }
 }

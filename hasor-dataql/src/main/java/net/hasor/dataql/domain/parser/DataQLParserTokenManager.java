@@ -28,57 +28,57 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
     private final int jjStopStringLiteralDfa_0(int pos, long active0, long active1) {
         switch (pos) {
         case 0:
-            if ((active0 & 0x3ffe0000L) != 0L) {
-                jjmatchedKind = 74;
-                return 47;
-            }
-            if ((active0 & 0x1000000000000L) != 0L)
+            if ((active0 & 0x2000000000000L) != 0L)
                 return 24;
-            if ((active0 & 0x600000000000L) != 0L || (active1 & 0x1000L) != 0L)
-                return 48;
+            if ((active0 & 0xc00000000000L) != 0L || (active1 & 0x2000L) != 0L)
+                return 47;
             if ((active0 & 0x800000000L) != 0L)
                 return 13;
+            if ((active0 & 0x4003ffe0000L) != 0L) {
+                jjmatchedKind = 75;
+                return 48;
+            }
             if ((active0 & 0x1000000000L) != 0L)
                 return 11;
             return -1;
         case 1:
+            if ((active0 & 0x20000L) != 0L)
+                return 48;
             if ((active0 & 0x3ffc0000L) != 0L) {
                 if (jjmatchedPos != 1) {
-                    jjmatchedKind = 74;
+                    jjmatchedKind = 75;
                     jjmatchedPos = 1;
                 }
-                return 47;
+                return 48;
             }
-            if ((active0 & 0x20000L) != 0L)
-                return 47;
             return -1;
         case 2:
-            if ((active0 & 0x3eec0000L) != 0L) {
-                jjmatchedKind = 74;
-                jjmatchedPos = 2;
-                return 47;
-            }
             if ((active0 & 0x1100000L) != 0L)
-                return 47;
+                return 48;
+            if ((active0 & 0x3eec0000L) != 0L) {
+                jjmatchedKind = 75;
+                jjmatchedPos = 2;
+                return 48;
+            }
             return -1;
         case 3:
+            if ((active0 & 0x148c0000L) != 0L)
+                return 48;
             if ((active0 & 0x2a600000L) != 0L) {
                 if (jjmatchedPos != 3) {
-                    jjmatchedKind = 74;
+                    jjmatchedKind = 75;
                     jjmatchedPos = 3;
                 }
-                return 47;
+                return 48;
             }
-            if ((active0 & 0x148c0000L) != 0L)
-                return 47;
             return -1;
         case 4:
             if ((active0 & 0x8400000L) != 0L)
-                return 47;
+                return 48;
             if ((active0 & 0x22240000L) != 0L) {
-                jjmatchedKind = 74;
+                jjmatchedKind = 75;
                 jjmatchedPos = 4;
-                return 47;
+                return 48;
             }
             return -1;
         default:
@@ -102,16 +102,18 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         case 13:
             return jjStopAtPos(0, 4);
         case 33:
-            jjmatchedKind = 44;
-            return jjMoveStringLiteralDfa1_0(0x100000000000000L, 0x0L);
+            jjmatchedKind = 45;
+            return jjMoveStringLiteralDfa1_0(0x200000000000000L, 0x0L);
         case 34:
             return jjStartNfaWithStates_0(0, 36, 11);
+        case 36:
+            return jjMoveStringLiteralDfa1_0(0x40000000000L, 0x0L);
         case 37:
-            jjmatchedKind = 49;
+            jjmatchedKind = 50;
             return jjMoveStringLiteralDfa1_0(0x20000000000L, 0x0L);
         case 38:
-            jjmatchedKind = 57;
-            return jjMoveStringLiteralDfa1_0(0x0L, 0x1L);
+            jjmatchedKind = 58;
+            return jjMoveStringLiteralDfa1_0(0x0L, 0x2L);
         case 39:
             return jjStartNfaWithStates_0(0, 35, 13);
         case 40:
@@ -119,39 +121,39 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         case 41:
             return jjStopAtPos(0, 38);
         case 42:
-            return jjStopAtPos(0, 47);
+            return jjStopAtPos(0, 48);
         case 43:
-            return jjStartNfaWithStates_0(0, 45, 48);
+            return jjStartNfaWithStates_0(0, 46, 47);
         case 44:
             return jjStopAtPos(0, 30);
         case 45:
-            jjmatchedKind = 46;
-            return jjMoveStringLiteralDfa1_0(0x0L, 0x1000L);
+            jjmatchedKind = 47;
+            return jjMoveStringLiteralDfa1_0(0x0L, 0x2000L);
         case 47:
-            return jjStartNfaWithStates_0(0, 48, 24);
+            return jjStartNfaWithStates_0(0, 49, 24);
         case 58:
             return jjStopAtPos(0, 31);
         case 59:
             return jjStopAtPos(0, 33);
         case 60:
-            jjmatchedKind = 53;
-            return jjMoveStringLiteralDfa1_0(0x1040000000000000L, 0x0L);
+            jjmatchedKind = 54;
+            return jjMoveStringLiteralDfa1_0(0x2080000000000000L, 0x0L);
         case 61:
             jjmatchedKind = 34;
-            return jjMoveStringLiteralDfa1_0(0x80000000000000L, 0x0L);
+            return jjMoveStringLiteralDfa1_0(0x100000000000000L, 0x0L);
         case 62:
-            jjmatchedKind = 51;
-            return jjMoveStringLiteralDfa1_0(0x6010000000000000L, 0x0L);
+            jjmatchedKind = 52;
+            return jjMoveStringLiteralDfa1_0(0xc020000000000000L, 0x0L);
         case 63:
             return jjStopAtPos(0, 32);
         case 91:
             return jjStopAtPos(0, 39);
         case 92:
-            return jjStopAtPos(0, 50);
+            return jjStopAtPos(0, 51);
         case 93:
             return jjStopAtPos(0, 40);
         case 94:
-            return jjStopAtPos(0, 59);
+            return jjStopAtPos(0, 60);
         case 101:
             return jjMoveStringLiteralDfa1_0(0x9c0000L, 0x0L);
         case 102:
@@ -171,14 +173,14 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         case 118:
             return jjMoveStringLiteralDfa1_0(0x1000000L, 0x0L);
         case 123:
-            return jjStopAtPos(0, 42);
-        case 124:
-            jjmatchedKind = 58;
-            return jjMoveStringLiteralDfa1_0(0x8000000000000000L, 0x0L);
-        case 125:
             return jjStopAtPos(0, 43);
+        case 124:
+            jjmatchedKind = 59;
+            return jjMoveStringLiteralDfa1_0(0x0L, 0x1L);
+        case 125:
+            return jjStopAtPos(0, 44);
         case 126:
-            return jjStopAtPos(0, 75);
+            return jjStopAtPos(0, 76);
         default:
             return jjMoveNfa_0(0, 0);
         }
@@ -192,37 +194,37 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         }
         switch (curChar) {
         case 38:
-            if ((active1 & 0x1L) != 0L)
-                return jjStopAtPos(1, 64);
+            if ((active1 & 0x2L) != 0L)
+                return jjStopAtPos(1, 65);
             break;
         case 60:
-            if ((active0 & 0x1000000000000000L) != 0L)
-                return jjStopAtPos(1, 60);
+            if ((active0 & 0x2000000000000000L) != 0L)
+                return jjStopAtPos(1, 61);
             break;
         case 61:
-            if ((active0 & 0x10000000000000L) != 0L)
-                return jjStopAtPos(1, 52);
-            else if ((active0 & 0x40000000000000L) != 0L)
-                return jjStopAtPos(1, 54);
+            if ((active0 & 0x20000000000000L) != 0L)
+                return jjStopAtPos(1, 53);
             else if ((active0 & 0x80000000000000L) != 0L)
                 return jjStopAtPos(1, 55);
             else if ((active0 & 0x100000000000000L) != 0L)
                 return jjStopAtPos(1, 56);
+            else if ((active0 & 0x200000000000000L) != 0L)
+                return jjStopAtPos(1, 57);
             break;
         case 62:
-            if ((active0 & 0x2000000000000000L) != 0L) {
-                jjmatchedKind = 61;
+            if ((active0 & 0x4000000000000000L) != 0L) {
+                jjmatchedKind = 62;
                 jjmatchedPos = 1;
-            } else if ((active1 & 0x1000L) != 0L)
-                return jjStopAtPos(1, 76);
-            return jjMoveStringLiteralDfa2_0(active0, 0x4000000000000000L, active1, 0L);
+            } else if ((active1 & 0x2000L) != 0L)
+                return jjStopAtPos(1, 77);
+            return jjMoveStringLiteralDfa2_0(active0, 0x8000000000000000L, active1, 0L);
         case 97:
             return jjMoveStringLiteralDfa2_0(active0, 0xb000000L, active1, 0L);
         case 101:
             return jjMoveStringLiteralDfa2_0(active0, 0x200000L, active1, 0L);
         case 102:
             if ((active0 & 0x20000L) != 0L)
-                return jjStartNfaWithStates_0(1, 17, 47);
+                return jjStartNfaWithStates_0(1, 17, 48);
             break;
         case 104:
             return jjMoveStringLiteralDfa2_0(active0, 0x400000L, active1, 0L);
@@ -241,10 +243,12 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         case 123:
             if ((active0 & 0x20000000000L) != 0L)
                 return jjStopAtPos(1, 41);
+            else if ((active0 & 0x40000000000L) != 0L)
+                return jjStopAtPos(1, 42);
             break;
         case 124:
-            if ((active0 & 0x8000000000000000L) != 0L)
-                return jjStopAtPos(1, 63);
+            if ((active1 & 0x1L) != 0L)
+                return jjStopAtPos(1, 64);
             break;
         default:
             break;
@@ -262,12 +266,12 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         }
         switch (curChar) {
         case 62:
-            if ((active0 & 0x4000000000000000L) != 0L)
-                return jjStopAtPos(2, 62);
+            if ((active0 & 0x8000000000000000L) != 0L)
+                return jjStopAtPos(2, 63);
             break;
         case 100:
             if ((active0 & 0x100000L) != 0L)
-                return jjStartNfaWithStates_0(2, 20, 47);
+                return jjStartNfaWithStates_0(2, 20, 48);
             break;
         case 105:
             return jjMoveStringLiteralDfa3_0(active0, 0x800000L);
@@ -277,7 +281,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
             return jjMoveStringLiteralDfa3_0(active0, 0x2000000L);
         case 114:
             if ((active0 & 0x1000000L) != 0L)
-                return jjStartNfaWithStates_0(2, 24, 47);
+                return jjStartNfaWithStates_0(2, 24, 48);
             return jjMoveStringLiteralDfa3_0(active0, 0x400000L);
         case 115:
             return jjMoveStringLiteralDfa3_0(active0, 0xc0000L);
@@ -307,13 +311,13 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                 jjmatchedKind = 19;
                 jjmatchedPos = 3;
             } else if ((active0 & 0x4000000L) != 0L)
-                return jjStartNfaWithStates_0(3, 26, 47);
+                return jjStartNfaWithStates_0(3, 26, 48);
             return jjMoveStringLiteralDfa4_0(active0, 0x40000L);
         case 105:
             return jjMoveStringLiteralDfa4_0(active0, 0x20000000L);
         case 108:
             if ((active0 & 0x10000000L) != 0L)
-                return jjStartNfaWithStates_0(3, 28, 47);
+                return jjStartNfaWithStates_0(3, 28, 48);
             break;
         case 111:
             return jjMoveStringLiteralDfa4_0(active0, 0x400000L);
@@ -321,7 +325,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
             return jjMoveStringLiteralDfa4_0(active0, 0x8000000L);
         case 116:
             if ((active0 & 0x800000L) != 0L)
-                return jjStartNfaWithStates_0(3, 23, 47);
+                return jjStartNfaWithStates_0(3, 23, 48);
             break;
         case 117:
             return jjMoveStringLiteralDfa4_0(active0, 0x200000L);
@@ -344,7 +348,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
             return jjMoveStringLiteralDfa5_0(active0, 0x2000000L);
         case 101:
             if ((active0 & 0x8000000L) != 0L)
-                return jjStartNfaWithStates_0(4, 27, 47);
+                return jjStartNfaWithStates_0(4, 27, 48);
             break;
         case 105:
             return jjMoveStringLiteralDfa5_0(active0, 0x40000L);
@@ -354,7 +358,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
             return jjMoveStringLiteralDfa5_0(active0, 0x200000L);
         case 119:
             if ((active0 & 0x400000L) != 0L)
-                return jjStartNfaWithStates_0(4, 22, 47);
+                return jjStartNfaWithStates_0(4, 22, 48);
             break;
         default:
             break;
@@ -373,17 +377,17 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         switch (curChar) {
         case 97:
             if ((active0 & 0x2000000L) != 0L)
-                return jjStartNfaWithStates_0(5, 25, 47);
+                return jjStartNfaWithStates_0(5, 25, 48);
             break;
         case 102:
             if ((active0 & 0x40000L) != 0L)
-                return jjStartNfaWithStates_0(5, 18, 47);
+                return jjStartNfaWithStates_0(5, 18, 48);
             break;
         case 110:
             if ((active0 & 0x200000L) != 0L)
-                return jjStartNfaWithStates_0(5, 21, 47);
+                return jjStartNfaWithStates_0(5, 21, 48);
             else if ((active0 & 0x20000000L) != 0L)
-                return jjStartNfaWithStates_0(5, 29, 47);
+                return jjStartNfaWithStates_0(5, 29, 48);
             break;
         default:
             break;
@@ -425,7 +429,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                 long l = 1L << curChar;
                 do {
                     switch (jjstateSet[--i]) {
-                    case 48:
+                    case 47:
                         if ((0x3ff000000000000L & l) != 0L) {
                             jjCheckNAddTwoStates(33, 34);
                         }
@@ -444,10 +448,10 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                             jjCheckNAddTwoStates(25, 26);
                         }
                         break;
-                    case 47:
+                    case 48:
                         if ((0x3ff001800000000L & l) != 0L) {
-                            if (kind > 74)
-                                kind = 74;
+                            if (kind > 75)
+                                kind = 75;
                             {
                                 jjCheckNAddStates(0, 2);
                             }
@@ -467,8 +471,8 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                         } else if ((0x280000000000L & l) != 0L) {
                             jjCheckNAddTwoStates(32, 33);
                         } else if ((0x1800000000L & l) != 0L) {
-                            if (kind > 74)
-                                kind = 74;
+                            if (kind > 75)
+                                kind = 75;
                             {
                                 jjCheckNAddStates(0, 2);
                             }
@@ -490,24 +494,24 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                         if ((0xffffff7fffffc9ffL & l) != 0L) {
                             jjCheckNAddStates(11, 13);
                         } else if (curChar == 39) {
-                            if (kind > 71)
-                                kind = 71;
+                            if (kind > 72)
+                                kind = 72;
                         }
                         if (curChar == 39) {
-                            if (kind > 70)
-                                kind = 70;
+                            if (kind > 71)
+                                kind = 71;
                         }
                         break;
                     case 11:
                         if ((0xfffffffbffffc9ffL & l) != 0L) {
                             jjCheckNAddStates(14, 16);
                         } else if (curChar == 34) {
-                            if (kind > 71)
-                                kind = 71;
+                            if (kind > 72)
+                                kind = 72;
                         }
                         if (curChar == 34) {
-                            if (kind > 68)
-                                kind = 68;
+                            if (kind > 69)
+                                kind = 69;
                         }
                         break;
                     case 1:
@@ -526,8 +530,8 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                         }
                         break;
                     case 5:
-                        if (curChar == 34 && kind > 68)
-                            kind = 68;
+                        if (curChar == 34 && kind > 69)
+                            kind = 69;
                         break;
                     case 6:
                         if (curChar == 39) {
@@ -545,8 +549,8 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                         }
                         break;
                     case 10:
-                        if (curChar == 39 && kind > 70)
-                            kind = 70;
+                        if (curChar == 39 && kind > 71)
+                            kind = 71;
                         break;
                     case 12:
                         if (curChar == 34)
@@ -559,8 +563,8 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                     case 15:
                         if ((0x1800000000L & l) == 0L)
                             break;
-                        if (kind > 74)
-                            kind = 74;
+                        if (kind > 75)
+                            kind = 75;
                     {
                         jjCheckNAddStates(0, 2);
                     }
@@ -568,8 +572,8 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                     case 16:
                         if ((0x3ff001800000000L & l) == 0L)
                             break;
-                        if (kind > 74)
-                            kind = 74;
+                        if (kind > 75)
+                            kind = 75;
                     {
                         jjCheckNAddStates(0, 2);
                     }
@@ -581,8 +585,8 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                     case 18:
                         if ((0x1800000000L & l) == 0L)
                             break;
-                        if (kind > 74)
-                            kind = 74;
+                        if (kind > 75)
+                            kind = 75;
                     {
                         jjCheckNAddStates(17, 19);
                     }
@@ -590,8 +594,8 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                     case 19:
                         if ((0x3ff001800000000L & l) == 0L)
                             break;
-                        if (kind > 74)
-                            kind = 74;
+                        if (kind > 75)
+                            kind = 75;
                     {
                         jjCheckNAddStates(17, 19);
                     }
@@ -726,10 +730,10 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                 long l = 1L << (curChar & 077);
                 do {
                     switch (jjstateSet[--i]) {
-                    case 47:
+                    case 48:
                         if ((0x7fffffe87fffffeL & l) != 0L) {
-                            if (kind > 74)
-                                kind = 74;
+                            if (kind > 75)
+                                kind = 75;
                             {
                                 jjCheckNAddStates(0, 2);
                             }
@@ -739,8 +743,8 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                     case 0:
                         if ((0x7fffffe87fffffeL & l) == 0L)
                             break;
-                        if (kind > 74)
-                            kind = 74;
+                        if (kind > 75)
+                            kind = 75;
                     {
                         jjCheckNAddStates(0, 2);
                     }
@@ -788,8 +792,8 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                     case 16:
                         if ((0x7fffffe87fffffeL & l) == 0L)
                             break;
-                        if (kind > 74)
-                            kind = 74;
+                        if (kind > 75)
+                            kind = 75;
                     {
                         jjCheckNAddStates(0, 2);
                     }
@@ -798,8 +802,8 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                     case 19:
                         if ((0x7fffffe87fffffeL & l) == 0L)
                             break;
-                        if (kind > 74)
-                            kind = 74;
+                        if (kind > 75)
+                            kind = 75;
                     {
                         jjCheckNAddStates(17, 19);
                     }
@@ -811,8 +815,8 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                     case 22:
                         if (curChar != 93)
                             break;
-                        if (kind > 74)
-                            kind = 74;
+                        if (kind > 75)
+                            kind = 75;
                     {
                         jjCheckNAddTwoStates(17, 20);
                     }
@@ -864,12 +868,12 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                 long l2 = 1L << (curChar & 077);
                 do {
                     switch (jjstateSet[--i]) {
-                    case 47:
+                    case 48:
                     case 16:
                         if (!jjCanMove_1(hiByte, i1, i2, l1, l2))
                             break;
-                        if (kind > 74)
-                            kind = 74;
+                        if (kind > 75)
+                            kind = 75;
                     {
                         jjCheckNAddStates(0, 2);
                     }
@@ -877,8 +881,8 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                     case 0:
                         if (!jjCanMove_1(hiByte, i1, i2, l1, l2))
                             break;
-                        if (kind > 74)
-                            kind = 74;
+                        if (kind > 75)
+                            kind = 75;
                     {
                         jjCheckNAddStates(0, 2);
                     }
@@ -899,8 +903,8 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
                     case 19:
                         if (!jjCanMove_1(hiByte, i1, i2, l1, l2))
                             break;
-                        if (kind > 74)
-                            kind = 74;
+                        if (kind > 75)
+                            kind = 75;
                     {
                         jjCheckNAddStates(17, 19);
                     }
@@ -976,8 +980,8 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         }
     }
     /** Token literal values. */
-    public static final String[] jjstrLiteralImages = { "", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "\151\146", "\145\154\163\145\151\146", "\145\154\163\145", "\145\156\144", "\162\145\164\165\162\156", "\164\150\162\157\167", "\145\170\151\164", "\166\141\162", "\154\141\155\142\144\141", "\164\162\165\145", "\146\141\154\163\145", "\156\165\154\154", "\157\160\164\151\157\156", "\54", "\72", "\77", "\73", "\75", "\47", "\42", "\50", "\51", "\133", "\135", "\45\173", "\173", "\175", "\41", "\53", "\55", "\52", "\57", "\45", "\134",
-            "\76", "\76\75", "\74", "\74\75", "\75\75", "\41\75", "\46", "\174", "\136", "\74\74", "\76\76", "\76\76\76", "\174\174", "\46\46", null, null, null, null, null, null, null, null, null, null, "\176", "\55\76", };
+    public static final String[] jjstrLiteralImages = { "", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "\151\146", "\145\154\163\145\151\146", "\145\154\163\145", "\145\156\144", "\162\145\164\165\162\156", "\164\150\162\157\167", "\145\170\151\164", "\166\141\162", "\154\141\155\142\144\141", "\164\162\165\145", "\146\141\154\163\145", "\156\165\154\154", "\157\160\164\151\157\156", "\54", "\72", "\77", "\73", "\75", "\47", "\42", "\50", "\51", "\133", "\135", "\45\173", "\44\173", "\173", "\175", "\41", "\53", "\55", "\52", "\57", "\45",
+            "\134", "\76", "\76\75", "\74", "\74\75", "\75\75", "\41\75", "\46", "\174", "\136", "\74\74", "\76\76", "\76\76\76", "\174\174", "\46\46", null, null, null, null, null, null, null, null, null, null, "\176", "\55\76", };
     protected Token jjFillToken() {
         final Token t;
         final String curTokenImage;
@@ -1131,7 +1135,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
     }
     /** Lexer state names. */
     public static final String[] lexStateNames = { "DEFAULT", };
-    static final        long[]   jjtoToken     = { 0xfffffffffffff001L, 0x1cd1L, };
+    static final        long[]   jjtoToken     = { 0xfffffffffffff001L, 0x39a3L, };
     static final        long[]   jjtoSkip      = { 0x1feL, 0x0L, };
     static final        long[]   jjtoSpecial   = { 0x1c0L, 0x0L, };
     protected JavaCharStream input_stream;

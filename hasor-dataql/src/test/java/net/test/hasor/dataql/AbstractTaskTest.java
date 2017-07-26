@@ -19,6 +19,10 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.dataql.binder.DataApiBinder;
+import net.test.hasor.dataql.udfs.FindUserByID;
+import net.test.hasor.dataql.udfs.Foo;
+import net.test.hasor.dataql.udfs.QueryOrder;
+import net.test.hasor.dataql.udfs.UserManager;
 import org.junit.Before;
 /**
  * @author 赵永春(zyc@hasor.net)
@@ -38,9 +42,9 @@ public class AbstractTaskTest implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         // - DataUDF
         DataApiBinder binder = apiBinder.tryCast(DataApiBinder.class);
-        //        binder.addUDF("findUserByID", FindUserByID.class);
-        //        binder.addUDF("queryOrder", QueryOrder.class);
-        //        binder.addUDF("userManager.findUserByID", UserManager.class);
-        //        binder.addUDF("foo", Foo.class);
+        binder.addUDF("findUserByID", FindUserByID.class);
+        binder.addUDF("queryOrder", QueryOrder.class);
+        binder.addUDF("userManager.findUserByID", UserManager.class);
+        binder.addUDF("foo", Foo.class);
     }
 }

@@ -110,6 +110,7 @@ TOKEN: {
     | < CBRA                : "]" >
 
     | < OCBRR               : "%{" >
+    | < OCBRS               : "${" >
     | < OCBR                : "{" >
     | < CCBR                : "}" >
 
@@ -206,9 +207,13 @@ TOKEN:{
 String identifier() : {                              Token dataToken = null;
 }{
     (
-        dataToken = <IDENTIFIER>                    {return dataToken.image;}
-    ) | (
-        <OCBRR> dataToken = <IDENTIFIER> <CCBR>     {return "%{" + dataToken.image + "}";}
+        (
+            dataToken = <IDENTIFIER>                {return dataToken.image;}
+        ) | (
+            <OCBRR> dataToken = <IDENTIFIER> <CCBR> {return "%{" + dataToken.image + "}";}
+        ) | (
+            <OCBRS> dataToken = <IDENTIFIER> <CCBR> {return "${" + dataToken.image + "}";}
+        )
     )
 }
 

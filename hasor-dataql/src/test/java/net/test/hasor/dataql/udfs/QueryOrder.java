@@ -26,7 +26,7 @@ public class QueryOrder implements UDF {
     @Override
     public Object call(Object[] values) {
         ArrayList<Object> orderList = new ArrayList<Object>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 2; i++) {
             HashMap<String, Object> udfData = new HashMap<String, Object>();
             udfData.put("accountID", 123);
             udfData.put("orderID", 123456789);

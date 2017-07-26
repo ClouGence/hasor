@@ -21,15 +21,15 @@ import java.util.Stack;
  * @version : 2017-07-19
  */
 public class LocalData {
-    private Stack<Object> dsStack = new Stack<Object>();
+    private Stack<Object> dsDataStack = new Stack<Object>();
     //
     public void pushData(Object obj) {
-        this.dsStack.push(obj);
+        this.dsDataStack.push(obj);
     }
     public void popData() {
-        this.dsStack.pop();
+        this.dsDataStack.pop();
     }
     public Object getData() {
-        return this.dsStack.empty() ? null : this.dsStack.peek();
+        return this.dsDataStack.empty() ? null : this.dsDataStack.peek();
     }
 }

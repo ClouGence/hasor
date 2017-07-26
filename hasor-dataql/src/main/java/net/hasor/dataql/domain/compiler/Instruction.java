@@ -23,8 +23,9 @@ import java.lang.reflect.Field;
  * @version : 2017-07-03
  */
 public class Instruction implements InstOpcodes {
-    private byte     instCode  = 0;
-    private Object[] instParam = null;
+    private byte     instCode     = 0;
+    private Object[] instParam    = null;
+    private boolean  compilerMark = false;//一个特殊的标，用于处理 ListExpression、ObjectExpression 两个模型编译时是否输出对应的 NA、NO 指令。
     public Instruction(byte instCode, Object[] instParam) {
         this.instCode = instCode;
         this.instParam = instParam == null ? new Object[0] : instParam;
@@ -106,5 +107,14 @@ public class Instruction implements InstOpcodes {
         }
         //
         return codeName.toString();
+    }
+    //
+    /** 判断是否要被编译输出 */
+    public boolean isCompilerMark() {
+        return this.compilerMark;
+    }
+    /** 判断是否要被编译输出 */
+    public void setCompilerMark(boolean compilerMark) {
+        this.compilerMark = compilerMark;
     }
 }

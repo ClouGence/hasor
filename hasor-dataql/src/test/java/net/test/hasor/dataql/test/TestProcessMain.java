@@ -23,7 +23,7 @@ import java.util.Map;
 public class TestProcessMain extends AbstractTaskTest {
     @Test
     public void mainALL() throws Exception {
-        this.printTaskTree("/graphql/graphql_" + 12 + ".ql");
+        this.printTaskTree("/graphql/graphql_" + 5 + ".ql");
     }
     //
     // --------------------------------------------------------------------------------------------

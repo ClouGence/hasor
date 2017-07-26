@@ -52,8 +52,10 @@ public class ObjectExpression extends Expression {
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         Instruction instruction = queue.lastInst();
-        if (instruction == null || ASM != instruction.getInstCode()) {
+        if (instruction == null || ASM != instruction.getInstCode() || instruction.isCompilerMark()) {
             queue.inst(NO, this.objectType);
+        } else {
+            instruction.setCompilerMark(true);
         }
         //
         for (String fieldName : this.fieldSort) {

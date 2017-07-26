@@ -122,6 +122,7 @@
 | &lt;OBRA: "["&gt;
 | &lt;CBRA: "]"&gt;
 | &lt;OCBRR: "%{"&gt;
+| &lt;OCBRS: "${"&gt;
 | &lt;OCBR: "{"&gt;
 | &lt;CCBR: "}"&gt;
 | &lt;BANG: "!"&gt;
@@ -193,12 +194,7 @@
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod1">identifier</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;IDENTIFIER&gt; )</TD>
-</TR>
-<TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
-<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;OCBRR&gt; &lt;IDENTIFIER&gt; &lt;CCBR&gt; )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;IDENTIFIER&gt; ) | ( &lt;OCBRR&gt; &lt;IDENTIFIER&gt; &lt;CCBR&gt; ) | ( &lt;OCBRS&gt; &lt;IDENTIFIER&gt; &lt;CCBR&gt; ) )</TD>
 </TR>
  <!-- Special token -->
  <TR>
@@ -494,7 +490,7 @@
  <TR>
   <TD>
 <PRE>
-// .块
+// .指令
 </PRE>
   </TD>
  </TR>

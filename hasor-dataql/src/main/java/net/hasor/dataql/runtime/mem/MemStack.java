@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.mem;
+import net.hasor.dataql.runtime.struts.SelfData;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -47,6 +49,18 @@ public class MemStack {
     }
     public Object peek() {
         return this.stackData.peek();
+    }
+    public SelfData findSelf() {
+        for (int i = this.stackData.size() - 1; i >= 0; i--) {
+            Object o = this.stackData.get(i);
+            if (o instanceof SelfData) {
+                return (SelfData) o;
+            }
+        }
+        if (this.parentStack != null) {
+            return this.parentStack.findSelf();
+        }
+        return null;
     }
     //
     //

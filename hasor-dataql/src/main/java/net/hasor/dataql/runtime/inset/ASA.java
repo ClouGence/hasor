@@ -94,13 +94,13 @@ class ASA implements InsetProcess {
         Collection<Object> dataSet = toCollection(result);
         for (Object obj : dataSet) {
             subSequence.reset();    // 重置执行序列
-            local.pushData(obj);    // 设置DS
+            local.pushData(obj);    // 设置DS数据源
             context.processInset(subSequence, memStack, local);// 执行序列
-            local.popData();        // 销毁DS
+            local.popData();        // 销毁DS数据源
         }
         //
         // .处理完毕跳到出口
-        sequence.jumpTo(subSequence.exitPosition() - 1);
+        sequence.jumpTo(subSequence.exitPosition());
     }
     private Collection<Object> toCollection(Object curData) {
         Collection<Object> listData = null;

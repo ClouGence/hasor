@@ -45,8 +45,10 @@ public class ListExpression extends Expression {
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         Instruction instruction = queue.lastInst();
-        if (instruction == null || ASA != instruction.getInstCode()) {
+        if (instruction == null || ASA != instruction.getInstCode() || instruction.isCompilerMark()) {
             queue.inst(NA, this.listType);
+        } else {
+            instruction.setCompilerMark(true);
         }
         //
         for (Expression exp : this.expressionList) {

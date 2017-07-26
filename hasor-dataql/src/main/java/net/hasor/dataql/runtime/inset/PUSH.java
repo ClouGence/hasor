@@ -15,14 +15,13 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.InvokerProcessException;
-import net.hasor.dataql.Option;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.result.ListModel;
-import net.hasor.dataql.runtime.mem.LocalData;
-import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
+import net.hasor.dataql.runtime.mem.LocalData;
+import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.struts.ListResultStruts;
 
 import java.util.Collection;
@@ -54,9 +53,6 @@ class PUSH implements InsetProcess {
             return;
         }
         //
-        Object optionValue = context.getOption(Option.SAFE_PUT);
-        if (Boolean.TRUE.equals(optionValue)) {
-            throw new InvokerProcessException(getOpcode(), "output data eror, target type must be 'ListResultStruts or ListModel or Collection.'");
-        }
+        throw new InvokerProcessException(getOpcode(), "output data eror, target type must be 'ListResultStruts or ListModel or Collection.'");
     }
 }

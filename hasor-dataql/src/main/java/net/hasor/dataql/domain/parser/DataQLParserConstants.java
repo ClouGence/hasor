@@ -95,74 +95,76 @@ public interface DataQLParserConstants {
     /** RegularExpression Id. */
     int      OCBRR               = 41;
     /** RegularExpression Id. */
-    int      OCBR                = 42;
+    int      OCBRS               = 42;
     /** RegularExpression Id. */
-    int      CCBR                = 43;
+    int      OCBR                = 43;
     /** RegularExpression Id. */
-    int      BANG                = 44;
+    int      CCBR                = 44;
     /** RegularExpression Id. */
-    int      PLUS                = 45;
+    int      BANG                = 45;
     /** RegularExpression Id. */
-    int      MINUS               = 46;
+    int      PLUS                = 46;
     /** RegularExpression Id. */
-    int      STAR                = 47;
+    int      MINUS               = 47;
     /** RegularExpression Id. */
-    int      SLASH               = 48;
+    int      STAR                = 48;
     /** RegularExpression Id. */
-    int      REM                 = 49;
+    int      SLASH               = 49;
     /** RegularExpression Id. */
-    int      ALI                 = 50;
+    int      REM                 = 50;
     /** RegularExpression Id. */
-    int      GT                  = 51;
+    int      ALI                 = 51;
     /** RegularExpression Id. */
-    int      GE                  = 52;
+    int      GT                  = 52;
     /** RegularExpression Id. */
-    int      LT                  = 53;
+    int      GE                  = 53;
     /** RegularExpression Id. */
-    int      LE                  = 54;
+    int      LT                  = 54;
     /** RegularExpression Id. */
-    int      EQ                  = 55;
+    int      LE                  = 55;
     /** RegularExpression Id. */
-    int      NE                  = 56;
+    int      EQ                  = 56;
     /** RegularExpression Id. */
-    int      BIT_AND             = 57;
+    int      NE                  = 57;
     /** RegularExpression Id. */
-    int      BIT_OR              = 58;
+    int      BIT_AND             = 58;
     /** RegularExpression Id. */
-    int      XOR                 = 59;
+    int      BIT_OR              = 59;
     /** RegularExpression Id. */
-    int      LSHIFT              = 60;
+    int      XOR                 = 60;
     /** RegularExpression Id. */
-    int      RSIGNEDSHIFT        = 61;
+    int      LSHIFT              = 61;
     /** RegularExpression Id. */
-    int      RUNSIGNEDSHIFT      = 62;
+    int      RSIGNEDSHIFT        = 62;
     /** RegularExpression Id. */
-    int      SC_OR               = 63;
+    int      RUNSIGNEDSHIFT      = 63;
     /** RegularExpression Id. */
-    int      SC_AND              = 64;
+    int      SC_OR               = 64;
     /** RegularExpression Id. */
-    int      LETTER              = 65;
+    int      SC_AND              = 65;
     /** RegularExpression Id. */
-    int      STR_UNICODE         = 66;
+    int      LETTER              = 66;
     /** RegularExpression Id. */
-    int      STR_DOUBLE_BODY     = 67;
+    int      STR_UNICODE         = 67;
     /** RegularExpression Id. */
-    int      STR_DOUBLE_QUOTED   = 68;
+    int      STR_DOUBLE_BODY     = 68;
     /** RegularExpression Id. */
-    int      STR_SINGLE_BODY     = 69;
+    int      STR_DOUBLE_QUOTED   = 69;
     /** RegularExpression Id. */
-    int      STR_SINGLE_QUOTED   = 70;
+    int      STR_SINGLE_BODY     = 70;
     /** RegularExpression Id. */
-    int      STR_EMPTY           = 71;
+    int      STR_SINGLE_QUOTED   = 71;
     /** RegularExpression Id. */
-    int      IDENTIFIER_S        = 72;
+    int      STR_EMPTY           = 72;
     /** RegularExpression Id. */
-    int      IDENTIFIER_A        = 73;
+    int      IDENTIFIER_S        = 73;
     /** RegularExpression Id. */
-    int      IDENTIFIER          = 74;
+    int      IDENTIFIER_A        = 74;
+    /** RegularExpression Id. */
+    int      IDENTIFIER          = 75;
     /** Lexical state. */
     int      DEFAULT             = 0;
     /** Literal token values. */
-    String[] tokenImage          = { "<EOF>", "\" \"", "\"\\t\"", "\"\\n\"", "\"\\r\"", "\"\\f\"", "<C_SINGLE_COMMENT>", "<C_MULTILINE_COMMENT>", "<EOL>", "\"0\"", "<SYMBOL>", "<DIGIT>", "<INTEGER_NUM>", "<HEX_NUM>", "<OCTAL_NUM>", "<BINARY_NUM>", "<DECIMAL_NUM>", "\"if\"", "\"elseif\"", "\"else\"", "\"end\"", "\"return\"", "\"throw\"", "\"exit\"", "\"var\"", "\"lambda\"", "\"true\"", "\"false\"", "\"null\"", "\"option\"", "\",\"", "\":\"", "\"?\"", "\";\"", "\"=\"", "\"\\\'\"", "\"\\\"\"", "\"(\"", "\")\"", "\"[\"", "\"]\"", "\"%{\"", "\"{\"", "\"}\"", "\"!\"", "\"+\"", "\"-\"", "\"*\"",
-            "\"/\"", "\"%\"", "\"\\\\\"", "\">\"", "\">=\"", "\"<\"", "\"<=\"", "\"==\"", "\"!=\"", "\"&\"", "\"|\"", "\"^\"", "\"<<\"", "\">>\"", "\">>>\"", "\"||\"", "\"&&\"", "<LETTER>", "<STR_UNICODE>", "<STR_DOUBLE_BODY>", "<STR_DOUBLE_QUOTED>", "<STR_SINGLE_BODY>", "<STR_SINGLE_QUOTED>", "<STR_EMPTY>", "<IDENTIFIER_S>", "<IDENTIFIER_A>", "<IDENTIFIER>", "\"~\"", "\"->\"", };
+    String[] tokenImage          = { "<EOF>", "\" \"", "\"\\t\"", "\"\\n\"", "\"\\r\"", "\"\\f\"", "<C_SINGLE_COMMENT>", "<C_MULTILINE_COMMENT>", "<EOL>", "\"0\"", "<SYMBOL>", "<DIGIT>", "<INTEGER_NUM>", "<HEX_NUM>", "<OCTAL_NUM>", "<BINARY_NUM>", "<DECIMAL_NUM>", "\"if\"", "\"elseif\"", "\"else\"", "\"end\"", "\"return\"", "\"throw\"", "\"exit\"", "\"var\"", "\"lambda\"", "\"true\"", "\"false\"", "\"null\"", "\"option\"", "\",\"", "\":\"", "\"?\"", "\";\"", "\"=\"", "\"\\\'\"", "\"\\\"\"", "\"(\"", "\")\"", "\"[\"", "\"]\"", "\"%{\"", "\"${\"", "\"{\"", "\"}\"", "\"!\"", "\"+\"", "\"-\"",
+            "\"*\"", "\"/\"", "\"%\"", "\"\\\\\"", "\">\"", "\">=\"", "\"<\"", "\"<=\"", "\"==\"", "\"!=\"", "\"&\"", "\"|\"", "\"^\"", "\"<<\"", "\">>\"", "\">>>\"", "\"||\"", "\"&&\"", "<LETTER>", "<STR_UNICODE>", "<STR_DOUBLE_BODY>", "<STR_DOUBLE_QUOTED>", "<STR_SINGLE_BODY>", "<STR_SINGLE_QUOTED>", "<STR_EMPTY>", "<IDENTIFIER_S>", "<IDENTIFIER_A>", "<IDENTIFIER>", "\"~\"", "\"->\"", };
 }

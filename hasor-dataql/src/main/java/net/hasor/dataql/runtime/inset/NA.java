@@ -45,16 +45,19 @@ class NA implements InsetProcess {
             } catch (Exception e) {
                 throw new InvokerProcessException(getOpcode(), "load type failed -> " + typeString, e);
             }
-        } else {
-            listType = ListModel.class;
         }
         //
-        if (!Collection.class.isAssignableFrom(listType)) {
-            throw new InvokerProcessException(getOpcode(), "NA -> type " + listType + " is not Collection");
-        }
-        //
+        ListModel data = null;
         try {
-            memStack.push(listType.newInstance());
+            if (listType != null) {
+                if (!Collection.class.isAssignableFrom(listType)) {
+                    throw new InvokerProcessException(getOpcode(), "NA -> type " + listType + " is not Collection");
+                }
+                data = new ListModel(listType.newInstance());
+            } else {
+                data = new ListModel();
+            }
+            memStack.push(data);
         } catch (Exception e) {
             throw new InvokerProcessException(getOpcode(), "NA -> " + e.getMessage(), e);
         }

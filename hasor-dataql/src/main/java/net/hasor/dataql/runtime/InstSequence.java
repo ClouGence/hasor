@@ -115,7 +115,7 @@ public class InstSequence {
     }
     /**重置执行指针到序列最开始*/
     public void reset() {
-        this.jumpTo(this.startPosition);
+        this.sequenceIndex.set(this.startPosition);
     }
     //
     @Override

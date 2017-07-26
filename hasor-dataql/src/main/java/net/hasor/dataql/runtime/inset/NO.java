@@ -43,12 +43,16 @@ class NO implements InsetProcess {
             } catch (Exception e) {
                 throw new InvokerProcessException(getOpcode(), "load type failed -> " + typeString, e);
             }
-        } else {
-            objectType = ObjectModel.class;
         }
         //
+        ObjectModel data = null;
         try {
-            memStack.push(objectType.newInstance());
+            if (objectType != null) {
+                data = new ObjectModel(objectType.newInstance());
+            } else {
+                data = new ObjectModel();
+            }
+            memStack.push(data);
         } catch (Exception e) {
             throw new InvokerProcessException(getOpcode(), "NO -> " + e.getMessage(), e);
         }

@@ -14,28 +14,55 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.struts.ResultStruts;
+import net.hasor.dataql.runtime.struts.SelfData;
 /**
- * ASA、ASM、ASO 三个指令在处理数据时都是用 ResultStruts 进行封装。
- * ASE 指令的目的是拆除 ResultStruts 封装，还原真实结果。
- *
+ * ROU，寻值
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-class ASE implements InsetProcess {
+class ROU implements InsetProcess {
+    private static enum RouType {
+        /*根结果节点*/
+        Root,       //
+        /*当结果前节点*/
+        Self,       //
+        /*当前数据(默认)*/
+        DataSource  //
+    }
     @Override
     public int getOpcode() {
-        return ASE;
+        return ROU;
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
-        ResultStruts rs = (ResultStruts) memStack.pop();
-        memStack.push(rs.getResult());
+        String rouPath = sequence.currentInst().getString(0);
+        if (StringUtils.isBlank(rouPath)) {
+            memStack.push(null);
+            return;
+        }
+        //
+        rouPath = rouPath.trim();
+        RouType rouType = RouType.DataSource;
+        if (rouPath.startsWith("${")) {
+            rouType = RouType.Root;
+            rouPath = rouPath.substring(2, rouPath.length() - 1);
+        } else if (rouPath.startsWith("%{")) {
+            rouType = RouType.Self;
+            rouPath = rouPath.substring(2, rouPath.length() - 1);
+        }
+        //
+        Object data = local.getData();
+        SelfData self = memStack.findSelf();
+        //        memStack.findSelf();
+        //        memStack.findSelf(Integer.MAX_VALUE);
+        //        local.getData();
+        memStack.push("data:" + rouPath);
     }
 }
