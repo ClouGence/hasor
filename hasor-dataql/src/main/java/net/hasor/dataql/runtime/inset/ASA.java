@@ -94,9 +94,9 @@ class ASA implements InsetProcess {
         Collection<Object> dataSet = toCollection(result);
         for (Object obj : dataSet) {
             subSequence.reset();    // 重置执行序列
-            local.pushData(obj);    // 设置DS数据源
+            local.push(obj);        // 设置DS数据源
             context.processInset(subSequence, memStack, local);// 执行序列
-            local.popData();        // 销毁DS数据源
+            local.pop();            // 销毁DS数据源
         }
         //
         // .处理完毕跳到出口

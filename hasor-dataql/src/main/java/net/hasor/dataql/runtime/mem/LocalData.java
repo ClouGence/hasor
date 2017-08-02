@@ -20,16 +20,32 @@ import java.util.Stack;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-public class LocalData {
-    private Stack<Object> dsDataStack = new Stack<Object>();
+public class LocalData implements FindData {
+    protected Stack<Object> dataPool = new Stack<Object>();
     //
-    public void pushData(Object obj) {
-        this.dsDataStack.push(obj);
+    public void push(Object data) {
+        this.dataPool.push(data);
     }
-    public void popData() {
-        this.dsDataStack.pop();
+    public Object pop() {
+        return this.dataPool.pop();
     }
-    public Object getData() {
-        return this.dsDataStack.empty() ? null : this.dsDataStack.peek();
+    public Object peek() {
+        return this.dataPool.empty() ? null : this.dataPool.peek();
+    }
+    //
+    @Override
+    public int getLayerDepth() {
+        return this.dataPool.size();
+    }
+    @Override
+    public Object dataOfDepth(int depth) {
+        if (depth < 0 || depth >= this.dataPool.size()) {
+            return null;
+        }
+        return this.dataPool.get(this.dataPool.size() - 1 - depth);
+    }
+    @Override
+    public Object dataOfHead() {
+        return this.peek();
     }
 }

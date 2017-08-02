@@ -31,9 +31,18 @@ public class ObjectModel extends HashMap<String, Object> implements QueryResult 
         this.sortList = new ArrayList<String>();
     }
     public ObjectModel(Object dataItem) {
-        InterBeanMap beanMap = new InterBeanMap(dataItem);
-        this.sortList = new ArrayList<String>(beanMap.keySet());
-        this.putAll(beanMap);
+        this();
+        if (dataItem instanceof Map) {
+            Set keySet = ((Map) dataItem).keySet();
+            for (Object keyName : keySet) {
+                this.addField(keyName.toString());
+            }
+            this.putAll((Map<? extends String, ?>) dataItem);
+        } else {
+            InterBeanMap beanMap = new InterBeanMap(dataItem);
+            this.sortList.addAll(beanMap.keySet());
+            this.putAll(beanMap);
+        }
     }
     public ObjectModel(Collection<String> sortList) {
         this.sortList = new ArrayList<String>(sortList);

@@ -121,9 +121,8 @@
 | &lt;CPAR: ")"&gt;
 | &lt;OBRA: "["&gt;
 | &lt;CBRA: "]"&gt;
-| &lt;OCBRR: "%{"&gt;
-| &lt;OCBRS: "${"&gt;
 | &lt;OCBR: "{"&gt;
+| &lt;OCBREXT: ["@","#","$","%","&amp;"] &lt;OCBR&gt;&gt;
 | &lt;CCBR: "}"&gt;
 | &lt;BANG: "!"&gt;
 | &lt;PLUS: "+"&gt;
@@ -194,7 +193,7 @@
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod1">identifier</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;IDENTIFIER&gt; ) | ( &lt;OCBRR&gt; &lt;IDENTIFIER&gt; &lt;CCBR&gt; ) | ( &lt;OCBRS&gt; &lt;IDENTIFIER&gt; &lt;CCBR&gt; ) )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;IDENTIFIER&gt; ) | ( &lt;OCBREXT&gt; &lt;IDENTIFIER&gt; &lt;CCBR&gt; ) )</TD>
 </TR>
  <!-- Special token -->
  <TR>

@@ -18,16 +18,14 @@ import net.hasor.dataql.runtime.struts.SelfData;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 /**
  * 堆 和 栈
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class MemStack {
+public class MemStack extends LocalData {
     private MemStack             parentStack = null;
     private Map<Integer, Object> heapData    = new HashMap<Integer, Object>();
-    private Stack<Object>        stackData   = new Stack<Object>();
     private Object               resultData  = null;
     //
     public MemStack() {
@@ -40,19 +38,9 @@ public class MemStack {
         return new MemStack(this);
     }
     //
-    //
-    public void push(Object data) {
-        this.stackData.push(data);
-    }
-    public Object pop() {
-        return this.stackData.pop();
-    }
-    public Object peek() {
-        return this.stackData.peek();
-    }
     public SelfData findSelf() {
-        for (int i = this.stackData.size() - 1; i >= 0; i--) {
-            Object o = this.stackData.get(i);
+        for (int i = this.dataPool.size() - 1; i >= 0; i--) {
+            Object o = this.dataPool.get(i);
             if (o instanceof SelfData) {
                 return (SelfData) o;
             }

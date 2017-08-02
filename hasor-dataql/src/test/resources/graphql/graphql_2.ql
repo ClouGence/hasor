@@ -5,7 +5,7 @@ return {
             "age",
             "nick"
         },
-        "nick" : info.nick
+        "nick" : ${info.nick}
     },
     "source" : "DataQL"
 }

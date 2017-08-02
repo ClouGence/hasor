@@ -18,12 +18,13 @@ import net.hasor.core.future.BasicFuture;
 import net.hasor.dataql.*;
 import net.hasor.dataql.domain.compiler.InstOpcodes;
 import net.hasor.dataql.domain.compiler.QueryType;
+import net.hasor.dataql.result.ListModel;
 import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.runtime.inset.OpcodesPool;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Map;
 /**
  * 用于封装和引发 QL 查询执行。
@@ -49,18 +50,14 @@ class QueryInstance extends OptionSet implements Query {
     //    }
     @Override
     public QueryResult execute(Map<String, Object> queryContext) throws InvokerProcessException {
-        //
         Object resultData = null;
         try {
-            //
             // .准备执行环境堆栈
             MemStack memStack = new MemStack(); // 堆栈
             LocalData local = new LocalData();  // DS
             InstSequence sec = new InstSequence(0, this.instSequence.getArrays());
-            //
             // .执行指令序列
             this.queryEngine.processInset(sec, memStack, local);
-            //
             // .结果集
             resultData = memStack.getResult();
         } catch (ProcessException e) {
@@ -76,7 +73,16 @@ class QueryInstance extends OptionSet implements Query {
                 throw new InvokerProcessException(0, e.getMessage(), e);
             }
         }
-        //
-        return new ObjectModel(new HashMap<String, Object>());
+        // .返回值
+        if (resultData == null) {
+            return null;
+        }
+        if (resultData instanceof QueryResult) {
+            return (QueryResult) resultData;
+        }
+        if (resultData instanceof Collection || resultData.getClass().isArray()) {
+            return new ListModel(resultData);
+        }
+        return new ObjectModel(resultData);
     }
 }

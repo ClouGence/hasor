@@ -5,7 +5,7 @@ return {
         "age",
         "nick"
     },
-    "orderList" : queryOrder ( %{$.user.uid} ) [
+    "orderList" : queryOrder ( user.uid ) [
         {
             "orderID",
             "itemID",
@@ -29,7 +29,7 @@ return {
     PUT     "nick"
     ASE
     PUT     "user"
-    ROU     "%{$.user.uid}"
+    ROU     "user.uid"
     CALL    "queryOrder"
     ASA
     NO

@@ -4,14 +4,14 @@ return findUserByID ({"userID" : uid, "status" : 1, "oriData" : {
     }}) {
     "info" :  {
         "userID",
-        "nick" : nick
+        "nick"
     },
-    "orderList" : queryOrder ({"accountID" : %{$.info.userID} , "oriList" :  [ "self" ,"testID" ] }) [
+    "orderList" : queryOrder ({"accountID" : userID , "oriList" :  [ "self" ,"testID" ] }) [
         {
             "orderID",
             "itemID",
             "itemName",
-            "nick" : $.nick
+            "nick"
         }
     ]
 }
@@ -37,7 +37,7 @@ return findUserByID ({"userID" : uid, "status" : 1, "oriData" : {
     PUT     "nick"
     PUT     "info"
     NO
-    ROU     "%{$.info.userID}"
+    ROU     "userID"
     PUT     "accountID"
     NA
     LDC_S   "self"
@@ -54,7 +54,7 @@ return findUserByID ({"userID" : uid, "status" : 1, "oriData" : {
     PUT     "itemID"
     ROU     "itemName"
     PUT     "itemName"
-    ROU     "$.nick"
+    ROU     "nick"
     PUT     "nick"
     PUSH
     ASE

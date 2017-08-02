@@ -14,32 +14,42 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.core.utils.BeanUtils;
 import net.hasor.core.utils.StringUtils;
+import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.ProcessException;
+import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
+import net.hasor.dataql.runtime.mem.FindData;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.runtime.struts.SelfData;
+
+import java.lang.reflect.Method;
+import java.util.Map;
 /**
  * ROU，寻值
+ * --
+ *  寻值机制：ROU会先尝试在当前结果中寻找值，如果找不到则到上一层数据节点进行查找，直到根节点（默认：自下而上）。
+ *
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
 class ROU implements InsetProcess {
+    /*路由类型*/
     private static enum RouType {
-        /*根结果节点*/
-        Root,       //
-        /*当结果前节点*/
-        Self,       //
-        /*当前数据(默认)*/
-        DataSource  //
+        Type_1, // @ (Default)  在 '数据' 上路由
+        Type_2, // #
+        Type_3, // $            在 '结果' 上路由
+        Type_4, // %
+        Type_5, // &
     }
     @Override
     public int getOpcode() {
         return ROU;
     }
+    //
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
         String rouPath = sequence.currentInst().getString(0);
@@ -47,22 +57,93 @@ class ROU implements InsetProcess {
             memStack.push(null);
             return;
         }
-        //
+        // 确定路由类型  @、#、$、%、&
         rouPath = rouPath.trim();
-        RouType rouType = RouType.DataSource;
-        if (rouPath.startsWith("${")) {
-            rouType = RouType.Root;
-            rouPath = rouPath.substring(2, rouPath.length() - 1);
-        } else if (rouPath.startsWith("%{")) {
-            rouType = RouType.Self;
-            rouPath = rouPath.substring(2, rouPath.length() - 1);
+        RouType rouType = RouType.Type_1;
+        String routeExpression = rouPath;
+        switch (rouPath.charAt(0)) {
+        case '@':   //
+            rouPath = rouPath.substring(1);
+            rouType = RouType.Type_1;
+            break;
+        case '#':   //
+            rouPath = rouPath.substring(1);
+            rouType = RouType.Type_2;
+            break;
+        case '$':   //
+            rouPath = rouPath.substring(1);
+            rouType = RouType.Type_3;
+            break;
+        case '%':   //
+            rouPath = rouPath.substring(1);
+            rouType = RouType.Type_4;
+            break;
+        case '&':   //
+            rouPath = rouPath.substring(1);
+            rouType = RouType.Type_5;
+            break;
+        }
+        // .拆大括号
+        if (rouPath.startsWith("{") && rouPath.endsWith("}")) {
+            rouPath = rouPath.substring(1, rouPath.length() - 1);
+        }
+        // .数据路由
+        if (rouType == RouType.Type_1) {
+            memStack.push(this.routeByStack(rouPath, local, 0));
+            return;
+        }
+        if (rouType == RouType.Type_3) {
+            memStack.push(this.routeByStack(rouPath, memStack, 0));
+            return;
         }
         //
-        Object data = local.getData();
-        SelfData self = memStack.findSelf();
+        throw new InvokerProcessException(getOpcode(), "does not support routing expressions -> " + routeExpression);
+    }
+    //
+    protected Object routeByStack(String routePath, FindData local, int startDepth) throws InvokerProcessException {
+        if (startDepth > local.getLayerDepth()) {
+            return null;
+        }
+        Object useData = local.dataOfDepth(startDepth);
+        if (useData == null) {
+            return null;
+        }
+        //
+        String[] routeSplit = routePath.split("\\.");
+        for (String nodeName : routeSplit) {
+            if (useData == null) {
+                return this.routeByStack(routePath, local, startDepth + 1);
+            }
+            try {
+                useData = readProperty(useData, nodeName);
+            } catch (Exception e) {
+                throw new InvokerProcessException(getOpcode(), e.getMessage(), e);
+            }
+        }
+        //
+        //        Object data = local.dataOfHead();
+        //        SelfData self = memStack.findSelf();
         //        memStack.findSelf();
-        //        memStack.findSelf(Integer.MAX_VALUE);
-        //        local.getData();
-        memStack.push("data:" + rouPath);
+        return useData;
+    }
+    public static Object readProperty(Object object, String fieldName) throws Exception {
+        if (object == null) {
+            return null;
+        }
+        if (object instanceof Map) {
+            return ((Map) object).get(fieldName);
+        }
+        if (object instanceof ObjectModel) {
+            return ((ObjectModel) object).getOriResult(fieldName);
+        }
+        //
+        Method[] allMethod = object.getClass().getMethods();
+        for (Method m : allMethod) {
+            Class<?>[] parameterTypes = m.getParameterTypes();
+            if ("get".equalsIgnoreCase(m.getName()) && parameterTypes.length == 1 && parameterTypes[0] == String.class) {
+                return m.invoke(object, fieldName);
+            }
+        }
+        return BeanUtils.readPropertyOrField(object, fieldName);
     }
 }
