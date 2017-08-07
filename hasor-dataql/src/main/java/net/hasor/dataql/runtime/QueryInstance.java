@@ -15,16 +15,18 @@
  */
 package net.hasor.dataql.runtime;
 import net.hasor.core.future.BasicFuture;
+import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.*;
 import net.hasor.dataql.domain.compiler.InstOpcodes;
 import net.hasor.dataql.domain.compiler.QueryType;
+import net.hasor.dataql.result.DataModel;
 import net.hasor.dataql.result.ListModel;
 import net.hasor.dataql.result.ObjectModel;
-import net.hasor.dataql.runtime.inset.OpcodesPool;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 /**
  * 用于封装和引发 QL 查询执行。
@@ -32,24 +34,36 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 class QueryInstance extends OptionSet implements Query {
-    private BasicFuture future;
-    private QueryType   instSequence;
-    private QueryEngine queryEngine;
+    private BasicFuture<QueryResult> future;
+    private QueryType                instSequence;
+    private QueryEngine              queryEngine;
+    private Map<String, Object>      queryContext;
     //
-    QueryInstance(OpcodesPool opcodesPool, QueryEngine queryEngine, QueryType instSequence) {
+    QueryInstance(QueryEngine queryEngine, QueryType instSequence) {
         super(queryEngine);
-        this.future = new BasicFuture();
+        this.future = new BasicFuture<QueryResult>();
         this.queryEngine = queryEngine;
         this.instSequence = instSequence;
+        this.queryContext = new HashMap<String, Object>();
     }
     //
     //
-    //    @Override
-    //    public <T> T execute(Map<String, Object> queryContext, Class<?> toType) {
-    //        throw new UnsupportedOperationException();  // TODO
-    //    }
     @Override
-    public QueryResult execute(Map<String, Object> queryContext) throws InvokerProcessException {
+    public void addParameter(String key, Object value) {
+        if (StringUtils.isBlank(key)) {
+            return;
+        }
+        this.queryContext.put(key, value);
+    }
+    @Override
+    public void addParameterMap(Map<String, Object> queryData) {
+        if (queryData == null || queryData.isEmpty()) {
+            return;
+        }
+        this.queryContext.putAll(queryData);
+    }
+    @Override
+    public QueryResult execute() throws InvokerProcessException {
         Object resultData = null;
         try {
             // .准备执行环境堆栈
@@ -64,21 +78,29 @@ class QueryInstance extends OptionSet implements Query {
             if (e instanceof BreakProcessException) {
                 BreakProcessException ipe = (BreakProcessException) e;
                 if (InstOpcodes.EXIT == ipe.getInstOpcodes()) {
-                    e.printStackTrace();
+                    int errorCode = ipe.getErrorCode();
+                    Object errorData = ipe.getErrorMsg();
+                    DataModel res = evalQueryResult(errorData);
+                    return new QueryResultImpl(errorCode, res);
                 }
             } else {
                 if (e instanceof InvokerProcessException) {
                     throw (InvokerProcessException) e;
+                } else {
+                    throw new InvokerProcessException(0, e.getMessage(), e);
                 }
-                throw new InvokerProcessException(0, e.getMessage(), e);
             }
         }
         // .返回值
+        DataModel res = evalQueryResult(resultData);
+        return new QueryResultImpl(0, res);
+    }
+    private DataModel evalQueryResult(Object resultData) {
         if (resultData == null) {
             return null;
         }
-        if (resultData instanceof QueryResult) {
-            return (QueryResult) resultData;
+        if (resultData instanceof DataModel) {
+            return (DataModel) resultData;
         }
         if (resultData instanceof Collection || resultData.getClass().isArray()) {
             return new ListModel(resultData);

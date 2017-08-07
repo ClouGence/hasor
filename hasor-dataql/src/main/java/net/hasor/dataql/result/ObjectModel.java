@@ -15,7 +15,6 @@
  */
 package net.hasor.dataql.result;
 import net.hasor.core.utils.StringUtils;
-import net.hasor.dataql.QueryResult;
 
 import java.util.*;
 /**
@@ -23,7 +22,7 @@ import java.util.*;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ObjectModel extends HashMap<String, Object> implements QueryResult {
+public class ObjectModel extends HashMap<String, Object> implements DataModel {
     private List<String> sortList;
     //
     //

@@ -13,15 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql;
+package net.hasor.dataql.runtime;
+import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.result.DataModel;
 /**
- * 结果集
+ * 结果
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface QueryResult {
-    public int getCode();
-
-    public DataModel getData();
+class QueryResultImpl implements QueryResult {
+    private int       errorCode;
+    private DataModel dataModel;
+    public QueryResultImpl(int errorCode, DataModel dataModel) {
+        this.errorCode = errorCode;
+        this.dataModel = dataModel;
+    }
+    @Override
+    public int getCode() {
+        return this.errorCode;
+    }
+    @Override
+    public DataModel getData() {
+        return this.dataModel;
+    }
 }

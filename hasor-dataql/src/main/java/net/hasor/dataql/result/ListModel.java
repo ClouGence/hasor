@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataql.result;
-import net.hasor.dataql.QueryResult;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,7 +22,7 @@ import java.util.Collection;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ListModel extends ArrayList<Object> implements QueryResult {
+public class ListModel extends ArrayList<Object> implements DataModel {
     public ListModel() {
     }
     public ListModel(Object dataItem) {

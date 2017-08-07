@@ -15,8 +15,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
 /**
  * Created by yongchun.zyc on 2017/7/17.
  */
@@ -43,13 +41,13 @@ public class TestProcessMain extends AbstractTaskTest {
         //
         // - 执行 QL
         try {
-            Map<String, Object> params = new HashMap<String, Object>();
-            params.put("uid", "uid form env");
-            params.put("sid", "sid form env");
             //
             DataQL gc = appContext.getInstance(DataQL.class);
             Query query = gc.createQuery(buildQuery);
-            QueryResult result = query.execute(params);
+            query.addParameter("uid", "uid form env");
+            query.addParameter("sid", "sid form env");
+            //
+            QueryResult result = query.execute();
             System.out.println(JSON.toJSON(result).toString());
         } catch (Exception e) {
             e.printStackTrace();

@@ -15,13 +15,12 @@
  */
 package net.hasor.dataql.result;
 import net.hasor.core.convert.ConverterUtils;
-import net.hasor.dataql.QueryResult;
 /**
  * 值类型结果
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ValueModel implements QueryResult {
+public class ValueModel implements DataModel {
     private Object value = null;
     public ValueModel(Object value) {
         this.value = value;

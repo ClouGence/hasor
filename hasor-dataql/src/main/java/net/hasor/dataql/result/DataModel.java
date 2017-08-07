@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql;
-import net.hasor.dataql.result.DataModel;
+package net.hasor.dataql.result;
 /**
  * 结果集
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface QueryResult {
-    public int getCode();
-
-    public DataModel getData();
+public interface DataModel {
 }

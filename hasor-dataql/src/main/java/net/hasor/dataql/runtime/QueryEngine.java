@@ -55,7 +55,7 @@ public class QueryEngine extends OptionSet implements ProcessContet {
     //
     /** 创建一个新查询实例。 */
     public Query newQuery() {
-        return new QueryInstance(opcodesPool, this, this.queryType);
+        return new QueryInstance(this, this.queryType);
     }
     //
     @Override

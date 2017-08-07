@@ -21,6 +21,12 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 public interface Query extends Option {
+    /**添加参数*/
+    public void addParameter(String key, Object value);
+
+    /**添加参数*/
+    public void addParameterMap(Map<String, Object> queryData);
+
     /**执行查询*/
-    public QueryResult execute(Map<String, Object> queryData) throws InvokerProcessException, BreakProcessException;
+    public QueryResult execute() throws InvokerProcessException;
 }
