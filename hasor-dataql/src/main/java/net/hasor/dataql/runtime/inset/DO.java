@@ -17,12 +17,12 @@ package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.OperatorProcess;
 import net.hasor.dataql.ProcessException;
-import net.hasor.dataql.runtime.Symbol;
-import net.hasor.dataql.runtime.mem.LocalData;
-import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
+import net.hasor.dataql.runtime.Symbol;
+import net.hasor.dataql.runtime.mem.LocalData;
+import net.hasor.dataql.runtime.mem.MemStack;
 /**
  * DO 指令是用于进行 二元运算。
  * 该指令会通过运算符和被计算的表达式来寻找 OperatorProcess 运算实现类，进行运算。
@@ -46,10 +46,11 @@ class DO implements InsetProcess {
         OperatorProcess process = context.findOperator(Symbol.Dyadic, dyadicSymbol, fstType, secType);
         //
         if (process == null) {
-            throw new InvokerProcessException(getOpcode(), "DO -> " + dyadicSymbol + " OperatorProcess is Undefined");
+            throw new InvokerProcessException(getOpcode(), //
+                    "DO -> type '" + fstType + "' and type '" + fstType + "' operation '" + dyadicSymbol + "' is not supported.");
         }
         //
-        Object result = process.doProcess(dyadicSymbol, new Object[] { fstExpData, secExpData });
+        Object result = process.doProcess(DO, dyadicSymbol, new Object[] { fstExpData, secExpData });
         memStack.push(result);
     }
 }

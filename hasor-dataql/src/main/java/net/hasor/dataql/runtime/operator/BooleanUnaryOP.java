@@ -13,26 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql;
-import net.hasor.core.utils.StringUtils;
+package net.hasor.dataql.runtime.operator;
+import net.hasor.dataql.InvokerProcessException;
 /**
- * 一元或二元运算
+ * 一元运算，boolean类型的只处理：取反
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public abstract class OperatorProcess {
-    /**执行运算*/
-    public abstract Object doProcess(int opcode, String operator, Object[] args) throws InvokerProcessException;
-    //
-    protected static boolean testIn(String[] dataSet, String test) {
-        if (dataSet == null || dataSet.length == 0 || StringUtils.isBlank(test)) {
-            return false;
+public class BooleanUnaryOP extends UnaryOperatorProcess {
+    @Override
+    public Object doUnaryProcess(int opcode, String operator, Object object) throws InvokerProcessException {
+        if ("!".equals(operator) && OperatorUtils.isBoolean(object)) {
+            return !((Boolean) object);
         }
-        for (String str : dataSet) {
-            if (test.equalsIgnoreCase(str)) {
-                return true;
-            }
-        }
-        return false;
+        String dataType = object == null ? "null" : object.getClass().getName();
+        throw new InvokerProcessException(opcode, dataType + " , Cannot be used as '" + operator + "'.");
     }
 }

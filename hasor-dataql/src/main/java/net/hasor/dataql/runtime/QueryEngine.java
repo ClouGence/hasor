@@ -28,8 +28,9 @@ import net.hasor.dataql.runtime.mem.MemStack;
  * @version : 2017-03-23
  */
 public class QueryEngine extends OptionSet implements ProcessContet {
-    private final static OpcodesPool opcodesPool = OpcodesPool.newPool();
-    private final UdfManager   udfManager;
+    private final static OpcodesPool     opcodesPool = OpcodesPool.newPool();
+    private final        UdfManager      udfManager  = new UdfManager();
+    private final        OperatorManager opeManager  = new OperatorManager();
     private final QueryType    queryType;
     private final QueryRuntime runtime;
     //
@@ -37,7 +38,6 @@ public class QueryEngine extends OptionSet implements ProcessContet {
         super(runtime);
         this.runtime = runtime;
         this.queryType = queryType;
-        this.udfManager = new UdfManager();
     }
     //
     /** 添加 UDF */
@@ -51,6 +51,15 @@ public class QueryEngine extends OptionSet implements ProcessContet {
             udf = this.runtime.findUDF(udfName);
         }
         return udf;
+    }
+    @Override
+    public OperatorProcess findOperator(Symbol symbolType, String symbolName, Class<?> fstType, Class<?> secType) {
+        //
+        OperatorProcess operator = this.opeManager.findOperator(symbolType, symbolName, fstType, secType);
+        if (operator == null) {
+            operator = this.runtime.findOperator(symbolType, symbolName, fstType, secType);
+        }
+        return operator;
     }
     //
     /** 创建一个新查询实例。 */
@@ -69,14 +78,5 @@ public class QueryEngine extends OptionSet implements ProcessContet {
             opcodesPool.doWork(sequence, memStack, local, this);
             sequence.doNext(1);
         }
-    }
-    @Override
-    public OperatorProcess findOperator(Symbol unary, String dyadicSymbol, Class<?> fstType, Class<?> secType) {
-        return new OperatorProcess() {
-            @Override
-            public Object doProcess(String operator, Object[] args) {
-                return false;
-            }
-        };
     }
 }

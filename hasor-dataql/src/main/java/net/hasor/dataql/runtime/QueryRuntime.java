@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
+import net.hasor.dataql.OperatorProcess;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
 import net.hasor.dataql.domain.compiler.QueryType;
@@ -23,8 +24,9 @@ import net.hasor.dataql.domain.compiler.QueryType;
  * @version : 2017-03-23
  */
 public class QueryRuntime extends ClassLoader implements Option {
-    private final Option     option     = new OptionSet();
-    private final UdfManager udfManager = new UdfManager();
+    private final Option          option     = new OptionSet();
+    private final UdfManager      udfManager = new UdfManager();
+    private final OperatorManager opeManager = new OperatorManager();
     //
     public QueryRuntime() {
         this(Thread.currentThread().getContextClassLoader());
@@ -46,6 +48,9 @@ public class QueryRuntime extends ClassLoader implements Option {
     //
     UDF findUDF(String udfName) {
         return this.udfManager.findUDF(udfName);
+    }
+    OperatorProcess findOperator(Symbol symbolType, String symbolName, Class<?> fstType, Class<?> secType) {
+        return this.opeManager.findOperator(symbolType, symbolName, fstType, secType);
     }
     //
     public Class<?> loadType(String type) throws ClassNotFoundException {

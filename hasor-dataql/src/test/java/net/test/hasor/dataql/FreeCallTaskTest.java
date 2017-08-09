@@ -36,44 +36,44 @@ import java.nio.charset.Charset;
 public class FreeCallTaskTest extends AbstractTaskTest {
     @Test
     public void main1() throws Exception {
-        this.printTaskTree("/graphql/graphql_1.ql");
+        this.printTaskTree("/dataql/dataql_1.ql");
     }
     @Test
     public void main2() throws Exception {
-        this.printTaskTree("/graphql/graphql_2.ql");
+        this.printTaskTree("/dataql/dataql_2.ql");
     }
     @Test
     public void main3() throws Exception {
-        this.printTaskTree("/graphql/graphql_3.ql");
+        this.printTaskTree("/dataql/dataql_3.ql");
     }
     @Test
     public void main4() throws Exception {
-        this.printTaskTree("/graphql/graphql_4.ql");
+        this.printTaskTree("/dataql/dataql_4.ql");
     }
     @Test
     public void main5() throws Exception {
-        this.printTaskTree("/graphql/graphql_5.ql");
+        this.printTaskTree("/dataql/dataql_5.ql");
     }
     @Test
     public void main6() throws Exception {
-        this.printTaskTree("/graphql/graphql_6.ql");
+        this.printTaskTree("/dataql/dataql_6.ql");
     }
     @Test
     public void main7() throws Exception {
-        this.printTaskTree("/graphql/graphql_7.ql");
+        this.printTaskTree("/dataql/dataql_7.ql");
     }
     @Test
     public void main8() throws Exception {
-        this.printTaskTree("/graphql/graphql_8.ql");
+        this.printTaskTree("/dataql/dataql_8.ql");
     }
     @Test
     public void main9() throws Exception {
-        this.printTaskTree("/graphql/graphql_9.ql");
+        this.printTaskTree("/dataql/dataql_9.ql");
     }
     @Test
     public void mainALL() throws Exception {
         for (int i = 1; i < 100; i++) {
-            this.printTaskTree("/graphql/graphql_" + i + ".ql");
+            this.printTaskTree("/dataql/dataql_" + i + ".ql");
         }
     }
     //

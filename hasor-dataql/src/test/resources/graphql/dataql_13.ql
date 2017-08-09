@@ -52,25 +52,20 @@ var a = abc
 var a = abccccccccccccccccccccccccccccccccccccccccccccccccc
 var a = abccccccccccccccccccccccccccccccccccccccccccccccccc.cccc
 var a = abc.cc.cccc.xx
-var a = $abc.cc.cccc.xx
-var a = #abc.cc.cccc.xx
-var a = $aaa
-var a = #aaa
-var a = %{$.aaa.cc}
-var a = %{#.aaa.cc}
+var a = ${abc.cc.cccc.xx}
+var a = @{abc.cc.cccc.xx}
+var a = ${aaa}
+var a = @{aaa}
+var a = @{aaa.cc}
+var a = ${aaa.cc}
 
-var a = %{aaaa}
-var a = %{$1234}
-var a = %{#1234}
-var a = #123
-var a = #123
-var a = %{s.a1.a2}
+var a = @{aaaa}
+var a = ${s.a1.a2}
 
 var a = this[0].sss.a1.a2.a3_1qw
-var a = this[0].sss.a1.$2.#3_1qw
-var a = $[0][1][1][1]
-var a = #[0][1][1][1];
 var a = a[0][1][1][1]
+var a = b[0][1][1][1];
+var a = c[0][1][1][1]
 
 var a = null;
 var a = null
@@ -93,12 +88,12 @@ var b = {
     "aaaa" : "ffff",
     'vvvv' : true,
     'vvvv' : 1.234E-2345,
-    'vvvv' : $abc,
+    'vvvv' : ${abc},
     "aaaa" : "ffff",
-    'cc'   : $.abc,
-    'vvvv' : #.abc,
-    'cc'   : %{$.abc},
-    'vvvv' : %{#.abc}
+    'cc'   : abc,
+    'vvvv' : abc,
+    'cc'   : %{abc},
+    'vvvv' : %{abc}
 }
 var b = {
     "aaaa" : ffff,
@@ -107,13 +102,13 @@ var b = {
         "aaaa" : "ffff",
         'vvvv' : true,
         'vvvv' : 1.234E-2345,
-        'vvvv' : $abc,
+        'vvvv' : abc,
         "dddd" : [
             {
-                'cc'   : $.abc,
-                'vvvv' : #.abc,
-                'cc'   : %{$.abc},
-                'vvvv' : %{#.abc}
+                'cc'   : abc,
+                'vvvv' : abc,
+                'cc'   : %{abc},
+                'vvvv' : %{abc}
             }
         ]
     },
@@ -141,9 +136,7 @@ var b = [
             "dddd" : [
                 {
                     'cc'   : $.abc,
-                    'vvvv' : #.abc,
-                    'cc'   : %{$.abc},
-                    'vvvv' : %{#.abc}
+                    'cc'   : %{$.abc}
                 }
             ]
         },
@@ -197,10 +190,10 @@ var f = filter("abc"    ,'abc'      ,true       ,false,
             'vvvv' : $abc,
             "dddd" : [
                 {
-                    'cc'   : $.abc,
-                    'vvvv' : #.abc,
-                    'cc'   : %{$.abc},
-                    'vvvv' : %{#.abc}
+                    'cc'   : abc,
+                    'vvvv' : abc,
+                    'cc'   : %{abc},
+                    'vvvv' : %{abc}
                 }
             ]
         },

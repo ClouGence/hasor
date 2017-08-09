@@ -24,7 +24,7 @@ return {
     PUT     "nick"
     ASE
     PUT     "info"
-    ROU     "info.nick"
+    ROU     "${info.nick}"
     PUT     "nick"
     PUT     "userInfo"
     LDC_S   "DataQL"

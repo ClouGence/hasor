@@ -46,6 +46,43 @@ public class DataQLParser {
         DataQLParser parser = new DataQLParser(inputStream,encoding);
         return parser.rootBlock();
     }
+    public static Number automaticBigInteger(java.math.BigInteger bigInt) {
+        int bitLength = bigInt.bitLength();
+        if (bitLength < 8) {
+            return bigInt.byteValue();
+        }
+        if (bitLength < 16) {
+            return bigInt.shortValue();
+        }
+        if (bitLength < 32) {
+            return bigInt.intValue();
+        }
+        if (bitLength < 64) {
+            return bigInt.longValue();
+        }
+        return bigInt;
+    }
+    public static Number automaticBigDecimal(java.math.BigDecimal bigDec) {
+        int precisionLength = bigDec.precision();
+        if (precisionLength < 8) {
+            return bigDec.floatValue();
+        }
+        if (precisionLength < 16) {
+            return bigDec.doubleValue();
+        }
+        return bigDec;
+    }
+    public static String fixNumberValue(Token t) {
+        boolean signBit = t.image.charAt(0) == '-';
+        if (t.kind == HEX_NUM || t.kind == OCTAL_NUM || t.kind == BINARY_NUM) {
+            if (signBit) {
+                return "-" + t.image.substring(3);
+            } else {
+                return t.image.substring(2);
+            }
+        }
+        return t.image;
+    }
 }
 PARSER_END(DataQLParser)
 
@@ -147,7 +184,6 @@ TOKEN:{
                               //http://www.unicode.org/Public/4.1.0/ucd/NamesList.txt
                               //more inclusive than Character.isLetter
            "$",               //DOLLAR SIGN: milreis, escudo
-           "#",               //DOLLAR SIGN: milreis, escudo
            "A"-"Z",           //LATIN CAPITAL LETTER A - LATIN CAPITAL LETTER Z
            "_",               //LOW LINE: spacing underscore
            "a"-"z",           //LATIN SMALL LETTER A - LATIN SMALL LETTER Z
@@ -251,15 +287,15 @@ Number numberValue() : {                             Number number = null;
 }{
     (
         (
-            t = <DECIMAL_NUM>                       {number = new java.math.BigDecimal(t.image);}
+            t = <DECIMAL_NUM>                       {number = automaticBigDecimal(new java.math.BigDecimal(fixNumberValue(t)));}
         ) | (
-            t = <INTEGER_NUM>                       {number = new java.math.BigInteger(t.image);}
+            t = <INTEGER_NUM>                       {number = automaticBigInteger(new java.math.BigInteger(fixNumberValue(t)));}
         ) | (
-            t = <HEX_NUM>                           {number = new java.math.BigInteger(t.image,16);}
+            t = <HEX_NUM>                           {number = automaticBigInteger(new java.math.BigInteger(fixNumberValue(t),16));}
         ) | (
-            t = <OCTAL_NUM>                         {number = new java.math.BigInteger(t.image,8);}
+            t = <OCTAL_NUM>                         {number = automaticBigInteger(new java.math.BigInteger(fixNumberValue(t),8));}
         ) | (
-            t = <BINARY_NUM>                        {number = new java.math.BigInteger(t.image,2);}
+            t = <BINARY_NUM>                        {number = automaticBigInteger(new java.math.BigInteger(fixNumberValue(t),2));}
         )
     )                                               {return number;}
 }

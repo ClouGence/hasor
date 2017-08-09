@@ -17,12 +17,12 @@ package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.OperatorProcess;
 import net.hasor.dataql.ProcessException;
-import net.hasor.dataql.runtime.Symbol;
-import net.hasor.dataql.runtime.mem.LocalData;
-import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
+import net.hasor.dataql.runtime.Symbol;
+import net.hasor.dataql.runtime.mem.LocalData;
+import net.hasor.dataql.runtime.mem.MemStack;
 /**
  * UO 指令是用于进行 一元运算。
  * 该指令会通过运算符和被计算的表达式来寻找 OperatorProcess 运算实现类进行运算。
@@ -47,7 +47,7 @@ class UO implements InsetProcess {
             throw new InvokerProcessException(getOpcode(), "UO -> " + dyadicSymbol + " OperatorProcess is Undefined");
         }
         //
-        Object result = process.doProcess(dyadicSymbol, new Object[] { expData });
+        Object result = process.doProcess(UO, dyadicSymbol, new Object[] { expData });
         memStack.push(result);
     }
 }
