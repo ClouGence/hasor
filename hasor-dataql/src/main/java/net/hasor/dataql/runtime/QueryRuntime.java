@@ -18,6 +18,8 @@ import net.hasor.dataql.OperatorProcess;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
 import net.hasor.dataql.domain.compiler.QueryType;
+import net.hasor.dataql.runtime.operator.BooleanUnaryOP;
+import net.hasor.dataql.runtime.operator.NumberUnaryOP;
 /**
  * DataQL 运行时。
  * @author 赵永春(zyc@hasor.net)
@@ -33,6 +35,9 @@ public class QueryRuntime extends ClassLoader implements Option {
     }
     public QueryRuntime(ClassLoader loader) {
         super(loader);
+        this.opeManager.registryOperator(Symbol.Unary, "!", Boolean.TYPE, null, new BooleanUnaryOP());
+        this.opeManager.registryOperator(Symbol.Unary, "!", Boolean.class, null, new BooleanUnaryOP());
+        this.opeManager.registryOperator(Symbol.Unary, "-", Number.class, null, new NumberUnaryOP());
     }
     //
     /** 添加 UDF */

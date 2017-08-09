@@ -22,10 +22,12 @@ import net.hasor.dataql.domain.compiler.QueryType;
 import net.hasor.dataql.result.DataModel;
 import net.hasor.dataql.result.ListModel;
 import net.hasor.dataql.result.ObjectModel;
+import net.hasor.dataql.result.ValueModel;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 /**
@@ -105,6 +107,16 @@ class QueryInstance extends OptionSet implements Query {
         if (resultData instanceof Collection || resultData.getClass().isArray()) {
             return new ListModel(resultData);
         }
+        if (resultData.getClass().isPrimitive() || //
+                resultData instanceof Number || //
+                resultData instanceof Boolean || //
+                resultData instanceof Date || //
+                resultData instanceof Character ||//
+                resultData instanceof String//
+                ) {
+            return new ValueModel(resultData);
+        }
+        //
         return new ObjectModel(resultData);
     }
 }

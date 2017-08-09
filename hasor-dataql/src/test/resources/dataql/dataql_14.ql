@@ -1,5 +1,7 @@
 var a = {};
-var a = false;
+var a = 123;
+var a = -a;
+exit a;
 
 var abs = lambda : (arg1) -> {
     return arg1;

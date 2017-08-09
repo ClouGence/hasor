@@ -29,28 +29,28 @@ public class ValueModel implements DataModel {
     public Object getOriValue() {
         return this.value;
     }
-    public boolean getBoolean() {
+    public boolean asBoolean() {
         return (Boolean) ConverterUtils.convert(Boolean.TYPE, this.value);
     }
-    public String getString() {
+    public String asString() {
         return this.value == null ? null : this.value.toString();
     }
-    public byte getByte() {
+    public byte asByte() {
         return (Byte) ConverterUtils.convert(Short.TYPE, this.value);
     }
-    public short getShort() {
+    public short asShort() {
         return (Short) ConverterUtils.convert(Short.TYPE, this.value);
     }
-    public int getInt() {
+    public int asInt() {
         return (Integer) ConverterUtils.convert(Integer.TYPE, this.value);
     }
-    public long getLong() {
+    public long asLong() {
         return (Long) ConverterUtils.convert(Long.TYPE, this.value);
     }
-    public float getFloat() {
+    public float asFloat() {
         return (Float) ConverterUtils.convert(Float.TYPE, this.value);
     }
-    public double getDouble() {
+    public double asDouble() {
         return (Double) ConverterUtils.convert(Double.TYPE, this.value);
     }
 }
