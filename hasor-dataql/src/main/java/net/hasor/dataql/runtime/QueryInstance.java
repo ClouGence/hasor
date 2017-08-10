@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import net.hasor.core.future.BasicFuture;
 import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.*;
 import net.hasor.dataql.domain.compiler.InstOpcodes;
@@ -36,14 +35,12 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 class QueryInstance extends OptionSet implements Query {
-    private BasicFuture<QueryResult> future;
-    private QueryType                instSequence;
-    private QueryEngine              queryEngine;
-    private Map<String, Object>      queryContext;
+    private QueryType           instSequence;
+    private QueryEngine         queryEngine;
+    private Map<String, Object> queryContext;
     //
     QueryInstance(QueryEngine queryEngine, QueryType instSequence) {
         super(queryEngine);
-        this.future = new BasicFuture<QueryResult>();
         this.queryEngine = queryEngine;
         this.instSequence = instSequence;
         this.queryContext = new HashMap<String, Object>();
