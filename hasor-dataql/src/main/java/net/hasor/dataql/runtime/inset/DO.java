@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.OperatorProcess;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
@@ -23,6 +24,7 @@ import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.Symbol;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.operator.PrecisionEnum;
 /**
  * DO 指令是用于进行 二元运算。
  * 该指令会通过运算符和被计算的表达式来寻找 OperatorProcess 运算实现类，进行运算。
@@ -50,7 +52,12 @@ class DO implements InsetProcess {
                     "DO -> type '" + fstType + "' and type '" + fstType + "' operation '" + dyadicSymbol + "' is not supported.");
         }
         //
-        Object result = process.doProcess(DO, dyadicSymbol, new Object[] { fstExpData, secExpData });
+        Object option = context.getOption(Option.NUMBER_PRECISION);
+        option = (option == null) ? "32" : option;
+        int precision = Integer.parseInt(option.toString());
+        Object result = process.doProcess(DO, dyadicSymbol, new Object[] { //
+                fstExpData, secExpData, PrecisionEnum.find(precision)//
+        });
         memStack.push(result);
     }
 }

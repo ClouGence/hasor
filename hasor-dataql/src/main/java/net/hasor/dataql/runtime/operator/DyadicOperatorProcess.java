@@ -27,15 +27,15 @@ public abstract class DyadicOperatorProcess extends OperatorProcess {
         if (args == null) {
             throw new InvokerProcessException(opcode, "dyadic operator error, args is null.");
         }
-        if (args.length != 2) {
-            throw new InvokerProcessException(opcode, "dyadic operator error, args count expect 2 , but " + args.length);
+        if (args.length != 3) {
+            throw new InvokerProcessException(opcode, "dyadic operator error, args count expect 3 , but " + args.length);
         }
         if (!testIn(new String[] { "+", "-", "*", "/", "%", "\\", ">", ">=", "<", "<=", "==", "!=", "&", "|", "^", "<<", ">>", ">>>", "||", "&&" }, operator)) {
             throw new InvokerProcessException(opcode, "does not support dyadic Operator -> " + operator);
         }
         //
-        return this.doDyadicProcess(opcode, operator, args);
+        return this.doDyadicProcess(opcode, operator, args[0], args[1], (PrecisionEnum) args[2]);
     }
     /**执行运算*/
-    public abstract Object doDyadicProcess(int opcode, String operator, Object object);
+    public abstract Object doDyadicProcess(int opcode, String operator, Object fstObject, Object secObject, PrecisionEnum precisionEnum) throws InvokerProcessException;
 }
