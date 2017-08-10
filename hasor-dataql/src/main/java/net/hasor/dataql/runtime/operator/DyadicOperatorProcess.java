@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime.operator;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.OperatorProcess;
+import net.hasor.dataql.Option;
 /**
  * 二元运算
  * @author 赵永春(zyc@hasor.net)
@@ -23,19 +24,19 @@ import net.hasor.dataql.OperatorProcess;
  */
 public abstract class DyadicOperatorProcess extends OperatorProcess {
     /**执行运算*/
-    public Object doProcess(int opcode, String operator, Object[] args) throws InvokerProcessException {
+    public Object doProcess(int opcode, String operator, Object[] args, Option option) throws InvokerProcessException {
         if (args == null) {
             throw new InvokerProcessException(opcode, "dyadic operator error, args is null.");
         }
-        if (args.length != 3) {
-            throw new InvokerProcessException(opcode, "dyadic operator error, args count expect 3 , but " + args.length);
+        if (args.length != 2) {
+            throw new InvokerProcessException(opcode, "dyadic operator error, args count expect 2 , but " + args.length);
         }
         if (!testIn(new String[] { "+", "-", "*", "/", "%", "\\", ">", ">=", "<", "<=", "==", "!=", "&", "|", "^", "<<", ">>", ">>>", "||", "&&" }, operator)) {
             throw new InvokerProcessException(opcode, "does not support dyadic Operator -> " + operator);
         }
         //
-        return this.doDyadicProcess(opcode, operator, args[0], args[1], (PrecisionEnum) args[2]);
+        return this.doDyadicProcess(opcode, operator, args[0], args[1], option);
     }
     /**执行运算*/
-    public abstract Object doDyadicProcess(int opcode, String operator, Object fstObject, Object secObject, PrecisionEnum precisionEnum) throws InvokerProcessException;
+    public abstract Object doDyadicProcess(int opcode, String operator, Object fstObject, Object secObject, Option option) throws InvokerProcessException;
 }

@@ -22,7 +22,7 @@ import net.hasor.core.utils.StringUtils;
  */
 public abstract class OperatorProcess {
     /**执行运算*/
-    public abstract Object doProcess(int opcode, String operator, Object[] args) throws InvokerProcessException;
+    public abstract Object doProcess(int opcode, String operator, Object[] args, Option option) throws InvokerProcessException;
     //
     protected static boolean testIn(String[] dataSet, String test) {
         if (dataSet == null || dataSet.length == 0 || StringUtils.isBlank(test)) {

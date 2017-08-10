@@ -13,28 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.operator;
+package net.test.hasor.dataql.udfs;
+import net.hasor.dataql.UDF;
 /**
- * 数值计算最大精度
- * @author 赵永春(zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2014-7-12
+ * @author 赵永春 (zyc@byshell.org)
  */
-public enum PrecisionEnum {
-    //
-    Bit8(8), Bit16(16), Bit32(32), Bit64(64), Auto(0);
-    //
-    private int n = -1;
-    PrecisionEnum(int n) {
-        this.n = n;
-    }
-    public static PrecisionEnum find(Number precision) {
-        if (precision == null) {
-            return Bit32;
-        }
-        for (PrecisionEnum pre : PrecisionEnum.values()) {
-            if (pre.n == precision.intValue())
-                return pre;
-        }
-        return Auto;
+public class DoubleNumber implements UDF {
+    @Override
+    public Object call(Object[] values) {
+        return (double) 1234567.89012;
     }
 }

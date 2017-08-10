@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.runtime.operator;
 import net.hasor.dataql.InvokerProcessException;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.compiler.InstOpcodes;
 
 import java.math.BigDecimal;
@@ -26,35 +27,73 @@ import java.math.BigInteger;
  */
 public class NumberDyadicOP extends DyadicOperatorProcess {
     @Override
-    public Object doDyadicProcess(int opcode, String operator, Object fstObject, Object secObject, PrecisionEnum precisionEnum) throws InvokerProcessException {
+    public Object doDyadicProcess(int opcode, String operator, Object fstObject, Object secObject, Option option) throws InvokerProcessException {
         if (!(fstObject instanceof Number) || !(secObject instanceof Number)) {
             throw throwError(operator, fstObject, secObject);
         }
+        // .数值计算的选项参数
+        PrecisionEnum precisionEnum = PrecisionEnum.find((Number) option.getOption(Option.NUMBER_PRECISION));   // 计算精度
+        RoundingEnum roundingMode = RoundingEnum.find((String) option.getOption(Option.NUMBER_ROUNDING));       // 舍入模式
+        Number maxDecimalNum = (Number) option.getOption(Option.MAX_DECIMAL_DIGITS);                               // 小数位数(默认20位)
+        if (maxDecimalNum == null) {
+            maxDecimalNum = 20;
+        }
+        int maxDecimal = maxDecimalNum.intValue();// 要保留的小数
         //
+        // .数值计算
+        Number result = null;
         if (PrecisionEnum.Auto == precisionEnum) {
             Number bigFstObject = autoToBig((Number) fstObject);
             Number bigSecObject = autoToBig((Number) secObject);
-            return doProcessBig(operator, bigFstObject, bigSecObject);
+            result = doProcessBig(operator, bigFstObject, bigSecObject, maxDecimal, roundingMode);
         }
         if (PrecisionEnum.Bit8 == precisionEnum) {
             byte realFstObject = ((Number) fstObject).byteValue();
             byte realSecObject = ((Number) secObject).byteValue();
-            return doProcessBit32(operator, realFstObject, realSecObject);
+            result = doProcessBit32(operator, realFstObject, realSecObject);
         }
         if (PrecisionEnum.Bit16 == precisionEnum) {
             short realFstObject = ((Number) fstObject).shortValue();
             short realSecObject = ((Number) secObject).shortValue();
-            return doProcessBit32(operator, realFstObject, realSecObject);
+            result = doProcessBit32(operator, realFstObject, realSecObject);
         }
         if (PrecisionEnum.Bit32 == precisionEnum) {
             int realFstObject = ((Number) fstObject).intValue();
             int realSecObject = ((Number) secObject).intValue();
-            return doProcessBit32(operator, realFstObject, realSecObject);
+            result = doProcessBit32(operator, realFstObject, realSecObject);
         }
         if (PrecisionEnum.Bit64 == precisionEnum) {
             long realFstObject = ((Number) fstObject).longValue();
             long realSecObject = ((Number) secObject).longValue();
-            return doProcessBit64(operator, realFstObject, realSecObject);
+            result = doProcessBit64(operator, realFstObject, realSecObject);
+        }
+        // .处理小数保留位数(默认保留20位)
+        if (result != null) {
+            //
+            // float
+            //      1bit（符号位） 8bits（指数位） 23bits（尾数位）
+            //      2^23 = 8388608，一共七位，因此小数精度为 6~7位。
+            if (OperatorUtils.isFloatNumber(result) && maxDecimal < 7) {
+                BigDecimal resultDecimal = new BigDecimal(result.toString());
+                resultDecimal = resultDecimal.setScale(maxDecimal, roundingMode.getModeNum());
+                return resultDecimal.floatValue();
+            }
+            // double
+            //      1bit（符号位） 11bits（指数位） 52bits（尾数位）
+            //      2^52 = 4503599627370496，一共16位，因此小数精度为 15~16位。
+            if (OperatorUtils.isDoubleNumber(result) && maxDecimal < 16) {
+                BigDecimal resultDecimal = new BigDecimal(result.toString());
+                resultDecimal = resultDecimal.setScale(maxDecimal, roundingMode.getModeNum());
+                return resultDecimal.doubleValue();
+            }
+            // BigDecimal 大数，通过 setScale 处理保留位数。
+            if (result instanceof BigDecimal) {
+                return ((BigDecimal) result)//
+                        .setScale(maxDecimal, roundingMode.getModeNum())// 设置小数位数
+                        .stripTrailingZeros();// 抹除末尾0
+            }
+            //
+            return result;
         }
         //
         String fstDataType = fstObject.getClass().getName();
@@ -80,7 +119,7 @@ public class NumberDyadicOP extends DyadicOperatorProcess {
         }
     }
     //
-    private static Object doProcessBit32(String operator, int realFstObject, int realSecObject) throws InvokerProcessException {
+    private static Number doProcessBit32(String operator, int realFstObject, int realSecObject) throws InvokerProcessException {
         // .加法
         if ("+".equals(operator)) {
             return realFstObject + realSecObject;
@@ -108,7 +147,7 @@ public class NumberDyadicOP extends DyadicOperatorProcess {
         throw throwError(operator, realFstObject, realSecObject);
     }
     //
-    private Object doProcessBit64(String operator, long realFstObject, long realSecObject) throws InvokerProcessException {
+    private Number doProcessBit64(String operator, long realFstObject, long realSecObject) throws InvokerProcessException {
         // .加法
         if ("+".equals(operator)) {
             return realFstObject + realSecObject;
@@ -136,7 +175,7 @@ public class NumberDyadicOP extends DyadicOperatorProcess {
         throw throwError(operator, realFstObject, realSecObject);
     }
     //
-    private Object doProcessBig(String operator, Number bigFstObject, Number bigSecObject) throws InvokerProcessException {
+    private Number doProcessBig(String operator, Number bigFstObject, Number bigSecObject, int maxDecimal, RoundingEnum roundingMode) throws InvokerProcessException {
         boolean useDecimal = false;
         if (bigFstObject instanceof BigDecimal || bigSecObject instanceof BigDecimal) {
             if (bigFstObject instanceof BigInteger) {
@@ -175,11 +214,13 @@ public class NumberDyadicOP extends DyadicOperatorProcess {
         // .除法
         if ("/".equals(operator)) {
             if (useDecimal) {
-                return ((BigDecimal) bigFstObject).divide((BigDecimal) bigSecObject);
+                return ((BigDecimal) bigFstObject)//
+                        .divide((BigDecimal) bigSecObject, roundingMode.getModeNum());
             } else {
-                bigFstObject = new BigDecimal((BigInteger) bigFstObject);
-                bigSecObject = new BigDecimal((BigInteger) bigSecObject);
-                return ((BigDecimal) bigFstObject).divide((BigDecimal) bigSecObject);
+                bigFstObject = new BigDecimal((BigInteger) bigFstObject).setScale(maxDecimal, roundingMode.getModeNum());
+                bigSecObject = new BigDecimal((BigInteger) bigSecObject).setScale(maxDecimal, roundingMode.getModeNum());
+                return ((BigDecimal) bigFstObject)//
+                        .divide((BigDecimal) bigSecObject, roundingMode.getModeNum());
             }
         }
         // .整除

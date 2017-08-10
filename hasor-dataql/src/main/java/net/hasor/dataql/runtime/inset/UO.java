@@ -47,7 +47,7 @@ class UO implements InsetProcess {
             throw new InvokerProcessException(getOpcode(), "UO -> " + dyadicSymbol + " OperatorProcess is Undefined");
         }
         //
-        Object result = process.doProcess(UO, dyadicSymbol, new Object[] { expData });
+        Object result = process.doProcess(UO, dyadicSymbol, new Object[] { expData }, context);
         memStack.push(result);
     }
 }

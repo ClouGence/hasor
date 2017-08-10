@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.runtime.operator;
 import net.hasor.dataql.InvokerProcessException;
+import net.hasor.dataql.Option;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -25,7 +26,7 @@ import java.math.BigInteger;
  */
 public class NumberUnaryOP extends UnaryOperatorProcess {
     @Override
-    public Object doUnaryProcess(int opcode, String operator, Object object) throws InvokerProcessException {
+    public Object doUnaryProcess(int opcode, String operator, Object object, Option option) throws InvokerProcessException {
         if ("-".equals(operator) && object instanceof Number) {
             Number number = (Number) object;
             // .整数
