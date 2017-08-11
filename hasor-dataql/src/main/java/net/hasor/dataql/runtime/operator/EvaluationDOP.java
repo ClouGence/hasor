@@ -25,7 +25,7 @@ import java.math.BigInteger;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class NumberDyadicOP extends DyadicOperatorProcess {
+public class EvaluationDOP extends DyadicOperatorProcess {
     @Override
     public Object doDyadicProcess(int opcode, String operator, Object fstObject, Object secObject, Option option) throws InvokerProcessException {
         if (!(fstObject instanceof Number) || !(secObject instanceof Number)) {

@@ -24,7 +24,7 @@ import java.math.BigInteger;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class NumberUnaryOP extends UnaryOperatorProcess {
+public class NumberUOP extends UnaryOperatorProcess {
     @Override
     public Object doUnaryProcess(int opcode, String operator, Object object, Option option) throws InvokerProcessException {
         if ("-".equals(operator) && object instanceof Number) {

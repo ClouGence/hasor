@@ -21,7 +21,7 @@ import net.hasor.dataql.Option;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class BooleanUnaryOP extends UnaryOperatorProcess {
+public class BooleanUOP extends UnaryOperatorProcess {
     @Override
     public Object doUnaryProcess(int opcode, String operator, Object object, Option option) throws InvokerProcessException {
         if ("!".equals(operator) && OperatorUtils.isBoolean(object)) {

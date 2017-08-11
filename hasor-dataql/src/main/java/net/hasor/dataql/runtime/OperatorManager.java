@@ -16,9 +16,10 @@
 package net.hasor.dataql.runtime;
 import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.OperatorProcess;
-import net.hasor.dataql.runtime.operator.BooleanUnaryOP;
-import net.hasor.dataql.runtime.operator.NumberDyadicOP;
-import net.hasor.dataql.runtime.operator.NumberUnaryOP;
+import net.hasor.dataql.runtime.operator.BooleanUOP;
+import net.hasor.dataql.runtime.operator.CompareDOP;
+import net.hasor.dataql.runtime.operator.EvaluationDOP;
+import net.hasor.dataql.runtime.operator.NumberUOP;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,15 +34,32 @@ class OperatorManager {
     static {
         DEFAULT = new OperatorManager();
         // .一元运算(注册一元操作符，第二个操作数类型无效但是必须要有，所以给 Object)
-        DEFAULT.registryOperator(Symbol.Unary, "!", Boolean.class, Object.class, new BooleanUnaryOP());
-        DEFAULT.registryOperator(Symbol.Unary, "-", Number.class, Object.class, new NumberUnaryOP());
-        // .二元运算
-        DEFAULT.registryOperator(Symbol.Dyadic, "+", Number.class, Number.class, new NumberDyadicOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "-", Number.class, Number.class, new NumberDyadicOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "*", Number.class, Number.class, new NumberDyadicOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "/", Number.class, Number.class, new NumberDyadicOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "%", Number.class, Number.class, new NumberDyadicOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "\\", Number.class, Number.class, new NumberDyadicOP());
+        DEFAULT.registryOperator(Symbol.Unary, "!", Boolean.class, Object.class, new BooleanUOP());
+        DEFAULT.registryOperator(Symbol.Unary, "-", Number.class, Object.class, new NumberUOP());
+        // .二元，求值运算
+        DEFAULT.registryOperator(Symbol.Dyadic, "+", Number.class, Number.class, new EvaluationDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "-", Number.class, Number.class, new EvaluationDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "*", Number.class, Number.class, new EvaluationDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "/", Number.class, Number.class, new EvaluationDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "%", Number.class, Number.class, new EvaluationDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "\\", Number.class, Number.class, new EvaluationDOP());
+        // .二元，比较运算
+        DEFAULT.registryOperator(Symbol.Dyadic, ">", Comparable.class, Comparable.class, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, ">=", Comparable.class, Comparable.class, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "<", Comparable.class, Comparable.class, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "<=", Comparable.class, Comparable.class, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "==", Comparable.class, Comparable.class, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "!=", Comparable.class, Comparable.class, new CompareDOP());
+        //            | < BIT_AND             : "&" >
+        //                | < BIT_OR              : "|" >
+        //                | < XOR                 : "^" >
+        //
+        //                | < LSHIFT              : "<<" >
+        //                | < RSIGNEDSHIFT        : ">>" >
+        //                | < RUNSIGNEDSHIFT      : ">>>" >
+        //
+        //                | < SC_OR               : "||" >
+        //                | < SC_AND              : "&&" >
     }
 
     //
