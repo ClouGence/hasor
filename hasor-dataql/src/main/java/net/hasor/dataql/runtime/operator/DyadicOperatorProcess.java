@@ -17,6 +17,7 @@ package net.hasor.dataql.runtime.operator;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.OperatorProcess;
 import net.hasor.dataql.Option;
+import net.hasor.dataql.domain.compiler.InstOpcodes;
 /**
  * 二元运算
  * @author 赵永春(zyc@hasor.net)
@@ -36,6 +37,12 @@ public abstract class DyadicOperatorProcess extends OperatorProcess {
         }
         //
         return this.doDyadicProcess(opcode, operator, args[0], args[1], option);
+    }
+    //
+    protected static InvokerProcessException throwError(String operator, Object realFstObject, Object realSecObject) {
+        String fstDataType = realFstObject == null ? "null" : realFstObject.getClass().getName();
+        String secDataType = realSecObject == null ? "null" : realSecObject.getClass().getName();
+        return new InvokerProcessException(InstOpcodes.DO, fstDataType + " and " + secDataType + " , Cannot be used as '" + operator + "'.");
     }
     /**执行运算*/
     public abstract Object doDyadicProcess(int opcode, String operator, Object fstObject, Object secObject, Option option) throws InvokerProcessException;
