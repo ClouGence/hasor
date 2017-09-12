@@ -1,5 +1,5 @@
 package net.test.hasor.dataql.test;
-import net.hasor.dataql.runtime.utils.NumberUtils;
+import net.hasor.dataql.runtime.operator.NumberUtils;
 import net.test.hasor.dataql.AbstractTaskTest;
 import org.junit.Test;
 

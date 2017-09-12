@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.utils;
-import net.hasor.dataql.runtime.operator.RoundingEnum;
-
+package net.hasor.dataql.runtime.operator;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 /**

@@ -16,8 +16,6 @@
 package net.hasor.dataql.runtime.operator;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
-import net.hasor.dataql.runtime.utils.NumberUtils;
-import net.hasor.dataql.runtime.utils.OperatorUtils;
 /**
  * 二元比较运算，负责处理：">", ">=", "<", "<=", "==", "!=", "&&", "||", "&", "|", "^", "<<", ">>", ">>>"
  * @author 赵永春(zyc@hasor.net)

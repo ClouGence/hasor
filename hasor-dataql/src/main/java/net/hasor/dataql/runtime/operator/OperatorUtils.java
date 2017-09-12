@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.utils;
+package net.hasor.dataql.runtime.operator;
 /**
  * 工具类
  * @author 赵永春(zyc@hasor.net)
