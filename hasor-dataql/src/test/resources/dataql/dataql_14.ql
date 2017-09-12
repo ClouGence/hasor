@@ -1,6 +1,5 @@
-// 计算数值采用 64 bit，long 模式
-option NUMBER_PRECISION     = 32
-option MAX_DECIMAL_DIGITS   = 3
+// 小数精度为 3
+option MAX_DECIMAL_DIGITS   = 5
 
 
 // 基础算数运算

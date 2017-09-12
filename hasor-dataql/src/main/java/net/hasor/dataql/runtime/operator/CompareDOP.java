@@ -68,27 +68,27 @@ public class CompareDOP extends DyadicOperatorProcess {
         //
         // .与
         if ("&".equals(operator)) {
-            return !NumberUtils.and((Number) fstObject, (Number) secObject);
+            return NumberUtils.and((Number) fstObject, (Number) secObject);
         }
         // .或
         if ("|".equals(operator)) {
-            return !NumberUtils.or((Number) fstObject, (Number) secObject);
+            return NumberUtils.or((Number) fstObject, (Number) secObject);
         }
         // .异或
         if ("^".equals(operator)) {
-            return !NumberUtils.xor((Number) fstObject, (Number) secObject);
+            return NumberUtils.xor((Number) fstObject, (Number) secObject);
         }
         // .左位移
         if ("<<".equals(operator)) {
-            return !NumberUtils.leftShift((Number) fstObject, (Number) secObject);
+            return NumberUtils.shiftLeft((Number) fstObject, (Number) secObject);
         }
         // .带符号右位移
         if (">>".equals(operator)) {
-            return !NumberUtils.rightShift((Number) fstObject, (Number) secObject);
+            return NumberUtils.shiftRight((Number) fstObject, (Number) secObject);
         }
         // .无符号右位移
         if (">>>".equals(operator)) {
-            return !NumberUtils.rightShiftWithUnsigned((Number) fstObject, (Number) secObject);
+            return NumberUtils.shiftRightWithUnsigned((Number) fstObject, (Number) secObject);
         }
         // .逻辑比较运算
         if ("&&".equals(operator) || "||".equals(operator)) {

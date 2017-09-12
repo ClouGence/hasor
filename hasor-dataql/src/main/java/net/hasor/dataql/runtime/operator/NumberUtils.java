@@ -632,4 +632,74 @@ public class NumberUtils {
         }
         return obj1.doubleValue() <= obj2.doubleValue();
     }
+    //
+    // ============================================================================================
+    //
+    private static void checkDecimal(Number obj1, Number obj2) {
+        if (testDecimal(obj1) || testDecimal(obj2)) {
+            throw new NumberFormatException("value mast be int.");
+        }
+    }
+    /** 与 */
+    public static Number and(Number obj1, Number obj2) {
+        checkDecimal(obj1, obj2);
+        int numericType = getNumericType(obj1, obj2);
+        if (numericType <= LONG) {
+            return longValue(obj1) & longValue(obj2);
+        } else {
+            return bigIntValue(obj1).and(bigIntValue(obj2));
+        }
+    }
+    /** 或 */
+    public static Number or(Number obj1, Number obj2) {
+        checkDecimal(obj1, obj2);
+        int numericType = getNumericType(obj1, obj2);
+        if (numericType <= LONG) {
+            return longValue(obj1) | longValue(obj2);
+        } else {
+            return bigIntValue(obj1).or(bigIntValue(obj2));
+        }
+    }
+    /** 异或 */
+    public static Number xor(Number obj1, Number obj2) {
+        checkDecimal(obj1, obj2);
+        int numericType = getNumericType(obj1, obj2);
+        if (numericType <= LONG) {
+            return longValue(obj1) ^ longValue(obj2);
+        } else {
+            return bigIntValue(obj1).xor(bigIntValue(obj2));
+        }
+    }
+    /** 左位移 */
+    public static Number shiftLeft(Number obj1, Number obj2) {
+        checkDecimal(obj1, obj2);
+        int numericType = getNumericType(obj1, obj2);
+        if (numericType <= LONG) {
+            return longValue(obj1) << intValue(obj2);
+        } else {
+            return bigIntValue(obj1).shiftLeft(intValue(obj2));
+        }
+    }
+    /** 右位移 */
+    public static Number shiftRight(Number obj1, Number obj2) {
+        checkDecimal(obj1, obj2);
+        int numericType = getNumericType(obj1, obj2);
+        if (numericType <= LONG) {
+            return longValue(obj1) >> intValue(obj2);
+        } else {
+            return bigIntValue(obj1).shiftRight(intValue(obj2));
+        }
+    }
+    /** 无符号右位移 */
+    public static Number shiftRightWithUnsigned(Number obj1, Number obj2) {
+        checkDecimal(obj1, obj2);
+        int numericType = getNumericType(obj1, obj2);
+        if (numericType <= LONG) {
+            return longValue(obj1) >>> intValue(obj2);
+        } else {
+            //忽略无符号的右位移运算符（>>>），因为该操作与由此类提供的“无穷大的词大小”抽象结合使用时毫无意义。
+            // - 无穷大的词大小 -> BigInteger 理论上可以表示无穷大。
+            return bigIntValue(obj1).shiftRight(intValue(obj2));
+        }
+    }
 }

@@ -46,15 +46,15 @@ class OperatorManager {
         DEFAULT.registryOperator(Symbol.Dyadic, "\\", Number.class, Number.class, new NumberDOP());
         // .二元，数值比较运算
         Class[] classSet = { Number.class, Boolean.class };
-        DEFAULT.registryOperator(Symbol.Dyadic, ">", classSet, classSet, new CompareDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, ">=", classSet, classSet, new CompareDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "<", classSet, classSet, new CompareDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "<=", classSet, classSet, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, ">", Number.class, Number.class, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, ">=", Number.class, Number.class, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "<", Number.class, Number.class, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "<=", Number.class, Number.class, new CompareDOP());
         DEFAULT.registryOperator(Symbol.Dyadic, "==", classSet, classSet, new CompareDOP());
         DEFAULT.registryOperator(Symbol.Dyadic, "!=", classSet, classSet, new CompareDOP());
         // .二元，逻辑比较
-        DEFAULT.registryOperator(Symbol.Dyadic, "||", classSet, classSet, new CompareDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "&&", classSet, classSet, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "||", Boolean.class, Boolean.class, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "&&", Boolean.class, Boolean.class, new CompareDOP());
         // .二元，位运算
         DEFAULT.registryOperator(Symbol.Dyadic, "&", classSet, classSet, new CompareDOP());
         DEFAULT.registryOperator(Symbol.Dyadic, "|", classSet, classSet, new CompareDOP());
