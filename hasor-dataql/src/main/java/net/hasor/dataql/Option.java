@@ -23,14 +23,6 @@ public interface Option {
     /** 在执行 put 时，如果不能 put 是否引发异常（默认为 true：安全的，不引发异常） */
     public static final String SAFE_PUT           = "SAFE_PUT";
     /**
-     * 在进行数值计算时采用的精度，超出范围的数值计算将会产生精度丢失。
-     * 开发者可以通过设置成 0 来启用自动精度，自动精度计算下数值计算将通过 BigDecimal、BigInteger 计算（默认为 32 int）
-     *
-     * 注意：精度并不代表产生的计算结果精度，而是计算前的数值精度。
-     * DO，指令中使用该参数，受影响的运算符为："+", "-", "*", "/", "%", "\"
-     * */
-    public static final String NUMBER_PRECISION   = "NUMBER_PRECISION";
-    /**
      * 最大保留的小数位数，默认为：20。超出该范围将会根据 NUMBER_ROUNDING 选项指定的舍入模式进行舍入，默认是四舍五入。
      */
     public static final String MAX_DECIMAL_DIGITS = "MAX_DECIMAL_DIGITS";

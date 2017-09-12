@@ -35,9 +35,38 @@ public class DyadicExpression extends Expression {
     //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
+        this.doCompiler(queue, stackTree, null);
+    }
+    protected void doCompiler(InstQueue queue, CompilerStack stackTree, Runnable callback) {
+        //
+        //        this.fstExpression.doCompiler(queue, stackTree);
+        //        // .第二个表达式运算优先
+        //        if (this.secExpression.priorityTo(this.fstExpression)) {
+        //            this.secExpression.doCompiler(queue, stackTree, new Runnable() {
+        //                @Override
+        //                public void run() {
+        //                }
+        //            });
+        //        } else {
+        //        }
         //
         this.fstExpression.doCompiler(queue, stackTree);
         this.secExpression.doCompiler(queue, stackTree);
         queue.inst(DO, this.dyadicSymbol);
     }
 }
+// a + b * c - d
+//      a,b,c,*,+,d,-
+//
+// a + b * c - d / e
+//      [[a,(b,c,*),+],(d,e,/),-]
+//
+
+
+
+// c
+// +
+// *
+//        this.fstExpression.doCompiler(queue, stackTree);
+//                this.secExpression.doCompiler(queue, stackTree);
+//                queue.inst(DO, this.dyadicSymbol);

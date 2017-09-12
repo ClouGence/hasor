@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
+import net.hasor.core.Hasor;
 import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.OperatorProcess;
 import net.hasor.dataql.runtime.operator.BooleanUOP;
 import net.hasor.dataql.runtime.operator.CompareDOP;
-import net.hasor.dataql.runtime.operator.EvaluationDOP;
+import net.hasor.dataql.runtime.operator.NumberDOP;
 import net.hasor.dataql.runtime.operator.NumberUOP;
 
 import java.util.HashMap;
@@ -34,32 +35,34 @@ class OperatorManager {
     static {
         DEFAULT = new OperatorManager();
         // .一元运算(注册一元操作符，第二个操作数类型无效但是必须要有，所以给 Object)
-        DEFAULT.registryOperator(Symbol.Unary, "!", Boolean.class, Object.class, new BooleanUOP());
-        DEFAULT.registryOperator(Symbol.Unary, "-", Number.class, Object.class, new NumberUOP());
+        DEFAULT.registryOperator(Symbol.Unary, "!", Boolean.class, new BooleanUOP());
+        DEFAULT.registryOperator(Symbol.Unary, "-", Number.class, new NumberUOP());
         // .二元，求值运算
-        DEFAULT.registryOperator(Symbol.Dyadic, "+", Number.class, Number.class, new EvaluationDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "-", Number.class, Number.class, new EvaluationDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "*", Number.class, Number.class, new EvaluationDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "/", Number.class, Number.class, new EvaluationDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "%", Number.class, Number.class, new EvaluationDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "\\", Number.class, Number.class, new EvaluationDOP());
-        // .二元，比较运算
-        DEFAULT.registryOperator(Symbol.Dyadic, ">", Comparable.class, Comparable.class, new CompareDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, ">=", Comparable.class, Comparable.class, new CompareDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "<", Comparable.class, Comparable.class, new CompareDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "<=", Comparable.class, Comparable.class, new CompareDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "==", Comparable.class, Comparable.class, new CompareDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "!=", Comparable.class, Comparable.class, new CompareDOP());
-        //            | < BIT_AND             : "&" >
-        //                | < BIT_OR              : "|" >
-        //                | < XOR                 : "^" >
+        DEFAULT.registryOperator(Symbol.Dyadic, "+", Number.class, Number.class, new NumberDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "-", Number.class, Number.class, new NumberDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "*", Number.class, Number.class, new NumberDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "/", Number.class, Number.class, new NumberDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "%", Number.class, Number.class, new NumberDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "\\", Number.class, Number.class, new NumberDOP());
+        // .二元，数值比较运算
+        Class[] classSet = { Number.class, Boolean.class };
+        DEFAULT.registryOperator(Symbol.Dyadic, ">", classSet, classSet, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, ">=", classSet, classSet, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "<", classSet, classSet, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "<=", classSet, classSet, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "==", classSet, classSet, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "!=", classSet, classSet, new CompareDOP());
+        // .二元，逻辑比较
+        DEFAULT.registryOperator(Symbol.Dyadic, "||", classSet, classSet, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "&&", classSet, classSet, new CompareDOP());
+        // .二元，位运算
+        DEFAULT.registryOperator(Symbol.Dyadic, "&", classSet, classSet, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "|", classSet, classSet, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "^", classSet, classSet, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "<<", classSet, classSet, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, ">>", classSet, classSet, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, ">>>", classSet, classSet, new CompareDOP());
         //
-        //                | < LSHIFT              : "<<" >
-        //                | < RSIGNEDSHIFT        : ">>" >
-        //                | < RUNSIGNEDSHIFT      : ">>>" >
-        //
-        //                | < SC_OR               : "||" >
-        //                | < SC_AND              : "&&" >
     }
 
     //
@@ -67,8 +70,20 @@ class OperatorManager {
     private final Map<String, OperatorProcessManager> dyadicProcessMap = new HashMap<String, OperatorProcessManager>();
     //
     /** 添加 操作符 实现 */
-    public void registryOperator(Symbol symbolType, String symbolName, OperatorProcess process) {
-        this.registryOperator(symbolType, symbolName, Object.class, Object.class, process);
+    public void registryOperator(Symbol symbolType, String symbolName, Class<?> opeType, OperatorProcess process) {
+        Hasor.assertIsNotNull(opeType);
+        this.registryOperator(symbolType, symbolName, opeType, Object.class, process);
+    }
+    /** 添加 操作符 实现 */
+    private void registryOperator(Symbol symbolType, String symbolName, Class[] classSetA, Class[] classSetB, OperatorProcess process) {
+        if (classSetA == null || classSetA.length == 0 || classSetB == null || classSetB.length == 0) {
+            throw new NullPointerException("classSetA or classSetB is empty.");
+        }
+        for (Class fstType : classSetA) {
+            for (Class secType : classSetB) {
+                this.registryOperator(symbolType, symbolName, fstType, secType, process);
+            }
+        }
     }
     /** 添加 操作符 实现 */
     public void registryOperator(Symbol symbolType, String symbolName, Class<?> fstType, Class<?> secType, OperatorProcess process) {
@@ -97,6 +112,7 @@ class OperatorManager {
         // .注册或重载
         manager.rewrite(fstType, secType, process);
     }
+    //
     public OperatorProcess findOperator(Symbol symbolType, String symbolName, Class<?> fstType, Class<?> secType) {
         // .一元
         if (Symbol.Unary == symbolType) {

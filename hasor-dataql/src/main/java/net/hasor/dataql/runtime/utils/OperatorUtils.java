@@ -13,54 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.operator;
+package net.hasor.dataql.runtime.utils;
 /**
  * 工具类
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class OperatorUtils {
-    public static boolean isByteNumber(Number number) {
-        if (number == null) {
+    public static boolean isNumber(Object object) {
+        if (object == null) {
             return false;
         }
-        Class<?> numberClass = number.getClass();
-        return numberClass == Byte.class || numberClass == Byte.TYPE;
-    }
-    public static boolean isShortNumber(Number number) {
-        if (number == null) {
-            return false;
-        }
-        Class<?> numberClass = number.getClass();
-        return numberClass == Short.class || numberClass == Short.TYPE;
-    }
-    public static boolean isIntegerNumber(Number number) {
-        if (number == null) {
-            return false;
-        }
-        Class<?> numberClass = number.getClass();
-        return numberClass == Integer.class || numberClass == Integer.TYPE;
-    }
-    public static boolean isLongNumber(Number number) {
-        if (number == null) {
-            return false;
-        }
-        Class<?> numberClass = number.getClass();
-        return numberClass == Long.class || numberClass == Long.TYPE;
-    }
-    public static boolean isFloatNumber(Number number) {
-        if (number == null) {
-            return false;
-        }
-        Class<?> numberClass = number.getClass();
-        return numberClass == Float.class || numberClass == Float.TYPE;
-    }
-    public static boolean isDoubleNumber(Number number) {
-        if (number == null) {
-            return false;
-        }
-        Class<?> numberClass = number.getClass();
-        return numberClass == Double.class || numberClass == Double.TYPE;
+        return object instanceof Number;
     }
     public static boolean isBoolean(Object object) {
         if (object == null) {
@@ -68,5 +32,54 @@ public class OperatorUtils {
         }
         Class<?> numberClass = object.getClass();
         return numberClass == Boolean.class || numberClass == Boolean.TYPE;
+    }
+    public static boolean isByteNumber(Object number) {
+        if (number == null) {
+            return false;
+        }
+        Class<?> numberClass = number.getClass();
+        return numberClass == Byte.class || numberClass == Byte.TYPE;
+    }
+    public static boolean isShortNumber(Object number) {
+        if (number == null) {
+            return false;
+        }
+        Class<?> numberClass = number.getClass();
+        return numberClass == Short.class || numberClass == Short.TYPE;
+    }
+    public static boolean isIntegerNumber(Object number) {
+        if (number == null) {
+            return false;
+        }
+        Class<?> numberClass = number.getClass();
+        return numberClass == Integer.class || numberClass == Integer.TYPE;
+    }
+    public static boolean isCharacter(Object number) {
+        if (number == null) {
+            return false;
+        }
+        Class<?> numberClass = number.getClass();
+        return numberClass == Character.class || numberClass == Character.TYPE;
+    }
+    public static boolean isLongNumber(Object number) {
+        if (number == null) {
+            return false;
+        }
+        Class<?> numberClass = number.getClass();
+        return numberClass == Long.class || numberClass == Long.TYPE;
+    }
+    public static boolean isFloatNumber(Object number) {
+        if (number == null) {
+            return false;
+        }
+        Class<?> numberClass = number.getClass();
+        return numberClass == Float.class || numberClass == Float.TYPE;
+    }
+    public static boolean isDoubleNumber(Object number) {
+        if (number == null) {
+            return false;
+        }
+        Class<?> numberClass = number.getClass();
+        return numberClass == Double.class || numberClass == Double.TYPE;
     }
 }

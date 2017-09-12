@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.operator;
+import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.OperatorProcess;
 import net.hasor.dataql.Option;
@@ -39,10 +40,11 @@ public abstract class DyadicOperatorProcess extends OperatorProcess {
         return this.doDyadicProcess(opcode, operator, args[0], args[1], option);
     }
     //
-    protected static InvokerProcessException throwError(String operator, Object realFstObject, Object realSecObject) {
+    protected static InvokerProcessException throwError(String operator, Object realFstObject, Object realSecObject, String message) {
         String fstDataType = realFstObject == null ? "null" : realFstObject.getClass().getName();
         String secDataType = realSecObject == null ? "null" : realSecObject.getClass().getName();
-        return new InvokerProcessException(InstOpcodes.DO, fstDataType + " and " + secDataType + " , Cannot be used as '" + operator + "'.");
+        message = StringUtils.isBlank(message) ? "no message." : message;
+        return new InvokerProcessException(InstOpcodes.DO, fstDataType + " and " + secDataType + " , Cannot be used as '" + operator + "' -> " + message);
     }
     /**执行运算*/
     public abstract Object doDyadicProcess(int opcode, String operator, Object fstObject, Object secObject, Option option) throws InvokerProcessException;
