@@ -18,12 +18,12 @@ import net.example.jfinal.daos.UserDao;
 import net.example.jfinal.domain.UserDTO;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.data.Transactional;
+import net.hasor.db.transaction.interceptor.Transactional;
 
 import java.sql.SQLException;
 import java.util.List;
 
-import static net.hasor.data.transaction.Propagation.REQUIRED;
+import static net.hasor.db.transaction.Propagation.REQUIRED;
 /**
  *
  * @version : 2016年11月07日

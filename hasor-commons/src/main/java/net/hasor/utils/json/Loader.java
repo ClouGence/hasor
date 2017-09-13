@@ -10,7 +10,7 @@
 // http://www.opensource.org/licenses/apache2.0.php
 // You may elect to redistribute this code under either of these licenses. 
 // ========================================================================
-package net.hasor.rsf.json;
+package net.hasor.utils.json;
 import java.net.URL;
 import java.util.Locale;
 import java.util.MissingResourceException;

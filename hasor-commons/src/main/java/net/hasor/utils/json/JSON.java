@@ -10,10 +10,8 @@
 // http://www.opensource.org/licenses/apache2.0.php
 // You may elect to redistribute this code under either of these licenses.
 // ========================================================================
-package net.hasor.rsf.json;
-import net.hasor.rsf.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package net.hasor.utils.json;
+import net.hasor.utils.StringUtils;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -21,6 +19,8 @@ import java.io.Reader;
 import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  * JSON Parser and Generator.
  *
@@ -54,17 +54,17 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * </p>
  * <p>
- * The interface {@link net.hasor.rsf.json.JSON.Convertible} may be implemented by classes that
+ * The interface {@link net.hasor.utils.json.JSON.Convertible} may be implemented by classes that
  * wish to externalize and initialize specific fields to and from JSON objects.
  * Only directed acyclic graphs of objects are supported.
  * </p>
  * <p>
- * The interface {@link net.hasor.rsf.json.JSON.Generator} may be implemented by classes that know
+ * The interface {@link net.hasor.utils.json.JSON.Generator} may be implemented by classes that know
  * how to render themselves as JSON and the {@link #toString(Object)} method
- * will use {@link net.hasor.rsf.json.JSON.Generator#addJSON(Appendable)} to generate the JSON.
- * The class {@link net.hasor.rsf.json.JSON.Literal} may be used to hold pre-generated JSON object.
+ * will use {@link net.hasor.utils.json.JSON.Generator#addJSON(Appendable)} to generate the JSON.
+ * The class {@link net.hasor.utils.json.JSON.Literal} may be used to hold pre-generated JSON object.
  * <p>
- * The interface {@link net.hasor.rsf.json.JSON.Convertor} may be implemented to provide static
+ * The interface {@link net.hasor.utils.json.JSON.Convertor} may be implemented to provide static
  * convertors for objects that may be registered with
  * {@link #getConvertor(Class)}.
  * </p>
@@ -73,7 +73,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class JSON {
-    protected final static Logger                 logger            = LoggerFactory.getLogger(JSON.class);
+    protected final static Logger                 logger            = Logger.getLogger(JSON.class.getName());
     public final static    JSON                   DEFAULT           = new JSON();
     private                Map<String, Convertor> _convertors       = new ConcurrentHashMap<String, Convertor>();
     private                int                    _stringBufferSize = 1024;
@@ -396,7 +396,7 @@ public class JSON {
      * interfaces are tried recursively.
      *
      * @param forClass The class
-     * @return a {@link net.hasor.rsf.json.JSON.Convertor} or null if none were found.
+     * @return a {@link net.hasor.utils.json.JSON.Convertor} or null if none were found.
      */
     protected Convertor getConvertor(Class forClass) {
         if (forClass == null) {
@@ -422,7 +422,7 @@ public class JSON {
     }
     /* ------------------------------------------------------------ */
     /**
-     * Register a {@link net.hasor.rsf.json.JSON.Convertor} for a named class or interface.
+     * Register a {@link net.hasor.utils.json.JSON.Convertor} for a named class or interface.
      *
      * @param name name of a class or an interface that the convertor applies to
      * @param convertor the convertor
@@ -436,7 +436,7 @@ public class JSON {
      *
      * @param name
      *            name of the class
-     * @return a {@link net.hasor.rsf.json.JSON.Convertor} or null if none were found.
+     * @return a {@link net.hasor.utils.json.JSON.Convertor} or null if none were found.
      */
     public Convertor getConvertorFor(String name) {
         String clsName = name;
@@ -629,7 +629,7 @@ public class JSON {
                 Class c = Loader.loadClass(JSON.class, classname);
                 return convertTo(c, map);
             } catch (ClassNotFoundException e) {
-                logger.warn(e.getMessage(), e);
+                logger.warning(e.getMessage());
             }
         }
         return map;
@@ -1122,9 +1122,9 @@ public class JSON {
      * <p>
      * may be implemented to provide static convertors for objects that may be
      * registered with
-     * {@link net.hasor.rsf.json.JSON#registerConvertor(Class, net.hasor.rsf.json.JSON.Convertor)}
+     * {@link net.hasor.utils.json.JSON#registerConvertor(Class, net.hasor.utils.json.JSON.Convertor)}
      * . These convertors are looked up by class, interface and super class by
-     * {@link net.hasor.rsf.json.JSON#getConvertor(Class)}. Convertors should be used when the
+     * {@link net.hasor.utils.json.JSON#getConvertor(Class)}. Convertors should be used when the
      * classes to be converted cannot implement {@link Convertible} or
      * {@link Generator}.
      */
@@ -1144,7 +1144,7 @@ public class JSON {
     }
     /* ------------------------------------------------------------ */
     /**
-     * A Literal JSON generator A utility instance of {@link net.hasor.rsf.json.JSON.Generator}
+     * A Literal JSON generator A utility instance of {@link net.hasor.utils.json.JSON.Generator}
      * that holds a pre-generated string on JSON text.
      */
     public static class Literal implements Generator {
@@ -1155,7 +1155,7 @@ public class JSON {
          * @param json A literal JSON string.
          */
         public Literal(String json) {
-            if (logger.isDebugEnabled()) // TODO: Make this a configurable option on JSON instead!
+            if (logger.isLoggable(Level.FINE)) // TODO: Make this a configurable option on JSON instead!
                 parse(json);
             _json = json;
         }

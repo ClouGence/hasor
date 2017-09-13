@@ -10,16 +10,14 @@
 // http://www.opensource.org/licenses/apache2.0.php
 // You may elect to redistribute this code under either of these licenses. 
 // ========================================================================
-package net.hasor.rsf.json;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+package net.hasor.utils.json;
 import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.logging.Logger;
 /* ------------------------------------------------------------ */
 /**
  * Convert a {@link Date} to JSON.
@@ -28,7 +26,7 @@ import java.util.TimeZone;
  * If fromJSON is false, then only the string value of the date is generated.
  */
 public class JSONDateConvertor implements JSON.Convertor {
-    protected final static Logger logger = LoggerFactory.getLogger(JSONDateConvertor.class);
+    protected final static Logger logger = Logger.getLogger(JSONDateConvertor.class.getName());
     private boolean _fromJSON;
     DateCache        _dateCache;
     SimpleDateFormat _format;
@@ -60,7 +58,7 @@ public class JSONDateConvertor implements JSON.Convertor {
                 return _format.parseObject((String) map.get("value"));
             }
         } catch (Exception e) {
-            logger.warn(e.getMessage(), e);
+            logger.warning(e.getMessage());
         }
         return null;
     }

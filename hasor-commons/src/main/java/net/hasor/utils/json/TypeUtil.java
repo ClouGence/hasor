@@ -10,10 +10,7 @@
 // http://www.opensource.org/licenses/apache2.0.php
 // You may elect to redistribute this code under either of these licenses.
 // ========================================================================
-package net.hasor.rsf.json;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+package net.hasor.utils.json;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -25,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 /* ------------------------------------------------------------ */
 /**
  * TYPE Utilities.
@@ -34,7 +32,7 @@ import java.util.List;
  * @since Jetty 4.1
  */
 class TypeUtil {
-    protected final static Logger                    logger     = LoggerFactory.getLogger(TypeUtil.class);
+    protected final static Logger                    logger     = Logger.getLogger(TypeUtil.class.getName());
     public static          int                       CR         = '\015';
     public static          int                       LF         = '\012';
     /* ------------------------------------------------------------ */
@@ -397,7 +395,7 @@ class TypeUtil {
             if (s.startsWith("jar:file:"))
                 return new URL(s.substring(4, s.indexOf("!/")));
         } catch (Exception e) {
-            logger.debug(e.getMessage(), e);
+            logger.fine(e.getMessage());
         }
         return null;
     }
@@ -416,9 +414,9 @@ class TypeUtil {
             try {
                 return methods[c].invoke(obj, arg);
             } catch (IllegalAccessException e) {
-                logger.debug(e.getMessage(), e);
+                logger.fine(e.getMessage());
             } catch (IllegalArgumentException e) {
-                logger.debug(e.getMessage(), e);
+                logger.fine(e.getMessage());
             }
         }
         throw new NoSuchMethodException(method);

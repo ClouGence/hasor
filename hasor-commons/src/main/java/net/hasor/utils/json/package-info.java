@@ -16,4 +16,4 @@
 /**
  * 负责将对象序列化成JSON的工具,原始版本来自 jetty utils, 经过简化得来。
  */
-package net.hasor.rsf.json;
+package net.hasor.utils.json;

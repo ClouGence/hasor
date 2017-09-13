@@ -10,16 +10,15 @@
 // http://www.opensource.org/licenses/apache2.0.php
 // You may elect to redistribute this code under either of these licenses. 
 // ========================================================================
-package net.hasor.rsf.json;
-import net.hasor.rsf.json.JSON.Output;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package net.hasor.utils.json;
+import net.hasor.utils.json.JSON.Output;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.logging.Logger;
 /**
  * Converts POJOs to JSON and vice versa.
  * The key difference:
@@ -29,7 +28,7 @@ import java.util.*;
  *
  */
 public class JSONPojoConvertor implements JSON.Convertor {
-    protected final static Logger   logger     = LoggerFactory.getLogger(JSONPojoConvertor.class);
+    protected final static Logger   logger     = Logger.getLogger(JSONPojoConvertor.class.getName());
     public static final    Object[] GETTER_ARG = new Object[] {}, NULL_ARG = new Object[] { null };
     private static final Map<Class<?>, NumberType> __numberTypes = new HashMap<Class<?>, NumberType>();
     public static NumberType getNumberType(Class<?> clazz) {
@@ -151,7 +150,7 @@ public class JSONPojoConvertor implements JSON.Convertor {
                     setter.invoke(obj, entry.getValue());
                     count++;
                 } catch (Exception e) {
-                    logger.warn(_pojoClass.getName() + "#" + setter.getPropertyName() + " not set from " + (entry.getValue().getClass().getName()) + "=" + entry.getValue().toString());
+                    logger.warning(_pojoClass.getName() + "#" + setter.getPropertyName() + " not set from " + (entry.getValue().getClass().getName()) + "=" + entry.getValue().toString());
                     log(e);
                 }
             }
@@ -166,14 +165,14 @@ public class JSONPojoConvertor implements JSON.Convertor {
             try {
                 out.add(entry.getKey(), entry.getValue().invoke(obj, GETTER_ARG));
             } catch (Exception e) {
-                logger.warn("{} property '{}' excluded. (errors)", _pojoClass.getName(), entry.getKey());
+                logger.warning(_pojoClass.getName() + " property '" + entry.getKey() + "' excluded. (errors)");
                 log(e);
             }
         }
     }
     /* ------------------------------------------------------------ */
     protected void log(Throwable t) {
-        logger.debug(t.getMessage(), t);
+        logger.fine(t.getMessage());
     }
     /* ------------------------------------------------------------ */
     public static class Setter {
@@ -234,7 +233,7 @@ public class JSONPojoConvertor implements JSON.Convertor {
                         System.arraycopy(value, 0, array, 0, len);
                     } catch (Exception e) {
                         // unusual array with multiple types
-                        logger.debug(e.getMessage(), e);
+                        logger.fine(e.getMessage());
                         _setter.invoke(obj, new Object[] { value });
                         return;
                     }
@@ -247,7 +246,7 @@ public class JSONPojoConvertor implements JSON.Convertor {
                             Array.set(array, i, _numberType.getActualValue((Number) old[i]));
                     } catch (Exception e) {
                         // unusual array with multiple types
-                        logger.debug(e.getMessage(), e);
+                        logger.fine(e.getMessage());
                         _setter.invoke(obj, new Object[] { value });
                         return;
                     }

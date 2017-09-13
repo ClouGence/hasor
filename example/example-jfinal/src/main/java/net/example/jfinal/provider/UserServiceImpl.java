@@ -19,7 +19,7 @@ import net.example.domain.domain.UserDO;
 import net.example.jfinal.domain.UserDTO;
 import net.example.jfinal.services.UserManager;
 import net.hasor.core.Inject;
-import net.hasor.core.utils.ExceptionUtils;
+import net.hasor.utils.ExceptionUtils;
 
 import java.util.ArrayList;
 import java.util.List;

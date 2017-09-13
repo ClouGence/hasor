@@ -6,9 +6,9 @@ import com.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.jfinal.plugin.c3p0.C3p0Plugin;
 import net.example.jfinal.domain.UserDTO;
 import net.example.jfinal.web.Index;
-import net.hasor.jfinal.HasorDataSourceProxy;
-import net.hasor.jfinal.HasorInterceptor;
-import net.hasor.jfinal.HasorPlugin;
+import net.hasor.plugins.jfinal.HasorDataSourceProxy;
+import net.hasor.plugins.jfinal.HasorInterceptor;
+import net.hasor.plugins.jfinal.HasorPlugin;
 /**
  * JFinal API 引导式配置（Hasor系列框架全面深度整合）
  * @version : 2016年11月07日

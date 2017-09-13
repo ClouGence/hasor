@@ -8,7 +8,7 @@ import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfModule;
 import net.hasor.rsf.RsfResult;
-import net.hasor.rsf.json.JSON;
+import net.hasor.utils.json.JSON;
 
 import java.util.List;
 /**

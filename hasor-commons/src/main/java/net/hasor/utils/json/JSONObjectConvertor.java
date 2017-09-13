@@ -10,8 +10,8 @@
 // http://www.opensource.org/licenses/apache2.0.php
 // You may elect to redistribute this code under either of these licenses. 
 // ========================================================================
-package net.hasor.rsf.json;
-import net.hasor.rsf.json.JSON.Output;
+package net.hasor.utils.json;
+import net.hasor.utils.json.JSON.Output;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;

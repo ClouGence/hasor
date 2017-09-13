@@ -91,15 +91,25 @@
             <dependency>
                 <groupId>net.hasor</groupId>
                 <artifactId>hasor-rsf</artifactId>
-                <version>1.3.1</version>
+                <version>3.2.0-SNAPSHOT</version>
+            </dependency>
+            <!-- Hasor -->
+            <dependency>
+                <groupId>net.hasor</groupId>
+                <artifactId>hasor-web</artifactId>
+                <version>3.2.0-SNAPSHOT</version>
             </dependency>
             <!-- Center -->
             <dependency>
                 <groupId>net.hasor</groupId>
                 <artifactId>hasor-registry</artifactId>
-                <version>1.3.1</version>
+                <version>3.2.0-SNAPSHOT</version>
             </dependency>
-
+            <dependency>
+                <groupId>net.hasor</groupId>
+                <artifactId>hasor-plugins</artifactId>
+                <version>3.2.0-SNAPSHOT</version>
+            </dependency>
             <!-- JFinal -->
             <dependency>
                 <groupId>com.jfinal</groupId>

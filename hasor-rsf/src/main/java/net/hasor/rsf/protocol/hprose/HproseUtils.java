@@ -18,7 +18,7 @@ import io.netty.buffer.ByteBuf;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.domain.*;
-import net.hasor.rsf.json.JSON;
+import net.hasor.utils.json.JSON;
 import net.hasor.rsf.libs.com.hprose.io.HproseReader;
 import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 import net.hasor.rsf.libs.com.hprose.io.HproseWriter;

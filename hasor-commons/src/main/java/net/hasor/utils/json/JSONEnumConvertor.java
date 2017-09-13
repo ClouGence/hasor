@@ -10,12 +10,10 @@
 // http://www.opensource.org/licenses/apache2.0.php
 // You may elect to redistribute this code under either of these licenses. 
 // ========================================================================
-package net.hasor.rsf.json;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+package net.hasor.utils.json;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.logging.Logger;
 /* ------------------------------------------------------------ */
 /**
  * Convert an {@link Enum} to JSON.
@@ -24,7 +22,7 @@ import java.util.Map;
  * If fromJSON is false, then only the string value of the enum is generated.
  */
 public class JSONEnumConvertor implements JSON.Convertor {
-    protected final static Logger logger = LoggerFactory.getLogger(JSONEnumConvertor.class);
+    protected final static Logger logger = Logger.getLogger(JSONEnumConvertor.class.getName());
     private boolean _fromJSON;
     private Method  _valueOf;
 
@@ -50,7 +48,7 @@ public class JSONEnumConvertor implements JSON.Convertor {
             Class c = Loader.loadClass(getClass(), (String) map.get("class"));
             return _valueOf.invoke(null, new Object[] { c, map.get("value") });
         } catch (Exception e) {
-            logger.warn(e.getMessage(), e);
+            logger.warning(e.getMessage());
         }
         return null;
     }

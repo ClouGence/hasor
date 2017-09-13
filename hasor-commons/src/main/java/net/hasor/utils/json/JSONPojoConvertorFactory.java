@@ -10,9 +10,9 @@
 // http://www.opensource.org/licenses/apache2.0.php
 // You may elect to redistribute this code under either of these licenses. 
 // ========================================================================
-package net.hasor.rsf.json;
-import net.hasor.rsf.json.JSON.Convertor;
-import net.hasor.rsf.json.JSON.Output;
+package net.hasor.utils.json;
+import net.hasor.utils.json.JSON.Convertor;
+import net.hasor.utils.json.JSON.Output;
 
 import java.util.Map;
 /**
@@ -52,7 +52,7 @@ public class JSONPojoConvertorFactory implements Convertor {
                 convertor = new JSONPojoConvertor(cls, _fromJson);
                 _json.addConvertorFor(clsName, convertor);
             } catch (ClassNotFoundException e) {
-                JSON.logger.warn(e.getMessage(), e);
+                JSON.logger.warning(e.getMessage());
             }
         }
         if (convertor != null) {
@@ -70,7 +70,7 @@ public class JSONPojoConvertorFactory implements Convertor {
                     convertor = new JSONPojoConvertor(cls, _fromJson);
                     _json.addConvertorFor(clsName, convertor);
                 } catch (ClassNotFoundException e) {
-                    JSON.logger.warn(e.getMessage(), e);
+                    JSON.logger.warning(e.getMessage());
                 }
             }
             if (convertor != null) {
