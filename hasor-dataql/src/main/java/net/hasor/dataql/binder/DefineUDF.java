@@ -17,6 +17,7 @@ package net.hasor.dataql.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
 /**
  * UDF 函数定义
@@ -40,7 +41,7 @@ class DefineUDF implements UDF, AppContextAware {
         return this.name;
     }
     @Override
-    public Object call(Object[] values) {
-        return this.target.call(values);
+    public Object call(Object[] values, Option readOnly) {
+        return this.target.call(values, readOnly);
     }
 }

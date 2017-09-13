@@ -20,6 +20,7 @@ import net.hasor.dataql.UDF;
 import net.hasor.dataql.domain.compiler.Instruction;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
+import net.hasor.dataql.runtime.OptionReadOnly;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
@@ -49,7 +50,7 @@ class CALL implements InsetProcess {
             throw new InvokerProcessException(getOpcode(), "CALL -> udf '" + udfName + "' is not found");
         }
         //
-        Object result = udf.call(paramArrays);
+        Object result = udf.call(paramArrays, new OptionReadOnly(context));
         memStack.push(result);
     }
 }

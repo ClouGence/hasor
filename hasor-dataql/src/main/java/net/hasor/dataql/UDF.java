@@ -21,5 +21,5 @@ package net.hasor.dataql;
  */
 public interface UDF {
     /** 执行服务调用 */
-    public Object call(Object[] values);
+    public Object call(Object[] values, Option readOnly);
 }

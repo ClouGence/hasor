@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.udfs.collection;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import java.util.Iterator;
  */
 public class Limit extends AbstractCollectionUDF implements UDF {
     @Override
-    public Object call(Object[] values) {
+    public Object call(Object[] values, Option readOnly) {
         Collection<Object> objects = super.toCollection(values[0]);
         if (objects.isEmpty()) {
             return null;

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.udfs.collection;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
 /**
  * 循环遍历函数
@@ -22,7 +23,7 @@ import net.hasor.dataql.UDF;
  */
 public class Foreach extends AbstractCollectionUDF implements UDF {
     @Override
-    public Object call(Object[] values) {
+    public Object call(Object[] values, Option readOnly) {
         if (values == null || values.length < 1) {
             return null;
         }
