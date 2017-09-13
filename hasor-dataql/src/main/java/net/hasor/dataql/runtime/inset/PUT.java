@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.core.utils.BeanUtils;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.ProcessException;
@@ -25,6 +24,7 @@ import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.struts.ObjectResultStruts;
+import net.hasor.dataql.utils.BeanUtils;
 
 import java.util.Map;
 /**

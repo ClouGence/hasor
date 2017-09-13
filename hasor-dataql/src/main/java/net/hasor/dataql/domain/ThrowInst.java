@@ -31,7 +31,6 @@ public class ThrowInst extends Inst {
         this.throwData = throwData;
     }
     //
-    //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         queue.inst(LDC_D, this.errorCode);

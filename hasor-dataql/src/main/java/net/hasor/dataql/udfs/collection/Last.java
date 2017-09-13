@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.exts.collection;
+package net.hasor.dataql.udfs.collection;
 import net.hasor.dataql.UDF;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 /**
- * 取第一个元素。
+ * 取最后一个元素。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-06-09
  */
-public class First extends AbstractCollectionUDF implements UDF {
+public class Last extends AbstractCollectionUDF implements UDF {
     @Override
     public Object call(Object[] values) {
         if (values == null || values.length < 1) {
@@ -34,6 +36,16 @@ public class First extends AbstractCollectionUDF implements UDF {
             return null;
         }
         //
-        return objects.iterator().next();
+        if (objects instanceof List) {
+            List<?> list = (List<?>) objects;
+            return list.get(list.size() - 1);
+        } else {
+            Iterator<Object> iterator = objects.iterator();
+            Object curData = null;
+            while (iterator.hasNext()) {
+                curData = iterator.next();
+            }
+            return curData;
+        }
     }
 }

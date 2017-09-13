@@ -28,7 +28,6 @@ public class ReturnInst extends Inst {
         this.result = result;
     }
     //
-    //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         this.result.doCompiler(queue, stackTree);

@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.ProcessException;
-import net.hasor.dataql.runtime.mem.LocalData;
-import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
+import net.hasor.dataql.runtime.mem.LocalData;
+import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.struts.LambdaCallStruts;
 /**
  * END，正常结束指令，当执行该指令时，会将栈顶的元素作为 result。
  * 并且将执行指针设置到执行序列的末尾。
@@ -36,6 +38,10 @@ class END implements InsetProcess {
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
         Object result = memStack.pop();
+        if (result instanceof LambdaCallStruts) {
+            // lambda 调用不能用作返回值，考虑到执行上下文的复杂性，这个口子也不能开。
+            throw new InvokerProcessException(getOpcode(), "lambda call Cannot be used as return value.");
+        }
         memStack.setResult(result);
         sequence.jumpTo(sequence.exitPosition());
     }

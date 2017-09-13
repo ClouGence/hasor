@@ -32,7 +32,6 @@ public class ExitInst extends Inst {
         this.exitData = exitData;
     }
     //
-    //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         queue.inst(LDC_D, this.exitCode);

@@ -20,6 +20,10 @@ import net.hasor.dataql.domain.compiler.QueryCompiler;
 import net.hasor.dataql.domain.compiler.QueryType;
 import net.hasor.dataql.domain.parser.ParseException;
 import net.hasor.dataql.runtime.QueryRuntime;
+import net.hasor.dataql.udfs.collection.First;
+import net.hasor.dataql.udfs.collection.Foreach;
+import net.hasor.dataql.udfs.collection.Last;
+import net.hasor.dataql.udfs.collection.Limit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,5 +60,15 @@ public class DataQLModule implements Module {
                 }
             }
         });
+        //
+        // .UDFs(内置集合函数)
+        DataApiBinder dataBinder = apiBinder.tryCast(DataApiBinder.class);
+        if (dataBinder == null) {
+            return;
+        }
+        dataBinder.addUDF("foreach", new Foreach());
+        dataBinder.addUDF("first", new First());
+        dataBinder.addUDF("last", new Last());
+        dataBinder.addUDF("limit", new Limit());
     }
 }

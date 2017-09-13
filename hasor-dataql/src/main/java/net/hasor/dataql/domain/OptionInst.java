@@ -30,7 +30,6 @@ public class OptionInst extends Inst {
         this.expression = expression;
     }
     //
-    //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         queue.inst(LDC_S, this.optKey);

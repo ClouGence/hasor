@@ -15,11 +15,11 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.ProcessException;
-import net.hasor.dataql.runtime.mem.LocalData;
-import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
+import net.hasor.dataql.runtime.mem.LocalData;
+import net.hasor.dataql.runtime.mem.MemStack;
 /**
  * GOTO，跳转当前指令的执行指针到新的位置。
  * @author 赵永春(zyc@hasor.net)

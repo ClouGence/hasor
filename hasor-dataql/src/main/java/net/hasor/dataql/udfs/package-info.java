@@ -13,20 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.exts.collection;
-import net.hasor.dataql.UDF;
 /**
- * 循环遍历函数
- * @author 赵永春(zyc@hasor.net)
- * @version : 2017-03-23
+ * DataQL，内置函数库。
  */
-public class Foreach extends AbstractCollectionUDF implements UDF {
-    @Override
-    public Object call(Object[] values) {
-        if (values == null || values.length < 1) {
-            return null;
-        }
-        //
-        return super.toCollection(values[0]);
-    }
-}
+package net.hasor.dataql.udfs;

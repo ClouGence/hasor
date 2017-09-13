@@ -13,39 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.exts.collection;
+package net.hasor.dataql.udfs.collection;
 import net.hasor.dataql.UDF;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 /**
- * 取最后一个元素。
+ * 循环遍历函数
  * @author 赵永春(zyc@hasor.net)
- * @version : 2017-06-09
+ * @version : 2017-03-23
  */
-public class Last extends AbstractCollectionUDF implements UDF {
+public class Foreach extends AbstractCollectionUDF implements UDF {
     @Override
     public Object call(Object[] values) {
         if (values == null || values.length < 1) {
             return null;
         }
         //
-        Collection<Object> objects = super.toCollection(values[0]);
-        if (objects.isEmpty()) {
-            return null;
-        }
-        //
-        if (objects instanceof List) {
-            List<?> list = (List<?>) objects;
-            return list.get(list.size() - 1);
-        } else {
-            Iterator<Object> iterator = objects.iterator();
-            Object curData = null;
-            while (iterator.hasNext()) {
-                curData = iterator.next();
-            }
-            return curData;
-        }
+        return super.toCollection(values[0]);
     }
 }

@@ -16,11 +16,11 @@
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.BreakProcessException;
 import net.hasor.dataql.ProcessException;
-import net.hasor.dataql.runtime.mem.LocalData;
-import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
+import net.hasor.dataql.runtime.mem.LocalData;
+import net.hasor.dataql.runtime.mem.MemStack;
 /**
  * EXIT，退出指令，当执行该指令时，会将栈顶的两个元素作为整个查询退出的返回值。
  * 退出的实现机制和 ERR 指令相似，不同的是开发者不会得到异常抛出。

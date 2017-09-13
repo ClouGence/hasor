@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime.operator;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
+import net.hasor.dataql.utils.OperatorUtils;
 /**
  * 一元运算。number类型的只处理：负号
  * @author 赵永春(zyc@hasor.net)
@@ -25,7 +26,7 @@ public class NumberUOP extends UnaryOperatorProcess {
     @Override
     public Object doUnaryProcess(int opcode, String operator, Object object, Option option) throws InvokerProcessException {
         if ("-".equals(operator) && object instanceof Number) {
-            return NumberUtils.negate((Number) object);
+            return OperatorUtils.negate((Number) object);
         }
         String dataType = object == null ? "null" : object.getClass().getName();
         throw new InvokerProcessException(opcode, dataType + " , Cannot be used as '" + operator + "'.");

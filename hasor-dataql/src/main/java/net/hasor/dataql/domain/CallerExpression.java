@@ -34,7 +34,6 @@ public class CallerExpression extends Expression {
         this.varList = new ArrayList<Variable>();
     }
     //
-    //
     /** 设置返回值处理格式 */
     public void setResultFormat(Format resultFormat) {
         this.resultFormat = resultFormat;
@@ -45,7 +44,6 @@ public class CallerExpression extends Expression {
             this.varList.add(paramValue);
         }
     }
-    //
     //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {

@@ -31,7 +31,6 @@ public class UnaryExpression extends Expression {
         this.dyadicSymbol = dyadicSymbol;
     }
     //
-    //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         this.target.doCompiler(queue, stackTree);

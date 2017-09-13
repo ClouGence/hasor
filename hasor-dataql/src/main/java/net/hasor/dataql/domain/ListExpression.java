@@ -33,7 +33,6 @@ public class ListExpression extends Expression {
         this.expressionList = new ArrayList<Expression>();
     }
     //
-    //
     /** 添加元素 */
     public void addItem(Expression valueExp) {
         if (valueExp != null) {

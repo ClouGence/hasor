@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.*;
 import net.hasor.dataql.domain.compiler.InstOpcodes;
 import net.hasor.dataql.domain.compiler.QueryType;
@@ -24,6 +23,7 @@ import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.result.ValueModel;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.utils.Objects;
 
 import java.util.Collection;
 import java.util.Date;
@@ -49,7 +49,7 @@ class QueryInstance extends OptionSet implements Query {
     //
     @Override
     public void addParameter(String key, Object value) {
-        if (StringUtils.isBlank(key)) {
+        if (Objects.isBlank(key)) {
             return;
         }
         this.queryContext.put(key, value);
@@ -76,18 +76,20 @@ class QueryInstance extends OptionSet implements Query {
         } catch (ProcessException e) {
             if (e instanceof BreakProcessException) {
                 BreakProcessException ipe = (BreakProcessException) e;
+                int errorCode = ipe.getErrorCode();
+                Object errorData = ipe.getErrorMsg();
+                DataModel res = evalQueryResult(errorData);
+                //
                 if (InstOpcodes.EXIT == ipe.getInstOpcodes()) {
-                    int errorCode = ipe.getErrorCode();
-                    Object errorData = ipe.getErrorMsg();
-                    DataModel res = evalQueryResult(errorData);
                     return new QueryResultImpl(errorCode, res);
-                }
-            } else {
-                if (e instanceof InvokerProcessException) {
-                    throw (InvokerProcessException) e;
                 } else {
-                    throw new InvokerProcessException(0, e.getMessage(), e);
+                    return new QueryResultImpl(true, errorCode, res);
                 }
+            }
+            if (e instanceof InvokerProcessException) {
+                throw (InvokerProcessException) e;
+            } else {
+                throw new InvokerProcessException(0, e.getMessage(), e);
             }
         }
         // .返回值

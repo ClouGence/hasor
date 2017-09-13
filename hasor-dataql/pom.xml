@@ -42,6 +42,7 @@
             <groupId>net.hasor</groupId>
             <artifactId>hasor-core</artifactId>
             <version>${hasor.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

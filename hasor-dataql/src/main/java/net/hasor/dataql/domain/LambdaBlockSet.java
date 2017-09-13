@@ -27,7 +27,6 @@ import java.util.List;
 public class LambdaBlockSet extends BlockSet implements Variable {
     private List<String> paramList = new ArrayList<String>();
     //
-    //
     /** 添加入参 */
     public void addParam(String name) {
         if (this.paramList.contains(name)) {

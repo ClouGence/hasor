@@ -15,11 +15,11 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.ProcessException;
-import net.hasor.dataql.runtime.mem.LocalData;
-import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
+import net.hasor.dataql.runtime.mem.LocalData;
+import net.hasor.dataql.runtime.mem.MemStack;
 /**
  * STORE，将栈顶的数据保存到堆。与其对应的指令为 LOAD
  * @see net.hasor.dataql.runtime.inset.LOAD

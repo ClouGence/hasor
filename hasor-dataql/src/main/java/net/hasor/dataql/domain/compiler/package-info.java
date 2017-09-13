@@ -18,6 +18,4 @@
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-03
  */
-@AopIgnore
 package net.hasor.dataql.domain.compiler;
-import net.hasor.core.container.AopIgnore;

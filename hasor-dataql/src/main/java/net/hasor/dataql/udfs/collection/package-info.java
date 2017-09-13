@@ -16,6 +16,4 @@
 /**
  * DataQL，集合函数库。
  */
-@AopIgnore
-package net.hasor.dataql.exts.collection;
-import net.hasor.core.container.AopIgnore;
+package net.hasor.dataql.udfs.collection;

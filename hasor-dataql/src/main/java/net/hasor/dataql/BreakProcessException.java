@@ -19,22 +19,16 @@ package net.hasor.dataql;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-14
  */
-public class BreakProcessException extends ProcessException {
-    private int    instOpcodes;
+public class BreakProcessException extends InvokerProcessException {
     private int    errorCode;
     private Object errorMsg;
     //
     public BreakProcessException(int instOpcodes, int errorCode, Object errorMsg) {
-        super("errorCode is " + errorCode);
-        this.instOpcodes = instOpcodes;
+        super(instOpcodes, "errorCode is " + errorCode);
         this.errorCode = errorCode;
         this.errorMsg = errorMsg;
     }
     //
-    /**运行出错的指令*/
-    public int getInstOpcodes() {
-        return this.instOpcodes;
-    }
     /**错误码*/
     public int getErrorCode() {
         return this.errorCode;

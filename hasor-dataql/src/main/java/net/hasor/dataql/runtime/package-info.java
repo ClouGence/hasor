@@ -16,6 +16,4 @@
 /**
  * DataQL，执行运行时。
  */
-@AopIgnore
 package net.hasor.dataql.runtime;
-import net.hasor.core.container.AopIgnore;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.compiler;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.dataql.utils.Objects;
 /**
  * DataQL 查询
  * @author 赵永春(zyc@hasor.net)
@@ -44,7 +44,7 @@ public class QueryType {
         for (int i = 0; i < instList.length; i++) {
             Instruction inst = instList[i];
             strBuffer.append("  #");
-            strBuffer.append(StringUtils.leftPad(String.valueOf(i), length, '0'));
+            strBuffer.append(Objects.leftPad(String.valueOf(i), length, '0'));
             strBuffer.append("  ");
             strBuffer.append(inst.toString());
             strBuffer.append("\n");

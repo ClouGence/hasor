@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataql.result;
-import net.hasor.core.convert.ConverterUtils;
 /**
  * 值类型结果
  * @author 赵永春(zyc@hasor.net)

@@ -36,7 +36,6 @@ public class BlockSet implements InstCompiler {
         }
     }
     //
-    //
     /** 批量添加指令集 */
     public void addInstSet(BlockSet inst) {
         this.instList.addAll(inst.instList);
@@ -47,7 +46,6 @@ public class BlockSet implements InstCompiler {
             this.instList.add(inst);
         }
     }
-    //
     //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {

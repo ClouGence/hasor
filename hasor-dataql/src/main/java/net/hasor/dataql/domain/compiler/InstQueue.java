@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.compiler;
-import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.domain.parser.ParseException;
+import net.hasor.dataql.utils.Objects;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -128,7 +128,7 @@ public class InstQueue {
         for (int i = 0; i < instList.size(); i++) {
             Instruction inst = instList.get(i);
             strBuffer.append("  #");
-            strBuffer.append(StringUtils.leftPad(String.valueOf(i), length, '0'));
+            strBuffer.append(Objects.leftPad(String.valueOf(i), length, '0'));
             strBuffer.append("  ");
             strBuffer.append(inst.toString());
             strBuffer.append("\n");

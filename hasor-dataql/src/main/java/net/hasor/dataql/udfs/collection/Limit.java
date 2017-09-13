@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.exts.collection;
-import net.hasor.core.convert.ConverterUtils;
+package net.hasor.dataql.udfs.collection;
 import net.hasor.dataql.UDF;
 
 import java.util.ArrayList;
@@ -33,10 +32,8 @@ public class Limit extends AbstractCollectionUDF implements UDF {
             return null;
         }
         //
-        Object start = values[1];
-        Object limit = values[2];
-        int startInt = (Integer) ConverterUtils.convert(Integer.TYPE, start);
-        int limitInt = (Integer) ConverterUtils.convert(Integer.TYPE, limit);
+        int startInt = (Integer) values[1];
+        int limitInt = (Integer) values[2];
         if (limitInt <= 0) {
             limitInt = Integer.MAX_VALUE;
         }

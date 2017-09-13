@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
-import net.hasor.core.utils.BeanUtils;
-import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.result.ObjectModel;
@@ -25,6 +23,8 @@ import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.FindData;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.utils.BeanUtils;
+import net.hasor.dataql.utils.Objects;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -53,7 +53,7 @@ class ROU implements InsetProcess {
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
         String rouPath = sequence.currentInst().getString(0);
-        if (StringUtils.isBlank(rouPath)) {
+        if (Objects.isBlank(rouPath)) {
             memStack.push(null);
             return;
         }

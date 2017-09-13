@@ -21,6 +21,9 @@ import net.hasor.dataql.result.DataModel;
  * @version : 2017-03-23
  */
 public interface QueryResult {
+    /** 执行结果是否通过 ERR 形式返回的 */
+    public boolean isThrow();
+
     public int getCode();
 
     public DataModel getData();

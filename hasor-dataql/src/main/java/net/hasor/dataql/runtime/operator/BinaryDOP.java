@@ -18,11 +18,11 @@ import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.utils.OperatorUtils;
 /**
- * 二元比较运算，负责处理：">", ">=", "<", "<=", "==", "!=", "&&", "||"
+ * 二元比较运算，负责处理：, "&", "|", "^", "<<", ">>", ">>>"
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class CompareDOP extends DyadicOperatorProcess {
+public class BinaryDOP extends DyadicOperatorProcess {
     private static final Integer BOOL_FASLE = 0;
     private static final Integer BOOL_TRUE  = 1;
     @Override
@@ -42,50 +42,29 @@ public class CompareDOP extends DyadicOperatorProcess {
             secObject = Boolean.TRUE.equals(secObject) ? BOOL_TRUE : BOOL_FASLE;
         }
         //
-        // .大于
-        if (">".equals(operator)) {
-            return OperatorUtils.gt((Number) fstObject, (Number) secObject);
+        // .与
+        if ("&".equals(operator)) {
+            return OperatorUtils.and((Number) fstObject, (Number) secObject);
         }
-        // .大于等于
-        if (">=".equals(operator)) {
-            return OperatorUtils.gteq((Number) fstObject, (Number) secObject);
+        // .或
+        if ("|".equals(operator)) {
+            return OperatorUtils.or((Number) fstObject, (Number) secObject);
         }
-        // .小于
-        if ("<".equals(operator)) {
-            return OperatorUtils.lt((Number) fstObject, (Number) secObject);
+        // .异或
+        if ("^".equals(operator)) {
+            return OperatorUtils.xor((Number) fstObject, (Number) secObject);
         }
-        // .小于等于
-        if ("<=".equals(operator)) {
-            return OperatorUtils.lteq((Number) fstObject, (Number) secObject);
+        // .左位移
+        if ("<<".equals(operator)) {
+            return OperatorUtils.shiftLeft((Number) fstObject, (Number) secObject);
         }
-        // .等于
-        if ("==".equals(operator)) {
-            return OperatorUtils.eq((Number) fstObject, (Number) secObject);
+        // .带符号右位移
+        if (">>".equals(operator)) {
+            return OperatorUtils.shiftRight((Number) fstObject, (Number) secObject);
         }
-        // .不等于
-        if ("!=".equals(operator)) {
-            return !OperatorUtils.eq((Number) fstObject, (Number) secObject);
-        }
-        // .逻辑比较运算
-        if ("&&".equals(operator) || "||".equals(operator)) {
-            boolean fstBool, secBool;
-            if (OperatorUtils.isNumber(fstObject)) {
-                fstBool = !OperatorUtils.eq((Number) fstObject, 0);
-            } else {
-                fstBool = Boolean.TRUE.equals(fstObject);
-            }
-            if (OperatorUtils.isNumber(secObject)) {
-                secBool = !OperatorUtils.eq((Number) secObject, 0);
-            } else {
-                secBool = Boolean.TRUE.equals(secObject);
-            }
-            //
-            if ("&&".equals(operator)) {
-                return fstBool && secBool;
-            }
-            if ("||".equals(operator)) {
-                return fstBool || secBool;
-            }
+        // .无符号右位移
+        if (">>>".equals(operator)) {
+            return OperatorUtils.shiftRightWithUnsigned((Number) fstObject, (Number) secObject);
         }
         throw throwError(operator, fstObject, secObject, "this operator nonsupport.");
     }

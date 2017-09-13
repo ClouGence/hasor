@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime.operator;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.Option;
+import net.hasor.dataql.utils.OperatorUtils;
 
 import java.math.BigDecimal;
 /**
@@ -41,22 +42,22 @@ public class NumberDOP extends DyadicOperatorProcess {
         Number result = null;
         switch (operator.charAt(0)) {
         case '+':
-            result = NumberUtils.add((Number) fstObject, (Number) secObject);
+            result = OperatorUtils.add((Number) fstObject, (Number) secObject);
             break;
         case '-':
-            result = NumberUtils.subtract((Number) fstObject, (Number) secObject);
+            result = OperatorUtils.subtract((Number) fstObject, (Number) secObject);
             break;
         case '*':
-            result = NumberUtils.multiply((Number) fstObject, (Number) secObject);
+            result = OperatorUtils.multiply((Number) fstObject, (Number) secObject);
             break;
         case '/':
-            result = NumberUtils.divide((Number) fstObject, (Number) secObject, maxDecimal, roundingMode);
+            result = OperatorUtils.divide((Number) fstObject, (Number) secObject, maxDecimal, roundingMode);
             break;
         case '\\':
-            result = NumberUtils.aliquot((Number) fstObject, (Number) secObject);
+            result = OperatorUtils.aliquot((Number) fstObject, (Number) secObject);
             break;
         case '%':
-            result = NumberUtils.mod((Number) fstObject, (Number) secObject);
+            result = OperatorUtils.mod((Number) fstObject, (Number) secObject);
             break;
         default:
             throw throwError(operator, fstObject, secObject, "this operator nonsupport.");

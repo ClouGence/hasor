@@ -16,6 +16,4 @@
 /**
  * Runtime 执行用到的一些数据结构。
  */
-@AopIgnore
 package net.hasor.dataql.runtime.struts;
-import net.hasor.core.container.AopIgnore;

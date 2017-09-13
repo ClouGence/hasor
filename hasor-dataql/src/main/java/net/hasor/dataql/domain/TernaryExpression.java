@@ -33,7 +33,6 @@ public class TernaryExpression extends Expression {
         this.elseExpression = elseExp;
     }
     //
-    //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         Label elseEnterIn = queue.labelDef(); //

@@ -32,7 +32,6 @@ public class DyadicExpression extends Expression {
         this.secExpression = secExpression;
     }
     //
-    //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         this.doCompiler(queue, stackTree, null);
@@ -61,9 +60,6 @@ public class DyadicExpression extends Expression {
 // a + b * c - d / e
 //      [[a,(b,c,*),+],(d,e,/),-]
 //
-
-
-
 // c
 // +
 // *

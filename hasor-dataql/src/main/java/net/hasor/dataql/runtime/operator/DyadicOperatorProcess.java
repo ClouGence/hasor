@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.operator;
-import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.OperatorProcess;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.domain.compiler.InstOpcodes;
+import net.hasor.dataql.utils.Objects;
 /**
  * 二元运算
  * @author 赵永春(zyc@hasor.net)
@@ -43,7 +43,7 @@ public abstract class DyadicOperatorProcess extends OperatorProcess {
     protected static InvokerProcessException throwError(String operator, Object realFstObject, Object realSecObject, String message) {
         String fstDataType = realFstObject == null ? "null" : realFstObject.getClass().getName();
         String secDataType = realSecObject == null ? "null" : realSecObject.getClass().getName();
-        message = StringUtils.isBlank(message) ? "no message." : message;
+        message = Objects.isBlank(message) ? "no message." : message;
         return new InvokerProcessException(InstOpcodes.DO, fstDataType + " and " + secDataType + " , Cannot be used as '" + operator + "' -> " + message);
     }
     /**执行运算*/

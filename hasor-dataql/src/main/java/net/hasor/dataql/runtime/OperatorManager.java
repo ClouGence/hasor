@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import net.hasor.core.Hasor;
-import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.OperatorProcess;
-import net.hasor.dataql.runtime.operator.BooleanUOP;
-import net.hasor.dataql.runtime.operator.CompareDOP;
-import net.hasor.dataql.runtime.operator.NumberDOP;
-import net.hasor.dataql.runtime.operator.NumberUOP;
+import net.hasor.dataql.runtime.operator.*;
+import net.hasor.dataql.utils.Objects;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,12 +52,12 @@ class OperatorManager {
         DEFAULT.registryOperator(Symbol.Dyadic, "||", Boolean.class, Boolean.class, new CompareDOP());
         DEFAULT.registryOperator(Symbol.Dyadic, "&&", Boolean.class, Boolean.class, new CompareDOP());
         // .二元，位运算
-        DEFAULT.registryOperator(Symbol.Dyadic, "&", classSet, classSet, new CompareDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "|", classSet, classSet, new CompareDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "^", classSet, classSet, new CompareDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, "<<", classSet, classSet, new CompareDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, ">>", classSet, classSet, new CompareDOP());
-        DEFAULT.registryOperator(Symbol.Dyadic, ">>>", classSet, classSet, new CompareDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "&", classSet, classSet, new BinaryDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "|", classSet, classSet, new BinaryDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "^", classSet, classSet, new BinaryDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "<<", classSet, classSet, new BinaryDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, ">>", classSet, classSet, new BinaryDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, ">>>", classSet, classSet, new BinaryDOP());
         //
     }
 
@@ -71,7 +67,7 @@ class OperatorManager {
     //
     /** 添加 操作符 实现 */
     public void registryOperator(Symbol symbolType, String symbolName, Class<?> opeType, OperatorProcess process) {
-        Hasor.assertIsNotNull(opeType);
+        Objects.assertIsNotNull(opeType);
         this.registryOperator(symbolType, symbolName, opeType, Object.class, process);
     }
     /** 添加 操作符 实现 */
@@ -87,7 +83,7 @@ class OperatorManager {
     }
     /** 添加 操作符 实现 */
     public void registryOperator(Symbol symbolType, String symbolName, Class<?> fstType, Class<?> secType, OperatorProcess process) {
-        if (symbolType == null || StringUtils.isBlank(symbolName))
+        if (symbolType == null || Objects.isBlank(symbolName))
             throw new NullPointerException("symbolType or symbolName is null.");
         if (fstType == null || secType == null)
             throw new NullPointerException("fstType or secType is null.");

@@ -36,7 +36,6 @@ public class SwitchInst extends Inst {
         this.testBlockSet = new ArrayList<SwitchExpression>();
     }
     //
-    //
     /** 添加条件分支 */
     public void addBlockSet(Expression testExp, BlockSet instBlockSet) {
         SwitchExpression se = new SwitchExpression();

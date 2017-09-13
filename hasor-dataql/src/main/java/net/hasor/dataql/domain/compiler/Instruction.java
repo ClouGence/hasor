@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain.compiler;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.dataql.utils.Objects;
 
 import java.lang.reflect.Field;
 /**
@@ -97,7 +97,7 @@ public class Instruction implements InstOpcodes {
         //
         int needSpace = 10 - codeName.length();
         if (needSpace > 0) {
-            codeName.append(StringUtils.leftPad("", needSpace, ' '));
+            codeName.append(Objects.leftPad("", needSpace, ' '));
         }
         for (int i = 0; i < this.instParam.length; i++) {
             if (i > 0) {

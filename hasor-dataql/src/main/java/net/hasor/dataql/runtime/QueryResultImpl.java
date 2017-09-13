@@ -22,11 +22,21 @@ import net.hasor.dataql.result.DataModel;
  * @version : 2017-03-23
  */
 class QueryResultImpl implements QueryResult {
+    private boolean   isThrow;
     private int       errorCode;
     private DataModel dataModel;
     public QueryResultImpl(int errorCode, DataModel dataModel) {
+        this.isThrow = false;
         this.errorCode = errorCode;
         this.dataModel = dataModel;
+    }
+    public QueryResultImpl(boolean isThrow, int errorCode, DataModel dataModel) {
+        this.isThrow = isThrow;
+        this.errorCode = errorCode;
+        this.dataModel = dataModel;
+    }
+    public boolean isThrow() {
+        return isThrow;
     }
     @Override
     public int getCode() {

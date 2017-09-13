@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.dataql.domain;
-import net.hasor.core.utils.StringUtils;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 import net.hasor.dataql.domain.compiler.Instruction;
+import net.hasor.dataql.utils.Objects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,10 +38,9 @@ public class ObjectExpression extends Expression {
         this.objectData = new HashMap<String, Expression>();
     }
     //
-    //
     /** 添加字段 */
     public void addField(String fieldName, Expression valueExp) {
-        if (StringUtils.isBlank(fieldName) || this.fieldSort.contains(fieldName)) {
+        if (Objects.isBlank(fieldName) || this.fieldSort.contains(fieldName)) {
             return;
         }
         this.fieldSort.add(fieldName);

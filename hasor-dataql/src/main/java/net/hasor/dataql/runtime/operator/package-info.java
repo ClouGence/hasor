@@ -16,6 +16,4 @@
 /**
  * 提供运算符实现，包含：一元运算，二元运算。
  */
-@AopIgnore
 package net.hasor.dataql.runtime.operator;
-import net.hasor.core.container.AopIgnore;

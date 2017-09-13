@@ -16,6 +16,4 @@
 /**
  * 内存数据结构。
  */
-@AopIgnore
 package net.hasor.dataql.runtime.mem;
-import net.hasor.core.container.AopIgnore;

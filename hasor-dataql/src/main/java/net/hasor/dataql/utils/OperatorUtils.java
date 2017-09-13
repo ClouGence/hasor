@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime.operator;
+package net.hasor.dataql.utils;
+import net.hasor.dataql.runtime.operator.RoundingEnum;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 /**
@@ -22,7 +24,72 @@ import java.math.BigInteger;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class NumberUtils {
+public class OperatorUtils {
+    public static boolean isNumber(Object object) {
+        if (object == null) {
+            return false;
+        }
+        return object instanceof Number;
+    }
+    public static boolean isBoolean(Object object) {
+        if (object == null) {
+            return false;
+        }
+        Class<?> numberClass = object.getClass();
+        return numberClass == Boolean.class || numberClass == Boolean.TYPE;
+    }
+    public static boolean isByteNumber(Object number) {
+        if (number == null) {
+            return false;
+        }
+        Class<?> numberClass = number.getClass();
+        return numberClass == Byte.class || numberClass == Byte.TYPE;
+    }
+    public static boolean isShortNumber(Object number) {
+        if (number == null) {
+            return false;
+        }
+        Class<?> numberClass = number.getClass();
+        return numberClass == Short.class || numberClass == Short.TYPE;
+    }
+    public static boolean isIntegerNumber(Object number) {
+        if (number == null) {
+            return false;
+        }
+        Class<?> numberClass = number.getClass();
+        return numberClass == Integer.class || numberClass == Integer.TYPE;
+    }
+    public static boolean isCharacter(Object number) {
+        if (number == null) {
+            return false;
+        }
+        Class<?> numberClass = number.getClass();
+        return numberClass == Character.class || numberClass == Character.TYPE;
+    }
+    public static boolean isLongNumber(Object number) {
+        if (number == null) {
+            return false;
+        }
+        Class<?> numberClass = number.getClass();
+        return numberClass == Long.class || numberClass == Long.TYPE;
+    }
+    public static boolean isFloatNumber(Object number) {
+        if (number == null) {
+            return false;
+        }
+        Class<?> numberClass = number.getClass();
+        return numberClass == Float.class || numberClass == Float.TYPE;
+    }
+    public static boolean isDoubleNumber(Object number) {
+        if (number == null) {
+            return false;
+        }
+        Class<?> numberClass = number.getClass();
+        return numberClass == Double.class || numberClass == Double.TYPE;
+    }
+    //
+    // ============================================================================================
+    //
     private static final int BOOL   = 1;
     private static final int BYTE   = 2;
     private static final int SHORT  = 3;

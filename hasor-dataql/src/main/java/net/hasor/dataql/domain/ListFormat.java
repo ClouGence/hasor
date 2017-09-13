@@ -29,7 +29,6 @@ public class ListFormat extends Format {
         this.format = format;
     }
     //
-    //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         queue.inst(InstOpcodes.ASA, "");

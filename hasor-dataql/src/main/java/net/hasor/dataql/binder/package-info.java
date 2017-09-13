@@ -16,6 +16,4 @@
 /**
  * DataQL，Hasor 专用扩展。
  */
-@AopIgnore
 package net.hasor.dataql.binder;
-import net.hasor.core.container.AopIgnore;

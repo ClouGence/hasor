@@ -30,7 +30,6 @@ public class VariableInst extends Inst {
         this.value = value;
     }
     //
-    //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         // .表达式指令
