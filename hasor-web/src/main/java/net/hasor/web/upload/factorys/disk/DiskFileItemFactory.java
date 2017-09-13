@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.upload.factorys.disk;
-import net.hasor.core.utils.IOUtils;
+import net.hasor.utils.IOUtils;
 import net.hasor.web.FileItem;
 import net.hasor.web.FileItemFactory;
 import net.hasor.web.FileItemStream;

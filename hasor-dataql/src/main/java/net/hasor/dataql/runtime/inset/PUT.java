@@ -24,7 +24,7 @@ import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.struts.ObjectResultStruts;
-import net.hasor.dataql.utils.BeanUtils;
+import net.hasor.utils.BeanUtils;
 
 import java.util.Map;
 /**

@@ -37,6 +37,12 @@
 
     <!-- 引用依赖 -->
     <dependencies>
+        <!-- Commons -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-commons</artifactId>
+            <version>${hasor.version}</version>
+        </dependency>
         <!-- Hasor-Core -->
         <dependency>
             <groupId>net.hasor</groupId>

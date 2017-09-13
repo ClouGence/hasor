@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
-import net.hasor.dataql.utils.Objects;
+import net.hasor.utils.StringUtils;
 /**
  * 一元或二元运算，用于运算符重载。
  * @author 赵永春(zyc@hasor.net)
@@ -25,7 +25,7 @@ public abstract class OperatorProcess {
     public abstract Object doProcess(int opcode, String operator, Object[] args, Option option) throws InvokerProcessException;
     //
     protected static boolean testIn(String[] dataSet, String test) {
-        if (dataSet == null || dataSet.length == 0 || Objects.isBlank(test)) {
+        if (dataSet == null || dataSet.length == 0 || StringUtils.isBlank(test)) {
             return false;
         }
         for (String str : dataSet) {

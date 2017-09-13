@@ -18,7 +18,7 @@ import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
-import net.hasor.core.future.FutureCallback;
+import net.hasor.utils.future.FutureCallback;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.rsf.*;
 import net.hasor.rsf.container.RsfBeanContainer;

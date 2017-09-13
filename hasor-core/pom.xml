@@ -43,6 +43,12 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.7.21</version>
         </dependency>
+        <!-- Commons -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-commons</artifactId>
+            <version>${hasor.version}</version>
+        </dependency>
 
         <!-- 整合 Spring 容器时使用,最终由项目环境的 Spring 提供依赖 -->
         <dependency>

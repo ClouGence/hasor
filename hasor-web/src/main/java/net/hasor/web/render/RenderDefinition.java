@@ -16,7 +16,7 @@
 package net.hasor.web.render;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 import net.hasor.web.RenderEngine;
 
 import java.util.List;

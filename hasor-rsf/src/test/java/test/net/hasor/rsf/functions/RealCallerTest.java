@@ -16,7 +16,7 @@
 package test.net.hasor.rsf.functions;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.future.FutureCallback;
+import net.hasor.utils.future.FutureCallback;
 import net.hasor.rsf.*;
 import org.junit.Test;
 import test.net.hasor.rsf.services.EchoService;

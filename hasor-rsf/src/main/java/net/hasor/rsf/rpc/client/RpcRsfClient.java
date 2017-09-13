@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.client;
-import net.hasor.core.future.FutureCallback;
+import net.hasor.utils.future.FutureCallback;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfFuture;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.valid;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.wrap.InvokerWrap;
 

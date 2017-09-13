@@ -15,7 +15,7 @@
  */
 package net.hasor.plugins.jfinal;
 import com.jfinal.core.JFinal;
-import net.hasor.core.utils.Iterators;
+import net.hasor.utils.Iterators;
 
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;

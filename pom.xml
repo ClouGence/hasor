@@ -86,6 +86,7 @@
     </developers>
 
     <modules>
+        <module>hasor-commons</module>
         <module>hasor-core</module>
         <module>hasor-db</module>
         <module>hasor-web</module>

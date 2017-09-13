@@ -19,5 +19,5 @@ package net.hasor.rsf.utils;
  * @version : 2014年7月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class MatchUtils extends net.hasor.core.utils.MatchUtils {
+public abstract class MatchUtils extends net.hasor.utils.MatchUtils {
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.result;
-import net.hasor.dataql.utils.Objects;
+import net.hasor.utils.StringUtils;
 
 import java.util.*;
 /**
@@ -55,7 +55,7 @@ public class ObjectModel extends HashMap<String, Object> implements DataModel {
     }
     @Override
     public Object put(String key, Object value) {
-        if (Objects.isBlank(key) || !this.hasField(key)) {
+        if (StringUtils.isBlank(key) || !this.hasField(key)) {
             return null;
         }
         return super.put(key, value);

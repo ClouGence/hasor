@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
-import net.hasor.core.utils.BeanUtils;
+import net.hasor.utils.BeanUtils;
 
 import java.util.HashMap;
 import java.util.List;

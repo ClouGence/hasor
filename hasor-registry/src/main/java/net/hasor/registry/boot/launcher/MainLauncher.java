@@ -16,7 +16,7 @@
 package net.hasor.registry.boot.launcher;
 import net.hasor.core.*;
 import net.hasor.core.environment.StandardEnvironment;
-import net.hasor.core.future.BasicFuture;
+import net.hasor.utils.future.BasicFuture;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.console.RsfInstruct;

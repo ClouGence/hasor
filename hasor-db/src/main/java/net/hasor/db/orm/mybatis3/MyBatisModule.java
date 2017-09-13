@@ -18,7 +18,7 @@ import net.hasor.core.*;
 import net.hasor.core.provider.InfoAwareProvider;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.provider.SingleProvider;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;

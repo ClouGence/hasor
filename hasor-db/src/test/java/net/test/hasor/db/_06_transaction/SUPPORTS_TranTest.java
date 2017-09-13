@@ -19,9 +19,9 @@ import net.hasor.db.transaction.TransactionCallbackWithoutResult;
 import net.hasor.db.transaction.TransactionStatus;
 import net.hasor.db.transaction.TransactionTemplate;
 import net.hasor.db.transaction.interceptor.Transactional;
-import net.hasor.plugins.junit.ContextConfiguration;
-import net.hasor.plugins.junit.HasorUnitRunner;
 import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
+import net.test.hasor.db.junit.ContextConfiguration;
+import net.test.hasor.db.junit.HasorUnitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 /**

@@ -18,5 +18,5 @@ package net.hasor.rsf.utils;
 /**
  * <p>Operations on {@link java.lang.String} that are <code>null</code> safe.</p>
  */
-public abstract class StringUtils extends net.hasor.core.utils.StringUtils {
+public abstract class StringUtils extends net.hasor.utils.StringUtils {
 }

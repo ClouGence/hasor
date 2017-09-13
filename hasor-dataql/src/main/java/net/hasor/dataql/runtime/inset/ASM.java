@@ -25,7 +25,7 @@ import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.struts.ObjectResultStruts;
-import net.hasor.dataql.utils.Objects;
+import net.hasor.utils.StringUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
 /**
@@ -49,7 +49,7 @@ class ASM implements InsetProcess {
         // .读取返回值并包装成 ResultStruts
         String typeString = sequence.currentInst().getString(0);
         Class<?> objectType = null;
-        if (!Objects.isBlank(typeString)) {
+        if (StringUtils.isNotBlank(typeString)) {
             try {
                 objectType = context.loadType(typeString);
             } catch (Exception e) {

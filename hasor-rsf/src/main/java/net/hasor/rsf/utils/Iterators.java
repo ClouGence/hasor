@@ -19,5 +19,5 @@ package net.hasor.rsf.utils;
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class Iterators extends net.hasor.core.utils.Iterators {
+public abstract class Iterators extends net.hasor.utils.Iterators {
 }

@@ -19,5 +19,5 @@ package net.hasor.rsf.utils;
  * @version 2010-9-24
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class ResourcesUtils extends net.hasor.core.utils.ResourcesUtils {
+public abstract class ResourcesUtils extends net.hasor.utils.ResourcesUtils {
 }

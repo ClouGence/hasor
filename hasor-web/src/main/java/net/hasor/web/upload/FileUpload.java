@@ -16,7 +16,7 @@
  */
 package net.hasor.web.upload;
 import net.hasor.core.Settings;
-import net.hasor.core.utils.ExceptionUtils;
+import net.hasor.utils.ExceptionUtils;
 import net.hasor.web.*;
 import net.hasor.web.FileUploadException;
 import net.hasor.web.upload.util.Closeable;

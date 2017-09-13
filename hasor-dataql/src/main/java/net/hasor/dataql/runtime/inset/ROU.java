@@ -23,8 +23,8 @@ import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.FindData;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.utils.BeanUtils;
-import net.hasor.dataql.utils.Objects;
+import net.hasor.utils.BeanUtils;
+import net.hasor.utils.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -53,7 +53,7 @@ class ROU implements InsetProcess {
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
         String rouPath = sequence.currentInst().getString(0);
-        if (Objects.isBlank(rouPath)) {
+        if (StringUtils.isBlank(rouPath)) {
             memStack.push(null);
             return;
         }

@@ -16,7 +16,7 @@
 package net.hasor.core.classcode.aop;
 import net.hasor.core.classcode.ASMEngineTools;
 import net.hasor.core.classcode.AbstractClassConfig;
-import net.hasor.core.classcode.asm.ClassVisitor;
+import net.hasor.utils.asm.ClassVisitor;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

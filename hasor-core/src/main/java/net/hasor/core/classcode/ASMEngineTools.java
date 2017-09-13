@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.classcode;
-import net.hasor.core.classcode.asm.Opcodes;
-import net.hasor.core.classcode.asm.Type;
+import net.hasor.utils.asm.Opcodes;
+import net.hasor.utils.asm.Type;
 
 import java.io.IOException;
 import java.io.StringReader;

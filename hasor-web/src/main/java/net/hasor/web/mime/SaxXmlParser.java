@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.mime;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;

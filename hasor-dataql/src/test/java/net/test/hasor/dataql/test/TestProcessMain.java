@@ -1,12 +1,12 @@
 package net.test.hasor.dataql.test;
 import com.alibaba.fastjson.JSON;
 import net.hasor.core.Settings;
-import net.hasor.core.utils.IOUtils;
-import net.hasor.core.utils.ResourcesUtils;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.binder.DataQL;
 import net.hasor.dataql.domain.parser.ParseException;
+import net.hasor.utils.IOUtils;
+import net.hasor.utils.ResourcesUtils;
 import net.test.hasor.dataql.AbstractTaskTest;
 import org.junit.Test;
 

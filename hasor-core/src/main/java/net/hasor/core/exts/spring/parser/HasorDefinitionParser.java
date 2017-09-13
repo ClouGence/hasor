@@ -15,8 +15,8 @@
  */
 package net.hasor.core.exts.spring.parser;
 import net.hasor.core.AppContext;
-import net.hasor.core.utils.StringUtils;
 import net.hasor.core.exts.spring.factory.SpringFactoryBean;
+import net.hasor.utils.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;

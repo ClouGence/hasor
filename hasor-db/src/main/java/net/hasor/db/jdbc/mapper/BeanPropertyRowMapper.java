@@ -15,7 +15,7 @@
  */
 package net.hasor.db.jdbc.mapper;
 import net.hasor.core.Hasor;
-import net.hasor.core.utils.BeanUtils;
+import net.hasor.utils.BeanUtils;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;

@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.exts.spring.parser;
-import net.hasor.core.utils.StringUtils;
 import net.hasor.core.exts.spring.factory.HasorBean;
+import net.hasor.utils.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;

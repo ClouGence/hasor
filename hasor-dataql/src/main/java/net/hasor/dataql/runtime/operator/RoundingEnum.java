@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.operator;
-import net.hasor.dataql.utils.Objects;
+import net.hasor.utils.StringUtils;
 
 import java.math.RoundingMode;
 /**
@@ -59,7 +59,7 @@ public enum RoundingEnum {
         return this.modeNum;
     }
     public static RoundingEnum find(String modeType) {
-        if (Objects.isBlank(modeType))
+        if (StringUtils.isBlank(modeType))
             return HALF_UP;
         for (RoundingEnum pre : RoundingEnum.values()) {
             if (pre.name().equalsIgnoreCase(modeType))

@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * General IO stream manipulation utilities.
  */
-public abstract class IOUtils extends net.hasor.core.utils.IOUtils {
+public abstract class IOUtils extends net.hasor.utils.IOUtils {
     public static BufferedReader toBufferedReader(Reader reader) {
         return reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader);
     }

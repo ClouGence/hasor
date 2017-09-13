@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.caller;
-import net.hasor.core.future.FutureCallback;
+import net.hasor.utils.future.FutureCallback;
 import net.hasor.rsf.*;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.RsfException;

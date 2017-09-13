@@ -20,7 +20,7 @@ import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.NotifyData;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.scope.SingletonScope;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

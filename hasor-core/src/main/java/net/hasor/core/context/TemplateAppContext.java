@@ -22,8 +22,8 @@ import net.hasor.core.binder.BinderHelper;
 import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.BeanContainer;
 import net.hasor.core.container.ScopManager;
-import net.hasor.core.utils.ExceptionUtils;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

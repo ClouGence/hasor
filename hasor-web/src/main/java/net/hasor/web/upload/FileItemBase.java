@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 package net.hasor.web.upload;
-import net.hasor.core.utils.IOUtils;
+import net.hasor.utils.IOUtils;
 import net.hasor.web.FileItem;
 import net.hasor.web.FileItemHeaders;
 import net.hasor.web.FileItemStream;

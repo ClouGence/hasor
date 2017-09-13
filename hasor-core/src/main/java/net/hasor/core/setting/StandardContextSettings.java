@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.setting;
-import net.hasor.core.utils.ResourcesUtils;
+import net.hasor.utils.ResourcesUtils;
 
 import java.io.File;
 import java.io.IOException;

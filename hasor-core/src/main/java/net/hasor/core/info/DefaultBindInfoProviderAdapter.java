@@ -18,8 +18,8 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
-import net.hasor.core.utils.ExceptionUtils;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.StringUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;

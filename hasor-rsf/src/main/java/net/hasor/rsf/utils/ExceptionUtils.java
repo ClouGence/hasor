@@ -19,5 +19,5 @@ package net.hasor.rsf.utils;
  * @version : 2014年9月25日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class ExceptionUtils extends net.hasor.core.utils.ExceptionUtils {
+public abstract class ExceptionUtils extends net.hasor.utils.ExceptionUtils {
 }

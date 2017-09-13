@@ -24,9 +24,9 @@ import net.hasor.core.setting.AbstractSettings;
 import net.hasor.core.setting.SettingValue;
 import net.hasor.core.setting.UpdateValue;
 import net.hasor.core.setting.xml.DefaultXmlNode;
-import net.hasor.core.utils.ResourcesUtils;
-import net.hasor.core.utils.ScanClassPath;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.utils.ResourcesUtils;
+import net.hasor.utils.ScanClassPath;
+import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

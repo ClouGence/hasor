@@ -18,7 +18,6 @@ import net.hasor.core.*;
 import net.hasor.core.classcode.matcher.AopMatchers;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.provider.SingleProvider;
-import net.hasor.core.utils.StringUtils;
 import net.hasor.db.jdbc.JdbcOperations;
 import net.hasor.db.jdbc.core.JdbcOperationsProvider;
 import net.hasor.db.jdbc.core.JdbcTemplate;
@@ -29,6 +28,7 @@ import net.hasor.db.transaction.interceptor.TransactionInterceptor;
 import net.hasor.db.transaction.interceptor.Transactional;
 import net.hasor.db.transaction.provider.TransactionManagerProvider;
 import net.hasor.db.transaction.provider.TransactionTemplateProvider;
+import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

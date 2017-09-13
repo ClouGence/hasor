@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.land.node;
-import net.hasor.core.future.FutureCallback;
+import net.hasor.utils.future.FutureCallback;
 import net.hasor.land.bootstrap.LandContext;
 import net.hasor.land.domain.NodeStatus;
 import net.hasor.land.election.CollectVoteData;

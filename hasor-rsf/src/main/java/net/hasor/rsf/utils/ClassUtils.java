@@ -18,5 +18,5 @@ package net.hasor.rsf.utils;
 /**
  * <p>Operates on classes without using reflection.</p>
  */
-public abstract class ClassUtils extends net.hasor.core.utils.ClassUtils {
+public abstract class ClassUtils extends net.hasor.utils.ClassUtils {
 }

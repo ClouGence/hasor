@@ -20,7 +20,7 @@ import com.jfinal.plugin.IPlugin;
 import net.hasor.core.*;
 import net.hasor.core.EventListener;
 import net.hasor.core.context.TemplateAppContext;
-import net.hasor.core.utils.ExceptionUtils;
+import net.hasor.utils.ExceptionUtils;
 import net.hasor.web.startup.RuntimeFilter;
 import net.hasor.web.startup.RuntimeListener;
 

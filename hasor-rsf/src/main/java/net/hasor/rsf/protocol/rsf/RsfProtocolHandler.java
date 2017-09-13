@@ -16,7 +16,7 @@
 package net.hasor.rsf.protocol.rsf;
 import io.netty.channel.ChannelHandler;
 import net.hasor.core.AppContext;
-import net.hasor.core.future.BasicFuture;
+import net.hasor.utils.future.BasicFuture;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.OptionInfo;

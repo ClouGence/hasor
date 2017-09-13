@@ -16,8 +16,8 @@
 package net.hasor.core.setting;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
-import net.hasor.core.convert.ConverterUtils;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.utils.StringUtils;
+import net.hasor.utils.convert.ConverterUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

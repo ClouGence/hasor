@@ -17,7 +17,7 @@ package net.hasor.rsf.rpc.net;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import net.hasor.core.AppContext;
-import net.hasor.core.future.BasicFuture;
+import net.hasor.utils.future.BasicFuture;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;

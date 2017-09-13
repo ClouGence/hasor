@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.classcode;
-import net.hasor.core.classcode.asm.ClassReader;
-import net.hasor.core.classcode.asm.ClassVisitor;
-import net.hasor.core.classcode.asm.ClassWriter;
+import net.hasor.utils.asm.ClassReader;
+import net.hasor.utils.asm.ClassVisitor;
+import net.hasor.utils.asm.ClassWriter;
 
 import java.io.IOException;
 import java.io.InputStream;

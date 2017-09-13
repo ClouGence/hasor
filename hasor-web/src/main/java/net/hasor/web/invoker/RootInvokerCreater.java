@@ -17,7 +17,7 @@ package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerCreater;
 

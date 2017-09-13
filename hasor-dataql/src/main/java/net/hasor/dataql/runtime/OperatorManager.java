@@ -16,7 +16,7 @@
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.OperatorProcess;
 import net.hasor.dataql.runtime.operator.*;
-import net.hasor.dataql.utils.Objects;
+import net.hasor.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,7 +67,6 @@ class OperatorManager {
     //
     /** 添加 操作符 实现 */
     public void registryOperator(Symbol symbolType, String symbolName, Class<?> opeType, OperatorProcess process) {
-        Objects.assertIsNotNull(opeType);
         this.registryOperator(symbolType, symbolName, opeType, Object.class, process);
     }
     /** 添加 操作符 实现 */
@@ -83,7 +82,7 @@ class OperatorManager {
     }
     /** 添加 操作符 实现 */
     public void registryOperator(Symbol symbolType, String symbolName, Class<?> fstType, Class<?> secType, OperatorProcess process) {
-        if (symbolType == null || Objects.isBlank(symbolName))
+        if (symbolType == null || StringUtils.isBlank(symbolName))
             throw new NullPointerException("symbolType or symbolName is null.");
         if (fstType == null || secType == null)
             throw new NullPointerException("fstType or secType is null.");

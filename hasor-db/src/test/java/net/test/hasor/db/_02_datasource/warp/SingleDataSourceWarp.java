@@ -17,7 +17,7 @@ package net.test.hasor.db._02_datasource.warp;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 import net.hasor.core.Settings;
-import net.hasor.db.DBApiBinder;
+import net.hasor.db.DBModule;
 
 import javax.sql.DataSource;
 /***
@@ -36,6 +36,6 @@ public class SingleDataSourceWarp implements Module {
         //2.创建数据库连接池
         DataSource dataSource = C3p0DataSourceFactory.createDataSource(driverString, urlString, userString, pwdString);
         //5.启用默认事务拦截器
-        apiBinder.tryCast(DBApiBinder.class).addDataSource(dataSource);
+        apiBinder.installModule(new DBModule(dataSource));
     }
 }

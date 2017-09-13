@@ -23,7 +23,7 @@ import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.result.ValueModel;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
-import net.hasor.dataql.utils.Objects;
+import net.hasor.utils.StringUtils;
 
 import java.util.Collection;
 import java.util.Date;
@@ -49,7 +49,7 @@ class QueryInstance extends OptionSet implements Query {
     //
     @Override
     public void addParameter(String key, Object value) {
-        if (Objects.isBlank(key)) {
+        if (StringUtils.isBlank(key)) {
             return;
         }
         this.queryContext.put(key, value);

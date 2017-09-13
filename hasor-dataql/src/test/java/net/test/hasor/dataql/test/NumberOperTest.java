@@ -1,5 +1,5 @@
 package net.test.hasor.dataql.test;
-import net.hasor.dataql.utils.NumberUtils;
+import net.hasor.dataql.runtime.operator.OperatorUtils;
 import net.test.hasor.dataql.AbstractTaskTest;
 import org.junit.Test;
 
@@ -18,7 +18,7 @@ public class NumberOperTest extends AbstractTaskTest {
         double doubleValue = 111111111111111.0d;
         BigInteger bigValue = BigInteger.valueOf(123L);
         //
-        Number number = NumberUtils.add(floatValue, shortValue);
+        Number number = OperatorUtils.add(floatValue, shortValue);
         //
         System.out.println(number);
     }

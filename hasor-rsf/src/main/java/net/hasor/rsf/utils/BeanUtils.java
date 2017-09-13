@@ -19,5 +19,5 @@ package net.hasor.rsf.utils;
  * @version : 2011-6-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class BeanUtils extends net.hasor.core.utils.BeanUtils {
+public abstract class BeanUtils extends net.hasor.utils.BeanUtils {
 }

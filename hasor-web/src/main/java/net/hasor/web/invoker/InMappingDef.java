@@ -16,7 +16,7 @@
 package net.hasor.web.invoker;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Async;
 import net.hasor.web.annotation.HttpMethod;

@@ -16,7 +16,7 @@
 package net.test.hasor.core._05_plugins;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 import net.test.hasor.core._05_plugins.mods.OnLifeModule;
 import net.test.hasor.core._05_plugins.mods.SimpleModule;
 import org.junit.Test;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.console;
-import net.hasor.core.convert.ConverterUtils;
+import net.hasor.utils.convert.ConverterUtils;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.utils.StringUtils;

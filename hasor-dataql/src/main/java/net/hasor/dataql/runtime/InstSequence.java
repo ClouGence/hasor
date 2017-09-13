@@ -16,7 +16,7 @@
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.domain.compiler.Instruction;
-import net.hasor.dataql.utils.Objects;
+import net.hasor.utils.StringUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
 /**
@@ -133,7 +133,7 @@ public class InstSequence {
             } else {
                 strBuffer.append("  #");
             }
-            strBuffer.append(Objects.leftPad(String.valueOf(i), length, '0'));
+            strBuffer.append(StringUtils.leftPad(String.valueOf(i), length, '0'));
             strBuffer.append("  ");
             strBuffer.append(instList[i].toString());
             strBuffer.append("\n");

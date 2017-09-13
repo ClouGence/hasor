@@ -19,7 +19,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import net.hasor.core.Provider;
 import net.hasor.core.provider.InstanceProvider;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 

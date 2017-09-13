@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
-import net.hasor.core.convert.ConverterUtils;
-import net.hasor.core.future.BasicFuture;
-import net.hasor.core.utils.BeanUtils;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.utils.BeanUtils;
+import net.hasor.utils.StringUtils;
+import net.hasor.utils.convert.ConverterUtils;
+import net.hasor.utils.future.BasicFuture;
 import net.hasor.web.*;
 import net.hasor.web.annotation.*;
 import net.hasor.web.definition.AbstractDefinition;

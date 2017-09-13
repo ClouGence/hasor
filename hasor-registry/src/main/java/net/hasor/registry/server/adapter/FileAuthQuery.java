@@ -15,7 +15,6 @@
  */
 package net.hasor.registry.server.adapter;
 import net.hasor.core.*;
-import net.hasor.core.utils.IOUtils;
 import net.hasor.registry.domain.server.AuthInfo;
 import net.hasor.registry.domain.server.ServiceInfo;
 import net.hasor.registry.server.domain.Result;
@@ -24,6 +23,7 @@ import net.hasor.registry.server.manager.ServerSettings;
 import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.utils.AutoCloseInputStream;
 import net.hasor.rsf.utils.StringUtils;
+import net.hasor.utils.IOUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;

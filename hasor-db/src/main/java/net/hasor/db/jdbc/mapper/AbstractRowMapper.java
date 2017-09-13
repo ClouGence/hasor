@@ -15,7 +15,7 @@
  */
 package net.hasor.db.jdbc.mapper;
 import net.hasor.core.Hasor;
-import net.hasor.core.convert.ConverterUtils;
+import net.hasor.utils.convert.ConverterUtils;
 import net.hasor.db.jdbc.RowMapper;
 
 import java.math.BigDecimal;

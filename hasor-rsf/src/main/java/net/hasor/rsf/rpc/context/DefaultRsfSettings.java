@@ -16,7 +16,7 @@
 package net.hasor.rsf.rpc.context;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
-import net.hasor.core.convert.ConverterUtils;
+import net.hasor.utils.convert.ConverterUtils;
 import net.hasor.core.setting.SettingsWrap;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfOptionSet;

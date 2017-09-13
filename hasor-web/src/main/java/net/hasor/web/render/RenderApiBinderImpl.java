@@ -16,8 +16,8 @@
 package net.hasor.web.render;
 import net.hasor.core.*;
 import net.hasor.core.binder.ApiBinderWrap;
-import net.hasor.core.utils.ExceptionUtils;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.StringUtils;
 import net.hasor.web.RenderEngine;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.annotation.Render;

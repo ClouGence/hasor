@@ -20,8 +20,8 @@ import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.ScopManager;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.provider.InstanceProvider;
-import net.hasor.core.utils.BeanUtils;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.utils.BeanUtils;
+import net.hasor.utils.StringUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;

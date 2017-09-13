@@ -20,7 +20,7 @@ import net.hasor.db.jdbc.core.JdbcTemplate;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import static net.hasor.plugins.junit.HasorUnit.newID;
+import static net.test.hasor.db.junit.HasorUnit.newID;
 /**
  * 使用多数据源例子
  * @version : 2014年7月23日

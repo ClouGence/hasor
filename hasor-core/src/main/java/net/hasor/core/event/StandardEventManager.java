@@ -15,8 +15,8 @@
  */
 package net.hasor.core.event;
 import net.hasor.core.*;
-import net.hasor.core.future.BasicFuture;
-import net.hasor.core.utils.StringUtils;
+import net.hasor.utils.StringUtils;
+import net.hasor.utils.future.BasicFuture;
 
 import java.util.List;
 import java.util.concurrent.*;

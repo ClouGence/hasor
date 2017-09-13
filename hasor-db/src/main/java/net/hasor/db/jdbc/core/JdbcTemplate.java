@@ -15,14 +15,14 @@
  */
 package net.hasor.db.jdbc.core;
 import net.hasor.core.Hasor;
-import net.hasor.core.utils.IOUtils;
-import net.hasor.core.utils.ResourcesUtils;
 import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.mapper.BeanPropertyRowMapper;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
 import net.hasor.db.jdbc.mapper.SingleColumnRowMapper;
 import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
 import net.hasor.db.jdbc.result.LinkedCaseInsensitiveMap;
+import net.hasor.utils.IOUtils;
+import net.hasor.utils.ResourcesUtils;
 
 import javax.sql.DataSource;
 import java.io.*;
