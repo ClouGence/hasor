@@ -25,10 +25,11 @@
 ![架构](http://files.hasor.net/uploader/20170609/155318/CC2_403A_3BD5_D581.jpg "架构")
 
 - Core 职责是提供Bean容器、Module机制。
-- Data 提供了JDBC操作、事务管理、DataQL。
-- RSF 是一个完备的分布式 RPC 服务框架。
+- DB 提供了JDBC操作、事务管理。
+- DataQL 提供比 GraphQL 更加灵活好用的 服务查询引擎。
 - Web 是一个吸收了百家所长的 Web MVC框架。
 - Land 它类似于 Zookeeper 负责提供分布式一致性的支持。
+- RSF 是一个完备的分布式 RPC 服务框架。
 - Center 它是 RSF 的服务治理中心。
 
 ----------
