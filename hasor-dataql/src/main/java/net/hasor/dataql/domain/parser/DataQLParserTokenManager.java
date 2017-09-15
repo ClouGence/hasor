@@ -30,7 +30,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         case 0:
             if ((active0 & 0x202000000000000L) != 0L || (active1 & 0x1L) != 0L)
                 return 2;
-            if ((active0 & 0x600000000000L) != 0L || (active1 & 0x1000L) != 0L)
+            if ((active0 & 0x600000000000L) != 0L || (active1 & 0x800L) != 0L)
                 return 49;
             if ((active0 & 0x3ffe0000L) != 0L) {
                 jjmatchedKind = 74;
@@ -127,7 +127,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
             return jjStopAtPos(0, 30);
         case 45:
             jjmatchedKind = 46;
-            return jjMoveStringLiteralDfa1_0(0x0L, 0x1000L);
+            return jjMoveStringLiteralDfa1_0(0x0L, 0x800L);
         case 47:
             return jjStartNfaWithStates_0(0, 48, 26);
         case 58:
@@ -179,7 +179,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         case 125:
             return jjStopAtPos(0, 43);
         case 126:
-            return jjStopAtPos(0, 75);
+            return jjStopAtPos(0, 76);
         default:
             return jjMoveNfa_0(0, 0);
         }
@@ -214,8 +214,8 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
             if ((active0 & 0x2000000000000000L) != 0L) {
                 jjmatchedKind = 61;
                 jjmatchedPos = 1;
-            } else if ((active1 & 0x1000L) != 0L)
-                return jjStopAtPos(1, 76);
+            } else if ((active1 & 0x800L) != 0L)
+                return jjStopAtPos(1, 75);
             return jjMoveStringLiteralDfa2_0(active0, 0x4000000000000000L, active1, 0L);
         case 97:
             return jjMoveStringLiteralDfa2_0(active0, 0xb000000L, active1, 0L);
@@ -1006,7 +1006,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
     }
     /** Token literal values. */
     public static final String[] jjstrLiteralImages = { "", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "\151\146", "\145\154\163\145\151\146", "\145\154\163\145", "\145\156\144", "\162\145\164\165\162\156", "\164\150\162\157\167", "\145\170\151\164", "\166\141\162", "\154\141\155\142\144\141", "\164\162\165\145", "\146\141\154\163\145", "\156\165\154\154", "\157\160\164\151\157\156", "\54", "\72", "\77", "\73", "\75", "\47", "\42", "\50", "\51", "\133", "\135", "\173", null, "\175", "\41", "\53", "\55", "\52", "\57", "\45", "\134", "\76",
-            "\76\75", "\74", "\74\75", "\75\75", "\41\75", "\46", "\174", "\136", "\74\74", "\76\76", "\76\76\76", "\174\174", "\46\46", null, null, null, null, null, null, null, null, null, null, "\176", "\55\76", };
+            "\76\75", "\74", "\74\75", "\75\75", "\41\75", "\46", "\174", "\136", "\74\74", "\76\76", "\76\76\76", "\174\174", "\46\46", null, null, null, null, null, null, null, null, null, null, "\55\76", "\176", };
     protected Token jjFillToken() {
         final Token t;
         final String curTokenImage;

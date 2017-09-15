@@ -1,10 +1,12 @@
 # DataQL 服务查询引擎
 
-&emsp;&emsp;DataQL 是一款服务查询框架，如果您了解 GraphQL ，那么上手 DataQL 将非常块。使用DataQL 将会极大的满足业务灵活性上的开发需要。
+&emsp;&emsp;DataQL 是一款服务查询框架，你可以把任意的服务通过 DataQL 进行查询整合形成新的结果来使用。使用DataQL 将会极大的满足业务灵活性上的开发需要。
+
+&emsp;&emsp; 需要特别说明的是，DataQL 不是一门脚本语言！！！
 
 ----------
 ## 设计思想
-&emsp;&emsp;DataQL 查询语言用法借鉴了 GraphQL。不同于 GraphQL 的是 DataQL 增添了一些脚本特性，同时可以基于 DataQL 编写 UDF。这些新特性会让您用起来比 GraphQL 更加舒心。
+&emsp;&emsp;DataQL 的设计思想借鉴了 GraphQL。在借鉴的同时使用了全新的语法，同时增加了一些新特性。这些新特性会让您用起来比 GraphQL 更加舒心，更加接地气。
 
 ----------
 ## 架构

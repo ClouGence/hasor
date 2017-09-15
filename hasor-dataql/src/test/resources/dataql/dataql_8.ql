@@ -1,3 +1,6 @@
+
+// 说明：解析Json数据。
+
 return {
     "version": "1.0",
     "numberData" : [

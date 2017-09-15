@@ -468,37 +468,46 @@ Variable callerParamItem() : {                       Variable value = null;
 }
 
 // .参数集：(xx , xx , xx)
-void callerParamSet(CallerExpression callerExp) : {  Variable atParam = null;
+CallerExpression callerParamSet(String callName) :  {Variable atParam = null;
 } {
     LOOKAHEAD(2)
     (
-        <OPAR> <CPAR>
+        <OPAR> <CPAR>                               {return new CallerExpression(callName);}
     ) | (
+                                                    {CallerExpression callerExp = new CallerExpression(callName);}
         <OPAR>
             atParam = callerParamItem()             {callerExp.addParam(atParam);atParam = null;}
             (
                 <COMMA> atParam = callerParamItem() {callerExp.addParam(atParam);atParam = null;}
             )*
-        <CPAR>
+        <CPAR>                                      {return callerExp;}
+    ) | (
+                                                    {String quickSelect = null;}
+        "->" quickSelect = stringValue()            {return new QuickSelectCallerExpression(callName,new RouteExpression("$"+quickSelect));}
     )
 }
 
 // .函数调用
-CallerExpression funCall(String callName) : {        CallerExpression callerExp   = new CallerExpression(callName);
+CallerExpression funCall(String callName) : {        CallerExpression callerExp   = null;
                                                      Format           finalFormat = null;
+                                                     String           quickSelect = null;
 } {
-    callerParamSet(callerExp)
+    callerExp = callerParamSet(callName)
+    (
+        "->" quickSelect = stringValue()
+    )?
     (
         (
+            "~"                                     {finalFormat = new RawFormat();}
+        ) | (
                                                     {ListExpression listExp = null;}
             listExp = list()                        {finalFormat = new ListFormat(listExp);}
         ) | (
                                                     {ObjectExpression objectExp = null;}
             objectExp = object()                    {finalFormat = new ObjectFormat(objectExp);}
-        ) | (
-            "~"                                     {finalFormat = new RawFormat();}
         )
-    )                                               {callerExp.setResultFormat(finalFormat);}
+    )                                               {finalFormat = quickSelect==null?finalFormat:new RouFormat("$" + quickSelect,finalFormat);}
+                                                    {callerExp.setResultFormat(finalFormat);}
                                                     {return callerExp;}
 }
 

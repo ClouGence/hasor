@@ -1,6 +1,7 @@
-// 小数精度为 5
-option MAX_DECIMAL_DIGITS   = 5
 
+// 说明：基础四则运算，大数四则运算演示。
+
+option MAX_DECIMAL_DIGITS   = 5  // 小数精度为 5
 
 // 基础算数运算
 var basicNumber = [

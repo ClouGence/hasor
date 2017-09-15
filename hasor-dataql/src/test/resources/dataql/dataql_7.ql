@@ -1,3 +1,6 @@
+
+// 说明：基于 “dataql_1.ql”、“dataql_2.ql” 两个例子上稍微复杂一点的查询语句。
+
 var user_id = 12345;
 
 var fOrder = queryOrder ( user_id ) [

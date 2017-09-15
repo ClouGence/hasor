@@ -15,38 +15,30 @@
  */
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
-import net.hasor.dataql.domain.compiler.InstOpcodes;
 import net.hasor.dataql.domain.compiler.InstQueue;
 /**
- * 值路由
+ * 函数调用
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class RouteExpression extends Expression {
-    private String routeExpression;
-    public RouteExpression(String routeExpression) {
-        super();
-        this.routeExpression = routeExpression;
+public class QuickSelectCallerExpression extends CallerExpression {
+    private RouteExpression quickSelect = null;
+    public QuickSelectCallerExpression(String callName, RouteExpression quickSelect) {
+        super(callName);
+        this.quickSelect = quickSelect;
     }
     //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        // .方法区中
-        int index = stackTree.contains(this.routeExpression);
-        if (index >= 0) {
-            queue.inst(InstOpcodes.LOAD, index);
-            return;
+        int index = stackTree.contains(this.callName);
+        if (index > -1) {
+            // .存在函数定义
+            queue.inst(LOAD, index);
+        } else {
+            // .使用UDF进行调用
+            queue.inst(ROU, this.callName);
         }
-        // .整个堆栈
-        if (this.routeExpression.indexOf('.') >= 0) {
-            index = stackTree.contains(this.routeExpression.split("\\.")[0]);
-            if (index >= 0) {
-                queue.inst(InstOpcodes.LOAD, index);
-                return;
-            }
-        }
-        //
-        // .路由数据
-        queue.inst(InstOpcodes.ROU, this.routeExpression);
+        this.quickSelect.doCompiler(queue, stackTree);
+        super.doCompilerFormat(queue, stackTree);
     }
 }

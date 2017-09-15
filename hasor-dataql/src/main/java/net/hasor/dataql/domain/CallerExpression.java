@@ -25,7 +25,7 @@ import java.util.List;
  * @version : 2017-03-23
  */
 public class CallerExpression extends Expression {
-    private String         callName     = null;
+    protected final String callName;
     private List<Variable> varList      = null;
     private Format         resultFormat = null;
     public CallerExpression(String callName) {
@@ -65,6 +65,9 @@ public class CallerExpression extends Expression {
             }
         }
         //
+        this.doCompilerFormat(queue, stackTree);
+    }
+    public void doCompilerFormat(InstQueue queue, CompilerStack stackTree) {
         this.resultFormat.doCompiler(queue, stackTree);
     }
 }
