@@ -27,4 +27,6 @@ public interface QueryResult {
     public int getCode();
 
     public DataModel getData();
+
+    public long executionTime();
 }

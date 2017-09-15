@@ -17,7 +17,7 @@ package net.hasor.dataql.runtime;
 import net.hasor.dataql.OperatorProcess;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
-import net.hasor.dataql.domain.compiler.QueryType;
+import net.hasor.dataql.domain.compiler.QIL;
 /**
  * DataQL 运行时。
  * @author 赵永春(zyc@hasor.net)
@@ -41,8 +41,8 @@ public class QueryRuntime extends ClassLoader implements Option {
     }
     //
     /** 根据编译出来的 QueryType，创建对应的执行引擎。 */
-    public QueryEngine createEngine(QueryType queryType) {
-        return new QueryEngine(this, queryType);
+    public QueryEngine createEngine(QIL qil) {
+        return new QueryEngine(this, qil);
     }
     //
     //
@@ -53,7 +53,7 @@ public class QueryRuntime extends ClassLoader implements Option {
         return this.opeManager.findOperator(symbolType, symbolName, fstType, secType);
     }
     //
-    public Class<?> loadType(String type) throws ClassNotFoundException {
+    public Class<?> loadClass(String type) throws ClassNotFoundException {
         return super.loadClass(type);
     }
     @Override

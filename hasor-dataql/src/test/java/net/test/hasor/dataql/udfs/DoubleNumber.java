@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.test.hasor.dataql.udfs;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
 /**
  * @version : 2014-7-12
@@ -21,7 +22,7 @@ import net.hasor.dataql.UDF;
  */
 public class DoubleNumber implements UDF {
     @Override
-    public Object call(Object[] values) {
+    public Object call(Object[] values, Option readOnly) {
         return (double) 1234567.89012;
     }
 }

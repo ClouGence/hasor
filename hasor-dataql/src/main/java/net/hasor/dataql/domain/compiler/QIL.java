@@ -16,14 +16,14 @@
 package net.hasor.dataql.domain.compiler;
 import net.hasor.utils.StringUtils;
 /**
- * DataQL 查询
+ * Query intermediate language 中间查询语言
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-03
  */
-public class QueryType {
+public class QIL {
     private Instruction[][] queueSet;
     //
-    QueryType(Instruction[][] queueSet) {
+    QIL(Instruction[][] queueSet) {
         this.queueSet = queueSet;
     }
     //
@@ -51,7 +51,22 @@ public class QueryType {
         }
         strBuffer.append("\n");
     }
-    public Instruction[][] getArrays() {
-        return this.queueSet;
+    //
+    //
+    /** 方法总数 */
+    public int iqlPoolSize() {
+        return this.queueSet.length;
+    }
+    /** 方法的指令序列长度 */
+    public int iqlSize(int name) {
+        return this.queueSet[name].length;
+    }
+    /** 获取指令 */
+    public Instruction instOf(int name, int index) {
+        return this.queueSet[name][index];
+    }
+    /** 获取方法指令序列的迭代器 */
+    public Instruction[] iqlArrays(int name) {
+        return this.queueSet[name].clone();
     }
 }

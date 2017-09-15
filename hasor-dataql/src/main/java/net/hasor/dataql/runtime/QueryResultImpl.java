@@ -25,14 +25,17 @@ class QueryResultImpl implements QueryResult {
     private boolean   isThrow;
     private int       errorCode;
     private DataModel dataModel;
-    public QueryResultImpl(int errorCode, DataModel dataModel) {
+    private long      executionTime;
+    public QueryResultImpl(int errorCode, long executionTime, DataModel dataModel) {
         this.isThrow = false;
         this.errorCode = errorCode;
+        this.executionTime = executionTime;
         this.dataModel = dataModel;
     }
-    public QueryResultImpl(boolean isThrow, int errorCode, DataModel dataModel) {
+    public QueryResultImpl(boolean isThrow, int errorCode, long executionTime, DataModel dataModel) {
         this.isThrow = isThrow;
         this.errorCode = errorCode;
+        this.executionTime = executionTime;
         this.dataModel = dataModel;
     }
     public boolean isThrow() {
@@ -45,5 +48,9 @@ class QueryResultImpl implements QueryResult {
     @Override
     public DataModel getData() {
         return this.dataModel;
+    }
+    @Override
+    public long executionTime() {
+        return this.executionTime;
     }
 }

@@ -17,7 +17,7 @@ package net.hasor.dataql.binder;
 import net.hasor.core.*;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.domain.compiler.QueryCompiler;
-import net.hasor.dataql.domain.compiler.QueryType;
+import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.domain.parser.ParseException;
 import net.hasor.dataql.runtime.QueryRuntime;
 import net.hasor.dataql.udfs.collection.First;
@@ -42,7 +42,7 @@ public class DataQLModule implements Module {
         apiBinder.bindType(DataQL.class).toInstance(new DataQL() {
             @Override
             public Query createQuery(String qlString) throws ParseException {
-                QueryType queryType = QueryCompiler.compilerQuery(qlString);
+                QIL queryType = QueryCompiler.compilerQuery(qlString);
                 return runtime.createEngine(queryType).newQuery();
             }
         });

@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package net.test.hasor.dataql.udfs;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
+import net.hasor.utils.json.JSON;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +26,9 @@ import java.util.HashMap;
  */
 public class QueryOrder implements UDF {
     @Override
-    public Object call(Object[] values) {
+    public Object call(Object[] values, Option readOnly) {
+        System.out.println("QueryOrder -> params : " + JSON.toString(values));
+        //
         ArrayList<Object> orderList = new ArrayList<Object>();
         for (int i = 0; i < 2; i++) {
             HashMap<String, Object> udfData = new HashMap<String, Object>();

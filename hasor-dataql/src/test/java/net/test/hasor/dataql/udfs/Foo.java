@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 package net.test.hasor.dataql.udfs;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
+import net.hasor.utils.json.JSON;
 /**
  * @version : 2014-7-12
  * @author 赵永春 (zyc@byshell.org)
  */
 public class Foo implements UDF {
     @Override
-    public Object call(Object[] values) {
+    public Object call(Object[] values, Option readOnly) {
+        System.out.println("Foo -> params : " + JSON.toString(values));
+        //
         return 54321;
     }
 }

@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.domain.compiler.Instruction;
+import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.utils.StringUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,21 +26,21 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version : 2017-07-14
  */
 public class InstSequence {
-    private final int             name;         // 指令集中的序列名称
-    private final Instruction[][] queueSet;     // 指令集
-    private final int             startPosition;// 有效的起始位置
-    private final int             endPosition;  // 有效的终止位置
-    private final AtomicInteger   sequenceIndex;// 当前指令指针指向的序列位置
+    private final int           name;         // 指令集中的序列名称
+    private final QIL           queueSet;     // 指令集
+    private final int           startPosition;// 有效的起始位置
+    private final int           endPosition;  // 有效的终止位置
+    private final AtomicInteger sequenceIndex;// 当前指令指针指向的序列位置
     private boolean jumpMark = false;
     //
-    InstSequence(int name, Instruction[][] queueSet) {
+    InstSequence(int name, QIL queueSet) {
         this.name = name;
         this.queueSet = queueSet;
         this.startPosition = 0;
-        this.endPosition = this.queueSet[name].length;
+        this.endPosition = this.queueSet.iqlSize(name);
         this.sequenceIndex = new AtomicInteger(this.startPosition);
     }
-    InstSequence(int name, Instruction[][] queueSet, int startPosition, int endPosition) {
+    InstSequence(int name, QIL queueSet, int startPosition, int endPosition) {
         this.name = name;
         this.queueSet = queueSet;
         this.startPosition = startPosition;
@@ -52,23 +53,20 @@ public class InstSequence {
         if (this.queueSet == null) {
             return null;
         }
-        if (this.queueSet.length < this.name || this.queueSet[this.name] == null) {
-            return null;
-        }
         //
-        return this.queueSet[this.name][this.sequenceIndex.get()];
+        return this.queueSet.instOf(this.name, this.sequenceIndex.get());
     }
     /** 另一个方法序列 */
     public InstSequence methodSet(int address) {
-        if (address < 0 || address > this.queueSet.length) {
+        if (address < 0 || address > this.queueSet.iqlPoolSize()) {
             return null;
         }
         return new InstSequence(address, this.queueSet);
     }
     /** 根据 filter，来决定圈定  form to 范围的指令集。 */
     public InstSequence findSubSequence(InstFilter instFilter) {
-        Instruction[] curInstSet = this.queueSet[this.name];
-        int startIndex = this.sequenceIndex.get();  // 从下一条指令作为开始
+        Instruction[] curInstSet = this.queueSet.iqlArrays(this.name);
+        int startIndex = this.sequenceIndex.get();              // 从下一条指令作为开始
         int endIndex = curInstSet.length - 1;       // 结束位置，默认为最长
         for (int i = startIndex; i < endIndex; i++) {
             if (instFilter.isExit(curInstSet[i])) {
@@ -125,7 +123,7 @@ public class InstSequence {
         strBuffer.append(this.name);
         strBuffer.append("]\n");
         //
-        Instruction[] instList = this.queueSet[this.name];
+        Instruction[] instList = this.queueSet.iqlArrays(this.name);
         int length = String.valueOf(instList.length).length();
         for (int i = this.startPosition; i < this.endPosition; i++) {
             if (i == this.sequenceIndex.get()) {

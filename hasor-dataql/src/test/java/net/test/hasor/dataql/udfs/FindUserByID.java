@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package net.test.hasor.dataql.udfs;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
+import net.hasor.utils.json.JSON;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +27,9 @@ import java.util.Map;
  */
 public class FindUserByID implements UDF {
     @Override
-    public Object call(Object[] values) {
+    public Object call(Object[] values, Option readOnly) {
+        System.out.println("FindUserByID -> params : " + JSON.toString(values));
+        //
         ArrayList<Map<String, Object>> addressSet = new ArrayList<Map<String, Object>>();
         for (int i = 0; i < 5; i++) {
             HashMap<String, Object> udfData = new HashMap<String, Object>();

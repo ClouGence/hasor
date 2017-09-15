@@ -18,7 +18,7 @@ import net.hasor.dataql.OperatorProcess;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.UDF;
-import net.hasor.dataql.domain.compiler.QueryType;
+import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.runtime.inset.OpcodesPool;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
@@ -31,10 +31,10 @@ public class QueryEngine extends OptionSet implements ProcessContet {
     private final static OpcodesPool     opcodesPool = OpcodesPool.newPool();
     private final        UdfManager      udfManager  = new UdfManager();
     private final        OperatorManager opeManager  = new OperatorManager();
-    private final QueryType    queryType;
+    private final QIL          queryType;
     private final QueryRuntime runtime;
     //
-    QueryEngine(QueryRuntime runtime, QueryType queryType) {
+    QueryEngine(QueryRuntime runtime, QIL queryType) {
         super(runtime);
         this.runtime = runtime;
         this.queryType = queryType;
@@ -69,7 +69,7 @@ public class QueryEngine extends OptionSet implements ProcessContet {
     //
     @Override
     public Class<?> loadType(String type) throws ClassNotFoundException {
-        return this.runtime.loadType(type);
+        return this.runtime.loadClass(type);
     }
     @Override
     public void processInset(InstSequence sequence, MemStack memStack, LocalData local) throws ProcessException {

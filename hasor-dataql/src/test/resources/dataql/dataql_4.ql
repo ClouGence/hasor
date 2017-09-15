@@ -1,13 +1,19 @@
-return findUserByID (12345) [
-    name2
+var addrList_1 = findUserByID (12345) -> "addressList" [
+    {
+        "code",
+        "address"
+    }
 ]
 
-/*
-    LDC_D   12345
-    CALL    "findUserByID",1
-    ASA
-    ROU     "name2"
-    PUSH
-    ASE
-    END
-*/
+var data = findUserByID (12345)~;
+var addrList_2 = data -> "addressList" [
+    {
+        "code",
+        "address"
+    }
+]
+
+return {
+    "addrA" : addrList_1,
+    "addrB" : addrList_2
+};

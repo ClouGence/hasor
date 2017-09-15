@@ -1,4 +1,4 @@
-return findUserByID (12345) [
+var userList = findUserByID ( foo(54321)~ ) [
     {
         "name",
         "age",
@@ -6,18 +6,11 @@ return findUserByID (12345) [
     }
 ]
 
-/*
-    LDC_D  12345
-    CALL    "findUserByID",1
-    ASA
-    NO
-    ROU     "name"
-    PUT     "name"
-    ROU     "age"
-    PUT     "age"
-    ROU     "nick"
-    PUT     "nick"
-    PUSH
-    ASE
-    END
-*/
+var nameList = findUserByID (12345) [
+    name2
+]
+
+return {
+    "users" : userList,
+    "names" : nameList
+};

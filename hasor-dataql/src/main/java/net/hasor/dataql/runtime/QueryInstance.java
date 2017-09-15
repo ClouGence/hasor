@@ -16,7 +16,7 @@
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.*;
 import net.hasor.dataql.domain.compiler.InstOpcodes;
-import net.hasor.dataql.domain.compiler.QueryType;
+import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.result.DataModel;
 import net.hasor.dataql.result.ListModel;
 import net.hasor.dataql.result.ObjectModel;
@@ -35,11 +35,11 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 class QueryInstance extends OptionSet implements Query {
-    private QueryType           instSequence;
+    private QIL                 instSequence;
     private QueryEngine         queryEngine;
     private Map<String, Object> queryContext;
     //
-    QueryInstance(QueryEngine queryEngine, QueryType instSequence) {
+    QueryInstance(QueryEngine queryEngine, QIL instSequence) {
         super(queryEngine);
         this.queryEngine = queryEngine;
         this.instSequence = instSequence;
@@ -63,12 +63,13 @@ class QueryInstance extends OptionSet implements Query {
     }
     @Override
     public QueryResult execute() throws InvokerProcessException {
+        long startTime = System.currentTimeMillis();
         Object resultData = null;
         try {
             // .准备执行环境堆栈
             MemStack memStack = new MemStack(); // 堆栈
             LocalData local = new LocalData();  // DS
-            InstSequence sec = new InstSequence(0, this.instSequence.getArrays());
+            InstSequence sec = new InstSequence(0, this.instSequence);
             // .执行指令序列
             this.queryEngine.processInset(sec, memStack, local);
             // .结果集
@@ -81,9 +82,9 @@ class QueryInstance extends OptionSet implements Query {
                 DataModel res = evalQueryResult(errorData);
                 //
                 if (InstOpcodes.EXIT == ipe.getInstOpcodes()) {
-                    return new QueryResultImpl(errorCode, res);
+                    return new QueryResultImpl(errorCode, executionTime(startTime), res);
                 } else {
-                    return new QueryResultImpl(true, errorCode, res);
+                    return new QueryResultImpl(true, errorCode, executionTime(startTime), res);
                 }
             }
             if (e instanceof InvokerProcessException) {
@@ -94,7 +95,10 @@ class QueryInstance extends OptionSet implements Query {
         }
         // .返回值
         DataModel res = evalQueryResult(resultData);
-        return new QueryResultImpl(0, res);
+        return new QueryResultImpl(0, executionTime(startTime), res);
+    }
+    private static long executionTime(long startTime) {
+        return System.currentTimeMillis() - startTime;
     }
     private DataModel evalQueryResult(Object resultData) {
         if (resultData == null) {

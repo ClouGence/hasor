@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.test.hasor.dataql.udfs;
+import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
 
 import java.util.HashMap;
@@ -23,7 +24,7 @@ import java.util.HashMap;
  */
 public class UserManager implements UDF {
     @Override
-    public Object call(Object[] values) {
+    public Object call(Object[] values, Option readOnly) {
         HashMap<String, Object> udfData = new HashMap<String, Object>();
         udfData.put("userID", 1234567890);
         udfData.put("age", 31);

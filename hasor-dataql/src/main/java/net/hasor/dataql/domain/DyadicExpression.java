@@ -54,12 +54,15 @@ public class DyadicExpression extends Expression {
         queue.inst(DO, this.dyadicSymbol);
     }
 }
-// a + b * c - d
+//  a + b * c - d
 //      a,b,c,*,+,d,-
 //
-// a + b * c - d / e
+//  a + b * c - d / e
 //      [[a,(b,c,*),+],(d,e,/),-]
+// (a + b)* c
 //
+
+
 // c
 // +
 // *

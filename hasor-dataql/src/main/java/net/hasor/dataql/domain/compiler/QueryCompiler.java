@@ -24,13 +24,13 @@ import net.hasor.dataql.domain.parser.ParseException;
  */
 public class QueryCompiler {
     //
-    public static QueryType compilerQuery(String queryString) throws ParseException {
+    public static QIL compilerQuery(String queryString) throws ParseException {
         //
         BlockSet queryModel = DataQLParser.parserDataQL(queryString);
         InstQueue queue = new InstQueue();
         queryModel.doCompiler(queue, new CompilerStack());
         Instruction[][] queueSet = queue.buildArrays();
         //
-        return new QueryType(queueSet);
+        return new QIL(queueSet);
     }
 }

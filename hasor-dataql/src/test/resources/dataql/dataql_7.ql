@@ -1,46 +1,28 @@
-return {
-    "user" : userManager.findUserByID (uid) {
-        "uid" : userID,
-        "name",
-        "age",
-        "nick"
-    },
-    "orderList" : queryOrder ( user.uid ) [
-        {
-            "orderID",
-            "itemID",
-            "itemName"
-        }
-    ]
-}
+var user_id = 12345;
 
-/*
-    NO
-    ROU     "uid"
-    CALL    "userManager.findUserByID"
-    ASO
-    ROU     "userID"
-    PUT     "uid"
-    ROU     "name"
-    PUT     "name"
-    ROU     "age"
-    PUT     "age"
-    ROU     "nick"
-    PUT     "nick"
-    ASE
-    PUT     "user"
-    ROU     "user.uid"
-    CALL    "queryOrder"
-    ASA
-    NO
-    ROU     "orderID"
-    PUT     "orderID"
-    ROU     "itemID"
-    PUT     "itemID"
-    ROU     "itemName"
-    PUT     "itemName"
-    PUSH
-    ASE
-    PUT     "orderList"
-    END
-*/
+var fOrder = queryOrder ( user_id ) [
+    {
+        "orderID",
+        "itemID",
+        "itemName"
+    }
+];
+
+var fUser = {
+    "userInfo" : findUserByID (user_id) {
+        "userID",
+        "status",
+        "addressList" : foreach( addressList ) [
+            {
+                "zip",
+                "address"
+            }
+        ]
+    },
+    "source" : "DataQL"
+};
+
+return {
+    "user" : fUser,
+    "orderList" : fOrder
+};
