@@ -110,7 +110,7 @@ TOKEN:{
     | <HEX_NUM     :             (<ZERO> ["x","X"]) (["0"-"9","a"-"f","A"-"F"])+ >  // 十六进制：0x12345
     | <OCTAL_NUM   :             (<ZERO> ["o","O"]) (["0"-"7"])+ >                  // 八 进 制：0o1234567
     | <BINARY_NUM  :             (<ZERO> ["b","B"]) (["0"-"7"])+ >                  // 二 进 制：0b01010101100
-	| <DECIMAL_NUM : (<SYMBOL>)? (<DIGIT>)+ "." (<DIGIT>)*
+	| <DECIMAL_NUM : (<SYMBOL>)? (<DIGIT>)+ ("." (<DIGIT>)*)?
 	                             (["e","E"] (<SYMBOL>)? (<DIGIT>)+ )? >             // 浮点数，包含科学计数法
 }
 

@@ -85,6 +85,7 @@ public class TestProcessMain {
     // --------------------------------------------------------------------------------------------
     @Test
     public void mainALL() throws Exception {
-        this.printTaskTree("/dataql/dataql_" + 3 + ".ql");
+        this.printTaskTree("/dataql/dataql_" + 8 + ".ql");
+//        this.printTaskTree("/test/test_" + 1 + ".ql");
     }
 }
