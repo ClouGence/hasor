@@ -468,34 +468,42 @@ Variable callerParamItem() : {                       Variable value = null;
 }
 
 // .参数集：(xx , xx , xx)
-CallerExpression callerParamSet(String callName) :  {Variable atParam = null;
+CallerExpression callerParamSet(String callName) :  {Variable atParam           = null;
+                                                     String   quickSelect       = null;
+                                                     CallerExpression callerExp = new CallerExpression(callName);
 } {
-    LOOKAHEAD(2)
     (
-        <OPAR> <CPAR>                               {return new CallerExpression(callName);}
-    ) | (
-                                                    {CallerExpression callerExp = new CallerExpression(callName);}
-        <OPAR>
-            atParam = callerParamItem()             {callerExp.addParam(atParam);atParam = null;}
+        (
+            <OPAR>
             (
-                <COMMA> atParam = callerParamItem() {callerExp.addParam(atParam);atParam = null;}
-            )*
-        <CPAR>                                      {return callerExp;}
-    ) | (
-                                                    {String quickSelect = null;}
-        "->" quickSelect = stringValue()            {return new QuickSelectCallerExpression(callName,new RouteExpression("$"+quickSelect));}
-    )
+                (
+                    <CPAR>
+                ) | (
+                    atParam = callerParamItem()     {callerExp.addParam(atParam);atParam = null;}
+                    (
+                        <COMMA> atParam = callerParamItem()
+                                                    {callerExp.addParam(atParam);atParam = null;}
+                    )*
+                    <CPAR>
+                )
+            )
+            (
+                "->" quickSelect = stringValue()    {callerExp.setQuickSelect(false,quickSelect);}
+            )?
+        ) | (
+            "->"
+            (
+                 quickSelect = stringValue()
+            )?                                      {callerExp.setQuickSelect(true,quickSelect);}
+        )
+    )                                               {return callerExp;}
 }
 
 // .函数调用
 CallerExpression funCall(String callName) : {        CallerExpression callerExp   = null;
                                                      Format           finalFormat = null;
-                                                     String           quickSelect = null;
 } {
     callerExp = callerParamSet(callName)
-    (
-        "->" quickSelect = stringValue()
-    )?
     (
         (
             "~"                                     {finalFormat = new RawFormat();}
@@ -506,8 +514,7 @@ CallerExpression funCall(String callName) : {        CallerExpression callerExp 
                                                     {ObjectExpression objectExp = null;}
             objectExp = object()                    {finalFormat = new ObjectFormat(objectExp);}
         )
-    )                                               {finalFormat = quickSelect==null?finalFormat:new RouFormat("$" + quickSelect,finalFormat);}
-                                                    {callerExp.setResultFormat(finalFormat);}
+    )                                               {callerExp.setResultFormat(finalFormat);}
                                                     {return callerExp;}
 }
 

@@ -16,6 +16,7 @@
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+import net.hasor.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +27,10 @@ import java.util.List;
  */
 public class CallerExpression extends Expression {
     protected final String callName;
-    private List<Variable> varList      = null;
-    private Format         resultFormat = null;
+    private boolean         justRule     = false;
+    private List<Variable>  varList      = null;
+    private Format          resultFormat = null;
+    private RouteExpression quickSelect  = null;
     public CallerExpression(String callName) {
         super();
         this.callName = callName;
@@ -44,27 +47,47 @@ public class CallerExpression extends Expression {
             this.varList.add(paramValue);
         }
     }
+    public void setQuickSelect(boolean justRule, String quickSelect) {
+        this.justRule = justRule;
+        if (StringUtils.isNotBlank(quickSelect)) {
+            quickSelect = "$" + quickSelect;
+        }
+        this.quickSelect = new RouteExpression(quickSelect);
+    }
     //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        //
-        // .输出参数
-        for (Variable var : this.varList) {
-            var.doCompiler(queue, stackTree);
-        }
-        // .CALL指令
-        {
+        if (!this.justRule) {
+            //
+            // .输出参数
+            for (Variable var : this.varList) {
+                var.doCompiler(queue, stackTree);
+            }
+            // .CALL指令
+            {
+                int index = stackTree.contains(this.callName);
+                if (index > -1) {
+                    // .存在函数定义
+                    queue.inst(LOAD, index);
+                    queue.inst(LCALL, this.varList.size());
+                } else {
+                    // .使用UDF进行调用
+                    queue.inst(CALL, this.callName, this.varList.size());
+                }
+            }
+        } else {
             int index = stackTree.contains(this.callName);
             if (index > -1) {
                 // .存在函数定义
                 queue.inst(LOAD, index);
-                queue.inst(LCALL, this.varList.size());
             } else {
-                // .使用UDF进行调用
-                queue.inst(CALL, this.callName, this.varList.size());
+                queue.inst(ROU, this.callName);
             }
         }
         //
+        if (this.quickSelect != null) {
+            this.quickSelect.doCompiler(queue, stackTree);
+        }
         this.doCompilerFormat(queue, stackTree);
     }
     public void doCompilerFormat(InstQueue queue, CompilerStack stackTree) {

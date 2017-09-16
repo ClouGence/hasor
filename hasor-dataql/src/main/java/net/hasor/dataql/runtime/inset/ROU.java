@@ -87,7 +87,7 @@ class ROU implements InsetProcess {
         if (rouPath.startsWith("{") && rouPath.endsWith("}")) {
             rouPath = rouPath.substring(1, rouPath.length() - 1);
         }
-        // .数据路由
+        // .数据路由(一般出现在 ASX...ASE 之间使用)
         if (rouType == RouType.Type_1) {
             memStack.push(this.routeByStack(rouPath, local, 0));
             return;

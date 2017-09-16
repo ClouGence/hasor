@@ -17,6 +17,7 @@ package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstOpcodes;
 import net.hasor.dataql.domain.compiler.InstQueue;
+import net.hasor.utils.StringUtils;
 /**
  * 值路由
  * @author 赵永春(zyc@hasor.net)
@@ -31,6 +32,10 @@ public class RouteExpression extends Expression {
     //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
+        if (StringUtils.isBlank(this.routeExpression)) {
+            return;
+        }
+        //
         // .方法区中
         int index = stackTree.contains(this.routeExpression);
         if (index >= 0) {

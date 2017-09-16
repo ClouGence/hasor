@@ -381,17 +381,7 @@
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod18">callerParamSet</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;OPAR&gt; &lt;CPAR&gt; )</TD>
-</TR>
-<TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
-<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( &lt;OPAR&gt; <A HREF="#prod16">callerParamItem</A> ( &lt;COMMA&gt; <A HREF="#prod16">callerParamItem</A> )* &lt;CPAR&gt; )</TD>
-</TR>
-<TR>
-<TD ALIGN=RIGHT VALIGN=BASELINE></TD>
-<TD ALIGN=CENTER VALIGN=BASELINE>|</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE>( "-&gt;" <A HREF="#prod2">stringValue</A> )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE>( ( &lt;OPAR&gt; ( ( &lt;CPAR&gt; ) | ( <A HREF="#prod16">callerParamItem</A> ( &lt;COMMA&gt; <A HREF="#prod16">callerParamItem</A> )* &lt;CPAR&gt; ) ) ( "-&gt;" <A HREF="#prod2">stringValue</A> )? ) | ( "-&gt;" ( <A HREF="#prod2">stringValue</A> )? ) )</TD>
 </TR>
  <!-- Special token -->
  <TR>
@@ -404,7 +394,7 @@
 <TR>
 <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod15">funCall</A></TD>
 <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod18">callerParamSet</A> ( "-&gt;" <A HREF="#prod2">stringValue</A> )? ( ( "~" ) | ( <A HREF="#prod6">list</A> ) | ( <A HREF="#prod8">object</A> ) )</TD>
+<TD ALIGN=LEFT VALIGN=BASELINE><A HREF="#prod18">callerParamSet</A> ( ( "~" ) | ( <A HREF="#prod6">list</A> ) | ( <A HREF="#prod8">object</A> ) )</TD>
 </TR>
  <!-- Special token -->
  <TR>
