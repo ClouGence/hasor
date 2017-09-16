@@ -37,23 +37,13 @@
 
     <!-- 引用依赖 -->
     <dependencies>
-        <!-- Log依赖 -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <!-- Commons -->
+        <!-- Hasor -->
         <dependency>
             <groupId>net.hasor</groupId>
-            <artifactId>hasor-commons</artifactId>
+            <artifactId>hasor-core</artifactId>
             <version>${hasor.version}</version>
         </dependency>
         <!-- Hasor-Core -->
-        <!--<dependency>-->
-        <!--<groupId>net.hasor</groupId>-->
-        <!--<artifactId>hasor-core</artifactId>-->
-        <!--<version>${hasor.version}</version>-->
-        <!--</dependency>-->
 
         <!-- 整合 MyBatis 提供MyBatis插件, 最终由项目环境的 MyBatis 提供依赖 -->
         <dependency>
