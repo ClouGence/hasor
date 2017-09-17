@@ -7,10 +7,7 @@ import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.domain.compiler.QueryCompiler;
 import net.hasor.dataql.domain.parser.ParseException;
 import net.hasor.dataql.runtime.QueryRuntime;
-import net.hasor.dataql.udfs.collection.First;
-import net.hasor.dataql.udfs.collection.Foreach;
-import net.hasor.dataql.udfs.collection.Last;
-import net.hasor.dataql.udfs.collection.Limit;
+import net.hasor.dataql.udfs.collection.*;
 import net.hasor.utils.IOUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.test.hasor.dataql.udfs.*;
@@ -33,6 +30,7 @@ public class TestProcessMain {
         this.runtime.addShareUDF("first", new First());
         this.runtime.addShareUDF("last", new Last());
         this.runtime.addShareUDF("limit", new Limit());
+        this.runtime.addShareUDF("addTo", new AddTo());
         //
         this.runtime.addShareUDF("findUserByID", new FindUserByID());
         this.runtime.addShareUDF("queryOrder", new QueryOrder());
@@ -85,9 +83,9 @@ public class TestProcessMain {
     // --------------------------------------------------------------------------------------------
     @Test
     public void mainALL() throws Exception {
-        System.out.println(16      &   19 );
+        System.out.println(16 & 19);
         //        for (int i = 0; i <= 11; i++)
-        this.printTaskTree("/dataql/dataql_" + 12 + ".ql");
-        //        this.printTaskTree("/test/test_" + 4 + ".ql");
+        //        this.printTaskTree("/dataql/dataql_" + 7 + ".ql");
+        this.printTaskTree("/test/test_" + 1 + ".ql");
     }
 }
