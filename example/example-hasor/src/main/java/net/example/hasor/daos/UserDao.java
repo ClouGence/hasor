@@ -1,8 +1,8 @@
 package net.example.hasor.daos;
 import net.example.hasor.domain.UserDTO;
 import net.hasor.core.Inject;
-import net.hasor.data.jdbc.core.JdbcTemplate;
-import net.hasor.data.jdbc.paramer.BeanSqlParameterSource;
+import net.hasor.db.jdbc.core.JdbcTemplate;
+import net.hasor.db.jdbc.paramer.BeanSqlParameterSource;
 
 import java.sql.SQLException;
 import java.util.List;

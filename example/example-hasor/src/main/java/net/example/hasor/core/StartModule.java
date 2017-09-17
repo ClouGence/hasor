@@ -23,7 +23,8 @@ import net.example.hasor.provider.MessageServiceImpl;
 import net.example.hasor.provider.UserServiceImpl;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
-import net.hasor.data.DataApiBinder;
+import net.hasor.db.JdbcModule;
+import net.hasor.db.Level;
 import net.hasor.plugins.render.FreemarkerRender;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.web.WebApiBinder;
@@ -75,7 +76,7 @@ public class StartModule extends WebModule {
         dataSource.setMaxIdleTime(25000);
         //
         // .数据库框架
-        apiBinder.tryCast(DataApiBinder.class).addDataSource(dataSource);
+        apiBinder.installModule(new JdbcModule(Level.Full, dataSource));
     }
     //
     private void loadRpc(RsfApiBinder apiBinder) {
