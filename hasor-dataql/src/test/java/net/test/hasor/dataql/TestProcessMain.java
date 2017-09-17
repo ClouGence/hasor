@@ -5,7 +5,7 @@ import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.domain.compiler.QueryCompiler;
-import net.hasor.dataql.domain.parser.ParseException;
+import net.hasor.dataql.result.LambdaModel;
 import net.hasor.dataql.runtime.QueryRuntime;
 import net.hasor.dataql.udfs.collection.*;
 import net.hasor.utils.IOUtils;
@@ -37,8 +37,9 @@ public class TestProcessMain {
         this.runtime.addShareUDF("userManager.findUserByID", new UserManager());
         this.runtime.addShareUDF("foo", new Foo());
         this.runtime.addShareUDF("double", new DoubleNumber());
+        this.runtime.addShareUDF("filter", new Filter());
     }
-    private void printTaskTree(String queryResource) throws IOException, ParseException {
+    private void printTaskTree(String queryResource) throws IOException {
         InputStream inStream = ResourcesUtils.getResourceAsStream(queryResource);
         if (inStream == null) {
             return;
@@ -72,8 +73,14 @@ public class TestProcessMain {
                     maxTime = executionTime;
                 }
             }
-            System.out.println((sumTime / queryCount) + "/" + maxTime + " - " + JSON.toJSON(result).toString());
-        } catch (Exception e) {
+            //
+            Object data = result.getData();
+            if (data instanceof LambdaModel) {
+                data = ((LambdaModel) data).call(new Object[] { -1 }, null);
+            }
+            //
+            System.out.println((sumTime / queryCount) + "/" + maxTime + " - " + JSON.toJSON(data).toString());
+        } catch (Throwable e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }

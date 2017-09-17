@@ -18,12 +18,10 @@ import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.UDF;
 import net.hasor.dataql.domain.compiler.Instruction;
-import net.hasor.dataql.runtime.InsetProcess;
-import net.hasor.dataql.runtime.InstSequence;
-import net.hasor.dataql.runtime.OptionReadOnly;
-import net.hasor.dataql.runtime.ProcessContet;
+import net.hasor.dataql.runtime.*;
 import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.struts.LambdaCallStruts;
 /**
  * CALL，指令是用于发起对 UDF 的调用。
  * @author 赵永春(zyc@hasor.net)
@@ -42,7 +40,18 @@ class CALL implements InsetProcess {
         //
         Object[] paramArrays = new Object[paramCount];
         for (int i = 0; i < paramCount; i++) {
-            paramArrays[paramCount - 1 - i] = memStack.pop();
+            int paramIndex = paramCount - 1 - i;
+            Object paramObj = memStack.pop();
+            //
+            if (paramObj instanceof LambdaCallStruts) {
+                int callAddress = ((LambdaCallStruts) paramObj).getMethod();
+                InstSequence methodSeq = sequence.methodSet(callAddress);
+                MemStack sub = memStack.create();
+                paramArrays[paramIndex] = new LambdaCallProxy(methodSeq, sub, local, context);
+                continue;
+            }
+            //
+            paramArrays[paramIndex] = paramObj;
         }
         //
         UDF udf = context.findUDF(udfName);
@@ -50,7 +59,11 @@ class CALL implements InsetProcess {
             throw new InvokerProcessException(getOpcode(), "CALL -> udf '" + udfName + "' is not found");
         }
         //
-        Object result = udf.call(paramArrays, new OptionReadOnly(context));
-        memStack.push(result);
+        try {
+            Object result = udf.call(paramArrays, new OptionReadOnly(context));
+            memStack.push(result);
+        } catch (Throwable e) {
+            throw new InvokerProcessException(getOpcode(), "call '" + udfName + "' error.", e);
+        }
     }
 }

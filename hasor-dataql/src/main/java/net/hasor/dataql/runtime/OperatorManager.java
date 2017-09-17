@@ -59,6 +59,7 @@ class OperatorManager {
         DEFAULT.registryOperator(Symbol.Dyadic, ">>", classSet, classSet, new BinaryDOP());
         DEFAULT.registryOperator(Symbol.Dyadic, ">>>", classSet, classSet, new BinaryDOP());
         //
+        DEFAULT.registryOperator(Symbol.Dyadic, "+", Object.class, Object.class, new StringJointDOP());
     }
 
     //

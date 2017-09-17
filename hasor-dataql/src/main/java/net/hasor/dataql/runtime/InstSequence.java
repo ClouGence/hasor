@@ -26,35 +26,43 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version : 2017-07-14
  */
 public class InstSequence {
-    private final int           name;         // 指令集中的序列名称
+    private final int           address;         // 指令集中的序列地址
     private final QIL           queueSet;     // 指令集
     private final int           startPosition;// 有效的起始位置
     private final int           endPosition;  // 有效的终止位置
     private final AtomicInteger sequenceIndex;// 当前指令指针指向的序列位置
     private boolean jumpMark = false;
     //
-    InstSequence(int name, QIL queueSet) {
-        this.name = name;
+    InstSequence(int address, QIL queueSet) {
+        this.address = address;
         this.queueSet = queueSet;
         this.startPosition = 0;
-        this.endPosition = this.queueSet.iqlSize(name);
+        this.endPosition = this.queueSet.iqlSize(address);
         this.sequenceIndex = new AtomicInteger(this.startPosition);
     }
-    InstSequence(int name, QIL queueSet, int startPosition, int endPosition) {
-        this.name = name;
+    InstSequence(int address, QIL queueSet, int startPosition, int endPosition) {
+        this.address = address;
         this.queueSet = queueSet;
         this.startPosition = startPosition;
         this.endPosition = endPosition;
         this.sequenceIndex = new AtomicInteger(this.startPosition);
     }
     //
+    /** 当前指令序列的地址 */
+    public int getAddress() {
+        return this.address;
+    }
+    /** 克隆一个 */
+    public InstSequence clone() {
+        return new InstSequence(this.address, this.queueSet);
+    }
     /** 当前指令 */
     public Instruction currentInst() {
         if (this.queueSet == null) {
             return null;
         }
         //
-        return this.queueSet.instOf(this.name, this.sequenceIndex.get());
+        return this.queueSet.instOf(this.address, this.sequenceIndex.get());
     }
     /** 另一个方法序列 */
     public InstSequence methodSet(int address) {
@@ -65,7 +73,7 @@ public class InstSequence {
     }
     /** 根据 filter，来决定圈定  form to 范围的指令集。 */
     public InstSequence findSubSequence(InstFilter instFilter) {
-        Instruction[] curInstSet = this.queueSet.iqlArrays(this.name);
+        Instruction[] curInstSet = this.queueSet.iqlArrays(this.address);
         int startIndex = this.sequenceIndex.get();              // 从下一条指令作为开始
         int endIndex = curInstSet.length - 1;       // 结束位置，默认为最长
         for (int i = startIndex; i < endIndex; i++) {
@@ -74,7 +82,7 @@ public class InstSequence {
                 break;
             }
         }
-        return new InstSequence(this.name, this.queueSet, startIndex + 1, endIndex);
+        return new InstSequence(this.address, this.queueSet, startIndex + 1, endIndex);
     }
     //
     /** 是否还有更多指令等待执行。 */
@@ -120,10 +128,10 @@ public class InstSequence {
     public String toString() {
         StringBuilder strBuffer = new StringBuilder();
         strBuffer.append("[");
-        strBuffer.append(this.name);
+        strBuffer.append(this.address);
         strBuffer.append("]\n");
         //
-        Instruction[] instList = this.queueSet.iqlArrays(this.name);
+        Instruction[] instList = this.queueSet.iqlArrays(this.address);
         int length = String.valueOf(instList.length).length();
         for (int i = this.startPosition; i < this.endPosition; i++) {
             if (i == this.sequenceIndex.get()) {

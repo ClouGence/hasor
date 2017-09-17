@@ -13,13 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql;
+package net.test.hasor.dataql.udfs;
+import net.hasor.dataql.Option;
+import net.hasor.dataql.UDF;
+import net.hasor.utils.json.JSON;
 /**
- * UDF
- * @author 赵永春(zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2014-7-12
+ * @author 赵永春 (zyc@byshell.org)
  */
-public interface UDF {
-    /** 执行服务调用 */
-    public Object call(Object[] values, Option readOnly) throws Throwable;
+public class Filter implements UDF {
+    @Override
+    public Object call(Object[] values, Option readOnly) throws Throwable {
+        System.out.println("Filter -> params : " + JSON.toString(values));
+        return ((UDF) values[1]).call(values, readOnly);
+    }
 }

@@ -31,7 +31,7 @@ import net.hasor.dataql.runtime.mem.MemStack;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-class EXIT implements InsetProcess {
+class EXIT extends AbstractReturn implements InsetProcess {
     @Override
     public int getOpcode() {
         return EXIT;
@@ -40,6 +40,8 @@ class EXIT implements InsetProcess {
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
         Object exitData = memStack.pop();
         int exitCode = (Integer) memStack.pop();
+        //
+        exitData = specialProcess(sequence, memStack, local, context, exitData);
         throw new BreakProcessException(this.getOpcode(), exitCode, exitData);
     }
 }

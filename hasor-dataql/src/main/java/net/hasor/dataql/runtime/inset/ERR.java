@@ -30,7 +30,7 @@ import net.hasor.dataql.runtime.mem.MemStack;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-class ERR implements InsetProcess {
+class ERR extends AbstractReturn implements InsetProcess {
     @Override
     public int getOpcode() {
         return ERR;
@@ -39,6 +39,8 @@ class ERR implements InsetProcess {
     public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
         Object errorMsg = memStack.pop();
         int errorCode = (Integer) memStack.pop();
+        //
+        errorMsg = specialProcess(sequence, memStack, local, context, errorMsg);
         throw new BreakProcessException(this.getOpcode(), errorCode, errorMsg);
     }
 }

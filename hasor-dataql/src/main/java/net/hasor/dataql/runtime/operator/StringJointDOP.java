@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql;
+package net.hasor.dataql.runtime.operator;
+import net.hasor.dataql.InvokerProcessException;
+import net.hasor.dataql.OperatorProcess;
+import net.hasor.dataql.Option;
 /**
- * UDF
+ * 字符串拼接
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface UDF {
-    /** 执行服务调用 */
-    public Object call(Object[] values, Option readOnly) throws Throwable;
+public class StringJointDOP extends OperatorProcess {
+    @Override
+    public Object doProcess(int opcode, String operator, Object[] args, Option option) throws InvokerProcessException {
+        String str1 = args[0] == null ? "null" : args[0].toString();
+        String str2 = args[1] == null ? "null" : args[1].toString();
+        return str1 + str2;
+    }
 }

@@ -44,6 +44,11 @@ public class LocalData implements FindData {
         }
         return this.dataPool.get(this.dataPool.size() - 1 - depth);
     }
+    public LocalData clone() {
+        LocalData localData = new LocalData();
+        localData.dataPool = (Stack<Object>) this.dataPool.clone();
+        return localData;
+    }
     @Override
     public Object dataOfHead() {
         return this.peek();

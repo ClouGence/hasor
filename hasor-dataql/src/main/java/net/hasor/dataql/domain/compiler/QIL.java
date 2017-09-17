@@ -58,15 +58,15 @@ public class QIL {
         return this.queueSet.length;
     }
     /** 方法的指令序列长度 */
-    public int iqlSize(int name) {
-        return this.queueSet[name].length;
+    public int iqlSize(int address) {
+        return this.queueSet[address].length;
     }
     /** 获取指令 */
-    public Instruction instOf(int name, int index) {
-        return this.queueSet[name][index];
+    public Instruction instOf(int address, int index) {
+        return this.queueSet[address][index];
     }
     /** 获取方法指令序列的迭代器 */
-    public Instruction[] iqlArrays(int name) {
-        return this.queueSet[name].clone();
+    public Instruction[] iqlArrays(int address) {
+        return this.queueSet[address].clone();
     }
 }

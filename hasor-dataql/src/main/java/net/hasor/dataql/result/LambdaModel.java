@@ -13,13 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql;
+package net.hasor.dataql.result;
+import net.hasor.dataql.Option;
+import net.hasor.dataql.UDF;
 /**
- * UDF
+ * Lambda 函数
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface UDF {
-    /** 执行服务调用 */
-    public Object call(Object[] values, Option readOnly) throws Throwable;
+public class LambdaModel implements DataModel, UDF {
+    private UDF lambdaUdf = null;
+    public LambdaModel(UDF lambdaUdf) {
+        this.lambdaUdf = lambdaUdf;
+    }
+    //
+    @Override
+    public Object call(Object[] values, Option readOnly) throws Throwable {
+        return this.lambdaUdf.call(values, readOnly);
+    }
 }

@@ -41,7 +41,7 @@ class DefineUDF implements UDF, AppContextAware {
         return this.name;
     }
     @Override
-    public Object call(Object[] values, Option readOnly) {
+    public Object call(Object[] values, Option readOnly) throws Throwable {
         return this.target.call(values, readOnly);
     }
 }
