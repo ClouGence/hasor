@@ -58,8 +58,10 @@ class OperatorManager {
         DEFAULT.registryOperator(Symbol.Dyadic, "<<", classSet, classSet, new BinaryDOP());
         DEFAULT.registryOperator(Symbol.Dyadic, ">>", classSet, classSet, new BinaryDOP());
         DEFAULT.registryOperator(Symbol.Dyadic, ">>>", classSet, classSet, new BinaryDOP());
-        //
+        // .通用类型运算
         DEFAULT.registryOperator(Symbol.Dyadic, "+", Object.class, Object.class, new StringJointDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "==", Object.class, Object.class, new ObjectEqDOP());
+        DEFAULT.registryOperator(Symbol.Dyadic, "!=", Object.class, Object.class, new ObjectEqDOP());
     }
 
     //

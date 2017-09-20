@@ -2,16 +2,16 @@
 <config xmlns="http://project.hasor.net/hasor/schema/hasor-dataql">
     <hasor>
         <!-- 包扫描覆盖范围，逗号间隔 -->
-        <loadPackages>net.hasor.dataql.*</loadPackages>
+        <loadPackages>net.hasor.eval.*</loadPackages>
 
         <!-- 默认要装载的模块 -->
         <modules>
-            <module>net.hasor.dataql.binder.DataQLModule</module>
+            <module>net.hasor.eval.binder.DataQLModule</module>
         </modules>
 
         <!-- ApiBinder 扩展（多个 type 可以指定同一个实现类，Hasor 会自动映射到同一个实例对象上） -->
         <apiBinderSet>
-            <binder type="net.hasor.dataql.binder.DataApiBinder">net.hasor.dataql.binder.DataApiBinderCreater</binder>
+            <binder type="net.hasor.eval.binder.DataApiBinder">net.hasor.eval.binder.DataApiBinderCreater</binder>
         </apiBinderSet>
 
     </hasor>

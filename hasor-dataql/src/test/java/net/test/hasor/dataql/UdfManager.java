@@ -58,6 +58,7 @@ public class UdfManager {
             udfData.put("name", "this is name.");
             udfData.put("name2", "this is name2.");
             udfData.put("age", 31);
+            udfData.put("sex", "F");
             udfData.put("nick", "this is nick.");
             udfData.put("userID", 1111111);
             udfData.put("status", true);

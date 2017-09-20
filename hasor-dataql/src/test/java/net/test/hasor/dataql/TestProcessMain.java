@@ -64,22 +64,22 @@ public class TestProcessMain {
         //
         // .执行查询
         try {
-            QueryResult result = null;
+            Object data = null;
             int queryCount = 1;
             long sumTime = 0;
             long maxTime = 0;
             for (int i = 0; i < queryCount; i++) {
-                result = query.execute();
+                QueryResult result = query.execute();
                 long executionTime = result.executionTime();
                 sumTime += executionTime;
                 if (maxTime < executionTime) {
                     maxTime = executionTime;
                 }
-            }
-            //
-            Object data = result.getData();
-            if (data instanceof LambdaModel) {
-                data = ((LambdaModel) data).call(new Object[] { -1 }, null);
+                //
+                data = result.getData();
+                if (data instanceof LambdaModel) {
+                    data = "外部调用结果：" + ((LambdaModel) data).call(new Object[] { -1 }, null);
+                }
             }
             //
             System.out.println((sumTime / queryCount) + "/" + maxTime + " - " + JSON.toJSON(data).toString());
@@ -94,8 +94,8 @@ public class TestProcessMain {
     @Test
     public void mainALL() throws Exception {
         System.out.println(16 & 19);
-        for (int i = 0; i <= 12; i++)
-            this.printTaskTree("/dataql/dataql_" + i + ".ql");
+        //        for (int i = 0; i <= 12; i++)
+        this.printTaskTree("/lambda/dataql_22.ql");
         //        this.printTaskTree("/test/test_" + 1 + ".ql");
     }
 }
