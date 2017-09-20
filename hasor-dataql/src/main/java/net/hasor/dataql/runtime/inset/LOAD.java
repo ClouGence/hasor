@@ -18,8 +18,8 @@ import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.mem.StackStruts;
 /**
  * LOAD，从堆中装载一个数据到栈。与其对应的指令为 STORE
  * @see net.hasor.dataql.runtime.inset.STORE
@@ -32,9 +32,10 @@ class LOAD implements InsetProcess {
         return LOAD;
     }
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
-        int position = sequence.currentInst().getInt(0);
-        Object data = memStack.loadData(position);
+    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
+        int depth = sequence.currentInst().getInt(0);
+        int index = sequence.currentInst().getInt(1);
+        Object data = memStack.loadData(depth, index);
         memStack.push(data);
     }
 }

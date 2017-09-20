@@ -18,8 +18,8 @@ import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.dataql.runtime.struts.OriResultStruts;
 /**
  * ASO，指令处理器。用于将结果作为原封不动的进行返回。
@@ -37,7 +37,7 @@ class ASO implements InsetProcess {
         return ASO;
     }
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         Object result = memStack.pop();
         memStack.push(new OriResultStruts(result));
     }

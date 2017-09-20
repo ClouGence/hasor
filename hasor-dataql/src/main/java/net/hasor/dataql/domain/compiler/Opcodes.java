@@ -19,7 +19,7 @@ package net.hasor.dataql.domain.compiler;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-03
  */
-public interface InstOpcodes {
+public interface Opcodes {
     //
     // -------------------------------------------------------------- 构造指令
     public static final byte NO     = 11; // new Object

@@ -15,8 +15,8 @@
  */
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
-import net.hasor.dataql.domain.compiler.InstOpcodes;
 import net.hasor.dataql.domain.compiler.InstQueue;
+import net.hasor.dataql.domain.compiler.Opcodes;
 /**
  * 一元运算表达式
  * @author 赵永春(zyc@hasor.net)
@@ -34,6 +34,6 @@ public class UnaryExpression extends Expression {
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         this.target.doCompiler(queue, stackTree);
-        queue.inst(InstOpcodes.UO, this.dyadicSymbol);
+        queue.inst(Opcodes.UO, this.dyadicSymbol);
     }
 }

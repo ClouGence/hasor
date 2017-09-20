@@ -20,8 +20,8 @@ import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.utils.StringUtils;
 /**
  * NO，创建一个对象 or Map。
@@ -34,7 +34,7 @@ class NO implements InsetProcess {
         return NO;
     }
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         String typeString = sequence.currentInst().getString(0);
         Class<?> objectType = null;
         if (StringUtils.isNotBlank(typeString)) {

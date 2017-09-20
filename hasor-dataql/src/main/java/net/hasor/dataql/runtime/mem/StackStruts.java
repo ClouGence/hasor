@@ -16,11 +16,11 @@
 package net.hasor.dataql.runtime.mem;
 import java.util.Stack;
 /**
- * DS，用于在处理 ASA ASM ASE 阶段内，处理 ROU 指令时寻值使用。
+ * 栈内存结构
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-public class LocalData implements FindData {
+public class StackStruts implements FindData, Cloneable {
     protected Stack<Object> dataPool = new Stack<Object>();
     //
     public void push(Object data) {
@@ -44,8 +44,8 @@ public class LocalData implements FindData {
         }
         return this.dataPool.get(this.dataPool.size() - 1 - depth);
     }
-    public LocalData clone() {
-        LocalData localData = new LocalData();
+    public StackStruts clone() throws CloneNotSupportedException {
+        StackStruts localData = (StackStruts) super.clone();
         localData.dataPool = (Stack<Object>) this.dataPool.clone();
         return localData;
     }

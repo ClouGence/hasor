@@ -19,8 +19,8 @@ import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.UDF;
 import net.hasor.dataql.domain.compiler.Instruction;
 import net.hasor.dataql.runtime.*;
-import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.dataql.runtime.struts.LambdaCallStruts;
 /**
  * CALL，指令是用于发起对 UDF 的调用。
@@ -33,7 +33,7 @@ class CALL implements InsetProcess {
         return CALL;
     }
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         Instruction instruction = sequence.currentInst();
         String udfName = instruction.getString(0);
         int paramCount = instruction.getInt(1);

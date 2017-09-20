@@ -3,8 +3,8 @@ import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.mem.StackStruts;
 /**
  * Created by yongchun.zyc on 2017/7/13.
  */
@@ -58,7 +58,7 @@ public class OpcodesPool {
         this.processes[inst.getOpcode()] = inst;
     }
     //
-    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         //
         InsetProcess process = this.processes[sequence.currentInst().getInstCode()];
         if (process == null) {

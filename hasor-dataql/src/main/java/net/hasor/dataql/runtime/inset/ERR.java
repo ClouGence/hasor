@@ -19,8 +19,8 @@ import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.mem.StackStruts;
 /**
  * ERR，异常结束指令，当执行该指令时，会将栈顶的两个元素作为 异常信息抛出。
  * DataQL 在抛出异常时允许携带一个对象类型的返回值。
@@ -36,7 +36,7 @@ class ERR extends AbstractReturn implements InsetProcess {
         return ERR;
     }
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         Object errorMsg = memStack.pop();
         int errorCode = (Integer) memStack.pop();
         //

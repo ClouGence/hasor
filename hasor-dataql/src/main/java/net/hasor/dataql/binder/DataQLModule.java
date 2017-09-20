@@ -16,8 +16,8 @@
 package net.hasor.dataql.binder;
 import net.hasor.core.*;
 import net.hasor.dataql.Query;
-import net.hasor.dataql.domain.compiler.QueryCompiler;
 import net.hasor.dataql.domain.compiler.QIL;
+import net.hasor.dataql.domain.compiler.QueryCompiler;
 import net.hasor.dataql.domain.parser.ParseException;
 import net.hasor.dataql.runtime.QueryRuntime;
 import net.hasor.dataql.udfs.collection.First;

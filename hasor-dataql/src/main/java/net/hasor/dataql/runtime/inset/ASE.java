@@ -18,8 +18,8 @@ import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.dataql.runtime.struts.ResultStruts;
 /**
  * ASA、ASM、ASO 三个指令在处理数据时都是用 ResultStruts 进行封装。
@@ -34,7 +34,7 @@ class ASE implements InsetProcess {
         return ASE;
     }
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         ResultStruts rs = (ResultStruts) memStack.pop();
         memStack.push(rs.getResult());
     }

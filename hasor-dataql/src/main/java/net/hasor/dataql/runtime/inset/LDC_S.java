@@ -18,8 +18,8 @@ import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.mem.StackStruts;
 /**
  * LDC_S，输出一个字符串到栈。
  * @author 赵永春(zyc@hasor.net)
@@ -31,7 +31,7 @@ class LDC_S implements InsetProcess {
         return LDC_S;
     }
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         String value = sequence.currentInst().getString(0);
         memStack.push(value);
     }

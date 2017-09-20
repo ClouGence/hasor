@@ -17,8 +17,8 @@ package net.hasor.dataql.runtime;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.UDF;
-import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.dataql.runtime.struts.LambdaCall;
 /**
  * 代理 Lambda 使其成为 UDF.
@@ -28,23 +28,27 @@ import net.hasor.dataql.runtime.struts.LambdaCall;
 public class LambdaCallProxy implements UDF {
     private InstSequence  instSequence;
     private MemStack      memStack;
-    private LocalData     localData;
+    private StackStruts   localData;
     private ProcessContet context;
     //
-    public LambdaCallProxy(InstSequence instSequence, MemStack memStack, LocalData localData, ProcessContet context) {
-        this.instSequence = instSequence;
-        this.memStack = memStack;
-        this.localData = localData;
-        this.context = context;
+    public LambdaCallProxy(InstSequence instSequence, MemStack memStack, StackStruts localData, ProcessContet context) {
+        try {
+            this.instSequence = instSequence;
+            this.memStack = memStack.clone();
+            this.localData = localData.clone();
+            this.context = context;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     //
     @Override
-    public Object call(Object[] values, Option readOnly) throws ProcessException {
+    public Object call(Object[] values, Option readOnly) throws ProcessException, CloneNotSupportedException {
         //
         int address = this.instSequence.getAddress();
         InstSequence instSequence = this.instSequence.clone();
-        MemStack memStack = this.memStack.create();
-        LocalData localData = this.localData.clone();
+        MemStack memStack = this.memStack.clone();
+        StackStruts localData = this.localData.clone();
         //
         LambdaCall callInfo = new LambdaCall(address, values);
         memStack.push(callInfo);

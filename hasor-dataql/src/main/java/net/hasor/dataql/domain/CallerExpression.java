@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
+import net.hasor.dataql.domain.compiler.CompilerStack.ContainsIndex;
 import net.hasor.dataql.domain.compiler.InstQueue;
 import net.hasor.utils.StringUtils;
 
@@ -65,10 +66,10 @@ public class CallerExpression extends Expression {
             }
             // .CALL指令
             {
-                int index = stackTree.contains(this.callName);
-                if (index > -1) {
+                ContainsIndex index = stackTree.contains(this.callName);
+                if (index.isValid()) {
                     // .存在函数定义
-                    queue.inst(LOAD, index);
+                    queue.inst(LOAD, index.depth, index.index);
                     queue.inst(LCALL, this.varList.size());
                 } else {
                     // .使用UDF进行调用
@@ -76,10 +77,10 @@ public class CallerExpression extends Expression {
                 }
             }
         } else {
-            int index = stackTree.contains(this.callName);
-            if (index > -1) {
+            ContainsIndex index = stackTree.contains(this.callName);
+            if (index.isValid()) {
                 // .存在函数定义
-                queue.inst(LOAD, index);
+                queue.inst(LOAD, index.depth, index.index);
             } else {
                 queue.inst(ROU, this.callName);
             }

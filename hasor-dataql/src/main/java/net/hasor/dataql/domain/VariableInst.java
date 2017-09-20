@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
+import net.hasor.dataql.domain.compiler.CompilerStack.ContainsIndex;
 import net.hasor.dataql.domain.compiler.InstQueue;
 /**
  * var指令
@@ -36,12 +37,12 @@ public class VariableInst extends Inst {
         this.value.doCompiler(queue, stackTree);
         //
         // .如果当前堆栈中存在该变量的定义，那么直接覆盖
-        int index = stackTree.contains(this.varName);
-        if (index >= 0) {
-            queue.inst(STORE, index);
+        ContainsIndex index = stackTree.contains(this.varName);
+        if (index.isValid()) {
+            queue.inst(STORE, index.index);
         } else {
-            index = stackTree.push(this.varName);
-            queue.inst(STORE, index);
+            int storeIndex = stackTree.push(this.varName);
+            queue.inst(STORE, storeIndex);
         }
     }
 }

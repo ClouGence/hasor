@@ -15,8 +15,9 @@
  */
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
-import net.hasor.dataql.domain.compiler.InstOpcodes;
+import net.hasor.dataql.domain.compiler.CompilerStack.ContainsIndex;
 import net.hasor.dataql.domain.compiler.InstQueue;
+import net.hasor.dataql.domain.compiler.Opcodes;
 import net.hasor.utils.StringUtils;
 /**
  * 值路由
@@ -37,21 +38,21 @@ public class RouteExpression extends Expression {
         }
         //
         // .方法区中
-        int index = stackTree.contains(this.routeExpression);
-        if (index >= 0) {
-            queue.inst(InstOpcodes.LOAD, index);
+        ContainsIndex index = stackTree.contains(this.routeExpression);
+        if (index.isValid()) {
+            queue.inst(Opcodes.LOAD, index.depth, index.index);
             return;
         }
         // .整个堆栈
         if (this.routeExpression.indexOf('.') >= 0) {
             index = stackTree.contains(this.routeExpression.split("\\.")[0]);
-            if (index >= 0) {
-                queue.inst(InstOpcodes.LOAD, index);
+            if (index.isValid()) {
+                queue.inst(Opcodes.LOAD, index.depth, index.index);
                 return;
             }
         }
         //
         // .路由数据
-        queue.inst(InstOpcodes.ROU, this.routeExpression);
+        queue.inst(Opcodes.ROU, this.routeExpression);
     }
 }

@@ -21,8 +21,8 @@ import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.dataql.runtime.struts.ObjectResultStruts;
 import net.hasor.utils.BeanUtils;
 
@@ -38,7 +38,7 @@ class PUT implements InsetProcess {
         return PUT;
     }
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         String filedName = sequence.currentInst().getString(0);
         Object data = memStack.pop();
         //

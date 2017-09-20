@@ -18,8 +18,8 @@ import net.hasor.dataql.OperatorProcess;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.UDF;
-import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.mem.StackStruts;
 /**
  * 指令执行器接口
  * @author 赵永春(zyc@hasor.net)
@@ -28,7 +28,7 @@ import net.hasor.dataql.runtime.mem.MemStack;
 public interface ProcessContet extends Option {
     public Class<?> loadType(String type) throws ClassNotFoundException;
 
-    public void processInset(InstSequence sequence, MemStack memStack, LocalData local) throws ProcessException;
+    public void processInset(InstSequence sequence, MemStack memStack, StackStruts local) throws ProcessException;
 
     public OperatorProcess findOperator(Symbol unary, String dyadicSymbol, Class<?> fstType, Class<?> secType);
 

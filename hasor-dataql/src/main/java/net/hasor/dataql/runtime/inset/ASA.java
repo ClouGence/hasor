@@ -22,8 +22,8 @@ import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstFilter;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.dataql.runtime.struts.ListResultStruts;
 import net.hasor.utils.StringUtils;
 
@@ -47,7 +47,7 @@ class ASA implements InsetProcess {
         return ASA;
     }
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         //
         // .读取返回值并包装成 ResultStruts
         String typeString = sequence.currentInst().getString(0);

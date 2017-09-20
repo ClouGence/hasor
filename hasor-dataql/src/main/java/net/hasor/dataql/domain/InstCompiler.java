@@ -15,14 +15,14 @@
  */
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
-import net.hasor.dataql.domain.compiler.InstOpcodes;
 import net.hasor.dataql.domain.compiler.InstQueue;
+import net.hasor.dataql.domain.compiler.Opcodes;
 /**
  * 生成指令序列
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface InstCompiler extends InstOpcodes {
+public interface InstCompiler extends Opcodes {
     /**生成指令序列*/
     public void doCompiler(InstQueue queue, CompilerStack stackTree);
 }

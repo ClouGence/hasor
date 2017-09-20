@@ -15,14 +15,14 @@
  */
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.*;
-import net.hasor.dataql.domain.compiler.InstOpcodes;
+import net.hasor.dataql.domain.compiler.Opcodes;
 import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.result.DataModel;
 import net.hasor.dataql.result.ListModel;
 import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.result.ValueModel;
-import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.utils.StringUtils;
 
 import java.util.Collection;
@@ -68,7 +68,7 @@ class QueryInstance extends OptionSet implements Query {
         try {
             // .准备执行环境堆栈
             MemStack memStack = new MemStack(); // 堆栈
-            LocalData local = new LocalData();  // DS
+            StackStruts local = new StackStruts();  // DS
             InstSequence sec = new InstSequence(0, this.instSequence);
             // .执行指令序列
             this.queryEngine.processInset(sec, memStack, local);
@@ -81,7 +81,7 @@ class QueryInstance extends OptionSet implements Query {
                 Object errorData = ipe.getErrorMsg();
                 DataModel res = evalQueryResult(errorData);
                 //
-                if (InstOpcodes.EXIT == ipe.getInstOpcodes()) {
+                if (Opcodes.EXIT == ipe.getInstOpcodes()) {
                     return new QueryResultImpl(errorCode, executionTime(startTime), res);
                 } else {
                     return new QueryResultImpl(true, errorCode, executionTime(startTime), res);

@@ -61,8 +61,6 @@ public class DyadicExpression extends Expression {
 //      [[a,(b,c,*),+],(d,e,/),-]
 // (a + b)* c
 //
-
-
 // c
 // +
 // *

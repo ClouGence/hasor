@@ -27,17 +27,17 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version : 2017-07-03
  */
 public class InstQueue {
-    private final int                           name;
-    private final AtomicInteger                 labelIndex;
-    private final AtomicInteger                 methodName;
-    private final List<LinkedList<Instruction>> instSet;
+    private final int                               name;
+    private final AtomicInteger                     labelIndex;
+    private final AtomicInteger                     methodName;
+    private final List<LinkedList<InstructionInfo>> instSet;
     //
     public InstQueue() {
         this.name = 0;
         this.labelIndex = new AtomicInteger(0);
         this.methodName = new AtomicInteger(0);
-        this.instSet = new ArrayList<LinkedList<Instruction>>();
-        this.instSet.add(new LinkedList<Instruction>());
+        this.instSet = new ArrayList<LinkedList<InstructionInfo>>();
+        this.instSet.add(new LinkedList<InstructionInfo>());
     }
     private InstQueue(int methodName, InstQueue dataPool) {
         this.name = methodName;
@@ -54,13 +54,13 @@ public class InstQueue {
     public int inst(byte inst, Object... param) {
         //
         // .加入到指令集
-        LinkedList<Instruction> instList = this.instSet.get(this.name);
-        Instruction instObj = new Instruction(inst, param);
+        LinkedList<InstructionInfo> instList = this.instSet.get(this.name);
+        InstructionInfo instObj = new InstructionInfo(inst, param);
         instList.addLast(instObj);
         int index = instList.size() - 1;
         //
         // .Label指令索引更新
-        if (inst == InstOpcodes.LABEL) {
+        if (inst == Opcodes.LABEL) {
             for (Object obj : param) {
                 if (obj instanceof Label) {
                     ((Label) obj).updateIndex(index);
@@ -70,14 +70,14 @@ public class InstQueue {
         return index;
     }
     /** 最后加入的那条指令 */
-    public Instruction lastInst() {
-        LinkedList<Instruction> instList = this.instSet.get(this.name);
+    public InstructionInfo lastInst() {
+        LinkedList<InstructionInfo> instList = this.instSet.get(this.name);
         return instList.isEmpty() ? null : instList.getLast();
     }
     //
     /**新函数指令集*/
     public InstQueue newMethodInst() {
-        LinkedList<Instruction> instList = new LinkedList<Instruction>();
+        LinkedList<InstructionInfo> instList = new LinkedList<InstructionInfo>();
         this.instSet.add(instList);
         int name = -1;
         for (int i = 0; i < this.instSet.size(); i++) {
@@ -94,18 +94,18 @@ public class InstQueue {
     }
     //
     public Instruction[][] buildArrays() throws ParseException {
-        for (LinkedList<Instruction> instList : this.instSet) {
-            for (Instruction inst : instList) {
+        for (LinkedList<InstructionInfo> instList : this.instSet) {
+            for (InstructionInfo inst : instList) {
                 if (!inst.replaceLabel()) {
                     throw new ParseException("compiler error -> inst(" + inst.getInstCode() + ") encounter not insert Label.");
                 }
             }
         }
         //
-        Instruction[][] buildDatas = new Instruction[this.instSet.size()][];
+        InstructionInfo[][] buildDatas = new InstructionInfo[this.instSet.size()][];
         for (int i = 0; i < this.instSet.size(); i++) {
-            LinkedList<Instruction> instList = this.instSet.get(i);
-            Instruction[] instSet = instList.toArray(new Instruction[instList.size()]);
+            LinkedList<InstructionInfo> instList = this.instSet.get(i);
+            InstructionInfo[] instSet = instList.toArray(new InstructionInfo[instList.size()]);
             buildDatas[i] = instSet;
         }
         return buildDatas;
@@ -115,18 +115,18 @@ public class InstQueue {
     public String toString() {
         StringBuilder strBuffer = new StringBuilder();
         for (int i = 0; i < this.instSet.size(); i++) {
-            LinkedList<Instruction> instList = this.instSet.get(i);
+            LinkedList<InstructionInfo> instList = this.instSet.get(i);
             printInstList(i, instList, strBuffer);
         }
         return strBuffer.toString();
     }
-    private static void printInstList(int name, LinkedList<Instruction> instList, StringBuilder strBuffer) {
+    private static void printInstList(int name, LinkedList<InstructionInfo> instList, StringBuilder strBuffer) {
         strBuffer.append("[");
         strBuffer.append(name);
         strBuffer.append("]\n");
         int length = String.valueOf(instList.size()).length();
         for (int i = 0; i < instList.size(); i++) {
-            Instruction inst = instList.get(i);
+            InstructionInfo inst = instList.get(i);
             strBuffer.append("  #");
             strBuffer.append(StringUtils.leftPad(String.valueOf(i), length, '0'));
             strBuffer.append("  ");

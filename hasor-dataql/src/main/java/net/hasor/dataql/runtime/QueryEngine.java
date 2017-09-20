@@ -20,8 +20,8 @@ import net.hasor.dataql.Query;
 import net.hasor.dataql.UDF;
 import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.runtime.inset.OpcodesPool;
-import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.mem.StackStruts;
 /**
  * 用于封装和引发 QL 查询执行。
  * @author 赵永春(zyc@hasor.net)
@@ -72,7 +72,7 @@ public class QueryEngine extends OptionSet implements ProcessContet {
         return this.runtime.loadClass(type);
     }
     @Override
-    public void processInset(InstSequence sequence, MemStack memStack, LocalData local) throws ProcessException {
+    public void processInset(InstSequence sequence, MemStack memStack, StackStruts local) throws ProcessException {
         //
         while (sequence.hasNext()) {
             opcodesPool.doWork(sequence, memStack, local, this);

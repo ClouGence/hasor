@@ -21,8 +21,8 @@ import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.Symbol;
-import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.mem.StackStruts;
 /**
  * UO 指令是用于进行 一元运算。
  * 该指令会通过运算符和被计算的表达式来寻找 OperatorProcess 运算实现类进行运算。
@@ -36,7 +36,7 @@ class UO implements InsetProcess {
         return UO;
     }
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         String dyadicSymbol = sequence.currentInst().getString(0);
         Object expData = memStack.pop();
         //

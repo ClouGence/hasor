@@ -20,8 +20,8 @@ import net.hasor.dataql.result.ListModel;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.utils.StringUtils;
 
 import java.util.Collection;
@@ -36,7 +36,7 @@ class NA implements InsetProcess {
         return NA;
     }
     @Override
-    public void doWork(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context) throws ProcessException {
+    public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         String typeString = sequence.currentInst().getString(0);
         Class<?> listType = null;
         if (StringUtils.isNotBlank(typeString)) {

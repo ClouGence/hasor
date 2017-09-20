@@ -19,8 +19,8 @@ import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.LambdaCallProxy;
 import net.hasor.dataql.runtime.ProcessContet;
-import net.hasor.dataql.runtime.mem.LocalData;
 import net.hasor.dataql.runtime.mem.MemStack;
+import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.dataql.runtime.struts.LambdaCallStruts;
 /**
  * 特殊处理结果，兼容 return 、throw、exit 时返回一个 lambda 的情况。
@@ -30,7 +30,7 @@ import net.hasor.dataql.runtime.struts.LambdaCallStruts;
  * @version : 2017-07-19
  */
 abstract class AbstractReturn implements InsetProcess {
-    protected Object specialProcess(InstSequence sequence, MemStack memStack, LocalData local, ProcessContet context, Object result) {
+    protected Object specialProcess(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context, Object result) {
         if (result instanceof LambdaCallStruts) {
             int callAddress = ((LambdaCallStruts) result).getMethod();
             InstSequence methodSeq = sequence.methodSet(callAddress);

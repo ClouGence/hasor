@@ -23,20 +23,59 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class MemStack extends LocalData {
+public class MemStack extends StackStruts {
     private MemStack             parentStack = null;
     private Map<Integer, Object> heapData    = new HashMap<Integer, Object>();
-    private Object               resultData  = null;
+    private int                  depth       = 0;
+    private Object               result      = null;
     //
     public MemStack() {
         this(null);
     }
     public MemStack(MemStack parentStack) {
         this.parentStack = parentStack;
+        if (parentStack != null) {
+            this.depth = parentStack.depth + 1;
+        }
     }
     public MemStack create() {
         return new MemStack(this);
     }
+    public MemStack clone() throws CloneNotSupportedException {
+        MemStack memStack = (MemStack) super.clone();
+        if (this.parentStack != null) {
+            memStack.parentStack = this.parentStack.clone();
+        }
+        memStack.heapData = new HashMap<Integer, Object>(this.heapData);
+        memStack.depth = this.depth;
+        memStack.result = this.result;
+        return memStack;
+    }
+    public int getDepth() {
+        return this.depth;
+    }
+    //
+    //
+    public void storeData(int position, Object data) {
+        this.heapData.put(position, data);
+    }
+    public Object loadData(int depth, int position) {
+        int atDepth = this.depth - depth;
+        MemStack atStack = this;
+        for (int i = 0; i < atDepth; i++) {
+            atStack = atStack.parentStack;
+        }
+        return atStack.heapData.get(position);
+    }
+    //
+    //
+    public void setResult(Object result) {
+        this.result = result;
+    }
+    public Object getResult() {
+        return result;
+    }
+    //
     //
     public SelfData findSelf() {
         for (int i = this.dataPool.size() - 1; i >= 0; i--) {
@@ -49,21 +88,5 @@ public class MemStack extends LocalData {
             return this.parentStack.findSelf();
         }
         return null;
-    }
-    //
-    //
-    public void storeData(int position, Object data) {
-        this.heapData.put(position, data);
-    }
-    public Object loadData(int position) {
-        return this.heapData.get(position);
-    }
-    //
-    //
-    public void setResult(Object result) {
-        this.resultData = result;
-    }
-    public Object getResult() {
-        return resultData;
     }
 }
