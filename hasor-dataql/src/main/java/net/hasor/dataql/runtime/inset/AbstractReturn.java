@@ -34,8 +34,7 @@ abstract class AbstractReturn implements InsetProcess {
         if (result instanceof LambdaCallStruts) {
             int callAddress = ((LambdaCallStruts) result).getMethod();
             InstSequence methodSeq = sequence.methodSet(callAddress);
-            MemStack sub = memStack.create();
-            result = new LambdaModel(new LambdaCallProxy(methodSeq, sub, local, context));
+            result = new LambdaModel(new LambdaCallProxy(methodSeq, memStack, local, context));
         }
         return result;
     }

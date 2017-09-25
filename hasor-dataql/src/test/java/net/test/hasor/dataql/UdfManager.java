@@ -28,6 +28,13 @@ import java.util.Map;
  */
 public class UdfManager {
     /** 返回一个 double 类型的 number */
+    public static class Track implements UDF {
+        public Object call(Object[] values, Option readOnly) {
+            System.out.println("track -> params : " + JSON.toString(values));
+            return null;
+        }
+    }
+    /** 返回一个 double 类型的 number */
     public static class DoubleNumber implements UDF {
         public Object call(Object[] values, Option readOnly) {
             return 1234567.89012;

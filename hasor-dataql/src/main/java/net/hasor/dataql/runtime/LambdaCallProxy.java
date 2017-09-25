@@ -47,7 +47,7 @@ public class LambdaCallProxy implements UDF {
         //
         int address = this.instSequence.getAddress();
         InstSequence instSequence = this.instSequence.clone();
-        MemStack memStack = this.memStack.clone();
+        MemStack memStack = this.memStack.create();
         StackStruts localData = this.localData.clone();
         //
         LambdaCall callInfo = new LambdaCall(address, values);

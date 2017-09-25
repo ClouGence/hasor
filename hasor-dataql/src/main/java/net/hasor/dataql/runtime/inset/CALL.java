@@ -46,8 +46,7 @@ class CALL implements InsetProcess {
             if (paramObj instanceof LambdaCallStruts) {
                 int callAddress = ((LambdaCallStruts) paramObj).getMethod();
                 InstSequence methodSeq = sequence.methodSet(callAddress);
-                MemStack sub = memStack.create();
-                paramArrays[paramIndex] = new LambdaCallProxy(methodSeq, sub, local, context);
+                paramArrays[paramIndex] = new LambdaCallProxy(methodSeq, memStack, local, context);
                 continue;
             }
             //

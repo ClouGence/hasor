@@ -1,28 +1,3 @@
-
-
-var args = "性别：";
-var fo1 = lambda: (obj) -> {
-    return args + "[女]";
-}
-
-var uuu = lambda : (a) -> {
-    return fo1(a)~ + "END"
-}
-
-var ffff = lambda : (b) -> {
-    return uuu(b)~ + "~~~~"
-}
-
-
- return ffff;
-
-
-// 说明：数据类型测试。
-// 闭包特性
-// 多维数组
-// 各种路由表达式
-
-
 var title = "性别："
 var sexConse = {
     "W" : "男",
@@ -30,7 +5,7 @@ var sexConse = {
 }
 
 var sexName= lambda: (sex) -> {
-    if ( sex == 0 )
+    if ( sex == -1 )
         return sexConse -> "W" ~    // 男
     else
         return sexConse -> "F" ~    // 女
@@ -38,21 +13,32 @@ var sexName= lambda: (sex) -> {
 }
 
 var decSexName = lambda: (userInfo) -> {
+
+    var track = track(userInfo)~
+
+
     return sexName(userInfo -> "sex" ~)~ + title
 }
-
 
 var userInfo = {
     "sex" : 0
 }
 
 var foo = lambda: (userName) -> {
+
     return {
-        "userName" : userName,
-        "sex"      : descSexName(userInfo)~
+        "userName" : "'" + userName + ",二楼'",
+        "sex"      : decSexName(userInfo)~
     }
 }
 
-return decSexName
+return foo
+
+
+// 说明：数据类型测试。
+// 多维数组
+// 各种路由表达式
+
+
 
 

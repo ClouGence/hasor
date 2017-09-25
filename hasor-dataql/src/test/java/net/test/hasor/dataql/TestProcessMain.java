@@ -26,6 +26,7 @@ public class TestProcessMain {
     private QueryRuntime runtime = new QueryRuntime();
     @Before
     public void before() {
+        //
         this.runtime.addShareUDF("foreach", new Foreach());
         this.runtime.addShareUDF("first", new First());
         this.runtime.addShareUDF("last", new Last());
@@ -38,6 +39,7 @@ public class TestProcessMain {
         this.runtime.addShareUDF("foo", new UdfManager.Foo());
         this.runtime.addShareUDF("double", new UdfManager.DoubleNumber());
         this.runtime.addShareUDF("filter", new UdfManager.Filter());
+        this.runtime.addShareUDF("track", new UdfManager.Track());
     }
     private void printTaskTree(String queryResource) throws IOException, ParseException {
         InputStream inStream = ResourcesUtils.getResourceAsStream(queryResource);
@@ -65,7 +67,7 @@ public class TestProcessMain {
         // .执行查询
         try {
             Object data = null;
-            int queryCount = 1;
+            int queryCount = 10000;
             long sumTime = 0;
             long maxTime = 0;
             for (int i = 0; i < queryCount; i++) {
@@ -94,8 +96,9 @@ public class TestProcessMain {
     @Test
     public void mainALL() throws Exception {
         System.out.println(16 & 19);
-        //        for (int i = 0; i <= 12; i++)
-        this.printTaskTree("/lambda/dataql_22.ql");
+        //        this.printTaskTree("/basic/dataql_4.ql");
+        //        this.printTaskTree("/eval/dataql_10.ql");
+        this.printTaskTree("/lambda/dataql_25.ql");
         //        this.printTaskTree("/test/test_" + 1 + ".ql");
     }
 }

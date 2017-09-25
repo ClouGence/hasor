@@ -25,7 +25,7 @@
         <!-- Hasor -->
         <dependency>
             <groupId>net.hasor</groupId>
-            <artifactId>hasor-core</artifactId>
+            <artifactId>hasor-web</artifactId>
         </dependency>
 
         <!-- RPC框架 -->
@@ -38,6 +38,12 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-registry</artifactId>
+        </dependency>
+
+        <!-- Plugins -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-plugins</artifactId>
         </dependency>
 
         <!-- freemarker -->
@@ -74,5 +80,11 @@
             <artifactId>commons-beanutils</artifactId>
         </dependency>
         <!-- apache end -->
+
+        <dependency>
+            <groupId>org.jogamp.jogl</groupId>
+            <artifactId>jogl-all</artifactId>
+            <version>2.3.2</version>
+        </dependency>
     </dependencies>
 </project>
