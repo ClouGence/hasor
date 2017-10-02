@@ -33,7 +33,9 @@ class LOAD implements InsetProcess {
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
-        int depth = sequence.currentInst().getInt(0); // depth 小于 0 表示的是当前堆栈
+        // depth 小于 0 表示的是当前堆栈，常规编译模式下处理 lambda_25 用例时发现，在加载入参参数时。要加载的 depth 位置和实际堆栈位置有偏差。
+        //      因此通过 -1 形式来表示这个参数的 load 是方法变量表中的参数。同时作为特殊处理， -1 只加载栈顶以修复偏差。
+        int depth = sequence.currentInst().getInt(0);
         int index = sequence.currentInst().getInt(1);
         Object data = null;
         if (depth < 0) {

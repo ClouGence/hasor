@@ -5,6 +5,3 @@
 4. Center 服务注册没有清理机制。
 5.Hprose 在处理时候 call://[RSF]net.hasor.website.client.EchoService-1.0.0/sayHello?t=12345   t 参数没有处理
 
-
-1. dataql_4.ql 新增语法
-2. dataql_8.ql json 解析大数失败

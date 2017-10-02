@@ -113,7 +113,7 @@ public class TestProcessMain {
     @Test
     public void mainALL() throws Exception {
         System.out.println(16 & 19);
-        this.printTaskTree("/basic/dataql_1.ql");
+        this.printTaskTree("/basic/dataql_3.ql");
         //        this.printTaskTree("/eval/dataql_10.ql");
         //        this.printTaskTree("/lambda/dataql_24.ql");
         //        this.printTaskTree("/test/test_" + 1 + ".ql");
