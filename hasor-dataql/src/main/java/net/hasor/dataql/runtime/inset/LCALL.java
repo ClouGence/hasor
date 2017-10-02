@@ -55,7 +55,7 @@ class LCALL implements InsetProcess {
         }
         // .执行调用，调用前把所有入参打包成一个 Array，交给 METHOD 指令去处理。
         {
-            MemStack sub = memStack.create();
+            MemStack sub = memStack.create(address);
             sub.push(callInfo);
             context.processInset(methodSeq, sub, local);
             callInfo.setResult(sub.getResult());

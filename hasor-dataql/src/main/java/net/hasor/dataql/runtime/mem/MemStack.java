@@ -28,14 +28,16 @@ import java.util.Map;
 public class MemStack extends StackStruts {
     private MemStack             parentStack = null;
     private List<MemStack>       taskTree    = null;
+    private int                  atAddress   = -1;
     private Map<Integer, Object> heapData    = new HashMap<Integer, Object>();
     private int                  depth       = 0;
     private Object               result      = null;
     //
-    public MemStack() {
-        this(null);
+    public MemStack(int atAddress) {
+        this(atAddress, null);
     }
-    public MemStack(MemStack parentStack) {
+    public MemStack(int atAddress, MemStack parentStack) {
+        this.atAddress = atAddress;
         this.parentStack = parentStack;
         if (parentStack != null) {
             this.depth = parentStack.depth + 1;
@@ -45,8 +47,8 @@ public class MemStack extends StackStruts {
         }
         this.taskTree.add(this);
     }
-    public MemStack create() {
-        return new MemStack(this);
+    public MemStack create(int atAddress) {
+        return new MemStack(atAddress, this);
     }
     public MemStack clone() throws CloneNotSupportedException {
         MemStack memStack = (MemStack) super.clone();
@@ -56,6 +58,7 @@ public class MemStack extends StackStruts {
         }
         memStack.heapData = new HashMap<Integer, Object>(this.heapData);
         memStack.depth = this.depth;
+        memStack.atAddress = this.atAddress;
         memStack.result = this.result;
         return memStack;
     }

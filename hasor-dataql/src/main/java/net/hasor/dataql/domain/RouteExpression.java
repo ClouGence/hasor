@@ -40,14 +40,22 @@ public class RouteExpression extends Expression {
         // .方法区中
         ContainsIndex index = stackTree.containsWithTree(this.routeExpression);
         if (index.isValid()) {
-            queue.inst(Opcodes.LOAD, index.depth, index.index);
+            if (index.current) {
+                queue.inst(LOAD, -1, index.index);
+            } else {
+                queue.inst(LOAD, index.depth, index.index);
+            }
             return;
         }
         // .整个堆栈
         if (this.routeExpression.indexOf('.') >= 0) {
             index = stackTree.containsWithTree(this.routeExpression.split("\\.")[0]);
             if (index.isValid()) {
-                queue.inst(Opcodes.LOAD, index.depth, index.index);
+                if (index.current) {
+                    queue.inst(LOAD, -1, index.index);
+                } else {
+                    queue.inst(LOAD, index.depth, index.index);
+                }
                 return;
             }
         }

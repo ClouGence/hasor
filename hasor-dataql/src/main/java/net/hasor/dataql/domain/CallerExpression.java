@@ -69,7 +69,11 @@ public class CallerExpression extends Expression {
                 ContainsIndex index = stackTree.containsWithTree(this.callName);
                 if (index.isValid()) {
                     // .存在函数定义
-                    queue.inst(LOAD, index.depth, index.index);
+                    if (index.current) {
+                        queue.inst(LOAD, -1, index.index);
+                    } else {
+                        queue.inst(LOAD, index.depth, index.index);
+                    }
                     queue.inst(LCALL, this.varList.size());
                 } else {
                     // .使用UDF进行调用
@@ -80,7 +84,11 @@ public class CallerExpression extends Expression {
             ContainsIndex index = stackTree.containsWithTree(this.callName);
             if (index.isValid()) {
                 // .存在函数定义
-                queue.inst(LOAD, index.depth, index.index);
+                if (index.current) {
+                    queue.inst(LOAD, -1, index.index);
+                } else {
+                    queue.inst(LOAD, index.depth, index.index);
+                }
             } else {
                 queue.inst(ROU, this.callName);
             }

@@ -52,6 +52,7 @@ public class CompilerStack {
         //
         int stackSize = this.dataStack.size();
         for (int i = 0; i < this.dataStack.size(); i++) {
+            index.current = i == 0;
             index.depth = stackSize - i - 1;
             List<String> stringList = this.dataStack.get(index.depth);
             int indexOf = stringList.indexOf(target);
@@ -77,8 +78,9 @@ public class CompilerStack {
     }
     //
     public static class ContainsIndex {
-        public int depth = 0;
-        public int index = 0;
+        public int     depth   = 0;
+        public int     index   = 0;
+        public boolean current = false;
         //
         public boolean isValid() {
             return this.depth >= 0 && this.index >= 0;

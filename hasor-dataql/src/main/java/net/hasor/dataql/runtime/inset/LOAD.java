@@ -33,9 +33,14 @@ class LOAD implements InsetProcess {
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
-        int depth = sequence.currentInst().getInt(0);
+        int depth = sequence.currentInst().getInt(0); // depth 小于 0 表示的是当前堆栈
         int index = sequence.currentInst().getInt(1);
-        Object data = memStack.loadData(depth, index);
+        Object data = null;
+        if (depth < 0) {
+            data = memStack.loadData(memStack.getDepth(), index);
+        } else {
+            data = memStack.loadData(depth, index);
+        }
         memStack.push(data);
     }
 }

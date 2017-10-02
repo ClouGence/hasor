@@ -67,7 +67,7 @@ class QueryInstance extends OptionSet implements Query {
         Object resultData = null;
         try {
             // .准备执行环境堆栈
-            MemStack memStack = new MemStack(); // 堆栈
+            MemStack memStack = new MemStack(0); // 堆栈
             StackStruts local = new StackStruts();  // DS
             InstSequence sec = new InstSequence(0, this.instSequence);
             // .执行指令序列
