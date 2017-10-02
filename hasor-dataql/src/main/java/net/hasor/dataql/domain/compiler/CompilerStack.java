@@ -36,7 +36,16 @@ public class CompilerStack {
     }
     //
     /** 当前栈中是否存在该元素，如果存在返回位置 */
-    public ContainsIndex contains(String target) {
+    public int containsWithCurrent(String target) {
+        if (this.dataStack.isEmpty()) {
+            return -1;
+        } else {
+            return this.dataStack.peek().indexOf(target);
+        }
+    }
+    //
+    /** 当前栈中是否存在该元素，如果存在返回位置 */
+    public ContainsIndex containsWithTree(String target) {
         ContainsIndex index = new ContainsIndex();
         index.depth = -1; // <-无效值
         index.index = -1; // <-无效值

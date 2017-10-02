@@ -66,7 +66,7 @@ public class CallerExpression extends Expression {
             }
             // .CALL指令
             {
-                ContainsIndex index = stackTree.contains(this.callName);
+                ContainsIndex index = stackTree.containsWithTree(this.callName);
                 if (index.isValid()) {
                     // .存在函数定义
                     queue.inst(LOAD, index.depth, index.index);
@@ -77,7 +77,7 @@ public class CallerExpression extends Expression {
                 }
             }
         } else {
-            ContainsIndex index = stackTree.contains(this.callName);
+            ContainsIndex index = stackTree.containsWithTree(this.callName);
             if (index.isValid()) {
                 // .存在函数定义
                 queue.inst(LOAD, index.depth, index.index);

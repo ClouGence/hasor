@@ -1,19 +1,19 @@
 
-var decSexName = lambda: (userInfo) -> {
-    return userInfo -> "title" ~
+var decSexName = lambda: (u) -> {
+    return u -> "title" ~
 }
 
 var userInfo = {
     "sex"   : 0,
-    "title" : "title"
+    "title" : "男"
 }
 
 var foo = lambda: (userName) -> {
 
     return {
-        "userName" : "'" + userName + ",二楼'",
+        "userName" : userName + ",二楼",
         "sex"      : decSexName(userInfo)~
     }
 }
 
-return foo
+return foo('淘宝')~

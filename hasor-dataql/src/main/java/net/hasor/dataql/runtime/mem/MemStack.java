@@ -16,7 +16,9 @@
 package net.hasor.dataql.runtime.mem;
 import net.hasor.dataql.runtime.struts.SelfData;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 /**
  * 堆 和 栈
@@ -25,6 +27,7 @@ import java.util.Map;
  */
 public class MemStack extends StackStruts {
     private MemStack             parentStack = null;
+    private List<MemStack>       taskTree    = null;
     private Map<Integer, Object> heapData    = new HashMap<Integer, Object>();
     private int                  depth       = 0;
     private Object               result      = null;
@@ -36,7 +39,11 @@ public class MemStack extends StackStruts {
         this.parentStack = parentStack;
         if (parentStack != null) {
             this.depth = parentStack.depth + 1;
+            this.taskTree = new ArrayList<MemStack>(parentStack.taskTree);
+        } else {
+            this.taskTree = new ArrayList<MemStack>();
         }
+        this.taskTree.add(this);
     }
     public MemStack create() {
         return new MemStack(this);
@@ -45,6 +52,7 @@ public class MemStack extends StackStruts {
         MemStack memStack = (MemStack) super.clone();
         if (this.parentStack != null) {
             memStack.parentStack = this.parentStack.clone();
+            memStack.taskTree = new ArrayList<MemStack>(this.taskTree);
         }
         memStack.heapData = new HashMap<Integer, Object>(this.heapData);
         memStack.depth = this.depth;

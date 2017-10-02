@@ -33,8 +33,8 @@ class STORE implements InsetProcess {
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
-        int position = sequence.currentInst().getInt(0);
+        int index = sequence.currentInst().getInt(0);
         Object data = memStack.pop();
-        memStack.storeData(position, data);
+        memStack.storeData(index, data);
     }
 }
