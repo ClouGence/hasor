@@ -38,6 +38,24 @@ public class DyadicExpression extends Expression {
     }
     protected void doCompiler(InstQueue queue, CompilerStack stackTree, Runnable callback) {
         //
+        //  规则：
+        //      在输出完第一个操作数之后，如果后一组表达式优先那么完整的输出后一组表达式之后输出运算符。
+        //
+        //  优先级：
+        //      0st: ()                            括号
+        //      1st: ->                            取值
+        //      2st: !  , ++ , --                  一元操作
+        //      3st: *  , /  , \  , %              乘除法
+        //      4st: +  , -                        加减法
+        //      5st: &  , |  , ^  , << , >> , >>>  位运算
+        //      6st: >  , >= , == , != , <= , <    比较运算
+        //      7st: && , ||                       逻辑运算
+        //
+        //  例：
+        //      a + b * c - d       ->  a,b,c,*,+,d,-
+        //      a + b * c - d / e   ->  a,b,c,*,+,d,e,/,-
+        //      a + b * c < d ^ 2   ->  a,b,c,*,+,d,2,^,<
+        //
         //        this.fstExpression.doCompiler(queue, stackTree);
         //        // .第二个表达式运算优先
         //        if (this.secExpression.priorityTo(this.fstExpression)) {
@@ -54,16 +72,3 @@ public class DyadicExpression extends Expression {
         queue.inst(DO, this.dyadicSymbol);
     }
 }
-//  a + b * c - d
-//      a,b,c,*,+,d,-
-//
-//  a + b * c - d / e
-//      [[a,(b,c,*),+],(d,e,/),-]
-// (a + b)* c
-//
-// c
-// +
-// *
-//        this.fstExpression.doCompiler(queue, stackTree);
-//                this.secExpression.doCompiler(queue, stackTree);
-//                queue.inst(DO, this.dyadicSymbol);
