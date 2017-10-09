@@ -43,12 +43,6 @@
             <artifactId>hasor-core</artifactId>
             <version>${hasor.version}</version>
         </dependency>
-        <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>hasor-web</artifactId>
-            <version>${hasor.version}</version>
-            <scope>provided</scope>
-        </dependency>
 
         <dependency>
             <groupId>io.netty</groupId>
@@ -66,20 +60,6 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.23</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- Web环境下功能依赖，最终由web容器提供支持 -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.3</version>
-            <scope>provided</scope>
-        </dependency>
-        <!-- 第三方集成插件,仅当使用时才产生依赖 -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>2.5.6</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
