@@ -28,7 +28,7 @@ import net.hasor.rsf.rpc.net.Connector;
 import net.hasor.rsf.rpc.net.LinkPool;
 import net.hasor.rsf.rpc.net.ReceivedListener;
 import net.hasor.rsf.rpc.net.RsfChannel;
-import net.hasor.rsf.utils.NameThreadFactory;
+import net.hasor.utils.NameThreadFactory;
 import net.hasor.utils.future.BasicFuture;
 import org.junit.Test;
 

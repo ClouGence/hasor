@@ -15,6 +15,7 @@
  */
 package net.hasor.core.event;
 import net.hasor.core.*;
+import net.hasor.utils.NameThreadFactory;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.future.BasicFuture;
 
