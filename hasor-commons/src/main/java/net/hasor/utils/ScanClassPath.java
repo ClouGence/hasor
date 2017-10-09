@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.utils;
+import net.hasor.utils.ResourcesUtils.ScanEvent;
+import net.hasor.utils.ResourcesUtils.ScanItem;
 import net.hasor.utils.asm.AnnotationVisitor;
 import net.hasor.utils.asm.ClassReader;
 import net.hasor.utils.asm.ClassVisitor;
 import net.hasor.utils.asm.Opcodes;
-import net.hasor.utils.ResourcesUtils.ScanEvent;
-import net.hasor.utils.ResourcesUtils.ScanItem;
 
 import java.io.IOException;
 import java.io.InputStream;

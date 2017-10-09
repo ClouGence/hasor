@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.land.node;
-import net.hasor.utils.future.FutureCallback;
 import net.hasor.land.bootstrap.LandContext;
 import net.hasor.land.domain.NodeStatus;
 import net.hasor.land.election.CollectVoteData;
@@ -24,6 +23,7 @@ import net.hasor.land.election.LeaderBeatResult;
 import net.hasor.land.replicator.DataContext;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
+import net.hasor.utils.future.FutureCallback;
 /**
  * 集群中服务器节点信息
  * @version : 2016年09月10日

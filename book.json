@@ -1,53 +1,53 @@
 {
-	"title": "Hasor 开发指南",
-	"description": "Hasor 开发指南。",
-	"language": "zh-hans",
-	"gitbook": "3.x.x",
-	"plugins": [
-		"splitter",
-		"-lunr",
-		"-search",
-		"ace",
-		"expandable-chapters-small",
-		"ga",
-		"3-ba",
-		"tbfed-pagefooter",
-		"-sharing",
-		"favicon",
-		"github-buttons"
-	],
-	"pluginsConfig": {
-		"ga": {
-			"token": "UA-88648560-1"
-		},
-		"3-ba": {
-			"token": "8d5f7a839f4f8fee4eefbeac046d05cc"
-		},
-		"tbfed-pagefooter": {
-			"copyright": "Copyright &copy zyc@hasor.net 2017",
-			"modify_label": "该文件修订时间：",
-			"modify_format": "YYYY-MM-DD HH:mm:ss"
-		},
-		"favicon": {
-			"shortcut": "assets/images/favicon.ico",
-			"bookmark": "assets/images/favicon.ico",
-			"appleTouch": "assets/images/apple-touch-icon.png",
-			"appleTouchMore": {
-				"120x120": "assets/images/apple-touch-icon-120x120.png",
-				"180x180": "assets/images/apple-touch-icon-180x180.png"
-			}
-		},
-		"github-buttons": {
-			"repo": "zycgit/hasor",
-			"types": [
-				"star",
-				"watch",
-				"fork"
-			],
-			"size": "small"
-		}
-	},
-	"variables": {
-		"hasor_version": "3.2.0"
-	}
+  "title": "Hasor 开发指南",
+  "description": "Hasor 开发指南。",
+  "language": "zh-hans",
+  "gitbook": "3.x.x",
+  "plugins": [
+    "splitter",
+    "-lunr",
+    "-search",
+    "ace",
+    "expandable-chapters-small",
+    "ga",
+    "3-ba",
+    "tbfed-pagefooter",
+    "-sharing",
+    "favicon",
+    "github-buttons"
+  ],
+  "pluginsConfig": {
+    "ga": {
+      "token": "UA-88648560-1"
+    },
+    "3-ba": {
+      "token": "8d5f7a839f4f8fee4eefbeac046d05cc"
+    },
+    "tbfed-pagefooter": {
+      "copyright": "Copyright &copy zyc@hasor.net 2017",
+      "modify_label": "该文件修订时间：",
+      "modify_format": "YYYY-MM-DD HH:mm:ss"
+    },
+    "favicon": {
+      "shortcut": "assets/images/favicon.ico",
+      "bookmark": "assets/images/favicon.ico",
+      "appleTouch": "assets/images/apple-touch-icon.png",
+      "appleTouchMore": {
+        "120x120": "assets/images/apple-touch-icon-120x120.png",
+        "180x180": "assets/images/apple-touch-icon-180x180.png"
+      }
+    },
+    "github-buttons": {
+      "repo": "zycgit/hasor",
+      "types": [
+        "star",
+        "watch",
+        "fork"
+      ],
+      "size": "small"
+    }
+  },
+  "variables": {
+    "hasor_version": "3.2.0"
+  }
 }

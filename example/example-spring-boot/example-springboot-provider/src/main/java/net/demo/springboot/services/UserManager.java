@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.demo.springboot.services;
-import net.example.domain.domain.UserDO;
 import net.demo.springboot.daos.UserDao;
 import net.demo.springboot.domain.UserDTO;
+import net.example.domain.domain.UserDO;
 import net.hasor.db.Transactional;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

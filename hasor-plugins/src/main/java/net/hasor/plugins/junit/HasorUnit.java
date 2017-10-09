@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.plugins.junit;
-import net.hasor.utils.convert.ConverterUtils;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.convert.ConverterUtils;
 
 import java.io.PrintStream;
 import java.util.*;

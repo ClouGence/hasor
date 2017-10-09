@@ -40,6 +40,32 @@ import java.nio.charset.Charset;
  * @version : 2017-07-19
  */
 public class TestProcessMain {
+    private static final String[] testQl;
+
+    static {
+        testQl = new String[] {//
+                "/basic/dataql_1.ql",//
+                "/basic/dataql_2.ql",//
+                "/basic/dataql_3.ql",//
+                "/basic/dataql_4.ql",//
+                "/basic/dataql_5.ql",//
+                "/basic/dataql_6.ql",//
+                "/basic/dataql_7.ql",//
+                "/basic/dataql_8.ql",//
+                //
+                "/eval/dataql_10.ql",//
+                "/eval/dataql_11.ql",//
+                "/eval/dataql_12.ql",//
+                //
+                "/lambda/dataql_20.ql",//
+                "/lambda/dataql_21.ql",//
+                "/lambda/dataql_22.ql",//
+                "/lambda/dataql_23.ql",//
+                "/lambda/dataql_24.ql",//
+                "/lambda/dataql_25.ql"//
+        };
+    }
+
     private QueryRuntime runtime = new QueryRuntime();
     @Before
     public void before() {
@@ -112,10 +138,12 @@ public class TestProcessMain {
     // --------------------------------------------------------------------------------------------
     @Test
     public void mainALL() throws Exception {
-        System.out.println(16 & 19);
-        this.printTaskTree("/basic/dataql_3.ql");
+        //        this.printTaskTree("/basic/dataql_3.ql");
         //        this.printTaskTree("/eval/dataql_10.ql");
         //        this.printTaskTree("/lambda/dataql_24.ql");
         //        this.printTaskTree("/test/test_" + 1 + ".ql");
+        for (int i = 0; i < testQl.length; i++) {
+            this.printTaskTree(testQl[i]);
+        }
     }
 }

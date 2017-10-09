@@ -15,7 +15,6 @@
  */
 package net.demo.springboot.core;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import net.hasor.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

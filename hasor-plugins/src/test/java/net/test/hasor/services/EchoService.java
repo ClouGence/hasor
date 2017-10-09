@@ -13,20 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import net.hasor.core.Hasor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
+package net.test.hasor.services;
 /**
- * 单机模式
- * @version : 2015年8月13日
+ * 服务接口
+ * @version : 2015年11月27日
  * @author 赵永春(zyc@hasor.net)
  */
-public class CenterServerAlone {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    public static void main(String[] args) throws IOException {
-        Hasor.createAppContext("center-alone.xml");
-        System.in.read();
-    }
+public interface EchoService {
+    public String sayHello(String echo) throws InterruptedException;
 }
