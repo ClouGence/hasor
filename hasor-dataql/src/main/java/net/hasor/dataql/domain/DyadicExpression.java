@@ -56,6 +56,9 @@ public class DyadicExpression extends Expression {
         //      a + b * c - d / e   ->  a,b,c,*,+,d,e,/,-
         //      a + b * c < d ^ 2   ->  a,b,c,*,+,d,2,^,<
         //
+        // .第二个比第一个优先（comparePriority，方法返回 true 表示 当前被测试对象优先）
+        //        if (this.fstExpression.comparePriority(this.secExpression)) {
+        //        }
         //        this.fstExpression.doCompiler(queue, stackTree);
         //        // .第二个表达式运算优先
         //        if (this.secExpression.priorityTo(this.fstExpression)) {
@@ -70,5 +73,13 @@ public class DyadicExpression extends Expression {
         this.fstExpression.doCompiler(queue, stackTree);
         this.secExpression.doCompiler(queue, stackTree);
         queue.inst(DO, this.dyadicSymbol);
+    }
+    /**
+     * comparePriority，方法返回 true 表示 当前被测试对象优先
+     * @param testExpression 被测试表达式。
+     * @return 如果 testExpression 优先于 this 那么返回true
+     */
+    public boolean comparePriority(Expression testExpression) {
+        return false;
     }
 }

@@ -354,7 +354,7 @@ Expression expression() : {                          Expression exp;
 } {
     (
         // 优先级
-        <OPAR> exp = expression() <CPAR>
+        <OPAR> exp = expression() <CPAR>            {exp = new PrivilegeExpression(exp);}
         (
             exp = extExpression(exp)
         )?                                          {return exp;}

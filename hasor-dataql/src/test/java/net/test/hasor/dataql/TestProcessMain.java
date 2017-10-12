@@ -56,6 +56,7 @@ public class TestProcessMain {
                 "/eval/dataql_10.ql",//
                 "/eval/dataql_11.ql",//
                 "/eval/dataql_12.ql",//
+                "/eval/dataql_13.ql",//
                 //
                 "/lambda/dataql_20.ql",//
                 "/lambda/dataql_21.ql",//
@@ -138,12 +139,9 @@ public class TestProcessMain {
     // --------------------------------------------------------------------------------------------
     @Test
     public void mainALL() throws Exception {
-        //        this.printTaskTree("/basic/dataql_3.ql");
-        //        this.printTaskTree("/eval/dataql_10.ql");
-        //        this.printTaskTree("/lambda/dataql_24.ql");
-        //        this.printTaskTree("/test/test_" + 1 + ".ql");
-        for (int i = 0; i < testQl.length; i++) {
-            this.printTaskTree(testQl[i]);
-        }
+        this.printTaskTree("/eval/dataql_13.ql");
+        //        for (int i = 0; i < testQl.length; i++) {
+        //            this.printTaskTree(testQl[i]);
+        //        }
     }
 }

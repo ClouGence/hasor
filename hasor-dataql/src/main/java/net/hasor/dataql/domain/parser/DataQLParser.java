@@ -335,6 +335,7 @@ public class DataQLParser implements DataQLParserConstants {
             jj_consume_token(OPAR);
             exp = expression();
             jj_consume_token(CPAR);
+            exp = new PrivilegeExpression(exp);
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
             case QUEM:
             case PLUS:

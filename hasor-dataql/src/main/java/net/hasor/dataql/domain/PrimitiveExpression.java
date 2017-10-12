@@ -41,7 +41,7 @@ public class PrimitiveExpression extends Expression {
     }
     @Override
     public String toString() {
-        return super.toString() + "'" + this.value + "'";
+        return "Primitive - '" + this.value + "'";
     }
     //
     //
