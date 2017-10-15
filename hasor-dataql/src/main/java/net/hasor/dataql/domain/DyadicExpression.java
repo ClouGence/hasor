@@ -117,7 +117,7 @@ public class DyadicExpression extends Expression {
                 }
             }
         }
-        return -1;
+        throw new UnsupportedOperationException("symbol " + dyadicSymbol + " undefined priority.");
     }
     private static final String[][] ComparePriorityKeys = new String[][] {
             //      0st: ()                            括号
