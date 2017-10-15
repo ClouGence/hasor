@@ -130,5 +130,5 @@
 ### 小备注
 
 * mvn release:prepare -P release
-* ./deploy.sh -P release
+* mvn clean deploy -P release
 * ./build.sh && docker build -t debug . && docker run debug
