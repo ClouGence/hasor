@@ -3,30 +3,16 @@
     <parent>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-parent</artifactId>
-        <version>0.0.11-SNAPSHOT</version>
+        <version>3.2.0-SNAPSHOT</version>
     </parent>
 
     <!-- Maven Info -->
     <artifactId>hasor-plugins</artifactId>
-    <version>${hasor.version}</version>
     <packaging>jar</packaging>
 
     <!-- Project Info -->
     <name>Hasor-Plugins</name>
     <description>the hasor plugins project.</description>
-
-    <!-- 配置属性 -->
-    <properties>
-        <project.shortname>Hasor-</project.shortname>
-    </properties>
-
-    <!-- SCM -->
-    <scm>
-        <connection>scm:git:git@git.oschina.net:zycgit/hasor.git</connection>
-        <developerConnection>scm:git:git@git.oschina.net:zycgit/hasor.git</developerConnection>
-        <url>git@git.oschina.net:zycgit/hasor.git</url>
-        <tag>HEAD</tag>
-    </scm>
 
     <developers>
         <developer>
@@ -41,27 +27,27 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-core</artifactId>
-            <version>${hasor.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-dataql</artifactId>
-            <version>${hasor.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-db</artifactId>
-            <version>${hasor.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-web</artifactId>
-            <version>${hasor.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-rsf</artifactId>
-            <version>${hasor.version}</version>
+            <version>${project.version}</version>
         </dependency>
 
         <!-- 整合 Junit -->

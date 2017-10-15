@@ -4,7 +4,7 @@
 
     <groupId>net.hasor</groupId>
     <artifactId>hasor-parent</artifactId>
-    <version>0.0.11-SNAPSHOT</version>
+    <version>3.2.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <!-- 配置属性 -->
@@ -16,7 +16,6 @@
         <gpg.passphrase>fubing220106</gpg.passphrase>
         <maven.test.skip>true</maven.test.skip>
 
-        <hasor.version>3.2.0-SNAPSHOT</hasor.version>
         <project.shortname></project.shortname>
         <project.website>http://www.hasor.net/</project.website>
         <project.inceptionYear>2017</project.inceptionYear>
