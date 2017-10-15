@@ -16,7 +16,7 @@
         <gpg.passphrase>fubing220106</gpg.passphrase>
         <maven.test.skip>true</maven.test.skip>
 
-        <project.shortname></project.shortname>
+        <project.shortname>Hasor-</project.shortname>
         <project.website>http://www.hasor.net/</project.website>
         <project.inceptionYear>2017</project.inceptionYear>
         <javadocs.bottom><![CDATA[
