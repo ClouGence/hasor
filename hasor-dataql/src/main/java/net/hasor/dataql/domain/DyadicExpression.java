@@ -16,6 +16,8 @@
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
+import java.util.Stack;
 /**
  * 二元运算表达式
  * @author 赵永春(zyc@hasor.net)
@@ -34,12 +36,9 @@ public class DyadicExpression extends Expression {
     //
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        this.doCompiler(queue, stackTree, null);
+        this.doCompiler(queue, stackTree, new Stack<String>());
     }
-    protected void doCompiler(InstQueue queue, CompilerStack stackTree, Runnable callback) {
-        //
-        //  规则：
-        //      在输出完第一个操作数之后，如果后一组表达式优先那么完整的输出后一组表达式之后输出运算符。
+    protected void doCompiler(final InstQueue queue, CompilerStack stackTree, Stack<String> last) {
         //
         //  优先级：
         //      0st: ()                            括号
@@ -56,30 +55,84 @@ public class DyadicExpression extends Expression {
         //      a + b * c - d / e   ->  a,b,c,*,+,d,e,/,-
         //      a + b * c < d ^ 2   ->  a,b,c,*,+,d,2,^,<
         //
-        // .第二个比第一个优先（comparePriority，方法返回 true 表示 当前被测试对象优先）
-        //        if (this.fstExpression.comparePriority(this.secExpression)) {
-        //        }
-        //        this.fstExpression.doCompiler(queue, stackTree);
-        //        // .第二个表达式运算优先
-        //        if (this.secExpression.priorityTo(this.fstExpression)) {
-        //            this.secExpression.doCompiler(queue, stackTree, new Runnable() {
-        //                @Override
-        //                public void run() {
-        //                }
-        //            });
-        //        } else {
-        //        }
+        //  算法说明：
+        //      算法的研发是在没有做参考任何资料情况下完全自主演算得出。
+        //      另：该算法没有核实是否市面上存在类似算法，因此不能做独创性宣传。如确实属于独创那么保留算法独创的全部权利。
         //
+        //  算法逻辑：
+        //      put fstExpression
+        //      if last = empty then
+        //          goto self
+        //      end
+        //
+        //      while last.empty = false
+        //          if self <= last.peek then   <- 根据优先级Tab，计算 slef 的运算符是否比 last 中最后一个放进去的优先级要低
+        //              put last.pop
+        //          else
+        //              goto self
+        //          end
+        //      end
+        //      self : last.push( self )
+        //
+        //      if next = null then
+        //          put secExpression
+        //          while last.empty = false
+        //              put last.pop
+        //          end
+        //      end
+        //
+        //  -----------------------------------------------------------------------------
+        //
+        // .输出第一个表达式
         this.fstExpression.doCompiler(queue, stackTree);
-        this.secExpression.doCompiler(queue, stackTree);
-        queue.inst(DO, this.dyadicSymbol);
+        //
+        int selfPriority = priorityAt(this.dyadicSymbol);
+        if (!last.isEmpty()) {
+            while (!last.isEmpty()) {
+                int lastPriority = priorityAt(last.peek());
+                if (selfPriority > lastPriority) {
+                    queue.inst(DO, last.pop());
+                } else {
+                    break;
+                }
+            }
+        }
+        last.push(this.dyadicSymbol);
+        //
+        if (this.secExpression instanceof DyadicExpression) {
+            ((DyadicExpression) this.secExpression).doCompiler(queue, stackTree, last);
+        } else {
+            this.secExpression.doCompiler(queue, stackTree);
+            while (!last.isEmpty()) {
+                queue.inst(DO, last.pop());
+            }
+        }
     }
-    /**
-     * comparePriority，方法返回 true 表示 当前被测试对象优先
-     * @param testExpression 被测试表达式。
-     * @return 如果 testExpression 优先于 this 那么返回true
-     */
-    public boolean comparePriority(Expression testExpression) {
-        return false;
+    private static int priorityAt(String dyadicSymbol) {
+        for (int symbolArraysIndex = 0; symbolArraysIndex < ComparePriorityKeys.length; symbolArraysIndex++) {
+            String[] symbolArrays = ComparePriorityKeys[symbolArraysIndex];
+            for (String symbol : symbolArrays) {
+                if (symbol.equalsIgnoreCase(dyadicSymbol)) {
+                    return symbolArraysIndex;
+                }
+            }
+        }
+        return -1;
     }
+    private static final String[][] ComparePriorityKeys = new String[][] {
+            //      0st: ()                            括号
+            //      1st: ->                            取值
+            //      2st: !  , ++ , --                  一元操作
+            //      3st: *  , /  , \  , %              乘除法
+            new String[] { "*", "/", "\\", "%" },
+            //      4st: +  , -                        加减法
+            new String[] { "+", "-" },
+            //      5st: &  , |  , ^  , << , >> , >>>  位运算
+            new String[] { "&", "|", "^", "<<", ">>", ">>>" },
+            //      6st: >  , >= , == , != , <= , <    比较运算
+            new String[] { ">", ">=", "!=", "<=", "<" },
+            //      7st: && , ||                       逻辑运算
+            new String[] { "&&", "||" },
+            //
+    };
 }
