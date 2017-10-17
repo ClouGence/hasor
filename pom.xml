@@ -3,7 +3,7 @@
 
     <groupId>net.hasor</groupId>
     <artifactId>hasor-parent</artifactId>
-    <version>3.2.1-SNAPSHOT</version>
+    <version>3.2.1</version>
     <packaging>pom</packaging>
 
     <!-- 配置属性 -->
@@ -73,7 +73,7 @@
         <connection>scm:git:git@git.oschina.net:zycgit/hasor.git</connection>
         <developerConnection>scm:git:git@git.oschina.net:zycgit/hasor.git</developerConnection>
         <url>git@git.oschina.net:zycgit/hasor.git</url>
-        <tag>HEAD</tag>
+        <tag>Release.Hasor-3.2.1</tag>
     </scm>
 
 
