@@ -12,17 +12,16 @@
     <name>example-root</name>
 
     <modules>
-        <module>example-rpc-domain</module>
         <module>example-rsf</module>
         <module>example-hasor</module>
         <module>example-jfinal</module>
         <module>example-spring</module>
-        <!--<module>example-spring-boot</module>-->
         <module>example-nutz</module>
     </modules>
 
     <!-- 配置属性 -->
     <properties>
+        <hasor.version>3.2.1-SNAPSHOT</hasor.version>
         <wtpversion>2.0</wtpversion>
         <downloadSources>true</downloadSources>
         <downloadJavadocs>true</downloadJavadocs>
@@ -85,31 +84,43 @@
             <dependency>
                 <groupId>net.hasor</groupId>
                 <artifactId>hasor-core</artifactId>
-                <version>3.2.0-SNAPSHOT</version>
+                <version>${hasor.version}</version>
             </dependency>
             <!-- RSF -->
             <dependency>
                 <groupId>net.hasor</groupId>
                 <artifactId>hasor-rsf</artifactId>
-                <version>3.2.0-SNAPSHOT</version>
+                <version>${hasor.version}</version>
             </dependency>
             <!-- Hasor -->
             <dependency>
                 <groupId>net.hasor</groupId>
                 <artifactId>hasor-web</artifactId>
-                <version>3.2.0-SNAPSHOT</version>
+                <version>${hasor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.hasor</groupId>
+                <artifactId>hasor-db</artifactId>
+                <version>${hasor.version}</version>
             </dependency>
             <!-- Center -->
             <dependency>
                 <groupId>net.hasor</groupId>
                 <artifactId>hasor-registry</artifactId>
-                <version>3.2.0-SNAPSHOT</version>
+                <version>${hasor.version}</version>
             </dependency>
             <dependency>
                 <groupId>net.hasor</groupId>
                 <artifactId>hasor-plugins</artifactId>
-                <version>3.2.0-SNAPSHOT</version>
+                <version>${hasor.version}</version>
             </dependency>
+            <!-- Plugins -->
+            <dependency>
+                <groupId>net.hasor</groupId>
+                <artifactId>hasor-plugins</artifactId>
+                <version>${hasor.version}</version>
+            </dependency>
+
             <!-- JFinal -->
             <dependency>
                 <groupId>com.jfinal</groupId>

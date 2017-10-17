@@ -44,7 +44,7 @@ public class DemoConfig extends JFinalConfig {
         me.add(c3p0);
         //
         // .（必选）Hasor 框架的启动和销毁
-        me.add(new HasorPlugin(JFinal.me(), dbProxy, new RpcModule()));
+        me.add(new HasorPlugin(JFinal.me(), dbProxy, new MyModule()));
         //
         // .JFinal 表映射
         ActiveRecordPlugin arp = new ActiveRecordPlugin(dbProxy);

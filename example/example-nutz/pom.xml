@@ -11,10 +11,19 @@
     <groupId>net.hasor</groupId>
     <artifactId>example-nutz</artifactId>
     <version>1.0</version>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
-    <modules>
-        <module>example-nutz-consumer</module>
-        <module>example-nutz-provider</module>
-    </modules>
+    <dependencies>
+        <!-- Nutz -->
+        <dependency>
+            <groupId>org.nutz</groupId>
+            <artifactId>nutz-integration-hasor</artifactId>
+        </dependency>
+
+        <!-- Hasor框架 -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-core</artifactId>
+        </dependency>
+    </dependencies>
 </project>

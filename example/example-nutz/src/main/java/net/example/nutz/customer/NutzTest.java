@@ -13,18 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.example.nutz.provider;
-import net.example.domain.consumer.EchoService;
+package net.example.nutz.customer;
+import net.hasor.core.AppContext;
+import org.nutz.ioc.Ioc;
+import org.nutz.ioc.impl.NutIoc;
+import org.nutz.ioc.loader.combo.ComboIocLoader;
 /**
- * 服务实现
- * @version : 2017年02月21日
+ *
+ * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class EchoServiceImpl implements EchoService {
-    @Override
-    public String sayHello(String echo) throws InterruptedException {
-        Thread.sleep(100);
-        System.out.println("server : " + echo);
-        return "you say " + echo;
+public class NutzTest {
+    public static void main(String[] args) throws Throwable {
+        Ioc ioc = new NutIoc(new ComboIocLoader("*js", "ioc/", "*hasor"));
+        //
+        // .启动 Hasor
+        ioc.get(AppContext.class);
+        System.out.println("start.");
+        //
+        //Client -> Server
+        HasorBean hasorBean = ioc.get(HasorBean.class);
+        System.out.println(hasorBean);
+        //
+        ioc.depose();
     }
 }

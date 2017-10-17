@@ -15,31 +15,15 @@
 
     <!-- 引用依赖 -->
     <dependencies>
-        <!-- RPC 例子接口定义 -->
-        <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>example-rpc-domain</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-
         <!-- Hasor -->
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-web</artifactId>
         </dependency>
-
-        <!-- RPC框架 -->
         <dependency>
             <groupId>net.hasor</groupId>
-            <artifactId>hasor-rsf</artifactId>
+            <artifactId>hasor-db</artifactId>
         </dependency>
-
-        <!-- 分布式PRC扩展 -->
-        <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>hasor-registry</artifactId>
-        </dependency>
-
         <!-- Plugins -->
         <dependency>
             <groupId>net.hasor</groupId>

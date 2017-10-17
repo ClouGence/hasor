@@ -15,18 +15,11 @@
  */
 package net.example.hasor.core;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import net.example.domain.consumer.EchoService;
-import net.example.domain.consumer.MessageService;
-import net.example.domain.consumer.UserService;
-import net.example.hasor.provider.EchoServiceImpl;
-import net.example.hasor.provider.MessageServiceImpl;
-import net.example.hasor.provider.UserServiceImpl;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
 import net.hasor.db.JdbcModule;
 import net.hasor.db.Level;
 import net.hasor.plugins.render.FreemarkerRender;
-import net.hasor.rsf.RsfApiBinder;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 /**
@@ -44,7 +37,6 @@ public class StartModule extends WebModule {
         apiBinder.scanMappingTo();                          //扫描所有 @MappingTo 注解
         //
         this.loadDataSource(apiBinder);                     //连接数据库
-        this.loadRpc(apiBinder.tryCast(RsfApiBinder.class));//发布分布式服务
     }
     //
     private void loadDataSource(ApiBinder apiBinder) throws Throwable {
@@ -79,18 +71,4 @@ public class StartModule extends WebModule {
         apiBinder.installModule(new JdbcModule(Level.Full, dataSource));
     }
     //
-    private void loadRpc(RsfApiBinder apiBinder) {
-        //
-        apiBinder.rsfService(EchoService.class).toInfo(         // 声明 RSF 的服务来自容器中哪一个 Bean
-                apiBinder.bindType(EchoServiceImpl.class)       // 将 Bean 注册到 Hasor 容器
-                        .toInfo()).register();                  // 发布 RPC 服务
-        //
-        apiBinder.rsfService(MessageService.class).toInfo(      // 声明 RSF 的服务来自容器中哪一个 Bean
-                apiBinder.bindType(MessageServiceImpl.class)    // 将 Bean 注册到 Hasor 容器
-                        .toInfo()).register();                  // 发布 RPC 服务
-        //
-        apiBinder.rsfService(UserService.class).toInfo(         // 声明 RSF 的服务来自容器中哪一个 Bean
-                apiBinder.bindType(UserServiceImpl.class)       // 将 Bean 注册到 Hasor 容器
-                        .toInfo()).register();                  // 发布 RPC 服务
-    }
 }

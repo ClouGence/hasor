@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/main">
+    <myApp>
+        <config>this config from hasor-config.xml</config>
+    </myApp>
+</config>

@@ -14,27 +14,14 @@
  * limitations under the License.
  */
 package net.example.nutz.customer;
-import net.example.domain.consumer.EchoService;
-import net.example.domain.consumer.MessageService;
 import net.hasor.core.ApiBinder;
-import net.hasor.rsf.RsfApiBinder;
 import org.nutz.integration.hasor.NutzModule;
 import org.nutz.integration.hasor.annotation.HasorConfiguration;
 //
 //
 @HasorConfiguration
-public class RpcModule extends NutzModule {
+public class MyModule extends NutzModule {
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        // .切换成 RSF RsfApiBinder
-        RsfApiBinder rsfApiBinder = apiBinder.tryCast(RsfApiBinder.class);
-        //
-        // .服务订阅（发布到 Hasor 容器中的 Bean 会自动导出到 Nutz）
-        rsfApiBinder.bindType(EchoService.class).toProvider(rsfApiBinder.converToProvider(      // 发布服务到 Hasor 容器中
-                rsfApiBinder.rsfService(EchoService.class).register()                           // 注册消费者
-        ));
-        rsfApiBinder.bindType(MessageService.class).toProvider(rsfApiBinder.converToProvider(   // 发布服务到 Hasor 容器中
-                rsfApiBinder.rsfService(MessageService.class).register()                        // 注册消费者
-        ));
     }
 }

@@ -13,26 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.example.nutz.provider;
-import net.hasor.core.AppContext;
-import org.nutz.ioc.Ioc;
-import org.nutz.ioc.impl.NutIoc;
-import org.nutz.ioc.loader.combo.ComboIocLoader;
+package net.example.nutz.customer;
+import net.hasor.core.InjectSettings;
 /**
- *
- * @version : 2017年02月21日
+ * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ProviderClient {
-    public static void main(String[] args) throws Throwable {
-        Ioc ioc = new NutIoc(new ComboIocLoader("*js", "ioc/", "*hasor"));
-        //
-        // .启动 Hasor
-        ioc.get(AppContext.class);
-        //
-        System.out.println("server start.");
-        System.in.read();
-        //
-        ioc.depose();
+public class HasorBean {
+    @InjectSettings("myapp.config")
+    private String myapp;
+    @InjectSettings("${value}")
+    private String value;
+    //
+    public String toString() {
+        return "HasorBean - [myapp:" + this.myapp + ", value =" + this.value + "]";
     }
 }
