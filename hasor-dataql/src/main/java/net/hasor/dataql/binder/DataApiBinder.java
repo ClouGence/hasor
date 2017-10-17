@@ -18,6 +18,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
 import net.hasor.dataql.UDF;
+import net.hasor.dataql.UdfSource;
 /**
  * 全面提供 “数据库 + 服务” 整合查询，并为查询结果提供全面的数据整合能力。您甚至可以通过一条 QL 混合 RPC 和数据库的查询结果。
  * 除此之外，Data 软件包，还为您提供全面的数据库事务控制能力，在底层上 Data 还为您提供了 DataSource、JDBC操作接口、等常见的功能。
@@ -27,14 +28,38 @@ import net.hasor.dataql.UDF;
  */
 public interface DataApiBinder extends ApiBinder {
     /** 添加 DataQL UDF */
-    public void addUDF(String name, Class<? extends UDF> udfType);
+    public void addUdf(String name, Class<? extends UDF> udfType);
 
     /** 添加 DataQL UDF */
-    public void addUDF(String name, UDF dataUDF);
+    public void addUdf(String name, UDF dataUDF);
 
     /** 添加 DataQL UDF */
-    public void addUDF(String name, Provider<? extends UDF> udfProvider);
+    public void addUdf(String name, Provider<? extends UDF> udfProvider);
 
     /** 添加 DataQL UDF */
-    public void addUDF(String name, BindInfo<? extends UDF> udfInfo);
+    public void addUdf(String name, BindInfo<? extends UDF> udfInfo);
+
+    /** 设置Udf数据源 */
+    public void addDefaultUdfSource(Class<? extends UdfSource> udfSource);
+
+    /** 设置Udf数据源 */
+    public void addDefaultUdfSource(UdfSource udfSource);
+
+    /** 设置Udf数据源 */
+    public void addDefaultUdfSource(Provider<? extends UdfSource> udfSource);
+
+    /** 设置Udf数据源 */
+    public void addDefaultUdfSource(BindInfo<? extends UdfSource> udfSource);
+
+    /** 设置Udf数据源 */
+    public void addUdfSource(String sourceName, Class<? extends UdfSource> udfSource);
+
+    /** 设置Udf数据源 */
+    public void addUdfSource(String sourceName, UdfSource udfSource);
+
+    /** 设置Udf数据源 */
+    public void addUdfSource(String sourceName, Provider<? extends UdfSource> udfSource);
+
+    /** 设置Udf数据源 */
+    public void addUdfSource(String sourceName, BindInfo<? extends UdfSource> udfSource);
 }

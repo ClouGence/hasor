@@ -15,20 +15,29 @@
  */
 package net.test.hasor.dataql;
 import com.alibaba.fastjson.JSON;
-import net.hasor.core.Settings;
+import net.hasor.core.*;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.QueryResult;
+import net.hasor.dataql.UdfManager;
+import net.hasor.dataql.UdfSource;
+import net.hasor.dataql.binder.DataApiBinder;
+import net.hasor.dataql.binder.DataQL;
 import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.domain.compiler.QueryCompiler;
-import net.hasor.dataql.domain.parser.ParseException;
 import net.hasor.dataql.result.LambdaModel;
-import net.hasor.dataql.runtime.QueryRuntime;
+import net.hasor.dataql.runtime.QueryEngine;
+import net.hasor.dataql.udfs.SimpleUdfManager;
+import net.hasor.dataql.udfs.SimpleUdfSource;
 import net.hasor.dataql.udfs.collection.*;
 import net.hasor.utils.IOUtils;
 import net.hasor.utils.ResourcesUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.SimpleScriptContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -67,30 +76,28 @@ public class TestProcessMain {
         };
     }
 
-    private QueryRuntime runtime = new QueryRuntime();
+    private static UdfSource udfSource = new SimpleUdfSource();
     @Before
     public void before() {
-        //
-        this.runtime.addShareUDF("foreach", new Foreach());
-        this.runtime.addShareUDF("first", new First());
-        this.runtime.addShareUDF("last", new Last());
-        this.runtime.addShareUDF("limit", new Limit());
-        this.runtime.addShareUDF("addTo", new AddTo());
-        //
-        this.runtime.addShareUDF("findUserByID", new UdfManager.FindUserByID());
-        this.runtime.addShareUDF("queryOrder", new UdfManager.QueryOrder());
-        this.runtime.addShareUDF("userManager.findUserByID", new UdfManager.UserInfo());
-        this.runtime.addShareUDF("foo", new UdfManager.Foo());
-        this.runtime.addShareUDF("double", new UdfManager.DoubleNumber());
-        this.runtime.addShareUDF("filter", new UdfManager.Filter());
-        this.runtime.addShareUDF("track", new UdfManager.Track());
+        udfSource.addUdf("foreach", new Foreach());
+        udfSource.addUdf("first", new First());
+        udfSource.addUdf("last", new Last());
+        udfSource.addUdf("limit", new Limit());
+        udfSource.addUdf("addTo", new AddTo());
+        udfSource.addUdf("findUserByID", new FooManager.FindUserByID());
+        udfSource.addUdf("queryOrder", new FooManager.QueryOrder());
+        udfSource.addUdf("userManager.findUserByID", new FooManager.UserInfo());
+        udfSource.addUdf("foo", new FooManager.Foo());
+        udfSource.addUdf("double", new FooManager.DoubleNumber());
+        udfSource.addUdf("filter", new FooManager.Filter());
+        udfSource.addUdf("track", new FooManager.Track());
     }
-    private void printTaskTree(String queryResource) throws IOException, ParseException {
+    //
+    private String getScript(String queryResource) throws IOException {
         InputStream inStream = ResourcesUtils.getResourceAsStream(queryResource);
         if (inStream == null) {
-            return;
+            return "";
         }
-        //
         // .获取 DataQL 查询字符串
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         System.out.println("resource = " + queryResource);
@@ -100,11 +107,68 @@ public class TestProcessMain {
         String buildQuery = outWriter.toString();
         System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         System.out.println(buildQuery);
+        return buildQuery;
+    }
+    private void printResult(QueryResult result) throws Throwable {
+        Object data = result.getData();
+        if (data instanceof LambdaModel) {
+            data = "外部调用结果：" + ((LambdaModel) data).call(new Object[] { -1 }, null);
+        }
+        System.out.println(" - " + JSON.toJSON(data).toString());
+    }
+    //
+    // --------------------------------------------------------------------------------------------
+    @Test
+    public void mainALL() throws Throwable {
+        //        for (int i = 0; i < testQl.length; i++) {
+        //            this.printTaskTree(testQl[i]);
+        //        }
+        String buildQuery = getScript("/basic/dataql_1.ql");
+        QueryResult result = null;
         //
-        // .编译 DataQL 为 QIL
-        QIL compilerQuery = QueryCompiler.compilerQuery(buildQuery);
-        // .通过 QIL 构建 Query
-        Query query = this.runtime.createEngine(compilerQuery).newQuery();
+        // --------------------------------------------------------------------------------------------------
+        // .JSR223方式
+        ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("dataql");
+        ((UdfManager) scriptEngine).addDefaultSource(udfSource);
+        SimpleScriptContext params = new SimpleScriptContext();
+        params.setAttribute("uid", "uid form env", ScriptContext.ENGINE_SCOPE);
+        params.setAttribute("sid", "sid form env", ScriptContext.ENGINE_SCOPE);
+        result = (QueryResult) scriptEngine.eval(buildQuery);
+        printResult(result);
+        //
+        // --------------------------------------------------------------------------------------------------
+        // .DataQL原生方式
+        UdfManager udfManager = new SimpleUdfManager();
+        udfManager.addDefaultSource(udfSource);
+        QIL compilerQuery = QueryCompiler.compilerQuery(buildQuery);        //编译 DataQL 为 QIL
+        Query query = new QueryEngine(udfManager, compilerQuery).newQuery();//通过 QIL 构建 Query
+        query.addParameter("uid", "uid form env");
+        query.addParameter("sid", "sid form env");
+        result = query.execute();
+        printResult(result);
+        //
+        // --------------------------------------------------------------------------------------------------
+        // .Hasor框架中使用DataQL
+        AppContext appContext = Hasor.createAppContext(new Module() {
+            public void loadModule(ApiBinder apiBinder) throws Throwable {
+                apiBinder.tryCast(DataApiBinder.class).addDefaultUdfSource(udfSource);
+            }
+        });
+        DataQL dataQL = appContext.getInstance(DataQL.class);
+        Query qlQuery = dataQL.createQuery(buildQuery);
+        qlQuery.addParameter("uid", "uid form env");
+        qlQuery.addParameter("sid", "sid form env");
+        result = qlQuery.execute();
+        printResult(result);
+    }
+    //
+    @Test
+    public void performanceALL() throws Throwable {
+        String buildQuery = getScript("/basic/dataql_1.ql");
+        UdfManager udfManager = new SimpleUdfManager();
+        udfManager.addDefaultSource(udfSource);
+        QIL compilerQuery = QueryCompiler.compilerQuery(buildQuery);        //编译 DataQL 为 QIL
+        Query query = new QueryEngine(udfManager, compilerQuery).newQuery();//通过 QIL 构建 Query
         query.addParameter("uid", "uid form env");
         query.addParameter("sid", "sid form env");
         //
@@ -133,15 +197,5 @@ public class TestProcessMain {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-    }
-    //
-    //
-    // --------------------------------------------------------------------------------------------
-    @Test
-    public void mainALL() throws Exception {
-        this.printTaskTree("/eval/dataql_13.ql");
-        //        for (int i = 0; i < testQl.length; i++) {
-        //            this.printTaskTree(testQl[i]);
-        //        }
     }
 }

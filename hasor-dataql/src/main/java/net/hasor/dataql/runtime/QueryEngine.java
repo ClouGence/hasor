@@ -14,62 +14,63 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import net.hasor.dataql.OperatorProcess;
-import net.hasor.dataql.ProcessException;
-import net.hasor.dataql.Query;
-import net.hasor.dataql.UDF;
+import net.hasor.dataql.*;
 import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.runtime.inset.OpcodesPool;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
+import net.hasor.utils.Objects;
 /**
  * 用于封装和引发 QL 查询执行。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class QueryEngine extends OptionSet implements ProcessContet {
-    private final static OpcodesPool     opcodesPool = OpcodesPool.newPool();
-    private final        UdfManager      udfManager  = new UdfManager();
-    private final        OperatorManager opeManager  = new OperatorManager();
-    private final QIL          queryType;
-    private final QueryRuntime runtime;
+public class QueryEngine extends OptionSet implements DataQLEngine, ProcessContet {
+    private final static OpcodesPool opcodesPool = OpcodesPool.newPool();
+    private       ClassLoader     classLoader;
+    private final OperatorManager opeManager;
+    private final UdfFinder       udfFinder;
+    private final QIL             queryType;
     //
-    QueryEngine(QueryRuntime runtime, QIL queryType) {
-        super(runtime);
-        this.runtime = runtime;
+    public QueryEngine(UdfManager udfManager, QIL queryType) {
+        Objects.requireNonNull(udfManager, "udfManager is null.");
+        Objects.requireNonNull(queryType, "qil is null.");
+        //
+        this.classLoader = Thread.currentThread().getContextClassLoader();
+        this.opeManager = OperatorManager.DEFAULT;
+        this.udfFinder = new UdfFinder(udfManager);
         this.queryType = queryType;
     }
     //
-    /** 添加 UDF */
-    public void addQueryUDF(String udfName, UDF udf) {
-        this.udfManager.addUDF(udfName, udf);
+    @Override
+    public QIL getQil() {
+        return this.queryType;
+    }
+    @Override
+    public ClassLoader getClassLoader() {
+        return this.classLoader;
+    }
+    @Override
+    public void setClassLoader(ClassLoader classLoader) {
+        this.classLoader = (classLoader == null) ? Thread.currentThread().getContextClassLoader() : classLoader;
     }
     @Override
     public UDF findUDF(String udfName) {
-        UDF udf = this.udfManager.findUDF(udfName);
-        if (udf == null) {
-            udf = this.runtime.findUDF(udfName);
-        }
-        return udf;
+        return this.udfFinder.get(udfName);
     }
     @Override
     public OperatorProcess findOperator(Symbol symbolType, String symbolName, Class<?> fstType, Class<?> secType) {
-        //
-        OperatorProcess operator = this.opeManager.findOperator(symbolType, symbolName, fstType, secType);
-        if (operator == null) {
-            operator = this.runtime.findOperator(symbolType, symbolName, fstType, secType);
-        }
-        return operator;
+        return this.opeManager.findOperator(symbolType, symbolName, fstType, secType);
     }
+    @Override
+    public Class<?> loadType(String type) throws ClassNotFoundException {
+        return this.classLoader.loadClass(type);
+    }
+    //
     //
     /** 创建一个新查询实例。 */
     public Query newQuery() {
         return new QueryInstance(this, this.queryType);
-    }
-    //
-    @Override
-    public Class<?> loadType(String type) throws ClassNotFoundException {
-        return this.runtime.loadClass(type);
     }
     @Override
     public void processInset(InstSequence sequence, MemStack memStack, StackStruts local) throws ProcessException {

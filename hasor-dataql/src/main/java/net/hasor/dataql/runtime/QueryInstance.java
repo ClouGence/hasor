@@ -100,6 +100,7 @@ class QueryInstance extends OptionSet implements Query {
     private static long executionTime(long startTime) {
         return System.currentTimeMillis() - startTime;
     }
+    //
     private DataModel evalQueryResult(Object resultData) {
         if (resultData == null) {
             return null;

@@ -21,15 +21,14 @@ import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.dataql.UDF;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.hasor.dataql.UdfManager;
+import net.hasor.dataql.UdfSource;
 /**
  * DataQL 扩展接口。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class DataApiBinderCreater implements ApiBinderCreater {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public ApiBinder createBinder(final ApiBinder apiBinder) {
         return new DataApiBinderImpl(apiBinder);
@@ -37,29 +36,60 @@ public class DataApiBinderCreater implements ApiBinderCreater {
     //
     //
     private static class DataApiBinderImpl extends ApiBinderWrap implements DataApiBinder {
-        protected Logger logger = LoggerFactory.getLogger(getClass());
         public DataApiBinderImpl(ApiBinder apiBinder) {
             super(apiBinder);
         }
         //
         @Override
-        public void addUDF(String name, Class<? extends UDF> udfType) {
-            this.addUDF(name, bindType(UDF.class).uniqueName().to(udfType).toInfo());
+        public void addUdf(String name, Class<? extends UDF> udfType) {
+            this.addUdf(name, bindType(UDF.class).uniqueName().to(udfType).toInfo());
         }
         @Override
-        public void addUDF(String name, UDF dataUDF) {
-            this.addUDF(name, bindType(UDF.class).uniqueName().toInstance(dataUDF).toInfo());
+        public void addUdf(String name, UDF dataUDF) {
+            this.addUdf(name, bindType(UDF.class).uniqueName().toInstance(dataUDF).toInfo());
         }
         @Override
-        public void addUDF(String name, Provider<? extends UDF> udfProvider) {
-            this.addUDF(name, bindType(UDF.class).uniqueName().toProvider(udfProvider).toInfo());
+        public void addUdf(String name, Provider<? extends UDF> udfProvider) {
+            this.addUdf(name, bindType(UDF.class).uniqueName().toProvider(udfProvider).toInfo());
+        }
+        @Override
+        public void addUdf(String name, BindInfo<? extends UDF> udfInfo) {
+            DefineUDF define = Hasor.autoAware(getEnvironment(), new DefineUDF(null, name, udfInfo));
+            this.bindType(DefineUDF.class).uniqueName().toInstance(define);
         }
         //
         @Override
-        public void addUDF(String name, BindInfo<? extends UDF> udfInfo) {
-            DefineUDF define = Hasor.autoAware(getEnvironment(), new DefineUDF(name, udfInfo));
-            this.bindType(DefineUDF.class).uniqueName().toInstance(define);
+        public void addDefaultUdfSource(Class<? extends UdfSource> udfSource) {
+            this.addDefaultUdfSource(bindType(UdfSource.class).uniqueName().to(udfSource).toInfo());
+        }
+        @Override
+        public void addDefaultUdfSource(UdfSource udfSource) {
+            this.addDefaultUdfSource(bindType(UdfSource.class).uniqueName().toInstance(udfSource).toInfo());
+        }
+        @Override
+        public void addDefaultUdfSource(Provider<? extends UdfSource> udfSource) {
+            this.addDefaultUdfSource(bindType(UdfSource.class).uniqueName().toProvider(udfSource).toInfo());
+        }
+        @Override
+        public void addDefaultUdfSource(BindInfo<? extends UdfSource> udfSource) {
+            this.addUdfSource(UdfManager.DefaultSource, udfSource);
+        }
+        //
+        @Override
+        public void addUdfSource(String sourceName, Class<? extends UdfSource> udfSource) {
+            this.addUdfSource(sourceName, bindType(UdfSource.class).uniqueName().to(udfSource).toInfo());
+        }
+        @Override
+        public void addUdfSource(String sourceName, UdfSource udfSource) {
+            this.addUdfSource(sourceName, bindType(UdfSource.class).uniqueName().toInstance(udfSource).toInfo());
+        }
+        @Override
+        public void addUdfSource(String sourceName, Provider<? extends UdfSource> udfSource) {
+            this.addUdfSource(sourceName, bindType(UdfSource.class).uniqueName().toProvider(udfSource).toInfo());
+        }
+        @Override
+        public void addUdfSource(String sourceName, BindInfo<? extends UdfSource> udfSource) {
+            this.bindType(DefineSource.class).nameWith(sourceName).toInstance(new DefineSource(sourceName, udfSource));
         }
     }
-    //
 }

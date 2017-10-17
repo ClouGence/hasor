@@ -26,7 +26,7 @@ import java.util.Map;
  * @version : 2014-7-12
  * @author 赵永春 (zyc@byshell.org)
  */
-public class UdfManager {
+public class FooManager {
     /** 返回一个 double 类型的 number */
     public static class Track implements UDF {
         public Object call(Object[] values, Option readOnly) {

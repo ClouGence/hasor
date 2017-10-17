@@ -130,7 +130,7 @@ public class DyadicExpression extends Expression {
             //      5st: &  , |  , ^  , << , >> , >>>  位运算
             new String[] { "&", "|", "^", "<<", ">>", ">>>" },
             //      6st: >  , >= , == , != , <= , <    比较运算
-            new String[] { ">", ">=", "!=", "<=", "<" },
+            new String[] { ">", ">=", "!=", "==", "<=", "<" },
             //      7st: && , ||                       逻辑运算
             new String[] { "&&", "||" },
             //

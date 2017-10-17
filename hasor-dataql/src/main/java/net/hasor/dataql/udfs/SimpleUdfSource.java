@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.runtime;
+package net.hasor.dataql.udfs;
 import net.hasor.dataql.UDF;
+import net.hasor.dataql.UdfSource;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,21 +24,18 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-class UdfManager {
-    private final Map<String, UDF> udfMap = new HashMap<String, UDF>();
-    //
-    //
-    /** 添加 UDF */
-    public void addUDF(String udfName, UDF udf) {
-        if (this.udfMap.containsKey(udfName)) {
-            throw new IllegalStateException("udf name ‘" + udfName + "’ already exist.");
-        }
-        this.udfMap.put(udfName, udf);
+public class SimpleUdfSource extends HashMap<String, UDF> implements UdfSource {
+    public SimpleUdfSource() {
     }
-    public UDF findUDF(String udfName) {
-        if (this.udfMap.containsKey(udfName)) {
-            return this.udfMap.get(udfName);
-        }
-        return null;
+    public SimpleUdfSource(Map<String, UDF> udfMap) {
+        super(udfMap);
+    }
+    //
+    @Override
+    public UDF findUdf(String udfName) {
+        return super.get(udfName);
+    }
+    public void addUdf(String udfName, UDF udf) {
+        super.put(udfName, udf);
     }
 }

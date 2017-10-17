@@ -25,17 +25,22 @@ import net.hasor.dataql.UDF;
  * @version : 2017-03-23
  */
 class DefineUDF implements UDF, AppContextAware {
+    private String                  parentName;
     private String                  name;
     private BindInfo<? extends UDF> udfInfo;
     private UDF                     target;
     //
-    public DefineUDF(String name, BindInfo<? extends UDF> udfInfo) {
+    public DefineUDF(String parentName, String name, BindInfo<? extends UDF> udfInfo) {
+        this.parentName = parentName;
         this.name = name;
         this.udfInfo = udfInfo;
     }
     @Override
     public void setAppContext(AppContext appContext) {
         this.target = appContext.getInstance(this.udfInfo);
+    }
+    public String getParentName() {
+        return this.parentName;
     }
     public String getName() {
         return this.name;
