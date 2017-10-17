@@ -32,7 +32,7 @@ public class NutzTest {
         System.out.println("start.");
         //
         //Client -> Server
-        HasorBean hasorBean = ioc.get(HasorBean.class);
+        HasorBean hasorBean = ioc.get(AppContext.class).getInstance(HasorBean.class);
         System.out.println(hasorBean);
         //
         ioc.depose();

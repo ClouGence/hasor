@@ -21,7 +21,7 @@
 
     <!-- 配置属性 -->
     <properties>
-        <hasor.version>3.2.1-SNAPSHOT</hasor.version>
+        <hasor.version>3.2.1</hasor.version>
         <wtpversion>2.0</wtpversion>
         <downloadSources>true</downloadSources>
         <downloadJavadocs>true</downloadJavadocs>
@@ -139,7 +139,7 @@
             <dependency>
                 <groupId>org.nutz</groupId>
                 <artifactId>nutz-integration-hasor</artifactId>
-                <version>1.r.61-SNAPSHOT</version>
+                <version>1.r.63-SNAPSHOT</version>
             </dependency>
 
             <!-- freemarker -->
