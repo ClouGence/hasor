@@ -42,10 +42,19 @@ public class SimpleUdfManager implements UdfManager {
         if (StringUtils.isBlank(sourceName) || DefaultSource.equalsIgnoreCase(sourceName)) {
             throw new UnsupportedOperationException("name of '" + sourceName + "' can't be added.");
         }
-        this.udfSourceMap.put(sourceName.trim(), udfSource);
+        this._addSource(sourceName, udfSource);
     }
     @Override
     public void addDefaultSource(UdfSource udfSource) {
-        this.udfSourceMap.put(DefaultSource, udfSource);
+        this._addSource(DefaultSource, udfSource);
+    }
+    //
+    private void _addSource(String sourceName, UdfSource udfSource) {
+        UdfSource source = this.udfSourceMap.get(sourceName);
+        if (source != null) {
+            source.putAll(udfSource);
+        } else {
+            this.udfSourceMap.put(sourceName.trim(), udfSource);
+        }
     }
 }
