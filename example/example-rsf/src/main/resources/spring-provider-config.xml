@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:h="http://project.hasor.net/schema/spring/hasor-core"
+       xmlns:r="http://project.hasor.net/schema/spring/hasor-rsf"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+http://project.hasor.net/schema/spring/hasor-core http://project.hasor.net/schema/spring/hasor-core/spring-hasor-2.5.1.xsd
+http://project.hasor.net/schema/spring/hasor-rsf http://project.hasor.net/schema/spring/hasor-rsf/spring-rsf-1.1.0.xsd
+" default-autowire="byName">
+
+    <!-- 使用 Spring 的属性文件作为 Hasor 的环境变量配置文件 -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="properties">
+            <map>
+                <!--jdbc.database_host = db.daily.hasor.net-->
+                <!--jdbc.database_name = hdm1250987_db-->
+                <!--jdbc.user = hdm1250987-->
+                <!--jdbc.password = s3G3j3f98t6Uqh46f67t-->
+
+                <!-- 服务IP -->
+                <entry key="RSF_CENTER_SERVERS" value="rsf://127.0.0.1:2181/default"/>
+                <!-- 服务IP -->
+                <entry key="RSF_CENTER_WORK_MODE" value="client"/>
+
+                <!-- 服务IP -->
+                <entry key="RSF_SERVICE_IP" value="127.0.0.1"/>
+                <!-- Telnet 控制台端口 -->
+                <entry key="RSF_CONSOLE_PORT" value="2160"/>
+                <!-- RSF 协议服务端口 -->
+                <entry key="RSF_SERVICE_PORT" value="2161"/>
+                <!-- Hprose 协议服务端口 -->
+                <entry key="HPROSE_SERVICE_PORT" value="2162"/>
+            </map>
+        </property>
+    </bean>
+
+    <!-- Hasor -->
+    <h:hasor refProperties="propertyConfigurer"/>
+    <!-- RSF -->
+    <r:rsf/>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- EchoService -->
+    <bean id="echoServiceImpl" class="net.example.rsf.service.EchoServiceImpl"/>
+    <bean id="echoService" class="net.hasor.plugins.spring.rsf.RsfProviderBean" init-method="init">
+        <property name="bindType" value="net.example.rsf.service.EchoService"/>
+        <property name="target" ref="echoServiceImpl"/>
+    </bean>
+
+    <!-- MessageService -->
+    <bean id="messageServiceImpl" class="net.example.rsf.service.MessageServiceImpl"/>
+    <bean id="messageService" class="net.hasor.plugins.spring.rsf.RsfProviderBean" init-method="init">
+        <property name="bindType" value="net.example.rsf.service.MessageService"/>
+        <property name="target" ref="echoServiceImpl"/>
+    </bean>
+</beans>

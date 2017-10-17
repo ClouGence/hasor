@@ -11,10 +11,23 @@
     <groupId>net.hasor</groupId>
     <artifactId>example-spring</artifactId>
     <version>1.0</version>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
-    <modules>
-        <module>example-spring-consumer</module>
-        <module>example-spring-provider</module>
-    </modules>
+    <dependencies>
+        <!-- Hasor -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-core</artifactId>
+        </dependency>
+        <!-- Plugins -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-plugins</artifactId>
+        </dependency>
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+    </dependencies>
 </project>

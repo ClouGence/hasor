@@ -11,10 +11,28 @@
     <groupId>net.hasor</groupId>
     <artifactId>example-rsf</artifactId>
     <version>1.0</version>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
-    <modules>
-        <module>example-rsf-consumer</module>
-        <module>example-rsf-provider</module>
-    </modules>
+    <dependencies>
+        <!-- RPC框架 -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-rsf</artifactId>
+        </dependency>
+        <!-- 分布式PRC扩展 -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-registry</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-plugins</artifactId>
+        </dependency>
+
+        <!-- Spring -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+    </dependencies>
 </project>
