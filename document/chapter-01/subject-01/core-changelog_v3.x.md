@@ -1,4 +1,16 @@
-﻿
+﻿### Hasor-Core v3.2.1 (2017-10-17)
+**新增**
+    01. DataQL，执行引擎新增 jsr223 兼容。从这个版本开始可以使用 jsr223 的方式使用 DataQL 了。
+    02. DataQL UDF 新增 manager 接口方便管理和注册。
+**改进**
+    01. 优化 dataQL 函数注册更加方便。
+    02. 优化 ApiBinder 在 toString 时的提示信息。
+    03. plugin 项目的插件依赖改为弱依赖。
+**修复**
+    01. 修复 dataQL 表达式计算时 == 判断出现异常的问题。
+    02. fix plugins 插件中配置文件错乱的问题。
+    03. fix RsfWebModule 已经删除但是配置依然存在的问题。
+
 ### Hasor-Core v3.2.0 (2017-10-15)
 **新增**
     01. 新增内置 Freemarker 渲染器，如想使用该渲染引擎开发者还需要额外依赖 freemarker 的 jar 包。

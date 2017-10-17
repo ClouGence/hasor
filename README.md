@@ -45,6 +45,7 @@
     - 支持表达式计算（算数运算、位运算、逻辑运算、比较运算）
     - 支持运算符重载（暂不开放该功能）
     - 支持 if 条件判断。
+    - 支持 JSR223
 - Web 是一个吸收了百家所长的 Web MVC框架（[详细..](hasor-web/README.md)）
     - 提供 RESTful 风格的 mvc 开发方式。
     - 提供Form表单验证接口、验证支持场景化。
@@ -131,4 +132,10 @@
 
 * mvn release:prepare -P release
 * mvn clean deploy -P release
+* jekyll 安装（mac）
+    * brew install ruby
+    * gem update --system
+    * sudo gem update
+    * sudo gem install jekyll bundler
+    * jekyll server
 * ./build.sh && docker build -t debug . && docker run debug
