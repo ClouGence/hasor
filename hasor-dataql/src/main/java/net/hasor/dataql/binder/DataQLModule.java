@@ -22,12 +22,10 @@ import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.domain.compiler.QueryCompiler;
 import net.hasor.dataql.domain.parser.ParseException;
 import net.hasor.dataql.runtime.QueryEngine;
-import net.hasor.dataql.udfs.SimpleUdfManager;
-import net.hasor.dataql.udfs.SimpleUdfSource;
-import net.hasor.dataql.udfs.collection.First;
-import net.hasor.dataql.udfs.collection.Foreach;
-import net.hasor.dataql.udfs.collection.Last;
-import net.hasor.dataql.udfs.collection.Limit;
+import net.hasor.dataql.udf.SimpleUdfManager;
+import net.hasor.dataql.udf.SimpleUdfSource;
+import net.hasor.dataql.udf.funs.CollectionUDFs;
+import net.hasor.dataql.udf.source.TypeUdfSource;
 import net.hasor.utils.StringUtils;
 
 import java.util.List;
@@ -101,9 +99,7 @@ public class DataQLModule implements Module {
         if (dataBinder == null) {
             return;
         }
-        dataBinder.addUdf("foreach", new Foreach());
-        dataBinder.addUdf("first", new First());
-        dataBinder.addUdf("last", new Last());
-        dataBinder.addUdf("limit", new Limit());
+        //
+        dataBinder.addDefaultUdfSource(new TypeUdfSource<CollectionUDFs>(CollectionUDFs.class, null, null));
     }
 }

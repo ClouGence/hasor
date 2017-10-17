@@ -9,8 +9,6 @@
             <module>net.hasor.rsf.bootstrap.RsfFrameworkModule</module>
             <!-- Telnet控制台插件 -->
             <module>net.hasor.rsf.console.RsfConsoleModule</module>
-            <!-- Web支持插件 -->
-            <module>net.hasor.rsf.web.RsfWebModule</module>
 
             <!-- Hprose：AutoSetAliasName支持插件 -->
             <module>net.hasor.rsf.protocol.hprose.AutoSetAliasName</module>

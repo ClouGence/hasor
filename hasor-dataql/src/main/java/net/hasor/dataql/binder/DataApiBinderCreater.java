@@ -89,7 +89,7 @@ public class DataApiBinderCreater implements ApiBinderCreater {
         }
         @Override
         public void addUdfSource(String sourceName, BindInfo<? extends UdfSource> udfSource) {
-            this.bindType(DefineSource.class).nameWith(sourceName).toInstance(new DefineSource(sourceName, udfSource));
+            this.bindType(DefineSource.class).uniqueName().toInstance(new DefineSource(sourceName, udfSource));
         }
     }
 }

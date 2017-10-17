@@ -26,9 +26,10 @@ import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.domain.compiler.QueryCompiler;
 import net.hasor.dataql.result.LambdaModel;
 import net.hasor.dataql.runtime.QueryEngine;
-import net.hasor.dataql.udfs.SimpleUdfManager;
-import net.hasor.dataql.udfs.SimpleUdfSource;
-import net.hasor.dataql.udfs.collection.*;
+import net.hasor.dataql.udf.SimpleUdfManager;
+import net.hasor.dataql.udf.SimpleUdfSource;
+import net.hasor.dataql.udf.funs.CollectionUDFs;
+import net.hasor.dataql.udf.source.TypeUdfSource;
 import net.hasor.utils.IOUtils;
 import net.hasor.utils.ResourcesUtils;
 import org.junit.Before;
@@ -79,11 +80,6 @@ public class TestProcessMain {
     private static UdfSource udfSource = new SimpleUdfSource();
     @Before
     public void before() {
-        udfSource.addUdf("foreach", new Foreach());
-        udfSource.addUdf("first", new First());
-        udfSource.addUdf("last", new Last());
-        udfSource.addUdf("limit", new Limit());
-        udfSource.addUdf("addTo", new AddTo());
         udfSource.addUdf("findUserByID", new FooManager.FindUserByID());
         udfSource.addUdf("queryOrder", new FooManager.QueryOrder());
         udfSource.addUdf("userManager.findUserByID", new FooManager.UserInfo());
@@ -130,6 +126,7 @@ public class TestProcessMain {
         // .JSR223方式
         ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("dataql");
         ((UdfManager) scriptEngine).addDefaultSource(udfSource);
+        ((UdfManager) scriptEngine).addDefaultSource(new TypeUdfSource<CollectionUDFs>(CollectionUDFs.class, null, null));
         SimpleScriptContext params = new SimpleScriptContext();
         params.setAttribute("uid", "uid form env", ScriptContext.ENGINE_SCOPE);
         params.setAttribute("sid", "sid form env", ScriptContext.ENGINE_SCOPE);
@@ -140,6 +137,7 @@ public class TestProcessMain {
         // .DataQL原生方式
         UdfManager udfManager = new SimpleUdfManager();
         udfManager.addDefaultSource(udfSource);
+        udfManager.addDefaultSource(new TypeUdfSource<CollectionUDFs>(CollectionUDFs.class, null, null));
         QIL compilerQuery = QueryCompiler.compilerQuery(buildQuery);        //编译 DataQL 为 QIL
         Query query = new QueryEngine(udfManager, compilerQuery).newQuery();//通过 QIL 构建 Query
         query.addParameter("uid", "uid form env");

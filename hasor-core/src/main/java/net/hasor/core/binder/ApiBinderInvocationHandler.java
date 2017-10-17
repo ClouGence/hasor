@@ -37,13 +37,24 @@ public class ApiBinderInvocationHandler implements InvocationHandler {
     }
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+        if (method.getName().equals("toString")) {
+            StringBuilder builder = new StringBuilder();
+            builder = builder.append("count = ").append(this.supportMap.size()).append(" - [");
+            for (Class<?> face : this.supportMap.keySet()) {
+                builder = builder.append(face.getName()).append(",");
+            }
+            if (builder.charAt(builder.length() - 1) == ',') {
+                builder = builder.deleteCharAt(builder.length() - 1);
+            }
+            builder.append("]");
+            return builder.toString();
+        }
         //
         Class<?> declaringClass = method.getDeclaringClass();
         Object target = this.supportMap.get(declaringClass);
         if (target == null) {
             throw new UnsupportedOperationException("this method is not support -> " + method);
         }
-        //
         if (method.getName().equals("installModule")) {
             if (args[0] != null) {
                 ApiBinder apiBinder = (ApiBinder) this.supportMap.get(ApiBinder.class);

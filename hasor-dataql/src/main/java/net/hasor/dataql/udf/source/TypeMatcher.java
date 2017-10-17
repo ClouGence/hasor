@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.dataql.udf.source;
 /**
- * DataQL，集合函数库。
+ * 匹配器
+ * @version : 2013-7-10
+ * @author 赵永春 (zyc@hasor.net)
  */
-package net.hasor.dataql.udfs.collection;
+public interface TypeMatcher<T> {
+    /**Returns {@code true} if this matches {@code T}, {@code false} otherwise.*/
+    public boolean matches(T target);
+}

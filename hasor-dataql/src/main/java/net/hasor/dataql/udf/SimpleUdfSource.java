@@ -13,27 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.udfs.collection;
-import net.hasor.dataql.Option;
+package net.hasor.dataql.udf;
 import net.hasor.dataql.UDF;
+import net.hasor.dataql.UdfSource;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 /**
- * 将一个对象添加到另外一个集合中
+ * 用于管理 UDF。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class AddTo extends AbstractCollectionUDF implements UDF {
+public class SimpleUdfSource extends HashMap<String, UDF> implements UdfSource {
+    public SimpleUdfSource() {
+    }
+    public SimpleUdfSource(Map<String, UDF> udfMap) {
+        super(udfMap);
+    }
+    //
     @Override
-    public Object call(Object[] values, Option readOnly) {
-        if (values == null || values.length < 2) {
-            return null;
-        }
-        //
-        List<Object> list = new ArrayList<Object>(super.toCollection(values[1]));
-        list.add(values[0]);
-        //
-        return list;
+    public UDF findUdf(String udfName) {
+        return super.get(udfName);
+    }
+    public void addUdf(String udfName, UDF udf) {
+        super.put(udfName, udf);
     }
 }

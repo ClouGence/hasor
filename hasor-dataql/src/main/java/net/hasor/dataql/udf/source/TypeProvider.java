@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.example.domain.consumer;
-import net.example.domain.domain.UserDO;
-
-import java.util.List;
+package net.hasor.dataql.udf.source;
 /**
- * 消息接口
- * @version : 2015年11月27日
- * @author 赵永春(zyc@hasor.net)
+ *
+ * @version : 2014年5月22日
+ * @author 赵永春 (zyc@byshell.org)
  */
-public interface UserService {
-    public List<UserDO> queryUser() throws Exception;
+public interface TypeProvider<T> {
+    /** @return 获取对象。  */
+    public T get();
 }

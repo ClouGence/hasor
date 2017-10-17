@@ -5,7 +5,7 @@ import net.hasor.dataql.UdfSource;
 import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.domain.compiler.QueryCompiler;
 import net.hasor.dataql.domain.parser.ParseException;
-import net.hasor.dataql.udfs.SimpleUdfManager;
+import net.hasor.dataql.udf.SimpleUdfManager;
 import net.hasor.utils.IOUtils;
 
 import javax.script.*;

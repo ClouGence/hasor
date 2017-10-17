@@ -16,4 +16,4 @@
 /**
  * DataQL，内置函数库。
  */
-package net.hasor.dataql.udfs;
+package net.hasor.dataql.udf;

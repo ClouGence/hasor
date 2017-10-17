@@ -13,29 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.udfs;
-import net.hasor.dataql.UDF;
-import net.hasor.dataql.UdfSource;
-
-import java.util.HashMap;
-import java.util.Map;
 /**
- * 用于管理 UDF。
- * @author 赵永春(zyc@hasor.net)
- * @version : 2017-03-23
+ * DataQL，函数库。
  */
-public class SimpleUdfSource extends HashMap<String, UDF> implements UdfSource {
-    public SimpleUdfSource() {
-    }
-    public SimpleUdfSource(Map<String, UDF> udfMap) {
-        super(udfMap);
-    }
-    //
-    @Override
-    public UDF findUdf(String udfName) {
-        return super.get(udfName);
-    }
-    public void addUdf(String udfName, UDF udf) {
-        super.put(udfName, udf);
-    }
-}
+package net.hasor.dataql.udf.funs;
