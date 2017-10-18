@@ -19,16 +19,18 @@ import net.hasor.dataql.UdfManager;
 import net.hasor.dataql.UdfSource;
 import net.hasor.utils.StringUtils;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 /**
  * Udf查找器。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-10-17
  */
 class UdfFinder extends HashMap<String, UDF> {
+    private List<UdfSource> sourceList = new ArrayList<UdfSource>();
+    private Map<String, UdfSource> resourceMappingSourceCache;
+    //
     public UdfFinder(UdfManager udfManager) {
+        this.resourceMappingSourceCache = new HashMap<String, UdfSource>();
         List<String> sourceNames = udfManager.getSourceNames();
         if (sourceNames == null || sourceNames.isEmpty()) {
             return;
@@ -38,6 +40,7 @@ class UdfFinder extends HashMap<String, UDF> {
             if (source == null) {
                 continue;
             }
+            this.sourceList.add(source);
             Set<String> keySet = source.keySet();
             if (keySet.isEmpty()) {
                 continue;
@@ -54,5 +57,23 @@ class UdfFinder extends HashMap<String, UDF> {
                 }
             }
         }
+    }
+    public UDF loadUdf(Class<?> aClass) throws Throwable {
+        return (UDF) aClass.newInstance();
+    }
+    public UDF loadResource(String resourceName, QueryEngine sourceEngine) throws Throwable {
+        UdfSource udfSource = this.resourceMappingSourceCache.get(resourceName);
+        if (udfSource != null) {
+            return udfSource.findUdf(resourceName, sourceEngine);
+        }
+        //
+        for (UdfSource source : this.sourceList) {
+            UDF udf = source.findUdf(resourceName, sourceEngine);
+            if (udf != null) {
+                this.resourceMappingSourceCache.put(resourceName, source);
+                return udf;
+            }
+        }
+        return null;
     }
 }

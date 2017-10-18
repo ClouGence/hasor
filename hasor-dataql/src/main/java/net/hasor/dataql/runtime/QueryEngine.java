@@ -26,10 +26,11 @@ import net.hasor.utils.Objects;
  * @version : 2017-03-23
  */
 public class QueryEngine extends OptionSet implements DataQLEngine, ProcessContet {
-    private final static OpcodesPool opcodesPool = OpcodesPool.newPool();
+    protected final static OpcodesPool opcodesPool = OpcodesPool.newPool();
     private       ClassLoader     classLoader;
     private final OperatorManager opeManager;
-    private final UdfFinder       udfFinder;
+    private final UdfManager      udfManager;
+    private       UdfFinder       udfFinder;
     private final QIL             queryType;
     //
     public QueryEngine(UdfManager udfManager, QIL queryType) {
@@ -38,6 +39,7 @@ public class QueryEngine extends OptionSet implements DataQLEngine, ProcessConte
         //
         this.classLoader = Thread.currentThread().getContextClassLoader();
         this.opeManager = OperatorManager.DEFAULT;
+        this.udfManager = udfManager;
         this.udfFinder = new UdfFinder(udfManager);
         this.queryType = queryType;
     }
@@ -51,12 +53,26 @@ public class QueryEngine extends OptionSet implements DataQLEngine, ProcessConte
         return this.classLoader;
     }
     @Override
+    public UdfManager getUdfManager() {
+        return this.udfManager;
+    }
+    @Override
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = (classLoader == null) ? Thread.currentThread().getContextClassLoader() : classLoader;
     }
     @Override
-    public UDF findUDF(String udfName) {
-        return this.udfFinder.get(udfName);
+    public UDF findUDF(String udfName, LoadType loadType) throws Throwable {
+        if (LoadType.ByName == loadType) {
+            return this.udfFinder.get(udfName);
+        }
+        if (LoadType.ByType == loadType) {
+            Class<?> aClass = this.loadType(udfName);
+            return this.udfFinder.loadUdf(aClass);
+        }
+        if (LoadType.ByResource == loadType) {
+            return this.udfFinder.loadResource(udfName, this);
+        }
+        return null;
     }
     @Override
     public OperatorProcess findOperator(Symbol symbolType, String symbolName, Class<?> fstType, Class<?> secType) {
@@ -73,8 +89,11 @@ public class QueryEngine extends OptionSet implements DataQLEngine, ProcessConte
         return new QueryInstance(this, this.queryType);
     }
     @Override
+    public void refreshUDF() {
+        this.udfFinder = new UdfFinder(this.udfManager);
+    }
+    @Override
     public void processInset(InstSequence sequence, MemStack memStack, StackStruts local) throws ProcessException {
-        //
         while (sequence.hasNext()) {
             opcodesPool.doWork(sequence, memStack, local, this);
             sequence.doNext(1);

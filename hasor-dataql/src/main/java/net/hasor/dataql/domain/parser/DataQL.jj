@@ -129,6 +129,8 @@ TOKEN: {
     | < FALSE               : "false" >
     | < NULL                : "null" >
     | < OPTION              : "option" >
+    | < IMPORT              : "import" >
+    | < AS                  : "as" >
 }
 
 /* OPERATORS */
@@ -623,6 +625,14 @@ Inst optionBlock() : {                               String              optKey 
                                                     {return new OptionInst(optKey,optValue);}
 }
 
+// .import指令
+Inst importBlock() : {                               String packageName = null;
+                                                     String udfName     = null;
+} {
+    <IMPORT> packageName = stringValue() <AS> udfName = identifier()
+                                                    {return new ImportInst(packageName,udfName);}
+}
+
 // .指令
 Inst block() : {                                     Inst inst = null;
 } {
@@ -652,11 +662,14 @@ BlockSet blockSet() : {                              BlockSet blockSet = new Blo
 // 入口
 BlockSet rootBlock() : {                             BlockSet rootBlockSet = new BlockSet();
                                                      BlockSet instBlockSet = null;
-                                                     Inst     optionInst   = null;
+                                                     Inst     preInst      = null;
 } {
     (
-        optionInst = optionBlock() ( <SEMI> )?      {rootBlockSet.addInst(optionInst);}
-                                                    {optionInst = null;}
+        (
+            preInst = importBlock() ( <SEMI> )?     {rootBlockSet.addInst(preInst);preInst = null;}
+        ) | (
+            preInst = optionBlock() ( <SEMI> )?     {rootBlockSet.addInst(preInst);preInst = null;}
+        )
     )*
     instBlockSet = blockSet() <EOF>                 {rootBlockSet.addInstSet(instBlockSet);}
                                                     {return rootBlockSet;}

@@ -26,6 +26,7 @@ import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.domain.compiler.QueryCompiler;
 import net.hasor.dataql.result.LambdaModel;
 import net.hasor.dataql.runtime.QueryEngine;
+import net.hasor.dataql.udf.LoaderUdfSource;
 import net.hasor.dataql.udf.SimpleUdfManager;
 import net.hasor.dataql.udf.SimpleUdfSource;
 import net.hasor.dataql.udf.funs.CollectionUDFs;
@@ -84,7 +85,7 @@ public class TestProcessMain {
         udfSource.addUdf("queryOrder", new FooManager.QueryOrder());
         udfSource.addUdf("userManager.findUserByID", new FooManager.UserInfo());
         udfSource.addUdf("foo", new FooManager.Foo());
-        udfSource.addUdf("double", new FooManager.DoubleNumber());
+        udfSource.addUdf("double", new DoubleFoo());
         udfSource.addUdf("filter", new FooManager.Filter());
         udfSource.addUdf("track", new FooManager.Track());
     }
@@ -127,6 +128,7 @@ public class TestProcessMain {
         ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("dataql");
         ((UdfManager) scriptEngine).addDefaultSource(udfSource);
         ((UdfManager) scriptEngine).addDefaultSource(new TypeUdfSource<CollectionUDFs>(CollectionUDFs.class, null, null));
+        ((UdfManager) scriptEngine).addSource(LoaderUdfSource.class.getName(), new LoaderUdfSource());
         SimpleScriptContext params = new SimpleScriptContext();
         params.setAttribute("uid", "uid form env", ScriptContext.ENGINE_SCOPE);
         params.setAttribute("sid", "sid form env", ScriptContext.ENGINE_SCOPE);
@@ -137,6 +139,7 @@ public class TestProcessMain {
         // .DataQL原生方式
         UdfManager udfManager = new SimpleUdfManager();
         udfManager.addDefaultSource(udfSource);
+        udfManager.addSource(LoaderUdfSource.class.getName(), new LoaderUdfSource());
         udfManager.addDefaultSource(new TypeUdfSource<CollectionUDFs>(CollectionUDFs.class, null, null));
         QIL compilerQuery = QueryCompiler.compilerQuery(buildQuery);        //编译 DataQL 为 QIL
         Query query = new QueryEngine(udfManager, compilerQuery).newQuery();//通过 QIL 构建 Query
@@ -150,6 +153,7 @@ public class TestProcessMain {
         AppContext appContext = Hasor.createAppContext(new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
                 apiBinder.tryCast(DataApiBinder.class).addDefaultUdfSource(udfSource);
+                apiBinder.tryCast(DataApiBinder.class).addUdfSource(LoaderUdfSource.class.getName(), new LoaderUdfSource());
             }
         });
         DataQL dataQL = appContext.getInstance(DataQL.class);
@@ -195,5 +199,23 @@ public class TestProcessMain {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+    @Test
+    public void testQL() throws Throwable {
+        String buildQuery = getScript("/test/test_1.ql");
+        QueryResult result = null;
+        //
+        UdfManager udfManager = new SimpleUdfManager();
+        udfManager.addDefaultSource(udfSource);
+        udfManager.addSource(LoaderUdfSource.class.getName(), new LoaderUdfSource());
+        udfManager.addDefaultSource(new TypeUdfSource<CollectionUDFs>(CollectionUDFs.class, null, null));
+        QIL compilerQuery = QueryCompiler.compilerQuery(buildQuery);        //编译 DataQL 为 QIL
+        QueryEngine engine = new QueryEngine(udfManager, compilerQuery);    //通过 QIL 构建 Query
+        engine.setClassLoader(Thread.currentThread().getContextClassLoader());
+        Query query = engine.newQuery();
+        query.addParameter("uid", "uid form env");
+        query.addParameter("sid", "sid form env");
+        result = query.execute();
+        printResult(result);
     }
 }

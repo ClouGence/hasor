@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
-import java.util.Map;
 /**
- * UDF数据源
+ * UDF查找方式
  * @author 赵永春(zyc@hasor.net)
- * @version : 2017-03-23
+ * @version : 2017-07-14
  */
-public interface UdfSource extends Map<String, UDF> {
-    /**获取UDF，不同于 get 方法。使用 find 可以在不加入到 Map 的情况下动态的加载 udf。*/
-    public UDF findUdf(String udfName, DataQLEngine sourceEngine) throws Throwable;
-
-    /**添加 UDF 到 Map*/
-    public void addUdf(String udfName, UDF udf);
+public enum LoadType {
+    /**根据 name 查找 UDF。*/
+    ByName,//
+    /**根据 javaClass 查找 UDF。*/
+    ByType,//
+    /**根据 资源地址加载一个 UDF。*/
+    ByResource//
 }

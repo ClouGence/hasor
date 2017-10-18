@@ -34,12 +34,6 @@ public class FooManager {
             return null;
         }
     }
-    /** 返回一个 double 类型的 number */
-    public static class DoubleNumber implements UDF {
-        public Object call(Object[] values, Option readOnly) {
-            return 1234567.89012;
-        }
-    }
     /** UDF 作为参数传入 */
     public static class Filter implements UDF {
         public Object call(Object[] values, Option readOnly) throws Throwable {

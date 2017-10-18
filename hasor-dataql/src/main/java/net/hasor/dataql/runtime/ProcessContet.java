@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime;
-import net.hasor.dataql.OperatorProcess;
-import net.hasor.dataql.Option;
-import net.hasor.dataql.ProcessException;
-import net.hasor.dataql.UDF;
+import net.hasor.dataql.*;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
 /**
@@ -32,5 +29,5 @@ public interface ProcessContet extends Option {
 
     public OperatorProcess findOperator(Symbol unary, String dyadicSymbol, Class<?> fstType, Class<?> secType);
 
-    public UDF findUDF(String udfName);
+    public UDF findUDF(String udfName, LoadType loadType) throws Throwable;
 }

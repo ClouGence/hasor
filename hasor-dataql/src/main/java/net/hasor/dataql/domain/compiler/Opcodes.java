@@ -68,4 +68,5 @@ public interface Opcodes {
     public static final byte LINE   = 2; // 行号
     public static final byte LABEL  = 3; // 协助GOTO定位用，无实际作用
     public static final byte LOCAL  = 4; // 本地变量表名称
+    public static final byte IMPORT = 5; // 导入另一个QL脚本作为函数
 }

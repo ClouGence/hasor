@@ -25,8 +25,13 @@ public interface DataQLEngine extends Option {
 
     public ClassLoader getClassLoader();
 
+    public UdfManager getUdfManager();
+
     public void setClassLoader(ClassLoader classLoader);
 
     /** 创建一个新查询实例。 */
     public Query newQuery();
+
+    /** 刷新UDF */
+    public void refreshUDF();
 }

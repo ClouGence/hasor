@@ -93,6 +93,8 @@
 | &lt;FALSE: "false"&gt;
 | &lt;NULL: "null"&gt;
 | &lt;OPTION: "option"&gt;
+| &lt;IMPORT: "import"&gt;
+| &lt;AS: "as"&gt;
 }
 
    </PRE>
@@ -484,6 +486,19 @@
     <TR>
         <TD>
 <PRE>
+// .import指令
+</PRE>
+        </TD>
+    </TR>
+    <TR>
+        <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod27">importBlock</A></TD>
+        <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
+        <TD ALIGN=LEFT VALIGN=BASELINE>&lt;IMPORT&gt; <A HREF="#prod2">stringValue</A> &lt;AS&gt; <A HREF="#prod1">identifier</A></TD>
+    </TR>
+    <!-- Special token -->
+    <TR>
+        <TD>
+<PRE>
 // .指令
 </PRE>
         </TD>
@@ -515,9 +530,9 @@
         </TD>
     </TR>
     <TR>
-        <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod27">rootBlock</A></TD>
+        <TD ALIGN=RIGHT VALIGN=BASELINE><A NAME="prod28">rootBlock</A></TD>
         <TD ALIGN=CENTER VALIGN=BASELINE>::=</TD>
-        <TD ALIGN=LEFT VALIGN=BASELINE>( <A HREF="#prod26">optionBlock</A> ( &lt;SEMI&gt; )? )* <A HREF="#prod19">blockSet</A> &lt;EOF&gt;</TD>
+        <TD ALIGN=LEFT VALIGN=BASELINE>( ( <A HREF="#prod27">importBlock</A> ( &lt;SEMI&gt; )? ) | ( <A HREF="#prod26">optionBlock</A> ( &lt;SEMI&gt; )? ) )* <A HREF="#prod19">blockSet</A> &lt;EOF&gt;</TD>
     </TR>
 </TABLE>
 </BODY>

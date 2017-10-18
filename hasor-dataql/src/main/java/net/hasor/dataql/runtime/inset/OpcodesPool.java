@@ -68,6 +68,7 @@ public class OpcodesPool {
             //
             pool.addInsetProcess(new OPT());
             pool.addInsetProcess(new LOCAL());
+            pool.addInsetProcess(new IMPORT());
         }
         return pool;
     }

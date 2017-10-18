@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.dataql.udf;
+import net.hasor.dataql.DataQLEngine;
 import net.hasor.dataql.UDF;
 import net.hasor.dataql.UdfSource;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 /**
  * 用于管理 UDF。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class SimpleUdfSource extends HashMap<String, UDF> implements UdfSource {
+public class SimpleUdfSource extends ConcurrentHashMap<String, UDF> implements UdfSource {
     public SimpleUdfSource() {
     }
     public SimpleUdfSource(Map<String, UDF> udfMap) {
@@ -32,7 +33,7 @@ public class SimpleUdfSource extends HashMap<String, UDF> implements UdfSource {
     }
     //
     @Override
-    public UDF findUdf(String udfName) {
+    public UDF findUdf(String udfName, DataQLEngine sourceEngine) throws Throwable {
         return super.get(udfName);
     }
     public void addUdf(String udfName, UDF udf) {

@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.InvokerProcessException;
+import net.hasor.dataql.LoadType;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.UDF;
 import net.hasor.dataql.domain.compiler.Instruction;
@@ -53,14 +54,15 @@ class CALL implements InsetProcess {
             paramArrays[paramIndex] = paramObj;
         }
         //
-        UDF udf = context.findUDF(udfName);
-        if (udf == null) {
-            throw new InvokerProcessException(getOpcode(), "CALL -> udf '" + udfName + "' is not found");
-        }
-        //
         try {
+            UDF udf = context.findUDF(udfName, LoadType.ByName);
+            if (udf == null) {
+                throw new InvokerProcessException(getOpcode(), "CALL -> udf '" + udfName + "' is not found");
+            }
             Object result = udf.call(paramArrays, new OptionReadOnly(context));
             memStack.push(result);
+        } catch (ProcessException e) {
+            throw e;
         } catch (Throwable e) {
             throw new InvokerProcessException(getOpcode(), "call '" + udfName + "' error.", e);
         }

@@ -640,7 +640,7 @@ public class DataQLParser implements DataQLParserConstants {
             finalExp = new RouteExpression(mabeCallerName);
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
             case OPAR:
-            case 75: {
+            case 77: {
                 finalExp = funCall(mabeCallerName);
                 break;
             }
@@ -819,8 +819,8 @@ public class DataQLParser implements DataQLParserConstants {
                 throw new ParseException();
             }
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-            case 75: {
-                jj_consume_token(75);
+            case 77: {
+                jj_consume_token(77);
                 quickSelect = stringValue();
                 callerExp.setQuickSelect(false, quickSelect);
                 break;
@@ -831,8 +831,8 @@ public class DataQLParser implements DataQLParserConstants {
             }
             break;
         }
-        case 75: {
-            jj_consume_token(75);
+        case 77: {
+            jj_consume_token(77);
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
             case STR_DOUBLE_QUOTED:
             case STR_SINGLE_QUOTED:
@@ -864,8 +864,8 @@ public class DataQLParser implements DataQLParserConstants {
         Format finalFormat = null;
         callerExp = callerParamSet(callName);
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-        case 76: {
-            jj_consume_token(76);
+        case 78: {
+            jj_consume_token(78);
             finalFormat = new RawFormat();
             break;
         }
@@ -927,7 +927,7 @@ public class DataQLParser implements DataQLParserConstants {
             lambdaBlockSet.addParam(paramName.image);
         }
         jj_consume_token(CPAR);
-        jj_consume_token(75);
+        jj_consume_token(77);
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
         case OCBR: {
             jj_consume_token(OCBR);
@@ -1143,6 +1143,20 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+    // .import指令
+    final public Inst importBlock() throws ParseException {
+        String packageName = null;
+        String udfName = null;
+        jj_consume_token(IMPORT);
+        packageName = stringValue();
+        jj_consume_token(AS);
+        udfName = identifier();
+        {
+            if ("" != null)
+                return new ImportInst(packageName, udfName);
+        }
+        throw new Error("Missing return statement in function");
+    }
     // .指令
     final public Inst block() throws ParseException {
         Inst inst = null;
@@ -1217,11 +1231,12 @@ public class DataQLParser implements DataQLParserConstants {
     final public BlockSet rootBlock() throws ParseException {
         BlockSet rootBlockSet = new BlockSet();
         BlockSet instBlockSet = null;
-        Inst optionInst = null;
+        Inst preInst = null;
         label_7:
         while (true) {
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-            case OPTION: {
+            case OPTION:
+            case IMPORT: {
                 ;
                 break;
             }
@@ -1229,18 +1244,42 @@ public class DataQLParser implements DataQLParserConstants {
                 jj_la1[38] = jj_gen;
                 break label_7;
             }
-            optionInst = optionBlock();
             switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
-            case SEMI: {
-                jj_consume_token(SEMI);
+            case IMPORT: {
+                preInst = importBlock();
+                switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+                case SEMI: {
+                    jj_consume_token(SEMI);
+                    break;
+                }
+                default:
+                    jj_la1[39] = jj_gen;
+                    ;
+                }
+                rootBlockSet.addInst(preInst);
+                preInst = null;
+                break;
+            }
+            case OPTION: {
+                preInst = optionBlock();
+                switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
+                case SEMI: {
+                    jj_consume_token(SEMI);
+                    break;
+                }
+                default:
+                    jj_la1[40] = jj_gen;
+                    ;
+                }
+                rootBlockSet.addInst(preInst);
+                preInst = null;
                 break;
             }
             default:
-                jj_la1[39] = jj_gen;
-                ;
+                jj_la1[41] = jj_gen;
+                jj_consume_token(-1);
+                throw new ParseException();
             }
-            rootBlockSet.addInst(optionInst);
-            optionInst = null;
         }
         instBlockSet = blockSet();
         jj_consume_token(0);
@@ -1306,11 +1345,6 @@ public class DataQLParser implements DataQLParserConstants {
             jj_save(4, xla);
         }
     }
-    private boolean jj_3_3() {
-        if (jj_3R_8())
-            return true;
-        return false;
-    }
     private boolean jj_3R_74() {
         if (jj_3R_80())
             return true;
@@ -1326,9 +1360,9 @@ public class DataQLParser implements DataQLParserConstants {
     private boolean jj_3R_8() {
         Token xsp;
         xsp = jj_scanpos;
-        if (jj_scan_token(44)) {
+        if (jj_scan_token(46)) {
             jj_scanpos = xsp;
-            if (jj_scan_token(46))
+            if (jj_scan_token(48))
                 return true;
         }
         if (jj_3R_11())
@@ -1502,7 +1536,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         if (jj_scan_token(CPAR))
             return true;
-        if (jj_scan_token(75))
+        if (jj_scan_token(77))
             return true;
         xsp = jj_scanpos;
         if (jj_3R_71()) {
@@ -1547,7 +1581,7 @@ public class DataQLParser implements DataQLParserConstants {
         return false;
     }
     private boolean jj_3R_63() {
-        if (jj_scan_token(76))
+        if (jj_scan_token(78))
             return true;
         return false;
     }
@@ -1596,7 +1630,7 @@ public class DataQLParser implements DataQLParserConstants {
         return false;
     }
     private boolean jj_3R_82() {
-        if (jj_scan_token(75))
+        if (jj_scan_token(77))
             return true;
         if (jj_3R_59())
             return true;
@@ -1610,7 +1644,7 @@ public class DataQLParser implements DataQLParserConstants {
         return false;
     }
     private boolean jj_3R_78() {
-        if (jj_scan_token(75))
+        if (jj_scan_token(77))
             return true;
         Token xsp;
         xsp = jj_scanpos;
@@ -1673,7 +1707,7 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         Token xsp;
         xsp = jj_scanpos;
-        if (jj_scan_token(38)) {
+        if (jj_scan_token(40)) {
             jj_scanpos = xsp;
             if (jj_3R_81())
                 return true;
@@ -1727,6 +1761,15 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+    private boolean jj_3R_58() {
+        if (jj_3R_9())
+            return true;
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_scan_token(35))
+            jj_scanpos = xsp;
+        return false;
+    }
     private boolean jj_3R_61() {
         Token xsp;
         xsp = jj_scanpos;
@@ -1747,30 +1790,6 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
-    private boolean jj_3R_86() {
-        Token xsp;
-        xsp = jj_scanpos;
-        if (jj_3R_90()) {
-            jj_scanpos = xsp;
-            if (jj_3R_91())
-                return true;
-        }
-        return false;
-    }
-    private boolean jj_3R_58() {
-        if (jj_3R_9())
-            return true;
-        Token xsp;
-        xsp = jj_scanpos;
-        if (jj_scan_token(33))
-            jj_scanpos = xsp;
-        return false;
-    }
-    private boolean jj_3R_48() {
-        if (jj_3R_16())
-            return true;
-        return false;
-    }
     private boolean jj_3R_38() {
         Token xsp;
         while (true) {
@@ -1782,18 +1801,18 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
-    private boolean jj_3R_47() {
-        if (jj_3R_61())
-            return true;
+    private boolean jj_3R_86() {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_3R_90()) {
+            jj_scanpos = xsp;
+            if (jj_3R_91())
+                return true;
+        }
         return false;
     }
     private boolean jj_3R_15() {
         if (jj_3R_24())
-            return true;
-        return false;
-    }
-    private boolean jj_3R_46() {
-        if (jj_3R_60())
             return true;
         return false;
     }
@@ -1802,22 +1821,42 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
-    private boolean jj_3R_59() {
-        Token xsp;
-        xsp = jj_scanpos;
-        if (jj_scan_token(68)) {
-            jj_scanpos = xsp;
-            if (jj_scan_token(70)) {
-                jj_scanpos = xsp;
-                if (jj_scan_token(71))
-                    return true;
-            }
-        }
-        return false;
-    }
     private boolean jj_3R_13() {
         if (jj_3R_22())
             return true;
+        return false;
+    }
+    private boolean jj_3R_48() {
+        if (jj_3R_16())
+            return true;
+        return false;
+    }
+    private boolean jj_3R_47() {
+        if (jj_3R_61())
+            return true;
+        return false;
+    }
+    private boolean jj_3R_46() {
+        if (jj_3R_60())
+            return true;
+        return false;
+    }
+    private boolean jj_3R_12() {
+        if (jj_3R_21())
+            return true;
+        return false;
+    }
+    private boolean jj_3R_59() {
+        Token xsp;
+        xsp = jj_scanpos;
+        if (jj_scan_token(70)) {
+            jj_scanpos = xsp;
+            if (jj_scan_token(72)) {
+                jj_scanpos = xsp;
+                if (jj_scan_token(73))
+                    return true;
+            }
+        }
         return false;
     }
     private boolean jj_3R_32() {
@@ -1855,26 +1894,6 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
-    private boolean jj_3R_20() {
-        if (jj_3R_34())
-            return true;
-        return false;
-    }
-    private boolean jj_3R_19() {
-        if (jj_3R_33())
-            return true;
-        return false;
-    }
-    private boolean jj_3R_12() {
-        if (jj_3R_21())
-            return true;
-        return false;
-    }
-    private boolean jj_3R_49() {
-        if (jj_scan_token(IDENTIFIER))
-            return true;
-        return false;
-    }
     private boolean jj_3R_9() {
         Token xsp;
         xsp = jj_scanpos;
@@ -1889,6 +1908,21 @@ public class DataQLParser implements DataQLParserConstants {
                 }
             }
         }
+        return false;
+    }
+    private boolean jj_3R_20() {
+        if (jj_3R_34())
+            return true;
+        return false;
+    }
+    private boolean jj_3R_19() {
+        if (jj_3R_33())
+            return true;
+        return false;
+    }
+    private boolean jj_3R_49() {
+        if (jj_scan_token(IDENTIFIER))
+            return true;
         return false;
     }
     private boolean jj_3R_31() {
@@ -2002,45 +2036,45 @@ public class DataQLParser implements DataQLParserConstants {
     private boolean jj_3R_88() {
         Token xsp;
         xsp = jj_scanpos;
-        if (jj_scan_token(45)) {
+        if (jj_scan_token(47)) {
             jj_scanpos = xsp;
-            if (jj_scan_token(46)) {
+            if (jj_scan_token(48)) {
                 jj_scanpos = xsp;
-                if (jj_scan_token(47)) {
+                if (jj_scan_token(49)) {
                     jj_scanpos = xsp;
-                    if (jj_scan_token(48)) {
+                    if (jj_scan_token(50)) {
                         jj_scanpos = xsp;
-                        if (jj_scan_token(49)) {
+                        if (jj_scan_token(51)) {
                             jj_scanpos = xsp;
-                            if (jj_scan_token(50)) {
+                            if (jj_scan_token(52)) {
                                 jj_scanpos = xsp;
-                                if (jj_scan_token(51)) {
+                                if (jj_scan_token(53)) {
                                     jj_scanpos = xsp;
-                                    if (jj_scan_token(52)) {
+                                    if (jj_scan_token(54)) {
                                         jj_scanpos = xsp;
-                                        if (jj_scan_token(53)) {
+                                        if (jj_scan_token(55)) {
                                             jj_scanpos = xsp;
-                                            if (jj_scan_token(54)) {
+                                            if (jj_scan_token(56)) {
                                                 jj_scanpos = xsp;
-                                                if (jj_scan_token(55)) {
+                                                if (jj_scan_token(57)) {
                                                     jj_scanpos = xsp;
-                                                    if (jj_scan_token(56)) {
+                                                    if (jj_scan_token(58)) {
                                                         jj_scanpos = xsp;
-                                                        if (jj_scan_token(57)) {
+                                                        if (jj_scan_token(59)) {
                                                             jj_scanpos = xsp;
-                                                            if (jj_scan_token(58)) {
+                                                            if (jj_scan_token(60)) {
                                                                 jj_scanpos = xsp;
-                                                                if (jj_scan_token(59)) {
+                                                                if (jj_scan_token(61)) {
                                                                     jj_scanpos = xsp;
-                                                                    if (jj_scan_token(60)) {
+                                                                    if (jj_scan_token(62)) {
                                                                         jj_scanpos = xsp;
-                                                                        if (jj_scan_token(61)) {
+                                                                        if (jj_scan_token(63)) {
                                                                             jj_scanpos = xsp;
-                                                                            if (jj_scan_token(62)) {
+                                                                            if (jj_scan_token(64)) {
                                                                                 jj_scanpos = xsp;
-                                                                                if (jj_scan_token(63)) {
+                                                                                if (jj_scan_token(65)) {
                                                                                     jj_scanpos = xsp;
-                                                                                    if (jj_scan_token(64))
+                                                                                    if (jj_scan_token(66))
                                                                                         return true;
                                                                                 }
                                                                             }
@@ -2124,6 +2158,11 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+    private boolean jj_3_3() {
+        if (jj_3R_8())
+            return true;
+        return false;
+    }
     /** Generated Token Manager. */
     public DataQLParserTokenManager token_source;
     JavaCharStream jj_input_stream;
@@ -2135,7 +2174,7 @@ public class DataQLParser implements DataQLParserConstants {
     private Token jj_scanpos, jj_lastpos;
     private int jj_la;
     private int jj_gen;
-    final private int[] jj_la1 = new int[40];
+    final private int[] jj_la1 = new int[42];
     static private int[] jj_la1_0;
     static private int[] jj_la1_1;
     static private int[] jj_la1_2;
@@ -2147,13 +2186,13 @@ public class DataQLParser implements DataQLParserConstants {
     }
 
     private static void jj_la1_init_0() {
-        jj_la1_0 = new int[] { 0x0, 0x0, 0xc000000, 0x1f000, 0x40000000, 0x0, 0x80000000, 0x40000000, 0x80000000, 0x0, 0x0, 0x0, 0x0, 0x1c01f000, 0x0, 0x0, 0x0, 0x0, 0x1c01f000, 0x1c01f000, 0x1e01f000, 0x40000000, 0x1e01f000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x40000000, 0x0, 0x1e01f000, 0x40000, 0x80000, 0xc00000, 0x1c01f000, 0x1e20000, 0x1e20000, 0x0, 0x20000000, 0x0, };
+        jj_la1_0 = new int[] { 0x0, 0x0, 0xc000000, 0x1f000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1c01f000, 0x0, 0x0, 0x0, 0x0, 0x1c01f000, 0x1c01f000, 0x1e01f000, 0x0, 0x1e01f000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1e01f000, 0x40000, 0x80000, 0xc00000, 0x1c01f000, 0x1e20000, 0x1e20000, 0x0, 0x60000000, 0x0, 0x0, 0x60000000, };
     }
     private static void jj_la1_init_1() {
-        jj_la1_1 = new int[] { 0x400, 0x0, 0x0, 0x0, 0x0, 0x80, 0x0, 0x0, 0x0, 0x200, 0xffffe001, 0xffffe001, 0x20, 0x680, 0x5000, 0xffffe001, 0xffffe000, 0x20, 0x680, 0x0, 0x56a0, 0x0, 0x56e0, 0x0, 0x0, 0x20, 0x280, 0x0, 0x0, 0x200, 0x56a0, 0x0, 0x0, 0x0, 0x56a0, 0x0, 0x0, 0x2, 0x0, 0x2, };
+        jj_la1_1 = new int[] { 0x1000, 0x0, 0x0, 0x0, 0x1, 0x200, 0x2, 0x1, 0x2, 0x800, 0xffff8004, 0xffff8004, 0x80, 0x1a00, 0x14000, 0xffff8004, 0xffff8000, 0x80, 0x1a00, 0x0, 0x15a80, 0x1, 0x15b80, 0x0, 0x0, 0x80, 0xa00, 0x0, 0x1, 0x800, 0x15a80, 0x0, 0x0, 0x0, 0x15a80, 0x0, 0x0, 0x8, 0x0, 0x8, 0x8, 0x0, };
     }
     private static void jj_la1_init_2() {
-        jj_la1_2 = new int[] { 0x400, 0xd0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x0, 0x4d0, 0x0, 0x1, 0x1, 0x800, 0x4d0, 0xd0, 0x4d0, 0x0, 0x4d0, 0x800, 0xd0, 0x800, 0x1000, 0x400, 0x0, 0x0, 0x4d0, 0x0, 0x0, 0x0, 0x4d0, 0x0, 0x0, 0x0, 0x0, 0x0, };
+        jj_la1_2 = new int[] { 0x1000, 0x340, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7, 0x7, 0x0, 0x1340, 0x0, 0x7, 0x7, 0x2000, 0x1340, 0x340, 0x1340, 0x0, 0x1340, 0x2000, 0x340, 0x2000, 0x4000, 0x1000, 0x0, 0x0, 0x1340, 0x0, 0x0, 0x0, 0x1340, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, };
     }
     final private JJCalls[] jj_2_rtns = new JJCalls[5];
     private       boolean   jj_rescan = false;
@@ -2173,7 +2212,7 @@ public class DataQLParser implements DataQLParserConstants {
         token = new Token();
         jj_ntk = -1;
         jj_gen = 0;
-        for (int i = 0; i < 40; i++)
+        for (int i = 0; i < 42; i++)
             jj_la1[i] = -1;
         for (int i = 0; i < jj_2_rtns.length; i++)
             jj_2_rtns[i] = new JJCalls();
@@ -2193,7 +2232,7 @@ public class DataQLParser implements DataQLParserConstants {
         token = new Token();
         jj_ntk = -1;
         jj_gen = 0;
-        for (int i = 0; i < 40; i++)
+        for (int i = 0; i < 42; i++)
             jj_la1[i] = -1;
         for (int i = 0; i < jj_2_rtns.length; i++)
             jj_2_rtns[i] = new JJCalls();
@@ -2205,7 +2244,7 @@ public class DataQLParser implements DataQLParserConstants {
         token = new Token();
         jj_ntk = -1;
         jj_gen = 0;
-        for (int i = 0; i < 40; i++)
+        for (int i = 0; i < 42; i++)
             jj_la1[i] = -1;
         for (int i = 0; i < jj_2_rtns.length; i++)
             jj_2_rtns[i] = new JJCalls();
@@ -2217,7 +2256,7 @@ public class DataQLParser implements DataQLParserConstants {
         token = new Token();
         jj_ntk = -1;
         jj_gen = 0;
-        for (int i = 0; i < 40; i++)
+        for (int i = 0; i < 42; i++)
             jj_la1[i] = -1;
         for (int i = 0; i < jj_2_rtns.length; i++)
             jj_2_rtns[i] = new JJCalls();
@@ -2228,7 +2267,7 @@ public class DataQLParser implements DataQLParserConstants {
         token = new Token();
         jj_ntk = -1;
         jj_gen = 0;
-        for (int i = 0; i < 40; i++)
+        for (int i = 0; i < 42; i++)
             jj_la1[i] = -1;
         for (int i = 0; i < jj_2_rtns.length; i++)
             jj_2_rtns[i] = new JJCalls();
@@ -2239,7 +2278,7 @@ public class DataQLParser implements DataQLParserConstants {
         token = new Token();
         jj_ntk = -1;
         jj_gen = 0;
-        for (int i = 0; i < 40; i++)
+        for (int i = 0; i < 42; i++)
             jj_la1[i] = -1;
         for (int i = 0; i < jj_2_rtns.length; i++)
             jj_2_rtns[i] = new JJCalls();
@@ -2363,12 +2402,12 @@ public class DataQLParser implements DataQLParserConstants {
     /** Generate ParseException. */
     public ParseException generateParseException() {
         jj_expentries.clear();
-        boolean[] la1tokens = new boolean[77];
+        boolean[] la1tokens = new boolean[79];
         if (jj_kind >= 0) {
             la1tokens[jj_kind] = true;
             jj_kind = -1;
         }
-        for (int i = 0; i < 40; i++) {
+        for (int i = 0; i < 42; i++) {
             if (jj_la1[i] == jj_gen) {
                 for (int j = 0; j < 32; j++) {
                     if ((jj_la1_0[i] & (1 << j)) != 0) {
@@ -2383,7 +2422,7 @@ public class DataQLParser implements DataQLParserConstants {
                 }
             }
         }
-        for (int i = 0; i < 77; i++) {
+        for (int i = 0; i < 79; i++) {
             if (la1tokens[i]) {
                 jj_expentry = new int[1];
                 jj_expentry[0] = i;
