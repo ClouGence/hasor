@@ -20,7 +20,11 @@
             <groupId>net.hasor</groupId>
             <artifactId>hasor-plugins</artifactId>
         </dependency>
-
+        <!-- RPC 例子接口定义 -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-db</artifactId>
+        </dependency>
         <!-- Hasor -->
         <dependency>
             <groupId>net.hasor</groupId>
