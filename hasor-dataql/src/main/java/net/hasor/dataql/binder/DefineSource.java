@@ -22,15 +22,10 @@ import net.hasor.dataql.UdfSource;
  * @version : 2017-03-23
  */
 class DefineSource {
-    private String                        sourceName;
     private BindInfo<? extends UdfSource> target;
     //
-    public DefineSource(String sourceName, BindInfo<? extends UdfSource> target) {
-        this.sourceName = sourceName;
+    public DefineSource(BindInfo<? extends UdfSource> target) {
         this.target = target;
-    }
-    public String getName() {
-        return this.sourceName;
     }
     public BindInfo<? extends UdfSource> getTarget() {
         return target;

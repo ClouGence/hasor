@@ -26,20 +26,21 @@ import net.hasor.dataql.runtime.struts.LambdaCall;
  * @version : 2017-03-23
  */
 public class LambdaCallProxy implements UDF {
+    private int           methodAddress;
     private InstSequence  instSequence;
     private MemStack      memStack;
     private StackStruts   localData;
     private ProcessContet context;
     //
-    public LambdaCallProxy(InstSequence instSequence, MemStack memStack, StackStruts localData, ProcessContet context) {
-        try {
-            this.instSequence = instSequence;
-            this.memStack = memStack.clone();
-            this.localData = localData.clone();
-            this.context = context;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public LambdaCallProxy(int methodAddress, InstSequence instSequence, MemStack memStack, StackStruts localData, ProcessContet context) throws Exception {
+        this.methodAddress = methodAddress;
+        this.instSequence = instSequence;
+        this.memStack = memStack.clone();
+        this.localData = localData.clone();
+        this.context = context;
+    }
+    public int getMethodAddress() {
+        return this.methodAddress;
     }
     //
     @Override

@@ -16,23 +16,17 @@
 package net.hasor.dataql;
 import java.util.List;
 /**
- * UDF数据源
+ * UDF数据源管理器
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
 public interface UdfManager {
-    /**默认数据源*/
-    public static final String DefaultSource = "default";
-
     /**Source名*/
-    public UdfSource getSourceByName(String sourceName);
+    public List<UdfSource> getSourceByName(String sourceName);
 
     /**数据源名字*/
     public List<String> getSourceNames();
 
-    /**添加Udf数据源*/
-    public void addSource(String sourceName, UdfSource udfSource);
-
     /**设置默认Udf数据源(默认数据源的name为空)*/
-    public void addDefaultSource(UdfSource udfSource);
+    public void addSource(UdfSource udfSource);
 }

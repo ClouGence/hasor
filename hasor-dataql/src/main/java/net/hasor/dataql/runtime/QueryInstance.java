@@ -36,10 +36,10 @@ import java.util.Map;
  */
 class QueryInstance extends OptionSet implements Query {
     private QIL                 instSequence;
-    private QueryEngine         queryEngine;
+    private QueryEngineImpl     queryEngine;
     private Map<String, Object> queryContext;
     //
-    QueryInstance(QueryEngine queryEngine, QIL instSequence) {
+    QueryInstance(QueryEngineImpl queryEngine, QIL instSequence) {
         super(queryEngine);
         this.queryEngine = queryEngine;
         this.instSequence = instSequence;

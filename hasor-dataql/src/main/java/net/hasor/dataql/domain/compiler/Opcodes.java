@@ -50,7 +50,8 @@ public interface Opcodes {
     //
     // -------------------------------------------------------------- 调用指令
     public static final byte CALL   = 61; // 发起服务调用（例：CALL,"xxxxx",2）
-    public static final byte LCALL  = 62; // 调用内置函数
+    public static final byte RCALL  = 62; // 调用内置函数
+    public static final byte LCALL  = 63; // 调用外部QL，或者UDF类来完成函数调用
     //
     // -------------------------------------------------------------- 函数指令
     public static final byte METHOD = 71; // 函数定义
@@ -68,5 +69,4 @@ public interface Opcodes {
     public static final byte LINE   = 2; // 行号
     public static final byte LABEL  = 3; // 协助GOTO定位用，无实际作用
     public static final byte LOCAL  = 4; // 本地变量表名称
-    public static final byte IMPORT = 5; // 导入另一个QL脚本作为函数
 }

@@ -16,7 +16,6 @@
 package net.hasor.dataql.udf;
 import net.hasor.dataql.UdfManager;
 import net.hasor.dataql.UdfSource;
-import net.hasor.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,9 +27,9 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 public class SimpleUdfManager implements UdfManager {
-    private final Map<String, UdfSource> udfSourceMap = new HashMap<String, UdfSource>();
+    private final Map<String, List<UdfSource>> udfSourceMap = new HashMap<String, List<UdfSource>>();
     @Override
-    public UdfSource getSourceByName(String sourceName) {
+    public List<UdfSource> getSourceByName(String sourceName) {
         return this.udfSourceMap.get(sourceName);
     }
     @Override
@@ -38,23 +37,19 @@ public class SimpleUdfManager implements UdfManager {
         return new ArrayList<String>(this.udfSourceMap.keySet());
     }
     @Override
-    public void addSource(String sourceName, UdfSource udfSource) {
-        if (StringUtils.isBlank(sourceName) || DefaultSource.equalsIgnoreCase(sourceName)) {
-            throw new UnsupportedOperationException("name of '" + sourceName + "' can't be added.");
+    public void addSource(UdfSource udfSource) {
+        String sourceName = udfSource.getName();
+        List<UdfSource> sourceList = this.udfSourceMap.get(sourceName);
+        if (sourceList == null) {
+            sourceList = new ArrayList<UdfSource>();
+            this.udfSourceMap.put(sourceName, sourceList);
         }
-        this._addSource(sourceName, udfSource);
-    }
-    @Override
-    public void addDefaultSource(UdfSource udfSource) {
-        this._addSource(DefaultSource, udfSource);
-    }
-    //
-    private void _addSource(String sourceName, UdfSource udfSource) {
-        UdfSource source = this.udfSourceMap.get(sourceName);
-        if (source != null) {
-            source.putAll(udfSource);
-        } else {
-            this.udfSourceMap.put(sourceName.trim(), udfSource);
+        for (UdfSource atSource : sourceList) {
+            if (atSource.getClass() == SimpleUdfSource.class && udfSource.getClass() == SimpleUdfSource.class) {
+                atSource.putAll(udfSource);
+                return;
+            }
         }
+        sourceList.add(udfSource);
     }
 }

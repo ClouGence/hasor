@@ -33,7 +33,7 @@ public class ImportInst extends Inst {
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         InstQueue instQueue = queue.newMethodInst();
-        instQueue.inst(IMPORT, this.packageName);
+        instQueue.inst(LCALL, this.packageName);
         //
         // .指向函数的指针
         int methodAddress = instQueue.getName();

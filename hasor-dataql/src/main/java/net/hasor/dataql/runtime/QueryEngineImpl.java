@@ -25,7 +25,7 @@ import net.hasor.utils.Objects;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class QueryEngine extends OptionSet implements DataQLEngine, ProcessContet {
+public class QueryEngineImpl extends OptionSet implements QueryEngine, ProcessContet {
     protected final static OpcodesPool opcodesPool = OpcodesPool.newPool();
     private       ClassLoader     classLoader;
     private final OperatorManager opeManager;
@@ -33,7 +33,7 @@ public class QueryEngine extends OptionSet implements DataQLEngine, ProcessConte
     private       UdfFinder       udfFinder;
     private final QIL             queryType;
     //
-    public QueryEngine(UdfManager udfManager, QIL queryType) {
+    public QueryEngineImpl(UdfManager udfManager, QIL queryType) {
         Objects.requireNonNull(udfManager, "udfManager is null.");
         Objects.requireNonNull(queryType, "qil is null.");
         //

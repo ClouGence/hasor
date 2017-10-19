@@ -40,6 +40,9 @@ public interface Option {
     public void removeOption(String optionKey);
 
     /** 设置选项参数 */
+    public void setOptionSet(Option optionSet);
+
+    /** 设置选项参数 */
     public void setOption(String optionKey, String value);
 
     /** 设置选项参数 */

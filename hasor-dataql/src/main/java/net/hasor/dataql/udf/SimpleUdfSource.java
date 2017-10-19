@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.dataql.udf;
-import net.hasor.dataql.DataQLEngine;
+import net.hasor.dataql.QueryEngine;
 import net.hasor.dataql.UDF;
 import net.hasor.dataql.UdfSource;
+import net.hasor.utils.StringUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,14 +27,33 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version : 2017-03-23
  */
 public class SimpleUdfSource extends ConcurrentHashMap<String, UDF> implements UdfSource {
+    private String name = null;
     public SimpleUdfSource() {
+        this(DefaultSource);
     }
     public SimpleUdfSource(Map<String, UDF> udfMap) {
-        super(udfMap);
+        this(DefaultSource, udfMap);
+    }
+    public SimpleUdfSource(String name) {
+        this(name, null);
+    }
+    public SimpleUdfSource(String name, Map<String, UDF> udfMap) {
+        if (StringUtils.isBlank(name)) {
+            name = DefaultSource;
+        }
+        this.name = name;
+        if (udfMap != null) {
+            super.putAll(udfMap);
+        }
     }
     //
     @Override
-    public UDF findUdf(String udfName, DataQLEngine sourceEngine) throws Throwable {
+    public String getName() {
+        return this.name;
+    }
+    //
+    @Override
+    public UDF findUdf(String udfName, QueryEngine sourceEngine) throws Throwable {
         return super.get(udfName);
     }
     public void addUdf(String udfName, UDF udf) {

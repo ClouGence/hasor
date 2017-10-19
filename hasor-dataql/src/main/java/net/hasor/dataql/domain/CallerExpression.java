@@ -74,7 +74,7 @@ public class CallerExpression extends Expression {
                     } else {
                         queue.inst(LOAD, index.depth, index.index);
                     }
-                    queue.inst(LCALL, this.varList.size());
+                    queue.inst(RCALL, this.varList.size());
                 } else {
                     // .使用UDF进行调用
                     queue.inst(CALL, this.callName, this.varList.size());

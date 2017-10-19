@@ -16,12 +16,12 @@
 package net.hasor.dataql.binder;
 import net.hasor.core.*;
 import net.hasor.dataql.Query;
-import net.hasor.dataql.UdfManager;
 import net.hasor.dataql.UdfSource;
 import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.domain.compiler.QueryCompiler;
 import net.hasor.dataql.domain.parser.ParseException;
-import net.hasor.dataql.runtime.QueryEngine;
+import net.hasor.dataql.runtime.QueryEngineImpl;
+import net.hasor.dataql.udf.LoaderUdfSource;
 import net.hasor.dataql.udf.SimpleUdfManager;
 import net.hasor.dataql.udf.SimpleUdfSource;
 import net.hasor.dataql.udf.funs.CollectionUDFs;
@@ -44,22 +44,18 @@ public class DataQLModule implements Module {
             public void onEvent(String event, Object eventData) throws Throwable {
                 AppContext appContext = (AppContext) eventData;
                 //
+                SimpleUdfSource simpleUdfSource = new SimpleUdfSource();
                 List<DefineUDF> udfList = appContext.findBindingBean(DefineUDF.class);
                 for (DefineUDF define : udfList) {
                     if (define == null || StringUtils.isBlank(define.getName())) {
                         continue;
                     }
-                    UdfSource sourceByName = udfManager.getSourceByName(UdfManager.DefaultSource);
-                    if (sourceByName == null) {
-                        sourceByName = new SimpleUdfSource();
-                        udfManager.addDefaultSource(sourceByName);
-                    }
-                    sourceByName.addUdf(define.getName(), define);
+                    simpleUdfSource.addUdf(define.getName(), define);
                 }
+                udfManager.addSource(simpleUdfSource);
                 //
                 List<DefineSource> udfSourceList = appContext.findBindingBean(DefineSource.class);
                 for (DefineSource define : udfSourceList) {
-                    String defineName = define.getName();
                     BindInfo<? extends UdfSource> bindInfo = define.getTarget();
                     if (bindInfo == null) {
                         continue;
@@ -68,17 +64,7 @@ public class DataQLModule implements Module {
                     if (instance == null) {
                         continue;
                     }
-                    //
-                    UdfSource source = udfManager.getSourceByName(defineName);
-                    if (source != null) {
-                        source.putAll(instance);
-                    } else {
-                        if (UdfManager.DefaultSource.equalsIgnoreCase(defineName)) {
-                            udfManager.addDefaultSource(instance);
-                        } else {
-                            udfManager.addSource(defineName, instance);
-                        }
-                    }
+                    udfManager.addSource(instance);
                 }
             }
         });
@@ -88,7 +74,7 @@ public class DataQLModule implements Module {
             @Override
             public Query createQuery(String qlString) throws ParseException {
                 QIL queryType = QueryCompiler.compilerQuery(qlString);
-                QueryEngine queryEngine = new QueryEngine(udfManager, queryType);
+                QueryEngineImpl queryEngine = new QueryEngineImpl(udfManager, queryType);
                 queryEngine.setClassLoader(apiBinder.getEnvironment().getClassLoader());
                 return queryEngine.newQuery();
             }
@@ -99,7 +85,7 @@ public class DataQLModule implements Module {
         if (dataBinder == null) {
             return;
         }
-        //
-        dataBinder.addDefaultUdfSource(new TypeUdfSource<CollectionUDFs>(CollectionUDFs.class, null, null));
+        dataBinder.addUdfSource(new LoaderUdfSource(apiBinder.getEnvironment().getClassLoader()));
+        dataBinder.addUdfSource(new TypeUdfSource<CollectionUDFs>(CollectionUDFs.class, null, null));
     }
 }

@@ -55,7 +55,7 @@ public class OpcodesPool {
             pool.addInsetProcess(new DO());
             //
             pool.addInsetProcess(new CALL());
-            pool.addInsetProcess(new LCALL());
+            pool.addInsetProcess(new RCALL());
             //
             pool.addInsetProcess(new METHOD());
             pool.addInsetProcess(new M_REF());
@@ -68,7 +68,7 @@ public class OpcodesPool {
             //
             pool.addInsetProcess(new OPT());
             pool.addInsetProcess(new LOCAL());
-            pool.addInsetProcess(new IMPORT());
+            pool.addInsetProcess(new LCALL());
         }
         return pool;
     }

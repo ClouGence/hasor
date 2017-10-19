@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.dataql.runtime.inset;
+import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.ProcessException;
 import net.hasor.dataql.domain.compiler.Instruction;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
+import net.hasor.dataql.runtime.LambdaCallProxy;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
-import net.hasor.dataql.runtime.struts.LambdaCallStruts;
 /**
  * M_REF，定义一个 lambda 函数指针。（产生一个LambdaCallStruts）
  * @author 赵永春(zyc@hasor.net)
@@ -36,9 +37,17 @@ class M_REF implements InsetProcess {
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         //
         Instruction inst = sequence.currentInst();
-        int address = inst.getInt(0);
+        int callAddress = inst.getInt(0);
         //
         // .前把函数入口定义，打包成一个 LambdaCallStruts
-        memStack.push(new LambdaCallStruts(address));
+        try {
+            InstSequence methodSeq = sequence.methodSet(callAddress);
+            LambdaCallProxy callProxy = new LambdaCallProxy(callAddress, methodSeq, memStack, local, context);
+            memStack.push(callProxy);
+        } catch (ProcessException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new InvokerProcessException(getOpcode(), e.getMessage(), e);
+        }
     }
 }

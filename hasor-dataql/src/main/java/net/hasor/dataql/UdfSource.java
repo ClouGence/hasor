@@ -21,8 +21,14 @@ import java.util.Map;
  * @version : 2017-03-23
  */
 public interface UdfSource extends Map<String, UDF> {
-    /**获取UDF，不同于 get 方法。使用 find 可以在不加入到 Map 的情况下动态的加载 udf。*/
-    public UDF findUdf(String udfName, DataQLEngine sourceEngine) throws Throwable;
+    /**默认数据源*/
+    public static final String DefaultSource = "default";
+
+    /**数据源名称*/
+    public String getName();
+
+    /**获取UDF，不同于 get 方法。使用 find 可以在不加入到 Map 的情况下动态的查找 udf。*/
+    public UDF findUdf(String udfName, QueryEngine sourceEngine) throws Throwable;
 
     /**添加 UDF 到 Map*/
     public void addUdf(String udfName, UDF udf);

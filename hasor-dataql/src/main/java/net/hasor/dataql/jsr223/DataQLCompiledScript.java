@@ -1,22 +1,38 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.hasor.dataql.jsr223;
-import net.hasor.dataql.InvokerProcessException;
-import net.hasor.dataql.Option;
-import net.hasor.dataql.Query;
-import net.hasor.dataql.QueryResult;
+import net.hasor.dataql.*;
 import net.hasor.dataql.domain.compiler.QIL;
-import net.hasor.dataql.runtime.QueryEngine;
+import net.hasor.dataql.runtime.QueryEngineImpl;
 
 import javax.script.*;
 /**
- *
+ * JSR223 编译机制的实现。
+ * @author 赵永春(zyc@hasor.net)
+ * @version : 2017-10-19
  */
-class DataQLCompiledScript extends CompiledScript implements Option {
+class DataQLCompiledScript extends CompiledScript implements QueryEngine {
     private DataQLScriptEngine engine;
-    private QueryEngine        queryEngine;
+    private QueryEngineImpl    queryEngine;
     public DataQLCompiledScript(QIL compilerQIL, DataQLScriptEngine engine) {
         this.engine = engine;
-        this.queryEngine = new QueryEngine(engine, compilerQIL);
+        this.queryEngine = new QueryEngineImpl(engine, compilerQIL);
+        this.queryEngine.setOptionSet(engine);
         this.queryEngine.setClassLoader(engine.getLoader());
+        //
     }
     @Override
     public ScriptEngine getEngine() {
@@ -44,6 +60,7 @@ class DataQLCompiledScript extends CompiledScript implements Option {
     }
     //
     //
+    // -------------------------------------------------------------------------------------------- Option
     @Override
     public String[] getOptionNames() {
         return this.queryEngine.getOptionNames();
@@ -57,6 +74,10 @@ class DataQLCompiledScript extends CompiledScript implements Option {
         this.queryEngine.removeOption(optionKey);
     }
     @Override
+    public void setOptionSet(Option optionSet) {
+        this.queryEngine.setOptionSet(optionSet);
+    }
+    @Override
     public void setOption(String optionKey, String value) {
         this.queryEngine.setOption(optionKey, value);
     }
@@ -67,5 +88,31 @@ class DataQLCompiledScript extends CompiledScript implements Option {
     @Override
     public void setOption(String optionKey, boolean value) {
         this.queryEngine.setOption(optionKey, value);
+    }
+    //
+    // -------------------------------------------------------------------------------------------- QueryEngine
+    @Override
+    public QIL getQil() {
+        return this.queryEngine.getQil();
+    }
+    @Override
+    public ClassLoader getClassLoader() {
+        return this.queryEngine.getClassLoader();
+    }
+    @Override
+    public UdfManager getUdfManager() {
+        return this.queryEngine.getUdfManager();
+    }
+    @Override
+    public void setClassLoader(ClassLoader classLoader) {
+        this.queryEngine.setClassLoader(classLoader);
+    }
+    @Override
+    public Query newQuery() {
+        return this.queryEngine.newQuery();
+    }
+    @Override
+    public void refreshUDF() {
+        this.queryEngine.refreshUDF();
     }
 }

@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.Option;
+import net.hasor.dataql.runtime.operator.OperatorUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,17 +24,17 @@ import java.util.Map;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-class OptionSet implements Option {
+public class OptionSet implements Option {
     private Map<String, Object> optionMap;
     //
-    OptionSet(Option optionSet) {
+    public OptionSet() {
+        this.optionMap = new HashMap<String, Object>();
+    }
+    public OptionSet(Option optionSet) {
         this.optionMap = new HashMap<String, Object>();
         for (String name : optionSet.getOptionNames()) {
             this.optionMap.put(name, optionSet.getOption(name));
         }
-    }
-    OptionSet() {
-        this.optionMap = new HashMap<String, Object>();
     }
     //
     @Override
@@ -47,6 +48,30 @@ class OptionSet implements Option {
     /** 删除选项参数 */
     public void removeOption(String key) {
         this.optionMap.remove(key);
+    }
+    @Override
+    public void setOptionSet(Option optionSet) {
+        if (optionSet == null) {
+            return;
+        }
+        String[] optKeySet = optionSet.getOptionNames();
+        if (optKeySet == null) {
+            return;
+        }
+        for (String optKey : optKeySet) {
+            Object value = optionSet.getOption(optKey);
+            if (OperatorUtils.isNumber(value)) {
+                this.setOption(optKey, (Number) value);
+                continue;
+            }
+            if (OperatorUtils.isBoolean(value)) {
+                this.setOption(optKey, (Boolean) value);
+                continue;
+            }
+            if (value != null) {
+                this.setOption(optKey, value.toString());
+            }
+        }
     }
     /** 设置选项参数 */
     public void setOption(String key, String value) {

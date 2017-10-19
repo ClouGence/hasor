@@ -26,34 +26,38 @@ import java.util.*;
  * @version : 2017-10-17
  */
 class UdfFinder extends HashMap<String, UDF> {
-    private List<UdfSource> sourceList = new ArrayList<UdfSource>();
-    private Map<String, UdfSource> resourceMappingSourceCache;
+    private List<UdfSource>        sourceList                 = new ArrayList<UdfSource>();
+    private Map<String, UdfSource> resourceMappingSourceCache = new HashMap<String, UdfSource>();
     //
     public UdfFinder(UdfManager udfManager) {
-        this.resourceMappingSourceCache = new HashMap<String, UdfSource>();
         List<String> sourceNames = udfManager.getSourceNames();
         if (sourceNames == null || sourceNames.isEmpty()) {
             return;
         }
         for (String sourceName : sourceNames) {
-            UdfSource source = udfManager.getSourceByName(sourceName);
-            if (source == null) {
+            List<UdfSource> sourceList = udfManager.getSourceByName(sourceName);
+            if (sourceList == null || sourceList.isEmpty()) {
                 continue;
             }
-            this.sourceList.add(source);
-            Set<String> keySet = source.keySet();
-            if (keySet.isEmpty()) {
-                continue;
-            }
-            for (String udfName : keySet) {
-                UDF udf = source.get(udfName);
-                if (udf == null || StringUtils.isBlank(udfName)) {
+            for (UdfSource source : sourceList) {
+                if (this.sourceList.contains(source)) {
                     continue;
                 }
-                if (StringUtils.isNotBlank(sourceName) && !UdfManager.DefaultSource.equalsIgnoreCase(sourceName)) {
-                    super.put(sourceName + "." + udfName, udf);
-                } else {
-                    super.put(udfName, udf);
+                this.sourceList.add(source);
+                Set<String> keySet = source.keySet();
+                if (keySet.isEmpty()) {
+                    continue;
+                }
+                for (String udfName : keySet) {
+                    UDF udf = source.get(udfName);
+                    if (udf == null || StringUtils.isBlank(udfName)) {
+                        continue;
+                    }
+                    if (StringUtils.isNotBlank(sourceName) && !UdfSource.DefaultSource.equalsIgnoreCase(sourceName)) {
+                        super.put(sourceName + "." + udfName, udf);
+                    } else {
+                        super.put(udfName, udf);
+                    }
                 }
             }
         }
@@ -61,7 +65,7 @@ class UdfFinder extends HashMap<String, UDF> {
     public UDF loadUdf(Class<?> aClass) throws Throwable {
         return (UDF) aClass.newInstance();
     }
-    public UDF loadResource(String resourceName, QueryEngine sourceEngine) throws Throwable {
+    public UDF loadResource(String resourceName, QueryEngineImpl sourceEngine) throws Throwable {
         UdfSource udfSource = this.resourceMappingSourceCache.get(resourceName);
         if (udfSource != null) {
             return udfSource.findUdf(resourceName, sourceEngine);

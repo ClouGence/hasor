@@ -15,53 +15,42 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.InvokerProcessException;
-import net.hasor.dataql.LoadType;
 import net.hasor.dataql.ProcessException;
-import net.hasor.dataql.UDF;
-import net.hasor.dataql.domain.compiler.Instruction;
-import net.hasor.dataql.runtime.*;
+import net.hasor.dataql.runtime.InsetProcess;
+import net.hasor.dataql.runtime.InstSequence;
+import net.hasor.dataql.runtime.LambdaCallProxy;
+import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
 /**
- * CALL，指令是用于发起对 UDF 的调用。
+ * RCALL，发起一个 lambda 的调用，调用会在一个全新的堆栈上运行。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
-class CALL implements InsetProcess {
+class RCALL implements InsetProcess {
     @Override
     public int getOpcode() {
-        return CALL;
+        return RCALL;
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
-        Instruction instruction = sequence.currentInst();
-        String udfName = instruction.getString(0);
-        int paramCount = instruction.getInt(1);
         //
+        LambdaCallProxy callStruts = (LambdaCallProxy) memStack.pop();
+        int paramCount = sequence.currentInst().getInt(0);
+        //
+        // .参数准备
         Object[] paramArrays = new Object[paramCount];
         for (int i = 0; i < paramCount; i++) {
-            int paramIndex = paramCount - 1 - i;
-            Object paramObj = memStack.pop();
-            //
-            if (paramObj instanceof LambdaCallProxy) {
-                paramArrays[paramIndex] = paramObj;
-                continue;
-            }
-            //
-            paramArrays[paramIndex] = paramObj;
+            paramArrays[paramCount - 1 - i] = memStack.pop();
         }
-        //
+        // .返回值处理
         try {
-            UDF udf = context.findUDF(udfName, LoadType.ByName);
-            if (udf == null) {
-                throw new InvokerProcessException(getOpcode(), "CALL -> udf '" + udfName + "' is not found");
-            }
-            Object result = udf.call(paramArrays, new OptionReadOnly(context));
+            Object result = callStruts.call(paramArrays, context);
             memStack.push(result);
         } catch (ProcessException e) {
             throw e;
         } catch (Throwable e) {
-            throw new InvokerProcessException(getOpcode(), "call '" + udfName + "' error.", e);
+            throw new InvokerProcessException(getOpcode(), e.getMessage(), e);
         }
     }
 }

@@ -17,7 +17,7 @@ package net.hasor.dataql.udf;
 import net.hasor.dataql.*;
 import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.domain.compiler.QueryCompiler;
-import net.hasor.dataql.runtime.QueryEngine;
+import net.hasor.dataql.runtime.QueryEngineImpl;
 import net.hasor.utils.IOUtils;
 import net.hasor.utils.ResourcesUtils;
 
@@ -32,8 +32,14 @@ import java.nio.charset.Charset;
  * @version : 2017-10-18
  */
 public class LoaderUdfSource extends SimpleUdfSource {
+    private ClassLoader classLoader;
+    public LoaderUdfSource() {
+    }
+    public LoaderUdfSource(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
     @Override
-    public UDF findUdf(String udfName, DataQLEngine source) throws Throwable {
+    public UDF findUdf(String udfName, QueryEngine sourceEngine) throws Throwable {
         //
         UDF target = super.get(udfName);
         if (target != null) {
@@ -54,7 +60,11 @@ public class LoaderUdfSource extends SimpleUdfSource {
         StringWriter outWriter = new StringWriter();
         IOUtils.copy(reader, outWriter);
         QIL compilerQuery = QueryCompiler.compilerQuery(outWriter.toString());
-        final QueryEngine engine = new QueryEngine(source.getUdfManager(), compilerQuery);
+        final QueryEngineImpl engine = new QueryEngineImpl(sourceEngine.getUdfManager(), compilerQuery);
+        if (this.classLoader != null) {
+            engine.setClassLoader(this.classLoader);
+        }
+        //
         target = new UDF() {
             public Object call(Object[] values, Option readOnly) throws Throwable {
                 Query query = engine.newQuery();

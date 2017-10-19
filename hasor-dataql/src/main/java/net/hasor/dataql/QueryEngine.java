@@ -20,7 +20,7 @@ import net.hasor.dataql.domain.compiler.QIL;
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface DataQLEngine extends Option {
+public interface QueryEngine extends Option {
     public QIL getQil();
 
     public ClassLoader getClassLoader();

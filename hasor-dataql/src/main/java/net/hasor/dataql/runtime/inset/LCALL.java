@@ -15,17 +15,20 @@
  */
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.InvokerProcessException;
+import net.hasor.dataql.LoadType;
 import net.hasor.dataql.ProcessException;
+import net.hasor.dataql.UDF;
+import net.hasor.dataql.domain.compiler.Instruction;
 import net.hasor.dataql.runtime.InsetProcess;
 import net.hasor.dataql.runtime.InstSequence;
+import net.hasor.dataql.runtime.OptionReadOnly;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.dataql.runtime.struts.LambdaCall;
-import net.hasor.dataql.runtime.struts.LambdaCallStruts;
+import net.hasor.utils.StringUtils;
 /**
- * LCALL，发起一个 lambda 的调用，调用会在一个全新的堆栈上运行。
- * 当执行该指令时，栈顶必须是一个 LambdaCallStruts ，而 LambdaCallStruts 是通过 M_REF 定义的。
+ * LCALL，使用一个外部包来执行dataql。
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-07-19
  */
@@ -36,32 +39,31 @@ class LCALL implements InsetProcess {
     }
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
+        Instruction inst = sequence.currentInst();
+        LambdaCall result = (LambdaCall) memStack.peek();
+        String packageName = inst.getString(0);
         //
-        LambdaCallStruts callStruts = (LambdaCallStruts) memStack.pop();
-        int address = callStruts.getMethod();
-        int paramCount = sequence.currentInst().getInt(0);
-        //
-        // .参数准备
-        Object[] paramArrays = new Object[paramCount];
-        for (int i = 0; i < paramCount; i++) {
-            paramArrays[paramCount - 1 - i] = memStack.pop();
+        // .package 为空
+        if (StringUtils.isBlank(packageName)) {
+            throw new InvokerProcessException(getOpcode(), "import package is null.");
         }
-        LambdaCall callInfo = new LambdaCall(address, paramArrays);
-        //
-        // .查找方法指令序列
-        InstSequence methodSeq = sequence.methodSet(address);
-        if (methodSeq == null) {
-            throw new InvokerProcessException(getOpcode(), "LCALL -> InstSequence '" + address + "' is not found.");
+        // .查找UDF
+        try {
+            UDF loadUdf = null;
+            if (packageName.charAt(0) == '@') {
+                loadUdf = context.findUDF(packageName.substring(1), LoadType.ByResource);
+            } else {
+                loadUdf = context.findUDF(packageName, LoadType.ByType);
+            }
+            if (loadUdf == null) {
+                throw new InvokerProcessException(getOpcode(), "import '" + packageName + "' failed, load result is null.");
+            }
+            result.setResult(loadUdf.call(result.getArrays(), new OptionReadOnly(context)));
+            memStack.setResult(result.getResult());
+        } catch (ProcessException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new InvokerProcessException(getOpcode(), "call '" + packageName + "' error.", e);
         }
-        // .执行调用，调用前把所有入参打包成一个 Array，交给 METHOD 指令去处理。
-        {
-            MemStack sub = memStack.create(address);
-            sub.push(callInfo);
-            context.processInset(methodSeq, sub, local);
-            callInfo.setResult(sub.getResult());
-        }
-        // .返回值处理
-        Object result = callInfo.getResult();
-        memStack.push(result);
     }
 }
