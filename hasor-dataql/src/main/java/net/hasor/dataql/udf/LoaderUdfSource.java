@@ -20,6 +20,7 @@ import net.hasor.dataql.domain.compiler.QueryCompiler;
 import net.hasor.dataql.runtime.QueryEngineImpl;
 import net.hasor.utils.IOUtils;
 import net.hasor.utils.ResourcesUtils;
+import net.hasor.utils.StringUtils;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,6 +29,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 /**
  * 用于加载另一个 DataQL 并将其包装为 UDF。
+ * DataQL 查询文件必须是以 .ql 结尾
  * @author 赵永春(zyc@hasor.net)
  * @version : 2017-10-18
  */
@@ -40,6 +42,9 @@ public class LoaderUdfSource extends SimpleUdfSource {
     }
     @Override
     public UDF findUdf(String udfName, QueryEngine sourceEngine) throws Throwable {
+        if (this.isIgnore(udfName)) {
+            return null;
+        }
         //
         UDF target = super.get(udfName);
         if (target != null) {
@@ -80,5 +85,9 @@ public class LoaderUdfSource extends SimpleUdfSource {
         //
         super.put(udfName, target);
         return target;
+    }
+    /**是否忽略，用于检测目标资源名的格式是否符合要加载的范围。*/
+    protected boolean isIgnore(String udfName) {
+        return StringUtils.isBlank(udfName) || !udfName.endsWith(".ql");
     }
 }
