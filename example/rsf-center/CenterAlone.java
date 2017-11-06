@@ -26,7 +26,7 @@ import java.io.IOException;
 public class CenterServerAlone {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     public static void main(String[] args) throws IOException {
-        Hasor.createAppContext("center-alone.xml");
+        Hasor.createAppContext("rsf-config.xml");
         System.in.read();
     }
 }

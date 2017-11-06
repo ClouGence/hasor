@@ -180,7 +180,7 @@ public abstract class RsfRequestManager {
         return rsfFuture;
     }
     /**
-     * 发送RSF调用请求。
+     * 发送RSF调用请求，处理RsfFilter
      * @param rsfRequest rsf请求
      * @param listener FutureCallback回调监听器。
      * @return 返回RsfFuture。
@@ -198,11 +198,11 @@ public abstract class RsfRequestManager {
             rsfRequest.addOption("RPC_TYPE", "INVOKER");
         }
         rsfRequest.addOptionMap(this.getContext().getSettings().getClientOption());//写入客户端选项，并将选项发送到Server。
-        Provider<RsfFilter>[] rsfFilterList = this.getContainer().getFilterProviders(serviceID);
-        RsfResponseObject res = new RsfResponseObject(rsfRequest);
         //
         try {
-            /*下面这段代码要负责 -> 执行rsfFilter过滤器链，并最终调用sendRequest发送请求。*/
+            RsfResponseObject res = new RsfResponseObject(rsfRequest);
+           /*下面这段代码要负责 -> 执行rsfFilter过滤器链，并最终调用sendRequest发送请求。*/
+            Provider<RsfFilter>[] rsfFilterList = this.getContainer().getFilterProviders(serviceID);
             new RsfFilterHandler(rsfFilterList, new RsfFilterChain() {
                 public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
                     if (response.isResponse()) {

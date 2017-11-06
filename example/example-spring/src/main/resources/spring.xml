@@ -4,7 +4,7 @@
        xmlns:h="http://project.hasor.net/schema/spring/hasor-core"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-http://project.hasor.net/schema/spring/hasor-core spring-hasor-3.2.2.xsd">
+http://project.hasor.net/schema/spring/hasor-core http://project.hasor.net/schema/spring/hasor-core/spring-hasor-3.2.2.xsd">
 
     <!-- 开启 Spring 的自动注入（开启自动注入之后 startWith 配置的启动类可以使用Spring的 @Autowired 注解） -->
     <context:annotation-config/>

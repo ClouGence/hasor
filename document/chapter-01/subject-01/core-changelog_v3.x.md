@@ -1,4 +1,17 @@
-﻿### Hasor-Core v3.2.1 (2017-10-17)
+﻿### Hasor-Core v3.2.2 (2017-?)
+**新增**
+    01. AppContextWarp 类,提供 AppContext 包装工具。
+    02. DataQL UDF 新增 manager 接口方便管理和注册。
+    03. DataQL 新增了 import 语法，现在可以导入另外一个 QL 查询作为 udf 导入到当前 QL 中了。
+**改进**
+    01. Spring 插件中的 sechma 升级为 3.2.2。同时 rsf 的 sechma 和 hasor-core 合并成一个。
+    02. DataQL 的 LoaderUdfSource 增加 isIgnore 方法用于判断是否忽略不正确的UDF查找请求
+    03. DataQL 优化udf source增加机制。
+**修复**
+    01. fix Hasor 的 Spring 插件初始化失败问题。
+    02. fix jfinal 列子编译问题。
+
+### Hasor-Core v3.2.1 (2017-10-17)
 **新增**
     01. DataQL，执行引擎新增 jsr223 兼容。从这个版本开始可以使用 jsr223 的方式使用 DataQL 了。
     02. DataQL UDF 新增 manager 接口方便管理和注册。

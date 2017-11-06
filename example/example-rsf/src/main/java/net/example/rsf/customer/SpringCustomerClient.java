@@ -9,7 +9,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @version : 2014年9月12日
  * @author 赵永春(zyc@hasor.net)
  */
-public class StringCustomerClient {
+public class SpringCustomerClient {
     public static void main(String[] args) throws Throwable {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("spring-consumer-config.xml");
         //

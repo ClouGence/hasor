@@ -10,7 +10,7 @@
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element name="configFile" maxOccurs="1" type="xsd:string">
+                <xsd:element name="configFile" minOccurs="0" maxOccurs="1" type="xsd:string">
                     <xsd:annotation>
                         <xsd:documentation>Hasor 的配置文件入口.</xsd:documentation>
                     </xsd:annotation>
