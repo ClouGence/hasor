@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.services;
-import net.hasor.rsf.RsfResult;
+package net.example.spring;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
 /**
- * 服务实现
- * @version : 2015年11月27日
+ * 在 Spring 容器中配置的Bean
+ * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */
-public class MessageServiceImpl implements MessageService {
-    @Override
-    public RsfResult sayHello(String echo) throws InterruptedException {
-        Thread.sleep(100);
-        System.out.println("server : " + echo);
-        return null;
-    }
+public class MyBean {
+    @Autowired
+    private SimpleBean simpleBean;
+    @Autowired
+    private ConfigInfo hasorBean;
+    @Resource(name = "helloString")
+    private String     helloString;
 }

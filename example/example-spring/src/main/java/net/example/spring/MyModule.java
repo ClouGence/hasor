@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.spring.parser;
-import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
+package net.example.spring;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Module;
+import org.springframework.beans.factory.annotation.Autowired;
 /**
  *
- * @version : 2016年2月16日
+ * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfNamespaceHandler extends NamespaceHandlerSupport {
+public class MyModule implements Module {
+    @Autowired
+    private SimpleBean simpleBean;
     @Override
-    public void init() {
-        registerBeanDefinitionParser("rsf", new RsfDefinitionParser());
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
+        System.out.println("SpringTestModule loading ..." + this.simpleBean);
+        //
+        apiBinder.bindType(String.class).idWith("helloWord").toInstance("HelloWord");
     }
 }

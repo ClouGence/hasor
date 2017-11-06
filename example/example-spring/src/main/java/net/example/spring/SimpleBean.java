@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 package net.example.spring;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.Module;
 /**
- *
+ * 在 Spring 容器中配置的Bean
  * @version : 2016年2月15日
  * @author 赵永春(zyc@hasor.net)
  */
-public class SpringModule implements Module {
-    @Override
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
-        System.out.println("SpringTestModule loading ...");
-        //
-        apiBinder.bindType(String.class).idWith("helloWord").toInstance("HelloWord");
+public class SimpleBean {
+    private String value;
+    //
+    public String getValue() {
+        return value;
+    }
+    public void setValue(String value) {
+        this.value = value;
     }
 }

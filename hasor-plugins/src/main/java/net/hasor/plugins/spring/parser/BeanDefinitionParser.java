@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.plugins.spring.parser;
+import net.hasor.plugins.spring.SpringModule;
 import net.hasor.plugins.spring.factory.HasorBean;
 import net.hasor.utils.StringUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -29,22 +30,31 @@ import org.w3c.dom.NamedNodeMap;
  * @author 赵永春(zyc@hasor.net)
  */
 class BeanDefinitionParser extends AbstractHasorDefinitionParser {
-    public BeanDefinitionParser() {
-    }
-    public BeanDefinitionParser(String factoryID) {
-        this.factoryID = factoryID;
-    }
-    private String factoryID;
-    //
     @Override
-    protected String beanID() {
-        return "id";
+    protected String beanID(Element element, NamedNodeMap attributes) {
+        String beanID = revertProperty(attributes, "springID");
+        if (StringUtils.isBlank(beanID)) {
+            String refID = super.revertProperty(attributes, "refID");
+            if (StringUtils.isBlank(refID)) {
+                beanID = super.revertProperty(attributes, "refType");
+                String refName = super.revertProperty(attributes, "refName");
+                if (!StringUtils.isBlank(refName)) {
+                    beanID = refName + "-" + beanID;
+                }
+            } else {
+                beanID = refID;
+            }
+        }
+        return beanID;
     }
+    //
+    //
     @Override
     protected AbstractBeanDefinition parse(Element element, NamedNodeMap attributes, ParserContext parserContext) {
         BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition();
         builder.getRawBeanDefinition().setBeanClass(HasorBean.class);
         builder.setScope(BeanDefinition.SCOPE_SINGLETON);//单例
+        builder.setLazyInit(true);
         //
         String factoryID = revertProperty(attributes, "hasorID");
         String refID = revertProperty(attributes, "refID");
@@ -52,7 +62,7 @@ class BeanDefinitionParser extends AbstractHasorDefinitionParser {
         String refName = revertProperty(attributes, "refName");
         //
         if (StringUtils.isBlank(factoryID)) {
-            factoryID = StringUtils.isBlank(this.factoryID) ? defaultHasorContextBeanName() : this.factoryID;
+            factoryID = SpringModule.DefaultHasorBeanName;
         }
         if (StringUtils.isNotBlank(refID) || StringUtils.isNotBlank(refType)) {
             builder.addPropertyReference("factory", factoryID);

@@ -25,10 +25,7 @@ public class SpringTest {
     public static void main(String[] args) {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("spring.xml");
         //
-        Object obj2 = applicationContext.getBean("helloString");
+        MyBean obj2 = (MyBean) applicationContext.getBean("myBean");
         System.out.println("@@@@@@@@@@@@@@" + obj2);
-        //
-        Object obj3 = applicationContext.getBean("hasorBean");
-        System.out.println("@@@@@@@@@@@@@@" + obj3);
     }
 }

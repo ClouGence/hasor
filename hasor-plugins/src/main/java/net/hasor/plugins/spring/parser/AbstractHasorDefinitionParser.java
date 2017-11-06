@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.plugins.spring.parser;
-import net.hasor.plugins.spring.SpringModule;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
@@ -33,20 +32,17 @@ import org.w3c.dom.Node;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractHasorDefinitionParser implements BeanDefinitionParser {
-    /** BeanID 属性名 */
-    protected abstract String beanID();
+    /** 属性解析 */
+    protected final String revertProperty(NamedNodeMap attributes, String attName) {
+        Node attNode = attributes.getNamedItem(attName);
+        return (attNode != null) ? attNode.getNodeValue() : null;
+    }
+    /** BeanID */
+    protected abstract String beanID(Element element, NamedNodeMap attributes);
 
     /** 配置Bean */
     protected abstract AbstractBeanDefinition parse(Element element, NamedNodeMap attributes, ParserContext parserContext);
     //
-    /** 属性解析 */
-    protected String revertProperty(NamedNodeMap attributes, String attName) {
-        Node attNode = attributes.getNamedItem(attName);
-        return (attNode != null) ? attNode.getNodeValue() : null;
-    }
-    protected String defaultHasorContextBeanName() {
-        return SpringModule.DefaultHasorBeanName;
-    }
     //
     //
     /** 解析Xml 文件 */
@@ -65,9 +61,9 @@ public abstract class AbstractHasorDefinitionParser implements BeanDefinitionPar
     private BeanDefinition registerBean(Element element, ParserContext parserContext, NamedNodeMap attributes, AbstractBeanDefinition definition) {
         if (!parserContext.isNested()) {
             try {
-                String id = revertProperty(attributes, beanID());
+                String id = beanID(element, attributes);
                 if (!StringUtils.hasText(id)) {
-                    parserContext.getReaderContext().error(beanID() + " is undefined. for element '" + element.getLocalName(), element);
+                    parserContext.getReaderContext().error(beanID(element, attributes) + " is undefined. for element '" + element.getLocalName(), element);
                 }
                 BeanDefinitionHolder holder = new BeanDefinitionHolder(definition, id);
                 BeanDefinitionReaderUtils.registerBeanDefinition(holder, parserContext.getRegistry());

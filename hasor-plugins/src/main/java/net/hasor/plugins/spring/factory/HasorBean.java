@@ -16,11 +16,8 @@
 package net.hasor.plugins.spring.factory;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 /**
@@ -29,14 +26,13 @@ import org.springframework.beans.factory.InitializingBean;
  * @author 赵永春(zyc@hasor.net)
  */
 public class HasorBean<T> implements FactoryBean, InitializingBean {
-    protected static Logger                logger       = LoggerFactory.getLogger(Hasor.class);
-    private          AppContext            factory      = null;
-    private          Provider<? extends T> beanProvider = null;
-    private          BindInfo<? extends T> beanBindInfo = null;
+    private AppContext            factory      = null;
+    private Provider<? extends T> beanProvider = null;
+    private BindInfo<? extends T> beanBindInfo = null;
     //
-    private          String                refID        = null;
-    private          Class<? extends T>    refType      = null;
-    private          String                refName      = null;
+    private String                refID        = null;
+    private Class<? extends T>    refType      = null;
+    private String                refName      = null;
     //
     public AppContext getFactory() {
         return factory;
