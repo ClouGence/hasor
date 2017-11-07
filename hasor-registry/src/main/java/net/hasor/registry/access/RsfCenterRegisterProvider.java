@@ -21,7 +21,7 @@ import net.hasor.registry.RsfCenterResult;
 import net.hasor.registry.access.adapter111222.AuthQuery;
 import net.hasor.registry.access.domain.*;
 import net.hasor.registry.access.manager.PublishManager;
-import net.hasor.registry.access.manager.ServiceManager;
+import net.hasor.registry.access.manager.QueryManager;
 import net.hasor.registry.domain.ConsumerPublishInfo;
 import net.hasor.registry.domain.ProviderPublishInfo;
 import net.hasor.registry.domain.PublishInfo;
@@ -48,7 +48,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     @Inject
     private RsfRequest     rsfRequest;
     @Inject
-    private ServiceManager serviceManager;
+    private QueryManager   serviceManager;
     @Inject
     private PublishManager publishManager;
     //

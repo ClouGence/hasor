@@ -18,7 +18,6 @@ import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.registry.RegistryConstants;
 import net.hasor.registry.access.domain.*;
-import net.hasor.registry.access.domain.server.AuthBean;
 import net.hasor.registry.access.manager.AuthManager;
 import net.hasor.registry.trace.TraceUtil;
 import net.hasor.rsf.RsfFilter;

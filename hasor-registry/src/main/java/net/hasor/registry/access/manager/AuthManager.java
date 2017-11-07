@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.server.manager;
+package net.hasor.registry.access.manager;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.registry.domain.server.AuthInfo;
-import net.hasor.registry.server.adapter.AuthQuery;
-import net.hasor.registry.server.domain.DateCenterUtils;
-import net.hasor.registry.server.domain.LogUtils;
-import net.hasor.registry.server.domain.Result;
-import net.hasor.registry.server.domain.ResultDO;
+import net.hasor.registry.access.adapter111222.AuthQuery;
+import net.hasor.registry.access.domain.*;
 import net.hasor.registry.trace.TraceUtil;
 import net.hasor.rsf.InterAddress;
 import org.slf4j.Logger;
@@ -39,7 +35,7 @@ public class AuthManager {
     @Inject
     private AuthQuery      authQuery;
     //
-    public Result<Boolean> checkAuth(AuthInfo authInfo, InterAddress remoteAddress) {
+    public Result<Boolean> checkAuth(AuthBean authInfo, InterAddress remoteAddress) {
         LogUtils logUtils = LogUtils.create("INFO_200_00002")//
                 .addLog("traceID", TraceUtil.getTraceID())//
                 .addLog("appCode", authInfo.getAppKey())//
