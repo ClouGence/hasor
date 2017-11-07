@@ -40,6 +40,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
@@ -48,7 +49,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 赵永春(zyc@hasor.net)
  */
 public abstract class AbstractRsfContext implements RsfContext, ContextStartListener, ContextShutdownListener {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected     Logger logger     = LoggerFactory.getLogger(getClass());
+    private final String instanceID = UUID.randomUUID().toString().replace("-", "");
     private final RsfBeanContainer     rsfBeanContainer; // 服务管理
     private final RsfEnvironment       rsfEnvironment;   // 环境&配置
     private final RemoteRsfCaller      rsfCaller;        // 调用器
@@ -153,6 +155,10 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
     }
     //
     //
+    @Override
+    public String getInstanceID() {
+        return this.instanceID;
+    }
     @Override
     public AppContext getAppContext() {
         return this.appContext;

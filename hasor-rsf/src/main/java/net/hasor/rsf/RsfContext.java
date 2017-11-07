@@ -28,6 +28,9 @@ import java.util.Set;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RsfContext extends OnlineStatus {
+    /** 获取实例ID，实例ID在应用每次启动时生成一个全新的ID。 */
+    public String getInstanceID();
+
     /** @return 发起远程调用的客户端接口*/
     public RsfClient getRsfClient();
 

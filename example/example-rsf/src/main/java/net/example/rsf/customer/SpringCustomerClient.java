@@ -14,10 +14,14 @@ public class SpringCustomerClient {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("spring-consumer-config.xml");
         //
         EchoService echoService = (EchoService) applicationContext.getBean("echoService");
-        for (int i = 0; i < 10; i++) {
-            Thread.sleep(100);
-            String res = echoService.sayHello("Hello Word");
-            System.out.println(res);
+        for (int i = 0; i < 100; i++) {
+            try {
+                Thread.sleep(300);
+                String res = echoService.sayHello("Hello Word");
+                System.out.println(res);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         System.out.println("@@@@@@@@@@@@@@");
         //

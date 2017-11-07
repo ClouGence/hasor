@@ -3,7 +3,6 @@ import net.example.rsf.service.EchoService;
 import net.example.rsf.service.EchoServiceImpl;
 import net.example.rsf.service.MessageService;
 import net.example.rsf.service.MessageServiceImpl;
-import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfModule;
@@ -15,7 +14,7 @@ import net.hasor.rsf.RsfModule;
 public class HasorProviderClient {
     public static void main(String[] args) throws Throwable {
         //Client
-        AppContext clientContext = Hasor.createAppContext("hasor-provider-config.xml", new RsfModule() {
+        Hasor.createAppContext("hasor-provider-config.xml", new RsfModule() {
             public void loadModule(RsfApiBinder apiBinder) throws Throwable {
                 apiBinder.bindType(EchoService.class).toProvider(apiBinder.converToProvider(//
                         apiBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register()//
