@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.server.domain;
+package net.hasor.registry.access.domain;
 /**
- * 各种常量
- * @version : 2014年9月20日
+ * 用于封装结果集
+ * @version : 2015年1月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface RsfCenterConstants {
-    public static final String Center_DataKey_Service  = "S|";                  //服务
-    public static final String Center_DataKey_Provider = "P|";                  //提供者
-    public static final String Center_DataKey_Consumer = "C|";                  //订阅者
-    // ----------------------------------------------------
-    //
-    public static final String Center_Request_AuthInfo = "RSF_REQUEST_AUTH";     //远程Request请求携带的验证信息
+public interface Result<T> {
+    /**返回操作是否成功。*/
+    public boolean isSuccess();
+
+    /**(如果有)返回如果操作失败反馈的异常信息。*/
+    public Throwable getThrowable();
+
+    public ErrorCode getErrorInfo();
+
+    /**获取返回的结果集。*/
+    public T getResult();
 }

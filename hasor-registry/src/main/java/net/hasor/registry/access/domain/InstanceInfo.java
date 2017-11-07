@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.server.domain;
-import net.hasor.registry.RsfCenterResult;
-import net.hasor.rsf.domain.RsfResultDO;
+package net.hasor.registry.access.domain;
 /**
- * 结果
- * @version : 2014年10月25日
+ * 接口授权查询。
+ * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfCenterResultDO<T> extends RsfResultDO implements RsfCenterResult<T> {
-    private static final long serialVersionUID = -4678893554960623786L;
-    private              T    result           = null;
+public class InstanceInfo {
+    private String instanceID;
+    private String unitName;
     //
-    @Override
-    public T getResult() {
-        return this.result;
+    public String getInstanceID() {
+        return this.instanceID;
     }
-    public void setResult(T result) {
-        this.result = result;
+    public void setInstanceID(String instanceID) {
+        this.instanceID = instanceID;
+    }
+    public String getUnitName() {
+        return unitName;
+    }
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
     }
 }
