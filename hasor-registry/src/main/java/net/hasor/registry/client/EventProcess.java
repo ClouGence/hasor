@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.registry.client;
-import net.hasor.registry.domain.client.CenterEventBody;
+import net.hasor.registry.domain.CenterEventBody;
 import net.hasor.rsf.RsfUpdater;
 /**
  * 注册中心事件处理器接口

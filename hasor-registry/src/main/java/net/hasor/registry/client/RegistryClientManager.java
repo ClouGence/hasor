@@ -50,7 +50,7 @@ class RegistryClientManager implements TimerTask {
         this.rsfContext = rsfContext;
         RsfCenterSettings settings = this.rsfContext.getAppContext().getInstance(RsfCenterSettings.class);
         ClassLoader loader = rsfContext.getClassLoader();
-        this.timerManager = new TimerManager(settings.getHeartbeatTime(), "RsfCenterBeatTimer", loader);
+        this.timerManager = new TimerManager(settings.getHeartbeatTime(), "RsfCenter-BeatTimer", loader);
         this.centerRegister = rsfContext.getRsfClient().wrapper(RsfCenterRegister.class);
         this.instance = new InstanceInfo();
         this.instance.setInstanceID(this.rsfContext.getInstanceID());

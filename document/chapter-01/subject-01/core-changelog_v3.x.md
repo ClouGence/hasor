@@ -7,6 +7,7 @@
     01. Spring 插件中的 sechma 升级为 3.2.2。同时 rsf 的 sechma 和 hasor-core 合并成一个。
     02. DataQL 的 LoaderUdfSource 增加 isIgnore 方法用于判断是否忽略不正确的UDF查找请求
     03. DataQL 优化udf source增加机制。
+    04. HASOR_LOAD_EVENT_POOL 配置项从 20 改为 8
 **修复**
     01. fix Hasor 的 Spring 插件初始化失败问题。
     02. fix jfinal 列子编译问题。

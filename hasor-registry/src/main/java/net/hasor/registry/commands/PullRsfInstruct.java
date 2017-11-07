@@ -15,9 +15,9 @@
  */
 package net.hasor.registry.commands;
 import net.hasor.core.Singleton;
-import net.hasor.registry.RegistryConstants;
 import net.hasor.registry.RsfCenterRegister;
 import net.hasor.registry.RsfCenterResult;
+import net.hasor.registry.access.domain.InstanceInfo;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
@@ -99,13 +99,21 @@ public class PullRsfInstruct implements RsfInstruct {
                     request.writeMessageLine(" ->  [IGNORE] service is Provider.");
                     continue;
                 }
-                String registerID = (String) info.getMetaData(RegistryConstants.Center_Ticket);
+                //
+                //
+                String protocol = rsfContext.getDefaultProtocol();
+                InterAddress callBackAddress = rsfContext.publishAddress(protocol);
+                String callBackTo = callBackAddress.toHostSchema();
+                InstanceInfo instance = new InstanceInfo();
+                instance.setInstanceID(rsfContext.getInstanceID());
+                instance.setUnitName(rsfContext.getSettings().getUnitName());
+                instance.setRsfAddress(callBackTo);
                 if ("request".equalsIgnoreCase(request.getCommandString())) {
                     // -request
-                    processRequest(request, register, serviceID, registerID);
+                    processRequest(request, register, serviceID, instance);
                 } else {
                     // -pull
-                    processPull(request, register, serviceID, registerID);
+                    processPull(request, register, serviceID, instance);
                 }
             }
         } else {
@@ -117,16 +125,13 @@ public class PullRsfInstruct implements RsfInstruct {
     }
     //
     //
-    private void processPull(RsfCommandRequest request, RsfCenterRegister register, String serviceID, String registerID) {
-        if (StringUtils.isBlank(registerID)) {
-            request.writeMessageLine(" ->  [FAILED] the service has not yet registered to the center.");
-            return;
-        }
+    private void processPull(RsfCommandRequest request, RsfCenterRegister register, String serviceID, InstanceInfo instance) {
         // .1of4
-        String protocol = request.getRsfContext().getDefaultProtocol();
+        RsfContext rsfContext = request.getRsfContext();
+        String protocol = rsfContext.getDefaultProtocol();
         request.writeMessageLine(" ->  this machine is the default protocol is " + protocol);
         request.writeMessageLine(" ->  (1of4) pull address form rsfCenter ...");
-        RsfCenterResult<List<String>> result = register.pullProviders(registerID, serviceID, protocol);
+        RsfCenterResult<List<String>> result = register.pullProviders(instance, serviceID);
         if (result == null || !result.isSuccess() || result.getResult() == null) {
             String failedInfo = (result == null || result.getResult() == null) ?//
                     "EmptyResult." ://
@@ -152,20 +157,15 @@ public class PullRsfInstruct implements RsfInstruct {
         request.getRsfContext().getUpdater().refreshAddress(serviceID, finalAddressList);
         request.writeMessageLine(String.format(" ->  (4of4) done."));
     }
-    private void processRequest(RsfCommandRequest request, RsfCenterRegister register, String serviceID, String registerID) {
-        if (StringUtils.isBlank(registerID)) {
-            request.writeMessageLine(" ->  [FAILED] the service has not yet registered to the center.");
-            return;
-        }
+    private void processRequest(RsfCommandRequest request, RsfCenterRegister register, String serviceID, InstanceInfo instance) {
+        // .1of2
         RsfContext rsfContext = request.getRsfContext();
         String protocol = rsfContext.getDefaultProtocol();
         InterAddress callBackAddress = rsfContext.publishAddress(protocol);
         String callBackTo = callBackAddress.toHostSchema();
-        //
-        // .1of2
         request.writeMessageLine(" ->  this machine is the default protocol is " + protocol);
         request.writeMessageLine(" ->  (1of2) request data form rsfCenter ,callBack is " + callBackTo);
-        RsfCenterResult<Boolean> result = register.requestPushProviders(registerID, serviceID, protocol, callBackTo);
+        RsfCenterResult<Boolean> result = register.requestPushProviders(instance, serviceID);
         if (result == null || !result.isSuccess() || result.getResult() == null) {
             String failedInfo = (result == null || result.getResult() == null) ?//
                     "EmptyResult." ://
