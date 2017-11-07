@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.registry.access.pusher;
-import net.hasor.rsf.InterAddress;
-
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -25,25 +23,25 @@ import java.util.List;
  */
 public class PushEvent {
     private String             serviceID;       //ServiceID
-    private List<InterAddress> targetList;      //推送指令对特定RSF客户端的指向
+    private List<String>       targetList;      //推送指令对特定RSF客户端的指向
     //
     private RsfCenterEventEnum pushEventType;   //推送的事件类型 @see RsfCenterEvent枚举
     private String             eventBody;       //内容体（真正推送的内容）
     //
-    PushEvent(String serviceID, List<InterAddress> targets, RsfCenterEventEnum pushEventType) {
+    PushEvent(String serviceID, List<String> targets, RsfCenterEventEnum pushEventType) {
         this.serviceID = serviceID;
         this.pushEventType = pushEventType;
         if (targets != null) {
             this.targetList = targets;
         } else {
-            this.targetList = new ArrayList<InterAddress>();
+            this.targetList = new ArrayList<String>();
         }
     }
     //
     public String getServiceID() {
         return serviceID;
     }
-    public List<InterAddress> getTarget() {
+    public List<String> getTarget() {
         return targetList;
     }
     public String getEventBody() {

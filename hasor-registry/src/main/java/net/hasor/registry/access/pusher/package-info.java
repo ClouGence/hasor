@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 向客户端单向推送数据。
+ * 提供点对点数据推送能力。
  */
 package net.hasor.registry.access.pusher;

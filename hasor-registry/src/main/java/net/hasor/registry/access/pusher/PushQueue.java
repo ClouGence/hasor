@@ -18,10 +18,9 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
+import net.hasor.registry.access.ServerSettings;
 import net.hasor.registry.access.domain.LogUtils;
-import net.hasor.registry.access.manager.ServerSettings;
 import net.hasor.registry.trace.TraceUtil;
-import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +85,7 @@ public class PushQueue implements Runnable {
     }
     //
     // - 立刻执行消息推送,返回推送失败的地址列表。
-    private List<InterAddress> doPush(PushEvent pushEvent) {
+    private List<String> doPush(PushEvent pushEvent) {
         PushProcessor pushProcessor = this.processorMapping.get(pushEvent.getPushEventType());
         if (pushProcessor != null) {
             return pushProcessor.doProcessor(pushEvent);

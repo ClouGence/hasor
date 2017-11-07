@@ -16,7 +16,6 @@
 package net.hasor.registry.access.pusher;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.InterAddress;
 
 import java.util.Collection;
 import java.util.List;
@@ -31,28 +30,28 @@ public class RsfPusher {
     private PushQueue pushQueue;
     //
     /** 推送服务路由脚本(服务级) */
-    public boolean updateServiceRoute(String serviceID, String scriptBody, List<InterAddress> targets) {
+    public boolean updateServiceRoute(String serviceID, String scriptBody, List<String> targets) {
         RsfCenterEventEnum centerEventEnum = RsfCenterEventEnum.UpdateServiceRouteEvent;
         PushEvent eventData = new PushEvent(serviceID, targets, centerEventEnum);
         eventData.setEventBody(scriptBody);
         return this.pushQueue.doPushEvent(eventData);
     }
     /** 推送服务路由脚本(方法级) */
-    public boolean updateMethodRoute(String serviceID, String scriptBody, List<InterAddress> targets) {
+    public boolean updateMethodRoute(String serviceID, String scriptBody, List<String> targets) {
         RsfCenterEventEnum centerEventEnum = RsfCenterEventEnum.UpdateMethodRouteEvent;
         PushEvent eventData = new PushEvent(serviceID, targets, centerEventEnum);
         eventData.setEventBody(scriptBody);
         return this.pushQueue.doPushEvent(eventData);
     }
     /** 推送服务路由脚本(参数级) */
-    public boolean updateArgsRoute(String serviceID, String scriptBody, List<InterAddress> targets) {
+    public boolean updateArgsRoute(String serviceID, String scriptBody, List<String> targets) {
         RsfCenterEventEnum centerEventEnum = RsfCenterEventEnum.UpdateArgsRouteEvent;
         PushEvent eventData = new PushEvent(serviceID, targets, centerEventEnum);
         eventData.setEventBody(scriptBody);
         return this.pushQueue.doPushEvent(eventData);
     }
     /** 推送服务流控规则 */
-    public boolean updateFlowControl(String serviceID, String flowControl, List<InterAddress> targets) {
+    public boolean updateFlowControl(String serviceID, String flowControl, List<String> targets) {
         RsfCenterEventEnum centerEventEnum = RsfCenterEventEnum.UpdateFlowControlEvent;
         PushEvent eventData = new PushEvent(serviceID, targets, centerEventEnum);
         eventData.setEventBody(flowControl);
@@ -60,48 +59,48 @@ public class RsfPusher {
     }
     //
     /** 增量推送服务地址 */
-    public boolean appendAddress(String serviceID, Collection<InterAddress> newHostSet, List<InterAddress> targets) {
+    public boolean appendAddress(String serviceID, Collection<String> newHostSet, List<String> targets) {
         if (newHostSet == null || newHostSet.isEmpty()) {
             return false;
         }
         RsfCenterEventEnum centerEventEnum = RsfCenterEventEnum.AppendAddressEvent;
         PushEvent eventData = new PushEvent(serviceID, targets, centerEventEnum);
         StringBuilder strBuilder = new StringBuilder("");
-        for (InterAddress addr : newHostSet) {
+        for (String addr : newHostSet) {
             strBuilder.append(",");
-            strBuilder.append(addr.toHostSchema());
+            strBuilder.append(addr.trim());
         }
         //
         eventData.setEventBody(strBuilder.substring(1));
         return this.pushQueue.doPushEvent(eventData);
     }
     /** 全量推送服务地址 */
-    public boolean refreshAddress(String serviceID, Collection<InterAddress> allHostSet, List<InterAddress> targets) {
+    public boolean refreshAddress(String serviceID, Collection<String> allHostSet, List<String> targets) {
         if (allHostSet == null || allHostSet.isEmpty()) {
             return false;
         }
         RsfCenterEventEnum centerEventEnum = RsfCenterEventEnum.RefreshAddressEvent;
         PushEvent eventData = new PushEvent(serviceID, targets, centerEventEnum);
         StringBuilder strBuilder = new StringBuilder("");
-        for (InterAddress addr : allHostSet) {
+        for (String addr : allHostSet) {
             strBuilder.append(",");
-            strBuilder.append(addr.toHostSchema());
+            strBuilder.append(addr.trim());
         }
         //
         eventData.setEventBody(strBuilder.substring(1));
         return this.pushQueue.doPushEvent(eventData);
     }
     /** 删除服务地址 */
-    public boolean removeAddress(String serviceID, Collection<InterAddress> invalidAddressSet, List<InterAddress> targets) {
+    public boolean removeAddress(String serviceID, Collection<String> invalidAddressSet, List<String> targets) {
         if (invalidAddressSet == null || invalidAddressSet.isEmpty()) {
             return false;
         }
         RsfCenterEventEnum centerEventEnum = RsfCenterEventEnum.RemoveAddressEvent;
         PushEvent eventData = new PushEvent(serviceID, targets, centerEventEnum);
         StringBuilder strBuilder = new StringBuilder("");
-        for (InterAddress addr : invalidAddressSet) {
+        for (String addr : invalidAddressSet) {
             strBuilder.append(",");
-            strBuilder.append(addr.toHostSchema());
+            strBuilder.append(addr.trim());
         }
         //
         eventData.setEventBody(strBuilder.substring(1));

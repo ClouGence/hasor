@@ -18,7 +18,7 @@ import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.registry.RsfCenterListener;
 import net.hasor.registry.access.domain.LogUtils;
-import net.hasor.registry.domain.client.CenterEventBody;
+import net.hasor.registry.domain.CenterEventBody;
 import net.hasor.registry.trace.TraceUtil;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfContext;
@@ -50,7 +50,7 @@ public class PushProcessor {
         };
     }
     //
-    public final List<InterAddress> doProcessor(PushEvent event) {
+    public final List<String> doProcessor(PushEvent event) {
         if (event == null) {
             return Collections.emptyList();
         }
@@ -63,8 +63,8 @@ public class PushProcessor {
             return Collections.emptyList();
             //
         } else {
-            ArrayList<InterAddress> failedAddress = new ArrayList<InterAddress>();
-            for (InterAddress target : event.getTarget()) {
+            ArrayList<String> failedAddress = new ArrayList<String>();
+            for (String target : event.getTarget()) {
                 boolean res = this.doProcessor(target, event);
                 if (!res) {
                     failedAddress.add(target);
@@ -79,7 +79,7 @@ public class PushProcessor {
      * @param rsfAddress 目标客户端
      * @param event 数据
      */
-    private boolean doProcessor(InterAddress rsfAddress, PushEvent event) {
+    private boolean doProcessor(String rsfAddress, PushEvent event) {
         CenterEventBody eventBody = new CenterEventBody();
         eventBody.setEventType(event.getPushEventType().forCenterEvent());
         eventBody.setServiceID(event.getServiceID());
@@ -97,7 +97,7 @@ public class PushProcessor {
         return result;
     }
     /** 数据推送 */
-    private boolean sendEvent(InterAddress rsfAddress, CenterEventBody eventBody, int times) {
+    private boolean sendEvent(String rsfAddress, CenterEventBody eventBody, int times) {
         //
         logger.info(LogUtils.create("INFO_200_00001")//
                 .addLog("traceID", TraceUtil.getTraceID())//
@@ -109,13 +109,14 @@ public class PushProcessor {
         //
         try {
             RsfCenterListener listener = this.rsfClientListener.get();
-            ((RsfServiceWrapper) listener).setTarget(new InstanceAddressProvider(rsfAddress));
+            InterAddress interAddress = new InterAddress(rsfAddress);
+            ((RsfServiceWrapper) listener).setTarget(new InstanceAddressProvider(interAddress));
             return listener.onEvent(eventBody.getEventType(), eventBody);
         } catch (Throwable e) {
             logger.error(LogUtils.create("ERROR_300_00002")//
                     .addLog("traceID", TraceUtil.getTraceID())//
                     .logException(e)//
-                    .addLog("rsfAddress", rsfAddress.toHostSchema())//
+                    .addLog("rsfAddress", rsfAddress)//
                     .addLog("serviceID", eventBody.getServiceID())//
                     .addLog("eventType", eventBody.getEventType())//
                     .addLog("eventBody", eventBody.getEventBody())//
