@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.registry;
-import net.hasor.registry.domain.client.ConsumerPublishInfo;
-import net.hasor.registry.domain.client.ProviderPublishInfo;
+import net.hasor.registry.access.domain.InstanceInfo;
+import net.hasor.registry.domain.ConsumerPublishInfo;
+import net.hasor.registry.domain.ProviderPublishInfo;
 import net.hasor.rsf.RsfService;
 
 import java.util.List;
@@ -30,23 +31,20 @@ public interface RsfCenterRegister {
      * 发布服务,返回服务注册ID
      * @param info 服务信息
      */
-    public RsfCenterResult<String> registerProvider(ProviderPublishInfo info);
+    public RsfCenterResult<Void> registerProvider(InstanceInfo instance, ProviderPublishInfo info);
 
     /**
      * 订阅服务,返回服务订阅ID
      * @param info 服务信息
      */
-    public RsfCenterResult<String> registerConsumer(ConsumerPublishInfo info);
+    public RsfCenterResult<Void> registerConsumer(InstanceInfo instance, ConsumerPublishInfo info);
 
     /** 解除发布或订阅 */
-    public RsfCenterResult<Boolean> unRegister(String registerID, String serviceID);
-
-    /** 心跳 */
-    public RsfCenterResult<Boolean> serviceBeat(String registerID, String serviceID);
+    public RsfCenterResult<Void> unRegister(InstanceInfo instance, String serviceID);
 
     /** 拉取服务提供者列表 */
-    public RsfCenterResult<List<String>> pullProviders(String registerID, String serviceID, String protocol);
+    public RsfCenterResult<List<String>> pullProviders(InstanceInfo instance, String serviceID, String protocol);
 
     /** 请求远程把服务地址重新推送过来(如果远程服务器繁忙,那么可能返回失败) */
-    public RsfCenterResult<Boolean> requestPushProviders(String registerID, String serviceID, String protocol, String callBackRsfAddress);
+    public RsfCenterResult<Boolean> requestPushProviders(InstanceInfo instance, String serviceID, String protocol, String callBackRsfAddress);
 }

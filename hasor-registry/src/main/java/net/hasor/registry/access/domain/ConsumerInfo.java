@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.domain.server;
+package net.hasor.registry.access.domain;
 /**
  * 服务消费者信息
  *
@@ -21,6 +21,11 @@ package net.hasor.registry.domain.server;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ConsumerInfo {
+    /** 提供者实例ID。*/
+    private String  instanceID;
+    /** 提供者所处单元。*/
+    private String  unitName;
+    //
     /** 客户端订阅者地址 */
     private String  rsfAddress;
     /** 获取客户端调用服务超时时间 */
@@ -32,6 +37,18 @@ public class ConsumerInfo {
     /** 是否为消息模式 */
     private boolean message;
     //
+    public String getInstanceID() {
+        return instanceID;
+    }
+    public void setInstanceID(String instanceID) {
+        this.instanceID = instanceID;
+    }
+    public String getUnitName() {
+        return unitName;
+    }
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
+    }
     public String getRsfAddress() {
         return rsfAddress;
     }

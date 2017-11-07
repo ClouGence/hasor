@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.domain.server;
+package net.hasor.registry.access.domain;
 import java.util.Date;
 /**
  * 授权信息
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class AuthInfo {
+public class AuthBean {
     private String appKey       = null; // Key
     private String appKeySecret = null; // Key秘钥
     private Date   expireTime   = null; // 过期时间

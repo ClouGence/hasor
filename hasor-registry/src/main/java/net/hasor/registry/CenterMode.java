@@ -20,10 +20,11 @@ package net.hasor.registry;
  * @author 赵永春(zyc@hasor.net)
  */
 public enum CenterMode {
-    None("none", "禁用"),//
-    Client("client", "客户端"),//
-    Server("server", "服务器"),//
-    Cluster("cluster", "服务器集群"),//
+    None("none", "禁用（默认）"),//
+    Client("client", "注册中心-客户端"),//
+    Server("server", "注册中心-服务器(单机)"),//
+    Cluster("cluster", "注册中心-服务器(集群)"),//
+    Leader("leader", "注册中心-服务器(集群Leader)"),//
     ;
     //
     private String workType;

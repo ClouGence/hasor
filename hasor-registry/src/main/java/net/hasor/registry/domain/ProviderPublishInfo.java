@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.domain.client;
+package net.hasor.registry.domain;
 /**
- * 服务消费者信息
+ * 服务提供功着信息
  * @version : 2016年2月18日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ConsumerPublishInfo extends PublishInfo {
-    private static final long serialVersionUID = -335204051257003763L;
-    private int clientMaximumRequest;    //最大并发请求数
-    private boolean message = false;     //是否工作在消息模式
+public class ProviderPublishInfo extends PublishInfo {
+    private static final long serialVersionUID = -6681610352758467621L;
+    private int     queueMaxSize;                            //最大服务处理队列长度
+    private boolean sharedThreadPool;
     //
-    public int getClientMaximumRequest() {
-        return clientMaximumRequest;
+    public int getQueueMaxSize() {
+        return queueMaxSize;
     }
-    public void setClientMaximumRequest(int clientMaximumRequest) {
-        this.clientMaximumRequest = clientMaximumRequest;
+    public void setQueueMaxSize(int queueMaxSize) {
+        this.queueMaxSize = queueMaxSize;
     }
-    public boolean getMessage() {
-        return this.message;
+    public boolean isSharedThreadPool() {
+        return sharedThreadPool;
     }
-    public void setMessage(boolean message) {
-        this.message = message;
+    public void setSharedThreadPool(boolean sharedThreadPool) {
+        this.sharedThreadPool = sharedThreadPool;
     }
 }

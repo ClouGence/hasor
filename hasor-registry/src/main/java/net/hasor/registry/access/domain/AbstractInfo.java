@@ -13,48 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.domain.server;
+package net.hasor.registry.access.domain;
 import java.util.Date;
 /**
  * 对象
  * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class ObjectDO {
-    private String objectID;    // 对象ID
+public class AbstractInfo {
+    private String instanceID;  // instanceID
     private String type;        // 对象类别
-    private String refObjectID; // 与其它对象建立关系
     private String content;     // 内容
     private Date   refreshTime; // 最后刷新时间
     //
-    public String getObjectID() {
-        return objectID;
-    }
-    public void setObjectID(String objectID) {
-        this.objectID = objectID;
-    }
     public String getType() {
         return type;
     }
     public void setType(String type) {
         this.type = type;
     }
-    public String getRefObjectID() {
-        return refObjectID;
+    public Date getRefreshTime() {
+        return refreshTime;
     }
-    public void setRefObjectID(String refObjectID) {
-        this.refObjectID = refObjectID;
+    public void setRefreshTime(Date refreshTime) {
+        this.refreshTime = refreshTime;
+    }
+    public String getInstanceID() {
+        return instanceID;
+    }
+    public void setInstanceID(String instanceID) {
+        this.instanceID = instanceID;
     }
     public String getContent() {
         return content;
     }
     public void setContent(String content) {
         this.content = content;
-    }
-    public Date getRefreshTime() {
-        return refreshTime;
-    }
-    public void setRefreshTime(Date refreshTime) {
-        this.refreshTime = refreshTime;
     }
 }

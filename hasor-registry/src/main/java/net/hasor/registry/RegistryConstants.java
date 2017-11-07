@@ -21,7 +21,6 @@ package net.hasor.registry;
  */
 public interface RegistryConstants {
     /**注册中心中的注册ID*/
-    public static final String Center_Ticket             = "CenterTicket";
     public static final String Center_RSF_APP_KEY        = "RSF_APP_KEY";          //key
     public static final String Center_RSF_APP_KEY_SECRET = "RSF_APP_KEY_SECRET";   //秘钥
     public static final String LoggerName_CenterReceiver = "rsf-center-receiver";

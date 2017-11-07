@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.domain.server;
+package net.hasor.registry.access.domain;
 import java.util.List;
 /**
  * 服务提供者信息
@@ -22,6 +22,10 @@ import java.util.List;
  * @author 赵永春(zyc@hasor.net)
  */
 public class ProviderInfo {
+    /** 提供者实例ID。*/
+    private String       instanceID;
+    /** 提供者所处单元。*/
+    private String       unitName;
     /** 获取客户端调用服务超时时间。*/
     private int          clientTimeout;
     /** 获取序列化方式*/
@@ -33,6 +37,18 @@ public class ProviderInfo {
     /** 服务地址*/
     private List<String> rsfAddress;
     //
+    public String getInstanceID() {
+        return instanceID;
+    }
+    public void setInstanceID(String instanceID) {
+        this.instanceID = instanceID;
+    }
+    public String getUnitName() {
+        return unitName;
+    }
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
+    }
     public int getClientTimeout() {
         return clientTimeout;
     }

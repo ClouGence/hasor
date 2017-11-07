@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.domain.client;
-import java.io.Serializable;
+package net.hasor.registry.access.domain;
 /**
- * 发布的服务信息
- * @version : 2016年2月18日
+ * 服务信息
+ *
+ * @version : 2015年5月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public class PublishInfo implements Serializable {
-    private static final long serialVersionUID = -7962837923093982098L;
-    /** 唯一标识（客户端唯一标识）。*/
+public class ServiceInfo {
+    /** 唯一标识*/
     private String bindID;
     /** 服务名称。*/
     private String bindName;
@@ -30,14 +29,6 @@ public class PublishInfo implements Serializable {
     private String bindGroup;
     /** 服务版本。*/
     private String bindVersion;
-    /** 注册的服务类型。*/
-    private String bindType;
-    /** 获取客户端调用服务超时时间。*/
-    private int    clientTimeout;
-    /** 获取序列化方式*/
-    private String serializeType;
-    /** 服务地址'逗号分割'*/
-    private String targetList;
     //
     public String getBindID() {
         return bindID;
@@ -62,29 +53,5 @@ public class PublishInfo implements Serializable {
     }
     public void setBindVersion(String bindVersion) {
         this.bindVersion = bindVersion;
-    }
-    public String getBindType() {
-        return bindType;
-    }
-    public void setBindType(String bindType) {
-        this.bindType = bindType;
-    }
-    public int getClientTimeout() {
-        return clientTimeout;
-    }
-    public void setClientTimeout(int clientTimeout) {
-        this.clientTimeout = clientTimeout;
-    }
-    public String getSerializeType() {
-        return serializeType;
-    }
-    public void setSerializeType(String serializeType) {
-        this.serializeType = serializeType;
-    }
-    public String getTargetList() {
-        return targetList;
-    }
-    public void setTargetList(String targetList) {
-        this.targetList = targetList;
     }
 }
