@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.server.manager;
+package net.hasor.registry.access.manager;
 import net.hasor.registry.RsfCenterSettings;
 import net.hasor.rsf.RsfEnvironment;
 import org.slf4j.Logger;

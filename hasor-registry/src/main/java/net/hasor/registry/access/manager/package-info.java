@@ -16,4 +16,4 @@
 /**
  * 各种Manager。
  */
-package net.hasor.registry.server.manager;
+package net.hasor.registry.access.manager;
