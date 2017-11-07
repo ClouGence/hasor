@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.server.register;
+package net.hasor.registry.access;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.registry.RegistryConstants;
-import net.hasor.registry.domain.server.AuthInfo;
-import net.hasor.registry.server.domain.*;
-import net.hasor.registry.server.manager.AuthManager;
+import net.hasor.registry.access.domain.*;
+import net.hasor.registry.access.domain.server.AuthBean;
+import net.hasor.registry.access.manager.AuthManager;
 import net.hasor.registry.trace.TraceUtil;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
@@ -45,7 +45,7 @@ public class RsfCenterServerVerifyFilter implements RsfFilter {
             // .校验应用接入Key
             String appKey = request.getOption(RegistryConstants.Center_RSF_APP_KEY);              //appKey 授权码
             String appKeySecret = request.getOption(RegistryConstants.Center_RSF_APP_KEY_SECRET); //appKeySecret  应用程序编码
-            AuthInfo authInfo = new AuthInfo();
+            AuthBean authInfo = new AuthBean();
             authInfo.setAppKey(appKey);
             authInfo.setAppKeySecret(appKeySecret);
             request.setAttribute(RsfCenterConstants.Center_Request_AuthInfo, authInfo);

@@ -13,22 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.server.register;
+package net.hasor.registry.access;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.registry.RsfCenterRegister;
 import net.hasor.registry.RsfCenterResult;
-import net.hasor.registry.domain.client.ConsumerPublishInfo;
-import net.hasor.registry.domain.client.ProviderPublishInfo;
-import net.hasor.registry.domain.client.PublishInfo;
-import net.hasor.registry.domain.server.ConsumerInfo;
-import net.hasor.registry.domain.server.ProviderInfo;
-import net.hasor.registry.domain.server.ServiceInfo;
-import net.hasor.registry.server.domain.ErrorCode;
-import net.hasor.registry.server.domain.LogUtils;
-import net.hasor.registry.server.domain.Result;
-import net.hasor.registry.server.domain.RsfCenterResultDO;
-import net.hasor.registry.server.manager.ServiceManager;
+import net.hasor.registry.access.adapter111222.AuthQuery;
+import net.hasor.registry.access.domain.*;
+import net.hasor.registry.access.manager.PublishManager;
+import net.hasor.registry.access.manager.ServiceManager;
+import net.hasor.registry.domain.ConsumerPublishInfo;
+import net.hasor.registry.domain.ProviderPublishInfo;
+import net.hasor.registry.domain.PublishInfo;
 import net.hasor.registry.trace.TraceUtil;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfRequest;
@@ -48,10 +44,16 @@ import java.util.List;
 public class RsfCenterRegisterProvider implements RsfCenterRegister {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
+    private AuthQuery      authQuery;
+    @Inject
     private RsfRequest     rsfRequest;
     @Inject
     private ServiceManager serviceManager;
+    @Inject
+    private PublishManager publishManager;
     //
+    //
+    /**服务信息*/
     private ServiceInfo getServiceInfo(PublishInfo info) {
         ServiceInfo serviceInfo = new ServiceInfo();
         serviceInfo.setBindID(info.getBindID());
@@ -60,20 +62,12 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
         serviceInfo.setBindVersion(info.getBindVersion());
         return serviceInfo;
     }
-    private RsfCenterResult<String> errorCenterResult(RsfCenterResult<?> result) {
-        RsfCenterResultDO<String> centerResult = new RsfCenterResultDO<String>();
-        centerResult.setSuccess(result.isSuccess());
-        centerResult.setMessageID(result.getMessageID());
-        centerResult.setErrorCode(result.getErrorCode());
-        centerResult.setErrorMessage(result.getErrorMessage());
-        return centerResult;
-    }
-    //
     /**发布服务*/
     @Override
-    public RsfCenterResult<String> registerProvider(ProviderPublishInfo info) {
-        //
+    public RsfCenterResult<Void> registerProvider(InstanceInfo instance, ProviderPublishInfo info) {
         ProviderInfo providerInfo = new ProviderInfo();
+        providerInfo.setInstanceID(instance.getInstanceID());
+        providerInfo.setUnitName(instance.getUnitName());
         providerInfo.setClientTimeout(info.getClientTimeout());
         providerInfo.setQueueMaxSize(info.getQueueMaxSize());
         providerInfo.setSerializeType(info.getSerializeType());
@@ -84,8 +78,10 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     }
     /**订阅服务*/
     @Override
-    public RsfCenterResult<String> registerConsumer(ConsumerPublishInfo info) {
+    public RsfCenterResult<Void> registerConsumer(InstanceInfo instance, ConsumerPublishInfo info) {
         ConsumerInfo consumerInfo = new ConsumerInfo();
+        consumerInfo.setInstanceID(instance.getInstanceID());
+        consumerInfo.setUnitName(instance.getUnitName());
         consumerInfo.setClientTimeout(info.getClientTimeout());
         consumerInfo.setMaximumRequestSize(info.getClientMaximumRequest());
         consumerInfo.setMessage(info.getMessage());
@@ -95,18 +91,38 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
         return this.register(serviceInfo, consumerInfo, RsfServiceType.Consumer);
     }
     //
-    private RsfCenterResult<String> register(ServiceInfo serviceInfo, Object info, RsfServiceType type) {
+    //
+    private RsfCenterResult<Void> register(ServiceInfo serviceInfo, Object info, RsfServiceType type) {
+        // .检查权限
+        AuthBean authInfo = (AuthBean) this.rsfRequest.getAttribute(RsfCenterConstants.Center_Request_AuthInfo);
+        Result<Boolean> checkResult = this.authQuery.checkPublish(authInfo, serviceInfo, type);
+        if (checkResult == null || !checkResult.isSuccess() || checkResult.getResult() == null) {
+            RsfCenterResultDO<Void> centerResult = new RsfCenterResultDO<Void>();
+            centerResult.setSuccess(false);
+            if (checkResult != null && checkResult.getErrorInfo() != null) {
+                centerResult.setErrorCode(checkResult.getErrorInfo().getCodeType());
+                centerResult.setErrorMessage(checkResult.getErrorInfo().getMessage());
+            }
+            return centerResult;
+        }
+        if (!checkResult.getResult()) {
+            RsfCenterResultDO<Void> centerResult = new RsfCenterResultDO<Void>();
+            centerResult.setSuccess(false);
+            centerResult.setErrorCode(ErrorCode.AuthCheckFailed_ResultEmpty.getCodeType());
+            centerResult.setErrorMessage(ErrorCode.AuthCheckFailed_ResultEmpty.getMessage());
+            return centerResult;
+        }
         //
-        RsfCenterResultDO<String> centerResult = new RsfCenterResultDO<String>();
+        RsfCenterResultDO<Void> centerResult = new RsfCenterResultDO<Void>();
         centerResult.setMessageID(this.rsfRequest.getRequestID());
         InterAddress remoteRsfAddress = this.rsfRequest.getRemoteAddress();
         try {
             // .发布服务,并获取结果
-            Result<String> result = null;
+            Result<Void> result = null;
             if (RsfServiceType.Provider == type && info instanceof ProviderInfo) {
-                result = this.serviceManager.publishService(serviceInfo, (ProviderInfo) info);
+                result = this.publishManager.publishService(serviceInfo, (ProviderInfo) info);
             } else if (RsfServiceType.Consumer == type && info instanceof ConsumerInfo) {
-                result = this.serviceManager.publishConsumer(serviceInfo, (ConsumerInfo) info);
+                result = this.publishManager.publishConsumer(serviceInfo, (ConsumerInfo) info);
             } else {
                 centerResult.setErrorCode(ErrorCode.EmptyResult.getCodeType());
                 centerResult.setErrorMessage("registerType mast in Provider or Consumer.");
@@ -135,7 +151,6 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
             } else {
                 centerResult.setSuccess(true);
                 centerResult.setErrorCode(ErrorCode.OK.getCodeType());
-                centerResult.setResult(result.getResult());
             }
         } catch (Throwable e) {
             centerResult.setSuccess(false);
@@ -152,15 +167,18 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
         }
         return centerResult;
     }
+    //
+    //
+    //
     /**服务下线*/
     @Override
-    public RsfCenterResult<Boolean> unRegister(String registerID, String serviceID) {
-        RsfCenterResultDO<Boolean> centerResult = new RsfCenterResultDO<Boolean>();
+    public RsfCenterResult<Void> unRegister(InstanceInfo instance, String serviceID) {
+        RsfCenterResultDO<Void> centerResult = new RsfCenterResultDO<Void>();
         centerResult.setMessageID(this.rsfRequest.getRequestID());
         InterAddress remoteRsfAddress = this.rsfRequest.getRemoteAddress();
         try {
             // .判断异常
-            Result<Boolean> result = this.serviceManager.removeRegister(registerID, serviceID);
+            Result<Void> result = this.publishManager.removeRegister(instance.getInstanceID(), serviceID);
             if (!result.isSuccess()) {
                 centerResult.setSuccess(false);
                 ErrorCode errorInfo = result.getErrorInfo();
@@ -175,7 +193,6 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
             } else {
                 centerResult.setSuccess(true);
                 centerResult.setErrorCode(ErrorCode.OK.getCodeType());
-                centerResult.setResult(result.getResult());
             }
         } catch (Throwable e) {
             centerResult.setSuccess(false);
@@ -193,51 +210,13 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     }
     //
     @Override
-    public RsfCenterResult<Boolean> serviceBeat(String registerID, String serviceID) {
-        RsfCenterResultDO<Boolean> centerResult = new RsfCenterResultDO<Boolean>();
-        centerResult.setMessageID(this.rsfRequest.getRequestID());
-        InterAddress remoteRsfAddress = this.rsfRequest.getRemoteAddress();
-        try {
-            // .判断异常
-            Result<Boolean> result = this.serviceManager.serviceBeat(registerID, serviceID);
-            if (!result.isSuccess()) {
-                centerResult.setSuccess(false);
-                ErrorCode errorInfo = result.getErrorInfo();
-                centerResult.setErrorCode(errorInfo.getCodeType());
-                centerResult.setErrorMessage(errorInfo.getMessage());
-                logger.error(LogUtils.create("ERROR_100_00201")//
-                        .addLog("traceID", TraceUtil.getTraceID())//
-                        .addLog("errorCode", centerResult.getErrorCode())//
-                        .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
-                        .addLog("serviceID", serviceID)//
-                        .toJson());
-            } else {
-                centerResult.setSuccess(true);
-                centerResult.setErrorCode(ErrorCode.OK.getCodeType());
-                centerResult.setResult(result.getResult());
-            }
-        } catch (Throwable e) {
-            centerResult.setSuccess(false);
-            centerResult.setErrorCode(ErrorCode.Exception.getCodeType());
-            centerResult.setErrorMessage(e.getMessage());
-            logger.error(LogUtils.create("ERROR_100_00202")//
-                    .addLog("traceID", TraceUtil.getTraceID())//
-                    .addLog("errorCode", centerResult.getErrorCode())//
-                    .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
-                    .addLog("serviceID", serviceID)//
-                    .addLog("error", e.getMessage())//
-                    .toJson(), e);
-        }
-        return centerResult;
-    }
-    @Override
-    public RsfCenterResult<List<String>> pullProviders(String registerID, String serviceID, String protocol) {
+    public RsfCenterResult<List<String>> pullProviders(InstanceInfo instance, String serviceID, String protocol) {
         RsfCenterResultDO<List<String>> centerResult = new RsfCenterResultDO<List<String>>();
         centerResult.setMessageID(this.rsfRequest.getRequestID());
         InterAddress remoteRsfAddress = this.rsfRequest.getRemoteAddress();
         try {
             // .判断异常
-            Result<List<String>> result = this.serviceManager.queryProviders(registerID, serviceID, protocol);
+            Result<List<String>> result = this.serviceManager.queryProviders(instance, serviceID, protocol);
             if (!result.isSuccess()) {
                 centerResult.setSuccess(false);
                 ErrorCode errorInfo = result.getErrorInfo();
@@ -269,14 +248,14 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
         return centerResult;
     }
     @Override
-    public RsfCenterResult<Boolean> requestPushProviders(String registerID, String serviceID, String protocol, String callBackRsfAddress) {
+    public RsfCenterResult<Boolean> requestPushProviders(InstanceInfo instance, String serviceID, String protocol, String callBackRsfAddress) {
         RsfCenterResultDO<Boolean> centerResult = new RsfCenterResultDO<Boolean>();
         centerResult.setMessageID(this.rsfRequest.getRequestID());
         InterAddress remoteRsfAddress = this.rsfRequest.getRemoteAddress();
         try {
             // .判断异常
             InterAddress callBack = new InterAddress(callBackRsfAddress);
-            Result<Boolean> result = this.serviceManager.requestProviders(callBack, registerID, serviceID, protocol);
+            Result<Boolean> result = this.serviceManager.requestProviders(callBack, instance, serviceID, protocol);
             if (!result.isSuccess()) {
                 centerResult.setSuccess(false);
                 ErrorCode errorInfo = result.getErrorInfo();

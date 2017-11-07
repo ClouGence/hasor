@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 多 Rsf-Center,服务信息分片管理功能。
+ * RSF 分布式RPC框架的注册中心。
  */
-package net.hasor.registry.server.sharding;
+package net.hasor.registry.access;
