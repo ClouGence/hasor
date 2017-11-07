@@ -31,9 +31,7 @@ import org.slf4j.LoggerFactory;
 public class AuthManager {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
-    private ServerSettings rsfCenterCfg;
-    @Inject
-    private AuthQuery      authQuery;
+    private AuthQuery authQuery;
     //
     public Result<Boolean> checkAuth(AuthBean authInfo, InterAddress remoteAddress) {
         LogUtils logUtils = LogUtils.create("INFO_200_00002")//

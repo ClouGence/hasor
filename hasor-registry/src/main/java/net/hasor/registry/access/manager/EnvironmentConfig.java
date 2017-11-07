@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.server.manager;
+package net.hasor.registry.access.manager;
 import net.hasor.core.AppContext;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
+import net.hasor.registry.access.ServerSettings;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.utils.StringUtils;
 import org.slf4j.Logger;

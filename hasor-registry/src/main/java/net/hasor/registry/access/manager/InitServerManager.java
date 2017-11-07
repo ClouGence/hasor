@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.server.manager;
+package net.hasor.registry.access.manager;
 import net.hasor.core.AppContext;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.registry.server.adapter.DataAdapter;
+import net.hasor.registry.access.adapter111222.DataAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -106,3 +106,122 @@ public class InitServerManager {
         //        //
     }
 }
+//   服务提供者地址推送客户端
+//
+//
+//    List<InterAddress> pushData = new ArrayList<InterAddress>();
+//        for (String atData : info.getRsfAddress()) {
+//                pushData.add(new InterAddress(atData));
+//                }
+////
+//// .查询订阅者列表
+//final int dataRowCount = this.dataAdapter.queryListCountByType(instanceID, serviceID, RsfServiceType.Consumer.name());
+//        if (dataRowCount <= 0) {
+//        ResultDO<Void> result = new ResultDO<Void>();
+//        result.setSuccess(true);
+//        return result;
+//        }
+//        int dataRowIndex = 0;
+//        int pageSize = 100;
+//        while (dataRowIndex <= dataRowCount) {
+//        List<String> dataList = this.dataAdapter.queryListByType(instanceID, serviceID, RsfServiceType.Consumer.name(), dataRowIndex, pageSize);
+//        if (dataList == null || dataList.isEmpty()) {
+//        dataRowIndex = dataRowIndex + pageSize;
+//        continue;
+//        }
+//        for (String jsonData : dataList) {
+//        // .解析Json获取推送地址
+//        InterAddress toPush = null;
+//        try {
+//        ConsumerInfo consumerInfo = JsonUtils.converToService(jsonData, ConsumerInfo.class);
+//        if (consumerInfo != null && StringUtils.isNotBlank(consumerInfo.getRsfAddress())) {
+//        toPush = new InterAddress(consumerInfo.getRsfAddress());
+//        }
+//        } catch (Exception e) {
+//        this.logger.error(e.getMessage(), e);
+//        continue;
+//        }
+//        // .推送新的提供者地址
+//        boolean result = this.rsfPusher.appendAddress(serviceID, pushData, Arrays.asList(toPush)); // 第一次尝试
+//        if (!result) {
+//        result = this.rsfPusher.appendAddress(serviceID, pushData, Arrays.asList(toPush));     // 第二次尝试
+//        if (!result) {
+//        result = this.rsfPusher.appendAddress(serviceID, pushData, Arrays.asList(toPush)); // 第三次尝试
+//        }
+//        }
+//        //
+//        if (!result) {
+//        // TODO
+//        }
+//        }
+//        }
+//    @Inject
+//    private RsfPusher rsfPusher;    // 服务推送触发器
+//    //
+//    // .查询订阅者列表
+//    QueryOption opt = new QueryOption();
+//        opt.setObjectType(RsfCenterConstants.Center_DataKey_Consumer);//尝试过滤结果,只保留Consumer数据
+//                Result<List<AbstractInfo>>refList=this.dataAdapter.queryObjectListByID(serviceObjectID,opt);
+//        if(refList==null||!refList.isSuccess()){
+//        return buildFailedResult(refList);
+//        }
+//        List<AbstractInfo> allList=refList.getResult();
+//        List<InterAddress> consumerList=filterConsumerList(allList);
+//        //
+//        ProviderInfo providerInfo=JsonUtils.converToService(objResult.getResult().getContent(),ProviderInfo.class);
+//        List<String> providerHost=providerInfo.getRsfAddress();
+//        List<InterAddress> newHostSet=new ArrayList<InterAddress>();
+//        if(providerHost!=null){
+//        for(String host:providerHost){
+//        newHostSet.add(new InterAddress(host));
+//        }
+//        }
+//        //
+//        // .删除地址
+//        boolean result=true;
+//        if(consumerList!=null&&!consumerList.isEmpty()){
+//        result=this.rsfPusher.removeAddress(serviceID,newHostSet,consumerList);         // 第一次尝试
+//        if(!result){
+//        result=this.rsfPusher.removeAddress(serviceID,newHostSet,consumerList);     // 第二次尝试
+//        if(!result){
+//        result=this.rsfPusher.removeAddress(serviceID,newHostSet,consumerList); // 第三次尝试
+//        }
+//        }
+//        }
+//        //
+//        ResultDO<Boolean> finalResult=new ResultDO<Boolean>();
+//        finalResult.setSuccess(true);
+//        finalResult.setResult(true);
+//        if(!result){
+//        finalResult.setSuccess(false);
+//        finalResult.setResult(false);
+//        finalResult.setErrorInfo(ErrorCode.PushAddressFailed_TooBusy);
+//        }
+//        return finalResult;
+//
+//
+//
+//
+//
+//    final int rowCount = this.dataAdapter.getPointCountByServiceID(serviceID, RsfServiceType.Provider);
+//    final int limitSize = 100;
+//    int rowIndex = 0;
+//        while (rowIndex <= rowCount) {
+//                List<String> targetList = this.dataAdapter.getPointByServiceID(serviceID, RsfServiceType.Provider, rowIndex, limitSize);
+//        if (targetList == null || targetList.isEmpty()) {
+//        break;
+//        }
+//        rowIndex = rowIndex + limitSize;
+//        // .推送新的提供者地址
+//        boolean result = this.rsfPusher.removeAddress(serviceID, invalidAddressSet, targetList); // 第一次尝试
+//        if (!result) {
+//        result = this.rsfPusher.removeAddress(serviceID, invalidAddressSet, targetList);     // 第二次尝试
+//        if (!result) {
+//        result = this.rsfPusher.removeAddress(serviceID, invalidAddressSet, targetList); // 第三次尝试
+//        }
+//        }
+//        //
+//        if (!result) {
+//        // TODO
+//        }
+//        }
