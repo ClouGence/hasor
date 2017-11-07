@@ -18,6 +18,7 @@ import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.registry.access.adapter111222.DataAdapter;
 import net.hasor.registry.access.domain.*;
+import net.hasor.registry.access.pusher.RsfPusher;
 import net.hasor.rsf.domain.RsfServiceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,7 @@ public class QueryManager {
     @Inject
     private DataAdapter dataAdapter;
     @Inject
-    private TaskManager taskManager;
+    private RsfPusher   rsfPusher;
     //
     /** 请求Center做一次全量推送 */
     public Result<Void> requestProviders(InstanceInfo instance, String serviceID) {
@@ -45,14 +46,19 @@ public class QueryManager {
             return DateCenterUtils.buildFailedResult(listResult);
         }
         //
-        TaskManager.PublishTask task = new TaskManager.PublishTask();
-        task.setAddressList(listResult.getResult());
-        task.setPublishRange(Collections.singletonList(instance.getRsfAddress()));
-        this.taskManager.addTask(serviceID, task);
+        // .异步任务，要求推送所有提供者地址给消费者(全量)
+        boolean address = this.rsfPusher.refreshAddress(//
+                serviceID, //
+                listResult.getResult(),//
+                Collections.singletonList(instance.getRsfAddress())//
+        );
         //
         ResultDO<Void> result = new ResultDO<Void>();
-        result.setSuccess(true);
+        result.setSuccess(address);
         result.setErrorInfo(ErrorCode.OK);
+        if (!address) {
+            result.setErrorInfo(ErrorCode.Failed_PushAddress_System_TooBusy);
+        }
         return result;
     }
     //

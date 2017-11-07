@@ -29,19 +29,20 @@ public enum ErrorCode {
     OK(0, "Success"),//
     Exception(1, "Center 出现内部错误。"),//
     EmptyResult(2, "结果集为空。"),//
-    ServiceTypeFailed_Null(3, "服务类型不清楚。"),//
-    BuildRegisterIDFailed_Null(4, "registerID计算失败。"), //
+    //    ServiceTypeFailed_Null(3, "服务类型不清楚。"),//
+    //    BuildRegisterIDFailed_Null(4, "registerID计算失败。"), //
     AuthCheckFailed_ResultEmpty(5, "授权检查失败,检测结果为空。"),//
-    PublishServiceFailed_StoreInfo(6, "发布服务失败,保存服务信息错误。"),//
-    SubscribeServiceFailed_Undefined(7, "订阅服务失败,服务未定义。"), //
-    RegisterCheckInvalid(8, "RegisterID验证错误。"),//
-    BeatFailed_RefreshResultNull(9, "心跳失败,刷新对象无返回值。"), //
-    PushAddressFailed_TooBusy(10, "地址推送失败,服务器繁忙。"),//
-    TargetListEmpty(11, "目标地址为空。"),//
-    ServiceTypeFailed_Error(12, "服务类型错误。"),//
+    //    RegisterCheckInvalid(8, "RegisterID验证错误。"),//
+    //    BeatFailed_RefreshResultNull(9, "心跳失败,刷新对象无返回值。"), //
+    //    TargetListEmpty(11, "目标地址为空。"),//
     //
-    PPF_AlreadyAsConsumer(6, "发布服务失败,保存服务信息错误-PublishProviderFailed_AlreadyAsConsumer。"),//
-    CPF_AlreadyAsProvider(6, "发布服务失败,保存服务信息错误-ConsumerPublishFailed_AlreadyAsProvider。"),//
+    Failed_RemoveRegister(12, "服务解除注册失败。"),//
+    Failed_PushAddress_System_TooBusy(10, "地址推送失败,服务器繁忙。"),//
+    Failed_Save_ServiceInfo(6, "保存服务信息失败。"),//
+    Failed_Publish_Provider(6, "发布服务失败,保存服务信息错误。"),//
+    Failed_Publish_Consumer(7, "订阅服务失败,服务未定义。"), //
+    //    PPF_AlreadyAsConsumer(6, "发布服务失败,保存服务信息错误-PublishProviderFailed_AlreadyAsConsumer。"),//
+    //    CPF_AlreadyAsProvider(6, "发布服务失败,保存服务信息错误-ConsumerPublishFailed_AlreadyAsProvider。"),//
     //
     ;
     private static Logger logger = LoggerFactory.getLogger(ErrorCode.class);

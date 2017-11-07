@@ -18,6 +18,8 @@ import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.registry.access.adapter111222.DataAdapter;
 import net.hasor.registry.access.domain.*;
+import net.hasor.registry.access.manager.TaskManager.PublishTask;
+import net.hasor.registry.access.manager.TaskManager.RemoveTask;
 import net.hasor.rsf.domain.RsfServiceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +52,7 @@ public class PublishManager {
             return resultDO;
         } else {
             ResultDO<Void> resultDO = new ResultDO<Void>();
-            resultDO.setErrorInfo(ErrorCode.PublishServiceFailed_StoreInfo);
+            resultDO.setErrorInfo(ErrorCode.Failed_Save_ServiceInfo);
             resultDO.setSuccess(false);
             return resultDO;
         }
@@ -58,28 +60,20 @@ public class PublishManager {
     //
     /**订阅服务*/
     public Result<Void> publishConsumer(ServiceInfo serviceInfo, ConsumerInfo info) {
-        // .双身份检测
-        String instanceID = info.getInstanceID();
-        String serviceID = serviceInfo.getBindID();
-        RsfServiceType serviceType = this.dataAdapter.getPointTypeByID(instanceID, serviceID);
-        if (RsfServiceType.Provider == serviceType) {
-            ResultDO<Void> result = new ResultDO<Void>();
-            result.setErrorInfo(ErrorCode.CPF_AlreadyAsProvider);
-            result.setSuccess(false);
-            return result;
-        }
         // .获取保存或者更新服务信息
         Result<Void> saveResult = this.saveService(serviceInfo);
         if (saveResult == null || !saveResult.isSuccess()) {
             return DateCenterUtils.buildFailedResult(saveResult);
         }
-        // .登记服务消费者
+        // .登记为服务消费者
+        String instanceID = info.getInstanceID();
+        String serviceID = serviceInfo.getBindID();
         boolean consumerResult = this.dataAdapter.storePoint(//
                 instanceID, serviceID, Collections.singletonList(info.getRsfAddress()), RsfServiceType.Consumer//
         );
         if (!consumerResult) {
             ResultDO<Void> result = new ResultDO<Void>();
-            result.setErrorInfo(ErrorCode.PublishServiceFailed_StoreInfo);
+            result.setErrorInfo(ErrorCode.Failed_Publish_Consumer);
             result.setSuccess(false);
             return result;
         }
@@ -94,37 +88,28 @@ public class PublishManager {
     //
     /**发布服务*/
     public Result<Void> publishService(ServiceInfo serviceInfo, ProviderInfo info) {
-        // .双身份检测
-        String instanceID = info.getInstanceID();
-        String serviceID = serviceInfo.getBindID();
-        RsfServiceType serviceType = this.dataAdapter.getPointTypeByID(instanceID, serviceID);
-        if (RsfServiceType.Consumer == serviceType) {
-            ResultDO<Void> result = new ResultDO<Void>();
-            result.setErrorInfo(ErrorCode.PPF_AlreadyAsConsumer);
-            result.setSuccess(false);
-            return result;
-        }
         // .获取保存或者更新服务信息
         Result<Void> saveResult = this.saveService(serviceInfo);
         if (saveResult == null || !saveResult.isSuccess()) {
             return DateCenterUtils.buildFailedResult(saveResult);
         }
         // .登记服务提供者
+        String instanceID = info.getInstanceID();
+        String serviceID = serviceInfo.getBindID();
         boolean providerResult = this.dataAdapter.storePoint(//
                 instanceID, serviceID, info.getRsfAddress(), RsfServiceType.Provider//
         );
         if (!providerResult) {
             ResultDO<Void> result = new ResultDO<Void>();
-            result.setErrorInfo(ErrorCode.PublishServiceFailed_StoreInfo);
+            result.setErrorInfo(ErrorCode.Failed_Publish_Provider);
             result.setSuccess(false);
             return result;
         }
         this.dataAdapter.storeAddition(instanceID, serviceID, JsonUtils.converToString(info));
         //
-        // .异步任务，要求推送新地址给所有消费者
-        TaskManager.PublishTask task = new TaskManager.PublishTask();
-        task.setAddressList(info.getRsfAddress());
-        this.taskManager.addTask(serviceID, task);
+        // .异步任务，要求推送新地址给所有消费者(增量)
+        PublishTask task = new PublishTask(info.getRsfAddress());
+        this.taskManager.asyncToPublish(serviceID, task);
         //
         // .返回
         ResultDO<Void> resultDO = new ResultDO<Void>();
@@ -136,26 +121,24 @@ public class PublishManager {
     /**删除订阅*/
     public Result<Void> removeRegister(String instanceID, String serviceID) throws URISyntaxException {
         //
-        // .查询提供者列表
+        // .查询当前身份（如果身份为提供者，那么查询pointList并推送给所有消费者）
         RsfServiceType serviceType = this.dataAdapter.getPointTypeByID(instanceID, serviceID);
         List<String> invalidAddressSet = null;
         if (RsfServiceType.Provider == serviceType) {
             invalidAddressSet = this.dataAdapter.getPointByID(instanceID, serviceID);
         }
-        //
         // .获取服务Info
         boolean removeResult = this.dataAdapter.remove(instanceID, serviceID);
         if (!removeResult) {
             ResultDO<Void> result = new ResultDO<Void>();
-            result.setErrorInfo(ErrorCode.ServiceTypeFailed_Error);
+            result.setErrorInfo(ErrorCode.Failed_RemoveRegister);
             result.setSuccess(false);
             return result;
         }
-        // .异步任务，要求推送失效的地址给所有消费者
+        // .异步任务，要求推送失效的地址给所有消费者(增量)
         if (invalidAddressSet != null) {
-            TaskManager.RemoveTask task = new TaskManager.RemoveTask();
-            task.setAddressList(invalidAddressSet);
-            this.taskManager.addTask(serviceID, task);
+            RemoveTask task = new RemoveTask(invalidAddressSet);
+            this.taskManager.asyncToPublish(serviceID, task);
         }
         //
         ResultDO<Void> resultDO = new ResultDO<Void>();

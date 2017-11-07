@@ -30,6 +30,7 @@ import java.util.Random;
  * @version : 2016年9月18日
  * @author 赵永春(zyc@hasor.net)
  */
+@Deprecated
 @Singleton
 public class EnvironmentConfig {
     protected Logger logger = LoggerFactory.getLogger(getClass());
