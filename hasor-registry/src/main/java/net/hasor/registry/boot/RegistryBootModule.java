@@ -16,7 +16,7 @@
 package net.hasor.registry.boot;
 import net.hasor.registry.CenterMode;
 import net.hasor.registry.RsfCenterSettings;
-import net.hasor.registry.access.manager.RegistryServerModule;
+import net.hasor.registry.access.RegistryServerModule;
 import net.hasor.registry.client.RegistryClientModule;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfEnvironment;

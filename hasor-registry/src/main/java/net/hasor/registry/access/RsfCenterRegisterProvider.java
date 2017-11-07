@@ -210,13 +210,13 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     }
     //
     @Override
-    public RsfCenterResult<List<String>> pullProviders(InstanceInfo instance, String serviceID, String protocol) {
+    public RsfCenterResult<List<String>> pullProviders(InstanceInfo instance, String serviceID) {
         RsfCenterResultDO<List<String>> centerResult = new RsfCenterResultDO<List<String>>();
         centerResult.setMessageID(this.rsfRequest.getRequestID());
         InterAddress remoteRsfAddress = this.rsfRequest.getRemoteAddress();
         try {
             // .判断异常
-            Result<List<String>> result = this.serviceManager.queryProviders(instance, serviceID, protocol);
+            Result<List<String>> result = this.serviceManager.queryProviders(serviceID);
             if (!result.isSuccess()) {
                 centerResult.setSuccess(false);
                 ErrorCode errorInfo = result.getErrorInfo();
@@ -248,14 +248,13 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
         return centerResult;
     }
     @Override
-    public RsfCenterResult<Boolean> requestPushProviders(InstanceInfo instance, String serviceID, String protocol, String callBackRsfAddress) {
+    public RsfCenterResult<Boolean> requestPushProviders(InstanceInfo instance, String serviceID) {
         RsfCenterResultDO<Boolean> centerResult = new RsfCenterResultDO<Boolean>();
         centerResult.setMessageID(this.rsfRequest.getRequestID());
         InterAddress remoteRsfAddress = this.rsfRequest.getRemoteAddress();
         try {
             // .判断异常
-            InterAddress callBack = new InterAddress(callBackRsfAddress);
-            Result<Boolean> result = this.serviceManager.requestProviders(callBack, instance, serviceID, protocol);
+            Result<Void> result = this.serviceManager.requestProviders(instance, serviceID);
             if (!result.isSuccess()) {
                 centerResult.setSuccess(false);
                 ErrorCode errorInfo = result.getErrorInfo();
@@ -270,7 +269,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
             } else {
                 centerResult.setSuccess(true);
                 centerResult.setErrorCode(ErrorCode.OK.getCodeType());
-                centerResult.setResult(result.getResult());
+                centerResult.setResult(true);
             }
         } catch (Throwable e) {
             centerResult.setSuccess(false);

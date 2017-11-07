@@ -40,6 +40,9 @@ public enum ErrorCode {
     TargetListEmpty(11, "目标地址为空。"),//
     ServiceTypeFailed_Error(12, "服务类型错误。"),//
     //
+    PPF_AlreadyAsConsumer(6, "发布服务失败,保存服务信息错误-PublishProviderFailed_AlreadyAsConsumer。"),//
+    CPF_AlreadyAsProvider(6, "发布服务失败,保存服务信息错误-ConsumerPublishFailed_AlreadyAsProvider。"),//
+    //
     ;
     private static Logger logger = LoggerFactory.getLogger(ErrorCode.class);
     private final int    codeType;

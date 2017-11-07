@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.access.manager;
+package net.hasor.registry.access;
 import net.hasor.core.AppContext;
 import net.hasor.core.LifeModule;
 import net.hasor.registry.RsfCenterListener;
 import net.hasor.registry.RsfCenterRegister;
 import net.hasor.registry.RsfCenterSettings;
-import net.hasor.registry.access.RsfCenterRegisterProvider;
-import net.hasor.registry.access.RsfCenterServerVerifyFilter;
 import net.hasor.registry.access.adapter111222.AuthQuery;
 import net.hasor.registry.access.adapter111222.DataAdapter;
 import net.hasor.rsf.*;

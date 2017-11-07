@@ -163,46 +163,43 @@ class RegistryClientManager implements TimerTask {
         }
     }
     //
-    /** 拉地址 */
+    /** 拉地址，三次失败之后改为异步请求一次全量推送 */
     private void pullAddress(RsfBindInfo<?> domain) {
         if (RsfServiceType.Consumer != domain.getServiceType()) {
             return;/*只有Consumer才需要pull地址*/
         }
         // .拉地址3次尝试
         String serviceID = domain.getBindID();
-        String protocol = this.rsfContext.getDefaultProtocol();
-        logger.info("pullAddress[{}] '{}' 1st.", protocol, serviceID);
-        RsfCenterResult<List<String>> providerResult = this.centerRegister.pullProviders(this.instance, serviceID, protocol);
+        logger.info("pullAddress '{}' 1st.", serviceID);
+        RsfCenterResult<List<String>> providerResult = this.centerRegister.pullProviders(this.instance, serviceID);
         if (providerResult == null || !providerResult.isSuccess()) {
-            logger.warn("pullAddress[{}] '{}' 2st.", protocol, serviceID);
-            providerResult = this.centerRegister.pullProviders(this.instance, serviceID, protocol);
+            logger.warn("pullAddress '{}' 2st.", serviceID);
+            providerResult = this.centerRegister.pullProviders(this.instance, serviceID);
             if (providerResult == null || !providerResult.isSuccess()) {
-                logger.error("pullAddress[{}] '{}' 3st.", protocol, serviceID);
-                providerResult = this.centerRegister.pullProviders(this.instance, serviceID, protocol);
+                logger.error("pullAddress '{}' 3st.", serviceID);
+                providerResult = this.centerRegister.pullProviders(this.instance, serviceID);
             }
         }
         //
         if (providerResult == null || !providerResult.isSuccess()) {
             if (providerResult == null) {
-                logger.error("pullAddress[{}] {} failed at 3st. -> result is null.", protocol, serviceID);
+                logger.error("pullAddress {} failed at 3st. -> result is null.", serviceID);
             } else {
-                logger.error("pullAddress[{}] {} failed at 3st. -> errorCode ={} ,errorMessage = {}", //
-                        protocol, serviceID, providerResult.getErrorCode(), providerResult.getErrorMessage());
+                logger.error("pullAddress {} failed at 3st. -> errorCode ={} ,errorMessage = {}", //
+                        serviceID, providerResult.getErrorCode(), providerResult.getErrorMessage());
             }
             //
-            InterAddress callBackAddress = this.rsfContext.publishAddress(protocol);
-            String callBackTo = callBackAddress.toHostSchema();
-            logger.info("pullAddress[{}] {} failed try async request pullProviders. callBack is {}", protocol, serviceID, callBackTo);
-            RsfCenterResult<Boolean> result = this.centerRegister.requestPushProviders(this.instance, serviceID, protocol, callBackTo);
+            logger.info("pullAddress {} failed try async request pullProviders.", serviceID);
+            RsfCenterResult<Boolean> result = this.centerRegister.requestPushProviders(this.instance, serviceID);
             if (result == null || !result.isSuccess()) {
                 if (result == null) {
-                    logger.error("asyncPullAddress[{}] {} failed -> result is null.", protocol, serviceID);
+                    logger.error("asyncPullAddress {} failed -> result is null.", serviceID);
                 } else {
-                    logger.error("asyncPullAddress[{}] {} failed -> errorCode ={} ,errorMessage = {}", //
-                            protocol, serviceID, result.getErrorCode(), result.getErrorMessage());
+                    logger.error("asyncPullAddress {} failed -> errorCode ={} ,errorMessage = {}", //
+                            serviceID, result.getErrorCode(), result.getErrorMessage());
                 }
             } else {
-                logger.info("asyncPullAddress[{}] {} successful -> waiting for the center pull providers.", protocol, serviceID);
+                logger.info("asyncPullAddress {} successful -> waiting for the center pull providers.", serviceID);
             }
             return;
         }
@@ -215,18 +212,18 @@ class RegistryClientManager implements TimerTask {
                 try {
                     newHostSet.add(new InterAddress(providerAddress));
                 } catch (Throwable e) {
-                    logger.error("pullAddress[{}] '" + providerAddress + "' formater error ->" + e.getMessage(), protocol, e);
+                    logger.error("pullAddress '" + providerAddress + "' formater error ->" + e.getMessage(), e);
                 }
             }
         } else {
-            logger.warn("pullAddress[{}] already up-to-date. pull empty.", protocol);
+            logger.warn("pullAddress already up-to-date. pull empty.");
         }
         //
         // .更新服务提供者地址列表
         try {
             this.rsfContext.getUpdater().appendAddress(serviceID, newHostSet);
         } catch (Throwable e) {
-            logger.error("pullAddress[{}] -> appendAddress failed ,serviceID={} ,message={}.", protocol, serviceID, e.getMessage(), e);
+            logger.error("pullAddress -> appendAddress failed ,serviceID={} ,message={}.", serviceID, e.getMessage(), e);
         }
     }
     private <T extends PublishInfo> T fillTo(RsfBindInfo<?> eventData, T info) {

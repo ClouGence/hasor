@@ -43,8 +43,8 @@ public interface RsfCenterRegister {
     public RsfCenterResult<Void> unRegister(InstanceInfo instance, String serviceID);
 
     /** 拉取服务提供者列表 */
-    public RsfCenterResult<List<String>> pullProviders(InstanceInfo instance, String serviceID, String protocol);
+    public RsfCenterResult<List<String>> pullProviders(InstanceInfo instance, String serviceID);
 
     /** 请求远程把服务地址重新推送过来(如果远程服务器繁忙,那么可能返回失败) */
-    public RsfCenterResult<Boolean> requestPushProviders(InstanceInfo instance, String serviceID, String protocol, String callBackRsfAddress);
+    public RsfCenterResult<Boolean> requestPushProviders(InstanceInfo instance, String serviceID);
 }

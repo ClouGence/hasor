@@ -15,13 +15,14 @@
  */
 package net.hasor.registry.access.domain;
 /**
- * 接口授权查询。
+ * 实列信息。
  * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
 public class InstanceInfo {
     private String instanceID;
     private String unitName;
+    private String rsfAddress;
     //
     public String getInstanceID() {
         return this.instanceID;
@@ -34,5 +35,11 @@ public class InstanceInfo {
     }
     public void setUnitName(String unitName) {
         this.unitName = unitName;
+    }
+    public String getRsfAddress() {
+        return rsfAddress;
+    }
+    public void setRsfAddress(String rsfAddress) {
+        this.rsfAddress = rsfAddress;
     }
 }
