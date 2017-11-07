@@ -56,6 +56,9 @@
             <appKeySecret>${RSF_APP_KEY_SECRET}</appKeySecret>
         </security>
 
+        <!-- 授权配置 : allowAnonymous 允许匿名应用 -->
+        <auth allowAnonymous="${RSF_CENTER_AUTH_ANONYMOUS}"/>
+
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
         <!--
             推送配置
@@ -63,7 +66,7 @@
                - queueMaxSize : 推送队列最大长度，当推送处理队列达到这个阀值之后,新的推送任务将不会被接受。受影响Center将会暂定服务。
                - sleepTime    : 当遇到推送队列满了之后等待多长时间重试一次，如果重试的时候队列依然满的，那么放弃推送。(单位毫秒)
          -->
-        <polling threadSize="10" queueMaxSize="20000" sleepTime="1000"/>
+        <polling threadSize="10" queueMaxSize="100000" sleepTime="1000"/>
 
         <!-- 服务管理 -->
         <serviceManager>
@@ -75,12 +78,9 @@
 
         <!-- 数据适配器 -->
         <adapterConfig>
-            <dataAdapter>net.hasor.registry.server.adapter.HashMapDataAdapter</dataAdapter>
-            <authQuery>net.hasor.registry.server.adapter.FileAuthQuery</authQuery>
+            <dataAdapter>net.hasor.registry.access.adapter111222.HashMapDataAdapter</dataAdapter>
+            <authQuery>net.hasor.registry.access.adapter111222.FileAuthQuery</authQuery>
         </adapterConfig>
-
-        <!-- 授权配置 : allowAnonymous 允许匿名应用 -->
-        <auth allowAnonymous="${RSF_CENTER_AUTH_ANONYMOUS}"/>
 
     </hasor.registry>
 </config>
