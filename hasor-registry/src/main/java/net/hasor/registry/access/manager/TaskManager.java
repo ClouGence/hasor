@@ -87,10 +87,10 @@ public class TaskManager extends Thread {
         int rowIndex = 0;
         while (rowIndex <= rowCount) {
             List<String> targetList = this.dataAdapter.getPointByServiceID(serviceID, RsfServiceType.Consumer, rowIndex, limitSize);
+            rowIndex = rowIndex + limitSize;
             if (targetList == null || targetList.isEmpty()) {
                 continue;
             }
-            rowIndex = rowIndex + limitSize;
             // .推送失效地址
             boolean result = this.rsfPusher.removeAddress(serviceID, invalidAddressSet, targetList); // 第一次尝试
             if (!result) {
@@ -112,10 +112,10 @@ public class TaskManager extends Thread {
         int rowIndex = 0;
         while (rowIndex <= rowCount) {
             List<String> targetList = this.dataAdapter.getPointByServiceID(serviceID, RsfServiceType.Consumer, rowIndex, limitSize);
+            rowIndex = rowIndex + limitSize;
             if (targetList == null || targetList.isEmpty()) {
                 continue;
             }
-            rowIndex = rowIndex + limitSize;
             // .推送失效地址
             boolean result = this.rsfPusher.appendAddress(serviceID, newAddressSet, targetList); // 第一次尝试
             if (!result) {

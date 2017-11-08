@@ -29,9 +29,9 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author 赵永春(zyc@hasor.net)
  */
 class TreeNode {
-    private String name = "";
-    private ObjectData objectData;
-    private TreeNode   parent;
+    private String                name         = "";
+    private ObjectData            objectData   = null;
+    private TreeNode              parent       = null;
     private Lock                  lock         = new ReentrantLock();
     private Map<String, TreeNode> treeNodeMap  = new ConcurrentHashMap<String, TreeNode>();
     private List<TreeNode>        treeNodeList = new CopyOnWriteArrayList<TreeNode>();

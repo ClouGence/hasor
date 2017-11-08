@@ -69,7 +69,7 @@ public class PushQueue implements Runnable {
         }
     }
     public void run() {
-        logger.info("pushQueue Thread start.");
+        logger.info("pushQueue Thread start. -> " + Thread.currentThread().getName());
         while (true) {
             try {
                 PushEvent pushEvent = null;

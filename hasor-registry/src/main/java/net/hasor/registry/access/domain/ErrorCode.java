@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.registry.access.domain;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashSet;
 import java.util.Set;
 /**
@@ -36,16 +33,15 @@ public enum ErrorCode {
     //    BeatFailed_RefreshResultNull(9, "心跳失败,刷新对象无返回值。"), //
     //    TargetListEmpty(11, "目标地址为空。"),//
     //
-    Failed_RemoveRegister(12, "服务解除注册失败。"),//
-    Failed_PushAddress_System_TooBusy(10, "地址推送失败,服务器繁忙。"),//
-    Failed_Save_ServiceInfo(6, "保存服务信息失败。"),//
-    Failed_Publish_Provider(6, "发布服务失败,保存服务信息错误。"),//
-    Failed_Publish_Consumer(7, "订阅服务失败,服务未定义。"), //
+    Failed_RemoveRegister(6, "服务解除注册失败。"),//
+    Failed_PushAddress_System_TooBusy(7, "地址推送失败,服务器繁忙。"),//
+    Failed_Save_ServiceInfo(8, "保存服务信息失败。"),//
+    Failed_Publish_Provider(9, "发布服务失败,保存服务信息错误。"),//
+    Failed_Publish_Consumer(10, "订阅服务失败,服务未定义。"), //
     //    PPF_AlreadyAsConsumer(6, "发布服务失败,保存服务信息错误-PublishProviderFailed_AlreadyAsConsumer。"),//
     //    CPF_AlreadyAsProvider(6, "发布服务失败,保存服务信息错误-ConsumerPublishFailed_AlreadyAsProvider。"),//
     //
     ;
-    private static Logger logger = LoggerFactory.getLogger(ErrorCode.class);
     private final int    codeType;
     private final String message;
     ErrorCode(final int codeType, final String message) {

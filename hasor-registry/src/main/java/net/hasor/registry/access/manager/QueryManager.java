@@ -71,10 +71,10 @@ public class QueryManager {
         int rowIndex = 0;
         while (rowIndex <= rowCount) {
             List<String> targetList = this.dataAdapter.getPointByServiceID(serviceID, RsfServiceType.Provider, rowIndex, limitSize);
+            rowIndex = rowIndex + limitSize;
             if (targetList == null || targetList.isEmpty()) {
                 continue;
             }
-            rowIndex = rowIndex + limitSize;
             resultList.addAll(targetList);
         }
         //

@@ -19,9 +19,10 @@ import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.registry.access.ServerSettings;
 import net.hasor.rsf.domain.RsfServiceType;
-import net.hasor.utils.json.JSON;
+import net.hasor.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 /**
  * 服务数据存储检索适配器，负责将数据的操作对应到 DataDao 接口上。
@@ -51,7 +52,7 @@ public class DataAdapter {
         return this.storageDao.saveData(data.getDataPath(), data);
     }
     public boolean storePoint(String instanceID, String serviceID, List<String> addressSet, RsfServiceType asType) {
-        ObjectData data = new ObjectData(JSON.toString(addressSet));
+        ObjectData data = new ObjectData(StringUtils.join(addressSet.toArray(), ","));
         data = this.fillData(instanceID, serviceID, data);
         data.setDataType(RsfServiceType.Provider == asType ? "Provider" : "Consumer");
         //
@@ -88,9 +89,15 @@ public class DataAdapter {
         ArrayList<String> dataList = new ArrayList<String>(itemList.size());
         for (String item : itemList) {
             ObjectData dataInfo = this.storageDao.getByPath(item);
-            if (!testInvalid(dataInfo)) {
-                dataList.add(dataInfo.getDataBody());
+            if (testInvalid(dataInfo)) {
+                continue;
             }
+            String dataBody = dataInfo.getDataBody();
+            if (dataBody == null) {
+                continue;
+            }
+            String[] split = dataBody.split(",");
+            dataList.addAll(Arrays.asList(split));
         }
         return dataList;
     }

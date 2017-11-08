@@ -90,6 +90,10 @@ class RegistryClientManager implements TimerTask {
             if (serviceInfo == null) {
                 continue;
             }
+            if (serviceInfo.isShadow()) {
+                logger.info("online,failed -> {} is isShadow.", serviceInfo.getBindID());
+                continue;
+            }
             this.onlineService(serviceInfo);
         }
     }
@@ -102,13 +106,21 @@ class RegistryClientManager implements TimerTask {
             if (serviceInfo == null) {
                 continue;
             }
+            if (serviceInfo.isShadow()) {
+                logger.info("offline,failed -> {} is isShadow.", serviceInfo.getBindID());
+                continue;
+            }
             this.offlineService(serviceInfo);
         }
     }
     //
     /**注册服务到中心*/
     public void onlineService(RsfBindInfo<?> domain) {
-        if (domain == null || !this.rsfContext.isOnline()) {
+        if (domain == null) {
+            return;
+        }
+        if (!this.rsfContext.isOnline() || domain.isShadow()) {
+            logger.info("onlineService {} ,failed -> online status is {} , shadow is {}.", domain.getBindID(), this.rsfContext.isOnline(), domain.isShadow());
             return;
         }
         try {
@@ -140,7 +152,11 @@ class RegistryClientManager implements TimerTask {
     }
     /**解除服务注册*/
     public void offlineService(RsfBindInfo<?> domain) {
-        if (domain == null || !this.rsfContext.isOnline()) {
+        if (domain == null) {
+            return;
+        }
+        if (!this.rsfContext.isOnline() || domain.isShadow()) {
+            logger.info("offlineService {} ,failed -> online status is {} , shadow is {}.", domain.getBindID(), this.rsfContext.isOnline(), domain.isShadow());
             return;
         }
         //
