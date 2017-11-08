@@ -18,7 +18,7 @@ import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.registry.RsfCenterRegister;
 import net.hasor.registry.RsfCenterResult;
-import net.hasor.registry.access.adapter111222.AuthQuery;
+import net.hasor.registry.access.adapter.AuthQuery;
 import net.hasor.registry.access.domain.*;
 import net.hasor.registry.access.manager.PublishManager;
 import net.hasor.registry.access.manager.QueryManager;

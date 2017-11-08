@@ -14,109 +14,142 @@
  * limitations under the License.
  */
 package net.hasor.registry.access.manager;
+import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
+import net.hasor.registry.access.adapter.DataAdapter;
+import net.hasor.registry.access.domain.LogUtils;
 import net.hasor.registry.access.pusher.RsfPusher;
+import net.hasor.registry.trace.TraceUtil;
+import net.hasor.rsf.domain.RsfServiceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 /**
- * 任务调度
+ * 每当服务注册和离线的时候，都会生成一个服务地址推送任务通过 addTask 方法加入进来。
+ * 但当遇到大量服务启动或者离线情况下，如果直接调用 RsfPusher 进行推送会造成大量的推送行为。
+ *
+ * TaskManager 解决这个问题的办法是，设立的一个临时的中转站。分批次将大量同类的推送优化合并成几个有限的批次。
+ *
  * @version : 2016年9月18日
  * @author 赵永春(zyc@hasor.net)
  */
 @Singleton
-public class TaskManager {
+public class TaskManager extends Thread {
     protected Logger logger = LoggerFactory.getLogger(getClass());
+    private LinkedBlockingQueue<Task> taskQueue;
     @Inject
-    private RsfPusher rsfPusher;
+    private RsfPusher                 rsfPusher;
+    @Inject
+    private DataAdapter               dataAdapter;
     //
-    public void addTask(String serviceID, Task task) {
+    @Init
+    public void init() {
+        this.taskQueue = new LinkedBlockingQueue<Task>();
+        this.setDaemon(true);
+        this.setName("RsfCenter-TaskToPusher");
+        this.start();
     }
-    //    final int rowCount = this.dataAdapter.getPointCount(serviceID);
-    //    final int limitSize = 100;
-    //    int rowIndex = 0;
-    //        while (rowIndex <= rowCount) {
-    //        List<String> targetList = this.dataAdapter.getPoint(serviceID, rowIndex, limitSize);
-    //        if (targetList == null || targetList.isEmpty()) {
-    //            break;
-    //        }
-    //        rowIndex = rowIndex + limitSize;
-    //        // .推送新的提供者地址
-    //        boolean result = this.rsfPusher.removeAddress(serviceID, invalidAddressSet, targetList); // 第一次尝试
-    //        if (!result) {
-    //            result = this.rsfPusher.removeAddress(serviceID, invalidAddressSet, targetList);     // 第二次尝试
-    //            if (!result) {
-    //                result = this.rsfPusher.removeAddress(serviceID, invalidAddressSet, targetList); // 第三次尝试
-    //            }
-    //        }
-    //        //
-    //        if (!result) {
-    //            // TODO
-    //        }
-    //    }
-    //    /* 对订阅做请求全量推送提供者列表 */
-    //    private Result<Boolean> requestProviders(InterAddress targetRsfAddress, String serviceID, String protocol) {
-    //        //
-    //        // .查询提供者列表
-    //        QueryOption opt = new QueryOption();
-    //        opt.setObjectType(RsfCenterConstants.Center_DataKey_Provider);//尝试过滤结果,只保留Provider数据
-    //        String serviceObjectID = RsfCenterConstants.Center_DataKey_Service + serviceID;
-    //        Result<List<AbstractInfo>> refList = this.dataAdapter.queryObjectListByID(serviceObjectID, opt);
-    //        if (refList == null || !refList.isSuccess()) {
-    //            return DateCenterUtils.buildFailedResult(refList);
-    //        }
-    //        List<AbstractInfo> providerDataList = refList.getResult();
-    //        List<InterAddress> providerList = this.filterProviderList(providerDataList, protocol);
-    //        //
-    //        // .推送提供者地址(三次尝试),即使全部失败也不用担心,依靠客户端主动拉取来换的最终成功
-    //        boolean result = false;
-    //        if (providerList != null && !providerList.isEmpty()) {
-    //            Result<AbstractInfo> serviceResult = this.dataAdapter.queryObjectByID(serviceObjectID);
-    //            if (serviceResult == null || !serviceResult.isSuccess() || serviceResult.getResult() == null) {
-    //                return DateCenterUtils.buildFailedResult(serviceResult);
-    //            }
-    //            List<InterAddress> target = Collections.singletonList(targetRsfAddress);
-    //            result = this.rsfPusher.refreshAddress(serviceID, providerList, target);            // 第一次尝试
-    //            if (!result) {
-    //                result = this.rsfPusher.refreshAddress(serviceID, providerList, target);        // 第二次尝试
-    //                if (!result) {
-    //                    result = this.rsfPusher.refreshAddress(serviceID, providerList, target);    // 第三次尝试
-    //                }
-    //            }
-    //        }
-    //        //
-    //        // .返回结果
-    //        ResultDO<Boolean> requestResult = new ResultDO<Boolean>();
-    //        requestResult.setSuccess(true);
-    //        if (!result) {
-    //            requestResult.setResult(false);
-    //            requestResult.setErrorInfo(ErrorCode.PushAddressFailed_TooBusy);
-    //        } else {
-    //            requestResult.setResult(true);
-    //            requestResult.setErrorInfo(ErrorCode.OK);
-    //        }
-    //        return requestResult;
-    //    }
+    public void asyncToPublish(String serviceID, Task task) {
+        this.taskQueue.offer(task);
+    }
+    @Override
+    public void run() {
+        logger.info("taskToPusher Thread start.");
+        while (true) {
+            try {
+                Task task = null;
+                while ((task = this.taskQueue.take()) != null) {
+                    if (task instanceof PublishTask) {
+                        this.appendAddress(task.serviceID, task.addressList);
+                        break;
+                    }
+                    if (task instanceof RemoveTask) {
+                        this.invalidAddress(task.serviceID, task.addressList);
+                        break;
+                    }
+                }
+            } catch (Throwable e) {
+                logger.error(LogUtils.create("ERROR_300_00004")//
+                        .addLog("traceID", TraceUtil.getTraceID())//
+                        .logException(e).toJson());
+            }
+        }
+    }
     //
+    //
+    private void invalidAddress(String serviceID, List<String> invalidAddressSet) {
+        // .获取服务的消费者列表
+        final int rowCount = this.dataAdapter.getPointCountByServiceID(serviceID, RsfServiceType.Consumer);
+        final int limitSize = 100;
+        int rowIndex = 0;
+        while (rowIndex <= rowCount) {
+            List<String> targetList = this.dataAdapter.getPointByServiceID(serviceID, RsfServiceType.Consumer, rowIndex, limitSize);
+            if (targetList == null || targetList.isEmpty()) {
+                continue;
+            }
+            rowIndex = rowIndex + limitSize;
+            // .推送失效地址
+            boolean result = this.rsfPusher.removeAddress(serviceID, invalidAddressSet, targetList); // 第一次尝试
+            if (!result) {
+                result = this.rsfPusher.removeAddress(serviceID, invalidAddressSet, targetList);     // 第二次尝试
+                if (!result) {
+                    result = this.rsfPusher.removeAddress(serviceID, invalidAddressSet, targetList); // 第三次尝试
+                }
+            }
+            if (!result) {
+                // TODO
+            }
+        }
+        //
+    }
+    private void appendAddress(String serviceID, List<String> newAddressSet) {
+        // .获取服务的消费者列表
+        final int rowCount = this.dataAdapter.getPointCountByServiceID(serviceID, RsfServiceType.Consumer);
+        final int limitSize = 100;
+        int rowIndex = 0;
+        while (rowIndex <= rowCount) {
+            List<String> targetList = this.dataAdapter.getPointByServiceID(serviceID, RsfServiceType.Consumer, rowIndex, limitSize);
+            if (targetList == null || targetList.isEmpty()) {
+                continue;
+            }
+            rowIndex = rowIndex + limitSize;
+            // .推送失效地址
+            boolean result = this.rsfPusher.appendAddress(serviceID, newAddressSet, targetList); // 第一次尝试
+            if (!result) {
+                result = this.rsfPusher.appendAddress(serviceID, newAddressSet, targetList);     // 第二次尝试
+                if (!result) {
+                    result = this.rsfPusher.appendAddress(serviceID, newAddressSet, targetList); // 第三次尝试
+                }
+            }
+            if (!result) {
+                // TODO
+            }
+        }
+        //
+    }
     //
     /** 任务 */
     public static class Task {
+        public final String       serviceID;
+        public final List<String> addressList;
+        public Task(String serviceID, List<String> addressList) {
+            this.serviceID = serviceID;
+            this.addressList = addressList;
+        }
     }
     /** 增量推送服务地址给全部消费者 or 特定机器 */
     public static class PublishTask extends Task {
-        public void setAddressList(List<String> addressList) {
-            this.addressList = addressList;
-        }
-        public void setPublishRange(List<String> publishRange) {
-            this.publishRange = publishRange;
+        public PublishTask(String serviceID, List<String> addressList) {
+            super(serviceID, addressList);
         }
     }
     /** 增量推送失效的地址 */
     public static class RemoveTask extends Task {
-        public void setAddressList(List<String> addressList) {
-            this.addressList = addressList;
+        public RemoveTask(String serviceID, List<String> addressList) {
+            super(serviceID, addressList);
         }
     }
 }

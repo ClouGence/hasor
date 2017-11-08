@@ -58,18 +58,18 @@ public class PushQueue implements Runnable {
         //
         this.dataQueue = new LinkedBlockingQueue<PushEvent>();
         this.threadPushQueue = new ArrayList<Thread>();
-        int threadSize = rsfCenterCfg.getThreadSize();
+        int threadSize = this.rsfCenterCfg.getThreadSize();
         for (int i = 1; i <= threadSize; i++) {
             Thread pushQueue = new Thread(this);
             pushQueue.setDaemon(true);
-            pushQueue.setName("Rsf-Center-PushQueue-" + i);
+            pushQueue.setName("RsfCenter-PushQueue-" + i);
             pushQueue.setContextClassLoader(this.rsfContext.getClassLoader());
             pushQueue.start();
             this.threadPushQueue.add(pushQueue);
         }
-        logger.info("PushQueue Thread start.");
     }
     public void run() {
+        logger.info("pushQueue Thread start.");
         while (true) {
             try {
                 PushEvent pushEvent = null;

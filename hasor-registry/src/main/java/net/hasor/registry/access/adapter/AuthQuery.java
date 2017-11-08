@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.server.adapter;
-import net.hasor.registry.domain.server.AuthInfo;
-import net.hasor.registry.domain.server.ServiceInfo;
-import net.hasor.registry.server.domain.Result;
+package net.hasor.registry.access.adapter;
+import net.hasor.registry.access.domain.AuthBean;
+import net.hasor.registry.access.domain.Result;
+import net.hasor.registry.access.domain.ServiceInfo;
 import net.hasor.rsf.domain.RsfServiceType;
 /**
  * 接口授权查询。
@@ -28,7 +28,7 @@ public interface AuthQuery {
      *
      * @param authInfo
      */
-    public Result<Boolean> checkKeySecret(AuthInfo authInfo);
+    public Result<Boolean> checkKeySecret(AuthBean authInfo);
 
     /**
      * 发布服务权限检测
@@ -36,5 +36,5 @@ public interface AuthQuery {
      * @param serviceInfo 服务信息
      * @param serviceType 提供者 or 消费者
      */
-    public Result<Boolean> checkPublish(AuthInfo authInfo, ServiceInfo serviceInfo, RsfServiceType serviceType);
+    public Result<Boolean> checkPublish(AuthBean authInfo, ServiceInfo serviceInfo, RsfServiceType serviceType);
 }

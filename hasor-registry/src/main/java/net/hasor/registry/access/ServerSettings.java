@@ -29,8 +29,7 @@ public class ServerSettings {
     private int      queueMaxSize;
     private int      sleepTime;
     //
-    private int      providerExpireTime;
-    private int      consumerExpireTime;
+    private int      dataExpireTime;
     private boolean  allowAnonymous;
     private Class<?> dataAdapterType;
     private Class<?> authQueryType;
@@ -45,8 +44,7 @@ public class ServerSettings {
         this.queueMaxSize = settings.getInteger("hasor.registry.polling.queueMaxSize", 20000);
         this.sleepTime = settings.getInteger("hasor.registry.polling.sleepTime", 1000);
         //
-        this.providerExpireTime = settings.getInteger("hasor.registry.serviceManager.providerExpireTime", 60000);
-        this.consumerExpireTime = settings.getInteger("hasor.registry.serviceManager.consumerExpireTime", 60000);
+        this.dataExpireTime = settings.getInteger("hasor.registry.serviceManager.dataExpireTime", 60000);
         this.allowAnonymous = settings.getBoolean("hasor.registry.auth.allowAnonymous", true);
         //
         ClassLoader classLoader = rsfEnvironment.getClassLoader();
@@ -64,11 +62,8 @@ public class ServerSettings {
         return sleepTime;
     }
     //
-    public int getProviderExpireTime() {
-        return providerExpireTime;
-    }
-    public int getConsumerExpireTime() {
-        return consumerExpireTime;
+    public int getDataExpireTime() {
+        return dataExpireTime;
     }
     public boolean isAllowAnonymous() {
         return allowAnonymous;

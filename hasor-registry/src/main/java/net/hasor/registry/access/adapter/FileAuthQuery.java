@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.server.adapter;
+package net.hasor.registry.access.adapter;
 import net.hasor.core.*;
-import net.hasor.registry.domain.server.AuthInfo;
-import net.hasor.registry.domain.server.ServiceInfo;
-import net.hasor.registry.server.domain.Result;
-import net.hasor.registry.server.domain.ResultDO;
-import net.hasor.registry.server.manager.ServerSettings;
+import net.hasor.registry.access.ServerSettings;
+import net.hasor.registry.access.adapter.AuthQuery;
+import net.hasor.registry.access.domain.AuthBean;
+import net.hasor.registry.access.domain.Result;
+import net.hasor.registry.access.domain.ResultDO;
+import net.hasor.registry.access.domain.ServiceInfo;
 import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.utils.AutoCloseInputStream;
 import net.hasor.rsf.utils.StringUtils;
@@ -51,7 +52,7 @@ public class FileAuthQuery implements AuthQuery {
     private AppContext     appContext;
     @Inject
     private ServerSettings rsfCenterSettings;
-    private Map<String, AuthInfo> keyPool = new HashMap<String, AuthInfo>();
+    private Map<String, AuthBean> keyPool = new HashMap<String, AuthBean>();
     //
     @Init
     public void init() throws IOException, XMLStreamException {
@@ -86,7 +87,7 @@ public class FileAuthQuery implements AuthQuery {
                     String keySecret = attributes.getValue("keySecret");
                     String expireTime = attributes.getValue("expireTime");
                     //
-                    AuthInfo authInfo = new AuthInfo();
+                    AuthBean authInfo = new AuthBean();
                     authInfo.setAppKey(appKey);
                     try {
                         authInfo.setExpireTime(formatter.parse(expireTime));
@@ -105,7 +106,7 @@ public class FileAuthQuery implements AuthQuery {
     }
     //
     @Override
-    public Result<Boolean> checkKeySecret(AuthInfo authInfo) {
+    public Result<Boolean> checkKeySecret(AuthBean authInfo) {
         authInfo = Hasor.assertIsNotNull(authInfo);
         ResultDO<Boolean> result = new ResultDO<Boolean>();
         result.setSuccess(true);
@@ -116,7 +117,7 @@ public class FileAuthQuery implements AuthQuery {
         }
         //
         String putKey = authInfo.getAppKey() + "-" + authInfo.getAppKeySecret();
-        AuthInfo userAuth = this.keyPool.get(putKey);
+        AuthBean userAuth = this.keyPool.get(putKey);
         if (userAuth == null || userAuth.getExpireTime().getTime() <= authInfo.getExpireTime().getTime()) {
             result.setResult(false);
         } else {
@@ -126,7 +127,7 @@ public class FileAuthQuery implements AuthQuery {
         return result;
     }
     @Override
-    public Result<Boolean> checkPublish(AuthInfo authInfo, ServiceInfo serviceInfo, RsfServiceType serviceType) {
+    public Result<Boolean> checkPublish(AuthBean authInfo, ServiceInfo serviceInfo, RsfServiceType serviceType) {
         return this.checkKeySecret(authInfo);
     }
 }

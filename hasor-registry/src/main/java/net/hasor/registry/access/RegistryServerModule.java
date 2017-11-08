@@ -19,8 +19,9 @@ import net.hasor.core.LifeModule;
 import net.hasor.registry.RsfCenterListener;
 import net.hasor.registry.RsfCenterRegister;
 import net.hasor.registry.RsfCenterSettings;
-import net.hasor.registry.access.adapter111222.AuthQuery;
-import net.hasor.registry.access.adapter111222.DataAdapter;
+import net.hasor.registry.access.adapter.AuthQuery;
+import net.hasor.registry.access.adapter.DataAdapter;
+import net.hasor.registry.access.adapter.StorageDao;
 import net.hasor.rsf.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public class RegistryServerModule extends RsfModule implements LifeModule {
         //
         // .adapter
         apiBinder.bindType(AuthQuery.class).to((Class<? extends AuthQuery>) this.serverSettings.getAuthQueryType());
-        apiBinder.bindType(DataAdapter.class).to((Class<? extends DataAdapter>) this.serverSettings.getDataAdapterType());
+        apiBinder.bindType(StorageDao.class).to((Class<? extends StorageDao>) this.serverSettings.getDataAdapterType());
         //
     }
     public final void onStart(AppContext appContext) throws Throwable {

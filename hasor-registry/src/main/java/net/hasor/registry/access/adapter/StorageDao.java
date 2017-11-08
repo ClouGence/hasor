@@ -13,7 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.registry.access.adapter;
+import java.util.List;
 /**
- * 默认数据存取服务。
+ * 服务数据存储检索
+ * @version : 2015年8月19日
+ * @author 赵永春(zyc@hasor.net)
  */
-package net.hasor.registry.server.adapter;
+public interface StorageDao {
+    public boolean saveData(String dataPath, ObjectData data);
+
+    public boolean deleteData(String dataPath);
+
+    public ObjectData getByPath(String dataPath);
+
+    public int querySubCount(String dataPath);
+
+    public List<String> querySubList(String dataPath, int rowIndex, int limit);
+}

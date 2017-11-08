@@ -16,7 +16,7 @@
 package net.hasor.registry.access.manager;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.registry.access.adapter111222.DataAdapter;
+import net.hasor.registry.access.adapter.DataAdapter;
 import net.hasor.registry.access.domain.*;
 import net.hasor.registry.access.manager.TaskManager.PublishTask;
 import net.hasor.registry.access.manager.TaskManager.RemoveTask;
@@ -77,7 +77,7 @@ public class PublishManager {
             result.setSuccess(false);
             return result;
         }
-        this.dataAdapter.storeAddition(instanceID, serviceID, JsonUtils.converToString(info));
+        this.dataAdapter.storeAddition(instanceID, serviceID, RsfServiceType.Consumer, JsonUtils.converToString(info));
         //
         // .返回registerID
         ResultDO<Void> resultDO = new ResultDO<Void>();
@@ -105,10 +105,10 @@ public class PublishManager {
             result.setSuccess(false);
             return result;
         }
-        this.dataAdapter.storeAddition(instanceID, serviceID, JsonUtils.converToString(info));
+        this.dataAdapter.storeAddition(instanceID, serviceID, RsfServiceType.Provider, JsonUtils.converToString(info));
         //
         // .异步任务，要求推送新地址给所有消费者(增量)
-        PublishTask task = new PublishTask(info.getRsfAddress());
+        PublishTask task = new PublishTask(serviceID, info.getRsfAddress());
         this.taskManager.asyncToPublish(serviceID, task);
         //
         // .返回
@@ -125,7 +125,7 @@ public class PublishManager {
         RsfServiceType serviceType = this.dataAdapter.getPointTypeByID(instanceID, serviceID);
         List<String> invalidAddressSet = null;
         if (RsfServiceType.Provider == serviceType) {
-            invalidAddressSet = this.dataAdapter.getPointByID(instanceID, serviceID);
+            invalidAddressSet = this.dataAdapter.getPointByID(instanceID, serviceID, RsfServiceType.Provider);
         }
         // .获取服务Info
         boolean removeResult = this.dataAdapter.remove(instanceID, serviceID);
@@ -136,8 +136,8 @@ public class PublishManager {
             return result;
         }
         // .异步任务，要求推送失效的地址给所有消费者(增量)
-        if (invalidAddressSet != null) {
-            RemoveTask task = new RemoveTask(invalidAddressSet);
+        if (invalidAddressSet != null && !invalidAddressSet.isEmpty()) {
+            RemoveTask task = new RemoveTask(serviceID, invalidAddressSet);
             this.taskManager.asyncToPublish(serviceID, task);
         }
         //

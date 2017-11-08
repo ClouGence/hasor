@@ -16,7 +16,7 @@
 package net.hasor.registry.access.manager;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.registry.access.adapter111222.DataAdapter;
+import net.hasor.registry.access.adapter.DataAdapter;
 import net.hasor.registry.access.domain.*;
 import net.hasor.registry.access.pusher.RsfPusher;
 import net.hasor.rsf.domain.RsfServiceType;
@@ -72,7 +72,7 @@ public class QueryManager {
         while (rowIndex <= rowCount) {
             List<String> targetList = this.dataAdapter.getPointByServiceID(serviceID, RsfServiceType.Provider, rowIndex, limitSize);
             if (targetList == null || targetList.isEmpty()) {
-                break;
+                continue;
             }
             rowIndex = rowIndex + limitSize;
             resultList.addAll(targetList);
