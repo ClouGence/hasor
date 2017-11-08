@@ -44,7 +44,7 @@
             Center工作在集群模式下的时候,集群的机器列表
                 注意:集群中每台机器的对应clusterServers配置都应相同,center在启动时会进行检测
         -->
-        <servers timeout="6000" heartbeatTime="15000">
+        <servers timeout="6000" heartbeatTime="30000">
             ${RSF_CENTER_SERVERS}
         </servers>
 
@@ -68,18 +68,13 @@
          -->
         <polling threadSize="10" queueMaxSize="100000" sleepTime="1000"/>
 
-        <!-- 服务管理 -->
-        <serviceManager>
-            <!-- 服务提供者,心跳过期时间(60秒) -->
-            <providerExpireTime>60000</providerExpireTime>
-            <!-- 服务订阅者,心跳过期时间(60秒) -->
-            <consumerExpireTime>60000</consumerExpireTime>
-        </serviceManager>
+        <!-- 服务管理心跳过期时间(60秒) -->
+        <serviceManager dataExpireTime="60000"/>
 
         <!-- 数据适配器 -->
         <adapterConfig>
-            <dataAdapter>net.hasor.registry.access.adapter111222.HashMapDataAdapter</dataAdapter>
-            <authQuery>net.hasor.registry.access.adapter111222.FileAuthQuery</authQuery>
+            <dataAdapter>net.hasor.registry.storage.mem.MemStorageDao</dataAdapter>
+            <authQuery>net.hasor.registry.access.adapter.FileAuthQuery</authQuery>
         </adapterConfig>
 
     </hasor.registry>

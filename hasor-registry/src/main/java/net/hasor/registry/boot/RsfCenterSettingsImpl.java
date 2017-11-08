@@ -101,7 +101,7 @@ class RsfCenterSettingsImpl extends SettingsWrap implements RsfCenterSettings {
         //
         //
         this.centerRsfTimeout = getInteger("hasor.registry.servers.timeout", 6000);
-        this.centerHeartbeatTime = getInteger("hasor.registry.servers.heartbeatTime", 15000);
+        this.centerHeartbeatTime = getInteger("hasor.registry.servers.heartbeatTime", 30000);
         //
         //
         this.appKeyID = getString("hasor.registry.security.appKeyID");

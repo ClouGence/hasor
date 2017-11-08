@@ -39,24 +39,29 @@ public class RegistryBootModule extends RsfModule {
         apiBinder.bindType(RsfCenterSettings.class).toInstance(settings);
         //
         if (CenterMode.None.equals(settings.getMode())) {
-            this.logger.warn("registry workAt None mode, so registry cannot be started.");
+            this.logger.info("registry workAt None mode, so registry cannot be started.");
             return;
         }
         //
         if (CenterMode.Client.equals(settings.getMode())) {
-            this.logger.warn("registry workAt Client mode, so registry will maintain your service info.");
+            this.logger.info("registry workAt Client mode, so registry will maintain your service info.");
             apiBinder.installModule(new RegistryClientModule(settings));
             return;
         }
         //
         if (CenterMode.Server.equals(settings.getMode())) {
-            this.logger.warn("registry workAt Server mode, so registry will managing all service info.");
+            this.logger.info("registry workAt Server mode, so registry will managing all service info.");
             apiBinder.installModule(new RegistryServerModule(rsfEnvironment, settings));
             return;
         }
         //
         if (CenterMode.Cluster.equals(settings.getMode())) {
             this.logger.warn("registry workAt Cluster mode, Temporary does not support.");
+            throw new UnsupportedOperationException("Temporary does not support");
+        }
+        //
+        if (CenterMode.Leader.equals(settings.getMode())) {
+            this.logger.warn("registry workAt Leader mode, Temporary does not support.");
             throw new UnsupportedOperationException("Temporary does not support");
         }
     }
