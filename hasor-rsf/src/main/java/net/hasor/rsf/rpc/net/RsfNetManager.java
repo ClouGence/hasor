@@ -20,6 +20,7 @@ import net.hasor.core.AppContext;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.rpc.net.netty.ConnectorOnNetty;
 import net.hasor.utils.NameThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +92,7 @@ public class RsfNetManager {
             }
             //
             try {
-                Connector connector = new Connector(appContext, protocolKey, local, gateway, this.receivedListener, this.workLoopGroup);
+                Connector connector = new ConnectorOnNetty(appContext, protocolKey, local, gateway, this.receivedListener, this.workLoopGroup);
                 connector.startListener(this.listenLoopGroup);//启动连接器
                 this.bindListener.put(protocolKey, connector);
             } catch (Throwable e) {

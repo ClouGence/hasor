@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.domain.*;
+import net.hasor.utils.future.FutureCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,22 +29,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version : 2015年12月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfChannel {
+public abstract class RsfChannel {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    private          String                 protocol;
     private final    InterAddress           target;
-    private          InterAddress           inverseMappingTo;
-    private final    Channel                channel;
     private final    AtomicBoolean          shakeHands;
     private final    LinkType               linkType;
     private volatile long                   lastSendTime;   //最后数据发送时间
     private volatile long                   sendPackets;    //发送的数据包总数
+    private volatile long                   sendPacketsOk;  //发送的数据包总数
+    private volatile long                   sendPacketsErr; //发送的数据包总数
     private          List<ReceivedListener> listenerList;
     //
-    RsfChannel(String protocol, InterAddress target, Channel channel, LinkType linkType) {
-        this.protocol = protocol;
+    public RsfChannel(InterAddress target, LinkType linkType) {
         this.target = target;
-        this.channel = channel;
         this.shakeHands = new AtomicBoolean(false);
         this.linkType = linkType;
         this.listenerList = new CopyOnWriteArrayList<ReceivedListener>();
@@ -57,38 +52,25 @@ public class RsfChannel {
     }
     @Override
     public String toString() {
-        return "RsfChannel{" + "protocol=" + protocol +//
+        return "RsfChannel{" + "protocol=" + this.getProtocol() +//
                 ", linkType=" + linkType.name() + //
                 ", shakeHands=" + shakeHands + //
-                ", channel=" + channel +//
                 '}';
     }
     //
     //
-    /**接收到数据*/
-    public void addListener(ReceivedListener receivedListener) {
-        if (!this.listenerList.contains(receivedListener)) {
-            this.listenerList.add(receivedListener);
-        }
-    }
-    /**接收到数据*/
-    void receivedData(OptionInfo object) throws IOException {
-        for (ReceivedListener listener : this.listenerList) {
-            listener.receivedMessage(this, object);
-        }
-    }
     /**将数据写入 Netty。*/
-    public void sendData(final RequestInfo info, final SendCallBack callBack) {
+    public final void sendData(final RequestInfo info, final SendCallBack callBack) {
         this.sendData(info.getRequestID(), info, callBack);
     }
     /**将数据写入 Netty。*/
-    public void sendData(final ResponseInfo info, final SendCallBack callBack) {
+    public final void sendData(final ResponseInfo info, final SendCallBack callBack) {
         this.sendData(info.getRequestID(), info, callBack);
     }
-    /**将数据写入 Netty。*/
-    private void sendData(final long requestID, Object sendData, final SendCallBack callBack) {
-        if (!this.channel.isActive()) {
-            RsfException e = new RsfException(ProtocolStatus.NetworkError, "send (" + requestID + ") an error, socket Channel is close.");
+    //
+    private void sendData(final long requestID, OptionInfo sendData, final SendCallBack callBack) {
+        if (!this.isActive()) {
+            RsfException e = new RsfException(ProtocolStatus.NetworkError, "send (" + requestID + ") an error, channel is not ready.");
             if (callBack != null) {
                 callBack.failed(requestID, e);
             }
@@ -96,47 +78,47 @@ public class RsfChannel {
         }
         /*发送数据*/
         this.sendPackets++;
-        ChannelFuture future = this.channel.writeAndFlush(sendData);
-        /*为sendData添加侦听器，负责处理意外情况。*/
-        future.addListener(new ChannelFutureListener() {
-            public void operationComplete(ChannelFuture future) throws Exception {
-                if (future.isSuccess()) {
-                    if (callBack != null) {
-                        callBack.complete(requestID);
-                    }
+        this.lastSendTime = System.currentTimeMillis();
+        this.sendData(sendData, new FutureCallback<Object>() {
+            @Override
+            public void completed(Object result) {
+                sendPacketsOk++;
+                if (callBack == null) {
                     return;
                 }
-                lastSendTime = System.currentTimeMillis();
-                RsfException e = null;
-                if (future.isCancelled()) {
-                    //用户取消
-                    String errorMsg = "send request(" + requestID + ") to cancelled by user.";
-                    e = new RsfException(ProtocolStatus.NetworkError, errorMsg);
-                    logger.error(e.getMessage(), e);
-                    //回应Response
-                    if (callBack != null) {
-                        callBack.failed(requestID, e);
-                    }
-                } else if (!future.isSuccess()) {
-                    //异常状况
-                    Throwable ex = future.cause();
-                    String errorMsg = "send request(" + requestID + ") an error ->" + ex.getMessage();
-                    e = new RsfException(ProtocolStatus.NetworkError, errorMsg, ex);
-                    logger.error(e.getMessage(), e);
-                    //回应Response
-                    if (callBack != null) {
-                        callBack.failed(requestID, e);
-                    }
+                callBack.complete(requestID);
+            }
+            @Override
+            public void failed(Throwable ex) {
+                sendPacketsErr++;
+                if (callBack == null) {
+                    return;
                 }
+                if (ex instanceof RsfException) {
+                    callBack.failed(requestID, (RsfException) ex);
+                } else {
+                    callBack.failed(requestID, new RsfException(ProtocolStatus.NetworkError, ex.getMessage(), ex));
+                }
+            }
+            @Override
+            public void cancelled() {
+                String errorMsg = "send request(" + requestID + ") to cancelled by user.";
+                sendPacketsErr++;
+                if (callBack == null) {
+                    return;
+                }
+                callBack.failed(requestID, new RsfException(ProtocolStatus.NetworkError, errorMsg));
             }
         });
     }
-    //
-    //
-    /**运行的协议*/
-    public String getProtocol() {
-        return this.protocol;
+    /**接收到数据*/
+    protected void receivedData(OptionInfo object) throws IOException {
+        for (ReceivedListener listener : this.listenerList) {
+            listener.receivedMessage(this, object);
+        }
     }
+    //
+    //
     /**连接方向*/
     public LinkType getLinkType() {
         return this.linkType;
@@ -149,9 +131,17 @@ public class RsfChannel {
     public long getSendPackets() {
         return this.sendPackets;
     }
+    /**发送的数据包成功数。*/
+    public long getSendPacketsOk() {
+        return this.sendPacketsOk;
+    }
+    /**发送的数据包失败数。*/
+    public long getSendPacketsErr() {
+        return this.sendPacketsErr;
+    }
     /**测定连接是否处于激活的。*/
     public boolean isActive() {
-        return this.channel.isActive() && this.shakeHands.get();
+        return this.isChannelActive() && this.shakeHands.get();
     }
     /**获取远程连接的地址*/
     public InterAddress getTarget() {
@@ -160,20 +150,35 @@ public class RsfChannel {
         }
         return this.target;
     }
-    //
-    //
     /**激活这个连接服务*/
     public boolean activeIn() {
         this.shakeHands.set(true);
         return this.shakeHands.get();
     }
     /**关闭连接。*/
-    void close() {
-        if (this.channel != null && this.channel.isActive()) {
-            this.channel.close();
+    public void close() {
+        if (this.isChannelActive()) {
+            this.closeChannel();
         }
     }
-    void inverseMappingTo(InterAddress interAddress) {
-        this.inverseMappingTo = interAddress;
+    /**添加数据接收监听器。*/
+    public void addListener(ReceivedListener receivedListener) {
+        if (!this.listenerList.contains(receivedListener)) {
+            this.listenerList.add(receivedListener);
+        }
     }
+    //
+    //
+    //
+    /**运行的协议*/
+    public abstract String getProtocol();
+
+    /**判断底层网络是否可用*/
+    protected abstract boolean isChannelActive();
+
+    /**关闭网络连接*/
+    protected abstract void closeChannel();
+
+    /**发送数据*/
+    protected abstract void sendData(OptionInfo sendData, FutureCallback<?> sendCallBack);
 }

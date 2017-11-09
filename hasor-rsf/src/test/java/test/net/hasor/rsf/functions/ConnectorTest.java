@@ -24,10 +24,8 @@ import net.hasor.rsf.domain.OptionInfo;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
-import net.hasor.rsf.rpc.net.Connector;
-import net.hasor.rsf.rpc.net.LinkPool;
-import net.hasor.rsf.rpc.net.ReceivedListener;
-import net.hasor.rsf.rpc.net.RsfChannel;
+import net.hasor.rsf.rpc.net.*;
+import net.hasor.rsf.rpc.net.netty.ConnectorOnNetty;
 import net.hasor.utils.NameThreadFactory;
 import org.junit.Test;
 
@@ -60,7 +58,7 @@ public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provi
         EventLoopGroup workLoopGroup = new NioEventLoopGroup(10, new NameThreadFactory("RSF-Nio-%s", appContext.getClassLoader()));
         NioEventLoopGroup listenLoopGroup = new NioEventLoopGroup(10, new NameThreadFactory("RSF-Listen-%s", appContext.getClassLoader()));
         LinkPool pool = new LinkPool(appContext.getInstance(RsfEnvironment.class));
-        Connector connector = new Connector(appContext, protocolKey, local, gateway, this, workLoopGroup);
+        Connector connector = new ConnectorOnNetty(appContext, protocolKey, local, gateway, this, workLoopGroup);
         connector.startListener(listenLoopGroup);
         System.out.println(">>>>>>>>> server started. <<<<<<<<<<");
         //

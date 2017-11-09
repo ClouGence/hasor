@@ -52,7 +52,7 @@ public class RsfProtocolHandler implements ProtocolHandler {
                     String serverInfo = response.getOption("SERVER_INFO");
                     try {
                         if (LinkType.In == rsfChannel.getLinkType()) {
-                            connector.mappingTo(rsfChannel, new InterAddress(serverInfo));
+                            //                            connector.mappingTo(rsfChannel, new InterAddress(serverInfo));
                         }
                     } catch (Exception e) { /**/ }
                     future.completed(true);
