@@ -44,7 +44,7 @@ public class ServerSettings {
         this.queueMaxSize = settings.getInteger("hasor.registry.polling.queueMaxSize", 20000);
         this.sleepTime = settings.getInteger("hasor.registry.polling.sleepTime", 1000);
         //
-        this.dataExpireTime = settings.getInteger("hasor.registry.serviceManager.dataExpireTime", 60000);
+        this.dataExpireTime = settings.getInteger("hasor.registry.serviceManager.dataExpireTime", 300) * 1000;
         this.allowAnonymous = settings.getBoolean("hasor.registry.auth.allowAnonymous", true);
         //
         ClassLoader classLoader = rsfEnvironment.getClassLoader();

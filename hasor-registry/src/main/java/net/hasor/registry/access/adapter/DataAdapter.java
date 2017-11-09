@@ -131,6 +131,6 @@ public class DataAdapter {
     }
     private boolean testInvalid(ObjectData dataInfo) {
         int expireTime = this.centerCfg.getDataExpireTime();
-        return dataInfo != null && (dataInfo.getTimestamp() + expireTime) > System.currentTimeMillis();
+        return dataInfo == null || !((dataInfo.getTimestamp() + expireTime) > System.currentTimeMillis());
     }
 }

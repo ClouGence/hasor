@@ -76,7 +76,6 @@ class RsfCenterSettingsImpl extends SettingsWrap implements RsfCenterSettings {
         //
         this.centerMode = getEnum("hasor.registry.workAt", CenterMode.class, CenterMode.None);
         //
-        //
         XmlNode serversNode = getXmlNode("hasor.registry.servers");
         ArrayList<InterAddress> addressArrays = new ArrayList<InterAddress>();
         String serverOriInfo = serversNode.getText();
@@ -99,10 +98,8 @@ class RsfCenterSettingsImpl extends SettingsWrap implements RsfCenterSettings {
         }
         this.centerServerSet = addressArrays.toArray(new InterAddress[addressArrays.size()]);
         //
-        //
         this.centerRsfTimeout = getInteger("hasor.registry.servers.timeout", 6000);
         this.centerHeartbeatTime = getInteger("hasor.registry.servers.heartbeatTime", 30000);
-        //
         //
         this.appKeyID = getString("hasor.registry.security.appKeyID");
         this.appKeySecret = getString("hasor.registry.security.appKeySecret");

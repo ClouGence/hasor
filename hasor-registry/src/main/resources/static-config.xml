@@ -68,8 +68,8 @@
          -->
         <polling threadSize="10" queueMaxSize="100000" sleepTime="1000"/>
 
-        <!-- 服务管理心跳过期时间(60秒) -->
-        <serviceManager dataExpireTime="60000"/>
+        <!-- 服务管理心跳过期时间(300秒) -->
+        <serviceManager dataExpireTime="300"/>
 
         <!-- 数据适配器 -->
         <adapterConfig>
