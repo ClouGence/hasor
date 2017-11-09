@@ -29,11 +29,11 @@ import net.hasor.rsf.rpc.net.LinkPool;
 import net.hasor.rsf.rpc.net.ReceivedListener;
 import net.hasor.rsf.rpc.net.RsfChannel;
 import net.hasor.utils.NameThreadFactory;
-import net.hasor.utils.future.BasicFuture;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 /**
  *  在 Connector 层面上测试，启动本地监听服务，并且连接到远程连接器上进行数据发送和接收。
  * @version : 2014年9月12日
@@ -60,13 +60,12 @@ public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provi
         EventLoopGroup workLoopGroup = new NioEventLoopGroup(10, new NameThreadFactory("RSF-Nio-%s", appContext.getClassLoader()));
         NioEventLoopGroup listenLoopGroup = new NioEventLoopGroup(10, new NameThreadFactory("RSF-Listen-%s", appContext.getClassLoader()));
         LinkPool pool = new LinkPool(appContext.getInstance(RsfEnvironment.class));
-        Connector connector = new Connector(appContext, protocolKey, local, gateway, this, pool, workLoopGroup);
+        Connector connector = new Connector(appContext, protocolKey, local, gateway, this, workLoopGroup);
         connector.startListener(listenLoopGroup);
         System.out.println(">>>>>>>>> server started. <<<<<<<<<<");
         //
         Thread.sleep(2000);
-        BasicFuture<RsfChannel> result = new BasicFuture<RsfChannel>();
-        connector.connectionTo(local, result);
+        Future<RsfChannel> result = connector.getChannel(local);
         for (int i = 0; i <= 10; i++) {
             Thread.sleep(1);
             RequestInfo outRequest = new RequestInfo();

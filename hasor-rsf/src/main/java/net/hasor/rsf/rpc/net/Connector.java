@@ -38,6 +38,7 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.Future;
 /**
  * RPC协议连接器，负责创建某个特定RPC协议的网络事件。
  * tips：传入的网络连接，交给{@link LinkPool}进行处理，{@link Connector}本身不维护任何连接。
@@ -47,24 +48,25 @@ import java.util.Map;
 @ChannelHandler.Sharable
 public class Connector extends ChannelInboundHandlerAdapter implements ReceivedListener {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    private final String           protocol;
-    private final AppContext       appContext;
-    private final InterAddress     bindAddress;
-    private final InterAddress     gatewayAddress;
-    private       RsfChannel       localListener;
-    private final LinkPool         linkPool;
-    private final ReceivedListener receivedListener;
-    private final EventLoopGroup   workLoopGroup;
-    private final ProtocolHandler  handler;
+    private final String           protocol;        // 协议名，例如：rsf、hprose
+    private final AppContext       appContext;      // Hasor 环境
+    private final InterAddress     bindAddress;     // 网络通信地址
+    private final InterAddress     gatewayAddress;  // 网络通信地址(网关)
+    private       RsfChannel       localListener;   // Socket监听器
+    private final LinkPool         linkPool;        // 连接池
+    private final ReceivedListener receivedListener;// 数据接收器
+    private final EventLoopGroup   workLoopGroup;   // I/O处理线程
+    private final ProtocolHandler  handler;         // Netty处理传输协议的ChannelHandler
+    //
     public Connector(AppContext appContext, String protocol, InterAddress local, InterAddress gateway,//
-            final ReceivedListener receivedListener, LinkPool linkPool, EventLoopGroup workLoopGroup) throws ClassNotFoundException {
+            final ReceivedListener receivedListener, EventLoopGroup workLoopGroup) throws ClassNotFoundException {
         //
         this.protocol = protocol;
         this.appContext = appContext;
         this.bindAddress = local;
         this.gatewayAddress = gateway;
         this.receivedListener = receivedListener;
-        this.linkPool = linkPool;
+        this.linkPool = new LinkPool(appContext.getInstance(RsfEnvironment.class));
         this.workLoopGroup = workLoopGroup;
         //
         RsfEnvironment env = this.appContext.getInstance(RsfEnvironment.class);
@@ -165,12 +167,20 @@ public class Connector extends ChannelInboundHandlerAdapter implements ReceivedL
     public InterAddress getGatewayAddress() {
         return this.gatewayAddress;
     }
+    /** 获取RSF运行的网关地址（如果有），或者本地绑定地址。 */
+    public InterAddress getPublishAddress() {
+        InterAddress address = getGatewayAddress();
+        if (address == null) {
+            address = getBindAddress();
+        }
+        return address;
+    }
     //
     //
     /** 连接到远程机器 */
-    public void connectionTo(final InterAddress hostAddress, final BasicFuture<RsfChannel> result) {
+    private void connectionTo(final InterAddress hostAddress, final BasicFuture<RsfChannel> result) {
         //
-        //
+        logger.info("connect to {} ...", hostAddress.toHostSchema());
         Bootstrap boot = new Bootstrap();
         boot.group(this.workLoopGroup);
         boot.channel(NioSocketChannel.class);
@@ -206,6 +216,7 @@ public class Connector extends ChannelInboundHandlerAdapter implements ReceivedL
      */
     public void startListener(NioEventLoopGroup listenLoopGroup) {
         //
+        this.linkPool.initPool();
         ServerBootstrap boot = new ServerBootstrap();
         boot.group(listenLoopGroup, this.workLoopGroup);
         boot.channel(NioServerSocketChannel.class);
@@ -256,7 +267,50 @@ public class Connector extends ChannelInboundHandlerAdapter implements ReceivedL
     /**停止监听器*/
     public void shutdown() {
         this.localListener.close();
+        this.linkPool.destroyPool();
     }
+    //
+    /** 建立或获取和远程的连接(异步+回调) */
+    public Future<RsfChannel> getChannel(InterAddress target) throws InterruptedException {
+        String protocol = target.getSechma();
+        if (!this.protocol.equalsIgnoreCase(protocol)) {
+            throw new RsfException(ProtocolStatus.ProtocolError, "protocol mismatch exists.");
+        }
+        //
+        // .查找连接，并确定已有连接是否有效
+        String hostPort = target.getHostPort();
+        BasicFuture<RsfChannel> channelFuture = this.linkPool.findChannel(hostPort);
+        if (channelFuture != null && channelFuture.isDone()) {
+            RsfChannel channel = null;
+            try {
+                channel = channelFuture.get();
+                if (channel != null && !channel.isActive()) {
+                    this.linkPool.closeConnection(hostPort);// 连接已经失效，需要重新连接
+                    channelFuture = null;
+                }
+            } catch (Exception e) {
+                this.linkPool.closeConnection(hostPort);// 连接失败
+                channelFuture = null;
+            }
+        }
+        if (channelFuture != null) {
+            return channelFuture;
+        }
+        //
+        // .异步新建连接
+        synchronized (this) {
+            channelFuture = this.linkPool.findChannel(hostPort);
+            if (channelFuture != null) {
+                return channelFuture;
+            }
+            channelFuture = this.linkPool.preConnection(hostPort);
+            logger.info("connect to {} ...", hostPort);
+            this.connectionTo(target, channelFuture);
+        }
+        return channelFuture;
+    }
+    //
+    //
     public void mappingTo(RsfChannel rsfChannel, InterAddress interAddress) {
         rsfChannel.inverseMappingTo(interAddress);
         this.linkPool.mappingTo(rsfChannel, interAddress.getHostPort());

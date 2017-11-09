@@ -54,9 +54,9 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
     private final RsfBeanContainer     rsfBeanContainer; // 服务管理
     private final RsfEnvironment       rsfEnvironment;   // 环境&配置
     private final RemoteRsfCaller      rsfCaller;        // 调用器
-    private final RsfNetManager        rsfNetManager;    // 网络传输
+    private final RsfNetManager        rsfNetManager;    // 网络管理器
     private final DiskCacheAddressPool addressPool;      // 地址管理器
-    private final AddressProvider      poolProvider;     // 地址获取接口
+    private final AddressProvider      poolProvider;     // 地址获取接口（addressPool的另一个形态）
     private final AtomicBoolean        onlineStatus;     // 在线状态
     private       AppContext           appContext;       // 上下文环境
     //
@@ -204,11 +204,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         Connector connector = this.rsfNetManager.findConnector(protocol);
         if (connector == null)
             return null;
-        InterAddress address = connector.getGatewayAddress();
-        if (address == null) {
-            address = connector.getBindAddress();
-        }
-        return address;
+        return connector.getPublishAddress();
     }
     //
     public RsfClient getRsfClient() {
@@ -265,7 +261,8 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         public void sendRequest(Provider<InterAddress> targetProvider, RequestInfo info) {
             InterAddress target = targetProvider.get();
             try {
-                RsfChannel channel = rsfNetManager.getChannel(target).get();
+                Connector connector = findConnector(target);
+                RsfChannel channel = connector.getChannel(target).get();
                 if (channel != null) {
                     channel.sendData(info, null);
                 } else {
@@ -280,7 +277,8 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         @Override
         public void sendResponse(InterAddress target, ResponseInfo info) {
             try {
-                RsfChannel channel = rsfNetManager.getChannel(target).get();
+                Connector connector = findConnector(target);
+                RsfChannel channel = connector.getChannel(target).get();
                 if (channel != null) {
                     channel.sendData(info, null);
                 } else {
@@ -291,5 +289,13 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
                 logger.error("sendResponse - " + e.getMessage(), e);
             }
         }
+    }
+    private Connector findConnector(InterAddress target) {
+        String protocol = target.getSechma();
+        Connector connector = rsfNetManager.findConnector(protocol);// tips：例如：如果本地都不支持 rsf 协议，那么也没有必要连接远程的 rsf 协议。
+        if (connector == null) {
+            throw new RsfException(ProtocolStatus.ProtocolUndefined, "protocol is not support, invalid address ->" + target.toHostSchema());
+        }
+        return connector;
     }
 }

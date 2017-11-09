@@ -20,10 +20,7 @@ import net.hasor.core.AppContext;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.domain.RsfException;
 import net.hasor.utils.NameThreadFactory;
-import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +28,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Future;
 /**
  * RSF网络服务，并提供数据传出、传入，以及端口监听服务。
  * tips:支持多协议
@@ -41,7 +37,6 @@ import java.util.concurrent.Future;
 public class RsfNetManager {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     private final RsfEnvironment         rsfEnvironment;    // RSF环境
-    private final LinkPool               linkPool;          // 网络连接池，负责管理所有网络连接
     private final EventLoopGroup         workLoopGroup;     // I/O线程
     private final NioEventLoopGroup      listenLoopGroup;   // 监听线程
     private final RsfReceivedListener    receivedListener;  // 负责汇总所有来自底层网络的 RequestInfo、ResponseInfo消息
@@ -50,7 +45,6 @@ public class RsfNetManager {
     public RsfNetManager(RsfEnvironment rsfEnvironment, RsfReceivedListener receivedListener) {
         RsfSettings rsfSettings = rsfEnvironment.getSettings();
         this.bindListener = new HashMap<String, Connector>();
-        this.linkPool = new LinkPool(rsfEnvironment);
         //
         int workerThread = rsfSettings.getNetworkWorker();
         int listenerThread = rsfEnvironment.getSettings().getNetworkListener();
@@ -77,10 +71,9 @@ public class RsfNetManager {
     }
     //
     //
-    /** 启动RSF上配置的所有连接器。*/
+    /** 启动RSF上配置的所有连接器(传入方向)。*/
     public void start(AppContext appContext) {
         //
-        this.linkPool.initPool();
         RsfSettings settings = this.getRsfEnvironment().getSettings();
         String defaultProtocol = settings.getDefaultProtocol();
         Map<String, InterAddress> connectorSet = settings.getBindAddressSet();
@@ -98,7 +91,7 @@ public class RsfNetManager {
             }
             //
             try {
-                Connector connector = new Connector(appContext, protocolKey, local, gateway, this.receivedListener, this.linkPool, this.workLoopGroup);
+                Connector connector = new Connector(appContext, protocolKey, local, gateway, this.receivedListener, this.workLoopGroup);
                 connector.startListener(this.listenLoopGroup);//启动连接器
                 this.bindListener.put(protocolKey, connector);
             } catch (Throwable e) {
@@ -119,50 +112,7 @@ public class RsfNetManager {
             }
             this.bindListener.clear();
         }
-        this.linkPool.destroyPool();
         this.listenLoopGroup.shutdownGracefully();
         this.workLoopGroup.shutdownGracefully();
-    }
-    //
-    /** 建立或获取和远程的连接(异步+回调) */
-    public Future<RsfChannel> getChannel(InterAddress target) throws InterruptedException {
-        // .查找连接，并确定已有连接是否有效
-        String hostPort = target.getHostPort();
-        BasicFuture<RsfChannel> channelFuture = this.linkPool.findChannel(hostPort);
-        if (channelFuture != null && channelFuture.isDone()) {
-            RsfChannel channel = null;
-            try {
-                channel = channelFuture.get();
-                if (channel != null && !channel.isActive()) {
-                    this.linkPool.closeConnection(hostPort);// 连接已经失效，需要重新连接
-                    channelFuture = null;
-                }
-            } catch (Exception e) {
-                this.linkPool.closeConnection(hostPort);// 连接失败
-                channelFuture = null;
-            }
-        }
-        if (channelFuture != null) {
-            return channelFuture;
-        }
-        //
-        // .异步新建连接
-        synchronized (this) {
-            channelFuture = this.linkPool.findChannel(hostPort);
-            if (channelFuture != null) {
-                return channelFuture;
-            }
-            channelFuture = this.linkPool.preConnection(hostPort);
-            String protocol = target.getSechma();
-            Connector connector = this.findConnector(protocol);// tips：例如：如果本地都不支持 rsf 协议，那么也没有必要连接远程的 rsf 协议。
-            if (connector == null) {
-                this.logger.error("connect to {} failed. ", hostPort);
-                channelFuture.failed(new RsfException(ProtocolStatus.ProtocolUndefined, "Connector Undefined for protocol " + protocol));
-            } else {
-                logger.info("connect to {} ...", hostPort);
-                connector.connectionTo(target, channelFuture);
-            }
-        }
-        return channelFuture;
     }
 }
