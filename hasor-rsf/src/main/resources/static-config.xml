@@ -117,13 +117,13 @@
                 <!-- 处理网络监听请求的线程数。 -->
                 <listenThread>1</listenThread>
                 <!-- 选择具体的Netty Handler。 -->
-                <nettyHandler>net.hasor.rsf.rpc.net.netty.RsfDuplexHandler</nettyHandler>
+                <nettyHandler>net.hasor.rsf.protocol.rsf.RsfDuplexHandler</nettyHandler>
             </rsf_1_0>
 
             <!-- Hprose协议 -->
-            <hprose_http name="Hprose/Http" protocol="hprose" factory="net.hasor.rsf.rpc.net.netty.NettyConnectorFactory"
-                         localPort="${HPROSE_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${HPROSE_GATEWAY_PORT}">
-            </hprose_http>
+            <!--<hprose_http name="Hprose/Http" protocol="hprose" factory="net.hasor.rsf.rpc.net.netty.NettyConnectorFactory"-->
+                         <!--localPort="${HPROSE_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${HPROSE_GATEWAY_PORT}">-->
+            <!--</hprose_http>-->
         </connectorSet>
         <!--&lt;!&ndash;-->
         <!--这里配置 RSF 中支持的 RPC协议，但是要让协议生效必须配置对应的连接器。-->

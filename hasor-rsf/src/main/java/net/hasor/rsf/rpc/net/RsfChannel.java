@@ -30,6 +30,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public abstract class RsfChannel {
     protected Logger logger = LoggerFactory.getLogger(getClass());
+    private final    String                 protocol;       // 使用的协议
     private final    InterAddress           target;
     private final    LinkType               linkType;
     private volatile long                   lastSendTime;   //最后数据发送时间
@@ -39,6 +40,7 @@ public abstract class RsfChannel {
     private          List<ReceivedListener> listenerList;
     //
     public RsfChannel(InterAddress target, LinkType linkType) {
+        this.protocol = target.getSechma();
         this.target = target;
         this.linkType = linkType;
         this.listenerList = new CopyOnWriteArrayList<ReceivedListener>();
@@ -47,6 +49,10 @@ public abstract class RsfChannel {
     public String toString() {
         return "RsfChannel{" + "protocol=" + this.getProtocol() +//
                 ", linkType=" + linkType.name() + '}';
+    }
+    /**运行的协议*/
+    public String getProtocol() {
+        return this.protocol;
     }
     //
     //
@@ -157,9 +163,6 @@ public abstract class RsfChannel {
     //
     //
     //
-    /**运行的协议*/
-    public abstract String getProtocol();
-
     /**关闭网络连接*/
     protected abstract void closeChannel();
 
