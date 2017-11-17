@@ -26,30 +26,20 @@ import net.hasor.utils.future.FutureCallback;
 
 import java.io.IOException;
 /**
- * 封装网络连接，并且提供网络数据收发统计。
+ * 封装Netty网络连接。
  * @version : 2015年12月8日
  * @author 赵永春(zyc@hasor.net)
  */
-public class RsfChannelOnNetty extends RsfChannel {
-    private       String  protocol;
+class RsfChannelOnNetty extends RsfChannel {
     private final Channel channel;
     //
-    public RsfChannelOnNetty(String protocol, InterAddress target, Channel channel, LinkType linkType) {
+    RsfChannelOnNetty(InterAddress target, Channel channel, LinkType linkType) {
         super(target, linkType);
-        this.protocol = protocol;
         this.channel = channel;
     }
     //
-    public void receivedData(OptionInfo object) throws IOException {
-        super.receivedData(object);
-    }
-    //
-    /**运行的协议*/
-    public String getProtocol() {
-        return this.protocol;
-    }
     @Override
-    protected boolean isChannelActive() {
+    public boolean isActive() {
         return this.channel.isActive();
     }
     @Override
@@ -82,5 +72,9 @@ public class RsfChannelOnNetty extends RsfChannel {
                 }
             }
         });
+    }
+    /**接收到数据*/
+    public void receivedData(OptionInfo object) throws IOException {
+        super.receivedData(object);
     }
 }

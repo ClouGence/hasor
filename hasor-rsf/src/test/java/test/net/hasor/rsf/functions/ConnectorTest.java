@@ -15,22 +15,17 @@
  */
 package test.net.hasor.rsf.functions;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
 import net.hasor.core.*;
-import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.OptionInfo;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.rsf.rpc.net.*;
-import net.hasor.rsf.rpc.net.netty.ConnectorOnNetty;
-import net.hasor.utils.NameThreadFactory;
+import net.hasor.rsf.rpc.net.netty.NettyConnectorFactory;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 /**
  *  在 Connector 层面上测试，启动本地监听服务，并且连接到远程连接器上进行数据发送和接收。
@@ -44,7 +39,7 @@ public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provi
         return this.rsfEnv;
     }
     @Test
-    public void sendPack() throws IOException, InterruptedException, ExecutionException, ClassNotFoundException {
+    public void sendPack() throws Throwable {
         AppContext appContext = Hasor.create().putData("RSF_ENABLE", "false").build(new Module() {
             @Override
             public void loadModule(ApiBinder apiBinder) throws Throwable {
@@ -53,17 +48,18 @@ public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provi
         });
         this.rsfEnv = new DefaultRsfEnvironment(appContext.getEnvironment());
         String protocolKey = "RSF/1.0";
-        InterAddress local = rsfEnv.getSettings().getBindAddressSet().get(protocolKey);
-        InterAddress gateway = rsfEnv.getSettings().getGatewaySet().get(protocolKey);
-        EventLoopGroup workLoopGroup = new NioEventLoopGroup(10, new NameThreadFactory("RSF-Nio-%s", appContext.getClassLoader()));
-        NioEventLoopGroup listenLoopGroup = new NioEventLoopGroup(10, new NameThreadFactory("RSF-Listen-%s", appContext.getClassLoader()));
         LinkPool pool = new LinkPool(appContext.getInstance(RsfEnvironment.class));
-        Connector connector = new ConnectorOnNetty(appContext, protocolKey, local, gateway, this, workLoopGroup);
-        connector.startListener(listenLoopGroup);
+        Connector connector = new NettyConnectorFactory().create(protocolKey, appContext, this, new ConnectionAccepter() {
+            @Override
+            public boolean acceptIn(RsfChannel rsfChannel) throws IOException {
+                return true;
+            }
+        });
+        connector.startListener(appContext);
         System.out.println(">>>>>>>>> server started. <<<<<<<<<<");
         //
         Thread.sleep(2000);
-        Future<RsfChannel> result = connector.getChannel(local);
+        Future<RsfChannel> result = connector.getOrConnectionTo(connector.getBindAddress());
         for (int i = 0; i <= 10; i++) {
             Thread.sleep(1);
             RequestInfo outRequest = new RequestInfo();

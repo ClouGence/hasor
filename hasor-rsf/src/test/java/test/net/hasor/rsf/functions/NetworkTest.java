@@ -20,9 +20,9 @@ import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
+import net.hasor.rsf.rpc.net.ReceivedAdapter;
 import net.hasor.rsf.rpc.net.RsfChannel;
 import net.hasor.rsf.rpc.net.RsfNetManager;
-import net.hasor.rsf.rpc.net.ReceivedAdapter;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -53,7 +53,7 @@ public class NetworkTest extends ReceivedAdapter implements Provider<RsfEnvironm
         //
         Thread.sleep(2000);
         InterAddress local = rsfNetManager.findConnector("rsf").getBindAddress();
-        RsfChannel channel = rsfNetManager.findConnector("rsf").getChannel(local).get();
+        RsfChannel channel = rsfNetManager.findConnector("rsf").getOrConnectionTo(local).get();
         for (int i = 0; i <= 10; i++) {
             RequestInfo outRequest = new RequestInfo();
             outRequest.setMessage(i % 2 == 0);

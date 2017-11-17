@@ -37,7 +37,8 @@ public abstract class RsfChannel {
     private volatile long                   sendPackets;    //发送的数据包总数
     private volatile long                   sendPacketsOk;  //发送的数据包总数
     private volatile long                   sendPacketsErr; //发送的数据包总数
-    private          List<ReceivedListener> listenerList;
+    private          List<ReceivedListener> listenerList;   //
+    private          CloseListener          closeListener;  //当关闭时
     //
     public RsfChannel(InterAddress target, LinkType linkType) {
         this.protocol = target.getSechma();
@@ -109,7 +110,7 @@ public abstract class RsfChannel {
         });
     }
     /**接收到数据*/
-    void receivedData(OptionInfo object) throws IOException {
+    protected void receivedData(OptionInfo object) throws IOException {
         if (!isActive()) {
             return;
         }
@@ -151,6 +152,7 @@ public abstract class RsfChannel {
     /**关闭连接。*/
     public void close() {
         if (this.isActive()) {
+            this.closeListener.doClose(this);
             this.closeChannel();
         }
     }
@@ -159,6 +161,9 @@ public abstract class RsfChannel {
         if (!this.listenerList.contains(receivedListener)) {
             this.listenerList.add(receivedListener);
         }
+    }
+    void onClose(CloseListener closeListener) {
+        this.closeListener = closeListener;
     }
     //
     //

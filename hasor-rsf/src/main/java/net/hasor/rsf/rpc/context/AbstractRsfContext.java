@@ -261,7 +261,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
             InterAddress target = targetProvider.get();
             try {
                 Connector connector = findConnector(target);
-                RsfChannel channel = connector.getChannel(target).get();
+                RsfChannel channel = connector.getOrConnectionTo(target).get();
                 if (channel != null) {
                     channel.sendData(info, null);
                 } else {
@@ -277,7 +277,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         public void sendResponse(InterAddress target, ResponseInfo info) {
             try {
                 Connector connector = findConnector(target);
-                RsfChannel channel = connector.getChannel(target).get();
+                RsfChannel channel = connector.getOrConnectionTo(target).get();
                 if (channel != null) {
                     channel.sendData(info, null);
                 } else {

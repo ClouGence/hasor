@@ -89,8 +89,12 @@ public abstract class Connector {
         return address;
     }
     //
+    /**根据主机ip和端口号查找 RsfChannel*/
+    public Future<RsfChannel> findRsfChannelByHostPort(String hostPort) {
+        return this.linkPool.findChannel(hostPort);
+    }
     /** 建立或获取和远程的连接(异步+回调) */
-    public Future<RsfChannel> getChannel(InterAddress target) throws InterruptedException {
+    public Future<RsfChannel> getOrConnectionTo(InterAddress target) throws InterruptedException {
         String protocol = target.getSechma();
         if (!this.protocol.equalsIgnoreCase(protocol)) {
             throw new RsfException(ProtocolStatus.ProtocolError, "protocol mismatch exists.");
@@ -142,6 +146,7 @@ public abstract class Connector {
             }
             if (rsfChannel == future.get()) {
                 future.get().addListener(this.receivedListener);
+                future.get().onClose(new CloseListener(this.linkPool));
                 return true;
             }
             // 理论上不应该出现同一个 hostPort 对应两个 RsfChannel 的情况。
