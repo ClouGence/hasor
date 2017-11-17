@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
 import net.hasor.core.AppContext;
-import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.rpc.net.netty.ConnectorOnNetty;
-import net.hasor.utils.NameThreadFactory;
+import net.hasor.rsf.domain.OptionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,25 +35,14 @@ import java.util.Set;
 public class RsfNetManager {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     private final RsfEnvironment         rsfEnvironment;    // RSF环境
-    private final EventLoopGroup         workLoopGroup;     // I/O线程
-    private final NioEventLoopGroup      listenLoopGroup;   // 监听线程
-    private final RsfReceivedListener    receivedListener;  // 负责汇总所有来自底层网络的 RequestInfo、ResponseInfo消息
-    private final Map<String, Connector> bindListener;      // 不同协议都有自己独立的‘RPC协议连接器’
+    private final ReceivedAdapter        receivedAdapter;   // 负责汇总所有来自底层网络的 RequestInfo、ResponseInfo消息
+    private final Map<String, Connector> bindConnector;     // 不同协议都有自己独立的‘RPC协议连接器’
     //
-    public RsfNetManager(RsfEnvironment rsfEnvironment, RsfReceivedListener receivedListener) {
-        RsfSettings rsfSettings = rsfEnvironment.getSettings();
-        this.bindListener = new HashMap<String, Connector>();
-        //
-        int workerThread = rsfSettings.getNetworkWorker();
-        int listenerThread = rsfEnvironment.getSettings().getNetworkListener();
-        this.workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s", rsfEnvironment.getClassLoader()));
-        this.listenLoopGroup = new NioEventLoopGroup(listenerThread, new NameThreadFactory("RSF-Listen-%s", rsfEnvironment.getClassLoader()));
-        this.logger.info("nioEventLoopGroup, workerThread = {} , listenerThread = {}", workerThread, listenerThread);
-        //
+    public RsfNetManager(RsfEnvironment rsfEnvironment, ReceivedAdapter receivedAdapter) {
+        this.bindConnector = new HashMap<String, Connector>();
         this.rsfEnvironment = rsfEnvironment;
-        this.receivedListener = receivedListener;
+        this.receivedAdapter = receivedAdapter;
     }
-    //
     //
     /** 环境对象 */
     public RsfEnvironment getRsfEnvironment() {
@@ -64,56 +50,60 @@ public class RsfNetManager {
     }
     /**获取运行着哪些协议*/
     public Set<String> runProtocols() {
-        return Collections.unmodifiableSet(this.bindListener.keySet());
+        return Collections.unmodifiableSet(this.bindConnector.keySet());
     }
     /** 查找RPC连接器。 */
     public Connector findConnector(String protocol) {
-        return this.bindListener.get(protocol);
+        return this.bindConnector.get(protocol);
     }
-    //
     //
     /** 启动RSF上配置的所有连接器(传入方向)。*/
     public void start(AppContext appContext) {
         //
         RsfSettings settings = this.getRsfEnvironment().getSettings();
         String defaultProtocol = settings.getDefaultProtocol();
-        Map<String, InterAddress> connectorSet = settings.getBindAddressSet();
-        Map<String, InterAddress> gatewaySet = settings.getGatewaySet();
+        String[] protocolArrays = settings.getProtocos();
         //
-        for (Map.Entry<String, InterAddress> entry : connectorSet.entrySet()) {
-            String protocolKey = entry.getKey();
-            InterAddress local = entry.getValue();
-            InterAddress gateway = gatewaySet.get(protocolKey);
-            if (local.getPort() <= 0) {
-                throw new IllegalStateException("[" + protocolKey + "] the prot is zero.");
-            }
-            if (gateway != null && gateway.getPort() <= 0) {
-                throw new IllegalStateException("[" + protocolKey + "] the gateway prot is zero.");
-            }
-            //
+        for (String protocol : protocolArrays) {
             try {
-                Connector connector = new ConnectorOnNetty(appContext, protocolKey, local, gateway, this.receivedListener, this.workLoopGroup);
-                connector.startListener(this.listenLoopGroup);//启动连接器
-                this.bindListener.put(protocolKey, connector);
+                String configKey = settings.getProtocolConfigKey(protocol);
+                String connectorFactory = settings.getString(configKey + ".factory");
+                Class<?> factoryClass = appContext.getClassLoader().loadClass(connectorFactory);
+                ConnectorFactory factory = (ConnectorFactory) appContext.getInstance(factoryClass);
+                Connector connector = factory.create(protocol, appContext, new ReceivedListener() {
+                    @Override
+                    public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) throws IOException {
+                        receivedAdapter.receivedMessage(rsfChannel, info);
+                    }
+                }, new ConnectionAccepter() {
+                    @Override
+                    public boolean acceptIn(RsfChannel rsfChannel) throws IOException {
+                        return acceptChannel(rsfChannel);
+                    }
+                });
+                connector.startListener(appContext);//启动连接器
+                this.bindConnector.put(protocol, connector);
             } catch (Throwable e) {
-                this.logger.error("connector[{}] failed -> {}", protocolKey, e.getMessage(), e);
-                if (defaultProtocol.equals(protocolKey)) {
+                this.logger.error("connector[{}] failed -> {}", protocol, e.getMessage(), e);
+                if (defaultProtocol.equals(protocol)) {
                     throw new IllegalStateException("default connector start failed.", e);//默认连接器启动失败
                 }
             }
         }
         //
     }
+    //
+    protected boolean acceptChannel(RsfChannel rsfChannel) throws IOException {
+        return true;
+    }
     /** 销毁 */
     public void shutdown() {
         logger.info("rsfNetManager, shutdownGracefully.");
-        if (this.bindListener != null && !this.bindListener.isEmpty()) {
-            for (Connector listener : this.bindListener.values()) {
+        if (!this.bindConnector.isEmpty()) {
+            for (Connector listener : this.bindConnector.values()) {
                 listener.shutdown();
             }
-            this.bindListener.clear();
+            this.bindConnector.clear();
         }
-        this.listenLoopGroup.shutdownGracefully();
-        this.workLoopGroup.shutdownGracefully();
     }
 }

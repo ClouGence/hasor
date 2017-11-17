@@ -26,10 +26,7 @@ import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.utils.StringUtils;
 
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 /**
  * RSF框架工作信息。
  * @version : 2016年4月3日
@@ -62,7 +59,14 @@ public class InfoRsfInstruct implements RsfInstruct {
             }
         }
         //
-        Map<String, InterAddress> bindAddressSet = rsfContext.getSettings().getBindAddressSet();
+        String[] protocolArrays = rsfContext.getSettings().getProtocos();
+        Map<String, InterAddress> bindAddressSet = new HashMap<String, InterAddress>();
+        for (String protocol : protocolArrays) {
+            InterAddress interAddress = rsfContext.publishAddress(protocol);
+            if (interAddress != null) {
+                bindAddressSet.put(protocol, interAddress);
+            }
+        }
         List<String> arrays = new ArrayList<String>(bindAddressSet.keySet());
         Collections.sort(arrays);
         RsfSettings settings = rsfContext.getSettings();
@@ -104,8 +108,6 @@ public class InfoRsfInstruct implements RsfInstruct {
         sw.write(">>      serializeType :" + settings.getDefaultSerializeType() + "\r\n");
         sw.write(">>\r\n");
         sw.write(">>----- Network Settings ------\r\n");
-        sw.write(">>      networkWorker :" + settings.getNetworkWorker() + "\r\n");
-        sw.write(">>    networkListener :" + settings.getNetworkListener() + "\r\n");
         sw.write(">>     connectTimeout :" + settings.getConnectTimeout() + "\r\n");
         sw.write(">>\r\n");
         sw.write(">>----- RPC Settings ------\r\n");

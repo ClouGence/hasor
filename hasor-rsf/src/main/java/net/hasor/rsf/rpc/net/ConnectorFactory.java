@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net;
-import net.hasor.rsf.domain.OptionInfo;
-
-import java.io.IOException;
+import net.hasor.core.AppContext;
+import net.hasor.rsf.rpc.net.netty.NettyConnector;
 /**
- * 接受消息
- * @version : 2015年12月10日
+ * RPC协议连接器，负责创建某个特定RPC协议的网络事件。
+ * @version : 2017年01月16日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ReceivedListener {
-    /**从远端收到Response消息。*/
-    public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) throws IOException;
+public interface ConnectorFactory {
+    public NettyConnector create(String protocol, AppContext appContext, ReceivedListener receivedListener, ConnectionAccepter accepter) throws Throwable;
 }

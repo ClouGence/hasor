@@ -17,7 +17,6 @@ package net.hasor.rsf;
 import net.hasor.core.Settings;
 
 import java.io.IOException;
-import java.util.Map;
 /**
  * RSF 配置。
  * @version : 2014年11月18日
@@ -41,12 +40,6 @@ public interface RsfSettings extends Settings {
 
     /**获取配置的客户端选项*/
     public RsfOptionSet getClientOption();
-
-    /**处理网络IO数据包的线程数*/
-    public int getNetworkWorker();
-
-    /**处理网络监听请求的线程数*/
-    public int getNetworkListener();
 
     /**处理任务队列的最大大小，作为服务端当队列满了之后所有新进来的请求都会被回应 ChooseOther*/
     public int getQueueMaxSize();
@@ -78,14 +71,17 @@ public interface RsfSettings extends Settings {
     /**获取默认传输协议*/
     public String getDefaultProtocol();
 
-    /**获取本地服务绑定地址*/
-    public Map<String, InterAddress> getBindAddressSet();
+    /**可使用的协议名集合*/
+    public String[] getProtocos();
 
-    /**协议和提供者的关系*/
-    public Map<String, String> getProtocolHandlerMapping();
+    /**获取本地服务绑定地址*/
+    public InterAddress getBindAddressSet(String protocolName);
 
     /**获取网关地址*/
-    public Map<String, InterAddress> getGatewaySet();
+    public InterAddress getGatewaySet(String protocolName);
+
+    /**获取协议配置节点名*/
+    public String getProtocolConfigKey(String protocolName);
 
     /**获取本机所属单元*/
     public String getUnitName();

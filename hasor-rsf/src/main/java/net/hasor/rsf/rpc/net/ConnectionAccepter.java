@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net;
-import net.hasor.rsf.domain.OptionInfo;
-
 import java.io.IOException;
 /**
- * 接受消息
+ * 接受连接
  * @version : 2015年12月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public interface ReceivedListener {
-    /**从远端收到Response消息。*/
-    public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) throws IOException;
+public interface ConnectionAccepter {
+    public boolean acceptIn(RsfChannel rsfChannel) throws IOException;
 }

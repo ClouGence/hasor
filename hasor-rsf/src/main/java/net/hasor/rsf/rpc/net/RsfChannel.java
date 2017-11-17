@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 封装网络连接，并且提供网络数据收发统计。
  * @version : 2015年12月8日
@@ -32,7 +31,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public abstract class RsfChannel {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     private final    InterAddress           target;
-    private final    AtomicBoolean          shakeHands;
     private final    LinkType               linkType;
     private volatile long                   lastSendTime;   //最后数据发送时间
     private volatile long                   sendPackets;    //发送的数据包总数
@@ -42,20 +40,13 @@ public abstract class RsfChannel {
     //
     public RsfChannel(InterAddress target, LinkType linkType) {
         this.target = target;
-        this.shakeHands = new AtomicBoolean(false);
         this.linkType = linkType;
         this.listenerList = new CopyOnWriteArrayList<ReceivedListener>();
-        //
-        if (!LinkType.In.equals(linkType)) {
-            this.shakeHands.set(true);//连入的连接，需要进行握手之后才能使用
-        }
     }
     @Override
     public String toString() {
         return "RsfChannel{" + "protocol=" + this.getProtocol() +//
-                ", linkType=" + linkType.name() + //
-                ", shakeHands=" + shakeHands + //
-                '}';
+                ", linkType=" + linkType.name() + '}';
     }
     //
     //
@@ -112,7 +103,10 @@ public abstract class RsfChannel {
         });
     }
     /**接收到数据*/
-    protected void receivedData(OptionInfo object) throws IOException {
+    void receivedData(OptionInfo object) throws IOException {
+        if (!isActive()) {
+            return;
+        }
         for (ReceivedListener listener : this.listenerList) {
             listener.receivedMessage(this, object);
         }
@@ -140,24 +134,17 @@ public abstract class RsfChannel {
         return this.sendPacketsErr;
     }
     /**测定连接是否处于激活的。*/
-    public boolean isActive() {
-        return this.isChannelActive() && this.shakeHands.get();
-    }
+    public abstract boolean isActive();
     /**获取远程连接的地址*/
     public InterAddress getTarget() {
         if (this.target != null) {
             return this.target;
         }
-        return this.target;
-    }
-    /**激活这个连接服务*/
-    public boolean activeIn() {
-        this.shakeHands.set(true);
-        return this.shakeHands.get();
+        return null;
     }
     /**关闭连接。*/
     public void close() {
-        if (this.isChannelActive()) {
+        if (this.isActive()) {
             this.closeChannel();
         }
     }
@@ -172,9 +159,6 @@ public abstract class RsfChannel {
     //
     /**运行的协议*/
     public abstract String getProtocol();
-
-    /**判断底层网络是否可用*/
-    protected abstract boolean isChannelActive();
 
     /**关闭网络连接*/
     protected abstract void closeChannel();

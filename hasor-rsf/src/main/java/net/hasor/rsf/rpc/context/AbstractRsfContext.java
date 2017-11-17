@@ -30,9 +30,9 @@ import net.hasor.rsf.rpc.caller.remote.RemoteRsfCaller;
 import net.hasor.rsf.rpc.caller.remote.RemoteSenderListener;
 import net.hasor.rsf.rpc.client.RpcRsfClient;
 import net.hasor.rsf.rpc.net.Connector;
+import net.hasor.rsf.rpc.net.ReceivedAdapter;
 import net.hasor.rsf.rpc.net.RsfChannel;
 import net.hasor.rsf.rpc.net.RsfNetManager;
-import net.hasor.rsf.rpc.net.RsfReceivedListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,18 +56,17 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
     private final RemoteRsfCaller      rsfCaller;        // 调用器
     private final RsfNetManager        rsfNetManager;    // 网络管理器
     private final DiskCacheAddressPool addressPool;      // 地址管理器
-    private final AddressProvider      poolProvider;     // 地址获取接口（addressPool的另一个形态）
+    private final PoolAddressProvider  poolProvider;     // 地址获取接口（addressPool的另一个形态）
     private final AtomicBoolean        onlineStatus;     // 在线状态
     private       AppContext           appContext;       // 上下文环境
     //
-    public AbstractRsfContext(RsfEnvironment environment) {
-        this.rsfEnvironment = environment;
-        this.addressPool = new DiskCacheAddressPool(this.rsfEnvironment);
+    public AbstractRsfContext(RsfEnvironment rsfEnvironment) {
+        this.addressPool = new DiskCacheAddressPool(rsfEnvironment);
         this.poolProvider = new PoolAddressProvider(this.addressPool);
-        //
         this.rsfBeanContainer = new RsfBeanContainer(this.addressPool);
+        this.rsfEnvironment = rsfEnvironment;
         Transport transport = new Transport();
-        this.rsfNetManager = new RsfNetManager(this.rsfEnvironment, transport);
+        this.rsfNetManager = new RsfNetManager(rsfEnvironment, transport);
         this.rsfCaller = new RemoteRsfCaller(this, this.rsfBeanContainer, transport);
         this.onlineStatus = new AtomicBoolean(false);
     }
@@ -247,7 +246,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
     //
     //
     /*接收到网络数据 & 发送网络数据*/
-    private class Transport extends RsfReceivedListener implements RemoteSenderListener {
+    private class Transport extends ReceivedAdapter implements RemoteSenderListener {
         @Override
         public void receivedMessage(InterAddress form, ResponseInfo response) {
             rsfCaller.putResponse(response);

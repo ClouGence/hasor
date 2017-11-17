@@ -157,7 +157,7 @@ public class StandardEventManager implements EventContext {
         }
         //
         //2.处理Once事件.
-        List<EventListener<?>> onceList = listenerPool.popOnceListener();
+        List<EventListener<?>> onceList = (listenerPool != null) ? listenerPool.popOnceListener() : null;
         if (onceList != null) {
             for (EventListener<?> listenerItem : onceList) {
                 Throwable doListener = doListener(eventObj, eventType, eventData, callBack, (EventListener<T>) listenerItem);

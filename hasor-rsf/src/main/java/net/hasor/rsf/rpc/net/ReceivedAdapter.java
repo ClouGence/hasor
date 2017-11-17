@@ -23,9 +23,9 @@ import net.hasor.rsf.domain.ResponseInfo;
  * @version : 2015年12月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public abstract class RsfReceivedListener implements ReceivedListener {
+public abstract class ReceivedAdapter implements ReceivedListener {
     @Override
-    public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) {
+    public final void receivedMessage(RsfChannel rsfChannel, OptionInfo info) {
         if (info instanceof RequestInfo) {
             RequestInfo request = (RequestInfo) info;
             if (request.getRequestID() > 0) {

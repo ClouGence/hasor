@@ -24,13 +24,14 @@ import net.hasor.rsf.SendLimitPolicy;
 import net.hasor.rsf.domain.OptionInfo;
 import net.hasor.rsf.utils.NetworkUtils;
 import net.hasor.rsf.utils.StringUtils;
-import net.hasor.utils.convert.ConverterUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 /**
  *
  * @version : 2014年11月12日
@@ -46,9 +47,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private   OptionInfo                serverOptionManager   = new OptionInfo();
     private   OptionInfo                clientOptionManager   = new OptionInfo();
     //
-    private   int                       networkWorker         = 2;
-    private   int                       networkListener       = 1;
-    //
     private   int                       queueMaxSize          = 4096;
     private   int                       queueMinPoolSize      = 1;
     private   int                       queueMaxPoolSize      = 7;
@@ -56,9 +54,9 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     //
     private   String                    bindAddress           = "local";
     private   String                    defaultProtocol       = null;
+    private   Map<String, String>       connectorSet          = null;
     private   Map<String, InterAddress> bindAddressSet        = null;
     private   Map<String, InterAddress> gatewayAddressMap     = null;
-    private   Map<String, String>       protocolHandlerMap    = null;
     //
     private   int                       consolePort           = 2180;
     private   String[]                  consoleInBound        = null;
@@ -105,14 +103,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         return this.defaultSerializeType;
     }
     @Override
-    public int getNetworkWorker() {
-        return this.networkWorker;
-    }
-    @Override
-    public int getNetworkListener() {
-        return this.networkListener;
-    }
-    @Override
     public int getQueueMaxSize() {
         return this.queueMaxSize;
     }
@@ -153,16 +143,20 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         return this.defaultProtocol;
     }
     @Override
-    public Map<String, InterAddress> getBindAddressSet() {
-        return Collections.unmodifiableMap(this.bindAddressSet);
+    public String[] getProtocos() {
+        return this.connectorSet.keySet().toArray(new String[this.connectorSet.size()]);
     }
     @Override
-    public Map<String, String> getProtocolHandlerMapping() {
-        return Collections.unmodifiableMap(this.protocolHandlerMap);
+    public InterAddress getBindAddressSet(String protocolName) {
+        return this.bindAddressSet.get(protocolName);
     }
     @Override
-    public Map<String, InterAddress> getGatewaySet() {
-        return Collections.unmodifiableMap(this.gatewayAddressMap);
+    public InterAddress getGatewaySet(String protocolName) {
+        return this.gatewayAddressMap.get(protocolName);
+    }
+    @Override
+    public String getProtocolConfigKey(String protocolName) {
+        return this.connectorSet.get(protocolName);
     }
     @Override
     public String getUnitName() {
@@ -232,9 +226,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
             }
         }
         //
-        this.networkListener = getInteger("hasor.rsfConfig.network.listenThread", 1);
-        this.networkWorker = getInteger("hasor.rsfConfig.network.workerThread", 2);
-        //
         this.queueMaxSize = getInteger("hasor.rsfConfig.queue.maxSize", 4096);
         this.queueMinPoolSize = getInteger("hasor.rsfConfig.queue.minPoolSize", 1);
         this.queueMaxPoolSize = getInteger("hasor.rsfConfig.queue.maxPoolSize", 7);
@@ -243,47 +234,49 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         String bindAddress = getString("hasor.rsfConfig.address", "local");
         InetAddress inetAddress = NetworkUtils.finalBindAddress(bindAddress);
         this.bindAddress = inetAddress.getHostAddress();
-        this.defaultProtocol = getString("hasor.rsfConfig.connectorSet.default", "RSF/1.0");
-        this.protocolHandlerMap = new HashMap<String, String>();
-        XmlNode[] protocolSetNode = getXmlNodeArray("hasor.rsfConfig.protocolSet");
-        if (protocolSetNode != null) {
-            for (XmlNode protocolNode : protocolSetNode) {
-                this.parseProtocol(this.protocolHandlerMap, protocolNode);
-            }
-        }
-        this.parseProtocol(this.protocolHandlerMap, getXmlNode("hasor.rsfConfig.protocolSet"));
-        //
-        //
+        this.defaultProtocol = getString("hasor.rsfConfig.connectorSet.default");
         this.bindAddressSet = new HashMap<String, InterAddress>();
         this.gatewayAddressMap = new HashMap<String, InterAddress>();
-        XmlNode[] connectorArrays = getXmlNodeArray("hasor.rsfConfig.connectorSet.connector");
-        if (connectorArrays != null) {
-            for (XmlNode connectorNode : connectorArrays) {
-                String protocol = connectorNode.getAttribute("protocol");
-                String localPort = connectorNode.getAttribute("localPort");
-                String gatewayHost = connectorNode.getAttribute("gatewayAddress");
-                String gatewayPort = connectorNode.getAttribute("gatewayPort");
-                //
-                if (StringUtils.isBlank(protocol))
-                    continue;
-                int localPortInt = 0;
-                int gatewayPortInt = 0;
-                if (StringUtils.isNotBlank(localPort))
-                    localPortInt = (Integer) ConverterUtils.convert(Integer.TYPE, localPort);
-                if (StringUtils.isNotBlank(gatewayPort))
-                    gatewayPortInt = (Integer) ConverterUtils.convert(Integer.TYPE, gatewayPort);
-                //
-                if (localPortInt <= 0)
-                    continue;
-                InterAddress localAddress = new InterAddress(protocol, this.bindAddress, localPortInt, this.unitName);
-                this.bindAddressSet.put(protocol, localAddress);
-                //
-                if (gatewayPortInt <= 0 || StringUtils.isBlank(gatewayHost))
-                    continue;
-                InetAddress gatewayInetAddress = NetworkUtils.finalBindAddress(gatewayHost);
-                InterAddress gatewayAddress = new InterAddress(protocol, gatewayInetAddress.getHostAddress(), gatewayPortInt, this.unitName);
-                this.gatewayAddressMap.put(protocol, gatewayAddress);
+        Map<String, String> connectorTmpSet = new HashMap<String, String>();
+        XmlNode[] connectorRoot = getXmlNodeArray("hasor.rsfConfig.connectorSet");
+        if (connectorRoot != null) {
+            for (XmlNode connector : connectorRoot) {
+                connectorTmpSet.put(connector.getName(), "hasor.rsfConfig.connectorSet." + connector.getName());
             }
+        }
+        //
+        this.connectorSet = new HashMap<String, String>();
+        for (String connectorName : connectorTmpSet.keySet()) {
+            String basePath = this.connectorSet.get(connectorName);
+            String name = this.getString(basePath + ".name");
+            String protocol = this.getString(basePath + ".protocol");
+            if (StringUtils.isBlank(protocol) || StringUtils.isBlank(name))
+                continue;
+            if (this.connectorSet.containsKey(name))
+                throw new IOException("repeat connector config error , name is " + name);
+            //
+            // .先解析端口和地址
+            int localPort = this.getInteger(basePath + ".localPort", 0);
+            if (localPort <= 0)
+                continue;
+            InterAddress localAddress = new InterAddress(protocol, this.bindAddress, localPort, this.unitName);
+            // .解析没问哦在放到connectorSet中
+            this.connectorSet.put(name, basePath);
+            this.bindAddressSet.put(name, localAddress);
+            // .确保有默认的协议可用
+            if (StringUtils.isBlank(this.defaultProtocol)) {
+                this.defaultProtocol = name;
+            }
+            //
+            // .解析网关配置（可选）
+            String gatewayHost = this.getString(basePath + ".gatewayAddress");
+            int gatewayPort = this.getInteger(basePath + ".gatewayPort", 0);
+            if (gatewayPort <= 0 || StringUtils.isBlank(gatewayHost))
+                continue;
+            InetAddress gatewayInetAddress = NetworkUtils.finalBindAddress(gatewayHost);
+            InterAddress gatewayAddress = new InterAddress(protocol, gatewayInetAddress.getHostAddress(), gatewayPort, this.unitName);
+            this.gatewayAddressMap.put(name, gatewayAddress);
+            //
         }
         //
         this.consolePort = getInteger("hasor.rsfConfig.console.port", 2180);
@@ -327,19 +320,5 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         //
         this.automaticOnline = getBoolean("hasor.rsfConfig.automaticOnline", true);
         this.logger.info("loadRsfConfig complete!");
-    }
-    private void parseProtocol(Map<String, String> implementorMap, XmlNode protocolSetNode) {
-        List<XmlNode> protocolSet = protocolSetNode.getChildren("protocol");
-        if (protocolSet == null) {
-            return;
-        }
-        for (XmlNode protocolNode : protocolSet) {
-            String name = protocolNode.getAttribute("name");
-            String implementor = protocolNode.getAttribute("implementor");
-            if (StringUtils.isBlank(name) || StringUtils.isBlank(implementor))
-                continue;
-            //
-            implementorMap.put(name, implementor);
-        }
     }
 }

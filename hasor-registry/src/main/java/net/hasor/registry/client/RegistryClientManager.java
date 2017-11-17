@@ -55,6 +55,9 @@ class RegistryClientManager implements TimerTask {
         this.instance = new InstanceInfo();
         this.instance.setInstanceID(this.rsfContext.getInstanceID());
         this.instance.setUnitName(this.rsfContext.getSettings().getUnitName());
+        String protocol = this.rsfContext.getDefaultProtocol();
+        InterAddress interAddress = this.rsfContext.publishAddress(protocol);
+        this.instance.setRsfAddress(interAddress.toHostSchema());
     }
     @Override
     public void run(Timeout timeout) {

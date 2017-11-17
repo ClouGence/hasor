@@ -30,10 +30,11 @@ import net.hasor.utils.NameThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -91,7 +92,15 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         }
         //
         RsfSettings settings = this.rsfContext.getSettings();
-        List<String> rsfAddressList = getStrings(settings.getBindAddressSet());
+        String[] protocolArrays = settings.getProtocos();
+        List<String> rsfAddressList = new ArrayList<String>(protocolArrays.length);
+        for (String protocol : protocolArrays) {
+            InterAddress interAddress = this.rsfContext.publishAddress(protocol);
+            if (interAddress != null) {
+                rsfAddressList.add(inetAddress.getHostName());
+            }
+        }
+        Collections.sort(rsfAddressList);
         //
         Attribute<RsfCommandSession> attr = ctx.attr(SessionKEY);
         if (attr.get() == null) {
@@ -118,21 +127,6 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         ctx.write("--------------------------------------------\r\n");
         ctx.write(CMD);
         ctx.flush();
-    }
-    private List<String> getStrings(Map<String, InterAddress> bindPortMap) throws UnknownHostException {
-        List<String> hostSchema = new ArrayList<String>();
-        List<String> portType = new ArrayList<String>(bindPortMap.keySet());
-        Collections.sort(portType);
-        //
-        for (String key : portType) {
-            try {
-                InterAddress addr = bindPortMap.get(key);
-                hostSchema.add(addr.toHostSchema());
-            } catch (Exception e) {
-                hostSchema.add(InetAddress.getLocalHost().getHostAddress());
-            }
-        }
-        return hostSchema;
     }
     @Override
     public void channelRead0(ChannelHandlerContext ctx, String request) throws Exception {

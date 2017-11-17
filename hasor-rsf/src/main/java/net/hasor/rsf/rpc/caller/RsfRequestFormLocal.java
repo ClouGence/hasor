@@ -108,7 +108,8 @@ class RsfRequestFormLocal extends AttributeSet implements RsfRequest {
         RsfContext rsfContext = this.rsfCaller.getContext();
         String protocol = null;
         if (this.getTargetAddress() == null) {
-            protocol = rsfContext.getSettings().getDefaultProtocol();
+            String protocolName = rsfContext.getDefaultProtocol();
+            protocol = rsfContext.getSettings().getBindAddressSet(protocolName).getSechma();
         } else {
             protocol = getTargetAddress().getSechma();
         }
