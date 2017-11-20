@@ -1,5 +1,5 @@
 package net.example.hasor.web;
-import net.example.domain.domain.UserDO;
+import net.example.hasor.domain.UserDO;
 import net.example.hasor.services.UserManager;
 import net.hasor.core.Inject;
 import net.hasor.web.WebController;

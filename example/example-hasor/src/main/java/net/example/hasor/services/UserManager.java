@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.example.hasor.services;
-import net.example.domain.domain.UserDO;
 import net.example.hasor.daos.UserDao;
+import net.example.hasor.domain.UserDO;
 import net.example.hasor.domain.UserDTO;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
