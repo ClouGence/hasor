@@ -27,7 +27,9 @@ class NettySocketAccept extends ChannelInboundHandlerAdapter {
         this.connector = connector;
     }
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        if (!this.connector.acceptIn(ctx)) {
+        if (this.connector.acceptIn(ctx)) {
+            super.channelActive(ctx);
+        } else {
             ctx.close();
         }
     }

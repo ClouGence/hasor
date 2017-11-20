@@ -29,46 +29,6 @@ import org.slf4j.LoggerFactory;
  */
 public class RsfProtocolHandler implements ProtocolHandlerFactory {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    //    @Override
-    //    public boolean acceptIn(final Connector connector, RsfChannel rsfChannel) throws Exception {
-    //        //
-    //        // .添加数据接收监听器，获取握手数据
-    //        final BasicFuture<Boolean> future = new BasicFuture<Boolean>();
-    //        rsfChannel.addListener(new ReceivedListener() {
-    //            @Override
-    //            public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) throws IOException {
-    //                if (future.isDone()) {
-    //                    return;
-    //                }
-    //                //
-    //                if (info instanceof ResponseInfo) {
-    //                    ResponseInfo response = (ResponseInfo) info;
-    //                    String serverInfo = response.getOption("SERVER_INFO");
-    //                    try {
-    //                        if (LinkType.In == rsfChannel.getLinkType()) {
-    //                            //                            connector.mappingTo(rsfChannel, new InterAddress(serverInfo));
-    //                        }
-    //                    } catch (Exception e) { /**/ }
-    //                    future.completed(true);
-    //                    logger.info("handshake -> ready for {}", serverInfo);
-    //                }
-    //            }
-    //        });
-    //        //
-    //        // .发送RSF实例信息
-    //        InterAddress interAddress = connector.getGatewayAddress();
-    //        if (interAddress == null) {
-    //            interAddress = connector.getBindAddress();
-    //        }
-    //        InterAddress publishAddress = interAddress;
-    //        ResponseInfo options = new ResponseInfo();
-    //        options.setRequestID(-1);
-    //        options.setStatus(ProtocolStatus.OK);
-    //        options.addOption("SERVER_INFO", publishAddress.toHostSchema());
-    //        rsfChannel.sendData(options, null);
-    //        //
-    //        return rsfChannel.activeIn();
-    //    }
     @Override
     public ChannelHandler[] channelHandler(Connector connector, AppContext appContext) {
         RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);
@@ -77,7 +37,8 @@ public class RsfProtocolHandler implements ProtocolHandlerFactory {
                 new RsfEncoder(env)                             //
         );
         return new ChannelHandler[] {                           //
-                duplexHandler                                   //
+                duplexHandler,                                  //
+                new ShakeHands(connector)                       //
         };
     }
 }

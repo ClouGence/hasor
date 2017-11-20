@@ -61,7 +61,6 @@ public class RealCallerTest {
         EchoService echoService = client.wrapper(EchoService.class);
         String res = echoService.sayHello("Hello Word for Invoker");
         System.out.println("invoker -> " + res);
-        //
     }
     @Test
     public void realCallerTest() throws Throwable {
