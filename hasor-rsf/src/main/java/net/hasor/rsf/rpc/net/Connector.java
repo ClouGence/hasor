@@ -158,7 +158,9 @@ public abstract class Connector {
                 return true;
             }
             // 理论上不应该出现同一个 hostPort 对应两个 RsfChannel 的情况。
-            throw new RsfException(ProtocolStatus.NetworkError, "the same port, multiple connected to the request. -> " + hostPort);
+            RsfException rsfException = new RsfException(ProtocolStatus.NetworkError, "the same port, multiple connected to the request. -> " + hostPort);
+            future.failed(rsfException);
+            throw rsfException;
         } else {
             this.logger.warn("connection[{}] refused form {} ,", this.getProtocol(), rsfChannel.getTarget().getHostPort());
             return false;

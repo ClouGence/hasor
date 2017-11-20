@@ -43,9 +43,10 @@ import java.util.Arrays;
  */
 public class NettyConnector extends Connector {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    private RsfChannel       localListener;     // Socket监听器
-    private NettyThreadGroup threadGroup;       // Netty 线程组
-    private ChannelHandler[] nettyHandler;      // Netty ChannelHandler 组
+    private RsfChannel             localListener;   // Socket监听器
+    private NettyThreadGroup       threadGroup;     // Netty 线程组
+    private ProtocolHandlerFactory handlerFactory;  // Netty ChannelHandler 组
+    private AppContext             appContext;      // App
     //
     public NettyConnector(String protocol, final AppContext appContext, final ReceivedListener receivedAdapter, ConnectionAccepter accepter) throws ClassNotFoundException {
         super(protocol, appContext.getInstance(RsfEnvironment.class), receivedAdapter, accepter);
@@ -53,15 +54,8 @@ public class NettyConnector extends Connector {
         String configKey = getRsfEnvironment().getSettings().getProtocolConfigKey(protocol);
         String nettyHandlerType = getRsfEnvironment().getSettings().getString(configKey + ".handlerFactory");
         final Class<ProtocolHandlerFactory> handlerClass = (Class<ProtocolHandlerFactory>) appContext.getClassLoader().loadClass(nettyHandlerType);
-        //
-        ArrayList<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
-        // 1st,IP黑名单实现（检测是否可以连入或者连出[IP黑名单实现]）
-        handlers.add(new NettySocketAccept(this));
-        // 2st,编码解码器
-        handlers.addAll(Arrays.asList(appContext.getInstance(handlerClass).channelHandler(this, appContext)));
-        // 3st,转发RequestInfo、ResponseInfo到RSF
-        handlers.add(new NettySocketReader(this));
-        this.nettyHandler = handlers.toArray(new ChannelHandler[handlers.size()]);
+        this.handlerFactory = appContext.getInstance(handlerClass);
+        this.appContext = appContext;
     }
     //
     /** 启动本地监听器 */
@@ -72,7 +66,7 @@ public class NettyConnector extends Connector {
         boot.channel(NioServerSocketChannel.class);
         boot.childHandler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
-                ch.pipeline().addLast(nettyHandler);
+                ch.pipeline().addLast(channelHandlerList());
             }
         });
         boot.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
@@ -100,6 +94,17 @@ public class NettyConnector extends Connector {
         }
         //
     }
+    private ChannelHandler[] channelHandlerList() {
+        //
+        ArrayList<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
+        // 1st,IP黑名单实现（检测是否可以连入或者连出[IP黑名单实现]）
+        handlers.add(new NettySocketAccept(this));
+        // 2st,编码解码器
+        handlers.addAll(Arrays.asList(this.handlerFactory.channelHandler(this, this.appContext)));
+        // 3st,转发RequestInfo、ResponseInfo到RSF
+        handlers.add(new NettySocketReader(this));
+        return handlers.toArray(new ChannelHandler[handlers.size()]);
+    }
     /**停止监听器*/
     public void shutdownListener() {
         this.localListener.close();
@@ -115,7 +120,7 @@ public class NettyConnector extends Connector {
         boot.channel(NioSocketChannel.class);
         boot.handler(new ChannelInitializer<SocketChannel>() {
             public void initChannel(SocketChannel ch) throws Exception {
-                ch.pipeline().addLast(nettyHandler);
+                ch.pipeline().addLast(channelHandlerList());
             }
         });
         ChannelFuture future = configBoot(boot).connect(hostAddress.toSocketAddress());

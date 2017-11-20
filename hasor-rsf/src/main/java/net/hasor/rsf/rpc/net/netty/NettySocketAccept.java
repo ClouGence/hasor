@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net.netty;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 /**
@@ -22,16 +21,13 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  * @version : 2017年01月16日
  * @author 赵永春(zyc@hasor.net)
  */
-@ChannelHandler.Sharable
 class NettySocketAccept extends ChannelInboundHandlerAdapter {
     private NettyConnector connector;
     public NettySocketAccept(NettyConnector connector) {
         this.connector = connector;
     }
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        if (this.connector.acceptIn(ctx)) {
-            super.channelActive(ctx);
-        } else {
+        if (!this.connector.acceptIn(ctx)) {
             ctx.close();
         }
     }

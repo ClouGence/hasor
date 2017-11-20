@@ -21,7 +21,10 @@ import net.hasor.rsf.domain.OptionInfo;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
-import net.hasor.rsf.rpc.net.*;
+import net.hasor.rsf.rpc.net.ConnectionAccepter;
+import net.hasor.rsf.rpc.net.Connector;
+import net.hasor.rsf.rpc.net.ReceivedListener;
+import net.hasor.rsf.rpc.net.RsfChannel;
 import net.hasor.rsf.rpc.net.netty.NettyConnectorFactory;
 import org.junit.Test;
 
@@ -48,7 +51,6 @@ public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provi
         });
         this.rsfEnv = new DefaultRsfEnvironment(appContext.getEnvironment());
         String protocolKey = "RSF/1.0";
-        LinkPool pool = new LinkPool(appContext.getInstance(RsfEnvironment.class));
         Connector connector = new NettyConnectorFactory().create(protocolKey, appContext, this, new ConnectionAccepter() {
             @Override
             public boolean acceptIn(RsfChannel rsfChannel) throws IOException {
@@ -60,6 +62,7 @@ public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provi
         //
         Thread.sleep(2000);
         Future<RsfChannel> result = connector.getOrConnectionTo(connector.getBindAddress());
+        RsfChannel rsfChannel = result.get();
         for (int i = 0; i <= 10; i++) {
             Thread.sleep(1);
             RequestInfo outRequest = new RequestInfo();
@@ -74,13 +77,14 @@ public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provi
             outRequest.setTargetMethod("add");
             outRequest.addParameter("java.lang.Object", "aaaa".getBytes(), null);
             System.out.println("sendData[Request] >>>>>>>>> " + outRequest.getRequestID());
-            result.get().sendData(outRequest, null);
+            rsfChannel.sendData(outRequest, null);
         }
         //
         Thread.sleep(2000);
         System.out.println(">>>>>>>>> stop. <<<<<<<<<<");
-        pool.closeConnection(result.get().getTarget().getHostPort());
-        connector.shutdown();
+        System.in.read();
+        //        pool.closeConnection(result.get().getTarget().getHostPort());
+        //        connector.shutdown();
     }
     //
     @Override

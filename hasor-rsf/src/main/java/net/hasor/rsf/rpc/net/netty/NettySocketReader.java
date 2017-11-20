@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net.netty;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hasor.rsf.domain.OptionInfo;
@@ -33,7 +32,6 @@ import java.util.concurrent.Future;
  * @version : 2017年01月16日
  * @author 赵永春(zyc@hasor.net)
  */
-@ChannelHandler.Sharable
 class NettySocketReader extends ChannelInboundHandlerAdapter {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     private NettyConnector connector;
