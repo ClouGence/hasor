@@ -22,10 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 /**
  * RSF网络服务，并提供数据传出、传入，以及端口监听服务。
  * tips:支持多协议
@@ -34,12 +31,14 @@ import java.util.Set;
  */
 public class RsfNetManager {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    private final RsfEnvironment         rsfEnvironment;    // RSF环境
-    private final ReceivedAdapter        receivedAdapter;   // 负责汇总所有来自底层网络的 RequestInfo、ResponseInfo消息
-    private final Map<String, Connector> bindConnector;     // 不同协议都有自己独立的‘RPC协议连接器’
+    private final RsfEnvironment            rsfEnvironment;     // RSF环境
+    private final ReceivedAdapter           receivedAdapter;    // 负责汇总所有来自底层网络的 RequestInfo、ResponseInfo消息
+    private final Map<String, Connector>    protocolConnector;  // 不同协议都有自己独立的‘RPC协议连接器’
+    private final Map<String, List<String>> sechmaMapping;      // 不同协议都有自己独立的‘RPC协议连接器’
     //
     public RsfNetManager(RsfEnvironment rsfEnvironment, ReceivedAdapter receivedAdapter) {
-        this.bindConnector = new HashMap<String, Connector>();
+        this.protocolConnector = new HashMap<String, Connector>();
+        this.sechmaMapping = new HashMap<String, List<String>>();
         this.rsfEnvironment = rsfEnvironment;
         this.receivedAdapter = receivedAdapter;
     }
@@ -50,11 +49,18 @@ public class RsfNetManager {
     }
     /**获取运行着哪些协议*/
     public Set<String> runProtocols() {
-        return Collections.unmodifiableSet(this.bindConnector.keySet());
+        return Collections.unmodifiableSet(this.protocolConnector.keySet());
     }
     /** 查找RPC连接器。 */
     public Connector findConnector(String protocol) {
-        return this.bindConnector.get(protocol);
+        return this.protocolConnector.get(protocol);
+    }
+    public Connector findConnectorBySechma(String sechma) {
+        if (!this.sechmaMapping.containsKey(sechma)) {
+            return null;
+        }
+        List<String> protocolNames = this.sechmaMapping.get(sechma);
+        return this.findConnector(protocolNames.get(0));
     }
     //
     /** 启动RSF上配置的所有连接器(传入方向)。*/
@@ -65,8 +71,24 @@ public class RsfNetManager {
         String[] protocolArrays = settings.getProtocos();
         //
         for (String protocol : protocolArrays) {
+            String configKey = settings.getProtocolConfigKey(protocol);
+            String sechmaName = settings.getString(configKey + ".protocol");
+            // .Sechma 注册
+            List<String> sechmaMapping = this.sechmaMapping.get(sechmaName);
+            if (sechmaMapping == null) {
+                sechmaMapping = new ArrayList<String>();
+                this.sechmaMapping.put(sechmaName, sechmaMapping);
+            }
+            if (sechmaMapping.contains(protocol)) {
+                this.logger.error("connector[{}] failed -> repeat.", protocol);
+                if (defaultProtocol.equals(protocol)) {
+                    throw new IllegalStateException("default connector start failed. " + protocol + "-> repeat.");
+                }
+            } else {
+                sechmaMapping.add(protocol);
+            }
+            //
             try {
-                String configKey = settings.getProtocolConfigKey(protocol);
                 String connectorFactory = settings.getString(configKey + ".factory");
                 Class<?> factoryClass = appContext.getClassLoader().loadClass(connectorFactory);
                 ConnectorFactory factory = (ConnectorFactory) appContext.getInstance(factoryClass);
@@ -82,7 +104,7 @@ public class RsfNetManager {
                     }
                 });
                 connector.startListener(appContext);//启动连接器
-                this.bindConnector.put(protocol, connector);
+                this.protocolConnector.put(protocol, connector);
             } catch (Throwable e) {
                 this.logger.error("connector[{}] failed -> {}", protocol, e.getMessage(), e);
                 if (defaultProtocol.equals(protocol)) {
@@ -99,11 +121,12 @@ public class RsfNetManager {
     /** 销毁 */
     public void shutdown() {
         logger.info("rsfNetManager, shutdownGracefully.");
-        if (!this.bindConnector.isEmpty()) {
-            for (Connector listener : this.bindConnector.values()) {
+        if (!this.protocolConnector.isEmpty()) {
+            for (Connector listener : this.protocolConnector.values()) {
                 listener.shutdown();
             }
-            this.bindConnector.clear();
+            this.protocolConnector.clear();
+            this.sechmaMapping.clear();
         }
     }
 }

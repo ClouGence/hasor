@@ -290,8 +290,8 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         }
     }
     private Connector findConnector(InterAddress target) {
-        String protocol = target.getSechma();
-        Connector connector = rsfNetManager.findConnector(protocol);// tips：例如：如果本地都不支持 rsf 协议，那么也没有必要连接远程的 rsf 协议。
+        String sechma = target.getSechma();
+        Connector connector = rsfNetManager.findConnectorBySechma(sechma);// tips：例如：如果本地都不支持 rsf 协议，那么也没有必要连接远程的 rsf 协议。
         if (connector == null) {
             throw new RsfException(ProtocolStatus.ProtocolUndefined, "protocol is not support, invalid address ->" + target.toHostSchema());
         }

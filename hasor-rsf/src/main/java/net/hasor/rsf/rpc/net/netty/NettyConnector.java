@@ -150,7 +150,7 @@ public class NettyConnector extends Connector {
         int port = socketAddress.getPort();
         String hostPort = hostAddress + ":" + port;
         //
-        InterAddress target = new InterAddress(this.getProtocol(), hostAddress, port, "unknown");
+        InterAddress target = new InterAddress(this.getSechma(), hostAddress, port, "unknown");
         RsfChannel rsfChannel = new RsfChannelOnNetty(target, ctx.channel(), LinkType.In);
         //
         // .检查当前连接是否被允许接入，如果不允许接入关闭这个连接
