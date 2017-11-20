@@ -43,6 +43,13 @@ class RsfChannelOnNetty extends RsfChannel {
         return this.channel.isActive();
     }
     @Override
+    protected boolean equalsSameAs(RsfChannel rsfChannel) {
+        if (rsfChannel instanceof RsfChannelOnNetty) {
+            return this.channel.id().asShortText().equals(((RsfChannelOnNetty) rsfChannel).channel.id().asShortText());
+        }
+        return false;
+    }
+    @Override
     protected void closeChannel() {
         this.channel.close();
     }

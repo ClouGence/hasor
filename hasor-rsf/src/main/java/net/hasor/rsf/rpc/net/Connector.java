@@ -32,7 +32,8 @@ import java.util.concurrent.Future;
  */
 public abstract class Connector {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    private final String             protocol;        // 协议名，例如：rsf、hprose
+    private final String             protocol;        // 协议名，例如：RSF/1.0、Hprose/HTTP
+    private final String             sechma;          // 协议头，例如：rsf、hprose
     private final RsfEnvironment     rsfEnvironment;  // Rsf环境
     private final InterAddress       bindAddress;     // 网络通信地址
     private final InterAddress       gatewayAddress;  // 网络通信地址(网关)
@@ -49,6 +50,8 @@ public abstract class Connector {
         this.accepter = accepter;
         //
         RsfSettings settings = rsfEnvironment.getSettings();
+        String configKey = settings.getProtocolConfigKey(protocol);
+        this.sechma = settings.getString(configKey + ".protocol");
         this.bindAddress = settings.getBindAddressSet(protocol);
         this.gatewayAddress = settings.getGatewaySet(protocol);
         if (this.bindAddress.getPort() <= 0) {
@@ -66,8 +69,13 @@ public abstract class Connector {
         return "Connector{ protocol='" + protocol + "', bindAddress=" + local + '}';
     }
     //
+    /** 获取协议名 */
     public String getProtocol() {
         return this.protocol;
+    }
+    /** 获取协议头 */
+    public String getSechma() {
+        return this.sechma;
     }
     public RsfEnvironment getRsfEnvironment() {
         return rsfEnvironment;
@@ -96,8 +104,8 @@ public abstract class Connector {
     /** 建立或获取和远程的连接(异步+回调) */
     public Future<RsfChannel> getOrConnectionTo(InterAddress target) throws InterruptedException {
         String protocol = target.getSechma();
-        if (!this.protocol.equalsIgnoreCase(protocol)) {
-            throw new RsfException(ProtocolStatus.ProtocolError, "protocol mismatch exists.");
+        if (!this.sechma.equalsIgnoreCase(protocol)) {
+            throw new RsfException(ProtocolStatus.ProtocolError, "sechma not match.");
         }
         //
         // .查找连接，并确定已有连接是否有效
@@ -144,7 +152,7 @@ public abstract class Connector {
             if (!future.isDone()) {
                 future.completed(rsfChannel);
             }
-            if (rsfChannel == future.get()) {
+            if (rsfChannel.equalsSameAs(future.get())) {
                 future.get().addListener(this.receivedListener);
                 future.get().onClose(new CloseListener(this.linkPool));
                 return true;

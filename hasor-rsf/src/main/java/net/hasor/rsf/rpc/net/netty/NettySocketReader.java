@@ -34,7 +34,7 @@ import java.util.concurrent.Future;
  * @author 赵永春(zyc@hasor.net)
  */
 @ChannelHandler.Sharable
-class NettyHandlerAdapter extends ChannelInboundHandlerAdapter {
+class NettySocketReader extends ChannelInboundHandlerAdapter {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     private NettyConnector connector;
     //
@@ -42,7 +42,7 @@ class NettyHandlerAdapter extends ChannelInboundHandlerAdapter {
         InetSocketAddress socketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
         return socketAddress.getAddress().getHostAddress() + ":" + socketAddress.getPort();
     }
-    public NettyHandlerAdapter(NettyConnector connector) {
+    public NettySocketReader(NettyConnector connector) {
         this.connector = connector;
     }
     @Override

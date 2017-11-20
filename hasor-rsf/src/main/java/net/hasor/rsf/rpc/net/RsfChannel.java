@@ -152,7 +152,9 @@ public abstract class RsfChannel {
     /**关闭连接。*/
     public void close() {
         if (this.isActive()) {
-            this.closeListener.doClose(this);
+            if (this.closeListener != null) {
+                this.closeListener.doClose(this);
+            }
             this.closeChannel();
         }
     }
@@ -168,6 +170,9 @@ public abstract class RsfChannel {
     //
     //
     //
+    /**判断两个数据通道是相同的*/
+    protected abstract boolean equalsSameAs(RsfChannel rsfChannel);
+
     /**关闭网络连接*/
     protected abstract void closeChannel();
 

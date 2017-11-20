@@ -33,6 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.util.Arrays;
 /**
  * RPC协议连接器，负责创建某个特定RPC协议的网络事件。
  * tips：传入的网络连接，交给{@link LinkPool}进行处理，{@link NettyConnector}本身不维护任何连接。
@@ -49,28 +51,17 @@ public class NettyConnector extends Connector {
         super(protocol, appContext.getInstance(RsfEnvironment.class), receivedAdapter, accepter);
         this.threadGroup = new NettyThreadGroup(protocol, this.getRsfEnvironment());
         String configKey = getRsfEnvironment().getSettings().getProtocolConfigKey(protocol);
-        String nettyHandlerType = getRsfEnvironment().getSettings().getString(configKey + ".nettyHandler");
-        final Class<?> handlerClass = appContext.getClassLoader().loadClass(nettyHandlerType);
+        String nettyHandlerType = getRsfEnvironment().getSettings().getString(configKey + ".handlerFactory");
+        final Class<ProtocolHandlerFactory> handlerClass = (Class<ProtocolHandlerFactory>) appContext.getClassLoader().loadClass(nettyHandlerType);
         //
-        // .检测是否可以连入或者连出（IP黑名单实现）
-        final ChannelInboundHandlerAdapter inboundHandler = new ChannelInboundHandlerAdapter() {
-            public void channelActive(ChannelHandlerContext ctx) throws Exception {
-                if (acceptIn(ctx)) {
-                    super.channelActive(ctx);
-                } else {
-                    ctx.close();
-                }
-            }
-        };
-        //
-        this.nettyHandler = new ChannelHandler[] {//
-                // 1st,IP黑名单实现
-                inboundHandler,
-                // 2st,编码解码器
-                (ChannelHandler) appContext.getInstance(handlerClass),//
-                // 3st,转发RequestInfo、ResponseInfo到RSF
-                new NettyHandlerAdapter(this)//
-        };
+        ArrayList<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
+        // 1st,IP黑名单实现（检测是否可以连入或者连出[IP黑名单实现]）
+        handlers.add(new NettySocketAccept(this));
+        // 2st,编码解码器
+        handlers.addAll(Arrays.asList(appContext.getInstance(handlerClass).channelHandler(this, appContext)));
+        // 3st,转发RequestInfo、ResponseInfo到RSF
+        handlers.add(new NettySocketReader(this));
+        this.nettyHandler = handlers.toArray(new ChannelHandler[handlers.size()]);
     }
     //
     /** 启动本地监听器 */
@@ -144,8 +135,8 @@ public class NettyConnector extends Connector {
         });
     }
     //
-    /** IP黑名单实现 */
-    private boolean acceptIn(ChannelHandlerContext ctx) throws Exception {
+    /** IP黑名单实现(包内可见) */
+    boolean acceptIn(ChannelHandlerContext ctx) throws Exception {
         InetSocketAddress socketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
         if (socketAddress == null) {
             return false;

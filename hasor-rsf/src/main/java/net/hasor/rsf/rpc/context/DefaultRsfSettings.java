@@ -240,14 +240,19 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         Map<String, String> connectorTmpSet = new HashMap<String, String>();
         XmlNode[] connectorRoot = getXmlNodeArray("hasor.rsfConfig.connectorSet");
         if (connectorRoot != null) {
-            for (XmlNode connector : connectorRoot) {
-                connectorTmpSet.put(connector.getName(), "hasor.rsfConfig.connectorSet." + connector.getName());
+            for (XmlNode connectorSet : connectorRoot) {
+                if (connectorSet == null || connectorSet.getChildren().isEmpty()) {
+                    continue;
+                }
+                for (XmlNode connector : connectorSet.getChildren()) {
+                    connectorTmpSet.put(connector.getName(), "hasor.rsfConfig.connectorSet." + connector.getName());
+                }
             }
         }
         //
         this.connectorSet = new HashMap<String, String>();
         for (String connectorName : connectorTmpSet.keySet()) {
-            String basePath = this.connectorSet.get(connectorName);
+            String basePath = connectorTmpSet.get(connectorName);
             String name = this.getString(basePath + ".name");
             String protocol = this.getString(basePath + ".protocol");
             if (StringUtils.isBlank(protocol) || StringUtils.isBlank(name))
