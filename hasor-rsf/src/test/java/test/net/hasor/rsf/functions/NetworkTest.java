@@ -52,8 +52,8 @@ public class NetworkTest extends ReceivedAdapter implements Provider<RsfEnvironm
         System.out.println(">>>>>>>>> server started. <<<<<<<<<<");
         //
         Thread.sleep(2000);
-        InterAddress local = rsfNetManager.findConnector("rsf").getBindAddress();
-        RsfChannel channel = rsfNetManager.findConnector("rsf").getOrConnectionTo(local).get();
+        InterAddress local = rsfNetManager.findConnector("RSF/1.0").getBindAddress();
+        RsfChannel channel = rsfNetManager.findConnector("RSF/1.0").getOrConnectionTo(local).get();
         for (int i = 0; i <= 10; i++) {
             RequestInfo outRequest = new RequestInfo();
             outRequest.setMessage(i % 2 == 0);
@@ -70,6 +70,7 @@ public class NetworkTest extends ReceivedAdapter implements Provider<RsfEnvironm
             channel.sendData(outRequest, null);
         }
         //
+        Thread.sleep(2000);
         rsfNetManager.shutdown();
     }
     @Override

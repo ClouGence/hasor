@@ -82,9 +82,8 @@ public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provi
         //
         Thread.sleep(2000);
         System.out.println(">>>>>>>>> stop. <<<<<<<<<<");
-        System.in.read();
-        //        pool.closeConnection(result.get().getTarget().getHostPort());
-        //        connector.shutdown();
+        rsfChannel.close();
+        connector.shutdown();
     }
     //
     @Override
