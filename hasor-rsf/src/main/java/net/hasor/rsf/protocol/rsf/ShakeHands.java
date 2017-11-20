@@ -79,7 +79,7 @@ public class ShakeHands extends ChannelInboundHandlerAdapter {
                 ResponseInfo responseInfo = (ResponseInfo) msg;
                 String serverInfo = responseInfo.getOption("SERVER_INFO");
                 if (StringUtils.isNotBlank(serverInfo)) {
-                    logger.error("shake hands successful. ->" + ctx.channel().remoteAddress());
+                    logger.info("shake hands successful. ->" + ctx.channel().remoteAddress());
                     this.atomicBoolean.set(true);
                 }
             }
