@@ -171,8 +171,9 @@ public abstract class RsfChannel {
     //
     //
     /**判断两个数据通道是相同的*/
-    protected abstract boolean equalsSameAs(RsfChannel rsfChannel);
-
+    protected boolean equalsSameAs(RsfChannel rsfChannel) {
+        return this.target.getHostPort().equals(rsfChannel.target.getHostPort());
+    }
     /**关闭网络连接*/
     protected abstract void closeChannel();
 

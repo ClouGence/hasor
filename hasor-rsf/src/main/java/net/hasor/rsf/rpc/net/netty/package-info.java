@@ -13,13 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.net;
-import net.hasor.core.AppContext;
 /**
- * RPC协议连接器，负责创建某个特定RPC协议的网络事件。
- * @version : 2017年01月16日
- * @author 赵永春(zyc@hasor.net)
+ * Netty 网络连接器。
  */
-public interface ConnectorFactory {
-    public Connector create(String protocol, AppContext appContext, ReceivedListener receivedListener, ConnectionAccepter accepter) throws Throwable;
-}
+package net.hasor.rsf.rpc.net.netty;
