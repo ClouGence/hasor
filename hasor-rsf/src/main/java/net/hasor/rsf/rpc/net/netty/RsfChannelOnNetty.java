@@ -23,8 +23,6 @@ import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.rpc.net.LinkType;
 import net.hasor.rsf.rpc.net.RsfChannel;
 import net.hasor.utils.future.FutureCallback;
-
-import java.io.IOException;
 /**
  * 封装Netty网络连接。
  * @version : 2015年12月8日
@@ -79,9 +77,5 @@ class RsfChannelOnNetty extends RsfChannel {
                 }
             }
         });
-    }
-    /**接收到数据*/
-    public void receivedData(OptionInfo object) throws IOException {
-        super.receivedData(object);
     }
 }

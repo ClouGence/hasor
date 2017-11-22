@@ -110,7 +110,7 @@ public abstract class RsfChannel {
         });
     }
     /**接收到数据*/
-    protected void receivedData(OptionInfo object) throws IOException {
+    public void receivedData(OptionInfo object) throws IOException {
         if (!isActive()) {
             return;
         }
