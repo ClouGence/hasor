@@ -29,6 +29,8 @@ import net.hasor.rsf.utils.ProtocolUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 import static io.netty.handler.codec.http.HttpHeaders.Names.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
@@ -131,9 +133,9 @@ public class HproseHttpCoder extends ChannelDuplexHandler {
     }
     //
     //
-    private FullHttpResponse newResponse(ResponseInfo response) {
+    private FullHttpResponse newResponse(ResponseInfo response) throws IOException {
         long requestID = response.getRequestID();
-        ByteBuf result = HproseUtils.doResult(requestID, response);
+        ByteBuf result = HproseUtils.doResult(requestID, response, this.rsfContext);
         return newResponse(result, response.getOption(ORIGIN));
     }
     private FullHttpResponse newResponse(ByteBuf result, String origin) {

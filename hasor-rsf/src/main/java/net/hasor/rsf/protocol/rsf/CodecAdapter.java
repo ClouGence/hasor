@@ -28,20 +28,20 @@ import java.io.IOException;
  */
 public interface CodecAdapter {
     /**将{@link RequestInfo},转换为{@link RequestBlock}。*/
-    RequestBlock buildRequestBlock(RequestInfo info);
+    RequestBlock buildRequestBlock(RequestInfo info) throws IOException;
 
     /**将{@link RequestBlock}写入{@link ByteBuf}。*/
     void wirteRequestBlock(RequestBlock block, ByteBuf out) throws IOException;
 
     /**将{@link ByteBuf} 中读取{@link RequestInfo}信息。*/
-    RequestInfo readRequestInfo(ByteBuf frame) throws IOException;
+    RequestInfo readRequestInfo(ByteBuf frame) throws Throwable;
 
     /**将{@link ResponseInfo},转换为{@link ResponseBlock}。*/
-    ResponseBlock buildResponseBlock(ResponseInfo info);
+    ResponseBlock buildResponseBlock(ResponseInfo info) throws IOException;
 
     /**将{@link ResponseBlock}写入{@link ByteBuf}。*/
     void wirteResponseBlock(ResponseBlock block, ByteBuf out) throws IOException;
 
     /**将{@link ByteBuf} 中读取{@link ResponseInfo}信息。*/
-    ResponseInfo readResponseInfo(ByteBuf frame) throws IOException;
+    ResponseInfo readResponseInfo(ByteBuf frame) throws Throwable;
 }

@@ -16,12 +16,14 @@
 package net.hasor.rsf.protocol.rsf.v1;
 import io.netty.buffer.ByteBuf;
 import net.hasor.rsf.RsfEnvironment;
+import net.hasor.rsf.SerializeCoder;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.protocol.rsf.CodecAdapter;
 import net.hasor.rsf.protocol.rsf.Protocol;
 import net.hasor.rsf.utils.ByteStringCachelUtils;
+import net.hasor.rsf.utils.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,12 +34,14 @@ import java.util.List;
  */
 public class CodecAdapterForV1 implements CodecAdapter {
     private RsfEnvironment rsfEnvironment = null;
-    public CodecAdapterForV1(RsfEnvironment rsfEnvironment) {
+    private ClassLoader    classLoader    = null;
+    public CodecAdapterForV1(RsfEnvironment rsfEnvironment, ClassLoader classLoader) {
         this.rsfEnvironment = rsfEnvironment;
+        this.classLoader = classLoader;
     }
     //
     @Override
-    public RequestBlock buildRequestBlock(RequestInfo info) {
+    public RequestBlock buildRequestBlock(RequestInfo info) throws IOException {
         RequestBlock block = new RequestBlock();
         if (info.isMessage()) {
             block.setHead(RsfConstants.RSF_MessageRequest);
@@ -56,11 +60,13 @@ public class CodecAdapterForV1 implements CodecAdapter {
         //
         //2.params
         List<String> pTypes = info.getParameterTypes();
-        List<byte[]> pValues = info.getParameterBytes();
+        List<Object> pValues = info.getParameterValues();
         if ((pTypes != null && !pTypes.isEmpty()) && (pValues != null && !pValues.isEmpty())) {
+            SerializeCoder coder = this.rsfEnvironment.getSerializeCoder(info.getSerializeType());
             for (int i = 0; i < pTypes.size(); i++) {
                 String typeKey = pTypes.get(i);
-                byte[] valKey = pValues.get(i);
+                Object value = pValues.get(i);
+                byte[] valKey = (coder != null) ? coder.encode(value) : new byte[0];
                 //
                 short paramType = pushString(block, typeKey);
                 short paramData = pushBytes(block, valKey);
@@ -81,7 +87,7 @@ public class CodecAdapterForV1 implements CodecAdapter {
         return block;
     }
     @Override
-    public ResponseBlock buildResponseBlock(ResponseInfo info) {
+    public ResponseBlock buildResponseBlock(ResponseInfo info) throws IOException {
         ResponseBlock block = new ResponseBlock();
         //
         //1.基本信息
@@ -90,7 +96,12 @@ public class CodecAdapterForV1 implements CodecAdapter {
         block.setSerializeType(pushString(block, info.getSerializeType()));//序列化策略
         //
         //2.returnData
-        block.setReturnData(block.pushData(info.getReturnData()));
+        String returnType = info.getReturnType();
+        SerializeCoder serializeCoder = this.rsfEnvironment.getSerializeCoder(info.getSerializeType());
+        byte[] encode = (serializeCoder != null) ? serializeCoder.encode(info.getReturnData()) : new byte[0];
+        block.setReturnData(block.pushData(encode));
+        block.setReturnType(pushString(block, returnType));
+        block.setReturnData(block.pushData(encode));
         block.setStatus(info.getStatus());//响应状态
         //
         //3.Opt参数
@@ -129,7 +140,7 @@ public class CodecAdapterForV1 implements CodecAdapter {
         this.requestProtocol.encode(block, out);
     }
     @Override
-    public RequestInfo readRequestInfo(ByteBuf frame) throws IOException {
+    public RequestInfo readRequestInfo(ByteBuf frame) throws Throwable {
         RequestBlock rsfBlock = this.requestProtocol.decode(frame);
         RequestInfo info = new RequestInfo();
         //
@@ -172,6 +183,7 @@ public class CodecAdapterForV1 implements CodecAdapter {
         info.setClientTimeout(clientTimeout);
         //
         int[] paramDatas = rsfBlock.getParameters();
+        SerializeCoder serializeCoder = this.rsfEnvironment.getSerializeCoder(serializeType);
         if (paramDatas.length > 0) {
             for (int i = 0; i < paramDatas.length; i++) {
                 int paramItem = paramDatas[i];
@@ -181,7 +193,8 @@ public class CodecAdapterForV1 implements CodecAdapter {
                 byte[] valData = rsfBlock.readPool(paramVal);
                 //
                 String paramType = ByteStringCachelUtils.fromCache(keyData);
-                info.addParameter(paramType, valData, null);
+                Object paramObj = (serializeCoder == null || StringUtils.isBlank(paramType)) ? null : serializeCoder.decode(valData, this.classLoader.loadClass(paramType));
+                info.addParameter(paramType, paramObj);
             }
         }
         //
@@ -192,7 +205,7 @@ public class CodecAdapterForV1 implements CodecAdapter {
         this.responseProtocol.encode(block, out);
     }
     @Override
-    public ResponseInfo readResponseInfo(ByteBuf frame) throws IOException {
+    public ResponseInfo readResponseInfo(ByteBuf frame) throws Throwable {
         ResponseBlock rsfBlock = this.responseProtocol.decode(frame);
         ResponseInfo info = new ResponseInfo();
         //
@@ -214,7 +227,11 @@ public class CodecAdapterForV1 implements CodecAdapter {
         //
         //3.Response
         info.setStatus(rsfBlock.getStatus());
-        byte[] returnData = rsfBlock.readPool(rsfBlock.getReturnData());
+        SerializeCoder serializeCoder = this.rsfEnvironment.getSerializeCoder(serializeType);
+        String returnType = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getReturnType()));
+        info.setReturnType(returnType);
+        byte[] returnByte = rsfBlock.readPool(rsfBlock.getReturnData());
+        Object returnData = (serializeCoder == null || StringUtils.isBlank(returnType)) ? null : serializeCoder.decode(returnByte, this.classLoader.loadClass(returnType));
         info.setReturnData(returnData);
         return info;
     }

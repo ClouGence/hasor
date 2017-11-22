@@ -96,7 +96,6 @@ abstract class InvokerProcessing implements Runnable {
             //2.参数数量校验
             List<String> pTypeList = this.requestInfo.getParameterTypes();
             List<Object> pObjectList = this.requestInfo.getParameterValues();
-            List<byte[]> pByteList = this.requestInfo.getParameterBytes();
             if (pTypeList.size() != pObjectList.size()) {
                 String errorInfo = "do request(" + requestID + ") failed -> parameters count and types count, not equal.";
                 logger.error(errorInfo);
@@ -109,16 +108,10 @@ abstract class InvokerProcessing implements Runnable {
             pObjects = new Object[pObjectList.size()];
             for (int i = 0; i < pTypeList.size(); i++) {
                 String paramTypeStr = pTypeList.get(i);
-                byte[] paramByteStr = pByteList.get(i);
-                Object paramObjectStr = pObjectList.get(i);
+                Object paramObject = pObjectList.get(i);
                 //
                 pTypes[i] = RsfRuntimeUtils.getType(paramTypeStr, this.classLoader);
-                if (paramObjectStr != null) {
-                    pObjects[i] = paramObjectStr;
-                } else {
-                    pObjects[i] = coder.decode(paramByteStr, pTypes[i]);
-                }
-                //
+                pObjects[i] = paramObject;
             }
         } catch (Throwable e) {
             String errorMessage = "(" + e.getClass().getName() + ")" + e.getMessage();

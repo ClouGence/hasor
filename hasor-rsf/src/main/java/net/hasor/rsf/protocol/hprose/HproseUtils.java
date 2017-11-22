@@ -39,7 +39,7 @@ import static io.netty.handler.codec.http.HttpHeaders.Names.ORIGIN;
  */
 public class HproseUtils implements HproseConstants {
     /***/
-    public static RequestInfo[] doCall(RsfContext rsfContext, ByteBuf content, String requestURI, String origin) throws RsfException {
+    public static RequestInfo[] doCall(RsfContext rsfContext, ByteBuf content, String requestURI, String origin) throws RsfException, IOException {
         //
         HproseReader reader = new HproseReader(content.nioBuffer());
         List<RequestInfo> infoArrays = new ArrayList<RequestInfo>();
@@ -55,7 +55,7 @@ public class HproseUtils implements HproseConstants {
         return infoArrays.toArray(new RequestInfo[infoArrays.size()]);
     }
     /***/
-    private static void parseRequest(RsfContext rsfContext, HproseReader reader, List<RequestInfo> infoArrays) {
+    private static void parseRequest(RsfContext rsfContext, HproseReader reader, List<RequestInfo> infoArrays) throws IOException {
         long requestID = 12345;
         String callName = null;
         try {
@@ -100,7 +100,7 @@ public class HproseUtils implements HproseConstants {
         try {
             int argCount = 0;
             String methodName = request.getTargetMethod();
-            lastTag = reader.checkTags(new StringBuilder().append((char) TagList).append((char) TagEnd).append((char) TagCall).toString());
+            lastTag = reader.checkTags(String.valueOf((char) TagList) + (char) TagEnd + (char) TagCall);
             if (lastTag == HproseTags.TagList) {
                 reader.reset();
                 argCount = reader.readInt(HproseTags.TagOpenbrace);
@@ -135,10 +135,9 @@ public class HproseUtils implements HproseConstants {
         // .参数处理(isRef是否为引用参数调用 (遇到引用参数方法，会在response时将请求参数一同返回给客户端)
         for (int i = 0; i < parameterTypes.length; i++) {
             Class<?> paramType = parameterTypes[i];
-            byte[] paramBytes = args[i];
-            //Object paramData = (args.length >= i) ? args[i] : null;
-            String typeByte = RsfRuntimeUtils.toAsmType(paramType);
-            request.addParameter(typeByte, paramBytes, null);
+            HproseReader paramDataReader = new HproseReader(args[i]);
+            Object paramData = paramDataReader.unserialize(paramType);
+            request.addParameter(paramType.getName(), paramData);
         }
         // .请求参数
         infoArrays.add(request);
@@ -170,11 +169,15 @@ public class HproseUtils implements HproseConstants {
         }
     }
     /***/
-    public static ByteBuf doResult(long requestID, ResponseInfo response) {
+    public static ByteBuf doResult(long requestID, ResponseInfo response, RsfContext rsfContext) throws IOException {
         ByteBuf outBuf = ProtocolUtils.newByteBuf();
         if (response.getStatus() == ProtocolStatus.OK) {
             outBuf.writeByte((byte) 'R');
-            outBuf.writeBytes(response.getReturnData());
+            ByteArrayOutputStream binary = new ByteArrayOutputStream();
+            HproseWriter writer = new HproseWriter(binary);
+            writer.serialize(response.getReturnData());
+            byte[] encode = binary.toByteArray();
+            outBuf.writeBytes(encode);
             outBuf.writeByte((byte) 'z');
             //
         } else {

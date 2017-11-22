@@ -53,6 +53,8 @@ public class RpcResponseProtocolV1 implements Protocol<ResponseBlock> {
         bodyBuf.writeShort(resMsg.getStatus());
         //* byte[2]  serializeType-(attr-index)           序列化策略
         bodyBuf.writeShort(resMsg.getSerializeType());
+        //* byte[2]  returnType-(attr-index)              返回数据类型
+        bodyBuf.writeShort(resMsg.getReturnType());
         //* byte[2]  returnData-(attr-index)              返回数据
         bodyBuf.writeShort(resMsg.getReturnData());
         //* --------------------------------------------------------bytes =1 ~ 1021
@@ -92,6 +94,8 @@ public class RpcResponseProtocolV1 implements Protocol<ResponseBlock> {
         res.setStatus(buf.readShort());
         //* byte[2]  serializeType-(attr-index)           序列化策略
         res.setSerializeType(buf.readShort());
+        //* byte[2]  returnType-(attr-index)              返回数据类型
+        res.setReturnType(buf.readShort());
         //* byte[2]  returnData-(attr-index)              返回数据
         res.setReturnData(buf.readShort());
         //* --------------------------------------------------------bytes =1 ~ 1021

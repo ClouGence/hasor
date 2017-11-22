@@ -26,10 +26,10 @@ import static net.hasor.rsf.domain.RsfConstants.Version_1;
 public class CodecAdapterFactory {
     private static CodecAdapter[] adapterPool = new CodecAdapter[16];
     //
-    public static CodecAdapter getCodecAdapterByVersion(RsfEnvironment rsfEnvironment, byte version) {
+    public static CodecAdapter getCodecAdapterByVersion(RsfEnvironment rsfEnvironment, ClassLoader classLoader, byte version) {
         if ((version | Version_1) == version) {
             if (adapterPool[Version_1] == null) {
-                adapterPool[Version_1] = new CodecAdapterForV1(rsfEnvironment);
+                adapterPool[Version_1] = new CodecAdapterForV1(rsfEnvironment, classLoader);
             }
             return adapterPool[Version_1];
         }

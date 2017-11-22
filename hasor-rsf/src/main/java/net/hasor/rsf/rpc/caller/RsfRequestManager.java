@@ -106,9 +106,8 @@ public abstract class RsfRequestManager {
         String serializeType = info.getSerializeType();
         String bindID = local.getBindInfo().getBindID();
         Method callMethod = rsfRequest.getMethod();
-        int length = info.getReturnData() == null ? 0 : info.getReturnData().length;
-        invLogger.info("response({}) -> receiveTime ={}, serializeType ={}, status ={}, dataLength ={}, isMessage ={}, bindID ={}, callMethod ={}.",//
-                requestID, info.getReceiveTime(), serializeType, info.getStatus(), length, rsfRequest.isMessage(), bindID, callMethod);
+        invLogger.info("response({}) -> receiveTime ={}, serializeType ={}, status ={}, isMessage ={}, bindID ={}, callMethod ={}.",//
+                requestID, info.getReceiveTime(), serializeType, info.getStatus(), rsfRequest.isMessage(), bindID, callMethod);
         //
         // - Message 调用
         if (rsfRequest.isMessage()) {
@@ -140,17 +139,7 @@ public abstract class RsfRequestManager {
         }
         // - Invoker 调用
         if (info.getStatus() == ProtocolStatus.OK) {
-            SerializeCoder coder = this.getContext().getEnvironment().getSerializeCoder(serializeType);
-            Class<?> returnType = rsfRequest.getMethod().getReturnType();
-            try {
-                byte[] returnDataData = info.getReturnData();
-                Object returnObject = coder.decode(returnDataData, returnType);
-                local.sendData(returnObject);
-            } catch (Throwable e) {
-                invLogger.error("response({}) -> serializeFailed, bindID ={}, serializeType ={}, callMethod ={}, dataType ={}, message ={}.",//
-                        requestID, bindID, serializeType, callMethod, returnType, e.getMessage(), e);
-                return rsfFuture.failed(e);
-            }
+            local.sendData(info.getReturnData());
             return rsfFuture.completed(local);
         } else {
             invLogger.error("response({}) -> statusFailed, bindID ={}, status ={}.",//

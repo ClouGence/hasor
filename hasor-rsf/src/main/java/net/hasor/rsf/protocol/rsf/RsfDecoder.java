@@ -25,8 +25,6 @@ import net.hasor.rsf.utils.ProtocolUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-
 import static net.hasor.rsf.domain.RsfConstants.*;
 /**
  * RSF 解码器
@@ -36,14 +34,16 @@ import static net.hasor.rsf.domain.RsfConstants.*;
 public class RsfDecoder extends LengthFieldBasedFrameDecoder {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     private RsfEnvironment rsfEnvironment;
+    private ClassLoader    classLoader;
     //
-    public RsfDecoder(RsfEnvironment rsfEnvironment, int maxBodyLength) {
+    public RsfDecoder(RsfEnvironment rsfEnvironment, int maxBodyLength, ClassLoader classLoader) {
         // lengthFieldOffset   = 10
         // lengthFieldLength   = 3
         // lengthAdjustment    = 0
         // initialBytesToStrip = 0
         super(maxBodyLength, 10, 3, 0, 0);
         this.rsfEnvironment = rsfEnvironment;
+        this.classLoader = classLoader;
     }
     //
     /*解码*/
@@ -69,7 +69,7 @@ public class RsfDecoder extends LengthFieldBasedFrameDecoder {
     //
     /**协议解析*/
     private short doDecode(byte rsfHead, ChannelHandlerContext ctx, ByteBuf frame) {
-        CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, (byte) (rsfHead & 0x0F));
+        CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, this.classLoader, (byte) (rsfHead & 0x0F));
         // - RSF_InvokerRequest
         if (RSF_InvokerRequest == rsfHead) {
             try {
@@ -79,7 +79,7 @@ public class RsfDecoder extends LengthFieldBasedFrameDecoder {
                 //
                 ctx.fireChannelRead(info);
                 return ProtocolStatus.OK;/*正常处理后返回*/
-            } catch (IOException e) {
+            } catch (Throwable e) {
                 logger.error("decode request error :" + e.getMessage(), e);
                 return ProtocolStatus.ProtocolError;
             }
@@ -93,7 +93,7 @@ public class RsfDecoder extends LengthFieldBasedFrameDecoder {
                 //
                 ctx.fireChannelRead(info);
                 return ProtocolStatus.OK;/*正常处理后返回*/
-            } catch (IOException e) {
+            } catch (Throwable e) {
                 logger.error("decode request error :" + e.getMessage(), e);
                 return ProtocolStatus.ProtocolError;
             }
@@ -105,7 +105,7 @@ public class RsfDecoder extends LengthFieldBasedFrameDecoder {
                 info.setReceiveTime(System.currentTimeMillis());//      <-2.设置接收时间戳
                 ctx.fireChannelRead(info);
                 return ProtocolStatus.OK;/*正常处理后返回*/
-            } catch (IOException e) {
+            } catch (Throwable e) {
                 logger.error("decode response error :" + e.getMessage(), e);
                 return ProtocolStatus.ProtocolError;
             }

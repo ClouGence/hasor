@@ -16,7 +16,10 @@
 package net.hasor.rsf.utils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
-import net.hasor.rsf.*;
+import net.hasor.rsf.RsfBindInfo;
+import net.hasor.rsf.RsfEnvironment;
+import net.hasor.rsf.RsfRequest;
+import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
@@ -33,7 +36,6 @@ public class ProtocolUtils {
         RequestInfo info = new RequestInfo();
         RsfBindInfo<?> rsfBindInfo = rsfRequest.getBindInfo();
         String serializeType = rsfRequest.getSerializeType();
-        SerializeCoder coder = env.getSerializeCoder(serializeType);
         //
         //1.基本信息
         info.setRequestID(rsfRequest.getRequestID());//请求ID
@@ -52,8 +54,7 @@ public class ProtocolUtils {
         pObjects = (pObjects == null) ? new Object[0] : pObjects;
         for (int i = 0; i < pTypes.length; i++) {
             String typeByte = RsfRuntimeUtils.toAsmType(pTypes[i]);
-            byte[] paramByte = coder.encode(pObjects[i]);
-            info.addParameter(typeByte, paramByte, pObjects[i]);
+            info.addParameter(typeByte, pObjects[i]);
         }
         //
         //3.Opt参数
@@ -74,12 +75,13 @@ public class ProtocolUtils {
     public static ResponseInfo buildResponseInfo(RsfEnvironment env, RsfResponse rsfResponse) throws IOException {
         ResponseInfo info = new ResponseInfo();
         String serializeType = rsfResponse.getSerializeType();
-        SerializeCoder coder = env.getSerializeCoder(serializeType);
-        byte[] returnData = coder.encode(rsfResponse.getData());
+        //        SerializeCoder coder = env.getSerializeCoder(serializeType);
+        //        byte[] returnData = coder.encode(rsfResponse.getData());
         info.setRequestID(rsfResponse.getRequestID());
         info.setStatus(rsfResponse.getStatus());
         info.setSerializeType(serializeType);
-        info.setReturnData(returnData);
+        info.setReturnType(rsfResponse.getReturnType().getName());
+        info.setReturnData(rsfResponse.getData());
         info.addOptionMap(rsfResponse);
         //
         return info;

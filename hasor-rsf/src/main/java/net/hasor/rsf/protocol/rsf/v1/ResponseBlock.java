@@ -24,6 +24,7 @@ package net.hasor.rsf.protocol.rsf.v1;
  * --------------------------------------------------------bytes =6
  * byte[2]  status                               响应状态
  * byte[2]  serializeType-(attr-index)           序列化策略
+ * byte[2]  returnType-(attr-index)              返回数据类型
  * byte[2]  returnData-(attr-index)              返回数据
  * --------------------------------------------------------bytes =1 ~ 1021
  * byte[1]  optionCount                          选项参数总数
@@ -46,6 +47,7 @@ public class ResponseBlock extends PoolBlock {
     private long  requestID     = 0;  //byte[8]  请求ID
     private short status        = 0;  //byte[2]  响应状态
     private short serializeType = 0;  //byte[2]  序列化类型
+    private short returnType    = 0;  //byte[2]  返回数据类型
     private short returnData    = 0;  //byte[2]  返回数据
     private int[] optionMap     = {}; //(attr-index,attr-index)
     //
@@ -84,6 +86,14 @@ public class ResponseBlock extends PoolBlock {
     /**设置序列化类型*/
     public void setSerializeType(short serializeType) {
         this.serializeType = serializeType;
+    }
+    /**获取返回值类型*/
+    public short getReturnType() {
+        return this.returnType;
+    }
+    /**设置返回值类型*/
+    public void setReturnType(short returnType) {
+        this.returnType = returnType;
     }
     /**获取返回值数据*/
     public short getReturnData() {

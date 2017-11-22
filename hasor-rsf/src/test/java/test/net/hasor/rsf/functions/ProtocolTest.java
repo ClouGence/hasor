@@ -16,14 +16,13 @@
 package test.net.hasor.rsf.functions;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.protocol.rsf.v1.CodecAdapterForV1;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import org.junit.Test;
-
-import java.io.IOException;
 /**
  *
  * @version : 2014年9月12日
@@ -31,9 +30,10 @@ import java.io.IOException;
  */
 public class ProtocolTest {
     @Test
-    public void requestPack() throws IOException {
-        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.createAppContext().getEnvironment());
-        CodecAdapterForV1 codecAdapter = new CodecAdapterForV1(rsfEnv);
+    public void requestPack() throws Throwable {
+        AppContext appContext = Hasor.createAppContext();
+        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(appContext.getEnvironment());
+        CodecAdapterForV1 codecAdapter = new CodecAdapterForV1(rsfEnv, appContext.getClassLoader());
         //
         //
         RequestInfo outRequest = new RequestInfo();
@@ -46,7 +46,7 @@ public class ProtocolTest {
         outRequest.setServiceName("java.util.List");
         outRequest.setServiceVersion("1.0.0");
         outRequest.setTargetMethod("add");
-        outRequest.addParameter("java.lang.Object", "aaaa".getBytes(), null);
+        outRequest.addParameter("java.lang.Object", "aaaa");
         //
         ByteBuf outBuf = ByteBufAllocator.DEFAULT.heapBuffer();
         codecAdapter.wirteRequestBlock(codecAdapter.buildRequestBlock(outRequest), outBuf);
@@ -61,9 +61,10 @@ public class ProtocolTest {
     }
     //
     @Test
-    public void responsePack() throws IOException {
-        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(Hasor.createAppContext().getEnvironment());
-        CodecAdapterForV1 codecAdapter = new CodecAdapterForV1(rsfEnv);
+    public void responsePack() throws Throwable {
+        AppContext appContext = Hasor.createAppContext();
+        DefaultRsfEnvironment rsfEnv = new DefaultRsfEnvironment(appContext.getEnvironment());
+        CodecAdapterForV1 codecAdapter = new CodecAdapterForV1(rsfEnv, appContext.getClassLoader());
         //
         ResponseInfo outResponse = new ResponseInfo();
         outResponse.setSerializeType("json");

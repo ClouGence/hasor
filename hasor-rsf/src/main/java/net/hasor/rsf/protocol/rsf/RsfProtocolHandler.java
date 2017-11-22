@@ -34,8 +34,8 @@ public class RsfProtocolHandler implements ProtocolHandlerFactory {
     public ChannelHandler[] channelHandler(Connector connector, AppContext appContext) {
         RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);
         RsfDuplexHandler duplexHandler = new RsfDuplexHandler(  //
-                new RsfDecoder(env, PoolBlock.DataMaxSize),     //
-                new RsfEncoder(env)                             //
+                new RsfDecoder(env, PoolBlock.DataMaxSize, appContext.getClassLoader()),//
+                new RsfEncoder(env, appContext.getClassLoader())//
         );
         return new ChannelHandler[] {                           //
                 duplexHandler,                                  //
