@@ -109,7 +109,7 @@
                 - gatewayPort    : 网关上RSF的端口号
         -->
         <connectorSet default="RSF/1.0">
-            <!-- RSF协议 -->
+            <!-- RSF 连接器 -->
             <rsf_1_0 name="RSF/1.0" protocol="rsf" factory="net.hasor.rsf.rpc.net.netty.NettyConnectorFactory"
                      localPort="${RSF_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${RSF_GATEWAY_PORT}">
                 <!-- 处理网络IO数据包的线程数。 -->
@@ -120,19 +120,17 @@
                 <handlerFactory>net.hasor.rsf.protocol.rsf.RsfProtocolHandler</handlerFactory>
             </rsf_1_0>
 
-            <!-- Hprose协议 -->
-            <!--<hprose_http name="Hprose/Http" protocol="hprose" factory="net.hasor.rsf.rpc.net.netty.NettyConnectorFactory"-->
-                         <!--localPort="${HPROSE_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${HPROSE_GATEWAY_PORT}">-->
-            <!--</hprose_http>-->
+            <!-- Hprose 连接器 -->
+            <hprose_http name="Hprose/NettyHttp" protocol="hprose" factory="net.hasor.rsf.rpc.net.netty.NettyConnectorFactory"
+                         localPort="${HPROSE_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${HPROSE_GATEWAY_PORT}">
+                <!-- 处理网络IO数据包的线程数。 -->
+                <workerThread>8</workerThread>
+                <!-- 处理网络监听请求的线程数。 -->
+                <listenThread>1</listenThread>
+                <!-- 选择具体的Netty Handler。 -->
+                <handlerFactory>net.hasor.rsf.protocol.hprose.HproseProtocolHandler</handlerFactory>
+            </hprose_http>
         </connectorSet>
-        <!--&lt;!&ndash;-->
-        <!--这里配置 RSF 中支持的 RPC协议，但是要让协议生效必须配置对应的连接器。-->
-        <!--如果您需要覆盖默认协议的实现类，请在 hasor-config.xml 主配置文件中覆盖它。-->
-        <!--&ndash;&gt;-->
-        <!--<protocolSet>-->
-        <!--<protocol name="rsf" implementor="net.hasor.rsf.protocol.rsf.RsfProtocolHandler"/>-->
-        <!--<protocol name="hprose" implementor="net.hasor.rsf.protocol.hprose.HproseProtocolHandler"/>-->
-        <!--</protocolSet>-->
 
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
         <!--
