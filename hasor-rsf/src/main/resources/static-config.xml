@@ -110,7 +110,7 @@
         -->
         <connectorSet default="RSF/1.0">
             <!-- RSF 连接器 -->
-            <rsf_1_0 name="RSF/1.0" protocol="rsf" factory="net.hasor.rsf.rpc.net.netty.NettyConnectorFactory"
+            <netty_rsf10 name="RSF/1.0" protocol="rsf" factory="net.hasor.rsf.rpc.net.netty.NettyConnectorFactory"
                      localPort="${RSF_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${RSF_GATEWAY_PORT}">
                 <!-- 处理网络IO数据包的线程数。 -->
                 <workerThread>8</workerThread>
@@ -118,18 +118,14 @@
                 <listenThread>1</listenThread>
                 <!-- 选择具体的Netty Handler。 -->
                 <handlerFactory>net.hasor.rsf.protocol.rsf.RsfProtocolHandler</handlerFactory>
-            </rsf_1_0>
+            </netty_rsf10>
 
             <!-- Hprose 连接器 -->
-            <hprose_http name="Hprose/NettyHttp" protocol="hprose" factory="net.hasor.rsf.rpc.net.netty.NettyConnectorFactory"
+            <http_hprose name="Hprose/NettyHttp" protocol="hprose" factory="net.hasor.rsf.rpc.net.http.HttpConnectorFactory"
                          localPort="${HPROSE_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${HPROSE_GATEWAY_PORT}">
-                <!-- 处理网络IO数据包的线程数。 -->
-                <workerThread>8</workerThread>
-                <!-- 处理网络监听请求的线程数。 -->
-                <listenThread>1</listenThread>
                 <!-- 选择具体的Netty Handler。 -->
                 <handlerFactory>net.hasor.rsf.protocol.hprose.HproseProtocolHandler</handlerFactory>
-            </hprose_http>
+            </http_hprose>
         </connectorSet>
 
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
