@@ -48,8 +48,8 @@ public class NettyConnector extends Connector {
     private ProtocolHandlerFactory handlerFactory;  // Netty ChannelHandler 组
     private AppContext             appContext;      // App
     //
-    public NettyConnector(String protocol, final AppContext appContext, final ReceivedListener receivedAdapter, ConnectionAccepter accepter) throws ClassNotFoundException {
-        super(protocol, appContext.getInstance(RsfEnvironment.class), receivedAdapter, accepter);
+    public NettyConnector(String protocol, final AppContext appContext, final ReceivedListener receivedListener, ConnectionAccepter accepter) throws ClassNotFoundException {
+        super(protocol, appContext.getInstance(RsfEnvironment.class), receivedListener, accepter);
         this.threadGroup = new NettyThreadGroup(protocol, this.getRsfEnvironment());
         String configKey = getRsfEnvironment().getSettings().getProtocolConfigKey(protocol);
         String nettyHandlerType = getRsfEnvironment().getSettings().getString(configKey + ".handlerFactory");

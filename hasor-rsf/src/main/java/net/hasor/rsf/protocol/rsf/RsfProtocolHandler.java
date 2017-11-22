@@ -20,6 +20,7 @@ import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.protocol.rsf.v1.PoolBlock;
 import net.hasor.rsf.rpc.net.Connector;
 import net.hasor.rsf.rpc.net.netty.ProtocolHandlerFactory;
+import net.hasor.rsf.rpc.net.netty.RsfDuplexHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**

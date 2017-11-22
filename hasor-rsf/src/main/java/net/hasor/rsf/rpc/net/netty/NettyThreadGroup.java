@@ -36,16 +36,16 @@ class NettyThreadGroup {
         String configKey = rsfSettings.getProtocolConfigKey(protocol);
         int workerThread = rsfSettings.getInteger(configKey + ".workerThread", 8);
         int listenerThread = rsfSettings.getInteger(configKey + ".listenThread", 1);
+        String preName = "RSF(" + protocol + ")";
         //
         this.logger.info("nioEventLoopGroup, workerThread = {} , listenerThread = {}", workerThread, listenerThread);
-        this.workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory("RSF-Nio-%s", rsfEnvironment.getClassLoader()));
-        this.listenLoopGroup = new NioEventLoopGroup(listenerThread, new NameThreadFactory("RSF-Listen-%s", rsfEnvironment.getClassLoader()));
-        //
+        this.workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory(preName + "-Nio-%s", rsfEnvironment.getClassLoader()));
+        this.listenLoopGroup = new NioEventLoopGroup(listenerThread, new NameThreadFactory(preName + "-Listen-%s", rsfEnvironment.getClassLoader()));
     }
     public void shutdownGracefully() {
-        logger.info("shutdownGracefully -> nioEventLoopGroup (listenLoopGroup and workLoopGroup).");
-        listenLoopGroup.shutdownGracefully();
-        workLoopGroup.shutdownGracefully();
+        this.logger.info("shutdownGracefully -> nioEventLoopGroup (listenLoopGroup and workLoopGroup).");
+        this.listenLoopGroup.shutdownGracefully();
+        this.workLoopGroup.shutdownGracefully();
     }
     //
     public EventLoopGroup getWorkLoopGroup() {
