@@ -6,5 +6,6 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface HproseConstants extends HproseTags {
-    public String RsfTag_Ref = "Hprose_RefParams";
+    public static final String HPROSE     = "Hprose";
+    public              String RsfTag_Ref = "Hprose_RefParams";
 }

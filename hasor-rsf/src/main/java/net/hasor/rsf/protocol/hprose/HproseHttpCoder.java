@@ -19,6 +19,7 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.*;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RequestInfo;
@@ -32,64 +33,25 @@ import static io.netty.handler.codec.http.HttpHeaders.Names.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 /**
- * Hprose
+ * Http Netty 请求处理器
  * @version : 2017年1月26日
  * @author 赵永春(zyc@hasor.net)
  */
-//@ChannelHandler.Sharable
 public class HproseHttpCoder extends ChannelDuplexHandler {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    private RsfContext rsfContext;
-    private String     requestURI;
-    private String     origin;
+    private RsfContext             rsfContext;
+    private WorkStatus             workStatus;
+    private DefaultFullHttpRequest httpRequest;
     //
-    public HproseHttpCoder(RsfContext rsfContext) {
+    public HproseHttpCoder(RsfContext rsfContext, InterAddress publishAddress) {
         this.rsfContext = rsfContext;
-    }
-    @Override
-    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        if (msg instanceof ResponseInfo) {
-            ResponseInfo response = (ResponseInfo) msg;
-            if (response.getStatus() == ProtocolStatus.Accept) {
-                return;
-            }
-            //
-            FullHttpResponse httpResponse = newResponse(response);
-            super.write(ctx, httpResponse, promise);
-            return;
-        }
-        super.write(ctx, msg, promise);
+        this.workStatus = WorkStatus.Idle;
     }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         try {
-            if (msg instanceof HttpContent) {
-                HttpContent http = (HttpContent) msg;
-                ByteBuf content = http.content();
-                byte aByte = content.readByte();
-                if ((char) aByte == 'z') {
-                    // .函数列表
-                    FullHttpResponse response = this.newResponse(HproseUtils.doFunction(this.rsfContext), this.origin);
-                    ctx.writeAndFlush(response);
-                } else if ((char) aByte == 'C') {
-                    // .请求
-                    RequestInfo[] info = HproseUtils.doCall(this.rsfContext, content, this.requestURI, this.origin);
-                    if (info != null && info.length > 0)
-                        super.channelRead(ctx, info[0]);
-                }
-                //
-                this.requestURI = null;
-                this.origin = null;
-                return;
-            }
-            if (msg instanceof HttpRequest) {
-                HttpHeaders headers = ((HttpRequest) msg).headers();
-                this.requestURI = ((HttpRequest) msg).uri();
-                this.origin = headers.get(ORIGIN);
-            }
-            //
-            super.channelRead(ctx, msg);
-        } catch (Exception e) {
+            readData(ctx, msg);
+        } catch (Throwable e) {
             short errorCode = ProtocolStatus.Unknown;
             String errorMessage = e.getMessage();
             if (e instanceof RsfException) {
@@ -98,8 +60,74 @@ public class HproseHttpCoder extends ChannelDuplexHandler {
             }
             ResponseInfo info = ProtocolUtils.buildResponseStatus(rsfContext.getEnvironment(), 0, errorCode, errorMessage);
             FullHttpResponse fullHttpResponse = this.newResponse(info);
-            ctx.writeAndFlush(fullHttpResponse);
+            ctx.writeAndFlush(fullHttpResponse).channel().close();
         }
+    }
+    private void readData(ChannelHandlerContext ctx, Object msg) throws Throwable {
+        // .请求头
+        if (msg instanceof HttpRequest) {
+            HttpVersion httpVersion = ((HttpRequest) msg).protocolVersion();
+            HttpMethod httpMethod = ((HttpRequest) msg).method();
+            String requestURI = ((HttpRequest) msg).uri();
+            this.httpRequest = new DefaultFullHttpRequest(httpVersion, httpMethod, requestURI);
+            this.workStatus = WorkStatus.ReceiveRequest;
+            this.httpRequest.headers().set(((HttpRequest) msg).headers());
+            return;
+        }
+        // .请求数据(最后一个)
+        if (msg instanceof LastHttpContent) {
+            ByteBuf content = ((LastHttpContent) msg).content();
+            this.httpRequest.content().writeBytes(content);
+            String requestURI = this.httpRequest.uri();
+            String origin = this.httpRequest.headers().get(ORIGIN);
+            content = this.httpRequest.content();
+            //
+            byte aByte = content.readByte();
+            if ((char) aByte == 'z') {
+                // .函数列表
+                FullHttpResponse response = this.newResponse(HproseUtils.doFunction(this.rsfContext), origin);
+                ctx.writeAndFlush(response);
+                this.workStatus = WorkStatus.Idle;
+            } else if ((char) aByte == 'C') {
+                // .请求
+                RequestInfo[] info = HproseUtils.doCall(this.rsfContext, content, requestURI, origin);
+                if (info.length == 0) {
+                    throw new RsfException(ProtocolStatus.ProtocolError, "undefined calls.");
+                }
+                if (info.length == 1) {
+                    ctx.fireChannelRead(info[0]);
+                } else {
+                    throw new RsfException(ProtocolStatus.ProtocolError, "not support multiple calls.");
+                }
+                this.workStatus = WorkStatus.WaitResult;
+            }
+            return;
+        }
+        // 请求数据
+        if (msg instanceof HttpContent) {
+            HttpContent http = (HttpContent) msg;
+            ByteBuf content = http.content();
+            this.httpRequest.content().writeBytes(content);
+            return;
+        }
+        //
+        super.channelRead(ctx, msg);
+    }
+    //
+    @Override
+    public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
+        if (msg instanceof ResponseInfo) {
+            ResponseInfo response = (ResponseInfo) msg;
+            if (response.getStatus() == ProtocolStatus.Accept) {
+                return; //ACK 确认包忽略不计
+            }
+            //
+            FullHttpResponse httpResponse = newResponse(response);
+            super.write(ctx, httpResponse, promise);
+            this.workStatus = WorkStatus.Idle;
+            return;
+        }
+        super.write(ctx, msg, promise);
     }
     //
     //

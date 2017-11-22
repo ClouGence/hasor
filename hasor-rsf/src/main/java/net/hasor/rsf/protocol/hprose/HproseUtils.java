@@ -38,7 +38,6 @@ import static io.netty.handler.codec.http.HttpHeaders.Names.ORIGIN;
  * @author 赵永春(zyc@hasor.net)
  */
 public class HproseUtils implements HproseConstants {
-    public static final String HPROSE = "Hprose";
     /***/
     public static RequestInfo[] doCall(RsfContext rsfContext, ByteBuf content, String requestURI, String origin) throws RsfException {
         //
@@ -148,10 +147,11 @@ public class HproseUtils implements HproseConstants {
         try {
             if (lastTag == TagEnd)
                 return;
-            lastTag = reader.checkTags(new StringBuilder().append((char) TagTrue).append((char) TagEnd).append((char) TagCall).toString());
+            lastTag = reader.checkTags(String.valueOf((char) TagTrue) + (char) TagEnd + (char) TagCall);
         } catch (Exception e) {
-            if (e instanceof RsfException)
+            if (e instanceof RsfException) {
                 throw (RsfException) e;
+            }
             throw new RsfException(ProtocolStatus.SerializeError, "error(" + e.getClass() + ") reader.checkTags -> " + e.getMessage());
         }
         //
@@ -195,7 +195,7 @@ public class HproseUtils implements HproseConstants {
         }
         return outBuf;
     }
-    //
+    /***/
     public static ByteBuf doFunction(RsfContext rsfContext) throws IOException {
         Set<String> allMethod = new LinkedHashSet<String>();
         allMethod.add("*");
@@ -229,6 +229,23 @@ public class HproseUtils implements HproseConstants {
         //
         ByteBuf outBuf = ProtocolUtils.newByteBuf();
         outBuf.writeByte('F');
+        outBuf.writeBytes(out.toByteArray());
+        outBuf.writeByte('z');
+        return outBuf;
+    }
+    /***/
+    public static ByteBuf encodeRequest(RsfContext rsfContext, RequestInfo request) throws IOException {
+        RsfBindInfo<?> bindInfo = rsfContext.getServiceInfo(request.getServiceGroup(), request.getServiceName(), request.getServiceVersion());
+        String aliasName = bindInfo.getAliasName(HPROSE);
+        //
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        HproseWriter writer = new HproseWriter(out);
+        writer.writeString(aliasName + "_" + request.getTargetMethod());
+        //
+        writer.writeArray(request.getParameterValues().toArray());
+        //
+        ByteBuf outBuf = ProtocolUtils.newByteBuf();
+        outBuf.writeByte('C');
         outBuf.writeBytes(out.toByteArray());
         outBuf.writeByte('z');
         return outBuf;

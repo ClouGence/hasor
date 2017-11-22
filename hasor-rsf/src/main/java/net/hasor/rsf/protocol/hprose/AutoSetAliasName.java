@@ -37,7 +37,7 @@ public class AutoSetAliasName extends RsfModule implements EventListener<Object>
         eventContext.addListener(RsfEvent.Rsf_ProviderService, this);
         eventContext.addListener(RsfEvent.Rsf_ConsumerService, this);
         //
-        apiBinder.bindFilter(HproseUtils.HPROSE, new RsfFilter() {
+        apiBinder.bindFilter(HproseConstants.HPROSE, new RsfFilter() {
             public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
                 response.addOption(LOCATION, request.getOption(LOCATION));
                 response.addOption(ORIGIN, request.getOption(ORIGIN));
@@ -56,6 +56,6 @@ public class AutoSetAliasName extends RsfModule implements EventListener<Object>
         String simpleName = domain.getBindType().getSimpleName();
         simpleName = StringUtils.firstCharToLowerCase(simpleName);
         //
-        domain.putAliasName(HproseUtils.HPROSE, simpleName);
+        domain.putAliasName(HproseConstants.HPROSE, simpleName);
     }
 }
