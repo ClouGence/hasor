@@ -29,11 +29,25 @@ import net.hasor.utils.future.BasicFuture;
  * @author 赵永春(zyc@hasor.net)
  */
 public class HttpConnector extends NettyConnector {
+    private HttpHandler httpHandler;
     public HttpConnector(String protocol, AppContext appContext, ReceivedListener receivedListener, ConnectionAccepter accepter) throws ClassNotFoundException {
         super(protocol, appContext, receivedListener, accepter);
     }
+    @Override
+    public void startListener(AppContext appContext) throws Throwable {
+        String configKey = getRsfEnvironment().getSettings().getProtocolConfigKey(this.getProtocol());
+        String httpHandlerFactory = getRsfEnvironment().getSettings().getString(configKey + ".httpHandlerFactory");
+        Class<HttpHandlerFactory> handlerClass = (Class<HttpHandlerFactory>) appContext.getClassLoader().loadClass(httpHandlerFactory);
+        this.httpHandler = appContext.getInstance(handlerClass).newHandler(this, appContext);
+        super.startListener(appContext);
+    }
+    @Override
+    public void shutdownListener() {
+        this.httpHandler = null;
+        super.shutdownListener();
+    }
     protected ProtocolHandlerFactory createHandler(String protocol, AppContext appContext) throws ClassNotFoundException {
-        return new HttpProtocolHandler();
+        return new HttpProtocolHandler(this.httpHandler);
     }
     @Override
     public void connectionTo(InterAddress hostAddress, BasicFuture<RsfChannel> channelFuture) {

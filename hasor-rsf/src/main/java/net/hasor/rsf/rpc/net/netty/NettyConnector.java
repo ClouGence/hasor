@@ -52,8 +52,6 @@ public class NettyConnector extends Connector {
     //
     public NettyConnector(String protocol, final AppContext appContext, final ReceivedListener receivedListener, ConnectionAccepter accepter) throws ClassNotFoundException {
         super(protocol, appContext.getInstance(RsfEnvironment.class), receivedListener, accepter);
-        this.threadGroup = new NettyThreadGroup(protocol, this.getRsfEnvironment());
-        this.handlerFactory = createHandler(protocol, appContext);
         this.appContext = appContext;
     }
     /**创建 ProtocolHandlerFactory 对象。*/
@@ -65,7 +63,9 @@ public class NettyConnector extends Connector {
     }
     //
     /** 启动本地监听器 */
-    public void startListener(AppContext appContext) {
+    public void startListener(AppContext appContext) throws Throwable {
+        this.threadGroup = new NettyThreadGroup(this.getProtocol(), this.getRsfEnvironment());
+        this.handlerFactory = createHandler(this.getProtocol(), appContext);
         //
         ServerBootstrap boot = new ServerBootstrap();
         boot.group(this.threadGroup.getListenLoopGroup(), this.threadGroup.getWorkLoopGroup());

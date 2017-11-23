@@ -177,7 +177,7 @@ public abstract class Connector {
     /**
      * 启动本地监听器
      */
-    public abstract void startListener(AppContext appContext);
+    public abstract void startListener(AppContext appContext) throws Throwable;
 
     /**
      * 停止本地监听器

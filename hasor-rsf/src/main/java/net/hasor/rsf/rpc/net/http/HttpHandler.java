@@ -15,10 +15,6 @@
  */
 package net.hasor.rsf.rpc.net.http;
 import net.hasor.rsf.domain.RequestInfo;
-import net.hasor.rsf.domain.ResponseInfo;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 /**
  * Http 解码器组
  * @version : 2017年11月22日
@@ -26,8 +22,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface HttpHandler {
     /**解析 http 请求，并创建 RequestInfo。*/
-    public RequestInfo parseRequest(HttpServletRequest httpRequest, HttpServletResponse httpResponse);
+    public RequestInfo parseRequest(RsfHttpRequest httpRequest, RsfHttpResponse httpResponse);
 
     /**解析 http 请求，并创建 RequestInfo。*/
-    public void buildResponse(HttpServletRequest httpRequest, HttpServletResponse httpResponse, RequestInfo rsfRequest, ResponseInfo rsfResponse);
+    public void buildResponse(RsfHttpRequest httpRequest, RsfHttpResponse httpResponse);
 }

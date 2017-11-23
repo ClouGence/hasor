@@ -28,6 +28,10 @@ import net.hasor.rsf.rpc.net.netty.RsfDuplexHandler;
  * @author 赵永春(zyc@hasor.net)
  */
 public class HttpProtocolHandler implements ProtocolHandlerFactory {
+    private HttpHandler httpHandler;
+    public HttpProtocolHandler(HttpHandler httpHandler) {
+        this.httpHandler = httpHandler;
+    }
     @Override
     public ChannelHandler[] channelHandler(Connector connector, AppContext appContext) {
         RsfContext rsfContext = appContext.getInstance(RsfContext.class);
@@ -37,7 +41,7 @@ public class HttpProtocolHandler implements ProtocolHandlerFactory {
         );
         return new ChannelHandler[] {       //
                 inHandler,                  //
-                new HttpCoder(rsfContext, connector.getPublishAddress())//
+                new HttpCoder(rsfContext, connector.getPublishAddress(), this.httpHandler)//
         };
     }
 }
