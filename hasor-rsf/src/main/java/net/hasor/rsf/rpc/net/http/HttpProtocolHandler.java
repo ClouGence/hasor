@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.hprose;
+package net.hasor.rsf.rpc.net.http;
 import io.netty.channel.ChannelHandler;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
@@ -27,7 +27,7 @@ import net.hasor.rsf.rpc.net.netty.RsfDuplexHandler;
  * @version : 2014年10月10日
  * @author 赵永春(zyc@hasor.net)
  */
-public class HproseProtocolHandler implements ProtocolHandlerFactory {
+public class HttpProtocolHandler implements ProtocolHandlerFactory {
     @Override
     public ChannelHandler[] channelHandler(Connector connector, AppContext appContext) {
         RsfContext rsfContext = appContext.getInstance(RsfContext.class);
@@ -37,7 +37,7 @@ public class HproseProtocolHandler implements ProtocolHandlerFactory {
         );
         return new ChannelHandler[] {       //
                 inHandler,                  //
-                new HproseHttpCoder(rsfContext, connector.getPublishAddress())//
+                new HttpCoder(rsfContext, connector.getPublishAddress())//
         };
     }
 }

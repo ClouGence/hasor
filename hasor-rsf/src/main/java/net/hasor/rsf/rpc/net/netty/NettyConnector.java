@@ -53,11 +53,15 @@ public class NettyConnector extends Connector {
     public NettyConnector(String protocol, final AppContext appContext, final ReceivedListener receivedListener, ConnectionAccepter accepter) throws ClassNotFoundException {
         super(protocol, appContext.getInstance(RsfEnvironment.class), receivedListener, accepter);
         this.threadGroup = new NettyThreadGroup(protocol, this.getRsfEnvironment());
-        String configKey = getRsfEnvironment().getSettings().getProtocolConfigKey(protocol);
-        String nettyHandlerType = getRsfEnvironment().getSettings().getString(configKey + ".handlerFactory");
-        final Class<ProtocolHandlerFactory> handlerClass = (Class<ProtocolHandlerFactory>) appContext.getClassLoader().loadClass(nettyHandlerType);
-        this.handlerFactory = appContext.getInstance(handlerClass);
+        this.handlerFactory = createHandler(protocol, appContext);
         this.appContext = appContext;
+    }
+    /**创建 ProtocolHandlerFactory 对象。*/
+    protected ProtocolHandlerFactory createHandler(String protocol, AppContext appContext) throws ClassNotFoundException {
+        String configKey = getRsfEnvironment().getSettings().getProtocolConfigKey(protocol);
+        String nettyHandlerType = getRsfEnvironment().getSettings().getString(configKey + ".nettyHandlerFactory");
+        Class<ProtocolHandlerFactory> handlerClass = (Class<ProtocolHandlerFactory>) appContext.getClassLoader().loadClass(nettyHandlerType);
+        return appContext.getInstance(handlerClass);
     }
     //
     /** 启动本地监听器 */
@@ -147,7 +151,7 @@ public class NettyConnector extends Connector {
     }
     //
     /** IP黑名单实现(包内可见) */
-    boolean acceptIn(ChannelHandlerContext ctx) throws Exception {
+    protected boolean acceptIn(ChannelHandlerContext ctx) throws Exception {
         InetSocketAddress socketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
         if (socketAddress == null) {
             return false;

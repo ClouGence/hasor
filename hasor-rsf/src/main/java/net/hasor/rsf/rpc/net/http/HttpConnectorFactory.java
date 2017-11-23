@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.hprose;
+package net.hasor.rsf.rpc.net.http;
+import net.hasor.core.AppContext;
+import net.hasor.rsf.rpc.net.ConnectionAccepter;
+import net.hasor.rsf.rpc.net.ConnectorFactory;
+import net.hasor.rsf.rpc.net.ReceivedListener;
 /**
- * Hprose 协议工作状态
- * @version : 2017年1月28日
+ * Http 协议连接器。
+ * @version : 2017年11月22日
  * @author 赵永春(zyc@hasor.net)
  */
-public enum WorkStatus {
-    // Idle -> ReceiveRequest -> WaitResult -> Idle
-    Idle,           // 空闲
-    ReceiveRequest, // 收到请求调用，并等待数据
-    WaitResult      // 发起调用并等待执行结果
+public class HttpConnectorFactory implements ConnectorFactory {
+    public HttpConnector create(String protocol, AppContext appContext, ReceivedListener receivedListener, ConnectionAccepter accepter) throws Throwable {
+        return new HttpConnector(protocol, appContext, receivedListener, accepter);
+    }
 }
