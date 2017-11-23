@@ -19,27 +19,38 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.*;
+import io.netty.util.Timeout;
+import io.netty.util.TimerTask;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.domain.ProtocolStatus;
+import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.utils.ProtocolUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
 /**
  * Http Netty 请求处理器
- * @version : 2017年1月26日
+ * @version : 2017年11月22日
  * @author 赵永春(zyc@hasor.net)
  */
 public class HttpCoder extends ChannelDuplexHandler {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    private RsfContext             rsfContext;
-    private WorkStatus             workStatus;
-    private DefaultFullHttpRequest httpRequest;
+    private WorkStatus      workStatus;
+    private RsfContext      rsfContext;
+    private HttpHandler     httpHandler;
     //
-    public HttpCoder(RsfContext rsfContext, InterAddress publishAddress) {
+    private RsfHttpRequest  httpRequest;
+    private RsfHttpResponse httpResponse;
+    //
+    public HttpCoder(RsfContext rsfContext, InterAddress publishAddress, HttpHandler httpHandler) {
         this.rsfContext = rsfContext;
+        this.httpHandler = httpHandler;
         this.workStatus = WorkStatus.Idle;
     }
     @Override
@@ -47,42 +58,72 @@ public class HttpCoder extends ChannelDuplexHandler {
         try {
             readData(ctx, msg);
         } catch (Throwable e) {
-            short errorCode = ProtocolStatus.Unknown;
-            String errorMessage = e.getMessage();
-            if (e instanceof RsfException) {
-                errorCode = ((RsfException) e).getStatus();
-                errorMessage = e.getMessage();
-            }
-            ResponseInfo info = ProtocolUtils.buildResponseStatus(rsfContext.getEnvironment(), 0, errorCode, errorMessage);
-            FullHttpResponse fullHttpResponse = this.newResponse(info);
-            ctx.writeAndFlush(fullHttpResponse).channel().close();
+            this.exceptionCaught(ctx, e);
         }
     }
-    private void readData(ChannelHandlerContext ctx, Object msg) throws Throwable {
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable e) throws Exception {
+        int errorCode = HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
+        String errorMessage = HttpResponseStatus.INTERNAL_SERVER_ERROR.reasonPhrase();
+        if (e instanceof RsfException) {
+            errorCode = ((RsfException) e).getStatus();
+            errorMessage = e.getMessage();
+        }
+        //
+        HttpVersion version = (this.httpRequest != null) ? this.httpRequest.getNettyRequest().protocolVersion() : HttpVersion.HTTP_1_1;
+        HttpResponseStatus status = HttpResponseStatus.parseLine(errorCode + " " + errorMessage);
+        DefaultFullHttpResponse httpResponse = new DefaultFullHttpResponse(version, status);
+        //
+        if ("debug".equalsIgnoreCase(this.rsfContext.getEnvironment().getWorkMode())) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            httpResponse.content().writeCharSequence(sw.toString(), Charset.forName("UTF-8"));
+        }
+        //
+        ctx.writeAndFlush(httpResponse).channel().close();
+    }
+    private void readData(final ChannelHandlerContext ctx, Object msg) throws Throwable {
         // .请求头
         if (msg instanceof HttpRequest) {
             HttpVersion httpVersion = ((HttpRequest) msg).protocolVersion();
             HttpMethod httpMethod = ((HttpRequest) msg).method();
             String requestURI = ((HttpRequest) msg).uri();
-            this.httpRequest = new DefaultFullHttpRequest(httpVersion, httpMethod, requestURI);
+            this.httpRequest = new RsfHttpRequest(new DefaultFullHttpRequest(httpVersion, httpMethod, requestURI));
+            this.httpResponse = new RsfHttpResponse(this.httpRequest);
             this.workStatus = WorkStatus.ReceiveRequest;
-            this.httpRequest.headers().set(((HttpRequest) msg).headers());
+            this.httpRequest.getNettyRequest().headers().set(((HttpRequest) msg).headers());
             return;
         }
         // .请求数据(最后一个)
         if (msg instanceof LastHttpContent) {
             ByteBuf content = ((LastHttpContent) msg).content();
-            this.httpRequest.content().writeBytes(content);
-            content = this.httpRequest.content();
+            this.httpRequest.getNettyRequest().content().writeBytes(content);
             //
-            byte aByte = content.readByte();
+            RequestInfo requestInfo = this.httpHandler.parseRequest(this.httpRequest, this.httpResponse);
+            if (requestInfo != null) {
+                // 启动一个定时任务，防止任务执行时间过长导致资源无法释放。
+                this.rsfContext.getEnvironment().atTime(new TimerTask() {
+                    @Override
+                    public void run(Timeout timeout) throws Exception {
+                        if (ctx.channel().isActive()) {
+                            exceptionCaught(ctx, new RsfException(ProtocolStatus.Timeout, "request timeout."));
+                        }
+                    }
+                }, this.rsfContext.getEnvironment().getSettings().getRequestTimeout());
+                this.httpRequest.setRsfRequest(requestInfo);
+                ctx.fireChannelRead(requestInfo);
+            } else {
+                ResponseInfo info = ProtocolUtils.buildResponseStatus(//
+                        this.rsfContext.getEnvironment(), 0, ProtocolStatus.ProtocolError, "request has no invoker.");
+                this.write(ctx, info, null);
+            }
             return;
         }
         // 请求数据
         if (msg instanceof HttpContent) {
             HttpContent http = (HttpContent) msg;
             ByteBuf content = http.content();
-            this.httpRequest.content().writeBytes(content);
+            this.httpRequest.getNettyRequest().content().writeBytes(content);
             return;
         }
         //
@@ -97,11 +138,12 @@ public class HttpCoder extends ChannelDuplexHandler {
                 return; //ACK 确认包忽略不计
             }
             //
-            FullHttpResponse httpResponse = newResponse(response);
-            super.write(ctx, httpResponse, promise);
-            this.workStatus = WorkStatus.Idle;
+            this.httpHandler.buildResponse(this.httpRequest, this.httpResponse);
+            ctx.writeAndFlush(this.httpResponse.getHttpResponse()).channel().close();
             return;
         }
+        //
         super.write(ctx, msg, promise);
     }
+    //
 }
