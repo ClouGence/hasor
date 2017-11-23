@@ -72,8 +72,7 @@ class NettySocketReader extends ChannelInboundHandlerAdapter {
                 this.exceptionCaught(ctx, new RsfException(ProtocolStatus.NetworkError, "the " + hostPort + " connection is not management."));
                 return;
             }
-            //
-            ((RsfChannelOnNetty) rsfChannel).receivedData((OptionInfo) msg);
+            this.connector.receivedData(rsfChannel, (OptionInfo) msg);
         }
         super.channelRead(ctx, msg);
     }

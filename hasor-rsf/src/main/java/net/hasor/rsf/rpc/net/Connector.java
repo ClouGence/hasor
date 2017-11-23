@@ -18,12 +18,14 @@ import net.hasor.core.AppContext;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
+import net.hasor.rsf.domain.OptionInfo;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.concurrent.Future;
 /**
  * RPC协议连接器，负责创建某个特定RPC协议的网络事件。
@@ -181,7 +183,12 @@ public abstract class Connector {
      * 停止本地监听器
      */
     public abstract void shutdownListener();
-
+    /**
+     * 接收到数据
+     */
+    protected void receivedData(RsfChannel rsfChannel, OptionInfo object) throws IOException {
+        rsfChannel.receivedData(object);
+    }
     /**
      * 连接到远程机器
      */

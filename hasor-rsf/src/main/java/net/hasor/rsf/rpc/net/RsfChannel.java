@@ -109,13 +109,19 @@ public abstract class RsfChannel {
             }
         });
     }
-    /**接收到数据*/
-    public void receivedData(OptionInfo object) throws IOException {
+    /**接收到数据（受保护的，只有包内可见）*/
+    final void receivedData(OptionInfo object) throws IOException {
         if (!isActive()) {
             return;
         }
         for (ReceivedListener listener : this.listenerList) {
             listener.receivedMessage(this, object);
+        }
+    }
+    /**添加数据接收监听器（受保护的，只有包内可见）*/
+    final void addListener(ReceivedListener receivedListener) {
+        if (!this.listenerList.contains(receivedListener)) {
+            this.listenerList.add(receivedListener);
         }
     }
     //
@@ -156,12 +162,6 @@ public abstract class RsfChannel {
                 this.closeListener.doClose(this);
             }
             this.closeChannel();
-        }
-    }
-    /**添加数据接收监听器。*/
-    public void addListener(ReceivedListener receivedListener) {
-        if (!this.listenerList.contains(receivedListener)) {
-            this.listenerList.add(receivedListener);
         }
     }
     void onClose(CloseListener closeListener) {

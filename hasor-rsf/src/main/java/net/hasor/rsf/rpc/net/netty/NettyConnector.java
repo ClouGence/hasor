@@ -25,6 +25,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import net.hasor.core.AppContext;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
+import net.hasor.rsf.domain.OptionInfo;
 import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.rpc.net.*;
@@ -32,6 +33,7 @@ import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,6 +113,10 @@ public class NettyConnector extends Connector {
         this.threadGroup.shutdownGracefully();
     }
     //
+    /**接收到数据(方法public化)*/
+    public void receivedData(RsfChannel target, OptionInfo object) throws IOException {
+        super.receivedData(target, object);
+    }
     /** 连接到远程机器 */
     public void connectionTo(final InterAddress hostAddress, final BasicFuture<RsfChannel> result) {
         //
