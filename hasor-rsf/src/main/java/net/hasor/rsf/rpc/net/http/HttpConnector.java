@@ -37,8 +37,9 @@ public class HttpConnector extends NettyConnector {
     public void startListener(AppContext appContext) throws Throwable {
         String configKey = getRsfEnvironment().getSettings().getProtocolConfigKey(this.getProtocol());
         String httpHandlerFactory = getRsfEnvironment().getSettings().getString(configKey + ".httpHandlerFactory");
+        String contextPath = getRsfEnvironment().getSettings().getString(configKey + ".contextPath");
         Class<HttpHandlerFactory> handlerClass = (Class<HttpHandlerFactory>) appContext.getClassLoader().loadClass(httpHandlerFactory);
-        this.httpHandler = appContext.getInstance(handlerClass).newHandler(this, appContext);
+        this.httpHandler = appContext.getInstance(handlerClass).newHandler(contextPath, this, appContext);
         super.startListener(appContext);
     }
     @Override

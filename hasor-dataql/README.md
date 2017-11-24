@@ -2,11 +2,13 @@
 
 &emsp;&emsp;DataQL 是一款服务查询框架，你可以把任意的服务通过 DataQL 进行查询整合形成新的结果来使用。使用DataQL 将会极大的满足业务灵活性上的开发需要。
 
-&emsp;&emsp; 重要的事情要说三遍：DataQL 不是一门脚本语言！DataQL 不是一门脚本语言！！DataQL 不是一门脚本语言！！！
+&emsp;&emsp; 因此也可以称 DataQL 为服务聚合引擎。
 
 ----------
 ## 设计思想
 &emsp;&emsp;DataQL 的设计思想借鉴了 GraphQL。在借鉴的同时使用了全新的语法，同时增加了一些新特性。这些新特性会让您用起来比 GraphQL 更加舒心，更加接地气。
+
+&emsp;&emsp; 因此也可以称 DataQL 为服务聚合引擎，例如：在 DataQL 中您可以进行常规的表达式计算、也可以执行 if 逻辑判断、它还支持 lambda 表达式、甚至您可以调用通过DataQL定义的lambda函数。
 
 ----------
 ## 架构

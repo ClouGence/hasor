@@ -22,5 +22,5 @@ import net.hasor.rsf.rpc.net.Connector;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface HttpHandlerFactory {
-    public HttpHandler newHandler(Connector connector, AppContext appContext);
+    public HttpHandler newHandler(String contextPath, Connector connector, AppContext appContext);
 }

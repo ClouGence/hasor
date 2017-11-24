@@ -111,7 +111,7 @@
         <connectorSet default="RSF/1.0">
             <!-- RSF 连接器 -->
             <netty_rsf10 name="RSF/1.0" protocol="rsf" factory="net.hasor.rsf.rpc.net.netty.NettyConnectorFactory"
-                     localPort="${RSF_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${RSF_GATEWAY_PORT}">
+                         localPort="${RSF_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${RSF_GATEWAY_PORT}">
                 <!-- 处理网络IO数据包的线程数 -->
                 <workerThread>8</workerThread>
                 <!-- 处理网络监听请求的线程数 -->
@@ -121,12 +121,14 @@
             </netty_rsf10>
 
             <!-- Hprose 连接器 -->
-            <http_hprose name="Http/Hprose" protocol="hprose" factory="net.hasor.rsf.rpc.net.http.HttpConnectorFactory"
+            <http_hprose name="Http/Hprose" protocol="http" factory="net.hasor.rsf.rpc.net.http.HttpConnectorFactory"
                          localPort="${HPROSE_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${HPROSE_GATEWAY_PORT}">
                 <!-- 处理网络IO数据包的线程数 -->
                 <workerThread>8</workerThread>
                 <!-- 处理网络监听请求的线程数 -->
                 <listenThread>1</listenThread>
+                <!-- BasePath -->
+                <contextPath>/hprose</contextPath>
                 <!-- Rsf Handler -->
                 <httpHandlerFactory>net.hasor.rsf.protocol.hprose.HproseHttpHandler</httpHandlerFactory>
             </http_hprose>

@@ -41,12 +41,12 @@ import java.nio.charset.Charset;
  */
 public class HttpCoder extends ChannelDuplexHandler {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    private WorkStatus      workStatus;
-    private RsfContext      rsfContext;
-    private HttpHandler     httpHandler;
+    private WorkStatus            workStatus;
+    private RsfContext            rsfContext;
+    private HttpHandler           httpHandler;
     //
-    private RsfHttpRequest  httpRequest;
-    private RsfHttpResponse httpResponse;
+    private RsfHttpRequestObject  httpRequest;
+    private RsfHttpResponseObject httpResponse;
     //
     public HttpCoder(RsfContext rsfContext, InterAddress publishAddress, HttpHandler httpHandler) {
         this.rsfContext = rsfContext;
@@ -88,8 +88,8 @@ public class HttpCoder extends ChannelDuplexHandler {
             HttpVersion httpVersion = ((HttpRequest) msg).protocolVersion();
             HttpMethod httpMethod = ((HttpRequest) msg).method();
             String requestURI = ((HttpRequest) msg).uri();
-            this.httpRequest = new RsfHttpRequest(new DefaultFullHttpRequest(httpVersion, httpMethod, requestURI));
-            this.httpResponse = new RsfHttpResponse(this.httpRequest);
+            this.httpRequest = new RsfHttpRequestObject(new DefaultFullHttpRequest(httpVersion, httpMethod, requestURI));
+            this.httpResponse = new RsfHttpResponseObject(this.httpRequest);
             this.workStatus = WorkStatus.ReceiveRequest;
             this.httpRequest.getNettyRequest().headers().set(((HttpRequest) msg).headers());
             return;
