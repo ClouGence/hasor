@@ -27,12 +27,14 @@ import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.domain.RsfException;
+import net.hasor.rsf.rpc.net.Connector;
 import net.hasor.rsf.utils.ProtocolUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 /**
  * Http Netty 请求处理器
@@ -44,12 +46,14 @@ public class HttpCoder extends ChannelDuplexHandler {
     private WorkStatus            workStatus;
     private RsfContext            rsfContext;
     private HttpHandler           httpHandler;
+    private Connector             connector;
     //
     private RsfHttpRequestObject  httpRequest;
     private RsfHttpResponseObject httpResponse;
     //
-    public HttpCoder(RsfContext rsfContext, InterAddress publishAddress, HttpHandler httpHandler) {
+    public HttpCoder(RsfContext rsfContext, Connector connector, HttpHandler httpHandler) {
         this.rsfContext = rsfContext;
+        this.connector = connector;
         this.httpHandler = httpHandler;
         this.workStatus = WorkStatus.Idle;
     }
@@ -88,7 +92,11 @@ public class HttpCoder extends ChannelDuplexHandler {
             HttpVersion httpVersion = ((HttpRequest) msg).protocolVersion();
             HttpMethod httpMethod = ((HttpRequest) msg).method();
             String requestURI = ((HttpRequest) msg).uri();
-            this.httpRequest = new RsfHttpRequestObject(new DefaultFullHttpRequest(httpVersion, httpMethod, requestURI));
+            InetSocketAddress remoteSocket = (InetSocketAddress) ctx.channel().remoteAddress();
+            InterAddress remoteAddress = new InterAddress("socket", remoteSocket.getAddress().getHostAddress(), remoteSocket.getPort(), "unknown");
+            InterAddress local = this.connector.getPublishAddress();
+            //
+            this.httpRequest = new RsfHttpRequestObject(remoteAddress, local, new DefaultFullHttpRequest(httpVersion, httpMethod, requestURI));
             this.httpResponse = new RsfHttpResponseObject(this.httpRequest);
             this.workStatus = WorkStatus.ReceiveRequest;
             this.httpRequest.getNettyRequest().headers().set(((HttpRequest) msg).headers());
@@ -138,6 +146,7 @@ public class HttpCoder extends ChannelDuplexHandler {
                 return; //ACK 确认包忽略不计
             }
             //
+            this.httpResponse.setRsfResponse(response);
             this.httpHandler.buildResponse(this.httpRequest, this.httpResponse);
             ctx.writeAndFlush(this.httpResponse.getHttpResponse()).channel().close();
             return;

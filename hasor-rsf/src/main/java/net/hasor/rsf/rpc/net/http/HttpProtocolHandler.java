@@ -41,7 +41,7 @@ public class HttpProtocolHandler implements ProtocolHandlerFactory {
         );
         return new ChannelHandler[] {       //
                 inHandler,                  //
-                new HttpCoder(rsfContext, connector.getPublishAddress(), this.httpHandler)//
+                new HttpCoder(rsfContext, connector, this.httpHandler)//
         };
     }
 }

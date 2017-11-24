@@ -16,7 +16,6 @@
 package net.hasor.rsf.rpc.net.http;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 /**
  * Http Request 删减版
@@ -58,17 +57,6 @@ public interface RsfHttpRequest {
      *			decoded by the container.
      */
     public String getQueryString();
-
-    /**
-     * Returns the portion of the request URI that indicates the context
-     * of the request. The context path always comes first in a request
-     * URI. The path starts with a "/" character but does not end with a "/"
-     * character. For servlets in the default (root) context, this method
-     * returns "". The container does not decode this string.
-     *
-     * @return a <code>String</code> specifying the portion of the request URI that indicates the context of the request
-     */
-    public String getContextPath();
 
     /**
      * Returns the name of the HTTP method with which this
@@ -121,25 +109,6 @@ public interface RsfHttpRequest {
     public void removeAttribute(String name);
 
     /**
-     * Returns the name of the character encoding used in the body of this
-     * request. This method returns <code>null</code> if the request
-     * does not specify a character encoding
-     * @return a <code>String</code> containing the name of the character encoding, or <code>null</code> if the request does not specify a character encoding
-     */
-    public String getCharacterEncoding();
-
-    /**
-     * Overrides the name of the character encoding used in the body of this
-     * request. This method must be called prior to reading request parameters
-     * or reading input using getReader(). Otherwise, it has no effect.
-     *
-     * @param env <code>String</code> containing the name of the character encoding.
-     * @throws UnsupportedEncodingException if this ServletRequest is still
-     * in a state where a character encoding may be set, but the specified encoding is invalid
-     */
-    public void setCharacterEncoding(String env) throws UnsupportedEncodingException;
-
-    /**
      * Returns the length, in bytes, of the request body and made available by the input stream, or -1
      * if the length is not known ir is greater than Integer.MAX_VALUE. For HTTP servlets,
      * same as the value of the CGI variable CONTENT_LENGTH.
@@ -147,14 +116,6 @@ public interface RsfHttpRequest {
      * @return an integer containing the length of the request body or -1 if the length is not known or is greater than Integer.MAX_VALUE.
      */
     public long getContentLength();
-
-    /**
-     * Returns the MIME type of the body of the request, or <code>null</code> if the type is not known.
-     * For HTTP servlets, same as the value of the CGI variable CONTENT_TYPE.
-     *
-     * @return a <code>String</code> containing the name of the MIME type of the request, or null if the type is not known
-     */
-    public String getContentType();
 
     /**
      * Returns the value of the specified request header
@@ -278,16 +239,6 @@ public interface RsfHttpRequest {
      * @return a <code>String</code> containing the protocol name and version number
      */
     public String getProtocol();
-
-    /**
-     * Returns the name of the scheme used to make this request, for example,
-     * <code>http</code>, <code>https</code>, or <code>ftp</code>.
-     * Different schemes have different rules for constructing URLs,
-     * as noted in RFC 1738.
-     *
-     * @return a <code>String</code> containing the name of the scheme used to make this request
-     */
-    public String getScheme();
 
     /**
      * Returns the Internet Protocol (IP) address of the client or last proxy that sent the request.
