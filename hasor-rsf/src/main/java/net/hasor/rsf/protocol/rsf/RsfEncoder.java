@@ -50,12 +50,14 @@ public class RsfEncoder extends MessageToByteEncoder<Object> {
                 return;
             }
             if (msg instanceof RequestBlock) {
+                /*=这个可有可无*/
                 RequestBlock block = (RequestBlock) msg;
                 CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, this.classLoader, RsfConstants.Version_1);
                 factory.wirteRequestBlock(block, out);
                 return;
             }
             if (msg instanceof ResponseBlock) {
+                /*=这个可有可无*/
                 ResponseBlock block = (ResponseBlock) msg;
                 CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, this.classLoader, RsfConstants.Version_1);
                 factory.wirteResponseBlock(block, out);
