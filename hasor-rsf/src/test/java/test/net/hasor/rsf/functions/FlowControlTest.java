@@ -53,7 +53,7 @@ public class FlowControlTest {
     @Test
     public void randomTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
-        String randomBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/flow-control/random-flow.xml"));
+        String randomBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/flow-control/random-flow.xml"), "utf-8");
         RandomFlowControl rule = (RandomFlowControl) ruleParser.ruleSettings(randomBody);
         //
         List<InterAddress> address = addressList();
@@ -66,7 +66,7 @@ public class FlowControlTest {
     @Test
     public void unitTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
-        String roomBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/flow-control/unit-flow.xml"));
+        String roomBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/flow-control/unit-flow.xml"), "utf-8");
         //
         UnitFlowControl rule = (UnitFlowControl) ruleParser.ruleSettings(roomBody);
         List<InterAddress> address = addressList();
@@ -77,7 +77,7 @@ public class FlowControlTest {
     @Test
     public void speedTest() throws Throwable {
         RuleParser ruleParser = getRuleParser();
-        String speedBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/flow-control/speed-flow.xml"));
+        String speedBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/flow-control/speed-flow.xml"), "utf-8");
         //
         SpeedFlowControl rule = (SpeedFlowControl) ruleParser.ruleSettings(speedBody);
         InterAddress doCallAddress = addressList().get(0);

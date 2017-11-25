@@ -143,61 +143,66 @@ public class CodecAdapterForV1 implements CodecAdapter {
     public RequestInfo readRequestInfo(ByteBuf frame) throws Throwable {
         RequestBlock rsfBlock = this.requestProtocol.decode(frame);
         RequestInfo info = new RequestInfo();
-        //
-        //1.基本数据
-        info.setRequestID(rsfBlock.getRequestID());
-        short serializeTypeInt = rsfBlock.getSerializeType();
-        String serializeType = ByteStringCachelUtils.fromCache(rsfBlock.readPool(serializeTypeInt));
-        info.setSerializeType(serializeType);
-        //
-        //2.Message
-        if (rsfBlock.getHead() == RsfConstants.RSF_InvokerRequest) {
-            info.setMessage(false);
-        }
-        if (rsfBlock.getHead() == RsfConstants.RSF_MessageRequest) {
-            info.setMessage(true);
-        }
-        //
-        //3.Opt参数
-        int[] optionArray = rsfBlock.getOptions();
-        if (optionArray.length > 0) {
-            for (int optItem : optionArray) {
-                short optKey = (short) (optItem >>> 16);
-                short optVal = (short) (optItem & PoolBlock.PoolMaxSize);
-                String optKeyStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optKey));
-                String optValStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optVal));
-                info.addOption(optKeyStr, optValStr);
+        try {
+            //
+            //1.基本数据
+            info.setRequestID(rsfBlock.getRequestID());
+            short serializeTypeInt = rsfBlock.getSerializeType();
+            String serializeType = ByteStringCachelUtils.fromCache(rsfBlock.readPool(serializeTypeInt));
+            info.setSerializeType(serializeType);
+            //
+            //2.Message
+            if (rsfBlock.getHead() == RsfConstants.RSF_InvokerRequest) {
+                info.setMessage(false);
+            }
+            if (rsfBlock.getHead() == RsfConstants.RSF_MessageRequest) {
+                info.setMessage(true);
+            }
+            //
+            //3.Opt参数
+            int[] optionArray = rsfBlock.getOptions();
+            if (optionArray.length > 0) {
+                for (int optItem : optionArray) {
+                    short optKey = (short) (optItem >>> 16);
+                    short optVal = (short) (optItem & PoolBlock.PoolMaxSize);
+                    String optKeyStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optKey));
+                    String optValStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optVal));
+                    info.addOption(optKeyStr, optValStr);
+                }
+            }
+            //
+            //4.Request
+            String serviceGroup = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getServiceGroup()));
+            String serviceName = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getServiceName()));
+            String serviceVersion = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getServiceVersion()));
+            String targetMethod = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getTargetMethod()));
+            int clientTimeout = rsfBlock.getClientTimeout();
+            info.setServiceGroup(serviceGroup);
+            info.setServiceName(serviceName);
+            info.setServiceVersion(serviceVersion);
+            info.setTargetMethod(targetMethod);
+            info.setClientTimeout(clientTimeout);
+            //
+            int[] paramDatas = rsfBlock.getParameters();
+            SerializeCoder serializeCoder = this.rsfEnvironment.getSerializeCoder(serializeType);
+            if (paramDatas.length > 0) {
+                for (int i = 0; i < paramDatas.length; i++) {
+                    int paramItem = paramDatas[i];
+                    short paramKey = (short) (paramItem >>> 16);
+                    short paramVal = (short) (paramItem & PoolBlock.PoolMaxSize);
+                    byte[] keyData = rsfBlock.readPool(paramKey);
+                    byte[] valData = rsfBlock.readPool(paramVal);
+                    //
+                    String paramType = ByteStringCachelUtils.fromCache(keyData);
+                    Object paramObj = (serializeCoder == null || StringUtils.isBlank(paramType)) ? null : serializeCoder.decode(valData, this.classLoader.loadClass(paramType));
+                    info.addParameter(paramType, paramObj);
+                }
+            }
+        } finally {
+            if (rsfBlock != null) {
+                rsfBlock.release();
             }
         }
-        //
-        //4.Request
-        String serviceGroup = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getServiceGroup()));
-        String serviceName = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getServiceName()));
-        String serviceVersion = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getServiceVersion()));
-        String targetMethod = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getTargetMethod()));
-        int clientTimeout = rsfBlock.getClientTimeout();
-        info.setServiceGroup(serviceGroup);
-        info.setServiceName(serviceName);
-        info.setServiceVersion(serviceVersion);
-        info.setTargetMethod(targetMethod);
-        info.setClientTimeout(clientTimeout);
-        //
-        int[] paramDatas = rsfBlock.getParameters();
-        SerializeCoder serializeCoder = this.rsfEnvironment.getSerializeCoder(serializeType);
-        if (paramDatas.length > 0) {
-            for (int i = 0; i < paramDatas.length; i++) {
-                int paramItem = paramDatas[i];
-                short paramKey = (short) (paramItem >>> 16);
-                short paramVal = (short) (paramItem & PoolBlock.PoolMaxSize);
-                byte[] keyData = rsfBlock.readPool(paramKey);
-                byte[] valData = rsfBlock.readPool(paramVal);
-                //
-                String paramType = ByteStringCachelUtils.fromCache(keyData);
-                Object paramObj = (serializeCoder == null || StringUtils.isBlank(paramType)) ? null : serializeCoder.decode(valData, this.classLoader.loadClass(paramType));
-                info.addParameter(paramType, paramObj);
-            }
-        }
-        //
         return info;
     }
     @Override
@@ -208,31 +213,37 @@ public class CodecAdapterForV1 implements CodecAdapter {
     public ResponseInfo readResponseInfo(ByteBuf frame) throws Throwable {
         ResponseBlock rsfBlock = this.responseProtocol.decode(frame);
         ResponseInfo info = new ResponseInfo();
-        //
-        //1.基本数据
-        info.setRequestID(rsfBlock.getRequestID());
-        short serializeTypeInt = rsfBlock.getSerializeType();
-        String serializeType = ByteStringCachelUtils.fromCache(rsfBlock.readPool(serializeTypeInt));
-        info.setSerializeType(serializeType);
-        //
-        //2.Opt参数
-        int[] optionArray = rsfBlock.getOptions();
-        for (int optItem : optionArray) {
-            short optKey = (short) (optItem >>> 16);
-            short optVal = (short) (optItem & PoolBlock.PoolMaxSize);
-            String optKeyStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optKey));
-            String optValStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optVal));
-            info.addOption(optKeyStr, optValStr);
+        try {
+            //
+            //1.基本数据
+            info.setRequestID(rsfBlock.getRequestID());
+            short serializeTypeInt = rsfBlock.getSerializeType();
+            String serializeType = ByteStringCachelUtils.fromCache(rsfBlock.readPool(serializeTypeInt));
+            info.setSerializeType(serializeType);
+            //
+            //2.Opt参数
+            int[] optionArray = rsfBlock.getOptions();
+            for (int optItem : optionArray) {
+                short optKey = (short) (optItem >>> 16);
+                short optVal = (short) (optItem & PoolBlock.PoolMaxSize);
+                String optKeyStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optKey));
+                String optValStr = ByteStringCachelUtils.fromCache(rsfBlock.readPool(optVal));
+                info.addOption(optKeyStr, optValStr);
+            }
+            //
+            //3.Response
+            info.setStatus(rsfBlock.getStatus());
+            SerializeCoder serializeCoder = this.rsfEnvironment.getSerializeCoder(serializeType);
+            String returnType = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getReturnType()));
+            info.setReturnType(returnType);
+            byte[] returnByte = rsfBlock.readPool(rsfBlock.getReturnData());
+            Object returnData = (serializeCoder == null || StringUtils.isBlank(returnType)) ? null : serializeCoder.decode(returnByte, this.classLoader.loadClass(returnType));
+            info.setReturnData(returnData);
+        } finally {
+            if (rsfBlock != null) {
+                rsfBlock.release();
+            }
         }
-        //
-        //3.Response
-        info.setStatus(rsfBlock.getStatus());
-        SerializeCoder serializeCoder = this.rsfEnvironment.getSerializeCoder(serializeType);
-        String returnType = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getReturnType()));
-        info.setReturnType(returnType);
-        byte[] returnByte = rsfBlock.readPool(rsfBlock.getReturnData());
-        Object returnData = (serializeCoder == null || StringUtils.isBlank(returnType)) ? null : serializeCoder.decode(returnByte, this.classLoader.loadClass(returnType));
-        info.setReturnData(returnData);
         return info;
     }
 }

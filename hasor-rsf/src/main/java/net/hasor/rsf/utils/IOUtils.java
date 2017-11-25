@@ -15,38 +15,20 @@
  * limitations under the License.
  */
 package net.hasor.rsf.utils;
-import net.hasor.core.Settings;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import io.netty.util.ReferenceCounted;
 /**
  * General IO stream manipulation utilities.
  */
 public abstract class IOUtils extends net.hasor.utils.IOUtils {
-    public static BufferedReader toBufferedReader(Reader reader) {
-        return reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader);
-    }
-    public static List<String> readLines(Reader input) throws IOException {
-        BufferedReader reader = toBufferedReader(input);
-        List<String> list = new ArrayList<String>();
-        String line = reader.readLine();
-        while (line != null) {
-            list.add(line);
-            line = reader.readLine();
+    public static void releaseByteBuf(ReferenceCounted frame) {
+        if (frame == null) {
+            return;
         }
-        return list;
-    }
-    public static List<String> readLines(InputStream input) throws IOException {
-        InputStreamReader reader = new InputStreamReader(input, Settings.DefaultCharset);
-        return readLines(reader);
-    }
-    public static String readToString(InputStream input) throws IOException {
-        List<String> stringList = readLines(input);
-        StringBuilder builder = new StringBuilder();
-        for (String str : stringList) {
-            builder = builder.append(str);
+        try {
+            if (frame.refCnt() != 0) {
+                frame.release();
+            }
+        } catch (Exception e) {
         }
-        return builder.toString();
     }
 }

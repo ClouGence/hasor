@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.protocol.rsf.v1;
 import io.netty.buffer.ByteBuf;
+import net.hasor.rsf.utils.IOUtils;
 import net.hasor.rsf.utils.ProtocolUtils;
 /**
  * 池上限为 0~4095条数据，单条数据最大约16MB。
@@ -117,5 +118,14 @@ public class PoolBlock {
         byte[] data = new byte[readLength];
         this.poolData.getBytes(rawIndex, data, 0, readLength);
         return data;
+    }
+    public void release() {
+        IOUtils.releaseByteBuf(this.poolData);
+        this.poolMap = null;
+    }
+    @Override
+    protected void finalize() throws Throwable {
+        this.release();
+        super.finalize();
     }
 }

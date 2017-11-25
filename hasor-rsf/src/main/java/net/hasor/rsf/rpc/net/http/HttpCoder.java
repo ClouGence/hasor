@@ -19,6 +19,7 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.*;
+import io.netty.util.ReferenceCounted;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import net.hasor.rsf.InterAddress;
@@ -28,6 +29,7 @@ import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.rpc.net.Connector;
+import net.hasor.rsf.utils.IOUtils;
 import net.hasor.rsf.utils.ProtocolUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,10 +61,16 @@ public class HttpCoder extends ChannelDuplexHandler {
     }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        ReferenceCounted referenceCounted = null;
         try {
+            if (msg instanceof ReferenceCounted) {
+                referenceCounted = (ReferenceCounted) msg;
+            }
             readData(ctx, msg);
         } catch (Throwable e) {
             this.exceptionCaught(ctx, e);
+        } finally {
+            IOUtils.releaseByteBuf(referenceCounted);
         }
     }
     @Override
@@ -100,6 +108,7 @@ public class HttpCoder extends ChannelDuplexHandler {
             this.httpResponse = new RsfHttpResponseObject(this.httpRequest);
             this.workStatus = WorkStatus.ReceiveRequest;
             this.httpRequest.getNettyRequest().headers().set(((HttpRequest) msg).headers());
+            //
             return;
         }
         // .请求数据(最后一个)

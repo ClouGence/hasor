@@ -15,7 +15,7 @@
  */
 package net.hasor.rsf.utils;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.PooledByteBufAllocator;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfRequest;
@@ -88,6 +88,6 @@ public class ProtocolUtils {
     }
     /**创建ByteBuf*/
     public static ByteBuf newByteBuf() {
-        return ByteBufAllocator.DEFAULT.heapBuffer();
+        return PooledByteBufAllocator.DEFAULT.directBuffer();
     }
 }

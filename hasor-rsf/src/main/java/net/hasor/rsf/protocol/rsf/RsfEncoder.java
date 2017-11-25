@@ -21,6 +21,7 @@ import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.domain.RsfConstants;
+import net.hasor.rsf.protocol.rsf.v1.PoolBlock;
 import net.hasor.rsf.protocol.rsf.v1.RequestBlock;
 import net.hasor.rsf.protocol.rsf.v1.ResponseBlock;
 /**
@@ -36,37 +37,40 @@ public class RsfEncoder extends MessageToByteEncoder<Object> {
         this.classLoader = classLoader;
     }
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
+        PoolBlock block = null;
         try {
+            CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, this.classLoader, RsfConstants.Version_1);
             if (msg instanceof RequestInfo) {
                 RequestInfo info = (RequestInfo) msg;
-                CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, this.classLoader, RsfConstants.Version_1);
-                factory.wirteRequestBlock(factory.buildRequestBlock(info), out);
+                block = factory.buildRequestBlock(info);
+                factory.wirteRequestBlock((RequestBlock) block, out);
                 return;
             }
             if (msg instanceof ResponseInfo) {
                 ResponseInfo info = (ResponseInfo) msg;
-                CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, this.classLoader, RsfConstants.Version_1);
-                factory.wirteResponseBlock(factory.buildResponseBlock(info), out);
+                block = factory.buildResponseBlock(info);
+                factory.wirteResponseBlock((ResponseBlock) block, out);
                 return;
             }
             if (msg instanceof RequestBlock) {
                 /*=这个可有可无*/
-                RequestBlock block = (RequestBlock) msg;
-                CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, this.classLoader, RsfConstants.Version_1);
-                factory.wirteRequestBlock(block, out);
+                block = (RequestBlock) msg;
+                factory.wirteRequestBlock((RequestBlock) block, out);
                 return;
             }
             if (msg instanceof ResponseBlock) {
                 /*=这个可有可无*/
-                ResponseBlock block = (ResponseBlock) msg;
-                CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, this.classLoader, RsfConstants.Version_1);
-                factory.wirteResponseBlock(block, out);
+                block = (ResponseBlock) msg;
+                factory.wirteResponseBlock((ResponseBlock) block, out);
                 return;
             }
         } catch (Exception e) {
             ctx.fireExceptionCaught(e);
         } finally {
             ctx.flush();
+            if (block != null) {
+                block.release();
+            }
         }
     }
 }

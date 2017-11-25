@@ -18,6 +18,8 @@ package net.hasor.utils;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 /**
  * General IO stream manipulation utilities.
  * <p>
@@ -544,5 +546,30 @@ public abstract class IOUtils {
                 return isSeparator(ch0) ? 1 : 0;
             }
         }
+    }
+    public static BufferedReader toBufferedReader(Reader reader) {
+        return reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader);
+    }
+    public static List<String> readLines(Reader input) throws IOException {
+        BufferedReader reader = toBufferedReader(input);
+        List<String> list = new ArrayList<String>();
+        String line = reader.readLine();
+        while (line != null) {
+            list.add(line);
+            line = reader.readLine();
+        }
+        return list;
+    }
+    public static List<String> readLines(InputStream input, String charset) throws IOException {
+        InputStreamReader reader = new InputStreamReader(input, charset);
+        return readLines(reader);
+    }
+    public static String readToString(InputStream input, String charset) throws IOException {
+        List<String> stringList = readLines(input, charset);
+        StringBuilder builder = new StringBuilder();
+        for (String str : stringList) {
+            builder = builder.append(str);
+        }
+        return builder.toString();
     }
 }

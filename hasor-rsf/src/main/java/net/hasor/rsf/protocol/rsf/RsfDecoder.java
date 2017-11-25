@@ -53,6 +53,7 @@ public class RsfDecoder extends LengthFieldBasedFrameDecoder {
             return null;
         }
         //
+        //        try {
         byte rsfHead = frame.getByte(0);//协议头
         short status = this.doDecode(rsfHead, ctx, frame);//协议解析
         if (status != ProtocolStatus.OK) {
@@ -61,6 +62,9 @@ public class RsfDecoder extends LengthFieldBasedFrameDecoder {
             ResponseInfo info = ProtocolUtils.buildResponseStatus(this.rsfEnvironment, requestID, status, null);
             ctx.pipeline().writeAndFlush(info);
         }
+        //        } finally {
+        // IOUtils.releaseByteBuf(frame); // 外层调用这个方法的地方会执行释放
+        //        }
         return null;
     }
     protected ByteBuf extractFrame(ChannelHandlerContext ctx, ByteBuf buffer, int index, int length) {

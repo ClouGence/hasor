@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.address;
+import net.hasor.core.Settings;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
@@ -436,7 +437,7 @@ public class AddressBucket extends Observable {
         try {
             if (dataMaps.containsKey(AddressList_ZipEntry)) {                                               // 通
                 InputStream dataIn = new ByteArrayInputStream(dataMaps.get(AddressList_ZipEntry));          // 用
-                List<String> dataBody = IOUtils.readLines(dataIn);                                          // 模
+                List<String> dataBody = IOUtils.readLines(dataIn, Settings.DefaultCharset);                 // 模
                 if (dataBody != null && !dataBody.isEmpty()) {                                              // 式
                     logger.info("service {} read address form stream", this.serviceID);
                     StringBuilder strBuffer = new StringBuilder();
@@ -473,7 +474,7 @@ public class AddressBucket extends Observable {
         try {
             if (dataMaps.containsKey(FlowControlRef_ZipEntry)) {                                            // 通
                 InputStream dataIn = new ByteArrayInputStream(dataMaps.get(FlowControlRef_ZipEntry));       // 用
-                List<String> dataBody = IOUtils.readLines(dataIn);                                          // 模
+                List<String> dataBody = IOUtils.readLines(dataIn, Settings.DefaultCharset);                 // 模
                 if (dataBody != null && !dataBody.isEmpty()) {                                              // 式
                     String flowControl = StringUtils.join(dataBody.toArray(), "\n");
                     if (StringUtils.isNotBlank(flowControl)) {
@@ -489,7 +490,7 @@ public class AddressBucket extends Observable {
         try {
             if (dataMaps.containsKey(ServiceLevelScript_ZipEntry)) {                                        // 通
                 InputStream dataIn = new ByteArrayInputStream(dataMaps.get(ServiceLevelScript_ZipEntry));   // 用
-                List<String> dataBody = IOUtils.readLines(dataIn);                                          // 模
+                List<String> dataBody = IOUtils.readLines(dataIn, Settings.DefaultCharset);                 // 模
                 if (dataBody != null && !dataBody.isEmpty()) {                                              // 式
                     String scriptBody = StringUtils.join(dataBody.toArray(), "\n");
                     updateRoute(RouteTypeEnum.ServiceLevel, scriptBody);
@@ -503,7 +504,7 @@ public class AddressBucket extends Observable {
         try {
             if (dataMaps.containsKey(MethodLevelScript_ZipEntry)) {                                         // 通
                 InputStream dataIn = new ByteArrayInputStream(dataMaps.get(MethodLevelScript_ZipEntry));    // 用
-                List<String> dataBody = IOUtils.readLines(dataIn);                                          // 模
+                List<String> dataBody = IOUtils.readLines(dataIn, Settings.DefaultCharset);                 // 模
                 if (dataBody != null && !dataBody.isEmpty()) {                                              // 式
                     String scriptBody = StringUtils.join(dataBody.toArray(), "\n");
                     updateRoute(RouteTypeEnum.MethodLevel, scriptBody);
@@ -517,7 +518,7 @@ public class AddressBucket extends Observable {
         try {
             if (dataMaps.containsKey(ArgsLevelScript_ZipEntry)) {                                           // 通
                 InputStream dataIn = new ByteArrayInputStream(dataMaps.get(ArgsLevelScript_ZipEntry));      // 用
-                List<String> dataBody = IOUtils.readLines(dataIn);                                          // 模
+                List<String> dataBody = IOUtils.readLines(dataIn, Settings.DefaultCharset);                 // 模
                 if (dataBody != null && !dataBody.isEmpty()) {                                              // 式
                     String scriptBody = StringUtils.join(dataBody.toArray(), "\n");
                     updateRoute(RouteTypeEnum.ArgsLevel, scriptBody);

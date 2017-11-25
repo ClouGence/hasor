@@ -41,16 +41,16 @@ public class BucketTest {
         BuildBucketBuild buildBucket = new BuildBucketBuild(serviceID, rsfEnv).invoke();
         AddressBucket bucket = buildBucket.getBucket();
         //
-        String flowBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/flow-control/full-flow.xml"));
+        String flowBody = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/flow-control/full-flow.xml"), "utf-8");
         bucket.updateFlowControl(flowBody);
         //
-        String scriptBody1 = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/rule-script/service-level.groovy"));
+        String scriptBody1 = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/rule-script/service-level.groovy"), "utf-8");
         bucket.updateRoute(RouteTypeEnum.ServiceLevel, scriptBody1);
         //
-        String scriptBody2 = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/rule-script/method-level.groovy"));
+        String scriptBody2 = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/rule-script/method-level.groovy"), "utf-8");
         bucket.updateRoute(RouteTypeEnum.MethodLevel, scriptBody2);
         //
-        String scriptBody3 = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/rule-script/args-level.groovy"));
+        String scriptBody3 = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/rule-script/args-level.groovy"), "utf-8");
         bucket.updateRoute(RouteTypeEnum.ArgsLevel, scriptBody3);
         //
         File outFile = new File(rsfEnv.getPluginDir(BucketTest.class), serviceID + ".zip");
