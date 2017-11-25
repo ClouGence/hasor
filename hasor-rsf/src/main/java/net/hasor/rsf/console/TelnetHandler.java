@@ -25,8 +25,8 @@ import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.domain.RsfConstants;
-import net.hasor.rsf.utils.StringUtils;
 import net.hasor.utils.NameThreadFactory;
+import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.registry.trace;
-import net.hasor.rsf.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 import org.slf4j.MDC;
 
 import java.util.UUID;

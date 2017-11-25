@@ -24,7 +24,7 @@ import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.rpc.net.Connector;
 import net.hasor.rsf.utils.ProtocolUtils;
-import net.hasor.rsf.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

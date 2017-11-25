@@ -49,7 +49,6 @@ public class HttpCoder extends ChannelDuplexHandler {
     private RsfContext            rsfContext;
     private HttpHandler           httpHandler;
     private Connector             connector;
-    //
     private RsfHttpRequestObject  httpRequest;
     private RsfHttpResponseObject httpResponse;
     //
@@ -58,6 +57,12 @@ public class HttpCoder extends ChannelDuplexHandler {
         this.connector = connector;
         this.httpHandler = httpHandler;
         this.workStatus = WorkStatus.Idle;
+    }
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        super.channelInactive(ctx);
+        this.httpRequest.release();
+        this.httpResponse.release();
     }
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

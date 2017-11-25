@@ -19,7 +19,7 @@ import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.domain.RsfConstants;
-import net.hasor.rsf.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

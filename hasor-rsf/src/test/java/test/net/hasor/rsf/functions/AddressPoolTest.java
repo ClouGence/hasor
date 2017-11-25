@@ -21,7 +21,7 @@ import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.DiskCacheAddressPool;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
 import net.hasor.rsf.utils.IOUtils;
-import net.hasor.rsf.utils.ResourcesUtils;
+import net.hasor.utils.ResourcesUtils;
 import org.junit.Test;
 
 import java.io.File;

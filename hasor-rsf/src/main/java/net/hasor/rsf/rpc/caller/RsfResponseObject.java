@@ -19,7 +19,7 @@ import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.domain.OptionInfo;
 import net.hasor.rsf.domain.ProtocolStatus;
-import net.hasor.rsf.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 /**
  * 调用请求
  * @version : 2014年10月25日

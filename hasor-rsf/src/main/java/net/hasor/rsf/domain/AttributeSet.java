@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.domain;
-import net.hasor.rsf.utils.Iterators;
+import net.hasor.utils.Iterators;
 
 import java.util.*;
 /**

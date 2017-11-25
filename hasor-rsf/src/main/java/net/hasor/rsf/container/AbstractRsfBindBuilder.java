@@ -25,7 +25,7 @@ import net.hasor.rsf.*;
 import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.domain.ServiceDomain;
-import net.hasor.rsf.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;

@@ -128,7 +128,7 @@ class HasorDefinitionParser extends AbstractHasorDefinitionParser {
         //
         // Spring 版本兼容
         String version = SpringVersion.getVersion();
-        version = net.hasor.rsf.utils.StringUtils.isBlank(version) ? "?" : version;
+        version = StringUtils.isBlank(version) ? "?" : version;
         Map customEditors = null;
         if (version.charAt(0) == '4' || version.charAt(0) == '5') {
             customEditors = new HashMap<Class<?>, Class<? extends PropertyEditor>>();

@@ -15,7 +15,7 @@
  */
 package net.hasor.registry.access.domain;
 import com.alibaba.fastjson.JSONObject;
-import net.hasor.rsf.utils.BeanUtils;
+import net.hasor.utils.BeanUtils;
 
 import java.util.HashMap;
 import java.util.List;

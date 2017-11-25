@@ -21,8 +21,8 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.address.route.flowcontrol.unit.UnitFlowControl;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.utils.IOUtils;
-import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.utils.ZipUtils;
+import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

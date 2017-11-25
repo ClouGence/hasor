@@ -20,7 +20,7 @@ import net.hasor.rsf.*;
 import net.hasor.rsf.container.RsfDomainProvider;
 import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.rsf.domain.ServiceDomain;
-import net.hasor.rsf.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.LOCATION;
 import static io.netty.handler.codec.http.HttpHeaders.Names.ORIGIN;

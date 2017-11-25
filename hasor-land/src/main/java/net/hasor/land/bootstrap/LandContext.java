@@ -11,8 +11,8 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfClient;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.utils.NetworkUtils;
-import net.hasor.rsf.utils.StringUtils;
 import net.hasor.rsf.utils.TimerManager;
+import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

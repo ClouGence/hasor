@@ -23,7 +23,7 @@ import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.protocol.rsf.CodecAdapter;
 import net.hasor.rsf.protocol.rsf.Protocol;
 import net.hasor.rsf.utils.ByteStringCachelUtils;
-import net.hasor.rsf.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
 import java.util.List;

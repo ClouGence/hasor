@@ -20,7 +20,7 @@ import net.hasor.core.setting.SettingsWrap;
 import net.hasor.registry.CenterMode;
 import net.hasor.registry.RsfCenterSettings;
 import net.hasor.rsf.InterAddress;
-import net.hasor.rsf.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

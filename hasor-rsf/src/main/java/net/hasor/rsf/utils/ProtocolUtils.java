@@ -23,6 +23,7 @@ import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
+import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
 /**

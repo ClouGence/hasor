@@ -22,7 +22,7 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.address.RouteTypeEnum;
 import net.hasor.rsf.domain.ServiceDomain;
 import net.hasor.rsf.domain.warp.RsfBindInfoWrap;
-import net.hasor.rsf.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 
 import java.util.*;
 /**

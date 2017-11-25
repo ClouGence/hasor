@@ -21,7 +21,7 @@ import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.domain.AttributeSet;
 import net.hasor.rsf.domain.OptionKeys;
 import net.hasor.rsf.domain.RequestInfo;
-import net.hasor.rsf.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 
 import java.lang.reflect.Method;
 /**

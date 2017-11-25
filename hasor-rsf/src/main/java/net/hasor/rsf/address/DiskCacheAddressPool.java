@@ -3,7 +3,7 @@ import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.utils.IOUtils;
-import net.hasor.rsf.utils.MatchUtils;
+import net.hasor.utils.MatchUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

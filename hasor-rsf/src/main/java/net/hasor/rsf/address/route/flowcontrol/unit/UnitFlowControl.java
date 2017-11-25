@@ -17,7 +17,7 @@ package net.hasor.rsf.address.route.flowcontrol.unit;
 import net.hasor.core.Settings;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.address.route.rule.AbstractRule;
-import net.hasor.rsf.utils.MatchUtils;
+import net.hasor.utils.MatchUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -16,7 +16,7 @@
 package net.hasor.rsf.container;
 import net.hasor.rsf.RsfService;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 
 import java.lang.annotation.Annotation;
 /**

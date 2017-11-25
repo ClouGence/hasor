@@ -18,7 +18,7 @@ import net.hasor.registry.RsfCenterEvent;
 import net.hasor.registry.domain.CenterEventBody;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfUpdater;
-import net.hasor.rsf.utils.StringUtils;
+import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

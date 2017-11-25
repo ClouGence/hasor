@@ -16,15 +16,14 @@
 package net.hasor.registry.access.adapter;
 import net.hasor.core.*;
 import net.hasor.registry.access.ServerSettings;
-import net.hasor.registry.access.adapter.AuthQuery;
 import net.hasor.registry.access.domain.AuthBean;
 import net.hasor.registry.access.domain.Result;
 import net.hasor.registry.access.domain.ResultDO;
 import net.hasor.registry.access.domain.ServiceInfo;
 import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.rsf.utils.AutoCloseInputStream;
-import net.hasor.rsf.utils.StringUtils;
 import net.hasor.utils.IOUtils;
+import net.hasor.utils.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
