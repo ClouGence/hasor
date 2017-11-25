@@ -19,7 +19,7 @@ import net.hasor.rsf.*;
 import net.hasor.rsf.address.route.rule.ArgsKey;
 import net.hasor.rsf.address.route.rule.DefaultArgsKey;
 import net.hasor.rsf.domain.RsfEvent;
-import net.hasor.rsf.utils.FilenameUtils;
+import net.hasor.rsf.utils.IOUtils;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
@@ -565,7 +565,7 @@ public class AddressPool implements RsfUpdater {
                 ZipEntry zipEntry = null;
                 while ((zipEntry = zipStream.getNextEntry()) != null) {
                     String serviceID = zipEntry.getName();
-                    serviceID = FilenameUtils.getBaseName(serviceID);
+                    serviceID = IOUtils.getBaseName(serviceID);
                     AddressBucket bucket = this.addressPool.get(serviceID);
                     if (bucket == null) {
                         continue;
