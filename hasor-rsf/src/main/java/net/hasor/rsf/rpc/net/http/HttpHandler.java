@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net.http;
-import net.hasor.rsf.domain.RequestInfo;
+import net.hasor.rsf.domain.ResponseInfo;
+
+import java.io.IOException;
 /**
  * Http 解码器组
  * @version : 2017年11月22日
@@ -22,8 +24,8 @@ import net.hasor.rsf.domain.RequestInfo;
  */
 public interface HttpHandler {
     /**解析 http 请求，并创建 RequestInfo。*/
-    public RequestInfo parseRequest(RsfHttpRequest httpRequest, RsfHttpResponse httpResponse);
+    public void doRequest(RsfHttpRequest httpRequest, RsfHttpResponse httpResponse) throws IOException;
 
-    /**解析 http 请求，并创建 RequestInfo。*/
-    public void buildResponse(RsfHttpRequest httpRequest, RsfHttpResponse httpResponse);
+    /** 对 Response 进行编码，写入响应流中。*/
+    public void encodResponse(ResponseInfo info, RsfHttpRequest httpRequest, RsfHttpResponse httpResponse) throws IOException;
 }

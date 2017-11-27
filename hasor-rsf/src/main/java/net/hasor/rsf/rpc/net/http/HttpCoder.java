@@ -120,10 +120,16 @@ public class HttpCoder extends ChannelDuplexHandler {
         if (msg instanceof LastHttpContent) {
             ByteBuf content = ((LastHttpContent) msg).content();
             this.httpRequest.getNettyRequest().content().writeBytes(content);
+            this.httpHandler.doRequest(this.httpRequest, this.httpResponse);
             //
-            RequestInfo requestInfo = this.httpHandler.parseRequest(this.httpRequest, this.httpResponse);
-            if (requestInfo != null) {
-                // 启动一个定时任务，防止任务执行时间过长导致资源无法释放。
+            // .已经做出 response 回应，不需要在处理RequestInfo。
+            if (this.httpResponse.isCommitted()) {
+                this.write(ctx, this.httpResponse.getHttpResponse(), null);
+                return;
+            }
+            // .需要解析 Request，启动一个定时任务，防止任务执行时间过长导致资源无法释放。
+            RequestInfo rsfRequest = this.httpRequest.getRsfRequest();
+            if (rsfRequest != null) {
                 this.rsfContext.getEnvironment().atTime(new TimerTask() {
                     @Override
                     public void run(Timeout timeout) throws Exception {
@@ -132,13 +138,13 @@ public class HttpCoder extends ChannelDuplexHandler {
                         }
                     }
                 }, this.rsfContext.getEnvironment().getSettings().getRequestTimeout());
-                this.httpRequest.setRsfRequest(requestInfo);
-                ctx.fireChannelRead(requestInfo);
-            } else {
-                ResponseInfo info = ProtocolUtils.buildResponseStatus(//
-                        this.rsfContext.getEnvironment(), 0, ProtocolStatus.ProtocolError, "request has no invoker.");
-                this.write(ctx, info, null);
+                ctx.fireChannelRead(rsfRequest);
+                return;
             }
+            // .没有解析到 request，直接响应结束
+            ResponseInfo info = ProtocolUtils.buildResponseStatus(//
+                    this.rsfContext.getEnvironment(), 0, ProtocolStatus.ProtocolError, "request has no invoker.");
+            this.write(ctx, info, null);
             return;
         }
         // 请求数据
@@ -160,13 +166,14 @@ public class HttpCoder extends ChannelDuplexHandler {
                 return; //ACK 确认包忽略不计
             }
             //
-            this.httpResponse.setRsfResponse(response);
-            this.httpHandler.buildResponse(this.httpRequest, this.httpResponse);
-            ctx.writeAndFlush(this.httpResponse.getHttpResponse()).channel().close();
-            return;
+            this.httpHandler.encodResponse(response, this.httpRequest, this.httpResponse);
+            msg = this.httpResponse.getHttpResponse();
         }
         //
+        if (msg instanceof FullHttpResponse) {
+            ctx.writeAndFlush(msg).channel().close();
+            return;
+        }
         super.write(ctx, msg, promise);
     }
-    //
 }

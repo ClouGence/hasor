@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net.http;
+import net.hasor.rsf.domain.RequestInfo;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
@@ -264,4 +266,10 @@ public interface RsfHttpRequest {
      * @return an integer specifying the port number
      */
     public int getLocalPort();
+
+    /**
+     * 设置调用信息
+     * @param requestInfo
+     */
+    public void setInvokerInfo(RequestInfo requestInfo);
 }
