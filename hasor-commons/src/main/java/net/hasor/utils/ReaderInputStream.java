@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.utils;
+package net.hasor.utils;
 import java.io.*;
 /**
  * 使用InputStream读取Reader的工具类

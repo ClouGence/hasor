@@ -21,7 +21,7 @@ import net.hasor.registry.access.domain.Result;
 import net.hasor.registry.access.domain.ResultDO;
 import net.hasor.registry.access.domain.ServiceInfo;
 import net.hasor.rsf.domain.RsfServiceType;
-import net.hasor.rsf.utils.AutoCloseInputStream;
+import net.hasor.utils.AutoCloseInputStream;
 import net.hasor.utils.IOUtils;
 import net.hasor.utils.StringUtils;
 import org.xml.sax.Attributes;
