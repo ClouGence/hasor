@@ -54,6 +54,12 @@ public class NettyConnector extends Connector {
         super(protocol, appContext.getInstance(RsfEnvironment.class), receivedListener, accepter);
         this.appContext = appContext;
     }
+    /**获取work线程组*/
+    public EventLoopGroup getWorkerGroup() {
+        if (this.threadGroup == null)
+            return null;
+        return this.threadGroup.getWorkLoopGroup();
+    }
     /**创建 ProtocolHandlerFactory 对象。*/
     protected ProtocolHandlerFactory createHandler(String protocol, AppContext appContext) throws ClassNotFoundException {
         String configKey = getRsfEnvironment().getSettings().getProtocolConfigKey(protocol);

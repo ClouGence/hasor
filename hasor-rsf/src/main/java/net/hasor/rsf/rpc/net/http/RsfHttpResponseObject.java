@@ -42,6 +42,10 @@ class RsfHttpResponseObject implements RsfHttpResponse {
         this.httpResponse = new DefaultFullHttpResponse(httpVersion, status);
         this.committedStatus = new AtomicBoolean(false);
     }
+    RsfHttpResponseObject(HttpVersion httpVersion, HttpResponseStatus status) {
+        this.httpResponse = new DefaultFullHttpResponse(httpVersion, status);
+        this.committedStatus = new AtomicBoolean(false);
+    }
     //
     FullHttpResponse getHttpResponse() {
         return httpResponse;

@@ -78,34 +78,44 @@ public abstract class RsfChannel {
         this.sendPackets++;
         this.lastSendTime = System.currentTimeMillis();
         this.sendData(sendData, new FutureCallback<Object>() {
+            private boolean asked = false;
             @Override
             public void completed(Object result) {
-                sendPacketsOk++;
-                if (callBack == null) {
+                if (asked) {
                     return;
                 }
-                callBack.complete(requestID);
+                sendPacketsOk++;
+                if (callBack != null) {
+                    callBack.complete(requestID);
+                }
+                this.asked = true;
             }
             @Override
             public void failed(Throwable ex) {
-                sendPacketsErr++;
-                if (callBack == null) {
+                if (asked) {
                     return;
                 }
-                if (ex instanceof RsfException) {
-                    callBack.failed(requestID, (RsfException) ex);
-                } else {
-                    callBack.failed(requestID, new RsfException(ProtocolStatus.NetworkError, ex.getMessage(), ex));
+                sendPacketsErr++;
+                if (callBack != null) {
+                    if (ex instanceof RsfException) {
+                        callBack.failed(requestID, (RsfException) ex);
+                    } else {
+                        callBack.failed(requestID, new RsfException(ProtocolStatus.NetworkError, ex.getMessage(), ex));
+                    }
                 }
+                this.asked = true;
             }
             @Override
             public void cancelled() {
-                String errorMsg = "send request(" + requestID + ") to cancelled by user.";
-                sendPacketsErr++;
-                if (callBack == null) {
+                if (asked) {
                     return;
                 }
-                callBack.failed(requestID, new RsfException(ProtocolStatus.NetworkError, errorMsg));
+                String errorMsg = "send request(" + requestID + ") to cancelled by user.";
+                sendPacketsErr++;
+                if (callBack != null) {
+                    callBack.failed(requestID, new RsfException(ProtocolStatus.NetworkError, errorMsg));
+                }
+                this.asked = true;
             }
         });
     }

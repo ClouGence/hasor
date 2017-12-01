@@ -33,6 +33,9 @@ public class HttpConnector extends NettyConnector {
     public HttpConnector(String protocol, AppContext appContext, ReceivedListener receivedListener, ConnectionAccepter accepter) throws ClassNotFoundException {
         super(protocol, appContext, receivedListener, accepter);
     }
+    protected HttpHandler getHttpHandler() {
+        return this.httpHandler;
+    }
     @Override
     public void startListener(AppContext appContext) throws Throwable {
         String configKey = getRsfEnvironment().getSettings().getProtocolConfigKey(this.getProtocol());
@@ -54,6 +57,6 @@ public class HttpConnector extends NettyConnector {
     public void connectionTo(InterAddress hostAddress, BasicFuture<RsfChannel> channelFuture) {
         // 不会真实的去连接，只有当发起调用时才会进行http连接。因此这个阶段只需要创建 RsfChannelOnHttp 即可。
         logger.info("connect to {} ...", hostAddress.toHostSchema());
-        channelFuture.completed(new RsfChannelOnHttp(hostAddress, LinkType.Out));
+        channelFuture.completed(new RsfChannelOnHttp(hostAddress, LinkType.Out, this));
     }
 }
