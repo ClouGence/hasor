@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Http Netty 请求处理器
  * @version : 2017年11月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春(zyc @ hasor.net)
  */
 public class HttpCoder extends ChannelDuplexHandler {
     protected Logger logger = LoggerFactory.getLogger(getClass());
@@ -106,7 +106,7 @@ public class HttpCoder extends ChannelDuplexHandler {
         }
         //
         httpResponse = this.httpResponse.getHttpResponse();
-        ctx.writeAndFlush(httpResponse).channel().closeFuture().sync();
+        ctx.writeAndFlush(httpResponse).channel().close().sync();
     }
     private void readData(final ChannelHandlerContext ctx, Object msg) throws Throwable {
         // .请求头
@@ -173,7 +173,7 @@ public class HttpCoder extends ChannelDuplexHandler {
         this.httpHandler.receivedRequest(this.httpRequest, this.httpResponse, httpResult);
         if (!atomicBoolean.get()) {
             this.httpResponse.sendError(ProtocolStatus.InvokeError, "the server didn't respond");
-            ctx.writeAndFlush(this.httpResponse).channel().closeFuture().sync();
+            ctx.writeAndFlush(this.httpResponse).channel().close().sync();
             return;
         }
         //
@@ -220,7 +220,7 @@ public class HttpCoder extends ChannelDuplexHandler {
         }
         //
         if (msg instanceof FullHttpResponse) {
-            ctx.writeAndFlush(msg).channel().closeFuture().sync();
+            ctx.writeAndFlush(msg).channel().close().sync();
             return;
         }
         super.write(ctx, msg, promise);
