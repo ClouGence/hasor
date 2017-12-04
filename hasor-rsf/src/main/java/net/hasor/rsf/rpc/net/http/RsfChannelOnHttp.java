@@ -162,6 +162,9 @@ class RsfChannelOnHttp extends RsfChannel {
             channel.writeAndFlush(nettyRequest);
         } catch (Exception e) {
             asked.set(true);
+            sendCallBack.failed(e);
+            return;
+        } finally {
             if (channel != null) {
                 try {
                     channel.close().sync();
@@ -169,8 +172,6 @@ class RsfChannelOnHttp extends RsfChannel {
                     /*吃掉这个异常*/
                 }
             }
-            sendCallBack.failed(e);
-            return;
         }
         // .发起一个Timeout 任务，避免远程服务器一直阻塞响应
         this.httpConnector.getRsfEnvironment().atTime(new TimerTask() {
