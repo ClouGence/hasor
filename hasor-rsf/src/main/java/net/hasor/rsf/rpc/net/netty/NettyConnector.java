@@ -149,7 +149,8 @@ public class NettyConnector extends Connector {
                 } else {
                     Channel channel = future.channel();
                     logger.info("connect to {} Success.", hostAddress);
-                    result.completed(new RsfChannelOnNetty(getBindAddress(), channel, LinkType.Out));
+                    RsfChannelOnNetty onNetty = new RsfChannelOnNetty(getBindAddress(), channel, LinkType.Out);
+                    result.completed(configListener(onNetty));
                 }
             }
         });

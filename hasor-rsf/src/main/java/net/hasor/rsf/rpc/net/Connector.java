@@ -25,7 +25,6 @@ import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.concurrent.Future;
 /**
  * RPC协议连接器，负责创建某个特定RPC协议的网络事件。
@@ -145,11 +144,14 @@ public abstract class Connector {
     }
     //
     //
-    /** 是否允许接入，IP黑名单实现 */
-    protected boolean acceptChannel(RsfChannel rsfChannel) throws Exception {
+    /** 配置监听器 */
+    protected RsfChannel configListener(RsfChannel rsfChannel) {
         rsfChannel.addListener(this.receivedListener);
         rsfChannel.onClose(new CloseListener(this.linkPool));
-        //
+        return rsfChannel;
+    }
+    /** 是否允许接入，IP黑名单实现 */
+    protected boolean acceptChannel(RsfChannel rsfChannel) throws Exception {
         // .检查当前连接是否被允许接入，如果不允许接入关闭这个连接
         if (this.accepter.acceptIn(rsfChannel)) {
             String hostPort = rsfChannel.getTarget().getHostPort();
@@ -158,6 +160,7 @@ public abstract class Connector {
                 future.completed(rsfChannel);
             }
             if (rsfChannel.equalsSameAs(future.get())) {
+                configListener(rsfChannel);
                 return true;
             }
             // 理论上不应该出现同一个 hostPort 对应两个 RsfChannel 的情况。

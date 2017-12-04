@@ -60,10 +60,7 @@ public class HttpConnector extends NettyConnector {
         RsfChannelOnHttp channel = new RsfChannelOnHttp(hostAddress, LinkType.Out, this);
         channelFuture.completed(channel);
         //
-        try {
-            // .检查当前连接是否被允许接入，如果不允许接入关闭这个连接
-            super.acceptChannel(channel);
-        } catch (Exception e) {
-        }
+        // .检查当前连接是否被允许接入，如果不允许接入关闭这个连接
+        super.configListener(channel);
     }
 }

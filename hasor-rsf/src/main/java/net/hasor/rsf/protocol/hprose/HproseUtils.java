@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.rsf.protocol.hprose;
+import io.netty.buffer.ByteBuf;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.domain.*;
 import net.hasor.rsf.libs.com.hprose.io.HproseReader;
 import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 import net.hasor.rsf.libs.com.hprose.io.HproseWriter;
+import net.hasor.rsf.utils.ProtocolUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.json.JSON;
 
@@ -82,6 +84,7 @@ public class HproseUtils implements HproseConstants {
         //
         return infoArrays.toArray(new RequestInfo[infoArrays.size()]);
     }
+    //
     //
     //
     /***/
@@ -226,21 +229,32 @@ public class HproseUtils implements HproseConstants {
             output.write(data.getBytes());
         }
     }
-    //    /***/
-    //    public static ByteBuf encodeRequest(RsfContext rsfContext, RequestInfo request) throws IOException {
-    //        RsfBindInfo<?> bindInfo = rsfContext.getServiceInfo(request.getServiceGroup(), request.getServiceName(), request.getServiceVersion());
-    //        String aliasName = bindInfo.getAliasName(HPROSE);
-    //        //
-    //        ByteArrayOutputStream out = new ByteArrayOutputStream();
-    //        HproseWriter writer = new HproseWriter(out);
-    //        writer.writeString(aliasName + "_" + request.getTargetMethod());
-    //        //
-    //        writer.writeArray(request.getParameterValues().toArray());
-    //        //
-    //        ByteBuf outBuf = ProtocolUtils.newByteBuf();
-    //        outBuf.writeByte('C');
-    //        outBuf.writeBytes(out.toByteArray());
-    //        outBuf.writeByte('z');
-    //        return outBuf;
-    //    }
+    //
+    //
+    //
+    /***/
+    public static ByteBuf encodeRequest(RsfContext rsfContext, RequestInfo request) throws IOException {
+        RsfBindInfo<?> bindInfo = rsfContext.getServiceInfo(request.getServiceGroup(), request.getServiceName(), request.getServiceVersion());
+        String aliasName = bindInfo.getAliasName(HPROSE);
+        //
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        HproseWriter writer = new HproseWriter(out);
+        writer.writeString(aliasName + "_" + request.getTargetMethod());
+        //
+        writer.writeArray(request.getParameterValues().toArray());
+        //
+        ByteBuf outBuf = ProtocolUtils.newByteBuf();
+        outBuf.writeByte('C');
+        outBuf.writeBytes(out.toByteArray());
+        outBuf.writeByte('z');
+        return outBuf;
+    }
+    public static Object decodeResponse(InputStream inputStream) throws IOException {
+        int aByte = inputStream.read();
+        if ((char) aByte == 'R') {
+            HproseReader reader = new HproseReader(inputStream);
+            reader.readIntWithoutTag();
+        }
+        return null;
+    }
 }
