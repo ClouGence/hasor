@@ -187,7 +187,7 @@ public abstract class Connector {
     /**
      * 接收到数据
      */
-    protected void receivedData(RsfChannel rsfChannel, OptionInfo object) throws IOException {
+    protected void receivedData(RsfChannel rsfChannel, OptionInfo object) {
         rsfChannel.receivedData(object);
     }
     /**

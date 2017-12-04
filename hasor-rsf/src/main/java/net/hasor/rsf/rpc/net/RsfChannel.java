@@ -19,13 +19,12 @@ import net.hasor.rsf.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * 封装网络连接，并且提供网络数据收发统计。
  * @version : 2015年12月8日
- * @author 赵永春(zyc @hasor.net)
+ * @author 赵永春(zyc@hasor.net)
  */
 public abstract class RsfChannel {
     protected Logger logger = LoggerFactory.getLogger(getClass());
@@ -103,7 +102,7 @@ public abstract class RsfChannel {
         });
     }
     /**接收到数据（受保护的，只有包内可见）*/
-    final void receivedData(OptionInfo object) throws IOException {
+    final void receivedData(OptionInfo object) {
         if (!isActive()) {
             return;
         }

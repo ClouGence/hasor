@@ -92,7 +92,7 @@ public class RsfNetManager {
                 ConnectorFactory factory = (ConnectorFactory) appContext.getInstance(factoryClass);
                 Connector connector = factory.create(protocol, appContext, new ReceivedListener() {
                     @Override
-                    public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) throws IOException {
+                    public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) {
                         receivedAdapter.receivedMessage(rsfChannel, info);
                     }
                 }, new ConnectionAccepter() {

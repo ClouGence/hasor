@@ -57,6 +57,13 @@ public class HttpConnector extends NettyConnector {
     public void connectionTo(InterAddress hostAddress, BasicFuture<RsfChannel> channelFuture) {
         // 不会真实的去连接，只有当发起调用时才会进行http连接。因此这个阶段只需要创建 RsfChannelOnHttp 即可。
         logger.info("connect to {} ...", hostAddress.toHostSchema());
-        channelFuture.completed(new RsfChannelOnHttp(hostAddress, LinkType.Out, this));
+        RsfChannelOnHttp channel = new RsfChannelOnHttp(hostAddress, LinkType.Out, this);
+        channelFuture.completed(channel);
+        //
+        try {
+            // .检查当前连接是否被允许接入，如果不允许接入关闭这个连接
+            super.acceptChannel(channel);
+        } catch (Exception e) {
+        }
     }
 }

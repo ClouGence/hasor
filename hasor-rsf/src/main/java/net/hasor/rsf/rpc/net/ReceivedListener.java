@@ -24,5 +24,5 @@ import java.io.IOException;
  */
 public interface ReceivedListener {
     /**从远端收到Response消息。*/
-    public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) throws IOException;
+    public void receivedMessage(RsfChannel rsfChannel, OptionInfo info);
 }

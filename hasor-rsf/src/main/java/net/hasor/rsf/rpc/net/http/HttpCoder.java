@@ -222,7 +222,7 @@ public class HttpCoder extends ChannelDuplexHandler {
         }
         //
         if (msg instanceof FullHttpResponse) {
-            ctx.writeAndFlush(msg).channel().close().sync();
+            ctx.writeAndFlush(msg).sync().channel().close().sync();
             return;
         }
         super.write(ctx, msg, promise);

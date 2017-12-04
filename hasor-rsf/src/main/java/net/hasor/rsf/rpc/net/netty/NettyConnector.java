@@ -124,7 +124,7 @@ public class NettyConnector extends Connector {
     }
     //
     /**接收到数据(方法public化)*/
-    public void receivedData(RsfChannel target, OptionInfo object) throws IOException {
+    public void receivedData(RsfChannel target, OptionInfo object) {
         super.receivedData(target, object);
     }
     /** 连接到远程机器 */
