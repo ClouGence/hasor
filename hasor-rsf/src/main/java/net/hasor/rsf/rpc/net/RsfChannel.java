@@ -16,7 +16,6 @@
 package net.hasor.rsf.rpc.net;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.domain.*;
-import net.hasor.utils.future.FutureCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * 封装网络连接，并且提供网络数据收发统计。
  * @version : 2015年12月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春(zyc @hasor.net)
  */
 public abstract class RsfChannel {
     protected Logger logger = LoggerFactory.getLogger(getClass());
@@ -77,43 +76,27 @@ public abstract class RsfChannel {
         /*发送数据*/
         this.sendPackets++;
         this.lastSendTime = System.currentTimeMillis();
-        this.sendData(sendData, new FutureCallback<Object>() {
+        this.sendData(sendData, new SendCallBack() {
             private boolean asked = false;
             @Override
-            public void completed(Object result) {
+            public void failed(long requestID, Throwable ex) {
+                if (asked) {
+                    return;
+                }
+                sendPacketsErr++;
+                if (callBack != null) {
+                    callBack.failed(requestID, new RsfException(ProtocolStatus.NetworkError, ex.getMessage(), ex));
+                }
+                this.asked = true;
+            }
+            @Override
+            public void complete(long requestID) {
                 if (asked) {
                     return;
                 }
                 sendPacketsOk++;
                 if (callBack != null) {
                     callBack.complete(requestID);
-                }
-                this.asked = true;
-            }
-            @Override
-            public void failed(Throwable ex) {
-                if (asked) {
-                    return;
-                }
-                sendPacketsErr++;
-                if (callBack != null) {
-                    if (ex instanceof RsfException) {
-                        callBack.failed(requestID, (RsfException) ex);
-                    } else {
-                        callBack.failed(requestID, new RsfException(ProtocolStatus.NetworkError, ex.getMessage(), ex));
-                    }
-                }
-                this.asked = true;
-            }
-            @Override
-            public void cancelled() {
-                if (asked) {
-                    return;
-                }
-                String errorMsg = "send request(" + requestID + ") to cancelled by user.";
-                sendPacketsErr++;
-                if (callBack != null) {
-                    callBack.failed(requestID, new RsfException(ProtocolStatus.NetworkError, errorMsg));
                 }
                 this.asked = true;
             }
@@ -188,5 +171,5 @@ public abstract class RsfChannel {
     protected abstract void closeChannel();
 
     /**发送数据*/
-    protected abstract void sendData(OptionInfo sendData, FutureCallback<?> sendCallBack);
+    protected abstract void sendData(OptionInfo sendData, SendCallBack sendCallBack);
 }

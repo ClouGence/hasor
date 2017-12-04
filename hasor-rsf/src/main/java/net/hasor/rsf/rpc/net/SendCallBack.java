@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net;
-import net.hasor.rsf.domain.RsfException;
 /**
  * 发送数据到远端的回调函数。
  * @version : 2015年12月12日
@@ -22,7 +21,7 @@ import net.hasor.rsf.domain.RsfException;
  */
 public interface SendCallBack {
     /**发送失败。*/
-    public void failed(long requestID, RsfException e);
+    public void failed(long requestID, Throwable e);
 
     /**发送成功。*/
     public void complete(long requestID);

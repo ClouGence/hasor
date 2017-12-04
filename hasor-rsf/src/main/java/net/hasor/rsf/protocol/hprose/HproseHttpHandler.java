@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.protocol.hprose;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
 import net.hasor.core.AppContext;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfContext;
@@ -24,15 +26,19 @@ import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.libs.com.hprose.io.HproseWriter;
 import net.hasor.rsf.rpc.net.Connector;
 import net.hasor.rsf.rpc.net.http.*;
+import net.hasor.rsf.utils.IOUtils;
+import net.hasor.rsf.utils.ProtocolUtils;
 
 import java.io.*;
+import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Collection;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.*;
 /**
  * Http Netty 请求处理器
  * @version : 2017年11月23日
- * @author 赵永春(zyc @ hasor.net)
+ * @author 赵永春(zyc@hasor.net)
  */
 public class HproseHttpHandler implements HttpHandler, HttpHandlerFactory {
     @Override
@@ -118,22 +124,53 @@ public class HproseHttpHandler implements HttpHandler, HttpHandlerFactory {
         }
     }
     //
-    //
-    //
-    //
     @Override
-    public void sendRequest(InterAddress server, RequestInfo info, SenderBuilder builder) throws IOException {
+    public void sendRequest(InterAddress server, RequestInfo info, SenderBuilder builder) throws Throwable {
         String group = URLEncoder.encode(info.getServiceGroup(), "UTF-8");
         String name = URLEncoder.encode(info.getServiceName(), "UTF-8");
         String version = URLEncoder.encode(info.getServiceVersion(), "UTF-8");
-        String pathInfo = "/" + group + "/" + name + "/" + version;
+        String pathInfo = ("/" + group + "/" + name + "/" + version).replaceAll("/{2,}", "/");
+        URL requestURL = new URL("http", server.getHost(), server.getPort(), pathInfo);
         //
-        RequestBuilder requestBuilder = RequestBuilder.newBuild(server, "GET", pathInfo.replaceAll("/{2,}", "/"));
+        ByteBuf byteBuf = HproseUtils.encodeRequest(this.rsfContext, info);
+        InputStream inputStream = new ByteBufInputStream(byteBuf);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        IOUtils.copy(inputStream, out);
+        //
+        RequestBuilder requestBuilder = RequestBuilder.newBuild("GET", requestURL);
+        requestBuilder.setContentData(out.toByteArray());
+        for (String optKey : info.getOptionKeys()) {
+            requestBuilder.addHeader(optKey, info.getOption(optKey));
+        }
+        //
         RequestObject httpObject = requestBuilder.buildObject();
-        builder.sendRequest(httpObject, new RequestEncoder() {
+        builder.sendRequest(httpObject, new ResponseDecoder() {
             @Override
-            public void complete(RsfHttpResponse httpResponse, RequestInfo info) throws IOException {
+            public ResponseInfo complete(long requestID, RsfHttpResponseData httpResponse) throws IOException {
+                return decodeResponseInfo(requestID, httpResponse);
             }
         });
+    }
+    private ResponseInfo decodeResponseInfo(long requestID, RsfHttpResponseData httpResponse) throws IOException {
+        short responseStatus = (short) httpResponse.getStatus();
+        if (httpResponse.getStatus() != ProtocolStatus.OK) {
+            String errorInfo = httpResponse.getStatusMessage();
+            return ProtocolUtils.buildResponseStatus(null, requestID, responseStatus, errorInfo);
+        }
+        Object result = HproseUtils.decodeResponse(httpResponse.getInputStream());
+        //
+        ResponseInfo responseInfo = new ResponseInfo();
+        Collection<String> headerNames = httpResponse.getHeaderNames();
+        for (String optKey : headerNames) {
+            responseInfo.addOption(optKey, httpResponse.getHeader(optKey));
+        }
+        responseInfo.setReceiveTime(System.currentTimeMillis());
+        responseInfo.setRequestID(requestID);
+        responseInfo.setStatus(responseStatus);
+        responseInfo.setSerializeType("Hprose");
+        responseInfo.setReturnType("");
+        responseInfo.setReturnData(result);
+        //
+        return responseInfo;
     }
 }

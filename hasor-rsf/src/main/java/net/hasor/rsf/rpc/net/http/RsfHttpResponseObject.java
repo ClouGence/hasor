@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net.http;
+import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.handler.codec.http.*;
 import net.hasor.rsf.utils.IOUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,9 +31,9 @@ import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_TYPE;
 /**
  * Http 解码器组
  * @version : 2017年11月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春(zyc @ hasor.net)
  */
-class RsfHttpResponseObject implements RsfHttpResponse {
+class RsfHttpResponseObject implements RsfHttpResponse, RsfHttpResponseData {
     private FullHttpResponse httpResponse;
     private AtomicBoolean    committedStatus;
     //
@@ -89,11 +91,22 @@ class RsfHttpResponseObject implements RsfHttpResponse {
         this.sendError(sc, null);
     }
     @Override
+    public InputStream getInputStream() throws IOException {
+        return new ByteBufInputStream(this.httpResponse.content());
+    }
+    @Override
     public int getStatus() {
         if (this.httpResponse.status() != null) {
             return this.httpResponse.status().code();
         }
         return 0;
+    }
+    @Override
+    public String getStatusMessage() {
+        if (this.httpResponse.status() != null) {
+            return this.httpResponse.status().reasonPhrase();
+        }
+        return null;
     }
     //
     @Override

@@ -18,11 +18,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import net.hasor.rsf.InterAddress;
-import net.hasor.rsf.domain.OptionInfo;
-import net.hasor.rsf.domain.RsfException;
+import net.hasor.rsf.domain.*;
 import net.hasor.rsf.rpc.net.LinkType;
 import net.hasor.rsf.rpc.net.RsfChannel;
-import net.hasor.utils.future.FutureCallback;
+import net.hasor.rsf.rpc.net.SendCallBack;
 /**
  * 封装Netty网络连接。
  * @version : 2015年12月8日
@@ -52,14 +51,16 @@ class RsfChannelOnNetty extends RsfChannel {
         this.channel.close();
     }
     @Override
-    protected void sendData(OptionInfo sendData, final FutureCallback<?> sendCallBack) {
+    protected void sendData(OptionInfo sendData, final SendCallBack sendCallBack) {
         final ChannelFuture future = this.channel.writeAndFlush(sendData);
+        final long requestID = (sendData instanceof RequestInfo) ? ((RequestInfo) sendData).getRequestID() ://
+                (sendData instanceof ResponseInfo) ? ((ResponseInfo) sendData).getRequestID() : 0;
         /*为sendData添加侦听器，负责处理意外情况。*/
         future.addListener(new ChannelFutureListener() {
             public void operationComplete(ChannelFuture future) throws Exception {
                 if (future.isSuccess()) {
                     if (sendCallBack != null) {
-                        sendCallBack.completed(null);
+                        sendCallBack.complete(requestID);
                     }
                     return;
                 }
@@ -67,12 +68,12 @@ class RsfChannelOnNetty extends RsfChannel {
                 if (future.isCancelled()) {
                     //用户取消
                     if (sendCallBack != null) {
-                        sendCallBack.cancelled();
+                        sendCallBack.failed(requestID, new RsfException(ProtocolStatus.Unknown, "user Cancelled."));
                     }
                 } else if (!future.isSuccess()) {
                     //异常状况
                     if (sendCallBack != null) {
-                        sendCallBack.failed(future.cause());
+                        sendCallBack.failed(requestID, future.cause());
                     }
                 }
             }

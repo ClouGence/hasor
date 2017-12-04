@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Http Netty 请求处理器
  * @version : 2017年11月22日
- * @author 赵永春(zyc @ hasor.net)
+ * @author 赵永春(zyc@hasor.net)
  */
 public class HttpCoder extends ChannelDuplexHandler {
     protected Logger logger = LoggerFactory.getLogger(getClass());
@@ -95,6 +95,8 @@ public class HttpCoder extends ChannelDuplexHandler {
             HttpResponseStatus status = HttpResponseStatus.parseLine(errorCode + " " + errorMessage);
             new DefaultFullHttpResponse(version, status);
             this.httpResponse = new RsfHttpResponseObject(version, status);
+        } else {
+            this.httpResponse.sendError(errorCode, errorMessage);
         }
         //
         if (this.encoder != null) {
@@ -148,7 +150,7 @@ public class HttpCoder extends ChannelDuplexHandler {
     }
     //
     //
-    private void doInvoker(final ChannelHandlerContext ctx) throws Exception {
+    private void doInvoker(final ChannelHandlerContext ctx) throws Throwable {
         final AtomicBoolean atomicBoolean = new AtomicBoolean(false);
         HttpHandler.HttpResult httpResult = new HttpHandler.HttpResult() {
             @Override

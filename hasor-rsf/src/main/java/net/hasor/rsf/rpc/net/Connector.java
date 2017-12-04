@@ -147,6 +147,9 @@ public abstract class Connector {
     //
     /** 是否允许接入，IP黑名单实现 */
     protected boolean acceptChannel(RsfChannel rsfChannel) throws Exception {
+        rsfChannel.addListener(this.receivedListener);
+        rsfChannel.onClose(new CloseListener(this.linkPool));
+        //
         // .检查当前连接是否被允许接入，如果不允许接入关闭这个连接
         if (this.accepter.acceptIn(rsfChannel)) {
             String hostPort = rsfChannel.getTarget().getHostPort();
@@ -155,8 +158,6 @@ public abstract class Connector {
                 future.completed(rsfChannel);
             }
             if (rsfChannel.equalsSameAs(future.get())) {
-                future.get().addListener(this.receivedListener);
-                future.get().onClose(new CloseListener(this.linkPool));
                 return true;
             }
             // 理论上不应该出现同一个 hostPort 对应两个 RsfChannel 的情况。

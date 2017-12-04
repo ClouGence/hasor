@@ -30,7 +30,7 @@ public interface HttpHandler {
      * 1. 可以解析 httpRequest，并生成 RequestInfo 对象。然后 outputTo.callRPC 进行服务调用。
      * 2. 或者直接把rpc结果写到 RsfHttpResponse 的输出流中，然后直接 outputTo.finishRPC 完成响应。
      */
-    public void receivedRequest(RsfHttpRequest httpRequest, RsfHttpResponse httpResponse, HttpResult outputTo) throws IOException;
+    public void receivedRequest(RsfHttpRequest httpRequest, RsfHttpResponse httpResponse, HttpResult outputTo) throws Throwable;
 
     /** 结果处理方式 */
     public static interface HttpResult {
@@ -63,7 +63,7 @@ public interface HttpHandler {
      * 1. 可以解析 RequestInfo，并生成 RequestObject 对象。然后通过 builder.sendRequest 进行服务调用。
      * 2. 或者直接把rpc结果写到 builder.finishRequest 中。
      */
-    public void sendRequest(InterAddress requestHost, RequestInfo info, SenderBuilder builder) throws IOException;
+    public void sendRequest(InterAddress requestHost, RequestInfo info, SenderBuilder builder) throws Throwable;
 
     /** Response 编码器 */
     public static interface SenderBuilder {
@@ -71,7 +71,7 @@ public interface HttpHandler {
          * 方式一：发送调用请求。
          * @throws IllegalStateException sendRequest、finishRequest 两个方法中只有一个能被成功调用，且只能调用一次。
          */
-        public void sendRequest(RequestObject httpRequest, RequestEncoder encoder);
+        public void sendRequest(RequestObject httpRequest, ResponseDecoder decoder);
 
         /**
          * 方式二：直接给出请求结果。
@@ -79,9 +79,9 @@ public interface HttpHandler {
          */
         public void finishRequest(ResponseInfo responseInfo) throws IOException;
     }
-    /** Response 编码器 */
-    public static interface RequestEncoder {
+    /** Response 解码器 */
+    public static interface ResponseDecoder {
         /** 完成调用 */
-        public void complete(RsfHttpResponse httpResponse, RequestInfo info) throws IOException;
+        public ResponseInfo complete(long requestID, RsfHttpResponseData httpResponse) throws IOException;
     }
 }
