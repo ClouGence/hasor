@@ -99,9 +99,6 @@ public class TaskManager extends Thread {
                     result = this.rsfPusher.removeAddress(serviceID, invalidAddressSet, targetList); // 第三次尝试
                 }
             }
-            if (!result) {
-                // TODO
-            }
         }
         //
     }
@@ -123,9 +120,6 @@ public class TaskManager extends Thread {
                 if (!result) {
                     result = this.rsfPusher.appendAddress(serviceID, newAddressSet, targetList); // 第三次尝试
                 }
-            }
-            if (!result) {
-                // TODO
             }
         }
         //
