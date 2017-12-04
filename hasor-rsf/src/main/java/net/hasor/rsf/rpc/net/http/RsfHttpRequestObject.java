@@ -55,7 +55,7 @@ class RsfHttpRequestObject extends HashMap<String, Object> implements RsfHttpReq
         this.rsfRequest = rsfRequest;
     }
     void loadPostRequestBody() {
-        // TODO 加载 http body
+        //throw new java.lang.UnsupportedOperationException("temporary does not support the :" + this.getMethod());
     }
     void release() {
         this.clear();

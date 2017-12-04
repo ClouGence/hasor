@@ -30,14 +30,14 @@ import net.hasor.rsf.rpc.net.RsfChannel;
 import net.hasor.rsf.rpc.net.SendCallBack;
 import net.hasor.rsf.rpc.net.http.HttpHandler.ResponseDecoder;
 import net.hasor.rsf.rpc.net.http.HttpHandler.SenderBuilder;
+import net.hasor.rsf.utils.ProtocolUtils;
 import net.hasor.utils.Objects;
+import net.hasor.utils.future.BasicFuture;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 封装Http网络连接，还负责向外发起远程调用。
  * @version : 2017年11月22日
@@ -45,12 +45,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 class RsfChannelOnHttp extends RsfChannel {
     private HttpConnector httpConnector;
-    private AtomicBoolean atomicBoolean;
-    private Channel channel = null;
     public RsfChannelOnHttp(InterAddress target, LinkType linkType, HttpConnector httpConnector) {
         super(target, linkType);
         this.httpConnector = httpConnector;
-        this.atomicBoolean = new AtomicBoolean(false);
     }
     @Override
     public boolean isActive() {
@@ -60,40 +57,33 @@ class RsfChannelOnHttp extends RsfChannel {
     protected void closeChannel() {
         //http本身就是请求一次自动关闭，因此不需要 close 任何东西。
     }
-    @Override
+    //
     protected void sendData(OptionInfo sendData, final SendCallBack sendCallBack) {
         final long requestID = (sendData instanceof RequestInfo) ? ((RequestInfo) sendData).getRequestID() ://
                 (sendData instanceof ResponseInfo) ? ((ResponseInfo) sendData).getRequestID() : 0;
-        if (this.atomicBoolean.compareAndSet(false, true)) {
-            sendCallBack.failed(requestID, new RsfException(ProtocolStatus.QueueFull, "HTTP channel busy."));
-            return;
-        }
-        try {
-            this.channel = _sendData(requestID, sendData, new SendCallBack() {
-                @Override
-                public void failed(long requestID, Throwable e) {
-                    atomicBoolean.set(false);
-                    closeSocket(channel);
-                    sendCallBack.failed(requestID, e);
+        //
+        sendData(requestID, sendData, new SendCallBack() {
+            @Override
+            public void failed(long requestID, Throwable e) {
+                short status = ProtocolStatus.InvokeError;
+                if (e instanceof RsfException) {
+                    status = ((RsfException) e).getStatus();
                 }
-                @Override
-                public void complete(long requestID) {
-                    atomicBoolean.set(false);
-                    closeSocket(channel);
-                    sendCallBack.complete(requestID);
-                }
-            });
-        } finally {
-            if (this.channel == null) {
-                this.atomicBoolean.set(false);
+                ResponseInfo responseInfo = ProtocolUtils.buildResponseStatus(//
+                        null, requestID, status, e.getMessage());
+                httpConnector.receivedData(RsfChannelOnHttp.this, responseInfo);
+                sendCallBack.failed(requestID, e);
             }
-        }
+            @Override
+            public void complete(long requestID) {
+                sendCallBack.complete(requestID);
+            }
+        });
     }
-    //
-    private Channel _sendData(final long requestID, OptionInfo sendData, final SendCallBack sendCallBack) {
+    private void sendData(long requestID, OptionInfo sendData, final SendCallBack sendCallBack) {
         if (!(sendData instanceof RequestInfo)) {
             sendCallBack.failed(requestID, new RsfException(ProtocolStatus.InvokeError, "only support RequestInfo."));
-            return null;
+            return;
         }
         // .通用数据
         RequestInfo requestInfo = (RequestInfo) sendData;
@@ -108,7 +98,7 @@ class RsfChannelOnHttp extends RsfChannel {
             uri = new URL("http", remoteHost, remotePort, pathInfo).toURI();
         } catch (Exception e) {
             sendCallBack.failed(requestID, e);
-            return null;
+            return;
         }
         //
         // ---------------------------------------------------------------------------------------- 本地部分
@@ -139,33 +129,33 @@ class RsfChannelOnHttp extends RsfChannel {
             this.httpConnector.getHttpHandler().sendRequest(this.getTarget(), requestInfo, senderBuilder);
         } catch (Throwable e) {
             sendCallBack.failed(requestID, e);
-            return null;
+            return;
         }
         //
         // ---------------------------------------------------------------------------------------- 不需要发送远程请求的情况
         if (objectToUse.isEmpty()) {
             sendCallBack.failed(requestID, new RsfException(ProtocolStatus.InvokeError, "the server didn't respond"));
-            return null;
+            return;
         }
         Object dat = objectToUse.get(0);
         try {
             if (dat instanceof ResponseInfo && objectToUse.size() == 1) {
                 sendCallBack.complete(requestID);
                 this.httpConnector.receivedData(this, (ResponseInfo) dat);
-                return null;
+                return;
             }
         } catch (Exception e) {
             sendCallBack.failed(requestID, e);
-            return null;
+            return;
         }
         //
         // ---------------------------------------------------------------------------------------- 网络部分
-        final AtomicBoolean asked = new AtomicBoolean(false);// 是否执行过响应，避免重复响应
         Channel channel = null;
+        final BasicFuture<RsfHttpResponseObject> responseFuture = new BasicFuture<RsfHttpResponseObject>();
+        ResponseDecoder requestEncoder = (ResponseDecoder) objectToUse.get(1);
         try {
             // .准备请求数据
             RequestObject requestObject = (RequestObject) dat;
-            final ResponseDecoder requestEncoder = (ResponseDecoder) objectToUse.get(1);
             nettyRequest.headers().add(requestObject.headers());
             nettyRequest.setMethod(requestObject.method());
             nettyRequest.headers().set(HttpHeaders.Names.CONNECTION, HttpHeaders.Values.KEEP_ALIVE);
@@ -179,7 +169,7 @@ class RsfChannelOnHttp extends RsfChannel {
             URL requestURL = requestObject.requestFullPath();
             if (!"http".equalsIgnoreCase(requestURL.getProtocol())) {
                 sendCallBack.failed(requestID, new RsfException(ProtocolStatus.ProtocolError, "only support HTTP."));
-                return null;
+                return;
             }
             String remoteHost = requestURL.getHost();
             int remotePort = (requestURL.getPort() <= 0) ? 80 : requestURL.getPort();
@@ -198,33 +188,49 @@ class RsfChannelOnHttp extends RsfChannel {
                     ch.pipeline().addLast(new HttpResponseDecoder());
                     // 客户端发送的是httprequest，所以要使用HttpRequestEncoder进行编码
                     ch.pipeline().addLast(new HttpRequestEncoder());
-                    ch.pipeline().addLast(new RsfChannelOnHttpClientHandler(requestID, asked, //
-                            RsfChannelOnHttp.this, sendCallBack, requestEncoder));
+                    ch.pipeline().addLast(new RsfChannelOnHttpClientHandler(responseFuture));
                 }
             });
             channel = b.connect(remoteHost, remotePort).sync().channel();
             //
             // .向外发起远程调用
-            channel.writeAndFlush(nettyRequest);
+            channel.writeAndFlush(nettyRequest).sync();
         } catch (Exception e) {
-            asked.set(true);
             sendCallBack.failed(requestID, e);
             closeSocket(channel);
-            return null;
+            return;
         }
+        //
         // .发起一个Timeout 任务，避免远程服务器一直阻塞响应
-        final Channel finalChannel = channel;
         this.httpConnector.getRsfEnvironment().atTime(new TimerTask() {
             @Override
             public void run(Timeout timeout) throws Exception {
-                if (asked.get()) {
-                    return;// 如果已经执行过响应，那么放弃后续操作
+                if (!responseFuture.isDone()) {
+                    responseFuture.failed(new RsfException(ProtocolStatus.Timeout, "client send request failed, request is timeout."));
                 }
-                sendCallBack.failed(requestID, new RsfException(ProtocolStatus.Timeout, "client send request failed, request is timeout."));
-                closeSocket(finalChannel);
             }
         }, requestInfo.getClientTimeout());
-        return channel;
+        //
+        //
+        try {
+            RsfHttpResponseObject responseObject = responseFuture.get();
+            if (!requestInfo.isMessage()) {
+                ResponseInfo responseInfo = requestEncoder.complete(requestID, responseObject);
+                responseObject.release();
+                sendCallBack.complete(requestID);
+                this.httpConnector.receivedData(this, responseInfo);
+            } else {
+                ResponseInfo responseInfo = ProtocolUtils.buildResponseStatus(//
+                        null, requestID, ProtocolStatus.Accept, "ok.");
+                this.httpConnector.receivedData(this, responseInfo);
+                sendCallBack.complete(requestID);
+            }
+        } catch (Exception e) {
+            sendCallBack.failed(requestID, e);
+        } finally {
+            closeSocket(channel);
+        }
+        return;
     }
     //
     void closeSocket(Channel channel) {
@@ -236,10 +242,5 @@ class RsfChannelOnHttp extends RsfChannel {
         } catch (Exception e1) {
             /*吃掉这个异常*/
         }
-    }
-    void receivedResponse(ResponseInfo responseInfo) throws IOException {
-        this.httpConnector.receivedData(this, responseInfo);
-        this.closeSocket(this.channel);
-        this.atomicBoolean.set(false);
     }
 }

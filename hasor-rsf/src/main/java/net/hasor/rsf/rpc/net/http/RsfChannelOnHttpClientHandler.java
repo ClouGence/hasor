@@ -33,12 +33,6 @@ class RsfChannelOnHttpClientHandler extends ChannelInboundHandlerAdapter {
         this.responseFuture = responseFuture;
     }
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        if (this.httpResponse != null)
-            this.httpResponse.release();
-        super.channelInactive(ctx);
-    }
-    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         // .请求头
         if (msg instanceof HttpResponse) {

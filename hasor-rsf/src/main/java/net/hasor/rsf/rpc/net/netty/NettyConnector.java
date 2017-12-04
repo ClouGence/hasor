@@ -33,7 +33,6 @@ import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -99,9 +98,9 @@ public class NettyConnector extends Connector {
         });
         try {
             this.localListener = result.get();
-            logger.info("rsf Server started at {}", this.getBindAddress());
+            logger.info("rsf[{}] Server started at {}", this.getProtocol(), this.getBindAddress());
         } catch (Exception e) {
-            logger.error("rsf start listener error: " + e.getMessage(), e);
+            logger.error("rsf[{}] start listener error: " + e.getMessage(), this.getProtocol(), e);
             throw new RsfException(ProtocolStatus.NetworkError, this.getBindAddress().toString() + " -> " + e.getMessage());
         }
         //
