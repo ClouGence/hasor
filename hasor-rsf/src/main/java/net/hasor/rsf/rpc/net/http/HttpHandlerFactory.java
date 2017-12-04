@@ -17,7 +17,7 @@ package net.hasor.rsf.rpc.net.http;
 import net.hasor.core.AppContext;
 import net.hasor.rsf.rpc.net.Connector;
 /**
- * Http 解码器组
+ * 创建 HttpHandler 使用。
  * @version : 2017年11月22日
  * @author 赵永春(zyc@hasor.net)
  */

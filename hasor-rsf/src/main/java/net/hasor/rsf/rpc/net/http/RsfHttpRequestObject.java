@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.rpc.net.http;
 import io.netty.buffer.ByteBufInputStream;
-import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.domain.RequestInfo;
@@ -39,7 +38,7 @@ class RsfHttpRequestObject extends HashMap<String, Object> implements RsfHttpReq
     private RequestInfo                   rsfRequest;
     private HashMap<String, List<String>> parameterMap;
     //
-    RsfHttpRequestObject(InterAddress remoteAddress, InterAddress localAddress, DefaultFullHttpRequest httpRequest) {
+    RsfHttpRequestObject(InterAddress remoteAddress, InterAddress localAddress, FullHttpRequest httpRequest) {
         this.remoteAddress = remoteAddress;
         this.localAddress = localAddress;
         this.httpRequest = httpRequest;
@@ -52,16 +51,18 @@ class RsfHttpRequestObject extends HashMap<String, Object> implements RsfHttpReq
     RequestInfo getRsfRequest() {
         return this.rsfRequest;
     }
+    void setRsfRequest(RequestInfo rsfRequest) {
+        this.rsfRequest = rsfRequest;
+    }
+    void loadPostRequestBody() {
+        // TODO 加载 http body
+    }
     void release() {
         this.clear();
         this.parameterMap.clear();
         IOUtils.releaseByteBuf(this.httpRequest);
     }
     // ----------------------------------------------------------------------------------
-    @Override
-    public void setInvokerInfo(RequestInfo rsfRequest) {
-        this.rsfRequest = rsfRequest;
-    }
     @Override
     public String getRequestURI() {
         return this.httpRequest.uri();

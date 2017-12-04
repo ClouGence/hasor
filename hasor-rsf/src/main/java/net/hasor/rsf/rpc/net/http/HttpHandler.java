@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.net.http;
+import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 
@@ -25,7 +26,7 @@ import java.io.IOException;
  */
 public interface HttpHandler {
     /**
-     * 接收到 http request 请求。
+     * 接收到 http request 请求并做出响应。
      * 1. 可以解析 httpRequest，并生成 RequestInfo 对象。然后 outputTo.callRPC 进行服务调用。
      * 2. 或者直接把rpc结果写到 RsfHttpResponse 的输出流中，然后直接 outputTo.finishRPC 完成响应。
      */
@@ -33,10 +34,16 @@ public interface HttpHandler {
 
     /** 结果处理方式 */
     public static interface HttpResult {
-        /** 方式一：解析 httpRequest，并生成 RequestInfo 对象，然后让 rsf 调度这个请求。*/
+        /**
+         * 方式一：解析 httpRequest，并生成 RequestInfo 对象，然后让 rsf 调度这个请求。
+         * @throws IllegalStateException callRPC、finishRPC 两个方法中只有一个能被成功调用，且只能调用一次。
+         */
         public void callRPC(RequestInfo requestInfo, ResponseEncoder encoder);
 
-        /** 方式二：结束 RPC 调用立即进行 response 响应。*/
+        /**
+         * 方式二：结束 RPC 调用立即进行 response 响应。
+         * @throws IllegalStateException callRPC、finishRPC 两个方法中只有一个能被成功调用，且只能调用一次。
+         */
         public void finishRPC();
     }
     /** Response 编码器 */
@@ -50,22 +57,31 @@ public interface HttpHandler {
     //
     // ------------------------------------------------------------------------------------------------------
     //
-    //
 
     /**
-     * 接收到 http request 请求。
-     * 1. 可以解析 httpRequest，并生成 RequestInfo 对象。然后 outputTo.callRPC 进行服务调用。
-     * 2. 或者直接把rpc结果写到 RsfHttpResponse 的输出流中，然后直接 outputTo.finishRPC 完成响应。
+     * 准备向外发送 http request 请求。
+     * 1. 可以解析 RequestInfo，并生成 RequestObject 对象。然后通过 builder.sendRequest 进行服务调用。
+     * 2. 或者直接把rpc结果写到 builder.finishRequest 中。
      */
-    public void sendRequest(RsfHttpRequest httpRequest, RsfHttpResponse httpResponse, HttpResult outputTo) throws IOException;
+    public void sendRequest(InterAddress requestHost, RequestInfo info, SenderBuilder builder) throws IOException;
 
+    /** Response 编码器 */
+    public static interface SenderBuilder {
+        /**
+         * 方式一：发送调用请求。
+         * @throws IllegalStateException sendRequest、finishRequest 两个方法中只有一个能被成功调用，且只能调用一次。
+         */
+        public void sendRequest(RequestObject httpRequest, RequestEncoder encoder);
+
+        /**
+         * 方式二：直接给出请求结果。
+         * @throws IllegalStateException sendRequest、finishRequest 两个方法中只有一个能被成功调用，且只能调用一次。
+         */
+        public void finishRequest(ResponseInfo responseInfo) throws IOException;
+    }
     /** Response 编码器 */
     public static interface RequestEncoder {
         /** 完成调用 */
         public void complete(RsfHttpResponse httpResponse, RequestInfo info) throws IOException;
     }
-    //    /**
-    //     * 对 info 的数据进行编码，写入 RsfHttpResponse 输出流中。
-    //     */
-    //    public void encodResponse(ResponseInfo info, RsfHttpResponse httpResponse) throws IOException;
 }

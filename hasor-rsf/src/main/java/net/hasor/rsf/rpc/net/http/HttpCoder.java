@@ -31,6 +31,7 @@ import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.rpc.net.Connector;
 import net.hasor.rsf.utils.IOUtils;
 import net.hasor.rsf.utils.ProtocolUtils;
+import net.hasor.utils.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -152,16 +153,29 @@ public class HttpCoder extends ChannelDuplexHandler {
         HttpHandler.HttpResult httpResult = new HttpHandler.HttpResult() {
             @Override
             public void callRPC(RequestInfo requestInfo, HttpHandler.ResponseEncoder encoder) {
+                Objects.requireNonNull(requestInfo);
+                Objects.requireNonNull(encoder);
+                if (atomicBoolean.get()) {
+                    throw new IllegalStateException("callRPC and finishRPC , have only one of to use");
+                }
                 httpRequest.setRsfRequest(requestInfo);
                 HttpCoder.this.encoder = encoder;
                 atomicBoolean.set(true);
             }
             @Override
             public void finishRPC() {
+                if (atomicBoolean.get()) {
+                    throw new IllegalStateException("callRPC and finishRPC , have only one of to use");
+                }
                 atomicBoolean.set(true);
             }
         };
-        this.httpHandler.doRequest(this.httpRequest, this.httpResponse, httpResult);
+        this.httpHandler.receivedRequest(this.httpRequest, this.httpResponse, httpResult);
+        if (!atomicBoolean.get()) {
+            this.httpResponse.sendError(ProtocolStatus.InvokeError, "the server didn't respond");
+            ctx.writeAndFlush(this.httpResponse).channel().closeFuture().sync();
+            return;
+        }
         //
         // .引发fireChannelRead或者响应response
         // .已经做出 response 回应，不需要在处理RequestInfo。
