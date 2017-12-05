@@ -86,7 +86,6 @@ public class HproseUtils implements HproseConstants {
     }
     //
     //
-    //
     /***/
     private static void parseRequest(RsfContext rsfContext, HproseReader reader, List<RequestInfo> infoArrays) throws IOException {
         long requestID = 12345;
@@ -231,7 +230,6 @@ public class HproseUtils implements HproseConstants {
     }
     //
     //
-    //
     /***/
     public static ByteBuf encodeRequest(RsfContext rsfContext, RequestInfo request) throws IOException {
         RsfBindInfo<?> bindInfo = rsfContext.getServiceInfo(request.getServiceGroup(), request.getServiceName(), request.getServiceVersion());
@@ -253,7 +251,7 @@ public class HproseUtils implements HproseConstants {
         int aByte = inputStream.read();
         if ((char) aByte == 'R') {
             HproseReader reader = new HproseReader(inputStream);
-            reader.readIntWithoutTag();
+            return reader.unserialize();
         }
         return null;
     }

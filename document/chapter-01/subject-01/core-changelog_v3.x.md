@@ -8,9 +8,13 @@
     02. DataQL 的 LoaderUdfSource 增加 isIgnore 方法用于判断是否忽略不正确的UDF查找请求
     03. DataQL 优化udf source增加机制。
     04. HASOR_LOAD_EVENT_POOL 配置项从 20 改为 8
-    05. RSF 网络层，抽象 Connector 概念，作为 RPC 连接器存在。netty 作为一个连接器实现。
-    05. RSF RequestInfo 和 ResponseInfo 不在同时封装 byte 和 object。
-    06. 序列化和反序列化都交给 io 线程进行处理。
+    05. RSF 网络层，抽象 Connector 概念，作为 RPC 连接器存在。有了连接器扩展任意 rpc 协议变得可能。
+    06. 提供一个 netty 基础连接器实现，rsf 协议基于 Netty 连接器 实现。
+    07. 提供一个 http 基础连接器实现， hprose 协议基于 http 连接器实现。
+    08. RSF RequestInfo 和 ResponseInfo 不在同时封装 byte 和 object。
+    09. 序列化和反序列化都交给 io 线程进行处理。
+    10. Hprose 协议，支持双向调用了。之前只能被动充当 Hprose 服务提供者，目前也可以作为消费者存在了。
+    11. Rsf 注册重新完全重新实现。
 **修复**
     01. fix Hasor 的 Spring 插件初始化失败问题。
     02. fix jfinal 列子编译问题。
