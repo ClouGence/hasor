@@ -29,9 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 /**
  *
  * @version : 2014年11月12日
@@ -143,8 +141,8 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         return this.defaultProtocol;
     }
     @Override
-    public String[] getProtocos() {
-        return this.connectorSet.keySet().toArray(new String[this.connectorSet.size()]);
+    public Set<String> getProtocos() {
+        return Collections.unmodifiableSet(this.connectorSet.keySet());
     }
     @Override
     public InterAddress getBindAddressSet(String protocolName) {
@@ -234,7 +232,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         String bindAddress = getString("hasor.rsfConfig.address", "local");
         InetAddress inetAddress = NetworkUtils.finalBindAddress(bindAddress);
         this.bindAddress = inetAddress.getHostAddress();
-        this.defaultProtocol = getString("hasor.rsfConfig.connectorSet.default");
         this.bindAddressSet = new HashMap<String, InterAddress>();
         this.gatewayAddressMap = new HashMap<String, InterAddress>();
         Map<String, String> connectorTmpSet = new HashMap<String, String>();
@@ -268,10 +265,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
             // .解析没问哦在放到connectorSet中
             this.connectorSet.put(name, basePath);
             this.bindAddressSet.put(name, localAddress);
-            // .确保有默认的协议可用
-            if (StringUtils.isBlank(this.defaultProtocol)) {
-                this.defaultProtocol = name;
-            }
             //
             // .解析网关配置（可选）
             String gatewayHost = this.getString(basePath + ".gatewayAddress");
@@ -281,7 +274,12 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
             InetAddress gatewayInetAddress = NetworkUtils.finalBindAddress(gatewayHost);
             InterAddress gatewayAddress = new InterAddress(protocol, gatewayInetAddress.getHostAddress(), gatewayPort, this.unitName);
             this.gatewayAddressMap.put(name, gatewayAddress);
-            //
+        }
+        //
+        // .确保有默认的协议可用
+        this.defaultProtocol = getString("hasor.rsfConfig.connectorSet.default");
+        if (!this.bindAddressSet.containsKey(this.defaultProtocol)) {
+            throw new IOException("default protocol missing config.");
         }
         //
         this.consolePort = getInteger("hasor.rsfConfig.console.port", 2180);

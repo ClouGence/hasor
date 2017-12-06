@@ -68,9 +68,9 @@ public class RsfNetManager {
         //
         RsfSettings settings = this.getRsfEnvironment().getSettings();
         String defaultProtocol = settings.getDefaultProtocol();
-        String[] protocolArrays = settings.getProtocos();
+        Set<String> protocolSet = settings.getProtocos();
         //
-        for (String protocol : protocolArrays) {
+        for (String protocol : protocolSet) {
             // .Sechma 注册
             String configKey = settings.getProtocolConfigKey(protocol);
             String sechmaName = settings.getString(configKey + ".protocol");
@@ -82,7 +82,7 @@ public class RsfNetManager {
             if (sechmaMapping.contains(protocol)) {
                 this.logger.error("connector[{}] failed -> repeat.", protocol);
                 if (defaultProtocol.equals(protocol)) {
-                    throw new IllegalStateException("default connector start failed. " + protocol + "-> repeat.");
+                    throw new IllegalStateException("default connector start failed. " + protocol + "-> repeat protocol.");
                 }
             }
             //
@@ -118,6 +118,14 @@ public class RsfNetManager {
             }
         }
         //
+        if (this.findConnector(defaultProtocol) == null) {
+            try {
+                this.logger.error("start failed , default {} protocol failed", defaultProtocol);
+                throw new IllegalStateException("start failed , default " + defaultProtocol + " protocol failed");
+            } finally {
+                shutdown();// 一定要做清理
+            }
+        }
     }
     //
     protected boolean acceptChannel(RsfChannel rsfChannel) throws IOException {

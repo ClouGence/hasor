@@ -31,10 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -92,9 +89,9 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         }
         //
         RsfSettings settings = this.rsfContext.getSettings();
-        String[] protocolArrays = settings.getProtocos();
-        List<String> rsfAddressList = new ArrayList<String>(protocolArrays.length);
-        for (String protocol : protocolArrays) {
+        Set<String> protocolSet = settings.getProtocos();
+        List<String> rsfAddressList = new ArrayList<String>(protocolSet.size());
+        for (String protocol : rsfAddressList) {
             InterAddress interAddress = this.rsfContext.publishAddress(protocol);
             if (interAddress != null) {
                 rsfAddressList.add(inetAddress.getHostName());

@@ -59,9 +59,9 @@ public class InfoRsfInstruct implements RsfInstruct {
             }
         }
         //
-        String[] protocolArrays = rsfContext.getSettings().getProtocos();
+        Set<String> protocolSet = rsfContext.getSettings().getProtocos();
         Map<String, InterAddress> bindAddressSet = new HashMap<String, InterAddress>();
-        for (String protocol : protocolArrays) {
+        for (String protocol : protocolSet) {
             InterAddress interAddress = rsfContext.publishAddress(protocol);
             if (interAddress != null) {
                 bindAddressSet.put(protocol, interAddress);

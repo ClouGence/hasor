@@ -29,4 +29,6 @@ public interface RsfEnvironment extends Environment {
     public void atTime(TimerTask timeTask, int timeout);
 
     public void atTime(TimerTask timerTask);
+
+    public String getInstanceID();
 }

@@ -17,6 +17,7 @@ package net.hasor.rsf;
 import net.hasor.core.Settings;
 
 import java.io.IOException;
+import java.util.Set;
 /**
  * RSF 配置。
  * @version : 2014年11月18日
@@ -72,7 +73,7 @@ public interface RsfSettings extends Settings {
     public String getDefaultProtocol();
 
     /**可使用的协议名集合*/
-    public String[] getProtocos();
+    public Set<String> getProtocos();
 
     /**获取本地服务绑定地址*/
     public InterAddress getBindAddressSet(String protocolName);

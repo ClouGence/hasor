@@ -24,6 +24,7 @@ import net.hasor.rsf.serialize.SerializeFactory;
 import net.hasor.rsf.utils.TimerManager;
 
 import java.io.IOException;
+import java.util.UUID;
 /**
  *
  * @version : 2014年11月12日
@@ -33,6 +34,7 @@ public class DefaultRsfEnvironment extends EnvironmentWrap implements RsfEnviron
     private RsfSettings      rsfSettings  = null;
     private SerializeFactory factory      = null;
     private TimerManager     timerManager = null;
+    private String           instanceID   = UUID.randomUUID().toString().replace("-", "");
     //
     public DefaultRsfEnvironment(Environment environment) throws IOException {
         super(environment);
@@ -56,5 +58,9 @@ public class DefaultRsfEnvironment extends EnvironmentWrap implements RsfEnviron
     @Override
     public void atTime(TimerTask timerTask) {
         this.timerManager.atTime(timerTask);
+    }
+    @Override
+    public String getInstanceID() {
+        return this.instanceID;
     }
 }
