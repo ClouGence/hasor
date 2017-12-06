@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.registry.boot;
-import net.hasor.core.Settings;
+import net.hasor.core.Hasor;
 import net.hasor.core.XmlNode;
 import net.hasor.core.setting.SettingsWrap;
 import net.hasor.registry.CenterMode;
+import net.hasor.registry.InstanceInfo;
 import net.hasor.registry.RsfCenterSettings;
 import net.hasor.rsf.InterAddress;
+import net.hasor.rsf.RsfEnvironment;
+import net.hasor.rsf.RsfSettings;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,14 +44,34 @@ class RsfCenterSettingsImpl extends SettingsWrap implements RsfCenterSettings {
     private   String         appKeyID            = null;
     private   String         appKeySecret        = null;
     //
+    private   InstanceInfo   instance            = null;
     //
-    public RsfCenterSettingsImpl(Settings settings) throws IOException {
-        super(settings);
+    //
+    public RsfCenterSettingsImpl(RsfEnvironment rsfEnvironment) throws IOException {
+        super(rsfEnvironment.getSettings());
+        RsfSettings rsfSettings = rsfEnvironment.getSettings();
+        String defaultProtocol = rsfSettings.getDefaultProtocol();
+        //
+        InterAddress address = rsfSettings.getGatewaySet(defaultProtocol);
+        if (address == null) {
+            address = rsfSettings.getBindAddressSet(defaultProtocol);
+        }
+        address = Hasor.assertIsNotNull(address);
+        //
+        this.instance = new InstanceInfo();
+        this.instance.setInstanceID(rsfEnvironment.getInstanceID());
+        this.instance.setUnitName(rsfSettings.getUnitName());
+        this.instance.setDefaultProtocol(defaultProtocol);
+        this.instance.setRsfAddress(address.toHostSchema());
         this.refreshRsfConfig();
     }
     @Override
     public CenterMode getMode() {
         return this.centerMode;
+    }
+    @Override
+    public InstanceInfo getInstanceInfo() {
+        return this.instance;
     }
     //
     @Override

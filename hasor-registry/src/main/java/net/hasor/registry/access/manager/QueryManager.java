@@ -16,8 +16,12 @@
 package net.hasor.registry.access.manager;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
+import net.hasor.registry.InstanceInfo;
 import net.hasor.registry.access.adapter.DataAdapter;
-import net.hasor.registry.access.domain.*;
+import net.hasor.registry.access.domain.DateCenterUtils;
+import net.hasor.registry.access.domain.ErrorCode;
+import net.hasor.registry.access.domain.Result;
+import net.hasor.registry.access.domain.ResultDO;
 import net.hasor.registry.access.pusher.RsfPusher;
 import net.hasor.rsf.domain.RsfServiceType;
 import org.slf4j.Logger;
@@ -41,7 +45,7 @@ public class QueryManager {
     //
     /** 请求Center做一次全量推送 */
     public Result<Void> requestProviders(InstanceInfo instance, String serviceID) {
-        Result<List<String>> listResult = this.queryProviders(serviceID);
+        Result<List<String>> listResult = this.queryProviders(serviceID, instance);
         if (!listResult.isSuccess()) {
             return DateCenterUtils.buildFailedResult(listResult);
         }
@@ -63,7 +67,7 @@ public class QueryManager {
     }
     //
     /** 查询提供者列表 */
-    public Result<List<String>> queryProviders(String serviceID) {
+    public Result<List<String>> queryProviders(String serviceID, InstanceInfo target) {
         //
         final int rowCount = this.dataAdapter.getPointCountByServiceID(serviceID, RsfServiceType.Provider);
         final List<String> resultList = new ArrayList<String>(rowCount);

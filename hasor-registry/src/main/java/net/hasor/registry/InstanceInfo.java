@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.access.domain;
+package net.hasor.registry;
 /**
  * 实列信息。
  * @version : 2016年2月22日
@@ -23,6 +23,7 @@ public class InstanceInfo {
     private String instanceID;
     private String unitName;
     private String rsfAddress;
+    private String defaultProtocol;
     //
     public String getInstanceID() {
         return this.instanceID;
@@ -41,5 +42,11 @@ public class InstanceInfo {
     }
     public void setRsfAddress(String rsfAddress) {
         this.rsfAddress = rsfAddress;
+    }
+    public String getDefaultProtocol() {
+        return defaultProtocol;
+    }
+    public void setDefaultProtocol(String defaultProtocol) {
+        this.defaultProtocol = defaultProtocol;
     }
 }

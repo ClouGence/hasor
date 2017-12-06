@@ -21,42 +21,12 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 /**
  * 生成字节码时候使用的工具类。
  * @version 2009-10-16
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ASMEngineTools implements Opcodes {
-    /** <p>The package separator character: <code>'&#x2e;' == {@value}</code>.</p> */
-    public static final  char                PACKAGE_SEPARATOR_CHAR     = '.';
-    /** <p>The inner class separator character: <code>'$' == {@value}</code>.</p> */
-    public static final  char                INNER_CLASS_SEPARATOR_CHAR = '$';
-    /** Maps a primitive class name to its corresponding abbreviation used in array class names. */
-    private static final Map<String, String> abbreviationMap            = new HashMap<String, String>();
-    /** Maps an abbreviation used in array class names to corresponding primitive class name. */
-    private static final Map<String, String> reverseAbbreviationMap     = new HashMap<String, String>();
-    /**
-     * Add primitive type abbreviation to maps of abbreviations.
-     * @param primitive Canonical name of primitive type
-     * @param abbreviation Corresponding abbreviation of primitive type
-     */
-    private static void addAbbreviation(final String primitive, final String abbreviation) {
-        abbreviationMap.put(primitive, abbreviation);
-        reverseAbbreviationMap.put(abbreviation, primitive);
-    }
-    /** Feed abbreviation maps */
-    static {
-        addAbbreviation("int", "I");
-        addAbbreviation("boolean", "Z");
-        addAbbreviation("float", "F");
-        addAbbreviation("long", "J");
-        addAbbreviation("short", "S");
-        addAbbreviation("byte", "B");
-        addAbbreviation("double", "D");
-        addAbbreviation("char", "C");
-    }
     //=======================================================================================================================
     /**根据类型获取其Return指令。*/
     public static int getReturn(final String asmType) {

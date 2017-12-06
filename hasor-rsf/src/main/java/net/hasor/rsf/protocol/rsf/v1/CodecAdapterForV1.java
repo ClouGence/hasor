@@ -23,6 +23,7 @@ import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.protocol.rsf.CodecAdapter;
 import net.hasor.rsf.protocol.rsf.Protocol;
 import net.hasor.rsf.utils.ByteStringCachelUtils;
+import net.hasor.utils.ClassUtils;
 import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
@@ -30,7 +31,7 @@ import java.util.List;
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年11月4日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春(zyc @ hasor.net)
  */
 public class CodecAdapterForV1 implements CodecAdapter {
     private RsfEnvironment rsfEnvironment = null;
@@ -194,7 +195,10 @@ public class CodecAdapterForV1 implements CodecAdapter {
                     byte[] valData = rsfBlock.readPool(paramVal);
                     //
                     String paramType = ByteStringCachelUtils.fromCache(keyData);
-                    Object paramObj = (serializeCoder == null || StringUtils.isBlank(paramType)) ? null : serializeCoder.decode(valData, this.classLoader.loadClass(paramType));
+                    Object paramObj = null;
+                    if (serializeCoder != null && StringUtils.isNotBlank(paramType)) {
+                        paramObj = serializeCoder.decode(valData, ClassUtils.getClass(this.classLoader, paramType, false));
+                    }
                     info.addParameter(paramType, paramObj);
                 }
             }
@@ -237,7 +241,10 @@ public class CodecAdapterForV1 implements CodecAdapter {
             String returnType = ByteStringCachelUtils.fromCache(rsfBlock.readPool(rsfBlock.getReturnType()));
             info.setReturnType(returnType);
             byte[] returnByte = rsfBlock.readPool(rsfBlock.getReturnData());
-            Object returnData = (serializeCoder == null || StringUtils.isBlank(returnType)) ? null : serializeCoder.decode(returnByte, this.classLoader.loadClass(returnType));
+            Object returnData = null;
+            if (serializeCoder != null && StringUtils.isNotBlank(returnType)) {
+                returnData = serializeCoder.decode(returnByte, ClassUtils.getClass(this.classLoader, returnType, false));
+            }
             info.setReturnData(returnData);
         } finally {
             if (rsfBlock != null) {

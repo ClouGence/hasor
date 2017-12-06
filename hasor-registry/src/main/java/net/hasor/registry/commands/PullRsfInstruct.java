@@ -15,15 +15,15 @@
  */
 package net.hasor.registry.commands;
 import net.hasor.core.Singleton;
+import net.hasor.registry.InstanceInfo;
+import net.hasor.registry.RegistryCenter;
 import net.hasor.registry.RsfCenterRegister;
 import net.hasor.registry.RsfCenterResult;
-import net.hasor.registry.access.domain.InstanceInfo;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.console.RsfCommand;
 import net.hasor.rsf.console.RsfCommandRequest;
-import net.hasor.rsf.console.RsfInstruct;
 import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.utils.StringUtils;
 
@@ -39,7 +39,7 @@ import java.util.List;
  */
 @Singleton
 @RsfCommand({ "pull", "request" })
-public class PullRsfInstruct implements RsfInstruct {
+public class PullRsfInstruct extends AbstractCenterInstruct {
     //
     @Override
     public String helpInfo() {
@@ -53,7 +53,7 @@ public class PullRsfInstruct implements RsfInstruct {
         return false;
     }
     @Override
-    public String doCommand(RsfCommandRequest request) throws Throwable {
+    public String doCommand(InstanceInfo instance, RsfCommandRequest request) throws Throwable {
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 0) {
@@ -100,14 +100,6 @@ public class PullRsfInstruct implements RsfInstruct {
                     continue;
                 }
                 //
-                //
-                String protocol = rsfContext.getDefaultProtocol();
-                InterAddress callBackAddress = rsfContext.publishAddress(protocol);
-                String callBackTo = callBackAddress.toHostSchema();
-                InstanceInfo instance = new InstanceInfo();
-                instance.setInstanceID(rsfContext.getInstanceID());
-                instance.setUnitName(rsfContext.getSettings().getUnitName());
-                instance.setRsfAddress(callBackTo);
                 if ("request".equalsIgnoreCase(request.getCommandString())) {
                     // -request
                     processRequest(request, register, serviceID, instance);
@@ -123,7 +115,6 @@ public class PullRsfInstruct implements RsfInstruct {
         }
         return sw.toString();
     }
-    //
     //
     private void processPull(RsfCommandRequest request, RsfCenterRegister register, String serviceID, InstanceInfo instance) {
         // .1of4

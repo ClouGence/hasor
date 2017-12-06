@@ -18,6 +18,8 @@
         <RSF_CONSOLE_PORT>2170</RSF_CONSOLE_PORT>
         <!-- RSF对外提供服务的服务端口（可以配置 0 用来关闭 RSF连接器） -->
         <RSF_SERVICE_PORT>2171</RSF_SERVICE_PORT>
+        <!-- Hprose 服务端口 -->
+        <HPROSE_SERVICE_PORT>2172</HPROSE_SERVICE_PORT>
 
     </hasor.environmentVar>
 </config>

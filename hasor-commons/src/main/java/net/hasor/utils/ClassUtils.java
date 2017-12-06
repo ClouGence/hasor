@@ -143,6 +143,88 @@ public class ClassUtils {
     public static String getShortCanonicalName(final String canonicalName) {
         return ClassUtils.getShortClassName(ClassUtils.getCanonicalName(canonicalName));
     }
+    // Class loading
+    // ----------------------------------------------------------------------
+    /**
+     * Returns the class represented by {@code className} using the
+     * {@code classLoader}.  This implementation supports the syntaxes
+     * "{@code java.util.Map.Entry[]}", "{@code java.util.Map$Entry[]}",
+     * "{@code [Ljava.util.Map.Entry;}", and "{@code [Ljava.util.Map$Entry;}".
+     *
+     * @param classLoader  the class loader to use to load the class
+     * @param className  the class name
+     * @param initialize  whether the class must be initialized
+     * @return the class represented by {@code className} using the {@code classLoader}
+     * @throws ClassNotFoundException if the class is not found
+     */
+    public static Class<?> getClass(final ClassLoader classLoader, final String className, final boolean initialize) throws ClassNotFoundException {
+        try {
+            Class<?> clazz;
+            if (abbreviationMap.containsKey(className)) {
+                final String clsName = "[" + abbreviationMap.get(className);
+                clazz = Class.forName(clsName, initialize, classLoader).getComponentType();
+            } else {
+                clazz = Class.forName(toCanonicalName(className), initialize, classLoader);
+            }
+            return clazz;
+        } catch (final ClassNotFoundException ex) {
+            // allow path separators (.) as inner class name separators
+            final int lastDotIndex = className.lastIndexOf(PACKAGE_SEPARATOR_CHAR);
+            if (lastDotIndex != -1) {
+                try {
+                    return getClass(classLoader, className.substring(0, lastDotIndex) + INNER_CLASS_SEPARATOR_CHAR + className.substring(lastDotIndex + 1), initialize);
+                } catch (final ClassNotFoundException ex2) { // NOPMD
+                    // ignore exception
+                }
+            }
+            throw ex;
+        }
+    }
+    /**
+     * Returns the (initialized) class represented by {@code className}
+     * using the {@code classLoader}.  This implementation supports
+     * the syntaxes "{@code java.util.Map.Entry[]}",
+     * "{@code java.util.Map$Entry[]}", "{@code [Ljava.util.Map.Entry;}",
+     * and "{@code [Ljava.util.Map$Entry;}".
+     *
+     * @param classLoader  the class loader to use to load the class
+     * @param className  the class name
+     * @return the class represented by {@code className} using the {@code classLoader}
+     * @throws ClassNotFoundException if the class is not found
+     */
+    public static Class<?> getClass(final ClassLoader classLoader, final String className) throws ClassNotFoundException {
+        return getClass(classLoader, className, true);
+    }
+    /**
+     * Returns the (initialized) class represented by {@code className}
+     * using the current thread's context class loader. This implementation
+     * supports the syntaxes "{@code java.util.Map.Entry[]}",
+     * "{@code java.util.Map$Entry[]}", "{@code [Ljava.util.Map.Entry;}",
+     * and "{@code [Ljava.util.Map$Entry;}".
+     *
+     * @param className  the class name
+     * @return the class represented by {@code className} using the current thread's context class loader
+     * @throws ClassNotFoundException if the class is not found
+     */
+    public static Class<?> getClass(final String className) throws ClassNotFoundException {
+        return getClass(className, true);
+    }
+    /**
+     * Returns the class represented by {@code className} using the
+     * current thread's context class loader. This implementation supports the
+     * syntaxes "{@code java.util.Map.Entry[]}", "{@code java.util.Map$Entry[]}",
+     * "{@code [Ljava.util.Map.Entry;}", and "{@code [Ljava.util.Map$Entry;}".
+     *
+     * @param className  the class name
+     * @param initialize  whether the class must be initialized
+     * @return the class represented by {@code className} using the current thread's context class loader
+     * @throws ClassNotFoundException if the class is not found
+     */
+    public static Class<?> getClass(final String className, final boolean initialize) throws ClassNotFoundException {
+        final ClassLoader contextCL = Thread.currentThread().getContextClassLoader();
+        final ClassLoader loader = contextCL == null ? ClassUtils.class.getClassLoader() : contextCL;
+        return getClass(loader, className, initialize);
+    }
     // Package name
     // ----------------------------------------------------------------------
     /**
@@ -201,6 +283,32 @@ public class ClassUtils {
                 return canonicalClassNameBuffer.toString();
             }
         }
+    }
+    /**
+     * Converts a class name to a JLS style class name.
+     *
+     * @param className  the class name
+     * @return the converted name
+     */
+    private static String toCanonicalName(String className) {
+        className = StringUtils.deleteWhitespace(className);
+        if (className == null) {
+            throw new NullPointerException("className must not be null.");
+        } else if (className.endsWith("[]")) {
+            final StringBuilder classNameBuffer = new StringBuilder();
+            while (className.endsWith("[]")) {
+                className = className.substring(0, className.length() - 2);
+                classNameBuffer.append("[");
+            }
+            final String abbreviation = abbreviationMap.get(className);
+            if (abbreviation != null) {
+                classNameBuffer.append(abbreviation);
+            } else {
+                classNameBuffer.append("L").append(className).append(";");
+            }
+            className = classNameBuffer.toString();
+        }
+        return className;
     }
     /**获取方法的标识代码，在不考虑其所属类的情况下。*/
     public static String getDescName(final Class<?> type) {

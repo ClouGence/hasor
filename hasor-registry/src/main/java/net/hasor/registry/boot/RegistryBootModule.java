@@ -35,7 +35,7 @@ public class RegistryBootModule extends RsfModule {
     @Override
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
         RsfEnvironment rsfEnvironment = apiBinder.getEnvironment();
-        RsfCenterSettings settings = new RsfCenterSettingsImpl(rsfEnvironment.getSettings());
+        RsfCenterSettings settings = new RsfCenterSettingsImpl(rsfEnvironment);
         apiBinder.bindType(RsfCenterSettings.class).toInstance(settings);
         //
         if (CenterMode.None.equals(settings.getMode())) {

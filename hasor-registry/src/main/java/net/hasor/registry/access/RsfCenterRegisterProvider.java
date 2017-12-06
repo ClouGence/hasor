@@ -16,6 +16,7 @@
 package net.hasor.registry.access;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
+import net.hasor.registry.InstanceInfo;
 import net.hasor.registry.RsfCenterRegister;
 import net.hasor.registry.RsfCenterResult;
 import net.hasor.registry.access.adapter.AuthQuery;
@@ -216,7 +217,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
         InterAddress remoteRsfAddress = this.rsfRequest.getRemoteAddress();
         try {
             // .判断异常
-            Result<List<String>> result = this.serviceManager.queryProviders(serviceID);
+            Result<List<String>> result = this.serviceManager.queryProviders(serviceID, instance);
             if (!result.isSuccess()) {
                 centerResult.setSuccess(false);
                 ErrorCode errorInfo = result.getErrorInfo();

@@ -16,10 +16,7 @@
 package net.hasor.registry.client;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
-import net.hasor.registry.RsfCenterRegister;
-import net.hasor.registry.RsfCenterResult;
-import net.hasor.registry.RsfCenterSettings;
-import net.hasor.registry.access.domain.InstanceInfo;
+import net.hasor.registry.*;
 import net.hasor.registry.domain.ConsumerPublishInfo;
 import net.hasor.registry.domain.ProviderPublishInfo;
 import net.hasor.registry.domain.PublishInfo;
@@ -52,12 +49,7 @@ class RegistryClientManager implements TimerTask {
         ClassLoader loader = rsfContext.getClassLoader();
         this.timerManager = new TimerManager(settings.getHeartbeatTime(), "RsfCenter-BeatTimer", loader);
         this.centerRegister = rsfContext.getRsfClient().wrapper(RsfCenterRegister.class);
-        this.instance = new InstanceInfo();
-        this.instance.setInstanceID(this.rsfContext.getInstanceID());
-        this.instance.setUnitName(this.rsfContext.getSettings().getUnitName());
-        String protocol = this.rsfContext.getDefaultProtocol();
-        InterAddress interAddress = this.rsfContext.publishAddress(protocol);
-        this.instance.setRsfAddress(interAddress.toHostSchema());
+        this.instance = rsfContext.getAppContext().getInstance(RsfCenterSettings.class).getInstanceInfo();
     }
     @Override
     public void run(Timeout timeout) {
