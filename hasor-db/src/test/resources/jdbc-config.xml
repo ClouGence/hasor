@@ -3,8 +3,8 @@
     <!-- MySQL -->
     <demo-jdbc-mysql>
         <driver>com.mysql.jdbc.Driver</driver>
-        <url>jdbc:mysql://db.daily.hasor.net/hdm1250987_db?useUnicode=true&amp;characterEncoding=utf8</url>
-        <user>hdm1250987</user>
+        <url>jdbc:mysql://qdm203329271.my3w.com/qdm203329271_db?useUnicode=true&amp;characterEncoding=utf8</url>
+        <user>qdm203329271</user>
         <password>s3G3j3f98t6Uqh46f67t</password>
     </demo-jdbc-mysql>
     <!-- HSQL -->

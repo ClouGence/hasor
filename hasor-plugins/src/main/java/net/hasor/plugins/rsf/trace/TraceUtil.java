@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.trace;
+package net.hasor.plugins.rsf.trace;
 import net.hasor.utils.StringUtils;
 import org.slf4j.MDC;
 

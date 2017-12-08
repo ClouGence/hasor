@@ -16,4 +16,4 @@
 /**
  * RSF,分布式调用全链路调用跟踪系统。
  */
-package net.hasor.registry.trace;
+package net.hasor.plugins.rsf.trace;
