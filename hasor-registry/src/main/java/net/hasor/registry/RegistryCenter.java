@@ -20,4 +20,6 @@ package net.hasor.registry;
  * @author 赵永春(zyc@hasor.net)
  */
 public interface RegistryCenter {
+    /** 获取InstanceInfo */
+    public InstanceInfo getInstanceInfo();
 }

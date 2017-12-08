@@ -25,9 +25,6 @@ public interface RsfCenterSettings extends Settings {
     /** 工作模式 */
     public CenterMode getMode();
 
-    /** 获取InstanceInfo */
-    public InstanceInfo getInstanceInfo();
-
     /**
      * center地址列表
      * <li>none模式下，配置无效。<li/>

@@ -49,7 +49,7 @@ class RegistryClientManager implements TimerTask {
         ClassLoader loader = rsfContext.getClassLoader();
         this.timerManager = new TimerManager(settings.getHeartbeatTime(), "RsfCenter-BeatTimer", loader);
         this.centerRegister = rsfContext.getRsfClient().wrapper(RsfCenterRegister.class);
-        this.instance = rsfContext.getAppContext().getInstance(RsfCenterSettings.class).getInstanceInfo();
+        this.instance = rsfContext.getAppContext().getInstance(RegistryCenter.class).getInstanceInfo();
     }
     @Override
     public void run(Timeout timeout) {

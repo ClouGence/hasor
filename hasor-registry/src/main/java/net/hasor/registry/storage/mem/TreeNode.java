@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @version : 2015年8月19日
  * @author 赵永春(zyc@hasor.net)
  */
-class TreeNode {
+class TreeNode implements TreeVisitor{
     private String                name         = "";
     private ObjectData            objectData   = null;
     private TreeNode              parent       = null;

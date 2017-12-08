@@ -15,6 +15,7 @@
  */
 package net.hasor.registry.boot;
 import net.hasor.registry.CenterMode;
+import net.hasor.registry.RegistryCenter;
 import net.hasor.registry.RsfCenterSettings;
 import net.hasor.registry.access.RegistryServerModule;
 import net.hasor.registry.client.RegistryClientModule;
@@ -37,29 +38,26 @@ public class RegistryBootModule extends RsfModule {
         RsfEnvironment rsfEnvironment = apiBinder.getEnvironment();
         RsfCenterSettings settings = new RsfCenterSettingsImpl(rsfEnvironment);
         apiBinder.bindType(RsfCenterSettings.class).toInstance(settings);
+        apiBinder.bindType(RegistryCenter.class).to(RegistryCenterService.class);
         //
         if (CenterMode.None.equals(settings.getMode())) {
             this.logger.info("registry workAt None mode, so registry cannot be started.");
             return;
         }
-        //
         if (CenterMode.Client.equals(settings.getMode())) {
             this.logger.info("registry workAt Client mode, so registry will maintain your service info.");
             apiBinder.installModule(new RegistryClientModule(settings));
             return;
         }
-        //
         if (CenterMode.Server.equals(settings.getMode())) {
             this.logger.info("registry workAt Server mode, so registry will managing all service info.");
             apiBinder.installModule(new RegistryServerModule(rsfEnvironment, settings));
             return;
         }
-        //
         if (CenterMode.Cluster.equals(settings.getMode())) {
             this.logger.warn("registry workAt Cluster mode, Temporary does not support.");
             throw new UnsupportedOperationException("Temporary does not support");
         }
-        //
         if (CenterMode.Leader.equals(settings.getMode())) {
             this.logger.warn("registry workAt Leader mode, Temporary does not support.");
             throw new UnsupportedOperationException("Temporary does not support");

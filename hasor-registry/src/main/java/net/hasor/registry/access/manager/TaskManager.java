@@ -20,7 +20,6 @@ import net.hasor.core.Singleton;
 import net.hasor.registry.access.adapter.DataAdapter;
 import net.hasor.registry.access.domain.LogUtils;
 import net.hasor.registry.access.pusher.RsfPusher;
-import net.hasor.registry.trace.TraceUtil;
 import net.hasor.rsf.domain.RsfServiceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +72,6 @@ public class TaskManager extends Thread {
                 }
             } catch (Throwable e) {
                 logger.error(LogUtils.create("ERROR_300_00004")//
-                        .addLog("traceID", TraceUtil.getTraceID())//
                         .logException(e).toJson());
             }
         }

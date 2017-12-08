@@ -19,7 +19,6 @@ import net.hasor.core.Singleton;
 import net.hasor.registry.RegistryConstants;
 import net.hasor.registry.access.domain.*;
 import net.hasor.registry.access.manager.AuthManager;
-import net.hasor.registry.trace.TraceUtil;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
@@ -58,7 +57,6 @@ public class RsfCenterServerVerifyFilter implements RsfFilter {
                     errorMessage = JsonUtils.converToString(authResult.getErrorInfo());
                 }
                 logger.error(LogUtils.create("ERROR_300_00001")//
-                        .addLog("traceID", TraceUtil.getTraceID())//
                         .addLog("rsfAddress", request.getRemoteAddress().toHostSchema())//
                         .addLog("errorMessage", errorMessage)//
                         .addLog("appKey", appKey)//

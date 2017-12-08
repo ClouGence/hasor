@@ -20,7 +20,6 @@ import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.registry.access.ServerSettings;
 import net.hasor.registry.access.domain.LogUtils;
-import net.hasor.registry.trace.TraceUtil;
 import net.hasor.rsf.RsfContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +77,6 @@ public class PushQueue implements Runnable {
                 }
             } catch (Throwable e) {
                 logger.error(LogUtils.create("ERROR_300_00004")//
-                        .addLog("traceID", TraceUtil.getTraceID())//
                         .logException(e).toJson());
             }
         }
@@ -91,7 +89,6 @@ public class PushQueue implements Runnable {
             return pushProcessor.doProcessor(pushEvent);
         } else {
             logger.error(LogUtils.create("ERROR_300_00005")//
-                    .addLog("traceID", TraceUtil.getTraceID())//
                     .addLog("pushEventType", pushEvent.getPushEventType().name())//
                     .toJson());
         }
@@ -104,7 +101,6 @@ public class PushQueue implements Runnable {
                 Thread.sleep(this.rsfCenterCfg.getSleepTime());
             } catch (Exception e) {
                 logger.error(LogUtils.create("ERROR_300_00004")//
-                        .addLog("traceID", TraceUtil.getTraceID())//
                         .logException(e).toJson());
             }
             if (this.dataQueue.size() > this.rsfCenterCfg.getQueueMaxSize()) {

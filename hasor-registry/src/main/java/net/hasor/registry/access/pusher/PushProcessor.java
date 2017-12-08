@@ -19,7 +19,6 @@ import net.hasor.core.Inject;
 import net.hasor.registry.RsfCenterListener;
 import net.hasor.registry.access.domain.LogUtils;
 import net.hasor.registry.domain.CenterEventBody;
-import net.hasor.registry.trace.TraceUtil;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.domain.provider.InstanceAddressProvider;
@@ -56,7 +55,6 @@ public class PushProcessor {
         }
         if (event.getTarget() == null || event.getTarget().isEmpty()) {
             logger.error(LogUtils.create("ERROR_300_00003")//
-                    .addLog("traceID", TraceUtil.getTraceID())//
                     .addLog("serviceID", event.getServiceID())//
                     .addLog("pushEventType", event.getPushEventType().name())//
                     .toJson());
@@ -100,7 +98,6 @@ public class PushProcessor {
     private boolean sendEvent(String rsfAddress, CenterEventBody eventBody, int times) {
         //
         logger.info(LogUtils.create("INFO_200_00001")//
-                .addLog("traceID", TraceUtil.getTraceID())//
                 .addLog("serviceID", eventBody.getServiceID())//
                 .addLog("rsfAddress", rsfAddress)//
                 .addLog("eventType", eventBody.getEventType())//
@@ -114,7 +111,6 @@ public class PushProcessor {
             return listener.onEvent(eventBody.getEventType(), eventBody);
         } catch (Throwable e) {
             logger.error(LogUtils.create("ERROR_300_00002")//
-                    .addLog("traceID", TraceUtil.getTraceID())//
                     .logException(e)//
                     .addLog("rsfAddress", rsfAddress)//
                     .addLog("serviceID", eventBody.getServiceID())//

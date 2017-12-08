@@ -26,7 +26,6 @@ import net.hasor.registry.access.manager.QueryManager;
 import net.hasor.registry.domain.ConsumerPublishInfo;
 import net.hasor.registry.domain.ProviderPublishInfo;
 import net.hasor.registry.domain.PublishInfo;
-import net.hasor.registry.trace.TraceUtil;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.domain.RsfServiceType;
@@ -128,7 +127,6 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
                 centerResult.setErrorCode(ErrorCode.EmptyResult.getCodeType());
                 centerResult.setErrorMessage("registerType mast in Provider or Consumer.");
                 logger.error(LogUtils.create("ERROR_100_00001")//
-                        .addLog("traceID", TraceUtil.getTraceID())//
                         .addLog("errorCode", centerResult.getErrorCode())//
                         .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                         .addLog("serviceID", serviceInfo.getBindID())//
@@ -143,7 +141,6 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
                 centerResult.setErrorCode(errorInfo.getCodeType());
                 centerResult.setErrorMessage(errorInfo.getMessage());
                 logger.error(LogUtils.create("ERROR_100_00002")//
-                        .addLog("traceID", TraceUtil.getTraceID())//
                         .addLog("errorCode", centerResult.getErrorCode())//
                         .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                         .addLog("serviceID", serviceInfo.getBindID())//
@@ -158,7 +155,6 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
             centerResult.setErrorCode(ErrorCode.Exception.getCodeType());
             centerResult.setErrorMessage(e.getMessage());
             logger.error(LogUtils.create("ERROR_100_00003")//
-                    .addLog("traceID", TraceUtil.getTraceID())//
                     .addLog("errorCode", centerResult.getErrorCode())//
                     .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                     .addLog("serviceID", serviceInfo.getBindID())//
@@ -186,7 +182,6 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
                 centerResult.setErrorCode(errorInfo.getCodeType());
                 centerResult.setErrorMessage(errorInfo.getMessage());
                 logger.error(LogUtils.create("ERROR_100_00101")//
-                        .addLog("traceID", TraceUtil.getTraceID())//
                         .addLog("errorCode", centerResult.getErrorCode())//
                         .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                         .addLog("serviceID", serviceID)//
@@ -200,7 +195,6 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
             centerResult.setErrorCode(ErrorCode.Exception.getCodeType());
             centerResult.setErrorMessage(e.getMessage());
             logger.error(LogUtils.create("ERROR_100_00102")//
-                    .addLog("traceID", TraceUtil.getTraceID())//
                     .addLog("errorCode", centerResult.getErrorCode())//
                     .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                     .addLog("serviceID", serviceID)//
@@ -224,7 +218,6 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
                 centerResult.setErrorCode(errorInfo.getCodeType());
                 centerResult.setErrorMessage(errorInfo.getMessage());
                 logger.error(LogUtils.create("ERROR_100_00301")//
-                        .addLog("traceID", TraceUtil.getTraceID())//
                         .addLog("errorCode", centerResult.getErrorCode())//
                         .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                         .addLog("serviceID", serviceID)//
@@ -239,7 +232,6 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
             centerResult.setErrorCode(ErrorCode.Exception.getCodeType());
             centerResult.setErrorMessage(e.getMessage());
             logger.error(LogUtils.create("ERROR_100_00302")//
-                    .addLog("traceID", TraceUtil.getTraceID())//
                     .addLog("errorCode", centerResult.getErrorCode())//
                     .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                     .addLog("serviceID", serviceID)//
@@ -262,7 +254,6 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
                 centerResult.setErrorCode(errorInfo.getCodeType());
                 centerResult.setErrorMessage(errorInfo.getMessage());
                 logger.error(LogUtils.create("ERROR_100_00401")//
-                        .addLog("traceID", TraceUtil.getTraceID())//
                         .addLog("errorCode", centerResult.getErrorCode())//
                         .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                         .addLog("serviceID", serviceID)//
@@ -277,7 +268,6 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
             centerResult.setErrorCode(ErrorCode.Exception.getCodeType());
             centerResult.setErrorMessage(e.getMessage());
             logger.error(LogUtils.create("ERROR_100_00402")//
-                    .addLog("traceID", TraceUtil.getTraceID())//
                     .addLog("errorCode", centerResult.getErrorCode())//
                     .addLog("remoteAddress", remoteRsfAddress.toHostSchema())//
                     .addLog("serviceID", serviceID)//

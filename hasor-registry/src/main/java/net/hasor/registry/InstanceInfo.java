@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.registry;
+import java.util.List;
 /**
  * 实列信息。
  * @version : 2016年2月22日
  * @author 赵永春(zyc@hasor.net)
  */
 public class InstanceInfo {
-    private String instanceID;
-    private String unitName;
-    private String rsfAddress;
-    private String defaultProtocol;
+    private String       instanceID;
+    private String       unitName;
+    private String       rsfAddress;
+    private String       defaultProtocol;
+    private List<String> runProtocols;
     //
     public String getInstanceID() {
         return this.instanceID;
@@ -48,5 +50,11 @@ public class InstanceInfo {
     }
     public void setDefaultProtocol(String defaultProtocol) {
         this.defaultProtocol = defaultProtocol;
+    }
+    public void setRunProtocols(List<String> runProtocols) {
+        this.runProtocols = runProtocols;
+    }
+    public List<String> getRunProtocols() {
+        return this.runProtocols;
     }
 }

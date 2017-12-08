@@ -15,6 +15,7 @@
  */
 package net.hasor.registry.commands;
 import net.hasor.registry.InstanceInfo;
+import net.hasor.registry.RegistryCenter;
 import net.hasor.registry.RsfCenterSettings;
 import net.hasor.rsf.console.RsfCommandRequest;
 import net.hasor.rsf.console.RsfInstruct;
@@ -26,7 +27,7 @@ import net.hasor.rsf.console.RsfInstruct;
 public abstract class AbstractCenterInstruct implements RsfInstruct {
     @Override
     public final String doCommand(RsfCommandRequest request) throws Throwable {
-        RsfCenterSettings center = request.getRsfContext().getAppContext().getInstance(RsfCenterSettings.class);
+        RegistryCenter center = request.getRsfContext().getAppContext().getInstance(RegistryCenter.class);
         if (center == null) {
             return "[ERROR] the service 'RegistryCenter' is Undefined.";
         }

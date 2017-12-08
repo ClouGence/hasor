@@ -18,7 +18,6 @@ import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.registry.access.adapter.AuthQuery;
 import net.hasor.registry.access.domain.*;
-import net.hasor.registry.trace.TraceUtil;
 import net.hasor.rsf.InterAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,6 @@ public class AuthManager {
     //
     public Result<Boolean> checkAuth(AuthBean authInfo, InterAddress remoteAddress) {
         LogUtils logUtils = LogUtils.create("INFO_200_00002")//
-                .addLog("traceID", TraceUtil.getTraceID())//
                 .addLog("appCode", authInfo.getAppKey())//
                 .addLog("authCode", authInfo.getAppKeySecret())//
                 .addLog("remoteAddress", remoteAddress.toHostSchema());
