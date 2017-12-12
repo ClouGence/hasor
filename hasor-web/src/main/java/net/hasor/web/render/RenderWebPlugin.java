@@ -130,7 +130,9 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
             RenderInvoker renderInvoker = (RenderInvoker) invoker;
             HttpServletRequest httpRequest = renderInvoker.getHttpRequest();
             HttpServletResponse httpResponse = renderInvoker.getHttpResponse();
-            httpRequest.getRequestDispatcher(renderInvoker.renderTo()).forward(httpRequest, httpResponse);
+            if (!httpResponse.isCommitted()) {
+                httpRequest.getRequestDispatcher(renderInvoker.renderTo()).forward(httpRequest, httpResponse);
+            }
         }
     }
     @Override

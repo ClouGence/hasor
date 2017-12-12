@@ -51,7 +51,7 @@ public class SettingValue {
     }
     //
     public void replace(int index, Object oldVar, Object newVar) {
-        if (this.defaultVar == oldVar) {
+        if (this.defaultVar.equals(oldVar)) {
             this.defaultVar = newVar;
         }
         //
