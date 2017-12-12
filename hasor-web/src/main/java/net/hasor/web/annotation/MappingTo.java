@@ -25,5 +25,5 @@ import java.lang.annotation.*;
 @Target({ ElementType.TYPE })
 public @interface MappingTo {
     /**请求地址*/
-    public String value();
+    public String[] value();
 }

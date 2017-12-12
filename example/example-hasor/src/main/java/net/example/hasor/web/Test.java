@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 package net.example.hasor.web;
-import net.hasor.web.annotation.Get;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.annotation.Post;
 
 import java.io.IOException;
 /**
- * 登录
+ * get 访问无效
  * @version : 2016年11月07日
  * @author 赵永春(zyc @ hasor.net)
  */
 @MappingTo("/test")
 public class Test {
-    @Get
+    @Post
     public void test1() throws IOException {
         System.out.print(1);
     }
