@@ -16,7 +16,7 @@
     10. Hprose 协议，支持双向调用了。之前只能被动充当 Hprose 服务提供者，目前也可以作为消费者存在了。
     11. Rsf 注册重新完全重新实现。
     12. Web框架中 @MappingTo 支持配置多个地址。
-    14. @Transactional 注解可以标记在：方法、类(含父类)、包 上面。如果是父类或者包，那么还可以通过 genetic 遗传属性控制是否遗传。
+    14. @Transactional 注解可以标记在：方法、类 上。
 **修复**
     01. fix Hasor 的 Spring 插件初始化失败问题。
     02. fix jfinal 列子编译问题。

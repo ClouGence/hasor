@@ -15,10 +15,11 @@
  * limitations under the License.
  */
 package net.hasor.utils;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 /**
  * <p>Operates on classes without using reflection.</p>
  *
@@ -350,5 +351,19 @@ public class ClassUtils {
         str.append(")");
         //
         return str.toString();
+    }
+    public static Class<?>[] getAllInterfaces(Class<?> faceType) {
+        Set<Class<?>> classes = new HashSet<Class<?>>();
+        intoInterfaces(faceType, classes);
+        return classes.toArray(new Class[classes.size()]);
+    }
+    private static void intoInterfaces(Class<?> faceType, Set<Class<?>> intoSet) {
+        if (faceType.isInterface()) {
+            intoSet.add(faceType);
+        }
+        Class<?>[] interfaces = faceType.getInterfaces();
+        for (Class<?> faces : interfaces) {
+            intoInterfaces(faces, intoSet);
+        }
     }
 }

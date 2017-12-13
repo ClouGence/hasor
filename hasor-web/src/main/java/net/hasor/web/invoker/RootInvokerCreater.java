@@ -17,6 +17,7 @@ package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
+import net.hasor.utils.ClassUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerCreater;
@@ -60,13 +61,19 @@ class RootInvokerCreater implements InvokerCreater {
                 }
                 //
                 extBinderMap.put(binderType, binderImpl);
+                Class<?>[] interfaces = ClassUtils.getAllInterfaces(binderType);
+                for (Class<?> faces : interfaces) {
+                    extBinderMap.put(faces, binderImpl);
+                }
             }
         }
         // .创建扩展(extMapping来建立映射，避免重复创建InvokerCreater)
         for (Map.Entry<Class<?>, Class<?>> ent : extBinderMap.entrySet()) {
+            if (this.extMapping.containsKey(ent.getKey())) {
+                continue;
+            }
             Class<?> createrType = ent.getValue();
             this.extMapping.put(ent.getKey(), createrType);
-            //
             if (this.createrMap.containsKey(createrType)) {
                 continue;
             }

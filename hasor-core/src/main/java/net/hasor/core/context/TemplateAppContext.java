@@ -22,6 +22,7 @@ import net.hasor.core.binder.BinderHelper;
 import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.BeanContainer;
 import net.hasor.core.container.ScopManager;
+import net.hasor.utils.ClassUtils;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
@@ -347,6 +348,10 @@ public abstract class TemplateAppContext implements AppContext {
                 }
                 //
                 extBinderMap.put(binderType, binderImpl);
+                Class<?>[] interfaces = ClassUtils.getAllInterfaces(binderType);
+                for (Class<?> faces : interfaces) {
+                    extBinderMap.put(faces, binderImpl);
+                }
             }
         }
         //
@@ -377,7 +382,7 @@ public abstract class TemplateAppContext implements AppContext {
         supportMap.put(ApiBinder.class, binder);
         for (Map.Entry<Class<?>, Class<?>> ent : extBinderMap.entrySet()) {
             Object supportVal = implMap.get(ent.getValue());
-            if (supportVal != null) {
+            if (supportVal != null && !supportMap.containsKey(ent.getKey())) {
                 supportMap.put(ent.getKey(), supportVal);
             }
         }
