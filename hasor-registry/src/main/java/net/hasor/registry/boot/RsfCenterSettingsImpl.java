@@ -29,7 +29,7 @@ import java.util.ArrayList;
 /**
  *
  * @version : 2014年11月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class RsfCenterSettingsImpl extends SettingsWrap implements RsfCenterSettings {
     protected Logger         logger              = LoggerFactory.getLogger(getClass());

@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 /**
  * @version : 2015年7月6日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class JsonUtils {
     public static String converToString(Object object) {

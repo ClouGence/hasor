@@ -21,7 +21,7 @@ import net.hasor.rsf.domain.RsfServiceType;
 /**
  * 接口授权查询。
  * @version : 2016年2月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface AuthQuery {
     /**

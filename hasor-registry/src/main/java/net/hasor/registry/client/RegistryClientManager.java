@@ -34,7 +34,7 @@ import java.util.Set;
 /**
  * 负责维护RSF客户端服务在注册中心上的信息。
  * @version : 2016年2月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class RegistryClientManager implements TimerTask {
     protected Logger logger = LoggerFactory.getLogger(getClass());

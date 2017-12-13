@@ -38,7 +38,7 @@ import java.util.Map;
 /**
  *
  * @version : 2016年3月29日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class MainLauncher {
     protected static Logger logger = LoggerFactory.getLogger(MainLauncher.class);

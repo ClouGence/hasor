@@ -17,7 +17,7 @@ package net.hasor.registry.access.domain;
 /**
  * 各种常量
  * @version : 2014年9月20日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfCenterConstants {
     public static final String Center_DataKey_Service  = "S|";                  //服务

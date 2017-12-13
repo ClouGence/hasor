@@ -18,7 +18,7 @@ import java.util.Date;
 /**
  * 授权信息
  * @version : 2015年5月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class AuthBean {
     private String appKey       = null; // Key

@@ -26,21 +26,29 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * 服务数据存储检索
  * @version : 2015年8月19日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
-class TreeNode implements TreeVisitor{
-    private String                name         = "";
-    private ObjectData            objectData   = null;
-    private TreeNode              parent       = null;
-    private Lock                  lock         = new ReentrantLock();
-    private Map<String, TreeNode> treeNodeMap  = new ConcurrentHashMap<String, TreeNode>();
-    private List<TreeNode>        treeNodeList = new CopyOnWriteArrayList<TreeNode>();
+public class MenTreeNode implements TreeVisitor {
+    private String                   name         = "";
+    private ObjectData               objectData   = null;
+    private MenTreeNode              parent       = null;
+    private Lock                     lock         = new ReentrantLock();
+    private Map<String, MenTreeNode> treeNodeMap  = new ConcurrentHashMap<String, MenTreeNode>();
+    private List<MenTreeNode>        treeNodeList = new CopyOnWriteArrayList<MenTreeNode>();
+    //
+    public MenTreeNode(String name) {
+        this(name, null);
+    }
+    public MenTreeNode(String name, MenTreeNode parent) {
+        this.name = StringUtils.isBlank(name) ? null : name.trim();
+        this.parent = parent;
+    }
     //
     //
-    public TreeNode getNode(String atPath) {
+    public MenTreeNode getNode(String atPath) {
         return this.treeNodeMap.get(atPath);
     }
-    public TreeNode getParent() {
+    public MenTreeNode getParent() {
         return this.parent;
     }
     public String getName() {
@@ -55,13 +63,13 @@ class TreeNode implements TreeVisitor{
     public int sizeOfSub() {
         return this.treeNodeList.size();
     }
-    public List<TreeNode> getSubList() {
+    public List<MenTreeNode> getSubList() {
         return this.treeNodeList;
     }
     //
     public String getPath() {
         StringBuilder strBuilder = new StringBuilder();
-        TreeNode atNode = this;
+        MenTreeNode atNode = this;
         while (true) {
             strBuilder.insert(0, atNode.name).insert(0, "/");
             atNode = atNode.parent;
@@ -71,14 +79,12 @@ class TreeNode implements TreeVisitor{
         }
         return strBuilder.toString();
     }
-    public TreeNode createOrGetNode(String atPath) {
+    public MenTreeNode createOrGetNode(String atPath, TreeNodeCreater creater) {
         this.lock.lock();
         try {
-            TreeNode treeNode = null;
+            MenTreeNode treeNode = null;
             if (!this.treeNodeMap.containsKey(atPath)) {
-                treeNode = new TreeNode();
-                treeNode.name = atPath;
-                treeNode.parent = this;
+                treeNode = creater.createTreeNode(atPath, this);
                 this.treeNodeMap.put(atPath, treeNode);
                 this.treeNodeList.add(treeNode);
             } else {
@@ -93,7 +99,7 @@ class TreeNode implements TreeVisitor{
         this.lock.lock();
         try {
             if (this.treeNodeMap.containsKey(name)) {
-                TreeNode treeNode = this.treeNodeMap.get(name);
+                MenTreeNode treeNode = this.treeNodeMap.get(name);
                 this.treeNodeList.remove(treeNode);
                 this.treeNodeMap.remove(name);
                 return true;

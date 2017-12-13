@@ -38,7 +38,7 @@ import java.util.List;
  * 客户端注册中心接口{@link RsfCenterRegister}实现类，负责接收来自客户端的请求调用。
  * (这个类做的最多的是输入输出校验)
  * @version : 2015年6月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
 public class RsfCenterRegisterProvider implements RsfCenterRegister {

@@ -19,7 +19,7 @@ import net.hasor.rsf.RsfUpdater;
 /**
  * 注册中心事件处理器接口
  * @version : 2016年2月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 interface EventProcess {
     public boolean processEvent(RsfUpdater rsfUpdater, CenterEventBody centerEventBody);

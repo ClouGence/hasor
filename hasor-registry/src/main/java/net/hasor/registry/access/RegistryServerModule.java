@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 注册中心启动入口。
  *
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2015年5月5日
  */
 public class RegistryServerModule extends RsfModule implements LifeModule {

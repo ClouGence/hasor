@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * 提供服务的发布能力（注册、解除注册）
  * @version : 2016年9月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
 public class PublishManager {

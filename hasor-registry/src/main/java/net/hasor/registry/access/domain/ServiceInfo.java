@@ -18,7 +18,7 @@ package net.hasor.registry.access.domain;
  * 服务信息
  *
  * @version : 2015年5月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ServiceInfo {
     /** 唯一标识*/

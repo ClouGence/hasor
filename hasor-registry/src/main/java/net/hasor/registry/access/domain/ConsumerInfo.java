@@ -18,7 +18,7 @@ package net.hasor.registry.access.domain;
  * 服务消费者信息
  *
  * @version : 2015年5月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ConsumerInfo {
     /** 提供者实例ID。*/

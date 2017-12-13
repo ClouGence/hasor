@@ -17,7 +17,7 @@ package net.hasor.registry;
 /**
  * 各种常量
  * @version : 2014年9月20日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RegistryConstants {
     /**注册中心中的注册ID*/

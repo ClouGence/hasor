@@ -33,7 +33,7 @@ import java.util.List;
 /**
  * 提供服务的查询能力
  * @version : 2016年9月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
 public class QueryManager {

@@ -23,13 +23,18 @@ import java.util.List;
 /**
  * 服务数据存储检索
  * @version : 2015年8月19日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
-public class MemStorageDao implements StorageDao {
-    private TreeNode rootNode = new TreeNode();
-    private TreeNode findNode(String dataPath) {
+public class MemStorageDao implements StorageDao, TreeNodeCreater {
+    private MenTreeNode rootNode = createTreeNode(null, null);
+    //
+    public MenTreeNode createTreeNode(String name, MenTreeNode parent) {
+        return new MenTreeNode(name, parent);
+    }
+    //
+    private MenTreeNode findNode(String dataPath) {
         String[] nodePathArray = dataPath.split("/");
-        TreeNode atNode = this.rootNode;
+        MenTreeNode atNode = this.rootNode;
         for (String atPath : nodePathArray) {
             if (StringUtils.isBlank(atPath)) {
                 continue;
@@ -45,19 +50,19 @@ public class MemStorageDao implements StorageDao {
     @Override
     public boolean saveData(String dataPath, ObjectData data) {
         String[] nodePathArray = dataPath.split("/");
-        TreeNode atNode = this.rootNode;
+        MenTreeNode atNode = this.rootNode;
         for (String atPath : nodePathArray) {
             if (StringUtils.isBlank(atPath)) {
                 continue;
             }
-            atNode = atNode.createOrGetNode(atPath);
+            atNode = atNode.createOrGetNode(atPath, this);
         }
         atNode.updateData(data);
         return true;
     }
     @Override
     public boolean deleteData(String dataPath) {
-        TreeNode atNode = findNode(dataPath);
+        MenTreeNode atNode = findNode(dataPath);
         if (atNode != null) {
             return atNode.getParent().deleteNode(atNode.getName());
         }
@@ -65,7 +70,7 @@ public class MemStorageDao implements StorageDao {
     }
     @Override
     public ObjectData getByPath(String dataPath) {
-        TreeNode atNode = findNode(dataPath);
+        MenTreeNode atNode = findNode(dataPath);
         if (atNode != null) {
             return atNode.getObjectData();
         }
@@ -73,22 +78,22 @@ public class MemStorageDao implements StorageDao {
     }
     @Override
     public int querySubCount(String dataPath) {
-        TreeNode atNode = findNode(dataPath);
+        MenTreeNode atNode = findNode(dataPath);
         if (atNode != null) {
             return atNode.sizeOfSub();
         }
         return 0;
     }
     @Override
-    public List<String> querySubList(String dataPath, int rowIndex, int limit) {
-        TreeNode atNode = findNode(dataPath);
+    public List<String> querySubPathList(String dataPath, int rowIndex, int limit) {
+        MenTreeNode atNode = findNode(dataPath);
         if (atNode != null) {
-            List<TreeNode> subList = atNode.getSubList();
+            List<MenTreeNode> subList = atNode.getSubList();
             int toIndex = rowIndex + limit;
             toIndex = (toIndex >= subList.size()) ? subList.size() : toIndex;
-            List<TreeNode> treeNodes = subList.subList(rowIndex, toIndex);
+            List<MenTreeNode> treeNodes = subList.subList(rowIndex, toIndex);
             ArrayList<String> findPathList = new ArrayList<String>();
-            for (TreeNode treeNode : treeNodes) {
+            for (MenTreeNode treeNode : treeNodes) {
                 findPathList.add(treeNode.getPath());
             }
             return findPathList;

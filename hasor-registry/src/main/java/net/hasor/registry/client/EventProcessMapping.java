@@ -27,7 +27,7 @@ import java.util.*;
 /**
  * 注册中心事件响应实现
  * @version : 2016年2月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class EventProcessMapping {
     protected static Logger logger = LoggerFactory.getLogger(EventProcessMapping.class);

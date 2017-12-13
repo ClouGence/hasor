@@ -17,7 +17,7 @@ package net.hasor.registry;
 /**
  * center工作模式
  * @version : 2017年2月16日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public enum CenterMode {
     None("none", "禁用（默认）"),//

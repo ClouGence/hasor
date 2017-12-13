@@ -19,7 +19,7 @@ import net.hasor.rsf.domain.RsfResultDO;
 /**
  * 结果
  * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfCenterResultDO<T> extends RsfResultDO implements RsfCenterResult<T> {
     private static final long serialVersionUID = -4678893554960623786L;

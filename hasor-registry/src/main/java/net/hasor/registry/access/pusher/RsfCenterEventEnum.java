@@ -19,7 +19,7 @@ import net.hasor.registry.RsfCenterEvent;
  * 注册中心下推送的事件类型，与枚举{@link RsfCenterEvent}为一对一映射关系。映射时增加了处理类。
  *
  * @version : 2016年2月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public enum RsfCenterEventEnum {
     /**

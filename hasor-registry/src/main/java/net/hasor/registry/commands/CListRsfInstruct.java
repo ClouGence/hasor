@@ -28,7 +28,7 @@
 ///**
 // * 列出注册中心上都有哪些服务。
 // * @version : 2016年11月11日
-// * @author 赵永春(zyc@hasor.net)
+// * @author 赵永春 (zyc@hasor.net)
 // */
 //@Singleton
 //@RsfCommand({ "clist" })

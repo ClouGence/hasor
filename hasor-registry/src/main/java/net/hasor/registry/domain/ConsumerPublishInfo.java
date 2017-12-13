@@ -17,7 +17,7 @@ package net.hasor.registry.domain;
 /**
  * 服务消费者信息
  * @version : 2016年2月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ConsumerPublishInfo extends PublishInfo {
     private static final long serialVersionUID = -335204051257003763L;

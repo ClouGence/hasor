@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * 服务发布接口，该接口需要远端注册中心实现
  * @version : 2016年2月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @RsfService(group = "RSF", version = "1.0.0")
 public interface RsfCenterRegister {

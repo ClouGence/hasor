@@ -32,7 +32,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 /**
  * 推送服务触发器
  * @version : 2016年3月1日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
 public class PushQueue implements Runnable {

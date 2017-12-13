@@ -18,7 +18,7 @@ import net.hasor.rsf.RsfResult;
 /**
  * 消息发送的返回值。
  * @version : 2015年1月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfCenterResult<T> extends RsfResult {
     /** 返回值 */

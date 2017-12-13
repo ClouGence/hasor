@@ -26,7 +26,7 @@ import static net.hasor.rsf.domain.RsfEvent.*;
 /**
  * 负责侦听RSF框架发出的事件，并将事件转发到RsfCenter。
  * @version : 2016年2月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class RsfEventTransport implements EventListener<Object>, ContextStartListener {
     protected Logger                logger        = LoggerFactory.getLogger(getClass());

@@ -17,7 +17,7 @@ package net.hasor.registry.access.domain;
 /**
  * 用于封装结果集
  * @version : 2015年1月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface Result<T> {
     /**返回操作是否成功。*/

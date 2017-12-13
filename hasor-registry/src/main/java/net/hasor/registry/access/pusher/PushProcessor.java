@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * 执行处理器，该类的作用是将事件推送到指定的客户端中去。
  * @version : 2016年3月23日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class PushProcessor {
     protected Logger logger = LoggerFactory.getLogger(getClass());

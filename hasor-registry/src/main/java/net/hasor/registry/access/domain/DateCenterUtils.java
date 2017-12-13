@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * @version : 2015年7月6日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class DateCenterUtils {
     protected static Logger logger = LoggerFactory.getLogger(DateCenterUtils.class);

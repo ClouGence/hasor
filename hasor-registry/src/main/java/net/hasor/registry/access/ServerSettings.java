@@ -20,7 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
  * @version : 2015年8月19日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ServerSettings {
     protected static final Logger logger = LoggerFactory.getLogger(ServerSettings.class);

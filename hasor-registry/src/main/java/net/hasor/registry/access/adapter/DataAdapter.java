@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * 服务数据存储检索适配器，负责将数据的操作对应到 DataDao 接口上。
  * @version : 2015年8月19日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
 public class DataAdapter {
@@ -82,7 +82,7 @@ public class DataAdapter {
         String dataType = RsfServiceType.Provider == asType ? "Provider" : "Consumer";
         String dataPath = "/" + serviceID + "/" + dataType;
         //
-        List<String> itemList = this.storageDao.querySubList(dataPath, rowIndex, limit);
+        List<String> itemList = this.storageDao.querySubPathList(dataPath, rowIndex, limit);
         if (itemList == null) {
             return null;
         }

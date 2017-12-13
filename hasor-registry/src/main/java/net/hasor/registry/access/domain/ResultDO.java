@@ -17,7 +17,7 @@ package net.hasor.registry.access.domain;
 /**
  * 结果集
  * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ResultDO<T> implements Result<T> {
     private           T         result    = null;

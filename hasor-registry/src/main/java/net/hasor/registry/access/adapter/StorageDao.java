@@ -18,16 +18,21 @@ import java.util.List;
 /**
  * 服务数据存储检索
  * @version : 2015年8月19日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface StorageDao {
+    /** 在 dataPath 上保存数据（保存or更新） */
     public boolean saveData(String dataPath, ObjectData data);
 
+    /** 删除 dataPath */
     public boolean deleteData(String dataPath);
 
+    /** 获取 dataPath 的数据。 */
     public ObjectData getByPath(String dataPath);
 
+    /** 返回 dataPath 目录下的子目录数量。(深度1)。 */
     public int querySubCount(String dataPath);
 
-    public List<String> querySubList(String dataPath, int rowIndex, int limit);
+    /** 分页方式查询 dataPath 目录下的子目录。(深度1)。 */
+    public List<String> querySubPathList(String dataPath, int rowIndex, int limit);
 }

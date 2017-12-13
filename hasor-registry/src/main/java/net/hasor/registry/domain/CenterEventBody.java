@@ -18,7 +18,7 @@ import java.io.Serializable;
 /**
  * center下发的事件
  * @version : 2016年3月11日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class CenterEventBody implements Serializable {
     private static final long serialVersionUID = 1617451556801258822L;

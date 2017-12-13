@@ -33,7 +33,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * TaskManager 解决这个问题的办法是，设立的一个临时的中转站。分批次将大量同类的推送优化合并成几个有限的批次。
  *
  * @version : 2016年9月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
 public class TaskManager extends Thread {

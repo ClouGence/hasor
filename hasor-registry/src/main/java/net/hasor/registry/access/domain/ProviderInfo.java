@@ -19,7 +19,7 @@ import java.util.List;
  * 服务提供者信息
  *
  * @version : 2015年5月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ProviderInfo {
     /** 提供者实例ID。*/

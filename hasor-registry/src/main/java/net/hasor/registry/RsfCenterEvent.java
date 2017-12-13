@@ -18,7 +18,7 @@ package net.hasor.registry;
  * 注册中心下推送的事件类型
  *
  * @version : 2016年2月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfCenterEvent {
     /**

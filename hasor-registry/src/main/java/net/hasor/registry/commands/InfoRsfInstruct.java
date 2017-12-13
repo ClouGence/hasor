@@ -33,7 +33,7 @@
 ///**
 // * RSF框架工作信息。
 // * @version : 2016年4月3日
-// * @author 赵永春(zyc@hasor.net)
+// * @author 赵永春 (zyc@hasor.net)
 // */
 //@Singleton
 //@RsfCommand("info")

@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 对Center请求的服务接口都加上AppCode和AuthCode隐式参数。
  * @version : 2016年2月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
 public class RegistryClientVerifyFilter implements RsfFilter {

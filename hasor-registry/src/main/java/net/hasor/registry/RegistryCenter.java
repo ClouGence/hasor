@@ -17,7 +17,7 @@ package net.hasor.registry;
 /**
  * 注册中心管理服务
  * @version : 2017年03月05日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RegistryCenter {
     /** 获取InstanceInfo */

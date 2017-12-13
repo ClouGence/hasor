@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 检验来自Client的请求是否准许访问Cenrer。
  * @version : 2016年2月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
 public class RsfCenterServerVerifyFilter implements RsfFilter {

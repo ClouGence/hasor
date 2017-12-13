@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * 需要推送的事件对象
  * @version : 2016年3月23日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class PushEvent {
     private String             serviceID;       //ServiceID

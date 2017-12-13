@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * 实列信息。
  * @version : 2016年2月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class InstanceInfo {
     private String       instanceID;

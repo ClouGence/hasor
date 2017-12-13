@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Client模式
  * @version : 2016年2月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RegistryClientModule extends RsfModule {
     protected static Logger logger = LoggerFactory.getLogger(RegistryClientModule.class);

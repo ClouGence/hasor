@@ -24,6 +24,6 @@ public class StorageTest {
         //
         storageDao.deleteData("/1");
         //
-        System.out.println(JSON.toJSON(storageDao.querySubList("/", 0, 100)));
+        System.out.println(JSON.toJSON(storageDao.querySubPathList("/", 0, 100)));
     }
 }
