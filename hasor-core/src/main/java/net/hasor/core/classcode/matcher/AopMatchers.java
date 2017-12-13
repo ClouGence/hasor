@@ -19,6 +19,7 @@ import net.hasor.core.Matcher;
 import net.hasor.utils.ClassUtils;
 import net.hasor.utils.MatchUtils;
 import net.hasor.utils.MatchUtils.MatchTypeEnum;
+import net.hasor.utils.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -57,6 +58,10 @@ public class AopMatchers {
     /** 在方法中匹配注解 */
     public static Matcher<Method> annotatedWithMethod(final Class<? extends Annotation> annotationType) {
         return new MethodAnnotationOf(annotationType);
+    }
+    /** 在类型所在的 package 和父 packages 中匹配， */
+    public static Matcher<Class<?>> annotatedWithPackageTree(Class<? extends Annotation> annotationType) {
+        return new PackageAnnotationOf(annotationType);
     }
     /** 返回一个匹配器，匹配给定类型的子类（或实现了的接口） */
     public static Matcher<Class<?>> subClassesOf(final Class<?> superclass) {
@@ -191,6 +196,44 @@ public class AopMatchers {
         }
         public String toString() {
             return "MethodAnnotationOf(" + this.annotationType.getSimpleName() + ".class)";
+        }
+    }
+    //
+    /**匹配在 package 和父 packages 中的注解。*/
+    private static class PackageAnnotationOf implements Matcher<Class<?>> {
+        private Class<? extends Annotation> annotationType = null;
+        public PackageAnnotationOf(final Class<? extends Annotation> annotationType) {
+            this.annotationType = annotationType;
+        }
+        @Override
+        public boolean matches(Class<?> target) {
+            return this.matches(target.getPackage());
+        }
+        public boolean matches(Package targetPackage) {
+            if (targetPackage == null) {
+                return false;
+            }
+            Annotation tran = targetPackage.getAnnotation(annotationType);
+            if (tran != null) {
+                return true;
+            }
+            //
+            String packageName = targetPackage.getName();
+            for (; ; ) {
+                if (packageName.indexOf('.') == -1) {
+                    break;
+                }
+                packageName = StringUtils.substringBeforeLast(packageName, ".");
+                if (StringUtils.isBlank(packageName)) {
+                    break;
+                }
+                Package supperPackage = Package.getPackage(packageName);
+                if (supperPackage == null) {
+                    continue;
+                }
+                return matches(targetPackage);
+            }
+            return false;
         }
     }
 }

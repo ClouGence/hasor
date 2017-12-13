@@ -19,7 +19,6 @@ import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
 import net.hasor.core.Provider;
 import net.hasor.db.transaction.*;
-import net.hasor.utils.StringUtils;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
@@ -90,65 +89,8 @@ public class TransactionInterceptor implements MethodInterceptor {
         Transactional tran = targetMethod.getAnnotation(Transactional.class);
         if (tran == null) {
             Class<?> declaringClass = targetMethod.getDeclaringClass();
-            tran = tranAnnotation(declaringClass);
-            if (tran == null) {
-                tran = tranAnnotation(declaringClass.getPackage());
-            }
+            tran = declaringClass.getAnnotation(Transactional.class);
         }
         return tran;
-    }
-    //
-    //
-    //
-    private static Transactional tranAnnotation(Class<?> targetType) {
-        return tranAnnotation(targetType, true);
-    }
-    private static Transactional tranAnnotation(Package targetPackage) {
-        return tranAnnotation(targetPackage, true);
-    }
-    private static Transactional tranAnnotation(Class<?> targetType, boolean isRootClass) {
-        Transactional tran = targetType.getAnnotation(Transactional.class);
-        if (tran != null) {
-            // 1.被测试的类标记了@Transactional
-            // 2.继承的父类中标记了 Transactional 注解并且 遗传属性genetic 的值为 true。
-            if (isRootClass || tran.genetic()) {
-                return tran;
-            }
-        }
-        Class<?> superclass = targetType.getSuperclass();
-        if (superclass != null) {
-            return tranAnnotation(superclass, false);
-        }
-        return null;
-    }
-    private static Transactional tranAnnotation(Package targetPackage, boolean isRootPakcage) {
-        if (targetPackage == null) {
-            return null;
-        }
-        Transactional tran = targetPackage.getAnnotation(Transactional.class);
-        if (tran != null) {
-            // 1.被测试的包标记了@Transactional
-            // 2.包的父包中标记了 Transactional 注解并且 遗传属性genetic 的值为 true。
-            if (isRootPakcage || tran.genetic()) {
-                return tran;
-            }
-        }
-        //
-        String packageName = targetPackage.getName();
-        for (; ; ) {
-            if (packageName.indexOf('.') == -1) {
-                break;
-            }
-            packageName = StringUtils.substringBeforeLast(packageName, ".");
-            if (StringUtils.isBlank(packageName)) {
-                break;
-            }
-            Package supperPackage = Package.getPackage(packageName);
-            if (supperPackage == null) {
-                continue;
-            }
-            return tranAnnotation(supperPackage, false);
-        }
-        return null;
     }
 }
