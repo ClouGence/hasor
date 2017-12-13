@@ -103,7 +103,7 @@ class ClassEngine {
         if (aopIgnore != null) {
             // 1.被测试的类标记了@AopIgnore
             // 2.继承的父类中标记了AopIgnore 注解并且 遗传属性genetic 的值为 true。
-            if (isRootClass || aopIgnore.genetic()) {
+            if (isRootClass || aopIgnore.inherited()) {
                 return true;
             }
         }
@@ -121,7 +121,7 @@ class ClassEngine {
         if (aopIgnore != null) {
             // 1.被测试的包标记了@AopIgnore
             // 2.包的父包中标记了AopIgnore 注解并且 遗传属性genetic 的值为 true。
-            if (isRootPakcage || aopIgnore.genetic()) {
+            if (isRootPakcage || aopIgnore.inherited()) {
                 return true;
             }
         }

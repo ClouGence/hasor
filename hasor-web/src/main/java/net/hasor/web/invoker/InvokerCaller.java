@@ -73,11 +73,11 @@ class InvokerCaller implements ExceuteCaller {
         }
         //
         // .异步调用
-        boolean needAsync = this.mappingToDefine.isAsync(invoker);
-        ServletVersion version = invoker.getAppContext().getInstance(ServletVersion.class);
-        if (version.ge(ServletVersion.V3_0) && needAsync) {
-            // .必须满足: Servlet3.x、环境支持异步Servlet、目标开启了Servlet3
-            try {
+        try {
+            boolean needAsync = this.mappingToDefine.isAsync(invoker);
+            ServletVersion version = invoker.getAppContext().getInstance(ServletVersion.class);
+            if (version.ge(ServletVersion.V3_0) && needAsync) {
+                // .必须满足: Servlet3.x、环境支持异步Servlet、目标开启了Servlet3
                 AsyncContext asyncContext = invoker.getHttpRequest().startAsync();
                 asyncContext.start(new AsyncInvocationWorker(asyncContext, targetMethod) {
                     public void doWork(Method targetMethod) throws Throwable {
@@ -90,8 +90,8 @@ class InvokerCaller implements ExceuteCaller {
                     }
                 });
                 return future;
-            } catch (Throwable e) { /* 不支持异步 */ }
-        }
+            }
+        } catch (Throwable e) { /* 不支持异步 */ }
         //
         // .同步调用
         try {

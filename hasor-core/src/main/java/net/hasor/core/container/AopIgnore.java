@@ -26,5 +26,5 @@ import java.lang.annotation.*;
 @Documented
 public @interface AopIgnore {
     /** 是否将 AopIgnore 的配置策略遗传给子类或者子包（只有当标记在父类或包上有效）*/
-    public boolean genetic() default true;
+    public boolean inherited() default true;
 }
