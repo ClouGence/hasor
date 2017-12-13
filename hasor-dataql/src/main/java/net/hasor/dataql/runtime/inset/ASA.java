@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * TODO 后续可以考虑优化这个代码做成并发处理。
  *
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class ASA implements InsetProcess {

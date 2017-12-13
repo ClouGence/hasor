@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 单例
  * @version : 2015年6月28日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class SingletonScope implements Scope {
     private ConcurrentHashMap<Object, Provider<?>> scopeMap = new ConcurrentHashMap<Object, Provider<?>>();

@@ -19,7 +19,7 @@ import java.util.Enumeration;
 /**
  * 调用请求
  * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfRequest extends RsfHeader {
     /**获取属性*/

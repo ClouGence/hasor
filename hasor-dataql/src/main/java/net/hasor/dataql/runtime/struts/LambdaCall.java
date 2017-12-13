@@ -16,7 +16,7 @@
 package net.hasor.dataql.runtime.struts;
 /**
  * 用于表示一个 Lambda 函数调用。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 public class LambdaCall {

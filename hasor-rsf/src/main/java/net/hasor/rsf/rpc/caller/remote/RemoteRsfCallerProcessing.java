@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 负责处理远程Request对象的请求调用，同时也负责将产生的Response对象写回客户端。
  * @version : 2014年11月4日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class RemoteRsfCallerProcessing extends InvokerProcessing {
     protected Logger logger = LoggerFactory.getLogger(getClass());

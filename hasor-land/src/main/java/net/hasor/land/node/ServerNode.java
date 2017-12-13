@@ -34,7 +34,7 @@ import java.util.Set;
  * 当前服务器节点信息
  *
  * @version : 2016年09月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ServerNode implements EventListener<Object>, Operation {
     protected     Logger         logger        = LoggerFactory.getLogger(getClass());

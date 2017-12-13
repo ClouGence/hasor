@@ -18,7 +18,7 @@ package net.hasor.rsf.domain;
  * Server:Unknown、Message、MovedPermanently、Unauthorized
  * Client:
  * @version : 2014年9月20日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface ProtocolStatus {
     /**未定义*/

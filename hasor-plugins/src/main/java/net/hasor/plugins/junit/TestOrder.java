@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 /**
  * 用于配置测试用例的启动顺序。
  * @version : 2014年7月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

@@ -24,7 +24,7 @@ import java.io.IOException;
 /**
  *
  * @version : 2017年1月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class HproseSerializeCoder implements SerializeCoder {
     //

@@ -16,7 +16,7 @@
 package net.hasor.dataql;
 /**
  * 用于封装 Option。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public interface Option {

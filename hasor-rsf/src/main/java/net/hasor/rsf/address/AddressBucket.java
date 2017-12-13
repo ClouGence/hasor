@@ -49,7 +49,7 @@ import static net.hasor.rsf.domain.RsfConstants.*;
  * 所有对服务地址的进一 步处理都需要使用{@link #getAvailableAddresses()}获得的地址列表。
  * 如果应用了本地机房策略，则本地
  * @version : 2014年9月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class AddressBucket extends Observable {
     protected static final Logger addressLogger = LoggerFactory.getLogger(RsfConstants.LoggerName_Address);

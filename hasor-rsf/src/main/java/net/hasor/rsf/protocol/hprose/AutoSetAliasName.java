@@ -27,7 +27,7 @@ import static io.netty.handler.codec.http.HttpHeaders.Names.ORIGIN;
 /**
  * Hprose 服务自动设定别名工具
  * @version : 2017年02月23日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class AutoSetAliasName extends RsfModule implements EventListener<Object> {
     @Override

@@ -24,7 +24,7 @@ import net.hasor.dataql.UDF;
 import net.hasor.dataql.UdfSource;
 /**
  * DataQL 扩展接口。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class DataApiBinderCreater implements ApiBinderCreater {

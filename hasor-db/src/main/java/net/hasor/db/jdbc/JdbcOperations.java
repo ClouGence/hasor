@@ -22,7 +22,7 @@ import java.util.Map;
  * @version : 2013-10-9
  * @author Thomas Risberg
  * @author Juergen Hoeller
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface JdbcOperations {
     /**通过回调函数执行一个JDBC数据访问操作。 */

@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 /**
  * 负责处理服务的调用。
  * @version : 2014年11月4日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class RsfInvokeFilterChain implements RsfFilterChain {
     public static RsfFilterChain Default = new RsfInvokeFilterChain();

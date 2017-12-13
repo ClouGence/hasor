@@ -18,7 +18,7 @@ import java.io.IOException;
 /**
  * 接受连接
  * @version : 2015年12月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface ConnectionAccepter {
     public boolean acceptIn(RsfChannel rsfChannel) throws IOException;

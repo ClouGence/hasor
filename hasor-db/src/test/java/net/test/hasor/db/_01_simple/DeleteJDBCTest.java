@@ -24,7 +24,7 @@ import java.sql.SQLException;
 /***
  * 基本的delete操作语句执行
  * @version : 2014-1-13
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class DeleteJDBCTest {
     @Test

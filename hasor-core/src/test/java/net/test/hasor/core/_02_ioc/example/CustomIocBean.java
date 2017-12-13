@@ -22,7 +22,7 @@ import net.test.hasor.core._01_bean.pojo.PojoInfo;
 /**
  * 通过{@link InjectMembers}接口进行注入。
  * @version : 2014-1-3
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class CustomIocBean implements InjectMembers {
     @Inject

@@ -20,7 +20,7 @@ import java.io.IOException;
 /**
  * 序列化（编码/解码）器
  * @version : 2014年9月19日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface SerializeCoder {
     /**初始化*/

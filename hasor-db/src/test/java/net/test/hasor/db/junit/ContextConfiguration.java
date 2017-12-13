@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 /**
  * 用于指定测试用例使用的配置文件。
  * @version : 2014年7月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

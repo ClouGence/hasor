@@ -30,7 +30,7 @@ import java.sql.Statement;
 /**
  *
  * @version : 2013-10-16
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcConnection extends JdbcAccessor {
     /*JDBC查询和从结果集里面每次取设置行数，循环去取，直到取完。合理设置该参数可以避免内存异常。

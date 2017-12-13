@@ -17,7 +17,7 @@ package net.hasor.dataql.runtime.struts;
 /**
  * ASA、ASM、ASO 三个结果数据处理指令，在处理数据时会有各自的数据封装结构。
  * 该接口的目的是为了，封装三个操作指令数据结构的通用方法。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 public interface ResultStruts extends SelfData {

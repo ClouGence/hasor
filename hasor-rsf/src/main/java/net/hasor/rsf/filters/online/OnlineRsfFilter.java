@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 一旦下线，所有远程的连入请求都被回绝：Forbidden
  * @version : 2016年3月23日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class OnlineRsfFilter implements RsfFilter {
     protected Logger logger = LoggerFactory.getLogger(getClass());

@@ -19,7 +19,7 @@ import net.hasor.core.Matcher;
 /**
  * 逻辑器
  * @version : 2013-8-20
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class MatcherDevice<T> implements Matcher<T> {
     private Matcher<T> matcherNode = null;

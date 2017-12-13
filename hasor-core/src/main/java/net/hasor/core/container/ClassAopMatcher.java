@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 /**
  * 负责根据Class或BindInfo创建Bean。
  * @version : 2015年6月26日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class ClassAopMatcher implements AopMatcher {
     private Matcher<Method> matcherMethod = null;

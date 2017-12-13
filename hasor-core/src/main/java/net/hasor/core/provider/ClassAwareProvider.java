@@ -22,7 +22,7 @@ import net.hasor.core.Provider;
  * 用法：Hasor.autoAware(env,new ClassAwareProvider(...));
  * 注意事项：只可以在 AppContext init 期间使用。
  * @version : 2015年12月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ClassAwareProvider<T> implements Provider<T>, AppContextAware {
     private Class<? extends T> implementation;

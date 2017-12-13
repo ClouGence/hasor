@@ -23,7 +23,7 @@ import java.util.Observable;
 /**
  * 提供metaData。
  * @version : 2014年7月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class MetaDataAdapter extends Observable {
     private final Map<String, Object> metaData = new HashMap<String, Object>();

@@ -17,7 +17,7 @@ package net.hasor.rsf.console;
 /**
  *
  * @version : 2016年4月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class RsfCommandResponse {
     private String  result;

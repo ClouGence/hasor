@@ -4,7 +4,7 @@ import net.hasor.core.Scope;
 /**
  * Bean构建接口，负责创建和定义Bean对象。
  * @version : 2014-3-17
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface ScopManager {
     public static final String SINGLETON_SCOPE = "singleton";

@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.console;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
@@ -40,20 +41,16 @@ import net.hasor.utils.NameThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Set;
 /**
  * RSF终端管理器插件。
  * @version : 2016年2月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfConsoleModule extends RsfModule implements LifeModule {
     protected static Logger         logger        = LoggerFactory.getLogger(RsfConstants.LoggerName_Console);
-    private          StringDecoder  stringDecoder = new StringDecoder();
-    private          StringEncoder  stringEncoder = new StringEncoder();
-    private          TelnetHandler  telnetHandler = null;
-    private          InterAddress   bindAddress   = null;
+    private          Channel        telnetChannel = null;
     private          EventLoopGroup workerGroup   = null;
     //
     @Override
@@ -81,47 +78,42 @@ public class RsfConsoleModule extends RsfModule implements LifeModule {
         //
     }
     @Override
-    public void onStart(AppContext appContext) throws Throwable {
-        RsfContext rsfContext = appContext.getInstance(RsfContext.class);
+    public void onStart(AppContext appContext) {
+        final RsfContext rsfContext = appContext.getInstance(RsfContext.class);
         if (rsfContext == null) {
             logger.error("rsfConsole -> RsfContext is null.");
             return;
         }
         //1.初始化常量配置。
         this.workerGroup = new NioEventLoopGroup(1, new NameThreadFactory("RSF-Console", appContext.getClassLoader()));
-        this.telnetHandler = new TelnetHandler(rsfContext);
         int consolePort = rsfContext.getSettings().getConsolePort();
         String consoleAddress = rsfContext.getSettings().getBindAddress();
         String formUnit = rsfContext.getSettings().getUnitName();
-        try {
-            this.bindAddress = new InterAddress(consoleAddress, consolePort, formUnit);
-        } catch (Throwable e) {
-            throw new UnknownHostException(e.getMessage());
-        }
-        logger.info("rsfConsole -> starting... at {}", this.bindAddress);
+        InterAddress bindAddress = new InterAddress(consoleAddress, consolePort, formUnit);
+        logger.info("rsfConsole -> starting... at {}", bindAddress);
         //
         //2.启动Telnet。
         try {
             ServerBootstrap b = new ServerBootstrap();
-            b.group(workerGroup, workerGroup);
+            b.group(this.workerGroup, this.workerGroup);
             b.channel(NioServerSocketChannel.class);
             b.handler(new LoggingHandler(LogLevel.INFO));
             b.childHandler(new ChannelInitializer<SocketChannel>() {
                 @Override
-                public void initChannel(SocketChannel ch) throws Exception {
+                public void initChannel(SocketChannel ch) {
                     ChannelPipeline pipeline = ch.pipeline();
                     pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
-                    pipeline.addLast(stringDecoder);
-                    pipeline.addLast(stringEncoder);
-                    pipeline.addLast(telnetHandler);
+                    pipeline.addLast(new StringDecoder());
+                    pipeline.addLast(new StringEncoder());
+                    pipeline.addLast(new TelnetHandler(rsfContext));
                 }
             });
-            b.bind(this.bindAddress.getHost(), this.bindAddress.getPort()).sync().await();
+            this.telnetChannel = b.bind(bindAddress.getHost(), bindAddress.getPort()).sync().channel();
         } catch (Throwable e) {
             logger.error("rsfConsole -> start failed, " + e.getMessage(), e);
             this.shutdown();
         }
-        logger.info("rsfConsole -> - bindSocket at {}", this.bindAddress);
+        logger.info("rsfConsole -> - bindSocket at {}", bindAddress);
         //
         //3.注册shutdown事件，以保证在shutdown时可以停止Telnet。
         Hasor.addShutdownListener(rsfContext.getEnvironment(), new EventListener<AppContext>() {
@@ -132,12 +124,18 @@ public class RsfConsoleModule extends RsfModule implements LifeModule {
         });
     }
     public void shutdown() {
+        if (this.telnetChannel == null && this.workerGroup == null) {
+            return;
+        }
+        logger.info("rsfConsole -> shutdown.");
+        if (this.telnetChannel != null) {
+            this.telnetChannel.close();
+        }
         if (this.workerGroup != null) {
-            logger.info("rsfConsole -> shutdown.");
             this.workerGroup.shutdownGracefully();
         }
     }
     @Override
-    public void onStop(AppContext appContext) throws Throwable {
+    public void onStop(AppContext appContext) {
     }
 }

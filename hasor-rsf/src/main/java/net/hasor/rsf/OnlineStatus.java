@@ -17,7 +17,7 @@ package net.hasor.rsf;
 /**
  * 是否在线
  * @version : 2016年09月09日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface OnlineStatus {
     /**是否在线*/

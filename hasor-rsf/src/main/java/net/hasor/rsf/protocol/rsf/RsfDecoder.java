@@ -29,7 +29,7 @@ import static net.hasor.rsf.domain.RsfConstants.*;
 /**
  * RSF 解码器
  * @version : 2014年10月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfDecoder extends LengthFieldBasedFrameDecoder {
     protected Logger logger = LoggerFactory.getLogger(getClass());

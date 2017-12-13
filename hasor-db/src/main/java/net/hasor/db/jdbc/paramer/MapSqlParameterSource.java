@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  *
  * @version : 2014-3-31
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class MapSqlParameterSource implements SqlParameterSource, ParameterDisposer {
     private Map<String, ?> values;

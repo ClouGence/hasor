@@ -20,7 +20,7 @@ import net.hasor.web.valid.ValidBy;
 /**
  * 登录表单,指定 LoginFormValidation 类为它的验证器。
  * @version : 2016年1月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @ValidBy(LoginFormValidation.class)
 public class LoginForm {

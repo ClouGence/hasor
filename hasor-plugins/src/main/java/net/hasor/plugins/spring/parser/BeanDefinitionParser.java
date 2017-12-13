@@ -27,7 +27,7 @@ import org.w3c.dom.NamedNodeMap;
 /**
  *
  * @version : 2016年2月16日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class BeanDefinitionParser extends AbstractHasorDefinitionParser {
     @Override

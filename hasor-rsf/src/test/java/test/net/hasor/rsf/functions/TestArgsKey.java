@@ -18,7 +18,7 @@ import net.hasor.rsf.address.route.rule.DefaultArgsKey;
 /**
  * 对指定的服务上的方法进行处理，sayEcho，testUserTag。两个方法上用于计算路由地址的参考参数是第一个传入参数。
  * @version : 2015年4月16日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class TestArgsKey extends DefaultArgsKey {
     public String eval(String serviceID, String methodName, Object[] args) {

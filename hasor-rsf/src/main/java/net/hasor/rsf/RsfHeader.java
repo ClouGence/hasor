@@ -17,7 +17,7 @@ package net.hasor.rsf;
 /**
  * 请求响应通用。
  * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfHeader extends RsfOptionSet {
     /**获取元信息*/

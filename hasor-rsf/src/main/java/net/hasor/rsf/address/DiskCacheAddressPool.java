@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 服务地址的辅助工具,负责读写本地地址本缓存。
  * @version : 2014年9月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class DiskCacheAddressPool extends AddressPool {
     protected final Logger        logger = LoggerFactory.getLogger(getClass());

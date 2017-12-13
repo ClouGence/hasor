@@ -28,7 +28,7 @@ import javax.servlet.http.HttpSessionListener;
 /**
  * {@link WebApiBinder} 接口包装器
  * @version : 2017-01-10
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
     private WebApiBinder webApiBinder;

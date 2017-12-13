@@ -20,7 +20,7 @@ import java.sql.Connection;
 /**
  *
  * @version : 2013-10-30
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class DataSourceManager {
     /**申请连接*/

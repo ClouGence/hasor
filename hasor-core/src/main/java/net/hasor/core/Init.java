@@ -21,7 +21,7 @@ import java.lang.annotation.*;
  * 标记方法为初始化方法，如果{@link LifeBindingBuilder#initMethod(String)}方法也定义了一个初始化方法则，注解方式优先于配置。
  * @see LifeBindingBuilder#initMethod(String)
  * @version : 2015年7月28日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })

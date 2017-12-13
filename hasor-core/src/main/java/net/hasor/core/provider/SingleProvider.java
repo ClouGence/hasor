@@ -18,7 +18,7 @@ import net.hasor.core.Provider;
 /**
  * 单例对象的{@link Provider}封装形式。
  * @version : 2014年7月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class SingleProvider<T> implements Provider<T> {
     private          Provider<T> provider = null;

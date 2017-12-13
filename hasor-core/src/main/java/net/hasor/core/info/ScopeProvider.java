@@ -19,7 +19,7 @@ import net.hasor.core.Scope;
 /**
  * 如果Bean配置了{@link Scope}，那么Hasor容器需要通过该接口获取到这个Scope。
  * @version : 2014年12月2日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface ScopeProvider {
     /**获取Provider对象，可以直接取得对象实例。*/

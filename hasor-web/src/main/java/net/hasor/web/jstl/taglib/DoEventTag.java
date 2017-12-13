@@ -19,7 +19,7 @@ import javax.servlet.jsp.tagext.Tag;
 /**
  *
  * @version : 2013-12-24
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class DoEventTag extends AbstractTag {
     private static final long    serialVersionUID = -5728789063520917320L;

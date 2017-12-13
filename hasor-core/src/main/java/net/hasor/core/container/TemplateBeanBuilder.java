@@ -30,7 +30,7 @@ import java.util.Map.Entry;
 /**
  * 负责创建Bean对象，以及依赖注入和Aop的实现。
  * @version : 2015年6月26日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class TemplateBeanBuilder implements BeanBuilder {
     protected Logger logger = LoggerFactory.getLogger(getClass());

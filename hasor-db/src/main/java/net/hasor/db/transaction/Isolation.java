@@ -18,7 +18,7 @@ import java.sql.Connection;
 /**
  * 事务隔离级别
  * @version : 2013-10-30
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public enum Isolation {
     /**默认事务隔离级别，具体使用的数据库事务隔离级别由底层决定。

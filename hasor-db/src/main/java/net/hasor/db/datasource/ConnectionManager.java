@@ -19,7 +19,7 @@ import java.sql.SQLException;
 /**
  * 连接管理器
  * @version : 2013-10-30
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface ConnectionManager {
     /**增加引用计数,一个因为持有人已被请求。*/

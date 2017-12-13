@@ -18,7 +18,7 @@ import net.hasor.core.exts.aop.Aop;
 /**
  * Bean测试
  * @version : 2015年1月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Aop(SimpleInterceptor.class)
 public class AopBean {

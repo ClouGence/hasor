@@ -18,7 +18,7 @@ package net.hasor.land.election;
  * 征集选票的结果
  *
  * @version : 2016年09月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class CollectVoteResult {
     private String  serverID    = null;  //服务器ID

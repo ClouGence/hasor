@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Hasor 添加多个模块的演示程序
  * @version : 2014-1-10
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ModuleTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());

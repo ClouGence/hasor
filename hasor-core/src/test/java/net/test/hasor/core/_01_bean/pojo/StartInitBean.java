@@ -19,7 +19,7 @@ import net.hasor.core.Singleton;
 /**
  * 一个Bean
  * @version : 2014-1-3
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
 public class StartInitBean extends PojoBean {

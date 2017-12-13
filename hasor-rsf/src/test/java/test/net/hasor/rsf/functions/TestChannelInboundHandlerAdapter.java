@@ -19,7 +19,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 /**
  *
  * @version : 2014年9月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class TestChannelInboundHandlerAdapter extends ChannelInboundHandlerAdapter {
     private final String target;

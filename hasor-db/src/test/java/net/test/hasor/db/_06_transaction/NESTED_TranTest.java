@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 /**
  * NESTED：在当前事务中通过Savepoint方式开启一个子事务。
  * @version : 2015年11月17日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @RunWith(HasorUnitRunner.class)
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)

@@ -17,7 +17,7 @@ package net.hasor.plugins.mybatis3;
 import org.apache.ibatis.session.SqlSession;
 /**
  * @version : 2015年5月27日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface SqlSessionCallback<T> {
     public T doSqlSession(SqlSession sqlSession);

@@ -17,7 +17,7 @@ package net.hasor.dataql.udf.funs;
 import java.util.*;
 /**
  * 集合函数基类
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class CollectionUDFs {

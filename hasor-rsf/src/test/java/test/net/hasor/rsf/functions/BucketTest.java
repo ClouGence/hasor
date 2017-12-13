@@ -31,7 +31,7 @@ import java.net.URISyntaxException;
 /**
  *
  * @version : 2014年9月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class BucketTest {
     @Test

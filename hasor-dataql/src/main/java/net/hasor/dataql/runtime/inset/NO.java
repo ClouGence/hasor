@@ -25,7 +25,7 @@ import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.utils.StringUtils;
 /**
  * NO，创建一个对象 or Map。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class NO implements InsetProcess {

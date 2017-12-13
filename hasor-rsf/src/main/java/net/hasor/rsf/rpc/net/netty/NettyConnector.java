@@ -40,7 +40,7 @@ import java.util.Arrays;
  * RPC协议连接器，负责创建某个特定RPC协议的网络事件。
  * tips：传入的网络连接，交给{@link LinkPool}进行处理，{@link NettyConnector}本身不维护任何连接。
  * @version : 2017年01月16日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class NettyConnector extends Connector {
     protected Logger logger = LoggerFactory.getLogger(getClass());

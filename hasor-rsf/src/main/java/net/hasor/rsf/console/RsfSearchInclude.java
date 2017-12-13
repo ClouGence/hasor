@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 /**
  * 包含在搜索结果中
  * @version : 2016年4月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Target({ ElementType.PACKAGE })
 @Retention(RetentionPolicy.RUNTIME)

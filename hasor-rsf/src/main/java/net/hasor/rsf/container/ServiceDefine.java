@@ -28,7 +28,7 @@ import java.util.*;
 /**
  * 服务对象，封装了服务元信息、RsfFilter、服务提供者（如果有）。
  * @version : 2014年11月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class ServiceDefine<T> extends RsfBindInfoWrap<T> implements CustomerProvider<T>, RsfBindInfo<T>, RsfDomainProvider<T> {
     private final List<FilterDefine>         filterList;

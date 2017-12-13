@@ -25,7 +25,7 @@ import net.hasor.rsf.rpc.net.SendCallBack;
 /**
  * 封装Netty网络连接。
  * @version : 2015年12月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class RsfChannelOnNetty extends RsfChannel {
     private final Channel channel;

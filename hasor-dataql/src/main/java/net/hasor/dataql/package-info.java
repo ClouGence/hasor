@@ -15,7 +15,7 @@
  */
 /**
  * DataQL 全面提供 “服务” 查询整合能力。您甚至可以通过一条 QL 混合 RPC 和数据库的查询结果。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 @AopIgnore

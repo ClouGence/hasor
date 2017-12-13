@@ -19,7 +19,7 @@ import net.hasor.core.Module;
 /**
  * 模块
  * @version : 2015年11月9日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class SimpleModule implements Module {
     public static final String STR = "say form Mod_2.";

@@ -23,7 +23,7 @@ import net.hasor.dataql.runtime.mem.StackStruts;
 /**
  * LOAD，从堆中装载一个数据到栈。与其对应的指令为 STORE
  * @see net.hasor.dataql.runtime.inset.STORE
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class LOAD implements InsetProcess {

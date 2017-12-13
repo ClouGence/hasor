@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * RSF Request 的化身,是封装 Request 的数据对象。
  * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RequestInfo extends OptionInfo {
     private long         requestID      = 0;    //请求ID

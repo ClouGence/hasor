@@ -17,7 +17,7 @@ package net.hasor.rsf.domain;
 /**
  *
  * @version : 2014年11月14日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfTimeoutException extends RsfException {
     private static final long serialVersionUID = -445430836145251422L;

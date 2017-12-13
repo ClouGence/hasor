@@ -29,7 +29,7 @@ import net.hasor.dataql.runtime.struts.LambdaCall;
 import net.hasor.utils.StringUtils;
 /**
  * LCALL，使用一个外部包来执行dataql。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class LCALL implements InsetProcess {

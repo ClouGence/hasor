@@ -17,7 +17,7 @@ package net.hasor.dataql.domain.compiler;
 import net.hasor.utils.StringUtils;
 /**
  * Query intermediate language 中间查询语言
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-03
  */
 public class QIL {

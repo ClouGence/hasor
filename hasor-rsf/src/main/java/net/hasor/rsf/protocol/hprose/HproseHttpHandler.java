@@ -38,7 +38,7 @@ import static io.netty.handler.codec.http.HttpHeaders.Names.*;
 /**
  * Http Netty 请求处理器
  * @version : 2017年11月23日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class HproseHttpHandler implements HttpHandler, HttpHandlerFactory {
     @Override

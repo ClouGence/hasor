@@ -21,7 +21,7 @@ import static net.hasor.rsf.domain.RsfConstants.Version_1;
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年11月4日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class CodecAdapterFactory {
     private static CodecAdapter[] adapterPool = new CodecAdapter[16];

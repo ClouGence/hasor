@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 负责根据Class或BindInfo创建BeanType。
  *  ** 不支持热部署，该类会造成类型无法被回收。
  * @version : 2015年6月26日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class ClassEngine {
     private static ConcurrentHashMap<Class<?>, AopClassConfig> buildEngineMap = new ConcurrentHashMap<Class<?>, AopClassConfig>();

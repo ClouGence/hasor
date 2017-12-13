@@ -18,7 +18,7 @@ package net.hasor.rsf.rpc.net;
  * 用于描述网络连接的输入输出特性。
  * 区分为：传入连接、传出连接、双向连接
  * @version : 2014年9月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public enum LinkType {
     /**传入*/

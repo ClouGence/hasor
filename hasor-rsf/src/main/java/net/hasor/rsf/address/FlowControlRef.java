@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * 方便引用切换。
  * @version : 2014年9月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class FlowControlRef {
     protected final Logger logger = LoggerFactory.getLogger(getClass());

@@ -34,7 +34,7 @@ import static net.hasor.db.transaction.Propagation.*;
  * <p>倘若被弹出的事务(A)并不是栈顶的事务，那么在事务(A)被处理（commit,rollback）时会优先处理自事务(A)以后开启的其它事务。
  *
  * @version : 2013-10-30
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcTransactionManager implements TransactionManager {
     protected Logger                            logger              = LoggerFactory.getLogger(getClass());

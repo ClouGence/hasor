@@ -24,7 +24,7 @@ import net.hasor.utils.future.BasicFuture;
 /**
  * Http Netty 响应处理器
  * @version : 2017年11月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class RsfChannelOnHttpClientHandler extends ChannelInboundHandlerAdapter {
     private RsfHttpResponseObject              httpResponse;

@@ -21,7 +21,7 @@ import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
 /**
  * UDF 函数定义
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 class DefineUDF implements UDF, AppContextAware {

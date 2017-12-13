@@ -21,7 +21,7 @@ import java.io.*;
 /**
  *
  * @version : 2014年9月19日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class JavaSerializeCoder implements SerializeCoder {
     @Override

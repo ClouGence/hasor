@@ -20,7 +20,7 @@ import net.hasor.dataql.domain.compiler.InstQueue;
 import java.util.Stack;
 /**
  * 二元运算表达式
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class DyadicExpression extends Expression {

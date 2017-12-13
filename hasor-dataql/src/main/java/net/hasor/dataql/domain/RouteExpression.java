@@ -21,7 +21,7 @@ import net.hasor.dataql.domain.compiler.Opcodes;
 import net.hasor.utils.StringUtils;
 /**
  * 值路由
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class RouteExpression extends Expression {

@@ -17,7 +17,7 @@ package net.hasor.core;
 /**
  * 辅助{@link Inject @Inject}注解用来标识value，表示的是 ByID，还是ByName。
  * @version : 2015年7月28日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public enum Type {
     /**AppContext.getInstance(bindID)方式*/

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 /**
  *
  * @version : 2016年09月09日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class BuildBucketBuild {
     private DefaultRsfEnvironment rsfEnv;

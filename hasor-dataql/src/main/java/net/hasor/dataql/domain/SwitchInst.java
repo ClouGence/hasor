@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 /**
  * if指令
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class SwitchInst extends Inst {

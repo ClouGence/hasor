@@ -15,7 +15,7 @@
  */
 /**
  * 数据库框架，提供了JDBC操作接口，和全面的事务管理功能。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 @AopIgnore

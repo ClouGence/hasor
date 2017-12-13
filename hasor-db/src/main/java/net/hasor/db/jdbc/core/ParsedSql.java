@@ -22,7 +22,7 @@ import java.util.*;
 /**
  * 编译的SQL
  * @version : 2013-10-16
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ParsedSql {
     private String       originalSql;

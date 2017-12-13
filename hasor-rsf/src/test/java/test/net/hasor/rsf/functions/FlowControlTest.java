@@ -33,7 +33,7 @@ import java.util.List;
 /**
  *
  * @version : 2015年4月5日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class FlowControlTest {
     private List<InterAddress> addressList() throws IOException, URISyntaxException {

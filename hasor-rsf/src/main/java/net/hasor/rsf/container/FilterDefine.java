@@ -20,7 +20,7 @@ import net.hasor.rsf.RsfFilter;
 /**
  * 获取服务上配置有效的过滤器。
  * @version : 2014年11月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class FilterDefine implements Provider<RsfFilter> {
     private String                        filterID;

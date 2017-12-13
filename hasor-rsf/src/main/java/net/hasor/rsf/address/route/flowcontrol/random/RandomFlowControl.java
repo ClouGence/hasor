@@ -28,7 +28,7 @@ import java.util.Random;
  * &lt;/flowControl&gt;
  * </pre>
  * @version : 2015年4月6日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RandomFlowControl extends AbstractRule {
     private Random random = new Random();

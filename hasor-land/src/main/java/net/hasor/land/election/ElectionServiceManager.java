@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 选举服务,负责选出 Leader
  *
  * @version : 2016年09月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ElectionServiceManager implements ElectionService, EventListener<ServerStatus> {
     protected Logger logger = LoggerFactory.getLogger(getClass());

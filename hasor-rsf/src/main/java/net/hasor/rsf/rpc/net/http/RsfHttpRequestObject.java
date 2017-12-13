@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * Http 解码器组
  * @version : 2017年11月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class RsfHttpRequestObject extends HashMap<String, Object> implements RsfHttpRequest {
     private InterAddress                  remoteAddress;

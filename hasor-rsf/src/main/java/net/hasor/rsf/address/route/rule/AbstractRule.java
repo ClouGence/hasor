@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * &lt;/flowControl&gt;
  * </pre>
  * @version : 2015年3月29日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractRule implements Rule {
     protected Logger logger = LoggerFactory.getLogger(getClass());

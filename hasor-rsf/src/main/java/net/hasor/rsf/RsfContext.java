@@ -25,7 +25,7 @@ import java.util.Set;
 /**
  * RSF 环境。
  * @version : 2014年11月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfContext extends OnlineStatus {
     /** 获取实例ID，实例ID在应用每次启动时生成一个全新的ID。 */

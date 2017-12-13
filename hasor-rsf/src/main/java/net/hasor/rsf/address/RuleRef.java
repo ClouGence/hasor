@@ -17,7 +17,7 @@ package net.hasor.rsf.address;
 /**
  *
  * @version : 2015年12月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RuleRef {
     public RuleRef(RuleRef scriptResourcesRef) {

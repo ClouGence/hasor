@@ -20,7 +20,7 @@ import net.hasor.rsf.rpc.caller.SenderListener;
 /**
  * 可以提供向远端响应Response的能力。
  * @version : 2015年12月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RemoteSenderListener extends SenderListener {
     /**向远端发送响应数据。*/

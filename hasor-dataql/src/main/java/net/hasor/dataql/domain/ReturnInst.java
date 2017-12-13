@@ -18,7 +18,7 @@ import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 /**
  * return指令
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class ReturnInst extends Inst {

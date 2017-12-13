@@ -19,7 +19,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 /**
  * 网络接受器，负责判定网络连接是否接受。
  * @version : 2017年01月16日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class NettySocketAccept extends ChannelInboundHandlerAdapter {
     private NettyConnector connector;

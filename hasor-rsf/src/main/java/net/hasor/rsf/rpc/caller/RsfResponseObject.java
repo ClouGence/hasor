@@ -23,7 +23,7 @@ import net.hasor.utils.StringUtils;
 /**
  * 调用请求
  * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfResponseObject extends OptionInfo implements RsfResponse {
     private final RsfRequest rsfRequest;

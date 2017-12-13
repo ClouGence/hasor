@@ -18,7 +18,7 @@ import java.math.BigInteger;
 /**
  * ID 工具
  * @version : 2016年09月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class TermUtils {
     /** +1 */

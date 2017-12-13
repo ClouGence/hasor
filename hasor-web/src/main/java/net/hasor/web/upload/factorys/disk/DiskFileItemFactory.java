@@ -25,7 +25,7 @@ import java.util.UUID;
 /**
  *
  * @version : 2015年2月11日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class DiskFileItemFactory implements FileItemFactory {
     private File cacheDirectory;

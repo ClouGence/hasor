@@ -17,7 +17,7 @@ package net.hasor.rsf.domain;
 /**
  * 事件名
  * @version : 2015年5月6日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfEvent {
     /**发布服务*/

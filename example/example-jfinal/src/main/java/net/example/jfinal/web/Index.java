@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * 首页打印，使用的数据库驱动名
  * @version : 2016年11月07日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class Index extends Controller {
     @Inject

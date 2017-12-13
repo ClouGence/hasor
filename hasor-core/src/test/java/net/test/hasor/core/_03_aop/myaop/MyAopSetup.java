@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 /**
  * 让自定义MyAop注解生效。
  * @version : 2015年11月9日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class MyAopSetup implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {

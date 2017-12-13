@@ -19,7 +19,7 @@ import java.lang.annotation.*;
  * 标记接口或者包上，用于忽略Hasor的Aop动态代理功能。当标记到包上时表示整个包都忽略动态代理。
  * 该功能可以有效的防止泛滥的全局Aop。
  * @version : 2016年12月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.PACKAGE })

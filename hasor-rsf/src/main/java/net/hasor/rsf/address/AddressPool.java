@@ -39,7 +39,7 @@ import java.util.zip.ZipOutputStream;
  * <p>路由策略：随机选址
  * <p>流控规则：服务级、方法级、参数级
  * @version : 2014年9月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class AddressPool implements RsfUpdater {
     protected final Logger logger = LoggerFactory.getLogger(getClass());

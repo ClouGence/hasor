@@ -29,7 +29,7 @@ import java.util.concurrent.*;
 /**
  * 通过包装RSF请求响应，提供（同步、异步、回调、接口代理）四种远程调用方式的实现。
  * @version : 2015年12月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfCaller extends RsfRequestManager {
     private RsfBeanContainer rsfBeanContainer = null;

@@ -23,7 +23,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 /**
  *
  * @version : 2013-12-23
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractTag extends TagSupport {
     private static final long serialVersionUID = 954597728447849929L;

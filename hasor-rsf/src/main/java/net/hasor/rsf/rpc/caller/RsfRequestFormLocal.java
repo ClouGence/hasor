@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 /**
  * RSF请求(本地发起调用)
  * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class RsfRequestFormLocal extends AttributeSet implements RsfRequest {
     private final RsfCaller       rsfCaller;

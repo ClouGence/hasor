@@ -19,7 +19,7 @@ import net.test.hasor.core._01_bean.pojo.PojoInfo;
 /**
  * 用名字区分Bean
  * @version : 2014-1-3
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class NameIocBean {
     @Inject("beanA")

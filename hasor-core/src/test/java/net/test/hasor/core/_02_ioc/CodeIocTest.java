@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  *      当同一个类型声明了不同实例时候，你需要通过名称注入你想要的
  *
  * @version : 2015年11月6日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class CodeIocTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());

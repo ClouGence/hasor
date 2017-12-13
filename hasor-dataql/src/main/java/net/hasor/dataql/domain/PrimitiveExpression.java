@@ -18,7 +18,7 @@ import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 /**
  * 基础类型值，用于表示【String、Number、Null、Boolean】四种基本类型
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class PrimitiveExpression extends Expression {

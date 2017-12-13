@@ -24,7 +24,7 @@ import java.io.IOException;
 /**
  * 登录
  * @version : 2016年11月07日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @MappingTo("/login.{action}")
 public class Login {

@@ -19,7 +19,7 @@ import net.hasor.utils.StringUtils;
 import java.util.*;
 /**
  * 对象结果
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class ObjectModel extends HashMap<String, Object> implements DataModel {

@@ -18,7 +18,7 @@ import net.hasor.core.InjectSettings;
 /**
  * 使用Hasor的方式注入Spring的Bean。
  * @version : 2016年2月15日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class HasorBean {
     @InjectSettings("${message}")

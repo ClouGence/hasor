@@ -31,7 +31,7 @@ import java.io.Reader;
 /**
  * mybatis 插件
  * @version : 2016年1月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class MyBatisModule implements Module {
     protected Logger                      logger         = LoggerFactory.getLogger(getClass());

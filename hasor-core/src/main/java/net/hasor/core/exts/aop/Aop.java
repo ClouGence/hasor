@@ -28,5 +28,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface Aop {
+    /** 是否将 AopIgnore 的配置策略遗传给子类或者子包（只有当标记在父类或包上有效）*/
+    public boolean genetic() default true;
+
+    /**拦截器*/
     public Class<? extends MethodInterceptor>[] value();
 }

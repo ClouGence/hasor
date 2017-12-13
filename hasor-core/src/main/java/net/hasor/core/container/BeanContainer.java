@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <br/>它，支持了{@link AppContext}接口功能。
  * <br/>它，是万物之母，一切生命的源泉。
  * @version : 2015年11月25日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class BeanContainer extends TemplateBeanBuilder implements ScopManager, Observer {
     protected Logger                                     logger           = LoggerFactory.getLogger(getClass());

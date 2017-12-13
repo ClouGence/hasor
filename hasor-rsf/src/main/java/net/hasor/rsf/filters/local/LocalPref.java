@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
  * 优先检查本地是否有服务提供（优先本地服务提供者的调用）。
  * 提示:如果是 p2p 调用则本地调用优先失效。
  * @version : 2014年11月30日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class LocalPref implements RsfFilter {
     //

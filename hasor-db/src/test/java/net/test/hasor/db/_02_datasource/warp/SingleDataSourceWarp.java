@@ -24,7 +24,7 @@ import javax.sql.DataSource;
 /***
  * 创建JDBC环境
  * @version : 2014-1-13
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class SingleDataSourceWarp implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {

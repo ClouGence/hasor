@@ -26,7 +26,7 @@ import java.util.Set;
 /**
  * 服务的描述信息，包括了服务的发布和订阅信息。
  * @version : 2014年9月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> {
     private String              bindID             = null;      //服务ID

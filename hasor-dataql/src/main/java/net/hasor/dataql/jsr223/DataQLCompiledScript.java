@@ -21,7 +21,7 @@ import net.hasor.dataql.runtime.QueryEngineImpl;
 import javax.script.*;
 /**
  * JSR223 编译机制的实现。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-10-19
  */
 class DataQLCompiledScript extends CompiledScript implements QueryEngine {

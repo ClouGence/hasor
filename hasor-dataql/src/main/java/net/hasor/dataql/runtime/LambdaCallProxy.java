@@ -22,7 +22,7 @@ import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.dataql.runtime.struts.LambdaCall;
 /**
  * 代理 Lambda 使其成为 UDF.
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class LambdaCallProxy implements UDF {

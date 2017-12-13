@@ -18,7 +18,7 @@ public class ExtRuntimeListener extends RuntimeListener {
     /**
      * S
      * @version : 2016年2月15日
-     * @author 赵永春(zyc@hasor.net)
+     * @author 赵永春 (zyc@hasor.net)
      */
     public static class MimeTypeTest {
         @Test

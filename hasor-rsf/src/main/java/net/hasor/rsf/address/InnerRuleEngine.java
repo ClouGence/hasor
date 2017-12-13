@@ -27,7 +27,7 @@ import java.util.List;
 /**
  *
  * @version : 2015年12月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class InnerRuleEngine {
     protected static final Logger                  logger     = LoggerFactory.getLogger(InnerRuleEngine.class);

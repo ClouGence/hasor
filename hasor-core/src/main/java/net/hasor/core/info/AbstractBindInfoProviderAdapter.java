@@ -23,7 +23,7 @@ import net.hasor.utils.StringUtils;
  * 用于定义Bean，实现了Bean配置接口{@link BindInfoBuilder}，配置的信息通过{@link BindInfo}接口展现出来。
  * <p>同时实现了{@link CustomerProvider}和{@link ScopeProvider}接口。表示着这个Bean定义支持自定义{@link Provider}和{@link Scope}。
  * @version : 2014年7月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter implements//
         BindInfoBuilder<T>, BindInfo<T>, CustomerProvider<T>, ScopeProvider {

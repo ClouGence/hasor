@@ -21,7 +21,7 @@ import java.util.UUID;
 /**
  * 分布式RPC,全链路调用跟踪系统,工具包。
  * @version : 2015年1月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class TraceUtil {
     public static final  String              KEY     = "traceID";

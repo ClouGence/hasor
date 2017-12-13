@@ -27,7 +27,7 @@ import net.hasor.dataql.runtime.mem.StackStruts;
  * 区别于 END 指令的是，EXIT 指令将会终结整个查询的执行。而 END 指令只会终止当前指令序列的执行。同时有别于 ERR 指令的是，开发者不会得到异常抛出。
  * @see net.hasor.dataql.runtime.inset.END
  * @see net.hasor.dataql.runtime.inset.EXIT
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class ERR extends AbstractReturn implements InsetProcess {

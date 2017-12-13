@@ -21,7 +21,7 @@ import java.net.URL;
 /**
  * Http 请求对象
  * @version : 2017年12月04日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RequestObject {
     private HttpMethod  httpMethod;

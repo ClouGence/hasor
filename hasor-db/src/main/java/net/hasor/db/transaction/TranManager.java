@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * 某一个数据源的事务管理器
  * @version : 2013-10-30
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class TranManager extends DataSourceManager {
     private final static ThreadLocal<ConcurrentMap<DataSource, JdbcTransactionManager>> managerMap;

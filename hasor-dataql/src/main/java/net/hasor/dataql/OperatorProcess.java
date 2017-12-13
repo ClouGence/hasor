@@ -17,7 +17,7 @@ package net.hasor.dataql;
 import net.hasor.utils.StringUtils;
 /**
  * 一元或二元运算，用于运算符重载。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public abstract class OperatorProcess {

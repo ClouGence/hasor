@@ -20,7 +20,7 @@ import java.util.*;
 /**
  *
  * @version : 2015年1月24日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class AttributeSet extends OptionInfo {
     private final Map<String, Object> attributeMap = new HashMap<String, Object>();

@@ -9,7 +9,7 @@ import java.util.List;
 /**
  *
  * @version : 2016年11月07日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class UserDao {
     @Inject

@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 /**
  * DSL 语法解析器
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class DataQLParser implements DataQLParserConstants {

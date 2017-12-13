@@ -21,7 +21,7 @@ import java.lang.annotation.*;
  * 标记接口的默认实现类，如果通过{@link LinkedBindingBuilder}接口也指定了实现，则注解会优先于配置。
  * @see LinkedBindingBuilder
  * @version : 2015年7月28日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })

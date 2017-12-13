@@ -20,7 +20,7 @@ import net.hasor.rsf.rpc.net.Connector;
 /**
  * Netty 解码器组
  * @version : 2014年10月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface ProtocolHandlerFactory {
     public ChannelHandler[] channelHandler(Connector connector, AppContext appContext);

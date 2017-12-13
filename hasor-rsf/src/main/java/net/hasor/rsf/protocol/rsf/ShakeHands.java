@@ -32,7 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * RSF 握手协议实现
  * @version : 2017年11月20日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ShakeHands extends ChannelInboundHandlerAdapter {
     protected Logger logger = LoggerFactory.getLogger(getClass());

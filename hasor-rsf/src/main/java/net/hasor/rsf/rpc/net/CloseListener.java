@@ -17,7 +17,7 @@ package net.hasor.rsf.rpc.net;
 /**
  * 当遇到关闭时
  * @version : 2015年12月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class CloseListener {
     private LinkPool linkPool;

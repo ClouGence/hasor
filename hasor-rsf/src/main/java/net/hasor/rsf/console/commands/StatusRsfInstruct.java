@@ -24,7 +24,7 @@ import java.io.StringWriter;
 /**
  * RSF 服务框架状态查看和更新指令
  * @version : 2016年4月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
 @RsfCommand("status")

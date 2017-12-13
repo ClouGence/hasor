@@ -32,7 +32,7 @@ import java.net.URISyntaxException;
 /**
  * 服务注册器
  * @version : 2014年11月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 abstract class AbstractRsfBindBuilder implements RsfPublisher {
     protected abstract <T> RsfBindInfo<T> addService(ServiceDefine<T> serviceDefine);

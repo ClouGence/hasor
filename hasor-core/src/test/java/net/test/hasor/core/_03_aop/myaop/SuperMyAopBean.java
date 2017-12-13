@@ -17,7 +17,7 @@ package net.test.hasor.core._03_aop.myaop;
 /**
  * 继承
  * @version : 2014-1-3
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class SuperMyAopBean extends MyAopBean {
 }

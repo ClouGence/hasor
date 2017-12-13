@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 负责管理所有 RSF 发起的请求，Manager还提供了最大并发上限的配置.
  * @version : 2014年9月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class RsfRequestManager {
     protected static Logger logger    = LoggerFactory.getLogger(RsfRequestManager.class);

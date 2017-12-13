@@ -30,7 +30,7 @@ import java.io.Writer;
  * JSON 渲染器，您可以通过 apiBinder.bind(JsonRenderEngine.class).... 来设置您自定义的渲染方式。
  * 默认情况下，JsonRender会自动按照下面顺序尝试寻找可以使用的 JSON 库：fastjson、Gson
  * @version : 2016年1月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class JsonRender implements RenderEngine {
     private JsonRenderEngine jsonRenderEngine;

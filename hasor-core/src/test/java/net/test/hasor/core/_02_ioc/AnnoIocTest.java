@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  *      一般的注解用法。
  *
  * @version : 2015年11月6日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class AnnoIocTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());

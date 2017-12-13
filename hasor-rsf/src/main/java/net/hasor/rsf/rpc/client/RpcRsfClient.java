@@ -27,7 +27,7 @@ import java.util.concurrent.TimeoutException;
 /**
  *
  * @version : 2015年12月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RpcRsfClient implements RsfClient {
     private AddressProvider provider;

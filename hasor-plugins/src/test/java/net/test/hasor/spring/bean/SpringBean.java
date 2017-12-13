@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 /**
  * 使用Spring的方式注入Hasor的Bean。
  * @version : 2016年2月15日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class SpringBean {
     @Resource

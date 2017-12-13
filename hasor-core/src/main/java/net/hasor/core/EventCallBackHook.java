@@ -17,7 +17,7 @@ package net.hasor.core;
 /**
  * 异步消息回调接口
  * @version : 2014-3-19
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface EventCallBackHook<T> {
     /**

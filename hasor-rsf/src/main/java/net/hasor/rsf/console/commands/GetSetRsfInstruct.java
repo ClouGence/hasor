@@ -22,7 +22,7 @@ import net.hasor.utils.StringUtils;
 /**
  * 在本次Telnet中设置环境变量，当Telnet连接断开变量失效
  * @version : 2016年4月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
 @RsfCommand({ "set", "get" })

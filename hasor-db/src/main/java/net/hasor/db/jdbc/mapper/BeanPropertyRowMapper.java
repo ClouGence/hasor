@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * 用于 POJO 的 RowMapper
  * @version : 2013-12-18
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
     private Class<T> requiredType;

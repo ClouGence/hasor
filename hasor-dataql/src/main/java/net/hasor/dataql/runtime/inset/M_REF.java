@@ -25,7 +25,7 @@ import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
 /**
  * M_REF，定义一个 lambda 函数指针。（产生一个LambdaCallStruts）
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class M_REF implements InsetProcess {

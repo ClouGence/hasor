@@ -19,7 +19,7 @@ import net.hasor.rsf.domain.warp.AbstractRsfResponseWarp;
 /**
  * {@link RsfResponse}接口包装器（当前线程绑定）。
  * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfResponseLocal extends AbstractRsfResponseWarp {
     private static final ThreadLocal<RsfResponse> LOCAL_RESPONSE = new ThreadLocal<RsfResponse>();

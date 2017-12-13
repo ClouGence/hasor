@@ -17,7 +17,7 @@ package net.example.spring;
 /**
  * 在 Spring 容器中配置的Bean
  * @version : 2016年2月15日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class SimpleBean {
     private String value;

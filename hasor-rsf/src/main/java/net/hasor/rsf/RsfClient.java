@@ -21,7 +21,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * RSF调用者。
  * @version : 2014年11月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfClient {
     /**

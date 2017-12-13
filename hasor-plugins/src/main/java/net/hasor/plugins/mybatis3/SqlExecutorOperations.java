@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 /**
  * @version : 2015年5月27日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface SqlExecutorOperations {
     /**

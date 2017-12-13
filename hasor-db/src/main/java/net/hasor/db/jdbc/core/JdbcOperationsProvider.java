@@ -22,7 +22,7 @@ import javax.sql.DataSource;
 /**
  *
  * @version : 2014年7月17日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcOperationsProvider implements Provider<JdbcOperations> {
     private Provider<DataSource> dataSource;

@@ -24,7 +24,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * 封装网络连接，并且提供网络数据收发统计。
  * @version : 2015年12月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class RsfChannel {
     protected Logger logger = LoggerFactory.getLogger(getClass());

@@ -21,7 +21,7 @@ import org.nutz.ioc.loader.combo.ComboIocLoader;
 /**
  *
  * @version : 2014年9月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class NutzTest {
     public static void main(String[] args) throws Throwable {

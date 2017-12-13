@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * 该模块只会加载一个Module，如果要加载多个module建议使用原生。<br>
  * 该模块的存在只是为了简化 xml 配置。
  * @version : 2014年8月27日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class StartupModule implements Module {
     private Logger logger = LoggerFactory.getLogger(getClass());

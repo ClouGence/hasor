@@ -17,7 +17,7 @@ package net.hasor.rsf.rpc.net;
 /**
  * 发送数据到远端的回调函数。
  * @version : 2015年12月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface SendCallBack {
     /**发送失败。*/

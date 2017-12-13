@@ -17,7 +17,7 @@ package net.hasor.rsf.address;
 /**
  * 失效信息
  * @version : 2015年10月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class InnerInvalidInfo {
     private long timeoutPoint;

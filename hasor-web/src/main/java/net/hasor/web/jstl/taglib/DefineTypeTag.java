@@ -22,7 +22,7 @@ import javax.servlet.jsp.tagext.Tag;
 /**
  *
  * @version : 2013-12-24
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class DefineTypeTag extends AbstractTag {
     private static final long   serialVersionUID = 7146544912135244582L;

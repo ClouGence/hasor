@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  *
  * @version : 2015年12月6日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfBeanContainer {
     protected            Logger     logger       = LoggerFactory.getLogger(getClass());

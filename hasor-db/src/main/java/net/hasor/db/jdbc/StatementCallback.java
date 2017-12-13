@@ -22,7 +22,7 @@ import java.sql.Statement;
  * @version : 2013-10-9
  * @author Thomas Risberg
  * @author Juergen Hoeller
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface StatementCallback<T> {
     /**

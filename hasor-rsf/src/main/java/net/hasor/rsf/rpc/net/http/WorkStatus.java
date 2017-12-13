@@ -17,7 +17,7 @@ package net.hasor.rsf.rpc.net.http;
 /**
  * Http 协议工作状态
  * @version : 2017年11月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public enum WorkStatus {
     // Idle -> ReceiveRequest -> WaitResult -> Idle

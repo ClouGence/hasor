@@ -21,7 +21,7 @@ import net.hasor.rsf.console.RsfInstruct;
 /**
  *
  * @version : 2016年4月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
 @RsfCommand({ "quit", "exit" })

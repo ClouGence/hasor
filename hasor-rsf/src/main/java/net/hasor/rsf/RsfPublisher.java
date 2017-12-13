@@ -22,7 +22,7 @@ import java.net.URISyntaxException;
 /**
  * 服务配置器
  * @version : 2014年11月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfPublisher {
     public RsfEnvironment getEnvironment();

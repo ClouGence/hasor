@@ -17,7 +17,7 @@ package net.hasor.db.transaction;
 /**
  * 事务传播属性
  * @version : 2013-10-30
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public enum Propagation {
     /**

@@ -25,7 +25,7 @@ import net.hasor.dataql.runtime.mem.StackStruts;
  * 特殊处理结果，兼容 return 、throw、exit 时返回一个 lambda 的情况。
  * @see net.hasor.dataql.runtime.inset.ERR
  * @see net.hasor.dataql.runtime.inset.EXIT
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 abstract class AbstractReturn implements InsetProcess {

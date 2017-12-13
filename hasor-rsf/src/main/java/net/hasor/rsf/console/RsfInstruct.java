@@ -17,7 +17,7 @@ package net.hasor.rsf.console;
 /**
  * RSF命令
  * @version : 2016年4月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfInstruct {
     public static final String AFTER_CLOSE_SESSION = "Session_AfterClose";

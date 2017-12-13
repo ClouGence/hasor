@@ -29,7 +29,7 @@ import java.util.concurrent.Future;
 /**
  * RPC协议连接器，负责创建某个特定RPC协议的网络事件。
  * @version : 2017年01月16日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class Connector {
     protected Logger logger = LoggerFactory.getLogger(getClass());

@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * WebModule
  * @version : 2013-11-4
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class WebModule implements Module {
     protected Logger logger = LoggerFactory.getLogger(getClass());

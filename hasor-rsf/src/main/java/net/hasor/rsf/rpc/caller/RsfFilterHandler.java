@@ -22,7 +22,7 @@ import net.hasor.rsf.RsfResponse;
 /**
  * 负责处理 RsfFilter 调用
  * @version : 2014年11月4日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfFilterHandler implements RsfFilterChain {
     private static final Provider<RsfFilter>[] EMPTY_FILTER = new Provider[0];

@@ -24,7 +24,7 @@ import java.util.Enumeration;
 /**
  * RSF请求
  * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractRsfRequestWarp implements RsfRequest {
     protected abstract RsfRequest getRsfRequest();

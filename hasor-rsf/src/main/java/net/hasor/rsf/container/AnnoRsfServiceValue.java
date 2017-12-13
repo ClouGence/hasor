@@ -21,7 +21,7 @@ import net.hasor.utils.StringUtils;
 import java.lang.annotation.Annotation;
 /**
  * @version : 2014年11月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class AnnoRsfServiceValue implements RsfService {
     private String serviceGroup   = null;

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 /**
  * 用于管理 UDF。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 class OperatorProcessManager {

@@ -19,7 +19,7 @@ import net.hasor.utils.StringUtils;
 import java.math.RoundingMode;
 /**
  * 数值计算最大精度
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public enum RoundingEnum {

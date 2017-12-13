@@ -29,7 +29,7 @@ import net.hasor.utils.BeanUtils;
 import java.util.Map;
 /**
  * PUT，将栈顶的数据 set 到结果集中。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class PUT implements InsetProcess {

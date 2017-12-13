@@ -19,7 +19,7 @@ import java.math.BigInteger;
 /**
  * 数学计算处理工具，提供：加、减、乘、除、整除、求余
  * 尽量考虑在保证性能的前提下不产生精度丢失问题。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class OperatorUtils {

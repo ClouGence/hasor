@@ -31,7 +31,7 @@ import net.hasor.dataql.runtime.struts.LambdaCall;
  * <pre/>
  * 例子中，foo 方法定义了 3个参数，但是当发起调用 foo 时实际传入了 5 个参数。METHOD，指令的目的就是为了纠正入参个数的不一致。
  *
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class METHOD implements InsetProcess {

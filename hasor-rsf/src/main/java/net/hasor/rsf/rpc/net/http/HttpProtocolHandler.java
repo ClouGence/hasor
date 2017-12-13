@@ -25,7 +25,7 @@ import net.hasor.rsf.rpc.net.netty.RsfDuplexHandler;
 /**
  * Http 解码器
  * @version : 2017年11月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class HttpProtocolHandler implements ProtocolHandlerFactory {
     private HttpHandler httpHandler;

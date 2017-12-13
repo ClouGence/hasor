@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  *
  * @version : 2014年9月7日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractClassConfig {
     /**默认超类java.lang.Object。*/

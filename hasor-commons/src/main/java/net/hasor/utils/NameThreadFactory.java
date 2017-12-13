@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadFactory;
 /**
  *
  * @version : 2015年3月28日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class NameThreadFactory implements ThreadFactory {
     private String      nameSample = "Thread-%s";

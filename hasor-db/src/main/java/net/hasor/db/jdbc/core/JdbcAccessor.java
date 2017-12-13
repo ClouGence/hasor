@@ -22,7 +22,7 @@ import java.sql.Connection;
 /**
  *
  * @version : 2013-10-16
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcAccessor {
     protected Logger logger = LoggerFactory.getLogger(getClass());

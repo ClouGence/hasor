@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 /**
  * 堆 和 栈
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class MemStack extends StackStruts {

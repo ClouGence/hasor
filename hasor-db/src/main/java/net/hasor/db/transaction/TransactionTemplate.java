@@ -18,7 +18,7 @@ import java.sql.SQLException;
 /**
  * 事务模版接口
  * @version : 2015年10月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface TransactionTemplate {
     /**

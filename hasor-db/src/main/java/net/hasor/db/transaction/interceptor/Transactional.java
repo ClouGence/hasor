@@ -23,7 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
  * 可以标记在：方法、类、包 上面
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2013-10-30
  */
 @Target({ ElementType.METHOD, ElementType.TYPE, ElementType.PACKAGE })

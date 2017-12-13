@@ -24,7 +24,7 @@ import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
 /**
  * CALL，指令是用于发起对 UDF 的调用。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class CALL implements InsetProcess {

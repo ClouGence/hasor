@@ -25,7 +25,7 @@ import net.hasor.dataql.UdfSource;
  * 无论您是简单使用数据库查询，还是要整合数据库 + 服务。 Data 都将会您最有力的帮手。
  *
  * Data 提供的 DataQL
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public interface DataApiBinder extends ApiBinder {

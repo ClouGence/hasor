@@ -28,7 +28,7 @@ import java.util.UUID;
 /**
  *
  * @version : 2014年11月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class DefaultRsfEnvironment extends EnvironmentWrap implements RsfEnvironment {
     private RsfSettings      rsfSettings  = null;

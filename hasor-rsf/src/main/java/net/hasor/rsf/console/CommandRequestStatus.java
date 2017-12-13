@@ -17,7 +17,7 @@ package net.hasor.rsf.console;
 /**
  *
  * @version : 2016年4月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 enum CommandRequestStatus {
     /**命令准备，用于多行命令在执行前接受内容。（单行命令不支持此状态）*/

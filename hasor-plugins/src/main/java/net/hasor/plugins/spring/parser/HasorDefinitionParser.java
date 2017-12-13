@@ -37,7 +37,7 @@ import java.util.Map;
 /**
  * h:hasor 标签
  * @version : 2016年2月16日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class HasorDefinitionParser extends AbstractHasorDefinitionParser {
     @Override

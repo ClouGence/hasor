@@ -22,7 +22,7 @@ import net.hasor.utils.StringUtils;
 import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 指令序列集
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-14
  */
 public class InstSequence {

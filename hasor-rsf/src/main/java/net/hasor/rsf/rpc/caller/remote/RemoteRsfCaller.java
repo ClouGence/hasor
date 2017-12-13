@@ -31,7 +31,7 @@ import java.util.concurrent.RejectedExecutionException;
 /**
  * 扩展{@link RsfCaller}，用来支持远程机器发来的调用请求。
  * @version : 2015年12月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RemoteRsfCaller extends RsfCaller {
     private final ExecutesManager      executesManager;

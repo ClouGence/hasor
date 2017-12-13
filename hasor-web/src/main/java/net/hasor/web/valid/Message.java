@@ -18,7 +18,7 @@ import java.io.Serializable;
 /**
  * 消息。
  * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class Message implements Serializable {
     private static final long            serialVersionUID = -4678293554960623786L;

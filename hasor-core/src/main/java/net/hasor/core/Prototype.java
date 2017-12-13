@@ -21,7 +21,7 @@ import java.lang.annotation.*;
  * 标记类型为原型模式，与{@link Singleton}为互斥关系，注解方式优先于配置。
  * @see ScopedBindingBuilder#asEagerPrototype()
  * @version : 2015年7月28日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

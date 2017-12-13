@@ -17,7 +17,7 @@ package net.hasor.rsf.address.route.rule;
 /**
  * 路由规则
  * @version : 2015年3月29日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface Rule {
     /**路由规则ID*/

@@ -30,7 +30,7 @@ import java.nio.charset.Charset;
 /**
  * 用于加载另一个 DataQL 并将其包装为 UDF。
  * DataQL 查询文件必须是以 .ql 结尾
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-10-18
  */
 public class LoaderUdfSource extends SimpleUdfSource {

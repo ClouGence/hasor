@@ -17,7 +17,7 @@ package net.hasor.land.election;
 /**
  * 选举接口
  * @version : 2016年09月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface ElectionService {
     /** 请求选票 */

@@ -39,7 +39,7 @@ import java.util.HashSet;
 import java.util.Set;
 /**
  * DB 模块。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class JdbcModule implements Module {

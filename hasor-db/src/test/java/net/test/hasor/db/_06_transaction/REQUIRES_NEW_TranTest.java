@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 /**
  * REQUIRES_NEW：将挂起当前存在的事务挂起（如果存在的话）。 并且开启一个全新的事务，新事务与已存在的事务之间彼此没有关系。
  * @version : 2013-12-10
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @RunWith(HasorUnitRunner.class)
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)

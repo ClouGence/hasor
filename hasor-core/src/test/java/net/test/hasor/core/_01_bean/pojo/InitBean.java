@@ -18,7 +18,7 @@ import net.hasor.core.Init;
 /**
  * 一个Bean
  * @version : 2014-1-3
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class InitBean extends PojoBean {
     public boolean called = false;

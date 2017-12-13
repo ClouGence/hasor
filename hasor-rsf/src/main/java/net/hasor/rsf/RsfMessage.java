@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
  *
  * <p>提示: 您可以配合 RSF 的异步调用,使消息发布变为异步消息。</p>
  * @version : 2014年11月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

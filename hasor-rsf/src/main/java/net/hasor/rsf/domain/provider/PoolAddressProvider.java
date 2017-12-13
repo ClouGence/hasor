@@ -19,7 +19,7 @@ import net.hasor.rsf.address.AddressPool;
 /**
  *
  * @version : 2015年12月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class PoolAddressProvider implements AddressProvider {
     private AddressPool pool;

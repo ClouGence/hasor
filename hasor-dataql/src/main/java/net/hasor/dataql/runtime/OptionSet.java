@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 /**
  * 用于封装 Option。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class OptionSet implements Option {

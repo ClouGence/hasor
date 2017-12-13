@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * 查询用户列表
  * @version : 2016年11月07日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @MappingTo("/user_list.htm")
 public class UserList extends WebController {

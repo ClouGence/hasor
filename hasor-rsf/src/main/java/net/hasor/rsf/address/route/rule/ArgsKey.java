@@ -17,7 +17,7 @@ package net.hasor.rsf.address.route.rule;
 /**
  * 将参数映射为一个Key.
  * @version : 2015年4月16日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface ArgsKey {
     public String eval(String serviceID, String methodName, Object[] args);

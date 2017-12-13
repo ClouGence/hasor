@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 /**
  * 值类型结果
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class ValueModel implements DataModel {

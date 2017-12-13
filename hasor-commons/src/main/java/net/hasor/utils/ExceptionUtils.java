@@ -17,7 +17,7 @@ package net.hasor.utils;
 /**
  * 异常工具类
  * @version : 2014年9月25日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ExceptionUtils {
     /**将异常包装为 {@link RuntimeException}*/

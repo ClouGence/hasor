@@ -20,7 +20,7 @@ import net.hasor.rsf.RsfFilter;
 /**
  * RsfFilter的{@link Provider}封装形式。
  * @version : 2014年7月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfFilterProvider implements Provider<RsfFilter> {
     private Class<? extends RsfFilter> rsfFilterType;

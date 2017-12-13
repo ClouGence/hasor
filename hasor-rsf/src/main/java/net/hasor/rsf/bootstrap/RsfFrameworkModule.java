@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Rsf 框架启动入口。
  * @version : 2014年11月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public final class RsfFrameworkModule extends RsfModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());

@@ -22,7 +22,7 @@ import javax.sql.DataSource;
 /**
  *
  * @version : 2015年11月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class TransactionManagerProvider implements Provider<TransactionManager> {
     private Provider<DataSource> dataSource;

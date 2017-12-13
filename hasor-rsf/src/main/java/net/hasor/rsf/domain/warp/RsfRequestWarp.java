@@ -18,7 +18,7 @@ import net.hasor.rsf.RsfRequest;
 /**
  * {@link RsfRequest}接口包装器。
  * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfRequestWarp extends AbstractRsfRequestWarp {
     private final RsfRequest request;

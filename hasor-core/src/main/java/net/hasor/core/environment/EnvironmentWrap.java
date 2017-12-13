@@ -22,7 +22,7 @@ import java.util.Set;
 /**
  * {@link Environment}接口包装器。
  * @version : 2013-9-11
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class EnvironmentWrap implements Environment {
     private final Environment environment;

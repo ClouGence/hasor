@@ -18,7 +18,7 @@ import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
 /**
  * Lambda 函数
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class LambdaModel implements DataModel, UDF {

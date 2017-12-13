@@ -15,7 +15,7 @@
  */
 /**
  * DataQL 的 jsr223 支持。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 @AopIgnore

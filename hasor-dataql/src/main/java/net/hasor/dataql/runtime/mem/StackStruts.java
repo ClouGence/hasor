@@ -17,7 +17,7 @@ package net.hasor.dataql.runtime.mem;
 import java.util.Stack;
 /**
  * 栈内存结构
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 public class StackStruts implements FindData, Cloneable {

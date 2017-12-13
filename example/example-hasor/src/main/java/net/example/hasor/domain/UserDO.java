@@ -3,7 +3,7 @@ import java.util.Date;
 /**
  * UserDTO
  * @version : 2016年11月07日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class UserDO extends UserDTO {
     private Date createTime = null; // 创建时间

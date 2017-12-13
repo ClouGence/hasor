@@ -17,7 +17,7 @@ package net.hasor.rsf.domain;
 /**
  * 服务类型，用于区分注册的服务是提供者还是消费者。
  * @version : 2016年3月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public enum RsfServiceType {
     /**提供者*/

@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * 序列化工厂
  * @version : 2014年9月20日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class SerializeFactory {
     protected static Logger                      logger   = LoggerFactory.getLogger(SerializeFactory.class);

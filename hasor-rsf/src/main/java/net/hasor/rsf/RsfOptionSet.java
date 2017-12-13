@@ -17,7 +17,7 @@ package net.hasor.rsf;
 /**
  *
  * @version : 2014年11月30日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfOptionSet {
     /**获取选项Key集合。*/

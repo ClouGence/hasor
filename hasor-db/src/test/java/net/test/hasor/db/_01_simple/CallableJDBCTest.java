@@ -28,7 +28,7 @@ import java.sql.Types;
 /**
  * 存储过程调用
  * @version : 2013-12-10
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class CallableJDBCTest {
     @Test

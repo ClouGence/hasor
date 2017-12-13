@@ -22,7 +22,7 @@ import java.lang.annotation.Target;
  * 当测试用例启动之后，Hasor测试框架会独立线程启动该方法，作为陪伴直到测试结束。
  * 注意该方法不能同时与@Test在一个方法上使用。
  * @version : 2014年7月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

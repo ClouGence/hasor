@@ -21,7 +21,7 @@ import java.util.Set;
 /**
  * Rsf绑定信息。
  * @version : 2014年11月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfBindInfo<T> extends BindInfo<T> {
     /** @return 唯一标识（客户端唯一标识）。*/

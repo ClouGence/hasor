@@ -19,7 +19,7 @@ import net.hasor.utils.StringUtils;
 import java.lang.reflect.Field;
 /**
  * QL 指令
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-03
  */
 public class InstructionInfo implements Opcodes, Instruction {

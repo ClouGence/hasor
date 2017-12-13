@@ -18,7 +18,7 @@ import java.lang.annotation.*;
 /**
  * 依赖注入，注入settings配置数据。请注意{@link InjectMembers}接口方式与注解方式互斥，且接口方式优先于注解方式。
  * @version : 2016年07月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD })

@@ -41,7 +41,7 @@ import java.util.ArrayList;
 /**
  * 封装Http网络连接，还负责向外发起远程调用。
  * @version : 2017年11月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class RsfChannelOnHttp extends RsfChannel {
     private HttpConnector httpConnector;

@@ -28,7 +28,7 @@ import net.hasor.dataql.runtime.struts.OriResultStruts;
  *
  * ASO 指令后续通常紧跟着一个 ASE。
  *
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class ASO implements InsetProcess {

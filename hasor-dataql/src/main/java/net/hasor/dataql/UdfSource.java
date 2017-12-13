@@ -17,7 +17,7 @@ package net.hasor.dataql;
 import java.util.Map;
 /**
  * UDF数据源
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public interface UdfSource extends Map<String, UDF> {

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 /**
  * lambda 函数定义
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class LambdaBlockSet extends BlockSet implements Variable {

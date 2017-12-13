@@ -47,7 +47,7 @@ import java.io.StringWriter;
 import java.nio.charset.Charset;
 /**
  * 测试用例
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 public class TestProcessMain {

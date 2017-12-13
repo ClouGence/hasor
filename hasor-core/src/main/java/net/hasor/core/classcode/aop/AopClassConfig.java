@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  *
  * @version : 2014年9月7日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class AopClassConfig extends AbstractClassConfig {
     private List<InnerAopInterceptorDefine> aopList = null; //Aop

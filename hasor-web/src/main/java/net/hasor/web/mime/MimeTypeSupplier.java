@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * {@link MimeType} 接口实现。
  * @version : 2015年2月11日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class MimeTypeSupplier extends ConcurrentHashMap<String, String> implements MimeType {
     private static final long   serialVersionUID = -8955832291109288048L;

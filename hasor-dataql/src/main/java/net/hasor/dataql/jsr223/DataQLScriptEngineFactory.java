@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 /**
  * JSR223
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-10-19
  */
 public class DataQLScriptEngineFactory implements ScriptEngineFactory {

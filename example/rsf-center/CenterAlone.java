@@ -21,7 +21,7 @@ import java.io.IOException;
 /**
  * 单机模式
  * @version : 2015年8月13日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class CenterServerAlone {
     protected Logger logger = LoggerFactory.getLogger(getClass());

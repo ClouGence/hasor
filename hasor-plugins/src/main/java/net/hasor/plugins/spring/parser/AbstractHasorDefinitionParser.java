@@ -29,7 +29,7 @@ import org.w3c.dom.Node;
 /**
  *
  * @version : 2016年2月16日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractHasorDefinitionParser implements BeanDefinitionParser {
     /** 属性解析 */

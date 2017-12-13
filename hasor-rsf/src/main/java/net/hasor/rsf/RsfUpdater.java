@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * 服务配置更新器。
  * @version : 2014年11月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfUpdater {
     /**更新服务地址本计算规则（服务级）*/

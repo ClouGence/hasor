@@ -25,7 +25,7 @@ import net.hasor.dataql.runtime.mem.StackStruts;
  * 并且将执行指针设置到执行序列的末尾。
  * @see net.hasor.dataql.runtime.inset.ERR
  * @see net.hasor.dataql.runtime.inset.EXIT
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class END extends AbstractReturn implements InsetProcess {

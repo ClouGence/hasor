@@ -18,7 +18,7 @@ import net.hasor.rsf.RsfResult;
 /**
  * 消息调用结果集
  * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfResultDO implements RsfResult {
     private static final long serialVersionUID = -4678893554960623786L;

@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *      当容器启动自动调用单例Bean的init方法。
  *
  * @version : 2015年11月6日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class InitBeanTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());

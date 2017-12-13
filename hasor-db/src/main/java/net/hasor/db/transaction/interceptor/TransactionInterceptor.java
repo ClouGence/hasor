@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
 /**
  * 某一个数据源的事务管理器
  * @version : 2015年11月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class TransactionInterceptor implements MethodInterceptor {
     private Provider<DataSource> dataSource = null;

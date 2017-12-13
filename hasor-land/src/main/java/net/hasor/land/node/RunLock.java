@@ -17,7 +17,7 @@ package net.hasor.land.node;
 /**
  * 同步操作 Operation
  * @version : 2016年09月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RunLock {
     public void run(Operation object);

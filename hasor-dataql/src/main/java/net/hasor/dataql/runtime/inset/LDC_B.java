@@ -22,7 +22,7 @@ import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
 /**
  * LDC_B，输出一个 boolean 到栈。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class LDC_B implements InsetProcess {

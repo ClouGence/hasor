@@ -21,7 +21,7 @@ import net.hasor.rsf.domain.ResponseInfo;
 /**
  *
  * @version : 2015年12月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class ReceivedAdapter implements ReceivedListener {
     @Override

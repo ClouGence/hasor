@@ -18,7 +18,7 @@ import net.hasor.rsf.RsfResponse;
 /**
  * {@link RsfResponse}接口包装器。
  * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfResponseWarp extends AbstractRsfResponseWarp {
     private final RsfResponse response;

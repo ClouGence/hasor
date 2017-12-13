@@ -17,7 +17,7 @@ package net.hasor.dataql.runtime;
 import net.hasor.dataql.Option;
 /**
  * 用于封装 Option。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class OptionReadOnly implements Option {

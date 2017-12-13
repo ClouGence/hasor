@@ -24,7 +24,7 @@ import javax.sql.DataSource;
 /***
  * 多数剧源
  * @version : 2014-1-13
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class MultipleDataSourceWarp implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {

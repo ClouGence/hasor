@@ -18,7 +18,7 @@ import java.util.ArrayList;
 /**
  * 一个item下的验证信息
  * @version : 2014年8月27日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class ValidItem extends ArrayList<Message> {
     private String key;

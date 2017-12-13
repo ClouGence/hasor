@@ -15,7 +15,7 @@
  */
 /**
  * 指令序列模型。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-03
  */
 package net.hasor.dataql.domain.compiler;

@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * 查看服务详细信息
  * @version : 2016年4月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
 @RsfCommand("detail")

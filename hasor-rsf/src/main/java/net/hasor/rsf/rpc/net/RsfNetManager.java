@@ -27,7 +27,7 @@ import java.util.*;
  * RSF网络服务，并提供数据传出、传入，以及端口监听服务。
  * tips:支持多协议
  * @version : 2014年9月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfNetManager {
     protected Logger logger = LoggerFactory.getLogger(getClass());

@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 维护RSF同其它RSF的连接。
  * tips：主要数据结构为 hostPort 和 RsfChannel 的映射关系。另外还维护了一个 别名关系，通过别名关系实现双向通信上的连接复用问题。
  * @version : 2014年9月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class LinkPool {
     protected     Logger        logger = LoggerFactory.getLogger(getClass());

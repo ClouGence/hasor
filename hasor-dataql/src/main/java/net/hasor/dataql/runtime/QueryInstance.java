@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 /**
  * 用于封装和引发 QL 查询执行。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 class QueryInstance extends OptionSet implements Query {

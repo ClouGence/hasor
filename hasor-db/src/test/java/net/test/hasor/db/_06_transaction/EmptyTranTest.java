@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 /**
  *
  * @version : 2015年11月17日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @RunWith(HasorUnitRunner.class)
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)

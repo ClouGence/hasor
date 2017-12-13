@@ -27,7 +27,7 @@ import net.hasor.rsf.protocol.rsf.v1.ResponseBlock;
 /**
  * RSF 编码器，支持将{@link RequestInfo}、{@link RequestBlock}或者{@link ResponseInfo}、{@link ResponseBlock}编码写入Socket
  * @version : 2014年10月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfEncoder extends MessageToByteEncoder<Object> {
     private RsfEnvironment rsfEnvironment;

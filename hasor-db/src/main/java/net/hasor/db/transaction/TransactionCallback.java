@@ -17,7 +17,7 @@ package net.hasor.db.transaction;
 /**
  * 事务模版
  * @version : 2015年8月11日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface TransactionCallback<T> {
     /**

@@ -17,7 +17,7 @@ package net.hasor.land.domain;
 /**
  * 当前节点状态
  * @version : 2016年09月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public enum ServerStatus {
     /**领导人*/

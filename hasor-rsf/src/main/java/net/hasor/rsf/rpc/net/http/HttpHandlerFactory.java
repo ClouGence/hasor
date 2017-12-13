@@ -19,7 +19,7 @@ import net.hasor.rsf.rpc.net.Connector;
 /**
  * 创建 HttpHandler 使用。
  * @version : 2017年11月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface HttpHandlerFactory {
     public HttpHandler newHandler(String contextPath, Connector connector, AppContext appContext);

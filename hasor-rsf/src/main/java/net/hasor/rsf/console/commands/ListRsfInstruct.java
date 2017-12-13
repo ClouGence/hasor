@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * 列出服务列表
  * @version : 2016年4月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
 @RsfCommand("list")

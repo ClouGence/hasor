@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 /**
  * 集合类型结果集
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class ListModel extends ArrayList<Object> implements DataModel {

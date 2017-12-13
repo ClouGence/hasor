@@ -18,7 +18,7 @@ package net.hasor.land.replicator;
  * 数据上下文
  *
  * @version : 2016年09月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class DataContext {
     private String commitIndex = null; //已知的,最大的,已经被提交的日志条目的termID

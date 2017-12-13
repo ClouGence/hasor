@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  *
  * @version : 2016年4月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public final class RsfCommandSession {
     protected static Logger rxdLogger = LoggerFactory.getLogger(RsfConstants.LoggerName_ConsoleRXD);

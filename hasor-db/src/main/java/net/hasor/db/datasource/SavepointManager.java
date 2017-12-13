@@ -19,7 +19,7 @@ import java.sql.Savepoint;
 /**
  *
  * @version : 2013-10-30
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface SavepointManager {
     /**是否支持保存点 */

@@ -17,7 +17,7 @@ package net.hasor.rsf.utils;
 /**
  * 令热策略的,LRU
  * @version : 2014年11月4日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ByteStringCachelUtils {
     private static final LRU<Integer, String> stringCache1;

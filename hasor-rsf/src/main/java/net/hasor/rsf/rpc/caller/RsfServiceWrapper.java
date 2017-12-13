@@ -18,7 +18,7 @@ import net.hasor.rsf.domain.provider.AddressProvider;
 /**
  * 服务对象基类。
  * @version : 2015年12月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfServiceWrapper {
     public AddressProvider getTarget();

@@ -18,7 +18,7 @@ import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 /**
  * 函数调用的返回值处理格式，原始格式
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class RawFormat extends Format {

@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  *
  * @version : 2016年4月7日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
 public class CommandManager {

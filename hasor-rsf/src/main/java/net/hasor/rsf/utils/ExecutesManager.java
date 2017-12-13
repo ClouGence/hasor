@@ -25,7 +25,7 @@ import java.util.concurrent.*;
 /**
  * 业务线程
  * @version : 2014年11月11日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ExecutesManager {
     protected Logger logger = LoggerFactory.getLogger(getClass());

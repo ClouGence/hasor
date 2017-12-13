@@ -22,7 +22,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * 用于封装事件对象。
  * @version : 2014-3-13
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class EventListenerPool {
     private final Object ONCE_LOCK = new Object();

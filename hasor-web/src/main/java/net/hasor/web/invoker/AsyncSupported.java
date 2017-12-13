@@ -17,7 +17,7 @@ package net.hasor.web.invoker;
 /**
  * servlet是否支持异步。
  * @version : 2013-11-4
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public enum AsyncSupported {
     yes(), no(),;

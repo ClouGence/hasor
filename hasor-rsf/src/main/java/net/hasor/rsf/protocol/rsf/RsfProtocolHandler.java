@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 /**
  * RSF 解码器
  * @version : 2014年10月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfProtocolHandler implements ProtocolHandlerFactory {
     protected Logger logger = LoggerFactory.getLogger(getClass());

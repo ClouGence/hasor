@@ -29,7 +29,7 @@ import java.io.IOException;
 /**
  *
  * @version : 2015年3月28日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ProtocolUtils {
     /**将{@link RsfRequest},转换为{@link RequestInfo}。*/

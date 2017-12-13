@@ -23,7 +23,7 @@ import java.util.List;
 /**
  *
  * @version : 2014-3-31
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class BeanSqlParameterSource implements SqlParameterSource, ParameterDisposer {
     private Object       dataBean;

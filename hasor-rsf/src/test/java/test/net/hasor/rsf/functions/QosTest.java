@@ -19,7 +19,7 @@ import org.junit.Test;
 /**
  *
  * @version : 2015年4月5日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class QosTest {
     @Test

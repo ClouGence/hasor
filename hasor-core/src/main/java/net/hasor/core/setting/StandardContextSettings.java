@@ -29,7 +29,7 @@ import java.util.List;
  * 继承自{@link InputStreamSettings}父类，该类自动装载 classpath 中所有静态配置文件。
  * 并且自动装载主配置文件（该配置文件应当只有一个）。
  * @version : 2013-9-9
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class StandardContextSettings extends InputStreamSettings {
     /**主配置文件名称*/

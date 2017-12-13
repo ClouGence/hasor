@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 用于处理当虚拟机关闭时{@link TemplateAppContext}的shutdown过程。
  * @version : 2015年11月4日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class ShutdownHook extends Thread implements Runnable {
     protected Logger logger = LoggerFactory.getLogger(getClass());

@@ -24,7 +24,7 @@ import java.util.Map.Entry;
 /**
  *
  * @version : 2014年7月11日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class HasorUnit {
     /**代码相当于：<code>UUID.randomUUID().toString()</code>*/

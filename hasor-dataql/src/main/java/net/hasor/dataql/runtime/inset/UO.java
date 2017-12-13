@@ -27,7 +27,7 @@ import net.hasor.dataql.runtime.mem.StackStruts;
  * UO 指令是用于进行 一元运算。
  * 该指令会通过运算符和被计算的表达式来寻找 OperatorProcess 运算实现类进行运算。
  * 开发者可以通过实现 OperatorProcess 接口，覆盖某个运算符实现 运算符重载功能。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class UO implements InsetProcess {

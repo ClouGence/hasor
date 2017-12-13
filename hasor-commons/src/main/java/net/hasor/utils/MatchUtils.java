@@ -17,7 +17,7 @@ package net.hasor.utils;
 /**
  *
  * @version : 2014年7月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class MatchUtils {
     public static enum MatchTypeEnum {

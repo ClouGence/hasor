@@ -22,7 +22,7 @@
 ///**
 // * 所有投票都投给 S1
 // * @version : 2014年9月12日
-// * @author 赵永春(zyc@hasor.net)
+// * @author 赵永春 (zyc@hasor.net)
 // */
 //public class AllServerVoted_S1 {
 //    public static void main(String[] args) throws Throwable {

@@ -27,7 +27,7 @@ import net.hasor.utils.future.FutureCallback;
 /**
  * 集群中服务器节点信息
  * @version : 2016年09月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class NodeData {
     private String         serverID    = null; //服务器ID

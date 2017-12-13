@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 工厂
  * @version : 2014-1-3
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class PojoBeanFactory implements Provider<PojoInfo> {
     protected     Logger  logger = LoggerFactory.getLogger(getClass());

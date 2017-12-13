@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  *      工厂方式创建Bean。
  *
  * @version : 2015年11月6日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class BeanTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());

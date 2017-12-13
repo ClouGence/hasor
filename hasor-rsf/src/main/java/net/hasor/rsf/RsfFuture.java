@@ -23,7 +23,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * RSF Future
  * @version : 2014年11月14日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfFuture extends BasicFuture<RsfResponse> {
     private RsfRequest rsfRequest = null;

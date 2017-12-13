@@ -16,7 +16,7 @@
 package net.hasor.dataql.runtime.mem;
 /**
  * 内存数据存储结构的，统一操作接口。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 public interface FindData {

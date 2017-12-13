@@ -19,7 +19,7 @@ import net.hasor.core.Environment;
 /**
  * RSF 配置。
  * @version : 2014年11月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfEnvironment extends Environment {
     public RsfSettings getSettings();

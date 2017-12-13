@@ -21,7 +21,7 @@ import java.util.List;
  * 当前服务器节点信息
  *
  * @version : 2016年09月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface Server {
     /** 当前条目ID(已递交，已生效) */

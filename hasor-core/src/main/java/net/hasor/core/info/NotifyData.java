@@ -17,7 +17,7 @@ package net.hasor.core.info;
 /**
  *
  * @version : 2016年10月21日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class NotifyData {
     private String key      = null;

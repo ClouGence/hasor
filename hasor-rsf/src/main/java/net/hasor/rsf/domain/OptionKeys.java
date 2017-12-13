@@ -17,7 +17,7 @@ package net.hasor.rsf.domain;
 /**
  *
  * @version : 2014年11月14日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface OptionKeys {
     public static final String TargetAddress = "target";

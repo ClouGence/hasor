@@ -22,7 +22,7 @@ import net.hasor.utils.StringUtils;
 import java.util.*;
 /**
  * Udf查找器。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-10-17
  */
 class UdfFinder extends HashMap<String, UDF> {

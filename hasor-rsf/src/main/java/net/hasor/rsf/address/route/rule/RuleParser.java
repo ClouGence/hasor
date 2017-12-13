@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  * 路由规则解析器
  * @version : 2015年3月29日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RuleParser {
     protected Logger                logger      = LoggerFactory.getLogger(getClass());

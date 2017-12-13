@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Stack;
 /**
  * 编译器用到的栈结构。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class CompilerStack {

@@ -18,7 +18,7 @@ package net.hasor.land.node;
  * 服务器操作
  *
  * @version : 2016年09月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface Operation extends Server {
     /** Term 自增 */

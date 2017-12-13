@@ -35,7 +35,7 @@ import static net.test.hasor.db.junit.HasorUnit.newID;
 /***
  * 数据库测试程序基类，监控线程
  * @version : 2014-1-13
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractNativesJDBCTest {
     @Inject

@@ -12,7 +12,7 @@ import net.hasor.plugins.jfinal.HasorPlugin;
 /**
  * JFinal API 引导式配置（Hasor系列框架全面深度整合）
  * @version : 2016年11月07日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class DemoConfig extends JFinalConfig {
     private C3p0Plugin getC3p0Plugin() {

@@ -37,7 +37,7 @@ import static io.netty.handler.codec.http.HttpHeaders.Names.ORIGIN;
 /**
  * Hprose 工具
  * @version : 2017年1月28日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class HproseUtils implements HproseConstants {
     /***/

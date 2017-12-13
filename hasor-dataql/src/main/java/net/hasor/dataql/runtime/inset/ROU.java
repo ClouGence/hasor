@@ -33,7 +33,7 @@ import java.util.Map;
  * --
  *  寻值机制：ROU会先尝试在当前结果中寻找值，如果找不到则到上一层数据节点进行查找，直到根节点（默认：自下而上）。
  *
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class ROU implements InsetProcess {

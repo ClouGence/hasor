@@ -18,7 +18,7 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 /**
  *
  * @version : 2016年2月16日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class HasorNamespaceHandler extends NamespaceHandlerSupport {
     @Override

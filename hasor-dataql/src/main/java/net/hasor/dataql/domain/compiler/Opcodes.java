@@ -16,7 +16,7 @@
 package net.hasor.dataql.domain.compiler;
 /**
  * QL 指令集，共计 30 条指令
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-03
  */
 public interface Opcodes {

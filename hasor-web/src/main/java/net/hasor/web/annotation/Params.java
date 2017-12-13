@@ -18,7 +18,7 @@ import java.lang.annotation.*;
 /**
  * 参数组
  * @version : 2015年6月16日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.PARAMETER, ElementType.FIELD })

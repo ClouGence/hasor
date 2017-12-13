@@ -21,7 +21,7 @@ import java.sql.Connection;
 /**
  * Connection 接口代理，目的是为了控制一些方法的调用。同时进行一些特殊类型的处理。
  * @version : 2013-10-30
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class CloseSuppressingInvocationHandler implements InvocationHandler {
     private final ConnectionHolder holder;

@@ -20,7 +20,7 @@ import net.hasor.rsf.domain.RequestInfo;
 /**
  *
  * @version : 2015年12月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface SenderListener {
     /**向远端发送请求。*/

@@ -17,7 +17,7 @@ package net.hasor.rsf.address.route.flowcontrol.speed;
 /**
  * 流控级别，可选的级别有（服务级、方法级、地址级）
  * @version : 2015年4月6日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public enum QoSActionEnum {
     /**限制接口所有方法的总调用速率。*/

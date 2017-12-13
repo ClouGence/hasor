@@ -33,7 +33,7 @@ import java.util.*;
 /**
  *
  * @version : 2014年11月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     protected Logger                    logger                = LoggerFactory.getLogger(getClass());

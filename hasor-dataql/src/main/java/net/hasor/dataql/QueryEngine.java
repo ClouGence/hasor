@@ -17,7 +17,7 @@ package net.hasor.dataql;
 import net.hasor.dataql.domain.compiler.QIL;
 /**
  * 引擎
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public interface QueryEngine extends Option {

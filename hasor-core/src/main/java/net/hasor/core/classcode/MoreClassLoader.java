@@ -21,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  *
  * @version : 2014年9月7日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class MoreClassLoader extends ClassLoader {
     private Map<String, ClassInfo>       classMap  = new ConcurrentHashMap<String, ClassInfo>();

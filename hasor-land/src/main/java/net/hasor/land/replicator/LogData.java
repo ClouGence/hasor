@@ -19,7 +19,7 @@ import java.util.Date;
  * 一条日志数据
  *
  * @version : 2016年09月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class LogData {
     public String atTerm;       // termID(BigInt)

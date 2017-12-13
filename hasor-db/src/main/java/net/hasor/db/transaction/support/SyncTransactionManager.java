@@ -19,7 +19,7 @@ import net.hasor.db.transaction.TranManager;
 import javax.sql.DataSource;
 /**
  * @version : 2013-10-30
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class SyncTransactionManager extends TranManager {
     public static void setSync(TransactionObject tranConn) {

@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 /**
  * NOT_SUPPORTED：如果当前没有事务存在，就以非事务方式执行；如果有，就将当前事务挂起。
  * @version : 2015年11月17日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @RunWith(HasorUnitRunner.class)
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)

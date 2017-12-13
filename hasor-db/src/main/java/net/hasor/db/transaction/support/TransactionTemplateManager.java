@@ -18,7 +18,7 @@ import net.hasor.db.transaction.*;
 /**
  *
  * @version : 2015年10月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class TransactionTemplateManager implements TransactionTemplate {
     private TransactionManager transactionManager;

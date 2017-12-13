@@ -20,7 +20,7 @@ import java.util.Collection;
 /**
  * Http Response 删减版
  * @version : 2017年12月04日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfHttpResponseData {
     /**

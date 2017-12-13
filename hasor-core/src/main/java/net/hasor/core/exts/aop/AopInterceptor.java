@@ -26,7 +26,7 @@ import java.util.WeakHashMap;
 /**
  * Aop拦截器
  * @version : 2013-11-8
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class AopInterceptor implements MethodInterceptor, AppContextAware {
     private WeakHashMap<Method, List<Class<? extends MethodInterceptor>>> methodInterceptorMap = new WeakHashMap<Method, List<Class<? extends MethodInterceptor>>>();

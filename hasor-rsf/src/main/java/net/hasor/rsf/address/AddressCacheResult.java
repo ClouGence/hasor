@@ -26,7 +26,7 @@ import java.util.Map.Entry;
  * 路由计算结果缓存<br/>
  * 接口级    方法级      参数级
  * @version : 2015年3月29日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class AddressCacheResult {
     protected Logger logger = LoggerFactory.getLogger(getClass());

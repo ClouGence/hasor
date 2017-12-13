@@ -21,7 +21,7 @@ import net.hasor.rsf.rpc.net.ReceivedListener;
 /**
  * Http 协议连接器创建工厂。
  * @version : 2017年11月22日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class HttpConnectorFactory implements ConnectorFactory {
     public HttpConnector create(String protocol, AppContext appContext, ReceivedListener receivedListener, ConnectionAccepter accepter) throws Throwable {

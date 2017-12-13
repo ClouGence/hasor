@@ -32,7 +32,7 @@ import java.io.StringWriter;
 import java.util.List;
 /**
  * JSR223 引擎机制的实现。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-10-19
  */
 public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEngine, Compilable, UdfManager, Option {

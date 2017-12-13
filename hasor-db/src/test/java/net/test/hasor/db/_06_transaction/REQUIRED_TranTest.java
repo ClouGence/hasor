@@ -27,7 +27,7 @@ import org.junit.runner.RunWith;
 /**
  * REQUIRED：尝试加入已经存在的事务中，如果没有则开启一个新的事务。
  * @version : 2015年11月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @RunWith(HasorUnitRunner.class)
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)

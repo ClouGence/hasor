@@ -18,7 +18,7 @@ package net.hasor.land.election;
  * 心跳回应包
  *
  * @version : 2016年09月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class LeaderBeatResult {
     private String  serverID = null;  //服务器ID

@@ -36,7 +36,7 @@ import java.util.HashMap;
 /**
  * Freemarker 渲染器，您可以通过 apiBinder.bind(Configuration.class).... 来设置您自定义的。
  * @version : 2016年1月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class FreemarkerRender implements RenderEngine {
     protected Configuration freemarker;

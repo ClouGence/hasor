@@ -21,7 +21,7 @@ import net.hasor.rsf.RsfEnvironment;
 /**
  * 服务注册器
  * @version : 2014年11月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 abstract class ContextRsfBindBuilder extends AbstractRsfBindBuilder {
     protected abstract RsfBeanContainer getContainer();

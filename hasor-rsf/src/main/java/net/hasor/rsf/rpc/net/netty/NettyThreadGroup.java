@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Netty 线程组。
  * @version : 2017年01月16日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 class NettyThreadGroup {
     protected Logger logger = LoggerFactory.getLogger(getClass());

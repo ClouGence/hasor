@@ -20,7 +20,7 @@ import net.hasor.web.WebPlugin;
 /**
  * {@link WebPlugin}，插件调用器。
  * @version : 2017-01-10
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 interface WebPluginCaller {
     public void beforeFilter(Invoker invoker, InvokerData info);

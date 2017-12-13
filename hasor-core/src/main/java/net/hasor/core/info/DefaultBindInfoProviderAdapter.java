@@ -28,7 +28,7 @@ import java.util.Map.Entry;
 /**
  *
  * @version : 2014年7月4日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderAdapter<T> {
     private Map<Integer, ParamInfo> constructorParams;

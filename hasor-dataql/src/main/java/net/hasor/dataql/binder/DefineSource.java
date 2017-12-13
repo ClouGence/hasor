@@ -18,7 +18,7 @@ import net.hasor.core.BindInfo;
 import net.hasor.dataql.UdfSource;
 /**
  * UDF 函数定义
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 class DefineSource {

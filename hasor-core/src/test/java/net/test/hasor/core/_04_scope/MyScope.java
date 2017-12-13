@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * 一个自定义 Scope ，实现了线程间单例化
  * @version : 2015年11月9日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class MyScope implements Scope {
     private ThreadLocal<Map<Object, Provider<?>>> threadSington = new ThreadLocal<Map<Object, Provider<?>>>();

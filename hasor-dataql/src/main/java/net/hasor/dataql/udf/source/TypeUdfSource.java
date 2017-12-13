@@ -25,7 +25,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 /**
  * 支持把某个Bean的所有方法都注册成为 UDF。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class TypeUdfSource<T> extends SimpleUdfSource {

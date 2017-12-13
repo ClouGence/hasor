@@ -17,7 +17,7 @@ package net.hasor.land.domain;
 /**
  * Land工作模式
  * @version : 2016年09月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public enum WorkMode {
     /** 不启用（默认） */

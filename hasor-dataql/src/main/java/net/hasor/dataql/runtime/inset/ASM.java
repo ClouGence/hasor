@@ -35,7 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * TODO 后续可以考虑优化这个代码，让对象的每个字段的处理做成并发。
  *
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class ASM implements InsetProcess {

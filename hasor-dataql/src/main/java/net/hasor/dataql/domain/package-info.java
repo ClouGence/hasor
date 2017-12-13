@@ -16,7 +16,7 @@
 /**
  * DataQL，各类模型和查询编译。
  * 其中模型包含了：查询模型、指令序列模型、编译器、DSL解析器。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 package net.hasor.dataql.domain;

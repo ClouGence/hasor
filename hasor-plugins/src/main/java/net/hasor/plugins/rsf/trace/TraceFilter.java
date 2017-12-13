@@ -22,7 +22,7 @@ import net.hasor.utils.StringUtils;
 /**
  * 优先检查本地是否有服务提供（优先本地服务提供者的调用）。
  * @version : 2014年11月30日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class TraceFilter implements RsfFilter {
     private static class InnerTraceUtil extends TraceUtil {

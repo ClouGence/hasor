@@ -18,7 +18,7 @@ import java.io.Serializable;
 /**
  * 用于RPC消息模式下,消息发送的返回值。
  * @version : 2015年1月8日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfResult extends Serializable {
     /**返回操作是否成功。*/

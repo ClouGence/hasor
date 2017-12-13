@@ -19,7 +19,7 @@ import net.hasor.dataql.domain.compiler.InstQueue;
 import net.hasor.dataql.domain.compiler.Label;
 /**
  * 三元运算表达式
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class TernaryExpression extends Expression {

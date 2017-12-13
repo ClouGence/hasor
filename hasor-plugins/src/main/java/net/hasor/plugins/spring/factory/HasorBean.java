@@ -23,7 +23,7 @@ import org.springframework.beans.factory.InitializingBean;
 /**
  * 在Spring获取Hasor的Bean
  * @version : 2016年2月15日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class HasorBean<T> implements FactoryBean, InitializingBean {
     private AppContext            factory      = null;

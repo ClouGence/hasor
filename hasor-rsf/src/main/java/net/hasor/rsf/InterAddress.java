@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 /**
  * 服务地址例：“rsf://127.0.0.1:8000/unit”
  * @version : 2014年9月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class InterAddress {
     protected static    Logger logger         = LoggerFactory.getLogger(InterAddress.class);

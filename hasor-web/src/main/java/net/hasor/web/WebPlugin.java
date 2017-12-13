@@ -17,7 +17,7 @@ package net.hasor.web;
 /**
  * 过滤器链扩展。
  * @version : 2016年12月30日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface WebPlugin {
     /**

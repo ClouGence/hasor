@@ -18,7 +18,7 @@ import java.sql.SQLException;
 /**
  * 数据源的事务管理器。
  * @version : 2013-10-30
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface TransactionManager {
     /**开启事务，使用默认事务隔离级别。

@@ -25,7 +25,7 @@ import java.sql.SQLException;
 /**
  * 使用多数据源例子
  * @version : 2014年7月23日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class MultipleDataSourceTest {
     @Test

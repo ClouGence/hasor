@@ -24,7 +24,7 @@ import java.lang.annotation.*;
  * <li>“byType=Type.ByName”使用“{@code AppContext.findBindingBean(withName, bindType)}”方式进行依赖注入。</li>
  * </ul></p>
  * @version : 2015年7月28日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD })

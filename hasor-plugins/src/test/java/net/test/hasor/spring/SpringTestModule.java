@@ -19,7 +19,7 @@ import net.hasor.core.Module;
 /**
  *
  * @version : 2016年2月15日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class SpringTestModule implements Module {
     @Override

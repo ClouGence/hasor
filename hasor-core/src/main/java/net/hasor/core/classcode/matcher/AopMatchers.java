@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 /**
  *
  * @version : 2013-8-20
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class AopMatchers {
     private AopMatchers() {

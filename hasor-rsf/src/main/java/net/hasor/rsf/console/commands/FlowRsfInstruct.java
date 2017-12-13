@@ -28,7 +28,7 @@ import java.io.StringWriter;
 /**
  * 流量控制规则查看和更新指令。
  * @version : 2016年4月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
 @RsfCommand("flow")

@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * {@link Environment}接口实现类，继承自{@link AbstractEnvironment}。
  * @version : 2013-9-11
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class StandardEnvironment extends AbstractEnvironment {
     public StandardEnvironment(Object context, File mainSettings) throws IOException {

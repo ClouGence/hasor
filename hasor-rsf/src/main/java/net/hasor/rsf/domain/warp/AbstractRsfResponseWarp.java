@@ -19,7 +19,7 @@ import net.hasor.rsf.RsfResponse;
 /**
  * 调用请求
  * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractRsfResponseWarp implements RsfResponse {
     protected abstract RsfResponse getRsfResponse();

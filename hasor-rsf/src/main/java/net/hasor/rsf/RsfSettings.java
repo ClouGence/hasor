@@ -21,7 +21,7 @@ import java.util.Set;
 /**
  * RSF 配置。
  * @version : 2014年11月18日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfSettings extends Settings {
     /**获取默认超时时间。*/

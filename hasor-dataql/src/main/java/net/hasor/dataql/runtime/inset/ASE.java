@@ -25,7 +25,7 @@ import net.hasor.dataql.runtime.struts.ResultStruts;
  * ASA、ASM、ASO 三个指令在处理数据时都是用 ResultStruts 进行封装。
  * ASE 指令的目的是拆除 ResultStruts 封装，还原真实结果。
  *
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class ASE implements InsetProcess {

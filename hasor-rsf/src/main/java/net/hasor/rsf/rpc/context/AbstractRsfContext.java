@@ -46,7 +46,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * 服务上下文，负责提供 RSF 运行环境的支持。
  *
  * @version : 2014年11月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractRsfContext implements RsfContext, ContextStartListener, ContextShutdownListener {
     protected     Logger logger     = LoggerFactory.getLogger(getClass());

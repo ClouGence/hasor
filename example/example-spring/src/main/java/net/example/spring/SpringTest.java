@@ -19,7 +19,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
  * S
  * @version : 2016年2月15日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class SpringTest {
     public static void main(String[] args) {

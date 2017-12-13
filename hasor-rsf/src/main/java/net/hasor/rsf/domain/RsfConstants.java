@@ -22,7 +22,7 @@ package net.hasor.rsf.domain;
  *  <li>最后的 4 个二进制位,用于表示该分类包的版本。可选范围为:0~15 (0000 0000 ~ 0000 1111) <li/>
  * </p>
  * @version : 2014年9月20日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface RsfConstants {
     // RSF数据包           -（1000 0000）

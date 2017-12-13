@@ -22,7 +22,7 @@ import java.io.IOException;
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年10月25日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class RpcRequestProtocolV1 implements Protocol<RequestBlock> {
     /**encode Message to byte & write to network framework*/

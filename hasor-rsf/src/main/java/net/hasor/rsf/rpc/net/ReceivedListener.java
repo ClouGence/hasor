@@ -20,7 +20,7 @@ import java.io.IOException;
 /**
  * 接受消息
  * @version : 2015年12月10日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public interface ReceivedListener {
     /**从远端收到Response消息。*/

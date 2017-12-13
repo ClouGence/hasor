@@ -29,7 +29,7 @@ import java.util.concurrent.Executor;
 /**
  *
  * @version : 2016年4月3日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public final class RsfCommandRequest {
     protected static    Logger logger                      = LoggerFactory.getLogger(RsfConstants.LoggerName_Console);

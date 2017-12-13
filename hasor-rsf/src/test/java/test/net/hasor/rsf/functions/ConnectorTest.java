@@ -33,7 +33,7 @@ import java.util.concurrent.Future;
 /**
  *  在 Connector 层面上测试，启动本地监听服务，并且连接到远程连接器上进行数据发送和接收。
  * @version : 2014年9月12日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provider<RsfEnvironment>, ReceivedListener {
     private RsfEnvironment rsfEnv;

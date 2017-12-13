@@ -16,7 +16,7 @@
 package net.hasor.dataql.runtime;
 /**
  * 运算符类型
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-14
  */
 public enum Symbol {

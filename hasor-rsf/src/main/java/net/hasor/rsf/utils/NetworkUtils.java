@@ -21,7 +21,7 @@ import java.net.UnknownHostException;
 /**
  *
  * @version : 2014年11月17日
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class NetworkUtils {
     private static void isPortAvailable(String host, int port) throws Exception {

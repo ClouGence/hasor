@@ -24,7 +24,7 @@ import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
 /**
  * RCALL，发起一个 lambda 的调用，调用会在一个全新的堆栈上运行。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class RCALL implements InsetProcess {

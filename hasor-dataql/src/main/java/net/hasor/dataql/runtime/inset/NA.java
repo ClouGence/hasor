@@ -27,7 +27,7 @@ import net.hasor.utils.StringUtils;
 import java.util.Collection;
 /**
  * NO，创建一个集合对象
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 class NA implements InsetProcess {

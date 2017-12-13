@@ -20,7 +20,7 @@ import net.test.hasor.core._01_bean.pojo.PojoBean;
 /**
  * 注解方式注入Bean。
  * @version : 2014-1-3
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class AnnoIocBean {
     @Inject

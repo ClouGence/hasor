@@ -18,7 +18,7 @@ import java.util.UUID;
 /**
  * 一个Bean
  * @version : 2014-1-3
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class PojoBean implements PojoInfo, IntefaceBean {
     private String uuid    = UUID.randomUUID().toString();

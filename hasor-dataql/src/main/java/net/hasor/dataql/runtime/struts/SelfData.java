@@ -16,7 +16,7 @@
 package net.hasor.dataql.runtime.struts;
 /**
  * 标记为 self 数据源，用于 ROU 指令路由数据使用。
- * @author 赵永春(zyc@hasor.net)
+ * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 public interface SelfData {
