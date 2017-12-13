@@ -582,4 +582,14 @@ public class StringUtils {
         }
     }
     //
+    public static String substringBeforeLast(final String str, final String separator) {
+        if (StringUtils.isEmpty(str) || StringUtils.isEmpty(separator)) {
+            return str;
+        }
+        int pos = str.lastIndexOf(separator);
+        if (pos == StringUtils.INDEX_NOT_FOUND) {
+            return str;
+        }
+        return str.substring(0, pos);
+    }
 }

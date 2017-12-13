@@ -25,6 +25,6 @@ import java.lang.annotation.*;
 @Target({ ElementType.TYPE, ElementType.PACKAGE })
 @Documented
 public @interface AopIgnore {
-    /** 忽略 aop 的行为是否传播给子类和子包 */
-    public boolean diffuse() default true;
+    /** 是否将 AopIgnore 的配置策略遗传给子类或者子包（只有当标记在父类或包上有效）*/
+    public boolean genetic() default true;
 }

@@ -22,13 +22,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- *
+ * 可以标记在：方法、类、包 上面
  * @author 赵永春(zyc@hasor.net)
  * @version : 2013-10-30
  */
-@Target(ElementType.METHOD)
+@Target({ ElementType.METHOD, ElementType.TYPE, ElementType.PACKAGE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Transactional {
+    /** 是否将 Transactional 的配置策略遗传给子类或者子包（只有当标记在父类或包上有效）*/
+    public boolean genetic() default true;
+
     /**传播属性*/
     public Propagation propagation() default Propagation.REQUIRED;
 

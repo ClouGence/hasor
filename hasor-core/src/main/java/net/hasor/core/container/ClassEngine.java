@@ -46,8 +46,8 @@ class ClassEngine {
         AopClassConfig engine = buildEngineMap.get(targetType);
         if (engine == null) {
             // .检查是否忽略Aop
-            boolean aopIgnoreClass = testAopIgnore(targetType, true);
-            boolean aopIgnorePackage = testAopIgnore(targetType.getPackage(), true);
+            boolean aopIgnoreClass = testAopIgnore(targetType);
+            boolean aopIgnorePackage = testAopIgnore(targetType.getPackage());
             if (aopIgnorePackage || aopIgnoreClass) {
                 aopList = Collections.EMPTY_LIST;
             }
@@ -90,12 +90,20 @@ class ClassEngine {
         return newType;
     }
     //
-    private static boolean testAopIgnore(Class<?> targetType, boolean isRoot) {
+    //
+    //
+    private static boolean testAopIgnore(Class<?> targetType) {
+        return testAopIgnore(targetType, true);
+    }
+    private static boolean testAopIgnore(Package targetPackage) {
+        return testAopIgnore(targetPackage, true);
+    }
+    private static boolean testAopIgnore(Class<?> targetType, boolean isRootClass) {
         AopIgnore aopIgnore = targetType.getAnnotation(AopIgnore.class);
         if (aopIgnore != null) {
-            if (isRoot) {
-                return true;
-            } else if (aopIgnore.diffuse()) {
+            // 1.被测试的类标记了@AopIgnore
+            // 2.继承的父类中标记了AopIgnore 注解并且 遗传属性genetic 的值为 true。
+            if (isRootClass || aopIgnore.genetic()) {
                 return true;
             }
         }
@@ -105,15 +113,15 @@ class ClassEngine {
         }
         return false;
     }
-    private static boolean testAopIgnore(Package targetPackage, boolean isRoot) {
+    private static boolean testAopIgnore(Package targetPackage, boolean isRootPakcage) {
         if (targetPackage == null) {
             return false;
         }
         AopIgnore aopIgnore = targetPackage.getAnnotation(AopIgnore.class);
         if (aopIgnore != null) {
-            if (isRoot) {
-                return true;
-            } else if (aopIgnore.diffuse()) {
+            // 1.被测试的包标记了@AopIgnore
+            // 2.包的父包中标记了AopIgnore 注解并且 遗传属性genetic 的值为 true。
+            if (isRootPakcage || aopIgnore.genetic()) {
                 return true;
             }
         }
@@ -123,7 +131,7 @@ class ClassEngine {
             if (packageName.indexOf('.') == -1) {
                 break;
             }
-            packageName = substringBeforeLast(packageName, ".");
+            packageName = StringUtils.substringBeforeLast(packageName, ".");
             if (StringUtils.isBlank(packageName)) {
                 break;
             }
@@ -134,15 +142,5 @@ class ClassEngine {
             return testAopIgnore(supperPackage, false);
         }
         return false;
-    }
-    private static String substringBeforeLast(final String str, final String separator) {
-        if (StringUtils.isEmpty(str) || StringUtils.isEmpty(separator)) {
-            return str;
-        }
-        int pos = str.lastIndexOf(separator);
-        if (pos == StringUtils.INDEX_NOT_FOUND) {
-            return str;
-        }
-        return str.substring(0, pos);
     }
 }
