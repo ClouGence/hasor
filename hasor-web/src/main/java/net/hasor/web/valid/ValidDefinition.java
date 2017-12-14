@@ -19,7 +19,6 @@ import net.hasor.core.AppContext;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
-
 /**
  * 验证执行器,线程安全
  * @version : 2017-01-10
@@ -68,42 +67,34 @@ class ValidDefinition {
         if (paramValid == null) {
             return;
         }
+        // .收集验证器
         String sceneName = paramValid.value();
         Class<?> paramType = this.paramTypeMap.get(paramIndex);
-
-        List<Class<?>> superList = new ArrayList<Class<?>>();
-        if(paramType.getAnnotation(ValidBy.class)!=null){
-            superList.add(paramType);
-        }
-
+        Set<Class<? extends Validation>> validList = new HashSet<Class<? extends Validation>>();
+        int loopIndex = 0;
         do {
-            paramType = paramType.getSuperclass();
-            if(paramType.getAnnotation(ValidBy.class)!=null&&paramType.getAnnotation(ValidBy.class).inherited()){
-                superList.add(paramType);
-            }
-        }while (paramType.getAnnotation(ValidBy.class)!=null);
-
-        Set<Class<?>> superSet = new HashSet<Class<?>>();
-        superSet.addAll(superList);
-        for (Class<?> param:superSet) {
             ValidBy validBy = paramType.getAnnotation(ValidBy.class);
-//            if (validBy == null) {
-//                data.addError(sceneName, "@ValidBy is Undefined.");
-//                return;
-//            }
-            for (Class<? extends Validation> validType : validBy.value()) {
-                if (validType == null) {
-                    data.addError(sceneName, "validType is Undefined.");
-                    continue;
+            if (validBy != null) {
+                if (validBy.value().length == 0) {
+                    data.addError(sceneName, paramType + " validType is Undefined.");
                 }
-                Validation<Object> validObject = appContext.getInstance(validType);
-                if (validObject == null) {
-                    data.addError(sceneName, "Validation program is not exist. [" + validType + "]");
-                    continue;
+                if (loopIndex == 0 || validBy.inherited()) {
+                    validList.addAll(Arrays.asList(validBy.value()));
                 }
-                //
-                validObject.doValidation(sceneName, paramObject, data);
             }
+            paramType = paramType.getSuperclass();
+            loopIndex++;
+        } while (paramType != null);
+        //
+        // .执行
+        for (Class<? extends Validation> validType : validList) {
+            Validation<Object> validObject = appContext.getInstance(validType);
+            if (validObject == null) {
+                data.addError(sceneName, "Validation program is not exist. [" + validType + "]");
+                continue;
+            }
+            //
+            validObject.doValidation(sceneName, paramObject, data);
         }
         //
     }
