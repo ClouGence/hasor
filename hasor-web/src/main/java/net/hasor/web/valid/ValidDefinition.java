@@ -18,8 +18,8 @@ import net.hasor.core.AppContext;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
 /**
  * 验证执行器,线程安全
  * @version : 2017-01-10
@@ -70,23 +70,40 @@ class ValidDefinition {
         }
         String sceneName = paramValid.value();
         Class<?> paramType = this.paramTypeMap.get(paramIndex);
-        ValidBy validBy = paramType.getAnnotation(ValidBy.class);
-        if (validBy == null) {
-            data.addError(sceneName, "@ValidBy is Undefined.");
-            return;
+
+        List<Class<?>> superList = new ArrayList<Class<?>>();
+        if(paramType.getAnnotation(ValidBy.class)!=null){
+            superList.add(paramType);
         }
-        for (Class<? extends Validation> validType : validBy.value()) {
-            if (validType == null) {
-                data.addError(sceneName, "validType is Undefined.");
-                continue;
+
+        do {
+            paramType = paramType.getSuperclass();
+            if(paramType.getAnnotation(ValidBy.class)!=null&&paramType.getAnnotation(ValidBy.class).inherited()){
+                superList.add(paramType);
             }
-            Validation<Object> validObject = appContext.getInstance(validType);
-            if (validObject == null) {
-                data.addError(sceneName, "Validation program is not exist. [" + validType + "]");
-                continue;
+        }while (paramType.getAnnotation(ValidBy.class)!=null);
+
+        Set<Class<?>> superSet = new HashSet<Class<?>>();
+        superSet.addAll(superList);
+        for (Class<?> param:superSet) {
+            ValidBy validBy = paramType.getAnnotation(ValidBy.class);
+//            if (validBy == null) {
+//                data.addError(sceneName, "@ValidBy is Undefined.");
+//                return;
+//            }
+            for (Class<? extends Validation> validType : validBy.value()) {
+                if (validType == null) {
+                    data.addError(sceneName, "validType is Undefined.");
+                    continue;
+                }
+                Validation<Object> validObject = appContext.getInstance(validType);
+                if (validObject == null) {
+                    data.addError(sceneName, "Validation program is not exist. [" + validType + "]");
+                    continue;
+                }
+                //
+                validObject.doValidation(sceneName, paramObject, data);
             }
-            //
-            validObject.doValidation(sceneName, paramObject, data);
         }
         //
     }

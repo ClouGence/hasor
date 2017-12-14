@@ -27,4 +27,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidBy {
     public Class<? extends Validation>[] value();
+
+    /**
+     * 该注解是可被否继承 true可被继承 false不可被继承 默认true
+     * @author 大妖怪
+     * @return
+     */
+    public boolean inherited() default true;
 }
