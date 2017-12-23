@@ -94,7 +94,14 @@ class ValidDefinition {
                 continue;
             }
             //
-            validObject.doValidation(sceneName, paramObject, data);
+            ValidStrategy validStrategy = validObject.doValidation(sceneName, paramObject, data);
+            if(validStrategy == null){
+
+            }else{
+                if(validStrategy.getValue()==0){
+                    break;
+                }
+            }
         }
         //
     }

@@ -26,5 +26,5 @@ public interface Validation<T> {
      * @param dataForm 等待验证的数据。
      * @param errors 验证结果。
      */
-    public void doValidation(String scene, T dataForm, ValidInvoker errors);
+    public ValidStrategy doValidation(String scene, T dataForm, ValidInvoker errors);
 }
