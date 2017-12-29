@@ -95,12 +95,8 @@ class ValidDefinition {
             }
             //
             ValidStrategy validStrategy = validObject.doValidation(sceneName, paramObject, data);
-            if(validStrategy == null){
-
-            }else{
-                if(validStrategy.getValue()==0){
-                    break;
-                }
+            if (ValidStrategy.EXIT_EXECUTION.equals(validStrategy)) {
+                break;
             }
         }
         //
