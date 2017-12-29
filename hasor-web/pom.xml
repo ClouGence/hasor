@@ -19,6 +19,9 @@
             <name>赵永春(Mr.Zhao)</name>
             <email>zyc@hasor.net</email>
         </developer>
+        <developer>
+            <name>大妖怪</name>
+        </developer>
     </developers>
 
     <!-- 引用依赖 -->

@@ -125,4 +125,8 @@
     04. 2.4.4版本中添加的 web-fragment 特性不在支持，原因很容易引起重复配置。
 **修复**
     01. Fix HasorUnitRunner 在 JUnit 4.12 版本上 computeTestMethods 方法出现异常的问题。
+    
+**新增**
+    01. @ValidBy注解新增boolean类型属性inherited控制注解是否被继承。
+    02. 新增doValidation验证器验证策略ValidStrategy，用于控制是否执行后面的验证器。
 ---
