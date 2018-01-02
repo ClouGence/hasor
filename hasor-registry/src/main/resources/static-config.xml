@@ -74,8 +74,12 @@
         <!-- 服务管理数据过期时间(300秒) -->
         <serviceManager dataExpireTime="300"/>
 
-        <!-- 数据存储 -->
-        <dataStorage default="fileStorage">
+        <!--
+            数据存储
+                default 取值为 memStorage 表示使用内存存储器
+                default 取值为 fileStorage 表示使用文件存储器（开发中）
+        -->
+        <dataStorage default="memStorage">
             <memStorage>net.hasor.registry.storage.mem.MemStorageDaoCreater</memStorage>
             <fileStorage dataDir="${RSF_CENTER_FILE_STORAGE}/">net.hasor.registry.storage.file.FileStorageDaoCreater</fileStorage>
         </dataStorage>

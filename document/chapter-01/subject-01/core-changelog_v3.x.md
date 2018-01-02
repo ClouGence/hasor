@@ -5,6 +5,7 @@
     03. DataQL 新增了 import 语法，现在可以导入另外一个 QL 查询作为 udf 导入到当前 QL 中了。
     04. @ValidBy注解新增boolean类型属性inherited控制注解是否被继承。
     05. 新增doValidation验证器验证策略ValidStrategy，用于控制是否执行后面的验证器。
+    06. RSF-Center 的内存数据存储器新增了垃圾数据扫描处理机制。
 **改进**
     01. Spring 插件中的 sechma 升级为 3.2.2。同时 rsf 的 sechma 和 hasor-core 合并成一个。
     02. DataQL 的 LoaderUdfSource 增加 isIgnore 方法用于判断是否忽略不正确的UDF查找请求
