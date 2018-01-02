@@ -27,7 +27,7 @@ import java.util.List;
 @RsfService(group = "RSF", version = "1.0.0")
 public interface RsfCenterRegister {
     /**
-     * 发布服务,返回服务注册ID
+     * 发布服务（由于）
      * @param info 服务信息
      */
     public RsfCenterResult<Void> registerProvider(InstanceInfo instance, ProviderPublishInfo info);

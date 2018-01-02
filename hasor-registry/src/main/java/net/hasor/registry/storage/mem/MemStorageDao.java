@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.registry.storage.mem;
+import net.hasor.core.Init;
+import net.hasor.core.Inject;
+import net.hasor.core.Singleton;
+import net.hasor.registry.access.ServerSettings;
 import net.hasor.registry.access.adapter.ObjectData;
 import net.hasor.registry.access.adapter.StorageDao;
 import net.hasor.utils.StringUtils;
@@ -25,14 +29,50 @@ import java.util.List;
  * @version : 2015年8月19日
  * @author 赵永春 (zyc@hasor.net)
  */
+@Singleton
 public class MemStorageDao implements StorageDao, TreeNodeCreater {
-    private MenTreeNode rootNode = createTreeNode(null, null);
+    @Inject
+    private   ServerSettings centerCfg;
+    private   Thread         clearThread;
+    protected MenTreeNode    rootNode;
+    @Init
+    public void initDao() {
+        this.rootNode = createTreeNode(null, null);
+        this.clearThread = new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        runClear();
+                    } catch (Throwable t) {
+                        //
+                    } finally {
+                        try {
+                            Thread.sleep(30000);
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                }
+            }
+        };
+        this.clearThread.setDaemon(true);
+        this.clearThread.setName("RSF-" + this.getClass().getSimpleName() + "-Clear");
+        this.clearThread.start();
+    }
+    private void runClear() throws InterruptedException {
+        // .扫描垃圾
+        VisitorContext visitorContext = new VisitorContext(this.centerCfg.getDataExpireTime());
+        this.rootNode.visitor(visitorContext);
+        // .清扫垃圾
+        visitorContext.clearNodes(this);
+    }
+    //
     //
     public MenTreeNode createTreeNode(String name, MenTreeNode parent) {
         return new MenTreeNode(name, parent);
     }
     //
-    private MenTreeNode findNode(String dataPath) {
+    public MenTreeNode findNode(String dataPath) {
         String[] nodePathArray = dataPath.split("/");
         MenTreeNode atNode = this.rootNode;
         for (String atPath : nodePathArray) {

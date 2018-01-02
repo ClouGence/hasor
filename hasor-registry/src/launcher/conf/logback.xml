@@ -66,7 +66,16 @@
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
         </layout>
     </appender>
-
+    <!-- 注册中心数据存储日志 -->
+    <appender name="rsfCenterStorage_appender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${app.home:-.}/logs/rsf-center-storage.log.%d{yyyy-MM-dd}</fileNamePattern>
+        </rollingPolicy>
+        <Encoding>UTF-8</Encoding>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
+        </layout>
+    </appender>
 
     <logger name="rsf-console" additivity="false" level="INFO">
         <appender-ref ref="rsfTelnet_appender"/>
@@ -82,6 +91,9 @@
     </logger>
     <logger name="rsf-center-receiver" additivity="false" level="INFO">
         <appender-ref ref="rsfCenterReceiver_appender"/>
+    </logger>
+    <logger name="rsf-center-storage" additivity="false" level="INFO">
+        <appender-ref ref="rsfCenterStorage_appender"/>
     </logger>
 
 

@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.registry.storage.mem;
+import net.hasor.registry.RegistryConstants;
 import net.hasor.registry.access.adapter.ObjectData;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.json.JSON;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -29,18 +33,20 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MenTreeNode implements TreeVisitor {
-    private String                   name         = "";
-    private ObjectData               objectData   = null;
-    private MenTreeNode              parent       = null;
-    private Lock                     lock         = new ReentrantLock();
-    private Map<String, MenTreeNode> treeNodeMap  = new ConcurrentHashMap<String, MenTreeNode>();
-    private List<MenTreeNode>        treeNodeList = new CopyOnWriteArrayList<MenTreeNode>();
+    protected Logger                   logger       = LoggerFactory.getLogger(RegistryConstants.LoggerName_CenterStorage);
+    private   String                   name         = "";
+    private   ObjectData               objectData   = null;
+    private   MenTreeNode              parent       = null;
+    private   Lock                     lock         = new ReentrantLock();
+    private   long                     lastTime     = System.currentTimeMillis();
+    private   Map<String, MenTreeNode> treeNodeMap  = new ConcurrentHashMap<String, MenTreeNode>();
+    private   List<MenTreeNode>        treeNodeList = new CopyOnWriteArrayList<MenTreeNode>();
     //
     public MenTreeNode(String name) {
         this(name, null);
     }
     public MenTreeNode(String name, MenTreeNode parent) {
-        this.name = StringUtils.isBlank(name) ? null : name.trim();
+        this.name = StringUtils.isBlank(name) ? "" : name.trim();
         this.parent = parent;
     }
     //
@@ -54,9 +60,6 @@ public class MenTreeNode implements TreeVisitor {
     public String getName() {
         return name;
     }
-    public void updateData(ObjectData objectData) {
-        this.objectData = objectData;
-    }
     public ObjectData getObjectData() {
         return this.objectData;
     }
@@ -66,21 +69,74 @@ public class MenTreeNode implements TreeVisitor {
     public List<MenTreeNode> getSubList() {
         return this.treeNodeList;
     }
-    //
     public String getPath() {
         StringBuilder strBuilder = new StringBuilder();
         MenTreeNode atNode = this;
         while (true) {
             strBuilder.insert(0, atNode.name).insert(0, "/");
             atNode = atNode.parent;
-            if (StringUtils.isBlank(atNode.name)) {
+            if (atNode == null || StringUtils.isBlank(atNode.name)) {
                 break;
             }
         }
         return strBuilder.toString();
     }
-    public MenTreeNode createOrGetNode(String atPath, TreeNodeCreater creater) {
+    /**上锁*/
+    protected void lockNode() {
         this.lock.lock();
+    }
+    /**解锁*/
+    protected void unlockNode() {
+        this.lock.unlock();
+    }
+    /**延续声明*/
+    public void continueLife() {
+        MenTreeNode atNode = this;
+        while (atNode != null) {
+            atNode.lastTime = System.currentTimeMillis();
+            atNode = atNode.parent;
+        }
+    }
+    public boolean isSurvival(long survivalLife) {
+        return (this.lastTime + survivalLife) > System.currentTimeMillis();
+    }
+    @Override
+    public void visitor(VisitorContext context) {
+        context.visitorNode(this.getPath(), this);
+        for (MenTreeNode node : this.treeNodeList) {
+            node.visitor(context);
+        }
+    }
+    /**宣布死亡*/
+    private final void toDie() {
+        for (MenTreeNode node : this.treeNodeList) {
+            node.toDie();
+        }
+        this.notifyDie();
+    }
+    protected void notifyDie() {
+        this.logger.info("die, time = {}, path = {}", System.currentTimeMillis(), this.getPath());
+    }
+    protected void notifyUpdate(ObjectData oldData, ObjectData newData) {
+        this.logger.info("dat, time = {}, path = {}", System.currentTimeMillis(), this.getPath(), JSON.toString(newData));
+    }
+    //
+    //
+    //
+    //
+    public void updateData(ObjectData objectData) {
+        this.lockNode();
+        this.continueLife();
+        try {
+            this.notifyUpdate(this.objectData, objectData);
+            this.objectData = objectData;
+        } finally {
+            this.unlockNode();
+        }
+    }
+    public MenTreeNode createOrGetNode(String atPath, TreeNodeCreater creater) {
+        this.lockNode();
+        this.continueLife();
         try {
             MenTreeNode treeNode = null;
             if (!this.treeNodeMap.containsKey(atPath)) {
@@ -92,21 +148,26 @@ public class MenTreeNode implements TreeVisitor {
             }
             return treeNode;
         } finally {
-            this.lock.unlock();
+            this.unlockNode();
         }
     }
     public boolean deleteNode(String name) {
-        this.lock.lock();
+        this.lockNode();
+        this.continueLife();
+        MenTreeNode treeNode = null;
         try {
             if (this.treeNodeMap.containsKey(name)) {
-                MenTreeNode treeNode = this.treeNodeMap.get(name);
+                treeNode = this.treeNodeMap.get(name);
                 this.treeNodeList.remove(treeNode);
                 this.treeNodeMap.remove(name);
                 return true;
             }
             return false;
         } finally {
-            this.lock.unlock();
+            this.unlockNode();
+            if (treeNode != null) {
+                treeNode.toDie();
+            }
         }
     }
 }

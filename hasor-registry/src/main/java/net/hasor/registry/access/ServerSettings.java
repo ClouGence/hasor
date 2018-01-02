@@ -14,25 +14,32 @@
  * limitations under the License.
  */
 package net.hasor.registry.access;
+import net.hasor.core.XmlNode;
 import net.hasor.registry.RsfCenterSettings;
+import net.hasor.registry.storage.file.FileStorageDao;
 import net.hasor.rsf.RsfEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 /**
  * @version : 2015年8月19日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ServerSettings {
     protected static final Logger logger = LoggerFactory.getLogger(ServerSettings.class);
+    private int                 threadSize;
+    private int                 queueMaxSize;
+    private int                 sleepTime;
     //
-    private int      threadSize;
-    private int      queueMaxSize;
-    private int      sleepTime;
+    private int                 dataExpireTime;
+    private boolean             allowAnonymous;
+    private Class<?>            authQueryType;
     //
-    private int      dataExpireTime;
-    private boolean  allowAnonymous;
-    private Class<?> dataAdapterType;
-    private Class<?> authQueryType;
+    private String              defaultStoreage;
+    private Map<String, String> storeageConfig;
     //
     //
     public ServerSettings(RsfEnvironment rsfEnvironment, RsfCenterSettings settings) throws ClassNotFoundException {
@@ -48,8 +55,18 @@ public class ServerSettings {
         this.allowAnonymous = settings.getBoolean("hasor.registry.auth.allowAnonymous", true);
         //
         ClassLoader classLoader = rsfEnvironment.getClassLoader();
-        this.dataAdapterType = classLoader.loadClass(settings.getString("hasor.registry.adapterConfig.dataAdapter"));
         this.authQueryType = classLoader.loadClass(settings.getString("hasor.registry.adapterConfig.authQuery"));
+        //
+        this.storeageConfig = new HashMap<String, String>();
+        XmlNode[] dataStorageSetArray = settings.getXmlNodeArray("hasor.registry.dataStorage");
+        if (dataStorageSetArray != null) {
+            for (XmlNode dataStorageSet : dataStorageSetArray) {
+                for (XmlNode dataStorage : dataStorageSet.getChildren()) {
+                    this.storeageConfig.put(dataStorage.getName(), "hasor.registry.dataStorage." + dataStorage.getName());
+                }
+            }
+        }
+        this.defaultStoreage = settings.getString("hasor.registry.dataStorage.default", FileStorageDao.class.getName());
     }
     //
     public int getThreadSize() {
@@ -68,10 +85,14 @@ public class ServerSettings {
     public boolean isAllowAnonymous() {
         return allowAnonymous;
     }
-    public Class<?> getDataAdapterType() {
-        return dataAdapterType;
-    }
     public Class<?> getAuthQueryType() {
         return authQueryType;
+    }
+    //
+    public String getDefaultStoreage() {
+        return this.defaultStoreage;
+    }
+    public Map<String, String> getStoreageConfig() {
+        return Collections.unmodifiableMap(this.storeageConfig);
     }
 }

@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.storage.mem;
+package net.hasor.registry.access.adapter;
+import net.hasor.core.AppContext;
+import net.hasor.core.XmlNode;
+
+import java.io.IOException;
 /**
- *
+ * 用来创建服务数据存储器
  * @version : 2015年8月19日
  * @author 赵永春 (zyc@hasor.net)
  */
-interface TreeVisitor {
-    public void visitor(VisitorContext context);
+public interface StorageDaoCreater {
+    public StorageDao create(AppContext appContext, XmlNode config) throws IOException;
 }

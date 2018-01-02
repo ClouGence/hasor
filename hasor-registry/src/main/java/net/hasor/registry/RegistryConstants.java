@@ -24,4 +24,5 @@ public interface RegistryConstants {
     public static final String Center_RSF_APP_KEY        = "RSF_APP_KEY";          //key
     public static final String Center_RSF_APP_KEY_SECRET = "RSF_APP_KEY_SECRET";   //秘钥
     public static final String LoggerName_CenterReceiver = "rsf-center-receiver";
+    public static final String LoggerName_CenterStorage  = "rsf-center-storage";   // 存储 log
 }

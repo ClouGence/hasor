@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.registry.storage.mem;
+import net.hasor.core.AppContext;
+import net.hasor.core.Singleton;
+import net.hasor.core.XmlNode;
+import net.hasor.registry.access.adapter.StorageDao;
+import net.hasor.registry.access.adapter.StorageDaoCreater;
 /**
- *
- * @version : 2015年8月19日
+ * 服务数据存储检索
+ * @version : 2018年1月2日
  * @author 赵永春 (zyc@hasor.net)
  */
-interface TreeVisitor {
-    public void visitor(VisitorContext context);
+@Singleton
+public class MemStorageDaoCreater implements StorageDaoCreater {
+    @Override
+    public StorageDao create(AppContext appContext, XmlNode config) {
+        return appContext.getInstance(MemStorageDao.class);
+    }
 }

@@ -25,6 +25,9 @@
             <RSF_CENTER_AUTH_FILE_NAME>auth_keys.xml</RSF_CENTER_AUTH_FILE_NAME>
             <!-- 是否开启匿名应用连入的请求: 默认开启 -->
             <RSF_CENTER_AUTH_ANONYMOUS>true</RSF_CENTER_AUTH_ANONYMOUS>
+
+            <!-- 内置简易文件数据存储器的存储位置 -->
+            <RSF_CENTER_FILE_STORAGE>%WORK_HOME%/rsfcenter_storage</RSF_CENTER_FILE_STORAGE>
         </environmentVar>
     </hasor>
     <!--
@@ -68,14 +71,17 @@
          -->
         <polling threadSize="10" queueMaxSize="100000" sleepTime="1000"/>
 
-        <!-- 服务管理心跳过期时间(300秒) -->
+        <!-- 服务管理数据过期时间(300秒) -->
         <serviceManager dataExpireTime="300"/>
 
-        <!-- 数据适配器 -->
+        <!-- 数据存储 -->
+        <dataStorage default="fileStorage">
+            <memStorage>net.hasor.registry.storage.mem.MemStorageDaoCreater</memStorage>
+            <fileStorage dataDir="${RSF_CENTER_FILE_STORAGE}/">net.hasor.registry.storage.file.FileStorageDaoCreater</fileStorage>
+        </dataStorage>
+
         <adapterConfig>
-            <dataAdapter>net.hasor.registry.storage.mem.MemStorageDao</dataAdapter>
             <authQuery>net.hasor.registry.access.adapter.FileAuthQuery</authQuery>
         </adapterConfig>
-
     </hasor.registry>
 </config>

@@ -111,7 +111,15 @@ class RegistryClientManager implements TimerTask {
     //
     /**注册服务到中心*/
     public void onlineService(RsfBindInfo<?> domain) {
+        this.onlineService(domain, 1);
+    }
+    private void onlineService(RsfBindInfo<?> domain, int tryTyimes) {
         if (domain == null) {
+            return;
+        }
+        // 最大重试 3次
+        if (tryTyimes >= 3) {
+            logger.info("onlineService {} ,failed -> outof max retry count.", domain.getBindID());
             return;
         }
         if (!this.rsfContext.isOnline() || domain.isShadow()) {
@@ -140,14 +148,25 @@ class RegistryClientManager implements TimerTask {
             // .同步拉取地址数据
             if (registerInfo != null && registerInfo.isSuccess()) {
                 pullAddress(domain);//更新地址池
+            } else {
+                this.onlineService(domain, tryTyimes + 1); //重试
             }
         } catch (Exception e) {
             logger.error("service {} register to center error-> {}", domain.getBindID(), e.getMessage(), e);
+            this.onlineService(domain, tryTyimes + 1); //重试
         }
     }
     /**解除服务注册*/
     public void offlineService(RsfBindInfo<?> domain) {
+        this.offlineService(domain, 1);
+    }
+    private void offlineService(RsfBindInfo<?> domain, int tryTyimes) {
         if (domain == null) {
+            return;
+        }
+        // 最大重试 3次
+        if (tryTyimes >= 3) {
+            logger.info("offlineService {} ,failed -> outof max retry count.", domain.getBindID());
             return;
         }
         if (!this.rsfContext.isOnline() || domain.isShadow()) {
@@ -168,9 +187,11 @@ class RegistryClientManager implements TimerTask {
                     logger.error("deleteService -> failed , serviceID={} ,errorCode={} ,errorMessage={}.", //
                             serviceID, result.getErrorCode(), result.getErrorMessage());
                 }
+                this.offlineService(domain, tryTyimes + 1);
             }
         } catch (Exception e) {
             logger.error("deleteService -> failed , serviceID={} ,error={}", domain.getBindID(), e.getMessage(), e);
+            this.offlineService(domain, tryTyimes + 1);
         }
     }
     //

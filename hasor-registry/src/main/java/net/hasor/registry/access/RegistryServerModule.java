@@ -19,6 +19,7 @@ import net.hasor.core.LifeModule;
 import net.hasor.registry.RsfCenterListener;
 import net.hasor.registry.RsfCenterRegister;
 import net.hasor.registry.RsfCenterSettings;
+import net.hasor.registry.access.adapter.AdapterStorageDao;
 import net.hasor.registry.access.adapter.AuthQuery;
 import net.hasor.registry.access.adapter.DataAdapter;
 import net.hasor.registry.access.adapter.StorageDao;
@@ -44,7 +45,7 @@ public class RegistryServerModule extends RsfModule implements LifeModule {
         //
         // .adapter
         apiBinder.bindType(AuthQuery.class).to((Class<? extends AuthQuery>) this.serverSettings.getAuthQueryType());
-        apiBinder.bindType(StorageDao.class).to((Class<? extends StorageDao>) this.serverSettings.getDataAdapterType());
+        apiBinder.bindType(StorageDao.class).to(AdapterStorageDao.class);
         //
     }
     public final void onStart(AppContext appContext) throws Throwable {
