@@ -1,4 +1,9 @@
-﻿### Hasor-Core v3.2.2 (2017-?)
+﻿### Hasor-Core v3.2.3 (2018-02-?)
+**新增**
+    01. xx
+---
+
+### Hasor-Core v3.2.2 (2018-01-02)
 **新增**
     01. AppContextWarp 类,提供 AppContext 包装工具。
     02. DataQL UDF 新增 manager 接口方便管理和注册。
@@ -23,6 +28,7 @@
 **修复**
     01. fix Hasor 的 Spring 插件初始化失败问题。
     02. fix jfinal 列子编译问题。
+---
 
 ### Hasor-Core v3.2.1 (2017-10-17)
 **新增**
@@ -36,6 +42,7 @@
     01. 修复 dataQL 表达式计算时 == 判断出现异常的问题。
     02. fix plugins 插件中配置文件错乱的问题。
     03. fix RsfWebModule 已经删除但是配置依然存在的问题。
+---
 
 ### Hasor-Core v3.2.0 (2017-10-15)
 **新增**
