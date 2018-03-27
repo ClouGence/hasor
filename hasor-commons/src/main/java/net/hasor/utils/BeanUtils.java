@@ -20,6 +20,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.Map;
  * @version : 2011-6-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class BeanUtils {
+public class BeanUtils {
     /**获取指定类型的默认值。*/
     public static Object getDefaultValue(final Class<?> returnType) {
         if (returnType == null) {
@@ -349,10 +350,18 @@ public abstract class BeanUtils {
             return false;
         }
     }
+    /**测试是否支持Field方法写。*/
+    public static boolean canWriteField(final String propertyName, final Class<?> target) {
+        Field field = getField(propertyName, target);
+        if (field == null || Modifier.isFinal(field.getModifiers())) {
+            return false;
+        }
+        return true;
+    }
     /**测试是否支持writePropertyOrField方法。*/
     public static boolean canWritePropertyOrField(final String propertyName, final Class<?> target) {
         if (!BeanUtils.canWriteProperty(propertyName, target)) {
-            if (!BeanUtils.hasField(propertyName, target)) {
+            if (!BeanUtils.canWriteField(propertyName, target)) {
                 return false;
             }
         }

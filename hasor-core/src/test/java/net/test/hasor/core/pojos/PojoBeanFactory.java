@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._02_ioc.example;
-import net.hasor.core.AppContext;
-import net.hasor.core.Inject;
-import net.hasor.core.InjectMembers;
-import net.test.hasor.core._01_bean.pojo.PojoBean;
-import net.test.hasor.core._01_bean.pojo.PojoInfo;
+package net.test.hasor.core.pojos;
+import net.hasor.core.Provider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
- * 通过{@link InjectMembers}接口进行注入。
+ * 工厂
  * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public class CustomIocBean implements InjectMembers {
-    @Inject
-    public PojoInfo iocBeanTest = null; // <-因为实现了InjectMembers接口，因此@Inject注解将会失效。
-    public PojoInfo iocBean     = null; //
-    //
-    public void doInject(AppContext appContext) throws Throwable {
-        this.iocBean = new PojoBean();
+public class PojoBeanFactory implements Provider<PojoInfo> {
+    protected     Logger  logger = LoggerFactory.getLogger(getClass());
+    public static boolean called = false;
+    @Override
+    public PojoBean get() {
+        called = true;
+        logger.debug("create bean.");
+        return new PojoBean();
     }
 }

@@ -195,7 +195,7 @@ public class ContextSerializerFactory {
             _deserializerClassNameMap.putAll(_staticClassNameMap);
         }
         HashMap<Class<?>, Class<?>> classMap = new HashMap<Class<?>, Class<?>>();
-        initSerializerFiles("META-INF/hessian/serializers", _serializerFiles, classMap, Serializer.class);
+        initSerializerFiles("META-INF/hasor-framework/rsf-hessian/serializers", _serializerFiles, classMap, Serializer.class);
         for (Map.Entry<Class<?>, Class<?>> entry : classMap.entrySet()) {
             try {
                 Serializer ser = (Serializer) entry.getValue().newInstance();
@@ -208,7 +208,7 @@ public class ContextSerializerFactory {
             }
         }
         classMap = new HashMap<Class<?>, Class<?>>();
-        initSerializerFiles("META-INF/hessian/deserializers", _deserializerFiles, classMap, Deserializer.class);
+        initSerializerFiles("META-INF/hasor-framework/rsf-hessian/deserializers", _deserializerFiles, classMap, Deserializer.class);
         for (Map.Entry<Class<?>, Class<?>> entry : classMap.entrySet()) {
             try {
                 Deserializer ser = (Deserializer) entry.getValue().newInstance();

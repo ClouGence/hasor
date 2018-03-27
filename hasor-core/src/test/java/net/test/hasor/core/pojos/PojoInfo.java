@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._01_bean.pojo;
-import net.hasor.core.Provider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package net.test.hasor.core.pojos;
 /**
- * 工厂
+ * 一个Bean
  * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public class PojoBeanFactory implements Provider<PojoInfo> {
-    protected     Logger  logger = LoggerFactory.getLogger(getClass());
-    public static boolean called = false;
-    @Override
-    public PojoBean get() {
-        called = true;
-        logger.debug("create bean.");
-        return new PojoBean();
-    }
+public interface PojoInfo {
+    public String getName();
+
+    public String getAddress();
 }

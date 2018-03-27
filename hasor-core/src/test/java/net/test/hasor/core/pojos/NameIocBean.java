@@ -13,16 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._01_bean.pojo;
-import net.hasor.core.ImplBy;
+package net.test.hasor.core.pojos;
+import net.hasor.core.Inject;
+import net.test.hasor.core.pojos.PojoInfo;
 /**
- * 一个Bean
+ * 用名字区分Bean
  * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-@ImplBy(PojoBean.class)
-public interface IntefaceBean {
-    public String getName();
-
-    public String getAddress();
+public class NameIocBean {
+    @Inject("beanA")
+    private PojoInfo iocBeanA;
+    @Inject("beanB")
+    private PojoInfo iocBeanB;
+    //
+    //
+    public PojoInfo getIocBeanA() {
+        return iocBeanA;
+    }
+    public void setIocBeanA(PojoInfo iocBeanA) {
+        this.iocBeanA = iocBeanA;
+    }
+    public PojoInfo getIocBeanB() {
+        return iocBeanB;
+    }
+    public void setIocBeanB(PojoInfo iocBeanB) {
+        this.iocBeanB = iocBeanB;
+    }
 }

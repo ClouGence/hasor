@@ -13,14 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._01_bean.pojo;
+package net.test.hasor.core.pojos;
+import net.hasor.core.Init;
 /**
  * 一个Bean
  * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface PojoInfo {
-    public String getName();
-
-    public String getAddress();
+public class InitBean2 extends PojoBean {
+    public boolean called = false;
+    @Init
+    public void print() {
+        called = true;
+        System.out.println("hello init method is print." + this.getClass());
+    }
 }

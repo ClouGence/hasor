@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.setting;
+import net.hasor.core.Settings;
+import net.hasor.utils.IOUtils;
 import net.hasor.utils.ResourcesUtils;
 
 import java.io.File;
@@ -22,8 +24,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 /**
  * 继承自{@link InputStreamSettings}父类，该类自动装载 classpath 中所有静态配置文件。
@@ -33,9 +33,9 @@ import java.util.List;
  */
 public class StandardContextSettings extends InputStreamSettings {
     /**主配置文件名称*/
-    public static final String MainSettingName   = "hasor-config.xml";
+    public static final  String MainSettingName = "hasor-config.xml";
     /**默认静态配置文件名称*/
-    public static final String StaticSettingName = "static-config.xml";
+    private static final String SechmaName      = "/META-INF/hasor.schemas";
     private URI settingURI;
     //
     private void outInitLog(String mode, Object oriResource) {
@@ -93,36 +93,21 @@ public class StandardContextSettings extends InputStreamSettings {
     protected void readyLoad() throws IOException {
         super.readyLoad();
         //1.装载所有static-config.xml
-        List<URL> streamList = ResourcesUtils.getResources(StandardContextSettings.StaticSettingName);
-        //2.排序，确保位于jar包中的资源排序优先级靠后。
-        //因为覆盖加载是顺序的，因此先加载位于jar中的资源。然后覆盖它们。
-        Collections.sort(streamList, new Comparator<URL>() {
-            @Override
-            public int compare(final URL o1, final URL o2) {
-                String o1p = o1.getProtocol();
-                String o2p = o2.getProtocol();
-                if (o1p.equals(o2p)) {
-                    return 0;
-                }
-                if (o1p.equals("jar")) {
-                    return -1;
-                }
-                if (o2p.equals("jar")) {
-                    return 1;
-                }
-                return 0;
+        List<URL> schemaUrlList = ResourcesUtils.getResources(SechmaName);
+        for (URL schemaUrl : schemaUrlList) {
+            InputStream sechmaStream = ResourcesUtils.getResourceAsStream(schemaUrl);
+            List<String> readLines = IOUtils.readLines(sechmaStream, Settings.DefaultCharset);
+            if (readLines == null || readLines.isEmpty()) {
+                logger.warn("found nothing , {}", schemaUrl.toString());
+                continue;
             }
-        });
-        if (streamList == null || streamList.isEmpty()) {
-            logger.warn("found nothing , use match {}", StandardContextSettings.StaticSettingName);
-        } else {
-            for (URL resURL : streamList) {
-                InputStream stream = ResourcesUtils.getResourceAsStream(resURL);
+            for (String sechma : readLines) {
+                InputStream stream = ResourcesUtils.getResourceAsStream(sechma);
                 if (stream != null) {
-                    logger.info("found = {}", resURL);
-                    _addStream(stream, resURL.toString());
+                    logger.info("addSechma '{}' in '{}'", sechma, schemaUrl.toString());
+                    _addStream(stream, sechma);
                 } else {
-                    logger.error("cannot be read {}", resURL);
+                    logger.error("cannot be read '{}' in '{}'", sechma);
                 }
             }
         }

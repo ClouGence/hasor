@@ -229,14 +229,14 @@ do_stop() {
           kill -0 `cat "$APP_PID"` >/dev/null 2>&1
           if [ $? -gt 0 ]; then
             echo "PID file found but no matching process was found. Stop aborted."
-            exit 1
+            exit 0
           fi
         else
           echo "PID file is empty and has been ignored."
         fi
       else
         echo "\$APP_PID was set but the specified file does not exist. Is RsfCenter running? Stop aborted."
-        exit 1
+        exit 0
       fi
     fi
     

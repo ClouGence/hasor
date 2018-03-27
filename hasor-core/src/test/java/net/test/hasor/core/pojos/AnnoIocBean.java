@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._02_ioc.example;
+package net.test.hasor.core.pojos;
 import net.hasor.core.Inject;
 import net.hasor.core.InjectSettings;
-import net.test.hasor.core._01_bean.pojo.PojoBean;
+import net.test.hasor.core.pojos.PojoBean;
 /**
  * 注解方式注入Bean。
  * @version : 2014-1-3

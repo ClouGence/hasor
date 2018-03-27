@@ -13,29 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._02_ioc.aware;
-import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
-import net.hasor.core.BindInfo;
-import net.hasor.core.BindInfoAware;
+package net.test.hasor.core.pojos;
+import net.hasor.core.Init;
 /**
- *
- * @version : 2013-8-11
+ * 一个Bean
+ * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public class AwareBean implements AppContextAware, BindInfoAware {
-    private AppContext  appContext;
-    private BindInfo<?> bindInfo;
+public class InitBean extends PojoBean {
     public boolean called = false;
-    public void setAppContext(AppContext appContext) {
-        this.appContext = appContext;
-    }
-    public void setBindInfo(BindInfo<?> bindInfo) {
-        this.bindInfo = bindInfo;
-    }
-    public void foo() {
+    @Init
+    public void print(Object testParam) {
+        //方法参数是不会传入的。
         called = true;
-        Object sayBody = this.appContext.findBindingBean("say", String.class);
-        System.out.println("bindID=" + bindInfo.getBindID() + " -> " + sayBody);
+        System.out.println("hello init method is print. " + this.getClass());
     }
 }

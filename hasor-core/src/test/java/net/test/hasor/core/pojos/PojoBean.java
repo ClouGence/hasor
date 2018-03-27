@@ -13,31 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._02_ioc.example;
-import net.hasor.core.Inject;
-import net.test.hasor.core._01_bean.pojo.PojoInfo;
+package net.test.hasor.core.pojos;
+import java.util.UUID;
 /**
- * 用名字区分Bean
+ * 一个Bean
  * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public class NameIocBean {
-    @Inject("beanA")
-    private PojoInfo iocBeanA;
-    @Inject("beanB")
-    private PojoInfo iocBeanB;
-    //
-    //
-    public PojoInfo getIocBeanA() {
-        return iocBeanA;
+public class PojoBean implements PojoInfo, IntefaceBean {
+    private String uuid    = UUID.randomUUID().toString();
+    private String name    = "马三";
+    private String address = "北京马连洼街道办...";
+    public String getUuid() {
+        return uuid;
     }
-    public void setIocBeanA(PojoInfo iocBeanA) {
-        this.iocBeanA = iocBeanA;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
-    public PojoInfo getIocBeanB() {
-        return iocBeanB;
+    public String getName() {
+        return name;
     }
-    public void setIocBeanB(PojoInfo iocBeanB) {
-        this.iocBeanB = iocBeanB;
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getAddress() {
+        return address;
+    }
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

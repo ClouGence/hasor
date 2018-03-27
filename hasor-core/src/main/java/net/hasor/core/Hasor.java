@@ -153,7 +153,7 @@ public class Hasor extends HashMap<String, String> {
      */
     public static <T extends AppContextAware> Provider<T> autoAware(Environment env, final Provider<T> awareProvider) {
         if (awareProvider == null) {
-            return awareProvider;
+            return null;
         }
         Hasor.assertIsNotNull(env, "EventContext is null.");
         env.getEventContext().pushListener(ContextEvent_Started, new EventListener<AppContext>() {
@@ -170,7 +170,7 @@ public class Hasor extends HashMap<String, String> {
      */
     public static <T extends AppContextAware> T autoAware(Environment env, final T aware) {
         if (aware == null) {
-            return aware;
+            return null;
         }
         Hasor.assertIsNotNull(env, "EventContext is null.");
         env.getEventContext().pushListener(ContextEvent_Started, new EventListener<AppContext>() {

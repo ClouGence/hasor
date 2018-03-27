@@ -19,27 +19,11 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.test.hasor.core._01_bean.pojo.*;
+import net.test.hasor.core.pojos.*;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
- * 1.beanTest
- *      基本的Bean用法。
- * 2.interfaceBindTest
- *      给一个接口指定一个实现类。
- * 3.nameBindTest
- *      用名字区分相同类型的两个不同Bean。
- * 4.singletonDefaultBeanTest
- *      框架配置成默认单例模式。
- * 5.singletonDefaultBeanTest
- *      框架配置成默认单例模式。
- * 6.customBeanTest
- *      托管一个自己创建的Bean，被托管的Bean将成为单例。
- * 7.idBeanTest
- *      为Bean起一个唯一的名字，然后通过名字获取它。
- * 8.factoryBeanTest
- *      工厂方式创建Bean。
  *
  * @version : 2015年11月6日
  * @author 赵永春 (zyc@hasor.net)
@@ -72,8 +56,9 @@ public class BeanTest {
         });
         logger.debug("---------------------------------------------");
         //
-        //通过类型获取实现类实例。
+        //use ApiBinder.bindType(..)
         PojoInfo myBean1 = appContext.getInstance(PojoInfo.class);
+        //use @ImplBy
         IntefaceBean myBean2 = appContext.getInstance(IntefaceBean.class);
         //
         logger.debug(JSON.toJSONString(myBean1));

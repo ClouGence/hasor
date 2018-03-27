@@ -34,7 +34,7 @@ public class LogUtils {
     static {
         InputStream in = null;
         try {
-            in = LogUtils.class.getResourceAsStream("/logger_messages.properties");
+            in = LogUtils.class.getResourceAsStream("/META-INF/rsf-center/logger_messages.properties");
             errorProp.load(in);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

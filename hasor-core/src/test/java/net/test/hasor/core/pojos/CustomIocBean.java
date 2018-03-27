@@ -13,19 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._01_bean.pojo;
-import net.hasor.core.Init;
+package net.test.hasor.core.pojos;
+import net.hasor.core.AppContext;
+import net.hasor.core.Inject;
+import net.hasor.core.InjectMembers;
+import net.test.hasor.core.pojos.PojoBean;
+import net.test.hasor.core.pojos.PojoInfo;
 /**
- * 一个Bean
+ * 通过{@link InjectMembers}接口进行注入。
  * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InitBean extends PojoBean {
-    public boolean called = false;
-    @Init
-    public void print(Object testParam) {
-        //方法参数是不会传入的。
-        called = true;
-        System.out.println("hello init method is print. " + this.getClass());
+public class CustomIocBean implements InjectMembers {
+    @Inject
+    public PojoInfo iocBeanTest = null; // <-因为实现了InjectMembers接口，因此@Inject注解将会失效。
+    public PojoInfo iocBean     = null; //
+    //
+    public void doInject(AppContext appContext) throws Throwable {
+        this.iocBean = new PojoBean();
     }
 }

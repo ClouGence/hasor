@@ -16,8 +16,8 @@
 package net.test.hasor.core._04_scope;
 import com.alibaba.fastjson.JSON;
 import net.hasor.core.*;
-import net.test.hasor.core._01_bean.pojo.PojoBean;
-import net.test.hasor.core._01_bean.pojo.PojoInfo;
+import net.test.hasor.core.pojos.PojoBean;
+import net.test.hasor.core.pojos.PojoInfo;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,11 @@
-﻿### Hasor-Core v3.2.3 (2018-02-?)
-**新增**
-    01. xx
+﻿``### Hasor-Core v3.2.3 (2018-02-?)
+**改进**
+    01. 当使用 maven-shade-plugin 进行 maven 打包时由于 static-config.xml 无法通过文件追加的方式进行简单合并，因此老版本 Hasor 的工程无法使用 maven-shade-plugin 打包。
+        - 3.2.3版本之后修改了 static-config.xml 发现机制，改为通过 /META-INF/hasor.schemas 配置文件进行发现。
+        - 改进之后，使用 maven-shade-plugin 的 hasor 工程可以像处理 spring.schemas 一样处理 hasor.schemas 合并。
+    02. BeanUtils 类的 canWriteField，修复了对 Field 为 final 的判断。
+    03. rsf的内置 hessian 序列化和反序列化配置文件，路径改到 ‘META-INF/hasor-framework/rsf-hessian/’ 下面。以避免和 hessian jar包冲突。
+
 ---
 
 ### Hasor-Core v3.2.2 (2018-01-02)
