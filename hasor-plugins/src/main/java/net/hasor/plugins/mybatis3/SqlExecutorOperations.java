@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.plugins.mybatis3;
+import net.hasor.db.jdbc.JdbcOperations;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
@@ -24,7 +25,7 @@ import java.util.Map;
  * @version : 2015年5月27日
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface SqlExecutorOperations {
+public interface SqlExecutorOperations extends JdbcOperations {
     /**
      * 查询单个数据的方法。 与mybatis中的用法一致。
      *
@@ -153,7 +154,7 @@ public interface SqlExecutorOperations {
      *            Unique identifier matching the statement to execute.
      * @return int The number of rows affected by the insert.
      */
-    public int insert(String statement) throws SQLException;
+    public int insertStatement(String statement) throws SQLException;
 
     /**
      * Execute an insert statement with the given parameter object. Any generated autoincrement values or selectKey entries will modify the given parameter object properties. Only the number of rows affected will be returned.
@@ -164,7 +165,7 @@ public interface SqlExecutorOperations {
      *            A parameter object to pass to the statement.
      * @return int The number of rows affected by the insert.
      */
-    public int insert(String statement, Object parameter) throws SQLException;
+    public int insertStatement(String statement, Object parameter) throws SQLException;
 
     /**
      * Execute an update statement. The number of rows affected will be returned.
@@ -173,7 +174,7 @@ public interface SqlExecutorOperations {
      *            Unique identifier matching the statement to execute.
      * @return int The number of rows affected by the update.
      */
-    public int update(String statement) throws SQLException;
+    public int updateStatement(String statement) throws SQLException;
 
     /**
      * Execute an update statement. The number of rows affected will be returned.
@@ -184,7 +185,7 @@ public interface SqlExecutorOperations {
      *            A parameter object to pass to the statement.
      * @return int The number of rows affected by the update.
      */
-    public int update(String statement, Object parameter) throws SQLException;
+    public int updateStatement(String statement, Object parameter) throws SQLException;
 
     /**
      * Execute a delete statement. The number of rows affected will be returned.
@@ -193,7 +194,7 @@ public interface SqlExecutorOperations {
      *            Unique identifier matching the statement to execute.
      * @return int The number of rows affected by the delete.
      */
-    public int delete(String statement) throws SQLException;
+    public int deleteStatement(String statement) throws SQLException;
 
     /**
      * Execute a delete statement. The number of rows affected will be returned.
@@ -204,5 +205,5 @@ public interface SqlExecutorOperations {
      *            A parameter object to pass to the statement.
      * @return int The number of rows affected by the delete.
      */
-    public int delete(String statement, Object parameter) throws SQLException;
+    public int deleteStatement(String statement, Object parameter) throws SQLException;
 }

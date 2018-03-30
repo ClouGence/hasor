@@ -16,7 +16,7 @@
 package net.hasor.plugins.mybatis3;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.ConnectionCallback;
-import net.hasor.db.jdbc.core.JdbcConnection;
+import net.hasor.db.jdbc.core.JdbcTemplate;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -30,7 +30,7 @@ import java.util.Map;
  * @version : 2015年5月27日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SqlExecutorTemplate extends JdbcConnection implements SqlExecutorOperations {
+public class SqlExecutorTemplate extends JdbcTemplate implements SqlExecutorOperations {
     private SqlSessionFactory sessionFactory;
     /**
      * Construct a new SqlExecutorTemplate for bean usage.
@@ -151,42 +151,42 @@ public class SqlExecutorTemplate extends JdbcConnection implements SqlExecutorOp
             }
         });
     }
-    public int insert(final String statement) throws SQLException {
+    public int insertStatement(final String statement) throws SQLException {
         return this.execute(new SqlSessionCallback<Integer>() {
             public Integer doSqlSession(SqlSession sqlSession) {
                 return sqlSession.insert(statement);
             }
         });
     }
-    public int insert(final String statement, final Object parameter) throws SQLException {
+    public int insertStatement(final String statement, final Object parameter) throws SQLException {
         return this.execute(new SqlSessionCallback<Integer>() {
             public Integer doSqlSession(SqlSession sqlSession) {
                 return sqlSession.insert(statement, parameter);
             }
         });
     }
-    public int update(final String statement) throws SQLException {
+    public int updateStatement(final String statement) throws SQLException {
         return this.execute(new SqlSessionCallback<Integer>() {
             public Integer doSqlSession(SqlSession sqlSession) {
                 return sqlSession.update(statement);
             }
         });
     }
-    public int update(final String statement, final Object parameter) throws SQLException {
+    public int updateStatement(final String statement, final Object parameter) throws SQLException {
         return this.execute(new SqlSessionCallback<Integer>() {
             public Integer doSqlSession(SqlSession sqlSession) {
                 return sqlSession.update(statement, parameter);
             }
         });
     }
-    public int delete(final String statement) throws SQLException {
+    public int deleteStatement(final String statement) throws SQLException {
         return this.execute(new SqlSessionCallback<Integer>() {
             public Integer doSqlSession(SqlSession sqlSession) {
                 return sqlSession.delete(statement);
             }
         });
     }
-    public int delete(final String statement, final Object parameter) throws SQLException {
+    public int deleteStatement(final String statement, final Object parameter) throws SQLException {
         return this.execute(new SqlSessionCallback<Integer>() {
             public Integer doSqlSession(SqlSession sqlSession) {
                 return sqlSession.delete(statement, parameter);

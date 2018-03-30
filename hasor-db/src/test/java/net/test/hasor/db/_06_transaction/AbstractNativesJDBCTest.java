@@ -62,7 +62,7 @@ public abstract class AbstractNativesJDBCTest {
         JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
         String insertUser = "insert into TB_User values(?,'默罕默德','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
         System.out.println("insert new User ‘默罕默德’...");
-        jdbcTemplate.update(insertUser, newID());//执行插入语句
+        jdbcTemplate.executeUpdate(insertUser, newID());//执行插入语句
         Thread.sleep(500);
     }
     /**新增用户：赵飞燕*/
@@ -70,7 +70,7 @@ public abstract class AbstractNativesJDBCTest {
         JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
         String insertUser = "insert into TB_User values(?,'赵飞燕','muhammad','123','muhammad@hasor.net','2011-06-08 20:08:08');";
         System.out.println("insert new User ‘赵飞燕’...");
-        jdbcTemplate.update(insertUser, newID());//执行插入语句
+        jdbcTemplate.executeUpdate(insertUser, newID());//执行插入语句
         Thread.sleep(500);
     }
     /**新增用户：安妮.贝隆*/
@@ -78,7 +78,7 @@ public abstract class AbstractNativesJDBCTest {
         JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
         String insertUser = "insert into TB_User values(?,'安妮.贝隆','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
         System.out.println("insert new User ‘安妮.贝隆’...");
-        jdbcTemplate.update(insertUser, newID());//执行插入语句
+        jdbcTemplate.executeUpdate(insertUser, newID());//执行插入语句
         Thread.sleep(500);
     }
     /**新增用户：吴广*/
@@ -86,7 +86,7 @@ public abstract class AbstractNativesJDBCTest {
         JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
         String insertUser = "insert into TB_User values(?,'吴广','belon','123','belon@hasor.net','2011-06-08 20:08:08');";
         System.out.println("insert new User ‘吴广’...");
-        jdbcTemplate.update(insertUser, newID());//执行插入语句
+        jdbcTemplate.executeUpdate(insertUser, newID());//执行插入语句
         Thread.sleep(500);
     }
     //

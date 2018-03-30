@@ -543,7 +543,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     //
     //
     /***/
-    public int update(final PreparedStatementCreator psc, final PreparedStatementSetter pss) throws SQLException {
+    public int executeUpdate(final PreparedStatementCreator psc, final PreparedStatementSetter pss) throws SQLException {
         if (logger.isDebugEnabled()) {
             logger.debug("executing prepared SQL update");
         }
@@ -568,11 +568,11 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
         });
     }
     @Override
-    public int update(final PreparedStatementCreator psc) throws SQLException {
-        return this.update(psc, (PreparedStatementSetter) null);
+    public int executeUpdate(final PreparedStatementCreator psc) throws SQLException {
+        return this.executeUpdate(psc, null);
     }
     @Override
-    public int update(final String sql) throws SQLException {
+    public int executeUpdate(final String sql) throws SQLException {
         Hasor.assertIsNotNull(sql, "SQL must not be null");
         if (logger.isDebugEnabled()) {
             logger.debug("Executing SQL update [{}]", sql);
@@ -595,26 +595,26 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
         return this.execute(new UpdateStatementCallback());
     }
     @Override
-    public int update(final String sql, final PreparedStatementSetter pss) throws SQLException {
-        return this.update(new SimplePreparedStatementCreator(sql), pss);
+    public int executeUpdate(final String sql, final PreparedStatementSetter pss) throws SQLException {
+        return this.executeUpdate(new SimplePreparedStatementCreator(sql), pss);
     }
     @Override
-    public int update(final String sql, final Object... args) throws SQLException {
-        return this.update(sql, this.newArgPreparedStatementSetter(args));
+    public int executeUpdate(final String sql, final Object... args) throws SQLException {
+        return this.executeUpdate(sql, this.newArgPreparedStatementSetter(args));
     }
     @Override
-    public int update(final String sql, final SqlParameterSource paramSource) throws SQLException {
-        return this.update(this.getPreparedStatementCreator(sql, paramSource));
+    public int executeUpdate(final String sql, final SqlParameterSource paramSource) throws SQLException {
+        return this.executeUpdate(this.getPreparedStatementCreator(sql, paramSource));
     }
     @Override
-    public int update(final String sql, final Map<String, ?> paramMap) throws SQLException {
-        return this.update(this.getPreparedStatementCreator(sql, new MapSqlParameterSource(paramMap)));
+    public int executeUpdate(final String sql, final Map<String, ?> paramMap) throws SQLException {
+        return this.executeUpdate(this.getPreparedStatementCreator(sql, new MapSqlParameterSource(paramMap)));
     }
     //
     //
     //
     @Override
-    public int[] batchUpdate(final String[] sql) throws SQLException {
+    public int[] executeBatch(final String[] sql) throws SQLException {
         if (sql == null || sql.length == 0) {
             throw new NullPointerException("SQL array must not be empty");
         }
@@ -655,24 +655,24 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
         return this.execute(new BatchUpdateStatementCallback());
     }
     @Override
-    public int[] batchUpdate(final String sql, final Map<String, ?>[] batchValues) throws SQLException {
+    public int[] executeBatch(final String sql, final Map<String, ?>[] batchValues) throws SQLException {
         SqlParameterSource[] batchArgs = new SqlParameterSource[batchValues.length];
         int i = 0;
         for (Map<String, ?> values : batchValues) {
             batchArgs[i] = new MapSqlParameterSource(values);
             i++;
         }
-        return this.batchUpdate(sql, batchArgs);
+        return this.executeBatch(sql, batchArgs);
     }
     @Override
-    public int[] batchUpdate(final String sql, final SqlParameterSource[] batchArgs) throws SQLException {
+    public int[] executeBatch(final String sql, final SqlParameterSource[] batchArgs) throws SQLException {
         if (batchArgs.length <= 0) {
             return new int[] { 0 };
         }
-        return this.batchUpdate(sql, new SqlParameterSourceBatchPreparedStatementSetter(sql, batchArgs));
+        return this.executeBatch(sql, new SqlParameterSourceBatchPreparedStatementSetter(sql, batchArgs));
     }
     @Override
-    public int[] batchUpdate(String sql, final BatchPreparedStatementSetter pss) throws SQLException {
+    public int[] executeBatch(String sql, final BatchPreparedStatementSetter pss) throws SQLException {
         if (logger.isDebugEnabled()) {
             logger.debug("Executing SQL batch update [{}].", sql);
         }

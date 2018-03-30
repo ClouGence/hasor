@@ -369,35 +369,35 @@ public interface JdbcOperations {
     //
 
     /**执行一个更新语句（insert、update、delete），这个查询将会使用 PreparedStatement 接口操作。*/
-    public int update(PreparedStatementCreator psc) throws SQLException;
+    public int executeUpdate(PreparedStatementCreator psc) throws SQLException;
 
     /**执行一条 insert 或 update、delete 语句，返回值用于表示受影响的行数。*/
-    public int update(String sql) throws SQLException;
+    public int executeUpdate(String sql) throws SQLException;
 
     /**执行一个更新语句（insert、update、delete），这个查询将会使用 PreparedStatement 接口操作。*/
-    public int update(String sql, PreparedStatementSetter pss) throws SQLException;
+    public int executeUpdate(String sql, PreparedStatementSetter pss) throws SQLException;
 
     /**执行一个更新语句（insert、update、delete），这个查询将会使用 PreparedStatement 接口操作。*/
-    public int update(String sql, Object... args) throws SQLException;
+    public int executeUpdate(String sql, Object... args) throws SQLException;
 
     /**执行一个更新语句（insert、update、delete），这个查询将会使用 PreparedStatement 接口操作。*/
-    public int update(String sql, SqlParameterSource paramSource) throws SQLException;
+    public int executeUpdate(String sql, SqlParameterSource paramSource) throws SQLException;
 
     /**执行一个更新语句（insert、update、delete），这个查询将会使用 PreparedStatement 接口操作。*/
-    public int update(String sql, Map<String, ?> paramMap) throws SQLException;
+    public int executeUpdate(String sql, Map<String, ?> paramMap) throws SQLException;
     //
     //
     //
 
     /**批量执行 insert 或 update、delete 语句，返回值用于表示受影响的行数。*/
-    public int[] batchUpdate(String[] sql) throws SQLException;
+    public int[] executeBatch(String[] sql) throws SQLException;
 
     /**批量执行 insert 或 update、delete 语句，这一批次中的SQL 参数使用 BatchPreparedStatementSetter 接口设置。*/
-    public int[] batchUpdate(String sql, BatchPreparedStatementSetter pss) throws SQLException;
+    public int[] executeBatch(String sql, BatchPreparedStatementSetter pss) throws SQLException;
 
     /**批量执行 insert 或 update、delete 语句，这一批次中的SQL 参数使用 BatchPreparedStatementSetter 接口设置。*/
-    public int[] batchUpdate(String sql, Map<String, ?>[] batchValues) throws SQLException;
+    public int[] executeBatch(String sql, Map<String, ?>[] batchValues) throws SQLException;
 
     /**批量执行 insert 或 update、delete 语句，这一批次中的SQL 参数使用 BatchPreparedStatementSetter 接口设置。*/
-    public int[] batchUpdate(String sql, SqlParameterSource[] batchArgs) throws SQLException;
+    public int[] executeBatch(String sql, SqlParameterSource[] batchArgs) throws SQLException;
 }

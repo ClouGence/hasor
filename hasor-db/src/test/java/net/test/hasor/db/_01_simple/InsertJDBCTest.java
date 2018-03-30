@@ -47,10 +47,10 @@ public class InsertJDBCTest {
         int count = jdbc.queryForInt(quertCount);
         if (count > 0) {
             System.out.println("记录已经存在，删除该记录重新录入。");
-            jdbc.update(deleteData);
+            jdbc.executeUpdate(deleteData);
         }
         //
-        jdbc.update(insertData);//执行插入语句
+        jdbc.executeUpdate(insertData);//执行插入语句
         count = jdbc.queryForInt(quertCount);
         System.out.println("插入结果：" + count);
     }
@@ -76,7 +76,7 @@ public class InsertJDBCTest {
             batchValues[i].put("Email", String.format("autoUser_%s@hasor.net", i));
             batchValues[i].put("RegTime", new Date());
         }
-        jdbc.batchUpdate(batchInsert, batchValues);//批量执行执行插入语句
+        jdbc.executeBatch(batchInsert, batchValues);//批量执行执行插入语句
         HasorUnit.printMapList(jdbc.queryForList("select * from TB_User"));
         //
         showUserCount(jdbc);//显示当前用户总数

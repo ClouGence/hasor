@@ -40,11 +40,11 @@ public class InitDataService {
         //1.初始化MySQL
         mysqlJDBC.execute("drop table TB_User");
         mysqlJDBC.loadSQL("TB_User.sql");
-        mysqlJDBC.update(insertUser_1, newID());//执行插入语句
-        mysqlJDBC.update(insertUser_2, newID());//执行插入语句
+        mysqlJDBC.executeUpdate(insertUser_1, newID());//执行插入语句
+        mysqlJDBC.executeUpdate(insertUser_2, newID());//执行插入语句
         //2.初始化HSQL
         hsqlJDBC.execute("drop table TB_User");
         hsqlJDBC.loadSQL("TB_User.sql");
-        hsqlJDBC.update(insertUser_3, newID());//执行插入语句
+        hsqlJDBC.executeUpdate(insertUser_3, newID());//执行插入语句
     }
 }
