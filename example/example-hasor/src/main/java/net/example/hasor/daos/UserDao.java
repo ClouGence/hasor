@@ -23,7 +23,7 @@ public class UserDao {
     /** 新增用户 */
     public boolean insertUser(UserDTO userDO) throws Exception {
         //
-        int execute = this.jdbcTemplate.update("insert into TEST_USER_INFO ("//
+        int execute = this.jdbcTemplate.executeUpdate("insert into TEST_USER_INFO ("//
                 + "    `account`,`email`,`password`,`nick`,`create_time`,`modify_time`"//
                 + ") values ("//
                 + "    :account,:email,:password,:nick,:create_time,:modify_time" + //

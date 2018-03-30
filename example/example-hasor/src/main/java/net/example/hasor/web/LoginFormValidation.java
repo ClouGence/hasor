@@ -17,6 +17,7 @@ package net.example.hasor.web;
 import net.example.hasor.services.UserManager;
 import net.hasor.core.Inject;
 import net.hasor.web.valid.ValidInvoker;
+import net.hasor.web.valid.ValidStrategy;
 import net.hasor.web.valid.Validation;
 import org.apache.commons.lang3.StringUtils;
 /**
@@ -28,7 +29,7 @@ public class LoginFormValidation implements Validation<LoginForm> {
     @Inject
     private UserManager userManager;
     @Override
-    public void doValidation(String validType, LoginForm dataForm, ValidInvoker errors) {
+    public ValidStrategy doValidation(String validType, LoginForm dataForm, ValidInvoker errors) {
         // .填写验证
         if (StringUtils.isBlank(dataForm.getAccount())) {
             errors.addError("loginMessage", "帐号为空。");
@@ -42,5 +43,6 @@ public class LoginFormValidation implements Validation<LoginForm> {
         if (!checkLogin) {
             errors.addError("loginMessage", "帐号密码验证失败。");
         }
+        return ValidStrategy.DEFAULT_CONTINUE;
     }
 }
