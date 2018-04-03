@@ -13,16 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.rpc.caller.remote;
-import net.hasor.rsf.InterAddress;
-import net.hasor.rsf.domain.ResponseInfo;
-import net.hasor.rsf.rpc.caller.SenderListener;
+package net.hasor.rsf.domain;
 /**
- * 可以提供向远端响应Response的能力。
- * @version : 2015年12月8日
+ * 请求头标记
+ * @version : 2014年10月25日
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface RemoteSenderListener extends SenderListener {
-    /**向远端发送响应数据。*/
-    public void sendResponse(InterAddress target, ResponseInfo info);
+public enum RsfFlags {
+    P2PFlag((short) 0),      // 第0位，P2P调用
+    ;
+    private int flagMark;
+    RsfFlags(short flagMark) {
+        this.flagMark = flagMark;
+    }
+    //
+    public short addTag(short oldValue) {
+        return (short) (1 << this.flagMark | oldValue);
+    }
+    public short removeTag(short oldValue) {
+        return (short) (~(1 << this.flagMark) & oldValue);
+    }
+    public boolean testTag(short oldValue) {
+        return addTag(oldValue) == oldValue;
+    }
 }

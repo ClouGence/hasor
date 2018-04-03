@@ -118,7 +118,7 @@ public class HttpCoder extends ChannelDuplexHandler {
             String requestURI = ((HttpRequest) msg).uri();
             InetSocketAddress remoteSocket = (InetSocketAddress) ctx.channel().remoteAddress();
             InterAddress remoteAddress = new InterAddress("socket", remoteSocket.getAddress().getHostAddress(), remoteSocket.getPort(), "unknown");
-            InterAddress local = this.connector.getPublishAddress();
+            InterAddress local = this.connector.getBindAddress();
             //
             this.httpRequest = new RsfHttpRequestObject(remoteAddress, local, new DefaultFullHttpRequest(httpVersion, httpMethod, requestURI));
             this.httpResponse = new RsfHttpResponseObject(this.httpRequest);

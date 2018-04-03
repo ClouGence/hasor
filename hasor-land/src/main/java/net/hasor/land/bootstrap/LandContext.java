@@ -53,7 +53,7 @@ public class LandContext {
         }
         //
         String protocol = this.rsfContext.getDefaultProtocol();
-        this.workAddress = this.rsfContext.publishAddress(protocol);
+        this.workAddress = this.rsfContext.bindAddress(protocol);
         //
         // .集群信息
         this.servers = new HashMap<String, InterAddress>();

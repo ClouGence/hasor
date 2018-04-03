@@ -17,6 +17,7 @@ package net.hasor.rsf.rpc.caller;
 import net.hasor.rsf.*;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.RsfException;
+import net.hasor.rsf.domain.RsfFlags;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.rsf.domain.provider.AddressProvider;
 import net.hasor.utils.future.FutureCallback;
@@ -188,6 +189,8 @@ public class RsfCaller extends RsfRequestManager {
             } else if ("setTarget".equals(callMethod.getName())) {
                 this.target = (AddressProvider) params[0];
                 return null;
+            } else if ("toString".equals(callMethod.getName())) {
+                return this.target.toString();
             } else {
                 RsfServiceWrapper wrapper = (RsfServiceWrapper) target;
                 AddressProvider targetAddress = wrapper.getTarget();
@@ -209,13 +212,11 @@ public class RsfCaller extends RsfRequestManager {
     public Object syncInvoke(AddressProvider target, RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) throws InterruptedException, ExecutionException, TimeoutException {
         //1.准备Request
         int timeout = validateTimeout(bindInfo.getClientTimeout());
-        Method targetMethod = RsfRuntimeUtils.getServiceMethod(bindInfo.getBindType(), methodName, parameterTypes);
-        RsfRequestFormLocal request = new RsfRequestFormLocal(target, bindInfo, targetMethod, parameterObjects, this);
+        RsfRequestFormLocal request = buildRsfRequestFormLocal(target, bindInfo, methodName, parameterTypes, parameterObjects);
         //2.发起Request
         RsfFuture rsfFuture = doSendRequest(request, null);
         //3.返回数据
-        RsfResponse response = rsfFuture.get(timeout, TimeUnit.MILLISECONDS);
-        return response.getData();
+        return rsfFuture.get(timeout, TimeUnit.MILLISECONDS).getData();
     }
     /**
      * 异步方式调用远程服务。
@@ -227,8 +228,7 @@ public class RsfCaller extends RsfRequestManager {
      */
     public RsfFuture asyncInvoke(AddressProvider target, RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) {
         //1.准备Request
-        Method targetMethod = RsfRuntimeUtils.getServiceMethod(bindInfo.getBindType(), methodName, parameterTypes);
-        RsfRequestFormLocal request = new RsfRequestFormLocal(target, bindInfo, targetMethod, parameterObjects, this);
+        RsfRequestFormLocal request = buildRsfRequestFormLocal(target, bindInfo, methodName, parameterTypes, parameterObjects);
         //2.发起Request
         return doSendRequest(request, null);
     }
@@ -265,14 +265,23 @@ public class RsfCaller extends RsfRequestManager {
      */
     public void callBackRequest(AddressProvider target, RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects, FutureCallback<RsfResponse> listener) {
         //1.准备Request
-        Method targetMethod = RsfRuntimeUtils.getServiceMethod(bindInfo.getBindType(), methodName, parameterTypes);
-        RsfRequestFormLocal request = new RsfRequestFormLocal(target, bindInfo, targetMethod, parameterObjects, this);
+        RsfRequestFormLocal request = buildRsfRequestFormLocal(target, bindInfo, methodName, parameterTypes, parameterObjects);
         //2.发起Request
         doSendRequest(request, listener);
     }
+    //
     private int validateTimeout(int timeout) {
         if (timeout <= 0)
             timeout = this.getContext().getSettings().getDefaultTimeout();
         return timeout;
+    }
+    private RsfRequestFormLocal buildRsfRequestFormLocal(AddressProvider target, RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) {
+        short flags = 0;
+        if (target.isDistributed()) {
+            flags = RsfFlags.P2PFlag.addTag(flags);
+        }
+        Method targetMethod = RsfRuntimeUtils.getServiceMethod(bindInfo.getBindType(), methodName, parameterTypes);
+        InterAddress targetAddress = target.get(bindInfo.getBindID(), methodName, parameterObjects);
+        return new RsfRequestFormLocal(targetAddress, flags, bindInfo, targetMethod, parameterObjects, this);
     }
 }

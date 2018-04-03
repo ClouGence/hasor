@@ -35,6 +35,7 @@ public class RpcRequestProtocolV1 implements Protocol<RequestBlock> {
         //* byte[1]  keepData                             保留区
         buf.writeByte(0);
         //* byte[3]  contentLength                        内容大小(max = 16MB)
+        //
         ByteBuf requestBody = this.encodeRequest(reqMsg);
         int bodyLength = requestBody.readableBytes();
         bodyLength = (bodyLength << 8) >>> 8;//左移8未，在无符号右移8位。形成最大16777215字节的限制。
@@ -58,6 +59,8 @@ public class RpcRequestProtocolV1 implements Protocol<RequestBlock> {
         bodyBuf.writeShort(reqMsg.getSerializeType());
         //* byte[4]  clientTimeout                        远程客户端超时时间
         bodyBuf.writeInt(reqMsg.getClientTimeout());
+        //* byte[2]  flag                                 标签
+        bodyBuf.writeShort(reqMsg.getFlags());
         //* --------------------------------------------------------bytes =1 ~ 1021
         //* byte[1]  paramCount                           参数总数
         int[] paramMapping = reqMsg.getParameters();
@@ -99,7 +102,7 @@ public class RpcRequestProtocolV1 implements Protocol<RequestBlock> {
         RequestBlock req = new RequestBlock();
         req.setHead(rsfHead);
         req.setRequestID(requestID);
-        //* --------------------------------------------------------bytes =14
+        //* --------------------------------------------------------bytes =16
         //* byte[2]  servicesName-(attr-index)            远程服务名
         req.setServiceName(buf.readShort());
         //* byte[2]  servicesGroup-(attr-index)           远程服务分组
@@ -112,6 +115,8 @@ public class RpcRequestProtocolV1 implements Protocol<RequestBlock> {
         req.setSerializeType(buf.readShort());
         //* byte[4]  clientTimeout                        远程客户端超时时间
         req.setClientTimeout(buf.readInt());
+        //* byte[2]  flag                                 标签
+        req.setFlags(buf.readShort());
         //* --------------------------------------------------------bytes =1 ~ 1021
         //* byte[1]  paramCount                           参数总数
         byte paramCount = buf.readByte();

@@ -54,7 +54,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private   String                    defaultProtocol       = null;
     private   Map<String, String>       connectorSet          = null;
     private   Map<String, InterAddress> bindAddressSet        = null;
-    private   Map<String, InterAddress> gatewayAddressMap     = null;
     //
     private   int                       consolePort           = 2180;
     private   String[]                  consoleInBound        = null;
@@ -149,10 +148,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         return this.bindAddressSet.get(protocolName);
     }
     @Override
-    public InterAddress getGatewaySet(String protocolName) {
-        return this.gatewayAddressMap.get(protocolName);
-    }
-    @Override
     public String getProtocolConfigKey(String protocolName) {
         return this.connectorSet.get(protocolName);
     }
@@ -233,7 +228,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
         InetAddress inetAddress = NetworkUtils.finalBindAddress(bindAddress);
         this.bindAddress = inetAddress.getHostAddress();
         this.bindAddressSet = new HashMap<String, InterAddress>();
-        this.gatewayAddressMap = new HashMap<String, InterAddress>();
         Map<String, String> connectorTmpSet = new HashMap<String, String>();
         XmlNode[] connectorRoot = getXmlNodeArray("hasor.rsfConfig.connectorSet");
         if (connectorRoot != null) {
@@ -265,15 +259,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
             // .解析没问哦在放到connectorSet中
             this.connectorSet.put(name, basePath);
             this.bindAddressSet.put(name, localAddress);
-            //
-            // .解析网关配置（可选）
-            String gatewayHost = this.getString(basePath + ".gatewayAddress");
-            int gatewayPort = this.getInteger(basePath + ".gatewayPort", 0);
-            if (gatewayPort <= 0 || StringUtils.isBlank(gatewayHost))
-                continue;
-            InetAddress gatewayInetAddress = NetworkUtils.finalBindAddress(gatewayHost);
-            InterAddress gatewayAddress = new InterAddress(protocol, gatewayInetAddress.getHostAddress(), gatewayPort, this.unitName);
-            this.gatewayAddressMap.put(name, gatewayAddress);
         }
         //
         // .确保有默认的协议可用

@@ -23,6 +23,7 @@ import java.util.List;
  */
 public class RequestInfo extends OptionInfo {
     private long         requestID      = 0;    //请求ID
+    private short        flags          = 0;    //标签
     private long         receiveTime    = 0;    //接收请求（本地时间戳）
     private String       serviceName    = null; //远程服务名
     private String       serviceGroup   = null; //远程服务分组
@@ -46,6 +47,14 @@ public class RequestInfo extends OptionInfo {
     /**设置请求ID。*/
     public void setRequestID(long requestID) {
         this.requestID = requestID;
+    }
+    /**获取flag*/
+    public short getFlags() {
+        return flags;
+    }
+    /**设置flag。*/
+    public void setFlags(short flags) {
+        this.flags = flags;
     }
     /**数据包到达时间*/
     public void setReceiveTime(long receiveTime) {

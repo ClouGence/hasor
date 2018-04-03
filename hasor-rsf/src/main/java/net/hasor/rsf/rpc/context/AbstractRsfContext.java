@@ -26,13 +26,10 @@ import net.hasor.rsf.domain.*;
 import net.hasor.rsf.domain.provider.AddressProvider;
 import net.hasor.rsf.domain.provider.InstanceAddressProvider;
 import net.hasor.rsf.domain.provider.PoolAddressProvider;
+import net.hasor.rsf.rpc.caller.SenderListener;
 import net.hasor.rsf.rpc.caller.remote.RemoteRsfCaller;
-import net.hasor.rsf.rpc.caller.remote.RemoteSenderListener;
 import net.hasor.rsf.rpc.client.RpcRsfClient;
-import net.hasor.rsf.rpc.net.Connector;
-import net.hasor.rsf.rpc.net.ReceivedAdapter;
-import net.hasor.rsf.rpc.net.RsfChannel;
-import net.hasor.rsf.rpc.net.RsfNetManager;
+import net.hasor.rsf.rpc.net.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +37,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
@@ -49,7 +45,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractRsfContext implements RsfContext, ContextStartListener, ContextShutdownListener {
-    protected     Logger logger     = LoggerFactory.getLogger(getClass());
+    protected Logger logger = LoggerFactory.getLogger(getClass());
     private final RsfBeanContainer     rsfBeanContainer; // 服务管理
     private final RsfEnvironment       rsfEnvironment;   // 环境&配置
     private final RemoteRsfCaller      rsfCaller;        // 调用器
@@ -87,7 +83,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
             throw new IllegalStateException("not running any protocol, please check the configuration.");
         }
         for (String protocol : protocols) {
-            InterAddress interAddress = this.publishAddress(protocol);
+            InterAddress interAddress = this.bindAddress(protocol);
             this.logger.info("rsfContext -> doStart , bindAddress : {}", interAddress.toHostSchema());
         }
     }
@@ -190,20 +186,6 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
             return null;
         return connector.getBindAddress();
     }
-    @Override
-    public InterAddress gatewayAddress(String protocol) {
-        Connector connector = this.rsfNetManager.findConnector(protocol);
-        if (connector == null)
-            return null;
-        return connector.getGatewayAddress();
-    }
-    @Override
-    public InterAddress publishAddress(String protocol) {
-        Connector connector = this.rsfNetManager.findConnector(protocol);
-        if (connector == null)
-            return null;
-        return connector.getPublishAddress();
-    }
     //
     public RsfClient getRsfClient() {
         return new RpcRsfClient(this.poolProvider, this.rsfCaller);
@@ -245,7 +227,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
     //
     //
     /*接收到网络数据 & 发送网络数据*/
-    private class Transport extends ReceivedAdapter implements RemoteSenderListener {
+    private class Transport extends ReceivedAdapter implements SenderListener {
         @Override
         public void receivedMessage(InterAddress form, ResponseInfo response) {
             rsfCaller.putResponse(response);
@@ -256,34 +238,33 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         }
         //
         @Override
-        public void sendRequest(Provider<InterAddress> targetProvider, RequestInfo info) {
-            InterAddress target = targetProvider.get();
+        public void sendRequest(InterAddress toAddress, RequestInfo info, SendCallBack callBack) {
             try {
-                Connector connector = findConnector(target);
-                RsfChannel channel = connector.getOrConnectionTo(target).get();
+                Connector connector = findConnector(toAddress);
+                RsfChannel channel = connector.getOrConnectionTo(toAddress).get();
                 if (channel != null) {
-                    channel.sendData(info, null);
+                    channel.sendData(info, callBack);
                 } else {
-                    throw new RsfException(ProtocolStatus.NetworkError, "Invalid address ->" + target.toHostSchema());
+                    throw new RsfException(ProtocolStatus.NetworkError, "Invalid address ->" + toAddress.toHostSchema());
                 }
             } catch (Throwable e) {
-                addressPool.invalidAddress(target);//异常地址失效
+                addressPool.invalidAddress(toAddress);//异常地址失效
                 rsfCaller.putResponse(info.getRequestID(), e);
                 logger.error("sendRequest - " + e.getMessage());
             }
         }
         @Override
-        public void sendResponse(InterAddress target, ResponseInfo info) {
+        public void sendResponse(InterAddress toAddress, ResponseInfo info, SendCallBack callBack) {
             try {
-                Connector connector = findConnector(target);
-                RsfChannel channel = connector.getOrConnectionTo(target).get();
+                Connector connector = findConnector(toAddress);
+                RsfChannel channel = connector.getOrConnectionTo(toAddress).get();
                 if (channel != null) {
-                    channel.sendData(info, null);
+                    channel.sendData(info, callBack);
                 } else {
-                    throw new RsfException(ProtocolStatus.NetworkError, "Invalid address ->" + target.toHostSchema());
+                    throw new RsfException(ProtocolStatus.NetworkError, "Invalid address ->" + toAddress.toHostSchema());
                 }
             } catch (Throwable e) {
-                addressPool.invalidAddress(target);//异常地址失效
+                addressPool.invalidAddress(toAddress);//异常地址失效
                 logger.error("sendResponse - " + e.getMessage(), e);
             }
         }

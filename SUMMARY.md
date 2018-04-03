@@ -85,7 +85,7 @@
   * [第十节 环境变量](document/chapter-03/subject-10/Environment.md)
     * [1. 使用环境变量](document/chapter-03/subject-10/VarEnv.md)
     * [2. 模版化配置文件](document/chapter-03/subject-10/TemplateSettings.md)
-    * [3. env.config](document/chapter-03/subject-10/EnvConfig.md)
+    * [3. hconfig.properties](document/chapter-03/subject-10/EnvConfig.md)
 * [第四章 Web开发](document/chapter-04/Web.md)
   * [第一节 热身](document/chapter-04/subject-01/Start.md)
     * [1. Web工程配置](document/chapter-04/subject-01/Start.md)

@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.caller;
-import net.hasor.core.Provider;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.domain.RequestInfo;
+import net.hasor.rsf.domain.ResponseInfo;
+import net.hasor.rsf.rpc.net.SendCallBack;
 /**
  *
  * @version : 2015年12月8日
@@ -24,5 +25,8 @@ import net.hasor.rsf.domain.RequestInfo;
  */
 public interface SenderListener {
     /**向远端发送请求。*/
-    public void sendRequest(Provider<InterAddress> targetProvider, RequestInfo info);
+    public void sendRequest(InterAddress toAddress, RequestInfo info, SendCallBack callBack);
+
+    /**向远端发送响应数据。*/
+    public void sendResponse(InterAddress target, ResponseInfo info, SendCallBack callBack);
 }

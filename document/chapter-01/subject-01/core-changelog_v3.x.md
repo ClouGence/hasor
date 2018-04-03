@@ -5,7 +5,8 @@
         - 改进之后，使用 maven-shade-plugin 的 hasor 工程可以像处理 spring.schemas 一样处理 hasor.schemas 合并。
     02. BeanUtils 类的 canWriteField，修复了对 Field 为 final 的判断。
     03. rsf的内置 hessian 序列化和反序列化配置文件，路径改到 ‘META-INF/hasor-framework/rsf-hessian/’ 下面。以避免和 hessian jar包冲突。
-
+    04. rsf Gateway 从 rsf 基础框架中删除后面会独立成一个框架。
+    05. env.config 配置文件名，更名为 hconfig.properties。
 ---
 
 ### Hasor-Core v3.2.2 (2018-01-02)

@@ -31,7 +31,7 @@ public class CustomerClient {
             @Override
             public void loadModule(RsfApiBinder apiBinder) throws Throwable {
                 InterAddress localRsf = new InterAddress("rsf://127.0.0.1:2180/default");
-                InterAddress localHprose = new InterAddress("http://127.0.0.1:2181/default");
+                InterAddress localHprose = null;// new InterAddress("http://127.0.0.1:2181/default");
                 apiBinder.rsfService(EchoService.class).bindAddress(localRsf, localHprose).register();
                 apiBinder.rsfService(MessageService.class).bindAddress(localRsf, localHprose).register();
             }

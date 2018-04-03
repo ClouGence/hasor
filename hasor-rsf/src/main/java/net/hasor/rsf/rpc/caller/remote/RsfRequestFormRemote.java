@@ -19,9 +19,8 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.domain.AttributeSet;
-import net.hasor.rsf.domain.OptionKeys;
 import net.hasor.rsf.domain.RequestInfo;
-import net.hasor.utils.StringUtils;
+import net.hasor.rsf.domain.RsfFlags;
 
 import java.lang.reflect.Method;
 /**
@@ -57,7 +56,7 @@ class RsfRequestFormRemote extends AttributeSet implements RsfRequest {
     }
     @Override
     public boolean isP2PCalls() {
-        return StringUtils.isNotBlank(this.requestInfo.getOption(OptionKeys.TargetAddress));
+        return RsfFlags.P2PFlag.testTag(this.requestInfo.getFlags());
     }
     @Override
     public boolean isMessage() {

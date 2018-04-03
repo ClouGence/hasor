@@ -37,12 +37,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ShakeHands extends ChannelInboundHandlerAdapter {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     private final AtomicBoolean  atomicBoolean;
-    private final InterAddress   publishAddress;
+    private final InterAddress   bindAddress;
     private final RsfEnvironment rsfEnvironment;
     public ShakeHands(Connector connector) {
         this.atomicBoolean = new AtomicBoolean(false);
         this.rsfEnvironment = connector.getRsfEnvironment();
-        this.publishAddress = connector.getPublishAddress();
+        this.bindAddress = connector.getBindAddress();
     }
     //
     @Override
@@ -67,7 +67,7 @@ public class ShakeHands extends ChannelInboundHandlerAdapter {
         ResponseInfo options = new ResponseInfo();
         options.setRequestID(-1);
         options.setStatus(ProtocolStatus.OK);
-        options.addOption("SERVER_INFO", this.publishAddress.toHostSchema());
+        options.addOption("SERVER_INFO", this.bindAddress.toHostSchema());
         ctx.writeAndFlush(options);
         //
         super.channelActive(ctx);

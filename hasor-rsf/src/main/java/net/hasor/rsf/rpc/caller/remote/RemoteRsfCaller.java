@@ -23,6 +23,7 @@ import net.hasor.rsf.domain.ProtocolStatus;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.rpc.caller.RsfCaller;
+import net.hasor.rsf.rpc.caller.SenderListener;
 import net.hasor.rsf.utils.ExecutesManager;
 import net.hasor.rsf.utils.ProtocolUtils;
 
@@ -34,10 +35,10 @@ import java.util.concurrent.RejectedExecutionException;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RemoteRsfCaller extends RsfCaller {
-    private final ExecutesManager      executesManager;
-    private final RemoteSenderListener senderListener;
+    private final ExecutesManager executesManager;
+    private final SenderListener  senderListener;
     // 
-    public RemoteRsfCaller(RsfContext rsfContext, RsfBeanContainer rsfBeanContainer, RemoteSenderListener senderListener) {
+    public RemoteRsfCaller(RsfContext rsfContext, RsfBeanContainer rsfBeanContainer, SenderListener senderListener) {
         super(rsfContext, rsfBeanContainer, senderListener);
         //
         this.senderListener = senderListener;
@@ -68,7 +69,7 @@ public class RemoteRsfCaller extends RsfCaller {
             Executor executor = executesManager.getExecute(serviceUniqueName);
             executor.execute(new RemoteRsfCallerProcessing(target, this, info));//放入业务线程准备执行
             ResponseInfo resp = ProtocolUtils.buildResponseStatus(rsfEnv, info.getRequestID(), ProtocolStatus.Accept, null);
-            this.senderListener.sendResponse(target, resp);
+            this.senderListener.sendResponse(target, resp, null);
         } catch (RejectedExecutionException e) {
             invLogger.info("request({}) -> rejected request, queue is full. -> bindID ={}, targetMethod ={}, remoteAddress ={}.", //
                     info.getRequestID(), serviceUniqueName, info.getTargetMethod(), target);
@@ -77,12 +78,12 @@ public class RemoteRsfCaller extends RsfCaller {
             String msgLog = "rejected request, queue is full." + errorMessage;
             logger.warn(msgLog, e);
             ResponseInfo resp = ProtocolUtils.buildResponseStatus(rsfEnv, info.getRequestID(), ProtocolStatus.QueueFull, msgLog);
-            this.senderListener.sendResponse(target, resp);
+            this.senderListener.sendResponse(target, resp, null);
         }
     }
     //
     /**获取消息监听器。*/
-    RemoteSenderListener getSenderListener() {
+    SenderListener getSenderListener() {
         return this.senderListener;
     }
 }

@@ -5,43 +5,40 @@
         <root:hasor.loadPackages>${HASOR_LOAD_PACKAGES}</root:hasor.loadPackages>
     </root:config>
     <!-- ============================================================================ -->
+    <!-- 环境变量定义,如果和(系统环境变量,java环境变量,java属性)冲突那么将会放弃配置文件中配置的环境变量,并同时产生一条警告。 -->
+    <hasor.environmentVar>
+        <!-- 默认加载的包 -->
+        <HASOR_LOAD_PACKAGES>net.*,org.*,com.*</HASOR_LOAD_PACKAGES>
+        <!-- 是否加载模块 -->
+        <HASOR_LOAD_MODULE>true</HASOR_LOAD_MODULE>
+        <!-- 程序入口模块类名(默认为空) -->
+        <HASOR_LOAD_STARTUP></HASOR_LOAD_STARTUP>
+        <!-- 执行事件的线程池大小 -->
+        <HASOR_LOAD_EVENT_POOL>8</HASOR_LOAD_EVENT_POOL>
+
+        <!-- 程序目录 -->
+        <RUN_PATH>./</RUN_PATH>
+        <!-- 工作目录 -->
+        <WORK_HOME>%USER.HOME%/hasor-work</WORK_HOME>
+        <!-- 框架工作模式：debug、normal -->
+        <WORK_MODE>normal</WORK_MODE>
+        <!-- 临时文件位置 -->
+        <HASOR_TEMP_PATH>%WORK_HOME%/temp</HASOR_TEMP_PATH>
+        <!-- 日志存放位置 -->
+        <HASOR_LOG_PATH>%WORK_HOME%/log</HASOR_LOG_PATH>
+        <!-- 插件目录 -->
+        <HASOR_PLUGIN_PATH>%WORK_HOME%/plugins</HASOR_PLUGIN_PATH>
+        <!-- 模块配置目录 -->
+        <HASOR_PLUGIN_SETTINGS>%WORK_HOME%/settings</HASOR_PLUGIN_SETTINGS>
+    </hasor.environmentVar>
+
     <!-- 框架配置 -->
     <hasor>
         <!-- 包扫描覆盖范围，逗号间隔 -->
         <loadPackages>net.hasor.*</loadPackages>
 
-        <!-- 环境变量设置,如果和(系统环境变量,java环境变量,java属性)冲突那么将会放弃配置文件中配置的环境变量,并同时产生一条警告。 -->
-        <environmentVar>
-            <!-- 默认加载的包 -->
-            <HASOR_LOAD_PACKAGES>net.*,org.*,com.*</HASOR_LOAD_PACKAGES>
-            <!-- 是否加载模块 -->
-            <HASOR_LOAD_MODULE>true</HASOR_LOAD_MODULE>
-            <!-- 程序入口模块类名(默认为空) -->
-            <HASOR_LOAD_STARTUP></HASOR_LOAD_STARTUP>
-            <!-- 执行事件的线程池大小 -->
-            <HASOR_LOAD_EVENT_POOL>8</HASOR_LOAD_EVENT_POOL>
-
-            <!-- 程序目录 -->
-            <RUN_PATH>./</RUN_PATH>
-            <!-- 工作目录 -->
-            <WORK_HOME>%USER.HOME%/hasor-work</WORK_HOME>
-            <!-- 框架工作模式：debug、normal -->
-            <WORK_MODE>normal</WORK_MODE>
-            <!-- 临时文件位置 -->
-            <HASOR_TEMP_PATH>%WORK_HOME%/temp</HASOR_TEMP_PATH>
-            <!-- 日志存放位置 -->
-            <HASOR_LOG_PATH>%WORK_HOME%/log</HASOR_LOG_PATH>
-            <!-- 插件目录 -->
-            <HASOR_PLUGIN_PATH>%WORK_HOME%/plugins</HASOR_PLUGIN_PATH>
-            <!-- 模块配置目录 -->
-            <HASOR_PLUGIN_SETTINGS>%WORK_HOME%/settings</HASOR_PLUGIN_SETTINGS>
-        </environmentVar>
-
-        <!-- 默认设置 -->
-        <default>
-            <!-- 默认不启用单例模式 -->
-            <asEagerSingleton>false</asEagerSingleton>
-        </default>
+        <!-- 默认不启用单例模式 -->
+        <default.asEagerSingleton>false</default.asEagerSingleton>
 
         <!-- 执行事件的线程池大小 -->
         <eventThreadPoolSize>${HASOR_LOAD_EVENT_POOL}</eventThreadPoolSize>

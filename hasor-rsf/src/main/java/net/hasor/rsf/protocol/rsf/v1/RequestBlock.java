@@ -21,13 +21,14 @@ package net.hasor.rsf.protocol.rsf.v1;
  * byte[8]  requestID                            请求ID
  * byte[1]  keepData                             保留区
  * byte[3]  contentLength                        内容大小(max ~ 16MB)
- * --------------------------------------------------------bytes =14
+ * --------------------------------------------------------bytes =16
  * byte[2]  servicesName-(attr-index)            远程服务名
  * byte[2]  servicesGroup-(attr-index)           远程服务分组
  * byte[2]  servicesVersion-(attr-index)         远程服务版本
  * byte[2]  servicesMethod-(attr-index)          远程服务方法名
  * byte[2]  serializeType-(attr-index)           序列化策略
  * byte[4]  clientTimeout                        远程客户端超时时间
+ * byte[2]  flag                                 标记
  * --------------------------------------------------------bytes =1 ~ 1021
  * byte[1]  paramCount                           参数总数
  *     byte[4]  ptype-0-(attr-index,attr-index)  参数类型1
@@ -53,6 +54,7 @@ package net.hasor.rsf.protocol.rsf.v1;
 public class RequestBlock extends PoolBlock {
     private byte  rsfHead        = 0;  //byte[1]  RSF头
     private long  requestID      = 0;  //byte[8]  请求ID
+    private short flags          = 0;  //byte[2]  标记
     private short serviceName    = 0;  //byte[2]  远程服务名
     private short serviceGroup   = 0;  //byte[2]  远程服务分组
     private short serviceVersion = 0;  //byte[2]  远程服务版本
@@ -83,6 +85,14 @@ public class RequestBlock extends PoolBlock {
     /**设置请求ID。*/
     public void setRequestID(long requestID) {
         this.requestID = requestID;
+    }
+    /**获取flag*/
+    public short getFlags() {
+        return flags;
+    }
+    /**设置flag。*/
+    public void setFlags(short flags) {
+        this.flags = flags;
     }
     /**获取服务名*/
     public short getServiceName() {

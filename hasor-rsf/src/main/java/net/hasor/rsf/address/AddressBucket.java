@@ -340,12 +340,14 @@ public class AddressBucket extends Observable {
     //
     //
     /**保存地址列表到zip流中。*/
-    public void saveToZip(OutputStream outStream) throws IOException {
+    public boolean saveToZip(OutputStream outStream) throws IOException {
+        boolean toSave = false;
         ZipOutputStream zipStream = new ZipOutputStream(outStream);
         zipStream.setComment("this config of " + this.getServiceID());
         //
         //1.服务地址本
         if (!this.allAddressList.isEmpty()) {
+            toSave = true;
             StringBuilder strLogs = new StringBuilder();
             StringWriter strWriter = new StringWriter();
             BufferedWriter bfwriter = new BufferedWriter(strWriter);
@@ -377,6 +379,7 @@ public class AddressBucket extends Observable {
         FlowControlRef flowControlRef = this.flowControlRef;
         if (flowControlRef != null && StringUtils.isNotBlank(flowControlRef.flowControlScript)) {
             try {
+                toSave = true;
                 String comment = "the flowControlRef of [" + this.serviceID + "] service.";
                 ZipUtils.writeEntry(zipStream, flowControlRef.flowControlScript, FlowControlRef_ZipEntry, comment);
                 logger.info("flowControlRef save to entry -> {} ,finish.", this.serviceID);
@@ -389,37 +392,49 @@ public class AddressBucket extends Observable {
         RuleRef ruleRef = this.ruleRef;
         if (ruleRef != null) {
             // - 服务级路由脚本
-            try {
-                String comment = "the ServiceLevelScript of [" + this.serviceID + "] service.";
-                String script = ruleRef.getServiceLevel().getScript();
-                ZipUtils.writeEntry(zipStream, script, ServiceLevelScript_ZipEntry, comment);
-                logger.info("ServiceLevelScript save to entry -> {} ,finish.", this.serviceID);
-            } catch (Exception e) {
-                logger.error("ServiceLevelScript save to entry -> {} ,error -> {}", this.serviceID, e.getMessage(), e);
+            if (StringUtils.isBlank(ruleRef.getServiceLevel().getScript())) {
+                try {
+                    toSave = true;
+                    String comment = "the ServiceLevelScript of [" + this.serviceID + "] service.";
+                    String script = ruleRef.getServiceLevel().getScript();
+                    ZipUtils.writeEntry(zipStream, script, ServiceLevelScript_ZipEntry, comment);
+                    logger.info("ServiceLevelScript save to entry -> {} ,finish.", this.serviceID);
+                } catch (Exception e) {
+                    logger.error("ServiceLevelScript save to entry -> {} ,error -> {}", this.serviceID, e.getMessage(), e);
+                }
             }
             // - 方法级路由脚本
-            try {
-                String comment = "the MethodLevelScript of [" + this.serviceID + "] service.";
-                String script = ruleRef.getMethodLevel().getScript();
-                ZipUtils.writeEntry(zipStream, script, MethodLevelScript_ZipEntry, comment);
-                logger.info("MethodLevelScript save to entry -> {} ,finish.", this.serviceID);
-            } catch (Exception e) {
-                logger.error("MethodLevelScript save to entry -> {} ,error -> {}", this.serviceID, e.getMessage(), e);
+            if (StringUtils.isBlank(ruleRef.getMethodLevel().getScript())) {
+                try {
+                    toSave = true;
+                    String comment = "the MethodLevelScript of [" + this.serviceID + "] service.";
+                    String script = ruleRef.getMethodLevel().getScript();
+                    ZipUtils.writeEntry(zipStream, script, MethodLevelScript_ZipEntry, comment);
+                    logger.info("MethodLevelScript save to entry -> {} ,finish.", this.serviceID);
+                } catch (Exception e) {
+                    logger.error("MethodLevelScript save to entry -> {} ,error -> {}", this.serviceID, e.getMessage(), e);
+                }
             }
             // - 参数级路由脚本
-            try {
-                String comment = "the ArgsLevelScript of [" + this.serviceID + "] service.";
-                String script = ruleRef.getArgsLevel().getScript();
-                ZipUtils.writeEntry(zipStream, script, ArgsLevelScript_ZipEntry, comment);
-                logger.info("ArgsLevelScript save to entry -> {} ,finish.", this.serviceID);
-            } catch (Exception e) {
-                logger.error("ArgsLevelScript save to entry -> {} ,error -> {}", this.serviceID, e.getMessage(), e);
+            if (StringUtils.isBlank(ruleRef.getArgsLevel().getScript())) {
+                try {
+                    toSave = true;
+                    String comment = "the ArgsLevelScript of [" + this.serviceID + "] service.";
+                    String script = ruleRef.getArgsLevel().getScript();
+                    ZipUtils.writeEntry(zipStream, script, ArgsLevelScript_ZipEntry, comment);
+                    logger.info("ArgsLevelScript save to entry -> {} ,finish.", this.serviceID);
+                } catch (Exception e) {
+                    logger.error("ArgsLevelScript save to entry -> {} ,error -> {}", this.serviceID, e.getMessage(), e);
+                }
             }
         }
         //
         //4.关闭输出
-        zipStream.finish();
-        zipStream.closeEntry();
+        if (toSave) {
+            zipStream.finish();
+            zipStream.closeEntry();
+        }
+        return toSave;
     }
     //
     /**从流中读取地址列表地址列表到zip流中。*/

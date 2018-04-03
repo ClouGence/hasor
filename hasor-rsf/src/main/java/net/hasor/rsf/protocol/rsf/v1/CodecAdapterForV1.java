@@ -52,6 +52,7 @@ public class CodecAdapterForV1 implements CodecAdapter {
         //
         //1.基本信息
         block.setRequestID(info.getRequestID());//请求ID
+        block.setFlags(info.getFlags());
         block.setServiceGroup(pushString(block, info.getServiceGroup()));
         block.setServiceName(pushString(block, info.getServiceName()));
         block.setServiceVersion(pushString(block, info.getServiceVersion()));

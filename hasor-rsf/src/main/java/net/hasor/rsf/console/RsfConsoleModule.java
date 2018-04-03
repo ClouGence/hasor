@@ -87,9 +87,8 @@ public class RsfConsoleModule extends RsfModule implements LifeModule {
         //1.初始化常量配置。
         this.workerGroup = new NioEventLoopGroup(1, new NameThreadFactory("RSF-Console", appContext.getClassLoader()));
         int consolePort = rsfContext.getSettings().getConsolePort();
-        String consoleAddress = rsfContext.getSettings().getBindAddress();
         String formUnit = rsfContext.getSettings().getUnitName();
-        InterAddress bindAddress = new InterAddress(consoleAddress, consolePort, formUnit);
+        InterAddress bindAddress = new InterAddress("0.0.0.0", consolePort, formUnit);
         logger.info("rsfConsole -> starting... at {}", bindAddress);
         //
         //2.启动Telnet。

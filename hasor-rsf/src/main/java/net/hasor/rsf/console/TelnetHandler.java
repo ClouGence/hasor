@@ -92,7 +92,7 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         Set<String> protocolSet = settings.getProtocos();
         List<String> rsfAddressList = new ArrayList<String>(protocolSet.size());
         for (String protocol : rsfAddressList) {
-            InterAddress interAddress = this.rsfContext.publishAddress(protocol);
+            InterAddress interAddress = this.rsfContext.bindAddress(protocol);
             if (interAddress != null) {
                 rsfAddressList.add(inetAddress.getHostName());
             }

@@ -28,10 +28,10 @@
         </environmentVar>
     </hasor>
 
-    <!-- 应用自己的配置，请随意,您也可以通过 ${..} 方式引入 ‘env.config’ 中的属性 -->
+    <!-- 应用自己的配置，请随意,您也可以通过 ${..} 方式引入 ‘hconfig.properties’ 中的属性 -->
     <myApp>
         <configString>this is string form 'hasor-config.xml'</configString>
-        <!-- ${..}会被环境变量替换，环境变量来源：environmentVar、操作系统环境变量、jvm -D参数、env.config配置文件 -->
+        <!-- ${..}会被环境变量替换，环境变量来源：environmentVar、操作系统环境变量、jvm -D参数、hconfig.properties配置文件 -->
         <data_user>${jdbc.user}</data_user>
     </myApp>
 

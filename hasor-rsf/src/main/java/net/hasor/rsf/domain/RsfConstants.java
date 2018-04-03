@@ -30,8 +30,8 @@ public interface RsfConstants {
     //
     // RSF所有包头分类      -（1000 0000 ~ 1111 0000）
     public static final byte   RSF_Packet_Heart            = RSF_Packet | 0x00; // 1000 (心跳)
-    public static final byte   RSF_Packet_InvokerRequest   = RSF_Packet | 0x10; // 1001 (请求：调用方式)
-    public static final byte   RSF_Packet_MessageRequest   = RSF_Packet | 0x20; // 1010 (请求：方式)
+    public static final byte   RSF_Packet_InvokerRequest   = RSF_Packet | 0x10; // 1001 (请求类型：调用)
+    public static final byte   RSF_Packet_MessageRequest   = RSF_Packet | 0x20; // 1010 (请求类型：消息)
     public static final byte   RSF_Packet_Response         = RSF_Packet | 0x30; // 1011 (响应)
     public static final byte   RSF_Packet_Options          = RSF_Packet | 0x40; // 1100 (选项参数)
     public static final byte   RSF_Packet_xxxx5            = RSF_Packet | 0x50; // 1101 (未使用)

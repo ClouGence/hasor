@@ -32,6 +32,6 @@ class RemoteRsfCallerProcessing extends InvokerProcessing {
     }
     @Override
     protected void doSendResponse(ResponseInfo info) {
-        this.getRsfCaller().getSenderListener().sendResponse(this.getTarget(), info);
+        this.getRsfCaller().getSenderListener().sendResponse(this.getTarget(), info, null);
     }
 }

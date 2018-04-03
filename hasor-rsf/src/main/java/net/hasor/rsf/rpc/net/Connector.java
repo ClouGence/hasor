@@ -37,7 +37,6 @@ public abstract class Connector {
     private final String             sechma;          // 协议头，例如：rsf、hprose
     private final RsfEnvironment     rsfEnvironment;  // Rsf环境
     private final InterAddress       bindAddress;     // 网络通信地址
-    private final InterAddress       gatewayAddress;  // 网络通信地址(网关)
     private final LinkPool           linkPool;        // 连接池
     private final ReceivedListener   receivedListener;// 数据接收器
     private final ConnectionAccepter accepter;        // 连接接受器，用于IP黑名单实现
@@ -54,20 +53,14 @@ public abstract class Connector {
         String configKey = settings.getProtocolConfigKey(protocol);
         this.sechma = settings.getString(configKey + ".protocol");
         this.bindAddress = settings.getBindAddressSet(protocol);
-        this.gatewayAddress = settings.getGatewaySet(protocol);
         if (this.bindAddress.getPort() <= 0) {
             throw new IllegalStateException("[" + protocol + "] the prot is zero.");
-        }
-        if (this.gatewayAddress != null && this.gatewayAddress.getPort() <= 0) {
-            throw new IllegalStateException("[" + protocol + "] the gateway prot is zero.");
         }
     }
     //
     @Override
     public String toString() {
-        InterAddress local = this.gatewayAddress;
-        local = (local == null) ? this.bindAddress : local;
-        return "Connector{ protocol='" + protocol + "', bindAddress=" + local + '}';
+        return "Connector{ protocol='" + protocol + "', bindAddress=" + this.bindAddress + '}';
     }
     //
     /** 获取协议名 */
@@ -84,18 +77,6 @@ public abstract class Connector {
     /** 监听的本地端口号 */
     public InterAddress getBindAddress() {
         return this.bindAddress;
-    }
-    /** 如果工作在内网，这里返回配置的外网映射地址 */
-    public InterAddress getGatewayAddress() {
-        return this.gatewayAddress;
-    }
-    /** 获取RSF运行的网关地址（如果有），或者本地绑定地址。 */
-    public InterAddress getPublishAddress() {
-        InterAddress address = getGatewayAddress();
-        if (address == null) {
-            address = getBindAddress();
-        }
-        return address;
     }
     //
     /**根据主机ip和端口号查找 RsfChannel*/

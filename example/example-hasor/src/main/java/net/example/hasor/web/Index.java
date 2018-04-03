@@ -13,7 +13,7 @@ import net.hasor.web.annotation.MappingTo;
 public class Index {
     @Inject
     private UserManager userManager;
-    @InjectSettings("${jdbc.driver}")  // <- 注入的配置来自于 “env.config” 或者环境变量
+    @InjectSettings("${jdbc.driver}")  // <- 注入的配置来自于 “hconfig.properties” 或者环境变量
     private String      thisServerDriver;
     //
     /* 当访问“/index.htm”页面时，Hasor框架会寻找默认执行方法：execute，去执行 */

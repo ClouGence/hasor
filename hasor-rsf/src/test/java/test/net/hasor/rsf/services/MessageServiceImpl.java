@@ -23,7 +23,7 @@ import net.hasor.rsf.RsfResult;
 public class MessageServiceImpl implements MessageService {
     @Override
     public RsfResult sayHello(String echo) throws InterruptedException {
-        Thread.sleep(100);
+        Thread.sleep(300);
         System.out.println("server : " + echo);
         return null;
     }

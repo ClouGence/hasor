@@ -18,11 +18,10 @@ import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
-import net.hasor.core.provider.InstanceProvider;
 import net.hasor.rsf.*;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.*;
-import net.hasor.rsf.domain.provider.AddressProvider;
+import net.hasor.rsf.rpc.net.SendCallBack;
 import net.hasor.rsf.utils.ProtocolUtils;
 import net.hasor.utils.future.FutureCallback;
 import org.slf4j.Logger;
@@ -59,8 +58,8 @@ public abstract class RsfRequestManager {
     /**获取{@link RsfBeanContainer}。*/
     public abstract RsfBeanContainer getContainer();
     /**发送数据包*/
-    private void sendData(Provider<InterAddress> target, RequestInfo info) {
-        this.senderListener.sendRequest(target, info);
+    private void sendData(InterAddress toAddress, RequestInfo info, SendCallBack callBack) {
+        this.senderListener.sendRequest(toAddress, info, callBack);
     }
     //
     /**
@@ -181,16 +180,13 @@ public abstract class RsfRequestManager {
         invLogger.info("request({}) -> doSendRequest, bindID ={}, callMethod ={}, isMessage ={}.", //
                 rsfRequest.getRequestID(), serviceID, rsfRequest.getMethod(), bindInfo.isMessage());
         //
-        if (bindInfo.isMessage()) {
-            rsfRequest.addOption("RPC_TYPE", "MESSAGE");
-        } else {
-            rsfRequest.addOption("RPC_TYPE", "INVOKER");
-        }
+        // .setup RsfRequest
         rsfRequest.addOptionMap(this.getContext().getSettings().getClientOption());//写入客户端选项，并将选项发送到Server。
         //
+        // .call Chain
         try {
             RsfResponseObject res = new RsfResponseObject(rsfRequest);
-           /*下面这段代码要负责 -> 执行rsfFilter过滤器链，并最终调用sendRequest发送请求。*/
+            /*下面这段代码要负责 -> 执行rsfFilter过滤器链，并最终调用sendRequest发送请求。*/
             Provider<RsfFilter>[] rsfFilterList = this.getContainer().getFilterProviders(serviceID);
             new RsfFilterHandler(rsfFilterList, new RsfFilterChain() {
                 public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
@@ -217,7 +213,6 @@ public abstract class RsfRequestManager {
     private void sendRequest(final RsfFuture rsfFuture) throws Throwable {
         /*1.远程目标机*/
         final RsfRequestFormLocal rsfRequest = (RsfRequestFormLocal) rsfFuture.getRequest();
-        final AddressProvider target = rsfRequest.getTarget();
         String serviceID = rsfRequest.getBindInfo().getBindID();
         invLogger.info("request({}) -> bindID ={}, callMethod ={}, serializeType ={}, isMessage ={}, isP2PCalls ={}.",//
                 rsfRequest.getRequestID(), serviceID, rsfRequest.getMethod(), rsfRequest.getSerializeType(), rsfRequest.isMessage(), rsfRequest.isP2PCalls());
@@ -230,7 +225,8 @@ public abstract class RsfRequestManager {
             invLogger.error(errorMessage);
             if (sendPolicy == SendLimitPolicy.Reject) {
                 // - A.直接抛异常
-                throw new RsfException(ProtocolStatus.SendLimitPolicy, errorMessage);
+                rsfFuture.failed(new RsfException(ProtocolStatus.SendLimitPolicy, errorMessage));
+                return;
             } else {
                 // - B.等待1秒之后重新尝试，如果依然资源不足，那么抛异常
                 try {
@@ -240,30 +236,33 @@ public abstract class RsfRequestManager {
                 }
                 if (this.requestCount.get() >= rsfSettings.getMaximumRequest()) {
                     invLogger.error(errorMessage);
-                    throw new RsfException(ProtocolStatus.SendLimitPolicy, errorMessage);
+                    rsfFuture.failed(new RsfException(ProtocolStatus.SendLimitPolicy, errorMessage));
+                    return;
                 }
             }
         }
         /*3.准备发送数据*/
-        String methodName = rsfRequest.getMethod().getName();
-        Object[] args = rsfRequest.getParameterObject();
-        InterAddress address = target.get(serviceID, methodName, args);
-        if (address == null) {
+        InterAddress toAddress = rsfRequest.getTargetAddress();
+        if (toAddress == null) {
             invLogger.warn("request({}) -> targetAddress Unavailable, bindID ={}.", rsfRequest.getRequestID(), serviceID);
             rsfFuture.failed(new RsfException(ProtocolStatus.Forbidden, "Service [" + serviceID + "] Address Unavailable."));
             return;
         }
-        if (rsfRequest.isP2PCalls()) {
-            rsfRequest.addOption(OptionKeys.TargetAddress, address.toHostSchema());
-        }
         /*4.发送请求*/
         try {
-            Provider<InterAddress> targetProvider = new InstanceProvider<InterAddress>(address);
-            invLogger.warn("request({}) -> pre sendData, bindID ={}, targetAddress ={}.", rsfRequest.getRequestID(), serviceID, address);
+            invLogger.warn("request({}) -> pre sendData, bindID ={}, targetAddress ={}.", rsfRequest.getRequestID(), serviceID, toAddress);
             RsfEnvironment environment = this.getContext().getEnvironment();
-            startRequest(rsfFuture);                                                    // <- 1.计时request。
-            RequestInfo info = ProtocolUtils.buildRequestInfo(environment, rsfRequest); // <- 2.生成RequestInfo
-            sendData(targetProvider, info);                                             // <- 3.发送数据
+            RequestInfo info = ProtocolUtils.buildRequestInfo(environment, rsfRequest); // <- 1.生成RequestInfo
+            info.setFlags(rsfRequest.getFlags());
+            startRequest(rsfFuture);                                                    // <- 2.开始 timeout 计时
+            sendData(toAddress, info, new SendCallBack() {                              // <- 3.发送数据
+                public void failed(long requestID, Throwable e) {
+                    putResponse(requestID, e);                                          // <- 4.发送失败直接 failed
+                }
+                public void complete(long requestID) {
+                    /* wait response data */
+                }
+            });
         } catch (Throwable e) {
             invLogger.error("request(" + rsfRequest.getRequestID() + ") send error, " + e.getMessage(), e);
             putResponse(rsfRequest.getRequestID(), e);
@@ -281,8 +280,9 @@ public abstract class RsfRequestManager {
             public void run(Timeout timeoutObject) throws Exception {
                 RsfFuture rsfCallBack = getRequest(request.getRequestID());
                 /*检测不到说明请求已经被正确响应。*/
-                if (rsfCallBack == null)
+                if (rsfCallBack == null) {
                     return;
+                }
                 /*异常信息*/
                 String errorInfo = "request(" + request.getRequestID() + ") -> timeout for client.";
                 invLogger.error(errorInfo);

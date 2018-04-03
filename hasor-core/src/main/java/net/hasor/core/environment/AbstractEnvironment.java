@@ -277,8 +277,8 @@ public abstract class AbstractEnvironment implements Environment {
      * 2st，System.getenv()
      * 3st，配置文件"hasor.environmentVar"
      * 4st，传入的配置
-     * 5st，属性文件"env.config"
-     * tips：如果指定了loadEnvConfig参数，那么将会忽略"env.config"配置文件。
+     * 5st，属性文件"hconfig.properties"
+     * tips：如果指定了loadEnvConfig参数，那么将会忽略"hconfig.properties"配置文件。
      */
     private void initEnvConfig(Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig) throws IOException {
         //
@@ -326,37 +326,37 @@ public abstract class AbstractEnvironment implements Environment {
         }
         // .4st，传入的配置
         if (frameworkEnvConfig != null && !frameworkEnvConfig.isEmpty()) {
-            this.logger.info("ignore 'env.config' use framework map, size = " + frameworkEnvConfig.size());
+            this.logger.info("ignore 'hconfig.properties' use framework map, size = " + frameworkEnvConfig.size());
             for (String name : frameworkEnvConfig.keySet()) {
                 this.envMap.put(name.toUpperCase(), frameworkEnvConfig.get(name));
             }
         }
         if (customEnvConfig != null && !customEnvConfig.isEmpty()) {
-            this.logger.info("ignore 'env.config' use custom map, size = " + customEnvConfig.size());
+            this.logger.info("ignore 'hconfig.properties' use custom map, size = " + customEnvConfig.size());
             for (String name : customEnvConfig.keySet()) {
                 this.envMap.put(name.toUpperCase(), customEnvConfig.get(name));
             }
             return;
         }
         //
-        // .5st，外部属性文件"env.config"
+        // .5st，外部属性文件"hconfig.properties"
         InputStream inStream = null;
         String workHome = this.evalString("%" + Environment.WORK_HOME + "%");
         File envFile = new File(workHome, EVN_FILE_NAME);
         String envFileName = envFile.getAbsolutePath();
         if (envFile.exists()) {
             if (envFile.isDirectory()) {
-                this.logger.info("load 'env.config' failed(isDirectory) -> {}.", envFileName);
+                this.logger.info("load 'hconfig.properties' failed(isDirectory) -> {}.", envFileName);
             } else if (!envFile.canRead()) {
-                this.logger.info("load 'env.config' failed(can not read) -> {}.", envFileName);
+                this.logger.info("load 'hconfig.properties' failed(can not read) -> {}.", envFileName);
             } else {
                 inStream = new FileInputStream(envFile);
-                this.logger.info("load 'env.config' form file -> {}.", envFileName);
+                this.logger.info("load 'hconfig.properties' form file -> {}.", envFileName);
             }
         }
         if (inStream == null) {
             URL inStreamURL = ResourcesUtils.getResource(EVN_FILE_NAME);
-            this.logger.info("load 'env.config' use classpath -> {}.", (inStreamURL == null) ? "empty." : inStreamURL);
+            this.logger.info("load 'hconfig.properties' use classpath -> {}.", (inStreamURL == null) ? "empty." : inStreamURL);
             if (inStreamURL != null) {
                 inStream = ResourcesUtils.getResourceAsStream(inStreamURL);
             }
@@ -368,7 +368,7 @@ public abstract class AbstractEnvironment implements Environment {
             for (String name : properties.stringPropertyNames()) {
                 String argKey = name.toUpperCase();
                 String argVal = properties.getProperty(name);
-                this.logger.info("load 'env.config' {} -> {}.", argKey, argVal);
+                this.logger.info("load 'hconfig.properties' {} -> {}.", argKey, argVal);
                 this.envMap.put(argKey, argVal);
             }
         }

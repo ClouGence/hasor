@@ -1,5 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://project.hasor.net/hasor/schema/hasor-rsf">
+
+    <!-- RSF框架环境变量 -->
+    <hasor.environmentVar>
+        <!-- 是否启用RSF，默认情况启用。启用了RSF之后它会开启相应的端口和线程。 -->
+        <RSF_ENABLE>true</RSF_ENABLE>
+        <!-- 启用磁盘地址本缓存，在refreshCacheTime期间每隔1小时自动写入一次。 -->
+        <RSF_DISK_CACHE_ENABLE>true</RSF_DISK_CACHE_ENABLE>
+
+        <!-- 应用程序所属单元 -->
+        <RSF_APP_UNIT>default</RSF_APP_UNIT>
+
+        <!-- RSF对外提供服务的IP -->
+        <RSF_SERVICE_IP>local</RSF_SERVICE_IP>
+        <!-- Telnet 控制台端口 -->
+        <RSF_CONSOLE_PORT>2180</RSF_CONSOLE_PORT>
+
+        <!-- RSF对外提供服务的服务端口（可以配置 0 用来关闭 RSF连接器） -->
+        <RSF_SERVICE_PORT>2181</RSF_SERVICE_PORT>
+        <!-- Hprose对外提供服务的服务端口（可以配置 0 用来关闭 Hprose连接器） -->
+        <HPROSE_SERVICE_PORT>0</HPROSE_SERVICE_PORT>
+    </hasor.environmentVar>
+
     <!-- 框架配置，包扫描范围 -->
     <hasor>
         <loadPackages>net.hasor.rsf.*</loadPackages>
@@ -19,33 +41,6 @@
             <binder type="net.hasor.rsf.RsfApiBinder">net.hasor.rsf.container.RsfApiBinerCreater</binder>
             <binder type="net.hasor.rsf.RsfPublisher">net.hasor.rsf.container.RsfApiBinerCreater</binder>
         </apiBinderSet>
-
-        <!-- RSF框架环境变量 -->
-        <environmentVar>
-            <!-- 是否启用RSF，默认情况启用。启用了RSF之后它会开启相应的端口和线程。 -->
-            <RSF_ENABLE>true</RSF_ENABLE>
-            <!-- 启用磁盘地址本缓存，在refreshCacheTime期间每隔1小时自动写入一次。 -->
-            <RSF_DISK_CACHE_ENABLE>true</RSF_DISK_CACHE_ENABLE>
-
-            <!-- 应用程序所属单元 -->
-            <RSF_APP_UNIT>default</RSF_APP_UNIT>
-
-            <!-- RSF对外提供服务的IP -->
-            <RSF_SERVICE_IP>local</RSF_SERVICE_IP>
-            <!-- 如果RSF是工作在内网，则需要通过网关进行映射将服务暴露到外网，这里填写网关在外网的IP地址 -->
-            <RSF_GATEWAY_IP></RSF_GATEWAY_IP>
-            <!-- Telnet 控制台端口 -->
-            <RSF_CONSOLE_PORT>2180</RSF_CONSOLE_PORT>
-
-            <!-- RSF对外提供服务的服务端口（可以配置 0 用来关闭 RSF连接器） -->
-            <RSF_SERVICE_PORT>2181</RSF_SERVICE_PORT>
-            <!-- 如果RSF是工作在内网，则需要通过网关进行端口映射，这里填写外网端口号 -->
-            <RSF_GATEWAY_PORT></RSF_GATEWAY_PORT>
-            <!-- Hprose对外提供服务的服务端口（可以配置 0 用来关闭 Hprose连接器） -->
-            <HPROSE_SERVICE_PORT>0</HPROSE_SERVICE_PORT>
-            <!-- 如果Hprose是工作在内网，则需要通过网关进行端口映射，这里填写外网端口号 -->
-            <HPROSE_GATEWAY_PORT></HPROSE_GATEWAY_PORT>
-        </environmentVar>
     </hasor>
 
     <!--
@@ -110,8 +105,7 @@
         -->
         <connectorSet default="RSF/1.0">
             <!-- RSF 连接器 -->
-            <netty_rsf10 name="RSF/1.0" protocol="rsf" factory="net.hasor.rsf.rpc.net.netty.NettyConnectorFactory"
-                         localPort="${RSF_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${RSF_GATEWAY_PORT}">
+            <netty_rsf10 name="RSF/1.0" protocol="rsf" localPort="${RSF_SERVICE_PORT}" factory="net.hasor.rsf.rpc.net.netty.NettyConnectorFactory">
                 <!-- 处理网络IO数据包的线程数 -->
                 <workerThread>8</workerThread>
                 <!-- 处理网络监听请求的线程数 -->
@@ -121,8 +115,7 @@
             </netty_rsf10>
 
             <!-- Hprose 连接器 -->
-            <http_hprose name="Http/Hprose" protocol="http" factory="net.hasor.rsf.rpc.net.http.HttpConnectorFactory"
-                         localPort="${HPROSE_SERVICE_PORT}" gatewayAddress="${RSF_GATEWAY_IP}" gatewayPort="${HPROSE_GATEWAY_PORT}">
+            <http_hprose name="Http/Hprose" protocol="http" localPort="${HPROSE_SERVICE_PORT}" factory="net.hasor.rsf.rpc.net.http.HttpConnectorFactory">
                 <!-- 处理网络IO数据包的线程数 -->
                 <workerThread>8</workerThread>
                 <!-- 处理网络监听请求的线程数 -->

@@ -78,9 +78,6 @@ public interface RsfSettings extends Settings {
     /**获取本地服务绑定地址*/
     public InterAddress getBindAddressSet(String protocolName);
 
-    /**获取网关地址*/
-    public InterAddress getGatewaySet(String protocolName);
-
     /**获取协议配置节点名*/
     public String getProtocolConfigKey(String protocolName);
 

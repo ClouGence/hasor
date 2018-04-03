@@ -19,8 +19,8 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.domain.AttributeSet;
+import net.hasor.rsf.domain.RsfFlags;
 import net.hasor.rsf.domain.RsfRuntimeUtils;
-import net.hasor.rsf.domain.provider.AddressProvider;
 
 import java.lang.reflect.Method;
 /**
@@ -29,17 +29,20 @@ import java.lang.reflect.Method;
  * @author 赵永春 (zyc@hasor.net)
  */
 class RsfRequestFormLocal extends AttributeSet implements RsfRequest {
-    private final RsfCaller       rsfCaller;
-    private final AddressProvider target;
-    private final long            requestID;
-    private final RsfBindInfo<?>  bindInfo;
-    private final Method          targetMethod;
-    private final Class<?>[]      parameterTypes;
-    private final Object[]        parameterObjects;
+    private final RsfCaller      rsfCaller;
+    private final InterAddress   targetAddress;
+    private final short          flags;
+    private final long           requestID;
+    private final RsfBindInfo<?> bindInfo;
+    private final Method         targetMethod;
+    private final Class<?>[]     parameterTypes;
+    private final Object[]       parameterObjects;
     //
-    public RsfRequestFormLocal(AddressProvider target, RsfBindInfo<?> bindInfo, Method targetMethod, Object[] parameterObjects, RsfCaller rsfCaller) {
+    public RsfRequestFormLocal(InterAddress targetAddress, short flags, RsfBindInfo<?> bindInfo,//
+            Method targetMethod, Object[] parameterObjects, RsfCaller rsfCaller) {
         this.requestID = RsfRuntimeUtils.genRequestID();
-        this.target = target;
+        this.targetAddress = targetAddress;
+        this.flags = flags;
         this.bindInfo = bindInfo;
         this.targetMethod = targetMethod;
         this.parameterTypes = targetMethod.getParameterTypes();
@@ -50,13 +53,9 @@ class RsfRequestFormLocal extends AttributeSet implements RsfRequest {
     public String toString() {
         return "requestID:" + this.getRequestID() + " from Local," + this.bindInfo.toString();
     }
-    /**获取最终要调用的远程服务地址。*/
-    public AddressProvider getTarget() {
-        return this.target;
-    }
     @Override
     public boolean isP2PCalls() {
-        return !this.target.isDistributed();
+        return RsfFlags.P2PFlag.testTag(this.flags);
     }
     //
     @Override
@@ -113,10 +112,13 @@ class RsfRequestFormLocal extends AttributeSet implements RsfRequest {
         } else {
             protocol = getTargetAddress().getSechma();
         }
-        return rsfContext.publishAddress(protocol);
+        return rsfContext.bindAddress(protocol);
     }
     @Override
     public InterAddress getTargetAddress() {
-        return !this.target.isDistributed() ? this.target.get(null, null, null) : null;
+        return this.targetAddress;
+    }
+    public short getFlags() {
+        return flags;
     }
 }
