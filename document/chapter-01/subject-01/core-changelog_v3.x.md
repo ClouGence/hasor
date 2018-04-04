@@ -7,6 +7,8 @@
     03. rsf的内置 hessian 序列化和反序列化配置文件，路径改到 ‘META-INF/hasor-framework/rsf-hessian/’ 下面。以避免和 hessian jar包冲突。
     04. rsf Gateway 从 rsf 基础框架中删除后面会独立成一个框架。
     05. env.config 配置文件名，更名为 hconfig.properties。
+**修复**
+    01. fix 执行查询结果返回为空时，AbstractRowMapper.convertValueToRequiredType 方法报 NPE 的 Bug。
 ---
 
 ### Hasor-Core v3.2.2 (2018-01-02)
