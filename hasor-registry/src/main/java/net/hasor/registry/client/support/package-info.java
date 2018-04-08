@@ -17,4 +17,4 @@
  * client工作模式的实现。
  * 提供了包括了服务心跳，服务上下线，接收注册中心推送的事件。
  */
-package net.hasor.registry.client;
+package net.hasor.registry.client.support;

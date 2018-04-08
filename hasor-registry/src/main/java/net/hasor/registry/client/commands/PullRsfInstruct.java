@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.commands;
+package net.hasor.registry.client.commands;
 import net.hasor.core.Singleton;
-import net.hasor.registry.InstanceInfo;
-import net.hasor.registry.RegistryCenter;
-import net.hasor.registry.RsfCenterRegister;
-import net.hasor.registry.RsfCenterResult;
+import net.hasor.registry.common.InstanceInfo;
+import net.hasor.registry.client.RsfCenterRegister;
+import net.hasor.registry.client.RsfCenterResult;
+import net.hasor.registry.server.commonds.AbstractCenterInstruct;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
@@ -141,18 +141,18 @@ public class PullRsfInstruct extends AbstractCenterInstruct {
                 finalAddressStrList.add(inter.toHostSchema());
             } catch (Exception e) { /**/ }
         }
-        request.writeMessageLine(String.format(" ->  (2of4) pull addressSet is " + StringUtils.join(finalAddressStrList.toArray(), ", ")));
+        request.writeMessageLine(" ->  (2of4) pull addressSet is " + StringUtils.join(finalAddressStrList.toArray(), ", "));
         // .3of4
-        request.writeMessageLine(String.format(" ->  (3of4) prepare refreshAddress addressSet."));
+        request.writeMessageLine(" ->  (3of4) prepare refreshAddress addressSet.");
         // .4of4
         request.getRsfContext().getUpdater().refreshAddress(serviceID, finalAddressList);
-        request.writeMessageLine(String.format(" ->  (4of4) done."));
+        request.writeMessageLine(" ->  (4of4) done.");
     }
     private void processRequest(RsfCommandRequest request, RsfCenterRegister register, String serviceID, InstanceInfo instance) {
         // .1of2
         RsfContext rsfContext = request.getRsfContext();
         String protocol = rsfContext.getDefaultProtocol();
-        InterAddress callBackAddress = rsfContext.publishAddress(protocol);
+        InterAddress callBackAddress = rsfContext.bindAddress(protocol);
         String callBackTo = callBackAddress.toHostSchema();
         request.writeMessageLine(" ->  this machine is the default protocol is " + protocol);
         request.writeMessageLine(" ->  (1of2) request data form rsfCenter ,callBack is " + callBackTo);

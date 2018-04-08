@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry;
-import net.hasor.registry.domain.ConsumerPublishInfo;
-import net.hasor.registry.domain.ProviderPublishInfo;
+package net.hasor.registry.client;
+import net.hasor.registry.common.InstanceInfo;
+import net.hasor.registry.client.domain.ConsumerPublishInfo;
+import net.hasor.registry.client.domain.ProviderPublishInfo;
 import net.hasor.rsf.RsfService;
 
 import java.util.List;

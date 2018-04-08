@@ -17,9 +17,9 @@ package net.hasor.registry.storage.mem;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.registry.access.ServerSettings;
-import net.hasor.registry.access.adapter.ObjectData;
-import net.hasor.registry.access.adapter.StorageDao;
+import net.hasor.registry.server.ServerSettings;
+import net.hasor.registry.server.adapter.ObjectData;
+import net.hasor.registry.server.adapter.StorageDao;
 import net.hasor.utils.StringUtils;
 
 import java.util.ArrayList;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry;
+package net.hasor.registry.client;
 /**
  * 注册中心下推送的事件类型
  *

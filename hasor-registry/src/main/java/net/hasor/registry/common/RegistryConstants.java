@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry;
+package net.hasor.registry.common;
 /**
  * 各种常量
  * @version : 2014年9月20日

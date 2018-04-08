@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.client;
+package net.hasor.registry.client.support;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
-import net.hasor.registry.*;
-import net.hasor.registry.domain.ConsumerPublishInfo;
-import net.hasor.registry.domain.ProviderPublishInfo;
-import net.hasor.registry.domain.PublishInfo;
+import net.hasor.registry.common.InstanceInfo;
+import net.hasor.registry.RegistryCenter;
+import net.hasor.registry.client.RsfCenterRegister;
+import net.hasor.registry.client.RsfCenterResult;
+import net.hasor.registry.client.domain.ConsumerPublishInfo;
+import net.hasor.registry.client.domain.ProviderPublishInfo;
+import net.hasor.registry.client.domain.PublishInfo;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
@@ -28,9 +31,7 @@ import net.hasor.rsf.utils.TimerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 /**
  * 负责维护RSF客户端服务在注册中心上的信息。
  * @version : 2016年2月18日
@@ -41,15 +42,14 @@ class RegistryClientManager implements TimerTask {
     private final RsfContext        rsfContext;
     private final TimerManager      timerManager;
     private final RsfCenterRegister centerRegister;
-    private final InstanceInfo      instance;
+    private final RegistryCenter    registryCenter;
     //
     public RegistryClientManager(RsfContext rsfContext) {
         this.rsfContext = rsfContext;
-        RsfCenterSettings settings = this.rsfContext.getAppContext().getInstance(RsfCenterSettings.class);
         ClassLoader loader = rsfContext.getClassLoader();
-        this.timerManager = new TimerManager(settings.getHeartbeatTime(), "RsfCenter-BeatTimer", loader);
         this.centerRegister = rsfContext.getRsfClient().wrapper(RsfCenterRegister.class);
-        this.instance = rsfContext.getAppContext().getInstance(RegistryCenter.class).getInstanceInfo();
+        this.registryCenter = rsfContext.getAppContext().getInstance(RegistryCenter.class);
+        this.timerManager = new TimerManager(this.registryCenter.getSettings().getHeartbeatTime(), "RsfCenter-BeatTimer", loader);
     }
     @Override
     public void run(Timeout timeout) {
@@ -134,14 +134,14 @@ class RegistryClientManager implements TimerTask {
                 ProviderPublishInfo info = fillTo(domain, new ProviderPublishInfo());
                 info.setQueueMaxSize(this.rsfContext.getSettings().getQueueMaxSize());
                 info.setSharedThreadPool(domain.isSharedThreadPool());
-                registerInfo = this.centerRegister.registerProvider(this.instance, info);
+                registerInfo = this.centerRegister.registerProvider(this.registryCenter.getInstanceInfo(), info);
                 logger.info("publishService service {} register to center -> {}", domain.getBindID(), registerInfo);
             } else if (RsfServiceType.Consumer == domain.getServiceType()) {
                 //
                 ConsumerPublishInfo info = fillTo(domain, new ConsumerPublishInfo());
                 info.setClientMaximumRequest(this.rsfContext.getSettings().getMaximumRequest());
                 info.setMessage(domain.isMessage());
-                registerInfo = this.centerRegister.registerConsumer(this.instance, info);
+                registerInfo = this.centerRegister.registerConsumer(this.registryCenter.getInstanceInfo(), info);
                 logger.info("receiveService service {} register to center -> {}", domain.getBindID(), registerInfo);
             }
             //
@@ -177,7 +177,7 @@ class RegistryClientManager implements TimerTask {
         String serviceID = domain.getBindID();
         try {
             //
-            RsfCenterResult<Void> result = this.centerRegister.unRegister(this.instance, serviceID);
+            RsfCenterResult<Void> result = this.centerRegister.unRegister(this.registryCenter.getInstanceInfo(), serviceID);
             if (result != null && result.isSuccess()) {
                 logger.info("deleteService -> complete.", serviceID);
             } else {
@@ -202,14 +202,15 @@ class RegistryClientManager implements TimerTask {
         }
         // .拉地址3次尝试
         String serviceID = domain.getBindID();
+        InstanceInfo instanceInfo = this.registryCenter.getInstanceInfo();
         logger.info("pullAddress '{}' 1st.", serviceID);
-        RsfCenterResult<List<String>> providerResult = this.centerRegister.pullProviders(this.instance, serviceID);
+        RsfCenterResult<List<String>> providerResult = this.centerRegister.pullProviders(instanceInfo, serviceID);
         if (providerResult == null || !providerResult.isSuccess()) {
             logger.warn("pullAddress '{}' 2st.", serviceID);
-            providerResult = this.centerRegister.pullProviders(this.instance, serviceID);
+            providerResult = this.centerRegister.pullProviders(instanceInfo, serviceID);
             if (providerResult == null || !providerResult.isSuccess()) {
                 logger.error("pullAddress '{}' 3st.", serviceID);
-                providerResult = this.centerRegister.pullProviders(this.instance, serviceID);
+                providerResult = this.centerRegister.pullProviders(instanceInfo, serviceID);
             }
         }
         //
@@ -222,7 +223,7 @@ class RegistryClientManager implements TimerTask {
             }
             //
             logger.info("pullAddress {} failed try async request pullProviders.", serviceID);
-            RsfCenterResult<Boolean> result = this.centerRegister.requestPushProviders(this.instance, serviceID);
+            RsfCenterResult<Boolean> result = this.centerRegister.requestPushProviders(instanceInfo, serviceID);
             if (result == null || !result.isSuccess()) {
                 if (result == null) {
                     logger.error("asyncPullAddress {} failed -> result is null.", serviceID);
@@ -264,24 +265,19 @@ class RegistryClientManager implements TimerTask {
         if (protocols == null || protocols.isEmpty()) {
             throw new IllegalStateException("not running any protocol, please check the configuration.");
         }
-        StringBuilder addressList = new StringBuilder("");
         if (RsfServiceType.Provider == eventData.getServiceType()) {
             // - 提供者需要上报所有地址
+            Map<String, String> targetMap = new HashMap<String, String>();
             for (String protocol : protocols) {
-                InterAddress interAddress = this.rsfContext.publishAddress(protocol);
-                String rsfURL = interAddress.toHostSchema();
-                this.logger.info("rsfContext -> doStart , bindAddress : {}", rsfURL);
-                if (addressList.length() > 0) {
-                    addressList.append(',');
-                }
-                addressList.append(rsfURL);
+                InterAddress interAddress = this.rsfContext.bindAddress(protocol);
+                targetMap.put(protocol, interAddress.toHostSchema());
             }
+            ((ProviderPublishInfo) info).setTargetMap(targetMap);
         } else {
             // - 订阅者仅上报默认协议地址
             String protocol = this.rsfContext.getDefaultProtocol();
-            InterAddress interAddress = this.rsfContext.publishAddress(protocol);
-            String rsfURL = interAddress.toHostSchema();
-            addressList.append(rsfURL);
+            InterAddress interAddress = this.rsfContext.bindAddress(protocol);
+            ((ConsumerPublishInfo) info).setTargetAddress(interAddress.toHostSchema());
         }
         //
         info.setBindID(eventData.getBindID());
@@ -291,7 +287,6 @@ class RegistryClientManager implements TimerTask {
         info.setBindType(eventData.getBindType().getName());
         info.setClientTimeout(eventData.getClientTimeout());
         info.setSerializeType(eventData.getSerializeType());
-        info.setTargetList(addressList.toString());
         return info;
     }
 }

@@ -16,8 +16,8 @@
 package net.hasor.registry.boot;
 import net.hasor.core.XmlNode;
 import net.hasor.core.setting.SettingsWrap;
-import net.hasor.registry.CenterMode;
-import net.hasor.registry.RsfCenterSettings;
+import net.hasor.registry.common.CenterMode;
+import net.hasor.registry.common.RsfCenterSettings;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.utils.StringUtils;

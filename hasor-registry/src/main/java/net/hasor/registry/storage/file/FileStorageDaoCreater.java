@@ -17,8 +17,8 @@ package net.hasor.registry.storage.file;
 import net.hasor.core.AppContext;
 import net.hasor.core.Singleton;
 import net.hasor.core.XmlNode;
-import net.hasor.registry.access.adapter.StorageDao;
-import net.hasor.registry.access.adapter.StorageDaoCreater;
+import net.hasor.registry.server.adapter.StorageDao;
+import net.hasor.registry.server.adapter.StorageDaoCreater;
 import net.hasor.utils.StringUtils;
 
 import java.io.File;

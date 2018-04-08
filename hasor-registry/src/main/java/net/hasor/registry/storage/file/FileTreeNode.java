@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.registry.storage.file;
-import net.hasor.registry.access.adapter.ObjectData;
+import net.hasor.registry.server.adapter.ObjectData;
 import net.hasor.registry.storage.mem.MenTreeNode;
 import net.hasor.utils.future.FutureCallback;
 import net.hasor.utils.json.JSON;
@@ -50,7 +50,6 @@ public class FileTreeNode extends MenTreeNode {
                 @Override
                 public void completed(String jsonData) {
                     updateData((ObjectData) JSON.parse(jsonData));
-
                 }
                 @Override
                 public void failed(Throwable ex) {

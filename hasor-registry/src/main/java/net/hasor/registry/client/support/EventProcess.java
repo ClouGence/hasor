@@ -13,7 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.registry.client.support;
+import net.hasor.registry.client.domain.CenterEventBody;
+import net.hasor.rsf.RsfUpdater;
 /**
- * 与注册中心通信的功能，所需要的domain数据模型。
+ * 注册中心事件处理器接口
+ * @version : 2016年2月18日
+ * @author 赵永春 (zyc@hasor.net)
  */
-package net.hasor.registry.domain;
+interface EventProcess {
+    public boolean processEvent(RsfUpdater rsfUpdater, CenterEventBody centerEventBody);
+}

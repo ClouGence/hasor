@@ -13,17 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry;
-import net.hasor.registry.common.InstanceInfo;
-import net.hasor.registry.common.RsfCenterSettings;
 /**
- * 注册中心管理服务
- * @version : 2017年03月05日
- * @author 赵永春 (zyc@hasor.net)
+ * Center,指令集。
  */
-public interface RegistryCenter {
-    /** 获取InstanceInfo */
-    public InstanceInfo getInstanceInfo();
-
-    public RsfCenterSettings getSettings();
-}
+@RsfSearchInclude()
+package net.hasor.registry.client.commands;
+import net.hasor.rsf.console.RsfSearchInclude;

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.client;
-import net.hasor.registry.RsfCenterEvent;
-import net.hasor.registry.domain.CenterEventBody;
+package net.hasor.registry.client.support;
+import net.hasor.registry.client.RsfCenterEvent;
+import net.hasor.registry.client.domain.CenterEventBody;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfUpdater;
 import net.hasor.utils.StringUtils;

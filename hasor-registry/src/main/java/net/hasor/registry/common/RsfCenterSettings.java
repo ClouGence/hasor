@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry;
+package net.hasor.registry.common;
 import net.hasor.core.Settings;
+import net.hasor.registry.common.CenterMode;
 import net.hasor.rsf.InterAddress;
 /**
  *

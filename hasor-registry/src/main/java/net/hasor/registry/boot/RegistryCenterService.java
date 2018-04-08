@@ -17,8 +17,9 @@ package net.hasor.registry.boot;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.registry.InstanceInfo;
+import net.hasor.registry.common.InstanceInfo;
 import net.hasor.registry.RegistryCenter;
+import net.hasor.registry.common.RsfCenterSettings;
 import net.hasor.rsf.RsfContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +35,9 @@ import java.util.List;
 public class RegistryCenterService implements RegistryCenter {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
-    private RsfContext   rsfContext;
-    private InstanceInfo instance;
+    private RsfContext        rsfContext;
+    private InstanceInfo      instance;
+    private RsfCenterSettings centerSettings;
     //
     //
     @Init
@@ -46,13 +48,19 @@ public class RegistryCenterService implements RegistryCenter {
         this.instance.setInstanceID(rsfContext.getInstanceID());
         this.instance.setUnitName(rsfContext.getSettings().getUnitName());
         this.instance.setDefaultProtocol(protocol);
-        this.instance.setRsfAddress(rsfContext.publishAddress(protocol).toHostSchema());
+        this.instance.setRsfAddress(rsfContext.bindAddress(protocol).toHostSchema());
         //
         List<String> runProtocols = new ArrayList<String>(rsfContext.runProtocols());
         this.instance.setRunProtocols(runProtocols);
+        //
+        this.centerSettings = rsfContext.getAppContext().getInstance(RsfCenterSettings.class);
     }
     @Override
     public InstanceInfo getInstanceInfo() {
         return this.instance;
+    }
+    @Override
+    public RsfCenterSettings getSettings() {
+        return this.centerSettings;
     }
 }

@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.domain;
+package net.hasor.registry.client.domain;
+import java.util.Map;
 /**
  * 服务提供功着信息
  * @version : 2016年2月18日
@@ -21,8 +22,9 @@ package net.hasor.registry.domain;
  */
 public class ProviderPublishInfo extends PublishInfo {
     private static final long serialVersionUID = -6681610352758467621L;
-    private int     queueMaxSize;                            //最大服务处理队列长度
-    private boolean sharedThreadPool;
+    private int                 queueMaxSize;       //最大服务处理队列长度
+    private boolean             sharedThreadPool;
+    private Map<String, String> addressMap;
     //
     public int getQueueMaxSize() {
         return queueMaxSize;
@@ -35,5 +37,11 @@ public class ProviderPublishInfo extends PublishInfo {
     }
     public void setSharedThreadPool(boolean sharedThreadPool) {
         this.sharedThreadPool = sharedThreadPool;
+    }
+    public Map<String, String> getTargetMap() {
+        return addressMap;
+    }
+    public void setTargetMap(Map<String, String> addressMap) {
+        this.addressMap = addressMap;
     }
 }

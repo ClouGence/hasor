@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.client;
+package net.hasor.registry.client.support;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.registry.RegistryConstants;
-import net.hasor.registry.RsfCenterSettings;
+import net.hasor.registry.common.RegistryConstants;
+import net.hasor.registry.common.RsfCenterSettings;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.domain;
+package net.hasor.registry.client.domain;
 /**
  * 服务消费者信息
  * @version : 2016年2月18日
@@ -23,6 +23,7 @@ public class ConsumerPublishInfo extends PublishInfo {
     private static final long serialVersionUID = -335204051257003763L;
     private int clientMaximumRequest;    //最大并发请求数
     private boolean message = false;     //是否工作在消息模式
+    private String targetAddress;        //
     //
     public int getClientMaximumRequest() {
         return clientMaximumRequest;
@@ -35,5 +36,11 @@ public class ConsumerPublishInfo extends PublishInfo {
     }
     public void setMessage(boolean message) {
         this.message = message;
+    }
+    public String getTargetAddress() {
+        return targetAddress;
+    }
+    public void setTargetAddress(String targetAddress) {
+        this.targetAddress = targetAddress;
     }
 }

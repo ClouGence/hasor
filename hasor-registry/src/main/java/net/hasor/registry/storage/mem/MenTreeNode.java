@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.registry.storage.mem;
-import net.hasor.registry.RegistryConstants;
-import net.hasor.registry.access.adapter.ObjectData;
+import net.hasor.registry.common.RegistryConstants;
+import net.hasor.registry.server.adapter.ObjectData;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.json.JSON;
 import org.slf4j.Logger;

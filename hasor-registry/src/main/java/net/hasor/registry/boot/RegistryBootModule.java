@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.registry.boot;
-import net.hasor.registry.CenterMode;
 import net.hasor.registry.RegistryCenter;
-import net.hasor.registry.RsfCenterSettings;
-import net.hasor.registry.access.RegistryServerModule;
-import net.hasor.registry.client.RegistryClientModule;
+import net.hasor.registry.client.support.RegistryClientModule;
+import net.hasor.registry.common.CenterMode;
+import net.hasor.registry.common.RsfCenterSettings;
+import net.hasor.registry.server.RegistryServerModule;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfModule;

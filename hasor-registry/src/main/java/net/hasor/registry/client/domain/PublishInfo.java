@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.domain;
+package net.hasor.registry.client.domain;
 import java.io.Serializable;
 /**
  * 发布的服务信息
@@ -36,8 +36,6 @@ public class PublishInfo implements Serializable {
     private int    clientTimeout;
     /** 获取序列化方式*/
     private String serializeType;
-    /** 服务地址'逗号分割'*/
-    private String targetList;
     //
     public String getBindID() {
         return bindID;
@@ -80,11 +78,5 @@ public class PublishInfo implements Serializable {
     }
     public void setSerializeType(String serializeType) {
         this.serializeType = serializeType;
-    }
-    public String getTargetList() {
-        return targetList;
-    }
-    public void setTargetList(String targetList) {
-        this.targetList = targetList;
     }
 }

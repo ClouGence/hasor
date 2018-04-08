@@ -17,8 +17,8 @@ package net.hasor.registry.storage.mem;
 import net.hasor.core.AppContext;
 import net.hasor.core.Singleton;
 import net.hasor.core.XmlNode;
-import net.hasor.registry.access.adapter.StorageDao;
-import net.hasor.registry.access.adapter.StorageDaoCreater;
+import net.hasor.registry.server.adapter.StorageDao;
+import net.hasor.registry.server.adapter.StorageDaoCreater;
 /**
  * 服务数据存储检索
  * @version : 2018年1月2日

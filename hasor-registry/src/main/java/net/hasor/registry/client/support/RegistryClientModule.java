@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.client;
+package net.hasor.registry.client.support;
 import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.context.ContextStartListener;
-import net.hasor.registry.RsfCenterListener;
-import net.hasor.registry.RsfCenterRegister;
-import net.hasor.registry.RsfCenterSettings;
+import net.hasor.registry.common.RsfCenterSettings;
+import net.hasor.registry.client.RsfCenterListener;
+import net.hasor.registry.client.RsfCenterRegister;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfEnvironment;
