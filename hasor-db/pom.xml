@@ -9,7 +9,6 @@
     <!-- Maven Info -->
     <artifactId>hasor-db</artifactId>
     <packaging>jar</packaging>
-    <version>3.2.2-fix20180408</version>
 
     <!-- Project Info -->
     <name>Hasor-DB</name>
@@ -28,7 +27,7 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-core</artifactId>
-            <version>3.2.2</version>
+            <version>${project.version}</version>
         </dependency>
         <!-- Hasor-Core -->
 
