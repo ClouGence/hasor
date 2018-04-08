@@ -16,6 +16,7 @@
 package net.hasor.db.jdbc.mapper;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.RowMapper;
+import net.hasor.utils.BeanUtils;
 import net.hasor.utils.convert.ConverterUtils;
 
 import java.math.BigDecimal;
@@ -64,6 +65,9 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
     }
     /**转换为单值的类型*/
     protected static Object convertValueToRequiredType(final Object value, final Class<?> requiredType) {
+        if (value == null) {
+            return BeanUtils.getDefaultValue(requiredType);
+        }
         if (String.class.equals(requiredType)) {
             return value.toString();
         } else if (Number.class.isAssignableFrom(requiredType) || isNumberPrimitive(requiredType)) {
