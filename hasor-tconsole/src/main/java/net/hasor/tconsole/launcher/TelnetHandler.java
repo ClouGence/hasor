@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console;
+package net.hasor.tconsole.launcher;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -21,17 +21,15 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
-import net.hasor.rsf.InterAddress;
-import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.domain.RsfConstants;
+import net.hasor.tconsole.CommandExecutor;
+import net.hasor.tconsole.CommandFinder;
 import net.hasor.utils.NameThreadFactory;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
-import java.util.*;
+import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -39,30 +37,27 @@ import java.util.concurrent.ThreadPoolExecutor;
  * Handles a server-side channel.
  */
 @Sharable
-public class TelnetHandler extends SimpleChannelInboundHandler<String> {
-    protected static     Logger                          logger     = LoggerFactory.getLogger(RsfConstants.LoggerName_Console);
-    protected static     Logger                          rxdLogger  = LoggerFactory.getLogger(RsfConstants.LoggerName_ConsoleRXD);
-    private static final AttributeKey<RsfCommandRequest> RequestKEY = AttributeKey.newInstance("CommandRequest");
-    private static final AttributeKey<RsfCommandSession> SessionKEY = AttributeKey.newInstance("CommandSession");
-    private static final String                          CMD        = "rsf>";
-    private RsfContext               rsfContext;
-    private CommandManager           commandManager;
+class TelnetHandler extends SimpleChannelInboundHandler<String> {
+    protected static     Logger                   logger     = LoggerFactory.getLogger(TelnetHandler.class);
+    private static final AttributeKey<CmdRequest> RequestKEY = AttributeKey.newInstance("CommandRequest");
+    private static final AttributeKey<CmdSession> SessionKEY = AttributeKey.newInstance("CommandSession");
+    public static final  String                   CMD        = "tConsole>";
+    private CommandFinder            commandFinder;
     private ScheduledExecutorService executor;
-    private String[]                 inBoundAddress;
+    private String[]                 consoleInBound;
     //
-    public TelnetHandler(RsfContext rsfContext) {
-        this.rsfContext = rsfContext;
+    public TelnetHandler(CommandFinder finder, String[] consoleInBound) {
+        this.commandFinder = finder;
+        this.consoleInBound = consoleInBound;
         int workSize = 1;
-        String shortName = "RSF-Console-Work";
-        this.executor = Executors.newScheduledThreadPool(workSize, new NameThreadFactory(shortName, rsfContext.getClassLoader()));
+        String shortName = "tConsole-Work";
+        this.executor = Executors.newScheduledThreadPool(workSize, new NameThreadFactory(shortName, finder.getAppContext().getClassLoader()));
         ThreadPoolExecutor threadPool = (ThreadPoolExecutor) this.executor;
         threadPool.setCorePoolSize(workSize);
         threadPool.setMaximumPoolSize(workSize);
-        logger.info("rsfConsole -> create TelnetHandler , threadShortName={} , workThreadSize = {}.", shortName, workSize);
+        logger.info("tConsole -> create TelnetHandler , threadShortName={} , workThreadSize = {}.", shortName, workSize);
         //
-        this.inBoundAddress = rsfContext.getSettings().getConsoleInBoundAddress();
-        this.commandManager = rsfContext.getAppContext().getInstance(CommandManager.class);
-        logger.info("rsfConsole -> inBoundAddress is :{}.", StringUtils.join(this.inBoundAddress, ","));
+        logger.info("tConsole -> inBoundAddress is :{}.", StringUtils.join(consoleInBound, ","));
     }
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -70,13 +65,13 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         String remoteAddress = inetAddress.getAddress().getHostAddress();
         //
         boolean contains = false;
-        for (String addr : this.inBoundAddress) {
+        for (String addr : this.consoleInBound) {
             if (addr.equals(remoteAddress))
                 contains = true;
         }
         //
         if (!contains) {
-            logger.warn("rsfConsole -> reject inBound socket ,remoteAddress = {}.", remoteAddress);
+            logger.warn("tConsole -> reject inBound socket ,remoteAddress = {}.", remoteAddress);
             ctx.write("--------------------------------------------\r\n\r\n");
             ctx.write("I'm sorry you are not allowed to connect RSF Console.\r\n\r\n");
             ctx.write(" your address is :" + remoteAddress + "\r\n");
@@ -85,40 +80,21 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
             ctx.close();
             return;
         } else {
-            logger.info("rsfConsole -> accept inBound socket ,remoteAddress = {}.", remoteAddress);
+            logger.info("tConsole -> accept inBound socket ,remoteAddress = {}.", remoteAddress);
         }
         //
-        RsfSettings settings = this.rsfContext.getSettings();
-        Set<String> protocolSet = settings.getProtocos();
-        List<String> rsfAddressList = new ArrayList<String>(protocolSet.size());
-        for (String protocol : rsfAddressList) {
-            InterAddress interAddress = this.rsfContext.bindAddress(protocol);
-            if (interAddress != null) {
-                rsfAddressList.add(inetAddress.getHostName());
-            }
-        }
-        Collections.sort(rsfAddressList);
-        //
-        Attribute<RsfCommandSession> attr = ctx.attr(SessionKEY);
+        Attribute<CmdSession> attr = ctx.attr(SessionKEY);
         if (attr.get() == null) {
-            logger.info("rsfConsole -> new  RsfCommandSession.");
-            attr.set(new RsfCommandSession(this.rsfContext, ctx));
+            logger.info("tConsole -> new  RsfCommandSession.");
+            attr.set(new CmdSession(this.commandFinder, ctx));
         }
-        logger.info("rsfConsole -> send Welcome info.");
+        logger.info("tConsole -> send Welcome info.");
         // Send greeting for a new connection.
         ctx.write("--------------------------------------------\r\n\r\n");
-        ctx.write("Welcome to RSF Console!\r\n");
+        ctx.write("Welcome to tConsole!\r\n");
         ctx.write("\r\n");
         ctx.write("     login : " + new Date() + " now. form " + ctx.channel().remoteAddress() + "\r\n");
         ctx.write("    workAt : " + ctx.channel().localAddress() + "\r\n");
-        for (int i = 0; i < rsfAddressList.size(); i++) {
-            if (i == 0) {
-                ctx.write("rsfAddress : " + rsfAddressList.get(i) + "\r\n");
-            } else {
-                ctx.write("           : " + rsfAddressList.get(i) + "\r\n");
-            }
-        }
-        ctx.write("  unitName : " + this.rsfContext.getSettings().getUnitName() + "\r\n\r\n");
         ctx.write("Tips: You can enter a 'help' or 'help -a' for more information.\r\n");
         ctx.write("use the 'exit' or 'quit' out of the console.\r\n");
         ctx.write("--------------------------------------------\r\n");
@@ -128,9 +104,7 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
     @Override
     public void channelRead0(ChannelHandlerContext ctx, String request) throws Exception {
         request = request.trim();
-        rxdLogger.info("RXD({})-> {}", ctx.channel().remoteAddress(), request);
-        //
-        Attribute<RsfCommandRequest> attr = ctx.attr(RequestKEY);
+        Attribute<CmdRequest> attr = ctx.attr(RequestKEY);
         boolean close = false;
         String result = "";
         boolean doRequest = false;
@@ -142,15 +116,10 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
             doRequest = true;
         }
         //
-        if (!doRequest) {
-            logger.info("rsfConsole -> receive RXD :" + request);
-        }
-        //
         if (doRequest) {
-            RsfCommandResponse response = this.doRequest(attr, ctx, request);
+            CmdResponse response = this.doRequest(attr, ctx, request);
             if (response != null) {
                 close = response.isCloseConnection();
-                logger.info("rsfConsole -> receive RXD, response isComplete = {}, isCloseConnection = {}", response.isComplete(), response.isCloseConnection());
                 if (response.isComplete()) {
                     result = response.getResult() + "\r\n" + CMD;
                 } else {
@@ -162,10 +131,9 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         }
         //
         if (StringUtils.isNotBlank(result)) {
-            rxdLogger.info("TXD({})-> {}", ctx.channel().remoteAddress(), result);
             ChannelFuture future = ctx.writeAndFlush(result);
             if (close) {
-                logger.info("rsfConsole -> close connection.");
+                logger.info("tConsole -> close connection.");
                 future.addListener(ChannelFutureListener.CLOSE);
             }
         }
@@ -176,33 +144,32 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
     }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        LoggerFactory.getLogger(TelnetHandler.class).error("rsfConsole error->" + cause.getMessage(), cause);
+        LoggerFactory.getLogger(TelnetHandler.class).error("tConsole error->" + cause.getMessage(), cause);
         clearAttr(ctx);
         ctx.close();
     }
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        logger.info("rsfConsole -> channelInactive.");
+        logger.info("tConsole -> channelInactive.");
         clearAttr(ctx);
         super.channelInactive(ctx);
     }
     private void clearAttr(ChannelHandlerContext ctx) {
-        Attribute<RsfCommandSession> sessionAttr = ctx.attr(SessionKEY);
-        Attribute<RsfCommandRequest> attr = ctx.attr(RequestKEY);
+        Attribute<CmdSession> sessionAttr = ctx.attr(SessionKEY);
+        Attribute<CmdRequest> attr = ctx.attr(RequestKEY);
         if (sessionAttr != null) {
-            logger.info("rsfConsole -> clearAttr ,remove sessionAttr.");
+            logger.info("tConsole -> clearAttr ,remove sessionAttr.");
             sessionAttr.remove();
         }
         if (attr != null) {
-            logger.info("rsfConsole -> clearAttr ,remove requestAttr.");
+            logger.info("tConsole -> clearAttr ,remove requestAttr.");
             attr.remove();
         }
     }
-    private RsfCommandResponse doRequest(final Attribute<RsfCommandRequest> cmdAttr, final ChannelHandlerContext ctx, final String inputString) {
+    private CmdResponse doRequest(final Attribute<CmdRequest> cmdAttr, final ChannelHandlerContext ctx, final String inputString) {
         // .准备环境
-        logger.info("rsfConsole -> doRequest, pre environment.");
-        RsfCommandRequest requestCmd = cmdAttr.get();
-        Attribute<RsfCommandSession> sessionAttr = ctx.attr(SessionKEY);
+        CmdRequest requestCmd = cmdAttr.get();
+        Attribute<CmdSession> sessionAttr = ctx.attr(SessionKEY);
         boolean newCommand = (requestCmd == null);
         //
         // .确定是否将本次输入追加到上一个命令中
@@ -214,29 +181,28 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
                 requestCMD = inputString.substring(0, cmdIndex);
                 requestArgs = inputString.substring(cmdIndex + 1);
             }
-            RsfInstruct rsfInstruct = this.commandManager.findCommand(requestCMD);
-            if (rsfInstruct == null) {
+            CommandExecutor executor = this.commandFinder.findCommand(requestCMD);
+            if (executor == null) {
                 String msgStr = "'" + requestCMD + "' is bad command.";
-                logger.info("rsfConsole -> " + msgStr);
-                return new RsfCommandResponse(msgStr, true, false);
+                return new CmdResponse(msgStr, true, false);
             }
             //
-            logger.info("rsfConsole -> doRequest, RsfCommandRequest in ctx exist. -> command = {} , args = {}", requestCMD, requestArgs);
-            requestCmd = new RsfCommandRequest(requestCMD, sessionAttr.get(), rsfInstruct, requestArgs);
+            logger.info("tConsole -> doRequest, CommandRequest in ctx exist. -> command = {} , args = {}", requestCMD, requestArgs);
+            requestCmd = new CmdRequest(requestCMD, sessionAttr.get(), executor, requestArgs);
             cmdAttr.set(requestCmd);
         }
         //
         // .不同模式命令的处理
         if (requestCmd.inputMultiLine()) {
             /*多行模式*/
-            if (requestCmd.getStatus() == CommandRequestStatus.Prepare) {
+            if (requestCmd.getStatus() == RequestStatus.Prepare) {
                 if (!newCommand) {
                     requestCmd.appendRequestBody(inputString);
                 }
                 if (StringUtils.isBlank(inputString)) {
                     requestCmd.inReady();//命令准备执行
                 }
-            } else if (requestCmd.getStatus() == CommandRequestStatus.Ready) {
+            } else if (requestCmd.getStatus() == RequestStatus.Ready) {
                 if (StringUtils.isBlank(inputString)) {
                     requestCmd.inStandBy();//命令准备执行
                 } else {
@@ -249,8 +215,8 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
         }
         //
         //3.执行命令
-        if (requestCmd.getStatus() == CommandRequestStatus.StandBy) {
-            logger.info("rsfConsole -> doRequest, doRunning.");
+        if (requestCmd.getStatus() == RequestStatus.StandBy) {
+            logger.info("tConsole -> doRequest, doRunning.");
             requestCmd.doCommand(executor, new Runnable() {
                 public void run() {
                     cmdAttr.remove();
@@ -259,8 +225,8 @@ public class TelnetHandler extends SimpleChannelInboundHandler<String> {
             });
             //命令进入就绪状态
             return requestCmd.getResponse();
-        } else if (requestCmd.getStatus() == CommandRequestStatus.Running) {
-            return new RsfCommandResponse("command is running, please wait a moment.", false, false);
+        } else if (requestCmd.getStatus() == RequestStatus.Running) {
+            return new CmdResponse("command is running, please wait a moment.", false, false);
         }
         //
         return null;

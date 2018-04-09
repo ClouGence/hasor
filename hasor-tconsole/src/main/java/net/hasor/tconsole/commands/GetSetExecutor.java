@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console.commands;
+package net.hasor.tconsole.commands;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.console.RsfCommand;
-import net.hasor.rsf.console.RsfCommandRequest;
-import net.hasor.rsf.console.RsfInstruct;
+import net.hasor.tconsole.CommandExecutor;
+import net.hasor.tconsole.launcher.CmdRequest;
 import net.hasor.utils.StringUtils;
 /**
  * 在本次Telnet中设置环境变量，当Telnet连接断开变量失效
@@ -25,8 +24,7 @@ import net.hasor.utils.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-@RsfCommand({ "set", "get" })
-public class GetSetRsfInstruct implements RsfInstruct {
+public class GetSetExecutor implements CommandExecutor {
     @Override
     public String helpInfo() {
         return "set/get environment variables of console .\r\n"//
@@ -34,12 +32,12 @@ public class GetSetRsfInstruct implements RsfInstruct {
                 + " - set variableName variableValue  (set new values to variable.)";//
     }
     @Override
-    public boolean inputMultiLine(RsfCommandRequest request) {
+    public boolean inputMultiLine(CmdRequest request) {
         return false;
     }
     @Override
-    public String doCommand(RsfCommandRequest request) throws Throwable {
-        request.setAttr(RsfCommandRequest.WITHOUT_AFTER_CLOSE_SESSION, true);//不关闭Session
+    public String doCommand(CmdRequest request) throws Throwable {
+        request.setAttr(CmdRequest.WITHOUT_AFTER_CLOSE_SESSION, true);//不关闭Session
         String[] args = request.getRequestArgs();
         String argsJoin = StringUtils.join(args, "");
         argsJoin = argsJoin.replace("\\s+", " ");

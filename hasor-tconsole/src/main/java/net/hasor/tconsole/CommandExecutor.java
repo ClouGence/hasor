@@ -13,17 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.tconsole;
+import net.hasor.tconsole.launcher.CmdRequest;
 /**
- * 包含在搜索结果中
+ * Telnet指令执行器。
+ *  - 无论是否设置了单例模式，执行器都是单例模式运行的。see: net.hasor.tconsole.binder.ExecutorDefine
  * @version : 2016年4月3日
  * @author 赵永春 (zyc@hasor.net)
  */
-@Target({ ElementType.PACKAGE })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface RsfSearchInclude {
+public interface CommandExecutor {
+    public static final String AFTER_CLOSE_SESSION = "Session_AfterClose";
+    //
+
+    /**帮助信息.*/
+    public String helpInfo();
+
+    /**命令是否启用多行输入，启用多行输入之后。两次回车即可完成整个命令。*/
+    public boolean inputMultiLine(CmdRequest request);
+
+    /**执行命令*/
+    public String doCommand(CmdRequest request) throws Throwable;
 }

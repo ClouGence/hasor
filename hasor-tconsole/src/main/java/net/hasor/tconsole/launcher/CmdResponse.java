@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console;
+package net.hasor.tconsole.launcher;
 /**
  *
  * @version : 2016年4月3日
  * @author 赵永春 (zyc@hasor.net)
  */
-class RsfCommandResponse {
+class CmdResponse {
     private String  result;
     private boolean complete;
     private boolean closeConnection;
-    public RsfCommandResponse(String result, boolean complete, boolean closeConnection) {
+    public CmdResponse(String result, boolean complete, boolean closeConnection) {
         this.result = result;
         this.complete = complete;
         this.closeConnection = closeConnection;

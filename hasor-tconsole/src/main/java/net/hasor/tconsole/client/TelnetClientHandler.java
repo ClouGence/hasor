@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package net.hasor.rsf.console.launcher;
+package net.hasor.tconsole.client;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -37,7 +37,7 @@ public class TelnetClientHandler extends SimpleChannelInboundHandler<String> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
         logger.error(msg);
-        if (msg.startsWith("rsf>[SUCCEED]")) {
+        if (msg.startsWith("tConsole>[SUCCEED]")) {
             this.atomicBoolean.set(true);
         }
     }

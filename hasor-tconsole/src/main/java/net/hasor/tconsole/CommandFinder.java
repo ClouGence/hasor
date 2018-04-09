@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console;
+package net.hasor.tconsole;
+import net.hasor.core.AppContext;
+
+import java.util.List;
 /**
- *
- * @version : 2016年4月3日
+ * TConsol 为您提供 telnet 下和应用程序交互的能力。
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2018-04-09
  */
-enum CommandRequestStatus {
-    /**命令准备，用于多行命令在执行前接受内容。（单行命令不支持此状态）*/
-    Prepare, /**命令就绪，多行命令在Prepare模式下输入一个空行即可进入状态，如果命令在该状态下输入了新的内容会重新跳回到Prepare状态。（单行命令默认值）*/
-    Ready, /**命令即将执行，等待任务执行调度系统调度。*/
-    StandBy, /**命令运行中，命令在Ready状态下输入一个空行即可进入该状态。*/
-    Running, /**命令执行完毕*/
-    Complete
+public interface CommandFinder {
+    /**查找命令。*/
+    public CommandExecutor findCommand(String cmdName);
+
+    /**获取所有命令。*/
+    public List<String> getCommandNames();
+
+    public AppContext getAppContext();
 }

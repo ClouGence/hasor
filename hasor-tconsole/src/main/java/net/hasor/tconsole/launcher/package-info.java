@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 提供一个工具，可以连接远端并执行一条指令。
+ * Telnet 控制台框架主体代码。
  */
-package net.hasor.rsf.console.launcher;
+package net.hasor.tconsole.launcher;

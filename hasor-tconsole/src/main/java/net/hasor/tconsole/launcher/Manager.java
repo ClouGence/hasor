@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console;
+package net.hasor.tconsole.launcher;
 import net.hasor.core.AppContext;
-import net.hasor.core.Init;
-import net.hasor.core.Inject;
-import net.hasor.core.Singleton;
-import net.hasor.rsf.domain.RsfConstants;
+import net.hasor.core.AppContextAware;
+import net.hasor.tconsole.CommandExecutor;
+import net.hasor.tconsole.CommandFinder;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,41 +31,39 @@ import java.util.Map;
  * @version : 2016年4月7日
  * @author 赵永春 (zyc@hasor.net)
  */
-@Singleton
-public class CommandManager {
-    protected static Logger logger = LoggerFactory.getLogger(RsfConstants.LoggerName_Console);
-    @Inject
-    private AppContext appContext;
-    private final Map<String, RsfInstruct> commandMap = new HashMap<String, RsfInstruct>();
+class Manager implements CommandFinder, AppContextAware {
+    protected static Logger                      logger     = LoggerFactory.getLogger(Manager.class);
+    private final    Map<String, ExecutorDefine> commandMap = new HashMap<String, ExecutorDefine>();
+    private          AppContext                  appContext = null;
     //
-    @Init
-    public void initCommand() throws Throwable {
-        List<RsfInstruct> cmdSet = appContext.findBindingBean(RsfInstruct.class);
+    @Override
+    public void setAppContext(AppContext appContext) {
+        this.appContext = appContext;
+        List<ExecutorDefine> cmdSet = appContext.findBindingBean(ExecutorDefine.class);
         if (cmdSet == null || cmdSet.isEmpty()) {
-            logger.warn("rsfConsole -> initCommand is empty.");
+            logger.warn("tConsole -> initCommand is empty.");
             return;
         }
         //
         ArrayList<String> cmdNames = new ArrayList<String>();
-        for (RsfInstruct cmdObject : cmdSet) {
-            RsfCommand cmdInfo = cmdObject.getClass().getAnnotation(RsfCommand.class);
-            for (String name : cmdInfo.value()) {
+        for (ExecutorDefine cmdObject : cmdSet) {
+            for (String name : cmdObject.getNames()) {
                 name = name.toLowerCase();
                 cmdNames.add(name);
                 if (this.commandMap.containsKey(name)) {
-                    RsfInstruct conflictCmd = this.commandMap.get(name);
-                    String types = cmdObject.getClass().getName() + " , " + conflictCmd.getClass().getName();
+                    ExecutorDefine conflictCmd = this.commandMap.get(name);
+                    String types = cmdObject.getTargetClassName() + " , " + conflictCmd.getTargetClassName();
                     throw new IllegalStateException("conflict command name '" + name + "' {" + types + "}");
                 } else {
                     this.commandMap.put(name, cmdObject);
                 }
             }
         }
-        logger.info("load rsf Console Commands ={}.", StringUtils.join(cmdNames.toArray(), ", "));
+        logger.info("load tConsole Commands ={}.", StringUtils.join(cmdNames.toArray(), ", "));
         //
     }
     /**查找命令。*/
-    public RsfInstruct findCommand(String requestCMD) {
+    public CommandExecutor findCommand(String requestCMD) {
         if (StringUtils.isBlank(requestCMD)) {
             return null;
         }
@@ -77,5 +74,9 @@ public class CommandManager {
         List<String> names = new ArrayList<String>(this.commandMap.keySet());
         java.util.Collections.sort(names);
         return names;
+    }
+    @Override
+    public AppContext getAppContext() {
+        return this.appContext;
     }
 }

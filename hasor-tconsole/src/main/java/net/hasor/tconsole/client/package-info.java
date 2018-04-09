@@ -13,18 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 /**
- * RSF命令
- * @version : 2016年4月3日
- * @author 赵永春 (zyc@hasor.net)
+ * 提供一个工具，可以连接远端并执行一条指令。
  */
-@Target({ ElementType.TYPE })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface RsfCommand {
-    public String[] value();
-}
+package net.hasor.tconsole.client;

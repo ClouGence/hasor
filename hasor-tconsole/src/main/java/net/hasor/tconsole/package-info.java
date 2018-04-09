@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * RSF框架，管理控制台功能。使用了RSF的应用程序可以通过Telnet直接管理RSF。
+ * Tenlet控制台框架，可以为应用程序提供简单的交互媒介。
  */
-package net.hasor.rsf.console;
+package net.hasor.tconsole;

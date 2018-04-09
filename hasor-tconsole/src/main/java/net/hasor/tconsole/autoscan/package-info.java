@@ -13,22 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console;
 /**
- * RSF命令
- * @version : 2016年4月3日
- * @author 赵永春 (zyc@hasor.net)
+ * 指令注解配置扫描加载器。
  */
-public interface RsfInstruct {
-    public static final String AFTER_CLOSE_SESSION = "Session_AfterClose";
-    //
-
-    /**帮助信息.*/
-    public String helpInfo();
-
-    /**命令是否启用多行输入，启用多行输入之后。两次回车即可完成整个命令。*/
-    public boolean inputMultiLine(RsfCommandRequest request);
-
-    /**执行命令*/
-    public String doCommand(RsfCommandRequest request) throws Throwable;
-}
+package net.hasor.tconsole.autoscan;

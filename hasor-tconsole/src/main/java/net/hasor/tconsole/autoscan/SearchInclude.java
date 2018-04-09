@@ -13,30 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console.commands;
-import net.hasor.core.Singleton;
-import net.hasor.rsf.console.RsfCommand;
-import net.hasor.rsf.console.RsfCommandRequest;
-import net.hasor.rsf.console.RsfInstruct;
+package net.hasor.tconsole.autoscan;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- *
+ * 包含在搜索结果中
  * @version : 2016年4月3日
  * @author 赵永春 (zyc@hasor.net)
  */
-@Singleton
-@RsfCommand({ "quit", "exit" })
-public class QuitRsfInstruct implements RsfInstruct {
-    @Override
-    public String helpInfo() {
-        return "out of console.";
-    }
-    @Override
-    public boolean inputMultiLine(RsfCommandRequest request) {
-        return false;
-    }
-    @Override
-    public String doCommand(RsfCommandRequest request) throws Throwable {
-        request.closeSession();
-        return "logout of console";
-    }
+@Target({ ElementType.PACKAGE })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface SearchInclude {
 }

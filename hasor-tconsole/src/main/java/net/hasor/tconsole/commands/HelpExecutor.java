@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console.commands;
+package net.hasor.tconsole.commands;
 import net.hasor.core.Singleton;
-import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.console.CommandManager;
-import net.hasor.rsf.console.RsfCommand;
-import net.hasor.rsf.console.RsfCommandRequest;
-import net.hasor.rsf.console.RsfInstruct;
+import net.hasor.tconsole.CommandExecutor;
+import net.hasor.tconsole.CommandFinder;
+import net.hasor.tconsole.launcher.CmdRequest;
 import net.hasor.utils.StringUtils;
 
 import java.io.StringWriter;
@@ -30,60 +28,50 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-@RsfCommand("help")
-public class HelpRsfInstruct implements RsfInstruct {
-    //
+public class HelpExecutor implements CommandExecutor {
     @Override
     public String helpInfo() {
         return "command help manual. the function like linux man.\r\n"//
                 + " - help       (show all commands help info.)\r\n"// 
-                + " - help -a    (show all commands help detail info.)\r\n"// 
-                + " - help quit  (show the 'quit' command help info.)";
+                + " - help <cmd> (show <cmd> help detail info.)\r\n"//
+                + " - example : \r\n"//
+                + "       help quit  (show the 'quit' command help info.)";
     }
     @Override
-    public boolean inputMultiLine(RsfCommandRequest request) {
+    public boolean inputMultiLine(CmdRequest request) {
         return false;
     }
     @Override
-    public String doCommand(RsfCommandRequest request) throws Throwable {
-        RsfContext rsfContext = request.getRsfContext();
-        CommandManager commandManager = rsfContext.getAppContext().getInstance(CommandManager.class);
-        List<String> cmdNames = commandManager.getCommandNames();
+    public String doCommand(CmdRequest request) throws Throwable {
+        CommandFinder finder = request.getFinder();
+        List<String> cmdNames = finder.getCommandNames();
         StringWriter sw = new StringWriter();
         if (cmdNames == null || cmdNames.isEmpty()) {
             return "there is nothing  command to display information.";
         }
-        //
         String[] args = request.getRequestArgs();
-        boolean showDetail = false;
         if (args != null && args.length > 0) {
             String cmdName = args[0];
-            if ("-a".equalsIgnoreCase(cmdName)) {
-                showDetail = true;
+            CommandExecutor cmd = finder.findCommand(cmdName);
+            if (cmd != null) {
+                sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + cmdName + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
+                sw.write(cmd.helpInfo() + "\r\n");
             } else {
-                RsfInstruct cmd = commandManager.findCommand(cmdName);
-                if (cmd != null) {
-                    sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + cmdName + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
-                    sw.write(cmd.helpInfo() + "\r\n");
-                } else {
-                    sw.write("[ERROR] command '" + cmdName + "' does not exist.\r\n");
-                }
-                return sw.toString();
+                sw.write("[ERROR] command '" + cmdName + "' does not exist.\r\n");
             }
+            return sw.toString();
         }
+        //
+        cmdNames.remove("help");
+        cmdNames.remove("man");
         int maxLength = 0;
         for (String name : cmdNames) {
             maxLength = name.length() > maxLength ? name.length() : maxLength;
         }
         maxLength = maxLength + 2;
         for (String name : cmdNames) {
-            RsfInstruct cmd = commandManager.findCommand(name);
-            if (showDetail) {
-                sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + name + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
-                sw.write(cmd.helpInfo() + "\r\n");
-            } else {
-                sw.write(" - " + StringUtils.rightPad(name, maxLength, " ") + cmd.helpInfo().split("\r\n")[0]);
-            }
+            CommandExecutor cmd = finder.findCommand(name);
+            sw.write(" - " + StringUtils.rightPad(name, maxLength, " ") + cmd.helpInfo().split("\r\n")[0]);
             if (cmdNames.size() > 1) {
                 sw.write("\r\n");
             }

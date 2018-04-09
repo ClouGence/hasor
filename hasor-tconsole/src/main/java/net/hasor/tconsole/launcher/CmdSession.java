@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console;
+package net.hasor.tconsole.launcher;
 import io.netty.channel.ChannelHandlerContext;
-import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.domain.RsfConstants;
+import net.hasor.tconsole.CommandFinder;
 import net.hasor.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,14 +25,13 @@ import java.util.Map;
  * @version : 2016年4月3日
  * @author 赵永春 (zyc@hasor.net)
  */
-public final class RsfCommandSession {
-    protected static Logger rxdLogger = LoggerFactory.getLogger(RsfConstants.LoggerName_ConsoleRXD);
-    private RsfContext            rsfContext;   //Rsf环境
+public final class CmdSession {
+    private CommandFinder         commandFinder;//环境
     private ChannelHandlerContext nettyContext; //网络套接字
     private Map<String, Object>   attr;
     //
-    RsfCommandSession(RsfContext rsfContext, ChannelHandlerContext nettyContext) {
-        this.rsfContext = rsfContext;
+    CmdSession(CommandFinder commandFinder, ChannelHandlerContext nettyContext) {
+        this.commandFinder = commandFinder;
         this.nettyContext = nettyContext;
         this.attr = new HashMap<String, Object>();
     }
@@ -49,7 +45,6 @@ public final class RsfCommandSession {
         }
         if (this.nettyContext.channel().isActive()) {
             String outStr = message + "\r\n";
-            rxdLogger.info("TXD({})-> {}", this.nettyContext.channel().remoteAddress(), outStr);
             this.nettyContext.writeAndFlush(outStr).sync();
         }
     }
@@ -59,7 +54,6 @@ public final class RsfCommandSession {
             message = "";
         }
         if (this.nettyContext.channel().isActive()) {
-            rxdLogger.info("TXD({})-> {}", this.nettyContext.channel().remoteAddress(), message);
             this.nettyContext.writeAndFlush(message).sync();
         }
     }
@@ -68,8 +62,8 @@ public final class RsfCommandSession {
     public boolean isActive() {
         return this.nettyContext.channel().isActive();
     }
-    public RsfContext getRsfContext() {
-        return this.rsfContext;
+    public CommandFinder getFinder() {
+        return this.commandFinder;
     }
     public Object getSessionAttr(String key) {
         return this.attr.get(key.toLowerCase());

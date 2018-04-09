@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-package net.hasor.rsf.console.launcher;
+package net.hasor.tconsole.client;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -31,7 +31,7 @@ import java.io.StringWriter;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
- * Simplistic telnet client.
+ * simple telnet client.
  */
 public final class TelnetClient {
     public static void execCommand(String host, int port, final String command, Map<String, String> envMap) throws Exception {
