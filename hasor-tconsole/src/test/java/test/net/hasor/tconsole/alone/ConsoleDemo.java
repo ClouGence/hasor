@@ -15,7 +15,6 @@
  */
 package test.net.hasor.tconsole.alone;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.tconsole.ConsoleApiBinder;
@@ -24,14 +23,13 @@ import net.hasor.tconsole.ConsoleApiBinder;
  * @version : 2014年9月12日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ProviderServer {
+public class ConsoleDemo {
     public static void main(String[] args) throws Throwable {
         //Server
-        AppContext appContext = Hasor.createAppContext(new Module() {
+        Hasor.createAppContext(new Module() {
             @Override
             public void loadModule(ApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(ConsoleApiBinder.class).addCommand(new String[] { "get" }, HelloWordExecutor.class);
-                //
+                apiBinder.tryCast(ConsoleApiBinder.class).addCommand(new String[] { "hello" }, HelloWordExecutor.class);
             }
         });
         //
