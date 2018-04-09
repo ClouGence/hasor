@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console.commands;
+package net.hasor.rsf.tconsole;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.console.RsfCommand;
-import net.hasor.rsf.console.RsfCommandRequest;
-import net.hasor.rsf.console.RsfInstruct;
 import net.hasor.rsf.domain.RsfServiceType;
-import net.hasor.utils.StringUtils;
+import net.hasor.tconsole.CommandExecutor;
+import net.hasor.tconsole.launcher.CmdRequest;
 
 import java.io.StringWriter;
 import java.util.*;
@@ -33,8 +31,7 @@ import java.util.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-@RsfCommand("info")
-public class InfoRsfInstruct implements RsfInstruct {
+public class InfoRsfInstruct implements CommandExecutor {
     //
     @Override
     public String helpInfo() {
@@ -43,12 +40,12 @@ public class InfoRsfInstruct implements RsfInstruct {
                 + " - info      (show server info.)";
     }
     @Override
-    public boolean inputMultiLine(RsfCommandRequest request) {
+    public boolean inputMultiLine(CmdRequest request) {
         return false;
     }
     @Override
-    public String doCommand(RsfCommandRequest request) throws Throwable {
-        RsfContext rsfContext = request.getRsfContext();
+    public String doCommand(CmdRequest request) throws Throwable {
+        RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 0) {
@@ -96,10 +93,6 @@ public class InfoRsfInstruct implements RsfInstruct {
         sw.write(">>      service Count :" + serviceIDs.size() + "\r\n");
         sw.write(">>     provider Count :" + providerCount + "\r\n");
         sw.write(">>     customer Count :" + customerCount + "\r\n");
-        sw.write(">>\r\n");
-        sw.write(">>----- Console Info ------\r\n");
-        sw.write(">>        consolePort :" + settings.getConsolePort() + "\r\n");
-        sw.write(">>     consoleInBound :" + StringUtils.join(settings.getConsoleInBoundAddress(), ", ") + "\r\n");
         sw.write(">>\r\n");
         sw.write(">>----- Default Info ------\r\n");
         sw.write(">>            timeout :" + settings.getDefaultTimeout() + "\r\n");

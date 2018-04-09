@@ -29,7 +29,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 /**
  *
  * @version : 2014年11月12日
@@ -54,9 +57,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private   String                    defaultProtocol       = null;
     private   Map<String, String>       connectorSet          = null;
     private   Map<String, InterAddress> bindAddressSet        = null;
-    //
-    private   int                       consolePort           = 2180;
-    private   String[]                  consoleInBound        = null;
     //
     private   int                       requestTimeout        = 6000;
     private   int                       maximumRequest        = 200;
@@ -175,14 +175,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     public boolean isAutomaticOnline() {
         return this.automaticOnline;
     }
-    @Override
-    public int getConsolePort() {
-        return this.consolePort;
-    }
-    @Override
-    public String[] getConsoleInBoundAddress() {
-        return this.consoleInBound;
-    }
     //
     public void refresh() throws IOException {
         super.refresh();
@@ -267,33 +259,6 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
             throw new IOException("default protocol missing config.");
         }
         //
-        this.consolePort = getInteger("hasor.rsfConfig.console.port", 2180);
-        String consoleInBoundStr = getString("hasor.rsfConfig.console.inBound", "local");
-        ArrayList<String> addressList = new ArrayList<String>();
-        if (StringUtils.isNotBlank(consoleInBoundStr)) {
-            for (String item : consoleInBoundStr.split(",")) {
-                String itemTrim = item.trim();
-                if (StringUtils.isNotBlank(itemTrim)) {
-                    try {
-                        if ("local".equalsIgnoreCase(itemTrim)) {
-                            addressList.add(NetworkUtils.finalBindAddress("local").getHostAddress());
-                        } else {
-                            addressList.add(itemTrim);
-                        }
-                    } catch (Exception e) {
-                        logger.error("console - inBound address " + itemTrim + " error " + e.getMessage(), e);
-                    }
-                }
-            }
-        }
-        if (addressList.isEmpty()) {
-            try {
-                addressList.add(NetworkUtils.finalBindAddress("local").getHostAddress());
-            } catch (Exception e) {
-                addressList.add("127.0.0.1");
-            }
-        }
-        this.consoleInBound = addressList.toArray(new String[addressList.size()]);
         //
         this.requestTimeout = getInteger("hasor.rsfConfig.client.defaultTimeout", 6000);
         this.maximumRequest = getInteger("hasor.rsfConfig.client.maximumRequest", 200);

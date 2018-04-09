@@ -33,6 +33,7 @@ import net.hasor.tconsole.CommandFinder;
 import net.hasor.tconsole.ConsoleApiBinder;
 import net.hasor.tconsole.commands.GetSetExecutor;
 import net.hasor.tconsole.commands.HelpExecutor;
+import net.hasor.tconsole.commands.QuitExecutor;
 import net.hasor.utils.NameThreadFactory;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
@@ -68,10 +69,10 @@ public class ConsoleModule implements LifeModule {
         //
         Settings settings = apiBinder.getEnvironment().getSettings();
         int consolePort = settings.getInteger("hasor.tConsole.bindPort", 2180);
-        String hostString = settings.getString("hasor.tConsole..bindAddress", "0.0.0.0");
+        String hostString = settings.getString("hasor.tConsole.bindAddress", "0.0.0.0");
         this.bindAddress = new InetSocketAddress(finalBindAddress(hostString), consolePort);
         //
-        String consoleInBoundStr = settings.getString("hasor.tConsole..inBound", "local,127.0.0.1");
+        String consoleInBoundStr = settings.getString("hasor.tConsole.inBound", "local,127.0.0.1");
         ArrayList<String> addressList = new ArrayList<String>();
         if (StringUtils.isNotBlank(consoleInBoundStr)) {
             for (String item : consoleInBoundStr.split(",")) {
@@ -102,7 +103,7 @@ public class ConsoleModule implements LifeModule {
         ConsoleApiBinder consoleBinder = apiBinder.tryCast(ConsoleApiBinder.class);
         consoleBinder.addCommand(new String[] { "set", "get" }, new GetSetExecutor());
         consoleBinder.addCommand(new String[] { "help", "man" }, new HelpExecutor());
-        consoleBinder.addCommand(new String[] { "quit", "exit" }, new HelpExecutor());
+        consoleBinder.addCommand(new String[] { "quit", "exit" }, new QuitExecutor());
     }
     @Override
     public void onStart(final AppContext appContext) {

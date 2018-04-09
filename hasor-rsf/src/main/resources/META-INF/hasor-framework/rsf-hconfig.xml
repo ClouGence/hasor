@@ -13,8 +13,6 @@
 
         <!-- RSF对外提供服务的IP -->
         <RSF_SERVICE_IP>local</RSF_SERVICE_IP>
-        <!-- Telnet 控制台端口 -->
-        <RSF_CONSOLE_PORT>2180</RSF_CONSOLE_PORT>
 
         <!-- RSF对外提供服务的服务端口（可以配置 0 用来关闭 RSF连接器） -->
         <RSF_SERVICE_PORT>2181</RSF_SERVICE_PORT>
@@ -29,8 +27,8 @@
         <modules>
             <!-- RSF框架本体 -->
             <module>net.hasor.rsf.bootstrap.RsfFrameworkModule</module>
-            <!-- Telnet控制台插件 -->
-            <module>net.hasor.rsf.console.RsfConsoleModule</module>
+            <!-- RSF框架的 Telnet,命令 -->
+            <module>net.hasor.rsf.tconsole.TelnetModule</module>
 
             <!-- Hprose：AutoSetAliasName支持插件 -->
             <module>net.hasor.rsf.protocol.hprose.AutoSetAliasName</module>
@@ -57,15 +55,6 @@
 
         <!-- automaticOnline : RSF在启动之后是否自动转换为 online 状态。 -->
         <automaticOnline>true</automaticOnline>
-
-        <!--
-            RSF管理控制台(Telnet)
-                - telnet  	  : 监听端口号。
-                - inBound 	  : 可以使用RSF管理控制台的IP地址列表，默认是“127.0.0.1”。
-                                    默认情况下您必须登录到应用服务器上，才能够访问RSF管理控制台。
-                提示：RSF在启动的时，如果管理控制台的端口被占用，是不会影响到整个RSF启动进程。
-        -->
-        <console port="${RSF_CONSOLE_PORT}" inBound="local,127.0.0.1"/>
 
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
         <!--用于设置默认情况下RSF服务的一些(不重要)的选项。

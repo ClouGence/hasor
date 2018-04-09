@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console.commands;
+package net.hasor.rsf.tconsole;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.console.RsfCommand;
-import net.hasor.rsf.console.RsfCommandRequest;
-import net.hasor.rsf.console.RsfInstruct;
+import net.hasor.tconsole.CommandExecutor;
+import net.hasor.tconsole.launcher.CmdRequest;
 
 import java.io.StringWriter;
 /**
@@ -27,8 +26,7 @@ import java.io.StringWriter;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-@RsfCommand("status")
-public class StatusRsfInstruct implements RsfInstruct {
+public class StatusRsfInstruct implements CommandExecutor {
     //
     @Override
     public String helpInfo() {
@@ -39,12 +37,12 @@ public class StatusRsfInstruct implements RsfInstruct {
                 + " - status off  (offline application , remove publishing/subscription form registry.)";
     }
     @Override
-    public boolean inputMultiLine(RsfCommandRequest request) {
+    public boolean inputMultiLine(CmdRequest request) {
         return false;
     }
     @Override
-    public String doCommand(RsfCommandRequest request) throws Throwable {
-        RsfContext rsfContext = request.getRsfContext();
+    public String doCommand(CmdRequest request) throws Throwable {
+        RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 0) {

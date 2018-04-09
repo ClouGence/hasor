@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console.commands;
+package net.hasor.rsf.tconsole;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfUpdater;
-import net.hasor.rsf.console.RsfCommand;
-import net.hasor.rsf.console.RsfCommandRequest;
-import net.hasor.rsf.console.RsfInstruct;
+import net.hasor.tconsole.CommandExecutor;
+import net.hasor.tconsole.launcher.CmdRequest;
 
 import java.io.StringWriter;
 import java.util.List;
@@ -31,8 +30,7 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-@RsfCommand("detail")
-public class DetailRsfInstruct implements RsfInstruct {
+public class DetailRsfInstruct implements CommandExecutor {
     //
     @Override
     public String helpInfo() {
@@ -43,15 +41,15 @@ public class DetailRsfInstruct implements RsfInstruct {
                 + " - detail -a xxxx (show service info of XXXX. if service is Consumer then show Providers)";
     }
     @Override
-    public boolean inputMultiLine(RsfCommandRequest request) {
+    public boolean inputMultiLine(CmdRequest request) {
         return false;
     }
     @Override
-    public String doCommand(RsfCommandRequest request) throws Throwable {
+    public String doCommand(CmdRequest request) throws Throwable {
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();
         // .help
-        if (args == null || args.length == 0 || (args.length > 0 && "-h".equalsIgnoreCase(args[0]))) {
+        if (args == null || args.length == 0 || "-h".equalsIgnoreCase(args[0])) {
             //
             sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + request.getCommandString() + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
             sw.write(helpInfo());
@@ -60,7 +58,7 @@ public class DetailRsfInstruct implements RsfInstruct {
         //
         // .准备参数
         String serviceID = args[args.length - 1].trim();
-        RsfContext rsfContext = request.getRsfContext();
+        RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
         RsfBindInfo<Object> info = rsfContext.getServiceInfo(serviceID);
         boolean isProvider = rsfContext.getServiceProvider(info) != null;
         if (info == null) {

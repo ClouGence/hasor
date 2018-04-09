@@ -99,12 +99,6 @@ public interface RsfSettings extends Settings {
     /**应用自动上线*/
     public boolean isAutomaticOnline();
 
-    /**RSF管理控制台监听的端口号（Telnet）*/
-    public int getConsolePort();
-
-    /**准许的ip地址列表。*/
-    public String[] getConsoleInBoundAddress();
-
     /**重新加载Rsf配置*/
     public void refreshRsfConfig() throws IOException;
 }

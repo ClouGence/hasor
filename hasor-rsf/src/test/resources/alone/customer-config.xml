@@ -9,7 +9,7 @@
         <!-- Hprose 服务端口 -->
         <HPROSE_SERVICE_PORT>2171</HPROSE_SERVICE_PORT>
         <!-- Telnet 控制台端口 -->
-        <RSF_CONSOLE_PORT>2172</RSF_CONSOLE_PORT>
+        <TCONSOLE_PORT>2172</TCONSOLE_PORT>
     </hasor.environmentVar>
 
 </config>

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console.commands;
+package net.hasor.rsf.tconsole;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.console.RsfCommand;
-import net.hasor.rsf.console.RsfCommandRequest;
-import net.hasor.rsf.console.RsfInstruct;
+import net.hasor.tconsole.CommandExecutor;
+import net.hasor.tconsole.autoscan.Command;
+import net.hasor.tconsole.launcher.CmdRequest;
 import net.hasor.utils.StringUtils;
 
 import java.io.StringWriter;
@@ -30,8 +30,7 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-@RsfCommand("list")
-public class ListRsfInstruct implements RsfInstruct {
+public class ListRsfInstruct implements CommandExecutor {
     //
     @Override
     public String helpInfo() {
@@ -40,12 +39,12 @@ public class ListRsfInstruct implements RsfInstruct {
                 + " - list -h   (show help info.)\r\n";
     }
     @Override
-    public boolean inputMultiLine(RsfCommandRequest request) {
+    public boolean inputMultiLine(CmdRequest request) {
         return false;
     }
     @Override
-    public String doCommand(RsfCommandRequest request) throws Throwable {
-        RsfContext rsfContext = request.getRsfContext();
+    public String doCommand(CmdRequest request) throws Throwable {
+        RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 0) {

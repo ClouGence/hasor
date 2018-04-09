@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console.commands;
+package net.hasor.rsf.tconsole;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.console.RsfCommand;
-import net.hasor.rsf.console.RsfCommandRequest;
-import net.hasor.rsf.console.RsfInstruct;
+import net.hasor.tconsole.CommandExecutor;
+import net.hasor.tconsole.launcher.CmdRequest;
 import net.hasor.utils.StringUtils;
 
 import java.io.BufferedReader;
@@ -31,8 +30,7 @@ import java.io.StringWriter;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-@RsfCommand("rule")
-public class RuleRsfInstruct implements RsfInstruct {
+public class RuleRsfInstruct implements CommandExecutor {
     //
     @Override
     public String helpInfo() {
@@ -51,7 +49,7 @@ public class RuleRsfInstruct implements RsfInstruct {
                 + " - rule -ca XXXX     (clean args Level rule info of XXXX.)";
     }
     @Override
-    public boolean inputMultiLine(RsfCommandRequest request) {
+    public boolean inputMultiLine(CmdRequest request) {
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 0) {
             String mode = args[0];
@@ -60,8 +58,8 @@ public class RuleRsfInstruct implements RsfInstruct {
         return false;
     }
     @Override
-    public String doCommand(RsfCommandRequest request) throws Throwable {
-        RsfContext rsfContext = request.getRsfContext();
+    public String doCommand(CmdRequest request) throws Throwable {
+        RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 1) {
@@ -76,23 +74,23 @@ public class RuleRsfInstruct implements RsfInstruct {
             }
             /*执行指令*/
             if ("-s".equalsIgnoreCase(mode)) {
-                this.showServiceRule(sw, nameArg, rsfContext);  //显示服务级路由脚本
+                this.showServiceRule(sw, nameArg, rsfContext);              //显示服务级路由脚本
             } else if ("-m".equalsIgnoreCase(mode)) {
-                this.showMethodRule(sw, nameArg, rsfContext);   //显示方法级路由脚本
+                this.showMethodRule(sw, nameArg, rsfContext);               //显示方法级路由脚本
             } else if ("-a".equalsIgnoreCase(mode)) {
-                this.showArgsRule(sw, nameArg, rsfContext);     //显示参数级路由脚本
+                this.showArgsRule(sw, nameArg, rsfContext);                 //显示参数级路由脚本
             } else if ("-us".equalsIgnoreCase(mode)) {
-                this.updateServiceRule(sw, nameArg, request);   //更新服务级路由脚本
+                this.updateServiceRule(sw, nameArg, request, rsfContext);   //更新服务级路由脚本
             } else if ("-um".equalsIgnoreCase(mode)) {
-                this.updateMethodRule(sw, nameArg, request);    //更新方法级路由脚本
+                this.updateMethodRule(sw, nameArg, request, rsfContext);    //更新方法级路由脚本
             } else if ("-ua".equalsIgnoreCase(mode)) {
-                this.updateArgsRule(sw, nameArg, request);      //更新参数级路由脚本
+                this.updateArgsRule(sw, nameArg, request, rsfContext);      //更新参数级路由脚本
             } else if ("-cs".equalsIgnoreCase(mode)) {
-                this.cleanServiceRule(sw, nameArg, request);    //清空服务级路由脚本
+                this.cleanServiceRule(sw, nameArg, request, rsfContext);    //清空服务级路由脚本
             } else if ("-cm".equalsIgnoreCase(mode)) {
-                this.cleanMethodRule(sw, nameArg, request);     //清空方法级路由脚本
+                this.cleanMethodRule(sw, nameArg, request, rsfContext);     //清空方法级路由脚本
             } else if ("-ca".equalsIgnoreCase(mode)) {
-                this.cleanArgsRule(sw, nameArg, request);       //清空参数级别路由脚本
+                this.cleanArgsRule(sw, nameArg, request, rsfContext);       //清空参数级别路由脚本
             } else {
                 sw.write("[ERROR] bad args.");
             }
@@ -146,8 +144,7 @@ public class RuleRsfInstruct implements RsfInstruct {
         }
     }
     //
-    private void updateArgsRule(StringWriter sw, String nameArg, RsfCommandRequest request) {
-        RsfContext rsfContext = request.getRsfContext();
+    private void updateArgsRule(StringWriter sw, String nameArg, CmdRequest request, RsfContext rsfContext) {
         String scriptBody = request.getRequestBody();
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
@@ -158,8 +155,7 @@ public class RuleRsfInstruct implements RsfInstruct {
             return;
         }
     }
-    private void updateMethodRule(StringWriter sw, String nameArg, RsfCommandRequest request) {
-        RsfContext rsfContext = request.getRsfContext();
+    private void updateMethodRule(StringWriter sw, String nameArg, CmdRequest request, RsfContext rsfContext) {
         String scriptBody = request.getRequestBody();
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
@@ -170,8 +166,7 @@ public class RuleRsfInstruct implements RsfInstruct {
             return;
         }
     }
-    private void updateServiceRule(StringWriter sw, String nameArg, RsfCommandRequest request) {
-        RsfContext rsfContext = request.getRsfContext();
+    private void updateServiceRule(StringWriter sw, String nameArg, CmdRequest request, RsfContext rsfContext) {
         String scriptBody = request.getRequestBody();
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
@@ -183,8 +178,7 @@ public class RuleRsfInstruct implements RsfInstruct {
         }
     }
     //
-    private void cleanArgsRule(StringWriter sw, String nameArg, RsfCommandRequest request) {
-        RsfContext rsfContext = request.getRsfContext();
+    private void cleanArgsRule(StringWriter sw, String nameArg, CmdRequest request, RsfContext rsfContext) {
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
             return;
@@ -194,8 +188,7 @@ public class RuleRsfInstruct implements RsfInstruct {
             return;
         }
     }
-    private void cleanMethodRule(StringWriter sw, String nameArg, RsfCommandRequest request) {
-        RsfContext rsfContext = request.getRsfContext();
+    private void cleanMethodRule(StringWriter sw, String nameArg, CmdRequest request, RsfContext rsfContext) {
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
             return;
@@ -205,8 +198,7 @@ public class RuleRsfInstruct implements RsfInstruct {
             return;
         }
     }
-    private void cleanServiceRule(StringWriter sw, String nameArg, RsfCommandRequest request) {
-        RsfContext rsfContext = request.getRsfContext();
+    private void cleanServiceRule(StringWriter sw, String nameArg, CmdRequest request, RsfContext rsfContext) {
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
             return;

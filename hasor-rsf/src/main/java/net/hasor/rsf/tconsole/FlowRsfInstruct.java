@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.console.commands;
+package net.hasor.rsf.tconsole;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.console.RsfCommand;
-import net.hasor.rsf.console.RsfCommandRequest;
-import net.hasor.rsf.console.RsfInstruct;
+import net.hasor.tconsole.CommandExecutor;
+import net.hasor.tconsole.launcher.CmdRequest;
 import net.hasor.utils.StringUtils;
 
 import java.io.BufferedReader;
@@ -31,8 +30,7 @@ import java.io.StringWriter;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-@RsfCommand("flow")
-public class FlowRsfInstruct implements RsfInstruct {
+public class FlowRsfInstruct implements CommandExecutor {
     //
     @Override
     public String helpInfo() {
@@ -43,7 +41,7 @@ public class FlowRsfInstruct implements RsfInstruct {
                 + " - flow -c XXXX     (clean service flowControl info of XXXX.)";
     }
     @Override
-    public boolean inputMultiLine(RsfCommandRequest request) {
+    public boolean inputMultiLine(CmdRequest request) {
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 0) {
             String mode = args[0];
@@ -52,8 +50,8 @@ public class FlowRsfInstruct implements RsfInstruct {
         return false;
     }
     @Override
-    public String doCommand(RsfCommandRequest request) throws Throwable {
-        RsfContext rsfContext = request.getRsfContext();
+    public String doCommand(CmdRequest request) throws Throwable {
+        RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 1) {
@@ -71,9 +69,9 @@ public class FlowRsfInstruct implements RsfInstruct {
             if ("-s".equalsIgnoreCase(mode)) {
                 this.showFlowControl(sw, nameArg, rsfContext);//显示流控规则
             } else if ("-u".equalsIgnoreCase(mode)) {
-                this.updateFlowControl(sw, nameArg, request);//更新流控规则
+                this.updateFlowControl(sw, nameArg, request, rsfContext);//更新流控规则
             } else if ("-c".equalsIgnoreCase(mode)) {
-                this.cleanFlowControl(sw, nameArg, request);//清空流控规则
+                this.cleanFlowControl(sw, nameArg, request, rsfContext);//清空流控规则
             } else {
                 sw.write("[ERROR] bad args.");
             }
@@ -104,8 +102,7 @@ public class FlowRsfInstruct implements RsfInstruct {
         }
     }
     //
-    private void updateFlowControl(StringWriter sw, String nameArg, RsfCommandRequest request) {
-        RsfContext rsfContext = request.getRsfContext();
+    private void updateFlowControl(StringWriter sw, String nameArg, CmdRequest request, RsfContext rsfContext) {
         String scriptBody = request.getRequestBody();
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
@@ -117,8 +114,7 @@ public class FlowRsfInstruct implements RsfInstruct {
         }
     }
     //
-    private void cleanFlowControl(StringWriter sw, String nameArg, RsfCommandRequest request) {
-        RsfContext rsfContext = request.getRsfContext();
+    private void cleanFlowControl(StringWriter sw, String nameArg, CmdRequest request, RsfContext rsfContext) {
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
             return;
