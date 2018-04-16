@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+
+    <!-- 启动监听器，框架加载入口 -->
     <listener>
         <listener-class>net.hasor.web.startup.RuntimeListener</listener-class>
     </listener>
+
+    <!-- web请求拦截器 -->
     <filter>
         <filter-name>rootFilter</filter-name>
         <filter-class>net.hasor.web.startup.RuntimeFilter</filter-class>
     </filter>
-
     <filter-mapping>
         <filter-name>rootFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+
+    <!-- App启动入口 -->
+    <context-param>
+        <param-name>hasor-root-module</param-name>
+        <param-value>net.example.hasor.core.StartModule</param-value>
+    </context-param>
 </web-app>

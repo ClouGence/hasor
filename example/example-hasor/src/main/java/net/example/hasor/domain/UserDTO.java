@@ -8,7 +8,6 @@ import java.util.Date;
 public class UserDTO {
     private long   id          = 0;    // UserID（PK，自增）
     private String account     = null; // 帐号（唯一）
-    private String email       = null; // email
     private String password    = null; // 密码(非明文)
     private String nick        = null; // 昵称
     private Date   create_time = null; // 创建时间
@@ -25,12 +24,6 @@ public class UserDTO {
     }
     public void setAccount(String account) {
         this.account = account;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
     }
     public String getPassword() {
         return password;

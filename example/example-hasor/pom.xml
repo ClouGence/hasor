@@ -24,7 +24,6 @@
             <groupId>net.hasor</groupId>
             <artifactId>hasor-db</artifactId>
         </dependency>
-        <!-- Plugins -->
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-plugins</artifactId>
@@ -52,23 +51,11 @@
             <groupId>c3p0</groupId>
             <artifactId>c3p0</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.3.1</version>
+        </dependency>
         <!-- DB end -->
-
-        <!-- apache begin -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-        </dependency>
-        <!-- apache end -->
-
-        <dependency>
-            <groupId>org.jogamp.jogl</groupId>
-            <artifactId>jogl-all</artifactId>
-            <version>2.3.2</version>
-        </dependency>
     </dependencies>
 </project>

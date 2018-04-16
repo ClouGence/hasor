@@ -14,36 +14,39 @@
  * limitations under the License.
  */
 package net.example.hasor.web;
-import net.hasor.web.RenderInvoker;
+import net.example.hasor.daos.MyDAO;
+import net.example.hasor.domain.UserDTO;
+import net.hasor.core.Inject;
+import net.hasor.db.transaction.interceptor.Transactional;
+import net.hasor.web.WebController;
 import net.hasor.web.annotation.MappingTo;
-import net.hasor.web.annotation.Params;
-import net.hasor.web.valid.Valid;
-import net.hasor.web.valid.ValidInvoker;
 
 import java.io.IOException;
+import java.sql.SQLException;
 /**
  * 登录
  * @version : 2016年11月07日
  * @author 赵永春 (zyc@hasor.net)
  */
-@MappingTo("/login.{action}")
-public class Login {
-    public void execute(@Valid() @Params LoginForm loginForm,//
-            ValidInvoker valid, RenderInvoker render) throws IOException {
-        //
-        // .不处理非表单请求
-        if (!"do".equalsIgnoreCase(loginForm.getAction())) {
-            valid.clearValidErrors();
-            return;
+@MappingTo("/login.do")
+public class Login extends WebController {
+    @Inject
+    private MyDAO myDAO;
+    //
+    @Transactional // 数据库事务控制注解
+    public void execute() throws IOException, SQLException {
+        String account = getPara("username");
+        String password = getPara("password");
+        UserDTO userInfo = myDAO.getUserByAccount(account);
+        password = password == null ? "" : password;
+        getResponse().setCharacterEncoding("UTF-8");
+        if (userInfo != null && password.equals(userInfo.getPassword())) {
+            putData("messageInfo", "login ok.");
+            putData("userInfo", userInfo);
+            renderTo("htm", "succeed.htm");
+        } else {
+            putData("messageInfo", "login faile.");
+            renderTo("htm", "failed.htm");
         }
-        //
-        // .帐号验证成功，跳转到 list 页
-        if (valid.isValid()) {
-            render.getHttpResponse().sendRedirect("/user_list.htm");
-            return;
-        }
-        // .验证失败，回显数据
-        render.put("loginForm", loginForm);
-        render.renderTo("htm", "/login.htm");
     }
 }

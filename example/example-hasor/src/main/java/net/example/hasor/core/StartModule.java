@@ -15,49 +15,46 @@
  */
 package net.example.hasor.core;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.Environment;
+import net.hasor.core.AppContext;
+import net.hasor.core.LifeModule;
+import net.hasor.core.Settings;
 import net.hasor.db.JdbcModule;
 import net.hasor.db.Level;
-import net.hasor.plugins.render.FreemarkerRender;
+import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
+import net.hasor.web.annotation.MappingTo;
+
+import java.util.Set;
 /**
  * Hasor API 引导式配置
  * @version : 2015年12月25日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class StartModule extends WebModule {
+public class StartModule extends WebModule implements LifeModule {
+    /** init 阶段 */
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         //
-        apiBinder.setEncodingCharacter("utf-8", "utf-8");   //设置请求响应编码
-        apiBinder.suffix("htm")//
-                .bind(FreemarkerRender.class);              //设置 Freemarker 渲染器
-        apiBinder.scanMappingTo();                          //扫描所有 @MappingTo 注解
+        // 设置请求响应编码
+        apiBinder.setEncodingCharacter("UTF-8", "UTF-8");
         //
-        this.loadDataSource(apiBinder);                     //连接数据库
-    }
-    //
-    private void loadDataSource(ApiBinder apiBinder) throws Throwable {
+        // 设置freemarker渲染器
+        apiBinder.suffix("htm").bind(MyFreemarkerRender.class);
+        //
+        // 扫描所有带有 @MappingTo 特征类
+        Set<Class<?>> aClass = apiBinder.findClass(MappingTo.class);
+        // 对 aClass 集合进行发现并自动配置控制器
+        apiBinder.looking4MappingTo(aClass);
         //
         // .数据库配置
-        Environment env = apiBinder.getEnvironment();
-        String driverString = env.evalString("%jdbc.driver%");
-        String urlString = env.evalString("%jdbc.url%");
-        String userString = env.evalString("%jdbc.user%");
-        String pwdString = env.evalString("%jdbc.password%");
-        //
-        // .数据源
-        int poolMaxSize = 40;
-        logger.info("C3p0 Pool Info maxSize is ‘{}’ driver is ‘{}’ jdbcUrl is‘{}’",//
-                poolMaxSize, driverString, urlString);
+        Settings settings = apiBinder.getEnvironment().getSettings();
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
-        dataSource.setDriverClass(driverString);
-        dataSource.setJdbcUrl(urlString);
-        dataSource.setUser(userString);
-        dataSource.setPassword(pwdString);
-        dataSource.setMaxPoolSize(poolMaxSize);
+        dataSource.setDriverClass("org.hsqldb.jdbcDriver");
+        dataSource.setJdbcUrl(settings.getString("myApp.jdbcURL"));
+        dataSource.setUser(settings.getString("myApp.userName"));
+        dataSource.setPassword(settings.getString("myApp.userPassword"));
+        dataSource.setMaxPoolSize(40);
         dataSource.setInitialPoolSize(3);
         dataSource.setIdleConnectionTestPeriod(18000);
         dataSource.setCheckoutTimeout(3000);
@@ -66,9 +63,18 @@ public class StartModule extends WebModule {
         dataSource.setAcquireRetryAttempts(30);
         dataSource.setAcquireIncrement(1);
         dataSource.setMaxIdleTime(25000);
-        //
-        // .数据库框架
         apiBinder.installModule(new JdbcModule(Level.Full, dataSource));
     }
-    //
+    /** start 阶段 */
+    @Override
+    public void onStart(AppContext appContext) throws Throwable {
+        // 初始化内容数据库
+        JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
+        jdbcTemplate.loadSQL("utf-8", "/ddl_sql_user.sql");
+        //
+        jdbcTemplate.execute("insert into UserInfo values(1,'admin','pwd','administrator',now(),now())");
+    }
+    @Override
+    public void onStop(AppContext appContext) throws Throwable {
+    }
 }
