@@ -92,7 +92,7 @@ public class StandardContextSettings extends InputStreamSettings {
     @Override
     protected void readyLoad() throws IOException {
         super.readyLoad();
-        //1.装载所有static-config.xml
+        //1.装载所有 xxx-hconfig.xml
         List<URL> schemaUrlList = ResourcesUtils.getResources(SechmaName);
         for (URL schemaUrl : schemaUrlList) {
             InputStream sechmaStream = ResourcesUtils.getResourceAsStream(schemaUrl);

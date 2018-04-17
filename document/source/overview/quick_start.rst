@@ -68,7 +68,7 @@ Hasor不鼓吹“零配置”、“零注解”、“零Xml”，但是Hasor会�
 
     <!-- App启动入口 -->
     <context-param>
-        <param-name>startModule</param-name>
+        <param-name>hasor-root-module</param-name>
         <param-value>net.demo.core.StartModule</param-value>
     </context-param>
 
@@ -551,14 +551,8 @@ IoC 是 Hasor 提供的一项基础功能，在使用这两个功能时您无需
     }
 
 
-Aop
-------------------------------------
-
-
-
-
 示例项目
 ------------------------------------
 最后这里是示例项目的下载地址，祝您使用 Hasor 的路途愉快：
-Git地址：
+http://files.hasor.net/resources/example-hasor.zip
 

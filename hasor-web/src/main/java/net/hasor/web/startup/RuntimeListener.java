@@ -17,7 +17,9 @@ package net.hasor.web.startup;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
+import net.hasor.core.Settings;
 import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.listener.ListenerPipeline;
 import org.slf4j.Logger;
@@ -28,6 +30,10 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Properties;
 /**
  *
  * @version : 2017-01-10
@@ -41,40 +47,70 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     /*----------------------------------------------------------------------------------------------------*/
     //
     /**创建{@link AppContext}对象*/
-    protected Hasor createAppContext(final ServletContext sc) throws Throwable {
+    protected Hasor newHasor(ServletContext sc, String configName, Properties properties) throws Throwable {
         final class WebHasor extends Hasor {
             protected WebHasor(Object context) {
                 super(context);
             }
         }
         //
+        Hasor webHasor = WebHasor.create(sc);
+        //
+        if (StringUtils.isNotBlank(configName)) {
+            webHasor.setMainSettings(configName);
+        }
+        if (properties != null && !properties.isEmpty()) {
+            for (String key : properties.stringPropertyNames()) {
+                webHasor.putFrameworkData(key, properties.getProperty(key));
+            }
+        }
         String webContextDir = sc.getRealPath("/");
-        return WebHasor.create(sc).putFrameworkData("HASOR_WEBROOT", webContextDir);
+        webHasor.putFrameworkData("HASOR_WEBROOT", webContextDir);
+        return webHasor;
     }
     //
     /**获取启动模块*/
-    protected Module getStartModule(ServletContext sc) throws Exception {
-        //
-        //1.Start Module.
-        Module startModule = null;
-        String startModuleType = sc.getInitParameter("startModule");
-        if (StringUtils.isBlank(startModuleType)) {
+    protected Module newRootModule(ServletContext sc, String rootModule) throws Exception {
+        if (StringUtils.isBlank(rootModule)) {
             logger.info("web initModule is undefinition.");
+            return null;
         } else {
-            Class<Module> startModuleClass = (Class<Module>) Thread.currentThread().getContextClassLoader().loadClass(startModuleType);
-            startModule = startModuleClass.newInstance();
-            logger.info("web initModule is " + startModuleType);
+            Class<Module> startModuleClass = (Class<Module>) Thread.currentThread().getContextClassLoader().loadClass(rootModule);
+            logger.info("web initModule is " + rootModule);
+            return startModuleClass.newInstance();
         }
-        return startModule;
     }
+    /**加载属性文件*/
+    protected Properties loadEnvProperties(ServletContext sc, String envPropertieName) throws IOException {
+        if (StringUtils.isBlank(envPropertieName)) {
+            logger.info("properties file is undefinition.");
+            return null;
+        } else {
+            InputStream resourceAsStream = ResourcesUtils.getResourceAsStream(envPropertieName);
+            if (resourceAsStream == null) {
+                logger.warn("properties file is " + envPropertieName + " , but there is not exist.");
+                return null;
+            }
+            logger.info("properties file is " + envPropertieName);
+            Properties prop = new Properties();
+            prop.load(new InputStreamReader(resourceAsStream, Settings.DefaultCharset));
+            return prop;
+        }
+    }
+    //
     //
     @Override
     public void contextInitialized(final ServletContextEvent servletContextEvent) {
         //1.create AppContext
         try {
             ServletContext sc = servletContextEvent.getServletContext();
-            Module startModule = this.getStartModule(sc);
-            this.appContext = this.createAppContext(sc).build(startModule);
+            String rootModule = sc.getInitParameter("hasor-root-module");       // 启动入口
+            String configName = sc.getInitParameter("hasor-hconfig-name");      // 配置文件名
+            String envProperties = sc.getInitParameter("hasor-env-properties"); // 环境变量配置
+            //
+            Properties properties = this.loadEnvProperties(sc, envProperties);
+            Module startModule = this.newRootModule(sc, rootModule);
+            this.appContext = this.newHasor(sc, configName, properties).build(startModule);
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
@@ -92,7 +128,9 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         if (this.listenerPipeline != null) {
             this.listenerPipeline.contextDestroyed(servletContextEvent);
         }
-        this.appContext.shutdown();
+        if (appContext != null) {
+            this.appContext.shutdown();
+        }
         logger.info("shutdown.");
     }
     @Override

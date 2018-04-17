@@ -146,22 +146,6 @@ public abstract class AbstractEnvironment implements Environment {
         return evalString("%" + WORK_HOME + "%/");
     }
     //
-    private String formatMap4log(final int colWidth, final Map<String, String> mapData) {
-        /*输出系统环境变量日志*/
-        StringBuilder outLog = new StringBuilder("");
-        for (String key : mapData.keySet()) {
-            String var = mapData.get(key);
-            var = (var != null) ? (var.replace("\r", "\\r").replace("\n", "\\n")) : "";
-            outLog.append(StringUtils.fixedString(' ', colWidth - key.length()));
-            outLog.append(String.format("%s = %s", key, var));
-            outLog.append('\n');
-        }
-        if (outLog.length() > 1) {
-            outLog.deleteCharAt(outLog.length() - 1);
-        }
-        return outLog.toString();
-    }
-    //
     /* ------------------------------------------------------------------------------------- Env */
     @Override
     public void addEnvVar(final String varName, final String value) {
@@ -255,21 +239,6 @@ public abstract class AbstractEnvironment implements Environment {
             this.logger.info("loadPackages = " + packages);
         }
         //
-        // .日志输出
-        if (this.logger.isInfoEnabled()) {
-            int keyMaxSize = 0;
-            for (String key : this.envMap.keySet()) {
-                keyMaxSize = key.length() >= keyMaxSize ? key.length() : keyMaxSize;
-            }
-            keyMaxSize = keyMaxSize + 2;
-            StringBuilder sb = new StringBuilder();
-            sb.append("EnvVars:");
-            if (!this.envMap.isEmpty()) {
-                sb.append("\n").append(this.formatMap4log(keyMaxSize, this.envMap));
-                sb.append("\n").append(StringUtils.fixedString('-', 50));
-            }
-            this.logger.info(sb.toString());
-        }
         this.workMode = this.evalString("%" + WORK_MODE + "%");
     }
     /**

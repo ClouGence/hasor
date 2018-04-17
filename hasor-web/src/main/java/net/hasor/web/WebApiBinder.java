@@ -25,6 +25,7 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
 import java.util.Map;
+import java.util.Set;
 /**
  * 提供了注册Servlet和Filter的方法。
  * @version : 2016-12-26
@@ -58,13 +59,11 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /**使用 MappingTo 表达式，创建一个{@link MappingToBindingBuilder}。*/
     public MappingToBindingBuilder<Object> mappingTo(String[] morePatterns);
-
     //
-    public void scanMappingTo();
 
-    public void scanMappingTo(String... packages);
+    public void looking4MappingTo(Set<Class<?>> mabeMappingToSet);
 
-    public void scanMappingTo(Matcher<Class<?>> matcher, String... packages);
+    public void looking4MappingTo(Set<Class<?>> mabeMappingToSet, Matcher<Class<?>> matcher);
     //
 
     /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/

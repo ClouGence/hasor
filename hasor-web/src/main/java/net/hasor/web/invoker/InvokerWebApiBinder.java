@@ -453,10 +453,9 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         }
         return this.mappingTo(null, morePatterns);
     }
-    //
     @Override
-    public void scanMappingTo() {
-        this.scanMappingTo(new Matcher<Class<?>>() {
+    public void looking4MappingTo(Set<Class<?>> mabeMappingToSet) {
+        this.looking4MappingTo(mabeMappingToSet, new Matcher<Class<?>>() {
             @Override
             public boolean matches(Class<?> target) {
                 return true;
@@ -464,27 +463,17 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         });
     }
     @Override
-    public void scanMappingTo(String... packages) {
-        this.scanMappingTo(new Matcher<Class<?>>() {
-            @Override
-            public boolean matches(Class<?> target) {
-                return true;
+    public void looking4MappingTo(Set<Class<?>> mabeMappingToSet, Matcher<Class<?>> matcher) {
+        int counts = 0;
+        if (mabeMappingToSet != null && !mabeMappingToSet.isEmpty()) {
+            for (Class<?> type : mabeMappingToSet) {
+                counts += (loadType(this, type) ? 1 : 0);
             }
-        });
-    }
-    @Override
-    public void scanMappingTo(Matcher<Class<?>> matcher, String... packages) {
-        String[] defaultPackages = this.getEnvironment().getSpanPackage();
-        String[] scanPackages = (packages == null || packages.length == 0) ? defaultPackages : packages;
-        //
-        Set<Class<?>> serviceSet = this.findClass(MappingTo.class, scanPackages);
-        serviceSet = (serviceSet == null) ? new HashSet<Class<?>>() : new HashSet<Class<?>>(serviceSet);
-        serviceSet.remove(MappingTo.class);
-        if (serviceSet.isEmpty()) {
-            logger.warn("mapingTo -> exit , not found any @MappingTo.");
         }
-        for (Class<?> type : serviceSet) {
-            loadType(this, type);
+        if (counts == 0) {
+            logger.warn("mapingTo -> exit , not found any @MappingTo.");
+        } else {
+            logger.info("mapingTo -> found {} counts.");
         }
     }
     //

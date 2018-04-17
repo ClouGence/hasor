@@ -6,12 +6,13 @@ import org.junit.Test;
 
 import javax.servlet.ServletContext;
 import java.io.IOException;
+import java.util.Properties;
 /**
  * Created by yongchun.zyc on 2017/2/25.
  */
 public class ExtRuntimeListener extends RuntimeListener {
-    protected Hasor createAppContext(ServletContext sc) throws Throwable {
-        Hasor hasor = super.createAppContext(sc);
+    protected Hasor newHasor(ServletContext sc, String configName, Properties properties) throws Throwable {
+        Hasor hasor = super.newHasor(sc, configName, properties);
         hasor.setMainSettings(".....");
         return hasor;
     }

@@ -25,6 +25,7 @@ import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionListener;
+import java.util.Set;
 /**
  * {@link WebApiBinder} 接口包装器
  * @version : 2017-01-10
@@ -108,16 +109,12 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
         return this.webApiBinder.mappingTo(morePatterns);
     }
     @Override
-    public void scanMappingTo() {
-        this.webApiBinder.scanMappingTo();
+    public void looking4MappingTo(Set<Class<?>> mabeMappingToSet) {
+        this.webApiBinder.looking4MappingTo(mabeMappingToSet);
     }
     @Override
-    public void scanMappingTo(String... packages) {
-        this.webApiBinder.scanMappingTo(packages);
-    }
-    @Override
-    public void scanMappingTo(Matcher<Class<?>> matcher, String... packages) {
-        this.webApiBinder.scanMappingTo(matcher, packages);
+    public void looking4MappingTo(Set<Class<?>> mabeMappingToSet, Matcher<Class<?>> matcher) {
+        this.webApiBinder.looking4MappingTo(mabeMappingToSet, matcher);
     }
     @Override
     public void addServletListener(Class<? extends ServletContextListener> targetKey) {

@@ -4,6 +4,8 @@ Release Hasor v3.x
 
 Hasor-Core v3.2.3 (2018-04-?)
 ------------------------------------
+**新增**
+    - web 新增：hasor-root-module、hasor-hconfig-name、hasor-env-properties 三个 web.xml 的属性配置。
 **改进**
     - 当使用 maven-shade-plugin 进行 maven 打包时由于 static-config.xml 无法通过文件追加的方式进行简单合并，因此老版本 Hasor 的工程无法使用 maven-shade-plugin 打包。
       3.2.3版本之后修改了 static-config.xml 发现机制，改为通过 /META-INF/hasor.schemas 配置文件进行发现。
@@ -14,6 +16,7 @@ Hasor-Core v3.2.3 (2018-04-?)
     - env.config 配置文件名，更名为 hconfig.properties。
 **修复**
     - fix 执行查询结果返回为空时，AbstractRowMapper.convertValueToRequiredType 方法报 NPE 的 Bug。
+    - fix JdbcTemplate 类中 requiredSingleResult 当执行结果为空时报空指针的异常。
 
 
 Hasor-Core v3.2.2 (2018-01-02)

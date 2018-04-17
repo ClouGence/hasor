@@ -810,11 +810,13 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     //
     /**至返回结果集中的一条数据。*/
     private static <T> T requiredSingleResult(final Collection<T> results) throws SQLException {
-        int size = results != null ? results.size() : 0;
-        if (size == 0)
-            throw new SQLException("Empty Result");
-        if (results.size() > 1)
+        if (results == null || results.isEmpty()) {
+            return null;
+        }
+        int size = results.size();
+        if (size > 1) {
             throw new SQLException("Incorrect column count: expected 1, actual " + size);
+        }
         return results.iterator().next();
     }
     //
