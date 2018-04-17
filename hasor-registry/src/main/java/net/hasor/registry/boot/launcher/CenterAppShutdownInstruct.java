@@ -15,9 +15,8 @@
  */
 package net.hasor.registry.boot.launcher;
 import net.hasor.core.AppContext;
-import net.hasor.rsf.console.RsfCommand;
-import net.hasor.rsf.console.RsfCommandRequest;
-import net.hasor.rsf.console.RsfInstruct;
+import net.hasor.tconsole.CommandExecutor;
+import net.hasor.tconsole.launcher.CmdRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -25,19 +24,18 @@ import org.slf4j.LoggerFactory;
  * @version : 2016年3月29日
  * @author 赵永春 (zyc@hasor.net)
  */
-@RsfCommand("center_app_shutdown_command")
-public class CenterAppShutdownInstruct implements RsfInstruct {
+public class CenterAppShutdownInstruct implements CommandExecutor {
     protected static Logger logger = LoggerFactory.getLogger(CenterAppShutdownInstruct.class);
     @Override
     public String helpInfo() {
         return "shutdown center.";
     }
     @Override
-    public boolean inputMultiLine(RsfCommandRequest request) {
+    public boolean inputMultiLine(CmdRequest request) {
         return false;
     }
     @Override
-    public String doCommand(RsfCommandRequest request) throws Throwable {
+    public String doCommand(CmdRequest request) throws Throwable {
         boolean killSelfValue = Boolean.valueOf((String) request.getSessionAttr("open_kill_self"));
         if (!killSelfValue) {
             return "center can't quit, please run command.";
@@ -58,7 +56,7 @@ public class CenterAppShutdownInstruct implements RsfInstruct {
             }
         }
         //延迟3秒，shutdown
-        final AppContext appContext = request.getRsfContext().getAppContext();
+        final AppContext appContext = request.getFinder().getAppContext();
         Thread thread = new Thread() {
             public void run() {
                 try {

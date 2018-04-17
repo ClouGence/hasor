@@ -18,6 +18,7 @@ import net.hasor.registry.common.InstanceInfo;
 import net.hasor.registry.client.domain.ConsumerPublishInfo;
 import net.hasor.registry.client.domain.ProviderPublishInfo;
 import net.hasor.rsf.RsfService;
+import net.hasor.rsf.domain.RsfServiceType;
 
 import java.util.List;
 /**
@@ -40,7 +41,7 @@ public interface RsfCenterRegister {
     public RsfCenterResult<Void> registerConsumer(InstanceInfo instance, ConsumerPublishInfo info);
 
     /** 解除发布或订阅 */
-    public RsfCenterResult<Void> unRegister(InstanceInfo instance, String serviceID);
+    public RsfCenterResult<Void> unRegister(InstanceInfo instance, String serviceID, RsfServiceType serviceType);
 
     /** 拉取服务提供者列表 */
     public RsfCenterResult<List<String>> pullProviders(InstanceInfo instance, String serviceID);

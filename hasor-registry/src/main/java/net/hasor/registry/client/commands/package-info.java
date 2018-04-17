@@ -16,6 +16,4 @@
 /**
  * Center,指令集。
  */
-@RsfSearchInclude()
 package net.hasor.registry.client.commands;
-import net.hasor.rsf.console.RsfSearchInclude;

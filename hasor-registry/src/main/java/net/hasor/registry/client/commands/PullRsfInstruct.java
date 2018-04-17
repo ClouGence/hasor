@@ -15,16 +15,15 @@
  */
 package net.hasor.registry.client.commands;
 import net.hasor.core.Singleton;
-import net.hasor.registry.common.InstanceInfo;
 import net.hasor.registry.client.RsfCenterRegister;
 import net.hasor.registry.client.RsfCenterResult;
+import net.hasor.registry.common.InstanceInfo;
 import net.hasor.registry.server.commonds.AbstractCenterInstruct;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
-import net.hasor.rsf.console.RsfCommand;
-import net.hasor.rsf.console.RsfCommandRequest;
 import net.hasor.rsf.domain.RsfServiceType;
+import net.hasor.tconsole.launcher.CmdRequest;
 import net.hasor.utils.StringUtils;
 
 import java.io.StringWriter;
@@ -38,7 +37,6 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-@RsfCommand({ "pull", "request" })
 public class PullRsfInstruct extends AbstractCenterInstruct {
     //
     @Override
@@ -49,18 +47,18 @@ public class PullRsfInstruct extends AbstractCenterInstruct {
                 + " - pull or request XXXX  (pull service addressSet of XXXX.)\r\n";
     }
     @Override
-    public boolean inputMultiLine(RsfCommandRequest request) {
+    public boolean inputMultiLine(CmdRequest request) {
         return false;
     }
     @Override
-    public String doCommand(InstanceInfo instance, RsfCommandRequest request) throws Throwable {
+    public String doCommand(InstanceInfo instance, CmdRequest request) throws Throwable {
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 0) {
             //
             // .准备参数
             String doArg = args[0];
-            RsfContext rsfContext = request.getRsfContext();
+            RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
             List<String> servicesList = Collections.emptyList();
             //
             // .确定拉取地址的服务列表
@@ -102,10 +100,10 @@ public class PullRsfInstruct extends AbstractCenterInstruct {
                 //
                 if ("request".equalsIgnoreCase(request.getCommandString())) {
                     // -request
-                    processRequest(request, register, serviceID, instance);
+                    processRequest(request, register, serviceID, instance, rsfContext);
                 } else {
                     // -pull
-                    processPull(request, register, serviceID, instance);
+                    processPull(request, register, serviceID, instance, rsfContext);
                 }
             }
         } else {
@@ -116,9 +114,8 @@ public class PullRsfInstruct extends AbstractCenterInstruct {
         return sw.toString();
     }
     //
-    private void processPull(RsfCommandRequest request, RsfCenterRegister register, String serviceID, InstanceInfo instance) {
+    private void processPull(CmdRequest request, RsfCenterRegister register, String serviceID, InstanceInfo instance, RsfContext rsfContext) {
         // .1of4
-        RsfContext rsfContext = request.getRsfContext();
         String protocol = rsfContext.getDefaultProtocol();
         request.writeMessageLine(" ->  this machine is the default protocol is " + protocol);
         request.writeMessageLine(" ->  (1of4) pull address form rsfCenter ...");
@@ -145,12 +142,11 @@ public class PullRsfInstruct extends AbstractCenterInstruct {
         // .3of4
         request.writeMessageLine(" ->  (3of4) prepare refreshAddress addressSet.");
         // .4of4
-        request.getRsfContext().getUpdater().refreshAddress(serviceID, finalAddressList);
+        rsfContext.getUpdater().refreshAddress(serviceID, finalAddressList);
         request.writeMessageLine(" ->  (4of4) done.");
     }
-    private void processRequest(RsfCommandRequest request, RsfCenterRegister register, String serviceID, InstanceInfo instance) {
+    private void processRequest(CmdRequest request, RsfCenterRegister register, String serviceID, InstanceInfo instance, RsfContext rsfContext) {
         // .1of2
-        RsfContext rsfContext = request.getRsfContext();
         String protocol = rsfContext.getDefaultProtocol();
         InterAddress callBackAddress = rsfContext.bindAddress(protocol);
         String callBackTo = callBackAddress.toHostSchema();

@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.commands;
-import net.hasor.registry.InstanceInfo;
+package net.hasor.registry.server.commonds;
 import net.hasor.registry.RegistryCenter;
-import net.hasor.registry.RsfCenterSettings;
-import net.hasor.rsf.console.RsfCommandRequest;
-import net.hasor.rsf.console.RsfInstruct;
+import net.hasor.registry.common.InstanceInfo;
+import net.hasor.tconsole.CommandExecutor;
+import net.hasor.tconsole.launcher.CmdRequest;
 /**
  * center 命令基类。
  * @version : 2016年4月3日
  * @author 赵永春(zyc @ hasor.net)
  */
-public abstract class AbstractCenterInstruct implements RsfInstruct {
+public abstract class AbstractCenterInstruct implements CommandExecutor {
     @Override
-    public final String doCommand(RsfCommandRequest request) throws Throwable {
-        RegistryCenter center = request.getRsfContext().getAppContext().getInstance(RegistryCenter.class);
+    public final String doCommand(CmdRequest request) throws Throwable {
+        RegistryCenter center = request.getFinder().getAppContext().getInstance(RegistryCenter.class);
         if (center == null) {
             return "[ERROR] the service 'RegistryCenter' is Undefined.";
         }
         return this.doCommand(center.getInstanceInfo(), request);
     }
-    public abstract String doCommand(InstanceInfo instance, RsfCommandRequest request) throws Throwable;
+    public abstract String doCommand(InstanceInfo instance, CmdRequest request) throws Throwable;
 }

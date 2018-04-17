@@ -16,13 +16,13 @@
 package net.hasor.registry.client.support;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
-import net.hasor.registry.common.InstanceInfo;
 import net.hasor.registry.RegistryCenter;
 import net.hasor.registry.client.RsfCenterRegister;
 import net.hasor.registry.client.RsfCenterResult;
 import net.hasor.registry.client.domain.ConsumerPublishInfo;
 import net.hasor.registry.client.domain.ProviderPublishInfo;
 import net.hasor.registry.client.domain.PublishInfo;
+import net.hasor.registry.common.InstanceInfo;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
@@ -177,7 +177,7 @@ class RegistryClientManager implements TimerTask {
         String serviceID = domain.getBindID();
         try {
             //
-            RsfCenterResult<Void> result = this.centerRegister.unRegister(this.registryCenter.getInstanceInfo(), serviceID);
+            RsfCenterResult<Void> result = this.centerRegister.unRegister(this.registryCenter.getInstanceInfo(), serviceID, domain.getServiceType());
             if (result != null && result.isSuccess()) {
                 logger.info("deleteService -> complete.", serviceID);
             } else {

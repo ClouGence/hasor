@@ -17,14 +17,16 @@ package net.hasor.registry.client.support;
 import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.context.ContextStartListener;
-import net.hasor.registry.common.RsfCenterSettings;
 import net.hasor.registry.client.RsfCenterListener;
 import net.hasor.registry.client.RsfCenterRegister;
+import net.hasor.registry.client.commands.PullRsfInstruct;
+import net.hasor.registry.common.RsfCenterSettings;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfModule;
 import net.hasor.rsf.domain.RsfEvent;
+import net.hasor.tconsole.ConsoleApiBinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -70,6 +72,9 @@ public class RegistryClientModule extends RsfModule {
                 .bindFilter("AuthFilter", RegistryClientVerifyFilter.class)//服务安全过滤器
                 .bindAddress(null, centerList)//静态地址，用不失效
                 .asShadow().register();//注册服务
+        //
+        // 4.tConsole指令
+        apiBinder.tryCast(ConsoleApiBinder.class).addCommand(new String[] { "pull", "request" }, PullRsfInstruct.class);
         logger.info("rsf center-client started.");
     }
     //

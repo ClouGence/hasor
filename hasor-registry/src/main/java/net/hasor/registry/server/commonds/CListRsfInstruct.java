@@ -15,7 +15,7 @@
 // */
 //package net.hasor.registry.commands;
 //import net.hasor.core.Singleton;
-//import net.hasor.registry.RegistryConstants;
+//import net.hasor.registry.common.RegistryConstants;
 //import net.hasor.rsf.RsfBindInfo;
 //import net.hasor.rsf.RsfContext;
 //import net.hasor.rsf.console.RsfCommand;
