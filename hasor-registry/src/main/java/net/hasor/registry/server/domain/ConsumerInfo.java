@@ -13,29 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.access.domain;
-import java.util.List;
+package net.hasor.registry.server.domain;
 /**
- * 服务提供者信息
+ * 服务消费者信息
  *
  * @version : 2015年5月22日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ProviderInfo {
+public class ConsumerInfo {
     /** 提供者实例ID。*/
-    private String       instanceID;
+    private String  instanceID;
     /** 提供者所处单元。*/
-    private String       unitName;
-    /** 获取客户端调用服务超时时间。*/
-    private int          clientTimeout;
-    /** 获取序列化方式*/
-    private String       serializeType;
-    /** 最大服务处理队列长度 */
-    private int          queueMaxSize;
-    /** 是否是共享处理线程池 */
-    private boolean      sharedThreadPool;
-    /** 服务地址*/
-    private List<String> rsfAddress;
+    private String  unitName;
+    //
+    /** 客户端订阅者地址 */
+    private String  rsfAddress;
+    /** 获取客户端调用服务超时时间 */
+    private int     clientTimeout;
+    /** 获取序列化方式 */
+    private String  serializeType;
+    /** 最大请求队列长度 */
+    private int     maximumRequestSize;
+    /** 是否为消息模式 */
+    private boolean message;
     //
     public String getInstanceID() {
         return instanceID;
@@ -49,6 +49,12 @@ public class ProviderInfo {
     public void setUnitName(String unitName) {
         this.unitName = unitName;
     }
+    public String getRsfAddress() {
+        return rsfAddress;
+    }
+    public void setRsfAddress(String rsfAddress) {
+        this.rsfAddress = rsfAddress;
+    }
     public int getClientTimeout() {
         return clientTimeout;
     }
@@ -61,22 +67,16 @@ public class ProviderInfo {
     public void setSerializeType(String serializeType) {
         this.serializeType = serializeType;
     }
-    public int getQueueMaxSize() {
-        return queueMaxSize;
+    public int getMaximumRequestSize() {
+        return maximumRequestSize;
     }
-    public void setQueueMaxSize(int queueMaxSize) {
-        this.queueMaxSize = queueMaxSize;
+    public void setMaximumRequestSize(int maximumRequestSize) {
+        this.maximumRequestSize = maximumRequestSize;
     }
-    public boolean isSharedThreadPool() {
-        return sharedThreadPool;
+    public boolean isMessage() {
+        return message;
     }
-    public void setSharedThreadPool(boolean sharedThreadPool) {
-        this.sharedThreadPool = sharedThreadPool;
-    }
-    public List<String> getRsfAddress() {
-        return rsfAddress;
-    }
-    public void setRsfAddress(List<String> rsfAddress) {
-        this.rsfAddress = rsfAddress;
+    public void setMessage(boolean message) {
+        this.message = message;
     }
 }

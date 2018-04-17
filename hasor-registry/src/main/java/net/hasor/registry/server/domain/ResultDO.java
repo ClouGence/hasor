@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.access.domain;
+package net.hasor.registry.server.domain;
 /**
  * 结果集
  * @version : 2014年10月25日

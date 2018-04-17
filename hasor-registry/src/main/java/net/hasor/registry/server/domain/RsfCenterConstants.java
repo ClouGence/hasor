@@ -13,7 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.registry.server.domain;
 /**
- * RsfCenter注册中心需要用到的domain数据模型。
+ * 各种常量
+ * @version : 2014年9月20日
+ * @author 赵永春 (zyc@hasor.net)
  */
-package net.hasor.registry.access.domain;
+public interface RsfCenterConstants {
+    public static final String Center_DataKey_Service  = "S|";                  //服务
+    public static final String Center_DataKey_Provider = "P|";                  //提供者
+    public static final String Center_DataKey_Consumer = "C|";                  //订阅者
+    // ----------------------------------------------------
+    //
+    public static final String Center_Request_AuthInfo = "RSF_REQUEST_AUTH";     //远程Request请求携带的验证信息
+}
