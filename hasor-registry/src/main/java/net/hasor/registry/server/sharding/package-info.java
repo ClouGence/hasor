@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 /**
- * 简易内存型存储器。
- * @version : 2018年1月2日
- * @author 赵永春 (zyc@hasor.net)
+ * 多 Rsf-Center,服务信息分片管理功能。
  */
-package net.hasor.registry.storage.mem;
+package net.hasor.registry.server.sharding;

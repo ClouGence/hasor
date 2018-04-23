@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.access.adapter;
-import net.hasor.registry.access.domain.AuthBean;
-import net.hasor.registry.access.domain.Result;
-import net.hasor.registry.access.domain.ServiceInfo;
+package net.hasor.registry.server.manager;
+import net.hasor.core.ImplBy;
+import net.hasor.registry.client.domain.ServiceID;
+import net.hasor.registry.server.domain.AuthBean;
+import net.hasor.registry.server.domain.Result;
 import net.hasor.rsf.domain.RsfServiceType;
 /**
  * 接口授权查询。
  * @version : 2016年2月22日
  * @author 赵永春 (zyc@hasor.net)
  */
+@ImplBy(FileAuthQuery.class)
 public interface AuthQuery {
     /**
      *
@@ -36,5 +38,5 @@ public interface AuthQuery {
      * @param serviceInfo 服务信息
      * @param serviceType 提供者 or 消费者
      */
-    public Result<Boolean> checkPublish(AuthBean authInfo, ServiceInfo serviceInfo, RsfServiceType serviceType);
+    public Result<Boolean> checkPublish(AuthBean authInfo, ServiceID serviceInfo, RsfServiceType serviceType);
 }

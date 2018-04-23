@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.access;
+package net.hasor.registry.server;
 import net.hasor.core.XmlNode;
-import net.hasor.registry.RsfCenterSettings;
+import net.hasor.registry.common.RsfCenterSettings;
 import net.hasor.registry.storage.file.FileStorageDao;
 import net.hasor.rsf.RsfEnvironment;
 import org.slf4j.Logger;

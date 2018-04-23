@@ -26,4 +26,10 @@ public interface RsfCenterConstants {
     // ----------------------------------------------------
     //
     public static final String Center_Request_AuthInfo = "RSF_REQUEST_AUTH";     //远程Request请求携带的验证信息
+    // ----------------------------------------------------
+    //
+    //
+    public static final long   TAG_Service             = 0x1;
+    public static final long   TAG_Provider            = 0x2;
+    public static final long   TAG_Consumer            = 0x4;
 }

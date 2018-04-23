@@ -14,44 +14,44 @@
  * limitations under the License.
  */
 package net.hasor.registry.server.domain;
+import java.util.List;
 /**
  * 服务信息
- *
- * @version : 2015年5月22日
+ * @version : 2018年4月23日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ServiceInfo {
-    /** 唯一标识*/
-    private String bindID;
-    /** 服务名称。*/
-    private String bindName;
+public class ServiceBean {
     /** 服务分组。*/
-    private String bindGroup;
+    private String       group;
+    /** 服务名称。*/
+    private String       name;
     /** 服务版本。*/
-    private String bindVersion;
+    private String       version;
+    /***/
+    private List<String> methodSet;
     //
-    public String getBindID() {
-        return bindID;
+    public String getGroup() {
+        return group;
     }
-    public void setBindID(String bindID) {
-        this.bindID = bindID;
+    public void setGroup(String group) {
+        this.group = group;
     }
-    public String getBindName() {
-        return bindName;
+    public String getName() {
+        return name;
     }
-    public void setBindName(String bindName) {
-        this.bindName = bindName;
+    public void setName(String name) {
+        this.name = name;
     }
-    public String getBindGroup() {
-        return bindGroup;
+    public String getVersion() {
+        return version;
     }
-    public void setBindGroup(String bindGroup) {
-        this.bindGroup = bindGroup;
+    public void setVersion(String version) {
+        this.version = version;
     }
-    public String getBindVersion() {
-        return bindVersion;
+    public List<String> getMethodSet() {
+        return methodSet;
     }
-    public void setBindVersion(String bindVersion) {
-        this.bindVersion = bindVersion;
+    public void setMethodSet(List<String> methodSet) {
+        this.methodSet = methodSet;
     }
 }

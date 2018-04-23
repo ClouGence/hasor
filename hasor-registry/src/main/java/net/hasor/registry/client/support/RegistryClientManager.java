@@ -19,9 +19,10 @@ import io.netty.util.TimerTask;
 import net.hasor.registry.RegistryCenter;
 import net.hasor.registry.client.RsfCenterRegister;
 import net.hasor.registry.client.RsfCenterResult;
+import net.hasor.registry.client.domain.BeanInfo;
 import net.hasor.registry.client.domain.ConsumerPublishInfo;
 import net.hasor.registry.client.domain.ProviderPublishInfo;
-import net.hasor.registry.client.domain.PublishInfo;
+import net.hasor.registry.client.domain.ServiceID;
 import net.hasor.registry.common.InstanceInfo;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
@@ -113,12 +114,12 @@ class RegistryClientManager implements TimerTask {
     public void onlineService(RsfBindInfo<?> domain) {
         this.onlineService(domain, 1);
     }
-    private void onlineService(RsfBindInfo<?> domain, int tryTyimes) {
+    private void onlineService(RsfBindInfo<?> domain, int tryTimes) {
         if (domain == null) {
             return;
         }
         // 最大重试 3次
-        if (tryTyimes >= 3) {
+        if (tryTimes >= 3) {
             logger.info("onlineService {} ,failed -> outof max retry count.", domain.getBindID());
             return;
         }
@@ -127,21 +128,54 @@ class RegistryClientManager implements TimerTask {
             return;
         }
         try {
+            // .检查要注册服务的协议
+            Set<String> rsfRunProtocols = this.rsfContext.runProtocols();
+            Set<String> readyProtocols = domain.getBindProtocols();
+            if (readyProtocols != null) {
+                for (String protocol : readyProtocols) {
+                    if (!rsfRunProtocols.contains(protocol)) {
+                        throw new IllegalStateException("not running '" + protocol + "' protocol, please check the configuration.");
+                    }
+                }
+            }
+            if (readyProtocols == null || readyProtocols.isEmpty()) {
+                readyProtocols = rsfRunProtocols;
+            }
             // .注册服务(提供者/消费者)
             RsfCenterResult<Void> registerInfo = null;
             if (RsfServiceType.Provider == domain.getServiceType()) {
                 //
-                ProviderPublishInfo info = fillTo(domain, new ProviderPublishInfo());
+                Map<String, String> targetMap = new HashMap<String, String>();
+                for (String protocol : readyProtocols) {
+                    InterAddress interAddress = this.rsfContext.bindAddress(protocol);
+                    targetMap.put(protocol, interAddress.toHostSchema());
+                }
+                ProviderPublishInfo info = new ProviderPublishInfo();
+                info.setClientTimeout(domain.getClientTimeout());
+                info.setSerializeType(domain.getSerializeType());
                 info.setQueueMaxSize(this.rsfContext.getSettings().getQueueMaxSize());
                 info.setSharedThreadPool(domain.isSharedThreadPool());
-                registerInfo = this.centerRegister.registerProvider(this.registryCenter.getInstanceInfo(), info);
+                info.setAddressMap(targetMap);
+                info.setClientBeanInfo(BeanInfo.of(domain));
+                //
+                ServiceID serviceID = ServiceID.of(domain);
+                registerInfo = this.centerRegister.registerProvider(this.registryCenter.getInstanceInfo(), serviceID, info);
                 logger.info("publishService service {} register to center -> {}", domain.getBindID(), registerInfo);
             } else if (RsfServiceType.Consumer == domain.getServiceType()) {
                 //
-                ConsumerPublishInfo info = fillTo(domain, new ConsumerPublishInfo());
+                ConsumerPublishInfo info = new ConsumerPublishInfo();
+                info.setClientTimeout(domain.getClientTimeout());
+                info.setSerializeType(domain.getSerializeType());
                 info.setClientMaximumRequest(this.rsfContext.getSettings().getMaximumRequest());
                 info.setMessage(domain.isMessage());
-                registerInfo = this.centerRegister.registerConsumer(this.registryCenter.getInstanceInfo(), info);
+                info.setProtocol(new ArrayList<String>(readyProtocols));
+                String protocol = this.rsfContext.getDefaultProtocol();
+                InterAddress interAddress = this.rsfContext.bindAddress(protocol);
+                info.setCommunicationAddress(interAddress.toHostSchema());
+                info.setClientBeanInfo(BeanInfo.of(domain));
+                //
+                ServiceID serviceID = ServiceID.of(domain);
+                registerInfo = this.centerRegister.registerConsumer(this.registryCenter.getInstanceInfo(), serviceID, info);
                 logger.info("receiveService service {} register to center -> {}", domain.getBindID(), registerInfo);
             }
             //
@@ -149,23 +183,23 @@ class RegistryClientManager implements TimerTask {
             if (registerInfo != null && registerInfo.isSuccess()) {
                 pullAddress(domain);//更新地址池
             } else {
-                this.onlineService(domain, tryTyimes + 1); //重试
+                this.onlineService(domain, tryTimes + 1); //重试
             }
         } catch (Exception e) {
             logger.error("service {} register to center error-> {}", domain.getBindID(), e.getMessage(), e);
-            this.onlineService(domain, tryTyimes + 1); //重试
+            this.onlineService(domain, tryTimes + 1); //重试
         }
     }
     /**解除服务注册*/
     public void offlineService(RsfBindInfo<?> domain) {
         this.offlineService(domain, 1);
     }
-    private void offlineService(RsfBindInfo<?> domain, int tryTyimes) {
+    private void offlineService(RsfBindInfo<?> domain, int tryTimes) {
         if (domain == null) {
             return;
         }
         // 最大重试 3次
-        if (tryTyimes >= 3) {
+        if (tryTimes >= 3) {
             logger.info("offlineService {} ,failed -> outof max retry count.", domain.getBindID());
             return;
         }
@@ -174,10 +208,9 @@ class RegistryClientManager implements TimerTask {
             return;
         }
         //
-        String serviceID = domain.getBindID();
         try {
-            //
-            RsfCenterResult<Void> result = this.centerRegister.unRegister(this.registryCenter.getInstanceInfo(), serviceID, domain.getServiceType());
+            String serviceID = domain.getBindID();
+            RsfCenterResult<Void> result = this.centerRegister.unRegister(this.registryCenter.getInstanceInfo(), ServiceID.of(domain));
             if (result != null && result.isSuccess()) {
                 logger.info("deleteService -> complete.", serviceID);
             } else {
@@ -187,11 +220,12 @@ class RegistryClientManager implements TimerTask {
                     logger.error("deleteService -> failed , serviceID={} ,errorCode={} ,errorMessage={}.", //
                             serviceID, result.getErrorCode(), result.getErrorMessage());
                 }
-                this.offlineService(domain, tryTyimes + 1);
+                Thread.sleep(500);
+                this.offlineService(domain, tryTimes + 1);
             }
         } catch (Exception e) {
             logger.error("deleteService -> failed , serviceID={} ,error={}", domain.getBindID(), e.getMessage(), e);
-            this.offlineService(domain, tryTyimes + 1);
+            this.offlineService(domain, tryTimes + 1);
         }
     }
     //
@@ -201,16 +235,17 @@ class RegistryClientManager implements TimerTask {
             return;/*只有Consumer才需要pull地址*/
         }
         // .拉地址3次尝试
-        String serviceID = domain.getBindID();
+        ServiceID serviceID = ServiceID.of(domain);
         InstanceInfo instanceInfo = this.registryCenter.getInstanceInfo();
+        List<String> runProtocol = new ArrayList<String>(domain.getBindProtocols());
         logger.info("pullAddress '{}' 1st.", serviceID);
-        RsfCenterResult<List<String>> providerResult = this.centerRegister.pullProviders(instanceInfo, serviceID);
+        RsfCenterResult<List<String>> providerResult = this.centerRegister.pullProviders(instanceInfo, serviceID, runProtocol);
         if (providerResult == null || !providerResult.isSuccess()) {
             logger.warn("pullAddress '{}' 2st.", serviceID);
-            providerResult = this.centerRegister.pullProviders(instanceInfo, serviceID);
+            providerResult = this.centerRegister.pullProviders(instanceInfo, serviceID, runProtocol);
             if (providerResult == null || !providerResult.isSuccess()) {
                 logger.error("pullAddress '{}' 3st.", serviceID);
-                providerResult = this.centerRegister.pullProviders(instanceInfo, serviceID);
+                providerResult = this.centerRegister.pullProviders(instanceInfo, serviceID, runProtocol);
             }
         }
         //
@@ -223,7 +258,7 @@ class RegistryClientManager implements TimerTask {
             }
             //
             logger.info("pullAddress {} failed try async request pullProviders.", serviceID);
-            RsfCenterResult<Boolean> result = this.centerRegister.requestPushProviders(instanceInfo, serviceID);
+            RsfCenterResult<Boolean> result = this.centerRegister.requestPushProviders(instanceInfo, serviceID, runProtocol);
             if (result == null || !result.isSuccess()) {
                 if (result == null) {
                     logger.error("asyncPullAddress {} failed -> result is null.", serviceID);
@@ -254,39 +289,9 @@ class RegistryClientManager implements TimerTask {
         //
         // .更新服务提供者地址列表
         try {
-            this.rsfContext.getUpdater().appendAddress(serviceID, newHostSet);
+            this.rsfContext.getUpdater().appendAddress(domain.getBindID(), newHostSet);
         } catch (Throwable e) {
             logger.error("pullAddress -> appendAddress failed ,serviceID={} ,message={}.", serviceID, e.getMessage(), e);
         }
-    }
-    private <T extends PublishInfo> T fillTo(RsfBindInfo<?> eventData, T info) {
-        //
-        Set<String> protocols = this.rsfContext.runProtocols();
-        if (protocols == null || protocols.isEmpty()) {
-            throw new IllegalStateException("not running any protocol, please check the configuration.");
-        }
-        if (RsfServiceType.Provider == eventData.getServiceType()) {
-            // - 提供者需要上报所有地址
-            Map<String, String> targetMap = new HashMap<String, String>();
-            for (String protocol : protocols) {
-                InterAddress interAddress = this.rsfContext.bindAddress(protocol);
-                targetMap.put(protocol, interAddress.toHostSchema());
-            }
-            ((ProviderPublishInfo) info).setTargetMap(targetMap);
-        } else {
-            // - 订阅者仅上报默认协议地址
-            String protocol = this.rsfContext.getDefaultProtocol();
-            InterAddress interAddress = this.rsfContext.bindAddress(protocol);
-            ((ConsumerPublishInfo) info).setTargetAddress(interAddress.toHostSchema());
-        }
-        //
-        info.setBindID(eventData.getBindID());
-        info.setBindGroup(eventData.getBindGroup());
-        info.setBindName(eventData.getBindName());
-        info.setBindVersion(eventData.getBindVersion());
-        info.setBindType(eventData.getBindType().getName());
-        info.setClientTimeout(eventData.getClientTimeout());
-        info.setSerializeType(eventData.getSerializeType());
-        return info;
     }
 }

@@ -22,5 +22,5 @@ import net.hasor.rsf.RsfUpdater;
  * @author 赵永春 (zyc@hasor.net)
  */
 interface EventProcess {
-    public boolean processEvent(RsfUpdater rsfUpdater, CenterEventBody centerEventBody);
+    public boolean processEvent(RsfUpdater rsfUpdater, String rsfBindID, CenterEventBody centerEventBody);
 }

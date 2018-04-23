@@ -24,6 +24,9 @@ import java.util.Set;
  */
 public enum ErrorCode {
     OK(0, "Success"),//
+    Undefined(0, "undefined"),//
+    ServiceUndefined(0, "undefined"),//
+    ParamError(0, "参数错误"),//
     Exception(1, "Center 出现内部错误。"),//
     EmptyResult(2, "结果集为空。"),//
     //    ServiceTypeFailed_Null(3, "服务类型不清楚。"),//
@@ -33,11 +36,11 @@ public enum ErrorCode {
     //    BeatFailed_RefreshResultNull(9, "心跳失败,刷新对象无返回值。"), //
     //    TargetListEmpty(11, "目标地址为空。"),//
     //
-    Failed_RemoveRegister(6, "服务解除注册失败。"),//
-    Failed_PushAddress_System_TooBusy(7, "地址推送失败,服务器繁忙。"),//
-    Failed_Save_ServiceInfo(8, "保存服务信息失败。"),//
-    Failed_Publish_Provider(9, "发布服务失败,保存服务信息错误。"),//
-    Failed_Publish_Consumer(10, "订阅服务失败,服务未定义。"), //
+    RemoveRegister_Failed(6, "服务解除注册失败。"),//
+    SystemTooBusy(7, "地址推送失败,服务器繁忙。"),//
+    Storage_Service_Failed(8, "保存服务信息失败。"),//
+    Storage_Consumer_Failed(10, "订阅服务失败,服务未定义。"), //
+    Storage_Provider_Failed(9, "发布服务失败,保存服务信息错误。"),//
     //    PPF_AlreadyAsConsumer(6, "发布服务失败,保存服务信息错误-PublishProviderFailed_AlreadyAsConsumer。"),//
     //    CPF_AlreadyAsProvider(6, "发布服务失败,保存服务信息错误-ConsumerPublishFailed_AlreadyAsProvider。"),//
     //

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.registry.client;
-import net.hasor.registry.common.InstanceInfo;
 import net.hasor.registry.client.domain.ConsumerPublishInfo;
 import net.hasor.registry.client.domain.ProviderPublishInfo;
+import net.hasor.registry.client.domain.ServiceID;
+import net.hasor.registry.common.InstanceInfo;
 import net.hasor.rsf.RsfService;
-import net.hasor.rsf.domain.RsfServiceType;
 
 import java.util.List;
 /**
@@ -32,20 +32,20 @@ public interface RsfCenterRegister {
      * 发布服务（由于）
      * @param info 服务信息
      */
-    public RsfCenterResult<Void> registerProvider(InstanceInfo instance, ProviderPublishInfo info);
+    public RsfCenterResult<Void> registerProvider(InstanceInfo instance, ServiceID serviceID, ProviderPublishInfo info);
 
     /**
      * 订阅服务,返回服务订阅ID
      * @param info 服务信息
      */
-    public RsfCenterResult<Void> registerConsumer(InstanceInfo instance, ConsumerPublishInfo info);
+    public RsfCenterResult<Void> registerConsumer(InstanceInfo instance, ServiceID serviceID, ConsumerPublishInfo info);
 
     /** 解除发布或订阅 */
-    public RsfCenterResult<Void> unRegister(InstanceInfo instance, String serviceID, RsfServiceType serviceType);
+    public RsfCenterResult<Void> unRegister(InstanceInfo instance, ServiceID serviceID);
 
     /** 拉取服务提供者列表 */
-    public RsfCenterResult<List<String>> pullProviders(InstanceInfo instance, String serviceID);
+    public RsfCenterResult<List<String>> pullProviders(InstanceInfo instance, ServiceID serviceID, List<String> runProtocol);
 
     /** 请求远程把服务地址重新推送过来(如果远程服务器繁忙,那么可能返回失败) */
-    public RsfCenterResult<Boolean> requestPushProviders(InstanceInfo instance, String serviceID);
+    public RsfCenterResult<Boolean> requestPushProviders(InstanceInfo instance, ServiceID serviceID, List<String> runProtocol);
 }

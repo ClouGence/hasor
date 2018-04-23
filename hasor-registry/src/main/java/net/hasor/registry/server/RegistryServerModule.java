@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.access;
+package net.hasor.registry.server;
 import net.hasor.core.AppContext;
 import net.hasor.core.LifeModule;
-import net.hasor.registry.RsfCenterListener;
-import net.hasor.registry.RsfCenterRegister;
-import net.hasor.registry.RsfCenterSettings;
-import net.hasor.registry.access.adapter.AdapterStorageDao;
-import net.hasor.registry.access.adapter.AuthQuery;
-import net.hasor.registry.access.adapter.DataAdapter;
-import net.hasor.registry.access.adapter.StorageDao;
+import net.hasor.registry.client.RsfCenterListener;
+import net.hasor.registry.client.RsfCenterRegister;
+import net.hasor.registry.common.RsfCenterSettings;
+import net.hasor.registry.server.manager.AuthQuery;
+import net.hasor.registry.storage.DataAdapter;
 import net.hasor.rsf.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,11 +40,6 @@ public class RegistryServerModule extends RsfModule implements LifeModule {
     @Override
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
         apiBinder.bindType(ServerSettings.class).toInstance(this.serverSettings);
-        //
-        // .adapter
-        apiBinder.bindType(AuthQuery.class).to((Class<? extends AuthQuery>) this.serverSettings.getAuthQueryType());
-        apiBinder.bindType(StorageDao.class).to(AdapterStorageDao.class);
-        //
     }
     public final void onStart(AppContext appContext) throws Throwable {
         RsfContext rsfContext = appContext.getInstance(RsfContext.class);

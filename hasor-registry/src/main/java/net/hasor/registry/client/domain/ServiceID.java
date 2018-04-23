@@ -14,27 +14,38 @@
  * limitations under the License.
  */
 package net.hasor.registry.client.domain;
+import net.hasor.rsf.RsfBindInfo;
+
 import java.io.Serializable;
 /**
- * center下发的事件
- * @version : 2016年3月11日
+ * 服务ID
+ * @version : 2018年4月23日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class CenterEventBody implements Serializable {
+public class ServiceID implements Serializable {
     private static final long serialVersionUID = 1617451556801258822L;
-    private String eventType;
-    private String eventBody;    // 事件内容
+    /** 服务名称。*/
+    private String bindName;
+    /** 服务分组。*/
+    private String bindGroup;
+    /** 服务版本。*/
+    private String bindVersion;
     //
-    public String getEventType() {
-        return eventType;
+    public static ServiceID of(RsfBindInfo<?> domain) {
+        ServiceID serviceID = new ServiceID();
+        serviceID.bindName = domain.getBindGroup();
+        serviceID.bindGroup = domain.getBindName();
+        serviceID.bindVersion = domain.getBindVersion();
+        return serviceID;
     }
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
+    //
+    public String getBindName() {
+        return bindName;
     }
-    public String getEventBody() {
-        return eventBody;
+    public String getBindGroup() {
+        return bindGroup;
     }
-    public void setEventBody(String eventBody) {
-        this.eventBody = eventBody;
+    public String getBindVersion() {
+        return bindVersion;
     }
 }

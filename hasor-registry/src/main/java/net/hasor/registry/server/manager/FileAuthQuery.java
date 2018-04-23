@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.access.adapter;
+package net.hasor.registry.server.manager;
 import net.hasor.core.*;
-import net.hasor.registry.access.ServerSettings;
-import net.hasor.registry.access.domain.AuthBean;
-import net.hasor.registry.access.domain.Result;
-import net.hasor.registry.access.domain.ResultDO;
-import net.hasor.registry.access.domain.ServiceInfo;
+import net.hasor.registry.client.domain.ServiceID;
+import net.hasor.registry.server.ServerSettings;
+import net.hasor.registry.server.domain.AuthBean;
+import net.hasor.registry.server.domain.Result;
+import net.hasor.registry.server.domain.ResultDO;
 import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.utils.AutoCloseInputStream;
 import net.hasor.utils.IOUtils;
@@ -126,7 +126,7 @@ public class FileAuthQuery implements AuthQuery {
         return result;
     }
     @Override
-    public Result<Boolean> checkPublish(AuthBean authInfo, ServiceInfo serviceInfo, RsfServiceType serviceType) {
+    public Result<Boolean> checkPublish(AuthBean authInfo, ServiceID serviceInfo, RsfServiceType serviceType) {
         return this.checkKeySecret(authInfo);
     }
 }

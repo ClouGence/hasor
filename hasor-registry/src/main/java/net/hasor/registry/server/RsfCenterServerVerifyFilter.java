@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.access;
+package net.hasor.registry.server;
+import com.alibaba.fastjson.JSON;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.registry.RegistryConstants;
-import net.hasor.registry.access.domain.*;
-import net.hasor.registry.access.manager.AuthManager;
-import net.hasor.rsf.RsfFilter;
-import net.hasor.rsf.RsfFilterChain;
-import net.hasor.rsf.RsfRequest;
-import net.hasor.rsf.RsfResponse;
+import net.hasor.registry.common.RegistryConstants;
+import net.hasor.registry.server.domain.*;
+import net.hasor.registry.server.manager.AuthQuery;
+import net.hasor.registry.server.utils.CenterUtils;
+import net.hasor.rsf.*;
 import net.hasor.rsf.domain.ProtocolStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,23 @@ import org.slf4j.LoggerFactory;
 public class RsfCenterServerVerifyFilter implements RsfFilter {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
-    private AuthManager authManager;
+    private AuthQuery authQuery;
+    //
+    private Result<Boolean> checkAuth(AuthBean authInfo, InterAddress remoteAddress) {
+        LogUtils logUtils = LogUtils.create("INFO_200_00002")//
+                .addLog("appCode", authInfo.getAppKey())//
+                .addLog("authCode", authInfo.getAppKeySecret())//
+                .addLog("remoteAddress", remoteAddress.toHostSchema());
+        //
+        Result<Boolean> checkResult = authQuery.checkKeySecret(authInfo);
+        if (checkResult == null || !checkResult.isSuccess() || checkResult.getResult() == null) {
+            logger.error(logUtils.addLog("result", "failed.").toJson());
+            return DateCenterUtils.buildFailedResult(checkResult);
+        }
+        //
+        logger.info(logUtils.addLog("result", checkResult.getResult()).toJson());
+        return CenterUtils.resultOK(checkResult.getResult());
+    }
     //
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
@@ -47,14 +62,14 @@ public class RsfCenterServerVerifyFilter implements RsfFilter {
             authInfo.setAppKey(appKey);
             authInfo.setAppKeySecret(appKeySecret);
             request.setAttribute(RsfCenterConstants.Center_Request_AuthInfo, authInfo);
-            Result<Boolean> authResult = this.authManager.checkAuth(authInfo, request.getRemoteAddress());
+            Result<Boolean> authResult = checkAuth(authInfo, request.getRemoteAddress());
             // .error
             if (authResult == null || !authResult.isSuccess()) {
                 String errorMessage = "";
                 if (authResult == null || authResult.getResult() == null) {
-                    errorMessage = JsonUtils.converToString(ErrorCode.EmptyResult);
+                    errorMessage = JSON.toJSONString(ErrorCode.EmptyResult);
                 } else {
-                    errorMessage = JsonUtils.converToString(authResult.getErrorInfo());
+                    errorMessage = JSON.toJSONString(authResult.getErrorInfo());
                 }
                 logger.error(LogUtils.create("ERROR_300_00001")//
                         .addLog("rsfAddress", request.getRemoteAddress().toHostSchema())//

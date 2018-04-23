@@ -17,6 +17,7 @@ package net.hasor.registry.client.commands;
 import net.hasor.core.Singleton;
 import net.hasor.registry.client.RsfCenterRegister;
 import net.hasor.registry.client.RsfCenterResult;
+import net.hasor.registry.client.domain.ServiceID;
 import net.hasor.registry.common.InstanceInfo;
 import net.hasor.registry.server.commonds.AbstractCenterInstruct;
 import net.hasor.rsf.InterAddress;
@@ -88,7 +89,7 @@ public class PullRsfInstruct extends AbstractCenterInstruct {
                 request.writeMessageLine(" ->");
                 request.writeMessageLine(" ->ServiceID : " + serviceID);
                 //
-                RsfBindInfo<Object> info = rsfContext.getServiceInfo(serviceID);
+                RsfBindInfo<?> info = rsfContext.getServiceInfo(serviceID);
                 if (info == null) {
                     request.writeMessageLine(" ->  [IGNORE] service is Undefined.");
                     continue;
@@ -100,10 +101,10 @@ public class PullRsfInstruct extends AbstractCenterInstruct {
                 //
                 if ("request".equalsIgnoreCase(request.getCommandString())) {
                     // -request
-                    processRequest(request, register, serviceID, instance, rsfContext);
+                    processRequest(request, register, info, instance, rsfContext);
                 } else {
                     // -pull
-                    processPull(request, register, serviceID, instance, rsfContext);
+                    processPull(request, register, info, instance, rsfContext);
                 }
             }
         } else {
@@ -114,12 +115,13 @@ public class PullRsfInstruct extends AbstractCenterInstruct {
         return sw.toString();
     }
     //
-    private void processPull(CmdRequest request, RsfCenterRegister register, String serviceID, InstanceInfo instance, RsfContext rsfContext) {
+    private void processPull(CmdRequest request, RsfCenterRegister register, RsfBindInfo<?> serviceInfo, InstanceInfo instance, RsfContext rsfContext) {
         // .1of4
         String protocol = rsfContext.getDefaultProtocol();
         request.writeMessageLine(" ->  this machine is the default protocol is " + protocol);
         request.writeMessageLine(" ->  (1of4) pull address form rsfCenter ...");
-        RsfCenterResult<List<String>> result = register.pullProviders(instance, serviceID);
+        List<String> runProtocol = new ArrayList<String>(serviceInfo.getBindProtocols());
+        RsfCenterResult<List<String>> result = register.pullProviders(instance, ServiceID.of(serviceInfo), runProtocol);
         if (result == null || !result.isSuccess() || result.getResult() == null) {
             String failedInfo = (result == null || result.getResult() == null) ?//
                     "EmptyResult." ://
@@ -142,17 +144,18 @@ public class PullRsfInstruct extends AbstractCenterInstruct {
         // .3of4
         request.writeMessageLine(" ->  (3of4) prepare refreshAddress addressSet.");
         // .4of4
-        rsfContext.getUpdater().refreshAddress(serviceID, finalAddressList);
+        rsfContext.getUpdater().refreshAddress(serviceInfo.getBindID(), finalAddressList);
         request.writeMessageLine(" ->  (4of4) done.");
     }
-    private void processRequest(CmdRequest request, RsfCenterRegister register, String serviceID, InstanceInfo instance, RsfContext rsfContext) {
+    private void processRequest(CmdRequest request, RsfCenterRegister register, RsfBindInfo<?> serviceInfo, InstanceInfo instance, RsfContext rsfContext) {
         // .1of2
         String protocol = rsfContext.getDefaultProtocol();
         InterAddress callBackAddress = rsfContext.bindAddress(protocol);
         String callBackTo = callBackAddress.toHostSchema();
         request.writeMessageLine(" ->  this machine is the default protocol is " + protocol);
         request.writeMessageLine(" ->  (1of2) request data form rsfCenter ,callBack is " + callBackTo);
-        RsfCenterResult<Boolean> result = register.requestPushProviders(instance, serviceID);
+        List<String> runProtocol = new ArrayList<String>(serviceInfo.getBindProtocols());
+        RsfCenterResult<Boolean> result = register.requestPushProviders(instance, ServiceID.of(serviceInfo), runProtocol);
         if (result == null || !result.isSuccess() || result.getResult() == null) {
             String failedInfo = (result == null || result.getResult() == null) ?//
                     "EmptyResult." ://

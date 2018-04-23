@@ -13,12 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.storage.mem;
 /**
- *
- * @version : 2015年8月19日
- * @author 赵永春 (zyc@hasor.net)
+ * RSF 分布式RPC框架的注册中心。
  */
-interface TreeVisitor {
-    public void visitor(VisitorContext context);
-}
+package net.hasor.registry.server;
