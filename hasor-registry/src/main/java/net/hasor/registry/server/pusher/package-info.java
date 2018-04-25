@@ -16,4 +16,4 @@
 /**
  * 提供点对点数据推送能力。
  */
-package net.hasor.registry.access.pusher;
+package net.hasor.registry.server.pusher;

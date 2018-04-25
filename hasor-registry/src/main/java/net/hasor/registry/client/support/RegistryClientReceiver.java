@@ -18,8 +18,6 @@ import net.hasor.core.EventContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Inject;
 import net.hasor.registry.client.RsfCenterListener;
-import net.hasor.registry.client.domain.CenterEventBody;
-import net.hasor.registry.client.domain.ServiceID;
 import net.hasor.registry.common.RegistryConstants;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
@@ -52,31 +50,28 @@ public class RegistryClientReceiver implements RsfCenterListener {
     }
 
     @Override
-    public boolean onEvent(ServiceID serviceID, String eventType, CenterEventBody centerEventBody) throws Throwable {
+    public boolean onEvent(String group, String name, String version, String eventType, String eventBody) throws Throwable {
         RsfUpdater rsfUpdater = Hasor.assertIsNotNull(this.rsfContext, " rsfContext is null.").getUpdater();
         EventProcess process = EventProcessMapping.findEventProcess(eventType);
         if (process == null) {
             throw new RsfCenterException(eventType + " eventType is undefined.");
         }
-        String group = serviceID.getBindGroup();
-        String name = serviceID.getBindName();
-        String version = serviceID.getBindVersion();
         //-有些事件需要检测服务-
         for (String checkItem : checkServiceEventArrays) {
             if (checkItem.equals(eventType)) {
                 if (this.rsfContext.getServiceInfo(group, name, version) == null) {
-                    throw new RsfCenterException(serviceID + " service is undefined.");
+                    throw new RsfCenterException(String.format("group =%s ,name =%s version =%s ->service is undefined. ", group, name, version));
                 }
             }
         }
         //
-        RsfBindInfo<?> serviceInfo = rsfContext.getServiceInfo(serviceID.getBindGroup(), serviceID.getBindName(), serviceID.getBindVersion());
+        RsfBindInfo<?> serviceInfo = rsfContext.getServiceInfo(group, name, version);
         if (serviceInfo == null) {
             return true;
         }
-        boolean result = process.processEvent(rsfUpdater, serviceInfo.getBindID(), centerEventBody);
+        boolean result = process.processEvent(rsfUpdater, serviceInfo.getBindID(), eventBody);
         logger.info("centerEvent event ={} ,g ={} ,n ={} ,v ={} , result ={}, body ={}.", //
-                eventType, group, name, version, result, centerEventBody.getEventBody());
+                eventType, group, name, version, result, eventBody);
         return result;
     }
 }

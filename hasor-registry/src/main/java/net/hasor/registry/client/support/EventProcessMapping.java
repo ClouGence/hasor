@@ -15,7 +15,6 @@
  */
 package net.hasor.registry.client.support;
 import net.hasor.registry.client.RsfCenterEvent;
-import net.hasor.registry.client.domain.CenterEventBody;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfUpdater;
 import net.hasor.utils.StringUtils;
@@ -76,9 +75,7 @@ class EventProcessMapping {
     /**追加或重新激活地址。*/
     private static class AppendAddressEvent implements EventProcess {
         @Override
-        public boolean processEvent(RsfUpdater rsfUpdater, String rsfBindID, CenterEventBody centerEventBody) {
-            String eventBody = centerEventBody.getEventBody();
-            //
+        public boolean processEvent(RsfUpdater rsfUpdater, String rsfBindID, String eventBody) {
             List<InterAddress> addressList = convertTo(eventBody);
             if (addressList != null && !addressList.isEmpty()) {
                 rsfUpdater.appendAddress(rsfBindID, addressList);
@@ -92,9 +89,7 @@ class EventProcessMapping {
     /**使用新的地址本替换已有的地址本。*/
     private static class RefreshAddressEvent implements EventProcess {
         @Override
-        public boolean processEvent(RsfUpdater rsfUpdater, String rsfBindID, CenterEventBody centerEventBody) {
-            String eventBody = centerEventBody.getEventBody();
-            //
+        public boolean processEvent(RsfUpdater rsfUpdater, String rsfBindID, String eventBody) {
             List<InterAddress> addressList = convertTo(eventBody);
             if (addressList != null && !addressList.isEmpty()) {
                 rsfUpdater.refreshAddress(rsfBindID, addressList);
@@ -108,9 +103,7 @@ class EventProcessMapping {
     /**推送无效的地址，客户端对此地址进行删除操作。*/
     private static class RemoveAddressEvent implements EventProcess {
         @Override
-        public boolean processEvent(RsfUpdater rsfUpdater, String rsfBindID, CenterEventBody centerEventBody) {
-            String eventBody = centerEventBody.getEventBody();
-            //
+        public boolean processEvent(RsfUpdater rsfUpdater, String rsfBindID, String eventBody) {
             List<InterAddress> addressList = convertTo(eventBody);
             if (addressList != null && !addressList.isEmpty()) {
                 rsfUpdater.removeAddress(rsfBindID, addressList);
@@ -124,12 +117,10 @@ class EventProcessMapping {
     /**推送服务级路由规则*/
     private static class UpdateServiceRouteEvent implements EventProcess {
         @Override
-        public boolean processEvent(RsfUpdater rsfUpdater, String rsfBindID, CenterEventBody centerEventBody) {
-            String scriptBody = centerEventBody.getEventBody();
-            //
-            if (StringUtils.isNotBlank(scriptBody)) {
+        public boolean processEvent(RsfUpdater rsfUpdater, String rsfBindID, String eventBody) {
+            if (StringUtils.isNotBlank(eventBody)) {
                 logger.info("receiver Event from RsfCenter , eventType=UpdateServiceRouteEvent , serviceID = {} -> atTime = {}.", rsfBindID, nowData());
-                rsfUpdater.updateServiceRoute(rsfBindID, scriptBody);
+                rsfUpdater.updateServiceRoute(rsfBindID, eventBody);
             } else {
                 logger.info("receiver Event from RsfCenter , eventType=UpdateServiceRouteEvent , serviceID = {} -> scriptBody is empty , atTime = {}.", rsfBindID, nowData());
             }
@@ -139,12 +130,10 @@ class EventProcessMapping {
     /**推送方法级路由规则*/
     private static class UpdateMethodRouteEvent implements EventProcess {
         @Override
-        public boolean processEvent(RsfUpdater rsfUpdater, String rsfBindID, CenterEventBody centerEventBody) {
-            String scriptBody = centerEventBody.getEventBody();
-            //
-            if (StringUtils.isNotBlank(scriptBody)) {
+        public boolean processEvent(RsfUpdater rsfUpdater, String rsfBindID, String eventBody) {
+            if (StringUtils.isNotBlank(eventBody)) {
                 logger.info("receiver Event from RsfCenter , eventType=UpdateMethodRouteEvent , serviceID = {} -> atTime = {}.", rsfBindID, nowData());
-                rsfUpdater.updateMethodRoute(rsfBindID, scriptBody);
+                rsfUpdater.updateMethodRoute(rsfBindID, eventBody);
             } else {
                 logger.info("receiver Event from RsfCenter , eventType=UpdateMethodRouteEvent , serviceID = {} -> scriptBody is empty , atTime = {}.", rsfBindID, nowData());
             }
@@ -154,12 +143,10 @@ class EventProcessMapping {
     /**推送参数级路由规则*/
     private static class UpdateArgsRouteEvent implements EventProcess {
         @Override
-        public boolean processEvent(RsfUpdater rsfUpdater, String rsfBindID, CenterEventBody centerEventBody) {
-            String scriptBody = centerEventBody.getEventBody();
-            //
-            if (StringUtils.isNotBlank(scriptBody)) {
+        public boolean processEvent(RsfUpdater rsfUpdater, String rsfBindID, String eventBody) {
+            if (StringUtils.isNotBlank(eventBody)) {
                 logger.info("receiver Event from RsfCenter , eventType=UpdateArgsRouteEvent , serviceID = {} -> atTime = {}.", rsfBindID, nowData());
-                rsfUpdater.updateArgsRoute(rsfBindID, scriptBody);
+                rsfUpdater.updateArgsRoute(rsfBindID, eventBody);
             } else {
                 logger.info("receiver Event from RsfCenter , eventType=UpdateArgsRouteEvent , serviceID = {} -> scriptBody is empty , atTime = {}.", rsfBindID, nowData());
             }
@@ -169,12 +156,10 @@ class EventProcessMapping {
     /**推送流控流控规则*/
     private static class UpdateFlowControlEvent implements EventProcess {
         @Override
-        public boolean processEvent(RsfUpdater rsfUpdater, String rsfBindID, CenterEventBody centerEventBody) {
-            String flowControl = centerEventBody.getEventBody();
-            //
-            if (StringUtils.isNotBlank(flowControl)) {
+        public boolean processEvent(RsfUpdater rsfUpdater, String rsfBindID, String eventBody) {
+            if (StringUtils.isNotBlank(eventBody)) {
                 logger.info("receiver Event from RsfCenter , eventType=UpdateFlowControlEvent , serviceID = {} -> atTime = {}.", rsfBindID, nowData());
-                rsfUpdater.updateFlowControl(rsfBindID, flowControl);
+                rsfUpdater.updateFlowControl(rsfBindID, eventBody);
             } else {
                 logger.info("receiver Event from RsfCenter , eventType=UpdateFlowControlEvent , serviceID = {} -> scriptBody is empty , atTime = {}.", rsfBindID, nowData());
             }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.registry.client.support;
-import net.hasor.registry.client.domain.CenterEventBody;
 import net.hasor.rsf.RsfUpdater;
 /**
  * 注册中心事件处理器接口
@@ -22,5 +21,5 @@ import net.hasor.rsf.RsfUpdater;
  * @author 赵永春 (zyc@hasor.net)
  */
 interface EventProcess {
-    public boolean processEvent(RsfUpdater rsfUpdater, String rsfBindID, CenterEventBody centerEventBody);
+    public boolean processEvent(RsfUpdater rsfUpdater, String rsfBindID, String eventBody);
 }

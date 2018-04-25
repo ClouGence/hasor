@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.access.pusher;
-import net.hasor.registry.RsfCenterEvent;
+package net.hasor.registry.server.pusher;
+import net.hasor.registry.client.RsfCenterEvent;
 /**
  * 注册中心下推送的事件类型，与枚举{@link RsfCenterEvent}为一对一映射关系。映射时增加了处理类。
  *

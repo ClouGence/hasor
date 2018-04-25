@@ -15,6 +15,7 @@
  */
 package net.hasor.registry.server.manager;
 import com.alibaba.fastjson.JSON;
+import net.hasor.core.EventContext;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
 import net.hasor.registry.client.domain.ConsumerPublishInfo;
@@ -52,6 +53,9 @@ public class PublishManager implements RsfCenterConstants {
     private QueryManager queryManager;
     @Inject
     private RsfPusher    rsfPusher;
+    @Inject
+    private EventContext eventContext;
+    //
     //
     //
     /** 发布服务 */
@@ -84,7 +88,7 @@ public class PublishManager implements RsfCenterConstants {
         }
         // .推送服务(异步)
         try {
-            this.asyncTask(new Runnable() {
+            this.eventContext.asyncTask(new Runnable() {
                 @Override
                 public void run() {
                     asyncPushProviders(serviceID, info, false);
@@ -142,7 +146,7 @@ public class PublishManager implements RsfCenterConstants {
         }
         // .推送服务(异步)
         try {
-            this.asyncTask(new Runnable() {
+            this.eventContext.asyncTask(new Runnable() {
                 @Override
                 public void run() {
                     asyncPushProviders(serviceID, info);
@@ -186,7 +190,7 @@ public class PublishManager implements RsfCenterConstants {
             return resultOK(null);
         }
         try {
-            this.asyncTask(new Runnable() {
+            this.eventContext.asyncTask(new Runnable() {
                 @Override
                 public void run() {
                     asyncPushProviders(serviceID, removeProvider.get(), true);
@@ -201,7 +205,7 @@ public class PublishManager implements RsfCenterConstants {
     /** 请求推送地址 */
     public Result<Void> requestPushProviders(final InstanceInfo instance, final ServiceID serviceID, final List<String> protocol) {
         try {
-            this.asyncTask(new Runnable() {
+            this.eventContext.asyncTask(new Runnable() {
                 @Override
                 public void run() {
                     List<String> providerList = queryManager.queryProviderList(protocol, serviceID);
@@ -225,8 +229,5 @@ public class PublishManager implements RsfCenterConstants {
             }
         }
         return false;
-    }
-    private void asyncTask(Runnable runnable) {
-        this.rsfPusher.asyncTask(runnable);
     }
 }

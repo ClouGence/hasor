@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.access.pusher;
+package net.hasor.registry.server.pusher;
 import net.hasor.core.AppContext;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
 import net.hasor.core.Singleton;
-import net.hasor.registry.access.ServerSettings;
-import net.hasor.registry.access.domain.LogUtils;
+import net.hasor.registry.server.ServerSettings;
+import net.hasor.registry.server.domain.LogUtils;
 import net.hasor.rsf.RsfContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +92,7 @@ public class PushQueue implements Runnable {
                     .addLog("pushEventType", pushEvent.getPushEventType().name())//
                     .toJson());
         }
-        return pushEvent.getTarget();
+        return pushEvent.getTargetList();
     }
     // - 将消息推送交给推送线程,执行异步推送。
     public boolean doPushEvent(PushEvent eventData) {

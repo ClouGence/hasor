@@ -22,7 +22,6 @@ import net.hasor.registry.client.domain.ConsumerPublishInfo;
 import net.hasor.registry.client.domain.ProviderPublishInfo;
 import net.hasor.registry.client.domain.ServiceID;
 import net.hasor.registry.server.domain.RsfCenterConstants;
-import net.hasor.registry.server.pusher.RsfPusher;
 import net.hasor.registry.storage.DataAdapter;
 import net.hasor.registry.storage.DataEntity;
 import net.hasor.utils.StringUtils;
@@ -44,8 +43,6 @@ public class QueryManager {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Inject
     private DataAdapter dataAdapter;
-    @Inject
-    private RsfPusher   rsfPusher;
     //
     /** 得到 Consumer 列表，用于异步推送服务的提供者列表 */
     public List<ConsumerPublishInfo> queryConsumerList(List<String> protocol, ServiceID serviceID) {

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.registry.client;
-import net.hasor.registry.client.domain.CenterEventBody;
-import net.hasor.registry.client.domain.ServiceID;
 import net.hasor.rsf.RsfService;
 /**
  * 接收来自注册中心的消息。
@@ -27,9 +25,9 @@ public interface RsfCenterListener {
     /**
      * 接收来自注册中心的消息
      * @param eventType 事件类型
-     * @param centerEventBody 内容
+     * @param eventBody 内容
      * @return 返回事件处理是否成功
      * @throws Throwable 如果事件处理失败则引发的错误。
      */
-    public boolean onEvent(ServiceID serviceID, String eventType, CenterEventBody centerEventBody) throws Throwable;
+    public boolean onEvent(String group, String name, String version, String eventType, String eventBody) throws Throwable;
 }

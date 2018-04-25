@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.access.pusher;
+package net.hasor.registry.server.pusher;
 import net.hasor.core.Init;
 import net.hasor.core.Inject;
-import net.hasor.registry.RsfCenterListener;
-import net.hasor.registry.access.domain.LogUtils;
-import net.hasor.registry.domain.CenterEventBody;
+import net.hasor.registry.client.RsfCenterListener;
+import net.hasor.registry.server.domain.LogUtils;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.domain.provider.InstanceAddressProvider;
@@ -50,19 +49,21 @@ public class PushProcessor {
     }
     //
     public final List<String> doProcessor(PushEvent event) {
-        if (event == null) {
+        if (event == null || event.getTargetList() == null) {
             return Collections.emptyList();
         }
-        if (event.getTarget() == null || event.getTarget().isEmpty()) {
+        if (event.getTargetList() == null || event.getTargetList().isEmpty()) {
             logger.error(LogUtils.create("ERROR_300_00003")//
-                    .addLog("serviceID", event.getServiceID())//
+                    .addLog("group", event.getGroup())//
+                    .addLog("name", event.getName())//
+                    .addLog("version", event.getVersion())//
                     .addLog("pushEventType", event.getPushEventType().name())//
                     .toJson());
             return Collections.emptyList();
             //
         } else {
             ArrayList<String> failedAddress = new ArrayList<String>();
-            for (String target : event.getTarget()) {
+            for (String target : event.getTargetList()) {
                 boolean res = this.doProcessor(target, event);
                 if (!res) {
                     failedAddress.add(target);
@@ -78,29 +79,25 @@ public class PushProcessor {
      * @param event 数据
      */
     private boolean doProcessor(String rsfAddress, PushEvent event) {
-        CenterEventBody eventBody = new CenterEventBody();
-        eventBody.setEventType(event.getPushEventType().forCenterEvent());
-        eventBody.setServiceID(event.getServiceID());
-        eventBody.setEventBody(event.getEventBody());
         boolean result = false;
-        //
-        result = sendEvent(rsfAddress, eventBody, 1);           // 第一次尝试
+        result = sendEvent(rsfAddress, event, 1);           // 第一次尝试
         if (!result) {
-            result = sendEvent(rsfAddress, eventBody, 2);       // 第二次尝试
+            result = sendEvent(rsfAddress, event, 2);       // 第二次尝试
             if (!result) {
-                result = sendEvent(rsfAddress, eventBody, 3);   // 第三次尝试
+                result = sendEvent(rsfAddress, event, 3);   // 第三次尝试
             }
         }
         //
         return result;
     }
     /** 数据推送 */
-    private boolean sendEvent(String rsfAddress, CenterEventBody eventBody, int times) {
+    private boolean sendEvent(String rsfAddress, PushEvent event, int times) {
+        String eventType = event.getPushEventType().forCenterEvent();
+        String eventBody = event.getEventBody();    // 事件内容
         //
         logger.info(LogUtils.create("INFO_200_00001")//
-                .addLog("serviceID", eventBody.getServiceID())//
                 .addLog("rsfAddress", rsfAddress)//
-                .addLog("eventType", eventBody.getEventType())//
+                .addLog("eventType", eventType)//
                 .addLog("times", times)//
                 .toJson());
         //
@@ -108,14 +105,12 @@ public class PushProcessor {
             RsfCenterListener listener = this.rsfClientListener.get();
             InterAddress interAddress = new InterAddress(rsfAddress);
             ((RsfServiceWrapper) listener).setTarget(new InstanceAddressProvider(interAddress));
-            return listener.onEvent(eventBody.getEventType(), eventBody);
+            return listener.onEvent(event.getGroup(), event.getName(), event.getVersion(), eventType, eventBody);
         } catch (Throwable e) {
             logger.error(LogUtils.create("ERROR_300_00002")//
                     .logException(e)//
                     .addLog("rsfAddress", rsfAddress)//
-                    .addLog("serviceID", eventBody.getServiceID())//
-                    .addLog("eventType", eventBody.getEventType())//
-                    .addLog("eventBody", eventBody.getEventBody())//
+                    .addLog("eventType", eventType)//
                     .toJson());
             return false;
         }
