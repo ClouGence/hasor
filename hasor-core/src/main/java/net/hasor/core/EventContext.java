@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import net.hasor.utils.future.FutureCallback;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 /**
  *
  * @version : 2014年5月22日
@@ -83,4 +87,30 @@ public interface EventContext {
      * @param callBack 回调方法
      */
     public <T> void fireAsyncEvent(String eventType, T eventData, FireType fireType, EventCallBackHook<T> callBack);
+
+    /**
+     * 异步方式执行任务。<p>
+     * @param runnable 异步任务
+     * @param callBack 回调方法
+     */
+    public <T> void asyncTask(Callable<T> runnable, FutureCallback<T> callBack);
+
+    /**
+     * 异步方式执行任务。<p>
+     * @param runnable 异步任务
+     * @param callBack 回调方法
+     */
+    public void asyncTask(Runnable runnable, FutureCallback<Void> callBack);
+
+    /**
+     * 异步方式执行任务。<p>
+     * @param runnable 异步任务
+     */
+    public <T> Future<T> asyncTask(Callable<T> runnable);
+
+    /**
+     * 异步方式执行任务。<p>
+     * @param runnable 异步任务
+     */
+    public Future<Void> asyncTask(Runnable runnable);
 }

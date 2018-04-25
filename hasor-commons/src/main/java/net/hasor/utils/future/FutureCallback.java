@@ -25,7 +25,4 @@ public interface FutureCallback<T> {
 
     /**执行过程出错*/
     public void failed(Throwable ex);
-
-    /**执行被取消。*/
-    public void cancelled();
 }

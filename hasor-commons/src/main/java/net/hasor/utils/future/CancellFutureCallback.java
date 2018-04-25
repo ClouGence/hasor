@@ -13,21 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.storage.mem;
-import net.hasor.core.AppContext;
-import net.hasor.core.Singleton;
-import net.hasor.core.XmlNode;
-import net.hasor.registry.server.adapter.StorageDao;
-import net.hasor.registry.server.adapter.StorageDaoCreater;
+package net.hasor.utils.future;
 /**
- * 服务数据存储检索
- * @version : 2018年1月2日
+ *
+ * @version : 2014年11月15日
  * @author 赵永春 (zyc@hasor.net)
  */
-@Singleton
-public class MemStorageDaoCreater implements StorageDaoCreater {
-    @Override
-    public StorageDao create(AppContext appContext, XmlNode config) {
-        return appContext.getInstance(MemStorageDao.class);
-    }
+public interface CancellFutureCallback<T> extends FutureCallback<T> {
+    /**执行被取消。*/
+    public void cancelled();
 }

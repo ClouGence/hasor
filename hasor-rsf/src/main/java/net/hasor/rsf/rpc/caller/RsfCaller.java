@@ -249,9 +249,6 @@ public class RsfCaller extends RsfRequestManager {
             public void failed(Throwable ex) {
                 listener.failed(ex);
             }
-            public void cancelled() {
-                listener.cancelled();
-            }
         });
     }
     /**

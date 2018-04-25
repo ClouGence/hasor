@@ -74,9 +74,6 @@ public class NodeData {
                     public void failed(Throwable ex) {
                         callBack.failed(ex);
                     }
-                    public void cancelled() {
-                        callBack.cancelled();
-                    }
                 });
         //
     }
@@ -97,9 +94,6 @@ public class NodeData {
                     }
                     public void failed(Throwable ex) {
                         callBack.failed(ex);
-                    }
-                    public void cancelled() {
-                        callBack.cancelled();
                     }
                 });
         //

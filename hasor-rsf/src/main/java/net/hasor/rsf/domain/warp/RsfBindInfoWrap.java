@@ -68,6 +68,10 @@ public class RsfBindInfoWrap<T> implements RsfBindInfo<T> {
         return this.target.getServiceType();
     }
     @Override
+    public Set<String> getBindProtocols() {
+        return this.target.getBindProtocols();
+    }
+    @Override
     public boolean isMessage() {
         return this.target.isMessage();
     }

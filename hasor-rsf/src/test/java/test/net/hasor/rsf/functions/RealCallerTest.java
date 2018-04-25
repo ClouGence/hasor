@@ -126,10 +126,6 @@ public class RealCallerTest {
             public void failed(Throwable ex) {
                 System.out.println("callBackInvoke -> exception :" + ex.getMessage());
             }
-            @Override
-            public void cancelled() {
-                System.out.println("callBackInvoke -> cancelled.");
-            }
         });
         Thread.sleep(2000);
         //
@@ -142,10 +138,6 @@ public class RealCallerTest {
             @Override
             public void failed(Throwable ex) {
                 System.out.println("callBackRequest -> exception :" + ex.getMessage());
-            }
-            @Override
-            public void cancelled() {
-                System.out.println("callBackRequest -> cancelled.");
             }
         });
         Thread.sleep(2000);

@@ -249,8 +249,6 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
                         public void failed(Throwable ex) {
                             doFailed(ex);
                         }
-                        public void cancelled() {
-                        }
                     });
                 }
                 //
@@ -320,8 +318,6 @@ public class ElectionServiceManager implements ElectionService, EventListener<Se
                         }
                         public void failed(Throwable ex) {
                             doFailed(ex);
-                        }
-                        public void cancelled() {
                         }
                     });
                 }

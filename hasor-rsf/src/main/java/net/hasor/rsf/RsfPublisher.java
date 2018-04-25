@@ -178,6 +178,14 @@ public interface RsfPublisher {
          * @return 返回ConfigurationBuilder
          */
         public ConfigurationBuilder<T> serialize(String serializeType);
+
+        /**
+         * 设置使用的协议
+         * @param protocol 使用的协议
+         * @param protocolArrays 使用的协议
+         * @return 返回ConfigurationBuilder
+         */
+        public ConfigurationBuilder<T> protocol(String protocol, String... protocolArrays);
     }
     /**设置过滤器*/
     public static interface FilterBindBuilder<T> extends RegisterBuilder<T> {

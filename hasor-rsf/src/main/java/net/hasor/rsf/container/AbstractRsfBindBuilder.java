@@ -148,6 +148,18 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
             this.serviceDefine.getDomain().setSerializeType(serializeType);
             return this;
         }
+        @Override
+        public ConfigurationBuilder<T> protocol(String protocol, String... protocolArrays) {
+            if (StringUtils.isNotBlank(protocol)) {
+                this.serviceDefine.getDomain().addBindProtocol(protocol);
+            }
+            for (String prot : protocolArrays) {
+                if (StringUtils.isNotBlank(prot)) {
+                    this.serviceDefine.getDomain().addBindProtocol(prot);
+                }
+            }
+            return this;
+        }
         //
         public ConfigurationBuilder<T> bindFilter(String filterID, RsfFilter instance) {
             Provider<RsfFilter> provider = new InstanceProvider<RsfFilter>(Hasor.assertIsNotNull(instance));

@@ -45,8 +45,11 @@ public interface RsfBindInfo<T> extends BindInfo<T> {
     /** @return 注册的服务类型。*/
     public Class<T> getBindType();
 
-    /**是提供者还是消费者*/
+    /** @return 是提供者还是消费者*/
     public RsfServiceType getServiceType();
+
+    /** @return 指定使用的RPC通信协议，如果为空表示没有特殊指定。RSF将使用 RsfContext.runProtocols()*/
+    public Set<String> getBindProtocols();
 
     /**
      * 返回接口是否为一个 Message 接口。
