@@ -49,7 +49,7 @@ public class QoSBucket {
         double initialToken = rate * timeWindow / 1000d;
         //初始的token为零不合理， 改为1。
         this.tokens = initialToken >= 1 ? new AtomicInteger((int) initialToken) : new AtomicInteger(1);
-        //增加此保存值，是为了double转int时候的不精确；如果不累及这个误差，累计的接过会非常大。
+        //增加此保存值，是为了double转int时候的不精确；如果不累及这个误差，累计的结果会非常大（修正参数）
         this.leftDouble = initialToken - Math.floor(initialToken);
         this.lastRefreshTime = System.currentTimeMillis();
     }

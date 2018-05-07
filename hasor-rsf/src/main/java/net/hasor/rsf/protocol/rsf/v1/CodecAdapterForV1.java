@@ -19,9 +19,9 @@ import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.SerializeCoder;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.protocol.rsf.CodecAdapter;
 import net.hasor.rsf.protocol.rsf.Protocol;
+import net.hasor.rsf.protocol.rsf.ProtocolConstants;
 import net.hasor.rsf.utils.ByteStringCachelUtils;
 import net.hasor.utils.ClassUtils;
 import net.hasor.utils.StringUtils;
@@ -33,7 +33,7 @@ import java.util.List;
  * @version : 2014年11月4日
  * @author 赵永春(zyc @ hasor.net)
  */
-public class CodecAdapterForV1 implements CodecAdapter {
+public class CodecAdapterForV1 implements CodecAdapter, ProtocolConstants {
     private RsfEnvironment rsfEnvironment = null;
     private ClassLoader    classLoader    = null;
     public CodecAdapterForV1(RsfEnvironment rsfEnvironment, ClassLoader classLoader) {
@@ -45,9 +45,9 @@ public class CodecAdapterForV1 implements CodecAdapter {
     public RequestBlock buildRequestBlock(RequestInfo info) throws IOException {
         RequestBlock block = new RequestBlock();
         if (info.isMessage()) {
-            block.setHead(RsfConstants.RSF_MessageRequest);
+            block.setHead(RSF_MessageRequest);
         } else {
-            block.setHead(RsfConstants.RSF_InvokerRequest);
+            block.setHead(RSF_InvokerRequest);
         }
         //
         //1.基本信息
@@ -93,7 +93,7 @@ public class CodecAdapterForV1 implements CodecAdapter {
         ResponseBlock block = new ResponseBlock();
         //
         //1.基本信息
-        block.setHead(RsfConstants.RSF_Response);
+        block.setHead(RSF_Response);
         block.setRequestID(info.getRequestID());//请求ID
         block.setSerializeType(pushString(block, info.getSerializeType()));//序列化策略
         //
@@ -154,10 +154,10 @@ public class CodecAdapterForV1 implements CodecAdapter {
             info.setSerializeType(serializeType);
             //
             //2.Message
-            if (rsfBlock.getHead() == RsfConstants.RSF_InvokerRequest) {
+            if (rsfBlock.getHead() == RSF_InvokerRequest) {
                 info.setMessage(false);
             }
-            if (rsfBlock.getHead() == RsfConstants.RSF_MessageRequest) {
+            if (rsfBlock.getHead() == RSF_MessageRequest) {
                 info.setMessage(true);
             }
             //

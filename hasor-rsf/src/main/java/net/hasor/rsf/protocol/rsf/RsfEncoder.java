@@ -20,7 +20,6 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
-import net.hasor.rsf.domain.RsfConstants;
 import net.hasor.rsf.protocol.rsf.v1.PoolBlock;
 import net.hasor.rsf.protocol.rsf.v1.RequestBlock;
 import net.hasor.rsf.protocol.rsf.v1.ResponseBlock;
@@ -29,7 +28,7 @@ import net.hasor.rsf.protocol.rsf.v1.ResponseBlock;
  * @version : 2014年10月10日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RsfEncoder extends MessageToByteEncoder<Object> {
+public class RsfEncoder extends MessageToByteEncoder<Object> implements ProtocolConstants {
     private RsfEnvironment rsfEnvironment;
     private ClassLoader    classLoader;
     public RsfEncoder(RsfEnvironment rsfEnvironment, ClassLoader classLoader) {
@@ -39,7 +38,7 @@ public class RsfEncoder extends MessageToByteEncoder<Object> {
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
         PoolBlock block = null;
         try {
-            CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, this.classLoader, RsfConstants.Version_1);
+            CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, this.classLoader, Version_1);
             if (msg instanceof RequestInfo) {
                 RequestInfo info = (RequestInfo) msg;
                 block = factory.buildRequestBlock(info);

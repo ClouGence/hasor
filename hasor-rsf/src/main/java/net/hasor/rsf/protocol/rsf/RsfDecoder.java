@@ -24,14 +24,12 @@ import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.utils.ProtocolUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static net.hasor.rsf.domain.RsfConstants.*;
 /**
  * RSF 解码器
  * @version : 2014年10月10日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RsfDecoder extends LengthFieldBasedFrameDecoder {
+public class RsfDecoder extends LengthFieldBasedFrameDecoder implements ProtocolConstants {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     private RsfEnvironment rsfEnvironment;
     private ClassLoader    classLoader;

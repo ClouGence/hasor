@@ -16,14 +16,12 @@
 package net.hasor.rsf.protocol.rsf;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.protocol.rsf.v1.CodecAdapterForV1;
-
-import static net.hasor.rsf.domain.RsfConstants.Version_1;
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年11月4日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class CodecAdapterFactory {
+public class CodecAdapterFactory implements ProtocolConstants {
     private static CodecAdapter[] adapterPool = new CodecAdapter[16];
     //
     public static CodecAdapter getCodecAdapterByVersion(RsfEnvironment rsfEnvironment, ClassLoader classLoader, byte version) {
