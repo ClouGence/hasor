@@ -31,7 +31,7 @@ public class BlockFileAdapterTest {
         BlockFileAdapter adapter = new BlockFileAdapter(FILE);
         //
         Random random = new Random(System.currentTimeMillis());
-        int count = random.nextInt(10) + 10;
+        int count = random.nextInt(50) + 50;
         System.out.println(count);
         for (int i = 1; i <= count; i++) {
             int dataSize = random.nextInt(1024 * 1024);
@@ -319,4 +319,65 @@ public class BlockFileAdapterTest {
         System.out.println("blockDataSize = " + endBlock + " ,data=" + new String(stream.toByteArray()));
     }
     //
+    /** 分裂一个Block（被分裂的 Block 必须是 delete 状态） */
+    @Test
+    public void splitBlockTest() throws IOException {
+        iteratorlocks();
+        //
+        Random random = new Random(System.currentTimeMillis());
+        BlockFileAdapter adapter = new BlockFileAdapter(FILE);
+        Block block = null;
+        while ((block = adapter.nextBlock()) != null) {
+            if (block.isInvalid()) {
+                break;
+            }
+            if (random.nextBoolean()) {
+                adapter.deleteBlock(block);
+                break;
+            }
+        }
+        if (block == null) {
+            assert false;
+        }
+        //
+        System.out.println("split at :" + block);
+        adapter.splitBlock(block, block.getBlockSize() / 2);
+        adapter.close();
+        //
+        iteratorlocks();
+    }
+    /** 合并两个Block */
+    @Test
+    public void mergeBlockTest() throws IOException {
+        iteratorlocks();
+        //
+        Random random = new Random(System.currentTimeMillis());
+        BlockFileAdapter adapter = new BlockFileAdapter(FILE);
+        Block block = null;
+        while ((block = adapter.nextBlock()) != null) {
+            if (block.isInvalid()) {
+                break;
+            }
+            if (random.nextBoolean()) {
+                adapter.deleteBlock(block);
+                break;
+            }
+        }
+        if (block == null) {
+            assert false;
+        }
+        //
+        System.out.println("split at :" + block);
+        Block[] splitBlock = adapter.splitBlock(block, block.getBlockSize() / 2);
+        adapter.close();
+        //
+        iteratorlocks();
+        //
+        //
+        adapter = new BlockFileAdapter(FILE);
+        adapter.mergeBlock(splitBlock);
+        adapter.close();
+        //
+        iteratorlocks();
+    }
 }

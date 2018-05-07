@@ -4,6 +4,8 @@ import net.hasor.utils.IOUtils;
 import java.io.*;
 import java.util.concurrent.atomic.AtomicLong;
 //
+// -- 文件格式为：0 到多个 Block 序列。
+// -- 单个 Block 格式为：<blockSize 8-Byte> + <dataSize 8-Byte> + <data bytes n-Byte>
 //
 public class BlockFileAdapter {
     private RandomAccessFile randomAccessFile = null;
@@ -167,15 +169,88 @@ public class BlockFileAdapter {
         seekTo(block.getPosition(), this.randomAccessFile);
         //
         // .原本要读取一个 long，但是由于第一位就表示是否删除，因此简化为只读第一个字节不用在读取整个length
-        byte flagBit = this.randomAccessFile.readByte();
-        if (flagBit < 0) {
+        long blockSize = this.randomAccessFile.readLong();  // BlockSize（预读8个字节）
+        long dataSize = this.randomAccessFile.readLong();   // DataSize （预读8个字节）
+        if (blockSize < 0) {
             return false;
         }
-        // .回退一个字节然后写入删除标记
+        // .回退然后写入删除
         seekTo(block.getPosition(), this.randomAccessFile);
-        this.randomAccessFile.writeByte(flagBit | (byte) 0x80);
+        this.randomAccessFile.writeLong(blockSize | 0x8000000000000000L);
+        this.randomAccessFile.writeLong(0);
         //
         return true;
+    }
+    //
+    public Block[] splitBlock(Block originBlock, long splitPosition) throws IOException {
+        if (splitPosition < 0) {
+            throw new IOException("split position must be greater than zero.");
+        }
+        //
+        Block block = this.findBlock(originBlock);
+        if (block == null || !block.isInvalid()) {
+            return null;
+        }
+        //
+        long bSize = block.getBlockSize() - splitPosition - Block.HEAD_LENGTH;
+        if (bSize < 0) {
+            throw new IOException("split allowance is too small, must be greater than " + Block.HEAD_LENGTH);
+        }
+        //
+        Block[] result = new Block[2];
+        result[0] = new Block(block.getPosition(), 0, splitPosition, true, false);
+        long bPosition = result[0].getPosition() + result[0].stiffBlockSize();
+        result[1] = new Block(bPosition, 0, bSize, true, false);
+        //
+        // - 先写分裂的新 Block。如果此时写失败或程序中断原始分裂前的 Block 信息至少是完整的。
+        seekTo(result[1].getPosition(), this.randomAccessFile);
+        this.randomAccessFile.writeLong(result[1].getBlockSize() | 0x8000000000000000L);
+        this.randomAccessFile.writeLong(result[1].getDataSize() | 0x8000000000000000L);
+        //
+        seekTo(result[0].getPosition(), this.randomAccessFile);
+        this.randomAccessFile.writeLong(result[0].getBlockSize() | 0x8000000000000000L);
+        this.randomAccessFile.writeLong(result[0].getDataSize() | 0x8000000000000000L);
+        return result;
+    }
+    //
+    public Block mergeBlock(Block[] blockArrays) throws IOException {
+        Block block = blockArrays[0];
+        for (int i = 1; i < blockArrays.length; i++) {
+            block = mergeBlock(block, blockArrays[i]);
+        }
+        return block;
+    }
+    //
+    public Block mergeBlock(Block block, Block extendBlock) throws IOException {
+        block = this.findBlock(block);
+        extendBlock = this.findBlock(extendBlock);
+        if (block == null || extendBlock == null) {
+            throw new IOException("bad block or extend Block.");
+        }
+        if (block.stiffBlockSize() + block.getPosition() != extendBlock.getPosition()) {
+            throw new IOException("merge blocks must be continuous.");
+        }
+        if (block.isEof() || extendBlock.isEof()) {
+            throw new IOException("merge blocks must not eof.");
+        }
+        if (!extendBlock.isInvalid()) {
+            throw new IOException("extend Block is a valid data.");
+        }
+        //
+        long dataSize = block.getDataSize();
+        long blockSize = block.getBlockSize() + extendBlock.stiffBlockSize();
+        boolean invalid = block.isInvalid();
+        Block newBlock = new Block(block.getPosition(), dataSize, blockSize, invalid, false);
+        //
+        seekTo(newBlock.getPosition(), this.randomAccessFile);
+        if (invalid) {
+            this.randomAccessFile.writeLong(newBlock.getBlockSize() | 0x8000000000000000L);
+            this.randomAccessFile.writeLong(0);
+        } else {
+            this.randomAccessFile.writeLong(newBlock.getBlockSize() & 0x7FFFFFFFFFFFFFFFL);
+            this.randomAccessFile.writeLong(dataSize);
+        }
+        return newBlock;
     }
     //
     public OutputStream getOutputStream(Block block) throws IOException {
@@ -198,8 +273,6 @@ public class BlockFileAdapter {
         }
         throw new IOException("getOutputStream failed.");
     }
-    //
-    //
     //
     //
     /** -- */
