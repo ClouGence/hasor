@@ -118,8 +118,8 @@ public class BlockFileAdapter {
         //
         seekTo(position, this.randomAccessFile);
         Block readBlock = readBlock();
-        if (readBlock.getBlockSize() == refBlock.getBlockSize()) {
-            return readBlock;
+        if (readBlock.getBlockSize() == refBlock.getBlockSize() || refBlock.isEof()) {
+            return readBlock; // 正常都要检测一下 BlockSize 是否一致已确定 Block 是同一个，eofBlock 除外。
         }
         return null;
     }
@@ -217,14 +217,23 @@ public class BlockFileAdapter {
         public void reset() throws IOException {
             checkClose(isClose, streamID);
             randomAccessFile.seek(this.block.getPosition());
-            randomAccessFile.skipBytes(Block.HEAD_LENGTH); //额外补偿 Block Head
+            if (block.isEof()) {
+                randomAccessFile.setLength(randomAccessFile.length() + Block.HEAD_LENGTH);
+                randomAccessFile.writeLong(0);
+                randomAccessFile.writeLong(0);
+            } else {
+                randomAccessFile.skipBytes(Block.HEAD_LENGTH); //额外补偿 Block Head
+            }
         }
-        private void appendSize(int realSize) {
+        private void appendSize(int realSize) throws IOException {
             if (block.getBlockSize() >= 0) {
                 long afterDataSize = this.writePosition + realSize;
                 if (afterDataSize > block.getBlockSize()) {
                     throw new ArrayIndexOutOfBoundsException("write data size " + afterDataSize + " out of limit " + block.getBlockSize());
                 }
+            }
+            if (block.isEof()) {
+                randomAccessFile.setLength(randomAccessFile.length() + realSize);
             }
             this.writePosition += realSize;
         }
@@ -254,8 +263,12 @@ public class BlockFileAdapter {
             this.flush();
             /*--*/
             randomAccessFile.seek(this.block.getPosition());
-            randomAccessFile.writeLong(this.block.getBlockSize()); // BlockSize
-            randomAccessFile.writeLong(this.writePosition);        // DataSize
+            long blockSize = this.block.getBlockSize();
+            if (this.block.isEof()) {
+                blockSize = this.writePosition;
+            }
+            randomAccessFile.writeLong(blockSize);          // BlockSize
+            randomAccessFile.writeLong(this.writePosition); // DataSize
             /*--*/
             this.isClose = true;
             releaseStream(this.streamID);

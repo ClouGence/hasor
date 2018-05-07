@@ -5,14 +5,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.Random;
 //
 //
 public class BlockFileAdapterTest {
     //
-    private static int  emptyBlock = 300;
+    private static int  emptyBlock = 3;
     private static File FILE       = new File("myfile.dat");
     private static byte[] tempData;
 
@@ -30,58 +28,40 @@ public class BlockFileAdapterTest {
     @Before
     public void writeFile() throws IOException {
         FILE.delete();
-        RandomAccessFile fos = new RandomAccessFile(FILE, "rw");
-        FileChannel channel = fos.getChannel();
+        BlockFileAdapter adapter = new BlockFileAdapter(FILE);
         //
         Random random = new Random(System.currentTimeMillis());
-        int count = random.nextInt(1000) + 100;
+        int count = random.nextInt(10) + 10;
         System.out.println(count);
         for (int i = 1; i <= count; i++) {
-            long dataSize = random.nextInt(1024 * 1024);
+            int dataSize = random.nextInt(1024 * 1024);
             if (i == emptyBlock) {
                 dataSize = 0;
             }
-            writeItem(random.nextBoolean(), dataSize, channel);
+            writeItem(random.nextBoolean(), dataSize, adapter);
             System.out.println("i=" + i + " of " + count);
         }
-        fos.close();
+        adapter.close();
     }
-    private void writeItem(boolean delete, long dataSize, FileChannel fos) throws IOException {
-        //
-        ByteBuffer buffer = ByteBuffer.allocateDirect(10240);
-        //
-        byte[] length = longToBytes(dataSize);
-        if (delete) {
-            length[0] = (byte) (length[0] & (byte) 0x7F); // 保证最高位为0（正常）
-        } else {
-            length[0] = (byte) (length[0] | (byte) 0x80); // 保证最高位为1（删除）
-        }
-        //
-        buffer.put(length);  // block size
-        length[0] = (byte) (length[0] & (byte) 0x7F); // 保证最高位为0（正常）
-        buffer.put(length);  // data  size
-        //
+    private void writeItem(boolean delete, int dataSize, BlockFileAdapter adapter) throws IOException {
+        Block block = adapter.endBlock();
+        OutputStream outStream = adapter.getOutputStream(block);
         while (dataSize > 0) {
-            // - buffer is Full
-            if (buffer.position() == buffer.limit()) {
-                buffer.flip();
-                fos.write(buffer);
-                buffer.clear();
+            //
+            if (dataSize > tempData.length) {
+                dataSize -= tempData.length;
+                outStream.write(tempData);
+            } else {
+                outStream.write(tempData, 0, dataSize);
+                dataSize = 0;
             }
-            // - eval write the size of limit
-            long allowSize = buffer.limit() - buffer.position();
-            if (allowSize > dataSize) {
-                allowSize = dataSize;
-            }
-            allowSize = allowSize > tempData.length ? tempData.length : allowSize;
-            // - write to Buffer
-            buffer.put(tempData, 0, (int) allowSize);
-            dataSize -= allowSize;
         }
+        outStream.close();
         //
-        buffer.flip();
-        fos.write(buffer);
-        buffer.clear();
+        if (delete) {
+            block = adapter.findBlock(block);
+            adapter.deleteBlock(block);
+        }
     }
     //
     // --------------------------------------------------------------------------------------------
@@ -314,19 +294,29 @@ public class BlockFileAdapterTest {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         adapter.readToStream(freeSpace, stream);
         System.out.println("blockDataSize = " + freeSpace + " ,data=" + new String(stream.toByteArray()));
-        //
-        //
-        //
     }
     //
-    // --------------------------------------------------------------------------------------------
-    //
-    public static byte[] longToBytes(long l) {
-        byte[] result = new byte[8];
-        for (int i = 7; i >= 0; i--) {
-            result[i] = (byte) (l & 0xFF);
-            l >>= 8;
-        }
-        return result;
+    /** 末尾追加内容 */
+    @Test
+    public void appendFile() throws IOException {
+        iteratorlocks();
+        //
+        BlockFileAdapter adapter = new BlockFileAdapter(FILE);
+        Block endBlock = adapter.endBlock();
+        System.out.println("endBlock = " + endBlock);
+        //
+        OutputStream outputStream = adapter.getOutputStream(endBlock);
+        outputStream.write("END".getBytes());
+        outputStream.close();
+        adapter.close();
+        //
+        iteratorlocks();
+        //
+        adapter = new BlockFileAdapter(FILE);
+        endBlock = adapter.findBlock(endBlock);
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        adapter.readToStream(endBlock, stream);
+        System.out.println("blockDataSize = " + endBlock + " ,data=" + new String(stream.toByteArray()));
     }
+    //
 }
