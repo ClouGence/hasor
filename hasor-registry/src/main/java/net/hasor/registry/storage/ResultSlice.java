@@ -15,34 +15,24 @@
  */
 package net.hasor.registry.storage;
 /**
- *
+ * 查询 B-Tree 的结果
  * @version : 2015年8月19日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class DataEntity {
-    private String dataKey;
-    private long   tags;
+public class ResultSlice {
+    private Slice atSlice    = null;    // 所处 Slice
+    private int   atPosition = 0;       // 位于 Slice 的位置
+    ResultSlice(Slice atSlice, int atPosition) {
+        this.atSlice = atSlice;
+        this.atPosition = atPosition;
+    }
     //
-    private long   dataPosition;
-    private long   dataLength;
-    //
-    //
-    public String getDataKey() {
-        return dataKey;
+    /**所处 Slice*/
+    public Slice getAtSlice() {
+        return this.atSlice;
     }
-    public String getDataValue() {
-        return null;
-    }
-    public long getTags() {
-        return tags;
-    }
-    public String getMD5() {
-        return null;
-    }
-    public String getTarget() {
-        return null;
-    }
-    public boolean isLinkTo() {
-        return false;
+    /**位于 Slice 的位置*/
+    public int getAtPosition() {
+        return this.atPosition;
     }
 }

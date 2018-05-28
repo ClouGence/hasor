@@ -15,34 +15,36 @@
  */
 package net.hasor.registry.storage;
 /**
- *
+ * B-Tree 节点
  * @version : 2015年8月19日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class DataEntity {
-    private String dataKey;
-    private long   tags;
+public abstract class Node {
+    private long dataKey;       // hashKey
+    private long position;      // 位置
     //
-    private long   dataPosition;
-    private long   dataLength;
+    public Node(long dataKey) {
+        this.dataKey = dataKey;
+    }
     //
-    //
-    public String getDataKey() {
+    /** 索引上节点的 Key */
+    public long getDataKey() {
         return dataKey;
     }
-    public String getDataValue() {
-        return null;
+    /** 数据位置（对于索引节点来说相当于索引节点ID） */
+    public long getPosition() {
+        return position;
     }
-    public long getTags() {
-        return tags;
+    /** 设置数据位置（对于索引节点来说相当于索引节点ID） */
+    protected void setPosition(long position) {
+        this.position = position;
     }
-    public String getMD5() {
-        return null;
-    }
-    public String getTarget() {
-        return null;
-    }
-    public boolean isLinkTo() {
-        return false;
+    //
+    /** 返回是否为数据节点 */
+    public abstract boolean isData();
+    //
+    @Override
+    public String toString() {
+        return "dataKey=" + dataKey;
     }
 }

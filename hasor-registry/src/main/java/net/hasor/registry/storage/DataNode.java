@@ -15,34 +15,17 @@
  */
 package net.hasor.registry.storage;
 /**
- *
+ * B-Tree 上的数据
  * @version : 2015年8月19日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class DataEntity {
-    private String dataKey;
-    private long   tags;
-    //
-    private long   dataPosition;
-    private long   dataLength;
-    //
-    //
-    public String getDataKey() {
-        return dataKey;
+public class DataNode extends Node {
+    public DataNode(long dataKey) {
+        super(dataKey);
     }
-    public String getDataValue() {
-        return null;
-    }
-    public long getTags() {
-        return tags;
-    }
-    public String getMD5() {
-        return null;
-    }
-    public String getTarget() {
-        return null;
-    }
-    public boolean isLinkTo() {
-        return false;
+    /** 返回是否为数据节点，DataNode 始终为 true */
+    @Override
+    public boolean isData() {
+        return true;
     }
 }

@@ -1,41 +1,68 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.hasor.registry.storage;
 import net.hasor.utils.IOUtils;
 
 import java.io.*;
 import java.util.concurrent.atomic.AtomicLong;
-//
-// -- 文件格式为：0 到多个 Block 序列。
-// -- 单个 Block 格式为：<blockSize 8-Byte> + <dataSize 8-Byte> + <data bytes n-Byte>
-//
+/**
+ * 文件格式为：0 到多个 Block 序列。
+ * 单个 Block 格式为：<blockSize 8-Byte> + <dataSize 8-Byte> + <data bytes n-Byte>
+ * @version : 2015年8月19日
+ * @author 赵永春 (zyc@hasor.net)
+ */
 public class BlockFileAdapter {
-    private RandomAccessFile randomAccessFile = null;
-    private AtomicLong       curentStreamID   = null;
-    private Block            curentBlock      = null;
+    private static final long             DEL_MASK         = 0x8000000000000000L;
+    private static final long             NORMAL_MASK      = 0x7FFFFFFFFFFFFFFFL;
+    private              File             blockFileName    = null;
+    private              RandomAccessFile randomAccessFile = null;
+    private              AtomicLong       curentStreamID   = null;
+    private              Block            curentBlock      = null;
     //
     //
-    public BlockFileAdapter(File fileName) throws IOException {
-        this.randomAccessFile = new RandomAccessFile(fileName, "rw");
+    public BlockFileAdapter(File blockFileName) throws IOException {
+        this.blockFileName = blockFileName;
+        this.randomAccessFile = new RandomAccessFile(blockFileName, "rw");
         this.curentStreamID = new AtomicLong(0);
         this.curentBlock = null;
     }
     //
-    public void close() throws IOException {
-        this.randomAccessFile.close();
+    /** 存储的文件 */
+    public File getFile() {
+        return this.blockFileName;
     }
     //
+    /** 关闭 */
+    public void close() throws IOException {
+        this.ioClose();
+    }
+    //
+    /** 文件大小 */
+    public final long fileSize() throws IOException {
+        return this.ioFileSize();
+    }
+    //
+    /** 重置读取指针，curentBlock 会被置空。同时 nextBlock 会重头开始读文件 */
     public void reset() throws IOException {
         this.curentStreamID = new AtomicLong(0);
         this.curentBlock = null;
-        seekTo(0, this.randomAccessFile);
+        ioSeekTo(0);
     }
     //
-    public final long fileSize() throws IOException {
-        return this.randomAccessFile.length();
-    }
-    private final long getFilePointer() throws IOException {
-        return this.randomAccessFile.getFilePointer();
-    }
-    //
+    /** 释放任何可能存在的，读写流操作 */
     public boolean releaseStream() {
         return this.releaseStream(this.curentStreamID.get());
     }
@@ -46,15 +73,18 @@ public class BlockFileAdapter {
         return curentStreamID.compareAndSet(streamID, 0);
     }
     //
+    /** 获取用于表示文件尾的Block，基于这个 Block 进行写会以追加模式写入 */
     public Block endBlock() throws IOException {
         long endPosition = this.fileSize();
         return new Block(endPosition, 0, -1, true, true);
     }
     //
+    /** 基于 curentBlock 查找下一个最近的自由空间 */
     public Block findFreeSpace() throws IOException {
         return findFreeSpace(null);
     }
     //
+    /** 基于 atBlock 查找下一个最近的自由空间 */
     public Block findFreeSpace(Block atBlock) throws IOException {
         // .curent Block is Free ?
         Block foundBlock = this.curentBlock();
@@ -71,14 +101,17 @@ public class BlockFileAdapter {
         return this.endBlock();
     }
     //
+    /** 当前 Block 每一次调用 nextBlock 都会重置 curentBlock 为最新的 */
     public Block curentBlock() {
         return this.curentBlock;
     }
     //
+    /** 基于 curentBlock 查找下一个Block */
     public Block nextBlock() throws IOException {
         return nextBlock(null);
     }
     //
+    /** 基于 atBlock 查找下一个Block */
     public Block nextBlock(Block atBlock) throws IOException {
         // .release any curent stream
         this.releaseStream();
@@ -89,10 +122,10 @@ public class BlockFileAdapter {
         // . move pointer to ready.
         Block curentBlock = (atBlock != null) ? atBlock : this.curentBlock;
         if (curentBlock == null) {
-            seekTo(0, this.randomAccessFile);
+            ioSeekTo(0);
         } else {
             long nextPoint = curentBlock.getPosition() + curentBlock.stiffBlockSize();
-            seekTo(nextPoint, this.randomAccessFile);
+            ioSeekTo(nextPoint);
         }
         //
         // .read Block Header
@@ -100,25 +133,26 @@ public class BlockFileAdapter {
         return this.curentBlock();
     }
     private Block readBlock() throws IOException {
-        long blockPosition = this.getFilePointer();
-        long blockSize = this.randomAccessFile.readLong();  // BlockSize（预读8个字节）
-        long dataSize = this.randomAccessFile.readLong();   // DataSize （预读8个字节）
-        seekTo(blockPosition, this.randomAccessFile);       // 回退预读的字节的指针
+        long blockPosition = this.ioFilePointer();
+        long blockSize = this.ioReadLong();  // BlockSize（预读8个字节）
+        long dataSize = this.ioReadLong();   // DataSize （预读8个字节）
+        ioSeekTo(blockPosition);             // 回退预读的字节的指针
         //
         // .create structure of the Block
         boolean invalid = blockSize < 0;
-        blockSize = blockSize & 0x7FFFFFFFFFFFFFFFL;    // 去掉第一个二进制位变为真实长度
-        dataSize = dataSize & 0x7FFFFFFFFFFFFFFFL;      // 保证 dataSize 行为和 blockSize 一致
+        blockSize = blockSize & NORMAL_MASK;    // 去掉第一个二进制位变为真实长度
+        dataSize = dataSize & NORMAL_MASK;      // 保证 dataSize 行为和 blockSize 一致
         return new Block(blockPosition, dataSize, blockSize, invalid, false);
     }
     //
+    /** 基于 refBlock 的信息，在当前 File 中查找对应的 Block */
     public Block findBlock(Block refBlock) throws IOException {
         long position = refBlock.getPosition();
         if (position + Block.HEAD_LENGTH > this.fileSize()) {
             return null; // 目标 Block 的 position 在 this file 中根本不成立
         }
         //
-        seekTo(position, this.randomAccessFile);
+        ioSeekTo(position);
         Block readBlock = readBlock();
         if (readBlock.getBlockSize() == refBlock.getBlockSize() || refBlock.isEof()) {
             return readBlock; // 正常都要检测一下 BlockSize 是否一致已确定 Block 是同一个，eofBlock 除外。
@@ -126,11 +160,12 @@ public class BlockFileAdapter {
         return null;
     }
     //
+    /** 判断是否具有下一个可以读取的 Block */
     public boolean hasNext() throws IOException {
         if (this.curentBlock != null) {
             return (this.curentBlock.getPosition() + this.curentBlock.stiffBlockSize()) != this.fileSize();
         }
-        long filePointer = this.getFilePointer();
+        long filePointer = this.ioFilePointer();
         if (this.fileSize() == filePointer) {
             return false;
         }
@@ -141,6 +176,7 @@ public class BlockFileAdapter {
         return true;
     }
     //
+    /** 获取 Block 的读入流（同一个时间内只能有一个流进行读写操作）*/
     public InputStream getInputStream(Block block) throws IOException {
         long streamID = System.currentTimeMillis();
         if (this.curentStreamID.compareAndSet(0, streamID)) {
@@ -151,6 +187,7 @@ public class BlockFileAdapter {
         return null;
     }
     //
+    /** 读取 Block 数据到 outStream（同一个时间内只能有一个流进行读写操作）*/
     public void readToStream(Block block, OutputStream outStream) throws IOException {
         InputStream inStream = this.getInputStream(block);
         if (inStream != null) {
@@ -161,27 +198,29 @@ public class BlockFileAdapter {
         throw new IOException("getInputStream failed.");
     }
     //
+    /** 删除 Block */
     public boolean deleteBlock(Block block) throws IOException {
         if (block == null) {
             return false;
         }
         // .重定向到目标Block
-        seekTo(block.getPosition(), this.randomAccessFile);
+        ioSeekTo(block.getPosition());
         //
         // .原本要读取一个 long，但是由于第一位就表示是否删除，因此简化为只读第一个字节不用在读取整个length
-        long blockSize = this.randomAccessFile.readLong();  // BlockSize（预读8个字节）
-        long dataSize = this.randomAccessFile.readLong();   // DataSize （预读8个字节）
+        long blockSize = this.ioReadLong();  // BlockSize（预读8个字节）
+        long dataSize = this.ioReadLong();   // DataSize （预读8个字节）
         if (blockSize < 0) {
             return false;
         }
         // .回退然后写入删除
-        seekTo(block.getPosition(), this.randomAccessFile);
-        this.randomAccessFile.writeLong(blockSize | 0x8000000000000000L);
-        this.randomAccessFile.writeLong(0);
+        ioSeekTo(block.getPosition());
+        ioWriteHeader(blockSize | DEL_MASK, 0);
         //
+        ioSyncBuffer();
         return true;
     }
     //
+    /** 拆分 originBlock 为两个部分，被拆分的 Block 一定是被删除的 */
     public Block[] splitBlock(Block originBlock, long splitPosition) throws IOException {
         if (splitPosition < 0) {
             throw new IOException("split position must be greater than zero.");
@@ -203,24 +242,21 @@ public class BlockFileAdapter {
         result[1] = new Block(bPosition, 0, bSize, true, false);
         //
         // - 先写分裂的新 Block。如果此时写失败或程序中断原始分裂前的 Block 信息至少是完整的。
-        seekTo(result[1].getPosition(), this.randomAccessFile);
-        this.randomAccessFile.writeLong(result[1].getBlockSize() | 0x8000000000000000L);
-        this.randomAccessFile.writeLong(result[1].getDataSize() | 0x8000000000000000L);
+        ioSeekTo(result[1].getPosition());
+        ioWriteHeader(result[1].getBlockSize() | DEL_MASK,//
+                result[1].getDataSize() | DEL_MASK//
+        );
         //
-        seekTo(result[0].getPosition(), this.randomAccessFile);
-        this.randomAccessFile.writeLong(result[0].getBlockSize() | 0x8000000000000000L);
-        this.randomAccessFile.writeLong(result[0].getDataSize() | 0x8000000000000000L);
+        ioSeekTo(result[0].getPosition());
+        ioWriteHeader(result[0].getBlockSize() | DEL_MASK,//
+                result[0].getDataSize() | DEL_MASK//
+        );
+        //
+        ioSyncBuffer();
         return result;
     }
     //
-    public Block mergeBlock(Block[] blockArrays) throws IOException {
-        Block block = blockArrays[0];
-        for (int i = 1; i < blockArrays.length; i++) {
-            block = mergeBlock(block, blockArrays[i]);
-        }
-        return block;
-    }
-    //
+    /** 安全的合并两个 Block ，被合并的 extendBlock 必须是删除状态 */
     public Block mergeBlock(Block block, Block extendBlock) throws IOException {
         block = this.findBlock(block);
         extendBlock = this.findBlock(extendBlock);
@@ -242,17 +278,28 @@ public class BlockFileAdapter {
         boolean invalid = block.isInvalid();
         Block newBlock = new Block(block.getPosition(), dataSize, blockSize, invalid, false);
         //
-        seekTo(newBlock.getPosition(), this.randomAccessFile);
+        ioSeekTo(newBlock.getPosition());
         if (invalid) {
-            this.randomAccessFile.writeLong(newBlock.getBlockSize() | 0x8000000000000000L);
-            this.randomAccessFile.writeLong(0);
+            ioWriteHeader(newBlock.getBlockSize() | DEL_MASK, 0);
         } else {
-            this.randomAccessFile.writeLong(newBlock.getBlockSize() & 0x7FFFFFFFFFFFFFFFL);
-            this.randomAccessFile.writeLong(dataSize);
+            ioWriteHeader(newBlock.getBlockSize() & NORMAL_MASK, dataSize);
         }
+        //
+        ioSyncBuffer();
         return newBlock;
     }
     //
+    /** 半安全的批量合并操作。半安全是指该方法当合并多个 Block 过程中如果遇到意外，不会回滚整个操作。
+     * 但是已经合并的 Block 都是安全的。*/
+    public Block halfSafeMergeBlock(Block[] blockArrays) throws IOException {
+        Block block = blockArrays[0];
+        for (int i = 1; i < blockArrays.length; i++) {
+            block = mergeBlock(block, blockArrays[i]);
+        }
+        return block;
+    }
+    //
+    /** 获取某个 Block 的输出流，数据写完之后一定要 close，否则会产生数据丢失。 */
     public OutputStream getOutputStream(Block block) throws IOException {
         long streamID = System.currentTimeMillis();
         if (this.curentStreamID.compareAndSet(0, streamID)) {
@@ -263,6 +310,7 @@ public class BlockFileAdapter {
         return null;
     }
     //
+    /** 输出数据到某个输出流上。输出完毕之后一定要 close，否则会产生数据丢失。 */
     public void writeFromStream(Block block, InputStream inStream) throws IOException {
         OutputStream outStream = this.getOutputStream(block);
         if (outStream != null) {
@@ -288,14 +336,13 @@ public class BlockFileAdapter {
         }
         //
         public void reset() throws IOException {
-            checkClose(isClose, streamID);
-            randomAccessFile.seek(this.block.getPosition());
+            checkStreamClose(isClose, streamID);
+            ioSeekTo(this.block.getPosition());
             if (block.isEof()) {
-                randomAccessFile.setLength(randomAccessFile.length() + Block.HEAD_LENGTH);
-                randomAccessFile.writeLong(0);
-                randomAccessFile.writeLong(0);
+                ioExtendSize(Block.HEAD_LENGTH);
+                ioWriteHeader(0, 0);
             } else {
-                randomAccessFile.skipBytes(Block.HEAD_LENGTH); //额外补偿 Block Head
+                ioSkipBytes(Block.HEAD_LENGTH);//额外补偿 Block Head
             }
         }
         private void appendSize(int realSize) throws IOException {
@@ -306,15 +353,20 @@ public class BlockFileAdapter {
                 }
             }
             if (block.isEof()) {
-                randomAccessFile.setLength(randomAccessFile.length() + realSize);
+                ioExtendSize(realSize);
             }
             this.writePosition += realSize;
         }
         @Override
         public void write(int b) throws IOException {
-            checkClose(isClose, streamID);
+            checkStreamClose(isClose, streamID);
             appendSize(4);
-            randomAccessFile.writeInt(b);
+            write(new byte[] {                  //
+                    (byte) ((b >>> 24) & 0xFF), //
+                    (byte) ((b >>> 16) & 0xFF), //
+                    (byte) ((b >>> 8) & 0xFF),  //
+                    (byte) ((b >>> 0) & 0xFF)   //
+            });
         }
         @Override
         public void write(byte[] b) throws IOException {
@@ -322,26 +374,25 @@ public class BlockFileAdapter {
         }
         @Override
         public void write(byte[] b, int off, int len) throws IOException {
-            checkClose(isClose, streamID);
+            checkStreamClose(isClose, streamID);
             appendSize(len);
-            randomAccessFile.write(b, off, len);
+            ioReadWrite(b, off, len);
         }
         @Override
         public void flush() throws IOException {
-            //
+            ioSyncBuffer();
         }
         @Override
         public void close() throws IOException {
-            checkClose(isClose, streamID);
-            this.flush();
+            checkStreamClose(isClose, streamID);
             /*--*/
-            randomAccessFile.seek(this.block.getPosition());
+            ioSeekTo(this.block.getPosition());
             long blockSize = this.block.getBlockSize();
             if (this.block.isEof()) {
                 blockSize = this.writePosition;
             }
-            randomAccessFile.writeLong(blockSize);          // BlockSize
-            randomAccessFile.writeLong(this.writePosition); // DataSize
+            ioWriteHeader(blockSize, this.writePosition);
+            this.flush();
             /*--*/
             this.isClose = true;
             releaseStream(this.streamID);
@@ -362,38 +413,38 @@ public class BlockFileAdapter {
         //
         @Override
         public int read(byte[] b, int off, int len) throws IOException {
-            checkClose(isClose, streamID);
+            checkStreamClose(isClose, streamID);
             if ((this.position + len) > this.block.getDataSize()) {
                 len = (int) (this.block.getDataSize() - this.position);
             }
             if (len == 0) {
                 return -1;
             }
-            int readLength = randomAccessFile.read(b, off, len);
+            int readLength = ioReadBytes(b, off, len);
             this.position += readLength;
             return readLength;
         }
         @Override
         public int read() throws IOException {
-            checkClose(isClose, streamID);
+            checkStreamClose(isClose, streamID);
             if (this.position >= this.block.getDataSize()) {
                 return -1;
             }
-            int data = randomAccessFile.readByte();
+            int data = ioReadByte();
             this.position++;
             return data;
         }
         @Override
         public long skip(long n) throws IOException {
-            checkClose(isClose, streamID);
+            checkStreamClose(isClose, streamID);
             if ((this.position + n) > this.block.getDataSize()) {
                 n = (int) (this.block.getDataSize() - this.position);
             }
-            return skipBytes(n, randomAccessFile);
+            return skipBytes(n);
         }
         @Override
         public int available() throws IOException {
-            checkClose(isClose, streamID);
+            checkStreamClose(isClose, streamID);
             long available = this.block.getDataSize() - position;
             if (available > Integer.MAX_VALUE) {
                 // 为了避免 long 截断问题，返回最大不过 Integer.MAX_VALUE 的值
@@ -408,10 +459,10 @@ public class BlockFileAdapter {
         }
         @Override
         public void reset() throws IOException {
-            checkClose(isClose, streamID);
+            checkStreamClose(isClose, streamID);
             this.position = resetPosition;
-            randomAccessFile.seek(this.block.getPosition() + this.position);
-            randomAccessFile.skipBytes(Block.HEAD_LENGTH); //跳过 Block Head
+            ioSeekTo(this.block.getPosition() + this.position);
+            ioSkipBytes(Block.HEAD_LENGTH); //跳过 Block Head
         }
         @Override
         public void mark(int readlimit) {
@@ -427,7 +478,7 @@ public class BlockFileAdapter {
     }
     //
     //
-    private void checkClose(boolean isClose, long streamID) throws IOException {
+    private void checkStreamClose(boolean isClose, long streamID) throws IOException {
         // .关闭状态
         if (isClose) {
             throw new IOException("stream is closed.");
@@ -438,24 +489,59 @@ public class BlockFileAdapter {
             throw new IOException("stream has expired.");
         }
     }
-    private static long skipBytes(long readSize, RandomAccessFile fis) throws IOException {
+    private long skipBytes(long readSize) throws IOException {
         long skipLength = 0;
         while (readSize > Integer.MAX_VALUE) {
-            long realSkipBytes = fis.skipBytes((int) readSize);
+            long realSkipBytes = this.ioSkipBytes((int) readSize);
             if (realSkipBytes == 0) {
                 break;
             }
             skipLength += realSkipBytes;
             readSize = readSize - Integer.MAX_VALUE;
         }
-        skipLength += fis.skipBytes((int) readSize);
+        skipLength += this.ioSkipBytes((int) readSize);
         return skipLength;
     }
-    private static void seekTo(long atPosition, RandomAccessFile fis) throws IOException {
-        long nowPosition = fis.getFilePointer();
+    //
+    private int ioSkipBytes(int readSize) throws IOException {
+        return this.randomAccessFile.skipBytes(readSize);
+    }
+    private void ioSeekTo(long atPosition) throws IOException {
+        long nowPosition = this.randomAccessFile.getFilePointer();
         if (nowPosition == atPosition) {
             return;
         }
-        fis.seek(atPosition);
+        this.randomAccessFile.seek(atPosition);
+    }
+    private long ioFileSize() throws IOException {
+        return this.randomAccessFile.length();
+    }
+    private long ioFilePointer() throws IOException {
+        return this.randomAccessFile.getFilePointer();
+    }
+    private long ioReadLong() throws IOException {
+        return randomAccessFile.readLong();
+    }
+    private int ioReadByte() throws IOException {
+        return randomAccessFile.readByte();
+    }
+    private int ioReadBytes(byte b[], int off, int len) throws IOException {
+        return randomAccessFile.read(b, off, len);
+    }
+    private void ioReadWrite(byte b[], int off, int len) throws IOException {
+        randomAccessFile.write(b, off, len);
+    }
+    private void ioWriteHeader(long blockSize, long dataSize) throws IOException {
+        randomAccessFile.writeLong(blockSize);
+        randomAccessFile.writeLong(dataSize);
+    }
+    private void ioExtendSize(long addSize) throws IOException {
+        randomAccessFile.setLength(randomAccessFile.length() + addSize);
+    }
+    private void ioClose() throws IOException {
+        this.randomAccessFile.close();
+    }
+    private void ioSyncBuffer() throws IOException {
+        //
     }
 }

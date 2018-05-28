@@ -36,7 +36,7 @@ class EventProcessMapping {
     private static List<InterAddress> convertTo(String addressSetBody) {
         String[] addressSet = StringUtils.isBlank(addressSetBody) ? null : addressSetBody.split(",");
         if (addressSet == null || addressSet.length == 0) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         List<InterAddress> addressList = new ArrayList<InterAddress>();
         for (String address : addressSet) {
