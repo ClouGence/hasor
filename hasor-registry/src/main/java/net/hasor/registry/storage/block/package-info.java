@@ -13,26 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.storage;
 /**
- * 查询 B-Tree 的结果
- * @version : 2015年8月19日
- * @author 赵永春 (zyc@hasor.net)
+ * 基于块的存储区层。
  */
-public class ResultSlice {
-    private Slice atSlice    = null;    // 所处 Slice
-    private int   atPosition = 0;       // 位于 Slice 的位置
-    ResultSlice(Slice atSlice, int atPosition) {
-        this.atSlice = atSlice;
-        this.atPosition = atPosition;
-    }
-    //
-    /**所处 Slice*/
-    public Slice getAtSlice() {
-        return this.atSlice;
-    }
-    /**位于 Slice 的位置*/
-    public int getAtPosition() {
-        return this.atPosition;
-    }
-}
+package net.hasor.registry.storage.block;

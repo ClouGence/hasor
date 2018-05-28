@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.storage;
+package net.hasor.registry.storage.block;
 /**
  * 表示文件上的一个数据块
  * @version : 2015年8月19日

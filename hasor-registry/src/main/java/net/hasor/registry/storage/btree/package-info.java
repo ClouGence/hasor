@@ -13,20 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.storage;
 /**
- * B-Tree 上的索引
- * @version : 2017年02月23日
- * @author 赵永春 (zyc@hasor.net)
+ * B-Tree索引层。
  */
-public class TreeNode extends Node {
-    public TreeNode(long dataKey, int sliceID) {
-        super(dataKey);
-        this.setPosition(sliceID);
-    }
-    /** 返回是否为数据节点，TreeNode 始终为 false */
-    @Override
-    public boolean isData() {
-        return false;
-    }
-}
+package net.hasor.registry.storage.btree;

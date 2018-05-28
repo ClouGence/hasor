@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.storage;
+package net.hasor.registry.storage.btree;
 /**
  * 表示一个B-Tree 索引区块
  * @version : 2015年8月19日
