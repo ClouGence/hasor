@@ -16,7 +16,7 @@
 package net.hasor.registry.storage.btree;
 /**
  * 表示一个B-Tree 索引区块
- * @version : 2015年8月19日
+ * @version : 2018年5月28日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class Slice {

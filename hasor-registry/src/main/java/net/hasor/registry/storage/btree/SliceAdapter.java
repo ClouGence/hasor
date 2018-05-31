@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Random;
 /**
  * B-Tree 索引操作类
- * @version : 2015年8月19日
+ * @version : 2018年5月28日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SliceAdapter {

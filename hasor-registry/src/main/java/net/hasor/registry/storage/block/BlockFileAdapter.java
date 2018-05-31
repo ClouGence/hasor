@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * 文件格式为：0 到多个 Block 序列。
  * 单个 Block 格式为：<blockSize 8-Byte> + <dataSize 8-Byte> + <data bytes n-Byte>
- * @version : 2015年8月19日
+ * @version : 2018年5月7日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class BlockFileAdapter {

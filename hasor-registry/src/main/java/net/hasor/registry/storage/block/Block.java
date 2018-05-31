@@ -16,7 +16,7 @@
 package net.hasor.registry.storage.block;
 /**
  * 表示文件上的一个数据块
- * @version : 2015年8月19日
+ * @version : 2018年5月7日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class Block {

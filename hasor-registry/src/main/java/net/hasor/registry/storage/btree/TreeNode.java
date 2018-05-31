@@ -16,7 +16,7 @@
 package net.hasor.registry.storage.btree;
 /**
  * B-Tree 上的索引
- * @version : 2017年02月23日
+ * @version : 2018年5月28日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class TreeNode extends Node {
