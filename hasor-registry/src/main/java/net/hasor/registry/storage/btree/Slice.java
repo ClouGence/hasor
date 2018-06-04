@@ -20,20 +20,11 @@ package net.hasor.registry.storage.btree;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class Slice {
-    private int    parentSlice   = 0;       // 父ID（树结构）
-    private int    sliceID       = 0;       // 位置
-    private Node[] childrensKeys = null;    // data keys
+    private int    sliceID          = 0;       // 位置
+    private Node[] childrensKeys    = null;    // data keys
+    private byte   branchSaturation = 0;       // TreeNode 节点所占比例（100%）
     //
-    Slice(int parentSlice) {
-        this.parentSlice = parentSlice;
-    }
-    //
-    /** 父 Tree 节点 */
-    public int getParent() {
-        return this.parentSlice;
-    }
-    void setParent(int newParentSlice) {
-        this.parentSlice = newParentSlice;
+    Slice() {
     }
     //
     /** 索引中数据 */
@@ -41,6 +32,9 @@ public class Slice {
         return childrensKeys;
     }
     void setChildrensKeys(Node[] childrensKeys) {
+        if (childrensKeys.length > Short.MAX_VALUE) {
+            throw new ArrayIndexOutOfBoundsException("childrens keys size out of range.");
+        }
         this.childrensKeys = childrensKeys;
     }
     //
