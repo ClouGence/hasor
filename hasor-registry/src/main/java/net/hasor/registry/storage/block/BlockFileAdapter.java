@@ -15,11 +15,15 @@
  */
 package net.hasor.registry.storage.block;
 import net.hasor.utils.IOUtils;
+import sun.misc.Cleaner;
+import sun.nio.ch.DirectBuffer;
 
 import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.concurrent.atomic.AtomicLong;
 /**
- * 文件格式为：0 到多个 Block 序列。
+ * 文件格式为：0 到多个 Block 序列。读写支持 NIO，堆外内存和流两种方式。
  * 单个 Block 格式为：<blockSize 8-Byte> + <dataSize 8-Byte> + <data bytes n-Byte>
  * @version : 2018年5月7日
  * @author 赵永春 (zyc@hasor.net)
@@ -29,6 +33,7 @@ public class BlockFileAdapter {
     private static final long             NORMAL_MASK      = 0x7FFFFFFFFFFFFFFFL;
     private              File             blockFileName    = null;
     private              RandomAccessFile randomAccessFile = null;
+    private              FileChannel      fileChannel      = null;
     private              AtomicLong       curentStreamID   = null;
     private              Block            curentBlock      = null;
     //
@@ -36,6 +41,7 @@ public class BlockFileAdapter {
     public BlockFileAdapter(File blockFileName) throws IOException {
         this.blockFileName = blockFileName;
         this.randomAccessFile = new RandomAccessFile(blockFileName, "rw");
+        this.fileChannel = this.randomAccessFile.getChannel();
         this.curentStreamID = new AtomicLong(0);
         this.curentBlock = null;
     }
@@ -73,8 +79,14 @@ public class BlockFileAdapter {
         return curentStreamID.compareAndSet(streamID, 0);
     }
     //
+    /** 获取第一个Block */
+    public Block firstBlock() throws IOException {
+        this.ioSeekTo(0);
+        return this.nextBlock();
+    }
+    //
     /** 获取用于表示文件尾的Block，基于这个 Block 进行写会以追加模式写入 */
-    public Block endBlock() throws IOException {
+    public Block eofBlock() throws IOException {
         long endPosition = this.fileSize();
         return new Block(endPosition, 0, -1, true, true);
     }
@@ -98,7 +110,7 @@ public class BlockFileAdapter {
             }
         }
         // .eof as Free Block
-        return this.endBlock();
+        return this.eofBlock();
     }
     //
     /** 当前 Block 每一次调用 nextBlock 都会重置 curentBlock 为最新的 */
@@ -322,6 +334,17 @@ public class BlockFileAdapter {
         throw new IOException("getOutputStream failed.");
     }
     //
+    /** 获取一个nio的输入输出管道。 */
+    public BlockChannel getBlockChannel(Block block) throws IOException {
+        long streamID = System.currentTimeMillis();
+        if (this.curentStreamID.compareAndSet(0, streamID)) {
+            NioBlockChannel outStream = new NioBlockChannel(streamID, block);
+            outStream.reset();
+            return outStream;
+        }
+        throw new IOException("getOutputStream failed.");
+    }
+    //
     //
     /** -- */
     private class BlockOutputStream extends OutputStream {
@@ -476,7 +499,74 @@ public class BlockFileAdapter {
             return true;
         }
     }
-    //
+    /** --*/
+    private class NioBlockChannel extends BlockChannel {
+        private long    streamID    = 0;
+        private boolean isClose     = false;
+        private Block   block       = null;
+        private long    readerIndex = 0;
+        private long    writerIndex = 0;
+        public NioBlockChannel(long streamID, Block block) {
+            this.streamID = streamID;
+            this.block = block;
+        }
+        @Override
+        public int read(ByteBuffer dst) throws IOException {
+            checkStreamClose(isClose, streamID);
+            //
+            // .还可以读数据数
+            long canReadSize = this.block.getBlockSize() - readerIndex;
+            // .期待 Buffer 的 Limit 值
+            long expectLimit = dst.position() + canReadSize;
+            // .Buffer 真实还可以读取的字节数
+            int realMaxReadSize = dst.capacity() - dst.position();
+            //
+            if (expectLimit >= realMaxReadSize) {
+                expectLimit = realMaxReadSize + dst.position();
+            }
+            //
+            // .调整预期读取最大字节数
+            dst.limit((int) expectLimit);
+            //
+            int read = ioReadToByteBuffer(dst);
+            this.readerIndex += read;
+            return read;
+        }
+        @Override
+        public int write(ByteBuffer src) throws IOException {
+            checkStreamClose(isClose, streamID);
+            //
+            // .如果写入的数据过多那么抛异常（eof类型block 无上限）
+            int expectWrite = src.capacity() - src.position();
+            if (!this.block.isEof() && expectWrite > (this.block.getBlockSize() - writerIndex)) {
+                throw new IndexOutOfBoundsException("Too much data can be written to.");
+            }
+            //
+            try {
+                return ioWriteToByteBuffer(src);
+            } finally {
+                if (src.isDirect() && src instanceof DirectBuffer) {
+                    Cleaner cleaner = ((DirectBuffer) src).cleaner();
+                    if (cleaner != null) {
+                        cleaner.clean();
+                    }
+                }
+            }
+        }
+        public void reset() throws IOException {
+            checkStreamClose(isClose, streamID);
+            fileChannel.position(block.getPosition() + Block.HEAD_LENGTH); //跳过 Block Head
+        }
+        @Override
+        public boolean isOpen() {
+            return fileChannel.isOpen();
+        }
+        @Override
+        public void close() throws IOException {
+            this.isClose = true;
+            releaseStream(this.streamID);
+        }
+    }
     //
     private void checkStreamClose(boolean isClose, long streamID) throws IOException {
         // .关闭状态
@@ -531,9 +621,15 @@ public class BlockFileAdapter {
     private void ioReadWrite(byte b[], int off, int len) throws IOException {
         randomAccessFile.write(b, off, len);
     }
+    private int ioReadToByteBuffer(ByteBuffer dst) throws IOException {
+        return this.fileChannel.read(dst);
+    }
     private void ioWriteHeader(long blockSize, long dataSize) throws IOException {
         randomAccessFile.writeLong(blockSize);
         randomAccessFile.writeLong(dataSize);
+    }
+    private int ioWriteToByteBuffer(ByteBuffer dst) throws IOException {
+        return this.fileChannel.write(dst);
     }
     private void ioExtendSize(long addSize) throws IOException {
         randomAccessFile.setLength(randomAccessFile.length() + addSize);
