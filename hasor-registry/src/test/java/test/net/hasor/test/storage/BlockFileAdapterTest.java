@@ -1,17 +1,19 @@
 package test.net.hasor.test.storage;
-import net.hasor.registry.storage.Block;
-import net.hasor.registry.storage.BlockFileAdapter;
+import net.hasor.registry.storage.block.Block;
+import net.hasor.registry.storage.block.BlockChannel;
+import net.hasor.registry.storage.block.BlockFileAdapter;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.util.Random;
 //
 //
 public class BlockFileAdapterTest {
     //
-    private static int  emptyBlock = 3;
-    private static File FILE       = new File("myfile.dat");
+    private static int    emptyBlock = 3;
+    private static File   FILE       = new File("myfile.dat");
     private static byte[] tempData;
 
     static {
@@ -44,7 +46,7 @@ public class BlockFileAdapterTest {
         adapter.close();
     }
     private void writeItem(boolean delete, int dataSize, BlockFileAdapter adapter) throws IOException {
-        Block block = adapter.endBlock();
+        Block block = adapter.eofBlock();
         OutputStream outStream = adapter.getOutputStream(block);
         while (dataSize > 0) {
             //
@@ -224,6 +226,157 @@ public class BlockFileAdapterTest {
         adapter.close();
     }
     //
+    /** 使用 nio 读取数据( Buffer超过数据的总大小) */
+    @Test
+    public void testNioRead_BigBuffer() throws IOException {
+        BlockFileAdapter adapter = new BlockFileAdapter(FILE);
+        // .写入一段小数据
+        Block eofBlock = adapter.eofBlock();
+        OutputStream outputStream = adapter.getOutputStream(eofBlock);
+        outputStream.write("abcdefg".getBytes());
+        outputStream.flush();
+        outputStream.close();
+        //
+        // .构造一个超大的 Buffer
+        Block reloadBlock = adapter.findBlock(eofBlock);
+        ByteBuffer byteBuffer = ByteBuffer.allocate((int) (reloadBlock.getBlockSize() + 100));
+        // .使用超大的 buffer 用 nio 方式读取数据
+        BlockChannel channel = adapter.getBlockChannel(reloadBlock);
+        int read = channel.read(byteBuffer);
+        //
+        // .读出来的数据扔到 bytes里
+        byte[] datas = new byte[read];
+        byteBuffer.flip();
+        byteBuffer.get(datas);
+        //
+        System.out.println("blockDataSize = " + reloadBlock.getDataSize() + " ,dataLength =" + new String(datas));
+        //
+        adapter.close();
+    }
+    //
+    /** 使用 nio 读取数据( Buffer超过数据的总大小，Buffer 中有余量数据) */
+    @Test
+    public void testNioRead_BigBuffer2() throws IOException {
+        BlockFileAdapter adapter = new BlockFileAdapter(FILE);
+        // .写入一段小数据
+        Block eofBlock = adapter.eofBlock();
+        OutputStream outputStream = adapter.getOutputStream(eofBlock);
+        outputStream.write("abcdefg".getBytes());
+        outputStream.flush();
+        outputStream.close();
+        //
+        // .构造一个超大的 Buffer
+        Block reloadBlock = adapter.findBlock(eofBlock);
+        ByteBuffer byteBuffer = ByteBuffer.allocate((int) (reloadBlock.getBlockSize() + 100));
+        byteBuffer.put("12345".getBytes());
+        // .使用超大的 buffer 用 nio 方式读取数据
+        BlockChannel channel = adapter.getBlockChannel(reloadBlock);
+        int read = channel.read(byteBuffer);
+        //
+        // .读出来的数据扔到 bytes里
+        byte[] datas = new byte[byteBuffer.position()];
+        byteBuffer.flip();
+        byteBuffer.get(datas);
+        //
+        System.out.println("blockDataSize = " + reloadBlock.getDataSize() + " ,dataLength =" + new String(datas));
+        //
+        adapter.close();
+    }
+    //
+    /** 使用 nio 读取数据( Buffer 比较小需要多次读) */
+    @Test
+    public void testNioRead_SmallBuffer() throws IOException {
+        BlockFileAdapter adapter = new BlockFileAdapter(FILE);
+        // .写入一段小数据
+        Block eofBlock = adapter.eofBlock();
+        OutputStream outputStream = adapter.getOutputStream(eofBlock);
+        outputStream.write("abcdefg".getBytes());
+        outputStream.flush();
+        outputStream.close();
+        //
+        // .构造一个超小 Buffer
+        ByteBuffer byteBuffer = ByteBuffer.allocate(2);
+        Block reloadBlock = adapter.findBlock(eofBlock);
+        BlockChannel channel = adapter.getBlockChannel(reloadBlock);
+        //
+        ByteArrayOutputStream temp = new ByteArrayOutputStream();// 临时存储区
+        int read = -1;
+        while ((read = channel.read(byteBuffer)) > 0) {
+            byte[] datas = new byte[byteBuffer.position()];
+            byteBuffer.flip();
+            byteBuffer.get(datas);
+            temp.write(datas);
+            byteBuffer.clear();
+        }
+        //
+        System.out.println("blockDataSize = " + reloadBlock.getDataSize() + " ,dataLength =" + new String(temp.toByteArray()));
+        //
+        adapter.close();
+    }
+    //
+    /** 使用 nio 读取数据( Buffer 比较小需要多次读,每次读的时候，Buffer里都写一个标记) */
+    @Test
+    public void testNioRead_SmallBuffer2() throws IOException {
+        BlockFileAdapter adapter = new BlockFileAdapter(FILE);
+        // .写入一段小数据
+        Block eofBlock = adapter.eofBlock();
+        OutputStream outputStream = adapter.getOutputStream(eofBlock);
+        outputStream.write("abcdefg".getBytes());
+        outputStream.flush();
+        outputStream.close();
+        //
+        // .构造一个超小 Buffer
+        ByteBuffer byteBuffer = ByteBuffer.allocate(2);
+        Block reloadBlock = adapter.findBlock(eofBlock);
+        BlockChannel channel = adapter.getBlockChannel(reloadBlock);
+        //
+        ByteArrayOutputStream temp = new ByteArrayOutputStream();// 临时存储区
+        int read = -1;
+        while ((read = channel.read(byteBuffer)) > 0) {
+            byte[] datas = new byte[byteBuffer.position()];
+            byteBuffer.flip();
+            byteBuffer.get(datas);
+            temp.write(datas);
+            byteBuffer.clear();
+            byteBuffer.put("-".getBytes());
+        }
+        //
+        System.out.println("blockDataSize = " + reloadBlock.getDataSize() + " ,dataLength =" + new String(temp.toByteArray()));
+        //
+        adapter.close();
+    }
+    //
+    /** 使用 nio 写数据（追加） */
+    @Test
+    public void testNioWriteRead_BigBuffer() throws IOException {
+        BlockFileAdapter adapter = new BlockFileAdapter(FILE);
+        // .写入一段小数据
+        Block eofBlock = adapter.eofBlock();
+        BlockChannel channel = adapter.getBlockChannel(eofBlock);
+        channel.write(ByteBuffer.wrap("abcdefg".getBytes()));
+        channel.close();
+        //
+        // .读取 Block
+        byte[] datas = readData(eofBlock, adapter);
+        System.out.println("blockDataSize = " + new String(datas));
+        //
+        adapter.close();
+    }
+    private byte[] readData(Block block, BlockFileAdapter adapter) throws IOException {
+        // .读取 Block
+        Block reloadBlock = adapter.findBlock(block);
+        ByteBuffer byteBuffer = ByteBuffer.allocate((int) (reloadBlock.getBlockSize() + 100));
+        // .使用超大的 buffer 用 nio 方式读取数据
+        BlockChannel channel = adapter.getBlockChannel(reloadBlock);
+        int read = channel.read(byteBuffer);
+        //
+        // .读出来的数据扔到 bytes里
+        byte[] datas = new byte[read];
+        byteBuffer.flip();
+        byteBuffer.get(datas);
+        return datas;
+    }
+    //
     // --------------------------------------------------------------------------------------------
     //
     /** 随机删除一个 Block */
@@ -302,7 +455,7 @@ public class BlockFileAdapterTest {
         iteratorlocks();
         //
         BlockFileAdapter adapter = new BlockFileAdapter(FILE);
-        Block endBlock = adapter.endBlock();
+        Block endBlock = adapter.eofBlock();
         System.out.println("endBlock = " + endBlock);
         //
         OutputStream outputStream = adapter.getOutputStream(endBlock);
@@ -319,7 +472,7 @@ public class BlockFileAdapterTest {
         System.out.println("blockDataSize = " + endBlock + " ,data=" + new String(stream.toByteArray()));
     }
     //
-    /** 分裂一个Block（被分裂的 Block 必须是 delete 状态） */
+    /** 分裂一个Block（被分裂的 Block 必须是 delete 状态，并且大于 16个字节） */
     @Test
     public void splitBlockTest() throws IOException {
         iteratorlocks();
@@ -327,9 +480,14 @@ public class BlockFileAdapterTest {
         Random random = new Random(System.currentTimeMillis());
         BlockFileAdapter adapter = new BlockFileAdapter(FILE);
         Block block = null;
-        while ((block = adapter.nextBlock()) != null) {
-            if (block.isInvalid()) {
+        while (true) {
+            block = adapter.nextBlock();
+            if (block == null) {
                 break;
+            }
+            if (block.getBlockSize() / 2 < 16) {
+                block = null;
+                continue;
             }
             if (random.nextBoolean()) {
                 adapter.deleteBlock(block);
@@ -358,6 +516,9 @@ public class BlockFileAdapterTest {
             if (block.isInvalid()) {
                 break;
             }
+            if (block.getBlockSize() / 2 < 16) {
+                continue;
+            }
             if (random.nextBoolean()) {
                 adapter.deleteBlock(block);
                 break;
@@ -375,7 +536,7 @@ public class BlockFileAdapterTest {
         //
         //
         adapter = new BlockFileAdapter(FILE);
-        adapter.mergeBlock(splitBlock);
+        adapter.halfSafeMergeBlock(splitBlock);
         adapter.close();
         //
         iteratorlocks();
