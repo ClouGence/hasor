@@ -25,24 +25,25 @@ import java.sql.Connection;
  */
 class CloseSuppressingInvocationHandler implements InvocationHandler {
     private final ConnectionHolder holder;
-    private       Connection       connection;
-    public CloseSuppressingInvocationHandler(ConnectionHolder holder) {
+    CloseSuppressingInvocationHandler(ConnectionHolder holder) {
         this.holder = holder;
         this.holder.requested();//ref++
     }
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-        this.connection = holder.getConnection();
+        Connection connection = holder.getConnection();
         //
-        if (method.getName().equals("getTargetConnection"))
-            return this.connection;
-        else if (method.getName().equals("getTargetSource"))
+        if (method.getName().equals("getTargetConnection")) {
+            return connection;
+        } else if (method.getName().equals("getTargetSource")) {
             return this.holder.getDataSource();
-        else if (method.getName().equals("equals"))
+        } else if (method.getName().equals("toString")) {
+            return this.holder.toString();
+        } else if (method.getName().equals("equals")) {
             return proxy == args[0];
-        else if (method.getName().equals("hashCode"))
+        } else if (method.getName().equals("hashCode")) {
             return System.identityHashCode(proxy);
-        else if (method.getName().equals("close")) {
+        } else if (method.getName().equals("close")) {
             if (holder.isOpen()) {
                 holder.released();//ref--
             }
@@ -50,7 +51,7 @@ class CloseSuppressingInvocationHandler implements InvocationHandler {
         }
         //
         try {
-            return method.invoke(this.connection, args);
+            return method.invoke(connection, args);
         } catch (InvocationTargetException ex) {
             throw ex.getTargetException();
         }

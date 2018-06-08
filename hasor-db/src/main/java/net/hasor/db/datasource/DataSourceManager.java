@@ -26,13 +26,10 @@ public class DataSourceManager {
     /**申请连接*/
     public static Connection genConnection(DataSource dataSource) {
         ConnectionHolder holder = genConnectionHolder(dataSource);
-        if (holder == null) {
-            throw new NullPointerException("genConnectionHolder. return null.");
-        }
         return newProxyConnection(holder);
     }
     /**申请{@link ConnectionHolder}*/
-    public static ConnectionHolder genConnectionHolder(DataSource dataSource) {
+    protected static ConnectionHolder genConnectionHolder(DataSource dataSource) {
         return new ConnectionHolder(dataSource);
     }
     //

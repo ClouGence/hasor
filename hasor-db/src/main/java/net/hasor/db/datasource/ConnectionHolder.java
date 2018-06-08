@@ -42,8 +42,6 @@ public class ConnectionHolder implements SavepointManager, ConnectionManager {
                 this.savepointCounter = 0;
                 this.savepointsSupported = null;
                 this.connection.close();
-            } catch (SQLException e) {
-                throw e;
             } finally {
                 this.connection = null;
             }
@@ -58,9 +56,7 @@ public class ConnectionHolder implements SavepointManager, ConnectionManager {
         return this.connection;
     }
     public boolean isOpen() {
-        if (this.referenceCount == 0)
-            return false;
-        return true;
+        return this.referenceCount != 0;
     }
     /**则表示当前数据库连接是否有被引用。*/
     public DataSource getDataSource() {
@@ -77,13 +73,13 @@ public class ConnectionHolder implements SavepointManager, ConnectionManager {
     /**设置事务状态*/
     public void setTransaction() throws SQLException {
         Connection conn = this.getConnection();
-        if (conn != null && conn.getAutoCommit() == true)
+        if (conn != null && conn.getAutoCommit())
             conn.setAutoCommit(false);
     }
     /**取消事务状态*/
     public void cancelTransaction() throws SQLException {
         Connection conn = this.getConnection();
-        if (conn != null && conn.getAutoCommit() == false)
+        if (conn != null && !conn.getAutoCommit())
             conn.setAutoCommit(true);
     }
     //
@@ -94,9 +90,9 @@ public class ConnectionHolder implements SavepointManager, ConnectionManager {
         if (conn == null)
             throw new SQLException("Connection is null.");
     }
-    public static final String SAVEPOINT_NAME_PREFIX = "SAVEPOINT_";
-    private             int    savepointCounter      = 0;
-    private Boolean savepointsSupported;
+    private static final String  SAVEPOINT_NAME_PREFIX = "SAVEPOINT_";
+    private              int     savepointCounter      = 0;
+    private              Boolean savepointsSupported;
     /**返回 JDBC 驱动是否支持保存点。*/
     public boolean supportsSavepoints() throws SQLException {
         Connection conn = this.getConnection();
@@ -135,5 +131,4 @@ public class ConnectionHolder implements SavepointManager, ConnectionManager {
         this.checkConn(conn);
         return conn.getMetaData().supportsSavepoints();
     }
-    ;
 }

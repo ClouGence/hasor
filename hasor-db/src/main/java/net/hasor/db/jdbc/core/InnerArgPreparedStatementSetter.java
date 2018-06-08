@@ -24,7 +24,7 @@ import java.sql.SQLException;
  */
 class InnerArgPreparedStatementSetter implements PreparedStatementSetter, ParameterDisposer {
     private final Object[] args;
-    public InnerArgPreparedStatementSetter(final Object[] args) {
+    InnerArgPreparedStatementSetter(final Object[] args) {
         this.args = args;
     }
     @Override

@@ -123,7 +123,7 @@ public abstract class TemplateAppContext implements AppContext {
             return null;
         }
         try {
-            return (T) this.getContainer().justInject(object, beanType, this);
+            return this.getContainer().justInject(object, beanType, this);
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
@@ -160,12 +160,11 @@ public abstract class TemplateAppContext implements AppContext {
             return null;
         }
         final AppContext appContext = this;
-        Provider<T> provider = new Provider<T>() {
+        return new Provider<T>() {
             public T get() {
                 return getBeanBuilder().getInstance(info, appContext);
             }
         };
-        return provider;
     }
     ;
     //

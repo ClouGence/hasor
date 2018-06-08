@@ -54,10 +54,10 @@ class InnerCallableStatementGetter {
         if (String.class.equals(requiredType)) {
             value = cs.getString(index);
         } else if (Integer.class.equals(requiredType)) {
-            value = Integer.valueOf(cs.getInt(index));
+            value = cs.getInt(index);
             wasNullCheck = true;
         } else if (Double.class.equals(requiredType)) {
-            value = new Double(cs.getDouble(index));
+            value = cs.getDouble(index);
             wasNullCheck = true;
         } else if (Boolean.class.equals(requiredType)) {
             value = cs.getBoolean(index) ? Boolean.TRUE : Boolean.FALSE;
@@ -71,19 +71,19 @@ class InnerCallableStatementGetter {
         } else if (java.util.Date.class.equals(requiredType)) {
             value = new java.util.Date(cs.getTimestamp(index).getTime());
         } else if (Byte.class.equals(requiredType)) {
-            value = Byte.valueOf(cs.getByte(index));
+            value = cs.getByte(index);
             wasNullCheck = true;
         } else if (Short.class.equals(requiredType)) {
-            value = Short.valueOf(cs.getShort(index));
+            value = cs.getShort(index);
             wasNullCheck = true;
         } else if (Long.class.equals(requiredType)) {
-            value = Long.valueOf(cs.getLong(index));
+            value = cs.getLong(index);
             wasNullCheck = true;
         } else if (Float.class.equals(requiredType)) {
-            value = new Float(cs.getFloat(index));
+            value = cs.getFloat(index);
             wasNullCheck = true;
         } else if (Number.class.equals(requiredType)) {
-            value = new Double(cs.getDouble(index));
+            value = cs.getDouble(index);
             wasNullCheck = true;
         } else if (byte[].class.equals(requiredType)) {
             value = cs.getBytes(index);
@@ -99,8 +99,7 @@ class InnerCallableStatementGetter {
             // Some unknown type desired -> rely on getObject.
             value = cs.getObject(index);
         }
-        // Perform was-null check if demanded (for results that the
-        // JDBC driver returns as primitives).
+        // Perform was-null check if demanded (for results that the JDBC driver returns as primitives).
         if (wasNullCheck && value != null && cs.wasNull()) {
             value = null;
         }
