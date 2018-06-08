@@ -6,6 +6,7 @@ Hasor-Core v3.2.3 (2018-04-?)
 ------------------------------------
 **新增**
     - web 新增：hasor-root-module、hasor-hconfig-name、hasor-env-properties 三个 web.xml 的属性配置。
+    - EventContext 接口增加异步任务方法，从现在开始可以使用异步任务了。
 **改进**
     - 当使用 maven-shade-plugin 进行 maven 打包时由于 static-config.xml 无法通过文件追加的方式进行简单合并，因此老版本 Hasor 的工程无法使用 maven-shade-plugin 打包。
       3.2.3版本之后修改了 static-config.xml 发现机制，改为通过 /META-INF/hasor.schemas 配置文件进行发现。
@@ -14,6 +15,7 @@ Hasor-Core v3.2.3 (2018-04-?)
     - rsf的内置 hessian 序列化和反序列化配置文件，路径改到 ‘META-INF/hasor-framework/rsf-hessian/’ 下面。以避免和 hessian jar包冲突。
     - rsf Gateway 从 rsf 基础框架中删除后面会独立成一个框架。
     - env.config 配置文件名，更名为 hconfig.properties。
+    - FutureCallback接口的cancelled 方法单独拆出一个接口。
 **修复**
     - fix 执行查询结果返回为空时，AbstractRowMapper.convertValueToRequiredType 方法报 NPE 的 Bug。
     - fix JdbcTemplate 类中 requiredSingleResult 当执行结果为空时报空指针的异常。

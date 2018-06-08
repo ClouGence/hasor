@@ -1,9 +1,7 @@
 --------------------
-概述
+快速上手
 --------------------
 .. toctree::
     :maxdepth: 3
 
-    overview/about_me
-    overview/tks
-    overview/quick_start
+    02_quick/quick_start
