@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
-import java.lang.annotation.*;
+package net.test.hasor.core.pojos;
+import net.hasor.core.Inject;
+import net.hasor.core.InjectMembers;
 /**
- * 依赖注入，注入settings配置数据。请注意{@link InjectMembers}接口方式与注解方式互斥，且接口方式优先于注解方式。
- * @version : 2016年07月18日
+ * 通过{@link InjectMembers}接口进行注入。
+ * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD, ElementType.PARAMETER })
-@Documented
-public @interface InjectSettings {
-    /**配置Key*/
-    public String value();
-
-    /**默认值*/
-    public String defaultValue() default "";
+public class CustomBean2 {
+    public InitBean iocBean = null; // <-因为实现了InjectMembers接口，因此@Inject注解将会失效。
+    public CustomBean2(@Inject() InitBean iocBean) {
+        this.iocBean = iocBean;
+    }
 }

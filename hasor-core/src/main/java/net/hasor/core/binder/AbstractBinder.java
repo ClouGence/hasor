@@ -160,12 +160,12 @@ public abstract class AbstractBinder implements ApiBinder {
     @Override
     public <T> BindInfo<T> getBindInfo(String bindID) {
         Hasor.assertIsNotNull(bindID, "bindID is null.");
-        return getBeanBuilder().findBindInfoByID(bindID);
+        return getBeanBuilder().findBindInfo(bindID);
     }
     @Override
     public <T> BindInfo<T> getBindInfo(Class<T> bindType) {
         Hasor.assertIsNotNull(bindType, "bindType is null.");
-        return getBeanBuilder().findBindInfoByType(bindType);
+        return getBeanBuilder().findBindInfo(null, bindType);
     }
     //
     /*------------------------------------------------------------------------------------Binding*/
@@ -278,23 +278,30 @@ public abstract class AbstractBinder implements ApiBinder {
             return this;
         }
         @Override
+        public InjectPropertyBindingBuilder<T> inject(String property, Class<?> valueType) {
+            this.typeBuilder.addInject(property, bindType(valueType).toInfo());
+            return this;
+        }
+        @Override
         public InjectConstructorBindingBuilder<T> injectValue(final int index, final Object value) {
             return this.inject(index, new InstanceProvider<Object>(value));
         }
         @Override
         public InjectConstructorBindingBuilder<T> inject(final int index, final BindInfo<?> valueInfo) {
-            if (index >= this.initParams.length) {
-                throw new IndexOutOfBoundsException("index out of bounds.");
-            }
+            checkIndex(this.initParams, index);
             this.typeBuilder.setConstructor(index, this.initParams[index], valueInfo);
             return this;
         }
         @Override
         public InjectConstructorBindingBuilder<T> inject(final int index, final Provider<?> valueProvider) {
-            if (index >= this.initParams.length) {
-                throw new IndexOutOfBoundsException("index out of bounds.");
-            }
+            checkIndex(this.initParams, index);
             this.typeBuilder.setConstructor(index, this.initParams[index], valueProvider);
+            return this;
+        }
+        @Override
+        public InjectConstructorBindingBuilder<T> inject(int index, Class<?> valueType) {
+            checkIndex(this.initParams, index);
+            this.typeBuilder.setConstructor(index, this.initParams[index], bindType(valueType).toInfo());
             return this;
         }
         @Override
@@ -303,4 +310,9 @@ public abstract class AbstractBinder implements ApiBinder {
         }
     }
     //
+    private void checkIndex(Class<?>[] length, int index) {
+        if (index >= length.length) {
+            throw new IndexOutOfBoundsException("index out of bounds.");
+        }
+    }
 }

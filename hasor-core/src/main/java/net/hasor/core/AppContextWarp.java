@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import java.lang.reflect.Constructor;
 import java.util.List;
 /**
  * Hasor的核心接口，它为应用程序提供了一个统一的配置界面和运行环境。
@@ -86,6 +87,10 @@ public class AppContextWarp implements AppContext {
         return this.getAppContext().getBindInfo(bindType);
     }
     @Override
+    public <T> BindInfo<T> getBindInfo(Constructor<T> bindType) {
+        return this.getAppContext().getBindInfo(bindType);
+    }
+    @Override
     public <T> T getInstance(String bindID) {
         return this.getAppContext().getInstance(bindID);
     }
@@ -98,8 +103,16 @@ public class AppContextWarp implements AppContext {
         return this.getAppContext().justInject(object, beanType);
     }
     @Override
+    public <T> T justInject(T object, BindInfo<?> bindInfo) {
+        return this.getAppContext().justInject(object, bindInfo);
+    }
+    @Override
     public <T> T getInstance(Class<T> targetClass) {
         return this.getAppContext().getInstance(targetClass);
+    }
+    @Override
+    public <T> T getInstance(Constructor<T> bindType) {
+        return this.getAppContext().getInstance(bindType);
     }
     @Override
     public <T> T getInstance(BindInfo<T> info) {
@@ -112,6 +125,10 @@ public class AppContextWarp implements AppContext {
     @Override
     public <T> Provider<T> getProvider(Class<T> targetClass) {
         return this.getAppContext().getProvider(targetClass);
+    }
+    @Override
+    public <T> Provider<T> getProvider(Constructor<T> bindType) {
+        return this.getAppContext().getProvider(bindType);
     }
     @Override
     public <T> Provider<T> getProvider(BindInfo<T> info) {
@@ -140,5 +157,9 @@ public class AppContextWarp implements AppContext {
     @Override
     public <T> BindInfo<T> findBindingRegister(String withName, Class<T> bindType) {
         return this.getAppContext().findBindingRegister(withName, bindType);
+    }
+    @Override
+    public <T> BindInfo<T> findBindingRegister(String withName, Constructor<T> bindConstructor) {
+        return this.getAppContext().findBindingRegister(withName, bindConstructor);
     }
 }

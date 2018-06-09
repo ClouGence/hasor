@@ -19,6 +19,8 @@ import net.hasor.core.context.ContainerCreater;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
+import net.hasor.core.provider.SingleProvider;
+import net.hasor.core.provider.ThreadSingleProvider;
 import net.hasor.utils.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,13 +38,13 @@ import static net.hasor.core.AppContext.ContextEvent_Started;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class Hasor extends HashMap<String, String> {
-    protected static Logger logger = LoggerFactory.getLogger(Hasor.class);
-    private final Object context;
-    private       Object                  mainSettings    = TemplateAppContext.DefaultSettings;
-    private final List<Module>            moduleList      = new ArrayList<Module>();
-    private final HashMap<String, String> frameworkConfig = new HashMap<String, String>();
-    private ClassLoader      loader;
-    private ContainerCreater creater;
+    protected static Logger                  logger          = LoggerFactory.getLogger(Hasor.class);
+    private final    Object                  context;
+    private          Object                  mainSettings    = TemplateAppContext.DefaultSettings;
+    private final    List<Module>            moduleList      = new ArrayList<Module>();
+    private final    HashMap<String, String> frameworkConfig = new HashMap<String, String>();
+    private          ClassLoader             loader;
+    private          ContainerCreater        creater;
     //
     protected Hasor(Object context) {
         this.context = context;
@@ -95,6 +97,34 @@ public class Hasor extends HashMap<String, String> {
         }
         return this;
     }
+    //
+    private static Provider<AppContext> singletonHasor = null;
+    public AppContext asGlobalSingleton() {
+        singletonHasor = new SingleProvider<AppContext>(new Provider<AppContext>() {
+            @Override
+            public AppContext get() {
+                return Hasor.this.build();
+            }
+        });
+        return singletonHasor.get();
+    }
+    public AppContext asThreadSingleton() {
+        singletonHasor = new ThreadSingleProvider<AppContext>(new Provider<AppContext>() {
+            @Override
+            public AppContext get() {
+                return Hasor.this.build();
+            }
+        });
+        return singletonHasor.get();
+    }
+    public static AppContext localAppContext() {
+        if (singletonHasor != null) {
+            return singletonHasor.get();
+        }
+        return null;
+    }
+    //
+    //
     /**用简易的方式创建{@link AppContext}容器。*/
     public AppContext build(Module... modules) {
         return this.addModules(modules).build();

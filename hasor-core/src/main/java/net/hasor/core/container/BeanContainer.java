@@ -20,10 +20,12 @@ import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.NotifyData;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.scope.SingletonScope;
+import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,12 +51,8 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
     //
     /*-----------------------------------------------------------------------------------BindInfo*/
     /**根据ID查找{@link BindInfo}*/
-    public <T> BindInfo<T> findBindInfoByID(String infoID) {
+    public <T> BindInfo<T> findBindInfo(String infoID) {
         return (BindInfo<T>) this.idDataSource.get(infoID);
-    }
-    public <T> BindInfo<T> findBindInfoByType(Class<T> bindType) {
-        Hasor.assertIsNotNull(bindType, "bindType is null.");
-        return findBindInfo(null, bindType);
     }
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
     public <T> BindInfo<T> findBindInfo(final String withName, final Class<T> bindType) {
@@ -136,27 +134,36 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
         return adapter;
     }
     @Override
-    protected <T> T createObject(final Class<T> targetType, final BindInfo<T> bindInfo, final AppContext appContext) {
+    protected <T> T createObject(final Class<T> targetType, final Constructor<T> referConstructor, //
+            final BindInfo<T> bindInfo, final AppContext appContext) {
         boolean isSingleton = testSingleton(targetType, bindInfo, appContext.getEnvironment().getSettings());
-        //
-        if (isSingleton) {
-            Object key = (bindInfo != null) ? bindInfo : targetType;
-            Provider<Scope> singleton = Hasor.assertIsNotNull(this.scopeMapping.get(ScopManager.SINGLETON_SCOPE));
-            return singleton.get().scope(key, new Provider<T>() {
-                public T get() {
-                    return callSuperCreateObject(targetType, bindInfo, appContext);
-                }
-            }).get();
-        } else {
-            return callSuperCreateObject(targetType, bindInfo, appContext);
+        if (!isSingleton) {
+            try {
+                return super.createObject(targetType, referConstructor, bindInfo, appContext);
+            } catch (Throwable e) {
+                throw ExceptionUtils.toRuntimeException(e);
+            }
         }
+        // 单例的
+        Object key = (bindInfo != null) ? bindInfo : targetType;
+        Provider<Scope> singleton = Hasor.assertIsNotNull(this.scopeMapping.get(ScopManager.SINGLETON_SCOPE));
+        return singleton.get().scope(key, new Provider<T>() {
+            public T get() {
+                try {
+                    return BeanContainer.super.createObject(targetType, referConstructor, bindInfo, appContext);
+                } catch (Throwable e) {
+                    throw ExceptionUtils.toRuntimeException(e);
+                }
+            }
+        }).get();
     }
     /** 仅执行依赖注入 */
     public <T> T justInject(T object, Class<?> beanType, AppContext appContext) throws Throwable {
         return super.doInject(object, null, appContext, beanType);
     }
-    private <T> T callSuperCreateObject(Class<T> targetType, BindInfo<T> bindInfo, AppContext appContext) {
-        return super.createObject(targetType, bindInfo, appContext);
+    /** 仅执行依赖注入 */
+    public <T> T justInject(T object, BindInfo<?> bindInfo, AppContext appContext) throws Throwable {
+        return super.doInject(object, bindInfo, appContext, null);
     }
     //
     /*-------------------------------------------------------------------------------------------*/

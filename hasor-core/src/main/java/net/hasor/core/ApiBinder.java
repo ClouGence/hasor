@@ -298,6 +298,14 @@ public interface ApiBinder {
          * @return 返回 - {@link InjectConstructorBindingBuilder}。
          */
         public InjectConstructorBindingBuilder<T> inject(int index, Provider<?> valueProvider);
+
+        /**
+         * 设置构造方法注入属性。
+         * @param index 构造方法参数索引位置。
+         * @param valueType 要注入的参数来自于其它绑定。
+         * @return 返回 - {@link InjectConstructorBindingBuilder}。
+         */
+        public InjectConstructorBindingBuilder<T> inject(int index, Class<?> valueType);
     }
     /**属性依赖注入*/
     public interface InjectPropertyBindingBuilder<T> extends LifeBindingBuilder<T> {
@@ -324,6 +332,14 @@ public interface ApiBinder {
          * @return 返回属性注入接口，以继续其它属性注入。 - {@link InjectPropertyBindingBuilder}。
          */
         public InjectPropertyBindingBuilder<T> inject(String property, Provider<?> valueProvider);
+
+        /**
+         * 工厂方式注入Bean。
+         * @param property 被注入Bean的属性名
+         * @param valueType 属性值提供者。
+         * @return 返回属性注入接口，以继续其它属性注入。 - {@link InjectPropertyBindingBuilder}。
+         */
+        public InjectPropertyBindingBuilder<T> inject(String property, Class<?> valueType);
     }
     /**负责启动之后的生命周期方法映射。*/
     public interface LifeBindingBuilder<T> extends ScopedBindingBuilder<T> {

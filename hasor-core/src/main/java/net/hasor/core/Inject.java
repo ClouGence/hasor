@@ -27,7 +27,7 @@ import java.lang.annotation.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.FIELD })
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Documented
 public @interface Inject {
     /**如果同类型有多个注册可以使用该值进行区分。*/

@@ -24,6 +24,7 @@ import net.hasor.utils.convert.ConverterUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.Map.Entry;
@@ -34,11 +35,35 @@ import java.util.Map.Entry;
  */
 public abstract class TemplateBeanBuilder implements BeanBuilder {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    /**创建一个AbstractBindInfoProviderAdapter*/
+    //
     public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType, Class<?> binderSource) {
         return new DefaultBindInfoProviderAdapter<T>(bindType);
     }
-    /** 通过{@link BindInfo}创建Bean。 */
+    //
+    //
+    //
+    public <T> T getInstance(Class<T> targetType, AppContext appContext) {
+        if (targetType == null) {
+            return null;
+        }
+        try {
+            return createObject(targetType, null, null, appContext);
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
+    }
+    //
+    public <T> T getInstance(Constructor<T> targetConstructor, AppContext appContext) {
+        if (targetConstructor == null) {
+            return null;
+        }
+        try {
+            return createObject(targetConstructor.getDeclaringClass(), targetConstructor, null, appContext);
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
+    }
+    //
     public <T> T getInstance(final BindInfo<T> bindInfo, final AppContext appContext) {
         Provider<? extends T> instanceProvider = null;
         Provider<Scope> scopeProvider = null;
@@ -62,15 +87,17 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
                     if (superType != null) {
                         targetType = superType;
                     }
-                    T targetBean = createObject(targetType, bindInfo, appContext);
-                    return targetBean;
+                    try {
+                        return createObject(targetType, null, bindInfo, appContext);
+                    } catch (Throwable e) {
+                        throw ExceptionUtils.toRuntimeException(e);
+                    }
                 }
             };
         } else if (instanceProvider == null) {
             instanceProvider = new Provider<T>() {
                 public T get() {
-                    T targetBean = getDefaultInstance(bindInfo.getBindType(), appContext);
-                    return targetBean;
+                    return getInstance(bindInfo.getBindType(), appContext);
                 }
             };
         }
@@ -80,87 +107,126 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         }
         return instanceProvider.get();
     }
-    /**创建一个未绑定过的类型*/
-    public <T> T getDefaultInstance(final Class<T> oriType, AppContext appContext) {
-        if (oriType == null) {
+    //
+    //
+    //
+    protected <T> Class<T> findImplClass(final Class<?> notSureType) {
+        Class<?> tmpType = notSureType;
+        ImplBy implBy = null;
+        do {
+            implBy = tmpType.getAnnotation(ImplBy.class);
+            if (implBy != null) {
+                tmpType = implBy.value();
+            }
+            if (tmpType == notSureType) {
+                break;
+            }
+        } while (implBy != null);
+        return (Class<T>) tmpType;
+    }
+    protected <T> T createObject(Class<T> targetType, Constructor<T> referConstructor, BindInfo<T> bindInfo, AppContext appContext) throws Throwable {
+        //
+        // .targetType也许只是一个接口或者抽象类，找到真正创建的那个类型
+        targetType = findImplClass(targetType);
+        //
+        // .check
+        int modifiers = targetType.getModifiers();
+        if (targetType.isInterface() || targetType.isEnum() || (modifiers == (modifiers | Modifier.ABSTRACT))) {
             return null;
         }
-        T targetBean = createObject(oriType, null, appContext);
-        return targetBean;
-    }
-    //
-    //
-    protected <T> Class<T> findImplClass(Class<T> notSureType) {
-        ImplBy implBy = notSureType.getAnnotation(ImplBy.class);
-        if (implBy == null) {
-            return notSureType;
+        if (targetType.isPrimitive()) {
+            return (T) BeanUtils.getDefaultValue(targetType);
         }
-        Class<?> implClass = implBy.value();
-        if (implClass == notSureType) {
-            return notSureType;
+        if (targetType.isArray()) {
+            Class<?> comType = targetType.getComponentType();
+            return (T) Array.newInstance(comType, 0);
         }
-        Class<?> implLinkClass = findImplClass(implClass);
-        return (Class<T>) ((implClass == implLinkClass) ? implClass : implLinkClass);
-    }
-    /**创建对象*/
-    protected <T> T createObject(Class<T> targetType, BindInfo<T> bindInfo, AppContext appContext) {
-        try {
+        //
+        // .准备Aop
+        List<BindInfo<AopBindInfoAdapter>> aopBindList = appContext.findBindingRegister(AopBindInfoAdapter.class);
+        List<AopBindInfoAdapter> aopList = new ArrayList<AopBindInfoAdapter>();
+        for (BindInfo<AopBindInfoAdapter> info : aopBindList) {
+            aopList.add(this.getInstance(info, appContext));
+        }
+        //
+        // .动态代理
+        ClassLoader rootLoader = appContext.getClassLoader();
+        Class<?> newType = ClassEngine.buildType(targetType, rootLoader, aopList, appContext);
+        //
+        // .确定要调用的构造方法 & 构造入参
+        Constructor<?> constructor = null;
+        Object[] paramObjects = null;
+        if (bindInfo instanceof DefaultBindInfoProviderAdapter) {
             //
-            //1.特殊类型创建处理。
-            targetType = findImplClass(targetType);
-            int modifiers = targetType.getModifiers();
-            if (targetType.isInterface() || targetType.isEnum() || (modifiers == (modifiers | Modifier.ABSTRACT))) {
-                return null;
-            }
-            if (targetType.isPrimitive()) {
-                return (T) BeanUtils.getDefaultValue(targetType);
-            }
-            if (targetType.isArray()) {
-                Class<?> comType = targetType.getComponentType();
-                return (T) Array.newInstance(comType, 0);
-            }
+            DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
+            constructor = defBinder.getConstructor(newType, appContext);
             //
-            //2.准备Aop
-            List<BindInfo<AopBindInfoAdapter>> aopBindList = appContext.findBindingRegister(AopBindInfoAdapter.class);
-            List<AopBindInfoAdapter> aopList = new ArrayList<AopBindInfoAdapter>();
-            for (BindInfo<AopBindInfoAdapter> info : aopBindList) {
-                aopList.add(this.getInstance(info, appContext));
+            Provider<?>[] paramProviders = defBinder.getConstructorParams(newType, appContext);
+            paramObjects = new Object[paramProviders.length];
+            for (int i = 0; i < paramProviders.length; i++) {
+                paramObjects[i] = paramProviders[i].get();
             }
+        } else {
             //
-            //3.动态代理
-            ClassLoader rootLoader = appContext.getClassLoader();
-            Class<?> newType = ClassEngine.buildType(targetType, rootLoader, aopList, appContext);
-            //
-            //4.确定要调用的构造方法。
-            Constructor<?> constructor = null;
-            Provider<?>[] paramProviders = null;
-            if (bindInfo != null && bindInfo instanceof DefaultBindInfoProviderAdapter) {
-                DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
-                constructor = defBinder.getConstructor(newType, appContext);
-                paramProviders = defBinder.getConstructorParams(newType, appContext);
+            Class<?>[] parameterTypes = null;
+            Annotation[][] parameterAnnos = null;
+            if (referConstructor != null) {
+                parameterTypes = referConstructor.getParameterTypes();
+                parameterAnnos = referConstructor.getParameterAnnotations();
+                constructor = newType.getConstructor(referConstructor.getParameterTypes());
             } else {
-                constructor = newType.getConstructor();
-                paramProviders = new Provider<?>[0];
+                constructor = newType.getConstructor(targetType.getConstructors()[0].getParameterTypes());
+                parameterTypes = constructor.getParameterTypes();
+                parameterAnnos = constructor.getParameterAnnotations();
             }
             //
-            //5.创建对象。
-            if (paramProviders == null || paramProviders.length == 0) {
-                T targetBean = (T) constructor.newInstance();
-                return doInject(targetBean, bindInfo, appContext, newType);
-            } else {
-                Object[] paramObjects = new Object[paramProviders.length];
-                for (int i = 0; i < paramProviders.length; i++) {
-                    paramObjects[i] = paramProviders[i].get();
+            paramObjects = new Object[parameterTypes.length];
+            for (int i = 0; i < parameterTypes.length; i++) {
+                Annotation[] annotations = parameterAnnos[i];
+                //
+                Inject inject = findAnnotation(Inject.class, annotations);
+                if (inject != null) {
+                    if (Type.ByName == inject.byType() && StringUtils.isNotBlank(inject.value())) {
+                        paramObjects[i] = appContext.findBindingBean(inject.value(), parameterTypes[i]);
+                    } else {
+                        paramObjects[i] = appContext.getInstance(parameterTypes[i]);
+                    }
+                    continue;
                 }
-                T targetBean = (T) constructor.newInstance(paramObjects);
-                return doInject(targetBean, bindInfo, appContext, newType);
+                InjectSettings injectSettings = findAnnotation(InjectSettings.class, annotations);
+                if (injectSettings != null) {
+                    paramObjects[i] = injSettings(appContext, injectSettings, parameterTypes[i]);
+                    continue;
+                }
+                paramObjects[i] = BeanUtils.getDefaultValue(parameterTypes[i]);
             }
-        } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
+        }
+        //
+        // .创建对象。
+        if (paramObjects.length == 0) {
+            T targetBean = (T) constructor.newInstance();
+            return doInject(targetBean, bindInfo, appContext, newType);
+        } else {
+            T targetBean = (T) constructor.newInstance(paramObjects);
+            return doInject(targetBean, bindInfo, appContext, newType);
         }
     }
+    private <T extends Annotation> T findAnnotation(Class<T> annoType, Annotation[] annotations) {
+        if (annotations == null || annotations.length == 0) {
+            return null;
+        }
+        for (Annotation anno : annotations) {
+            if (annoType.isAssignableFrom(annoType)) {
+                return (T) anno;
+            }
+        }
+        return null;
+    }
+    //
+    //
+    //
     /**执行依赖注入*/
-    protected <T> T doInject(T targetBean, BindInfo<T> bindInfo, AppContext appContext, Class<?> targetType) throws Throwable {
+    protected <T> T doInject(T targetBean, BindInfo<?> bindInfo, AppContext appContext, Class<?> targetType) throws Throwable {
         //1.Aware接口的执行
         if (bindInfo != null && targetBean instanceof BindInfoAware) {
             ((BindInfoAware) targetBean).setBindInfo(bindInfo);
@@ -181,7 +247,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         return targetBean;
     }
     /**/
-    private <T> void injectObject(T targetBean, BindInfo<T> bindInfo, AppContext appContext, Class<?> targetType) throws IllegalAccessException {
+    private <T> void injectObject(T targetBean, BindInfo<?> bindInfo, AppContext appContext, Class<?> targetType) throws IllegalAccessException {
         Set<String> injectFileds = new HashSet<String>();
         /*a.配置注入*/
         if (bindInfo != null && bindInfo instanceof DefaultBindInfoProviderAdapter) {
@@ -213,6 +279,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         List<Field> fieldList = BeanUtils.findALLFields(targetType);
         for (Field field : fieldList) {
             String name = field.getName();
+            field.getAnnotations();
             boolean hasAnno_1 = field.isAnnotationPresent(Inject.class);
             boolean hasAnno_2 = field.isAnnotationPresent(InjectSettings.class);
             //
@@ -231,7 +298,10 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             //
             boolean inj = injInject(targetBean, appContext, field);// @Inject
             if (!inj) {
-                injSettings(targetBean, appContext, field); // @InjectSettings
+                Object settingValue = injSettings(appContext, field.getAnnotation(InjectSettings.class), field.getDeclaringClass()); // @InjectSettings
+                if (settingValue != null) {
+                    field.set(targetBean, settingValue);
+                }
             }
             //
             injectFileds.add(field.getName());
@@ -263,34 +333,22 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         }
     }
     //
-    private <T> boolean injSettings(T targetBean, AppContext appContext, Field field) throws IllegalAccessException {
-        InjectSettings inject = field.getAnnotation(InjectSettings.class);
-        if (inject == null) {
-            return false;
+    private Object injSettings(AppContext appContext, InjectSettings injectSettings, Class<?> toType) throws IllegalAccessException {
+        if (injectSettings == null || StringUtils.isBlank(injectSettings.value())) {
+            return BeanUtils.getDefaultValue(toType);
         }
-        Object obj = null;
-        if (StringUtils.isBlank(inject.value())) {
-            return false;
+        String settingVar = injectSettings.value();
+        String settingValue = null;
+        if (settingVar.startsWith("${") && settingVar.endsWith("}")) {
+            settingVar = settingVar.substring(2, settingVar.length() - 1);
+            settingValue = appContext.getEnvironment().evalString("%" + settingVar + "%");
         } else {
-            String settingVar = inject.value();
-            String settingValue = null;
-            if (settingVar.startsWith("${") && settingVar.endsWith("}")) {
-                settingVar = settingVar.substring(2, settingVar.length() - 1);
-                settingValue = appContext.getEnvironment().evalString("%" + settingVar + "%");
-            } else {
-                settingValue = appContext.getEnvironment().getSettings().getString(inject.value(), inject.defaultValue());
-            }
-            obj = ConverterUtils.convert(settingValue, field.getType());
+            settingValue = appContext.getEnvironment().getSettings().getString(injectSettings.value(), injectSettings.defaultValue());
         }
-        if (obj != null) {
-            field.set(targetBean, obj);
-            return true;
-        } else {
-            return false;
-        }
+        return ConverterUtils.convert(settingValue, toType);
     }
     //
-    private <T> void initObject(T targetBean, BindInfo<T> bindInfo) throws Throwable {
+    private void initObject(Object targetBean, BindInfo<?> bindInfo) throws Throwable {
         try {
             Method initMethod = findInitMethod(targetBean.getClass(), bindInfo);
             //
@@ -308,7 +366,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
     public static Method findInitMethod(Class<?> targetBeanType, BindInfo<?> bindInfo) {
         Method initMethod = null;
         //a.注解形式（注解优先）
-        if (initMethod == null && targetBeanType != null) {
+        if (targetBeanType != null) {
             List<Method> methodList = BeanUtils.getMethods(targetBeanType);
             for (Method method : methodList) {
                 boolean hasAnno = method.isAnnotationPresent(Init.class);
@@ -319,7 +377,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             }
         }
         //b.可能存在的配置。
-        if (initMethod == null && bindInfo != null && bindInfo instanceof DefaultBindInfoProviderAdapter) {
+        if (initMethod == null && bindInfo instanceof DefaultBindInfoProviderAdapter) {
             DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
             initMethod = defBinder.getInitMethod(targetBeanType);
         }
