@@ -13,6 +13,7 @@ Welcome to Hasor's Documentation!
     01_overview
     02_quick
     03_ioc
+    04_aop
     changelog
 
 Indices and tables
