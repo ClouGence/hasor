@@ -69,8 +69,7 @@ Hasor 的构造方法注入十分简单，你只需要在构造方法中需要�
         ...
     }
 
-小贴士2：被注入的接口类型不一定非要强制通过 @ImplBy 注解来指定类型。如果您不打算使用注解来指定实现类，
-那么就需要在 Hasor 加载过程中指明实现类。这里会用到 `非侵入式注入`
+小贴士2：被注入的接口类型不一定非要强制通过 @ImplBy 注解来指定类型。如果您不打算使用注解来指定实现类，那么就需要在 Hasor 加载过程中指明实现类。这里会用到 `非侵入式注入`
 
 .. code-block:: java
     :linenos:
@@ -84,8 +83,7 @@ Hasor 的构造方法注入十分简单，你只需要在构造方法中需要�
 
 回调注入
 ------------------------------------
-回调式注入是 Hasor 特有的一种注入方式，它要求被注入的 Bean 必须实现 InjectMembers 接口。因此这种方式具备很强的侵入性。
-优点是，这种方式可以让我们更加直接的通过 java code 来执行注入过程。
+回调式注入是 Hasor 特有的一种注入方式，它要求被注入的 Bean 必须实现 InjectMembers 接口。因此这种方式具备很强的侵入性。优点是，这种方式可以让我们更加直接的通过 java code 来执行注入过程。
 
 需要提示的是 @Inject 和 InjectMembers 两者是排他性的。而且 InjectMembers 具备较高的优先级
 
@@ -113,8 +111,7 @@ Hasor 的构造方法注入十分简单，你只需要在构造方法中需要�
 
 非侵入式注入
 ------------------------------------
-上面的注入方式无论那种都需要您在被注入Bean 和注入 Bean 之间进行配置，因此它们都属于侵入式的。
-下面介绍一下使用 Hasor 的 Module 来声明依赖关系的方式：
+上面的注入方式无论那种都需要您在被注入Bean 和注入 Bean 之间进行配置，因此它们都属于侵入式的。下面介绍一下使用 Hasor 的 Module 来声明依赖关系的方式：
 
 .. code-block:: java
     :linenos:
@@ -153,8 +150,7 @@ Hasor 和 Spring一样，您可以为 Bean 指定一个唯一的名称。这样�
         private InfoBean pojoB;
     }
 
-当然您也可以通过 AppContext 根据 ID 获取Bean
-`AppContext.getInstance("beanA")`
+当然您也可以通过 AppContext 根据 ID 获取Bean `AppContext.getInstance("beanA")`
 
 **B. Name**
 Name不同于 ID 的是，它允许在不同的类型之间重复定义同一个名字。
@@ -176,6 +172,7 @@ Name不同于 ID 的是，它允许在不同的类型之间重复定义同一个
         @Inject("data")
         private ICache data;
     }
+
 
 注入配置
 ------------------------------------
@@ -230,8 +227,7 @@ Name不同于 ID 的是，它允许在不同的类型之间重复定义同一个
 
 注入环境变量
 ------------------------------------
-环境变量，指的是操作系统层面设置的环境变量，例如：JAVA_HOME，还有当前登录用户的主目录：USER.HOME。
-当然这些环境变量你也可以通过“System.getenv()” 或 “System.getProperties()” 自己拿到。
+环境变量，指的是操作系统层面设置的环境变量，例如：JAVA_HOME，还有当前登录用户的主目录：USER.HOME。当然这些环境变量你也可以通过“System.getenv()” 或 “System.getProperties()” 自己拿到。
 
 .. code-block:: java
     :linenos:
@@ -260,5 +256,4 @@ Name不同于 ID 的是，它允许在不同的类型之间重复定义同一个
         }
     }
 
-最后我们要通过命令行的方式启动这个程序：
-`java TestMain -Ddb.user=username -Ddb.pwd=password`
+最后我们要通过命令行的方式启动这个程序： `java TestMain -Ddb.user=username -Ddb.pwd=password`

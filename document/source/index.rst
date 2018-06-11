@@ -10,10 +10,8 @@ Welcome to Hasor's Documentation!
     :maxdepth: 3
     :numbered: 2
 
-    01_overview
-    02_quick
-    03_ioc
-    04_aop
+    overview
+    basic/basic
     changelog
 
 Indices and tables

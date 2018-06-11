@@ -60,6 +60,4 @@
 
 作为一个 Controller 肯定有它的一个特殊标记，例如在 Hasor 中 Controller 是一个接口。如果类是一个 Controller 那它一定实现了这个接口，可以理解为一定是 Controller 的子类。
 
-这时上面的 `AopMatchers.anyClass();` 就可以改为 `AopMatchers.subClassesOf(Controller.class)`。
-
-更多功能您可以参看 `AopMatchers` 类，如果没有满足要求的方法。开发者还可以自己编写一个 Matcher 来完成自己的筛选规则。
+这时上面的 `AopMatchers.anyClass();` 就可以改为 `AopMatchers.subClassesOf(Controller.class)`。更多功能您可以参看 `AopMatchers` 类，如果没有满足要求的方法。开发者还可以自己编写一个 Matcher 来完成自己的筛选规则。
