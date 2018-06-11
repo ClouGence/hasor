@@ -21,16 +21,21 @@ import net.hasor.core.Provider;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ThreadSingleProvider<T> implements Provider<T> {
-    private volatile ThreadLocal<T> instance;
+    private final ThreadLocal<T> instance;
     //
     public ThreadSingleProvider(final Provider<T> provider) {
         this.instance = new ThreadLocal<T>() {
             @Override
             protected T initialValue() {
-                return provider.get();
+                return newInstance(provider);
             }
         };
     }
+    //
+    protected T newInstance(Provider<T> provider) {
+        return provider.get();
+    }
+    //
     public T get() {
         return this.instance.get();
     }

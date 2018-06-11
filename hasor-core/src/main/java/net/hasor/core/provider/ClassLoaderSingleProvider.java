@@ -15,35 +15,32 @@
  */
 package net.hasor.core.provider;
 import net.hasor.core.Provider;
+import net.hasor.utils.ContextClassLoaderLocal;
 /**
- * 单例对象的{@link Provider}封装形式。
+ * ClassLoader单例对象的{@link Provider}封装形式。
  * @version : 2014年7月8日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SingleProvider<T> implements Provider<T> {
-    private          Provider<T> provider = null;
-    private volatile T           instance = null;
-    private final    Object      lock     = new Object();
+public class ClassLoaderSingleProvider<T> implements Provider<T> {
+    private final ContextClassLoaderLocal<T> instance;
     //
-    public SingleProvider(Provider<T> provider) {
-        this.provider = provider;
-    }
-    public T get() {
-        if (this.instance == null) {
-            synchronized (this.lock) {
-                if (this.instance == null) {
-                    this.instance = newInstance(this.provider);
-                }
+    public ClassLoaderSingleProvider(final Provider<T> provider) {
+        this.instance = new ContextClassLoaderLocal<T>() {
+            @Override
+            protected T initialValue() {
+                return newInstance(provider);
             }
-        }
-        return this.instance;
+        };
     }
     //
     protected T newInstance(Provider<T> provider) {
         return provider.get();
     }
     //
+    public T get() {
+        return this.instance.get();
+    }
     public String toString() {
-        return "SingleProvider->" + provider.toString();
+        return "ClassLoaderSingleProvider->" + instance.toString();
     }
 }

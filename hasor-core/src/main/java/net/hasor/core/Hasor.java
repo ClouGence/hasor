@@ -19,12 +19,16 @@ import net.hasor.core.context.ContainerCreater;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
+import net.hasor.core.provider.ClassLoaderSingleProvider;
+import net.hasor.core.provider.JNDISingleProvider;
 import net.hasor.core.provider.SingleProvider;
 import net.hasor.core.provider.ThreadSingleProvider;
 import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.naming.NamingException;
 import java.io.File;
 import java.net.URI;
 import java.net.URL;
@@ -99,23 +103,64 @@ public class Hasor extends HashMap<String, String> {
     }
     //
     private static Provider<AppContext> singletonHasor = null;
-    public AppContext asGlobalSingleton() {
-        singletonHasor = new SingleProvider<AppContext>(new Provider<AppContext>() {
-            @Override
-            public AppContext get() {
-                return Hasor.this.build();
-            }
-        });
-        return singletonHasor.get();
+    public AppContext asGlobalSingleton() throws NamingException {
+        return asGlobalSingleton(AppContext.class.getName());
+    }
+    public AppContext asGlobalSingleton(final String jndiName) throws NamingException {
+        if (StringUtils.isBlank(jndiName)) {
+            throw new NullPointerException("jndi name is empty or null.");
+        }
+        //
+        AppContext appContext = localAppContext();
+        if (appContext == null) {
+            singletonHasor = new JNDISingleProvider<AppContext>(jndiName, new Provider<AppContext>() {
+                @Override
+                public AppContext get() {
+                    return Hasor.this.build();
+                }
+            });
+            return singletonHasor.get();
+        }
+        throw new IllegalStateException("Hasor has been initialized.");
+    }
+    public AppContext asStaticSingleton() {
+        AppContext appContext = localAppContext();
+        if (appContext == null) {
+            singletonHasor = new SingleProvider<AppContext>(new Provider<AppContext>() {
+                @Override
+                public AppContext get() {
+                    return Hasor.this.build();
+                }
+            });
+            return singletonHasor.get();
+        }
+        throw new IllegalStateException("Hasor has been initialized.");
     }
     public AppContext asThreadSingleton() {
-        singletonHasor = new ThreadSingleProvider<AppContext>(new Provider<AppContext>() {
-            @Override
-            public AppContext get() {
-                return Hasor.this.build();
-            }
-        });
-        return singletonHasor.get();
+        AppContext appContext = localAppContext();
+        if (appContext == null) {
+            singletonHasor = new ThreadSingleProvider<AppContext>(new Provider<AppContext>() {
+                @Override
+                public AppContext get() {
+                    return Hasor.this.build();
+                }
+            });
+            return singletonHasor.get();
+        }
+        throw new IllegalStateException("Hasor has been initialized.");
+    }
+    public AppContext asContextSingleton() {
+        AppContext appContext = localAppContext();
+        if (appContext == null) {
+            singletonHasor = new ClassLoaderSingleProvider<AppContext>(new Provider<AppContext>() {
+                @Override
+                public AppContext get() {
+                    return Hasor.this.build();
+                }
+            });
+            return singletonHasor.get();
+        }
+        throw new IllegalStateException("Hasor has been initialized.");
     }
     public static AppContext localAppContext() {
         if (singletonHasor != null) {
