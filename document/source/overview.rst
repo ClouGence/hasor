@@ -6,10 +6,9 @@
     overview/about
     overview/tks
 
-
 快速上手
 --------------------
 .. toctree::
     :maxdepth: 3
 
-    quick/quick_start
+    overview/quick_start

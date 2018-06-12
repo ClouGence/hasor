@@ -56,7 +56,7 @@ Hasor 的构造方法注入十分简单，你只需要在构造方法中需要�
         ...
     }
 
-小贴士1：如果 @ImplBy 指定的类型上也标记了 @ImplBy，那么 Hasor 会进一步向下寻找。这就意味着例如下面这样的 case 也是成立的。
+**小贴士1：** 如果 @ImplBy 指定的类型上也标记了 @ImplBy，那么 Hasor 会进一步向下寻找。这就意味着例如下面这样的 case 也是成立的。
 
 .. code-block:: java
     :linenos:
@@ -69,7 +69,7 @@ Hasor 的构造方法注入十分简单，你只需要在构造方法中需要�
         ...
     }
 
-小贴士2：被注入的接口类型不一定非要强制通过 @ImplBy 注解来指定类型。如果您不打算使用注解来指定实现类，那么就需要在 Hasor 加载过程中指明实现类。这里会用到 `非侵入式注入`
+**小贴士2：** 被注入的接口类型不一定非要强制通过 @ImplBy 注解来指定类型。如果您不打算使用注解来指定实现类，那么就需要在 Hasor 加载过程中指明实现类。这里会用到 `非侵入式注入`
 
 .. code-block:: java
     :linenos:
@@ -215,7 +215,7 @@ Name不同于 ID 的是，它允许在不同的类型之间重复定义同一个
 
     AppContext appContext = Hasor.createAppContext("hasor-config.xml");
 
-小贴士：像这样 @InjectSettings 还会支持类型的自动转换。
+**小贴士：** 像这样 @InjectSettings 还会支持类型的自动转换。
 
 .. code-block:: java
     :linenos:
@@ -224,6 +224,7 @@ Name不同于 ID 的是，它允许在不同的类型之间重复定义同一个
         @InjectSettings("userInfo.myAge")
         private int myAge;
     }
+
 
 注入环境变量
 ------------------------------------
