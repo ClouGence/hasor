@@ -36,7 +36,10 @@
 
 Bean的管理
 --------------------
+.. toctree::
+    :maxdepth: 3
 
+    beans/scope
 
 
 模块化
