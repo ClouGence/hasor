@@ -73,3 +73,11 @@ Pluins Hasor 套件下的第三方插件项目
   - Freemarker 渲染器插件
   - Json 渲染器插件（支持Json引擎顺序为：fastjson -> gson）
   - `支持与 Nutz 集成（2017-02-21）-> nutz-integration-hasor <https://github.com/nutzam/nutzmore/tree/master/nutz-integration-hasor>`__
+
+
+相关资源
+-------------------
+- Issues：[https://gitee.com/zycgit/hasor/issues]
+- Hasor首页项目：[http://git.oschina.net/zycgit/hasor-website]
+- Sphinx：[http://www.sphinx-doc.org/en/master/]
+- QQ群：193943114

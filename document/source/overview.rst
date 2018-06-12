@@ -4,6 +4,7 @@
     :maxdepth: 3
 
     overview/about
+    overview/join_us
     overview/tks
 
 快速上手
