@@ -51,7 +51,10 @@ public class BeanTest {
         AppContext appContext = Hasor.createAppContext(new Module() {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
                 /*为一个类型指定一个实现类*/
-                apiBinder.bindType(PojoInfo.class).to(PojoBean.class);
+                LifeBean lifeBean = new LifeBeanImpl();
+                apiBinder.bindType(LifeBean.class).toInstance(lifeBean);
+                //
+                Hasor.addStartListener(apiBinder.getEnvironment(), lifeBean);
             }
         });
         logger.debug("---------------------------------------------");

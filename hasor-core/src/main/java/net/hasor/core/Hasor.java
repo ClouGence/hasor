@@ -101,7 +101,9 @@ public class Hasor extends HashMap<String, String> {
         }
         return this;
     }
-    //
+    public Hasor asSmaller() {
+        return this.putFrameworkData("HASOR_LOAD_MODULE", "false");
+    }
     private static Provider<AppContext> singletonHasor = null;
     public AppContext asGlobalSingleton() throws NamingException {
         return asGlobalSingleton(AppContext.class.getName());
@@ -168,8 +170,6 @@ public class Hasor extends HashMap<String, String> {
         }
         return null;
     }
-    //
-    //
     /**用简易的方式创建{@link AppContext}容器。*/
     public AppContext build(Module... modules) {
         return this.addModules(modules).build();
@@ -272,6 +272,42 @@ public class Hasor extends HashMap<String, String> {
     }
     public static <TD, T extends EventListener<TD>> T addShutdownListener(Environment env, T eventListener) {
         env.getEventContext().addListener(ContextEvent_Shutdown, eventListener);
+        return eventListener;
+    }
+    public static <T extends EventListener<AppContext>> BindInfo<T> pushStartListener(Environment env, final BindInfo<T> eventListener) {
+        env.getEventContext().pushListener(ContextEvent_Started, new EventListener<AppContext>() {
+            @Override
+            public void onEvent(String event, AppContext eventData) throws Throwable {
+                eventData.getInstance(eventListener).onEvent(event, eventData);
+            }
+        });
+        return eventListener;
+    }
+    public static <T extends EventListener<AppContext>> BindInfo<T> pushShutdownListener(Environment env, final BindInfo<T> eventListener) {
+        env.getEventContext().pushListener(ContextEvent_Shutdown, new EventListener<AppContext>() {
+            @Override
+            public void onEvent(String event, AppContext eventData) throws Throwable {
+                eventData.getInstance(eventListener).onEvent(event, eventData);
+            }
+        });
+        return eventListener;
+    }
+    public static <T extends EventListener<AppContext>> BindInfo<T> addStartListener(Environment env, final BindInfo<T> eventListener) {
+        env.getEventContext().pushListener(ContextEvent_Started, new EventListener<AppContext>() {
+            @Override
+            public void onEvent(String event, AppContext eventData) throws Throwable {
+                eventData.getInstance(eventListener).onEvent(event, eventData);
+            }
+        });
+        return eventListener;
+    }
+    public static <T extends EventListener<AppContext>> BindInfo<T> addShutdownListener(Environment env, final BindInfo<T> eventListener) {
+        env.getEventContext().pushListener(ContextEvent_Shutdown, new EventListener<AppContext>() {
+            @Override
+            public void onEvent(String event, AppContext eventData) throws Throwable {
+                eventData.getInstance(eventListener).onEvent(event, eventData);
+            }
+        });
         return eventListener;
     }
     //

@@ -9,6 +9,6 @@ public class HasorTest {
     @Test
     public void hasorTest() {
         //
-        AppContext appContext = Hasor.create().build();
+        AppContext appContext = Hasor.create().asSmaller().build();
     }
 }

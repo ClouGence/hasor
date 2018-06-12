@@ -434,8 +434,8 @@ public abstract class TemplateAppContext implements AppContext {
         return (ApiBinder) Proxy.newProxyInstance(this.
                 getClassLoader(), apiArrays, new ApiBinderInvocationHandler(supportMap));
     }
-    /**当完成所有初始化过程之后调用，负责向 Context 绑定一些预先定义的类型。*/
-    protected void doBind(final ApiBinder apiBinder) {
+    /**当开始所有 Module 的 installModule 之前。*/
+    protected void doBindBefore(ApiBinder apiBinder) {
         final AppContext appContet = this;
         /*绑定Settings对象的Provider*/
         apiBinder.bindType(Settings.class).toProvider(new Provider<Settings>() {
@@ -461,6 +461,10 @@ public abstract class TemplateAppContext implements AppContext {
                 return appContet;
             }
         });
+    }
+    /**当完成所有 Module 的 installModule 直呼。*/
+    protected void doBindAfter(ApiBinder apiBinder) {
+        //
     }
     //
     /*------------------------------------------------------------------------------------Creater*/
@@ -511,14 +515,15 @@ public abstract class TemplateAppContext implements AppContext {
         doInitialize();
         /*3.Bind*/
         ApiBinder apiBinder = newApiBinder();
+        doBindBefore(apiBinder);
         for (Module module : findModules) {
             if (module == null) {
                 continue;
             }
             this.installModule(apiBinder, module);
         }
+        doBindAfter(apiBinder);
         logger.info("appContext -> doBind.");
-        doBind(apiBinder);
         /*4.引发事件*/
         logger.info("appContext -> doInitializeCompleted");
         doInitializeCompleted();
