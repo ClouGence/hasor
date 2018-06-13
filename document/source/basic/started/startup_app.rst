@@ -31,7 +31,7 @@ simple-config.xml 配置文件的格式如下:
 
 唯一
 ------------------------------------
-有的时候我们为了方便引用某个对象，经常会找一个静态字段来存放。Hasor 提供了一种方式来协助你做到这一点，您无需自己额外编写多余的类来进行管理。
+有的时候我们为了方便将AppContext放到某个 static 的静态变量上。在 Hasor 提供了一种方式来协助你做到这一点，您无需自己额外编写多余的类来进行管理。
 
 .. code-block:: xml
     :linenos:
@@ -42,7 +42,7 @@ simple-config.xml 配置文件的格式如下:
     AppContext appContext = Hasor.localAppContext();
 
 
-除了上面创建全局唯一 AppContext 之外，Hasor 还提供了另外两个场景的唯一。使用它们的方式就是将 “asGlobalSingleton” 换为你所需要的。
+除了上面创建全局唯一 AppContext 之外，Hasor 还提供了另外几个场景的唯一。使用它们的方式就是将 “asGlobalSingleton” 换为你所需要的。
 
 - asGlobalSingleton()：使用 JNDI 方式保证 JVM 内全局唯一。
 - asStaticSingleton()：使用 static 方式保证全局唯一。
