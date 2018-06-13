@@ -5,6 +5,7 @@
 
     started/startup_app
     started/load_moduls
+    started/scan_class
 
 依赖注入(IoC)
 --------------------

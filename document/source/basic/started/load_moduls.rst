@@ -130,7 +130,7 @@
 
 除了配置文件你也可以在创建 Hasor 时通过下面这样的方式来构建一个最小的 Hasor：
 
-.. code-block:: xml
+.. code-block:: java
     :linenos:
 
     AppContext appContext = Hasor.create().asSmaller().build();

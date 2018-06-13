@@ -1,5 +1,5 @@
 注入容器
---------------------
+------------------------------------
 用过 Spring 的同学都知道要想注入 Spring 容器本身您必须要实现 ApplicationContextAware 接口。在Hasor 中您也可以使用相同的方式：
 
 .. code-block:: java

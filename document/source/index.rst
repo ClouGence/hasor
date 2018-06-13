@@ -10,9 +10,10 @@ Welcome to Hasor's Documentation!
     :maxdepth: 3
     :numbered: 2
 
-    overview
-    basic/basic
-    changelog
+    overview/catalog
+    basic/index
+    extends/index
+    changelog/index
 
 Indices and tables
 ==================
