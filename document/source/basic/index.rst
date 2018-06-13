@@ -48,3 +48,21 @@ Bean的管理
     :maxdepth: 3
 
     module/module
+
+事件机制
+--------------------
+.. toctree::
+    :maxdepth: 3
+
+    event/about_event
+    event/fire_event
+
+环境变量
+--------------------
+.. toctree::
+    :maxdepth: 3
+
+    environment/what_is_it
+    environment/use_hconfig_properties
+    environment/use_it
+    environment/in_settings_use_var
