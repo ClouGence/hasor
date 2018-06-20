@@ -66,3 +66,12 @@ Bean的管理
     environment/use_hconfig_properties
     environment/use_it
     environment/in_settings_use_var
+
+配置文件
+--------------------
+.. toctree::
+    :maxdepth: 3
+
+    config/settings
+    config/namespace
+    config/xml_parser

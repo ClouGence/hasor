@@ -12,8 +12,10 @@ Welcome to Hasor's Documentation!
 
     overview/catalog
     basic/index
+
     extends/index
     changelog/index
+    attachment/index
 
 Indices and tables
 ==================
