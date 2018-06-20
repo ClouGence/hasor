@@ -109,12 +109,16 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
         return this.webApiBinder.mappingTo(morePatterns);
     }
     @Override
-    public void looking4MappingTo(Set<Class<?>> mabeMappingToSet) {
-        this.webApiBinder.looking4MappingTo(mabeMappingToSet);
+    public void loadMappingTo(Class<?> clazz) {
+        this.webApiBinder.loadMappingTo(clazz);
     }
     @Override
-    public void looking4MappingTo(Set<Class<?>> mabeMappingToSet, Matcher<Class<?>> matcher) {
-        this.webApiBinder.looking4MappingTo(mabeMappingToSet, matcher);
+    public void loadMappingTo(Set<Class<?>> mabeMappingToSet) {
+        this.webApiBinder.loadMappingTo(mabeMappingToSet);
+    }
+    @Override
+    public void loadMappingTo(Set<Class<?>> mabeMappingToSet, Matcher<Class<?>> matcher) {
+        this.webApiBinder.loadMappingTo(mabeMappingToSet, matcher);
     }
     @Override
     public void addServletListener(Class<? extends ServletContextListener> targetKey) {

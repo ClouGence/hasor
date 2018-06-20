@@ -95,8 +95,6 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-core/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.hasor/hasor-core)
 [![Build Status](https://travis-ci.org/zycgit/hasor.svg?branch=master)](https://travis-ci.org/zycgit/hasor)
 [![Build Status](https://travis-ci.org/zycgit/hasor.svg?branch=dev)](https://travis-ci.org/zycgit/hasor)
-* Demo工程：[http://git.oschina.net/zycgit/hasor-example](http://git.oschina.net/zycgit/hasor-example)
-* 参考手册(WiKi版)：[点这里(Click Me)](SUMMARY.md)
 * Docs : [http://www.hasor.net/docs/hasor/guide/](http://www.hasor.net/docs/hasor/guide/)
 
 ----------
@@ -127,15 +125,3 @@
 * 
 * Q：我只想使用某一个小功能，Hasor可以拆分独立使用么？
 * A：可以的。
-
-### 小备注
-
-* mvn release:prepare -P release
-* mvn clean deploy -P release
-* jekyll 安装（mac）
-    * brew install ruby
-    * gem update --system
-    * sudo gem update
-    * sudo gem install jekyll bundler
-    * jekyll server
-* ./build.sh && docker build -t debug . && docker run debug

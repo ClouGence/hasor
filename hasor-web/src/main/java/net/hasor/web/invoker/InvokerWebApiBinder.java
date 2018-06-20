@@ -44,9 +44,9 @@ import java.util.*;
 public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     private final InstanceProvider<String> requestEncoding  = new InstanceProvider<String>("");
     private final InstanceProvider<String> responseEncoding = new InstanceProvider<String>("");
-    private ServletVersion      curVersion;
-    private MimeType            mimeType;
-    private RenderApiBinderImpl renderBinder;
+    private       ServletVersion           curVersion;
+    private       MimeType                 mimeType;
+    private       RenderApiBinderImpl      renderBinder;
     //
     // ------------------------------------------------------------------------------------------------------
     protected InvokerWebApiBinder(ServletVersion curVersion, MimeType mimeType, ApiBinder apiBinder) {
@@ -454,8 +454,8 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         return this.mappingTo(null, morePatterns);
     }
     @Override
-    public void looking4MappingTo(Set<Class<?>> mabeMappingToSet) {
-        this.looking4MappingTo(mabeMappingToSet, new Matcher<Class<?>>() {
+    public void loadMappingTo(Set<Class<?>> mabeMappingToSet) {
+        this.loadMappingTo(mabeMappingToSet, new Matcher<Class<?>>() {
             @Override
             public boolean matches(Class<?> target) {
                 return true;
@@ -463,17 +463,37 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         });
     }
     @Override
-    public void looking4MappingTo(Set<Class<?>> mabeMappingToSet, Matcher<Class<?>> matcher) {
+    public void loadMappingTo(Set<Class<?>> mabeMappingToSet, Matcher<Class<?>> matcher) {
         int counts = 0;
         if (mabeMappingToSet != null && !mabeMappingToSet.isEmpty()) {
             for (Class<?> type : mabeMappingToSet) {
-                counts += (loadType(this, type) ? 1 : 0);
+                loadMappingTo(type);
+                counts++;
             }
         }
         if (counts == 0) {
             logger.warn("mapingTo -> exit , not found any @MappingTo.");
         } else {
             logger.info("mapingTo -> found {} counts.");
+        }
+    }
+    public void loadMappingTo(Class<?> mabeMappingType) {
+        Hasor.assertIsNotNull(mabeMappingType, "class is null.");
+        int modifier = mabeMappingType.getModifiers();
+        if (checkIn(modifier, Modifier.INTERFACE) || checkIn(modifier, Modifier.ABSTRACT) || mabeMappingType.isArray() || mabeMappingType.isEnum()) {
+            throw new IllegalStateException(mabeMappingType.getName() + " must be configure @MappingTo normal Bean");
+        }
+        if (!mabeMappingType.isAnnotationPresent(MappingTo.class)) {
+            throw new IllegalStateException(mabeMappingType.getName() + " must be configure @MappingTo normal Bean");
+        }
+        //
+        MappingTo mto = mabeMappingType.getAnnotation(MappingTo.class);
+        if (HttpServlet.class.isAssignableFrom(mabeMappingType)) {
+            this.jeeServlet(mto.value()).with((Class<? extends HttpServlet>) mabeMappingType);
+            logger.info("mapingTo[Servlet] -> type ‘{}’ mappingTo: ‘{}’.", mabeMappingType.getName(), mto.value());
+        } else {
+            this.mappingTo(mto.value()).with(mabeMappingType);
+            logger.info("mapingTo[Object] -> type ‘{}’ mappingTo: ‘{}’.", mabeMappingType.getName(), mto.value());
         }
     }
     //
@@ -582,25 +602,6 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             list.add(object);
         }
         return list;
-    }
-    public boolean loadType(WebApiBinder apiBinder, Class<?> clazz) {
-        int modifier = clazz.getModifiers();
-        if (checkIn(modifier, Modifier.INTERFACE) || checkIn(modifier, Modifier.ABSTRACT)) {
-            return false;
-        }
-        if (!clazz.isAnnotationPresent(MappingTo.class)) {
-            return false;
-        }
-        //
-        MappingTo mto = clazz.getAnnotation(MappingTo.class);
-        if (HttpServlet.class.isAssignableFrom(clazz)) {
-            apiBinder.jeeServlet(mto.value()).with((Class<? extends HttpServlet>) clazz);
-            logger.info("mapingTo[Servlet] -> type ‘{}’ mappingTo: ‘{}’.", clazz.getName(), mto.value());
-        } else {
-            apiBinder.mappingTo(mto.value()).with(clazz);
-            logger.info("mapingTo[Object] -> type ‘{}’ mappingTo: ‘{}’.", clazz.getName(), mto.value());
-        }
-        return true;
     }
     //
     /** 通过位运算决定check是否在data里。 */

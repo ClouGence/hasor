@@ -52,8 +52,7 @@ public class BeanTest {
             public void loadModule(ApiBinder apiBinder) throws Throwable {
                 /*为一个类型指定一个实现类*/
                 LifeBean lifeBean = new LifeBeanImpl();
-                apiBinder.bindType(LifeBean.class).toInstance(lifeBean);
-                //
+                apiBinder.bindType(LifeBean.class).toInstance(lifeBean);                //
                 Hasor.addStartListener(apiBinder.getEnvironment(), lifeBean);
             }
         });

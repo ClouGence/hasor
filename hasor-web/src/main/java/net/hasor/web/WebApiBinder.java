@@ -59,11 +59,13 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /**使用 MappingTo 表达式，创建一个{@link MappingToBindingBuilder}。*/
     public MappingToBindingBuilder<Object> mappingTo(String[] morePatterns);
+
     //
+    public void loadMappingTo(Class<?> clazz);
 
-    public void looking4MappingTo(Set<Class<?>> mabeMappingToSet);
+    public void loadMappingTo(Set<Class<?>> mabeMappingToSet);
 
-    public void looking4MappingTo(Set<Class<?>> mabeMappingToSet, Matcher<Class<?>> matcher);
+    public void loadMappingTo(Set<Class<?>> mabeMappingToSet, Matcher<Class<?>> matcher);
     //
 
     /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/

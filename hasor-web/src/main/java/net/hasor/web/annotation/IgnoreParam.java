@@ -21,7 +21,7 @@ import java.lang.annotation.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.PARAMETER, ElementType.FIELD })
+@Target({ ElementType.FIELD })
 @Documented
 public @interface IgnoreParam {
 }
