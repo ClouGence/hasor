@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>net.hasor</groupId>
+    <artifactId>hasor-parent</artifactId>
+    <version>3.2.3-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <!-- 构建描述 -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>kr.motd.maven</groupId>
+                <artifactId>sphinx-maven-plugin</artifactId>
+                <version>1.5.3.Final</version> <!-- 2.2.2 -->
+                <configuration>
+                    <fork>true</fork>
+                    <force>true</force>
+                    <warningsAsErrors>true</warningsAsErrors>
+                    <sourceDirectory>${project.basedir}/source</sourceDirectory>
+                    <outputDirectory>${project.build.directory}/html</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

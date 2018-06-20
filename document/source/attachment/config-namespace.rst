@@ -6,3 +6,5 @@
 - http://project.hasor.net/hasor/schema/hasor-rsf
 - http://project.hasor.net/hasor/schema/hasor-registry
 - http://project.hasor.net/hasor/schema/hasor-land
+- http://project.hasor.net/hasor/schema/hasor-jstl
+- http://project.hasor.net/hasor/schema/hasor-mime-mapping

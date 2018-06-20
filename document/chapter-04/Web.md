@@ -1,1 +1,0 @@
-&emsp;&emsp;Hasor 支持 Web 开发，在前面第二章，我们已见识到。本章将会更加详细的介绍 Hasor Web 开发的特性。

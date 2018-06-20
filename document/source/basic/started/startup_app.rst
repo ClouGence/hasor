@@ -29,9 +29,9 @@ simple-config.xml 配置文件的格式如下:
     </config>
 
 
-唯一
+唯一性
 ------------------------------------
-有的时候我们为了方便将AppContext放到某个 static 的静态变量上。在 Hasor 提供了一种方式来协助你做到这一点，您无需自己额外编写多余的类来进行管理。
+有的时候我们为了方便将AppContext放到某个 static 的静态变量上。Hasor 提供了一种方式来协助你做到这一点，您无需自己额外编写多余的类来进行管理。
 
 .. code-block:: xml
     :linenos:
@@ -49,3 +49,4 @@ simple-config.xml 配置文件的格式如下:
 - asThreadSingleton()：线程级别的唯一。
 - asContextSingleton()：基于当前线程的 ClassLoader 来保证 Loader 级别的唯一。
 
+如无特殊指定 Hasor 是不会进行唯一性处理。
