@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.registry.storage.block;
+import net.hasor.registry.storage.cache.Cache;
 import net.hasor.utils.IOUtils;
 import sun.misc.Cleaner;
 import sun.nio.ch.DirectBuffer;
@@ -29,21 +30,37 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class BlockFileAdapter {
-    private static final long             DEL_MASK         = 0x8000000000000000L;
-    private static final long             NORMAL_MASK      = 0x7FFFFFFFFFFFFFFFL;
-    private              File             blockFileName    = null;
-    private              RandomAccessFile randomAccessFile = null;
-    private              FileChannel      fileChannel      = null;
-    private              AtomicLong       curentStreamID   = null;
-    private              Block            curentBlock      = null;
+    private static final long               DEL_MASK       = 0x8000000000000000L;
+    private static final long               NORMAL_MASK    = 0x7FFFFFFFFFFFFFFFL;
+    private              File               blockFileName  = null;
+    private              RandomAccessFile   ioAccessFile   = null;
+    private              ByteBuffer         ioBuffer       = null;
+    private              FileChannel        isFileChannel  = null;
+    private              AtomicLong         curentStreamID = null;
+    private              Block              curentBlock    = null;
+    private              Cache<Long, Block> blockCache     = null;
     //
     //
     public BlockFileAdapter(File blockFileName) throws IOException {
+        this(blockFileName, 0);
+    }
+    public BlockFileAdapter(File blockFileName, int bufferSize) throws IOException {
         this.blockFileName = blockFileName;
-        this.randomAccessFile = new RandomAccessFile(blockFileName, "rw");
-        this.fileChannel = this.randomAccessFile.getChannel();
+        this.ioAccessFile = new RandomAccessFile(blockFileName, "rw");
+        this.ioBuffer = ByteBuffer.allocate(bufferSize > 4096 ? bufferSize : 4096); // 最小 4K
+        this.isFileChannel = this.ioAccessFile.getChannel();
         this.curentStreamID = new AtomicLong(0);
         this.curentBlock = null;
+        this.blockCache = new Cache<Long, Block>() {
+            @Override
+            public Block fromCache(Long blockPosition) {
+                return null;
+            }
+            @Override
+            public int hashCode() {
+                return super.hashCode();
+            }
+        };
     }
     //
     /** 存储的文件 */
@@ -97,6 +114,21 @@ public class BlockFileAdapter {
     }
     //
     /** 基于 atBlock 查找下一个最近的自由空间 */
+    public Block findFreeSpace(long blockPosition) throws IOException {
+        Block fromCache = this.blockCache.fromCache(blockPosition);
+        if (fromCache != null) {
+            return findFreeSpace(fromCache);
+        }
+        //
+        ioSeekTo(blockPosition);
+        Block readBlock = readBlock();
+        if (readBlock == null) {
+            return null;
+        }
+        return findFreeSpace(readBlock);
+    }
+    //
+    /** 基于 atBlock 查找下一个最近的自由空间 */
     public Block findFreeSpace(Block atBlock) throws IOException {
         // .curent Block is Free ?
         Block foundBlock = this.curentBlock();
@@ -122,8 +154,18 @@ public class BlockFileAdapter {
     public Block nextBlock() throws IOException {
         return nextBlock(null);
     }
+    /**  查找 blockPosition 位置之后的一个 Block */
+    public Block nextBlock(long blockPosition) throws IOException {
+        Block fromCache = this.blockCache.fromCache(blockPosition);
+        if (fromCache != null) {
+            return fromCache;
+        }
+        //
+        ioSeekTo(blockPosition);
+        return nextBlock();
+    }
     //
-    /** 基于 atBlock 查找下一个Block */
+    /**  查找 atBlock 之后的一个 Block */
     public Block nextBlock(Block atBlock) throws IOException {
         // .release any curent stream
         this.releaseStream();
@@ -145,6 +187,10 @@ public class BlockFileAdapter {
         return this.curentBlock();
     }
     private Block readBlock() throws IOException {
+        if (this.ioFilePointer() == this.ioFileSize()) {
+            return null;
+        }
+        //
         long blockPosition = this.ioFilePointer();
         long blockSize = this.ioReadLong();  // BlockSize（预读8个字节）
         long dataSize = this.ioReadLong();   // DataSize （预读8个字节）
@@ -166,6 +212,9 @@ public class BlockFileAdapter {
         //
         ioSeekTo(position);
         Block readBlock = readBlock();
+        if (readBlock == null) {
+            return null;
+        }
         if (readBlock.getBlockSize() == refBlock.getBlockSize() || refBlock.isEof()) {
             return readBlock; // 正常都要检测一下 BlockSize 是否一致已确定 Block 是同一个，eofBlock 除外。
         }
@@ -210,6 +259,20 @@ public class BlockFileAdapter {
         throw new IOException("getInputStream failed.");
     }
     //
+    /** 删除 Block */
+    public boolean deleteBlock(long blockPosition) throws IOException {
+        Block fromCache = this.blockCache.fromCache(blockPosition);
+        if (fromCache != null) {
+            return deleteBlock(fromCache);
+        }
+        //
+        ioSeekTo(blockPosition);
+        Block readBlock = readBlock();
+        if (readBlock == null) {
+            return false;
+        }
+        return deleteBlock(readBlock);
+    }
     /** 删除 Block */
     public boolean deleteBlock(Block block) throws IOException {
         if (block == null) {
@@ -555,11 +618,11 @@ public class BlockFileAdapter {
         }
         public void reset() throws IOException {
             checkStreamClose(isClose, streamID);
-            fileChannel.position(block.getPosition() + Block.HEAD_LENGTH); //跳过 Block Head
+            isFileChannel.position(block.getPosition() + Block.HEAD_LENGTH); //跳过 Block Head
         }
         @Override
         public boolean isOpen() {
-            return fileChannel.isOpen();
+            return isFileChannel.isOpen();
         }
         @Override
         public void close() throws IOException {
@@ -594,48 +657,48 @@ public class BlockFileAdapter {
     }
     //
     private int ioSkipBytes(int readSize) throws IOException {
-        return this.randomAccessFile.skipBytes(readSize);
+        return this.ioAccessFile.skipBytes(readSize);
     }
     private void ioSeekTo(long atPosition) throws IOException {
-        long nowPosition = this.randomAccessFile.getFilePointer();
+        long nowPosition = this.ioAccessFile.getFilePointer();
         if (nowPosition == atPosition) {
             return;
         }
-        this.randomAccessFile.seek(atPosition);
+        this.ioAccessFile.seek(atPosition);
     }
     private long ioFileSize() throws IOException {
-        return this.randomAccessFile.length();
+        return this.ioAccessFile.length();
     }
     private long ioFilePointer() throws IOException {
-        return this.randomAccessFile.getFilePointer();
+        return this.ioAccessFile.getFilePointer();
     }
     private long ioReadLong() throws IOException {
-        return randomAccessFile.readLong();
+        return ioAccessFile.readLong();
     }
     private int ioReadByte() throws IOException {
-        return randomAccessFile.readByte();
+        return ioAccessFile.readByte();
     }
     private int ioReadBytes(byte b[], int off, int len) throws IOException {
-        return randomAccessFile.read(b, off, len);
+        return ioAccessFile.read(b, off, len);
     }
     private void ioReadWrite(byte b[], int off, int len) throws IOException {
-        randomAccessFile.write(b, off, len);
+        ioAccessFile.write(b, off, len);
     }
     private int ioReadToByteBuffer(ByteBuffer dst) throws IOException {
-        return this.fileChannel.read(dst);
+        return this.isFileChannel.read(dst);
     }
     private void ioWriteHeader(long blockSize, long dataSize) throws IOException {
-        randomAccessFile.writeLong(blockSize);
-        randomAccessFile.writeLong(dataSize);
+        ioAccessFile.writeLong(blockSize);
+        ioAccessFile.writeLong(dataSize);
     }
     private int ioWriteToByteBuffer(ByteBuffer dst) throws IOException {
-        return this.fileChannel.write(dst);
+        return this.isFileChannel.write(dst);
     }
     private void ioExtendSize(long addSize) throws IOException {
-        randomAccessFile.setLength(randomAccessFile.length() + addSize);
+        ioAccessFile.setLength(ioAccessFile.length() + addSize);
     }
     private void ioClose() throws IOException {
-        this.randomAccessFile.close();
+        this.ioAccessFile.close();
     }
     private void ioSyncBuffer() throws IOException {
         //

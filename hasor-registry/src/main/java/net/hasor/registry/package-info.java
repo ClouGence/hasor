@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * RSF注册中心相关功能。
+ * Tree 结构的存储系统。索引采用 B-Tree，底层数据存储采用 Block。
  */
 @AopIgnore
 package net.hasor.registry;
