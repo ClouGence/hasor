@@ -8,7 +8,7 @@
 ## 设计思想
 &emsp;&emsp;DataQL 的设计思想借鉴了 GraphQL。在借鉴的同时使用了全新的语法，同时增加了一些新特性。这些新特性会让您用起来比 GraphQL 更加舒心，更加接地气。
 
-&emsp;&emsp; 因此也可以称 DataQL 为服务聚合引擎，例如：在 DataQL 中您可以进行常规的表达式计算、也可以执行 if 逻辑判断、它还支持 lambda 表达式、甚至您可以调用通过DataQL定义的lambda函数。
+&emsp;&emsp; 例如：在 DataQL 中您可以进行常规的表达式计算、也可以执行 if 逻辑判断、它还支持 lambda 函数、甚至您可以在应用中调用 DataQL定义的 lambda 函数。
 
 ----------
 ## 架构

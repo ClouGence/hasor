@@ -226,10 +226,10 @@ public interface RsfPublisher {
         /**更新服务地址本计算规则（服务级）*/
         public RegisterBuilder updateServiceRoute(String scriptBody);
 
-        /**更新本地方法级地址计算脚本。*/
+        /**更新服务地址本计算规则（方法级）*/
         public RegisterBuilder updateMethodRoute(String scriptBody);
 
-        /**更新本地参数级地址计算脚本。*/
+        /**更新服务地址本计算规则（参数级）*/
         public RegisterBuilder updateArgsRoute(String scriptBody);
 
         /**更新服务路由策略*/
