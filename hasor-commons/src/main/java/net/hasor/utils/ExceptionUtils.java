@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.utils;
+import java.lang.reflect.InvocationTargetException;
 /**
  * 异常工具类
  * @version : 2014年9月25日
@@ -22,6 +23,9 @@ package net.hasor.utils;
 public class ExceptionUtils {
     /**将异常包装为 {@link RuntimeException}*/
     public static RuntimeException toRuntimeException(Throwable proxy) {
+        if (proxy instanceof InvocationTargetException && ((InvocationTargetException) proxy).getTargetException() != null) {
+            proxy = ((InvocationTargetException) proxy).getTargetException();
+        }
         if (proxy instanceof RuntimeException) {
             return (RuntimeException) proxy;
         }

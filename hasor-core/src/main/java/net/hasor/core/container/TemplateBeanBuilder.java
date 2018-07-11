@@ -175,7 +175,11 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
                 parameterAnnos = referConstructor.getParameterAnnotations();
                 constructor = newType.getConstructor(referConstructor.getParameterTypes());
             } else {
-                constructor = newType.getConstructor(targetType.getConstructors()[0].getParameterTypes());
+                try {
+                    constructor = targetType.getConstructor();
+                } catch (Exception e) {
+                    constructor = newType.getConstructor(targetType.getConstructors()[0].getParameterTypes());
+                }
                 parameterTypes = constructor.getParameterTypes();
                 parameterAnnos = constructor.getParameterAnnotations();
             }

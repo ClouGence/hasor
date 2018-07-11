@@ -18,6 +18,8 @@
         <RSF_SERVICE_PORT>2181</RSF_SERVICE_PORT>
         <!-- Hprose对外提供服务的服务端口（可以配置 0 用来关闭 Hprose连接器） -->
         <HPROSE_SERVICE_PORT>0</HPROSE_SERVICE_PORT>
+        <!-- Http协议对外提供服务的服务端口（可以配置 0 用来关闭 Http连接器） -->
+        <HTTP_SERVICE_PORT>0</HTTP_SERVICE_PORT>
     </hasor.environmentVar>
 
     <!-- 框架配置，包扫描范围 -->
@@ -31,7 +33,9 @@
             <module>net.hasor.rsf.tconsole.TelnetModule</module>
 
             <!-- Hprose：AutoSetAliasName支持插件 -->
-            <module>net.hasor.rsf.protocol.hprose.AutoSetAliasName</module>
+            <module>net.hasor.rsf.protocol.http_hprose.AutoSetAliasName</module>
+            <!-- Web：AutoSetAliasName支持插件 -->
+            <module>net.hasor.rsf.protocol.http_web.AutoSetAliasName</module>
         </modules>
 
         <!-- Binder扩展 -->
@@ -79,7 +83,8 @@
             RSF 支持多种 RPC 协议共存，这里是配置 RPC 协议连接器的地方。
                 连接器的作用是为不同协议提供网络数据包编码解码的功能，RSF 内置了两种RPC协议。
                 RSF/1.0     原生的内置协议，也是默认协议。
-                Hprose/1.0  see：http://www.hprose.com/
+                Http/Hprose see：http://www.hprose.com/ (使用Http方式)
+                Http/Web    Web请求
 
             default
                 - 默认RPC协议，RSF 在启动的时必须有一个默认RPC协议
@@ -104,7 +109,7 @@
             </netty_rsf10>
 
             <!-- Hprose 连接器 -->
-            <http_hprose name="Http/Hprose" protocol="http" localPort="${HPROSE_SERVICE_PORT}" factory="net.hasor.rsf.rpc.net.http.HttpConnectorFactory">
+            <http_hprose name="Http/Hprose" protocol="hprose" localPort="${HPROSE_SERVICE_PORT}" factory="net.hasor.rsf.rpc.net.http.HttpConnectorFactory">
                 <!-- 处理网络IO数据包的线程数 -->
                 <workerThread>8</workerThread>
                 <!-- 处理网络监听请求的线程数 -->
@@ -112,8 +117,20 @@
                 <!-- BasePath -->
                 <contextPath>/hprose</contextPath>
                 <!-- Rsf Handler -->
-                <httpHandlerFactory>net.hasor.rsf.protocol.hprose.HproseHttpHandler</httpHandlerFactory>
+                <httpHandlerFactory>net.hasor.rsf.protocol.http_hprose.HproseHttpHandler</httpHandlerFactory>
             </http_hprose>
+
+            <!-- Web 请求连接器 -->
+            <!--<http_web name="Http/Web" protocol="http" localPort="${HTTP_SERVICE_PORT}" factory="net.hasor.rsf.rpc.net.http.HttpConnectorFactory">-->
+                <!--&lt;!&ndash; 处理网络IO数据包的线程数 &ndash;&gt;-->
+                <!--<workerThread>8</workerThread>-->
+                <!--&lt;!&ndash; 处理网络监听请求的线程数 &ndash;&gt;-->
+                <!--<listenThread>1</listenThread>-->
+                <!--&lt;!&ndash; BasePath &ndash;&gt;-->
+                <!--<contextPath>/rsf</contextPath>-->
+                <!--&lt;!&ndash; Rsf Handler &ndash;&gt;-->
+                <!--<httpHandlerFactory>net.hasor.rsf.protocol.http_web.WebHttpHandler</httpHandlerFactory>-->
+            <!--</http_web>-->
         </connectorSet>
 
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
