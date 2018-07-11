@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.hprose;
+package net.hasor.rsf.protocol.http_hprose;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import net.hasor.core.AppContext;
@@ -41,27 +41,34 @@ import static io.netty.handler.codec.http.HttpHeaders.Names.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class HproseHttpHandler implements HttpHandler, HttpHandlerFactory {
-    @Override
-    public HttpHandler newHandler(String contextPath, Connector connector, AppContext appContext) {
-        return new HproseHttpHandler(connector, appContext);
-    }
     public HproseHttpHandler() {
     }
+    @Override
+    public HttpHandler newHandler(String contextPath, Connector connector, AppContext appContext) {
+        return new HproseHttpHandler(contextPath, connector, appContext);
+    }
+    //
+    private String     contextPath;
     private Connector  connector;
     private RsfContext rsfContext;
-    public HproseHttpHandler(Connector connector, AppContext appContext) {
+    public HproseHttpHandler(String contextPath, Connector connector, AppContext appContext) {
+        this.contextPath = contextPath;
         this.connector = connector;
         this.rsfContext = appContext.getInstance(RsfContext.class);
     }
     //
     @Override
     public void receivedRequest(RsfHttpRequest httpRequest, RsfHttpResponse httpResponse, HttpResult outputTo) throws IOException {
+        String requestURI = httpRequest.getRequestURI();
+        if (!requestURI.startsWith(this.contextPath)) {
+            httpResponse.sendError(404, "not found service.");
+            return;
+        }
         //
         // .设置跨域
         final String originString = httpRequest.getHeader(ORIGIN);
         this.httpOrigin(originString, httpResponse);
         // .基础数据
-        String requestURI = httpRequest.getRequestURI();
         String origin = httpRequest.getHeader(ORIGIN);
         InputStream inputStream = httpRequest.getInputStream();
         //

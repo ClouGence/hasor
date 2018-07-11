@@ -4,12 +4,15 @@
     <hasor.environmentVar>
         <!-- RSF对外提供服务的IP -->
         <RSF_SERVICE_IP>127.0.0.1</RSF_SERVICE_IP>
-        <!-- RSF    服务端口 -->
-        <RSF_SERVICE_PORT>2170</RSF_SERVICE_PORT>
-        <!-- Hprose 服务端口 -->
-        <HPROSE_SERVICE_PORT>2171</HPROSE_SERVICE_PORT>
+
         <!-- Telnet 控制台端口 -->
-        <TCONSOLE_PORT>2172</TCONSOLE_PORT>
+        <TCONSOLE_PORT>2170</TCONSOLE_PORT>
+        <!-- RSF    服务端口 -->
+        <RSF_SERVICE_PORT>2171</RSF_SERVICE_PORT>
+        <!-- Hprose 服务端口 -->
+        <HPROSE_SERVICE_PORT>2172</HPROSE_SERVICE_PORT>
+        <!-- Hprose 服务端口 -->
+        <HTTP_SERVICE_PORT>2173</HTTP_SERVICE_PORT>
     </hasor.environmentVar>
 
 </config>

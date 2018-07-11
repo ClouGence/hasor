@@ -1,4 +1,4 @@
-package net.hasor.rsf.protocol.hprose;
+package net.hasor.rsf.protocol.http_hprose;
 import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 /**
  * 常量

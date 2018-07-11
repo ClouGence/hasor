@@ -43,14 +43,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class HttpCoder extends ChannelDuplexHandler {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    private WorkStatus                  workStatus;
-    private RsfContext                  rsfContext;
-    private HttpHandler                 httpHandler;
-    private Connector                   connector;
-    private RsfHttpRequestObject        httpRequest;
-    private RsfHttpResponseObject       httpResponse;
-    private HttpHandler.ResponseEncoder encoder;
+    protected Logger                      logger = LoggerFactory.getLogger(getClass());
+    private   WorkStatus                  workStatus;
+    private   RsfContext                  rsfContext;
+    private   HttpHandler                 httpHandler;
+    private   Connector                   connector;
+    private   RsfHttpRequestObject        httpRequest;
+    private   RsfHttpResponseObject       httpResponse;
+    private   HttpHandler.ResponseEncoder encoder;
     //
     public HttpCoder(RsfContext rsfContext, Connector connector, HttpHandler httpHandler) {
         this.rsfContext = rsfContext;
@@ -174,8 +174,10 @@ public class HttpCoder extends ChannelDuplexHandler {
         };
         this.httpHandler.receivedRequest(this.httpRequest, this.httpResponse, httpResult);
         if (!atomicBoolean.get()) {
-            this.httpResponse.sendError(ProtocolStatus.InvokeError, "the server didn't respond");
-            ctx.writeAndFlush(this.httpResponse).channel().close().sync();
+            if (this.httpResponse.getStatus() == 0) {
+                this.httpResponse.sendError(ProtocolStatus.InvokeError, "the server didn't respond");
+            }
+            this.write(ctx, this.httpResponse.getHttpResponse(), null);
             return;
         }
         //

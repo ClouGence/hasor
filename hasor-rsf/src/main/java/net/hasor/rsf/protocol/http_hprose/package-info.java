@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Hprose RPC协议 数据包编码器和解码器。
+ * Hprose Http RPC协议 数据包编码器和解码器。
  */
-package net.hasor.rsf.protocol.hprose;
+package net.hasor.rsf.protocol.http_hprose;

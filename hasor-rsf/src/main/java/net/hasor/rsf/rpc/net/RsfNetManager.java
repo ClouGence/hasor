@@ -30,7 +30,7 @@ import java.util.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfNetManager {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected     Logger                    logger = LoggerFactory.getLogger(getClass());
     private final RsfEnvironment            rsfEnvironment;     // RSF环境
     private final ReceivedAdapter           receivedAdapter;    // 负责汇总所有来自底层网络的 RequestInfo、ResponseInfo消息
     private final Map<String, Connector>    protocolConnector;  // 不同协议都有自己独立的‘RPC协议连接器’
@@ -112,9 +112,7 @@ public class RsfNetManager {
                 this.protocolConnector.put(protocol, connector);
             } catch (Throwable e) {
                 this.logger.error("connector[{}] failed -> {}", protocol, e.getMessage(), e);
-                if (defaultProtocol.equals(protocol)) {
-                    throw new IllegalStateException("default connector start failed.", e);//默认连接器启动失败
-                }
+                throw new IllegalStateException("connector " + protocol + " start failed.", e);//默认连接器启动失败
             }
         }
         //

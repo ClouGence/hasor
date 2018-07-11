@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.hprose;
+package net.hasor.rsf.protocol.http_hprose;
 import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
 import net.hasor.rsf.*;
@@ -32,12 +32,14 @@ import static io.netty.handler.codec.http.HttpHeaders.Names.ORIGIN;
 public class AutoSetAliasName extends RsfModule implements EventListener<Object> {
     @Override
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
+        // .添加 Listener 用于监听 Provider、Consumer 的注册事件，在事件处理中补增 Hprose 别名。
         RsfEnvironment env = apiBinder.getEnvironment();
         EventContext eventContext = env.getEventContext();
         eventContext.addListener(RsfEvent.Rsf_ProviderService, this);
         eventContext.addListener(RsfEvent.Rsf_ConsumerService, this);
         //
-        apiBinder.bindFilter(HproseConstants.HPROSE, new RsfFilter() {
+        // .增加 RsfFilter，在请求头中新增一个 Option，用于增加 Http 跨域调用的 Header。
+        apiBinder.bindFilter(HproseConstants.HPROSE + "_AliasNameFilter", new RsfFilter() {
             public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
                 response.addOption(LOCATION, request.getOption(LOCATION));
                 response.addOption(ORIGIN, request.getOption(ORIGIN));

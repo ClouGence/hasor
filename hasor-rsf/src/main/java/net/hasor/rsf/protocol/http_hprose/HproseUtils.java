@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.rsf.protocol.hprose;
+package net.hasor.rsf.protocol.http_hprose;
 import io.netty.buffer.ByteBuf;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
