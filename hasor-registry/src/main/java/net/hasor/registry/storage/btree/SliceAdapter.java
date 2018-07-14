@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.registry.storage.btree;
+import net.hasor.registry.storage.NoDataException;
 import net.hasor.registry.storage.block.Block;
 import net.hasor.registry.storage.block.BlockChannel;
 import net.hasor.registry.storage.block.BlockFileAdapter;
+import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +27,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 /**
  * B-Tree 索引操作类
  * @version : 2018年5月28日
@@ -38,8 +39,7 @@ public class SliceAdapter {
     protected static Logger           logger = LoggerFactory.getLogger(SliceAdapter.class);
     private          int              entryPoint;      // 入口点
     private          byte[]           slicePool;       // slice 使用状态池，所有 bit状态位的总数等于 maxEchoSequence
-    private          ByteBuffer       slicePosition;   // slice 数据块所在真实位置
-    private          List<Long>       changeList;//
+    private          ByteBuffer       slicePositionPool;// slice 数据块所在真实位置
     //
     private          BlockFileAdapter fileAdapter;     //
     private          int              splitSize;       // 切块大小
@@ -47,22 +47,48 @@ public class SliceAdapter {
     private          int              echoSequence;    // 当前自旋值
     //
     //
+    //
+    /** 初始化一个全新的索引 */
+    public static SliceAdapter initIndex(int splitSize, int slicePoolSize, BlockFileAdapter fileAdapter) throws IOException {
+        if (splitSize < 3 || slicePoolSize < 1) {
+            throw new IndexOutOfBoundsException("splitSize < 3 or slicePoolSize < 1");
+        }
+        if (fileAdapter.fileSize() > 0) {
+            throw new IndexOutOfBoundsException("file is not empty.");
+        }
+        //
+        // 根据参数创建 SliceAdapter
+        SliceAdapter adapter = new SliceAdapter();
+        adapter.splitSize = splitSize;
+        adapter.echoSequence = 0;
+        adapter.maxEchoSequence = slicePoolSize * 8;
+        int slicePositionBufferSize = adapter.maxEchoSequence * 8; // all of slice position
+        logger.info("realPoolSize= " + slicePoolSize + " ,echoSequence=" + adapter.maxEchoSequence + " ,slicePositionBufferSize=" + slicePositionBufferSize);
+        adapter.slicePositionPool = ByteBuffer.allocateDirect(slicePositionBufferSize);
+        adapter.slicePool = new byte[slicePoolSize];
+        for (int i = 0; i < adapter.slicePool.length; i++) {
+            adapter.slicePool[i] = -1;
+        }
+        adapter.entryPoint = -1;
+        adapter.fileAdapter = fileAdapter;
+        adapter.submit();
+        return adapter;
+    }
     /** 从文件中读取一个索引 */
     public static SliceAdapter loadIndex(BlockFileAdapter fileAdapter) throws IOException {
-        Block firstBlock = fileAdapter.firstBlock();
-        if (firstBlock == null) {
+        Block headerBlock = fileAdapter.firstBlock();
+        if (headerBlock == null) {
             throw new IOException("cannot load empty file.");
         }
         //
-        BlockChannel blockChannel = fileAdapter.getBlockChannel(firstBlock);
-        ByteBuffer headBuffer = ByteBuffer.allocate(11);
-        int readSize1 = blockChannel.read(headBuffer);
-        if (readSize1 != 11) {
-            throw new IOException("file is damaged.");
+        BlockChannel blockChannel = fileAdapter.getBlockChannel(headerBlock);
+        ByteBuffer headBuffer = ByteBuffer.allocate(10);
+        int readSize = blockChannel.read(headBuffer);
+        if (readSize != 10) {
+            throw new IOException("bad index header .");
         }
         //
         headBuffer.flip();
-        byte version = headBuffer.get();                    // 1 bytes - 版本
         int splitSize = headBuffer.getShort();              // 2 bytes - Slice 切分大小
         int entryPoint = headBuffer.getInt();               // 4 bytes - Btree 的树根 SliceID
         int splitStatusBytesLength = headBuffer.getInt();   // 4 bytes - 状态池字节大小
@@ -80,101 +106,98 @@ public class SliceAdapter {
         adapter.echoSequence = 0;
         //
         // slice 数据真实位置使用一个 long 存储，总长度等于 maxEchoSequence 乘 8
-        adapter.slicePosition = ByteBuffer.allocateDirect(adapter.maxEchoSequence * 8);
-        int readSize2 = blockChannel.read(adapter.slicePosition);
-        if (readSize2 != adapter.slicePosition.capacity()) {
+        adapter.slicePositionPool = ByteBuffer.allocateDirect(adapter.maxEchoSequence * 8);
+        int readSize2 = blockChannel.read(adapter.slicePositionPool);
+        if (readSize2 != adapter.slicePositionPool.capacity()) {
             throw new IOException("file is damaged.");
         }
+        blockChannel.close();
         //
         adapter.fileAdapter = fileAdapter;
+        adapter.init();
         return adapter;
     }
-    //
-    /** 初始化一个全新的索引 */
-    public static SliceAdapter initIndex(int splitSize, int slicePoolSize, BlockFileAdapter fileAdapter) throws IOException {
-        if (splitSize < 3 || slicePoolSize < 1) {
-            throw new IndexOutOfBoundsException("splitSize < 3 or slicePoolSize < 1");
-        }
-        //
-        SliceAdapter adapter = new SliceAdapter();
-        adapter.splitSize = splitSize;
-        int realPoolBytesLength = Math.abs(slicePoolSize) / 8;
-        realPoolBytesLength = realPoolBytesLength == 0 ? 1 : realPoolBytesLength;
-        adapter.echoSequence = 0;
-        adapter.maxEchoSequence = realPoolBytesLength * 8;
-        int slicePositionDirectBufferSize = adapter.maxEchoSequence * 8; // all of slice position
-        logger.info("realPoolSize= " + realPoolBytesLength + " ,echoSequence=" + adapter.maxEchoSequence + " ,slicePositionDirectBufferSize=" + slicePositionDirectBufferSize);
-        //
-        adapter.slicePosition = ByteBuffer.allocateDirect(slicePositionDirectBufferSize);
-        adapter.slicePool = new byte[realPoolBytesLength];
-        for (int i = 0; i < adapter.slicePool.length; i++) {
-            adapter.slicePool[i] = -1;
-        }
-        //
-        adapter.fileAdapter = fileAdapter;
-        adapter.submitStore(true);
-        return adapter;
+    private void init() {
     }
-    //
-    //
-    //
-    //
-    //
-    private Map<String, byte[]> sliceDataMap = new ConcurrentHashMap<String, byte[]>();
-    private void deleteBlock(long position) {
-        sliceDataMap.remove(String.valueOf(position));
-        System.out.println("releaseBlock-" + position);
-    }
-    //
-    private ByteBuffer readBlock(long position) {
-        String sliceKey = String.valueOf(position);
-        if (!sliceDataMap.containsKey(sliceKey)) {
-            return null;
-        }
-        return ByteBuffer.wrap(sliceDataMap.get(sliceKey));
-    }
-    private long writeBlock(ByteBuffer dataBufer) {
-        long timeMillis = Math.abs(new Random(System.currentTimeMillis()).nextLong());
-        while (this.sliceDataMap.containsKey(String.valueOf(timeMillis))) {
-            timeMillis = Math.abs(new Random(System.currentTimeMillis()).nextLong());
-        }
-        //
-        byte[] temp = new byte[dataBufer.capacity()];
-        dataBufer.flip();
-        dataBufer.get(temp);
-        sliceDataMap.put(String.valueOf(timeMillis), temp);
-        return timeMillis;
-    }
-    /**递交存储改动，保存到磁盘上*/
-    private void submitStore(boolean init) throws IOException {
-        ByteBuffer submitData = ByteBuffer.allocate(11 + this.slicePool.length + this.slicePool.length * 8 * 8);
-        //
-        submitData.put((byte) 1);                   // 1 bytes - 版本
-        submitData.putShort((short) this.splitSize);// 2 bytes - Slice 切分大小
-        submitData.putInt(this.entryPoint);         // 4 bytes - Btree 的树根 SliceID
-        submitData.putInt(this.slicePool.length);   // 4 bytes - 状态池字节大小
-        //
-        submitData.put(this.slicePool);
-        submitData.put(this.slicePosition);
-        //
-        if (init) {
-            Block block = this.fileAdapter.firstBlock();
-            if (block == null) {
-                block = this.fileAdapter.eofBlock();
-            }
-            OutputStream outputStream = this.fileAdapter.getOutputStream(block);
-            byte[] data = new byte[submitData.capacity()];
-            submitData.flip();
-            submitData.get(data);
-            outputStream.write(data);
-            outputStream.flush();
-            outputStream.close();
-        }
-    }
-    //
     public void close() throws IOException {
         this.fileAdapter.close();
     }
+    //
+    //
+    /**递交存储改动，保存到磁盘上*/
+    public void submit() throws IOException {
+        //
+        // 判断 headerVersion 来确定，主次版本
+        Block block = this.fileAdapter.firstBlock();
+        if (block == null) {
+            block = this.fileAdapter.eofBlock();
+        }
+        ByteBuffer submitData = ByteBuffer.allocate(10 + this.slicePool.length + this.slicePool.length * 8 * 8);
+        submitData.putShort((short) this.splitSize);// 2 bytes - Slice 切分大小
+        submitData.putInt(this.entryPoint);         // 4 bytes - Btree 的树根 SliceID
+        submitData.putInt(this.slicePool.length);   // 4 bytes - 状态池字节大小
+        submitData.put(this.slicePool);
+        this.slicePositionPool.flip();
+        this.slicePositionPool.position(0);
+        submitData.put(this.slicePositionPool);
+        //
+        OutputStream outputStream = this.fileAdapter.getOutputStream(block);
+        byte[] data = new byte[submitData.capacity()];
+        submitData.flip();
+        submitData.get(data);
+        outputStream.write(data);
+        outputStream.flush();
+        outputStream.close();
+        //
+        for (Long blockPosition : this.deleteBlock) {
+            Block delBlock = this.fileAdapter.findBlock(blockPosition);
+            this.fileAdapter.deleteBlock(delBlock);
+        }
+        this.deleteBlock.clear();
+    }
+    //
+    //
+    //
+    //
+    private List<Long> deleteBlock = new ArrayList<Long>(100);
+    private void deleteBlock(long position) {
+        this.deleteBlock.add(position);
+    }
+    private ByteBuffer readBlock(long position) {
+        try {
+            Block block = this.fileAdapter.findBlock(position);
+            if (block == null) {
+                throw new NoDataException("position " + position + " has no any Block");
+            }
+            if (block.isInvalid()) {
+                throw new NoDataException("position " + position + " data is invalid.");
+            }
+            //
+            BlockChannel blockChannel = this.fileAdapter.getBlockChannel(block);
+            ByteBuffer allocate = ByteBuffer.allocate((int) block.getDataSize());
+            blockChannel.read(allocate);
+            blockChannel.close();
+            return allocate;
+            //
+        } catch (Exception e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        } finally {
+        }
+    }
+    private long writeBlock(ByteBuffer dataBufer) {
+        try {
+            dataBufer.flip();
+            Block freeSpace = this.fileAdapter.eofBlock();
+            BlockChannel blockChannel = this.fileAdapter.getBlockChannel(freeSpace);
+            blockChannel.write(dataBufer);
+            blockChannel.close();
+            //
+            return freeSpace.getPosition();
+        } catch (Throwable e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
+    }
+    //
     //
     //
     //
@@ -182,20 +205,6 @@ public class SliceAdapter {
     //
     //
     private SliceAdapter() {
-    }
-    /*获取跟 Slice */
-    private Slice getEntryPoint() {
-        Slice root = getSlice(entryPoint);
-        if (root != null) {
-            return root;
-        }
-        //
-        root = new Slice();
-        root.setSliceID(requestNewSliceID());
-        root.setChildrensKeys(new Node[] {});
-        this.storeSlice(root);
-        //
-        return root;
     }
     /*分配一个 Slice ID*/
     private int requestNewSliceID() {
@@ -221,24 +230,50 @@ public class SliceAdapter {
     }
     /*释放一个 Slice ID*/
     private void releaseSlice(int sliceID) {
-        // .清理状态
+        // .释放SliceID
         int byteIndex = sliceID / 8;
         int bitIndex = sliceID % 8;
         this.slicePool[byteIndex] = (byte) (this.slicePool[byteIndex] | (1 << bitIndex));
-        // .获取Block位置，然后删除它
-        long position = this.slicePosition.getLong(sliceID * 8);
+        // .删除区块
+        long position = this.getSlicePosition(sliceID);
         this.deleteBlock(position);
+    }
+    protected long getSlicePosition(int sliceID) {
+        return this.slicePositionPool.getLong(sliceID * 8);
+    }
+    protected void setSlicePosition(int sliceID, long slicePosition) {
+        this.slicePositionPool.putLong(sliceID * 8, slicePosition);
     }
     //
     //
+    //
+    /*获取跟 Slice */
+    private Slice getEntryPoint() {
+        if (entryPoint != -1) {
+            return getSlice(entryPoint);
+        }
+        //
+        Slice root = new Slice();
+        root.setSliceID(requestNewSliceID());
+        root.setChildrensKeys(new Node[] {});
+        this.storeSlice(root);
+        this.updataEntryPoint(root.getSliceID());
+        //
+        return root;
+    }
+    private void updataEntryPoint(int entryPoint) {
+        this.entryPoint = entryPoint;
+    }
+    /* 根据 sliceID 获取 Slice */
     protected Slice getSlice(int sliceID) {
         // .根据 sliceID 计算slicePosition位置，然后取出 slice 的 Position
-        long positionLong = this.slicePosition.getLong(sliceID * 8);
+        long positionLong = this.getSlicePosition(sliceID);
         ByteBuffer byteBuffer = this.readBlock(positionLong);
         if (byteBuffer == null) {
             return null;
         }
         //
+        byteBuffer.flip();
         int dat_sliceID = byteBuffer.getInt();
         Slice slice = new Slice();
         slice.setSliceID(dat_sliceID);
@@ -258,14 +293,13 @@ public class SliceAdapter {
         slice.setChildrensKeys(dataArray);
         return slice;
     }
-    //
-    //
+    /* 保存 Slice 返回数据存储的位置 */
     protected long storeSlice(Slice sliceData) {
         // .计算 Slice 所需长度 (最大不过 512K)
         int dataLength = sliceData.getChildrensKeys().length * 16 + 6; // Node length is long + long = 8 + 8
         //
         // .写数据到 Buffer
-        ByteBuffer writeBuffer = ByteBuffer.allocateDirect(dataLength);
+        ByteBuffer writeBuffer = ByteBuffer.allocate(dataLength);
         writeBuffer.putInt(sliceData.getSliceID());
         writeBuffer.putShort((short) sliceData.getChildrensKeys().length);
         //
@@ -278,9 +312,10 @@ public class SliceAdapter {
             writeBuffer.putLong(dataKey);
             writeBuffer.putLong(dataPosition);
         }
-        // .保存到 Block
+        // .保存到 Block ,并更新索引元信息
         long dataPosition = this.writeBlock(writeBuffer);
-        this.slicePosition.putLong(sliceData.getSliceID() * 8, dataPosition);
+        this.setSlicePosition(sliceData.getSliceID(), dataPosition);
+        //
         return sliceData.getSliceID();
     }
     //
@@ -334,16 +369,7 @@ public class SliceAdapter {
         System.arraycopy(childrensNodes, atPosition, new_childrensNodes, atPosition + 1, childrensNodes.length - atPosition);
         atSlice.setChildrensKeys(new_childrensNodes);
         //
-        boolean operStatus = false;
-        try {
-            resultSlice = splitAndStore(resultSlice, this.splitSize);
-            operStatus = true;
-            return resultSlice;
-        } finally {
-            if (operStatus) {
-                submitStore(false);
-            }
-        }
+        return splitAndStore(resultSlice, this.splitSize);
     }
     private void insertToParent(TreeNode treeNode, Slice atSlice, int parentSlice) {
         Node[] childrensNodes = atSlice.getChildrensKeys();
@@ -430,9 +456,6 @@ public class SliceAdapter {
         //
         return sliceResult;
     }
-    private void updataEntryPoint(int entryPoint) {
-        this.entryPoint = entryPoint;
-    }
     //
     //
     //
@@ -466,7 +489,7 @@ public class SliceAdapter {
         BlockFileAdapter adapter = new BlockFileAdapter(new File("bTree.dat"));
         Random random = new Random(System.currentTimeMillis());
         //
-        if (bTree.exists()) {
+        if (adapter.fileSize() > 0) {
             sliceAdapter = SliceAdapter.loadIndex(adapter);
         } else {
             int slicePoolSize = 1024 + random.nextInt(512);
@@ -482,6 +505,8 @@ public class SliceAdapter {
             sliceAdapter.insertData(new DataNode(randomLong));
             counter++;
         }
+        //
+        sliceAdapter.submit();
         //
         System.out.println("enteryKey = " + sliceAdapter.entryPoint);
         sliceAdapter.printNodeTree((int) sliceAdapter.entryPoint, 1);

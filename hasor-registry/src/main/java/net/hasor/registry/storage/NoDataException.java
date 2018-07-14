@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.registry.storage.block;
-import java.nio.ByteBuffer;
+package net.hasor.registry.storage;
 /**
- * 文件格式为：0 到多个 Block 序列。
- * 单个 Block 格式为：<blockSize 8-Byte> + <dataSize 8-Byte> + <data bytes n-Byte>
- * @version : 2018年5月7日
+ * B-Tree 索引操作类
+ * @version : 2018年5月28日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class BlockManager {
-    public Block freeBlock(int dataLength) {
-        return null;
-    }
-    //
-    public void writeData(Block atBlock, ByteBuffer writeBuffer) {
+public class NoDataException extends RuntimeException {
+    public NoDataException(String s) {
+        super(s);
     }
 }

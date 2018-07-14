@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.registry.storage.block;
-import net.hasor.registry.storage.cache.Cache;
 import net.hasor.utils.IOUtils;
 import sun.misc.Cleaner;
 import sun.nio.ch.DirectBuffer;
@@ -30,15 +29,13 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class BlockFileAdapter {
-    private static final long               DEL_MASK       = 0x8000000000000000L;
-    private static final long               NORMAL_MASK    = 0x7FFFFFFFFFFFFFFFL;
-    private              File               blockFileName  = null;
-    private              RandomAccessFile   ioAccessFile   = null;
-    private              ByteBuffer         ioBuffer       = null;
-    private              FileChannel        isFileChannel  = null;
-    private              AtomicLong         curentStreamID = null;
-    private              Block              curentBlock    = null;
-    private              Cache<Long, Block> blockCache     = null;
+    private static final long             DEL_MASK       = 0x8000000000000000L;
+    private static final long             NORMAL_MASK    = 0x7FFFFFFFFFFFFFFFL;
+    private              File             blockFileName  = null;
+    private              RandomAccessFile ioAccessFile   = null;
+    private              FileChannel      isFileChannel  = null;
+    private              AtomicLong       curentStreamID = null;
+    private              Block            curentBlock    = null;
     //
     //
     public BlockFileAdapter(File blockFileName) throws IOException {
@@ -47,20 +44,9 @@ public class BlockFileAdapter {
     public BlockFileAdapter(File blockFileName, int bufferSize) throws IOException {
         this.blockFileName = blockFileName;
         this.ioAccessFile = new RandomAccessFile(blockFileName, "rw");
-        this.ioBuffer = ByteBuffer.allocate(bufferSize > 4096 ? bufferSize : 4096); // 最小 4K
         this.isFileChannel = this.ioAccessFile.getChannel();
         this.curentStreamID = new AtomicLong(0);
         this.curentBlock = null;
-        this.blockCache = new Cache<Long, Block>() {
-            @Override
-            public Block fromCache(Long blockPosition) {
-                return null;
-            }
-            @Override
-            public int hashCode() {
-                return super.hashCode();
-            }
-        };
     }
     //
     /** 存储的文件 */
@@ -99,6 +85,7 @@ public class BlockFileAdapter {
     /** 获取第一个Block */
     public Block firstBlock() throws IOException {
         this.ioSeekTo(0);
+        this.curentBlock = null;
         return this.nextBlock();
     }
     //
@@ -115,10 +102,6 @@ public class BlockFileAdapter {
     //
     /** 基于 atBlock 查找下一个最近的自由空间 */
     public Block findFreeSpace(long blockPosition) throws IOException {
-        Block fromCache = this.blockCache.fromCache(blockPosition);
-        if (fromCache != null) {
-            return findFreeSpace(fromCache);
-        }
         //
         ioSeekTo(blockPosition);
         Block readBlock = readBlock();
@@ -156,11 +139,6 @@ public class BlockFileAdapter {
     }
     /**  查找 blockPosition 位置之后的一个 Block */
     public Block nextBlock(long blockPosition) throws IOException {
-        Block fromCache = this.blockCache.fromCache(blockPosition);
-        if (fromCache != null) {
-            return fromCache;
-        }
-        //
         ioSeekTo(blockPosition);
         return nextBlock();
     }
@@ -203,6 +181,15 @@ public class BlockFileAdapter {
         return new Block(blockPosition, dataSize, blockSize, invalid, false);
     }
     //
+    /**  查找 blockPosition 位置之后的一个 Block */
+    public Block findBlock(long blockPosition) throws IOException {
+        ioSeekTo(blockPosition);
+        Block readBlock = readBlock();
+        if (readBlock == null) {
+            return null;
+        }
+        return readBlock();
+    }
     /** 基于 refBlock 的信息，在当前 File 中查找对应的 Block */
     public Block findBlock(Block refBlock) throws IOException {
         long position = refBlock.getPosition();
@@ -257,21 +244,6 @@ public class BlockFileAdapter {
             return;
         }
         throw new IOException("getInputStream failed.");
-    }
-    //
-    /** 删除 Block */
-    public boolean deleteBlock(long blockPosition) throws IOException {
-        Block fromCache = this.blockCache.fromCache(blockPosition);
-        if (fromCache != null) {
-            return deleteBlock(fromCache);
-        }
-        //
-        ioSeekTo(blockPosition);
-        Block readBlock = readBlock();
-        if (readBlock == null) {
-            return false;
-        }
-        return deleteBlock(readBlock);
     }
     /** 删除 Block */
     public boolean deleteBlock(Block block) throws IOException {
@@ -606,7 +578,9 @@ public class BlockFileAdapter {
             }
             //
             try {
-                return ioWriteToByteBuffer(src);
+                int write = ioWriteToByteBuffer(src);
+                writerIndex += write;
+                return write;
             } finally {
                 if (src.isDirect() && src instanceof DirectBuffer) {
                     Cleaner cleaner = ((DirectBuffer) src).cleaner();
@@ -626,6 +600,17 @@ public class BlockFileAdapter {
         }
         @Override
         public void close() throws IOException {
+            checkStreamClose(isClose, streamID);
+            /*--*/
+            if (this.writerIndex > 0) {
+                isFileChannel.position(this.block.getPosition());
+                long blockSize = this.block.getBlockSize();
+                if (this.block.isEof()) {
+                    blockSize = this.writerIndex;
+                }
+                ioWriteHeader(blockSize, this.writerIndex);
+            }
+            /*--*/
             this.isClose = true;
             releaseStream(this.streamID);
         }
