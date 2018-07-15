@@ -19,18 +19,15 @@ import net.hasor.registry.storage.block.Block;
 import net.hasor.registry.storage.block.BlockChannel;
 import net.hasor.registry.storage.block.BlockFileAdapter;
 import net.hasor.utils.ExceptionUtils;
-import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 /**
- * B-Tree 索引操作类
+ * B-Tree 索引操作类，保存机制为 copy on write。
  * @version : 2018年5月28日
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -49,6 +46,9 @@ public class SliceAdapter {
     //
     private SliceAdapter() {
     }
+    //
+    // ------------------------------------------------------------------------------------------------------ Block 存储和回收
+    //
     /** 初始化一个全新的索引 */
     public static SliceAdapter initIndex(int sliceSize, int sliceAreaSize, BlockFileAdapter fileAdapter) throws IOException {
         if (sliceSize < 3 || sliceAreaSize < 1) {
@@ -72,9 +72,10 @@ public class SliceAdapter {
         }
         adapter.entryPoint = -1;
         adapter.fileAdapter = fileAdapter;
-        adapter.submit();
+        adapter.submitToFile();
         return adapter;
     }
+    //
     /** 从文件中读取一个索引 */
     public static SliceAdapter loadIndex(BlockFileAdapter fileAdapter) throws IOException {
         Block headerBlock = fileAdapter.firstBlock();
@@ -115,13 +116,14 @@ public class SliceAdapter {
         adapter.fileAdapter = fileAdapter;
         return adapter;
     }
+    //
+    /** 关闭索引文件 */
     public void close() throws IOException {
         this.fileAdapter.close();
     }
     //
-    //
-    /**递交Header存储到磁盘上*/
-    public void submit() throws IOException {
+    /** 递交所有操作到磁盘上（其实就是把头信息保存到磁盘上）*/
+    public void submitToFile() throws IOException {
         //
         // 判断 headerVersion 来确定，主次版本
         Block block = this.fileAdapter.firstBlock();
@@ -158,15 +160,15 @@ public class SliceAdapter {
         }
     }
     //
+    // ------------------------------------------------------------------------------------------------------ Block 存储和回收
     //
-    //
-    //
-    //
-    // ------------------------------------------------------------------------------------------------------
+    // - 删除 Block 数据（真正的删除操作在 commit 环节进行）
     private List<Long> deleteBlock = new ArrayList<Long>(100);
     private void deleteBlock(long position) {
         this.deleteBlock.add(position);
     }
+    //
+    // - 读取 Block 数据
     private ByteBuffer readBlock(long position) {
         try {
             Block block = this.fileAdapter.findBlock(position);
@@ -187,6 +189,8 @@ public class SliceAdapter {
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
+    //
+    // - 保存 Block 数据
     private long writeBlock(ByteBuffer dataBufer) {
         try {
             dataBufer.flip();
@@ -201,8 +205,9 @@ public class SliceAdapter {
         }
     }
     //
-    // ------------------------------------------------------------------------------------------------------
-    /*分配一个 Slice ID*/
+    // ------------------------------------------------------------------------------------------------------ Slice 存储和回收
+    //
+    // - 分配一个 Slice ID
     private int requestNewSliceID() {
         int counter = 0;
         while (true) {
@@ -225,27 +230,34 @@ public class SliceAdapter {
             }
         }
     }
-    /*释放一个 Slice ID*/
+    //
+    // - 释放一个 Slice
     private void releaseSlice(int sliceID) {
-        // .释放SliceID
+        // 释放过程分为两个操作，1.释放SliceID，2.删除对应的 Block块。其中第二步可以失败，不影响删除进程
+        // - .释放SliceID
         int byteIndex = sliceID / 8;
         int bitIndex = sliceID % 8;
         byte byteValue = this.slicePool.get(byteIndex);
         this.slicePool.put(byteIndex, (byte) (byteValue | (1 << bitIndex)));
-        // .删除区块
+        // - 删除区块
         long position = this.getSlicePosition(sliceID);
         this.deleteBlock(position);
     }
+    //
+    // - 强制获取某个 Slice 的数据位置（该 Slice 有可能未被分配或者已经被释放）
     private long getSlicePosition(int sliceID) {
         return this.slicePositionPool.getLong(sliceID * 8);
     }
+    //
+    // - 强制更新某个 Slice 的数据位置（该 Slice 有可能未被分配或者已经被释放）
     private void setSlicePosition(int sliceID, long slicePosition) {
         this.slicePositionPool.putLong(sliceID * 8, slicePosition);
     }
     //
-    // ------------------------------------------------------------------------------------------------------
-    /*获取跟 Slice */
-    private Slice getEntryPoint() {
+    // ------------------------------------------------------------------------------------------------------ 索引功能
+    //
+    /** 获取跟 Slice */
+    public Slice getEntryPoint() {
         if (entryPoint != -1) {
             return getSlice(entryPoint);
         }
@@ -258,11 +270,14 @@ public class SliceAdapter {
         //
         return root;
     }
+    //
+    // - 更新 entryPoint
     private void updataEntryPoint(int entryPoint) {
         this.entryPoint = entryPoint;
     }
-    /* 根据 sliceID 获取 Slice */
-    protected Slice getSlice(int sliceID) {
+    //
+    /** 根据 sliceID 获取 Slice */
+    public Slice getSlice(int sliceID) {
         // .根据 sliceID 计算slicePosition位置，然后取出 slice 的 Position
         long positionLong = this.getSlicePosition(sliceID);
         ByteBuffer byteBuffer = this.readBlock(positionLong);
@@ -290,7 +305,8 @@ public class SliceAdapter {
         slice.setChildrensKeys(dataArray);
         return slice;
     }
-    /* 保存 Slice 返回数据存储的位置 */
+    //
+    /** 保存 Slice 返回数据存储的位置，保存机制为 copy on write。 */
     protected long storeSlice(Slice sliceData) {
         // .计算 Slice 所需长度 (最大不过 512K)
         int dataLength = sliceData.getChildrensKeys().length * 16 + 6; // Node length is long + long = 8 + 8
@@ -316,14 +332,14 @@ public class SliceAdapter {
         return sliceData.getSliceID();
     }
     //
-    //
-    // -最近的（可操作）
+    /** 根据 hashKey 查找所处 Slice，或最接近的 Slice。 */
     public ResultSlice nearSlice(long hashKey) {
         Slice slice = this.getEntryPoint();
         return nearSlice(hashKey, slice, 0, -1);
     }
+    //
+    // - 根据 hashKey 查找最接近的 Slice 并以 ResultSlice 方式返回
     private ResultSlice nearSlice(long hashKey, Slice atSlice, int positionOfatSlice, int parentSliceID) {
-        //
         // .已经是叶子节点了，不可能在遍历了
         Node[] childrensNodes = atSlice.getChildrensKeys();
         if (childrensNodes.length == 0) {
@@ -350,6 +366,7 @@ public class SliceAdapter {
         return new ResultSlice(parentSliceID, atSlice, childrensNodes.length);
     }
     //
+    /** 插入数据到索引中 */
     public ResultSlice insertData(DataNode dataSlice) throws IOException {
         // .找到最近的 Slice
         ResultSlice resultSlice = this.nearSlice(dataSlice.getDataKey());
@@ -367,8 +384,10 @@ public class SliceAdapter {
         //
         return splitAndStore(resultSlice, this.sliceSize);
     }
-    private void insertToParent(TreeNode treeNode, Slice atSlice, int parentSlice) {
-        Node[] childrensNodes = atSlice.getChildrensKeys();
+    //
+    // - 将 treeNode 插入到 parentSlice 所表示的 parent 中。
+    private void insertToParent(TreeNode treeNode, Slice parentSlice, int parentSliceID) {
+        Node[] childrensNodes = parentSlice.getChildrensKeys();
         int atPosition = -1;
         for (int i = 0; i < childrensNodes.length; i++) {
             atPosition = i;
@@ -384,11 +403,12 @@ public class SliceAdapter {
         System.arraycopy(childrensNodes, 0, new_childrensNodes, 0, atPosition);
         System.arraycopy(childrensNodes, atPosition, new_childrensNodes, atPosition + 1, childrensNodes.length - atPosition);
         //
-        atSlice.setChildrensKeys(new_childrensNodes);
+        parentSlice.setChildrensKeys(new_childrensNodes);
         //
-        splitAndStore(new ResultSlice(parentSlice, atSlice, atPosition), this.sliceSize);
+        splitAndStore(new ResultSlice(parentSliceID, parentSlice, atPosition), this.sliceSize);
     }
-    // -根据分裂因子进行分裂，分裂后返回依据的父节点
+    //
+    // - 根据分裂因子进行分裂，分裂后返回依据的父节点
     private ResultSlice splitAndStore(ResultSlice sliceResult, int maxRecord) {
         //
         // .容量还够的情况下不进行分裂
@@ -451,62 +471,5 @@ public class SliceAdapter {
         );
         //
         return sliceResult;
-    }
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    protected void printNodeTree(int sliceID, int depth) {
-        depth = (depth < 1) ? 1 : depth;
-        Slice slice = getSlice(sliceID);
-        if (slice == null) {
-            System.out.println(sliceID);
-        }
-        for (Node node : slice.getChildrensKeys()) {
-            if (node.isData()) {
-                System.out.println("Data " + StringUtils.fixedString(' ', depth * 3) + node.getDataKey() + //
-                        "\tslice-(" + slice.getSliceID() + ")");
-            } else {
-                System.out.println("Index" + StringUtils.fixedString(' ', depth * 3) + node.getDataKey() +//
-                        "\tslice-(" + slice.getSliceID() + ")");
-                printNodeTree((int) node.getPosition(), depth + 1);
-            }
-            //
-        }
-    }
-    public static void main(String[] args) throws InterruptedException, IOException {
-        SliceAdapter sliceAdapter = null;
-        File bTree = new File("bTree.dat");
-        BlockFileAdapter adapter = new BlockFileAdapter(new File("bTree.dat"));
-        Random random = new Random(System.currentTimeMillis());
-        //
-        if (adapter.fileSize() > 0) {
-            sliceAdapter = SliceAdapter.loadIndex(adapter);
-        } else {
-            int slicePoolSize = 1024 + random.nextInt(512);
-            sliceAdapter = SliceAdapter.initIndex(5, slicePoolSize, adapter);
-        }
-        //
-        int counter = 0;
-        while (true) {
-            if (counter >= 300)
-                break;
-            long randomLong = random.nextLong();
-            System.out.println(randomLong);
-            sliceAdapter.insertData(new DataNode(randomLong));
-            //            sliceAdapter.insertData(new DataNode(counter));
-            counter++;
-        }
-        //
-        sliceAdapter.submit();
-        //
-        System.out.println("enteryKey = " + sliceAdapter.entryPoint);
-        sliceAdapter.printNodeTree((int) sliceAdapter.entryPoint, 1);
-        Thread.sleep(1000);
     }
 }
