@@ -19,7 +19,7 @@ package net.hasor.registry.storage.btree;
  * @version : 2018年5月28日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class DataNode extends Node {
+class DataNode extends Node {
     public DataNode(long dataKey) {
         super(dataKey);
     }

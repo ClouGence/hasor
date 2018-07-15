@@ -20,9 +20,8 @@ package net.hasor.registry.storage.btree;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class Slice {
-    private int    sliceID          = 0;       // 位置
-    private Node[] childrensKeys    = null;    // data keys
-    private byte   branchSaturation = 0;       // TreeNode 节点所占比例（100%）
+    private int    sliceID       = 0;       // 位置
+    private Node[] childrensKeys = null;    // data keys
     //
     Slice() {
     }

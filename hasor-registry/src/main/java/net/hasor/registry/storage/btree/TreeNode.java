@@ -19,7 +19,7 @@ package net.hasor.registry.storage.btree;
  * @version : 2018年5月28日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class TreeNode extends Node {
+class TreeNode extends Node {
     public TreeNode(long dataKey, int sliceID) {
         super(dataKey);
         this.setPosition(sliceID);
