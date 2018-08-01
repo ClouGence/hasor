@@ -24,7 +24,7 @@ import java.util.Map;
  * @version : 2016-08-03
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ValidWebPlugin extends WebModule implements WebPlugin, MappingSetup {
+public class ValidWebPlugin extends WebModule implements WebPlugin, MappingDiscoverer {
     private Map<Method, ValidDefinition> validMapping = null;
     //
     @Override
@@ -34,7 +34,7 @@ public class ValidWebPlugin extends WebModule implements WebPlugin, MappingSetup
         this.validMapping = new HashMap<Method, ValidDefinition>();
     }
     @Override
-    public void setup(MappingData mappingData) {
+    public void discover(Mapping mappingData) {
         Method[] methods = mappingData.getMethods();
         for (Method m : methods) {
             this.validMapping.put(m, new ValidDefinition(m));

@@ -19,7 +19,7 @@ package net.hasor.web;
  * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface MappingSetup {
+public interface MappingDiscoverer {
     /** 发现控制器 */
-    public void setup(MappingData mappingData);
+    public void discover(Mapping mappingData);
 }

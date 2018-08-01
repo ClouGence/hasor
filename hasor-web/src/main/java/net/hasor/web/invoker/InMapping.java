@@ -15,14 +15,14 @@
  */
 package net.hasor.web.invoker;
 import net.hasor.web.Invoker;
-import net.hasor.web.MappingData;
+import net.hasor.web.Mapping;
 
 import java.lang.reflect.Method;
 /**
  * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
  */
-interface InMapping extends MappingData {
+interface InMapping extends Mapping {
     /**
      * 首先测试路径是否匹配，然后判断Restful实例是否支持这个 请求方法。
      * @return 返回测试结果。

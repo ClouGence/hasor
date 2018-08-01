@@ -119,24 +119,24 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     //
     // ------------------------------------------------------------------------------------------------------
     @Override
-    public WebApiBinder addSetup(Class<? extends MappingSetup> setup) {
-        this.bindType(MappingSetup.class).to(Hasor.assertIsNotNull(setup));
+    public WebApiBinder addDiscoverer(Class<? extends MappingDiscoverer> discoverer) {
+        this.bindType(MappingDiscoverer.class).to(Hasor.assertIsNotNull(discoverer));
         return this;
     }
     @Override
-    public WebApiBinder addSetup(MappingSetup setup) {
-        this.bindType(MappingSetup.class).toInstance(Hasor.assertIsNotNull(setup));
+    public WebApiBinder addDiscoverer(MappingDiscoverer discoverer) {
+        this.bindType(MappingDiscoverer.class).toInstance(Hasor.assertIsNotNull(discoverer));
         return this;
     }
     @Override
-    public WebApiBinder addSetup(Provider<? extends MappingSetup> setup) {
-        this.bindType(MappingSetup.class).toProvider(Hasor.assertIsNotNull(setup));
+    public WebApiBinder addDiscoverer(Provider<? extends MappingDiscoverer> discoverer) {
+        this.bindType(MappingDiscoverer.class).toProvider(Hasor.assertIsNotNull(discoverer));
         return this;
     }
     @Override
-    public WebApiBinder addSetup(BindInfo<? extends MappingSetup> setup) {
-        InfoAwareProvider<MappingSetup> provider = new InfoAwareProvider<MappingSetup>(Hasor.assertIsNotNull(setup));
-        this.bindType(MappingSetup.class).toProvider(Hasor.autoAware(this.getEnvironment(), provider));
+    public WebApiBinder addDiscoverer(BindInfo<? extends MappingDiscoverer> discoverer) {
+        InfoAwareProvider<MappingDiscoverer> provider = new InfoAwareProvider<MappingDiscoverer>(Hasor.assertIsNotNull(discoverer));
+        this.bindType(MappingDiscoverer.class).toProvider(Hasor.autoAware(this.getEnvironment(), provider));
         return this;
     }
     //

@@ -73,17 +73,17 @@ public class InvokerContext implements WebPluginCaller {
             logger.info("webPlugin -> type ‘{}’.", plugin.toString());
         }
         //
-        // .setup
-        List<MappingSetup> setupList = appContext.findBindingBean(MappingSetup.class);
-        for (MappingSetup setup : setupList) {
+        // .discover
+        List<MappingDiscoverer> setupList = appContext.findBindingBean(MappingDiscoverer.class);
+        for (MappingDiscoverer setup : setupList) {
             if (setup == null) {
                 continue;
             }
-            for (MappingData mapping : this.invokeArray) {
+            for (Mapping mapping : this.invokeArray) {
                 if (mapping == null) {
                     continue;
                 }
-                setup.setup(mapping);
+                setup.discover(mapping);
             }
         }
         //

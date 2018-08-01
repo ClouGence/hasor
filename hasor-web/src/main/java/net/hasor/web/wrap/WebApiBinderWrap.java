@@ -169,20 +169,20 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
         return this.webApiBinder.addPlugin(webPlugin);
     }
     @Override
-    public WebApiBinder addSetup(Class<? extends MappingSetup> setup) {
-        return this.webApiBinder.addSetup(setup);
+    public WebApiBinder addDiscoverer(Class<? extends MappingDiscoverer> discoverer) {
+        return this.webApiBinder.addDiscoverer(discoverer);
     }
     @Override
-    public WebApiBinder addSetup(MappingSetup setup) {
-        return this.webApiBinder.addSetup(setup);
+    public WebApiBinder addDiscoverer(MappingDiscoverer discoverer) {
+        return this.webApiBinder.addDiscoverer(discoverer);
     }
     @Override
-    public WebApiBinder addSetup(Provider<? extends MappingSetup> setup) {
-        return this.webApiBinder.addSetup(setup);
+    public WebApiBinder addDiscoverer(Provider<? extends MappingDiscoverer> discoverer) {
+        return this.webApiBinder.addDiscoverer(discoverer);
     }
     @Override
-    public WebApiBinder addSetup(BindInfo<? extends MappingSetup> setup) {
-        return this.webApiBinder.addSetup(setup);
+    public WebApiBinder addDiscoverer(BindInfo<? extends MappingDiscoverer> discoverer) {
+        return this.webApiBinder.addDiscoverer(discoverer);
     }
     @Override
     public RenderEngineBindingBuilder<RenderEngine> suffix(String urlPattern, String... morePatterns) {

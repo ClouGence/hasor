@@ -28,5 +28,5 @@ public interface InvokerData {
     public Object[] getParameters();
 
     /** 控制器 */
-    public MappingData getMappingTo();
+    public Mapping getMappingTo();
 }

@@ -130,7 +130,7 @@ class InvokerCaller implements ExceuteCaller {
                 return resolveParams.isEmpty() ? new Object[0] : resolveParams.get(0);
             }
             @Override
-            public MappingData getMappingTo() {
+            public Mapping getMappingTo() {
                 return mappingToDefine;
             }
         };
