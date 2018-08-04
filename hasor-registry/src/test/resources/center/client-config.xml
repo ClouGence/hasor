@@ -15,7 +15,7 @@
         <!-- RSF对外提供服务的IP -->
         <RSF_SERVICE_IP>127.0.0.1</RSF_SERVICE_IP>
         <!-- Telnet 控制台端口 -->
-        <RSF_CONSOLE_PORT>2170</RSF_CONSOLE_PORT>
+        <TCONSOLE_PORT>2170</TCONSOLE_PORT>
         <!-- RSF对外提供服务的服务端口（可以配置 0 用来关闭 RSF连接器） -->
         <RSF_SERVICE_PORT>2171</RSF_SERVICE_PORT>
         <!-- Hprose 服务端口 -->

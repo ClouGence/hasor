@@ -45,7 +45,7 @@ public class StartModule extends WebModule implements LifeModule {
         // 扫描所有带有 @MappingTo 特征类
         Set<Class<?>> aClass = apiBinder.findClass(MappingTo.class);
         // 对 aClass 集合进行发现并自动配置控制器
-        apiBinder.looking4MappingTo(aClass);
+        apiBinder.loadMappingTo(aClass);
         //
         // .数据库配置
         Settings settings = apiBinder.getEnvironment().getSettings();

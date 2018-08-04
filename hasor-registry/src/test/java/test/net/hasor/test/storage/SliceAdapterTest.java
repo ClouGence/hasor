@@ -10,6 +10,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
+import java.util.regex.Pattern;
 //
 //
 public class SliceAdapterTest {
@@ -30,6 +31,10 @@ public class SliceAdapterTest {
             }
             //
         }
+    }
+    @Test
+    public void test() throws InterruptedException, IOException {
+        System.out.println(Pattern.matches("[a-zA-Z0-9]+", "ab@Cdefg12345"));
     }
     @Test
     public void main() throws InterruptedException, IOException {
