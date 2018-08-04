@@ -158,6 +158,55 @@ public class StringUtils {
         }
         return buf.toString();
     }
+    // Equals
+    //-----------------------------------------------------------------------
+    /**
+     * <p>Compares two Strings, returning <code>true</code> if they are equal.</p>
+     *
+     * <p><code>null</code>s are handled without exceptions. Two <code>null</code>
+     * references are considered to be equal. The comparison is case sensitive.</p>
+     *
+     * <pre>
+     * StringUtils.equals(null, null)   = true
+     * StringUtils.equals(null, "abc")  = false
+     * StringUtils.equals("abc", null)  = false
+     * StringUtils.equals("abc", "abc") = true
+     * StringUtils.equals("abc", "ABC") = false
+     * </pre>
+     *
+     * @see java.lang.String#equals(Object)
+     * @param str1  the first String, may be null
+     * @param str2  the second String, may be null
+     * @return <code>true</code> if the Strings are equal, case sensitive, or
+     *  both <code>null</code>
+     */
+    public static boolean equals(final String str1, final String str2) {
+        return str1 == null ? str2 == null : str1.equals(str2);
+    }
+    /**
+     * <p>Compares two Strings, returning <code>true</code> if they are equal ignoring
+     * the case.</p>
+     *
+     * <p><code>null</code>s are handled without exceptions. Two <code>null</code>
+     * references are considered equal. Comparison is case insensitive.</p>
+     *
+     * <pre>
+     * StringUtils.equalsIgnoreCase(null, null)   = true
+     * StringUtils.equalsIgnoreCase(null, "abc")  = false
+     * StringUtils.equalsIgnoreCase("abc", null)  = false
+     * StringUtils.equalsIgnoreCase("abc", "abc") = true
+     * StringUtils.equalsIgnoreCase("abc", "ABC") = true
+     * </pre>
+     *
+     * @see java.lang.String#equalsIgnoreCase(String)
+     * @param str1  the first String, may be null
+     * @param str2  the second String, may be null
+     * @return <code>true</code> if the Strings are equal, case insensitive, or
+     *  both <code>null</code>
+     */
+    public static boolean equalsIgnoreCase(final String str1, final String str2) {
+        return str1 == null ? str2 == null : str1.equalsIgnoreCase(str2);
+    }
     // Padding
     //-----------------------------------------------------------------------
     /**
@@ -363,6 +412,96 @@ public class StringUtils {
             }
             return new String(padding).concat(str);
         }
+    }
+    // Contains
+    //-----------------------------------------------------------------------
+    /**
+     * <p>Checks if String contains a search character, handling <code>null</code>.
+     * This method uses {@link String#indexOf(int)}.</p>
+     *
+     * <p>A <code>null</code> or empty ("") String will return <code>false</code>.</p>
+     *
+     * <pre>
+     * StringUtils.contains(null, *)    = false
+     * StringUtils.contains("", *)      = false
+     * StringUtils.contains("abc", 'a') = true
+     * StringUtils.contains("abc", 'z') = false
+     * </pre>
+     *
+     * @param str  the String to check, may be null
+     * @param searchChar  the character to find
+     * @return true if the String contains the search character,
+     *  false if not or <code>null</code> string input
+     * @since 2.0
+     */
+    public static boolean contains(final String str, final char searchChar) {
+        if (StringUtils.isEmpty(str)) {
+            return false;
+        }
+        return str.indexOf(searchChar) >= 0;
+    }
+    /**
+     * <p>Checks if String contains a search String, handling <code>null</code>.
+     * This method uses {@link String#indexOf(String)}.</p>
+     *
+     * <p>A <code>null</code> String will return <code>false</code>.</p>
+     *
+     * <pre>
+     * StringUtils.contains(null, *)     = false
+     * StringUtils.contains(*, null)     = false
+     * StringUtils.contains("", "")      = true
+     * StringUtils.contains("abc", "")   = true
+     * StringUtils.contains("abc", "a")  = true
+     * StringUtils.contains("abc", "z")  = false
+     * </pre>
+     *
+     * @param str  the String to check, may be null
+     * @param searchStr  the String to find, may be null
+     * @return true if the String contains the search String,
+     *  false if not or <code>null</code> string input
+     * @since 2.0
+     */
+    public static boolean contains(final String str, final String searchStr) {
+        if (str == null || searchStr == null) {
+            return false;
+        }
+        return str.indexOf(searchStr) >= 0;
+    }
+    /**
+     * <p>Checks if String contains a search String irrespective of case,
+     * handling <code>null</code>. Case-insensitivity is defined as by
+     * {@link String#equalsIgnoreCase(String)}.
+     *
+     * <p>A <code>null</code> String will return <code>false</code>.</p>
+     *
+     * <pre>
+     * StringUtils.contains(null, *) = false
+     * StringUtils.contains(*, null) = false
+     * StringUtils.contains("", "") = true
+     * StringUtils.contains("abc", "") = true
+     * StringUtils.contains("abc", "a") = true
+     * StringUtils.contains("abc", "z") = false
+     * StringUtils.contains("abc", "A") = true
+     * StringUtils.contains("abc", "Z") = false
+     * </pre>
+     *
+     * @param str  the String to check, may be null
+     * @param searchStr  the String to find, may be null
+     * @return true if the String contains the search String irrespective of
+     * case or false if not or <code>null</code> string input
+     */
+    public static boolean containsIgnoreCase(final String str, final String searchStr) {
+        if (str == null || searchStr == null) {
+            return false;
+        }
+        int len = searchStr.length();
+        int max = str.length() - len;
+        for (int i = 0; i <= max; i++) {
+            if (str.regionMatches(true, i, searchStr, 0, len)) {
+                return true;
+            }
+        }
+        return false;
     }
     // Centering
     //-----------------------------------------------------------------------
