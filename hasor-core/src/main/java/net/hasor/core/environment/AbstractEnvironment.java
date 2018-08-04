@@ -192,9 +192,7 @@ public abstract class AbstractEnvironment implements Environment {
         for (String key : data.keySet()) {
             newEvalString = newEvalString.replace(key, data.get(key));
         }
-        if (logger.isInfoEnabled()) {
-            logger.info("evalString '{}' eval to '{}'.", evalString, newEvalString);
-        }
+        logger.debug("evalString '{}' eval to '{}'.", evalString, newEvalString);
         return newEvalString;
     }
     //
@@ -396,10 +394,8 @@ public abstract class AbstractEnvironment implements Environment {
         for (String key : data.keySet()) {
             newEvalString = newEvalString.replace(key, data.get(key));
         }
-        if (this.logger.isInfoEnabled()) {
-            if (!evalString.equalsIgnoreCase(newEvalString)) {
-                this.logger.info("replace settingValue '{}' to '{}'.", evalString, newEvalString);
-            }
+        if (!evalString.equalsIgnoreCase(newEvalString)) {
+            this.logger.debug("replace settingValue '{}' to '{}'.", evalString, newEvalString);
         }
         return newEvalString;
     }

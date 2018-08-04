@@ -522,13 +522,15 @@ public abstract class TemplateAppContext implements AppContext {
             }
             this.installModule(apiBinder, module);
         }
-        doBindAfter(apiBinder);
         logger.info("appContext -> doBind.");
+        doBindAfter(apiBinder);
         /*4.引发事件*/
-        logger.info("appContext -> doInitializeCompleted");
         doInitializeCompleted();
+        logger.info("appContext -> doInitializeCompleted");
         //
         //-------------------------------------------------------------------------------------------
+        Runtime.getRuntime().addShutdownHook(shutdownHook);
+
         /*5.Start*/
         logger.info("appContext -> doStart");
         doStart();
@@ -538,9 +540,7 @@ public abstract class TemplateAppContext implements AppContext {
         logger.info("appContext -> doStartCompleted");
         doStartCompleted();/*用于扩展*/
         //
-        /*7.打印状态*/
         logger.info("Hasor Started!");
-        Runtime.getRuntime().addShutdownHook(shutdownHook);
     }
     /**发送停止通知*/
     public synchronized final void shutdown() {
@@ -552,13 +552,13 @@ public abstract class TemplateAppContext implements AppContext {
         logger.info("shutdown - doShutdown.");
         doShutdown();
         /*2.引发事件*/
-        logger.info("shutdown - fireSyncEvent.");
+        logger.debug("shutdown - fireSyncEvent.");
         try {
             ec.fireSyncEvent(ContextEvent_Shutdown, this);
         } catch (Throwable throwable) {
             /**/
         }
-        logger.info("shutdown - doShutdownCompleted..");
+        logger.debug("shutdown - doShutdownCompleted.");
         doShutdownCompleted();
         logger.info("shutdown - finish.");
         try {
