@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/hasor-boot">
+    <hasor>
+        <!-- 框架配置，包扫描范围 -->
+        <loadPackages>net.hasor.boot.*</loadPackages>
+        <!-- Binder扩展 -->
+        <apiBinderSet>
+            <binder type="net.hasor.boot.BootBinder">net.hasor.boot.BootBinderCreater</binder>
+        </apiBinderSet>
+    </hasor>
+</config>
