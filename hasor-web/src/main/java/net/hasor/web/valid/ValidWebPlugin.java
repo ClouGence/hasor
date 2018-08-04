@@ -30,7 +30,7 @@ public class ValidWebPlugin extends WebModule implements WebPlugin, MappingDisco
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         apiBinder.addPlugin(this);
-        apiBinder.addSetup(this);
+        apiBinder.addDiscoverer(this);
         this.validMapping = new HashMap<Method, ValidDefinition>();
     }
     @Override

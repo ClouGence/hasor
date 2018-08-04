@@ -96,6 +96,8 @@
         <module>hasor-registry</module>
         <module>hasor-plugins</module>
         <module>hasor-land</module>
+        <module>hasor-boot</module>
+        <module>hasor-mavenplugin</module>
     </modules>
 
     <!-- 构建描述 -->
