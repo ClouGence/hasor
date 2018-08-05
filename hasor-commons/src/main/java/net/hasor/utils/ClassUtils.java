@@ -227,6 +227,12 @@ public class ClassUtils {
         final ClassLoader loader = contextCL == null ? ClassUtils.class.getClassLoader() : contextCL;
         return getClass(loader, className, initialize);
     }
+    // ClassLoader
+    // ----------------------------------------------------------------------
+    public static ClassLoader getClassLoader(ClassLoader classLoader) {
+        classLoader = classLoader == null ? Thread.currentThread().getContextClassLoader() : classLoader;
+        return classLoader == null ? ClassLoader.getSystemClassLoader() : classLoader;
+    }
     // Package name
     // ----------------------------------------------------------------------
     /**

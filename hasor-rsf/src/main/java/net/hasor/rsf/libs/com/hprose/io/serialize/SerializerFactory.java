@@ -19,6 +19,7 @@
 package net.hasor.rsf.libs.com.hprose.io.serialize;
 import net.hasor.rsf.libs.com.hprose.utils.DateTime;
 import net.hasor.rsf.libs.com.hprose.utils.JdkVersion;
+import net.hasor.utils.ClassUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -118,7 +119,7 @@ public final class SerializerFactory {
         serializers.put(DateTime.class, HproseDateTimeSerializer.instance);
         if (JdkVersion.majorJavaVersion >= JdkVersion.JAVA_18) {
             try {
-                Class.forName("hprose.io.serialize.java8.SerializerLoader");
+                Class.forName("hprose.io.serialize.java8.SerializerLoader", false, ClassUtils.getClassLoader(null));
             } catch (ClassNotFoundException e) {
             }
         }

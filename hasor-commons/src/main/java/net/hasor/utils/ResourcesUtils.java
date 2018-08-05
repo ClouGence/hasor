@@ -70,7 +70,7 @@ public abstract class ResourcesUtils {
         }
     }
     /**扫描classpath时找到资源的回调接口方法。*/
-    public static interface ScanItem {
+    public static interface Scanner {
         /**
          * 找到资源(返回值为true表示找到预期的资源结束扫描，false表示继续扫描剩下的资源)
          * @param event 找到资源事件。
@@ -205,7 +205,7 @@ public abstract class ResourcesUtils {
     }
     /*------------------------------------------------------------------------------*/
     /**对某一个目录执行扫描。*/
-    private static void scanDir(final File dirFile, final String wild, final ScanItem item, final File contextDir) throws IOException {
+    private static void scanDir(final File dirFile, final String wild, final Scanner item, final File contextDir) throws IOException {
         String contextPath = contextDir.getAbsolutePath().replace("\\", "/");
         //1.如果进来的就是一个文件。
         if (!dirFile.isDirectory()) {
@@ -244,7 +244,7 @@ public abstract class ResourcesUtils {
         }
     }
     /**对某一个jar文件执行扫描。*/
-    public static void scanJar(final JarFile jarFile, final String wild, final ScanItem item) throws IOException {
+    public static void scanJar(final JarFile jarFile, final String wild, final Scanner item) throws IOException {
         final Enumeration<JarEntry> jes = jarFile.entries();
         while (jes.hasMoreElements()) {
             JarEntry e = jes.nextElement();
@@ -257,13 +257,13 @@ public abstract class ResourcesUtils {
         }
     }
     /**
-     * 扫描classpath目录中的资源，每当发现一个资源时都将产生对{@link ScanItem}接口的一次调用。请注意首个字符不可以是通配符。
+     * 扫描classpath目录中的资源，每当发现一个资源时都将产生对{@link Scanner}接口的一次调用。请注意首个字符不可以是通配符。
      * 如果资源是存在于jar包中的那么在获取的对象输入流时要在回调中处理完毕。
-     * 在扫描期间如果想随时退出扫描则{@link ScanItem}接口的返回值给true即可。
+     * 在扫描期间如果想随时退出扫描则{@link Scanner}接口的返回值给true即可。
      * @param wild 扫描期间要排除资源的通配符。
      * @param item 当找到资源时执行回调的接口。
      */
-    public static void scan(final String wild, final ScanItem item) throws IOException, URISyntaxException {
+    public static void scan(final String wild, final Scanner item) throws IOException, URISyntaxException {
         if (wild == null || wild.equals("")) {
             return;
         }

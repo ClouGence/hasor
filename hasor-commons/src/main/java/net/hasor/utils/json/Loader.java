@@ -12,9 +12,6 @@
 // ========================================================================
 package net.hasor.utils.json;
 import java.net.URL;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 /* ------------------------------------------------------------ */
 /** ClassLoader Helper.
  * This helper class allows classes to be loaded either from the
@@ -68,71 +65,20 @@ class Loader {
     public static Class loadClass(Class loadClass, String name, boolean checkParents) throws ClassNotFoundException {
         ClassNotFoundException ex = null;
         Class<?> c = null;
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        ClassLoader loader = (loadClass == null) ? Thread.currentThread().getContextClassLoader() : loadClass.getClassLoader();
         while (c == null && loader != null) {
             try {
                 c = loader.loadClass(name);
             } catch (ClassNotFoundException e) {
-                if (ex == null)
+                if (ex == null) {
                     ex = e;
+                }
             }
             loader = (c == null && checkParents) ? loader.getParent() : null;
         }
-        loader = loadClass == null ? null : loadClass.getClassLoader();
-        while (c == null && loader != null) {
-            try {
-                c = loader.loadClass(name);
-            } catch (ClassNotFoundException e) {
-                if (ex == null)
-                    ex = e;
-            }
-            loader = (c == null && checkParents) ? loader.getParent() : null;
-        }
-        if (c == null) {
-            try {
-                c = Class.forName(name);
-            } catch (ClassNotFoundException e) {
-                if (ex == null)
-                    ex = e;
-            }
-        }
-        if (c != null)
+        if (c != null) {
             return c;
-        throw ex;
-    }
-    public static ResourceBundle getResourceBundle(Class<?> loadClass, String name, boolean checkParents, Locale locale) throws MissingResourceException {
-        MissingResourceException ex = null;
-        ResourceBundle bundle = null;
-        ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        while (bundle == null && loader != null) {
-            try {
-                bundle = ResourceBundle.getBundle(name, locale, loader);
-            } catch (MissingResourceException e) {
-                if (ex == null)
-                    ex = e;
-            }
-            loader = (bundle == null && checkParents) ? loader.getParent() : null;
         }
-        loader = loadClass == null ? null : loadClass.getClassLoader();
-        while (bundle == null && loader != null) {
-            try {
-                bundle = ResourceBundle.getBundle(name, locale, loader);
-            } catch (MissingResourceException e) {
-                if (ex == null)
-                    ex = e;
-            }
-            loader = (bundle == null && checkParents) ? loader.getParent() : null;
-        }
-        if (bundle == null) {
-            try {
-                bundle = ResourceBundle.getBundle(name, locale);
-            } catch (MissingResourceException e) {
-                if (ex == null)
-                    ex = e;
-            }
-        }
-        if (bundle != null)
-            return bundle;
         throw ex;
     }
 }

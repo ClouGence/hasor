@@ -61,13 +61,13 @@ import java.util.WeakHashMap;
  */
 @SuppressWarnings({ "restriction", "unused" })
 public class UnsafeSerializer extends AbstractSerializer {
-    private static final Logger log = LoggerFactory.getLogger(UnsafeSerializer.class);
-    private static boolean _isEnabled;
-    private static Unsafe  _unsafe;
+    private static final Logger                                                 log            = LoggerFactory.getLogger(UnsafeSerializer.class);
+    private static       boolean                                                _isEnabled;
+    private static       Unsafe                                                 _unsafe;
     private static final WeakHashMap<Class<?>, SoftReference<UnsafeSerializer>> _serializerMap = new WeakHashMap<Class<?>, SoftReference<UnsafeSerializer>>();
     private static       Object[]                                               NULL_ARGS      = new Object[0];
-    private Field[]           _fields;
-    private FieldSerializer[] _fieldSerializers;
+    private              Field[]                                                _fields;
+    private              FieldSerializer[]                                      _fieldSerializers;
     public static boolean isEnabled() {
         return _isEnabled;
     }
@@ -341,16 +341,18 @@ public class UnsafeSerializer extends AbstractSerializer {
         DateFieldSerializer(Field field) {
             _field = field;
             _offset = _unsafe.objectFieldOffset(field);
-            if (_offset == Unsafe.INVALID_FIELD_OFFSET)
+            if (_offset == Unsafe.INVALID_FIELD_OFFSET) {
                 throw new IllegalStateException();
+            }
         }
         @Override
         void serialize(AbstractHessianOutput out, Object obj) throws IOException {
             java.util.Date value = (java.util.Date) _unsafe.getObject(obj, _offset);
-            if (value == null)
+            if (value == null) {
                 out.writeNull();
-            else
+            } else {
                 out.writeUTCDate(value.getTime());
+            }
         }
     }
     static {
@@ -359,8 +361,9 @@ public class UnsafeSerializer extends AbstractSerializer {
             Class<?> unsafe = Class.forName("sun.misc.Unsafe");
             Field theUnsafe = null;
             for (Field field : unsafe.getDeclaredFields()) {
-                if (field.getName().equals("theUnsafe"))
+                if (field.getName().equals("theUnsafe")) {
                     theUnsafe = field;
+                }
             }
             if (theUnsafe != null) {
                 theUnsafe.setAccessible(true);
@@ -368,8 +371,9 @@ public class UnsafeSerializer extends AbstractSerializer {
             }
             isEnabled = _unsafe != null;
             String unsafeProp = System.getProperty("com.caucho.hessian.unsafe");
-            if ("false".equals(unsafeProp))
+            if ("false".equals(unsafeProp)) {
                 isEnabled = false;
+            }
         } catch (Throwable e) {
             log.debug(e.toString(), e);
         }

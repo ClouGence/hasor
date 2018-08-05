@@ -19,6 +19,7 @@
 package net.hasor.rsf.libs.com.hprose.io.convert;
 import net.hasor.rsf.libs.com.hprose.utils.DateTime;
 import net.hasor.rsf.libs.com.hprose.utils.JdkVersion;
+import net.hasor.utils.ClassUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -68,7 +69,7 @@ public final class ConverterFactory {
         converters.put(DateTime.class, HproseDateTimeConverter.instance);
         if (JdkVersion.majorJavaVersion >= JdkVersion.JAVA_18) {
             try {
-                Class.forName("hprose.io.convert.java8.ConverterLoader");
+                Class.forName("hprose.io.convert.java8.ConverterLoader", false, ClassUtils.getClassLoader(null));
             } catch (ClassNotFoundException e) {
             }
         }

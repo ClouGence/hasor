@@ -15,7 +15,6 @@
  */
 package net.hasor.utils;
 import net.hasor.utils.ResourcesUtils.ScanEvent;
-import net.hasor.utils.ResourcesUtils.ScanItem;
 import net.hasor.utils.asm.AnnotationVisitor;
 import net.hasor.utils.asm.ClassReader;
 import net.hasor.utils.asm.ClassVisitor;
@@ -89,7 +88,7 @@ public class ScanClassPath {
                 continue;
             }
             try {
-                ResourcesUtils.scan(tiem.replace(".", "/") + "*.class", new ScanItem() {
+                ResourcesUtils.scan(tiem.replace(".", "/") + "*.class", new ResourcesUtils.Scanner() {
                     @Override
                     public void found(final ScanEvent event, final boolean isInJar) throws IOException {
                         String name = event.getName();

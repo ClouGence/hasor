@@ -20,6 +20,7 @@ import net.hasor.rsf.address.route.rule.ArgsKey;
 import net.hasor.rsf.address.route.rule.DefaultArgsKey;
 import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.rsf.utils.IOUtils;
+import net.hasor.utils.ClassUtils;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
@@ -42,15 +43,15 @@ import java.util.zip.ZipOutputStream;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AddressPool implements RsfUpdater {
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    protected final Logger                               logger = LoggerFactory.getLogger(getClass());
     //
-    private final RsfEnvironment                       rsfEnvironment;
-    private final ConcurrentMap<String, AddressBucket> addressPool;
-    private final String                               unitName;
+    private final   RsfEnvironment                       rsfEnvironment;
+    private final   ConcurrentMap<String, AddressBucket> addressPool;
+    private final   String                               unitName;
     //
-    private final AddressCacheResult                   rulerCache;
-    private final ArgsKey                              argsKey;
-    private final Object                               poolLock;
+    private final   AddressCacheResult                   rulerCache;
+    private final   ArgsKey                              argsKey;
+    private final   Object                               poolLock;
     //
     public AddressPool(RsfEnvironment rsfEnvironment) {
         String unitName = rsfEnvironment.getSettings().getUnitName();
@@ -66,7 +67,7 @@ public class AddressPool implements RsfUpdater {
         String argsKeyType = rsfSettings.getString("hasor.rsfConfig.route.argsKey", DefaultArgsKey.class.getName());
         this.logger.info("argsKey type is {}", argsKeyType);
         try {
-            Class<?> type = Class.forName(argsKeyType);
+            Class<?> type = Class.forName(argsKeyType, false, ClassUtils.getClassLoader(rsfEnvironment.getClassLoader()));
             this.argsKey = (ArgsKey) type.newInstance();
         } catch (Throwable e) {
             this.logger.error("create argsKey " + argsKeyType + " , message = " + e.getMessage(), e);

@@ -18,6 +18,7 @@
  \**********************************************************/
 package net.hasor.rsf.libs.com.hprose.utils;
 import net.hasor.rsf.libs.com.hprose.io.HproseClassManager;
+import net.hasor.utils.ClassUtils;
 
 import java.lang.reflect.*;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public final class ClassUtil {
             return type;
         } else {
             try {
-                return Class.forName(className.toString());
+                return Class.forName(className.toString(), false, ClassUtils.getClassLoader(null));
             } catch (ClassNotFoundException e) {
                 return null;
             }
@@ -63,7 +64,7 @@ public final class ClassUtil {
             return type;
         } else {
             try {
-                return Class.forName(className.toString());
+                return Class.forName(className.toString(), false, ClassUtils.getClassLoader(null));
             } catch (ClassNotFoundException e) {
                 return null;
             }
@@ -98,8 +99,9 @@ public final class ClassUtil {
                 }
             } else {
                 try {
-                    type = Class.forName(className);
+                    type = Class.forName(className, false, ClassUtils.getClassLoader(null));
                 } catch (ClassNotFoundException e) {
+                    /* */
                 }
             }
             if (type == null) {

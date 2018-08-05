@@ -21,6 +21,7 @@ import net.hasor.rsf.libs.com.hprose.utils.CaseInsensitiveMap;
 import net.hasor.rsf.libs.com.hprose.utils.DateTime;
 import net.hasor.rsf.libs.com.hprose.utils.JdkVersion;
 import net.hasor.rsf.libs.com.hprose.utils.LinkedCaseInsensitiveMap;
+import net.hasor.utils.ClassUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -123,7 +124,7 @@ public final class UnserializerFactory {
         unserializers.put(DateTime.class, HproseDateTimeUnserializer.instance);
         if (JdkVersion.majorJavaVersion >= JdkVersion.JAVA_18) {
             try {
-                Class.forName("hprose.io.unserialize.java8.UnserializerLoader");
+                Class.forName("hprose.io.unserialize.java8.UnserializerLoader", false, ClassUtils.getClassLoader(null));
             } catch (ClassNotFoundException e) {
             }
         }

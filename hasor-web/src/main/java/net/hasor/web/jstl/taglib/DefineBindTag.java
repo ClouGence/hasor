@@ -15,6 +15,7 @@
  */
 package net.hasor.web.jstl.taglib;
 import net.hasor.core.AppContext;
+import net.hasor.utils.ClassUtils;
 import net.hasor.utils.StringUtils;
 
 import javax.servlet.jsp.JspException;
@@ -69,8 +70,9 @@ public class DefineBindTag extends AbstractTag {
         }
         //
         try {
-            Class<?> defineType = Class.forName(this.bindType);
             AppContext appContext = getAppContext();
+            ClassLoader classLoader = ClassUtils.getClassLoader(appContext.getClassLoader());
+            Class<?> defineType = Class.forName(this.bindType, false, classLoader);
             Object targetBean = appContext.findBindingBean(this.name, defineType);
             this.pageContext.setAttribute(this.var, targetBean);
             return Tag.SKIP_BODY;

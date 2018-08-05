@@ -20,6 +20,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonWriter;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
+import net.hasor.utils.ClassUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.RenderEngine;
 import net.hasor.web.RenderInvoker;
@@ -38,20 +39,16 @@ public class JsonRender implements RenderEngine {
     public void initEngine(AppContext appContext) throws Throwable {
         BindInfo<JsonRenderEngine> bindInfo = appContext.getBindInfo(JsonRenderEngine.class);
         if (bindInfo == null) {
+            ClassLoader classLoader = ClassUtils.getClassLoader(appContext.getClassLoader());
             try {
-                Class.forName("com.alibaba.fastjson.JSON");
+                Class.forName("com.alibaba.fastjson.JSON", false, classLoader);
                 this.jsonRenderEngine = new FastJsonRenderEngine();
             } catch (Exception e1) {
                 try {
-                    Class.forName("com.google.gson.Gson");
+                    Class.forName("com.google.gson.Gson", false, classLoader);
                     this.jsonRenderEngine = new GsonRenderEngine();
                 } catch (Exception e2) {
-                    //                    try {
-                    //                        Class.forName("net.sf.json.JSONObject");
-                    //                        this.jsonRenderEngine = new JsonLibRenderEngine();
-                    //                    } catch (Exception e3) {
                     throw new ClassNotFoundException("Did not find any of the following set up (Fastjson、Gson)");
-                    //                    }
                 }
             }
         } else {
