@@ -28,7 +28,7 @@ import net.hasor.utils.StringUtils;
 public class BootBinderCreater implements ApiBinderCreater {
     @Override
     public BootBinder createBinder(ApiBinder apiBinder) {
-        return HasorLauncher.usingBoot ? new BootBinderImpl(apiBinder) : null;
+        return BootLauncher.usingBoot ? new BootBinderImpl(apiBinder) : null;
     }
     private static class BootBinderImpl extends ApiBinderWrap implements BootBinder {
         public BootBinderImpl(ApiBinder apiBinder) {
@@ -37,18 +37,18 @@ public class BootBinderCreater implements ApiBinderCreater {
         //
         @Override
         public String[] mainArgs() {
-            return HasorLauncher.mainArgs;
+            return BootLauncher.mainArgs;
         }
         @Override
         public int mainArgsCount() {
-            return HasorLauncher.mainArgs.length;
+            return BootLauncher.mainArgs.length;
         }
         @Override
         public String mainArgs(int index) {
-            if (index < 0 || index >= HasorLauncher.mainArgs.length) {
+            if (index < 0 || index >= BootLauncher.mainArgs.length) {
                 return null;
             }
-            return HasorLauncher.mainArgs[index];
+            return BootLauncher.mainArgs[index];
         }
         //
         @Override

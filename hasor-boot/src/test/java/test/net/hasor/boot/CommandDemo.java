@@ -15,8 +15,8 @@
  */
 package test.net.hasor.boot;
 import net.hasor.boot.BootBinder;
+import net.hasor.boot.BootLauncher;
 import net.hasor.boot.CommandLauncher;
-import net.hasor.boot.HasorLauncher;
 import net.hasor.boot.SetupModule;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
@@ -30,7 +30,7 @@ import net.hasor.core.Module;
 public class CommandDemo implements Module {
     public static void main(String[] args) {
         args = new String[] { "hello" };
-        HasorLauncher.run(CommandDemo.class, args);
+        BootLauncher.run(CommandDemo.class, args);
     }
     //
     @Override

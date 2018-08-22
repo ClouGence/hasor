@@ -38,13 +38,13 @@ import java.util.List;
  * @version : 2018-08-04
  * @author 赵永春 (zyc@hasor.net)
  */
-public final class HasorLauncher implements Module, ContextStartListener, ContextShutdownListener {
-    private static Logger              logger    = LoggerFactory.getLogger(HasorLauncher.class);
+public final class BootLauncher implements Module, ContextStartListener, ContextShutdownListener {
+    private static Logger              logger    = LoggerFactory.getLogger(BootLauncher.class);
     private static BasicFuture<Object> future    = new BasicFuture<Object>();
     static         String[]            mainArgs  = null;
     static         boolean             usingBoot = false;
     //
-    private HasorLauncher() {
+    private BootLauncher() {
     }
     public static void run(Class<? extends Module> launcherModuleType, String[] args) {
         // .打印 Hello
@@ -87,7 +87,7 @@ public final class HasorLauncher implements Module, ContextStartListener, Contex
                 hasor.setMainSettings(config);
             }
             //
-            hasor.build(new HasorLauncher(), launcherModuleType.newInstance());
+            hasor.build(new BootLauncher(), launcherModuleType.newInstance());
             if (!setupModule.join()) {
                 future.completed(new Object());
             }

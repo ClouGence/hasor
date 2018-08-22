@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package test.net.hasor.boot;
-import net.hasor.boot.HasorLauncher;
+import net.hasor.boot.BootLauncher;
 import net.hasor.boot.SetupModule;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
@@ -26,7 +26,7 @@ import net.hasor.core.Module;
 @SetupModule()
 public class BootDemo implements Module {
     public static void main(String[] args) {
-        HasorLauncher.run(BootDemo.class, args);
+        BootLauncher.run(BootDemo.class, args);
     }
     //
     @Override
