@@ -9,7 +9,7 @@
     </parent>
 
     <!-- Maven Info -->
-    <artifactId>hasor-boot-mavenplugin</artifactId>
+    <artifactId>maven-hasor-plugin</artifactId>
     <packaging>maven-plugin</packaging>
 
     <!-- Project Info -->

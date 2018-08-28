@@ -48,7 +48,7 @@ public abstract class ExecutableArchiveLauncher extends Launcher {
         if (manifest != null) {
             mainClass = manifest.getMainAttributes().getValue("Start-Class");
         }
-        if (mainClass == null) {
+        if (mainClass == null || "".equals(mainClass)) {
             throw new IllegalStateException("No 'Start-Class' manifest entry specified in " + this);
         }
         return mainClass;

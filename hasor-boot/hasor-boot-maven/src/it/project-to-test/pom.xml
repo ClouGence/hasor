@@ -11,7 +11,7 @@
 
     <!-- 配置属性 -->
     <properties>
-        <hasor.version>3.2.2</hasor.version>
+        <hasor.version>3.2.3-SNAPSHOT</hasor.version>
     </properties>
 
     <artifactId>project-to-test</artifactId>
@@ -34,8 +34,8 @@
         <!-- 分布式PRC扩展 -->
         <dependency>
             <groupId>net.hasor</groupId>
-            <artifactId>hasor-boot</artifactId>
-            <version>3.2.3-SNAPSHOT</version>
+            <artifactId>hasor-boot-starter</artifactId>
+            <version>${hasor.version}</version>
         </dependency>
     </dependencies>
 
@@ -43,7 +43,7 @@
         <plugins>
             <plugin>
                 <groupId>net.hasor</groupId>
-                <artifactId>hasor-boot-mavenplugin</artifactId>
+                <artifactId>maven-hasor-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
                     <main-class>org.test.PluginDemo</main-class>

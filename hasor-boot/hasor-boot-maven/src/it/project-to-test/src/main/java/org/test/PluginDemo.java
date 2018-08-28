@@ -1,4 +1,4 @@
-package org.test;/*
+/*
  * Copyright 2008-2009 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,7 @@ package org.test;/*
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.test;
 import net.hasor.boot.BootBinder;
 import net.hasor.boot.BootLauncher;
 import net.hasor.boot.CommandLauncher;
@@ -30,7 +31,6 @@ public class PluginDemo implements Module {
     //
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        System.out.pringln(apiBinder.tryCast(BootBinder.class));
         apiBinder.tryCast(BootBinder.class).addCommand(0, "help", new CommandLauncher() {
             @Override
             public void run(String[] args, AppContext appContext) {

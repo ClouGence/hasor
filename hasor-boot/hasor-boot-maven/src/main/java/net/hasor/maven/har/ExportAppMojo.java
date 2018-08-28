@@ -78,7 +78,7 @@ public class ExportAppMojo extends AbstractHasorMojo {
         if (StringUtils.isBlank(bootVersion)) {
             bootVersion = bootLauncher.getValue("bootVersion");
         }
-        Artifact bootArtifact = repositorySystem.createArtifact("net.hasor", "hasor-boot", bootVersion, "jar");
+        Artifact bootArtifact = repositorySystem.createArtifact("net.hasor", "hasor-boot-starter", bootVersion, "jar");
         bootArtifact = localRepository.find(bootArtifact);
         getLog().info("use boot -> " + bootArtifact);
         jarArchiver.addFile(repackageArtifact(bootArtifact), "/BOOT-INF/lib/" + getArtifactDestName(bootArtifact));
@@ -120,6 +120,7 @@ public class ExportAppMojo extends AbstractHasorMojo {
         getLog().info("done.");
         //
         // .启动描述
+        getLog().info("mainClass -> " + mainClass);
         archive.getManifestEntries().put("Main-Class", "net.hasor.boot.launcher.JarLauncher");
         archive.getManifestEntries().put("Start-Class", mainClass);
         archive.setCompress(false);
@@ -168,7 +169,7 @@ public class ExportAppMojo extends AbstractHasorMojo {
     //
     private void fetchDependencyTo(boolean stopOnFailure, Artifact artifact, Set<Artifact> fetchTo, boolean skipBoot) throws MojoExecutionException {
         if (skipBoot) {
-            if ("net.hasor".equalsIgnoreCase(artifact.getGroupId()) && "hasor-boot".equalsIgnoreCase(artifact.getArtifactId())) {
+            if ("net.hasor".equalsIgnoreCase(artifact.getGroupId()) && "hasor-boot-starter".equalsIgnoreCase(artifact.getArtifactId())) {
                 return;
             }
         }
@@ -196,7 +197,7 @@ public class ExportAppMojo extends AbstractHasorMojo {
         String bootVersion = null;
         for (Artifact artifact : fetchTo) {
             // .忽略 hasor-boot 和 plexus-classworlds
-            if ("net.hasor".equalsIgnoreCase(artifact.getGroupId()) && "hasor-boot".equalsIgnoreCase(artifact.getArtifactId())) {
+            if ("net.hasor".equalsIgnoreCase(artifact.getGroupId()) && "hasor-boot-starter".equalsIgnoreCase(artifact.getArtifactId())) {
                 bootVersion = artifact.getVersion();
                 break;
             }
