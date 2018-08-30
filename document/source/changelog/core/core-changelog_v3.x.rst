@@ -2,26 +2,40 @@
 Release Hasor v3.x
 --------------------
 
-Hasor-Core v3.2.3 (2018-04-?)
+Hasor v3.3.0 (2018-08-?)
 ------------------------------------
 **新增**
-    - web 新增：hasor-root-module、hasor-hconfig-name、hasor-env-properties 三个 web.xml 的属性配置。
+    - 新增：hasor-boot 项目和配套的 hasor-boot mavenplugin。
+    - 新增：utils resource loader 相关工具，来源为老版本 hasor 中的工具。
+    - ApiBinder 接口支持 inject 一个 Class 类型。
     - EventContext 接口增加异步任务方法，从现在开始可以使用异步任务了。
+    - Hasor 类新增一组 asxxxSingleton 方法，用来设定 AppContext 的单例范围（全局JNDI、静态、线程、ClassLoader）
+    - @InjectSettings @Inject 注解支持标注在参数上了。
+    - 新增：tConsole 框架，提供一个 Telnet 环境支持，给予没有界面类的应用一个可以通过命令行进行交互的工具。
+    - web 框架中：MappingSetup 接口，更名为 MappingDiscoverer，MappingData更名为Mapping
+    - web RuntimeListener 新增：hasor-root-module、hasor-hconfig-name、hasor-env-properties 三个 web.xml 的属性配置。
+    - plugin 项目新增多种 freemarker 的 loader。
+**static-config.xml**
+    - 当使用 maven-shade-plugin 进行 maven 打包时由于 static-config.xml 无法通过文件追加的方式进行简单合并。
+    - 因此老版本 Hasor 的工程无法使用 maven-shade-plugin 打包。
+    - 3.3.0 版本之后修改了 static-config.xml 发现机制，改为通过 /META-INF/hasor.schemas 配置文件进行发现。
+    - 改进之后，使用 maven-shade-plugin 的 hasor 工程可以像处理 spring.schemas 一样处理 hasor.schemas 合并。
+**rsf-registry**
+    - 进行重构。
 **改进**
-    - 当使用 maven-shade-plugin 进行 maven 打包时由于 static-config.xml 无法通过文件追加的方式进行简单合并，因此老版本 Hasor 的工程无法使用 maven-shade-plugin 打包。
-      3.2.3版本之后修改了 static-config.xml 发现机制，改为通过 /META-INF/hasor.schemas 配置文件进行发现。
-      改进之后，使用 maven-shade-plugin 的 hasor 工程可以像处理 spring.schemas 一样处理 hasor.schemas 合并。
+    - FutureCallback 的 cancelled 方法沉降到 CancellFutureCallback 接口中。
+    - Class.forName 用法改进，普遍增加 ClassLoader 参数传入。
+    - env.config 配置文件名，更名为 hconfig.properties。
     - BeanUtils 类的 canWriteField，修复了对 Field 为 final 的判断。
     - rsf的内置 hessian 序列化和反序列化配置文件，路径改到 ‘META-INF/hasor-framework/rsf-hessian/’ 下面。以避免和 hessian jar包冲突。
     - rsf Gateway 从 rsf 基础框架中删除后面会独立成一个框架。
-    - env.config 配置文件名，更名为 hconfig.properties。
-    - FutureCallback接口的cancelled 方法单独拆出一个接口。
+    - rsf 地址本保存时候不在保存空数据。
 **修复**
     - fix 执行查询结果返回为空时，AbstractRowMapper.convertValueToRequiredType 方法报 NPE 的 Bug。
     - fix JdbcTemplate 类中 requiredSingleResult 当执行结果为空时报空指针的异常。
 
 
-Hasor-Core v3.2.2 (2018-01-02)
+Hasor v3.2.2 (2018-01-02)
 ------------------------------------
 **新增**
     - AppContextWarp 类,提供 AppContext 包装工具。
@@ -49,7 +63,7 @@ Hasor-Core v3.2.2 (2018-01-02)
     - fix jfinal 列子编译问题。
 
 
-Hasor-Core v3.2.1 (2017-10-17)
+Hasor v3.2.1 (2017-10-17)
 ------------------------------------
 **新增**
     - DataQL，执行引擎新增 jsr223 兼容。从这个版本开始可以使用 jsr223 的方式使用 DataQL 了。
@@ -64,7 +78,7 @@ Hasor-Core v3.2.1 (2017-10-17)
     - fix RsfWebModule 已经删除但是配置依然存在的问题。
 
 
-Hasor-Core v3.2.0 (2017-10-15)
+Hasor v3.2.0 (2017-10-15)
 ------------------------------------
 **新增**
     - 新增内置 Freemarker 渲染器，如想使用该渲染引擎开发者还需要额外依赖 freemarker 的 jar 包。
@@ -80,7 +94,7 @@ Hasor-Core v3.2.0 (2017-10-15)
     - Fix @Produces 注解工作时的一些问题。
 
 
-Hasor-Core v3.1.3 (2017-02-23)
+Hasor v3.1.3 (2017-02-23)
 ------------------------------------
 **改进**
     - 事件管理器增添一个字符串参数的构造方法参数，用来确定执行事件的线程名称。
@@ -88,7 +102,7 @@ Hasor-Core v3.1.3 (2017-02-23)
     - 修复 AppContext接口 getBindIDs、getNames 两个方法返回值为空的问题。
 
 
-Hasor-Core v3.1.2 (2017-02-19)
+Hasor v3.1.2 (2017-02-19)
 ------------------------------------
 **新增**
     - Hasor类在处理用户设置的环境参数时，设定为两种分类：框架环境变量、用户环境变量。
@@ -101,13 +115,13 @@ Hasor-Core v3.1.2 (2017-02-19)
     - HASOR_RESTFUL_LAYOUT环境变量默认值从 true 改为 false。站点文件布局本身是一个极具个性色彩的功能，不应该强行加给开发者。
 
 
-Hasor-Core v3.1.1 (2017-02-16)
+Hasor v3.1.1 (2017-02-16)
 ------------------------------------
 **修复**
     - 当Hasor通过 Hasor.create 创建容器之后，如果开发者设置了环境参数。那么Hasor将放弃加载 env.config。
 
 
-Hasor-Core v3.1.0 (2017-02-15)
+Hasor v3.1.0 (2017-02-15)
 ------------------------------------
 **改进**
     - 当依赖注入遇到父子类重名字段引发，duplicate异常时候，打印出冲突的字段名。
@@ -122,13 +136,13 @@ Hasor-Core v3.1.0 (2017-02-15)
     - fix 当在 jdk8 下使用 hasor aop 功能时出现 VerifyError 错误的问题，3.1.0版本开始不在需要通过 -noverify 参数压制异常。
 
 
-Hasor-Core v3.0.3 (2017-02-07)
+Hasor v3.0.3 (2017-02-07)
 ------------------------------------
 **修复**
     - Fix ClassEngine 类在判断 @AopIgnore 时，潜在的一个空指针 bug。该问题会导致启动失败。
 
 
-Hasor-Core v3.0.2 (2017-01-30)
+Hasor v3.0.2 (2017-01-30)
 ------------------------------------
 **新增**
     - 新增 ProviderType 接口，用于确定 Provider 接口的返回值类型。
@@ -137,7 +151,7 @@ Hasor-Core v3.0.2 (2017-01-30)
     - Fix RuntimeFilter入口类，当没有配置 request/ressponse 编码时引发的异常。
 
 
-Hasor-Core v3.0.1 (2017-01-29)
+Hasor v3.0.1 (2017-01-29)
 ------------------------------------
 **修复**
     - Fix DefaultXmlNode在执行配置替换时，属性没有被替换的问题。
@@ -145,7 +159,7 @@ Hasor-Core v3.0.1 (2017-01-29)
     - 删除了 LogUtils 小工具。
 
 
-Hasor-Core v3.0.0 (2017-01-12)
+Hasor v3.0.0 (2017-01-12)
 ------------------------------------
 **新增**
     - 新增 ApiBinder 扩展机制。开发者可以通过 net.hasor.core.binder.ApiBinderCreater 接口可以自定义 ApiBinder。

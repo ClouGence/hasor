@@ -2,7 +2,7 @@
 Release Hasor v1.x
 --------------------
 
-Hasor-Core v1.2.0 (2015-08-20)
+Hasor v1.2.0 (2015-08-20)
 ------------------------------------
 **新增**
     - 增加 @IgnoreParam注解，用于Form表单注入忽略。
@@ -16,7 +16,7 @@ Hasor-Core v1.2.0 (2015-08-20)
     - 改进ResultDO相关Message方面的功能，使其用起来更爽。
 
 
-Hasor-Core v1.1.0 (2015-07-09)
+Hasor v1.1.0 (2015-07-09)
 ------------------------------------
 **新增**
     - 增加ContextMap类，该类可以为WebMVC提供request作用域范围的数据存储。可以通过AbstractWebController或者AppContext获取到它。
@@ -34,7 +34,7 @@ Hasor-Core v1.1.0 (2015-07-09)
     - BindInfoProvider去掉构造方法ApiBinder类型参数，相关AppContextAware工作不再需要特殊声明。
 
 
-Hasor-Core v1.0.0 (2015-07-03)
+Hasor v1.0.0 (2015-07-03)
 ------------------------------------
 **新增**
     - 新增DateUtils，时间日期方面的工具类。
