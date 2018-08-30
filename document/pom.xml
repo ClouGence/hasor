@@ -9,28 +9,6 @@
     <packaging>pom</packaging>
 
     <!-- 构建描述 -->
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>kr.motd.maven</groupId>
-                <artifactId>sphinx-maven-plugin</artifactId>
-                <version>2.2.3</version>
-                <configuration>
-                    <configuration>
-                        <outputDirectory>${project.build.directory}/docs</outputDirectory>
-                    </configuration>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
     <reporting>
         <plugins>
             <plugin>
