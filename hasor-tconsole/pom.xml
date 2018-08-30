@@ -3,7 +3,7 @@
     <parent>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-parent</artifactId>
-        <version>3.2.3-SNAPSHOT</version>
+        <version>3.3.0-SNAPSHOT</version>
     </parent>
 
     <!-- Maven Info -->
@@ -11,8 +11,8 @@
     <packaging>jar</packaging>
 
     <!-- Project Info -->
-    <name>Hasor-TConsole</name>
-    <description>the Hasor Local Telnet Console Service.</description>
+    <name>Hasor-tConsole</name>
+    <description>The telnet console service for application.</description>
 
     <developers>
         <developer>
@@ -27,7 +27,6 @@
         <dependency>
             <groupId>net.hasor</groupId>
             <artifactId>hasor-core</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <dependency>

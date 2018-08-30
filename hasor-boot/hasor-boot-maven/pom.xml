@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>net.hasor</groupId>
         <artifactId>hasor-parent</artifactId>
-        <version>3.2.3-SNAPSHOT</version>
+        <version>3.3.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <!-- Maven Info -->
@@ -25,11 +25,16 @@
 
     <properties>
         <maven.version>3.3.9</maven.version>
-        <hasor-boot.version>${project.version}</hasor-boot.version>
     </properties>
 
     <!-- 引用依赖 -->
     <dependencies>
+        <!-- Hasor -->
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-core</artifactId>
+        </dependency>
+
         <!-- 插件API-->
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -50,13 +55,6 @@
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-archiver</artifactId>
             <version>3.2.0</version>
-        </dependency>
-
-        <!-- Hasor -->
-        <dependency>
-            <groupId>net.hasor</groupId>
-            <artifactId>hasor-core</artifactId>
-            <version>${project.version}</version>
         </dependency>
 
         <!-- plexus工具-->
