@@ -16,6 +16,7 @@
 package net.hasor.boot;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
+import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderWrap;
@@ -72,7 +73,7 @@ public class BootBinderCreater implements ApiBinderCreater {
                 throw new NullPointerException("commandName name undefined.");
             }
             CommandLauncherDef define = new CommandLauncherDef(checkArgsIndex, commandName, launcherInfo);
-            this.bindType(CommandLauncherDef.class).uniqueName().toInstance(define);
+            this.bindType(CommandLauncherDef.class).uniqueName().toInstance(Hasor.autoAware(getEnvironment(), define));
         }
     }
 }

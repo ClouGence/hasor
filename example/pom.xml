@@ -14,6 +14,7 @@
     <modules>
         <module>example-rsf</module>
         <module>example-hasor</module>
+        <module>example-hasor-web</module>
         <module>example-jfinal</module>
         <module>example-spring</module>
         <module>example-nutz</module>

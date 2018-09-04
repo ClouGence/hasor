@@ -4,9 +4,9 @@
 
     <!-- Maven Info -->
     <groupId>net.hasor</groupId>
-    <artifactId>example-hasor</artifactId>
+    <artifactId>example-hasor-web</artifactId>
     <version>1.0</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <!-- 构建描述 -->
     <build>
@@ -27,7 +27,7 @@
 
     <!-- 配置属性 -->
     <properties>
-        <hasor.version>3.3.0-SNAPSHOT</hasor.version>
+        <hasor.version>3.2.3-SNAPSHOT</hasor.version>
         <wtpversion>2.0</wtpversion>
         <downloadSources>true</downloadSources>
         <downloadJavadocs>true</downloadJavadocs>
@@ -39,7 +39,7 @@
         <!-- Hasor -->
         <dependency>
             <groupId>net.hasor</groupId>
-            <artifactId>hasor-core</artifactId>
+            <artifactId>hasor-web</artifactId>
             <version>${hasor.version}</version>
         </dependency>
         <dependency>
@@ -49,10 +49,31 @@
         </dependency>
         <dependency>
             <groupId>net.hasor</groupId>
-            <artifactId>hasor-boot-starter</artifactId>
+            <artifactId>hasor-plugins</artifactId>
             <version>${hasor.version}</version>
         </dependency>
 
+        <!-- freemarker -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.23</version>
+        </dependency>
+
+        <!-- servlet -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- DB begin -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.30</version>
+        </dependency>
         <dependency>
             <groupId>c3p0</groupId>
             <artifactId>c3p0</artifactId>

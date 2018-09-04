@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.boot;
-import net.hasor.core.AppContext;
 /**
  *
  * @version : 2018-08-04
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface CommandLauncher {
-    public void run(String[] args, AppContext appContext);
+    public void run(String[] args) throws Throwable;
 }

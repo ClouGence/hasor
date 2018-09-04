@@ -51,10 +51,11 @@ public final class BootLauncher implements Module, ContextStartListener, Context
         try {
             InputStream inputStream = ResourcesUtils.getResourceAsStream("/META-INF/hasor-framework/hello-text.txt");
             List<String> helloText = IOUtils.readLines(inputStream, "utf-8");
+            StringBuilder builder = new StringBuilder("\n");
             for (String msg : helloText) {
-                logger.info(msg);
+                builder.append(msg).append("\n");
             }
-            logger.info("");
+            logger.info(builder.toString());
         } catch (Exception e) { /**/ }
         mainArgs = args;
         usingBoot = true;
@@ -120,8 +121,12 @@ public final class BootLauncher implements Module, ContextStartListener, Context
             }
         });
         //
-        for (CommandLauncherDef def : cmdSet) {
-            def.run(mainArgs, appContext);
+        try {
+            for (CommandLauncherDef def : cmdSet) {
+                def.run(mainArgs);
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
     }
     @Override

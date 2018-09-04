@@ -19,7 +19,6 @@ import net.hasor.boot.BootLauncher;
 import net.hasor.boot.CommandLauncher;
 import net.hasor.boot.SetupModule;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 /**
  * 启动服务端
@@ -37,14 +36,14 @@ public class CommandDemo implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         apiBinder.tryCast(BootBinder.class).addCommand(0, "help", new CommandLauncher() {
             @Override
-            public void run(String[] args, AppContext appContext) {
+            public void run(String[] args) {
                 System.out.println("show help");
             }
         });
         //
         apiBinder.tryCast(BootBinder.class).addCommand(0, "hello", new CommandLauncher() {
             @Override
-            public void run(String[] args, AppContext appContext) {
+            public void run(String[] args) {
                 System.out.println("hello word!");
             }
         });
