@@ -22,6 +22,14 @@
                     <encoding>UTF8</encoding>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>net.hasor</groupId>
+                <artifactId>maven-hasor-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <main-class>net.example.hasor.StartModule</main-class>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

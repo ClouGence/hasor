@@ -1,7 +1,12 @@
 #Hasor 例子
 
-项目说明
-1. 项目启动入口：net.demo.hasor.core.StartModule
-2. Freemarker 渲染引擎：net.demo.hasor.core.FreemarkerRender
-3. 配置文件 hasor-config.xml
-4. 入口页面 index.htm
+使用 Hasor-Boot 启动例子，例子项目中提供了 list、get、set、remove 四个数据操作方法，用来操作 hsqldb 数据库。
+
+用法：
+
+- java -jar ./target/example-hasor-1.0.jar list
+- java -jar ./target/example-hasor-1.0.jar get xxx
+- java -jar ./target/example-hasor-1.0.jar set xxx newValue
+- java -jar ./target/example-hasor-1.0.jar remove xxx
+
+jdk 要求 1.7+
