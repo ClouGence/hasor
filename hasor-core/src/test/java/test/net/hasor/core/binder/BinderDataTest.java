@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.core._07_binder;
+package test.net.hasor.core.binder;
 import net.hasor.core.*;
-import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.core.classcode.matcher.AopMatchers;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
@@ -40,17 +39,16 @@ import static org.mockito.Matchers.anyString;
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class WarpBinderDataTest extends AbstractBinderDataTest {
+public class BinderDataTest extends AbstractBinderDataTest {
     @Before
     public void beforeTest() throws IOException {
         super.beforeTest();
-        this.binder = new ApiBinderWrap(this.binder);
     }
     //
     @Test
     public void binderTest1() {
-        binder.bindType(WarpBinderDataTest.class);
-        assert reference.get().getBindType() == WarpBinderDataTest.class;
+        binder.bindType(BinderDataTest.class);
+        assert reference.get().getBindType() == BinderDataTest.class;
     }
     //
     @Test
@@ -118,8 +116,8 @@ public class WarpBinderDataTest extends AbstractBinderDataTest {
     //
     @Test
     public void binderTest9() {
-        binder.bindType(WarpBinderDataTest.class).idWith("12345");
-        assert reference.get().getBindType() == WarpBinderDataTest.class;
+        binder.bindType(BinderDataTest.class).idWith("12345");
+        assert reference.get().getBindType() == BinderDataTest.class;
         assert "12345".equals(reference.get().getBindID());
     }
     //
@@ -226,9 +224,9 @@ public class WarpBinderDataTest extends AbstractBinderDataTest {
     //
     @Test
     public void binderTest16() {
-        binder.bindType(WarpBinderDataTest.class).asEagerSingleton();
+        binder.bindType(BinderDataTest.class).asEagerSingleton();
         assert reference.get().isSingleton();
-        binder.bindType(WarpBinderDataTest.class).asEagerPrototype();
+        binder.bindType(BinderDataTest.class).asEagerPrototype();
         assert !reference.get().isSingleton();
     }
     //

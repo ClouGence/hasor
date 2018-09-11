@@ -121,14 +121,13 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
     /**
      * 创建{@link AbstractBindInfoProviderAdapter}，交给外层用于Bean定义。
      * @param bindType 声明的类型。
-     * @param binderSource
      */
-    public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType, Class<?> binderSource) {
+    public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType) {
         if (this.inited.get()) {
             throw new java.lang.IllegalStateException("container has been started.");
         }
         //
-        AbstractBindInfoProviderAdapter<T> adapter = super.createInfoAdapter(bindType, binderSource);
+        AbstractBindInfoProviderAdapter<T> adapter = super.createInfoAdapter(bindType);
         adapter.addObserver(this);
         adapter.setBindID(adapter.getBindID());
         return adapter;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.core._07_binder;
+package test.net.hasor.core.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.binder.AbstractBinder;
@@ -52,7 +52,7 @@ public class AbstractBinderDataTest {
         this.scopManager = PowerMockito.mock(ScopManager.class);
         StandardEnvironment env = new StandardEnvironment(null, null);
         final BeanBuilder builder = PowerMockito.mock(BeanBuilder.class);
-        PowerMockito.when(builder.createInfoAdapter((Class<?>) anyObject(), (Class<?>) anyObject())).thenAnswer(new Answer<Object>() {
+        PowerMockito.when(builder.createInfoAdapter((Class<?>) anyObject())).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 Class<Object> targetType = (Class<Object>) invocationOnMock.getArguments()[0];

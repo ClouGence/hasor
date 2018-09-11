@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.core._07_binder;
+package test.net.hasor.core.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.binder.ApiBinderCreater;
 /**

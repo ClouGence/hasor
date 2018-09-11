@@ -36,7 +36,7 @@ import java.util.Map.Entry;
 public abstract class TemplateBeanBuilder implements BeanBuilder {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     //
-    public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType, Class<?> binderSource) {
+    public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType) {
         return new DefaultBindInfoProviderAdapter<T>(bindType);
     }
     //

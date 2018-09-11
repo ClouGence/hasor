@@ -68,9 +68,6 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     //
     /*------------------------------------------------------------------------------------Binding*/
-    protected Class<?> getBinderSource() {
-        return ApiBinder.class;
-    }
     /**注册一个类型*/
     protected abstract BeanBuilder getBeanBuilder();
 
@@ -80,7 +77,7 @@ public abstract class AbstractBinder implements ApiBinder {
     @Override
     public <T> NamedBindingBuilder<T> bindType(final Class<T> type) {
         BeanBuilder builder = this.getBeanBuilder();
-        BindInfoBuilder<T> typeBuilder = builder.createInfoAdapter(type, this.getBinderSource());
+        BindInfoBuilder<T> typeBuilder = builder.createInfoAdapter(type);
         return new BindingBuilderImpl<T>(typeBuilder);
     }
     @Override
