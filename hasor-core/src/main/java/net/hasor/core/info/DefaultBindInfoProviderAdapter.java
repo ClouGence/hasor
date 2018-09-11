@@ -18,7 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
-import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 
 import java.lang.reflect.Constructor;
@@ -60,17 +60,23 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
     public void addInject(final String property, final Provider<?> valueProvider) {
         Hasor.assertIsNotNull(property, "property parameter is null.");
         Hasor.assertIsNotNull(valueProvider, "valueProvider parameter is null.");
-        this.injectProperty.put(property, new ParamInfo(null, valueProvider));
+        Class<?> propertyType = Hasor.assertIsNotNull(lookupPropertyType(property), "not found '" + property + "' property.");
+        this.injectProperty.put(property, new ParamInfo(propertyType, valueProvider));
     }
     @Override
     public void addInject(final String property, final BindInfo<?> valueInfo) {
         Hasor.assertIsNotNull(property, "paramType parameter is null.");
         Hasor.assertIsNotNull(valueInfo, "valueInfo parameter is null.");
-        this.injectProperty.put(property, new ParamInfo(null, valueInfo));
+        Class<?> propertyType = Hasor.assertIsNotNull(lookupPropertyType(property), "not found '" + property + "' property.");
+        this.injectProperty.put(property, new ParamInfo(propertyType, valueInfo));
+    }
+    //
+    private Class<?> lookupPropertyType(String propertyName) {
+        return BeanUtils.getPropertyOrFieldType(lookupType(), propertyName);
     }
     //
     //
-    private ConstructorInfo genConstructorInfo(AppContext appContext) throws NoSuchMethodException, SecurityException {
+    private ConstructorInfo genConstructorInfo(AppContext appContext) {
         ArrayList<Integer> ints = new ArrayList<Integer>(constructorParams.keySet());
         Collections.sort(ints);
         //check
@@ -93,12 +99,16 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         return new ConstructorInfo(types, providers);
     }
     /**获得需要IoC的属性列表*/
-    public Constructor<?> getConstructor(Class<?> targetClass, AppContext appContext) throws NoSuchMethodException, SecurityException {
+    public Constructor<?> getConstructor(AppContext appContext) throws NoSuchMethodException {
+        return this.getConstructor(lookupType(), appContext);
+    }
+    /**获得需要IoC的属性列表*/
+    public Constructor<?> getConstructor(Class<?> targetClass, AppContext appContext) throws NoSuchMethodException {
         Class<?>[] types = genConstructorInfo(appContext).types;
         return targetClass.getConstructor(types);
     }
     /**获得需要IoC的属性列表*/
-    public Provider<?>[] getConstructorParams(Class<?> targetClass, AppContext appContext) throws NoSuchMethodException, SecurityException {
+    public Provider<?>[] getConstructorParams(AppContext appContext) {
         return genConstructorInfo(appContext).providers;
     }
     /**获得需要IoC的属性列表*/
@@ -123,13 +133,24 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         this.initMethod = methodName;
     }
     /**获得初始化方法。*/
+    public Method getInitMethod() {
+        return getInitMethod(lookupType());
+    }
+    private Class<?> lookupType() {
+        Class<?> sourceType = this.getSourceType();
+        if (sourceType == null) {
+            sourceType = this.getBindType();
+        }
+        return sourceType;
+    }
+    /**获得初始化方法。*/
     public Method getInitMethod(Class<?> targetClass) {
         try {
             if (StringUtils.isNotBlank(this.initMethod)) {
                 return targetClass.getMethod(this.initMethod);
             }
-        } catch (Exception e) {
-            throw ExceptionUtils.toRuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            logger.error("not found init method " + this.initMethod);
         }
         return null;
     }

@@ -430,7 +430,7 @@ public abstract class TemplateAppContext implements AppContext {
         }
         //
         // .返回
-        Class<?>[] apiArrays = supportMap.keySet().toArray(new Class<?>[supportMap.size()]);
+        Class<?>[] apiArrays = supportMap.keySet().toArray(new Class<?>[0]);
         return (ApiBinder) Proxy.newProxyInstance(this.
                 getClassLoader(), apiArrays, new ApiBinderInvocationHandler(supportMap));
     }

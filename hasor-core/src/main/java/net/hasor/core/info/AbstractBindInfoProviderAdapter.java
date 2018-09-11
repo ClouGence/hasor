@@ -19,6 +19,8 @@ import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.binder.BindInfoBuilder;
 import net.hasor.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 用于定义Bean，实现了Bean配置接口{@link BindInfoBuilder}，配置的信息通过{@link BindInfo}接口展现出来。
  * <p>同时实现了{@link CustomerProvider}和{@link ScopeProvider}接口。表示着这个Bean定义支持自定义{@link Provider}和{@link Scope}。
@@ -27,15 +29,16 @@ import net.hasor.utils.StringUtils;
  */
 public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter implements//
         BindInfoBuilder<T>, BindInfo<T>, CustomerProvider<T>, ScopeProvider {
+    protected static Logger                logger           = LoggerFactory.getLogger(AbstractBindInfoProviderAdapter.class);
     //1.基本属性
-    private String                bindID           = null;
-    private String                bindName         = null;
-    private Class<T>              bindType         = null;
-    private Class<? extends T>    sourceType       = null;
-    private Boolean               singleton        = null;
+    private          String                bindID           = null;
+    private          String                bindName         = null;
+    private          Class<T>              bindType         = null;
+    private          Class<? extends T>    sourceType       = null;
+    private          Boolean               singleton        = null;
     //2.系统属性
-    private Provider<? extends T> customerProvider = null;
-    private Provider<Scope>       scopeProvider    = null;
+    private          Provider<? extends T> customerProvider = null;
+    private          Provider<Scope>       scopeProvider    = null;
     //
     public String getBindID() {
         if (this.bindID == null) {

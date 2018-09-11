@@ -13,33 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.scope;
+package test.net.hasor.core._04_scope;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.provider.SingleProvider;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 /**
- * 单例
- * @version : 2015年6月28日
+ * 一个自定义 Scope ，实现了线程间单例化
+ * @version : 2015年11月9日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SingletonScope implements Scope {
-    private ConcurrentHashMap<Object, Provider<?>> scopeMap = new ConcurrentHashMap<Object, Provider<?>>();
+public class MyScope implements Scope {
+    private ThreadLocal<Map<Object, Provider<?>>> threadSington = new ThreadLocal<Map<Object, Provider<?>>>();
+    //
+    public MyScope() {
+        this.threadSington.set(new HashMap<Object, Provider<?>>());
+    }
     public <T> Provider<T> scope(Object key, final Provider<T> provider) {
-        Provider<?> returnData = this.scopeMap.get(key);
+        Map<Object, Provider<?>> scopeMap = threadSington.get();
+        Provider<?> returnData = scopeMap.get(key);
         if (returnData == null) {
-            Provider<T> newSingleProvider = new SingleProvider<T>(provider);
-            returnData = this.scopeMap.putIfAbsent(key, newSingleProvider);
+            Provider<T> newSingleProvider = new SingleProvider<T>(provider) {
+            };
+            returnData = scopeMap.put(key, newSingleProvider);
             if (returnData == null) {
                 returnData = newSingleProvider;
             }
         }
         return (Provider<T>) returnData;
-    }
-    public Map<Object, Provider<?>> getSingletonData() {
-        return Collections.unmodifiableMap(this.scopeMap);
     }
 }

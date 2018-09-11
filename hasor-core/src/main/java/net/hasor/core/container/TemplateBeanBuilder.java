@@ -151,7 +151,12 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         //
         // .动态代理
         ClassLoader rootLoader = appContext.getClassLoader();
-        Class<?> newType = ClassEngine.buildType(targetType, rootLoader, aopList, appContext);
+        Class<?> newType = null;
+        if (aopList.isEmpty()) {
+            newType = targetType;
+        } else {
+            newType = ClassEngine.buildType(targetType, rootLoader, aopList, appContext);
+        }
         //
         // .确定要调用的构造方法 & 构造入参
         Constructor<?> constructor = null;
@@ -161,7 +166,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
             constructor = defBinder.getConstructor(newType, appContext);
             //
-            Provider<?>[] paramProviders = defBinder.getConstructorParams(newType, appContext);
+            Provider<?>[] paramProviders = defBinder.getConstructorParams(appContext);
             paramObjects = new Object[paramProviders.length];
             for (int i = 0; i < paramProviders.length; i++) {
                 paramObjects[i] = paramProviders[i].get();
@@ -176,7 +181,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
                 constructor = newType.getConstructor(referConstructor.getParameterTypes());
             } else {
                 try {
-                    constructor = targetType.getConstructor();
+                    constructor = newType.getConstructor();
                 } catch (Exception e) {
                     constructor = newType.getConstructor(targetType.getConstructors()[0].getParameterTypes());
                 }
