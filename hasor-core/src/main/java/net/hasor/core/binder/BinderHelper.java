@@ -23,7 +23,7 @@ import net.hasor.core.*;
 public class BinderHelper {
     public static Module onInstall(Environment env, final Module atModule) {
         if (atModule == null) {
-            return atModule;
+            return null;
         }
         if (atModule instanceof LifeModule) {
             /*启动*/

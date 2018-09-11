@@ -13,12 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._07_binder;
-import net.hasor.core.ApiBinder;
+package test.net.hasor.core._07_binder;
+import java.lang.reflect.Method;
+import java.util.Date;
 /**
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface TestBinder extends ApiBinder {
-    public void hello();
+public class TestBean2 {
+    private Date   abc1;
+    private int    abc2;
+    private Object abc3;
+    private Method abc4;
+    //
+    public TestBean2(Date abc1, int abc2, Object abc3, Method abc4) {
+        this.abc1 = abc1;
+        this.abc2 = abc2;
+        this.abc3 = abc3;
+        this.abc4 = abc4;
+    }
+    //
+    public void doInit() {
+    }
 }

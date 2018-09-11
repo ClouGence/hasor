@@ -13,19 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._07_binder;
+package test.net.hasor.core._07_binder;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.binder.ApiBinderWrap;
 /**
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class TestBinderImpl extends ApiBinderWrap implements TestBinder {
-    public TestBinderImpl(ApiBinder apiBinder) {
-        super(apiBinder);
-    }
-    @Override
-    public void hello() {
-        this.bindType(String.class).toInstance("hello Binder");
-    }
+public interface TestBinder extends ApiBinder {
+    public void hello();
 }

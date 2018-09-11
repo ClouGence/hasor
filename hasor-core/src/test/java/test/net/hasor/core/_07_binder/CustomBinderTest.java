@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.core._07_binder;
+package test.net.hasor.core._07_binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
@@ -25,10 +25,11 @@ import org.slf4j.LoggerFactory;
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class BinderTest {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+public class CustomBinderTest implements Module {
+    protected Logger  logger        = LoggerFactory.getLogger(getClass());
+    protected boolean installStatus = false;
     //
-    // - 类扫描
+    // - 自定义 Binder
     @Test
     public void binderTest() {
         System.out.println("--->>binderTest<<--");
@@ -39,11 +40,22 @@ public class BinderTest {
                 } else {
                     assert apiBinder instanceof TestBinder;
                 }
+                //
+                apiBinder.tryCast(TestBinder.class).hello();
+                System.out.print(apiBinder.toString());
+                //
+                apiBinder.installModule(CustomBinderTest.this);
             }
         });
+        //
+        assert this.installStatus;
         //
         logger.debug("---------------------------------------------");
         String instance = appContext.getInstance(String.class);
         logger.debug(instance);
+    }
+    @Override
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
+        this.installStatus = true;
     }
 }

@@ -248,12 +248,17 @@ public abstract class AbstractBinder implements ApiBinder {
         }
         @Override
         public MetaDataBindingBuilder<T> toScope(final Provider<Scope> scope) {
+            Hasor.assertIsNotNull(scope, "the Provider of Scope is null.");
             this.typeBuilder.setScopeProvider(scope);
             return this;
         }
         @Override
         public MetaDataBindingBuilder<T> toScope(String scopeName) {
-            return this.toScope(getScopManager().findScope(scopeName));
+            Provider<Scope> scope = getScopManager().findScope(scopeName);
+            if (scope == null) {
+                throw new IllegalStateException("scope '" + scopeName + "' Have not yet registered");
+            }
+            return this.toScope(scope);
         }
         @Override
         public LifeBindingBuilder<T> toProvider(final Provider<? extends T> provider) {

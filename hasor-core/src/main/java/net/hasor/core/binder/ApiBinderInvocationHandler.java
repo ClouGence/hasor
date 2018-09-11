@@ -29,11 +29,16 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ApiBinderInvocationHandler implements InvocationHandler {
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private Logger                logger = LoggerFactory.getLogger(getClass());
     private Map<Class<?>, Object> supportMap;
     //
     public ApiBinderInvocationHandler(Map<Class<?>, Object> supportMap) {
         this.supportMap = supportMap;
+        for (Map.Entry<Class<?>, Object> entry : supportMap.entrySet()) {
+            if (entry.getValue() == null) {
+                throw new UnsupportedOperationException("this method is not support -> " + entry.getKey());
+            }
+        }
     }
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
@@ -52,9 +57,6 @@ public class ApiBinderInvocationHandler implements InvocationHandler {
         //
         Class<?> declaringClass = method.getDeclaringClass();
         Object target = this.supportMap.get(declaringClass);
-        if (target == null) {
-            throw new UnsupportedOperationException("this method is not support -> " + method);
-        }
         if (method.getName().equals("installModule")) {
             if (args[0] != null) {
                 ApiBinder apiBinder = (ApiBinder) this.supportMap.get(ApiBinder.class);
@@ -70,9 +72,6 @@ public class ApiBinderInvocationHandler implements InvocationHandler {
             Class<?>[] types = method.getParameterTypes();
             if (types.length == 1 && types[0] == Class.class) {
                 Class<?> castApiBinder = (Class<?>) args[0];
-                if (castApiBinder == null) {
-                    return null;
-                }
                 if (!castApiBinder.isInstance(proxy)) {
                     return null;
                 }
