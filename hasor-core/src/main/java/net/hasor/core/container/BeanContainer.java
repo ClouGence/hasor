@@ -62,9 +62,6 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
         if (typeRegisterList != null && !typeRegisterList.isEmpty()) {
             for (int i = typeRegisterList.size() - 1; i >= 0; i--) {
                 BindInfo<T> adapter = typeRegisterList.get(i);
-                if (adapter == null) {
-                    continue;
-                }
                 String bindName = adapter.getBindName();
                 if (StringUtils.isBlank(bindName) && StringUtils.isBlank(withName)) {
                     return adapter;
@@ -205,12 +202,12 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
     /*-------------------------------------------------------------------------------------------*/
     //
     @Override
-    public Provider<Scope> registerScope(String scopeName, Provider<Scope> scope) {
-        Provider<Scope> oldScope = this.scopeMapping.putIfAbsent(scopeName, scope);
+    public <T extends Scope> Provider<T> registerScope(String scopeName, Provider<T> scopeProvider) {
+        Provider<? extends Scope> oldScope = this.scopeMapping.putIfAbsent(scopeName, (Provider<Scope>) scopeProvider);
         if (oldScope == null) {
-            oldScope = scope;
+            oldScope = scopeProvider;
         }
-        return oldScope;
+        return (Provider<T>) oldScope;
     }
     @Override
     public Provider<Scope> findScope(String scopeName) {
@@ -261,7 +258,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
             this.idDataSource.remove(oldValue);
             List<String> idList = this.indexTypeMapping.get(target.getBindType().getName());
             if (idList == null) {
-                throw new IllegalStateException("beans were not registered correctly.");
+                throw new IllegalStateException("beans are not registered.");
             }
             idList.remove(oldValue);
             idList.add((String) newValue);

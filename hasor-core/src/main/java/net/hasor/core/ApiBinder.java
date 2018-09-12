@@ -218,7 +218,7 @@ public interface ApiBinder {
      * @param scopeProvider 作用域
      * @return 成功注册之后返回它自身, 如果存在同名的scope那么会返回第一次注册那个 scope。
      */
-    public Provider<Scope> registerScope(String scopeName, Provider<Scope> scopeProvider);
+    public <T extends Scope> Provider<T> registerScope(String scopeName, Provider<T> scopeProvider);
     //
     /*--------------------------------------------------------------------------------------Faces*/
     /**给绑定起个名字。*/

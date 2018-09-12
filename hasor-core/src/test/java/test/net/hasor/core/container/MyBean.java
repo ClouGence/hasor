@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.provider;
-import net.hasor.core.Provider;
+package test.net.hasor.core.container;
 /**
- * 对象的{@link Provider}封装形式。
- * @version : 2014年7月8日
+ * 一个Bean
+ * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InstanceProvider<T> implements Provider<T> {
-    private T instance = null;
-    public InstanceProvider(final T instance) {
-        this.instance = instance;
-    }
-    public T get() {
-        return this.instance;
-    }
+public class MyBean extends TestBean {
+    private        boolean init       = false;
+    private static boolean staticInit = false;
     //
-    public void set(T instance) {
-        this.instance = instance;
+    public static void resetInit() {
+        staticInit = false;
     }
-    //
-    public static <T> Provider<T> of(T target) {
-        return new InstanceProvider<T>(target);
+    public static boolean isStaticInit() {
+        return staticInit;
+    }
+    public boolean isInit() {
+        return init;
+    }
+    public void init() {
+        this.init = true;
+        staticInit = true;
     }
 }

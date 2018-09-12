@@ -29,16 +29,16 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter implements//
         BindInfoBuilder<T>, BindInfo<T>, CustomerProvider<T>, ScopeProvider {
-    protected static Logger                logger           = LoggerFactory.getLogger(AbstractBindInfoProviderAdapter.class);
+    protected static Logger                    logger           = LoggerFactory.getLogger(AbstractBindInfoProviderAdapter.class);
     //1.基本属性
-    private          String                bindID           = null;
-    private          String                bindName         = null;
-    private          Class<T>              bindType         = null;
-    private          Class<? extends T>    sourceType       = null;
-    private          Boolean               singleton        = null;
+    private          String                    bindID           = null;
+    private          String                    bindName         = null;
+    private          Class<T>                  bindType         = null;
+    private          Class<? extends T>        sourceType       = null;
+    private          Boolean                   singleton        = null;
     //2.系统属性
-    private          Provider<? extends T> customerProvider = null;
-    private          Provider<Scope>       scopeProvider    = null;
+    private          Provider<? extends T>     customerProvider = null;
+    private          Provider<? extends Scope> scopeProvider    = null;
     //
     public String getBindID() {
         if (this.bindID == null) {
@@ -63,7 +63,7 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
         return this.customerProvider;
     }
     public Provider<Scope> getScopeProvider() {
-        return this.scopeProvider;
+        return (Provider<Scope>) this.scopeProvider;
     }
     public BindInfo<T> toInfo() {
         return this;
@@ -102,7 +102,7 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
         this.notify(new NotifyData("customerProvider", this.customerProvider, customerProvider));
         this.customerProvider = customerProvider;
     }
-    public void setScopeProvider(final Provider<Scope> scopeProvider) {
+    public void setScopeProvider(final Provider<? extends Scope> scopeProvider) {
         // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("scopeProvider", this.scopeProvider, scopeProvider));
         this.scopeProvider = scopeProvider;

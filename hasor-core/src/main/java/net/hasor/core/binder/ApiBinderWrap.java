@@ -96,7 +96,7 @@ public class ApiBinderWrap implements ApiBinder {
     public Provider<Scope> registerScope(String scopeName, Scope scope) {
         return this.apiBinder.registerScope(scopeName, scope);
     }
-    public Provider<Scope> registerScope(String scopeName, Provider<Scope> scope) {
-        return this.apiBinder.registerScope(scopeName, scope);
+    public <T extends Scope> Provider<T> registerScope(String scopeName, Provider<T> scopeProvider) {
+        return this.apiBinder.registerScope(scopeName, scopeProvider);
     }
 }

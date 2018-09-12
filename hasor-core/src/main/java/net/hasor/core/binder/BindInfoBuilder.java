@@ -64,7 +64,7 @@ public interface BindInfoBuilder<T> {
      * 将类型发布到一个固定的命名空间内。
      * @param scopeProvider 命名空间
      */
-    public void setScopeProvider(Provider<Scope> scopeProvider);
+    public void setScopeProvider(Provider<? extends Scope> scopeProvider);
     //
 
     /**

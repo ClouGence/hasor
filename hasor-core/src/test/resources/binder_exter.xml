@@ -2,7 +2,7 @@
 <config xmlns="http://project.hasor.net/hasor/schema/main">
 
     <hasor.apiBinderSet>
-        <binder type="test.net.hasor.core._07_binder.TestBinder">test.net.hasor.core._07_binder.TestBinderCreater</binder>
+        <binder type="test.net.hasor.core.binder.TestBinder">test.net.hasor.core.binder.TestBinderCreater</binder>
     </hasor.apiBinderSet>
 
 </config>

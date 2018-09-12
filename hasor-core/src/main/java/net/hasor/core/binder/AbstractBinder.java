@@ -110,8 +110,8 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     //
     @Override
-    public Provider<Scope> registerScope(String scopeName, Provider<Scope> scope) {
-        return this.getScopManager().registerScope(scopeName, scope);
+    public <T extends Scope> Provider<T> registerScope(String scopeName, Provider<T> scopeProvider) {
+        return this.getScopManager().registerScope(scopeName, scopeProvider);
     }
     @Override
     public Provider<Scope> registerScope(String scopeName, Scope scope) {
