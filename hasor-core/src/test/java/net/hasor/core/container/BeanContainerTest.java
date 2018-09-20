@@ -1,7 +1,6 @@
-package test.net.hasor.core.container;
+package net.hasor.core.container;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.core.container.BeanContainer;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.provider.InstanceProvider;

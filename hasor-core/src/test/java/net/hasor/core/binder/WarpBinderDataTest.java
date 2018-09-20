@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.core.binder;
+package net.hasor.core.binder;
 import net.hasor.core.*;
 import net.hasor.core.classcode.matcher.AopMatchers;
 import net.hasor.core.info.AopBindInfoAdapter;
@@ -39,16 +39,17 @@ import static org.mockito.Matchers.anyString;
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class BinderDataTest extends AbstractBinderDataTest {
+public class WarpBinderDataTest extends AbstractBinderDataTest {
     @Before
     public void beforeTest() throws IOException {
         super.beforeTest();
+        this.binder = new ApiBinderWrap(this.binder);
     }
     //
     @Test
     public void binderTest1() {
-        binder.bindType(BinderDataTest.class);
-        assert reference.get().getBindType() == BinderDataTest.class;
+        binder.bindType(WarpBinderDataTest.class);
+        assert reference.get().getBindType() == WarpBinderDataTest.class;
     }
     //
     @Test
@@ -116,8 +117,8 @@ public class BinderDataTest extends AbstractBinderDataTest {
     //
     @Test
     public void binderTest9() {
-        binder.bindType(BinderDataTest.class).idWith("12345");
-        assert reference.get().getBindType() == BinderDataTest.class;
+        binder.bindType(WarpBinderDataTest.class).idWith("12345");
+        assert reference.get().getBindType() == WarpBinderDataTest.class;
         assert "12345".equals(reference.get().getBindID());
     }
     //
@@ -224,9 +225,9 @@ public class BinderDataTest extends AbstractBinderDataTest {
     //
     @Test
     public void binderTest16() {
-        binder.bindType(BinderDataTest.class).asEagerSingleton();
+        binder.bindType(WarpBinderDataTest.class).asEagerSingleton();
         assert reference.get().isSingleton();
-        binder.bindType(BinderDataTest.class).asEagerPrototype();
+        binder.bindType(WarpBinderDataTest.class).asEagerPrototype();
         assert !reference.get().isSingleton();
     }
     //

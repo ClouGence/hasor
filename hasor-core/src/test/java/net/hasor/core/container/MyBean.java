@@ -13,12 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.core.binder;
-import net.hasor.core.ApiBinder;
+package net.hasor.core.container;
 /**
- * @version : 2016-12-16
+ * 一个Bean
+ * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface TestBinder extends ApiBinder {
-    public void hello();
+public class MyBean extends TestBean {
+    private        boolean init       = false;
+    private static boolean staticInit = false;
+    //
+    public static void resetInit() {
+        staticInit = false;
+    }
+    public static boolean isStaticInit() {
+        return staticInit;
+    }
+    public boolean isInit() {
+        return init;
+    }
+    public void init() {
+        this.init = true;
+        staticInit = true;
+    }
 }

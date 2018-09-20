@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.core.container;
+package net.hasor.core.container;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.provider.SingleProvider;

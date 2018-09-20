@@ -1,4 +1,4 @@
-package test.net.hasor.core.container;
+package net.hasor.core.container;
 import net.hasor.core.Inject;
 //
 public class RefBean {

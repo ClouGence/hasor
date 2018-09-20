@@ -13,27 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.core.container;
+package net.hasor.core.binder;
+import java.lang.reflect.Method;
+import java.util.Date;
 /**
- * 一个Bean
- * @version : 2014-1-3
+ * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MyBean extends TestBean {
-    private        boolean init       = false;
-    private static boolean staticInit = false;
+public class TestBean2 {
+    private Date   abc1;
+    private int    abc2;
+    private Object abc3;
+    private Method abc4;
     //
-    public static void resetInit() {
-        staticInit = false;
+    public TestBean2(Date abc1, int abc2, Object abc3, Method abc4) {
+        this.abc1 = abc1;
+        this.abc2 = abc2;
+        this.abc3 = abc3;
+        this.abc4 = abc4;
     }
-    public static boolean isStaticInit() {
-        return staticInit;
-    }
-    public boolean isInit() {
-        return init;
-    }
-    public void init() {
-        this.init = true;
-        staticInit = true;
+    //
+    public void doInit() {
     }
 }

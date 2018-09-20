@@ -1,4 +1,4 @@
-package test.net.hasor.core.binder;
+package net.hasor.core.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.LifeModule;

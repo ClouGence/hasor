@@ -1,4 +1,4 @@
-package test.net.hasor.core.container;
+package net.hasor.core.container;
 //
 public class ConstructorBean {
     private String param = null;
