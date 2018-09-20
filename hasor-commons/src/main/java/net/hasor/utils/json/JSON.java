@@ -1038,7 +1038,7 @@ public class JSON {
     /* ------------------------------------------------------------ */
     public static class ReaderSource implements Source {
         private Reader _reader;
-        private int _next = -1;
+        private int    _next = -1;
         private char[] scratch;
         public ReaderSource(Reader r) {
             _reader = r;
