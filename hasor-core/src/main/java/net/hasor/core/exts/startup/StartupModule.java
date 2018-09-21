@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class StartupModule implements Module {
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private static Logger logger = LoggerFactory.getLogger(StartupModule.class);
     //
     public final void loadModule(ApiBinder apiBinder) throws Throwable {
         ClassLoader classLoader = apiBinder.getEnvironment().getClassLoader();

@@ -13,36 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container;
-import test.net.hasor.core.pojos.IntefaceBean;
-import test.net.hasor.core.pojos.PojoInfo;
-
-import java.util.UUID;
+package net.hasor.core.container.beans;
 /**
  * 一个Bean
  * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public class TestBean implements PojoInfo, IntefaceBean {
-    private String uuid    = UUID.randomUUID().toString();
-    private String name    = "马三";
-    private String address = "北京马连洼街道办...";
-    public String getUuid() {
-        return uuid;
-    }
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
+public class MyIntefaceBean implements MyInteface {
+    @Override
     public String getName() {
-        return name;
+        return null;
     }
-    public void setName(String name) {
-        this.name = name;
-    }
+    @Override
     public String getAddress() {
-        return address;
-    }
-    public void setAddress(String address) {
-        this.address = address;
+        return null;
     }
 }

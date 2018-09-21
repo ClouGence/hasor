@@ -1,5 +1,7 @@
 package net.hasor.core.container;
 import net.hasor.core.BindInfo;
+import net.hasor.core.container.beans.CallInitBean;
+import net.hasor.core.container.beans.TestBean;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.NotifyData;
@@ -12,7 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-public class ContainerTest {
+public class ContainerBasicTest {
     private StandardEnvironment env;
     @Before
     public void testBefore() throws IOException {
@@ -93,20 +95,20 @@ public class ContainerTest {
         adapter3.setBindID("ID:3");
         adapter3.setBindName(null);
         //
-        AbstractBindInfoProviderAdapter<?> adapter4 = container.createInfoAdapter(MyBean.class);
+        AbstractBindInfoProviderAdapter<?> adapter4 = container.createInfoAdapter(CallInitBean.class);
         adapter4.setBindID("ID:4");
         adapter4.setBindName("c");
         //
-        AbstractBindInfoProviderAdapter<?> adapter5 = container.createInfoAdapter(MyBean.class);
+        AbstractBindInfoProviderAdapter<?> adapter5 = container.createInfoAdapter(CallInitBean.class);
         adapter5.setBindID("ID:5");
         adapter5.setBindName("d");
         //
-        AbstractBindInfoProviderAdapter<?> adapter6 = container.createInfoAdapter(MyBean.class);
+        AbstractBindInfoProviderAdapter<?> adapter6 = container.createInfoAdapter(CallInitBean.class);
         adapter6.setBindID("ID:6");
         adapter6.setBindName(null);
         //
         //
-        Collection<String> namesByType = container.getBindInfoNamesByType(MyBean.class);
+        Collection<String> namesByType = container.getBindInfoNamesByType(CallInitBean.class);
         assert !namesByType.contains("a");
         assert !namesByType.contains("b");
         assert namesByType.contains("c");
@@ -225,7 +227,7 @@ public class ContainerTest {
         adapter1.setBindName("a");
         //
         try {
-            ((AbstractBindInfoProviderAdapter<MyBean>) adapter1).setBindType(MyBean.class);
+            ((AbstractBindInfoProviderAdapter<CallInitBean>) adapter1).setBindType(CallInitBean.class);
             assert false;
         } catch (Exception e) {
             assert e.getMessage().equals("'bindType' are not allowed to be changed");

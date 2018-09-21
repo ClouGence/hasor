@@ -35,9 +35,9 @@ import java.util.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractSettings implements Settings {
-    protected            Logger         logger              = LoggerFactory.getLogger(getClass());
-    private static final SettingValue[] EMPTY_SETTING_VALUE = new SettingValue[0];
-    private DecSpaceMap<String, SettingValue> dataMap;
+    protected            Logger                            logger              = LoggerFactory.getLogger(getClass());
+    private static final SettingValue[]                    EMPTY_SETTING_VALUE = new SettingValue[0];
+    private              DecSpaceMap<String, SettingValue> dataMap;
     public AbstractSettings() {
         this.dataMap = new DecSpaceMap<String, SettingValue>();
     }

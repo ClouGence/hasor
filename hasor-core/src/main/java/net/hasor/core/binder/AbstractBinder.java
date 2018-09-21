@@ -22,6 +22,8 @@ import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -35,7 +37,8 @@ import java.util.UUID;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractBinder implements ApiBinder {
-    private Environment environment;
+    protected Logger      logger = LoggerFactory.getLogger(getClass());
+    private   Environment environment;
     public AbstractBinder(Environment environment) {
         this.environment = Hasor.assertIsNotNull(environment, "environment is null.");
     }
@@ -188,12 +191,17 @@ public abstract class AbstractBinder implements ApiBinder {
         }
         @Override
         public MetaDataBindingBuilder<T> asEagerPrototype() {
-            this.typeBuilder.setSingleton(false);
+            this.typeBuilder.setSingletonMode(SingletonMode.Prototype);
             return this;
         }
         @Override
         public MetaDataBindingBuilder<T> asEagerSingleton() {
-            this.typeBuilder.setSingleton(true);
+            this.typeBuilder.setSingletonMode(SingletonMode.Singleton);
+            return this;
+        }
+        @Override
+        public MetaDataBindingBuilder<T> asEagerSingletonClear() {
+            this.typeBuilder.setSingletonMode(SingletonMode.Clear);
             return this;
         }
         @Override

@@ -225,10 +225,12 @@ public class WarpBinderDataTest extends AbstractBinderDataTest {
     //
     @Test
     public void binderTest16() {
-        binder.bindType(WarpBinderDataTest.class).asEagerSingleton();
-        assert reference.get().isSingleton();
-        binder.bindType(WarpBinderDataTest.class).asEagerPrototype();
-        assert !reference.get().isSingleton();
+        binder.bindType(BinderDataTest.class).asEagerSingleton();
+        assert reference.get().getSingletonMode() == SingletonMode.Singleton;
+        binder.bindType(BinderDataTest.class).asEagerPrototype();
+        assert reference.get().getSingletonMode() == SingletonMode.Prototype;
+        binder.bindType(BinderDataTest.class).asEagerSingletonClear();
+        assert reference.get().getSingletonMode() == SingletonMode.Clear;
     }
     //
     @Test

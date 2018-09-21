@@ -2,6 +2,8 @@ package net.hasor.core.container;
 import net.hasor.core.AppContext;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
+import net.hasor.core.container.beans.CallInitBean;
+import net.hasor.core.container.beans.MyScope;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.provider.InstanceProvider;
@@ -10,7 +12,7 @@ import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
 import java.io.IOException;
-public class ScopeContainerTest {
+public class ContainerScopeTest {
     private StandardEnvironment env;
     @Before
     public void testBefore() throws IOException {
@@ -18,7 +20,7 @@ public class ScopeContainerTest {
     }
     @Test
     public void containerTest1() {
-        MyBean.resetInit();
+        CallInitBean.resetInit();
         BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
@@ -26,7 +28,7 @@ public class ScopeContainerTest {
         Provider<MyScope> myScope = InstanceProvider.of(new MyScope());
         container.registerScope("myScope", myScope);
         //
-        AbstractBindInfoProviderAdapter<?> adapter = container.createInfoAdapter(MyBean.class);
+        AbstractBindInfoProviderAdapter<?> adapter = container.createInfoAdapter(CallInitBean.class);
         adapter.setBindID("12345");
         adapter.setBindName("myBean");
         adapter.initMethod("init");

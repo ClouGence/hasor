@@ -20,10 +20,7 @@ import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.NotifyData;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.scope.SingletonScope;
-import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -42,12 +39,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class BeanContainer extends TemplateBeanBuilder implements ScopManager, Observer {
-    protected Logger                                     logger           = LoggerFactory.getLogger(getClass());
-    private   AtomicBoolean                              inited           = new AtomicBoolean(false);
-    private   List<BindInfo<?>>                          allBindInfoList  = new ArrayList<BindInfo<?>>();
-    private   ConcurrentHashMap<String, List<String>>    indexTypeMapping = new ConcurrentHashMap<String, List<String>>();
-    private   ConcurrentHashMap<String, BindInfo<?>>     idDataSource     = new ConcurrentHashMap<String, BindInfo<?>>();
-    private   ConcurrentHashMap<String, Provider<Scope>> scopeMapping     = new ConcurrentHashMap<String, Provider<Scope>>();
+    private AtomicBoolean                              inited           = new AtomicBoolean(false);
+    private List<BindInfo<?>>                          allBindInfoList  = new ArrayList<BindInfo<?>>();
+    private ConcurrentHashMap<String, List<String>>    indexTypeMapping = new ConcurrentHashMap<String, List<String>>();
+    private ConcurrentHashMap<String, BindInfo<?>>     idDataSource     = new ConcurrentHashMap<String, BindInfo<?>>();
+    private ConcurrentHashMap<String, Provider<Scope>> scopeMapping     = new ConcurrentHashMap<String, Provider<Scope>>();
     //
     /*-----------------------------------------------------------------------------------BindInfo*/
     /**根据ID查找{@link BindInfo}*/
@@ -78,7 +74,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
         List<String> idList = this.indexTypeMapping.get(bindType.getName());
         if (idList == null || idList.isEmpty()) {
             logger.debug("getBindInfoByType , never define this type = {}", bindType);
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         List<BindInfo<T>> resultList = new ArrayList<BindInfo<T>>();
         for (String infoID : idList) {
@@ -134,31 +130,23 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
             final BindInfo<T> bindInfo, final AppContext appContext) {
         boolean isSingleton = testSingleton(targetType, bindInfo, appContext.getEnvironment().getSettings());
         if (!isSingleton) {
-            try {
-                return super.createObject(targetType, referConstructor, bindInfo, appContext);
-            } catch (Throwable e) {
-                throw ExceptionUtils.toRuntimeException(e);
-            }
+            return super.createObject(targetType, referConstructor, bindInfo, appContext);
         }
         // 单例的
         Object key = (bindInfo != null) ? bindInfo : targetType;
         Provider<Scope> singleton = Hasor.assertIsNotNull(this.scopeMapping.get(ScopManager.SINGLETON_SCOPE));
         return singleton.get().scope(key, new Provider<T>() {
             public T get() {
-                try {
-                    return BeanContainer.super.createObject(targetType, referConstructor, bindInfo, appContext);
-                } catch (Throwable e) {
-                    throw ExceptionUtils.toRuntimeException(e);
-                }
+                return BeanContainer.super.createObject(targetType, referConstructor, bindInfo, appContext);
             }
         }).get();
     }
     /** 仅执行依赖注入 */
-    public <T> T justInject(T object, Class<?> beanType, AppContext appContext) throws Throwable {
+    public <T> T justInject(T object, Class<?> beanType, AppContext appContext) {
         return super.doInject(object, null, appContext, beanType);
     }
     /** 仅执行依赖注入 */
-    public <T> T justInject(T object, BindInfo<?> bindInfo, AppContext appContext) throws Throwable {
+    public <T> T justInject(T object, BindInfo<?> bindInfo, AppContext appContext) {
         return super.doInject(object, bindInfo, appContext, null);
     }
     //

@@ -225,9 +225,11 @@ public class BinderDataTest extends AbstractBinderDataTest {
     @Test
     public void binderTest16() {
         binder.bindType(BinderDataTest.class).asEagerSingleton();
-        assert reference.get().isSingleton();
+        assert reference.get().getSingletonMode() == SingletonMode.Singleton;
         binder.bindType(BinderDataTest.class).asEagerPrototype();
-        assert !reference.get().isSingleton();
+        assert reference.get().getSingletonMode() == SingletonMode.Prototype;
+        binder.bindType(BinderDataTest.class).asEagerSingletonClear();
+        assert reference.get().getSingletonMode() == SingletonMode.Clear;
     }
     //
     @Test

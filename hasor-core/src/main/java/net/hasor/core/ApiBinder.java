@@ -243,6 +243,7 @@ public interface ApiBinder {
          */
         public NamedBindingBuilder<T> idWith(String idString);
     }
+    //
     /**处理类型和实现的绑定。*/
     public interface LinkedBindingBuilder<T> extends InjectPropertyBindingBuilder<T> {
         /**
@@ -273,7 +274,8 @@ public interface ApiBinder {
          */
         public InjectConstructorBindingBuilder<T> toConstructor(Constructor<? extends T> constructor);
     }
-    /**构造方法依赖注入。*/
+    //
+    /**构造方法依赖注入，该接口的配置会覆盖注解  {@link ConstructorBy}。*/
     public interface InjectConstructorBindingBuilder<T> extends LifeBindingBuilder<T> {
         /**
          * 设置构造方法注入属性。
@@ -363,6 +365,12 @@ public interface ApiBinder {
          * @return 返回 - {@link MetaDataBindingBuilder}。
          */
         public MetaDataBindingBuilder<T> asEagerSingleton();
+
+        /**
+         * 使 Bean 原身自带的 @Prototype 或者 @Singleton 注解失效。<p>
+         * @return 返回 - {@link MetaDataBindingBuilder}。
+         */
+        public MetaDataBindingBuilder<T> asEagerSingletonClear();
 
         /**
          * 设置Scope。

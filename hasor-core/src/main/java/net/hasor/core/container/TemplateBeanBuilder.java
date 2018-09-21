@@ -16,11 +16,14 @@
 package net.hasor.core.container;
 import net.hasor.core.*;
 import net.hasor.core.Type;
+import net.hasor.core.classcode.aop.AopClassConfig;
 import net.hasor.core.info.*;
+import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
+import net.hasor.utils.reflect.ConstructorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,22 +49,14 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         if (targetType == null) {
             return null;
         }
-        try {
-            return createObject(targetType, null, null, appContext);
-        } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
-        }
+        return createObject(targetType, null, null, appContext);
     }
     //
     public <T> T getInstance(Constructor<T> targetConstructor, AppContext appContext) {
         if (targetConstructor == null) {
             return null;
         }
-        try {
-            return createObject(targetConstructor.getDeclaringClass(), targetConstructor, null, appContext);
-        } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
-        }
+        return createObject(targetConstructor.getDeclaringClass(), targetConstructor, null, appContext);
     }
     //
     public <T> T getInstance(final BindInfo<T> bindInfo, final AppContext appContext) {
@@ -87,11 +82,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
                     if (superType != null) {
                         targetType = superType;
                     }
-                    try {
-                        return createObject(targetType, null, bindInfo, appContext);
-                    } catch (Throwable e) {
-                        throw ExceptionUtils.toRuntimeException(e);
-                    }
+                    return createObject(targetType, null, bindInfo, appContext);
                 }
             };
         } else if (instanceProvider == null) {
@@ -124,16 +115,12 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         } while (implBy != null);
         return (Class<T>) tmpType;
     }
-    protected <T> T createObject(Class<T> targetType, Constructor<T> referConstructor, BindInfo<T> bindInfo, AppContext appContext) throws Throwable {
+    protected <T> T createObject(Class<T> targetType, Constructor<T> referConstructor, BindInfo<T> bindInfo, AppContext appContext) {
         //
         // .targetType也许只是一个接口或者抽象类，找到真正创建的那个类型
         targetType = findImplClass(targetType);
         //
         // .check
-        int modifiers = targetType.getModifiers();
-        if (targetType.isInterface() || targetType.isEnum() || (modifiers == (modifiers | Modifier.ABSTRACT))) {
-            return null;
-        }
         if (targetType.isPrimitive()) {
             return (T) BeanUtils.getDefaultValue(targetType);
         }
@@ -141,20 +128,30 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             Class<?> comType = targetType.getComponentType();
             return (T) Array.newInstance(comType, 0);
         }
+        if (targetType.isInterface() || targetType.isEnum()) {
+            return null;
+        }
+        if (Modifier.isAbstract(targetType.getModifiers())) {
+            // Integer.TYPE 判断结果为 true & targetType.isArray() 情况下也为 true
+            return null;// 因此要放在后面
+        }
         //
         // .准备Aop
         List<BindInfo<AopBindInfoAdapter>> aopBindList = appContext.findBindingRegister(AopBindInfoAdapter.class);
-        List<AopBindInfoAdapter> aopList = new ArrayList<AopBindInfoAdapter>();
-        for (BindInfo<AopBindInfoAdapter> info : aopBindList) {
-            aopList.add(this.getInstance(info, appContext));
+        List<AopBindInfoAdapter> aopList;
+        if (!aopBindList.isEmpty()) {
+            aopList = new ArrayList<AopBindInfoAdapter>();
+            for (BindInfo<AopBindInfoAdapter> info : aopBindList) {
+                aopList.add(this.getInstance(info, appContext));
+            }
+        } else {
+            aopList = Collections.emptyList();
         }
         //
         // .动态代理
         ClassLoader rootLoader = appContext.getClassLoader();
-        Class<?> newType = null;
-        if (aopList.isEmpty()) {
-            newType = targetType;
-        } else {
+        Class<?> newType = targetType;
+        if (AopClassConfig.isSupport(targetType) && !aopList.isEmpty()) {
             newType = ClassEngine.buildType(targetType, rootLoader, aopList, appContext);
         }
         //
@@ -178,15 +175,26 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             if (referConstructor != null) {
                 parameterTypes = referConstructor.getParameterTypes();
                 parameterAnnos = referConstructor.getParameterAnnotations();
-                constructor = newType.getConstructor(referConstructor.getParameterTypes());
+                constructor = ConstructorUtils.getAccessibleConstructor(newType, referConstructor.getParameterTypes());
             } else {
-                try {
-                    constructor = newType.getConstructor();
-                } catch (Exception e) {
-                    constructor = newType.getConstructor(targetType.getConstructors()[0].getParameterTypes());
+                Constructor<?>[] constructorArrays = newType.getConstructors();
+                for (Constructor<?> c : constructorArrays) {
+                    if (c.isAnnotationPresent(ConstructorBy.class)) {
+                        constructor = c;
+                        parameterTypes = c.getParameterTypes();
+                        parameterAnnos = c.getParameterAnnotations();
+                        break;
+                    }
                 }
-                parameterTypes = constructor.getParameterTypes();
-                parameterAnnos = constructor.getParameterAnnotations();
+                if (constructor == null) {
+                    constructor = ConstructorUtils.getMatchingAccessibleConstructor(newType, ArrayUtils.EMPTY_CLASS_ARRAY);
+                    parameterTypes = ArrayUtils.EMPTY_CLASS_ARRAY;
+                    parameterAnnos = new Annotation[0][0];
+                }
+            }
+            //
+            if (constructor == null) {
+                throw new RuntimeException("No default constructor found.");
             }
             //
             paramObjects = new Object[parameterTypes.length];
@@ -211,13 +219,21 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             }
         }
         //
-        // .创建对象。
-        if (paramObjects.length == 0) {
-            T targetBean = (T) constructor.newInstance();
-            return doInject(targetBean, bindInfo, appContext, newType);
-        } else {
-            T targetBean = (T) constructor.newInstance(paramObjects);
-            return doInject(targetBean, bindInfo, appContext, newType);
+        // .创建对象
+        try {
+            if (paramObjects.length == 0) {
+                T targetBean = (T) constructor.newInstance();
+                return doInject(targetBean, bindInfo, appContext, newType);
+            } else {
+                T targetBean = (T) constructor.newInstance(paramObjects);
+                return doInject(targetBean, bindInfo, appContext, newType);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            if (e instanceof InvocationTargetException) {
+                throw ExceptionUtils.toRuntimeException(((InvocationTargetException) e).getTargetException());
+            }
+            throw ExceptionUtils.toRuntimeException(e);
         }
     }
     private <T extends Annotation> T findAnnotation(Class<T> annoType, Annotation[] annotations) {
@@ -235,7 +251,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
     //
     //
     /**执行依赖注入*/
-    protected <T> T doInject(T targetBean, BindInfo<?> bindInfo, AppContext appContext, Class<?> targetType) throws Throwable {
+    protected <T> T doInject(T targetBean, BindInfo<?> bindInfo, AppContext appContext, Class<?> targetType) {
         //1.Aware接口的执行
         if (bindInfo != null && targetBean instanceof BindInfoAware) {
             ((BindInfoAware) targetBean).setBindInfo(bindInfo);
@@ -246,7 +262,12 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         //2.依赖注入
         targetType = (targetType == null) ? targetBean.getClass() : targetType;
         if (targetBean instanceof InjectMembers) {
-            ((InjectMembers) targetBean).doInject(appContext);
+            try {
+                ((InjectMembers) targetBean).doInject(appContext);
+            } catch (Throwable e) {
+                logger.error(e.getMessage(), e);
+                throw ExceptionUtils.toRuntimeException(e);
+            }
         } else {
             injectObject(targetBean, bindInfo, appContext, targetType);
         }
@@ -256,7 +277,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         return targetBean;
     }
     /**/
-    private <T> void injectObject(T targetBean, BindInfo<?> bindInfo, AppContext appContext, Class<?> targetType) throws IllegalAccessException {
+    private <T> void injectObject(T targetBean, BindInfo<?> bindInfo, AppContext appContext, Class<?> targetType) {
         Set<String> injectFileds = new HashSet<String>();
         /*a.配置注入*/
         if (bindInfo != null && bindInfo instanceof DefaultBindInfoProviderAdapter) {
@@ -309,7 +330,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             if (!inj) {
                 Object settingValue = injSettings(appContext, field.getAnnotation(InjectSettings.class), field.getDeclaringClass()); // @InjectSettings
                 if (settingValue != null) {
-                    field.set(targetBean, settingValue);
+                    setField(field, targetBean, settingValue);
                 }
             }
             //
@@ -317,7 +338,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         }
     }
     //
-    private <T> boolean injInject(T targetBean, AppContext appContext, Field field) throws IllegalAccessException {
+    private <T> boolean injInject(T targetBean, AppContext appContext, Field field) {
         Inject inject = field.getAnnotation(Inject.class);
         if (inject == null) {
             return false;
@@ -335,14 +356,14 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             }
         }
         if (obj != null) {
-            field.set(targetBean, obj);
+            setField(field, targetBean, obj);
             return true;
         } else {
             return false;
         }
     }
     //
-    private Object injSettings(AppContext appContext, InjectSettings injectSettings, Class<?> toType) throws IllegalAccessException {
+    private Object injSettings(AppContext appContext, InjectSettings injectSettings, Class<?> toType) {
         if (injectSettings == null || StringUtils.isBlank(injectSettings.value())) {
             return BeanUtils.getDefaultValue(toType);
         }
@@ -357,20 +378,34 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         return ConverterUtils.convert(settingValue, toType);
     }
     //
-    private void initObject(Object targetBean, BindInfo<?> bindInfo) throws Throwable {
+    //
+    //
+    /** 执行初始化 init方法 */
+    private void initObject(Object targetBean, BindInfo<?> bindInfo) {
+        Method initMethod = findInitMethod(targetBean.getClass(), bindInfo);
+        if (initMethod == null) {
+            return;
+        }
+        //
+        Class<?>[] paramArray = initMethod.getParameterTypes();
+        Object[] paramObject = BeanUtils.getDefaultValue(paramArray);
+        //
         try {
-            Method initMethod = findInitMethod(targetBean.getClass(), bindInfo);
-            //
-            if (initMethod != null) {
-                Class<?>[] paramArray = initMethod.getParameterTypes();
-                Object[] paramObject = BeanUtils.getDefaultValue(paramArray);
+            try {
                 initMethod.invoke(targetBean, paramObject);
+            } catch (IllegalAccessException e) {
+                initMethod.setAccessible(true);
+                try {
+                    initMethod.invoke(targetBean, paramObject);
+                } catch (IllegalAccessException e1) {
+                    logger.error(e1.getMessage(), e);
+                }
             }
-        } catch (InvocationTargetException e) {
-            throw e.getTargetException();
+        } catch (InvocationTargetException e2) {
+            logger.error(e2.getMessage(), e2);
+            throw ExceptionUtils.toRuntimeException(e2.getTargetException());
         }
     }
-    //
     /** 查找类的默认初始化方法*/
     public static Method findInitMethod(Class<?> targetBeanType, BindInfo<?> bindInfo) {
         Method initMethod = null;
@@ -396,26 +431,47 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
     public static boolean testSingleton(Class<?> targetType, BindInfo<?> bindInfo, Settings settings) {
         Prototype prototype = targetType.getAnnotation(Prototype.class);
         Singleton singleton = targetType.getAnnotation(Singleton.class);
+        SingletonMode singletonMode = null;
+        if (bindInfo instanceof AbstractBindInfoProviderAdapter) {
+            singletonMode = ((AbstractBindInfoProviderAdapter) bindInfo).getSingletonMode();
+        }
+        //
+        if (SingletonMode.Singleton == singletonMode) {
+            return true;
+        }
+        if (SingletonMode.Prototype == singletonMode) {
+            return false;
+        }
+        if (SingletonMode.Clear == singletonMode) {
+            prototype = null;
+            singleton = null;
+        }
+        //
         if (prototype != null && singleton != null) {
             throw new IllegalArgumentException(targetType + " , @Prototype and @Singleton appears only one.");
         }
         //
-        boolean isSingleton = false;
-        if (prototype != null) {
-            isSingleton = false;
-        } else if (singleton != null) {
-            isSingleton = true;
-        } else {
-            if (settings != null) {
-                isSingleton = settings.getBoolean("hasor.default.asEagerSingleton", true);
-            }
-            if (bindInfo != null && bindInfo instanceof AbstractBindInfoProviderAdapter) {
-                Boolean sing = ((AbstractBindInfoProviderAdapter) bindInfo).isSingleton();
-                if (sing != null) {
-                    isSingleton = sing;
-                }
-            }
+        boolean isSingleton = (singleton != null);
+        if (!isSingleton) {
+            isSingleton = settings.getBoolean("hasor.default.asEagerSingleton", isSingleton);
         }
         return isSingleton;
+    }
+    //
+    private void setField(Field field, Object targetBean, Object newValue) {
+        try {
+            field.set(targetBean, newValue);
+        } catch (IllegalAccessException e) {
+            try {
+                field.setAccessible(true);
+                Class<?> toType = field.getType();
+                Object attValueObject = ConverterUtils.convert(toType, newValue);
+                field.set(targetBean, attValueObject);
+            } catch (IllegalAccessException e1) {
+                logger.error(e1.getMessage(), e);
+            }
+        } catch (IllegalArgumentException e) {
+            throw e;
+        }
     }
 }

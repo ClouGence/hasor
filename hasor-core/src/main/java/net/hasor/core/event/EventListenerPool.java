@@ -25,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author 赵永春 (zyc@hasor.net)
  */
 class EventListenerPool {
-    private final Object ONCE_LOCK = new Object();
+    private final Object                                 ONCE_LOCK = new Object();
     private       ArrayList<EventListener<?>>            onceListener;
     private final CopyOnWriteArrayList<EventListener<?>> listenerList;
     //

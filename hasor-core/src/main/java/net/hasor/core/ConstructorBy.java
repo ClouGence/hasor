@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import net.hasor.core.ApiBinder.ScopedBindingBuilder;
+import net.hasor.core.ApiBinder.InjectConstructorBindingBuilder;
 
 import java.lang.annotation.*;
 /**
- * 标记类型为原型模式，与 {@link Singleton} 为互斥关系，代码配置优先于注解。
- * 当 {@link Prototype} 和 {@link ImplBy} 组合使用时，标记在接口上的 Prototype 注解会覆盖 ImplBy 指定的那个实现。
- * @see ScopedBindingBuilder#asEagerPrototype()
- * @version : 2015年7月28日
+ * 如果通过{@link InjectConstructorBindingBuilder}接口配置会覆盖注解配置。
+ * 如果在该类上出现多个 {@link ConstructorBy} 注解配置，那么将会按照 class.getConstructors() 顺序取第一个。
+ * @see InjectConstructorBindingBuilder
+ * @version : 2018年9月21日
  * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
+@Target({ ElementType.CONSTRUCTOR })
 @Documented
-public @interface Prototype {
+public @interface ConstructorBy {
 }

@@ -91,7 +91,6 @@ public abstract class AbstractClassConfig {
         }
         return this.classBytes;
     }
-    ;
     /**父类是否支持*/
     public static boolean isSupport(Class<?> superClass) {
         String resName = superClass.getName().replace(".", "/") + ".class";

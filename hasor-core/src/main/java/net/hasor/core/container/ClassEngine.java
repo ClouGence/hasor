@@ -18,8 +18,11 @@ import net.hasor.core.AppContext;
 import net.hasor.core.classcode.aop.AopClassConfig;
 import net.hasor.core.classcode.aop.AopMatcher;
 import net.hasor.core.info.AopBindInfoAdapter;
+import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.IOUtils;
 import net.hasor.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,13 +37,14 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author 赵永春 (zyc@hasor.net)
  */
 class ClassEngine {
+    private static Logger                                      logger         = LoggerFactory.getLogger(ClassEngine.class);
     private static ConcurrentHashMap<Class<?>, AopClassConfig> buildEngineMap = new ConcurrentHashMap<Class<?>, AopClassConfig>();
     public static Class<?> buildType(Class<?> targetType, ClassLoader rootLoader,//
-            List<AopBindInfoAdapter> aopList, AppContext appContext) throws ClassNotFoundException, IOException {
+            List<AopBindInfoAdapter> aopList, AppContext appContext) {
         //
-        if (!AopClassConfig.isSupport(targetType)) {
-            return targetType;
-        }
+        //        if (!AopClassConfig.isSupport(targetType)) {
+        //            return targetType;
+        //        }
         // .动态代理
         Class<?> newType = targetType;
         AopClassConfig engine = buildEngineMap.get(targetType);
@@ -49,7 +53,7 @@ class ClassEngine {
             boolean aopIgnoreClass = testAopIgnore(targetType);
             boolean aopIgnorePackage = testAopIgnore(targetType.getPackage());
             if (aopIgnorePackage || aopIgnoreClass) {
-                aopList = Collections.EMPTY_LIST;
+                aopList = Collections.emptyList();
             }
             //
             engine = new AopClassConfig(targetType, rootLoader);
@@ -76,13 +80,19 @@ class ClassEngine {
                     byte[] buildBytes = engine.buildBytes();
                     fos.write(buildBytes);
                     fos.flush();
+                } catch (IOException e) {
+                    logger.debug(e.getMessage(), e);
                 } finally {
                     IOUtils.closeQuietly(fos);
                 }
             }
         }
         if (engine.hasChange()) {
-            newType = engine.toClass();
+            try {
+                newType = engine.toClass();
+            } catch (Exception e) {
+                throw ExceptionUtils.toRuntimeException(e);
+            }
         } else {
             newType = engine.getSuperClass();
         }

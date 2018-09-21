@@ -20,6 +20,7 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.reflect.ConstructorUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -99,13 +100,12 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         return new ConstructorInfo(types, providers);
     }
     /**获得需要IoC的属性列表*/
-    public Constructor<?> getConstructor(AppContext appContext) throws NoSuchMethodException {
+    public Constructor<?> getConstructor(AppContext appContext) {
         return this.getConstructor(lookupType(), appContext);
     }
     /**获得需要IoC的属性列表*/
-    public Constructor<?> getConstructor(Class<?> targetClass, AppContext appContext) throws NoSuchMethodException {
-        Class<?>[] types = genConstructorInfo(appContext).types;
-        return targetClass.getConstructor(types);
+    public Constructor<?> getConstructor(Class<?> targetClass, AppContext appContext) {
+        return ConstructorUtils.getAccessibleConstructor(targetClass, genConstructorInfo(appContext).types);
     }
     /**获得需要IoC的属性列表*/
     public Provider<?>[] getConstructorParams(AppContext appContext) {

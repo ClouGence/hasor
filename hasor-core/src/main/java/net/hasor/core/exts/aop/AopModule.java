@@ -29,7 +29,7 @@ import java.lang.reflect.Method;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class AopModule implements Module {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    private static Logger logger = LoggerFactory.getLogger(AopModule.class);
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //Aop拦截器
         Matcher<Class<?>> matcherClass = AopMatchers.annotatedWithClass(Aop.class);//

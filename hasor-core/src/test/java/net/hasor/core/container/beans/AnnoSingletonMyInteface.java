@@ -13,27 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container;
+package net.hasor.core.container.beans;
+import net.hasor.core.ImplBy;
+import net.hasor.core.Singleton;
 /**
  * 一个Bean
  * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MyBean extends TestBean {
-    private        boolean init       = false;
-    private static boolean staticInit = false;
-    //
-    public static void resetInit() {
-        staticInit = false;
-    }
-    public static boolean isStaticInit() {
-        return staticInit;
-    }
-    public boolean isInit() {
-        return init;
-    }
-    public void init() {
-        this.init = true;
-        staticInit = true;
-    }
+@Singleton
+@ImplBy(AnnoSingletonMyIntefaceBean.class)
+public interface AnnoSingletonMyInteface {
+    public String getName();
+
+    public String getAddress();
 }

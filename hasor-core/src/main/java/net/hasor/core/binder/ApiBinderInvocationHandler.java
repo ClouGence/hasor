@@ -29,8 +29,8 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ApiBinderInvocationHandler implements InvocationHandler {
-    private Logger                logger = LoggerFactory.getLogger(getClass());
-    private Map<Class<?>, Object> supportMap;
+    private static Logger                logger = LoggerFactory.getLogger(ApiBinderInvocationHandler.class);
+    private        Map<Class<?>, Object> supportMap;
     //
     public ApiBinderInvocationHandler(Map<Class<?>, Object> supportMap) {
         this.supportMap = supportMap;

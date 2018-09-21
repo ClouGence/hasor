@@ -17,6 +17,7 @@ package net.hasor.core.binder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
+import net.hasor.core.SingletonMode;
 /**
  * Bean配置接口，用于对Bean信息进行全方面配置。
  * @version : 2014年7月2日
@@ -49,10 +50,10 @@ public interface BindInfoBuilder<T> {
     public void setMetaData(String key, Object value);
 
     /**
-     * 标记是否为单例。
-     * @param singleton true - 表示单例，false - 表示非单例。
+     * 标记单例模式。
+     * @param singletonMode see : SingletonMode
      */
-    public void setSingleton(boolean singleton);
+    public void setSingletonMode(SingletonMode singletonMode);
 
     /**
      * 开发者自定义的{@link Provider}。

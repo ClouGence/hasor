@@ -22,8 +22,8 @@ import net.hasor.core.binder.BinderHelper;
 import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.BeanContainer;
 import net.hasor.core.container.ScopManager;
+import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.ClassUtils;
-import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +57,7 @@ public abstract class TemplateAppContext implements AppContext {
     public String[] getBindIDs() {
         Collection<String> nameList = getContainer().getBindInfoIDs();
         if (nameList == null || nameList.isEmpty()) {
-            return StringUtils.EMPTY_STRING_ARRAY;
+            return ArrayUtils.EMPTY_STRING_ARRAY;
         }
         return nameList.toArray(new String[nameList.size()]);
     }
@@ -66,7 +66,7 @@ public abstract class TemplateAppContext implements AppContext {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
         Collection<String> nameList = getContainer().getBindInfoNamesByType(targetClass);
         if (nameList == null || nameList.isEmpty()) {
-            return StringUtils.EMPTY_STRING_ARRAY;
+            return ArrayUtils.EMPTY_STRING_ARRAY;
         }
         return nameList.toArray(new String[nameList.size()]);
     }
@@ -129,15 +129,11 @@ public abstract class TemplateAppContext implements AppContext {
         if (object == null || beanType == null) {
             return object;
         }
-        try {
-            BindInfo<?> bindInfo = this.findBindingRegister(null, beanType);
-            if (bindInfo != null) {
-                return this.getContainer().justInject(object, bindInfo, this);
-            } else {
-                return this.getContainer().justInject(object, beanType, this);
-            }
-        } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
+        BindInfo<?> bindInfo = this.findBindingRegister(null, beanType);
+        if (bindInfo != null) {
+            return this.getContainer().justInject(object, bindInfo, this);
+        } else {
+            return this.getContainer().justInject(object, beanType, this);
         }
     }
     @Override
@@ -145,11 +141,7 @@ public abstract class TemplateAppContext implements AppContext {
         if (object == null || bindInfo == null) {
             return object;
         }
-        try {
-            return this.getContainer().justInject(object, bindInfo, this);
-        } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
-        }
+        return this.getContainer().justInject(object, bindInfo, this);
     }
     @Override
     public <T> Provider<T> getProvider(String bindID) {
@@ -390,7 +382,7 @@ public abstract class TemplateAppContext implements AppContext {
                 }
                 //
                 extBinderMap.put(binderType, binderImpl);
-                Class<?>[] interfaces = ClassUtils.getAllInterfaces(binderType);
+                List<Class<?>> interfaces = ClassUtils.getAllInterfaces(binderType);
                 for (Class<?> faces : interfaces) {
                     extBinderMap.put(faces, binderImpl);
                 }

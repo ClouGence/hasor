@@ -17,6 +17,7 @@ package net.hasor.core.info;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
 import net.hasor.core.Scope;
+import net.hasor.core.SingletonMode;
 import net.hasor.core.binder.BindInfoBuilder;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
@@ -35,7 +36,7 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
     private          String                    bindName         = null;
     private          Class<T>                  bindType         = null;
     private          Class<? extends T>        sourceType       = null;
-    private          Boolean                   singleton        = null;
+    private          SingletonMode             singletonMode    = null;
     //2.系统属性
     private          Provider<? extends T>     customerProvider = null;
     private          Provider<? extends Scope> scopeProvider    = null;
@@ -55,8 +56,8 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
     public Class<? extends T> getSourceType() {
         return this.sourceType;
     }
-    public Boolean isSingleton() {
-        return this.singleton;
+    public SingletonMode getSingletonMode() {
+        return this.singletonMode;
     }
     /**获取 {@link #setCustomerProvider(Provider)} 方法设置的 Provider 对象。*/
     public Provider<? extends T> getCustomerProvider() {
@@ -92,10 +93,10 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
         this.notify(new NotifyData("sourceType", this.sourceType, sourceType));
         this.sourceType = sourceType;
     }
-    public void setSingleton(boolean singleton) {
+    public void setSingletonMode(SingletonMode singletonMode) {
         // 发个消息出来给 BeanContainer，让它来检测是否重复。
-        this.notify(new NotifyData("singleton", this.singleton, singleton));
-        this.singleton = singleton;
+        this.notify(new NotifyData("singleton", this.singletonMode, singletonMode));
+        this.singletonMode = singletonMode;
     }
     public void setCustomerProvider(final Provider<? extends T> customerProvider) {
         // 发个消息出来给 BeanContainer，让它来检测是否重复。
