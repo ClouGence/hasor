@@ -28,11 +28,11 @@ import java.lang.reflect.Method;
  * @version : 2013-8-20
  * @author 赵永春 (zyc@hasor.net)
  */
-public class AopMatchers {
-    private AopMatchers() {
+public class Matchers {
+    private Matchers() {
     }
     //
-    public static <T> MatcherDevice<T> createDevice(final Matcher<T> matcher) {
+    public static <T> MatcherDevice<T> device(final Matcher<T> matcher) {
         return new MatcherDevice<T>(matcher);
     }
     /** 匹配任意类型*/

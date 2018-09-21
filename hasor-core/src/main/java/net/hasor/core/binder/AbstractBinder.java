@@ -15,7 +15,7 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.*;
-import net.hasor.core.classcode.matcher.AopMatchers;
+import net.hasor.core.classcode.matcher.Matchers;
 import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.ScopManager;
 import net.hasor.core.info.AopBindInfoAdapter;
@@ -132,8 +132,8 @@ public abstract class AbstractBinder implements ApiBinder {
     @Override
     public void bindInterceptor(final String matcherExpression, final MethodInterceptor interceptor) {
         //
-        Matcher<Class<?>> matcherClass = AopMatchers.expressionClass(matcherExpression);
-        Matcher<Method> matcherMethod = AopMatchers.expressionMethod(matcherExpression);
+        Matcher<Class<?>> matcherClass = Matchers.expressionClass(matcherExpression);
+        Matcher<Method> matcherMethod = Matchers.expressionMethod(matcherExpression);
         this.bindInterceptor(matcherClass, matcherMethod, interceptor);
     }
     @Override

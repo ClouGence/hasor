@@ -149,7 +149,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         }
         //
         // .动态代理
-        ClassLoader rootLoader = appContext.getClassLoader();
+        ClassLoader rootLoader = Hasor.assertIsNotNull(appContext.getClassLoader());
         Class<?> newType = targetType;
         if (AopClassConfig.isSupport(targetType) && !aopList.isEmpty()) {
             newType = ClassEngine.buildType(targetType, rootLoader, aopList, appContext);
@@ -228,10 +228,10 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
                 T targetBean = (T) constructor.newInstance(paramObjects);
                 return doInject(targetBean, bindInfo, appContext, newType);
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.error(e.getMessage(), e);
             if (e instanceof InvocationTargetException) {
-                throw ExceptionUtils.toRuntimeException(((InvocationTargetException) e).getTargetException());
+                e = ((InvocationTargetException) e).getTargetException();
             }
             throw ExceptionUtils.toRuntimeException(e);
         }
@@ -452,7 +452,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         }
         //
         boolean isSingleton = (singleton != null);
-        if (!isSingleton) {
+        if (!isSingleton && prototype == null) {
             isSingleton = settings.getBoolean("hasor.default.asEagerSingleton", isSingleton);
         }
         return isSingleton;
