@@ -1,4 +1,4 @@
-package net.hasor.core.container.beans;
+package net.hasor.core.container.anno;
 import net.hasor.core.Singleton;
 //
 @Singleton

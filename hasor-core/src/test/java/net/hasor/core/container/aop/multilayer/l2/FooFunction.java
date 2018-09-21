@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.core._03_aop.myaop;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.core.container.aop.multilayer.l2;
+import net.hasor.core.ImplBy;
 /**
- * 自定义的Aop注解只让它在方法上生效。
- * @version : 2015年11月9日
+ * Bean测试
+ * @version : 2015年1月12日
  * @author 赵永春 (zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
-public @interface MyAop {
+@ImplBy(FooFunctionImpl.class)
+public interface FooFunction {
+    public String fooCall(String sayMessage);
+
+    public String throwError(String sayMessage);
 }

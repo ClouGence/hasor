@@ -13,11 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.core._03_aop.myaop;
+package net.hasor.core.container.aop;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 继承
- * @version : 2014-1-3
+ * 自定义的Aop注解只让它在方法上生效。
+ * @version : 2015年11月9日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SuperMyAopBean extends MyAopBean {
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD })
+public @interface MyAop {
 }

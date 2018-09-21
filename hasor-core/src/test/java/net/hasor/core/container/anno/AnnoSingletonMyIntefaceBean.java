@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container.beans;
-import net.hasor.core.Prototype;
+package net.hasor.core.container.anno;
+import net.hasor.core.Singleton;
+import net.hasor.core.container.beans.MyIntefaceBean;
 /**
  * 一个Bean
  * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-@Prototype
-public class AnnoPrototypeMyIntefaceBean extends MyIntefaceBean implements //
+@Singleton
+public class AnnoSingletonMyIntefaceBean extends MyIntefaceBean implements //
         AnnoSingletonMyIntefaceCross2Prototype, AnnoSingletonMyInteface, //
         AnnoPrototypeMyIntefaceCross2Singleton, AnnoPrototypeMyInteface {
 }

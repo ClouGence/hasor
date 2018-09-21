@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.core._03_aop.myaop;
+package net.hasor.core.container.aop;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Matcher;
 import net.hasor.core.Module;
-import net.hasor.core.classcode.matcher.AopMatchers;
-import test.net.hasor.core._03_aop.simple.SimpleInterceptor;
+import net.hasor.core.classcode.matcher.Matchers;
 
 import java.lang.reflect.Method;
 /**
@@ -29,10 +28,10 @@ import java.lang.reflect.Method;
 public class MyAopSetup implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //1.任意类
-        Matcher<Class<?>> atClass = AopMatchers.anyClass();
+        Matcher<Class<?>> atClass = Matchers.anyClass();
         //2.有MyAop注解的方法
-        Matcher<Method> atMethod = AopMatchers.annotatedWithMethod(MyAop.class);
+        Matcher<Method> atMethod = Matchers.annotatedWithMethod(MyAop.class);
         //3.让@MyAop注解生效
-        apiBinder.bindInterceptor(atClass, atMethod, new SimpleInterceptor());
+        apiBinder.bindInterceptor(atClass, atMethod, new TestInterceptor());
     }
 }

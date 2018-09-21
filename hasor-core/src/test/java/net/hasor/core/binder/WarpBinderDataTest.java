@@ -15,7 +15,7 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.*;
-import net.hasor.core.classcode.matcher.AopMatchers;
+import net.hasor.core.classcode.matcher.Matchers;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.provider.InstanceProvider;
@@ -378,8 +378,8 @@ public class WarpBinderDataTest extends AbstractBinderDataTest {
         //
         //
         try {
-            Matcher<Class<?>> matcherClass = AopMatchers.anyClass();
-            Matcher<Method> matcherMethod = AopMatchers.anyMethod();
+            Matcher<Class<?>> matcherClass = Matchers.anyClass();
+            Matcher<Method> matcherMethod = Matchers.anyMethod();
             binder.bindInterceptor(matcherClass, matcherMethod, interceptor);
             AopBindInfoAdapter aopAdapter = (AopBindInfoAdapter) reference.get().getCustomerProvider().get();
             Field interceptorField = AopBindInfoAdapter.class.getDeclaredField("interceptor");

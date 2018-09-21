@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.core._03_aop.simple;
+package net.hasor.core.container.aop;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
 /**
@@ -21,17 +21,27 @@ import net.hasor.core.MethodInvocation;
  * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SimpleInterceptor implements MethodInterceptor {
-    public static boolean called = false;
+public class TestInterceptor implements MethodInterceptor {
+    private static boolean called  = false;
+    private static boolean throwed = false;
+    //
+    public static boolean isCalled() {
+        return called;
+    }
+    public static boolean isThrowed() {
+        return throwed;
+    }
+    public static void resetInit() {
+        called = false;
+        throwed = false;
+    }
+    //
     public Object invoke(MethodInvocation invocation) throws Throwable {
         called = true;
         try {
-            System.out.println("before... " + invocation.getMethod().getName());
-            Object returnData = invocation.proceed();
-            System.out.println("after...");
-            return returnData;
+            return invocation.proceed();
         } catch (Exception e) {
-            System.out.println("throw...");
+            throwed = true;
             throw e;
         }
     }

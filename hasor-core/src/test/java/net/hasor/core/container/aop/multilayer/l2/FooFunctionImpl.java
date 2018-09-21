@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container.beans;
-import net.hasor.core.Init;
+package net.hasor.core.container.aop.multilayer.l2;
 /**
- * 一个Bean
- * @version : 2014-1-3
+ * Bean测试
+ * @version : 2015年1月12日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class AnnoCallInitBean extends CallInitBean {
-    @Init
-    public void init() {
-        super.init();
+public class FooFunctionImpl implements FooFunction {
+    public String fooCall(String string) {
+        return "call back : " + string;
+    }
+    @Override
+    public String throwError(String sayMessage) {
+        throw new RuntimeException("");
     }
 }

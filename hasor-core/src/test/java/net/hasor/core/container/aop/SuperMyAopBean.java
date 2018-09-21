@@ -13,18 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container.beans;
-import net.hasor.core.ImplBy;
-import net.hasor.core.Singleton;
+package net.hasor.core.container.aop;
 /**
- * 一个Bean
+ * 继承
  * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-@Singleton
-@ImplBy(AnnoSingletonMyIntefaceBean.class)
-public interface AnnoSingletonMyInteface {
-    public String getName();
-
-    public String getAddress();
+public class SuperMyAopBean extends MyAopBean {
 }

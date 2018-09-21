@@ -2,7 +2,8 @@ package net.hasor.core.container;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.SingletonMode;
-import net.hasor.core.container.beans.AnnoCallInitBean;
+import net.hasor.core.container.anno.AnnoCallInitBean;
+import net.hasor.core.container.anno.AnnoConstructorMultiBean;
 import net.hasor.core.container.beans.CallInitBean;
 import net.hasor.core.container.beans.ConstructorBean;
 import net.hasor.core.container.beans.ConstructorMultiBean;
@@ -31,6 +32,7 @@ public class BeanContainerTest {
         final BeanContainer container = new BeanContainer();
         final AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         PowerMockito.when(appContext.getInstance((BindInfo) anyObject())).then(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -56,6 +58,7 @@ public class BeanContainerTest {
         BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         //
         AbstractBindInfoProviderAdapter<?> adapter = container.createInfoAdapter(CallInitBean.class);
         adapter.setBindID("12345");
@@ -78,6 +81,7 @@ public class BeanContainerTest {
         BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         //
         AbstractBindInfoProviderAdapter<?> adapter = container.createInfoAdapter(ConstructorBean.class);
         adapter.setBindID("12345");
@@ -98,6 +102,7 @@ public class BeanContainerTest {
         BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         //
         AbstractBindInfoProviderAdapter<?> adapter = container.createInfoAdapter(ConstructorMultiBean.class);
         adapter.setBindID("12345");
@@ -114,13 +119,28 @@ public class BeanContainerTest {
         assert "paramUUID".equals(instance.getUuid());
         assert "paramName".equals(instance.getName());
     }
-    //
     @Test
-    public void containerTest5() {
+    public void containerTest5() throws Throwable {
         CallInitBean.resetInit();
         BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
+        //
+        AnnoConstructorMultiBean instance = container.getInstance(AnnoConstructorMultiBean.class, appContext);
+        //
+        assert instance.getUuid() == null;
+        assert instance.getName() == null;
+    }
+    //
+    //
+    @Test
+    public void containerTest6() {
+        CallInitBean.resetInit();
+        BeanContainer container = new BeanContainer();
+        AppContext appContext = PowerMockito.mock(AppContext.class);
+        PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         //
         AbstractBindInfoProviderAdapter<?> adapter = container.createInfoAdapter(AnnoCallInitBean.class);
         adapter.setBindID("12345");

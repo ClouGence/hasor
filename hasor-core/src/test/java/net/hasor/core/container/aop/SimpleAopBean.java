@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container.beans;
-import net.hasor.core.ImplBy;
-import net.hasor.core.Prototype;
+package net.hasor.core.container.aop;
+import net.hasor.core.exts.aop.Aop;
 /**
- * 一个Bean
- * @version : 2014-1-3
+ * Bean测试
+ * @version : 2015年1月12日
  * @author 赵永春 (zyc@hasor.net)
  */
-@Prototype
-@ImplBy(AnnoSingletonMyIntefaceBean.class)
-public interface AnnoPrototypeMyIntefaceCross2Singleton extends AnnoPrototypeMyInteface {
+@Aop(TestInterceptor.class)
+public class SimpleAopBean {
+    public String echo(String sayMessage) {
+        return "echo :" + sayMessage;
+    }
 }

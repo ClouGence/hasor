@@ -3,7 +3,8 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
 import net.hasor.core.SingletonMode;
-import net.hasor.core.container.beans.*;
+import net.hasor.core.container.anno.*;
+import net.hasor.core.container.beans.SimpleBean;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.provider.InstanceProvider;
@@ -86,6 +87,7 @@ public class BeanSingletonTest {
         final BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
         Provider<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);
@@ -112,7 +114,8 @@ public class BeanSingletonTest {
         StandardEnvironment environment = new StandardEnvironment(null, null);
         final BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
-        PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
         Provider<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);
@@ -139,7 +142,8 @@ public class BeanSingletonTest {
         StandardEnvironment environment = new StandardEnvironment(null, null);
         final BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
-        PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
         Provider<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);
@@ -167,6 +171,7 @@ public class BeanSingletonTest {
         final BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         //
         try {
             container.getInstance(AnnoConflictBean.class, appContext);
@@ -183,6 +188,7 @@ public class BeanSingletonTest {
         final BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
         Provider<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);
@@ -214,6 +220,7 @@ public class BeanSingletonTest {
         final BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
         Provider<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);
@@ -245,6 +252,7 @@ public class BeanSingletonTest {
         final BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
         Provider<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);
@@ -278,6 +286,7 @@ public class BeanSingletonTest {
         final BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
         Provider<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);

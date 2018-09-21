@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container.beans;
+package net.hasor.core.container.anno;
+import net.hasor.core.ImplBy;
 import net.hasor.core.Singleton;
 /**
  * 一个Bean
@@ -21,7 +22,9 @@ import net.hasor.core.Singleton;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-public class AnnoSingletonMyIntefaceBean extends MyIntefaceBean implements //
-        AnnoSingletonMyIntefaceCross2Prototype, AnnoSingletonMyInteface, //
-        AnnoPrototypeMyIntefaceCross2Singleton, AnnoPrototypeMyInteface {
+@ImplBy(AnnoSingletonMyIntefaceBean.class)
+public interface AnnoSingletonMyInteface {
+    public String getName();
+
+    public String getAddress();
 }

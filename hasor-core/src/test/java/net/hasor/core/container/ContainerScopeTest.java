@@ -24,6 +24,7 @@ public class ContainerScopeTest {
         BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         //
         Provider<MyScope> myScope = InstanceProvider.of(new MyScope());
         container.registerScope("myScope", myScope);
@@ -45,6 +46,7 @@ public class ContainerScopeTest {
         BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         //
         Provider<MyScope> myScope = InstanceProvider.of(new MyScope());
         container.registerScope("myScope", myScope);

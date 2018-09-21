@@ -23,6 +23,7 @@ public class BeanInjectTest {
         BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         //
         AbstractBindInfoProviderAdapter<?> adapter = container.createInfoAdapter(TestBean.class);
         adapter.setBindID("12345");
@@ -47,6 +48,7 @@ public class BeanInjectTest {
         final BeanContainer container = new BeanContainer();
         final AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         //
         //
         final AbstractBindInfoProviderAdapter<?> adapter = container.createInfoAdapter(TestBean.class);

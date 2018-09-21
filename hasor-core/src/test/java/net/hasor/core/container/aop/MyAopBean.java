@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.core._03_aop.simple;
-import net.hasor.core.exts.aop.Aop;
+package net.hasor.core.container.aop;
 /**
- * Bean测试
- * @version : 2015年1月12日
+ * 用了自定义Aop注解的Bean
+ * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-@Aop(SimpleInterceptor.class)
-public class AopBean {
-    public String echo(String sayMessage) {
-        return "echo :" + sayMessage;
+public class MyAopBean {
+    @MyAop
+    public String fooCall(String string) {
+        System.out.println("fooCall");
+        return "call back : " + string;
     }
 }
