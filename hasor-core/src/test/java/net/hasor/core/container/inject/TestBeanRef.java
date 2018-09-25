@@ -1,5 +1,6 @@
-package net.hasor.core.container.beans;
+package net.hasor.core.container.inject;
 import net.hasor.core.Inject;
+import net.hasor.core.container.beans.TestBean;
 //
 public class TestBeanRef {
     @Inject

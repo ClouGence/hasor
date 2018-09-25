@@ -156,4 +156,20 @@ public class BeanContainerTest {
         assert ((CallInitBean) instance1).isInit();
         assert instance1 != instance2; // 非单列Bean
     }
+    @Test
+    public void containerTest7() {
+        CallInitBean.resetInit();
+        BeanContainer container = new BeanContainer();
+        AppContext appContext = PowerMockito.mock(AppContext.class);
+        PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
+        //
+        //
+        try {
+            container.getInstance(ConstructorMultiBean.class, appContext);
+            assert false;
+        } catch (Exception e) {
+            assert "No default constructor found.".equals(e.getMessage());
+        }
+    }
 }

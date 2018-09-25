@@ -30,6 +30,7 @@ public class ContainerBasicTest {
         BindInfo<Object> bindInfo = container.findBindInfo("ID:123456");
         assert "Name:dddd".equals(bindInfo.getBindName());
         assert bindInfo.getBindType().equals(TestBean.class);
+        //
     }
     @Test
     public void containerTest2() {

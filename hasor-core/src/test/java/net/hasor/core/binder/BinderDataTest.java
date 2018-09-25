@@ -49,6 +49,10 @@ public class BinderDataTest extends AbstractBinderDataTest {
     public void binderTest1() {
         binder.bindType(BinderDataTest.class);
         assert reference.get().getBindType() == BinderDataTest.class;
+        //
+        binder.bindType(BinderDataTest.class).metaData("test", "value");
+        assert "value".equals(reference.get().getMetaData("test"));
+        reference.get().removeMetaData("test");
     }
     //
     @Test
