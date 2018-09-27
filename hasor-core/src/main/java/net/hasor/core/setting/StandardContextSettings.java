@@ -15,8 +15,8 @@
  */
 package net.hasor.core.setting;
 import net.hasor.core.Settings;
-import net.hasor.utils.IOUtils;
 import net.hasor.utils.ResourcesUtils;
+import net.hasor.utils.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class StandardContextSettings extends InputStreamSettings {
     public static final  String MainSettingName = "hasor-config.xml";
     /**默认静态配置文件名称*/
     private static final String SechmaName      = "/META-INF/hasor.schemas";
-    private URI settingURI;
+    private              URI    settingURI;
     //
     private void outInitLog(String mode, Object oriResource) {
         if (logger.isInfoEnabled()) {

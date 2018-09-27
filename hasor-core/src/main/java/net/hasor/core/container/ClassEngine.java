@@ -20,12 +20,12 @@ import net.hasor.core.classcode.aop.AopClassConfig;
 import net.hasor.core.classcode.aop.AopMatcher;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.utils.ExceptionUtils;
-import net.hasor.utils.IOUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.asm.AnnotationVisitor;
 import net.hasor.utils.asm.ClassReader;
 import net.hasor.utils.asm.ClassVisitor;
 import net.hasor.utils.asm.Opcodes;
+import net.hasor.utils.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,8 +76,7 @@ class ClassEngine {
             if (engine == null) {
                 engine = buildEngineMap.get(targetType);
             }
-            String workMode = appContext.getEnvironment().getWorkMode();
-            if ("debug".equalsIgnoreCase(workMode) && engine.hasChange()) {
+            if ("true".equals(System.getProperty("net.hasor.core.container.classengine.debug")) && engine.hasChange()) {
                 String fileName = engine.getClassName();
                 String cacheDir = appContext.getEnvironment().evalString("%HASOR_TEMP_PATH%/debug/aopclasses");
                 FileOutputStream fos = null;

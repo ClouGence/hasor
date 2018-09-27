@@ -22,7 +22,7 @@ import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
-import net.hasor.utils.convert.ConverterUtils;
+import net.hasor.utils.convert.ConverterBean;
 import net.hasor.utils.reflect.ConstructorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +37,15 @@ import java.util.Map.Entry;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class TemplateBeanBuilder implements BeanBuilder {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected      Logger        logger         = LoggerFactory.getLogger(getClass());
+    private static ConverterBean converterUtils = null;
+
+    static {
+        converterUtils = new ConverterBean();
+        converterUtils.deregister();
+        converterUtils.register(true, true, 0);
+    }
+
     //
     public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType) {
         return new DefaultBindInfoProviderAdapter<T>(bindType);
@@ -60,6 +68,10 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
     }
     //
     public <T> T getInstance(final BindInfo<T> bindInfo, final AppContext appContext) {
+        if (bindInfo == null) {
+            return null;
+        }
+        //
         Provider<? extends T> instanceProvider = null;
         Provider<Scope> scopeProvider = null;
         //
@@ -203,10 +215,10 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
                 //
                 Inject inject = findAnnotation(Inject.class, annotations);
                 if (inject != null) {
-                    if (Type.ByName == inject.byType() && StringUtils.isNotBlank(inject.value())) {
+                    if (Type.ByID == inject.byType()) {
+                        paramObjects[i] = appContext.getInstance(inject.value());
+                    } else if (Type.ByName == inject.byType()) {
                         paramObjects[i] = appContext.findBindingBean(inject.value(), parameterTypes[i]);
-                    } else {
-                        paramObjects[i] = appContext.getInstance(parameterTypes[i]);
                     }
                     continue;
                 }
@@ -229,7 +241,6 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
                 return doInject(targetBean, bindInfo, appContext, newType);
             }
         } catch (Throwable e) {
-            logger.error(e.getMessage(), e);
             if (e instanceof InvocationTargetException) {
                 e = ((InvocationTargetException) e).getTargetException();
             }
@@ -241,7 +252,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             return null;
         }
         for (Annotation anno : annotations) {
-            if (annoType.isAssignableFrom(annoType)) {
+            if (annoType.isInstance(anno)) {
                 return (T) anno;
             }
         }
@@ -265,7 +276,6 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             try {
                 ((InjectMembers) targetBean).doInject(appContext);
             } catch (Throwable e) {
-                logger.error(e.getMessage(), e);
                 throw ExceptionUtils.toRuntimeException(e);
             }
         } else {
@@ -289,18 +299,14 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
                 boolean canWrite = BeanUtils.canWriteProperty(propertyName, targetType);
                 //
                 if (!canWrite) {
-                    String logMsg = "doInject, property " + propertyName + " can not write.";
-                    logger.error(logMsg);
-                    throw new IllegalStateException(logMsg);
+                    throw new IllegalStateException("doInject, property " + propertyName + " can not write.");
                 }
                 Provider<?> provider = propItem.getValue();
                 if (provider == null) {
-                    String logMsg = "can't injection ,property " + propertyName + " data Provider is null.";
-                    logger.error(logMsg);
-                    throw new IllegalStateException(logMsg);
+                    throw new IllegalStateException("can't injection ,property " + propertyName + " data Provider is null.");
                 }
                 //
-                Object propertyVal = ConverterUtils.convert(propertyType, provider.get());
+                Object propertyVal = converterUtils.convert(provider.get(), propertyType);
                 BeanUtils.writePropertyOrField(targetBean, propertyName, propertyVal);
                 injectFileds.add(propertyName);
             }
@@ -318,9 +324,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             }
             boolean hasInjected = injectFileds.contains(name);
             if (hasInjected) {
-                String logMsg = "doInject , " + targetType + " , property " + name + " duplicate.";
-                logger.warn(logMsg);
-                throw new IllegalStateException(logMsg);
+                throw new IllegalStateException("doInject , " + targetType + " , property '" + name + "' duplicate.");
             }
             if (!field.isAccessible()) {
                 field.setAccessible(true);
@@ -373,9 +377,14 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             settingVar = settingVar.substring(2, settingVar.length() - 1);
             settingValue = appContext.getEnvironment().evalString("%" + settingVar + "%");
         } else {
-            settingValue = appContext.getEnvironment().getSettings().getString(injectSettings.value(), injectSettings.defaultValue());
+            String defaultVal = injectSettings.defaultValue();
+            if (StringUtils.isBlank(defaultVal)) {
+                defaultVal = null;// 行为保持和 Convert 一致
+            }
+            settingValue = appContext.getEnvironment().getSettings().getString(injectSettings.value(), defaultVal);
         }
-        return ConverterUtils.convert(settingValue, toType);
+        //
+        return converterUtils.convert(settingValue, toType);
     }
     //
     //
@@ -402,7 +411,6 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
                 }
             }
         } catch (InvocationTargetException e2) {
-            logger.error(e2.getMessage(), e2);
             throw ExceptionUtils.toRuntimeException(e2.getTargetException());
         }
     }
@@ -459,14 +467,14 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
     }
     //
     private void setField(Field field, Object targetBean, Object newValue) {
+        Class<?> toType = field.getType();
+        newValue = converterUtils.convert(newValue, toType);
         try {
             field.set(targetBean, newValue);
         } catch (IllegalAccessException e) {
             try {
                 field.setAccessible(true);
-                Class<?> toType = field.getType();
-                Object attValueObject = ConverterUtils.convert(toType, newValue);
-                field.set(targetBean, attValueObject);
+                field.set(targetBean, newValue);
             } catch (IllegalAccessException e1) {
                 logger.error(e1.getMessage(), e);
             }

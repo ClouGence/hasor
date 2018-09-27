@@ -35,9 +35,6 @@ public interface Environment {
     /** @return 获取扫描路径*/
     public String[] getSpanPackage();
 
-    /** @return 获取配置的工作模式。*/
-    public String getWorkMode();
-
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> findClass(Class<?> featureType);
 
@@ -83,8 +80,6 @@ public interface Environment {
     public Settings getSettings();
     //
     /*----------------------------------------------------------------------------------------Env*/
-    /**获取工作模式，工作路径的配置可以在config.xml的“<b>environmentVar.WORK_MODE</b>”节点上配置。*/
-    public static final String WORK_MODE             = "WORK_MODE";
     /**获取工作目录，工作路径的配置可以在config.xml的“<b>environmentVar.WORK_HOME</b>”节点上配置。*/
     public static final String WORK_HOME             = "WORK_HOME";
     /**获取临时文件存放目录，工作路径的配置可以在config.xml的“<b>environmentVar.HASOR_TEMP_PATH</b>”节点上配置。*/

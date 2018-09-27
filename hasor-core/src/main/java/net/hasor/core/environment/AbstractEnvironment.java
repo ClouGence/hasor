@@ -43,7 +43,6 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractEnvironment implements Environment {
     protected Logger              logger       = LoggerFactory.getLogger(getClass());
-    private   String              workMode     = null;
     private   String[]            spanPackage  = null;
     private   ScanClassPath       scanUtils    = null;
     private   AbstractSettings    settings     = null;
@@ -84,10 +83,6 @@ public abstract class AbstractEnvironment implements Environment {
     @Override
     public String[] getSpanPackage() {
         return this.spanPackage;
-    }
-    @Override
-    public String getWorkMode() {
-        return this.workMode;
     }
     @Override
     public final EventContext getEventContext() {
@@ -183,7 +178,7 @@ public abstract class AbstractEnvironment implements Environment {
             String keyName = "%" + varKeyOri + "%";
             String var = this.envMap.get(varKeyOri.toUpperCase());
             if (var == null) {
-                data.put(keyName, keyName);
+                data.put(keyName, "");
             } else {
                 data.put(keyName, evalString(var));
             }
@@ -237,7 +232,6 @@ public abstract class AbstractEnvironment implements Environment {
             this.logger.info("loadPackages = " + packages);
         }
         //
-        this.workMode = this.evalString("%" + WORK_MODE + "%");
     }
     /**
      * 1st，System.getProperties()
