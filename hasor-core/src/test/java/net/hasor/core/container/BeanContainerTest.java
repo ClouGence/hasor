@@ -4,6 +4,8 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.SingletonMode;
 import net.hasor.core.container.anno.AnnoCallInitBean;
 import net.hasor.core.container.anno.AnnoConstructorMultiBean;
+import net.hasor.core.container.aware.AppContextAwareBean;
+import net.hasor.core.container.aware.BindInfoAwareBean;
 import net.hasor.core.container.beans.CallInitBean;
 import net.hasor.core.container.beans.ConstructorBean;
 import net.hasor.core.container.beans.ConstructorMultiBean;
@@ -17,6 +19,7 @@ import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 
 import static net.hasor.core.AppContext.ContextEvent_Started;
 import static org.mockito.Matchers.anyObject;
@@ -171,5 +174,55 @@ public class BeanContainerTest {
         } catch (Exception e) {
             assert "No default constructor found.".equals(e.getMessage());
         }
+    }
+    @Test
+    public void containerTest8() {
+        CallInitBean.resetInit();
+        BeanContainer container = new BeanContainer();
+        AppContext appContext = PowerMockito.mock(AppContext.class);
+        PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
+        //
+        assert container.getInstance((Class<Object>) null, appContext) == null;
+        assert container.getInstance((Constructor<Object>) null, appContext) == null;
+        assert container.getInstance((BindInfo<Object>) null, appContext) == null;
+    }
+    //
+    @Test
+    public void containerTest9() {
+        BeanContainer container = new BeanContainer();
+        AppContext appContext = PowerMockito.mock(AppContext.class);
+        PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
+        //
+        AbstractBindInfoProviderAdapter<?> adapter = container.createInfoAdapter(BindInfoAwareBean.class);
+        adapter.setBindID("12345");
+        adapter.setBindName("myBean");
+        //
+        container.doInitializeCompleted(env);
+        //
+        BindInfo<?> info = container.findBindInfo("12345");
+        BindInfoAwareBean instance = (BindInfoAwareBean) container.getInstance(info, appContext);
+        assert instance != null;
+        assert instance.getBindInfo() == adapter;
+    }
+    //
+    @Test
+    public void containerTest10() {
+        BeanContainer container = new BeanContainer();
+        AppContext appContext = PowerMockito.mock(AppContext.class);
+        PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
+        //
+        AbstractBindInfoProviderAdapter<?> adapter = container.createInfoAdapter(AppContextAwareBean.class);
+        adapter.setBindID("12345");
+        adapter.setBindName("myBean");
+        //
+        container.doInitializeCompleted(env);
+        //
+        BindInfo<?> info = container.findBindInfo("12345");
+        AppContextAwareBean instance = (AppContextAwareBean) container.getInstance(info, appContext);
+        assert instance != null;
+        assert instance.getAppContext() == appContext;
     }
 }
