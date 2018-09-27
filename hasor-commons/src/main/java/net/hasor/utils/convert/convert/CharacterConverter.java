@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 package net.hasor.utils.convert.convert;
+import net.hasor.utils.BeanUtils;
 import net.hasor.utils.convert.Converter;
 /**
  * {@link Converter} implementaion that handles conversion
@@ -80,6 +81,11 @@ public final class CharacterConverter extends AbstractConverter {
      */
     @Override
     protected Object convertToType(final Class type, final Object value) throws Exception {
-        return new Character(value.toString().charAt(0));
+        String string = value.toString();
+        if (string.length() == 0) {
+            return BeanUtils.getDefaultValue(type);
+        } else {
+            return string.charAt(0);
+        }
     }
 }

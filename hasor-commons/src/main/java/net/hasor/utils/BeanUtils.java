@@ -33,25 +33,27 @@ import java.util.Map;
 public class BeanUtils {
     /**获取指定类型的默认值。*/
     public static Object getDefaultValue(final Class<?> returnType) {
-        if (returnType == null) {
+        if (returnType == null || !returnType.isPrimitive()) {
             return null;
-        } else if (returnType == int.class || returnType == Integer.class) {
+        }
+        //
+        if (returnType == int.class) {
             return 0;
-        } else if (returnType == byte.class || returnType == Byte.class) {
-            return 0;
-        } else if (returnType == char.class || returnType == Character.class) {
+        } else if (returnType == byte.class) {
+            return (byte) 0;
+        } else if (returnType == char.class) {
             return '\0';
-        } else if (returnType == double.class || returnType == Double.class) {
+        } else if (returnType == double.class) {
             return 0d;
-        } else if (returnType == float.class || returnType == Float.class) {
+        } else if (returnType == float.class) {
             return 0f;
-        } else if (returnType == long.class || returnType == Long.class) {
+        } else if (returnType == long.class) {
             return 0l;
-        } else if (returnType == short.class || returnType == Short.class) {
-            return 0;
-        } else if (returnType == boolean.class || returnType == Boolean.class) {
+        } else if (returnType == short.class) {
+            return (short) 0;
+        } else if (returnType == boolean.class) {
             return false;
-        } else if (returnType == void.class || returnType == Void.class) {
+        } else if (returnType == void.class) {
             return null;
         } else if (returnType.isArray()) {
             return null;

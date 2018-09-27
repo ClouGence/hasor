@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 package net.hasor.utils.convert.convert;
+import net.hasor.utils.NumberUtils;
 import net.hasor.utils.convert.ConversionException;
 import net.hasor.utils.convert.Converter;
 
@@ -291,13 +292,14 @@ public abstract class DateTimeConverter extends AbstractConverter {
         // Handle Long
         if (value instanceof Long) {
             Long longObj = (Long) value;
-            return this.toDate(targetType, longObj.longValue());
+            return this.toDate(targetType, longObj);
         }
         // Convert all other types to String & handle
         String stringValue = value.toString().trim();
         if (stringValue.length() == 0) {
             return this.handleMissing(targetType);
         }
+        //
         // Parse the Date/Time
         if (this.useLocaleFormat) {
             Calendar calendar = null;
@@ -312,6 +314,11 @@ public abstract class DateTimeConverter extends AbstractConverter {
             } else {
                 return this.toDate(targetType, calendar.getTime().getTime());
             }
+        }
+        //
+        if (NumberUtils.isNumber(stringValue)) {
+            Long longObj = NumberUtils.createLong(stringValue);
+            return this.toDate(targetType, longObj);
         }
         // Default String conversion
         return this.toDate(targetType, stringValue);

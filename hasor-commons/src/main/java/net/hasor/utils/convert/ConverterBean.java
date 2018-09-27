@@ -251,8 +251,6 @@ public class ConverterBean {
         this.registerStandard(false, false);
         this.registerOther(true);
         this.registerArrays(false, 0);
-        this.register(BigDecimal.class, new BigDecimalConverter());
-        this.register(BigInteger.class, new BigIntegerConverter());
     }
     /**
      * Register the provided converters with the specified defaults.
@@ -335,6 +333,7 @@ public class ConverterBean {
         Boolean booleanDefault = defaultNull ? null : Boolean.FALSE;
         Character charDefault = defaultNull ? null : ConverterBean.SPACE;
         String stringDefault = defaultNull ? null : "";
+        //
         this.register(BigDecimal.class, throwException ? new BigDecimalConverter() : new BigDecimalConverter(bigDecDeflt));
         this.register(BigInteger.class, throwException ? new BigIntegerConverter() : new BigIntegerConverter(bigIntDeflt));
         this.register(Boolean.class, throwException ? new BooleanConverter() : new BooleanConverter(booleanDefault));

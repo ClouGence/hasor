@@ -544,4 +544,8 @@ public class CharUtils {
     static boolean isHighSurrogate(final char ch) {
         return '\uD800' <= ch && '\uDBFF' >= ch;
     }
+    //
+    public static boolean isCharType(Class targetType) {
+        return targetType.equals(Character.class) || targetType.equals(Character.TYPE);
+    }
 }

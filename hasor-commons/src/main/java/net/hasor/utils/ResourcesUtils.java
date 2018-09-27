@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.utils;
+import net.hasor.utils.io.AutoCloseInputStream;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;

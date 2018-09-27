@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package net.hasor.utils.convert.convert;
+import net.hasor.utils.ByteUtils;
+import net.hasor.utils.NumberUtils;
 import net.hasor.utils.convert.ConversionException;
 import net.hasor.utils.convert.Converter;
 
@@ -85,10 +87,10 @@ import java.util.Locale;
 public abstract class NumberConverter extends AbstractConverter {
     private static final Integer ZERO = new Integer(0);
     private static final Integer ONE  = new Integer(1);
-    private String  pattern;
-    private boolean allowDecimals;
-    private boolean useLocaleFormat;
-    private Locale  locale;
+    private              String  pattern;
+    private              boolean allowDecimals;
+    private              boolean useLocaleFormat;
+    private              Locale  locale;
     // ----------------------------------------------------------- Constructors
     /**
      * Construct a <b>java.lang.Number</b> <i>Converter</i>
@@ -264,7 +266,7 @@ public abstract class NumberConverter extends AbstractConverter {
             return value;
         }
         // Byte
-        if (targetType.equals(Byte.class)) {
+        if (ByteUtils.isByteType(targetType)) {
             long longValue = value.longValue();
             if (longValue > Byte.MAX_VALUE) {
                 throw new ConversionException(this.toString(sourceType) + " value '" + value + "' is too large for " + this.toString(targetType));
@@ -272,10 +274,10 @@ public abstract class NumberConverter extends AbstractConverter {
             if (longValue < Byte.MIN_VALUE) {
                 throw new ConversionException(this.toString(sourceType) + " value '" + value + "' is too small " + this.toString(targetType));
             }
-            return new Byte(value.byteValue());
+            return value.byteValue();
         }
         // Short
-        if (targetType.equals(Short.class)) {
+        if (NumberUtils.isShortType(targetType)) {
             long longValue = value.longValue();
             if (longValue > Short.MAX_VALUE) {
                 throw new ConversionException(this.toString(sourceType) + " value '" + value + "' is too large for " + this.toString(targetType));
@@ -283,10 +285,10 @@ public abstract class NumberConverter extends AbstractConverter {
             if (longValue < Short.MIN_VALUE) {
                 throw new ConversionException(this.toString(sourceType) + " value '" + value + "' is too small " + this.toString(targetType));
             }
-            return new Short(value.shortValue());
+            return value.shortValue();
         }
         // Integer
-        if (targetType.equals(Integer.class)) {
+        if (NumberUtils.isIntType(targetType)) {
             long longValue = value.longValue();
             if (longValue > Integer.MAX_VALUE) {
                 throw new ConversionException(this.toString(sourceType) + " value '" + value + "' is too large for " + this.toString(targetType));
@@ -294,22 +296,22 @@ public abstract class NumberConverter extends AbstractConverter {
             if (longValue < Integer.MIN_VALUE) {
                 throw new ConversionException(this.toString(sourceType) + " value '" + value + "' is too small " + this.toString(targetType));
             }
-            return new Integer(value.intValue());
+            return value.intValue();
         }
         // Long
-        if (targetType.equals(Long.class)) {
-            return new Long(value.longValue());
+        if (NumberUtils.isLongType(targetType)) {
+            return value.longValue();
         }
         // Float
-        if (targetType.equals(Float.class)) {
+        if (NumberUtils.isFloatType(targetType)) {
             if (value.doubleValue() > Float.MAX_VALUE) {
                 throw new ConversionException(this.toString(sourceType) + " value '" + value + "' is too large for " + this.toString(targetType));
             }
-            return new Float(value.floatValue());
+            return value.floatValue();
         }
         // Double
-        if (targetType.equals(Double.class)) {
-            return new Double(value.doubleValue());
+        if (NumberUtils.isDoubleType(targetType)) {
+            return value.doubleValue();
         }
         // BigDecimal
         if (targetType.equals(BigDecimal.class)) {
@@ -354,27 +356,27 @@ public abstract class NumberConverter extends AbstractConverter {
      */
     private Number toNumber(final Class sourceType, final Class targetType, final String value) {
         // Byte
-        if (targetType.equals(Byte.class)) {
+        if (ByteUtils.isByteType(targetType)) {
             return new Byte(value);
         }
         // Short
-        if (targetType.equals(Short.class)) {
+        if (NumberUtils.isShortType(targetType)) {
             return new Short(value);
         }
         // Integer
-        if (targetType.equals(Integer.class)) {
+        if (NumberUtils.isIntType(targetType)) {
             return new Integer(value);
         }
         // Long
-        if (targetType.equals(Long.class)) {
+        if (NumberUtils.isLongType(targetType)) {
             return new Long(value);
         }
         // Float
-        if (targetType.equals(Float.class)) {
+        if (NumberUtils.isFloatType(targetType)) {
             return new Float(value);
         }
         // Double
-        if (targetType.equals(Double.class)) {
+        if (NumberUtils.isDoubleType(targetType)) {
             return new Double(value);
         }
         // BigDecimal

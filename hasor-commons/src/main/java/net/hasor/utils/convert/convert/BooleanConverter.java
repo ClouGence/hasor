@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 package net.hasor.utils.convert.convert;
+import net.hasor.utils.BeanUtils;
 import net.hasor.utils.convert.ConversionException;
 import net.hasor.utils.convert.Converter;
 /**
@@ -175,6 +176,9 @@ public final class BooleanConverter extends AbstractConverter {
         // to lowercase too, we can use the efficient String.equals method
         // instead of the less-efficient String.equalsIgnoreCase method.
         String stringValue = value.toString().toLowerCase();
+        if ("".equals(stringValue)) {
+            return BeanUtils.getDefaultValue(type);
+        }
         for (String trueString : this.trueStrings) {
             if (trueString.equals(stringValue)) {
                 return Boolean.TRUE;

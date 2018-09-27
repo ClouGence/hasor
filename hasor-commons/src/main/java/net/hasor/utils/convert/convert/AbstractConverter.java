@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 package net.hasor.utils.convert.convert;
+import net.hasor.utils.BeanUtils;
 import net.hasor.utils.convert.ConversionException;
 import net.hasor.utils.convert.Converter;
 
@@ -78,26 +79,25 @@ public abstract class AbstractConverter implements Converter {
     @Override
     public Object convert(final Class type, Object value) {
         Class sourceType = value == null ? null : value.getClass();
-        Class targetType = this.primitive(type == null ? this.getDefaultType() : type);
         value = this.convertArray(value);//如果数据源是一个Array 或 集合 那么取得第一个元素。
         //Missing Value
         if (value == null) {
-            return this.handleMissing(targetType);
+            return this.handleMissing(type);
         }
         //
         sourceType = value.getClass();
         try {
             /*Convert --> String*/
-            if (targetType.equals(String.class)) {
+            if (type.equals(String.class)) {
                 return this.convertToString(value);
-            } else if (targetType.equals(sourceType)) {
+            } else if (type.equals(sourceType)) {
                 return value;
                 /*Convert --> Type*/
             } else {
-                return this.convertToType(targetType, value);
+                return this.convertToType(type, value);
             }
         } catch (Throwable t) {
-            return this.handleError(targetType, value, t);
+            return this.handleError(type, value, t);
         }
     }
     /**
@@ -196,36 +196,9 @@ public abstract class AbstractConverter implements Converter {
             }
             return value;
         }
-        throw new ConversionException("No value specified for '" + this.toString(type) + "'");
+        return BeanUtils.getDefaultValue(type);
     }
     // ----------------------------------------------------------- Package Methods
-    /** 转换基本类型到包装类型. */
-    private Class primitive(final Class type) {
-        if (type == null || !type.isPrimitive()) {
-            return type;
-        }
-        if (type == Integer.TYPE) {
-            return Integer.class;
-        } else if (type == Double.TYPE) {
-            return Double.class;
-        } else if (type == Long.TYPE) {
-            return Long.class;
-        } else if (type == Boolean.TYPE) {
-            return Boolean.class;
-        } else if (type == Float.TYPE) {
-            return Float.class;
-        } else if (type == Short.TYPE) {
-            return Short.class;
-        } else if (type == Byte.TYPE) {
-            return Byte.class;
-        } else if (type == Character.TYPE) {
-            return Character.class;
-        } else {
-            return type;
-        }
-    }
-    //
-    //
     /**
      * Provide a String representation of a <code>java.lang.Class</code>.
      * @param type The <code>java.lang.Class</code>.
