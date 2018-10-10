@@ -242,6 +242,13 @@ public interface ApiBinder {
          * @return 返回 - {@link NamedBindingBuilder}。
          */
         public NamedBindingBuilder<T> idWith(String idString);
+
+        /**
+         * 设置一个ID标识符，同时设置 name。
+         * @param nameString id标识符.
+         * @return 返回 - {@link NamedBindingBuilder}。
+         */
+        public NamedBindingBuilder<T> bothWith(String nameString);
     }
     //
     /**处理类型和实现的绑定。*/

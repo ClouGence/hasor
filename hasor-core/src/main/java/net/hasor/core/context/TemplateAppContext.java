@@ -88,26 +88,12 @@ public abstract class TemplateAppContext implements AppContext {
     @Override
     public <T> T getInstance(Class<T> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
-        Provider<T> provider = this.getProvider(targetClass);
-        if (provider != null) {
-            logger.debug("getInstance form getProvider, targetClass is {}.", targetClass);
-            return provider.get();
-        } else {
-            logger.debug("getInstance form BeanBuilder, targetClass is {}.", targetClass);
-            return getBeanBuilder().getInstance(targetClass, this);
-        }
+        return this.getProvider(targetClass).get();
     }
     @Override
     public <T> T getInstance(Constructor<T> targetConstructor) {
         Hasor.assertIsNotNull(targetConstructor, "targetConstructor is null.");
-        Provider<T> provider = this.getProvider(targetConstructor);
-        if (provider != null) {
-            logger.debug("getInstance form getProvider, targetConstructor is {}.", targetConstructor);
-            return provider.get();
-        } else {
-            logger.debug("getInstance form BeanBuilder, targetConstructor is {}.", targetConstructor);
-            return getBeanBuilder().getInstance(targetConstructor, this);
-        }
+        return this.getProvider(targetConstructor).get();
     }
     @Override
     public <T> T getInstance(BindInfo<T> info) {
@@ -129,7 +115,7 @@ public abstract class TemplateAppContext implements AppContext {
         if (object == null || beanType == null) {
             return object;
         }
-        BindInfo<?> bindInfo = this.findBindingRegister(null, beanType);
+        BindInfo<?> bindInfo = this.findBindingRegister("", beanType);
         if (bindInfo != null) {
             return this.getContainer().justInject(object, bindInfo, this);
         } else {
@@ -211,9 +197,9 @@ public abstract class TemplateAppContext implements AppContext {
         BeanContainer container = getContainer();
         List<BindInfo<T>> typeRegisterList = container.findBindInfoList(bindType);
         if (typeRegisterList == null || typeRegisterList.isEmpty()) {
-            return new ArrayList<T>(0);
+            return Collections.emptyList();
         }
-        ArrayList<T> returnData = new ArrayList<T>();
+        ArrayList<T> returnData = new ArrayList<T>(typeRegisterList.size());
         for (BindInfo<T> adapter : typeRegisterList) {
             T instance = this.getInstance(adapter);
             returnData.add(instance);
@@ -227,9 +213,9 @@ public abstract class TemplateAppContext implements AppContext {
         BeanContainer container = getContainer();
         List<BindInfo<T>> typeRegisterList = container.findBindInfoList(bindType);
         if (typeRegisterList == null || typeRegisterList.isEmpty()) {
-            return new ArrayList<Provider<T>>(0);
+            return Collections.emptyList();
         }
-        ArrayList<Provider<T>> returnData = new ArrayList<Provider<T>>();
+        ArrayList<Provider<T>> returnData = new ArrayList<Provider<T>>(typeRegisterList.size());
         for (BindInfo<T> adapter : typeRegisterList) {
             Provider<T> provider = this.getProvider(adapter);
             returnData.add(provider);
@@ -278,7 +264,7 @@ public abstract class TemplateAppContext implements AppContext {
         return getContainer().findBindInfoList(bindType);
     }
     @Override
-    public <T> BindInfo<T> findBindingRegister(final String withName, final Class<T> bindType) {
+    public <T> BindInfo<T> findBindingRegister(String withName, final Class<T> bindType) {
         Hasor.assertIsNotNull(withName, "withName is null.");
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         return getContainer().findBindInfo(withName, bindType);

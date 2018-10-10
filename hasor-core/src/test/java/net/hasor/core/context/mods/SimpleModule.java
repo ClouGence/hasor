@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.core._05_plugins.mods;
+package net.hasor.core.context.mods;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
+import net.hasor.core.container.beans.CallInitBean;
 /**
  * 模块
  * @version : 2015年11月9日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SimpleModule implements Module {
-    public static final String STR = "say form Mod_2.";
+public class SimpleModule extends CallInitBean implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
-        apiBinder.bindType(String.class).uniqueName().toInstance(STR);
+        this.init();
     }
 }

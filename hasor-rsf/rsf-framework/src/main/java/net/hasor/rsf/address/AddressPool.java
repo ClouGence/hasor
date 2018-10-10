@@ -23,6 +23,7 @@ import net.hasor.rsf.utils.IOUtils;
 import net.hasor.utils.ClassUtils;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -566,7 +567,7 @@ public class AddressPool implements RsfUpdater {
                 ZipEntry zipEntry = null;
                 while ((zipEntry = zipStream.getNextEntry()) != null) {
                     String serviceID = zipEntry.getName();
-                    serviceID = IOUtils.getBaseName(serviceID);
+                    serviceID = FilenameUtils.getBaseName(serviceID);
                     AddressBucket bucket = this.addressPool.get(serviceID);
                     if (bucket == null) {
                         continue;

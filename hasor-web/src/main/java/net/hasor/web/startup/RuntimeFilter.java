@@ -104,15 +104,12 @@ public class RuntimeFilter implements Filter {
             this.beforeRequest(this.appContext, httpReq, httpRes);
             doFilter(chain, httpReq, httpRes);
         } catch (Throwable e) {
-            logger.error(e.getMessage(), e);
-            String mode = appContext.getEnvironment().getWorkMode();
-            if ("debug".equalsIgnoreCase(mode) && !response.isCommitted()) {
-                e.printStackTrace(response.getWriter());
-            }
-            if (e instanceof IOException)
+            if (e instanceof IOException) {
                 throw (IOException) e;
-            if (e instanceof ServletException)
+            }
+            if (e instanceof ServletException) {
                 throw (ServletException) e;
+            }
             throw ExceptionUtils.toRuntimeException(e);
         } finally {
             this.afterResponse(this.appContext, httpReq, httpRes);

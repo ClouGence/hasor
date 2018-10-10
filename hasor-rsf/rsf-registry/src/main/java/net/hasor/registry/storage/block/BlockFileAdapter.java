@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.registry.storage.block;
-import net.hasor.utils.IOUtils;
+import net.hasor.utils.io.IOUtils;
 import sun.misc.Cleaner;
 import sun.nio.ch.DirectBuffer;
 

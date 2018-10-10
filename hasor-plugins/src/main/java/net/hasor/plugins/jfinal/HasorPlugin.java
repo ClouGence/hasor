@@ -70,11 +70,11 @@ public class HasorPlugin implements IPlugin {
         this.jFinal = Hasor.assertIsNotNull(jFinal, "jFinal Context is null.");
         AppContext webAppContext = RuntimeListener.getAppContext(this.jFinal.getServletContext());
         if (webAppContext != null) {
-            throw new IllegalStateException("Hasor WebAppContext already exists , please disable the other.");
+            throw new IllegalStateException("Hasor AppContext already exists.");
         }
         this.listener = new RuntimeListener() {
-            protected Hasor createAppContext(ServletContext sc) throws Throwable {
-                return newAppContext(jFinal, mainSettings, moduleList);// 创建WebAppContext
+            protected Hasor newHasor(ServletContext sc, String configName, Properties properties) throws Throwable {
+                return newAppContext(jFinal, mainSettings, moduleList, properties);// 创建WebAppContext
             }
         };
         this.rootFilter = new RuntimeFilter();
@@ -107,7 +107,7 @@ public class HasorPlugin implements IPlugin {
         this.listener.contextDestroyed(new ServletContextEvent(jFinal.getServletContext()));
         return true;
     }
-    protected Hasor newAppContext(final JFinal jFinal, String mainSettings, List<Module> moduleList) throws Throwable {
+    protected Hasor newAppContext(final JFinal jFinal, String mainSettings, List<Module> moduleList, Properties properties) throws Throwable {
         //
         // .JFinal 的属性文件(如果没有则为Null)
         InnerMap envProp = null;

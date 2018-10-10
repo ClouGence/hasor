@@ -134,8 +134,11 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
         }
         // 单例的
         Object key = (bindInfo != null) ? bindInfo : targetType;
-        Provider<Scope> singleton = Hasor.assertIsNotNull(this.scopeMapping.get(ScopManager.SINGLETON_SCOPE));
-        return singleton.get().scope(key, new Provider<T>() {
+        Provider<Scope> scopeProvider = this.scopeMapping.get(ScopManager.SINGLETON_SCOPE);
+        if (scopeProvider == null) {
+            throw new NullPointerException("scopeProvider undefined.");
+        }
+        return scopeProvider.get().scope(key, new Provider<T>() {
             public T get() {
                 return BeanContainer.super.createObject(targetType, referConstructor, bindInfo, appContext);
             }

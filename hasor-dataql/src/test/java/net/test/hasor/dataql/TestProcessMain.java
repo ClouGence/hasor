@@ -31,8 +31,8 @@ import net.hasor.dataql.udf.SimpleUdfManager;
 import net.hasor.dataql.udf.SimpleUdfSource;
 import net.hasor.dataql.udf.funs.CollectionUDFs;
 import net.hasor.dataql.udf.source.TypeUdfSource;
-import net.hasor.utils.IOUtils;
 import net.hasor.utils.ResourcesUtils;
+import net.hasor.utils.io.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 

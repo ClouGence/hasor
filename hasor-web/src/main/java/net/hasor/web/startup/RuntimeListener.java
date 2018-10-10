@@ -88,7 +88,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         } else {
             InputStream resourceAsStream = ResourcesUtils.getResourceAsStream(envPropertieName);
             if (resourceAsStream == null) {
-                logger.warn("properties file is " + envPropertieName + " , but there is not exist.");
+                logger.error("properties file is " + envPropertieName + " , but there is not exist.");
                 return null;
             }
             logger.info("properties file is " + envPropertieName);

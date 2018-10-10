@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.maven.har;
-import net.hasor.utils.IOUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.io.IOUtils;
 import org.apache.maven.archiver.MavenArchiveConfiguration;
 import org.apache.maven.archiver.MavenArchiver;
 import org.apache.maven.artifact.Artifact;

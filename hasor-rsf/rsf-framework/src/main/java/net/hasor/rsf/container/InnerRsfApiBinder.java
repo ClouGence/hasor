@@ -141,7 +141,7 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
         return this.apiBinder.registerScope(scopeName, scope);
     }
     @Override
-    public Provider<Scope> registerScope(String scopeName, Provider<Scope> scopeProvider) {
+    public <T extends Scope> Provider<T> registerScope(String scopeName, Provider<T> scopeProvider) {
         return this.apiBinder.registerScope(scopeName, scopeProvider);
     }
 }

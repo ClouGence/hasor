@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.web.mime;
-import net.hasor.utils.IOUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.io.IOUtils;
 import net.hasor.web.MimeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

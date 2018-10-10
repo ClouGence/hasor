@@ -15,6 +15,9 @@ Hasor v3.3.0 (2018-08-?)
     - web 框架中：MappingSetup 接口，更名为 MappingDiscoverer，MappingData更名为Mapping
     - web RuntimeListener 新增：hasor-root-module、hasor-hconfig-name、hasor-env-properties 三个 web.xml 的属性配置。
     - plugin 项目新增多种 freemarker 的 loader。
+    - 新增 @ConstructorBy 注解，可以在多个构造方法中指定一个作为创建 Bean 的入口。
+    - ApiBinder 接口中新增 asEagerSingletonClear 方法，可以用来抹除 Bean 身上配置的 @Prototype 或者 @Singleton 行为。
+    - AopIgnore 注解新增 ignore 属性，可以用于关闭注解功能（一般用不到）。
 **static-config.xml**
     - 当使用 maven-shade-plugin 进行 maven 打包时由于 static-config.xml 无法通过文件追加的方式进行简单合并。
     - 因此老版本 Hasor 的工程无法使用 maven-shade-plugin 打包。
@@ -33,6 +36,7 @@ Hasor v3.3.0 (2018-08-?)
 **修复**
     - fix 执行查询结果返回为空时，AbstractRowMapper.convertValueToRequiredType 方法报 NPE 的 Bug。
     - fix JdbcTemplate 类中 requiredSingleResult 当执行结果为空时报空指针的异常。
+    - fix 包扫描 AopIgnore 注解时，如果包里面没有任何类不加载 package-info.class 的问题。
 
 
 Hasor v3.2.2 (2018-01-02)

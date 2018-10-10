@@ -109,11 +109,11 @@ public class HproseHttpHandler implements HttpHandler, HttpHandlerFactory {
     private void onException(String originString, RsfHttpResponse httpResponse, Throwable e) throws IOException {
         httpOrigin(originString, httpResponse);
         //
-        if ("debug".equalsIgnoreCase(this.rsfContext.getEnvironment().getWorkMode())) {
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            new OutputStreamWriter(httpResponse.getOutputStream(), "UTF-8").write(sw.toString());
-        }
+        //        if ("debug".equalsIgnoreCase(this.rsfContext.getEnvironment().getWorkMode())) {
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        new OutputStreamWriter(httpResponse.getOutputStream(), "UTF-8").write(sw.toString());
+        //        }
     }
     private void onComplete(String originString, RsfHttpResponse httpResponse, ResponseInfo info) throws IOException {
         httpOrigin(originString, httpResponse);

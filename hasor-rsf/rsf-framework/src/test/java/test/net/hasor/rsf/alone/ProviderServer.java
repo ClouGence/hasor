@@ -34,8 +34,8 @@ public class ProviderServer {
         AppContext appContext = Hasor.createAppContext("/alone/provider-config.xml", new RsfModule() {
             @Override
             public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-                apiBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register();
-                apiBinder.rsfService(MessageService.class).toInstance(new MessageServiceImpl()).register();
+                apiBinder.rsfService(EchoService.class).to(EchoServiceImpl.class).register();
+                apiBinder.rsfService(MessageService.class).to(MessageServiceImpl.class).register();
             }
         });
         //

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.upload.factorys.disk;
-import net.hasor.utils.IOUtils;
+import net.hasor.utils.io.IOUtils;
 import net.hasor.web.FileItemStream;
 import net.hasor.web.upload.FileItemBase;
 import net.hasor.web.upload.util.DeferredFileOutputStream;
@@ -26,9 +26,9 @@ import java.io.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DiskFileItem extends FileItemBase {
-    public static final int DEFAULT_SIZE_THRESHOLD = 51200;// 50KB
-    private DeferredFileOutputStream dfos;
-    private File                     cacheFile;
+    public static final int                      DEFAULT_SIZE_THRESHOLD = 51200;// 50KB
+    private             DeferredFileOutputStream dfos;
+    private             File                     cacheFile;
     public DiskFileItem(FileItemStream stream, File cacheFile) throws IOException {
         super(stream);
         this.init(stream, cacheFile);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.plugins.freemarker.loader.mto;
-import net.hasor.utils.AutoCloseInputStream;
+import net.hasor.utils.io.AutoCloseInputStream;
 
 import java.io.*;
 import java.net.MalformedURLException;

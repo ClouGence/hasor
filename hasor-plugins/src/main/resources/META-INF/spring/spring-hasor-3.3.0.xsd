@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<xsd:schema xmlns="http://project.hasor.net/schema/spring/hasor-core" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            targetNamespace="http://project.hasor.net/schema/spring/hasor-core" elementFormDefault="qualified">
+<xsd:schema xmlns="http://www.hasor.net/schema/spring-hasor" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            targetNamespace="http://www.hasor.net/schema/spring-hasor" elementFormDefault="qualified">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
 
     <!-- Factory -->

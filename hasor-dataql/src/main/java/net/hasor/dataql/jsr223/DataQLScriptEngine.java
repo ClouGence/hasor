@@ -23,7 +23,7 @@ import net.hasor.dataql.domain.compiler.QueryCompiler;
 import net.hasor.dataql.domain.parser.ParseException;
 import net.hasor.dataql.runtime.OptionSet;
 import net.hasor.dataql.udf.SimpleUdfManager;
-import net.hasor.utils.IOUtils;
+import net.hasor.utils.io.IOUtils;
 
 import javax.script.*;
 import java.io.IOException;

@@ -419,10 +419,13 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         Method initMethod = null;
         //a.注解形式（注解优先）
         if (targetBeanType != null) {
-            List<Method> methodList = BeanUtils.getMethods(targetBeanType);
+            List<Method> methodList = BeanUtils.findALLMethods(targetBeanType);
             for (Method method : methodList) {
-                boolean hasAnno = method.isAnnotationPresent(Init.class);
-                if (hasAnno) {
+                Init initAnno = method.getAnnotation(Init.class);
+                if (initAnno == null) {
+                    continue;
+                }
+                if (Modifier.isPublic(method.getModifiers()) || initAnno.accessible()) {
                     initMethod = method;
                     break;
                 }

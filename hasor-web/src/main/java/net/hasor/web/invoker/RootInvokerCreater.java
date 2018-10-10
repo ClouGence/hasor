@@ -27,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 /**
  * @version : 2017-01-10
@@ -61,7 +62,7 @@ class RootInvokerCreater implements InvokerCreater {
                 }
                 //
                 extBinderMap.put(binderType, binderImpl);
-                Class<?>[] interfaces = ClassUtils.getAllInterfaces(binderType);
+                List<Class<?>> interfaces = ClassUtils.getAllInterfaces(binderType);
                 for (Class<?> faces : interfaces) {
                     extBinderMap.put(faces, binderImpl);
                 }

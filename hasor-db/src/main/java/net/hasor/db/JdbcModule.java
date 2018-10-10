@@ -15,7 +15,7 @@
  */
 package net.hasor.db;
 import net.hasor.core.*;
-import net.hasor.core.classcode.matcher.AopMatchers;
+import net.hasor.core.classcode.matcher.Matchers;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.provider.SingleProvider;
 import net.hasor.db.jdbc.JdbcOperations;
@@ -114,8 +114,8 @@ public class JdbcModule implements Module {
                 apiBinder.bindType(TransactionTemplate.class).nameWith(this.dataSourceID).toProvider(new SingleProvider<TransactionTemplate>(templateProvider));
             }
             TransactionInterceptor tranInter = new TransactionInterceptor(this.dataSource);
-            Matcher<Class<?>> matcherClass = AopMatchers.annotatedWithClass(Transactional.class);
-            Matcher<Method> matcherMethod = AopMatchers.annotatedWithMethod(Transactional.class);
+            Matcher<Class<?>> matcherClass = Matchers.annotatedWithClass(Transactional.class);
+            Matcher<Method> matcherMethod = Matchers.annotatedWithMethod(Transactional.class);
             apiBinder.bindInterceptor(matcherClass, matcherMethod, tranInter);
         }
     }

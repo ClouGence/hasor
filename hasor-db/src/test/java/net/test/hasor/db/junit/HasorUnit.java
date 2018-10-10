@@ -15,6 +15,7 @@
  */
 package net.test.hasor.db.junit;
 import net.hasor.utils.BeanUtils;
+import net.hasor.utils.CharUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
 
@@ -120,18 +121,22 @@ public abstract class HasorUnit {
     //
     private static int stringLength(final String str) {
         int length = 0;
-        for (char c : str.toCharArray())
-            if (StringUtils.isAscii(c))
+        for (char c : str.toCharArray()) {
+            if (CharUtils.isAscii(c)) {
                 length++;
-            else
+            } else {
                 length = length + 2;
+            }
+        }
         return length;
     }
     /*修正长度*/
     private static int fixLength(final String str, int length) {
-        for (char c : str.toCharArray())
-            if (!StringUtils.isAscii(c))
+        for (char c : str.toCharArray()) {
+            if (!CharUtils.isAscii(c)) {
                 length--;
+            }
+        }
         return length;
     }
 }

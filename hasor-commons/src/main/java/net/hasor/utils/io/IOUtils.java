@@ -901,6 +901,14 @@ public class IOUtils {
         }
         return list;
     }
+    public static String readToString(InputStream input, String charset) throws IOException {
+        List<String> stringList = readLines(input, charset);
+        StringBuilder builder = new StringBuilder();
+        for (String str : stringList) {
+            builder = builder.append(str);
+        }
+        return builder.toString();
+    }
     // lineIterator
     //-----------------------------------------------------------------------
     /**

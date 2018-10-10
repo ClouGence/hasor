@@ -6,9 +6,7 @@ import net.hasor.core.container.anno.AnnoCallInitBean;
 import net.hasor.core.container.anno.AnnoConstructorMultiBean;
 import net.hasor.core.container.aware.AppContextAwareBean;
 import net.hasor.core.container.aware.BindInfoAwareBean;
-import net.hasor.core.container.beans.CallInitBean;
-import net.hasor.core.container.beans.ConstructorBean;
-import net.hasor.core.container.beans.ConstructorMultiBean;
+import net.hasor.core.container.beans.*;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.provider.InstanceProvider;
@@ -224,5 +222,17 @@ public class BeanContainerTest {
         AppContextAwareBean instance = (AppContextAwareBean) container.getInstance(info, appContext);
         assert instance != null;
         assert instance.getAppContext() == appContext;
+    }
+    @Test
+    public void containerTest11() {
+        BeanContainer container = new BeanContainer();
+        AppContext appContext = PowerMockito.mock(AppContext.class);
+        PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
+        //
+        container.doInitializeCompleted(env);
+        //
+        assert container.getInstance(CallInitBean2.class, appContext).isInit();
+        assert !container.getInstance(CallInitBean3.class, appContext).isInit();
     }
 }

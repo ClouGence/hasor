@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://project.hasor.net/hasor/schema/hasor-core">
+<config xmlns:root="http://project.hasor.net/hasor/schema/main" xmlns="http://www.hasor.net/sechma/hasor-core">
     <!-- http://project.hasor.net/hasor/schema/main命名空间默认配置 -->
     <root:config>
         <root:hasor.loadPackages>${HASOR_LOAD_PACKAGES}</root:hasor.loadPackages>

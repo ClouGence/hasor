@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
-import net.hasor.core.ApiBinder.LifeBindingBuilder;
-
-import java.lang.annotation.*;
+package net.hasor.core.container.beans;
+import net.hasor.core.Init;
 /**
- * 标记方法为初始化方法，如果{@link LifeBindingBuilder#initMethod(String)}方法也定义了一个初始化方法则，注解方式优先于配置。
- * @see LifeBindingBuilder#initMethod(String)
- * @version : 2015年7月28日
+ * 一个Bean
+ * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
-@Documented
-public @interface Init {
-    public boolean accessible() default false;
+public class CallInitBean2 extends TestBean {
+    private boolean init = false;
+    //
+    public boolean isInit() {
+        return init;
+    }
+    //
+    @Init(accessible = true)
+    private void init() {
+        this.init = true;
+    }
 }

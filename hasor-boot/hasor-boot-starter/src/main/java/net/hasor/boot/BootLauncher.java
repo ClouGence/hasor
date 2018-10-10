@@ -21,10 +21,10 @@ import net.hasor.core.Module;
 import net.hasor.core.context.ContextShutdownListener;
 import net.hasor.core.context.ContextStartListener;
 import net.hasor.utils.ExceptionUtils;
-import net.hasor.utils.IOUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.future.BasicFuture;
+import net.hasor.utils.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mimeConfig xmlns="http://project.hasor.net/hasor/schema/mime-mapping">
+<mimeConfig xmlns="http://www.hasor.net/sechma/mime-mapping">
     <mime-mapping extension="123" mimeType="application/vnd.lotus-1-2-3"/>
     <mime-mapping extension="3dml" mimeType="text/vnd.in3d.3dml"/>
     <mime-mapping extension="3g2" mimeType="video/3gpp2"/>

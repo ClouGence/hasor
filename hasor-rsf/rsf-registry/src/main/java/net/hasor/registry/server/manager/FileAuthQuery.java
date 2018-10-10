@@ -21,9 +21,9 @@ import net.hasor.registry.server.domain.AuthBean;
 import net.hasor.registry.server.domain.Result;
 import net.hasor.registry.server.domain.ResultDO;
 import net.hasor.rsf.domain.RsfServiceType;
-import net.hasor.utils.AutoCloseInputStream;
-import net.hasor.utils.IOUtils;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.io.AutoCloseInputStream;
+import net.hasor.utils.io.IOUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -48,9 +48,9 @@ import java.util.Map;
 @Singleton
 public class FileAuthQuery implements AuthQuery {
     @Inject
-    private AppContext     appContext;
+    private AppContext            appContext;
     @Inject
-    private ServerSettings rsfCenterSettings;
+    private ServerSettings        rsfCenterSettings;
     private Map<String, AuthBean> keyPool = new HashMap<String, AuthBean>();
     //
     @Init

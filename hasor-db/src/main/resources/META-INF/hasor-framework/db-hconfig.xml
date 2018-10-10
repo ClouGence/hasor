@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<config xmlns="http://project.hasor.net/hasor/schema/hasor-db">
+<config xmlns="http://www.hasor.net/sechma/hasor-db">
     <!-- 包扫描覆盖范围，逗号间隔 -->
     <hasor.loadPackages>net.hasor.db.*</hasor.loadPackages>
 </config>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-autowire="byName"
-       xmlns:h="http://project.hasor.net/schema/spring/hasor-core"
+       xmlns:h="http://www.hasor.net/schema/spring-hasor"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-http://project.hasor.net/schema/spring/hasor-core spring-hasor-3.2.2.xsd">
+http://www.hasor.net/schema/spring-hasor http://www.hasor.net/schema/spring-hasor/spring-hasor-3.3.0.xsd">
 
     <!-- 使用 Spring 的属性文件作为 Hasor 的环境变量配置文件 -->
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -27,5 +27,6 @@ http://project.hasor.net/schema/spring/hasor-core spring-hasor-3.2.2.xsd">
     <bean id="springBean" class="net.test.hasor.spring.bean.SpringBean">
         <property name="hasorBean" ref="hasorBean"/>
     </bean>
+
 
 </beans>

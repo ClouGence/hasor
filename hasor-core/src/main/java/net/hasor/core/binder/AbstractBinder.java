@@ -208,7 +208,14 @@ public abstract class AbstractBinder implements ApiBinder {
         public NamedBindingBuilder<T> idWith(String newID) {
             if (!StringUtils.isBlank(newID)) {
                 this.typeBuilder.setBindID(newID);
-                this.typeBuilder.setBindName(newID);
+            }
+            return this;
+        }
+        @Override
+        public NamedBindingBuilder<T> bothWith(String nameString) {
+            if (!StringUtils.isBlank(nameString)) {
+                this.typeBuilder.setBindID(nameString);
+                this.typeBuilder.setBindName(nameString);
             }
             return this;
         }

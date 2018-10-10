@@ -18,9 +18,9 @@ import net.hasor.dataql.*;
 import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.domain.compiler.QueryCompiler;
 import net.hasor.dataql.runtime.QueryEngineImpl;
-import net.hasor.utils.IOUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.io.IOUtils;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
