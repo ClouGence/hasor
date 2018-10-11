@@ -47,7 +47,7 @@
         <startup>${HASOR_LOAD_STARTUP}</startup>
 
         <!-- 默认要装载的模块 -->
-        <modules loadModule="${HASOR_LOAD_MODULE}" loadErrorShow="true">
+        <modules loadModule="${HASOR_LOAD_MODULE}" throwLoadError="true">
             <module>net.hasor.core.exts.startup.StartupModule</module>
             <module>net.hasor.core.exts.aop.AopModule</module>
         </modules>

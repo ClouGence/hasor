@@ -54,6 +54,10 @@ public class SettingsWrap implements Settings {
     public void addSetting(String key, Object value, String namespace) {
         this.settings.addSetting(key, value, namespace);
     }
+    @Override
+    public void removeSetting(String key) {
+        this.settings.removeSetting(key);
+    }
     public void removeSetting(String key, String namespace) {
         this.settings.removeSetting(key, namespace);
     }

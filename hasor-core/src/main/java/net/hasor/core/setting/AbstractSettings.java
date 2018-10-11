@@ -83,6 +83,11 @@ public abstract class AbstractSettings implements Settings {
         };
     }
     /** 将整个配置项的多个值全部删除。 */
+    public void removeSetting(String key) {
+        String lowerKey = StringUtils.isBlank(key) ? "" : key.toLowerCase();
+        this.allSettingValue().removeAll(lowerKey);// 所有命名空间的数据
+    }
+    /** 将整个配置项的多个值全部删除。 */
     public void removeSetting(String key, String namespace) {
         String lowerKey = StringUtils.isBlank(key) ? "" : key.toLowerCase();
         this.allSettingValue().remove(namespace, lowerKey);// 所有命名空间的数据

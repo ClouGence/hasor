@@ -24,6 +24,7 @@ import net.hasor.core.container.BeanContainer;
 import net.hasor.core.container.ScopManager;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.ClassUtils;
+import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -280,7 +281,7 @@ public abstract class TemplateAppContext implements AppContext {
     /**查找Module（由Module初始化的子Module不再查找范围内）。*/
     protected Module[] findModules() {
         Environment env = this.getEnvironment();
-        boolean loadErrorShow = env.getSettings().getBoolean("hasor.modules.loadErrorShow", true);
+        boolean throwLoadError = env.getSettings().getBoolean("hasor.modules.throwLoadError", true);
         boolean loadModule = env.getSettings().getBoolean("hasor.modules.loadModule", true);
         if (!loadModule) {
             return new Module[0];
@@ -290,16 +291,18 @@ public abstract class TemplateAppContext implements AppContext {
         String[] allModules = env.getSettings().getStringArray("hasor.modules.module");
         Set<String> moduleTypeSet = new LinkedHashSet<String>(Arrays.asList(allModules));
         for (String moduleType : moduleTypeSet) {
-            if (StringUtils.isBlank(moduleType))
+            if (StringUtils.isBlank(moduleType)) {
                 continue;
+            }
             //
             try {
                 Class<?> moduleClass = this.getClassLoader().loadClass(moduleType);
                 moduleList.add((Module) moduleClass.newInstance());
             } catch (Throwable e) {
-                logger.warn("load module Type {} is failure. -> {}:{}", moduleType, e.getClass(), e.getMessage());
-                if (loadErrorShow) {
-                    logger.error(e.getMessage(), e);
+                if (!throwLoadError) {
+                    logger.error("load module Type " + moduleType + " is failure. :" + e.getMessage(), e);
+                } else {
+                    throw ExceptionUtils.toRuntimeException(e);
                 }
             }
         }
@@ -467,9 +470,7 @@ public abstract class TemplateAppContext implements AppContext {
         if (module == null) {
             return;
         }
-        if (logger.isInfoEnabled()) {
-            logger.info("loadModule " + module.getClass());
-        }
+        logger.info("loadModule " + module.getClass());
         module.loadModule(apiBinder);
         BinderHelper.onInstall(this.getEnvironment(), module);
     }
@@ -495,9 +496,6 @@ public abstract class TemplateAppContext implements AppContext {
         ApiBinder apiBinder = newApiBinder();
         doBindBefore(apiBinder);
         for (Module module : findModules) {
-            if (module == null) {
-                continue;
-            }
             this.installModule(apiBinder, module);
         }
         logger.info("appContext -> doBind.");
