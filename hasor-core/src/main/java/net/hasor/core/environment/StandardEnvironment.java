@@ -17,11 +17,11 @@ package net.hasor.core.environment;
 import net.hasor.core.Environment;
 import net.hasor.core.classcode.MoreClassLoader;
 import net.hasor.core.setting.StandardContextSettings;
+import net.hasor.utils.ResourcesUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
 /**
@@ -30,25 +30,34 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class StandardEnvironment extends AbstractEnvironment {
+    public StandardEnvironment() throws IOException {
+        this(null, (String) null, null, null, null);
+    }
+    public StandardEnvironment(Object context) throws IOException {
+        this(context, (String) null, null, null, null);
+    }
+    //
     public StandardEnvironment(Object context, File mainSettings) throws IOException {
+        this(context, mainSettings, null, null, null);
+    }
+    public StandardEnvironment(Object context, URL mainSettings) throws IOException {
+        this(context, mainSettings, null, null, null);
+    }
+    public StandardEnvironment(Object context, String mainSettings) throws IOException {
+        this(context, mainSettings, null, null, null);
+    }
+    public StandardEnvironment(Object context, URI mainSettings) throws IOException {
         this(context, mainSettings, null, null, null);
     }
     //
     public StandardEnvironment(Object context, File mainSettings, Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig, ClassLoader loader) throws IOException {
-        this(context, (mainSettings != null ? mainSettings.toURI() : null), frameworkEnvConfig, customEnvConfig, loader);
+        this(context, toURI(mainSettings), frameworkEnvConfig, customEnvConfig, loader);
     }
-    public StandardEnvironment(Object context, URL mainSettings, Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig, ClassLoader loader) throws URISyntaxException, IOException {
-        this(context, (mainSettings != null ? mainSettings.toURI() : null), frameworkEnvConfig, customEnvConfig, loader);
+    public StandardEnvironment(Object context, URL mainSettings, Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig, ClassLoader loader) throws IOException {
+        this(context, toURI(mainSettings), frameworkEnvConfig, customEnvConfig, loader);
     }
-    public StandardEnvironment(Object context, String mainSettings, Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig, ClassLoader loader) throws IOException, URISyntaxException {
-        super(context, new StandardContextSettings(mainSettings));
-        logger.info("create Environment, type = StandardEnvironment, mainSettings = {}", mainSettings);
-        if (loader == null) {
-            loader = Thread.currentThread().getContextClassLoader();
-        }
-        this.getSettings().refresh();
-        this.setRootLosder(new MoreClassLoader(loader));
-        this.initEnvironment(frameworkEnvConfig, customEnvConfig);
+    public StandardEnvironment(Object context, String mainSettings, Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig, ClassLoader loader) throws IOException {
+        this(context, toURI(mainSettings), frameworkEnvConfig, customEnvConfig, loader);
     }
     public StandardEnvironment(Object context, URI mainSettings, Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig, ClassLoader loader) throws IOException {
         super(context, new StandardContextSettings(mainSettings));
@@ -59,5 +68,31 @@ public class StandardEnvironment extends AbstractEnvironment {
         this.getSettings().refresh();
         this.setRootLosder(new MoreClassLoader(loader));
         this.initEnvironment(frameworkEnvConfig, customEnvConfig);
+    }
+    protected static URI toURI(Object source) {
+        if (source == null) {
+            return null;
+        }
+        //
+        try {
+            if (source instanceof URI) {
+                return (URI) source;
+            }
+            if (source instanceof URL) {
+                return ((URL) source).toURI();
+            }
+            if (source instanceof File) {
+                return ((File) source).toURI();
+            }
+            if (source instanceof String) {
+                URL resource = ResourcesUtils.getResource(source.toString());
+                return resource != null ? resource.toURI() : null;
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new ClassCastException(e.getMessage());
+        }
+        //
+        throw new ClassCastException(source.getClass() + " not convert to URI.");
     }
 }

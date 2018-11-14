@@ -16,7 +16,7 @@ public class ContainerScopeTest {
     private StandardEnvironment env;
     @Before
     public void testBefore() throws IOException {
-        this.env = new StandardEnvironment(null, null);
+        this.env = new StandardEnvironment();
     }
     @Test
     public void containerTest1() {

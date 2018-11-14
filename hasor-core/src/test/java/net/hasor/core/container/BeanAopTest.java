@@ -18,7 +18,7 @@ import java.io.IOException;
 public class BeanAopTest {
     @Test
     public void builderTest1() throws IOException {
-        final StandardEnvironment environment = new StandardEnvironment(null, null);
+        final StandardEnvironment environment = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
         ApiBinder apiBinder = new AbstractBinder(environment) {
             @Override

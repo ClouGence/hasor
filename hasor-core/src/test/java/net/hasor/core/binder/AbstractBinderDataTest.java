@@ -49,7 +49,7 @@ public class AbstractBinderDataTest {
         this.reference = new AtomicReference<DefaultBindInfoProviderAdapter>();
         this.mockApp = PowerMockito.mock(AppContext.class);
         this.scopManager = PowerMockito.mock(ScopManager.class);
-        StandardEnvironment env = new StandardEnvironment(null, null);
+        StandardEnvironment env = new StandardEnvironment(null);
         final BeanBuilder builder = PowerMockito.mock(BeanBuilder.class);
         PowerMockito.when(builder.createInfoAdapter((Class<?>) anyObject())).thenAnswer(new Answer<Object>() {
             @Override

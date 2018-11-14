@@ -18,7 +18,7 @@ public class BeanSingletonTest {
     private StandardEnvironment env;
     @Before
     public void testBefore() throws IOException {
-        this.env = new StandardEnvironment(null, null);
+        this.env = new StandardEnvironment();
     }
     //
     private void singletonTest(StandardEnvironment environment, BeanContainer container,//
@@ -83,7 +83,7 @@ public class BeanSingletonTest {
     //
     @Test
     public void builderTest1() throws IOException {
-        StandardEnvironment environment = new StandardEnvironment(null, null);
+        StandardEnvironment environment = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
@@ -111,7 +111,7 @@ public class BeanSingletonTest {
     }
     @Test
     public void builderTest2() throws IOException {
-        StandardEnvironment environment = new StandardEnvironment(null, null);
+        StandardEnvironment environment = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
@@ -139,7 +139,7 @@ public class BeanSingletonTest {
     }
     @Test
     public void builderTest3() throws IOException {
-        StandardEnvironment environment = new StandardEnvironment(null, null);
+        StandardEnvironment environment = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
@@ -184,7 +184,7 @@ public class BeanSingletonTest {
     //
     @Test
     public void builderTest5() throws IOException {
-        StandardEnvironment environment = new StandardEnvironment(null, null);
+        StandardEnvironment environment = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
@@ -216,7 +216,7 @@ public class BeanSingletonTest {
     }
     @Test
     public void builderTest6() throws IOException {
-        StandardEnvironment environment = new StandardEnvironment(null, null);
+        StandardEnvironment environment = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
@@ -248,7 +248,7 @@ public class BeanSingletonTest {
     }
     @Test
     public void builderTest7() throws IOException {
-        StandardEnvironment environment = new StandardEnvironment(null, null);
+        StandardEnvironment environment = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
@@ -282,7 +282,7 @@ public class BeanSingletonTest {
     //
     @Test
     public void builderTest8() throws IOException {
-        StandardEnvironment environment = new StandardEnvironment(null, null);
+        StandardEnvironment environment = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);

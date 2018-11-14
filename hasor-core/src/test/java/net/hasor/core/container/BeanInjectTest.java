@@ -24,7 +24,7 @@ public class BeanInjectTest {
     private StandardEnvironment env;
     @Before
     public void testBefore() throws IOException {
-        this.env = new StandardEnvironment(null, null);
+        this.env = new StandardEnvironment();
     }
     @Test
     public void builderTest1() {
@@ -219,7 +219,7 @@ public class BeanInjectTest {
     //
     @Test
     public void builderTest6() throws IOException {
-        final StandardEnvironment environment = new StandardEnvironment(null, null);
+        final StandardEnvironment environment = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
         final AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
@@ -258,7 +258,7 @@ public class BeanInjectTest {
     //
     @Test
     public void builderTest7() throws IOException {
-        final StandardEnvironment environment = new StandardEnvironment(null, null);
+        final StandardEnvironment environment = new StandardEnvironment();
         AbstractSettings settings = environment.getSettings();
         final BeanContainer container = new BeanContainer();
         final AppContext appContext = PowerMockito.mock(AppContext.class);
@@ -329,7 +329,7 @@ public class BeanInjectTest {
     //
     @Test
     public void builderTest8() throws IOException {
-        final StandardEnvironment environment = new StandardEnvironment(null, null);
+        final StandardEnvironment environment = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
         final AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
@@ -423,7 +423,7 @@ public class BeanInjectTest {
     //
     @Test
     public void builderTest9() throws IOException {
-        final StandardEnvironment environment = new StandardEnvironment(null, null);
+        final StandardEnvironment environment = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
         final AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
@@ -440,7 +440,7 @@ public class BeanInjectTest {
     //
     @Test
     public void builderTest10() throws IOException {
-        final StandardEnvironment environment = new StandardEnvironment(null, null);
+        final StandardEnvironment environment = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
         final AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
@@ -480,7 +480,7 @@ public class BeanInjectTest {
     //
     @Test
     public void builderTest11() throws IOException {
-        final StandardEnvironment environment = new StandardEnvironment(null, null);
+        final StandardEnvironment environment = new StandardEnvironment();
         AbstractSettings settings = environment.getSettings();
         final BeanContainer container = new BeanContainer();
         final AppContext appContext = PowerMockito.mock(AppContext.class);
@@ -552,7 +552,7 @@ public class BeanInjectTest {
     //
     @Test
     public void builderTest12() throws IOException {
-        final StandardEnvironment environment = new StandardEnvironment(null, null);
+        final StandardEnvironment environment = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
         final AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);

@@ -42,14 +42,14 @@ import java.util.regex.Pattern;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractEnvironment implements Environment {
-    protected Logger              logger       = LoggerFactory.getLogger(getClass());
-    private   String[]            spanPackage  = null;
-    private   ScanClassPath       scanUtils    = null;
-    private   AbstractSettings    settings     = null;
-    private   Object              context      = null;
-    private   ClassLoader         rootLosder   = null;
-    private   EventContext        eventManager = null;
-    private   Map<String, String> envMap       = null;
+    protected static Logger              logger       = LoggerFactory.getLogger(AbstractEnvironment.class);
+    private          String[]            spanPackage  = null;
+    private          ScanClassPath       scanUtils    = null;
+    private          AbstractSettings    settings     = null;
+    private          Object              context      = null;
+    private          ClassLoader         rootLosder   = null;
+    private          EventContext        eventManager = null;
+    private          Map<String, String> envMap       = null;
     //
     /* --------------------------------------------------------------------------------- get/set */
     public AbstractEnvironment(Object context, AbstractSettings settings) {
@@ -77,7 +77,7 @@ public abstract class AbstractEnvironment implements Environment {
         }
     }
     /**设置扫描路径*/
-    public void setSpanPackage(final String[] spanPackage) {
+    public void setSpanPackage(String[] spanPackage) {
         this.spanPackage = spanPackage;
     }
     @Override
@@ -196,8 +196,8 @@ public abstract class AbstractEnvironment implements Environment {
     protected final void initEnvironment(Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig) throws IOException {
         // .load & init
         this.envMap = new ConcurrentHashMap<String, String>();
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug("load envVars...");
+        if (logger.isDebugEnabled()) {
+            logger.debug("load envVars...");
         }
         // .vars
         this.initEnvConfig(frameworkEnvConfig, customEnvConfig);
@@ -221,7 +221,7 @@ public abstract class AbstractEnvironment implements Environment {
         ArrayList<String> spanPackagesArrays = new ArrayList<String>(allPack);
         Collections.sort(spanPackagesArrays);
         this.spanPackage = spanPackagesArrays.toArray(new String[spanPackagesArrays.size()]);
-        if (this.logger.isInfoEnabled()) {
+        if (logger.isInfoEnabled()) {
             StringBuilder packages = new StringBuilder("");
             for (int i = 0; i < this.spanPackage.length; i++) {
                 if (i > 0) {
@@ -229,7 +229,7 @@ public abstract class AbstractEnvironment implements Environment {
                 }
                 packages.append(this.spanPackage[i]);
             }
-            this.logger.info("loadPackages = " + packages);
+            logger.info("loadPackages = " + packages);
         }
         //
     }
@@ -244,9 +244,6 @@ public abstract class AbstractEnvironment implements Environment {
     private void initEnvConfig(Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig) throws IOException {
         //
         // .1st，System.getProperties()
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug("envVars.reload -> System.getProperties().");
-        }
         Properties prop = System.getProperties();
         for (Object propKey : prop.keySet()) {
             String k = propKey.toString();
@@ -256,17 +253,11 @@ public abstract class AbstractEnvironment implements Environment {
             }
         }
         // .2st，System.getenv()
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug("envVars.reload -> System.getenv().");
-        }
         Map<String, String> envMap = System.getenv();
         for (String key : envMap.keySet()) {
             this.envMap.put(key.toUpperCase(), envMap.get(key));
         }
         // .3st，配置文件"hasor.environmentVar"
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug("envVars.reload -> settings.");
-        }
         Settings settings = getSettings();
         XmlNode[] xmlPropArray = settings.getXmlNodeArray("hasor.environmentVar");
         List<String> envNames = new ArrayList<String>();//用于收集环境变量名称
@@ -279,7 +270,7 @@ public abstract class AbstractEnvironment implements Environment {
             if (this.envMap.containsKey(envItem)) {
                 String val = this.envMap.get(envItem);
                 if (StringUtils.isNotBlank(val)) {
-                    this.logger.warn("environmentVar {} is define, ignored. value is {}", envItem, val);
+                    logger.warn("environmentVar {} is define, ignored. value is {}", envItem, val);
                     continue;
                 }
             }
@@ -287,13 +278,13 @@ public abstract class AbstractEnvironment implements Environment {
         }
         // .4st，传入的配置
         if (frameworkEnvConfig != null && !frameworkEnvConfig.isEmpty()) {
-            this.logger.info("ignore 'hconfig.properties' use framework map, size = " + frameworkEnvConfig.size());
+            logger.info("ignore 'hconfig.properties' use framework map, size = " + frameworkEnvConfig.size());
             for (String name : frameworkEnvConfig.keySet()) {
                 this.envMap.put(name.toUpperCase(), frameworkEnvConfig.get(name));
             }
         }
         if (customEnvConfig != null && !customEnvConfig.isEmpty()) {
-            this.logger.info("ignore 'hconfig.properties' use custom map, size = " + customEnvConfig.size());
+            logger.info("ignore 'hconfig.properties' use custom map, size = " + customEnvConfig.size());
             for (String name : customEnvConfig.keySet()) {
                 this.envMap.put(name.toUpperCase(), customEnvConfig.get(name));
             }
@@ -307,17 +298,17 @@ public abstract class AbstractEnvironment implements Environment {
         String envFileName = envFile.getAbsolutePath();
         if (envFile.exists()) {
             if (envFile.isDirectory()) {
-                this.logger.info("load 'hconfig.properties' failed(isDirectory) -> {}.", envFileName);
+                logger.info("load 'hconfig.properties' failed(isDirectory) -> {}.", envFileName);
             } else if (!envFile.canRead()) {
-                this.logger.info("load 'hconfig.properties' failed(can not read) -> {}.", envFileName);
+                logger.info("load 'hconfig.properties' failed(can not read) -> {}.", envFileName);
             } else {
                 inStream = new FileInputStream(envFile);
-                this.logger.info("load 'hconfig.properties' form file -> {}.", envFileName);
+                logger.info("load 'hconfig.properties' form file -> {}.", envFileName);
             }
         }
         if (inStream == null) {
             URL inStreamURL = ResourcesUtils.getResource(EVN_FILE_NAME);
-            this.logger.info("load 'hconfig.properties' use classpath -> {}.", (inStreamURL == null) ? "empty." : inStreamURL);
+            logger.info("load 'hconfig.properties' use classpath -> {}.", (inStreamURL == null) ? "empty." : inStreamURL);
             if (inStreamURL != null) {
                 inStream = ResourcesUtils.getResourceAsStream(inStreamURL);
             }
@@ -329,7 +320,7 @@ public abstract class AbstractEnvironment implements Environment {
             for (String name : properties.stringPropertyNames()) {
                 String argKey = name.toUpperCase();
                 String argVal = properties.getProperty(name);
-                this.logger.info("load 'hconfig.properties' {} -> {}.", argKey, argVal);
+                logger.info("load 'hconfig.properties' {} -> {}.", argKey, argVal);
                 this.envMap.put(argKey, argVal);
             }
         }
@@ -389,7 +380,7 @@ public abstract class AbstractEnvironment implements Environment {
             newEvalString = newEvalString.replace(key, data.get(key));
         }
         if (!evalString.equalsIgnoreCase(newEvalString)) {
-            this.logger.debug("replace settingValue '{}' to '{}'.", evalString, newEvalString);
+            logger.debug("replace settingValue '{}' to '{}'.", evalString, newEvalString);
         }
         return newEvalString;
     }

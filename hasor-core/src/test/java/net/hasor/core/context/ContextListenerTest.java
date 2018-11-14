@@ -13,7 +13,7 @@ public class ContextListenerTest {
     private TemplateAppContext appContext;
     @Before
     public void testBefore() throws IOException {
-        final StandardEnvironment env = new StandardEnvironment(null, null);
+        final StandardEnvironment env = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
         this.appContext = new TemplateAppContext() {
             @Override

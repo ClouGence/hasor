@@ -10,7 +10,7 @@ public class ModuleTest {
     private TemplateAppContext appContext;
     @Before
     public void testBefore() throws IOException {
-        final StandardEnvironment env = new StandardEnvironment(null, null);
+        final StandardEnvironment env = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
         this.appContext = new TemplateAppContext() {
             @Override
@@ -26,7 +26,7 @@ public class ModuleTest {
     //
     @Test
     public void moduleTest1() throws IOException {
-        final StandardEnvironment env = new StandardEnvironment(null, null);
+        final StandardEnvironment env = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
         TemplateAppContext appContext = new TemplateAppContext() {
             @Override
@@ -49,7 +49,7 @@ public class ModuleTest {
     //
     @Test
     public void moduleTest2() throws IOException {
-        final StandardEnvironment env = new StandardEnvironment(null, null);
+        final StandardEnvironment env = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
         TemplateAppContext appContext = new TemplateAppContext() {
             @Override
