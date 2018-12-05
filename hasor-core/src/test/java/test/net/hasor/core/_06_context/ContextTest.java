@@ -39,6 +39,7 @@ public class ContextTest {
     // - 类扫描
     @Test
     public void test1() {
+        System.out.println(5 % 3);
         // .初始化为全局
         Hasor.create("xxxx").asThreadSingleton();
         // .每次使用 AppContext 这样就可以获取

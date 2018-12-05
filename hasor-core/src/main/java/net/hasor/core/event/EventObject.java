@@ -38,9 +38,7 @@ public class EventObject<T> {
     public FireType getFireType() {
         return this.fireType;
     }
-    public void setFireType(FireType fireType) {
-        this.fireType = fireType;
-    }
+    //
     public void setCallBack(final EventCallBackHook<T> callBack) {
         this.callBack = callBack;
     }

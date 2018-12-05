@@ -144,26 +144,28 @@ public class JdbcConnection extends JdbcAccessor {
         @Override
         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
             // Invocation on ConnectionProxy interface coming in...
-            if (method.getName().equals("getTargetConnection"))
+            if (method.getName().equals("getTargetConnection")) {
                 // Handle getTargetConnection method: return underlying Connection.
                 return this.target;
-            else if (method.getName().equals("getTargetSource"))
+            } else if (method.getName().equals("getTargetSource")) {
                 // Handle getTargetConnection method: return underlying DataSource.
                 return this.targetSource;
-            else if (method.getName().equals("equals"))
+            } else if (method.getName().equals("equals")) {
                 // Only consider equal when proxies are identical.
                 return proxy == args[0];
-            else if (method.getName().equals("hashCode"))
+            } else if (method.getName().equals("hashCode")) {
                 // Use hashCode of PersistenceManager proxy.
                 return System.identityHashCode(proxy);
-            else if (method.getName().equals("close"))
+            } else if (method.getName().equals("close")) {
                 return null;
+            }
             // Invoke method on target Connection.
             try {
                 Object retVal = method.invoke(this.target, args);
                 // If return value is a JDBC Statement, apply statement settings (fetch size, max rows, transaction timeout).
-                if (retVal instanceof Statement)
+                if (retVal instanceof Statement) {
                     JdbcConnection.this.applyStatementSettings((Statement) retVal);
+                }
                 return retVal;
             } catch (InvocationTargetException ex) {
                 throw ex.getTargetException();

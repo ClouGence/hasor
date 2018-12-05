@@ -45,7 +45,7 @@ public class FlowControlTest {
         return addresses;
     }
     private RuleParser getRuleParser() throws IOException, URISyntaxException {
-        RsfEnvironment settings = new DefaultRsfEnvironment(new StandardEnvironment(null, null));
+        RsfEnvironment settings = new DefaultRsfEnvironment(new StandardEnvironment());
         RuleParser parser = new RuleParser(settings);
         return parser;
     }

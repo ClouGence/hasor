@@ -103,8 +103,8 @@ public abstract class AbstractEnvironment implements Environment {
         if (featureType == null) {
             return null;
         }
-        if (loadPackages == null) {
-            loadPackages = new String[] { "" };
+        if (loadPackages == null || loadPackages.length == 0) {
+            return null;
         }
         if (this.scanUtils == null) {
             this.scanUtils = ScanClassPath.newInstance(loadPackages);
@@ -144,15 +144,15 @@ public abstract class AbstractEnvironment implements Environment {
     /* ------------------------------------------------------------------------------------- Env */
     @Override
     public void addEnvVar(final String varName, final String value) {
-        if (StringUtils.isBlank(varName)) {
-            if (logger.isWarnEnabled()) {
-                logger.warn(varName + "{} env, name is empty.");
-            }
+        if (StringUtils.isBlank(value)) {
+            removeEnvVar(varName);
             return;
         }
-        if (logger.isInfoEnabled()) {
-            logger.info("var -> {} = {}.", varName, value);
+        if (StringUtils.isBlank(varName)) {
+            logger.warn(varName + "{} env, name is empty.");
+            return;
         }
+        logger.info("var -> {} = {}.", varName, value);
         this.envMap.put(varName.toUpperCase(), value);
     }
     @Override
@@ -161,9 +161,7 @@ public abstract class AbstractEnvironment implements Environment {
             return;
         }
         this.envMap.remove(varName.toUpperCase());
-        if (logger.isInfoEnabled()) {
-            logger.info(varName + " env removed.");
-        }
+        logger.info(varName + " env removed.");
     }
     @Override
     public String evalString(String evalString) {
@@ -196,9 +194,7 @@ public abstract class AbstractEnvironment implements Environment {
     protected final void initEnvironment(Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig) throws IOException {
         // .load & init
         this.envMap = new ConcurrentHashMap<String, String>();
-        if (logger.isDebugEnabled()) {
-            logger.debug("load envVars...");
-        }
+        logger.debug("load envVars...");
         // .vars
         this.initEnvConfig(frameworkEnvConfig, customEnvConfig);
         this.refreshVariables();
@@ -220,7 +216,7 @@ public abstract class AbstractEnvironment implements Environment {
         }
         ArrayList<String> spanPackagesArrays = new ArrayList<String>(allPack);
         Collections.sort(spanPackagesArrays);
-        this.spanPackage = spanPackagesArrays.toArray(new String[spanPackagesArrays.size()]);
+        this.spanPackage = spanPackagesArrays.toArray(new String[0]);
         if (logger.isInfoEnabled()) {
             StringBuilder packages = new StringBuilder("");
             for (int i = 0; i < this.spanPackage.length; i++) {
