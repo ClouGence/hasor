@@ -30,68 +30,60 @@ public class EnvironmentWrap implements Environment {
         this.environment = environment;
     }
     //
-    protected Environment getEnvironment() {
+    protected Environment getTarget() {
         return environment;
     }
     //
     @Override
     public String[] getSpanPackage() {
-        return this.getEnvironment().getSpanPackage();
+        return this.getTarget().getSpanPackage();
     }
     @Override
     public Set<Class<?>> findClass(Class<?> featureType) {
-        return this.getEnvironment().findClass(featureType);
+        return this.getTarget().findClass(featureType);
     }
     @Override
     public Set<Class<?>> findClass(Class<?> featureType, String loadPackages) {
-        return this.getEnvironment().findClass(featureType, loadPackages);
+        return this.getTarget().findClass(featureType, loadPackages);
     }
     @Override
     public Set<Class<?>> findClass(Class<?> featureType, String[] loadPackages) {
-        return this.getEnvironment().findClass(featureType, loadPackages);
+        return this.getTarget().findClass(featureType, loadPackages);
     }
     @Override
     public Object getContext() {
-        return this.getEnvironment().getContext();
+        return this.getTarget().getContext();
     }
     @Override
     public ClassLoader getClassLoader() {
-        return this.getEnvironment().getClassLoader();
+        return this.getTarget().getClassLoader();
     }
     @Override
     public EventContext getEventContext() {
-        return this.getEnvironment().getEventContext();
-    }
-    @Override
-    public String getPluginDir(Class<?> pluginType) {
-        return this.getEnvironment().getPluginDir(pluginType);
-    }
-    @Override
-    public String getWorkSpaceDir() {
-        return this.getEnvironment().getWorkSpaceDir();
+        return this.getTarget().getEventContext();
     }
     @Override
     public Settings getSettings() {
-        return this.getEnvironment().getSettings();
+        return this.getTarget().getSettings();
     }
     @Override
     public String evalString(String eval) {
-        return this.getEnvironment().evalString(eval);
+        return this.getTarget().evalString(eval);
     }
     @Override
     public void addEnvVar(String varName, String value) {
-        this.getEnvironment().addEnvVar(varName, value);
+        this.getTarget().addEnvVar(varName, value);
     }
     @Override
     public void removeEnvVar(String varName) {
-        this.getEnvironment().removeEnvVar(varName);
+        this.getTarget().removeEnvVar(varName);
     }
     @Override
     public void refreshVariables() {
-        this.getEnvironment().refreshVariables();
+        this.getTarget().refreshVariables();
     }
     @Override
     public String getSystemProperty(String property) {
-        return this.getEnvironment().getSystemProperty(property);
+        return this.getTarget().getSystemProperty(property);
     }
 }

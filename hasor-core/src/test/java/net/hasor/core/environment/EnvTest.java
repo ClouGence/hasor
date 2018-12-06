@@ -1,7 +1,9 @@
 package net.hasor.core.environment;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.Environment;
 import net.hasor.core.Module;
 import net.hasor.core.context.mods.ErrorModule;
+import net.hasor.utils.StringUtils;
 import org.junit.Test;
 
 import java.io.File;
@@ -11,16 +13,19 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Date;
 public class EnvTest {
+    protected EnvironmentWrap wrap(Environment env) {
+        return new EnvironmentWrap(env);
+    }
     //
     @Test
     public void envTest1() throws IOException {
         Object context1 = new Object();
-        StandardEnvironment env = new StandardEnvironment(context1);
+        EnvironmentWrap env = wrap(new StandardEnvironment(context1));
         assert env.getContext() == context1;
         //
         Object context2 = new Object();
         assert env.getContext() != context2;
-        env.setContext(context2);
+        ((StandardEnvironment) env.getTarget()).setContext(context2);
         assert env.getContext() == context2;
     }
     //
@@ -28,7 +33,7 @@ public class EnvTest {
     public void envTest2() throws IOException {
         URL resource = Thread.currentThread().getContextClassLoader().getResource("net_hasor_core_environment/simple-config.xml");
         //
-        StandardEnvironment env = new StandardEnvironment(null, resource);
+        EnvironmentWrap env = wrap(new StandardEnvironment(null, resource));
         assert env.evalString("%MY_ENV%").equals("my my my");
     }
     //
@@ -36,7 +41,7 @@ public class EnvTest {
     public void envTest3() throws IOException, URISyntaxException {
         URL resource = Thread.currentThread().getContextClassLoader().getResource("net_hasor_core_environment/simple-config.xml");
         //
-        StandardEnvironment env = new StandardEnvironment(null, resource.toURI());
+        EnvironmentWrap env = wrap(new StandardEnvironment(null, resource.toURI()));
         assert env.evalString("%MY_ENV%").equals("my my my");
     }
     //
@@ -45,21 +50,21 @@ public class EnvTest {
         URL resource = Thread.currentThread().getContextClassLoader().getResource("net_hasor_core_environment/simple-config.xml");
         //
         File file = new File(resource.toURI());
-        StandardEnvironment env = new StandardEnvironment(null, file);
+        EnvironmentWrap env = wrap(new StandardEnvironment(null, file));
         assert env.evalString("%MY_ENV%").equals("my my my");
     }
     //
     @Test
     public void envTest5() throws IOException {
-        StandardEnvironment env = new StandardEnvironment(null, "net_hasor_core_environment/simple-config.xml");
+        EnvironmentWrap env = wrap(new StandardEnvironment(null, "net_hasor_core_environment/simple-config.xml"));
         assert env.evalString("%MY_ENV%").equals("my my my");
     }
     //
     @Test
     public void envTest6() throws IOException {
-        StandardEnvironment env = new StandardEnvironment(null);
+        EnvironmentWrap env = wrap(new StandardEnvironment(null));
         //
-        env.setSpanPackage(new String[] { "net.hasor.core.context.mods" });
+        ((StandardEnvironment) env.getTarget()).setSpanPackage(new String[] { "net.hasor.core.context.mods" });
         assert env.findClass(ErrorModule.class).size() == 1;
         assert env.findClass(Module.class).size() == 3;
     }
@@ -96,7 +101,8 @@ public class EnvTest {
     //
     @Test
     public void envTest8() throws IOException {
-        StandardEnvironment env = new StandardEnvironment(null);
+        StandardEnvironment oriEnv = new StandardEnvironment(null);
+        EnvironmentWrap env = wrap(oriEnv);
         //
         env.addEnvVar(null, "");
         env.addEnvVar("", "");
@@ -120,23 +126,38 @@ public class EnvTest {
         //
         System.setProperty("self_self_self", "self");
         assert "self".equals(System.getProperty("self_self_self")) && "self".equals(env.getSystemProperty("self_self_self"));
+        //
+        assert env.getClassLoader() == oriEnv.getClassLoader();
+        assert env.getContext() == oriEnv.getContext();
+        assert env.getSpanPackage() == oriEnv.getSpanPackage();
+        assert env.getEventContext() == oriEnv.getEventContext();
+        assert env.getSettings() == oriEnv.getSettings();
+        env.refreshVariables();
     }
     //
     @Test
     public void envTest9() throws IOException {
-        StandardEnvironment env = new StandardEnvironment(null);
+        EnvironmentWrap env = wrap(new StandardEnvironment(null));
         //
         assert env.findClass(null) == null;
         assert !env.findClass(ApiBinder.class).isEmpty();
         assert !env.findClass(ApiBinder.class, "").isEmpty();
         assert env.findClass(null, new String[0]) == null;
     }
-    //
     @Test
     public void envTest10() throws IOException {
-        StandardEnvironment env = new StandardEnvironment(null);
+        System.setProperty("MyVar", "hello");
+        System.setProperty("JAVA_HOME", "/TTTT/CC");
+        EnvironmentWrap env = wrap(new StandardEnvironment(null));
         //
-        String workSpaceDir = env.getWorkSpaceDir();
-        assert env.getPluginDir(Object.class).startsWith(workSpaceDir);
+        assert "hello".equals(env.evalString("%MyVar%"));
+        assert "i say hello.".equals(env.evalString("i say %MyVar%."));
+        //
+        //JAVA_HOME
+        String java_home = System.getenv().get("JAVA_HOME");
+        if (StringUtils.isNotBlank(java_home)) {
+            assert java_home.equals(env.evalString("%JAVA_HOME%"));
+            assert (java_home + "/bin/javac.exe").equals(env.evalString("%JAVA_HOME%/bin/javac.exe"));
+        }
     }
 }

@@ -42,13 +42,12 @@ import static net.hasor.core.AppContext.ContextEvent_Started;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class Hasor extends HashMap<String, String> {
-    protected static Logger                  logger          = LoggerFactory.getLogger(Hasor.class);
-    private final    Object                  context;
-    private          Object                  mainSettings    = TemplateAppContext.DefaultSettings;
-    private final    List<Module>            moduleList      = new ArrayList<Module>();
-    private final    HashMap<String, String> frameworkConfig = new HashMap<String, String>();
-    private          ClassLoader             loader;
-    private          ContainerCreater        creater;
+    protected static Logger           logger       = LoggerFactory.getLogger(Hasor.class);
+    private final    Object           context;
+    private          Object           mainSettings = TemplateAppContext.DefaultSettings;
+    private final    List<Module>     moduleList   = new ArrayList<Module>();
+    private          ClassLoader      loader;
+    private          ContainerCreater creater;
     //
     protected Hasor(Object context) {
         this.context = context;
@@ -77,14 +76,6 @@ public class Hasor extends HashMap<String, String> {
         this.putAll(mapData);
         return this;
     }
-    public Hasor putFrameworkData(String key, String value) {
-        this.frameworkConfig.put(key, value);
-        return this;
-    }
-    public Hasor putFrameworkDataMap(Map<String, String> mapData) {
-        this.frameworkConfig.putAll(mapData);
-        return this;
-    }
     public Hasor setLoader(ClassLoader loader) {
         this.loader = loader;
         return this;
@@ -102,7 +93,7 @@ public class Hasor extends HashMap<String, String> {
         return this;
     }
     public Hasor asSmaller() {
-        return this.putFrameworkData("HASOR_LOAD_MODULE", "false");
+        return this.putData("HASOR_LOAD_MODULE", "false");
     }
     private static Provider<AppContext> singletonHasor = null;
     public AppContext asGlobalSingleton() throws NamingException {
@@ -179,7 +170,7 @@ public class Hasor extends HashMap<String, String> {
         //
         // .单独处理RUN_PATH
         String runPath = new File("").getAbsolutePath();
-        this.frameworkConfig.put("RUN_PATH", runPath);
+        this.putData("RUN_PATH", runPath);
         if (logger.isInfoEnabled()) {
             logger.info("runPath at {}", runPath);
         }
@@ -188,19 +179,19 @@ public class Hasor extends HashMap<String, String> {
             Environment env = null;
             if (this.mainSettings == null) {
                 logger.info("create AppContext ,mainSettings = {}", TemplateAppContext.DefaultSettings);
-                env = new StandardEnvironment(this.context, TemplateAppContext.DefaultSettings, this.frameworkConfig, this, this.loader);
+                env = new StandardEnvironment(this.context, TemplateAppContext.DefaultSettings, this, this.loader);
             } else if (this.mainSettings instanceof String) {
                 logger.info("create AppContext ,mainSettings = {}", this.mainSettings);
-                env = new StandardEnvironment(this.context, (String) this.mainSettings, this.frameworkConfig, this, this.loader);
+                env = new StandardEnvironment(this.context, (String) this.mainSettings, this, this.loader);
             } else if (this.mainSettings instanceof File) {
                 logger.info("create AppContext ,mainSettings = {}", this.mainSettings);
-                env = new StandardEnvironment(this.context, (File) this.mainSettings, this.frameworkConfig, this, this.loader);
+                env = new StandardEnvironment(this.context, (File) this.mainSettings, this, this.loader);
             } else if (this.mainSettings instanceof URI) {
                 logger.info("create AppContext ,mainSettings = {}", this.mainSettings);
-                env = new StandardEnvironment(this.context, (URI) this.mainSettings, this.frameworkConfig, this, this.loader);
+                env = new StandardEnvironment(this.context, (URI) this.mainSettings, this, this.loader);
             } else if (this.mainSettings instanceof URL) {
                 logger.info("create AppContext ,mainSettings = {}", this.mainSettings);
-                env = new StandardEnvironment(this.context, (URL) this.mainSettings, this.frameworkConfig, this, this.loader);
+                env = new StandardEnvironment(this.context, (URL) this.mainSettings, this, this.loader);
             }
             //
             BeanContainer container = null;

@@ -24,20 +24,18 @@ import net.hasor.core.setting.AbstractSettings;
 import net.hasor.core.setting.SettingValue;
 import net.hasor.core.setting.UpdateValue;
 import net.hasor.core.setting.xml.DefaultXmlNode;
-import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.ScanClassPath;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.net.URL;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 /**
- * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment(Map, Map)}方法以初始化。
+ * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment(Map)}方法以初始化。
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -129,18 +127,6 @@ public abstract class AbstractEnvironment implements Environment {
         return new StandardEventManager(eventThreadPoolSize, "Hasor", this.getClassLoader());
     }
     //
-    /* ------------------------------------------------------------------------------------ Toos */
-    public String getPluginDir(Class<?> pluginType) {
-        String subName = "_";
-        if (pluginType != null) {
-            subName = pluginType.getPackage().getName();
-        }
-        return evalString("%" + HASOR_PLUGIN_PATH + "%/" + subName + "/");
-    }
-    public String getWorkSpaceDir() {
-        return evalString("%" + WORK_HOME + "%/");
-    }
-    //
     /* ------------------------------------------------------------------------------------- Env */
     @Override
     public void addEnvVar(final String varName, final String value) {
@@ -191,12 +177,12 @@ public abstract class AbstractEnvironment implements Environment {
     //
     /* ------------------------------------------------------------------------------------ init */
     /**初始化方法*/
-    protected final void initEnvironment(Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig) throws IOException {
+    protected final void initEnvironment(Map<String, String> frameworkEnvConfig) throws IOException {
         // .load & init
         this.envMap = new ConcurrentHashMap<String, String>();
         logger.debug("load envVars...");
         // .vars
-        this.initEnvConfig(frameworkEnvConfig, customEnvConfig);
+        this.initEnvConfig(frameworkEnvConfig);
         this.refreshVariables();
         //
         // .Packages
@@ -234,10 +220,8 @@ public abstract class AbstractEnvironment implements Environment {
      * 2st，System.getenv()
      * 3st，配置文件"hasor.environmentVar"
      * 4st，传入的配置
-     * 5st，属性文件"hconfig.properties"
-     * tips：如果指定了loadEnvConfig参数，那么将会忽略"hconfig.properties"配置文件。
      */
-    private void initEnvConfig(Map<String, String> frameworkEnvConfig, Map<String, String> customEnvConfig) throws IOException {
+    private void initEnvConfig(Map<String, String> frameworkEnvConfig) throws IOException {
         //
         // .1st，System.getProperties()
         Properties prop = System.getProperties();
@@ -277,47 +261,6 @@ public abstract class AbstractEnvironment implements Environment {
             logger.info("ignore 'hconfig.properties' use framework map, size = " + frameworkEnvConfig.size());
             for (String name : frameworkEnvConfig.keySet()) {
                 this.envMap.put(name.toUpperCase(), frameworkEnvConfig.get(name));
-            }
-        }
-        if (customEnvConfig != null && !customEnvConfig.isEmpty()) {
-            logger.info("ignore 'hconfig.properties' use custom map, size = " + customEnvConfig.size());
-            for (String name : customEnvConfig.keySet()) {
-                this.envMap.put(name.toUpperCase(), customEnvConfig.get(name));
-            }
-            return;
-        }
-        //
-        // .5st，外部属性文件"hconfig.properties"
-        InputStream inStream = null;
-        String workHome = this.evalString("%" + Environment.WORK_HOME + "%");
-        File envFile = new File(workHome, EVN_FILE_NAME);
-        String envFileName = envFile.getAbsolutePath();
-        if (envFile.exists()) {
-            if (envFile.isDirectory()) {
-                logger.info("load 'hconfig.properties' failed(isDirectory) -> {}.", envFileName);
-            } else if (!envFile.canRead()) {
-                logger.info("load 'hconfig.properties' failed(can not read) -> {}.", envFileName);
-            } else {
-                inStream = new FileInputStream(envFile);
-                logger.info("load 'hconfig.properties' form file -> {}.", envFileName);
-            }
-        }
-        if (inStream == null) {
-            URL inStreamURL = ResourcesUtils.getResource(EVN_FILE_NAME);
-            logger.info("load 'hconfig.properties' use classpath -> {}.", (inStreamURL == null) ? "empty." : inStreamURL);
-            if (inStreamURL != null) {
-                inStream = ResourcesUtils.getResourceAsStream(inStreamURL);
-            }
-        }
-        if (inStream != null) {
-            Properties properties = new Properties();
-            properties.load(new InputStreamReader(inStream, Settings.DefaultCharset));
-            inStream.close();
-            for (String name : properties.stringPropertyNames()) {
-                String argKey = name.toUpperCase();
-                String argVal = properties.getProperty(name);
-                logger.info("load 'hconfig.properties' {} -> {}.", argKey, argVal);
-                this.envMap.put(argKey, argVal);
             }
         }
     }

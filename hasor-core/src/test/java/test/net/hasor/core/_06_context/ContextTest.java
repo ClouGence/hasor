@@ -36,55 +36,6 @@ import java.util.Set;
 public class ContextTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     //
-    // - 类扫描
-    @Test
-    public void test1() {
-        System.out.println(5 % 3);
-        // .初始化为全局
-        Hasor.create("xxxx").asThreadSingleton();
-        // .每次使用 AppContext 这样就可以获取
-        AppContext appContext = Hasor.localAppContext();
-    }
-    //
-    // - 类扫描
-    @Test
-    public void findClassTest() {
-        System.out.println("--->>findClassTest<<--");
-        //1.创建一个标准的 Hasor 容器。
-        AppContext appContext = Hasor.createAppContext();
-        logger.debug("---------------------------------------------");
-        //
-        //2.查找所有Hasor模块（实现了Module接口的类）。
-        Set<Class<?>> facesFeature = appContext.getEnvironment().findClass(Module.class);
-        logger.info("find " + facesFeature);
-        assert facesFeature.size() > 0;
-        //3.查找AbstractAppContext的子类
-        Set<Class<?>> subFeature = appContext.getEnvironment().findClass(TemplateAppContext.class);
-        logger.info("find " + subFeature);
-        assert subFeature.size() > 0;
-    }
-    //
-    // - 环境变量的解析
-    @Test
-    public void variablesTest() {
-        System.out.println("--->>variablesTest<<--");
-        System.setProperty("MyVar", "hello");
-        AppContext appContext = Hasor.createAppContext();
-        Environment env = appContext.getEnvironment();
-        logger.debug("---------------------------------------------");
-        //
-        //JAVA_HOME
-        System.out.println(env.evalString("%JAVA_HOME%"));
-        //WORK_HOME，该环境变量由 hasor 的配置文件提供，仅在Hasor框架内有效
-        System.out.println(env.evalString("%WORK_HOME%"));
-        //javac.exe
-        System.out.println(env.evalString("%JAVA_HOME%/bin/javac.exe"));
-        //系统环境变量属性
-        System.out.println(env.evalString("%MyVar%"));
-        System.out.println(env.evalString("i say %MyVar%."));
-        assert env.evalString("i say %MyVar%.").equals("i say hello.");
-    }
-    //
     // - 配置信息读取
     @Test
     public void settingsTest() {
