@@ -137,7 +137,7 @@ public class EnvTest {
     //
     @Test
     public void envTest9() throws IOException {
-        EnvironmentWrap env = wrap(new StandardEnvironment(null));
+        EnvironmentWrap env = wrap(new StandardEnvironment());
         //
         assert env.findClass(null) == null;
         assert !env.findClass(ApiBinder.class).isEmpty();

@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.core._08_event;
-import com.alibaba.fastjson.JSON;
-import net.hasor.core.EventListener;
+package net.hasor.core.container.beans;
 /**
- * 收到事件，同时线程沉睡500毫秒延迟。
- * @version : 2014-1-11
- * @author 赵永春 (zyc@byshell.org)
+ * 一个Bean
+ * @version : 2014-1-3
+ * @author 赵永春 (zyc@hasor.net)
  */
-public class MyListener implements EventListener<Object> {
-    public void onEvent(String event, Object eventData) throws InterruptedException {
-        Thread.sleep(500);
-        System.out.println("Receive Message:" + JSON.toJSONString(eventData));
-        throw new NullPointerException();
-    }
+public interface PojoInfo {
+    public String getName();
+
+    public String getAddress();
 }

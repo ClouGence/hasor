@@ -13,23 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.core.pojos;
-import net.hasor.core.AppContext;
+package net.hasor.core.container.beans;
+import java.util.UUID;
 /**
  * 一个Bean
  * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public class LifeBeanImpl implements LifeBean {
-    @Override
+public class PojoBean implements PojoInfo, IntefaceBean {
+    private String uuid    = UUID.randomUUID().toString();
+    private String name    = "马三";
+    private String address = "北京马连洼街道办...";
+    public String getUuid() {
+        return uuid;
+    }
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
     public String getName() {
-        return null;
+        return name;
     }
-    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
     public String getAddress() {
-        return null;
+        return address;
     }
-    @Override
-    public void onEvent(String event, AppContext eventData) throws Throwable {
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

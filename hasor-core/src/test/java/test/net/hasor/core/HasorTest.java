@@ -1,4 +1,4 @@
-package test.net.hasor.core._09_hasor;
+package test.net.hasor.core;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import org.junit.Test;

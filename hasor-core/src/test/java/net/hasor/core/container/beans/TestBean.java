@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core.container.beans;
-import test.net.hasor.core.pojos.IntefaceBean;
-import test.net.hasor.core.pojos.PojoInfo;
-
 import java.util.UUID;
 /**
  * 一个Bean

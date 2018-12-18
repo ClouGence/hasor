@@ -84,10 +84,6 @@ public abstract class AbstractEnvironment implements Environment {
     }
     @Override
     public final EventContext getEventContext() {
-        if (this.eventManager == null) {
-            int eventThreadPoolSize = this.getSettings().getInteger("hasor.eventThreadPoolSize", 20);
-            this.eventManager = createEventManager(eventThreadPoolSize);
-        }
         return this.eventManager;
     }
     //
@@ -214,6 +210,8 @@ public abstract class AbstractEnvironment implements Environment {
             logger.info("loadPackages = " + packages);
         }
         //
+        int eventThreadPoolSize = this.getSettings().getInteger("hasor.eventThreadPoolSize", 20);
+        this.eventManager = createEventManager(eventThreadPoolSize);
     }
     /**
      * 1st，System.getProperties()

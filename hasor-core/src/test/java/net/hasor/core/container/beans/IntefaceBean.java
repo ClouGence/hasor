@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.core.pojos;
-import net.hasor.core.AppContext;
-import net.hasor.core.EventListener;
+package net.hasor.core.container.beans;
+import net.hasor.core.ImplBy;
 /**
  * 一个Bean
  * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface LifeBean extends EventListener<AppContext> {
+@ImplBy(PojoBean.class)
+public interface IntefaceBean {
     public String getName();
 
     public String getAddress();
