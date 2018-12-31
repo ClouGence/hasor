@@ -56,27 +56,34 @@ public class StandardEventManager implements EventContext {
     }
     //
     @Override
-    public <T> void pushListener(final String eventType, final EventListener<T> eventListener) {
+    public <T> boolean pushListener(final String eventType, final EventListener<T> eventListener) {
         if (StringUtils.isBlank(eventType) || eventListener == null) {
-            return;
+            return false;
         }
-        this.getListenerPool(eventType).pushOnceListener(eventListener);
+        return this.getListenerPool(eventType).pushOnceListener(eventListener);
     }
     //
     @Override
-    public <T> void addListener(final String eventType, final EventListener<T> eventListener) {
+    public <T> boolean addListener(final String eventType, final EventListener<T> eventListener) {
         if (StringUtils.isBlank(eventType) || eventListener == null) {
-            return;
+            return false;
         }
-        this.getListenerPool(eventType).addListener(eventListener);
+        return this.getListenerPool(eventType).addListener(eventListener);
     }
     //
     @Override
-    public <T> void removeListener(final String eventType, final EventListener<T> eventListener) {
+    public <T> boolean removeListener(final String eventType, final EventListener<T> eventListener) {
         if (StringUtils.isBlank(eventType) || eventListener == null) {
-            return;
+            return false;
         }
-        this.getListenerPool(eventType).removeListener(eventListener);
+        return this.getListenerPool(eventType).removeListener(eventListener);
+    }
+    @Override
+    public <T> boolean clearListener(String eventType) {
+        if (StringUtils.isBlank(eventType)) {
+            return false;
+        }
+        return this.getListenerPool(eventType).clearListener();
     }
     //
     @Override
@@ -89,9 +96,21 @@ public class StandardEventManager implements EventContext {
     }
     //
     @Override
-    public final <T> void fireSyncEventWithEspecial(final String eventType, final T eventData) throws Throwable {
+    public final <T> void fireSyncEventWithAlone(final String eventType, final T eventData) throws Throwable {
+        final BasicFuture<Void> future = new BasicFuture<Void>();
+        this.asyncTask(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    fireSyncEvent(eventType, eventData);
+                    future.completed(null);
+                } catch (Throwable e) {
+                    future.failed(e);
+                }
+            }
+        });
         try {
-            this.fireEvent(eventType, FireType.Interrupt, null, false, eventData).get();
+            future.get();
         } catch (ExecutionException e) {
             throw e.getCause();
         }
@@ -112,9 +131,9 @@ public class StandardEventManager implements EventContext {
         this.fireEvent(eventType, fireType, callBack, false, eventData);
     }
     @Override
-    public <T> void asyncTask(final Callable<T> runnable, final FutureCallback<T> callBack) {
+    public <T> boolean asyncTask(final Callable<T> runnable, final FutureCallback<T> callBack) {
         if (runnable == null) {
-            return;
+            return false;
         }
         getExecutorService().submit(new Runnable() {
             @Override
@@ -131,15 +150,20 @@ public class StandardEventManager implements EventContext {
                 }
             }
         });
+        return true;
     }
     @Override
-    public void asyncTask(final Runnable runnable, FutureCallback<Void> callBack) {
+    public boolean asyncTask(final Runnable runnable, FutureCallback<Void> callBack) {
+        if (runnable == null) {
+            return false;
+        }
         this.asyncTask(new Callable<Void>() {
             public Void call() {
                 runnable.run();
                 return null;
             }
         }, callBack);
+        return true;
     }
     @Override
     public <T> Future<T> asyncTask(Callable<T> runnable) {
@@ -161,6 +185,9 @@ public class StandardEventManager implements EventContext {
     }
     @Override
     public Future<Void> asyncTask(final Runnable runnable) {
+        if (runnable == null) {
+            return null;
+        }
         return this.asyncTask(new Callable<Void>() {
             public Void call() {
                 runnable.run();

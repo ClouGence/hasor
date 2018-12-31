@@ -26,35 +26,40 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 class EventListenerPool {
     private final Object                                 ONCE_LOCK = new Object();
-    private       ArrayList<EventListener<?>>            onceListener;
+    private       CopyOnWriteArrayList<EventListener<?>> onceListener;
     private final CopyOnWriteArrayList<EventListener<?>> listenerList;
     //
     public EventListenerPool() {
-        onceListener = new ArrayList<EventListener<?>>();
+        onceListener = new CopyOnWriteArrayList<EventListener<?>>();
         listenerList = new CopyOnWriteArrayList<EventListener<?>>();
     }
     //
-    public void pushOnceListener(EventListener<?> eventListener) {
+    public boolean pushOnceListener(EventListener<?> eventListener) {
         synchronized (ONCE_LOCK) {
-            onceListener.add(eventListener);
+            return onceListener.add(eventListener);
         }
     }
-    public void addListener(EventListener<?> eventListener) {
-        listenerList.add(eventListener);
+    public boolean addListener(EventListener<?> eventListener) {
+        return listenerList.add(eventListener);
     }
     //
     public List<EventListener<?>> popOnceListener() {
         List<EventListener<?>> onceList = null;
         synchronized (ONCE_LOCK) {
             onceList = this.onceListener;
-            this.onceListener = new ArrayList<EventListener<?>>();
+            this.onceListener = new CopyOnWriteArrayList<EventListener<?>>();
         }
         return onceList;
     }
     public List<EventListener<?>> getListenerSnapshot() {
         return new ArrayList<EventListener<?>>(this.listenerList);
     }
-    public void removeListener(EventListener<?> eventListener) {
-        listenerList.remove(eventListener);
+    public boolean removeListener(EventListener<?> eventListener) {
+        return listenerList.remove(eventListener);
+    }
+    public boolean clearListener() {
+        onceListener.clear();
+        listenerList.clear();
+        return true;
     }
 }

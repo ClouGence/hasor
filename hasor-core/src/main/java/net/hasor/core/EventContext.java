@@ -29,21 +29,27 @@ public interface EventContext {
      * @param eventType 事件类型
      * @param eventListener 事件监听器。
      */
-    public <T> void pushListener(String eventType, EventListener<T> eventListener);
+    public <T> boolean pushListener(String eventType, EventListener<T> eventListener);
 
     /**
      * 添加一种类型事件的事件监听器。
      * @param eventType 事件类型
      * @param eventListener 事件监听器。
      */
-    public <T> void addListener(String eventType, EventListener<T> eventListener);
+    public <T> boolean addListener(String eventType, EventListener<T> eventListener);
 
     /**
      * 删除某个监听器的注册。
      * @param eventType 事件类型
      * @param eventListener 事件监听器。
      */
-    public <T> void removeListener(String eventType, EventListener<T> eventListener);
+    public <T> boolean removeListener(String eventType, EventListener<T> eventListener);
+
+    /**
+     * 删除某个监听器的注册。
+     * @param eventType 事件类型
+     */
+    public <T> boolean clearListener(String eventType);
 
     /**
      * 同步方式抛出事件。当方法返回时已经全部处理完成事件分发。<p>
@@ -59,7 +65,7 @@ public interface EventContext {
      * @param eventType 事件类型
      * @param eventData 事件参数
      */
-    public <T> void fireSyncEventWithEspecial(String eventType, T eventData) throws Throwable;
+    public <T> void fireSyncEventWithAlone(String eventType, T eventData) throws Throwable;
 
     /**
      * 异步方式抛出事件。fireAsyncEvent方法的调用不会决定何时开始执行事件，而这一切由事件管理器决定。<p>
@@ -93,14 +99,14 @@ public interface EventContext {
      * @param runnable 异步任务
      * @param callBack 回调方法
      */
-    public <T> void asyncTask(Callable<T> runnable, FutureCallback<T> callBack);
+    public <T> boolean asyncTask(Callable<T> runnable, FutureCallback<T> callBack);
 
     /**
      * 异步方式执行任务。<p>
      * @param runnable 异步任务
      * @param callBack 回调方法
      */
-    public void asyncTask(Runnable runnable, FutureCallback<Void> callBack);
+    public boolean asyncTask(Runnable runnable, FutureCallback<Void> callBack);
 
     /**
      * 异步方式执行任务。<p>

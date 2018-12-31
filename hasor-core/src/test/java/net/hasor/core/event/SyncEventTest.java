@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.core.event;
-import net.hasor.core.AppContext;
 import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
-import net.hasor.core.Hasor;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.atomic.AtomicInteger;
 /**
  * 仅会被执行一次的事件
  * @version : 2013-8-11
@@ -30,8 +29,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class SyncEventTest {
     @Test
     public void syncEventTest() throws Throwable {
-        AppContext appContext = Hasor.createAppContext();
-        EventContext ec = appContext.getEnvironment().getEventContext();
+        EventContext ec = new StandardEventManager(20, "TestEvent", Thread.currentThread().getContextClassLoader());
         //
         String EventName = "MyEvent";
         //1.添加事件监听器
@@ -60,8 +58,7 @@ public class SyncEventTest {
     }
     @Test
     public void onesSyncEventTest() throws Throwable {
-        AppContext appContext = Hasor.createAppContext();
-        EventContext ec = appContext.getEnvironment().getEventContext();
+        EventContext ec = new StandardEventManager(20, "TestEvent", Thread.currentThread().getContextClassLoader());
         //
         String EventName = "MyEvent";
         //1.添加事件监听器
@@ -84,5 +81,95 @@ public class SyncEventTest {
         //3.check
         assert eventDataSet.size() == 1;
         assert (endTime - startTime) > 110;
+    }
+    //
+    @Test
+    public void syncTest1() throws Throwable {
+        //
+        EventContext ec = new StandardEventManager(20, "TestEvent", Thread.currentThread().getContextClassLoader());
+        //
+        String EventName = "MyEvent";
+        final Throwable error = new Exception("testError");
+        ec.pushListener(EventName, new EventListener<Object>() {
+            @Override
+            public void onEvent(String event, Object eventData) throws Throwable {
+                throw error;
+            }
+        });
+        //
+        try {
+            ec.fireSyncEvent(EventName, null);
+            assert false;
+        } catch (Exception e) {
+            assert e == error;
+        }
+    }
+    //
+    @Test
+    public void syncTest2() throws Throwable {
+        //
+        EventContext ec = new StandardEventManager(20, "TestEvent", Thread.currentThread().getContextClassLoader());
+        //
+        final AtomicInteger atomicInteger = new AtomicInteger();
+        final ThreadLocal<String> local = new ThreadLocal<String>();
+        local.set("abc");
+        //
+        String EventName = "MyEvent";
+        ec.addListener(EventName, new EventListener<Object>() {
+            @Override
+            public void onEvent(String event, Object eventData) throws Throwable {
+                if ("abc".equals(local.get())) {
+                    atomicInteger.incrementAndGet();
+                }
+            }
+        });
+        //
+        //
+        ec.fireSyncEventWithAlone(EventName, null);
+        assert atomicInteger.get() == 0;
+        //
+        ec.fireSyncEvent(EventName, null);
+        assert atomicInteger.get() == 1;
+    }
+    //
+    @Test
+    public void syncTest3() throws Throwable {
+        //
+        EventContext ec = new StandardEventManager(20, "TestEvent", Thread.currentThread().getContextClassLoader());
+        //
+        final ThreadLocal<Exception> local = new ThreadLocal<Exception>();
+        local.set(new Exception("testError"));
+        //
+        String EventName = "MyEvent";
+        ec.addListener(EventName, new EventListener<Object>() {
+            @Override
+            public void onEvent(String event, Object eventData) throws Throwable {
+                if (local.get() != null) {
+                    throw local.get();
+                } else {
+                    throw new Exception("testError2");
+                }
+            }
+        });
+        //
+        try {
+            ec.fireSyncEventWithAlone(EventName, null);
+            assert false;
+        } catch (Exception e) {
+            assert "testError2".equals(e.getMessage());
+        }
+    }
+    //
+    @Test
+    public void syncTest4() throws Throwable {
+        //
+        EventContext ec = new StandardEventManager(20, "TestEvent", Thread.currentThread().getContextClassLoader());
+        //
+        try {
+            ec.fireSyncEvent(null, null);
+            assert false;
+        } catch (Exception e) {
+            assert "eventType is empty.".equals(e.getMessage());
+        }
     }
 }

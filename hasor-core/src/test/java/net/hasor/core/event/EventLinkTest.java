@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.event;
-import net.hasor.core.AppContext;
 import net.hasor.core.EventContext;
 import net.hasor.core.EventListener;
-import net.hasor.core.Hasor;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,28 +27,26 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class EventLinkTest {
     @Test
     public void syncEventTest() throws InterruptedException {
-        AppContext appContext = Hasor.createAppContext();
-        EventContext ec = appContext.getEnvironment().getEventContext();
+        EventContext ec = new StandardEventManager(20, "TestEvent", Thread.currentThread().getContextClassLoader());
         //
-        final String EventName = "MyEvent";//事件链的终端
-        final String SeedEvent = "SeedEvent";//种子事件
+        final String SubEvent = "SubEvent";
+        final String FirstEvent = "FirstEvent";
         final AtomicInteger atomicInteger = new AtomicInteger();
         //1.添加事件监听器
-        ec.addListener(EventName, new EventListener<Object>() {
+        ec.addListener(SubEvent, new EventListener<Object>() {
             @Override
             public void onEvent(String event, Object eventData) throws Throwable {
                 atomicInteger.incrementAndGet();
             }
         });
-        ec.addListener(SeedEvent, new EventListener<AppContext>() {
-            public void onEvent(String event, AppContext app) throws Throwable {
-                EventContext localEC = app.getEnvironment().getEventContext();
-                localEC.fireAsyncEvent(EventName, 1);
-                localEC.fireAsyncEvent(EventName, 2);
+        ec.addListener(FirstEvent, new EventListener<EventContext>() {
+            public void onEvent(String event, EventContext eventEC) throws Throwable {
+                eventEC.fireAsyncEvent(SubEvent, 1);
+                eventEC.fireAsyncEvent(SubEvent, 2);
             }
         });
         //2.引发种子事件
-        ec.fireAsyncEvent(SeedEvent, appContext);
+        ec.fireAsyncEvent(FirstEvent, ec);
         Thread.sleep(1000);
         assert atomicInteger.get() == 2;
     }
