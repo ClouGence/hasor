@@ -33,7 +33,7 @@ public class InstanceProvider<T> implements Provider<T> {
         this.instance = instance;
     }
     //
-    public static <T> Provider<T> of(T target) {
+    public static <T, D extends T> Provider<T> of(D target) {
         return new InstanceProvider<T>(target);
     }
 }

@@ -9,6 +9,7 @@ public class HasorTest {
     @Test
     public void hasorTest() {
         //
-        AppContext appContext = Hasor.create().asSmaller().build();
+        AppContext appContext = Hasor.create().build();
+        appContext.getEnvironment().findClass(UnsupportedOperationException.class);
     }
 }

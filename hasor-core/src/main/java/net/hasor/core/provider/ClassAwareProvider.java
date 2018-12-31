@@ -41,4 +41,7 @@ public class ClassAwareProvider<T> implements Provider<T>, AppContextAware {
         }
         throw new IllegalStateException("has not been initialized");
     }
+    public String toString() {
+        return "ClassAwareProvider->" + implementation.getName();
+    }
 }
