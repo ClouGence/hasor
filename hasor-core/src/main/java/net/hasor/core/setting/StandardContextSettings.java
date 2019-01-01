@@ -61,6 +61,7 @@ public class StandardContextSettings extends InputStreamSettings {
             outInitLog("stream", mainSettings);
         }
         this.addStream(mainSettings, type);
+        refresh();
     }
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(final String mainSettings) throws IOException, URISyntaxException {
@@ -69,6 +70,7 @@ public class StandardContextSettings extends InputStreamSettings {
             this.settingURI = url.toURI();
             outInitLog("string", mainSettings);
         }
+        refresh();
     }
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(final File mainSettings) throws IOException {
@@ -76,6 +78,7 @@ public class StandardContextSettings extends InputStreamSettings {
             this.settingURI = mainSettings.toURI();
             outInitLog("file", mainSettings);
         }
+        refresh();
     }
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(final URI mainSettings) throws IOException {
@@ -83,6 +86,7 @@ public class StandardContextSettings extends InputStreamSettings {
             this.settingURI = mainSettings;
             outInitLog("uri", mainSettings);
         }
+        refresh();
     }
     /**获取配置文件{@link URI}。*/
     public URI getSettingURI() {

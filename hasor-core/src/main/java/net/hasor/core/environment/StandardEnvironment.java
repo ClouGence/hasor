@@ -65,7 +65,6 @@ public class StandardEnvironment extends AbstractEnvironment {
         if (loader == null) {
             loader = Thread.currentThread().getContextClassLoader();
         }
-        this.getSettings().refresh();
         this.setRootLosder(new MoreClassLoader(loader));
         this.initEnvironment(frameworkEnvConfig);
     }

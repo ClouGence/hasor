@@ -359,7 +359,7 @@ public abstract class AbstractSettings implements Settings {
     public Date[] getDateArray(final String name, final String format, final Date defaultValue) {
         String[] oriDataArray = this.getToTypeArray(name, String.class);
         if (oriDataArray == null || oriDataArray.length == 0) {
-            return null;
+            return new Date[0];
         }
         //
         DateFormat dateFormat = new SimpleDateFormat(format);
@@ -378,7 +378,7 @@ public abstract class AbstractSettings implements Settings {
     public Date[] getDateArray(final String name, final String format, final long defaultValue) {
         String[] oriDataArray = this.getToTypeArray(name, String.class);
         if (oriDataArray == null || oriDataArray.length == 0) {
-            return null;
+            return new Date[0];
         }
         //
         DateFormat dateFormat = new SimpleDateFormat(format);
@@ -446,7 +446,7 @@ public abstract class AbstractSettings implements Settings {
                 filePaths.add(filePath);
             }
         }
-        return filePaths.toArray(new String[filePaths.size()]);
+        return filePaths.toArray(new String[0]);
     }
     /** 解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。 */
     public String getDirectoryPath(final String name) {
@@ -486,7 +486,7 @@ public abstract class AbstractSettings implements Settings {
                 directoryPaths.add(filePath);
             }
         }
-        return directoryPaths.toArray(new String[directoryPaths.size()]);
+        return directoryPaths.toArray(new String[0]);
     }
     /** 解析全局配置参数，并且返回其{@link XmlNode}形式对象。 */
     public XmlNode getXmlNode(final String name) {

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://project.hasor.net/hasor/schema/main">
+    <valueGroup>
+        <!-- -->
+        <booleanValue_true>true</booleanValue_true>
+        <booleanValue_false>false</booleanValue_false>
+        <booleanValue_0>0</booleanValue_0>
+        <booleanValue_1>1</booleanValue_1>
+        <booleanValue_yes>yes</booleanValue_yes>
+        <booleanValue_no>no</booleanValue_no>
+        <booleanValue_on>on</booleanValue_on>
+        <booleanValue_off>off</booleanValue_off>
+        <booleanValue_y>y</booleanValue_y>
+        <booleanValue_n>n</booleanValue_n>
+        <!-- -->
+        <shortValue_123>123</shortValue_123>
+        <shortValue_456>456</shortValue_456>
+        <shortValue_over>9999999999999999999999999999999999999999999999999999999999999999999999999999999</shortValue_over>
+        <!-- -->
+        <intValue_123>123</intValue_123>
+        <intValue_456>456</intValue_456>
+        <intValue_over>9999999999999999999999999999999999999999999999999999999999999999999999999999999</intValue_over>
+        <!-- -->
+        <longValue_123>123</longValue_123>
+        <longValue_456>456</longValue_456>
+        <longValue_over>9999999999999999999999999999999999999999999999999999999999999999999999999999999</longValue_over>
+        <!-- -->
+        <floatValue_123>2.7182</floatValue_123>
+        <floatValue_456>3.1415</floatValue_456>
+        <floatValue_over>3434343434343434.12345678901234567891310</floatValue_over>
+        <!-- -->
+        <doubleValue_123>2.7182</doubleValue_123>
+        <doubleValue_456>3.1415</doubleValue_456>
+        <doubleValue_lage>12345678901234567891310123456789012345678913101234567890123456789131012345678901234567891310.12345678901234567891310123456789012345678913101234567890123456789131012345678901234567891310</doubleValue_lage>
+        <doubleValue_str>1.23e10</doubleValue_str>
+        <!-- -->
+        <stringValue>abc</stringValue>
+        <charValue>a</charValue>
+        <charValue_over>abc</charValue_over>
+        <!-- -->
+        <dateValue_1>1986-01-01 00:00:00</dateValue_1>
+        <dateValue_2>1986-01-01</dateValue_2>
+        <dateValue_3>00:00:00</dateValue_3>
+
+    </valueGroup>
+</config>
