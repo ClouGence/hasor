@@ -39,77 +39,80 @@ public class InputStreamSettings extends AbstractSettings implements IOSettings 
     //
     /**将一个输入流添加到待加载处理列表，使用load方法加载待处理列表中的流。
      * 注意：待处理列表中的流一旦装载完毕将会从待处理列表中清除出去。*/
-    public synchronized void addStream(final InputStream stream, StreamType streamType) {
-        if (stream != null) {
-            for (InputStreamEntity entity : this.pendingStream) {
-                if (entity.inStream == stream) {
-                    return;
-                }
-            }
-            this.pendingStream.add(new InputStreamEntity(stream, streamType));
+    public synchronized boolean addStream(final InputStream stream, StreamType streamType) {
+        if (stream == null || streamType == null) {
+            return false;
         }
+        for (InputStreamEntity entity : this.pendingStream) {
+            if (entity.inStream == stream) {
+                return false;
+            }
+        }
+        return this.pendingStream.add(new InputStreamEntity(stream, streamType));
     }
     //
     /**load装载所有待处理的流，如果没有待处理流则直接return。*/
     @Override
-    public synchronized void loadSettings() throws IOException {
+    public synchronized int loadSettings() throws IOException {
         this.readyLoad();//准备装载
-        {
-            if (this.pendingStream.isEmpty()) {
-                logger.info("loadSettings finish -> there is no need to be load.");
-                return;
-            }
-            //构建装载环境
-            InputStreamEntity entity = null;
-            try {
-                logger.debug("parsing...");
-                SAXParserFactory factory = SAXParserFactory.newInstance();
-                factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-                factory.setFeature("http://xml.org/sax/features/namespaces", true);
-                SAXParser parser = factory.newSAXParser();
-                SaxXmlParser handler = new SaxXmlParser(this);
-                while ((entity = this.pendingStream.removeFirst()) != null) {
-                    //根据文件类型选择适合的解析器
-                    if (StreamType.Xml.equals(entity.fileType)) {
-                        //加载xml
-                        parser.parse(entity.inStream, handler);
-                        entity.inStream.close();
-                    } else if (StreamType.Properties.equals(entity.fileType)) {
-                        //加载属性文件
-                        Properties properties = new Properties();
-                        properties.load(new InputStreamReader(entity.inStream, Settings.DefaultCharset));
-                        entity.inStream.close();
-                        if (!properties.isEmpty()) {
-                            //
-                            String namespace = (String) properties.get("namespace");
-                            if (StringUtils.isBlank(namespace)) {
-                                namespace = Settings.DefaultNameSpace;
-                            }
-                            for (Map.Entry<Object, Object> propEnt : properties.entrySet()) {
-                                String propKey = (String) propEnt.getKey();
-                                String propVal = (String) propEnt.getValue();
-                                if (StringUtils.isNotBlank(propVal)) {
-                                    this.addSetting(propKey, propVal, namespace);
-                                }
+        int loadCount = 0;
+        if (this.pendingStream.isEmpty()) {
+            logger.info("loadSettings finish -> there is no need to be load.");
+            return 0;
+        }
+        //构建装载环境
+        InputStreamEntity entity = null;
+        try {
+            logger.debug("parsing...");
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            factory.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+            factory.setFeature("http://xml.org/sax/features/namespaces", true);
+            SAXParser parser = factory.newSAXParser();
+            SaxXmlParser handler = new SaxXmlParser(this);
+            while ((entity = this.pendingStream.removeFirst()) != null) {
+                loadCount++;
+                //根据文件类型选择适合的解析器
+                if (StreamType.Xml.equals(entity.fileType)) {
+                    //加载xml
+                    parser.parse(entity.inStream, handler);
+                    entity.inStream.close();
+                } else if (StreamType.Properties.equals(entity.fileType)) {
+                    //加载属性文件
+                    Properties properties = new Properties();
+                    properties.load(new InputStreamReader(entity.inStream, Settings.DefaultCharset));
+                    entity.inStream.close();
+                    if (!properties.isEmpty()) {
+                        //
+                        String namespace = (String) properties.get("namespace");
+                        if (StringUtils.isBlank(namespace)) {
+                            namespace = Settings.DefaultNameSpace;
+                        }
+                        for (Map.Entry<Object, Object> propEnt : properties.entrySet()) {
+                            String propKey = (String) propEnt.getKey();
+                            String propVal = (String) propEnt.getValue();
+                            if (StringUtils.isNotBlank(propVal)) {
+                                this.addSetting(propKey, propVal, namespace);
                             }
                         }
                     }
-                    if (this.pendingStream.isEmpty()) {
-                        break;
-                    }
                 }
-            } catch (Throwable e) {
-                logger.error("parsing failed -> " + e.getMessage(), e);
-                if (e instanceof IOException) {
-                    throw (IOException) e;
-                } else {
-                    throw new IOException(e);
+                if (this.pendingStream.isEmpty()) {
+                    break;
                 }
+            }
+        } catch (Throwable e) {
+            String errorMessage = "parsing failed -> ";
+            logger.error("parsing failed -> " + e.getMessage(), e);
+            if (e instanceof IOException) {
+                throw (IOException) e;
+            } else {
+                throw new IOException(errorMessage + e.getMessage(), e);
             }
         }
         logger.debug("parsing finish.");
         this.loadFinish();//完成装载
         logger.debug("loadSettings finish.");
+        return loadCount;
     }
     /**准备装载*/
     protected void readyLoad() throws IOException {

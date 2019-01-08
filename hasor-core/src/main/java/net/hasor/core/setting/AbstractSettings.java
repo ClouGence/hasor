@@ -18,6 +18,7 @@ import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
+import net.hasor.utils.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -309,19 +310,23 @@ public abstract class AbstractSettings implements Settings {
     }
     /** 解析全局配置参数，并且返回其{@link Date}形式对象。 */
     public Date getDate(final String name) {
-        return this.getToType(name, Date.class);
+        return this.getDate(name, getString(name + ".format"), null);
     }
     /** 解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。 */
     public Date getDate(final String name, final Date defaultValue) {
-        return this.getToType(name, Date.class, defaultValue);
+        return this.getDate(name, getString(name + ".format"), defaultValue);
     }
     /** 解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。 */
     public Date getDate(final String name, final long defaultValue) {
-        return this.getToType(name, Date.class, new Date(defaultValue));
+        return this.getDate(name, getString(name + ".format"), new Date(defaultValue));
     }
     /** 解析全局配置参数，并且返回其{@link Date}形式对象。 */
     public Date getDate(final String name, final String format) {
         return this.getDate(name, format, null);
+    }
+    /** 解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。 */
+    public Date getDate(final String name, final String format, final long defaultValue) {
+        return this.getDate(name, format, new Date(defaultValue));
     }
     /** 解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。 */
     public Date getDate(final String name, final String format, final Date defaultValue) {
@@ -340,21 +345,20 @@ public abstract class AbstractSettings implements Settings {
             return parsedDate;
         }
     }
-    /** 解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。 */
-    public Date getDate(final String name, final String format, final long defaultValue) {
-        return this.getDate(name, format, new Date(defaultValue));
-    }
     public Date[] getDateArray(final String name) {
-        return this.getDateArray(name, null, null);
+        return this.getDateArray(name, getString(name + ".format"), null);
     }
     public Date[] getDateArray(final String name, final Date defaultValue) {
-        return this.getDateArray(name, null, defaultValue);
+        return this.getDateArray(name, getString(name + ".format"), defaultValue);
     }
     public Date[] getDateArray(final String name, final long defaultValue) {
-        return this.getDateArray(name, null, defaultValue);
+        return this.getDateArray(name, getString(name + ".format"), new Date(defaultValue));
     }
     public Date[] getDateArray(final String name, final String format) {
         return this.getDateArray(name, format, null);
+    }
+    public Date[] getDateArray(final String name, final String format, final long defaultValue) {
+        return this.getDateArray(name, format, new Date(defaultValue));
     }
     public Date[] getDateArray(final String name, final String format, final Date defaultValue) {
         String[] oriDataArray = this.getToTypeArray(name, String.class);
@@ -375,25 +379,6 @@ public abstract class AbstractSettings implements Settings {
         }
         return parsedDate;
     }
-    public Date[] getDateArray(final String name, final String format, final long defaultValue) {
-        String[] oriDataArray = this.getToTypeArray(name, String.class);
-        if (oriDataArray == null || oriDataArray.length == 0) {
-            return new Date[0];
-        }
-        //
-        DateFormat dateFormat = new SimpleDateFormat(format);
-        dateFormat.setLenient(false);
-        Date[] parsedDate = new Date[oriDataArray.length];
-        for (int i = 0; i < oriDataArray.length; i++) {
-            String oriData = oriDataArray[i];
-            ParsePosition pos = new ParsePosition(0);
-            parsedDate[i] = dateFormat.parse(oriData, pos); // ignore the result (use the Calendar)
-            if (pos.getErrorIndex() >= 0 || pos.getIndex() != oriData.length() || parsedDate[i] == null) {
-                parsedDate[i] = new Date(defaultValue);
-            }
-        }
-        return parsedDate;
-    }
     /** 解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。 */
     public <T extends Enum<?>> T getEnum(final String name, final Class<T> enmType) {
         return this.getToType(name, enmType, null);
@@ -410,83 +395,72 @@ public abstract class AbstractSettings implements Settings {
     }
     /** 解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。 */
     public String getFilePath(final String name) {
-        return this.getFilePath(name, null);
+        return getFilePath(name, null, true);
     }
     /** 解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。 */
     public String getFilePath(final String name, final String defaultValue) {
-        String filePath = this.getToType(name, String.class);
-        if (filePath == null || filePath.length() == 0) {
-            return defaultValue;// 空
-        } //
-        int length = filePath.length();
-        if (filePath.charAt(length - 1) == File.separatorChar) {
-            return filePath.substring(0, length - 1);
-        } else {
-            return filePath;
-        }
+        return getFilePath(name, defaultValue, true);
+    }
+    /** 解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。 */
+    public String getDirectoryPath(final String name) {
+        return getFilePath(name, null, false);
+    }
+    /** 解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。 */
+    public String getDirectoryPath(final String name, final String defaultValue) {
+        return getFilePath(name, defaultValue, false);
     }
     public String[] getFilePathArray(final String name) {
-        return this.getFilePathArray(name, null);
+        return this.getFilePathArray(name, null, true);
     }
     public String[] getFilePathArray(final String name, final String defaultValue) {
+        return this.getFilePathArray(name, defaultValue, true);
+    }
+    public String[] getDirectoryPathArray(final String name) {
+        return this.getFilePathArray(name, null, false);
+    }
+    public String[] getDirectoryPathArray(final String name, final String defaultValue) {
+        return this.getFilePathArray(name, defaultValue, false);
+    }
+    private String getFilePath(final String name, final String defaultValue, boolean includeName) {
+        String filePath = this.getToType(name, String.class);
+        if (StringUtils.isBlank(filePath)) {
+            return defaultValue;// 空
+        }
+        if (includeName) {
+            String fileName = FilenameUtils.getName(filePath);
+            if (StringUtils.isNotBlank(fileName)) {
+                return FilenameUtils.getFullPath(filePath) + FilenameUtils.getName(filePath);
+            } else {
+                return StringUtils.isBlank(defaultValue) ? null : defaultValue;
+            }
+        } else {
+            return FilenameUtils.getFullPath(filePath);
+        }
+    }
+    private String[] getFilePathArray(final String name, final String defaultValue, boolean includeName) {
         ArrayList<String> filePaths = new ArrayList<String>();
         for (String url : this.getSettingArray()) {
             Settings targetSettings = this.getSettings(url);
             if (targetSettings == null) {
                 continue;
             }
-            String filePath = targetSettings.getFilePath(name, defaultValue);
-            if (filePath == null || filePath.length() == 0) {
+            String filePath = targetSettings.getString(name);
+            if (StringUtils.isBlank(filePath)) {
                 continue;// 空
-            } //
-            int length = filePath.length();
-            if (filePath.charAt(length - 1) == File.separatorChar) {
-                filePaths.add(filePath.substring(0, length - 1));
+            }
+            //
+            if (includeName) {
+                String fileName = FilenameUtils.getName(filePath);
+                if (StringUtils.isNotBlank(fileName)) {
+                    filePaths.add(FilenameUtils.getFullPath(filePath) + FilenameUtils.getName(filePath));
+                } else {
+                    continue;
+                }
             } else {
-                filePaths.add(filePath);
+                filePaths.add(FilenameUtils.getFullPath(filePath));
             }
         }
         return filePaths.toArray(new String[0]);
-    }
-    /** 解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。 */
-    public String getDirectoryPath(final String name) {
-        return this.getDirectoryPath(name, null);
-    }
-    /** 解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。 */
-    public String getDirectoryPath(final String name, final String defaultValue) {
-        String filePath = this.getToType(name, String.class);
-        if (filePath == null || filePath.length() == 0) {
-            return defaultValue;// 空
-        } //
-        int length = filePath.length();
-        if (filePath.charAt(length - 1) == File.separatorChar) {
-            return filePath;
-        } else {
-            return filePath + File.separatorChar;
-        }
-    }
-    public String[] getDirectoryPathArray(final String name) {
-        return this.getDirectoryPathArray(name, null);
-    }
-    public String[] getDirectoryPathArray(final String name, final String defaultValue) {
-        ArrayList<String> directoryPaths = new ArrayList<String>();
-        for (String url : this.getSettingArray()) {
-            Settings targetSettings = this.getSettings(url);
-            if (targetSettings == null) {
-                continue;
-            }
-            String filePath = targetSettings.getDirectoryPath(name, defaultValue);
-            if (filePath == null || filePath.length() == 0) {
-                continue;// 空
-            } //
-            int length = filePath.length();
-            if (filePath.charAt(length - 1) == File.separatorChar) {
-                directoryPaths.add(filePath.substring(0, length - 1));
-            } else {
-                directoryPaths.add(filePath);
-            }
-        }
-        return directoryPaths.toArray(new String[0]);
     }
     /** 解析全局配置参数，并且返回其{@link XmlNode}形式对象。 */
     public XmlNode getXmlNode(final String name) {

@@ -228,4 +228,5 @@ public interface Settings {
 
     /** 解析全局配置参数，并且返回其{@link XmlNode}形式对象。 */
     public XmlNode[] getXmlNodeArray(String name);
+
 }

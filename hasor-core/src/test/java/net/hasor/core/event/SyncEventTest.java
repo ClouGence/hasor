@@ -58,16 +58,16 @@ public class SyncEventTest {
     }
     @Test
     public void onesSyncEventTest() throws Throwable {
-        EventContext ec = new StandardEventManager(20, "TestEvent", Thread.currentThread().getContextClassLoader());
+        EventContext ec = new StandardEventManager(10, "TestEvent", Thread.currentThread().getContextClassLoader());
         //
         String EventName = "MyEvent";
         //1.添加事件监听器
         final CopyOnWriteArraySet<String> eventDataSet = new CopyOnWriteArraySet<String>();
-        ec.pushListener(EventName, new EventListener<Object>() {
+        ec.addListener(EventName, new EventListener<Object>() {
             @Override
             public void onEvent(String event, Object eventData) throws Throwable {
                 eventDataSet.add(event + eventData);
-                Thread.sleep(110);
+                Thread.sleep(100); // 100ms
             }
         });
         //2.引发异步事件
@@ -79,8 +79,8 @@ public class SyncEventTest {
         Thread.sleep(1000);
         //
         //3.check
-        assert eventDataSet.size() == 1;
-        assert (endTime - startTime) > 110;
+        assert eventDataSet.size() == 50;// 线程池大小为 10 ，执行完至少要 500ms
+        assert (endTime - startTime) >= (50 * 100); // 同步执行，所以总时间应该大于等于 50 * 100
     }
     //
     @Test

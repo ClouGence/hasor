@@ -180,7 +180,7 @@ public class Hasor extends HashMap<String, String> {
             }
             //
             AppContext appContext = new StatusAppContext(env, assertIsNotNull(container));
-            appContext.start(this.moduleList.toArray(new Module[this.moduleList.size()]));
+            appContext.start(this.moduleList.toArray(new Module[0]));
             return appContext;
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);

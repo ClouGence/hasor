@@ -13,16 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.setting;
-import net.hasor.core.Settings;
-
-import java.io.IOException;
+package net.hasor.core.settings;
 /**
- * 需要经过解析读取配置文件资源的{@link Settings}
- * @version : 2013-9-9
+ *
+ * @version : 2013-8-11
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface IOSettings extends Settings {
-    /**装载配置文件*/
-    public int loadSettings() throws IOException;
-}
+public enum SelectEnum {One, Two, Three}

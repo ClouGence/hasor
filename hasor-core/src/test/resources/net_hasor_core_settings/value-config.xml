@@ -41,6 +41,23 @@
         <dateValue_1>1986-01-01 00:00:00</dateValue_1>
         <dateValue_2>1986-01-01</dateValue_2>
         <dateValue_3>00:00:00</dateValue_3>
+        <!-- -->
+        <dateValue_4 format="yyyy-MM-dd HH:mm:ss">1986-01-01 00:00:00</dateValue_4>
+        <dateValue_5 format="yyyy-MM-dd">1986-01-01</dateValue_5>
+        <dateValue_6 format="HH:mm:ss">00:00:00</dateValue_6>
+        <!-- -->
+        <enumValue_1>one</enumValue_1>
+        <enumValue_2>ONE</enumValue_2>
+        <enumValue_3>two</enumValue_3>
+        <!-- -->
+        <fileValue_1>c:\user\abc.txt</fileValue_1>
+        <fileValue_2>c:\</fileValue_2>
+        <fileValue_3>/root/user/abc.txt</fileValue_3>
+        <fileValue_4>/root/user</fileValue_4>
+        <fileValue_5>/</fileValue_5>
+        <!-- -->
+        <evalValue>%JAVA_HOME%/bin/javac.exe</evalValue>
+
 
     </valueGroup>
 </config>

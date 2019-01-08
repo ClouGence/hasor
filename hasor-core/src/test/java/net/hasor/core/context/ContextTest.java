@@ -17,12 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 public class ContextTest {
-    private TemplateAppContext appContext;
+    private AppContext         appContext;
+    private TemplateAppContext targetAppContext;
     @Before
     public void testBefore() throws IOException {
         final StandardEnvironment env = new StandardEnvironment();
         final BeanContainer container = new BeanContainer();
-        this.appContext = new TemplateAppContext() {
+        this.targetAppContext = new TemplateAppContext() {
             @Override
             protected BeanContainer getContainer() {
                 return container;
@@ -32,6 +33,7 @@ public class ContextTest {
                 return env;
             }
         };
+        this.appContext = new AppContextWarp(targetAppContext);
     }
     //
     @Test
@@ -66,12 +68,12 @@ public class ContextTest {
         //
         assert appContext.getBindIDs().length == 0;
         //
-        ApiBinder apiBinder = appContext.newApiBinder();
+        ApiBinder apiBinder = targetAppContext.newApiBinder();
         apiBinder.bindType(TestBean.class).idWith("abcdefg");
         apiBinder.bindType(SimpleInjectBean.class).bothWith("qqqq");
         //
-        appContext.doInitialize();
-        appContext.doInitializeCompleted();
+        targetAppContext.doInitialize();
+        targetAppContext.doInitializeCompleted();
         //
         assert appContext.getNames(TestBean.class).length == 0;
         assert appContext.getNames(SimpleInjectBean.class).length == 1;
@@ -93,12 +95,12 @@ public class ContextTest {
     public void builderTest3() throws Throwable {
         appContext.shutdown();
         assert appContext.getBindIDs().length == 0;
-        ApiBinder apiBinder = appContext.newApiBinder();
+        ApiBinder apiBinder = targetAppContext.newApiBinder();
         apiBinder.bindType(TestBean.class).idWith("abcdefg").asEagerSingleton();
         apiBinder.bindType(SimpleInjectBean.class).bothWith("qqqq").asEagerSingleton();
         //
-        appContext.doInitialize();
-        appContext.doInitializeCompleted();
+        targetAppContext.doInitialize();
+        targetAppContext.doInitializeCompleted();
         //
         Object bean1 = appContext.getInstance("abcdefg");
         Object bean2 = appContext.getInstance("qqqq");
@@ -119,12 +121,12 @@ public class ContextTest {
     public void builderTest4() throws Throwable {
         appContext.shutdown();
         assert appContext.getBindIDs().length == 0;
-        ApiBinder apiBinder = appContext.newApiBinder();
+        ApiBinder apiBinder = targetAppContext.newApiBinder();
         apiBinder.bindType(TestBean.class).idWith("abcdefg").asEagerSingleton();
         apiBinder.bindType(SimpleInjectBean.class).bothWith("qqqq").asEagerSingleton();
         //
-        appContext.doInitialize();
-        appContext.doInitializeCompleted();
+        targetAppContext.doInitialize();
+        targetAppContext.doInitializeCompleted();
         //
         Object bean1 = appContext.getInstance("abcdefg");
         Object bean2 = appContext.getInstance("qqqq");
@@ -163,7 +165,7 @@ public class ContextTest {
         appContext.justInject(ref1);
         assert ref1.getTestBean() != null;
         //
-        ApiBinder apiBinder = appContext.newApiBinder();
+        ApiBinder apiBinder = targetAppContext.newApiBinder();
         TestBean testBean = new TestBean();
         BindInfo<TestBean> info = apiBinder.bindType(TestBean.class)//
                 .idWith("abcdefg").toInstance(testBean).toInfo();
@@ -185,7 +187,7 @@ public class ContextTest {
     @Test
     public void builderTest6() throws Throwable {
         //
-        ApiBinder apiBinder = appContext.newApiBinder();
+        ApiBinder apiBinder = targetAppContext.newApiBinder();
         TestBean testBean = new TestBean();
         BindInfo<?> info1 = apiBinder.bindType(TestBean.class).idWith("abcdefg").toInstance(testBean).toInfo();
         BindInfo<?> info2 = apiBinder.bindType(SimpleInjectBean.class).bothWith("qqqq").asEagerSingleton().toInfo();

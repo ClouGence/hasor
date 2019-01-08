@@ -15,6 +15,7 @@
  */
 package net.hasor.core.settings;
 import net.hasor.core.Settings;
+import net.hasor.core.setting.SettingsWrap;
 import net.hasor.core.setting.StandardContextSettings;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -37,6 +38,7 @@ public class SettingsTest {
     @Test
     public void settingsTest() throws Exception {
         Settings settings = new StandardContextSettings("/net_hasor_core_settings/data-config.xml");
+        settings = new SettingsWrap(settings);
         //
         String myName = settings.getString("mySelf.myName");
         assert myName.equals("赵永春");
@@ -61,6 +63,7 @@ public class SettingsTest {
     @Test
     public void propTest() throws Exception {
         Settings settings = new StandardContextSettings("/net_hasor_core_settings/data-config.properties");
+        settings = new SettingsWrap(settings);
         //
         String myName = settings.getString("mySelf.myName");
         assert myName.equals("赵永春");
@@ -85,6 +88,7 @@ public class SettingsTest {
     @Test
     public void valueTest() throws Exception {
         Settings settings = new StandardContextSettings("/net_hasor_core_settings/value-config.xml");
+        settings = new SettingsWrap(settings);
         //
         assert settings.getBoolean("valueGroup.booleanValue_true");
         assert !settings.getBoolean("valueGroup.booleanValue_false", true);
@@ -126,22 +130,54 @@ public class SettingsTest {
         assert 'a' == settings.getChar("valueGroup.charValue");
         assert 'a' == settings.getChar("valueGroup.charValue_over");
         //
-        Date d1 = settings.getDate("valueGroup.dateValue_3", TIME_FORMAT);
+        Date df1 = settings.getDate("valueGroup.dateValue_3", TIME_FORMAT);
+        assert new SimpleDateFormat(TIME_FORMAT).parse("00:00:00").getTime() == df1.getTime();
+        Date df2 = settings.getDate("valueGroup.dateValue_2", DATA_FORMAT);
+        assert new SimpleDateFormat(DATA_FORMAT).parse("1986-01-01").getTime() == df2.getTime();
+        Date df3 = settings.getDate("valueGroup.dateValue_non", TIME_FORMAT, 12345);
+        assert df3.getTime() == 12345;
+        Date df4 = settings.getDate("valueGroup.dateValue_non", TIME_FORMAT, new Date(12345));
+        assert df4.getTime() == 12345;
+        Date df5 = settings.getDate("valueGroup.dateValue_1", DATA_TIME_FORMAT);
+        assert new SimpleDateFormat(DATA_TIME_FORMAT).parse("1986-01-01 00:00:00").getTime() == df5.getTime();
+        //
+        Date d1 = settings.getDate("valueGroup.dateValue_6");
         assert new SimpleDateFormat(TIME_FORMAT).parse("00:00:00").getTime() == d1.getTime();
-        Date d2 = settings.getDate("valueGroup.dateValue_2", DATA_FORMAT);
+        Date d2 = settings.getDate("valueGroup.dateValue_5");
         assert new SimpleDateFormat(DATA_FORMAT).parse("1986-01-01").getTime() == d2.getTime();
-        Date d3 = settings.getDate("valueGroup.dateValue_non", TIME_FORMAT, 12345);
+        Date d3 = settings.getDate("valueGroup.dateValue_non", 12345);
         assert d3.getTime() == 12345;
-        Date d4 = settings.getDate("valueGroup.dateValue_non", TIME_FORMAT, new Date(12345));
+        Date d4 = settings.getDate("valueGroup.dateValue_non", new Date(12345));
         assert d4.getTime() == 12345;
-        Date d5 = settings.getDate("valueGroup.dateValue_1", DATA_TIME_FORMAT);
+        Date d5 = settings.getDate("valueGroup.dateValue_4");
         assert new SimpleDateFormat(DATA_TIME_FORMAT).parse("1986-01-01 00:00:00").getTime() == d5.getTime();
+        //
+        assert SelectEnum.One == settings.getEnum("valueGroup.enumValue_1", SelectEnum.class);
+        assert SelectEnum.One == settings.getEnum("valueGroup.enumValue_2", SelectEnum.class);
+        assert SelectEnum.Two == settings.getEnum("valueGroup.enumValue_3", SelectEnum.class);
+        assert SelectEnum.Three == settings.getEnum("valueGroup.enumValue_4", SelectEnum.class, SelectEnum.Three);
+        //
+        assert "c:\\user\\abc.txt".equals(settings.getFilePath("valueGroup.fileValue_1"));
+        assert settings.getFilePath("valueGroup.fileValue_2") == null;
+        assert "/root/user/abc.txt".equals(settings.getFilePath("valueGroup.fileValue_3"));
+        assert "/root/user".equals(settings.getFilePath("valueGroup.fileValue_4"));
+        assert settings.getFilePath("valueGroup.fileValue_5") == null;
+        assert "abc".equals(settings.getFilePath("valueGroup.fileValue_2", "abc"));
+        assert "abc".equals(settings.getFilePath("valueGroup.fileValue_5", "abc"));
+        //
+        assert "c:\\user\\".equals(settings.getDirectoryPath("valueGroup.fileValue_1"));
+        assert "c:\\".equals(settings.getDirectoryPath("valueGroup.fileValue_2"));
+        assert "/root/user/".equals(settings.getDirectoryPath("valueGroup.fileValue_3"));
+        assert "/root/".equals(settings.getDirectoryPath("valueGroup.fileValue_4"));
+        assert "/".equals(settings.getDirectoryPath("valueGroup.fileValue_5"));
+        assert "abc".equals(settings.getDirectoryPath("valueGroup.fileValue_6", "abc"));
     }
     //
     // - 配置信息读取
     @Test
     public void valueTest2() throws Exception {
         Settings settings = new StandardContextSettings("/net_hasor_core_settings/value-config.xml");
+        settings = new SettingsWrap(settings);
         //
         assert settings.getBooleanArray("valueGroup.booleanValue_true")[0];
         assert !settings.getBooleanArray("valueGroup.booleanValue_false", true)[0];
@@ -189,11 +225,75 @@ public class SettingsTest {
         assert 'a' == settings.getCharArray("valueGroup.charValue")[0];
         assert 'a' == settings.getCharArray("valueGroup.charValue_over")[0];
         //
-        Date d1 = settings.getDateArray("valueGroup.dateValue_3", TIME_FORMAT)[0];
-        assert new SimpleDateFormat(TIME_FORMAT).parse("00:00:00").getTime() == d1.getTime();
-        Date d2 = settings.getDateArray("valueGroup.dateValue_2", DATA_FORMAT)[0];
-        assert new SimpleDateFormat(DATA_FORMAT).parse("1986-01-01").getTime() == d2.getTime();
+        Date df1 = settings.getDateArray("valueGroup.dateValue_3", TIME_FORMAT)[0];
+        assert new SimpleDateFormat(TIME_FORMAT).parse("00:00:00").getTime() == df1.getTime();
+        Date df2 = settings.getDateArray("valueGroup.dateValue_2", DATA_FORMAT)[0];
+        assert new SimpleDateFormat(DATA_FORMAT).parse("1986-01-01").getTime() == df2.getTime();
         assert settings.getDateArray("valueGroup.dateValue_non", TIME_FORMAT, 12345).length == 0;
         assert settings.getDateArray("valueGroup.dateValue_non", TIME_FORMAT, new Date(12345)).length == 0;
+        //
+        Date d1 = settings.getDateArray("valueGroup.dateValue_6")[0];
+        assert new SimpleDateFormat(TIME_FORMAT).parse("00:00:00").getTime() == d1.getTime();
+        Date d2 = settings.getDateArray("valueGroup.dateValue_5")[0];
+        assert new SimpleDateFormat(DATA_FORMAT).parse("1986-01-01").getTime() == d2.getTime();
+        assert settings.getDateArray("valueGroup.dateValue_non", 12345).length == 0;
+        assert settings.getDateArray("valueGroup.dateValue_non", new Date(12345)).length == 0;
+        //
+        assert SelectEnum.One == settings.getEnumArray("valueGroup.enumValue_1", SelectEnum.class)[0];
+        assert SelectEnum.One == settings.getEnumArray("valueGroup.enumValue_2", SelectEnum.class)[0];
+        assert SelectEnum.Two == settings.getEnumArray("valueGroup.enumValue_3", SelectEnum.class)[0];
+        assert settings.getEnumArray("valueGroup.enumValue_4", SelectEnum.class, SelectEnum.Three).length == 0;
+        //
+        assert "c:\\user\\abc.txt".equals(settings.getFilePathArray("valueGroup.fileValue_1")[0]);
+        assert settings.getFilePathArray("valueGroup.fileValue_2").length == 0;
+        assert "/root/user/abc.txt".equals(settings.getFilePathArray("valueGroup.fileValue_3")[0]);
+        assert "/root/user".equals(settings.getFilePathArray("valueGroup.fileValue_4")[0]);
+        assert settings.getFilePathArray("valueGroup.fileValue_5").length == 0;
+        assert settings.getFilePathArray("valueGroup.fileValue_2", "abc").length == 0;
+        assert settings.getFilePathArray("valueGroup.fileValue_5", "abc").length == 0;
+        //
+        assert "c:\\user\\".equals(settings.getDirectoryPathArray("valueGroup.fileValue_1")[0]);
+        assert "c:\\".equals(settings.getDirectoryPathArray("valueGroup.fileValue_2")[0]);
+        assert "/root/user/".equals(settings.getDirectoryPathArray("valueGroup.fileValue_3")[0]);
+        assert "/root/".equals(settings.getDirectoryPathArray("valueGroup.fileValue_4")[0]);
+        assert "/".equals(settings.getDirectoryPathArray("valueGroup.fileValue_5")[0]);
+        assert settings.getDirectoryPathArray("valueGroup.fileValue_6", "abc").length == 0;
     }
+    //
+    @Test
+    public void valueTest3() throws Exception {
+        Settings settings = new StandardContextSettings("/net_hasor_core_settings/value-config.xml");
+        settings = new SettingsWrap(settings);
+        //
+        assert settings.getBoolean("valueGroup.booleanValue_true");
+        settings.setSetting("valueGroup.booleanValue_true", false);
+        assert !settings.getBoolean("valueGroup.booleanValue_true");
+        settings.setSetting("valueGroup.booleanValue_true", "n");
+        assert !settings.getBoolean("valueGroup.booleanValue_true");
+        //
+        settings.addSetting("valueGroup.booleanValue_true", true, "http://schema_a");
+        Boolean[] array = settings.getBooleanArray("valueGroup.booleanValue_true");
+        assert array.length == 2;
+        assert !array[0];
+        assert array[1];
+    }
+    //
+    //    @Test
+    //    public void valueTest4() throws Exception {
+    //        StandardContextSettings settings = new StandardContextSettings("/net_hasor_core_settings/value-config.xml");
+    //        //
+    //        assert "%JAVA_HOME%/bin/javac.exe".equals(settings.getString("valueGroup.evalValue"));
+    //        settings.resetValues(new UpdateValue() {
+    //            @Override
+    //            public void update(SettingValue oldValue, Settings context) {
+    //                Object defaultVar = oldValue.getDefaultVar();
+    //                if (defaultVar instanceof XmlNode) {
+    //                    if (((XmlNode) defaultVar).getName().equals("valueGroup.evalValue")) {
+    //                        oldValue.setDefaultVar("/root/java8/bin/javac.exe");
+    //                    }
+    //                }
+    //            }
+    //        });
+    //        assert "/root/java8/bin/javac.exe".equals(settings.getString("valueGroup.evalValue"));
+    //    }
 }

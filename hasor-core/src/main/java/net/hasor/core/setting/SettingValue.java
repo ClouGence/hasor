@@ -21,8 +21,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SettingValue {
-    private String space;
-    private Object defaultVar;
+    private String       space;
+    private Object       defaultVar;
     private List<Object> varList = new CopyOnWriteArrayList<Object>();
     //
     SettingValue(String space) {
