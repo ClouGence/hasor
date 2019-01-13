@@ -2,18 +2,16 @@ package net.hasor.core.container;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.binder.AbstractBinder;
-import net.hasor.core.classcode.matcher.Matchers;
+import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.container.aop.TestInterceptor;
 import net.hasor.core.container.aop.multilayer.l2.FooFunction;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.info.AopBindInfoAdapter;
-import net.hasor.utils.io.FileUtils;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
-import java.io.File;
 import java.io.IOException;
 public class BeanAopTest {
     @Test
@@ -30,11 +28,6 @@ public class BeanAopTest {
                 return container;
             }
         };
-        //
-        String tempDir = new File("temp_path").getAbsolutePath();
-        environment.addEnvVar("HASOR_TEMP_PATH", tempDir);
-        System.setProperty("net.hasor.core.container.classengine.debug", "true");
-        //
         //
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
@@ -69,7 +62,5 @@ public class BeanAopTest {
         }
         assert TestInterceptor.isCalled();
         assert TestInterceptor.isThrowed();
-        //
-        FileUtils.forceDelete(new File(tempDir));
     }
 }

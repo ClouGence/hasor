@@ -18,7 +18,6 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.Hasor;
 import net.hasor.core.Matcher;
 import net.hasor.core.Module;
-import net.hasor.core.classcode.matcher.Matchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

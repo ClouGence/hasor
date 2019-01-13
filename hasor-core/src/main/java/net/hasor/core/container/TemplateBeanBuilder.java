@@ -14,33 +14,42 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import net.hasor.core.*;
 import net.hasor.core.Type;
-import net.hasor.core.classcode.aop.AopClassConfig;
+import net.hasor.core.*;
+import net.hasor.core.aop.AopClassConfig;
+import net.hasor.core.aop.AsmTools;
 import net.hasor.core.info.*;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.asm.AnnotationVisitor;
+import net.hasor.utils.asm.ClassReader;
+import net.hasor.utils.asm.ClassVisitor;
+import net.hasor.utils.asm.Opcodes;
 import net.hasor.utils.convert.ConverterBean;
 import net.hasor.utils.reflect.ConstructorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 /**
  * 负责创建Bean对象，以及依赖注入和Aop的实现。
  * @version : 2015年6月26日
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class TemplateBeanBuilder implements BeanBuilder {
-    protected      Logger        logger         = LoggerFactory.getLogger(getClass());
-    private static ConverterBean converterUtils = null;
+    protected static Logger                                      logger         = LoggerFactory.getLogger(TemplateBeanBuilder.class);
+    private static   ConverterBean                               converterUtils = null;
+    private static   ConcurrentHashMap<Class<?>, AopClassConfig> buildEngineMap = null;
 
     static {
+        buildEngineMap = new ConcurrentHashMap<Class<?>, AopClassConfig>();
         converterUtils = new ConverterBean();
         converterUtils.deregister();
         converterUtils.register(true, true, 0);
@@ -160,11 +169,29 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             aopList = Collections.emptyList();
         }
         //
-        // .动态代理
+        // .动态代理，需要满足三个条件（1.类型必须支持Aop、2.没有被@AopIgnore排除在外、3.具有至少一个有效的拦截器）
         ClassLoader rootLoader = Hasor.assertIsNotNull(appContext.getClassLoader());
         Class<?> newType = targetType;
-        if (AopClassConfig.isSupport(targetType) && !aopList.isEmpty()) {
-            newType = ClassEngine.buildType(targetType, rootLoader, aopList, appContext);
+        if (AsmTools.isSupport(targetType) && !testAopIgnore(targetType, rootLoader) && !aopList.isEmpty()) {
+            AopClassConfig engine = buildEngineMap.get(targetType);
+            if (engine == null) {
+                engine = new AopClassConfig(targetType, rootLoader);
+                for (AopBindInfoAdapter aop : aopList) {
+                    if (!aop.getMatcherClass().matches(targetType)) {
+                        continue;
+                    }
+                    engine.addAopInterceptor(aop.getMatcherMethod(), aop);
+                }
+                engine = buildEngineMap.putIfAbsent(targetType, engine);
+                if (engine == null) {
+                    engine = buildEngineMap.get(targetType);
+                }
+            }
+            try {
+                newType = engine.buildClass();
+            } catch (Exception e) {
+                throw ExceptionUtils.toRuntimeException(e);
+            }
         }
         //
         // .确定要调用的构造方法 & 构造入参
@@ -247,6 +274,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
+    //
     private <T extends Annotation> T findAnnotation(Class<T> annoType, Annotation[] annotations) {
         if (annotations == null || annotations.length == 0) {
             return null;
@@ -484,5 +512,83 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         } catch (IllegalArgumentException e) {
             throw e;
         }
+    }
+    //
+    private <T> boolean testAopIgnore(Class<T> targetType, ClassLoader rootLoader) {
+        Boolean ignore = testAopIgnore(targetType, true);
+        if (ignore != null) {
+            return ignore;
+        }
+        ignore = testAopIgnore(rootLoader, targetType.getPackage().getName(), true);
+        return (ignore != null) ? ignore : false;
+    }
+    //
+    private static Boolean testAopIgnore(Class<?> targetType, boolean isRootClass) {
+        AopIgnore aopIgnore = targetType.getAnnotation(AopIgnore.class);
+        if (aopIgnore != null) {
+            // 1.被测试的类标记了@AopIgnore
+            // 2.继承的父类中标记了AopIgnore 注解并且 遗传属性genetic 的值为 true。
+            if (isRootClass || aopIgnore.inherited()) {
+                return aopIgnore.ignore();
+            }
+        }
+        Class<?> superclass = targetType.getSuperclass();
+        if (superclass != null) {
+            return testAopIgnore(superclass, false);
+        }
+        return null;
+    }
+    private static Boolean testAopIgnore(ClassLoader rootLoader, String packageName, boolean isRootPakcage) {
+        if (packageName == null) {
+            return null;
+        }
+        packageName = packageName.replace(".", "/");
+        //
+        final Map<String, Object> aopIgnoreInfo = new HashMap<String, Object>();
+        aopIgnoreInfo.put("inherited", true);
+        aopIgnoreInfo.put("ignore", true);
+        class AopIgnoreFinderVisitor extends AnnotationVisitor {
+            public AopIgnoreFinderVisitor(int api, AnnotationVisitor av) {
+                super(api, av);
+            }
+            @Override
+            public void visit(String name, Object value) {
+                aopIgnoreInfo.put(name, value);
+            }
+        }
+        //
+        for (; ; ) {
+            InputStream asStream = rootLoader.getResourceAsStream(packageName + "/package-info.class");
+            if (asStream != null) {
+                try {
+                    ClassReader classReader = new ClassReader(asStream);
+                    classReader.accept(new ClassVisitor(Opcodes.ASM7) {
+                        @Override
+                        public AnnotationVisitor visitAnnotation(final String desc, final boolean visible) {
+                            if (!AsmTools.toAsmType(AopIgnore.class).equals(desc)) {
+                                return super.visitAnnotation(desc, visible);
+                            }
+                            return new AopIgnoreFinderVisitor(Opcodes.ASM4, super.visitAnnotation(desc, visible));
+                        }
+                    }, ClassReader.SKIP_CODE);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+                //
+                // 1.被测试的包标记了@AopIgnore
+                // 2.包的父包中标记了AopIgnore 注解并且 遗传属性genetic 的值为 true。
+                if (isRootPakcage || Boolean.TRUE.equals(aopIgnoreInfo.get("inherited"))) {
+                    return Boolean.TRUE.equals(aopIgnoreInfo.get("ignore"));
+                }
+            }
+            if (packageName.indexOf('/') == -1) {
+                break;
+            }
+            packageName = StringUtils.substringBeforeLast(packageName, "/");
+            if (StringUtils.isBlank(packageName)) {
+                break;
+            }
+        }
+        return null;
     }
 }

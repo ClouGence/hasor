@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.classcode.aop;
+package net.hasor.core.aop;
+import net.hasor.core.MethodInvocation;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 /**
@@ -21,40 +23,28 @@ import java.lang.reflect.Method;
  * @version : 2013-4-13
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InnerChainAopInvocation implements AopInvocation {
-    private Method     targetMethod = null;
-    private Object     targetObject = null;
-    private Object[]   paramObjects = null;
-    private Class<?>[] paramTypes   = null;
+class InnerChainMethodInvocation implements MethodInvocation {
+    private Method   proxyMethod  = null;
+    private Method   targetMethod = null;
+    private Object   targetObject = null;
+    private Object[] paramObjects = null;
     //
-    public InnerChainAopInvocation(Method targetMethod, Object targetObject, Object[] paramObjects) {
+    InnerChainMethodInvocation(Method proxyMethod, Method targetMethod, Object targetObject, Object[] paramObjects) {
+        this.proxyMethod = proxyMethod;
         this.targetMethod = targetMethod;
         this.targetObject = targetObject;
         this.paramObjects = paramObjects;
-        this.paramTypes = targetMethod.getParameterTypes();
     }
-    // 
+    //
     public Method getMethod() {
-        Class<?> superType = this.targetMethod.getDeclaringClass().getSuperclass();
-        try {
-            try {
-                return superType.getDeclaredMethod(this.targetMethod.getName(), this.paramTypes);
-            } catch (Throwable e) {
-                return superType.getMethod(this.targetMethod.getName(), this.paramTypes);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return this.targetMethod;
     }
     public Object[] getArguments() {
         return this.paramObjects;
     }
     public Object proceed() throws Throwable {
-        Class<?> targetClass = this.targetMethod.getDeclaringClass();
-        Method invokeMethod = targetClass.getDeclaredMethod(AopClassAdapter.AopPrefix + this.targetMethod.getName(), this.paramTypes);
-        invokeMethod.setAccessible(true);
         try {
-            return invokeMethod.invoke(this.targetObject, this.paramObjects);
+            return proxyMethod.invoke(this.targetObject, this.paramObjects);
         } catch (InvocationTargetException e) {
             throw e.getTargetException();
         }

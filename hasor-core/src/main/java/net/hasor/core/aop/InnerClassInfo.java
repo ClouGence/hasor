@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * Aop工具包
+package net.hasor.core.aop;
+/***
+ *
+ * @version : 2014年11月29日
+ * @author 赵永春 (zyc@hasor.net)
  */
-package net.hasor.core.classcode.aop;
+class InnerClassInfo {
+    public volatile AopClassConfig classConfig;
+    public volatile Class<?>       classInfo;
+}

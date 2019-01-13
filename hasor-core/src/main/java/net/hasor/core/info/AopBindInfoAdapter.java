@@ -15,8 +15,6 @@
  */
 package net.hasor.core.info;
 import net.hasor.core.*;
-import net.hasor.core.classcode.aop.AopInterceptor;
-import net.hasor.core.classcode.aop.AopInvocation;
 
 import java.lang.reflect.Method;
 /**
@@ -24,7 +22,7 @@ import java.lang.reflect.Method;
  * @version : 2014年5月22日
  * @author 赵永春 (zyc@byshell.org)
  */
-public class AopBindInfoAdapter implements MethodInterceptor, AopInterceptor, AppContextAware {
+public class AopBindInfoAdapter implements MethodInterceptor, AppContextAware {
     private Matcher<Class<?>> matcherClass  = null;
     private Matcher<Method>   matcherMethod = null;
     private MethodInterceptor interceptor   = null;
@@ -42,30 +40,8 @@ public class AopBindInfoAdapter implements MethodInterceptor, AopInterceptor, Ap
         return matcherMethod;
     }
     //
-    public Object invoke(AopInvocation invocation) throws Throwable {
-        return this.invoke(new ProxyAopInvocation(invocation));
-    }
     public Object invoke(final MethodInvocation invocation) throws Throwable {
         return this.interceptor.invoke(invocation);
-    }
-    //
-    private static class ProxyAopInvocation implements MethodInvocation {
-        private AopInvocation invocation;
-        public ProxyAopInvocation(AopInvocation invocation) {
-            this.invocation = invocation;
-        }
-        public Method getMethod() {
-            return this.invocation.getMethod();
-        }
-        public Object[] getArguments() {
-            return this.invocation.getArguments();
-        }
-        public Object proceed() throws Throwable {
-            return this.invocation.proceed();
-        }
-        public Object getThis() {
-            return this.invocation.getThis();
-        }
     }
     public void setAppContext(AppContext appContext) {
         if (this.interceptor instanceof AppContextAware) {

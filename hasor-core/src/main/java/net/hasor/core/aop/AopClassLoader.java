@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.classcode;
+package net.hasor.core.aop;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Map;
@@ -23,28 +23,28 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version : 2014年9月7日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MoreClassLoader extends ClassLoader {
-    private Map<String, ClassInfo>       classMap  = new ConcurrentHashMap<String, ClassInfo>();
-    private ThreadLocal<ClassCodeObject> localLocl = new ThreadLocal<ClassCodeObject>() {
-        protected ClassCodeObject initialValue() {
-            return new ClassCodeObject();
+public class AopClassLoader extends ClassLoader {
+    private Map<String, InnerClassInfo> classMap  = new ConcurrentHashMap<String, InnerClassInfo>();
+    private ThreadLocal<BasicObject>    localLocl = new ThreadLocal<BasicObject>() {
+        protected BasicObject initialValue() {
+            return new BasicObject();
         }
     };
     //
-    public MoreClassLoader() {
+    public AopClassLoader() {
         super(Thread.currentThread().getContextClassLoader());
     }
-    public MoreClassLoader(ClassLoader parentLoader) {
+    public AopClassLoader(ClassLoader parentLoader) {
         super(parentLoader);
     }
     //
-    public AbstractClassConfig findClassConfig(String className) {
-        ClassInfo ci = this.classMap.get(className);
+    public AopClassConfig findClassConfig(String className) {
+        InnerClassInfo ci = this.classMap.get(className);
         return ci == null ? null : ci.classConfig;
     }
     //
     protected final Class<?> findClass(final String className) throws ClassNotFoundException {
-        ClassInfo acc = this.classMap.get(className);
+        InnerClassInfo acc = this.classMap.get(className);
         if (acc != null) {
             if (acc.classInfo == null) {
                 synchronized (localLocl.get()) {
@@ -62,22 +62,39 @@ public class MoreClassLoader extends ClassLoader {
         if (classResource.endsWith(".class")) {
             String className = classResource.substring(0, classResource.length() - 6).replace("/", ".");
             if (this.classMap.containsKey(className)) {
-                ClassInfo ce = this.classMap.get(className);
+                InnerClassInfo ce = this.classMap.get(className);
                 return new ByteArrayInputStream(ce.classConfig.getBytes());
             }
         }
         return super.getResourceAsStream(classResource);
     }
     /***/
-    public void addClassConfig(AbstractClassConfig config) {
+    void addClassConfig(AopClassConfig config) {
         String cname = config.getClassName();
         if (!this.classMap.containsKey(cname)) {
-            ClassInfo ci = new ClassInfo();
+            InnerClassInfo ci = new InnerClassInfo();
             ci.classConfig = config;
             ci.classInfo = null;
             this.classMap.put(cname, ci);
         } else {
             //
         }
+    }
+    //
+    public static Class<?> getPrototypeType(Object aopObject) {
+        return getPrototypeType(aopObject.getClass());
+    }
+    public static Class<?> getPrototypeType(Class<?> aopType) {
+        if (aopType.getClassLoader() instanceof AopClassLoader) {
+            AopClassConfig classConfig = ((AopClassLoader) aopType.getClassLoader()).findClassConfig(aopType.getName());
+            return classConfig.getSuperClass();
+        }
+        return aopType;
+    }
+    public static boolean isDynamic(Object aopObject) {
+        return isDynamic(aopObject.getClass());
+    }
+    public static boolean isDynamic(Class<?> aopType) {
+        return aopType.getClassLoader() instanceof AopClassLoader;
     }
 }

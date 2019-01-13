@@ -13,13 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.classcode;
-/***
- *
- * @version : 2014年11月29日
+package net.hasor.core.aop;
+import net.hasor.core.MethodInterceptor;
+import net.hasor.core.MethodInvocation;
+
+import java.util.List;
+/**
+ * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-class ClassInfo {
-    public volatile AbstractClassConfig classConfig;
-    public volatile Class<?>            classInfo;
+public class AopBeanInterceptor implements MethodInterceptor {
+    @Override
+    public Object invoke(MethodInvocation invocation) throws Throwable {
+        invocation.getMethod();
+        invocation.getArguments();
+        invocation.getThis();
+        try {
+            ((List<String>) invocation.getArguments()[0]).add("BEFORE");
+            return invocation.proceed();
+        } finally {
+            ((List<String>) invocation.getArguments()[0]).add("AFTER");
+        }
+    }
 }

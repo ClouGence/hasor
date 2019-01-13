@@ -15,7 +15,7 @@
  */
 package net.hasor.core.environment;
 import net.hasor.core.Environment;
-import net.hasor.core.classcode.MoreClassLoader;
+import net.hasor.core.aop.AopClassLoader;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.utils.ResourcesUtils;
 
@@ -65,7 +65,7 @@ public class StandardEnvironment extends AbstractEnvironment {
         if (loader == null) {
             loader = Thread.currentThread().getContextClassLoader();
         }
-        this.setRootLosder(new MoreClassLoader(loader));
+        this.setRootLosder(new AopClassLoader(loader));
         this.initEnvironment(frameworkEnvConfig);
     }
     protected static URI toURI(Object source) {

@@ -19,4 +19,3 @@
  */
 @AopIgnore
 package net.hasor.core;
-import net.hasor.core.container.AopIgnore;

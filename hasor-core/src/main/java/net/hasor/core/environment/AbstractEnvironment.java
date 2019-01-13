@@ -18,7 +18,7 @@ import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
-import net.hasor.core.classcode.MoreClassLoader;
+import net.hasor.core.aop.AopClassLoader;
 import net.hasor.core.event.StandardEventManager;
 import net.hasor.core.setting.AbstractSettings;
 import net.hasor.core.setting.SettingValue;
@@ -53,7 +53,7 @@ public abstract class AbstractEnvironment implements Environment {
     public AbstractEnvironment(Object context, AbstractSettings settings) {
         this.settings = settings;
         this.context = context;
-        this.rootLosder = new MoreClassLoader();
+        this.rootLosder = new AopClassLoader();
         this.envMap = new ConcurrentHashMap<String, String>();
     }
     @Override

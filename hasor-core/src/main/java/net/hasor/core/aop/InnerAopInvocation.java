@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.classcode.aop;
-import net.hasor.core.classcode.AbstractClassConfig;
-import net.hasor.core.classcode.MoreClassLoader;
+package net.hasor.core.aop;
+import net.hasor.core.MethodInterceptor;
+import net.hasor.core.MethodInvocation;
 
 import java.lang.reflect.Method;
 /**
@@ -23,26 +23,23 @@ import java.lang.reflect.Method;
  * @version : 2013-4-13
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InnerAopInvocation implements AopInvocation {
-    private AopInterceptor[] interceptorDefinitions;
-    private AopInvocation    proceedingChain;
-    private int index = -1;
+public class InnerAopInvocation implements MethodInvocation {
+    private MethodInterceptor[] interceptorDefinitions;
+    private MethodInvocation    proceedingChain;
+    private int                 index = -1;
     //
-    public InnerAopInvocation(String targetMethodDesc, final Method targetMethod, final AopInvocation proceedingChain) {
-        Class<?> targetClass = targetMethod.getDeclaringClass();
+    public InnerAopInvocation(String targetMethodDesc, final Method targetMethod, final Method proxyMethod, final Object targetObject, Object[] methodParams) {
+        Class<?> targetClass = targetObject.getClass();
         ClassLoader loader = targetClass.getClassLoader();
-        if (loader instanceof MoreClassLoader) {
-            String className = targetMethod.getDeclaringClass().getName();
-            AbstractClassConfig cc = ((MoreClassLoader) loader).findClassConfig(className);
-            if (cc != null && cc instanceof AopClassConfig) {
-                AopClassConfig aopCC = (AopClassConfig) cc;
-                this.interceptorDefinitions = aopCC.findInterceptor(targetMethodDesc);
-            }
+        if (loader instanceof AopClassLoader) {
+            AopClassConfig cc = ((AopClassLoader) loader).findClassConfig(targetClass.getName());
+            this.interceptorDefinitions = cc.findInterceptor(targetMethodDesc);
         }
         if (this.interceptorDefinitions == null) {
-            this.interceptorDefinitions = new AopInterceptor[0];
+            this.interceptorDefinitions = new MethodInterceptor[0];
         }
-        this.proceedingChain = proceedingChain;
+        //
+        this.proceedingChain = new InnerChainMethodInvocation(proxyMethod, targetMethod, targetObject, methodParams);
     }
     public Method getMethod() {
         return this.proceedingChain.getMethod();

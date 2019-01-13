@@ -16,4 +16,4 @@
 /** 关闭忽略行为 */
 @AopIgnore(ignore = false)
 package net.hasor.core.container.aop;
-import net.hasor.core.container.AopIgnore;
+import net.hasor.core.AopIgnore;

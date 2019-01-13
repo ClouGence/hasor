@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container;
+package net.hasor.core;
 import java.lang.annotation.*;
 /**
  * 标记接口或者包上，用于忽略Hasor的Aop动态代理功能。当标记到包上时表示整个包都忽略动态代理。
- * 该功能可以有效的防止泛滥的全局Aop。
+ * 该功能可以有效的防止泛滥的全局Aop。优先级顺序为：类->父类->包->父包
  * @version : 2016年12月22日
  * @author 赵永春 (zyc@hasor.net)
  */

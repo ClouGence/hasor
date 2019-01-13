@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container;
-import net.hasor.core.Matcher;
-import net.hasor.core.classcode.aop.AopMatcher;
+package net.hasor.core.aop;
+import net.hasor.core.AopIgnore;
+import net.hasor.core.exts.aop.Aop;
 
-import java.lang.reflect.Method;
+import java.util.List;
 /**
- * 负责根据Class或BindInfo创建Bean。
- * @version : 2015年6月26日
+ * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-class ClassAopMatcher implements AopMatcher {
-    private Matcher<Method> matcherMethod = null;
-    public ClassAopMatcher(Matcher<Method> matcherMethod) {
-        this.matcherMethod = matcherMethod;
-    }
-    public boolean matcher(Method target) {
-        return this.matcherMethod.matches(target);
+@Aop(AopBeanInterceptor.class)
+@AopIgnore(ignore = false)
+public class AopBean {
+    public void doInit(List<String> event) {
+        event.add("DO");
     }
 }

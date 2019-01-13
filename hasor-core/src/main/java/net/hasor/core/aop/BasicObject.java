@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.classcode.aop;
-import java.lang.reflect.Method;
-/**
- * 该类的作用是在生成的类中加入aop的支持。
- * @version 2010-9-2
+package net.hasor.core.aop;
+/***
+ *
+ * @version : 2014年11月29日
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface AopMatcher {
-    /**Returns {@code true} if this matches {@code t}, {@code false} otherwise.*/
-    public boolean matcher(Method target);
+public class BasicObject extends java.lang.Object {
 }
