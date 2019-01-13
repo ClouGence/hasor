@@ -13,26 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.aop;
-import net.hasor.core.MethodInterceptor;
+package net.hasor.core.aop.interceptor;
 import net.hasor.core.MethodInvocation;
-
-import java.util.List;
+import net.hasor.core.container.aop.TestInterceptor;
 /**
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class AopBeanInterceptor implements MethodInterceptor {
+public class TransparentInterceptor extends TestInterceptor {
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        invocation.getMethod();
-        invocation.getArguments();
-        invocation.getThis();
-        try {
-            ((List<String>) invocation.getArguments()[0]).add("BEFORE");
-            return invocation.proceed();
-        } finally {
-            ((List<String>) invocation.getArguments()[0]).add("AFTER");
-        }
+        return super.invoke(invocation);
     }
 }

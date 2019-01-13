@@ -48,7 +48,10 @@ public class AopClassConfig {
     private        Map<String, MethodInterceptor[]>   interceptorMap    = null;
     private        Map<String, Method>                interceptorMethod = null;
     private static AtomicLong                         spinIndex         = new AtomicLong(0);
-    static         String                             aopMethodPrex     = "aop$";
+    static         String                             aopMethodSuffix   = "aop$";
+    static         String                             aopClassSuffix    = "$Auto$";
+    private        boolean                            debug             = false;
+    private        File                               classWritePath;
     //
     //
     /**创建{@link AopClassConfig}类型对象。 */
@@ -62,7 +65,7 @@ public class AopClassConfig {
     /**创建{@link AopClassConfig}类型对象。 */
     public AopClassConfig(Class<?> superClass, ClassLoader parentLoader) {
         this.superClass = (superClass == null) ? BasicObject.class : superClass;
-        this.className = this.superClass.getName() + "$Auto$" + spinIndex.getAndIncrement();
+        this.className = this.superClass.getName() + aopClassSuffix + spinIndex.getAndIncrement();
         this.classBytes = null;
         this.interceptorList = new ArrayList<InnerMethodInterceptorDefine>();
         this.interceptorMap = new HashMap<String, MethodInterceptor[]>();
@@ -169,7 +172,7 @@ public class AopClassConfig {
         if (this.classType != null) {
             return (Class<? extends T>) this.classType;
         }
-        if (!this.hasChange()){
+        if (!this.hasChange()) {
             return (Class<? extends T>) this.superClass;
         }
         if (!isSupport()) {
@@ -187,25 +190,40 @@ public class AopClassConfig {
         // .构造方法
         Constructor<?>[] constructorArray = this.getSuperClass().getConstructors();
         for (Constructor<?> constructor : constructorArray) {
+            String[] asmParams = AsmTools.splitAsmType(AsmTools.toAsmType(constructor.getParameterTypes()));//"IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean;"
             String[] throwStrArray = AsmTools.replaceClassName(constructor.getExceptionTypes());
             String paramsStr = "(" + AsmTools.toAsmType(constructor.getParameterTypes()) + ")V";
+            //
+            AtomicInteger variableIndexCounters = new AtomicInteger(0);
+            Map<String, Integer> paramIndexMap = new LinkedHashMap<String, Integer>();
+            paramIndexMap.put("this", 0);
+            for (int i = 0; i < asmParams.length; i++) {
+                paramIndexMap.put("args" + i, variableIndexCounters.incrementAndGet());
+                if ("D".equals(asmParams[i])) {
+                    variableIndexCounters.incrementAndGet();// double 需要额外增加1
+                }
+                if ("J".equals(asmParams[i])) {
+                    variableIndexCounters.incrementAndGet();// long 需要额外增加1
+                }
+            }
+            //
             Label startBlock = new Label();
             Label endBlock = new Label();
             //
             MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, "<init>", paramsStr, null, throwStrArray);
             mv.visitCode();
             mv.visitLabel(startBlock);
-            mv.visitVarInsn(ALOAD, 0);
+            mv.visitVarInsn(ALOAD, paramIndexMap.get("this"));
             Class<?>[] parameterTypes = constructor.getParameterTypes();
             for (int i = 0; i < parameterTypes.length; i++) {
-                mv.visitVarInsn(AsmTools.getLoad(AsmTools.toAsmType(parameterTypes[i])), i + 1);
+                mv.visitVarInsn(AsmTools.getLoad(AsmTools.toAsmType(parameterTypes[i])), paramIndexMap.get("args" + i));
             }
             mv.visitMethodInsn(INVOKESPECIAL, superClassName, "<init>", paramsStr, false);
             mv.visitInsn(RETURN);
             mv.visitLabel(endBlock);
-            mv.visitLocalVariable("this", "L" + thisClassName + ";", null, startBlock, endBlock, 0);
+            mv.visitLocalVariable("this", "L" + thisClassName + ";", null, startBlock, endBlock, paramIndexMap.get("this"));
             for (int i = 0; i < parameterTypes.length; i++) {
-                mv.visitLocalVariable("args" + i, AsmTools.toAsmType(parameterTypes), null, startBlock, endBlock, i + 1);
+                mv.visitLocalVariable("args" + i, AsmTools.toAsmType(parameterTypes[i]), null, startBlock, endBlock, paramIndexMap.get("args" + i));
             }
             int maxStack = parameterTypes.length + 1;
             mv.visitMaxs(maxStack, maxStack);
@@ -271,7 +289,7 @@ public class AopClassConfig {
                 mv.visitFieldInsn(GETSTATIC, thisClassName, "proxyMethod", AsmTools.toAsmType(Method[].class));
                 mv.visitIntInsn(BIPUSH, i);
                 mv.visitVarInsn(ALOAD, thisClassIndex); // superClass
-                mv.visitLdcInsn(aopMethodPrex + interceptorMethod.get(ent.getKey()).getName());
+                mv.visitLdcInsn(aopMethodSuffix + interceptorMethod.get(ent.getKey()).getName());
                 AsmTools.codeBuilder_2(mv, AsmTools.splitAsmType(AsmTools.toAsmType(parameterTypes)));
                 mv.visitMethodInsn(INVOKEVIRTUAL, AsmTools.replaceClassName(Class.class), "getMethod", getMethodDesc, false);
                 mv.visitInsn(AASTORE);
@@ -313,7 +331,7 @@ public class AopClassConfig {
                 }
             }
             //
-            MethodVisitor replacementVisitor = classWriter.visitMethod(ACC_PUBLIC, aopMethodPrex + aopMethod.getName(), AsmTools.toAsmDesc(aopMethod), AsmTools.toAsmSignature(aopMethod), throwStrArray);
+            MethodVisitor replacementVisitor = classWriter.visitMethod(ACC_PUBLIC, aopMethodSuffix + aopMethod.getName(), AsmTools.toAsmDesc(aopMethod), AsmTools.toAsmSignature(aopMethod), throwStrArray);
             replacementVisitor.visitCode();
             replacementVisitor.visitVarInsn(ALOAD, 0);
             for (int i = 0; i < asmParams.length; i++) {
@@ -424,12 +442,10 @@ public class AopClassConfig {
         //
         classWriter.visitEnd();
         this.classBytes = classWriter.toByteArray();
-        if ("true".equals(System.getProperty("net.hasor.core.container.classengine.debug"))) {
-            //            String cacheDir = appContext.getEnvironment().evalString("%HASOR_TEMP_PATH%/debug/aopclasses");
+        if (debug) {
             FileOutputStream fos = null;
             try {
-                File outFile = new File(thisClassName + ".class");
-                System.out.println(outFile.getAbsolutePath());
+                File outFile = new File(classWritePath, thisClassName + ".class");
                 outFile.getParentFile().mkdirs();
                 outFile.delete();
                 fos = new FileOutputStream(outFile, false);
@@ -444,5 +460,12 @@ public class AopClassConfig {
         this.parentLoader.addClassConfig(this);
         this.classType = this.parentLoader.findClass(getClassName());
         return (Class<? extends T>) this.classType;
+    }
+    public boolean isDebug() {
+        return debug;
+    }
+    public void debug(boolean debug, File classWritePath) {
+        this.classWritePath = Hasor.assertIsNotNull(classWritePath);
+        this.debug = debug;
     }
 }

@@ -90,7 +90,7 @@ public class AsmTools implements Opcodes {
         }
     }
     /**根据asm类型获取其ASTORE指令。*/
-    public static int getAstore(final String asmType) {
+    /*public static int getAstore(final String asmType) {
         char t = asmType.charAt(0);
         switch (t) {
         case 'B':
@@ -116,7 +116,7 @@ public class AsmTools implements Opcodes {
         default:
             throw new UnsupportedOperationException("不支持的类型装载请求");//
         }
-    }
+    }*/
     //=======================================================================================================================
     /**将某一个类型转为asm形式的表述， int 转为 I，String转为 Ljava/lang/String。*/
     public static String toAsmType(final Class<?> classType) {
@@ -356,7 +356,7 @@ public class AsmTools implements Opcodes {
         }
         try {
             return new AsmTypeRead(asmTypes).readTypes();//     IIIILjava/lang/Integer;F[[[Ljava/util/Date;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new RuntimeException("不合法的ASM类型desc。");
         }
     }
