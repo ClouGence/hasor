@@ -1,4 +1,4 @@
-package net.test.hasor.dataql;
+package net.hasor.dataql;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
 /** 返回一个 double 类型的 number */

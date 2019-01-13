@@ -13,13 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.dataql;
+package net.hasor.dataql;
 import com.alibaba.fastjson.JSON;
 import net.hasor.core.*;
-import net.hasor.dataql.Query;
-import net.hasor.dataql.QueryResult;
-import net.hasor.dataql.UdfManager;
-import net.hasor.dataql.UdfSource;
 import net.hasor.dataql.binder.DataApiBinder;
 import net.hasor.dataql.binder.DataQL;
 import net.hasor.dataql.domain.compiler.QIL;
