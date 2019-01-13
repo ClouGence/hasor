@@ -18,4 +18,4 @@
  */
 @AopIgnore
 package net.hasor.rsf;
-import net.hasor.core.container.AopIgnore;
+import net.hasor.core.AopIgnore;

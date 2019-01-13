@@ -20,4 +20,4 @@
  */
 @AopIgnore
 package net.hasor.dataql.jsr223;
-import net.hasor.core.container.AopIgnore;
+import net.hasor.core.AopIgnore;
