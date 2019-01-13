@@ -23,10 +23,11 @@ import net.hasor.core.provider.ClassLoaderSingleProvider;
 import net.hasor.core.provider.SingleProvider;
 import net.hasor.core.provider.ThreadSingleProvider;
 import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.ResourcesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.util.*;
@@ -49,6 +50,8 @@ public class Hasor extends HashMap<String, String> {
     protected Hasor(Object context) {
         this.context = context;
     }
+    //
+    //
     public Hasor setMainSettings(File mainSettings) {
         this.mainSettings = mainSettings;
         return this;
@@ -65,6 +68,8 @@ public class Hasor extends HashMap<String, String> {
         this.mainSettings = mainSettings;
         return this;
     }
+    //
+    //
     public Hasor putData(String key, String value) {
         this.put(key, value);
         return this;
@@ -73,10 +78,26 @@ public class Hasor extends HashMap<String, String> {
         this.putAll(mapData);
         return this;
     }
-    public Hasor setLoader(ClassLoader loader) {
-        this.loader = loader;
+    public Hasor loadProperties(File resourceName) throws IOException {
+        return loadProperties(new FileReader(resourceName));
+    }
+    public Hasor loadProperties(String resourceName) throws IOException {
+        InputStream inStream = ResourcesUtils.getResourceAsStream(resourceName);
+        return loadProperties(new InputStreamReader(inStream, Settings.DefaultCharset));
+    }
+    public Hasor loadProperties(String encodeing, InputStream inStream) throws IOException {
+        return loadProperties(new InputStreamReader(inStream, encodeing));
+    }
+    public Hasor loadProperties(Reader propertiesReader) throws IOException {
+        Properties properties = new Properties();
+        properties.load(propertiesReader);
+        for (Object key : properties.keySet()) {
+            this.put(key.toString(), properties.getProperty(key.toString()));
+        }
         return this;
     }
+    //
+    //
     public Hasor addModules(List<Module> moduleList) {
         if (moduleList != null) {
             this.moduleList.addAll(moduleList);
@@ -89,11 +110,18 @@ public class Hasor extends HashMap<String, String> {
         }
         return this;
     }
+    //
+    //
+    public Hasor setLoader(ClassLoader loader) {
+        this.loader = loader;
+        return this;
+    }
+    //
+    //
     public Hasor asSmaller() {
         return this.putData("HASOR_LOAD_MODULE", "false");
     }
     private static Provider<AppContext> singletonHasor = null;
-    //
     public AppContext asStaticSingleton() {
         AppContext appContext = localAppContext();
         if (appContext == null) {
@@ -133,12 +161,16 @@ public class Hasor extends HashMap<String, String> {
         }
         throw new IllegalStateException("Hasor has been initialized.");
     }
+    //
+    //
     public static AppContext localAppContext() {
         if (singletonHasor != null) {
             return singletonHasor.get();
         }
         return null;
     }
+    //
+    //
     /**用简易的方式创建{@link AppContext}容器。*/
     public AppContext build(Module... modules) {
         return this.addModules(modules).build();
