@@ -18,6 +18,7 @@ package net.hasor.web.definition;
  * A general interface for matching a URI against a URI pattern. Guice-servlet provides regex and
  * servlet-style pattern matching out of the box.
  * @author dhanji@gmail.com (Dhanji R. Prasanna)
+ * @author 赵永春 (zyc@hasor.net) 2019-01-07 ,删除extractPath方法
  */
 public interface UriPatternMatcher {
     /**
@@ -25,16 +26,6 @@ public interface UriPatternMatcher {
      * @return Returns true if the uri matches the pattern.
      */
     public boolean matches(String uri);
-
-    /**
-     * @param pattern The Path that this service pattern can match against.
-     * @return Returns a canonical servlet path from this pattern. For instance, if the pattern is
-     *         {@code /home/*} then the path extracted will be {@code /home}. Each pattern matcher
-     *         implementation must decide and publish what a canonical path represents.
-     *
-     *         NOTE(dhanji): This method returns null for the regex pattern matcher.
-     */
-    public String extractPath(String pattern);
 
     /** Returns the type of pattern this is. */
     public UriPatternType getPatternType();

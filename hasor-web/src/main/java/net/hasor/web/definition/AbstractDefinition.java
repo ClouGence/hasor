@@ -76,15 +76,13 @@ public abstract class AbstractDefinition implements InvokerFilter {
     @Override
     public final void init(InvokerConfig config) throws Throwable {
         this.appContext = config.getAppContext();
-        Map<String, String> initParams = new HashMap<String, String>();
         Enumeration<String> names = config.getInitParameterNames();
         while (names.hasMoreElements()) {
             String key = names.nextElement();
             String value = config.getInitParameter(key);
-            initParams.put(key, value);
+            this.getInitParams().put(key, value);
         }
         //
-        this.getInitParams().putAll(initParams);
         this.getTarget();
     }
     protected AppContext getAppContext() {

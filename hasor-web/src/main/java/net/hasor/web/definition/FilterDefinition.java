@@ -16,14 +16,13 @@
 package net.hasor.web.definition;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
+import net.hasor.core.Provider;
 import net.hasor.utils.ExceptionUtils;
-import net.hasor.utils.Iterators;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 
 import javax.servlet.*;
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.Map;
 /**
  * Filter 定义
@@ -45,56 +44,45 @@ public class FilterDefinition extends AbstractDefinition {
             return this.instance;
         }
         //
-        final Map<String, String> initParams = this.getInitParams();
         final AppContext appContext = this.getAppContext();
+        final ServletContext servletContext = appContext.getInstance(ServletContext.class);
         this.instance = appContext.getInstance(this.bindInfo);
-        this.instance.init(new FilterConfig() {
+        this.instance.init(new J2eeMapConfig(bindInfo.getBindID(), this.getInitParams(), new Provider<ServletContext>() {
             @Override
-            public String getFilterName() {
-                return bindInfo.getBindID();
+            public ServletContext get() {
+                return servletContext;
             }
-            @Override
-            public ServletContext getServletContext() {
-                return appContext.getInstance(ServletContext.class);
-            }
-            @Override
-            public String getInitParameter(String name) {
-                return initParams.get(name);
-            }
-            @Override
-            public Enumeration<String> getInitParameterNames() {
-                return Iterators.asEnumeration(initParams.keySet().iterator());
-            }
-        });
+        }));
         return this.instance;
     }
     //
     /*--------------------------------------------------------------------------------------------------------*/
     public void doInvoke(final Invoker invoker, final InvokerChain chain) throws Throwable {
         Filter filter = this.getTarget();
-        if (filter != null) {
-            filter.doFilter(invoker.getHttpRequest(), invoker.getHttpResponse(), new FilterChain() {
-                @Override
-                public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
-                    try {
-                        chain.doNext(invoker);
-                    } catch (IOException e) {
-                        throw (IOException) e;
-                    } catch (ServletException e) {
-                        throw (ServletException) e;
-                    } catch (Throwable e) {
-                        throw ExceptionUtils.toRuntimeException(e);
-                    }
-                }
-            });
-        } else {
-            chain.doNext(invoker);
+        if (filter == null) {
+            throw new NullPointerException("target Filter instance is null.");
         }
+        //
+        filter.doFilter(invoker.getHttpRequest(), invoker.getHttpResponse(), new FilterChain() {
+            @Override
+            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+                try {
+                    chain.doNext(invoker);
+                } catch (IOException e) {
+                    throw (IOException) e;
+                } catch (ServletException e) {
+                    throw (ServletException) e;
+                } catch (Throwable e) {
+                    throw ExceptionUtils.toRuntimeException(e);
+                }
+            }
+        });
     }
     public void destroy() {
         if (this.instance == null) {
             return;
         }
         this.instance.destroy();
+        this.instance = null;
     }
 }

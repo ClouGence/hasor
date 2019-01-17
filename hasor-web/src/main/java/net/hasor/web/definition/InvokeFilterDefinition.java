@@ -16,13 +16,10 @@
 package net.hasor.web.definition;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.utils.Iterators;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
-import net.hasor.web.InvokerConfig;
 import net.hasor.web.InvokerFilter;
 
-import java.util.Enumeration;
 import java.util.Map;
 /**
  * InvokerFilter 定义
@@ -47,35 +44,23 @@ public class InvokeFilterDefinition extends AbstractDefinition {
         final Map<String, String> initParams = this.getInitParams();
         final AppContext appContext = this.getAppContext();
         this.instance = appContext.getInstance(this.bindInfo);
-        this.instance.init(new InvokerConfig() {
-            @Override
-            public String getInitParameter(String name) {
-                return initParams.get(name);
-            }
-            @Override
-            public Enumeration<String> getInitParameterNames() {
-                return Iterators.asEnumeration(initParams.keySet().iterator());
-            }
-            @Override
-            public AppContext getAppContext() {
-                return appContext;
-            }
-        });
+        this.instance.init(new InvokerMapConfig(initParams, appContext));
         return this.instance;
     }
     //
     /*--------------------------------------------------------------------------------------------------------*/
     public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
         InvokerFilter filter = this.getTarget();
-        if (filter != null) {
-            filter.doInvoke(invoker, chain);
-        } else {
-            chain.doNext(invoker);
+        if (filter == null) {
+            throw new NullPointerException("target InvokerFilter instance is null.");
         }
+        filter.doInvoke(invoker, chain);
     }
     public void destroy() {
-        if (this.instance != null) {
-            this.instance.destroy();
+        if (this.instance == null) {
+            return;
         }
+        this.instance.destroy();
+        this.instance = null;
     }
 }
