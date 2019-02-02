@@ -13,28 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.render;
-import net.hasor.web.Controller;
+package net.hasor.web.invoker.beans;
 import net.hasor.web.Invoker;
-import net.hasor.web.annotation.Any;
-
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServlet;
-import java.io.IOException;
+import net.hasor.web.InvokerData;
+import net.hasor.web.WebPlugin;
 /**
  * @version : 2017-01-08
  * @author 赵永春 (zyc@hasor.net)
  */
-public class DefaultServlet extends HttpServlet implements Controller {
-    public static final String DEFAULT_NAME = DefaultServlet.class.getName();
-    @Override
-    public void initController(Invoker renderData) {
-        //
+public class TestWebPlugin implements WebPlugin {
+    private static boolean beforeFilter = false;
+    private static boolean afterFilter  = false;
+    //
+    public static void resetInit() {
+        beforeFilter = false;
+        afterFilter = false;
     }
-    @Any
+    public static boolean isBeforeFilter() {
+        return beforeFilter;
+    }
+    public static boolean isAfterFilter() {
+        return afterFilter;
+    }
+    //
     @Override
-    public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
+    public void beforeFilter(Invoker invoker, InvokerData info) {
+        beforeFilter = true;
+    }
+    @Override
+    public void afterFilter(Invoker invoker, InvokerData info) {
+        afterFilter = true;
     }
 }

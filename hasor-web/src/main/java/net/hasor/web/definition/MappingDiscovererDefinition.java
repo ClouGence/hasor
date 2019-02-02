@@ -15,48 +15,42 @@
  */
 package net.hasor.web.definition;
 import net.hasor.core.AppContext;
+import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
-import net.hasor.web.Invoker;
-import net.hasor.web.InvokerData;
-import net.hasor.web.WebPlugin;
+import net.hasor.web.Mapping;
+import net.hasor.web.MappingDiscoverer;
 /**
  * WebPlugin 定义
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public class WebPluginDefinition implements WebPlugin {
-    private BindInfo<? extends WebPlugin> bindInfo   = null;
-    private AppContext                    appContext = null;
+public class MappingDiscovererDefinition implements MappingDiscoverer, AppContextAware {
+    private BindInfo<? extends MappingDiscoverer> bindInfo   = null;
+    private AppContext                            appContext = null;
     //
-    public WebPluginDefinition(final BindInfo<? extends WebPlugin> bindInfo) {
+    public MappingDiscovererDefinition(final BindInfo<? extends MappingDiscoverer> bindInfo) {
         this.bindInfo = bindInfo;
     }
     //
-    protected WebPlugin getTarget() {
+    protected MappingDiscoverer getTarget() {
         return this.appContext.getInstance(this.bindInfo);
     }
     //
     @Override
     public String toString() {
-        return String.format("type %s", WebPluginDefinition.class);
+        return String.format("type %s", MappingDiscovererDefinition.class);
     }
     //
     /*--------------------------------------------------------------------------------------------------------*/
-    public void initPlugin(AppContext appContext) {
+    @Override
+    public void setAppContext(AppContext appContext) {
         this.appContext = appContext;
     }
     @Override
-    public void beforeFilter(Invoker invoker, InvokerData define) {
-        WebPlugin plugin = this.getTarget();
+    public void discover(Mapping mappingData) {
+        MappingDiscoverer plugin = this.getTarget();
         if (plugin != null) {
-            plugin.beforeFilter(invoker, define);
-        }
-    }
-    @Override
-    public void afterFilter(Invoker invoker, InvokerData define) {
-        WebPlugin plugin = this.getTarget();
-        if (plugin != null) {
-            plugin.afterFilter(invoker, define);
+            plugin.discover(mappingData);
         }
     }
 }

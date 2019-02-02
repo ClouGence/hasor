@@ -200,7 +200,7 @@ public abstract class AbstractBinder implements ApiBinder {
             return this;
         }
         @Override
-        public MetaDataBindingBuilder<T> asEagerSingletonClear() {
+        public MetaDataBindingBuilder<T> asEagerAnnoClear() {
             this.typeBuilder.setSingletonMode(SingletonMode.Clear);
             return this;
         }

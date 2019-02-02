@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.web;
-import net.hasor.web.mime.MimeTypeSupplier;
-import org.junit.Test;
-
-import java.io.IOException;
+package net.hasor.web.invoker.beans;
+import net.hasor.web.Mapping;
+import net.hasor.web.MappingDiscoverer;
 /**
- * S
- * @version : 2016年2月15日
+ * @version : 2017-01-08
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MimeTypeTest {
-    @Test
-    public void mimeTypeTest() throws IOException {
-        MimeTypeSupplier mimeTypeContext = new MimeTypeSupplier(null);
-        mimeTypeContext.loadStream("/META-INF/mime.types.xml");
-        mimeTypeContext.loadStream("mime.types.xml");
-        //
-        String htmlType = mimeTypeContext.get("html");
-        assert "text/html".equalsIgnoreCase(htmlType);
+public class TestMappingDiscoverer implements MappingDiscoverer {
+    private static boolean resetCall = false;
+    //
+    public static void resetCall() {
+        resetCall = false;
+    }
+    public static boolean isResetCall() {
+        return resetCall;
+    }
+    //
+    @Override
+    public void discover(Mapping mappingData) {
+        resetCall = true;
     }
 }

@@ -27,8 +27,8 @@ import java.util.Set;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ApiBinderWrap implements ApiBinder {
-    protected static Logger    logger    = LoggerFactory.getLogger(ApiBinderWrap.class);
-    private          ApiBinder apiBinder = null;
+    protected static Logger    logger = LoggerFactory.getLogger(ApiBinderWrap.class);
+    private final    ApiBinder apiBinder;
     //
     public ApiBinderWrap(ApiBinder apiBinder) {
         this.apiBinder = Hasor.assertIsNotNull(apiBinder);

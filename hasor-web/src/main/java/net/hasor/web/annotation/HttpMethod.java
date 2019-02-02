@@ -30,7 +30,7 @@ import java.lang.annotation.*;
  * @see HttpMethod#HEAD
  * @see HttpMethod#OPTIONS
  */
-@Target({ ElementType.ANNOTATION_TYPE })
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface HttpMethod {
@@ -50,5 +50,5 @@ public @interface HttpMethod {
     public static final String OPTIONS = "OPTIONS";
 
     /** Specifies the name of a HTTP method. E.g. "GET". */
-    public String value();
+    public String[] value();
 }

@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
-import net.hasor.core.BindInfo;
+package net.hasor.web.wrap;
+import net.hasor.web.Controller;
+import net.hasor.web.Invoker;
+import net.hasor.web.annotation.Any;
 
-import java.lang.reflect.Method;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServlet;
+import java.io.IOException;
 /**
- * 控制器映射信息
- * @version : 2016-12-26
+ * @version : 2017-01-08
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface Mapping {
-    /**
-     * 获取目标类型
-     */
-    public BindInfo<?> getTargetType();
-
-    /** 获取映射的地址 */
-    public String getMappingTo();
-
-    /** 获取方法 */
-    public String[] getHttpMethodSet();
-
-    /** 获取方法 */
-    public Method getHttpMethod(String httpMethod);
+public class DefaultServlet extends HttpServlet implements Controller {
+    @Override
+    public void initController(Invoker renderData) {
+        //
+    }
+    @Any
+    @Override
+    public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
+    }
 }

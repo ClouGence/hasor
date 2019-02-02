@@ -33,6 +33,9 @@ public class UtilsTest {
         assert config.getInitParameter("a3").equals("a3v");
         //
         assert servletContext == config.getServletContext();
+        //
+        config = new J2eeMapConfig("resourceName", initParams, null);
+        assert null == config.getServletContext();
     }
     //
     @Test

@@ -25,9 +25,9 @@ import java.lang.reflect.Method;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AsyncInvocationWorker implements Runnable {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    private AsyncContext asyncContext;
-    private Method       targetMethod;
+    protected Logger       logger = LoggerFactory.getLogger(getClass());
+    private   AsyncContext asyncContext;
+    private   Method       targetMethod;
     //
     public AsyncInvocationWorker(AsyncContext asyncContext, Method targetMethod) {
         this.asyncContext = asyncContext;
@@ -38,10 +38,12 @@ public abstract class AsyncInvocationWorker implements Runnable {
         try {
             this.doWork(this.targetMethod);
         } catch (Throwable e) {
-            logger.error(e.getMessage(), e);
+            this.doWorkWhenError(this.targetMethod, e);
         } finally {
             this.asyncContext.complete();
         }
     }
     public abstract void doWork(Method targetMethod) throws Throwable;
+
+    public abstract void doWorkWhenError(Method targetMethod, Throwable e);
 }

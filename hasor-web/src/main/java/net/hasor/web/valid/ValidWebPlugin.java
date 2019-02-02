@@ -35,9 +35,13 @@ public class ValidWebPlugin extends WebModule implements WebPlugin, MappingDisco
     }
     @Override
     public void discover(Mapping mappingData) {
-        Method[] methods = mappingData.getMethods();
-        for (Method m : methods) {
-            this.validMapping.put(m, new ValidDefinition(m));
+        String[] httpMethodSet = mappingData.getHttpMethodSet();
+        for (String m : httpMethodSet) {
+            Method objMethod = mappingData.getHttpMethod(m);
+            if (this.validMapping.containsKey(objMethod)) {
+                continue;
+            }
+            this.validMapping.put(objMethod, new ValidDefinition(objMethod));
         }
     }
     @Override

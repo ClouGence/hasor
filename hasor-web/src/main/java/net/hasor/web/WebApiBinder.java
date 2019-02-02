@@ -119,28 +119,28 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     public void addSessionListener(BindInfo<? extends HttpSessionListener> targetRegister);
 
     /**添加插件*/
-    public WebApiBinder addPlugin(Class<? extends WebPlugin> webPlugin);
+    public void addPlugin(Class<? extends WebPlugin> webPlugin);
 
     /**添加插件*/
-    public WebApiBinder addPlugin(WebPlugin webPlugin);
+    public void addPlugin(WebPlugin webPlugin);
 
     /**添加插件*/
-    public WebApiBinder addPlugin(Provider<? extends WebPlugin> webPlugin);
+    public void addPlugin(Provider<? extends WebPlugin> webPlugin);
 
     /**添加插件*/
-    public WebApiBinder addPlugin(BindInfo<? extends WebPlugin> webPlugin);
+    public void addPlugin(BindInfo<? extends WebPlugin> webPlugin);
 
     /**添加 MappingDiscoverer*/
-    public WebApiBinder addDiscoverer(Class<? extends MappingDiscoverer> discoverer);
+    public void addDiscoverer(Class<? extends MappingDiscoverer> discoverer);
 
     /**添加 MappingDiscoverer*/
-    public WebApiBinder addDiscoverer(MappingDiscoverer discoverer);
+    public void addDiscoverer(MappingDiscoverer discoverer);
 
     /**添加 MappingDiscoverer*/
-    public WebApiBinder addDiscoverer(Provider<? extends MappingDiscoverer> discoverer);
+    public void addDiscoverer(Provider<? extends MappingDiscoverer> discoverer);
 
     /**添加 MappingDiscoverer*/
-    public WebApiBinder addDiscoverer(BindInfo<? extends MappingDiscoverer> discoverer);
+    public void addDiscoverer(BindInfo<? extends MappingDiscoverer> discoverer);
     //
     /**负责配置Filter。*/
     public static interface FilterBindingBuilder<T> {

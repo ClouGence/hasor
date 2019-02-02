@@ -48,13 +48,13 @@ public class InvokerWebApiBinderCreater implements ApiBinderCreater {
             return null;
         }
         //
-        if (!(context instanceof ServletContext))
+        if (!(context instanceof ServletContext)) {
             return null;
-        return Creater.newBinder(apiBinder);
+        }
+        return newBinder(apiBinder);
     }
-}
-class Creater {
-    public static ApiBinder newBinder(ApiBinder apiBinder) throws XMLStreamException, IOException {
+    //
+    public static ApiBinder newBinder(ApiBinder apiBinder) throws IOException {
         Environment environment = apiBinder.getEnvironment();
         Object context = environment.getContext();
         if (!(context instanceof ServletContext)) {

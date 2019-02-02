@@ -1,4 +1,4 @@
-package net.test.hasor.web;
+package net.hasor.web;
 import net.hasor.core.Hasor;
 import net.hasor.web.mime.MimeTypeSupplier;
 import net.hasor.web.startup.RuntimeListener;

@@ -232,7 +232,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
         assert reference.get().getSingletonMode() == SingletonMode.Singleton;
         binder.bindType(BinderDataTest.class).asEagerPrototype();
         assert reference.get().getSingletonMode() == SingletonMode.Prototype;
-        binder.bindType(BinderDataTest.class).asEagerSingletonClear();
+        binder.bindType(BinderDataTest.class).asEagerAnnoClear();
         assert reference.get().getSingletonMode() == SingletonMode.Clear;
     }
     //

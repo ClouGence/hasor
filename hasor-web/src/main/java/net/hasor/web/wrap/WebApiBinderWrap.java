@@ -153,36 +153,36 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
         this.webApiBinder.addSessionListener(targetRegister);
     }
     @Override
-    public WebApiBinder addPlugin(Class<? extends WebPlugin> webPlugin) {
-        return this.webApiBinder.addPlugin(webPlugin);
+    public void addPlugin(Class<? extends WebPlugin> webPlugin) {
+        this.webApiBinder.addPlugin(webPlugin);
     }
     @Override
-    public WebApiBinder addPlugin(WebPlugin webPlugin) {
-        return this.webApiBinder.addPlugin(webPlugin);
+    public void addPlugin(WebPlugin webPlugin) {
+        this.webApiBinder.addPlugin(webPlugin);
     }
     @Override
-    public WebApiBinder addPlugin(Provider<? extends WebPlugin> webPlugin) {
-        return this.webApiBinder.addPlugin(webPlugin);
+    public void addPlugin(Provider<? extends WebPlugin> webPlugin) {
+        this.webApiBinder.addPlugin(webPlugin);
     }
     @Override
-    public WebApiBinder addPlugin(BindInfo<? extends WebPlugin> webPlugin) {
-        return this.webApiBinder.addPlugin(webPlugin);
+    public void addPlugin(BindInfo<? extends WebPlugin> webPlugin) {
+        this.webApiBinder.addPlugin(webPlugin);
     }
     @Override
-    public WebApiBinder addDiscoverer(Class<? extends MappingDiscoverer> discoverer) {
-        return this.webApiBinder.addDiscoverer(discoverer);
+    public void addDiscoverer(Class<? extends MappingDiscoverer> discoverer) {
+        this.webApiBinder.addDiscoverer(discoverer);
     }
     @Override
-    public WebApiBinder addDiscoverer(MappingDiscoverer discoverer) {
-        return this.webApiBinder.addDiscoverer(discoverer);
+    public void addDiscoverer(MappingDiscoverer discoverer) {
+        this.webApiBinder.addDiscoverer(discoverer);
     }
     @Override
-    public WebApiBinder addDiscoverer(Provider<? extends MappingDiscoverer> discoverer) {
-        return this.webApiBinder.addDiscoverer(discoverer);
+    public void addDiscoverer(Provider<? extends MappingDiscoverer> discoverer) {
+        this.webApiBinder.addDiscoverer(discoverer);
     }
     @Override
-    public WebApiBinder addDiscoverer(BindInfo<? extends MappingDiscoverer> discoverer) {
-        return this.webApiBinder.addDiscoverer(discoverer);
+    public void addDiscoverer(BindInfo<? extends MappingDiscoverer> discoverer) {
+        this.webApiBinder.addDiscoverer(discoverer);
     }
     @Override
     public RenderEngineBindingBuilder<RenderEngine> suffix(String urlPattern, String... morePatterns) {

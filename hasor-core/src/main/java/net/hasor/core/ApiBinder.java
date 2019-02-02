@@ -377,7 +377,7 @@ public interface ApiBinder {
          * 使 Bean 原身自带的 @Prototype 或者 @Singleton 注解失效。<p>
          * @return 返回 - {@link MetaDataBindingBuilder}。
          */
-        public MetaDataBindingBuilder<T> asEagerSingletonClear();
+        public MetaDataBindingBuilder<T> asEagerAnnoClear();
 
         /**
          * 设置Scope。

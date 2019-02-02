@@ -16,25 +16,24 @@
 package net.hasor.web.invoker;
 import net.hasor.core.*;
 import net.hasor.core.binder.ApiBinderWrap;
-import net.hasor.core.provider.InfoAwareProvider;
+import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.utils.ArrayUtils;
-import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.*;
 import net.hasor.web.annotation.MappingTo;
+import net.hasor.web.annotation.Render;
 import net.hasor.web.definition.*;
 import net.hasor.web.listener.ContextListenerDefinition;
 import net.hasor.web.listener.HttpSessionListenerDefinition;
-import net.hasor.web.render.RenderApiBinderImpl;
 import net.hasor.web.startup.RuntimeFilter;
+import net.hasor.web.wrap.DefaultServlet;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
 /**
@@ -47,7 +46,6 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     private final InstanceProvider<String> responseEncoding = new InstanceProvider<String>("");
     private       ServletVersion           curVersion;
     private       MimeType                 mimeType;
-    private       RenderApiBinderImpl      renderBinder;
     //
     // ------------------------------------------------------------------------------------------------------
     protected InvokerWebApiBinder(ServletVersion curVersion, MimeType mimeType, ApiBinder apiBinder) {
@@ -56,8 +54,6 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         apiBinder.bindType(String.class).nameWith(RuntimeFilter.HTTP_RESPONSE_ENCODING_KEY).toProvider(this.responseEncoding);
         this.curVersion = Hasor.assertIsNotNull(curVersion);
         this.mimeType = Hasor.assertIsNotNull(mimeType);
-        this.renderBinder = new RenderApiBinderImpl(apiBinder) {
-        };
     }
     //
     // ------------------------------------------------------------------------------------------------------
@@ -91,54 +87,53 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     //
     // ------------------------------------------------------------------------------------------------------
     @Override
-    public WebApiBinder addPlugin(Class<? extends WebPlugin> webPlugin) {
+    public void addPlugin(Class<? extends WebPlugin> webPlugin) {
         webPlugin = Hasor.assertIsNotNull(webPlugin);
         BindInfo<WebPlugin> bindInfo = this.bindType(WebPlugin.class).to(webPlugin).toInfo();
         this.bindType(WebPluginDefinition.class).toInstance(new WebPluginDefinition(bindInfo));
-        return this;
     }
     @Override
-    public WebApiBinder addPlugin(WebPlugin webPlugin) {
+    public void addPlugin(WebPlugin webPlugin) {
         webPlugin = Hasor.assertIsNotNull(webPlugin);
         BindInfo<WebPlugin> bindInfo = this.bindType(WebPlugin.class).toInstance(webPlugin).toInfo();
         this.bindType(WebPluginDefinition.class).toInstance(new WebPluginDefinition(bindInfo));
-        return this;
     }
     @Override
-    public WebApiBinder addPlugin(Provider<? extends WebPlugin> webPlugin) {
+    public void addPlugin(Provider<? extends WebPlugin> webPlugin) {
         webPlugin = Hasor.assertIsNotNull(webPlugin);
         BindInfo<WebPlugin> bindInfo = this.bindType(WebPlugin.class).toProvider(webPlugin).toInfo();
         this.bindType(WebPluginDefinition.class).toInstance(new WebPluginDefinition(bindInfo));
-        return this;
     }
     @Override
-    public WebApiBinder addPlugin(BindInfo<? extends WebPlugin> webPlugin) {
+    public void addPlugin(BindInfo<? extends WebPlugin> webPlugin) {
         webPlugin = Hasor.assertIsNotNull(webPlugin);
         this.bindType(WebPluginDefinition.class).toInstance(new WebPluginDefinition(webPlugin));
-        return this;
     }
     //
     // ------------------------------------------------------------------------------------------------------
     @Override
-    public WebApiBinder addDiscoverer(Class<? extends MappingDiscoverer> discoverer) {
-        this.bindType(MappingDiscoverer.class).to(Hasor.assertIsNotNull(discoverer));
-        return this;
+    public void addDiscoverer(Class<? extends MappingDiscoverer> discoverer) {
+        discoverer = Hasor.assertIsNotNull(discoverer);
+        BindInfo<MappingDiscoverer> bindInfo = this.bindType(MappingDiscoverer.class).to(discoverer).toInfo();
+        this.addDiscoverer(bindInfo);
     }
     @Override
-    public WebApiBinder addDiscoverer(MappingDiscoverer discoverer) {
-        this.bindType(MappingDiscoverer.class).toInstance(Hasor.assertIsNotNull(discoverer));
-        return this;
+    public void addDiscoverer(MappingDiscoverer discoverer) {
+        discoverer = Hasor.assertIsNotNull(discoverer);
+        BindInfo<MappingDiscoverer> bindInfo = this.bindType(MappingDiscoverer.class).toInstance(discoverer).toInfo();
+        this.addDiscoverer(bindInfo);
     }
     @Override
-    public WebApiBinder addDiscoverer(Provider<? extends MappingDiscoverer> discoverer) {
-        this.bindType(MappingDiscoverer.class).toProvider(Hasor.assertIsNotNull(discoverer));
-        return this;
+    public void addDiscoverer(Provider<? extends MappingDiscoverer> discoverer) {
+        discoverer = Hasor.assertIsNotNull(discoverer);
+        BindInfo<MappingDiscoverer> bindInfo = this.bindType(MappingDiscoverer.class).toProvider(discoverer).toInfo();
+        this.addDiscoverer(bindInfo);
     }
     @Override
-    public WebApiBinder addDiscoverer(BindInfo<? extends MappingDiscoverer> discoverer) {
-        InfoAwareProvider<MappingDiscoverer> provider = new InfoAwareProvider<MappingDiscoverer>(Hasor.assertIsNotNull(discoverer));
-        this.bindType(MappingDiscoverer.class).toProvider(Hasor.autoAware(this.getEnvironment(), provider));
-        return this;
+    public void addDiscoverer(BindInfo<? extends MappingDiscoverer> discoverer) {
+        discoverer = Hasor.assertIsNotNull(discoverer);
+        MappingDiscovererDefinition definition = Hasor.autoAware(getEnvironment(), new MappingDiscovererDefinition(discoverer));
+        this.bindType(MappingDiscovererDefinition.class).toInstance(definition);
     }
     //
     // ------------------------------------------------------------------------------------------------------
@@ -161,6 +156,8 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     public void addServletListener(BindInfo<? extends ServletContextListener> targetRegister) {
         this.bindType(ContextListenerDefinition.class).uniqueName().toInstance(new ContextListenerDefinition(targetRegister));
     }
+    //
+    // ------------------------------------------------------------------------------------------------------
     @Override
     public void addSessionListener(Class<? extends HttpSessionListener> targetKey) {
         BindInfo<HttpSessionListener> listenerRegister = bindType(HttpSessionListener.class).to(targetKey).toInfo();
@@ -215,6 +212,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         return this.filterRegex(null, regexes);
     }
     //
+    // ------------------------------------------------------------------------------------------------------
     @Override
     public FilterBindingBuilder<Filter> jeeFilter(final String urlPattern, final String... morePatterns) {
         return new FiltersModuleBinder<Filter>(Filter.class, UriPatternType.SERVLET, newArrayList(morePatterns, urlPattern)) {
@@ -343,7 +341,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     //
     // ------------------------------------------------------------------------------------------------------
-    protected void jeeServlet(long index, String pattern, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams) {
+    protected void jeeServlet(int index, String pattern, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams) {
         InMappingServlet define = new InMappingServlet(index, servletRegister, pattern, initParams);
         bindType(InMappingDef.class).uniqueName().toInstance(define);/*单例*/
     }
@@ -416,12 +414,12 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         return new MappingToBuilder<Object>(Object.class, newArrayList(morePatterns, urlPattern)) {
             @Override
             public void with(int index, BindInfo<? extends Object> targetInfo) {
-                List<Method> methodList = BeanUtils.getMethods(targetInfo.getBindType());
                 for (String pattern : this.getUriPatterns()) {
-                    if (StringUtils.isBlank(pattern))
+                    if (StringUtils.isBlank(pattern)) {
                         continue;
+                    }
                     //
-                    InMappingDef define = new InMappingDef(index, targetInfo, pattern, methodList, false);
+                    InMappingDef define = new InMappingDef(index, targetInfo, pattern, Matchers.anyMethod(), true);
                     bindType(InMappingDef.class).uniqueName().toInstance(define);
                 }
             }
@@ -499,35 +497,77 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     //
     // ------------------------------------------------------------------------------------------------------
-    /**拦截这些后缀的请求，这些请求会被渲染器渲染。*/
-    public RenderEngineBindingBuilder<RenderEngine> suffix(String urlPattern, String... morePatterns) {
-        return this.renderBinder.suffix(urlPattern, morePatterns);
-    }
-    /**拦截这些后缀的请求，这些请求会被渲染器渲染。*/
-    public RenderEngineBindingBuilder<RenderEngine> suffix(String[] morePatterns) {
-        return this.renderBinder.suffix(morePatterns);
-    }
+    private static Matcher<Class<? extends RenderEngine>> RENDER_ENGINE_MATCHER = new Matcher<Class<? extends RenderEngine>>() {
+        @Override
+        public boolean matches(Class<? extends RenderEngine> target) {
+            return true;
+        }
+    };
     /**扫描Render注解配置的渲染器。*/
     public void scanAnnoRender() {
-        this.scanAnnoRender(new Matcher<Class<? extends RenderEngine>>() {
-            @Override
-            public boolean matches(Class<? extends RenderEngine> target) {
-                return true;
-            }
-        });
+        this.scanAnnoRender(RENDER_ENGINE_MATCHER);
     }
     /**扫描Render注解配置的渲染器。*/
     public void scanAnnoRender(String... packages) {
-        this.scanAnnoRender(new Matcher<Class<? extends RenderEngine>>() {
-            @Override
-            public boolean matches(Class<? extends RenderEngine> target) {
-                return true;
-            }
-        });
+        this.scanAnnoRender(RENDER_ENGINE_MATCHER, packages);
     }
     /**扫描Render注解配置的渲染器。*/
     public void scanAnnoRender(Matcher<Class<? extends RenderEngine>> matcher, String... packages) {
-        this.renderBinder.scanAnnoRender(matcher, packages);
+        String[] defaultPackages = this.getEnvironment().getSpanPackage();
+        String[] scanPackages = (packages == null || packages.length == 0) ? defaultPackages : packages;
+        //
+        Set<Class<?>> renderSet = this.findClass(RenderEngine.class, scanPackages);
+        for (Class<?> renderClass : renderSet) {
+            if (renderClass.isInterface())
+                continue;
+            if (renderClass == RenderEngine.class)
+                continue;
+            //
+            Class<? extends RenderEngine> target = (Class<? extends RenderEngine>) renderClass;
+            if (matcher != null && !matcher.matches(target))
+                continue;
+            //
+            Render renderInfo = renderClass.getAnnotation(Render.class);
+            if (renderInfo != null && renderInfo.value().length > 0) {
+                String[] renderName = renderInfo.value();
+                suffix(renderName).bind(target);
+            }
+        }
+        //
+    }
+    //
+    // ------------------------------------------------------------------------------------------------------
+    /**拦截这些后缀的请求，这些请求会被渲染器渲染。*/
+    public WebApiBinder.RenderEngineBindingBuilder<RenderEngine> suffix(String suffix, String... moreSuffix) {
+        return new RenderEngineBindingBuilderImpl(newArrayList(moreSuffix, suffix)) {
+            @Override
+            protected void bindSuffix(List<String> suffixList, BindInfo<? extends RenderEngine> bindInfo) {
+                InvokerWebApiBinder.this.bindSuffix(suffixList, bindInfo);
+            }
+        };
+    }
+    /**拦截这些后缀的请求，这些请求会被渲染器渲染。*/
+    public WebApiBinder.RenderEngineBindingBuilder<RenderEngine> suffix(String[] suffixArrays) {
+        return new RenderEngineBindingBuilderImpl(Arrays.asList(suffixArrays)) {
+            @Override
+            protected void bindSuffix(List<String> suffixList, BindInfo<? extends RenderEngine> bindInfo) {
+                InvokerWebApiBinder.this.bindSuffix(suffixList, bindInfo);
+            }
+        };
+    }
+    //
+    private void bindSuffix(List<String> suffixList, BindInfo<? extends RenderEngine> bindInfo) {
+        suffixList = Collections.unmodifiableList(suffixList);
+        this.bindType(RenderDefinition.class).toInstance(new RenderDefinition(suffixList, bindInfo)).toInfo();
+        //
+        for (String suffix : suffixList) {
+            if (suffix.equals("*") || StringUtils.isBlank(suffix)) {
+                continue;
+            }
+            //
+            String pattern = "/*." + suffix.toLowerCase();
+            this.jeeServlet(pattern).with(Integer.MAX_VALUE, DefaultServlet.class);
+        }
     }
     //
     // ------------------------------------------------------------------------------------------------------
@@ -591,6 +631,43 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             return targetClass;
         }
         public abstract void with(int index, BindInfo<? extends T> targetInfo);
+    }
+    private abstract class RenderEngineBindingBuilderImpl implements WebApiBinder.RenderEngineBindingBuilder<RenderEngine> {
+        private List<String> suffixList;
+        public RenderEngineBindingBuilderImpl(List<String> suffixList) {
+            Set<String> suffixSet = new LinkedHashSet<String>();
+            for (String str : suffixList) {
+                if (StringUtils.isNotBlank(str)) {
+                    suffixSet.add(str.toUpperCase());
+                }
+            }
+            this.suffixList = new ArrayList<String>(suffixSet);
+        }
+        @Override
+        public void bind(Class<? extends RenderEngine> engineType) {
+            if (!this.suffixList.isEmpty()) {
+                bindSuffix(this.suffixList, bindType(RenderEngine.class).uniqueName().to(engineType).toInfo());
+            }
+        }
+        @Override
+        public void bind(RenderEngine engine) {
+            if (!this.suffixList.isEmpty()) {
+                bindSuffix(this.suffixList, bindType(RenderEngine.class).uniqueName().toInstance(engine).toInfo());
+            }
+        }
+        @Override
+        public void bind(Provider<? extends RenderEngine> engineProvider) {
+            if (!this.suffixList.isEmpty()) {
+                bindSuffix(this.suffixList, bindType(RenderEngine.class).uniqueName().toProvider(engineProvider).toInfo());
+            }
+        }
+        @Override
+        public void bind(BindInfo<? extends RenderEngine> engineRegister) {
+            if (!this.suffixList.isEmpty()) {
+                bindSuffix(this.suffixList, Hasor.assertIsNotNull(engineRegister));
+            }
+        }
+        protected abstract void bindSuffix(List<String> suffixList, BindInfo<? extends RenderEngine> bindInfo);
     }
     //
     // ------------------------------------------------------------------------------------------------------

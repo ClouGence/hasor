@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.test.hasor.web;
+package net.hasor.web;
 import net.hasor.web.mime.MimeTypeSupplier;
 import org.junit.Test;
 

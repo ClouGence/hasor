@@ -81,12 +81,11 @@ class InvokerCaller implements ExceuteCaller {
                 AsyncContext asyncContext = invoker.getHttpRequest().startAsync();
                 asyncContext.start(new AsyncInvocationWorker(asyncContext, targetMethod) {
                     public void doWork(Method targetMethod) throws Throwable {
-                        try {
-                            Object invoke = invoke(targetMethod, invoker);
-                            future.completed(invoke);
-                        } catch (Throwable e) {
-                            future.failed(e);
-                        }
+                        future.completed(invoke(targetMethod, invoker));
+                    }
+                    @Override
+                    public void doWorkWhenError(Method targetMethod, Throwable e) {
+                        future.failed(e);
                     }
                 });
                 return future;

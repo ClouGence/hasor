@@ -35,12 +35,12 @@ import java.util.concurrent.Future;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InvokerContext implements WebPluginCaller {
-    protected Logger               logger         = LoggerFactory.getLogger(getClass());
-    private   AppContext           appContext     = null;
-    private   InMapping[]          invokeArray    = new InMapping[0];
-    private   AbstractDefinition[] filters        = new AbstractDefinition[0];
-    private   WebPlugin[]          plugins        = new WebPlugin[0];
-    private   RootInvokerCreater   invokerCreater = null;
+    protected static Logger               logger         = LoggerFactory.getLogger(InvokerContext.class);
+    private          AppContext           appContext     = null;
+    private          InMapping[]          invokeArray    = new InMapping[0];
+    private          AbstractDefinition[] filters        = new AbstractDefinition[0];
+    private          WebPlugin[]          plugins        = new WebPlugin[0];
+    private          RootInvokerCreater   invokerCreater = null;
     //
     public void initContext(final AppContext appContext, final Map<String, String> configMap) throws Throwable {
         this.appContext = Hasor.assertIsNotNull(appContext);
@@ -60,7 +60,7 @@ public class InvokerContext implements WebPluginCaller {
                 return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
             }
         });
-        this.invokeArray = mappingList.toArray(new InMapping[mappingList.size()]);
+        this.invokeArray = mappingList.toArray(new InMapping[0]);
         for (InMapping inMapping : this.invokeArray) {
             logger.info("mapingTo -> type ‘{}’ mappingTo: ‘{}’.", inMapping.getTargetType().getBindType(), inMapping.getMappingTo());
         }

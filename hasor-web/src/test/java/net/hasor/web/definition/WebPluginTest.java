@@ -9,6 +9,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicBoolean;
 //
 public class WebPluginTest {
@@ -30,6 +31,7 @@ public class WebPluginTest {
         definition.initPlugin(appContext);
         definition.initPlugin(appContext);
         definition.toString();
+        definition.beforeFilter(null,null);
         //
         assert initCall.get();
     }

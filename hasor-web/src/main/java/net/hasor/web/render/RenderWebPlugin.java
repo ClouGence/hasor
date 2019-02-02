@@ -19,6 +19,7 @@ import net.hasor.core.Settings;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.*;
 import net.hasor.web.annotation.Produces;
+import net.hasor.web.invoker.RenderDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

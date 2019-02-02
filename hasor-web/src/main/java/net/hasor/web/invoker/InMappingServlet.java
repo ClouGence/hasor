@@ -16,16 +16,17 @@
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.utils.ExceptionUtils;
-import net.hasor.utils.Iterators;
+import net.hasor.core.Matcher;
+import net.hasor.core.provider.InstanceProvider;
 import net.hasor.web.Invoker;
+import net.hasor.web.definition.J2eeMapConfig;
 
-import javax.servlet.*;
+import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
 import java.util.Map;
 /**
  * 线程安全
@@ -33,19 +34,22 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InMappingServlet extends InMappingDef {
-    private Map<String, String> initParams;
-    private Object              servlet;
-    public InMappingServlet(long index, BindInfo<? extends HttpServlet> targetType, String mappingTo, Map<String, String> initParams) {
-        super(index, targetType, mappingTo, findMethod(), true);
-        this.initParams = initParams;
-    }
-    private static List<Method> findMethod() {
-        try {
-            Method serviceMethod = HttpServlet.class.getMethod("service", new Class[] { ServletRequest.class, ServletResponse.class });
-            return Arrays.asList(serviceMethod);
-        } catch (NoSuchMethodException e) {
-            throw ExceptionUtils.toRuntimeException(e);
+    private static Matcher<Method>     methodMatcher = new Matcher<Method>() {
+        @Override
+        public boolean matches(Method target) {
+            Class<?>[] parameterTypes = target.getParameterTypes();
+            return "service".equals(target.getName()) &&        //
+                    parameterTypes.length == 2 &&               //
+                    parameterTypes[0] == ServletRequest.class &&//
+                    parameterTypes[1] == ServletResponse.class;
         }
+    };
+    //
+    private        Map<String, String> initParams;
+    private        Object              servlet;
+    public InMappingServlet(int index, BindInfo<? extends HttpServlet> targetType, String mappingTo, Map<String, String> initParams) {
+        super(index, targetType, mappingTo, methodMatcher, false);
+        this.initParams = initParams;
     }
     //
     @Override
@@ -58,25 +62,9 @@ public class InMappingServlet extends InMappingDef {
                 return this.servlet;
             }
             final AppContext appContext = invoker.getAppContext();
+            final ServletContext servletContext = appContext.getInstance(ServletContext.class);
             this.servlet = super.newInstance(invoker);
-            ((Servlet) this.servlet).init(new ServletConfig() {
-                @Override
-                public String getServletName() {
-                    return getTargetType().toString();
-                }
-                @Override
-                public ServletContext getServletContext() {
-                    return appContext.getInstance(ServletContext.class);
-                }
-                @Override
-                public String getInitParameter(String name) {
-                    return initParams.get(name);
-                }
-                @Override
-                public Enumeration<String> getInitParameterNames() {
-                    return Iterators.asEnumeration(initParams.keySet().iterator());
-                }
-            });
+            ((Servlet) this.servlet).init(new J2eeMapConfig(getTargetType().toString(), initParams, InstanceProvider.wrap(servletContext)));
         }
         return this.servlet;
     }

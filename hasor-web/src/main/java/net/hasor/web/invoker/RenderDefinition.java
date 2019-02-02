@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.render;
+package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.utils.StringUtils;
@@ -25,7 +25,7 @@ import java.util.List;
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
-class RenderDefinition {
+public class RenderDefinition {
     private List<String>                     renderSet = null;
     private BindInfo<? extends RenderEngine> bindInfo  = null;
     //
