@@ -62,21 +62,31 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
     //
     //
     //
-    public <T> T getInstance(Class<T> targetType, AppContext appContext) {
+    public <T> Provider<? extends T> getProvider(final Class<T> targetType, final AppContext appContext) {
         if (targetType == null) {
             return null;
         }
-        return createObject(targetType, null, null, appContext);
+        return new Provider<T>() {
+            @Override
+            public T get() {
+                return createObject(targetType, null, null, appContext);
+            }
+        };
     }
     //
-    public <T> T getInstance(Constructor<T> targetConstructor, AppContext appContext) {
+    public <T> Provider<? extends T> getProvider(final Constructor<T> targetConstructor, final AppContext appContext) {
         if (targetConstructor == null) {
             return null;
         }
-        return createObject(targetConstructor.getDeclaringClass(), targetConstructor, null, appContext);
+        return new Provider<T>() {
+            @Override
+            public T get() {
+                return createObject(targetConstructor.getDeclaringClass(), targetConstructor, null, appContext);
+            }
+        };
     }
     //
-    public <T> T getInstance(final BindInfo<T> bindInfo, final AppContext appContext) {
+    public <T> Provider<? extends T> getProvider(final BindInfo<T> bindInfo, final AppContext appContext) {
         if (bindInfo == null) {
             return null;
         }
@@ -107,17 +117,13 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
                 }
             };
         } else if (instanceProvider == null) {
-            instanceProvider = new Provider<T>() {
-                public T get() {
-                    return getInstance(bindInfo.getBindType(), appContext);
-                }
-            };
+            instanceProvider = getProvider(bindInfo.getBindType(), appContext);
         }
         //scope
         if (scopeProvider != null) {
             instanceProvider = scopeProvider.get().scope(bindInfo, instanceProvider);
         }
-        return instanceProvider.get();
+        return instanceProvider;
     }
     //
     //
@@ -163,7 +169,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         if (!aopBindList.isEmpty()) {
             aopList = new ArrayList<AopBindInfoAdapter>();
             for (BindInfo<AopBindInfoAdapter> info : aopBindList) {
-                aopList.add(this.getInstance(info, appContext));
+                aopList.add(this.getProvider(info, appContext).get());
             }
         } else {
             aopList = Collections.emptyList();

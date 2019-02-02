@@ -16,6 +16,7 @@
 package net.hasor.core.container;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
+import net.hasor.core.Provider;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 
 import java.lang.reflect.Constructor;
@@ -38,13 +39,13 @@ public interface BeanBuilder {
      * @param bindInfo 绑定信息。
      * @return 创建并返回实例
      */
-    public <T> T getInstance(BindInfo<T> bindInfo, AppContext appContext);
+    public <T> Provider<? extends T> getProvider(BindInfo<T> bindInfo, AppContext appContext);
 
     /**创建一个未绑定过的类型*/
-    public <T> T getInstance(Class<T> bindType, AppContext appContext);
+    public <T> Provider<? extends T> getProvider(Class<T> bindType, AppContext appContext);
 
     /**创建一个未绑定过的类型*/
-    public <T> T getInstance(Constructor<T> targetConstructor, AppContext appContext);
+    public <T> Provider<? extends T> getProvider(Constructor<T> targetConstructor, AppContext appContext);
     //
     /* ----------------------------------------------------------------------------------------- */
     //

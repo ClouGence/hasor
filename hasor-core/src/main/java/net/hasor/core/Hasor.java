@@ -22,8 +22,12 @@ import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.provider.ClassLoaderSingleProvider;
 import net.hasor.core.provider.SingleProvider;
 import net.hasor.core.provider.ThreadSingleProvider;
+import net.hasor.core.setting.AbstractSettings;
+import net.hasor.core.setting.StandardContextSettings;
+import net.hasor.core.setting.StreamType;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;
+import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,12 +44,15 @@ import static net.hasor.core.AppContext.ContextEvent_Started;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class Hasor extends HashMap<String, String> {
-    protected static Logger           logger       = LoggerFactory.getLogger(Hasor.class);
-    private final    Object           context;
-    private          Object           mainSettings = TemplateAppContext.DefaultSettings;
-    private final    List<Module>     moduleList   = new ArrayList<Module>();
-    private          ClassLoader      loader;
-    private          ContainerCreater creater;
+    protected static Logger                           logger                 = LoggerFactory.getLogger(Hasor.class);
+    private final    Object                           context;
+    private          Object                           mainSettings           = TemplateAppContext.DefaultSettings;
+    private          StreamType                       mainSettingsStreamType = null;
+    private final    List<Module>                     moduleList             = new ArrayList<Module>();
+    private          ClassLoader                      loader;
+    private          ContainerCreater                 creater;
+    private          Map<String, Map<String, Object>> initSettingMap         = new HashMap<String, Map<String, Object>>();
+    private          boolean                          asSmaller              = false;
     //
     protected Hasor(Object context) {
         this.context = context;
@@ -66,6 +73,30 @@ public class Hasor extends HashMap<String, String> {
     }
     public Hasor setMainSettings(String mainSettings) {
         this.mainSettings = mainSettings;
+        return this;
+    }
+    public Hasor setMainSettings(Reader mainSettings, StreamType streamType) {
+        this.mainSettings = mainSettings;
+        this.mainSettingsStreamType = streamType;
+        return this;
+    }
+    public Hasor setMainSettings(String encoding, InputStream mainSettings, StreamType streamType) throws UnsupportedEncodingException {
+        this.mainSettings = new InputStreamReader(mainSettings, encoding);
+        this.mainSettingsStreamType = streamType;
+        return this;
+    }
+    //
+    //
+    public Hasor addSettings(String namespace, String key, Object value) {
+        if (StringUtils.isBlank(namespace) || StringUtils.isBlank(key)) {
+            return this;
+        }
+        Map<String, Object> stringMap = this.initSettingMap.get(namespace);
+        if (stringMap == null) {
+            stringMap = new HashMap<String, Object>();
+            this.initSettingMap.put(namespace, stringMap);
+        }
+        stringMap.put(key, value);
         return this;
     }
     //
@@ -119,7 +150,8 @@ public class Hasor extends HashMap<String, String> {
     //
     //
     public Hasor asSmaller() {
-        return this.putData("HASOR_LOAD_MODULE", "false");
+        this.asSmaller = true;
+        return this;
     }
     private static Provider<AppContext> singletonHasor = null;
     public AppContext asStaticSingleton() {
@@ -185,25 +217,54 @@ public class Hasor extends HashMap<String, String> {
             logger.info("runPath at {}", runPath);
         }
         //
+        if (this.asSmaller) {
+            this.putData("HASOR_LOAD_MODULE", "false");
+            this.putData("HASOR_LOAD_EXTERNALBINDER", "false");
+            StandardContextSettings.setLoadMatcher(new Matcher<String>() {
+                @Override
+                public boolean matches(String target) {
+                    return "/META-INF/hasor-framework/core-hconfig.xml".equals(target);
+                }
+            });
+        }
+        //
         try {
-            Environment env = null;
+            AbstractSettings mainSettings = null;
             if (this.mainSettings == null) {
                 logger.info("create AppContext ,mainSettings = {}", TemplateAppContext.DefaultSettings);
-                env = new StandardEnvironment(this.context, TemplateAppContext.DefaultSettings, this, this.loader);
+                mainSettings = new StandardContextSettings(TemplateAppContext.DefaultSettings);
             } else if (this.mainSettings instanceof String) {
                 logger.info("create AppContext ,mainSettings = {}", this.mainSettings);
-                env = new StandardEnvironment(this.context, (String) this.mainSettings, this, this.loader);
+                mainSettings = new StandardContextSettings((String) this.mainSettings);
             } else if (this.mainSettings instanceof File) {
                 logger.info("create AppContext ,mainSettings = {}", this.mainSettings);
-                env = new StandardEnvironment(this.context, (File) this.mainSettings, this, this.loader);
+                mainSettings = new StandardContextSettings((File) this.mainSettings);
             } else if (this.mainSettings instanceof URI) {
                 logger.info("create AppContext ,mainSettings = {}", this.mainSettings);
-                env = new StandardEnvironment(this.context, (URI) this.mainSettings, this, this.loader);
+                mainSettings = new StandardContextSettings((URI) this.mainSettings);
             } else if (this.mainSettings instanceof URL) {
                 logger.info("create AppContext ,mainSettings = {}", this.mainSettings);
-                env = new StandardEnvironment(this.context, (URL) this.mainSettings, this, this.loader);
+                mainSettings = new StandardContextSettings(((URL) this.mainSettings).toURI());
+            } else if (this.mainSettings instanceof Reader && this.mainSettingsStreamType != null) {
+                logger.info("create AppContext ,mainSettingsStreamType = {} , ", this.mainSettingsStreamType);
+                mainSettings = new StandardContextSettings((Reader) this.mainSettings, this.mainSettingsStreamType);
+            } else {
+                logger.error("create AppContext ,mainSettings Unsupported.");
+                throw new UnsupportedOperationException();
             }
             //
+            for (Map.Entry<String, Map<String, Object>> namespaceData : this.initSettingMap.entrySet()) {
+                String namespaceKey = namespaceData.getKey();
+                Map<String, Object> value = namespaceData.getValue();
+                if (StringUtils.isBlank(namespaceKey) || value.isEmpty()) {
+                    continue;
+                }
+                for (Map.Entry<String, Object> settingKV : value.entrySet()) {
+                    mainSettings.setSetting(settingKV.getKey(), settingKV.getValue(), namespaceKey);
+                }
+            }
+            //
+            Environment env = new StandardEnvironment(this.context, mainSettings, this, this.loader);
             BeanContainer container = null;
             if (this.creater != null) {
                 container = this.creater.create(env);
@@ -218,7 +279,6 @@ public class Hasor extends HashMap<String, String> {
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
-    //
     //
     //
     //

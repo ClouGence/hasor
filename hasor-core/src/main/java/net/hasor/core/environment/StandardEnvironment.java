@@ -16,6 +16,7 @@
 package net.hasor.core.environment;
 import net.hasor.core.Environment;
 import net.hasor.core.aop.AopClassLoader;
+import net.hasor.core.setting.AbstractSettings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.utils.ResourcesUtils;
 
@@ -49,7 +50,6 @@ public class StandardEnvironment extends AbstractEnvironment {
     public StandardEnvironment(Object context, URI mainSettings) throws IOException {
         this(context, mainSettings, null, null);
     }
-    //
     public StandardEnvironment(Object context, File mainSettings, Map<String, String> frameworkEnvConfig, ClassLoader loader) throws IOException {
         this(context, toURI(mainSettings), frameworkEnvConfig, loader);
     }
@@ -60,7 +60,10 @@ public class StandardEnvironment extends AbstractEnvironment {
         this(context, toURI(mainSettings), frameworkEnvConfig, loader);
     }
     public StandardEnvironment(Object context, URI mainSettings, Map<String, String> frameworkEnvConfig, ClassLoader loader) throws IOException {
-        super(context, new StandardContextSettings(mainSettings));
+        this(context, new StandardContextSettings(mainSettings), frameworkEnvConfig, loader);
+    }
+    public StandardEnvironment(Object context, AbstractSettings mainSettings, Map<String, String> frameworkEnvConfig, ClassLoader loader) throws IOException {
+        super(context, mainSettings);
         logger.info("create Environment, type = StandardEnvironment, mainSettings = {}", mainSettings);
         if (loader == null) {
             loader = Thread.currentThread().getContextClassLoader();
@@ -68,7 +71,7 @@ public class StandardEnvironment extends AbstractEnvironment {
         this.setRootLosder(new AopClassLoader(loader));
         this.initEnvironment(frameworkEnvConfig);
     }
-    protected static URI toURI(Object source) {
+    public static URI toURI(Object source) {
         if (source == null) {
             return null;
         }

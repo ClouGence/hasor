@@ -2,10 +2,10 @@ package net.hasor.core.container;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.binder.AbstractBinder;
-import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.container.aop.TestInterceptor;
 import net.hasor.core.container.aop.multilayer.l2.FooFunction;
 import net.hasor.core.environment.StandardEnvironment;
+import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.info.AopBindInfoAdapter;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -43,7 +43,7 @@ public class BeanAopTest {
         apiBinder.bindInterceptor(Matchers.anyClass(), Matchers.anyMethod(), new TestInterceptor());
         //
         TestInterceptor.resetInit();
-        FooFunction instance = container.getInstance(FooFunction.class, appContext);
+        FooFunction instance = container.getProvider(FooFunction.class, appContext).get();
         assert !TestInterceptor.isCalled();
         assert !TestInterceptor.isThrowed();
         instance.fooCall("sss");

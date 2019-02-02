@@ -37,6 +37,9 @@ public class DefaultXmlNode implements XmlNode, FieldProperty, Cloneable {
     private XmlNode             parentXmlProperty = null;
     //
     //
+    public DefaultXmlNode(final String elementName) {
+        this.elementName = elementName;
+    }
     public DefaultXmlNode(final XmlNode parentXmlProperty, final String elementName) {
         this.parentXmlProperty = parentXmlProperty;
         this.elementName = elementName;

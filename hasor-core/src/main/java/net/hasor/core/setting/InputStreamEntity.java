@@ -13,20 +13,20 @@
  *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  * See the License for the specific language governing permissions and
  *  * limitations under the License.
- *  
+ *
  */
 package net.hasor.core.setting;
-import java.io.InputStream;
+import java.io.Reader;
 /***
  *
  * @version : 16/7/4
  * @author 赵永春 (zyc@byshell.org)
  */
 class InputStreamEntity {
-    public InputStream inStream = null;
-    public StreamType  fileType = null;
-    public InputStreamEntity(InputStream inStream, StreamType fileType) {
-        this.inStream = inStream;
+    public Reader     inReader = null;
+    public StreamType fileType = null;
+    public InputStreamEntity(Reader inReader, StreamType fileType) {
+        this.inReader = inReader;
         this.fileType = fileType;
     }
 }

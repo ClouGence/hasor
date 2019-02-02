@@ -22,6 +22,7 @@ import net.hasor.core.binder.BinderHelper;
 import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.BeanContainer;
 import net.hasor.core.container.ScopManager;
+import net.hasor.core.info.MetaDataAdapter;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.ClassUtils;
 import net.hasor.utils.ExceptionUtils;
@@ -40,7 +41,7 @@ import java.util.*;
  * @version : 2013-4-9
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class TemplateAppContext implements AppContext {
+public abstract class TemplateAppContext extends MetaDataAdapter implements AppContext {
     public static final String       DefaultSettings = "hasor-config.xml";
     protected           Logger       logger          = LoggerFactory.getLogger(getClass());
     private final       ShutdownHook shutdownHook    = new ShutdownHook(this);
@@ -60,7 +61,7 @@ public abstract class TemplateAppContext implements AppContext {
         if (nameList == null || nameList.isEmpty()) {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
-        return nameList.toArray(new String[nameList.size()]);
+        return nameList.toArray(new String[0]);
     }
     @Override
     public String[] getNames(final Class<?> targetClass) {
@@ -69,7 +70,7 @@ public abstract class TemplateAppContext implements AppContext {
         if (nameList == null || nameList.isEmpty()) {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
-        return nameList.toArray(new String[nameList.size()]);
+        return nameList.toArray(new String[0]);
     }
     @Override
     public boolean containsBindID(String bindID) {
@@ -98,7 +99,7 @@ public abstract class TemplateAppContext implements AppContext {
     }
     @Override
     public <T> T getInstance(BindInfo<T> info) {
-        Provider<T> provider = this.getProvider(info);
+        Provider<? extends T> provider = this.getProvider(info);
         if (provider != null) {
             return provider.get();
         }
@@ -131,7 +132,7 @@ public abstract class TemplateAppContext implements AppContext {
         return this.getContainer().justInject(object, bindInfo, this);
     }
     @Override
-    public <T> Provider<T> getProvider(String bindID) {
+    public <T> Provider<? extends T> getProvider(String bindID) {
         Hasor.assertIsNotNull(bindID, "bindID is null.");
         BindInfo<T> bindInfo = getContainer().findBindInfo(bindID);
         if (bindInfo != null) {
@@ -140,48 +141,35 @@ public abstract class TemplateAppContext implements AppContext {
         return null;
     }
     @Override
-    public <T> Provider<T> getProvider(final Class<T> targetClass) {
+    public <T> Provider<? extends T> getProvider(final Class<T> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
         BindInfo<T> bindInfo = getBindInfo(targetClass);
         final AppContext appContext = this;
         //
         if (bindInfo == null) {
-            return new Provider<T>() {
-                public T get() {
-                    return getBeanBuilder().getInstance(targetClass, appContext);
-                }
-            };
+            return getBeanBuilder().getProvider(targetClass, appContext);
         } else {
             return getProvider(bindInfo);
         }
     }
     @Override
-    public <T> Provider<T> getProvider(final Constructor<T> targetConstructor) {
+    public <T> Provider<? extends T> getProvider(final Constructor<T> targetConstructor) {
         Hasor.assertIsNotNull(targetConstructor, "targetConstructor is null.");
         BindInfo<T> bindInfo = getBindInfo(targetConstructor);
         //
         if (bindInfo == null) {
-            return new Provider<T>() {
-                public T get() {
-                    return getBeanBuilder().getInstance(targetConstructor, TemplateAppContext.this);
-                }
-            };
+            return getBeanBuilder().getProvider(targetConstructor, TemplateAppContext.this);
         } else {
             return getProvider(bindInfo);
         }
     }
     @Override
-    public <T> Provider<T> getProvider(final BindInfo<T> info) {
+    public <T> Provider<? extends T> getProvider(final BindInfo<T> info) {
         if (info == null) {
             return null;
         }
-        return new Provider<T>() {
-            public T get() {
-                return getBeanBuilder().getInstance(info, TemplateAppContext.this);
-            }
-        };
+        return getBeanBuilder().getProvider(info, TemplateAppContext.this);
     }
-    ;
     //
     /**获取用于创建Bean的{@link BeanBuilder}*/
     protected BeanBuilder getBeanBuilder() {
@@ -189,7 +177,7 @@ public abstract class TemplateAppContext implements AppContext {
     }
     /**获取用于创建Bean对象的{@link BeanContainer}接口*/
     protected abstract BeanContainer getContainer();
-    // 
+    //
     /*------------------------------------------------------------------------------------Binding*/
     @Override
     public <T> List<T> findBindingBean(final Class<T> bindType) {
@@ -208,7 +196,7 @@ public abstract class TemplateAppContext implements AppContext {
         return returnData;
     }
     @Override
-    public <T> List<Provider<T>> findBindingProvider(final Class<T> bindType) {
+    public <T> List<Provider<? extends T>> findBindingProvider(final Class<T> bindType) {
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
         BeanContainer container = getContainer();
@@ -216,9 +204,9 @@ public abstract class TemplateAppContext implements AppContext {
         if (typeRegisterList == null || typeRegisterList.isEmpty()) {
             return Collections.emptyList();
         }
-        ArrayList<Provider<T>> returnData = new ArrayList<Provider<T>>(typeRegisterList.size());
+        ArrayList<Provider<? extends T>> returnData = new ArrayList<Provider<? extends T>>(typeRegisterList.size());
         for (BindInfo<T> adapter : typeRegisterList) {
-            Provider<T> provider = this.getProvider(adapter);
+            Provider<? extends T> provider = this.getProvider(adapter);
             returnData.add(provider);
         }
         return returnData;
@@ -235,7 +223,7 @@ public abstract class TemplateAppContext implements AppContext {
         return null;
     }
     @Override
-    public <T> Provider<T> findBindingProvider(final String withName, final Class<T> bindType) {
+    public <T> Provider<? extends T> findBindingProvider(final String withName, final Class<T> bindType) {
         Hasor.assertIsNotNull(withName, "withName is null.");
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         //
@@ -306,7 +294,7 @@ public abstract class TemplateAppContext implements AppContext {
                 }
             }
         }
-        return moduleList.toArray(new Module[moduleList.size()]);
+        return moduleList.toArray(new Module[0]);
     }
     /**开始进入初始化过程.*/
     protected void doInitialize() throws Throwable {
@@ -352,29 +340,33 @@ public abstract class TemplateAppContext implements AppContext {
         //
         // .寻找ApiBinder扩展
         Map<Class<?>, Class<?>> extBinderMap = new HashMap<Class<?>, Class<?>>();
-        XmlNode[] nodeArray = this.getEnvironment().getSettings().getXmlNodeArray("hasor.apiBinderSet.binder");
-        if (nodeArray != null && nodeArray.length > 0) {
-            for (XmlNode atNode : nodeArray) {
-                if (atNode == null) {
-                    continue;
-                }
-                String binderTypeStr = atNode.getAttribute("type");
-                String binderImplStr = atNode.getText();
-                if (StringUtils.isBlank(binderTypeStr) || StringUtils.isBlank(binderImplStr)) {
-                    continue;
-                }
-                //
-                Class<?> binderType = getEnvironment().getClassLoader().loadClass(binderTypeStr);
-                Class<?> binderImpl = getEnvironment().getClassLoader().loadClass(binderImplStr);
-                if (!binderType.isInterface()) {
-                    continue;
-                }
-                //
-                extBinderMap.put(binderType, binderImpl);
-                List<Class<?>> interfaces = ClassUtils.getAllInterfaces(binderType);
-                for (Class<?> faces : interfaces) {
-                    extBinderMap.put(faces, binderImpl);
-                }
+        XmlNode[] innerBinderSet = this.getEnvironment().getSettings().getXmlNodeArray("hasor.innerApiBinderSet.binder");
+        List<XmlNode> loadBinderSet = new ArrayList<XmlNode>(Arrays.asList(innerBinderSet));
+        if (this.getEnvironment().getSettings().getBoolean("hasor.apiBinderSet.loadExternal", true)) {
+            XmlNode[] externalBinderSet = this.getEnvironment().getSettings().getXmlNodeArray("hasor.apiBinderSet.binder");
+            loadBinderSet.addAll(Arrays.asList(externalBinderSet));
+        }
+        //
+        for (XmlNode atNode : loadBinderSet) {
+            if (atNode == null) {
+                continue;
+            }
+            String binderTypeStr = atNode.getAttribute("type");
+            String binderImplStr = atNode.getText();
+            if (StringUtils.isBlank(binderTypeStr) || StringUtils.isBlank(binderImplStr)) {
+                continue;
+            }
+            //
+            Class<?> binderType = getEnvironment().getClassLoader().loadClass(binderTypeStr);
+            Class<?> binderImpl = getEnvironment().getClassLoader().loadClass(binderImplStr);
+            if (!binderType.isInterface()) {
+                continue;
+            }
+            //
+            extBinderMap.put(binderType, binderImpl);
+            List<Class<?>> interfaces = ClassUtils.getAllInterfaces(binderType);
+            for (Class<?> faces : interfaces) {
+                extBinderMap.put(faces, binderImpl);
             }
         }
         //

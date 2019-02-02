@@ -37,7 +37,7 @@ public class BeanContainerTest {
         PowerMockito.when(appContext.getInstance((BindInfo) anyObject())).then(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                return container.getInstance((BindInfo) invocationOnMock.getArguments()[0], appContext);
+                return container.getProvider((BindInfo) invocationOnMock.getArguments()[0], appContext).get();
             }
         });
         //
@@ -69,8 +69,8 @@ public class BeanContainerTest {
         container.doInitializeCompleted(env);
         //
         BindInfo<?> info = container.findBindInfo("12345");
-        Object instance1 = container.getInstance(info, appContext);
-        Object instance2 = container.getInstance(info, appContext);
+        Object instance1 = container.getProvider(info, appContext).get();
+        Object instance2 = container.getProvider(info, appContext).get();
         //
         assert instance1 instanceof CallInitBean;
         assert ((CallInitBean) instance1).isInit();
@@ -92,7 +92,7 @@ public class BeanContainerTest {
         //
         container.doInitializeCompleted(env);
         //
-        ConstructorBean instance = (ConstructorBean) container.getInstance(adapter, appContext);
+        ConstructorBean instance = (ConstructorBean) container.getProvider(adapter, appContext).get();
         //
         assert instance.isInit();
         assert "testValue".equals(instance.getName());
@@ -114,7 +114,7 @@ public class BeanContainerTest {
         //
         container.doInitializeCompleted(env);
         //
-        ConstructorMultiBean instance = (ConstructorMultiBean) container.getInstance(adapter, appContext);
+        ConstructorMultiBean instance = (ConstructorMultiBean) container.getProvider(adapter, appContext).get();
         //
         assert instance.isInit();
         assert "paramUUID".equals(instance.getUuid());
@@ -128,7 +128,7 @@ public class BeanContainerTest {
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         //
-        AnnoConstructorMultiBean instance = container.getInstance(AnnoConstructorMultiBean.class, appContext);
+        AnnoConstructorMultiBean instance = container.getProvider(AnnoConstructorMultiBean.class, appContext).get();
         //
         assert instance.getUuid() == null;
         assert instance.getName() == null;
@@ -150,8 +150,8 @@ public class BeanContainerTest {
         container.doInitializeCompleted(env);
         //
         BindInfo<?> info = container.findBindInfo("12345");
-        Object instance1 = container.getInstance(info, appContext);
-        Object instance2 = container.getInstance(info, appContext);
+        Object instance1 = container.getProvider(info, appContext).get();
+        Object instance2 = container.getProvider(info, appContext).get();
         //
         assert instance1 instanceof CallInitBean;
         assert ((CallInitBean) instance1).isInit();
@@ -167,7 +167,7 @@ public class BeanContainerTest {
         //
         //
         try {
-            container.getInstance(ConstructorMultiBean.class, appContext);
+            container.getProvider(ConstructorMultiBean.class, appContext).get();
             assert false;
         } catch (Exception e) {
             assert "No default constructor found.".equals(e.getMessage());
@@ -181,9 +181,9 @@ public class BeanContainerTest {
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         //
-        assert container.getInstance((Class<Object>) null, appContext) == null;
-        assert container.getInstance((Constructor<Object>) null, appContext) == null;
-        assert container.getInstance((BindInfo<Object>) null, appContext) == null;
+        assert container.getProvider((Class<Object>) null, appContext) == null;
+        assert container.getProvider((Constructor<Object>) null, appContext) == null;
+        assert container.getProvider((BindInfo<Object>) null, appContext) == null;
     }
     //
     @Test
@@ -200,7 +200,7 @@ public class BeanContainerTest {
         container.doInitializeCompleted(env);
         //
         BindInfo<?> info = container.findBindInfo("12345");
-        BindInfoAwareBean instance = (BindInfoAwareBean) container.getInstance(info, appContext);
+        BindInfoAwareBean instance = (BindInfoAwareBean) container.getProvider(info, appContext).get();
         assert instance != null;
         assert instance.getBindInfo() == adapter;
     }
@@ -219,7 +219,7 @@ public class BeanContainerTest {
         container.doInitializeCompleted(env);
         //
         BindInfo<?> info = container.findBindInfo("12345");
-        AppContextAwareBean instance = (AppContextAwareBean) container.getInstance(info, appContext);
+        AppContextAwareBean instance = (AppContextAwareBean) container.getProvider(info, appContext).get();
         assert instance != null;
         assert instance.getAppContext() == appContext;
     }
@@ -232,7 +232,7 @@ public class BeanContainerTest {
         //
         container.doInitializeCompleted(env);
         //
-        assert container.getInstance(CallInitBean2.class, appContext).isInit();
-        assert !container.getInstance(CallInitBean3.class, appContext).isInit();
+        assert container.getProvider(CallInitBean2.class, appContext).get().isInit();
+        assert !container.getProvider(CallInitBean3.class, appContext).get().isInit();
     }
 }

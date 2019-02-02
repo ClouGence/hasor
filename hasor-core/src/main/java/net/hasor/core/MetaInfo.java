@@ -19,13 +19,24 @@ package net.hasor.core;
  * @version : 2014-3-17
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface BindInfo<T> extends MetaInfo {
-    /** @return 绑定的ID */
-    public String getBindID();
+public interface MetaInfo {
+    /**
+     * 获取元信息。
+     * @param key 元信息 key
+     * @return 返回元信息值
+     */
+    public Object getMetaData(String key);
 
-    /** @return 为类型绑定的名称。*/
-    public String getBindName();
+    /**
+     * 设置元数据
+     * @param key 元信息 key
+     * @param value 元信息值
+     */
+    public void setMetaData(String key, Object value);
 
-    /** @return 获取注册的类型*/
-    public Class<T> getBindType();
+    /**
+     * 删除元数据
+     * @param key 元信息 key
+     */
+    public void removeMetaData(String key);
 }

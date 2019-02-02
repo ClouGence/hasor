@@ -21,7 +21,7 @@ import java.util.List;
  * @version : 2013-3-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface AppContext {
+public interface AppContext extends MetaInfo {
     /** 容器事件，在所有模块 start 阶段之后引发。
      * @see net.hasor.core.context.TemplateAppContext*/
     public static final String ContextEvent_Started  = "ContextEvent_Started";
@@ -87,16 +87,16 @@ public interface AppContext {
     public <T> T getInstance(BindInfo<T> info);
 
     /** 根据 bindID 创建 Bean 的 Provider */
-    public <T> Provider<T> getProvider(String bindID);
+    public <T> Provider<? extends T> getProvider(String bindID);
 
     /** 根据类型创建创建 Bean 的 Provider */
-    public <T> Provider<T> getProvider(Class<T> targetClass);
+    public <T> Provider<? extends T> getProvider(Class<T> targetClass);
 
     /** 根据构造方法创建 Bean 的 Provider */
-    public <T> Provider<T> getProvider(Constructor<T> targetConstructor);
+    public <T> Provider<? extends T> getProvider(Constructor<T> targetConstructor);
 
     /** 根据 BindInfo 创建 Bean 的 Provider */
-    public <T> Provider<T> getProvider(BindInfo<T> info);
+    public <T> Provider<? extends T> getProvider(BindInfo<T> info);
 
     /** 对 object 对象仅执行依赖注入，要注入的属性等信息参照：findBindingRegister(null,object.getClass())。
      * 如果参照信息为空，那么将直接 return object。 */
@@ -126,7 +126,7 @@ public interface AppContext {
      * @param bindType bean type
      * @return 返回符合条件的绑定对象。
      */
-    public <T> List<Provider<T>> findBindingProvider(Class<T> bindType);
+    public <T> List<Provider<? extends T>> findBindingProvider(Class<T> bindType);
 
     /**
      * 根据名字和类型查找对应的 BindInfo 然后创建这个 Bean。
@@ -143,7 +143,7 @@ public interface AppContext {
      * @param bindType bean type
      * @return 返回{@link Provider}形式对象。
      */
-    public <T> Provider<T> findBindingProvider(String withName, Class<T> bindType);
+    public <T> Provider<? extends T> findBindingProvider(String withName, Class<T> bindType);
 
     /**
      * 获取可以构建出 bindType 的所有 BindInfo。

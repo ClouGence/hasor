@@ -119,19 +119,19 @@ public class AppContextWarp implements AppContext {
         return this.getAppContext().getInstance(info);
     }
     @Override
-    public <T> Provider<T> getProvider(String bindID) {
+    public <T> Provider<? extends T> getProvider(String bindID) {
         return this.getAppContext().getProvider(bindID);
     }
     @Override
-    public <T> Provider<T> getProvider(Class<T> targetClass) {
+    public <T> Provider<? extends T> getProvider(Class<T> targetClass) {
         return this.getAppContext().getProvider(targetClass);
     }
     @Override
-    public <T> Provider<T> getProvider(Constructor<T> bindType) {
+    public <T> Provider<? extends T> getProvider(Constructor<T> bindType) {
         return this.getAppContext().getProvider(bindType);
     }
     @Override
-    public <T> Provider<T> getProvider(BindInfo<T> info) {
+    public <T> Provider<? extends T> getProvider(BindInfo<T> info) {
         return this.getAppContext().getProvider(info);
     }
     @Override
@@ -139,7 +139,7 @@ public class AppContextWarp implements AppContext {
         return this.getAppContext().findBindingBean(bindType);
     }
     @Override
-    public <T> List<Provider<T>> findBindingProvider(Class<T> bindType) {
+    public <T> List<Provider<? extends T>> findBindingProvider(Class<T> bindType) {
         return this.getAppContext().findBindingProvider(bindType);
     }
     @Override
@@ -147,7 +147,7 @@ public class AppContextWarp implements AppContext {
         return this.getAppContext().findBindingBean(withName, bindType);
     }
     @Override
-    public <T> Provider<T> findBindingProvider(String withName, Class<T> bindType) {
+    public <T> Provider<? extends T> findBindingProvider(String withName, Class<T> bindType) {
         return this.getAppContext().findBindingProvider(withName, bindType);
     }
     @Override
@@ -161,5 +161,17 @@ public class AppContextWarp implements AppContext {
     @Override
     public <T> BindInfo<T> findBindingRegister(String withName, Constructor<T> bindConstructor) {
         return this.getAppContext().findBindingRegister(withName, bindConstructor);
+    }
+    @Override
+    public Object getMetaData(String key) {
+        return this.getAppContext().getMetaData(key);
+    }
+    @Override
+    public void setMetaData(String key, Object value) {
+        this.getAppContext().setMetaData(key, value);
+    }
+    @Override
+    public void removeMetaData(String key) {
+        this.getAppContext().removeMetaData(key);
     }
 }

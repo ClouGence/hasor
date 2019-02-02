@@ -17,12 +17,11 @@ package net.hasor.core.setting;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.xml.SaxXmlParser;
 import net.hasor.utils.StringUtils;
+import org.xml.sax.InputSource;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
@@ -39,16 +38,16 @@ public class InputStreamSettings extends AbstractSettings implements IOSettings 
     //
     /**将一个输入流添加到待加载处理列表，使用load方法加载待处理列表中的流。
      * 注意：待处理列表中的流一旦装载完毕将会从待处理列表中清除出去。*/
-    public synchronized boolean addStream(final InputStream stream, StreamType streamType) {
-        if (stream == null || streamType == null) {
+    public synchronized boolean addReader(Reader inReader, StreamType streamType) {
+        if (inReader == null || streamType == null) {
             return false;
         }
         for (InputStreamEntity entity : this.pendingStream) {
-            if (entity.inStream == stream) {
+            if (entity.inReader == inReader) {
                 return false;
             }
         }
-        return this.pendingStream.add(new InputStreamEntity(stream, streamType));
+        return this.pendingStream.add(new InputStreamEntity(inReader, streamType));
     }
     //
     /**load装载所有待处理的流，如果没有待处理流则直接return。*/
@@ -71,16 +70,18 @@ public class InputStreamSettings extends AbstractSettings implements IOSettings 
             SaxXmlParser handler = new SaxXmlParser(this);
             while ((entity = this.pendingStream.removeFirst()) != null) {
                 loadCount++;
+                //
                 //根据文件类型选择适合的解析器
                 if (StreamType.Xml.equals(entity.fileType)) {
                     //加载xml
-                    parser.parse(entity.inStream, handler);
-                    entity.inStream.close();
+                    InputSource inputSource = new InputSource(entity.inReader);
+                    parser.parse(inputSource, handler);
+                    entity.inReader.close();
                 } else if (StreamType.Properties.equals(entity.fileType)) {
                     //加载属性文件
                     Properties properties = new Properties();
-                    properties.load(new InputStreamReader(entity.inStream, Settings.DefaultCharset));
-                    entity.inStream.close();
+                    properties.load(entity.inReader);
+                    entity.inReader.close();
                     if (!properties.isEmpty()) {
                         //
                         String namespace = (String) properties.get("namespace");
@@ -116,8 +117,10 @@ public class InputStreamSettings extends AbstractSettings implements IOSettings 
     }
     /**准备装载*/
     protected void readyLoad() throws IOException {
+        //
     }
     /**完成装载*/
     protected void loadFinish() throws IOException {
+        //
     }
 }

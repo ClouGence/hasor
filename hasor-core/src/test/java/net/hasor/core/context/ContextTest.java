@@ -192,11 +192,11 @@ public class ContextTest {
         BindInfo<?> info1 = apiBinder.bindType(TestBean.class).idWith("abcdefg").toInstance(testBean).toInfo();
         BindInfo<?> info2 = apiBinder.bindType(SimpleInjectBean.class).bothWith("qqqq").asEagerSingleton().toInfo();
         //
-        List<Provider<TestBean>> bindingProviderList1 = appContext.findBindingProvider(TestBean.class);
+        List<Provider<? extends TestBean>> bindingProviderList1 = appContext.findBindingProvider(TestBean.class);
         assert bindingProviderList1.size() == 1;
         assert bindingProviderList1.get(0).get() == testBean;
         //
-        List<Provider<List>> bindingProviderList2 = appContext.findBindingProvider(List.class);
+        List<Provider<? extends List>> bindingProviderList2 = appContext.findBindingProvider(List.class);
         assert bindingProviderList2.size() == 0;
         //
         assert appContext.findBindingBean(TestBean.class).get(0) == testBean;

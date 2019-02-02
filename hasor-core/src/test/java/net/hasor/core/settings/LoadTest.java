@@ -20,9 +20,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.StringReader;
 /**
  *
  * @version : 2013-8-11
@@ -37,12 +36,12 @@ public class LoadTest {
         InputStreamSettings inputStreamSettings = new InputStreamSettings();
         assert inputStreamSettings.loadSettings() == 0;
         //
-        InputStream ins = new ByteArrayInputStream(new byte[] { 0, 0, 0 });
-        assert inputStreamSettings.addStream(ins, StreamType.Xml);
-        assert !inputStreamSettings.addStream(ins, StreamType.Xml);
-        assert !inputStreamSettings.addStream(null, StreamType.Xml);
-        assert !inputStreamSettings.addStream(null, null);
-        assert !inputStreamSettings.addStream(ins, null);
+        StringReader ins = new StringReader(new String(new byte[] { 0, 0, 0 }));
+        assert inputStreamSettings.addReader(ins, StreamType.Xml);
+        assert !inputStreamSettings.addReader(ins, StreamType.Xml);
+        assert !inputStreamSettings.addReader(null, StreamType.Xml);
+        assert !inputStreamSettings.addReader(null, null);
+        assert !inputStreamSettings.addReader(ins, null);
         //
         try {
             inputStreamSettings.loadSettings();

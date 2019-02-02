@@ -33,13 +33,17 @@ public class ProviderTest {
     }
     //
     @Test
-    public void providerTest1() throws Throwable {
+    public void providerTest1() {
         Provider<List> ofList = InstanceProvider.of(new ArrayList());
         ClassLoaderSingleProvider<List> provider = new ClassLoaderSingleProvider<List>(ofList);
         provider.toString();
         //
         assert provider.get() != null;
         assert provider.get() == provider.get();
+        //
+        ArrayList obj = new ArrayList();
+        Provider<ArrayList> ofListWrap = InstanceProvider.wrap(obj);
+        assert ofListWrap.get() == obj;
     }
     //
     @Test

@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.core.setting;
+import net.hasor.core.Matcher;
 import net.hasor.core.Settings;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.io.IOUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -33,10 +32,15 @@ import java.util.List;
  */
 public class StandardContextSettings extends InputStreamSettings {
     /**主配置文件名称*/
-    public static final  String MainSettingName = "hasor-config.xml";
+    public static final  String          MainSettingName = "hasor-config.xml";
     /**默认静态配置文件名称*/
-    private static final String SechmaName      = "/META-INF/hasor.schemas";
-    private              URI    settingURI;
+    private static final String          SechmaName      = "/META-INF/hasor.schemas";
+    private              URI             settingURI;
+    private static       Matcher<String> loadMatcher     = null;
+    //
+    public static void setLoadMatcher(Matcher<String> loadMatcher) {
+        StandardContextSettings.loadMatcher = loadMatcher;
+    }
     //
     private void outInitLog(String mode, Object oriResource) {
         if (logger.isInfoEnabled()) {
@@ -56,11 +60,11 @@ public class StandardContextSettings extends InputStreamSettings {
         this(StandardContextSettings.MainSettingName);
     }
     /**创建{@link StandardContextSettings}类型对象。*/
-    public StandardContextSettings(InputStream mainSettings, StreamType type) throws IOException, URISyntaxException {
+    public StandardContextSettings(Reader mainSettings, StreamType type) throws IOException {
         if (mainSettings != null) {
             outInitLog("stream", mainSettings);
         }
-        this.addStream(mainSettings, type);
+        this.addReader(mainSettings, type);
         refresh();
     }
     /**创建{@link StandardContextSettings}类型对象。*/
@@ -106,6 +110,11 @@ public class StandardContextSettings extends InputStreamSettings {
                 continue;
             }
             for (String sechma : readLines) {
+                if (loadMatcher != null && !loadMatcher.matches(sechma)) {
+                    logger.info("addSechma '{}' ignore.", sechma);
+                    continue;
+                }
+                //
                 InputStream stream = ResourcesUtils.getResourceAsStream(sechma);
                 if (stream != null) {
                     logger.info("addSechma '{}' in '{}'", sechma, schemaUrl.toString());
@@ -127,11 +136,12 @@ public class StandardContextSettings extends InputStreamSettings {
             }
         }
     }
-    private void _addStream(InputStream stream, String suffix) {
+    private void _addStream(InputStream inStream, String suffix) throws UnsupportedEncodingException {
+        InputStreamReader streamReader = new InputStreamReader(inStream, Settings.DefaultCharset);
         if (suffix != null && suffix.toLowerCase().endsWith(".xml")) {
-            this.addStream(stream, StreamType.Xml);
+            this.addReader(streamReader, StreamType.Xml);
         } else {
-            this.addStream(stream, StreamType.Properties);
+            this.addReader(streamReader, StreamType.Properties);
         }
     }
     @Override
