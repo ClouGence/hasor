@@ -15,6 +15,8 @@
  */
 package net.hasor.web.listener;
 import net.hasor.core.AppContext;
+import net.hasor.web.definition.ContextListenerDefinition;
+import net.hasor.web.definition.HttpSessionListenerDefinition;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.http.HttpSessionEvent;

@@ -18,6 +18,8 @@ import net.hasor.core.*;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
+import net.hasor.core.provider.ClassAwareProvider;
+import net.hasor.core.provider.InfoAwareProvider;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.scope.SingletonScope;
 import org.junit.Before;
@@ -408,5 +410,27 @@ public class BinderDataTest extends AbstractBinderDataTest {
         assert binder.findClass(null, null) == null;
         assert !binder.findClass(ApiBinder.class, new String[] { "test.net.hasor.core._07_binder" }).isEmpty();
         assert binder.getEnvironment() != null;
+    }
+    //
+    @Test
+    public void binderTest24() {
+        BeanCreaterListener<Object> listener = PowerMockito.mock(BeanCreaterListener.class);
+        Provider<? extends BeanCreaterListener<?>> createrProvider = InstanceProvider.of(listener);
+        BindInfo<? extends BeanCreaterListener<?>> createrInfo = PowerMockito.mock(BindInfo.class);
+        //
+        //
+        binder.bindType(TestBean.class).whenCreate(listener);
+        assert reference.get().getCreaterListener().get() == listener;
+        //
+        binder.bindType(TestBean.class).whenCreate(createrProvider);
+        assert reference.get().getCreaterListener() == createrProvider;
+        //
+        binder.bindType(TestBean.class).whenCreate(TestBeanCreaterListener.class);
+        assert reference.get().getCreaterListener() instanceof ClassAwareProvider;
+        assert ((ClassAwareProvider) reference.get().getCreaterListener()).getImplementation() == TestBeanCreaterListener.class;
+        //
+        binder.bindType(TestBean.class).whenCreate(createrInfo);
+        assert reference.get().getCreaterListener() instanceof InfoAwareProvider;
+        assert ((InfoAwareProvider) reference.get().getCreaterListener()).getInfo() == createrInfo;
     }
 }

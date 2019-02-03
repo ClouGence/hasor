@@ -1,4 +1,4 @@
-package net.hasor.web.definition;
+package net.hasor.web.definition.beans;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerData;
 import net.hasor.web.WebPlugin;

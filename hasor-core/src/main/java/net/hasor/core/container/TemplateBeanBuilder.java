@@ -128,7 +128,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
     //
     //
     //
-    protected <T> Class<T> findImplClass(final Class<?> notSureType) {
+    public static <T> Class<T> findImplClass(final Class<?> notSureType) {
         Class<?> tmpType = notSureType;
         ImplBy implBy = null;
         do {
@@ -265,14 +265,19 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         }
         //
         // .创建对象
+        T targetBean = null;
         try {
             if (paramObjects.length == 0) {
-                T targetBean = (T) constructor.newInstance();
-                return doInject(targetBean, bindInfo, appContext, newType);
+                targetBean = (T) constructor.newInstance();
+                targetBean = doInject(targetBean, bindInfo, appContext, newType);
             } else {
-                T targetBean = (T) constructor.newInstance(paramObjects);
-                return doInject(targetBean, bindInfo, appContext, newType);
+                targetBean = (T) constructor.newInstance(paramObjects);
+                targetBean = doInject(targetBean, bindInfo, appContext, newType);
             }
+            //
+            //4.Options方法。
+            doOptions(targetBean, bindInfo);
+            return targetBean;
         } catch (Throwable e) {
             if (e instanceof InvocationTargetException) {
                 e = ((InvocationTargetException) e).getTargetException();
@@ -421,8 +426,6 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         return converterUtils.convert(settingValue, toType);
     }
     //
-    //
-    //
     /** 执行初始化 init方法 */
     private void initObject(Object targetBean, BindInfo<?> bindInfo) {
         Method initMethod = findInitMethod(targetBean.getClass(), bindInfo);
@@ -472,6 +475,18 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         }
         return initMethod;
     }
+    //
+    private void doOptions(Object targetBean, BindInfo<?> bindInfo) throws Throwable {
+        //
+        if (bindInfo instanceof AbstractBindInfoProviderAdapter) {
+            Provider<? extends BeanCreaterListener<?>> listenerProvider = ((AbstractBindInfoProviderAdapter<?>) bindInfo).getCreaterListener();
+            if (listenerProvider != null) {
+                BeanCreaterListener<Object> createrListener = (BeanCreaterListener<Object>) listenerProvider.get();
+                createrListener.beanCreated(targetBean, (BindInfo<Object>) bindInfo);
+            }
+        }
+    }
+    //
     /** 检测是否为单例（注解优先）*/
     public static boolean testSingleton(Class<?> targetType, BindInfo<?> bindInfo, Settings settings) {
         Prototype prototype = targetType.getAnnotation(Prototype.class);
@@ -483,13 +498,13 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         //
         if (SingletonMode.Singleton == singletonMode) {
             return true;
-        }
-        if (SingletonMode.Prototype == singletonMode) {
+        } else if (SingletonMode.Prototype == singletonMode) {
             return false;
-        }
-        if (SingletonMode.Clear == singletonMode) {
+        } else if (SingletonMode.Clear == singletonMode) {
             prototype = null;
             singleton = null;
+        } else {
+            targetType = findImplClass(targetType);
         }
         //
         if (prototype != null && singleton != null) {

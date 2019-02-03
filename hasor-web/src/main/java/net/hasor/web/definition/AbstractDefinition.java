@@ -32,7 +32,7 @@ public abstract class AbstractDefinition implements InvokerFilter {
     private final Map<String, String> initParams;
     private final String              pattern;
     private final UriPatternMatcher   patternMatcher;
-    private AppContext appContext = null;
+    private       AppContext          appContext = null;
     //
     public AbstractDefinition(long index, String pattern, UriPatternMatcher patternMatcher, Map<String, String> initParams) {
         this.index = index;

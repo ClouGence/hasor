@@ -4,12 +4,12 @@ import net.hasor.core.BindInfo;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerData;
 import net.hasor.web.WebPlugin;
+import net.hasor.web.definition.beans.TestCallerWebPlugin;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
-import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicBoolean;
 //
 public class WebPluginTest {
@@ -31,7 +31,7 @@ public class WebPluginTest {
         definition.initPlugin(appContext);
         definition.initPlugin(appContext);
         definition.toString();
-        definition.beforeFilter(null,null);
+        definition.beforeFilter(null, null);
         //
         assert initCall.get();
     }
@@ -45,9 +45,14 @@ public class WebPluginTest {
         WebPluginDefinition definition = new WebPluginDefinition(bindInfo);
         //
         //
+        TestCallerWebPlugin.resetCalls();
+        assert !TestCallerWebPlugin.isBeforeCall();
+        assert !TestCallerWebPlugin.isAfterCall();
         definition.initPlugin(appContext);
         definition.beforeFilter(PowerMockito.mock(Invoker.class), PowerMockito.mock(InvokerData.class));
         definition.afterFilter(PowerMockito.mock(Invoker.class), PowerMockito.mock(InvokerData.class));
+        assert TestCallerWebPlugin.isBeforeCall();
+        assert TestCallerWebPlugin.isAfterCall();
         //
     }
 }

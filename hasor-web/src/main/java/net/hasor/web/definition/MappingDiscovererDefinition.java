@@ -38,7 +38,7 @@ public class MappingDiscovererDefinition implements MappingDiscoverer, AppContex
     //
     @Override
     public String toString() {
-        return String.format("type %s", MappingDiscovererDefinition.class);
+        return String.format("type %s listenerKey=%s", MappingDiscovererDefinition.class, this.bindInfo);
     }
     //
     /*--------------------------------------------------------------------------------------------------------*/

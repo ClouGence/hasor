@@ -121,7 +121,8 @@ public interface ApiBinder {
      *  -- {@link LinkedBindingBuilder}类型，为绑定设置实现方式。继承自：{@link InjectPropertyBindingBuilder}<br>
      *  -- {@link InjectPropertyBindingBuilder}类型，为绑定设置注入属性。继承自：{@link LifeBindingBuilder}<br>
      *  -- {@link LifeBindingBuilder}类型，为绑定设置生命周期方法配置。继承自：{@link ScopedBindingBuilder}<br>
-     *  -- {@link ScopedBindingBuilder}类型，为绑定设置作用域。继承自：{@link MetaDataBindingBuilder}<br>
+     *  -- {@link ScopedBindingBuilder}类型，为绑定设置作用域。继承自：{@link OptionPropertyBindingBuilder}<br>
+     *  -- {@link OptionPropertyBindingBuilder}类型，为绑定设置作用域。继承自：{@link MetaDataBindingBuilder}<br>
      *  -- {@link MetaDataBindingBuilder}类型，绑定元信息配置。<br>
      * @param type bean type。
      * @return 返回 - {@link NamedBindingBuilder}。
@@ -133,10 +134,10 @@ public interface ApiBinder {
      * 该方法相当于“<code>apiBinder.bindType(type).toInstance(instance);</code>”
      * @param type bean type。
      * @param instance 类型的实例
-     * @return 返回 - {@link MetaDataBindingBuilder}。
+     * @return 返回 - {@link OptionPropertyBindingBuilder}。
      * @see #bindType(Class)
      */
-    public <T> MetaDataBindingBuilder<T> bindType(Class<T> type, T instance);
+    public <T> OptionPropertyBindingBuilder<T> bindType(Class<T> type, T instance);
 
     /**
      * 绑定一个类型并且为这个类型指定一个实现类。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
@@ -174,11 +175,11 @@ public interface ApiBinder {
      * @param withName 要绑定的类型。
      * @param type bean type。
      * @param instance 同时指定实例对象
-     * @return 返回 - {@link MetaDataBindingBuilder}。
+     * @return 返回 - {@link OptionPropertyBindingBuilder}。
      * @see #bindType(String, Class)
      * @see #bindType(Class)
      */
-    public <T> MetaDataBindingBuilder<T> bindType(String withName, Class<T> type, T instance);
+    public <T> OptionPropertyBindingBuilder<T> bindType(String withName, Class<T> type, T instance);
 
     /**
      * 为绑定类型配置一个名称，进而基于同一个类型下不同名称的绑定进行差异化配置。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
@@ -263,9 +264,9 @@ public interface ApiBinder {
         /**
          * 为绑定设置一个实例
          * @param instance 实例对象
-         * @return 返回 - {@link MetaDataBindingBuilder}。
+         * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public MetaDataBindingBuilder<T> toInstance(T instance);
+        public OptionPropertyBindingBuilder<T> toInstance(T instance);
 
         /**
          * 为绑定设置一个 {@link Provider}。
@@ -357,48 +358,59 @@ public interface ApiBinder {
         public LifeBindingBuilder<T> initMethod(String methodName);
     }
     /**Bean存在的作用域*/
-    public interface ScopedBindingBuilder<T> extends MetaDataBindingBuilder<T> {
+    public interface ScopedBindingBuilder<T> extends OptionPropertyBindingBuilder<T> {
         /**
          * 注册为原型模式。<p>
          * 原型模式：当类型被多个对象注入时，每个注入的类型实例都是全新的对象。
-         * @return 返回 - {@link MetaDataBindingBuilder}。
+         * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public MetaDataBindingBuilder<T> asEagerPrototype();
+        public OptionPropertyBindingBuilder<T> asEagerPrototype();
 
         /**
          * 注册为单例模式。<p>
          * 单列模式：当类型被多个对象注入时，每个注入的类型实例都是同一个对象。
          * 如果配置了{@link #toScope(Provider)}或者{@link #toScope(Scope)}，那么该方法将会使它们失效。
-         * @return 返回 - {@link MetaDataBindingBuilder}。
+         * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public MetaDataBindingBuilder<T> asEagerSingleton();
+        public OptionPropertyBindingBuilder<T> asEagerSingleton();
 
         /**
          * 使 Bean 原身自带的 @Prototype 或者 @Singleton 注解失效。<p>
-         * @return 返回 - {@link MetaDataBindingBuilder}。
+         * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public MetaDataBindingBuilder<T> asEagerAnnoClear();
+        public OptionPropertyBindingBuilder<T> asEagerAnnoClear();
 
         /**
          * 设置Scope。
          * @param scope 作用域
-         * @return 返回 - {@link MetaDataBindingBuilder}。
+         * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public MetaDataBindingBuilder<T> toScope(Scope scope);
+        public OptionPropertyBindingBuilder<T> toScope(Scope scope);
 
         /**
          * 设置Scope。
          * @param scope 作用域
-         * @return 返回 - {@link MetaDataBindingBuilder}。
+         * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public MetaDataBindingBuilder<T> toScope(Provider<Scope> scope);
+        public OptionPropertyBindingBuilder<T> toScope(Provider<Scope> scope);
 
         /**
          * 设置Scope。
          * @param scopeName 作用域名
-         * @return 返回 - {@link MetaDataBindingBuilder}。
+         * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public MetaDataBindingBuilder<T> toScope(String scopeName);
+        public OptionPropertyBindingBuilder<T> toScope(String scopeName);
+    }
+    //
+    /**选项和属性的配置。*/
+    public interface OptionPropertyBindingBuilder<T> extends MetaDataBindingBuilder<T> {
+        public ScopedBindingBuilder<T> whenCreate(BeanCreaterListener<?> createrListener);
+
+        public ScopedBindingBuilder<T> whenCreate(Provider<? extends BeanCreaterListener<?>> createrListener);
+
+        public ScopedBindingBuilder<T> whenCreate(Class<? extends BeanCreaterListener<?>> createrListener);
+
+        public ScopedBindingBuilder<T> whenCreate(BindInfo<? extends BeanCreaterListener<?>> createrListener);
     }
     /**绑定元信息*/
     public interface MetaDataBindingBuilder<T> {

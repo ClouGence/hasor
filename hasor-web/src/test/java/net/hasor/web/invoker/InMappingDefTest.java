@@ -57,6 +57,11 @@ public class InMappingDefTest {
         //
         PowerMockito.when(invoker.getRequestPath()).thenReturn("/abc/asyncAction.do");
         assert !def.isAsync(invoker);
+        //
+        //
+        Invoker invoker3 = newInvoker("/abc.do", "POST");
+        InMappingDef mappingDef3 = new InMappingDef(1, targetInfo, "/execute.do", Matchers.anyMethod(), true);
+        assert !mappingDef3.isAsync(invoker3);
     }
     //
     @Test
@@ -93,8 +98,8 @@ public class InMappingDefTest {
         PowerMockito.when(targetInfo2.getBindType()).thenReturn(Async2TestAction.class);
         //
         Invoker invoker2 = newInvoker("/execute.do", "POST");
-        InMappingDef mappingDef = new InMappingDef(1, targetInfo2, "/execute.do", Matchers.anyMethod(), false);
-        assert mappingDef.isAsync(invoker2);
+        InMappingDef mappingDef2 = new InMappingDef(1, targetInfo2, "/execute.do", Matchers.anyMethod(), false);
+        assert mappingDef2.isAsync(invoker2);
     }
     //
     @Test

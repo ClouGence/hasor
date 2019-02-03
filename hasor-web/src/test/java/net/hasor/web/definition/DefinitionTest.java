@@ -5,6 +5,8 @@ import net.hasor.core.provider.InstanceProvider;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerFilter;
+import net.hasor.web.definition.beans.TestCallerFilter;
+import net.hasor.web.definition.beans.TestDoNextCallerFilter;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
@@ -49,38 +51,38 @@ public class DefinitionTest {
     //
     @Test
     public void filterDefineTest1() throws Throwable {
-        //
+        TestCallerFilter callerFilter = new TestCallerFilter();
         BindInfo<? extends Filter> bindInfo = PowerMockito.mock(BindInfo.class);
         FilterDefinition filterDefine = new FilterDefinition(123, "abc",//
                 UriPatternType.get(UriPatternType.SERVLET, "/servlet"),//
                 bindInfo, new HashMap<String, String>());
         //
         AppContext appContext = PowerMockito.mock(AppContext.class);
-        PowerMockito.when(appContext.getInstance(bindInfo)).thenReturn(new TestCallerFilter());
+        PowerMockito.when(appContext.getInstance(bindInfo)).thenReturn(callerFilter);
         //
         ServletContext servletContext = PowerMockito.mock(ServletContext.class);
         PowerMockito.when(appContext.getInstance(ServletContext.class)).thenReturn(servletContext);
         //
-        //
         TestCallerFilter.resetCalls();
+        filterDefine.init(new InvokerMapConfig(null, appContext));
+        filterDefine.beanCreated(callerFilter, (BindInfo<Filter>) bindInfo);
+        assert TestCallerFilter.isInitCall();
+        assert filterDefine.getTarget() == callerFilter;
+        //
         filterDefine.destroy();
         assert !TestCallerFilter.isDestroyCall(); // 没有init 不会调用 destroy
-        filterDefine.init(new InvokerMapConfig(null, appContext));
-        filterDefine.init(new InvokerMapConfig(null, appContext));
-        //
-        assert TestCallerFilter.isInitCall();
     }
     //
     @Test
     public void filterDefineTest2() throws Throwable {
-        //
+        TestDoNextCallerFilter nextCallerFilter = new TestDoNextCallerFilter();
         BindInfo<? extends Filter> bindInfo = PowerMockito.mock(BindInfo.class);
         FilterDefinition filterDefine = new FilterDefinition(123, "abc",//
                 UriPatternType.get(UriPatternType.SERVLET, "/servlet"),//
                 bindInfo, new HashMap<String, String>());
         //
         AppContext appContext = PowerMockito.mock(AppContext.class);
-        PowerMockito.when(appContext.getInstance(bindInfo)).thenReturn(new TestDoNextCallerFilter());
+        PowerMockito.when(appContext.getInstance(bindInfo)).thenReturn(nextCallerFilter);
         //
         ServletContext servletContext = PowerMockito.mock(ServletContext.class);
         PowerMockito.when(appContext.getInstance(ServletContext.class)).thenReturn(servletContext);
@@ -89,6 +91,8 @@ public class DefinitionTest {
         //
         TestCallerFilter.resetCalls();
         filterDefine.init(new InvokerMapConfig(null, InstanceProvider.wrap(appContext)));
+        filterDefine.beanCreated(nextCallerFilter, (BindInfo<Filter>) bindInfo);
+        assert filterDefine.getTarget() == nextCallerFilter;
         //
         assert TestCallerFilter.isInitCall();
         filterDefine.doInvoke(mockInvoker, new InvokerChain() {
@@ -167,6 +171,7 @@ public class DefinitionTest {
     //
     @Test
     public void invokerDefineTest1() throws Throwable {
+        TestCallerFilter callerFilter = new TestCallerFilter();
         //
         BindInfo<? extends InvokerFilter> bindInfo = PowerMockito.mock(BindInfo.class);
         InvokeFilterDefinition filterDefine = new InvokeFilterDefinition(123, "abc",//
@@ -174,7 +179,7 @@ public class DefinitionTest {
                 bindInfo, new HashMap<String, String>());
         //
         AppContext appContext = PowerMockito.mock(AppContext.class);
-        PowerMockito.when(appContext.getInstance(bindInfo)).thenReturn(new TestCallerFilter());
+        PowerMockito.when(appContext.getInstance(bindInfo)).thenReturn(callerFilter);
         //
         ServletContext servletContext = PowerMockito.mock(ServletContext.class);
         PowerMockito.when(appContext.getInstance(ServletContext.class)).thenReturn(servletContext);
@@ -184,7 +189,8 @@ public class DefinitionTest {
         filterDefine.destroy();
         assert !TestCallerFilter.isDestroyCall(); // 没有init 不会调用 destroy
         filterDefine.init(new InvokerMapConfig(null, appContext));
-        filterDefine.init(new InvokerMapConfig(null, appContext));
+        filterDefine.beanCreated(callerFilter, (BindInfo<InvokerFilter>) bindInfo);
+        assert callerFilter == filterDefine.getTarget();
         //
         assert TestCallerFilter.isInitCall();
     }
@@ -192,13 +198,14 @@ public class DefinitionTest {
     @Test
     public void invokerDefineTest2() throws Throwable {
         //
+        TestDoNextCallerFilter nextCallerFilter = new TestDoNextCallerFilter();
         BindInfo<? extends InvokerFilter> bindInfo = PowerMockito.mock(BindInfo.class);
         InvokeFilterDefinition filterDefine = new InvokeFilterDefinition(123, "abc",//
                 UriPatternType.get(UriPatternType.SERVLET, "/servlet"),//
                 bindInfo, new HashMap<String, String>());
         //
         AppContext appContext = PowerMockito.mock(AppContext.class);
-        PowerMockito.when(appContext.getInstance(bindInfo)).thenReturn(new TestDoNextCallerFilter());
+        PowerMockito.when(appContext.getInstance(bindInfo)).thenReturn(nextCallerFilter);
         //
         ServletContext servletContext = PowerMockito.mock(ServletContext.class);
         PowerMockito.when(appContext.getInstance(ServletContext.class)).thenReturn(servletContext);
@@ -207,6 +214,8 @@ public class DefinitionTest {
         //
         TestCallerFilter.resetCalls();
         filterDefine.init(new InvokerMapConfig(null, InstanceProvider.wrap(appContext)));
+        filterDefine.beanCreated(nextCallerFilter, (BindInfo<InvokerFilter>) bindInfo);
+        assert nextCallerFilter == filterDefine.getTarget();
         //
         assert TestCallerFilter.isInitCall();
         filterDefine.doInvoke(mockInvoker, new InvokerChain() {

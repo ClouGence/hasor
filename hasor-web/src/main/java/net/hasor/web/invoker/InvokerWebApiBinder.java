@@ -24,8 +24,6 @@ import net.hasor.web.*;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.annotation.Render;
 import net.hasor.web.definition.*;
-import net.hasor.web.listener.ContextListenerDefinition;
-import net.hasor.web.listener.HttpSessionListenerDefinition;
 import net.hasor.web.startup.RuntimeFilter;
 import net.hasor.web.wrap.DefaultServlet;
 
@@ -247,11 +245,11 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     protected void jeeFilterThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
         FilterDefinition define = new FilterDefinition(index, pattern, matcher, filterRegister, initParams);
-        bindType(AbstractDefinition.class).uniqueName().toInstance(define);
+        bindType(AbstractDefinition.class).uniqueName().toInstance(define).whenCreate(define);
     }
     protected void filterThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
         InvokeFilterDefinition define = new InvokeFilterDefinition(index, pattern, matcher, filterRegister, initParams);
-        bindType(AbstractDefinition.class).uniqueName().toInstance(define);
+        bindType(AbstractDefinition.class).uniqueName().toInstance(define).whenCreate(define);
     }
     private abstract class FiltersModuleBinder<T> implements FilterBindingBuilder<T> {
         private final Class<T>       targetType;
@@ -324,7 +322,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         }
         @Override
         public void through(final int index, final Provider<? extends T> filterProvider, Map<String, String> initParams) {
-            BindInfo<T> filterRegister = bindType(targetType).uniqueName().toProvider((Provider<T>) filterProvider).toInfo();
+            BindInfo<T> filterRegister = bindType(targetType).uniqueName().toProvider(filterProvider).toInfo();
             this.through(index, filterRegister, initParams);
         }
         @Override
@@ -377,11 +375,11 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         public void with(BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams) {
             this.with(0, servletRegister, initParams);
         }
+        //
         @Override
         public void with(int index, BindInfo<? extends HttpServlet> servletRegister) {
             this.with(index, servletRegister, null);
         }
-        //
         @Override
         public void with(final int index, final Class<? extends HttpServlet> servletKey, final Map<String, String> initParams) {
             BindInfo<HttpServlet> servletRegister = bindType(HttpServlet.class).uniqueName().to(servletKey).toInfo();
@@ -397,6 +395,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             BindInfo<HttpServlet> servletRegister = bindType(HttpServlet.class).uniqueName().toProvider(servletProvider).toInfo();
             this.with(index, servletRegister, initParams);
         }
+        //
         @Override
         public void with(int index, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams) {
             if (initParams == null) {

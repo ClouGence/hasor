@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.definition;
-import net.hasor.core.AppContext;
+import net.hasor.core.BeanCreaterListener;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Provider;
 import net.hasor.utils.ExceptionUtils;
@@ -29,9 +29,8 @@ import java.util.Map;
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */
-public class FilterDefinition extends AbstractDefinition {
+public class FilterDefinition extends AbstractDefinition implements BeanCreaterListener<Filter> {
     private BindInfo<? extends Filter> bindInfo = null;
-    private Filter                     instance = null;
     //
     public FilterDefinition(long index, String pattern, UriPatternMatcher uriPatternMatcher,//
             BindInfo<? extends Filter> bindInfo, Map<String, String> initParams) {
@@ -40,20 +39,17 @@ public class FilterDefinition extends AbstractDefinition {
     }
     //
     protected final Filter getTarget() throws ServletException {
-        if (this.instance != null) {
-            return this.instance;
-        }
-        //
-        final AppContext appContext = this.getAppContext();
-        final ServletContext servletContext = appContext.getInstance(ServletContext.class);
-        this.instance = appContext.getInstance(this.bindInfo);
-        this.instance.init(new J2eeMapConfig(bindInfo.getBindID(), this.getInitParams(), new Provider<ServletContext>() {
+        return this.getAppContext().getInstance(this.bindInfo);
+    }
+    @Override
+    public void beanCreated(Filter newObject, BindInfo<Filter> bindInfo) throws Throwable {
+        final ServletContext servletContext = this.getAppContext().getInstance(ServletContext.class);
+        newObject.init(new J2eeMapConfig(bindInfo.getBindID(), this.getInitParams(), new Provider<ServletContext>() {
             @Override
             public ServletContext get() {
                 return servletContext;
             }
         }));
-        return this.instance;
     }
     //
     /*--------------------------------------------------------------------------------------------------------*/
@@ -79,10 +75,10 @@ public class FilterDefinition extends AbstractDefinition {
         });
     }
     public void destroy() {
-        if (this.instance == null) {
-            return;
-        }
-        this.instance.destroy();
-        this.instance = null;
+//        if (this.instance == null) {
+//            return;
+//        }
+//        this.instance.destroy();
+//        this.instance = null;
     }
 }

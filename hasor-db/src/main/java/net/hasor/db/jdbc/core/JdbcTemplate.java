@@ -732,12 +732,14 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
     /** Create a new RowMapper for reading columns as Bean pairs. */
     protected <T> RowMapper<T> getBeanPropertyRowMapper(final Class<T> requiredType) {
-        Hasor.assertIsNotNull(requiredType != null, "requiredType is null.");
-        if (Map.class.isAssignableFrom(requiredType))
+        Hasor.assertIsNotNull(requiredType, "requiredType is null.");
+        if (Map.class.isAssignableFrom(requiredType)) {
             return (RowMapper<T>) this.getColumnMapRowMapper();
+        }
         //
-        if (requiredType.isPrimitive() || Number.class.isAssignableFrom(requiredType) || String.class.isAssignableFrom(requiredType))
+        if (requiredType.isPrimitive() || Number.class.isAssignableFrom(requiredType) || String.class.isAssignableFrom(requiredType)) {
             return this.getSingleColumnRowMapper(requiredType);
+        }
         //
         return new BeanPropertyRowMapper<T>(requiredType) {
             @Override
@@ -754,10 +756,11 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     //
     /**创建用于保存结果集的数据Map。*/
     protected Map<String, Object> createResultsMap() {
-        if (!this.isResultsCaseInsensitive())
+        if (!this.isResultsCaseInsensitive()) {
             return new LinkedCaseInsensitiveMap<Object>();
-        else
+        } else {
             return new LinkedHashMap<String, Object>();
+        }
     }
     /** Create a new PreparedStatementSetter.*/
     protected PreparedStatementSetter newArgPreparedStatementSetter(final Object[] args) throws SQLException {
@@ -796,16 +799,18 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
             }
         } else {
             SQLWarning warning = stmt.getWarnings();
-            if (warning != null)
+            if (warning != null) {
                 throw new SQLException("Warning not ignored", warning);
+            }
         }
     }
     /**获取SQL文本*/
     private static String getSql(final Object sqlProvider) {
-        if (sqlProvider instanceof SqlProvider)
+        if (sqlProvider instanceof SqlProvider) {
             return ((SqlProvider) sqlProvider).getSql();
-        else
+        } else {
             return null;
+        }
     }
     //
     /**至返回结果集中的一条数据。*/
@@ -865,8 +870,9 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
         }
         @Override
         public Object extractData(final ResultSet rs) throws SQLException {
-            while (rs.next())
+            while (rs.next()) {
                 this.rch.processRow(rs);
+            }
             return null;
         }
     }
@@ -889,8 +895,9 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
             Object[] paramArray = ParsedSql.buildSqlValues(this.parsedSql, this.paramSource);
             //3.创建PreparedStatement对象，并设置参数
             PreparedStatement statement = con.prepareStatement(sqlToUse);
-            for (int i = 0; i < paramArray.length; i++)
+            for (int i = 0; i < paramArray.length; i++) {
                 InnerStatementSetterUtils.setParameterValue(statement, i + 1, paramArray[i]);
+            }
             InnerStatementSetterUtils.cleanupParameters(paramArray);
             return statement;
         }
@@ -900,8 +907,9 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
         }
         @Override
         public void cleanupParameters() {
-            if (this.paramSource instanceof ParameterDisposer)
+            if (this.paramSource instanceof ParameterDisposer) {
                 ((ParameterDisposer) this.paramSource).cleanupParameters();
+            }
         }
     }
     /**接口 {@link BatchPreparedStatementSetter} 的简单实现，目的是设置批量操作*/
@@ -925,8 +933,9 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
             Object[] sqlValue = ParsedSql.buildSqlValues(this.parsedSql, paramSource);
             //2.设置参数
             int sqlColIndx = 1;
-            for (Object element : sqlValue)
+            for (Object element : sqlValue) {
                 InnerStatementSetterUtils.setParameterValue(ps, sqlColIndx++, element);
+            }
         }
         @Override
         public int getBatchSize() {
@@ -934,9 +943,11 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
         }
         @Override
         public void cleanupParameters() {
-            for (SqlParameterSource batchItem : this.batchArgs)
-                if (batchItem instanceof ParameterDisposer)
+            for (SqlParameterSource batchItem : this.batchArgs) {
+                if (batchItem instanceof ParameterDisposer) {
                     ((ParameterDisposer) batchItem).cleanupParameters();
+                }
+            }
         }
     }
 }

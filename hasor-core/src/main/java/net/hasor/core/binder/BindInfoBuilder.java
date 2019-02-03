@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import net.hasor.core.BindInfo;
-import net.hasor.core.Provider;
-import net.hasor.core.Scope;
-import net.hasor.core.SingletonMode;
+import net.hasor.core.*;
 /**
  * Bean配置接口，用于对Bean信息进行全方面配置。
  * @version : 2014年7月2日
@@ -110,4 +107,7 @@ public interface BindInfoBuilder<T> {
      * @param methodName 方法名。
      */
     public void initMethod(String methodName);
+
+    //
+    public void setCreaterListener(Provider<? extends BeanCreaterListener<?>> createrListener);
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.listener;
+package net.hasor.web.definition;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 
@@ -26,7 +26,6 @@ import javax.servlet.ServletContextListener;
  */
 public class ContextListenerDefinition implements ServletContextListener {
     private BindInfo<? extends ServletContextListener> listenerRegister = null;
-    private ServletContextListener                     listenerInstance = null;
     private AppContext                                 appContext       = null;
     //
     //
@@ -35,20 +34,15 @@ public class ContextListenerDefinition implements ServletContextListener {
     }
     //
     protected ServletContextListener getTarget() {
-        if (this.listenerInstance == null) {
-            this.listenerInstance = this.appContext.getInstance(this.listenerRegister);
-        }
-        return this.listenerInstance;
+        return this.appContext.getInstance(this.listenerRegister);
     }
     @Override
     public String toString() {
-        return String.format("type %s listenerKey=%s", //
-                ContextListenerDefinition.class, this.listenerInstance);
+        return String.format("type %s listenerKey=%s", ContextListenerDefinition.class, this.listenerRegister);
     }
     /**/
     public void init(final AppContext appContext) {
         this.appContext = appContext;
-        this.getTarget();
     }
     /*--------------------------------------------------------------------------------------------------------*/
     /**/

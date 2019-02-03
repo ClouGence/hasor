@@ -1,7 +1,5 @@
 package net.hasor.core.container;
-import net.hasor.core.AppContext;
-import net.hasor.core.BindInfo;
-import net.hasor.core.SingletonMode;
+import net.hasor.core.*;
 import net.hasor.core.container.anno.AnnoCallInitBean;
 import net.hasor.core.container.anno.AnnoConstructorMultiBean;
 import net.hasor.core.container.aware.AppContextAwareBean;
@@ -18,6 +16,7 @@ import org.powermock.api.mockito.PowerMockito;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static net.hasor.core.AppContext.ContextEvent_Started;
 import static org.mockito.Matchers.anyObject;
@@ -234,5 +233,34 @@ public class BeanContainerTest {
         //
         assert container.getProvider(CallInitBean2.class, appContext).get().isInit();
         assert !container.getProvider(CallInitBean3.class, appContext).get().isInit();
+    }
+    @Test
+    public void containerTest12() {
+        CallInitBean.resetInit();
+        BeanContainer container = new BeanContainer();
+        AppContext appContext = PowerMockito.mock(AppContext.class);
+        PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
+        //
+        final AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+        BeanCreaterListener<Object> listener = new BeanCreaterListener<Object>() {
+            @Override
+            public void beanCreated(Object newObject, BindInfo bindInfo) throws Throwable {
+                atomicBoolean.set(true);
+            }
+        };
+        Provider<? extends BeanCreaterListener<?>> createrProvider = InstanceProvider.of(listener);
+        //
+        AbstractBindInfoProviderAdapter<?> adapter = container.createInfoAdapter(AnnoCallInitBean.class);
+        adapter.setBindID("12345");
+        adapter.setBindName("myBean");
+        adapter.setCreaterListener(createrProvider);
+        //
+        container.doInitializeCompleted(env);
+        //
+        BindInfo<?> info = container.findBindInfo("12345");
+        container.getProvider(info, appContext).get();
+        //
+        assert atomicBoolean.get();
     }
 }

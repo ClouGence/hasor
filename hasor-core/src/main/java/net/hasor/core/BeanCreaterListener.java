@@ -13,25 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.invoker.beans;
-import net.hasor.web.Mapping;
-import net.hasor.web.MappingDiscoverer;
+package net.hasor.core;
 /**
- * @version : 2017-01-08
+ * 当 AppContext 创建这个Bean时调用。
+ * @version : 2013-11-8
  * @author 赵永春 (zyc@hasor.net)
  */
-public class TestMappingDiscoverer implements MappingDiscoverer {
-    private static boolean resetCall = false;
-    //
-    public static void resetCall() {
-        resetCall = false;
-    }
-    public static boolean isResetCall() {
-        return resetCall;
-    }
-    //
-    @Override
-    public void discover(Mapping mappingData) {
-        resetCall = true;
-    }
+public interface BeanCreaterListener<T> {
+    /**
+     * 注入AppContext。
+     * @param newObject 新对象。
+     * @param bindInfo 新对象的 BindInfo（可能为空）。
+     */
+    public void beanCreated(T newObject, BindInfo<T> bindInfo) throws Throwable;
 }

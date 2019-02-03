@@ -31,4 +31,15 @@ public class ExceptionUtils {
         }
         return new RuntimeException(proxy.getClass().getName() + " - " + proxy.getMessage(), proxy);
     }
+    //
+    public static Throwable toRuntimeException(Throwable proxy, Class<?>[] exceptionTypes) throws Throwable {
+        if (exceptionTypes != null) {
+            for (Class<?> e : exceptionTypes) {
+                if (e.isInstance(exceptionTypes)) {
+                    return proxy;
+                }
+            }
+        }
+        return new RuntimeException(proxy.getClass().getName() + " - " + proxy.getMessage(), proxy);
+    }
 }

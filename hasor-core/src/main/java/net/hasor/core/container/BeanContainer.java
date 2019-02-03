@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import net.hasor.core.*;
 import net.hasor.core.EventListener;
+import net.hasor.core.*;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.NotifyData;
 import net.hasor.core.provider.InstanceProvider;
@@ -168,8 +168,8 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
                 continue;
             }
             final AbstractBindInfoProviderAdapter<?> infoAdapter = (AbstractBindInfoProviderAdapter<?>) info;
-            Method initMethod = findInitMethod(infoAdapter.getBindType(), infoAdapter);             // 配置了init方法
-            boolean singleton = testSingleton(infoAdapter.getBindType(), info, env.getSettings());  // 配置了单例（只有单例的才会在容器启动时调用）
+            Method initMethod = findInitMethod(info.getBindType(), infoAdapter);// 配置了init方法
+            boolean singleton = testSingleton(info.getBindType(), info, env.getSettings());         // 配置了单例（只有单例的才会在容器启动时调用）
             if (initMethod != null && singleton) {
                 // 当前为 doInitializeCompleted 阶段，需要在 doStart 阶段开始调用 Bean 的 init。执行 init 只需要 get 它们。
                 Hasor.pushStartListener(env, new EventListener<AppContext>() {

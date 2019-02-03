@@ -30,6 +30,9 @@ public class ClassAwareProvider<T> implements Provider<T>, AppContextAware {
     public ClassAwareProvider(Class<? extends T> implementation) {
         this.implementation = Hasor.assertIsNotNull(implementation);
     }
+    public Class<? extends T> getImplementation() {
+        return implementation;
+    }
     @Override
     public void setAppContext(AppContext appContext) {
         this.appContext = appContext;

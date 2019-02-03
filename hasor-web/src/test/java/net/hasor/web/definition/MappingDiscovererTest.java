@@ -2,7 +2,8 @@ package net.hasor.web.definition;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.web.MappingDiscoverer;
-import net.hasor.web.invoker.beans.TestMappingDiscoverer;
+import net.hasor.web.definition.beans.TestCallerWebPlugin;
+import net.hasor.web.definition.beans.TestMappingDiscoverer;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -31,5 +32,22 @@ public class MappingDiscovererTest {
         definition.toString();
         //
         assert initCall.get();
+    }
+    //
+    @Test
+    public void mappingDiscovererTest2() throws Throwable {
+        //
+        BindInfo<? extends MappingDiscoverer> bindInfo = PowerMockito.mock(BindInfo.class);
+        AppContext appContext = PowerMockito.mock(AppContext.class);
+        PowerMockito.when(appContext.getInstance(bindInfo)).thenReturn(new TestMappingDiscoverer());
+        MappingDiscovererDefinition definition = new MappingDiscovererDefinition(bindInfo);
+        //
+        //
+        TestMappingDiscoverer.resetCall();
+        assert !TestMappingDiscoverer.isDiscoverCall();
+        definition.setAppContext(appContext);
+        definition.discover(null);
+        assert TestMappingDiscoverer.isDiscoverCall();
+        //
     }
 }

@@ -27,6 +27,9 @@ public class InfoAwareProvider<T> implements Provider<T>, AppContextAware {
     public InfoAwareProvider(BindInfo<? extends T> info) {
         this.info = Hasor.assertIsNotNull(info);
     }
+    public BindInfo<? extends T> getInfo() {
+        return info;
+    }
     @Override
     public void setAppContext(AppContext appContext) {
         this.appContext = appContext;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.listener;
+package net.hasor.web.definition;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 
@@ -26,7 +26,6 @@ import javax.servlet.http.HttpSessionListener;
  */
 public class HttpSessionListenerDefinition implements HttpSessionListener {
     private BindInfo<? extends HttpSessionListener> listenerRegister = null;
-    private HttpSessionListener                     listenerInstance = null;
     private AppContext                              appContext       = null;
     //
     public HttpSessionListenerDefinition(final BindInfo<? extends HttpSessionListener> listenerRegister) {
@@ -34,14 +33,11 @@ public class HttpSessionListenerDefinition implements HttpSessionListener {
     }
     //
     protected HttpSessionListener getTarget() {
-        if (this.listenerInstance == null) {
-            this.listenerInstance = this.appContext.getInstance(this.listenerRegister);
-        }
-        return this.listenerInstance;
+        return this.appContext.getInstance(this.listenerRegister);
     }
     @Override
     public String toString() {
-        return String.format("type %s listenerKey=%s", HttpSessionListenerDefinition.class, this.listenerInstance);
+        return String.format("type %s listenerKey=%s", HttpSessionListenerDefinition.class, this.listenerRegister);
     }
     /**/
     public void init(final AppContext appContext) {

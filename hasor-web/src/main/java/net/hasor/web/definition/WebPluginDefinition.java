@@ -38,7 +38,7 @@ public class WebPluginDefinition implements WebPlugin {
     //
     @Override
     public String toString() {
-        return String.format("type %s", WebPluginDefinition.class);
+        return String.format("type %s listenerKey=%s", WebPluginDefinition.class, this.bindInfo);
     }
     //
     /*--------------------------------------------------------------------------------------------------------*/

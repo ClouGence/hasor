@@ -15,10 +15,12 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.*;
-import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.ScopManager;
+import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.info.AopBindInfoAdapter;
+import net.hasor.core.provider.ClassAwareProvider;
+import net.hasor.core.provider.InfoAwareProvider;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
@@ -84,7 +86,7 @@ public abstract class AbstractBinder implements ApiBinder {
         return new BindingBuilderImpl<T>(typeBuilder);
     }
     @Override
-    public <T> MetaDataBindingBuilder<T> bindType(final Class<T> type, final T instance) {
+    public <T> OptionPropertyBindingBuilder<T> bindType(final Class<T> type, final T instance) {
         return this.bindType(type).toInstance(instance);
     }
     @Override
@@ -100,7 +102,7 @@ public abstract class AbstractBinder implements ApiBinder {
         return this.bindType(type).nameWith(withName).to(type);
     }
     @Override
-    public <T> MetaDataBindingBuilder<T> bindType(final String withName, final Class<T> type, final T instance) {
+    public <T> OptionPropertyBindingBuilder<T> bindType(final String withName, final Class<T> type, final T instance) {
         return this.bindType(type).nameWith(withName).toInstance(instance);
     }
     @Override
@@ -190,17 +192,48 @@ public abstract class AbstractBinder implements ApiBinder {
             return this;
         }
         @Override
-        public MetaDataBindingBuilder<T> asEagerPrototype() {
+        public ScopedBindingBuilder<T> whenCreate(BeanCreaterListener<?> createrListener) {
+            if (createrListener != null) {
+                Provider<? extends BeanCreaterListener<?>> listenerProvider = InstanceProvider.of(createrListener);
+                this.typeBuilder.setCreaterListener(listenerProvider);
+            }
+            return this;
+        }
+        @Override
+        public ScopedBindingBuilder<T> whenCreate(Provider<? extends BeanCreaterListener<?>> createrListener) {
+            if (createrListener != null) {
+                this.typeBuilder.setCreaterListener(createrListener);
+            }
+            return this;
+        }
+        @Override
+        public ScopedBindingBuilder<T> whenCreate(Class<? extends BeanCreaterListener<?>> createrListener) {
+            if (createrListener != null) {
+                ClassAwareProvider<? extends BeanCreaterListener<?>> listenerProvider = new ClassAwareProvider<BeanCreaterListener<?>>(createrListener);
+                this.typeBuilder.setCreaterListener(Hasor.autoAware(getEnvironment(), listenerProvider));
+            }
+            return this;
+        }
+        @Override
+        public ScopedBindingBuilder<T> whenCreate(BindInfo<? extends BeanCreaterListener<?>> createrListener) {
+            if (createrListener != null) {
+                InfoAwareProvider<? extends BeanCreaterListener<?>> listenerProvider = new InfoAwareProvider<BeanCreaterListener<?>>(createrListener);
+                this.typeBuilder.setCreaterListener(Hasor.autoAware(getEnvironment(), listenerProvider));
+            }
+            return this;
+        }
+        @Override
+        public OptionPropertyBindingBuilder<T> asEagerPrototype() {
             this.typeBuilder.setSingletonMode(SingletonMode.Prototype);
             return this;
         }
         @Override
-        public MetaDataBindingBuilder<T> asEagerSingleton() {
+        public OptionPropertyBindingBuilder<T> asEagerSingleton() {
             this.typeBuilder.setSingletonMode(SingletonMode.Singleton);
             return this;
         }
         @Override
-        public MetaDataBindingBuilder<T> asEagerAnnoClear() {
+        public OptionPropertyBindingBuilder<T> asEagerAnnoClear() {
             this.typeBuilder.setSingletonMode(SingletonMode.Clear);
             return this;
         }
@@ -230,11 +263,11 @@ public abstract class AbstractBinder implements ApiBinder {
             return this;
         }
         @Override
-        public MetaDataBindingBuilder<T> toScope(final Scope scope) {
+        public OptionPropertyBindingBuilder<T> toScope(final Scope scope) {
             return this.toScope(new InstanceProvider<Scope>(scope));
         }
         @Override
-        public MetaDataBindingBuilder<T> toInstance(final T instance) {
+        public OptionPropertyBindingBuilder<T> toInstance(final T instance) {
             return this.toProvider(new InstanceProvider<T>(instance));
         }
         @Override
@@ -259,13 +292,13 @@ public abstract class AbstractBinder implements ApiBinder {
             return this;
         }
         @Override
-        public MetaDataBindingBuilder<T> toScope(final Provider<Scope> scope) {
+        public OptionPropertyBindingBuilder<T> toScope(final Provider<Scope> scope) {
             Hasor.assertIsNotNull(scope, "the Provider of Scope is null.");
             this.typeBuilder.setScopeProvider(scope);
             return this;
         }
         @Override
-        public MetaDataBindingBuilder<T> toScope(String scopeName) {
+        public OptionPropertyBindingBuilder<T> toScope(String scopeName) {
             Provider<Scope> scope = getScopManager().findScope(scopeName);
             if (scope == null) {
                 throw new IllegalStateException("scope '" + scopeName + "' Have not yet registered");

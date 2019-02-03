@@ -71,7 +71,7 @@ public class ApiBinderWrap implements ApiBinder {
     public <T> NamedBindingBuilder<T> bindType(Class<T> type) {
         return this.apiBinder.bindType(type);
     }
-    public <T> MetaDataBindingBuilder<T> bindType(Class<T> type, T instance) {
+    public <T> OptionPropertyBindingBuilder<T> bindType(Class<T> type, T instance) {
         return this.apiBinder.bindType(type, instance);
     }
     public <T> InjectPropertyBindingBuilder<T> bindType(Class<T> type, Class<? extends T> implementation) {
@@ -83,7 +83,7 @@ public class ApiBinderWrap implements ApiBinder {
     public <T> InjectPropertyBindingBuilder<T> bindType(String withName, Class<T> type) {
         return this.apiBinder.bindType(withName, type);
     }
-    public <T> MetaDataBindingBuilder<T> bindType(String withName, Class<T> type, T instance) {
+    public <T> OptionPropertyBindingBuilder<T> bindType(String withName, Class<T> type, T instance) {
         return this.apiBinder.bindType(withName, type, instance);
     }
     public <T> InjectPropertyBindingBuilder<T> bindType(String withName, Class<T> type, Class<? extends T> implementation) {

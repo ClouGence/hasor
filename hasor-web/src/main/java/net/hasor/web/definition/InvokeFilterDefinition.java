@@ -15,7 +15,9 @@
  */
 package net.hasor.web.definition;
 import net.hasor.core.AppContext;
+import net.hasor.core.BeanCreaterListener;
 import net.hasor.core.BindInfo;
+import net.hasor.core.Hasor;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerFilter;
@@ -26,9 +28,8 @@ import java.util.Map;
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InvokeFilterDefinition extends AbstractDefinition {
+public class InvokeFilterDefinition extends AbstractDefinition implements BeanCreaterListener<InvokerFilter> {
     private BindInfo<? extends InvokerFilter> bindInfo = null;
-    private InvokerFilter                     instance = null;
     //
     public InvokeFilterDefinition(long index, String pattern, UriPatternMatcher uriPatternMatcher,//
             BindInfo<? extends InvokerFilter> bindInfo, Map<String, String> initParams) {
@@ -36,16 +37,14 @@ public class InvokeFilterDefinition extends AbstractDefinition {
         this.bindInfo = bindInfo;
     }
     //
-    protected final InvokerFilter getTarget() throws Throwable {
-        if (this.instance != null) {
-            return this.instance;
-        }
-        //
-        final Map<String, String> initParams = this.getInitParams();
-        final AppContext appContext = this.getAppContext();
-        this.instance = appContext.getInstance(this.bindInfo);
-        this.instance.init(new InvokerMapConfig(initParams, appContext));
-        return this.instance;
+    protected final InvokerFilter getTarget() {
+        return this.getAppContext().getInstance(this.bindInfo);
+    }
+    @Override
+    public void beanCreated(InvokerFilter newObject, BindInfo<InvokerFilter> bindInfo) throws Throwable {
+        Map<String, String> initParams = this.getInitParams();
+        AppContext appContext = this.getAppContext();
+        newObject.init(new InvokerMapConfig(initParams, appContext));
     }
     //
     /*--------------------------------------------------------------------------------------------------------*/
@@ -57,10 +56,10 @@ public class InvokeFilterDefinition extends AbstractDefinition {
         filter.doInvoke(invoker, chain);
     }
     public void destroy() {
-        if (this.instance == null) {
-            return;
-        }
-        this.instance.destroy();
-        this.instance = null;
+//        if (this.instance == null) {
+//            return;
+//        }
+//        this.instance.destroy();
+//        this.instance = null;
     }
 }
