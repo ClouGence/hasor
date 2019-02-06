@@ -4,6 +4,9 @@
     <!-- RSF框架环境变量 -->
     <hasor.environmentVar>
         <!-- 是否启用RSF，默认情况启用。启用了RSF之后它会开启相应的端口和线程。 -->
+        <RSF_DATA_HOME>%WORK_HOME%/rsf</RSF_DATA_HOME>
+
+        <!-- 是否启用RSF，默认情况启用。启用了RSF之后它会开启相应的端口和线程。 -->
         <RSF_ENABLE>true</RSF_ENABLE>
         <!-- 启用磁盘地址本缓存，在refreshCacheTime期间每隔1小时自动写入一次。 -->
         <RSF_DISK_CACHE_ENABLE>true</RSF_DISK_CACHE_ENABLE>

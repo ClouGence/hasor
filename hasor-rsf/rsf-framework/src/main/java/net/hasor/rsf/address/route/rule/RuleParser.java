@@ -20,7 +20,6 @@ import net.hasor.core.setting.InputStreamSettings;
 import net.hasor.core.setting.StreamType;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.utils.ReaderInputStream;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,9 +68,8 @@ public class RuleParser {
         }
         //
         try {
-            ReaderInputStream ris = new ReaderInputStream(new StringReader("<xml>" + rawRoute + "</xml>"));
             InputStreamSettings ruleSettings = new InputStreamSettings();
-            ruleSettings.addStream(ris, StreamType.Xml);
+            ruleSettings.addReader(new StringReader("<xml>" + rawRoute + "</xml>"), StreamType.Xml);
             ruleSettings.loadSettings();
             return ruleSettings(ruleSettings);
         } catch (Exception e) {

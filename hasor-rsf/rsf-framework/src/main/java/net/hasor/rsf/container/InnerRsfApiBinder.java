@@ -109,7 +109,7 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
         return this.apiBinder.bindType(type);
     }
     @Override
-    public <T> MetaDataBindingBuilder<T> bindType(Class<T> type, T instance) {
+    public <T> OptionPropertyBindingBuilder<T> bindType(Class<T> type, T instance) {
         return this.apiBinder.bindType(type, instance);
     }
     @Override
@@ -125,7 +125,7 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
         return this.apiBinder.bindType(withName, type);
     }
     @Override
-    public <T> MetaDataBindingBuilder<T> bindType(String withName, Class<T> type, T instance) {
+    public <T> OptionPropertyBindingBuilder<T> bindType(String withName, Class<T> type, T instance) {
         return this.apiBinder.bindType(withName, type, instance);
     }
     @Override

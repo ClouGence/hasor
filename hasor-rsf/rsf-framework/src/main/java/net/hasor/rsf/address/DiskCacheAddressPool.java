@@ -26,7 +26,7 @@ public class DiskCacheAddressPool extends AddressPool {
     //
     public DiskCacheAddressPool(final RsfEnvironment rsfEnvironment) {
         super(rsfEnvironment);
-        File rsfHome = new File(rsfEnvironment.evalString("%" + RsfEnvironment.WORK_HOME + "%/rsf/"));
+        File rsfHome = new File(rsfEnvironment.evalString("%RSF_DATA_HOME%/"));
         this.snapshotHome = new File(rsfHome, RsfConstants.SnapshotPath);
         this.indexFile = new File(snapshotHome, RsfConstants.SnapshotIndex);
         //
