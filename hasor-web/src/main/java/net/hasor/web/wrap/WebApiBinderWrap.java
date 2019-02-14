@@ -185,23 +185,23 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
         this.webApiBinder.addDiscoverer(discoverer);
     }
     @Override
-    public RenderEngineBindingBuilder<RenderEngine> suffix(String urlPattern, String... morePatterns) {
+    public RenderEngineBindingBuilder suffix(String urlPattern, String... morePatterns) {
         return this.webApiBinder.suffix(urlPattern, morePatterns);
     }
     @Override
-    public RenderEngineBindingBuilder<RenderEngine> suffix(String[] morePatterns) {
+    public RenderEngineBindingBuilder suffix(String[] morePatterns) {
         return this.webApiBinder.suffix(morePatterns);
     }
     @Override
-    public void scanAnnoRender() {
-        this.webApiBinder.scanAnnoRender();
+    public void loadRender(Class<?> renderClass) {
+        this.webApiBinder.loadRender(renderClass);
     }
     @Override
-    public void scanAnnoRender(String... packages) {
-        this.webApiBinder.scanAnnoRender(packages);
+    public void loadRender(Set<Class<?>> renderSet) {
+        this.webApiBinder.loadRender(renderSet);
     }
     @Override
-    public void scanAnnoRender(Matcher<Class<? extends RenderEngine>> matcher, String... packages) {
-        this.webApiBinder.scanAnnoRender(matcher, packages);
+    public void loadRender(Set<Class<?>> renderSet, Matcher<Class<?>> matcher) {
+        this.webApiBinder.loadRender(renderSet, matcher);
     }
 }

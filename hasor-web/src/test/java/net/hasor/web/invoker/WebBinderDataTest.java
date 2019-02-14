@@ -19,29 +19,40 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Provider;
 import net.hasor.core.provider.InstanceProvider;
+import net.hasor.web.Invoker;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
+import net.hasor.web.annotation.MappingTo;
+import net.hasor.web.annotation.Render;
 import net.hasor.web.definition.*;
 import net.hasor.web.definition.beans.TestCallerFilter;
 import net.hasor.web.definition.beans.TestHttpSessionListener;
 import net.hasor.web.definition.beans.TestMappingDiscoverer;
 import net.hasor.web.definition.beans.TestServletContextListener;
-import net.hasor.web.invoker.beans.TestWebPlugin;
+import net.hasor.web.invoker.beans.*;
 import net.hasor.web.startup.RuntimeFilter;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 /**
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
 public class WebBinderDataTest extends AbstractWebBinderDataTest {
+    private Invoker newInvoker(String mappingTo, String httpMethod, AppContext appContext) {
+        Invoker invoker = PowerMockito.mock(Invoker.class);
+        HttpServletRequest servletRequest = PowerMockito.mock(HttpServletRequest.class);
+        PowerMockito.when(invoker.getRequestPath()).thenReturn(mappingTo);
+        PowerMockito.when(servletRequest.getMethod()).thenReturn(httpMethod);
+        PowerMockito.when(invoker.getHttpRequest()).thenReturn(servletRequest);
+        PowerMockito.when(invoker.getAppContext()).thenReturn(appContext);
+        return invoker;
+    }
     //
     @Test
     public void binderTest0() throws Exception {
@@ -553,8 +564,10 @@ public class WebBinderDataTest extends AbstractWebBinderDataTest {
     //
     @Test
     public void filterTest5() throws Throwable {
-        Method target = InvokeFilterDefinition.class.getDeclaredMethod("getTarget");
-        target.setAccessible(true);
+        Method target1 = InvokeFilterDefinition.class.getDeclaredMethod("getTarget");
+        Method target2 = FilterDefinition.class.getDeclaredMethod("getTarget");
+        target1.setAccessible(true);
+        target2.setAccessible(true);
         //
         final String[] urls = new String[] { "/abc.do", "/def.do" };
         final TestCallerFilter testCallerFilter = new TestCallerFilter();
@@ -589,5 +602,700 @@ public class WebBinderDataTest extends AbstractWebBinderDataTest {
         assert definitions.get(3) instanceof InvokeFilterDefinition;
         assert definitions.get(5) instanceof FilterDefinition;
         assert definitions.get(7) instanceof FilterDefinition;
+        //
+        for (int i = 0; i < 8; i++) {
+            definitions.get(i).init(new InvokerMapConfig(null, appContext));
+        }
+        //
+        Object invoke0 = target1.invoke(definitions.get(0));     // 1
+        Object invoke2 = target1.invoke(definitions.get(2));     // 2
+        Object invoke4_1 = target2.invoke(definitions.get(4));   // 3
+        Object invoke4_2 = target2.invoke(definitions.get(4));   // 3
+        Object invoke6_1 = target2.invoke(definitions.get(6));   // 4
+        Object invoke6_2 = target2.invoke(definitions.get(6));   // 4
+        //
+        assert invoke0 == invoke2;
+        assert invoke4_1 == invoke4_2;
+        assert invoke6_1 == invoke6_2;
+        //
+        assert invoke0 == testCallerFilter && invoke4_1 == testCallerFilter && invoke6_1 == testCallerFilter;
+    }
+    //
+    @Test
+    public void filterTest6() throws Throwable {
+        //
+        hasor.build(new WebModule() {
+            @Override
+            public void loadModule(WebApiBinder apiBinder) throws Throwable {
+                try {
+                    apiBinder.tryCast(WebApiBinder.class).filter(new String[0]).through(TestCallerFilter.class);
+                    assert false;
+                } catch (Exception e) {
+                    assert e.getMessage().equals("Filter patterns is empty.");
+                }
+                try {
+                    apiBinder.tryCast(WebApiBinder.class).filter(new String[] { "", null }).through(TestCallerFilter.class);
+                    assert false;
+                } catch (Exception e) {
+                    assert e.getMessage().equals("Filter patterns is empty.");
+                }
+                //
+                //
+                try {
+                    apiBinder.tryCast(WebApiBinder.class).filterRegex(new String[0]).through(TestCallerFilter.class);
+                    assert false;
+                } catch (Exception e) {
+                    assert e.getMessage().equals("Filter patterns is empty.");
+                }
+                try {
+                    apiBinder.tryCast(WebApiBinder.class).filterRegex(new String[] { "", null }).through(TestCallerFilter.class);
+                    assert false;
+                } catch (Exception e) {
+                    assert e.getMessage().equals("Filter patterns is empty.");
+                }
+                //
+                //
+                try {
+                    apiBinder.tryCast(WebApiBinder.class).jeeFilter(new String[0]).through(TestCallerFilter.class);
+                    assert false;
+                } catch (Exception e) {
+                    assert e.getMessage().equals("Filter patterns is empty.");
+                }
+                try {
+                    apiBinder.tryCast(WebApiBinder.class).jeeFilter(new String[] { "", null }).through(TestCallerFilter.class);
+                    assert false;
+                } catch (Exception e) {
+                    assert e.getMessage().equals("Filter patterns is empty.");
+                }
+                //
+                //
+                try {
+                    apiBinder.tryCast(WebApiBinder.class).jeeFilterRegex(new String[0]).through(TestCallerFilter.class);
+                    assert false;
+                } catch (Exception e) {
+                    assert e.getMessage().equals("Filter patterns is empty.");
+                }
+                try {
+                    apiBinder.tryCast(WebApiBinder.class).jeeFilterRegex(new String[] { "", null }).through(TestCallerFilter.class);
+                    assert false;
+                } catch (Exception e) {
+                    assert e.getMessage().equals("Filter patterns is empty.");
+                }
+            }
+        });
+        //
+    }
+    //
+    @Test
+    public void jeeServletTest1() throws Throwable {
+        final String[] urls = new String[] { "/abc.do", "/def.do" };
+        final TestServlet testCallerServlet = new TestServlet();
+        final Provider<TestServlet> testCallerServletProvider = InstanceProvider.of(testCallerServlet);
+        //
+        AppContext appContext = hasor.build(new WebModule() {
+            @Override
+            public void loadModule(WebApiBinder apiBinder) throws Throwable {
+                BindInfo<TestServlet> filterBindInfo1 = apiBinder.bindType(TestServlet.class).asEagerSingleton().toInfo();
+                BindInfo<TestServlet> filterBindInfo2 = apiBinder.bindType(TestServlet.class).toInfo();
+                //
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(testCallerServlet);          // 1
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(testCallerServletProvider);  // 2
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(TestServlet.class);          // 3
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(filterBindInfo1);            // 4
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(filterBindInfo2);            // 5
+            }
+        });
+        //
+        List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
+        assert definitions.size() == 10;
+        //
+        assert "/abc.do".equals(definitions.get(0).getMappingTo());
+        assert "/abc.do".equals(definitions.get(2).getMappingTo());
+        assert "/abc.do".equals(definitions.get(4).getMappingTo());
+        assert "/abc.do".equals(definitions.get(6).getMappingTo());
+        assert "/abc.do".equals(definitions.get(8).getMappingTo());
+        assert definitions.get(0) instanceof InMappingServlet;
+        assert definitions.get(2) instanceof InMappingServlet;
+        assert definitions.get(4) instanceof InMappingServlet;
+        assert definitions.get(6) instanceof InMappingServlet;
+        assert definitions.get(8) instanceof InMappingServlet;
+        //
+        assert "/def.do".equals(definitions.get(1).getMappingTo());
+        assert "/def.do".equals(definitions.get(3).getMappingTo());
+        assert "/def.do".equals(definitions.get(5).getMappingTo());
+        assert "/def.do".equals(definitions.get(7).getMappingTo());
+        assert "/def.do".equals(definitions.get(9).getMappingTo());
+        assert definitions.get(1) instanceof InMappingServlet;
+        assert definitions.get(3) instanceof InMappingServlet;
+        assert definitions.get(5) instanceof InMappingServlet;
+        assert definitions.get(7) instanceof InMappingServlet;
+        assert definitions.get(9) instanceof InMappingServlet;
+        //
+        Invoker invoker = newInvoker("/execute.do", "GET", appContext);
+        Object invoke1_1 = definitions.get(0).newInstance(invoker);     // 1
+        Object invoke1_2 = definitions.get(1).newInstance(invoker);     // 1
+        Object invoke2_1 = definitions.get(2).newInstance(invoker);     // 2
+        Object invoke2_2 = definitions.get(3).newInstance(invoker);     // 2
+        Object invoke3_1 = definitions.get(4).newInstance(invoker);     // 3
+        Object invoke3_2 = definitions.get(5).newInstance(invoker);     // 3
+        Object invoke4_1 = definitions.get(6).newInstance(invoker);     // 4
+        Object invoke4_2 = definitions.get(7).newInstance(invoker);     // 4
+        Object invoke5_1 = definitions.get(8).newInstance(invoker);     // 5
+        Object invoke5_2 = definitions.get(9).newInstance(invoker);     // 5
+        //
+        assert invoke1_1 == invoke1_2;
+        assert invoke2_1 == invoke2_2;
+        assert invoke3_1 != invoke3_2;
+        assert invoke4_1 == invoke4_2;
+        assert invoke5_1 != invoke5_2;
+    }
+    //
+    @Test
+    public void jeeServletTest2() throws Throwable {
+        final String[] urls = new String[] { "/abc.do", "/def.do" };
+        final TestServlet testCallerServlet = new TestServlet();
+        final Provider<TestServlet> testCallerServletProvider = InstanceProvider.of(testCallerServlet);
+        //
+        AppContext appContext = hasor.build(new WebModule() {
+            @Override
+            public void loadModule(WebApiBinder apiBinder) throws Throwable {
+                BindInfo<TestServlet> filterBindInfo1 = apiBinder.bindType(TestServlet.class).asEagerSingleton().toInfo();
+                BindInfo<TestServlet> filterBindInfo2 = apiBinder.bindType(TestServlet.class).toInfo();
+                //
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(1, testCallerServlet);          // 1
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(2, testCallerServletProvider);  // 2
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(3, TestServlet.class);          // 3
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(4, filterBindInfo1);            // 4
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(5, filterBindInfo2);            // 5
+            }
+        });
+        //
+        List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
+        assert definitions.size() == 10;
+        //
+        assert "/abc.do".equals(definitions.get(0).getMappingTo());
+        assert "/abc.do".equals(definitions.get(2).getMappingTo());
+        assert "/abc.do".equals(definitions.get(4).getMappingTo());
+        assert "/abc.do".equals(definitions.get(6).getMappingTo());
+        assert "/abc.do".equals(definitions.get(8).getMappingTo());
+        assert definitions.get(0).getIndex() == 1;
+        assert definitions.get(2).getIndex() == 2;
+        assert definitions.get(4).getIndex() == 3;
+        assert definitions.get(6).getIndex() == 4;
+        assert definitions.get(8).getIndex() == 5;
+        assert definitions.get(0) instanceof InMappingServlet;
+        assert definitions.get(2) instanceof InMappingServlet;
+        assert definitions.get(4) instanceof InMappingServlet;
+        assert definitions.get(6) instanceof InMappingServlet;
+        assert definitions.get(8) instanceof InMappingServlet;
+        //
+        assert "/def.do".equals(definitions.get(1).getMappingTo());
+        assert "/def.do".equals(definitions.get(3).getMappingTo());
+        assert "/def.do".equals(definitions.get(5).getMappingTo());
+        assert "/def.do".equals(definitions.get(7).getMappingTo());
+        assert "/def.do".equals(definitions.get(9).getMappingTo());
+        assert definitions.get(1).getIndex() == 1;
+        assert definitions.get(3).getIndex() == 2;
+        assert definitions.get(5).getIndex() == 3;
+        assert definitions.get(7).getIndex() == 4;
+        assert definitions.get(9).getIndex() == 5;
+        assert definitions.get(1) instanceof InMappingServlet;
+        assert definitions.get(3) instanceof InMappingServlet;
+        assert definitions.get(5) instanceof InMappingServlet;
+        assert definitions.get(7) instanceof InMappingServlet;
+        assert definitions.get(9) instanceof InMappingServlet;
+        //
+        Invoker invoker = newInvoker("/execute.do", "GET", appContext);
+        Object invoke1_1 = definitions.get(0).newInstance(invoker);     // 1
+        Object invoke1_2 = definitions.get(1).newInstance(invoker);     // 1
+        Object invoke2_1 = definitions.get(2).newInstance(invoker);     // 2
+        Object invoke2_2 = definitions.get(3).newInstance(invoker);     // 2
+        Object invoke3_1 = definitions.get(4).newInstance(invoker);     // 3
+        Object invoke3_2 = definitions.get(5).newInstance(invoker);     // 3
+        Object invoke4_1 = definitions.get(6).newInstance(invoker);     // 4
+        Object invoke4_2 = definitions.get(7).newInstance(invoker);     // 4
+        Object invoke5_1 = definitions.get(8).newInstance(invoker);     // 5
+        Object invoke5_2 = definitions.get(9).newInstance(invoker);     // 5
+        //
+        assert invoke1_1 == invoke1_2;
+        assert invoke2_1 == invoke2_2;
+        assert invoke3_1 != invoke3_2;
+        assert invoke4_1 == invoke4_2;
+        assert invoke5_1 != invoke5_2;
+    }
+    //
+    @Test
+    public void jeeServletTest3() throws Throwable {
+        final String[] urls = new String[] { "/abc.do", "/def.do" };
+        final TestServlet testCallerServlet = new TestServlet();
+        final Provider<TestServlet> testCallerServletProvider = InstanceProvider.of(testCallerServlet);
+        final Map<String, String> params1 = new HashMap<String, String>();
+        params1.put("arg_string", "abc");
+        //
+        AppContext appContext = hasor.build(new WebModule() {
+            @Override
+            public void loadModule(WebApiBinder apiBinder) throws Throwable {
+                BindInfo<TestServlet> filterBindInfo1 = apiBinder.bindType(TestServlet.class).asEagerSingleton().toInfo();
+                BindInfo<TestServlet> filterBindInfo2 = apiBinder.bindType(TestServlet.class).toInfo();
+                //
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(1, testCallerServlet, params1);          // 1
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(2, testCallerServletProvider, params1);  // 2
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(3, TestServlet.class, params1);          // 3
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(4, filterBindInfo1, params1);            // 4
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(5, filterBindInfo2, params1);            // 5
+            }
+        });
+        //
+        List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
+        assert definitions.size() == 10;
+        for (int i = 0; i < 10; i++) {
+            assert "abc".equals(((InMappingServlet) definitions.get(i)).getInitParams().get("arg_string"));
+        }
+        //
+        assert "/abc.do".equals(definitions.get(0).getMappingTo());
+        assert "/abc.do".equals(definitions.get(2).getMappingTo());
+        assert "/abc.do".equals(definitions.get(4).getMappingTo());
+        assert "/abc.do".equals(definitions.get(6).getMappingTo());
+        assert "/abc.do".equals(definitions.get(8).getMappingTo());
+        assert definitions.get(0).getIndex() == 1;
+        assert definitions.get(2).getIndex() == 2;
+        assert definitions.get(4).getIndex() == 3;
+        assert definitions.get(6).getIndex() == 4;
+        assert definitions.get(8).getIndex() == 5;
+        assert definitions.get(0) instanceof InMappingServlet;
+        assert definitions.get(2) instanceof InMappingServlet;
+        assert definitions.get(4) instanceof InMappingServlet;
+        assert definitions.get(6) instanceof InMappingServlet;
+        assert definitions.get(8) instanceof InMappingServlet;
+        //
+        assert "/def.do".equals(definitions.get(1).getMappingTo());
+        assert "/def.do".equals(definitions.get(3).getMappingTo());
+        assert "/def.do".equals(definitions.get(5).getMappingTo());
+        assert "/def.do".equals(definitions.get(7).getMappingTo());
+        assert "/def.do".equals(definitions.get(9).getMappingTo());
+        assert definitions.get(1).getIndex() == 1;
+        assert definitions.get(3).getIndex() == 2;
+        assert definitions.get(5).getIndex() == 3;
+        assert definitions.get(7).getIndex() == 4;
+        assert definitions.get(9).getIndex() == 5;
+        assert definitions.get(1) instanceof InMappingServlet;
+        assert definitions.get(3) instanceof InMappingServlet;
+        assert definitions.get(5) instanceof InMappingServlet;
+        assert definitions.get(7) instanceof InMappingServlet;
+        assert definitions.get(9) instanceof InMappingServlet;
+        //
+        Invoker invoker = newInvoker("/execute.do", "GET", appContext);
+        Object invoke1_1 = definitions.get(0).newInstance(invoker);     // 1
+        Object invoke1_2 = definitions.get(1).newInstance(invoker);     // 1
+        Object invoke2_1 = definitions.get(2).newInstance(invoker);     // 2
+        Object invoke2_2 = definitions.get(3).newInstance(invoker);     // 2
+        Object invoke3_1 = definitions.get(4).newInstance(invoker);     // 3
+        Object invoke3_2 = definitions.get(5).newInstance(invoker);     // 3
+        Object invoke4_1 = definitions.get(6).newInstance(invoker);     // 4
+        Object invoke4_2 = definitions.get(7).newInstance(invoker);     // 4
+        Object invoke5_1 = definitions.get(8).newInstance(invoker);     // 5
+        Object invoke5_2 = definitions.get(9).newInstance(invoker);     // 5
+        //
+        assert invoke1_1 == invoke1_2;
+        assert invoke2_1 == invoke2_2;
+        assert invoke3_1 != invoke3_2;
+        assert invoke4_1 == invoke4_2;
+        assert invoke5_1 != invoke5_2;
+    }
+    //
+    @Test
+    public void jeeServletTest4() throws Throwable {
+        final String[] urls = new String[] { "/abc.do", "/def.do" };
+        final TestServlet testCallerServlet = new TestServlet();
+        final Provider<TestServlet> testCallerServletProvider = InstanceProvider.of(testCallerServlet);
+        final Map<String, String> params1 = new HashMap<String, String>();
+        params1.put("arg_string", "abc");
+        //
+        AppContext appContext = hasor.build(new WebModule() {
+            @Override
+            public void loadModule(WebApiBinder apiBinder) throws Throwable {
+                BindInfo<TestServlet> filterBindInfo1 = apiBinder.bindType(TestServlet.class).asEagerSingleton().toInfo();
+                BindInfo<TestServlet> filterBindInfo2 = apiBinder.bindType(TestServlet.class).toInfo();
+                //
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(testCallerServlet, params1);          // 1
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(testCallerServletProvider, params1);  // 2
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(TestServlet.class, params1);          // 3
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(filterBindInfo1, params1);            // 4
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(filterBindInfo2, params1);            // 5
+            }
+        });
+        //
+        List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
+        assert definitions.size() == 10;
+        for (int i = 0; i < 10; i++) {
+            assert "abc".equals(((InMappingServlet) definitions.get(i)).getInitParams().get("arg_string"));
+        }
+        //
+        assert "/abc.do".equals(definitions.get(0).getMappingTo());
+        assert "/abc.do".equals(definitions.get(2).getMappingTo());
+        assert "/abc.do".equals(definitions.get(4).getMappingTo());
+        assert "/abc.do".equals(definitions.get(6).getMappingTo());
+        assert "/abc.do".equals(definitions.get(8).getMappingTo());
+        assert definitions.get(0) instanceof InMappingServlet;
+        assert definitions.get(2) instanceof InMappingServlet;
+        assert definitions.get(4) instanceof InMappingServlet;
+        assert definitions.get(6) instanceof InMappingServlet;
+        assert definitions.get(8) instanceof InMappingServlet;
+        //
+        assert "/def.do".equals(definitions.get(1).getMappingTo());
+        assert "/def.do".equals(definitions.get(3).getMappingTo());
+        assert "/def.do".equals(definitions.get(5).getMappingTo());
+        assert "/def.do".equals(definitions.get(7).getMappingTo());
+        assert "/def.do".equals(definitions.get(9).getMappingTo());
+        assert definitions.get(1) instanceof InMappingServlet;
+        assert definitions.get(3) instanceof InMappingServlet;
+        assert definitions.get(5) instanceof InMappingServlet;
+        assert definitions.get(7) instanceof InMappingServlet;
+        assert definitions.get(9) instanceof InMappingServlet;
+        //
+        Invoker invoker = newInvoker("/execute.do", "GET", appContext);
+        Object invoke1_1 = definitions.get(0).newInstance(invoker);     // 1
+        Object invoke1_2 = definitions.get(1).newInstance(invoker);     // 1
+        Object invoke2_1 = definitions.get(2).newInstance(invoker);     // 2
+        Object invoke2_2 = definitions.get(3).newInstance(invoker);     // 2
+        Object invoke3_1 = definitions.get(4).newInstance(invoker);     // 3
+        Object invoke3_2 = definitions.get(5).newInstance(invoker);     // 3
+        Object invoke4_1 = definitions.get(6).newInstance(invoker);     // 4
+        Object invoke4_2 = definitions.get(7).newInstance(invoker);     // 4
+        Object invoke5_1 = definitions.get(8).newInstance(invoker);     // 5
+        Object invoke5_2 = definitions.get(9).newInstance(invoker);     // 5
+        //
+        assert invoke1_1 == invoke1_2;
+        assert invoke2_1 == invoke2_2;
+        assert invoke3_1 != invoke3_2;
+        assert invoke4_1 == invoke4_2;
+        assert invoke5_1 != invoke5_2;
+    }
+    //
+    @Test
+    public void jeeServletTest5() throws Throwable {
+        hasor.build(new WebModule() {
+            @Override
+            public void loadModule(WebApiBinder apiBinder) throws Throwable {
+                try {
+                    apiBinder.tryCast(WebApiBinder.class).jeeServlet(new String[0]).with(TestServlet.class);
+                    assert false;
+                } catch (Exception e) {
+                    assert e.getMessage().equals("Servlet patterns is empty.");
+                }
+                try {
+                    apiBinder.tryCast(WebApiBinder.class).jeeServlet(new String[] { "", null }).with(TestServlet.class);
+                    assert false;
+                } catch (Exception e) {
+                    assert e.getMessage().equals("Servlet patterns is empty.");
+                }
+            }
+        });
+    }
+    //
+    @Test
+    public void mappingToTest1() throws Throwable {
+        final String[] urls = new String[] { "/abc.do", "/def.do" };
+        final HttpsTestAction testCallerAction = new HttpsTestAction();
+        final Provider<HttpsTestAction> testCallerActionProvider = InstanceProvider.of(testCallerAction);
+        //
+        AppContext appContext = hasor.build(new WebModule() {
+            @Override
+            public void loadModule(WebApiBinder apiBinder) throws Throwable {
+                BindInfo<HttpsTestAction> filterBindInfo1 = apiBinder.bindType(HttpsTestAction.class).asEagerSingleton().toInfo();
+                BindInfo<HttpsTestAction> filterBindInfo2 = apiBinder.bindType(HttpsTestAction.class).toInfo();
+                //
+                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(testCallerAction);          // 1
+                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(testCallerActionProvider);  // 2
+                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(TestServlet.class);         // 3
+                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(filterBindInfo1);           // 4
+                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(filterBindInfo2);           // 5
+            }
+        });
+        //
+        List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
+        assert definitions.size() == 10;
+        for (int i = 0; i < 10; i++) {
+            assert definitions.get(i).getClass() == InMappingDef.class;
+        }
+        //
+        assert "/abc.do".equals(definitions.get(0).getMappingTo());
+        assert "/abc.do".equals(definitions.get(2).getMappingTo());
+        assert "/abc.do".equals(definitions.get(4).getMappingTo());
+        assert "/abc.do".equals(definitions.get(6).getMappingTo());
+        assert "/abc.do".equals(definitions.get(8).getMappingTo());
+        //
+        assert "/def.do".equals(definitions.get(1).getMappingTo());
+        assert "/def.do".equals(definitions.get(3).getMappingTo());
+        assert "/def.do".equals(definitions.get(5).getMappingTo());
+        assert "/def.do".equals(definitions.get(7).getMappingTo());
+        assert "/def.do".equals(definitions.get(9).getMappingTo());
+        //
+        Invoker invoker = newInvoker("/execute.do", "GET", appContext);
+        Object invoke1_1 = definitions.get(0).newInstance(invoker);     // 1
+        Object invoke1_2 = definitions.get(1).newInstance(invoker);     // 1
+        Object invoke2_1 = definitions.get(2).newInstance(invoker);     // 2
+        Object invoke2_2 = definitions.get(3).newInstance(invoker);     // 2
+        Object invoke3_1 = definitions.get(4).newInstance(invoker);     // 3
+        Object invoke3_2 = definitions.get(5).newInstance(invoker);     // 3
+        Object invoke4_1 = definitions.get(6).newInstance(invoker);     // 4
+        Object invoke4_2 = definitions.get(7).newInstance(invoker);     // 4
+        Object invoke5_1 = definitions.get(8).newInstance(invoker);     // 5
+        Object invoke5_2 = definitions.get(9).newInstance(invoker);     // 5
+        //
+        assert invoke1_1 == invoke1_2;
+        assert invoke2_1 == invoke2_2;
+        assert invoke3_1 != invoke3_2;
+        assert invoke4_1 == invoke4_2;
+        assert invoke5_1 != invoke5_2;
+    }
+    //
+    @Test
+    public void mappingToTest2() throws Throwable {
+        final String[] urls = new String[] { "/abc.do", "/def.do" };
+        final HttpsTestAction testCallerAction = new HttpsTestAction();
+        final Provider<HttpsTestAction> testCallerActionProvider = InstanceProvider.of(testCallerAction);
+        //
+        AppContext appContext = hasor.build(new WebModule() {
+            @Override
+            public void loadModule(WebApiBinder apiBinder) throws Throwable {
+                BindInfo<HttpsTestAction> filterBindInfo1 = apiBinder.bindType(HttpsTestAction.class).asEagerSingleton().toInfo();
+                BindInfo<HttpsTestAction> filterBindInfo2 = apiBinder.bindType(HttpsTestAction.class).toInfo();
+                //
+                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(1, testCallerAction);          // 1
+                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(2, testCallerActionProvider);  // 2
+                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(3, TestServlet.class);         // 3
+                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(4, filterBindInfo1);           // 4
+                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(5, filterBindInfo2);           // 5
+            }
+        });
+        //
+        List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
+        assert definitions.size() == 10;
+        for (int i = 0; i < 10; i++) {
+            assert definitions.get(i).getClass() == InMappingDef.class;
+        }
+        //
+        assert "/abc.do".equals(definitions.get(0).getMappingTo());
+        assert "/abc.do".equals(definitions.get(2).getMappingTo());
+        assert "/abc.do".equals(definitions.get(4).getMappingTo());
+        assert "/abc.do".equals(definitions.get(6).getMappingTo());
+        assert "/abc.do".equals(definitions.get(8).getMappingTo());
+        assert definitions.get(0).getIndex() == 1;
+        assert definitions.get(2).getIndex() == 2;
+        assert definitions.get(4).getIndex() == 3;
+        assert definitions.get(6).getIndex() == 4;
+        assert definitions.get(8).getIndex() == 5;
+        //
+        assert "/def.do".equals(definitions.get(1).getMappingTo());
+        assert "/def.do".equals(definitions.get(3).getMappingTo());
+        assert "/def.do".equals(definitions.get(5).getMappingTo());
+        assert "/def.do".equals(definitions.get(7).getMappingTo());
+        assert "/def.do".equals(definitions.get(9).getMappingTo());
+        assert definitions.get(1).getIndex() == 1;
+        assert definitions.get(3).getIndex() == 2;
+        assert definitions.get(5).getIndex() == 3;
+        assert definitions.get(7).getIndex() == 4;
+        assert definitions.get(9).getIndex() == 5;
+        //
+        Invoker invoker = newInvoker("/execute.do", "GET", appContext);
+        Object invoke1_1 = definitions.get(0).newInstance(invoker);     // 1
+        Object invoke1_2 = definitions.get(1).newInstance(invoker);     // 1
+        Object invoke2_1 = definitions.get(2).newInstance(invoker);     // 2
+        Object invoke2_2 = definitions.get(3).newInstance(invoker);     // 2
+        Object invoke3_1 = definitions.get(4).newInstance(invoker);     // 3
+        Object invoke3_2 = definitions.get(5).newInstance(invoker);     // 3
+        Object invoke4_1 = definitions.get(6).newInstance(invoker);     // 4
+        Object invoke4_2 = definitions.get(7).newInstance(invoker);     // 4
+        Object invoke5_1 = definitions.get(8).newInstance(invoker);     // 5
+        Object invoke5_2 = definitions.get(9).newInstance(invoker);     // 5
+        //
+        assert invoke1_1 == invoke1_2;
+        assert invoke2_1 == invoke2_2;
+        assert invoke3_1 != invoke3_2;
+        assert invoke4_1 == invoke4_2;
+        assert invoke5_1 != invoke5_2;
+    }
+    //
+    @Test
+    public void mappingToTest3() throws Throwable {
+        hasor.build(new WebModule() {
+            @Override
+            public void loadModule(WebApiBinder apiBinder) throws Throwable {
+                try {
+                    apiBinder.tryCast(WebApiBinder.class).mappingTo(new String[0]).with(HttpsTestAction.class);
+                    assert false;
+                } catch (Exception e) {
+                    assert e.getMessage().equals("mappingTo patterns is empty.");
+                }
+                try {
+                    apiBinder.tryCast(WebApiBinder.class).mappingTo(new String[] { "", null }).with(HttpsTestAction.class);
+                    assert false;
+                } catch (Exception e) {
+                    assert e.getMessage().equals("mappingTo patterns is empty.");
+                }
+            }
+        });
+    }
+    //
+    @Test
+    public void loadMappingToTest1() throws Throwable {
+        //
+        AppContext appContext = hasor.build(new WebModule() {
+            @Override
+            public void loadModule(WebApiBinder apiBinder) throws Throwable {
+                try {
+                    apiBinder.tryCast(WebApiBinder.class).loadMappingTo(BasicTestAction.class);
+                    assert false;
+                } catch (Exception e) {
+                    assert e.getMessage().endsWith(" must be configure @MappingTo");
+                }
+                try {
+                    apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AppContext.class);
+                    assert false;
+                } catch (Exception e) {
+                    assert e.getMessage().endsWith(" must be normal Bean");
+                }
+                //
+                Set<Class<?>> classSet = apiBinder.findClass(MappingTo.class, "net.hasor.web.invoker.beans");
+                assert classSet.size() == 2;
+                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(classSet);
+            }
+        });
+        //
+        List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
+        assert definitions.size() == 2;
+        //
+        Set<String> mappingToSet = new HashSet<String>();
+        mappingToSet.add(definitions.get(0).getMappingTo());
+        mappingToSet.add(definitions.get(1).getMappingTo());
+        //
+        assert mappingToSet.contains("/mappingto_a.do");
+        assert mappingToSet.contains("/mappingto_b.do");
+    }
+    //
+    @Test
+    public void renderTest1() throws Throwable {
+        final String[] ends = new String[] { ".htm", ".html" };
+        final TestRenderEngine testRenderEngine = new TestRenderEngine();
+        final Provider<TestRenderEngine> testRenderEngineProvider = InstanceProvider.of(testRenderEngine);
+        //
+        AppContext appContext = hasor.build(new WebModule() {
+            @Override
+            public void loadModule(WebApiBinder apiBinder) throws Throwable {
+                BindInfo<TestRenderEngine> engineBindInfo1 = apiBinder.bindType(TestRenderEngine.class).asEagerSingleton().toInfo();
+                BindInfo<TestRenderEngine> engineBindInfo2 = apiBinder.bindType(TestRenderEngine.class).toInfo();
+                //
+                apiBinder.tryCast(WebApiBinder.class).suffix(ends).bind(testRenderEngine);          // 1
+                apiBinder.tryCast(WebApiBinder.class).suffix(ends).bind(testRenderEngineProvider);  // 2
+                apiBinder.tryCast(WebApiBinder.class).suffix(ends).bind(TestRenderEngine.class);    // 3
+                apiBinder.tryCast(WebApiBinder.class).suffix(ends).bind(engineBindInfo1);           // 4
+                apiBinder.tryCast(WebApiBinder.class).suffix(ends).bind(engineBindInfo2);           // 5
+            }
+        });
+        //
+        List<RenderDefinition> definitions = appContext.findBindingBean(RenderDefinition.class);
+        assert definitions.size() == 5;
+        for (int i = 0; i < 5; i++) {
+            assert definitions.get(i).getClass() == RenderDefinition.class;
+        }
+        //
+        Object invoke1 = definitions.get(0).newEngine(appContext);     // 1
+        Object invoke2 = definitions.get(1).newEngine(appContext);     // 2
+        Object invoke3_1 = definitions.get(2).newEngine(appContext);   // 3
+        Object invoke3_2 = definitions.get(2).newEngine(appContext);   // 3
+        Object invoke4_1 = definitions.get(3).newEngine(appContext);   // 4
+        Object invoke4_2 = definitions.get(3).newEngine(appContext);   // 4
+        Object invoke5_1 = definitions.get(4).newEngine(appContext);   // 5
+        Object invoke5_2 = definitions.get(4).newEngine(appContext);   // 5
+        //
+        assert invoke1 == invoke2;
+        assert invoke3_1 != invoke3_2;
+        assert invoke4_1 == invoke4_2;
+        assert invoke5_1 != invoke5_2;
+    }
+    //
+    @Test
+    public void renderTest2() throws Throwable {
+        final TestRenderEngine testRenderEngine = new TestRenderEngine();
+        final Provider<TestRenderEngine> testRenderEngineProvider = InstanceProvider.of(testRenderEngine);
+        //
+        AppContext appContext = hasor.build(new WebModule() {
+            @Override
+            public void loadModule(WebApiBinder apiBinder) throws Throwable {
+                BindInfo<TestRenderEngine> engineBindInfo1 = apiBinder.bindType(TestRenderEngine.class).asEagerSingleton().toInfo();
+                BindInfo<TestRenderEngine> engineBindInfo2 = apiBinder.bindType(TestRenderEngine.class).toInfo();
+                //
+                apiBinder.tryCast(WebApiBinder.class).suffix(".htm", ".html").bind(testRenderEngine);          // 1
+                apiBinder.tryCast(WebApiBinder.class).suffix(".htm", ".html").bind(testRenderEngineProvider);  // 2
+                apiBinder.tryCast(WebApiBinder.class).suffix(".htm", ".html").bind(TestRenderEngine.class);    // 3
+                apiBinder.tryCast(WebApiBinder.class).suffix(".htm", ".html").bind(engineBindInfo1);           // 4
+                apiBinder.tryCast(WebApiBinder.class).suffix(".htm", ".html").bind(engineBindInfo2);           // 5
+            }
+        });
+        //
+        List<RenderDefinition> definitions = appContext.findBindingBean(RenderDefinition.class);
+        assert definitions.size() == 5;
+        for (int i = 0; i < 5; i++) {
+            assert definitions.get(i).getClass() == RenderDefinition.class;
+        }
+        //
+        Object invoke1 = definitions.get(0).newEngine(appContext);     // 1
+        Object invoke2 = definitions.get(1).newEngine(appContext);     // 2
+        Object invoke3_1 = definitions.get(2).newEngine(appContext);   // 3
+        Object invoke3_2 = definitions.get(2).newEngine(appContext);   // 3
+        Object invoke4_1 = definitions.get(3).newEngine(appContext);   // 4
+        Object invoke4_2 = definitions.get(3).newEngine(appContext);   // 4
+        Object invoke5_1 = definitions.get(4).newEngine(appContext);   // 5
+        Object invoke5_2 = definitions.get(4).newEngine(appContext);   // 5
+        //
+        assert invoke1 == invoke2;
+        assert invoke3_1 != invoke3_2;
+        assert invoke4_1 == invoke4_2;
+        assert invoke5_1 != invoke5_2;
+    }
+    //
+    @Test
+    public void loadRenderTest1() throws Throwable {
+        //
+        AppContext appContext = hasor.build(new WebModule() {
+            @Override
+            public void loadModule(WebApiBinder apiBinder) throws Throwable {
+                try {
+                    apiBinder.tryCast(WebApiBinder.class).loadRender(BasicTestAction.class);
+                    assert false;
+                } catch (Exception e) {
+                    assert e.getMessage().endsWith(" must be configure @Render");
+                }
+                try {
+                    apiBinder.tryCast(WebApiBinder.class).loadRender(AppContext.class);
+                    assert false;
+                } catch (Exception e) {
+                    assert e.getMessage().endsWith(" must be normal Bean");
+                }
+                //
+                try {
+                    apiBinder.tryCast(WebApiBinder.class).loadRender(ErrorRenderEngine.class);
+                    assert false;
+                } catch (Exception e) {
+                    assert e.getMessage().endsWith(" must be implements RenderEngine.");
+                }
+                //
+                Set<Class<?>> classSet = apiBinder.findClass(Render.class, "net.hasor.web.invoker.beans");
+                assert classSet.size() == 2;
+                classSet.remove(ErrorRenderEngine.class); // remove Error
+                apiBinder.tryCast(WebApiBinder.class).loadRender(classSet);
+            }
+        });
+        //
+        List<RenderDefinition> definitions = appContext.findBindingBean(RenderDefinition.class);
+        assert definitions.size() == 1;
+        //
+        Set<String> suffixSet = new HashSet<String>();
+        suffixSet.addAll(definitions.get(0).getRenderSet());
+        //
+        assert suffixSet.size() == 2;
+        assert suffixSet.contains("jspx".toUpperCase());
+        assert suffixSet.contains("asp".toUpperCase());
     }
 }

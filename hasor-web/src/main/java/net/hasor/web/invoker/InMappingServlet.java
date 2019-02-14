@@ -46,26 +46,21 @@ public class InMappingServlet extends InMappingDef {
     };
     //
     private        Map<String, String> initParams;
-    private        Object              servlet;
     public InMappingServlet(int index, BindInfo<? extends HttpServlet> targetType, String mappingTo, Map<String, String> initParams) {
         super(index, targetType, mappingTo, methodMatcher, false);
         this.initParams = initParams;
     }
     //
+    public Map<String, String> getInitParams() {
+        return initParams;
+    }
+    //
     @Override
     public Object newInstance(Invoker invoker) throws Throwable {
-        if (this.servlet != null) {
-            return this.servlet;
-        }
-        synchronized (this) {
-            if (this.servlet != null) {
-                return this.servlet;
-            }
-            final AppContext appContext = invoker.getAppContext();
-            final ServletContext servletContext = appContext.getInstance(ServletContext.class);
-            this.servlet = super.newInstance(invoker);
-            ((Servlet) this.servlet).init(new J2eeMapConfig(getTargetType().toString(), initParams, InstanceProvider.wrap(servletContext)));
-        }
-        return this.servlet;
+        AppContext appContext = invoker.getAppContext();
+        ServletContext servletContext = appContext.getInstance(ServletContext.class);
+        Servlet httpServlet = (Servlet) super.newInstance(invoker);
+        httpServlet.init(new J2eeMapConfig(getTargetType().toString(), initParams, InstanceProvider.wrap(servletContext)));
+        return httpServlet;
     }
 }

@@ -19,7 +19,7 @@ import net.hasor.core.Settings;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.*;
 import net.hasor.web.annotation.Produces;
-import net.hasor.web.invoker.RenderDefinition;
+import net.hasor.web.definition.RenderDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,12 +39,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilter {
-    protected Logger        logger       = LoggerFactory.getLogger(getClass());
-    private   AtomicBoolean inited       = new AtomicBoolean(false);
-    private   String        layoutPath   = null;                    // 布局模版位置
-    private   boolean       useLayout    = true;
-    private   String        templatePath = null;                    // 页面模版位置
-    private Map<String, RenderEngine> engineMap;
+    protected Logger                    logger       = LoggerFactory.getLogger(getClass());
+    private   AtomicBoolean             inited       = new AtomicBoolean(false);
+    private   String                    layoutPath   = null;                    // 布局模版位置
+    private   boolean                   useLayout    = true;
+    private   String                    templatePath = null;                    // 页面模版位置
+    private   Map<String, RenderEngine> engineMap    = null;
     //
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {

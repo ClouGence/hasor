@@ -13,13 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
+package net.hasor.web.invoker.beans;
+import net.hasor.web.annotation.Get;
+import net.hasor.web.annotation.HttpMethod;
+import net.hasor.web.annotation.MappingTo;
+import net.hasor.web.annotation.Post;
 /**
- *
- * @version : 2017年1月30日
- * @author 赵永春 (zyc@byshell.org)
+ * @version : 2017-01-08
+ * @author 赵永春 (zyc@hasor.net)
  */
-public interface ProviderType<T> {
-    /** @return 获取对象。  */
-    public Class<T> getType();
+@MappingTo("/mappingto_b.do")
+public class MappingToTestAction {
+    //
+    @Get
+    public void execute1() {
+    }
+    //
+    @Post
+    public void execute2() {
+    }
+    //
+    @HttpMethod({ "ADD", HttpMethod.DELETE })
+    public void execute3() {
+    }
 }

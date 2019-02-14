@@ -222,32 +222,32 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /**拦截这些后缀的请求，这些请求会被渲染器渲染。*/
-    public RenderEngineBindingBuilder<RenderEngine> suffix(String urlPattern, String... morePatterns);
+    public RenderEngineBindingBuilder suffix(String urlPattern, String... morePatterns);
 
     /**拦截这些后缀的请求，这些请求会被渲染器渲染。*/
-    public RenderEngineBindingBuilder<RenderEngine> suffix(String[] morePatterns);
+    public RenderEngineBindingBuilder suffix(String[] morePatterns);
 
-    /**扫描Render注解配置的渲染器。*/
-    public void scanAnnoRender();
+    /**加载Render注解配置的渲染器。*/
+    public void loadRender(Class<?> renderClass);
 
-    /**扫描Render注解配置的渲染器。*/
-    public void scanAnnoRender(String... packages);
+    /**加载Render注解配置的渲染器。*/
+    public void loadRender(Set<Class<?>> renderSet);
 
-    /**扫描Render注解配置的渲染器。*/
-    public void scanAnnoRender(Matcher<Class<? extends RenderEngine>> matcher, String... packages);
+    /**加载Render注解配置的渲染器。*/
+    public void loadRender(Set<Class<?>> renderSet, Matcher<Class<?>> matcher);
     //
     /**负责配置RenderEngine。*/
-    public static interface RenderEngineBindingBuilder<T> {
+    public static interface RenderEngineBindingBuilder {
         /**绑定实现。*/
-        public void bind(Class<? extends T> filterKey);
+        public <T extends RenderEngine> void bind(Class<T> renderEngineType);
 
         /**绑定实现。*/
-        public void bind(T filter);
+        public void bind(RenderEngine renderEngine);
 
         /**绑定实现。*/
-        public void bind(Provider<? extends T> filterProvider);
+        public void bind(Provider<? extends RenderEngine> renderEngineProvider);
 
         /**绑定实现。*/
-        public void bind(BindInfo<? extends T> filterRegister);
+        public void bind(BindInfo<? extends RenderEngine> renderEngineInfo);
     }
 }

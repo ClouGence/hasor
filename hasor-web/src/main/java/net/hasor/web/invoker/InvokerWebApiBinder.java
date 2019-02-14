@@ -18,14 +18,12 @@ import net.hasor.core.*;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.provider.InstanceProvider;
-import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.*;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.annotation.Render;
 import net.hasor.web.definition.*;
 import net.hasor.web.startup.RuntimeFilter;
-import net.hasor.web.wrap.DefaultServlet;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
@@ -179,7 +177,8 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     // ------------------------------------------------------------------------------------------------------
     @Override
     public FilterBindingBuilder<InvokerFilter> filter(String urlPattern, String... morePatterns) {
-        return new FiltersModuleBinder<InvokerFilter>(InvokerFilter.class, UriPatternType.SERVLET, newArrayList(morePatterns, urlPattern)) {
+        List<String> uriPatterns = checkEmpty(newArrayList(morePatterns, urlPattern), "Filter patterns is empty.");
+        return new FiltersModuleBinder<InvokerFilter>(InvokerFilter.class, UriPatternType.SERVLET, uriPatterns) {
             @Override
             protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
                 filterThrough(index, pattern, matcher, filterRegister, initParams);
@@ -188,14 +187,12 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     @Override
     public FilterBindingBuilder<InvokerFilter> filter(String[] morePatterns) {
-        if (ArrayUtils.isEmpty(morePatterns)) {
-            throw new NullPointerException("Filter patterns is empty.");
-        }
-        return this.filter(null, morePatterns);
+        return this.filter(null, checkEmpty(morePatterns, "Filter patterns is empty."));
     }
     @Override
     public FilterBindingBuilder<InvokerFilter> filterRegex(String regex, String... regexes) {
-        return new FiltersModuleBinder<InvokerFilter>(InvokerFilter.class, UriPatternType.REGEX, newArrayList(regexes, regex)) {
+        List<String> uriPatterns = checkEmpty(newArrayList(regexes, regex), "Filter patterns is empty.");
+        return new FiltersModuleBinder<InvokerFilter>(InvokerFilter.class, UriPatternType.REGEX, uriPatterns) {
             @Override
             protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
                 filterThrough(index, pattern, matcher, filterRegister, initParams);
@@ -204,16 +201,14 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     @Override
     public FilterBindingBuilder<InvokerFilter> filterRegex(String[] regexes) {
-        if (ArrayUtils.isEmpty(regexes)) {
-            throw new NullPointerException("Filter regexes is empty.");
-        }
-        return this.filterRegex(null, regexes);
+        return this.filterRegex(null, checkEmpty(regexes, "Filter patterns is empty."));
     }
     //
     // ------------------------------------------------------------------------------------------------------
     @Override
     public FilterBindingBuilder<Filter> jeeFilter(final String urlPattern, final String... morePatterns) {
-        return new FiltersModuleBinder<Filter>(Filter.class, UriPatternType.SERVLET, newArrayList(morePatterns, urlPattern)) {
+        List<String> uriPatterns = checkEmpty(newArrayList(morePatterns, urlPattern), "Filter patterns is empty.");
+        return new FiltersModuleBinder<Filter>(Filter.class, UriPatternType.SERVLET, uriPatterns) {
             @Override
             protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
                 jeeFilterThrough(index, pattern, matcher, filterRegister, initParams);
@@ -222,14 +217,12 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     @Override
     public FilterBindingBuilder<Filter> jeeFilter(final String[] morePatterns) throws NullPointerException {
-        if (ArrayUtils.isEmpty(morePatterns)) {
-            throw new NullPointerException("Filter patterns is empty.");
-        }
-        return this.jeeFilter(null, morePatterns);
+        return this.jeeFilter(null, checkEmpty(morePatterns, "Filter patterns is empty."));
     }
     @Override
     public FilterBindingBuilder<Filter> jeeFilterRegex(final String regex, final String... regexes) {
-        return new FiltersModuleBinder<Filter>(Filter.class, UriPatternType.REGEX, newArrayList(regexes, regex)) {
+        List<String> uriPatterns = checkEmpty(newArrayList(regexes, regex), "Filter patterns is empty.");
+        return new FiltersModuleBinder<Filter>(Filter.class, UriPatternType.REGEX, uriPatterns) {
             @Override
             protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
                 jeeFilterThrough(index, pattern, matcher, filterRegister, initParams);
@@ -238,10 +231,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     @Override
     public FilterBindingBuilder<Filter> jeeFilterRegex(final String[] regexes) throws NullPointerException {
-        if (ArrayUtils.isEmpty(regexes)) {
-            throw new NullPointerException("Filter regexes is empty.");
-        }
-        return this.jeeFilterRegex(null, regexes);
+        return this.jeeFilterRegex(null, checkEmpty(regexes, "Filter patterns is empty."));
     }
     protected void jeeFilterThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
         FilterDefinition define = new FilterDefinition(index, pattern, matcher, filterRegister, initParams);
@@ -345,14 +335,11 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     @Override
     public ServletBindingBuilder jeeServlet(final String urlPattern, final String... morePatterns) {
-        return new ServletsModuleBuilder(newArrayList(morePatterns, urlPattern));
+        return new ServletsModuleBuilder(checkEmpty(newArrayList(morePatterns, urlPattern), "Servlet patterns is empty."));
     }
     @Override
     public ServletBindingBuilder jeeServlet(final String[] morePatterns) {
-        if (ArrayUtils.isEmpty(morePatterns)) {
-            throw new NullPointerException("Servlet patterns is empty.");
-        }
-        return this.jeeServlet(null, morePatterns);
+        return this.jeeServlet(null, checkEmpty(morePatterns, "Servlet patterns is empty."));
     }
     //
     private class ServletsModuleBuilder extends MappingToBuilder<HttpServlet> implements ServletBindingBuilder {
@@ -410,25 +397,20 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     // ------------------------------------------------------------------------------------------------------
     @Override
     public MappingToBindingBuilder<Object> mappingTo(String urlPattern, String... morePatterns) {
-        return new MappingToBuilder<Object>(Object.class, newArrayList(morePatterns, urlPattern)) {
+        return new MappingToBuilder<Object>(Object.class, checkEmpty(newArrayList(morePatterns, urlPattern), "mappingTo patterns is empty.")) {
             @Override
             public void with(int index, BindInfo<? extends Object> targetInfo) {
                 for (String pattern : this.getUriPatterns()) {
                     if (StringUtils.isBlank(pattern)) {
                         continue;
                     }
-                    //
                     InMappingDef define = new InMappingDef(index, targetInfo, pattern, Matchers.anyMethod(), true);
                     bindType(InMappingDef.class).uniqueName().toInstance(define);
                 }
             }
             @Override
             protected Class<Object> findBindType(Class<Object> targetClass, Object target) {
-                if (target instanceof ProviderType) {
-                    return ((ProviderType) target).getType();
-                } else {
-                    return (Class<Object>) target.getClass();
-                }
+                return (Class<Object>) target.getClass();
             }
             @Override
             protected Class<Object> findBindType(Class<Object> targetClass, Class<?> targetKey) {
@@ -436,41 +418,31 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             }
             @Override
             protected Class<Object> findBindType(Class<Object> targetClass, Provider<?> targetProvider) {
-                if (targetProvider instanceof ProviderType) {
-                    return ((ProviderType) targetProvider).getType();
-                } else {
-                    return (Class<Object>) targetProvider.get().getClass();
-                }
+                return (Class<Object>) targetProvider.get().getClass();
             }
         };
     }
     @Override
     public MappingToBindingBuilder<Object> mappingTo(String[] morePatterns) {
-        if (ArrayUtils.isEmpty(morePatterns)) {
-            throw new NullPointerException("mappingTo patterns is empty.");
-        }
-        return this.mappingTo(null, morePatterns);
+        return this.mappingTo(null, checkEmpty(morePatterns, "mappingTo patterns is empty."));
     }
     @Override
     public void loadMappingTo(Set<Class<?>> mabeMappingToSet) {
-        this.loadMappingTo(mabeMappingToSet, new Matcher<Class<?>>() {
-            @Override
-            public boolean matches(Class<?> target) {
-                return true;
-            }
-        });
+        this.loadMappingTo(mabeMappingToSet, Matchers.anyClass());
     }
     @Override
     public void loadMappingTo(Set<Class<?>> mabeMappingToSet, Matcher<Class<?>> matcher) {
         int counts = 0;
         if (mabeMappingToSet != null && !mabeMappingToSet.isEmpty()) {
             for (Class<?> type : mabeMappingToSet) {
-                loadMappingTo(type);
-                counts++;
+                if (matcher.matches(type)) {
+                    loadMappingTo(type);
+                    counts++;
+                }
             }
         }
         if (counts == 0) {
-            logger.warn("mapingTo -> exit , not found any @MappingTo.");
+            logger.warn("mapingTo -> exit , not matcher any MappingTo.");
         } else {
             logger.info("mapingTo -> found {} counts.");
         }
@@ -479,10 +451,10 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         Hasor.assertIsNotNull(mabeMappingType, "class is null.");
         int modifier = mabeMappingType.getModifiers();
         if (checkIn(modifier, Modifier.INTERFACE) || checkIn(modifier, Modifier.ABSTRACT) || mabeMappingType.isArray() || mabeMappingType.isEnum()) {
-            throw new IllegalStateException(mabeMappingType.getName() + " must be configure @MappingTo normal Bean");
+            throw new IllegalStateException(mabeMappingType.getName() + " must be normal Bean");
         }
         if (!mabeMappingType.isAnnotationPresent(MappingTo.class)) {
-            throw new IllegalStateException(mabeMappingType.getName() + " must be configure @MappingTo normal Bean");
+            throw new IllegalStateException(mabeMappingType.getName() + " must be configure @MappingTo");
         }
         //
         MappingTo mto = mabeMappingType.getAnnotation(MappingTo.class);
@@ -496,49 +468,52 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     //
     // ------------------------------------------------------------------------------------------------------
-    private static Matcher<Class<? extends RenderEngine>> RENDER_ENGINE_MATCHER = new Matcher<Class<? extends RenderEngine>>() {
-        @Override
-        public boolean matches(Class<? extends RenderEngine> target) {
-            return true;
-        }
-    };
-    /**扫描Render注解配置的渲染器。*/
-    public void scanAnnoRender() {
-        this.scanAnnoRender(RENDER_ENGINE_MATCHER);
+    /**加载Render注解配置的渲染器。*/
+    public void loadRender(Set<Class<?>> renderSet) {
+        this.loadRender(renderSet, Matchers.anyClass());
     }
-    /**扫描Render注解配置的渲染器。*/
-    public void scanAnnoRender(String... packages) {
-        this.scanAnnoRender(RENDER_ENGINE_MATCHER, packages);
-    }
-    /**扫描Render注解配置的渲染器。*/
-    public void scanAnnoRender(Matcher<Class<? extends RenderEngine>> matcher, String... packages) {
-        String[] defaultPackages = this.getEnvironment().getSpanPackage();
-        String[] scanPackages = (packages == null || packages.length == 0) ? defaultPackages : packages;
-        //
-        Set<Class<?>> renderSet = this.findClass(RenderEngine.class, scanPackages);
-        for (Class<?> renderClass : renderSet) {
-            if (renderClass.isInterface())
-                continue;
-            if (renderClass == RenderEngine.class)
-                continue;
-            //
-            Class<? extends RenderEngine> target = (Class<? extends RenderEngine>) renderClass;
-            if (matcher != null && !matcher.matches(target))
-                continue;
-            //
-            Render renderInfo = renderClass.getAnnotation(Render.class);
-            if (renderInfo != null && renderInfo.value().length > 0) {
-                String[] renderName = renderInfo.value();
-                suffix(renderName).bind(target);
+    /**加载Render注解配置的渲染器。*/
+    public void loadRender(Set<Class<?>> renderSet, Matcher<Class<?>> matcher) {
+        int counts = 0;
+        if (renderSet != null && !renderSet.isEmpty()) {
+            for (Class<?> type : renderSet) {
+                if (matcher.matches(type)) {
+                    loadRender(type);
+                    counts++;
+                }
             }
         }
+        if (counts == 0) {
+            logger.warn("render -> exit , not matcher any Render.");
+        } else {
+            logger.info("render -> found {} counts.");
+        }
+    }
+    /**加载Render注解配置的渲染器。*/
+    public void loadRender(Class<?> renderClass) {
+        Hasor.assertIsNotNull(renderClass, "class is null.");
+        int modifier = renderClass.getModifiers();
+        if (checkIn(modifier, Modifier.INTERFACE) || checkIn(modifier, Modifier.ABSTRACT) || renderClass.isArray() || renderClass.isEnum()) {
+            throw new IllegalStateException(renderClass.getName() + " must be normal Bean");
+        }
+        if (!renderClass.isAnnotationPresent(Render.class)) {
+            throw new IllegalStateException(renderClass.getName() + " must be configure @Render");
+        }
+        if (!RenderEngine.class.isAssignableFrom(renderClass)) {
+            throw new IllegalStateException(renderClass.getName() + " must be implements RenderEngine.");
+        }
         //
+        Render renderInfo = renderClass.getAnnotation(Render.class);
+        if (renderInfo != null && renderInfo.value().length > 0) {
+            String[] renderName = checkEmpty(renderInfo.value(), "Render patterns is empty.");
+            suffix(renderName).bind((Class<? extends RenderEngine>) renderClass);
+        }
     }
     //
     // ------------------------------------------------------------------------------------------------------
     /**拦截这些后缀的请求，这些请求会被渲染器渲染。*/
-    public WebApiBinder.RenderEngineBindingBuilder<RenderEngine> suffix(String suffix, String... moreSuffix) {
-        return new RenderEngineBindingBuilderImpl(newArrayList(moreSuffix, suffix)) {
+    public WebApiBinder.RenderEngineBindingBuilder suffix(String suffix, String... moreSuffix) {
+        return new RenderEngineBindingBuilderImpl(checkEmpty(newArrayList(moreSuffix, suffix), "Render patterns is empty.")) {
             @Override
             protected void bindSuffix(List<String> suffixList, BindInfo<? extends RenderEngine> bindInfo) {
                 InvokerWebApiBinder.this.bindSuffix(suffixList, bindInfo);
@@ -546,8 +521,8 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         };
     }
     /**拦截这些后缀的请求，这些请求会被渲染器渲染。*/
-    public WebApiBinder.RenderEngineBindingBuilder<RenderEngine> suffix(String[] suffixArrays) {
-        return new RenderEngineBindingBuilderImpl(Arrays.asList(suffixArrays)) {
+    public WebApiBinder.RenderEngineBindingBuilder suffix(String[] suffixArrays) {
+        return new RenderEngineBindingBuilderImpl(checkEmpty(Arrays.asList(suffixArrays), "Render patterns is empty.")) {
             @Override
             protected void bindSuffix(List<String> suffixList, BindInfo<? extends RenderEngine> bindInfo) {
                 InvokerWebApiBinder.this.bindSuffix(suffixList, bindInfo);
@@ -558,15 +533,6 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     private void bindSuffix(List<String> suffixList, BindInfo<? extends RenderEngine> bindInfo) {
         suffixList = Collections.unmodifiableList(suffixList);
         this.bindType(RenderDefinition.class).toInstance(new RenderDefinition(suffixList, bindInfo)).toInfo();
-        //
-        for (String suffix : suffixList) {
-            if (suffix.equals("*") || StringUtils.isBlank(suffix)) {
-                continue;
-            }
-            //
-            String pattern = "/*." + suffix.toLowerCase();
-            this.jeeServlet(pattern).with(Integer.MAX_VALUE, DefaultServlet.class);
-        }
     }
     //
     // ------------------------------------------------------------------------------------------------------
@@ -631,7 +597,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         }
         public abstract void with(int index, BindInfo<? extends T> targetInfo);
     }
-    private abstract class RenderEngineBindingBuilderImpl implements WebApiBinder.RenderEngineBindingBuilder<RenderEngine> {
+    private abstract class RenderEngineBindingBuilderImpl implements WebApiBinder.RenderEngineBindingBuilder {
         private List<String> suffixList;
         public RenderEngineBindingBuilderImpl(List<String> suffixList) {
             Set<String> suffixSet = new LinkedHashSet<String>();
@@ -643,27 +609,27 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             this.suffixList = new ArrayList<String>(suffixSet);
         }
         @Override
-        public void bind(Class<? extends RenderEngine> engineType) {
+        public <T extends RenderEngine> void bind(Class<T> renderEngineType) {
             if (!this.suffixList.isEmpty()) {
-                bindSuffix(this.suffixList, bindType(RenderEngine.class).uniqueName().to(engineType).toInfo());
+                bindSuffix(this.suffixList, bindType(RenderEngine.class).uniqueName().to(renderEngineType).toInfo());
             }
         }
         @Override
-        public void bind(RenderEngine engine) {
+        public void bind(RenderEngine renderEngine) {
             if (!this.suffixList.isEmpty()) {
-                bindSuffix(this.suffixList, bindType(RenderEngine.class).uniqueName().toInstance(engine).toInfo());
+                bindSuffix(this.suffixList, bindType(RenderEngine.class).uniqueName().toInstance(renderEngine).toInfo());
             }
         }
         @Override
-        public void bind(Provider<? extends RenderEngine> engineProvider) {
+        public void bind(Provider<? extends RenderEngine> renderEngineProvider) {
             if (!this.suffixList.isEmpty()) {
-                bindSuffix(this.suffixList, bindType(RenderEngine.class).uniqueName().toProvider(engineProvider).toInfo());
+                bindSuffix(this.suffixList, bindType(RenderEngine.class).uniqueName().toProvider(renderEngineProvider).toInfo());
             }
         }
         @Override
-        public void bind(BindInfo<? extends RenderEngine> engineRegister) {
+        public void bind(BindInfo<? extends RenderEngine> renderEngineInfo) {
             if (!this.suffixList.isEmpty()) {
-                bindSuffix(this.suffixList, Hasor.assertIsNotNull(engineRegister));
+                bindSuffix(this.suffixList, Hasor.assertIsNotNull(renderEngineInfo));
             }
         }
         protected abstract void bindSuffix(List<String> suffixList, BindInfo<? extends RenderEngine> bindInfo);
@@ -685,5 +651,23 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     private boolean checkIn(final int data, final int check) {
         int or = data | check;
         return or == data;
+    }
+    private static String[] checkEmpty(String[] patternArrays, String npeMessage) {
+        checkEmpty(Arrays.asList(patternArrays), npeMessage);
+        return patternArrays;
+    }
+    private static List<String> checkEmpty(List<String> patternArrays, String npeMessage) {
+        boolean needThrow = true;
+        for (String pattern : patternArrays) {
+            if (StringUtils.isBlank(pattern)) {
+                continue;
+            }
+            needThrow = false;
+            break;
+        }
+        if (needThrow) {
+            throw new NullPointerException(npeMessage);
+        }
+        return patternArrays;
     }
 }
