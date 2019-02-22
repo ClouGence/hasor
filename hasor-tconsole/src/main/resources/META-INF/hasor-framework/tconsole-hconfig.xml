@@ -27,8 +27,6 @@
         <modules>
             <!-- tConsole 控制台插件 -->
             <module>net.hasor.tconsole.launcher.ConsoleModule</module>
-            <!-- tConsole 指令扫描器 -->
-            <module>net.hasor.tconsole.autoscan.AutoScanModule</module>
         </modules>
 
         <!-- Binder扩展 -->

@@ -49,11 +49,6 @@ public class BasicFuture<T> implements Future<T>, Cancellable {
     }
     private T getResult() throws ExecutionException {
         if (this.ex != null) {
-            if (this.ex instanceof ExecutionException) {
-                throw (ExecutionException) this.ex;
-            } else if (this.ex instanceof RuntimeException) {
-                throw (RuntimeException) this.ex;
-            }
             throw new ExecutionException(this.ex.getMessage(), this.ex);
         }
         return this.result;

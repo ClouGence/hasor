@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.tconsole.autoscan;
+package net.hasor.plugins.autoscan;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 import net.hasor.tconsole.CommandExecutor;

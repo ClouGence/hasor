@@ -16,4 +16,4 @@
 /**
  * 指令注解配置扫描加载器。
  */
-package net.hasor.tconsole.autoscan;
+package net.hasor.plugins.autoscan;

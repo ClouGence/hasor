@@ -23,6 +23,16 @@ import net.hasor.web.WebPlugin;
  * @author 赵永春 (zyc@hasor.net)
  */
 interface WebPluginCaller {
+    WebPluginCaller Empty = new WebPluginCaller() {
+        @Override
+        public void beforeFilter(Invoker invoker, InvokerData info) {
+        }
+        @Override
+        public void afterFilter(Invoker invoker, InvokerData info) {
+        }
+    };
+
+    //
     public void beforeFilter(Invoker invoker, InvokerData info);
 
     public void afterFilter(Invoker invoker, InvokerData info);

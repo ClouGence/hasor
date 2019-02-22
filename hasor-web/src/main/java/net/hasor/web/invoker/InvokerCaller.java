@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLDecoder;
 import java.util.*;
@@ -47,17 +48,17 @@ import java.util.regex.Pattern;
  * @author 赵永春 (zyc@hasor.net)
  */
 class InvokerCaller implements ExceuteCaller {
-    protected Logger                    logger          = LoggerFactory.getLogger(getClass());
-    private   InMapping                 mappingToDefine = null;
-    private   AbstractDefinition[]      filterArrays    = null;
-    private   WebPluginCaller           pluginCaller    = null;
-    private   Map<String, List<String>> queryParamLocal = null;
-    private   Map<String, Object>       pathParamsLocal = null;
+    protected static Logger                    logger          = LoggerFactory.getLogger(InvokerCaller.class);
+    private          InMapping                 mappingToDefine = null;
+    private          AbstractDefinition[]      filterArrays    = null;
+    private          WebPluginCaller           pluginCaller    = null;
+    private          Map<String, List<String>> queryParamLocal = null;
+    private          Map<String, Object>       pathParamsLocal = null;
     //
     public InvokerCaller(InMapping mappingToDefine, AbstractDefinition[] filterArrays, WebPluginCaller pluginCaller) {
         this.mappingToDefine = mappingToDefine;
         this.filterArrays = (filterArrays == null) ? new AbstractDefinition[0] : filterArrays;
-        this.pluginCaller = pluginCaller;
+        this.pluginCaller = (pluginCaller == null) ? WebPluginCaller.Empty : pluginCaller;
     }
     /**
      * 调用目标
@@ -67,7 +68,9 @@ class InvokerCaller implements ExceuteCaller {
         final BasicFuture<Object> future = new BasicFuture<Object>();
         Method targetMethod = this.mappingToDefine.findMethod(invoker);
         if (targetMethod == null) {
-            chain.doFilter(invoker.getHttpRequest(), invoker.getHttpResponse());
+            if (chain != null) {
+                chain.doFilter(invoker.getHttpRequest(), invoker.getHttpResponse());
+            }
             future.completed(null);
             return future;
         }
@@ -106,8 +109,11 @@ class InvokerCaller implements ExceuteCaller {
         //
         // .初始化WebController
         final Object targetObject = this.mappingToDefine.newInstance(invoker);
-        if (targetObject != null && targetObject instanceof Controller) {
+        if (targetObject instanceof Controller) {
             ((Controller) targetObject).initController(invoker);
+        }
+        if (targetObject == null) {
+            throw new NullPointerException("mappingToDefine newInstance is null.");
         }
         //
         // .准备过滤器链
@@ -115,8 +121,12 @@ class InvokerCaller implements ExceuteCaller {
         InvokerChain invokerChain = new InvokerChain() {
             @Override
             public void doNext(Invoker invoker) throws Throwable {
-                Object result = targetMethod.invoke(targetObject, resolveParams.get(0));
-                invoker.put(Invoker.RETURN_DATA_KEY, result);
+                try {
+                    Object result = targetMethod.invoke(targetObject, resolveParams.get(0));
+                    invoker.put(Invoker.RETURN_DATA_KEY, result);
+                } catch (InvocationTargetException e) {
+                    throw e.getTargetException();
+                }
             }
         };
         InvokerData invokerData = new InvokerData() {
@@ -153,7 +163,6 @@ class InvokerCaller implements ExceuteCaller {
         //
         Class<?>[] targetParamClass = targetMethod.getParameterTypes();
         Annotation[][] targetParamAnno = targetMethod.getParameterAnnotations();
-        targetParamClass = (targetParamClass == null) ? new Class<?>[0] : targetParamClass;
         targetParamAnno = (targetParamAnno == null) ? new Annotation[0][0] : targetParamAnno;
         ArrayList<Object> paramsArray = new ArrayList<Object>();
         /*准备参数*/
@@ -162,8 +171,7 @@ class InvokerCaller implements ExceuteCaller {
             Object paramObject = this.resolveParam(invoker, paramClass, targetParamAnno[i]);//获取参数
             paramsArray.add(paramObject);
         }
-        Object[] invokeParams = paramsArray.toArray();
-        return invokeParams;
+        return paramsArray.toArray();
     }
     private Object resolveParam(Invoker invoker, Class<?> paramClass, Annotation[] paramAnno) {
         // .特殊类型参数
@@ -198,7 +206,7 @@ class InvokerCaller implements ExceuteCaller {
         if (paramClass == Invoker.class) {
             return invoker;
         }
-        if (paramClass.isInterface() && paramClass.isInstance(invoker)) {
+        if (paramClass.isInstance(invoker)) {
             return invoker;
         }
         //
@@ -232,7 +240,7 @@ class InvokerCaller implements ExceuteCaller {
             paramObject = paramClass.newInstance();
         } catch (Throwable e) {
             logger.error(paramClass.getName() + "newInstance error.", e.getMessage());
-            return paramObject;
+            return null;
         }
         List<Field> fieldList = BeanUtils.findALLFields(paramClass);
         if (fieldList == null || fieldList.isEmpty()) {
@@ -240,9 +248,7 @@ class InvokerCaller implements ExceuteCaller {
         }
         for (Field field : fieldList) {
             if (field.isAnnotationPresent(IgnoreParam.class)) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(field + " -> Ignore.");
-                }
+                logger.debug(field + " -> Ignore.");
                 continue;
             }
             try {
@@ -414,7 +420,7 @@ class InvokerCaller implements ExceuteCaller {
         for (Entry<String, List<String>> ent : uriParams.entrySet()) {
             String k = ent.getKey();
             List<String> v = ent.getValue();
-            this.pathParamsLocal.put(k, v.toArray(new String[v.size()]));
+            this.pathParamsLocal.put(k, v.toArray(new String[0]));
         }
         return this.pathParamsLocal;
     }

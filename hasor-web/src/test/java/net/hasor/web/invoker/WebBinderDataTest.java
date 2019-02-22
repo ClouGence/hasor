@@ -43,7 +43,7 @@ import java.util.*;
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class WebBinderDataTest extends AbstractWebBinderDataTest {
+public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
     private Invoker newInvoker(String mappingTo, String httpMethod, AppContext appContext) {
         Invoker invoker = PowerMockito.mock(Invoker.class);
         HttpServletRequest servletRequest = PowerMockito.mock(HttpServletRequest.class);

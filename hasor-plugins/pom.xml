@@ -48,6 +48,11 @@
             <artifactId>hasor-rsf</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-tconsole</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- 整合 Junit -->
         <dependency>

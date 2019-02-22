@@ -37,9 +37,9 @@ public class ContextInjectTest {
         //
         this.appContext.start();
         injectBean = this.appContext.getInstance(ContextInjectBean.class);
-        assert injectBean.getAppContext() != null;
-        assert injectBean.getEnvironment() != null;
-        assert injectBean.getEventContext() != null;
-        assert injectBean.getSettings() != null;
+        assert injectBean.getAppContext() == appContext;
+        assert injectBean.getEnvironment() == appContext.getEnvironment();
+        assert injectBean.getEventContext() == appContext.getEnvironment().getEventContext();
+        assert injectBean.getSettings() == appContext.getEnvironment().getSettings();
     }
 }

@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.tconsole.autoscan;
+package net.hasor.plugins.autoscan;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 /**
- * 包含在搜索结果中
+ * RSF命令
  * @version : 2016年4月3日
  * @author 赵永春 (zyc@hasor.net)
  */
-@Target({ ElementType.PACKAGE })
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface SearchInclude {
+public @interface Command {
+    public String[] value();
 }
