@@ -53,12 +53,12 @@ public class BucketTest {
         String scriptBody3 = IOUtils.readToString(ResourcesUtils.getResourceAsStream("/rule-script/args-level.groovy"), "utf-8");
         bucket.updateRoute(RouteTypeEnum.ArgsLevel, scriptBody3);
         //
-        File outFile = new File(rsfEnv.getPluginDir(BucketTest.class), serviceID + ".zip");
-        outFile.getParentFile().mkdirs();
-        FileOutputStream out = new FileOutputStream(outFile, false);
-        bucket.saveToZip(out);
-        out.flush();
-        out.close();
+//        File outFile = new File(rsfEnv.getPluginDir(BucketTest.class), serviceID + ".zip");
+//        outFile.getParentFile().mkdirs();
+//        FileOutputStream out = new FileOutputStream(outFile, false);
+//        bucket.saveToZip(out);
+//        out.flush();
+//        out.close();
     }
     @Test
     public void readFormZipTest() throws IOException, URISyntaxException {
@@ -69,10 +69,10 @@ public class BucketTest {
         BuildBucketBuild buildBucket = new BuildBucketBuild(serviceID, rsfEnv).invoke();
         AddressBucket bucket = buildBucket.getBucket();
         //
-        File inFile = new File(rsfEnv.getPluginDir(BucketTest.class), serviceID + ".zip");
-        FileInputStream in = new FileInputStream(inFile);
-        bucket.readFromZip(in);
-        in.close();
+//        File inFile = new File(rsfEnv.getPluginDir(BucketTest.class), serviceID + ".zip");
+//        FileInputStream in = new FileInputStream(inFile);
+//        bucket.readFromZip(in);
+//        in.close();
     }
     //
     @Test

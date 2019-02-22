@@ -67,7 +67,7 @@ public class InvokerContext implements WebPluginCaller {
         //
         // .WebPlugin
         List<WebPluginDefinition> pluginList = appContext.findBindingBean(WebPluginDefinition.class);
-        this.plugins = pluginList.toArray(new WebPlugin[pluginList.size()]);
+        this.plugins = pluginList.toArray(new WebPlugin[0]);
         for (WebPluginDefinition plugin : pluginList) {
             plugin.initPlugin(appContext);
             logger.info("webPlugin -> type ‘{}’.", plugin.toString());
@@ -104,22 +104,21 @@ public class InvokerContext implements WebPluginCaller {
         };
         //
         // .Filters
-        ArrayList<AbstractDefinition> finalList = new ArrayList<AbstractDefinition>();
-        List<AbstractDefinition> filterList = appContext.findBindingBean(AbstractDefinition.class);
-        Collections.sort(filterList, new Comparator<AbstractDefinition>() {
+        List<AbstractDefinition> defineList = appContext.findBindingBean(AbstractDefinition.class);
+        Collections.sort(defineList, new Comparator<AbstractDefinition>() {
             public int compare(AbstractDefinition o1, AbstractDefinition o2) {
                 long o1Index = o1.getIndex();
                 long o2Index = o2.getIndex();
                 return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
             }
         });
-        finalList.addAll(filterList);
         //
         // .init
-        for (InvokerFilter filter : finalList) {
+        defineList = new ArrayList<AbstractDefinition>(defineList);
+        for (InvokerFilter filter : defineList) {
             filter.init(filterConfig);
         }
-        this.filters = finalList.toArray(new AbstractDefinition[finalList.size()]);
+        this.filters = defineList.toArray(new AbstractDefinition[0]);
         //
         // .creater
         this.invokerCreater = new RootInvokerCreater(appContext);

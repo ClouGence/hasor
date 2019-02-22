@@ -59,7 +59,7 @@ public class FileAuthQuery implements AuthQuery {
         // .获取输入流
         Environment env = appContext.getEnvironment();
         String authKeysFileName = env.evalString("%RSF_CENTER_AUTH_FILE_NAME%");
-        File authKeysPath = new File(env.getWorkSpaceDir(), authKeysFileName);
+        File authKeysPath = null;//new File(env.getWorkSpaceDir(), authKeysFileName);
         InputStream inStream = null;
         if (authKeysPath.canRead() && authKeysPath.exists()) {
             inStream = new AutoCloseInputStream(new FileInputStream(authKeysPath));

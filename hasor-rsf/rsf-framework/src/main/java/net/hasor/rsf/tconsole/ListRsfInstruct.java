@@ -18,7 +18,6 @@ import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.autoscan.Command;
 import net.hasor.tconsole.launcher.CmdRequest;
 import net.hasor.utils.StringUtils;
 

@@ -77,12 +77,12 @@ public class AddressPoolTest {
             configService(pool, service);
         }
         //
-        File outFile = new File(rsfEnv.getPluginDir(AddressPoolTest.class), "pool.zip");
-        outFile.getParentFile().mkdirs();
-        FileOutputStream out = new FileOutputStream(outFile, false);
-        pool.storeConfig(out);
-        out.flush();
-        out.close();
+//        File outFile = new File(rsfEnv.getPluginDir(AddressPoolTest.class), "pool.zip");
+//        outFile.getParentFile().mkdirs();
+//        FileOutputStream out = new FileOutputStream(outFile, false);
+//        pool.storeConfig(out);
+//        out.flush();
+//        out.close();
     }
     @Test
     public void readFormZipTest() throws IOException, URISyntaxException {
@@ -96,10 +96,10 @@ public class AddressPoolTest {
             pool.appendAddress(serviceID + i, new InterAddress("192.168.1.1", 8000, "etc2"));
         }
         //
-        File inFile = new File(rsfEnv.getPluginDir(AddressPoolTest.class), "pool.zip");
-        FileInputStream in = new FileInputStream(inFile);
-        pool.restoreConfig(in);
-        in.close();
+//        File inFile = new File(rsfEnv.getPluginDir(AddressPoolTest.class), "pool.zip");
+//        FileInputStream in = new FileInputStream(inFile);
+//        pool.restoreConfig(in);
+//        in.close();
         //
         Set<String> names = pool.getBucketNames();
         for (String service : names) {

@@ -39,6 +39,15 @@ public class NetworkUtils {
             return false;
         }
     }
+    /**根据IP字节数据转换为int.*/
+    public static byte[] ipStrToBytes(String ipData) {
+        byte[] ipParts = new byte[4];
+        String[] splitArrays = ipData.split("\\.");
+        for (int i = 0; i < splitArrays.length; i++) {
+            ipParts[i] = (byte) Integer.parseInt(splitArrays[i]);
+        }
+        return ipParts;
+    }
     /**根据名字获取地址，local代表本机（如果本机有多网卡那么请明确指定ip）*/
     public static InetAddress finalBindAddress(String hostString) throws UnknownHostException {
         return "local".equalsIgnoreCase(hostString) ? InetAddress.getLocalHost() : InetAddress.getByName(hostString);
