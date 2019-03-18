@@ -32,18 +32,18 @@ Hasor v3.4.0 (2019-02-?)
     - StandardEnvironment 增添若干构造方法，AbstractEnvironment 调整输出日志内容。
     - Environment.addEnvVar 方法在添加 环境变量时如果 Value 为空或者空字符串，其行为相当于删除。
     - Environment 接口上的一些常量定义删除（例如：WORK_HOME）
-**Hasor-Web**
+**Web**
     - MappingSetup 接口，更名为 MappingDiscoverer，MappingData更名为Mapping
     - web RuntimeListener 新增：hasor-root-module、hasor-hconfig-name、hasor-env-properties 三个 web.xml 的属性配置。
     - @HttpMethod 注解可以加到 Method 上了。
     - WebApiBinder 接口中 scanAnnoRender 方法改为 loadRender。
-**Hasor-RSF**
+**RSF**
     - 进行重构。
     - 使用 RSF_DATA_HOME 环境变量替代 RsfEnvironment.WORK_HOME。
     - rsf的内置 hessian 序列化和反序列化配置文件，路径改到 ‘META-INF/hasor-framework/rsf-hessian/’ 下面。以避免和 hessian jar包冲突。
     - rsf Gateway 从 rsf 基础框架中删除后面会独立成一个框架。
     - rsf 地址本保存时候不在保存空数据。
-**Hasor-JDBC**
+**JDBC**
     - fix 执行查询结果返回为空时，AbstractRowMapper.convertValueToRequiredType 方法报 NPE 的 Bug。
     - fix JdbcTemplate 类中 requiredSingleResult 当执行结果为空时报空指针的异常。
 **Bean容器**

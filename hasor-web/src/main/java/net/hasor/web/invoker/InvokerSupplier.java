@@ -35,7 +35,7 @@ public class InvokerSupplier implements Invoker {
     private HttpServletResponse httpResponse = null;
     private AppContext          appContext   = null;
     private MimeType            mimeType     = null;
-    private String requestPath;
+    private String              requestPath;
     //
     protected InvokerSupplier(AppContext appContext, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         //
@@ -101,8 +101,9 @@ public class InvokerSupplier implements Invoker {
     }
     @Override
     public void lockKey(String key) {
-        if (StringUtils.isBlank(key))
+        if (StringUtils.isBlank(key)) {
             return;
+        }
         this.lockKeys.add(key);
     }
     @Override

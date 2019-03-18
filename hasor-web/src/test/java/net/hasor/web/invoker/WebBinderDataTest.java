@@ -36,23 +36,14 @@ import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.*;
 /**
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
 public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
-    private Invoker newInvoker(String mappingTo, String httpMethod, AppContext appContext) {
-        Invoker invoker = PowerMockito.mock(Invoker.class);
-        HttpServletRequest servletRequest = PowerMockito.mock(HttpServletRequest.class);
-        PowerMockito.when(invoker.getRequestPath()).thenReturn(mappingTo);
-        PowerMockito.when(servletRequest.getMethod()).thenReturn(httpMethod);
-        PowerMockito.when(invoker.getHttpRequest()).thenReturn(servletRequest);
-        PowerMockito.when(invoker.getAppContext()).thenReturn(appContext);
-        return invoker;
-    }
     //
     @Test
     public void binderTest0() throws Exception {
@@ -731,7 +722,7 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         assert definitions.get(7) instanceof InMappingServlet;
         assert definitions.get(9) instanceof InMappingServlet;
         //
-        Invoker invoker = newInvoker("/execute.do", "GET", appContext);
+        Invoker invoker = newInvoker(mockRequest("GET", new URL("http://www.hasor.net/execute.do"), appContext), appContext);
         Object invoke1_1 = definitions.get(0).newInstance(invoker);     // 1
         Object invoke1_2 = definitions.get(1).newInstance(invoker);     // 1
         Object invoke2_1 = definitions.get(2).newInstance(invoker);     // 2
@@ -805,7 +796,7 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         assert definitions.get(7) instanceof InMappingServlet;
         assert definitions.get(9) instanceof InMappingServlet;
         //
-        Invoker invoker = newInvoker("/execute.do", "GET", appContext);
+        Invoker invoker = newInvoker(mockRequest("GET", new URL("http://www.hasor.net/execute.do"), appContext), appContext);
         Object invoke1_1 = definitions.get(0).newInstance(invoker);     // 1
         Object invoke1_2 = definitions.get(1).newInstance(invoker);     // 1
         Object invoke2_1 = definitions.get(2).newInstance(invoker);     // 2
@@ -884,7 +875,7 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         assert definitions.get(7) instanceof InMappingServlet;
         assert definitions.get(9) instanceof InMappingServlet;
         //
-        Invoker invoker = newInvoker("/execute.do", "GET", appContext);
+        Invoker invoker = newInvoker(mockRequest("GET", new URL("http://www.hasor.net/execute.do"), appContext), appContext);
         Object invoke1_1 = definitions.get(0).newInstance(invoker);     // 1
         Object invoke1_2 = definitions.get(1).newInstance(invoker);     // 1
         Object invoke2_1 = definitions.get(2).newInstance(invoker);     // 2
@@ -953,7 +944,7 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         assert definitions.get(7) instanceof InMappingServlet;
         assert definitions.get(9) instanceof InMappingServlet;
         //
-        Invoker invoker = newInvoker("/execute.do", "GET", appContext);
+        Invoker invoker = newInvoker(mockRequest("GET", new URL("http://www.hasor.net/execute.do"), appContext), appContext);
         Object invoke1_1 = definitions.get(0).newInstance(invoker);     // 1
         Object invoke1_2 = definitions.get(1).newInstance(invoker);     // 1
         Object invoke2_1 = definitions.get(2).newInstance(invoker);     // 2
@@ -1031,7 +1022,7 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         assert "/def.do".equals(definitions.get(7).getMappingTo());
         assert "/def.do".equals(definitions.get(9).getMappingTo());
         //
-        Invoker invoker = newInvoker("/execute.do", "GET", appContext);
+        Invoker invoker = newInvoker(mockRequest("GET", new URL("http://www.hasor.net/execute.do"), appContext), appContext);
         Object invoke1_1 = definitions.get(0).newInstance(invoker);     // 1
         Object invoke1_2 = definitions.get(1).newInstance(invoker);     // 1
         Object invoke2_1 = definitions.get(2).newInstance(invoker);     // 2
@@ -1098,7 +1089,7 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         assert definitions.get(7).getIndex() == 4;
         assert definitions.get(9).getIndex() == 5;
         //
-        Invoker invoker = newInvoker("/execute.do", "GET", appContext);
+        Invoker invoker = newInvoker(mockRequest("GET", new URL("http://www.hasor.net/execute.do"), appContext), appContext);
         Object invoke1_1 = definitions.get(0).newInstance(invoker);     // 1
         Object invoke1_2 = definitions.get(1).newInstance(invoker);     // 1
         Object invoke2_1 = definitions.get(2).newInstance(invoker);     // 2

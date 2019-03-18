@@ -16,58 +16,14 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
+import java.net.URL;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
 //
 public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
-    protected Invoker newInvoker(String mappingTo, final String httpMethod, final AppContext appContext, final boolean mockRequest) {
-        Invoker invoker = PowerMockito.mock(Invoker.class);
-        PowerMockito.when(invoker.getRequestPath()).thenReturn(mappingTo);
-        PowerMockito.when(invoker.getHttpRequest()).thenAnswer(new Answer<HttpServletRequest>() {
-            @Override
-            public HttpServletRequest answer(InvocationOnMock invocationOnMock) throws Throwable {
-                if (mockRequest) {
-                    HttpServletRequest servletRequest = PowerMockito.mock(HttpServletRequest.class);
-                    PowerMockito.when(servletRequest.getMethod()).thenReturn(httpMethod);
-                    return servletRequest;
-                } else {
-                    return appContext.getInstance(HttpServletRequest.class);
-                }
-            }
-        });
-        PowerMockito.when(invoker.getHttpResponse()).thenAnswer(new Answer<HttpServletResponse>() {
-            @Override
-            public HttpServletResponse answer(InvocationOnMock invocationOnMock) throws Throwable {
-                if (mockRequest) {
-                    return PowerMockito.mock(HttpServletResponse.class);
-                } else {
-                    return appContext.getInstance(HttpServletResponse.class);
-                }
-            }
-        });
-        PowerMockito.when(invoker.getAppContext()).thenReturn(appContext);
-        //
-        final Map<String, Object> context = new HashMap<String, Object>();
-        PowerMockito.doAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return context.put((String) invocation.getArguments()[0], invocation.getArguments()[1]);
-            }
-        }).when(invoker).put(anyString(), anyObject());
-        PowerMockito.when(invoker.get(anyString())).thenAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return context.get(invocation.getArguments()[0]);
-            }
-        });
-        return invoker;
-    }
     @Test
     public void basicTest1() throws Throwable {
         AppContext appContext = hasor.build(new WebModule() {
@@ -93,7 +49,7 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         atomicBoolean.set(false);
         assert !atomicBoolean.get();
         assert !TestServlet.isStaticCall();
-        Invoker invoker1 = newInvoker("/abc.do", "GET", appContext, true);
+        Invoker invoker1 = newInvoker(mockRequest("GET", new URL("http://www.hasor.net/abc.do"), appContext), appContext);
         Future<Object> invoke1 = caller.invoke(invoker1, chain);
         assert TestServlet.isStaticCall();
         assert !atomicBoolean.get();
@@ -104,7 +60,7 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         atomicBoolean.set(false);
         assert !atomicBoolean.get();
         assert !TestServlet.isStaticCall();
-        Invoker invoker2 = newInvoker("/hello.do", "GET", appContext, true);
+        Invoker invoker2 = newInvoker(mockRequest("GET", new URL("http://www.hasor.net/hello.do"), appContext), appContext);
         Future<Object> invoke2 = caller.invoke(invoker2, chain);
         assert !TestServlet.isStaticCall();
         assert atomicBoolean.get();
@@ -149,7 +105,7 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         assert !beforeFilterBoolean.get();
         assert !afterFilterBoolean.get();
         assert !SyncCallAction.isStaticCall();
-        Invoker invoker1 = newInvoker("/sync.do", "POST", appContext, true);
+        Invoker invoker1 = newInvoker(mockRequest("POST", new URL("http://www.hasor.net/sync.do"), appContext), appContext);
         caller.invoke(invoker1, null).get();
         assert beforeFilterBoolean.get();
         assert afterFilterBoolean.get();
@@ -161,7 +117,7 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         assert !beforeFilterBoolean.get();
         assert !afterFilterBoolean.get();
         assert !SyncCallAction.isStaticCall();
-        Invoker invoker2 = newInvoker("/abcc.do", "GET", appContext, true);
+        Invoker invoker2 = newInvoker(mockRequest("GET", new URL("http://www.hasor.net/abcc.do"), appContext), appContext);
         caller.invoke(invoker2, null).get();
         assert !beforeFilterBoolean.get();
         assert !afterFilterBoolean.get();
@@ -170,9 +126,14 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
     //
     @Test
     public void asyncInvokeTest1() throws Throwable {
-        final HttpServletRequest servletRequest = PowerMockito.mock(HttpServletRequest.class);
-        final HttpServletResponse httpServletResponse = PowerMockito.mock(HttpServletResponse.class);
-        PowerMockito.when(servletRequest.getMethod()).thenReturn("post");
+        AppContext appContext = hasor.build(new WebModule() {
+            @Override
+            public void loadModule(WebApiBinder apiBinder) throws Throwable {
+                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AsyncCallAction.class);
+            }
+        });
+        //
+        final HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/async.do"), appContext);
         final AtomicBoolean asyncCall = new AtomicBoolean(false);
         AsyncContext asyncContext = PowerMockito.mock(AsyncContext.class);
         PowerMockito.when(servletRequest.startAsync()).thenReturn(asyncContext);
@@ -185,23 +146,13 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
             }
         }).when(asyncContext).start((Runnable) anyObject());
         //
-        //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.bindType(HttpServletRequest.class).toInstance(servletRequest);
-                apiBinder.bindType(HttpServletResponse.class).toInstance(httpServletResponse);
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AsyncCallAction.class);
-            }
-        });
-        //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
         InvokerCaller caller = new InvokerCaller(definitions.get(0), null, null);
         //
         AsyncCallAction.resetInit();
         assert !asyncCall.get();
         assert !AsyncCallAction.isStaticCall();
-        Invoker invoker = newInvoker("/async.do", "post", appContext, false);
+        Invoker invoker = newInvoker(servletRequest, appContext);
         Object o = caller.invoke(invoker, null).get();
         //
         assert asyncCall.get();
@@ -211,9 +162,14 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
     //
     @Test
     public void asyncInvokeTest2() throws Throwable {
-        final HttpServletRequest servletRequest = PowerMockito.mock(HttpServletRequest.class);
-        final HttpServletResponse httpServletResponse = PowerMockito.mock(HttpServletResponse.class);
-        PowerMockito.when(servletRequest.getMethod()).thenReturn("get");
+        AppContext appContext = hasor.build(new WebModule() {
+            @Override
+            public void loadModule(WebApiBinder apiBinder) throws Throwable {
+                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AsyncCallAction.class);
+            }
+        });
+        //
+        final HttpServletRequest servletRequest = mockRequest("get", new URL("http://www.hasor.net/async.do"), appContext);
         final AtomicBoolean asyncCall = new AtomicBoolean(false);
         AsyncContext asyncContext = PowerMockito.mock(AsyncContext.class);
         PowerMockito.when(servletRequest.startAsync()).thenReturn(asyncContext);
@@ -227,22 +183,13 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         }).when(asyncContext).start((Runnable) anyObject());
         //
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.bindType(HttpServletRequest.class).toInstance(servletRequest);
-                apiBinder.bindType(HttpServletResponse.class).toInstance(httpServletResponse);
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AsyncCallAction.class);
-            }
-        });
-        //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
         InvokerCaller caller = new InvokerCaller(definitions.get(0), null, null);
         //
         AsyncCallAction.resetInit();
         assert !asyncCall.get();
         assert !AsyncCallAction.isStaticCall();
-        Invoker invoker = newInvoker("/async.do", "get", appContext, false);
+        Invoker invoker = newInvoker(servletRequest, appContext);
         try {
             caller.invoke(invoker, null).get();
             assert false;
@@ -288,7 +235,7 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         SyncCallAction.resetInit();
         assert !asyncCall.get();
         assert !SyncCallAction.isStaticCall();
-        Invoker invoker = newInvoker("/sync.do", "post", appContext, false);
+        Invoker invoker = newInvoker(mockRequest("post", new URL("http://www.hasor.net/sync.do"), appContext), appContext);
         Object o = caller.invoke(invoker, null).get();
         //
         assert !asyncCall.get();
@@ -329,7 +276,7 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         SyncCallAction.resetInit();
         assert !asyncCall.get();
         assert !SyncCallAction.isStaticCall();
-        Invoker invoker = newInvoker("/sync.do", "get", appContext, false);
+        Invoker invoker = newInvoker(mockRequest("get", new URL("http://www.hasor.net/sync.do"), appContext), appContext);
         try {
             caller.invoke(invoker, null).get();
             assert false;

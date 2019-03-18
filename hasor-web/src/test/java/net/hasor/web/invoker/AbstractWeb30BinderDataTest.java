@@ -27,7 +27,7 @@ import javax.servlet.ServletContext;
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class AbstractWeb30BinderDataTest implements Module {
+public class AbstractWeb30BinderDataTest extends AbstractWebTest implements Module {
     protected Hasor          hasor;
     protected ServletContext servletContext;
     protected MimeType       mimeType;
