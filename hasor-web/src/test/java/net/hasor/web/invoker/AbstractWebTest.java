@@ -35,15 +35,15 @@ import static org.mockito.Matchers.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AbstractWebTest {
-    private Object singleObjectFormMap(Map headerMap, String name) {
+    private String singleObjectFormMap(Map headerMap, String name) {
         Object[] objectFormMap = multipleObjectFormMap(headerMap, name);
         if (objectFormMap == null || objectFormMap.length == 0) {
             return null;
         } else {
-            return objectFormMap[0];
+            return objectFormMap[0].toString();
         }
     }
-    private Object[] multipleObjectFormMap(Map headerMap, String name) {
+    private String[] multipleObjectFormMap(Map headerMap, String name) {
         if (headerMap == null) {
             return null;
         }
@@ -52,18 +52,23 @@ public class AbstractWebTest {
             return null;
         }
         if (o instanceof List) {
-            return ((List) o).toArray();
+            return (String[]) ((List) o).toArray(new String[0]);
         }
         if (o.getClass().isArray()) {
-            return ((Object[]) o);
+            Object[] arrayData = (Object[]) o;
+            String[] arrayStr = new String[arrayData.length];
+            for (int i = 0; i < arrayData.length; i++) {
+                arrayStr[i] = (String) arrayData[i];
+            }
+            return arrayStr;
         }
-        return new Object[] { o };
+        return new String[] { o.toString() };
     }
     //
     protected HttpServletRequest mockRequest(String httpMethod, URL requestURL, AppContext appContext) {
-        return mockRequest(httpMethod, requestURL, appContext, null);
+        return mockRequest(httpMethod, requestURL, appContext, null, null);
     }
-    protected HttpServletRequest mockRequest(final String httpMethod, URL requestURL, final AppContext appContext, Cookie[] cookies) {
+    protected HttpServletRequest mockRequest(final String httpMethod, URL requestURL, final AppContext appContext, Cookie[] cookies, final Map<String, String> postParams) {
         //
         final HttpServletRequest request = PowerMockito.mock(HttpServletRequest.class);
         PowerMockito.when(request.getMethod()).thenReturn(httpMethod);
@@ -92,7 +97,7 @@ public class AbstractWebTest {
                     return null;
                 }
                 Map headerMap = appContext.findBindingBean("http-header", Map.class);
-                return (String) singleObjectFormMap(headerMap, (String) invocation.getArguments()[0]);
+                return singleObjectFormMap(headerMap, (String) invocation.getArguments()[0]);
             }
         });
         PowerMockito.when(request.getHeaderNames()).thenAnswer(new Answer<Enumeration<String>>() {
@@ -116,15 +121,21 @@ public class AbstractWebTest {
                     return null;
                 }
                 Map headerMap = appContext.findBindingBean("http-header", Map.class);
-                String[] objects = (String[]) multipleObjectFormMap(headerMap, (String) invocation.getArguments()[0]);
+                String[] objects = multipleObjectFormMap(headerMap, (String) invocation.getArguments()[0]);
                 return Iterators.asEnumeration(Arrays.asList(objects).iterator());
             }
         });
         //
         String query = requestURL.getQuery();
-        final Map<String, String[]> queryMap = new HashMap<String, String[]>();
+        Map<String, List<String>> tmpQueryMap = new HashMap<String, List<String>>();
+        if (postParams != null) {
+            for (final String key : postParams.keySet()) {
+                tmpQueryMap.put(key, new ArrayList<String>() {{
+                    add(postParams.get(key));
+                }});
+            }
+        }
         if (StringUtils.isNotBlank(query)) {
-            Map<String, List<String>> tmpQueryMap = new HashMap<String, List<String>>();
             String[] paramArray = query.split("&");
             for (String param : paramArray) {
                 String[] kv = param.split("=");
@@ -137,9 +148,10 @@ public class AbstractWebTest {
                 }
                 strings.add(value);
             }
-            for (String key : tmpQueryMap.keySet()) {
-                queryMap.put(key, tmpQueryMap.get(key).toArray(new String[0]));
-            }
+        }
+        final Map<String, String[]> queryMap = new HashMap<String, String[]>();
+        for (String key : tmpQueryMap.keySet()) {
+            queryMap.put(key, tmpQueryMap.get(key).toArray(new String[0]));
         }
         PowerMockito.when(request.getParameterMap()).thenAnswer(new Answer<Map<String, String[]>>() {
             @Override
@@ -156,7 +168,7 @@ public class AbstractWebTest {
         PowerMockito.when(request.getParameterValues(anyString())).thenAnswer(new Answer<String[]>() {
             @Override
             public String[] answer(InvocationOnMock invocation) throws Throwable {
-                return (String[]) multipleObjectFormMap(queryMap, (String) invocation.getArguments()[0]);
+                return multipleObjectFormMap(queryMap, (String) invocation.getArguments()[0]);
             }
         });
         //
@@ -182,7 +194,7 @@ public class AbstractWebTest {
         PowerMockito.doAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                return attrMap.remove((String) invocation.getArguments()[0]);
+                return attrMap.remove(invocation.getArguments()[0]);
             }
         }).when(request).removeAttribute(anyString());
         //

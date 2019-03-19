@@ -23,7 +23,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.PARAMETER, ElementType.FIELD })
 @Documented
-public @interface CookieParam {
+public @interface CookieParameter {
     /**参数名称。*/
     public String value();
 }

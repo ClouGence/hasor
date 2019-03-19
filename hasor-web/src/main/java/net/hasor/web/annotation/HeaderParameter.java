@@ -16,14 +16,14 @@
 package net.hasor.web.annotation;
 import java.lang.annotation.*;
 /**
- * 查询参数
+ * 请求头的中的值
  * @version : 2013-5-9
  * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.PARAMETER, ElementType.FIELD })
 @Documented
-public @interface QueryParam {
+public @interface HeaderParameter {
     /**参数名称。*/
     public String value();
 }

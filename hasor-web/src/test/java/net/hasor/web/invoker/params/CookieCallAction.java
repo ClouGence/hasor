@@ -1,7 +1,7 @@
 package net.hasor.web.invoker.params;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.annotation.Post;
-import net.hasor.web.annotation.QueryParameter;
+import net.hasor.web.annotation.CookieParameter;
 import net.hasor.web.invoker.beans.SelectEnum;
 
 import java.io.File;
@@ -12,23 +12,23 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 //
-@MappingTo("/query_param.do")
-public class QueryCallAction {
+@MappingTo("/cookie_param.do")
+public class CookieCallAction {
     //
     @Post
     public Map<String, Object> execute(//
-            @QueryParameter("byteParam") byte byteParam, @QueryParameter("shortParam") short shortParam,  //
-            @QueryParameter("intParam") int intParam, @QueryParameter("longParam") long longParam,    //
-            @QueryParameter("floatParam") float floatParam, @QueryParameter("doubleParam") double doubleParam,//
-            @QueryParameter("charParam") char charParam, @QueryParameter("strParam") String strParam, //
-            @QueryParameter("enumParam") SelectEnum enumParam,//
-            @QueryParameter("bigInteger") BigInteger bigInteger, @QueryParameter("bigDecimal") BigDecimal bigDecimal,//
+            @CookieParameter("byteParam") byte byteParam, @CookieParameter("shortParam") short shortParam,  //
+            @CookieParameter("intParam") int intParam, @CookieParameter("longParam") long longParam,    //
+            @CookieParameter("floatParam") float floatParam, @CookieParameter("doubleParam") double doubleParam,//
+            @CookieParameter("charParam") char charParam, @CookieParameter("strParam") String strParam, //
+            @CookieParameter("enumParam") SelectEnum enumParam,//
+            @CookieParameter("bigInteger") BigInteger bigInteger, @CookieParameter("bigDecimal") BigDecimal bigDecimal,//
             //
-            @QueryParameter("urlParam") URL urlParam, @QueryParameter("uriParam") URI uriParam, @QueryParameter("fileParam") File fileParam,
+            @CookieParameter("urlParam") URL urlParam, @CookieParameter("uriParam") URI uriParam, @CookieParameter("fileParam") File fileParam,
             //
             //
-            @QueryParameter("utilData") java.util.Date utilData, @QueryParameter("utilCalendar") java.util.Calendar utilCalendar, //
-            @QueryParameter("sqlData") java.sql.Date sqlData, @QueryParameter("sqlTime") java.sql.Time sqlTime, @QueryParameter("sqlTimestamp") java.sql.Timestamp sqlTimestamp //
+            @CookieParameter("utilData") java.util.Date utilData, @CookieParameter("utilCalendar") java.util.Calendar utilCalendar, //
+            @CookieParameter("sqlData") java.sql.Date sqlData, @CookieParameter("sqlTime") java.sql.Time sqlTime, @CookieParameter("sqlTimestamp") java.sql.Timestamp sqlTimestamp //
     ) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         //

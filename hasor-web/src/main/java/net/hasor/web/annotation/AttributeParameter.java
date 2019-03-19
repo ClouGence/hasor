@@ -16,14 +16,14 @@
 package net.hasor.web.annotation;
 import java.lang.annotation.*;
 /**
- * 路径中映射的值
+ * Request中的属性值
  * @version : 2013-5-9
  * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.PARAMETER, ElementType.FIELD })
 @Documented
-public @interface PathParam {
+public @interface AttributeParameter {
     /**参数名称。*/
     public String value();
 }

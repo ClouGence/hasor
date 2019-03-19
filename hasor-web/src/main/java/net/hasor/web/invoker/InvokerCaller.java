@@ -209,25 +209,24 @@ class InvokerCaller implements ExceuteCaller {
         if (paramClass.isInstance(invoker)) {
             return invoker;
         }
-        //
-        return invoker.getAppContext().getInstance(paramClass);
+        return null; //return invoker.getAppContext().getInstance(paramClass);
     }
     private Object resolveParam(Invoker invoker, Class<?> paramClass, Annotation pAnno) {
         Object atData = null;
         //
-        if (pAnno instanceof AttributeParam) {
-            atData = this.getAttributeParam(invoker, (AttributeParam) pAnno);
-        } else if (pAnno instanceof CookieParam) {
-            atData = this.getCookieParam(invoker, (CookieParam) pAnno);
-        } else if (pAnno instanceof HeaderParam) {
-            atData = this.getHeaderParam(invoker, (HeaderParam) pAnno);
-        } else if (pAnno instanceof QueryParam) {
-            atData = this.getQueryParam(invoker, (QueryParam) pAnno);
-        } else if (pAnno instanceof PathParam) {
-            atData = this.getPathParam(invoker, (PathParam) pAnno);
-        } else if (pAnno instanceof ReqParam) {
-            atData = invoker.getHttpRequest().getParameterValues(((ReqParam) pAnno).value());
-        } else if (pAnno instanceof Params) {
+        if (pAnno instanceof AttributeParameter) {
+            atData = this.getAttributeParam(invoker, (AttributeParameter) pAnno);
+        } else if (pAnno instanceof CookieParameter) {
+            atData = this.getCookieParam(invoker, (CookieParameter) pAnno);
+        } else if (pAnno instanceof HeaderParameter) {
+            atData = this.getHeaderParam(invoker, (HeaderParameter) pAnno);
+        } else if (pAnno instanceof QueryParameter) {
+            atData = this.getQueryParam(invoker, (QueryParameter) pAnno);
+        } else if (pAnno instanceof PathParameter) {
+            atData = this.getPathParam(invoker, (PathParameter) pAnno);
+        } else if (pAnno instanceof RequestParameter) {
+            atData = invoker.getHttpRequest().getParameterValues(((RequestParameter) pAnno).value());
+        } else if (pAnno instanceof ParameterForm) {
             atData = this.getParamsParam(invoker, paramClass);
         }
         //
@@ -272,17 +271,17 @@ class InvokerCaller implements ExceuteCaller {
         return paramObject;
     }
     /**/
-    private Object getPathParam(Invoker invoker, PathParam pAnno) {
+    private Object getPathParam(Invoker invoker, PathParameter pAnno) {
         String paramName = pAnno.value();
         return StringUtils.isBlank(paramName) ? null : this.getPathParamMap(invoker).get(paramName);
     }
     /**/
-    private Object getQueryParam(Invoker invoker, QueryParam pAnno) {
+    private Object getQueryParam(Invoker invoker, QueryParameter pAnno) {
         String paramName = pAnno.value();
         return StringUtils.isBlank(paramName) ? null : this.getQueryParamMap(invoker).get(paramName);
     }
     /**/
-    private Object getHeaderParam(Invoker invoker, HeaderParam pAnno) {
+    private Object getHeaderParam(Invoker invoker, HeaderParameter pAnno) {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName)) {
             return null;
@@ -304,7 +303,7 @@ class InvokerCaller implements ExceuteCaller {
         return null;
     }
     /**/
-    private Object getCookieParam(Invoker invoker, CookieParam pAnno) {
+    private Object getCookieParam(Invoker invoker, CookieParameter pAnno) {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName)) {
             return null;
@@ -327,7 +326,7 @@ class InvokerCaller implements ExceuteCaller {
         return cookieList;
     }
     /**/
-    private Object getAttributeParam(Invoker invoker, AttributeParam pAnno) {
+    private Object getAttributeParam(Invoker invoker, AttributeParameter pAnno) {
         String paramName = pAnno.value();
         if (StringUtils.isBlank(paramName)) {
             return null;

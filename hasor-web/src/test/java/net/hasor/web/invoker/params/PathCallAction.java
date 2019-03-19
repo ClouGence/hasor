@@ -1,7 +1,7 @@
 package net.hasor.web.invoker.params;
 import net.hasor.web.annotation.MappingTo;
+import net.hasor.web.annotation.PathParameter;
 import net.hasor.web.annotation.Post;
-import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.invoker.beans.SelectEnum;
 
 import java.io.File;
@@ -12,23 +12,23 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 //
-@MappingTo("/query_param.do")
-public class QueryCallAction {
+@MappingTo("/{byteParam}/{floatParam}/path_param.do")
+public class PathCallAction {
     //
     @Post
     public Map<String, Object> execute(//
-            @QueryParameter("byteParam") byte byteParam, @QueryParameter("shortParam") short shortParam,  //
-            @QueryParameter("intParam") int intParam, @QueryParameter("longParam") long longParam,    //
-            @QueryParameter("floatParam") float floatParam, @QueryParameter("doubleParam") double doubleParam,//
-            @QueryParameter("charParam") char charParam, @QueryParameter("strParam") String strParam, //
-            @QueryParameter("enumParam") SelectEnum enumParam,//
-            @QueryParameter("bigInteger") BigInteger bigInteger, @QueryParameter("bigDecimal") BigDecimal bigDecimal,//
+            @PathParameter("byteParam") byte byteParam, @PathParameter("shortParam") short shortParam,  //
+            @PathParameter("intParam") int intParam, @PathParameter("longParam") long longParam,    //
+            @PathParameter("floatParam") float floatParam, @PathParameter("doubleParam") double doubleParam,//
+            @PathParameter("charParam") char charParam, @PathParameter("strParam") String strParam, //
+            @PathParameter("enumParam") SelectEnum enumParam,//
+            @PathParameter("bigInteger") BigInteger bigInteger, @PathParameter("bigDecimal") BigDecimal bigDecimal,//
             //
-            @QueryParameter("urlParam") URL urlParam, @QueryParameter("uriParam") URI uriParam, @QueryParameter("fileParam") File fileParam,
+            @PathParameter("urlParam") URL urlParam, @PathParameter("uriParam") URI uriParam, @PathParameter("fileParam") File fileParam,
             //
             //
-            @QueryParameter("utilData") java.util.Date utilData, @QueryParameter("utilCalendar") java.util.Calendar utilCalendar, //
-            @QueryParameter("sqlData") java.sql.Date sqlData, @QueryParameter("sqlTime") java.sql.Time sqlTime, @QueryParameter("sqlTimestamp") java.sql.Timestamp sqlTimestamp //
+            @PathParameter("utilData") java.util.Date utilData, @PathParameter("utilCalendar") java.util.Calendar utilCalendar, //
+            @PathParameter("sqlData") java.sql.Date sqlData, @PathParameter("sqlTime") java.sql.Time sqlTime, @PathParameter("sqlTimestamp") java.sql.Timestamp sqlTimestamp //
     ) {
         Map<String, Object> dataMap = new HashMap<String, Object>();
         //
