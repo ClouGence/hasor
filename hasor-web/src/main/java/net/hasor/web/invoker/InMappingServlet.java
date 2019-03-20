@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
-import net.hasor.core.AppContext;
+import net.hasor.core.BeanCreaterListener;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Matcher;
 import net.hasor.core.provider.InstanceProvider;
-import net.hasor.web.Invoker;
 import net.hasor.web.definition.J2eeMapConfig;
 
 import javax.servlet.Servlet;
@@ -33,7 +32,7 @@ import java.util.Map;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InMappingServlet extends InMappingDef {
+public class InMappingServlet extends InMappingDef implements BeanCreaterListener<HttpServlet> {
     private static Matcher<Method>     methodMatcher = new Matcher<Method>() {
         @Override
         public boolean matches(Method target) {
@@ -46,21 +45,19 @@ public class InMappingServlet extends InMappingDef {
     };
     //
     private        Map<String, String> initParams;
-    public InMappingServlet(int index, BindInfo<? extends HttpServlet> targetType, String mappingTo, Map<String, String> initParams) {
+    private        ServletContext      servletContext;
+    public InMappingServlet(int index, BindInfo<? extends HttpServlet> targetType, String mappingTo, Map<String, String> initParams, ServletContext servletContext) {
         super(index, targetType, mappingTo, methodMatcher, false);
         this.initParams = initParams;
+        this.servletContext = servletContext;
     }
     //
     public Map<String, String> getInitParams() {
-        return initParams;
+        return this.initParams;
     }
     //
     @Override
-    public Object newInstance(Invoker invoker) throws Throwable {
-        AppContext appContext = invoker.getAppContext();
-        ServletContext servletContext = appContext.getInstance(ServletContext.class);
-        Servlet httpServlet = (Servlet) super.newInstance(invoker);
-        httpServlet.init(new J2eeMapConfig(getTargetType().toString(), initParams, InstanceProvider.wrap(servletContext)));
-        return httpServlet;
+    public void beanCreated(HttpServlet newObject, BindInfo<? extends HttpServlet> bindInfo) throws Throwable {
+        newObject.init(new J2eeMapConfig(getTargetType().toString(), this.initParams, InstanceProvider.wrap(this.servletContext)));
     }
 }

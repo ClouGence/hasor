@@ -14,8 +14,8 @@ public class TestDoNextCallerFilter extends TestCallerFilter {
         super.doFilter(request, response, chain);
     }
     @Override
-    public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
-        chain.doNext(invoker);
-        super.doInvoke(invoker, chain);
+    public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
+        Object resultData = chain.doNext(invoker);
+        return super.doInvoke(invoker, chain);
     }
 }

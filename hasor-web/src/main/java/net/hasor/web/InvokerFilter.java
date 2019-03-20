@@ -33,7 +33,7 @@ public interface InvokerFilter {
      * @param chain 过滤器链
      * @throws Throwable 执行过滤器中发生的异常。
      */
-    public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable;
+    public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable;
 
     /** 销毁过滤器。 */
     public void destroy();

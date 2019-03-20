@@ -17,6 +17,7 @@ Hasor v3.4.0 (2019-02-?)
     - ApiBinder 接口支持 inject 一个 Class 类型。
     - ApiBinder 接口中新增 asEagerSingletonClear 方法，可以用来抹除 Bean 身上配置的 @Prototype 或者 @Singleton 行为。
     - 新增 MetaInfo 接口，AppContext、BindInfo 两个接口均继承自这个接口。从而提供除了 Context 之外的第二种途径绑定环境参数。
+    - 增加一组 bindToCreater 方法用户绑定 BeanCreaterListener 到 BindInfo 上，BeanCreaterListener的作用是当创建 Bean 的时候会调用这个监听器。
 **Settings**
     - @InjectSettings @Inject 注解支持标注在参数上了。
     - Settings 接口增添 removeSetting 方法，可以将整个配置项的多个值全部删除。
@@ -37,6 +38,7 @@ Hasor v3.4.0 (2019-02-?)
     - web RuntimeListener 新增：hasor-root-module、hasor-hconfig-name、hasor-env-properties 三个 web.xml 的属性配置。
     - @HttpMethod 注解可以加到 Method 上了。
     - WebApiBinder 接口中 scanAnnoRender 方法改为 loadRender。
+    - InvokerFilter、InvokerChain 拥有返回值了。
 **RSF**
     - 进行重构。
     - 使用 RSF_DATA_HOME 环境变量替代 RsfEnvironment.WORK_HOME。

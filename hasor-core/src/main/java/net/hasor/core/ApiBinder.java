@@ -205,6 +205,14 @@ public interface ApiBinder {
      */
     public <T> LifeBindingBuilder<T> bindType(String withName, Class<T> type, Provider<T> provider);
 
+    public <T> void bindToCreater(BindInfo<T> info, BeanCreaterListener<?> listener);
+
+    public <T> void bindToCreater(BindInfo<T> info, Provider<? extends BeanCreaterListener<?>> listener);
+
+    public <T> void bindToCreater(BindInfo<T> info, Class<? extends BeanCreaterListener<?>> listener);
+
+    public <T> void bindToCreater(BindInfo<T> info, BindInfo<? extends BeanCreaterListener<?>> listener);
+
     /**
      * 注册作用域。
      * @param scopeName 作用域名称

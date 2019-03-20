@@ -7,6 +7,8 @@ import net.hasor.web.invoker.beans.TestServlet;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 //
@@ -27,8 +29,9 @@ public class InMappingServletTest {
         //
         BindInfo<TestServlet> targetInfo = PowerMockito.mock(BindInfo.class);
         PowerMockito.when(targetInfo.getBindType()).thenReturn(TestServlet.class);
+        ServletContext servletContext = PowerMockito.mock(ServletContext.class);
         //
-        InMappingServlet mappingDef = new InMappingServlet(1, targetInfo, "/execute.do", null);
+        InMappingServlet mappingDef = new InMappingServlet(1, targetInfo, "/execute.do", null, servletContext);
         //
         Invoker invoker1 = newInvoker("/execute.do", "GET", appContext);
         Method method1 = mappingDef.findMethod(invoker1);
@@ -42,7 +45,8 @@ public class InMappingServletTest {
         assert mappingDef.getTargetType() == targetInfo;
         assert "/execute.do".equals(mappingDef.getMappingTo());
         //
-        mappingDef.newInstance(invoker1);
+        Object newInstance = mappingDef.newInstance(invoker1);
+        mappingDef.beanCreated((HttpServlet) newInstance, targetInfo);
         assert TestServlet.isStaticInitServlet();
         TestServlet.resetInit();
         assert !TestServlet.isStaticInitServlet();

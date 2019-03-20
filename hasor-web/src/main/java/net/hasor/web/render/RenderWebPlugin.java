@@ -118,15 +118,15 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
         }
     }
     @Override
-    public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
+    public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
         // .执行过滤器
-        chain.doNext(invoker);
+        Object returnData = chain.doNext(invoker);
         //
         // .处理渲染
         if (invoker instanceof RenderInvoker) {
             boolean process = this.process((RenderInvoker) invoker);
             if (process) {
-                return;
+                return returnData;
             }
             RenderInvoker renderInvoker = (RenderInvoker) invoker;
             HttpServletRequest httpRequest = renderInvoker.getHttpRequest();
@@ -135,6 +135,7 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
                 httpRequest.getRequestDispatcher(renderInvoker.renderTo()).forward(httpRequest, httpResponse);
             }
         }
+        return returnData;
     }
     @Override
     public void afterFilter(Invoker invoker, InvokerData info) {

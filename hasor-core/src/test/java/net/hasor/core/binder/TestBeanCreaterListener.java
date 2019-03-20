@@ -22,6 +22,6 @@ import net.hasor.core.BindInfo;
  */
 public class TestBeanCreaterListener implements BeanCreaterListener<TestBeanCreaterListener> {
     @Override
-    public void beanCreated(TestBeanCreaterListener newObject, BindInfo<TestBeanCreaterListener> bindInfo) throws Throwable {
+    public void beanCreated(TestBeanCreaterListener newObject, BindInfo<? extends TestBeanCreaterListener> bindInfo) throws Throwable {
     }
 }

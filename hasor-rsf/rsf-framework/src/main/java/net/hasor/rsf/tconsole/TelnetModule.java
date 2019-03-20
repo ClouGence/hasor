@@ -29,7 +29,7 @@ public final class TelnetModule extends RsfModule {
     @Override
     public final void loadModule(RsfApiBinder apiBinder) throws Throwable {
         ConsoleApiBinder consoleApiBinder = apiBinder.tryCast(ConsoleApiBinder.class);
-        if (!consoleApiBinder.isEnable()) {
+        if (consoleApiBinder == null || !consoleApiBinder.isEnable()) {
             return;
         }
         //

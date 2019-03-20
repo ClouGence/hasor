@@ -42,7 +42,7 @@ public class FilterDefinition extends AbstractDefinition implements BeanCreaterL
         return this.getAppContext().getInstance(this.bindInfo);
     }
     @Override
-    public void beanCreated(Filter newObject, BindInfo<Filter> bindInfo) throws Throwable {
+    public void beanCreated(Filter newObject, BindInfo<? extends Filter> bindInfo) throws Throwable {
         final ServletContext servletContext = this.getAppContext().getInstance(ServletContext.class);
         newObject.init(new J2eeMapConfig(bindInfo.getBindID(), this.getInitParams(), new Provider<ServletContext>() {
             @Override
@@ -53,7 +53,7 @@ public class FilterDefinition extends AbstractDefinition implements BeanCreaterL
     }
     //
     /*--------------------------------------------------------------------------------------------------------*/
-    public void doInvoke(final Invoker invoker, final InvokerChain chain) throws Throwable {
+    public Object doInvoke(final Invoker invoker, final InvokerChain chain) throws Throwable {
         Filter filter = this.getTarget();
         if (filter == null) {
             throw new NullPointerException("target Filter instance is null.");
@@ -73,12 +73,13 @@ public class FilterDefinition extends AbstractDefinition implements BeanCreaterL
                 }
             }
         });
+        return invoker.get(Invoker.RETURN_DATA_KEY);
     }
     public void destroy() {
-//        if (this.instance == null) {
-//            return;
-//        }
-//        this.instance.destroy();
-//        this.instance = null;
+        //        if (this.instance == null) {
+        //            return;
+        //        }
+        //        this.instance.destroy();
+        //        this.instance = null;
     }
 }

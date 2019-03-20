@@ -97,8 +97,8 @@ public class DefinitionTest {
         assert TestCallerFilter.isInitCall();
         filterDefine.doInvoke(mockInvoker, new InvokerChain() {
             @Override
-            public void doNext(Invoker invoker) throws Throwable {
-                //
+            public Object doNext(Invoker invoker) throws Throwable {
+                return null;
             }
         });
         assert TestCallerFilter.isDoCall();
@@ -127,7 +127,7 @@ public class DefinitionTest {
         try {
             filterDefine.doInvoke(mockInvoker, new InvokerChain() {
                 @Override
-                public void doNext(Invoker invoker) throws Throwable {
+                public Object doNext(Invoker invoker) throws Throwable {
                     throw new IOException("TEST_ERROR");
                 }
             });
@@ -141,7 +141,7 @@ public class DefinitionTest {
         try {
             filterDefine.doInvoke(mockInvoker, new InvokerChain() {
                 @Override
-                public void doNext(Invoker invoker) throws Throwable {
+                public Object doNext(Invoker invoker) throws Throwable {
                     throw new ServletException("TEST_ERROR");
                 }
             });
@@ -155,7 +155,7 @@ public class DefinitionTest {
         try {
             filterDefine.doInvoke(mockInvoker, new InvokerChain() {
                 @Override
-                public void doNext(Invoker invoker) throws Throwable {
+                public Object doNext(Invoker invoker) throws Throwable {
                     throw new Exception("TEST_ERROR");
                 }
             });
@@ -220,8 +220,8 @@ public class DefinitionTest {
         assert TestCallerFilter.isInitCall();
         filterDefine.doInvoke(mockInvoker, new InvokerChain() {
             @Override
-            public void doNext(Invoker invoker) throws Throwable {
-                //
+            public Object doNext(Invoker invoker) throws Throwable {
+                return null;
             }
         });
         assert TestCallerFilter.isDoCall();
@@ -250,7 +250,7 @@ public class DefinitionTest {
         try {
             filterDefine.doInvoke(mockInvoker, new InvokerChain() {
                 @Override
-                public void doNext(Invoker invoker) throws Throwable {
+                public Object doNext(Invoker invoker) throws Throwable {
                     throw new IOException("TEST_ERROR");
                 }
             });
@@ -264,7 +264,7 @@ public class DefinitionTest {
         try {
             filterDefine.doInvoke(mockInvoker, new InvokerChain() {
                 @Override
-                public void doNext(Invoker invoker) throws Throwable {
+                public Object doNext(Invoker invoker) throws Throwable {
                     throw new ServletException("TEST_ERROR");
                 }
             });
@@ -278,7 +278,7 @@ public class DefinitionTest {
         try {
             filterDefine.doInvoke(mockInvoker, new InvokerChain() {
                 @Override
-                public void doNext(Invoker invoker) throws Throwable {
+                public Object doNext(Invoker invoker) throws Throwable {
                     throw new Exception("TEST_ERROR");
                 }
             });

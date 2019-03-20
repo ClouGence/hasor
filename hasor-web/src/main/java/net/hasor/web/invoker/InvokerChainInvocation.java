@@ -25,23 +25,23 @@ import net.hasor.web.definition.AbstractDefinition;
 class InvokerChainInvocation implements InvokerChain {
     private final AbstractDefinition[] filters;
     private final InvokerChain         chain;
-    private int index = -1;
+    private       int                  index = -1;
     //
     public InvokerChainInvocation(final AbstractDefinition[] filters, final InvokerChain chain) {
         this.filters = filters;
         this.chain = chain;
     }
     @Override
-    public void doNext(Invoker invoker) throws Throwable {
+    public Object doNext(Invoker invoker) throws Throwable {
         this.index++;
         if (this.index < this.filters.length) {
             if (this.filters[this.index].matchesInvoker(invoker)) {
-                this.filters[this.index].doInvoke(invoker, this);
+                return this.filters[this.index].doInvoke(invoker, this);
             } else {
-                this.doNext(invoker);
+                return this.doNext(invoker);
             }
         } else {
-            this.chain.doNext(invoker);
+            return this.chain.doNext(invoker);
         }
     }
 }

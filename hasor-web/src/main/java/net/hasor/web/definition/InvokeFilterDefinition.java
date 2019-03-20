@@ -41,19 +41,19 @@ public class InvokeFilterDefinition extends AbstractDefinition implements BeanCr
         return this.getAppContext().getInstance(this.bindInfo);
     }
     @Override
-    public void beanCreated(InvokerFilter newObject, BindInfo<InvokerFilter> bindInfo) throws Throwable {
+    public void beanCreated(InvokerFilter newObject, BindInfo<? extends InvokerFilter> bindInfo) throws Throwable {
         Map<String, String> initParams = this.getInitParams();
         AppContext appContext = this.getAppContext();
         newObject.init(new InvokerMapConfig(initParams, appContext));
     }
     //
     /*--------------------------------------------------------------------------------------------------------*/
-    public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
+    public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
         InvokerFilter filter = this.getTarget();
         if (filter == null) {
             throw new NullPointerException("target InvokerFilter instance is null.");
         }
-        filter.doInvoke(invoker, chain);
+        return filter.doInvoke(invoker, chain);
     }
     public void destroy() {
 //        if (this.instance == null) {

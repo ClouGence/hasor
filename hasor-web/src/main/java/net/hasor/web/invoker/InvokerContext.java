@@ -44,7 +44,6 @@ public class InvokerContext implements WebPluginCaller {
     //
     public void initContext(final AppContext appContext, final Map<String, String> configMap) throws Throwable {
         this.appContext = Hasor.assertIsNotNull(appContext);
-        final Map<String, String> config = Collections.unmodifiableMap(new HashMap<String, String>(configMap));
         //
         // .MappingData
         List<InMappingDef> mappingList = appContext.findBindingBean(InMappingDef.class);
@@ -88,6 +87,7 @@ public class InvokerContext implements WebPluginCaller {
         }
         //
         // .Filter Config
+        final Map<String, String> config = Collections.unmodifiableMap(new HashMap<String, String>(configMap));
         final InvokerConfig filterConfig = new InvokerConfig() {
             @Override
             public String getInitParameter(String name) {
@@ -146,15 +146,18 @@ public class InvokerContext implements WebPluginCaller {
             return new ExceuteCaller() {
                 @Override
                 public Future<Object> invoke(Invoker invoker, final FilterChain chain) throws Throwable {
-                    new InvokerChainInvocation(filters, new InvokerChain() {
+                    Object resultData = new InvokerChainInvocation(filters, new InvokerChain() {
                         @Override
-                        public void doNext(Invoker invoker) throws Throwable {
-                            chain.doFilter(invoker.getHttpRequest(), invoker.getHttpResponse());
+                        public Object doNext(Invoker invoker) throws Throwable {
+                            if (chain != null) {
+                                chain.doFilter(invoker.getHttpRequest(), invoker.getHttpResponse());
+                            }
+                            return invoker.get(Invoker.RETURN_DATA_KEY);
                         }
                     }).doNext(invoker);
                     //
                     BasicFuture<Object> future = new BasicFuture<Object>();
-                    future.completed(null);
+                    future.completed(resultData);
                     return future;
                 }
             };

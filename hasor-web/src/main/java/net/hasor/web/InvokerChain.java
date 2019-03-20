@@ -25,5 +25,5 @@ public interface InvokerChain {
      * @param invoker 当前请求对象
      * @throws Throwable 请求过程中抛出的异常。
      */
-    public void doNext(Invoker invoker) throws Throwable;
+    public Object doNext(Invoker invoker) throws Throwable;
 }

@@ -25,5 +25,5 @@ public interface BeanCreaterListener<T> {
      * @param newObject 新对象。
      * @param bindInfo 新对象的 BindInfo（可能为空）。
      */
-    public void beanCreated(T newObject, BindInfo<T> bindInfo) throws Throwable;
+    public void beanCreated(T newObject, BindInfo<? extends T> bindInfo) throws Throwable;
 }

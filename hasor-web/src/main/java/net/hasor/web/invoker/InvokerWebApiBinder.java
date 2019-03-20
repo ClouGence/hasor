@@ -235,11 +235,13 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     protected void jeeFilterThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
         FilterDefinition define = new FilterDefinition(index, pattern, matcher, filterRegister, initParams);
-        bindType(AbstractDefinition.class).uniqueName().toInstance(define).whenCreate(define);
+        bindType(AbstractDefinition.class).uniqueName().toInstance(define);
+        bindToCreater(filterRegister, define);
     }
     protected void filterThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
         InvokeFilterDefinition define = new InvokeFilterDefinition(index, pattern, matcher, filterRegister, initParams);
-        bindType(AbstractDefinition.class).uniqueName().toInstance(define).whenCreate(define);
+        bindType(AbstractDefinition.class).uniqueName().toInstance(define);
+        bindToCreater(filterRegister, define);
     }
     private abstract class FiltersModuleBinder<T> implements FilterBindingBuilder<T> {
         private final Class<T>       targetType;
@@ -330,8 +332,9 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     //
     // ------------------------------------------------------------------------------------------------------
     protected void jeeServlet(int index, String pattern, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams) {
-        InMappingServlet define = new InMappingServlet(index, servletRegister, pattern, initParams);
-        bindType(InMappingDef.class).uniqueName().toInstance(define);/*单例*/
+        InMappingServlet define = new InMappingServlet(index, servletRegister, pattern, initParams, this.getServletContext());
+        bindType(InMappingDef.class).uniqueName().toInstance(define);/* InMappingServlet是单例 */
+        bindToCreater(servletRegister, define);
     }
     @Override
     public ServletBindingBuilder jeeServlet(final String urlPattern, final String... morePatterns) {

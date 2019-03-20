@@ -120,10 +120,11 @@ class InvokerCaller implements ExceuteCaller {
         final ArrayList<Object[]> resolveParams = new ArrayList<Object[]>(1);
         InvokerChain invokerChain = new InvokerChain() {
             @Override
-            public void doNext(Invoker invoker) throws Throwable {
+            public Object doNext(Invoker invoker) throws Throwable {
                 try {
                     Object result = targetMethod.invoke(targetObject, resolveParams.get(0));
                     invoker.put(Invoker.RETURN_DATA_KEY, result);
+                    return result;
                 } catch (InvocationTargetException e) {
                     throw e.getTargetException();
                 }

@@ -37,8 +37,9 @@ public class Demo1CallerFilter implements Filter, InvokerFilter {
         initCall.set(true);
     }
     @Override
-    public void doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
+    public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
         doCall.set(true);
+        return chain.doNext(invoker);
     }
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

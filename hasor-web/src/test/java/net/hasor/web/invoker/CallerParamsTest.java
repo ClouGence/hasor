@@ -99,10 +99,10 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
         AppContext appContext = hasor.build(new WebModule() {
             @Override
             public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                Map<String, String> headerMap = new HashMap<String, String>();
-                headerMap.put("byteParam", "123");
-                headerMap.put("floatParam", "321");
-                apiBinder.bindType(Map.class).nameWith("http-header").toInstance(headerMap);
+                apiBinder.bindType(Map.class).nameWith("http-header").toInstance(new HashMap<String, String>() {{
+                    put("byteParam", "123");
+                    put("floatParam", "321");
+                }});
                 //
                 apiBinder.tryCast(WebApiBinder.class).loadMappingTo(HeaderCallAction.class);
             }
@@ -127,9 +127,10 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
             }
         });
         //
-        Map<String, String> requestMap = new HashMap<String, String>();
-        requestMap.put("byteParam", "123");
-        requestMap.put("floatParam", "321");
+        Map<String, String> requestMap = new HashMap<String, String>() {{
+            put("byteParam", "123");
+            put("floatParam", "321");
+        }};
         HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/req_param.do?intParam=111"), appContext, null, requestMap);
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
@@ -150,9 +151,10 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
             }
         });
         //
-        Map<String, String> requestMap = new HashMap<String, String>();
-        requestMap.put("byteParam", "123");
-        requestMap.put("floatParam", "321");
+        Map<String, String> requestMap = new HashMap<String, String>() {{
+            put("byteParam", "123");
+            put("floatParam", "321");
+        }};
         HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/bean_param.do?intParam=111"), appContext, null, requestMap);
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);

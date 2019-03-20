@@ -18,6 +18,7 @@ import net.hasor.core.*;
 import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.ScopManager;
 import net.hasor.core.exts.aop.Matchers;
+import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.provider.ClassAwareProvider;
 import net.hasor.core.provider.InfoAwareProvider;
@@ -112,6 +113,29 @@ public abstract class AbstractBinder implements ApiBinder {
     @Override
     public <T> LifeBindingBuilder<T> bindType(final String withName, final Class<T> type, final Provider<T> provider) {
         return this.bindType(type).nameWith(withName).toProvider(provider);
+    }
+    @Override
+    public <T> void bindToCreater(BindInfo<T> info, BeanCreaterListener<?> listener) {
+        Provider<? extends BeanCreaterListener<?>> listenerProvider = InstanceProvider.of(Hasor.assertIsNotNull(listener));
+        this.bindToCreater(info, listenerProvider);
+    }
+    @Override
+    public <T> void bindToCreater(BindInfo<T> info, Provider<? extends BeanCreaterListener<?>> listener) {
+        info = Hasor.assertIsNotNull(info);
+        listener = Hasor.assertIsNotNull(listener);
+        //
+        BindInfo<T> bindInfo = getBindInfo(info.getBindID());
+        if (bindInfo instanceof AbstractBindInfoProviderAdapter) {
+            ((AbstractBindInfoProviderAdapter) bindInfo).setCreaterListener(listener);
+        }
+    }
+    @Override
+    public <T> void bindToCreater(BindInfo<T> info, Class<? extends BeanCreaterListener<?>> listener) {
+        this.bindToCreater(info, Hasor.autoAware(getEnvironment(), new ClassAwareProvider<BeanCreaterListener<?>>(Hasor.assertIsNotNull(listener))));
+    }
+    @Override
+    public <T> void bindToCreater(BindInfo<T> info, BindInfo<? extends BeanCreaterListener<?>> listener) {
+        this.bindToCreater(info, Hasor.autoAware(getEnvironment(), new InfoAwareProvider<BeanCreaterListener<?>>(Hasor.assertIsNotNull(listener))));
     }
     //
     @Override
