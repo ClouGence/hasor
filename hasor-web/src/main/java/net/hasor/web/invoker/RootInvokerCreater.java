@@ -34,8 +34,8 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 class RootInvokerCreater implements InvokerCreater {
-    private Map<Class<?>, InvokerCreater> createrMap = new HashMap<Class<?>, InvokerCreater>();
-    private Map<Class<?>, Class<?>>       extMapping = new HashMap<Class<?>, Class<?>>();
+    protected Map<Class<?>, InvokerCreater> createrMap = new HashMap<Class<?>, InvokerCreater>();
+    protected Map<Class<?>, Class<?>>       extMapping = new HashMap<Class<?>, Class<?>>();
     //
     public RootInvokerCreater(AppContext appContext) throws Exception {
         Settings settings = appContext.getEnvironment().getSettings();
@@ -108,7 +108,7 @@ class RootInvokerCreater implements InvokerCreater {
         }
         //
         ClassLoader classLoader = dataContext.getAppContext().getClassLoader();
-        Class<?>[] apiArrays = supportMap.keySet().toArray(new Class<?>[supportMap.size()]);
+        Class<?>[] apiArrays = supportMap.keySet().toArray(new Class<?>[0]);
         return (Invoker) Proxy.newProxyInstance(classLoader, apiArrays, new InvokerCreaterInvocationHandler(supportMap));
     }
     private static class InvokerCreaterInvocationHandler implements InvocationHandler {

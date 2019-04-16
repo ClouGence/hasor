@@ -254,7 +254,7 @@ public class BeanContainerTest {
         AbstractBindInfoProviderAdapter<?> adapter = container.createInfoAdapter(AnnoCallInitBean.class);
         adapter.setBindID("12345");
         adapter.setBindName("myBean");
-        adapter.setCreaterListener(createrProvider);
+        adapter.addCreaterListener(createrProvider);
         //
         container.doInitializeCompleted(env);
         //

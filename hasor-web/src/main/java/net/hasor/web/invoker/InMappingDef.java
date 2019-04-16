@@ -151,7 +151,7 @@ public class InMappingDef implements InMapping {
         for (String m : this.httpMapping.keySet()) {
             if (httpMethod.equalsIgnoreCase(m)) {
                 return true;
-            } else if (HttpMethod.ANY.equals(m)) {
+            } else if (HttpMethod.ANY.equalsIgnoreCase(m)) {
                 return true;
             }
         }

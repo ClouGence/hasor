@@ -121,12 +121,9 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     @Override
     public <T> void bindToCreater(BindInfo<T> info, Provider<? extends BeanCreaterListener<?>> listener) {
-        info = Hasor.assertIsNotNull(info);
-        listener = Hasor.assertIsNotNull(listener);
-        //
-        BindInfo<T> bindInfo = getBindInfo(info.getBindID());
+        BindInfo<T> bindInfo = getBindInfo(Hasor.assertIsNotNull(info).getBindID());
         if (bindInfo instanceof AbstractBindInfoProviderAdapter) {
-            ((AbstractBindInfoProviderAdapter) bindInfo).setCreaterListener(listener);
+            ((AbstractBindInfoProviderAdapter) bindInfo).addCreaterListener(Hasor.assertIsNotNull(listener));
         }
     }
     @Override
@@ -219,14 +216,14 @@ public abstract class AbstractBinder implements ApiBinder {
         public ScopedBindingBuilder<T> whenCreate(BeanCreaterListener<?> createrListener) {
             if (createrListener != null) {
                 Provider<? extends BeanCreaterListener<?>> listenerProvider = InstanceProvider.of(createrListener);
-                this.typeBuilder.setCreaterListener(listenerProvider);
+                this.typeBuilder.addCreaterListener(listenerProvider);
             }
             return this;
         }
         @Override
         public ScopedBindingBuilder<T> whenCreate(Provider<? extends BeanCreaterListener<?>> createrListener) {
             if (createrListener != null) {
-                this.typeBuilder.setCreaterListener(createrListener);
+                this.typeBuilder.addCreaterListener(createrListener);
             }
             return this;
         }
@@ -234,7 +231,7 @@ public abstract class AbstractBinder implements ApiBinder {
         public ScopedBindingBuilder<T> whenCreate(Class<? extends BeanCreaterListener<?>> createrListener) {
             if (createrListener != null) {
                 ClassAwareProvider<? extends BeanCreaterListener<?>> listenerProvider = new ClassAwareProvider<BeanCreaterListener<?>>(createrListener);
-                this.typeBuilder.setCreaterListener(Hasor.autoAware(getEnvironment(), listenerProvider));
+                this.typeBuilder.addCreaterListener(Hasor.autoAware(getEnvironment(), listenerProvider));
             }
             return this;
         }
@@ -242,7 +239,7 @@ public abstract class AbstractBinder implements ApiBinder {
         public ScopedBindingBuilder<T> whenCreate(BindInfo<? extends BeanCreaterListener<?>> createrListener) {
             if (createrListener != null) {
                 InfoAwareProvider<? extends BeanCreaterListener<?>> listenerProvider = new InfoAwareProvider<BeanCreaterListener<?>>(createrListener);
-                this.typeBuilder.setCreaterListener(Hasor.autoAware(getEnvironment(), listenerProvider));
+                this.typeBuilder.addCreaterListener(Hasor.autoAware(getEnvironment(), listenerProvider));
             }
             return this;
         }

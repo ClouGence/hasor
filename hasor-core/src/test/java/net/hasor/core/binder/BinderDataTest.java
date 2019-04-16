@@ -420,7 +420,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
         //
         //
         binder.bindType(TestBean.class).whenCreate(listener);
-        assert reference.get().getCreaterListener().get() == listener;
+        assert ((Provider) reference.get().getCreaterListener().get(0)).get() == listener;
         //
         binder.bindType(TestBean.class).whenCreate(createrProvider);
         assert reference.get().getCreaterListener() == createrProvider;

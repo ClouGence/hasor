@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns="http://www.hasor.net/sechma/hasor-web">
+    <hasor>
+        <invokerCreaterSet>
+            <invokerCreater type="net.hasor.web.invoker.beans.TestInvoker">net.hasor.web.invoker.beans.TestInvokerCreater</invokerCreater>
+            <invokerCreater type="net.hasor.web.invoker.beans.TestInvoker2">net.hasor.web.invoker.beans.TestInvokerCreater</invokerCreater>
+        </invokerCreaterSet>
+    </hasor>
+</config>

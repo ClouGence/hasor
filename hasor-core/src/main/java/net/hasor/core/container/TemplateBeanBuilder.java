@@ -479,10 +479,16 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
     private void doOptions(Object targetBean, BindInfo<?> bindInfo) throws Throwable {
         //
         if (bindInfo instanceof AbstractBindInfoProviderAdapter) {
-            Provider<? extends BeanCreaterListener<?>> listenerProvider = ((AbstractBindInfoProviderAdapter<?>) bindInfo).getCreaterListener();
-            if (listenerProvider != null) {
-                BeanCreaterListener<Object> createrListener = (BeanCreaterListener<Object>) listenerProvider.get();
-                createrListener.beanCreated(targetBean, (BindInfo<Object>) bindInfo);
+            List<Provider<? extends BeanCreaterListener<?>>> listenerList = ((AbstractBindInfoProviderAdapter<?>) bindInfo).getCreaterListener();
+            if (listenerList != null && !listenerList.isEmpty()) {
+                for (Provider<? extends BeanCreaterListener<?>> provider : listenerList) {
+                    try {
+                        BeanCreaterListener<Object> createrListener = (BeanCreaterListener<Object>) provider.get();
+                        createrListener.beanCreated(targetBean, bindInfo);
+                    } catch (Exception e) {
+                        logger.error("do call beanCreated -> " + e.getMessage(), e);
+                    }
+                }
             }
         }
     }

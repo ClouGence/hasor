@@ -49,11 +49,6 @@ public class InvokerContext implements WebPluginCaller {
         List<InMappingDef> mappingList = appContext.findBindingBean(InMappingDef.class);
         Collections.sort(mappingList, new Comparator<InMappingDef>() {
             public int compare(InMappingDef o1, InMappingDef o2) {
-                return o1.getMappingTo().compareToIgnoreCase(o2.getMappingTo()) * -1;
-            }
-        });
-        Collections.sort(mappingList, new Comparator<InMappingDef>() {
-            public int compare(InMappingDef o1, InMappingDef o2) {
                 long o1Index = o1.getIndex();
                 long o2Index = o2.getIndex();
                 return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
@@ -75,13 +70,7 @@ public class InvokerContext implements WebPluginCaller {
         // .discover
         List<MappingDiscoverer> setupList = appContext.findBindingBean(MappingDiscoverer.class);
         for (MappingDiscoverer setup : setupList) {
-            if (setup == null) {
-                continue;
-            }
             for (Mapping mapping : this.invokeArray) {
-                if (mapping == null) {
-                    continue;
-                }
                 setup.discover(mapping);
             }
         }

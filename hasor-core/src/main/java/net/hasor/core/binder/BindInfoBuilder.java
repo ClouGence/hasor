@@ -109,5 +109,5 @@ public interface BindInfoBuilder<T> {
     public void initMethod(String methodName);
 
     //
-    public void setCreaterListener(Provider<? extends BeanCreaterListener<?>> createrListener);
+    public void addCreaterListener(Provider<? extends BeanCreaterListener<?>> createrListener);
 }

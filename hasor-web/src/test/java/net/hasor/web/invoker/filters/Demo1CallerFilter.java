@@ -6,48 +6,57 @@ import net.hasor.web.InvokerFilter;
 
 import javax.servlet.*;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 //
 public class Demo1CallerFilter implements Filter, InvokerFilter {
-    private static AtomicBoolean initCall    = new AtomicBoolean(false);
-    private static AtomicBoolean doCall      = new AtomicBoolean(false);
-    private static AtomicBoolean destroyCall = new AtomicBoolean(false);
+    private static AtomicInteger initCall    = new AtomicInteger(0);
+    private static AtomicInteger doCall      = new AtomicInteger(0);
+    private static AtomicInteger destroyCall = new AtomicInteger(0);
     //
     public static boolean isInitCall() {
-        return initCall.get();
+        return initCall.get() > 0;
     }
     public static boolean isDoCall() {
-        return doCall.get();
+        return doCall.get() > 0;
     }
     public static boolean isDestroyCall() {
-        return destroyCall.get();
+        return destroyCall.get() > 0;
     }
     public static void resetCalls() {
-        initCall.set(false);
-        doCall.set(false);
-        destroyCall.set(false);
+        initCall.set(0);
+        doCall.set(0);
+        destroyCall.set(0);
+    }
+    public static int getInitCall() {
+        return initCall.get();
+    }
+    public static int getDoCall() {
+        return doCall.get();
+    }
+    public static int getDestroyCall() {
+        return destroyCall.get();
     }
     //
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        initCall.set(true);
+        initCall.incrementAndGet();
     }
     @Override
     public void init(InvokerConfig config) throws Throwable {
-        initCall.set(true);
+        initCall.incrementAndGet();
     }
     @Override
     public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
-        doCall.set(true);
+        doCall.incrementAndGet();
         return chain.doNext(invoker);
     }
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        doCall.set(true);
+        doCall.incrementAndGet();
         chain.doFilter(request, response);
     }
     @Override
     public void destroy() {
-        destroyCall.set(true);
+        destroyCall.incrementAndGet();
     }
 }

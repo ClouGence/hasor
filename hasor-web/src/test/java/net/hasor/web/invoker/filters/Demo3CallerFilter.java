@@ -8,7 +8,7 @@ import javax.servlet.*;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 //
-public class Demo2CallerFilter implements Filter, InvokerFilter {
+public class Demo3CallerFilter implements Filter, InvokerFilter {
     private static AtomicInteger initCall    = new AtomicInteger(0);
     private static AtomicInteger doCall      = new AtomicInteger(0);
     private static AtomicInteger destroyCall = new AtomicInteger(0);
