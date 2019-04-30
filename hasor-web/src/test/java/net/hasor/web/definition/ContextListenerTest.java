@@ -39,7 +39,7 @@ public class ContextListenerTest {
         //
         BindInfo<? extends ServletContextListener> bindInfo = PowerMockito.mock(BindInfo.class);
         AppContext appContext = PowerMockito.mock(AppContext.class);
-        PowerMockito.when(appContext.getInstance(bindInfo)).thenReturn(new TestServletContextListener());
+        PowerMockito.when((ServletContextListener) appContext.getInstance(bindInfo)).thenReturn(new TestServletContextListener());
         ContextListenerDefinition definition = new ContextListenerDefinition(bindInfo);
         //
         //

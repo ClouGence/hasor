@@ -19,13 +19,14 @@ import net.hasor.web.Invoker;
 import net.hasor.web.wrap.InvokerWrap;
 
 import java.util.*;
+import java.util.stream.Collectors;
 /**
  * 表单验证器，Invoker 扩展实现类。
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker {
-    private final Map<String, ValidItem> validData = new HashMap<String, ValidItem>();
+    private final Map<String, ValidItem> validData = new HashMap<>();
     protected ValidInvokerSupplier(Invoker context) {
         super(context);
     }
@@ -35,12 +36,12 @@ public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker {
     }
     @Override
     public List<String> validKeys() {
-        return new ArrayList<String>(this.validData.keySet());
+        return new ArrayList<>(this.validData.keySet());
     }
     @Override
     public List<String> validErrors(String messageKey) {
         ValidItem data = this.validData.get(messageKey);
-        return data == null ? Collections.EMPTY_LIST : Collections.unmodifiableList(data);
+        return data == null ? Collections.EMPTY_LIST : data.stream().map(Message::getMessage).collect(Collectors.toList());
     }
     @Override
     public boolean isValid() {

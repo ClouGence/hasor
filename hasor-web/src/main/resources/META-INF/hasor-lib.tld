@@ -18,8 +18,8 @@
             <rtexprvalue>yes</rtexprvalue>
         </attribute>
         <attribute>
-            <description>要获取的 Bean 名称.</description>
-            <name>bean</name>
+            <description>要获取的 BeanID.</description>
+            <name>beanID</name>
             <required>yes</required>
             <rtexprvalue>yes</rtexprvalue>
         </attribute>
@@ -38,7 +38,7 @@
         </attribute>
         <attribute>
             <description>要获取的 Bean 类型.</description>
-            <name>type</name>
+            <name>bindType</name>
             <required>yes</required>
             <rtexprvalue>yes</rtexprvalue>
         </attribute>
@@ -56,40 +56,15 @@
             <rtexprvalue>yes</rtexprvalue>
         </attribute>
         <attribute>
-            <description>绑定名称.</description>
-            <name>name</name>
-            <required>yes</required>
-            <rtexprvalue>yes</rtexprvalue>
-        </attribute>
-        <attribute>
             <description>绑定的类型.</description>
             <name>bindType</name>
             <required>yes</required>
             <rtexprvalue>yes</rtexprvalue>
         </attribute>
-    </tag>
-    <!-- fireEvent，抛出事件 -->
-    <tag>
-        <description>抛出事件.</description>
-        <name>fireEvent</name>
-        <tag-class>net.hasor.web.jstl.taglib.DoEventTag</tag-class>
-        <body-content>empty</body-content>
         <attribute>
             <description>绑定名称.</description>
-            <name>event</name>
+            <name>name</name>
             <required>yes</required>
-            <rtexprvalue>yes</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>是否以异步方式引发事件.</description>
-            <name>async</name>
-            <required>no</required>
-            <rtexprvalue>yes</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>事件参数.</description>
-            <name>params</name>
-            <required>no</required>
             <rtexprvalue>yes</rtexprvalue>
         </attribute>
     </tag>

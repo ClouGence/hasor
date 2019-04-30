@@ -41,7 +41,7 @@ public class WebPluginTest {
         //
         BindInfo<? extends WebPlugin> bindInfo = PowerMockito.mock(BindInfo.class);
         AppContext appContext = PowerMockito.mock(AppContext.class);
-        PowerMockito.when(appContext.getInstance(bindInfo)).thenReturn(new TestCallerWebPlugin());
+        PowerMockito.when((WebPlugin) appContext.getInstance(bindInfo)).thenReturn(new TestCallerWebPlugin());
         WebPluginDefinition definition = new WebPluginDefinition(bindInfo);
         //
         //

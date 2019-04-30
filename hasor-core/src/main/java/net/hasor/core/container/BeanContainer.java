@@ -138,11 +138,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
         if (scopeProvider == null) {
             throw new NullPointerException("scopeProvider undefined.");
         }
-        return scopeProvider.get().scope(key, new Provider<T>() {
-            public T get() {
-                return BeanContainer.super.createObject(targetType, referConstructor, bindInfo, appContext);
-            }
-        }).get();
+        return scopeProvider.get().scope(key, () -> BeanContainer.super.createObject(targetType, referConstructor, bindInfo, appContext)).get();
     }
     /** 仅执行依赖注入 */
     public <T> T justInject(T object, Class<?> beanType, AppContext appContext) {

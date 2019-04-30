@@ -14,6 +14,7 @@ import org.powermock.api.mockito.PowerMockito;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 public class ContextTest {
@@ -40,17 +41,14 @@ public class ContextTest {
     public void builderTest1() {
         final AtomicInteger atomicInteger = new AtomicInteger(0);
         AppContext appContext = PowerMockito.mock(AppContext.class);
-        PowerMockito.doAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                if (atomicInteger.get() == 0) {
-                    atomicInteger.set(1);
-                } else {
-                    atomicInteger.set(2);
-                    throw new Exception();
-                }
-                return null;
+        PowerMockito.doAnswer(invocationOnMock -> {
+            if (atomicInteger.get() == 0) {
+                atomicInteger.set(1);
+            } else {
+                atomicInteger.set(2);
+                throw new Exception();
             }
+            return null;
         }).when(appContext).shutdown();
         //
         ShutdownHook hook = new ShutdownHook(appContext);
@@ -80,8 +78,8 @@ public class ContextTest {
         assert appContext.getNames(ArrayList.class).length == 0;
         //
         assert appContext.getBindIDs().length == 2;
-        assert appContext.getBindIDs()[0].equals("abcdefg");
-        assert appContext.getBindIDs()[1].equals("qqqq");
+        assert Arrays.asList(appContext.getBindIDs()).contains("abcdefg");
+        assert Arrays.asList(appContext.getBindIDs()).contains("qqqq");
         //
         assert appContext.getBeanType("abcdefg") == TestBean.class;
         assert appContext.getBeanType("qqqq") == SimpleInjectBean.class;

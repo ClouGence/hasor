@@ -16,7 +16,6 @@
 package net.hasor.web.jstl.taglib;
 import net.hasor.core.AppContext;
 import net.hasor.utils.ClassUtils;
-import net.hasor.utils.StringUtils;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
@@ -26,55 +25,16 @@ import javax.servlet.jsp.tagext.Tag;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DefineBindTag extends AbstractTag {
-    private static final long   serialVersionUID = -7899624524135156746L;
-    private              String var              = null;
-    private              String name             = null;
-    private              String bindType         = null;
-    public String getVar() {
-        return this.var;
-    }
-    public void setVar(final String var) {
-        this.var = var;
-    }
-    public String getName() {
-        return this.name;
-    }
-    public void setName(final String name) {
-        this.name = name;
-    }
-    public String getBindType() {
-        return this.bindType;
-    }
-    public void setBindType(final String bindType) {
-        this.bindType = bindType;
-    }
-    //
-    //
-    //
-    @Override
-    public void release() {
-        this.var = null;
-        this.name = null;
-        this.bindType = null;
-    }
+    private static final long serialVersionUID = -7899624524135156746L;
     @Override
     public int doStartTag() throws JspException {
-        if (StringUtils.isBlank(this.var)) {
-            throw new NullPointerException("tag param var is null.");
-        }
-        if (StringUtils.isBlank(this.name)) {
-            throw new NullPointerException("tag param name is null.");
-        }
-        if (StringUtils.isBlank(this.bindType)) {
-            throw new NullPointerException("tag param bindType is null.");
-        }
+        verifyAttribute(AttributeNames.Var, AttributeNames.BindType, AttributeNames.Name);
         //
         try {
             AppContext appContext = getAppContext();
             ClassLoader classLoader = ClassUtils.getClassLoader(appContext.getClassLoader());
-            Class<?> defineType = Class.forName(this.bindType, false, classLoader);
-            Object targetBean = appContext.findBindingBean(this.name, defineType);
-            this.pageContext.setAttribute(this.var, targetBean);
+            Class<?> defineType = Class.forName(this.getBindType(), false, classLoader);
+            storeToVar(appContext.findBindingBean(this.getName(), defineType));
             return Tag.SKIP_BODY;
         } catch (ClassNotFoundException e) {
             throw new JspException(e);

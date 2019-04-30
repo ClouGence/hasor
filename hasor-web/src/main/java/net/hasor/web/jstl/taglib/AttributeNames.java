@@ -13,23 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
-import java.util.function.Supplier;
+package net.hasor.web.jstl.taglib;
 /**
- *  提供者。
- * @version : 2014年5月22日
- * @author 赵永春 (zyc@byshell.org)
+ *
+ * @version : 2013-12-23
+ * @author 赵永春 (zyc@hasor.net)
  */
-public interface Provider<T> extends Supplier<T> {
-    /** @return 获取对象。  */
-    public T get();
-
-    //
-    default Supplier<T> toSupplier(Provider<T> provider) {
-        return provider;
-    }
-
-    default Provider<T> fromSupplier(Supplier<T> supplier) {
-        return supplier::get;
-    }
-}
+enum AttributeNames {Var, BeanID, Name, BindType;}

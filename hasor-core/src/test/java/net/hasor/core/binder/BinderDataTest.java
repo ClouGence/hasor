@@ -423,14 +423,14 @@ public class BinderDataTest extends AbstractBinderDataTest {
         assert ((Provider) reference.get().getCreaterListener().get(0)).get() == listener;
         //
         binder.bindType(TestBean.class).whenCreate(createrProvider);
-        assert reference.get().getCreaterListener() == createrProvider;
+        assert reference.get().getCreaterListener().get(0) == createrProvider;
         //
         binder.bindType(TestBean.class).whenCreate(TestBeanCreaterListener.class);
-        assert reference.get().getCreaterListener() instanceof ClassAwareProvider;
-        assert ((ClassAwareProvider) reference.get().getCreaterListener()).getImplementation() == TestBeanCreaterListener.class;
+        assert reference.get().getCreaterListener().get(0) instanceof ClassAwareProvider;
+        assert ((ClassAwareProvider) reference.get().getCreaterListener().get(0)).getImplementation() == TestBeanCreaterListener.class;
         //
         binder.bindType(TestBean.class).whenCreate(createrInfo);
-        assert reference.get().getCreaterListener() instanceof InfoAwareProvider;
-        assert ((InfoAwareProvider) reference.get().getCreaterListener()).getInfo() == createrInfo;
+        assert reference.get().getCreaterListener().get(0) instanceof InfoAwareProvider;
+        assert ((InfoAwareProvider) reference.get().getCreaterListener().get(0)).getInfo() == createrInfo;
     }
 }

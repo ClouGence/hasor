@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web.jstl.taglib;
-import net.hasor.core.AppContext;
-import net.hasor.utils.StringUtils;
-
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 /**
  *
@@ -25,41 +21,11 @@ import javax.servlet.jsp.tagext.Tag;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DefineBeanTag extends AbstractTag {
-    private static final long   serialVersionUID = 8066383523368039588L;
-    private              String var              = null;
-    private              String bean             = null;
-    public String getVar() {
-        return this.var;
-    }
-    public void setVar(final String var) {
-        this.var = var;
-    }
-    public String getBean() {
-        return this.bean;
-    }
-    public void setBean(final String bean) {
-        this.bean = bean;
-    }
-    //
-    //
-    //
+    private static final long serialVersionUID = 8066383523368039588L;
     @Override
-    public void release() {
-        this.var = null;
-        this.bean = null;
-    }
-    @Override
-    public int doStartTag() throws JspException {
-        if (StringUtils.isBlank(this.var)) {
-            throw new NullPointerException("tag param var is null.");
-        }
-        if (StringUtils.isBlank(this.bean)) {
-            throw new NullPointerException("tag param bean is null.");
-        }
-        //
-        AppContext appContext = getAppContext();
-        Object targetBean = appContext.getBindInfo(this.bean);
-        this.pageContext.setAttribute(this.var, targetBean);
+    public int doStartTag() {
+        verifyAttribute(AttributeNames.Var, AttributeNames.BeanID);
+        storeToVar(getAppContext().getBindInfo(this.getBeanID()));
         return Tag.SKIP_BODY;
     }
 }

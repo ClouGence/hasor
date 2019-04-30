@@ -111,8 +111,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.5.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <encoding>UTF8</encoding>
                 </configuration>
             </plugin>
@@ -137,7 +137,7 @@
                 <version>2.9.1</version>
                 <configuration>
                     <aggregate>true</aggregate>
-                    <additionalparam>${java_doc_additionalparam}</additionalparam>
+                    <additionalparam>-Xdoclint:none</additionalparam>
                     <excludePackageNames>net.hasor.libs.*,org.*,</excludePackageNames>
                     <encoding>UTF-8</encoding>
                     <docencoding>UTF-8</docencoding>
@@ -236,14 +236,6 @@
 
     <!-- 使用“-P release”启用下面配置 -->
     <profiles>
-        <profile>
-            <activation>
-                <jdk>1.8</jdk>
-            </activation>
-            <properties>
-                <java_doc_additionalparam>-Xdoclint:none</java_doc_additionalparam>
-            </properties>
-        </profile>
         <profile>
             <id>release</id>
             <properties>
