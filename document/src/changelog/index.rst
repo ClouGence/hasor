@@ -4,6 +4,7 @@
 .. toctree::
     :maxdepth: 3
 
+    core/core-changelog_v4.x
     core/core-changelog_v3.x
     core/core-changelog_v2.x
     core/core-changelog_v1.x
