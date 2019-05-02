@@ -33,7 +33,10 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Proxy;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 /**
  * 抽象类 AbstractAppContext 是 {@link AppContext} 接口的基础实现。
  * <p>它包装了大量细节代码，可以方便的通过子类来创建独特的上下文支持。<p>
@@ -217,11 +220,19 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         //
         // .寻找ApiBinder扩展
         Map<Class<?>, Class<?>> extBinderMap = new HashMap<>();
-        XmlNode[] innerBinderSet = this.getEnvironment().getSettings().getXmlNodeArray("hasor.innerApiBinderSet.binder");
-        List<XmlNode> loadBinderSet = new ArrayList<>(Arrays.asList(innerBinderSet));
+        XmlNode[] innerBinderSet = this.getEnvironment().getSettings().getXmlNodeArray("hasor.innerApiBinderSet");
+        List<XmlNode> loadBinderSet = Arrays.stream(innerBinderSet).flatMap((Function<XmlNode, Stream<XmlNode>>) xmlNode -> {
+            List<XmlNode> xmlNodes = xmlNode.getChildren("binder");
+            return xmlNodes.stream();
+        }).collect(Collectors.toList());
+        //
         if (this.getEnvironment().getSettings().getBoolean("hasor.apiBinderSet.loadExternal", true)) {
-            XmlNode[] externalBinderSet = this.getEnvironment().getSettings().getXmlNodeArray("hasor.apiBinderSet.binder");
-            loadBinderSet.addAll(Arrays.asList(externalBinderSet));
+            XmlNode[] binderSet = this.getEnvironment().getSettings().getXmlNodeArray("hasor.apiBinderSet");
+            List<XmlNode> externalBinderSet = Arrays.stream(binderSet).flatMap((Function<XmlNode, Stream<XmlNode>>) xmlNode -> {
+                List<XmlNode> xmlNodes = xmlNode.getChildren("binder");
+                return xmlNodes.stream();
+            }).collect(Collectors.toList());
+            loadBinderSet.addAll(externalBinderSet);
         }
         //
         for (XmlNode atNode : loadBinderSet) {

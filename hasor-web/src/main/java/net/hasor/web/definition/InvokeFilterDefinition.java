@@ -17,7 +17,6 @@ package net.hasor.web.definition;
 import net.hasor.core.AppContext;
 import net.hasor.core.BeanCreaterListener;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerFilter;
@@ -31,7 +30,7 @@ import java.util.Map;
 public class InvokeFilterDefinition extends AbstractDefinition implements BeanCreaterListener<InvokerFilter> {
     private BindInfo<? extends InvokerFilter> bindInfo = null;
     //
-    public InvokeFilterDefinition(long index, String pattern, UriPatternMatcher uriPatternMatcher,//
+    public InvokeFilterDefinition(int index, String pattern, UriPatternMatcher uriPatternMatcher,//
             BindInfo<? extends InvokerFilter> bindInfo, Map<String, String> initParams) {
         super(index, pattern, uriPatternMatcher, initParams);
         this.bindInfo = bindInfo;
@@ -56,10 +55,10 @@ public class InvokeFilterDefinition extends AbstractDefinition implements BeanCr
         return filter.doInvoke(invoker, chain);
     }
     public void destroy() {
-//        if (this.instance == null) {
-//            return;
-//        }
-//        this.instance.destroy();
-//        this.instance = null;
+        //        if (this.instance == null) {
+        //            return;
+        //        }
+        //        this.instance.destroy();
+        //        this.instance = null;
     }
 }

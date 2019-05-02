@@ -17,7 +17,6 @@ package net.hasor.web.invoker;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.core.setting.xml.DefaultXmlNode;
 import net.hasor.web.MimeType;
 import org.junit.Before;
 import org.powermock.api.mockito.PowerMockito;
@@ -43,16 +42,12 @@ public class AbstractWeb30BinderDataTest extends AbstractWebTest implements Modu
         this.servletContext = PowerMockito.mock(ServletContext.class);
         PowerMockito.when(this.servletContext.getContextPath()).thenReturn("/");
         //
-        this.mimeType = PowerMockito.mock(MimeType.class);
+        //
         this.hasor = Hasor.create(this.servletContext).asSmaller()//
-                .addSettings("http://test.hasor.net", "hasor.innerApiBinderSet.binder", newDefaultXmlNode())//
+                .addSettings("http://test.hasor.net", "hasor.innerApiBinderSet", defaultInnerApiBinderSetXmlNode())//
+                .addSettings("http://test.hasor.net", "hasor.invokerCreaterSet", defaultInvokerCreaterSetXmlNode())//
                 .addModules(this);
-    }
-    public static DefaultXmlNode newDefaultXmlNode() {
-        // .在禁用 web-hconfig.xml 下 模拟 apiBinderSet 的配置
-        DefaultXmlNode xmlNode = new DefaultXmlNode(null, "binder");
-        xmlNode.getAttributeMap().put("type", "net.hasor.web.WebApiBinder");
-        xmlNode.setText("net.hasor.web.invoker.InvokerWebApiBinderCreater");
-        return xmlNode;
+        //
+        this.mimeType = PowerMockito.mock(MimeType.class);
     }
 }

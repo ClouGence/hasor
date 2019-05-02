@@ -13,13 +13,14 @@ import javax.servlet.ServletContext;
 import java.io.InputStreamReader;
 //
 public class MimeTest extends AbstractWeb30BinderDataTest {
+    public static final String NET_HASOR_WEB_MIME_MIME_TYPES_XML = "/net_hasor_web_mime/mime.types.xml";
     @Test
     public void chainTest1() throws Throwable {
         //
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
             apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
             apiBinder.tryCast(WebApiBinder.class).addMimeType("afm", "abcdefg");
-            apiBinder.tryCast(WebApiBinder.class).loadMimeType("/net/hasor/web/mime/mime.types.xml");
+            apiBinder.tryCast(WebApiBinder.class).loadMimeType(NET_HASOR_WEB_MIME_MIME_TYPES_XML);
         });
         //
         MimeType mimeType = appContext.getInstance(MimeType.class);
@@ -32,17 +33,17 @@ public class MimeTest extends AbstractWeb30BinderDataTest {
         MimeTypeSupplier mimeType = null;
         //
         mimeType = new MimeTypeSupplier(PowerMockito.mock(ServletContext.class));
-        mimeType.loadResource("/net/hasor/web/mime/mime.types.xml");
+        mimeType.loadResource(NET_HASOR_WEB_MIME_MIME_TYPES_XML);
         assert mimeType.getMimeType("ass") == null;
         assert mimeType.getMimeType("test").equals("测试类型测试类型");
         //
         mimeType = new MimeTypeSupplier(PowerMockito.mock(ServletContext.class));
-        mimeType.loadStream(ResourcesUtils.getResourceAsStream("/net/hasor/web/mime/mime.types.xml"));
+        mimeType.loadStream(ResourcesUtils.getResourceAsStream(NET_HASOR_WEB_MIME_MIME_TYPES_XML));
         assert mimeType.getMimeType("ass") == null;
         assert mimeType.getMimeType("test").equals("测试类型测试类型");
         //
         mimeType = new MimeTypeSupplier(PowerMockito.mock(ServletContext.class));
-        mimeType.loadReader(new InputStreamReader(ResourcesUtils.getResourceAsStream("/net/hasor/web/mime/mime.types.xml")));
+        mimeType.loadReader(new InputStreamReader(ResourcesUtils.getResourceAsStream(NET_HASOR_WEB_MIME_MIME_TYPES_XML)));
         assert mimeType.getMimeType("ass") == null;
         assert mimeType.getMimeType("test").equals("测试类型测试类型");
         //

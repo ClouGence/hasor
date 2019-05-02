@@ -18,10 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.provider.InstanceProvider;
-import net.hasor.web.Invoker;
-import net.hasor.web.ServletVersion;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
+import net.hasor.web.*;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.annotation.Render;
 import net.hasor.web.definition.*;
@@ -68,12 +65,14 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         final ServletContext sc = PowerMockito.mock(ServletContext.class);
         PowerMockito.when(sc.getEffectiveMajorVersion()).thenReturn(1);
         PowerMockito.when(sc.getVirtualServerName()).thenReturn("");
+        //
+        this.mimeType = PowerMockito.mock(MimeType.class);
         Hasor.create(sc).asSmaller()//
-                .addSettings("http://test.hasor.net", "hasor.innerApiBinderSet.binder", newDefaultXmlNode())//
+                .addSettings("http://test.hasor.net", "hasor.innerApiBinderSet", defaultInnerApiBinderSetXmlNode())//
+                .addSettings("http://test.hasor.net", "hasor.invokerCreaterSet", defaultInvokerCreaterSetXmlNode())//
                 .build((WebModule) apiBinder -> {
                     assert sc == apiBinder.getServletContext();
                     assert apiBinder.tryCast(WebApiBinder.class).getServletVersion() == ServletVersion.V3_1;
-                    //
                 });
         //
     }

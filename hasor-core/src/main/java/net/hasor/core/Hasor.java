@@ -150,6 +150,10 @@ public class Hasor extends HashMap<String, String> {
         this.asSmaller = true;
         return this;
     }
+    public Hasor asFull() {
+        this.asSmaller = false;
+        return this;
+    }
     private static Supplier<AppContext> singletonHasor = null;
     public AppContext asStaticSingleton() {
         AppContext appContext = localAppContext();
@@ -197,6 +201,7 @@ public class Hasor extends HashMap<String, String> {
         this.putData("RUN_PATH", runPath);
         this.putData("RUN_MODE", this.asSmaller ? "smaller" : "none");
         if (logger.isInfoEnabled()) {
+            logger.info("runMode at {}", this.get("RUN_MODE"));
             logger.info("runPath at {}", runPath);
         }
         //
@@ -204,6 +209,8 @@ public class Hasor extends HashMap<String, String> {
             this.putData("HASOR_LOAD_MODULE", "false");
             this.putData("HASOR_LOAD_EXTERNALBINDER", "false");
             StandardContextSettings.setLoadMatcher("/META-INF/hasor-framework/core-hconfig.xml"::equals);
+        } else {
+            StandardContextSettings.setLoadMatcher(null);
         }
         //
         try {

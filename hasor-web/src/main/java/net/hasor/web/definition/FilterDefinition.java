@@ -20,7 +20,9 @@ import net.hasor.utils.ExceptionUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import java.io.IOException;
 import java.util.Map;
 /**
@@ -31,7 +33,7 @@ import java.util.Map;
 public class FilterDefinition extends AbstractDefinition implements BeanCreaterListener<Filter> {
     private BindInfo<? extends Filter> bindInfo = null;
     //
-    public FilterDefinition(long index, String pattern, UriPatternMatcher uriPatternMatcher,//
+    public FilterDefinition(int index, String pattern, UriPatternMatcher uriPatternMatcher,//
             BindInfo<? extends Filter> bindInfo, Map<String, String> initParams) {
         super(index, pattern, uriPatternMatcher, initParams);
         this.bindInfo = bindInfo;

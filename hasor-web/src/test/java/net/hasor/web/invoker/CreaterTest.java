@@ -17,7 +17,7 @@ public class CreaterTest extends AbstractWeb30BinderDataTest {
     @Test
     public void pluginTest3() throws Throwable {
         InputStreamSettings settings = new InputStreamSettings();
-        settings.addReader(new InputStreamReader(ResourcesUtils.getResourceAsStream("root-creater.xml")), StreamType.Xml);
+        settings.addReader(new InputStreamReader(ResourcesUtils.getResourceAsStream("/net_hasor_web_invoker/root-creater.xml")), StreamType.Xml);
         settings.loadSettings();
         //
         Environment environment = PowerMockito.mock(Environment.class);

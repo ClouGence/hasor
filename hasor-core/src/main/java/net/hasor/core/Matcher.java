@@ -30,4 +30,13 @@ public interface Matcher<T> extends Predicate<T> {
     default boolean test(T target) {
         return this.matches(target);
     }
+
+    //
+    default Predicate<T> toPredicate(Matcher<T> provider) {
+        return provider;
+    }
+
+    default Matcher<T> fromPredicate(Predicate<T> supplier) {
+        return supplier::test;
+    }
 }

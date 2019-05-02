@@ -15,6 +15,7 @@
  */
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
+import net.hasor.core.setting.xml.DefaultXmlNode;
 import net.hasor.utils.Iterators;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
@@ -34,6 +35,57 @@ import static org.mockito.Matchers.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AbstractWebTest {
+    protected Set<AbstractWeb24BinderDataTest.LoadExtEnum> loadInvokerSet = new HashSet<AbstractWeb24BinderDataTest.LoadExtEnum>() {{
+        add(AbstractWeb24BinderDataTest.LoadExtEnum.Web);
+    }};
+    //
+    public enum LoadExtEnum {
+        Web, Render, Valid
+    }
+    //
+    //
+    public static DefaultXmlNode invokerWebApiBinderCreaterXmlNode() {
+        // .在禁用 web-hconfig.xml 下 模拟 apiBinderSet 的配置
+        DefaultXmlNode xmlNode = new DefaultXmlNode(null, "binder");
+        xmlNode.getAttributeMap().put("type", "net.hasor.web.WebApiBinder");
+        xmlNode.setText("net.hasor.web.invoker.InvokerWebApiBinderCreater");
+        return xmlNode;
+    }
+    public static DefaultXmlNode validInvokerCreaterXmlNode() {
+        // .在禁用 web-hconfig.xml 下 模拟 apiBinderSet 的配置
+        DefaultXmlNode xmlNode = new DefaultXmlNode(null, "invokerCreater");
+        xmlNode.getAttributeMap().put("type", "net.hasor.web.valid.ValidInvoker");
+        xmlNode.setText("net.hasor.web.valid.ValidInvokerCreater");
+        return xmlNode;
+    }
+    public static DefaultXmlNode renderInvokerCreaterXmlNode() {
+        // .在禁用 web-hconfig.xml 下 模拟 apiBinderSet 的配置
+        DefaultXmlNode xmlNode = new DefaultXmlNode(null, "invokerCreater");
+        xmlNode.getAttributeMap().put("type", "net.hasor.web.RenderInvoker");
+        xmlNode.setText("net.hasor.web.render.RenderInvokerCreater");
+        return xmlNode;
+    }
+    //
+    //
+    public DefaultXmlNode defaultInvokerCreaterSetXmlNode() {
+        DefaultXmlNode xmlNode = new DefaultXmlNode(null, "invokerCreaterSet");
+        if (loadInvokerSet.contains(LoadExtEnum.Valid)) {
+            xmlNode.getChildren().add(validInvokerCreaterXmlNode());
+        }
+        if (loadInvokerSet.contains(LoadExtEnum.Render)) {
+            xmlNode.getChildren().add(renderInvokerCreaterXmlNode());
+        }
+        return xmlNode;
+    }
+    public DefaultXmlNode defaultInnerApiBinderSetXmlNode() {
+        DefaultXmlNode xmlNode = new DefaultXmlNode(null, "innerApiBinderSet");
+        if (loadInvokerSet.contains(LoadExtEnum.Web)) {
+            xmlNode.getChildren().add(invokerWebApiBinderCreaterXmlNode());
+        }
+        return xmlNode;
+    }
+    //
+    //
     private String singleObjectFormMap(Map headerMap, String name) {
         Object[] objectFormMap = multipleObjectFormMap(headerMap, name);
         if (objectFormMap == null || objectFormMap.length == 0) {

@@ -28,24 +28,24 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractDefinition implements InvokerFilter {
-    private final long                index;
+    private final int                 index;
     private final Map<String, String> initParams;
     private final String              pattern;
     private final UriPatternMatcher   patternMatcher;
     private       AppContext          appContext = null;
     //
-    public AbstractDefinition(long index, String pattern, UriPatternMatcher patternMatcher, Map<String, String> initParams) {
+    public AbstractDefinition(int index, String pattern, UriPatternMatcher patternMatcher, Map<String, String> initParams) {
         this.index = index;
         if (initParams != null) {
-            this.initParams = new HashMap<String, String>(initParams);
+            this.initParams = new HashMap<>(initParams);
         } else {
-            this.initParams = new HashMap<String, String>();
+            this.initParams = new HashMap<>();
         }
         this.pattern = pattern;
         this.patternMatcher = patternMatcher;
     }
     /***/
-    public long getIndex() {
+    public int getIndex() {
         return this.index;
     }
     /** Returns any context params supplied when creating the binding. */

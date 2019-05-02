@@ -112,7 +112,12 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         if (scopeProvider != null) {
             instanceProvider = scopeProvider.get().scope(bindInfo, instanceProvider);
         }
-        return instanceProvider;
+        Supplier<? extends T> finalInstanceProvider = instanceProvider;
+        return (Supplier<T>) () -> {
+            T targetBean = finalInstanceProvider.get();
+            doOptions(targetBean, bindInfo);
+            return targetBean;
+        };
     }
     //
     //
@@ -156,7 +161,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         List<BindInfo<AopBindInfoAdapter>> aopBindList = appContext.findBindingRegister(AopBindInfoAdapter.class);
         List<AopBindInfoAdapter> aopList;
         if (!aopBindList.isEmpty()) {
-            aopList = new ArrayList<AopBindInfoAdapter>();
+            aopList = new ArrayList<>();
             for (BindInfo<AopBindInfoAdapter> info : aopBindList) {
                 aopList.add(this.getProvider(info, appContext).get());
             }
@@ -268,9 +273,6 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             doOptions(targetBean, bindInfo);
             return targetBean;
         } catch (Throwable e) {
-            if (e instanceof InvocationTargetException) {
-                e = ((InvocationTargetException) e).getTargetException();
-            }
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
@@ -465,8 +467,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         return initMethod;
     }
     //
-    private void doOptions(Object targetBean, BindInfo<?> bindInfo) throws Throwable {
-        //
+    private void doOptions(Object targetBean, BindInfo<?> bindInfo) {
         if (bindInfo instanceof AbstractBindInfoProviderAdapter) {
             List<Supplier<? extends BeanCreaterListener<?>>> listenerList = ((AbstractBindInfoProviderAdapter<?>) bindInfo).getCreaterListener();
             if (listenerList != null && !listenerList.isEmpty()) {
@@ -474,7 +475,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
                     try {
                         BeanCreaterListener<Object> createrListener = (BeanCreaterListener<Object>) provider.get();
                         createrListener.beanCreated(targetBean, bindInfo);
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         logger.error("do call beanCreated -> " + e.getMessage(), e);
                     }
                 }

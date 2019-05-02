@@ -28,7 +28,7 @@ public class CreaterListenerTest {
         appContext.getInstance(ContextShutdownListenerBean.class);
         appContext.getInstance(ContextStartListenerBean.class);
         //
-        assert !dataMap.containsKey(TestBean.class.getName());
+        assert dataMap.containsKey(TestBean.class.getName());
         assert dataMap.containsKey(ContextInjectBean.class.getName());
         assert dataMap.get(ContextInjectBean.class.getName()) != null;
         assert dataMap.containsKey(ContextShutdownListenerBean.class.getName());
