@@ -26,8 +26,8 @@ import java.util.*;
  */
 class ValidDefinition {
     private boolean               enable        = false;
-    private Map<String, Valid>    paramValidMap = new HashMap<String, Valid>();
-    private Map<String, Class<?>> paramTypeMap  = new HashMap<String, Class<?>>();
+    private Map<String, Valid>    paramValidMap = new HashMap<>();
+    private Map<String, Class<?>> paramTypeMap  = new HashMap<>();
     //
     public ValidDefinition(Method targetMethod) {
         // .解析参数

@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.caller;
-import net.hasor.core.Provider;
 import net.hasor.rsf.RsfFilter;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
+
+import java.util.function.Supplier;
 /**
  * 负责处理 RsfFilter 调用
  * @version : 2014年11月4日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfFilterHandler implements RsfFilterChain {
-    private static final Provider<RsfFilter>[] EMPTY_FILTER = new Provider[0];
-    private final Provider<RsfFilter>[] rsfFilter;
-    private final RsfFilterChain        rsfChain;
-    private       int                   index;
+    private static final Supplier[]            EMPTY_FILTER = new Supplier[0];
+    private final        Supplier<RsfFilter>[] rsfFilter;
+    private final        RsfFilterChain        rsfChain;
+    private              int                   index;
     //
-    public RsfFilterHandler(final Provider<RsfFilter>[] rsfFilter, final RsfFilterChain rsfChain) {
+    public RsfFilterHandler(final Supplier<RsfFilter>[] rsfFilter, final RsfFilterChain rsfChain) {
         this.rsfChain = rsfChain;
         this.index = -1;
         this.rsfFilter = (rsfFilter != null && rsfFilter.length != 0) ? rsfFilter : EMPTY_FILTER;

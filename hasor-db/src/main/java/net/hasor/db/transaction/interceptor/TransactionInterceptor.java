@@ -17,19 +17,19 @@ package net.hasor.db.transaction.interceptor;
 import net.hasor.core.Hasor;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
-import net.hasor.core.Provider;
 import net.hasor.db.transaction.*;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
+import java.util.function.Supplier;
 /**
  * 某一个数据源的事务管理器
  * @version : 2015年11月10日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class TransactionInterceptor implements MethodInterceptor {
-    private Provider<DataSource> dataSource = null;
-    public TransactionInterceptor(Provider<DataSource> dataSource) {
+    private Supplier<DataSource> dataSource = null;
+    public TransactionInterceptor(Supplier<DataSource> dataSource) {
         this.dataSource = Hasor.assertIsNotNull(dataSource, "dataSource Provider is null.");
     }
     //

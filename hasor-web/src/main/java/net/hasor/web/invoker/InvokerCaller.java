@@ -65,7 +65,7 @@ class InvokerCaller implements ExceuteCaller {
      * @throws Throwable 异常抛出
      */
     public Future<Object> invoke(final Invoker invoker, final FilterChain chain) throws Throwable {
-        final BasicFuture<Object> future = new BasicFuture<Object>();
+        final BasicFuture<Object> future = new BasicFuture<>();
         Method targetMethod = this.mappingToDefine.findMethod(invoker);
         if (targetMethod == null) {
             if (chain != null) {
@@ -117,17 +117,14 @@ class InvokerCaller implements ExceuteCaller {
         }
         //
         // .准备过滤器链
-        final ArrayList<Object[]> resolveParams = new ArrayList<Object[]>(1);
-        InvokerChain invokerChain = new InvokerChain() {
-            @Override
-            public Object doNext(Invoker invoker) throws Throwable {
-                try {
-                    Object result = targetMethod.invoke(targetObject, resolveParams.get(0));
-                    invoker.put(Invoker.RETURN_DATA_KEY, result);
-                    return result;
-                } catch (InvocationTargetException e) {
-                    throw e.getTargetException();
-                }
+        final ArrayList<Object[]> resolveParams = new ArrayList<>(1);
+        InvokerChain invokerChain = invoker1 -> {
+            try {
+                Object result = targetMethod.invoke(targetObject, resolveParams.get(0));
+                invoker1.put(Invoker.RETURN_DATA_KEY, result);
+                return result;
+            } catch (InvocationTargetException e) {
+                throw e.getTargetException();
             }
         };
         InvokerData invokerData = new InvokerData() {
@@ -165,7 +162,7 @@ class InvokerCaller implements ExceuteCaller {
         Class<?>[] targetParamClass = targetMethod.getParameterTypes();
         Annotation[][] targetParamAnno = targetMethod.getParameterAnnotations();
         targetParamAnno = (targetParamAnno == null) ? new Annotation[0][0] : targetParamAnno;
-        ArrayList<Object> paramsArray = new ArrayList<Object>();
+        ArrayList<Object> paramsArray = new ArrayList<>();
         /*准备参数*/
         for (int i = 0; i < targetParamClass.length; i++) {
             Class<?> paramClass = targetParamClass[i];
@@ -293,7 +290,7 @@ class InvokerCaller implements ExceuteCaller {
         while (e.hasMoreElements()) {
             String name = e.nextElement().toString();
             if (name.equalsIgnoreCase(paramName)) {
-                ArrayList<Object> headerList = new ArrayList<Object>();
+                ArrayList<Object> headerList = new ArrayList<>();
                 Enumeration<?> v = httpRequest.getHeaders(paramName);
                 while (v.hasMoreElements()) {
                     headerList.add(v.nextElement());
@@ -312,7 +309,7 @@ class InvokerCaller implements ExceuteCaller {
         //
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         Cookie[] cookies = httpRequest.getCookies();
-        ArrayList<String> cookieList = new ArrayList<String>();
+        ArrayList<String> cookieList = new ArrayList<>();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 String cookieName = cookie.getName();
@@ -354,7 +351,7 @@ class InvokerCaller implements ExceuteCaller {
             return Collections.EMPTY_MAP;
         }
         //
-        this.queryParamLocal = new HashMap<String, List<String>>();
+        this.queryParamLocal = new HashMap<>();
         String[] params = queryString.split("&");
         for (String pData : params) {
             String oriData = pData;
@@ -375,7 +372,7 @@ class InvokerCaller implements ExceuteCaller {
             String v = kv[1];
             //
             List<String> pArray = this.queryParamLocal.get(k);
-            pArray = pArray == null ? new ArrayList<String>() : pArray;
+            pArray = pArray == null ? new ArrayList<>() : pArray;
             if (!pArray.contains(v)) {
                 pArray.add(v);
             }
@@ -395,8 +392,8 @@ class InvokerCaller implements ExceuteCaller {
         String matchKey = "(?:\\{(\\w+)\\}){1,}";//  (?:\{(\w+)\}){1,}
         Matcher keyM = Pattern.compile(matchKey).matcher(this.mappingToDefine.getMappingTo());
         Matcher varM = Pattern.compile(matchVar).matcher(requestPath);
-        ArrayList<String> keyArray = new ArrayList<String>();
-        ArrayList<String> varArray = new ArrayList<String>();
+        ArrayList<String> keyArray = new ArrayList<>();
+        ArrayList<String> varArray = new ArrayList<>();
         while (keyM.find()) {
             keyArray.add(keyM.group(1));
         }
@@ -405,18 +402,18 @@ class InvokerCaller implements ExceuteCaller {
             varArray.add(varM.group(i));
         }
         //
-        Map<String, List<String>> uriParams = new HashMap<String, List<String>>();
+        Map<String, List<String>> uriParams = new HashMap<>();
         for (int i = 0; i < keyArray.size(); i++) {
             String k = keyArray.get(i);
             String v = varArray.get(i);
             List<String> pArray = uriParams.get(k);
-            pArray = pArray == null ? new ArrayList<String>() : pArray;
+            pArray = pArray == null ? new ArrayList<>() : pArray;
             if (!pArray.contains(v)) {
                 pArray.add(v);
             }
             uriParams.put(k, pArray);
         }
-        this.pathParamsLocal = new HashMap<String, Object>();
+        this.pathParamsLocal = new HashMap<>();
         for (Entry<String, List<String>> ent : uriParams.entrySet()) {
             String k = ent.getKey();
             List<String> v = ent.getValue();

@@ -15,10 +15,10 @@
  */
 package net.hasor.rsf;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Provider;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.function.Supplier;
 /**
  * 服务配置器
  * @version : 2014年11月12日
@@ -39,7 +39,7 @@ public interface RsfPublisher {
      * @param filterID filter ID
      * @param provider provider for RsfFilter
      */
-    public RsfPublisher bindFilter(String filterID, Provider<? extends RsfFilter> provider);
+    public RsfPublisher bindFilter(String filterID, Supplier<? extends RsfFilter> provider);
 
     /**
      * 添加全局的RsfFilter。
@@ -101,7 +101,7 @@ public interface RsfPublisher {
      * @return 返回细粒度绑定操作接口 - {@link ConfigurationBuilder}
      * @see RsfPublisher.ConfigurationBuilder#rsfService(Class)
      */
-    public <T> ConfigurationBuilder<T> rsfService(Class<T> type, Provider<T> provider);
+    public <T> ConfigurationBuilder<T> rsfService(Class<T> type, Supplier<T> provider);
     //
     //
     /**处理类型和实现的绑定。*/
@@ -121,11 +121,11 @@ public interface RsfPublisher {
         public ConfigurationBuilder<T> toInstance(T instance);
 
         /**
-         * 为绑定设置一个 {@link Provider}。
+         * 为绑定设置一个 {@link Supplier}。
          * @param provider provider
          * @return 返回 ConfigurationBuilder。
          */
-        public ConfigurationBuilder<T> toProvider(Provider<? extends T> provider);
+        public ConfigurationBuilder<T> toProvider(Supplier<? extends T> provider);
 
         /**
          * 为绑定设置一个 {@link BindInfo}。
@@ -203,7 +203,7 @@ public interface RsfPublisher {
          * @param provider provider for Rsffilter.
          * @return 返回ConfigurationBuilder
          */
-        public FilterBindBuilder<T> bindFilter(String subFilterID, Provider<? extends RsfFilter> provider);
+        public FilterBindBuilder<T> bindFilter(String subFilterID, Supplier<? extends RsfFilter> provider);
 
         /**
          * 为服务添加一个专有的RsfFilter。

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
-import net.hasor.core.Provider;
 import net.hasor.core.Scope;
+
+import java.util.function.Supplier;
 /**
  * 如果Bean配置了{@link Scope}，那么Hasor容器需要通过该接口获取到这个Scope。
  * @version : 2014年12月2日
@@ -23,5 +24,5 @@ import net.hasor.core.Scope;
  */
 public interface ScopeProvider {
     /**获取Provider对象，可以直接取得对象实例。*/
-    public Provider<Scope> getScopeProvider();
+    public Supplier<? extends Scope> getScopeProvider();
 }

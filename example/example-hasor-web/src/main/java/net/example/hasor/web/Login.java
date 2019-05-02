@@ -19,6 +19,7 @@ import net.example.hasor.domain.UserDTO;
 import net.hasor.core.Inject;
 import net.hasor.db.transaction.interceptor.Transactional;
 import net.hasor.web.WebController;
+import net.hasor.web.annotation.Any;
 import net.hasor.web.annotation.MappingTo;
 
 import java.io.IOException;
@@ -33,6 +34,7 @@ public class Login extends WebController {
     @Inject
     private MyDAO myDAO;
     //
+    @Any
     @Transactional // 数据库事务控制注解
     public void execute() throws IOException, SQLException {
         String account = getPara("username");

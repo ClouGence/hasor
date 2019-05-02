@@ -43,6 +43,10 @@ public class EnvironmentWrap implements Environment {
         return this.getTarget().findClass(featureType);
     }
     @Override
+    public boolean isSmaller() {
+        return this.getTarget().isSmaller();
+    }
+    @Override
     public Set<Class<?>> findClass(Class<?> featureType, String loadPackages) {
         return this.getTarget().findClass(featureType, loadPackages);
     }

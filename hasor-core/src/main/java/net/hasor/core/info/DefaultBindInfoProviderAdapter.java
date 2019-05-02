@@ -17,7 +17,6 @@ package net.hasor.core.info;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
-import net.hasor.core.Provider;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.reflect.ConstructorUtils;
@@ -26,6 +25,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 /**
  *
  * @version : 2014年7月4日
@@ -37,8 +37,8 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
     private String                  initMethod;
     //
     public DefaultBindInfoProviderAdapter() {
-        this.injectProperty = new HashMap<String, ParamInfo>();
-        this.constructorParams = new HashMap<Integer, ParamInfo>();
+        this.injectProperty = new HashMap<>();
+        this.constructorParams = new HashMap<>();
     }
     public DefaultBindInfoProviderAdapter(Class<T> bindingType) {
         this();
@@ -46,7 +46,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         this.setBindType(bindingType);
     }
     @Override
-    public void setConstructor(final int index, final Class<?> paramType, final Provider<?> valueProvider) {
+    public void setConstructor(final int index, final Class<?> paramType, final Supplier<?> valueProvider) {
         Hasor.assertIsNotNull(paramType, "paramType parameter is null.");
         Hasor.assertIsNotNull(valueProvider, "valueProvider parameter is null.");
         this.constructorParams.put(index, new ParamInfo(paramType, valueProvider));
@@ -58,7 +58,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         this.constructorParams.put(index, new ParamInfo(paramType, valueInfo));
     }
     @Override
-    public void addInject(final String property, final Provider<?> valueProvider) {
+    public void addInject(final String property, final Supplier<?> valueProvider) {
         Hasor.assertIsNotNull(property, "property parameter is null.");
         Hasor.assertIsNotNull(valueProvider, "valueProvider parameter is null.");
         Class<?> propertyType = Hasor.assertIsNotNull(lookupPropertyType(property), "not found '" + property + "' property.");
@@ -78,7 +78,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
     //
     //
     private ConstructorInfo genConstructorInfo(AppContext appContext) {
-        ArrayList<Integer> ints = new ArrayList<Integer>(constructorParams.keySet());
+        ArrayList<Integer> ints = new ArrayList<>(constructorParams.keySet());
         Collections.sort(ints);
         //check
         int size = ints.size();
@@ -87,7 +87,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         }
         //
         Class<?>[] types = new Class<?>[size];
-        Provider<?>[] providers = new Provider<?>[size];
+        Supplier<?>[] providers = new Supplier<?>[size];
         for (Integer val : ints) {
             ParamInfo pinfo = constructorParams.get(val);
             types[val] = pinfo.paramType;
@@ -108,12 +108,12 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         return ConstructorUtils.getAccessibleConstructor(targetClass, genConstructorInfo(appContext).types);
     }
     /**获得需要IoC的属性列表*/
-    public Provider<?>[] getConstructorParams(AppContext appContext) {
+    public Supplier<?>[] getConstructorParams(AppContext appContext) {
         return genConstructorInfo(appContext).providers;
     }
     /**获得需要IoC的属性列表*/
-    public Map<String, Provider<?>> getPropertys(AppContext appContext) {
-        Map<String, Provider<?>> propertys = new HashMap<String, Provider<?>>();
+    public Map<String, Supplier<?>> getPropertys(AppContext appContext) {
+        Map<String, Supplier<?>> propertys = new HashMap<>();
         for (Entry<String, ParamInfo> ent : injectProperty.entrySet()) {
             String propKey = ent.getKey();
             ParamInfo propVal = ent.getValue();
@@ -158,15 +158,15 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
 //
 //
 class ConstructorInfo {
-    public ConstructorInfo(Class<?>[] types, Provider<?>[] providers) {
+    public ConstructorInfo(Class<?>[] types, Supplier<?>[] providers) {
         this.types = types;
         this.providers = providers;
     }
     public Class<?>[]    types;
-    public Provider<?>[] providers;
+    public Supplier<?>[] providers;
 }
 class ParamInfo {
-    public ParamInfo(Class<?> paramType, Provider<?> valueProvider) {
+    public ParamInfo(Class<?> paramType, Supplier<?> valueProvider) {
         this.paramType = paramType;
         this.valueProvider = valueProvider;
         this.useProvider = true;
@@ -179,5 +179,5 @@ class ParamInfo {
     public Class<?>    paramType;
     public boolean     useProvider;
     public BindInfo<?> valueInfo;
-    public Provider<?> valueProvider;
+    public Supplier<?> valueProvider;
 }

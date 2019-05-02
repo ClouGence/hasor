@@ -16,7 +16,8 @@
 package net.hasor.boot;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Provider;
+
+import java.util.function.Supplier;
 /**
  *
  * @version : 2018-08-04
@@ -39,7 +40,7 @@ public interface BootBinder extends ApiBinder {
     public void addCommand(int checkArgsIndex, String commandName, CommandLauncher launcher);
 
     /** 添加 CommandLauncher */
-    public void addCommand(int checkArgsIndex, String commandName, Provider<? extends CommandLauncher> launcherProvider);
+    public void addCommand(int checkArgsIndex, String commandName, Supplier<? extends CommandLauncher> launcherProvider);
 
     /** 添加 CommandLauncher */
     public void addCommand(int checkArgsIndex, String commandName, BindInfo<? extends CommandLauncher> launcherInfo);

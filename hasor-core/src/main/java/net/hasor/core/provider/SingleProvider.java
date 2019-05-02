@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.core.provider;
-import net.hasor.core.Provider;
+import java.util.function.Supplier;
 /**
- * 单例对象的{@link Provider}封装形式。
+ * 单例对象的{@link Supplier}封装形式。
  * @version : 2014年7月8日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SingleProvider<T> implements Provider<T> {
-    private          Provider<T> provider = null;
+public class SingleProvider<T> implements Supplier<T> {
+    private          Supplier<T> provider = null;
     private volatile T           instance = null;
     private final    Object      lock     = new Object();
     //
-    public SingleProvider(Provider<T> provider) {
+    public SingleProvider(Supplier<T> provider) {
         this.provider = provider;
     }
     public T get() {
@@ -39,7 +39,7 @@ public class SingleProvider<T> implements Provider<T> {
         return this.instance;
     }
     //
-    protected T newInstance(Provider<T> provider) {
+    protected T newInstance(Supplier<T> provider) {
         return provider.get();
     }
     //

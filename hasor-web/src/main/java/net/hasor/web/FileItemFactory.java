@@ -23,6 +23,7 @@ import java.io.IOException;
  *
  * @version $Id: FileItemFactory.java 1454690 2013-03-09 12:08:48Z simonetripodi $
  */
+@FunctionalInterface
 public interface FileItemFactory {
     /**
      * Create a new {@link FileItem} instance from the supplied parameters and

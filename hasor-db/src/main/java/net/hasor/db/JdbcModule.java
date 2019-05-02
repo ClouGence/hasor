@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.db;
-import net.hasor.core.*;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.provider.SingleProvider;
@@ -37,43 +39,45 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 /**
  * DB 模块。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class JdbcModule implements Module {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    private Set<Level>           loadLevel;
-    private String               dataSourceID;
-    private Provider<DataSource> dataSource;
+    protected Logger               logger = LoggerFactory.getLogger(getClass());
+    private   Set<Level>           loadLevel;
+    private   String               dataSourceID;
+    private   Supplier<DataSource> dataSource;
     //
     /** 添加数据源 */
     public JdbcModule(Level loadLevel, DataSource dataSource) {
-        this(new Level[] { loadLevel }, null, new InstanceProvider<DataSource>(Hasor.assertIsNotNull(dataSource)));
+        this(new Level[] { loadLevel }, null, new InstanceProvider<>(Hasor.assertIsNotNull(dataSource)));
     }
     /** 添加数据源 */
-    public JdbcModule(Level loadLevel, Provider<DataSource> dataSource) {
+    public JdbcModule(Level loadLevel, Supplier<DataSource> dataSource) {
         this(new Level[] { loadLevel }, null, dataSource);
     }
     /** 添加数据源 */
     public JdbcModule(Level loadLevel, String name, DataSource dataSource) {
-        this(new Level[] { loadLevel }, name, new InstanceProvider<DataSource>(Hasor.assertIsNotNull(dataSource)));
+        this(new Level[] { loadLevel }, name, new InstanceProvider<>(Hasor.assertIsNotNull(dataSource)));
     }
     //
     /** 添加数据源 */
     public JdbcModule(Level[] loadLevel, DataSource dataSource) {
-        this(loadLevel, null, new InstanceProvider<DataSource>(Hasor.assertIsNotNull(dataSource)));
+        this(loadLevel, null, new InstanceProvider<>(Hasor.assertIsNotNull(dataSource)));
     }
     /** 添加数据源 */
-    public JdbcModule(Level[] loadLevel, Provider<DataSource> dataSource) {
+    public JdbcModule(Level[] loadLevel, Supplier<DataSource> dataSource) {
         this(loadLevel, null, dataSource);
     }
     /** 添加数据源 */
-    public JdbcModule(Level[] loadLevel, String name, Provider<DataSource> dataSource) {
+    public JdbcModule(Level[] loadLevel, String name, Supplier<DataSource> dataSource) {
         Hasor.assertIsNotNull(loadLevel, "loadLevel is null.");
         Hasor.assertIsNotNull(dataSource, "dataSource Provider is null.");
-        this.loadLevel = new HashSet<Level>(Arrays.asList(loadLevel));
+        this.loadLevel = new HashSet<>(Arrays.asList(loadLevel));
         this.dataSourceID = name;
         this.dataSource = dataSource;
     }
@@ -104,18 +108,18 @@ public class JdbcModule implements Module {
         }
         //
         if (loadTran) {
-            Provider<TransactionManager> managerProvider = new TransactionManagerProvider(this.dataSource);
-            Provider<TransactionTemplate> templateProvider = new TransactionTemplateProvider(this.dataSource);
+            Supplier<TransactionManager> managerProvider = new TransactionManagerProvider(this.dataSource);
+            Supplier<TransactionTemplate> templateProvider = new TransactionTemplateProvider(this.dataSource);
             if (StringUtils.isBlank(this.dataSourceID)) {
-                apiBinder.bindType(TransactionManager.class).toProvider(new SingleProvider<TransactionManager>(managerProvider));
-                apiBinder.bindType(TransactionTemplate.class).toProvider(new SingleProvider<TransactionTemplate>(templateProvider));
+                apiBinder.bindType(TransactionManager.class).toProvider(new SingleProvider<>(managerProvider));
+                apiBinder.bindType(TransactionTemplate.class).toProvider(new SingleProvider<>(templateProvider));
             } else {
-                apiBinder.bindType(TransactionManager.class).nameWith(this.dataSourceID).toProvider(new SingleProvider<TransactionManager>(managerProvider));
-                apiBinder.bindType(TransactionTemplate.class).nameWith(this.dataSourceID).toProvider(new SingleProvider<TransactionTemplate>(templateProvider));
+                apiBinder.bindType(TransactionManager.class).nameWith(this.dataSourceID).toProvider(new SingleProvider<>(managerProvider));
+                apiBinder.bindType(TransactionTemplate.class).nameWith(this.dataSourceID).toProvider(new SingleProvider<>(templateProvider));
             }
             TransactionInterceptor tranInter = new TransactionInterceptor(this.dataSource);
-            Matcher<Class<?>> matcherClass = Matchers.annotatedWithClass(Transactional.class);
-            Matcher<Method> matcherMethod = Matchers.annotatedWithMethod(Transactional.class);
+            Predicate<Class<?>> matcherClass = Matchers.annotatedWithClass(Transactional.class);
+            Predicate<Method> matcherMethod = Matchers.annotatedWithMethod(Transactional.class);
             apiBinder.bindInterceptor(matcherClass, matcherMethod, tranInter);
         }
     }

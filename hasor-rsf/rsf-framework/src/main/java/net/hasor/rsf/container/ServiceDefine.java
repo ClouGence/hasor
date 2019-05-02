@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.container;
 import net.hasor.core.Hasor;
-import net.hasor.core.Provider;
 import net.hasor.core.info.CustomerProvider;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfBindInfo;
@@ -25,6 +24,7 @@ import net.hasor.rsf.domain.warp.RsfBindInfoWrap;
 import net.hasor.utils.StringUtils;
 
 import java.util.*;
+import java.util.function.Supplier;
 /**
  * 服务对象，封装了服务元信息、RsfFilter、服务提供者（如果有）。
  * @version : 2014年11月12日
@@ -32,19 +32,19 @@ import java.util.*;
  */
 class ServiceDefine<T> extends RsfBindInfoWrap<T> implements CustomerProvider<T>, RsfBindInfo<T>, RsfDomainProvider<T> {
     private final List<FilterDefine>         filterList;
-    private       Provider<? extends T>      customerProvider;
+    private       Supplier<? extends T>      customerProvider;
     private       String                     oriFlowControl;
     private final Map<RouteTypeEnum, String> oriRouteScript;
     private final Set<InterAddress>          oriAddressSet;
     //
     public ServiceDefine(Class<T> bindType) {
-        this(new ServiceDomain<T>(Hasor.assertIsNotNull(bindType)));
+        this(new ServiceDomain<>(Hasor.assertIsNotNull(bindType)));
     }
     public ServiceDefine(ServiceDomain<T> domain) {
         super(Hasor.assertIsNotNull(domain));
-        this.filterList = new ArrayList<FilterDefine>();
-        this.oriRouteScript = new HashMap<RouteTypeEnum, String>();
-        this.oriAddressSet = new HashSet<InterAddress>();
+        this.filterList = new ArrayList<>();
+        this.oriRouteScript = new HashMap<>();
+        this.oriAddressSet = new HashSet<>();
     }
     /**添加Filter*/
     public void addRsfFilter(FilterDefine filterDefine) {
@@ -65,10 +65,10 @@ class ServiceDefine<T> extends RsfBindInfoWrap<T> implements CustomerProvider<T>
     }
     /**获取服务提供者。*/
     @Override
-    public Provider<? extends T> getCustomerProvider() {
+    public Supplier<? extends T> getCustomerProvider() {
         return this.customerProvider;
     }
-    public void setCustomerProvider(Provider<? extends T> customerProvider) {
+    public void setCustomerProvider(Supplier<? extends T> customerProvider) {
         this.customerProvider = customerProvider;
     }
     //

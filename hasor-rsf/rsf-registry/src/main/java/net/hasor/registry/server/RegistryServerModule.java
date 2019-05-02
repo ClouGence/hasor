@@ -24,13 +24,15 @@ import net.hasor.registry.storage.DataAdapter;
 import net.hasor.rsf.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 /**
  * 注册中心启动入口。
  *
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2015年5月5日
  */
-public class RegistryServerModule extends RsfModule implements LifeModule {
+public class RegistryServerModule implements RsfModule, LifeModule {
     protected Logger         logger         = LoggerFactory.getLogger(getClass());
     protected ServerSettings serverSettings = null;
     public RegistryServerModule(RsfEnvironment rsfEnvironment, RsfCenterSettings settings) throws ClassNotFoundException {
@@ -52,7 +54,7 @@ public class RegistryServerModule extends RsfModule implements LifeModule {
         this.logger.info("rsfCenter online.");
     }
     /** Center启动 */
-    protected void doStartCenter(RsfContext rsfContext) throws java.io.IOException {
+    protected void doStartCenter(RsfContext rsfContext) throws IOException {
         //
         RsfPublisher rsfBinder = rsfContext.publisher();
         rsfBinder.rsfService(RsfCenterRegister.class).to(RsfCenterRegisterProvider.class)//

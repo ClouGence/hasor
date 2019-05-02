@@ -15,18 +15,19 @@
  */
 package net.hasor.rsf.container;
 import net.hasor.core.Hasor;
-import net.hasor.core.Provider;
 import net.hasor.rsf.RsfFilter;
+
+import java.util.function.Supplier;
 /**
  * 获取服务上配置有效的过滤器。
  * @version : 2014年11月12日
  * @author 赵永春 (zyc@hasor.net)
  */
-class FilterDefine implements Provider<RsfFilter> {
+class FilterDefine implements Supplier<RsfFilter> {
     private String                        filterID;
-    private Provider<? extends RsfFilter> filterProvider;
+    private Supplier<? extends RsfFilter> filterProvider;
     //
-    public FilterDefine(String filterID, Provider<? extends RsfFilter> provider) {
+    public FilterDefine(String filterID, Supplier<? extends RsfFilter> provider) {
         this.filterID = filterID;
         this.filterProvider = Hasor.assertIsNotNull(provider);
     }
@@ -39,7 +40,7 @@ class FilterDefine implements Provider<RsfFilter> {
     public RsfFilter get() {
         return filterProvider.get();
     }
-    public Provider<? extends RsfFilter> getProvider() {
+    public Supplier<? extends RsfFilter> getProvider() {
         return filterProvider;
     }
     public String toString() {

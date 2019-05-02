@@ -30,7 +30,7 @@ import java.util.Set;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InvokerSupplier implements Invoker {
-    private Set<String>         lockKeys     = new HashSet<String>();
+    private Set<String>         lockKeys     = new HashSet<>();
     private HttpServletRequest  httpRequest  = null;
     private HttpServletResponse httpResponse = null;
     private AppContext          appContext   = null;
@@ -75,7 +75,7 @@ public class InvokerSupplier implements Invoker {
     @Override
     public Set<String> keySet() {
         Enumeration<String> names = this.httpRequest.getAttributeNames();
-        HashSet<String> nameSet = new HashSet<String>();
+        HashSet<String> nameSet = new HashSet<>();
         while (names.hasMoreElements()) {
             nameSet.add(names.nextElement());
         }

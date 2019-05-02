@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import net.hasor.utils.StringUtils;
+
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 /**
  * Hasor的核心接口，它为应用程序提供了一个统一的配置界面和运行环境。
  * @version : 2013-3-26
@@ -33,7 +38,9 @@ public interface AppContext extends MetaInfo {
     public Environment getEnvironment();
 
     /** 获取当创建Bean时使用的{@link ClassLoader} */
-    public ClassLoader getClassLoader();
+    public default ClassLoader getClassLoader() {
+        return this.getEnvironment().getClassLoader();
+    }
 
     /**
      * 模块启动通知，如果在启动期间发生异常，将会抛出该异常。
@@ -60,7 +67,14 @@ public interface AppContext extends MetaInfo {
     public String[] getBindIDs();
 
     /** @return 如果存在目标类型的 Bean 则返回 Bean 的名称 */
-    public String[] getNames(Class<?> targetClass);
+    public default String[] getNames(final Class<?> targetClass) {
+        Hasor.assertIsNotNull(targetClass, "targetClass is null.");
+        List<? extends BindInfo<?>> infoList = findBindingRegister(targetClass);
+        return infoList.stream()                                            //
+                .map((Function<BindInfo<?>, String>) BindInfo::getBindName) //
+                .filter(StringUtils::isNotBlank)                            //
+                .toArray(String[]::new);
+    }
 
     /** @return 判断是否存在某个 bindID */
     public boolean containsBindID(String bindID);
@@ -69,38 +83,61 @@ public interface AppContext extends MetaInfo {
     public <T> BindInfo<T> getBindInfo(String bindID);
 
     /** 根据类型获取{@link BindInfo}，该方法相当于 findBindingRegister(null,bindType) */
-    public <T> BindInfo<T> getBindInfo(Class<T> bindType);
+    public default <T> BindInfo<T> getBindInfo(Class<T> bindType) {
+        return findBindingRegister(null, bindType);
+    }
 
-    /** 根据构造方法获取{@link BindInfo}，该方法相当于 findBindingRegister(null,bindConstructor) */
-    public <T> BindInfo<T> getBindInfo(Constructor<T> bindConstructor);
-
-    /** 根据 bindID 创建Bean */
-    public <T> T getInstance(String bindID);
+    /** 根据ID 类型创建 Bean */
+    public default <T> T getInstance(String bindID) {
+        Hasor.assertIsNotNull(bindID, "bindID is null.");
+        BindInfo<T> bindInfo = getBindInfo(bindID);
+        if (bindInfo != null) {
+            return this.getInstance(bindInfo);
+        }
+        return null;
+    }
 
     /** 根据类型创建 Bean */
-    public <T> T getInstance(Class<T> targetClass);
+    public default <T> T getInstance(Class<T> targetClass) {
+        Hasor.assertIsNotNull(targetClass, "targetClass is null.");
+        return this.getProvider(targetClass).get();
+    }
 
     /** 根据构造方法创建 Bean */
-    public <T> T getInstance(Constructor<T> targetConstructor);
+    public default <T> T getInstance(Constructor<T> targetConstructor) {
+        Hasor.assertIsNotNull(targetConstructor, "targetConstructor is null.");
+        return this.getProvider(targetConstructor).get();
+    }
 
     /** 根据 BindInfo 创建 Bean */
-    public <T> T getInstance(BindInfo<T> info);
+    public default <T> T getInstance(BindInfo<T> info) {
+        Supplier<? extends T> provider = this.getProvider(info);
+        if (provider != null) {
+            return provider.get();
+        }
+        return null;
+    }
 
     /** 根据 bindID 创建 Bean 的 Provider */
-    public <T> Provider<? extends T> getProvider(String bindID);
+    public <T> Supplier<? extends T> getProvider(String bindID);
 
     /** 根据类型创建创建 Bean 的 Provider */
-    public <T> Provider<? extends T> getProvider(Class<T> targetClass);
+    public <T> Supplier<? extends T> getProvider(Class<T> targetClass);
 
     /** 根据构造方法创建 Bean 的 Provider */
-    public <T> Provider<? extends T> getProvider(Constructor<T> targetConstructor);
+    public <T> Supplier<? extends T> getProvider(Constructor<T> targetConstructor);
 
     /** 根据 BindInfo 创建 Bean 的 Provider */
-    public <T> Provider<? extends T> getProvider(BindInfo<T> info);
+    public <T> Supplier<? extends T> getProvider(BindInfo<T> info);
 
     /** 对 object 对象仅执行依赖注入，要注入的属性等信息参照：findBindingRegister(null,object.getClass())。
      * 如果参照信息为空，那么将直接 return object。 */
-    public <T> T justInject(T object);
+    public default <T> T justInject(T object) {
+        if (object == null) {
+            return null;
+        }
+        return this.justInject(object, object.getClass());
+    }
 
     /** 对 object 对象仅执行依赖注入，要注入的属性等信息参照：findBindingRegister(null,bindType)。
      * 如果参照信息为空，那么将直接 return object。 */
@@ -118,7 +155,11 @@ public interface AppContext extends MetaInfo {
      * @param bindType bean type
      * @return 返回符合条件的绑定对象。
      */
-    public <T> List<T> findBindingBean(Class<T> bindType);
+    public default <T> List<T> findBindingBean(final Class<T> bindType) {
+        return this.findBindingRegister(bindType).stream()  //
+                .map(this::getInstance)                     //
+                .collect(Collectors.toList());
+    }
 
     /**
      * 获取可以构建出 bindType 的所有 BindInfo，最后创建这些 Bean 对象
@@ -126,7 +167,11 @@ public interface AppContext extends MetaInfo {
      * @param bindType bean type
      * @return 返回符合条件的绑定对象。
      */
-    public <T> List<Provider<? extends T>> findBindingProvider(Class<T> bindType);
+    public default <T> List<Supplier<? extends T>> findBindingProvider(final Class<T> bindType) {
+        return this.findBindingRegister(bindType).stream()  //
+                .map((Function<BindInfo<T>, Supplier<? extends T>>) this::getProvider)//
+                .collect(Collectors.toList());
+    }
 
     /**
      * 根据名字和类型查找对应的 BindInfo 然后创建这个 Bean。
@@ -134,7 +179,14 @@ public interface AppContext extends MetaInfo {
      * @param bindType bean type
      * @return 返回符合条件的绑定对象。
      */
-    public <T> T findBindingBean(String withName, Class<T> bindType);
+    public default <T> T findBindingBean(final String withName, final Class<T> bindType) {
+        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        BindInfo<T> typeRegister = this.findBindingRegister(withName, bindType);
+        if (typeRegister != null) {
+            return this.getInstance(typeRegister);
+        }
+        return null;
+    }
 
     /**
      * 根据名字和类型查找对应的 BindInfo 然后创建这个 Bean。
@@ -143,7 +195,12 @@ public interface AppContext extends MetaInfo {
      * @param bindType bean type
      * @return 返回{@link Provider}形式对象。
      */
-    public <T> Provider<? extends T> findBindingProvider(String withName, Class<T> bindType);
+    public default <T> Supplier<? extends T> findBindingProvider(final String withName, final Class<T> bindType) {
+        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        return findBindingRegister(bindType).stream().filter(bindInfo -> {
+            return StringUtils.equals(bindInfo.getBindName(), withName);
+        }).findFirst().map((Function<BindInfo<T>, Supplier<? extends T>>) this::getProvider).orElse(null);
+    }
 
     /**
      * 获取可以构建出 bindType 的所有 BindInfo。
@@ -158,13 +215,10 @@ public interface AppContext extends MetaInfo {
      * @param bindType bean type
      * @return 返回所有符合条件的绑定信息。
      */
-    public <T> BindInfo<T> findBindingRegister(String withName, Class<T> bindType);
-
-    /**
-     * 根据名字和构造方法查找对应的 BindInfo。
-     * @param withName 绑定名
-     * @param bindConstructor bean Constructor
-     * @return 返回所有符合条件的绑定信息。
-     */
-    public <T> BindInfo<T> findBindingRegister(String withName, Constructor<T> bindConstructor);
+    public default <T> BindInfo<T> findBindingRegister(String withName, Class<T> bindType) {
+        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        return findBindingRegister(bindType).stream().filter(bindInfo -> {
+            return StringUtils.equals(bindInfo.getBindName(), withName);
+        }).findFirst().orElse(null);
+    }
 }

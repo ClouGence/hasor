@@ -17,6 +17,7 @@ import org.powermock.api.mockito.PowerMockito;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 import static net.hasor.core.AppContext.ContextEvent_Started;
 import static org.mockito.Matchers.anyObject;
@@ -243,13 +244,8 @@ public class BeanContainerTest {
         PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         //
         final AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-        BeanCreaterListener<Object> listener = new BeanCreaterListener<Object>() {
-            @Override
-            public void beanCreated(Object newObject, BindInfo bindInfo) throws Throwable {
-                atomicBoolean.set(true);
-            }
-        };
-        Provider<? extends BeanCreaterListener<?>> createrProvider = InstanceProvider.of(listener);
+        BeanCreaterListener<Object> listener = (newObject, bindInfo) -> atomicBoolean.set(true);
+        Supplier<? extends BeanCreaterListener<?>> createrProvider = InstanceProvider.of(listener);
         //
         AbstractBindInfoProviderAdapter<?> adapter = container.createInfoAdapter(AnnoCallInitBean.class);
         adapter.setBindID("12345");

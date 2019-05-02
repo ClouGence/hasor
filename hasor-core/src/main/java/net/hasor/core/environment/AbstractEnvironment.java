@@ -21,8 +21,6 @@ import net.hasor.core.XmlNode;
 import net.hasor.core.aop.AopClassLoader;
 import net.hasor.core.event.StandardEventManager;
 import net.hasor.core.setting.AbstractSettings;
-import net.hasor.core.setting.SettingValue;
-import net.hasor.core.setting.UpdateValue;
 import net.hasor.core.setting.xml.DefaultXmlNode;
 import net.hasor.utils.ScanClassPath;
 import net.hasor.utils.StringUtils;
@@ -54,7 +52,7 @@ public abstract class AbstractEnvironment implements Environment {
         this.settings = settings;
         this.context = context;
         this.rootLosder = new AopClassLoader();
-        this.envMap = new ConcurrentHashMap<String, String>();
+        this.envMap = new ConcurrentHashMap<>();
     }
     @Override
     public Object getContext() {
@@ -85,6 +83,10 @@ public abstract class AbstractEnvironment implements Environment {
     @Override
     public final EventContext getEventContext() {
         return this.eventManager;
+    }
+    @Override
+    public boolean isSmaller() {
+        return "smaller".equalsIgnoreCase(this.evalString("%RUN_MODE%"));
     }
     //
     // ------------------------------------------------------------------------------- findClass */
@@ -175,7 +177,7 @@ public abstract class AbstractEnvironment implements Environment {
     /**初始化方法*/
     protected final void initEnvironment(Map<String, String> frameworkEnvConfig) throws IOException {
         // .load & init
-        this.envMap = new ConcurrentHashMap<String, String>();
+        this.envMap = new ConcurrentHashMap<>();
         logger.debug("load envVars...");
         // .vars
         this.initEnvConfig(frameworkEnvConfig);
@@ -183,7 +185,7 @@ public abstract class AbstractEnvironment implements Environment {
         //
         // .Packages
         String[] spanPackages = this.getSettings().getStringArray("hasor.loadPackages", "net.hasor.core.*,net.hasor.plugins.*");
-        Set<String> allPack = new HashSet<String>();
+        Set<String> allPack = new HashSet<>();
         for (String packs : spanPackages) {
             if (StringUtils.isBlank(packs)) {
                 continue;
@@ -196,7 +198,7 @@ public abstract class AbstractEnvironment implements Environment {
                 allPack.add(pack.trim());
             }
         }
-        ArrayList<String> spanPackagesArrays = new ArrayList<String>(allPack);
+        ArrayList<String> spanPackagesArrays = new ArrayList<>(allPack);
         Collections.sort(spanPackagesArrays);
         this.spanPackage = spanPackagesArrays.toArray(new String[0]);
         if (logger.isInfoEnabled()) {
@@ -238,7 +240,7 @@ public abstract class AbstractEnvironment implements Environment {
         // .3st，配置文件"hasor.environmentVar"
         Settings settings = getSettings();
         XmlNode[] xmlPropArray = settings.getXmlNodeArray("hasor.environmentVar");
-        List<String> envNames = new ArrayList<String>();//用于收集环境变量名称
+        List<String> envNames = new ArrayList<>();//用于收集环境变量名称
         for (XmlNode xmlProp : xmlPropArray) {
             for (XmlNode envItem : xmlProp.getChildren()) {
                 envNames.add(envItem.getName().toUpperCase());
@@ -266,31 +268,28 @@ public abstract class AbstractEnvironment implements Environment {
     /* ------------------------------------------------------------------------------------ init */
     @Override
     public void refreshVariables() {
-        this.getSettings().resetValues(new UpdateValue() {
-            @Override
-            public void update(SettingValue oldValue, Settings context) {
-                ArrayList<Object> varArrays = new ArrayList<Object>(oldValue.getVarList());
-                //
-                for (int index = 0; index < varArrays.size(); index++) {
-                    Object var = varArrays.get(index);
-                    if (var instanceof DefaultXmlNode) {
-                        DefaultXmlNode xmlVar = (DefaultXmlNode) var;
-                        // .引用类型-直接更新引用对象的属性值。
-                        String val = evalSettingString(xmlVar.getText());
-                        xmlVar.setText(val);//引用类型
-                        Map<String, String> attributeMap = xmlVar.getAttributeMap();
-                        for (String attrKey : attributeMap.keySet()) {
-                            String newValue = evalSettingString(attributeMap.get(attrKey));
-                            attributeMap.put(attrKey, newValue);
-                        }
-                    } else if (var instanceof CharSequence) {
-                        // .String类型-通过replace替换。
-                        String oldVal = String.valueOf(var);
-                        String newVal = evalSettingString(oldVal);
-                        oldValue.replace(index, var, newVal);//值类型
-                    } else {
-                        //TODO
+        this.getSettings().resetValues((oldValue, context) -> {
+            ArrayList<Object> varArrays = new ArrayList<>(oldValue.getVarList());
+            //
+            for (int index = 0; index < varArrays.size(); index++) {
+                Object var = varArrays.get(index);
+                if (var instanceof DefaultXmlNode) {
+                    DefaultXmlNode xmlVar = (DefaultXmlNode) var;
+                    // .引用类型-直接更新引用对象的属性值。
+                    String val = evalSettingString(xmlVar.getText());
+                    xmlVar.setText(val);//引用类型
+                    Map<String, String> attributeMap = xmlVar.getAttributeMap();
+                    for (String attrKey : attributeMap.keySet()) {
+                        String newValue = evalSettingString(attributeMap.get(attrKey));
+                        attributeMap.put(attrKey, newValue);
                     }
+                } else if (var instanceof CharSequence) {
+                    // .String类型-通过replace替换。
+                    String oldVal = String.valueOf(var);
+                    String newVal = evalSettingString(oldVal);
+                    oldValue.replace(index, var, newVal);//值类型
+                } else {
+                    //TODO
                 }
             }
         });

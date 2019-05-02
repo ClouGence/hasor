@@ -15,14 +15,15 @@
  */
 package net.hasor.rsf.container;
 import net.hasor.core.AppContext;
-import net.hasor.core.Provider;
 import net.hasor.rsf.RsfFilter;
+
+import java.util.function.Supplier;
 /**
- * RsfFilter的{@link Provider}封装形式。
+ * RsfFilter的{@link Supplier}封装形式。
  * @version : 2014年7月8日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RsfFilterProvider implements Provider<RsfFilter> {
+public class RsfFilterProvider implements Supplier<RsfFilter> {
     private Class<? extends RsfFilter> rsfFilterType;
     private AppContext                 appContext;
     //

@@ -35,6 +35,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Supplier;
 
 import static net.hasor.core.AppContext.ContextEvent_Shutdown;
 import static net.hasor.core.AppContext.ContextEvent_Started;
@@ -48,10 +49,10 @@ public class Hasor extends HashMap<String, String> {
     private final    Object                           context;
     private          Object                           mainSettings           = TemplateAppContext.DefaultSettings;
     private          StreamType                       mainSettingsStreamType = null;
-    private final    List<Module>                     moduleList             = new ArrayList<Module>();
+    private final    List<Module>                     moduleList             = new ArrayList<>();
     private          ClassLoader                      loader;
     private          ContainerCreater                 creater;
-    private          Map<String, Map<String, Object>> initSettingMap         = new HashMap<String, Map<String, Object>>();
+    private          Map<String, Map<String, Object>> initSettingMap         = new HashMap<>();
     private          boolean                          asSmaller              = false;
     //
     protected Hasor(Object context) {
@@ -91,11 +92,7 @@ public class Hasor extends HashMap<String, String> {
         if (StringUtils.isBlank(namespace) || StringUtils.isBlank(key)) {
             return this;
         }
-        Map<String, Object> stringMap = this.initSettingMap.get(namespace);
-        if (stringMap == null) {
-            stringMap = new HashMap<String, Object>();
-            this.initSettingMap.put(namespace, stringMap);
-        }
+        Map<String, Object> stringMap = this.initSettingMap.computeIfAbsent(namespace, k -> new HashMap<>());
         stringMap.put(key, value);
         return this;
     }
@@ -153,16 +150,11 @@ public class Hasor extends HashMap<String, String> {
         this.asSmaller = true;
         return this;
     }
-    private static Provider<AppContext> singletonHasor = null;
+    private static Supplier<AppContext> singletonHasor = null;
     public AppContext asStaticSingleton() {
         AppContext appContext = localAppContext();
         if (appContext == null) {
-            singletonHasor = new SingleProvider<AppContext>(new Provider<AppContext>() {
-                @Override
-                public AppContext get() {
-                    return Hasor.this.build();
-                }
-            });
+            singletonHasor = new SingleProvider<>(Hasor.this::build);
             return singletonHasor.get();
         }
         throw new IllegalStateException("Hasor has been initialized.");
@@ -170,12 +162,7 @@ public class Hasor extends HashMap<String, String> {
     public AppContext asThreadSingleton() {
         AppContext appContext = localAppContext();
         if (appContext == null) {
-            singletonHasor = new ThreadSingleProvider<AppContext>(new Provider<AppContext>() {
-                @Override
-                public AppContext get() {
-                    return Hasor.this.build();
-                }
-            });
+            singletonHasor = new ThreadSingleProvider<>(Hasor.this::build);
             return singletonHasor.get();
         }
         throw new IllegalStateException("Hasor has been initialized.");
@@ -183,12 +170,7 @@ public class Hasor extends HashMap<String, String> {
     public AppContext asContextSingleton() {
         AppContext appContext = localAppContext();
         if (appContext == null) {
-            singletonHasor = new ClassLoaderSingleProvider<AppContext>(new Provider<AppContext>() {
-                @Override
-                public AppContext get() {
-                    return Hasor.this.build();
-                }
-            });
+            singletonHasor = new ClassLoaderSingleProvider<>(Hasor.this::build);
             return singletonHasor.get();
         }
         throw new IllegalStateException("Hasor has been initialized.");
@@ -213,6 +195,7 @@ public class Hasor extends HashMap<String, String> {
         // .单独处理RUN_PATH
         String runPath = new File("").getAbsolutePath();
         this.putData("RUN_PATH", runPath);
+        this.putData("RUN_MODE", this.asSmaller ? "smaller" : "none");
         if (logger.isInfoEnabled()) {
             logger.info("runPath at {}", runPath);
         }
@@ -220,12 +203,7 @@ public class Hasor extends HashMap<String, String> {
         if (this.asSmaller) {
             this.putData("HASOR_LOAD_MODULE", "false");
             this.putData("HASOR_LOAD_EXTERNALBINDER", "false");
-            StandardContextSettings.setLoadMatcher(new Matcher<String>() {
-                @Override
-                public boolean matches(String target) {
-                    return "/META-INF/hasor-framework/core-hconfig.xml".equals(target);
-                }
-            });
+            StandardContextSettings.setLoadMatcher("/META-INF/hasor-framework/core-hconfig.xml"::equals);
         }
         //
         try {
@@ -287,15 +265,13 @@ public class Hasor extends HashMap<String, String> {
      * @param awareProvider 需要被注册的 AppContextAware 接口实现对象。
      * @return 返回 aware 参数本身。
      */
-    public static <T extends AppContextAware> Provider<T> autoAware(Environment env, final Provider<T> awareProvider) {
+    public static <T extends AppContextAware> Supplier<T> autoAware(Environment env, final Supplier<T> awareProvider) {
         if (awareProvider == null) {
             return null;
         }
         Hasor.assertIsNotNull(env, "EventContext is null.");
-        env.getEventContext().pushListener(ContextEvent_Started, new EventListener<AppContext>() {
-            public void onEvent(String event, AppContext eventData) throws Throwable {
-                awareProvider.get().setAppContext(eventData);
-            }
+        env.getEventContext().pushListener(ContextEvent_Started, (EventListener<AppContext>) (event, eventData) -> {
+            awareProvider.get().setAppContext(eventData);
         });
         return awareProvider;
     }
@@ -309,10 +285,8 @@ public class Hasor extends HashMap<String, String> {
             return null;
         }
         Hasor.assertIsNotNull(env, "EventContext is null.");
-        env.getEventContext().pushListener(ContextEvent_Started, new EventListener<AppContext>() {
-            public void onEvent(String event, AppContext eventData) throws Throwable {
-                aware.setAppContext(eventData);
-            }
+        env.getEventContext().pushListener(ContextEvent_Started, (EventListener<AppContext>) (event, eventData) -> {
+            aware.setAppContext(eventData);
         });
         return aware;
     }
@@ -336,40 +310,23 @@ public class Hasor extends HashMap<String, String> {
         return eventListener;
     }
     public static <T extends EventListener<AppContext>> BindInfo<T> pushStartListener(Environment env, final BindInfo<T> eventListener) {
-        env.getEventContext().pushListener(ContextEvent_Started, new EventListener<AppContext>() {
-            @Override
-            public void onEvent(String event, AppContext eventData) throws Throwable {
-                eventData.getInstance(eventListener).onEvent(event, eventData);
-            }
-        });
+        env.getEventContext().pushListener(ContextEvent_Started, doLazyCallEvent(eventListener));
         return eventListener;
     }
     public static <T extends EventListener<AppContext>> BindInfo<T> pushShutdownListener(Environment env, final BindInfo<T> eventListener) {
-        env.getEventContext().pushListener(ContextEvent_Shutdown, new EventListener<AppContext>() {
-            @Override
-            public void onEvent(String event, AppContext eventData) throws Throwable {
-                eventData.getInstance(eventListener).onEvent(event, eventData);
-            }
-        });
+        env.getEventContext().pushListener(ContextEvent_Shutdown, doLazyCallEvent(eventListener));
         return eventListener;
     }
     public static <T extends EventListener<AppContext>> BindInfo<T> addStartListener(Environment env, final BindInfo<T> eventListener) {
-        env.getEventContext().pushListener(ContextEvent_Started, new EventListener<AppContext>() {
-            @Override
-            public void onEvent(String event, AppContext eventData) throws Throwable {
-                eventData.getInstance(eventListener).onEvent(event, eventData);
-            }
-        });
+        env.getEventContext().pushListener(ContextEvent_Started, doLazyCallEvent(eventListener));
         return eventListener;
     }
     public static <T extends EventListener<AppContext>> BindInfo<T> addShutdownListener(Environment env, final BindInfo<T> eventListener) {
-        env.getEventContext().pushListener(ContextEvent_Shutdown, new EventListener<AppContext>() {
-            @Override
-            public void onEvent(String event, AppContext eventData) throws Throwable {
-                eventData.getInstance(eventListener).onEvent(event, eventData);
-            }
-        });
+        env.getEventContext().pushListener(ContextEvent_Shutdown, doLazyCallEvent(eventListener));
         return eventListener;
+    }
+    private static EventListener<AppContext> doLazyCallEvent(BindInfo<? extends EventListener<AppContext>> bindInfo) {
+        return (event1, eventData) -> eventData.getInstance(bindInfo).onEvent(event1, eventData);
     }
     //
     //

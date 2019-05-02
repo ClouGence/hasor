@@ -38,6 +38,7 @@ import java.lang.reflect.*;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 /**
  * 负责创建Bean对象，以及依赖注入和Aop的实现。
  * @version : 2015年6月26日
@@ -49,7 +50,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
     private static   ConcurrentHashMap<Class<?>, AopClassConfig> buildEngineMap = null;
 
     static {
-        buildEngineMap = new ConcurrentHashMap<Class<?>, AopClassConfig>();
+        buildEngineMap = new ConcurrentHashMap<>();
         converterUtils = new ConverterBean();
         converterUtils.deregister();
         converterUtils.register(true, true, 0);
@@ -62,37 +63,27 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
     //
     //
     //
-    public <T> Provider<? extends T> getProvider(final Class<T> targetType, final AppContext appContext) {
+    public <T> Supplier<? extends T> getProvider(final Class<T> targetType, final AppContext appContext) {
         if (targetType == null) {
             return null;
         }
-        return new Provider<T>() {
-            @Override
-            public T get() {
-                return createObject(targetType, null, null, appContext);
-            }
-        };
+        return (Supplier<T>) () -> createObject(targetType, null, null, appContext);
     }
     //
-    public <T> Provider<? extends T> getProvider(final Constructor<T> targetConstructor, final AppContext appContext) {
+    public <T> Supplier<? extends T> getProvider(final Constructor<T> targetConstructor, final AppContext appContext) {
         if (targetConstructor == null) {
             return null;
         }
-        return new Provider<T>() {
-            @Override
-            public T get() {
-                return createObject(targetConstructor.getDeclaringClass(), targetConstructor, null, appContext);
-            }
-        };
+        return (Supplier<T>) () -> createObject(targetConstructor.getDeclaringClass(), targetConstructor, null, appContext);
     }
     //
-    public <T> Provider<? extends T> getProvider(final BindInfo<T> bindInfo, final AppContext appContext) {
+    public <T> Supplier<? extends T> getProvider(final BindInfo<T> bindInfo, final AppContext appContext) {
         if (bindInfo == null) {
             return null;
         }
         //
-        Provider<? extends T> instanceProvider = null;
-        Provider<Scope> scopeProvider = null;
+        Supplier<? extends T> instanceProvider = null;
+        Supplier<? extends Scope> scopeProvider = null;
         //
         //可能存在的 CustomerProvider
         if (bindInfo instanceof CustomerProvider) {
@@ -106,15 +97,13 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         }
         //create Provider.
         if (instanceProvider == null && bindInfo instanceof AbstractBindInfoProviderAdapter) {
-            instanceProvider = new Provider<T>() {
-                public T get() {
-                    Class<T> targetType = bindInfo.getBindType();
-                    Class<T> superType = ((AbstractBindInfoProviderAdapter) bindInfo).getSourceType();
-                    if (superType != null) {
-                        targetType = superType;
-                    }
-                    return createObject(targetType, null, bindInfo, appContext);
+            instanceProvider = (Supplier<T>) () -> {
+                Class<T> targetType = bindInfo.getBindType();
+                Class<T> superType = ((AbstractBindInfoProviderAdapter) bindInfo).getSourceType();
+                if (superType != null) {
+                    targetType = superType;
                 }
+                return createObject(targetType, null, bindInfo, appContext);
             };
         } else if (instanceProvider == null) {
             instanceProvider = getProvider(bindInfo.getBindType(), appContext);
@@ -183,7 +172,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             if (engine == null) {
                 engine = new AopClassConfig(targetType, rootLoader);
                 for (AopBindInfoAdapter aop : aopList) {
-                    if (!aop.getMatcherClass().matches(targetType)) {
+                    if (!aop.getMatcherClass().test(targetType)) {
                         continue;
                     }
                     engine.addAopInterceptor(aop.getMatcherMethod(), aop);
@@ -208,7 +197,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
             constructor = defBinder.getConstructor(newType, appContext);
             //
-            Provider<?>[] paramProviders = defBinder.getConstructorParams(appContext);
+            Supplier<?>[] paramProviders = defBinder.getConstructorParams(appContext);
             paramObjects = new Object[paramProviders.length];
             for (int i = 0; i < paramProviders.length; i++) {
                 paramObjects[i] = paramProviders[i].get();
@@ -327,12 +316,12 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
     }
     /**/
     private <T> void injectObject(T targetBean, BindInfo<?> bindInfo, AppContext appContext, Class<?> targetType) {
-        Set<String> injectFileds = new HashSet<String>();
+        Set<String> injectFileds = new HashSet<>();
         /*a.配置注入*/
         if (bindInfo != null && bindInfo instanceof DefaultBindInfoProviderAdapter) {
             DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
-            Map<String, Provider<?>> propMaps = defBinder.getPropertys(appContext);
-            for (Entry<String, Provider<?>> propItem : propMaps.entrySet()) {
+            Map<String, Supplier<?>> propMaps = defBinder.getPropertys(appContext);
+            for (Entry<String, Supplier<?>> propItem : propMaps.entrySet()) {
                 String propertyName = propItem.getKey();
                 Class<?> propertyType = BeanUtils.getPropertyOrFieldType(targetType, propertyName);
                 boolean canWrite = BeanUtils.canWriteProperty(propertyName, targetType);
@@ -340,7 +329,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
                 if (!canWrite) {
                     throw new IllegalStateException("doInject, property " + propertyName + " can not write.");
                 }
-                Provider<?> provider = propItem.getValue();
+                Supplier<?> provider = propItem.getValue();
                 if (provider == null) {
                     throw new IllegalStateException("can't injection ,property " + propertyName + " data Provider is null.");
                 }
@@ -479,9 +468,9 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
     private void doOptions(Object targetBean, BindInfo<?> bindInfo) throws Throwable {
         //
         if (bindInfo instanceof AbstractBindInfoProviderAdapter) {
-            List<Provider<? extends BeanCreaterListener<?>>> listenerList = ((AbstractBindInfoProviderAdapter<?>) bindInfo).getCreaterListener();
+            List<Supplier<? extends BeanCreaterListener<?>>> listenerList = ((AbstractBindInfoProviderAdapter<?>) bindInfo).getCreaterListener();
             if (listenerList != null && !listenerList.isEmpty()) {
-                for (Provider<? extends BeanCreaterListener<?>> provider : listenerList) {
+                for (Supplier<? extends BeanCreaterListener<?>> provider : listenerList) {
                     try {
                         BeanCreaterListener<Object> createrListener = (BeanCreaterListener<Object>) provider.get();
                         createrListener.beanCreated(targetBean, bindInfo);

@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.plugins.spring.rsf;
-import net.hasor.core.Provider;
 import net.hasor.rsf.RsfPublisher;
+
+import java.util.function.Supplier;
 /**
  * 服务提供者
  * @version : 2016-11-08
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RsfProviderBean extends AbstractRsfBean implements Provider<Object> {
-    private Object target;
+public class RsfProviderBean extends AbstractRsfBean implements Supplier<Object> {
+    private Object  target;
     private boolean sharedThreadPool = true;
     public Object getTarget() {
         return target;

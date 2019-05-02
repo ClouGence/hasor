@@ -15,11 +15,11 @@
  */
 package net.hasor.core.container.aop;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Matcher;
 import net.hasor.core.Module;
 import net.hasor.core.exts.aop.Matchers;
 
 import java.lang.reflect.Method;
+import java.util.function.Predicate;
 /**
  * 让自定义MyAop注解生效。
  * @version : 2015年11月9日
@@ -28,9 +28,9 @@ import java.lang.reflect.Method;
 public class MyAopSetup implements Module {
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //1.任意类
-        Matcher<Class<?>> atClass = Matchers.anyClass();
+        Predicate<Class<?>> atClass = Matchers.anyClass();
         //2.有MyAop注解的方法
-        Matcher<Method> atMethod = Matchers.annotatedWithMethod(MyAop.class);
+        Predicate<Method> atMethod = Matchers.annotatedWithMethod(MyAop.class);
         //3.让@MyAop注解生效
         apiBinder.bindInterceptor(atClass, atMethod, new TestInterceptor());
     }

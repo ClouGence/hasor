@@ -22,7 +22,7 @@
 
     <!-- 配置属性 -->
     <properties>
-        <hasor.version>3.2.3-SNAPSHOT</hasor.version>
+        <hasor.version>3.3.0-SNAPSHOT</hasor.version>
         <wtpversion>2.0</wtpversion>
         <downloadSources>true</downloadSources>
         <downloadJavadocs>true</downloadJavadocs>
@@ -39,8 +39,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.5.1</version>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <encoding>UTF8</encoding>
                 </configuration>
             </plugin>

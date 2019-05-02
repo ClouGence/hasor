@@ -1,7 +1,6 @@
 package net.hasor.core.container;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Provider;
 import net.hasor.core.SingletonMode;
 import net.hasor.core.container.anno.*;
 import net.hasor.core.container.beans.SimpleBean;
@@ -14,6 +13,7 @@ import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 public class BeanSingletonTest {
     private StandardEnvironment env;
     @Before
@@ -89,7 +89,7 @@ public class BeanSingletonTest {
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
-        Provider<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
+        Supplier<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);
         //
         // . default is Prototype (config from Config)
@@ -117,7 +117,7 @@ public class BeanSingletonTest {
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
-        Provider<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
+        Supplier<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);
         //
         // . default is Prototype (config from Config)
@@ -145,7 +145,7 @@ public class BeanSingletonTest {
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
-        Provider<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
+        Supplier<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);
         //
         // . default is Prototype (config from Config)
@@ -190,7 +190,7 @@ public class BeanSingletonTest {
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
-        Provider<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
+        Supplier<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);
         //
         // . Override to clear
@@ -222,7 +222,7 @@ public class BeanSingletonTest {
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
-        Provider<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
+        Supplier<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);
         //
         // . Override to clear
@@ -254,7 +254,7 @@ public class BeanSingletonTest {
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
-        Provider<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
+        Supplier<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);
         //
         // . Override to clear
@@ -288,7 +288,7 @@ public class BeanSingletonTest {
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
-        Provider<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
+        Supplier<SingletonScope> singletonScope = InstanceProvider.of(new SingletonScope());
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);
         //
         // .

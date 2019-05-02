@@ -19,6 +19,7 @@ package net.hasor.dataql;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
+@FunctionalInterface
 public interface UDF {
     /** 执行服务调用 */
     public Object call(Object[] values, Option readOnly) throws Throwable;

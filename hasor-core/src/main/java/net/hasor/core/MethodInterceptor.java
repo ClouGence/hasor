@@ -18,6 +18,7 @@ package net.hasor.core;
  * }
  * </pre>
  */
+@FunctionalInterface
 public interface MethodInterceptor {
     /**
      * implement this method to perform extra treatments before and after the invocation.

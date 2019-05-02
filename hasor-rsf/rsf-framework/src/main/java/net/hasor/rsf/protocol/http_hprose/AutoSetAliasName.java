@@ -29,7 +29,7 @@ import static io.netty.handler.codec.http.HttpHeaders.Names.ORIGIN;
  * @version : 2017年02月23日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class AutoSetAliasName extends RsfModule implements EventListener<Object> {
+public class AutoSetAliasName implements RsfModule, EventListener<Object> {
     @Override
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
         // .添加 Listener 用于监听 Provider、Consumer 的注册事件，在事件处理中补增 Hprose 别名。

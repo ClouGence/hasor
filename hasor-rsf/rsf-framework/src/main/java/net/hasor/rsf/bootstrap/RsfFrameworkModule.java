@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.bootstrap;
-import net.hasor.core.Provider;
 import net.hasor.core.context.ContextShutdownListener;
 import net.hasor.core.context.ContextStartListener;
 import net.hasor.rsf.*;
@@ -31,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * @version : 2014年11月12日
  * @author 赵永春 (zyc@hasor.net)
  */
-public final class RsfFrameworkModule extends RsfModule {
+public final class RsfFrameworkModule implements RsfModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public final void loadModule(RsfApiBinder apiBinder) throws Throwable {
@@ -53,11 +52,7 @@ public final class RsfFrameworkModule extends RsfModule {
         apiBinder.bindType(RsfContext.class).toInstance(rsfContext);
         apiBinder.bindType(OnlineStatus.class).toInstance(rsfContext);
         apiBinder.bindType(RsfUpdater.class).toInstance(rsfContext.getUpdater());
-        apiBinder.bindType(RsfClient.class).toProvider(new Provider<RsfClient>() {
-            public RsfClient get() {
-                return rsfContext.getRsfClient();
-            }
-        });
+        apiBinder.bindType(RsfClient.class).toProvider(rsfContext::getRsfClient);
         apiBinder.bindType(RsfRequest.class).toInstance(new RsfRequestLocal());
         apiBinder.bindType(RsfResponse.class).toInstance(new RsfResponseLocal());
         //

@@ -40,7 +40,7 @@ public abstract class AbstractSettings implements Settings {
     private static final SettingValue[]                    EMPTY_SETTING_VALUE = new SettingValue[0];
     private              DecSpaceMap<String, SettingValue> dataMap;
     public AbstractSettings() {
-        this.dataMap = new DecSpaceMap<String, SettingValue>();
+        this.dataMap = new DecSpaceMap<>();
     }
     //
     //
@@ -69,7 +69,7 @@ public abstract class AbstractSettings implements Settings {
     /** 获取可用的命名空间。 */
     public String[] getSettingArray() {
         Set<String> nsSet = this.allSettingValue().spaceSet();
-        return nsSet.toArray(new String[nsSet.size()]);
+        return nsSet.toArray(new String[0]);
     }
     /** 获取指在某个特定命名空间下的Settings接口对象。 */
     public final AbstractSettings getSettings(final String namespace) {

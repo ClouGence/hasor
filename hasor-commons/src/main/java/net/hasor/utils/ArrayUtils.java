@@ -3382,7 +3382,7 @@ public class ArrayUtils {
      * in which case it will have the same type as the element.
      * @since 2.1
      */
-    public static Object[] add(final Object[] array, final Object element) {
+    public static <T> T[] add(final T[] array, final T element) {
         Class<?> type;
         if (array != null) {
             type = array.getClass();
@@ -3391,7 +3391,7 @@ public class ArrayUtils {
         } else {
             type = Object.class;
         }
-        Object[] newArray = (Object[]) ArrayUtils.copyArrayGrow1(array, type);
+        T[] newArray = (T[]) ArrayUtils.copyArrayGrow1(array, type);
         newArray[newArray.length - 1] = element;
         return newArray;
     }

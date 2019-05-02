@@ -24,8 +24,6 @@ import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import net.hasor.web.annotation.MappingTo;
-
-import java.util.Set;
 /**
  * Hasor API 引导式配置
  * @version : 2015年12月25日
@@ -42,10 +40,8 @@ public class StartModule extends WebModule implements LifeModule {
         // 设置freemarker渲染器
         apiBinder.suffix("htm").bind(MyFreemarkerRender.class);
         //
-        // 扫描所有带有 @MappingTo 特征类
-        Set<Class<?>> aClass = apiBinder.findClass(MappingTo.class);
-        // 对 aClass 集合进行发现并自动配置控制器
-        apiBinder.loadMappingTo(aClass);
+        // 扫描所有带有 @MappingTo 特征类并自动配置控制器
+        apiBinder.loadMappingTo(apiBinder.findClass(MappingTo.class));
         //
         // .数据库配置
         Settings settings = apiBinder.getEnvironment().getSettings();

@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import net.hasor.core.*;
+import net.hasor.core.BeanCreaterListener;
+import net.hasor.core.BindInfo;
+import net.hasor.core.Scope;
+import net.hasor.core.SingletonMode;
+
+import java.util.function.Supplier;
 /**
  * Bean配置接口，用于对Bean信息进行全方面配置。
  * @version : 2014年7月2日
@@ -53,16 +58,16 @@ public interface BindInfoBuilder<T> {
     public void setSingletonMode(SingletonMode singletonMode);
 
     /**
-     * 开发者自定义的{@link Provider}。
-     * @param customerProvider 设置自定义{@link Provider}
+     * 开发者自定义的{@link Supplier}。
+     * @param customerProvider 设置自定义{@link Supplier}
      */
-    public void setCustomerProvider(Provider<? extends T> customerProvider);
+    public void setCustomerProvider(Supplier<? extends T> customerProvider);
 
     /**
      * 将类型发布到一个固定的命名空间内。
      * @param scopeProvider 命名空间
      */
-    public void setScopeProvider(Provider<? extends Scope> scopeProvider);
+    public void setScopeProvider(Supplier<? extends Scope> scopeProvider);
     //
 
     /**
@@ -71,7 +76,7 @@ public interface BindInfoBuilder<T> {
      * @param paramType 参数类型
      * @param valueProvider 参数值
      */
-    public void setConstructor(int index, Class<?> paramType, Provider<?> valueProvider);
+    public void setConstructor(int index, Class<?> paramType, Supplier<?> valueProvider);
 
     /**
      * 设置构造参数。
@@ -86,7 +91,7 @@ public interface BindInfoBuilder<T> {
      * @param property 属性名
      * @param valueProvider 属性值
      */
-    public void addInject(String property, Provider<?> valueProvider);
+    public void addInject(String property, Supplier<?> valueProvider);
 
     /**
      * 添加依赖注入。
@@ -109,5 +114,5 @@ public interface BindInfoBuilder<T> {
     public void initMethod(String methodName);
 
     //
-    public void addCreaterListener(Provider<? extends BeanCreaterListener<?>> createrListener);
+    public void addCreaterListener(Supplier<? extends BeanCreaterListener<?>> createrListener);
 }

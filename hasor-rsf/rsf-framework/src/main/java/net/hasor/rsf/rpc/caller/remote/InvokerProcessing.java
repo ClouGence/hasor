@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.caller.remote;
-import net.hasor.core.Provider;
 import net.hasor.rsf.*;
 import net.hasor.rsf.domain.*;
 import net.hasor.rsf.rpc.caller.RsfFilterHandler;
@@ -25,13 +24,14 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.function.Supplier;
 /**
  * 负责处理远程Request对象的请求调用，同时也负责将产生的Response对象写回客户端。
  * @version : 2014年11月4日
  * @author 赵永春 (zyc@hasor.net)
  */
 abstract class InvokerProcessing implements Runnable {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected     Logger          logger = LoggerFactory.getLogger(getClass());
     private final RemoteRsfCaller rsfCaller;
     private final InterAddress    target;
     private final RequestInfo     requestInfo;
@@ -141,7 +141,7 @@ abstract class InvokerProcessing implements Runnable {
             rsfResponse.addOptionMap(this.rsfCaller.getContext().getSettings().getServerOption());//填充服务端的选项参数，并将选项参数响应到客户端。
             //
             String serviceID = bindInfo.getBindID();
-            Provider<RsfFilter>[] rsfFilters = this.rsfCaller.getContainer().getFilterProviders(serviceID);
+            Supplier<RsfFilter>[] rsfFilters = this.rsfCaller.getContainer().getFilterProviders(serviceID);
             new RsfFilterHandler(rsfFilters, RsfInvokeFilterChain.Default).doFilter(rsfRequest, rsfResponse);
             //
             this.sendResponse(rsfResponse);//将Response写入客户端。

@@ -16,22 +16,21 @@
 package net.hasor.web;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * WebModule
  * @version : 2013-11-4
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class WebModule implements Module {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+@FunctionalInterface
+public interface WebModule extends Module {
     @Override
-    public final void loadModule(final ApiBinder apiBinder) throws Throwable {
+    public default void loadModule(final ApiBinder apiBinder) throws Throwable {
         WebApiBinder webApiBinder = apiBinder.tryCast(WebApiBinder.class);
         if (webApiBinder == null) {
             return;
         }
         this.loadModule(webApiBinder);
     }
+
     public abstract void loadModule(WebApiBinder apiBinder) throws Throwable;
 }

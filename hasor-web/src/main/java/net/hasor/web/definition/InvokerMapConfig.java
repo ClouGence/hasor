@@ -15,7 +15,6 @@
  */
 package net.hasor.web.definition;
 import net.hasor.core.AppContext;
-import net.hasor.core.Provider;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.utils.Iterators;
 import net.hasor.web.InvokerConfig;
@@ -23,15 +22,16 @@ import net.hasor.web.InvokerConfig;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 /**
  * Abstract implementation for all servlet module bindings
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InvokerMapConfig extends HashMap<String, String> implements InvokerConfig {
-    private Provider<AppContext> appContext;
+    private Supplier<AppContext> appContext;
     //
-    public InvokerMapConfig(Map<String, String> initParams, Provider<AppContext> appContext) {
+    public InvokerMapConfig(Map<String, String> initParams, Supplier<AppContext> appContext) {
         this.appContext = appContext;
         if (initParams != null) {
             this.putAll(initParams);

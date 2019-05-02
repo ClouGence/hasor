@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.container;
-import net.hasor.core.*;
+import net.hasor.core.AppContext;
+import net.hasor.core.BindInfo;
+import net.hasor.core.EventContext;
+import net.hasor.core.Hasor;
 import net.hasor.rsf.*;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.RouteTypeEnum;
@@ -29,28 +32,24 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Supplier;
 /**
  *
  * @version : 2015年12月6日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfBeanContainer {
-    protected            Logger     logger       = LoggerFactory.getLogger(getClass());
-    private final static Provider[] EMPTY_FILTER = new Provider[0];
-    private final ConcurrentMap<String, ServiceDefine<?>>              serviceMap;
-    private final ConcurrentMap<String, ConcurrentMap<String, String>> aliasNameMap;
-    private final List<FilterDefine>                                   filterList;
-    private final Object                                               filterLock;
-    private final AddressPool                                          addressPool;
-    private final ConcurrentMap<String, Provider<RsfFilter>[]>         filterCache;
+    protected            Logger                                               logger       = LoggerFactory.getLogger(getClass());
+    private final static Supplier[]                                           EMPTY_FILTER = new Supplier[0];
+    private final        ConcurrentMap<String, ServiceDefine<?>>              serviceMap   = new ConcurrentHashMap<>();
+    private final        ConcurrentMap<String, ConcurrentMap<String, String>> aliasNameMap = new ConcurrentHashMap<>();
+    private final        List<FilterDefine>                                   filterList   = new ArrayList<>();
+    private final        Object                                               filterLock   = new Object();
+    private final        ConcurrentMap<String, Supplier<RsfFilter>[]>         filterCache  = new ConcurrentHashMap<>();
+    private final        AddressPool                                          addressPool;
     //
     public RsfBeanContainer(AddressPool addressPool) {
-        this.serviceMap = new ConcurrentHashMap<String, ServiceDefine<?>>();
-        this.aliasNameMap = new ConcurrentHashMap<String, ConcurrentMap<String, String>>();
-        this.filterList = new ArrayList<FilterDefine>();
-        this.filterLock = new Object();
         this.addressPool = addressPool;
-        this.filterCache = new ConcurrentHashMap<String, Provider<RsfFilter>[]>();
     }
     /**
      * 计算指定服务上配置的过滤器。{@link RsfFilter}按照配置方式分为共有和私有。
@@ -58,15 +57,15 @@ public class RsfBeanContainer {
      * 每一个Filter在配置的时候都需要指定ID，根据ID私有Filter可以覆盖共有Filter的配置。
      * @param serviceID 服务ID
      */
-    public Provider<RsfFilter>[] getFilterProviders(String serviceID) {
+    public Supplier<RsfFilter>[] getFilterProviders(String serviceID) {
         ServiceDefine<?> info = this.serviceMap.get(serviceID);
         if (info == null) {
             return EMPTY_FILTER;
         }
-        Provider<RsfFilter>[] result = filterCache.get(serviceID);
+        Supplier[] result = filterCache.get(serviceID);
         if (result == null) {
-            List<String> cacheIds = new LinkedList<String>();
-            Map<String, FilterDefine> cacheFilters = new HashMap<String, FilterDefine>();
+            List<String> cacheIds = new LinkedList<>();
+            Map<String, FilterDefine> cacheFilters = new HashMap<>();
             //2.计算最终结果。
             List<FilterDefine> publicList = this.filterList;
             if (!publicList.isEmpty()) {
@@ -88,12 +87,12 @@ public class RsfBeanContainer {
                 }
             }
             //3.产出最终结果(过滤器链前端是public，后段是private)。
-            List<Provider<RsfFilter>> filterArrays = new ArrayList<Provider<RsfFilter>>(cacheIds.size());
+            List<Supplier<RsfFilter>> filterArrays = new ArrayList<>(cacheIds.size());
             for (String filterID : cacheIds) {
                 FilterDefine define = cacheFilters.get(filterID);
                 filterArrays.add(define);
             }
-            result = (Provider<RsfFilter>[]) filterArrays.toArray(new Provider[filterArrays.size()]);
+            result = filterArrays.toArray(new Supplier[0]);
             this.filterCache.put(serviceID, result);
         }
         return result;
@@ -103,13 +102,13 @@ public class RsfBeanContainer {
      * @param rsfBindInfo 服务ID。
      * @return 服务提供者
      */
-    public <T> Provider<T> getProvider(RsfBindInfo<T> rsfBindInfo) {
+    public <T> Supplier<T> getProvider(RsfBindInfo<T> rsfBindInfo) {
         ServiceDefine<?> info = this.serviceMap.get(rsfBindInfo.getBindID());
         if (info == null)
             return null;
-        Provider<?> target = info.getCustomerProvider();
+        Supplier<?> target = info.getCustomerProvider();
         if (target != null) {
-            return (Provider<T>) target;
+            return (Supplier<T>) target;
         }
         return null;
     }
@@ -184,7 +183,7 @@ public class RsfBeanContainer {
         if (aliasNameMaps == null) {
             return Collections.EMPTY_LIST;
         }
-        return new ArrayList<String>(aliasNameMaps.keySet());
+        return new ArrayList<>(aliasNameMaps.keySet());
     }
     /**获取环境对象。*/
     public RsfEnvironment getEnvironment() {
@@ -261,7 +260,7 @@ public class RsfBeanContainer {
         for (String aliasType : aliasTypes) {
             ConcurrentMap<String, String> aliasMap = this.aliasNameMap.get(aliasType);
             if (aliasMap == null) {
-                aliasMap = new ConcurrentHashMap<String, String>();
+                aliasMap = new ConcurrentHashMap<>();
                 this.aliasNameMap.putIfAbsent(aliasType, aliasMap);
             }
             String aliasName = serviceDefine.getAliasName(aliasType);
@@ -309,7 +308,7 @@ public class RsfBeanContainer {
             //
             for (Map.Entry<String, ConcurrentMap<String, String>> aliasEntry : this.aliasNameMap.entrySet()) {
                 ConcurrentMap<String, String> aliasSet = aliasEntry.getValue();
-                ArrayList<String> toRemove = new ArrayList<String>();
+                ArrayList<String> toRemove = new ArrayList<>();
                 for (Map.Entry<String, String> entry : aliasSet.entrySet()) {
                     if (serviceID.equals(entry.getValue())) {
                         toRemove.add(entry.getKey());

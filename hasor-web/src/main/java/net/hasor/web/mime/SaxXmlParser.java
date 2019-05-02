@@ -35,8 +35,9 @@ public class SaxXmlParser extends DefaultHandler {
             return;
         String extension = attributes.getValue("extension");
         String mimeType = attributes.getValue("mimeType");
-        if (StringUtils.isBlank(extension) || StringUtils.isBlank(mimeType))
+        if (StringUtils.isBlank(extension) || StringUtils.isBlank(mimeType)) {
             return;
+        }
         this.dataMap.put(extension, mimeType);
     }
 }

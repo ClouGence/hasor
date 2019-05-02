@@ -31,7 +31,7 @@ import java.util.Properties;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class InputStreamSettings extends AbstractSettings implements IOSettings {
-    private LinkedList<InputStreamEntity> pendingStream = new LinkedList<InputStreamEntity>();
+    private LinkedList<InputStreamEntity> pendingStream = new LinkedList<>();
     /**子类决定如何添加资源*/
     public InputStreamSettings() {
     }

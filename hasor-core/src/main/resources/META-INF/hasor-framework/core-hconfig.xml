@@ -17,11 +17,13 @@
         <HASOR_LOAD_STARTUP></HASOR_LOAD_STARTUP>
         <!-- 执行事件的线程池大小 -->
         <HASOR_LOAD_EVENT_POOL>8</HASOR_LOAD_EVENT_POOL>
-
-        <!-- 程序目录 -->
-        <RUN_PATH>./</RUN_PATH>
         <!-- 工作目录 -->
         <WORK_HOME>%USER.HOME%/hasor-work</WORK_HOME>
+
+        <!-- 程序目录（不可配置，框架启动会自动初始化这个值） -->
+        <RUN_PATH>./</RUN_PATH>
+        <!-- 运行模式（不可配置，框架启动会自动初始化这个值）值范围：smaller、none -->
+        <RUN_MODE></RUN_MODE>
     </hasor.environmentVar>
 
     <!-- 框架配置 -->

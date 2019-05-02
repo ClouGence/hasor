@@ -16,7 +16,8 @@
 package net.hasor.rsf;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Provider;
+
+import java.util.function.Supplier;
 /**
  * 服务配置器
  * @version : 2014年11月12日
@@ -39,5 +40,5 @@ public interface RsfApiBinder extends RsfPublisher, ApiBinder {
      * 绑定一个类型到RSF环境。
      * @param bindInfo 服务类型
      */
-    public <T> Provider<T> converToProvider(RsfBindInfo<T> bindInfo);
+    public <T> Supplier<T> converToProvider(RsfBindInfo<T> bindInfo);
 }

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
-import net.hasor.core.Provider;
+import java.util.function.Supplier;
 /**
- * 如果Bean配置了{@link Provider}，那么Hasor容器需要通过该接口获取到这个Provider。
+ * 如果Bean配置了{@link Supplier}，那么Hasor容器需要通过该接口获取到这个Supplier。
  * @version : 2014年12月2日
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface CustomerProvider<T> {
     /**获取Provider对象，可以直接取得对象实例。*/
-    public Provider<? extends T> getCustomerProvider();
+    public Supplier<? extends T> getCustomerProvider();
 }

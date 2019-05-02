@@ -19,6 +19,7 @@ package net.hasor.web;
  * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
  */
+@FunctionalInterface
 public interface InvokerCreater {
     /**
      * 创建 {@link Invoker} 扩展

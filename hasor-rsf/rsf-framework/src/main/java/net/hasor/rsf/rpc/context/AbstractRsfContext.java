@@ -16,7 +16,6 @@
 package net.hasor.rsf.rpc.context;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventContext;
-import net.hasor.core.Provider;
 import net.hasor.core.context.ContextShutdownListener;
 import net.hasor.core.context.ContextStartListener;
 import net.hasor.rsf.*;
@@ -38,6 +37,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
  *
@@ -218,7 +218,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
     public List<String> getServiceIDs(String aliasType) {
         return this.rsfBeanContainer.getServiceIDs(aliasType);
     }
-    public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo) {
+    public <T> Supplier<T> getServiceProvider(RsfBindInfo<T> bindInfo) {
         return this.rsfBeanContainer.getProvider(bindInfo);
     }
     public RsfPublisher publisher() {

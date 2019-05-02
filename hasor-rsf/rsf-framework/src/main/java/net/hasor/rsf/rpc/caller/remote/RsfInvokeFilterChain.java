@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.caller.remote;
-import net.hasor.core.Provider;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfFilterChain;
 import net.hasor.rsf.RsfRequest;
@@ -23,6 +22,7 @@ import net.hasor.rsf.domain.ProtocolStatus;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.function.Supplier;
 /**
  * 负责处理服务的调用。
  * @version : 2014年11月4日
@@ -36,7 +36,7 @@ class RsfInvokeFilterChain implements RsfFilterChain {
         if (response.isResponse())
             return;
         RsfBindInfo<?> bindInfo = request.getBindInfo();
-        Provider<?> targetProvider = request.getContext().getServiceProvider(bindInfo);
+        Supplier<?> targetProvider = request.getContext().getServiceProvider(bindInfo);
         Object target = targetProvider == null ? null : targetProvider.get();
         //
         if (target == null) {

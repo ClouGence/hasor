@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 /**
  * 整个Hasor将围绕这个类构建！！
  * <br/>它，完成了Bean容器的功能。
@@ -40,10 +41,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class BeanContainer extends TemplateBeanBuilder implements ScopManager, Observer {
     private AtomicBoolean                              inited           = new AtomicBoolean(false);
-    private List<BindInfo<?>>                          allBindInfoList  = new ArrayList<BindInfo<?>>();
-    private ConcurrentHashMap<String, List<String>>    indexTypeMapping = new ConcurrentHashMap<String, List<String>>();
-    private ConcurrentHashMap<String, BindInfo<?>>     idDataSource     = new ConcurrentHashMap<String, BindInfo<?>>();
-    private ConcurrentHashMap<String, Provider<Scope>> scopeMapping     = new ConcurrentHashMap<String, Provider<Scope>>();
+    private List<BindInfo<?>>                          allBindInfoList  = new ArrayList<>();
+    private ConcurrentHashMap<String, List<String>>    indexTypeMapping = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, BindInfo<?>>     idDataSource     = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, Supplier<Scope>> scopeMapping     = new ConcurrentHashMap<>();
     //
     /*-----------------------------------------------------------------------------------BindInfo*/
     /**根据ID查找{@link BindInfo}*/
@@ -76,7 +77,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
             logger.debug("getBindInfoByType , never define this type = {}", bindType);
             return Collections.emptyList();
         }
-        List<BindInfo<T>> resultList = new ArrayList<BindInfo<T>>();
+        List<BindInfo<T>> resultList = new ArrayList<>();
         for (String infoID : idList) {
             BindInfo<?> adapter = this.idDataSource.get(infoID);
             if (adapter != null) {
@@ -98,7 +99,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
      */
     public Collection<String> getBindInfoNamesByType(Class<?> targetClass) {
         List<? extends BindInfo<?>> bindInfoList = this.findBindInfoList(targetClass);
-        ArrayList<String> names = new ArrayList<String>(bindInfoList.size());
+        ArrayList<String> names = new ArrayList<>(bindInfoList.size());
         for (BindInfo<?> info : bindInfoList) {
             String bindName = info.getBindName();
             if (StringUtils.isBlank(bindName)) {
@@ -134,7 +135,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
         }
         // 单例的
         Object key = (bindInfo != null) ? bindInfo : targetType;
-        Provider<Scope> scopeProvider = this.scopeMapping.get(ScopManager.SINGLETON_SCOPE);
+        Supplier<? extends Scope> scopeProvider = this.scopeMapping.get(ScopManager.SINGLETON_SCOPE);
         if (scopeProvider == null) {
             throw new NullPointerException("scopeProvider undefined.");
         }
@@ -158,7 +159,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
         if (!this.inited.compareAndSet(false, true)) {
             return;/*避免被初始化多次*/
         }
-        this.scopeMapping.put(ScopManager.SINGLETON_SCOPE, new InstanceProvider<Scope>(new SingletonScope()));
+        this.scopeMapping.put(ScopManager.SINGLETON_SCOPE, new InstanceProvider<>(new SingletonScope()));
         for (BindInfo<?> info : this.allBindInfoList) {
             if (!(info instanceof AbstractBindInfoProviderAdapter)) {
                 continue;
@@ -168,10 +169,8 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
             boolean singleton = testSingleton(info.getBindType(), info, env.getSettings());         // 配置了单例（只有单例的才会在容器启动时调用）
             if (initMethod != null && singleton) {
                 // 当前为 doInitializeCompleted 阶段，需要在 doStart 阶段开始调用 Bean 的 init。执行 init 只需要 get 它们。
-                Hasor.pushStartListener(env, new EventListener<AppContext>() {
-                    public void onEvent(String event, AppContext eventData) throws Throwable {
-                        eventData.getInstance(infoAdapter);//执行init
-                    }
+                Hasor.pushStartListener(env, (EventListener<AppContext>) (event, eventData) -> {
+                    eventData.getInstance(infoAdapter);//执行init
                 });
             }
         }
@@ -189,15 +188,15 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
     /*-------------------------------------------------------------------------------------------*/
     //
     @Override
-    public <T extends Scope> Provider<T> registerScope(String scopeName, Provider<T> scopeProvider) {
-        Provider<? extends Scope> oldScope = this.scopeMapping.putIfAbsent(scopeName, (Provider<Scope>) scopeProvider);
+    public <T extends Scope> Supplier<T> registerScope(String scopeName, Supplier<T> scopeProvider) {
+        Supplier<? extends Scope> oldScope = this.scopeMapping.putIfAbsent(scopeName, (Supplier<Scope>) scopeProvider);
         if (oldScope == null) {
             oldScope = scopeProvider;
         }
-        return (Provider<T>) oldScope;
+        return (Supplier<T>) oldScope;
     }
     @Override
-    public Provider<Scope> findScope(String scopeName) {
+    public Supplier<Scope> findScope(String scopeName) {
         return this.scopeMapping.get(scopeName);
     }
     //

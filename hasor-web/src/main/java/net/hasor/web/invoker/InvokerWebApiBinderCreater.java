@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
-import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 /**
  * 渲染插件，的ApiBinder扩展器。
@@ -38,7 +37,7 @@ import java.io.IOException;
 public class InvokerWebApiBinderCreater implements ApiBinderCreater {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
-    public ApiBinder createBinder(final ApiBinder apiBinder) throws IOException, XMLStreamException {
+    public ApiBinder createBinder(final ApiBinder apiBinder) throws IOException {
         Environment environment = apiBinder.getEnvironment();
         Object context = environment.getContext();
         //
@@ -64,8 +63,10 @@ public class InvokerWebApiBinderCreater implements ApiBinderCreater {
         //
         // .MimeType
         MimeTypeSupplier mimeTypeContext = new MimeTypeSupplier(servletContext);
-        mimeTypeContext.loadStream("/META-INF/mime.types.xml");
-        mimeTypeContext.loadStream("mime.types.xml");
+        if (!environment.isSmaller()) {
+            mimeTypeContext.loadResource("/META-INF/mime.types.xml");
+            mimeTypeContext.loadResource("mime.types.xml");
+        }
         apiBinder.bindType(MimeType.class, mimeTypeContext);
         //
         //.ServletVersion
@@ -81,12 +82,12 @@ public class InvokerWebApiBinderCreater implements ApiBinderCreater {
             curVersion = ServletVersion.V3_1;
         } catch (Throwable e) { /* 忽略 */ }
         //
-        ManagedListenerPipeline lPipline = new ManagedListenerPipeline();
+        ManagedListenerPipeline pipeline = new ManagedListenerPipeline();
         //
         // .Binder
         apiBinder.bindType(ServletContext.class).toInstance(servletContext);
         apiBinder.bindType(ServletVersion.class).toInstance(curVersion);
-        apiBinder.bindType(ListenerPipeline.class).toInstance(lPipline);
+        apiBinder.bindType(ListenerPipeline.class).toInstance(pipeline);
         //
         return new InvokerWebApiBinder(curVersion, mimeTypeContext, apiBinder);
     }

@@ -19,11 +19,8 @@ import java.util.Map;
 public class CallerParamsTest extends AbstractWeb30BinderDataTest {
     @Test
     public void queryParamTest() throws Throwable {
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
@@ -36,11 +33,8 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
     }
     @Test
     public void pathParamTest() throws Throwable {
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(PathCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(PathCallAction.class);
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
@@ -53,11 +47,8 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
     }
     @Test
     public void cookieParamTest() throws Throwable {
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(CookieCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(CookieCallAction.class);
         });
         //
         Cookie[] cookies = new Cookie[] {//
@@ -75,11 +66,8 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
     }
     @Test
     public void attrParamTest() throws Throwable {
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AttrCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AttrCallAction.class);
         });
         //
         HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/attr_param.do"), appContext);
@@ -96,16 +84,13 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
     }
     @Test
     public void headerParamTest() throws Throwable {
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.bindType(Map.class).nameWith("http-header").toInstance(new HashMap<String, String>() {{
-                    put("byteParam", "123");
-                    put("floatParam", "321");
-                }});
-                //
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(HeaderCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.bindType(Map.class).nameWith("http-header").toInstance(new HashMap<String, String>() {{
+                put("byteParam", "123");
+                put("floatParam", "321");
+            }});
+            //
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(HeaderCallAction.class);
         });
         //
         HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/header_param.do"), appContext);
@@ -120,11 +105,8 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
     }
     @Test
     public void requestParamTest() throws Throwable {
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(RequestCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(RequestCallAction.class);
         });
         //
         Map<String, String> requestMap = new HashMap<String, String>() {{
@@ -144,11 +126,8 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
     }
     @Test
     public void beanParamTest() throws Throwable {
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(ParamsCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(ParamsCallAction.class);
         });
         //
         Map<String, String> requestMap = new HashMap<String, String>() {{
@@ -168,11 +147,8 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
     }
     @Test
     public void specialParamTest() throws Throwable {
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(SpecialTypeCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(SpecialTypeCallAction.class);
         });
         //
         HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/special_param.do"), appContext);

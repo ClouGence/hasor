@@ -29,7 +29,7 @@ import java.util.concurrent.*;
  */
 public class StandardEventManager implements EventContext {
     private ScheduledExecutorService                 executorService = null;
-    private ConcurrentMap<String, EventListenerPool> listenerMap     = new ConcurrentHashMap<String, EventListenerPool>();
+    private ConcurrentMap<String, EventListenerPool> listenerMap     = new ConcurrentHashMap<>();
     //
     //
     public StandardEventManager(int eventThreadPoolSize, String name, ClassLoader classLoader) {
@@ -97,16 +97,13 @@ public class StandardEventManager implements EventContext {
     //
     @Override
     public final <T> void fireSyncEventWithAlone(final String eventType, final T eventData) throws Throwable {
-        final BasicFuture<Void> future = new BasicFuture<Void>();
-        this.asyncTask(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    fireSyncEvent(eventType, eventData);
-                    future.completed(null);
-                } catch (Throwable e) {
-                    future.failed(e);
-                }
+        final BasicFuture<Void> future = new BasicFuture<>();
+        this.asyncTask(() -> {
+            try {
+                fireSyncEvent(eventType, eventData);
+                future.completed(null);
+            } catch (Throwable e) {
+                future.failed(e);
             }
         });
         try {
@@ -135,18 +132,15 @@ public class StandardEventManager implements EventContext {
         if (runnable == null) {
             return false;
         }
-        getExecutorService().submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    T result = runnable.call();
-                    if (callBack != null) {
-                        callBack.completed(result);
-                    }
-                } catch (Exception e) {
-                    if (callBack != null) {
-                        callBack.failed(e);
-                    }
+        getExecutorService().submit(() -> {
+            try {
+                T result = runnable.call();
+                if (callBack != null) {
+                    callBack.completed(result);
+                }
+            } catch (Exception e) {
+                if (callBack != null) {
+                    callBack.failed(e);
                 }
             }
         });
@@ -157,11 +151,9 @@ public class StandardEventManager implements EventContext {
         if (runnable == null) {
             return false;
         }
-        this.asyncTask(new Callable<Void>() {
-            public Void call() {
-                runnable.run();
-                return null;
-            }
+        this.asyncTask(() -> {
+            runnable.run();
+            return null;
         }, callBack);
         return true;
     }
@@ -188,11 +180,9 @@ public class StandardEventManager implements EventContext {
         if (runnable == null) {
             return null;
         }
-        return this.asyncTask(new Callable<Void>() {
-            public Void call() {
-                runnable.run();
-                return null;
-            }
+        return this.asyncTask(() -> {
+            runnable.run();
+            return null;
         });
     }
     //
@@ -209,15 +199,11 @@ public class StandardEventManager implements EventContext {
     }
     /**引发事件，无论*/
     protected <T> Future<Boolean> fireEvent(final EventObject<T> event, boolean atCurrentThread) {
-        final BasicFuture<Boolean> future = new BasicFuture<Boolean>();
+        final BasicFuture<Boolean> future = new BasicFuture<>();
         if (atCurrentThread) {
             this.executeEvent(event, future);
         } else {
-            getExecutorService().submit(new Runnable() {
-                public void run() {
-                    StandardEventManager.this.executeEvent(event, future);
-                }
-            });
+            getExecutorService().submit(() -> StandardEventManager.this.executeEvent(event, future));
         }
         //
         return future;

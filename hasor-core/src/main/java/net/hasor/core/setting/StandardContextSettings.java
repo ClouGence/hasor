@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core.setting;
-import net.hasor.core.Matcher;
 import net.hasor.core.Settings;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.io.IOUtils;
@@ -24,6 +23,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import java.util.function.Predicate;
 /**
  * 继承自{@link InputStreamSettings}父类，该类自动装载 classpath 中所有静态配置文件。
  * 并且自动装载主配置文件（该配置文件应当只有一个）。
@@ -32,13 +32,13 @@ import java.util.List;
  */
 public class StandardContextSettings extends InputStreamSettings {
     /**主配置文件名称*/
-    public static final  String          MainSettingName = "hasor-config.xml";
+    public static final  String            MainSettingName = "hasor-config.xml";
     /**默认静态配置文件名称*/
-    private static final String          SechmaName      = "/META-INF/hasor.schemas";
-    private              URI             settingURI;
-    private static       Matcher<String> loadMatcher     = null;
+    private static final String            SechmaName      = "/META-INF/hasor.schemas";
+    private              URI               settingURI;
+    private static       Predicate<String> loadMatcher     = null;
     //
-    public static void setLoadMatcher(Matcher<String> loadMatcher) {
+    public static void setLoadMatcher(Predicate<String> loadMatcher) {
         StandardContextSettings.loadMatcher = loadMatcher;
     }
     //
@@ -110,7 +110,7 @@ public class StandardContextSettings extends InputStreamSettings {
                 continue;
             }
             for (String sechma : readLines) {
-                if (loadMatcher != null && !loadMatcher.matches(sechma)) {
+                if (loadMatcher != null && !loadMatcher.test(sechma)) {
                     logger.info("addSechma '{}' ignore.", sechma);
                     continue;
                 }

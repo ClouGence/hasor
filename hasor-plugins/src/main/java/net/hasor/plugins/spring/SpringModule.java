@@ -17,7 +17,6 @@ package net.hasor.plugins.spring;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
-import net.hasor.core.Provider;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.utils.StringUtils;
 import org.springframework.context.ApplicationContext;
@@ -25,6 +24,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 /**
  * Hasor集成Spring插件
  *
@@ -32,13 +32,13 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SpringModule implements Module {
-    public static final String DefaultHasorBeanName = AppContext.class.getName();
+    public static final String                       DefaultHasorBeanName = AppContext.class.getName();
     //
-    private Provider<ApplicationContext> applicationContext;
+    private             Supplier<ApplicationContext> applicationContext;
     public SpringModule(ApplicationContext applicationContext) {
-        this.applicationContext = new InstanceProvider<ApplicationContext>(applicationContext);
+        this.applicationContext = new InstanceProvider<>(applicationContext);
     }
-    public SpringModule(Provider<ApplicationContext> applicationContext) {
+    public SpringModule(Supplier<ApplicationContext> applicationContext) {
         this.applicationContext = applicationContext;
     }
     @Override
@@ -73,7 +73,7 @@ public class SpringModule implements Module {
         //
     }
     //
-    public Provider<ApplicationContext> getApplicationContextProvider() {
+    public Supplier<ApplicationContext> getApplicationContextProvider() {
         return this.applicationContext;
     }
     /**

@@ -151,7 +151,7 @@ class RsfChannelOnHttp extends RsfChannel {
         //
         // ---------------------------------------------------------------------------------------- 网络部分
         Channel channel = null;
-        final BasicFuture<RsfHttpResponseObject> responseFuture = new BasicFuture<RsfHttpResponseObject>();
+        final BasicFuture<RsfHttpResponseObject> responseFuture = new BasicFuture<>();
         ResponseDecoder requestEncoder = (ResponseDecoder) objectToUse.get(1);
         try {
             // .准备请求数据

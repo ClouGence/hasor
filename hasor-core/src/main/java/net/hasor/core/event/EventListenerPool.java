@@ -30,8 +30,8 @@ class EventListenerPool {
     private final CopyOnWriteArrayList<EventListener<?>> listenerList;
     //
     public EventListenerPool() {
-        onceListener = new CopyOnWriteArrayList<EventListener<?>>();
-        listenerList = new CopyOnWriteArrayList<EventListener<?>>();
+        onceListener = new CopyOnWriteArrayList<>();
+        listenerList = new CopyOnWriteArrayList<>();
     }
     //
     public boolean pushOnceListener(EventListener<?> eventListener) {
@@ -47,12 +47,12 @@ class EventListenerPool {
         List<EventListener<?>> onceList = null;
         synchronized (ONCE_LOCK) {
             onceList = this.onceListener;
-            this.onceListener = new CopyOnWriteArrayList<EventListener<?>>();
+            this.onceListener = new CopyOnWriteArrayList<>();
         }
         return onceList;
     }
     public List<EventListener<?>> getListenerSnapshot() {
-        return new ArrayList<EventListener<?>>(this.listenerList);
+        return new ArrayList<>(this.listenerList);
     }
     public boolean removeListener(EventListener<?> eventListener) {
         return listenerList.remove(eventListener);

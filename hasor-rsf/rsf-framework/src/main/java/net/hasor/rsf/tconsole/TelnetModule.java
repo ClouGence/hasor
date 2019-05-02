@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * @version : 2014年11月12日
  * @author 赵永春 (zyc@hasor.net)
  */
-public final class TelnetModule extends RsfModule {
+public final class TelnetModule implements RsfModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public final void loadModule(RsfApiBinder apiBinder) throws Throwable {

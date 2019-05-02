@@ -41,7 +41,7 @@ public class InvocationHandlerTest {
     //
     @Test
     public void apiBinderInvocationHandler_test() {
-        Map<Class<?>, Object> supportMap = new HashMap<Class<?>, Object>();
+        Map<Class<?>, Object> supportMap = new HashMap<>();
         new ApiBinderInvocationHandler(supportMap);
         //
         supportMap.put(Object.class, new Object());
@@ -58,24 +58,21 @@ public class InvocationHandlerTest {
     //
     @Test
     public void binderHelperTest() {
-        final AtomicReference<Object> referenceStarted = new AtomicReference<Object>();
-        final AtomicReference<Object> referenceShutdown = new AtomicReference<Object>();
-        Answer<Object> answer = new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                if (ContextEvent_Started.equalsIgnoreCase(invocationOnMock.getArguments()[0].toString())) {
-                    referenceStarted.set(invocationOnMock.getArguments()[1]);
-                }
-                if (ContextEvent_Shutdown.equalsIgnoreCase(invocationOnMock.getArguments()[0].toString())) {
-                    referenceShutdown.set(invocationOnMock.getArguments()[1]);
-                }
-                return null;
+        final AtomicReference<Object> referenceStarted = new AtomicReference<>();
+        final AtomicReference<Object> referenceShutdown = new AtomicReference<>();
+        Answer<Object> answer = invocationOnMock -> {
+            if (ContextEvent_Started.equalsIgnoreCase(invocationOnMock.getArguments()[0].toString())) {
+                referenceStarted.set(invocationOnMock.getArguments()[1]);
             }
+            if (ContextEvent_Shutdown.equalsIgnoreCase(invocationOnMock.getArguments()[0].toString())) {
+                referenceShutdown.set(invocationOnMock.getArguments()[1]);
+            }
+            return null;
         };
         //
         EventContext event = PowerMockito.mock(EventContext.class);
-        PowerMockito.doAnswer(answer).when(event).pushListener(anyString(), (EventListener<?>) anyObject());
-        PowerMockito.doAnswer(answer).when(event).pushListener(anyString(), (EventListener<?>) anyObject());
+        PowerMockito.doAnswer(answer).when(event).pushListener(anyString(), anyObject());
+        PowerMockito.doAnswer(answer).when(event).pushListener(anyString(), anyObject());
         Environment mock = PowerMockito.mock(Environment.class);
         PowerMockito.when(mock.getEventContext()).thenReturn(event);
         //

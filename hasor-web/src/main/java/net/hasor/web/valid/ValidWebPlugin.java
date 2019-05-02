@@ -24,14 +24,14 @@ import java.util.Map;
  * @version : 2016-08-03
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ValidWebPlugin extends WebModule implements WebPlugin, MappingDiscoverer {
+public class ValidWebPlugin implements WebModule, WebPlugin, MappingDiscoverer {
     private Map<Method, ValidDefinition> validMapping = null;
     //
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         apiBinder.addPlugin(this);
         apiBinder.addDiscoverer(this);
-        this.validMapping = new HashMap<Method, ValidDefinition>();
+        this.validMapping = new HashMap<>();
     }
     @Override
     public void discover(Mapping mappingData) {

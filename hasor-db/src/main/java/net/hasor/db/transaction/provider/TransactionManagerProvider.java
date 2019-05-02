@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.db.transaction.provider;
-import net.hasor.core.Provider;
 import net.hasor.db.transaction.TranManager;
 import net.hasor.db.transaction.TransactionManager;
 
 import javax.sql.DataSource;
+import java.util.function.Supplier;
 /**
  *
  * @version : 2015年11月10日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class TransactionManagerProvider implements Provider<TransactionManager> {
-    private Provider<DataSource> dataSource;
-    public TransactionManagerProvider(Provider<DataSource> dataSource) {
+public class TransactionManagerProvider implements Supplier<TransactionManager> {
+    private Supplier<DataSource> dataSource;
+    public TransactionManagerProvider(Supplier<DataSource> dataSource) {
         this.dataSource = dataSource;
     }
     public TransactionManager get() {

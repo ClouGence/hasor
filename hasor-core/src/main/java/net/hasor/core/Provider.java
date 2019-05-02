@@ -20,6 +20,7 @@ import java.util.function.Supplier;
  * @version : 2014年5月22日
  * @author 赵永春 (zyc@byshell.org)
  */
+@Deprecated
 public interface Provider<T> extends Supplier<T> {
     /** @return 获取对象。  */
     public T get();

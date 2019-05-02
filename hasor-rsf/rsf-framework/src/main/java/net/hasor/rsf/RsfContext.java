@@ -16,12 +16,12 @@
 package net.hasor.rsf;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
-import net.hasor.core.Provider;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 /**
  * RSF 环境。
  * @version : 2014年11月18日
@@ -65,7 +65,7 @@ public interface RsfContext extends OnlineStatus {
      * 获取元信息所描述的服务对象
      * @param bindInfo 元信息所描述对象
      */
-    public <T> Provider<T> getServiceProvider(RsfBindInfo<T> bindInfo);
+    public <T> Supplier<T> getServiceProvider(RsfBindInfo<T> bindInfo);
 
     /**获取运行着的协议*/
     public Set<String> runProtocols();

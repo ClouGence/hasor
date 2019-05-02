@@ -34,6 +34,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
@@ -59,7 +61,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
     //
     @Test
     public void binderTest2() {
-        List<Object> list = new ArrayList<Object>();
+        List<Object> list = new ArrayList<>();
         binder.bindType(List.class, list);
         assert reference.get().getBindType() == List.class;
         assert reference.get().getCustomerProvider().get() == list;
@@ -75,7 +77,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
     @Test
     public void binderTest4() {
         Date self = new Date();
-        Provider<Date> selfProvider = new InstanceProvider<Date>(self);
+        Supplier<Date> selfProvider = new InstanceProvider<>(self);
         binder.bindType(Date.class, selfProvider);
         assert reference.get().getBindType() == Date.class;
         assert reference.get().getSourceType() == null;
@@ -93,7 +95,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
     //
     @Test
     public void binderTest6() {
-        List<Object> list = new ArrayList<Object>();
+        List<Object> list = new ArrayList<>();
         binder.bindType("myList", List.class, list);
         assert reference.get().getBindType() == List.class;
         assert reference.get().getCustomerProvider().get() == list;
@@ -111,7 +113,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
     @Test
     public void binderTest8() {
         Date self = new Date();
-        Provider<Date> selfProvider = new InstanceProvider<Date>(self);
+        Supplier<Date> selfProvider = new InstanceProvider<>(self);
         binder.bindType("myDate", Date.class, selfProvider);
         assert reference.get().getBindType() == Date.class;
         assert reference.get().getSourceType() == null;
@@ -163,12 +165,12 @@ public class BinderDataTest extends AbstractBinderDataTest {
             //
             assert paramTypeField.get(propertys.get("abc2")) == Integer.TYPE;
             assert useProviderField.getBoolean(propertys.get("abc2"));
-            assert ((Provider) valueProviderField.get(propertys.get("abc2"))).get().equals(123);
+            assert ((Supplier) valueProviderField.get(propertys.get("abc2"))).get().equals(123);
             //
             assert paramTypeField.get(propertys.get("abc3")) == Object.class;
             assert useProviderField.getBoolean(propertys.get("abc3"));
             assert valProvider == valueProviderField.get(propertys.get("abc3"));
-            assert "val".equals(((Provider) valueProviderField.get(propertys.get("abc3"))).get());
+            assert "val".equals(((Supplier) valueProviderField.get(propertys.get("abc3"))).get());
             //
             assert paramTypeField.get(propertys.get("abc4")) == Method.class;
             assert !useProviderField.getBoolean(propertys.get("abc4"));
@@ -246,7 +248,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
             BindInfo<?> valueInfo = PowerMockito.mock(BindInfo.class);
             Constructor<? extends TestBean2> constructor = TestBean2.class.getConstructor(Date.class, Integer.TYPE, Object.class, Method.class);
             ApiBinder.InjectConstructorBindingBuilder<TestBean2> bindType = binder.bindType(TestBean2.class).toConstructor(constructor);
-            InstanceProvider<Object> valProvider = new InstanceProvider<Object>("val");
+            InstanceProvider<Object> valProvider = new InstanceProvider<>("val");
             bindType = bindType.inject(0, Timestamp.class);
             bindType = bindType.inject(2, valProvider);
             bindType = bindType.injectValue(1, 123);
@@ -275,12 +277,12 @@ public class BinderDataTest extends AbstractBinderDataTest {
             //
             assert paramTypeField.get(propertys.get(1)) == Integer.TYPE;
             assert useProviderField.getBoolean(propertys.get(1));
-            assert ((Provider) valueProviderField.get(propertys.get(1))).get().equals(123);
+            assert ((Supplier) valueProviderField.get(propertys.get(1))).get().equals(123);
             //
             assert paramTypeField.get(propertys.get(2)) == Object.class;
             assert useProviderField.getBoolean(propertys.get(2));
             assert valProvider == valueProviderField.get(propertys.get(2));
-            assert "val".equals(((Provider) valueProviderField.get(propertys.get(2))).get());
+            assert "val".equals(((Supplier) valueProviderField.get(propertys.get(2))).get());
             //
             assert paramTypeField.get(propertys.get(3)) == Method.class;
             assert !useProviderField.getBoolean(propertys.get(3));
@@ -305,14 +307,11 @@ public class BinderDataTest extends AbstractBinderDataTest {
         String scopeName1 = "my";
         String scopeName2 = "my2";
         final SingletonScope myScope = new SingletonScope();
-        PowerMockito.when(scopManager.findScope(anyString())).thenAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                if ("my".equals(invocationOnMock.getArguments()[0])) {
-                    return new InstanceProvider<Scope>(myScope);
-                }
-                return null;
+        PowerMockito.when(scopManager.findScope(anyString())).thenAnswer(invocationOnMock -> {
+            if ("my".equals(invocationOnMock.getArguments()[0])) {
+                return new InstanceProvider<Scope>(myScope);
             }
+            return null;
         });
         binder.bindType(TestBean.class).toScope(scopeName1);
         assert reference.get().getScopeProvider().get() == myScope;
@@ -324,21 +323,18 @@ public class BinderDataTest extends AbstractBinderDataTest {
         }
         //
         //
-        final Map<String, Object> scopeMap = new HashMap<String, Object>();
-        PowerMockito.when(scopManager.registerScope(anyString(), (Provider<Scope>) anyObject())).thenAnswer(new Answer<Provider<Scope>>() {
-            @Override
-            public Provider<Scope> answer(InvocationOnMock invocationOnMock) throws Throwable {
-                scopeMap.put((String) invocationOnMock.getArguments()[0], invocationOnMock.getArguments()[1]);
-                return (Provider<Scope>) invocationOnMock.getArguments()[1];
-            }
+        final Map<String, Object> scopeMap = new HashMap<>();
+        PowerMockito.when(scopManager.registerScope(anyString(), anyObject())).thenAnswer((Answer<Supplier<Scope>>) invocationOnMock -> {
+            scopeMap.put((String) invocationOnMock.getArguments()[0], invocationOnMock.getArguments()[1]);
+            return (Supplier<Scope>) invocationOnMock.getArguments()[1];
         });
         Scope mockScope = PowerMockito.mock(Scope.class);
         binder.registerScope("testScope", mockScope);
-        assert scopeMap.containsKey("testScope") && ((Provider) scopeMap.get("testScope")).get() == mockScope; // Scope 注册
+        assert scopeMap.containsKey("testScope") && ((Supplier) scopeMap.get("testScope")).get() == mockScope; // Scope 注册
         //
-        InstanceProvider<Scope> scopeProvider = new InstanceProvider<Scope>(mockScope);
+        InstanceProvider<Scope> scopeProvider = new InstanceProvider<>(mockScope);
         binder.registerScope("scopeProvider", scopeProvider);
-        assert scopeMap.containsKey("scopeProvider") && ((Provider) scopeMap.get("scopeProvider")).get() == mockScope; // Scope 注册
+        assert scopeMap.containsKey("scopeProvider") && ((Supplier) scopeMap.get("scopeProvider")).get() == mockScope; // Scope 注册
     }
     //
     @Test
@@ -383,8 +379,8 @@ public class BinderDataTest extends AbstractBinderDataTest {
         //
         //
         try {
-            Matcher<Class<?>> matcherClass = Matchers.anyClass();
-            Matcher<Method> matcherMethod = Matchers.anyMethod();
+            Predicate<Class<?>> matcherClass = Matchers.anyClass();
+            Predicate<Method> matcherMethod = Matchers.anyMethod();
             binder.bindInterceptor(matcherClass, matcherMethod, interceptor);
             AopBindInfoAdapter aopAdapter = (AopBindInfoAdapter) reference.get().getCustomerProvider().get();
             Field interceptorField = AopBindInfoAdapter.class.getDeclaredField("interceptor");
@@ -407,7 +403,7 @@ public class BinderDataTest extends AbstractBinderDataTest {
     public void binderTest23() {
         assert binder.findClass(null) == null;
         assert !binder.findClass(ApiBinder.class).isEmpty();
-        assert binder.findClass(null, null) == null;
+        assert binder.findClass(null, (String) null) == null;
         assert !binder.findClass(ApiBinder.class, new String[] { "test.net.hasor.core._07_binder" }).isEmpty();
         assert binder.getEnvironment() != null;
     }
@@ -415,12 +411,12 @@ public class BinderDataTest extends AbstractBinderDataTest {
     @Test
     public void binderTest24() {
         BeanCreaterListener<Object> listener = PowerMockito.mock(BeanCreaterListener.class);
-        Provider<? extends BeanCreaterListener<?>> createrProvider = InstanceProvider.of(listener);
+        Supplier<? extends BeanCreaterListener<?>> createrProvider = InstanceProvider.of(listener);
         BindInfo<? extends BeanCreaterListener<?>> createrInfo = PowerMockito.mock(BindInfo.class);
         //
         //
         binder.bindType(TestBean.class).whenCreate(listener);
-        assert ((Provider) reference.get().getCreaterListener().get(0)).get() == listener;
+        assert ((Supplier) reference.get().getCreaterListener().get(0)).get() == listener;
         //
         binder.bindType(TestBean.class).whenCreate(createrProvider);
         assert reference.get().getCreaterListener().get(0) == createrProvider;

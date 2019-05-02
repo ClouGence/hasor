@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import java.util.function.Supplier;
 /**
  *
  * @version : 2014-5-10
@@ -26,5 +27,5 @@ public interface Scope {
      * @param provider 对象 Provider。
      * @return 返回作用域中的对象 Provider。
      */
-    public <T> Provider<T> scope(Object key, Provider<T> provider);
+    public <T> Supplier<T> scope(Object key, Supplier<T> provider);
 }

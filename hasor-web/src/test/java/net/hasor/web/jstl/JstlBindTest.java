@@ -14,6 +14,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.servlet.ServletContext;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
 
@@ -29,17 +30,14 @@ public class JstlBindTest extends AbstractWeb30BinderDataTest {
     @Test
     public void chainTest1() throws Throwable {
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
-                apiBinder.bindType(String.class).idWith("my_name_is").toInstance("abcdefg");
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
+            apiBinder.bindType(String.class).idWith("my_name_is").toInstance("abcdefg");
         });
         //
         PageContext pageContext = PowerMockito.mock(PageContext.class);
         PowerMockito.when(pageContext.getServletContext()).thenReturn(appContext.getInstance(ServletContext.class));
-        PowerMockito.when(RuntimeListener.getAppContext((ServletContext) anyObject())).thenReturn(appContext);
+        PowerMockito.when(RuntimeListener.getAppContext(anyObject())).thenReturn(appContext);
         DefineBindTag tag = new DefineBindTag();
         tag.setPageContext(pageContext);
         //
@@ -66,6 +64,14 @@ public class JstlBindTest extends AbstractWeb30BinderDataTest {
             assert false;
         } catch (Exception e) {
             assert e.getMessage().contains("tag param bindType is null.");
+        }
+        //
+        try {
+            tag.setBindType("abc.abc.abc.String");
+            assert tag.doStartTag() == Tag.SKIP_BODY;
+            assert false;
+        } catch (JspException e) {
+            assert e.getCause() instanceof ClassNotFoundException;
         }
         //
         try {

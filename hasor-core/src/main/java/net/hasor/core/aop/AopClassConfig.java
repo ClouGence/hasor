@@ -15,7 +15,6 @@
  */
 package net.hasor.core.aop;
 import net.hasor.core.Hasor;
-import net.hasor.core.Matcher;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.asm.*;
@@ -30,6 +29,7 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Predicate;
 
 import static net.hasor.utils.asm.Opcodes.*;
 /**
@@ -67,9 +67,9 @@ public class AopClassConfig {
         this.superClass = (superClass == null) ? BasicObject.class : superClass;
         this.className = this.superClass.getName() + aopClassSuffix + spinIndex.getAndIncrement();
         this.classBytes = null;
-        this.interceptorList = new ArrayList<InnerMethodInterceptorDefine>();
-        this.interceptorMap = new HashMap<String, MethodInterceptor[]>();
-        this.interceptorMethod = new HashMap<String, Method>();
+        this.interceptorList = new ArrayList<>();
+        this.interceptorMap = new HashMap<>();
+        this.interceptorMethod = new HashMap<>();
         if (parentLoader instanceof AopClassLoader) {
             this.parentLoader = (AopClassLoader) parentLoader;
         } else {
@@ -79,24 +79,20 @@ public class AopClassConfig {
     //
     //
     /**添加Aop拦截器。*/
-    public void addAopInterceptors(Matcher<Method> aopMatcher, MethodInterceptor... aopInterceptor) {
+    public void addAopInterceptors(Predicate<Method> aopMatcher, MethodInterceptor... aopInterceptor) {
         for (MethodInterceptor aop : aopInterceptor) {
             this.addAopInterceptor(aopMatcher, aop);
         }
     }
     /**添加Aop拦截器。*/
     public void addAopInterceptor(MethodInterceptor aopInterceptor) {
-        this.addAopInterceptor(new Matcher<Method>() {
-            public boolean matches(Method target) {
-                return true;
-            }
-        }, aopInterceptor);
+        this.addAopInterceptor(target -> true, aopInterceptor);
     }
     /**添加Aop拦截器。*/
-    public void addAopInterceptor(Matcher<Method> aopMatcher, MethodInterceptor aopInterceptor) {
+    public void addAopInterceptor(Predicate<Method> aopMatcher, MethodInterceptor aopInterceptor) {
         Hasor.assertIsNotNull(aopMatcher, "aopMatcher is null.");
         if (this.interceptorList == null) {
-            this.interceptorList = new ArrayList<InnerMethodInterceptorDefine>();
+            this.interceptorList = new ArrayList<>();
         }
         this.interceptorList.add(new InnerMethodInterceptorDefine(aopMatcher, aopInterceptor));
     }
@@ -148,9 +144,9 @@ public class AopClassConfig {
                 continue;
             }
             //
-            List<MethodInterceptor> interceptorList = new ArrayList<MethodInterceptor>();
+            List<MethodInterceptor> interceptorList = new ArrayList<>();
             for (InnerMethodInterceptorDefine define : this.interceptorList) {
-                if (!define.matches(targetMethod)) {
+                if (!define.test(targetMethod)) {
                     continue;
                 }
                 interceptorList.add(define);
@@ -182,7 +178,7 @@ public class AopClassConfig {
         String thisClassName = AsmTools.replaceClassName(this.getClassName());
         String superClassName = AsmTools.replaceClassName(this.getSuperClass());
         String exceptionUtilsName = AsmTools.replaceClassName(ExceptionUtils.class);
-        Map<String, Integer> indexMap = new HashMap<String, Integer>();
+        Map<String, Integer> indexMap = new HashMap<>();
         //
         //
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
@@ -195,7 +191,7 @@ public class AopClassConfig {
             String paramsStr = "(" + AsmTools.toAsmType(constructor.getParameterTypes()) + ")V";
             //
             AtomicInteger variableIndexCounters = new AtomicInteger(0);
-            Map<String, Integer> paramIndexMap = new LinkedHashMap<String, Integer>();
+            Map<String, Integer> paramIndexMap = new LinkedHashMap<>();
             paramIndexMap.put("this", 0);
             for (int i = 0; i < asmParams.length; i++) {
                 paramIndexMap.put("args" + i, variableIndexCounters.incrementAndGet());

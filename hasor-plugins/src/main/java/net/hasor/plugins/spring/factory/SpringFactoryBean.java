@@ -39,13 +39,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Supplier;
 /**
  *
  * @version : 2016年2月15日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SpringFactoryBean implements FactoryBean, InitializingBean, DisposableBean,//
-        ApplicationContextAware, Module, Provider<AppContext> {
+        ApplicationContextAware, Module, Supplier<AppContext> {
     protected static Logger              logger             = LoggerFactory.getLogger(Hasor.class);
     private          AppContextWarp      warpThis           = new AppContextWarp(this);
     private          AppContext          realAppContext     = null;
@@ -117,17 +118,17 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, Disposa
             config = SystemPropertyUtils.resolvePlaceholders(config);
         }
         if (moduleList == null) {
-            moduleList = new ArrayList<Module>();
+            moduleList = new ArrayList<>();
         }
         // - AppContext
         moduleList.add(this);
-        Module[] moduleArrays = moduleList.toArray(new Module[moduleList.size()]);
+        Module[] moduleArrays = moduleList.toArray(new Module[0]);
         Resource resource = null;
         if (StringUtils.isNotBlank(config)) {
             resource = this.applicationContext.getResource(config);
         }
         //
-        HashMap<String, String> envMap = new HashMap<String, String>();
+        HashMap<String, String> envMap = new HashMap<>();
         if (StringUtils.isNotBlank(this.refProperties) && this.applicationContext.containsBean(this.refProperties)) {
             Object obj = this.applicationContext.getBean(this.refProperties);
             if (obj instanceof PropertiesLoaderSupport) {
@@ -174,7 +175,7 @@ public class SpringFactoryBean implements FactoryBean, InitializingBean, Disposa
     protected AppContext createAppContext(ApplicationContext context, Resource resource, Map<String, String> envProperties, final Module... modules) throws Exception {
         //
         // .获取所有 Spring 的属性配置
-        envProperties = (envProperties == null) ? new HashMap<String, String>() : envProperties;
+        envProperties = (envProperties == null) ? new HashMap<>() : envProperties;
         if (envProperties.isEmpty()) {
             logger.info("not import any environment variables -> refProperties is null");
         } else {

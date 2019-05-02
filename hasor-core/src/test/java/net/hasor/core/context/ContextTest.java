@@ -8,8 +8,6 @@ import net.hasor.core.container.inject.TestBeanRef;
 import net.hasor.core.environment.StandardEnvironment;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
 import java.io.IOException;
@@ -17,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 public class ContextTest {
     private AppContext         appContext;
     private TemplateAppContext targetAppContext;
@@ -190,29 +189,22 @@ public class ContextTest {
         BindInfo<?> info1 = apiBinder.bindType(TestBean.class).idWith("abcdefg").toInstance(testBean).toInfo();
         BindInfo<?> info2 = apiBinder.bindType(SimpleInjectBean.class).bothWith("qqqq").asEagerSingleton().toInfo();
         //
-        List<Provider<? extends TestBean>> bindingProviderList1 = appContext.findBindingProvider(TestBean.class);
+        List<Supplier<? extends TestBean>> bindingProviderList1 = appContext.findBindingProvider(TestBean.class);
         assert bindingProviderList1.size() == 1;
         assert bindingProviderList1.get(0).get() == testBean;
         //
-        List<Provider<? extends List>> bindingProviderList2 = appContext.findBindingProvider(List.class);
-        assert bindingProviderList2.size() == 0;
-        //
         assert appContext.findBindingBean(TestBean.class).get(0) == testBean;
-        assert appContext.findBindingBean("", TestBean.class) == testBean;
-        assert appContext.findBindingBean("", List.class) == null;
-        try {
-            appContext.findBindingBean(null, TestBean.class);
-            assert false;
-        } catch (Exception e) {
-            assert true;
-        }
+        assert appContext.findBindingBean(null, TestBean.class) == testBean;
+        assert appContext.findBindingBean("", TestBean.class) == null;
+        assert appContext.findBindingProvider(null, TestBean.class).get() == testBean;
         //
-        assert appContext.findBindingProvider("", TestBean.class).get() == testBean;
-        assert appContext.findBindingProvider("", List.class) == null;
+        List<Supplier<? extends List>> bindingProviderList2 = appContext.findBindingProvider(List.class);
+        assert bindingProviderList2.size() == 0;
+        assert appContext.findBindingBean(null, List.class) == null;
+        assert appContext.findBindingProvider(null, List.class) == null;
         //
         BindInfo<?> info3 = apiBinder.bindType(TestBean.class) //
                 .bothWith("123").toConstructor(CallInitBean.class.getConstructor()).toInfo();
-        assert appContext.findBindingRegister("", TestBean.class.getConstructor()) == info1;
-        assert appContext.findBindingRegister("123", TestBean.class.getConstructor()) == info3;
+        assert appContext.findBindingRegister("123", TestBean.class) == info3;
     }
 }

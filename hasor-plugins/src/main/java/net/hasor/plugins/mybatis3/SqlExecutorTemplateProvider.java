@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.plugins.mybatis3;
-import net.hasor.core.Provider;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import javax.sql.DataSource;
+import java.util.function.Supplier;
 /**
  * @version : 2014年7月17日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SqlExecutorTemplateProvider implements Provider<SqlExecutorTemplate> {
-    private Provider<DataSource>        dataSource;
-    private Provider<SqlSessionFactory> sessionFactory;
-    public SqlExecutorTemplateProvider(Provider<SqlSessionFactory> sessionFactory, Provider<DataSource> dataSource) {
+public class SqlExecutorTemplateProvider implements Supplier<SqlExecutorTemplate> {
+    private Supplier<DataSource>        dataSource;
+    private Supplier<SqlSessionFactory> sessionFactory;
+    public SqlExecutorTemplateProvider(Supplier<SqlSessionFactory> sessionFactory, Supplier<DataSource> dataSource) {
         this.dataSource = dataSource;
         this.sessionFactory = sessionFactory;
     }

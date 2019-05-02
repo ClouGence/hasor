@@ -16,10 +16,11 @@
 package net.hasor.plugins.spring.factory;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Provider;
 import net.hasor.utils.StringUtils;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
+
+import java.util.function.Supplier;
 /**
  * 在Spring获取Hasor的Bean
  * @version : 2016年2月15日
@@ -27,7 +28,7 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public class HasorBean<T> implements FactoryBean, InitializingBean {
     private AppContext            factory      = null;
-    private Provider<? extends T> beanProvider = null;
+    private Supplier<? extends T> beanProvider = null;
     private BindInfo<? extends T> beanBindInfo = null;
     //
     private String                refID        = null;

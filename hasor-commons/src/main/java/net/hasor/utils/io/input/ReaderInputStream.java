@@ -52,7 +52,7 @@ public class ReaderInputStream extends InputStream {
      * 带Reader和字符编码格式参数的构造函数
      * @param reader   - InputStream使用的Reader
      * @param encoding - InputStream使用的字符编码格式.
-     * @throws 如果字符编码格式不支持,则抛UnsupportedEncodingException异常
+     * @throws UnsupportedEncodingException 如果字符编码格式不支持,则抛 UnsupportedEncodingException 异常
      */
     public ReaderInputStream(final Reader reader, final String encoding) throws UnsupportedEncodingException {
         this.reader = reader;

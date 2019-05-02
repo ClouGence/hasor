@@ -16,8 +16,6 @@
 package net.hasor.web.wrap;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
-import net.hasor.core.Matcher;
-import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.web.*;
 
@@ -25,7 +23,8 @@ import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionListener;
-import java.util.Set;
+import java.io.IOException;
+import java.io.Reader;
 /**
  * {@link WebApiBinder} 接口包装器
  * @version : 2017-01-10
@@ -53,59 +52,31 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
         return this.webApiBinder.setResponseCharacter(encoding);
     }
     @Override
-    public WebApiBinder setEncodingCharacter(String requestEncoding, String responseEncoding) {
-        return this.webApiBinder.setEncodingCharacter(requestEncoding, responseEncoding);
-    }
-    @Override
     public ServletVersion getServletVersion() {
         return webApiBinder.getServletVersion();
-    }
-    @Override
-    public FilterBindingBuilder<InvokerFilter> filter(String urlPattern, String... morePatterns) {
-        return this.webApiBinder.filter(urlPattern, morePatterns);
     }
     @Override
     public FilterBindingBuilder<InvokerFilter> filter(String[] morePatterns) {
         return this.webApiBinder.filter(morePatterns);
     }
     @Override
-    public FilterBindingBuilder<InvokerFilter> filterRegex(String regex, String... regexes) {
-        return this.webApiBinder.filterRegex(regex, regexes);
-    }
-    @Override
     public FilterBindingBuilder<InvokerFilter> filterRegex(String[] regexes) {
         return this.webApiBinder.filterRegex(regexes);
-    }
-    @Override
-    public FilterBindingBuilder<Filter> jeeFilter(String urlPattern, String... morePatterns) {
-        return this.webApiBinder.jeeFilter(urlPattern, morePatterns);
     }
     @Override
     public FilterBindingBuilder<Filter> jeeFilter(String[] morePatterns) {
         return this.webApiBinder.jeeFilter(morePatterns);
     }
     @Override
-    public FilterBindingBuilder<Filter> jeeFilterRegex(String regex, String... regexes) {
-        return this.webApiBinder.jeeFilterRegex(regex, regexes);
-    }
-    @Override
     public FilterBindingBuilder<Filter> jeeFilterRegex(String[] regexes) {
         return this.webApiBinder.jeeFilterRegex(regexes);
-    }
-    @Override
-    public ServletBindingBuilder jeeServlet(String mappingTo, String... moreMappingTo) {
-        return this.webApiBinder.jeeServlet(mappingTo, moreMappingTo);
     }
     @Override
     public ServletBindingBuilder jeeServlet(String[] moreMappingTo) {
         return this.webApiBinder.jeeServlet(moreMappingTo);
     }
     @Override
-    public MappingToBindingBuilder<Object> mappingTo(String urlPattern, String... morePatterns) {
-        return this.webApiBinder.mappingTo(urlPattern, morePatterns);
-    }
-    @Override
-    public MappingToBindingBuilder<Object> mappingTo(String[] morePatterns) {
+    public <T> MappingToBindingBuilder<T> mappingTo(String[] morePatterns) {
         return this.webApiBinder.mappingTo(morePatterns);
     }
     @Override
@@ -113,80 +84,28 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
         this.webApiBinder.loadMappingTo(clazz);
     }
     @Override
-    public void loadMappingTo(Set<Class<?>> mabeMappingToSet) {
-        this.webApiBinder.loadMappingTo(mabeMappingToSet);
-    }
-    @Override
-    public void loadMappingTo(Set<Class<?>> mabeMappingToSet, Matcher<Class<?>> matcher) {
-        this.webApiBinder.loadMappingTo(mabeMappingToSet, matcher);
-    }
-    @Override
-    public void addServletListener(Class<? extends ServletContextListener> targetKey) {
-        this.webApiBinder.addServletListener(targetKey);
-    }
-    @Override
-    public void addServletListener(ServletContextListener sessionListener) {
-        this.webApiBinder.addServletListener(sessionListener);
-    }
-    @Override
-    public void addServletListener(Provider<? extends ServletContextListener> targetProvider) {
-        this.webApiBinder.addServletListener(targetProvider);
-    }
-    @Override
     public void addServletListener(BindInfo<? extends ServletContextListener> targetRegister) {
         this.webApiBinder.addServletListener(targetRegister);
-    }
-    @Override
-    public void addSessionListener(Class<? extends HttpSessionListener> targetKey) {
-        this.webApiBinder.addSessionListener(targetKey);
-    }
-    @Override
-    public void addSessionListener(HttpSessionListener sessionListener) {
-        this.webApiBinder.addSessionListener(sessionListener);
-    }
-    @Override
-    public void addSessionListener(Provider<? extends HttpSessionListener> targetProvider) {
-        this.webApiBinder.addSessionListener(targetProvider);
     }
     @Override
     public void addSessionListener(BindInfo<? extends HttpSessionListener> targetRegister) {
         this.webApiBinder.addSessionListener(targetRegister);
     }
     @Override
-    public void addPlugin(Class<? extends WebPlugin> webPlugin) {
-        this.webApiBinder.addPlugin(webPlugin);
-    }
-    @Override
-    public void addPlugin(WebPlugin webPlugin) {
-        this.webApiBinder.addPlugin(webPlugin);
-    }
-    @Override
-    public void addPlugin(Provider<? extends WebPlugin> webPlugin) {
-        this.webApiBinder.addPlugin(webPlugin);
-    }
-    @Override
     public void addPlugin(BindInfo<? extends WebPlugin> webPlugin) {
         this.webApiBinder.addPlugin(webPlugin);
-    }
-    @Override
-    public void addDiscoverer(Class<? extends MappingDiscoverer> discoverer) {
-        this.webApiBinder.addDiscoverer(discoverer);
-    }
-    @Override
-    public void addDiscoverer(MappingDiscoverer discoverer) {
-        this.webApiBinder.addDiscoverer(discoverer);
-    }
-    @Override
-    public void addDiscoverer(Provider<? extends MappingDiscoverer> discoverer) {
-        this.webApiBinder.addDiscoverer(discoverer);
     }
     @Override
     public void addDiscoverer(BindInfo<? extends MappingDiscoverer> discoverer) {
         this.webApiBinder.addDiscoverer(discoverer);
     }
     @Override
-    public RenderEngineBindingBuilder suffix(String urlPattern, String... morePatterns) {
-        return this.webApiBinder.suffix(urlPattern, morePatterns);
+    public void addMimeType(String type, String mimeType) {
+        this.webApiBinder.addMimeType(type, mimeType);
+    }
+    @Override
+    public void loadMimeType(Reader reader) throws IOException {
+        this.webApiBinder.loadMimeType(reader);
     }
     @Override
     public RenderEngineBindingBuilder suffix(String[] morePatterns) {
@@ -195,13 +114,5 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
     @Override
     public void loadRender(Class<?> renderClass) {
         this.webApiBinder.loadRender(renderClass);
-    }
-    @Override
-    public void loadRender(Set<Class<?>> renderSet) {
-        this.webApiBinder.loadRender(renderSet);
-    }
-    @Override
-    public void loadRender(Set<Class<?>> renderSet, Matcher<Class<?>> matcher) {
-        this.webApiBinder.loadRender(renderSet, matcher);
     }
 }

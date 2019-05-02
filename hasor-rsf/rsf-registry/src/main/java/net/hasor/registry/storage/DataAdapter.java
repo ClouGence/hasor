@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.registry.storage;
-import net.hasor.core.Matcher;
-
 import java.util.List;
+import java.util.function.Predicate;
 /**
  * 服务数据存储检索适配器，负责将数据的操作对应到 DataDao 接口上。
  * @version : 2015年8月19日
@@ -45,7 +44,7 @@ public class DataAdapter {
         return null;
     }
     //
-    public List<DataEntity> listData(String dataKey, Matcher<? extends DataEntity> matcher) {
+    public List<DataEntity> listData(String dataKey, Predicate<? extends DataEntity> matcher) {
         return null;
     }
     public boolean writeData(String dataKey, String dataValue, long tags) {

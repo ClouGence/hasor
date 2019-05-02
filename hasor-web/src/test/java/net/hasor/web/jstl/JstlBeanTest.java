@@ -29,17 +29,14 @@ public class JstlBeanTest extends AbstractWeb30BinderDataTest {
     @Test
     public void chainTest1() throws Throwable {
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
-                apiBinder.bindType(String.class).idWith("abc").toInstance("abcdefg");
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
+            apiBinder.bindType(String.class).idWith("abc").toInstance("abcdefg");
         });
         //
         PageContext pageContext = PowerMockito.mock(PageContext.class);
         PowerMockito.when(pageContext.getServletContext()).thenReturn(appContext.getInstance(ServletContext.class));
-        PowerMockito.when(RuntimeListener.getAppContext((ServletContext) anyObject())).thenReturn(appContext);
+        PowerMockito.when(RuntimeListener.getAppContext(anyObject())).thenReturn(appContext);
         DefineBeanTag tag = new DefineBeanTag();
         tag.setPageContext(pageContext);
         //

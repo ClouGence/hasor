@@ -25,12 +25,15 @@ import net.hasor.land.node.Server;
 import net.hasor.land.node.ServerNode;
 import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 启动入口
  * @version : 2016年10月12日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class LandModule extends RsfModule {
+public class LandModule implements RsfModule {
+    protected static Logger logger = LoggerFactory.getLogger(LandModule.class);
     @Override
     public void loadModule(final RsfApiBinder apiBinder) throws Throwable {
         Environment env = apiBinder.getEnvironment();
@@ -49,10 +52,8 @@ public class LandModule extends RsfModule {
         apiBinder.rsfService(apiBinder.getBindInfo(ElectionService.class))//
                 .asAloneThreadPool().asShadow().register();
         //
-        Hasor.addStartListener(apiBinder.getEnvironment(), new EventListener<AppContext>() {
-            public void onEvent(String event, AppContext eventData) throws Throwable {
-                eventData.getInstance(ElectionService.class);
-            }
+        Hasor.addStartListener(apiBinder.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
+            eventData.getInstance(ElectionService.class);
         });
     }
 }

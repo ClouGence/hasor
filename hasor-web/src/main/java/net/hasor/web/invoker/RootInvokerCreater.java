@@ -34,15 +34,15 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 class RootInvokerCreater implements InvokerCreater {
-    protected Map<Class<?>, InvokerCreater> createrMap = new HashMap<Class<?>, InvokerCreater>();
-    protected Map<Class<?>, Class<?>>       extMapping = new HashMap<Class<?>, Class<?>>();
+    protected Map<Class<?>, InvokerCreater> createrMap = new HashMap<>();
+    protected Map<Class<?>, Class<?>>       extMapping = new HashMap<>();
     //
     public RootInvokerCreater(AppContext appContext) throws Exception {
         Settings settings = appContext.getEnvironment().getSettings();
         ClassLoader classLoader = appContext.getClassLoader();
         //
         // .寻找InvokerCreater扩展
-        Map<Class<?>, Class<?>> extBinderMap = new HashMap<Class<?>, Class<?>>();
+        Map<Class<?>, Class<?>> extBinderMap = new HashMap<>();
         XmlNode[] nodeArray = settings.getXmlNodeArray("hasor.invokerCreaterSet.invokerCreater");
         if (nodeArray != null && nodeArray.length > 0) {
             for (XmlNode atNode : nodeArray) {
@@ -86,7 +86,7 @@ class RootInvokerCreater implements InvokerCreater {
     @Override
     public Invoker createExt(Invoker dataContext) {
         //
-        Map<Class<?>, Object> extMap = new HashMap<Class<?>, Object>();
+        Map<Class<?>, Object> extMap = new HashMap<>();
         for (Map.Entry<Class<?>, InvokerCreater> ent : this.createrMap.entrySet()) {
             Class<?> extType = ent.getKey();
             InvokerCreater creater = ent.getValue();
@@ -96,7 +96,7 @@ class RootInvokerCreater implements InvokerCreater {
             }
         }
         //
-        Map<Class<?>, Object> supportMap = new HashMap<Class<?>, Object>();
+        Map<Class<?>, Object> supportMap = new HashMap<>();
         supportMap.put(Invoker.class, dataContext);
         for (Map.Entry<Class<?>, Class<?>> ent : this.extMapping.entrySet()) {
             Class<?> key = ent.getKey();

@@ -15,27 +15,28 @@
  */
 package test.net.hasor.rsf.functions;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.hasor.core.*;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.OptionInfo;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.rpc.context.DefaultRsfEnvironment;
-import net.hasor.rsf.rpc.net.ConnectionAccepter;
 import net.hasor.rsf.rpc.net.Connector;
 import net.hasor.rsf.rpc.net.ReceivedListener;
 import net.hasor.rsf.rpc.net.RsfChannel;
 import net.hasor.rsf.rpc.net.netty.NettyConnectorFactory;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.concurrent.Future;
+import java.util.function.Supplier;
 /**
  *  在 Connector 层面上测试，启动本地监听服务，并且连接到远程连接器上进行数据发送和接收。
  * @version : 2014年9月12日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provider<RsfEnvironment>, ReceivedListener {
+public class ConnectorTest extends ChannelInboundHandlerAdapter implements Supplier<RsfEnvironment>, ReceivedListener {
     private RsfEnvironment rsfEnv;
     @Override
     public RsfEnvironment get() {
@@ -43,20 +44,12 @@ public class ConnectorTest extends ChannelInboundHandlerAdapter implements Provi
     }
     @Test
     public void sendPack() throws Throwable {
-        AppContext appContext = Hasor.create().putData("RSF_ENABLE", "false").build(new Module() {
-            @Override
-            public void loadModule(ApiBinder apiBinder) throws Throwable {
-                apiBinder.bindType(RsfEnvironment.class).toProvider(ConnectorTest.this);
-            }
+        AppContext appContext = Hasor.create().putData("RSF_ENABLE", "false").build((Module) apiBinder -> {
+            apiBinder.bindType(RsfEnvironment.class).toProvider(ConnectorTest.this);
         });
         this.rsfEnv = new DefaultRsfEnvironment(appContext.getEnvironment());
         String protocolKey = "RSF/1.0";
-        Connector connector = new NettyConnectorFactory().create(protocolKey, appContext, this, new ConnectionAccepter() {
-            @Override
-            public boolean acceptIn(RsfChannel rsfChannel) throws IOException {
-                return true;
-            }
-        });
+        Connector connector = new NettyConnectorFactory().create(protocolKey, appContext, this, rsfChannel -> true);
         connector.startListener(appContext);
         System.out.println(">>>>>>>>> server started. <<<<<<<<<<");
         //

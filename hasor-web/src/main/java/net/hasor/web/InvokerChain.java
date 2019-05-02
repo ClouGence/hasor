@@ -19,6 +19,7 @@ package net.hasor.web;
  * @version : 2016-12-24
  * @author 赵永春 (zyc@hasor.net)
  */
+@FunctionalInterface
 public interface InvokerChain {
     /**
      * 继续执行后续的请求过滤器链。

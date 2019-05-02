@@ -16,32 +16,28 @@
 package net.hasor.web.invoker;
 import net.hasor.core.BeanCreaterListener;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Matcher;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.web.definition.J2eeMapConfig;
 
-import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.function.Predicate;
 /**
  * 线程安全
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InMappingServlet extends InMappingDef implements BeanCreaterListener<HttpServlet> {
-    private static Matcher<Method>     methodMatcher = new Matcher<Method>() {
-        @Override
-        public boolean matches(Method target) {
-            Class<?>[] parameterTypes = target.getParameterTypes();
-            return "service".equals(target.getName()) &&        //
-                    parameterTypes.length == 2 &&               //
-                    parameterTypes[0] == ServletRequest.class &&//
-                    parameterTypes[1] == ServletResponse.class;
-        }
+    private static Predicate<Method>   methodMatcher = target -> {
+        Class<?>[] parameterTypes = target.getParameterTypes();
+        return "service".equals(target.getName()) &&        //
+                parameterTypes.length == 2 &&               //
+                parameterTypes[0] == ServletRequest.class &&//
+                parameterTypes[1] == ServletResponse.class;
     };
     //
     private        Map<String, String> initParams;

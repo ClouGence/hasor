@@ -16,7 +16,6 @@
 package net.hasor.web.invoker;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
-import net.hasor.core.Matcher;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
@@ -26,6 +25,7 @@ import net.hasor.web.annotation.HttpMethod;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.Predicate;
 /**
  * 一个请求地址只能是一个Action类进行处理，Action中的不同方法可以通过 @HttpMethod 等注解映射到 HTTP 协议中 GET、PUT 等行为上。
  * @version : 2013-6-5
@@ -40,10 +40,10 @@ public class InMappingDef implements InMapping {
     private       Set<Method>         asyncMethod;
     private       AsyncSupported      defaultAsync = AsyncSupported.no;
     //
-    public InMappingDef(int index, BindInfo<?> targetType, String mappingTo, Matcher<Method> methodMatcher) {
+    public InMappingDef(int index, BindInfo<?> targetType, String mappingTo, Predicate<Method> methodMatcher) {
         this(index, targetType, mappingTo, methodMatcher, true);
     }
-    public InMappingDef(int index, BindInfo<?> targetType, String mappingTo, Matcher<Method> methodMatcher, boolean needAnno) {
+    public InMappingDef(int index, BindInfo<?> targetType, String mappingTo, Predicate<Method> methodMatcher, boolean needAnno) {
         this.targetType = Hasor.assertIsNotNull(targetType, "targetType is null.");
         if (StringUtils.isBlank(mappingTo)) {
             throw new NullPointerException("'" + targetType.getBindType() + "' Service path is empty.");
@@ -58,12 +58,12 @@ public class InMappingDef implements InMapping {
         this.index = index;
         this.mappingTo = mappingTo;
         this.mappingToMatches = wildToRegex(mappingTo).replaceAll("\\{\\w{1,}\\}", "([^/]{1,})");
-        this.httpMapping = new HashMap<String, Method>();
-        this.asyncMethod = new HashSet<Method>();
+        this.httpMapping = new HashMap<>();
+        this.asyncMethod = new HashSet<>();
         //
         List<Method> methodList = BeanUtils.getMethods(targetType.getBindType());
         for (Method targetMethod : methodList) {
-            boolean matches = methodMatcher.matches(targetMethod);
+            boolean matches = methodMatcher.test(targetMethod);
             if (!matches) {
                 continue;
             }

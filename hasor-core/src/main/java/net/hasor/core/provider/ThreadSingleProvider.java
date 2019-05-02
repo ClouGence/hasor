@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.core.provider;
-import net.hasor.core.Provider;
+import java.util.function.Supplier;
 /**
- * 线程单例对象的{@link Provider}封装形式。
+ * 线程单例对象的{@link Supplier}封装形式。
  * @version : 2014年7月8日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ThreadSingleProvider<T> implements Provider<T> {
+public class ThreadSingleProvider<T> implements Supplier<T> {
     private final ThreadLocal<T> instance;
     //
-    public ThreadSingleProvider(final Provider<T> provider) {
-        this.instance = new ThreadLocal<T>() {
-            @Override
-            protected T initialValue() {
-                return newInstance(provider);
-            }
-        };
+    public ThreadSingleProvider(final Supplier<T> provider) {
+        this.instance = ThreadLocal.withInitial(() -> newInstance(provider));
     }
     //
-    protected T newInstance(Provider<T> provider) {
+    protected T newInstance(Supplier<T> provider) {
         return provider.get();
     }
     //

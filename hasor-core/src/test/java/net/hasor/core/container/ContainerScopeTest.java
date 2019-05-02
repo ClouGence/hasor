@@ -1,6 +1,5 @@
 package net.hasor.core.container;
 import net.hasor.core.AppContext;
-import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.container.beans.CallInitBean;
 import net.hasor.core.container.beans.MyScope;
@@ -12,6 +11,7 @@ import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 public class ContainerScopeTest {
     private StandardEnvironment env;
     @Before
@@ -26,7 +26,7 @@ public class ContainerScopeTest {
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         //
-        Provider<MyScope> myScope = InstanceProvider.of(new MyScope());
+        Supplier<MyScope> myScope = InstanceProvider.of(new MyScope());
         container.registerScope("myScope", myScope);
         //
         AbstractBindInfoProviderAdapter<?> adapter = container.createInfoAdapter(CallInitBean.class);
@@ -48,11 +48,11 @@ public class ContainerScopeTest {
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         //
-        Provider<MyScope> myScope = InstanceProvider.of(new MyScope());
+        Supplier<MyScope> myScope = InstanceProvider.of(new MyScope());
         container.registerScope("myScope", myScope);
         //
         //
-        Provider<Scope> scope = container.findScope("myScope");
+        Supplier<Scope> scope = container.findScope("myScope");
         assert scope.equals(myScope);
     }
 }

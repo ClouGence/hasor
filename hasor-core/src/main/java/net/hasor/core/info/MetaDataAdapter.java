@@ -26,7 +26,7 @@ import java.util.Observable;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MetaDataAdapter extends Observable {
-    private final Map<String, Object> metaData = new HashMap<String, Object>();
+    private final Map<String, Object> metaData = new HashMap<>();
     public void setMetaData(final String key, final Object value) {
         this.metaData.put(key, value);
     }

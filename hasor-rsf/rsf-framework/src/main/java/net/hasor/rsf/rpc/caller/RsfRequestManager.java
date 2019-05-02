@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.rpc.caller;
-import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
 import net.hasor.core.Hasor;
-import net.hasor.core.Provider;
 import net.hasor.rsf.*;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.*;
@@ -31,23 +29,24 @@ import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 /**
  * 负责管理所有 RSF 发起的请求，Manager还提供了最大并发上限的配置.
  * @version : 2014年9月12日
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class RsfRequestManager {
-    protected static Logger logger    = LoggerFactory.getLogger(RsfRequestManager.class);
-    protected static Logger invLogger = LoggerFactory.getLogger(RsfConstants.LoggerName_Invoker);
-    private final ConcurrentMap<Long, RsfFuture> rsfResponse;
-    private final RsfContext                     rsfContext;
-    private final AtomicInteger                  requestCount;
-    private final SenderListener                 senderListener;
+    protected static Logger                         logger    = LoggerFactory.getLogger(RsfRequestManager.class);
+    protected static Logger                         invLogger = LoggerFactory.getLogger(RsfConstants.LoggerName_Invoker);
+    private final    ConcurrentMap<Long, RsfFuture> rsfResponse;
+    private final    RsfContext                     rsfContext;
+    private final    AtomicInteger                  requestCount;
+    private final    SenderListener                 senderListener;
     //
     public RsfRequestManager(RsfContext rsfContext, SenderListener senderListener) {
         senderListener = Hasor.assertIsNotNull(senderListener, "not found SendData.");
         this.rsfContext = rsfContext;
-        this.rsfResponse = new ConcurrentHashMap<Long, RsfFuture>();
+        this.rsfResponse = new ConcurrentHashMap<>();
         this.requestCount = new AtomicInteger(0);
         this.senderListener = senderListener;
     }
@@ -187,16 +186,14 @@ public abstract class RsfRequestManager {
         try {
             RsfResponseObject res = new RsfResponseObject(rsfRequest);
             /*下面这段代码要负责 -> 执行rsfFilter过滤器链，并最终调用sendRequest发送请求。*/
-            Provider<RsfFilter>[] rsfFilterList = this.getContainer().getFilterProviders(serviceID);
-            new RsfFilterHandler(rsfFilterList, new RsfFilterChain() {
-                public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
-                    if (response.isResponse()) {
-                        invLogger.info("request({}) -> sendRequest, response form local.", request.getRequestID());
-                        rsfFuture.completed(response);//如果本地调用链已经做出了响应，那么不在需要发送到远端。
-                    } else {
-                        invLogger.info("request({}) -> sendRequest, response wait for remote.", request.getRequestID());
-                        sendRequest(rsfFuture);//发送请求到远方
-                    }
+            Supplier<RsfFilter>[] rsfFilterList = this.getContainer().getFilterProviders(serviceID);
+            new RsfFilterHandler(rsfFilterList, (request, response) -> {
+                if (response.isResponse()) {
+                    invLogger.info("request({}) -> sendRequest, response form local.", request.getRequestID());
+                    rsfFuture.completed(response);//如果本地调用链已经做出了响应，那么不在需要发送到远端。
+                } else {
+                    invLogger.info("request({}) -> sendRequest, response wait for remote.", request.getRequestID());
+                    sendRequest(rsfFuture);//发送请求到远方
                 }
             }).doFilter(rsfRequest, res);
         } catch (Throwable e) {
@@ -276,19 +273,17 @@ public abstract class RsfRequestManager {
         this.requestCount.incrementAndGet();// i++;
         this.rsfResponse.put(rsfFuture.getRequest().getRequestID(), rsfFuture);
         final RsfRequestFormLocal request = (RsfRequestFormLocal) rsfFuture.getRequest();
-        TimerTask timeTask = new TimerTask() {
-            public void run(Timeout timeoutObject) throws Exception {
-                RsfFuture rsfCallBack = getRequest(request.getRequestID());
-                /*检测不到说明请求已经被正确响应。*/
-                if (rsfCallBack == null) {
-                    return;
-                }
-                /*异常信息*/
-                String errorInfo = "request(" + request.getRequestID() + ") -> timeout for client.";
-                invLogger.error(errorInfo);
-                /*回应Response*/
-                putResponse(request.getRequestID(), new RsfTimeoutException(errorInfo));
+        TimerTask timeTask = timeoutObject -> {
+            RsfFuture rsfCallBack = getRequest(request.getRequestID());
+            /*检测不到说明请求已经被正确响应。*/
+            if (rsfCallBack == null) {
+                return;
             }
+            /*异常信息*/
+            String errorInfo = "request(" + request.getRequestID() + ") -> timeout for client.";
+            invLogger.error(errorInfo);
+            /*回应Response*/
+            putResponse(request.getRequestID(), new RsfTimeoutException(errorInfo));
         };
         invLogger.info("request({}) -> startRequest, timeout at {} ,bindID ={}, callMethod ={}.", //
                 request.getRequestID(), request.getTimeout(), request.getBindInfo().getBindID(), request.getMethod());

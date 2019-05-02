@@ -16,7 +16,8 @@
 package net.hasor.tconsole;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Provider;
+
+import java.util.function.Supplier;
 /**
  * TConsol 为您提供 telnet 下和应用程序交互的能力。
  * @author 赵永春 (zyc@hasor.net)
@@ -24,16 +25,25 @@ import net.hasor.core.Provider;
  */
 public interface ConsoleApiBinder extends ApiBinder {
     /**是否启用状态*/
-    public boolean isEnable();
+    public default boolean isEnable() {
+        return getEnvironment().getSettings().getBoolean("hasor.tConsole.enable", true);
+    }
+    //
 
     /** 添加 CommandExecutor */
-    public void addCommand(String[] name, Class<? extends CommandExecutor> executorType);
+    public default void addCommand(String[] names, Class<? extends CommandExecutor> instructType) {
+        this.addCommand(names, bindType(CommandExecutor.class).uniqueName().to(instructType).toInfo());
+    }
 
     /** 添加 CommandExecutor */
-    public void addCommand(String[] name, CommandExecutor executor);
+    public default void addCommand(String[] names, CommandExecutor instruct) {
+        this.addCommand(names, bindType(CommandExecutor.class).uniqueName().toInstance(instruct).toInfo());
+    }
 
     /** 添加 CommandExecutor */
-    public void addCommand(String[] name, Provider<? extends CommandExecutor> executorProvider);
+    public default void addCommand(String[] names, Supplier<? extends CommandExecutor> instructProvider) {
+        this.addCommand(names, bindType(CommandExecutor.class).uniqueName().toProvider(instructProvider).toInfo());
+    }
 
     /** 添加 CommandExecutor */
     public void addCommand(String[] name, BindInfo<? extends CommandExecutor> executorInfo);

@@ -34,9 +34,9 @@ import org.slf4j.LoggerFactory;
  * @version : 2016年2月18日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RegistryClientModule extends RsfModule {
-    protected static Logger logger = LoggerFactory.getLogger(RegistryClientModule.class);
-    private RsfCenterSettings centerSettings;
+public class RegistryClientModule implements RsfModule {
+    protected static Logger            logger = LoggerFactory.getLogger(RegistryClientModule.class);
+    private          RsfCenterSettings centerSettings;
     //
     public RegistryClientModule(RsfCenterSettings centerSettings) {
         this.centerSettings = Hasor.assertIsNotNull(centerSettings);

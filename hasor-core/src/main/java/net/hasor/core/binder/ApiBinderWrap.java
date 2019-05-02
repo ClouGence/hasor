@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 /**
  * 标准的 {@link ApiBinder} 接口包装类。
  * @version : 2013-4-12
@@ -53,7 +55,7 @@ public class ApiBinderWrap implements ApiBinder {
     public void bindInterceptor(String matcherExpression, MethodInterceptor interceptor) {
         this.apiBinder.bindInterceptor(matcherExpression, interceptor);
     }
-    public void bindInterceptor(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor) {
+    public void bindInterceptor(Predicate<Class<?>> matcherClass, Predicate<Method> matcherMethod, MethodInterceptor interceptor) {
         this.apiBinder.bindInterceptor(matcherClass, matcherMethod, interceptor);
     }
     public <T> BindInfo<T> getBindInfo(String bindID) {
@@ -71,48 +73,12 @@ public class ApiBinderWrap implements ApiBinder {
     public <T> NamedBindingBuilder<T> bindType(Class<T> type) {
         return this.apiBinder.bindType(type);
     }
-    public <T> OptionPropertyBindingBuilder<T> bindType(Class<T> type, T instance) {
-        return this.apiBinder.bindType(type, instance);
-    }
-    public <T> InjectPropertyBindingBuilder<T> bindType(Class<T> type, Class<? extends T> implementation) {
-        return this.apiBinder.bindType(type, implementation);
-    }
-    public <T> ScopedBindingBuilder<T> bindType(Class<T> type, Provider<T> provider) {
-        return this.apiBinder.bindType(type, provider);
-    }
-    public <T> InjectPropertyBindingBuilder<T> bindType(String withName, Class<T> type) {
-        return this.apiBinder.bindType(withName, type);
-    }
-    public <T> OptionPropertyBindingBuilder<T> bindType(String withName, Class<T> type, T instance) {
-        return this.apiBinder.bindType(withName, type, instance);
-    }
-    public <T> InjectPropertyBindingBuilder<T> bindType(String withName, Class<T> type, Class<? extends T> implementation) {
-        return this.apiBinder.bindType(withName, type, implementation);
-    }
-    public <T> LifeBindingBuilder<T> bindType(String withName, Class<T> type, Provider<T> provider) {
-        return this.apiBinder.bindType(withName, type, provider);
-    }
     @Override
-    public <T> void bindToCreater(BindInfo<T> info, BeanCreaterListener<?> listener) {
-        this.apiBinder.bindToCreater(info, listener);
-    }
-    @Override
-    public <T> void bindToCreater(BindInfo<T> info, Provider<? extends BeanCreaterListener<?>> listener) {
-        this.apiBinder.bindToCreater(info, listener);
-    }
-    @Override
-    public <T> void bindToCreater(BindInfo<T> info, Class<? extends BeanCreaterListener<?>> listener) {
-        this.apiBinder.bindToCreater(info, listener);
-    }
-    @Override
-    public <T> void bindToCreater(BindInfo<T> info, BindInfo<? extends BeanCreaterListener<?>> listener) {
+    public <T> void bindToCreater(BindInfo<T> info, Supplier<? extends BeanCreaterListener<?>> listener) {
         this.apiBinder.bindToCreater(info, listener);
     }
     //
-    public Provider<Scope> registerScope(String scopeName, Scope scope) {
-        return this.apiBinder.registerScope(scopeName, scope);
-    }
-    public <T extends Scope> Provider<T> registerScope(String scopeName, Provider<T> scopeProvider) {
+    public <T extends Scope> Supplier<T> registerScope(String scopeName, Supplier<T> scopeProvider) {
         return this.apiBinder.registerScope(scopeName, scopeProvider);
     }
 }

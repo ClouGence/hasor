@@ -15,7 +15,6 @@
  */
 package net.hasor.core.exts.aop;
 import net.hasor.core.Hasor;
-import net.hasor.core.Matcher;
 import net.hasor.utils.ClassUtils;
 import net.hasor.utils.MatchUtils;
 import net.hasor.utils.MatchUtils.MatchTypeEnum;
@@ -23,6 +22,7 @@ import net.hasor.utils.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.function.Predicate;
 /**
  *
  * @version : 2013-8-20
@@ -31,45 +31,33 @@ import java.lang.reflect.Method;
 public class Matchers {
     private Matchers() {
     }
-    //
-    public static <T> MatcherDevice<T> device(final Matcher<T> matcher) {
-        return new MatcherDevice<T>(matcher);
-    }
     /** 匹配任意类型*/
-    public static Matcher<Class<?>> anyClass() {
-        return new Matcher<Class<?>>() {
-            public boolean matches(final Class<?> t) {
-                return true;
-            }
-        };
+    public static Predicate<Class<?>> anyClass() {
+        return t -> true;
     }
     /** 匹配任意方法*/
-    public static Matcher<Method> anyMethod() {
-        return new Matcher<Method>() {
-            public boolean matches(final Method t) {
-                return true;
-            }
-        };
+    public static Predicate<Method> anyMethod() {
+        return t -> true;
     }
     /** 在类型中匹配注解 */
-    public static Matcher<Class<?>> annotatedWithClass(final Class<? extends Annotation> annotationType) {
+    public static Predicate<Class<?>> annotatedWithClass(final Class<? extends Annotation> annotationType) {
         return new ClassAnnotationOf(annotationType);
     }
     /** 在方法中匹配注解 */
-    public static Matcher<Method> annotatedWithMethod(final Class<? extends Annotation> annotationType) {
+    public static Predicate<Method> annotatedWithMethod(final Class<? extends Annotation> annotationType) {
         return new MethodAnnotationOf(annotationType);
     }
     /** 在类型所在的 package 和父 packages 中匹配， */
-    public static Matcher<Class<?>> annotatedWithPackageTree(Class<? extends Annotation> annotationType) {
+    public static Predicate<Class<?>> annotatedWithPackageTree(Class<? extends Annotation> annotationType) {
         return new PackageAnnotationOf(annotationType);
     }
     /** 返回一个匹配器，匹配给定类型的子类（或实现了的接口） */
-    public static Matcher<Class<?>> subClassesOf(final Class<?> superclass) {
+    public static Predicate<Class<?>> subClassesOf(final Class<?> superclass) {
         return new SubClassesOf(superclass);
     }
     /**将表达式解析为<code>Matcher&lt;Method&gt;</code>。
      * 格式为：<code>&lt;包名&gt;.&lt;类名&gt;</code>，可以使用通配符。*/
-    public static Matcher<Class<?>> expressionClass(final String matcherExpression) {
+    public static Predicate<Class<?>> expressionClass(final String matcherExpression) {
         return new ClassOf(MatchUtils.MatchTypeEnum.Wild, matcherExpression);
     }
     /**
@@ -85,7 +73,7 @@ public class Matchers {
      * </pre>
      * @param matcherExpression 格式为“<code>&lt;返回值&gt;&nbsp;&lt;类名&gt;.&lt;方法名&gt;(&lt;参数签名列表&gt;)</code>”
      */
-    public static Matcher<Method> expressionMethod(final String matcherExpression) {
+    public static Predicate<Method> expressionMethod(final String matcherExpression) {
         return new MethodOf(matcherExpression);
     }
     //
@@ -94,37 +82,37 @@ public class Matchers {
     //
     //
     /**匹配方法*/
-    private static class MethodOf implements Matcher<Method> {
+    private static class MethodOf implements Predicate<Method> {
         private final String matcherExpression;
         public MethodOf(String matcherExpression) {
             this.matcherExpression = matcherExpression;
         }
-        public boolean matches(Method target) {
+        public boolean test(Method target) {
             String methodStr = ClassUtils.getDescNameWithOutModifiers(target);
             return MatchUtils.wildToRegex(matcherExpression, methodStr, MatchTypeEnum.Wild);
         }
     }
     //
     /**匹配类名*/
-    private static class ClassOf implements Matcher<Class<?>> {
+    private static class ClassOf implements Predicate<Class<?>> {
         private final MatchTypeEnum matchTypeEnum;
         private final String        matcherExpression;
         public ClassOf(MatchTypeEnum matchTypeEnum, String matcherExpression) {
             this.matchTypeEnum = matchTypeEnum;
             this.matcherExpression = matcherExpression;
         }
-        public boolean matches(Class<?> target) {
+        public boolean test(Class<?> target) {
             return MatchUtils.wildToRegex(matcherExpression, target.getName(), this.matchTypeEnum);
         }
     }
     //
     /**匹配子类*/
-    private static class SubClassesOf implements Matcher<Class<?>> {
+    private static class SubClassesOf implements Predicate<Class<?>> {
         private final Class<?> superclass;
         public SubClassesOf(final Class<?> superclass) {
             this.superclass = Hasor.assertIsNotNull(superclass, "superclass");
         }
-        public boolean matches(final Class<?> subclass) {
+        public boolean test(final Class<?> subclass) {
             return this.superclass.isAssignableFrom(subclass);
         }
         public boolean equals(final Object other) {
@@ -139,12 +127,12 @@ public class Matchers {
     }
     //
     /**匹配类或类方法上标记的注解。*/
-    private static class ClassAnnotationOf implements Matcher<Class<?>> {
+    private static class ClassAnnotationOf implements Predicate<Class<?>> {
         private Class<? extends Annotation> annotationType = null;
         public ClassAnnotationOf(final Class<? extends Annotation> annotationType) {
             this.annotationType = annotationType;
         }
-        public boolean matches(final Class<?> matcherType) {
+        public boolean test(final Class<?> matcherType) {
             if (matcherType.isAnnotationPresent(this.annotationType)) {
                 return true;
             }
@@ -174,12 +162,12 @@ public class Matchers {
     }
     //
     /**匹配方法上的注解。*/
-    private static class MethodAnnotationOf implements Matcher<Method> {
+    private static class MethodAnnotationOf implements Predicate<Method> {
         private Class<? extends Annotation> annotationType = null;
         public MethodAnnotationOf(final Class<? extends Annotation> annotationType) {
             this.annotationType = annotationType;
         }
-        public boolean matches(final Method matcherType) {
+        public boolean test(final Method matcherType) {
             if (matcherType.isAnnotationPresent(this.annotationType)) {
                 return true;
             }
@@ -200,13 +188,13 @@ public class Matchers {
     }
     //
     /**匹配在 package 和父 packages 中的注解。*/
-    private static class PackageAnnotationOf implements Matcher<Class<?>> {
+    private static class PackageAnnotationOf implements Predicate<Class<?>> {
         private Class<? extends Annotation> annotationType = null;
         public PackageAnnotationOf(final Class<? extends Annotation> annotationType) {
             this.annotationType = annotationType;
         }
         @Override
-        public boolean matches(Class<?> target) {
+        public boolean test(Class<?> target) {
             return this.matches(target.getPackage());
         }
         public boolean matches(Package targetPackage) {

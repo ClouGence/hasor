@@ -32,8 +32,8 @@ import java.util.Map.Entry;
 public class DefaultXmlNode implements XmlNode, FieldProperty, Cloneable {
     private String              elementName       = null;
     private String              textString        = null;
-    private Map<String, String> arrMap            = new HashMap<String, String>();
-    private List<XmlNode>       children          = new ArrayList<XmlNode>();
+    private Map<String, String> arrMap            = new HashMap<>();
+    private List<XmlNode>       children          = new ArrayList<>();
     private XmlNode             parentXmlProperty = null;
     //
     //
@@ -64,7 +64,7 @@ public class DefaultXmlNode implements XmlNode, FieldProperty, Cloneable {
     @Override
     public List<XmlNode> getChildren(final String elementName) {
         Hasor.assertIsNotNull(elementName);
-        List<XmlNode> children = new ArrayList<XmlNode>();
+        List<XmlNode> children = new ArrayList<>();
         for (XmlNode xmlItem : this.children) {
             if (elementName.equalsIgnoreCase(xmlItem.getName())) {
                 children.add(xmlItem);

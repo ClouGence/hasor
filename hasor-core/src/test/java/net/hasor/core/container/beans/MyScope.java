@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 package net.hasor.core.container.beans;
-import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.provider.SingleProvider;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 /**
  * 一个自定义 Scope ，实现了线程间单例化
  * @version : 2015年11月9日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MyScope implements Scope {
-    private Map<Object, Provider<?>> singtonMap = new HashMap<Object, Provider<?>>();
+    private Map<Object, Supplier<?>> singtonMap = new HashMap<Object, Supplier<?>>();
     //
-    public <T> Provider<T> scope(Object key, final Provider<T> provider) {
-        Provider<?> returnData = singtonMap.get(key);
+    public <T> Supplier<T> scope(Object key, final Supplier<T> provider) {
+        Supplier<?> returnData = singtonMap.get(key);
         if (returnData == null) {
-            Provider<T> newSingleProvider = new SingleProvider<T>(provider);
+            Supplier<T> newSingleProvider = new SingleProvider<T>(provider);
             returnData = singtonMap.put(key, newSingleProvider);
             if (returnData == null) {
                 returnData = newSingleProvider;
             }
         }
-        return (Provider<T>) returnData;
+        return (Supplier<T>) returnData;
     }
 }

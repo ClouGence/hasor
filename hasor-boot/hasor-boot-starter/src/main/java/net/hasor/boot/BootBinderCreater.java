@@ -17,10 +17,11 @@ package net.hasor.boot;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
-import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.utils.StringUtils;
+
+import java.util.function.Supplier;
 /**
  * 只有通过 Hasor Boot 启动才可以使用。
  * @version : 2018-08-04
@@ -61,7 +62,7 @@ public class BootBinderCreater implements ApiBinderCreater {
             this.addCommand(checkArgsIndex, commandName, bindType(CommandLauncher.class).idWith(commandName).toInstance(launcher).toInfo());
         }
         @Override
-        public void addCommand(int checkArgsIndex, String commandName, Provider<? extends CommandLauncher> launcherProvider) {
+        public void addCommand(int checkArgsIndex, String commandName, Supplier<? extends CommandLauncher> launcherProvider) {
             this.addCommand(checkArgsIndex, commandName, bindType(CommandLauncher.class).idWith(commandName).toProvider(launcherProvider).toInfo());
         }
         @Override

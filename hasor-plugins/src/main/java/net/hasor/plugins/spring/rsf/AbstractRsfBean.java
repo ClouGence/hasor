@@ -15,7 +15,6 @@
  */
 package net.hasor.plugins.spring.rsf;
 import net.hasor.core.AppContext;
-import net.hasor.core.Provider;
 import net.hasor.plugins.spring.SpringModule;
 import net.hasor.rsf.*;
 import net.hasor.utils.StringUtils;
@@ -25,6 +24,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import java.util.Map;
+import java.util.function.Supplier;
 /**
  * 包装来自 Spring 的 Bean。
  * @version : 2016-11-08
@@ -157,8 +157,8 @@ public abstract class AbstractRsfBean implements FactoryBean, ApplicationContext
         //
         // .提供者
         RsfPublisher.ConfigurationBuilder<?> configBuilder = likeBuilder;
-        if (this instanceof Provider) {
-            configBuilder = likeBuilder.toProvider((Provider) this);
+        if (this instanceof Supplier) {
+            configBuilder = likeBuilder.toProvider((Supplier) this);
         }
         //
         // .服务信息

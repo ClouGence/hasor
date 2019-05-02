@@ -16,7 +16,6 @@
 package net.hasor.registry.server.manager;
 import com.alibaba.fastjson.JSON;
 import net.hasor.core.Inject;
-import net.hasor.core.Matcher;
 import net.hasor.core.Singleton;
 import net.hasor.registry.client.domain.ConsumerPublishInfo;
 import net.hasor.registry.client.domain.ProviderPublishInfo;
@@ -47,12 +46,9 @@ public class QueryManager {
     /** 得到 Consumer 列表，用于异步推送服务的提供者列表 */
     public List<ConsumerPublishInfo> queryConsumerList(List<String> protocol, ServiceID serviceID) {
         String dataKey = getDataKey(serviceID) + "/Consumer/";
-        List<DataEntity> consumerDataList = this.dataAdapter.listData(dataKey, new Matcher<DataEntity>() {
-            @Override
-            public boolean matches(DataEntity target) {
-                long tags = target.getTags();
-                return tags == (tags | RsfCenterConstants.TAG_Consumer);
-            }
+        List<DataEntity> consumerDataList = this.dataAdapter.listData(dataKey, target -> {
+            long tags = target.getTags();
+            return tags == (tags | RsfCenterConstants.TAG_Consumer);
         });
         List<ConsumerPublishInfo> resultList = new ArrayList<ConsumerPublishInfo>(consumerDataList.size());
         //
@@ -75,15 +71,12 @@ public class QueryManager {
     /** 查询提供者列表 */
     public List<String> queryProviderList(List<String> protocol, ServiceID serviceID) {
         String dataKey = getDataKey(serviceID) + "/Provider/";
-        List<DataEntity> providerDataList = this.dataAdapter.listData(dataKey, new Matcher<DataEntity>() {
-            @Override
-            public boolean matches(DataEntity target) {
-                long tags = target.getTags();
-                return tags == (tags | RsfCenterConstants.TAG_Provider);
-            }
+        List<DataEntity> providerDataList = this.dataAdapter.listData(dataKey, target -> {
+            long tags = target.getTags();
+            return tags == (tags | RsfCenterConstants.TAG_Provider);
         });
         //
-        List<String> resultList = new ArrayList<String>(providerDataList.size());
+        List<String> resultList = new ArrayList<>(providerDataList.size());
         for (DataEntity data : providerDataList) {
             ProviderPublishInfo providerInfo = JSON.parseObject(data.getDataValue(), ProviderPublishInfo.class);
             if (providerInfo == null || providerInfo.getAddressMap() == null) {

@@ -17,8 +17,9 @@ package net.hasor.plugins.jfinal;
 import com.jfinal.core.JFinal;
 import com.jfinal.kit.PropKit;
 import com.jfinal.plugin.IPlugin;
-import net.hasor.core.*;
-import net.hasor.core.EventListener;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.web.startup.RuntimeFilter;
@@ -96,11 +97,7 @@ public class HasorPlugin implements IPlugin {
         this.rootFilter.init(new InnerFilterConfig(this.jFinal, envProp));
         //
         /** Hasor 框架停止*/
-        Hasor.pushShutdownListener(this.appContext.getEnvironment(), new EventListener<Object>() {
-            public void onEvent(String event, Object eventData) throws Throwable {
-                stop();
-            }
-        });
+        Hasor.pushShutdownListener(this.appContext.getEnvironment(), (event, eventData) -> stop());
     }
     public boolean stop() {
         this.rootFilter.destroy();
@@ -129,17 +126,11 @@ public class HasorPlugin implements IPlugin {
                 .setMainSettings(mainSettings)//
                 .putAllData(envProp)//
                 .addModules(moduleList)//
-                .addModules(new Module() {
-                    public void loadModule(ApiBinder apiBinder) throws Throwable {
-                        // .注册类型
-                        apiBinder.bindType(InnerMap.class).toInstance((finalEnvProp != null) ? finalEnvProp : new InnerMap());
-                        apiBinder.bindType(JFinal.class).toInstance(jFinal);
-                        apiBinder.bindType(RuntimeFilter.class).toProvider(new Provider<RuntimeFilter>() {
-                            public RuntimeFilter get() {
-                                return rootFilter;
-                            }
-                        });
-                    }
+                .addModules((Module) apiBinder -> {
+                    // .注册类型
+                    apiBinder.bindType(InnerMap.class).toInstance((finalEnvProp != null) ? finalEnvProp : new InnerMap());
+                    apiBinder.bindType(JFinal.class).toInstance(jFinal);
+                    apiBinder.bindType(RuntimeFilter.class).toProvider(() -> rootFilter);
                 });
     }
 }

@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import net.hasor.core.provider.ClassAwareProvider;
+import net.hasor.core.provider.InfoAwareProvider;
+import net.hasor.core.provider.InstanceProvider;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 /**
  * Hasor的核心接口，主要用于收集Bean绑定信息。<p>
  * Bind 参考了 Google Guice 的 Binder 接口设计，功能上大体相似。目的是提供一种不同于配置文件、注解方式的配置方法。
@@ -88,7 +94,7 @@ public interface ApiBinder {
      * @param matcherMethod 方法匹配器
      * @param interceptor 拦截器对象
      */
-    public void bindInterceptor(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor);
+    public void bindInterceptor(Predicate<Class<?>> matcherClass, Predicate<Method> matcherMethod, MethodInterceptor interceptor);
 
     /*--------------------------------------------------------------------------------------Finds*/
 
@@ -137,7 +143,9 @@ public interface ApiBinder {
      * @return 返回 - {@link OptionPropertyBindingBuilder}。
      * @see #bindType(Class)
      */
-    public <T> OptionPropertyBindingBuilder<T> bindType(Class<T> type, T instance);
+    public default <T> OptionPropertyBindingBuilder<T> bindType(final Class<T> type, final T instance) {
+        return this.bindType(type).toInstance(instance);
+    }
 
     /**
      * 绑定一个类型并且为这个类型指定一个实现类。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
@@ -147,17 +155,21 @@ public interface ApiBinder {
      * @return 返回 - {@link InjectPropertyBindingBuilder}。
      * @see #bindType(Class)
      */
-    public <T> InjectPropertyBindingBuilder<T> bindType(Class<T> type, Class<? extends T> implementation);
+    public default <T> InjectPropertyBindingBuilder<T> bindType(final Class<T> type, final Class<? extends T> implementation) {
+        return this.bindType(type).to(implementation);
+    }
 
     /**
-     * 绑定一个类型并且为这个类型指定一个{@link Provider}，开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
+     * 绑定一个类型并且为这个类型指定一个{@link Supplier}，开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
      * 该方法相当于“<code>apiBinder.bindType(type).to(implementation);</code>”
      * @param type bean type。
-     * @param provider provider 可以用来封装类型实例创建的细节。
+     * @param supplier supplier 可以用来封装类型实例创建的细节。
      * @return 返回 - {@link ScopedBindingBuilder}。
      * @see #bindType(Class)
      */
-    public <T> ScopedBindingBuilder<T> bindType(Class<T> type, Provider<T> provider);
+    public default <T> ScopedBindingBuilder<T> bindType(final Class<T> type, final Supplier<T> supplier) {
+        return this.bindType(type).toProvider(supplier);
+    }
 
     /**
      * 为绑定类型配置一个名称，进而基于同一个类型下不同名称的绑定进行差异化配置。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
@@ -167,7 +179,9 @@ public interface ApiBinder {
      * @return 返回 - {@link InjectPropertyBindingBuilder}。
      * @see #bindType(Class)
      */
-    public <T> InjectPropertyBindingBuilder<T> bindType(String withName, Class<T> type);
+    public default <T> InjectPropertyBindingBuilder<T> bindType(final String withName, final Class<T> type) {
+        return this.bindType(type).nameWith(withName).to(type);
+    }
 
     /**
      * 为绑定类型配置一个名称，进而基于同一个类型下不同名称的绑定进行差异化配置。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
@@ -179,7 +193,9 @@ public interface ApiBinder {
      * @see #bindType(String, Class)
      * @see #bindType(Class)
      */
-    public <T> OptionPropertyBindingBuilder<T> bindType(String withName, Class<T> type, T instance);
+    public default <T> OptionPropertyBindingBuilder<T> bindType(final String withName, final Class<T> type, final T instance) {
+        return this.bindType(type).nameWith(withName).toInstance(instance);
+    }
 
     /**
      * 为绑定类型配置一个名称，进而基于同一个类型下不同名称的绑定进行差异化配置。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
@@ -191,27 +207,38 @@ public interface ApiBinder {
      * @see #bindType(String, Class)
      * @see #bindType(Class)
      */
-    public <T> InjectPropertyBindingBuilder<T> bindType(String withName, Class<T> type, Class<? extends T> implementation);
+    public default <T> InjectPropertyBindingBuilder<T> bindType(final String withName, final Class<T> type, final Class<? extends T> implementation) {
+        return this.bindType(type).nameWith(withName).to(implementation);
+    }
 
     /**
      * 为绑定类型配置一个名称，进而基于同一个类型下不同名称的绑定进行差异化配置。开发者可以通过返回的 Builder 可以对绑定进行后续更加细粒度的绑定。<p>
      * 该方法相当于“<code>apiBinder.bindType(type).nameWith(withName).to(implementation);</code>”
      * @param withName 要绑定的类型。
      * @param type bean type。
-     * @param provider provider 可以用来封装类型实例创建的细节。
+     * @param supplier supplier 可以用来封装类型实例创建的细节。
      * @return 返回 - {@link LifeBindingBuilder}。
      * @see #bindType(String, Class)
      * @see #bindType(Class)
      */
-    public <T> LifeBindingBuilder<T> bindType(String withName, Class<T> type, Provider<T> provider);
+    public default <T> LifeBindingBuilder<T> bindType(final String withName, final Class<T> type, final Supplier<T> supplier) {
+        return this.bindType(type).nameWith(withName).toProvider(supplier);
+    }
 
-    public <T> void bindToCreater(BindInfo<T> info, BeanCreaterListener<?> listener);
+    public default <T> void bindToCreater(BindInfo<T> info, BeanCreaterListener<?> listener) {
+        Supplier<? extends BeanCreaterListener<?>> listenerProvider = InstanceProvider.of(Hasor.assertIsNotNull(listener));
+        this.bindToCreater(info, listenerProvider);
+    }
 
-    public <T> void bindToCreater(BindInfo<T> info, Provider<? extends BeanCreaterListener<?>> listener);
+    public default <T> void bindToCreater(BindInfo<T> info, Class<? extends BeanCreaterListener<?>> listener) {
+        this.bindToCreater(info, Hasor.autoAware(getEnvironment(), new ClassAwareProvider<BeanCreaterListener<?>>(Hasor.assertIsNotNull(listener))));
+    }
 
-    public <T> void bindToCreater(BindInfo<T> info, Class<? extends BeanCreaterListener<?>> listener);
+    public default <T> void bindToCreater(BindInfo<T> info, BindInfo<? extends BeanCreaterListener<?>> listener) {
+        this.bindToCreater(info, Hasor.autoAware(getEnvironment(), new InfoAwareProvider<BeanCreaterListener<?>>(Hasor.assertIsNotNull(listener))));
+    }
 
-    public <T> void bindToCreater(BindInfo<T> info, BindInfo<? extends BeanCreaterListener<?>> listener);
+    public <T> void bindToCreater(BindInfo<T> info, Supplier<? extends BeanCreaterListener<?>> listener);
 
     /**
      * 注册作用域。
@@ -219,15 +246,17 @@ public interface ApiBinder {
      * @param scope 作用域
      * @return 成功注册之后返回它自身, 如果存在同名的scope那么会返回第一次注册那个 scope。
      */
-    public Provider<Scope> registerScope(String scopeName, Scope scope);
+    public default Supplier<Scope> registerScope(String scopeName, Scope scope) {
+        return this.registerScope(scopeName, new InstanceProvider<>(scope));
+    }
 
     /**
      * 注册作用域。
      * @param scopeName 作用域名称
-     * @param scopeProvider 作用域
+     * @param scopeSupplier 作用域
      * @return 成功注册之后返回它自身, 如果存在同名的scope那么会返回第一次注册那个 scope。
      */
-    public <T extends Scope> Provider<T> registerScope(String scopeName, Provider<T> scopeProvider);
+    public <T extends Scope> Supplier<T> registerScope(String scopeName, Supplier<T> scopeSupplier);
     //
     /*--------------------------------------------------------------------------------------Faces*/
     /**给绑定起个名字。*/
@@ -274,14 +303,16 @@ public interface ApiBinder {
          * @param instance 实例对象
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public OptionPropertyBindingBuilder<T> toInstance(T instance);
+        public default OptionPropertyBindingBuilder<T> toInstance(final T instance) {
+            return this.toProvider(new InstanceProvider<>(instance));
+        }
 
         /**
-         * 为绑定设置一个 {@link Provider}。
-         * @param provider provider 可以用来封装类型实例创建的细节。
+         * 为绑定设置一个 {@link Supplier}。
+         * @param supplier supplier 可以用来封装类型实例创建的细节。
          * @return 返回 - {@link LifeBindingBuilder}。
          */
-        public LifeBindingBuilder<T> toProvider(Provider<? extends T> provider);
+        public LifeBindingBuilder<T> toProvider(Supplier<? extends T> supplier);
 
         /**
          * 为绑定设置一个构造方法。
@@ -312,10 +343,10 @@ public interface ApiBinder {
         /**
          * 设置构造方法注入属性。
          * @param index 构造方法参数索引位置。
-         * @param valueProvider provider 可以用来封装类型实例创建的细节。
+         * @param valueSupplier supplier 可以用来封装类型实例创建的细节。
          * @return 返回 - {@link InjectConstructorBindingBuilder}。
          */
-        public InjectConstructorBindingBuilder<T> inject(int index, Provider<?> valueProvider);
+        public InjectConstructorBindingBuilder<T> inject(int index, Supplier<?> valueSupplier);
 
         /**
          * 设置构造方法注入属性。
@@ -346,10 +377,10 @@ public interface ApiBinder {
         /**
          * 工厂方式注入Bean。
          * @param property 被注入Bean的属性名
-         * @param valueProvider 属性值提供者。
+         * @param valueSupplier 属性值提供者。
          * @return 返回属性注入接口，以继续其它属性注入。 - {@link InjectPropertyBindingBuilder}。
          */
-        public InjectPropertyBindingBuilder<T> inject(String property, Provider<?> valueProvider);
+        public InjectPropertyBindingBuilder<T> inject(String property, Supplier<?> valueSupplier);
 
         /**
          * 工厂方式注入Bean。
@@ -377,7 +408,7 @@ public interface ApiBinder {
         /**
          * 注册为单例模式。<p>
          * 单列模式：当类型被多个对象注入时，每个注入的类型实例都是同一个对象。
-         * 如果配置了{@link #toScope(Provider)}或者{@link #toScope(Scope)}，那么该方法将会使它们失效。
+         * 如果配置了{@link #toScope(Supplier)}或者{@link #toScope(Scope)}，那么该方法将会使它们失效。
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
         public OptionPropertyBindingBuilder<T> asEagerSingleton();
@@ -393,14 +424,16 @@ public interface ApiBinder {
          * @param scope 作用域
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public OptionPropertyBindingBuilder<T> toScope(Scope scope);
+        public default OptionPropertyBindingBuilder<T> toScope(final Scope scope) {
+            return this.toScope(new InstanceProvider<>(scope));
+        }
 
         /**
          * 设置Scope。
          * @param scope 作用域
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public OptionPropertyBindingBuilder<T> toScope(Provider<Scope> scope);
+        public OptionPropertyBindingBuilder<T> toScope(Supplier<Scope> scope);
 
         /**
          * 设置Scope。
@@ -414,7 +447,7 @@ public interface ApiBinder {
     public interface OptionPropertyBindingBuilder<T> extends MetaDataBindingBuilder<T> {
         public ScopedBindingBuilder<T> whenCreate(BeanCreaterListener<?> createrListener);
 
-        public ScopedBindingBuilder<T> whenCreate(Provider<? extends BeanCreaterListener<?>> createrListener);
+        public ScopedBindingBuilder<T> whenCreate(Supplier<? extends BeanCreaterListener<?>> createrListener);
 
         public ScopedBindingBuilder<T> whenCreate(Class<? extends BeanCreaterListener<?>> createrListener);
 

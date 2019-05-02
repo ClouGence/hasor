@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Time;
 import java.util.*;
+import java.util.function.Predicate;
 public class AopTest {
     private AppContext appContext;
     @Before
@@ -94,12 +95,7 @@ public class AopTest {
     public void aopTest1() throws IOException, NoSuchMethodException, ClassNotFoundException, IllegalAccessException, InstantiationException {
         AopClassConfig classConfig = new AopClassConfig(AopBean.class);
         classConfig.debug(true, new File("target"));
-        classConfig.addAopInterceptor(new Matcher<Method>() {
-            @Override
-            public boolean matches(Method target) {
-                return target.getName().equals("aBooleanValue");
-            }
-        }, new TransparentInterceptor());
+        classConfig.addAopInterceptor(target -> target.getName().equals("aBooleanValue"), new TransparentInterceptor());
         Class<?> aClass = classConfig.buildClass();
         AopBean o = (AopBean) aClass.newInstance();
         //

@@ -16,22 +16,20 @@
 package net.hasor.rsf;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * Rsf 制定 Hasor Module。
  * @version : 2014年11月12日
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class RsfModule implements Module {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    @Override
-    public final void loadModule(final ApiBinder apiBinder) throws Throwable {
+@FunctionalInterface
+public interface RsfModule extends Module {
+    public default void loadModule(final ApiBinder apiBinder) throws Throwable {
         RsfApiBinder rsfApiBinder = apiBinder.tryCast(RsfApiBinder.class);
         if (rsfApiBinder == null) {
             return;
         }
         this.loadModule(rsfApiBinder);
     }
-    public abstract void loadModule(RsfApiBinder apiBinder) throws Throwable;
+
+    public void loadModule(RsfApiBinder apiBinder) throws Throwable;
 }

@@ -17,10 +17,11 @@ package net.hasor.tconsole.launcher;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Provider;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.tconsole.CommandExecutor;
+
+import java.util.function.Supplier;
 /**
  * RSF命令
  * @version : 2016年4月3日
@@ -66,7 +67,7 @@ class ExecutorDefine implements CommandExecutor, AppContextAware {
         if (sourceType != null) {
             return sourceType.getName();
         }
-        Provider<?> sourceProvider = ((AbstractBindInfoProviderAdapter) this.bindInfo).getCustomerProvider();
+        Supplier<?> sourceProvider = ((AbstractBindInfoProviderAdapter) this.bindInfo).getCustomerProvider();
         if (sourceProvider != null && sourceProvider instanceof InstanceProvider) {
             return ((InstanceProvider) sourceProvider).get().toString();
         }

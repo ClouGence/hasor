@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package test.net.hasor.rsf.functions;
-import net.hasor.core.*;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.domain.RequestInfo;
@@ -27,12 +30,13 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 /**
  *
  * @version : 2014年9月12日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class NetworkTest extends ReceivedAdapter implements Provider<RsfEnvironment> {
+public class NetworkTest extends ReceivedAdapter implements Supplier<RsfEnvironment> {
     private RsfEnvironment rsfEnv;
     @Override
     public RsfEnvironment get() {
@@ -40,11 +44,8 @@ public class NetworkTest extends ReceivedAdapter implements Provider<RsfEnvironm
     }
     @Test
     public void sendPack() throws IOException, InterruptedException, ExecutionException {
-        AppContext appContext = Hasor.create().putData("RSF_ENABLE", "false").build(new Module() {
-            @Override
-            public void loadModule(ApiBinder apiBinder) throws Throwable {
-                apiBinder.bindType(RsfEnvironment.class).toProvider(NetworkTest.this);//
-            }
+        AppContext appContext = Hasor.create().putData("RSF_ENABLE", "false").build((Module) apiBinder -> {
+            apiBinder.bindType(RsfEnvironment.class).toProvider(NetworkTest.this);//
         });
         this.rsfEnv = new DefaultRsfEnvironment(appContext.getEnvironment());
         RsfNetManager rsfNetManager = new RsfNetManager(this.rsfEnv, this);

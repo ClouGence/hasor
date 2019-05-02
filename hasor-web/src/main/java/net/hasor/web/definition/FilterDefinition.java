@@ -16,7 +16,6 @@
 package net.hasor.web.definition;
 import net.hasor.core.BeanCreaterListener;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Provider;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
@@ -44,12 +43,7 @@ public class FilterDefinition extends AbstractDefinition implements BeanCreaterL
     @Override
     public void beanCreated(Filter newObject, BindInfo<? extends Filter> bindInfo) throws Throwable {
         final ServletContext servletContext = this.getAppContext().getInstance(ServletContext.class);
-        newObject.init(new J2eeMapConfig(bindInfo.getBindID(), this.getInitParams(), new Provider<ServletContext>() {
-            @Override
-            public ServletContext get() {
-                return servletContext;
-            }
-        }));
+        newObject.init(new J2eeMapConfig(bindInfo.getBindID(), this.getInitParams(), () -> servletContext));
     }
     //
     /*--------------------------------------------------------------------------------------------------------*/
@@ -59,18 +53,15 @@ public class FilterDefinition extends AbstractDefinition implements BeanCreaterL
             throw new NullPointerException("target Filter instance is null.");
         }
         //
-        filter.doFilter(invoker.getHttpRequest(), invoker.getHttpResponse(), new FilterChain() {
-            @Override
-            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
-                try {
-                    chain.doNext(invoker);
-                } catch (IOException e) {
-                    throw (IOException) e;
-                } catch (ServletException e) {
-                    throw (ServletException) e;
-                } catch (Throwable e) {
-                    throw ExceptionUtils.toRuntimeException(e);
-                }
+        filter.doFilter(invoker.getHttpRequest(), invoker.getHttpResponse(), (request, response) -> {
+            try {
+                chain.doNext(invoker);
+            } catch (IOException e) {
+                throw (IOException) e;
+            } catch (ServletException e) {
+                throw (ServletException) e;
+            } catch (Throwable e) {
+                throw ExceptionUtils.toRuntimeException(e);
             }
         });
         return invoker.get(Invoker.RETURN_DATA_KEY);

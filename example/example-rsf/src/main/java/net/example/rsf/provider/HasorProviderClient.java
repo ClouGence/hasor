@@ -14,16 +14,14 @@ import net.hasor.rsf.RsfModule;
 public class HasorProviderClient {
     public static void main(String[] args) throws Throwable {
         //Client
-        Hasor.createAppContext("hasor-provider-config.xml", new RsfModule() {
-            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-                apiBinder.bindType(EchoService.class).toProvider(apiBinder.converToProvider(//
-                        apiBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register()//
-                ));
-                //
-                apiBinder.bindType(MessageService.class).toProvider(apiBinder.converToProvider(//
-                        apiBinder.rsfService(MessageService.class).toInstance(new MessageServiceImpl()).register()//
-                ));
-            }
+        Hasor.createAppContext("hasor-provider-config.xml", (RsfModule) apiBinder -> {
+            apiBinder.bindType(EchoService.class).toProvider(apiBinder.converToProvider(//
+                    apiBinder.rsfService(EchoService.class).toInstance(new EchoServiceImpl()).register()//
+            ));
+            //
+            apiBinder.bindType(MessageService.class).toProvider(apiBinder.converToProvider(//
+                    apiBinder.rsfService(MessageService.class).toInstance(new MessageServiceImpl()).register()//
+            ));
         });
         System.out.println("server start.");
         System.in.read();

@@ -19,6 +19,7 @@ package net.hasor.core;
  * @version : 2013-3-20
  * @author 赵永春 (zyc@hasor.net)
  */
+@FunctionalInterface
 public interface Module {
     /**
      * 初始化过程，注意：apiBinder 参数只能在 loadModule 阶段中使用。

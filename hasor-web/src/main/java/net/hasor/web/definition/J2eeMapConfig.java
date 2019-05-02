@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web.definition;
-import net.hasor.core.Provider;
 import net.hasor.utils.Iterators;
 
 import javax.servlet.FilterConfig;
@@ -23,6 +22,7 @@ import javax.servlet.ServletContext;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 /**
  * Abstract implementation for all servlet module bindings
  * @version : 2013-4-12
@@ -30,9 +30,9 @@ import java.util.Map;
  */
 public class J2eeMapConfig extends HashMap<String, String> implements FilterConfig, ServletConfig {
     private String                   resourceName;
-    private Provider<ServletContext> servletContext;
+    private Supplier<ServletContext> servletContext;
     //
-    public J2eeMapConfig(String resourceName, Map<String, String> initParams, Provider<ServletContext> servletContext) {
+    public J2eeMapConfig(String resourceName, Map<String, String> initParams, Supplier<ServletContext> servletContext) {
         this.resourceName = resourceName;
         this.servletContext = servletContext;
         if (initParams != null) {

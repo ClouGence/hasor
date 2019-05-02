@@ -1,7 +1,6 @@
 package net.hasor.core.provider;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Provider;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
@@ -9,6 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 public class ProviderTest {
     //
     @Test
@@ -17,7 +17,7 @@ public class ProviderTest {
         AppContext mock = PowerMockito.mock(AppContext.class);
         PowerMockito.when(mock.getInstance(ArrayList.class)).thenReturn(new ArrayList());
         //
-        ClassAwareProvider<List> provider = new ClassAwareProvider<List>(ArrayList.class);
+        ClassAwareProvider<List> provider = new ClassAwareProvider<>(ArrayList.class);
         //
         try {
             provider.get();
@@ -34,23 +34,23 @@ public class ProviderTest {
     //
     @Test
     public void providerTest1() {
-        Provider<List> ofList = InstanceProvider.of(new ArrayList());
-        ClassLoaderSingleProvider<List> provider = new ClassLoaderSingleProvider<List>(ofList);
+        Supplier<List> ofList = InstanceProvider.of(new ArrayList());
+        ClassLoaderSingleProvider<List> provider = new ClassLoaderSingleProvider<>(ofList);
         provider.toString();
         //
         assert provider.get() != null;
         assert provider.get() == provider.get();
         //
         ArrayList obj = new ArrayList();
-        Provider<ArrayList> ofListWrap = InstanceProvider.wrap(obj);
+        Supplier<ArrayList> ofListWrap = InstanceProvider.wrap(obj);
         assert ofListWrap.get() == obj;
     }
     //
     @Test
     public void providerTest2() throws Throwable {
         //
-        Provider<List> listProvider = InstanceProvider.of(new ArrayList());
-        SingleProvider<List> singleProvider = new SingleProvider<List>(listProvider);
+        Supplier<List> listProvider = InstanceProvider.of(new ArrayList());
+        SingleProvider<List> singleProvider = new SingleProvider<>(listProvider);
         singleProvider.toString();
         //
         assert singleProvider.get() == singleProvider.get();
@@ -59,7 +59,7 @@ public class ProviderTest {
     @Test
     public void providerTest3() throws Throwable {
         //
-        InstanceProvider<List> listProvider = new InstanceProvider<List>(new ArrayList());
+        InstanceProvider<List> listProvider = new InstanceProvider<>(new ArrayList());
         assert listProvider.get() instanceof ArrayList;
         //
         listProvider.set(new LinkedList());
@@ -74,7 +74,7 @@ public class ProviderTest {
         AppContext mock = PowerMockito.mock(AppContext.class);
         PowerMockito.when(mock.getInstance(info)).thenReturn(new ArrayList());
         //
-        InfoAwareProvider<List> provider = new InfoAwareProvider<List>(info);
+        InfoAwareProvider<List> provider = new InfoAwareProvider<>(info);
         //
         try {
             provider.get();
@@ -92,23 +92,15 @@ public class ProviderTest {
     @Test
     public void providerTest5() throws Throwable {
         //
-        final ThreadSingleProvider<Object> listProvider = new ThreadSingleProvider<Object>(new Provider<Object>() {
-            @Override
-            public Object get() {
-                return new Object();
-            }
-        });
-        final ArrayList<Object> result = new ArrayList<Object>();
+        final ThreadSingleProvider<Object> listProvider = new ThreadSingleProvider<>(Object::new);
+        final ArrayList<Object> result = new ArrayList<>();
         //
         //
         final AtomicInteger atomicInteger = new AtomicInteger();
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                result.add(listProvider.get());
-                if (listProvider.get() == listProvider.get()) { // 线程内单例
-                    atomicInteger.incrementAndGet();
-                }
+        final Runnable runnable = () -> {
+            result.add(listProvider.get());
+            if (listProvider.get() == listProvider.get()) { // 线程内单例
+                atomicInteger.incrementAndGet();
             }
         };
         //

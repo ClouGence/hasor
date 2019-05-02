@@ -33,6 +33,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 /**
  * 标准的 {@link ApiBinder} 接口实现，Hasor 在初始化模块时会为每个模块独立分配一个 ApiBinder 接口实例。
  * <p>抽象方法 {@link #getBeanBuilder()} ,会返回一个类( {@link BeanBuilder} )用于配置Bean信息。
@@ -87,61 +89,16 @@ public abstract class AbstractBinder implements ApiBinder {
         return new BindingBuilderImpl<T>(typeBuilder);
     }
     @Override
-    public <T> OptionPropertyBindingBuilder<T> bindType(final Class<T> type, final T instance) {
-        return this.bindType(type).toInstance(instance);
-    }
-    @Override
-    public <T> InjectPropertyBindingBuilder<T> bindType(final Class<T> type, final Class<? extends T> implementation) {
-        return this.bindType(type).to(implementation);
-    }
-    @Override
-    public <T> ScopedBindingBuilder<T> bindType(final Class<T> type, final Provider<T> provider) {
-        return this.bindType(type).toProvider(provider);
-    }
-    @Override
-    public <T> InjectPropertyBindingBuilder<T> bindType(final String withName, final Class<T> type) {
-        return this.bindType(type).nameWith(withName).to(type);
-    }
-    @Override
-    public <T> OptionPropertyBindingBuilder<T> bindType(final String withName, final Class<T> type, final T instance) {
-        return this.bindType(type).nameWith(withName).toInstance(instance);
-    }
-    @Override
-    public <T> InjectPropertyBindingBuilder<T> bindType(final String withName, final Class<T> type, final Class<? extends T> implementation) {
-        return this.bindType(type).nameWith(withName).to(implementation);
-    }
-    @Override
-    public <T> LifeBindingBuilder<T> bindType(final String withName, final Class<T> type, final Provider<T> provider) {
-        return this.bindType(type).nameWith(withName).toProvider(provider);
-    }
-    @Override
-    public <T> void bindToCreater(BindInfo<T> info, BeanCreaterListener<?> listener) {
-        Provider<? extends BeanCreaterListener<?>> listenerProvider = InstanceProvider.of(Hasor.assertIsNotNull(listener));
-        this.bindToCreater(info, listenerProvider);
-    }
-    @Override
-    public <T> void bindToCreater(BindInfo<T> info, Provider<? extends BeanCreaterListener<?>> listener) {
+    public <T> void bindToCreater(BindInfo<T> info, Supplier<? extends BeanCreaterListener<?>> listener) {
         BindInfo<T> bindInfo = getBindInfo(Hasor.assertIsNotNull(info).getBindID());
         if (bindInfo instanceof AbstractBindInfoProviderAdapter) {
             ((AbstractBindInfoProviderAdapter) bindInfo).addCreaterListener(Hasor.assertIsNotNull(listener));
         }
     }
-    @Override
-    public <T> void bindToCreater(BindInfo<T> info, Class<? extends BeanCreaterListener<?>> listener) {
-        this.bindToCreater(info, Hasor.autoAware(getEnvironment(), new ClassAwareProvider<BeanCreaterListener<?>>(Hasor.assertIsNotNull(listener))));
-    }
-    @Override
-    public <T> void bindToCreater(BindInfo<T> info, BindInfo<? extends BeanCreaterListener<?>> listener) {
-        this.bindToCreater(info, Hasor.autoAware(getEnvironment(), new InfoAwareProvider<BeanCreaterListener<?>>(Hasor.assertIsNotNull(listener))));
-    }
     //
     @Override
-    public <T extends Scope> Provider<T> registerScope(String scopeName, Provider<T> scopeProvider) {
+    public <T extends Scope> Supplier<T> registerScope(String scopeName, Supplier<T> scopeProvider) {
         return this.getScopManager().registerScope(scopeName, scopeProvider);
-    }
-    @Override
-    public Provider<Scope> registerScope(String scopeName, Scope scope) {
-        return this.registerScope(scopeName, new InstanceProvider<Scope>(scope));
     }
     /*----------------------------------------------------------------------------------------Aop*/
     //    static {
@@ -155,12 +112,12 @@ public abstract class AbstractBinder implements ApiBinder {
     @Override
     public void bindInterceptor(final String matcherExpression, final MethodInterceptor interceptor) {
         //
-        Matcher<Class<?>> matcherClass = Matchers.expressionClass(matcherExpression);
-        Matcher<Method> matcherMethod = Matchers.expressionMethod(matcherExpression);
+        Predicate<Class<?>> matcherClass = Matchers.expressionClass(matcherExpression);
+        Predicate<Method> matcherMethod = Matchers.expressionMethod(matcherExpression);
         this.bindInterceptor(matcherClass, matcherMethod, interceptor);
     }
     @Override
-    public void bindInterceptor(final Matcher<Class<?>> matcherClass, final Matcher<Method> matcherMethod, final MethodInterceptor interceptor) {
+    public void bindInterceptor(final Predicate<Class<?>> matcherClass, final Predicate<Method> matcherMethod, final MethodInterceptor interceptor) {
         Hasor.assertIsNotNull(matcherClass, "matcherClass is null.");
         Hasor.assertIsNotNull(matcherMethod, "matcherMethod is null.");
         Hasor.assertIsNotNull(interceptor, "interceptor is null.");
@@ -215,13 +172,13 @@ public abstract class AbstractBinder implements ApiBinder {
         @Override
         public ScopedBindingBuilder<T> whenCreate(BeanCreaterListener<?> createrListener) {
             if (createrListener != null) {
-                Provider<? extends BeanCreaterListener<?>> listenerProvider = InstanceProvider.of(createrListener);
+                Supplier<? extends BeanCreaterListener<?>> listenerProvider = InstanceProvider.of(createrListener);
                 this.typeBuilder.addCreaterListener(listenerProvider);
             }
             return this;
         }
         @Override
-        public ScopedBindingBuilder<T> whenCreate(Provider<? extends BeanCreaterListener<?>> createrListener) {
+        public ScopedBindingBuilder<T> whenCreate(Supplier<? extends BeanCreaterListener<?>> createrListener) {
             if (createrListener != null) {
                 this.typeBuilder.addCreaterListener(createrListener);
             }
@@ -284,14 +241,6 @@ public abstract class AbstractBinder implements ApiBinder {
             return this;
         }
         @Override
-        public OptionPropertyBindingBuilder<T> toScope(final Scope scope) {
-            return this.toScope(new InstanceProvider<Scope>(scope));
-        }
-        @Override
-        public OptionPropertyBindingBuilder<T> toInstance(final T instance) {
-            return this.toProvider(new InstanceProvider<T>(instance));
-        }
-        @Override
         public InjectPropertyBindingBuilder<T> to(final Class<? extends T> implementation) {
             this.typeBuilder.setSourceType(implementation);
             return this;
@@ -303,31 +252,29 @@ public abstract class AbstractBinder implements ApiBinder {
             this.typeBuilder.setSourceType(targetType);
             //
             Class<?>[] params = constructor.getParameterTypes();
-            if (params != null) {
-                for (int i = 0; i < params.length; i++) {
-                    Object defaultValue = BeanUtils.getDefaultValue(params[i]);//取得参数的默认值
-                    this.typeBuilder.setConstructor(i, params[i], new InstanceProvider<Object>(defaultValue));
-                }
-                this.initParams = params;
+            for (int i = 0; i < params.length; i++) {
+                Object defaultValue = BeanUtils.getDefaultValue(params[i]);//取得参数的默认值
+                this.typeBuilder.setConstructor(i, params[i], new InstanceProvider<>(defaultValue));
             }
+            this.initParams = params;
             return this;
         }
         @Override
-        public OptionPropertyBindingBuilder<T> toScope(final Provider<Scope> scope) {
+        public OptionPropertyBindingBuilder<T> toScope(final Supplier<Scope> scope) {
             Hasor.assertIsNotNull(scope, "the Provider of Scope is null.");
             this.typeBuilder.setScopeProvider(scope);
             return this;
         }
         @Override
         public OptionPropertyBindingBuilder<T> toScope(String scopeName) {
-            Provider<Scope> scope = getScopManager().findScope(scopeName);
+            Supplier<Scope> scope = getScopManager().findScope(scopeName);
             if (scope == null) {
                 throw new IllegalStateException("scope '" + scopeName + "' Have not yet registered");
             }
             return this.toScope(scope);
         }
         @Override
-        public LifeBindingBuilder<T> toProvider(final Provider<? extends T> provider) {
+        public LifeBindingBuilder<T> toProvider(final Supplier<? extends T> provider) {
             if (provider != null) {
                 this.typeBuilder.setCustomerProvider(provider);
             }
@@ -336,7 +283,7 @@ public abstract class AbstractBinder implements ApiBinder {
         //
         @Override
         public InjectPropertyBindingBuilder<T> injectValue(final String property, final Object value) {
-            return this.inject(property, new InstanceProvider<Object>(value));
+            return this.inject(property, new InstanceProvider<>(value));
         }
         @Override
         public InjectPropertyBindingBuilder<T> inject(final String property, final BindInfo<?> valueInfo) {
@@ -344,7 +291,7 @@ public abstract class AbstractBinder implements ApiBinder {
             return this;
         }
         @Override
-        public InjectPropertyBindingBuilder<T> inject(final String property, final Provider<?> valueProvider) {
+        public InjectPropertyBindingBuilder<T> inject(final String property, final Supplier<?> valueProvider) {
             this.typeBuilder.addInject(property, valueProvider);
             return this;
         }
@@ -355,7 +302,7 @@ public abstract class AbstractBinder implements ApiBinder {
         }
         @Override
         public InjectConstructorBindingBuilder<T> injectValue(final int index, final Object value) {
-            return this.inject(index, new InstanceProvider<Object>(value));
+            return this.inject(index, new InstanceProvider<>(value));
         }
         @Override
         public InjectConstructorBindingBuilder<T> inject(final int index, final BindInfo<?> valueInfo) {
@@ -364,7 +311,7 @@ public abstract class AbstractBinder implements ApiBinder {
             return this;
         }
         @Override
-        public InjectConstructorBindingBuilder<T> inject(final int index, final Provider<?> valueProvider) {
+        public InjectConstructorBindingBuilder<T> inject(final int index, final Supplier<?> valueProvider) {
             checkIndex(this.initParams, index);
             this.typeBuilder.setConstructor(index, this.initParams[index], valueProvider);
             return this;

@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Proxy;
 import java.util.*;
+import java.util.function.Supplier;
 /**
  * 抽象类 AbstractAppContext 是 {@link AppContext} 接口的基础实现。
  * <p>它包装了大量细节代码，可以方便的通过子类来创建独特的上下文支持。<p>
@@ -64,60 +65,17 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         return nameList.toArray(new String[0]);
     }
     @Override
-    public String[] getNames(final Class<?> targetClass) {
-        Hasor.assertIsNotNull(targetClass, "targetClass is null.");
-        Collection<String> nameList = getContainer().getBindInfoNamesByType(targetClass);
-        if (nameList == null || nameList.isEmpty()) {
-            return ArrayUtils.EMPTY_STRING_ARRAY;
-        }
-        return nameList.toArray(new String[0]);
-    }
-    @Override
     public boolean containsBindID(String bindID) {
         Hasor.assertIsNotNull(bindID, "bindID is null.");
         return getContainer().findBindInfo(bindID) != null;
     }
     /*---------------------------------------------------------------------------------------Bean*/
     @Override
-    public <T> T getInstance(String bindID) {
-        Hasor.assertIsNotNull(bindID, "bindID is null.");
-        BindInfo<T> bindInfo = getContainer().findBindInfo(bindID);
-        if (bindInfo != null) {
-            return this.getInstance(bindInfo);
-        }
-        return null;
-    }
-    @Override
-    public <T> T getInstance(Class<T> targetClass) {
-        Hasor.assertIsNotNull(targetClass, "targetClass is null.");
-        return this.getProvider(targetClass).get();
-    }
-    @Override
-    public <T> T getInstance(Constructor<T> targetConstructor) {
-        Hasor.assertIsNotNull(targetConstructor, "targetConstructor is null.");
-        return this.getProvider(targetConstructor).get();
-    }
-    @Override
-    public <T> T getInstance(BindInfo<T> info) {
-        Provider<? extends T> provider = this.getProvider(info);
-        if (provider != null) {
-            return provider.get();
-        }
-        return null;
-    }
-    @Override
-    public <T> T justInject(T object) {
-        if (object == null) {
-            return null;
-        }
-        return this.justInject(object, object.getClass());
-    }
-    @Override
     public <T> T justInject(T object, Class<?> beanType) {
         if (object == null || beanType == null) {
             return object;
         }
-        BindInfo<?> bindInfo = this.findBindingRegister("", beanType);
+        BindInfo<?> bindInfo = this.findBindingRegister(null, beanType);
         if (bindInfo != null) {
             return this.getContainer().justInject(object, bindInfo, this);
         } else {
@@ -132,7 +90,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         return this.getContainer().justInject(object, bindInfo, this);
     }
     @Override
-    public <T> Provider<? extends T> getProvider(String bindID) {
+    public <T> Supplier<? extends T> getProvider(String bindID) {
         Hasor.assertIsNotNull(bindID, "bindID is null.");
         BindInfo<T> bindInfo = getContainer().findBindInfo(bindID);
         if (bindInfo != null) {
@@ -141,128 +99,47 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         return null;
     }
     @Override
-    public <T> Provider<? extends T> getProvider(final Class<T> targetClass) {
+    public <T> Supplier<? extends T> getProvider(final Class<T> targetClass) {
         Hasor.assertIsNotNull(targetClass, "targetClass is null.");
         BindInfo<T> bindInfo = getBindInfo(targetClass);
         final AppContext appContext = this;
         //
         if (bindInfo == null) {
-            return getBeanBuilder().getProvider(targetClass, appContext);
+            return getContainer().getProvider(targetClass, appContext);
         } else {
             return getProvider(bindInfo);
         }
     }
     @Override
-    public <T> Provider<? extends T> getProvider(final Constructor<T> targetConstructor) {
+    public <T> Supplier<? extends T> getProvider(final Constructor<T> targetConstructor) {
         Hasor.assertIsNotNull(targetConstructor, "targetConstructor is null.");
-        BindInfo<T> bindInfo = getBindInfo(targetConstructor);
+        BindInfo<T> bindInfo = getBindInfo(targetConstructor.getDeclaringClass());
         //
         if (bindInfo == null) {
-            return getBeanBuilder().getProvider(targetConstructor, TemplateAppContext.this);
+            return getContainer().getProvider(targetConstructor, TemplateAppContext.this);
         } else {
             return getProvider(bindInfo);
         }
     }
     @Override
-    public <T> Provider<? extends T> getProvider(final BindInfo<T> info) {
+    public <T> Supplier<? extends T> getProvider(final BindInfo<T> info) {
         if (info == null) {
             return null;
         }
-        return getBeanBuilder().getProvider(info, TemplateAppContext.this);
-    }
-    //
-    /**获取用于创建Bean的{@link BeanBuilder}*/
-    protected BeanBuilder getBeanBuilder() {
-        return getContainer();
+        return getContainer().getProvider(info, TemplateAppContext.this);
     }
     /**获取用于创建Bean对象的{@link BeanContainer}接口*/
     protected abstract BeanContainer getContainer();
     //
     /*------------------------------------------------------------------------------------Binding*/
     @Override
-    public <T> List<T> findBindingBean(final Class<T> bindType) {
-        Hasor.assertIsNotNull(bindType, "bindType is null.");
-        //
-        BeanContainer container = getContainer();
-        List<BindInfo<T>> typeRegisterList = container.findBindInfoList(bindType);
-        if (typeRegisterList == null || typeRegisterList.isEmpty()) {
-            return Collections.emptyList();
-        }
-        ArrayList<T> returnData = new ArrayList<T>(typeRegisterList.size());
-        for (BindInfo<T> adapter : typeRegisterList) {
-            T instance = this.getInstance(adapter);
-            returnData.add(instance);
-        }
-        return returnData;
-    }
-    @Override
-    public <T> List<Provider<? extends T>> findBindingProvider(final Class<T> bindType) {
-        Hasor.assertIsNotNull(bindType, "bindType is null.");
-        //
-        BeanContainer container = getContainer();
-        List<BindInfo<T>> typeRegisterList = container.findBindInfoList(bindType);
-        if (typeRegisterList == null || typeRegisterList.isEmpty()) {
-            return Collections.emptyList();
-        }
-        ArrayList<Provider<? extends T>> returnData = new ArrayList<Provider<? extends T>>(typeRegisterList.size());
-        for (BindInfo<T> adapter : typeRegisterList) {
-            Provider<? extends T> provider = this.getProvider(adapter);
-            returnData.add(provider);
-        }
-        return returnData;
-    }
-    @Override
-    public <T> T findBindingBean(final String withName, final Class<T> bindType) {
-        Hasor.assertIsNotNull(withName, "withName is null.");
-        Hasor.assertIsNotNull(bindType, "bindType is null.");
-        //
-        BindInfo<T> typeRegister = this.findBindingRegister(withName, bindType);
-        if (typeRegister != null) {
-            return this.getInstance(typeRegister);
-        }
-        return null;
-    }
-    @Override
-    public <T> Provider<? extends T> findBindingProvider(final String withName, final Class<T> bindType) {
-        Hasor.assertIsNotNull(withName, "withName is null.");
-        Hasor.assertIsNotNull(bindType, "bindType is null.");
-        //
-        BindInfo<T> typeRegister = this.findBindingRegister(withName, bindType);
-        if (typeRegister != null) {
-            return this.getProvider(typeRegister);
-        }
-        return null;
-    }
-    @Override
     public <T> BindInfo<T> getBindInfo(String bindID) {
         return getContainer().findBindInfo(bindID);
-    }
-    @Override
-    public <T> BindInfo<T> getBindInfo(Class<T> bindType) {
-        Hasor.assertIsNotNull(bindType, "bindType is null.");
-        return getContainer().findBindInfo(null, bindType);
-    }
-    @Override
-    public <T> BindInfo<T> getBindInfo(Constructor<T> bindConstructor) {
-        Hasor.assertIsNotNull(bindConstructor, "bindConstructor is null.");
-        return getContainer().findBindInfo(null, bindConstructor.getDeclaringClass());
     }
     @Override
     public <T> List<BindInfo<T>> findBindingRegister(Class<T> bindType) {
         Hasor.assertIsNotNull(bindType, "bindType is null.");
         return getContainer().findBindInfoList(bindType);
-    }
-    @Override
-    public <T> BindInfo<T> findBindingRegister(String withName, final Class<T> bindType) {
-        Hasor.assertIsNotNull(withName, "withName is null.");
-        Hasor.assertIsNotNull(bindType, "bindType is null.");
-        return getContainer().findBindInfo(withName, bindType);
-    }
-    @Override
-    public <T> BindInfo<T> findBindingRegister(String withName, Constructor<T> bindConstructor) {
-        Hasor.assertIsNotNull(withName, "withName is null.");
-        Hasor.assertIsNotNull(bindConstructor, "bindConstructor is null.");
-        return getContainer().findBindInfo(withName, bindConstructor.getDeclaringClass());
     }
     //
     /*------------------------------------------------------------------------------------Process*/
@@ -275,9 +152,9 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
             return new Module[0];
         }
         //
-        ArrayList<Module> moduleList = new ArrayList<Module>();
+        ArrayList<Module> moduleList = new ArrayList<>();
         String[] allModules = env.getSettings().getStringArray("hasor.modules.module");
-        Set<String> moduleTypeSet = new LinkedHashSet<String>(Arrays.asList(allModules));
+        Set<String> moduleTypeSet = new LinkedHashSet<>(Arrays.asList(allModules));
         for (String moduleType : moduleTypeSet) {
             if (StringUtils.isBlank(moduleType)) {
                 continue;
@@ -339,9 +216,9 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     protected ApiBinder newApiBinder() throws Throwable {
         //
         // .寻找ApiBinder扩展
-        Map<Class<?>, Class<?>> extBinderMap = new HashMap<Class<?>, Class<?>>();
+        Map<Class<?>, Class<?>> extBinderMap = new HashMap<>();
         XmlNode[] innerBinderSet = this.getEnvironment().getSettings().getXmlNodeArray("hasor.innerApiBinderSet.binder");
-        List<XmlNode> loadBinderSet = new ArrayList<XmlNode>(Arrays.asList(innerBinderSet));
+        List<XmlNode> loadBinderSet = new ArrayList<>(Arrays.asList(innerBinderSet));
         if (this.getEnvironment().getSettings().getBoolean("hasor.apiBinderSet.loadExternal", true)) {
             XmlNode[] externalBinderSet = this.getEnvironment().getSettings().getXmlNodeArray("hasor.apiBinderSet.binder");
             loadBinderSet.addAll(Arrays.asList(externalBinderSet));
@@ -379,7 +256,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
                 return getContainer();
             }
         };
-        Map<Class<?>, Object> implMap = new HashMap<Class<?>, Object>();
+        Map<Class<?>, Object> implMap = new HashMap<>();
         for (Map.Entry<Class<?>, Class<?>> ent : extBinderMap.entrySet()) {
             Class<?> implKey = ent.getValue();
             if (implMap.containsKey(implKey)) {
@@ -393,7 +270,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         }
         //
         // .扩展的映射（这样做的目的是保证不同key应射了同一个实现之后，实现类避免重复初始化）
-        Map<Class<?>, Object> supportMap = new HashMap<Class<?>, Object>();
+        Map<Class<?>, Object> supportMap = new HashMap<>();
         supportMap.put(ApiBinder.class, binder);
         for (Map.Entry<Class<?>, Class<?>> ent : extBinderMap.entrySet()) {
             Object supportVal = implMap.get(ent.getValue());
@@ -409,31 +286,14 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     }
     /**当开始所有 Module 的 installModule 之前。*/
     protected void doBindBefore(ApiBinder apiBinder) {
-        final AppContext appContet = this;
         /*绑定Settings对象的Provider*/
-        apiBinder.bindType(Settings.class).toProvider(new Provider<Settings>() {
-            public Settings get() {
-                return appContet.getEnvironment().getSettings();
-            }
-        });
+        apiBinder.bindType(Settings.class).toProvider(() -> getEnvironment().getSettings());
         /*绑定EventContext对象的Provider*/
-        apiBinder.bindType(EventContext.class).toProvider(new Provider<EventContext>() {
-            public EventContext get() {
-                return appContet.getEnvironment().getEventContext();
-            }
-        });
+        apiBinder.bindType(EventContext.class).toProvider(() -> getEnvironment().getEventContext());
         /*绑定Environment对象的Provider*/
-        apiBinder.bindType(Environment.class).toProvider(new Provider<Environment>() {
-            public Environment get() {
-                return appContet.getEnvironment();
-            }
-        });
+        apiBinder.bindType(Environment.class).toProvider(this::getEnvironment);
         /*绑定AppContext对象的Provider*/
-        apiBinder.bindType(AppContext.class).toProvider(new Provider<AppContext>() {
-            public AppContext get() {
-                return appContet;
-            }
-        });
+        apiBinder.bindType(AppContext.class).toProvider(() -> TemplateAppContext.this);
     }
     /**当完成所有 Module 的 installModule 直呼。*/
     protected void doBindAfter(ApiBinder apiBinder) {
@@ -450,10 +310,6 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     }
     /**获取环境接口。*/
     public abstract Environment getEnvironment();
-    /**获取当创建Bean时使用的{@link ClassLoader}*/
-    public ClassLoader getClassLoader() {
-        return this.getEnvironment().getClassLoader();
-    }
     /**安装模块的工具方法。*/
     protected void installModule(ApiBinder apiBinder, Module module) throws Throwable {
         if (this.isStart()) {
@@ -478,7 +334,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         }
         /*1.findModules*/
         logger.info("appContext -> findModules.");
-        ArrayList<Module> findModules = new ArrayList<Module>();
+        ArrayList<Module> findModules = new ArrayList<>();
         findModules.addAll(Arrays.asList(this.findModules()));
         findModules.addAll(Arrays.asList(modules));
         /*2.doInitialize*/

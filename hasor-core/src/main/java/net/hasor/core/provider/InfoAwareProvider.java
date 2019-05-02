@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 package net.hasor.core.provider;
-import net.hasor.core.*;
+import net.hasor.core.AppContext;
+import net.hasor.core.AppContextAware;
+import net.hasor.core.BindInfo;
+import net.hasor.core.Hasor;
+
+import java.util.function.Supplier;
 /**
  * 用法：Hasor.autoAware(env,new InfoAwareProvider(...));
  * 注意事项：只可以在 AppContext init 期间使用。
  * @version : 2015年12月18日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InfoAwareProvider<T> implements Provider<T>, AppContextAware {
+public class InfoAwareProvider<T> implements Supplier<T>, AppContextAware {
     private BindInfo<? extends T> info;
     private AppContext            appContext;
     public InfoAwareProvider(BindInfo<? extends T> info) {

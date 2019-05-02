@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.plugins.spring;
-import net.hasor.core.Provider;
 import org.springframework.context.ApplicationContext;
+
+import java.util.function.Supplier;
 /**
  * 包装来自 Spring 的 Bean。
  *
  * @version : 2016年2月15日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SpringBean<T> implements Provider<T> {
+public class SpringBean<T> implements Supplier<T> {
     private String                       beanID;
-    private Provider<ApplicationContext> applicationContext;
+    private Supplier<ApplicationContext> applicationContext;
     //
-    public SpringBean(String beanID, Provider<ApplicationContext> applicationContext) {
+    public SpringBean(String beanID, Supplier<ApplicationContext> applicationContext) {
         this.beanID = beanID;
         this.applicationContext = applicationContext;
     }

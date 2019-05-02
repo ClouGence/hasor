@@ -17,7 +17,6 @@ package net.hasor.tconsole.launcher;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
-import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.tconsole.CommandExecutor;
@@ -36,23 +35,6 @@ public class ConsoleApiBinderCreater implements ApiBinderCreater {
     private static class ConsoleApiBinderImpl extends ApiBinderWrap implements ConsoleApiBinder {
         public ConsoleApiBinderImpl(ApiBinder apiBinder) {
             super(apiBinder);
-        }
-        @Override
-        public boolean isEnable() {
-            return getEnvironment().getSettings().getBoolean("hasor.tConsole.enable", true);
-        }
-        //
-        @Override
-        public void addCommand(String[] names, Class<? extends CommandExecutor> instructType) {
-            this.addCommand(names, bindType(CommandExecutor.class).uniqueName().to(instructType).toInfo());
-        }
-        @Override
-        public void addCommand(String[] names, CommandExecutor instruct) {
-            this.addCommand(names, bindType(CommandExecutor.class).uniqueName().toInstance(instruct).toInfo());
-        }
-        @Override
-        public void addCommand(String[] names, Provider<? extends CommandExecutor> instructProvider) {
-            this.addCommand(names, bindType(CommandExecutor.class).uniqueName().toProvider(instructProvider).toInfo());
         }
         @Override
         public void addCommand(String[] names, BindInfo<? extends CommandExecutor> instructInfo) {

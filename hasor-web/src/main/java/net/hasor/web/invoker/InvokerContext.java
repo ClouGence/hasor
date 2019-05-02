@@ -24,11 +24,9 @@ import net.hasor.web.definition.WebPluginDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
-import java.util.concurrent.Future;
 /**
  * 上下文。
  * @version : 2017-01-10
@@ -47,12 +45,10 @@ public class InvokerContext implements WebPluginCaller {
         //
         // .MappingData
         List<InMappingDef> mappingList = appContext.findBindingBean(InMappingDef.class);
-        Collections.sort(mappingList, new Comparator<InMappingDef>() {
-            public int compare(InMappingDef o1, InMappingDef o2) {
-                long o1Index = o1.getIndex();
-                long o2Index = o2.getIndex();
-                return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
-            }
+        mappingList.sort((o1, o2) -> {
+            long o1Index = o1.getIndex();
+            long o2Index = o2.getIndex();
+            return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
         });
         this.invokeArray = mappingList.toArray(new InMapping[0]);
         for (InMapping inMapping : this.invokeArray) {
@@ -76,7 +72,7 @@ public class InvokerContext implements WebPluginCaller {
         }
         //
         // .Filter Config
-        final Map<String, String> config = Collections.unmodifiableMap(new HashMap<String, String>(configMap));
+        final Map<String, String> config = Collections.unmodifiableMap(new HashMap<>(configMap));
         final InvokerConfig filterConfig = new InvokerConfig() {
             @Override
             public String getInitParameter(String name) {
@@ -94,16 +90,14 @@ public class InvokerContext implements WebPluginCaller {
         //
         // .Filters
         List<AbstractDefinition> defineList = appContext.findBindingBean(AbstractDefinition.class);
-        Collections.sort(defineList, new Comparator<AbstractDefinition>() {
-            public int compare(AbstractDefinition o1, AbstractDefinition o2) {
-                long o1Index = o1.getIndex();
-                long o2Index = o2.getIndex();
-                return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
-            }
+        defineList.sort((o1, o2) -> {
+            long o1Index = o1.getIndex();
+            long o2Index = o2.getIndex();
+            return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
         });
         //
         // .init
-        defineList = new ArrayList<AbstractDefinition>(defineList);
+        defineList = new ArrayList<>(defineList);
         for (InvokerFilter filter : defineList) {
             filter.init(filterConfig);
         }
@@ -132,23 +126,15 @@ public class InvokerContext implements WebPluginCaller {
             }
         }
         if (foundDefine == null) {
-            return new ExceuteCaller() {
-                @Override
-                public Future<Object> invoke(Invoker invoker, final FilterChain chain) throws Throwable {
-                    Object resultData = new InvokerChainInvocation(filters, new InvokerChain() {
-                        @Override
-                        public Object doNext(Invoker invoker) throws Throwable {
-                            if (chain != null) {
-                                chain.doFilter(invoker.getHttpRequest(), invoker.getHttpResponse());
-                            }
-                            return invoker.get(Invoker.RETURN_DATA_KEY);
-                        }
-                    }).doNext(invoker);
-                    //
-                    BasicFuture<Object> future = new BasicFuture<Object>();
-                    future.completed(resultData);
-                    return future;
-                }
+            return (invoker1, chain) -> {
+                BasicFuture<Object> future = new BasicFuture<>();
+                future.completed(new InvokerChainInvocation(filters, invoker11 -> {
+                    if (chain != null) {
+                        chain.doFilter(invoker11.getHttpRequest(), invoker11.getHttpResponse());
+                    }
+                    return invoker11.get(Invoker.RETURN_DATA_KEY);
+                }).doNext(invoker1));
+                return future;
             };
         }
         return new InvokerCaller(foundDefine, this.filters, this);

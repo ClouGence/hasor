@@ -31,8 +31,8 @@ import java.util.Map.Entry;
  */
 public class SaxXmlParser extends DefaultHandler {
     private Settings                    dataContainer     = null;
-    private Map<String, StringBuilder>  xmlText           = new HashMap<String, StringBuilder>();
-    private Map<String, DefaultXmlNode> currentXmlPropert = new HashMap<String, DefaultXmlNode>();
+    private Map<String, StringBuilder>  xmlText           = new HashMap<>();
+    private Map<String, DefaultXmlNode> currentXmlPropert = new HashMap<>();
     //
     public SaxXmlParser(final Settings dataContainer) {
         this.dataContainer = dataContainer;
@@ -94,10 +94,10 @@ public class SaxXmlParser extends DefaultHandler {
             String currentXmlns = ent.getKey();
             DefaultXmlNode currentXml = ent.getValue();
             // 1.将XmlTree转换为map映射
-            HashMap<String, List<Object>> dataMap = new HashMap<String, List<Object>>();
+            HashMap<String, List<Object>> dataMap = new HashMap<>();
             this.convertType(dataMap, currentXml.getChildren(), "");
             // 2.弃掉转换过程中根节点名称
-            HashMap<String, List<Object>> finalReturnData = new HashMap<String, List<Object>>();
+            HashMap<String, List<Object>> finalReturnData = new HashMap<>();
             for (Entry<String, List<Object>> data : dataMap.entrySet()) {
                 String keyStr = data.getKey();
                 List<Object> valStr = data.getValue();
@@ -145,7 +145,7 @@ public class SaxXmlParser extends DefaultHandler {
         if (returnData.containsKey(key)) {
             dataList = returnData.get(key);
         } else {
-            dataList = new ArrayList<Object>();
+            dataList = new ArrayList<>();
             returnData.put(key, dataList);
         }
         dataList.add(value);

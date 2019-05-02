@@ -32,13 +32,13 @@ class AopChainInvocation implements MethodInvocation {
     private int                 index             = -1;
     //
     public AopChainInvocation(AppContext appContext, List<Class<? extends MethodInterceptor>> interTypeList, MethodInvocation invocation) {
-        List<MethodInterceptor> beforeList = new ArrayList<MethodInterceptor>();
+        List<MethodInterceptor> beforeList = new ArrayList<>();
         for (Class<? extends MethodInterceptor> interType : interTypeList) {
             if (interType != null) {
                 beforeList.add(appContext.getInstance(interType));
             }
         }
-        this.beforeInterceptor = beforeList.toArray(new MethodInterceptor[beforeList.size()]);
+        this.beforeInterceptor = beforeList.toArray(new MethodInterceptor[0]);
         this.invocation = invocation;
     }
     public Object invoke(MethodInvocation invocation) throws Throwable {

@@ -17,7 +17,6 @@ package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
-import net.hasor.core.Provider;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.web.Invoker;
 import net.hasor.web.ServletVersion;
@@ -39,6 +38,7 @@ import javax.servlet.ServletContext;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
+import java.util.function.Supplier;
 /**
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
@@ -52,16 +52,13 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         //
         final TestWebPlugin testWebPlugin = new TestWebPlugin();
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).addPlugin(testWebPlugin);
-                apiBinder.tryCast(WebApiBinder.class).setEncodingCharacter("UTF-8-TTT", "UTF-8-AAA");
-                //
-                assert servletContext == apiBinder.getServletContext();
-                assert apiBinder.tryCast(WebApiBinder.class).getServletVersion() == ServletVersion.V2_5;
-                //
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).addPlugin(testWebPlugin);
+            apiBinder.tryCast(WebApiBinder.class).setEncodingCharacter("UTF-8-TTT", "UTF-8-AAA");
+            //
+            assert servletContext == apiBinder.getServletContext();
+            assert apiBinder.tryCast(WebApiBinder.class).getServletVersion() == ServletVersion.V2_5;
+            //
         });
         assert "UTF-8-TTT".equals(appContext.findBindingBean(RuntimeFilter.HTTP_REQUEST_ENCODING_KEY, String.class));
         assert "UTF-8-AAA".equals(appContext.findBindingBean(RuntimeFilter.HTTP_RESPONSE_ENCODING_KEY, String.class));
@@ -73,13 +70,10 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         PowerMockito.when(sc.getVirtualServerName()).thenReturn("");
         Hasor.create(sc).asSmaller()//
                 .addSettings("http://test.hasor.net", "hasor.innerApiBinderSet.binder", newDefaultXmlNode())//
-                .build(new WebModule() {
-                    @Override
-                    public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                        assert sc == apiBinder.getServletContext();
-                        assert apiBinder.tryCast(WebApiBinder.class).getServletVersion() == ServletVersion.V3_1;
-                        //
-                    }
+                .build((WebModule) apiBinder -> {
+                    assert sc == apiBinder.getServletContext();
+                    assert apiBinder.tryCast(WebApiBinder.class).getServletVersion() == ServletVersion.V3_1;
+                    //
                 });
         //
     }
@@ -90,20 +84,17 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         target.setAccessible(true);
         //
         final TestWebPlugin testWebPlugin = new TestWebPlugin();
-        final Provider<? extends TestWebPlugin> testWebPluginProvider = InstanceProvider.of(testWebPlugin);
+        final Supplier<? extends TestWebPlugin> testWebPluginProvider = InstanceProvider.of(testWebPlugin);
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).addPlugin(testWebPlugin);
-                apiBinder.tryCast(WebApiBinder.class).addPlugin(testWebPluginProvider);
-                //
-                apiBinder.tryCast(WebApiBinder.class).addPlugin(TestWebPlugin.class);
-                //
-                // 强制设置成单例
-                BindInfo<TestWebPlugin> bindInfo = apiBinder.bindType(TestWebPlugin.class).asEagerSingleton().toInfo();
-                apiBinder.tryCast(WebApiBinder.class).addPlugin(bindInfo);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).addPlugin(testWebPlugin);
+            apiBinder.tryCast(WebApiBinder.class).addPlugin(testWebPluginProvider);
+            //
+            apiBinder.tryCast(WebApiBinder.class).addPlugin(TestWebPlugin.class);
+            //
+            // 强制设置成单例
+            BindInfo<TestWebPlugin> bindInfo = apiBinder.bindType(TestWebPlugin.class).asEagerSingleton().toInfo();
+            apiBinder.tryCast(WebApiBinder.class).addPlugin(bindInfo);
         });
         //
         List<WebPluginDefinition> definitions = appContext.findBindingBean(WebPluginDefinition.class);
@@ -143,20 +134,17 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         target.setAccessible(true);
         //
         final TestMappingDiscoverer testDiscoverer = new TestMappingDiscoverer();
-        final Provider<? extends TestMappingDiscoverer> testDiscovererProvider = InstanceProvider.of(testDiscoverer);
+        final Supplier<? extends TestMappingDiscoverer> testDiscovererProvider = InstanceProvider.of(testDiscoverer);
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).addDiscoverer(testDiscoverer);
-                apiBinder.tryCast(WebApiBinder.class).addDiscoverer(testDiscovererProvider);
-                //
-                apiBinder.tryCast(WebApiBinder.class).addDiscoverer(TestMappingDiscoverer.class);
-                //
-                // 强制设置成单例
-                BindInfo<TestMappingDiscoverer> bindInfo = apiBinder.bindType(TestMappingDiscoverer.class).asEagerSingleton().toInfo();
-                apiBinder.tryCast(WebApiBinder.class).addDiscoverer(bindInfo);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).addDiscoverer(testDiscoverer);
+            apiBinder.tryCast(WebApiBinder.class).addDiscoverer(testDiscovererProvider);
+            //
+            apiBinder.tryCast(WebApiBinder.class).addDiscoverer(TestMappingDiscoverer.class);
+            //
+            // 强制设置成单例
+            BindInfo<TestMappingDiscoverer> bindInfo = apiBinder.bindType(TestMappingDiscoverer.class).asEagerSingleton().toInfo();
+            apiBinder.tryCast(WebApiBinder.class).addDiscoverer(bindInfo);
         });
         //
         List<MappingDiscovererDefinition> definitions = appContext.findBindingBean(MappingDiscovererDefinition.class);
@@ -185,20 +173,17 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         target.setAccessible(true);
         //
         final TestServletContextListener testServletContextListener = new TestServletContextListener();
-        final Provider<TestServletContextListener> testtestServletContextListenerProvider = InstanceProvider.of(testServletContextListener);
+        final Supplier<TestServletContextListener> testtestServletContextListenerProvider = InstanceProvider.of(testServletContextListener);
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).addServletListener(testServletContextListener);
-                apiBinder.tryCast(WebApiBinder.class).addServletListener(testtestServletContextListenerProvider);
-                //
-                apiBinder.tryCast(WebApiBinder.class).addServletListener(TestServletContextListener.class);
-                //
-                // 强制设置成单例
-                BindInfo<TestServletContextListener> bindInfo = apiBinder.bindType(TestServletContextListener.class).asEagerSingleton().toInfo();
-                apiBinder.tryCast(WebApiBinder.class).addServletListener(bindInfo);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).addServletListener(testServletContextListener);
+            apiBinder.tryCast(WebApiBinder.class).addServletListener(testtestServletContextListenerProvider);
+            //
+            apiBinder.tryCast(WebApiBinder.class).addServletListener(TestServletContextListener.class);
+            //
+            // 强制设置成单例
+            BindInfo<TestServletContextListener> bindInfo = apiBinder.bindType(TestServletContextListener.class).asEagerSingleton().toInfo();
+            apiBinder.tryCast(WebApiBinder.class).addServletListener(bindInfo);
         });
         //
         List<ContextListenerDefinition> definitions = appContext.findBindingBean(ContextListenerDefinition.class);
@@ -235,20 +220,17 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         target.setAccessible(true);
         //
         final TestHttpSessionListener testServletContextListener = new TestHttpSessionListener();
-        final Provider<TestHttpSessionListener> testtestServletContextListenerProvider = InstanceProvider.of(testServletContextListener);
+        final Supplier<TestHttpSessionListener> testtestServletContextListenerProvider = InstanceProvider.of(testServletContextListener);
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).addSessionListener(testServletContextListener);
-                apiBinder.tryCast(WebApiBinder.class).addSessionListener(testtestServletContextListenerProvider);
-                //
-                apiBinder.tryCast(WebApiBinder.class).addSessionListener(TestHttpSessionListener.class);
-                //
-                // 强制设置成单例
-                BindInfo<TestHttpSessionListener> bindInfo = apiBinder.bindType(TestHttpSessionListener.class).asEagerSingleton().toInfo();
-                apiBinder.tryCast(WebApiBinder.class).addSessionListener(bindInfo);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).addSessionListener(testServletContextListener);
+            apiBinder.tryCast(WebApiBinder.class).addSessionListener(testtestServletContextListenerProvider);
+            //
+            apiBinder.tryCast(WebApiBinder.class).addSessionListener(TestHttpSessionListener.class);
+            //
+            // 强制设置成单例
+            BindInfo<TestHttpSessionListener> bindInfo = apiBinder.bindType(TestHttpSessionListener.class).asEagerSingleton().toInfo();
+            apiBinder.tryCast(WebApiBinder.class).addSessionListener(bindInfo);
         });
         //
         List<HttpSessionListenerDefinition> definitions = appContext.findBindingBean(HttpSessionListenerDefinition.class);
@@ -286,20 +268,17 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         //
         final String[] urls = new String[] { "/abc.do", "/def.do" };
         final TestCallerFilter testCallerFilter = new TestCallerFilter();
-        final Provider<TestCallerFilter> testCallerFilterProvider = InstanceProvider.of(testCallerFilter);
+        final Supplier<TestCallerFilter> testCallerFilterProvider = InstanceProvider.of(testCallerFilter);
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                BindInfo<TestCallerFilter> filterBindInfo1 = apiBinder.bindType(TestCallerFilter.class).asEagerSingleton().toInfo();
-                BindInfo<TestCallerFilter> filterBindInfo2 = apiBinder.bindType(TestCallerFilter.class).toInfo();
-                //
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(testCallerFilter);           // 1
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(testCallerFilterProvider);   // 2
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(TestCallerFilter.class);     // 3
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(filterBindInfo1);            // 4
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(filterBindInfo2);            // 5
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            BindInfo<TestCallerFilter> filterBindInfo1 = apiBinder.bindType(TestCallerFilter.class).asEagerSingleton().toInfo();
+            BindInfo<TestCallerFilter> filterBindInfo2 = apiBinder.bindType(TestCallerFilter.class).toInfo();
+            //
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(testCallerFilter);           // 1
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(testCallerFilterProvider);   // 2
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(TestCallerFilter.class);     // 3
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(filterBindInfo1);            // 4
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(filterBindInfo2);            // 5
         });
         //
         List<AbstractDefinition> definitions = appContext.findBindingBean(AbstractDefinition.class);
@@ -347,20 +326,17 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         //
         final String[] urls = new String[] { "/abc.do", "/def.do" };
         final TestCallerFilter testCallerFilter = new TestCallerFilter();
-        final Provider<TestCallerFilter> testCallerFilterProvider = InstanceProvider.of(testCallerFilter);
+        final Supplier<TestCallerFilter> testCallerFilterProvider = InstanceProvider.of(testCallerFilter);
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                BindInfo<TestCallerFilter> filterBindInfo1 = apiBinder.bindType(TestCallerFilter.class).asEagerSingleton().toInfo();
-                BindInfo<TestCallerFilter> filterBindInfo2 = apiBinder.bindType(TestCallerFilter.class).toInfo();
-                //
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(1, testCallerFilter);           // 1
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(2, testCallerFilterProvider);   // 2
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(3, TestCallerFilter.class);     // 3
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(4, filterBindInfo1);            // 4
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(5, filterBindInfo2);            // 5
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            BindInfo<TestCallerFilter> filterBindInfo1 = apiBinder.bindType(TestCallerFilter.class).asEagerSingleton().toInfo();
+            BindInfo<TestCallerFilter> filterBindInfo2 = apiBinder.bindType(TestCallerFilter.class).toInfo();
+            //
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(1, testCallerFilter);           // 1
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(2, testCallerFilterProvider);   // 2
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(3, TestCallerFilter.class);     // 3
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(4, filterBindInfo1);            // 4
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(5, filterBindInfo2);            // 5
         });
         //
         List<AbstractDefinition> definitions = appContext.findBindingBean(AbstractDefinition.class);
@@ -414,24 +390,21 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         //
         final String[] urls = new String[] { "/abc.do", "/def.do" };
         final TestCallerFilter testCallerFilter = new TestCallerFilter();
-        final Provider<TestCallerFilter> testCallerFilterProvider = InstanceProvider.of(testCallerFilter);
-        final Map<String, String> params1 = new HashMap<String, String>();
+        final Supplier<TestCallerFilter> testCallerFilterProvider = InstanceProvider.of(testCallerFilter);
+        final Map<String, String> params1 = new HashMap<>();
         params1.put("arg_string1", "abc");
-        final Map<String, String> params2 = new HashMap<String, String>();
+        final Map<String, String> params2 = new HashMap<>();
         params2.put("arg_string2", "def");
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                BindInfo<TestCallerFilter> filterBindInfo1 = apiBinder.bindType(TestCallerFilter.class).asEagerSingleton().toInfo();
-                BindInfo<TestCallerFilter> filterBindInfo2 = apiBinder.bindType(TestCallerFilter.class).toInfo();
-                //
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(1, testCallerFilter, params1);           // 1
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(2, testCallerFilterProvider, params1);   // 2
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(3, TestCallerFilter.class, params1);     // 3
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(4, filterBindInfo1, params1);            // 4
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(5, filterBindInfo2, params1);            // 5
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            BindInfo<TestCallerFilter> filterBindInfo1 = apiBinder.bindType(TestCallerFilter.class).asEagerSingleton().toInfo();
+            BindInfo<TestCallerFilter> filterBindInfo2 = apiBinder.bindType(TestCallerFilter.class).toInfo();
+            //
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(1, testCallerFilter, params1);           // 1
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(2, testCallerFilterProvider, params1);   // 2
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(3, TestCallerFilter.class, params1);     // 3
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(4, filterBindInfo1, params1);            // 4
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(5, filterBindInfo2, params1);            // 5
         });
         //
         List<AbstractDefinition> definitions = appContext.findBindingBean(AbstractDefinition.class);
@@ -490,24 +463,21 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         //
         final String[] urls = new String[] { "/abc.do", "/def.do" };
         final TestCallerFilter testCallerFilter = new TestCallerFilter();
-        final Provider<TestCallerFilter> testCallerFilterProvider = InstanceProvider.of(testCallerFilter);
-        final Map<String, String> params1 = new HashMap<String, String>();
+        final Supplier<TestCallerFilter> testCallerFilterProvider = InstanceProvider.of(testCallerFilter);
+        final Map<String, String> params1 = new HashMap<>();
         params1.put("arg_string1", "abc");
-        final Map<String, String> params2 = new HashMap<String, String>();
+        final Map<String, String> params2 = new HashMap<>();
         params2.put("arg_string2", "def");
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                BindInfo<TestCallerFilter> filterBindInfo1 = apiBinder.bindType(TestCallerFilter.class).asEagerSingleton().toInfo();
-                BindInfo<TestCallerFilter> filterBindInfo2 = apiBinder.bindType(TestCallerFilter.class).toInfo();
-                //
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(testCallerFilter, params1);           // 1
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(testCallerFilterProvider, params1);   // 2
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(TestCallerFilter.class, params1);     // 3
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(filterBindInfo1, params1);            // 4
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(filterBindInfo2, params1);            // 5
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            BindInfo<TestCallerFilter> filterBindInfo1 = apiBinder.bindType(TestCallerFilter.class).asEagerSingleton().toInfo();
+            BindInfo<TestCallerFilter> filterBindInfo2 = apiBinder.bindType(TestCallerFilter.class).toInfo();
+            //
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(testCallerFilter, params1);           // 1
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(testCallerFilterProvider, params1);   // 2
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(TestCallerFilter.class, params1);     // 3
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(filterBindInfo1, params1);            // 4
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(filterBindInfo2, params1);            // 5
         });
         //
         List<AbstractDefinition> definitions = appContext.findBindingBean(AbstractDefinition.class);
@@ -563,14 +533,11 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         final String[] urls = new String[] { "/abc.do", "/def.do" };
         final TestCallerFilter testCallerFilter = new TestCallerFilter();
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).filter(urls).through(testCallerFilter);        // 1
-                apiBinder.tryCast(WebApiBinder.class).filterRegex(urls).through(testCallerFilter);   // 2
-                apiBinder.tryCast(WebApiBinder.class).jeeFilter(urls).through(testCallerFilter);     // 3
-                apiBinder.tryCast(WebApiBinder.class).jeeFilterRegex(urls).through(testCallerFilter);// 4
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(testCallerFilter);        // 1
+            apiBinder.tryCast(WebApiBinder.class).filterRegex(urls).through(testCallerFilter);   // 2
+            apiBinder.tryCast(WebApiBinder.class).jeeFilter(urls).through(testCallerFilter);     // 3
+            apiBinder.tryCast(WebApiBinder.class).jeeFilterRegex(urls).through(testCallerFilter);// 4
         });
         //
         List<AbstractDefinition> definitions = appContext.findBindingBean(AbstractDefinition.class);
@@ -615,63 +582,60 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
     @Test
     public void filterTest6() throws Throwable {
         //
-        hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                try {
-                    apiBinder.tryCast(WebApiBinder.class).filter(new String[0]).through(TestCallerFilter.class);
-                    assert false;
-                } catch (Exception e) {
-                    assert e.getMessage().equals("Filter patterns is empty.");
-                }
-                try {
-                    apiBinder.tryCast(WebApiBinder.class).filter(new String[] { "", null }).through(TestCallerFilter.class);
-                    assert false;
-                } catch (Exception e) {
-                    assert e.getMessage().equals("Filter patterns is empty.");
-                }
-                //
-                //
-                try {
-                    apiBinder.tryCast(WebApiBinder.class).filterRegex(new String[0]).through(TestCallerFilter.class);
-                    assert false;
-                } catch (Exception e) {
-                    assert e.getMessage().equals("Filter patterns is empty.");
-                }
-                try {
-                    apiBinder.tryCast(WebApiBinder.class).filterRegex(new String[] { "", null }).through(TestCallerFilter.class);
-                    assert false;
-                } catch (Exception e) {
-                    assert e.getMessage().equals("Filter patterns is empty.");
-                }
-                //
-                //
-                try {
-                    apiBinder.tryCast(WebApiBinder.class).jeeFilter(new String[0]).through(TestCallerFilter.class);
-                    assert false;
-                } catch (Exception e) {
-                    assert e.getMessage().equals("Filter patterns is empty.");
-                }
-                try {
-                    apiBinder.tryCast(WebApiBinder.class).jeeFilter(new String[] { "", null }).through(TestCallerFilter.class);
-                    assert false;
-                } catch (Exception e) {
-                    assert e.getMessage().equals("Filter patterns is empty.");
-                }
-                //
-                //
-                try {
-                    apiBinder.tryCast(WebApiBinder.class).jeeFilterRegex(new String[0]).through(TestCallerFilter.class);
-                    assert false;
-                } catch (Exception e) {
-                    assert e.getMessage().equals("Filter patterns is empty.");
-                }
-                try {
-                    apiBinder.tryCast(WebApiBinder.class).jeeFilterRegex(new String[] { "", null }).through(TestCallerFilter.class);
-                    assert false;
-                } catch (Exception e) {
-                    assert e.getMessage().equals("Filter patterns is empty.");
-                }
+        hasor.build((WebModule) apiBinder -> {
+            try {
+                apiBinder.tryCast(WebApiBinder.class).filter(new String[0]).through(TestCallerFilter.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().equals("Filter patterns is empty.");
+            }
+            try {
+                apiBinder.tryCast(WebApiBinder.class).filter(new String[] { "", null }).through(TestCallerFilter.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().equals("Filter patterns is empty.");
+            }
+            //
+            //
+            try {
+                apiBinder.tryCast(WebApiBinder.class).filterRegex(new String[0]).through(TestCallerFilter.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().equals("Filter patterns is empty.");
+            }
+            try {
+                apiBinder.tryCast(WebApiBinder.class).filterRegex(new String[] { "", null }).through(TestCallerFilter.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().equals("Filter patterns is empty.");
+            }
+            //
+            //
+            try {
+                apiBinder.tryCast(WebApiBinder.class).jeeFilter(new String[0]).through(TestCallerFilter.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().equals("Filter patterns is empty.");
+            }
+            try {
+                apiBinder.tryCast(WebApiBinder.class).jeeFilter(new String[] { "", null }).through(TestCallerFilter.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().equals("Filter patterns is empty.");
+            }
+            //
+            //
+            try {
+                apiBinder.tryCast(WebApiBinder.class).jeeFilterRegex(new String[0]).through(TestCallerFilter.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().equals("Filter patterns is empty.");
+            }
+            try {
+                apiBinder.tryCast(WebApiBinder.class).jeeFilterRegex(new String[] { "", null }).through(TestCallerFilter.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().equals("Filter patterns is empty.");
             }
         });
         //
@@ -681,20 +645,17 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
     public void jeeServletTest1() throws Throwable {
         final String[] urls = new String[] { "/abc.do", "/def.do" };
         final TestServlet testCallerServlet = new TestServlet();
-        final Provider<TestServlet> testCallerServletProvider = InstanceProvider.of(testCallerServlet);
+        final Supplier<TestServlet> testCallerServletProvider = InstanceProvider.of(testCallerServlet);
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                BindInfo<TestServlet> filterBindInfo1 = apiBinder.bindType(TestServlet.class).asEagerSingleton().toInfo();
-                BindInfo<TestServlet> filterBindInfo2 = apiBinder.bindType(TestServlet.class).toInfo();
-                //
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(testCallerServlet);          // 1
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(testCallerServletProvider);  // 2
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(TestServlet.class);          // 3
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(filterBindInfo1);            // 4
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(filterBindInfo2);            // 5
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            BindInfo<TestServlet> filterBindInfo1 = apiBinder.bindType(TestServlet.class).asEagerSingleton().toInfo();
+            BindInfo<TestServlet> filterBindInfo2 = apiBinder.bindType(TestServlet.class).toInfo();
+            //
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(testCallerServlet);          // 1
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(testCallerServletProvider);  // 2
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(TestServlet.class);          // 3
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(filterBindInfo1);            // 4
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(filterBindInfo2);            // 5
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
@@ -745,20 +706,17 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
     public void jeeServletTest2() throws Throwable {
         final String[] urls = new String[] { "/abc.do", "/def.do" };
         final TestServlet testCallerServlet = new TestServlet();
-        final Provider<TestServlet> testCallerServletProvider = InstanceProvider.of(testCallerServlet);
+        final Supplier<TestServlet> testCallerServletProvider = InstanceProvider.of(testCallerServlet);
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                BindInfo<TestServlet> filterBindInfo1 = apiBinder.bindType(TestServlet.class).asEagerSingleton().toInfo();
-                BindInfo<TestServlet> filterBindInfo2 = apiBinder.bindType(TestServlet.class).toInfo();
-                //
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(1, testCallerServlet);          // 1
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(2, testCallerServletProvider);  // 2
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(3, TestServlet.class);          // 3
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(4, filterBindInfo1);            // 4
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(5, filterBindInfo2);            // 5
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            BindInfo<TestServlet> filterBindInfo1 = apiBinder.bindType(TestServlet.class).asEagerSingleton().toInfo();
+            BindInfo<TestServlet> filterBindInfo2 = apiBinder.bindType(TestServlet.class).toInfo();
+            //
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(1, testCallerServlet);          // 1
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(2, testCallerServletProvider);  // 2
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(3, TestServlet.class);          // 3
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(4, filterBindInfo1);            // 4
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(5, filterBindInfo2);            // 5
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
@@ -819,22 +777,19 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
     public void jeeServletTest3() throws Throwable {
         final String[] urls = new String[] { "/abc.do", "/def.do" };
         final TestServlet testCallerServlet = new TestServlet();
-        final Provider<TestServlet> testCallerServletProvider = InstanceProvider.of(testCallerServlet);
-        final Map<String, String> params1 = new HashMap<String, String>();
+        final Supplier<TestServlet> testCallerServletProvider = InstanceProvider.of(testCallerServlet);
+        final Map<String, String> params1 = new HashMap<>();
         params1.put("arg_string", "abc");
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                BindInfo<TestServlet> filterBindInfo1 = apiBinder.bindType(TestServlet.class).asEagerSingleton().toInfo();
-                BindInfo<TestServlet> filterBindInfo2 = apiBinder.bindType(TestServlet.class).toInfo();
-                //
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(1, testCallerServlet, params1);          // 1
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(2, testCallerServletProvider, params1);  // 2
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(3, TestServlet.class, params1);          // 3
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(4, filterBindInfo1, params1);            // 4
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(5, filterBindInfo2, params1);            // 5
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            BindInfo<TestServlet> filterBindInfo1 = apiBinder.bindType(TestServlet.class).asEagerSingleton().toInfo();
+            BindInfo<TestServlet> filterBindInfo2 = apiBinder.bindType(TestServlet.class).toInfo();
+            //
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(1, testCallerServlet, params1);          // 1
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(2, testCallerServletProvider, params1);  // 2
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(3, TestServlet.class, params1);          // 3
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(4, filterBindInfo1, params1);            // 4
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(5, filterBindInfo2, params1);            // 5
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
@@ -898,22 +853,19 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
     public void jeeServletTest4() throws Throwable {
         final String[] urls = new String[] { "/abc.do", "/def.do" };
         final TestServlet testCallerServlet = new TestServlet();
-        final Provider<TestServlet> testCallerServletProvider = InstanceProvider.of(testCallerServlet);
-        final Map<String, String> params1 = new HashMap<String, String>();
+        final Supplier<TestServlet> testCallerServletProvider = InstanceProvider.of(testCallerServlet);
+        final Map<String, String> params1 = new HashMap<>();
         params1.put("arg_string", "abc");
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                BindInfo<TestServlet> filterBindInfo1 = apiBinder.bindType(TestServlet.class).asEagerSingleton().toInfo();
-                BindInfo<TestServlet> filterBindInfo2 = apiBinder.bindType(TestServlet.class).toInfo();
-                //
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(testCallerServlet, params1);          // 1
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(testCallerServletProvider, params1);  // 2
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(TestServlet.class, params1);          // 3
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(filterBindInfo1, params1);            // 4
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(filterBindInfo2, params1);            // 5
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            BindInfo<TestServlet> filterBindInfo1 = apiBinder.bindType(TestServlet.class).asEagerSingleton().toInfo();
+            BindInfo<TestServlet> filterBindInfo2 = apiBinder.bindType(TestServlet.class).toInfo();
+            //
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(testCallerServlet, params1);          // 1
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(testCallerServletProvider, params1);  // 2
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(TestServlet.class, params1);          // 3
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(filterBindInfo1, params1);            // 4
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(filterBindInfo2, params1);            // 5
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
@@ -965,21 +917,18 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
     //
     @Test
     public void jeeServletTest5() throws Throwable {
-        hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                try {
-                    apiBinder.tryCast(WebApiBinder.class).jeeServlet(new String[0]).with(TestServlet.class);
-                    assert false;
-                } catch (Exception e) {
-                    assert e.getMessage().equals("Servlet patterns is empty.");
-                }
-                try {
-                    apiBinder.tryCast(WebApiBinder.class).jeeServlet(new String[] { "", null }).with(TestServlet.class);
-                    assert false;
-                } catch (Exception e) {
-                    assert e.getMessage().equals("Servlet patterns is empty.");
-                }
+        hasor.build((WebModule) apiBinder -> {
+            try {
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(new String[0]).with(TestServlet.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().equals("Servlet patterns is empty.");
+            }
+            try {
+                apiBinder.tryCast(WebApiBinder.class).jeeServlet(new String[] { "", null }).with(TestServlet.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().equals("Servlet patterns is empty.");
             }
         });
     }
@@ -988,20 +937,17 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
     public void mappingToTest1() throws Throwable {
         final String[] urls = new String[] { "/abc.do", "/def.do" };
         final HttpsTestAction testCallerAction = new HttpsTestAction();
-        final Provider<HttpsTestAction> testCallerActionProvider = InstanceProvider.of(testCallerAction);
+        final Supplier<HttpsTestAction> testCallerActionProvider = InstanceProvider.of(testCallerAction);
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                BindInfo<HttpsTestAction> filterBindInfo1 = apiBinder.bindType(HttpsTestAction.class).asEagerSingleton().toInfo();
-                BindInfo<HttpsTestAction> filterBindInfo2 = apiBinder.bindType(HttpsTestAction.class).toInfo();
-                //
-                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(testCallerAction);          // 1
-                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(testCallerActionProvider);  // 2
-                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(TestServlet.class);         // 3
-                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(filterBindInfo1);           // 4
-                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(filterBindInfo2);           // 5
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            BindInfo<HttpsTestAction> filterBindInfo1 = apiBinder.bindType(HttpsTestAction.class).asEagerSingleton().toInfo();
+            BindInfo<HttpsTestAction> filterBindInfo2 = apiBinder.bindType(HttpsTestAction.class).toInfo();
+            //
+            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(testCallerAction);          // 1
+            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(testCallerActionProvider);  // 2
+            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(TestServlet.class);         // 3
+            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(filterBindInfo1);           // 4
+            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(filterBindInfo2);           // 5
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
@@ -1045,20 +991,17 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
     public void mappingToTest2() throws Throwable {
         final String[] urls = new String[] { "/abc.do", "/def.do" };
         final HttpsTestAction testCallerAction = new HttpsTestAction();
-        final Provider<HttpsTestAction> testCallerActionProvider = InstanceProvider.of(testCallerAction);
+        final Supplier<HttpsTestAction> testCallerActionProvider = InstanceProvider.of(testCallerAction);
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                BindInfo<HttpsTestAction> filterBindInfo1 = apiBinder.bindType(HttpsTestAction.class).asEagerSingleton().toInfo();
-                BindInfo<HttpsTestAction> filterBindInfo2 = apiBinder.bindType(HttpsTestAction.class).toInfo();
-                //
-                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(1, testCallerAction);          // 1
-                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(2, testCallerActionProvider);  // 2
-                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(3, TestServlet.class);         // 3
-                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(4, filterBindInfo1);           // 4
-                apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(5, filterBindInfo2);           // 5
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            BindInfo<HttpsTestAction> filterBindInfo1 = apiBinder.bindType(HttpsTestAction.class).asEagerSingleton().toInfo();
+            BindInfo<HttpsTestAction> filterBindInfo2 = apiBinder.bindType(HttpsTestAction.class).toInfo();
+            //
+            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(1, testCallerAction);          // 1
+            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(2, testCallerActionProvider);  // 2
+            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(3, TestServlet.class);         // 3
+            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(4, filterBindInfo1);           // 4
+            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(5, filterBindInfo2);           // 5
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
@@ -1110,21 +1053,18 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
     //
     @Test
     public void mappingToTest3() throws Throwable {
-        hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                try {
-                    apiBinder.tryCast(WebApiBinder.class).mappingTo(new String[0]).with(HttpsTestAction.class);
-                    assert false;
-                } catch (Exception e) {
-                    assert e.getMessage().equals("mappingTo patterns is empty.");
-                }
-                try {
-                    apiBinder.tryCast(WebApiBinder.class).mappingTo(new String[] { "", null }).with(HttpsTestAction.class);
-                    assert false;
-                } catch (Exception e) {
-                    assert e.getMessage().equals("mappingTo patterns is empty.");
-                }
+        hasor.build((WebModule) apiBinder -> {
+            try {
+                apiBinder.tryCast(WebApiBinder.class).mappingTo(new String[0]).with(HttpsTestAction.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().equals("mappingTo patterns is empty.");
+            }
+            try {
+                apiBinder.tryCast(WebApiBinder.class).mappingTo(new String[] { "", null }).with(HttpsTestAction.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().equals("mappingTo patterns is empty.");
             }
         });
     }
@@ -1132,32 +1072,29 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
     @Test
     public void loadMappingToTest1() throws Throwable {
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                try {
-                    apiBinder.tryCast(WebApiBinder.class).loadMappingTo(BasicTestAction.class);
-                    assert false;
-                } catch (Exception e) {
-                    assert e.getMessage().endsWith(" must be configure @MappingTo");
-                }
-                try {
-                    apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AppContext.class);
-                    assert false;
-                } catch (Exception e) {
-                    assert e.getMessage().endsWith(" must be normal Bean");
-                }
-                //
-                Set<Class<?>> classSet = apiBinder.findClass(MappingTo.class, "net.hasor.web.invoker.beans");
-                assert classSet.size() == 2;
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(classSet);
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            try {
+                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(BasicTestAction.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().endsWith(" must be configure @MappingTo");
             }
+            try {
+                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AppContext.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().endsWith(" must be normal Bean");
+            }
+            //
+            Set<Class<?>> classSet = apiBinder.findClass(MappingTo.class, "net.hasor.web.invoker.beans");
+            assert classSet.size() == 2;
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(classSet);
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
         assert definitions.size() == 2;
         //
-        Set<String> mappingToSet = new HashSet<String>();
+        Set<String> mappingToSet = new HashSet<>();
         mappingToSet.add(definitions.get(0).getMappingTo());
         mappingToSet.add(definitions.get(1).getMappingTo());
         //
@@ -1169,20 +1106,17 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
     public void renderTest1() throws Throwable {
         final String[] ends = new String[] { ".htm", ".html" };
         final TestRenderEngine testRenderEngine = new TestRenderEngine();
-        final Provider<TestRenderEngine> testRenderEngineProvider = InstanceProvider.of(testRenderEngine);
+        final Supplier<TestRenderEngine> testRenderEngineProvider = InstanceProvider.of(testRenderEngine);
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                BindInfo<TestRenderEngine> engineBindInfo1 = apiBinder.bindType(TestRenderEngine.class).asEagerSingleton().toInfo();
-                BindInfo<TestRenderEngine> engineBindInfo2 = apiBinder.bindType(TestRenderEngine.class).toInfo();
-                //
-                apiBinder.tryCast(WebApiBinder.class).suffix(ends).bind(testRenderEngine);          // 1
-                apiBinder.tryCast(WebApiBinder.class).suffix(ends).bind(testRenderEngineProvider);  // 2
-                apiBinder.tryCast(WebApiBinder.class).suffix(ends).bind(TestRenderEngine.class);    // 3
-                apiBinder.tryCast(WebApiBinder.class).suffix(ends).bind(engineBindInfo1);           // 4
-                apiBinder.tryCast(WebApiBinder.class).suffix(ends).bind(engineBindInfo2);           // 5
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            BindInfo<TestRenderEngine> engineBindInfo1 = apiBinder.bindType(TestRenderEngine.class).asEagerSingleton().toInfo();
+            BindInfo<TestRenderEngine> engineBindInfo2 = apiBinder.bindType(TestRenderEngine.class).toInfo();
+            //
+            apiBinder.tryCast(WebApiBinder.class).suffix(ends).bind(testRenderEngine);          // 1
+            apiBinder.tryCast(WebApiBinder.class).suffix(ends).bind(testRenderEngineProvider);  // 2
+            apiBinder.tryCast(WebApiBinder.class).suffix(ends).bind(TestRenderEngine.class);    // 3
+            apiBinder.tryCast(WebApiBinder.class).suffix(ends).bind(engineBindInfo1);           // 4
+            apiBinder.tryCast(WebApiBinder.class).suffix(ends).bind(engineBindInfo2);           // 5
         });
         //
         List<RenderDefinition> definitions = appContext.findBindingBean(RenderDefinition.class);
@@ -1209,20 +1143,17 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
     @Test
     public void renderTest2() throws Throwable {
         final TestRenderEngine testRenderEngine = new TestRenderEngine();
-        final Provider<TestRenderEngine> testRenderEngineProvider = InstanceProvider.of(testRenderEngine);
+        final Supplier<TestRenderEngine> testRenderEngineProvider = InstanceProvider.of(testRenderEngine);
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                BindInfo<TestRenderEngine> engineBindInfo1 = apiBinder.bindType(TestRenderEngine.class).asEagerSingleton().toInfo();
-                BindInfo<TestRenderEngine> engineBindInfo2 = apiBinder.bindType(TestRenderEngine.class).toInfo();
-                //
-                apiBinder.tryCast(WebApiBinder.class).suffix(".htm", ".html").bind(testRenderEngine);          // 1
-                apiBinder.tryCast(WebApiBinder.class).suffix(".htm", ".html").bind(testRenderEngineProvider);  // 2
-                apiBinder.tryCast(WebApiBinder.class).suffix(".htm", ".html").bind(TestRenderEngine.class);    // 3
-                apiBinder.tryCast(WebApiBinder.class).suffix(".htm", ".html").bind(engineBindInfo1);           // 4
-                apiBinder.tryCast(WebApiBinder.class).suffix(".htm", ".html").bind(engineBindInfo2);           // 5
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            BindInfo<TestRenderEngine> engineBindInfo1 = apiBinder.bindType(TestRenderEngine.class).asEagerSingleton().toInfo();
+            BindInfo<TestRenderEngine> engineBindInfo2 = apiBinder.bindType(TestRenderEngine.class).toInfo();
+            //
+            apiBinder.tryCast(WebApiBinder.class).suffix(".htm", ".html").bind(testRenderEngine);          // 1
+            apiBinder.tryCast(WebApiBinder.class).suffix(".htm", ".html").bind(testRenderEngineProvider);  // 2
+            apiBinder.tryCast(WebApiBinder.class).suffix(".htm", ".html").bind(TestRenderEngine.class);    // 3
+            apiBinder.tryCast(WebApiBinder.class).suffix(".htm", ".html").bind(engineBindInfo1);           // 4
+            apiBinder.tryCast(WebApiBinder.class).suffix(".htm", ".html").bind(engineBindInfo2);           // 5
         });
         //
         List<RenderDefinition> definitions = appContext.findBindingBean(RenderDefinition.class);
@@ -1249,40 +1180,37 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
     @Test
     public void loadRenderTest1() throws Throwable {
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                try {
-                    apiBinder.tryCast(WebApiBinder.class).loadRender(BasicTestAction.class);
-                    assert false;
-                } catch (Exception e) {
-                    assert e.getMessage().endsWith(" must be configure @Render");
-                }
-                try {
-                    apiBinder.tryCast(WebApiBinder.class).loadRender(AppContext.class);
-                    assert false;
-                } catch (Exception e) {
-                    assert e.getMessage().endsWith(" must be normal Bean");
-                }
-                //
-                try {
-                    apiBinder.tryCast(WebApiBinder.class).loadRender(ErrorRenderEngine.class);
-                    assert false;
-                } catch (Exception e) {
-                    assert e.getMessage().endsWith(" must be implements RenderEngine.");
-                }
-                //
-                Set<Class<?>> classSet = apiBinder.findClass(Render.class, "net.hasor.web.invoker.beans");
-                assert classSet.size() == 2;
-                classSet.remove(ErrorRenderEngine.class); // remove Error
-                apiBinder.tryCast(WebApiBinder.class).loadRender(classSet);
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            try {
+                apiBinder.tryCast(WebApiBinder.class).loadRender(BasicTestAction.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().endsWith(" must be configure @Render");
             }
+            try {
+                apiBinder.tryCast(WebApiBinder.class).loadRender(AppContext.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().endsWith(" must be normal Bean");
+            }
+            //
+            try {
+                apiBinder.tryCast(WebApiBinder.class).loadRender(ErrorRenderEngine.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().endsWith(" must be implements RenderEngine.");
+            }
+            //
+            Set<Class<?>> classSet = apiBinder.findClass(Render.class, "net.hasor.web.invoker.beans");
+            assert classSet.size() == 2;
+            classSet.remove(ErrorRenderEngine.class); // remove Error
+            apiBinder.tryCast(WebApiBinder.class).loadRender(classSet);
         });
         //
         List<RenderDefinition> definitions = appContext.findBindingBean(RenderDefinition.class);
         assert definitions.size() == 1;
         //
-        Set<String> suffixSet = new HashSet<String>();
+        Set<String> suffixSet = new HashSet<>();
         suffixSet.addAll(definitions.get(0).getRenderSet());
         //
         assert suffixSet.size() == 2;

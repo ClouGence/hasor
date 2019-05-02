@@ -17,7 +17,6 @@ package net.hasor.dataql.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
-import net.hasor.core.Provider;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.dataql.UDF;
@@ -40,35 +39,11 @@ public class DataApiBinderCreater implements ApiBinderCreater {
         }
         //
         @Override
-        public void addUdf(String name, Class<? extends UDF> udfType) {
-            this.addUdf(name, bindType(UDF.class).uniqueName().to(udfType).toInfo());
-        }
-        @Override
-        public void addUdf(String name, UDF dataUDF) {
-            this.addUdf(name, bindType(UDF.class).uniqueName().toInstance(dataUDF).toInfo());
-        }
-        @Override
-        public void addUdf(String name, Provider<? extends UDF> udfProvider) {
-            this.addUdf(name, bindType(UDF.class).uniqueName().toProvider(udfProvider).toInfo());
-        }
-        @Override
         public void addUdf(String name, BindInfo<? extends UDF> udfInfo) {
             DefineUDF define = Hasor.autoAware(getEnvironment(), new DefineUDF(null, name, udfInfo));
             this.bindType(DefineUDF.class).uniqueName().toInstance(define);
         }
         //
-        @Override
-        public void addUdfSource(Class<? extends UdfSource> udfSource) {
-            this.addUdfSource(bindType(UdfSource.class).uniqueName().to(udfSource).toInfo());
-        }
-        @Override
-        public void addUdfSource(UdfSource udfSource) {
-            this.addUdfSource(bindType(UdfSource.class).uniqueName().toInstance(udfSource).toInfo());
-        }
-        @Override
-        public void addUdfSource(Provider<? extends UdfSource> udfSource) {
-            this.addUdfSource(bindType(UdfSource.class).uniqueName().toProvider(udfSource).toInfo());
-        }
         @Override
         public void addUdfSource(BindInfo<? extends UdfSource> udfSource) {
             this.bindType(DefineSource.class).uniqueName().toInstance(new DefineSource(udfSource));

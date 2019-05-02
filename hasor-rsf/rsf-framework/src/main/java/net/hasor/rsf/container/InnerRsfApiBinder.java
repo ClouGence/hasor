@@ -24,6 +24,8 @@ import net.hasor.rsf.RsfEnvironment;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 /**
  * 服务注册器
  * @version : 2014年11月12日
@@ -61,7 +63,7 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
         return this.rsfService(bindInfo.getBindType()).toInfo(bindInfo);
     }
     @Override
-    public <T> Provider<T> converToProvider(RsfBindInfo<T> bindInfo) {
+    public <T> Supplier<T> converToProvider(RsfBindInfo<T> bindInfo) {
         return new SingleProvider<T>(makeSureAware(new InnerRsfObjectProvider<T>(bindInfo)));
     }
     @Override
@@ -85,7 +87,7 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
         this.apiBinder.bindInterceptor(matcherExpression, interceptor);
     }
     @Override
-    public void bindInterceptor(Matcher<Class<?>> matcherClass, Matcher<Method> matcherMethod, MethodInterceptor interceptor) {
+    public void bindInterceptor(Predicate<Class<?>> matcherClass, Predicate<Method> matcherMethod, MethodInterceptor interceptor) {
         this.apiBinder.bindInterceptor(matcherClass, matcherMethod, interceptor);
     }
     @Override
@@ -109,39 +111,11 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
         return this.apiBinder.bindType(type);
     }
     @Override
-    public <T> OptionPropertyBindingBuilder<T> bindType(Class<T> type, T instance) {
-        return this.apiBinder.bindType(type, instance);
+    public <T> void bindToCreater(BindInfo<T> info, Supplier<? extends BeanCreaterListener<?>> listener) {
+        this.apiBinder.bindToCreater(info, listener);
     }
     @Override
-    public <T> InjectPropertyBindingBuilder<T> bindType(Class<T> type, Class<? extends T> implementation) {
-        return this.apiBinder.bindType(type, implementation);
-    }
-    @Override
-    public <T> ScopedBindingBuilder<T> bindType(Class<T> type, Provider<T> provider) {
-        return this.apiBinder.bindType(type, provider);
-    }
-    @Override
-    public <T> InjectPropertyBindingBuilder<T> bindType(String withName, Class<T> type) {
-        return this.apiBinder.bindType(withName, type);
-    }
-    @Override
-    public <T> OptionPropertyBindingBuilder<T> bindType(String withName, Class<T> type, T instance) {
-        return this.apiBinder.bindType(withName, type, instance);
-    }
-    @Override
-    public <T> InjectPropertyBindingBuilder<T> bindType(String withName, Class<T> type, Class<? extends T> implementation) {
-        return this.apiBinder.bindType(withName, type, implementation);
-    }
-    @Override
-    public <T> LifeBindingBuilder<T> bindType(String withName, Class<T> type, Provider<T> provider) {
-        return this.apiBinder.bindType(withName, type, provider);
-    }
-    @Override
-    public Provider<Scope> registerScope(String scopeName, Scope scope) {
-        return this.apiBinder.registerScope(scopeName, scope);
-    }
-    @Override
-    public <T extends Scope> Provider<T> registerScope(String scopeName, Provider<T> scopeProvider) {
+    public <T extends Scope> Supplier<T> registerScope(String scopeName, Supplier<T> scopeProvider) {
         return this.apiBinder.registerScope(scopeName, scopeProvider);
     }
 }

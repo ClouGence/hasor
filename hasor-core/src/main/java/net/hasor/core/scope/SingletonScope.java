@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 package net.hasor.core.scope;
-import net.hasor.core.Provider;
 import net.hasor.core.Scope;
 import net.hasor.core.provider.SingleProvider;
 
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 /**
  * 单例
  * @version : 2015年6月28日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SingletonScope implements Scope {
-    private ConcurrentHashMap<Object, Provider<?>> scopeMap = new ConcurrentHashMap<Object, Provider<?>>();
-    public <T> Provider<T> scope(Object key, final Provider<T> provider) {
-        Provider<?> returnData = this.scopeMap.get(key);
+    private ConcurrentHashMap<Object, Supplier<?>> scopeMap = new ConcurrentHashMap<>();
+    public <T> Supplier<T> scope(Object key, final Supplier<T> provider) {
+        Supplier<?> returnData = this.scopeMap.get(key);
         if (returnData == null) {
-            Provider<T> newSingleProvider = new SingleProvider<T>(provider);
+            Supplier<T> newSingleProvider = new SingleProvider<T>(provider);
             returnData = this.scopeMap.putIfAbsent(key, newSingleProvider);
             if (returnData == null) {
                 returnData = newSingleProvider;
             }
         }
-        return (Provider<T>) returnData;
+        return (Supplier<T>) returnData;
     }
-    public Map<Object, Provider<?>> getSingletonData() {
+    public Map<Object, Supplier<?>> getSingletonData() {
         return Collections.unmodifiableMap(this.scopeMap);
     }
 }

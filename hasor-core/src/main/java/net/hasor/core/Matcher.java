@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import java.util.function.Predicate;
 /**
  * 匹配器
  * @version : 2013-7-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface Matcher<T> {
+@Deprecated
+@FunctionalInterface
+public interface Matcher<T> extends Predicate<T> {
     /**Returns {@code true} if this matches {@code T}, {@code false} otherwise.*/
     public boolean matches(T target);
+
+    @Override
+    default boolean test(T target) {
+        return this.matches(target);
+    }
 }

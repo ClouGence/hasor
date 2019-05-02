@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilter {
+public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
     protected Logger                    logger       = LoggerFactory.getLogger(getClass());
     private   AtomicBoolean             inited       = new AtomicBoolean(false);
     private   String                    layoutPath   = null;                    // 布局模版位置
@@ -59,8 +59,8 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
         }
         //
         AppContext appContext = config.getAppContext();
-        Map<String, RenderEngine> engineMap = new HashMap<String, RenderEngine>();
-        Map<String, String> renderMapping = new HashMap<String, String>();
+        Map<String, RenderEngine> engineMap = new HashMap<>();
+        Map<String, String> renderMapping = new HashMap<>();
         List<RenderDefinition> renderInfoList = appContext.findBindingBean(RenderDefinition.class);
         for (RenderDefinition renderInfo : renderInfoList) {
             if (renderInfo == null) {
@@ -76,7 +76,7 @@ public class RenderWebPlugin extends WebModule implements WebPlugin, InvokerFilt
             }
         }
         //
-        this.engineMap = new HashMap<String, RenderEngine>();
+        this.engineMap = new HashMap<>();
         for (String key : renderMapping.keySet()) {
             //
             String keyMapping = renderMapping.get(key);

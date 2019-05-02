@@ -22,9 +22,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 /**
  * 用于定义Bean，实现了Bean配置接口{@link BindInfoBuilder}，配置的信息通过{@link BindInfo}接口展现出来。
- * <p>同时实现了{@link CustomerProvider}和{@link ScopeProvider}接口。表示着这个Bean定义支持自定义{@link Provider}和{@link Scope}。
+ * <p>同时实现了{@link CustomerProvider}和{@link ScopeProvider}接口。表示着这个Bean定义支持自定义{@link Supplier}和{@link Scope}。
  * @version : 2014年7月3日
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -38,9 +39,9 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
     private          Class<? extends T>                               sourceType       = null;
     private          SingletonMode                                    singletonMode    = null;
     //2.系统属性
-    private          Provider<? extends T>                            customerProvider = null;
-    private          Provider<? extends Scope>                        scopeProvider    = null;
-    private          List<Provider<? extends BeanCreaterListener<?>>> createrListener  = null;
+    private          Supplier<? extends T>                            customerProvider = null;
+    private          Supplier<? extends Scope>                        scopeProvider    = null;
+    private          List<Supplier<? extends BeanCreaterListener<?>>> createrListener  = null;
     //
     public String getBindID() {
         if (this.bindID == null) {
@@ -60,14 +61,14 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
     public SingletonMode getSingletonMode() {
         return this.singletonMode;
     }
-    /**获取 {@link #setCustomerProvider(Provider)} 方法设置的 Provider 对象。*/
-    public Provider<? extends T> getCustomerProvider() {
+    /**获取 {@link #setCustomerProvider(Supplier)} 方法设置的 Provider 对象。*/
+    public Supplier<? extends T> getCustomerProvider() {
         return this.customerProvider;
     }
-    public Provider<Scope> getScopeProvider() {
-        return (Provider<Scope>) this.scopeProvider;
+    public Supplier<? extends Scope> getScopeProvider() {
+        return this.scopeProvider;
     }
-    public List<Provider<? extends BeanCreaterListener<?>>> getCreaterListener() {
+    public List<Supplier<? extends BeanCreaterListener<?>>> getCreaterListener() {
         return createrListener;
     }
     public BindInfo<T> toInfo() {
@@ -102,21 +103,21 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
         this.notify(new NotifyData("singleton", this.singletonMode, singletonMode));
         this.singletonMode = singletonMode;
     }
-    public void setCustomerProvider(final Provider<? extends T> customerProvider) {
+    public void setCustomerProvider(final Supplier<? extends T> customerProvider) {
         // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("customerProvider", this.customerProvider, customerProvider));
         this.customerProvider = customerProvider;
     }
-    public void setScopeProvider(final Provider<? extends Scope> scopeProvider) {
+    public void setScopeProvider(final Supplier<? extends Scope> scopeProvider) {
         // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("scopeProvider", this.scopeProvider, scopeProvider));
         this.scopeProvider = scopeProvider;
     }
-    public void addCreaterListener(Provider<? extends BeanCreaterListener<?>> createrListener) {
+    public void addCreaterListener(Supplier<? extends BeanCreaterListener<?>> createrListener) {
         // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("createrListener", this.createrListener, createrListener));
         if (this.createrListener == null) {
-            this.createrListener = new ArrayList<Provider<? extends BeanCreaterListener<?>>>();
+            this.createrListener = new ArrayList<>();
         }
         this.createrListener.add(createrListener);
     }
