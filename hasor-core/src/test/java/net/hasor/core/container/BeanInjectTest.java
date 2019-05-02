@@ -57,27 +57,18 @@ public class BeanInjectTest {
         final AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
-        PowerMockito.when(appContext.getInstance(anyString())).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                BindInfo<Object> bindInfo = container.findBindInfo((String) invocationOnMock.getArguments()[0]);
-                return container.getProvider(bindInfo, appContext).get();
-            }
+        PowerMockito.when(appContext.getInstance(anyString())).then(invocationOnMock -> {
+            BindInfo<Object> bindInfo = container.findBindInfo((String) invocationOnMock.getArguments()[0]);
+            return container.getProvider(bindInfo, appContext).get();
         });
-        PowerMockito.when(appContext.getInstance((Class<Object>) anyObject())).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                BindInfo<Object> bindInfo = container.findBindInfo(null, (Class<Object>) invocationOnMock.getArguments()[0]);
-                return container.getProvider(bindInfo, appContext).get();
-            }
+        PowerMockito.when(appContext.getInstance((Class<Object>) anyObject())).then(invocationOnMock -> {
+            BindInfo<Object> bindInfo = container.findBindInfo(null, (Class<Object>) invocationOnMock.getArguments()[0]);
+            return container.getProvider(bindInfo, appContext).get();
         });
-        PowerMockito.when(appContext.findBindingBean(anyString(), (Class<Object>) anyObject())).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                Object[] arguments = invocationOnMock.getArguments();
-                BindInfo<Object> bindInfo = container.findBindInfo((String) arguments[0], (Class<Object>) arguments[1]);
-                return container.getProvider(bindInfo, appContext).get();
-            }
+        PowerMockito.when(appContext.findBindingBean(anyString(), anyObject())).then(invocationOnMock -> {
+            Object[] arguments = invocationOnMock.getArguments();
+            BindInfo<Object> bindInfo = container.findBindInfo((String) arguments[0], (Class<Object>) arguments[1]);
+            return container.getProvider(bindInfo, appContext).get();
         });
         //
         //
@@ -103,16 +94,13 @@ public class BeanInjectTest {
         final AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
-        PowerMockito.when(appContext.findBindingBean(anyString(), (Class<Object>) anyObject())).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                Object[] arguments = invocationOnMock.getArguments();
-                BindInfo<?> bindInfo = container.findBindInfo((String) arguments[0], (Class<?>) arguments[1]);
-                if (bindInfo == null) {
-                    return null;
-                }
-                return container.getProvider(bindInfo, appContext).get();
+        PowerMockito.when(appContext.findBindingBean(anyString(), anyObject())).then(invocationOnMock -> {
+            Object[] arguments = invocationOnMock.getArguments();
+            BindInfo<?> bindInfo = container.findBindInfo((String) arguments[0], (Class<?>) arguments[1]);
+            if (bindInfo == null) {
+                return null;
             }
+            return container.getProvider(bindInfo, appContext).get();
         });
         //
         //
@@ -154,16 +142,13 @@ public class BeanInjectTest {
         final AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
-        PowerMockito.when(appContext.getInstance(anyString())).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                Object[] arguments = invocationOnMock.getArguments();
-                BindInfo<?> bindInfo = container.findBindInfo((String) arguments[0]);
-                if (bindInfo == null) {
-                    return null;
-                }
-                return container.getProvider(bindInfo, appContext).get();
+        PowerMockito.when(appContext.getInstance(anyString())).then(invocationOnMock -> {
+            Object[] arguments = invocationOnMock.getArguments();
+            BindInfo<?> bindInfo = container.findBindInfo((String) arguments[0]);
+            if (bindInfo == null) {
+                return null;
             }
+            return container.getProvider(bindInfo, appContext).get();
         });
         //
         //

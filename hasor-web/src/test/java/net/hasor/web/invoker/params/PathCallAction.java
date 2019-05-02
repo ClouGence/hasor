@@ -30,7 +30,7 @@ public class PathCallAction {
             @PathParameter("utilData") java.util.Date utilData, @PathParameter("utilCalendar") java.util.Calendar utilCalendar, //
             @PathParameter("sqlData") java.sql.Date sqlData, @PathParameter("sqlTime") java.sql.Time sqlTime, @PathParameter("sqlTimestamp") java.sql.Timestamp sqlTimestamp //
     ) {
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+        Map<String, Object> dataMap = new HashMap<>();
         //
         dataMap.put("byteParam", byteParam);
         dataMap.put("shortParam", shortParam);

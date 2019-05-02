@@ -18,7 +18,6 @@ import net.hasor.core.AppContext;
 import net.hasor.utils.Iterators;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
@@ -90,44 +89,35 @@ public class AbstractWebTest {
         PowerMockito.when(request.getSession()).thenReturn(mockSession);
         PowerMockito.when(request.getSession(anyBoolean())).thenReturn(mockSession);
         //
-        PowerMockito.when(request.getHeader(anyString())).thenAnswer(new Answer<String>() {
-            @Override
-            public String answer(InvocationOnMock invocation) throws Throwable {
-                if (appContext == null) {
-                    return null;
-                }
-                Map headerMap = appContext.findBindingBean("http-header", Map.class);
-                return singleObjectFormMap(headerMap, (String) invocation.getArguments()[0]);
+        PowerMockito.when(request.getHeader(anyString())).thenAnswer((Answer<String>) invocation -> {
+            if (appContext == null) {
+                return null;
             }
+            Map headerMap = appContext.findBindingBean("http-header", Map.class);
+            return singleObjectFormMap(headerMap, (String) invocation.getArguments()[0]);
         });
-        PowerMockito.when(request.getHeaderNames()).thenAnswer(new Answer<Enumeration<String>>() {
-            @Override
-            public Enumeration<String> answer(InvocationOnMock invocation) throws Throwable {
-                if (appContext == null) {
-                    return null;
-                }
-                Map headerMap = appContext.findBindingBean("http-header", Map.class);
-                if (headerMap == null) {
-                    return null;
-                }
-                Set<String> keySet = headerMap.keySet();
-                return Iterators.asEnumeration(keySet.iterator());
+        PowerMockito.when(request.getHeaderNames()).thenAnswer((Answer<Enumeration<String>>) invocation -> {
+            if (appContext == null) {
+                return null;
             }
+            Map headerMap = appContext.findBindingBean("http-header", Map.class);
+            if (headerMap == null) {
+                return null;
+            }
+            Set<String> keySet = headerMap.keySet();
+            return Iterators.asEnumeration(keySet.iterator());
         });
-        PowerMockito.when(request.getHeaders(anyString())).thenAnswer(new Answer<Enumeration<String>>() {
-            @Override
-            public Enumeration<String> answer(InvocationOnMock invocation) throws Throwable {
-                if (appContext == null) {
-                    return null;
-                }
-                Map headerMap = appContext.findBindingBean("http-header", Map.class);
-                String[] objects = multipleObjectFormMap(headerMap, (String) invocation.getArguments()[0]);
-                return Iterators.asEnumeration(Arrays.asList(objects).iterator());
+        PowerMockito.when(request.getHeaders(anyString())).thenAnswer((Answer<Enumeration<String>>) invocation -> {
+            if (appContext == null) {
+                return null;
             }
+            Map headerMap = appContext.findBindingBean("http-header", Map.class);
+            String[] objects = multipleObjectFormMap(headerMap, (String) invocation.getArguments()[0]);
+            return Iterators.asEnumeration(Arrays.asList(objects).iterator());
         });
         //
         String query = requestURL.getQuery();
-        Map<String, List<String>> tmpQueryMap = new HashMap<String, List<String>>();
+        Map<String, List<String>> tmpQueryMap = new HashMap<>();
         if (postParams != null) {
             for (final String key : postParams.keySet()) {
                 tmpQueryMap.put(key, new ArrayList<String>() {{
@@ -143,59 +133,42 @@ public class AbstractWebTest {
                 String value = kv[1].trim();
                 List<String> strings = tmpQueryMap.get(key);
                 if (strings == null) {
-                    strings = new ArrayList<String>();
+                    strings = new ArrayList<>();
                     tmpQueryMap.put(key, strings);
                 }
                 strings.add(value);
             }
         }
-        final Map<String, String[]> queryMap = new HashMap<String, String[]>();
+        final Map<String, String[]> queryMap = new HashMap<>();
         for (String key : tmpQueryMap.keySet()) {
             queryMap.put(key, tmpQueryMap.get(key).toArray(new String[0]));
         }
-        PowerMockito.when(request.getParameterMap()).thenAnswer(new Answer<Map<String, String[]>>() {
-            @Override
-            public Map<String, String[]> answer(InvocationOnMock invocation) throws Throwable {
-                return queryMap;//
-            }
+        PowerMockito.when(request.getParameterMap()).thenAnswer((Answer<Map<String, String[]>>) invocation -> {
+            return queryMap;//
         });
-        PowerMockito.when(request.getParameterNames()).thenAnswer(new Answer<Enumeration<String>>() {
-            @Override
-            public Enumeration<String> answer(InvocationOnMock invocation) throws Throwable {
-                return Iterators.asEnumeration(queryMap.keySet().iterator());
-            }
+        PowerMockito.when(request.getParameterNames()).thenAnswer((Answer<Enumeration<String>>) invocation -> {
+            return Iterators.asEnumeration(queryMap.keySet().iterator());
         });
-        PowerMockito.when(request.getParameterValues(anyString())).thenAnswer(new Answer<String[]>() {
-            @Override
-            public String[] answer(InvocationOnMock invocation) throws Throwable {
-                return multipleObjectFormMap(queryMap, (String) invocation.getArguments()[0]);
-            }
+        PowerMockito.when(request.getParameterValues(anyString())).thenAnswer((Answer<String[]>) invocation -> {
+            return multipleObjectFormMap(queryMap, (String) invocation.getArguments()[0]);
+        });
+        PowerMockito.when(request.getParameter(anyString())).thenAnswer((Answer<String>) invocation -> {
+            String[] strings = multipleObjectFormMap(queryMap, (String) invocation.getArguments()[0]);
+            return strings != null && strings.length > 0 ? strings[0] : null;
         });
         //
-        final Map<String, Object> attrMap = new HashMap<String, Object>();
-        PowerMockito.when(request.getAttributeNames()).thenAnswer(new Answer<Enumeration<String>>() {
-            @Override
-            public Enumeration<String> answer(InvocationOnMock invocation) throws Throwable {
-                return Iterators.asEnumeration(attrMap.keySet().iterator());
-            }
+        final Map<String, Object> attrMap = new HashMap<>();
+        PowerMockito.when(request.getAttributeNames()).thenAnswer((Answer<Enumeration<String>>) invocation -> {
+            return Iterators.asEnumeration(attrMap.keySet().iterator());
         });
-        PowerMockito.when(request.getAttribute(anyString())).thenAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return attrMap.get(invocation.getArguments()[0]);
-            }
+        PowerMockito.when(request.getAttribute(anyString())).thenAnswer(invocation -> {
+            return attrMap.get(invocation.getArguments()[0]);
         });
-        PowerMockito.doAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return attrMap.put((String) invocation.getArguments()[0], invocation.getArguments()[1]);
-            }
+        PowerMockito.doAnswer(invocation -> {
+            return attrMap.put((String) invocation.getArguments()[0], invocation.getArguments()[1]);
         }).when(request).setAttribute(anyString(), anyObject());
-        PowerMockito.doAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                return attrMap.remove(invocation.getArguments()[0]);
-            }
+        PowerMockito.doAnswer(invocation -> {
+            return attrMap.remove(invocation.getArguments()[0]);
         }).when(request).removeAttribute(anyString());
         //
         return request;

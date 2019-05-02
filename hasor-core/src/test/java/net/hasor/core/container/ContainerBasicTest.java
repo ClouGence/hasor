@@ -59,7 +59,7 @@ public class ContainerBasicTest {
         assert bindInfo2.getBindType().equals(TestBean.class);
         //
         List<BindInfo<TestBean>> bindInfoList = container.findBindInfoList(TestBean.class);
-        Set<String> infoSet = new HashSet<String>();
+        Set<String> infoSet = new HashSet<>();
         for (BindInfo<TestBean> info : bindInfoList) {
             infoSet.add(info.getBindID());
         }

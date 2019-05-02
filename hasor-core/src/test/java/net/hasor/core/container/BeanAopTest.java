@@ -8,7 +8,6 @@ import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.info.AopBindInfoAdapter;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
@@ -32,11 +31,8 @@ public class BeanAopTest {
         AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
-        PowerMockito.when(appContext.findBindingRegister(AopBindInfoAdapter.class)).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                return container.findBindInfoList(AopBindInfoAdapter.class);
-            }
+        PowerMockito.when(appContext.findBindingRegister(AopBindInfoAdapter.class)).then((Answer<Object>) invocationOnMock -> {
+            return container.findBindInfoList(AopBindInfoAdapter.class);
         });
         //
         //

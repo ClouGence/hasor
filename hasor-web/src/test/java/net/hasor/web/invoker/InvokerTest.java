@@ -26,12 +26,9 @@ public class InvokerTest {
         };
         //
         final AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-        PowerMockito.doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
-                atomicBoolean.set(true);
-                return null;
-            }
+        PowerMockito.doAnswer((Answer<Void>) invocationOnMock -> {
+            atomicBoolean.set(true);
+            return null;
         }).when(asyncContext).complete();
         //
         worker.run();

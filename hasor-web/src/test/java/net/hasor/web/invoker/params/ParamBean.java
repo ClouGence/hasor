@@ -55,7 +55,7 @@ public class ParamBean {
     private java.sql.Timestamp sqlTimestamp;
     //
     public Map<String, Object> buildParams() {
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+        Map<String, Object> dataMap = new HashMap<>();
         //
         dataMap.put("byteParam", this.byteParam);
         dataMap.put("shortParam", this.shortParam);

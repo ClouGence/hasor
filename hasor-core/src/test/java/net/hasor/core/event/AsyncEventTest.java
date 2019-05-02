@@ -35,16 +35,13 @@ public class AsyncEventTest {
         //
         String EventName = "MyEvent";
         //1.添加事件监听器
-        final CopyOnWriteArraySet<String> eventDataSet = new CopyOnWriteArraySet<String>();
-        ec.addListener(EventName, new EventListener<Object>() {
-            @Override
-            public void onEvent(String event, Object eventData) throws Throwable {
-                eventDataSet.add(event + eventData);
-                Thread.sleep(110);
-            }
+        final CopyOnWriteArraySet<String> eventDataSet = new CopyOnWriteArraySet<>();
+        ec.addListener(EventName, (event, eventData) -> {
+            eventDataSet.add(event + eventData);
+            Thread.sleep(110);
         });
         //2.引发异步事件
-        ArrayList<String> eventData = new ArrayList<String>();
+        ArrayList<String> eventData = new ArrayList<>();
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < 50; i++) {
             eventData.add(EventName + i);
@@ -68,13 +65,10 @@ public class AsyncEventTest {
         //
         String EventName = "MyEvent";
         //1.添加事件监听器
-        final CopyOnWriteArraySet<String> eventDataSet = new CopyOnWriteArraySet<String>();
-        ec.addListener(EventName, new EventListener<Object>() {
-            @Override
-            public void onEvent(String event, Object eventData) throws Throwable {
-                eventDataSet.add(event + eventData);
-                Thread.sleep(100); // 100ms
-            }
+        final CopyOnWriteArraySet<String> eventDataSet = new CopyOnWriteArraySet<>();
+        ec.addListener(EventName, (event, eventData) -> {
+            eventDataSet.add(event + eventData);
+            Thread.sleep(100); // 100ms
         });
         //2.引发异步事件
         long startTime = System.currentTimeMillis();
@@ -97,15 +91,11 @@ public class AsyncEventTest {
         final AtomicInteger exceptionInteger = new AtomicInteger();
         final AtomicInteger completeInteger = new AtomicInteger();
         //
-        assert ec.addListener("EventA", new EventListener<EventContext>() {
-            public void onEvent(String event, EventContext eventEC) throws Throwable {
-                //
-            }
+        assert ec.addListener("EventA", (EventListener<EventContext>) (event, eventEC) -> {
+            //
         });
-        assert ec.addListener("EventB", new EventListener<EventContext>() {
-            public void onEvent(String event, EventContext eventEC) throws Throwable {
-                throw new Exception("1111");
-            }
+        assert ec.addListener("EventB", (EventListener<EventContext>) (event, eventEC) -> {
+            throw new Exception("1111");
         });
         EventCallBackHook<Object> callBack = new EventCallBackHook<Object>() {
             @Override

@@ -13,21 +13,13 @@ public class CreaterListenerTest {
     @Test
     public void builderTest1() {
         //
-        final Map<String, BindInfo> dataMap = new HashMap<String, BindInfo>();
-        final BeanCreaterListener createrListener = new BeanCreaterListener() {
-            @Override
-            public void beanCreated(Object newObject, BindInfo bindInfo) throws Throwable {
-                dataMap.put(newObject.getClass().getName(), bindInfo);
-            }
-        };
+        final Map<String, BindInfo> dataMap = new HashMap<>();
+        final BeanCreaterListener createrListener = (newObject, bindInfo) -> dataMap.put(newObject.getClass().getName(), bindInfo);
         //
-        AppContext appContext = Hasor.create().asSmaller().build(new Module() {
-            @Override
-            public void loadModule(ApiBinder apiBinder) throws Throwable {
-                apiBinder.bindType(TestBean.class).toInstance(new TestBean()).whenCreate(createrListener);
-                apiBinder.bindType(ContextInjectBean.class).whenCreate(createrListener);
-                apiBinder.bindType(ContextShutdownListenerBean.class).whenCreate(createrListener);
-            }
+        AppContext appContext = Hasor.create().asSmaller().build((Module) apiBinder -> {
+            apiBinder.bindType(TestBean.class).toInstance(new TestBean()).whenCreate(createrListener);
+            apiBinder.bindType(ContextInjectBean.class).whenCreate(createrListener);
+            apiBinder.bindType(ContextShutdownListenerBean.class).whenCreate(createrListener);
         });
         //
         assert dataMap.isEmpty();

@@ -30,7 +30,7 @@ public class AttrCallAction {
             @AttributeParameter("utilData") java.util.Date utilData, @AttributeParameter("utilCalendar") java.util.Calendar utilCalendar, //
             @AttributeParameter("sqlData") java.sql.Date sqlData, @AttributeParameter("sqlTime") java.sql.Time sqlTime, @AttributeParameter("sqlTimestamp") java.sql.Timestamp sqlTimestamp //
     ) {
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+        Map<String, Object> dataMap = new HashMap<>();
         //
         dataMap.put("byteParam", byteParam);
         dataMap.put("shortParam", shortParam);

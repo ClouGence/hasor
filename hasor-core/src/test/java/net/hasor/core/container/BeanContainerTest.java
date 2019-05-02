@@ -34,11 +34,8 @@ public class BeanContainerTest {
         final AppContext appContext = PowerMockito.mock(AppContext.class);
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
-        PowerMockito.when(appContext.getInstance((BindInfo) anyObject())).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                return container.getProvider((BindInfo) invocationOnMock.getArguments()[0], appContext).get();
-            }
+        PowerMockito.when(appContext.getInstance((BindInfo) anyObject())).then(invocationOnMock -> {
+            return container.getProvider((BindInfo) invocationOnMock.getArguments()[0], appContext).get();
         });
         //
         AbstractBindInfoProviderAdapter<?> adapter = container.createInfoAdapter(CallInitBean.class);

@@ -106,7 +106,7 @@ public class WarpBinderDataTest extends AbstractBinderDataTest {
     @Test
     public void binderTest8() {
         Date self = new Date();
-        Supplier<Date> selfProvider = new InstanceProvider<Date>(self);
+        Supplier<Date> selfProvider = new InstanceProvider<>(self);
         binder.bindType("myDate", Date.class, selfProvider);
         assert reference.get().getBindType() == Date.class;
         assert reference.get().getSourceType() == null;
@@ -129,7 +129,7 @@ public class WarpBinderDataTest extends AbstractBinderDataTest {
             ignoreType.add(Timestamp.class);
             BindInfo<?> valueInfo = PowerMockito.mock(BindInfo.class);
             ApiBinder.InjectPropertyBindingBuilder<?> bindType = binder.bindType(TestBean.class);
-            InstanceProvider<Object> valProvider = new InstanceProvider<Object>("val");
+            InstanceProvider<Object> valProvider = new InstanceProvider<>("val");
             bindType = bindType.inject("abc1", Timestamp.class);
             bindType = bindType.injectValue("abc2", 123);
             bindType = bindType.inject("abc3", valProvider);
@@ -241,7 +241,7 @@ public class WarpBinderDataTest extends AbstractBinderDataTest {
             BindInfo<?> valueInfo = PowerMockito.mock(BindInfo.class);
             Constructor<? extends TestBean2> constructor = TestBean2.class.getConstructor(Date.class, Integer.TYPE, Object.class, Method.class);
             ApiBinder.InjectConstructorBindingBuilder<TestBean2> bindType = binder.bindType(TestBean2.class).toConstructor(constructor);
-            InstanceProvider<Object> valProvider = new InstanceProvider<Object>("val");
+            InstanceProvider<Object> valProvider = new InstanceProvider<>("val");
             bindType = bindType.inject(0, Timestamp.class);
             bindType = bindType.inject(2, valProvider);
             bindType = bindType.injectValue(1, 123);

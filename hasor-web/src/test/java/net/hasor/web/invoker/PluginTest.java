@@ -10,12 +10,7 @@ import java.util.HashMap;
 public class PluginTest extends AbstractWeb30BinderDataTest {
     @Test
     public void pluginTest3() throws Throwable {
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.addPlugin(new TestWebPlugin());
-            }
-        });
+        AppContext appContext = hasor.build((WebModule) apiBinder -> apiBinder.addPlugin(new TestWebPlugin()));
         //
         TestWebPlugin.resetInit();
         InvokerContext invokerContext = new InvokerContext();

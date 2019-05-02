@@ -8,14 +8,13 @@ import net.hasor.web.invoker.beans.TestServlet;
 import net.hasor.web.invoker.call.AsyncCallAction;
 import net.hasor.web.invoker.call.SyncCallAction;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
-import javax.servlet.*;
+import javax.servlet.AsyncContext;
+import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -26,23 +25,15 @@ import static org.mockito.Matchers.anyObject;
 public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
     @Test
     public void basicTest1() throws Throwable {
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                //
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet("/abc.do").with(TestServlet.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            //
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet("/abc.do").with(TestServlet.class);
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
         assert definitions.size() == 1;
         final AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-        FilterChain chain = new FilterChain() {
-            @Override
-            public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
-                atomicBoolean.set(true);
-            }
-        };
+        FilterChain chain = (request, response) -> atomicBoolean.set(true);
         InvokerCaller caller = new InvokerCaller(definitions.get(0), null, null);
         //
         TestServlet.resetInit();
@@ -68,12 +59,9 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
     }
     @Test
     public void basicTest2() throws Throwable {
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                //
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(SyncCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            //
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(SyncCallAction.class);
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
@@ -126,25 +114,19 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
     //
     @Test
     public void asyncInvokeTest1() throws Throwable {
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AsyncCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AsyncCallAction.class);
         });
         //
         final HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/async.do"), appContext);
         final AtomicBoolean asyncCall = new AtomicBoolean(false);
         AsyncContext asyncContext = PowerMockito.mock(AsyncContext.class);
         PowerMockito.when(servletRequest.startAsync()).thenReturn(asyncContext);
-        PowerMockito.doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
-                asyncCall.set(true);
-                ((Runnable) invocationOnMock.getArguments()[0]).run();
-                return null;
-            }
-        }).when(asyncContext).start((Runnable) anyObject());
+        PowerMockito.doAnswer((Answer<Void>) invocationOnMock -> {
+            asyncCall.set(true);
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            return null;
+        }).when(asyncContext).start(anyObject());
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
         InvokerCaller caller = new InvokerCaller(definitions.get(0), null, null);
@@ -162,25 +144,19 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
     //
     @Test
     public void asyncInvokeTest2() throws Throwable {
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AsyncCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AsyncCallAction.class);
         });
         //
         final HttpServletRequest servletRequest = mockRequest("get", new URL("http://www.hasor.net/async.do"), appContext);
         final AtomicBoolean asyncCall = new AtomicBoolean(false);
         AsyncContext asyncContext = PowerMockito.mock(AsyncContext.class);
         PowerMockito.when(servletRequest.startAsync()).thenReturn(asyncContext);
-        PowerMockito.doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
-                asyncCall.set(true);
-                ((Runnable) invocationOnMock.getArguments()[0]).run();
-                return null;
-            }
-        }).when(asyncContext).start((Runnable) anyObject());
+        PowerMockito.doAnswer((Answer<Void>) invocationOnMock -> {
+            asyncCall.set(true);
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            return null;
+        }).when(asyncContext).start(anyObject());
         //
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
@@ -210,23 +186,17 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         final AtomicBoolean asyncCall = new AtomicBoolean(false);
         AsyncContext asyncContext = PowerMockito.mock(AsyncContext.class);
         PowerMockito.when(servletRequest.startAsync()).thenReturn(asyncContext);
-        PowerMockito.doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
-                asyncCall.set(true);
-                ((Runnable) invocationOnMock.getArguments()[0]).run();
-                return null;
-            }
-        }).when(asyncContext).start((Runnable) anyObject());
+        PowerMockito.doAnswer((Answer<Void>) invocationOnMock -> {
+            asyncCall.set(true);
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            return null;
+        }).when(asyncContext).start(anyObject());
         //
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.bindType(HttpServletRequest.class).toInstance(servletRequest);
-                apiBinder.bindType(HttpServletResponse.class).toInstance(httpServletResponse);
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(SyncCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.bindType(HttpServletRequest.class).toInstance(servletRequest);
+            apiBinder.bindType(HttpServletResponse.class).toInstance(httpServletResponse);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(SyncCallAction.class);
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
@@ -251,23 +221,17 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         final AtomicBoolean asyncCall = new AtomicBoolean(false);
         AsyncContext asyncContext = PowerMockito.mock(AsyncContext.class);
         PowerMockito.when(servletRequest.startAsync()).thenReturn(asyncContext);
-        PowerMockito.doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
-                asyncCall.set(true);
-                ((Runnable) invocationOnMock.getArguments()[0]).run();
-                return null;
-            }
-        }).when(asyncContext).start((Runnable) anyObject());
+        PowerMockito.doAnswer((Answer<Void>) invocationOnMock -> {
+            asyncCall.set(true);
+            ((Runnable) invocationOnMock.getArguments()[0]).run();
+            return null;
+        }).when(asyncContext).start(anyObject());
         //
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.bindType(HttpServletRequest.class).toInstance(servletRequest);
-                apiBinder.bindType(HttpServletResponse.class).toInstance(httpServletResponse);
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(SyncCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.bindType(HttpServletRequest.class).toInstance(servletRequest);
+            apiBinder.bindType(HttpServletResponse.class).toInstance(httpServletResponse);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(SyncCallAction.class);
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);

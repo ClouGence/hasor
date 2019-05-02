@@ -47,7 +47,7 @@ public class RenderInvokerSupplier extends InvokerWrap implements RenderInvoker 
         if (lastIndex > 0) {
             this.viewType(this.viewName.substring(lastIndex + 1));
         } else {
-            this.viewType("default");
+            this.viewType("");
         }
     }
     @Override

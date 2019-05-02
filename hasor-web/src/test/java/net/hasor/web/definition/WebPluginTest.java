@@ -19,12 +19,9 @@ public class WebPluginTest {
         //
         BindInfo<? extends WebPlugin> bindInfo = PowerMockito.mock(BindInfo.class);
         AppContext appContext = PowerMockito.mock(AppContext.class);
-        PowerMockito.when(appContext.getInstance(bindInfo)).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                initCall.set(true);
-                return new TestCallerWebPlugin();
-            }
+        PowerMockito.when(appContext.getInstance(bindInfo)).then((Answer<Object>) invocationOnMock -> {
+            initCall.set(true);
+            return new TestCallerWebPlugin();
         });
         WebPluginDefinition definition = new WebPluginDefinition(bindInfo);
         //

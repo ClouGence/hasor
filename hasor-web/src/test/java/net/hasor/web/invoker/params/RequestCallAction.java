@@ -30,7 +30,7 @@ public class RequestCallAction {
             @RequestParameter("utilData") java.util.Date utilData, @RequestParameter("utilCalendar") java.util.Calendar utilCalendar, //
             @RequestParameter("sqlData") java.sql.Date sqlData, @RequestParameter("sqlTime") java.sql.Time sqlTime, @RequestParameter("sqlTimestamp") java.sql.Timestamp sqlTimestamp //
     ) {
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+        Map<String, Object> dataMap = new HashMap<>();
         //
         dataMap.put("byteParam", byteParam);
         dataMap.put("shortParam", shortParam);

@@ -58,7 +58,7 @@ public class DefinitionTest {
                 bindInfo, new HashMap<>());
         //
         AppContext appContext = PowerMockito.mock(AppContext.class);
-        PowerMockito.when((Filter) appContext.getInstance(bindInfo)).thenReturn(callerFilter);
+        PowerMockito.when(appContext.getInstance(bindInfo)).thenReturn(callerFilter);
         //
         ServletContext servletContext = PowerMockito.mock(ServletContext.class);
         PowerMockito.when(appContext.getInstance(ServletContext.class)).thenReturn(servletContext);
@@ -82,7 +82,7 @@ public class DefinitionTest {
                 bindInfo, new HashMap<>());
         //
         AppContext appContext = PowerMockito.mock(AppContext.class);
-        PowerMockito.when((Filter) appContext.getInstance(bindInfo)).thenReturn(nextCallerFilter);
+        PowerMockito.when(appContext.getInstance(bindInfo)).thenReturn(nextCallerFilter);
         //
         ServletContext servletContext = PowerMockito.mock(ServletContext.class);
         PowerMockito.when(appContext.getInstance(ServletContext.class)).thenReturn(servletContext);

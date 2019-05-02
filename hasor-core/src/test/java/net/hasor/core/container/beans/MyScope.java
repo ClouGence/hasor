@@ -26,7 +26,7 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MyScope implements Scope {
-    private Map<Object, Supplier<?>> singtonMap = new HashMap<Object, Supplier<?>>();
+    private Map<Object, Supplier<?>> singtonMap = new HashMap<>();
     //
     public <T> Supplier<T> scope(Object key, final Supplier<T> provider) {
         Supplier<?> returnData = singtonMap.get(key);

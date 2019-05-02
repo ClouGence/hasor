@@ -43,11 +43,8 @@ public class AbstractWeb24BinderDataTest extends AbstractWebTest implements Modu
     public void beforeTest() {
         // . Mock 2.4
         this.servletContext = PowerMockito.mock(ServletContext.class);
-        PowerMockito.when(this.servletContext.getEffectiveMajorVersion()).thenAnswer(new Answer<Integer>() {
-            @Override
-            public Integer answer(InvocationOnMock invocationOnMock) throws Throwable {
-                throw new Exception();
-            }
+        PowerMockito.when(this.servletContext.getEffectiveMajorVersion()).thenAnswer((Answer<Integer>) invocationOnMock -> {
+            throw new Exception();
         });
         //
         this.mimeType = PowerMockito.mock(MimeType.class);

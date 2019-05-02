@@ -27,7 +27,7 @@ public class CheckBaseType0Interceptor implements MethodInterceptor {
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {
         List<?> proceed = (List<?>) invocation.proceed();
-        ArrayList<Object> result = new ArrayList<Object>();
+        ArrayList<Object> result = new ArrayList<>();
         result.add("Before");
         result.addAll(proceed);
         result.add("After");

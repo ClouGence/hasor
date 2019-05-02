@@ -13,11 +13,8 @@ import java.util.Set;
 public class InvokerSupplierTest extends AbstractWeb30BinderDataTest {
     @Test
     public void invokerSupplierTest() throws Throwable {
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                //apiBinder.addPlugin(new TestWebPlugin());
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            //apiBinder.addPlugin(new TestWebPlugin());
         });
         //
         HttpServletRequest httpRequest = super.mockRequest("GET", new URL("http://www.hasor.net/query_param.do?byteParam=123&bigInteger=321"), appContext);

@@ -33,11 +33,7 @@ public class ListenerTest {
         //
         final String FirstEvent = "FirstEvent";
         final AtomicInteger atomicInteger = new AtomicInteger();
-        final EventListener<EventContext> listener = new EventListener<EventContext>() {
-            public void onEvent(String event, EventContext eventEC) throws Throwable {
-                atomicInteger.incrementAndGet();
-            }
-        };
+        final EventListener<EventContext> listener = (event, eventEC) -> atomicInteger.incrementAndGet();
         //
         //
         assert ec.addListener(FirstEvent, listener);
@@ -54,11 +50,7 @@ public class ListenerTest {
         //
         final String FirstEvent = "FirstEvent";
         final AtomicInteger atomicInteger = new AtomicInteger();
-        final EventListener<EventContext> listener = new EventListener<EventContext>() {
-            public void onEvent(String event, EventContext eventEC) throws Throwable {
-                atomicInteger.incrementAndGet();
-            }
-        };
+        final EventListener<EventContext> listener = (event, eventEC) -> atomicInteger.incrementAndGet();
         //
         //
         assert ec.addListener(FirstEvent, listener);

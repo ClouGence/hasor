@@ -14,27 +14,20 @@ import java.util.HashMap;
 public class DiscovererTest extends AbstractWeb30BinderDataTest {
     @Test
     public void sortTest3() throws Throwable {
-        final ArrayList<String> discovererData = new ArrayList<String>();
+        final ArrayList<String> discovererData = new ArrayList<>();
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.addDiscoverer(new MappingDiscoverer() {
-                    @Override
-                    public void discover(Mapping mappingData) {
-                        discovererData.add(mappingData.getMappingTo());
-                    }
-                });
-                //
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*.do").with(1, new DefaultServlet());
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*abc.do").with(0, new DefaultServlet());
-                //
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.addDiscoverer(mappingData -> discovererData.add(mappingData.getMappingTo()));
+            //
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*.do").with(1, new DefaultServlet());
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*abc.do").with(0, new DefaultServlet());
+            //
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
         });
         //
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new HashMap<String, String>() {{
+            //
         }});
         //
         assert discovererData.size() == 3;

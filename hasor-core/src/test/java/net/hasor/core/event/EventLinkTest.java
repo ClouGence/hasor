@@ -33,17 +33,10 @@ public class EventLinkTest {
         final String FirstEvent = "FirstEvent";
         final AtomicInteger atomicInteger = new AtomicInteger();
         //1.添加事件监听器
-        ec.addListener(SubEvent, new EventListener<Object>() {
-            @Override
-            public void onEvent(String event, Object eventData) throws Throwable {
-                atomicInteger.incrementAndGet();
-            }
-        });
-        ec.addListener(FirstEvent, new EventListener<EventContext>() {
-            public void onEvent(String event, EventContext eventEC) throws Throwable {
-                eventEC.fireAsyncEvent(SubEvent, 1);
-                eventEC.fireAsyncEvent(SubEvent, 2);
-            }
+        ec.addListener(SubEvent, (event, eventData) -> atomicInteger.incrementAndGet());
+        ec.addListener(FirstEvent, (EventListener<EventContext>) (event, eventEC) -> {
+            eventEC.fireAsyncEvent(SubEvent, 1);
+            eventEC.fireAsyncEvent(SubEvent, 2);
         });
         //2.引发种子事件
         ec.fireAsyncEvent(FirstEvent, ec);

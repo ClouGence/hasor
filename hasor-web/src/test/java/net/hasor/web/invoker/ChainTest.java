@@ -27,14 +27,11 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
     @Test
     public void chainTest1() throws Throwable {
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).filter("*").through(Demo1CallerFilter.class);
-                apiBinder.tryCast(WebApiBinder.class).filter("*").through(Demo2CallerFilter.class);
-                apiBinder.tryCast(WebApiBinder.class).filter("/abc/*").through(Demo3CallerFilter.class);
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).filter("*").through(Demo1CallerFilter.class);
+            apiBinder.tryCast(WebApiBinder.class).filter("*").through(Demo2CallerFilter.class);
+            apiBinder.tryCast(WebApiBinder.class).filter("/abc/*").through(Demo3CallerFilter.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
         });
         Demo1CallerFilter.resetCalls();
         Demo2CallerFilter.resetCalls();
@@ -72,14 +69,11 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
     @Test
     public void chainTest2() throws Throwable {
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).filter("*").through(Demo1CallerFilter.class);
-                apiBinder.tryCast(WebApiBinder.class).filter("*").through(Demo2CallerFilter.class);
-                apiBinder.tryCast(WebApiBinder.class).filter("/abc/*").through(Demo3CallerFilter.class);
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).filter("*").through(Demo1CallerFilter.class);
+            apiBinder.tryCast(WebApiBinder.class).filter("*").through(Demo2CallerFilter.class);
+            apiBinder.tryCast(WebApiBinder.class).filter("/abc/*").through(Demo3CallerFilter.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
         });
         Demo1CallerFilter.resetCalls();
         Demo2CallerFilter.resetCalls();
@@ -114,28 +108,19 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
     }
     @Test
     public void sortTest1() throws Throwable {
-        final ArrayList<String> sortData = new ArrayList<String>();
+        final ArrayList<String> sortData = new ArrayList<>();
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).filter("*").through(1, new AbstractInvokerFilter() {
-                    @Override
-                    public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
-                        sortData.add("Filter_1");
-                        return chain.doNext(invoker);
-                    }
-                });
-                apiBinder.tryCast(WebApiBinder.class).filter("*").through(0, new AbstractInvokerFilter() {
-                    @Override
-                    public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
-                        sortData.add("Filter_0");
-                        return chain.doNext(invoker);
-                    }
-                });
-                //
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).filter("*").through(1, (AbstractInvokerFilter) (invoker, chain) -> {
+                sortData.add("Filter_1");
+                return chain.doNext(invoker);
+            });
+            apiBinder.tryCast(WebApiBinder.class).filter("*").through(0, (AbstractInvokerFilter) (invoker, chain) -> {
+                sortData.add("Filter_0");
+                return chain.doNext(invoker);
+            });
+            //
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
         });
         //
         InvokerContext invokerContext = new InvokerContext();
@@ -154,28 +139,19 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
     }
     @Test
     public void sortTest2() throws Throwable {
-        final ArrayList<String> sortData = new ArrayList<String>();
+        final ArrayList<String> sortData = new ArrayList<>();
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).filter("*").through(new AbstractInvokerFilter() {
-                    @Override
-                    public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
-                        sortData.add("Filter_1");
-                        return chain.doNext(invoker);
-                    }
-                });
-                apiBinder.tryCast(WebApiBinder.class).filter("*").through(new AbstractInvokerFilter() {
-                    @Override
-                    public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
-                        sortData.add("Filter_0");
-                        return chain.doNext(invoker);
-                    }
-                });
-                //
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).filter("*").through((AbstractInvokerFilter) (invoker, chain) -> {
+                sortData.add("Filter_1");
+                return chain.doNext(invoker);
+            });
+            apiBinder.tryCast(WebApiBinder.class).filter("*").through((AbstractInvokerFilter) (invoker, chain) -> {
+                sortData.add("Filter_0");
+                return chain.doNext(invoker);
+            });
+            //
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
         });
         //
         InvokerContext invokerContext = new InvokerContext();
@@ -194,24 +170,21 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
     }
     @Test
     public void sortTest3() throws Throwable {
-        final ArrayList<String> sortData = new ArrayList<String>();
+        final ArrayList<String> sortData = new ArrayList<>();
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*.do").with(1, new DefaultServlet() {
-                    public void service(ServletRequest req, ServletResponse res) {
-                        sortData.add("Servlet_1");
-                    }
-                });
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*abc.do").with(0, new DefaultServlet() {
-                    public void service(ServletRequest req, ServletResponse res) {
-                        sortData.add("Servlet_0");
-                    }
-                });
-                //
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*.do").with(1, new DefaultServlet() {
+                public void service(ServletRequest req, ServletResponse res) {
+                    sortData.add("Servlet_1");
+                }
+            });
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*abc.do").with(0, new DefaultServlet() {
+                public void service(ServletRequest req, ServletResponse res) {
+                    sortData.add("Servlet_0");
+                }
+            });
+            //
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
         });
         //
         InvokerContext invokerContext = new InvokerContext();
@@ -229,24 +202,21 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
     }
     @Test
     public void sortTest4() throws Throwable {
-        final ArrayList<String> sortData = new ArrayList<String>();
+        final ArrayList<String> sortData = new ArrayList<>();
         //
-        AppContext appContext = hasor.build(new WebModule() {
-            @Override
-            public void loadModule(WebApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*.do").with(0, new DefaultServlet() {
-                    public void service(ServletRequest req, ServletResponse res) {
-                        sortData.add("Servlet_1");
-                    }
-                });
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*abc.do").with(1, new DefaultServlet() {
-                    public void service(ServletRequest req, ServletResponse res) {
-                        sortData.add("Servlet_0");
-                    }
-                });
-                //
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
-            }
+        AppContext appContext = hasor.build((WebModule) apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*.do").with(0, new DefaultServlet() {
+                public void service(ServletRequest req, ServletResponse res) {
+                    sortData.add("Servlet_1");
+                }
+            });
+            apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*abc.do").with(1, new DefaultServlet() {
+                public void service(ServletRequest req, ServletResponse res) {
+                    sortData.add("Servlet_0");
+                }
+            });
+            //
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
         });
         //
         InvokerContext invokerContext = new InvokerContext();

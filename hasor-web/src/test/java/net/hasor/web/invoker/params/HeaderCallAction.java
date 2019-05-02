@@ -30,7 +30,7 @@ public class HeaderCallAction {
             @HeaderParameter("utilData") java.util.Date utilData, @HeaderParameter("utilCalendar") java.util.Calendar utilCalendar, //
             @HeaderParameter("sqlData") java.sql.Date sqlData, @HeaderParameter("sqlTime") java.sql.Time sqlTime, @HeaderParameter("sqlTimestamp") java.sql.Timestamp sqlTimestamp //
     ) {
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+        Map<String, Object> dataMap = new HashMap<>();
         //
         dataMap.put("byteParam", byteParam);
         dataMap.put("shortParam", shortParam);

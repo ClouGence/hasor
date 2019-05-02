@@ -15,7 +15,7 @@ public class SpecialTypeCallAction {
     //
     @Post
     public Map<String, Object> execute(HttpServletRequest request, HttpServletResponse response, HttpSession session, Invoker invoker, List listData) {
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+        Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("request", request);
         dataMap.put("response", response);
         dataMap.put("session", session);

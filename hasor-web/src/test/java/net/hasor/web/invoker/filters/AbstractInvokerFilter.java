@@ -2,11 +2,11 @@ package net.hasor.web.invoker.filters;
 import net.hasor.web.InvokerConfig;
 import net.hasor.web.InvokerFilter;
 //
-public abstract class AbstractInvokerFilter implements InvokerFilter {
-    @Override
-    public void init(InvokerConfig config) throws Throwable {
+@FunctionalInterface
+public interface AbstractInvokerFilter extends InvokerFilter {
+    public default void init(InvokerConfig config) throws Throwable {
     }
-    @Override
-    public void destroy() {
+
+    public default void destroy() {
     }
 }

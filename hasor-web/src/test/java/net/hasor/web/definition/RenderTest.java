@@ -21,15 +21,12 @@ public class RenderTest {
         PowerMockito.when(bindInfo.getBindID()).thenReturn("TEST");
         //
         AppContext appContext = PowerMockito.mock(AppContext.class);
-        PowerMockito.when(appContext.getInstance(bindInfo)).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                initCall.set(true);
-                return new TestRenderEngine();
-            }
+        PowerMockito.when(appContext.getInstance(bindInfo)).then((Answer<Object>) invocationOnMock -> {
+            initCall.set(true);
+            return new TestRenderEngine();
         });
         //
-        List<String> ends = new ArrayList<String>();
+        List<String> ends = new ArrayList<>();
         ends.add("HTML");
         RenderDefinition definition = new RenderDefinition(ends, bindInfo);
         //

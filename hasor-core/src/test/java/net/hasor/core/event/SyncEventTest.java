@@ -33,16 +33,13 @@ public class SyncEventTest {
         //
         String EventName = "MyEvent";
         //1.添加事件监听器
-        final CopyOnWriteArraySet<String> eventDataSet = new CopyOnWriteArraySet<String>();
-        ec.addListener(EventName, new EventListener<Object>() {
-            @Override
-            public void onEvent(String event, Object eventData) throws Throwable {
-                eventDataSet.add(event + eventData);
-                Thread.sleep(110);
-            }
+        final CopyOnWriteArraySet<String> eventDataSet = new CopyOnWriteArraySet<>();
+        ec.addListener(EventName, (event, eventData) -> {
+            eventDataSet.add(event + eventData);
+            Thread.sleep(110);
         });
         //2.引发同步事件
-        ArrayList<String> eventData = new ArrayList<String>();
+        ArrayList<String> eventData = new ArrayList<>();
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < 50; i++) {
             eventData.add(EventName + i);
@@ -62,13 +59,10 @@ public class SyncEventTest {
         //
         String EventName = "MyEvent";
         //1.添加事件监听器
-        final CopyOnWriteArraySet<String> eventDataSet = new CopyOnWriteArraySet<String>();
-        ec.addListener(EventName, new EventListener<Object>() {
-            @Override
-            public void onEvent(String event, Object eventData) throws Throwable {
-                eventDataSet.add(event + eventData);
-                Thread.sleep(100); // 100ms
-            }
+        final CopyOnWriteArraySet<String> eventDataSet = new CopyOnWriteArraySet<>();
+        ec.addListener(EventName, (event, eventData) -> {
+            eventDataSet.add(event + eventData);
+            Thread.sleep(100); // 100ms
         });
         //2.引发异步事件
         long startTime = System.currentTimeMillis();
@@ -90,11 +84,8 @@ public class SyncEventTest {
         //
         String EventName = "MyEvent";
         final Throwable error = new Exception("testError");
-        ec.pushListener(EventName, new EventListener<Object>() {
-            @Override
-            public void onEvent(String event, Object eventData) throws Throwable {
-                throw error;
-            }
+        ec.pushListener(EventName, (event, eventData) -> {
+            throw error;
         });
         //
         try {
@@ -111,16 +102,13 @@ public class SyncEventTest {
         EventContext ec = new StandardEventManager(20, "TestEvent", Thread.currentThread().getContextClassLoader());
         //
         final AtomicInteger atomicInteger = new AtomicInteger();
-        final ThreadLocal<String> local = new ThreadLocal<String>();
+        final ThreadLocal<String> local = new ThreadLocal<>();
         local.set("abc");
         //
         String EventName = "MyEvent";
-        ec.addListener(EventName, new EventListener<Object>() {
-            @Override
-            public void onEvent(String event, Object eventData) throws Throwable {
-                if ("abc".equals(local.get())) {
-                    atomicInteger.incrementAndGet();
-                }
+        ec.addListener(EventName, (event, eventData) -> {
+            if ("abc".equals(local.get())) {
+                atomicInteger.incrementAndGet();
             }
         });
         //
@@ -137,18 +125,15 @@ public class SyncEventTest {
         //
         EventContext ec = new StandardEventManager(20, "TestEvent", Thread.currentThread().getContextClassLoader());
         //
-        final ThreadLocal<Exception> local = new ThreadLocal<Exception>();
+        final ThreadLocal<Exception> local = new ThreadLocal<>();
         local.set(new Exception("testError"));
         //
         String EventName = "MyEvent";
-        ec.addListener(EventName, new EventListener<Object>() {
-            @Override
-            public void onEvent(String event, Object eventData) throws Throwable {
-                if (local.get() != null) {
-                    throw local.get();
-                } else {
-                    throw new Exception("testError2");
-                }
+        ec.addListener(EventName, (event, eventData) -> {
+            if (local.get() != null) {
+                throw local.get();
+            } else {
+                throw new Exception("testError2");
             }
         });
         //

@@ -30,7 +30,7 @@ public class CookieCallAction {
             @CookieParameter("utilData") java.util.Date utilData, @CookieParameter("utilCalendar") java.util.Calendar utilCalendar, //
             @CookieParameter("sqlData") java.sql.Date sqlData, @CookieParameter("sqlTime") java.sql.Time sqlTime, @CookieParameter("sqlTimestamp") java.sql.Timestamp sqlTimestamp //
     ) {
-        Map<String, Object> dataMap = new HashMap<String, Object>();
+        Map<String, Object> dataMap = new HashMap<>();
         //
         dataMap.put("byteParam", byteParam);
         dataMap.put("shortParam", shortParam);

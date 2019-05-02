@@ -1,5 +1,7 @@
 package net.hasor.core.aop;
-import net.hasor.core.*;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
 import net.hasor.core.aop.interceptor.TransparentInterceptor;
 import net.hasor.core.exts.aop.AopModule;
 import net.hasor.core.setting.SettingsWrap;
@@ -10,25 +12,20 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.Time;
 import java.util.*;
-import java.util.function.Predicate;
 public class AopTest {
     private AppContext appContext;
     @Before
     public void testBefore() throws IOException {
-        appContext = Hasor.create().asSmaller().build(new Module() {
-            @Override
-            public void loadModule(ApiBinder apiBinder) throws Throwable {
-                apiBinder.installModule(new AopModule());
-            }
+        appContext = Hasor.create().asSmaller().build((Module) apiBinder -> {
+            apiBinder.installModule(new AopModule());
         });
     }
     //
     @Test
     public void aopTest0() throws IOException {
-        ArrayList<String> events = new ArrayList<String>();
+        ArrayList<String> events = new ArrayList<>();
         AopBean aopBean = this.appContext.getInstance(AopBean.class);
         //
         aopBean.doInit(events);
@@ -73,7 +70,7 @@ public class AopTest {
         assert aopBean.aCharValue('a') == 'a' && TransparentInterceptor.isCalled();
         //
         TransparentInterceptor.resetInit();
-        Map<String, Object> objectMap1 = aopBean.signatureMethod(new LinkedList<SettingsWrap>(), new SettingsWrap(null));
+        Map<String, Object> objectMap1 = aopBean.signatureMethod(new LinkedList<>(), new SettingsWrap(null));
         assert objectMap1.size() == 2 && TransparentInterceptor.isCalled();
         //
         List<? super Date> param1 = new ArrayList<Serializable>();
