@@ -60,8 +60,12 @@ public class DiskFileItem extends FileItemBase {
     }
     @Override
     public void deleteOrSkip() {
-        if (this.cacheFile != null && this.cacheFile.exists()) {
-            this.cacheFile.delete();
+        try {
+            if (this.cacheFile != null && this.cacheFile.exists()) {
+                this.cacheFile.delete();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     @Override

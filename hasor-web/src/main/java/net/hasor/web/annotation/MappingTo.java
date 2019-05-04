@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 package net.hasor.web.annotation;
-import java.lang.annotation.*;
+import java.lang.annotation.Repeatable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 /**
  * 控制器映射的地址。
  * @version : 2013-3-26
  * @author 赵永春 (zyc@hasor.net)
  */
-@Inherited
+@Repeatable(MappingToGroup.class)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
 public @interface MappingTo {
     /**请求地址*/
     public String[] value();

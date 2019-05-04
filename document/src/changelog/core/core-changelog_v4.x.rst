@@ -4,10 +4,11 @@ Release Hasor v3.x
 
 Hasor v4.0.0 (2019-05-?)
 ------------------------------------
-**JDK **
+**JDK8相关 **
     - 依赖JDK版本从 jdk6 升级到 jdk8，代码层面全面迁移到 jdk8 语法并深入结合 jdk8 相关特性。
     - net.hasor.core.Matcher 接口暂时保留，但已经不在使用，已替换成 java8 提供的 java.util.function.Predicate 接口替代。
     - net.hasor.core.Provider 接口暂时保留，但已经不在使用，已替换成 java8 提供的 java.util.function.Supplier 接口替代。
+    - @Aop、@MappingTo、注解迎合JDK8特性可以同时标注多个。
 **新成员**
     - 新增：hasor-boot 项目和配套的 hasor-boot mavenplugin。
     - 新增：tConsole 框架，提供一个 Telnet 环境支持，给予没有界面类的应用一个可以通过命令行进行交互的工具。

@@ -38,6 +38,7 @@ import java.io.Reader;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 /**
  * 该类是{@link WebApiBinder}接口实现。
  * @version : 2017-01-10
@@ -270,13 +271,10 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             }
             @Override
             public void with(int index, BindInfo<? extends T> targetInfo) {
-                for (String pattern : morePatterns) {
-                    if (StringUtils.isBlank(pattern)) {
-                        continue;
-                    }
+                Arrays.stream(morePatterns).filter(StringUtils::isNotBlank).forEach(pattern -> {
                     InMappingDef define = new InMappingDef(index, targetInfo, pattern, Matchers.anyMethod(), true);
                     bindType(InMappingDef.class).uniqueName().toInstance(define);
-                }
+                });
             }
         };
     }
@@ -286,17 +284,23 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         if (checkIn(modifier, Modifier.INTERFACE) || checkIn(modifier, Modifier.ABSTRACT) || mabeMappingType.isArray() || mabeMappingType.isEnum()) {
             throw new IllegalStateException(mabeMappingType.getName() + " must be normal Bean");
         }
-        if (!mabeMappingType.isAnnotationPresent(MappingTo.class)) {
+        MappingTo[] annotationsByType = mabeMappingType.getAnnotationsByType(MappingTo.class);
+        if (annotationsByType == null || annotationsByType.length == 0) {
             throw new IllegalStateException(mabeMappingType.getName() + " must be configure @MappingTo");
         }
         //
-        MappingTo mto = mabeMappingType.getAnnotation(MappingTo.class);
         if (HttpServlet.class.isAssignableFrom(mabeMappingType)) {
-            this.jeeServlet(mto.value()).with((Class<? extends HttpServlet>) mabeMappingType);
-            logger.info("mapingTo[Servlet] -> type ‘{}’ mappingTo: ‘{}’.", mabeMappingType.getName(), mto.value());
+            Arrays.stream(annotationsByType).peek(mappingTo -> {
+                logger.info("mapingTo[Servlet] -> type ‘{}’ mappingTo: ‘{}’.", mabeMappingType.getName(), mappingTo.value());
+            }).forEach(mappingTo -> {
+                jeeServlet(mappingTo.value()).with((Class<? extends HttpServlet>) mabeMappingType);
+            });
         } else {
-            this.mappingTo(mto.value()).with(mabeMappingType);
-            logger.info("mapingTo[Object] -> type ‘{}’ mappingTo: ‘{}’.", mabeMappingType.getName(), mto.value());
+            Arrays.stream(annotationsByType).peek(mappingTo -> {
+                logger.info("mapingTo[Object] -> type ‘{}’ mappingTo: ‘{}’.", mabeMappingType.getName(), mappingTo.value());
+            }).forEach(mappingTo -> {
+                mappingTo(mappingTo.value()).with(mabeMappingType);
+            });
         }
     }
     //
@@ -342,13 +346,11 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     private abstract class RenderEngineBindingBuilderImpl implements WebApiBinder.RenderEngineBindingBuilder {
         private List<String> suffixList;
         public RenderEngineBindingBuilderImpl(List<String> suffixList) {
-            Set<String> suffixSet = new LinkedHashSet<>();
-            for (String str : suffixList) {
-                if (StringUtils.isNotBlank(str)) {
-                    suffixSet.add(str.toUpperCase());
-                }
-            }
-            this.suffixList = new ArrayList<>(suffixSet);
+            this.suffixList = suffixList.stream()   //
+                    .filter(StringUtils::isNotBlank)// 1.非空
+                    .map(String::toUpperCase)       // 2.转大写
+                    .distinct()                     // 3.去重
+                    .collect(Collectors.toList());  //
         }
         @Override
         public <T extends RenderEngine> void bind(Class<T> renderEngineType) {

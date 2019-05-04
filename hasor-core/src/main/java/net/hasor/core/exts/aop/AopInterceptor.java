@@ -19,10 +19,15 @@ import net.hasor.core.AppContextAware;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.WeakHashMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 /**
  * Aop拦截器
  * @version : 2013-11-8
@@ -43,27 +48,22 @@ class AopInterceptor implements MethodInterceptor, AppContextAware {
         if (list == null) {
             list = new ArrayList<>();
             //b.类级拦截器
-            Aop beforeAnno = targetMethod.getDeclaringClass().getAnnotation(Aop.class);
-            if (beforeAnno != null) {
-                for (Class<? extends MethodInterceptor> interType : beforeAnno.value()) {
-                    if (interType != null) {
-                        list.add(interType);
-                    }
-                }
-            }
+            list.addAll(collectAnno(targetMethod.getDeclaringClass()));
             //c.方法级拦截器
-            beforeAnno = targetMethod.getAnnotation(Aop.class);
-            if (beforeAnno != null) {
-                for (Class<? extends MethodInterceptor> interType : beforeAnno.value()) {
-                    if (interType != null) {
-                        list.add(interType);
-                    }
-                }
-            }
+            list.addAll(collectAnno(targetMethod));
             //d.缓存结果
             this.methodInterceptorMap.put(targetMethod, list);
         }
         //2.创建对象
         return new AopChainInvocation(appContext, list, invocation).invoke(invocation);
+    }
+    private List<Class<? extends MethodInterceptor>> collectAnno(AnnotatedElement element) {
+        Aop[] annoSet = element.getAnnotationsByType(Aop.class);
+        if (annoSet == null) {
+            annoSet = new Aop[0];
+        }
+        return Arrays.stream(annoSet).flatMap(//
+                (Function<Aop, Stream<Class<? extends MethodInterceptor>>>) aop -> Arrays.stream(aop.value())//
+        ).collect(Collectors.toList());
     }
 }

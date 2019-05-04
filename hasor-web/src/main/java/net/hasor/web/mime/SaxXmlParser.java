@@ -38,6 +38,6 @@ public class SaxXmlParser extends DefaultHandler {
         if (StringUtils.isBlank(extension) || StringUtils.isBlank(mimeType)) {
             return;
         }
-        this.dataMap.put(extension, mimeType);
+        this.dataMap.put(extension.toUpperCase(), mimeType);
     }
 }

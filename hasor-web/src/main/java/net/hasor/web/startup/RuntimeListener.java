@@ -59,11 +59,10 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         if (StringUtils.isNotBlank(configName)) {
             webHasor.setMainSettings(configName);
         }
-        if (properties != null && !properties.isEmpty()) {
-            for (String key : properties.stringPropertyNames()) {
-                webHasor.putData(key, properties.getProperty(key));
-            }
-        }
+        properties.keySet().forEach(key -> {
+            String keyStr = key.toString();
+            webHasor.putData(keyStr, properties.getProperty(keyStr));
+        });
         String webContextDir = sc.getRealPath("/");
         webHasor.putData("HASOR_WEBROOT", webContextDir);
         return webHasor;

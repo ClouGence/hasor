@@ -45,11 +45,7 @@ public class InvokerContext implements WebPluginCaller {
         //
         // .MappingData
         List<InMappingDef> mappingList = appContext.findBindingBean(InMappingDef.class);
-        mappingList.sort((o1, o2) -> {
-            long o1Index = o1.getIndex();
-            long o2Index = o2.getIndex();
-            return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
-        });
+        mappingList.sort(Comparator.comparingLong(InMappingDef::getIndex));
         this.invokeArray = mappingList.toArray(new InMapping[0]);
         for (InMapping inMapping : this.invokeArray) {
             logger.info("mapingTo -> type ‘{}’ mappingTo: ‘{}’.", inMapping.getTargetType().getBindType(), inMapping.getMappingTo());
@@ -89,20 +85,13 @@ public class InvokerContext implements WebPluginCaller {
         };
         //
         // .Filters
-        List<AbstractDefinition> defineList = appContext.findBindingBean(AbstractDefinition.class);
-        defineList.sort((o1, o2) -> {
-            long o1Index = o1.getIndex();
-            long o2Index = o2.getIndex();
-            return o1Index < o2Index ? -1 : o1Index == o2Index ? 0 : 1;
-        });
-        //
+        this.filters = appContext.findBindingBean(AbstractDefinition.class).stream()//
+                .sorted(Comparator.comparingLong(AbstractDefinition::getIndex))     //
+                .toArray(AbstractDefinition[]::new);                                //
         // .init
-        defineList = new ArrayList<>(defineList);
-        for (InvokerFilter filter : defineList) {
+        for (InvokerFilter filter : this.filters) {
             filter.init(filterConfig);
         }
-        this.filters = defineList.toArray(new AbstractDefinition[0]);
-        //
         // .creater
         this.invokerCreater = new RootInvokerCreater(appContext);
     }

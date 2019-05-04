@@ -26,9 +26,10 @@ import java.util.Enumeration;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RenderInvokerSupplier extends InvokerWrap implements RenderInvoker {
-    private String  viewName  = null;//模版名称
-    private String  viewType  = null;//渲染引擎
-    private boolean useLayout = true;//是否渲染布局
+    private String  viewName     = null;    //模版名称
+    private String  viewType     = null;    //渲染引擎
+    private boolean viewTypeLock = false;   //是否配置了Produces注解
+    private boolean useLayout    = true;    //是否渲染布局
     //
     protected RenderInvokerSupplier(Invoker invoker) {
         super(invoker);
@@ -69,6 +70,9 @@ public class RenderInvokerSupplier extends InvokerWrap implements RenderInvoker 
     }
     @Override
     public void viewType(String viewType) {
+        if (this.viewTypeLock) {
+            throw new UnsupportedOperationException("annotation @Produces already exists, or viewType is locked");
+        }
         if (StringUtils.isNotBlank(viewType)) {
             this.viewType = viewType.trim().toUpperCase();
         } else {
@@ -86,5 +90,13 @@ public class RenderInvokerSupplier extends InvokerWrap implements RenderInvoker 
     @Override
     public void layoutDisable() {
         this.useLayout = false;
+    }
+    //
+    public void lockViewType() {
+        this.viewTypeLock = true;
+    }
+    //
+    public boolean isLockViewType() {
+        return this.viewTypeLock;
     }
 }

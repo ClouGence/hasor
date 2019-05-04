@@ -54,11 +54,11 @@ public class MimeTypeSupplier extends ConcurrentHashMap<String, String> implemen
         if (StringUtils.isNotBlank(mimeType)) {
             return mimeType;
         }
-        return this.get(suffix);
+        return this.get(suffix.toUpperCase());
     }
     public void addMimeType(String type, String mimeType) {
         if (StringUtils.isNotBlank(type) && StringUtils.isNotBlank(mimeType)) {
-            put(type, mimeType);
+            put(type.toUpperCase(), mimeType);
         }
     }
     //

@@ -46,8 +46,12 @@
             <maxFileSize>${HASOR_UPLOAD_MAX_FILE_SIZE}</maxFileSize>
         </fileupload>
 
-        <!-- 布局管理 -->
-        <layout enable="${HASOR_RESTFUL_LAYOUT}">
+        <!-- 布局管理
+                - enable        是否启用布局管理功能，默认为 false。
+                - placeholder   被渲染的页面在其装饰页面中的 占位符
+                - defaultLayout 首先会在 layoutPath 中以相同的路径和文件名寻找装饰器，如果找不到那么将会逐层向上寻找。
+         -->
+        <layout enable="${HASOR_RESTFUL_LAYOUT}" placeholder="content_placeholder" defaultLayout="default.html">
             <!-- 布局模版位置 -->
             <layoutPath>${HASOR_RESTFUL_LAYOUT_PATH_LAYOUT}</layoutPath>
             <!-- 页面模版位置 -->

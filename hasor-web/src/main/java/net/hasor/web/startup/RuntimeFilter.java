@@ -54,7 +54,7 @@ public class RuntimeFilter implements Filter {
         if (!this.inited.compareAndSet(false, true)) {
             return;
         }
-        Map<String, String> configMap = new HashMap<String, String>();
+        Map<String, String> configMap = new HashMap<>();
         Enumeration<?> names = filterConfig.getInitParameterNames();
         if (names != null) {
             while (names.hasMoreElements()) {

@@ -43,4 +43,10 @@ public interface RenderInvoker extends Invoker {
 
     /**禁用布局功能。*/
     public void layoutDisable();
+
+    /**锁定viewType不可修改，一旦锁上就不可以还原。*/
+    public void lockViewType();
+
+    /**判断viewType 是否被锁住。*/
+    public boolean isLockViewType();
 }

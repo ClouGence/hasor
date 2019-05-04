@@ -3,6 +3,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.aop.interceptor.TransparentInterceptor;
+import net.hasor.core.exts.aop.Aop;
 import net.hasor.core.exts.aop.AopModule;
 import net.hasor.core.setting.SettingsWrap;
 import org.junit.Before;

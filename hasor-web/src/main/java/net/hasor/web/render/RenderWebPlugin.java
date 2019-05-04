@@ -39,12 +39,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
-    protected Logger                    logger       = LoggerFactory.getLogger(getClass());
-    private   AtomicBoolean             inited       = new AtomicBoolean(false);
-    private   String                    layoutPath   = null;                    // 布局模版位置
-    private   boolean                   useLayout    = true;
-    private   String                    templatePath = null;                    // 页面模版位置
-    private   Map<String, RenderEngine> engineMap    = null;
+    protected Logger                    logger        = LoggerFactory.getLogger(getClass());
+    private   AtomicBoolean             inited        = new AtomicBoolean(false);
+    private   String                    layoutPath    = null;                    // 布局模版位置
+    private   boolean                   useLayout     = true;
+    private   String                    templatePath  = null;                    // 页面模版位置
+    private   Map<String, RenderEngine> engineMap     = null;
+    private   String                    placeholder   = null;
+    private   String                    defaultLayout = null;
     //
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
@@ -88,33 +90,43 @@ public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
         this.useLayout = settings.getBoolean("hasor.layout.enable", true);
         this.layoutPath = settings.getString("hasor.layout.layoutPath", "/layout");
         this.templatePath = settings.getString("hasor.layout.templatePath", "/templates");
+        this.placeholder = settings.getString("hasor.layout.placeholder", "content_placeholder");
+        this.defaultLayout = settings.getString("hasor.layout.defaultLayout", "default.htm");
+        this.logger.info("RenderPlugin init -> useLayout={}, layoutPath={}, templatePath={}, placeholder={}, defaultLayout={}",//
+                this.useLayout, this.layoutPath, this.templatePath, this.placeholder, this.defaultLayout);
     }
     //
     @Override
     public void destroy() {
     }
-    //
+    // - 在执行 Invoker 之前对 Invoker 的方法进行预分析，使其 @Produces 注解生效
     @Override
     public void beforeFilter(Invoker invoker, InvokerData info) {
         if (!(invoker instanceof RenderInvoker)) {
             return;
         }
-        //
         RenderInvoker render = (RenderInvoker) invoker;
-        HttpServletResponse htttResponse = render.getHttpResponse();
         Method targetMethod = info.targetMethod();
-        if (targetMethod.isAnnotationPresent(Produces.class)) {
+        if (targetMethod != null && targetMethod.isAnnotationPresent(Produces.class)) {
             Produces pro = targetMethod.getAnnotation(Produces.class);
-            String proValue = pro.value();
-            if (!StringUtils.isBlank(proValue)) {
+            if (pro != null && !StringUtils.isBlank(pro.value())) {
+                String proValue = pro.value();
                 render.viewType(proValue);
-                String mimeType = invoker.getMimeType(proValue);
-                if (StringUtils.isBlank(mimeType)) {
-                    htttResponse.setContentType(proValue);//用原始配置
-                } else {
-                    htttResponse.setContentType(mimeType);//用定义的配置
-                }
+                configContentType(render, proValue);
+                render.lockViewType();
             }
+        }
+    }
+    private void configContentType(RenderInvoker renderInvoker, String type) {
+        if (StringUtils.isBlank(type)) {
+            return;
+        }
+        //
+        HttpServletResponse httpResponse = renderInvoker.getHttpResponse();
+        String oriMimeType = httpResponse.getContentType();
+        String newMimeType = renderInvoker.getMimeType(type);
+        if (StringUtils.isNotBlank(newMimeType) && !StringUtils.equalsIgnoreCase(oriMimeType, newMimeType)) {
+            httpResponse.setContentType(newMimeType);//用定义的配置
         }
     }
     @Override
@@ -132,6 +144,7 @@ public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
             HttpServletRequest httpRequest = renderInvoker.getHttpRequest();
             HttpServletResponse httpResponse = renderInvoker.getHttpResponse();
             if (!httpResponse.isCommitted()) {
+                configContentType(renderInvoker, renderInvoker.viewType());
                 httpRequest.getRequestDispatcher(renderInvoker.renderTo()).forward(httpRequest, httpResponse);
             }
         }
@@ -145,8 +158,8 @@ public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
         if (render == null) {
             return false;
         }
-        String type = render.viewType();
-        RenderEngine engine = this.engineMap.get(type);
+        String engineType = render.viewType();
+        RenderEngine engine = this.engineMap.get(engineType);
         if (engine == null) {
             return false;
         }
@@ -155,8 +168,9 @@ public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
         }
         //
         String oriViewName = render.renderTo();
+        String newViewName = render.renderTo();
         if (this.useLayout) {
-            render.renderTo(fixTempName(this.templatePath, oriViewName));
+            newViewName = this.templatePath + ((oriViewName.charAt(0) != '/') ? "/" : "") + oriViewName;
         }
         //
         String layoutFile = null;
@@ -167,22 +181,26 @@ public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
         if (layoutFile != null) {
             //先执行目标页面,然后在渲染layout
             StringWriter tmpWriter = new StringWriter();
-            if (engine.exist(render.renderTo())) {
+            if (engine.exist(newViewName)) {
+                render.renderTo(newViewName);
                 engine.process(render, tmpWriter);
             } else {
                 return false;
             }
             //渲染layout
-            render.put("content_placeholder", tmpWriter.toString());
-            render.renderTo(layoutFile);
-            if (engine.exist(render.renderTo())) {
+            render.put(this.placeholder, tmpWriter.toString());
+            if (engine.exist(layoutFile)) {
+                render.renderTo(layoutFile);
+                configContentType(render, engineType);
                 engine.process(render, render.getHttpResponse().getWriter());
                 return true;
             } else {
                 throw new IOException("layout '" + layoutFile + "' file is missing.");//不可能发生这个错误。
             }
         } else {
-            if (engine.exist(render.renderTo())) {
+            if (engine.exist(newViewName)) {
+                render.renderTo(newViewName);
+                configContentType(render, engineType);
                 engine.process(render, render.getHttpResponse().getWriter());
                 return true;
             } else {
@@ -200,12 +218,12 @@ public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
         if (engine.exist(layoutFile.getPath())) {
             return layoutFile.getPath();
         } else {
-            layoutFile = new File(layoutFile.getParent(), "default.htm");
+            layoutFile = new File(layoutFile.getParent(), this.defaultLayout);
             if (engine.exist(layoutFile.getPath())) {
                 return layoutFile.getPath();
             } else {
                 while (layoutFile.getPath().startsWith(this.layoutPath)) {
-                    layoutFile = new File(layoutFile.getParentFile().getParent(), "default.htm");
+                    layoutFile = new File(layoutFile.getParentFile().getParent(), this.defaultLayout);
                     if (engine.exist(layoutFile.getPath())) {
                         return layoutFile.getPath();
                     }
@@ -213,12 +231,5 @@ public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
             }
         }
         return null;
-    }
-    private String fixTempName(String templatePath, String tempName) {
-        if (tempName.charAt(0) != '/') {
-            return templatePath + "/" + tempName;
-        } else {
-            return templatePath + tempName;
-        }
     }
 }

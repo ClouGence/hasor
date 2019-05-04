@@ -22,7 +22,10 @@ import net.hasor.utils.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 /**
  *
  * @version : 2013-8-20
@@ -133,21 +136,25 @@ public class Matchers {
             this.annotationType = annotationType;
         }
         public boolean test(final Class<?> matcherType) {
-            if (matcherType.isAnnotationPresent(this.annotationType)) {
+            Annotation[] annoByType1 = matcherType.getAnnotationsByType(this.annotationType);
+            if (annoByType1 != null && annoByType1.length > 0) {
                 return true;
             }
-            Method[] m1s = matcherType.getMethods();
-            Method[] m2s = matcherType.getDeclaredMethods();
-            for (Method m1 : m1s) {
-                if (m1.isAnnotationPresent(this.annotationType)) {
-                    return true;
-                }
+            //
+            Annotation[] annoByType2 = Arrays.stream(matcherType.getMethods()).flatMap((Function<Method, Stream<?>>) method -> {
+                return Arrays.stream(method.getAnnotationsByType(annotationType));
+            }).toArray(Annotation[]::new);
+            if (annoByType2.length > 0) {
+                return true;
             }
-            for (Method m2 : m2s) {
-                if (m2.isAnnotationPresent(this.annotationType)) {
-                    return true;
-                }
+            //
+            Annotation[] annoByType3 = Arrays.stream(matcherType.getDeclaredMethods()).flatMap((Function<Method, Stream<?>>) method -> {
+                return Arrays.stream(method.getAnnotationsByType(annotationType));
+            }).toArray(Annotation[]::new);
+            if (annoByType3.length > 0) {
+                return true;
             }
+            //
             return false;
         }
         public boolean equals(final Object other) {
