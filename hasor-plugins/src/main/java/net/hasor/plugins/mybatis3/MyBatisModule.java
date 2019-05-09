@@ -66,7 +66,7 @@ public class MyBatisModule implements Module {
         Hasor.assertIsNotNull(sqlmapConfig, "sqlmapConfig is null.");
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         final Reader reader = Hasor.assertIsNotNull(Resources.getResourceAsReader(loader, sqlmapConfig), "could not find resource '" + sqlmapConfig + "'");
-        return new SingleProvider<SqlSessionFactory>(() -> new SqlSessionFactoryBuilder().build(reader));
+        return new SingleProvider<>(() -> new SqlSessionFactoryBuilder().build(reader));
     }
     //
     public void loadModule(ApiBinder apiBinder) {
@@ -80,7 +80,7 @@ public class MyBatisModule implements Module {
             Supplier<DataSource> dataSource = Hasor.autoAware(apiBinder.getEnvironment(), new InfoAwareProvider<>(bindInfo));
             final SqlExecutorTemplateProvider templateProvider = new SqlExecutorTemplateProvider(this.sessionFactory, dataSource);
             apiBinder.bindType(SqlExecutorTemplate.class).toProvider(templateProvider);
-            apiBinder.bindType(SqlExecutorOperations.class).toProvider(templateProvider::get);
+            apiBinder.bindType(SqlExecutorOperations.class).toProvider(templateProvider);
         } else {
             // .检测依赖
             BindInfo<DataSource> bindInfo = apiBinder.findBindingRegister(this.dataSourceID, DataSource.class);
@@ -91,7 +91,9 @@ public class MyBatisModule implements Module {
             Supplier<DataSource> dataSource = Hasor.autoAware(apiBinder.getEnvironment(), new InfoAwareProvider<>(bindInfo));
             final SqlExecutorTemplateProvider templateProvider = new SqlExecutorTemplateProvider(this.sessionFactory, dataSource);
             apiBinder.bindType(SqlExecutorTemplate.class).nameWith(this.dataSourceID).toProvider(templateProvider);
-            apiBinder.bindType(SqlExecutorOperations.class).nameWith(this.dataSourceID).toProvider(templateProvider::get);
+            apiBinder.bindType(SqlExecutorOperations.class).nameWith(this.dataSourceID).toProvider(templateProvider);
         }
+        //
+        this.sessionFactory.get().getConfiguration().getMappedStatementNames();
     }
 }

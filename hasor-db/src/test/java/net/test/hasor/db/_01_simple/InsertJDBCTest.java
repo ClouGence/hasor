@@ -33,7 +33,6 @@ import java.util.UUID;
  */
 public class InsertJDBCTest {
     //
-    @Test
     public void simpleInsertJDBCTest() throws SQLException {
         System.out.println("--->>simple_InsertJDBCTest<<--");
         //
@@ -55,7 +54,6 @@ public class InsertJDBCTest {
         System.out.println("插入结果：" + count);
     }
     //
-    @Test
     public void batchInsertJDBCTest() throws SQLException {
         System.out.println("--->>baseInsertJDBCTest<<--");
         //

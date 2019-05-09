@@ -23,6 +23,7 @@ import java.sql.SQLException;
  * @author Juergen Hoeller
  * @author 赵永春 (zyc@hasor.net)
  */
+@FunctionalInterface
 public interface PreparedStatementSetter {
     /**
      * Set parameter values on the given PreparedStatement.

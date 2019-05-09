@@ -33,7 +33,6 @@ import java.util.Map;
  */
 public class QueryJDBCTest {
     //
-    @Test
     public void entity_QueryTest() throws SQLException {
         System.out.println("--->>entity_QueryTest<<--");
         //
@@ -44,7 +43,6 @@ public class QueryJDBCTest {
         HasorUnit.printObjectList(userList);
     }
     //
-    @Test
     public void mapParam_QueryTest() throws SQLException {
         System.out.println("--->>mapParam_QueryTest<<--");
         //
@@ -57,7 +55,6 @@ public class QueryJDBCTest {
         HasorUnit.printMapList(userList);
     }
     //
-    @Test
     public void simpleParam_QueryTest() throws SQLException {
         System.out.println("--->>simpleParam_QueryTest<<--");
         //

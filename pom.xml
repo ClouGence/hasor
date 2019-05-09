@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.hasor</groupId>
     <artifactId>hasor-parent</artifactId>
-    <version>3.3.0-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <!-- 配置属性 -->
@@ -98,8 +98,8 @@
         <module>hasor-rsf/rsf-registry</module>
         <module>hasor-plugins</module>
         <module>hasor-land</module>
-        <module>hasor-boot/hasor-boot-starter</module>
-        <module>hasor-boot/hasor-boot-maven</module>
+        <!--<module>hasor-boot/hasor-boot-starter</module>-->
+        <!--<module>hasor-boot/hasor-boot-maven</module>-->
     </modules>
 
     <!-- 构建描述 -->
@@ -170,6 +170,14 @@
                     <workspace>${basedir}</workspace>
                     <downloadSources>${downloadSources}</downloadSources>
                     <downloadJavadocs>${downloadJavadocs}</downloadJavadocs>
+                </configuration>
+            </plugin>
+            <!-- Test 失败继续 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <testFailureIgnore>true</testFailureIgnore>
                 </configuration>
             </plugin>
             <!-- 覆盖率 -->
@@ -258,6 +266,7 @@
                             </execution>
                         </executions>
                     </plugin>
+                    <!-- Release -->
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>

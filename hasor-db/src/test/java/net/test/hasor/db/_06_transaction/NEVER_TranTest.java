@@ -33,6 +33,9 @@ import org.junit.runner.RunWith;
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)
 public class NEVER_TranTest extends AbstractNativesJDBCTest {
     @Test
+    public void abc() {
+
+    }
     public void testHasTransactional() throws Throwable {
         System.out.println("--->>NEVER －> 前提：T1在一个事务中，T2要求环境中不能存在事务。");
         System.out.println("--->>NEVER －> 执行：T1在事务中正常执行，当调用T2时，因不满足T2要求非事务的条件，而导致异常抛出。");
@@ -42,29 +45,26 @@ public class NEVER_TranTest extends AbstractNativesJDBCTest {
         System.out.println();
         //
         TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
-        temp.execute(new TransactionCallbackWithoutResult() {
-            public void doTransactionWithoutResult(TransactionStatus tranStatus) throws Throwable {
-                System.out.println("begin T1!");
-                /*T1 - 默罕默德*/
-                insertUser_MHMD();
-                /*T2 - 安妮.贝隆、吴广*/
-                try {
-                    doTransactional();
-                } catch (Exception e) {
-                    System.out.println("T2 error = " + e.getMessage());
-                } finally {
-                    Thread.sleep(500);
-                }
-                /*T1 - 赵飞燕*/
-                insertUser_ZFY();
-                System.out.println("commit T1!");
+        temp.execute((TransactionCallbackWithoutResult) tranStatus -> {
+            System.out.println("begin T1!");
+            /*T1 - 默罕默德*/
+            insertUser_MHMD();
+            /*T2 - 安妮.贝隆、吴广*/
+            try {
+                doTransactional();
+            } catch (Exception e) {
+                System.out.println("T2 error = " + e.getMessage());
+            } finally {
+                Thread.sleep(500);
             }
+            /*T1 - 赵飞燕*/
+            insertUser_ZFY();
+            System.out.println("commit T1!");
         });
         //
         Thread.sleep(1000);
         printData();
     }
-    @Test
     public void testNoneTransactional() throws Throwable {
         System.out.println("--->>NEVER －> 前提：T1不存在事务，T2要求环境中不能存在事务。");
         System.out.println("--->>NEVER －> 执行：两个事务都顺利执行完毕。");

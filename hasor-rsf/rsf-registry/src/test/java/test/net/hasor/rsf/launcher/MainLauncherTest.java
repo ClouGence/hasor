@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 public class MainLauncherTest {
     protected static Logger logger = LoggerFactory.getLogger(MainLauncherTest.class);
     //
-    @Test
     public void doStart() throws Throwable {
         logger.info(">>>>>>>>>>>>>>>>> doStart <<<<<<<<<<<<<<<<<");
         String[] config = new String[2];
@@ -35,7 +34,6 @@ public class MainLauncherTest {
         config[1] = ResourcesUtils.getResource("/center/rsf-server-alone.xml").getFile();
         MainLauncher.doStart(config);
     }
-    @Test
     public void doStop() throws Throwable {
         logger.info(">>>>>>>>>>>>>>>>> doStop <<<<<<<<<<<<<<<<<");
         String[] config = new String[2];

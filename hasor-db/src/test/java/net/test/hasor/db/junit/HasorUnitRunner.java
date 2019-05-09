@@ -44,20 +44,15 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
             String configResource = TemplateAppContext.DefaultSettings;
             //1.获取配置信息
             ContextConfiguration config = klass.getAnnotation(ContextConfiguration.class);
-            List<Module> loadModule = new ArrayList<Module>();
+            List<Module> loadModule = new ArrayList<>();
             if (config != null) {
                 configResource = config.value();
                 for (Class<? extends Module> mod : config.loadModules())
                     loadModule.add(mod.newInstance());
             }
             //2.初始化绑定Test
-            loadModule.add(new Module() {
-                @Override
-                public void loadModule(final ApiBinder apiBinder) throws Throwable {
-                    HasorUnitRunner.this.typeRegister = apiBinder.bindType(klass).uniqueName().toInfo();
-                }
-            });
-            this.appContext = Hasor.createAppContext(configResource, loadModule.toArray(new Module[loadModule.size()]));
+            loadModule.add(apiBinder -> HasorUnitRunner.this.typeRegister = apiBinder.bindType(klass).uniqueName().toInfo());
+            this.appContext = Hasor.createAppContext(configResource, loadModule.toArray(new Module[0]));
             //3.
             if (this.appContext == null)
                 throw new NullPointerException("HasorFactory.createAppContext return null.");
@@ -80,17 +75,14 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
             }
         }
         //3.获取测试方法上的 @Order 注解，并对所有的测试方法重新排序
-        toRunMethodList = new ArrayList<FrameworkMethod>(toRunMethodList);
-        Collections.sort(toRunMethodList, new Comparator<FrameworkMethod>() {
-            @Override
-            public int compare(final FrameworkMethod m1, final FrameworkMethod m2) {
-                TestOrder o1 = m1.getAnnotation(TestOrder.class);
-                TestOrder o2 = m2.getAnnotation(TestOrder.class);
-                if (o1 == null || o2 == null) {
-                    return 0;
-                }
-                return o1.value() - o2.value();
+        toRunMethodList = new ArrayList<>(toRunMethodList);
+        toRunMethodList.sort((m1, m2) -> {
+            TestOrder o1 = m1.getAnnotation(TestOrder.class);
+            TestOrder o2 = m2.getAnnotation(TestOrder.class);
+            if (o1 == null || o2 == null) {
+                return 0;
             }
+            return o1.value() - o2.value();
         });
         return toRunMethodList;
     }
@@ -99,7 +91,7 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
     protected Statement methodInvoker(final FrameworkMethod method, final Object test) {
         //1.准备要执行的线程
         List<FrameworkMethod> methodList = this.getTestClass().getAnnotatedMethods(DaemonThread.class);//有单例问题，每个Test都会调用该方法。
-        final List<Thread> daemonThreads = new ArrayList<Thread>();
+        final List<Thread> daemonThreads = new ArrayList<>();
         for (FrameworkMethod threadMethod : methodList) {
             Thread daemonThread = new TestThread(test, threadMethod);
             daemonThread.setDaemon(true);

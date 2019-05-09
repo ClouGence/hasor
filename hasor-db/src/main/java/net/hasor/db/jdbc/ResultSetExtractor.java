@@ -23,6 +23,7 @@ import java.sql.SQLException;
  * @author Juergen Hoeller
  * @author 赵永春 (zyc@hasor.net)
  */
+@FunctionalInterface
 public interface ResultSetExtractor<T> {
     /**将结果集内容转换。 */
     public T extractData(ResultSet rs) throws SQLException;

@@ -24,6 +24,7 @@ import java.sql.Statement;
  * @author Juergen Hoeller
  * @author 赵永春 (zyc@hasor.net)
  */
+@FunctionalInterface
 public interface StatementCallback<T> {
     /**
      * 执行一个 JDBC 操作。开发者不需要关心数据库连接的状态和事务。

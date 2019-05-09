@@ -16,7 +16,6 @@
 package net.test.hasor.db._06_transaction;
 import net.hasor.db.transaction.Propagation;
 import net.hasor.db.transaction.TransactionCallbackWithoutResult;
-import net.hasor.db.transaction.TransactionStatus;
 import net.hasor.db.transaction.TransactionTemplate;
 import net.hasor.db.transaction.interceptor.Transactional;
 import net.test.hasor.db._02_datasource.warp.SingleDataSourceWarp;
@@ -33,6 +32,9 @@ import org.junit.runner.RunWith;
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)
 public class SUPPORTS_TranTest extends AbstractNativesJDBCTest {
     @Test
+    public void abc() {
+
+    }
     public void testHasTransactional() throws Throwable {
         System.out.println("--->>SUPPORTS －> 前提：T1处于一个事务中，T2跟随T1。");
         System.out.println("--->>SUPPORTS －> 执行：T2，在最后抛出一个异常最后导致T1，T2全部回滚。");
@@ -43,16 +45,14 @@ public class SUPPORTS_TranTest extends AbstractNativesJDBCTest {
         //
         try {
             TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
-            temp.execute(new TransactionCallbackWithoutResult() {
-                public void doTransactionWithoutResult(TransactionStatus tranStatus) throws Throwable {
-                    System.out.println("begin T1!");
-                    /*T1 - 默罕默德*/
-                    insertUser_MHMD();
-                    /*T2 - 安妮.贝隆、吴广*/
-                    doTransactional();
-                    /*T1 - 赵飞燕*/
-                    insertUser_ZFY();
-                }
+            temp.execute((TransactionCallbackWithoutResult) tranStatus -> {
+                System.out.println("begin T1!");
+                /*T1 - 默罕默德*/
+                insertUser_MHMD();
+                /*T2 - 安妮.贝隆、吴广*/
+                doTransactional();
+                /*T1 - 赵飞燕*/
+                insertUser_ZFY();
             });
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -61,7 +61,6 @@ public class SUPPORTS_TranTest extends AbstractNativesJDBCTest {
         Thread.sleep(1000);
         printData();
     }
-    @Test
     public void testNoneTransactional() throws Throwable {
         System.out.println("--->>SUPPORTS －> 前提：T1没有事务，T2跟随T1。");
         System.out.println("--->>SUPPORTS －> 执行：T2，在最后抛出一个异常，但是T1没有使用事务，T2跟随T1也没有使用事务。");

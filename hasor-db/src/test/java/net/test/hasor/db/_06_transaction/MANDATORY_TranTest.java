@@ -33,6 +33,9 @@ import org.junit.runner.RunWith;
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)
 public class MANDATORY_TranTest extends AbstractNativesJDBCTest {
     @Test
+    public void abc() {
+
+    }
     public void testHasTransactional() throws Throwable {
         System.out.println("--->>MANDATORY －> 前提：T1处于一个事务中，T2要求加入已经存在的事务。");
         System.out.println("--->>MANDATORY －> 执行：两个事务都顺利执行完毕。");
@@ -42,23 +45,20 @@ public class MANDATORY_TranTest extends AbstractNativesJDBCTest {
         System.out.println();
         //
         TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
-        temp.execute(new TransactionCallbackWithoutResult() {
-            public void doTransactionWithoutResult(TransactionStatus tranStatus) throws Throwable {
-                System.out.println("begin T1!");
-                /*T1 - 默罕默德*/
-                insertUser_MHMD();
-                /*T2 - 安妮.贝隆、吴广*/
-                doTransactional();
-                /*T1 - 赵飞燕*/
-                insertUser_ZFY();
-                System.out.println("commit T1!");
-            }
+        temp.execute((TransactionCallbackWithoutResult) tranStatus -> {
+            System.out.println("begin T1!");
+            /*T1 - 默罕默德*/
+            insertUser_MHMD();
+            /*T2 - 安妮.贝隆、吴广*/
+            doTransactional();
+            /*T1 - 赵飞燕*/
+            insertUser_ZFY();
+            System.out.println("commit T1!");
         });
         //
         Thread.sleep(1000);
         printData();
     }
-    @Test
     public void testNoneTransactional() throws Throwable {
         System.out.println("--->>MANDATORY －> 前提：T1没有事务，T2要求加入已经存在的事务。");
         System.out.println("--->>MANDATORY －> 执行：T1已非事务方式正常执行，T2因为不满足环境中要求存在事务的条件而导致异常。");

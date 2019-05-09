@@ -33,6 +33,10 @@ import org.junit.runner.RunWith;
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)
 public class REQUIRED_TranTest extends AbstractNativesJDBCTest {
     @Test
+    public void abc() {
+
+    }
+
     public void testHasTransactionalThrowT2() throws Throwable {
         System.out.println("--->>REQUIRED －> 前提：T1处于一个事务中，T2跟随T1。");
         System.out.println("--->>REQUIRED －> 执行：T2，在最后抛出一个异常，T1接住了这个异常，然后正常完成后续处理。");
@@ -42,26 +46,23 @@ public class REQUIRED_TranTest extends AbstractNativesJDBCTest {
         System.out.println();
         //
         TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
-        temp.execute(new TransactionCallbackWithoutResult() {
-            public void doTransactionWithoutResult(TransactionStatus tranStatus) throws Throwable {
-                System.out.println("begin T1!");
-                /*T1 - 默罕默德*/
-                insertUser_MHMD();
-                /*T2 - 安妮.贝隆、吴广*/
-                try {
-                    doTransactionalThrow();
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-                /*T1 - 赵飞燕*/
-                insertUser_ZFY();
+        temp.execute((TransactionCallbackWithoutResult) tranStatus -> {
+            System.out.println("begin T1!");
+            /*T1 - 默罕默德*/
+            insertUser_MHMD();
+            /*T2 - 安妮.贝隆、吴广*/
+            try {
+                doTransactionalThrow();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
+            /*T1 - 赵飞燕*/
+            insertUser_ZFY();
         });
         //
         Thread.sleep(1000);
         printData();
     }
-    @Test
     public void testHasTransactionalRollBackT1() throws Throwable {
         System.out.println("--->>REQUIRED －> 前提：T1处于一个事务中，T2跟随T1。");
         System.out.println("--->>REQUIRED －> 执行：T1在最后将事务回滚。");
@@ -71,19 +72,17 @@ public class REQUIRED_TranTest extends AbstractNativesJDBCTest {
         System.out.println();
         //
         TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
-        temp.execute(new TransactionCallbackWithoutResult() {
-            public void doTransactionWithoutResult(TransactionStatus tranStatus) throws Throwable {
-                System.out.println("begin T1!");
-                /*T1 - 默罕默德*/
-                insertUser_MHMD();
-                /*T2 - 安妮.贝隆、吴广*/
-                doTransactional();
-                /*T1 - 赵飞燕*/
-                insertUser_ZFY();
-                //
-                tranStatus.setRollbackOnly();
-                System.out.println("rollback T1!");
-            }
+        temp.execute((TransactionCallbackWithoutResult) tranStatus -> {
+            System.out.println("begin T1!");
+            /*T1 - 默罕默德*/
+            insertUser_MHMD();
+            /*T2 - 安妮.贝隆、吴广*/
+            doTransactional();
+            /*T1 - 赵飞燕*/
+            insertUser_ZFY();
+            //
+            tranStatus.setRollbackOnly();
+            System.out.println("rollback T1!");
         });
         //
         Thread.sleep(1000);

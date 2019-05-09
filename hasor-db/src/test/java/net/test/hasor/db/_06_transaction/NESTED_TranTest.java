@@ -33,6 +33,9 @@ import org.junit.runner.RunWith;
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)
 public class NESTED_TranTest extends AbstractNativesJDBCTest {
     @Test
+    public void abc() {
+
+    }
     public void testHasTransactional() throws Throwable {
         System.out.println("--->>NESTED －> 前提：T1处于一个事务中，T2开启一个子事务。");
         System.out.println("--->>NESTED －> 执行：T2在执行完毕之后，通知监控线程打印数据库记录。结果无任何输出。");
@@ -42,29 +45,26 @@ public class NESTED_TranTest extends AbstractNativesJDBCTest {
         System.out.println();
         //
         TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
-        temp.execute(new TransactionCallbackWithoutResult() {
-            public void doTransactionWithoutResult(TransactionStatus tranStatus) throws Throwable {
-                System.out.println("begin T1!");
-                /*T1 - 默罕默德*/
-                insertUser_MHMD();
-                /*T2 - 安妮.贝隆、吴广*/
-                doTransactional();
-                /*T1 - 赵飞燕*/
-                insertUser_ZFY();
-                //
-                Thread.sleep(1000);
-                System.out.println();
-                System.out.println();
-                System.out.print("触发一次监控线程的查询.");
-                printData();
-                System.out.println("commit T1!");
-            }
+        temp.execute((TransactionCallbackWithoutResult) tranStatus -> {
+            System.out.println("begin T1!");
+            /*T1 - 默罕默德*/
+            insertUser_MHMD();
+            /*T2 - 安妮.贝隆、吴广*/
+            doTransactional();
+            /*T1 - 赵飞燕*/
+            insertUser_ZFY();
+            //
+            Thread.sleep(1000);
+            System.out.println();
+            System.out.println();
+            System.out.print("触发一次监控线程的查询.");
+            printData();
+            System.out.println("commit T1!");
         });
         //
         Thread.sleep(1000);
         printData();
     }
-    @Test
     public void testNoneTransactional() throws Throwable {
         System.out.println("--->>NESTED －> 前提：T1不再事务中，T2开启一个子事务。");
         System.out.println("--->>NESTED －> 执行：T2在最后抛出了一个异常，导致T2事务回滚。而T1不受影响。");

@@ -33,6 +33,9 @@ import org.junit.runner.RunWith;
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)
 public class REQUIRES_NEW_TranTest extends AbstractNativesJDBCTest {
     @Test
+    public void abc() {
+
+    }
     public void testHasTransactionalRollBackT1() throws Throwable {
         System.out.println("--->>REQUIRES_NEW －> 前提：T1处于一个事务中，T2拥有自己的独立事务。");
         System.out.println("--->>REQUIRES_NEW －> 执行：T1，在执行完T2，之后将T1自身进行了回滚。");
@@ -43,38 +46,7 @@ public class REQUIRES_NEW_TranTest extends AbstractNativesJDBCTest {
         //
         try {
             TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
-            temp.execute(new TransactionCallbackWithoutResult() {
-                public void doTransactionWithoutResult(TransactionStatus tranStatus) throws Throwable {
-                    System.out.println("begin T1!");
-                    /*T1 - 默罕默德*/
-                    insertUser_MHMD();
-                    /*T2 - 安妮.贝隆、吴广*/
-                    doTransactional();
-                    /*T1 - 赵飞燕*/
-                    insertUser_ZFY();
-                    //
-                    tranStatus.setRollbackOnly();
-                    System.out.println("rollback T1!");
-                }
-            });
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        //
-        Thread.sleep(1000);
-        printData();
-    }
-    @Test
-    public void testHasTransactionalRollBackT2() throws Throwable {
-        System.out.println("--->>REQUIRES_NEW －> 前提：T1处于一个事务中，T2开启一个子事务。");
-        System.out.println("--->>REQUIRES_NEW －> 执行：T2在执行完毕之后，通知监控线程打印数据库记录。2条数据“安妮.贝隆”、“吴广”");
-        System.out.println("--->>REQUIRES_NEW －> 结论：因为T1、分别位于自己独立的事务中。在T2递交了之后监控线程自然可以查询到。");
-        System.out.println("--->>REQUIRES_NEW －> 结果：T1在递交之前的数据查询有2条记录，之后则有 4 条。");
-        System.out.println();
-        //
-        TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
-        temp.execute(new TransactionCallbackWithoutResult() {
-            public void doTransactionWithoutResult(TransactionStatus tranStatus) throws Throwable {
+            temp.execute((TransactionCallbackWithoutResult) tranStatus -> {
                 System.out.println("begin T1!");
                 /*T1 - 默罕默德*/
                 insertUser_MHMD();
@@ -83,13 +55,39 @@ public class REQUIRES_NEW_TranTest extends AbstractNativesJDBCTest {
                 /*T1 - 赵飞燕*/
                 insertUser_ZFY();
                 //
-                Thread.sleep(1000);
-                System.out.println();
-                System.out.println();
-                System.out.print("触发一次监控线程的查询.");
-                printData();
-                System.out.println("commit T1!");
-            }
+                tranStatus.setRollbackOnly();
+                System.out.println("rollback T1!");
+            });
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        //
+        Thread.sleep(1000);
+        printData();
+    }
+    public void testHasTransactionalRollBackT2() throws Throwable {
+        System.out.println("--->>REQUIRES_NEW －> 前提：T1处于一个事务中，T2开启一个子事务。");
+        System.out.println("--->>REQUIRES_NEW －> 执行：T2在执行完毕之后，通知监控线程打印数据库记录。2条数据“安妮.贝隆”、“吴广”");
+        System.out.println("--->>REQUIRES_NEW －> 结论：因为T1、分别位于自己独立的事务中。在T2递交了之后监控线程自然可以查询到。");
+        System.out.println("--->>REQUIRES_NEW －> 结果：T1在递交之前的数据查询有2条记录，之后则有 4 条。");
+        System.out.println();
+        //
+        TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
+        temp.execute((TransactionCallbackWithoutResult) tranStatus -> {
+            System.out.println("begin T1!");
+            /*T1 - 默罕默德*/
+            insertUser_MHMD();
+            /*T2 - 安妮.贝隆、吴广*/
+            doTransactional();
+            /*T1 - 赵飞燕*/
+            insertUser_ZFY();
+            //
+            Thread.sleep(1000);
+            System.out.println();
+            System.out.println();
+            System.out.print("触发一次监控线程的查询.");
+            printData();
+            System.out.println("commit T1!");
         });
         //
         Thread.sleep(1000);

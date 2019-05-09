@@ -23,6 +23,7 @@ import java.sql.SQLException;
  * @author Juergen Hoeller
  * @author 赵永春 (zyc@hasor.net)
  */
+@FunctionalInterface
 public interface RowMapper<T> {
     /**
      * 实现这个方法为结果集的一行记录进行转换，并将最终转换结果返回。如果返回为 null 等同于忽略该行。

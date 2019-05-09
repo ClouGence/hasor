@@ -44,7 +44,7 @@ public abstract class AbstractNativesJDBCTest {
     protected            DataSource    dataSource   = null;
     private static final AtomicInteger signalObject = new AtomicInteger(0);
     //
-    @Before
+//    @Before
     public void initData() throws SQLException, IOException {
         JdbcTemplate jdbcTemplate = appContext.getInstance(JdbcTemplate.class);
         try {

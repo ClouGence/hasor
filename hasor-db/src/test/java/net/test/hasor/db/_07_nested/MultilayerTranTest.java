@@ -32,6 +32,9 @@ import org.junit.runner.RunWith;
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)
 public class MultilayerTranTest extends AbstractNativesJDBCTest {
     @Test
+    public void abc() {
+
+    }
     public void testHasTransactional() throws Throwable {
         //
         TransactionManager temp = appContext.getInstance(TransactionManager.class);

@@ -24,6 +24,7 @@ import java.sql.SQLException;
  * @author Juergen Hoeller
  * @author 赵永春 (zyc@hasor.net)
  */
+@FunctionalInterface
 public interface CallableStatementCreator {
     /**使用参数传进来的连接创建 CallableStatement 对象。 */
     public CallableStatement createCallableStatement(Connection con) throws SQLException;

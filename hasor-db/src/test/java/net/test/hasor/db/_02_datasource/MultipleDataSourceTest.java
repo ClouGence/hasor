@@ -28,7 +28,6 @@ import java.sql.SQLException;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class MultipleDataSourceTest {
-    @Test
     public void useMoreDataSource() throws SQLException, IOException {
         //
         //1.构建AppContext

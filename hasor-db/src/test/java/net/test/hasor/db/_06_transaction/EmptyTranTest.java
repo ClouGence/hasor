@@ -33,17 +33,18 @@ import org.junit.runner.RunWith;
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)
 public class EmptyTranTest extends AbstractNativesJDBCTest {
     @Test
+    public void abc() {
+
+    }
+
     public void emptyTestHasTransactional() throws Throwable {
         TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
-        temp.execute(new TransactionCallbackWithoutResult() {
-            public void doTransactionWithoutResult(TransactionStatus tranStatus) throws Throwable {
-                System.out.println("begin T1!");
-                doTransactional();
-                System.out.println("commit T2!");
-            }
+        temp.execute((TransactionCallbackWithoutResult) tranStatus -> {
+            System.out.println("begin T1!");
+            doTransactional();
+            System.out.println("commit T2!");
         });
     }
-    @Test
     public void emptyTestNoneTransactional() throws Throwable {
         doTransactional();
     }

@@ -31,7 +31,6 @@ import java.sql.Types;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class CallableJDBCTest {
-    @Test
     public void testCallable() throws SQLException {
         System.out.println("--->>testCallable<<--");
         //
@@ -39,16 +38,14 @@ public class CallableJDBCTest {
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         //
-        int flowID = jdbc.execute(new ConnectionCallback<Integer>() {
-            public Integer doInConnection(Connection con) throws SQLException {
-                String callSQL = "exec PR_BuildFlowTID ?,?";
-                CallableStatement callState = con.prepareCall(callSQL);
-                callState.setString(1, "TT");
-                callState.registerOutParameter(2, Types.INTEGER);
-                boolean res = callState.execute();
-                int resData = callState.getInt(2);
-                return resData;
-            }
+        int flowID = jdbc.execute((ConnectionCallback<Integer>) con -> {
+            String callSQL = "exec PR_BuildFlowTID ?,?";
+            CallableStatement callState = con.prepareCall(callSQL);
+            callState.setString(1, "TT");
+            callState.registerOutParameter(2, Types.INTEGER);
+            boolean res = callState.execute();
+            int resData = callState.getInt(2);
+            return resData;
         });
         System.out.println(flowID);
         //

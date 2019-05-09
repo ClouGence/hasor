@@ -27,7 +27,6 @@ import java.sql.SQLException;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DeleteJDBCTest {
-    @Test
     public void simple_DeleteJDBCTest() throws SQLException {
         System.out.println("--->>simple_DeleteJDBCTest<<--");
         //

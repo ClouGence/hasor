@@ -19,6 +19,7 @@ package net.hasor.db.transaction;
  * @version : 2015年8月11日
  * @author 赵永春 (zyc@hasor.net)
  */
+@FunctionalInterface
 public interface TransactionCallback<T> {
     /**
      * 执行事务,如需回滚事务,只需要调用 tranStatus 的 setRollbackOnly() 方法即可。

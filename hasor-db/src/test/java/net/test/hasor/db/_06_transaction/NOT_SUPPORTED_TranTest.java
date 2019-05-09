@@ -33,6 +33,9 @@ import org.junit.runner.RunWith;
 @ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)
 public class NOT_SUPPORTED_TranTest extends AbstractNativesJDBCTest {
     @Test
+    public void abc() {
+
+    }
     public void testHasTransactional() throws Throwable {
         System.out.println("--->>NOT_SUPPORTED －> 前提：T1处于一个事务中，T2要求非事务。");
         System.out.println("--->>NOT_SUPPORTED －> 执行：T2在执行期间抛出一个异常，最终导致T1回滚。");
@@ -42,28 +45,25 @@ public class NOT_SUPPORTED_TranTest extends AbstractNativesJDBCTest {
         System.out.println();
         //
         TransactionTemplate temp = appContext.getInstance(TransactionTemplate.class);
-        temp.execute(new TransactionCallbackWithoutResult() {
-            public void doTransactionWithoutResult(TransactionStatus tranStatus) throws Throwable {
-                try {
-                    System.out.println("begin T1!");
-                    /*T1 - 默罕默德*/
-                    insertUser_MHMD();
-                    /*T2 - 安妮.贝隆、吴广*/
-                    doTransactional();
-                } catch (Exception e) {
-                    System.out.println("rollback T1!");
-                    tranStatus.setRollbackOnly();/*所有T1的数据全部回滚，不管是以录入数据库的还是将要录入数据库的*/
-                } finally {
-                    /*T1 - 赵飞燕*/
-                    insertUser_ZFY();
-                }
+        temp.execute((TransactionCallbackWithoutResult) tranStatus -> {
+            try {
+                System.out.println("begin T1!");
+                /*T1 - 默罕默德*/
+                insertUser_MHMD();
+                /*T2 - 安妮.贝隆、吴广*/
+                doTransactional();
+            } catch (Exception e) {
+                System.out.println("rollback T1!");
+                tranStatus.setRollbackOnly();/*所有T1的数据全部回滚，不管是以录入数据库的还是将要录入数据库的*/
+            } finally {
+                /*T1 - 赵飞燕*/
+                insertUser_ZFY();
             }
         });
         //
         Thread.sleep(1000);
         printData();
     }
-    @Test
     public void testNoneTransactional() throws Throwable {
         System.out.println("--->>NOT_SUPPORTED －> 前提：T1没有事务，T2要求非事务。");
         System.out.println("--->>NOT_SUPPORTED －> 执行：T2在执行期间抛出一个异常。");

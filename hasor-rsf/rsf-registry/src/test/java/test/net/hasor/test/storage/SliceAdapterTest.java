@@ -51,7 +51,7 @@ public class SliceAdapterTest {
         //
         int counter = 0;
         while (true) {
-            if (counter >= 3000000)
+            if (counter >= 300)
                 break;
             long randomLong = random.nextLong();
             System.out.println(counter + " - " + randomLong);

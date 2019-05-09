@@ -23,6 +23,7 @@ import java.sql.SQLException;
  * @author Juergen Hoeller
  * @author 赵永春 (zyc@hasor.net)
  */
+@FunctionalInterface
 public interface RowCallbackHandler {
     /**实现这个方法用于处理结果集的一行记录。
      * 注意：不要调用结果集的 next() 方法。*/
