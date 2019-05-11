@@ -17,11 +17,11 @@ package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
+import net.hasor.web.Mapping;
 import net.hasor.web.MimeType;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 /**
@@ -30,26 +30,20 @@ import java.util.Set;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InvokerSupplier implements Invoker {
-    private Set<String>         lockKeys     = new HashSet<>();
-    private HttpServletRequest  httpRequest  = null;
-    private HttpServletResponse httpResponse = null;
-    private AppContext          appContext   = null;
-    private MimeType            mimeType     = null;
-    private String              requestPath;
+    private Set<String>         lockKeys       = new HashSet<>();
+    private HttpServletRequest  httpRequest    = null;
+    private HttpServletResponse httpResponse   = null;
+    private AppContext          appContext     = null;
+    private MimeType            mimeType       = null;
+    private Mapping             ownerInMapping = null;
     //
-    protected InvokerSupplier(AppContext appContext, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+    protected InvokerSupplier(Mapping ownerInMapping, AppContext appContext, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         //
+        this.ownerInMapping = ownerInMapping;
         this.appContext = appContext;
         this.httpRequest = httpRequest;
         this.httpResponse = httpResponse;
         this.mimeType = appContext.getInstance(MimeType.class);
-        //
-        String contextPath = this.getHttpRequest().getContextPath();
-        String requestPath = this.getHttpRequest().getRequestURI();
-        if (requestPath.startsWith(contextPath)) {
-            requestPath = requestPath.substring(contextPath.length());
-        }
-        this.requestPath = requestPath;
         //
         this.put(ROOT_DATA_KEY, this);
         this.put(REQUEST_KEY, this.httpRequest);
@@ -73,31 +67,12 @@ public class InvokerSupplier implements Invoker {
         return this.httpResponse;
     }
     @Override
-    public Set<String> keySet() {
-        Enumeration<String> names = this.httpRequest.getAttributeNames();
-        HashSet<String> nameSet = new HashSet<>();
-        while (names.hasMoreElements()) {
-            nameSet.add(names.nextElement());
-        }
-        return nameSet;
+    public Mapping ownerMapping() {
+        return this.ownerInMapping;
     }
     @Override
-    public Object get(String key) {
-        return this.httpRequest.getAttribute(key);
-    }
-    @Override
-    public void put(String key, Object value) {
-        if (StringUtils.isBlank(key) || this.lockKeys.contains(key)) {
-            throw new UnsupportedOperationException("the key '" + key + "' is lock key.");
-        }
-        this.httpRequest.setAttribute(key, value);
-    }
-    @Override
-    public void remove(String key) {
-        if (StringUtils.isBlank(key) || this.lockKeys.contains(key)) {
-            throw new UnsupportedOperationException("the key '" + key + "' is lock key.");
-        }
-        this.httpRequest.removeAttribute(key);
+    public boolean isLockKey(String key) {
+        return this.lockKeys.contains(key);
     }
     @Override
     public void lockKey(String key) {
@@ -107,11 +82,12 @@ public class InvokerSupplier implements Invoker {
         this.lockKeys.add(key);
     }
     @Override
-    public String getRequestPath() {
-        return this.requestPath;
-    }
-    @Override
     public String getMimeType(String suffix) {
         return this.mimeType.getMimeType(suffix);
+    }
+    //
+    @Override
+    public <T> T fillForm(Class<? extends T> formType, T bean) {
+        return new InvokerCallerParamsBuilder().getParamsParam(this, formType, bean);
     }
 }

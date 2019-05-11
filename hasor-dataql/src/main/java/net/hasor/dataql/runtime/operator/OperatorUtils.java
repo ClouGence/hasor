@@ -204,7 +204,7 @@ public class OperatorUtils {
         if (value == null) {
             return 0L;
         }
-        Class c = value.getClass();
+        Class<?> c = value.getClass();
         if (c.getSuperclass() == Number.class) {
             return ((Number) value).longValue();
         }

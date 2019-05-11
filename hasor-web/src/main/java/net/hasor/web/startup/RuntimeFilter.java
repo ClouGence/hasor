@@ -17,7 +17,6 @@ package net.hasor.web.startup;
 import net.hasor.core.AppContext;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
-import net.hasor.web.Invoker;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.invoker.ExceuteCaller;
 import net.hasor.web.invoker.InvokerContext;
@@ -117,10 +116,9 @@ public class RuntimeFilter implements Filter {
     }
     private void doFilter(FilterChain chain, HttpServletRequest httpReq, HttpServletResponse httpRes) throws IOException, ServletException {
         try {
-            Invoker invoker = this.invokerContext.newInvoker(httpReq, httpRes);
-            ExceuteCaller caller = this.invokerContext.genCaller(invoker);
+            ExceuteCaller caller = this.invokerContext.genCaller(httpReq, httpRes);
             if (caller != null) {
-                Future<Object> resultData = caller.invoke(invoker, chain);
+                Future<Object> resultData = caller.invoke(chain);
                 if (resultData != null && resultData.isDone()) {
                     resultData.get();
                 }

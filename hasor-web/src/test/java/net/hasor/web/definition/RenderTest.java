@@ -4,12 +4,9 @@ import net.hasor.core.BindInfo;
 import net.hasor.web.RenderEngine;
 import net.hasor.web.definition.beans.TestRenderEngine;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 //
 public class RenderTest {
@@ -26,10 +23,7 @@ public class RenderTest {
             return new TestRenderEngine();
         });
         //
-        List<String> ends = new ArrayList<>();
-        ends.add("HTML");
-        RenderDefinition definition = new RenderDefinition(ends, bindInfo);
-        //
+        RenderDefinition definition = new RenderDefinition("HTML", "abc", bindInfo);
         //
         TestRenderEngine.resetCalls();
         assert !TestRenderEngine.isInitEngineCall();
@@ -41,7 +35,8 @@ public class RenderTest {
         assert TestRenderEngine.isInitEngineCall();
         //
         definition.toString();
-        assert definition.getRenderSet() == ends;
+        assert definition.getRenderInfo().name().equals("HTML");
+        assert definition.getRenderInfo().specialMimeType().equals("abc");
         assert "TEST".equals(definition.getID());
     }
 }

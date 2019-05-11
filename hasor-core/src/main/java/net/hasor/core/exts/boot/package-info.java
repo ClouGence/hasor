@@ -13,22 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 /**
- * 渲染器,配置只为渲染器名字，通常配置成为请求的扩展名。
- * @version : 2017-01-10
- * @author 赵永春 (zyc@hasor.net)
+ * Hasor Boot 框架，可以为应用程序提供快速启动的入口。
  */
-@Target({ ElementType.TYPE })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Render {
-    /** 渲染器名字，一般设置为扩展名 */
-    public String name();
-
-    /** 使用的 type 例如：text/html、image/jpeg */
-    public String specialMimeType() default "";
-}
+package net.hasor.core.exts.boot;

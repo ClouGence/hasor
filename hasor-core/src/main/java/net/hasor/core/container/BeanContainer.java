@@ -204,6 +204,21 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
     //
     @Override
     public synchronized void update(Observable o, Object arg) {
+        // - 处理当异常发生时，新的 Bean 定义回滚逻辑
+        try {
+            this.doUpdate(o, arg);
+        } catch (RuntimeException e) {
+            BindInfo<?> bindInfo = (BindInfo<?>) o;
+            this.idDataSource.remove(bindInfo.getBindID());
+            this.allBindInfoList.remove(o);
+            List<String> stringList = this.indexTypeMapping.get(bindInfo.getBindType().getName());
+            if (stringList != null) {
+                stringList.remove(bindInfo.getBindID());
+            }
+            throw e;
+        }
+    }
+    private void doUpdate(Observable o, Object arg) {
         if (arg == null || !(arg instanceof NotifyData)) {
             return;
         }

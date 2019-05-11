@@ -35,7 +35,7 @@ import java.util.*;
 public class InvokerContext implements WebPluginCaller {
     protected static Logger               logger         = LoggerFactory.getLogger(InvokerContext.class);
     private          AppContext           appContext     = null;
-    private          InMapping[]          invokeArray    = new InMapping[0];
+    private          Mapping[]            invokeArray    = new Mapping[0];
     private          AbstractDefinition[] filters        = new AbstractDefinition[0];
     private          WebPlugin[]          plugins        = new WebPlugin[0];
     private          RootInvokerCreater   invokerCreater = null;
@@ -46,8 +46,8 @@ public class InvokerContext implements WebPluginCaller {
         // .MappingData
         List<InMappingDef> mappingList = appContext.findBindingBean(InMappingDef.class);
         mappingList.sort(Comparator.comparingLong(InMappingDef::getIndex));
-        this.invokeArray = mappingList.toArray(new InMapping[0]);
-        for (InMapping inMapping : this.invokeArray) {
+        this.invokeArray = mappingList.toArray(new Mapping[0]);
+        for (Mapping inMapping : this.invokeArray) {
             logger.info("mapingTo -> type ‘{}’ mappingTo: ‘{}’.", inMapping.getTargetType().getBindType(), inMapping.getMappingTo());
         }
         //
@@ -102,31 +102,33 @@ public class InvokerContext implements WebPluginCaller {
         }
     }
     //
-    public Invoker newInvoker(HttpServletRequest request, HttpServletResponse response) {
-        return this.invokerCreater.createExt(new InvokerSupplier(this.appContext, request, response));
+    public Invoker newInvoker(Mapping define, HttpServletRequest request, HttpServletResponse response) {
+        return this.invokerCreater.createExt(new InvokerSupplier(define, this.appContext, request, response));
     }
     //
-    public ExceuteCaller genCaller(Invoker invoker) {
-        InMapping foundDefine = null;
-        for (InMapping define : this.invokeArray) {
-            if (define.matchingMapping(invoker)) {
+    public ExceuteCaller genCaller(HttpServletRequest httpReq, HttpServletResponse httpRes) {
+        Mapping foundDefine = null;
+        for (Mapping define : this.invokeArray) {
+            if (define.matchingMapping(httpReq)) {
                 foundDefine = define;
                 break;
             }
         }
+        final Invoker invoker = this.newInvoker(foundDefine, httpReq, httpRes);
         if (foundDefine == null) {
-            return (invoker1, chain) -> {
+            return (chain) -> {
                 BasicFuture<Object> future = new BasicFuture<>();
-                future.completed(new InvokerChainInvocation(filters, invoker11 -> {
+                future.completed(new InvokerChainInvocation(filters, innerInv -> {
                     if (chain != null) {
-                        chain.doFilter(invoker11.getHttpRequest(), invoker11.getHttpResponse());
+                        chain.doFilter(innerInv.getHttpRequest(), innerInv.getHttpResponse());
                     }
-                    return invoker11.get(Invoker.RETURN_DATA_KEY);
-                }).doNext(invoker1));
+                    return innerInv.get(Invoker.RETURN_DATA_KEY);
+                }).doNext(invoker));
                 return future;
             };
         }
-        return new InvokerCaller(foundDefine, this.filters, this);
+        //
+        return new InvokerCaller(() -> invoker, this.filters, this);
     }
     @Override
     public void beforeFilter(Invoker invoker, InvokerData define) {

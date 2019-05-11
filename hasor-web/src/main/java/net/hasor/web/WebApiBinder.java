@@ -17,10 +17,13 @@ package net.hasor.web;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
+import net.hasor.core.aop.AsmTools;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.ResourcesUtils;
+import net.hasor.web.annotation.MappingTo;
+import net.hasor.web.annotation.Render;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
@@ -31,7 +34,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -76,13 +81,22 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     /**使用 MappingTo 表达式，创建一个{@link MappingToBindingBuilder}。*/
     public <T> MappingToBindingBuilder<T> mappingTo(String[] morePatterns);
 
-    public void loadMappingTo(Class<?> clazz);
-
-    //
+    /** 加载带有 @MappingTo 注解的类。 */
     public default void loadMappingTo(Set<Class<?>> mabeMappingToSet) {
-        this.loadMappingTo(mabeMappingToSet, Matchers.anyClass());
+        this.loadMappingTo(mabeMappingToSet, aClass -> {
+            int modifier = aClass.getModifiers();
+            if (AsmTools.checkIn(modifier, Modifier.INTERFACE) || AsmTools.checkIn(modifier, Modifier.ABSTRACT) || aClass.isArray() || aClass.isEnum()) {
+                return false;
+            }
+            MappingTo[] annotationsByType = aClass.getAnnotationsByType(MappingTo.class);
+            if (annotationsByType == null || annotationsByType.length == 0) {
+                return false;
+            }
+            return true;
+        });
     }
 
+    /** 加载带有 @MappingTo 注解的类。 */
     public default void loadMappingTo(Set<Class<?>> mabeMappingToSet, Predicate<Class<?>> matcher) {
         if (mabeMappingToSet != null && !mabeMappingToSet.isEmpty()) {
             for (Class<?> type : mabeMappingToSet) {
@@ -90,6 +104,31 @@ public interface WebApiBinder extends ApiBinder, MimeType {
                     loadMappingTo(type);
                 }
             }
+        }
+    }
+
+    /** 加载带有 @MappingTo 注解的类。 */
+    public default void loadMappingTo(Class<?> mabeMappingType) {
+        Hasor.assertIsNotNull(mabeMappingType, "class is null.");
+        int modifier = mabeMappingType.getModifiers();
+        if (AsmTools.checkIn(modifier, Modifier.INTERFACE) || AsmTools.checkIn(modifier, Modifier.ABSTRACT) || mabeMappingType.isArray() || mabeMappingType.isEnum()) {
+            throw new IllegalStateException(mabeMappingType.getName() + " must be normal Bean");
+        }
+        MappingTo[] annotationsByType = mabeMappingType.getAnnotationsByType(MappingTo.class);
+        if (annotationsByType == null || annotationsByType.length == 0) {
+            throw new IllegalStateException(mabeMappingType.getName() + " must be configure @MappingTo");
+        }
+        //
+        if (HttpServlet.class.isAssignableFrom(mabeMappingType)) {
+            Arrays.stream(annotationsByType).peek(mappingTo -> {
+            }).forEach(mappingTo -> {
+                jeeServlet(mappingTo.value()).with((Class<? extends HttpServlet>) mabeMappingType);
+            });
+        } else {
+            Arrays.stream(annotationsByType).peek(mappingTo -> {
+            }).forEach(mappingTo -> {
+                mappingTo(mappingTo.value()).with(mabeMappingType);
+            });
         }
     }
     //
@@ -390,20 +429,12 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     //
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    /**拦截这些后缀的请求，这些请求会被渲染器渲染。*/
-    public default RenderEngineBindingBuilder suffix(String urlPattern, String... morePatterns) {
-        return this.suffix(ArrayUtils.add(morePatterns, urlPattern));
-    }
-
-    /**拦截这些后缀的请求，这些请求会被渲染器渲染。*/
-    public RenderEngineBindingBuilder suffix(String[] morePatterns);
-
-    /**加载Render注解配置的渲染器。*/
+    /** 加载@Render注解配置的渲染器。*/
     public default void loadRender(Set<Class<?>> renderSet) {
         this.loadRender(renderSet, Matchers.anyClass());
     }
 
-    /**加载Render注解配置的渲染器。*/
+    /** 加载@Render注解配置的渲染器。*/
     public default void loadRender(Set<Class<?>> renderSet, Predicate<Class<?>> matcher) {
         if (renderSet != null && !renderSet.isEmpty()) {
             for (Class<?> type : renderSet) {
@@ -414,10 +445,43 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         }
     }
 
-    /**加载Render注解配置的渲染器。*/
-    public void loadRender(Class<?> renderClass);
-    //
-    /**负责配置RenderEngine。*/
+    /** 加载 @Render注解配置的渲染器。*/
+    public default void loadRender(Class<?> renderClass) {
+        Hasor.assertIsNotNull(renderClass, "class is null.");
+        int modifier = renderClass.getModifiers();
+        if (AsmTools.checkIn(modifier, Modifier.INTERFACE) || AsmTools.checkIn(modifier, Modifier.ABSTRACT) || renderClass.isArray() || renderClass.isEnum()) {
+            throw new IllegalStateException(renderClass.getName() + " must be normal Bean");
+        }
+        if (!renderClass.isAnnotationPresent(Render.class)) {
+            throw new IllegalStateException(renderClass.getName() + " must be configure @Render");
+        }
+        if (!RenderEngine.class.isAssignableFrom(renderClass)) {
+            throw new IllegalStateException(renderClass.getName() + " must be implements RenderEngine.");
+        }
+        //
+        Render renderInfo = renderClass.getAnnotation(Render.class);
+        if (renderInfo != null) {
+            addRender(renderInfo.name(), renderInfo.specialMimeType()).bind((Class<? extends RenderEngine>) renderClass);
+        }
+    }
+
+    /**
+     * 添加一个渲染器，用来将 Action 请求的结果渲染成页面。
+     * @param renderName 渲染器名称
+     */
+    public default RenderEngineBindingBuilder addRender(String renderName) {
+        return this.addRender(renderName, null);
+    }
+
+    /**
+     * 添加一个渲染器，用来将 Action 请求的结果渲染成页面。
+     * @param renderName 渲染器名称
+     * @param specialMimeType 渲染器使用的 response.ContentType 是什么，
+     *      如果没有特殊指定。那么会通过 renderName 在 mime.types.xml 中查找，如果找不到那么不进行特殊设置。
+     */
+    public RenderEngineBindingBuilder addRender(String renderName, String specialMimeType);
+
+    /** 负责配置RenderEngine。*/
     public static interface RenderEngineBindingBuilder {
         /**绑定实现。*/
         public <T extends RenderEngine> void bind(Class<T> renderEngineType);
@@ -433,4 +497,12 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         /**绑定实现。*/
         public void bind(BindInfo<? extends RenderEngine> renderEngineInfo);
     }
+    //
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    //    /** 创建一个映射，当匹配某个URL的时候使用指定的 Render 来渲染。如果存在多条规则按照 index 顺序裁决 index 最大的那一个*/
+    //    public default void urlExtensionToRender(String extension, String renderName) {
+    //        this.urlExtensionToRender(0, extension, renderName);
+    //    }
+    //
+    //    public void urlExtensionToRender(int index, String extension, String renderName);
 }

@@ -19,6 +19,6 @@ import net.hasor.web.annotation.Render;
  * @version : 2017-01-08
  * @author 赵永春 (zyc@hasor.net)
  */
-@Render("html")
+@Render(name = "html")
 public class ErrorRenderEngine {
 }

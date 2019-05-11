@@ -1,6 +1,7 @@
 package net.hasor.web.render;
 import net.hasor.core.AppContext;
 import net.hasor.web.Invoker;
+import net.hasor.web.Mapping;
 import net.hasor.web.WebModule;
 import net.hasor.web.invoker.AbstractWeb30BinderDataTest;
 import org.junit.Test;
@@ -22,7 +23,8 @@ public class CreaterTest extends AbstractWeb30BinderDataTest {
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
             //
         });
-        Invoker invoker = newInvoker(mockRequest("post", new URL("http://www.hasor.net/query_param.do?byteParam=123&bigInteger=321"), appContext), appContext);
+        Mapping mapping = PowerMockito.mock(Mapping.class);
+        Invoker invoker = newInvoker(mapping, mockRequest("post", new URL("http://www.hasor.net/query_param.do?byteParam=123&bigInteger=321"), appContext), appContext);
         RenderInvokerSupplier supplier = new RenderInvokerSupplier(invoker);
         //
         RenderInvokerCreater creater = PowerMockito.mock(RenderInvokerCreater.class);
@@ -38,7 +40,8 @@ public class CreaterTest extends AbstractWeb30BinderDataTest {
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
             //
         });
-        Invoker invoker = newInvoker(mockRequest("post", new URL("http://www.hasor.net/query_param.do?byteParam=123&bigInteger=321"), appContext), appContext);
+        Mapping mapping = PowerMockito.mock(Mapping.class);
+        Invoker invoker = newInvoker(mapping, mockRequest("post", new URL("http://www.hasor.net/query_param.do?byteParam=123&bigInteger=321"), appContext), appContext);
         RenderInvokerSupplier supplier = new RenderInvokerSupplier(invoker);
         //
         assert supplier.layout();
@@ -66,16 +69,17 @@ public class CreaterTest extends AbstractWeb30BinderDataTest {
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
             //
         });
-        Invoker invoker1 = newInvoker(mockRequest("post", new URL("http://www.hasor.net/query_param.do"), appContext), appContext);
+        Mapping mapping = PowerMockito.mock(Mapping.class);
+        Invoker invoker1 = newInvoker(mapping, mockRequest("post", new URL("http://www.hasor.net/query_param.do"), appContext), appContext);
         assert "DO".equals(new RenderInvokerSupplier(invoker1).viewType());
         //
-        Invoker invoker2 = newInvoker(mockRequest("post", new URL("http://www.hasor.net/query_param.act"), appContext), appContext);
+        Invoker invoker2 = newInvoker(mapping, mockRequest("post", new URL("http://www.hasor.net/query_param.act"), appContext), appContext);
         assert "ACT".equals(new RenderInvokerSupplier(invoker2).viewType());
         //
-        Invoker invoker3 = newInvoker(mockRequest("post", new URL("http://www.hasor.net/test/abc.do"), appContext), appContext);
+        Invoker invoker3 = newInvoker(mapping, mockRequest("post", new URL("http://www.hasor.net/test/abc.do"), appContext), appContext);
         assert "/test/abc.do".equals(new RenderInvokerSupplier(invoker3).renderTo());
         //
-        Invoker invoker4 = newInvoker(mockRequest("post", new URL("http://www.hasor.net/test/def.act"), appContext), appContext);
+        Invoker invoker4 = newInvoker(mapping, mockRequest("post", new URL("http://www.hasor.net/test/def.act"), appContext), appContext);
         assert "/test/def.act".equals(new RenderInvokerSupplier(invoker4).renderTo());
     }
 }

@@ -19,6 +19,7 @@ import net.hasor.core.Settings;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.*;
 import net.hasor.web.annotation.Produces;
+import net.hasor.web.annotation.Render;
 import net.hasor.web.definition.RenderDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,14 +40,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
-    protected Logger                    logger        = LoggerFactory.getLogger(getClass());
-    private   AtomicBoolean             inited        = new AtomicBoolean(false);
-    private   String                    layoutPath    = null;                    // 布局模版位置
-    private   boolean                   useLayout     = true;
-    private   String                    templatePath  = null;                    // 页面模版位置
-    private   Map<String, RenderEngine> engineMap     = null;
-    private   String                    placeholder   = null;
-    private   String                    defaultLayout = null;
+    protected Logger                    logger             = LoggerFactory.getLogger(getClass());
+    private   AtomicBoolean             inited             = new AtomicBoolean(false);
+    private   String                    layoutPath         = null;                    // 布局模版位置
+    private   boolean                   useLayout          = true;
+    private   String                    templatePath       = null;                    // 页面模版位置
+    private   Map<String, String>       specialMimeTypeMap = new HashMap<>();
+    private   Map<String, RenderEngine> engineMap          = new HashMap<>();
+    private   String                    placeholder        = null;
+    private   String                    defaultLayout      = null;
     //
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
@@ -61,29 +63,17 @@ public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
         }
         //
         AppContext appContext = config.getAppContext();
-        Map<String, RenderEngine> engineMap = new HashMap<>();
-        Map<String, String> renderMapping = new HashMap<>();
         List<RenderDefinition> renderInfoList = appContext.findBindingBean(RenderDefinition.class);
         for (RenderDefinition renderInfo : renderInfoList) {
             if (renderInfo == null) {
                 continue;
             }
-            logger.info("web -> renderType {} mappingTo {}.", StringUtils.join(renderInfo.getRenderSet().toArray(), ","), renderInfo.toString());
-            String renderInfoID = renderInfo.getID();
-            engineMap.put(renderInfoID, renderInfo.newEngine(appContext));
-            //
-            List<String> renderSet = renderInfo.getRenderSet();
-            for (String renderName : renderSet) {
-                renderMapping.put(renderName.toUpperCase(), renderInfoID);
+            Render renderData = renderInfo.getRenderInfo();
+            logger.info("web -> renderName {} specialMimeType {}.", renderData.name(), renderData.specialMimeType());
+            if (StringUtils.isNotBlank(renderData.specialMimeType())) {
+                this.specialMimeTypeMap.put(renderData.name().toUpperCase(), renderData.specialMimeType());
             }
-        }
-        //
-        this.engineMap = new HashMap<>();
-        for (String key : renderMapping.keySet()) {
-            //
-            String keyMapping = renderMapping.get(key);
-            RenderEngine engine = engineMap.get(keyMapping);
-            this.engineMap.put(key, engine);
+            this.engineMap.put(renderData.name().toUpperCase(), renderInfo.newEngine(appContext));
         }
         //
         Settings settings = appContext.getEnvironment().getSettings();
@@ -109,6 +99,9 @@ public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
         Method targetMethod = info.targetMethod();
         if (targetMethod != null && targetMethod.isAnnotationPresent(Produces.class)) {
             Produces pro = targetMethod.getAnnotation(Produces.class);
+            if (pro == null) {
+                pro = targetMethod.getDeclaringClass().getAnnotation(Produces.class);
+            }
             if (pro != null && !StringUtils.isBlank(pro.value())) {
                 String proValue = pro.value();
                 render.viewType(proValue);
@@ -117,16 +110,23 @@ public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
             }
         }
     }
-    private void configContentType(RenderInvoker renderInvoker, String type) {
-        if (StringUtils.isBlank(type)) {
+    private void configContentType(RenderInvoker renderInvoker, String viewType) {
+        if (StringUtils.isBlank(viewType)) {
             return;
         }
         //
         HttpServletResponse httpResponse = renderInvoker.getHttpResponse();
-        String oriMimeType = httpResponse.getContentType();
-        String newMimeType = renderInvoker.getMimeType(type);
-        if (StringUtils.isNotBlank(newMimeType) && !StringUtils.equalsIgnoreCase(oriMimeType, newMimeType)) {
-            httpResponse.setContentType(newMimeType);//用定义的配置
+        String oldMimeType = httpResponse.getContentType();
+        String newMimeType = this.specialMimeTypeMap.get(viewType);
+        if (StringUtils.isBlank(newMimeType)) {
+            newMimeType = renderInvoker.getMimeType(viewType);
+            if (StringUtils.isBlank(newMimeType)) {
+                newMimeType = oldMimeType;
+            }
+        }
+        //
+        if (!StringUtils.equalsIgnoreCase(oldMimeType, newMimeType)) {
+            httpResponse.setContentType(newMimeType);//用新的配置
         }
     }
     @Override
@@ -158,8 +158,8 @@ public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
         if (render == null) {
             return false;
         }
-        String engineType = render.viewType();
-        RenderEngine engine = this.engineMap.get(engineType);
+        String viewType = render.viewType();
+        RenderEngine engine = this.engineMap.get(viewType);
         if (engine == null) {
             return false;
         }
@@ -191,7 +191,7 @@ public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
             render.put(this.placeholder, tmpWriter.toString());
             if (engine.exist(layoutFile)) {
                 render.renderTo(layoutFile);
-                configContentType(render, engineType);
+                configContentType(render, viewType);
                 engine.process(render, render.getHttpResponse().getWriter());
                 return true;
             } else {
@@ -200,7 +200,7 @@ public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
         } else {
             if (engine.exist(newViewName)) {
                 render.renderTo(newViewName);
-                configContentType(render, engineType);
+                configContentType(render, viewType);
                 engine.process(render, render.getHttpResponse().getWriter());
                 return true;
             } else {

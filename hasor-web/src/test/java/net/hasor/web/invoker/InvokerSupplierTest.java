@@ -1,6 +1,6 @@
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
-import net.hasor.web.WebApiBinder;
+import net.hasor.web.Mapping;
 import net.hasor.web.WebModule;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
@@ -19,7 +19,7 @@ public class InvokerSupplierTest extends AbstractWeb30BinderDataTest {
         //
         HttpServletRequest httpRequest = super.mockRequest("GET", new URL("http://www.hasor.net/query_param.do?byteParam=123&bigInteger=321"), appContext);
         HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
-        InvokerSupplier supplier = new InvokerSupplier(appContext, httpRequest, httpResponse);
+        InvokerSupplier supplier = new InvokerSupplier(PowerMockito.mock(Mapping.class), appContext, httpRequest, httpResponse);
         //
         //
         assert supplier.getHttpRequest() == httpRequest;

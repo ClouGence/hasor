@@ -86,7 +86,7 @@ public abstract class AbstractBinder implements ApiBinder {
     public <T> NamedBindingBuilder<T> bindType(final Class<T> type) {
         BeanBuilder builder = this.getBeanBuilder();
         BindInfoBuilder<T> typeBuilder = builder.createInfoAdapter(type);
-        return new BindingBuilderImpl<T>(typeBuilder);
+        return new BindingBuilderImpl<>(typeBuilder);
     }
     @Override
     public <T> void bindToCreater(BindInfo<T> info, Supplier<? extends BeanCreaterListener<?>> listener) {

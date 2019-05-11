@@ -19,9 +19,11 @@ import net.hasor.core.setting.xml.DefaultXmlNode;
 import net.hasor.utils.Iterators;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
+import net.hasor.web.Mapping;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -140,6 +142,7 @@ public class AbstractWebTest {
         HttpSession mockSession = PowerMockito.mock(HttpSession.class);
         PowerMockito.when(request.getSession()).thenReturn(mockSession);
         PowerMockito.when(request.getSession(anyBoolean())).thenReturn(mockSession);
+        PowerMockito.when(request.getRequestDispatcher(anyString())).thenReturn(PowerMockito.mock(RequestDispatcher.class));
         //
         PowerMockito.when(request.getHeader(anyString())).thenAnswer((Answer<String>) invocation -> {
             if (appContext == null) {
@@ -227,10 +230,10 @@ public class AbstractWebTest {
     }
     //
     //
-    protected Invoker newInvoker(HttpServletRequest request, AppContext appContext) {
-        return new InvokerSupplier(appContext, request, PowerMockito.mock(HttpServletResponse.class));
+    protected Invoker newInvoker(Mapping mapping, HttpServletRequest request, AppContext appContext) {
+        return new InvokerSupplier(mapping, appContext, request, PowerMockito.mock(HttpServletResponse.class));
     }
-    protected Invoker newInvoker(HttpServletRequest request, HttpServletResponse response, final AppContext appContext) {
-        return new InvokerSupplier(appContext, request, response);
+    protected Invoker newInvoker(Mapping mapping, HttpServletRequest request, HttpServletResponse response, final AppContext appContext) {
+        return new InvokerSupplier(mapping, appContext, request, response);
     }
 }

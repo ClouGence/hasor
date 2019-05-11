@@ -18,10 +18,11 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
-import net.hasor.web.Invoker;
+import net.hasor.web.Mapping;
 import net.hasor.web.annotation.Async;
 import net.hasor.web.annotation.HttpMethod;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -31,7 +32,7 @@ import java.util.function.Predicate;
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InMappingDef implements InMapping {
+public class InMappingDef implements Mapping {
     private final int                 index;
     private       BindInfo<?>         targetType;
     private       String              mappingTo;
@@ -141,10 +142,12 @@ public class InMappingDef implements InMapping {
      * 首先测试路径是否匹配，然后判断Restful实例是否支持这个 请求方法。
      * @return 返回测试结果。
      */
-    public boolean matchingMapping(Invoker invoker) {
-        String httpMethod = invoker.getHttpRequest().getMethod();
-        String requestPath = invoker.getRequestPath();
-        Hasor.assertIsNotNull(requestPath, "requestPath is null.");
+    public boolean matchingMapping(HttpServletRequest request) {
+        Hasor.assertIsNotNull(request, "request is null.");
+        //
+        String httpMethod = request.getMethod();
+        String requestPath = evalRequestPath(request);
+        //
         if (!requestPath.matches(this.mappingToMatches)) {
             return false;
         }
@@ -162,22 +165,21 @@ public class InMappingDef implements InMapping {
      * 调用目标
      * @throws Throwable 异常抛出
      */
-    public final Method findMethod(final Invoker invoker) {
-        String requestPath = invoker.getRequestPath();
-        Hasor.assertIsNotNull(requestPath, "requestPath is null.");
+    public final Method findMethod(HttpServletRequest request) {
+        String requestPath = evalRequestPath(request);
         if (!requestPath.matches(this.mappingToMatches)) {
             return null;
         }
         //
-        String httpMethod = invoker.getHttpRequest().getMethod();
+        String httpMethod = request.getMethod();
         Method targetMethod = this.httpMapping.get(httpMethod.trim().toUpperCase());
         if (targetMethod == null) {
             targetMethod = this.httpMapping.get(HttpMethod.ANY);
         }
         return targetMethod;
     }
-    public boolean isAsync(Invoker invoker) {
-        Method targetMethod = this.findMethod(invoker);
+    public boolean isAsync(HttpServletRequest request) {
+        Method targetMethod = this.findMethod(request);
         if (targetMethod == null) {
             return false;
         }
@@ -186,13 +188,17 @@ public class InMappingDef implements InMapping {
     }
     //
     @Override
-    public Object newInstance(Invoker invoker) throws Throwable {
-        return invoker.getAppContext().getInstance(getTargetType());
-    }
-    //
-    @Override
     public String toString() {
         return String.format("pattern=%s ,methodSet=%s ,type %s", //
                 this.mappingTo, StringUtils.join(this.httpMapping.keySet().toArray(), ","), this.getTargetType());
+    }
+    //
+    private String evalRequestPath(HttpServletRequest request) {
+        String contextPath = request.getContextPath();
+        String requestPath = request.getRequestURI();
+        if (requestPath.startsWith(contextPath)) {
+            requestPath = requestPath.substring(contextPath.length());
+        }
+        return requestPath;
     }
 }

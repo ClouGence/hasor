@@ -80,10 +80,6 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
         return this.webApiBinder.mappingTo(morePatterns);
     }
     @Override
-    public void loadMappingTo(Class<?> clazz) {
-        this.webApiBinder.loadMappingTo(clazz);
-    }
-    @Override
     public void addServletListener(BindInfo<? extends ServletContextListener> targetRegister) {
         this.webApiBinder.addServletListener(targetRegister);
     }
@@ -108,11 +104,7 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
         this.webApiBinder.loadMimeType(reader);
     }
     @Override
-    public RenderEngineBindingBuilder suffix(String[] morePatterns) {
-        return this.webApiBinder.suffix(morePatterns);
-    }
-    @Override
-    public void loadRender(Class<?> renderClass) {
-        this.webApiBinder.loadRender(renderClass);
+    public RenderEngineBindingBuilder addRender(String renderName, String toMimeType) {
+        return this.webApiBinder.addRender(renderName, toMimeType);
     }
 }

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
-import net.hasor.web.Invoker;
-
 import javax.servlet.FilterChain;
 import java.util.concurrent.Future;
 /**
@@ -23,5 +21,5 @@ import java.util.concurrent.Future;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface ExceuteCaller {
-    public Future<Object> invoke(Invoker invoker, FilterChain chain) throws Throwable;
+    public Future<Object> invoke(FilterChain chain) throws Throwable;
 }

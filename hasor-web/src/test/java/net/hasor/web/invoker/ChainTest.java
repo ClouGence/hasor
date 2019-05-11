@@ -1,7 +1,5 @@
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
-import net.hasor.web.Invoker;
-import net.hasor.web.InvokerChain;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import net.hasor.web.invoker.filters.AbstractInvokerFilter;
@@ -52,13 +50,12 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
         //
         HttpServletRequest httpRequest = mockRequest("post", new URL("http://www.hasor.net/query_param.do?byteParam=123&bigInteger=321"), appContext);
         HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
-        Invoker invoker = invokerContext.newInvoker(httpRequest, httpResponse);
-        ExceuteCaller caller = invokerContext.genCaller(invoker);
+        ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
         //
         assert !Demo1CallerFilter.isDoCall();
         assert !Demo2CallerFilter.isDoCall();
         assert !Demo3CallerFilter.isDoCall();
-        Object o = caller.invoke(invoker, null).get();
+        Object o = caller.invoke(null).get();
         assert Demo1CallerFilter.isDoCall();
         assert Demo2CallerFilter.isDoCall();
         assert !Demo3CallerFilter.isDoCall();
@@ -94,13 +91,12 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
         //
         HttpServletRequest httpRequest = mockRequest("post", new URL("http://www.hasor.net/abc.html"), appContext);
         HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
-        Invoker invoker = invokerContext.newInvoker(httpRequest, httpResponse);
-        ExceuteCaller caller = invokerContext.genCaller(invoker);
+        ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
         //
         assert !Demo1CallerFilter.isDoCall();
         assert !Demo2CallerFilter.isDoCall();
         assert !Demo3CallerFilter.isDoCall();
-        Object o = caller.invoke(invoker, null).get();
+        Object o = caller.invoke(null).get();
         assert Demo1CallerFilter.isDoCall();
         assert Demo2CallerFilter.isDoCall();
         assert !Demo3CallerFilter.isDoCall();
@@ -129,10 +125,9 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
         //
         HttpServletRequest httpRequest = mockRequest("post", new URL("http://www.hasor.net/query_param.do?byteParam=123&bigInteger=321"), appContext);
         HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
-        Invoker invoker = invokerContext.newInvoker(httpRequest, httpResponse);
-        ExceuteCaller caller = invokerContext.genCaller(invoker);
+        ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
         //
-        caller.invoke(invoker, null).get();
+        caller.invoke(null).get();
         assert sortData.size() == 2;
         assert sortData.get(0).equalsIgnoreCase("Filter_0");
         assert sortData.get(1).equalsIgnoreCase("Filter_1");
@@ -160,10 +155,9 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
         //
         HttpServletRequest httpRequest = mockRequest("post", new URL("http://www.hasor.net/query_param.do?byteParam=123&bigInteger=321"), appContext);
         HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
-        Invoker invoker = invokerContext.newInvoker(httpRequest, httpResponse);
-        ExceuteCaller caller = invokerContext.genCaller(invoker);
+        ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
         //
-        caller.invoke(invoker, null).get();
+        caller.invoke(null).get();
         assert sortData.size() == 2;
         assert sortData.get(0).equalsIgnoreCase("Filter_1");
         assert sortData.get(1).equalsIgnoreCase("Filter_0");
@@ -193,10 +187,9 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
         //
         HttpServletRequest httpRequest = mockRequest("post", new URL("http://www.hasor.net/test_abc.do"), appContext);
         HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
-        Invoker invoker = invokerContext.newInvoker(httpRequest, httpResponse);
-        ExceuteCaller caller = invokerContext.genCaller(invoker);
+        ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
         //
-        caller.invoke(invoker, null).get();
+        caller.invoke(null).get();
         assert sortData.size() == 1;
         assert sortData.get(0).equalsIgnoreCase("Servlet_0");
     }
@@ -225,10 +218,9 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
         //
         HttpServletRequest httpRequest = mockRequest("post", new URL("http://www.hasor.net/test_abc.do"), appContext);
         HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
-        Invoker invoker = invokerContext.newInvoker(httpRequest, httpResponse);
-        ExceuteCaller caller = invokerContext.genCaller(invoker);
+        ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
         //
-        caller.invoke(invoker, null).get();
+        caller.invoke(null).get();
         assert sortData.size() == 1;
         assert sortData.get(0).equalsIgnoreCase("Servlet_1");
     }

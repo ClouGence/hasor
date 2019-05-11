@@ -16,6 +16,7 @@
 package net.hasor.web;
 import net.hasor.core.BindInfo;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 /**
  * 控制器映射信息
@@ -31,9 +32,26 @@ public interface Mapping {
     /** 获取映射的地址 */
     public String getMappingTo();
 
+    /** 获取映射的地址的正则表达式形式 */
+    public String getMappingToMatches();
+
+    /**
+     * 首先测试路径是否匹配，然后判断Restful实例是否支持这个 请求方法。
+     * @return 返回测试结果。
+     */
+    public boolean matchingMapping(HttpServletRequest request);
+
     /** 获取方法 */
     public String[] getHttpMethodSet();
 
     /** 获取方法 */
     public Method getHttpMethod(String httpMethod);
+
+    /**
+     * 获取调用目标的方法
+     * @throws Throwable 异常抛出
+     */
+    public Method findMethod(HttpServletRequest request);
+
+    public boolean isAsync(HttpServletRequest request);
 }

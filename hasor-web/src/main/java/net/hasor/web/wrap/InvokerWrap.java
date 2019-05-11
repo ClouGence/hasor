@@ -16,10 +16,10 @@
 package net.hasor.web.wrap;
 import net.hasor.core.AppContext;
 import net.hasor.web.Invoker;
+import net.hasor.web.Mapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Set;
 /**
  * {@link Invoker} 接口包装器
  * @version : 2017-01-10
@@ -44,28 +44,20 @@ public class InvokerWrap implements Invoker {
         return this.dataContext.getHttpResponse();
     }
     @Override
-    public Set<String> keySet() {
-        return this.dataContext.keySet();
+    public Mapping ownerMapping() {
+        return this.dataContext.ownerMapping();
     }
     @Override
-    public Object get(String key) {
-        return this.dataContext.get(key);
+    public <T> T fillForm(Class<? extends T> formType, T bean) {
+        return this.dataContext.fillForm(formType, bean);
     }
     @Override
-    public void remove(String key) {
-        this.dataContext.remove(key);
-    }
-    @Override
-    public void put(String key, Object value) {
-        this.dataContext.put(key, value);
+    public boolean isLockKey(String key) {
+        return this.dataContext.isLockKey(key);
     }
     @Override
     public void lockKey(String key) {
         this.dataContext.lockKey(key);
-    }
-    @Override
-    public String getRequestPath() {
-        return this.dataContext.getRequestPath();
     }
     @Override
     public String getMimeType(String suffix) {

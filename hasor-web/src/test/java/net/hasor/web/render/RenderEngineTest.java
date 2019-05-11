@@ -4,8 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import net.hasor.core.AppContext;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.io.IOUtils;
-import net.hasor.web.Invoker;
-import net.hasor.web.InvokerData;
 import net.hasor.web.WebModule;
 import net.hasor.web.invoker.AbstractWeb30BinderDataTest;
 import net.hasor.web.invoker.InMappingDef;
@@ -22,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
 
@@ -42,7 +39,7 @@ public class RenderEngineTest extends AbstractWeb30BinderDataTest {
         //
         this.appContext = hasor.setMainSettings("META-INF/hasor-framework/web-hconfig.xml").build((WebModule) apiBinder -> {
             apiBinder.installModule(new RenderWebPlugin());
-            apiBinder.suffix("html").bind(new ArraysRenderEngine(//
+            apiBinder.addRender("html").bind(new ArraysRenderEngine(//
                     IOUtils.readLines(ResourcesUtils.getResourceAsStream("/net_hasor_web_render/directory_map_default.cfg"), "utf-8")//
             ));
             //
@@ -58,8 +55,10 @@ public class RenderEngineTest extends AbstractWeb30BinderDataTest {
     }
     @Test
     public void chainTest1() throws Throwable {
-        final Set<String> responseType = new HashSet<>();
+        HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"), appContext);
         HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
+        //
+        final Set<String> responseType = new HashSet<>();
         PowerMockito.doAnswer((Answer<Void>) invocation -> {
             responseType.add(invocation.getArguments()[0].toString());
             return null;
@@ -69,13 +68,7 @@ public class RenderEngineTest extends AbstractWeb30BinderDataTest {
         //
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new HashMap<>());
-        Invoker mockInvoker = newInvoker(mockRequest("post", new URL("http://www.hasor.net/abc.do"), appContext), servletResponse, appContext);
-        Invoker invoker = invokerContext.newInvoker(mockInvoker.getHttpRequest(), mockInvoker.getHttpResponse());
-        //
-        InvokerData data = PowerMockito.mock(InvokerData.class);
-        Method targetMethod = mappingDef.findMethod(invoker);
-        PowerMockito.when(data.targetMethod()).thenReturn(targetMethod);
-        invokerContext.genCaller(invoker).invoke(invoker, null).get();
+        invokerContext.genCaller(servletRequest, servletResponse).invoke(null).get();
         //
         JSONObject jsonObject = null;
         try {
@@ -98,10 +91,13 @@ public class RenderEngineTest extends AbstractWeb30BinderDataTest {
         assert responseType.size() == 1;
         assert responseType.contains("test/html");
     }
+    //
     @Test
     public void chainTest2() throws Throwable {
         final Set<String> responseType = new HashSet<>();
+        HttpServletRequest servletRequest = mockRequest("get", new URL("http://www.hasor.net/abc.do"), appContext);
         HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
+        //
         PowerMockito.doAnswer((Answer<Void>) invocation -> {
             responseType.add(invocation.getArguments()[0].toString());
             return null;
@@ -110,21 +106,14 @@ public class RenderEngineTest extends AbstractWeb30BinderDataTest {
         PowerMockito.when(servletResponse.getWriter()).thenReturn(new PrintWriter(stringWriter));
         //
         final Set<String> dispatcher = new HashSet<>();
-        HttpServletRequest request = mockRequest("get", new URL("http://www.hasor.net/abc.do"), appContext);
-        PowerMockito.when(request.getRequestDispatcher(anyString())).then(invocation -> {
+        PowerMockito.when(servletRequest.getRequestDispatcher(anyString())).then(invocation -> {
             dispatcher.add(invocation.getArguments()[0].toString());
             return PowerMockito.mock(RequestDispatcher.class);
         });
         //
-        Invoker mockInvoker = newInvoker(request, servletResponse, appContext);
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new HashMap<>());
-        Invoker invoker = invokerContext.newInvoker(mockInvoker.getHttpRequest(), mockInvoker.getHttpResponse());
-        //
-        InvokerData data = PowerMockito.mock(InvokerData.class);
-        Method targetMethod = mappingDef.findMethod(invoker);
-        PowerMockito.when(data.targetMethod()).thenReturn(targetMethod);
-        invokerContext.genCaller(invoker).invoke(invoker, null).get();
+        invokerContext.genCaller(servletRequest, servletResponse).invoke(null).get();
         //
         // 没有命中任何模板配置，因此走了 getRequestDispatcher ，但是成功设置了 viewType 为 json，因此 ContentType 等于 test/json
         assert stringWriter.toString().equals("");
@@ -132,9 +121,11 @@ public class RenderEngineTest extends AbstractWeb30BinderDataTest {
         assert responseType.size() == 1;
         assert responseType.contains("test/json");
     }
+    //
     @Test
     public void chainTest3() throws Throwable {
         final Set<String> responseType = new HashSet<>();
+        HttpServletRequest servletRequest = mockRequest("head", new URL("http://www.hasor.net/abc.do"), appContext);
         HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
         PowerMockito.doAnswer((Answer<Void>) invocation -> {
             responseType.add(invocation.getArguments()[0].toString());
@@ -144,21 +135,14 @@ public class RenderEngineTest extends AbstractWeb30BinderDataTest {
         PowerMockito.when(servletResponse.getWriter()).thenReturn(new PrintWriter(stringWriter));
         //
         final Set<String> dispatcher = new HashSet<>();
-        HttpServletRequest request = mockRequest("head", new URL("http://www.hasor.net/abc.do"), appContext);
-        PowerMockito.when(request.getRequestDispatcher(anyString())).then(invocation -> {
+        PowerMockito.when(servletRequest.getRequestDispatcher(anyString())).then(invocation -> {
             dispatcher.add(invocation.getArguments()[0].toString());
             return PowerMockito.mock(RequestDispatcher.class);
         });
         //
-        Invoker mockInvoker = newInvoker(request, servletResponse, appContext);
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new HashMap<>());
-        Invoker invoker = invokerContext.newInvoker(mockInvoker.getHttpRequest(), mockInvoker.getHttpResponse());
-        //
-        InvokerData data = PowerMockito.mock(InvokerData.class);
-        Method targetMethod = mappingDef.findMethod(invoker);
-        PowerMockito.when(data.targetMethod()).thenReturn(targetMethod);
-        invokerContext.genCaller(invoker).invoke(invoker, null).get();
+        invokerContext.genCaller(servletRequest, servletResponse).invoke(null).get();
         //
         // 没有命中任何模板配置，因此走了 getRequestDispatcher ，由于 case 自己设置了 ContentType 同时没有设置 @Produces 因此采用用户自己的。
         assert stringWriter.toString().equals("");
@@ -166,10 +150,13 @@ public class RenderEngineTest extends AbstractWeb30BinderDataTest {
         assert responseType.size() == 1;
         assert responseType.contains("abcdefg");
     }
+    //
     @Test
     public void chainTest4() throws Throwable {
         final ArrayList<String> responseType = new ArrayList<>();
+        HttpServletRequest servletRequest = mockRequest("options", new URL("http://www.hasor.net/abc.do"), appContext);
         HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
+        //
         PowerMockito.doAnswer((Answer<Void>) invocation -> {
             responseType.add(invocation.getArguments()[0].toString());
             return null;
@@ -178,21 +165,14 @@ public class RenderEngineTest extends AbstractWeb30BinderDataTest {
         PowerMockito.when(servletResponse.getWriter()).thenReturn(new PrintWriter(stringWriter));
         //
         final Set<String> dispatcher = new HashSet<>();
-        HttpServletRequest request = mockRequest("options", new URL("http://www.hasor.net/abc.do"), appContext);
-        PowerMockito.when(request.getRequestDispatcher(anyString())).then(invocation -> {
+        PowerMockito.when(servletRequest.getRequestDispatcher(anyString())).then(invocation -> {
             dispatcher.add(invocation.getArguments()[0].toString());
             return PowerMockito.mock(RequestDispatcher.class);
         });
         //
-        Invoker mockInvoker = newInvoker(request, servletResponse, appContext);
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new HashMap<>());
-        Invoker invoker = invokerContext.newInvoker(mockInvoker.getHttpRequest(), mockInvoker.getHttpResponse());
-        //
-        InvokerData data = PowerMockito.mock(InvokerData.class);
-        Method targetMethod = mappingDef.findMethod(invoker);
-        PowerMockito.when(data.targetMethod()).thenReturn(targetMethod);
-        invokerContext.genCaller(invoker).invoke(invoker, null).get();
+        invokerContext.genCaller(servletRequest, servletResponse).invoke(null).get();
         //
         // 没有命中任何模板配置，因此走了 getRequestDispatcher ，
         //  - case 中 @Produces 和 setContentType 同时生效但 renderTo 并没有把 viewType 设置为空，因此会导致三次 setContentType
@@ -203,10 +183,13 @@ public class RenderEngineTest extends AbstractWeb30BinderDataTest {
         assert responseType.get(1).equals("abcdefg");
         assert responseType.get(2).equals("test/html");
     }
+    //
     @Test
     public void chainTest5() throws Throwable {
         final ArrayList<String> responseType = new ArrayList<>();
+        HttpServletRequest servletRequest = mockRequest("put", new URL("http://www.hasor.net/abc.do"), appContext);
         HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
+        //
         PowerMockito.doAnswer((Answer<Void>) invocation -> {
             responseType.add(invocation.getArguments()[0].toString());
             return null;
@@ -214,18 +197,12 @@ public class RenderEngineTest extends AbstractWeb30BinderDataTest {
         StringWriter stringWriter = new StringWriter();
         PowerMockito.when(servletResponse.getWriter()).thenReturn(new PrintWriter(stringWriter));
         //
-        HttpServletRequest request = mockRequest("put", new URL("http://www.hasor.net/abc.do"), appContext);
         //
-        Invoker mockInvoker = newInvoker(request, servletResponse, appContext);
         InvokerContext invokerContext = new InvokerContext();
         invokerContext.initContext(appContext, new HashMap<>());
-        Invoker invoker = invokerContext.newInvoker(mockInvoker.getHttpRequest(), mockInvoker.getHttpResponse());
         //
-        InvokerData data = PowerMockito.mock(InvokerData.class);
-        Method targetMethod = mappingDef.findMethod(invoker);
-        PowerMockito.when(data.targetMethod()).thenReturn(targetMethod);
         try {
-            invokerContext.genCaller(invoker).invoke(invoker, null).get();
+            invokerContext.genCaller(servletRequest, servletResponse).invoke(null).get();
             assert false;
         } catch (Exception e) {
             assert e.getMessage().contains("annotation @Produces already exists, or viewType is locked");

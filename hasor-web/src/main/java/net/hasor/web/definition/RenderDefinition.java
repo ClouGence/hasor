@@ -16,35 +16,48 @@
 package net.hasor.web.definition;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.utils.StringUtils;
 import net.hasor.web.RenderEngine;
+import net.hasor.web.annotation.Render;
 
-import java.util.List;
+import java.lang.annotation.Annotation;
 /**
  * 渲染引擎定义。
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RenderDefinition {
-    private List<String>                     renderSet = null;
-    private BindInfo<? extends RenderEngine> bindInfo  = null;
+    private Render                           renderInfo = null;
+    private BindInfo<? extends RenderEngine> bindInfo   = null;
     //
-    public RenderDefinition(List<String> renderSet, BindInfo<? extends RenderEngine> bindInfo) {
-        this.renderSet = renderSet;
+    public RenderDefinition(String renderName, String specialMimeType, BindInfo<? extends RenderEngine> bindInfo) {
+        this.renderInfo = new Render() {
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return Render.class;
+            }
+            @Override
+            public String name() {
+                return renderName;
+            }
+            @Override
+            public String specialMimeType() {
+                return specialMimeType;
+            }
+        };
         this.bindInfo = bindInfo;
     }
     //
     @Override
     public String toString() {
-        return String.format("type %s pattern=%s ,uriPatternType=%s", //
-                RenderDefinition.class, StringUtils.join(this.renderSet.toArray(), ","), this.bindInfo.toString());
+        return String.format("rendName=%s specialMimeType=%s ,toBindID=%s", //
+                this.renderInfo.name(), this.renderInfo.specialMimeType(), this.bindInfo.getBindID());
     }
     //
     public String getID() {
         return this.bindInfo.getBindID();
     }
-    public List<String> getRenderSet() {
-        return this.renderSet;
+    public Render getRenderInfo() {
+        return this.renderInfo;
     }
     public RenderEngine newEngine(AppContext appContext) throws Throwable {
         RenderEngine engine = appContext.getInstance(this.bindInfo);

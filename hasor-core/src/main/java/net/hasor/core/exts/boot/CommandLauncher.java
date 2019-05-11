@@ -13,30 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.invoker.beans;
-import net.hasor.core.AppContext;
-import net.hasor.web.RenderEngine;
-import net.hasor.web.RenderInvoker;
-import net.hasor.web.annotation.Render;
-
-import java.io.IOException;
-import java.io.Writer;
+package net.hasor.core.exts.boot;
 /**
- * @version : 2017-01-08
+ *
+ * @version : 2018-08-04
  * @author 赵永春 (zyc@hasor.net)
  */
-@Render(name = "jspx")
-public class TestRenderEngine implements RenderEngine {
-    @Override
-    public void initEngine(AppContext appContext) throws Throwable {
-        //
-    }
-    @Override
-    public void process(RenderInvoker invoker, Writer writer) throws Throwable {
-        //
-    }
-    @Override
-    public boolean exist(String template) throws IOException {
-        return false;//
-    }
+public interface CommandLauncher {
+    public void run(String[] args) throws Throwable;
 }

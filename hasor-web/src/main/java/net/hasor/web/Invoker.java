@@ -15,9 +15,12 @@
  */
 package net.hasor.web;
 import net.hasor.core.AppContext;
+import net.hasor.utils.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Set;
 /**
  * 请求调用
@@ -43,21 +46,46 @@ public interface Invoker extends MimeType {
     /** 获取 {@link HttpServletResponse} 对象。*/
     public HttpServletResponse getHttpResponse();
 
+    /** 所属 Mapping */
+    public Mapping ownerMapping();
+
     /** 获取数据容器中已经保存的数据 keys 。*/
-    public Set<String> keySet();
+    public default Set<String> keySet() {
+        Enumeration<String> names = this.getHttpRequest().getAttributeNames();
+        HashSet<String> nameSet = new HashSet<>();
+        while (names.hasMoreElements()) {
+            nameSet.add(names.nextElement());
+        }
+        return nameSet;
+    }
+
+    /** 将Request中的参数填充到 formType 类型对象上，formType 的创建将会使用 {@link AppContext#getInstance(Class)} 方法。 */
+    public default <T> T fillForm(Class<? extends T> formType) {
+        return this.fillForm(formType, this.getAppContext().getInstance(formType));
+    }
+
+    /** 将Request中的参数填充到 formType 类型对象上，类型实例由参数指定 */
+    public <T> T fillForm(Class<? extends T> formType, T bean);
 
     /**
      * 从数据池中获取数据
      * @param key 数据key
      */
-    public Object get(String key);
+    public default Object get(String key) {
+        return this.getHttpRequest().getAttribute(key);
+    }
 
     /**
      * 从数据池中删除数据，如果尝试删除已经被锁定的key，会引发 {@link UnsupportedOperationException} 类型异常。
      * @see #lockKey(String)
      * @param key 数据key
      */
-    public void remove(String key);
+    public default void remove(String key) {
+        if (StringUtils.isBlank(key) || this.isLockKey(key)) {
+            throw new UnsupportedOperationException("the key '" + key + "' is lock key.");
+        }
+        this.getHttpRequest().removeAttribute(key);
+    }
 
     /**
      /**
@@ -66,7 +94,17 @@ public interface Invoker extends MimeType {
      * @param key 数据key
      * @param value 数据 value
      */
-    public void put(String key, Object value);
+    public default void put(String key, Object value) {
+        if (StringUtils.isBlank(key) || this.isLockKey(key)) {
+            throw new UnsupportedOperationException("the key '" + key + "' is lock key.");
+        }
+        this.getHttpRequest().setAttribute(key, value);
+    }
+
+    /**
+     * 判断一个 key 是否被 lock 了。
+     */
+    public boolean isLockKey(String key);
 
     /**
      * 将一个 key 进行锁定。
@@ -84,5 +122,12 @@ public interface Invoker extends MimeType {
      }
      return requestPath;
      </pre>*/
-    public String getRequestPath();
+    public default String getRequestPath() {
+        String contextPath = this.getHttpRequest().getContextPath();
+        String requestPath = this.getHttpRequest().getRequestURI();
+        if (requestPath.startsWith(contextPath)) {
+            requestPath = requestPath.substring(contextPath.length());
+        }
+        return requestPath;
+    }
 }

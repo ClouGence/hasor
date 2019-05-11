@@ -18,6 +18,7 @@ package net.hasor.utils;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 /**
  * <p>Operations on arrays, primitive arrays (like <code>int[]</code>) and

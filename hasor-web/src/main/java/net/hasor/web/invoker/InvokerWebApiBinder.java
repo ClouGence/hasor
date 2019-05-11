@@ -20,10 +20,9 @@ import net.hasor.core.Hasor;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.provider.InstanceProvider;
+import net.hasor.utils.CheckUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.*;
-import net.hasor.web.annotation.MappingTo;
-import net.hasor.web.annotation.Render;
 import net.hasor.web.definition.*;
 import net.hasor.web.mime.MimeTypeSupplier;
 import net.hasor.web.startup.RuntimeFilter;
@@ -35,10 +34,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
 import java.io.IOException;
 import java.io.Reader;
-import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 /**
  * 该类是{@link WebApiBinder}接口实现。
  * @version : 2017-01-10
@@ -116,7 +116,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     // ------------------------------------------------------------------------------------------------------
     @Override
     public FilterBindingBuilder<InvokerFilter> filter(String[] morePatterns) {
-        List<String> uriPatterns = checkEmpty(Arrays.asList(morePatterns), "Filter patterns is empty.");
+        List<String> uriPatterns = CheckUtils.checkEmpty(Arrays.asList(morePatterns), "Filter patterns is empty.");
         return new FiltersModuleBinder<InvokerFilter>(InvokerFilter.class, UriPatternType.SERVLET, uriPatterns) {
             @Override
             protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
@@ -126,7 +126,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     @Override
     public FilterBindingBuilder<InvokerFilter> filterRegex(String[] regexes) {
-        List<String> uriPatterns = checkEmpty(Arrays.asList(regexes), "Filter patterns is empty.");
+        List<String> uriPatterns = CheckUtils.checkEmpty(Arrays.asList(regexes), "Filter patterns is empty.");
         return new FiltersModuleBinder<InvokerFilter>(InvokerFilter.class, UriPatternType.REGEX, uriPatterns) {
             @Override
             protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
@@ -143,7 +143,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     // ------------------------------------------------------------------------------------------------------
     @Override
     public FilterBindingBuilder<Filter> jeeFilter(final String[] morePatterns) throws NullPointerException {
-        List<String> uriPatterns = checkEmpty(Arrays.asList(morePatterns), "Filter patterns is empty.");
+        List<String> uriPatterns = CheckUtils.checkEmpty(Arrays.asList(morePatterns), "Filter patterns is empty.");
         return new FiltersModuleBinder<Filter>(Filter.class, UriPatternType.SERVLET, uriPatterns) {
             @Override
             protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
@@ -153,7 +153,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     @Override
     public FilterBindingBuilder<Filter> jeeFilterRegex(final String[] regexes) throws NullPointerException {
-        List<String> uriPatterns = checkEmpty(Arrays.asList(regexes), "Filter patterns is empty.");
+        List<String> uriPatterns = CheckUtils.checkEmpty(Arrays.asList(regexes), "Filter patterns is empty.");
         return new FiltersModuleBinder<Filter>(Filter.class, UriPatternType.REGEX, uriPatterns) {
             @Override
             protected void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
@@ -215,7 +215,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     }
     @Override
     public ServletBindingBuilder jeeServlet(final String[] morePatterns) {
-        return new ServletsModuleBuilder(checkEmpty(Arrays.asList(morePatterns), "Servlet patterns is empty."));
+        return new ServletsModuleBuilder(CheckUtils.checkEmpty(Arrays.asList(morePatterns), "Servlet patterns is empty."));
     }
     //
     private class ServletsModuleBuilder implements ServletBindingBuilder {
@@ -248,13 +248,14 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             for (String pattern : this.uriPatterns) {
                 jeeServlet(index, pattern, servletRegister, initParams);
             }
+            logger.info("mapingTo[Servlet] -> bindID ‘{}’ mappingTo: ‘{}’.", servletRegister.getBindID(), this.uriPatterns);
         }
     }
     //
     // ------------------------------------------------------------------------------------------------------
     @Override
     public <T> MappingToBindingBuilder<T> mappingTo(String[] morePatterns) {
-        checkEmpty(Arrays.asList(morePatterns), "mappingTo patterns is empty.");
+        CheckUtils.checkEmpty(Arrays.asList(morePatterns), "mappingTo patterns is empty.");
         return new MappingToBindingBuilder<T>() {
             @Override
             public void with(int index, Class<? extends T> targetKey) {
@@ -275,117 +276,42 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
                     InMappingDef define = new InMappingDef(index, targetInfo, pattern, Matchers.anyMethod(), true);
                     bindType(InMappingDef.class).uniqueName().toInstance(define);
                 });
+                logger.info("mapingTo[Object] -> bindID ‘{}’ mappingTo: ‘{}’.", targetInfo.getBindID(), morePatterns);
             }
         };
     }
-    public void loadMappingTo(Class<?> mabeMappingType) {
-        Hasor.assertIsNotNull(mabeMappingType, "class is null.");
-        int modifier = mabeMappingType.getModifiers();
-        if (checkIn(modifier, Modifier.INTERFACE) || checkIn(modifier, Modifier.ABSTRACT) || mabeMappingType.isArray() || mabeMappingType.isEnum()) {
-            throw new IllegalStateException(mabeMappingType.getName() + " must be normal Bean");
-        }
-        MappingTo[] annotationsByType = mabeMappingType.getAnnotationsByType(MappingTo.class);
-        if (annotationsByType == null || annotationsByType.length == 0) {
-            throw new IllegalStateException(mabeMappingType.getName() + " must be configure @MappingTo");
-        }
-        //
-        if (HttpServlet.class.isAssignableFrom(mabeMappingType)) {
-            Arrays.stream(annotationsByType).peek(mappingTo -> {
-                logger.info("mapingTo[Servlet] -> type ‘{}’ mappingTo: ‘{}’.", mabeMappingType.getName(), mappingTo.value());
-            }).forEach(mappingTo -> {
-                jeeServlet(mappingTo.value()).with((Class<? extends HttpServlet>) mabeMappingType);
-            });
-        } else {
-            Arrays.stream(annotationsByType).peek(mappingTo -> {
-                logger.info("mapingTo[Object] -> type ‘{}’ mappingTo: ‘{}’.", mabeMappingType.getName(), mappingTo.value());
-            }).forEach(mappingTo -> {
-                mappingTo(mappingTo.value()).with(mabeMappingType);
-            });
-        }
-    }
     //
     // ------------------------------------------------------------------------------------------------------
-    /**加载Render注解配置的渲染器。*/
-    public void loadRender(Class<?> renderClass) {
-        Hasor.assertIsNotNull(renderClass, "class is null.");
-        int modifier = renderClass.getModifiers();
-        if (checkIn(modifier, Modifier.INTERFACE) || checkIn(modifier, Modifier.ABSTRACT) || renderClass.isArray() || renderClass.isEnum()) {
-            throw new IllegalStateException(renderClass.getName() + " must be normal Bean");
-        }
-        if (!renderClass.isAnnotationPresent(Render.class)) {
-            throw new IllegalStateException(renderClass.getName() + " must be configure @Render");
-        }
-        if (!RenderEngine.class.isAssignableFrom(renderClass)) {
-            throw new IllegalStateException(renderClass.getName() + " must be implements RenderEngine.");
-        }
-        //
-        Render renderInfo = renderClass.getAnnotation(Render.class);
-        if (renderInfo != null && renderInfo.value().length > 0) {
-            String[] renderName = renderInfo.value();
-            checkEmpty(Arrays.asList(renderName), "Render patterns is empty.");
-            suffix(renderInfo.value()).bind((Class<? extends RenderEngine>) renderClass);
-        }
-    }
-    //
-    // ------------------------------------------------------------------------------------------------------
-    /**拦截这些后缀的请求，这些请求会被渲染器渲染。*/
-    public WebApiBinder.RenderEngineBindingBuilder suffix(String[] suffixArrays) {
-        return new RenderEngineBindingBuilderImpl(checkEmpty(Arrays.asList(suffixArrays), "Render patterns is empty.")) {
+    /** 拦截这些后缀的请求，这些请求会被渲染器渲染。*/
+    public WebApiBinder.RenderEngineBindingBuilder addRender(String renderName, String specialMimeType) {
+        return new RenderEngineBindingBuilderImpl(Hasor.assertIsNotNull(renderName, "Render renderName is empty."), specialMimeType) {
             @Override
-            protected void bindSuffix(List<String> suffixList, BindInfo<? extends RenderEngine> bindInfo) {
-                if (suffixList == null || suffixList.isEmpty()) {
-                    return;
-                }
-                suffixList = Collections.unmodifiableList(suffixList);
-                bindType(RenderDefinition.class).toInstance(new RenderDefinition(suffixList, bindInfo)).toInfo();
+            protected void bindRender(String renderName, String specialMimeType, BindInfo<? extends RenderEngine> bindInfo) {
+                bindType(RenderDefinition.class).nameWith(renderName).toInstance(new RenderDefinition(renderName, specialMimeType, bindInfo));
             }
         };
     }
     //
     // ------------------------------------------------------------------------------------------------------
     private abstract class RenderEngineBindingBuilderImpl implements WebApiBinder.RenderEngineBindingBuilder {
-        private List<String> suffixList;
-        public RenderEngineBindingBuilderImpl(List<String> suffixList) {
-            this.suffixList = suffixList.stream()   //
-                    .filter(StringUtils::isNotBlank)// 1.非空
-                    .map(String::toUpperCase)       // 2.转大写
-                    .distinct()                     // 3.去重
-                    .collect(Collectors.toList());  //
+        private String renderName;
+        private String specialMimeType;
+        public RenderEngineBindingBuilderImpl(String renderName, String specialMimeType) {
+            this.renderName = renderName;
+            this.specialMimeType = specialMimeType;
         }
         @Override
         public <T extends RenderEngine> void bind(Class<T> renderEngineType) {
-            bindSuffix(this.suffixList, bindType(RenderEngine.class).uniqueName().to(renderEngineType).toInfo());
+            bindRender(this.renderName, this.specialMimeType, bindType(RenderEngine.class).uniqueName().to(renderEngineType).toInfo());
         }
         @Override
         public void bind(Supplier<? extends RenderEngine> renderEngineProvider) {
-            bindSuffix(this.suffixList, bindType(RenderEngine.class).uniqueName().toProvider(renderEngineProvider).toInfo());
+            bindRender(this.renderName, this.specialMimeType, bindType(RenderEngine.class).uniqueName().toProvider(renderEngineProvider).toInfo());
         }
         @Override
         public void bind(BindInfo<? extends RenderEngine> renderEngineInfo) {
-            bindSuffix(this.suffixList, Hasor.assertIsNotNull(renderEngineInfo));
+            bindRender(this.renderName, this.specialMimeType, Hasor.assertIsNotNull(renderEngineInfo));
         }
-        protected abstract void bindSuffix(List<String> suffixList, BindInfo<? extends RenderEngine> bindInfo);
-    }
-    //
-    // ------------------------------------------------------------------------------------------------------
-    //
-    /** 通过位运算决定check是否在data里。 */
-    private boolean checkIn(final int data, final int check) {
-        int or = data | check;
-        return or == data;
-    }
-    private static List<String> checkEmpty(List<String> patternArrays, String npeMessage) {
-        boolean needThrow = true;
-        for (String pattern : patternArrays) {
-            if (StringUtils.isBlank(pattern)) {
-                continue;
-            }
-            needThrow = false;
-            break;
-        }
-        if (needThrow) {
-            throw new NullPointerException(npeMessage);
-        }
-        return patternArrays;
+        protected abstract void bindRender(String renderName, String toMimeName, BindInfo<? extends RenderEngine> bindInfo);
     }
 }

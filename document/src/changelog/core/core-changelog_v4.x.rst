@@ -2,7 +2,18 @@
 Release Hasor v3.x
 --------------------
 
-Hasor v4.0.0 (2019-05-?)
+Hasor v4.0.1 (2019-05-?)
+------------------------------------
+**Web**
+    - BeanContainer 增加当配置新 Bean 发生异常时自动回滚新 Bean 的能力
+    - @Render 注解功能从描述URL请求尾缀，变为描述渲染器名字，同时可以执行这个渲染器使用的特殊MimeType。
+    - InMapping 接口删除
+    - Invoker 接口新增 ownerMapping、fillForm 方法。
+    - 对应TestCase 调整。
+*Boot*
+    - Boot 项目不在单独出现而是只保留一个启动器，使用时建议用户结合SpringBoot 的启动器使用更加方便。
+
+Hasor v4.0.0 (2019-05-09)
 ------------------------------------
 **JDK8相关 **
     - 依赖JDK版本从 jdk6 升级到 jdk8，代码层面全面迁移到 jdk8 语法并深入结合 jdk8 相关特性。

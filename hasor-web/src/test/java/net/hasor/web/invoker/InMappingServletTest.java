@@ -18,6 +18,8 @@ public class InMappingServletTest {
         HttpServletRequest servletRequest = PowerMockito.mock(HttpServletRequest.class);
         PowerMockito.when(invoker.getRequestPath()).thenReturn(mappingTo);
         PowerMockito.when(servletRequest.getMethod()).thenReturn(httpMethod);
+        PowerMockito.when(servletRequest.getRequestURI()).thenReturn(mappingTo);
+        PowerMockito.when(servletRequest.getContextPath()).thenReturn("");
         PowerMockito.when(invoker.getHttpRequest()).thenReturn(servletRequest);
         PowerMockito.when(invoker.getAppContext()).thenReturn(appContext);
         return invoker;
@@ -34,18 +36,18 @@ public class InMappingServletTest {
         InMappingServlet mappingDef = new InMappingServlet(1, targetInfo, "/execute.do", null, servletContext);
         //
         Invoker invoker1 = newInvoker("/execute.do", "GET", appContext);
-        Method method1 = mappingDef.findMethod(invoker1);
+        Method method1 = mappingDef.findMethod(invoker1.getHttpRequest());
         assert method1 != null;
         //
         Invoker invoker2 = newInvoker("/execute.do", "POST", appContext);
-        assert mappingDef.findMethod(invoker1) == mappingDef.findMethod(invoker2);
+        assert mappingDef.findMethod(invoker1.getHttpRequest()) == mappingDef.findMethod(invoker2.getHttpRequest());
         //
         assert mappingDef.getHttpMethodSet().length == 1;
         assert mappingDef.getIndex() == 1;
         assert mappingDef.getTargetType() == targetInfo;
         assert "/execute.do".equals(mappingDef.getMappingTo());
         //
-        Object newInstance = mappingDef.newInstance(invoker1);
+        Object newInstance = appContext.getInstance(mappingDef.getTargetType());
         mappingDef.beanCreated((HttpServlet) newInstance, targetInfo);
         assert TestServlet.isStaticInitServlet();
         TestServlet.resetInit();
