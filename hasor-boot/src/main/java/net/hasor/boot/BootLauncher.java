@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.exts.boot;
+package net.hasor.boot;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
@@ -38,7 +38,7 @@ import java.util.List;
  */
 public final class BootLauncher implements Module, ContextStartListener, ContextShutdownListener {
     private static Logger              logger    = LoggerFactory.getLogger(BootLauncher.class);
-    private static BasicFuture<Object> future    = new BasicFuture<Object>();
+    private static BasicFuture<Object> future    = new BasicFuture<>();
     static         String[]            mainArgs  = null;
     static         boolean             usingBoot = false;
     //
@@ -118,7 +118,7 @@ public final class BootLauncher implements Module, ContextStartListener, Context
         //
         try {
             for (CommandLauncherDef def : cmdSet) {
-                def.run(mainArgs);
+                def.run(appContext, mainArgs);
             }
         } catch (Throwable e) {
             e.printStackTrace();

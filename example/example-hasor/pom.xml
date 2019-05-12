@@ -59,6 +59,12 @@
             <artifactId>hasor-db</artifactId>
             <version>${hasor.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.hasor</groupId>
+            <artifactId>hasor-boot</artifactId>
+            <version>${hasor.version}</version>
+        </dependency>
+
 
         <!-- Spring Boot -->
         <dependency>

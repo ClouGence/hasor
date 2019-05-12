@@ -11,7 +11,7 @@ Hasor v4.0.1 (2019-05-?)
     - Invoker 接口新增 ownerMapping、fillForm 方法。
     - 对应TestCase 调整。
 *Boot*
-    - Boot 项目不在单独出现而是只保留一个启动器，使用时建议用户结合SpringBoot 的启动器使用更加方便。
+    - Boot Maven插件项目不在单独设立，而是只保留一个启动器，使用时建议用户结合 SpringBoot使用更加方便。
 
 Hasor v4.0.0 (2019-05-09)
 ------------------------------------

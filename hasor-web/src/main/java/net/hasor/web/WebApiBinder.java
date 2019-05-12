@@ -85,7 +85,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     public default void loadMappingTo(Set<Class<?>> mabeMappingToSet) {
         this.loadMappingTo(mabeMappingToSet, aClass -> {
             int modifier = aClass.getModifiers();
-            if (AsmTools.checkIn(modifier, Modifier.INTERFACE) || AsmTools.checkIn(modifier, Modifier.ABSTRACT) || aClass.isArray() || aClass.isEnum()) {
+            if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || aClass.isArray() || aClass.isEnum()) {
                 return false;
             }
             MappingTo[] annotationsByType = aClass.getAnnotationsByType(MappingTo.class);
@@ -111,7 +111,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     public default void loadMappingTo(Class<?> mabeMappingType) {
         Hasor.assertIsNotNull(mabeMappingType, "class is null.");
         int modifier = mabeMappingType.getModifiers();
-        if (AsmTools.checkIn(modifier, Modifier.INTERFACE) || AsmTools.checkIn(modifier, Modifier.ABSTRACT) || mabeMappingType.isArray() || mabeMappingType.isEnum()) {
+        if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || mabeMappingType.isArray() || mabeMappingType.isEnum()) {
             throw new IllegalStateException(mabeMappingType.getName() + " must be normal Bean");
         }
         MappingTo[] annotationsByType = mabeMappingType.getAnnotationsByType(MappingTo.class);
@@ -449,7 +449,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     public default void loadRender(Class<?> renderClass) {
         Hasor.assertIsNotNull(renderClass, "class is null.");
         int modifier = renderClass.getModifiers();
-        if (AsmTools.checkIn(modifier, Modifier.INTERFACE) || AsmTools.checkIn(modifier, Modifier.ABSTRACT) || renderClass.isArray() || renderClass.isEnum()) {
+        if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || renderClass.isArray() || renderClass.isEnum()) {
             throw new IllegalStateException(renderClass.getName() + " must be normal Bean");
         }
         if (!renderClass.isAnnotationPresent(Render.class)) {
@@ -461,7 +461,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         //
         Render renderInfo = renderClass.getAnnotation(Render.class);
         if (renderInfo != null) {
-            addRender(renderInfo.name(), renderInfo.specialMimeType()).bind((Class<? extends RenderEngine>) renderClass);
+            addRender(renderInfo.name(), renderInfo.specialMimeType()).to((Class<? extends RenderEngine>) renderClass);
         }
     }
 
@@ -484,18 +484,18 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     /** 负责配置RenderEngine。*/
     public static interface RenderEngineBindingBuilder {
         /**绑定实现。*/
-        public <T extends RenderEngine> void bind(Class<T> renderEngineType);
+        public <T extends RenderEngine> void to(Class<T> renderEngineType);
 
         /**绑定实现。*/
-        public default void bind(RenderEngine renderEngine) {
-            this.bind(new InstanceProvider<>(renderEngine));
+        public default void toInstance(RenderEngine renderEngine) {
+            this.toProvider(new InstanceProvider<>(renderEngine));
         }
 
         /**绑定实现。*/
-        public void bind(Supplier<? extends RenderEngine> renderEngineProvider);
+        public void toProvider(Supplier<? extends RenderEngine> renderEngineProvider);
 
         /**绑定实现。*/
-        public void bind(BindInfo<? extends RenderEngine> renderEngineInfo);
+        public void bindToInfo(BindInfo<? extends RenderEngine> renderEngineInfo);
     }
     //
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

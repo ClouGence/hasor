@@ -73,7 +73,7 @@ public class ConsoleModule implements LifeModule {
         this.bindAddress = new InetSocketAddress(finalBindAddress(hostString), consolePort);
         //
         String consoleInBoundStr = settings.getString("hasor.tConsole.inBound", "local,127.0.0.1");
-        ArrayList<String> addressList = new ArrayList<String>();
+        ArrayList<String> addressList = new ArrayList<>();
         if (StringUtils.isNotBlank(consoleInBoundStr)) {
             for (String item : consoleInBoundStr.split(",")) {
                 String itemTrim = item.trim();
@@ -97,7 +97,7 @@ public class ConsoleModule implements LifeModule {
                 addressList.add("127.0.0.1");
             }
         }
-        this.consoleInBound = addressList.toArray(new String[addressList.size()]);
+        this.consoleInBound = addressList.toArray(new String[0]);
         //
         apiBinder.bindType(CommandFinder.class).toInstance(Hasor.autoAware(apiBinder.getEnvironment(), new Manager()));
         ConsoleApiBinder consoleBinder = apiBinder.tryCast(ConsoleApiBinder.class);
@@ -144,12 +144,7 @@ public class ConsoleModule implements LifeModule {
         logger.info("tConsole -> - bindSocket at {}", this.bindAddress);
         //
         // .注册shutdown事件，以保证在shutdown时可以停止Telnet。
-        Hasor.addShutdownListener(appContext.getEnvironment(), new EventListener<AppContext>() {
-            @Override
-            public void onEvent(String event, AppContext eventData) throws Throwable {
-                onStop(appContext);
-            }
-        });
+        Hasor.addShutdownListener(appContext.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> onStop(appContext));
     }
     @Override
     public void onStop(AppContext appContext) {

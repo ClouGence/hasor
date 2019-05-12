@@ -138,9 +138,7 @@ public class AopClassConfig {
         Method[] targetMethodArrays = this.getSuperClass().getMethods();
         for (Method targetMethod : targetMethodArrays) {
             int dataModifiers = targetMethod.getModifiers();
-            if (/**/AsmTools.checkIn(dataModifiers, Modifier.PRIVATE) || //
-                    AsmTools.checkIn(dataModifiers, Modifier.FINAL) || //
-                    AsmTools.checkIn(dataModifiers, Modifier.STATIC)) {
+            if (AsmTools.checkOr(dataModifiers, Modifier.PRIVATE, Modifier.FINAL, Modifier.STATIC)) {
                 continue;
             }
             //

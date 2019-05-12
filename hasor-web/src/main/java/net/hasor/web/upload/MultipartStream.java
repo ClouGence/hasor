@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 package net.hasor.web.upload;
-import net.hasor.web.FileUploadException;
 import net.hasor.web.upload.util.Streams;
 
 import java.io.*;
 
 import static java.lang.String.format;
-import static net.hasor.web.FileUploadException.UploadErrorCodes.*;
+import static net.hasor.web.upload.FileUploadException.UploadErrorCodes.*;
 /**
  * <p> Low level API for processing file uploads.
  *

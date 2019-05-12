@@ -12,7 +12,7 @@ public class UtilsTest {
     @Test
     public void j2eeMapConfigTest() throws Throwable {
         ServletContext servletContext = PowerMockito.mock(ServletContext.class);
-        Map<String, String> initParams = new HashMap<String, String>();
+        Map<String, String> initParams = new HashMap<>();
         initParams.put("a1", "a1v");
         initParams.put("a2", "a2v");
         initParams.put("a3", "a3v");

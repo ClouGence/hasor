@@ -21,6 +21,7 @@ import net.hasor.db.transaction.interceptor.Transactional;
 import net.hasor.web.WebController;
 import net.hasor.web.annotation.Any;
 import net.hasor.web.annotation.MappingTo;
+import net.hasor.web.annotation.Produces;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -36,6 +37,7 @@ public class Login extends WebController {
     //
     @Any
     @Transactional // 数据库事务控制注解
+    @Produces("htm")
     public void execute() throws IOException, SQLException {
         String account = getPara("username");
         String password = getPara("password");
@@ -45,10 +47,10 @@ public class Login extends WebController {
         if (userInfo != null && password.equals(userInfo.getPassword())) {
             putData("messageInfo", "login ok.");
             putData("userInfo", userInfo);
-            renderTo("htm", "succeed.htm");
+            renderTo("succeed.htm");
         } else {
             putData("messageInfo", "login faile.");
-            renderTo("htm", "failed.htm");
+            renderTo("failed.htm");
         }
     }
 }

@@ -39,7 +39,7 @@ public class RenderEngineTest extends AbstractWeb30BinderDataTest {
         //
         this.appContext = hasor.setMainSettings("META-INF/hasor-framework/web-hconfig.xml").build((WebModule) apiBinder -> {
             apiBinder.installModule(new RenderWebPlugin());
-            apiBinder.addRender("html").bind(new ArraysRenderEngine(//
+            apiBinder.addRender("html").toInstance(new ArraysRenderEngine(//
                     IOUtils.readLines(ResourcesUtils.getResourceAsStream("/net_hasor_web_render/directory_map_default.cfg"), "utf-8")//
             ));
             //

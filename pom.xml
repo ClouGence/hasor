@@ -92,6 +92,8 @@
         <module>hasor-core</module>
         <module>hasor-db</module>
         <module>hasor-web</module>
+        <module>hasor-boot</module>
+
         <module>hasor-dataql</module>
         <module>hasor-tconsole</module>
         <module>hasor-rsf/rsf-framework</module>

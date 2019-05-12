@@ -29,7 +29,7 @@ import net.hasor.web.annotation.MappingTo;
  * @version : 2015年12月25日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class StartModule extends WebModule implements LifeModule {
+public class StartModule implements WebModule, LifeModule {
     /** init 阶段 */
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
@@ -38,7 +38,7 @@ public class StartModule extends WebModule implements LifeModule {
         apiBinder.setEncodingCharacter("UTF-8", "UTF-8");
         //
         // 设置freemarker渲染器
-        apiBinder.suffix("htm").bind(MyFreemarkerRender.class);
+        apiBinder.addRender("htm").to(MyFreemarkerRender.class);
         //
         // 扫描所有带有 @MappingTo 特征类并自动配置控制器
         apiBinder.loadMappingTo(apiBinder.findClass(MappingTo.class));

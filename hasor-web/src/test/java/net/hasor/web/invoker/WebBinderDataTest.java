@@ -1106,13 +1106,13 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
             BindInfo<TestRenderEngine> engineBindInfo1 = apiBinder.bindType(TestRenderEngine.class).asEagerSingleton().toInfo();
             BindInfo<TestRenderEngine> engineBindInfo2 = apiBinder.bindType(TestRenderEngine.class).toInfo();
             //
-            apiBinder.tryCast(WebApiBinder.class).addRender("htm1").bind(testRenderEngine);          // 1
-            apiBinder.tryCast(WebApiBinder.class).addRender("htm2").bind(testRenderEngineProvider);  // 2
-            apiBinder.tryCast(WebApiBinder.class).addRender("htm3").bind(TestRenderEngine.class);    // 3
-            apiBinder.tryCast(WebApiBinder.class).addRender("htm4").bind(engineBindInfo1);           // 4
-            apiBinder.tryCast(WebApiBinder.class).addRender("htm5").bind(engineBindInfo2);           // 5
+            apiBinder.tryCast(WebApiBinder.class).addRender("htm1").toInstance(testRenderEngine);           // 1
+            apiBinder.tryCast(WebApiBinder.class).addRender("htm2").toProvider(testRenderEngineProvider);   // 2
+            apiBinder.tryCast(WebApiBinder.class).addRender("htm3").to(TestRenderEngine.class);             // 3
+            apiBinder.tryCast(WebApiBinder.class).addRender("htm4").bindToInfo(engineBindInfo1);            // 4
+            apiBinder.tryCast(WebApiBinder.class).addRender("htm5").bindToInfo(engineBindInfo2);            // 5
             try {
-                apiBinder.tryCast(WebApiBinder.class).addRender("htm5").bind(engineBindInfo2);           // duplicate
+                apiBinder.tryCast(WebApiBinder.class).addRender("htm5").bindToInfo(engineBindInfo2);        // duplicate
                 assert false;
             } catch (IllegalStateException e) {
                 assert e.getMessage().startsWith("duplicate bind -> bindName 'htm5'");
@@ -1149,11 +1149,11 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
             BindInfo<TestRenderEngine> engineBindInfo1 = apiBinder.bindType(TestRenderEngine.class).asEagerSingleton().toInfo();
             BindInfo<TestRenderEngine> engineBindInfo2 = apiBinder.bindType(TestRenderEngine.class).toInfo();
             //
-            apiBinder.tryCast(WebApiBinder.class).addRender("htm1").bind(testRenderEngine);          // 1
-            apiBinder.tryCast(WebApiBinder.class).addRender("htm2").bind(testRenderEngineProvider);  // 2
-            apiBinder.tryCast(WebApiBinder.class).addRender("htm3").bind(TestRenderEngine.class);    // 3
-            apiBinder.tryCast(WebApiBinder.class).addRender("htm4").bind(engineBindInfo1);           // 4
-            apiBinder.tryCast(WebApiBinder.class).addRender("htm5").bind(engineBindInfo2);           // 5
+            apiBinder.tryCast(WebApiBinder.class).addRender("htm1").toInstance(testRenderEngine);           // 1
+            apiBinder.tryCast(WebApiBinder.class).addRender("htm2").toProvider(testRenderEngineProvider);   // 2
+            apiBinder.tryCast(WebApiBinder.class).addRender("htm3").to(TestRenderEngine.class);             // 3
+            apiBinder.tryCast(WebApiBinder.class).addRender("htm4").bindToInfo(engineBindInfo1);            // 4
+            apiBinder.tryCast(WebApiBinder.class).addRender("htm5").bindToInfo(engineBindInfo2);            // 5
         });
         //
         List<RenderDefinition> definitions = appContext.findBindingBean(RenderDefinition.class);

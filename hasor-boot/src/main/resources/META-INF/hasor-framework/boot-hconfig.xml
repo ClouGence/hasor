@@ -2,10 +2,10 @@
 <config xmlns="http://www.hasor.net/sechma/hasor-boot">
     <hasor>
         <!-- 框架配置，包扫描范围 -->
-        <loadPackages>net.hasor.core.exts.boot.*</loadPackages>
+        <loadPackages>net.hasor.boot.*</loadPackages>
         <!-- Binder扩展 -->
         <apiBinderSet>
-            <binder type="net.hasor.core.exts.boot.BootBinder">net.hasor.core.exts.boot.BootBinderCreater</binder>
+            <binder type="net.hasor.boot.BootBinder">net.hasor.boot.BootBinderCreater</binder>
         </apiBinderSet>
     </hasor>
 </config>

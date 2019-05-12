@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.exts.boot;
+package net.hasor.boot;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.utils.StringUtils;
 
-import java.util.function.Supplier;
+import java.util.Arrays;
+import java.util.function.Function;
+import java.util.stream.Stream;
 /**
  * 只有通过 Hasor Boot 启动才可以使用。
  * @version : 2018-08-04
@@ -52,18 +53,16 @@ public class BootBinderCreater implements ApiBinderCreater {
             }
             return BootLauncher.mainArgs[index];
         }
-        //
         @Override
-        public void addCommand(int checkArgsIndex, String commandName, Class<? extends CommandLauncher> launcherType) {
-            this.addCommand(checkArgsIndex, commandName, bindType(CommandLauncher.class).idWith(commandName).to(launcherType).toInfo());
-        }
-        @Override
-        public void addCommand(int checkArgsIndex, String commandName, CommandLauncher launcher) {
-            this.addCommand(checkArgsIndex, commandName, bindType(CommandLauncher.class).idWith(commandName).toInstance(launcher).toInfo());
-        }
-        @Override
-        public void addCommand(int checkArgsIndex, String commandName, Supplier<? extends CommandLauncher> launcherProvider) {
-            this.addCommand(checkArgsIndex, commandName, bindType(CommandLauncher.class).idWith(commandName).toProvider(launcherProvider).toInfo());
+        public void loadCommand(int checkArgsIndex, Class<?> launcherType) {
+            logger.info("tConsole -> new order {}.", launcherType);
+            Command[] commands = launcherType.getAnnotationsByType(Command.class);
+            BindInfo<? extends CommandLauncher> bindInfo = bindType(CommandLauncher.class).uniqueName().to((Class<? extends CommandLauncher>) launcherType).toInfo();
+            //
+            Arrays.stream(commands).filter(command -> command != null && command.value().length > 0)        //
+                    .flatMap((Function<Command, Stream<String>>) command -> Arrays.stream(command.value())) //
+                    .filter(StringUtils::isNotBlank)                                                        //
+                    .forEach(cmd -> addCommand(checkArgsIndex, cmd, bindInfo));                             //
         }
         @Override
         public void addCommand(int checkArgsIndex, String commandName, BindInfo<? extends CommandLauncher> launcherInfo) {
@@ -74,7 +73,7 @@ public class BootBinderCreater implements ApiBinderCreater {
                 throw new NullPointerException("commandName name undefined.");
             }
             CommandLauncherDef define = new CommandLauncherDef(checkArgsIndex, commandName, launcherInfo);
-            this.bindType(CommandLauncherDef.class).uniqueName().toInstance(Hasor.autoAware(getEnvironment(), define));
+            this.bindType(CommandLauncherDef.class).uniqueName().toInstance(define);
         }
     }
 }

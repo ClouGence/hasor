@@ -13,12 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.exts.boot;
 /**
- *
- * @version : 2018-08-04
- * @author 赵永春 (zyc@hasor.net)
+ * Hasor Boot 框架，可以为应用程序提供快速启动的入口。
  */
-public interface CommandLauncher {
-    public void run(String[] args) throws Throwable;
-}
+package net.hasor.boot;

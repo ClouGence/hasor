@@ -301,15 +301,15 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             this.specialMimeType = specialMimeType;
         }
         @Override
-        public <T extends RenderEngine> void bind(Class<T> renderEngineType) {
+        public <T extends RenderEngine> void to(Class<T> renderEngineType) {
             bindRender(this.renderName, this.specialMimeType, bindType(RenderEngine.class).uniqueName().to(renderEngineType).toInfo());
         }
         @Override
-        public void bind(Supplier<? extends RenderEngine> renderEngineProvider) {
+        public void toProvider(Supplier<? extends RenderEngine> renderEngineProvider) {
             bindRender(this.renderName, this.specialMimeType, bindType(RenderEngine.class).uniqueName().toProvider(renderEngineProvider).toInfo());
         }
         @Override
-        public void bind(BindInfo<? extends RenderEngine> renderEngineInfo) {
+        public void bindToInfo(BindInfo<? extends RenderEngine> renderEngineInfo) {
             bindRender(this.renderName, this.specialMimeType, Hasor.assertIsNotNull(renderEngineInfo));
         }
         protected abstract void bindRender(String renderName, String toMimeName, BindInfo<? extends RenderEngine> bindInfo);

@@ -17,8 +17,10 @@
 package net.hasor.web.upload;
 import net.hasor.core.Settings;
 import net.hasor.utils.ExceptionUtils;
-import net.hasor.web.*;
-import net.hasor.web.FileUploadException;
+import net.hasor.web.FileItem;
+import net.hasor.web.FileItemFactory;
+import net.hasor.web.FileItemHeaders;
+import net.hasor.web.FileItemStream;
 import net.hasor.web.upload.util.Closeable;
 import net.hasor.web.upload.util.HeadersSet;
 import net.hasor.web.upload.util.LimitedInputStream;
@@ -31,7 +33,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import static java.lang.String.format;
-import static net.hasor.web.FileUploadException.UploadErrorCodes.*;
+import static net.hasor.web.upload.FileUploadException.UploadErrorCodes.*;
 /**
  * <p>High level API for processing file uploads.</p>
  *
@@ -84,9 +86,9 @@ public class FileUpload {
     }
     // ----------------------------------------------------------- Data members
     /** The maximum size permitted for the complete request, as opposed to {@link #fileSizeMax}. A value of -1 indicates no maximum. */
-    private long sizeMax     = -1;
+    private long   sizeMax     = -1;
     /** The maximum size permitted for a single uploaded file, as opposed to {@link #sizeMax}. A value of -1 indicates no maximum. */
-    private long fileSizeMax = -1;
+    private long   fileSizeMax = -1;
     /** The content encoding to use when reading part headers. */
     private String headerEncoding;
     // ----------------------------------------------------- Property accessors
@@ -153,7 +155,7 @@ public class FileUpload {
      * @param request The  request.
      * @return An iterator to instances of <code>FileItemStream</code>
      *         parsed from the request, in the order that they were transmitted.
-     * @throws net.hasor.web.FileUploadException if there are problems reading/parsing the request or storing files.
+     * @throws net.hasor.web.upload.FileUploadException if there are problems reading/parsing the request or storing files.
      * @throws IOException An I/O error occurred. This may be a network
      *   error while communicating with the client or a problem while storing the uploaded content.
      */
@@ -167,7 +169,7 @@ public class FileUpload {
      * @throws FileUploadException if there are problems reading/parsing the request or storing files.
      */
     public List<FileItem> parseRequest(HttpServletRequest request, FileItemFactory factory) throws IOException {
-        List<FileItem> items = new ArrayList<FileItem>();
+        List<FileItem> items = new ArrayList<>();
         boolean successful = false;
         try {
             Iterator<FileItemStream> fileItems = this.getItemIterator(request);

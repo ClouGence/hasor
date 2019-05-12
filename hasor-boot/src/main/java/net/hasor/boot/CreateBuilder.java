@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.autoscan;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.boot;
+import net.hasor.core.Hasor;
 /**
- * 包含在搜索结果中
- * @version : 2016年4月3日
+ * Hasor 构造器
+ * @version : 2018-08-04
  * @author 赵永春 (zyc@hasor.net)
  */
-@Target({ ElementType.PACKAGE })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface SearchInclude {
+public interface CreateBuilder {
+    /** 构造 Hasor 容器，参数为 main 入口参数 */
+    public Hasor buildHasor(String[] args);
 }

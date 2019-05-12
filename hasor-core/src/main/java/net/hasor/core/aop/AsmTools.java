@@ -377,9 +377,23 @@ public class AsmTools implements Opcodes {
     }
     //
     /**通过位运算决定check是否在data里。*/
-    public static boolean checkIn(final int data, final int check) {
-        int or = data | check;
-        return or == data;
+    public static boolean checkAnd(final int data, int... check) {
+        for (int checkItem : check) {
+            int or = data | checkItem;
+            if (or != data) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public static boolean checkOr(final int data, int... check) {
+        for (int checkItem : check) {
+            int or = data | checkItem;
+            if (or == data) {
+                return true;
+            }
+        }
+        return false;
     }
     /**将一个Ljava/lang/Object;形式的字符串转化为java/lang/Object形式。*/
     public static String asmTypeToType(final String asmType) {
@@ -395,7 +409,7 @@ public class AsmTools implements Opcodes {
         if (resName.startsWith("java/") || resName.startsWith("javax/")) {
             return false;
         } else {
-            return AsmTools.checkIn(superClass.getModifiers(), Modifier.PUBLIC);
+            return AsmTools.checkAnd(superClass.getModifiers(), Modifier.PUBLIC);
         }
     }
     //

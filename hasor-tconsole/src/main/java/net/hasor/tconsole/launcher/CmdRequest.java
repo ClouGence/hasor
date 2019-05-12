@@ -53,7 +53,7 @@ public final class CmdRequest {
         this.requestArgs = StringUtils.isBlank(requestArgs) ? new String[0] : requestArgs.split(" ");
         this.bodyBuffer = new StringBuffer("");
         this.doClose = false;
-        this.attr = new HashMap<String, Object>();
+        this.attr = new HashMap<>();
         this.inputMultiLine = commandExecutor.inputMultiLine(this);
         this.status = this.inputMultiLine ? RequestStatus.Prepare : RequestStatus.Ready;
     }

@@ -89,7 +89,7 @@ public class FreemarkerRender implements RenderEngine {
         if (temp == null)
             return;
         //
-        HashMap<String, Object> data = new HashMap<String, Object>();
+        HashMap<String, Object> data = new HashMap<>();
         for (String key : renderData.keySet()) {
             data.put(key, renderData.get(key));
         }

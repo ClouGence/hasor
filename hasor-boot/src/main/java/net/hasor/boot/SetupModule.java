@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.autoscan;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.boot;
+import java.lang.annotation.*;
 /**
- * RSF命令
- * @version : 2016年4月3日
+ * @version : 2018-08-04
  * @author 赵永春 (zyc@hasor.net)
  */
-@Target({ ElementType.TYPE })
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Command {
-    public String[] value();
+@Target({ ElementType.TYPE })
+public @interface SetupModule {
+    /** Hasor 的 AppContext 生成器，用户构建各种不同环境的 AppContext */
+    public Class<? extends CreateBuilder> builder() default DefaultCreateBuilder.class;
+
+    /** 主配置文件名 */
+    public String config() default "hasor-config.xml";
+
+    /** 阻塞主进程的执行，直到收到一个停止信号为止。*/
+    public boolean join() default false;
 }

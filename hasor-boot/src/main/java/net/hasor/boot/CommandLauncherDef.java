@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.exts.boot;
+package net.hasor.boot;
 import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.utils.StringUtils;
 /**
@@ -23,11 +22,10 @@ import net.hasor.utils.StringUtils;
  * @version : 2016年4月3日
  * @author 赵永春 (zyc@hasor.net)
  */
-class CommandLauncherDef implements CommandLauncher, AppContextAware {
+class CommandLauncherDef implements CommandLauncher {
     private int                                 checkArgsIndex;
     private String                              commandName;
     private BindInfo<? extends CommandLauncher> bindInfo;
-    private AppContext                          appContext;
     //
     public CommandLauncherDef(int checkArgsIndex, String commandName, BindInfo<? extends CommandLauncher> bindInfo) {
         this.checkArgsIndex = checkArgsIndex;
@@ -38,11 +36,7 @@ class CommandLauncherDef implements CommandLauncher, AppContextAware {
         return this.checkArgsIndex;
     }
     @Override
-    public void setAppContext(AppContext appContext) {
-        this.appContext = appContext;
-    }
-    @Override
-    public void run(String[] args) throws Throwable {
+    public void run(AppContext appContext, String[] args) throws Throwable {
         if (args.length <= this.checkArgsIndex) {
             return;
         }
@@ -50,6 +44,6 @@ class CommandLauncherDef implements CommandLauncher, AppContextAware {
             return;
         }
         //
-        this.appContext.getInstance(this.bindInfo).run(args);
+        appContext.getInstance(this.bindInfo).run(appContext, args);
     }
 }

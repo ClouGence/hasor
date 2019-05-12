@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.exts.boot;
-import net.hasor.core.Hasor;
+package net.hasor.boot;
+import net.hasor.core.AppContext;
 /**
- * Hasor 构造器
+ *
  * @version : 2018-08-04
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface CreateBuilder {
-    /** 构造 Hasor 容器，参数为 main 入口参数 */
-    public Hasor buildHasor(String[] args);
+@FunctionalInterface
+public interface CommandLauncher {
+    public void run(AppContext appContext, String[] args) throws Throwable;
 }

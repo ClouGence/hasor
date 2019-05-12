@@ -13,7 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.hasor.boot;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 /**
- * 指令注解配置扫描加载器。
+ * RSF命令
+ * @version : 2016年4月3日
+ * @author 赵永春 (zyc@hasor.net)
  */
-package net.hasor.plugins.autoscan;
+@Target({ ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Command {
+    public String[] value();
+}

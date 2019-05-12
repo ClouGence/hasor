@@ -13,22 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.exts.boot;
-import java.lang.annotation.*;
+package net.hasor.boot;
+import net.hasor.core.Hasor;
 /**
+ * 默认的 Hasor 构造器。
  * @version : 2018-08-04
  * @author 赵永春 (zyc@hasor.net)
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE })
-public @interface SetupModule {
-    /** Hasor 的 AppContext 生成器，用户构建各种不同环境的 AppContext */
-    public Class<? extends CreateBuilder> builder() default DefaultCreateBuilder.class;
-
-    /** 主配置文件名 */
-    public String config() default "hasor-config.xml";
-
-    /** 阻塞主进程的执行，直到收到一个停止信号为止。*/
-    public boolean join() default false;
+public class DefaultCreateBuilder implements CreateBuilder {
+    public Hasor buildHasor(String[] args) {
+        return Hasor.create();
+    }
 }

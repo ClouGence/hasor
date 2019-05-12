@@ -13,15 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.exts.boot;
-import net.hasor.core.Hasor;
+package test.net.hasor.boot;
+import net.hasor.boot.BootLauncher;
+import net.hasor.boot.SetupModule;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Module;
 /**
- * 默认的 Hasor 构造器。
- * @version : 2018-08-04
+ * 启动服务端
+ * @version : 2014年9月12日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class DefaultCreateBuilder implements CreateBuilder {
-    public Hasor buildHasor(String[] args) {
-        return Hasor.create();
+@SetupModule()
+public class BootDemo implements Module {
+    public static void main(String[] args) {
+        BootLauncher.run(BootDemo.class, args);
+    }
+    //
+    @Override
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
+        //
+        System.out.println("HelloWord");
     }
 }

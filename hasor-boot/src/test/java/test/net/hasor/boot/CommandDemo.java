@@ -13,24 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.tconsole.alone;
+package test.net.hasor.boot;
+import net.hasor.boot.BootBinder;
+import net.hasor.boot.BootLauncher;
+import net.hasor.boot.SetupModule;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.tconsole.ConsoleApiBinder;
 /**
  * 启动服务端
  * @version : 2014年9月12日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ConsoleDemo {
-    public static void main(String[] args) throws Throwable {
-        //Server
-        Hasor.createAppContext((Module) apiBinder -> {
-            apiBinder.tryCast(ConsoleApiBinder.class).addCommand(new String[] { "hello" }, HelloWordExecutor.class);
+@SetupModule()
+public class CommandDemo implements Module {
+    public static void main(String[] args) {
+        args = new String[] { "hello" };
+        BootLauncher.run(CommandDemo.class, args);
+    }
+    //
+    @Override
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
+        apiBinder.tryCast(BootBinder.class).addCommand(0, "help", (appContext, args) -> {
+            System.out.println("show help");
         });
         //
-        System.out.println("server start.");
-        System.in.read();
+        apiBinder.tryCast(BootBinder.class).addCommand(0, "hello", (appContext, args) -> {
+            System.out.println("hello word!");
+        });
     }
 }
