@@ -20,7 +20,6 @@ import net.hasor.utils.Iterators;
 import net.hasor.utils.future.BasicFuture;
 import net.hasor.web.*;
 import net.hasor.web.definition.AbstractDefinition;
-import net.hasor.web.definition.WebPluginDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,12 +31,11 @@ import java.util.*;
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InvokerContext implements WebPluginCaller {
+public class InvokerContext {
     protected static Logger               logger         = LoggerFactory.getLogger(InvokerContext.class);
     private          AppContext           appContext     = null;
     private          Mapping[]            invokeArray    = new Mapping[0];
     private          AbstractDefinition[] filters        = new AbstractDefinition[0];
-    private          WebPlugin[]          plugins        = new WebPlugin[0];
     private          RootInvokerCreater   invokerCreater = null;
     //
     public void initContext(final AppContext appContext, final Map<String, String> configMap) throws Throwable {
@@ -49,14 +47,6 @@ public class InvokerContext implements WebPluginCaller {
         this.invokeArray = mappingList.toArray(new Mapping[0]);
         for (Mapping inMapping : this.invokeArray) {
             logger.info("mapingTo -> type ‘{}’ mappingTo: ‘{}’.", inMapping.getTargetType().getBindType(), inMapping.getMappingTo());
-        }
-        //
-        // .WebPlugin
-        List<WebPluginDefinition> pluginList = appContext.findBindingBean(WebPluginDefinition.class);
-        this.plugins = pluginList.toArray(new WebPlugin[0]);
-        for (WebPluginDefinition plugin : pluginList) {
-            plugin.initPlugin(appContext);
-            logger.info("webPlugin -> type ‘{}’.", plugin.toString());
         }
         //
         // .discover
@@ -128,18 +118,6 @@ public class InvokerContext implements WebPluginCaller {
             };
         }
         //
-        return new InvokerCaller(() -> invoker, this.filters, this);
-    }
-    @Override
-    public void beforeFilter(Invoker invoker, InvokerData define) {
-        for (WebPlugin plugin : plugins) {
-            plugin.beforeFilter(invoker, define);
-        }
-    }
-    @Override
-    public void afterFilter(Invoker invoker, InvokerData define) {
-        for (WebPlugin plugin : plugins) {
-            plugin.afterFilter(invoker, define);
-        }
+        return new InvokerCaller(() -> invoker, this.filters);
     }
 }

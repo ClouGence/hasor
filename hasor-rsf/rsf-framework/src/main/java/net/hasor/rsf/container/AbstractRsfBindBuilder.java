@@ -194,7 +194,7 @@ abstract class AbstractRsfBindBuilder implements RsfPublisher {
         }
         @Override
         public ConfigurationBuilder<T> toInstance(T instance) {
-            return this.toProvider(new InstanceProvider<T>(instance));
+            return this.toProvider(new InstanceProvider<>(instance));
         }
         //
         @Override

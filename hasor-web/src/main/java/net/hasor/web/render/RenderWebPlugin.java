@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
+public class RenderWebPlugin implements WebModule, InvokerFilter {
     protected Logger                    logger             = LoggerFactory.getLogger(getClass());
     private   AtomicBoolean             inited             = new AtomicBoolean(false);
     private   String                    layoutPath         = null;                    // 布局模版位置
@@ -52,8 +52,7 @@ public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
     //
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        apiBinder.addPlugin(this);
-        apiBinder.filter("/*").through(Integer.MAX_VALUE, this);
+        apiBinder.filter("/*").through(Integer.MIN_VALUE, this);
     }
     //
     @Override
@@ -85,31 +84,6 @@ public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
         this.logger.info("RenderPlugin init -> useLayout={}, layoutPath={}, templatePath={}, placeholder={}, defaultLayout={}",//
                 this.useLayout, this.layoutPath, this.templatePath, this.placeholder, this.defaultLayout);
     }
-    //
-    @Override
-    public void destroy() {
-    }
-    // - 在执行 Invoker 之前对 Invoker 的方法进行预分析，使其 @Produces 注解生效
-    @Override
-    public void beforeFilter(Invoker invoker, InvokerData info) {
-        if (!(invoker instanceof RenderInvoker)) {
-            return;
-        }
-        RenderInvoker render = (RenderInvoker) invoker;
-        Method targetMethod = info.targetMethod();
-        if (targetMethod != null && targetMethod.isAnnotationPresent(Produces.class)) {
-            Produces pro = targetMethod.getAnnotation(Produces.class);
-            if (pro == null) {
-                pro = targetMethod.getDeclaringClass().getAnnotation(Produces.class);
-            }
-            if (pro != null && !StringUtils.isBlank(pro.value())) {
-                String proValue = pro.value();
-                render.viewType(proValue);
-                configContentType(render, proValue);
-                render.lockViewType();
-            }
-        }
-    }
     private void configContentType(RenderInvoker renderInvoker, String viewType) {
         if (StringUtils.isBlank(viewType)) {
             return;
@@ -131,6 +105,23 @@ public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
     }
     @Override
     public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
+        // 在执行 Invoker 之前对 Invoker 的方法进行预分析，使其 @Produces 注解生效
+        if (invoker instanceof RenderInvoker) {
+            RenderInvoker render = (RenderInvoker) invoker;
+            Method targetMethod = invoker.ownerMapping().findMethod(invoker.getHttpRequest());
+            if (targetMethod != null && targetMethod.isAnnotationPresent(Produces.class)) {
+                Produces pro = targetMethod.getAnnotation(Produces.class);
+                if (pro == null) {
+                    pro = targetMethod.getDeclaringClass().getAnnotation(Produces.class);
+                }
+                if (pro != null && !StringUtils.isBlank(pro.value())) {
+                    String proValue = pro.value();
+                    render.viewType(proValue);
+                    configContentType(render, proValue);
+                    render.lockViewType();
+                }
+            }
+        }
         // .执行过滤器
         Object returnData = chain.doNext(invoker);
         //
@@ -149,9 +140,6 @@ public class RenderWebPlugin implements WebModule, WebPlugin, InvokerFilter {
             }
         }
         return returnData;
-    }
-    @Override
-    public void afterFilter(Invoker invoker, InvokerData info) {
     }
     //
     public boolean process(RenderInvoker render) throws Throwable {

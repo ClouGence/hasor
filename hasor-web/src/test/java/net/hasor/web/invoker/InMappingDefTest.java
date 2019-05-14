@@ -123,10 +123,10 @@ public class InMappingDefTest {
         assert mappingDef.findMethod(invoker5.getHttpRequest()) == null;
         //
         assert mappingDef.getHttpMethodSet().length == 4;
-        assert mappingDef.getHttpMethod("GET").getName().equals("execute1");
-        assert mappingDef.getHttpMethod("POST").getName().equals("execute2");
-        assert mappingDef.getHttpMethod("ADD").getName().equals("execute3");
-        assert mappingDef.getHttpMethod("DELETE").getName().equals("execute3");
+        assert mappingDef.findMethod("GET").getName().equals("execute1");
+        assert mappingDef.findMethod("POST").getName().equals("execute2");
+        assert mappingDef.findMethod("ADD").getName().equals("execute3");
+        assert mappingDef.findMethod("DELETE").getName().equals("execute3");
     }
     //
     @Test

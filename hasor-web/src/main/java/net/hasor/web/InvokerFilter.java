@@ -19,13 +19,15 @@ package net.hasor.web;
  * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
  */
+@FunctionalInterface
 public interface InvokerFilter {
     /**
      * 初始化过滤器
      * @param config 配置信息
      * @throws Throwable 初始化过程中发生异常。
      */
-    public void init(InvokerConfig config) throws Throwable;
+    public default void init(InvokerConfig config) throws Throwable {
+    }
 
     /**
      * 指定过滤器
@@ -36,5 +38,6 @@ public interface InvokerFilter {
     public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable;
 
     /** 销毁过滤器。 */
-    public void destroy();
+    public default void destroy() {
+    }
 }

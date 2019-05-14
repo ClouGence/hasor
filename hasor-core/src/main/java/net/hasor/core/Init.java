@@ -27,5 +27,4 @@ import java.lang.annotation.*;
 @Target({ ElementType.METHOD })
 @Documented
 public @interface Init {
-    public boolean accessible() default false;
 }

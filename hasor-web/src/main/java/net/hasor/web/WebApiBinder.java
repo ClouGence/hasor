@@ -209,30 +209,6 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     /**注册一个HttpSessionListener监听器。*/
     public void addSessionListener(BindInfo<? extends HttpSessionListener> targetRegister);
 
-    /**添加插件*/
-    public default void addPlugin(Class<? extends WebPlugin> webPlugin) {
-        Hasor.assertIsNotNull(webPlugin);
-        BindInfo<WebPlugin> bindInfo = this.bindType(WebPlugin.class).to(webPlugin).toInfo();
-        this.addPlugin(bindInfo);
-    }
-
-    /**添加插件*/
-    public default void addPlugin(WebPlugin webPlugin) {
-        Hasor.assertIsNotNull(webPlugin);
-        BindInfo<WebPlugin> bindInfo = this.bindType(WebPlugin.class).toInstance(webPlugin).toInfo();
-        this.addPlugin(bindInfo);
-    }
-
-    /**添加插件*/
-    public default void addPlugin(Supplier<? extends WebPlugin> webPlugin) {
-        Hasor.assertIsNotNull(webPlugin);
-        BindInfo<WebPlugin> bindInfo = this.bindType(WebPlugin.class).toProvider(webPlugin).toInfo();
-        this.addPlugin(bindInfo);
-    }
-
-    /**添加插件*/
-    public void addPlugin(BindInfo<? extends WebPlugin> webPlugin);
-
     /**添加 MappingDiscoverer*/
     public default void addDiscoverer(Class<? extends MappingDiscoverer> discoverer) {
         Hasor.assertIsNotNull(discoverer);

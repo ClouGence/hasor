@@ -44,8 +44,8 @@ public class ServiceDomain<T> extends MetaDataAdapter implements RsfBindInfo<T> 
     public ServiceDomain(Class<T> bindType) {
         this.bindType = bindType;
         this.asMessage = bindType.isAnnotationPresent(RsfMessage.class);
-        this.aliasNameMap = new HashMap<String, String>();
-        this.bindProtocols = new HashSet<String>();
+        this.aliasNameMap = new HashMap<>();
+        this.bindProtocols = new HashSet<>();
     }
     public String getBindID() {
         if (bindID == null) {

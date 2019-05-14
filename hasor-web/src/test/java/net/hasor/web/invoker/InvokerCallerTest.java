@@ -1,7 +1,7 @@
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.web.Invoker;
-import net.hasor.web.InvokerData;
+import net.hasor.web.InvokerFilter;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import net.hasor.web.invoker.beans.TestServlet;
@@ -15,6 +15,7 @@ import javax.servlet.AsyncContext;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -40,7 +41,7 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         assert !atomicBoolean.get();
         assert !TestServlet.isStaticCall();
         Invoker invoker1 = newInvoker(definitions.get(0), mockRequest("GET", new URL("http://www.hasor.net/abc.do"), appContext), appContext);
-        Future<Object> invoke1 = new InvokerCaller(() -> invoker1, null, null).invoke(chain);
+        Future<Object> invoke1 = new InvokerCaller(() -> invoker1, null).invoke(chain);
         assert TestServlet.isStaticCall();
         assert !atomicBoolean.get();
         assert invoke1.get() == null;
@@ -51,15 +52,29 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         assert !atomicBoolean.get();
         assert !TestServlet.isStaticCall();
         Invoker invoker2 = newInvoker(definitions.get(0), mockRequest("GET", new URL("http://www.hasor.net/hello.do"), appContext), appContext);
-        Future<Object> invoke2 = new InvokerCaller(() -> invoker2, null, null).invoke(chain);
+        Future<Object> invoke2 = new InvokerCaller(() -> invoker2, null).invoke(chain);
         assert !TestServlet.isStaticCall();
         assert atomicBoolean.get();
         assert invoke2.get() == null;
     }
     @Test
     public void basicTest2() throws Throwable {
+        final InvokerFilter webPluginCaller = (invoker, chain) -> {
+            Method targetMethod = invoker.ownerMapping().findMethod(invoker.getHttpRequest());
+            try {
+                assert targetMethod.getName().equals("execute");
+                assert targetMethod.getDeclaringClass() == SyncCallAction.class;
+                assert targetMethod.getParameters().length == 0;
+                return chain.doNext(invoker);
+            } finally {
+                assert targetMethod.getName().equals("execute");
+                assert targetMethod.getDeclaringClass() == SyncCallAction.class;
+                assert targetMethod.getParameters().length == 0;
+            }
+        };
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
             //
+            apiBinder.filter("/*").through(webPluginCaller);
             apiBinder.tryCast(WebApiBinder.class).loadMappingTo(SyncCallAction.class);
         });
         //
@@ -67,24 +82,6 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         assert definitions.size() == 1;
         final AtomicBoolean beforeFilterBoolean = new AtomicBoolean(false);
         final AtomicBoolean afterFilterBoolean = new AtomicBoolean(false);
-        final WebPluginCaller webPluginCaller = new WebPluginCaller() {
-            @Override
-            public void beforeFilter(Invoker invoker, InvokerData info) {
-                assert info.getMappingTo().getMappingTo().startsWith("/sync.do");
-                assert info.targetMethod().getName().equals("execute");
-                assert info.targetMethod().getDeclaringClass() == SyncCallAction.class;
-                assert info.getParameters().length == 0;
-                beforeFilterBoolean.set(true);
-            }
-            @Override
-            public void afterFilter(Invoker invoker, InvokerData info) {
-                assert info.getMappingTo().getMappingTo().startsWith("/sync.do");
-                assert info.targetMethod().getName().equals("execute");
-                assert info.targetMethod().getDeclaringClass() == SyncCallAction.class;
-                assert info.getParameters().length == 0;
-                afterFilterBoolean.set(true);
-            }
-        };
         //
         SyncCallAction.resetInit();
         beforeFilterBoolean.set(false);
@@ -93,7 +90,7 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         assert !afterFilterBoolean.get();
         assert !SyncCallAction.isStaticCall();
         Invoker invoker1 = newInvoker(definitions.get(0), mockRequest("POST", new URL("http://www.hasor.net/sync.do"), appContext), appContext);
-        new InvokerCaller(() -> invoker1, null, webPluginCaller).invoke(null).get();
+        new InvokerCaller(() -> invoker1, null).invoke(null).get();
         assert beforeFilterBoolean.get();
         assert afterFilterBoolean.get();
         assert SyncCallAction.isStaticCall();
@@ -105,7 +102,7 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         assert !afterFilterBoolean.get();
         assert !SyncCallAction.isStaticCall();
         Invoker invoker2 = newInvoker(definitions.get(0), mockRequest("GET", new URL("http://www.hasor.net/abcc.do"), appContext), appContext);
-        new InvokerCaller(() -> invoker2, null, webPluginCaller).invoke(null).get();
+        new InvokerCaller(() -> invoker2, null).invoke(null).get();
         assert !beforeFilterBoolean.get();
         assert !afterFilterBoolean.get();
         assert !SyncCallAction.isStaticCall();
@@ -133,7 +130,7 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         assert !asyncCall.get();
         assert !AsyncCallAction.isStaticCall();
         Invoker invoker = newInvoker(definitions.get(0), servletRequest, appContext);
-        Object o = new InvokerCaller(() -> invoker, null, null).invoke(null).get();
+        Object o = new InvokerCaller(() -> invoker, null).invoke(null).get();
         //
         assert asyncCall.get();
         assert AsyncCallAction.isStaticCall();
@@ -164,7 +161,7 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         assert !AsyncCallAction.isStaticCall();
         Invoker invoker = newInvoker(definitions.get(0), servletRequest, appContext);
         try {
-            new InvokerCaller(() -> invoker, null, null).invoke(null).get();
+            new InvokerCaller(() -> invoker, null).invoke(null).get();
             assert false;
         } catch (Throwable e) {
             Throwable cause = e.getCause();
@@ -202,7 +199,7 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         assert !asyncCall.get();
         assert !SyncCallAction.isStaticCall();
         Invoker invoker = newInvoker(definitions.get(0), mockRequest("post", new URL("http://www.hasor.net/sync.do"), appContext), appContext);
-        Object o = new InvokerCaller(() -> invoker, null, null).invoke(null).get();
+        Object o = new InvokerCaller(() -> invoker, null).invoke(null).get();
         //
         assert !asyncCall.get();
         assert SyncCallAction.isStaticCall();
@@ -237,7 +234,7 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         assert !SyncCallAction.isStaticCall();
         Invoker invoker = newInvoker(definitions.get(0), mockRequest("get", new URL("http://www.hasor.net/sync.do"), appContext), appContext);
         try {
-            new InvokerCaller(() -> invoker, null, null).invoke(null).get();
+            new InvokerCaller(() -> invoker, null).invoke(null).get();
             assert false;
         } catch (Throwable e) {
             Throwable cause = e.getCause();

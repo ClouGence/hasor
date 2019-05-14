@@ -21,42 +21,34 @@ import java.io.Serializable;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class Message implements Serializable {
-    private static final long            serialVersionUID = -4678293554960623786L;
-    private              MessageTemplate messageTemplate  = null;
-    private              Object[]        messageParams    = null;
+    private static final long     serialVersionUID = -4678293554960623786L;
+    private              String   messageTemplate  = null;
+    private              Object[] messageParams    = null;
     //
     public Message(String message) {
-        this(0, message, null);
+        this(message, (Object) null);
     }
-    public Message(int messageType, String messageTemplate, Object[] messageParams) {
-        this(new MessageTemplateString(messageType, messageTemplate), messageParams);
-    }
-    public Message(MessageTemplate messageTemplate, Object[] messageParams) {
+    public Message(String messageTemplate, Object... messageParams) {
         this.messageTemplate = messageTemplate;
         this.messageParams = messageParams == null ? new Object[0] : messageParams;
     }
     //
     //
     /**获取消息模版信息。*/
-    public MessageTemplate getMessageTemplate() {
+    public String getMessageTemplate() {
         return this.messageTemplate;
     }
     /**获取消息*/
     public String getMessage() {
-        String messageTemplate = this.messageTemplate.getMessageTemplate();
         try {
             if (this.messageParams != null && this.messageParams.length > 0) {
-                return String.format(messageTemplate, this.messageParams);
+                return String.format(this.messageTemplate, this.messageParams);
             } else {
                 return messageTemplate;
             }
         } catch (Exception e) {
-            return messageTemplate;
+            return this.messageTemplate;
         }
-    }
-    /**获取消息类型*/
-    public int getType() {
-        return this.messageTemplate.getMessageType();
     }
     /**获取参数*/
     public Object[] getParameters() {
@@ -64,21 +56,5 @@ public class Message implements Serializable {
     }
     public String toString() {
         return this.getMessage();
-    }
-}
-/***/
-class MessageTemplateString implements MessageTemplate {
-    private static final long serialVersionUID = -4678293554961623786L;
-    private String messageTemplate;
-    private int    messageType;
-    public MessageTemplateString(int messageType, String messageTemplate) {
-        this.messageTemplate = messageTemplate;
-        this.messageType = messageType;
-    }
-    public String getMessageTemplate() {
-        return this.messageTemplate;
-    }
-    public int getMessageType() {
-        return this.messageType;
     }
 }

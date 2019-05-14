@@ -39,8 +39,8 @@ public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker {
         return new ArrayList<>(this.validData.keySet());
     }
     @Override
-    public List<String> validErrors(String messageKey) {
-        ValidItem data = this.validData.get(messageKey);
+    public List<String> validErrors(String key) {
+        ValidItem data = this.validData.get(key);
         return data == null ? Collections.EMPTY_LIST : data.stream().map(Message::getMessage).collect(Collectors.toList());
     }
     @Override
@@ -53,8 +53,8 @@ public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker {
         return true;
     }
     @Override
-    public boolean isValid(String messageKey) {
-        ValidItem data = this.validData.get(messageKey);
+    public boolean isValid(String key) {
+        ValidItem data = this.validData.get(key);
         return data == null || data.isValid();
     }
     @Override
@@ -62,17 +62,10 @@ public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker {
         this.validData.clear();
     }
     @Override
-    public void clearValidErrors(String messageKey) {
-        this.validData.remove(messageKey);
+    public void clearValidErrors(String key) {
+        this.validData.remove(key);
     }
-    //
-    @Override
-    public void addError(String key, String validString) {
-        if (StringUtils.isBlank(key)) {
-            throw new NullPointerException("valid error message key is null.");
-        }
-        errors(new ValidItem(key, validString));
-    }
+
     @Override
     public void addError(String key, Message validMessage) {
         if (StringUtils.isBlank(key)) {

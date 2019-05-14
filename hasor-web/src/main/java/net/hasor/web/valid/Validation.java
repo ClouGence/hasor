@@ -22,9 +22,9 @@ package net.hasor.web.valid;
 public interface Validation<T> {
     /**
      * 验证逻辑
-     * @param scene 场景,由 {@link Valid}注解指定的场景名。
+     * @param scene 场景名
      * @param dataForm 等待验证的数据。
      * @param errors 验证结果。
      */
-    public ValidStrategy doValidation(String scene, T dataForm, ValidInvoker errors);
+    public void doValidation(String scene, T dataForm, ValidInvoker errors);
 }

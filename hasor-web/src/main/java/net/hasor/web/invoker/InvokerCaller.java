@@ -15,7 +15,10 @@
  */
 package net.hasor.web.invoker;
 import net.hasor.utils.future.BasicFuture;
-import net.hasor.web.*;
+import net.hasor.web.Controller;
+import net.hasor.web.Invoker;
+import net.hasor.web.InvokerChain;
+import net.hasor.web.ServletVersion;
 import net.hasor.web.definition.AbstractDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +27,6 @@ import javax.servlet.AsyncContext;
 import javax.servlet.FilterChain;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
 /**
@@ -35,13 +37,11 @@ import java.util.function.Supplier;
 class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller {
     protected static Logger               logger          = LoggerFactory.getLogger(InvokerCaller.class);
     private          AbstractDefinition[] filterArrays    = null;
-    private          WebPluginCaller      pluginCaller    = null;
     private          Supplier<Invoker>    invokerSupplier = null;
     //
-    public InvokerCaller(Supplier<Invoker> invokerSupplier, AbstractDefinition[] filterArrays, WebPluginCaller pluginCaller) {
+    public InvokerCaller(Supplier<Invoker> invokerSupplier, AbstractDefinition[] filterArrays) {
         this.invokerSupplier = invokerSupplier;
         this.filterArrays = (filterArrays == null) ? new AbstractDefinition[0] : filterArrays;
-        this.pluginCaller = (pluginCaller == null) ? WebPluginCaller.Empty : pluginCaller;
     }
     /**
      * 调用目标
@@ -92,8 +92,7 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller 
     private Object invoke(final Method targetMethod, Invoker invoker) throws Throwable {
         //
         // .初始化WebController
-        Mapping ownerMapping = invoker.ownerMapping();
-        final Object targetObject = invoker.getAppContext().getInstance(ownerMapping.getTargetType());
+        final Object targetObject = invoker.getAppContext().getInstance(invoker.ownerMapping().getTargetType());
         if (targetObject instanceof Controller) {
             ((Controller) targetObject).initController(invoker);
         }
@@ -102,42 +101,18 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller 
         }
         //
         // .准备过滤器链
-        final ArrayList<Object[]> resolveParams = new ArrayList<>(1);
-        InvokerChain invokerChain = invoker1 -> {
+        final InvokerChain invokerChain = inv -> {
             try {
-                Object result = targetMethod.invoke(targetObject, resolveParams.get(0));
-                invoker1.put(Invoker.RETURN_DATA_KEY, result);
+                final Object[] resolveParamsArrays = this.resolveParams(invoker, targetMethod);
+                Object result = targetMethod.invoke(targetObject, resolveParamsArrays);
+                inv.put(Invoker.RETURN_DATA_KEY, result);
                 return result;
             } catch (InvocationTargetException e) {
                 throw e.getTargetException();
             }
         };
-        InvokerData invokerData = new InvokerData() {
-            @Override
-            public Method targetMethod() {
-                return targetMethod;
-            }
-            @Override
-            public Object[] getParameters() {
-                return resolveParams.isEmpty() ? new Object[0] : resolveParams.get(0);
-            }
-            @Override
-            public Mapping getMappingTo() {
-                return invoker.ownerMapping();
-            }
-        };
         //
         // .执行Filters
-        try {
-            final Object[] resolveParamsArrays = this.resolveParams(invoker, targetMethod);
-            resolveParams.add(0, resolveParamsArrays);
-            //
-            this.pluginCaller.beforeFilter(invoker, invokerData);
-            new InvokerChainInvocation(this.filterArrays, invokerChain).doNext(invoker);
-        } finally {
-            this.pluginCaller.afterFilter(invoker, invokerData);
-        }
-        //
-        return invoker.get(Invoker.RETURN_DATA_KEY);
+        return new InvokerChainInvocation(this.filterArrays, invokerChain).doNext(invoker);
     }
 }

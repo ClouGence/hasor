@@ -2,7 +2,6 @@ package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
-import net.hasor.web.invoker.filters.AbstractInvokerFilter;
 import net.hasor.web.invoker.filters.Demo1CallerFilter;
 import net.hasor.web.invoker.filters.Demo2CallerFilter;
 import net.hasor.web.invoker.filters.Demo3CallerFilter;
@@ -107,11 +106,11 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
         final ArrayList<String> sortData = new ArrayList<>();
         //
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).filter("*").through(1, (AbstractInvokerFilter) (invoker, chain) -> {
+            apiBinder.tryCast(WebApiBinder.class).filter("*").through(1, (invoker, chain) -> {
                 sortData.add("Filter_1");
                 return chain.doNext(invoker);
             });
-            apiBinder.tryCast(WebApiBinder.class).filter("*").through(0, (AbstractInvokerFilter) (invoker, chain) -> {
+            apiBinder.tryCast(WebApiBinder.class).filter("*").through(0, (invoker, chain) -> {
                 sortData.add("Filter_0");
                 return chain.doNext(invoker);
             });
@@ -137,11 +136,11 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
         final ArrayList<String> sortData = new ArrayList<>();
         //
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).filter("*").through((AbstractInvokerFilter) (invoker, chain) -> {
+            apiBinder.tryCast(WebApiBinder.class).filter("*").through((invoker, chain) -> {
                 sortData.add("Filter_1");
                 return chain.doNext(invoker);
             });
-            apiBinder.tryCast(WebApiBinder.class).filter("*").through((AbstractInvokerFilter) (invoker, chain) -> {
+            apiBinder.tryCast(WebApiBinder.class).filter("*").through((invoker, chain) -> {
                 sortData.add("Filter_0");
                 return chain.doNext(invoker);
             });

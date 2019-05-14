@@ -32,6 +32,7 @@ import net.hasor.utils.reflect.ConstructorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.PostConstruct;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -449,11 +450,12 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         if (targetBeanType != null) {
             List<Method> methodList = BeanUtils.findALLMethods(targetBeanType);
             for (Method method : methodList) {
-                Init initAnno = method.getAnnotation(Init.class);
-                if (initAnno == null) {
+                Init initAnno1 = method.getAnnotation(Init.class);
+                PostConstruct initAnno2 = method.getAnnotation(PostConstruct.class);
+                if (initAnno1 == null && initAnno2 == null) {
                     continue;
                 }
-                if (Modifier.isPublic(method.getModifiers()) || initAnno.accessible()) {
+                if (Modifier.isPublic(method.getModifiers())) {
                     initMethod = method;
                     break;
                 }
@@ -489,7 +491,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         Singleton singleton = targetType.getAnnotation(Singleton.class);
         SingletonMode singletonMode = null;
         if (bindInfo instanceof AbstractBindInfoProviderAdapter) {
-            singletonMode = ((AbstractBindInfoProviderAdapter) bindInfo).getSingletonMode();
+            singletonMode = bindInfo.getSingletonMode();
         }
         //
         if (SingletonMode.Singleton == singletonMode) {

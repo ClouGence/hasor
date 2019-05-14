@@ -44,14 +44,14 @@ public interface Mapping {
     /** 获取方法 */
     public String[] getHttpMethodSet();
 
-    /** 获取方法 */
-    public Method getHttpMethod(String httpMethod);
-
     /**
      * 获取调用目标的方法
-     * @throws Throwable 异常抛出
      */
-    public Method findMethod(HttpServletRequest request);
+    public default Method findMethod(HttpServletRequest request) {
+        return findMethod(request.getMethod().trim().toUpperCase());
+    }
+
+    public Method findMethod(String requestMethod);
 
     public boolean isAsync(HttpServletRequest request);
 }

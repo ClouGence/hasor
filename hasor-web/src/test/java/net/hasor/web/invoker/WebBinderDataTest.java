@@ -46,13 +46,7 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
     //
     @Test
     public void binderTest0() throws Exception {
-        Method target = WebPluginDefinition.class.getDeclaredMethod("getTarget");
-        target.setAccessible(true);
-        //
-        final TestWebPlugin testWebPlugin = new TestWebPlugin();
-        //
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).addPlugin(testWebPlugin);
             apiBinder.tryCast(WebApiBinder.class).setEncodingCharacter("UTF-8-TTT", "UTF-8-AAA");
             //
             assert servletContext == apiBinder.getServletContext();
@@ -77,56 +71,6 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
                     assert apiBinder.tryCast(WebApiBinder.class).getServletVersion() == ServletVersion.V3_1;
                 });
         //
-    }
-    //
-    @Test
-    public void webPluginTest1() throws Exception {
-        Method target = WebPluginDefinition.class.getDeclaredMethod("getTarget");
-        target.setAccessible(true);
-        //
-        final TestWebPlugin testWebPlugin = new TestWebPlugin();
-        final Supplier<? extends TestWebPlugin> testWebPluginProvider = InstanceProvider.of(testWebPlugin);
-        //
-        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).addPlugin(testWebPlugin);
-            apiBinder.tryCast(WebApiBinder.class).addPlugin(testWebPluginProvider);
-            //
-            apiBinder.tryCast(WebApiBinder.class).addPlugin(TestWebPlugin.class);
-            //
-            // 强制设置成单例
-            BindInfo<TestWebPlugin> bindInfo = apiBinder.bindType(TestWebPlugin.class).asEagerSingleton().toInfo();
-            apiBinder.tryCast(WebApiBinder.class).addPlugin(bindInfo);
-        });
-        //
-        List<WebPluginDefinition> definitions = appContext.findBindingBean(WebPluginDefinition.class);
-        assert definitions.size() == 4;
-        TestWebPlugin.resetInit();
-        assert !TestWebPlugin.isBeforeFilter();
-        assert !TestWebPlugin.isAfterFilter();
-        //
-        TestWebPlugin.resetInit();
-        definitions.get(0).initPlugin(appContext);
-        definitions.get(0).beforeFilter(null, null);
-        definitions.get(0).afterFilter(null, null);
-        assert TestWebPlugin.isBeforeFilter();
-        assert TestWebPlugin.isAfterFilter();
-        //
-        definitions.get(0).initPlugin(appContext);
-        definitions.get(1).initPlugin(appContext);
-        definitions.get(2).initPlugin(appContext);
-        definitions.get(3).initPlugin(appContext);
-        //
-        Object invoke1 = target.invoke(definitions.get(0));
-        Object invoke2 = target.invoke(definitions.get(1));
-        Object invoke3_1 = target.invoke(definitions.get(2));
-        Object invoke3_2 = target.invoke(definitions.get(2));
-        Object invoke4_1 = target.invoke(definitions.get(3));
-        Object invoke4_2 = target.invoke(definitions.get(3));
-        //
-        assert invoke1 == testWebPlugin;
-        assert invoke2 == testWebPlugin;
-        assert invoke3_1 != invoke3_2;
-        assert invoke4_1 == invoke4_2;
     }
     //
     @Test

@@ -88,10 +88,6 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
         this.webApiBinder.addSessionListener(targetRegister);
     }
     @Override
-    public void addPlugin(BindInfo<? extends WebPlugin> webPlugin) {
-        this.webApiBinder.addPlugin(webPlugin);
-    }
-    @Override
     public void addDiscoverer(BindInfo<? extends MappingDiscoverer> discoverer) {
         this.webApiBinder.addDiscoverer(discoverer);
     }

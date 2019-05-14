@@ -94,11 +94,6 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     //
     // ------------------------------------------------------------------------------------------------------
     @Override
-    public void addPlugin(BindInfo<? extends WebPlugin> webPlugin) {
-        Hasor.assertIsNotNull(webPlugin);
-        this.bindType(WebPluginDefinition.class).toInstance(new WebPluginDefinition(webPlugin));
-    }
-    @Override
     public void addDiscoverer(BindInfo<? extends MappingDiscoverer> discoverer) {
         Hasor.assertIsNotNull(discoverer);
         MappingDiscovererDefinition definition = Hasor.autoAware(getEnvironment(), new MappingDiscovererDefinition(discoverer));
@@ -134,13 +129,6 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             }
         };
     }
-    protected void filterThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
-        InvokeFilterDefinition define = new InvokeFilterDefinition(index, pattern, matcher, filterRegister, initParams);
-        bindType(AbstractDefinition.class).uniqueName().toInstance(define);
-        bindToCreater(filterRegister, define);
-    }
-    //
-    // ------------------------------------------------------------------------------------------------------
     @Override
     public FilterBindingBuilder<Filter> jeeFilter(final String[] morePatterns) throws NullPointerException {
         List<String> uriPatterns = CheckUtils.checkEmpty(Arrays.asList(morePatterns), "Filter patterns is empty.");
@@ -160,6 +148,11 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
                 jeeFilterThrough(index, pattern, matcher, filterRegister, initParams);
             }
         };
+    }
+    protected void filterThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
+        InvokeFilterDefinition define = new InvokeFilterDefinition(index, pattern, matcher, filterRegister, initParams);
+        bindType(AbstractDefinition.class).uniqueName().toInstance(define);
+        bindToCreater(filterRegister, define);
     }
     protected void jeeFilterThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
         FilterDefinition define = new FilterDefinition(index, pattern, matcher, filterRegister, initParams);

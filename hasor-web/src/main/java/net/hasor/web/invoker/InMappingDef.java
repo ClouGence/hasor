@@ -133,10 +133,6 @@ public class InMappingDef implements Mapping {
     public String[] getHttpMethodSet() {
         return this.httpMapping.keySet().toArray(new String[httpMapping.size()]);
     }
-    public Method getHttpMethod(String httpMethod) {
-        return this.httpMapping.get(httpMethod);
-    }
-    //
     //
     /**
      * 首先测试路径是否匹配，然后判断Restful实例是否支持这个 请求方法。
@@ -161,18 +157,9 @@ public class InMappingDef implements Mapping {
         return false;
     }
     //
-    /**
-     * 调用目标
-     * @throws Throwable 异常抛出
-     */
-    public final Method findMethod(HttpServletRequest request) {
-        String requestPath = evalRequestPath(request);
-        if (!requestPath.matches(this.mappingToMatches)) {
-            return null;
-        }
-        //
-        String httpMethod = request.getMethod();
-        Method targetMethod = this.httpMapping.get(httpMethod.trim().toUpperCase());
+    @Override
+    public Method findMethod(String requestMethod) {
+        Method targetMethod = this.httpMapping.get(requestMethod);
         if (targetMethod == null) {
             targetMethod = this.httpMapping.get(HttpMethod.ANY);
         }

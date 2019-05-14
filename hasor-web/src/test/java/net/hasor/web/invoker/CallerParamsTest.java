@@ -25,7 +25,7 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
         Invoker invoker = newInvoker(definitions.get(0), mockRequest("post", new URL("http://www.hasor.net/query_param.do?byteParam=123&bigInteger=321"), appContext), appContext);
-        InvokerCaller caller = new InvokerCaller(() -> invoker, null, null);
+        InvokerCaller caller = new InvokerCaller(() -> invoker, null);
         Object o = caller.invoke(null).get();
         assert o instanceof Map;
         assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
@@ -39,7 +39,7 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
         Invoker invoker = newInvoker(definitions.get(0), mockRequest("post", new URL("http://www.hasor.net/123/321/path_param.do"), appContext), appContext);
-        InvokerCaller caller = new InvokerCaller(() -> invoker, null, null);
+        InvokerCaller caller = new InvokerCaller(() -> invoker, null);
         Object o = caller.invoke(null).get();
         assert o instanceof Map;
         assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
@@ -58,7 +58,7 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
         Invoker invoker = newInvoker(definitions.get(0), mockRequest("post", new URL("http://www.hasor.net/cookie_param.do"), appContext, cookies, null), appContext);
-        InvokerCaller caller = new InvokerCaller(() -> invoker, null, null);
+        InvokerCaller caller = new InvokerCaller(() -> invoker, null);
         Object o = caller.invoke(null).get();
         assert o instanceof Map;
         assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
@@ -76,7 +76,7 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
         Invoker invoker = newInvoker(definitions.get(0), request, appContext);
-        InvokerCaller caller = new InvokerCaller(() -> invoker, null, null);
+        InvokerCaller caller = new InvokerCaller(() -> invoker, null);
         Object o = caller.invoke(null).get();
         assert o instanceof Map;
         assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
@@ -97,7 +97,7 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
         Invoker invoker = newInvoker(definitions.get(0), request, appContext);
-        InvokerCaller caller = new InvokerCaller(() -> invoker, null, null);
+        InvokerCaller caller = new InvokerCaller(() -> invoker, null);
         Object o = caller.invoke(null).get();
         assert o instanceof Map;
         assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
@@ -117,7 +117,7 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
         Invoker invoker = newInvoker(definitions.get(0), request, appContext);
-        InvokerCaller caller = new InvokerCaller(() -> invoker, null, null);
+        InvokerCaller caller = new InvokerCaller(() -> invoker, null);
         Object o = caller.invoke(null).get();
         assert o instanceof Map;
         assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
@@ -138,7 +138,7 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
         Invoker invoker = newInvoker(definitions.get(0), request, appContext);
-        InvokerCaller caller = new InvokerCaller(() -> invoker, null, null);
+        InvokerCaller caller = new InvokerCaller(() -> invoker, null);
         Object o = caller.invoke(null).get();
         assert o instanceof Map;
         assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
@@ -155,7 +155,7 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
         Invoker invoker = newInvoker(definitions.get(0), request, appContext);
-        InvokerCaller caller = new InvokerCaller(() -> invoker, null, null);
+        InvokerCaller caller = new InvokerCaller(() -> invoker, null);
         Object o = caller.invoke(null).get();
         assert o instanceof Map;
         assert ((Map) o).get("request") instanceof HttpServletRequest;
