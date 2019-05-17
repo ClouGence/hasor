@@ -80,31 +80,17 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
         assert definitions.size() == 1;
-        final AtomicBoolean beforeFilterBoolean = new AtomicBoolean(false);
-        final AtomicBoolean afterFilterBoolean = new AtomicBoolean(false);
         //
         SyncCallAction.resetInit();
-        beforeFilterBoolean.set(false);
-        afterFilterBoolean.set(false);
-        assert !beforeFilterBoolean.get();
-        assert !afterFilterBoolean.get();
         assert !SyncCallAction.isStaticCall();
         Invoker invoker1 = newInvoker(definitions.get(0), mockRequest("POST", new URL("http://www.hasor.net/sync.do"), appContext), appContext);
         new InvokerCaller(() -> invoker1, null).invoke(null).get();
-        assert beforeFilterBoolean.get();
-        assert afterFilterBoolean.get();
         assert SyncCallAction.isStaticCall();
         //
         SyncCallAction.resetInit();
-        beforeFilterBoolean.set(false);
-        afterFilterBoolean.set(false);
-        assert !beforeFilterBoolean.get();
-        assert !afterFilterBoolean.get();
         assert !SyncCallAction.isStaticCall();
         Invoker invoker2 = newInvoker(definitions.get(0), mockRequest("GET", new URL("http://www.hasor.net/abcc.do"), appContext), appContext);
         new InvokerCaller(() -> invoker2, null).invoke(null).get();
-        assert !beforeFilterBoolean.get();
-        assert !afterFilterBoolean.get();
         assert !SyncCallAction.isStaticCall();
     }
     //

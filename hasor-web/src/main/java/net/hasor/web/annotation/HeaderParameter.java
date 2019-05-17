@@ -23,6 +23,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.PARAMETER, ElementType.FIELD })
 @Documented
+@WebParameter
 public @interface HeaderParameter {
     /**参数名称。*/
     public String value();

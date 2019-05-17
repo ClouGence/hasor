@@ -23,6 +23,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.PARAMETER, ElementType.FIELD })
 @Documented
+@WebParameter
 public @interface RequestParameter {
     /**参数名称。*/
     public String value();

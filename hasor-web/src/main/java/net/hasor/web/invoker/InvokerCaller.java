@@ -15,16 +15,14 @@
  */
 package net.hasor.web.invoker;
 import net.hasor.utils.future.BasicFuture;
-import net.hasor.web.Controller;
-import net.hasor.web.Invoker;
-import net.hasor.web.InvokerChain;
-import net.hasor.web.ServletVersion;
+import net.hasor.web.*;
 import net.hasor.web.definition.AbstractDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.Future;
@@ -49,11 +47,14 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller 
      */
     public Future<Object> invoke(final FilterChain chain) throws Throwable {
         Invoker invoker = this.invokerSupplier.get();
+        Mapping ownerMapping = invoker.ownerMapping();
+        HttpServletRequest httpRequest = invoker.getHttpRequest();
+        //
         final BasicFuture<Object> future = new BasicFuture<>();
-        Method targetMethod = invoker.ownerMapping().findMethod(invoker.getHttpRequest());
-        if (targetMethod == null) {
+        Method targetMethod = ownerMapping.findMethod(httpRequest);
+        if (targetMethod == null || !ownerMapping.matchingMapping(httpRequest)) {
             if (chain != null) {
-                chain.doFilter(invoker.getHttpRequest(), invoker.getHttpResponse());
+                chain.doFilter(httpRequest, invoker.getHttpResponse());
             }
             future.completed(null);
             return future;
@@ -61,11 +62,11 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller 
         //
         // .异步调用
         try {
-            boolean needAsync = invoker.ownerMapping().isAsync(invoker.getHttpRequest());
+            boolean needAsync = ownerMapping.isAsync(httpRequest);
             ServletVersion version = invoker.getAppContext().getInstance(ServletVersion.class);
             if (version.ge(ServletVersion.V3_0) && needAsync) {
                 // .必须满足: Servlet3.x、环境支持异步Servlet、目标开启了Servlet3
-                AsyncContext asyncContext = invoker.getHttpRequest().startAsync();
+                AsyncContext asyncContext = httpRequest.startAsync();
                 asyncContext.start(new AsyncInvocationWorker(asyncContext, targetMethod) {
                     public void doWork(Method targetMethod) throws Throwable {
                         future.completed(invoke(targetMethod, invoker));

@@ -421,7 +421,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
     /** 执行初始化 init方法 */
     private void initObject(Object targetBean, BindInfo<?> bindInfo) {
         Method initMethod = findInitMethod(targetBean.getClass(), bindInfo);
-        if (initMethod == null) {
+        if (initMethod == null || !Modifier.isPublic(initMethod.getModifiers())) {
             return;
         }
         //
@@ -491,7 +491,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         Singleton singleton = targetType.getAnnotation(Singleton.class);
         SingletonMode singletonMode = null;
         if (bindInfo instanceof AbstractBindInfoProviderAdapter) {
-            singletonMode = bindInfo.getSingletonMode();
+            singletonMode = ((AbstractBindInfoProviderAdapter) bindInfo).getSingletonMode();
         }
         //
         if (SingletonMode.Singleton == singletonMode) {

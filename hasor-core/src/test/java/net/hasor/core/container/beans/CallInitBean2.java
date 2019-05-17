@@ -27,8 +27,8 @@ public class CallInitBean2 extends TestBean {
         return init;
     }
     //
-    @Init(accessible = true)
-    private void init() {
+    @Init()
+    public void init() {
         this.init = true;
     }
 }

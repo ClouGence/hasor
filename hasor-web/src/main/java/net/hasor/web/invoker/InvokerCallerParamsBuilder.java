@@ -50,6 +50,9 @@ public class InvokerCallerParamsBuilder {
         }
         // .注解解析
         for (Annotation pAnno : paramAnno) {
+            if (pAnno.annotationType().getAnnotation(WebParameter.class) == null) {
+                continue;
+            }
             Object finalValue = resolveParam(invoker, paramClass, pAnno);
             finalValue = ConverterUtils.convert(paramClass, finalValue);
             if (finalValue != null) {
