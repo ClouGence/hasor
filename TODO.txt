@@ -10,3 +10,6 @@ features：
 
 
 https://www.eclipse.org/jetty/documentation/current/embedding-jetty.html
+
+* mvn release:prepare -P release
+* mvn clean deploy -P release
