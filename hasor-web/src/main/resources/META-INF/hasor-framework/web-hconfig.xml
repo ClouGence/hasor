@@ -21,7 +21,6 @@
 
         <!-- 默认要装载的模块 -->
         <modules>
-            <module>net.hasor.web.valid.ValidWebPlugin</module>
             <module>net.hasor.web.render.RenderWebPlugin</module>
         </modules>
 

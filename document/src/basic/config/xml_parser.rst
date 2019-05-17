@@ -9,7 +9,6 @@
     <config xmlns="http://project.hasor.net/hasor/schema/main">
         <hasor>
             <modules loadModule="${HASOR_LOAD_MODULE}" loadErrorShow="true">
-                <module>net.hasor.web.valid.ValidWebPlugin</module>
                 <module>net.hasor.web.render.RenderWebPlugin</module>
                 <module>net.hasor.plugins.startup.StartupModule</module>
                 <module>net.hasor.plugins.aop.AopModule</module>
