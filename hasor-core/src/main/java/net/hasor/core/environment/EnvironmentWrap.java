@@ -71,16 +71,26 @@ public class EnvironmentWrap implements Environment {
         return this.getTarget().getSettings();
     }
     @Override
+    public String[] getVariableNames() {
+        return this.getTarget().getVariableNames();
+    }
+
+    @Override
+    public String getVariable(String varName) {
+        return this.getTarget().getVariable(varName);
+    }
+
+    @Override
     public String evalString(String eval) {
         return this.getTarget().evalString(eval);
     }
     @Override
-    public void addEnvVar(String varName, String value) {
-        this.getTarget().addEnvVar(varName, value);
+    public void addVariable(String varName, String value) {
+        this.getTarget().addVariable(varName, value);
     }
     @Override
-    public void removeEnvVar(String varName) {
-        this.getTarget().removeEnvVar(varName);
+    public void removeVariable(String varName) {
+        this.getTarget().removeVariable(varName);
     }
     @Override
     public void refreshVariables() {

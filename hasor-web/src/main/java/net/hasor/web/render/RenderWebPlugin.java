@@ -108,17 +108,19 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
         // 在执行 Invoker 之前对 Invoker 的方法进行预分析，使其 @Produces 注解生效
         if (invoker instanceof RenderInvoker) {
             RenderInvoker render = (RenderInvoker) invoker;
-            Method targetMethod = invoker.ownerMapping().findMethod(invoker.getHttpRequest());
-            if (targetMethod != null && targetMethod.isAnnotationPresent(Produces.class)) {
-                Produces pro = targetMethod.getAnnotation(Produces.class);
-                if (pro == null) {
-                    pro = targetMethod.getDeclaringClass().getAnnotation(Produces.class);
-                }
-                if (pro != null && !StringUtils.isBlank(pro.value())) {
-                    String proValue = pro.value();
-                    render.viewType(proValue);
-                    configContentType(render, proValue);
-                    render.lockViewType();
+            if (invoker.ownerMapping() != null) {
+                Method targetMethod = invoker.ownerMapping().findMethod(invoker.getHttpRequest());
+                if (targetMethod != null && targetMethod.isAnnotationPresent(Produces.class)) {
+                    Produces pro = targetMethod.getAnnotation(Produces.class);
+                    if (pro == null) {
+                        pro = targetMethod.getDeclaringClass().getAnnotation(Produces.class);
+                    }
+                    if (pro != null && !StringUtils.isBlank(pro.value())) {
+                        String proValue = pro.value();
+                        render.viewType(proValue);
+                        configContentType(render, proValue);
+                        render.lockViewType();
+                    }
                 }
             }
         }

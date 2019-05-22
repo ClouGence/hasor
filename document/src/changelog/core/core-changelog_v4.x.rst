@@ -1,10 +1,21 @@
 ﻿--------------------
 Release Hasor v3.x
 --------------------
-Hasor v4.0.3 (2019-05-?)
+Hasor v4.0.4 (2019-05-22)
 ------------------------------------
-    - xxxxx
+**新增**
+    - Environment 接口新增 getVariableNames、getVariable 两个方法方便获取环境变量。
+**改进**
+    - Environment 接口的 removeEnvVar 方法更名为 removeVariable
+    - Environment 接口的 addEnvVar 方法更名为 addVariable
+**修复**
+    - 修复了 WebApiBinder 接口 loadRender 方法
+    - 修复 RenderWebPlugin NPE 的问题。
 
+Hasor v4.0.3 (2019-05-17)
+------------------------------------
+**修复**
+    - 删除默认配置文件中 net.hasor.web.valid.ValidWebPlugin，插件的配置，该插件已经不存在但是遗留了一个配置导致启动报错。
 
 Hasor v4.0.2 (2019-05-17)
 ------------------------------------

@@ -18,7 +18,6 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.aop.AsmTools;
-import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.ResourcesUtils;
@@ -407,7 +406,17 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /** 加载@Render注解配置的渲染器。*/
     public default void loadRender(Set<Class<?>> renderSet) {
-        this.loadRender(renderSet, Matchers.anyClass());
+        this.loadRender(renderSet, aClass -> {
+            int modifier = aClass.getModifiers();
+            if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || aClass.isArray() || aClass.isEnum()) {
+                return false;
+            }
+            Render[] annotationsByType = aClass.getAnnotationsByType(Render.class);
+            if (annotationsByType == null || annotationsByType.length == 0) {
+                return false;
+            }
+            return true;
+        });
     }
 
     /** 加载@Render注解配置的渲染器。*/

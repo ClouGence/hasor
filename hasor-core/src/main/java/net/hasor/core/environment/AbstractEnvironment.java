@@ -126,10 +126,18 @@ public abstract class AbstractEnvironment implements Environment {
     }
     //
     /* ------------------------------------------------------------------------------------- Env */
+
+    public String[] getVariableNames(){
+        return envMap.keySet().toArray(new String[0]);
+    }
+
+    public String getVariable(String varName){
+        return evalString("%"+varName+"%");
+    }
     @Override
-    public void addEnvVar(final String varName, final String value) {
+    public void addVariable(final String varName, final String value) {
         if (StringUtils.isBlank(value)) {
-            removeEnvVar(varName);
+            removeVariable(varName);
             return;
         }
         if (StringUtils.isBlank(varName)) {
@@ -140,7 +148,7 @@ public abstract class AbstractEnvironment implements Environment {
         this.envMap.put(varName.toUpperCase(), value);
     }
     @Override
-    public void removeEnvVar(final String varName) {
+    public void removeVariable(final String varName) {
         if (StringUtils.isBlank(varName)) {
             return;
         }
@@ -154,7 +162,7 @@ public abstract class AbstractEnvironment implements Environment {
         }
         Pattern keyPattern = Pattern.compile("(?:%([\\w\\._-]+)%){1,1}");//  (?:%([\w\._-]+)%)
         Matcher keyM = keyPattern.matcher(evalString);
-        Map<String, String> data = new HashMap<String, String>();
+        Map<String, String> data = new HashMap<>();
         while (keyM.find()) {
             String varKeyOri = keyM.group(1);
             String keyName = "%" + varKeyOri + "%";

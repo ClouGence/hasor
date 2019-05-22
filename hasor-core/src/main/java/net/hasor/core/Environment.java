@@ -73,6 +73,10 @@ public interface Environment {
     //
     /*----------------------------------------------------------------------------------------Env*/
 
+    public String[] getVariableNames();
+
+    public String getVariable(String varName);
+
     /**
      * 计算字符串，将字符串中定义的环境变量替换为环境变量值。环境变量名不区分大小写。<br>
      * <font color="ff0000"><b>注意</b></font>：只有被百分号包裹起来的部分才被解析成为环境变量名，
@@ -91,13 +95,13 @@ public interface Environment {
      * @param varName 环境变量名。
      * @param value 环境变量值或环境变量表达式。
      */
-    public void addEnvVar(String varName, String value);
+    public void addVariable(String varName, String value);
 
     /**
      * 删除环境变量，该方法从内部Map删除所保存的环境变量，这样做的目的是为了避免影响JVM正常运行。
      * @param varName 环境变量名。
      */
-    public void removeEnvVar(String varName);
+    public void removeVariable(String varName);
 
     /**刷新加载的环境变量*/
     public void refreshVariables();
