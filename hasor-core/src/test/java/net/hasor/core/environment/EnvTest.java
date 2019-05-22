@@ -104,24 +104,24 @@ public class EnvTest {
         StandardEnvironment oriEnv = new StandardEnvironment(null);
         EnvironmentWrap env = wrap(oriEnv);
         //
-        env.addEnvVar(null, "");
-        env.addEnvVar("", "");
+        env.addVariable(null, "");
+        env.addVariable("", "");
         //
-        env.addEnvVar("TEST_ENV", "abc");
+        env.addVariable("TEST_ENV", "abc");
         assert "abc".equals(env.evalString("%TEST_ENV%"));
         //
-        env.addEnvVar("TEST_ENV", null);
+        env.addVariable("TEST_ENV", null);
         assert "".equals(env.evalString("%TEST_ENV%"));
         //
-        env.addEnvVar("TEST_ENV", "");
+        env.addVariable("TEST_ENV", "");
         assert "".equals(env.evalString("%TEST_ENV%"));
         //
-        env.addEnvVar("TEST_ENV", "abc");
+        env.addVariable("TEST_ENV", "abc");
         assert "abc".equals(env.evalString("%TEST_ENV%"));
-        env.removeEnvVar("TEST_ENV");
+        env.removeVariable("TEST_ENV");
         assert "".equals(env.evalString("%TEST_ENV%"));
         //
-        env.addEnvVar("", "abc");
+        env.addVariable("", "abc");
         //
         //
         System.setProperty("self_self_self", "self");

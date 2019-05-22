@@ -350,17 +350,17 @@ public class BeanInjectTest {
         assert valueBean.getStringValue().equals("");
         assert valueBean.getEnumValue() == null;
         //
-        environment.addEnvVar("byteValue", "12");
-        environment.addEnvVar("shortValue", "12");
-        environment.addEnvVar("intValue", "12");
-        environment.addEnvVar("longValue", "12");
-        environment.addEnvVar("floatValue", "12.12");
-        environment.addEnvVar("doubleValue", "12.12");
-        environment.addEnvVar("booleanValue", "true");
-        environment.addEnvVar("charValue", "12");
-        environment.addEnvVar("dateValue", "12");
-        environment.addEnvVar("stringValue", "stringValue");
-        environment.addEnvVar("enumValue", "singleton");
+        environment.addVariable("byteValue", "12");
+        environment.addVariable("shortValue", "12");
+        environment.addVariable("intValue", "12");
+        environment.addVariable("longValue", "12");
+        environment.addVariable("floatValue", "12.12");
+        environment.addVariable("doubleValue", "12.12");
+        environment.addVariable("booleanValue", "true");
+        environment.addVariable("charValue", "12");
+        environment.addVariable("dateValue", "12");
+        environment.addVariable("stringValue", "stringValue");
+        environment.addVariable("enumValue", "singleton");
         //
         InjectSettingEnvValueBean valueBean2 = container.getProvider(InjectSettingEnvValueBean.class, appContext).get();
         assert valueBean2.getByteValue() == 12;
@@ -574,17 +574,17 @@ public class BeanInjectTest {
         assert valueBean.getStringValue().equals("");
         assert valueBean.getEnumValue() == null;
         //
-        environment.addEnvVar("byteValue", "12");
-        environment.addEnvVar("shortValue", "12");
-        environment.addEnvVar("intValue", "12");
-        environment.addEnvVar("longValue", "12");
-        environment.addEnvVar("floatValue", "12.12");
-        environment.addEnvVar("doubleValue", "12.12");
-        environment.addEnvVar("booleanValue", "true");
-        environment.addEnvVar("charValue", "12");
-        environment.addEnvVar("dateValue", "12");
-        environment.addEnvVar("stringValue", "stringValue");
-        environment.addEnvVar("enumValue", "singleton");
+        environment.addVariable("byteValue", "12");
+        environment.addVariable("shortValue", "12");
+        environment.addVariable("intValue", "12");
+        environment.addVariable("longValue", "12");
+        environment.addVariable("floatValue", "12.12");
+        environment.addVariable("doubleValue", "12.12");
+        environment.addVariable("booleanValue", "true");
+        environment.addVariable("charValue", "12");
+        environment.addVariable("dateValue", "12");
+        environment.addVariable("stringValue", "stringValue");
+        environment.addVariable("enumValue", "singleton");
         //
         ConstructorInjectSettingEnvValueBean valueBean2 = (ConstructorInjectSettingEnvValueBean) container.getProvider(constructor, appContext).get();
         assert valueBean2.getByteValue() == 12;
