@@ -122,8 +122,9 @@ public class InMappingDefTest {
         assert mappingDef.findMethod(invoker4.getHttpRequest()).getName().equals("execute3");
         assert mappingDef.findMethod(invoker5.getHttpRequest()) == null;
         //
-        assert mappingDef.getHttpMethodSet().length == 4;
+        assert mappingDef.getHttpMethodSet().length == 5;
         assert mappingDef.findMethod("GET").getName().equals("execute1");
+        assert mappingDef.findMethod("HEAD").getName().equals("execute1");
         assert mappingDef.findMethod("POST").getName().equals("execute2");
         assert mappingDef.findMethod("ADD").getName().equals("execute3");
         assert mappingDef.findMethod("DELETE").getName().equals("execute3");
