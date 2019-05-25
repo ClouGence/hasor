@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import net.hasor.core.EventListener;
 import net.hasor.core.Type;
 import net.hasor.core.*;
 import net.hasor.core.aop.AopClassConfig;
@@ -33,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
@@ -294,14 +296,16 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
     //
     /**执行依赖注入*/
     protected <T> T doInject(T targetBean, BindInfo<?> bindInfo, AppContext appContext, Class<?> targetType) {
-        //1.Aware接口的执行
+        //
+        // 1.Aware接口的执行
         if (bindInfo != null && targetBean instanceof BindInfoAware) {
             ((BindInfoAware) targetBean).setBindInfo(bindInfo);
         }
         if (targetBean instanceof AppContextAware) {
             ((AppContextAware) targetBean).setAppContext(appContext);
         }
-        //2.依赖注入
+        //
+        // 2.依赖注入
         targetType = (targetType == null) ? targetBean.getClass() : targetType;
         if (targetBean instanceof InjectMembers) {
             try {
@@ -312,8 +316,23 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         } else {
             injectObject(targetBean, bindInfo, appContext, targetType);
         }
-        //3.Init初始化方法。
-        initObject(targetBean, bindInfo);
+        //
+        // 3.Init初始化方法。
+        Method initMethod = findInitMethod(targetBean.getClass(), bindInfo);
+        if (initMethod != null && Modifier.isPublic(initMethod.getModifiers())) {
+            invokeMethod(targetBean, initMethod);
+        }
+        //
+        // 4.注册销毁事件
+        Method destroyMethod = findDestroyMethod(targetBean.getClass(), bindInfo);
+        if (destroyMethod != null && Modifier.isPublic(destroyMethod.getModifiers())) {
+            if (!testSingleton(targetType,bindInfo,appContext.getEnvironment().getSettings())){
+                throw new java.lang.IllegalStateException("destroyMethod bean must be single.");
+            }
+            Hasor.pushShutdownListener(appContext.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
+                invokeMethod(targetBean, destroyMethod);
+            });
+        }
         //
         return targetBean;
     }
@@ -398,7 +417,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         }
     }
     //
-    private Object injSettings(AppContext appContext, InjectSettings injectSettings, Class<?> toType) {
+    public static Object injSettings(AppContext appContext, InjectSettings injectSettings, Class<?> toType) {
         if (injectSettings == null || StringUtils.isBlank(injectSettings.value())) {
             return BeanUtils.getDefaultValue(toType);
         }
@@ -418,12 +437,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         return converterUtils.convert(settingValue, toType);
     }
     //
-    /** 执行初始化 init方法 */
-    private void initObject(Object targetBean, BindInfo<?> bindInfo) {
-        Method initMethod = findInitMethod(targetBean.getClass(), bindInfo);
-        if (initMethod == null || !Modifier.isPublic(initMethod.getModifiers())) {
-            return;
-        }
+    private void invokeMethod(Object targetBean, Method initMethod) {
         //
         Class<?>[] paramArray = initMethod.getParameterTypes();
         Object[] paramObject = BeanUtils.getDefaultValue(paramArray);
@@ -449,15 +463,17 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         //a.注解形式（注解优先）
         if (targetBeanType != null) {
             List<Method> methodList = BeanUtils.findALLMethods(targetBeanType);
-            for (Method method : methodList) {
-                Init initAnno1 = method.getAnnotation(Init.class);
-                PostConstruct initAnno2 = method.getAnnotation(PostConstruct.class);
-                if (initAnno1 == null && initAnno2 == null) {
-                    continue;
-                }
-                if (Modifier.isPublic(method.getModifiers())) {
-                    initMethod = method;
-                    break;
+            if (methodList != null) {
+                for (Method method : methodList) {
+                    Init initAnno1 = method.getAnnotation(Init.class);
+                    PostConstruct initAnno2 = method.getAnnotation(PostConstruct.class);
+                    if (initAnno1 == null && initAnno2 == null) {
+                        continue;
+                    }
+                    if (Modifier.isPublic(method.getModifiers())) {
+                        initMethod = method;
+                        break;
+                    }
                 }
             }
         }
@@ -467,6 +483,33 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             initMethod = defBinder.getInitMethod(targetBeanType);
         }
         return initMethod;
+    }
+    /** 查找类的默认销毁方法*/
+    public static Method findDestroyMethod(Class<?> targetBeanType, BindInfo<?> bindInfo) {
+        Method destroyMethod = null;
+        //a.注解形式（注解优先）
+        if (targetBeanType != null) {
+            List<Method> methodList = BeanUtils.findALLMethods(targetBeanType);
+            if (methodList != null) {
+                for (Method method : methodList) {
+                    Destroy destroyAnno1 = method.getAnnotation(Destroy.class);
+                    PreDestroy destroyAnno2 = method.getAnnotation(PreDestroy.class);
+                    if (destroyAnno1 == null && destroyAnno2 == null) {
+                        continue;
+                    }
+                    if (Modifier.isPublic(method.getModifiers())) {
+                        destroyMethod = method;
+                        break;
+                    }
+                }
+            }
+        }
+        //b.可能存在的配置。
+        if (destroyMethod == null && bindInfo instanceof DefaultBindInfoProviderAdapter) {
+            DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
+            destroyMethod = defBinder.getDestroyMethod(targetBeanType);
+        }
+        return destroyMethod;
     }
     //
     private void doOptions(Object targetBean, BindInfo<?> bindInfo) {

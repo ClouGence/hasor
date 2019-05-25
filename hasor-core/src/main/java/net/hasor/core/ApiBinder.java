@@ -395,6 +395,11 @@ public interface ApiBinder {
         /**配置当对象被创建时调用的方法，如果{@link Init @Init()}注解也定义了一个初始化方法则，注解方式优先于配置。
          * @see net.hasor.core.Init*/
         public LifeBindingBuilder<T> initMethod(String methodName);
+
+        /**配置当容器销毁时调用的方法，如果{@link Destroy @Destroy()}注解也定义了一个初始化方法则，注解方式优先于配置。
+         * @see net.hasor.core.Destroy*/
+        public LifeBindingBuilder<T> destroyMethod(String methodName);
+
     }
     /**Bean存在的作用域*/
     public interface ScopedBindingBuilder<T> extends OptionPropertyBindingBuilder<T> {

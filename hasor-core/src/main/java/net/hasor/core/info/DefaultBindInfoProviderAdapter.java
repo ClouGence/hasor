@@ -35,6 +35,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
     private Map<Integer, ParamInfo> constructorParams;
     private Map<String, ParamInfo>  injectProperty;
     private String                  initMethod;
+    private String                  destroyMethod;
     //
     public DefaultBindInfoProviderAdapter() {
         this.injectProperty = new HashMap<>();
@@ -132,16 +133,22 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
     public void initMethod(String methodName) {
         this.initMethod = methodName;
     }
-    /**获得初始化方法。*/
-    public Method getInitMethod() {
-        return getInitMethod(lookupType());
+    @Override
+    public void destroyMethod(String methodName) {
+        this.destroyMethod = methodName;
     }
+    //
     private Class<?> lookupType() {
         Class<?> sourceType = this.getSourceType();
         if (sourceType == null) {
             sourceType = this.getBindType();
         }
         return sourceType;
+    }
+    //
+    /**获得初始化方法。*/
+    public Method getInitMethod() {
+        return getInitMethod(lookupType());
     }
     /**获得初始化方法。*/
     public Method getInitMethod(Class<?> targetClass) {
@@ -151,6 +158,22 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
             }
         } catch (NoSuchMethodException e) {
             logger.error("not found init method " + this.initMethod);
+        }
+        return null;
+    }
+    //
+    /**获得销毁方法。*/
+    public Method getDestroyMethod() {
+        return getDestroyMethod(lookupType());
+    }
+    /**获得销毁方法。*/
+    public Method getDestroyMethod(Class<?> targetClass) {
+        try {
+            if (StringUtils.isNotBlank(this.destroyMethod)) {
+                return targetClass.getMethod(this.destroyMethod);
+            }
+        } catch (NoSuchMethodException e) {
+            logger.error("not found destroy method " + this.destroyMethod);
         }
         return null;
     }

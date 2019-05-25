@@ -8,6 +8,7 @@ import net.hasor.web.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
@@ -74,11 +75,11 @@ public class InvokerCallerParamsBuilder {
         if (paramClass == HttpSession.class) {
             return invoker.getHttpRequest().getSession(true);
         }
-        //
-        if (paramClass == Invoker.class) {
-            return invoker;
+        if (paramClass == ServletContext.class) {
+            return invoker.getAppContext().getInstance(ServletContext.class);
         }
-        if (paramClass.isInstance(invoker)) {
+        //
+        if (paramClass == Invoker.class || paramClass.isInstance(invoker)) {
             return invoker;
         }
         return null; //return invoker.getAppContext().getInstance(paramClass);
@@ -100,7 +101,8 @@ public class InvokerCallerParamsBuilder {
             atData = invoker.getHttpRequest().getParameterValues(((RequestParameter) pAnno).value());
         } else if (pAnno instanceof ParameterForm) {
             try {
-                atData = this.getParamsParam(invoker, paramClass, paramClass.newInstance());
+                Object instance = invoker.getAppContext().getInstance(paramClass);
+                atData = this.getParamsParam(invoker, paramClass, instance);
             } catch (Throwable e) {
                 logger.error(paramClass.getName() + "newInstance error.", e.getMessage());
                 atData = null;

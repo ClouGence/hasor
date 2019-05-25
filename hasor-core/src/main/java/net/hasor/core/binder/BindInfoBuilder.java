@@ -113,6 +113,12 @@ public interface BindInfoBuilder<T> {
      */
     public void initMethod(String methodName);
 
+    /**
+     * 设置初始化方法，一个无参的方法。例如：public void init(){ ... }。
+     * @param methodName 方法名。
+     */
+    public void destroyMethod(String methodName);
+
     //
     public void addCreaterListener(Supplier<? extends BeanCreaterListener<?>> createrListener);
 }

@@ -165,6 +165,11 @@ public abstract class AbstractBinder implements ApiBinder {
             return this;
         }
         @Override
+        public LifeBindingBuilder<T> destroyMethod(String methodName) {
+            this.typeBuilder.destroyMethod(methodName);
+            return this;
+        }
+        @Override
         public MetaDataBindingBuilder<T> metaData(final String key, final Object value) {
             this.typeBuilder.setMetaData(key, value);
             return this;

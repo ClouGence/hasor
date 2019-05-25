@@ -137,7 +137,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
         Object key = (bindInfo != null) ? bindInfo : targetType;
         Supplier<? extends Scope> scopeProvider = this.scopeMapping.get(ScopManager.SINGLETON_SCOPE);
         if (scopeProvider == null) {
-            throw new NullPointerException("scopeProvider undefined.");
+            throw new NullPointerException(ScopManager.SINGLETON_SCOPE + " scope undefined.");
         }
         return scopeProvider.get().scope(key, () -> BeanContainer.super.createObject(targetType, referConstructor, bindInfo, appContext)).get();
     }
