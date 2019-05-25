@@ -65,13 +65,13 @@ public abstract class AbstractBinder implements ApiBinder {
         return this.getEnvironment().findClass(featureType, scanPackages);
     }
     @Override
-    public void installModule(final Module module) throws Throwable {
-        //see : net.hasor.core.binder.ApiBinderInvocationHandler.invoke()
+    public void installModule(final Module... module) throws Throwable {
+        //see : net.hasor.core.binder.ApiBinderInvocationHandler.invoke() 由动态代理的拦截器实现。
         throw new IllegalStateException("current state is not allowed.");
     }
     @Override
     public <T extends ApiBinder> T tryCast(Class<T> castApiBinder) {
-        //see : net.hasor.core.binder.ApiBinderInvocationHandler.invoke()
+        //see : net.hasor.core.binder.ApiBinderInvocationHandler.invoke() 由动态代理的拦截器实现。
         throw new IllegalStateException("current state is not allowed.");
     }
     //

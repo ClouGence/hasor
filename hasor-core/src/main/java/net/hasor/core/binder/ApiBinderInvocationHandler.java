@@ -61,10 +61,12 @@ public class ApiBinderInvocationHandler implements InvocationHandler {
             if (args[0] != null) {
                 ApiBinder apiBinder = (ApiBinder) this.supportMap.get(ApiBinder.class);
                 Environment environment = apiBinder.getEnvironment();
-                Module module = (Module) args[0];
-                logger.info("installModule ->" + module);
-                module.loadModule((ApiBinder) proxy);
-                BinderHelper.onInstall(environment, module);
+                Module[] moduleArrays = (Module[]) args[0];
+                for (Module module : moduleArrays) {
+                    logger.info("installModule ->" + module);
+                    module.loadModule((ApiBinder) proxy);
+                    BinderHelper.onInstall(environment, module);
+                }
             }
             return null;
         }

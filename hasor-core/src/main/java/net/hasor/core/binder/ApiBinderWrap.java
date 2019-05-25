@@ -49,7 +49,7 @@ public class ApiBinderWrap implements ApiBinder {
     public <T extends ApiBinder> T tryCast(Class<T> castApiBinder) {
         return this.apiBinder.tryCast(castApiBinder);
     }
-    public void installModule(final Module module) throws Throwable {
+    public void installModule(final Module... module) throws Throwable {
         this.apiBinder.installModule(module);
     }
     public void bindInterceptor(String matcherExpression, MethodInterceptor interceptor) {

@@ -79,7 +79,7 @@ public class InnerRsfApiBinder extends AbstractRsfBindBuilder implements RsfApiB
         return this.apiBinder.tryCast(castApiBinder);
     }
     @Override
-    public void installModule(Module module) throws Throwable {
+    public void installModule(Module... module) throws Throwable {
         this.apiBinder.installModule(module);
     }
     @Override

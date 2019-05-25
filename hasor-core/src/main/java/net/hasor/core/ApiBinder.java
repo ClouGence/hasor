@@ -68,7 +68,7 @@ public interface ApiBinder {
      * @throws Throwable 在执行loadModule方法期间发生异常的。
      * @see net.hasor.core.Module#loadModule(ApiBinder)
      */
-    public void installModule(Module module) throws Throwable;
+    public void installModule(Module... module) throws Throwable;
     //
     /*----------------------------------------------------------------------------------------Aop*/
 
@@ -399,7 +399,6 @@ public interface ApiBinder {
         /**配置当容器销毁时调用的方法，如果{@link Destroy @Destroy()}注解也定义了一个初始化方法则，注解方式优先于配置。
          * @see net.hasor.core.Destroy*/
         public LifeBindingBuilder<T> destroyMethod(String methodName);
-
     }
     /**Bean存在的作用域*/
     public interface ScopedBindingBuilder<T> extends OptionPropertyBindingBuilder<T> {
