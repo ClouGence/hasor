@@ -34,7 +34,7 @@ public class CallableJDBCTest {
     public void testCallable() throws SQLException {
         System.out.println("--->>testCallable<<--");
         //
-        AppContext app = Hasor.create().setMainSettings("jdbc-config.xml").build(new SingleDataSourceWarp());
+        AppContext app = Hasor.create().mainSettingWith("jdbc-config.xml").build(new SingleDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         //

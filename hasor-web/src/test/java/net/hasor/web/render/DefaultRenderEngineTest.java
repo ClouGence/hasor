@@ -33,11 +33,11 @@ public class DefaultRenderEngineTest extends AbstractWeb30BinderDataTest {
         loadInvokerSet.add(LoadExtEnum.Render);
         super.beforeTest();
         //
-        hasor.putData("HASOR_RESTFUL_LAYOUT", "true");
-        //        hasor.putData("HASOR_RESTFUL_LAYOUT_PATH_LAYOUT", "/layout/mytest");
-        //        hasor.putData("HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES", "/templates/myfiles");
+        hasor.addVariable("HASOR_RESTFUL_LAYOUT", "true");
+        //        hasor.addVariable("HASOR_RESTFUL_LAYOUT_PATH_LAYOUT", "/layout/mytest");
+        //        hasor.addVariable("HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES", "/templates/myfiles");
         //
-        this.appContext = hasor.setMainSettings("META-INF/hasor-framework/web-hconfig.xml").build((WebModule) apiBinder -> {
+        this.appContext = hasor.mainSettingWith("META-INF/hasor-framework/web-hconfig.xml").build((WebModule) apiBinder -> {
             apiBinder.installModule(new RenderWebPlugin());
             apiBinder.addRender("html").toInstance(new ArraysRenderEngine(//
                     IOUtils.readLines(ResourcesUtils.getResourceAsStream("/net_hasor_web_render/directory_map_default.cfg"), "utf-8")//

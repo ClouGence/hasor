@@ -36,7 +36,7 @@ public class QueryJDBCTest {
     public void entity_QueryTest() throws SQLException {
         System.out.println("--->>entity_QueryTest<<--");
         //
-        AppContext app = Hasor.create().setMainSettings("jdbc-config.xml").build(new SingleDataSourceWarp());
+        AppContext app = Hasor.create().mainSettingWith("jdbc-config.xml").build(new SingleDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         List<TB_User> userList = jdbc.queryForList("select * from TB_User", TB_User.class);
@@ -46,7 +46,7 @@ public class QueryJDBCTest {
     public void mapParam_QueryTest() throws SQLException {
         System.out.println("--->>mapParam_QueryTest<<--");
         //
-        AppContext app = Hasor.create().setMainSettings("jdbc-config.xml").build(new SingleDataSourceWarp());
+        AppContext app = Hasor.create().mainSettingWith("jdbc-config.xml").build(new SingleDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         Map<String, String> paramMap = new HashMap<String, String>();
@@ -58,7 +58,7 @@ public class QueryJDBCTest {
     public void simpleParam_QueryTest() throws SQLException {
         System.out.println("--->>simpleParam_QueryTest<<--");
         //
-        AppContext app = Hasor.create().setMainSettings("jdbc-config.xml").build(new SingleDataSourceWarp());
+        AppContext app = Hasor.create().mainSettingWith("jdbc-config.xml").build(new SingleDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         List<Map<String, Object>> userList = jdbc.queryForList("select * from TB_User where userUUID like ?", "76%");

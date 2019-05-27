@@ -50,12 +50,12 @@ public class RenderPluginTest extends AbstractWeb30BinderDataTest {
         //
         RenderEngine engine = PowerMockito.mock(RenderEngine.class);
         //
-        hasor.putData("HASOR_RESTFUL_LAYOUT", "true");
-        hasor.putData("HASOR_RESTFUL_LAYOUT_PATH_LAYOUT", "/layout/mytest");
-        hasor.putData("HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES", "/templates/myfiles");
+        hasor.addVariable("HASOR_RESTFUL_LAYOUT", "true");
+        hasor.addVariable("HASOR_RESTFUL_LAYOUT_PATH_LAYOUT", "/layout/mytest");
+        hasor.addVariable("HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES", "/templates/myfiles");
         //
         RenderWebPlugin webPlugin = new RenderWebPlugin();
-        AppContext appContext = hasor.setMainSettings("META-INF/hasor-framework/web-hconfig.xml").build((WebModule) apiBinder -> {
+        AppContext appContext = hasor.mainSettingWith("META-INF/hasor-framework/web-hconfig.xml").build((WebModule) apiBinder -> {
             apiBinder.installModule(webPlugin);
             apiBinder.addRender("htm").toInstance(engine);
         });
@@ -88,12 +88,12 @@ public class RenderPluginTest extends AbstractWeb30BinderDataTest {
         TestRenderEngine.resetCalls();
         RenderEngine engine = new TestRenderEngine();
         //
-        hasor.putData("HASOR_RESTFUL_LAYOUT", "true");
-        hasor.putData("HASOR_RESTFUL_LAYOUT_PATH_LAYOUT", "/layout/mytest");
-        hasor.putData("HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES", "/templates/myfiles");
+        hasor.addVariable("HASOR_RESTFUL_LAYOUT", "true");
+        hasor.addVariable("HASOR_RESTFUL_LAYOUT_PATH_LAYOUT", "/layout/mytest");
+        hasor.addVariable("HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES", "/templates/myfiles");
         //
         RenderWebPlugin webPlugin = new RenderWebPlugin();
-        AppContext appContext = hasor.setMainSettings("META-INF/hasor-framework/web-hconfig.xml").build((WebModule) apiBinder -> {
+        AppContext appContext = hasor.mainSettingWith("META-INF/hasor-framework/web-hconfig.xml").build((WebModule) apiBinder -> {
             apiBinder.installModule(webPlugin);
             apiBinder.addRender("htm").toInstance(engine);
         });
@@ -116,10 +116,10 @@ public class RenderPluginTest extends AbstractWeb30BinderDataTest {
         TestRenderEngine.resetCalls();
         RenderEngine engine = new TestRenderEngine();
         //
-        hasor.putData("HASOR_RESTFUL_LAYOUT", "true");
+        hasor.addVariable("HASOR_RESTFUL_LAYOUT", "true");
         //
         RenderWebPlugin webPlugin = new RenderWebPlugin();
-        AppContext appContext = hasor.setMainSettings("META-INF/hasor-framework/web-hconfig.xml").build((WebModule) apiBinder -> {
+        AppContext appContext = hasor.mainSettingWith("META-INF/hasor-framework/web-hconfig.xml").build((WebModule) apiBinder -> {
             apiBinder.installModule(webPlugin);
             apiBinder.addRender("htm").toInstance(engine);
             apiBinder.loadMappingTo(HtmlProduces.class);

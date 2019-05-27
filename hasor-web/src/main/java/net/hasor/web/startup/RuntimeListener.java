@@ -51,14 +51,14 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         Hasor webHasor = Hasor.create(sc);
         //
         if (StringUtils.isNotBlank(configName)) {
-            webHasor.setMainSettings(configName);
+            webHasor.mainSettingWith(configName);
         }
         properties.keySet().forEach(key -> {
             String keyStr = key.toString();
-            webHasor.putData(keyStr, properties.getProperty(keyStr));
+            webHasor.addVariable(keyStr, properties.getProperty(keyStr));
         });
         String webContextDir = sc.getRealPath("/");
-        webHasor.putData("HASOR_WEBROOT", webContextDir);
+        webHasor.addVariable("HASOR_WEBROOT", webContextDir);
         return webHasor;
     }
     //

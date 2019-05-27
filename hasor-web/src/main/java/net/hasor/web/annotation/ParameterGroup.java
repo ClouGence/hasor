@@ -24,5 +24,5 @@ import java.lang.annotation.*;
 @Target({ ElementType.PARAMETER, ElementType.FIELD })
 @Documented
 @WebParameter
-public @interface ParameterForm {
+public @interface ParameterGroup {
 }

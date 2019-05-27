@@ -30,7 +30,7 @@ public class DeleteJDBCTest {
     public void simple_DeleteJDBCTest() throws SQLException {
         System.out.println("--->>simple_DeleteJDBCTest<<--");
         //
-        AppContext app = Hasor.create().setMainSettings("jdbc-config.xml").build(new SingleDataSourceWarp());
+        AppContext app = Hasor.create().mainSettingWith("jdbc-config.xml").build(new SingleDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
     }

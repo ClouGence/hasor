@@ -6,6 +6,7 @@ Hasor v4.0.5 (2019-05-27)
 **重要**
     - 4.0.0版本新增的 Hasor-Boot 项目不在单独存在，理由 Hasor 可以很好的在 Spring Boot 上运行和部署，因此并无任何必要在重复构建相同功能。
     - Boot 的机制融入到AppContext 接口的两个 join、joinSignal 新增方法中。
+    - 删除 @IgnoreParam 注解，@ParameterForm 注解更名为 @ParameterGroup。
 **新增**
     - 新增 @Destroy 注解 @PreDestroy 注解支持，可以配置当容器停止时调用的方法。
     - binder 可以声明 Destroy 方法了，要想使用 Destroy 的Bean 必须是单例的。

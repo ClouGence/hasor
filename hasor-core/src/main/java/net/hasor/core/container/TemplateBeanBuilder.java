@@ -118,7 +118,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         Supplier<? extends T> finalInstanceProvider = instanceProvider;
         return (Supplier<T>) () -> {
             T targetBean = finalInstanceProvider.get();
-            doOptions(targetBean, bindInfo);
+            doCreaterListener(targetBean, bindInfo);
             return targetBean;
         };
     }
@@ -272,8 +272,9 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
                 targetBean = doInject(targetBean, bindInfo, appContext, newType);
             }
             //
-            //4.Options方法。
-            doOptions(targetBean, bindInfo);
+            // .生命周期相关方法
+            doLife(targetBean, bindInfo, appContext, newType);
+            doCreaterListener(targetBean, bindInfo);
             return targetBean;
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
@@ -317,6 +318,11 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             injectObject(targetBean, bindInfo, appContext, targetType);
         }
         //
+        return targetBean;
+    }
+    /** 执行生命周期相关方法 */
+    protected void doLife(Object targetBean, BindInfo<?> bindInfo, AppContext appContext, Class<?> targetType) {
+        //
         // 3.Init初始化方法。
         Method initMethod = findInitMethod(targetBean.getClass(), bindInfo);
         if (initMethod != null && Modifier.isPublic(initMethod.getModifiers())) {
@@ -326,16 +332,31 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         // 4.注册销毁事件
         Method destroyMethod = findDestroyMethod(targetBean.getClass(), bindInfo);
         if (destroyMethod != null && Modifier.isPublic(destroyMethod.getModifiers())) {
-            if (!testSingleton(targetType,bindInfo,appContext.getEnvironment().getSettings())){
+            if (!testSingleton(targetType, bindInfo, appContext.getEnvironment().getSettings())) {
                 throw new java.lang.IllegalStateException("destroyMethod bean must be single.");
             }
             HasorUtils.pushShutdownListener(appContext.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
                 invokeMethod(targetBean, destroyMethod);
             });
         }
-        //
-        return targetBean;
     }
+    /** 执行BeanCreaterListener相关方法 */
+    protected void doCreaterListener(Object targetBean, BindInfo<?> bindInfo) {
+        if (bindInfo instanceof AbstractBindInfoProviderAdapter) {
+            List<Supplier<? extends BeanCreaterListener<?>>> listenerList = ((AbstractBindInfoProviderAdapter<?>) bindInfo).getCreaterListener();
+            if (listenerList != null && !listenerList.isEmpty()) {
+                for (Supplier<? extends BeanCreaterListener<?>> provider : listenerList) {
+                    try {
+                        BeanCreaterListener<Object> createrListener = (BeanCreaterListener<Object>) provider.get();
+                        createrListener.beanCreated(targetBean, bindInfo);
+                    } catch (Throwable e) {
+                        logger.error("do call beanCreated -> " + e.getMessage(), e);
+                    }
+                }
+            }
+        }
+    }
+    //
     /**/
     private <T> void injectObject(T targetBean, BindInfo<?> bindInfo, AppContext appContext, Class<?> targetType) {
         Set<String> injectFileds = new HashSet<>();
@@ -437,6 +458,8 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         return converterUtils.convert(settingValue, toType);
     }
     //
+    //
+    //
     private void invokeMethod(Object targetBean, Method initMethod) {
         //
         Class<?>[] paramArray = initMethod.getParameterTypes();
@@ -510,22 +533,6 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             destroyMethod = defBinder.getDestroyMethod(targetBeanType);
         }
         return destroyMethod;
-    }
-    //
-    private void doOptions(Object targetBean, BindInfo<?> bindInfo) {
-        if (bindInfo instanceof AbstractBindInfoProviderAdapter) {
-            List<Supplier<? extends BeanCreaterListener<?>>> listenerList = ((AbstractBindInfoProviderAdapter<?>) bindInfo).getCreaterListener();
-            if (listenerList != null && !listenerList.isEmpty()) {
-                for (Supplier<? extends BeanCreaterListener<?>> provider : listenerList) {
-                    try {
-                        BeanCreaterListener<Object> createrListener = (BeanCreaterListener<Object>) provider.get();
-                        createrListener.beanCreated(targetBean, bindInfo);
-                    } catch (Throwable e) {
-                        logger.error("do call beanCreated -> " + e.getMessage(), e);
-                    }
-                }
-            }
-        }
     }
     //
     /** 检测是否为单例（注解优先）*/

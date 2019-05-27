@@ -36,7 +36,7 @@ public class InsertJDBCTest {
     public void simpleInsertJDBCTest() throws SQLException {
         System.out.println("--->>simple_InsertJDBCTest<<--");
         //
-        AppContext app = Hasor.create().setMainSettings("jdbc-config.xml").build(new SingleDataSourceWarp());
+        AppContext app = Hasor.create().mainSettingWith("jdbc-config.xml").build(new SingleDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         String quertCount = "select count(*) from TB_User where userUUID='deb4f4c8-5ba1-4f76-8b4a-c2be028bf57b'";
@@ -57,7 +57,7 @@ public class InsertJDBCTest {
     public void batchInsertJDBCTest() throws SQLException {
         System.out.println("--->>baseInsertJDBCTest<<--");
         //
-        AppContext app = Hasor.create().setMainSettings("jdbc-config.xml").build(new SingleDataSourceWarp());
+        AppContext app = Hasor.create().mainSettingWith("jdbc-config.xml").build(new SingleDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
         String batchInsert = "insert into TB_User values(:ID,:Name,:Account,:Pwd,:Email,:RegTime);";

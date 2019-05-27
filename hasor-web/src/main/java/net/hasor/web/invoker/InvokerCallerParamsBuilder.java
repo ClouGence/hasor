@@ -99,10 +99,10 @@ public class InvokerCallerParamsBuilder {
             atData = this.getPathParam(invoker, (PathParameter) pAnno);
         } else if (pAnno instanceof RequestParameter) {
             atData = invoker.getHttpRequest().getParameterValues(((RequestParameter) pAnno).value());
-        } else if (pAnno instanceof ParameterForm) {
+        } else if (pAnno instanceof ParameterGroup) {
             try {
-                Object instance = invoker.getAppContext().justInject(paramClass.newInstance());
-                atData = this.getParamsParam(invoker, paramClass, instance);
+                atData = invoker.getAppContext().justInject(paramClass.newInstance());
+                atData = this.getParamsParam(invoker, paramClass, atData);
             } catch (Throwable e) {
                 logger.error(paramClass.getName() + "newInstance error.", e.getMessage());
                 atData = null;
@@ -120,24 +120,17 @@ public class InvokerCallerParamsBuilder {
             return paramObject;
         }
         for (Field field : fieldList) {
-            if (field.isAnnotationPresent(IgnoreParam.class)) {
-                logger.debug(field + " -> Ignore.");
-                continue;
-            }
             try {
                 Object fieldValue = null;
                 Annotation[] annos = field.getAnnotations();
-                if (annos == null || annos.length == 0) {
-                    fieldValue = invoker.getHttpRequest().getParameterValues(field.getName());
-                } else {
+                if (annos != null && annos.length > 0) {
                     fieldValue = resolveParam(invoker, field.getType(), annos);
+                    if (fieldValue != null) {
+                        fieldValue = ConverterUtils.convert(field.getType(), fieldValue);
+                        field.setAccessible(true);
+                        field.set(paramObject, fieldValue);
+                    }
                 }
-                if (fieldValue == null) {
-                    fieldValue = BeanUtils.getDefaultValue(field.getType());
-                }
-                fieldValue = ConverterUtils.convert(field.getType(), fieldValue);
-                field.setAccessible(true);
-                field.set(paramObject, fieldValue);
             } catch (Exception e) {
                 logger.error(field + "set new Value error.", e.getMessage());
             }
