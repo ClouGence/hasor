@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.mapper;
-import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.RowMapper;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.convert.ConverterUtils;
@@ -25,6 +24,7 @@ import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 /**
  *
  * @version : 2014年5月23日
@@ -105,8 +105,8 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
      * @see java.math.BigDecimal#BigDecimal(String)
      */
     private static Number parseNumber(final String text, final Class<?> targetClass) {
-        Hasor.assertIsNotNull(text, "Text must not be null");
-        Hasor.assertIsNotNull(targetClass, "Target class must not be null");
+        Objects.requireNonNull(text, "Text must not be null");
+        Objects.requireNonNull(targetClass, "Target class must not be null");
         String trimmed = text.trim();
         if (targetClass.equals(Byte.class)) {
             return AbstractRowMapper.isHexNumber(trimmed) ? Byte.decode(trimmed) : Byte.valueOf(trimmed);
@@ -144,8 +144,8 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
      * @see java.math.BigDecimal
      */
     private static Number convertNumberToTargetClass(final Number number, final Class<?> targetClass) throws IllegalArgumentException {
-        Hasor.assertIsNotNull(number, "Number must not be null");
-        Hasor.assertIsNotNull(targetClass, "Target class must not be null");
+        Objects.requireNonNull(number, "Number must not be null");
+        Objects.requireNonNull(targetClass, "Target class must not be null");
         if (targetClass.isInstance(number)) {
             return number;
         } else if (targetClass.equals(Byte.class) || targetClass.equals(Byte.TYPE)) {

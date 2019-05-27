@@ -53,7 +53,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
     }
     /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
     public <T> BindInfo<T> findBindInfo(final String withName, final Class<T> bindType) {
-        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        Objects.requireNonNull(bindType, "bindType is null.");
         //
         List<BindInfo<T>> typeRegisterList = findBindInfoList(bindType);
         if (typeRegisterList != null && !typeRegisterList.isEmpty()) {
@@ -169,7 +169,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
             boolean singleton = testSingleton(info.getBindType(), info, env.getSettings());         // 配置了单例（只有单例的才会在容器启动时调用）
             if (initMethod != null && singleton) {
                 // 当前为 doInitializeCompleted 阶段，需要在 doStart 阶段开始调用 Bean 的 init。执行 init 只需要 get 它们。
-                Hasor.pushStartListener(env, (EventListener<AppContext>) (event, eventData) -> {
+                HasorUtils.pushStartListener(env, (EventListener<AppContext>) (event, eventData) -> {
                     eventData.getInstance(infoAdapter);//执行init
                 });
             }
@@ -251,7 +251,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
         }
         // .
         if ("bindID".equalsIgnoreCase(notifyData.getKey())) {
-            newValue = Hasor.assertIsNotNull(newValue);
+            newValue = Objects.requireNonNull(newValue);
             if (this.idDataSource.containsKey(newValue)) {
                 throw new IllegalStateException("duplicate bind -> id value is " + newValue);
             }
@@ -266,7 +266,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
         }
         // .
         if ("bindName".equalsIgnoreCase(notifyData.getKey())) {
-            newValue = Hasor.assertIsNotNull(newValue);
+            newValue = Objects.requireNonNull(newValue);
             BindInfo bindInfo = this.findBindInfo((String) newValue, target.getBindType());
             if (bindInfo != null) {
                 throw new IllegalStateException("duplicate bind -> bindName '" + newValue + "' conflict with '" + bindInfo + "'");

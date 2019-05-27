@@ -16,7 +16,6 @@
 package net.hasor.core.info;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.reflect.ConstructorUtils;
@@ -48,28 +47,28 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
     }
     @Override
     public void setConstructor(final int index, final Class<?> paramType, final Supplier<?> valueProvider) {
-        Hasor.assertIsNotNull(paramType, "paramType parameter is null.");
-        Hasor.assertIsNotNull(valueProvider, "valueProvider parameter is null.");
+        Objects.requireNonNull(paramType, "paramType parameter is null.");
+        Objects.requireNonNull(valueProvider, "valueProvider parameter is null.");
         this.constructorParams.put(index, new ParamInfo(paramType, valueProvider));
     }
     @Override
     public void setConstructor(final int index, final Class<?> paramType, final BindInfo<?> valueInfo) {
-        Hasor.assertIsNotNull(paramType, "paramType parameter is null.");
-        Hasor.assertIsNotNull(valueInfo, "valueInfo parameter is null.");
+        Objects.requireNonNull(paramType, "paramType parameter is null.");
+        Objects.requireNonNull(valueInfo, "valueInfo parameter is null.");
         this.constructorParams.put(index, new ParamInfo(paramType, valueInfo));
     }
     @Override
     public void addInject(final String property, final Supplier<?> valueProvider) {
-        Hasor.assertIsNotNull(property, "property parameter is null.");
-        Hasor.assertIsNotNull(valueProvider, "valueProvider parameter is null.");
-        Class<?> propertyType = Hasor.assertIsNotNull(lookupPropertyType(property), "not found '" + property + "' property.");
+        Objects.requireNonNull(property, "property parameter is null.");
+        Objects.requireNonNull(valueProvider, "valueProvider parameter is null.");
+        Class<?> propertyType = Objects.requireNonNull(lookupPropertyType(property), "not found '" + property + "' property.");
         this.injectProperty.put(property, new ParamInfo(propertyType, valueProvider));
     }
     @Override
     public void addInject(final String property, final BindInfo<?> valueInfo) {
-        Hasor.assertIsNotNull(property, "paramType parameter is null.");
-        Hasor.assertIsNotNull(valueInfo, "valueInfo parameter is null.");
-        Class<?> propertyType = Hasor.assertIsNotNull(lookupPropertyType(property), "not found '" + property + "' property.");
+        Objects.requireNonNull(property, "paramType parameter is null.");
+        Objects.requireNonNull(valueInfo, "valueInfo parameter is null.");
+        Class<?> propertyType = Objects.requireNonNull(lookupPropertyType(property), "not found '" + property + "' property.");
         this.injectProperty.put(property, new ParamInfo(propertyType, valueInfo));
     }
     //

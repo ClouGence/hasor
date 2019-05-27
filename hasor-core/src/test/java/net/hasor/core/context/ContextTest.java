@@ -11,9 +11,11 @@ import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 public class ContextTest {
@@ -206,5 +208,55 @@ public class ContextTest {
         BindInfo<?> info3 = apiBinder.bindType(TestBean.class) //
                 .bothWith("123").toConstructor(CallInitBean.class.getConstructor()).toInfo();
         assert appContext.findBindingRegister("123", TestBean.class) == info3;
+    }
+    @Test
+    public void builderTest7() throws Throwable {
+        //
+        AppContext appContext = Hasor.create().asSmaller().build();
+        String name = ManagementFactory.getRuntimeMXBean().getName();
+        String pid = name.split("@")[0];
+        System.out.println("Pid is:" + pid);
+        //
+        Thread thread = new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+                Runtime.getRuntime().exec("kill -15 " + pid);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        thread.start();
+        try {
+            appContext.joinSignal(3, TimeUnit.SECONDS);
+            assert true;
+        } catch (RuntimeException e) {
+            assert false;
+        }
+    }
+    @Test
+    public void builderTest8() throws Throwable {
+        //
+        AppContext appContext = Hasor.create().asSmaller().build();
+        String name = ManagementFactory.getRuntimeMXBean().getName();
+        String pid = name.split("@")[0];
+        System.out.println("Pid is:" + pid);
+        //
+        Thread thread = new Thread(() -> {
+            try {
+                Thread.sleep(10000);
+                Runtime.getRuntime().exec("kill -15 " + pid);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        thread.start();
+        try {
+            appContext.joinSignal(1, TimeUnit.SECONDS);
+            assert false;
+        } catch (RuntimeException e) {
+            assert e.getCause() instanceof java.util.concurrent.TimeoutException;
+            return;
+        }
+        assert false;
     }
 }

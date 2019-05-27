@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.mapper;
-import net.hasor.core.Hasor;
 import net.hasor.utils.BeanUtils;
 
 import java.sql.ResultSet;
@@ -23,6 +22,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 /**
  * 用于 POJO 的 RowMapper
  * @version : 2013-12-18
@@ -31,20 +31,20 @@ import java.util.Map;
 public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
     private Class<T> requiredType;
     private boolean             caseInsensitive = false;
-    private Map<String, String> columnMapping   = new HashMap<String, String>();
+    private Map<String, String> columnMapping   = new HashMap<>();
     //
     /** Create a new BeanPropertyRowMapper.*/
     public BeanPropertyRowMapper() {
     }
     /** Create a new BeanPropertyRowMapper.*/
     public BeanPropertyRowMapper(final Class<T> requiredType) {
-        Hasor.assertIsNotNull(requiredType, "requiredType is null.");
+        Objects.requireNonNull(requiredType, "requiredType is null.");
         this.requiredType = requiredType;
         this.loadMapping();
     }
     /** Set the type that each result object is expected to match. <p>If not specified, the column value will be exposed as returned by the JDBC driver.*/
     public void setRequiredType(final Class<T> requiredType) {
-        Hasor.assertIsNotNull(requiredType, "requiredType is null.");
+        Objects.requireNonNull(requiredType, "requiredType is null.");
         this.requiredType = requiredType;
         this.loadMapping();
     }

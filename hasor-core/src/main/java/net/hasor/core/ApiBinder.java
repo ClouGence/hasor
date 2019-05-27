@@ -21,6 +21,7 @@ import net.hasor.core.provider.InstanceProvider;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -226,16 +227,15 @@ public interface ApiBinder {
     }
 
     public default <T> void bindToCreater(BindInfo<T> info, BeanCreaterListener<?> listener) {
-        Supplier<? extends BeanCreaterListener<?>> listenerProvider = InstanceProvider.of(Hasor.assertIsNotNull(listener));
-        this.bindToCreater(info, listenerProvider);
+        this.bindToCreater(info, InstanceProvider.of(Objects.requireNonNull(listener)));
     }
 
     public default <T> void bindToCreater(BindInfo<T> info, Class<? extends BeanCreaterListener<?>> listener) {
-        this.bindToCreater(info, Hasor.autoAware(getEnvironment(), new ClassAwareProvider<BeanCreaterListener<?>>(Hasor.assertIsNotNull(listener))));
+        this.bindToCreater(info, ClassAwareProvider.of(getEnvironment(), listener));
     }
 
     public default <T> void bindToCreater(BindInfo<T> info, BindInfo<? extends BeanCreaterListener<?>> listener) {
-        this.bindToCreater(info, Hasor.autoAware(getEnvironment(), new InfoAwareProvider<BeanCreaterListener<?>>(Hasor.assertIsNotNull(listener))));
+        this.bindToCreater(info, InfoAwareProvider.of(getEnvironment(), listener));
     }
 
     public <T> void bindToCreater(BindInfo<T> info, Supplier<? extends BeanCreaterListener<?>> listener);
@@ -247,7 +247,7 @@ public interface ApiBinder {
      * @return 成功注册之后返回它自身, 如果存在同名的scope那么会返回第一次注册那个 scope。
      */
     public default Supplier<Scope> registerScope(String scopeName, Scope scope) {
-        return this.registerScope(scopeName, new InstanceProvider<>(scope));
+        return this.registerScope(scopeName, InstanceProvider.of(scope));
     }
 
     /**
@@ -304,7 +304,7 @@ public interface ApiBinder {
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
         public default OptionPropertyBindingBuilder<T> toInstance(final T instance) {
-            return this.toProvider(new InstanceProvider<>(instance));
+            return this.toProvider(InstanceProvider.of(instance));
         }
 
         /**
@@ -429,7 +429,7 @@ public interface ApiBinder {
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
         public default OptionPropertyBindingBuilder<T> toScope(final Scope scope) {
-            return this.toScope(new InstanceProvider<>(scope));
+            return this.toScope(InstanceProvider.of(scope));
         }
 
         /**

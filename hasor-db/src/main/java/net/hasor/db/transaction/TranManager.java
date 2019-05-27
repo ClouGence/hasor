@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.db.transaction;
-import net.hasor.core.Hasor;
 import net.hasor.db.datasource.ConnectionHolder;
 import net.hasor.db.datasource.DataSourceManager;
 import net.hasor.db.transaction.support.JdbcTransactionManager;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 /**
@@ -47,7 +47,7 @@ public class TranManager extends DataSourceManager {
 
     //
     public static ConnectionHolder currentConnectionHolder(DataSource dataSource) {
-        Hasor.assertIsNotNull(dataSource);
+        Objects.requireNonNull(dataSource);
         ConcurrentMap<DataSource, ConnectionHolder> localMap = currentMap.get();
         ConnectionHolder holder = localMap.get(dataSource);
         if (holder == null) {
@@ -74,7 +74,7 @@ public class TranManager extends DataSourceManager {
     //
     /**获取事务管理器*/
     private static synchronized JdbcTransactionManager getTransactionManager(final DataSource dataSource) {
-        Hasor.assertIsNotNull(dataSource);
+        Objects.requireNonNull(dataSource);
         ConcurrentMap<DataSource, JdbcTransactionManager> localMap = managerMap.get();
         JdbcTransactionManager manager = localMap.get(dataSource);
         if (manager == null) {

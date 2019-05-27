@@ -27,9 +27,9 @@ public class BinderHelper {
         }
         if (atModule instanceof LifeModule) {
             /*启动*/
-            Hasor.pushStartListener(env, (EventListener<AppContext>) (event, eventData) -> ((LifeModule) atModule).onStart(eventData));
+            HasorUtils.pushStartListener(env, (EventListener<AppContext>) (event, eventData) -> ((LifeModule) atModule).onStart(eventData));
             /*停止*/
-            Hasor.pushShutdownListener(env, (EventListener<AppContext>) (event, eventData) -> ((LifeModule) atModule).onStop(eventData));
+            HasorUtils.pushShutdownListener(env, (EventListener<AppContext>) (event, eventData) -> ((LifeModule) atModule).onStop(eventData));
         }
         return atModule;
     }

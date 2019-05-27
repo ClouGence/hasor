@@ -33,7 +33,7 @@ public class CustomBinderTest implements Module {
     @Test
     public void binderTest() {
         System.out.println("--->>binderTest<<--");
-        AppContext appContext = Hasor.createAppContext("/net_hasor_core_context/binder_exter.xml", (Module) apiBinder -> {
+        AppContext appContext = Hasor.create().setMainSettings("/net_hasor_core_context/binder_exter.xml").build((Module) apiBinder -> {
             if (apiBinder instanceof TestBinder) {
                 ((TestBinder) apiBinder).hello();
             } else {

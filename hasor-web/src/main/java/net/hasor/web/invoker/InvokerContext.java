@@ -15,7 +15,6 @@
  */
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
 import net.hasor.utils.Iterators;
 import net.hasor.utils.future.BasicFuture;
 import net.hasor.web.*;
@@ -39,7 +38,7 @@ public class InvokerContext {
     private          RootInvokerCreater   invokerCreater = null;
     //
     public void initContext(final AppContext appContext, final Map<String, String> configMap) throws Throwable {
-        this.appContext = Hasor.assertIsNotNull(appContext);
+        this.appContext = Objects.requireNonNull(appContext);
         //
         // .MappingData
         List<InMappingDef> mappingList = appContext.findBindingBean(InMappingDef.class);

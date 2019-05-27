@@ -18,6 +18,8 @@ import net.hasor.utils.StringUtils;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -57,6 +59,18 @@ public interface AppContext extends MetaInfo {
 
     /** 发送停止通知 */
     public void shutdown();
+
+    /** 阻塞当前线程的继续执行，直到 {@link AppContext#shutdown()} 被调用 */
+    public void join();
+
+    /** 阻塞当前线程的继续执行，直到 {@link AppContext#shutdown()} 被调用 */
+    public void join(long timeout, TimeUnit unit);
+
+    /** 阻塞当前线程的继续执行，直到 {@link AppContext#shutdown()} 被调用或者接收到 kill -15 or kill -2 信号 */
+    public void joinSignal();
+
+    /** 阻塞当前线程的继续执行，直到 {@link AppContext#shutdown()} 被调用或者接收到 kill -15 or kill -2 信号 */
+    public void joinSignal(long timeout, TimeUnit unit);
     //
     /*---------------------------------------------------------------------------------------Bean*/
 
@@ -68,7 +82,7 @@ public interface AppContext extends MetaInfo {
 
     /** @return 如果存在目标类型的 Bean 则返回 Bean 的名称 */
     public default String[] getNames(final Class<?> targetClass) {
-        Hasor.assertIsNotNull(targetClass, "targetClass is null.");
+        Objects.requireNonNull(targetClass, "targetClass is null.");
         List<? extends BindInfo<?>> infoList = findBindingRegister(targetClass);
         return infoList.stream()                                            //
                 .map((Function<BindInfo<?>, String>) BindInfo::getBindName) //
@@ -89,7 +103,7 @@ public interface AppContext extends MetaInfo {
 
     /** 根据ID 类型创建 Bean */
     public default <T> T getInstance(String bindID) {
-        Hasor.assertIsNotNull(bindID, "bindID is null.");
+        Objects.requireNonNull(bindID, "bindID is null.");
         BindInfo<T> bindInfo = getBindInfo(bindID);
         if (bindInfo != null) {
             return this.getInstance(bindInfo);
@@ -99,13 +113,13 @@ public interface AppContext extends MetaInfo {
 
     /** 根据类型创建 Bean */
     public default <T> T getInstance(Class<T> targetClass) {
-        Hasor.assertIsNotNull(targetClass, "targetClass is null.");
+        Objects.requireNonNull(targetClass, "targetClass is null.");
         return this.getProvider(targetClass).get();
     }
 
     /** 根据构造方法创建 Bean */
     public default <T> T getInstance(Constructor<T> targetConstructor) {
-        Hasor.assertIsNotNull(targetConstructor, "targetConstructor is null.");
+        Objects.requireNonNull(targetConstructor, "targetConstructor is null.");
         return this.getProvider(targetConstructor).get();
     }
 
@@ -180,7 +194,7 @@ public interface AppContext extends MetaInfo {
      * @return 返回符合条件的绑定对象。
      */
     public default <T> T findBindingBean(final String withName, final Class<T> bindType) {
-        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        Objects.requireNonNull(bindType, "bindType is null.");
         BindInfo<T> typeRegister = this.findBindingRegister(withName, bindType);
         if (typeRegister != null) {
             return this.getInstance(typeRegister);
@@ -196,7 +210,7 @@ public interface AppContext extends MetaInfo {
      * @return 返回{@link Provider}形式对象。
      */
     public default <T> Supplier<? extends T> findBindingProvider(final String withName, final Class<T> bindType) {
-        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        Objects.requireNonNull(bindType, "bindType is null.");
         return findBindingRegister(bindType).stream().filter(bindInfo -> {
             return StringUtils.equals(bindInfo.getBindName(), withName);
         }).findFirst().map((Function<BindInfo<T>, Supplier<? extends T>>) this::getProvider).orElse(null);
@@ -216,7 +230,7 @@ public interface AppContext extends MetaInfo {
      * @return 返回所有符合条件的绑定信息。
      */
     public default <T> BindInfo<T> findBindingRegister(String withName, Class<T> bindType) {
-        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        Objects.requireNonNull(bindType, "bindType is null.");
         return findBindingRegister(bindType).stream().filter(bindInfo -> {
             return StringUtils.equals(bindInfo.getBindName(), withName);
         }).findFirst().orElse(null);

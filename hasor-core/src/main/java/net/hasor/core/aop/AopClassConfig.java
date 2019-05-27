@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core.aop;
-import net.hasor.core.Hasor;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.asm.*;
@@ -90,7 +89,7 @@ public class AopClassConfig {
     }
     /**添加Aop拦截器。*/
     public void addAopInterceptor(Predicate<Method> aopMatcher, MethodInterceptor aopInterceptor) {
-        Hasor.assertIsNotNull(aopMatcher, "aopMatcher is null.");
+        Objects.requireNonNull(aopMatcher, "aopMatcher is null.");
         if (this.interceptorList == null) {
             this.interceptorList = new ArrayList<>();
         }
@@ -459,7 +458,7 @@ public class AopClassConfig {
         return debug;
     }
     public void debug(boolean debug, File classWritePath) {
-        this.classWritePath = Hasor.assertIsNotNull(classWritePath);
+        this.classWritePath = Objects.requireNonNull(classWritePath);
         this.debug = debug;
     }
 }

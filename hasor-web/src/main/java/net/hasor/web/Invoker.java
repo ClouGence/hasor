@@ -15,6 +15,7 @@
  */
 package net.hasor.web;
 import net.hasor.core.AppContext;
+import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,9 +60,13 @@ public interface Invoker extends MimeType {
         return nameSet;
     }
 
-    /** 将Request中的参数填充到 formType 类型对象上，formType 的创建将会使用 {@link AppContext#getInstance(Class)} 方法。 */
-    public default <T> T fillForm(Class<? extends T> formType) {
-        return this.fillForm(formType, this.getAppContext().getInstance(formType));
+    /** 将Request中的参数填充到 formType 类型对象上，formType 的创建将会使用 {@link AppContext#justInject(Object)}  方法。 */
+    public default <T> T fillForm(Class<? extends T> formType) throws IllegalAccessException, InstantiationException {
+        try {
+            return this.fillForm(formType, this.getAppContext().justInject(formType.newInstance()));
+        } catch (Exception e) {
+            throw ExceptionUtils.toRuntimeException(e);
+        }
     }
 
     /** 将Request中的参数填充到 formType 类型对象上，类型实例由参数指定 */

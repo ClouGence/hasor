@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.paramer;
-import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.SqlParameterSource;
 import net.hasor.db.jdbc.core.ParameterDisposer;
 import net.hasor.utils.BeanUtils;
 
 import java.util.List;
+import java.util.Objects;
 /**
  *
  * @version : 2014-3-31
@@ -29,7 +29,7 @@ public class BeanSqlParameterSource implements SqlParameterSource, ParameterDisp
     private Object       dataBean;
     private List<String> dataNames;
     public BeanSqlParameterSource(Object dataBean) {
-        this.dataBean = Hasor.assertIsNotNull(dataBean);
+        this.dataBean = Objects.requireNonNull(dataBean);
         dataNames = BeanUtils.getPropertysAndFields(dataBean.getClass());
     }
     @Override

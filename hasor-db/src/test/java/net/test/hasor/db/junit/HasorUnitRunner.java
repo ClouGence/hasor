@@ -52,7 +52,7 @@ public class HasorUnitRunner extends BlockJUnit4ClassRunner {
             }
             //2.初始化绑定Test
             loadModule.add(apiBinder -> HasorUnitRunner.this.typeRegister = apiBinder.bindType(klass).uniqueName().toInfo());
-            this.appContext = Hasor.createAppContext(configResource, loadModule.toArray(new Module[0]));
+            this.appContext = Hasor.create().setMainSettings(configResource).build(loadModule.toArray(new Module[0]));
             //3.
             if (this.appContext == null)
                 throw new NullPointerException("HasorFactory.createAppContext return null.");

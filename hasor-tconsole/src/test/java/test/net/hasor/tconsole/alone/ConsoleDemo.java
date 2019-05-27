@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 package test.net.hasor.tconsole.alone;
-import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.tconsole.ConsoleApiBinder;
+
+import java.lang.management.ManagementFactory;
 /**
  * 启动服务端
  * @version : 2014年9月12日
@@ -26,11 +28,17 @@ import net.hasor.tconsole.ConsoleApiBinder;
 public class ConsoleDemo {
     public static void main(String[] args) throws Throwable {
         //Server
-        Hasor.createAppContext((Module) apiBinder -> {
+        AppContext appContext = Hasor.create().build((Module) apiBinder -> {
             apiBinder.tryCast(ConsoleApiBinder.class).addCommand(new String[] { "hello" }, HelloWordExecutor.class);
         });
         //
-        System.out.println("server start.");
-        System.in.read();
+        String name = ManagementFactory.getRuntimeMXBean().getName();
+        String pid = name.split("@")[0];
+        System.out.println("Pid is:" + pid);
+        //
+        System.out.println("server started. join wait signal.");
+        appContext.joinSignal();
+        System.out.println("server do shutdown.");
+        appContext.shutdown();
     }
 }

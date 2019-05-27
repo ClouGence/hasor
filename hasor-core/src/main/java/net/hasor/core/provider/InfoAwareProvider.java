@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.provider;
-import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
-import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
+import net.hasor.core.*;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 /**
  * 用法：Hasor.autoAware(env,new InfoAwareProvider(...));
@@ -30,7 +28,7 @@ public class InfoAwareProvider<T> implements Supplier<T>, AppContextAware {
     private BindInfo<? extends T> info;
     private AppContext            appContext;
     public InfoAwareProvider(BindInfo<? extends T> info) {
-        this.info = Hasor.assertIsNotNull(info);
+        this.info = Objects.requireNonNull(info);
     }
     public BindInfo<? extends T> getInfo() {
         return info;
@@ -45,5 +43,9 @@ public class InfoAwareProvider<T> implements Supplier<T>, AppContextAware {
             return this.appContext.getInstance(this.info);
         }
         throw new IllegalStateException("has not been initialized");
+    }
+    //
+    public static <T> InfoAwareProvider<T> of(Environment env, BindInfo<? extends T> info) {
+        return HasorUtils.autoAware(env, new InfoAwareProvider<>(Objects.requireNonNull(info)));
     }
 }

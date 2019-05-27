@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
-import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.*;
 import net.hasor.db.jdbc.mapper.BeanPropertyRowMapper;
 import net.hasor.db.jdbc.mapper.ColumnMapRowMapper;
@@ -103,7 +102,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     //
     @Override
     public <T> T execute(final StatementCallback<T> action) throws SQLException {
-        Hasor.assertIsNotNull(action, "Callback object must not be null");
+        Objects.requireNonNull(action, "Callback object must not be null");
         return this.execute(new ConnectionCallback<T>() {
             @Override
             public T doInConnection(final Connection con) throws SQLException {
@@ -129,8 +128,8 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
     @Override
     public <T> T execute(final PreparedStatementCreator psc, final PreparedStatementCallback<T> action) throws SQLException {
-        Hasor.assertIsNotNull(psc, "PreparedStatementCreator must not be null");
-        Hasor.assertIsNotNull(action, "Callback object must not be null");
+        Objects.requireNonNull(psc, "PreparedStatementCreator must not be null");
+        Objects.requireNonNull(action, "Callback object must not be null");
         if (logger.isDebugEnabled()) {
             String sql = JdbcTemplate.getSql(psc);
             logger.debug("Executing prepared SQL statement " + (sql != null ? " [" + sql + "]" : ""));
@@ -164,8 +163,8 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
     @Override
     public <T> T execute(final CallableStatementCreator csc, final CallableStatementCallback<T> action) throws SQLException {
-        Hasor.assertIsNotNull(csc, "CallableStatementCreator must not be null");
-        Hasor.assertIsNotNull(action, "Callback object must not be null");
+        Objects.requireNonNull(csc, "CallableStatementCreator must not be null");
+        Objects.requireNonNull(action, "Callback object must not be null");
         if (logger.isDebugEnabled()) {
             String sql = JdbcTemplate.getSql(csc);
             logger.debug("Calling stored procedure" + (sql != null ? " [" + sql + "]" : ""));
@@ -236,7 +235,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     //
     /***/
     public <T> T query(final PreparedStatementCreator psc, final PreparedStatementSetter pss, final ResultSetExtractor<T> rse) throws SQLException {
-        Hasor.assertIsNotNull(rse, "ResultSetExtractor must not be null.");
+        Objects.requireNonNull(rse, "ResultSetExtractor must not be null.");
         if (logger.isDebugEnabled()) {
             logger.debug("executing prepared SQL query");
         }
@@ -267,8 +266,8 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
     @Override
     public <T> T query(final String sql, final ResultSetExtractor<T> rse) throws SQLException {
-        Hasor.assertIsNotNull(sql, "SQL must not be null.");
-        Hasor.assertIsNotNull(rse, "ResultSetExtractor must not be null.");
+        Objects.requireNonNull(sql, "SQL must not be null.");
+        Objects.requireNonNull(rse, "ResultSetExtractor must not be null.");
         if (logger.isDebugEnabled()) {
             logger.debug("Executing SQL query [{}].", sql);
         }
@@ -573,7 +572,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
     @Override
     public int executeUpdate(final String sql) throws SQLException {
-        Hasor.assertIsNotNull(sql, "SQL must not be null");
+        Objects.requireNonNull(sql, "SQL must not be null");
         if (logger.isDebugEnabled()) {
             logger.debug("Executing SQL update [{}]", sql);
         }
@@ -732,7 +731,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     }
     /** Create a new RowMapper for reading columns as Bean pairs. */
     protected <T> RowMapper<T> getBeanPropertyRowMapper(final Class<T> requiredType) {
-        Hasor.assertIsNotNull(requiredType, "requiredType is null.");
+        Objects.requireNonNull(requiredType, "requiredType is null.");
         if (Map.class.isAssignableFrom(requiredType)) {
             return (RowMapper<T>) this.getColumnMapRowMapper();
         }
@@ -834,7 +833,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     private static class SimplePreparedStatementCreator implements PreparedStatementCreator, JdbcTemplate.SqlProvider {
         private final String sql;
         public SimplePreparedStatementCreator(final String sql) {
-            Hasor.assertIsNotNull(sql, "SQL must not be null");
+            Objects.requireNonNull(sql, "SQL must not be null");
             this.sql = sql;
         }
         @Override
@@ -850,7 +849,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
     private static class SimpleCallableStatementCreator implements CallableStatementCreator, JdbcTemplate.SqlProvider {
         private final String callString;
         public SimpleCallableStatementCreator(final String callString) {
-            Hasor.assertIsNotNull(callString, "Call string must not be null");
+            Objects.requireNonNull(callString, "Call string must not be null");
             this.callString = callString;
         }
         @Override
@@ -882,7 +881,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
         private SqlParameterSource paramSource = null;
         //
         public MapPreparedStatementCreator(final String originalSql, final SqlParameterSource paramSource) {
-            Hasor.assertIsNotNull(originalSql, "SQL must not be null");
+            Objects.requireNonNull(originalSql, "SQL must not be null");
             this.parsedSql = getParsedSql(originalSql);
             this.paramSource = paramSource;
         }

@@ -30,7 +30,7 @@ public class UpdateJDBCTest {
     public void simple_UpdateJDBCTest() throws SQLException {
         System.out.println("--->>simple_UpdateJDBCTest<<--");
         //
-        AppContext app = Hasor.createAppContext("jdbc-config.xml", new SingleDataSourceWarp());
+        AppContext app = Hasor.create().setMainSettings("jdbc-config.xml").build(new SingleDataSourceWarp());
         JdbcTemplate jdbc = app.getInstance(JdbcTemplate.class);
         //
     }

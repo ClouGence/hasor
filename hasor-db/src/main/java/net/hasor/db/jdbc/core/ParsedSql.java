@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
-import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.SqlParameterSource;
 
 import java.sql.SQLException;
@@ -70,14 +69,14 @@ public class ParsedSql {
         ParsedSql parSQL = new ParsedSql(originalSql);
         //
         //1.关键参数定义
-        List<String> parameterNames = new ArrayList<String>();
-        List<int[]> parameterIndexes = new ArrayList<int[]>();
+        List<String> parameterNames = new ArrayList<>();
+        List<int[]> parameterIndexes = new ArrayList<>();
         int namedParameterCount = 0;//带有名字参数的总数
         int unnamedParameterCount = 0;//无名字参数总数
         int totalParameterCount = 0;//参数总数
         //
         //2.分析SQL，提取出SQL中参数信息
-        Hasor.assertIsNotNull(originalSql, "SQL must not be null");
+        Objects.requireNonNull(originalSql, "SQL must not be null");
         Set<String> namedParameters = new HashSet<String>();
         char[] statement = originalSql.toCharArray();
         int i = 0;

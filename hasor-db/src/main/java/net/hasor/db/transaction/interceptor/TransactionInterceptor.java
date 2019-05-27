@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.db.transaction.interceptor;
-import net.hasor.core.Hasor;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
 import net.hasor.db.transaction.*;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.function.Supplier;
 /**
  * 某一个数据源的事务管理器
@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 public class TransactionInterceptor implements MethodInterceptor {
     private Supplier<DataSource> dataSource = null;
     public TransactionInterceptor(Supplier<DataSource> dataSource) {
-        this.dataSource = Hasor.assertIsNotNull(dataSource, "dataSource Provider is null.");
+        this.dataSource = Objects.requireNonNull(dataSource, "dataSource Provider is null.");
     }
     //
     /*是否不需要回滚:true表示不要回滚*/

@@ -15,7 +15,6 @@
  */
 package net.hasor.web;
 import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.FilenameUtils;
@@ -669,7 +668,7 @@ public class WebController implements Controller {
      * @param encoding 字符编码。
      */
     protected List<FileItem> getMultipart(String parameterName, String cacheDirectory, Integer maxPostSize, String encoding) throws IOException {
-        Hasor.assertIsNotNull(parameterName);
+        Objects.requireNonNull(parameterName);
         List<FileItem> itemList = this.getMultipartList(cacheDirectory, maxPostSize, encoding);
         if (itemList == null || itemList.isEmpty()) {
             return null;
@@ -716,7 +715,7 @@ public class WebController implements Controller {
      * @param encoding 字符编码。
      */
     protected FileItem getOneMultipart(String parameterName, String cacheDirectory, Integer maxPostSize, String encoding) throws IOException {
-        Hasor.assertIsNotNull(parameterName);
+        Objects.requireNonNull(parameterName);
         List<FileItem> itemList = this.getMultipartList(cacheDirectory, maxPostSize, encoding);
         if (itemList == null || itemList.isEmpty()) {
             return null;

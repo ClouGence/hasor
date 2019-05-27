@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core.exts.aop;
-import net.hasor.core.Hasor;
 import net.hasor.utils.ClassUtils;
 import net.hasor.utils.MatchUtils;
 import net.hasor.utils.MatchUtils.MatchTypeEnum;
@@ -23,6 +22,7 @@ import net.hasor.utils.StringUtils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -113,7 +113,7 @@ public class Matchers {
     private static class SubClassesOf implements Predicate<Class<?>> {
         private final Class<?> superclass;
         public SubClassesOf(final Class<?> superclass) {
-            this.superclass = Hasor.assertIsNotNull(superclass, "superclass");
+            this.superclass = Objects.requireNonNull(superclass, "superclass");
         }
         public boolean test(final Class<?> subclass) {
             return this.superclass.isAssignableFrom(subclass);

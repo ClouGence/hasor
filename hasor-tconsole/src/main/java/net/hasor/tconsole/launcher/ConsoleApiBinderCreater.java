@@ -16,7 +16,7 @@
 package net.hasor.tconsole.launcher;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
+import net.hasor.core.HasorUtils;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.tconsole.CommandExecutor;
@@ -41,7 +41,7 @@ public class ConsoleApiBinderCreater implements ApiBinderCreater {
             if (names == null || names.length == 0) {
                 throw new NullPointerException("command names undefined.");
             }
-            ExecutorDefine define = Hasor.autoAware(getEnvironment(), new ExecutorDefine(names, instructInfo));
+            ExecutorDefine define = HasorUtils.autoAware(getEnvironment(), new ExecutorDefine(names, instructInfo));
             this.bindType(ExecutorDefine.class).uniqueName().toInstance(define);
         }
     }

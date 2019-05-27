@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -45,7 +46,7 @@ public abstract class AbstractBinder implements ApiBinder {
     protected Logger      logger = LoggerFactory.getLogger(getClass());
     private   Environment environment;
     public AbstractBinder(Environment environment) {
-        this.environment = Hasor.assertIsNotNull(environment, "environment is null.");
+        this.environment = Objects.requireNonNull(environment, "environment is null.");
     }
     //
     @Override
@@ -90,9 +91,9 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     @Override
     public <T> void bindToCreater(BindInfo<T> info, Supplier<? extends BeanCreaterListener<?>> listener) {
-        BindInfo<T> bindInfo = getBindInfo(Hasor.assertIsNotNull(info).getBindID());
+        BindInfo<T> bindInfo = getBindInfo(Objects.requireNonNull(info).getBindID());
         if (bindInfo instanceof AbstractBindInfoProviderAdapter) {
-            ((AbstractBindInfoProviderAdapter) bindInfo).addCreaterListener(Hasor.assertIsNotNull(listener));
+            ((AbstractBindInfoProviderAdapter) bindInfo).addCreaterListener(Objects.requireNonNull(listener));
         }
     }
     //
@@ -118,33 +119,33 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     @Override
     public void bindInterceptor(final Predicate<Class<?>> matcherClass, final Predicate<Method> matcherMethod, final MethodInterceptor interceptor) {
-        Hasor.assertIsNotNull(matcherClass, "matcherClass is null.");
-        Hasor.assertIsNotNull(matcherMethod, "matcherMethod is null.");
-        Hasor.assertIsNotNull(interceptor, "interceptor is null.");
+        Objects.requireNonNull(matcherClass, "matcherClass is null.");
+        Objects.requireNonNull(matcherMethod, "matcherMethod is null.");
+        Objects.requireNonNull(interceptor, "interceptor is null.");
         //
         AopBindInfoAdapter aopAdapter = new AopBindInfoAdapter(matcherClass, matcherMethod, interceptor);
-        aopAdapter = Hasor.autoAware(this.getEnvironment(), aopAdapter);
+        aopAdapter = HasorUtils.autoAware(this.getEnvironment(), aopAdapter);
         this.bindType(AopBindInfoAdapter.class).uniqueName().toInstance(aopAdapter);
     }
     @Override
     public <T> List<BindInfo<T>> findBindingRegister(Class<T> bindType) {
-        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        Objects.requireNonNull(bindType, "bindType is null.");
         return getBeanBuilder().findBindInfoList(bindType);
     }
     @Override
     public <T> BindInfo<T> findBindingRegister(String withName, Class<T> bindType) {
-        Hasor.assertIsNotNull(withName, "withName is null.");
-        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        Objects.requireNonNull(withName, "withName is null.");
+        Objects.requireNonNull(bindType, "bindType is null.");
         return getBeanBuilder().findBindInfo(withName, bindType);
     }
     @Override
     public <T> BindInfo<T> getBindInfo(String bindID) {
-        Hasor.assertIsNotNull(bindID, "bindID is null.");
+        Objects.requireNonNull(bindID, "bindID is null.");
         return getBeanBuilder().findBindInfo(bindID);
     }
     @Override
     public <T> BindInfo<T> getBindInfo(Class<T> bindType) {
-        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        Objects.requireNonNull(bindType, "bindType is null.");
         return getBeanBuilder().findBindInfo(null, bindType);
     }
     //
@@ -193,7 +194,7 @@ public abstract class AbstractBinder implements ApiBinder {
         public ScopedBindingBuilder<T> whenCreate(Class<? extends BeanCreaterListener<?>> createrListener) {
             if (createrListener != null) {
                 ClassAwareProvider<? extends BeanCreaterListener<?>> listenerProvider = new ClassAwareProvider<BeanCreaterListener<?>>(createrListener);
-                this.typeBuilder.addCreaterListener(Hasor.autoAware(getEnvironment(), listenerProvider));
+                this.typeBuilder.addCreaterListener(HasorUtils.autoAware(getEnvironment(), listenerProvider));
             }
             return this;
         }
@@ -201,7 +202,7 @@ public abstract class AbstractBinder implements ApiBinder {
         public ScopedBindingBuilder<T> whenCreate(BindInfo<? extends BeanCreaterListener<?>> createrListener) {
             if (createrListener != null) {
                 InfoAwareProvider<? extends BeanCreaterListener<?>> listenerProvider = new InfoAwareProvider<BeanCreaterListener<?>>(createrListener);
-                this.typeBuilder.addCreaterListener(Hasor.autoAware(getEnvironment(), listenerProvider));
+                this.typeBuilder.addCreaterListener(HasorUtils.autoAware(getEnvironment(), listenerProvider));
             }
             return this;
         }
@@ -266,7 +267,7 @@ public abstract class AbstractBinder implements ApiBinder {
         }
         @Override
         public OptionPropertyBindingBuilder<T> toScope(final Supplier<Scope> scope) {
-            Hasor.assertIsNotNull(scope, "the Provider of Scope is null.");
+            Objects.requireNonNull(scope, "the Provider of Scope is null.");
             this.typeBuilder.setScopeProvider(scope);
             return this;
         }

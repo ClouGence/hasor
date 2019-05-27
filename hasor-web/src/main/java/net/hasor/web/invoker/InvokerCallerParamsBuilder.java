@@ -101,7 +101,7 @@ public class InvokerCallerParamsBuilder {
             atData = invoker.getHttpRequest().getParameterValues(((RequestParameter) pAnno).value());
         } else if (pAnno instanceof ParameterForm) {
             try {
-                Object instance = invoker.getAppContext().getInstance(paramClass);
+                Object instance = invoker.getAppContext().justInject(paramClass.newInstance());
                 atData = this.getParamsParam(invoker, paramClass, instance);
             } catch (Throwable e) {
                 logger.error(paramClass.getName() + "newInstance error.", e.getMessage());

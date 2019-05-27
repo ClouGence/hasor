@@ -217,11 +217,9 @@ class TelnetHandler extends SimpleChannelInboundHandler<String> {
         //3.执行命令
         if (requestCmd.getStatus() == RequestStatus.StandBy) {
             logger.info("tConsole -> doRequest, doRunning.");
-            requestCmd.doCommand(executor, new Runnable() {
-                public void run() {
-                    cmdAttr.remove();
-                    ctx.writeAndFlush("\r\n" + CMD);
-                }
+            requestCmd.doCommand(executor, () -> {
+                cmdAttr.remove();
+                ctx.writeAndFlush("\r\n" + CMD);
             });
             //命令进入就绪状态
             return requestCmd.getResponse();
