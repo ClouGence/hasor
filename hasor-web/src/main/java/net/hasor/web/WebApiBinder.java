@@ -16,7 +16,6 @@
 package net.hasor.web;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
 import net.hasor.core.aop.AsmTools;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.utils.ArrayUtils;
@@ -37,6 +36,7 @@ import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -108,7 +108,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /** 加载带有 @MappingTo 注解的类。 */
     public default void loadMappingTo(Class<?> mabeMappingType) {
-        Hasor.assertIsNotNull(mabeMappingType, "class is null.");
+        Objects.requireNonNull(mabeMappingType, "class is null.");
         int modifier = mabeMappingType.getModifiers();
         if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || mabeMappingType.isArray() || mabeMappingType.isEnum()) {
             throw new IllegalStateException(mabeMappingType.getName() + " must be normal Bean");
@@ -210,23 +210,17 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /**添加 MappingDiscoverer*/
     public default void addDiscoverer(Class<? extends MappingDiscoverer> discoverer) {
-        Hasor.assertIsNotNull(discoverer);
-        BindInfo<MappingDiscoverer> bindInfo = this.bindType(MappingDiscoverer.class).to(discoverer).toInfo();
-        this.addDiscoverer(bindInfo);
+        this.addDiscoverer(this.bindType(MappingDiscoverer.class).to(Objects.requireNonNull(discoverer)).toInfo());
     }
 
     /**添加 MappingDiscoverer*/
     public default void addDiscoverer(MappingDiscoverer discoverer) {
-        Hasor.assertIsNotNull(discoverer);
-        BindInfo<MappingDiscoverer> bindInfo = this.bindType(MappingDiscoverer.class).toInstance(discoverer).toInfo();
-        this.addDiscoverer(bindInfo);
+        this.addDiscoverer(this.bindType(MappingDiscoverer.class).toInstance(Objects.requireNonNull(discoverer)).toInfo());
     }
 
     /**添加 MappingDiscoverer*/
     public default void addDiscoverer(Supplier<? extends MappingDiscoverer> discoverer) {
-        Hasor.assertIsNotNull(discoverer);
-        BindInfo<MappingDiscoverer> bindInfo = this.bindType(MappingDiscoverer.class).toProvider(discoverer).toInfo();
-        this.addDiscoverer(bindInfo);
+        this.addDiscoverer(this.bindType(MappingDiscoverer.class).toProvider(Objects.requireNonNull(discoverer)).toInfo());
     }
 
     /**添加 MappingDiscoverer*/
@@ -243,7 +237,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     }
 
     public default void loadMimeType(Charset charset, String resource) throws IOException {
-        loadMimeType(charset, Hasor.assertIsNotNull(ResourcesUtils.getResourceAsStream(resource), resource + " is not exist"));
+        loadMimeType(charset, Objects.requireNonNull(ResourcesUtils.getResourceAsStream(resource), resource + " is not exist"));
     }
 
     public default void loadMimeType(Charset charset, InputStream inputStream) throws IOException {
@@ -432,7 +426,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /** 加载 @Render注解配置的渲染器。*/
     public default void loadRender(Class<?> renderClass) {
-        Hasor.assertIsNotNull(renderClass, "class is null.");
+        Objects.requireNonNull(renderClass, "class is null.");
         int modifier = renderClass.getModifiers();
         if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || renderClass.isArray() || renderClass.isEnum()) {
             throw new IllegalStateException(renderClass.getName() + " must be normal Bean");

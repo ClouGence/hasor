@@ -19,9 +19,6 @@ import net.hasor.core.context.ContainerCreater;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
-import net.hasor.core.provider.ClassLoaderSingleProvider;
-import net.hasor.core.provider.SingleProvider;
-import net.hasor.core.provider.ThreadSingleProvider;
 import net.hasor.core.setting.AbstractSettings;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.core.setting.StreamType;
@@ -35,58 +32,57 @@ import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.util.*;
-import java.util.function.Supplier;
-
-import static net.hasor.core.AppContext.ContextEvent_Shutdown;
-import static net.hasor.core.AppContext.ContextEvent_Started;
 /**
  * Hasor 基础工具包。
  * @version : 2013-4-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public class Hasor extends HashMap<String, String> {
+public final class Hasor extends HashMap<String, String> {
     protected static Logger                           logger                 = LoggerFactory.getLogger(Hasor.class);
     private final    Object                           context;
     private          Object                           mainSettings           = TemplateAppContext.DefaultSettings;
     private          StreamType                       mainSettingsStreamType = null;
     private final    List<Module>                     moduleList             = new ArrayList<>();
     private          ClassLoader                      loader;
-    private          ContainerCreater                 creater;
+    private          ContainerCreater                 containerCreater;
     private          Map<String, Map<String, Object>> initSettingMap         = new HashMap<>();
     private          boolean                          asSmaller              = false;
-    //
     protected Hasor(Object context) {
         this.context = context;
     }
     //
     //
-    public Hasor setMainSettings(File mainSettings) {
+    public Hasor mainSettingWith(File mainSettings) {
         this.mainSettings = mainSettings;
         return this;
     }
-    public Hasor setMainSettings(URI mainSettings) {
+    public Hasor mainSettingWith(URI mainSettings) {
         this.mainSettings = mainSettings;
         return this;
     }
-    public Hasor setMainSettings(URL mainSettings) {
+    public Hasor mainSettingWith(URL mainSettings) {
         this.mainSettings = mainSettings;
         return this;
     }
-    public Hasor setMainSettings(String mainSettings) {
+    public Hasor mainSettingWith(String mainSettings) {
         this.mainSettings = mainSettings;
         return this;
     }
-    public Hasor setMainSettings(Reader mainSettings, StreamType streamType) {
+    public Hasor mainSettingWith(Reader mainSettings, StreamType streamType) {
         this.mainSettings = mainSettings;
         this.mainSettingsStreamType = streamType;
         return this;
     }
-    public Hasor setMainSettings(String encoding, InputStream mainSettings, StreamType streamType) throws UnsupportedEncodingException {
+    public Hasor mainSettingWith(String encoding, InputStream mainSettings, StreamType streamType) throws UnsupportedEncodingException {
         this.mainSettings = new InputStreamReader(mainSettings, encoding);
         this.mainSettingsStreamType = streamType;
         return this;
     }
     //
+    public Hasor containerCreaterWith(ContainerCreater containerCreater) {
+        this.containerCreater = containerCreater;
+        return this;
+    }
     //
     public Hasor addSettings(String namespace, String key, Object value) {
         if (StringUtils.isBlank(namespace) || StringUtils.isBlank(key)) {
@@ -97,15 +93,15 @@ public class Hasor extends HashMap<String, String> {
         return this;
     }
     //
-    //
-    public Hasor putData(String key, String value) {
+    public Hasor addVariable(String key, String value) {
         this.put(key, value);
         return this;
     }
-    public Hasor putAllData(Map<String, String> mapData) {
+    public Hasor addVariableMap(Map<String, String> mapData) {
         this.putAll(mapData);
         return this;
     }
+    //
     public Hasor loadProperties(File resourceName) throws IOException {
         return loadProperties(new FileReader(resourceName));
     }
@@ -125,7 +121,6 @@ public class Hasor extends HashMap<String, String> {
         return this;
     }
     //
-    //
     public Hasor addModules(List<Module> moduleList) {
         if (moduleList != null) {
             this.moduleList.addAll(moduleList);
@@ -139,12 +134,10 @@ public class Hasor extends HashMap<String, String> {
         return this;
     }
     //
-    //
-    public Hasor setLoader(ClassLoader loader) {
+    public Hasor parentClassLoaderWith(ClassLoader loader) {
         this.loader = loader;
         return this;
     }
-    //
     //
     public Hasor asSmaller() {
         this.asSmaller = true;
@@ -154,60 +147,26 @@ public class Hasor extends HashMap<String, String> {
         this.asSmaller = false;
         return this;
     }
-    private static Supplier<AppContext> singletonHasor = null;
-    public AppContext asStaticSingleton() {
-        AppContext appContext = localAppContext();
-        if (appContext == null) {
-            singletonHasor = new SingleProvider<>(Hasor.this::build);
-            return singletonHasor.get();
-        }
-        throw new IllegalStateException("Hasor has been initialized.");
-    }
-    public AppContext asThreadSingleton() {
-        AppContext appContext = localAppContext();
-        if (appContext == null) {
-            singletonHasor = new ThreadSingleProvider<>(Hasor.this::build);
-            return singletonHasor.get();
-        }
-        throw new IllegalStateException("Hasor has been initialized.");
-    }
-    public AppContext asContextSingleton() {
-        AppContext appContext = localAppContext();
-        if (appContext == null) {
-            singletonHasor = new ClassLoaderSingleProvider<>(Hasor.this::build);
-            return singletonHasor.get();
-        }
-        throw new IllegalStateException("Hasor has been initialized.");
-    }
-    //
-    //
-    public static AppContext localAppContext() {
-        if (singletonHasor != null) {
-            return singletonHasor.get();
-        }
-        return null;
-    }
     //
     //
     /**用简易的方式创建{@link AppContext}容器。*/
     public AppContext build(Module... modules) {
-        return this.addModules(modules).build();
-    }
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public AppContext build() {
+        if (modules != null) {
+            this.addModules(modules);
+        }
         //
         // .单独处理RUN_PATH
         String runPath = new File("").getAbsolutePath();
-        this.putData("RUN_PATH", runPath);
-        this.putData("RUN_MODE", this.asSmaller ? "smaller" : "none");
+        this.addVariable("RUN_PATH", runPath);
+        this.addVariable("RUN_MODE", this.asSmaller ? "smaller" : "none");
         if (logger.isInfoEnabled()) {
             logger.info("runMode at {}", this.get("RUN_MODE"));
             logger.info("runPath at {}", runPath);
         }
         //
         if (this.asSmaller) {
-            this.putData("HASOR_LOAD_MODULE", "false");
-            this.putData("HASOR_LOAD_EXTERNALBINDER", "false");
+            this.addVariable("HASOR_LOAD_MODULE", "false");
+            this.addVariable("HASOR_LOAD_EXTERNALBINDER", "false");
             StandardContextSettings.setLoadMatcher("/META-INF/hasor-framework/core-hconfig.xml"::equals);
         } else {
             StandardContextSettings.setLoadMatcher(null);
@@ -251,106 +210,19 @@ public class Hasor extends HashMap<String, String> {
             //
             Environment env = new StandardEnvironment(this.context, mainSettings, this, this.loader);
             BeanContainer container = null;
-            if (this.creater != null) {
-                container = this.creater.create(env);
+            if (this.containerCreater != null) {
+                container = this.containerCreater.create(env);
             } else {
                 container = new BeanContainer();
             }
             //
-            AppContext appContext = new StatusAppContext(env, assertIsNotNull(container));
+            AppContext appContext = new StatusAppContext(env, Objects.requireNonNull(container));
             appContext.start(this.moduleList.toArray(new Module[0]));
             return appContext;
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
-    //
-    //
-    //
-    /**
-     * 将{@link AppContextAware}接口实现类注册到容器中，Hasor 会在启动的第一时间为这些对象执行注入。
-     * @param awareProvider 需要被注册的 AppContextAware 接口实现对象。
-     * @return 返回 aware 参数本身。
-     */
-    public static <T extends AppContextAware> Supplier<T> autoAware(Environment env, final Supplier<T> awareProvider) {
-        if (awareProvider == null) {
-            return null;
-        }
-        Hasor.assertIsNotNull(env, "EventContext is null.");
-        env.getEventContext().pushListener(ContextEvent_Started, (EventListener<AppContext>) (event, eventData) -> {
-            awareProvider.get().setAppContext(eventData);
-        });
-        return awareProvider;
-    }
-    /**
-     * 将{@link AppContextAware}接口实现类注册到容器中，Hasor 会在启动的第一时间为这些对象执行注入。
-     * @param aware 需要被注册的 AppContextAware 接口实现对象。
-     * @return 返回 aware 参数本身。
-     */
-    public static <T extends AppContextAware> T autoAware(Environment env, final T aware) {
-        if (aware == null) {
-            return null;
-        }
-        Hasor.assertIsNotNull(env, "EventContext is null.");
-        env.getEventContext().pushListener(ContextEvent_Started, (EventListener<AppContext>) (event, eventData) -> {
-            aware.setAppContext(eventData);
-        });
-        return aware;
-    }
-    //
-    //
-    //
-    public static <TD, T extends EventListener<TD>> T pushStartListener(Environment env, T eventListener) {
-        env.getEventContext().pushListener(ContextEvent_Started, eventListener);
-        return eventListener;
-    }
-    public static <TD, T extends EventListener<TD>> T pushShutdownListener(Environment env, T eventListener) {
-        env.getEventContext().pushListener(ContextEvent_Shutdown, eventListener);
-        return eventListener;
-    }
-    public static <TD, T extends EventListener<TD>> T addStartListener(Environment env, T eventListener) {
-        env.getEventContext().addListener(ContextEvent_Started, eventListener);
-        return eventListener;
-    }
-    public static <TD, T extends EventListener<TD>> T addShutdownListener(Environment env, T eventListener) {
-        env.getEventContext().addListener(ContextEvent_Shutdown, eventListener);
-        return eventListener;
-    }
-    public static <T extends EventListener<AppContext>> BindInfo<T> pushStartListener(Environment env, final BindInfo<T> eventListener) {
-        env.getEventContext().pushListener(ContextEvent_Started, doLazyCallEvent(eventListener));
-        return eventListener;
-    }
-    public static <T extends EventListener<AppContext>> BindInfo<T> pushShutdownListener(Environment env, final BindInfo<T> eventListener) {
-        env.getEventContext().pushListener(ContextEvent_Shutdown, doLazyCallEvent(eventListener));
-        return eventListener;
-    }
-    public static <T extends EventListener<AppContext>> BindInfo<T> addStartListener(Environment env, final BindInfo<T> eventListener) {
-        env.getEventContext().pushListener(ContextEvent_Started, doLazyCallEvent(eventListener));
-        return eventListener;
-    }
-    public static <T extends EventListener<AppContext>> BindInfo<T> addShutdownListener(Environment env, final BindInfo<T> eventListener) {
-        env.getEventContext().pushListener(ContextEvent_Shutdown, doLazyCallEvent(eventListener));
-        return eventListener;
-    }
-    private static EventListener<AppContext> doLazyCallEvent(BindInfo<? extends EventListener<AppContext>> bindInfo) {
-        return (event1, eventData) -> eventData.getInstance(bindInfo).onEvent(event1, eventData);
-    }
-    //
-    //
-    //
-    /**如果参数为空会抛出 NullPointerException 异常。*/
-    public static <T> T assertIsNotNull(final T object) {
-        return Hasor.assertIsNotNull(object, ""); //$NON-NLS-1$
-    }
-    /**如果参数为空会抛出 NullPointerException 异常。*/
-    public static <T> T assertIsNotNull(final T object, final String message) {
-        if (object == null) {
-            throw new NullPointerException("null argument:" + message); //$NON-NLS-1$
-        }
-        return object;
-    }
-    //
-    //
     //
     /**用Builder的方式创建{@link AppContext}容器。*/
     public static Hasor create() {
@@ -359,41 +231,5 @@ public class Hasor extends HashMap<String, String> {
     /**用Builder的方式创建{@link AppContext}容器。*/
     public static Hasor create(Object context) {
         return new Hasor(context);
-    }
-    //
-    //
-    //
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext() {
-        return create(null).build();
-    }
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(Module... modules) {
-        return create(null).build(modules);
-    }
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(File mainSettings) {
-        return create(null).setMainSettings(mainSettings).build();
-    }
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(String mainSettings) {
-        return create(null).setMainSettings(mainSettings).build();
-    }
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(URI mainSettings) {
-        return create(null).setMainSettings(mainSettings).build();
-    }
-    //
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(File mainSettings, Module... modules) {
-        return create(null).setMainSettings(mainSettings).build(modules);
-    }
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(String mainSettings, Module... modules) {
-        return create(null).setMainSettings(mainSettings).build(modules);
-    }
-    /**用简易的方式创建{@link AppContext}容器。*/
-    public static AppContext createAppContext(URI mainSettings, Module... modules) {
-        return create(null).setMainSettings(mainSettings).build(modules);
     }
 }

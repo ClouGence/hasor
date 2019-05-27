@@ -1,15 +1,21 @@
 ﻿--------------------
 Release Hasor v3.x
 --------------------
-Hasor v4.0.5 (2019-05-25)
+Hasor v4.0.5 (2019-05-27)
 ------------------------------------
+**重要**
+    - 4.0.0版本新增的 Hasor-Boot 项目不在单独存在，理由 Hasor 可以很好的在 Spring Boot 上运行和部署，因此并无任何必要在重复构建相同功能。
+    - Boot 的机制融入到AppContext 接口的两个 join、joinSignal 新增方法中。
 **新增**
     - 新增 @Destroy 注解 @PreDestroy 注解支持，可以配置当容器停止时调用的方法。
     - binder 可以声明 Destroy 方法了，要想使用 Destroy 的Bean 必须是单例的。
     - Web请求中 ServletContext 可以作为特殊类型注入进来了。
+    - AppContext 新增 join、joinSignal 两个方法。
 **改进**
     - 标记了 @ParameterForm 的参数对象会执行 inject。
     - ApiBinder 的 installModule 支持数组入参了。
+    - Hasor 类的工具方法拆分到 HasorUtils 中。
+    - Hasor.assertIsNotNull 方法使用 Objects 相关的方法进行替代。
 
 Hasor v4.0.4 (2019-05-22)
 ------------------------------------

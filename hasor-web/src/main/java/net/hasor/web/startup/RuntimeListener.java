@@ -48,13 +48,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     //
     /**创建{@link AppContext}对象*/
     protected Hasor newHasor(ServletContext sc, String configName, Properties properties) throws Throwable {
-        final class WebHasor extends Hasor {
-            protected WebHasor(Object context) {
-                super(context);
-            }
-        }
-        //
-        Hasor webHasor = WebHasor.create(sc);
+        Hasor webHasor = Hasor.create(sc);
         //
         if (StringUtils.isNotBlank(configName)) {
             webHasor.setMainSettings(configName);

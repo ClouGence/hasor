@@ -31,7 +31,7 @@ public class MultipleDataSourceTest {
     public void useMoreDataSource() throws SQLException, IOException {
         //
         //1.构建AppContext
-        AppContext app = Hasor.createAppContext("jdbc-config.xml", new MultipleDataSourceWarp());
+        AppContext app = Hasor.create().setMainSettings("jdbc-config.xml").build(new MultipleDataSourceWarp());
         //
         //2.初始化数据
         InitDataService dataTest = app.getInstance(InitDataService.class);

@@ -15,7 +15,6 @@
  */
 package net.hasor.web.invoker;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Mapping;
@@ -45,7 +44,7 @@ public class InMappingDef implements Mapping {
         this(index, targetType, mappingTo, methodMatcher, true);
     }
     public InMappingDef(int index, BindInfo<?> targetType, String mappingTo, Predicate<Method> methodMatcher, boolean needAnno) {
-        this.targetType = Hasor.assertIsNotNull(targetType, "targetType is null.");
+        this.targetType = Objects.requireNonNull(targetType, "targetType is null.");
         if (StringUtils.isBlank(mappingTo)) {
             throw new NullPointerException("'" + targetType.getBindType() + "' Service path is empty.");
         }
@@ -139,7 +138,7 @@ public class InMappingDef implements Mapping {
      * @return 返回测试结果。
      */
     public boolean matchingMapping(HttpServletRequest request) {
-        Hasor.assertIsNotNull(request, "request is null.");
+        Objects.requireNonNull(request, "request is null.");
         //
         String httpMethod = request.getMethod();
         String requestPath = evalRequestPath(request);

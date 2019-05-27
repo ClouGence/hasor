@@ -23,6 +23,7 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import net.hasor.tconsole.CommandExecutor;
 import net.hasor.utils.future.BasicFuture;
 
 import java.io.BufferedReader;
@@ -42,11 +43,11 @@ public final class TelnetClient {
                 commands.write("set " + key + " = " + val + " \n");
             }
         }
-        commands.write("set SESSION_AFTERCLOSE = true \n");
+        commands.write("set " + CommandExecutor.AFTER_CLOSE_SESSION + " = true \n");
         commands.write(command + "\n");
         //
         EventLoopGroup group = new NioEventLoopGroup();
-        final BasicFuture<Object> closeFuture = new BasicFuture<Object>();
+        final BasicFuture<Object> closeFuture = new BasicFuture<>();
         final AtomicBoolean atomicBoolean = new AtomicBoolean(true);
         try {
             Bootstrap b = new Bootstrap();

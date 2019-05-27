@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
-import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.ResultSetExtractor;
 import net.hasor.db.jdbc.RowMapper;
 
@@ -22,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 /**
  * {@link ResultSetExtractor} 接口实现类，该类会将结果集中的每一行进行处理，并返回一个 List 用以封装处理结果集。
  *
@@ -59,7 +59,7 @@ public class RowMapperResultSetExtractor<T> implements ResultSetExtractor<List<T
      * @param rowsExpected 预期结果集大小（实际得到的结果集条目不受此参数限制）。
      */
     public RowMapperResultSetExtractor(final RowMapper<T> rowMapper, final int rowsExpected) {
-        Hasor.assertIsNotNull(rowMapper, "RowMapper is required");
+        Objects.requireNonNull(rowMapper, "RowMapper is required");
         this.rowMapper = rowMapper;
         this.rowsExpected = rowsExpected;
     }

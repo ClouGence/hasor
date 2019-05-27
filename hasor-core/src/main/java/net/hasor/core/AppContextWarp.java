@@ -16,6 +16,7 @@
 package net.hasor.core;
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 /**
  * Hasor的核心接口，它为应用程序提供了一个统一的配置界面和运行环境。
@@ -58,6 +59,22 @@ public class AppContextWarp implements AppContext {
     @Override
     public void shutdown() {
         this.getAppContext().shutdown();
+    }
+    @Override
+    public void join() {
+        this.getAppContext().join();
+    }
+    @Override
+    public void join(long timeout, TimeUnit unit) {
+        this.getAppContext().join(timeout, unit);
+    }
+    @Override
+    public void joinSignal() {
+        this.getAppContext().joinSignal();
+    }
+    @Override
+    public void joinSignal(long timeout, TimeUnit unit) {
+        this.getAppContext().joinSignal(timeout, unit);
     }
     @Override
     public Class<?> getBeanType(String bindID) {

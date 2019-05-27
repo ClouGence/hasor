@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
-import net.hasor.core.Hasor;
 import net.hasor.db.datasource.ConnectionProxy;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.transaction.TranManager;
@@ -27,6 +26,7 @@ import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Objects;
 /**
  *
  * @version : 2013-10-16
@@ -86,7 +86,7 @@ public class JdbcConnection extends JdbcAccessor {
         this.queryTimeout = queryTimeout;
     }
     public <T> T execute(final ConnectionCallback<T> action) throws SQLException {
-        Hasor.assertIsNotNull(action, "Callback object must not be null");
+        Objects.requireNonNull(action, "Callback object must not be null");
         //
         Connection localConn = this.getConnection();
         DataSource localDS = this.getDataSource();//获取数据源
@@ -129,7 +129,7 @@ public class JdbcConnection extends JdbcAccessor {
     }
     /**获取与本地线程绑定的数据库连接，JDBC 框架会维护这个连接的事务。开发者不必关心该连接的事务管理，以及资源释放操作。*/
     private ConnectionProxy newProxyConnection(final Connection target, final DataSource targetSource) {
-        Hasor.assertIsNotNull(target, "Connection is null.");
+        Objects.requireNonNull(target, "Connection is null.");
         CloseSuppressingInvocationHandler handler = new CloseSuppressingInvocationHandler(target, targetSource);
         return (ConnectionProxy) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] { ConnectionProxy.class }, handler);
     }

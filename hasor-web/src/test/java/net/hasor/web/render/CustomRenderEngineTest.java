@@ -25,7 +25,7 @@ import java.util.*;
 
 import static org.mockito.Matchers.anyString;
 //
-public class RenderEngineTest extends AbstractWeb30BinderDataTest {
+public class CustomRenderEngineTest extends AbstractWeb30BinderDataTest {
     private AppContext   appContext = null;
     private InMappingDef mappingDef = null;
     @Before
@@ -34,13 +34,13 @@ public class RenderEngineTest extends AbstractWeb30BinderDataTest {
         super.beforeTest();
         //
         hasor.putData("HASOR_RESTFUL_LAYOUT", "true");
-        //        hasor.putData("HASOR_RESTFUL_LAYOUT_PATH_LAYOUT", "/layout/mytest");
-        //        hasor.putData("HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES", "/templates/myfiles");
+        hasor.putData("HASOR_RESTFUL_LAYOUT_PATH_LAYOUT", "/custom/custom_layout");
+        hasor.putData("HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES", "/custom/custom_templates");
         //
         this.appContext = hasor.setMainSettings("META-INF/hasor-framework/web-hconfig.xml").build((WebModule) apiBinder -> {
             apiBinder.installModule(new RenderWebPlugin());
             apiBinder.addRender("html").toInstance(new ArraysRenderEngine(//
-                    IOUtils.readLines(ResourcesUtils.getResourceAsStream("/net_hasor_web_render/directory_map_default.cfg"), "utf-8")//
+                    IOUtils.readLines(ResourcesUtils.getResourceAsStream("/net_hasor_web_render/directory_map_custom.cfg"), "utf-8")//
             ));
             //
             apiBinder.mappingTo("/abc.do").with(new HtmlRealRennerAction());
@@ -81,9 +81,9 @@ public class RenderEngineTest extends AbstractWeb30BinderDataTest {
         // placeholder 必须要有内容，该test case具备执行布局模板的条件 see ：directory_map_default.cfg
         assert jsonObject.get("content_placeholder") != null;
         // 最后一个渲染的是布局模板，因此展示印布局模板真实地址
-        assert jsonObject.get("engine_renderTo").equals("/layout/my/default.html");
+        assert jsonObject.get("engine_renderTo").equals("/custom/custom_layout/my/default.html");
         // 要展示的页面真实位置
-        assert jsonObject.getJSONObject("content_placeholder").getString("engine_renderTo").equals("/templates/my/my.html");
+        assert jsonObject.getJSONObject("content_placeholder").getString("engine_renderTo").equals("/custom/custom_templates/my/my.html");
         // 要展示的页面
         assert jsonObject.getJSONObject("resultData") != null;
         assert jsonObject.getJSONObject("resultData").getString("renderTo").equals("/my/my.html");

@@ -15,7 +15,6 @@
  */
 package net.hasor.db;
 import net.hasor.core.ApiBinder;
-import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.provider.InstanceProvider;
@@ -38,6 +37,7 @@ import javax.sql.DataSource;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -54,7 +54,7 @@ public class JdbcModule implements Module {
     //
     /** 添加数据源 */
     public JdbcModule(Level loadLevel, DataSource dataSource) {
-        this(new Level[] { loadLevel }, null, new InstanceProvider<>(Hasor.assertIsNotNull(dataSource)));
+        this(new Level[] { loadLevel }, null, new InstanceProvider<>(Objects.requireNonNull(dataSource)));
     }
     /** 添加数据源 */
     public JdbcModule(Level loadLevel, Supplier<DataSource> dataSource) {
@@ -62,12 +62,12 @@ public class JdbcModule implements Module {
     }
     /** 添加数据源 */
     public JdbcModule(Level loadLevel, String name, DataSource dataSource) {
-        this(new Level[] { loadLevel }, name, new InstanceProvider<>(Hasor.assertIsNotNull(dataSource)));
+        this(new Level[] { loadLevel }, name, new InstanceProvider<>(Objects.requireNonNull(dataSource)));
     }
     //
     /** 添加数据源 */
     public JdbcModule(Level[] loadLevel, DataSource dataSource) {
-        this(loadLevel, null, new InstanceProvider<>(Hasor.assertIsNotNull(dataSource)));
+        this(loadLevel, null, new InstanceProvider<>(Objects.requireNonNull(dataSource)));
     }
     /** 添加数据源 */
     public JdbcModule(Level[] loadLevel, Supplier<DataSource> dataSource) {
@@ -75,8 +75,8 @@ public class JdbcModule implements Module {
     }
     /** 添加数据源 */
     public JdbcModule(Level[] loadLevel, String name, Supplier<DataSource> dataSource) {
-        Hasor.assertIsNotNull(loadLevel, "loadLevel is null.");
-        Hasor.assertIsNotNull(dataSource, "dataSource Provider is null.");
+        Objects.requireNonNull(loadLevel, "loadLevel is null.");
+        Objects.requireNonNull(dataSource, "dataSource Provider is null.");
         this.loadLevel = new HashSet<>(Arrays.asList(loadLevel));
         this.dataSourceID = name;
         this.dataSource = dataSource;

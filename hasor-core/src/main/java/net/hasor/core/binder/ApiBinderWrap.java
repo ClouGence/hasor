@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -33,7 +34,7 @@ public class ApiBinderWrap implements ApiBinder {
     private final    ApiBinder apiBinder;
     //
     public ApiBinderWrap(ApiBinder apiBinder) {
-        this.apiBinder = Hasor.assertIsNotNull(apiBinder);
+        this.apiBinder = Objects.requireNonNull(apiBinder);
     }
     public Environment getEnvironment() {
         return this.apiBinder.getEnvironment();

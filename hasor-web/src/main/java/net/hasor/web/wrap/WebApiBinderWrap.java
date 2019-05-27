@@ -15,7 +15,6 @@
  */
 package net.hasor.web.wrap;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.web.*;
 
@@ -25,6 +24,7 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionListener;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Objects;
 /**
  * {@link WebApiBinder} 接口包装器
  * @version : 2017-01-10
@@ -34,7 +34,7 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
     private WebApiBinder webApiBinder;
     public WebApiBinderWrap(WebApiBinder apiBinder) {
         super(apiBinder);
-        this.webApiBinder = Hasor.assertIsNotNull(apiBinder);
+        this.webApiBinder = Objects.requireNonNull(apiBinder);
     }
     public ServletContext getServletContext() {
         return this.webApiBinder.getServletContext();

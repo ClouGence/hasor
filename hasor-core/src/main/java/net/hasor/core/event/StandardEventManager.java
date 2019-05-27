@@ -21,6 +21,7 @@ import net.hasor.utils.future.BasicFuture;
 import net.hasor.utils.future.FutureCallback;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.*;
 /**
  * 标准事件处理器接口的实现类
@@ -188,7 +189,7 @@ public class StandardEventManager implements EventContext {
     //
     //
     private <T> Future<Boolean> fireEvent(String eventType, FireType fireType, EventCallBackHook<T> callBack, boolean atCurrentThread, T eventData) {
-        EventObject<T> event = this.createEvent(eventType, Hasor.assertIsNotNull(fireType));
+        EventObject<T> event = this.createEvent(eventType, Objects.requireNonNull(fireType));
         event.setCallBack(callBack);
         event.setEventData(eventData);
         return this.fireEvent(event, atCurrentThread);

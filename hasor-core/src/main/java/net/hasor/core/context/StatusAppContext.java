@@ -16,8 +16,9 @@
 package net.hasor.core.context;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
-import net.hasor.core.Hasor;
 import net.hasor.core.container.BeanContainer;
+
+import java.util.Objects;
 /**
  * 通过{@link BeanContainer}提供{@link AppContext}接口功能。
  * @version : 2013-4-9
@@ -29,7 +30,7 @@ public class StatusAppContext extends TemplateAppContext {
     //
     public StatusAppContext(Environment environment, BeanContainer container) {
         this.environment = environment;
-        this.container = Hasor.assertIsNotNull(container);
+        this.container = Objects.requireNonNull(container);
     }
     @Override
     protected BeanContainer getContainer() {

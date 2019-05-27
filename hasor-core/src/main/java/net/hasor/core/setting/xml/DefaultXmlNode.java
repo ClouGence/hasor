@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.core.setting.xml;
-import net.hasor.core.Hasor;
 import net.hasor.core.XmlNode;
 import net.hasor.core.setting.FieldProperty;
 import net.hasor.utils.convert.ConverterUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 /**
  * XmlNode, GlobalProperty 接口实现类。
@@ -63,7 +59,7 @@ public class DefaultXmlNode implements XmlNode, FieldProperty, Cloneable {
     }
     @Override
     public List<XmlNode> getChildren(final String elementName) {
-        Hasor.assertIsNotNull(elementName);
+        Objects.requireNonNull(elementName);
         List<XmlNode> children = new ArrayList<>();
         for (XmlNode xmlItem : this.children) {
             if (elementName.equalsIgnoreCase(xmlItem.getName())) {

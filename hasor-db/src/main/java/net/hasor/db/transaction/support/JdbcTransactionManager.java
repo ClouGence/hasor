@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.db.transaction.support;
-import net.hasor.core.Hasor;
 import net.hasor.db.datasource.ConnectionHolder;
 import net.hasor.db.transaction.*;
 import org.slf4j.Logger;
@@ -23,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.LinkedList;
+import java.util.Objects;
 
 import static net.hasor.db.transaction.Propagation.*;
 /**
@@ -42,7 +42,7 @@ public class JdbcTransactionManager implements TransactionManager {
     private   DataSource                        dataSource          = null;
     private   TransactionTemplateManager        transactionTemplate = null;
     protected JdbcTransactionManager(final DataSource dataSource) {
-        Hasor.assertIsNotNull(dataSource);
+        Objects.requireNonNull(dataSource);
         this.dataSource = dataSource;
         this.transactionTemplate = new TransactionTemplateManager(this);
     }
@@ -75,8 +75,8 @@ public class JdbcTransactionManager implements TransactionManager {
     /**开启事务*/
     @Override
     public final TransactionStatus getTransaction(final Propagation behavior, final Isolation level) throws SQLException {
-        Hasor.assertIsNotNull(behavior);
-        Hasor.assertIsNotNull(level);
+        Objects.requireNonNull(behavior);
+        Objects.requireNonNull(level);
         //1.获取连接
         JdbcTransactionStatus defStatus = new JdbcTransactionStatus(behavior, level);
         defStatus.setTranConn(this.doGetConnection(defStatus));

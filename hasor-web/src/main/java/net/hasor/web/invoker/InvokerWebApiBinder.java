@@ -16,7 +16,7 @@
 package net.hasor.web.invoker;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
+import net.hasor.core.HasorUtils;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.provider.InstanceProvider;
@@ -34,10 +34,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 /**
  * 该类是{@link WebApiBinder}接口实现。
@@ -55,8 +52,8 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         super(apiBinder);
         apiBinder.bindType(String.class).nameWith(RuntimeFilter.HTTP_REQUEST_ENCODING_KEY).toProvider(this.requestEncoding);
         apiBinder.bindType(String.class).nameWith(RuntimeFilter.HTTP_RESPONSE_ENCODING_KEY).toProvider(this.responseEncoding);
-        this.curVersion = Hasor.assertIsNotNull(curVersion);
-        this.mimeType = Hasor.assertIsNotNull(mimeType);
+        this.curVersion = Objects.requireNonNull(curVersion);
+        this.mimeType = Objects.requireNonNull(mimeType);
     }
     //
     // ------------------------------------------------------------------------------------------------------
@@ -95,8 +92,8 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     // ------------------------------------------------------------------------------------------------------
     @Override
     public void addDiscoverer(BindInfo<? extends MappingDiscoverer> discoverer) {
-        Hasor.assertIsNotNull(discoverer);
-        MappingDiscovererDefinition definition = Hasor.autoAware(getEnvironment(), new MappingDiscovererDefinition(discoverer));
+        Objects.requireNonNull(discoverer);
+        MappingDiscovererDefinition definition = HasorUtils.autoAware(getEnvironment(), new MappingDiscovererDefinition(discoverer));
         this.bindType(MappingDiscovererDefinition.class).toInstance(definition);
     }
     @Override
@@ -277,7 +274,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     // ------------------------------------------------------------------------------------------------------
     /** 拦截这些后缀的请求，这些请求会被渲染器渲染。*/
     public WebApiBinder.RenderEngineBindingBuilder addRender(String renderName, String specialMimeType) {
-        return new RenderEngineBindingBuilderImpl(Hasor.assertIsNotNull(renderName, "Render renderName is empty."), specialMimeType) {
+        return new RenderEngineBindingBuilderImpl(Objects.requireNonNull(renderName, "Render renderName is empty."), specialMimeType) {
             @Override
             protected void bindRender(String renderName, String specialMimeType, BindInfo<? extends RenderEngine> bindInfo) {
                 bindType(RenderDefinition.class).nameWith(renderName).toInstance(new RenderDefinition(renderName, specialMimeType, bindInfo));
@@ -303,7 +300,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         }
         @Override
         public void bindToInfo(BindInfo<? extends RenderEngine> renderEngineInfo) {
-            bindRender(this.renderName, this.specialMimeType, Hasor.assertIsNotNull(renderEngineInfo));
+            bindRender(this.renderName, this.specialMimeType, Objects.requireNonNull(renderEngineInfo));
         }
         protected abstract void bindRender(String renderName, String toMimeName, BindInfo<? extends RenderEngine> bindInfo);
     }

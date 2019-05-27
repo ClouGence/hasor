@@ -173,7 +173,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         }
         //
         // .动态代理，需要满足三个条件（1.类型必须支持Aop、2.没有被@AopIgnore排除在外、3.具有至少一个有效的拦截器）
-        ClassLoader rootLoader = Hasor.assertIsNotNull(appContext.getClassLoader());
+        ClassLoader rootLoader = Objects.requireNonNull(appContext.getClassLoader());
         Class<?> newType = targetType;
         if (AsmTools.isSupport(targetType) && !testAopIgnore(targetType, rootLoader) && !aopList.isEmpty()) {
             AopClassConfig engine = buildEngineMap.get(targetType);
@@ -329,7 +329,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
             if (!testSingleton(targetType,bindInfo,appContext.getEnvironment().getSettings())){
                 throw new java.lang.IllegalStateException("destroyMethod bean must be single.");
             }
-            Hasor.pushShutdownListener(appContext.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
+            HasorUtils.pushShutdownListener(appContext.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
                 invokeMethod(targetBean, destroyMethod);
             });
         }

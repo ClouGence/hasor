@@ -99,7 +99,7 @@ public class ConsoleModule implements LifeModule {
         }
         this.consoleInBound = addressList.toArray(new String[0]);
         //
-        apiBinder.bindType(CommandFinder.class).toInstance(Hasor.autoAware(apiBinder.getEnvironment(), new Manager()));
+        apiBinder.bindType(CommandFinder.class).toInstance(HasorUtils.autoAware(apiBinder.getEnvironment(), new Manager()));
         ConsoleApiBinder consoleBinder = apiBinder.tryCast(ConsoleApiBinder.class);
         consoleBinder.addCommand(new String[] { "set", "get" }, new GetSetExecutor());
         consoleBinder.addCommand(new String[] { "help", "man" }, new HelpExecutor());
@@ -144,7 +144,7 @@ public class ConsoleModule implements LifeModule {
         logger.info("tConsole -> - bindSocket at {}", this.bindAddress);
         //
         // .注册shutdown事件，以保证在shutdown时可以停止Telnet。
-        Hasor.addShutdownListener(appContext.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> onStop(appContext));
+        HasorUtils.pushShutdownListener(appContext.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> onStop(appContext));
     }
     @Override
     public void onStop(AppContext appContext) {

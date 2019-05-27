@@ -15,6 +15,7 @@
  */
 package net.hasor.core.context;
 import net.hasor.core.*;
+import net.hasor.core.EventListener;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderInvocationHandler;
@@ -23,16 +24,19 @@ import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.BeanContainer;
 import net.hasor.core.container.ScopManager;
 import net.hasor.core.info.MetaDataAdapter;
-import net.hasor.utils.ArrayUtils;
-import net.hasor.utils.ClassUtils;
-import net.hasor.utils.ExceptionUtils;
-import net.hasor.utils.StringUtils;
+import net.hasor.utils.*;
+import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Proxy;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -52,7 +56,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     //
     @Override
     public Class<?> getBeanType(String bindID) {
-        Hasor.assertIsNotNull(bindID, "bindID is null.");
+        Objects.requireNonNull(bindID, "bindID is null.");
         BindInfo<?> bindInfo = getContainer().findBindInfo(bindID);
         if (bindInfo != null) {
             return bindInfo.getBindType();
@@ -69,7 +73,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     }
     @Override
     public boolean containsBindID(String bindID) {
-        Hasor.assertIsNotNull(bindID, "bindID is null.");
+        Objects.requireNonNull(bindID, "bindID is null.");
         return getContainer().findBindInfo(bindID) != null;
     }
     /*---------------------------------------------------------------------------------------Bean*/
@@ -94,7 +98,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     }
     @Override
     public <T> Supplier<? extends T> getProvider(String bindID) {
-        Hasor.assertIsNotNull(bindID, "bindID is null.");
+        Objects.requireNonNull(bindID, "bindID is null.");
         BindInfo<T> bindInfo = getContainer().findBindInfo(bindID);
         if (bindInfo != null) {
             return this.getProvider(bindInfo);
@@ -103,7 +107,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     }
     @Override
     public <T> Supplier<? extends T> getProvider(final Class<T> targetClass) {
-        Hasor.assertIsNotNull(targetClass, "targetClass is null.");
+        Objects.requireNonNull(targetClass, "targetClass is null.");
         BindInfo<T> bindInfo = getBindInfo(targetClass);
         final AppContext appContext = this;
         //
@@ -115,7 +119,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     }
     @Override
     public <T> Supplier<? extends T> getProvider(final Constructor<T> targetConstructor) {
-        Hasor.assertIsNotNull(targetConstructor, "targetConstructor is null.");
+        Objects.requireNonNull(targetConstructor, "targetConstructor is null.");
         BindInfo<T> bindInfo = getBindInfo(targetConstructor.getDeclaringClass());
         //
         if (bindInfo == null) {
@@ -141,7 +145,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     }
     @Override
     public <T> List<BindInfo<T>> findBindingRegister(Class<T> bindType) {
-        Hasor.assertIsNotNull(bindType, "bindType is null.");
+        Objects.requireNonNull(bindType, "bindType is null.");
         return getContainer().findBindInfoList(bindType);
     }
     //
@@ -402,6 +406,67 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
             if (!"Shutdown in progress".equals(e.getMessage())) {
                 logger.error(e.getMessage(), e);
             }
+        }
+    }
+    public void join() {
+        this.join(0, null);
+    }
+    public void join(long timeout, TimeUnit unit) {
+        if (!this.isStart()) {
+            return;
+        }
+        // .当收到 Shutdown 事件时退出 join
+        BasicFuture<Object> future = new BasicFuture<>();
+        HasorUtils.pushShutdownListener(getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
+            future.completed(new Object());
+        });
+        //
+        // .阻塞进程
+        joinAt(future, timeout, unit);
+    }
+    public void joinSignal() {
+        this.joinSignal(0, null);
+    }
+    public void joinSignal(long timeout, TimeUnit unit) {
+        if (!this.isStart()) {
+            return;
+        }
+        final BasicFuture<Object> future = new BasicFuture<>();
+        //
+        // .注册 shutdown 事件
+        HasorUtils.pushShutdownListener(getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
+            future.completed(new Object());
+        });
+        //
+        // .注册 shutdown 信号
+        final SignalHandler signalHandler = signal -> {
+            int number = signal.getNumber();
+            logger.warn("process kill by " + signal.getName() + "(" + number + ")");
+            try {
+                future.completed(new Object());
+            } catch (Exception e) {
+                future.failed(e);
+            }
+        };
+        Signal.handle(new Signal("TERM"), signalHandler);    // kill -15 pid
+        Signal.handle(new Signal("INT"), signalHandler);     // 相当于Ctrl+C
+        logger.info("register signal to TERM,INT");
+        //
+        // .阻塞进程
+        joinAt(future, timeout, unit);
+    }
+    // .阻塞进程
+    private void joinAt(BasicFuture<Object> future, long timeout, TimeUnit unit) {
+        try {
+            if (unit == null) {
+                future.get();
+            } else {
+                future.get(timeout, unit);
+            }
+        } catch (ExecutionException e) {
+            throw ExceptionUtils.toRuntimeException(e.getCause());
+        } catch (Exception e) {
+            throw ExceptionUtils.toRuntimeException(e);
         }
     }
 }
