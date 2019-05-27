@@ -29,8 +29,8 @@ import org.junit.runner.RunWith;
  * @version : 2015年11月15日
  * @author 赵永春 (zyc@hasor.net)
  */
-@RunWith(HasorUnitRunner.class)
-@ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)
+//@RunWith(HasorUnitRunner.class)
+//@ContextConfiguration(value = "jdbc-config.xml", loadModules = SingleDataSourceWarp.class)
 public class MANDATORY_TranTest extends AbstractNativesJDBCTest {
     @Test
     public void abc() {
