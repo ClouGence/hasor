@@ -24,59 +24,59 @@ public class BeanSingletonTest {
     private void singletonTest(StandardEnvironment environment, BeanContainer container,//
             AppContext appContext, BindInfo<?> adapter1) {
         // . default is Prototype (config from Config)
-        Object testBean1 = container.getProvider(adapter1, appContext).get();
-        Object testBean2 = container.getProvider(adapter1, appContext).get();
+        Object testBean1 = container.getProvider(adapter1, appContext, null).get();
+        Object testBean2 = container.getProvider(adapter1, appContext, null).get();
         assert testBean1 == testBean2;
         //
         // . default is Singleton
         environment.getSettings().setSetting("hasor.default.asEagerSingleton", "true");
-        Object testBean3 = container.getProvider(adapter1, appContext).get();
-        Object testBean4 = container.getProvider(adapter1, appContext).get();
+        Object testBean3 = container.getProvider(adapter1, appContext, null).get();
+        Object testBean4 = container.getProvider(adapter1, appContext, null).get();
         assert testBean3 == testBean4;
         //
         // . default is Prototype
         environment.getSettings().setSetting("hasor.default.asEagerSingleton", "false");
-        Object testBean5 = container.getProvider(adapter1, appContext).get();
-        Object testBean6 = container.getProvider(adapter1, appContext).get();
+        Object testBean5 = container.getProvider(adapter1, appContext, null).get();
+        Object testBean6 = container.getProvider(adapter1, appContext, null).get();
         assert testBean5 == testBean6;
     }
     private void prototypeTest(StandardEnvironment environment, BeanContainer container,//
             AppContext appContext, BindInfo<?> adapter1) {
         // . default is Prototype (config from Config)
-        Object testBean1 = container.getProvider(adapter1, appContext).get();
-        Object testBean2 = container.getProvider(adapter1, appContext).get();
+        Object testBean1 = container.getProvider(adapter1, appContext, null).get();
+        Object testBean2 = container.getProvider(adapter1, appContext, null).get();
         assert testBean1 != testBean2;
         //
         // . default is Singleton
         environment.getSettings().setSetting("hasor.default.asEagerSingleton", "true");
-        Object testBean3 = container.getProvider(adapter1, appContext).get();
-        Object testBean4 = container.getProvider(adapter1, appContext).get();
+        Object testBean3 = container.getProvider(adapter1, appContext, null).get();
+        Object testBean4 = container.getProvider(adapter1, appContext, null).get();
         assert testBean3 != testBean4;
         //
         // . default is Prototype
         environment.getSettings().setSetting("hasor.default.asEagerSingleton", "false");
-        Object testBean5 = container.getProvider(adapter1, appContext).get();
-        Object testBean6 = container.getProvider(adapter1, appContext).get();
+        Object testBean5 = container.getProvider(adapter1, appContext, null).get();
+        Object testBean6 = container.getProvider(adapter1, appContext, null).get();
         assert testBean5 != testBean6;
     }
     private void defaultTest(StandardEnvironment environment, BeanContainer container,//
             AppContext appContext, BindInfo<?> adapter1) {
         //
         // . default is Prototype (config from Config)
-        Object testBean1 = container.getProvider(adapter1, appContext).get();
-        Object testBean2 = container.getProvider(adapter1, appContext).get();
+        Object testBean1 = container.getProvider(adapter1, appContext, null).get();
+        Object testBean2 = container.getProvider(adapter1, appContext, null).get();
         assert testBean1 != testBean2;
         //
         // . default is Singleton
         environment.getSettings().setSetting("hasor.default.asEagerSingleton", "true");
-        Object testBean3 = container.getProvider(adapter1, appContext).get();
-        Object testBean4 = container.getProvider(adapter1, appContext).get();
+        Object testBean3 = container.getProvider(adapter1, appContext, null).get();
+        Object testBean4 = container.getProvider(adapter1, appContext, null).get();
         assert testBean3 == testBean4;
         //
         // . default is Prototype
         environment.getSettings().setSetting("hasor.default.asEagerSingleton", "false");
-        Object testBean5 = container.getProvider(adapter1, appContext).get();
-        Object testBean6 = container.getProvider(adapter1, appContext).get();
+        Object testBean5 = container.getProvider(adapter1, appContext, null).get();
+        Object testBean6 = container.getProvider(adapter1, appContext, null).get();
         assert testBean5 != testBean6;
     }
     //
@@ -93,20 +93,20 @@ public class BeanSingletonTest {
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);
         //
         // . default is Prototype (config from Config)
-        Object testBean1 = container.getProvider(SimpleBean.class, appContext).get();
-        Object testBean2 = container.getProvider(SimpleBean.class, appContext).get();
+        Object testBean1 = container.getProvider(SimpleBean.class, appContext, null).get();
+        Object testBean2 = container.getProvider(SimpleBean.class, appContext, null).get();
         assert testBean1 != testBean2;
         //
         // . default is Singleton
         environment.getSettings().setSetting("hasor.default.asEagerSingleton", "true");
-        Object testBean3 = container.getProvider(SimpleBean.class, appContext).get();
-        Object testBean4 = container.getProvider(SimpleBean.class, appContext).get();
+        Object testBean3 = container.getProvider(SimpleBean.class, appContext, null).get();
+        Object testBean4 = container.getProvider(SimpleBean.class, appContext, null).get();
         assert testBean3 == testBean4;
         //
         // . default is Prototype
         environment.getSettings().setSetting("hasor.default.asEagerSingleton", "false");
-        Object testBean5 = container.getProvider(SimpleBean.class, appContext).get();
-        Object testBean6 = container.getProvider(SimpleBean.class, appContext).get();
+        Object testBean5 = container.getProvider(SimpleBean.class, appContext, null).get();
+        Object testBean6 = container.getProvider(SimpleBean.class, appContext, null).get();
         assert testBean5 != testBean6;
     }
     @Test
@@ -121,20 +121,20 @@ public class BeanSingletonTest {
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);
         //
         // . default is Prototype (config from Config)
-        Object testBean1 = container.getProvider(AnnoSingletonBean.class, appContext).get();
-        Object testBean2 = container.getProvider(AnnoSingletonBean.class, appContext).get();
+        Object testBean1 = container.getProvider(AnnoSingletonBean.class, appContext, null).get();
+        Object testBean2 = container.getProvider(AnnoSingletonBean.class, appContext, null).get();
         assert testBean1 == testBean2;
         //
         // . default is Singleton
         environment.getSettings().setSetting("hasor.default.asEagerSingleton", "true");
-        Object testBean3 = container.getProvider(AnnoSingletonBean.class, appContext).get();
-        Object testBean4 = container.getProvider(AnnoSingletonBean.class, appContext).get();
+        Object testBean3 = container.getProvider(AnnoSingletonBean.class, appContext, null).get();
+        Object testBean4 = container.getProvider(AnnoSingletonBean.class, appContext, null).get();
         assert testBean3 == testBean4;
         //
         // . default is Prototype
         environment.getSettings().setSetting("hasor.default.asEagerSingleton", "false");
-        Object testBean5 = container.getProvider(AnnoSingletonBean.class, appContext).get();
-        Object testBean6 = container.getProvider(AnnoSingletonBean.class, appContext).get();
+        Object testBean5 = container.getProvider(AnnoSingletonBean.class, appContext, null).get();
+        Object testBean6 = container.getProvider(AnnoSingletonBean.class, appContext, null).get();
         assert testBean5 == testBean6;
     }
     @Test
@@ -149,20 +149,20 @@ public class BeanSingletonTest {
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);
         //
         // . default is Prototype (config from Config)
-        Object testBean1 = container.getProvider(AnnoPrototypeBean.class, appContext).get();
-        Object testBean2 = container.getProvider(AnnoPrototypeBean.class, appContext).get();
+        Object testBean1 = container.getProvider(AnnoPrototypeBean.class, appContext, null).get();
+        Object testBean2 = container.getProvider(AnnoPrototypeBean.class, appContext, null).get();
         assert testBean1 != testBean2;
         //
         // . default is Singleton
         environment.getSettings().setSetting("hasor.default.asEagerSingleton", "true");
-        Object testBean3 = container.getProvider(AnnoPrototypeBean.class, appContext).get();
-        Object testBean4 = container.getProvider(AnnoPrototypeBean.class, appContext).get();
+        Object testBean3 = container.getProvider(AnnoPrototypeBean.class, appContext, null).get();
+        Object testBean4 = container.getProvider(AnnoPrototypeBean.class, appContext, null).get();
         assert testBean3 != testBean4;
         //
         // . default is Prototype
         environment.getSettings().setSetting("hasor.default.asEagerSingleton", "false");
-        Object testBean5 = container.getProvider(AnnoPrototypeBean.class, appContext).get();
-        Object testBean6 = container.getProvider(AnnoPrototypeBean.class, appContext).get();
+        Object testBean5 = container.getProvider(AnnoPrototypeBean.class, appContext, null).get();
+        Object testBean6 = container.getProvider(AnnoPrototypeBean.class, appContext, null).get();
         assert testBean5 != testBean6;
         //
     }
@@ -174,7 +174,7 @@ public class BeanSingletonTest {
         PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         //
         try {
-            container.getProvider(AnnoConflictBean.class, appContext).get();
+            container.getProvider(AnnoConflictBean.class, appContext, null).get();
             assert false;
         } catch (IllegalArgumentException e) {
             assert e.getMessage().endsWith(" , @Prototype and @Singleton appears only one.");
@@ -292,20 +292,20 @@ public class BeanSingletonTest {
         container.registerScope(ScopManager.SINGLETON_SCOPE, singletonScope);
         //
         // .
-        Object testBean1 = container.getProvider(AnnoSingletonMyInteface.class, appContext).get();
-        Object testBean2 = container.getProvider(AnnoSingletonMyInteface.class, appContext).get();
+        Object testBean1 = container.getProvider(AnnoSingletonMyInteface.class, appContext, null).get();
+        Object testBean2 = container.getProvider(AnnoSingletonMyInteface.class, appContext, null).get();
         assert testBean1 == testBean2;
         // .
-        Object testBean3 = container.getProvider(AnnoPrototypeMyInteface.class, appContext).get();
-        Object testBean4 = container.getProvider(AnnoPrototypeMyInteface.class, appContext).get();
+        Object testBean3 = container.getProvider(AnnoPrototypeMyInteface.class, appContext, null).get();
+        Object testBean4 = container.getProvider(AnnoPrototypeMyInteface.class, appContext, null).get();
         assert testBean3 != testBean4;
         //
-        Object testBean5 = container.getProvider(AnnoPrototypeMyIntefaceCross2Singleton.class, appContext).get();
-        Object testBean6 = container.getProvider(AnnoPrototypeMyIntefaceCross2Singleton.class, appContext).get();
+        Object testBean5 = container.getProvider(AnnoPrototypeMyIntefaceCross2Singleton.class, appContext, null).get();
+        Object testBean6 = container.getProvider(AnnoPrototypeMyIntefaceCross2Singleton.class, appContext, null).get();
         assert testBean5 != testBean6;
         // .
-        Object testBean7 = container.getProvider(AnnoSingletonMyIntefaceCross2Prototype.class, appContext).get();
-        Object testBean8 = container.getProvider(AnnoSingletonMyIntefaceCross2Prototype.class, appContext).get();
+        Object testBean7 = container.getProvider(AnnoSingletonMyIntefaceCross2Prototype.class, appContext, null).get();
+        Object testBean8 = container.getProvider(AnnoSingletonMyIntefaceCross2Prototype.class, appContext, null).get();
         assert testBean7 == testBean8;
     }
 }

@@ -128,10 +128,10 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
     }
     @Override
     protected <T> T createObject(final Class<T> targetType, final Constructor<T> referConstructor, //
-            final BindInfo<T> bindInfo, final AppContext appContext) {
+            final BindInfo<T> bindInfo, final AppContext appContext, Object[] params) {
         boolean isSingleton = testSingleton(targetType, bindInfo, appContext.getEnvironment().getSettings());
         if (!isSingleton) {
-            return super.createObject(targetType, referConstructor, bindInfo, appContext);
+            return super.createObject(targetType, referConstructor, bindInfo, appContext, params);
         }
         // 单例的
         Object key = (bindInfo != null) ? bindInfo : targetType;
@@ -139,7 +139,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
         if (scopeProvider == null) {
             throw new NullPointerException(ScopManager.SINGLETON_SCOPE + " scope undefined.");
         }
-        return scopeProvider.get().scope(key, () -> BeanContainer.super.createObject(targetType, referConstructor, bindInfo, appContext)).get();
+        return scopeProvider.get().scope(key, () -> BeanContainer.super.createObject(targetType, referConstructor, bindInfo, appContext, params)).get();
     }
     /** 仅执行依赖注入 */
     public <T> T justInject(T object, Class<?> beanType, AppContext appContext) {
@@ -235,7 +235,7 @@ public class BeanContainer extends TemplateBeanBuilder implements ScopManager, O
         if (!hasOld) {
             this.allBindInfoList.add(target);
             this.idDataSource.put(bindID, target);
-            List<String> newTypeList = new ArrayList<String>();
+            List<String> newTypeList = new ArrayList<>();
             List<String> typeList = indexTypeMapping.putIfAbsent(bindTypeStr, newTypeList);
             if (typeList == null) {
                 typeList = newTypeList;

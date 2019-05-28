@@ -36,7 +36,6 @@ import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -106,24 +105,24 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         return null;
     }
     @Override
-    public <T> Supplier<? extends T> getProvider(final Class<T> targetClass) {
+    public <T> Supplier<? extends T> getProvider(final Class<T> targetClass, Object... params) {
         Objects.requireNonNull(targetClass, "targetClass is null.");
         BindInfo<T> bindInfo = getBindInfo(targetClass);
         final AppContext appContext = this;
         //
         if (bindInfo == null) {
-            return getContainer().getProvider(targetClass, appContext);
+            return getContainer().getProvider(targetClass, appContext, params);
         } else {
             return getProvider(bindInfo);
         }
     }
     @Override
-    public <T> Supplier<? extends T> getProvider(final Constructor<T> targetConstructor) {
+    public <T> Supplier<? extends T> getProvider(final Constructor<T> targetConstructor, Object... params) {
         Objects.requireNonNull(targetConstructor, "targetConstructor is null.");
         BindInfo<T> bindInfo = getBindInfo(targetConstructor.getDeclaringClass());
         //
         if (bindInfo == null) {
-            return getContainer().getProvider(targetConstructor, TemplateAppContext.this);
+            return getContainer().getProvider(targetConstructor, this, params);
         } else {
             return getProvider(bindInfo);
         }
@@ -133,7 +132,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         if (info == null) {
             return null;
         }
-        return getContainer().getProvider(info, TemplateAppContext.this);
+        return getContainer().getProvider(info, this, null);
     }
     /**获取用于创建Bean对象的{@link BeanContainer}接口*/
     protected abstract BeanContainer getContainer();

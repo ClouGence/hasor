@@ -8,8 +8,15 @@ features：
 2. 广播调用
 
 
+        invoker.ownerMapping().getTargetType().getBindType();
+                希望可以直接拿到直接调用的那个对象（HttpServiet 会有问题，因为 getTargetType 拿到的 BindInfo 是绑定到 HttpServiet 上的那个对象）
+
+
 
 https://www.eclipse.org/jetty/documentation/current/embedding-jetty.html
 
 * mvn release:prepare -P release
 * mvn clean deploy -P release
+
+
+

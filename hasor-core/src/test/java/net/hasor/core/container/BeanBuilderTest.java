@@ -22,10 +22,10 @@ public class BeanBuilderTest {
         PowerMockito.when(appContext.getEnvironment()).thenReturn(this.env);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         //
-        assert container.createObject(List.class, null, null, appContext) == null;
-        assert container.createObject(Byte.TYPE, null, null, appContext) == (byte) 0;
-        assert container.createObject(AbstractMap.class, null, null, appContext) == null;
-        assert container.createObject(SingletonMode.class, null, null, appContext) == null;
-        assert container.createObject(int[].class, null, null, appContext).length == 0;
+        assert container.createObject(List.class, null, null, appContext, null) == null;
+        assert container.createObject(Byte.TYPE, null, null, appContext, null) == (byte) 0;
+        assert container.createObject(AbstractMap.class, null, null, appContext, null) == null;
+        assert container.createObject(SingletonMode.class, null, null, appContext, null) == null;
+        assert container.createObject(int[].class, null, null, appContext, null).length == 0;
     }
 }

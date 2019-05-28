@@ -105,12 +105,12 @@ public class AppContextWarp implements AppContext {
         return this.getAppContext().getProvider(bindID);
     }
     @Override
-    public <T> Supplier<? extends T> getProvider(Class<T> targetClass) {
-        return this.getAppContext().getProvider(targetClass);
+    public <T> Supplier<? extends T> getProvider(Class<T> targetClass, Object... params) {
+        return this.getAppContext().getProvider(targetClass, params);
     }
     @Override
-    public <T> Supplier<? extends T> getProvider(Constructor<T> bindType) {
-        return this.getAppContext().getProvider(bindType);
+    public <T> Supplier<? extends T> getProvider(Constructor<T> bindType, Object... params) {
+        return this.getAppContext().getProvider(bindType, params);
     }
     @Override
     public <T> Supplier<? extends T> getProvider(BindInfo<T> info) {

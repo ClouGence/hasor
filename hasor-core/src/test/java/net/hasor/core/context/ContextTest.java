@@ -5,6 +5,7 @@ import net.hasor.core.container.beans.CallInitBean;
 import net.hasor.core.container.beans.TestBean;
 import net.hasor.core.container.inject.SimpleInjectBean;
 import net.hasor.core.container.inject.TestBeanRef;
+import net.hasor.core.context.beans.ConstructorBean;
 import net.hasor.core.environment.StandardEnvironment;
 import org.junit.Before;
 import org.junit.Test;
@@ -258,5 +259,13 @@ public class ContextTest {
             return;
         }
         assert false;
+    }
+    @Test
+    public void builderTest9() throws Throwable {
+        //
+        AppContext appContext = Hasor.create().asSmaller().build();
+        ConstructorBean constructorBean = appContext.getInstance(ConstructorBean.class,"abcdefg");
+        assert constructorBean.getName().equals("abcdefg");
+        assert constructorBean.getUuid().equals("aaa");
     }
 }

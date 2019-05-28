@@ -35,8 +35,8 @@ public class ContainerScopeTest {
         adapter.initMethod("init");
         adapter.setScopeProvider(myScope);
         //
-        Object instance1 = container.getProvider(adapter, appContext).get();
-        Object instance2 = container.getProvider(adapter, appContext).get();
+        Object instance1 = container.getProvider(adapter, appContext, null).get();
+        Object instance2 = container.getProvider(adapter, appContext, null).get();
         //
         assert instance1 != null;
         assert instance1 == instance2;

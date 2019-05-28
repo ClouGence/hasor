@@ -11,8 +11,6 @@ import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.setting.AbstractSettings;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
 import java.io.IOException;
@@ -39,7 +37,7 @@ public class BeanInjectTest {
         adapter.addInject("uuid", InstanceProvider.of("paramUUID"));
         adapter.addInject("name", InstanceProvider.of("paramName"));
         //
-        TestBean instance1 = (TestBean) container.getProvider(adapter, appContext).get();
+        TestBean instance1 = (TestBean) container.getProvider(adapter, appContext, null).get();
         assert "paramUUID".equals(instance1.getUuid());
         assert "paramName".equals(instance1.getName());
         //
@@ -59,16 +57,16 @@ public class BeanInjectTest {
         PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         PowerMockito.when(appContext.getInstance(anyString())).then(invocationOnMock -> {
             BindInfo<Object> bindInfo = container.findBindInfo((String) invocationOnMock.getArguments()[0]);
-            return container.getProvider(bindInfo, appContext).get();
+            return container.getProvider(bindInfo, appContext, null).get();
         });
         PowerMockito.when(appContext.getInstance((Class<Object>) anyObject())).then(invocationOnMock -> {
             BindInfo<Object> bindInfo = container.findBindInfo(null, (Class<Object>) invocationOnMock.getArguments()[0]);
-            return container.getProvider(bindInfo, appContext).get();
+            return container.getProvider(bindInfo, appContext, null).get();
         });
         PowerMockito.when(appContext.findBindingBean(anyString(), anyObject())).then(invocationOnMock -> {
             Object[] arguments = invocationOnMock.getArguments();
             BindInfo<Object> bindInfo = container.findBindInfo((String) arguments[0], (Class<Object>) arguments[1]);
-            return container.getProvider(bindInfo, appContext).get();
+            return container.getProvider(bindInfo, appContext, null).get();
         });
         //
         //
@@ -77,12 +75,12 @@ public class BeanInjectTest {
         adapter.addInject("uuid", InstanceProvider.of("paramUUID"));
         adapter.addInject("name", InstanceProvider.of("paramName"));
         //
-        TestBeanRef instance1 = container.getProvider(TestBeanRef.class, appContext).get();
+        TestBeanRef instance1 = container.getProvider(TestBeanRef.class, appContext, null).get();
         assert instance1.getTestBean() != null;
         assert "paramUUID".equals(instance1.getTestBean().getUuid());
         assert "paramName".equals(instance1.getTestBean().getName());
         //
-        ConstructorTestBeanRef instance2 = container.getProvider(ConstructorTestBeanRef.class, appContext).get();
+        ConstructorTestBeanRef instance2 = container.getProvider(ConstructorTestBeanRef.class, appContext, null).get();
         assert instance2.getTestBean() != null;
         assert "paramUUID".equals(instance2.getTestBean().getUuid());
         assert "paramName".equals(instance2.getTestBean().getName());
@@ -100,7 +98,7 @@ public class BeanInjectTest {
             if (bindInfo == null) {
                 return null;
             }
-            return container.getProvider(bindInfo, appContext).get();
+            return container.getProvider(bindInfo, appContext, null).get();
         });
         //
         //
@@ -111,9 +109,9 @@ public class BeanInjectTest {
         adapter1.addInject("name", InstanceProvider.of("paramName_11"));
         //
         //
-        ByNameTestBeanRef instance1 = container.getProvider(ByNameTestBeanRef.class, appContext).get();
+        ByNameTestBeanRef instance1 = container.getProvider(ByNameTestBeanRef.class, appContext, null).get();
         assert instance1.getTestBean() == null;
-        ByNameConstructorTestBeanRef instance2 = container.getProvider(ByNameConstructorTestBeanRef.class, appContext).get();
+        ByNameConstructorTestBeanRef instance2 = container.getProvider(ByNameConstructorTestBeanRef.class, appContext, null).get();
         assert instance2.getTestBean() == null;
         //
         //
@@ -126,11 +124,11 @@ public class BeanInjectTest {
         adapter2.addInject("name", InstanceProvider.of("paramName_22"));
         //
         //
-        ByNameTestBeanRef instance3 = container.getProvider(ByNameTestBeanRef.class, appContext).get();
+        ByNameTestBeanRef instance3 = container.getProvider(ByNameTestBeanRef.class, appContext, null).get();
         assert instance3.getTestBean() != null;
         assert "paramUUID_22".equals(instance3.getTestBean().getUuid());
         assert "paramName_22".equals(instance3.getTestBean().getName());
-        ByNameConstructorTestBeanRef instance4 = container.getProvider(ByNameConstructorTestBeanRef.class, appContext).get();
+        ByNameConstructorTestBeanRef instance4 = container.getProvider(ByNameConstructorTestBeanRef.class, appContext, null).get();
         assert instance4.getTestBean() != null;
         assert "paramUUID_22".equals(instance4.getTestBean().getUuid());
         assert "paramName_22".equals(instance4.getTestBean().getName());
@@ -148,7 +146,7 @@ public class BeanInjectTest {
             if (bindInfo == null) {
                 return null;
             }
-            return container.getProvider(bindInfo, appContext).get();
+            return container.getProvider(bindInfo, appContext, null).get();
         });
         //
         //
@@ -159,9 +157,9 @@ public class BeanInjectTest {
         adapter1.addInject("name", InstanceProvider.of("paramName_11"));
         //
         //
-        ByIDTestBeanRef instance1 = container.getProvider(ByIDTestBeanRef.class, appContext).get();
+        ByIDTestBeanRef instance1 = container.getProvider(ByIDTestBeanRef.class, appContext, null).get();
         assert instance1.getTestBean() == null;
-        ByIDConstructorTestBeanRef instance2 = container.getProvider(ByIDConstructorTestBeanRef.class, appContext).get();
+        ByIDConstructorTestBeanRef instance2 = container.getProvider(ByIDConstructorTestBeanRef.class, appContext, null).get();
         assert instance2.getTestBean() == null;
         //
         //
@@ -174,11 +172,11 @@ public class BeanInjectTest {
         adapter2.addInject("name", InstanceProvider.of("paramName_22"));
         //
         //
-        ByIDTestBeanRef instance3 = container.getProvider(ByIDTestBeanRef.class, appContext).get();
+        ByIDTestBeanRef instance3 = container.getProvider(ByIDTestBeanRef.class, appContext, null).get();
         assert instance3.getTestBean() != null;
         assert "paramUUID_22".equals(instance3.getTestBean().getUuid());
         assert "paramName_22".equals(instance3.getTestBean().getName());
-        ByIDConstructorTestBeanRef instance4 = container.getProvider(ByIDConstructorTestBeanRef.class, appContext).get();
+        ByIDConstructorTestBeanRef instance4 = container.getProvider(ByIDConstructorTestBeanRef.class, appContext, null).get();
         assert instance4.getTestBean() != null;
         assert "paramUUID_22".equals(instance4.getTestBean().getUuid());
         assert "paramName_22".equals(instance4.getTestBean().getName());
@@ -192,19 +190,19 @@ public class BeanInjectTest {
         PowerMockito.when(appContext.getClassLoader()).thenReturn(this.env.getClassLoader());
         //
         InjectMembersBean.resetInit();
-        container.getProvider(InjectMembersBean.class, appContext).get();
+        container.getProvider(InjectMembersBean.class, appContext, null).get();
         assert InjectMembersBean.isStaticInit();
         //
         try {
             InjectMembersThrowBean.resetInit();
-            container.getProvider(InjectMembersThrowBean.class, appContext).get();
+            container.getProvider(InjectMembersThrowBean.class, appContext, null).get();
             assert false;
         } catch (Exception e) {
             assert "testError".equals(e.getMessage());
         }
         //
         InjectAppContextAwareBean.resetInit();
-        container.getProvider(InjectAppContextAwareBean.class, appContext).get();
+        container.getProvider(InjectAppContextAwareBean.class, appContext, null).get();
         assert InjectAppContextAwareBean.isStaticInit();
     }
     //
@@ -216,7 +214,7 @@ public class BeanInjectTest {
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
-        InjectSettingDefaultValueBean valueBean = container.getProvider(InjectSettingDefaultValueBean.class, appContext).get();
+        InjectSettingDefaultValueBean valueBean = container.getProvider(InjectSettingDefaultValueBean.class, appContext, null).get();
         //
         assert valueBean.getByteValue() == 0;
         assert valueBean.getByteValue2() == null;
@@ -256,7 +254,7 @@ public class BeanInjectTest {
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
-        InjectSettingValueBean valueBean = container.getProvider(InjectSettingValueBean.class, appContext).get();
+        InjectSettingValueBean valueBean = container.getProvider(InjectSettingValueBean.class, appContext, null).get();
         assert valueBean.getByteValue() == 0;
         assert valueBean.getByteValue2() == null;
         assert valueBean.getShortValue() == 0;
@@ -293,7 +291,7 @@ public class BeanInjectTest {
         settings.addSetting("stringValue", "stringValue", nameSpace);
         settings.addSetting("enumValue", "singleton", nameSpace);
         //
-        InjectSettingValueBean valueBean2 = container.getProvider(InjectSettingValueBean.class, appContext).get();
+        InjectSettingValueBean valueBean2 = container.getProvider(InjectSettingValueBean.class, appContext, null).get();
         assert valueBean2.getByteValue() == 12;
         assert valueBean2.getByteValue2() == 12;
         assert valueBean2.getShortValue() == 12;
@@ -326,7 +324,7 @@ public class BeanInjectTest {
         PowerMockito.when(appContext.getEnvironment()).thenReturn(environment);
         PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
-        InjectSettingEnvValueBean valueBean = container.getProvider(InjectSettingEnvValueBean.class, appContext).get();
+        InjectSettingEnvValueBean valueBean = container.getProvider(InjectSettingEnvValueBean.class, appContext, null).get();
         assert valueBean.getByteValue() == 0;
         assert valueBean.getByteValue2() == null;
         assert valueBean.getShortValue() == 0;
@@ -362,7 +360,7 @@ public class BeanInjectTest {
         environment.addVariable("stringValue", "stringValue");
         environment.addVariable("enumValue", "singleton");
         //
-        InjectSettingEnvValueBean valueBean2 = container.getProvider(InjectSettingEnvValueBean.class, appContext).get();
+        InjectSettingEnvValueBean valueBean2 = container.getProvider(InjectSettingEnvValueBean.class, appContext, null).get();
         assert valueBean2.getByteValue() == 12;
         assert valueBean2.getByteValue2() == 12;
         assert valueBean2.getShortValue() == 12;
@@ -421,7 +419,7 @@ public class BeanInjectTest {
         PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
         try {
-            container.getProvider(SimpleInjectBeanExt.class, appContext).get();
+            container.getProvider(SimpleInjectBeanExt.class, appContext, null).get();
             assert false;
         } catch (IllegalStateException e) {
             assert e.getMessage().endsWith("property 'name' duplicate.");
@@ -438,7 +436,7 @@ public class BeanInjectTest {
         PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
         Constructor<?> constructor = ConstructorInjectSettingDefaultValueBean.class.getConstructors()[0];
-        ConstructorInjectSettingDefaultValueBean valueBean = (ConstructorInjectSettingDefaultValueBean) container.getProvider(constructor, appContext).get();
+        ConstructorInjectSettingDefaultValueBean valueBean = (ConstructorInjectSettingDefaultValueBean) container.getProvider(constructor, appContext, null).get();
         //
         assert valueBean.getByteValue() == 0;
         assert valueBean.getByteValue2() == null;
@@ -479,7 +477,7 @@ public class BeanInjectTest {
         PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
         Constructor<?> constructor = ConstructorInjectSettingValueBean.class.getConstructors()[0];
-        ConstructorInjectSettingValueBean valueBean = (ConstructorInjectSettingValueBean) container.getProvider(constructor, appContext).get();
+        ConstructorInjectSettingValueBean valueBean = (ConstructorInjectSettingValueBean) container.getProvider(constructor, appContext, null).get();
         assert valueBean.getByteValue() == 0;
         assert valueBean.getByteValue2() == null;
         assert valueBean.getShortValue() == 0;
@@ -516,7 +514,7 @@ public class BeanInjectTest {
         settings.addSetting("stringValue", "stringValue", nameSpace);
         settings.addSetting("enumValue", "singleton", nameSpace);
         //
-        ConstructorInjectSettingValueBean valueBean2 = (ConstructorInjectSettingValueBean) container.getProvider(constructor, appContext).get();
+        ConstructorInjectSettingValueBean valueBean2 = (ConstructorInjectSettingValueBean) container.getProvider(constructor, appContext, null).get();
         assert valueBean2.getByteValue() == 12;
         assert valueBean2.getByteValue2() == 12;
         assert valueBean2.getShortValue() == 12;
@@ -550,7 +548,7 @@ public class BeanInjectTest {
         PowerMockito.when(appContext.getClassLoader()).thenReturn(environment.getClassLoader());
         //
         Constructor<?> constructor = ConstructorInjectSettingEnvValueBean.class.getConstructors()[0];
-        ConstructorInjectSettingEnvValueBean valueBean = (ConstructorInjectSettingEnvValueBean) container.getProvider(constructor, appContext).get();
+        ConstructorInjectSettingEnvValueBean valueBean = (ConstructorInjectSettingEnvValueBean) container.getProvider(constructor, appContext, null).get();
         assert valueBean.getByteValue() == 0;
         assert valueBean.getByteValue2() == null;
         assert valueBean.getShortValue() == 0;
@@ -586,7 +584,7 @@ public class BeanInjectTest {
         environment.addVariable("stringValue", "stringValue");
         environment.addVariable("enumValue", "singleton");
         //
-        ConstructorInjectSettingEnvValueBean valueBean2 = (ConstructorInjectSettingEnvValueBean) container.getProvider(constructor, appContext).get();
+        ConstructorInjectSettingEnvValueBean valueBean2 = (ConstructorInjectSettingEnvValueBean) container.getProvider(constructor, appContext, null).get();
         assert valueBean2.getByteValue() == 12;
         assert valueBean2.getByteValue2() == 12;
         assert valueBean2.getShortValue() == 12;

@@ -61,26 +61,26 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
 
     //
     public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType) {
-        return new DefaultBindInfoProviderAdapter<T>(bindType);
+        return new DefaultBindInfoProviderAdapter<>(bindType);
     }
     //
     //
     //
-    public <T> Supplier<? extends T> getProvider(final Class<T> targetType, final AppContext appContext) {
+    public <T> Supplier<? extends T> getProvider(final Class<T> targetType, final AppContext appContext, Object[] params) {
         if (targetType == null) {
             return null;
         }
-        return (Supplier<T>) () -> createObject(targetType, null, null, appContext);
+        return (Supplier<T>) () -> createObject(targetType, null, null, appContext, params);
     }
     //
-    public <T> Supplier<? extends T> getProvider(final Constructor<T> targetConstructor, final AppContext appContext) {
+    public <T> Supplier<? extends T> getProvider(final Constructor<T> targetConstructor, final AppContext appContext, Object[] params) {
         if (targetConstructor == null) {
             return null;
         }
-        return (Supplier<T>) () -> createObject(targetConstructor.getDeclaringClass(), targetConstructor, null, appContext);
+        return (Supplier<T>) () -> createObject(targetConstructor.getDeclaringClass(), targetConstructor, null, appContext, params);
     }
     //
-    public <T> Supplier<? extends T> getProvider(final BindInfo<T> bindInfo, final AppContext appContext) {
+    public <T> Supplier<? extends T> getProvider(final BindInfo<T> bindInfo, final AppContext appContext, Object[] params) {
         if (bindInfo == null) {
             return null;
         }
@@ -106,10 +106,10 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
                 if (superType != null) {
                     targetType = superType;
                 }
-                return createObject(targetType, null, bindInfo, appContext);
+                return createObject(targetType, null, bindInfo, appContext, params);
             };
         } else if (instanceProvider == null) {
-            instanceProvider = getProvider(bindInfo.getBindType(), appContext);
+            instanceProvider = getProvider(bindInfo.getBindType(), appContext, params);
         }
         //scope
         if (scopeProvider != null) {
@@ -139,7 +139,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         } while (implBy != null);
         return (Class<T>) tmpType;
     }
-    protected <T> T createObject(Class<T> targetType, Constructor<T> referConstructor, BindInfo<T> bindInfo, AppContext appContext) {
+    protected <T> T createObject(Class<T> targetType, Constructor<T> referConstructor, BindInfo<T> bindInfo, AppContext appContext, Object[] params) {
         //
         // .targetType也许只是一个接口或者抽象类，找到真正创建的那个类型
         targetType = findImplClass(targetType);
@@ -166,7 +166,7 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
         if (!aopBindList.isEmpty()) {
             aopList = new ArrayList<>();
             for (BindInfo<AopBindInfoAdapter> info : aopBindList) {
-                aopList.add(this.getProvider(info, appContext).get());
+                aopList.add(this.getProvider(info, appContext, params).get());
             }
         } else {
             aopList = Collections.emptyList();
@@ -257,6 +257,12 @@ public abstract class TemplateBeanBuilder implements BeanBuilder {
                     paramObjects[i] = injSettings(appContext, injectSettings, parameterTypes[i]);
                     continue;
                 }
+                //
+                if (params != null && params.length > i) {
+                    paramObjects[i] = params[i];
+                    continue;
+                }
+                //
                 paramObjects[i] = BeanUtils.getDefaultValue(parameterTypes[i]);
             }
         }

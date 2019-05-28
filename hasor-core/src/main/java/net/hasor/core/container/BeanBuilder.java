@@ -39,13 +39,13 @@ public interface BeanBuilder {
      * @param bindInfo 绑定信息。
      * @return 创建并返回实例
      */
-    public <T> Supplier<? extends T> getProvider(BindInfo<T> bindInfo, AppContext appContext);
+    public <T> Supplier<? extends T> getProvider(BindInfo<T> bindInfo, AppContext appContext, Object[] params);
 
     /**创建一个未绑定过的类型*/
-    public <T> Supplier<? extends T> getProvider(Class<T> bindType, AppContext appContext);
+    public <T> Supplier<? extends T> getProvider(Class<T> bindType, AppContext appContext, Object[] params);
 
     /**创建一个未绑定过的类型*/
-    public <T> Supplier<? extends T> getProvider(Constructor<T> targetConstructor, AppContext appContext);
+    public <T> Supplier<? extends T> getProvider(Constructor<T> targetConstructor, AppContext appContext, Object[] params);
     //
     /* ----------------------------------------------------------------------------------------- */
     //

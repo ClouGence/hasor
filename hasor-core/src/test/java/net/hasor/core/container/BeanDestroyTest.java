@@ -39,9 +39,9 @@ public class BeanDestroyTest {
         infoAdapter.destroyMethod("destroy");
         infoAdapter.setSingletonMode(SingletonMode.Singleton);
         //
-        CallDestroyBean destroy1 = container.getProvider(infoAdapter, appContext).get();
-        CallDestroyBean2 destroy2 = container.getProvider(CallDestroyBean2.class, appContext).get();
-        CallDestroyBean3 destroy3 = container.getProvider(CallDestroyBean3.class, appContext).get();
+        CallDestroyBean destroy1 = container.getProvider(infoAdapter, appContext, null).get();
+        CallDestroyBean2 destroy2 = container.getProvider(CallDestroyBean2.class, appContext, null).get();
+        CallDestroyBean3 destroy3 = container.getProvider(CallDestroyBean3.class, appContext, null).get();
         //
         assert !destroy1.isDestroy();
         assert !destroy2.isDestroy();

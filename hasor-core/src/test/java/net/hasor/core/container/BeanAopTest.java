@@ -39,7 +39,7 @@ public class BeanAopTest {
         apiBinder.bindInterceptor(Matchers.anyClass(), Matchers.anyMethod(), new TestInterceptor());
         //
         TestInterceptor.resetInit();
-        FooFunction instance = container.getProvider(FooFunction.class, appContext).get();
+        FooFunction instance = container.getProvider(FooFunction.class, appContext, null).get();
         assert !TestInterceptor.isCalled();
         assert !TestInterceptor.isThrowed();
         instance.fooCall("sss");
