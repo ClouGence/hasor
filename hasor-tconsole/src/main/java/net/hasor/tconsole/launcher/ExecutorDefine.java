@@ -20,6 +20,7 @@ import net.hasor.core.BindInfo;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.tconsole.CommandExecutor;
+import net.hasor.tconsole.CommandRequest;
 
 import java.util.function.Supplier;
 /**
@@ -51,11 +52,11 @@ class ExecutorDefine implements CommandExecutor, AppContextAware {
         return getTarget().helpInfo();
     }
     @Override
-    public boolean inputMultiLine(CmdRequest request) {
+    public boolean inputMultiLine(CommandRequest request) {
         return getTarget().inputMultiLine(request);
     }
     @Override
-    public String doCommand(CmdRequest request) throws Throwable {
+    public String doCommand(CommandRequest request) throws Throwable {
         return getTarget().doCommand(request);
     }
     @Override

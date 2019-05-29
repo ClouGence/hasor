@@ -94,6 +94,7 @@ public class ConsoleModule implements LifeModule {
             try {
                 addressList.add(finalBindAddress("local").getHostAddress());
             } catch (Exception e) {
+                logger.info(e.getMessage(), e);
                 addressList.add("127.0.0.1");
             }
         }
@@ -142,9 +143,6 @@ public class ConsoleModule implements LifeModule {
             this.onStop(appContext);
         }
         logger.info("tConsole -> - bindSocket at {}", this.bindAddress);
-        //
-        // .注册shutdown事件，以保证在shutdown时可以停止Telnet。
-        HasorUtils.pushShutdownListener(appContext.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> onStop(appContext));
     }
     @Override
     public void onStop(AppContext appContext) {

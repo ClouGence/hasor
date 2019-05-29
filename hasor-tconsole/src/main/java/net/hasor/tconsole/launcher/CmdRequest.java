@@ -31,27 +31,26 @@ import java.util.concurrent.Executor;
  * @version : 2016年4月3日
  * @author 赵永春 (zyc@hasor.net)
  */
-public final class CmdRequest {
-    protected static    Logger logger                      = LoggerFactory.getLogger(CmdRequest.class);
-    public static final String WITHOUT_AFTER_CLOSE_SESSION = "WithoutAfterCloseSession";
-    private CmdSession          telnetSession;    //Rsf环境
-    private CommandExecutor     commandExecutor;  //命令执行体
-    private String              commandString;
-    private String[]            requestArgs;      //请求参数
-    private RequestStatus       status;
-    private boolean             inputMultiLine;
-    private StringBuffer        bodyBuffer;       //多行输入下内容缓冲区
-    private String              result;           //执行结果
-    private long                doStartTime;      //命令执行的开始时间
-    private boolean             doClose;
-    private Map<String, Object> attr;
+public final class CmdRequest implements net.hasor.tconsole.CommandRequest {
+    protected static Logger              logger = LoggerFactory.getLogger(CmdRequest.class);
+    private          CmdSession          telnetSession;    //Rsf环境
+    private          CommandExecutor     commandExecutor;  //命令执行体
+    private          String              commandString;
+    private          String[]            requestArgs;      //请求参数
+    private          RequestStatus       status;
+    private          boolean             inputMultiLine;
+    private          StringBuffer        bodyBuffer;       //多行输入下内容缓冲区
+    private          String              result;           //执行结果
+    private          long                doStartTime;      //命令执行的开始时间
+    private          boolean             doClose;
+    private          Map<String, Object> attr;
     //
     CmdRequest(String commandString, CmdSession telnetSession, CommandExecutor commandExecutor, String requestArgs) {
         this.commandString = commandString;
         this.telnetSession = telnetSession;
         this.commandExecutor = commandExecutor;
         this.requestArgs = StringUtils.isBlank(requestArgs) ? new String[0] : requestArgs.split(" ");
-        this.bodyBuffer = new StringBuffer("");
+        this.bodyBuffer = new StringBuffer();
         this.doClose = false;
         this.attr = new HashMap<>();
         this.inputMultiLine = commandExecutor.inputMultiLine(this);
@@ -80,7 +79,7 @@ public final class CmdRequest {
     boolean inputMultiLine() {
         return this.inputMultiLine;
     }
-    void doCommand(final Executor executor, Runnable callBack) {
+    void doCommand(Executor executor, Runnable callBack) {
         status = RequestStatus.Running;
         executor.execute(new CommandRun(callBack));
     }
@@ -96,10 +95,10 @@ public final class CmdRequest {
             } catch (Throwable e) {
                 StringWriter sw = new StringWriter();
                 e.printStackTrace(new PrintWriter(sw));
-                result = "execute the command error :" + sw.toString();
+                result = sw.toString();
             } finally {
                 //
-                Object withoutAfterClose = getAttr(WITHOUT_AFTER_CLOSE_SESSION);
+                Object withoutAfterClose = getCommandAttr(WITHOUT_AFTER_CLOSE_SESSION);
                 if (withoutAfterClose == null) {
                     withoutAfterClose = false;
                 }
@@ -145,12 +144,12 @@ public final class CmdRequest {
     public void setSessionAttr(String key, Object value) {
         this.telnetSession.setSessionAttr(key, value);
     }
-    /**获取会话属性。*/
-    public Object getAttr(String key) {
+    /**获取 Request 属性。*/
+    public Object getCommandAttr(String key) {
         return this.attr.get(key.toLowerCase());
     }
-    /**设置请求属性。*/
-    public void setAttr(String key, Object value) {
+    /**设置 Request 属性。*/
+    public void setCommandAttr(String key, Object value) {
         this.attr.put(key.toLowerCase(), value);
     }
     /**获取命令行输入*/

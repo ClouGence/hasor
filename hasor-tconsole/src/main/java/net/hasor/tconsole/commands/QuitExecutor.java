@@ -16,7 +16,7 @@
 package net.hasor.tconsole.commands;
 import net.hasor.core.Singleton;
 import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.launcher.CmdRequest;
+import net.hasor.tconsole.CommandRequest;
 /**
  *
  * @version : 2016年4月3日
@@ -29,11 +29,11 @@ public class QuitExecutor implements CommandExecutor {
         return "out of console.";
     }
     @Override
-    public boolean inputMultiLine(CmdRequest request) {
+    public boolean inputMultiLine(CommandRequest request) {
         return false;
     }
     @Override
-    public String doCommand(CmdRequest request) throws Throwable {
+    public String doCommand(CommandRequest request) throws Throwable {
         request.closeSession();
         return "logout of console";
     }

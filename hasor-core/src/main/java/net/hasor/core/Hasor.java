@@ -46,9 +46,24 @@ public final class Hasor extends HashMap<String, String> {
     private          ClassLoader                      loader;
     private          ContainerCreater                 containerCreater;
     private          Map<String, Map<String, Object>> initSettingMap         = new HashMap<>();
-    private          boolean                          asSmaller              = false;
+    private          Level                            asLevel                = Level.Full;
     protected Hasor(Object context) {
         this.context = context;
+    }
+    //
+    /** 加载框架的规模 */
+    public static enum Level {
+        /**
+         * 微小的，放弃一切插件加载，并且只处理 hasor-core 的加载
+         * 下面环境变量会被设置
+         *  - HASOR_LOAD_MODULE 为 false
+         *  - HASOR_LOAD_EXTERNALBINDER 为 false
+         */
+        Tiny(),
+        /** 核心部分，只完整的加载 hasor-core。 */
+        Core(),
+        /** 完整加载框架和可以发现的所有插件模块。 */
+        Full()
     }
     //
     //
@@ -139,12 +154,24 @@ public final class Hasor extends HashMap<String, String> {
         return this;
     }
     //
-    public Hasor asSmaller() {
-        this.asSmaller = true;
+    /**
+     * 微小的，放弃一切插件加载，并且只处理 hasor-core 的加载
+     * 下面环境变量会被设置
+     *  - HASOR_LOAD_MODULE 为 false
+     *  - HASOR_LOAD_EXTERNALBINDER 为 false
+     */
+    public Hasor asTiny() {
+        this.asLevel = Level.Tiny;
         return this;
     }
+    /** 核心部分，只完整的加载 hasor-core。 */
+    public Hasor asCore() {
+        this.asLevel = Level.Core;
+        return this;
+    }
+    /** 完整加载框架和可以发现的所有插件模块。 */
     public Hasor asFull() {
-        this.asSmaller = false;
+        this.asLevel = Level.Full;
         return this;
     }
     //
@@ -158,15 +185,17 @@ public final class Hasor extends HashMap<String, String> {
         // .单独处理RUN_PATH
         String runPath = new File("").getAbsolutePath();
         this.addVariable("RUN_PATH", runPath);
-        this.addVariable("RUN_MODE", this.asSmaller ? "smaller" : "none");
+        this.addVariable("RUN_MODE", this.asLevel.name());
         if (logger.isInfoEnabled()) {
             logger.info("runMode at {}", this.get("RUN_MODE"));
             logger.info("runPath at {}", runPath);
         }
         //
-        if (this.asSmaller) {
+        if (this.asLevel == Level.Tiny) {
             this.addVariable("HASOR_LOAD_MODULE", "false");
             this.addVariable("HASOR_LOAD_EXTERNALBINDER", "false");
+        }
+        if (this.asLevel == Level.Tiny || this.asLevel == Level.Core) {
             StandardContextSettings.setLoadMatcher("/META-INF/hasor-framework/core-hconfig.xml"::equals);
         } else {
             StandardContextSettings.setLoadMatcher(null);

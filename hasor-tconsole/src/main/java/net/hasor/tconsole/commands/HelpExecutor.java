@@ -17,7 +17,7 @@ package net.hasor.tconsole.commands;
 import net.hasor.core.Singleton;
 import net.hasor.tconsole.CommandExecutor;
 import net.hasor.tconsole.CommandFinder;
-import net.hasor.tconsole.launcher.CmdRequest;
+import net.hasor.tconsole.CommandRequest;
 import net.hasor.utils.StringUtils;
 
 import java.io.StringWriter;
@@ -38,11 +38,11 @@ public class HelpExecutor implements CommandExecutor {
                 + "       help quit  (show the 'quit' command help info.)";
     }
     @Override
-    public boolean inputMultiLine(CmdRequest request) {
+    public boolean inputMultiLine(CommandRequest request) {
         return false;
     }
     @Override
-    public String doCommand(CmdRequest request) throws Throwable {
+    public String doCommand(CommandRequest request) throws Throwable {
         CommandFinder finder = request.getFinder();
         List<String> cmdNames = finder.getCommandNames();
         StringWriter sw = new StringWriter();

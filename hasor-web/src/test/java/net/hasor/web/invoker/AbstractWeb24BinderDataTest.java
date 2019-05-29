@@ -45,7 +45,7 @@ public class AbstractWeb24BinderDataTest extends AbstractWebTest implements Modu
             throw new Exception();
         });
         //
-        this.hasor = Hasor.create(this.servletContext).asSmaller()//
+        this.hasor = Hasor.create(this.servletContext).asTiny()//
                 .addSettings("http://test.hasor.net", "hasor.innerApiBinderSet", defaultInnerApiBinderSetXmlNode())//
                 .addSettings("http://test.hasor.net", "hasor.invokerCreaterSet", defaultInvokerCreaterSetXmlNode())//
                 .addModules(this);

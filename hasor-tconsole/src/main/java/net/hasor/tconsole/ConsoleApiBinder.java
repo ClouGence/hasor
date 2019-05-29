@@ -16,7 +16,9 @@
 package net.hasor.tconsole;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
+import net.hasor.core.provider.InstanceProvider;
 
+import java.lang.reflect.Constructor;
 import java.util.function.Supplier;
 /**
  * TConsol 为您提供 telnet 下和应用程序交互的能力。
@@ -28,7 +30,6 @@ public interface ConsoleApiBinder extends ApiBinder {
     public default boolean isEnable() {
         return getEnvironment().getSettings().getBoolean("hasor.tConsole.enable", true);
     }
-    //
 
     /** 添加 CommandExecutor */
     public default void addCommand(String[] names, Class<? extends CommandExecutor> instructType) {
@@ -46,5 +47,50 @@ public interface ConsoleApiBinder extends ApiBinder {
     }
 
     /** 添加 CommandExecutor */
-    public void addCommand(String[] name, BindInfo<? extends CommandExecutor> executorInfo);
+    public default void addCommand(String[] names, BindInfo<? extends CommandExecutor> bindInfo) {
+        this.addCommand(names).toInfo(bindInfo);
+    }
+
+    /** 添加 CommandExecutor */
+    public CommandBindingBuilder addCommand(String... names);
+    //
+    //
+    /**绑定元信息*/
+    public interface CommandBindingBuilder {
+        /**
+         * 为绑定设置一个实现类。
+         * @param implementation 实现类型
+         * @return 返回 - {@link InjectPropertyBindingBuilder}。
+         */
+        public <T extends CommandExecutor> InjectPropertyBindingBuilder<? extends CommandExecutor> to(Class<T> implementation);
+
+        /**
+         * 为绑定设置一个实例
+         * @param instance 实例对象
+         * @return 返回 - {@link OptionPropertyBindingBuilder}。
+         */
+        public default <T extends CommandExecutor> LifeBindingBuilder<CommandExecutor> toInstance(final T instance) {
+            return this.toProvider(InstanceProvider.of(instance));
+        }
+
+        /**
+         * 为绑定设置一个实例
+         * @param bindInfo 实例对象
+         */
+        public void toInfo(BindInfo<? extends CommandExecutor> bindInfo);
+
+        /**
+         * 为绑定设置一个 {@link Supplier}。
+         * @param supplier supplier 可以用来封装类型实例创建的细节。
+         * @return 返回 - {@link LifeBindingBuilder}。
+         */
+        public <T extends CommandExecutor> LifeBindingBuilder<CommandExecutor> toProvider(Supplier<T> supplier);
+
+        /**
+         * 为绑定设置一个构造方法。
+         * @param constructor 使用的构造方法。
+         * @return 返回 - {@link InjectConstructorBindingBuilder}。
+         */
+        public <T extends CommandExecutor> LifeBindingBuilder<CommandExecutor> toConstructor(Constructor<T> constructor);
+    }
 }

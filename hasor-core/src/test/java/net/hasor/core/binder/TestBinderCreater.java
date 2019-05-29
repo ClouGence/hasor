@@ -19,7 +19,7 @@ import net.hasor.core.ApiBinder;
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class TestBinderCreater implements ApiBinderCreater {
+public class TestBinderCreater implements ApiBinderCreater<TestBinder> {
     @Override
     public TestBinder createBinder(ApiBinder apiBinder) {
         return new TestBinderImpl(apiBinder);

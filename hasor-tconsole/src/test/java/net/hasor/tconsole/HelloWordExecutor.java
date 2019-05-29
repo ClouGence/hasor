@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test.net.hasor.tconsole.alone;
+package net.hasor.tconsole;
 import net.hasor.core.Singleton;
 import net.hasor.tconsole.CommandExecutor;
 import net.hasor.tconsole.launcher.CmdRequest;
@@ -29,11 +29,11 @@ public class HelloWordExecutor implements CommandExecutor {
         return "hello help.";
     }
     @Override
-    public boolean inputMultiLine(CmdRequest request) {
+    public boolean inputMultiLine(CommandRequest request) {
         return false;
     }
     @Override
-    public String doCommand(CmdRequest request) throws Throwable {
-        return "you say ->" + request.getCommandString();
+    public String doCommand(CommandRequest request) throws Throwable {
+        return "you say -> hello";
     }
 }

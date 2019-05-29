@@ -20,10 +20,10 @@ import net.hasor.core.ApiBinder;
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface ApiBinderCreater {
+public interface ApiBinderCreater<T extends ApiBinder> {
     /**
      * 创建Beander 扩展接口实现类 {@link ApiBinder}
      * @return return {@link ApiBinder}
      */
-    public <T extends ApiBinder> T createBinder(ApiBinder apiBinder) throws Throwable;
+    public T createBinder(ApiBinder apiBinder) throws Throwable;
 }

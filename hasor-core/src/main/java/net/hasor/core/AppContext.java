@@ -112,6 +112,12 @@ public interface AppContext extends MetaInfo {
     }
 
     /** 根据类型创建 Bean */
+    public default <T> T getInstance(Class<T> targetClass) {
+        Objects.requireNonNull(targetClass, "targetClass is null.");
+        return this.getProvider(targetClass, new Object[0]).get();
+    }
+
+    /** 根据类型创建 Bean */
     public default <T> T getInstance(Class<T> targetClass, Object... params) {
         Objects.requireNonNull(targetClass, "targetClass is null.");
         return this.getProvider(targetClass, params).get();
@@ -134,6 +140,12 @@ public interface AppContext extends MetaInfo {
 
     /** 根据 bindID 创建 Bean 的 Provider */
     public <T> Supplier<? extends T> getProvider(String bindID);
+
+    /** 根据类型创建创建 Bean 的 Provider */
+    public default <T> Supplier<? extends T> getProvider(Class<T> targetClass) {
+        Objects.requireNonNull(targetClass, "targetClass is null.");
+        return this.getProvider(targetClass, new Object[0]);
+    }
 
     /** 根据类型创建创建 Bean 的 Provider */
     public <T> Supplier<? extends T> getProvider(Class<T> targetClass, Object... params);

@@ -34,10 +34,10 @@ import java.io.IOException;
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InvokerWebApiBinderCreater implements ApiBinderCreater {
+public class InvokerWebApiBinderCreater implements ApiBinderCreater<WebApiBinder> {
     protected Logger logger = LoggerFactory.getLogger(getClass());
     @Override
-    public ApiBinder createBinder(final ApiBinder apiBinder) throws IOException {
+    public WebApiBinder createBinder(final ApiBinder apiBinder) throws IOException {
         Environment environment = apiBinder.getEnvironment();
         Object context = environment.getContext();
         //
@@ -53,7 +53,7 @@ public class InvokerWebApiBinderCreater implements ApiBinderCreater {
         return newBinder(apiBinder);
     }
     //
-    public static ApiBinder newBinder(ApiBinder apiBinder) throws IOException {
+    public static WebApiBinder newBinder(ApiBinder apiBinder) throws IOException {
         Environment environment = apiBinder.getEnvironment();
         Object context = environment.getContext();
         if (!(context instanceof ServletContext)) {

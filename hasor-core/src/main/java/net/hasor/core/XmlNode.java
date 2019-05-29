@@ -36,7 +36,6 @@ public interface XmlNode {
 
     /** @return 获取Xml子节点。*/
     public List<XmlNode> getChildren();
-    //
 
     /**
      * 获取Xml子节点。

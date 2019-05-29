@@ -29,13 +29,26 @@ import net.hasor.utils.future.BasicFuture;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * simple telnet client.
  */
 public final class TelnetClient {
-    public static void execCommand(String host, int port, final String command, Map<String, String> envMap) throws Exception {
+    public static String executeCommand(String host, int port, String command) throws Exception {
+        StringWriter returnData = new StringWriter();
+        doExecuteCommand(host, port, command, new HashMap<>(), returnData);
+        return returnData.toString();
+    }
+    public static String executeCommand(String host, int port, String command, Map<String, String> envMap) throws Exception {
+        StringWriter returnData = new StringWriter();
+        doExecuteCommand(host, port, command, envMap, returnData);
+        return returnData.toString();
+    }
+    //
+    private static void doExecuteCommand(String host, int port, final String command, Map<String, String> envMap, StringWriter returnData) throws Exception {
+        //
         StringWriter commands = new StringWriter();
         if (envMap != null) {
             for (String key : envMap.keySet()) {
@@ -59,7 +72,7 @@ public final class TelnetClient {
                     pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
                     pipeline.addLast(new StringDecoder());
                     pipeline.addLast(new StringEncoder());
-                    pipeline.addLast(new TelnetClientHandler(closeFuture, atomicBoolean));
+                    pipeline.addLast(new TelnetClientHandler(closeFuture, atomicBoolean, returnData));
                 }
             });
             Channel ch = b.connect(host, port).sync().channel();

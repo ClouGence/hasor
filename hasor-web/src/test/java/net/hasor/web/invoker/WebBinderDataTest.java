@@ -63,7 +63,7 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         PowerMockito.when(sc.getVirtualServerName()).thenReturn("");
         //
         this.mimeType = PowerMockito.mock(MimeType.class);
-        Hasor.create(sc).asSmaller()//
+        Hasor.create(sc).asTiny()//
                 .addSettings("http://test.hasor.net", "hasor.innerApiBinderSet", defaultInnerApiBinderSetXmlNode())//
                 .addSettings("http://test.hasor.net", "hasor.invokerCreaterSet", defaultInvokerCreaterSetXmlNode())//
                 .build((WebModule) apiBinder -> {

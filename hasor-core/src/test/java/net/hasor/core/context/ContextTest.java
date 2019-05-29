@@ -1,3 +1,18 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.hasor.core.context;
 import net.hasor.core.*;
 import net.hasor.core.container.BeanContainer;
@@ -213,7 +228,7 @@ public class ContextTest {
     @Test
     public void builderTest7() throws Throwable {
         //
-        AppContext appContext = Hasor.create().asSmaller().build();
+        AppContext appContext = Hasor.create().asTiny().build();
         String name = ManagementFactory.getRuntimeMXBean().getName();
         String pid = name.split("@")[0];
         System.out.println("Pid is:" + pid);
@@ -237,7 +252,7 @@ public class ContextTest {
     @Test
     public void builderTest8() throws Throwable {
         //
-        AppContext appContext = Hasor.create().asSmaller().build();
+        AppContext appContext = Hasor.create().asTiny().build();
         String name = ManagementFactory.getRuntimeMXBean().getName();
         String pid = name.split("@")[0];
         System.out.println("Pid is:" + pid);
@@ -263,7 +278,7 @@ public class ContextTest {
     @Test
     public void builderTest9() throws Throwable {
         //
-        AppContext appContext = Hasor.create().asSmaller().build();
+        AppContext appContext = Hasor.create().asTiny().build();
         ConstructorBean constructorBean = appContext.getInstance(ConstructorBean.class,"abcdefg");
         assert constructorBean.getName().equals("abcdefg");
         assert constructorBean.getUuid().equals("aaa");

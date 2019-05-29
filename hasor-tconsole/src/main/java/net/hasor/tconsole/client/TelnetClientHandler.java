@@ -21,22 +21,28 @@ import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.StringWriter;
 import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Handles a client-side channel.
  */
 @Sharable
-public class TelnetClientHandler extends SimpleChannelInboundHandler<String> {
-    protected static Logger logger = LoggerFactory.getLogger(TelnetClientHandler.class);
-    private BasicFuture<Object> closeFuture;
-    private AtomicBoolean       atomicBoolean;
-    public TelnetClientHandler(BasicFuture<Object> closeFuture, AtomicBoolean atomicBoolean) {
+class TelnetClientHandler extends SimpleChannelInboundHandler<String> {
+    protected static Logger              logger = LoggerFactory.getLogger(TelnetClientHandler.class);
+    private          BasicFuture<Object> closeFuture;
+    private          AtomicBoolean       atomicBoolean;
+    private          StringWriter        returnData;
+    public TelnetClientHandler(BasicFuture<Object> closeFuture, AtomicBoolean atomicBoolean, StringWriter returnData) {
         this.closeFuture = closeFuture;
         this.atomicBoolean = atomicBoolean;
+        this.returnData = returnData;
     }
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, String msg) throws Exception {
-        logger.error(msg);
+    protected void channelRead0(ChannelHandlerContext ctx, String msg) {
+        logger.debug(msg);
+        if (returnData != null) {
+            returnData.write(msg + "\n");
+        }
         if (msg.startsWith("tConsole>[SUCCEED]")) {
             this.atomicBoolean.set(true);
         }

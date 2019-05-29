@@ -21,14 +21,20 @@ import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.tconsole.CommandExecutor;
 import net.hasor.tconsole.ConsoleApiBinder;
+import net.hasor.core.ApiBinder.InjectPropertyBindingBuilder;
+import net.hasor.core.ApiBinder.LifeBindingBuilder;
+import net.hasor.tconsole.ConsoleApiBinder.CommandBindingBuilder;
+
+import java.lang.reflect.Constructor;
+import java.util.function.Supplier;
 /**
  * DataQL 扩展接口。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ConsoleApiBinderCreater implements ApiBinderCreater {
+public class ConsoleApiBinderCreater implements ApiBinderCreater<ConsoleApiBinder> {
     @Override
-    public ApiBinder createBinder(final ApiBinder apiBinder) {
+    public ConsoleApiBinder createBinder(final ApiBinder apiBinder) {
         return new ConsoleApiBinderImpl(apiBinder);
     }
     //
@@ -37,12 +43,58 @@ public class ConsoleApiBinderCreater implements ApiBinderCreater {
             super(apiBinder);
         }
         @Override
-        public void addCommand(String[] names, BindInfo<? extends CommandExecutor> instructInfo) {
+        public CommandBindingBuilder addCommand(String... names) {
             if (names == null || names.length == 0) {
                 throw new NullPointerException("command names undefined.");
             }
-            ExecutorDefine define = HasorUtils.autoAware(getEnvironment(), new ExecutorDefine(names, instructInfo));
-            this.bindType(ExecutorDefine.class).uniqueName().toInstance(define);
+            return new CommandBindingBuilderImpl(this, names);
+        }
+    }
+    private static class CommandBindingBuilderImpl implements CommandBindingBuilder {
+        private String[]  names;
+        private ApiBinder apiBinder;
+        public CommandBindingBuilderImpl(ApiBinder apiBinder, String[] names) {
+            this.names = names;
+            this.apiBinder = apiBinder;
+        }
+        //
+        @Override
+        public <T extends CommandExecutor> InjectPropertyBindingBuilder<? extends CommandExecutor> to(Class<T> implementation) {
+            InjectPropertyBindingBuilder<CommandExecutor> bindingBuilder = apiBinder//
+                    .bindType(CommandExecutor.class)    //
+                    .uniqueName()                       //
+                    .to(implementation);
+            //
+            toInfo(bindingBuilder.toInfo());
+            return bindingBuilder;
+        }
+        @Override
+        public <T extends CommandExecutor> LifeBindingBuilder<CommandExecutor> toProvider(Supplier<T> supplier) {
+            LifeBindingBuilder<CommandExecutor> bindingBuilder = apiBinder//
+                    .bindType(CommandExecutor.class)    //
+                    .uniqueName()                       //
+                    .toProvider(supplier);
+            //
+            toInfo(bindingBuilder.toInfo());
+            return bindingBuilder;
+        }
+        @Override
+        public <T extends CommandExecutor> LifeBindingBuilder<CommandExecutor> toConstructor(Constructor<T> constructor) {
+            LifeBindingBuilder<CommandExecutor> bindingBuilder = apiBinder//
+                    .bindType(CommandExecutor.class)    //
+                    .uniqueName()                       //
+                    .toConstructor(constructor);
+            //
+            toInfo(bindingBuilder.toInfo());
+            return bindingBuilder;
+        }
+        public void toInfo(BindInfo<? extends CommandExecutor> bindInfo) {
+            apiBinder.bindType(ExecutorDefine.class)    //
+                    .uniqueName()                       //
+                    .toInstance(HasorUtils.autoAware(   //
+                            apiBinder.getEnvironment(), //
+                            new ExecutorDefine(names, bindInfo)//
+                    ));
         }
     }
 }

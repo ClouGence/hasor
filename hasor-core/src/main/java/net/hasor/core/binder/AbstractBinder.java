@@ -112,7 +112,6 @@ public abstract class AbstractBinder implements ApiBinder {
     //    private static final Pattern InterceptorPattern;
     @Override
     public void bindInterceptor(final String matcherExpression, final MethodInterceptor interceptor) {
-        //
         Predicate<Class<?>> matcherClass = Matchers.expressionClass(matcherExpression);
         Predicate<Method> matcherMethod = Matchers.expressionMethod(matcherExpression);
         this.bindInterceptor(matcherClass, matcherMethod, interceptor);
@@ -243,7 +242,9 @@ public abstract class AbstractBinder implements ApiBinder {
         }
         @Override
         public LinkedBindingBuilder<T> uniqueName() {
-            this.typeBuilder.setBindName(UUID.randomUUID().toString());
+            String newID = UUID.randomUUID().toString().replace("-", "");
+            this.typeBuilder.setBindID(newID);
+            this.typeBuilder.setBindName(newID);
             return this;
         }
         @Override

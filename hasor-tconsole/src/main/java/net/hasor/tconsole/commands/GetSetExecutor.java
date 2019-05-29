@@ -16,6 +16,7 @@
 package net.hasor.tconsole.commands;
 import net.hasor.core.Singleton;
 import net.hasor.tconsole.CommandExecutor;
+import net.hasor.tconsole.CommandRequest;
 import net.hasor.tconsole.launcher.CmdRequest;
 import net.hasor.utils.StringUtils;
 /**
@@ -32,12 +33,12 @@ public class GetSetExecutor implements CommandExecutor {
                 + " - set variableName variableValue  (set new values to variable.)";//
     }
     @Override
-    public boolean inputMultiLine(CmdRequest request) {
+    public boolean inputMultiLine(CommandRequest request) {
         return false;
     }
     @Override
-    public String doCommand(CmdRequest request) throws Throwable {
-        request.setAttr(CmdRequest.WITHOUT_AFTER_CLOSE_SESSION, true);//不关闭Session
+    public String doCommand(CommandRequest request) throws Throwable {
+        request.setCommandAttr(CmdRequest.WITHOUT_AFTER_CLOSE_SESSION, true);//不关闭Session
         String[] args = request.getRequestArgs();
         String argsJoin = StringUtils.join(args, "");
         argsJoin = argsJoin.replace("\\s+", " ");

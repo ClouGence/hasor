@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.tconsole;
-import net.hasor.tconsole.launcher.CmdRequest;
 /**
  * Telnet指令执行器。
  *  - 无论是否设置了单例模式，执行器都是单例模式运行的。see: net.hasor.tconsole.binder.ExecutorDefine
@@ -23,14 +22,13 @@ import net.hasor.tconsole.launcher.CmdRequest;
  */
 public interface CommandExecutor {
     public static final String AFTER_CLOSE_SESSION = "Session_AfterClose";
-    //
 
     /**帮助信息.*/
     public String helpInfo();
 
     /**命令是否启用多行输入，启用多行输入之后。两次回车即可完成整个命令。*/
-    public boolean inputMultiLine(CmdRequest request);
+    public boolean inputMultiLine(CommandRequest request);
 
     /**执行命令*/
-    public String doCommand(CmdRequest request) throws Throwable;
+    public String doCommand(CommandRequest request) throws Throwable;
 }
