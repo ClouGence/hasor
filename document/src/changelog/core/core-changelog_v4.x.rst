@@ -1,10 +1,10 @@
 ﻿--------------------
 Release Hasor v3.x
 --------------------
-Hasor v4.0.6 (2019-05-?)
+Hasor v4.0.6 (2019-05-31)
 ------------------------------------
 **改进**
-    - getInstance、getProvider 新增 param 参数以支持构造方法入参
+    - getInstance、getProvider 新增 param 参数以支持构造方法入参。
     - tConsole 接口调整。
 
 Hasor v4.0.5 (2019-05-27)
