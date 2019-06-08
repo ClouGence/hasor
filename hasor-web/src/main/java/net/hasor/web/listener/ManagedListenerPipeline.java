@@ -15,21 +15,26 @@
  */
 package net.hasor.web.listener;
 import net.hasor.core.AppContext;
-import net.hasor.web.definition.ContextListenerDefinition;
-import net.hasor.web.definition.HttpSessionListenerDefinition;
+import net.hasor.web.definition.WebListenerDefinition;
 
 import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.ServletRequestEvent;
+import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 /**
  *
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ManagedListenerPipeline implements ListenerPipeline {
-    private          HttpSessionListenerDefinition[] sessionListeners = null;
-    private          ContextListenerDefinition[]     contextListeners = null;
-    private volatile boolean                         initialized      = false;
+    private          Map<Class<?>, ArrayList<WebListenerDefinition>> webListeners = null;
+    private volatile boolean                                         initialized  = false;
     //
     //
     @Override
@@ -37,46 +42,40 @@ public class ManagedListenerPipeline implements ListenerPipeline {
         if (this.initialized) {
             return;
         }
-        //1.收集HttpSessionListenerDefinition
-        List<HttpSessionListenerDefinition> sessionListeners = appContext.findBindingBean(HttpSessionListenerDefinition.class);
-        this.sessionListeners = sessionListeners.toArray(new HttpSessionListenerDefinition[0]);
-        for (HttpSessionListenerDefinition def : this.sessionListeners) {
-            def.init(appContext);
-        }
-        //2.收集ContextListenerDefinition
-        List<ContextListenerDefinition> contextListeners = appContext.findBindingBean(ContextListenerDefinition.class);
-        this.contextListeners = contextListeners.toArray(new ContextListenerDefinition[0]);
-        for (ContextListenerDefinition def : this.contextListeners) {
-            def.init(appContext);
-        }
+        //
+        // 收集各类 WebListener
+        this.webListeners = new HashMap<Class<?>, ArrayList<WebListenerDefinition>>() {{
+            put(HttpSessionListener.class, new ArrayList<>());
+            put(ServletContextListener.class, new ArrayList<>());
+            put(ServletRequestListener.class, new ArrayList<>());
+        }};
+        List<WebListenerDefinition> listenerList = appContext.findBindingBean(WebListenerDefinition.class);
+        listenerList.forEach(listenerDefinition -> {
+            // .ServletContextListener
+            if (listenerDefinition.getWebListener(ServletContextListener.class) != null) {
+                webListeners.get(ServletContextListener.class).add(listenerDefinition);
+            }
+            // .HttpSessionListener
+            if (listenerDefinition.getWebListener(HttpSessionListener.class) != null) {
+                webListeners.get(HttpSessionListener.class).add(listenerDefinition);
+            }
+            // .ServletRequestListener
+            if (listenerDefinition.getWebListener(ServletRequestListener.class) != null) {
+                webListeners.get(ServletRequestListener.class).add(listenerDefinition);
+            }
+        });
         //everything was ok...
         this.initialized = true;
     }
-    @Override
-    public void sessionCreated(final HttpSessionEvent event) {
-        if (!this.initialized) {
-            return;
-        }
-        for (HttpSessionListenerDefinition httpSessionListenerDefinition : this.sessionListeners) {
-            httpSessionListenerDefinition.sessionCreated(event);
-        }
-    }
-    @Override
-    public void sessionDestroyed(final HttpSessionEvent event) {
-        if (!this.initialized) {
-            return;
-        }
-        for (HttpSessionListenerDefinition httpSessionListenerDefinition : this.sessionListeners) {
-            httpSessionListenerDefinition.sessionDestroyed(event);
-        }
-    }
+    //
+    //
     @Override
     public void contextInitialized(final ServletContextEvent event) {
         if (!this.initialized) {
             return;
         }
-        for (ContextListenerDefinition contextListenerDefinition : this.contextListeners) {
-            contextListenerDefinition.contextInitialized(event);
+        for (WebListenerDefinition contextListenerDefinition : this.webListeners.get(ServletContextListener.class)) {
+            contextListenerDefinition.getWebListener(ServletContextListener.class).contextInitialized(event);
         }
     }
     @Override
@@ -84,8 +83,44 @@ public class ManagedListenerPipeline implements ListenerPipeline {
         if (!this.initialized) {
             return;
         }
-        for (ContextListenerDefinition contextListenerDefinition : this.contextListeners) {
-            contextListenerDefinition.contextDestroyed(event);
+        for (WebListenerDefinition contextListenerDefinition : this.webListeners.get(ServletContextListener.class)) {
+            contextListenerDefinition.getWebListener(ServletContextListener.class).contextDestroyed(event);
+        }
+    }
+    @Override
+    public void sessionCreated(final HttpSessionEvent event) {
+        if (!this.initialized) {
+            return;
+        }
+        for (WebListenerDefinition contextListenerDefinition : this.webListeners.get(HttpSessionListener.class)) {
+            contextListenerDefinition.getWebListener(HttpSessionListener.class).sessionCreated(event);
+        }
+    }
+    @Override
+    public void sessionDestroyed(final HttpSessionEvent event) {
+        if (!this.initialized) {
+            return;
+        }
+        for (WebListenerDefinition listener : this.webListeners.get(HttpSessionListener.class)) {
+            listener.getWebListener(HttpSessionListener.class).sessionDestroyed(event);
+        }
+    }
+    @Override
+    public void requestDestroyed(ServletRequestEvent sre) {
+        if (!this.initialized) {
+            return;
+        }
+        for (WebListenerDefinition listener : this.webListeners.get(ServletRequestListener.class)) {
+            listener.getWebListener(ServletRequestListener.class).requestDestroyed(sre);
+        }
+    }
+    @Override
+    public void requestInitialized(ServletRequestEvent sre) {
+        if (!this.initialized) {
+            return;
+        }
+        for (WebListenerDefinition listener : this.webListeners.get(ServletRequestListener.class)) {
+            listener.getWebListener(ServletRequestListener.class).requestInitialized(sre);
         }
     }
 }

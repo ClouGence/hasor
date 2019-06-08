@@ -1,6 +1,16 @@
 ﻿--------------------
 Release Hasor v3.x
 --------------------
+Hasor v4.0.7 (2019-06-?)
+------------------------------------
+**新增**
+    - WebApiBinder 接口中新增 addWebListener 方法用来注册 ServletListener、SessionListener、RequestListener
+    - 新增 ServletRequestListener 支持。
+**改进**
+    - WebApiBinder,接口中 addServletListener、addSessionListener 都合并到 addWebListener 方法。
+**修复**
+    - 修复 ResourcesUtils 和 ScanClassPath，IO 文件句柄泄露问题。
+
 Hasor v4.0.6 (2019-05-31)
 ------------------------------------
 **改进**

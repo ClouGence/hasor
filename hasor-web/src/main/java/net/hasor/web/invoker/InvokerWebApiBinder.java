@@ -29,9 +29,7 @@ import net.hasor.web.startup.RuntimeFilter;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpSessionListener;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.*;
@@ -97,12 +95,9 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         this.bindType(MappingDiscovererDefinition.class).toInstance(definition);
     }
     @Override
-    public void addServletListener(BindInfo<? extends ServletContextListener> targetRegister) {
-        this.bindType(ContextListenerDefinition.class).uniqueName().toInstance(new ContextListenerDefinition(targetRegister));
-    }
-    @Override
-    public void addSessionListener(BindInfo<? extends HttpSessionListener> targetRegister) {
-        bindType(HttpSessionListenerDefinition.class).uniqueName().toInstance(new HttpSessionListenerDefinition(targetRegister));
+    public void addWebListener(BindInfo<? extends EventListener> targetRegister) {
+        this.bindType(WebListenerDefinition.class).uniqueName()//
+                .toInstance(HasorUtils.autoAware(getEnvironment(),new WebListenerDefinition(targetRegister)));
     }
     //
     // ------------------------------------------------------------------------------------------------------

@@ -37,8 +37,8 @@ public class ListenerTest extends AbstractWeb30BinderDataTest {
             apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
             apiBinder.bindType(String.class).idWith("abc").toInstance("abcdefg");
             //
-            apiBinder.addServletListener(new TestServletContextListener());
-            apiBinder.addSessionListener(new TestHttpSessionListener());
+            apiBinder.addWebListener(new TestServletContextListener());
+            apiBinder.addWebListener(new TestHttpSessionListener());
         });
         //
         ManagedListenerPipeline pipeline = new ManagedListenerPipeline();

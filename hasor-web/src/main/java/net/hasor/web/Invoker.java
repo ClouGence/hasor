@@ -30,13 +30,13 @@ import java.util.Set;
  */
 public interface Invoker extends MimeType {
     /**数据池中的key，该数据是表示请求方法的执行返回值。*/
-    public static final String RETURN_DATA_KEY = "resultData";//
+    public static final String RETURN_DATA_KEY = "resultData";  //
     /**数据池中的key，数据池中的自关联，相当于 this的含义。*/
-    public static final String ROOT_DATA_KEY   = "rootData";//
+    public static final String ROOT_DATA_KEY   = "rootData";    //
     /**数据池中的key，request对象。*/
-    public static final String REQUEST_KEY     = "request";//
+    public static final String REQUEST_KEY     = "request";     //
     /**数据池中的key，response对象。*/
-    public static final String RESPONSE_KEY    = "response";//
+    public static final String RESPONSE_KEY    = "response";    //
 
     /** 获取当前{@link AppContext} 对象。*/
     public AppContext getAppContext();
@@ -47,7 +47,7 @@ public interface Invoker extends MimeType {
     /** 获取 {@link HttpServletResponse} 对象。*/
     public HttpServletResponse getHttpResponse();
 
-    /** 所属 Mapping */
+    /** 本次请求的 Action，如果没有命中任何 Mapping 那么会返回空。例如在 InvokerFilter 拦截器中经常会看到空的 ownerMapping */
     public Mapping ownerMapping();
 
     /** 获取数据容器中已经保存的数据 keys 。*/

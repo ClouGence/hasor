@@ -24,6 +24,7 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.http.HttpSessionListener;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.EventListener;
 import java.util.Objects;
 /**
  * {@link WebApiBinder} 接口包装器
@@ -72,20 +73,16 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
         return this.webApiBinder.jeeFilterRegex(regexes);
     }
     @Override
+    public void addWebListener(BindInfo<? extends EventListener> targetRegister) {
+        this.webApiBinder.addWebListener(targetRegister);
+    }
+    @Override
     public ServletBindingBuilder jeeServlet(String[] moreMappingTo) {
         return this.webApiBinder.jeeServlet(moreMappingTo);
     }
     @Override
     public <T> MappingToBindingBuilder<T> mappingTo(String[] morePatterns) {
         return this.webApiBinder.mappingTo(morePatterns);
-    }
-    @Override
-    public void addServletListener(BindInfo<? extends ServletContextListener> targetRegister) {
-        this.webApiBinder.addServletListener(targetRegister);
-    }
-    @Override
-    public void addSessionListener(BindInfo<? extends HttpSessionListener> targetRegister) {
-        this.webApiBinder.addSessionListener(targetRegister);
     }
     @Override
     public void addDiscoverer(BindInfo<? extends MappingDiscoverer> discoverer) {

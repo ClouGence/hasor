@@ -26,6 +26,7 @@ import net.hasor.web.annotation.Render;
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextListener;
+import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSessionListener;
 import java.io.IOException;
@@ -34,10 +35,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Modifier;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 /**
@@ -166,61 +164,73 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     public FilterBindingBuilder<Filter> jeeFilterRegex(String[] regexes);
     //
 
-    /**注册一个ServletContextListener监听器。*/
-    public default void addServletListener(Class<? extends ServletContextListener> targetKey) {
-        BindInfo<ServletContextListener> listenerRegister = bindType(ServletContextListener.class).to(targetKey).toInfo();
-        this.addServletListener(listenerRegister);
+    /**
+     * 注册一个 Web Listener
+     * @see javax.servlet.ServletContextListener
+     * @see javax.servlet.http.HttpSessionListener
+     * @see javax.servlet.ServletRequestListener
+     */
+    public default void addWebListener(Class<? extends EventListener> webListenerKey) {
+        BindInfo<EventListener> listenerRegister = bindType(EventListener.class)    //
+                .uniqueName()       //
+                .to(webListenerKey) //
+                .toInfo();          //
+        this.addWebListener(listenerRegister);
     }
 
-    /**注册一个ServletContextListener监听器。*/
-    public default void addServletListener(ServletContextListener sessionListener) {
-        BindInfo<ServletContextListener> listenerRegister = bindType(ServletContextListener.class).toInstance(sessionListener).toInfo();
-        this.addServletListener(listenerRegister);
+    /**
+     * 注册一个 Web Listener
+     * @see javax.servlet.ServletContextListener
+     * @see javax.servlet.http.HttpSessionListener
+     * @see javax.servlet.ServletRequestListener
+     */
+    public default void addWebListener(EventListener webListener) {
+        BindInfo<EventListener> listenerRegister = bindType(EventListener.class)//
+                .toInstance(webListener)    //
+                .toInfo();                  //
+        this.addWebListener(listenerRegister);
     }
 
-    /**注册一个ServletContextListener监听器。*/
-    public default void addServletListener(Supplier<? extends ServletContextListener> targetProvider) {
-        BindInfo<ServletContextListener> listenerRegister = bindType(ServletContextListener.class).toProvider(targetProvider).toInfo();
-        this.addServletListener(listenerRegister);
+    /**
+     * 注册一个 Web Listener
+     * @see javax.servlet.ServletContextListener
+     * @see javax.servlet.http.HttpSessionListener
+     * @see javax.servlet.ServletRequestListener
+     */
+    public default void addWebListener(Supplier<? extends EventListener> targetProvider) {
+        BindInfo<EventListener> listenerRegister = bindType(EventListener.class)    //
+                .toProvider(targetProvider) //
+                .toInfo();                  //
+        this.addWebListener(listenerRegister);
     }
 
-    /**注册一个ServletContextListener监听器。*/
-    public void addServletListener(BindInfo<? extends ServletContextListener> targetRegister);
-
-    /**注册一个HttpSessionListener监听器。*/
-    public default void addSessionListener(Class<? extends HttpSessionListener> targetKey) {
-        BindInfo<HttpSessionListener> listenerRegister = bindType(HttpSessionListener.class).to(targetKey).toInfo();
-        this.addSessionListener(listenerRegister);
-    }
-
-    /**注册一个HttpSessionListener监听器。*/
-    public default void addSessionListener(HttpSessionListener sessionListener) {
-        BindInfo<HttpSessionListener> listenerRegister = bindType(HttpSessionListener.class).toInstance(sessionListener).toInfo();
-        this.addSessionListener(listenerRegister);
-    }
-
-    /**注册一个HttpSessionListener监听器。*/
-    public default void addSessionListener(Supplier<? extends HttpSessionListener> targetProvider) {
-        BindInfo<HttpSessionListener> listenerRegister = bindType(HttpSessionListener.class).toProvider(targetProvider).toInfo();
-        this.addSessionListener(listenerRegister);
-    }
-
-    /**注册一个HttpSessionListener监听器。*/
-    public void addSessionListener(BindInfo<? extends HttpSessionListener> targetRegister);
+    /**
+     * 注册一个 Web Listener
+     * @see javax.servlet.ServletContextListener
+     * @see javax.servlet.http.HttpSessionListener
+     * @see javax.servlet.ServletRequestListener
+     */
+    public void addWebListener(BindInfo<? extends EventListener> targetRegister);
 
     /**添加 MappingDiscoverer*/
     public default void addDiscoverer(Class<? extends MappingDiscoverer> discoverer) {
-        this.addDiscoverer(this.bindType(MappingDiscoverer.class).to(Objects.requireNonNull(discoverer)).toInfo());
+        this.addDiscoverer(this.bindType(MappingDiscoverer.class)   //
+                .to(Objects.requireNonNull(discoverer))             //
+                .toInfo());
     }
 
     /**添加 MappingDiscoverer*/
     public default void addDiscoverer(MappingDiscoverer discoverer) {
-        this.addDiscoverer(this.bindType(MappingDiscoverer.class).toInstance(Objects.requireNonNull(discoverer)).toInfo());
+        this.addDiscoverer(this.bindType(MappingDiscoverer.class)   //
+                .toInstance(Objects.requireNonNull(discoverer))     //
+                .toInfo());
     }
 
     /**添加 MappingDiscoverer*/
     public default void addDiscoverer(Supplier<? extends MappingDiscoverer> discoverer) {
-        this.addDiscoverer(this.bindType(MappingDiscoverer.class).toProvider(Objects.requireNonNull(discoverer)).toInfo());
+        this.addDiscoverer(this.bindType(MappingDiscoverer.class)   //
+                .toProvider(Objects.requireNonNull(discoverer))     //
+                .toInfo());
     }
 
     /**添加 MappingDiscoverer*/

@@ -35,6 +35,8 @@ import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletContextListener;
+import javax.servlet.http.HttpSessionListener;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Supplier;
@@ -114,95 +116,89 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
     //
     @Test
     public void servletListenerTest1() throws Exception {
-        Method target = ContextListenerDefinition.class.getDeclaredMethod("getTarget");
-        target.setAccessible(true);
-        //
         final TestServletContextListener testServletContextListener = new TestServletContextListener();
         final Supplier<TestServletContextListener> testtestServletContextListenerProvider = InstanceProvider.of(testServletContextListener);
         //
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).addServletListener(testServletContextListener);
-            apiBinder.tryCast(WebApiBinder.class).addServletListener(testtestServletContextListenerProvider);
+            apiBinder.tryCast(WebApiBinder.class).addWebListener(testServletContextListener);
+            apiBinder.tryCast(WebApiBinder.class).addWebListener(testtestServletContextListenerProvider);
             //
-            apiBinder.tryCast(WebApiBinder.class).addServletListener(TestServletContextListener.class);
+            apiBinder.tryCast(WebApiBinder.class).addWebListener(TestServletContextListener.class);
             //
             // 强制设置成单例
             BindInfo<TestServletContextListener> bindInfo = apiBinder.bindType(TestServletContextListener.class).asEagerSingleton().toInfo();
-            apiBinder.tryCast(WebApiBinder.class).addServletListener(bindInfo);
+            apiBinder.tryCast(WebApiBinder.class).addWebListener(bindInfo);
         });
         //
-        List<ContextListenerDefinition> definitions = appContext.findBindingBean(ContextListenerDefinition.class);
+        List<WebListenerDefinition> definitions = appContext.findBindingBean(WebListenerDefinition.class);
         assert definitions.size() == 4;
-        definitions.get(0).init(appContext);
-        definitions.get(1).init(appContext);
-        definitions.get(2).init(appContext);
-        definitions.get(3).init(appContext);
+        definitions.get(0).setAppContext(appContext);
+        definitions.get(1).setAppContext(appContext);
+        definitions.get(2).setAppContext(appContext);
+        definitions.get(3).setAppContext(appContext);
         //
         TestServletContextListener.resetCalls();
         assert !TestServletContextListener.isContextInitializedCall();
         assert !TestServletContextListener.isContextDestroyedCall();
-        definitions.get(0).contextInitialized(null);
-        definitions.get(0).contextDestroyed(null);
+        definitions.get(0).getWebListener(ServletContextListener.class).contextInitialized(null);
+        definitions.get(0).getWebListener(ServletContextListener.class).contextDestroyed(null);
         assert TestServletContextListener.isContextInitializedCall();
         assert TestServletContextListener.isContextDestroyedCall();
         //
-        Object invoke1 = target.invoke(definitions.get(0));
-        Object invoke2 = target.invoke(definitions.get(1));
-        Object invoke3_1 = target.invoke(definitions.get(2));
-        Object invoke3_2 = target.invoke(definitions.get(2));
-        Object invoke4_1 = target.invoke(definitions.get(3));
-        Object invoke4_2 = target.invoke(definitions.get(3));
+        Object invoke1 = definitions.get(0).getWebListener(ServletContextListener.class);
+        Object invoke2 = definitions.get(1).getWebListener(ServletContextListener.class);
+        Object invoke3_1 = definitions.get(2).getWebListener(ServletContextListener.class);
+        Object invoke3_2 = definitions.get(2).getWebListener(ServletContextListener.class);
+        Object invoke4_1 = definitions.get(3).getWebListener(ServletContextListener.class);
+        Object invoke4_2 = definitions.get(3).getWebListener(ServletContextListener.class);
         //
         assert invoke1 == testServletContextListener;
         assert invoke2 == testServletContextListener;
-        assert invoke3_1 != invoke3_2;
+        assert invoke3_1 == invoke3_2; // 无论怎样 WebListener 都是单例的
         assert invoke4_1 == invoke4_2;
     }
     //
     @Test
     public void sessionListenerTest1() throws Exception {
-        Method target = HttpSessionListenerDefinition.class.getDeclaredMethod("getTarget");
-        target.setAccessible(true);
-        //
         final TestHttpSessionListener testServletContextListener = new TestHttpSessionListener();
         final Supplier<TestHttpSessionListener> testtestServletContextListenerProvider = InstanceProvider.of(testServletContextListener);
         //
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).addSessionListener(testServletContextListener);
-            apiBinder.tryCast(WebApiBinder.class).addSessionListener(testtestServletContextListenerProvider);
+            apiBinder.tryCast(WebApiBinder.class).addWebListener(testServletContextListener);
+            apiBinder.tryCast(WebApiBinder.class).addWebListener(testtestServletContextListenerProvider);
             //
-            apiBinder.tryCast(WebApiBinder.class).addSessionListener(TestHttpSessionListener.class);
+            apiBinder.tryCast(WebApiBinder.class).addWebListener(TestHttpSessionListener.class);
             //
             // 强制设置成单例
             BindInfo<TestHttpSessionListener> bindInfo = apiBinder.bindType(TestHttpSessionListener.class).asEagerSingleton().toInfo();
-            apiBinder.tryCast(WebApiBinder.class).addSessionListener(bindInfo);
+            apiBinder.tryCast(WebApiBinder.class).addWebListener(bindInfo);
         });
         //
-        List<HttpSessionListenerDefinition> definitions = appContext.findBindingBean(HttpSessionListenerDefinition.class);
+        List<WebListenerDefinition> definitions = appContext.findBindingBean(WebListenerDefinition.class);
         assert definitions.size() == 4;
-        definitions.get(0).init(appContext);
-        definitions.get(1).init(appContext);
-        definitions.get(2).init(appContext);
-        definitions.get(3).init(appContext);
+        definitions.get(0).setAppContext(appContext);
+        definitions.get(1).setAppContext(appContext);
+        definitions.get(2).setAppContext(appContext);
+        definitions.get(3).setAppContext(appContext);
         //
         TestHttpSessionListener.resetCalls();
         assert !TestHttpSessionListener.isSessionCreatedCallCall();
         assert !TestHttpSessionListener.issSessionDestroyedCallCall();
-        definitions.get(0).sessionCreated(null);
-        definitions.get(0).sessionDestroyed(null);
+        definitions.get(0).getWebListener(HttpSessionListener.class).sessionCreated(null);
+        definitions.get(0).getWebListener(HttpSessionListener.class).sessionDestroyed(null);
         assert TestHttpSessionListener.isSessionCreatedCallCall();
         assert TestHttpSessionListener.issSessionDestroyedCallCall();
         //
-        Object invoke1 = target.invoke(definitions.get(0));
-        Object invoke2 = target.invoke(definitions.get(1));
-        Object invoke3_1 = target.invoke(definitions.get(2));
-        Object invoke3_2 = target.invoke(definitions.get(2));
-        Object invoke4_1 = target.invoke(definitions.get(3));
-        Object invoke4_2 = target.invoke(definitions.get(3));
+        Object invoke1 = definitions.get(0).getWebListener(HttpSessionListener.class);
+        Object invoke2 = definitions.get(1).getWebListener(HttpSessionListener.class);
+        Object invoke3_1 = definitions.get(2).getWebListener(HttpSessionListener.class);
+        Object invoke3_2 = definitions.get(2).getWebListener(HttpSessionListener.class);
+        Object invoke4_1 = definitions.get(3).getWebListener(HttpSessionListener.class);
+        Object invoke4_2 = definitions.get(3).getWebListener(HttpSessionListener.class);
         //
         assert invoke1 == testServletContextListener;
         assert invoke2 == testServletContextListener;
-        assert invoke3_1 != invoke3_2;
+        assert invoke3_1 == invoke3_2; // 无论怎样 WebListener 都是单例的
         assert invoke4_1 == invoke4_2;
     }
     //

@@ -25,9 +25,7 @@ import net.hasor.web.listener.ListenerPipeline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import javax.servlet.*;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import java.io.IOException;
@@ -39,7 +37,7 @@ import java.util.Properties;
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RuntimeListener implements ServletContextListener, HttpSessionListener {
+public class RuntimeListener implements ServletContextListener, HttpSessionListener, ServletRequestListener {
     protected           Logger           logger           = LoggerFactory.getLogger(getClass());
     public static final String           AppContextName   = AppContext.class.getName();
     private             AppContext       appContext       = null;
@@ -53,10 +51,12 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         if (StringUtils.isNotBlank(configName)) {
             webHasor.mainSettingWith(configName);
         }
-        properties.keySet().forEach(key -> {
-            String keyStr = key.toString();
-            webHasor.addVariable(keyStr, properties.getProperty(keyStr));
-        });
+        if (properties != null) {
+            properties.keySet().forEach(key -> {
+                String keyStr = key.toString();
+                webHasor.addVariable(keyStr, properties.getProperty(keyStr));
+            });
+        }
         String webContextDir = sc.getRealPath("/");
         webHasor.addVariable("HASOR_WEBROOT", webContextDir);
         return webHasor;
@@ -90,13 +90,9 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
             return prop;
         }
     }
-    //
-    //
-    @Override
-    public void contextInitialized(final ServletContextEvent servletContextEvent) {
+    protected void doInit(ServletContext sc) {
         //1.create AppContext
         try {
-            ServletContext sc = servletContextEvent.getServletContext();
             String rootModule = sc.getInitParameter("hasor-root-module");       // 启动入口
             String configName = sc.getInitParameter("hasor-hconfig-name");      // 配置文件名
             String envProperties = sc.getInitParameter("hasor-env-properties"); // 环境变量配置
@@ -113,34 +109,42 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         logger.info("sessionListenerPipeline created.");
         //3.放入ServletContext环境。
         logger.info("ServletContext Attribut is " + RuntimeListener.AppContextName);
-        servletContextEvent.getServletContext().setAttribute(RuntimeListener.AppContextName, this.appContext);
-        this.listenerPipeline.contextInitialized(servletContextEvent);
-    }
-    @Override
-    public void contextDestroyed(final ServletContextEvent servletContextEvent) {
-        if (this.listenerPipeline != null) {
-            this.listenerPipeline.contextDestroyed(servletContextEvent);
-        }
-        if (appContext != null) {
-            this.appContext.shutdown();
-        }
-        logger.info("shutdown.");
-    }
-    @Override
-    public void sessionCreated(final HttpSessionEvent se) {
-        if (this.listenerPipeline != null) {
-            this.listenerPipeline.sessionCreated(se);
-        }
-    }
-    @Override
-    public void sessionDestroyed(final HttpSessionEvent se) {
-        if (this.listenerPipeline != null) {
-            this.listenerPipeline.sessionDestroyed(se);
-        }
+        sc.setAttribute(RuntimeListener.AppContextName, this.appContext);
     }
     //
     /**获取{@link AppContext}*/
     public static AppContext getAppContext(ServletContext servletContext) {
         return (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
+    }
+    //
+    //
+    //
+    //
+    @Override
+    public void contextInitialized(final ServletContextEvent servletContextEvent) {
+        this.doInit(servletContextEvent.getServletContext());
+        this.listenerPipeline.contextInitialized(servletContextEvent);
+    }
+    @Override
+    public void contextDestroyed(final ServletContextEvent servletContextEvent) {
+        this.listenerPipeline.contextDestroyed(servletContextEvent);
+        this.appContext.shutdown();
+        this.logger.info("shutdown.");
+    }
+    @Override
+    public void sessionCreated(final HttpSessionEvent se) {
+        this.listenerPipeline.sessionCreated(se);
+    }
+    @Override
+    public void sessionDestroyed(final HttpSessionEvent se) {
+        this.listenerPipeline.sessionDestroyed(se);
+    }
+    @Override
+    public void requestDestroyed(ServletRequestEvent sre) {
+        this.listenerPipeline.requestDestroyed(sre);
+    }
+    @Override
+    public void requestInitialized(ServletRequestEvent sre) {
+        this.listenerPipeline.requestInitialized(sre);
     }
 }

@@ -66,7 +66,7 @@ public abstract class ResourcesUtils {
                 return this.stream;
             }
             if (this.file != null && this.isRead) {
-                return new FileInputStream(this.file);
+                return new AutoCloseInputStream(new FileInputStream(this.file));
             }
             return null;
         }
@@ -103,7 +103,7 @@ public abstract class ResourcesUtils {
             return null;
         }
         //
-        Map<String, String> fullData = new HashMap<String, String>();
+        Map<String, String> fullData = new HashMap<>();
         while (iterator.hasNext()) {
             String str = iterator.next();
             Map<String, String> att = getPropertys(str);
@@ -120,7 +120,7 @@ public abstract class ResourcesUtils {
         if (in != null) {
             prop.load(in);
         }
-        HashMap<String, String> resultData = new HashMap<String, String>();
+        HashMap<String, String> resultData = new HashMap<>();
         for (Object keyObj : prop.keySet()) {
             String key = (String) keyObj;
             String val = prop.getProperty(key);
@@ -140,11 +140,11 @@ public abstract class ResourcesUtils {
     /**获取classpath中可能存在的资源列表。*/
     public static List<URL> getResources(String resourcePath) throws IOException {
         if (resourcePath == null) {
-            return new ArrayList<URL>(0);
+            return new ArrayList<>(0);
         }
         //
         resourcePath = formatResource(resourcePath);
-        ArrayList<URL> urls = new ArrayList<URL>();
+        ArrayList<URL> urls = new ArrayList<>();
         Enumeration<URL> eurls = getCurrentLoader().getResources(resourcePath);
         while (eurls.hasMoreElements()) {
             URL url = eurls.nextElement();
@@ -189,13 +189,14 @@ public abstract class ResourcesUtils {
     public static InputStream getResourceAsStream(String resourcePath) throws IOException {
         resourcePath = formatResource(resourcePath);
         InputStream inStream = getCurrentLoader().getResourceAsStream(resourcePath);
-        if (inStream == null)
+        if (inStream == null) {
             inStream = ClassLoader.getSystemClassLoader().getResourceAsStream(resourcePath);
+        }
         return inStream;
     }
     /**获取classpath中可能存在的资源列表，以流的形式返回。*/
     public static List<InputStream> getResourcesAsStream(final String resourcePath) throws IOException {
-        ArrayList<InputStream> iss = new ArrayList<InputStream>();
+        ArrayList<InputStream> iss = new ArrayList<>();
         List<URL> urls = getResources(resourcePath);//已经调用过，formatResource(resourcePath);
         for (URL url : urls) {
             InputStream in = getResourceAsStream(url);//已经调用过，formatResource(resourcePath);
@@ -214,7 +215,7 @@ public abstract class ResourcesUtils {
             //1)去除上下文目录
             String dirPath = dirFile.getAbsolutePath().replace("\\", "/");
             if (dirPath.startsWith(contextPath)) {
-                dirPath = dirPath.substring(contextPath.length(), dirPath.length());
+                dirPath = dirPath.substring(contextPath.length());
             }
             //2)计算忽略
             if (!MatchUtils.matchWild(wild, dirPath)) {
@@ -231,7 +232,7 @@ public abstract class ResourcesUtils {
             //1)去除上下文目录
             String dirPath = f.getAbsolutePath().replace("\\", "/");
             if (dirPath.startsWith(contextPath)) {
-                dirPath = dirPath.substring(contextPath.length() + 1, dirPath.length());
+                dirPath = dirPath.substring(contextPath.length() + 1);
             }
             //3)执行发现
             if (f.isDirectory()) {
@@ -253,7 +254,9 @@ public abstract class ResourcesUtils {
             String name = e.getName();
             if (MatchUtils.matchWild(wild, name)) {
                 if (!e.isDirectory()) {
-                    item.found(new ScanEvent(name, e, jarFile.getInputStream(e)), true);
+                    try (InputStream jarFileInputStream = jarFile.getInputStream(e)) {
+                        item.found(new ScanEvent(name, e, jarFileInputStream), true);
+                    }
                 }
             }
         }
@@ -276,8 +279,8 @@ public abstract class ResourcesUtils {
         //确定位置
         int index1 = wild.indexOf('?');
         int index2 = wild.indexOf('*');
-        index1 = index1 == -1 ? index1 = wild.length() : index1;
-        index2 = index2 == -1 ? index2 = wild.length() : index2;
+        index1 = index1 == -1 ? (index1 = wild.length()) : index1;
+        index2 = index2 == -1 ? (index2 = wild.length()) : index2;
         int index = index1 > index2 ? index2 : index1;
         //
         String _wild = wild.substring(0, index);
@@ -310,7 +313,7 @@ public abstract class ResourcesUtils {
     }
     private static List<URL> rootDir() throws IOException {
         Enumeration<URL> roote = findAllClassPath("");
-        ArrayList<URL> rootList = new ArrayList<URL>();
+        ArrayList<URL> rootList = new ArrayList<>();
         while (roote.hasMoreElements()) {
             rootList.add(roote.nextElement());
         }

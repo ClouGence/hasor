@@ -28,6 +28,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
+
+import static net.hasor.core.container.ContainerUtils.*;
 /**
  * 整个Hasor将围绕这个类构建！！
  * <br/>它，完成了Bean容器的功能。

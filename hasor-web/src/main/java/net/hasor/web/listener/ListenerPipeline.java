@@ -17,13 +17,14 @@ package net.hasor.web.listener;
 import net.hasor.core.AppContext;
 
 import javax.servlet.ServletContextListener;
+import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpSessionListener;
 /**
  *
  * @version : 2013-4-17
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface ListenerPipeline extends HttpSessionListener, ServletContextListener {
+public interface ListenerPipeline extends ServletContextListener, HttpSessionListener, ServletRequestListener {
     /**初始化Servlet异常钩子。*/
     public void init(AppContext appContext);
 }

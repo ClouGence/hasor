@@ -16,6 +16,7 @@
 package net.hasor.core.setting;
 import net.hasor.core.Settings;
 import net.hasor.utils.ResourcesUtils;
+import net.hasor.utils.io.AutoCloseInputStream;
 import net.hasor.utils.io.IOUtils;
 
 import java.io.*;
@@ -137,6 +138,7 @@ public class StandardContextSettings extends InputStreamSettings {
         }
     }
     private void _addStream(InputStream inStream, String suffix) throws UnsupportedEncodingException {
+        inStream = new AutoCloseInputStream(inStream);
         InputStreamReader streamReader = new InputStreamReader(inStream, Settings.DefaultCharset);
         if (suffix != null && suffix.toLowerCase().endsWith(".xml")) {
             this.addReader(streamReader, StreamType.Xml);
