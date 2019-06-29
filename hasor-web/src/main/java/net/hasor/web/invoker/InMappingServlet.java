@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
-import net.hasor.core.BeanCreaterListener;
+import net.hasor.core.spi.BeanCreaterListener;
 import net.hasor.core.BindInfo;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.web.definition.J2eeMapConfig;

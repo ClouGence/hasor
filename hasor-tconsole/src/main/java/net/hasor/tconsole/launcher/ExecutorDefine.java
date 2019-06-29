@@ -15,7 +15,7 @@
  */
 package net.hasor.tconsole.launcher;
 import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
+import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.provider.InstanceProvider;

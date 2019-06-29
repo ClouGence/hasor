@@ -15,7 +15,7 @@
  */
 package net.hasor.web.definition;
 import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
+import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.BindInfo;
 
 import java.util.EventListener;

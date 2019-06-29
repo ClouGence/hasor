@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.definition;
-import net.hasor.core.BeanCreaterListener;
+import net.hasor.core.spi.BeanCreaterListener;
 import net.hasor.core.BindInfo;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.web.Invoker;

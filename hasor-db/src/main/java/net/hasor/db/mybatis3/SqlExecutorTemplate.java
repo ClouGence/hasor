@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.mybatis3;
+package net.hasor.db.mybatis3;
 import net.hasor.core.Hasor;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.jdbc.core.JdbcTemplate;
@@ -26,6 +26,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 /**
  * @version : 2015年5月27日
  * @author 赵永春 (zyc@hasor.net)
@@ -58,7 +59,6 @@ public class SqlExecutorTemplate extends JdbcTemplate implements SqlExecutorOper
      * Construct a new SqlExecutorTemplate, given a DataSource to obtain connections from.
      * <p>
      * Note: This will not trigger initialization of the exception translator.
-     *
      */
     public SqlExecutorTemplate(SqlSessionFactory sessionFactory, final Connection conn) {
         super(conn);
@@ -77,7 +77,7 @@ public class SqlExecutorTemplate extends JdbcTemplate implements SqlExecutorOper
     //
     //
     public <T> T execute(final SqlSessionCallback<T> sessionCallback) throws SQLException {
-        Hasor.assertIsNotNull(sessionCallback, "Callback object must not be null");
+        Objects.requireNonNull(sessionCallback, "Callback object must not be null");
         //
         ConnectionCallback<T> callBack = new ConnectionCallback<T>() {
             public T doInConnection(Connection con) throws SQLException {

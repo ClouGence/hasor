@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.mybatis3;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
-import net.hasor.core.Module;
-import net.hasor.core.provider.InfoAwareProvider;
+package net.hasor.db.mybatis3;
+import net.hasor.core.*;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.provider.SingleProvider;
 import net.hasor.utils.StringUtils;
@@ -31,6 +27,8 @@ import org.slf4j.LoggerFactory;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Collection;
+import java.util.Objects;
 import java.util.function.Supplier;
 /**
  * mybatis 插件
@@ -46,7 +44,7 @@ public class MyBatisModule implements Module {
         this(null, defaultSessionFactory(sqlmapConfig));
     }
     public MyBatisModule(SqlSessionFactory sessionFactory) {
-        this(null, new InstanceProvider<>(Hasor.assertIsNotNull(sessionFactory, "sessionFactory is null.")));
+        this(null, InstanceProvider.of(Objects.requireNonNull(sessionFactory, "sessionFactory is null.")));
     }
     public MyBatisModule(Supplier<SqlSessionFactory> sessionFactory) {
         this(null, sessionFactory);
@@ -55,17 +53,18 @@ public class MyBatisModule implements Module {
         this(dataSourceID, defaultSessionFactory(sqlmapConfig));
     }
     public MyBatisModule(String dataSourceID, SqlSessionFactory sessionFactory) {
-        this(dataSourceID, new InstanceProvider<>(Hasor.assertIsNotNull(sessionFactory, "sessionFactory is null.")));
+        this(dataSourceID, InstanceProvider.of(Objects.requireNonNull(sessionFactory, "sessionFactory is null.")));
     }
     public MyBatisModule(String dataSourceID, Supplier<SqlSessionFactory> sessionFactory) {
         this.dataSourceID = dataSourceID;
-        this.sessionFactory = Hasor.assertIsNotNull(sessionFactory, "sessionFactory is null.");
+        this.sessionFactory = Objects.requireNonNull(sessionFactory, "sessionFactory is null.");
     }
     //
     private static SingleProvider<SqlSessionFactory> defaultSessionFactory(final String sqlmapConfig) throws IOException {
-        Hasor.assertIsNotNull(sqlmapConfig, "sqlmapConfig is null.");
+        Objects.requireNonNull(sqlmapConfig, "sqlmapConfig is null.");
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
-        final Reader reader = Hasor.assertIsNotNull(Resources.getResourceAsReader(loader, sqlmapConfig), "could not find resource '" + sqlmapConfig + "'");
+        Reader resourceAsReader = Resources.getResourceAsReader(loader, sqlmapConfig);
+        final Reader reader = Objects.requireNonNull(resourceAsReader, "could not find resource '" + sqlmapConfig + "'");
         return new SingleProvider<>(() -> new SqlSessionFactoryBuilder().build(reader));
     }
     //
@@ -77,7 +76,7 @@ public class MyBatisModule implements Module {
                 throw new IllegalStateException("need DataSource.");
             }
             // .初始化MyBatis绑定
-            Supplier<DataSource> dataSource = Hasor.autoAware(apiBinder.getEnvironment(), new InfoAwareProvider<>(bindInfo));
+            Supplier<DataSource> dataSource = apiBinder.getProvider(bindInfo);
             final SqlExecutorTemplateProvider templateProvider = new SqlExecutorTemplateProvider(this.sessionFactory, dataSource);
             apiBinder.bindType(SqlExecutorTemplate.class).toProvider(templateProvider);
             apiBinder.bindType(SqlExecutorOperations.class).toProvider(templateProvider);
@@ -88,12 +87,18 @@ public class MyBatisModule implements Module {
                 throw new IllegalStateException("need DataSource.");
             }
             // .初始化MyBatis绑定
-            Supplier<DataSource> dataSource = Hasor.autoAware(apiBinder.getEnvironment(), new InfoAwareProvider<>(bindInfo));
+            Supplier<DataSource> dataSource = apiBinder.getProvider(bindInfo);
             final SqlExecutorTemplateProvider templateProvider = new SqlExecutorTemplateProvider(this.sessionFactory, dataSource);
             apiBinder.bindType(SqlExecutorTemplate.class).nameWith(this.dataSourceID).toProvider(templateProvider);
             apiBinder.bindType(SqlExecutorOperations.class).nameWith(this.dataSourceID).toProvider(templateProvider);
         }
         //
-        this.sessionFactory.get().getConfiguration().getMappedStatementNames();
+        Supplier<AppContext> contextSupplier = apiBinder.getProvider(AppContext.class);
+        Collection<Class<?>> mappers = this.sessionFactory.get().getConfiguration().getMapperRegistry().getMappers();
+        mappers.forEach(mapper -> {
+            apiBinder.bindType(mapper).toProvider(new InnerSqlMapperProxy<>(mapper, contextSupplier));
+            logger.info("Registering Ibatis Mapper: {}", mapper.getClass().getName());
+        });
+        logger.info("mysql mybatis init ok.");
     }
 }

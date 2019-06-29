@@ -15,7 +15,7 @@
  */
 package net.hasor.web.definition;
 import net.hasor.core.AppContext;
-import net.hasor.core.BeanCreaterListener;
+import net.hasor.core.spi.BeanCreaterListener;
 import net.hasor.core.BindInfo;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;

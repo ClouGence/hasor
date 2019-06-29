@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.plugins.mybatis3;
+package net.hasor.db.mybatis3;
 import net.hasor.db.jdbc.JdbcOperations;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;

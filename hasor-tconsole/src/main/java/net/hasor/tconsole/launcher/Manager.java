@@ -15,7 +15,7 @@
  */
 package net.hasor.tconsole.launcher;
 import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
+import net.hasor.core.spi.AppContextAware;
 import net.hasor.tconsole.CommandExecutor;
 import net.hasor.tconsole.CommandFinder;
 import net.hasor.utils.StringUtils;

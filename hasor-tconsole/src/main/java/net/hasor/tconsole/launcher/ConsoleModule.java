@@ -48,7 +48,7 @@ import java.util.ArrayList;
  * @version : 2016年2月18日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ConsoleModule implements LifeModule {
+public class ConsoleModule implements Module {
     protected static Logger            logger         = LoggerFactory.getLogger(ConsoleModule.class);
     private          boolean           enable         = true;
     private          Channel           telnetChannel  = null;

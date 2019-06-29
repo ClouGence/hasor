@@ -16,4 +16,4 @@
 /**
  * mybatis3 插件。
  */
-package net.hasor.plugins.mybatis3;
+package net.hasor.db.mybatis3;

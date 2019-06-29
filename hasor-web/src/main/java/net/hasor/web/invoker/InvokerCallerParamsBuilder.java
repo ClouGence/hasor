@@ -37,13 +37,13 @@ public class InvokerCallerParamsBuilder {
         /*准备参数*/
         for (int i = 0; i < targetParamClass.length; i++) {
             Class<?> paramClass = targetParamClass[i];
-            Object paramObject = this.resolveParam(invoker, paramClass, targetParamAnno[i]);//获取参数
+            Object paramObject = this.resolveParam(invoker, paramClass, targetParamAnno[i], true);//获取参数
             paramsArray.add(paramObject);
         }
         return paramsArray.toArray();
     }
     /**/
-    private Object resolveParam(Invoker invoker, Class<?> paramClass, Annotation[] paramAnno) {
+    private Object resolveParam(Invoker invoker, Class<?> paramClass, Annotation[] paramAnno, boolean useDefault) {
         // .特殊类型参数
         Object specialParam = resolveSpecialParam(invoker, paramClass);
         if (specialParam != null) {
@@ -56,11 +56,12 @@ public class InvokerCallerParamsBuilder {
             }
             Object finalValue = resolveParam(invoker, paramClass, pAnno);
             finalValue = ConverterUtils.convert(paramClass, finalValue);
-            if (finalValue != null) {
-                return finalValue;
-            }
+            return finalValue;
         }
-        return BeanUtils.getDefaultValue(paramClass);
+        if (useDefault) {
+            return BeanUtils.getDefaultValue(paramClass);
+        }
+        return null;
     }
     private Object resolveSpecialParam(Invoker invoker, Class<?> paramClass) {
         if (!paramClass.isInterface()) {
@@ -124,7 +125,7 @@ public class InvokerCallerParamsBuilder {
                 Object fieldValue = null;
                 Annotation[] annos = field.getAnnotations();
                 if (annos != null && annos.length > 0) {
-                    fieldValue = resolveParam(invoker, field.getType(), annos);
+                    fieldValue = resolveParam(invoker, field.getType(), annos, false);
                     if (fieldValue != null) {
                         fieldValue = ConverterUtils.convert(field.getType(), fieldValue);
                         field.setAccessible(true);
