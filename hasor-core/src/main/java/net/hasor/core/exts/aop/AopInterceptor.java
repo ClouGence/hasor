@@ -15,7 +15,7 @@
  */
 package net.hasor.core.exts.aop;
 import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
+import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
 

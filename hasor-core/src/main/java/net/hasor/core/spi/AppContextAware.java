@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.binder;
-import net.hasor.core.BeanCreaterListener;
-import net.hasor.core.BindInfo;
+package net.hasor.core.spi;
+import net.hasor.core.AppContext;
 /**
- * @version : 2016-12-16
+ * 当 AppContext 创建这个Bean时。容器会调用Bean实现的这个接口方法，将容器自身注入进来。
+ * @version : 2013-11-8
  * @author 赵永春 (zyc@hasor.net)
  */
-public class TestBeanCreaterListener implements BeanCreaterListener<TestBeanCreaterListener> {
-    @Override
-    public void beanCreated(TestBeanCreaterListener newObject, BindInfo<? extends TestBeanCreaterListener> bindInfo) throws Throwable {
-    }
+@FunctionalInterface
+public interface AppContextAware {
+    /**
+     * 注入AppContext。
+     * @param appContext 注入的AppContext。
+     */
+    public void setAppContext(AppContext appContext);
 }

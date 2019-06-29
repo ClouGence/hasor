@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
+package net.hasor.core.spi;
+import net.hasor.core.BindInfo;
 /**
- * 单例模式。
- * @version : 2018年9月21日
+ * 当 AppContext 创建这个Bean时。容器会调用Bean实现的这个接口方法，将Bean的Info注入进来。
+ * @version : 2013-11-8
  * @author 赵永春 (zyc@hasor.net)
  */
-public enum SingletonMode {
-    /** 使Bean身上的 @Singleton 和 @Prototype 注解全部失效，采用 Hasor 默认策略。 */
-    Clear,//
-    /** 使Bean身上的 @Singleton 和 @Prototype 注解全部失效，并强制采用 单例模式。 */
-    Singleton,//
-    /** 使Bean身上的 @Singleton 和 @Prototype 注解全部失效，并强制采用 非单例模式。 */
-    Prototype
+@FunctionalInterface
+public interface BindInfoAware {
+    /**
+     * 注入BindInfo。
+     * @param bindInfo 注入的BindInfo。
+     */
+    public void setBindInfo(BindInfo<?> bindInfo);
 }

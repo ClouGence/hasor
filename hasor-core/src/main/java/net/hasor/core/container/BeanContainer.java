@@ -14,269 +14,489 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import net.hasor.core.EventListener;
 import net.hasor.core.*;
+import net.hasor.core.EventListener;
+import net.hasor.core.aop.AopClassConfig;
+import net.hasor.core.aop.AsmTools;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
-import net.hasor.core.info.NotifyData;
+import net.hasor.core.info.AopBindInfoAdapter;
+import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.provider.InstanceProvider;
-import net.hasor.core.scope.SingletonScope;
-import net.hasor.utils.StringUtils;
+import net.hasor.core.provider.SingleProvider;
+import net.hasor.core.spi.AppContextAware;
+import net.hasor.core.spi.BindInfoAware;
+import net.hasor.core.spi.InjectMembers;
+import net.hasor.utils.ArrayUtils;
+import net.hasor.utils.BeanUtils;
+import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.convert.ConverterUtils;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
+import javax.inject.Named;
+import java.io.Closeable;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static net.hasor.core.container.ContainerUtils.*;
+import static net.hasor.core.container.ContainerUtils.findInject;
 /**
- * 整个Hasor将围绕这个类构建！！
- * <br/>它，完成了Bean容器的功能。
- * <br/>它，完成了依赖注入的功能。
- * <br/>它，完成了Aop的功能。
- * <br/>它，支持了{@link Scope}作用域功能。
- * <br/>它，支持了{@link AppContext}接口功能。
- * <br/>它，是万物之母，一切生命的源泉。
+ * 负责创建 Bean
  * @version : 2015年11月25日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class BeanContainer extends TemplateBeanBuilder implements ScopManager, Observer {
-    private AtomicBoolean                              inited           = new AtomicBoolean(false);
-    private List<BindInfo<?>>                          allBindInfoList  = new ArrayList<>();
-    private ConcurrentHashMap<String, List<String>>    indexTypeMapping = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<String, BindInfo<?>>     idDataSource     = new ConcurrentHashMap<>();
-    private ConcurrentHashMap<String, Supplier<Scope>> scopeMapping     = new ConcurrentHashMap<>();
-    //
-    /*-----------------------------------------------------------------------------------BindInfo*/
-    /**根据ID查找{@link BindInfo}*/
-    public <T> BindInfo<T> findBindInfo(String infoID) {
-        return (BindInfo<T>) this.idDataSource.get(infoID);
+public class BeanContainer implements Closeable {
+    private AtomicBoolean                               inited             = null;
+    private SpiCallerContainer                          spiCallerContainer = null;
+    private BindInfoContainer                           bindInfoContainer  = null;
+    private ScopContainer                               scopContainer      = null;
+    private ConcurrentHashMap<Class<?>, AopClassConfig> classEngineMap     = null;
+    public BeanContainer() {
+        this.inited = new AtomicBoolean(false);
+        this.spiCallerContainer = new SpiCallerContainer();
+        this.bindInfoContainer = new BindInfoContainer(spiCallerContainer);
+        this.scopContainer = new ScopContainer(spiCallerContainer);
+        this.classEngineMap = new ConcurrentHashMap<>();
     }
-    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> BindInfo<T> findBindInfo(final String withName, final Class<T> bindType) {
-        Objects.requireNonNull(bindType, "bindType is null.");
-        //
-        List<BindInfo<T>> typeRegisterList = findBindInfoList(bindType);
-        if (typeRegisterList != null && !typeRegisterList.isEmpty()) {
-            for (int i = typeRegisterList.size() - 1; i >= 0; i--) {
-                BindInfo<T> adapter = typeRegisterList.get(i);
-                String bindName = adapter.getBindName();
-                if (StringUtils.isBlank(bindName) && StringUtils.isBlank(withName)) {
-                    return adapter;
-                }
-                if (bindName != null && bindName.equals(withName)) {
-                    return adapter;
-                }
-            }
-        }
-        return null;
+    public BindInfoContainer getBindInfoContainer() {
+        return bindInfoContainer;
     }
-    /**通过一个类型获取所有绑定到该类型的上的对象实例。*/
-    public <T> List<BindInfo<T>> findBindInfoList(final Class<T> bindType) {
-        List<String> idList = this.indexTypeMapping.get(bindType.getName());
-        if (idList == null || idList.isEmpty()) {
-            logger.debug("getBindInfoByType , never define this type = {}", bindType);
-            return Collections.emptyList();
-        }
-        List<BindInfo<T>> resultList = new ArrayList<>();
-        for (String infoID : idList) {
-            BindInfo<?> adapter = this.idDataSource.get(infoID);
-            if (adapter != null) {
-                resultList.add((BindInfo<T>) adapter);
-            } else {
-                logger.debug("findBindInfoList , cannot find {} BindInfo.", infoID);
-            }
-        }
-        return resultList;
-    }
-    /**获取所有ID。*/
-    public Collection<String> getBindInfoIDs() {
-        return this.idDataSource.keySet();
-    }
-    /**
-     * 获取类型下所有Name
-     * @param targetClass 类型
-     * @return 返回声明类型下有效的名称。
-     */
-    public Collection<String> getBindInfoNamesByType(Class<?> targetClass) {
-        List<? extends BindInfo<?>> bindInfoList = this.findBindInfoList(targetClass);
-        ArrayList<String> names = new ArrayList<>(bindInfoList.size());
-        for (BindInfo<?> info : bindInfoList) {
-            String bindName = info.getBindName();
-            if (StringUtils.isBlank(bindName)) {
-                continue;
-            }
-            names.add(bindName);
-        }
-        return names;
+    public ScopContainer getScopContainer() {
+        return scopContainer;
     }
     //
     /*-------------------------------------------------------------------------------------------*/
     //
-    /**
-     * 创建{@link AbstractBindInfoProviderAdapter}，交给外层用于Bean定义。
-     * @param bindType 声明的类型。
-     */
-    public <T> AbstractBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType) {
-        if (this.inited.get()) {
-            throw new java.lang.IllegalStateException("container has been started.");
+    /** 仅通过 targetType 类型创建Bean（不参考BindInfoContainer） */
+    public <T> Supplier<? extends T> providerOnlyType(Class<T> targetType, AppContext appContext, Object[] params) {
+        if (targetType == null) {
+            return null;
         }
         //
-        AbstractBindInfoProviderAdapter<T> adapter = super.createInfoAdapter(bindType);
-        adapter.addObserver(this);
-        adapter.setBindID(adapter.getBindID());
-        return adapter;
+        // .targetType也许只是一个被标记了 ImplBy 注解的类型。因此需要找到真正需要创建的那个类型。
+        Class<T> implClass = findImplClass(targetType);
+        //
+        // .（构造方法）确定创建 implClass 类型对象时使用的构造方法，使用 Supplier 封装。
+        Supplier<Executable> constructorSupplier = new SingleProvider<>(() -> {
+            Constructor<?>[] constructors = Arrays.stream(implClass.getConstructors()).filter(constructor -> {
+                return constructor.getParameterCount() == 0 || isInjectConstructor(constructor);
+            }).sorted((o1, o2) -> {
+                int a = o1.getParameterCount() == 0 ? -1 : 1;
+                int b = o2.getParameterCount() == 0 ? -1 : 1;
+                return Integer.compare(a, b);
+            }).toArray(Constructor[]::new);
+            //
+            // .查找构造方法
+            Constructor<?> constructor = null;
+            if (constructors.length > 1) {
+                Constructor<?> defaultConstructor = null;
+                for (Constructor<?> c : constructors) {
+                    if (isInjectConstructor(c)) {
+                        constructor = c;
+                        break;
+                    } else {
+                        defaultConstructor = c;
+                    }
+                }
+                if (constructor == null) {
+                    constructor = defaultConstructor;
+                }
+            } else if (constructors.length == 1) {
+                constructor = constructors[0];
+            } else {
+                throw new IllegalArgumentException("No default constructor found.");
+            }
+            return (Constructor<T>) constructor;
+        });
+        //
+        // .（构造参数）构造方法用到的参数
+        Supplier<Object[]> parameterSupplier = parameterSupplier(constructorSupplier, appContext, params);
+        //
+        // .创建对象
+        return (Supplier<T>) () -> createObject(implClass, constructorSupplier, parameterSupplier, null, appContext);
     }
-    @Override
-    protected <T> T createObject(final Class<T> targetType, final Constructor<T> referConstructor, //
-            final BindInfo<T> bindInfo, final AppContext appContext, Object[] params) {
-        boolean isSingleton = testSingleton(targetType, bindInfo, appContext.getEnvironment().getSettings());
-        if (!isSingleton) {
-            return super.createObject(targetType, referConstructor, bindInfo, appContext, params);
+    //
+    /** 仅通过 targetConstructor 类型创建Bean（不参考BindInfoContainer） */
+    public <T> Supplier<? extends T> providerOnlyConstructor(Constructor<T> targetConstructor, AppContext appContext, Object[] params) {
+        if (targetConstructor == null) {
+            return null;
         }
-        // 单例的
-        Object key = (bindInfo != null) ? bindInfo : targetType;
-        Supplier<? extends Scope> scopeProvider = this.scopeMapping.get(ScopManager.SINGLETON_SCOPE);
+        // .（构造方法）
+        Supplier<Executable> constructorSupplier = InstanceProvider.of(targetConstructor);
+        //
+        // .（构造参数）构造方法用到的参数
+        Supplier<Object[]> parameterSupplier = parameterSupplier(constructorSupplier, appContext, params);
+        //
+        // .创建对象
+        return (Supplier<T>) () -> createObject(targetConstructor.getDeclaringClass(), constructorSupplier, parameterSupplier, null, appContext);
+    }
+    //
+    /** 通过 BindInfo 类型创建Bean */
+    public <T> Supplier<? extends T> providerOnlyBindInfo(BindInfo<T> bindInfo, AppContext appContext) {
+        if (bindInfo == null) {
+            return null;
+        }
+        DefaultBindInfoProviderAdapter<?> adapter = (DefaultBindInfoProviderAdapter) bindInfo;
+        //
+        // .（构造方法）确定创建 BindInfo 使用的构造方法，使用 Supplier 封装。
+        Supplier<Executable> constructorSupplier = new SingleProvider<>(() -> {
+            //
+            // .如果指定了 SourceType 那么使用 SourceType 作为 targetType
+            Class<?> targetType = adapter.getSourceType() != null ? adapter.getSourceType() : adapter.getBindType();
+            //
+            // .targetType也许只是一个被标记了 ImplBy 注解的类型。因此需要找到真正需要创建的那个类型。
+            Class<T> implClass = findImplClass(targetType);
+            //
+            Constructor<?> constructor = adapter.getConstructor(implClass, appContext);
+            return Objects.requireNonNull(constructor, "constructor is not found.");
+        });
+        //
+        // .（构造参数）构造方法用到的参数
+        Supplier<Object[]> parameterSupplier = () -> {
+            return Arrays.stream(adapter.getConstructorParams(appContext))  //
+                    .map((Function<Supplier<?>, Object>) Supplier::get)     //
+                    .toArray(Object[]::new);
+        };
+        //
+        // .创建对象
+        return (Supplier<T>) () -> createObject(bindInfo.getBindType(), constructorSupplier, parameterSupplier, bindInfo, appContext);
+    }
+    //
+    /** 仅通过 Annotation 来创建Bean。targetType 作为参考类型。 */
+    public <T> Supplier<? extends T> providerOnlyAnnotation(Class<T> targetType, Annotation anno, AppContext appContext, Object[] params) {
+        if (anno == null) {
+            return null;
+        }
+        if (anno instanceof InjectSettings) {
+            return () -> (T) injSettings(appContext, (InjectSettings) anno, targetType);
+        }
+        if (anno instanceof ID) {
+            return () -> appContext.getInstance(((ID) anno).value());
+        }
+        if (anno instanceof javax.inject.Named) {
+            return () -> appContext.getInstance(targetType, ((Named) anno).value());
+        }
+        throw new UnsupportedOperationException(anno.annotationType() + " Annotation is not support.");
+    }
+    //
+    /** 创建一个构造方法对应的参数Supplier */
+    private <T> Supplier<Object[]> parameterSupplier(Supplier<Executable> executableSupplier, AppContext appContext, Object[] params) {
+        return new SingleProvider<>(() -> {
+            // .基础数据
+            Executable constructor = executableSupplier.get();                      // 方法
+            Class<?>[] parameterTypes = constructor.getParameterTypes();            // 方法参数
+            Annotation[][] parameterAnnos = constructor.getParameterAnnotations();  // 方法参数上的注解
+            //
+            Object[] paramObjects = new Object[parameterTypes.length];
+            for (int i = 0; i < parameterTypes.length; i++) {
+                Annotation injectInfo = findInject(false, parameterAnnos[i]);
+                if (injectInfo != null) {
+                    paramObjects[i] = providerOnlyAnnotation(parameterTypes[i], injectInfo, appContext, null).get();
+                    continue;
+                }
+                //
+                if (params != null && params.length > i) {
+                    paramObjects[i] = params[i];
+                    continue;
+                }
+                //
+                paramObjects[i] = BeanUtils.getDefaultValue(parameterTypes[i]);
+            }
+            return paramObjects;
+        });
+    }
+    //
+    /**
+     * 创建Bean {@link BindInfo}创建Bean。
+     * @param targetType 表示目标类型
+     * @param referConstructor 表示使用的构造方法
+     * @param constructorParameter 构造方法所使用的参数
+     * @param bindInfo 可能为空，表示参考的 BindInfo
+     * @param appContext 容器
+     */
+    private <T> T createObject(Class<T> targetType, Supplier<Executable> referConstructor, Supplier<Object[]> constructorParameter, BindInfo<T> bindInfo, AppContext appContext) {
+        // .check基本类型
+        if (targetType.isPrimitive()) {
+            return (T) BeanUtils.getDefaultValue(targetType);
+        }
+        if (targetType.isArray()) {
+            Class<?> comType = targetType.getComponentType();
+            return (T) Array.newInstance(comType, 0);
+        }
+        if (targetType.isInterface() || targetType.isEnum()) {
+            return null;
+        }
+        if (Modifier.isAbstract(targetType.getModifiers())) {
+            return null;// Integer.TYPE 判断结果为 true & targetType.isArray() 情况下也为 true，因此要放在后面
+        }
+        // .作用域
+        Supplier<Scope> scopeProvider = null;
+        if (bindInfo != null) {
+            scopeProvider = this.scopContainer.findScope(bindInfo);
+        }
         if (scopeProvider == null) {
-            throw new NullPointerException(ScopManager.SINGLETON_SCOPE + " scope undefined.");
+            scopeProvider = this.scopContainer.findScope(targetType);
         }
-        return scopeProvider.get().scope(key, () -> BeanContainer.super.createObject(targetType, referConstructor, bindInfo, appContext, params)).get();
+        Scope scope = null;
+        if (scopeProvider != null) {
+            scope = Objects.requireNonNull(scopeProvider.get(), "scope is null.");
+        }
+        //
+        DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
+        Supplier<T> targetSupplier = (Supplier<T>) defBinder.getCustomerProvider();
+        if (targetSupplier == null) {
+            targetSupplier = () -> {
+                //
+                // .Aop 代理
+                Class<T> proxyType = proxyType(targetType, appContext);
+                //
+                // .重定向构造方法
+                Constructor<T> tConstructor = (Constructor<T>) referConstructor.get();
+                try {
+                    tConstructor = proxyType.getConstructor(tConstructor.getParameterTypes());
+                } catch (NoSuchMethodException e) {
+                    throw new IllegalStateException(e);
+                }
+                // .创建对象
+                T targetObject = null;
+                try {
+                    if (tConstructor.getParameterCount() > 0) {
+                        targetObject = tConstructor.newInstance(constructorParameter.get());
+                    } else {
+                        targetObject = tConstructor.newInstance(ArrayUtils.EMPTY_OBJECT_ARRAY);
+                    }
+                } catch (InvocationTargetException e) {
+                    throw new IllegalStateException(e.getTargetException());
+                } catch (Exception e) {
+                    throw new IllegalStateException(e);
+                }
+                //
+                // .执行依赖注入
+                justInject(targetObject, targetType, bindInfo, appContext);
+                //
+                // .执行生命周期
+                doLife(targetObject, bindInfo, appContext);
+                //
+                return targetObject;
+            };
+        }
+        //
+        // .创建对象，如果存在作用域那么就从作用域中获取对象
+        if (scope == null) {
+            return targetSupplier.get();
+        } else {
+            String key = (bindInfo != null) ? bindInfo.getBindID() : targetType.getName();
+            return scope.scope(key, targetSupplier).get();
+        }
     }
+    //
+    /** 生成动态代理类型 */
+    private <T> Class<T> proxyType(Class<T> targetType, AppContext appContext) {
+        // .@AopIgnore排除在外
+        ClassLoader rootLoader = Objects.requireNonNull(appContext.getClassLoader());
+        if (testAopIgnore(targetType, rootLoader)) {
+            return targetType;
+        }
+        //
+        // .准备Aop
+        List<BindInfo<AopBindInfoAdapter>> aopBindList = this.bindInfoContainer.findBindInfoList(AopBindInfoAdapter.class);
+        List<AopBindInfoAdapter> aopList = aopBindList.stream()//
+                .map((Function<BindInfo<AopBindInfoAdapter>, AopBindInfoAdapter>) info -> {
+                    Supplier<? extends AopBindInfoAdapter> bindInfo = providerOnlyBindInfo(info, appContext);
+                    if (bindInfo == null) {
+                        System.out.println();
+                    }
+                    return bindInfo.get();
+                }).collect(Collectors.toList());
+        //
+        // .动态代理，需要满足三个条件（1.类型必须支持Aop、2.没有被@AopIgnore排除在外、3.具有至少一个有效的拦截器）
+        Class<?> newType = targetType;
+        if (AsmTools.isSupport(targetType) && !aopList.isEmpty()) {
+            AopClassConfig engine = classEngineMap.get(targetType);
+            if (engine == null) {
+                engine = new AopClassConfig(targetType, rootLoader);
+                for (AopBindInfoAdapter aop : aopList) {
+                    if (!aop.getMatcherClass().test(targetType)) {
+                        continue;
+                    }
+                    engine.addAopInterceptor(aop.getMatcherMethod(), aop);
+                }
+                engine = classEngineMap.putIfAbsent(targetType, engine);
+                if (engine == null) {
+                    engine = classEngineMap.get(targetType);
+                }
+            }
+            try {
+                newType = engine.buildClass();
+            } catch (Exception e) {
+                throw ExceptionUtils.toRuntimeException(e);
+            }
+        }
+        //
+        return (Class<T>) newType;
+    }
+    //
+    /*-------------------------------------------------------------------------------------------*/
+    //
     /** 仅执行依赖注入 */
-    public <T> T justInject(T object, Class<?> beanType, AppContext appContext) {
-        return super.doInject(object, null, appContext, beanType);
+    public <T> T justInject(T object, Class<?> referType, AppContext appContext) {
+        this.justInject(object, referType, null, appContext);
+        return object;
     }
+    //
     /** 仅执行依赖注入 */
     public <T> T justInject(T object, BindInfo<?> bindInfo, AppContext appContext) {
-        return super.doInject(object, bindInfo, appContext, null);
+        DefaultBindInfoProviderAdapter<?> adapter = (DefaultBindInfoProviderAdapter) bindInfo;
+        Class<?> referType = adapter.getSourceType() != null ? adapter.getSourceType() : adapter.getBindType();
+        //
+        this.justInject(object, referType, bindInfo, appContext);
+        return object;
+    }
+    //
+    private <T> void justInject(T targetBean, Class<?> targetType, BindInfo<?> bindInfo, AppContext appContext) {
+        //
+        // .Aware接口的执行
+        if (bindInfo != null && targetBean instanceof BindInfoAware) {
+            ((BindInfoAware) targetBean).setBindInfo(bindInfo);
+        }
+        if (targetBean instanceof AppContextAware) {
+            ((AppContextAware) targetBean).setAppContext(appContext);
+        }
+        //
+        // .依赖注入(InjectMembers接口)
+        targetType = (targetType == null) ? targetBean.getClass() : targetType;
+        if (targetBean instanceof InjectMembers) {
+            try {
+                ((InjectMembers) targetBean).doInject(appContext);
+            } catch (Throwable e) {
+                throw ExceptionUtils.toRuntimeException(e);
+            }
+            return;
+        }
+        // a.配置注入
+        Set<String> injectFileds = new HashSet<>();
+        if (bindInfo instanceof DefaultBindInfoProviderAdapter) {
+            DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
+            Map<String, Supplier<?>> propMaps = defBinder.getPropertys(appContext);
+            for (Map.Entry<String, Supplier<?>> propItem : propMaps.entrySet()) {
+                String propertyName = propItem.getKey();
+                Class<?> propertyType = BeanUtils.getPropertyOrFieldType(targetType, propertyName);
+                boolean canWrite = BeanUtils.canWriteProperty(propertyName, targetType);
+                //
+                if (!canWrite) {
+                    throw new IllegalStateException("doInject, property " + propertyName + " can not write.");
+                }
+                Supplier<?> provider = propItem.getValue();
+                if (provider == null) {
+                    throw new IllegalStateException("can't injection ,property " + propertyName + " data Provider is null.");
+                }
+                //
+                Object propertyVal = ConverterUtils.convert(propertyType, provider.get());
+                BeanUtils.writePropertyOrField(targetBean, propertyName, propertyVal);
+                injectFileds.add(propertyName);
+            }
+        }
+        // b.注解注入
+        List<Field> fieldList = BeanUtils.findALLFields(targetType);
+        fieldList = fieldList == null ? new ArrayList<>(0) : fieldList;
+        for (Field field : fieldList) {
+            String name = field.getName();
+            boolean hasInjected = injectFileds.contains(name);
+            if (hasInjected) {
+                throw new IllegalStateException("doInject , " + targetType + " , property '" + name + "' duplicate.");
+            }
+            //
+            Annotation injectInfo = findInject(false, field.getAnnotations());
+            if (injectInfo == null) {
+                continue;
+            }
+            //
+            if (!field.isAccessible()) {
+                field.setAccessible(true);
+            }
+            invokeField(field, targetBean, providerOnlyAnnotation(field.getDeclaringClass(), injectInfo, appContext, null).get());
+            injectFileds.add(field.getName());
+        }
+        // c.方法注入
+        List<Method> methodList = BeanUtils.findALLMethods(targetType);
+        methodList = methodList == null ? new ArrayList<>(0) : methodList;
+        for (Method method : methodList) {
+            Annotation injectInfo = findInject(false, method.getAnnotations());
+            if (injectInfo == null) {
+                continue;
+            }
+            //
+            if (!method.isAccessible()) {
+                method.setAccessible(true);
+            }
+            //
+            Supplier<Object[]> parameterSupplier = parameterSupplier(InstanceProvider.of(method), appContext, ArrayUtils.EMPTY_OBJECT_ARRAY);
+            try {
+                method.invoke(parameterSupplier.get());
+            } catch (InvocationTargetException e2) {
+                throw ExceptionUtils.toRuntimeException(e2.getTargetException());
+            } catch (Exception e) {
+                throw ExceptionUtils.toRuntimeException(e);
+            }
+        }
     }
     //
     /*-------------------------------------------------------------------------------------------*/
+    //
+    private <T> void doLife(T targetObject, BindInfo<T> bindInfo, AppContext appContext) {
+        //
+        // .Init初始化方法。
+        Method initMethod = findInitMethod(targetObject.getClass(), bindInfo);
+        if (initMethod != null && Modifier.isPublic(initMethod.getModifiers())) {
+            invokeMethod(targetObject, initMethod);
+        }
+        //
+        // .注册销毁事件
+        Method destroyMethod = findDestroyMethod(targetObject.getClass(), bindInfo);
+        if (destroyMethod != null && Modifier.isPublic(destroyMethod.getModifiers())) {
+            HasorUtils.pushShutdownListener(appContext.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
+                invokeMethod(targetObject, destroyMethod);
+            });
+        }
+    }
     //
     public boolean isInit() {
         return this.inited.get();
     }
-    public void doInitializeCompleted(Environment env) {
+    //
+    //
+    //
+    public void doInitialize(Environment env) {
         if (!this.inited.compareAndSet(false, true)) {
             return;/*避免被初始化多次*/
         }
-        this.scopeMapping.put(ScopManager.SINGLETON_SCOPE, new InstanceProvider<>(new SingletonScope()));
-        for (BindInfo<?> info : this.allBindInfoList) {
-            if (!(info instanceof AbstractBindInfoProviderAdapter)) {
-                continue;
-            }
-            final AbstractBindInfoProviderAdapter<?> infoAdapter = (AbstractBindInfoProviderAdapter<?>) info;
-            Method initMethod = findInitMethod(info.getBindType(), infoAdapter);// 配置了init方法
-            boolean singleton = testSingleton(info.getBindType(), info, env.getSettings());         // 配置了单例（只有单例的才会在容器启动时调用）
+        this.spiCallerContainer.doInitialize();
+        this.scopContainer.doInitialize();
+        this.bindInfoContainer.doInitialize();
+        //
+        this.bindInfoContainer.forEach(bindInfo -> {
+            DefaultBindInfoProviderAdapter<?> infoAdapter = (DefaultBindInfoProviderAdapter<?>) bindInfo;
+            Method initMethod = findInitMethod(infoAdapter.getBindType(), infoAdapter); // 配置了init方法
+            boolean singleton = scopContainer.isSingleton(bindInfo);                    // 配置了单例（只有单例的才会在容器启动时调用）
             if (initMethod != null && singleton) {
-                // 当前为 doInitializeCompleted 阶段，需要在 doStart 阶段开始调用 Bean 的 init。执行 init 只需要 get 它们。
+                // 当前为 doInitialize 阶段，需要在 doStart 阶段开始调用 Bean 的 init。执行 init 只需要 get 它们。
                 HasorUtils.pushStartListener(env, (EventListener<AppContext>) (event, eventData) -> {
                     eventData.getInstance(infoAdapter);//执行init
                 });
             }
-        }
-    }
-    /** 当容器停止运行时，需要做Bean清理工作。*/
-    public void doShutdownCompleted() {
-        if (!this.inited.compareAndSet(true, false)) {
-            return;/*避免被销毁多次*/
-        }
-        this.indexTypeMapping.clear();
-        this.idDataSource.clear();
-        this.scopeMapping.clear();
-    }
-    //
-    /*-------------------------------------------------------------------------------------------*/
-    //
-    @Override
-    public <T extends Scope> Supplier<T> registerScope(String scopeName, Supplier<T> scopeProvider) {
-        Supplier<? extends Scope> oldScope = this.scopeMapping.putIfAbsent(scopeName, (Supplier<Scope>) scopeProvider);
-        if (oldScope == null) {
-            oldScope = scopeProvider;
-        }
-        return (Supplier<T>) oldScope;
+        });
     }
     @Override
-    public Supplier<Scope> findScope(String scopeName) {
-        return this.scopeMapping.get(scopeName);
-    }
-    //
-    /*-------------------------------------------------------------------------------------------*/
-    //
-    @Override
-    public synchronized void update(Observable o, Object arg) {
-        // - 处理当异常发生时，新的 Bean 定义回滚逻辑
-        try {
-            this.doUpdate(o, arg);
-        } catch (RuntimeException e) {
-            BindInfo<?> bindInfo = (BindInfo<?>) o;
-            this.idDataSource.remove(bindInfo.getBindID());
-            this.allBindInfoList.remove(o);
-            List<String> stringList = this.indexTypeMapping.get(bindInfo.getBindType().getName());
-            if (stringList != null) {
-                stringList.remove(bindInfo.getBindID());
-            }
-            throw e;
-        }
-    }
-    private void doUpdate(Observable o, Object arg) {
-        if (arg == null || !(arg instanceof NotifyData)) {
-            return;
-        }
-        if (o == null || !(o instanceof AbstractBindInfoProviderAdapter)) {
-            return;
-        }
-        //
-        AbstractBindInfoProviderAdapter target = (AbstractBindInfoProviderAdapter) o;
-        String bindTypeStr = target.getBindType().getName();
-        String bindID = target.getBindID();
-        //
-        // .新数据初始化
-        boolean hasOld = this.idDataSource.containsKey(bindID);
-        if (!hasOld) {
-            this.allBindInfoList.add(target);
-            this.idDataSource.put(bindID, target);
-            List<String> newTypeList = new ArrayList<>();
-            List<String> typeList = indexTypeMapping.putIfAbsent(bindTypeStr, newTypeList);
-            if (typeList == null) {
-                typeList = newTypeList;
-            }
-            typeList.add(bindID);
-        }
-        // .
-        NotifyData notifyData = (NotifyData) arg;
-        Object oldValue = notifyData.getOldValue();
-        Object newValue = notifyData.getNewValue();
-        if ((newValue == null && oldValue == null) || (newValue != null && newValue.equals(oldValue))) {
-            return;/*没有变化*/
-        }
-        // .
-        if ("bindID".equalsIgnoreCase(notifyData.getKey())) {
-            newValue = Objects.requireNonNull(newValue);
-            if (this.idDataSource.containsKey(newValue)) {
-                throw new IllegalStateException("duplicate bind -> id value is " + newValue);
-            }
-            this.idDataSource.put((String) newValue, target);
-            this.idDataSource.remove(oldValue);
-            List<String> idList = this.indexTypeMapping.get(target.getBindType().getName());
-            if (idList == null) {
-                throw new IllegalStateException("beans are not registered.");
-            }
-            idList.remove(oldValue);
-            idList.add((String) newValue);
-        }
-        // .
-        if ("bindName".equalsIgnoreCase(notifyData.getKey())) {
-            newValue = Objects.requireNonNull(newValue);
-            BindInfo bindInfo = this.findBindInfo((String) newValue, target.getBindType());
-            if (bindInfo != null) {
-                throw new IllegalStateException("duplicate bind -> bindName '" + newValue + "' conflict with '" + bindInfo + "'");
-            }
-        }
-        // .
-        if ("bindType".equalsIgnoreCase(notifyData.getKey())) {
-            throw new IllegalStateException("'bindType' are not allowed to be changed");
-        }
+    public void close() {
+        this.classEngineMap.clear();
+        this.bindInfoContainer.close();
+        this.scopContainer.close();
+        this.spiCallerContainer.close();
     }
 }

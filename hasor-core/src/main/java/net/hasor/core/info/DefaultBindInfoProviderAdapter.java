@@ -100,12 +100,12 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         return new ConstructorInfo(types, providers);
     }
     /**获得需要IoC的属性列表*/
-    public Constructor<?> getConstructor(AppContext appContext) {
-        return this.getConstructor(lookupType(), appContext);
-    }
-    /**获得需要IoC的属性列表*/
     public Constructor<?> getConstructor(Class<?> targetClass, AppContext appContext) {
-        return ConstructorUtils.getAccessibleConstructor(targetClass, genConstructorInfo(appContext).types);
+        Constructor<?> c = ConstructorUtils.getAccessibleConstructor(targetClass, genConstructorInfo(appContext).types);
+        if (c == null) {
+            c = targetClass.getConstructors()[0];
+        }
+        return c;
     }
     /**获得需要IoC的属性列表*/
     public Supplier<?>[] getConstructorParams(AppContext appContext) {
@@ -146,10 +146,6 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
     }
     //
     /**获得初始化方法。*/
-    public Method getInitMethod() {
-        return getInitMethod(lookupType());
-    }
-    /**获得初始化方法。*/
     public Method getInitMethod(Class<?> targetClass) {
         try {
             if (StringUtils.isNotBlank(this.initMethod)) {
@@ -161,10 +157,6 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         return null;
     }
     //
-    /**获得销毁方法。*/
-    public Method getDestroyMethod() {
-        return getDestroyMethod(lookupType());
-    }
     /**获得销毁方法。*/
     public Method getDestroyMethod(Class<?> targetClass) {
         try {

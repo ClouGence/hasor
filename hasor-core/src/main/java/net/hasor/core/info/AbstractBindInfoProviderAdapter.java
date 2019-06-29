@@ -16,6 +16,7 @@
 package net.hasor.core.info;
 import net.hasor.core.*;
 import net.hasor.core.binder.BindInfoBuilder;
+import net.hasor.core.spi.BeanCreaterListener;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +38,9 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
     private          String                                           bindName         = null;
     private          Class<T>                                         bindType         = null;
     private          Class<? extends T>                               sourceType       = null;
-    private          SingletonMode                                    singletonMode    = null;
     //2.系统属性
     private          Supplier<? extends T>                            customerProvider = null;
-    private          Supplier<? extends Scope>                        scopeProvider    = null;
+    private          Supplier<Scope>                                  scopeProvider    = null;
     private          List<Supplier<? extends BeanCreaterListener<?>>> createrListener  = null;
     //
     public String getBindID() {
@@ -49,23 +49,26 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
         }
         return this.bindID;
     }
+    //
     public String getBindName() {
         return this.bindName;
     }
+    //
+    /** 调用 bindType 使用的类型。 */
     public Class<T> getBindType() {
         return this.bindType;
     }
+    //
+    /** 调用 bindType 之后，并通过 to 方法明确指明的具体实现类。*/
     public Class<? extends T> getSourceType() {
         return this.sourceType;
     }
-    public SingletonMode getSingletonMode() {
-        return this.singletonMode;
-    }
+    //
     /**获取 {@link #setCustomerProvider(Supplier)} 方法设置的 Provider 对象。*/
     public Supplier<? extends T> getCustomerProvider() {
         return this.customerProvider;
     }
-    public Supplier<? extends Scope> getScopeProvider() {
+    public Supplier<Scope> getCustomerScopeProvider() {
         return this.scopeProvider;
     }
     public List<Supplier<? extends BeanCreaterListener<?>>> getCreaterListener() {
@@ -98,17 +101,12 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
         this.notify(new NotifyData("sourceType", this.sourceType, sourceType));
         this.sourceType = sourceType;
     }
-    public void setSingletonMode(SingletonMode singletonMode) {
-        // 发个消息出来给 BeanContainer，让它来检测是否重复。
-        this.notify(new NotifyData("singleton", this.singletonMode, singletonMode));
-        this.singletonMode = singletonMode;
-    }
     public void setCustomerProvider(final Supplier<? extends T> customerProvider) {
         // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("customerProvider", this.customerProvider, customerProvider));
         this.customerProvider = customerProvider;
     }
-    public void setScopeProvider(final Supplier<? extends Scope> scopeProvider) {
+    public void setScopeProvider(final Supplier<Scope> scopeProvider) {
         // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("scopeProvider", this.scopeProvider, scopeProvider));
         this.scopeProvider = scopeProvider;

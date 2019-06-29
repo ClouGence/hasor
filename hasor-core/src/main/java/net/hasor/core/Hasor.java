@@ -15,7 +15,6 @@
  */
 package net.hasor.core;
 import net.hasor.core.container.BeanContainer;
-import net.hasor.core.context.ContainerCreater;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
@@ -44,7 +43,6 @@ public final class Hasor extends HashMap<String, String> {
     private          StreamType                       mainSettingsStreamType = null;
     private final    List<Module>                     moduleList             = new ArrayList<>();
     private          ClassLoader                      loader;
-    private          ContainerCreater                 containerCreater;
     private          Map<String, Map<String, Object>> initSettingMap         = new HashMap<>();
     private          Level                            asLevel                = Level.Full;
     protected Hasor(Object context) {
@@ -91,11 +89,6 @@ public final class Hasor extends HashMap<String, String> {
     public Hasor mainSettingWith(String encoding, InputStream mainSettings, StreamType streamType) throws UnsupportedEncodingException {
         this.mainSettings = new InputStreamReader(mainSettings, encoding);
         this.mainSettingsStreamType = streamType;
-        return this;
-    }
-    //
-    public Hasor containerCreaterWith(ContainerCreater containerCreater) {
-        this.containerCreater = containerCreater;
         return this;
     }
     //
@@ -238,14 +231,7 @@ public final class Hasor extends HashMap<String, String> {
             }
             //
             Environment env = new StandardEnvironment(this.context, mainSettings, this, this.loader);
-            BeanContainer container = null;
-            if (this.containerCreater != null) {
-                container = this.containerCreater.create(env);
-            } else {
-                container = new BeanContainer();
-            }
-            //
-            AppContext appContext = new StatusAppContext(env, Objects.requireNonNull(container));
+            AppContext appContext = new StatusAppContext(env);
             appContext.start(this.moduleList.toArray(new Module[0]));
             return appContext;
         } catch (Throwable e) {

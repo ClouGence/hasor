@@ -17,6 +17,7 @@ package net.hasor.core.context;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.container.BeanContainer;
+import net.hasor.core.container.SpiCallerContainer;
 
 import java.util.Objects;
 /**
@@ -28,9 +29,9 @@ public class StatusAppContext extends TemplateAppContext {
     private BeanContainer container   = null;
     private Environment   environment = null;
     //
-    public StatusAppContext(Environment environment, BeanContainer container) {
+    public StatusAppContext(Environment environment) {
         this.environment = environment;
-        this.container = Objects.requireNonNull(container);
+        this.container = new BeanContainer();
     }
     @Override
     protected BeanContainer getContainer() {

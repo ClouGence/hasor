@@ -1,0 +1,122 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package net.hasor.core.container;
+import java.util.*;
+
+import net.hasor.utils.ExceptionUtils;
+
+import java.io.Closeable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Stream;
+/**
+ * SPI 管理器
+ * @version : 2019年06月20日
+ * @author 赵永春 (zyc@hasor.net)
+ */
+public class SpiCallerContainer implements Closeable {
+    private ConcurrentHashMap<Class<?>, List<? extends EventListener>> spiListener = new ConcurrentHashMap<>();
+    //
+    /** 执行 SPI */
+    public <T extends EventListener> void callSpi(Class<T> spiType, SpiCaller<T> spiCaller) {
+        List<? extends EventListener> listeners = this.spiListener.get(spiType);
+        if (listeners == null || listeners.isEmpty()) {
+            return;
+        }
+        for (EventListener listener : listeners) {
+            try {
+                spiCaller.doSpi((T) listener);
+            } catch (Throwable e) {
+                throw ExceptionUtils.toRuntimeException(e);
+            }
+        }
+    }
+    //
+    /** 获取某个类型 SPI 下面的所有监听器。 */
+    public <T extends EventListener> List<T> getEventListenerList(Class<T> spiType) {
+        return (List<T>) this.spiListener.get(spiType);
+    }
+    //
+    /** 获取已经注册的 SPI 类型总数。 */
+    public int getListenerTypeSize() {
+        return this.spiListener.size();
+    }
+    //
+    /** 获取所有SPI总共注册的监听器数。 */
+    public long getListenerSize() {
+        return this.spiListener.entrySet().stream()//
+                .flatMap((Function<Map.Entry<Class<?>, List<? extends EventListener>>, Stream<?>>) classListEntry -> {
+                    return classListEntry.getValue().stream();
+                }).count();
+    }
+    //
+    /** 注册一个 SPI 监听器 */
+    public synchronized <T extends EventListener> void addListener(Class<T> spiType, T spiListener) {
+        Objects.requireNonNull(spiType, "spiType is null.");
+        Objects.requireNonNull(spiListener, "spiListener is null.");
+        //
+        List<T> listenerList = (List<T>) this.spiListener.get(spiType);
+        if (listenerList == null) {
+            listenerList = new ArrayList<>(5);
+            this.spiListener.put(spiType, listenerList);
+        }
+        listenerList.add(spiListener);
+    }
+    //
+    /** 遍历所有 Listener */
+    public void forEachListener(Consumer<Map.Entry<Class<?>, EventListener>> action) {
+        Objects.requireNonNull(action);
+        for (Map.Entry<Class<?>, List<? extends EventListener>> entryList : spiListener.entrySet()) {
+            Class<?> listenerKey = entryList.getKey();
+            for (EventListener entry : entryList.getValue()) {
+                action.accept(new MapEntry(listenerKey, entry));
+            }
+        }
+    }
+    /** A single entry in the map. */
+    private final class MapEntry implements Map.Entry<Class<?>, EventListener> {
+        private Class<?>      listenerKey;
+        private EventListener listenerEntry;
+        public MapEntry(Class<?> listenerKey, EventListener listenerEntry) {
+            this.listenerKey = listenerKey;
+            this.listenerEntry = listenerEntry;
+        }
+        @Override
+        public Class<?> getKey() {
+            return this.listenerKey;
+        }
+        @Override
+        public EventListener getValue() {
+            return this.listenerEntry;
+        }
+        @Override
+        public EventListener setValue(EventListener value) {
+            throw new UnsupportedOperationException("this entry no support.");
+        }
+    }
+    //
+    /** 初始化过程 */
+    public void doInitialize() {
+        //
+    }
+    //
+    /** 销毁过程，清理掉所有已经注册的 SPI 监听器 */
+    @Override
+    public void close() {
+        this.spiListener.clear();
+    }
+}

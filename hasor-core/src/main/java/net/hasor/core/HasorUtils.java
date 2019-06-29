@@ -15,6 +15,7 @@
  */
 package net.hasor.core;
 import net.hasor.core.provider.SingleProvider;
+import net.hasor.core.spi.AppContextAware;
 
 import java.util.*;
 import java.util.function.Supplier;

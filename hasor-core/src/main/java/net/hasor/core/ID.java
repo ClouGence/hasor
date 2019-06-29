@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import javax.inject.Qualifier;
+import java.lang.annotation.*;
 /**
- * 当 AppContext 创建这个Bean时。容器会调用Bean实现的这个接口方法，将Bean的Info注入进来。
- * @version : 2013-11-8
- * @author 赵永春 (zyc@hasor.net)
+ * 使用 ID 方式进行依赖注入-based {@linkplain Qualifier qualifier}.
+ *
+ * <p>Example usage:
+ *
+ * <pre>
+ *   public class Car {
+ *     &#064;Inject <b>@ID("driver")</b> Seat driverSeat;
+ *     &#064;Inject <b>@ID("passenger")</b> Seat passengerSeat;
+ *     ...
+ *   }</pre>
  */
-@FunctionalInterface
-public interface BindInfoAware {
-    /**
-     * 注入BindInfo。
-     * @param bindInfo 注入的BindInfo。
-     */
-    public void setBindInfo(BindInfo<?> bindInfo);
+@Qualifier
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
+public @interface ID {
+    /**如果同类型有多个注册可以使用该值进行区分。*/
+    public String value() default "";
 }

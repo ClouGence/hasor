@@ -15,14 +15,14 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.*;
-import net.hasor.core.container.BeanBuilder;
-import net.hasor.core.container.ScopManager;
+import net.hasor.core.container.BeanContainer;
+import net.hasor.core.container.BindInfoContainer;
+import net.hasor.core.container.ScopContainer;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.AopBindInfoAdapter;
-import net.hasor.core.provider.ClassAwareProvider;
-import net.hasor.core.provider.InfoAwareProvider;
 import net.hasor.core.provider.InstanceProvider;
+import net.hasor.core.spi.BeanCreaterListener;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
@@ -38,7 +38,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 /**
  * 标准的 {@link ApiBinder} 接口实现，Hasor 在初始化模块时会为每个模块独立分配一个 ApiBinder 接口实例。
- * <p>抽象方法 {@link #getBeanBuilder()} ,会返回一个类( {@link BeanBuilder} )用于配置Bean信息。
  * @version : 2013-4-12
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -77,16 +76,17 @@ public abstract class AbstractBinder implements ApiBinder {
     }
     //
     /*------------------------------------------------------------------------------------Binding*/
-    /**注册一个类型*/
-    protected abstract BeanBuilder getBeanBuilder();
-
-    /**注册一个类型*/
-    protected abstract ScopManager getScopManager();
+    protected abstract BeanContainer getBeanContainer();
+    private BindInfoContainer getBindInfoContainer() {
+        return getBeanContainer().getBindInfoContainer();
+    }
+    private ScopContainer getScopContainer() {
+        return getBeanContainer().getScopContainer();
+    }
     //
     @Override
     public <T> NamedBindingBuilder<T> bindType(final Class<T> type) {
-        BeanBuilder builder = this.getBeanBuilder();
-        BindInfoBuilder<T> typeBuilder = builder.createInfoAdapter(type);
+        BindInfoBuilder<T> typeBuilder = getBindInfoContainer().createInfoAdapter(type);
         return new BindingBuilderImpl<>(typeBuilder);
     }
     @Override
@@ -99,7 +99,7 @@ public abstract class AbstractBinder implements ApiBinder {
     //
     @Override
     public <T extends Scope> Supplier<T> registerScope(String scopeName, Supplier<T> scopeProvider) {
-        return this.getScopManager().registerScope(scopeName, scopeProvider);
+        return this.getScopContainer().registerScope(scopeName, scopeProvider);
     }
     /*----------------------------------------------------------------------------------------Aop*/
     //    static {
@@ -129,23 +129,23 @@ public abstract class AbstractBinder implements ApiBinder {
     @Override
     public <T> List<BindInfo<T>> findBindingRegister(Class<T> bindType) {
         Objects.requireNonNull(bindType, "bindType is null.");
-        return getBeanBuilder().findBindInfoList(bindType);
+        return getBindInfoContainer().findBindInfoList(bindType);
     }
     @Override
     public <T> BindInfo<T> findBindingRegister(String withName, Class<T> bindType) {
         Objects.requireNonNull(withName, "withName is null.");
         Objects.requireNonNull(bindType, "bindType is null.");
-        return getBeanBuilder().findBindInfo(withName, bindType);
+        return getBindInfoContainer().findBindInfo(withName, bindType);
     }
     @Override
     public <T> BindInfo<T> getBindInfo(String bindID) {
         Objects.requireNonNull(bindID, "bindID is null.");
-        return getBeanBuilder().findBindInfo(bindID);
+        return getBindInfoContainer().findBindInfo(bindID);
     }
     @Override
     public <T> BindInfo<T> getBindInfo(Class<T> bindType) {
         Objects.requireNonNull(bindType, "bindType is null.");
-        return getBeanBuilder().findBindInfo(null, bindType);
+        return getBindInfoContainer().findBindInfo(null, bindType);
     }
     //
     /*------------------------------------------------------------------------------------Binding*/
@@ -192,32 +192,15 @@ public abstract class AbstractBinder implements ApiBinder {
         @Override
         public ScopedBindingBuilder<T> whenCreate(Class<? extends BeanCreaterListener<?>> createrListener) {
             if (createrListener != null) {
-                ClassAwareProvider<? extends BeanCreaterListener<?>> listenerProvider = new ClassAwareProvider<BeanCreaterListener<?>>(createrListener);
-                this.typeBuilder.addCreaterListener(HasorUtils.autoAware(getEnvironment(), listenerProvider));
+                this.typeBuilder.addCreaterListener(getProvider(createrListener));
             }
             return this;
         }
         @Override
         public ScopedBindingBuilder<T> whenCreate(BindInfo<? extends BeanCreaterListener<?>> createrListener) {
             if (createrListener != null) {
-                InfoAwareProvider<? extends BeanCreaterListener<?>> listenerProvider = new InfoAwareProvider<BeanCreaterListener<?>>(createrListener);
-                this.typeBuilder.addCreaterListener(HasorUtils.autoAware(getEnvironment(), listenerProvider));
+                this.typeBuilder.addCreaterListener(getProvider(createrListener));
             }
-            return this;
-        }
-        @Override
-        public OptionPropertyBindingBuilder<T> asEagerPrototype() {
-            this.typeBuilder.setSingletonMode(SingletonMode.Prototype);
-            return this;
-        }
-        @Override
-        public OptionPropertyBindingBuilder<T> asEagerSingleton() {
-            this.typeBuilder.setSingletonMode(SingletonMode.Singleton);
-            return this;
-        }
-        @Override
-        public OptionPropertyBindingBuilder<T> asEagerAnnoClear() {
-            this.typeBuilder.setSingletonMode(SingletonMode.Clear);
             return this;
         }
         @Override
@@ -274,7 +257,7 @@ public abstract class AbstractBinder implements ApiBinder {
         }
         @Override
         public OptionPropertyBindingBuilder<T> toScope(String scopeName) {
-            Supplier<Scope> scope = getScopManager().findScope(scopeName);
+            Supplier<Scope> scope = getScopContainer().findScope(scopeName);
             if (scope == null) {
                 throw new IllegalStateException("scope '" + scopeName + "' Have not yet registered");
             }

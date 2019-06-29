@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import net.hasor.core.spi.InjectMembers;
+
+import javax.inject.Qualifier;
 import java.lang.annotation.*;
 /**
  * 依赖注入。请注意{@link InjectMembers}接口方式与注解方式互斥，且接口方式优先于注解方式。
@@ -23,12 +26,16 @@ import java.lang.annotation.*;
  * <li>“byType=Type.ByID”使用“{@code AppContext.getInstance(String)}”方式进行依赖注入。</li>
  * <li>“byType=Type.ByName”使用“{@code AppContext.findBindingBean(withName, bindType)}”方式进行依赖注入。</li>
  * </ul></p>
+ * @see net.hasor.core.ID
+ * @see javax.inject.Inject
+ * @see javax.inject.Named
  * @version : 2015年7月28日
  * @author 赵永春 (zyc@hasor.net)
  */
+@Deprecated
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
-@Documented
 public @interface Inject {
     /**如果同类型有多个注册可以使用该值进行区分。*/
     public String value() default "";

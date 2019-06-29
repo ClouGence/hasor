@@ -13,17 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
+package net.hasor.core.spi;
+import net.hasor.core.Scope;
+
+import java.util.EventListener;
+import java.util.function.Supplier;
 /**
- * 当 AppContext 创建这个Bean时调用。
+ * Scope 注册监听器
  * @version : 2013-11-8
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface BeanCreaterListener<T> {
+public interface ScopeProvisionListener extends EventListener {
     /**
-     * 注入AppContext。
-     * @param newObject 新对象。
+     * 发现新的作用域。
+     * @param scopeName 新对象。
      * @param bindInfo 新对象的 BindInfo（可能为空）。
      */
-    public void beanCreated(T newObject, BindInfo<? extends T> bindInfo) throws Throwable;
+    public void newScope(String scopeName, Supplier<? extends Scope> bindInfo) throws Throwable;
 }

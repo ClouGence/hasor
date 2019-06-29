@@ -27,4 +27,20 @@ public interface Module {
      * @throws Throwable init异常抛出
      */
     public void loadModule(ApiBinder apiBinder) throws Throwable;
+
+    /**
+     * 启动过程。
+     * @param appContext appContext
+     * @throws Throwable init异常抛出
+     */
+    public default void onStart(AppContext appContext) throws Throwable {
+    }
+
+    /**
+     * 终止过程。
+     * @param appContext appContext
+     * @throws Throwable init异常抛出
+     */
+    public default void onStop(AppContext appContext) throws Throwable {
+    }
 }

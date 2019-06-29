@@ -24,5 +24,5 @@ import java.util.function.Supplier;
  */
 public interface ScopeProvider {
     /**获取Provider对象，可以直接取得对象实例。*/
-    public Supplier<? extends Scope> getScopeProvider();
+    public Supplier<Scope> getCustomerScopeProvider();
 }

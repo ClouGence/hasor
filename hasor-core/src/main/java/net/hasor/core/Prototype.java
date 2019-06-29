@@ -16,6 +16,8 @@
 package net.hasor.core;
 import net.hasor.core.ApiBinder.ScopedBindingBuilder;
 
+import javax.inject.Scope;
+import javax.inject.Singleton;
 import java.lang.annotation.*;
 /**
  * 标记类型为原型模式，与 {@link Singleton} 为互斥关系，代码配置优先于注解。
@@ -24,6 +26,7 @@ import java.lang.annotation.*;
  * @version : 2015年7月28日
  * @author 赵永春 (zyc@hasor.net)
  */
+@Scope
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented

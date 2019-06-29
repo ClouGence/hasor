@@ -20,11 +20,13 @@ import java.lang.annotation.*;
 /**
  * 当容器销毁时调用的这个方法，如果{@link LifeBindingBuilder#destroyMethod(String)} 方法也定义了销毁方法则，注解方式优先于配置。
  * @see LifeBindingBuilder#destroyMethod(String)
+ * @see javax.annotation.PreDestroy
  * @version : 2015年7月28日
  * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })
 @Documented
+@Deprecated
 public @interface Destroy {
 }

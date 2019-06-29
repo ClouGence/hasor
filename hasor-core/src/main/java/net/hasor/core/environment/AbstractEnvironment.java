@@ -266,9 +266,14 @@ public abstract class AbstractEnvironment implements Environment {
         }
         // .4st，传入的配置
         if (frameworkEnvConfig != null && !frameworkEnvConfig.isEmpty()) {
-            logger.info("ignore 'hconfig.properties' use framework map, size = " + frameworkEnvConfig.size());
+            logger.info("use framework map, size = " + frameworkEnvConfig.size());
             for (String name : frameworkEnvConfig.keySet()) {
-                this.envMap.put(name.toUpperCase(), frameworkEnvConfig.get(name));
+                String envStr = frameworkEnvConfig.get(name);
+                if (envStr == null) {
+                    envStr = "";
+                    logger.warn("framework key {} is empty. ", name);
+                }
+                this.envMap.put(name.toUpperCase(), envStr);
             }
         }
     }

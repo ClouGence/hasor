@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import net.hasor.core.provider.ClassAwareProvider;
-import net.hasor.core.provider.InfoAwareProvider;
 import net.hasor.core.provider.InstanceProvider;
+import net.hasor.core.spi.AppContextAware;
+import net.hasor.core.spi.BeanCreaterListener;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -25,6 +26,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import javax.inject.Named;
+import javax.inject.Singleton;
 /**
  * Hasor的核心接口，主要用于收集Bean绑定信息。<p>
  * Bind 参考了 Google Guice 的 Binder 接口设计，功能上大体相似。目的是提供一种不同于配置文件、注解方式的配置方法。
@@ -99,10 +102,10 @@ public interface ApiBinder {
 
     /*--------------------------------------------------------------------------------------Finds*/
 
-    /**根据ID获取{@link BindInfo}。*/
+    /** 根据ID获取{@link BindInfo} */
     public <T> BindInfo<T> getBindInfo(String bindID);
 
-    /**根据ID获取{@link BindInfo}。*/
+    /** 根据ID获取{@link BindInfo} */
     public <T> BindInfo<T> getBindInfo(Class<T> bindType);
 
     /**
@@ -231,14 +234,30 @@ public interface ApiBinder {
     }
 
     public default <T> void bindToCreater(BindInfo<T> info, Class<? extends BeanCreaterListener<?>> listener) {
-        this.bindToCreater(info, ClassAwareProvider.of(getEnvironment(), listener));
+        this.bindToCreater(info, getProvider(listener));
     }
 
     public default <T> void bindToCreater(BindInfo<T> info, BindInfo<? extends BeanCreaterListener<?>> listener) {
-        this.bindToCreater(info, InfoAwareProvider.of(getEnvironment(), listener));
+        this.bindToCreater(info, getProvider(listener));
     }
 
     public <T> void bindToCreater(BindInfo<T> info, Supplier<? extends BeanCreaterListener<?>> listener);
+
+    /**
+     * 注册作用域。
+     * @param scopeType 作用域名称
+     * @param scope 作用域
+     * @return 成功注册之后返回它自身, 如果存在同名的scope那么会返回第一次注册那个 scope。
+     * @see javax.inject.Scope
+     */
+    public default Supplier<Scope> registerScope(Class<? extends Annotation> scopeType, Scope scope) {
+        Objects.requireNonNull(scopeType, "scopeType is null.");
+        javax.inject.Scope scopeTypeAnno = scopeType.getAnnotation(javax.inject.Scope.class);
+        if (scopeTypeAnno == null) {
+            throw new IllegalStateException("Annotation Type " + scopeType.getName() + " does not declare a Scope.");
+        }
+        return this.registerScope(scopeType.getName(), InstanceProvider.of(scope));
+    }
 
     /**
      * 注册作用域。
@@ -257,6 +276,44 @@ public interface ApiBinder {
      * @return 成功注册之后返回它自身, 如果存在同名的scope那么会返回第一次注册那个 scope。
      */
     public <T extends Scope> Supplier<T> registerScope(String scopeName, Supplier<T> scopeSupplier);
+
+    //
+    public default <T> Supplier<T> getProvider(Class<T> targetType) {
+        class TargetSupplier implements AppContextAware, Supplier<T> {
+            private AppContext appContext = null;
+            @Override
+            public void setAppContext(AppContext appContext) {
+                this.appContext = appContext;
+            }
+            @Override
+            public T get() {
+                if (this.appContext == null) {
+                    throw new IllegalStateException("the current state is not ready.");
+                }
+                return appContext.getInstance(targetType);
+            }
+        }
+        return HasorUtils.autoAware(getEnvironment(), new TargetSupplier());
+    }
+
+    //
+    public default <T> Supplier<T> getProvider(BindInfo<T> targetType) {
+        class TargetSupplier implements AppContextAware, Supplier<T> {
+            private AppContext appContext = null;
+            @Override
+            public void setAppContext(AppContext appContext) {
+                this.appContext = appContext;
+            }
+            @Override
+            public T get() {
+                if (this.appContext == null) {
+                    throw new IllegalStateException("the current state is not ready.");
+                }
+                return appContext.getInstance(targetType);
+            }
+        }
+        return HasorUtils.autoAware(getEnvironment(), new TargetSupplier());
+    }
     //
     /*--------------------------------------------------------------------------------------Faces*/
     /**给绑定起个名字。*/
@@ -267,6 +324,25 @@ public interface ApiBinder {
          * @return 返回 - {@link LinkedBindingBuilder}。
          */
         public LinkedBindingBuilder<T> nameWith(String name);
+        //        {
+        //            return this.annotationWith(new Named() {
+        //                @Override
+        //                public Class<? extends Annotation> annotationType() {
+        //                    return Named.class;
+        //                }
+        //                @Override
+        //                public String value() {
+        //                    return name;
+        //                }
+        //            });
+        //        }
+        //
+        //        /**
+        //         * 绑定到一个注解上(并同时设置ID,为随机ID)。
+        //         * @param annotation 注解
+        //         * @return 返回 - {@link LinkedBindingBuilder}。
+        //         */
+        //        public LinkedBindingBuilder<T> annotationWith(Annotation annotation);
 
         /**
          * 随机取一个不重复的名字(并同时设置ID,为随机ID)。
@@ -407,29 +483,38 @@ public interface ApiBinder {
          * 原型模式：当类型被多个对象注入时，每个注入的类型实例都是全新的对象。
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public OptionPropertyBindingBuilder<T> asEagerPrototype();
+        public default OptionPropertyBindingBuilder<T> asEagerPrototype() {
+            return this.toScope(Prototype.class);
+        }
 
         /**
          * 注册为单例模式。<p>
          * 单列模式：当类型被多个对象注入时，每个注入的类型实例都是同一个对象。
-         * 如果配置了{@link #toScope(Supplier)}或者{@link #toScope(Scope)}，那么该方法将会使它们失效。
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public OptionPropertyBindingBuilder<T> asEagerSingleton();
+        public default OptionPropertyBindingBuilder<T> asEagerSingleton() {
+            return this.toScope(Singleton.class);
+        }
 
         /**
-         * 使 Bean 原身自带的 @Prototype 或者 @Singleton 注解失效。<p>
-         * @return 返回 - {@link OptionPropertyBindingBuilder}。
-         */
-        public OptionPropertyBindingBuilder<T> asEagerAnnoClear();
-
-        /**
-         * 设置Scope。
+         * 将Bean应用到一个用户指定的Scope上。
          * @param scope 作用域
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
         public default OptionPropertyBindingBuilder<T> toScope(final Scope scope) {
             return this.toScope(InstanceProvider.of(scope));
+        }
+
+        /**
+         * 将Bean应用到一个用户指定的Scope上。
+         * 如果配置了{@link #toScope(Supplier)}或者{@link #toScope(Scope)}，那么该方法将会使它们失效。
+         * @return 返回 - {@link OptionPropertyBindingBuilder}。
+         */
+        public default OptionPropertyBindingBuilder<T> toScope(Class<? extends Annotation> scopeAnno) {
+            if (scopeAnno.getAnnotation(javax.inject.Scope.class) == null) {
+                throw new IllegalArgumentException(scopeAnno.getName() + " are not declared as Scope.");
+            }
+            return this.toScope(scopeAnno.getName());
         }
 
         /**
@@ -441,7 +526,7 @@ public interface ApiBinder {
 
         /**
          * 设置Scope。
-         * @param scopeName 作用域名
+         * @param scopeName 作用域
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
         public OptionPropertyBindingBuilder<T> toScope(String scopeName);

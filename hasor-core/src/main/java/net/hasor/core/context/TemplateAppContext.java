@@ -20,9 +20,7 @@ import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderInvocationHandler;
 import net.hasor.core.binder.BinderHelper;
-import net.hasor.core.container.BeanBuilder;
 import net.hasor.core.container.BeanContainer;
-import net.hasor.core.container.ScopManager;
 import net.hasor.core.info.MetaDataAdapter;
 import net.hasor.utils.*;
 import net.hasor.utils.future.BasicFuture;
@@ -56,7 +54,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     @Override
     public Class<?> getBeanType(String bindID) {
         Objects.requireNonNull(bindID, "bindID is null.");
-        BindInfo<?> bindInfo = getContainer().findBindInfo(bindID);
+        BindInfo<?> bindInfo = getContainer().getBindInfoContainer().findBindInfo(bindID);
         if (bindInfo != null) {
             return bindInfo.getBindType();
         }
@@ -64,7 +62,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     }
     @Override
     public String[] getBindIDs() {
-        Collection<String> nameList = getContainer().getBindInfoIDs();
+        Collection<String> nameList = getContainer().getBindInfoContainer().getBindInfoIDs();
         if (nameList == null || nameList.isEmpty()) {
             return ArrayUtils.EMPTY_STRING_ARRAY;
         }
@@ -73,7 +71,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     @Override
     public boolean containsBindID(String bindID) {
         Objects.requireNonNull(bindID, "bindID is null.");
-        return getContainer().findBindInfo(bindID) != null;
+        return getContainer().getBindInfoContainer().findBindInfo(bindID) != null;
     }
     /*---------------------------------------------------------------------------------------Bean*/
     @Override
@@ -98,7 +96,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     @Override
     public <T> Supplier<? extends T> getProvider(String bindID) {
         Objects.requireNonNull(bindID, "bindID is null.");
-        BindInfo<T> bindInfo = getContainer().findBindInfo(bindID);
+        BindInfo<T> bindInfo = getContainer().getBindInfoContainer().findBindInfo(bindID);
         if (bindInfo != null) {
             return this.getProvider(bindInfo);
         }
@@ -111,7 +109,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         final AppContext appContext = this;
         //
         if (bindInfo == null) {
-            return getContainer().getProvider(targetClass, appContext, params);
+            return getContainer().providerOnlyType(targetClass, appContext, params);
         } else {
             return getProvider(bindInfo);
         }
@@ -122,17 +120,17 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         BindInfo<T> bindInfo = getBindInfo(targetConstructor.getDeclaringClass());
         //
         if (bindInfo == null) {
-            return getContainer().getProvider(targetConstructor, this, params);
+            return getContainer().providerOnlyConstructor(targetConstructor, this, params);
         } else {
             return getProvider(bindInfo);
         }
     }
     @Override
-    public <T> Supplier<? extends T> getProvider(final BindInfo<T> info) {
-        if (info == null) {
+    public <T> Supplier<? extends T> getProvider(final BindInfo<T> bindInfo) {
+        if (bindInfo == null) {
             return null;
         }
-        return getContainer().getProvider(info, this, null);
+        return getContainer().providerOnlyBindInfo(bindInfo, this);
     }
     /**获取用于创建Bean对象的{@link BeanContainer}接口*/
     protected abstract BeanContainer getContainer();
@@ -140,12 +138,12 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     /*------------------------------------------------------------------------------------Binding*/
     @Override
     public <T> BindInfo<T> getBindInfo(String bindID) {
-        return getContainer().findBindInfo(bindID);
+        return getContainer().getBindInfoContainer().findBindInfo(bindID);
     }
     @Override
     public <T> List<BindInfo<T>> findBindingRegister(Class<T> bindType) {
         Objects.requireNonNull(bindType, "bindType is null.");
-        return getContainer().findBindInfoList(bindType);
+        return getContainer().getBindInfoContainer().findBindInfoList(bindType);
     }
     //
     /*------------------------------------------------------------------------------------Process*/
@@ -185,7 +183,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     }
     /**初始化过程完成.*/
     protected void doInitializeCompleted() {
-        this.getContainer().doInitializeCompleted(getEnvironment());
+        //
     }
     /**开始进入容器启动过程.*/
     protected void doStart() {
@@ -214,7 +212,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         for (ContextShutdownListener listener : listenerList) {
             listener.doShutdownCompleted(this);
         }
-        this.getContainer().doShutdownCompleted();
+        this.getContainer().close();
     }
     //
     /*--------------------------------------------------------------------------------------Utils*/
@@ -263,10 +261,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         //
         // .创建扩展
         AbstractBinder binder = new AbstractBinder(this.getEnvironment()) {
-            protected BeanBuilder getBeanBuilder() {
-                return getContainer();
-            }
-            protected ScopManager getScopManager() {
+            protected BeanContainer getBeanContainer() {
                 return getContainer();
             }
         };
@@ -362,6 +357,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         }
         logger.info("appContext -> doBind.");
         doBindAfter(apiBinder);
+        this.getContainer().doInitialize(getEnvironment());
         /*4.引发事件*/
         doInitializeCompleted();
         logger.info("appContext -> doInitializeCompleted");

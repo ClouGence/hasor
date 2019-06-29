@@ -33,5 +33,12 @@
             <groupId>net.hasor</groupId>
             <artifactId>hasor-commons</artifactId>
         </dependency>
+
+        <!-- 依赖注入标准包 -->
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+        </dependency>
     </dependencies>
 </project>

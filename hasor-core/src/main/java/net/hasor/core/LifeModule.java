@@ -19,6 +19,7 @@ package net.hasor.core;
  * @version : 2013-3-20
  * @author 赵永春 (zyc@hasor.net)
  */
+@Deprecated
 public interface LifeModule extends Module {
     /**
      * 启动过程。

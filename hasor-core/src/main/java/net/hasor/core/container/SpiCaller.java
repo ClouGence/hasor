@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context;
-import net.hasor.core.Environment;
-import net.hasor.core.container.BeanContainer;
+package net.hasor.core.container;
 /**
  *
- * @version : 2015年11月3日
+ * @version : 2019年06月20日
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface ContainerCreater {
-    public BeanContainer create(Environment env) throws Throwable;
+public interface SpiCaller<T> {
+    public void doSpi(T listener) throws Throwable;
 }

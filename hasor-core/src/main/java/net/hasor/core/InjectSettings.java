@@ -14,15 +14,20 @@
  * limitations under the License.
  */
 package net.hasor.core;
+import net.hasor.core.spi.InjectMembers;
+
+import javax.inject.Qualifier;
 import java.lang.annotation.*;
 /**
  * 依赖注入，注入settings配置数据。请注意{@link InjectMembers}接口方式与注解方式互斥，且接口方式优先于注解方式。
+ * @see javax.inject.Qualifier
  * @version : 2016年07月18日
  * @author 赵永春 (zyc@hasor.net)
  */
+@Qualifier
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
-@Documented
 public @interface InjectSettings {
     /**配置Key*/
     public String value();

@@ -13,17 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container.aop;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 /**
- * 自定义的Aop注解只让它在方法上生效。
- * @version : 2015年11月9日
- * @author 赵永春 (zyc@hasor.net)
+ * SPI 扩展点.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD })
-public @interface MyAop {
-}
+@AopIgnore
+package net.hasor.core.spi;
+import net.hasor.core.AopIgnore;

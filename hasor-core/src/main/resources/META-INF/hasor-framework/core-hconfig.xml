@@ -31,9 +31,6 @@
         <!-- 包扫描覆盖范围，逗号间隔 -->
         <loadPackages>net.hasor.*</loadPackages>
 
-        <!-- 默认不启用单例模式 -->
-        <default.asEagerSingleton>false</default.asEagerSingleton>
-
         <!-- 执行事件的线程池大小 -->
         <eventThreadPoolSize>${HASOR_LOAD_EVENT_POOL}</eventThreadPoolSize>
 

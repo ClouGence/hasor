@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core;
+package net.hasor.core.spi;
+import net.hasor.core.BindInfo;
 /**
- * 初始化注入接口。Hasor 的 Ioc 是通过递归的方式实现，版本中要想实依赖注入必须要实现 InjectMembers接口。
- * 请注意：{@link Inject}注解方式和接口方式互斥，且接口方式优先于注解方式。
- * @version : 2014-5-10
- * @author 赵永春 (zyc@byshell.org)
+ * 当 AppContext 创建这个Bean时调用。
+ * @version : 2013-11-8
+ * @author 赵永春 (zyc@hasor.net)
  */
-@FunctionalInterface
-public interface InjectMembers {
+public interface BeanCreaterListener<T> {
     /**
-     * 执行注入
-     * @param appContext appContext对象
+     * 注入AppContext。
+     * @param newObject 新对象。
+     * @param bindInfo 新对象的 BindInfo（可能为空）。
      */
-    public void doInject(AppContext appContext) throws Throwable;
+    public void beanCreated(T newObject, BindInfo<? extends T> bindInfo) throws Throwable;
 }

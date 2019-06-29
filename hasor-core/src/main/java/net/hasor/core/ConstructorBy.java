@@ -21,11 +21,13 @@ import java.lang.annotation.*;
  * 如果通过{@link InjectConstructorBindingBuilder}接口配置会覆盖注解配置。
  * 如果在该类上出现多个 {@link ConstructorBy} 注解配置，那么将会按照 class.getConstructors() 顺序取第一个。
  * @see InjectConstructorBindingBuilder
+ * @see javax.inject.Inject
  * @version : 2018年9月21日
  * @author 赵永春 (zyc@hasor.net)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.CONSTRUCTOR })
 @Documented
+@Deprecated
 public @interface ConstructorBy {
 }

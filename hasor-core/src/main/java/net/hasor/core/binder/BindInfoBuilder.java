@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import net.hasor.core.BeanCreaterListener;
+import net.hasor.core.spi.BeanCreaterListener;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Scope;
-import net.hasor.core.SingletonMode;
 
 import java.util.function.Supplier;
 /**
@@ -52,12 +51,6 @@ public interface BindInfoBuilder<T> {
     public void setMetaData(String key, Object value);
 
     /**
-     * 标记单例模式。
-     * @param singletonMode see : SingletonMode
-     */
-    public void setSingletonMode(SingletonMode singletonMode);
-
-    /**
      * 开发者自定义的{@link Supplier}。
      * @param customerProvider 设置自定义{@link Supplier}
      */
@@ -67,7 +60,7 @@ public interface BindInfoBuilder<T> {
      * 将类型发布到一个固定的命名空间内。
      * @param scopeProvider 命名空间
      */
-    public void setScopeProvider(Supplier<? extends Scope> scopeProvider);
+    public void setScopeProvider(Supplier<Scope> scopeProvider);
     //
 
     /**

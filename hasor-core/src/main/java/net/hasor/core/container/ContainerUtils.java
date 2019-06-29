@@ -1,27 +1,33 @@
 package net.hasor.core.container;
 import net.hasor.core.*;
+import net.hasor.core.Type;
 import net.hasor.core.aop.AsmTools;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.utils.BeanUtils;
+import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.asm.AnnotationVisitor;
 import net.hasor.utils.asm.ClassReader;
 import net.hasor.utils.asm.ClassVisitor;
 import net.hasor.utils.asm.Opcodes;
+import net.hasor.utils.convert.ConverterUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.inject.Named;
+import javax.inject.Qualifier;
 import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 //
-class ContainerUtils {
+public class ContainerUtils {
     protected static Logger logger = LoggerFactory.getLogger(ContainerUtils.class);
     //
     /** 查找类的默认初始化方法*/
@@ -96,36 +102,116 @@ class ContainerUtils {
         return (Class<T>) tmpType;
     }
     //
-    /** 检测是否为单例（注解优先）*/
-    public static boolean testSingleton(Class<?> targetType, BindInfo<?> bindInfo, Settings settings) {
-        Prototype prototype = targetType.getAnnotation(Prototype.class);
-        Singleton singleton = targetType.getAnnotation(Singleton.class);
-        SingletonMode singletonMode = null;
-        if (bindInfo instanceof AbstractBindInfoProviderAdapter) {
-            singletonMode = ((AbstractBindInfoProviderAdapter) bindInfo).getSingletonMode();
+    /**
+     * 查找 Inject 信息
+     * @see net.hasor.core.ID
+     * @see javax.inject.Named
+     * @see javax.inject.Qualifier
+     */
+    public static Annotation findInject(boolean injectDefault, Annotation[] annotations) {
+        if (annotations == null || annotations.length == 0) {
+            return null;
         }
         //
-        if (SingletonMode.Singleton == singletonMode) {
-            return true;
-        } else if (SingletonMode.Prototype == singletonMode) {
-            return false;
-        } else if (SingletonMode.Clear == singletonMode) {
-            prototype = null;
-            singleton = null;
-        } else {
-            targetType = findImplClass(targetType);
+        boolean injectBoolean = injectDefault;
+        Annotation qualifier = null;
+        //
+        for (Annotation anno : annotations) {
+            // .如果遇到 net.hasor.core.Inject 那么信息是完整的不需要在查看其它注解
+            if (anno instanceof net.hasor.core.Inject) {
+                injectBoolean = true;
+                if (Type.ByName == ((net.hasor.core.Inject) anno).byType()) {
+                    qualifier = new NamedImpl(((net.hasor.core.Inject) anno).value());
+                }
+                if (Type.ByID == ((net.hasor.core.Inject) anno).byType()) {
+                    qualifier = new IDImpl(((net.hasor.core.Inject) anno).value());
+                }
+                break;
+            }
+            //
+            // .JSR-330，javax.inject.Inject 单独存在，或者加一个标记了Qualifier的注解
+            if (anno instanceof javax.inject.Inject) {
+                injectBoolean = true;
+                qualifier = (qualifier == null) ? anno : null;
+                continue;
+            }
+            if (anno.annotationType().getAnnotation(Qualifier.class) != null) {
+                qualifier = anno;
+            }
+            if (qualifier != null && injectBoolean) {
+                break;// JSR-330 所需的内容已经全部收集全了
+            }
         }
         //
-        if (prototype != null && singleton != null) {
-            throw new IllegalArgumentException(targetType + " , @Prototype and @Singleton appears only one.");
-        }
-        //
-        boolean isSingleton = (singleton != null);
-        if (!isSingleton && prototype == null) {
-            isSingleton = settings.getBoolean("hasor.default.asEagerSingleton", isSingleton);
-        }
-        return isSingleton;
+        return injectBoolean ? qualifier : null;
     }
+    //
+    //
+    //
+    public static boolean isInjectConstructor(Constructor<?> constructor) {
+        boolean constructorBy = constructor.getDeclaredAnnotation(ConstructorBy.class) != null;      // Hasor 规范
+        boolean javaxInjectBy = constructor.getDeclaredAnnotation(javax.inject.Inject.class) != null;// JSR-330
+        return constructorBy || javaxInjectBy;
+    }
+    //
+    public static Object injSettings(AppContext appContext, InjectSettings injectSettings, Class<?> toType) {
+        if (injectSettings == null || StringUtils.isBlank(injectSettings.value())) {
+            return BeanUtils.getDefaultValue(toType);
+        }
+        String settingVar = injectSettings.value();
+        String settingValue = null;
+        if (settingVar.startsWith("${") && settingVar.endsWith("}")) {
+            settingVar = settingVar.substring(2, settingVar.length() - 1);
+            settingValue = appContext.getEnvironment().evalString("%" + settingVar + "%");
+        } else {
+            String defaultVal = injectSettings.defaultValue();
+            if (StringUtils.isBlank(defaultVal)) {
+                defaultVal = null;// 行为保持和 Convert 一致
+            }
+            settingValue = appContext.getEnvironment().getSettings().getString(injectSettings.value(), defaultVal);
+        }
+        //
+        return ConverterUtils.convert(settingValue, toType);
+    }
+    //
+    //
+    public static void invokeMethod(Object targetBean, Method initMethod) {
+        //
+        Class<?>[] paramArray = initMethod.getParameterTypes();
+        Object[] paramObject = BeanUtils.getDefaultValue(paramArray);
+        //
+        try {
+            try {
+                initMethod.invoke(targetBean, paramObject);
+            } catch (IllegalAccessException e) {
+                initMethod.setAccessible(true);
+                try {
+                    initMethod.invoke(targetBean, paramObject);
+                } catch (IllegalAccessException e1) {
+                    logger.error(e1.getMessage(), e);
+                }
+            }
+        } catch (InvocationTargetException e2) {
+            throw ExceptionUtils.toRuntimeException(e2.getTargetException());
+        }
+    }
+    public static void invokeField(Field field, Object targetBean, Object newValue) {
+        Class<?> toType = field.getType();
+        newValue = ConverterUtils.convert(toType, newValue);
+        try {
+            field.set(targetBean, newValue);
+        } catch (IllegalAccessException e) {
+            try {
+                field.setAccessible(true);
+                field.set(targetBean, newValue);
+            } catch (IllegalAccessException e1) {
+                logger.error(e1.getMessage(), e);
+            }
+        } catch (IllegalArgumentException e) {
+            throw e;
+        }
+    }
+    //
     //
     /** 检测是否要忽略装配Aop */
     public static <T> boolean testAopIgnore(Class<T> targetType, ClassLoader rootLoader) {
@@ -157,7 +243,7 @@ class ContainerUtils {
         }
         packageName = packageName.replace(".", "/");
         //
-        final Map<String, Object> aopIgnoreInfo = new HashMap<String, Object>();
+        final Map<String, Object> aopIgnoreInfo = new HashMap<>();
         aopIgnoreInfo.put("inherited", true);
         aopIgnoreInfo.put("ignore", true);
         class AopIgnoreFinderVisitor extends AnnotationVisitor {

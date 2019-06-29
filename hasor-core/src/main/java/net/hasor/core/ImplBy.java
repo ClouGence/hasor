@@ -18,7 +18,9 @@ import net.hasor.core.ApiBinder.LinkedBindingBuilder;
 
 import java.lang.annotation.*;
 /**
- * 标记接口的默认实现类，如果通过{@link LinkedBindingBuilder}接口也指定了实现，则注解会优先于配置。
+ * <p>标记当前类型的具体实现。</p>
+ *
+ * 如果通过 {@link ApiBinder#bindType(Class)} 的 to 方式也指定了实现类，那么代码方式会优先注解配置。
  * @see LinkedBindingBuilder
  * @version : 2015年7月28日
  * @author 赵永春 (zyc@hasor.net)
