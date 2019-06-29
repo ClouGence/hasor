@@ -17,6 +17,7 @@ package net.hasor.core.settings;
 import net.hasor.core.Settings;
 import net.hasor.core.setting.SettingsWrap;
 import net.hasor.core.setting.StandardContextSettings;
+import net.hasor.test.beans.enums.SelectEnum;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

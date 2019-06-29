@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.provider;
-import net.hasor.core.AppContext;
-import net.hasor.core.BindInfo;
 import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -25,27 +22,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 public class ProviderTest {
-    //
-    @Test
-    public void providerTest0() throws Throwable {
-        //
-        AppContext mock = PowerMockito.mock(AppContext.class);
-        PowerMockito.when(mock.getInstance(ArrayList.class)).thenReturn(new ArrayList());
-        //
-        ClassAwareProvider<List> provider = new ClassAwareProvider<>(ArrayList.class);
-        //
-        try {
-            provider.get();
-            assert false;
-        } catch (Exception e) {
-            assert "has not been initialized".equalsIgnoreCase(e.getMessage());
-        }
-        //
-        provider.setAppContext(mock);
-        provider.toString();
-        //
-        assert provider.get() instanceof ArrayList;
-    }
     //
     @Test
     public void providerTest1() {
@@ -79,29 +55,6 @@ public class ProviderTest {
         //
         listProvider.set(new LinkedList());
         assert listProvider.get() instanceof LinkedList;
-    }
-    //
-    @Test
-    public void providerTest4() throws Throwable {
-        BindInfo<List> info = PowerMockito.mock(BindInfo.class);
-        PowerMockito.when(info.getBindID()).thenReturn("TEST");
-        //
-        AppContext mock = PowerMockito.mock(AppContext.class);
-        PowerMockito.when(mock.getInstance(info)).thenReturn(new ArrayList());
-        //
-        InfoAwareProvider<List> provider = new InfoAwareProvider<>(info);
-        //
-        try {
-            provider.get();
-            assert false;
-        } catch (Exception e) {
-            assert "has not been initialized".equalsIgnoreCase(e.getMessage());
-        }
-        //
-        provider.setAppContext(mock);
-        provider.toString();
-        //
-        assert provider.get() instanceof ArrayList;
     }
     //
     @Test
