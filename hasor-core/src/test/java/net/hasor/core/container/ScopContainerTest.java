@@ -17,6 +17,7 @@ package net.hasor.core.container;
 import net.hasor.core.Scope;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.scope.SingletonScope;
+import net.hasor.core.spi.ScopeProvisionListener;
 import net.hasor.test.beans.beans.pojo.SampleBean;
 import net.hasor.test.beans.beans.pojo.SampleFace;
 import net.hasor.test.beans.beans.pojo.SingletonSampleBean;
@@ -24,6 +25,7 @@ import net.hasor.test.beans.scope.*;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
+import java.util.HashMap;
 import java.util.function.Supplier;
 public class ScopContainerTest {
     //
@@ -259,5 +261,26 @@ public class ScopContainerTest {
         //
         new SingletonScope().chainScope("2", myScope, supplier2).get();// 不会命中 HashRemainderScope
         assert myScope.getScopeMap().size() == 1;
+    }
+    //
+    @Test
+    public void scopTest11() {
+        SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
+        ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
+        spiCallerContainer.doInitialize();
+        scopeContainer.doInitialize();
+        //
+        //
+        HashMap<String, Object> spiTest = new HashMap<>();
+        spiCallerContainer.addListener(ScopeProvisionListener.class, (scopeName, scopeSupplier) -> {
+            spiTest.put(scopeName, scopeSupplier.get());
+            //
+        });
+        //
+        Scope mockScope = PowerMockito.mock(Scope.class);
+        scopeContainer.registerScope(My.class.getName(), mockScope);
+        //
+        assert spiTest.size() == 1;
+        assert spiTest.containsKey(My.class.getName());
     }
 }

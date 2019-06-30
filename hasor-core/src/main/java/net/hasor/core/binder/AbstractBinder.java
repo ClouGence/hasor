@@ -99,7 +99,7 @@ public abstract class AbstractBinder implements ApiBinder {
     //
     @Override
     public <T extends Scope> Supplier<T> registerScope(String scopeName, Supplier<T> scopeProvider) {
-        return this.getScopContainer().registerScope(scopeName, scopeProvider);
+        return this.getScopContainer().registerScopeSupplier(scopeName, scopeProvider);
     }
     /*----------------------------------------------------------------------------------------Aop*/
     //    static {

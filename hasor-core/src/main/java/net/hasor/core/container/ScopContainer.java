@@ -57,8 +57,7 @@ public class ScopContainer implements Closeable {
         if (oldScope == null) {
             throw new IllegalStateException("reference Scope does not exist.");
         }
-        this.scopeMapping.put(aliasName, oldScope);
-        return (Supplier<T>) oldScope;
+        return (Supplier<T>) this.registerScopeSupplier(aliasName, oldScope);
     }
     /**
      * 注册作用域。
@@ -67,7 +66,7 @@ public class ScopContainer implements Closeable {
      * @return 成功注册之后返回scopeProvider自身, 如果存在同名的scope那么会引发异常。
      */
     public <T extends Scope> Supplier<T> registerScope(String scopeName, Scope scopeInstance) {
-        return this.registerScope(scopeName, (Supplier) InstanceProvider.of(scopeInstance));
+        return this.registerScopeSupplier(scopeName, (Supplier) InstanceProvider.of(scopeInstance));
     }
     /**
      * 注册作用域。
@@ -75,7 +74,7 @@ public class ScopContainer implements Closeable {
      * @param scopeProvider 作用域
      * @return 成功注册之后返回scopeProvider自身, 如果存在同名的scope那么会引发异常。
      */
-    public <T extends Scope> Supplier<T> registerScope(String scopeName, Supplier<T> scopeProvider) {
+    public <T extends Scope> Supplier<T> registerScopeSupplier(String scopeName, Supplier<T> scopeProvider) {
         // .重复检测
         if (this.scopeMapping.containsKey(scopeName)) {
             throw new IllegalStateException("the scope " + scopeName + " already exists.");

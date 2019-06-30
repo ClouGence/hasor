@@ -26,8 +26,8 @@ import java.util.function.Supplier;
 public interface ScopeProvisionListener extends EventListener {
     /**
      * 发现新的作用域。
-     * @param scopeName 新对象。
-     * @param bindInfo 新对象的 BindInfo（可能为空）。
+     * @param scopeName 新作用域名。
+     * @param scopeSupplier 新作用域。
      */
-    public void newScope(String scopeName, Supplier<? extends Scope> bindInfo) throws Throwable;
+    public void newScope(String scopeName, Supplier<? extends Scope> scopeSupplier) throws Throwable;
 }
