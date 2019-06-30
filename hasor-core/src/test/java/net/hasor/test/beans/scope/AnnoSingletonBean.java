@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/** 关闭忽略行为 */
-@AopIgnore(ignore = false)
-package net.hasor.core.container.aop;
-import net.hasor.core.AopIgnore;
+package net.hasor.test.beans.scope;
+import net.hasor.core.Singleton;
+//
+@Singleton
+public class AnnoSingletonBean {
+}

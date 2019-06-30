@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import net.hasor.core.*;
 import net.hasor.core.EventListener;
+import net.hasor.core.*;
 import net.hasor.core.aop.AopClassConfig;
 import net.hasor.core.aop.AsmTools;
-import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.provider.SingleProvider;
+import net.hasor.core.scope.PrototypeScope;
 import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.spi.BindInfoAware;
 import net.hasor.core.spi.InjectMembers;
@@ -33,19 +33,16 @@ import net.hasor.utils.convert.ConverterUtils;
 
 import javax.inject.Named;
 import java.io.Closeable;
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static net.hasor.core.container.ContainerUtils.*;
-import static net.hasor.core.container.ContainerUtils.findInject;
 /**
  * 负责创建 Bean
  * @version : 2015年11月25日
@@ -236,16 +233,18 @@ public class BeanContainer implements Closeable {
             return null;// Integer.TYPE 判断结果为 true & targetType.isArray() 情况下也为 true，因此要放在后面
         }
         // .作用域
-        Supplier<Scope> scopeProvider = null;
+        Supplier<Scope>[] scopeProvider = null;
         if (bindInfo != null) {
             scopeProvider = this.scopContainer.findScope(bindInfo);
         }
-        if (scopeProvider == null) {
+        if (ArrayUtils.isEmpty(scopeProvider)) {
             scopeProvider = this.scopContainer.findScope(targetType);
         }
-        Scope scope = null;
-        if (scopeProvider != null) {
-            scope = Objects.requireNonNull(scopeProvider.get(), "scope is null.");
+        Scope[] scope = null;
+        if (ArrayUtils.isNotEmpty(scopeProvider)) {
+            scope = Arrays.stream(scopeProvider).map(supplier -> {
+                return Objects.requireNonNull(supplier.get(), "scope is null.");
+            }).toArray(Scope[]::new);
         }
         //
         DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
@@ -288,11 +287,11 @@ public class BeanContainer implements Closeable {
         }
         //
         // .创建对象，如果存在作用域那么就从作用域中获取对象
-        if (scope == null) {
+        if (ArrayUtils.isEmpty(scope)) {
             return targetSupplier.get();
         } else {
             String key = (bindInfo != null) ? bindInfo.getBindID() : targetType.getName();
-            return scope.scope(key, targetSupplier).get();
+            return PrototypeScope.SINGLETON.chainScope(key, scope, targetSupplier).get();
         }
     }
     //

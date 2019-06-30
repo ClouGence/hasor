@@ -13,19 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container.anno;
-import net.hasor.core.ConstructorBy;
-import net.hasor.core.container.beans.CallInitBean;
+package net.hasor.test.beans.scope;
+import net.hasor.core.Prototype;
+import net.hasor.core.Singleton;
 //
-public class AnnoConstructorMultiBean extends CallInitBean {
-    //
-    public AnnoConstructorMultiBean(String paramName) {
-        this.setName(paramName);
-    }
-    //
-    @ConstructorBy
-    public AnnoConstructorMultiBean(String paramUUID, String paramName) {
-        this.setUuid(paramUUID);
-        this.setName(paramName);
-    }
+@Prototype
+@Singleton
+public class AnnoConflictBean {
 }

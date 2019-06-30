@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container.beans;
+package net.hasor.test.beans.scope;
 //
-public class ConstructorBean extends CallInitBean {
-    //
-    public ConstructorBean(String paramName) {
-        this.setName(paramName);
+public class CustomHashBean {
+    private int hashCode;
+    public CustomHashBean(int hashCode) {
+        this.hashCode = hashCode;
+    }
+    @Override
+    public int hashCode() {
+        return this.hashCode;
     }
 }

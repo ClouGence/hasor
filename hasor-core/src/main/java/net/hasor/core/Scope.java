@@ -29,4 +29,67 @@ public interface Scope {
      * @return 返回作用域中的对象 Provider。
      */
     public <T> Supplier<T> scope(Object key, Supplier<T> provider);
+
+    /**
+     * 构造一个Scope链，使一个对象的创建可以同时贯穿两个Scope。<p>
+     * 如果对象的创建满足这两个 Scope 的要求，那么对象会被这两个 Scope 同时缓存。
+     * @param key 加入作用域的key。
+     * @param secondScope 第二作用域
+     * @param provider 对象 Provider。
+     * @see #chainScope(Object, Scope[], Supplier)
+     * @see #chainScope(Object, Scope[], int, int, Supplier)
+     */
+    public default <T> Supplier<T> chainScope(Object key, Scope secondScope, Supplier<T> provider) {
+        Scope[] scopeArray = new Scope[] { secondScope };
+        return chainScope(key, scopeArray, 0, scopeArray.length, provider);
+    }
+
+    /**
+     * 构造一个Scope链，使一个对象的创建可以同时贯穿多个Scope。<p>
+     * scopeChain 中的 Scope 如果被创建的对象满足其缓存的要求那么会被缓存。
+     * @param key 加入作用域的key。
+     * @param scopeChain 作用域链
+     * @param provider 对象 Provider。
+     * @see #chainScope(Object, Scope, Supplier)
+     * @see #chainScope(Object, Scope[], int, int, Supplier)
+     */
+    public default <T> Supplier<T> chainScope(Object key, Scope[] scopeChain, Supplier<T> provider) {
+        return chainScope(key, scopeChain, 0, scopeChain.length, provider);
+    }
+
+    /**
+     * 构造一个Scope链，使一个对象的创建可以同时贯穿多个Scope。<p>
+     * scopeChain 中的 Scope 如果被创建的对象满足其缓存的要求那么会被缓存。
+     * @param key 加入作用域的key。
+     * @param scopeChain 作用域链
+     * @param start scopeChain 开始位置。
+     * @param end scopeChain 结束位置。
+     * @param provider 对象 Provider。
+     * @see #chainScope(Object, Scope, Supplier)
+     * @see #chainScope(Object, Scope[], Supplier)
+     */
+    public default <T> Supplier<T> chainScope(final Object key, final Scope[] scopeChain, int start, int end, Supplier<T> provider) {
+        Supplier<T> nextSupplier = provider;
+        if (start < end) {
+            for (int i = start; i < end; i++) {
+                Scope curentScope = scopeChain[end - i - 1];
+                Supplier<T> finalNextSupplier = nextSupplier;
+                nextSupplier = () -> {
+                    return curentScope.scope(key, finalNextSupplier).get();
+                };
+            }
+        }
+        //
+        Supplier<T> finalSupplier = nextSupplier;
+        return () -> {
+            Supplier<T> scope = scope(key, finalSupplier);
+            if (scope != null) {
+                T target = scope.get();
+                if (target != null) {
+                    return target;
+                }
+            }
+            return finalSupplier.get();
+        };
+    }
 }

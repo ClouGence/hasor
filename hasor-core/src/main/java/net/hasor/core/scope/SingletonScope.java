@@ -31,7 +31,7 @@ public class SingletonScope implements Scope {
     public <T> Supplier<T> scope(Object key, final Supplier<T> provider) {
         Supplier<?> returnData = this.scopeMap.get(key);
         if (returnData == null) {
-            Supplier<T> newSingleProvider = new SingleProvider<T>(provider);
+            Supplier<T> newSingleProvider = new SingleProvider<>(provider);
             returnData = this.scopeMap.putIfAbsent(key, newSingleProvider);
             if (returnData == null) {
                 returnData = newSingleProvider;
@@ -39,6 +39,7 @@ public class SingletonScope implements Scope {
         }
         return (Supplier<T>) returnData;
     }
+    //
     public Map<Object, Supplier<?>> getSingletonData() {
         return Collections.unmodifiableMap(this.scopeMap);
     }

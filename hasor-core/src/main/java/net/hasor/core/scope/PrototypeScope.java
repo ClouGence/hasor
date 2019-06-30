@@ -13,9 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container.anno;
-import net.hasor.core.Singleton;
-//
-@Singleton
-public class AnnoSingletonBean {
+package net.hasor.core.scope;
+import net.hasor.core.Scope;
+
+import java.util.function.Supplier;
+/**
+ * 多例
+ * @version : 2015年6月28日
+ * @author 赵永春 (zyc@hasor.net)
+ */
+public class PrototypeScope implements Scope {
+    public final static PrototypeScope SINGLETON = new PrototypeScope();
+    @Override
+    public <T> Supplier<T> scope(Object key, Supplier<T> provider) {
+        return provider;
+    }
 }

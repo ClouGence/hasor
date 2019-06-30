@@ -79,7 +79,7 @@ public class EnvTest {
     public void envTest6() throws IOException {
         EnvironmentWrap env = wrap(new StandardEnvironment(null));
         //
-        ((StandardEnvironment) env.getTarget()).setSpanPackage(new String[] { "net.hasor.core.test.mods" });
+        ((StandardEnvironment) env.getTarget()).setSpanPackage(new String[] { "net.hasor.test.beans.mods" });
         assert env.findClass(ErrorModule.class).size() == 1;
         assert env.findClass(Module.class).size() == 3;
     }

@@ -13,11 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.container.anno;
-import net.hasor.core.Prototype;
+package net.hasor.test.beans.beans.pojo;
 import net.hasor.core.Singleton;
-//
-@Prototype
+/**
+ * 一个Bean
+ * @version : 2014-1-3
+ * @author 赵永春 (zyc@hasor.net)
+ */
 @Singleton
-public class AnnoConflictBean {
+public class SingletonSampleBean implements SampleFace {
+    private String name;
+    private int    age;
+    private String address;
+    //
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public int getAge() {
+        return age;
+    }
+    public void setAge(int age) {
+        this.age = age;
+    }
+    public String getAddress() {
+        return address;
+    }
+    public void setAddress(String address) {
+        this.address = address;
+    }
 }
