@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
+
 /**
  * 用于处理当虚拟机关闭时{@link TemplateAppContext}的shutdown过程。
  * @version : 2015年11月4日
@@ -27,9 +28,11 @@ import java.util.Objects;
 class ShutdownHook extends Thread implements Runnable {
     protected static Logger     logger = LoggerFactory.getLogger(ShutdownHook.class);
     private          AppContext appContext;
+
     public ShutdownHook(AppContext appContext) {
         this.appContext = Objects.requireNonNull(appContext);
     }
+
     public void run() {
         ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
         ClassLoader newLoader = this.appContext.getClassLoader();

@@ -16,6 +16,7 @@
 package net.hasor.core.setting;
 import net.hasor.core.Settings;
 import net.hasor.core.XmlNode;
+import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
 import net.hasor.utils.io.FilenameUtils;
@@ -29,6 +30,7 @@ import java.text.DateFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
 /**
  * Settings接口的抽象实现。
  *
@@ -39,14 +41,15 @@ public abstract class AbstractSettings implements Settings {
     protected            Logger                            logger              = LoggerFactory.getLogger(getClass());
     private static final SettingValue[]                    EMPTY_SETTING_VALUE = new SettingValue[0];
     private              DecSpaceMap<String, SettingValue> dataMap;
+
     public AbstractSettings() {
         this.dataMap = new DecSpaceMap<>();
     }
-    //
-    //
+
     protected DecSpaceMap<String, SettingValue> allSettingValue() {
         return dataMap;
     }
+
     /**使用UpdateValue接口,遍历所有属性值,将它们重新计算并设置新的参数值。<p>
      * 注意:该过程不可逆,一旦重新设置了属性值,那么原有从配置文件中读取的属性值将会被替换。
      * 一个典型的应用场景是配置文件模版化。*/
@@ -61,16 +64,17 @@ public abstract class AbstractSettings implements Settings {
             }
         }
     }
+
     @Override
     public void refresh() throws IOException {
     }
-    //
-    //
+
     /** 获取可用的命名空间。 */
     public String[] getSettingArray() {
         Set<String> nsSet = this.allSettingValue().spaceSet();
         return nsSet.toArray(new String[0]);
     }
+
     /** 获取指在某个特定命名空间下的Settings接口对象。 */
     public final AbstractSettings getSettings(final String namespace) {
         final DecSpaceMap<String, SettingValue> localData = this.allSettingValue().space(namespace);
@@ -83,16 +87,19 @@ public abstract class AbstractSettings implements Settings {
             }
         };
     }
+
     /** 将整个配置项的多个值全部删除。 */
     public void removeSetting(String key) {
         String lowerKey = StringUtils.isBlank(key) ? "" : key.toLowerCase();
         this.allSettingValue().removeAll(lowerKey);// 所有命名空间的数据
     }
+
     /** 将整个配置项的多个值全部删除。 */
     public void removeSetting(String key, String namespace) {
         String lowerKey = StringUtils.isBlank(key) ? "" : key.toLowerCase();
         this.allSettingValue().remove(namespace, lowerKey);// 所有命名空间的数据
     }
+
     /**
      *  设置参数，如果出现多个值，则会覆盖。(使用默认命名空间 : DefaultNameSpace)
      * @see #DefaultNameSpace
@@ -101,12 +108,19 @@ public abstract class AbstractSettings implements Settings {
     public void setSetting(String key, Object value) {
         this.setSetting(key, value, DefaultNameSpace);
     }
+
     /** 设置参数，如果出现多个值，则会覆盖。 */
     public void setSetting(final String key, final Object value, final String namespace) {
         String lowerKey = StringUtils.isBlank(key) ? "" : key.toLowerCase();
         this.removeSetting(lowerKey, namespace);
         this.addSetting(lowerKey, value, namespace);
     }
+
+    /** 添加参数，如果参数名称相同则追加一项。 */
+    public void addSetting(final String key, final Object value) {
+        this.addSetting(key, value, DefaultNameSpace);
+    }
+
     /** 添加参数，如果参数名称相同则追加一项。 */
     public void addSetting(final String key, final Object value, final String namespace) {
         String lowerKey = StringUtils.isBlank(key) ? "" : key.toLowerCase();
@@ -118,13 +132,13 @@ public abstract class AbstractSettings implements Settings {
         }
         val.newValue(value);
     }
-    //
-    //
+
     /**清空已经装载的所有数据。*/
     protected void cleanData() {
         logger.info("cleanData -> clear all data.");
         this.allSettingValue().deleteAllSpace();
     }
+
     protected SettingValue[] findSettingValue(String name) {
         name = StringUtils.isBlank(name) ? "" : name.toLowerCase();
         List<SettingValue> svList = this.allSettingValue().get(name);
@@ -139,23 +153,28 @@ public abstract class AbstractSettings implements Settings {
         });
         return svList.toArray(new SettingValue[svList.size()]);
     }
+
     protected <T> T converTo(Object oriObject, final Class<T> toType, final T defaultValue) {
+        // .获取不到数据，使用默认值替代
         if (oriObject == null) {
-            return defaultValue;
+            if (defaultValue != null) {
+                return defaultValue;
+            } else {
+                return (T) BeanUtils.getDefaultValue(toType);
+            }
         }
-        T var = null;
-        if (oriObject instanceof String) {
-            // 原始数据是字符串经过Eval过程
-            var = (T) ConverterUtils.convert(toType, oriObject);
-        } else if (oriObject instanceof FieldProperty) {
-            // 原始数据是GlobalProperty直接get
-            var = ((FieldProperty) oriObject).getValue(toType, defaultValue);
-        } else {
-            // 其他类型不予处理（数据就是要的值）
-            var = (T) oriObject;
+        // .原始数据是 FieldProperty 直接get
+        if (oriObject instanceof FieldProperty) {
+            return ((FieldProperty) oriObject).getValue(toType, defaultValue);
         }
-        return var == null ? defaultValue : var;
+        // .如果数据就是目标需要的类型那么就直接返回
+        if (toType.isInstance(oriObject)) {
+            return (T) oriObject;
+        }
+        // .转换类型
+        return (T) ConverterUtils.convert(toType, oriObject);
     }
+
     /** 解析全局配置参数，并且返回toType参数指定的类型。 */
     public final <T> T getToType(final String name, final Class<T> toType, final T defaultValue) {
         SettingValue[] settingvar = this.findSettingValue(name);
@@ -164,6 +183,7 @@ public abstract class AbstractSettings implements Settings {
         }
         return converTo(settingvar[0].getDefaultVar(), toType, defaultValue);
     }
+
     public <T> T[] getToTypeArray(final String name, final Class<T> toType, final T defaultValue) {
         SettingValue[] varArrays = this.findSettingValue(name);
         if (varArrays == null) {
@@ -178,153 +198,195 @@ public abstract class AbstractSettings implements Settings {
         }
         return targetObjects.toArray((T[]) Array.newInstance(toType, targetObjects.size()));
     }
+
     public <T> T[] getToTypeArray(final String name, final Class<T> toType) {
         return this.getToTypeArray(name, toType, null);
     }
+
     /** 解析全局配置参数，并且返回toType参数指定的类型。 */
     public final <T> T getToType(final String name, final Class<T> toType) {
         return this.getToType(name, toType, null);
     }
+
     /** 解析全局配置参数，并且返回其{@link Object}形式对象。 */
     public Object getObject(final String name) {
         return this.getToType(name, Object.class);
     }
+
     /** 解析全局配置参数，并且返回其{@link Object}形式对象。第二个参数为默认值。 */
     public Object getObject(final String name, final Object defaultValue) {
         return this.getToType(name, Object.class, defaultValue);
     }
+
     /** 解析全局配置参数，并且返回其{@link Character}形式对象。 */
     public Character getChar(final String name) {
         return this.getToType(name, Character.class);
     }
+
     /** 解析全局配置参数，并且返回其{@link Character}形式对象。第二个参数为默认值。 */
     public Character getChar(final String name, final Character defaultValue) {
         return this.getToType(name, Character.class, defaultValue);
     }
+
     public Character[] getCharArray(final String name) {
         return this.getToTypeArray(name, Character.class);
     }
+
     public Character[] getCharArray(final String name, final Character defaultValue) {
         return this.getToTypeArray(name, Character.class, defaultValue);
     }
+
     /** 解析全局配置参数，并且返回其{@link String}形式对象。 */
     public String getString(final String name) {
         return this.getToType(name, String.class);
     }
+
     /** 解析全局配置参数，并且返回其{@link String}形式对象。第二个参数为默认值。 */
     public String getString(final String name, final String defaultValue) {
         return this.getToType(name, String.class, defaultValue);
     }
+
     public String[] getStringArray(final String name) {
         return this.getToTypeArray(name, String.class);
     }
+
     public String[] getStringArray(final String name, final String defaultValue) {
         return this.getToTypeArray(name, String.class, defaultValue);
     }
+
     /** 解析全局配置参数，并且返回其{@link Boolean}形式对象。 */
     public Boolean getBoolean(final String name) {
         return this.getToType(name, Boolean.class);
     }
+
     /** 解析全局配置参数，并且返回其{@link Boolean}形式对象。第二个参数为默认值。 */
     public Boolean getBoolean(final String name, final Boolean defaultValue) {
         return this.getToType(name, Boolean.class, defaultValue);
     }
+
     public Boolean[] getBooleanArray(final String name) {
         return this.getToTypeArray(name, Boolean.class);
     }
+
     public Boolean[] getBooleanArray(final String name, final Boolean defaultValue) {
         return this.getToTypeArray(name, Boolean.class, defaultValue);
     }
+
     /** 解析全局配置参数，并且返回其{@link Short}形式对象。 */
     public Short getShort(final String name) {
         return this.getToType(name, Short.class);
     }
+
     /** 解析全局配置参数，并且返回其{@link Short}形式对象。第二个参数为默认值。 */
     public Short getShort(final String name, final Short defaultValue) {
         return this.getToType(name, Short.class, defaultValue);
     }
+
     public Short[] getShortArray(final String name) {
         return this.getToTypeArray(name, Short.class);
     }
+
     public Short[] getShortArray(final String name, final Short defaultValue) {
         return this.getToTypeArray(name, Short.class, defaultValue);
     }
+
     /** 解析全局配置参数，并且返回其{@link Integer}形式对象。 */
     public Integer getInteger(final String name) {
         return this.getToType(name, Integer.class);
     }
+
     /** 解析全局配置参数，并且返回其{@link Integer}形式对象。第二个参数为默认值。 */
     public Integer getInteger(final String name, final Integer defaultValue) {
         return this.getToType(name, Integer.class, defaultValue);
     }
+
     public Integer[] getIntegerArray(final String name) {
         return this.getToTypeArray(name, Integer.class);
     }
+
     public Integer[] getIntegerArray(final String name, final Integer defaultValue) {
         return this.getToTypeArray(name, Integer.class, defaultValue);
     }
+
     /** 解析全局配置参数，并且返回其{@link Long}形式对象。 */
     public Long getLong(final String name) {
         return this.getToType(name, Long.class);
     }
+
     /** 解析全局配置参数，并且返回其{@link Long}形式对象。第二个参数为默认值。 */
     public Long getLong(final String name, final Long defaultValue) {
         return this.getToType(name, Long.class, defaultValue);
     }
+
     public Long[] getLongArray(final String name) {
         return this.getToTypeArray(name, Long.class);
     }
+
     public Long[] getLongArray(final String name, final Long defaultValue) {
         return this.getToTypeArray(name, Long.class, defaultValue);
     }
+
     /** 解析全局配置参数，并且返回其{@link Float}形式对象。 */
     public Float getFloat(final String name) {
         return this.getToType(name, Float.class);
     }
+
     /** 解析全局配置参数，并且返回其{@link Float}形式对象。第二个参数为默认值。 */
     public Float getFloat(final String name, final Float defaultValue) {
         return this.getToType(name, Float.class, defaultValue);
     }
+
     public Float[] getFloatArray(final String name) {
         return this.getToTypeArray(name, Float.class);
     }
+
     public Float[] getFloatArray(final String name, final Float defaultValue) {
         return this.getToTypeArray(name, Float.class, defaultValue);
     }
+
     /** 解析全局配置参数，并且返回其{@link Double}形式对象。 */
     public Double getDouble(final String name) {
         return this.getToType(name, Double.class);
     }
+
     /** 解析全局配置参数，并且返回其{@link Double}形式对象。第二个参数为默认值。 */
     public Double getDouble(final String name, final Double defaultValue) {
         return this.getToType(name, Double.class, defaultValue);
     }
+
     public Double[] getDoubleArray(final String name) {
         return this.getToTypeArray(name, Double.class);
     }
+
     public Double[] getDoubleArray(final String name, final Double defaultValue) {
         return this.getToTypeArray(name, Double.class, defaultValue);
     }
+
     /** 解析全局配置参数，并且返回其{@link Date}形式对象。 */
     public Date getDate(final String name) {
         return this.getDate(name, getString(name + ".format"), null);
     }
+
     /** 解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。 */
     public Date getDate(final String name, final Date defaultValue) {
         return this.getDate(name, getString(name + ".format"), defaultValue);
     }
+
     /** 解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。 */
     public Date getDate(final String name, final long defaultValue) {
         return this.getDate(name, getString(name + ".format"), new Date(defaultValue));
     }
+
     /** 解析全局配置参数，并且返回其{@link Date}形式对象。 */
     public Date getDate(final String name, final String format) {
         return this.getDate(name, format, null);
     }
+
     /** 解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。 */
     public Date getDate(final String name, final String format, final long defaultValue) {
         return this.getDate(name, format, new Date(defaultValue));
     }
+
     /** 解析全局配置参数，并且返回其{@link Date}形式对象。第二个参数为默认值。 */
     public Date getDate(final String name, final String format, final Date defaultValue) {
         String oriData = this.getToType(name, String.class);
@@ -342,21 +404,27 @@ public abstract class AbstractSettings implements Settings {
             return parsedDate;
         }
     }
+
     public Date[] getDateArray(final String name) {
         return this.getDateArray(name, getString(name + ".format"), null);
     }
+
     public Date[] getDateArray(final String name, final Date defaultValue) {
         return this.getDateArray(name, getString(name + ".format"), defaultValue);
     }
+
     public Date[] getDateArray(final String name, final long defaultValue) {
         return this.getDateArray(name, getString(name + ".format"), new Date(defaultValue));
     }
+
     public Date[] getDateArray(final String name, final String format) {
         return this.getDateArray(name, format, null);
     }
+
     public Date[] getDateArray(final String name, final String format, final long defaultValue) {
         return this.getDateArray(name, format, new Date(defaultValue));
     }
+
     public Date[] getDateArray(final String name, final String format, final Date defaultValue) {
         String[] oriDataArray = this.getToTypeArray(name, String.class);
         if (oriDataArray == null || oriDataArray.length == 0) {
@@ -376,48 +444,61 @@ public abstract class AbstractSettings implements Settings {
         }
         return parsedDate;
     }
+
     /** 解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。 */
     public <T extends Enum<?>> T getEnum(final String name, final Class<T> enmType) {
         return this.getToType(name, enmType, null);
     }
+
     /** 解析全局配置参数，并且返回其{@link Enum}形式对象。第二个参数为默认值。 */
     public <T extends Enum<?>> T getEnum(final String name, final Class<T> enmType, final T defaultValue) {
         return this.getToType(name, enmType, defaultValue);
     }
+
     public <T extends Enum<?>> T[] getEnumArray(final String name, final Class<T> enmType) {
         return this.getToTypeArray(name, enmType, null);
     }
+
     public <T extends Enum<?>> T[] getEnumArray(final String name, final Class<T> enmType, final T defaultValue) {
         return this.getToTypeArray(name, enmType, defaultValue);
     }
+
     /** 解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。 */
     public String getFilePath(final String name) {
         return getFilePath(name, null, true);
     }
+
     /** 解析全局配置参数，并且返回其{@link Date}形式对象（用于表示文件）。第二个参数为默认值。 */
     public String getFilePath(final String name, final String defaultValue) {
         return getFilePath(name, defaultValue, true);
     }
+
     /** 解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。 */
     public String getDirectoryPath(final String name) {
         return getFilePath(name, null, false);
     }
+
     /** 解析全局配置参数，并且返回其{@link File}形式对象（用于表示目录）。第二个参数为默认值。 */
     public String getDirectoryPath(final String name, final String defaultValue) {
         return getFilePath(name, defaultValue, false);
     }
+
     public String[] getFilePathArray(final String name) {
         return this.getFilePathArray(name, null, true);
     }
+
     public String[] getFilePathArray(final String name, final String defaultValue) {
         return this.getFilePathArray(name, defaultValue, true);
     }
+
     public String[] getDirectoryPathArray(final String name) {
         return this.getFilePathArray(name, null, false);
     }
+
     public String[] getDirectoryPathArray(final String name, final String defaultValue) {
         return this.getFilePathArray(name, defaultValue, false);
     }
+
     private String getFilePath(final String name, final String defaultValue, boolean includeName) {
         String filePath = this.getToType(name, String.class);
         if (StringUtils.isBlank(filePath)) {
@@ -434,6 +515,7 @@ public abstract class AbstractSettings implements Settings {
             return FilenameUtils.getFullPath(filePath);
         }
     }
+
     private String[] getFilePathArray(final String name, final String defaultValue, boolean includeName) {
         ArrayList<String> filePaths = new ArrayList<String>();
         for (String url : this.getSettingArray()) {
@@ -459,13 +541,16 @@ public abstract class AbstractSettings implements Settings {
         }
         return filePaths.toArray(new String[0]);
     }
+
     /** 解析全局配置参数，并且返回其{@link XmlNode}形式对象。 */
     public XmlNode getXmlNode(final String name) {
         return this.getToType(name, XmlNode.class, null);
     }
+
     public XmlNode[] getXmlNodeArray(final String name) {
         return this.getToTypeArray(name, XmlNode.class, null);
     }
+
     public String toString() {
         return "Settings[" + this.getClass().getSimpleName() + "]";
     }

@@ -23,37 +23,39 @@ import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Closeable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+
 /**
  * 负责管理 Bean 的元信息
- * @version : 2019年06月20日
+ *
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2019年06月20日
  */
-public class BindInfoContainer implements Observer, Closeable {
+public class BindInfoContainer extends AbstractContainer implements Observer {
     protected static Logger                                  logger             = LoggerFactory.getLogger(BindInfoContainer.class);
-    private          AtomicBoolean                           inited             = new AtomicBoolean(false);
     private          List<BindInfo<?>>                       allBindInfoList    = new ArrayList<>();
     private          ConcurrentHashMap<String, List<String>> indexTypeMapping   = new ConcurrentHashMap<>();
     private          ConcurrentHashMap<String, BindInfo<?>>  idDataSource       = new ConcurrentHashMap<>();
     private          SpiCallerContainer                      spiCallerContainer = null;
+
     public BindInfoContainer(SpiCallerContainer spiCallerContainer) {
         this.spiCallerContainer = spiCallerContainer;
     }
-    //
-    //
+
     /*-----------------------------------------------------------------------------------BindInfo*/
-    //
-    /**根据ID获取{@link BindInfo}。*/
+
+    /**
+     * 根据ID获取{@link BindInfo}。
+     */
     public <T> BindInfo<T> findBindInfo(String infoID) {
         return (BindInfo<T>) this.idDataSource.get(infoID);
     }
-    //
+
     /**
      * 通过一个类型获取所有绑定该类型下的绑定信息。
+     *
      * @param bindType bean type
      * @return 返回所有符合条件的绑定信息。
      */
@@ -68,15 +70,14 @@ public class BindInfoContainer implements Observer, Closeable {
             BindInfo<?> adapter = this.idDataSource.get(infoID);
             if (adapter != null) {
                 resultList.add((BindInfo<T>) adapter);
-            } else {
-                logger.debug("findBindInfoList , cannot find {} BindInfo.", infoID);
             }
         }
         return resultList;
     }
-    //
+
     /**
      * 通过一个类型获取所有绑定该类型下的绑定信息。
+     *
      * @param withName 绑定名
      * @param bindType bean type
      * @return 返回所有符合条件的绑定信息。
@@ -99,20 +100,23 @@ public class BindInfoContainer implements Observer, Closeable {
         }
         return null;
     }
-    //
-    /**获取所有ID。*/
+
+    /**
+     * 获取所有ID。
+     */
     public Collection<String> getBindInfoIDs() {
         return this.idDataSource.keySet();
     }
-    //
+
     /*-------------------------------------------------------------------------------------------*/
-    //
+
     /**
      * 创建{@link DefaultBindInfoProviderAdapter}，交给外层用于Bean定义。
+     *
      * @param bindType 声明的类型。
      */
     public <T> DefaultBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType) {
-        if (this.inited.get()) {
+        if (this.isInit()) {
             throw new IllegalStateException("container has been started.");
         }
         // .构造 BindInfo
@@ -125,7 +129,7 @@ public class BindInfoContainer implements Observer, Closeable {
         });
         return adapter;
     }
-    //
+
     @Override
     public synchronized void update(Observable o, Object arg) {
         // - 处理当异常发生时，新的 Bean 定义回滚逻辑
@@ -142,6 +146,7 @@ public class BindInfoContainer implements Observer, Closeable {
             throw e;
         }
     }
+
     private void doUpdate(Observable o, Object arg) {
         if (!(arg instanceof NotifyData)) {
             return;
@@ -201,29 +206,42 @@ public class BindInfoContainer implements Observer, Closeable {
             throw new IllegalStateException("'bindType' are not allowed to be changed");
         }
     }
-    //
-    /** 遍历所有 BindInfo */
+
+    /**
+     * 遍历所有 BindInfo
+     */
     public void forEach(Consumer<BindInfo<?>> action) {
         Objects.requireNonNull(action);
         for (BindInfo<?> t : this.allBindInfoList) {
             action.accept(t);
         }
     }
-    //
-    //
-    //
-    /** 初始化，把inited标记为true，从而锁住 createInfoAdapter 方法不在允许新对象注册进来。*/
-    public void doInitialize() {
-        if (!this.inited.compareAndSet(false, true)) {
-            return;/*避免被初始化多次*/
-        }
+
+    /**
+     * 初始化，把inited标记为true，从而锁住 createInfoAdapter 方法不在允许新对象注册进来。
+     */
+    protected void doInitialize() {
+        // 相同类型，同名检测
+        HashSet<String> names = new HashSet<>();
+        this.indexTypeMapping.forEach((key, value) -> {
+            value.forEach(bindID -> {
+                BindInfo<?> bindInfo = idDataSource.get(bindID);
+                String name = StringUtils.isBlank(bindInfo.getBindName()) ? null : bindInfo.getBindName();
+                if (names.contains(name)) {
+                    throw new IllegalStateException("conflict definition of the same type" + (StringUtils.isBlank(name) ? "" : (" with name " + name)));
+                } else {
+                    names.add(name);
+                }
+            });
+            names.clear();
+        });
     }
-    /** 当容器停止运行时，需要做Bean清理工作。*/
+
+    /**
+     * 当容器停止运行时，需要做Bean清理工作。
+     */
     @Override
-    public void close() {
-        if (!this.inited.compareAndSet(true, false)) {
-            return;/*避免被销毁多次*/
-        }
+    protected void doClose() {
         this.allBindInfoList.clear();
         this.indexTypeMapping.clear();
         this.idDataSource.clear();

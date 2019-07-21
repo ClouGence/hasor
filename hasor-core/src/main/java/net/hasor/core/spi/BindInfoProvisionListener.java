@@ -17,6 +17,7 @@ package net.hasor.core.spi;
 import net.hasor.core.BindInfo;
 
 import java.util.EventListener;
+
 /**
  * Scope 注册监听器
  * @version : 2013-11-8
@@ -25,8 +26,7 @@ import java.util.EventListener;
 public interface BindInfoProvisionListener extends EventListener {
     /**
      * 注入AppContext。
-     * @param newObject 新对象。
-     * @param bindInfo 新对象的 BindInfo（可能为空）。
+     * @param bindInfo 新对象的 BindInfo
      */
     public void newBindInfo(BindInfo<?> bindInfo) throws Throwable;
 }

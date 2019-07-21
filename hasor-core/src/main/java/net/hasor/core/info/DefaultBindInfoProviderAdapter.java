@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
+
 /**
  *
  * @version : 2014年7月4日
@@ -35,28 +36,32 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
     private Map<String, ParamInfo>  injectProperty;
     private String                  initMethod;
     private String                  destroyMethod;
-    //
+
     public DefaultBindInfoProviderAdapter() {
         this.injectProperty = new HashMap<>();
         this.constructorParams = new HashMap<>();
     }
+
     public DefaultBindInfoProviderAdapter(Class<T> bindingType) {
         this();
         this.setBindID(UUID.randomUUID().toString());
         this.setBindType(bindingType);
     }
+
     @Override
     public void setConstructor(final int index, final Class<?> paramType, final Supplier<?> valueProvider) {
         Objects.requireNonNull(paramType, "paramType parameter is null.");
         Objects.requireNonNull(valueProvider, "valueProvider parameter is null.");
         this.constructorParams.put(index, new ParamInfo(paramType, valueProvider));
     }
+
     @Override
     public void setConstructor(final int index, final Class<?> paramType, final BindInfo<?> valueInfo) {
         Objects.requireNonNull(paramType, "paramType parameter is null.");
         Objects.requireNonNull(valueInfo, "valueInfo parameter is null.");
         this.constructorParams.put(index, new ParamInfo(paramType, valueInfo));
     }
+
     @Override
     public void addInject(final String property, final Supplier<?> valueProvider) {
         Objects.requireNonNull(property, "property parameter is null.");
@@ -64,6 +69,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         Class<?> propertyType = Objects.requireNonNull(lookupPropertyType(property), "not found '" + property + "' property.");
         this.injectProperty.put(property, new ParamInfo(propertyType, valueProvider));
     }
+
     @Override
     public void addInject(final String property, final BindInfo<?> valueInfo) {
         Objects.requireNonNull(property, "paramType parameter is null.");
@@ -71,12 +77,11 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         Class<?> propertyType = Objects.requireNonNull(lookupPropertyType(property), "not found '" + property + "' property.");
         this.injectProperty.put(property, new ParamInfo(propertyType, valueInfo));
     }
-    //
+
     private Class<?> lookupPropertyType(String propertyName) {
         return BeanUtils.getPropertyOrFieldType(lookupType(), propertyName);
     }
-    //
-    //
+
     private ConstructorInfo genConstructorInfo(AppContext appContext) {
         ArrayList<Integer> ints = new ArrayList<>(constructorParams.keySet());
         Collections.sort(ints);
@@ -99,6 +104,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         }
         return new ConstructorInfo(types, providers);
     }
+
     /**获得需要IoC的属性列表*/
     public Constructor<?> getConstructor(Class<?> targetClass, AppContext appContext) {
         Constructor<?> c = ConstructorUtils.getAccessibleConstructor(targetClass, genConstructorInfo(appContext).types);
@@ -107,10 +113,12 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         }
         return c;
     }
+
     /**获得需要IoC的属性列表*/
     public Supplier<?>[] getConstructorParams(AppContext appContext) {
         return genConstructorInfo(appContext).providers;
     }
+
     /**获得需要IoC的属性列表*/
     public Map<String, Supplier<?>> getPropertys(AppContext appContext) {
         Map<String, Supplier<?>> propertys = new HashMap<>();
@@ -128,15 +136,17 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         }
         return propertys;
     }
+
     @Override
     public void initMethod(String methodName) {
         this.initMethod = methodName;
     }
+
     @Override
     public void destroyMethod(String methodName) {
         this.destroyMethod = methodName;
     }
-    //
+
     private Class<?> lookupType() {
         Class<?> sourceType = this.getSourceType();
         if (sourceType == null) {
@@ -144,7 +154,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         }
         return sourceType;
     }
-    //
+
     /**获得初始化方法。*/
     public Method getInitMethod(Class<?> targetClass) {
         try {
@@ -156,7 +166,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         }
         return null;
     }
-    //
+
     /**获得销毁方法。*/
     public Method getDestroyMethod(Class<?> targetClass) {
         try {
@@ -169,27 +179,30 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
         return null;
     }
 }
-//
-//
+
 class ConstructorInfo {
     public ConstructorInfo(Class<?>[] types, Supplier<?>[] providers) {
         this.types = types;
         this.providers = providers;
     }
+
     public Class<?>[]    types;
     public Supplier<?>[] providers;
 }
+
 class ParamInfo {
     public ParamInfo(Class<?> paramType, Supplier<?> valueProvider) {
         this.paramType = paramType;
         this.valueProvider = valueProvider;
         this.useProvider = true;
     }
+
     public ParamInfo(Class<?> paramType, BindInfo<?> valueInfo) {
         this.paramType = paramType;
         this.valueInfo = valueInfo;
         this.useProvider = false;
     }
+
     public Class<?>    paramType;
     public boolean     useProvider;
     public BindInfo<?> valueInfo;

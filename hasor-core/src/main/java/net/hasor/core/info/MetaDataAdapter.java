@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+
 /**
  * 提供metaData。
  * @version : 2014年7月3日
@@ -27,15 +28,19 @@ import java.util.Observable;
  */
 public class MetaDataAdapter extends Observable {
     private final Map<String, Object> metaData = new HashMap<>();
+
     public void setMetaData(final String key, final Object value) {
         this.metaData.put(key, value);
     }
+
     public Object getMetaData(final String key) {
         return this.metaData.get(key);
     }
+
     public void removeMetaData(String key) {
         this.metaData.remove(key);
     }
+
     public String toString() {
         List<String> propertys = BeanUtils.getPropertys(this.getClass());
         StringBuilder builder = new StringBuilder(this.getClass().getSimpleName()).append("{");
@@ -46,7 +51,7 @@ public class MetaDataAdapter extends Observable {
         builder.append("}");
         return builder.toString();
     }
-    //
+
     protected void notify(NotifyData notifyData) {
         setChanged();
         this.notifyObservers(notifyData);

@@ -16,6 +16,7 @@
 package net.hasor.core;
 import java.io.IOException;
 import java.util.Date;
+
 /**
  * <p>
  * 配置文件设置
@@ -49,6 +50,9 @@ public interface Settings {
 
     /** 将整个配置项的多个值全部删除。 */
     public void removeSetting(String key, String namespace);
+
+    /** 添加参数，如果参数名称相同则追加一项。 */
+    public void addSetting(String key, Object var);
 
     /** 添加参数，如果参数名称相同则追加一项。 */
     public void addSetting(String key, Object var, String currentXmlns);
@@ -228,5 +232,4 @@ public interface Settings {
 
     /** 解析全局配置参数，并且返回其{@link XmlNode}形式对象。 */
     public XmlNode[] getXmlNodeArray(String name);
-
 }

@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 /**
  * @version : 2013-7-13
  * @author 赵永春 (zyc@byshell.org)
@@ -33,27 +34,32 @@ public class SaxXmlParser extends DefaultHandler {
     private Settings                    dataContainer     = null;
     private Map<String, StringBuilder>  xmlText           = new HashMap<>();
     private Map<String, DefaultXmlNode> currentXmlPropert = new HashMap<>();
-    //
+
     public SaxXmlParser(final Settings dataContainer) {
         this.dataContainer = dataContainer;
     }
+
     private StringBuilder getText(final String xmlns) {
         if (!this.xmlText.containsKey(xmlns)) {
             this.xmlText.put(xmlns, new StringBuilder(""));
         }
         return this.xmlText.get(xmlns);
     }
+
     private void cleanText(final String xmlns) {
         this.xmlText.remove(xmlns);
     }
+
     private DefaultXmlNode getCurrentXmlPropert(final String xmlns) {
         return this.currentXmlPropert.get(xmlns);
     }
+
     private void setCurrentXmlPropert(final String xmlns, final DefaultXmlNode xmlProperty) {
         this.currentXmlPropert.put(xmlns, xmlProperty);
     }
-    //
+
     private String curXmlns = null;
+
     public void startElement(final String uri, final String localName, final String qName, final Attributes attributes) throws SAXException {
         DefaultXmlNode xmlProperty = this.getCurrentXmlPropert(uri);
         if (xmlProperty == null) {
@@ -71,6 +77,7 @@ public class SaxXmlParser extends DefaultHandler {
         }
         this.curXmlns = uri;
     }
+
     public void endElement(final String uri, final String localName, final String qName) throws SAXException {
         StringBuilder strBuffer = this.getText(uri);
         //
@@ -81,6 +88,7 @@ public class SaxXmlParser extends DefaultHandler {
         this.cleanText(uri);
         this.curXmlns = uri;
     }
+
     public void characters(final char[] ch, final int start, final int length) throws SAXException {
         if (this.curXmlns == null) {
             return;
@@ -89,6 +97,7 @@ public class SaxXmlParser extends DefaultHandler {
         String content = new String(ch, start, length);
         strBuffer.append(content);
     }
+
     public void endDocument() throws SAXException {
         for (Entry<String, DefaultXmlNode> ent : this.currentXmlPropert.entrySet()) {
             String currentXmlns = ent.getKey();
@@ -122,6 +131,7 @@ public class SaxXmlParser extends DefaultHandler {
             }
         }
     }
+
     /** 转换成Key Value形式 */
     protected void convertType(final Map<String, List<Object>> returnData, final List<XmlNode> xmlPropertyList, final String parentAttName) {
         if (xmlPropertyList != null) {
@@ -140,6 +150,7 @@ public class SaxXmlParser extends DefaultHandler {
             }
         }
     }
+
     private void convertTypePut(final Map<String, List<Object>> returnData, String key, Object value) {
         List<Object> dataList = null;
         if (returnData.containsKey(key)) {

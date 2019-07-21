@@ -20,6 +20,7 @@ import net.hasor.core.Settings;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * 简化“modules.module”的配置，提供整个应用程序的一个唯一入口 Module。
  * 该模块只会加载一个Module，如果要加载多个module建议使用原生。<br>
@@ -29,7 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public class StartupModule implements Module {
     private static Logger logger = LoggerFactory.getLogger(StartupModule.class);
-    //
+
     public final void loadModule(ApiBinder apiBinder) throws Throwable {
         ClassLoader classLoader = apiBinder.getEnvironment().getClassLoader();
         Settings settings = apiBinder.getEnvironment().getSettings();
@@ -42,6 +43,7 @@ public class StartupModule implements Module {
             }
         }
     }
+
     /**获取启动模块*/
     protected Module getStartModule(Settings settings, ClassLoader loader) throws Exception {
         Module startupModule = null;

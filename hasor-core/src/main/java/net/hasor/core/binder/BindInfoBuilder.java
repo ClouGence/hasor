@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import net.hasor.core.spi.BeanCreaterListener;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Scope;
+import net.hasor.core.spi.BeanCreaterListener;
 
 import java.util.function.Supplier;
+
 /**
  * Bean配置接口，用于对Bean信息进行全方面配置。
  * @version : 2014年7月2日
@@ -57,11 +58,27 @@ public interface BindInfoBuilder<T> {
     public void setCustomerProvider(Supplier<? extends T> customerProvider);
 
     /**
-     * 将类型发布到一个固定的命名空间内。
+     * 加入一个 Scope。
      * @param scopeProvider 命名空间
      */
-    public void setScopeProvider(Supplier<Scope> scopeProvider);
-    //
+    public void addScopeProvider(Supplier<Scope> scopeProvider);
+
+    /**
+     * 加入一个 Scope。
+     * @param scopeProvider 命名空间
+     */
+    public default void addScopeProvider(Supplier<Scope>[] scopeProvider) {
+        if (scopeProvider != null && scopeProvider.length > 0) {
+            for (Supplier<Scope> scope : scopeProvider) {
+                this.addScopeProvider(scope);
+            }
+        }
+    }
+
+    /**
+     * 清空已经加入的所有 Scope。
+     */
+    public void clearScope();
 
     /**
      * 设置构造参数。
@@ -92,7 +109,6 @@ public interface BindInfoBuilder<T> {
      * @param valueInfo 属性值
      */
     public void addInject(String property, BindInfo<?> valueInfo);
-    //
 
     /**
      * 转化为{@link BindInfo}类型对象。
@@ -112,6 +128,5 @@ public interface BindInfoBuilder<T> {
      */
     public void destroyMethod(String methodName);
 
-    //
     public void addCreaterListener(Supplier<? extends BeanCreaterListener<?>> createrListener);
 }

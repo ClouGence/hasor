@@ -15,6 +15,7 @@
  */
 package net.hasor.core.provider;
 import java.util.function.Supplier;
+
 /**
  * 单例对象的{@link Supplier}封装形式。
  * @version : 2014年7月8日
@@ -24,10 +25,12 @@ public class SingleProvider<T> implements Supplier<T> {
     private          Supplier<T> provider = null;
     private volatile T           instance = null;
     private final    Object      lock     = new Object();
+
     //
     public SingleProvider(Supplier<T> provider) {
         this.provider = provider;
     }
+
     public T get() {
         if (this.instance == null) {
             synchronized (this.lock) {
@@ -38,11 +41,11 @@ public class SingleProvider<T> implements Supplier<T> {
         }
         return this.instance;
     }
-    //
+
     protected T newInstance(Supplier<T> provider) {
         return provider.get();
     }
-    //
+
     public String toString() {
         return "SingleProvider->" + provider.toString();
     }

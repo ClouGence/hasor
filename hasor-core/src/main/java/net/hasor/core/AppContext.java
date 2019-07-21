@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
 /**
  * Hasor的核心接口，它为应用程序提供了一个统一的配置界面和运行环境。
  * @version : 2013-3-26
@@ -71,7 +72,7 @@ public interface AppContext extends MetaInfo {
 
     /** 阻塞当前线程的继续执行，直到 {@link AppContext#shutdown()} 被调用或者接收到 kill -15 or kill -2 信号 */
     public void joinSignal(long timeout, TimeUnit unit);
-    //
+
     /*---------------------------------------------------------------------------------------Bean*/
 
     /** 通过 bindID 获取 Bean 的类型 */

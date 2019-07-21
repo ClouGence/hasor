@@ -21,10 +21,13 @@ import org.xml.sax.InputSource;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Properties;
+
 /***
  * 传入{@link InputStream}的方式获取{@link Settings}接口的支持。
  * @version : 2013-9-8
@@ -32,10 +35,11 @@ import java.util.Properties;
  */
 public class InputStreamSettings extends AbstractSettings implements IOSettings {
     private LinkedList<InputStreamEntity> pendingStream = new LinkedList<>();
+
     /**子类决定如何添加资源*/
     public InputStreamSettings() {
     }
-    //
+
     /**将一个输入流添加到待加载处理列表，使用load方法加载待处理列表中的流。
      * 注意：待处理列表中的流一旦装载完毕将会从待处理列表中清除出去。*/
     public synchronized boolean addReader(Reader inReader, StreamType streamType) {
@@ -49,7 +53,7 @@ public class InputStreamSettings extends AbstractSettings implements IOSettings 
         }
         return this.pendingStream.add(new InputStreamEntity(inReader, streamType));
     }
-    //
+
     /**load装载所有待处理的流，如果没有待处理流则直接return。*/
     @Override
     public synchronized int loadSettings() throws IOException {
@@ -115,10 +119,12 @@ public class InputStreamSettings extends AbstractSettings implements IOSettings 
         logger.debug("loadSettings finish.");
         return loadCount;
     }
+
     /**准备装载*/
     protected void readyLoad() throws IOException {
         //
     }
+
     /**完成装载*/
     protected void loadFinish() throws IOException {
         //

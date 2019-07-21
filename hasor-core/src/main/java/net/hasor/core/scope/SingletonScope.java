@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
+
 /**
  * 单例
  * @version : 2015年6月28日
@@ -28,6 +29,7 @@ import java.util.function.Supplier;
  */
 public class SingletonScope implements Scope {
     private ConcurrentHashMap<Object, Supplier<?>> scopeMap = new ConcurrentHashMap<>();
+
     public <T> Supplier<T> scope(Object key, final Supplier<T> provider) {
         Supplier<?> returnData = this.scopeMap.get(key);
         if (returnData == null) {
@@ -39,7 +41,7 @@ public class SingletonScope implements Scope {
         }
         return (Supplier<T>) returnData;
     }
-    //
+
     public Map<Object, Supplier<?>> getSingletonData() {
         return Collections.unmodifiableMap(this.scopeMap);
     }

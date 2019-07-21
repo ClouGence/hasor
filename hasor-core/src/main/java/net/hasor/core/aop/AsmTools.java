@@ -24,6 +24,7 @@ import java.io.StringReader;
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Map;
+
 /**
  * 生成字节码时候使用的工具类。
  * @version 2009-10-16
@@ -31,6 +32,7 @@ import java.util.Map;
  */
 public class AsmTools implements Opcodes {
     //=======================================================================================================================
+
     /**根据类型获取其Return指令。*/
     public static int getReturn(final String asmType) {
         char t = asmType.charAt(0);
@@ -61,6 +63,7 @@ public class AsmTools implements Opcodes {
             throw new UnsupportedOperationException("不支持的类型装载请求");//
         }
     }
+
     /**根据类型获取其Load指令。*/
     public static int getLoad(final String asmType) {
         char t = asmType.charAt(0);
@@ -118,6 +121,7 @@ public class AsmTools implements Opcodes {
         }
     }*/
     //=======================================================================================================================
+
     /**将某一个类型转为asm形式的表述， int 转为 I，String转为 Ljava/lang/String。*/
     public static String toAsmType(final Class<?> classType) {
         if (classType == int.class) {
@@ -144,6 +148,7 @@ public class AsmTools implements Opcodes {
             return "L" + Type.getInternalName(classType) + ";";
         }
     }
+
     /**将某一个类型转为asm形式的表述， int,int 转为 II，String,int转为 Ljava/lang/String;I。*/
     public static String toAsmType(final Class<?>[] classType) {
         String returnString = "";
@@ -153,6 +158,7 @@ public class AsmTools implements Opcodes {
         ;
         return returnString;
     }
+
     /**获取方法的Signature描述信息。*/
     public static String toAsmSignature(Method targetMethod) {
         class MoreType {
@@ -229,6 +235,7 @@ public class AsmTools implements Opcodes {
         }
         return signature.toString();
     }
+
     private static StringBuffer getTypeVarStr(StringBuffer atString, java.lang.reflect.Type type) {
         //
         if (type instanceof TypeVariable) {
@@ -269,6 +276,7 @@ public class AsmTools implements Opcodes {
         //
         return atString;
     }
+
     /**获取方法的ASM格式描述信息。*/
     public static String toAsmFullDesc(Method method) {
         StringBuffer str = new StringBuffer();
@@ -284,6 +292,7 @@ public class AsmTools implements Opcodes {
         }
         return str.toString();
     }
+
     /**获取方法的ASM格式描述信息。*/
     public static String toAsmDesc(Method method) {
         StringBuffer str = new StringBuffer();
@@ -298,6 +307,7 @@ public class AsmTools implements Opcodes {
         }
         return str.toString();
     }
+
     /**
      * 将IIIILjava/lang/Integer;F形式的ASM类型表述分解为数组。
      * 测试字符串IIIILjava/lang/Integer;F[[[ILjava/lang.Boolean; ->
@@ -306,9 +316,11 @@ public class AsmTools implements Opcodes {
     public static String[] splitAsmType(final String asmTypes) {
         class AsmTypeRead {
             StringReader sread = null;
+
             public AsmTypeRead(final String sr) {
                 this.sread = new StringReader(sr);
             }
+
             /** 读取到下一个分号为止或者结束为止。*/
             private String readToSemicolon() throws IOException {
                 String res = "";
@@ -323,6 +335,7 @@ public class AsmTools implements Opcodes {
                     }
                 }
             }
+
             /** 读取一个类型 */
             private String readType() throws IOException {
                 int strInt = this.sread.read();
@@ -338,6 +351,7 @@ public class AsmTools implements Opcodes {
                     return String.valueOf((char) strInt);
                 }
             }
+
             /** 读取所有类型 */
             public String[] readTypes() throws IOException {
                 ArrayList<String> ss = new ArrayList<String>(0);
@@ -361,13 +375,16 @@ public class AsmTools implements Opcodes {
         }
     }
     //=======================================================================================================================
+
     /**将类名转换为asm类名。*/
     public static String replaceClassName(final Class<?> targetClass) {
         return targetClass.getName().replace(".", "/");
     }
+
     public static String replaceClassName(final String targetClass) {
         return targetClass.replace(".", "/");
     }
+
     public static String[] replaceClassName(Class<?>[] exceptionTypes) {
         String[] typeStr = new String[exceptionTypes.length];
         for (int i = 0; i < exceptionTypes.length; i++) {
@@ -375,7 +392,7 @@ public class AsmTools implements Opcodes {
         }
         return typeStr;
     }
-    //
+
     /**通过位运算决定check是否在data里。*/
     public static boolean checkAnd(final int data, int... check) {
         for (int checkItem : check) {
@@ -386,6 +403,7 @@ public class AsmTools implements Opcodes {
         }
         return true;
     }
+
     public static boolean checkOr(final int data, int... check) {
         for (int checkItem : check) {
             int or = data | checkItem;
@@ -395,6 +413,7 @@ public class AsmTools implements Opcodes {
         }
         return false;
     }
+
     /**将一个Ljava/lang/Object;形式的字符串转化为java/lang/Object形式。*/
     public static String asmTypeToType(final String asmType) {
         if (asmType.charAt(0) == 'L') {
@@ -403,6 +422,7 @@ public class AsmTools implements Opcodes {
             return asmType;
         }
     }
+
     /**父类是否支持*/
     public static boolean isSupport(Class<?> superClass) {
         String resName = superClass.getName().replace(".", "/") + ".class";
@@ -412,7 +432,7 @@ public class AsmTools implements Opcodes {
             return AsmTools.checkAnd(superClass.getModifiers(), Modifier.PUBLIC);
         }
     }
-    //
+
     //=======================================================================================================================
     //Code Builder “new Object[] { abc, abcc, abcc };”
     public static void codeBuilder_1(MethodVisitor mv, String[] asmParams, Map<String, Integer> paramIndexMap) {
@@ -453,6 +473,7 @@ public class AsmTools implements Opcodes {
             mv.visitInsn(Opcodes.AASTORE);
         }
     }
+
     //Code Builder “new Class[] { int.class, Object.class, boolean.class, short.class };”
     public static void codeBuilder_2(MethodVisitor mv, String[] asmParams) {
         int paramCount = asmParams.length;
@@ -484,6 +505,7 @@ public class AsmTools implements Opcodes {
             mv.visitInsn(Opcodes.AASTORE);
         }
     }
+
     //Code Builder “return ...”
     public static void codeBuilder_3(MethodVisitor mv, String asmReturns, Label tryEnd) {
         if (asmReturns.equals("B")) {

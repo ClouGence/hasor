@@ -15,6 +15,7 @@
  */
 package net.hasor.core.provider;
 import java.util.function.Supplier;
+
 /**
  * 线程单例对象的{@link Supplier}封装形式。
  * @version : 2014年7月8日
@@ -22,18 +23,20 @@ import java.util.function.Supplier;
  */
 public class ThreadSingleProvider<T> implements Supplier<T> {
     private final ThreadLocal<T> instance;
-    //
+
     public ThreadSingleProvider(final Supplier<T> provider) {
         this.instance = ThreadLocal.withInitial(() -> newInstance(provider));
     }
+
     //
     protected T newInstance(Supplier<T> provider) {
         return provider.get();
     }
-    //
+
     public T get() {
         return this.instance.get();
     }
+
     public String toString() {
         return "ThreadSingleProvider->" + instance.toString();
     }

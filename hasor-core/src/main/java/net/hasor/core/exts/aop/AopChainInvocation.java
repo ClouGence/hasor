@@ -21,6 +21,7 @@ import net.hasor.core.MethodInvocation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  *
  * @version : 2013-4-13
@@ -30,7 +31,7 @@ class AopChainInvocation implements MethodInvocation {
     private MethodInterceptor[] beforeInterceptor = null;
     private MethodInvocation    invocation        = null;
     private int                 index             = -1;
-    //
+
     public AopChainInvocation(AppContext appContext, List<Class<? extends MethodInterceptor>> interTypeList, MethodInvocation invocation) {
         List<MethodInterceptor> beforeList = new ArrayList<>();
         for (Class<? extends MethodInterceptor> interType : interTypeList) {
@@ -41,6 +42,7 @@ class AopChainInvocation implements MethodInvocation {
         this.beforeInterceptor = beforeList.toArray(new MethodInterceptor[0]);
         this.invocation = invocation;
     }
+
     public Object invoke(MethodInvocation invocation) throws Throwable {
         index++;
         if (index < beforeInterceptor.length) {
@@ -49,16 +51,19 @@ class AopChainInvocation implements MethodInvocation {
             return invocation.proceed();
         }
     }
-    //-----------------------------------------------------------
+
     public Object[] getArguments() {
         return invocation.getArguments();
     }
+
     public Object proceed() throws Throwable {
         return this.invoke(this.invocation);
     }
+
     public Object getThis() {
         return invocation.getThis();
     }
+
     public Method getMethod() {
         return invocation.getMethod();
     }

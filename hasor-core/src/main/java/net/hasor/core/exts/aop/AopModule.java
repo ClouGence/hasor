@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.function.Predicate;
+
 /**
  * 提供 <code>@Aop</code>注解 功能支持。
  * @version : 2013-9-13
@@ -29,6 +30,7 @@ import java.util.function.Predicate;
  */
 public class AopModule implements Module {
     private static Logger logger = LoggerFactory.getLogger(AopModule.class);
+
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         //Aop拦截器
         Predicate<Class<?>> matcherClass = Matchers.annotatedWithClass(Aop.class);//

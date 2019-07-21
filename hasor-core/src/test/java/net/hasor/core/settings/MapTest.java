@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+
 /**
  *
  * @version : 2013-8-11
@@ -29,7 +30,7 @@ import java.util.Set;
  */
 public class MapTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    //
+
     // - 配置信息读取
     @Test
     public void mapTest() {

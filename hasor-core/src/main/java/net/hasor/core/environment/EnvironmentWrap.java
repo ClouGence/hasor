@@ -19,6 +19,7 @@ import net.hasor.core.EventContext;
 import net.hasor.core.Settings;
 
 import java.util.Set;
+
 /**
  * {@link Environment}接口包装器。
  * @version : 2013-9-11
@@ -26,50 +27,60 @@ import java.util.Set;
  */
 public class EnvironmentWrap implements Environment {
     private final Environment environment;
+
     public EnvironmentWrap(Environment environment) {
         this.environment = environment;
     }
-    //
+
     protected Environment getTarget() {
         return environment;
     }
-    //
+
     @Override
     public String[] getSpanPackage() {
         return this.getTarget().getSpanPackage();
     }
+
     @Override
     public Set<Class<?>> findClass(Class<?> featureType) {
         return this.getTarget().findClass(featureType);
     }
+
     @Override
     public boolean isSmaller() {
         return this.getTarget().isSmaller();
     }
+
     @Override
     public Set<Class<?>> findClass(Class<?> featureType, String loadPackages) {
         return this.getTarget().findClass(featureType, loadPackages);
     }
+
     @Override
     public Set<Class<?>> findClass(Class<?> featureType, String[] loadPackages) {
         return this.getTarget().findClass(featureType, loadPackages);
     }
+
     @Override
     public Object getContext() {
         return this.getTarget().getContext();
     }
+
     @Override
     public ClassLoader getClassLoader() {
         return this.getTarget().getClassLoader();
     }
+
     @Override
     public EventContext getEventContext() {
         return this.getTarget().getEventContext();
     }
+
     @Override
     public Settings getSettings() {
         return this.getTarget().getSettings();
     }
+
     @Override
     public String[] getVariableNames() {
         return this.getTarget().getVariableNames();
@@ -84,18 +95,22 @@ public class EnvironmentWrap implements Environment {
     public String evalString(String eval) {
         return this.getTarget().evalString(eval);
     }
+
     @Override
     public void addVariable(String varName, String value) {
         this.getTarget().addVariable(varName, value);
     }
+
     @Override
     public void removeVariable(String varName) {
         this.getTarget().removeVariable(varName);
     }
+
     @Override
     public void refreshVariables() {
         this.getTarget().refreshVariables();
     }
+
     @Override
     public String getSystemProperty(String property) {
         return this.getTarget().getSystemProperty(property);

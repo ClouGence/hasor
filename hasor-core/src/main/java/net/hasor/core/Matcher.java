@@ -15,6 +15,7 @@
  */
 package net.hasor.core;
 import java.util.function.Predicate;
+
 /**
  * 匹配器
  * @version : 2013-7-10

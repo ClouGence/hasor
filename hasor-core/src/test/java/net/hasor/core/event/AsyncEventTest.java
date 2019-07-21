@@ -23,6 +23,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * 仅会被执行一次的事件
  * @version : 2013-8-11
@@ -59,6 +60,7 @@ public class AsyncEventTest {
         }
         assert (endTime - startTime) < (100 * 50);
     }
+
     @Test
     public void onesAsyncEventTest() throws Throwable {
         EventContext ec = new StandardEventManager(10, "TestEvent", Thread.currentThread().getContextClassLoader());
@@ -82,7 +84,7 @@ public class AsyncEventTest {
         assert eventDataSet.size() == 50;// 线程池大小为 10 ，执行完至少要 500ms
         assert (endTime - startTime) < (50 * 100); // 并发执行，所以总时间不应该大于 50 * 100
     }
-    //
+
     @Test
     public void syncTest() throws Throwable {
         //
@@ -102,6 +104,7 @@ public class AsyncEventTest {
             public void handleException(String eventType, Object eventData, Throwable e) {
                 exceptionInteger.incrementAndGet();
             }
+
             @Override
             public void handleComplete(String eventType, Object eventData) {
                 completeInteger.incrementAndGet();

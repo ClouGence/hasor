@@ -16,6 +16,7 @@
 package net.hasor.core.spi;
 import net.hasor.core.AppContext;
 import net.hasor.core.Inject;
+
 /**
  * 初始化注入接口。Hasor 的 Ioc 是通过递归的方式实现，版本中要想实依赖注入必须要实现 InjectMembers接口。
  * 请注意：{@link Inject}注解方式和接口方式互斥，且接口方式优先于注解方式。

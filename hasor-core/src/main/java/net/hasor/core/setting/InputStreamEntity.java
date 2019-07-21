@@ -17,6 +17,7 @@
  */
 package net.hasor.core.setting;
 import java.io.Reader;
+
 /***
  *
  * @version : 16/7/4
@@ -25,6 +26,7 @@ import java.io.Reader;
 class InputStreamEntity {
     public Reader     inReader = null;
     public StreamType fileType = null;
+
     public InputStreamEntity(Reader inReader, StreamType fileType) {
         this.inReader = inReader;
         this.fileType = fileType;

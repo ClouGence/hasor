@@ -23,18 +23,21 @@ public class NotifyData {
     private String key      = null;
     private Object oldValue = null;
     private Object newValue = null;
-    //
+
     public NotifyData(String key, Object oldValue, Object newValue) {
         this.key = key;
         this.oldValue = oldValue;
         this.newValue = newValue;
     }
+
     public String getKey() {
         return key;
     }
+
     public Object getOldValue() {
         return oldValue;
     }
+
     public Object getNewValue() {
         return newValue;
     }

@@ -18,6 +18,7 @@ import net.hasor.core.ApiBinder.ScopedBindingBuilder;
 
 import javax.inject.Scope;
 import java.lang.annotation.*;
+
 /**
  * 标记类型为单例模式，与 {@link Prototype} 为互斥关系，代码配置优先于注解。
  * 当 {@link Singleton} 和 {@link ImplBy} 组合使用时，标记在接口上的 Singleton 注解会覆盖 ImplBy 指定的那个实现。

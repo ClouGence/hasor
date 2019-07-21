@@ -15,6 +15,7 @@
  */
 package net.hasor.core;
 import java.lang.annotation.*;
+
 /**
  * 标记接口或者包上，用于忽略Hasor的Aop动态代理功能。当标记到包上时表示整个包都忽略动态代理。
  * 该功能可以有效的防止泛滥的全局Aop。优先级顺序为：类->父类->包->父包
@@ -25,9 +26,9 @@ import java.lang.annotation.*;
 @Target({ ElementType.TYPE, ElementType.PACKAGE })
 @Documented
 public @interface AopIgnore {
-    /** 是否将 AopIgnore 的配置策略遗传给子类或者子包（只有当标记在父类或包上有效）*/
-    public boolean inherited() default true;
+    /** 当前注解的配置生效范围是否传递到子包或子类中。如果设置为 false 表示配置只有在当前包或类有效，不会传播到子包或子类中（默认为 true）*/
+    public boolean propagate() default true;
 
-    /** 是否忽略Aop配置 */
+    /** 是否忽略Aop配置（默认为 false） */
     public boolean ignore() default true;
 }

@@ -17,9 +17,11 @@ package net.hasor.test.beans.scope;
 //
 public class CustomHashBean {
     private int hashCode;
+
     public CustomHashBean(int hashCode) {
         this.hashCode = hashCode;
     }
+
     @Override
     public int hashCode() {
         return this.hashCode;

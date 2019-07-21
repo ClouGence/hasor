@@ -17,6 +17,7 @@ package net.hasor.core;
 import net.hasor.core.ApiBinder.LinkedBindingBuilder;
 
 import java.lang.annotation.*;
+
 /**
  * <p>标记当前类型的具体实现。</p>
  *

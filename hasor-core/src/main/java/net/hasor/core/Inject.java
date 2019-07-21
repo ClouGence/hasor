@@ -16,8 +16,8 @@
 package net.hasor.core;
 import net.hasor.core.spi.InjectMembers;
 
-import javax.inject.Qualifier;
 import java.lang.annotation.*;
+
 /**
  * 依赖注入。请注意{@link InjectMembers}接口方式与注解方式互斥，且接口方式优先于注解方式。
  * <p>如果没有配置“value”参数那么将会使用“{@code AppContext.getInstance(class)}”方式进行依赖注入。</p>

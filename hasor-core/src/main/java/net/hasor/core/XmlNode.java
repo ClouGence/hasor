@@ -16,6 +16,7 @@
 package net.hasor.core;
 import java.util.List;
 import java.util.Map;
+
 /**
  * Xml属性节点。
  * @version : 2013-4-22

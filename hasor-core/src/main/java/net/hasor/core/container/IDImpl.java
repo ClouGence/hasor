@@ -19,21 +19,25 @@ import net.hasor.core.ID;
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.util.Objects;
-//
+
 class IDImpl implements ID, Serializable {
     private final String value;
+
     public IDImpl(String value) {
         this.value = Objects.requireNonNull(value, "id");
     }
+
     @Override
     public String value() {
         return this.value;
     }
+
     @Override
     public int hashCode() {
         // This is specified in java.lang.Annotation.
         return (127 * "value".hashCode()) ^ value.hashCode();
     }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof ID)) {
@@ -42,13 +46,16 @@ class IDImpl implements ID, Serializable {
         ID other = (ID) o;
         return value.equals(other.value());
     }
+
     @Override
     public String toString() {
         return "@" + ID.class.getName() + "(value=" + value + ")";
     }
+
     @Override
     public Class<? extends Annotation> annotationType() {
         return ID.class;
     }
+
     private static final long serialVersionUID = 0;
 }

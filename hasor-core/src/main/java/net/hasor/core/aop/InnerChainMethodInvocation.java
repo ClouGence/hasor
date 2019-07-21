@@ -18,6 +18,7 @@ import net.hasor.core.MethodInvocation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
 /**
  *
  * @version : 2013-4-13
@@ -28,20 +29,22 @@ class InnerChainMethodInvocation implements MethodInvocation {
     private Method   targetMethod = null;
     private Object   targetObject = null;
     private Object[] paramObjects = null;
-    //
+
     InnerChainMethodInvocation(Method proxyMethod, Method targetMethod, Object targetObject, Object[] paramObjects) {
         this.proxyMethod = proxyMethod;
         this.targetMethod = targetMethod;
         this.targetObject = targetObject;
         this.paramObjects = paramObjects;
     }
-    //
+
     public Method getMethod() {
         return this.targetMethod;
     }
+
     public Object[] getArguments() {
         return this.paramObjects;
     }
+
     public Object proceed() throws Throwable {
         try {
             return proxyMethod.invoke(this.targetObject, this.paramObjects);
@@ -49,6 +52,7 @@ class InnerChainMethodInvocation implements MethodInvocation {
             throw e.getTargetException();
         }
     }
+
     public Object getThis() {
         return this.targetObject;
     }

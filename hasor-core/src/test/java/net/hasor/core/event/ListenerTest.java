@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  *
  * @version : 2013-8-11
@@ -43,6 +44,7 @@ public class ListenerTest {
         ec.fireSyncEvent(FirstEvent, ec);
         assert atomicInteger.get() == 1;
     }
+
     @Test
     public void listenerTest1() throws Throwable {
         //
@@ -60,7 +62,7 @@ public class ListenerTest {
         ec.fireSyncEvent(FirstEvent, ec);
         assert atomicInteger.get() == 1;
     }
-    //
+
     @Test
     public void listenerTest2() throws Throwable {
         //

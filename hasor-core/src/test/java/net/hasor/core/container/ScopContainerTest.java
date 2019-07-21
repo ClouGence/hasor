@@ -18,28 +18,39 @@ import net.hasor.core.Scope;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.scope.SingletonScope;
 import net.hasor.core.spi.ScopeProvisionListener;
-import net.hasor.test.beans.beans.pojo.SampleBean;
-import net.hasor.test.beans.beans.pojo.SampleFace;
-import net.hasor.test.beans.beans.pojo.SingletonSampleBean;
-import net.hasor.test.beans.scope.*;
+import net.hasor.test.beans.basic.destroy.PrototypePublicCallDestroyBean;
+import net.hasor.test.beans.basic.destroy.SingletonPublicCallDestroyBean;
+import net.hasor.test.beans.basic.pojo.SampleBean;
+import net.hasor.test.beans.basic.pojo.SampleFace;
+import net.hasor.test.beans.basic.pojo.SingletonSampleBean;
+import net.hasor.test.beans.scope.AnnoMyBean;
+import net.hasor.test.beans.scope.CustomHashBean;
+import net.hasor.test.beans.scope.HashRemainderScope;
+import net.hasor.test.beans.scope.My;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
 import java.util.HashMap;
 import java.util.function.Supplier;
+
 public class ScopContainerTest {
-    //
     @Test
     public void scopTest1() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
-        spiCallerContainer.doInitialize();
+        spiCallerContainer.init();
+        //
+        try {
+            spiCallerContainer.init();
+            assert false;
+        } catch (Exception e) {
+            assert "the Container has been inited.".equals(e.getMessage());
+        }
         //
         assert scopeContainer.findScope(javax.inject.Singleton.class.getName()) == null;
         assert scopeContainer.findScope(net.hasor.core.Singleton.class.getName()) == null;
         assert scopeContainer.findScope(net.hasor.core.Prototype.class.getName()) == null;
-        //
-        scopeContainer.doInitialize();
+        scopeContainer.init();
         //
         assert scopeContainer.findScope(javax.inject.Singleton.class.getName()) != null;
         assert scopeContainer.findScope(net.hasor.core.Singleton.class.getName()) != null;
@@ -47,34 +58,34 @@ public class ScopContainerTest {
         //
         scopeContainer.close();
     }
-    //
+
     @Test
     public void scopTest2() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
-        spiCallerContainer.doInitialize();
-        scopeContainer.doInitialize();
+        spiCallerContainer.init();
+        scopeContainer.init();
         //
         try {
-            scopeContainer.findScope(AnnoMyBean.class);
+            scopeContainer.collectScope(AnnoMyBean.class);
             assert false;
         } catch (IllegalStateException e) {
             assert e.getMessage().equals("the scope " + My.class.getName() + " undefined.");
         }
     }
-    //
+
     @Test
     public void scopTest3() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
-        spiCallerContainer.doInitialize();
-        scopeContainer.doInitialize();
+        spiCallerContainer.init();
+        scopeContainer.init();
         //
         Scope mockScope = PowerMockito.mock(Scope.class);
         scopeContainer.registerScope(My.class.getName(), mockScope);
         //
         try {
-            Supplier<Scope>[] scope = scopeContainer.findScope(AnnoMyBean.class);
+            Supplier<Scope>[] scope = scopeContainer.collectScope(AnnoMyBean.class);
             assert scope.length == 1;
             assert scope[0].get() == mockScope;
         } catch (IllegalStateException e) {
@@ -88,13 +99,13 @@ public class ScopContainerTest {
             assert e.getMessage().equals("the scope " + My.class.getName() + " already exists.");
         }
     }
-    //
+
     @Test
     public void scopTest4() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
-        spiCallerContainer.doInitialize();
-        scopeContainer.doInitialize();
+        spiCallerContainer.init();
+        scopeContainer.init();
         //
         scopeContainer.registerAlias(javax.inject.Singleton.class.getName(), My.class.getName());
         //
@@ -104,13 +115,13 @@ public class ScopContainerTest {
         assert scope1.get() == scope2.get();
         assert scope2.get() == scope3.get();
     }
-    //
+
     @Test
     public void scopTest5() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
-        spiCallerContainer.doInitialize();
-        scopeContainer.doInitialize();
+        spiCallerContainer.init();
+        scopeContainer.init();
         //
         scopeContainer.registerAlias(javax.inject.Singleton.class.getName(), My.class.getName());
         //
@@ -121,12 +132,12 @@ public class ScopContainerTest {
             assert e.getMessage().equals("the scope " + My.class.getName() + " already exists.");
         }
     }
-    //
+
     @Test
     public void scopTest6() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
-        spiCallerContainer.doInitialize();
+        spiCallerContainer.init();
         //
         try {
             scopeContainer.registerAlias(My.class.getName(), javax.inject.Singleton.class.getName());
@@ -135,20 +146,20 @@ public class ScopContainerTest {
             assert e.getMessage().equals("reference Scope does not exist.");
         }
     }
-    //
+
     @Test
     public void scopTest7() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
         //
-        assert scopeContainer.findScope((Class<?>) null) == null;
+        assert scopeContainer.collectScope((Class<?>) null) == null;
     }
-    //
+
     @Test
     public void scopTest8() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
-        scopeContainer.doInitialize();
+        scopeContainer.init();
         //
         DefaultBindInfoProviderAdapter<SampleFace> adapter1 = new DefaultBindInfoProviderAdapter<>();
         adapter1.setBindID("1234");
@@ -161,20 +172,23 @@ public class ScopContainerTest {
         adapter2.setBindType(SampleBean.class);
         assert !scopeContainer.isSingleton(adapter2);
     }
-    //
+
     @Test
     public void scopTest9() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
-        scopeContainer.doInitialize();
+        scopeContainer.init();
         //
         DefaultBindInfoProviderAdapter<SingletonSampleBean> adapter = new DefaultBindInfoProviderAdapter<>();
         adapter.setBindID("1234");
         adapter.setBindType(SingletonSampleBean.class);
         //
         assert scopeContainer.isSingleton(adapter);
+        //
+        assert !scopeContainer.isSingleton(PrototypePublicCallDestroyBean.class);
+        assert scopeContainer.isSingleton(SingletonPublicCallDestroyBean.class);
     }
-    //
+
     @Test
     public void scopTest10_1() {
         // 构造三个对象的 Supplier，每个对象按照要求返回指定的 hashCode
@@ -210,7 +224,7 @@ public class ScopContainerTest {
         assert myScope3.getScopeMap().size() == 1;
         assert singletonScope.getSingletonData().size() == 3;
     }
-    //
+
     @Test
     public void scopTest10_2() {
         // 构造三个对象的 Supplier，每个对象按照要求返回指定的 hashCode
@@ -246,7 +260,7 @@ public class ScopContainerTest {
         assert myScope3.getScopeMap().size() == 1;
         assert singletonScope.getSingletonData().size() == 3;
     }
-    //
+
     @Test
     public void scopTest10_3() {
         // 构造2个对象的 Supplier，每个对象按照要求返回指定的 hashCode
@@ -262,13 +276,13 @@ public class ScopContainerTest {
         new SingletonScope().chainScope("2", myScope, supplier2).get();// 不会命中 HashRemainderScope
         assert myScope.getScopeMap().size() == 1;
     }
-    //
+
     @Test
     public void scopTest11() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
         ScopContainer scopeContainer = new ScopContainer(spiCallerContainer);
-        spiCallerContainer.doInitialize();
-        scopeContainer.doInitialize();
+        spiCallerContainer.init();
+        scopeContainer.init();
         //
         //
         HashMap<String, Object> spiTest = new HashMap<>();

@@ -17,6 +17,7 @@ package net.hasor.core;
 import net.hasor.core.ApiBinder.LifeBindingBuilder;
 
 import java.lang.annotation.*;
+
 /**
  * 标记方法为初始化方法，如果{@link LifeBindingBuilder#initMethod(String)}方法也定义了一个初始化方法则，注解方式优先于配置。
  * @see LifeBindingBuilder#initMethod(String)

@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  *
  * @version : 2013-8-11
@@ -39,6 +40,7 @@ public class TaskTest {
             public void completed(Void result) {
                 completedInteger.incrementAndGet();
             }
+
             @Override
             public void failed(Throwable ex) {
                 failedInteger.incrementAndGet();
@@ -46,9 +48,11 @@ public class TaskTest {
         };
         class TestRunnable implements Runnable {
             private boolean b;
+
             public TestRunnable(boolean b) {
                 this.b = b;
             }
+
             @Override
             public void run() {
                 runInteger.incrementAndGet();
@@ -59,9 +63,11 @@ public class TaskTest {
         }
         class TestCallable implements Callable<Void> {
             private boolean b;
+
             public TestCallable(boolean b) {
                 this.b = b;
             }
+
             @Override
             public Void call() throws Exception {
                 runInteger.incrementAndGet();

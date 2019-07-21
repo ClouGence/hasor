@@ -15,6 +15,7 @@
  */
 package net.hasor.core;
 import java.util.function.Supplier;
+
 /**
  *
  * @version : 2014-5-10

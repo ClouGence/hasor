@@ -18,27 +18,30 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 /**
  *
  * @version : 2014年9月7日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AopClassLoader extends ClassLoader {
-    private Map<String, InnerClassInfo> classMap  = new ConcurrentHashMap<>();
+    private Map<String, InnerClassInfo> classMap   = new ConcurrentHashMap<>();
     private ThreadLocal<BasicObject>    localLocal = ThreadLocal.withInitial(BasicObject::new);
-    //
+
     public AopClassLoader() {
         super(Thread.currentThread().getContextClassLoader());
     }
+
     public AopClassLoader(ClassLoader parentLoader) {
         super(parentLoader);
     }
+
     //
     public AopClassConfig findClassConfig(String className) {
         InnerClassInfo ci = this.classMap.get(className);
         return ci == null ? null : ci.classConfig;
     }
-    //
+
     protected final Class<?> findClass(final String className) throws ClassNotFoundException {
         InnerClassInfo acc = this.classMap.get(className);
         if (acc != null) {
@@ -54,6 +57,7 @@ public class AopClassLoader extends ClassLoader {
         }
         return super.findClass(className);
     }
+
     public InputStream getResourceAsStream(final String classResource) {
         if (classResource.endsWith(".class")) {
             String className = classResource.substring(0, classResource.length() - 6).replace("/", ".");
@@ -64,6 +68,7 @@ public class AopClassLoader extends ClassLoader {
         }
         return super.getResourceAsStream(classResource);
     }
+
     /***/
     void addClassConfig(AopClassConfig config) {
         String cname = config.getClassName();
@@ -76,10 +81,11 @@ public class AopClassLoader extends ClassLoader {
             //
         }
     }
-    //
+
     public static Class<?> getPrototypeType(Object aopObject) {
         return getPrototypeType(aopObject.getClass());
     }
+
     public static Class<?> getPrototypeType(Class<?> aopType) {
         if (aopType.getClassLoader() instanceof AopClassLoader) {
             AopClassConfig classConfig = ((AopClassLoader) aopType.getClassLoader()).findClassConfig(aopType.getName());
@@ -87,9 +93,11 @@ public class AopClassLoader extends ClassLoader {
         }
         return aopType;
     }
+
     public static boolean isDynamic(Object aopObject) {
         return isDynamic(aopObject.getClass());
     }
+
     public static boolean isDynamic(Class<?> aopType) {
         return aopType.getClassLoader() instanceof AopClassLoader;
     }

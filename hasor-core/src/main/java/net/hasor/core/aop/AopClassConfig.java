@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 
 import static net.hasor.utils.asm.Opcodes.*;
+
 /**
  *
  * @version : 2014年9月7日
@@ -53,14 +54,17 @@ public class AopClassConfig {
     private        File                               classWritePath;
     //
     //
+
     /**创建{@link AopClassConfig}类型对象。 */
     public AopClassConfig() {
         this(BasicObject.class);
     }
+
     /**创建{@link AopClassConfig}类型对象。 */
     public AopClassConfig(Class<?> superClass) {
         this(superClass, superClass.getClassLoader());
     }
+
     /**创建{@link AopClassConfig}类型对象。 */
     public AopClassConfig(Class<?> superClass, ClassLoader parentLoader) {
         this.superClass = (superClass == null) ? BasicObject.class : superClass;
@@ -77,16 +81,19 @@ public class AopClassConfig {
     }
     //
     //
+
     /**添加Aop拦截器。*/
     public void addAopInterceptors(Predicate<Method> aopMatcher, MethodInterceptor... aopInterceptor) {
         for (MethodInterceptor aop : aopInterceptor) {
             this.addAopInterceptor(aopMatcher, aop);
         }
     }
+
     /**添加Aop拦截器。*/
     public void addAopInterceptor(MethodInterceptor aopInterceptor) {
         this.addAopInterceptor(target -> true, aopInterceptor);
     }
+
     /**添加Aop拦截器。*/
     public void addAopInterceptor(Predicate<Method> aopMatcher, MethodInterceptor aopInterceptor) {
         Objects.requireNonNull(aopMatcher, "aopMatcher is null.");
@@ -95,29 +102,32 @@ public class AopClassConfig {
         }
         this.interceptorList.add(new InnerMethodInterceptorDefine(aopMatcher, aopInterceptor));
     }
+
     /** 根据方法查找这个方法的所有拦截器 */
     MethodInterceptor[] findInterceptor(String tmDesc) {
         return this.interceptorMap.get(tmDesc);
     }
-    //
-    //
+
     /** 是否支持Aop */
     public boolean isSupport() {
         return AsmTools.isSupport(this.getSuperClass());
     }
-    //
+
     /** 取得字节码信息 */
     public byte[] getBytes() {
         return this.classBytes;
     }
+
     /** 父类类型 */
     public Class<?> getSuperClass() {
         return superClass;
     }
+
     /** 新类类名 */
     public String getClassName() {
         return this.className;
     }
+
     /** 新类类名 */
     public String getSimpleName() {
         if (this.className == null) {
@@ -125,13 +135,12 @@ public class AopClassConfig {
         }
         return this.className.substring(this.className.lastIndexOf(".") + 1);
     }
-    //
+
     /**是否包含改变*/
     public boolean hasChange() {
         return !this.interceptorList.isEmpty();
     }
-    //
-    //
+
     protected void initBuild() {
         // . 构建 interceptorMap
         Method[] targetMethodArrays = this.getSuperClass().getMethods();
@@ -156,10 +165,8 @@ public class AopClassConfig {
                 this.interceptorMethod.put(interceptorMethodDesc, targetMethod);
             }
         }
-        //
     }
-    //
-    //
+
     /** 调用ClassLoader，生成字节码并装载它 */
     public synchronized <T> Class<? extends T> buildClass() throws IOException, ClassNotFoundException, NoSuchMethodException {
         if (this.classType != null) {
@@ -179,7 +186,9 @@ public class AopClassConfig {
         //
         //
         ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-        classWriter.visit(V1_6, ACC_PUBLIC + ACC_SUPER, thisClassName, null, superClassName, null);
+        classWriter.visit(V1_6, ACC_PUBLIC + ACC_SUPER, thisClassName, null, superClassName, new String[] {//
+                AsmTools.replaceClassName(DynamicClass.class)//
+        });
         // .构造方法
         Constructor<?>[] constructorArray = this.getSuperClass().getConstructors();
         for (Constructor<?> constructor : constructorArray) {
@@ -454,9 +463,11 @@ public class AopClassConfig {
         this.classType = this.parentLoader.findClass(getClassName());
         return (Class<? extends T>) this.classType;
     }
+
     public boolean isDebug() {
         return debug;
     }
+
     public void debug(boolean debug, File classWritePath) {
         this.classWritePath = Objects.requireNonNull(classWritePath);
         this.debug = debug;

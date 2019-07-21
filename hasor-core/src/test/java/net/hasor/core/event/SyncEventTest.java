@@ -15,12 +15,12 @@
  */
 package net.hasor.core.event;
 import net.hasor.core.EventContext;
-import net.hasor.core.EventListener;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * 仅会被执行一次的事件
  * @version : 2013-8-11
@@ -53,6 +53,7 @@ public class SyncEventTest {
         }
         assert (endTime - startTime) > (100 * 50);
     }
+
     @Test
     public void onesSyncEventTest() throws Throwable {
         EventContext ec = new StandardEventManager(10, "TestEvent", Thread.currentThread().getContextClassLoader());
@@ -76,7 +77,7 @@ public class SyncEventTest {
         assert eventDataSet.size() == 50;// 线程池大小为 10 ，执行完至少要 500ms
         assert (endTime - startTime) >= (50 * 100); // 同步执行，所以总时间应该大于等于 50 * 100
     }
-    //
+
     @Test
     public void syncTest1() throws Throwable {
         //
@@ -95,7 +96,7 @@ public class SyncEventTest {
             assert e == error;
         }
     }
-    //
+
     @Test
     public void syncTest2() throws Throwable {
         //
@@ -119,7 +120,7 @@ public class SyncEventTest {
         ec.fireSyncEvent(EventName, null);
         assert atomicInteger.get() == 1;
     }
-    //
+
     @Test
     public void syncTest3() throws Throwable {
         //
@@ -144,7 +145,7 @@ public class SyncEventTest {
             assert "testError2".equals(e.getMessage());
         }
     }
-    //
+
     @Test
     public void syncTest4() throws Throwable {
         //

@@ -15,9 +15,9 @@
  */
 package net.hasor.core.exts.aop;
 import net.hasor.core.AppContext;
-import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
+import net.hasor.core.spi.AppContextAware;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
@@ -28,6 +28,7 @@ import java.util.WeakHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 /**
  * Aop拦截器
  * @version : 2013-11-8
@@ -36,11 +37,11 @@ import java.util.stream.Stream;
 class AopInterceptor implements MethodInterceptor, AppContextAware {
     private WeakHashMap<Method, List<Class<? extends MethodInterceptor>>> methodInterceptorMap = new WeakHashMap<Method, List<Class<? extends MethodInterceptor>>>();
     private AppContext                                                    appContext           = null;
-    //
+
     public void setAppContext(AppContext appContext) {
         this.appContext = appContext;
     }
-    //
+
     public Object invoke(MethodInvocation invocation) throws Throwable {
         Method targetMethod = invocation.getMethod();
         List<Class<? extends MethodInterceptor>> list = this.methodInterceptorMap.get(targetMethod);
@@ -57,6 +58,7 @@ class AopInterceptor implements MethodInterceptor, AppContextAware {
         //2.创建对象
         return new AopChainInvocation(appContext, list, invocation).invoke(invocation);
     }
+
     private List<Class<? extends MethodInterceptor>> collectAnno(AnnotatedElement element) {
         Aop[] annoSet = element.getAnnotationsByType(Aop.class);
         if (annoSet == null) {

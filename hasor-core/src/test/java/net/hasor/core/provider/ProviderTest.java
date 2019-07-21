@@ -21,8 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+
 public class ProviderTest {
-    //
     @Test
     public void providerTest1() {
         Supplier<List> ofList = InstanceProvider.of(new ArrayList());
@@ -36,9 +36,9 @@ public class ProviderTest {
         Supplier<ArrayList> ofListWrap = InstanceProvider.wrap(obj);
         assert ofListWrap.get() == obj;
     }
-    //
+
     @Test
-    public void providerTest2() throws Throwable {
+    public void providerTest2() {
         //
         Supplier<List> listProvider = InstanceProvider.of(new ArrayList());
         SingleProvider<List> singleProvider = new SingleProvider<>(listProvider);
@@ -46,9 +46,9 @@ public class ProviderTest {
         //
         assert singleProvider.get() == singleProvider.get();
     }
-    //
+
     @Test
-    public void providerTest3() throws Throwable {
+    public void providerTest3() {
         //
         InstanceProvider<List> listProvider = new InstanceProvider<>(new ArrayList());
         assert listProvider.get() instanceof ArrayList;
@@ -56,7 +56,7 @@ public class ProviderTest {
         listProvider.set(new LinkedList());
         assert listProvider.get() instanceof LinkedList;
     }
-    //
+
     @Test
     public void providerTest5() throws Throwable {
         //

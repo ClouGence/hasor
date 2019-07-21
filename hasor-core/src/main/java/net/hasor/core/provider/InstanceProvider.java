@@ -15,6 +15,7 @@
  */
 package net.hasor.core.provider;
 import java.util.function.Supplier;
+
 /**
  * 对象的{@link Supplier}封装形式。
  * @version : 2014年7月8日
@@ -22,20 +23,23 @@ import java.util.function.Supplier;
  */
 public class InstanceProvider<T> implements Supplier<T> {
     private T instance = null;
+
     public InstanceProvider(final T instance) {
         this.instance = instance;
     }
+
     public T get() {
         return this.instance;
     }
-    //
+
     public void set(T instance) {
         this.instance = instance;
     }
-    //
+
     public static <V, T extends V> Supplier<V> of(T target) {
         return new InstanceProvider<>(target);
     }
+
     public static <T> Supplier<T> wrap(T target) {
         return new InstanceProvider<>(target);
     }

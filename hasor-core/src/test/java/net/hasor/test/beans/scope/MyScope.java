@@ -4,8 +4,10 @@ import net.hasor.core.provider.SingleProvider;
 
 import java.util.HashMap;
 import java.util.function.Supplier;
+
 public class MyScope implements Scope {
     private HashMap<Object, Supplier<?>> scopeMap = new HashMap<>();
+
     public <T> Supplier<T> scope(Object key, final Supplier<T> provider) {
         Supplier<?> returnData = this.scopeMap.get(key);
         if (returnData == null) {

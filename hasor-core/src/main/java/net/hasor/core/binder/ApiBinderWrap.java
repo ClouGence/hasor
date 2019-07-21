@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
 /**
  * 标准的 {@link ApiBinder} 接口包装类。
  * @version : 2013-4-12
@@ -33,53 +34,67 @@ import java.util.function.Supplier;
 public class ApiBinderWrap implements ApiBinder {
     protected static Logger    logger = LoggerFactory.getLogger(ApiBinderWrap.class);
     private final    ApiBinder apiBinder;
+
     //
     public ApiBinderWrap(ApiBinder apiBinder) {
         this.apiBinder = Objects.requireNonNull(apiBinder);
     }
+
     public Environment getEnvironment() {
         return this.apiBinder.getEnvironment();
     }
+
     public Set<Class<?>> findClass(final Class<?> featureType) {
         return this.apiBinder.findClass(featureType);
     }
+
     @Override
     public Set<Class<?>> findClass(Class<?> featureType, String... scanPackages) {
         return this.apiBinder.findClass(featureType, scanPackages);
     }
+
     @Override
     public <T extends ApiBinder> T tryCast(Class<T> castApiBinder) {
         return this.apiBinder.tryCast(castApiBinder);
     }
+
     public void installModule(final Module... module) throws Throwable {
         this.apiBinder.installModule(module);
     }
+
     public void bindInterceptor(String matcherExpression, MethodInterceptor interceptor) {
         this.apiBinder.bindInterceptor(matcherExpression, interceptor);
     }
+
     public void bindInterceptor(Predicate<Class<?>> matcherClass, Predicate<Method> matcherMethod, MethodInterceptor interceptor) {
         this.apiBinder.bindInterceptor(matcherClass, matcherMethod, interceptor);
     }
+
     public <T> BindInfo<T> getBindInfo(String bindID) {
         return this.apiBinder.getBindInfo(bindID);
     }
+
     public <T> BindInfo<T> getBindInfo(Class<T> bindType) {
         return this.apiBinder.getBindInfo(bindType);
     }
+
     public <T> List<BindInfo<T>> findBindingRegister(Class<T> bindType) {
         return this.apiBinder.findBindingRegister(bindType);
     }
+
     public <T> BindInfo<T> findBindingRegister(String withName, Class<T> bindType) {
         return this.apiBinder.findBindingRegister(withName, bindType);
     }
+
     public <T> NamedBindingBuilder<T> bindType(Class<T> type) {
         return this.apiBinder.bindType(type);
     }
+
     @Override
     public <T> void bindToCreater(BindInfo<T> info, Supplier<? extends BeanCreaterListener<?>> listener) {
         this.apiBinder.bindToCreater(info, listener);
     }
-    //
+
     public <T extends Scope> Supplier<T> registerScope(String scopeName, Supplier<T> scopeProvider) {
         return this.apiBinder.registerScope(scopeName, scopeProvider);
     }

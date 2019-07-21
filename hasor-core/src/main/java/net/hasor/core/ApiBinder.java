@@ -18,6 +18,7 @@ import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.spi.BeanCreaterListener;
 
+import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -26,8 +27,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import javax.inject.Named;
-import javax.inject.Singleton;
+
 /**
  * Hasor的核心接口，主要用于收集Bean绑定信息。<p>
  * Bind 参考了 Google Guice 的 Binder 接口设计，功能上大体相似。目的是提供一种不同于配置文件、注解方式的配置方法。
@@ -281,10 +281,12 @@ public interface ApiBinder {
     public default <T> Supplier<T> getProvider(Class<T> targetType) {
         class TargetSupplier implements AppContextAware, Supplier<T> {
             private AppContext appContext = null;
+
             @Override
             public void setAppContext(AppContext appContext) {
                 this.appContext = appContext;
             }
+
             @Override
             public T get() {
                 if (this.appContext == null) {
@@ -300,10 +302,12 @@ public interface ApiBinder {
     public default <T> Supplier<T> getProvider(BindInfo<T> targetType) {
         class TargetSupplier implements AppContextAware, Supplier<T> {
             private AppContext appContext = null;
+
             @Override
             public void setAppContext(AppContext appContext) {
                 this.appContext = appContext;
             }
+
             @Override
             public T get() {
                 if (this.appContext == null) {
@@ -316,6 +320,7 @@ public interface ApiBinder {
     }
     //
     /*--------------------------------------------------------------------------------------Faces*/
+
     /**给绑定起个名字。*/
     public interface NamedBindingBuilder<T> extends LinkedBindingBuilder<T> {
         /**
@@ -365,6 +370,7 @@ public interface ApiBinder {
         public NamedBindingBuilder<T> bothWith(String nameString);
     }
     //
+
     /**处理类型和实现的绑定。*/
     public interface LinkedBindingBuilder<T> extends InjectPropertyBindingBuilder<T> {
         /**
@@ -398,6 +404,7 @@ public interface ApiBinder {
         public InjectConstructorBindingBuilder<T> toConstructor(Constructor<? extends T> constructor);
     }
     //
+
     /**构造方法依赖注入，该接口的配置会覆盖注解  {@link ConstructorBy}。*/
     public interface InjectConstructorBindingBuilder<T> extends LifeBindingBuilder<T> {
         /**
@@ -432,6 +439,7 @@ public interface ApiBinder {
          */
         public InjectConstructorBindingBuilder<T> inject(int index, Class<?> valueType);
     }
+
     /**属性依赖注入*/
     public interface InjectPropertyBindingBuilder<T> extends LifeBindingBuilder<T> {
         /**
@@ -466,6 +474,7 @@ public interface ApiBinder {
          */
         public InjectPropertyBindingBuilder<T> inject(String property, Class<?> valueType);
     }
+
     /**负责启动之后的生命周期方法映射。*/
     public interface LifeBindingBuilder<T> extends ScopedBindingBuilder<T> {
         /**配置当对象被创建时调用的方法，如果{@link Init @Init()}注解也定义了一个初始化方法则，注解方式优先于配置。
@@ -476,6 +485,7 @@ public interface ApiBinder {
          * @see net.hasor.core.Destroy*/
         public LifeBindingBuilder<T> destroyMethod(String methodName);
     }
+
     /**Bean存在的作用域*/
     public interface ScopedBindingBuilder<T> extends OptionPropertyBindingBuilder<T> {
         /**
@@ -532,6 +542,7 @@ public interface ApiBinder {
         public OptionPropertyBindingBuilder<T> toScope(String scopeName);
     }
     //
+
     /**选项和属性的配置。*/
     public interface OptionPropertyBindingBuilder<T> extends MetaDataBindingBuilder<T> {
         public ScopedBindingBuilder<T> whenCreate(BeanCreaterListener<?> createrListener);
@@ -542,6 +553,7 @@ public interface ApiBinder {
 
         public ScopedBindingBuilder<T> whenCreate(BindInfo<? extends BeanCreaterListener<?>> createrListener);
     }
+
     /**绑定元信息*/
     public interface MetaDataBindingBuilder<T> {
         /**

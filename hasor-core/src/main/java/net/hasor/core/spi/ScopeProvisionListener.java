@@ -18,6 +18,7 @@ import net.hasor.core.Scope;
 
 import java.util.EventListener;
 import java.util.function.Supplier;
+
 /**
  * Scope 注册监听器
  * @version : 2013-11-8

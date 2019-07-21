@@ -15,6 +15,7 @@
  */
 package net.hasor.core;
 import java.util.function.Supplier;
+
 /**
  *  提供者实现这个接口就相当于同时实现了，java.util.function.Supplier、javax.inject.Provider 两个接口
  * @version : 2014年5月22日
@@ -24,7 +25,6 @@ public interface Provider<T> extends Supplier<T>, javax.inject.Provider<T> {
     /** @return 获取对象。*/
     public T get();
 
-    //
     public default Supplier<T> toSupplier(Provider<T> provider) {
         return provider;
     }

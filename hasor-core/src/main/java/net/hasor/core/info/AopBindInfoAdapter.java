@@ -15,12 +15,13 @@
  */
 package net.hasor.core.info;
 import net.hasor.core.AppContext;
-import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
+import net.hasor.core.spi.AppContextAware;
 
 import java.lang.reflect.Method;
 import java.util.function.Predicate;
+
 /**
  *
  * @version : 2014年5月22日
@@ -30,23 +31,25 @@ public class AopBindInfoAdapter implements MethodInterceptor, AppContextAware {
     private Predicate<Class<?>> matcherClass  = null;
     private Predicate<Method>   matcherMethod = null;
     private MethodInterceptor   interceptor   = null;
-    //
-    public AopBindInfoAdapter(final Predicate<Class<?>> matcherClass, final Predicate<Method> matcherMethod, final MethodInterceptor interceptor) {
+
+    public AopBindInfoAdapter(Predicate<Class<?>> matcherClass, Predicate<Method> matcherMethod, MethodInterceptor interceptor) {
         this.matcherClass = matcherClass;
         this.matcherMethod = matcherMethod;
         this.interceptor = interceptor;
     }
-    //
+
     public Predicate<Class<?>> getMatcherClass() {
         return matcherClass;
     }
+
     public Predicate<Method> getMatcherMethod() {
         return matcherMethod;
     }
-    //
+
     public Object invoke(final MethodInvocation invocation) throws Throwable {
         return this.interceptor.invoke(invocation);
     }
+
     public void setAppContext(AppContext appContext) {
         if (this.interceptor instanceof AppContextAware) {
             ((AppContextAware) this.interceptor).setAppContext(appContext);

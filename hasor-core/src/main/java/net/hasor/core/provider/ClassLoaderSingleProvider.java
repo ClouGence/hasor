@@ -17,6 +17,7 @@ package net.hasor.core.provider;
 import net.hasor.utils.ContextClassLoaderLocal;
 
 import java.util.function.Supplier;
+
 /**
  * ClassLoader单例对象的{@link Supplier}封装形式。
  * @version : 2014年7月8日
@@ -24,7 +25,7 @@ import java.util.function.Supplier;
  */
 public class ClassLoaderSingleProvider<T> implements Supplier<T> {
     private final ContextClassLoaderLocal<T> instance;
-    //
+
     public ClassLoaderSingleProvider(final Supplier<T> provider) {
         this.instance = new ContextClassLoaderLocal<T>() {
             @Override
@@ -33,14 +34,15 @@ public class ClassLoaderSingleProvider<T> implements Supplier<T> {
             }
         };
     }
-    //
+
     protected T newInstance(Supplier<T> provider) {
         return provider.get();
     }
-    //
+
     public T get() {
         return this.instance.get();
     }
+
     public String toString() {
         return "ClassLoaderSingleProvider->" + instance.toString();
     }

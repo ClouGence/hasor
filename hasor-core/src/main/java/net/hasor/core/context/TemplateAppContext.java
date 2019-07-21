@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 package net.hasor.core.context;
-import net.hasor.core.*;
 import net.hasor.core.EventListener;
+import net.hasor.core.*;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderInvocationHandler;
 import net.hasor.core.binder.BinderHelper;
 import net.hasor.core.container.BeanContainer;
 import net.hasor.core.info.MetaDataAdapter;
-import net.hasor.utils.*;
+import net.hasor.utils.ArrayUtils;
+import net.hasor.utils.ClassUtils;
+import net.hasor.utils.ExceptionUtils;
+import net.hasor.utils.StringUtils;
 import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +41,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 /**
  * 抽象类 AbstractAppContext 是 {@link AppContext} 接口的基础实现。
  * <p>它包装了大量细节代码，可以方便的通过子类来创建独特的上下文支持。<p>
@@ -50,7 +54,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     public static final String       DefaultSettings = "hasor-config.xml";
     protected           Logger       logger          = LoggerFactory.getLogger(getClass());
     private final       ShutdownHook shutdownHook    = new ShutdownHook(this);
-    //
+
     @Override
     public Class<?> getBeanType(String bindID) {
         Objects.requireNonNull(bindID, "bindID is null.");
@@ -60,6 +64,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         }
         return null;
     }
+
     @Override
     public String[] getBindIDs() {
         Collection<String> nameList = getContainer().getBindInfoContainer().getBindInfoIDs();
@@ -68,12 +73,15 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         }
         return nameList.toArray(new String[0]);
     }
+
     @Override
     public boolean containsBindID(String bindID) {
         Objects.requireNonNull(bindID, "bindID is null.");
         return getContainer().getBindInfoContainer().findBindInfo(bindID) != null;
     }
+
     /*---------------------------------------------------------------------------------------Bean*/
+
     @Override
     public <T> T justInject(T object, Class<?> beanType) {
         if (object == null || beanType == null) {
@@ -86,6 +94,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
             return this.getContainer().justInject(object, beanType, this);
         }
     }
+
     @Override
     public <T> T justInject(T object, BindInfo<?> bindInfo) {
         if (object == null || bindInfo == null) {
@@ -93,6 +102,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         }
         return this.getContainer().justInject(object, bindInfo, this);
     }
+
     @Override
     public <T> Supplier<? extends T> getProvider(String bindID) {
         Objects.requireNonNull(bindID, "bindID is null.");
@@ -102,6 +112,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         }
         return null;
     }
+
     @Override
     public <T> Supplier<? extends T> getProvider(final Class<T> targetClass, Object... params) {
         Objects.requireNonNull(targetClass, "targetClass is null.");
@@ -114,6 +125,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
             return getProvider(bindInfo);
         }
     }
+
     @Override
     public <T> Supplier<? extends T> getProvider(final Constructor<T> targetConstructor, Object... params) {
         Objects.requireNonNull(targetConstructor, "targetConstructor is null.");
@@ -125,6 +137,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
             return getProvider(bindInfo);
         }
     }
+
     @Override
     public <T> Supplier<? extends T> getProvider(final BindInfo<T> bindInfo) {
         if (bindInfo == null) {
@@ -132,21 +145,24 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         }
         return getContainer().providerOnlyBindInfo(bindInfo, this);
     }
+
     /**获取用于创建Bean对象的{@link BeanContainer}接口*/
     protected abstract BeanContainer getContainer();
-    //
+
     /*------------------------------------------------------------------------------------Binding*/
+
     @Override
     public <T> BindInfo<T> getBindInfo(String bindID) {
         return getContainer().getBindInfoContainer().findBindInfo(bindID);
     }
+
     @Override
     public <T> List<BindInfo<T>> findBindingRegister(Class<T> bindType) {
         Objects.requireNonNull(bindType, "bindType is null.");
         return getContainer().getBindInfoContainer().findBindInfoList(bindType);
     }
-    //
     /*------------------------------------------------------------------------------------Process*/
+
     /**查找Module（由Module初始化的子Module不再查找范围内）。*/
     protected Module[] findModules() {
         Environment env = this.getEnvironment();
@@ -177,14 +193,17 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         }
         return moduleList.toArray(new Module[0]);
     }
+
     /**开始进入初始化过程.*/
     protected void doInitialize() throws Throwable {
         //
     }
+
     /**初始化过程完成.*/
     protected void doInitializeCompleted() {
         //
     }
+
     /**开始进入容器启动过程.*/
     protected void doStart() {
         List<ContextStartListener> listenerList = findBindingBean(ContextStartListener.class);
@@ -192,6 +211,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
             listener.doStart(this);
         }
     }
+
     /**容器启动完成。*/
     protected void doStartCompleted() {
         List<ContextStartListener> listenerList = findBindingBean(ContextStartListener.class);
@@ -199,6 +219,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
             listener.doStartCompleted(this);
         }
     }
+
     /**开始进入容器停止.*/
     protected void doShutdown() {
         List<ContextShutdownListener> listenerList = findBindingBean(ContextShutdownListener.class);
@@ -206,6 +227,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
             listener.doShutdown(this);
         }
     }
+
     /**容器启动停止。*/
     protected void doShutdownCompleted() {
         List<ContextShutdownListener> listenerList = findBindingBean(ContextShutdownListener.class);
@@ -214,8 +236,9 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         }
         this.getContainer().close();
     }
-    //
+
     /*--------------------------------------------------------------------------------------Utils*/
+
     /**为模块创建ApiBinder。*/
     protected ApiBinder newApiBinder() throws Throwable {
         //
@@ -293,6 +316,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         return (ApiBinder) Proxy.newProxyInstance(this.
                 getClassLoader(), apiArrays, new ApiBinderInvocationHandler(supportMap));
     }
+
     /**当开始所有 Module 的 installModule 之前。*/
     protected void doBindBefore(ApiBinder apiBinder) {
         /*绑定Settings对象的Provider*/
@@ -304,12 +328,14 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         /*绑定AppContext对象的Provider*/
         apiBinder.bindType(AppContext.class).toProvider(() -> TemplateAppContext.this);
     }
+
     /**当完成所有 Module 的 installModule 直呼。*/
     protected void doBindAfter(ApiBinder apiBinder) {
         //
     }
-    //
+
     /*------------------------------------------------------------------------------------Creater*/
+
     /**
      * 确定 AppContext 目前状态是否处于启动状态。
      * @return 返回 true 表示已经完成初始化并且启动完成。false表示尚未完成启动过程。
@@ -317,8 +343,10 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     public boolean isStart() {
         return this.getContainer().isInit();
     }
+
     /**获取环境接口。*/
     public abstract Environment getEnvironment();
+
     /**安装模块的工具方法。*/
     protected void installModule(ApiBinder apiBinder, Module module) throws Throwable {
         if (this.isStart()) {
@@ -331,6 +359,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         module.loadModule(apiBinder);
         BinderHelper.onInstall(this.getEnvironment(), module);
     }
+
     /**
      * 模块启动通知，如果在启动期间发生异常，将会抛出该异常。
      * @param modules 启动时使用的模块。
@@ -348,6 +377,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         findModules.addAll(Arrays.asList(modules));
         /*2.doInitialize*/
         logger.info("appContext -> doInitialize.");
+        this.getContainer().preInitialize();
         doInitialize();
         /*3.Bind*/
         ApiBinder apiBinder = newApiBinder();
@@ -357,7 +387,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         }
         logger.info("appContext -> doBind.");
         doBindAfter(apiBinder);
-        this.getContainer().doInitialize(getEnvironment());
+        this.getContainer().init();
         /*4.引发事件*/
         doInitializeCompleted();
         logger.info("appContext -> doInitializeCompleted");
@@ -376,6 +406,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         //
         logger.info("Hasor Started!");
     }
+
     /**发送停止通知*/
     public synchronized final void shutdown() {
         if (!this.isStart()) {
@@ -403,9 +434,11 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
             }
         }
     }
+
     public void join() {
         this.join(0, null);
     }
+
     public void join(long timeout, TimeUnit unit) {
         if (!this.isStart()) {
             return;
@@ -419,9 +452,11 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         // .阻塞进程
         joinAt(future, timeout, unit);
     }
+
     public void joinSignal() {
         this.joinSignal(0, null);
     }
+
     public void joinSignal(long timeout, TimeUnit unit) {
         if (!this.isStart()) {
             return;
@@ -450,6 +485,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         // .阻塞进程
         joinAt(future, timeout, unit);
     }
+
     // .阻塞进程
     private void joinAt(BasicFuture<Object> future, long timeout, TimeUnit unit) {
         try {

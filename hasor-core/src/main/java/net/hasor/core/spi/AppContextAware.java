@@ -15,6 +15,7 @@
  */
 package net.hasor.core.spi;
 import net.hasor.core.AppContext;
+
 /**
  * 当 AppContext 创建这个Bean时。容器会调用Bean实现的这个接口方法，将容器自身注入进来。
  * @version : 2013-11-8

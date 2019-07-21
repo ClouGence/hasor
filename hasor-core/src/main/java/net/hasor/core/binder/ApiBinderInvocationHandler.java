@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
+
 /**
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
@@ -31,6 +32,7 @@ import java.util.Map;
 public class ApiBinderInvocationHandler implements InvocationHandler {
     private static Logger                logger = LoggerFactory.getLogger(ApiBinderInvocationHandler.class);
     private        Map<Class<?>, Object> supportMap;
+
     //
     public ApiBinderInvocationHandler(Map<Class<?>, Object> supportMap) {
         this.supportMap = supportMap;
@@ -40,6 +42,7 @@ public class ApiBinderInvocationHandler implements InvocationHandler {
             }
         }
     }
+
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
         if (method.getName().equals("toString")) {

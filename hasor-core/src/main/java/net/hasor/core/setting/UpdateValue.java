@@ -15,6 +15,7 @@
  */
 package net.hasor.core.setting;
 import net.hasor.core.Settings;
+
 /**
  * @version : 2014年10月11日
  * @author 赵永春 (zyc@hasor.net)

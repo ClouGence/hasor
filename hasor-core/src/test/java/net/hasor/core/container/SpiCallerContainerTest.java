@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.HashSet;
 import java.util.function.Supplier;
+
 public class SpiCallerContainerTest {
     //
     @Test
@@ -55,11 +56,12 @@ public class SpiCallerContainerTest {
         assert keyHashSet.size() == 2;
         assert valueHashSet.size() == 2;
         //
+        spiCallerContainer.init();
         spiCallerContainer.close();
         assert spiCallerContainer.getListenerTypeSize() == 0;
         assert spiCallerContainer.getListenerSize() == 0;
     }
-    //
+
     @Test
     public void spiTest2() {
         ArrayList<Object> receive = new ArrayList<>();
@@ -78,11 +80,11 @@ public class SpiCallerContainerTest {
         assert receive.size() == 1;
         assert receive.get(0) == mockScope;
     }
-    //
+
     @Test
     public void spiTest3() {
         SpiCallerContainer spiCallerContainer = new SpiCallerContainer();
-        spiCallerContainer.doInitialize();
+        spiCallerContainer.init();
         //
         ScopeProvisionListener listener = PowerMockito.mock(ScopeProvisionListener.class);
         spiCallerContainer.addListener(ScopeProvisionListener.class, listener);

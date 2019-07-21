@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringReader;
+
 /**
  *
  * @version : 2013-8-11
@@ -29,7 +30,7 @@ import java.io.StringReader;
  */
 public class LoadTest {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    //
+
     // - 配置信息读取
     @Test
     public void mapTest() throws IOException {

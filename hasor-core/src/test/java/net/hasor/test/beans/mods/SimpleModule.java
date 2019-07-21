@@ -16,7 +16,8 @@
 package net.hasor.test.beans.mods;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
-import net.hasor.test.beans.beans.init.WithoutAnnoCallInitBean;
+import net.hasor.test.beans.basic.init.WithoutAnnoCallInitBean;
+
 /**
  * 模块
  * @version : 2015年11月9日

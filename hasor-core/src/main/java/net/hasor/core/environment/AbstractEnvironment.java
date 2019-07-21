@@ -32,6 +32,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 /**
  * {@link Environment}接口实现类，集成该类的子类需要调用{@link #initEnvironment(Map)}方法以初始化。
  * @version : 2013-4-9
@@ -46,7 +47,7 @@ public abstract class AbstractEnvironment implements Environment {
     private          ClassLoader         rootLosder   = null;
     private          EventContext        eventManager = null;
     private          Map<String, String> envMap       = null;
-    //
+
     /* --------------------------------------------------------------------------------- get/set */
     public AbstractEnvironment(Object context, AbstractSettings settings) {
         this.settings = settings;
@@ -54,46 +55,55 @@ public abstract class AbstractEnvironment implements Environment {
         this.rootLosder = new AopClassLoader();
         this.envMap = new ConcurrentHashMap<>();
     }
+
     @Override
     public Object getContext() {
         return this.context;
     }
+
     /**设置或更新 context */
     public void setContext(final Object context) {
         this.context = context;
     }
+
     /**获取当创建Bean时使用的{@link ClassLoader}*/
     public ClassLoader getClassLoader() {
         return this.rootLosder;
     }
+
     /**设置类加载器*/
     public void setRootLosder(ClassLoader classLoader) {
         if (classLoader != null) {
             this.rootLosder = classLoader;
         }
     }
+
     /**设置扫描路径*/
     public void setSpanPackage(String[] spanPackage) {
         this.spanPackage = spanPackage;
     }
+
     @Override
     public String[] getSpanPackage() {
         return this.spanPackage;
     }
+
     @Override
     public final EventContext getEventContext() {
         return this.eventManager;
     }
+
     @Override
     public boolean isSmaller() {
         return "smaller".equalsIgnoreCase(this.evalString("%RUN_MODE%"));
     }
-    //
+
     // ------------------------------------------------------------------------------- findClass */
     @Override
     public Set<Class<?>> findClass(final Class<?> featureType) {
         return this.findClass(featureType, this.spanPackage);
     }
+
     /** 在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类） */
     public Set<Class<?>> findClass(final Class<?> featureType, String[] loadPackages) {
         if (featureType == null) {
@@ -107,6 +117,7 @@ public abstract class AbstractEnvironment implements Environment {
         }
         return this.scanUtils.getClassSet(featureType);
     }
+
     /** 在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记某个注解的类） */
     public Set<Class<?>> findClass(final Class<?> featureType, String loadPackages) {
         if (featureType == null) {
@@ -116,24 +127,27 @@ public abstract class AbstractEnvironment implements Environment {
         String[] spanPackage = loadPackages.split(",");
         return this.findClass(featureType, spanPackage);
     }
+
     @Override
     public AbstractSettings getSettings() {
         return this.settings;
     }
+
     /**创建事件管理器*/
     protected EventContext createEventManager(int eventThreadPoolSize) {
         return new StandardEventManager(eventThreadPoolSize, "Hasor", this.getClassLoader());
     }
-    //
+
     /* ------------------------------------------------------------------------------------- Env */
 
-    public String[] getVariableNames(){
+    public String[] getVariableNames() {
         return envMap.keySet().toArray(new String[0]);
     }
 
-    public String getVariable(String varName){
-        return evalString("%"+varName+"%");
+    public String getVariable(String varName) {
+        return evalString("%" + varName + "%");
     }
+
     @Override
     public void addVariable(final String varName, final String value) {
         if (StringUtils.isBlank(value)) {
@@ -147,6 +161,7 @@ public abstract class AbstractEnvironment implements Environment {
         logger.info("var -> {} = {}.", varName, value);
         this.envMap.put(varName.toUpperCase(), value);
     }
+
     @Override
     public void removeVariable(final String varName) {
         if (StringUtils.isBlank(varName)) {
@@ -155,6 +170,7 @@ public abstract class AbstractEnvironment implements Environment {
         this.envMap.remove(varName.toUpperCase());
         logger.info(varName + " env removed.");
     }
+
     @Override
     public String evalString(String evalString) {
         if (StringUtils.isBlank(evalString)) {
@@ -180,8 +196,9 @@ public abstract class AbstractEnvironment implements Environment {
         logger.debug("evalString '{}' eval to '{}'.", evalString, newEvalString);
         return newEvalString;
     }
-    //
+
     /* ------------------------------------------------------------------------------------ init */
+
     /**初始化方法*/
     protected final void initEnvironment(Map<String, String> frameworkEnvConfig) throws IOException {
         // .load & init
@@ -223,6 +240,7 @@ public abstract class AbstractEnvironment implements Environment {
         int eventThreadPoolSize = this.getSettings().getInteger("hasor.eventThreadPoolSize", 20);
         this.eventManager = createEventManager(eventThreadPoolSize);
     }
+
     /**
      * 1st，System.getProperties()
      * 2st，System.getenv()
@@ -277,7 +295,7 @@ public abstract class AbstractEnvironment implements Environment {
             }
         }
     }
-    //
+
     /* ------------------------------------------------------------------------------------ init */
     @Override
     public void refreshVariables() {
@@ -307,6 +325,7 @@ public abstract class AbstractEnvironment implements Environment {
             }
         });
     }
+
     private String evalSettingString(String evalString) {
         if (StringUtils.isBlank(evalString)) {
             return "";
@@ -333,7 +352,7 @@ public abstract class AbstractEnvironment implements Environment {
         }
         return newEvalString;
     }
-    //
+
     /* ----------------------------------------------------------------------------------- toos */
     @Override
     public String getSystemProperty(String property) {

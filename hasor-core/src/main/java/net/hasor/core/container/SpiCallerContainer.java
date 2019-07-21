@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import java.util.*;
-
 import net.hasor.utils.ExceptionUtils;
 
-import java.io.Closeable;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
 /**
  * SPI 管理器
  * @version : 2019年06月20日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SpiCallerContainer implements Closeable {
+public class SpiCallerContainer extends AbstractContainer {
     private ConcurrentHashMap<Class<?>, List<? extends EventListener>> spiListener = new ConcurrentHashMap<>();
-    //
+
     /** 执行 SPI */
     public <T extends EventListener> void callSpi(Class<T> spiType, SpiCaller<T> spiCaller) {
         List<? extends EventListener> listeners = this.spiListener.get(spiType);
@@ -45,17 +44,17 @@ public class SpiCallerContainer implements Closeable {
             }
         }
     }
-    //
+
     /** 获取某个类型 SPI 下面的所有监听器。 */
     public <T extends EventListener> List<T> getEventListenerList(Class<T> spiType) {
         return (List<T>) this.spiListener.get(spiType);
     }
-    //
+
     /** 获取已经注册的 SPI 类型总数。 */
     public int getListenerTypeSize() {
         return this.spiListener.size();
     }
-    //
+
     /** 获取所有SPI总共注册的监听器数。 */
     public long getListenerSize() {
         return this.spiListener.entrySet().stream()//
@@ -63,7 +62,7 @@ public class SpiCallerContainer implements Closeable {
                     return classListEntry.getValue().stream();
                 }).count();
     }
-    //
+
     /** 注册一个 SPI 监听器 */
     public synchronized <T extends EventListener> void addListener(Class<T> spiType, T spiListener) {
         Objects.requireNonNull(spiType, "spiType is null.");
@@ -76,7 +75,7 @@ public class SpiCallerContainer implements Closeable {
         }
         listenerList.add(spiListener);
     }
-    //
+
     /** 遍历所有 Listener */
     public void forEachListener(Consumer<Map.Entry<Class<?>, EventListener>> action) {
         Objects.requireNonNull(action);
@@ -87,36 +86,41 @@ public class SpiCallerContainer implements Closeable {
             }
         }
     }
+
     /** A single entry in the map. */
     private final class MapEntry implements Map.Entry<Class<?>, EventListener> {
         private Class<?>      listenerKey;
         private EventListener listenerEntry;
+
         public MapEntry(Class<?> listenerKey, EventListener listenerEntry) {
             this.listenerKey = listenerKey;
             this.listenerEntry = listenerEntry;
         }
+
         @Override
         public Class<?> getKey() {
             return this.listenerKey;
         }
+
         @Override
         public EventListener getValue() {
             return this.listenerEntry;
         }
+
         @Override
         public EventListener setValue(EventListener value) {
             throw new UnsupportedOperationException("this entry no support.");
         }
     }
-    //
+
     /** 初始化过程 */
-    public void doInitialize() {
+    protected void doInitialize() {
         //
     }
-    //
+
     /** 销毁过程，清理掉所有已经注册的 SPI 监听器 */
     @Override
-    public void close() {
+    protected void doClose() {
         this.spiListener.clear();
     }
 }

@@ -18,6 +18,7 @@ import net.hasor.core.spi.InjectMembers;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.*;
+
 /**
  * 依赖注入，注入settings配置数据。请注意{@link InjectMembers}接口方式与注解方式互斥，且接口方式优先于注解方式。
  * @see javax.inject.Qualifier

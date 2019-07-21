@@ -15,6 +15,7 @@
  */
 package net.hasor.core.spi;
 import net.hasor.core.BindInfo;
+
 /**
  * 当 AppContext 创建这个Bean时。容器会调用Bean实现的这个接口方法，将Bean的Info注入进来。
  * @version : 2013-11-8

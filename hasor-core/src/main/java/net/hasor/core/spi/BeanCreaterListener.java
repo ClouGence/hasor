@@ -15,6 +15,7 @@
  */
 package net.hasor.core.spi;
 import net.hasor.core.BindInfo;
+
 /**
  * 当 AppContext 创建这个Bean时调用。
  * @version : 2013-11-8

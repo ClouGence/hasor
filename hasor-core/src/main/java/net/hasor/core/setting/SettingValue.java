@@ -16,6 +16,7 @@
 package net.hasor.core.setting;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * @version : 2014年10月11日
  * @author 赵永春 (zyc@hasor.net)
@@ -24,32 +25,34 @@ public class SettingValue {
     private String       space;
     private Object       defaultVar;
     private List<Object> varList = new CopyOnWriteArrayList<Object>();
-    //
+
     SettingValue(String space) {
         this.space = space;
     }
-    //
+
     public String getSpace() {
         return space;
     }
-    //
+
     public void newValue(Object value) {
         if (!this.varList.contains(value)) {
             this.varList.add(value);
         }
         this.defaultVar = value;
     }
-    //
+
     public Object getDefaultVar() {
         return this.defaultVar;
     }
+
     public void setDefaultVar(Object defaultVar) {
         this.defaultVar = defaultVar;
     }
+
     public List<Object> getVarList() {
         return this.varList;
     }
-    //
+
     public void replace(int index, Object oldVar, Object newVar) {
         if (this.defaultVar.equals(oldVar)) {
             this.defaultVar = newVar;
@@ -63,7 +66,7 @@ public class SettingValue {
         }
         this.varList.set(index, newVar);
     }
-    //
+
     public String toString() {
         StringBuilder buffer = new StringBuilder();
         for (Object obj : this.varList) {
@@ -73,6 +76,7 @@ public class SettingValue {
         }
         return buffer.toString();
     }
+
     public void clear() {
         this.varList.clear();
         this.defaultVar = null;

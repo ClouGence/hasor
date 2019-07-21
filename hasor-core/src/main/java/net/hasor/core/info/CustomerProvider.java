@@ -15,6 +15,7 @@
  */
 package net.hasor.core.info;
 import java.util.function.Supplier;
+
 /**
  * 如果Bean配置了{@link Supplier}，那么Hasor容器需要通过该接口获取到这个Supplier。
  * @version : 2014年12月2日

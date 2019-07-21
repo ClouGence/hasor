@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.function.Predicate;
+
 /**
  * 继承自{@link InputStreamSettings}父类，该类自动装载 classpath 中所有静态配置文件。
  * 并且自动装载主配置文件（该配置文件应当只有一个）。
@@ -38,11 +39,11 @@ public class StandardContextSettings extends InputStreamSettings {
     private static final String            SechmaName      = "/META-INF/hasor.schemas";
     private              URI               settingURI;
     private static       Predicate<String> loadMatcher     = null;
-    //
+
     public static void setLoadMatcher(Predicate<String> loadMatcher) {
         StandardContextSettings.loadMatcher = loadMatcher;
     }
-    //
+
     private void outInitLog(String mode, Object oriResource) {
         if (logger.isInfoEnabled()) {
             if (this.settingURI != null) {
@@ -56,10 +57,12 @@ public class StandardContextSettings extends InputStreamSettings {
             }
         }
     }
+
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings() throws IOException, URISyntaxException {
         this(StandardContextSettings.MainSettingName);
     }
+
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(Reader mainSettings, StreamType type) throws IOException {
         if (mainSettings != null) {
@@ -68,6 +71,7 @@ public class StandardContextSettings extends InputStreamSettings {
         this.addReader(mainSettings, type);
         refresh();
     }
+
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(final String mainSettings) throws IOException, URISyntaxException {
         URL url = ResourcesUtils.getResource(mainSettings);
@@ -77,6 +81,7 @@ public class StandardContextSettings extends InputStreamSettings {
         }
         refresh();
     }
+
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(final File mainSettings) throws IOException {
         if (mainSettings != null) {
@@ -85,6 +90,7 @@ public class StandardContextSettings extends InputStreamSettings {
         }
         refresh();
     }
+
     /**创建{@link StandardContextSettings}类型对象。*/
     public StandardContextSettings(final URI mainSettings) throws IOException {
         if (mainSettings != null) {
@@ -93,11 +99,12 @@ public class StandardContextSettings extends InputStreamSettings {
         }
         refresh();
     }
+
     /**获取配置文件{@link URI}。*/
     public URI getSettingURI() {
         return this.settingURI;
     }
-    //
+
     @Override
     protected void readyLoad() throws IOException {
         super.readyLoad();
@@ -137,6 +144,7 @@ public class StandardContextSettings extends InputStreamSettings {
             }
         }
     }
+
     private void _addStream(InputStream inStream, String suffix) throws UnsupportedEncodingException {
         inStream = new AutoCloseInputStream(inStream);
         InputStreamReader streamReader = new InputStreamReader(inStream, Settings.DefaultCharset);
@@ -146,6 +154,7 @@ public class StandardContextSettings extends InputStreamSettings {
             this.addReader(streamReader, StreamType.Properties);
         }
     }
+
     @Override
     public void refresh() throws IOException {
         logger.info("refresh -> cleanData and loadSettings...");

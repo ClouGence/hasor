@@ -27,11 +27,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Date;
+
 public class EnvTest {
     protected EnvironmentWrap wrap(Environment env) {
         return new EnvironmentWrap(env);
     }
-    //
+
     @Test
     public void envTest1() throws IOException {
         Object context1 = new Object();
@@ -43,7 +44,7 @@ public class EnvTest {
         ((StandardEnvironment) env.getTarget()).setContext(context2);
         assert env.getContext() == context2;
     }
-    //
+
     @Test
     public void envTest2() throws IOException {
         URL resource = Thread.currentThread().getContextClassLoader().getResource("net_hasor_core_environment/simple-config.xml");
@@ -51,7 +52,7 @@ public class EnvTest {
         EnvironmentWrap env = wrap(new StandardEnvironment(null, resource));
         assert env.evalString("%MY_ENV%").equals("my my my");
     }
-    //
+
     @Test
     public void envTest3() throws IOException, URISyntaxException {
         URL resource = Thread.currentThread().getContextClassLoader().getResource("net_hasor_core_environment/simple-config.xml");
@@ -59,7 +60,7 @@ public class EnvTest {
         EnvironmentWrap env = wrap(new StandardEnvironment(null, resource.toURI()));
         assert env.evalString("%MY_ENV%").equals("my my my");
     }
-    //
+
     @Test
     public void envTest4() throws IOException, URISyntaxException {
         URL resource = Thread.currentThread().getContextClassLoader().getResource("net_hasor_core_environment/simple-config.xml");
@@ -68,28 +69,29 @@ public class EnvTest {
         EnvironmentWrap env = wrap(new StandardEnvironment(null, file));
         assert env.evalString("%MY_ENV%").equals("my my my");
     }
-    //
+
     @Test
     public void envTest5() throws IOException {
         EnvironmentWrap env = wrap(new StandardEnvironment(null, "net_hasor_core_environment/simple-config.xml"));
         assert env.evalString("%MY_ENV%").equals("my my my");
     }
-    //
+
     @Test
     public void envTest6() throws IOException {
         EnvironmentWrap env = wrap(new StandardEnvironment(null));
         //
         ((StandardEnvironment) env.getTarget()).setSpanPackage(new String[] { "net.hasor.test.beans.mods" });
         assert env.findClass(ErrorModule.class).size() == 1;
-        assert env.findClass(Module.class).size() == 3;
+        assert env.findClass(Module.class).size() == 5;
     }
-    //
+
     @Test
     public void envTest7() throws IOException, URISyntaxException {
         class StandardEnvironment2 extends StandardEnvironment {
             public StandardEnvironment2(Object context) throws IOException {
                 super(context);
             }
+
             public URI toURIProxy(Object source) {
                 return toURI(source);
             }
@@ -113,7 +115,7 @@ public class EnvTest {
             assert true;
         }
     }
-    //
+
     @Test
     public void envTest8() throws IOException {
         StandardEnvironment oriEnv = new StandardEnvironment(null);
@@ -149,7 +151,7 @@ public class EnvTest {
         assert env.getSettings() == oriEnv.getSettings();
         env.refreshVariables();
     }
-    //
+
     @Test
     public void envTest9() throws IOException {
         EnvironmentWrap env = wrap(new StandardEnvironment());
@@ -159,6 +161,7 @@ public class EnvTest {
         assert !env.findClass(ApiBinder.class, "").isEmpty();
         assert env.findClass(null, new String[0]) == null;
     }
+
     @Test
     public void envTest10() throws IOException {
         System.setProperty("MyVar", "hello");

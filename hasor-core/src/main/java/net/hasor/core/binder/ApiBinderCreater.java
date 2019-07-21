@@ -15,6 +15,7 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.ApiBinder;
+
 /**
  * Binder 扩展接口
  * @version : 2016-12-16

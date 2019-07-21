@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import net.hasor.core.container.BeanContainer;
 import net.hasor.core.context.StatusAppContext;
 import net.hasor.core.context.TemplateAppContext;
 import net.hasor.core.environment.StandardEnvironment;
@@ -31,6 +30,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.util.*;
+
 /**
  * Hasor 基础工具包。
  * @version : 2013-4-3
@@ -45,10 +45,11 @@ public final class Hasor extends HashMap<String, String> {
     private          ClassLoader                      loader;
     private          Map<String, Map<String, Object>> initSettingMap         = new HashMap<>();
     private          Level                            asLevel                = Level.Full;
+
     protected Hasor(Object context) {
         this.context = context;
     }
-    //
+
     /** 加载框架的规模 */
     public static enum Level {
         /**
@@ -63,35 +64,39 @@ public final class Hasor extends HashMap<String, String> {
         /** 完整加载框架和可以发现的所有插件模块。 */
         Full()
     }
-    //
-    //
+
     public Hasor mainSettingWith(File mainSettings) {
         this.mainSettings = mainSettings;
         return this;
     }
+
     public Hasor mainSettingWith(URI mainSettings) {
         this.mainSettings = mainSettings;
         return this;
     }
+
     public Hasor mainSettingWith(URL mainSettings) {
         this.mainSettings = mainSettings;
         return this;
     }
+
     public Hasor mainSettingWith(String mainSettings) {
         this.mainSettings = mainSettings;
         return this;
     }
+
     public Hasor mainSettingWith(Reader mainSettings, StreamType streamType) {
         this.mainSettings = mainSettings;
         this.mainSettingsStreamType = streamType;
         return this;
     }
+
     public Hasor mainSettingWith(String encoding, InputStream mainSettings, StreamType streamType) throws UnsupportedEncodingException {
         this.mainSettings = new InputStreamReader(mainSettings, encoding);
         this.mainSettingsStreamType = streamType;
         return this;
     }
-    //
+
     public Hasor addSettings(String namespace, String key, Object value) {
         if (StringUtils.isBlank(namespace) || StringUtils.isBlank(key)) {
             return this;
@@ -100,26 +105,30 @@ public final class Hasor extends HashMap<String, String> {
         stringMap.put(key, value);
         return this;
     }
-    //
+
     public Hasor addVariable(String key, String value) {
         this.put(key, value);
         return this;
     }
+
     public Hasor addVariableMap(Map<String, String> mapData) {
         this.putAll(mapData);
         return this;
     }
-    //
+
     public Hasor loadProperties(File resourceName) throws IOException {
         return loadProperties(new FileReader(resourceName));
     }
+
     public Hasor loadProperties(String resourceName) throws IOException {
         InputStream inStream = ResourcesUtils.getResourceAsStream(resourceName);
         return loadProperties(new InputStreamReader(inStream, Settings.DefaultCharset));
     }
+
     public Hasor loadProperties(String encodeing, InputStream inStream) throws IOException {
         return loadProperties(new InputStreamReader(inStream, encodeing));
     }
+
     public Hasor loadProperties(Reader propertiesReader) throws IOException {
         Properties properties = new Properties();
         properties.load(propertiesReader);
@@ -128,25 +137,26 @@ public final class Hasor extends HashMap<String, String> {
         }
         return this;
     }
-    //
+
     public Hasor addModules(List<Module> moduleList) {
         if (moduleList != null) {
             this.moduleList.addAll(moduleList);
         }
         return this;
     }
+
     public Hasor addModules(Module... modules) {
         if (modules != null) {
             this.moduleList.addAll(Arrays.asList(modules));
         }
         return this;
     }
-    //
+
     public Hasor parentClassLoaderWith(ClassLoader loader) {
         this.loader = loader;
         return this;
     }
-    //
+
     /**
      * 微小的，放弃一切插件加载，并且只处理 hasor-core 的加载
      * 下面环境变量会被设置
@@ -157,18 +167,19 @@ public final class Hasor extends HashMap<String, String> {
         this.asLevel = Level.Tiny;
         return this;
     }
+
     /** 核心部分，只完整的加载 hasor-core。 */
     public Hasor asCore() {
         this.asLevel = Level.Core;
         return this;
     }
+
     /** 完整加载框架和可以发现的所有插件模块。 */
     public Hasor asFull() {
         this.asLevel = Level.Full;
         return this;
     }
-    //
-    //
+
     /**用简易的方式创建{@link AppContext}容器。*/
     public AppContext build(Module... modules) {
         if (modules != null) {
@@ -238,11 +249,12 @@ public final class Hasor extends HashMap<String, String> {
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
-    //
+
     /**用Builder的方式创建{@link AppContext}容器。*/
     public static Hasor create() {
         return new Hasor(null);
     }
+
     /**用Builder的方式创建{@link AppContext}容器。*/
     public static Hasor create(Object context) {
         return new Hasor(context);

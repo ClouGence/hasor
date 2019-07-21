@@ -28,49 +28,55 @@ import net.hasor.core.spi.BindInfoAware;
 import net.hasor.core.spi.InjectMembers;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.BeanUtils;
+import net.hasor.utils.ClassUtils;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.convert.ConverterUtils;
 
 import javax.inject.Named;
-import java.io.Closeable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static net.hasor.core.container.ContainerUtils.*;
+
 /**
  * 负责创建 Bean
- * @version : 2015年11月25日
+ *
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2015年11月25日
  */
-public class BeanContainer implements Closeable {
-    private AtomicBoolean                               inited             = null;
+public class BeanContainer extends AbstractContainer {
+    private Environment                                 environment        = null;
     private SpiCallerContainer                          spiCallerContainer = null;
     private BindInfoContainer                           bindInfoContainer  = null;
     private ScopContainer                               scopContainer      = null;
     private ConcurrentHashMap<Class<?>, AopClassConfig> classEngineMap     = null;
-    public BeanContainer() {
-        this.inited = new AtomicBoolean(false);
+
+    public BeanContainer(Environment environment) {
+        this.environment = Objects.requireNonNull(environment, "need Environment.");
         this.spiCallerContainer = new SpiCallerContainer();
         this.bindInfoContainer = new BindInfoContainer(spiCallerContainer);
         this.scopContainer = new ScopContainer(spiCallerContainer);
         this.classEngineMap = new ConcurrentHashMap<>();
     }
+
     public BindInfoContainer getBindInfoContainer() {
         return bindInfoContainer;
     }
+
     public ScopContainer getScopContainer() {
         return scopContainer;
     }
-    //
+
     /*-------------------------------------------------------------------------------------------*/
-    //
-    /** 仅通过 targetType 类型创建Bean（不参考BindInfoContainer） */
+
+    /**
+     * 仅通过 targetType 类型创建Bean（不参考BindInfoContainer）
+     */
     public <T> Supplier<? extends T> providerOnlyType(Class<T> targetType, AppContext appContext, Object[] params) {
         if (targetType == null) {
             return null;
@@ -91,35 +97,24 @@ public class BeanContainer implements Closeable {
             //
             // .查找构造方法
             Constructor<?> constructor = null;
-            if (constructors.length > 1) {
-                Constructor<?> defaultConstructor = null;
-                for (Constructor<?> c : constructors) {
-                    if (isInjectConstructor(c)) {
-                        constructor = c;
-                        break;
-                    } else {
-                        defaultConstructor = c;
-                    }
-                }
-                if (constructor == null) {
-                    constructor = defaultConstructor;
-                }
-            } else if (constructors.length == 1) {
+            if (constructors.length >= 1) {
                 constructor = constructors[0];
             } else {
                 throw new IllegalArgumentException("No default constructor found.");
             }
-            return (Constructor<T>) constructor;
+            return constructor;
         });
         //
         // .（构造参数）构造方法用到的参数
-        Supplier<Object[]> parameterSupplier = parameterSupplier(constructorSupplier, appContext, params);
+        Supplier<Object[]> parameterSupplier = parameterSupplier(constructorSupplier, appContext, params, true);
         //
         // .创建对象
         return (Supplier<T>) () -> createObject(implClass, constructorSupplier, parameterSupplier, null, appContext);
     }
-    //
-    /** 仅通过 targetConstructor 类型创建Bean（不参考BindInfoContainer） */
+
+    /**
+     * 仅通过 targetConstructor 类型创建Bean（不参考BindInfoContainer）
+     */
     public <T> Supplier<? extends T> providerOnlyConstructor(Constructor<T> targetConstructor, AppContext appContext, Object[] params) {
         if (targetConstructor == null) {
             return null;
@@ -128,13 +123,15 @@ public class BeanContainer implements Closeable {
         Supplier<Executable> constructorSupplier = InstanceProvider.of(targetConstructor);
         //
         // .（构造参数）构造方法用到的参数
-        Supplier<Object[]> parameterSupplier = parameterSupplier(constructorSupplier, appContext, params);
+        Supplier<Object[]> parameterSupplier = parameterSupplier(constructorSupplier, appContext, params, true);
         //
         // .创建对象
         return (Supplier<T>) () -> createObject(targetConstructor.getDeclaringClass(), constructorSupplier, parameterSupplier, null, appContext);
     }
-    //
-    /** 通过 BindInfo 类型创建Bean */
+
+    /**
+     * 通过 BindInfo 类型创建Bean
+     */
     public <T> Supplier<? extends T> providerOnlyBindInfo(BindInfo<T> bindInfo, AppContext appContext) {
         if (bindInfo == null) {
             return null;
@@ -164,9 +161,11 @@ public class BeanContainer implements Closeable {
         // .创建对象
         return (Supplier<T>) () -> createObject(bindInfo.getBindType(), constructorSupplier, parameterSupplier, bindInfo, appContext);
     }
-    //
-    /** 仅通过 Annotation 来创建Bean。targetType 作为参考类型。 */
-    public <T> Supplier<? extends T> providerOnlyAnnotation(Class<T> targetType, Annotation anno, AppContext appContext, Object[] params) {
+
+    /**
+     * 仅通过 Annotation 来创建Bean。targetType 作为参考类型。
+     */
+    public <T> Supplier<? extends T> providerOnlyAnnotation(Class<T> targetType, Annotation anno, AppContext appContext) {
         if (anno == null) {
             return null;
         }
@@ -177,13 +176,15 @@ public class BeanContainer implements Closeable {
             return () -> appContext.getInstance(((ID) anno).value());
         }
         if (anno instanceof javax.inject.Named) {
-            return () -> appContext.getInstance(targetType, ((Named) anno).value());
+            return () -> appContext.findBindingBean(((Named) anno).value(), targetType);
         }
         throw new UnsupportedOperationException(anno.annotationType() + " Annotation is not support.");
     }
-    //
-    /** 创建一个构造方法对应的参数Supplier */
-    private <T> Supplier<Object[]> parameterSupplier(Supplier<Executable> executableSupplier, AppContext appContext, Object[] params) {
+
+    /**
+     * 创建一个构造方法对应的参数Supplier
+     */
+    private Supplier<Object[]> parameterSupplier(Supplier<Executable> executableSupplier, AppContext appContext, Object[] params, boolean alwaysInject) {
         return new SingleProvider<>(() -> {
             // .基础数据
             Executable constructor = executableSupplier.get();                      // 方法
@@ -194,7 +195,7 @@ public class BeanContainer implements Closeable {
             for (int i = 0; i < parameterTypes.length; i++) {
                 Annotation injectInfo = findInject(false, parameterAnnos[i]);
                 if (injectInfo != null) {
-                    paramObjects[i] = providerOnlyAnnotation(parameterTypes[i], injectInfo, appContext, null).get();
+                    paramObjects[i] = providerOnlyAnnotation(parameterTypes[i], injectInfo, appContext).get();
                     continue;
                 }
                 //
@@ -203,19 +204,29 @@ public class BeanContainer implements Closeable {
                     continue;
                 }
                 //
-                paramObjects[i] = BeanUtils.getDefaultValue(parameterTypes[i]);
+                BindInfo<?> bindInfo = getBindInfoContainer().findBindInfo("", parameterTypes[i]);
+                if (bindInfo != null) {
+                    paramObjects[i] = providerOnlyBindInfo(bindInfo, appContext).get();
+                } else {
+                    if (ClassUtils.wrapperToPrimitive(parameterTypes[i]) != null || parameterTypes[i].isPrimitive()) {
+                        paramObjects[i] = BeanUtils.getDefaultValue(parameterTypes[i]);
+                    } else {
+                        paramObjects[i] = providerOnlyType(parameterTypes[i], appContext, null).get();
+                    }
+                }
             }
             return paramObjects;
         });
     }
-    //
+
     /**
      * 创建Bean {@link BindInfo}创建Bean。
-     * @param targetType 表示目标类型
-     * @param referConstructor 表示使用的构造方法
+     *
+     * @param targetType           表示目标类型
+     * @param referConstructor     表示使用的构造方法
      * @param constructorParameter 构造方法所使用的参数
-     * @param bindInfo 可能为空，表示参考的 BindInfo
-     * @param appContext 容器
+     * @param bindInfo             可能为空，表示参考的 BindInfo
+     * @param appContext           容器
      */
     private <T> T createObject(Class<T> targetType, Supplier<Executable> referConstructor, Supplier<Object[]> constructorParameter, BindInfo<T> bindInfo, AppContext appContext) {
         // .check基本类型
@@ -235,10 +246,10 @@ public class BeanContainer implements Closeable {
         // .作用域
         Supplier<Scope>[] scopeProvider = null;
         if (bindInfo != null) {
-            scopeProvider = this.scopContainer.findScope(bindInfo);
+            scopeProvider = this.scopContainer.collectScope(bindInfo);
         }
         if (ArrayUtils.isEmpty(scopeProvider)) {
-            scopeProvider = this.scopContainer.findScope(targetType);
+            scopeProvider = this.scopContainer.collectScope(targetType);
         }
         Scope[] scope = null;
         if (ArrayUtils.isNotEmpty(scopeProvider)) {
@@ -248,7 +259,7 @@ public class BeanContainer implements Closeable {
         }
         //
         DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
-        Supplier<T> targetSupplier = (Supplier<T>) defBinder.getCustomerProvider();
+        Supplier<T> targetSupplier = defBinder != null ? (Supplier<T>) defBinder.getCustomerProvider() : null;
         if (targetSupplier == null) {
             targetSupplier = () -> {
                 //
@@ -273,7 +284,7 @@ public class BeanContainer implements Closeable {
                 } catch (InvocationTargetException e) {
                     throw new IllegalStateException(e.getTargetException());
                 } catch (Exception e) {
-                    throw new IllegalStateException(e);
+                    throw ExceptionUtils.toRuntimeException(e, IllegalStateException::new);
                 }
                 //
                 // .执行依赖注入
@@ -294,8 +305,10 @@ public class BeanContainer implements Closeable {
             return PrototypeScope.SINGLETON.chainScope(key, scope, targetSupplier).get();
         }
     }
-    //
-    /** 生成动态代理类型 */
+
+    /**
+     * 生成动态代理类型
+     */
     private <T> Class<T> proxyType(Class<T> targetType, AppContext appContext) {
         // .@AopIgnore排除在外
         ClassLoader rootLoader = Objects.requireNonNull(appContext.getClassLoader());
@@ -308,9 +321,6 @@ public class BeanContainer implements Closeable {
         List<AopBindInfoAdapter> aopList = aopBindList.stream()//
                 .map((Function<BindInfo<AopBindInfoAdapter>, AopBindInfoAdapter>) info -> {
                     Supplier<? extends AopBindInfoAdapter> bindInfo = providerOnlyBindInfo(info, appContext);
-                    if (bindInfo == null) {
-                        System.out.println();
-                    }
                     return bindInfo.get();
                 }).collect(Collectors.toList());
         //
@@ -340,16 +350,20 @@ public class BeanContainer implements Closeable {
         //
         return (Class<T>) newType;
     }
-    //
+
     /*-------------------------------------------------------------------------------------------*/
-    //
-    /** 仅执行依赖注入 */
+
+    /**
+     * 仅执行依赖注入
+     */
     public <T> T justInject(T object, Class<?> referType, AppContext appContext) {
         this.justInject(object, referType, null, appContext);
         return object;
     }
-    //
-    /** 仅执行依赖注入 */
+
+    /**
+     * 仅执行依赖注入
+     */
     public <T> T justInject(T object, BindInfo<?> bindInfo, AppContext appContext) {
         DefaultBindInfoProviderAdapter<?> adapter = (DefaultBindInfoProviderAdapter) bindInfo;
         Class<?> referType = adapter.getSourceType() != null ? adapter.getSourceType() : adapter.getBindType();
@@ -357,7 +371,7 @@ public class BeanContainer implements Closeable {
         this.justInject(object, referType, bindInfo, appContext);
         return object;
     }
-    //
+
     private <T> void justInject(T targetBean, Class<?> targetType, BindInfo<?> bindInfo, AppContext appContext) {
         //
         // .Aware接口的执行
@@ -389,10 +403,12 @@ public class BeanContainer implements Closeable {
                 boolean canWrite = BeanUtils.canWriteProperty(propertyName, targetType);
                 //
                 if (!canWrite) {
+                    // 理论上进不到这里，原因是在DefaultBindInfoProviderAdapter 配置阶段就会拦截到没有属性对应 set 方法的情况。
                     throw new IllegalStateException("doInject, property " + propertyName + " can not write.");
                 }
                 Supplier<?> provider = propItem.getValue();
                 if (provider == null) {
+                    // 理论上进不到这里，原因是在DefaultBindInfoProviderAdapter 配置阶段就会拦截到空情况。
                     throw new IllegalStateException("can't injection ,property " + propertyName + " data Provider is null.");
                 }
                 //
@@ -405,21 +421,21 @@ public class BeanContainer implements Closeable {
         List<Field> fieldList = BeanUtils.findALLFields(targetType);
         fieldList = fieldList == null ? new ArrayList<>(0) : fieldList;
         for (Field field : fieldList) {
+            Annotation injectInfo = findInject(false, field.getAnnotations());
+            if (injectInfo == null) {
+                continue;
+            }
+            //
             String name = field.getName();
             boolean hasInjected = injectFileds.contains(name);
             if (hasInjected) {
                 throw new IllegalStateException("doInject , " + targetType + " , property '" + name + "' duplicate.");
             }
             //
-            Annotation injectInfo = findInject(false, field.getAnnotations());
-            if (injectInfo == null) {
-                continue;
-            }
-            //
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
-            invokeField(field, targetBean, providerOnlyAnnotation(field.getDeclaringClass(), injectInfo, appContext, null).get());
+            invokeField(field, targetBean, providerOnlyAnnotation(field.getDeclaringClass(), injectInfo, appContext).get());
             injectFileds.add(field.getName());
         }
         // c.方法注入
@@ -435,9 +451,9 @@ public class BeanContainer implements Closeable {
                 method.setAccessible(true);
             }
             //
-            Supplier<Object[]> parameterSupplier = parameterSupplier(InstanceProvider.of(method), appContext, ArrayUtils.EMPTY_OBJECT_ARRAY);
+            Supplier<Object[]> parameterSupplier = parameterSupplier(InstanceProvider.of(method), appContext, ArrayUtils.EMPTY_OBJECT_ARRAY, true);
             try {
-                method.invoke(parameterSupplier.get());
+                method.invoke(targetBean, parameterSupplier.get());
             } catch (InvocationTargetException e2) {
                 throw ExceptionUtils.toRuntimeException(e2.getTargetException());
             } catch (Exception e) {
@@ -445,9 +461,9 @@ public class BeanContainer implements Closeable {
             }
         }
     }
-    //
+
     /*-------------------------------------------------------------------------------------------*/
-    //
+
     private <T> void doLife(T targetObject, BindInfo<T> bindInfo, AppContext appContext) {
         //
         // .Init初始化方法。
@@ -459,25 +475,29 @@ public class BeanContainer implements Closeable {
         // .注册销毁事件
         Method destroyMethod = findDestroyMethod(targetObject.getClass(), bindInfo);
         if (destroyMethod != null && Modifier.isPublic(destroyMethod.getModifiers())) {
-            HasorUtils.pushShutdownListener(appContext.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
-                invokeMethod(targetObject, destroyMethod);
-            });
+            boolean single = false;
+            if (bindInfo != null) {
+                single = getScopContainer().isSingleton(bindInfo);
+            } else {
+                single = getScopContainer().isSingleton(targetObject.getClass());
+            }
+            if (single) {
+                HasorUtils.pushShutdownListener(appContext.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
+                    invokeMethod(targetObject, destroyMethod);
+                });
+            }
         }
     }
-    //
-    public boolean isInit() {
-        return this.inited.get();
+
+    public void preInitialize() {
+        tryInit(this.spiCallerContainer);
+        tryInit(this.scopContainer);
     }
-    //
-    //
-    //
-    public void doInitialize(Environment env) {
-        if (!this.inited.compareAndSet(false, true)) {
-            return;/*避免被初始化多次*/
-        }
-        this.spiCallerContainer.doInitialize();
-        this.scopContainer.doInitialize();
-        this.bindInfoContainer.doInitialize();
+
+    @Override
+    protected void doInitialize() {
+        preInitialize();
+        tryInit(this.bindInfoContainer);
         //
         this.bindInfoContainer.forEach(bindInfo -> {
             DefaultBindInfoProviderAdapter<?> infoAdapter = (DefaultBindInfoProviderAdapter<?>) bindInfo;
@@ -485,17 +505,30 @@ public class BeanContainer implements Closeable {
             boolean singleton = scopContainer.isSingleton(bindInfo);                    // 配置了单例（只有单例的才会在容器启动时调用）
             if (initMethod != null && singleton) {
                 // 当前为 doInitialize 阶段，需要在 doStart 阶段开始调用 Bean 的 init。执行 init 只需要 get 它们。
-                HasorUtils.pushStartListener(env, (EventListener<AppContext>) (event, eventData) -> {
+                HasorUtils.pushStartListener(this.environment, (EventListener<AppContext>) (event, eventData) -> {
                     eventData.getInstance(infoAdapter);//执行init
                 });
             }
         });
     }
+
     @Override
-    public void close() {
+    protected void doClose() {
         this.classEngineMap.clear();
-        this.bindInfoContainer.close();
-        this.scopContainer.close();
-        this.spiCallerContainer.close();
+        tryClose(this.bindInfoContainer);
+        tryClose(this.scopContainer);
+        tryClose(this.spiCallerContainer);
+    }
+
+    private void tryInit(AbstractContainer container) {
+        if (!container.isInit()) {
+            container.init();
+        }
+    }
+
+    private void tryClose(AbstractContainer container) {
+        if (container.isInit()) {
+            container.close();
+        }
     }
 }

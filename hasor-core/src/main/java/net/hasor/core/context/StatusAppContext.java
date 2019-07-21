@@ -17,9 +17,7 @@ package net.hasor.core.context;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.container.BeanContainer;
-import net.hasor.core.container.SpiCallerContainer;
 
-import java.util.Objects;
 /**
  * 通过{@link BeanContainer}提供{@link AppContext}接口功能。
  * @version : 2013-4-9
@@ -28,15 +26,17 @@ import java.util.Objects;
 public class StatusAppContext extends TemplateAppContext {
     private BeanContainer container   = null;
     private Environment   environment = null;
-    //
+
     public StatusAppContext(Environment environment) {
         this.environment = environment;
-        this.container = new BeanContainer();
+        this.container = new BeanContainer(environment);
     }
+
     @Override
     protected BeanContainer getContainer() {
         return this.container;
     }
+
     @Override
     public Environment getEnvironment() {
         return this.environment;

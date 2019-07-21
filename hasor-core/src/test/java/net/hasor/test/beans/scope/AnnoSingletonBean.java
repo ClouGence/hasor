@@ -15,7 +15,7 @@
  */
 package net.hasor.test.beans.scope;
 import net.hasor.core.Singleton;
-//
+
 @Singleton
 public class AnnoSingletonBean {
 }

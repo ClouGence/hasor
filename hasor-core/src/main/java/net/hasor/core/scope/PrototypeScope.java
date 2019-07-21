@@ -17,6 +17,7 @@ package net.hasor.core.scope;
 import net.hasor.core.Scope;
 
 import java.util.function.Supplier;
+
 /**
  * 多例
  * @version : 2015年6月28日
@@ -24,6 +25,7 @@ import java.util.function.Supplier;
  */
 public class PrototypeScope implements Scope {
     public final static PrototypeScope SINGLETON = new PrototypeScope();
+
     @Override
     public <T> Supplier<T> scope(Object key, Supplier<T> provider) {
         return provider;

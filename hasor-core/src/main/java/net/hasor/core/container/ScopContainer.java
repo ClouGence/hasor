@@ -22,26 +22,26 @@ import net.hasor.core.scope.PrototypeScope;
 import net.hasor.core.scope.SingletonScope;
 import net.hasor.core.spi.ScopeProvisionListener;
 
-import java.io.Closeable;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
+
 /**
  * 作用域管理器
  * @version : 2019年06月20日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ScopContainer implements Closeable {
+public class ScopContainer extends AbstractContainer {
     private SingletonScope                             singletonScope = new SingletonScope();
     private PrototypeScope                             prototypeScope = new PrototypeScope();
     private SpiCallerContainer                         spiContainer   = null;
     private ConcurrentHashMap<String, Supplier<Scope>> scopeMapping   = new ConcurrentHashMap<>();
-    //
+
     public ScopContainer(SpiCallerContainer spiContainer) {
         this.spiContainer = Objects.requireNonNull(spiContainer, "SpiCallerContainer si null.");
     }
-    //
+
     /**
      * 为一个已经注册的作用域起一个别名。
      * @param scopeName 已经存在的作用域名称
@@ -57,8 +57,9 @@ public class ScopContainer implements Closeable {
         if (oldScope == null) {
             throw new IllegalStateException("reference Scope does not exist.");
         }
-        return (Supplier<T>) this.registerScopeSupplier(aliasName, oldScope);
+        return (Supplier<T>) this.registerScopeProvider(aliasName, oldScope);
     }
+
     /**
      * 注册作用域。
      * @param scopeName 作用域名称
@@ -66,15 +67,16 @@ public class ScopContainer implements Closeable {
      * @return 成功注册之后返回scopeProvider自身, 如果存在同名的scope那么会引发异常。
      */
     public <T extends Scope> Supplier<T> registerScope(String scopeName, Scope scopeInstance) {
-        return this.registerScopeSupplier(scopeName, (Supplier) InstanceProvider.of(scopeInstance));
+        return this.registerScopeProvider(scopeName, (Supplier) InstanceProvider.of(scopeInstance));
     }
+
     /**
      * 注册作用域。
      * @param scopeName 作用域名称
      * @param scopeProvider 作用域
      * @return 成功注册之后返回scopeProvider自身, 如果存在同名的scope那么会引发异常。
      */
-    public <T extends Scope> Supplier<T> registerScopeSupplier(String scopeName, Supplier<T> scopeProvider) {
+    public <T extends Scope> Supplier<T> registerScopeProvider(String scopeName, Supplier<T> scopeProvider) {
         // .重复检测
         if (this.scopeMapping.containsKey(scopeName)) {
             throw new IllegalStateException("the scope " + scopeName + " already exists.");
@@ -90,7 +92,7 @@ public class ScopContainer implements Closeable {
         });
         return (Supplier<T>) oldScope;
     }
-    //
+
     /**
      * 查找某个作用域。
      * @param scopeName 作用域名称
@@ -98,16 +100,24 @@ public class ScopContainer implements Closeable {
     public Supplier<Scope> findScope(String scopeName) {
         return this.scopeMapping.get(scopeName);
     }
-    //
+
     /**
-     * 根据 BindInfo 查找作用域。
+     * 查找某个作用域。
+     * @param scopeType 作用域名称
+     */
+    public Supplier<Scope> findScope(Class<?> scopeType) {
+        return this.scopeMapping.get(scopeType.getName());
+    }
+
+    /**
+     * 从 BindInfo 对象身上收集对应的 Scope。
      * @param bindInfo 参考的 BindInfo
      */
-    public Supplier<Scope>[] findScope(BindInfo<?> bindInfo) {
+    public Supplier<Scope>[] collectScope(BindInfo<?> bindInfo) {
         DefaultBindInfoProviderAdapter<?> adapter = (DefaultBindInfoProviderAdapter<?>) bindInfo;
-        Supplier<Scope> scopeProvider = adapter.getCustomerScopeProvider();
+        Supplier<Scope>[] scopeProvider = adapter.getCustomerScopeProvider();
         if (scopeProvider != null) {
-            return new Supplier[] { scopeProvider };
+            return scopeProvider;
         }
         //
         Class<?> sourceType = adapter.getSourceType();
@@ -115,11 +125,11 @@ public class ScopContainer implements Closeable {
             sourceType = adapter.getBindType();
         }
         //
-        return findScope(ContainerUtils.findImplClass(sourceType));
+        return collectScope(ContainerUtils.findImplClass(sourceType));
     }
-    //
+
     /** 根据类型上的注解查找对应的作用域。 */
-    public Supplier<Scope>[] findScope(Class<?> targetType) {
+    public Supplier<Scope>[] collectScope(Class<?> targetType) {
         if (targetType == null) {
             return null;
         }
@@ -136,14 +146,14 @@ public class ScopContainer implements Closeable {
             }
         }).toArray(Supplier[]::new);
     }
-    //
+
     /**
      * 判断是否是单例，单列对象需要标记了 Singleton 注解。或者通过别名的方式映射到 Singleton 上。
      * @see net.hasor.core.Singleton
      * @see javax.inject.Singleton
      */
     public boolean isSingleton(BindInfo<?> bindInfo) {
-        Supplier<Scope>[] scopeArrays = findScope(bindInfo);
+        Supplier<Scope>[] scopeArrays = collectScope(bindInfo);
         if (scopeArrays != null && scopeArrays.length > 0) {
             for (Supplier<Scope> scope : scopeArrays) {
                 if (scope.get() == singletonScope) {
@@ -153,15 +163,36 @@ public class ScopContainer implements Closeable {
         }
         return false;
     }
-    //
-    public void doInitialize() {
+
+    public boolean isSingleton(Class<?> targetType) {
+        if (targetType == null) {
+            return false;
+        }
+        //
+        return Arrays.stream(targetType.getAnnotations()).filter(anno -> {
+            return anno.annotationType().getAnnotation(javax.inject.Scope.class) != null;
+        }).map(anno -> {
+            String scopeName = anno.annotationType().getName();
+            Supplier<Scope> supplier = findScope(anno.annotationType().getName());
+            if (supplier != null) {
+                return supplier;
+            } else {
+                throw new IllegalStateException("the scope " + scopeName + " undefined.");
+            }
+        }).anyMatch(scopeSupplier -> {
+            return scopeSupplier.get() == singletonScope;
+        });
+    }
+
+    protected void doInitialize() {
         this.singletonScope = new SingletonScope();
         this.scopeMapping.put(net.hasor.core.Prototype.class.getName(), InstanceProvider.of(prototypeScope));
         this.scopeMapping.put(net.hasor.core.Singleton.class.getName(), InstanceProvider.of(singletonScope));
         this.scopeMapping.put(javax.inject.Singleton.class.getName(), InstanceProvider.of(singletonScope));
     }
+
     @Override
-    public void close() {
+    protected void doClose() {
         this.scopeMapping.clear();
     }
 }

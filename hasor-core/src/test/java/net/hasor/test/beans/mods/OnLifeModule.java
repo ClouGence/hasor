@@ -19,6 +19,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Module;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * 在模块中处理容器启动
  * @version : 2013-9-14
@@ -27,15 +28,17 @@ import org.slf4j.LoggerFactory;
 public class OnLifeModule implements Module {
     protected           Logger logger = LoggerFactory.getLogger(getClass());
     public static final String STR    = "say form Mod_1.";
-    //
+
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         apiBinder.installModule(new SimpleModule());
         apiBinder.bindType(String.class).uniqueName().toInstance(STR);
     }
+
     @Override
     public void onStart(AppContext appContext) throws Throwable {
         logger.info("启动啦...");
     }
+
     @Override
     public void onStop(AppContext appContext) throws Throwable {
         logger.info("停止啦...");

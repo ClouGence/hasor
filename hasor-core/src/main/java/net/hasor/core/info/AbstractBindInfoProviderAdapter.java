@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.core.info;
-import net.hasor.core.*;
+import net.hasor.core.BindInfo;
+import net.hasor.core.Scope;
 import net.hasor.core.binder.BindInfoBuilder;
 import net.hasor.core.spi.BeanCreaterListener;
 import net.hasor.utils.StringUtils;
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+
 /**
  * 用于定义Bean，实现了Bean配置接口{@link BindInfoBuilder}，配置的信息通过{@link BindInfo}接口展现出来。
  * <p>同时实现了{@link CustomerProvider}和{@link ScopeProvider}接口。表示着这个Bean定义支持自定义{@link Supplier}和{@link Scope}。
@@ -40,44 +42,50 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
     private          Class<? extends T>                               sourceType       = null;
     //2.系统属性
     private          Supplier<? extends T>                            customerProvider = null;
-    private          Supplier<Scope>                                  scopeProvider    = null;
+    private          List<Supplier<Scope>>                            scopeProvider    = null;
     private          List<Supplier<? extends BeanCreaterListener<?>>> createrListener  = null;
-    //
+
     public String getBindID() {
         if (this.bindID == null) {
             this.bindID = this.bindType.getName() + "#" + this.bindName;
         }
         return this.bindID;
     }
-    //
+
     public String getBindName() {
         return this.bindName;
     }
-    //
+
     /** 调用 bindType 使用的类型。 */
     public Class<T> getBindType() {
         return this.bindType;
     }
-    //
+
     /** 调用 bindType 之后，并通过 to 方法明确指明的具体实现类。*/
     public Class<? extends T> getSourceType() {
         return this.sourceType;
     }
-    //
+
     /**获取 {@link #setCustomerProvider(Supplier)} 方法设置的 Provider 对象。*/
     public Supplier<? extends T> getCustomerProvider() {
         return this.customerProvider;
     }
-    public Supplier<Scope> getCustomerScopeProvider() {
-        return this.scopeProvider;
+
+    public Supplier<Scope>[] getCustomerScopeProvider() {
+        if (this.scopeProvider != null) {
+            return this.scopeProvider.toArray(new Supplier[0]);
+        }
+        return null;
     }
+
     public List<Supplier<? extends BeanCreaterListener<?>>> getCreaterListener() {
         return createrListener;
     }
+
     public BindInfo<T> toInfo() {
         return this;
     }
-    //
+
     public void setBindID(String newID) {
         if (StringUtils.isBlank(newID)) {
             throw new NullPointerException("newID is null.");
@@ -86,33 +94,48 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
         this.notify(new NotifyData("bindID", this.bindID, newID));
         this.bindID = newID;
     }
+
     public void setBindName(final String bindName) {
         // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("bindName", this.bindName, bindName));
         this.bindName = bindName;
     }
+
     public void setBindType(final Class<T> bindType) {
         // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("bindType", this.bindType, bindType));
         this.bindType = bindType;
     }
+
     public void setSourceType(final Class<? extends T> sourceType) {
         // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("sourceType", this.sourceType, sourceType));
         this.sourceType = sourceType;
     }
+
     public void setCustomerProvider(final Supplier<? extends T> customerProvider) {
-        // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("customerProvider", this.customerProvider, customerProvider));
         this.customerProvider = customerProvider;
     }
-    public void setScopeProvider(final Supplier<Scope> scopeProvider) {
-        // 发个消息出来给 BeanContainer，让它来检测是否重复。
-        this.notify(new NotifyData("scopeProvider", this.scopeProvider, scopeProvider));
-        this.scopeProvider = scopeProvider;
+
+    public void addScopeProvider(final Supplier<Scope> scopeProvider) {
+        if (this.scopeProvider == null) {
+            this.scopeProvider = new ArrayList<>();
+        }
+        if (!this.scopeProvider.contains(scopeProvider)) {
+            this.notify(new NotifyData("scopeProvider", this.scopeProvider, scopeProvider));
+            this.scopeProvider.add(scopeProvider);
+        }
     }
+
+    public void clearScope() {
+        if (this.scopeProvider != null) {
+            this.notify(new NotifyData("scopeProvider", this.scopeProvider, scopeProvider));
+            this.scopeProvider.clear();
+        }
+    }
+
     public void addCreaterListener(Supplier<? extends BeanCreaterListener<?>> createrListener) {
-        // 发个消息出来给 BeanContainer，让它来检测是否重复。
         this.notify(new NotifyData("createrListener", this.createrListener, createrListener));
         if (this.createrListener == null) {
             this.createrListener = new ArrayList<>();

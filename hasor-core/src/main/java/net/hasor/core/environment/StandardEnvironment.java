@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Map;
+
 /**
  * {@link Environment}接口实现类，继承自{@link AbstractEnvironment}。
  * @version : 2013-9-11
@@ -34,34 +35,43 @@ public class StandardEnvironment extends AbstractEnvironment {
     public StandardEnvironment() throws IOException {
         this(null, (String) null, null, null);
     }
+
     public StandardEnvironment(Object context) throws IOException {
         this(context, (String) null, null, null);
     }
-    //
+
     public StandardEnvironment(Object context, File mainSettings) throws IOException {
         this(context, mainSettings, null, null);
     }
+
     public StandardEnvironment(Object context, URL mainSettings) throws IOException {
         this(context, mainSettings, null, null);
     }
+
     public StandardEnvironment(Object context, String mainSettings) throws IOException {
         this(context, mainSettings, null, null);
     }
+
     public StandardEnvironment(Object context, URI mainSettings) throws IOException {
         this(context, mainSettings, null, null);
     }
+
     public StandardEnvironment(Object context, File mainSettings, Map<String, String> frameworkEnvConfig, ClassLoader loader) throws IOException {
         this(context, toURI(mainSettings), frameworkEnvConfig, loader);
     }
+
     public StandardEnvironment(Object context, URL mainSettings, Map<String, String> frameworkEnvConfig, ClassLoader loader) throws IOException {
         this(context, toURI(mainSettings), frameworkEnvConfig, loader);
     }
+
     public StandardEnvironment(Object context, String mainSettings, Map<String, String> frameworkEnvConfig, ClassLoader loader) throws IOException {
         this(context, toURI(mainSettings), frameworkEnvConfig, loader);
     }
+
     public StandardEnvironment(Object context, URI mainSettings, Map<String, String> frameworkEnvConfig, ClassLoader loader) throws IOException {
         this(context, new StandardContextSettings(mainSettings), frameworkEnvConfig, loader);
     }
+
     public StandardEnvironment(Object context, AbstractSettings mainSettings, Map<String, String> frameworkEnvConfig, ClassLoader loader) throws IOException {
         super(context, mainSettings);
         logger.info("create Environment, type = StandardEnvironment, mainSettings = {}", mainSettings);
@@ -71,6 +81,7 @@ public class StandardEnvironment extends AbstractEnvironment {
         this.setRootLosder(new AopClassLoader(loader));
         this.initEnvironment(frameworkEnvConfig);
     }
+
     public static URI toURI(Object source) {
         if (source == null) {
             return null;

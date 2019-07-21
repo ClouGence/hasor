@@ -19,6 +19,7 @@ import net.hasor.core.MethodInterceptor;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
 /**
  * 标记在类或方法上，为类或方法指定拦截器。
  * @version : 2013-3-20

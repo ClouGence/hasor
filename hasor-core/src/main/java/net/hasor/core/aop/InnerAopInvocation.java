@@ -18,6 +18,7 @@ import net.hasor.core.MethodInterceptor;
 import net.hasor.core.MethodInvocation;
 
 import java.lang.reflect.Method;
+
 /**
  *
  * @version : 2013-4-13
@@ -27,7 +28,7 @@ public class InnerAopInvocation implements MethodInvocation {
     private MethodInterceptor[] interceptorDefinitions;
     private MethodInvocation    proceedingChain;
     private int                 index = -1;
-    //
+
     public InnerAopInvocation(String targetMethodDesc, final Method targetMethod, final Method proxyMethod, final Object targetObject, Object[] methodParams) {
         Class<?> targetClass = targetObject.getClass();
         ClassLoader loader = targetClass.getClassLoader();
@@ -41,12 +42,15 @@ public class InnerAopInvocation implements MethodInvocation {
         //
         this.proceedingChain = new InnerChainMethodInvocation(proxyMethod, targetMethod, targetObject, methodParams);
     }
+
     public Method getMethod() {
         return this.proceedingChain.getMethod();
     }
+
     public Object[] getArguments() {
         return this.proceedingChain.getArguments();
     }
+
     public Object proceed() throws Throwable {
         this.index++;
         if (this.index < this.interceptorDefinitions.length) {
@@ -55,6 +59,7 @@ public class InnerAopInvocation implements MethodInvocation {
             return this.proceedingChain.proceed();
         }
     }
+
     public Object getThis() {
         return this.proceedingChain.getThis();
     }

@@ -15,6 +15,7 @@
  */
 package net.hasor.core.settings;
 import net.hasor.core.Settings;
+import net.hasor.core.setting.InputStreamSettings;
 import net.hasor.core.setting.SettingsWrap;
 import net.hasor.core.setting.StandardContextSettings;
 import net.hasor.test.beans.enums.SelectEnum;
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 /**
  *
  * @version : 2013-8-11
@@ -34,7 +36,7 @@ public class SettingsTest {
     private static String DATA_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private static String TIME_FORMAT      = "HH:mm:ss";
     private static String DATA_FORMAT      = "yyyy-MM-dd";
-    //
+
     // - 配置信息读取
     @Test
     public void settingsTest() throws Exception {
@@ -59,7 +61,7 @@ public class SettingsTest {
         String source = settings.getString("mySelf.source");
         assert source.equals("Xml");
     }
-    //
+
     // - 配置信息读取
     @Test
     public void propTest() throws Exception {
@@ -84,7 +86,7 @@ public class SettingsTest {
         String source = settings.getString("mySelf.source");
         assert source.equals("Prop");
     }
-    //
+
     // - 配置信息读取
     @Test
     public void valueTest() throws Exception {
@@ -173,7 +175,7 @@ public class SettingsTest {
         assert "/".equals(settings.getDirectoryPath("valueGroup.fileValue_5"));
         assert "abc".equals(settings.getDirectoryPath("valueGroup.fileValue_6", "abc"));
     }
-    //
+
     // - 配置信息读取
     @Test
     public void valueTest2() throws Exception {
@@ -260,7 +262,7 @@ public class SettingsTest {
         assert "/".equals(settings.getDirectoryPathArray("valueGroup.fileValue_5")[0]);
         assert settings.getDirectoryPathArray("valueGroup.fileValue_6", "abc").length == 0;
     }
-    //
+
     @Test
     public void valueTest3() throws Exception {
         Settings settings = new StandardContextSettings("/net_hasor_core_settings/value-config.xml");
@@ -277,6 +279,17 @@ public class SettingsTest {
         assert array.length == 2;
         assert !array[0];
         assert array[1];
+    }
+
+    @Test
+    public void valueTest4() throws Exception {
+        Settings settings = new InputStreamSettings();
+        //
+        settings.addSetting("charValue", 32);
+        assert settings.getChar("charValue") == '3';// 32 会被toString
+        //
+        settings.addSetting("charValue", ' ');
+        assert settings.getChar("charValue") == ' ';
     }
     //
     //    @Test
