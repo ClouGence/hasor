@@ -16,15 +16,13 @@
 package net.hasor.core;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.spi.AppContextAware;
-import net.hasor.core.spi.BeanCreaterListener;
 
 import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.EventListener;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -73,7 +71,7 @@ public interface ApiBinder {
      * @see net.hasor.core.Module#loadModule(ApiBinder)
      */
     public void installModule(Module... module) throws Throwable;
-    //
+
     /*----------------------------------------------------------------------------------------Aop*/
 
     /**
@@ -122,7 +120,7 @@ public interface ApiBinder {
      * @return 返回所有符合条件的绑定信息。
      */
     public <T> List<BindInfo<T>> findBindingRegister(Class<T> bindType);
-    //
+
     /*------------------------------------------------------------------------------------Binding*/
 
     /**
@@ -229,19 +227,8 @@ public interface ApiBinder {
         return this.bindType(type).nameWith(withName).toProvider(supplier);
     }
 
-    public default <T> void bindToCreater(BindInfo<T> info, BeanCreaterListener<?> listener) {
-        this.bindToCreater(info, InstanceProvider.of(Objects.requireNonNull(listener)));
-    }
-
-    public default <T> void bindToCreater(BindInfo<T> info, Class<? extends BeanCreaterListener<?>> listener) {
-        this.bindToCreater(info, getProvider(listener));
-    }
-
-    public default <T> void bindToCreater(BindInfo<T> info, BindInfo<? extends BeanCreaterListener<?>> listener) {
-        this.bindToCreater(info, getProvider(listener));
-    }
-
-    public <T> void bindToCreater(BindInfo<T> info, Supplier<? extends BeanCreaterListener<?>> listener);
+    /** 添加SPI监听器 */
+    public <T extends EventListener> void bindSpiListener(Class<T> spiType, T listener);
 
     /**
      * 注册作用域。
@@ -250,13 +237,13 @@ public interface ApiBinder {
      * @return 成功注册之后返回它自身, 如果存在同名的scope那么会返回第一次注册那个 scope。
      * @see javax.inject.Scope
      */
-    public default Supplier<Scope> registerScope(Class<? extends Annotation> scopeType, Scope scope) {
+    public default Supplier<Scope> bindScope(Class<? extends Annotation> scopeType, Scope scope) {
         Objects.requireNonNull(scopeType, "scopeType is null.");
         javax.inject.Scope scopeTypeAnno = scopeType.getAnnotation(javax.inject.Scope.class);
         if (scopeTypeAnno == null) {
             throw new IllegalStateException("Annotation Type " + scopeType.getName() + " does not declare a Scope.");
         }
-        return this.registerScope(scopeType.getName(), InstanceProvider.of(scope));
+        return this.bindScope(scopeType.getName(), InstanceProvider.of(scope));
     }
 
     /**
@@ -265,8 +252,8 @@ public interface ApiBinder {
      * @param scope 作用域
      * @return 成功注册之后返回它自身, 如果存在同名的scope那么会返回第一次注册那个 scope。
      */
-    public default Supplier<Scope> registerScope(String scopeName, Scope scope) {
-        return this.registerScope(scopeName, InstanceProvider.of(scope));
+    public default Supplier<Scope> bindScope(String scopeName, Scope scope) {
+        return this.bindScope(scopeName, InstanceProvider.of(scope));
     }
 
     /**
@@ -275,11 +262,10 @@ public interface ApiBinder {
      * @param scopeSupplier 作用域
      * @return 成功注册之后返回它自身, 如果存在同名的scope那么会返回第一次注册那个 scope。
      */
-    public <T extends Scope> Supplier<T> registerScope(String scopeName, Supplier<T> scopeSupplier);
+    public <T extends Scope> Supplier<T> bindScope(String scopeName, Supplier<T> scopeSupplier);
 
-    //
     public default <T> Supplier<T> getProvider(Class<T> targetType) {
-        class TargetSupplier implements AppContextAware, Supplier<T> {
+        class TargetSupplierByClass implements AppContextAware, Supplier<T> {
             private AppContext appContext = null;
 
             @Override
@@ -295,12 +281,11 @@ public interface ApiBinder {
                 return appContext.getInstance(targetType);
             }
         }
-        return HasorUtils.autoAware(getEnvironment(), new TargetSupplier());
+        return HasorUtils.autoAware(getEnvironment(), new TargetSupplierByClass());
     }
 
-    //
     public default <T> Supplier<T> getProvider(BindInfo<T> targetType) {
-        class TargetSupplier implements AppContextAware, Supplier<T> {
+        class TargetSupplierByInfo implements AppContextAware, Supplier<T> {
             private AppContext appContext = null;
 
             @Override
@@ -316,9 +301,9 @@ public interface ApiBinder {
                 return appContext.getInstance(targetType);
             }
         }
-        return HasorUtils.autoAware(getEnvironment(), new TargetSupplier());
+        return HasorUtils.autoAware(getEnvironment(), new TargetSupplierByInfo());
     }
-    //
+
     /*--------------------------------------------------------------------------------------Faces*/
 
     /**给绑定起个名字。*/
@@ -369,7 +354,6 @@ public interface ApiBinder {
          */
         public NamedBindingBuilder<T> bothWith(String nameString);
     }
-    //
 
     /**处理类型和实现的绑定。*/
     public interface LinkedBindingBuilder<T> extends InjectPropertyBindingBuilder<T> {
@@ -403,7 +387,6 @@ public interface ApiBinder {
          */
         public InjectConstructorBindingBuilder<T> toConstructor(Constructor<? extends T> constructor);
     }
-    //
 
     /**构造方法依赖注入，该接口的配置会覆盖注解  {@link ConstructorBy}。*/
     public interface InjectConstructorBindingBuilder<T> extends LifeBindingBuilder<T> {
@@ -511,20 +494,31 @@ public interface ApiBinder {
          * @param scope 作用域
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public default OptionPropertyBindingBuilder<T> toScope(final Scope scope) {
-            return this.toScope(InstanceProvider.of(scope));
+        public default OptionPropertyBindingBuilder<T> toScope(Scope... scope) {
+            Supplier[] supplierArray = Arrays.stream(scope).map(InstanceProvider::of).toArray(Supplier[]::new);
+            return this.toScope(supplierArray);
         }
 
         /**
          * 将Bean应用到一个用户指定的Scope上。
-         * 如果配置了{@link #toScope(Supplier)}或者{@link #toScope(Scope)}，那么该方法将会使它们失效。
+         * 如果配置了{@link #toScope(Supplier...)}或者{@link #toScope(Scope...)}，那么该方法将会使它们失效。
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public default OptionPropertyBindingBuilder<T> toScope(Class<? extends Annotation> scopeAnno) {
-            if (scopeAnno.getAnnotation(javax.inject.Scope.class) == null) {
-                throw new IllegalArgumentException(scopeAnno.getName() + " are not declared as Scope.");
-            }
-            return this.toScope(scopeAnno.getName());
+        public default OptionPropertyBindingBuilder<T> toScope(Class<?>... scopeAnno) {
+            return this.toScope(Arrays.stream(scopeAnno)//
+                    .filter(aClass -> {
+                        if (!aClass.isAnnotation()) {
+                            throw new IllegalArgumentException(aClass.getName() + " must be Annotation.");
+                        }
+                        return true;
+                    })//
+                    .map(aClass -> {
+                        if (aClass.getAnnotation(javax.inject.Scope.class) == null) {
+                            throw new IllegalArgumentException(aClass.getName() + " are not declared as Scope.");
+                        }
+                        return aClass.getName();
+                    }).toArray(String[]::new)//
+            );
         }
 
         /**
@@ -532,26 +526,18 @@ public interface ApiBinder {
          * @param scope 作用域
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public OptionPropertyBindingBuilder<T> toScope(Supplier<Scope> scope);
+        public OptionPropertyBindingBuilder<T> toScope(Supplier<Scope>... scope);
 
         /**
          * 设置Scope。
          * @param scopeName 作用域
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
-        public OptionPropertyBindingBuilder<T> toScope(String scopeName);
+        public OptionPropertyBindingBuilder<T> toScope(String... scopeName);
     }
-    //
 
-    /**选项和属性的配置。*/
+    /** 选项和属性的配置。*/
     public interface OptionPropertyBindingBuilder<T> extends MetaDataBindingBuilder<T> {
-        public ScopedBindingBuilder<T> whenCreate(BeanCreaterListener<?> createrListener);
-
-        public ScopedBindingBuilder<T> whenCreate(Supplier<? extends BeanCreaterListener<?>> createrListener);
-
-        public ScopedBindingBuilder<T> whenCreate(Class<? extends BeanCreaterListener<?>> createrListener);
-
-        public ScopedBindingBuilder<T> whenCreate(BindInfo<? extends BeanCreaterListener<?>> createrListener);
     }
 
     /**绑定元信息*/

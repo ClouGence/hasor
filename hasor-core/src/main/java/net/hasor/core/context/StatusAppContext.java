@@ -24,21 +24,14 @@ import net.hasor.core.container.BeanContainer;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class StatusAppContext extends TemplateAppContext {
-    private BeanContainer container   = null;
-    private Environment   environment = null;
+    private BeanContainer container = null;
 
     public StatusAppContext(Environment environment) {
-        this.environment = environment;
         this.container = new BeanContainer(environment);
     }
 
     @Override
     protected BeanContainer getContainer() {
         return this.container;
-    }
-
-    @Override
-    public Environment getEnvironment() {
-        return this.environment;
     }
 }

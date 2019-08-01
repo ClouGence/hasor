@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.aop.interceptor;
-import net.hasor.core.MethodInvocation;
-import net.hasor.core.container.aop.TestInterceptor;
-/**
- * @version : 2016-12-16
- * @author 赵永春 (zyc@hasor.net)
- */
-public class TransparentInterceptor extends TestInterceptor {
-    @Override
-    public Object invoke(MethodInvocation invocation) throws Throwable {
-        return super.invoke(invocation);
+package net.hasor.core.aop;
+import org.junit.Test;
+
+public class AopToosTest {
+    @Test
+    public void toosTest1() throws Exception {
+        String[] asmType1 = AsmTools.splitAsmType("IIIILLjava/lang/Integer;");
+        assert asmType1[0].equals("I");
+        assert asmType1[1].equals("I");
+        assert asmType1[2].equals("I");
+        assert asmType1[3].equals("I");
+        assert asmType1[4].equals("LLjava/lang/Integer;");
+        //
+        String[] asmType2 = AsmTools.splitAsmType("");
+        assert asmType2.length == 0;
     }
 }

@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.Environment;
-import net.hasor.core.Module;
+import net.hasor.core.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -32,6 +31,10 @@ import java.util.Map;
 public class ApiBinderInvocationHandler implements InvocationHandler {
     private static Logger                logger = LoggerFactory.getLogger(ApiBinderInvocationHandler.class);
     private        Map<Class<?>, Object> supportMap;
+
+    protected Map<Class<?>, Object> supportMap() {
+        return Collections.unmodifiableMap(supportMap);
+    }
 
     //
     public ApiBinderInvocationHandler(Map<Class<?>, Object> supportMap) {
@@ -67,8 +70,12 @@ public class ApiBinderInvocationHandler implements InvocationHandler {
                 Module[] moduleArrays = (Module[]) args[0];
                 for (Module module : moduleArrays) {
                     logger.info("installModule ->" + module);
+                    /*加载*/
                     module.loadModule((ApiBinder) proxy);
-                    BinderHelper.onInstall(environment, module);
+                    /*启动*/
+                    HasorUtils.pushStartListener(environment, (EventListener<AppContext>) (event, eventData) -> module.onStart(eventData));
+                    /*停止*/
+                    HasorUtils.pushShutdownListener(environment, (EventListener<AppContext>) (event, eventData) -> module.onStop(eventData));
                 }
             }
             return null;

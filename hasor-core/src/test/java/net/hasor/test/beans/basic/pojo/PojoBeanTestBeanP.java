@@ -13,44 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.binder;
+package net.hasor.test.beans.basic.pojo;
 import java.lang.reflect.Method;
 import java.util.Date;
+
 /**
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class TestBean {
+public class PojoBeanTestBeanP {
     private Date   abc1;
     private int    abc2;
     private Object abc3;
     private Method abc4;
-    //
+
     public Date getAbc1() {
         return abc1;
     }
+
     public void setAbc1(Date abc1) {
         this.abc1 = abc1;
     }
+
     public int getAbc2() {
         return abc2;
     }
+
     public void setAbc2(int abc2) {
         this.abc2 = abc2;
     }
+
     public Object getAbc3() {
         return abc3;
     }
+
     public void setAbc3(Object abc3) {
         this.abc3 = abc3;
     }
+
     public Method getAbc4() {
         return abc4;
     }
+
     public void setAbc4(Method abc4) {
         this.abc4 = abc4;
     }
-    //
+
     public void doInit() {
+    }
+
+    public void doDestroy() {
     }
 }

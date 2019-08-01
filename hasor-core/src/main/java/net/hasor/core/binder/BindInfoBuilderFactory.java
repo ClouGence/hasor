@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import java.lang.reflect.Method;
-import java.util.Date;
+import net.hasor.core.Environment;
+import net.hasor.core.container.BindInfoContainer;
+import net.hasor.core.container.ScopContainer;
+import net.hasor.core.container.SpiCallerContainer;
+
 /**
- * @version : 2016-12-16
+ *
+ * @version : 2014年7月2日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class TestBean2 {
-    private Date   abc1;
-    private int    abc2;
-    private Object abc3;
-    private Method abc4;
-    //
-    public TestBean2(Date abc1, int abc2, Object abc3, Method abc4) {
-        this.abc1 = abc1;
-        this.abc2 = abc2;
-        this.abc3 = abc3;
-        this.abc4 = abc4;
-    }
-    //
-    public void doInit() {
-    }
+public interface BindInfoBuilderFactory {
+    public Environment getEnvironment();
+
+    public SpiCallerContainer getSpiContainer();
+
+    public BindInfoContainer getBindInfoContainer();
+
+    public ScopContainer getScopContainer();
 }

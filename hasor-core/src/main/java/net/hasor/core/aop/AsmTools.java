@@ -60,7 +60,7 @@ public class AsmTools implements Opcodes {
         case 'V':
             return Opcodes.RETURN;//Void
         default:
-            throw new UnsupportedOperationException("不支持的类型装载请求");//
+            throw new UnsupportedOperationException("Unsupported LOAD instruction.");//
         }
     }
 
@@ -89,7 +89,7 @@ public class AsmTools implements Opcodes {
         case '[':
             return Opcodes.ALOAD;//Array
         default:
-            throw new UnsupportedOperationException("不支持的类型装载请求");//
+            throw new UnsupportedOperationException("Unsupported LOAD instruction.");//
         }
     }
     /**根据asm类型获取其ASTORE指令。*/
@@ -371,7 +371,7 @@ public class AsmTools implements Opcodes {
         try {
             return new AsmTypeRead(asmTypes).readTypes();//     IIIILjava/lang/Integer;F[[[Ljava/util/Date;
         } catch (IOException e) {
-            throw new RuntimeException("不合法的ASM类型desc。");
+            throw new RuntimeException("Invalid ASM type desc.");
         }
     }
     //=======================================================================================================================

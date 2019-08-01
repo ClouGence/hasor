@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.aop.interceptor;
-import net.hasor.core.MethodInterceptor;
-import net.hasor.core.MethodInvocation;
+package net.hasor.core.spi;
+import net.hasor.core.BindInfo;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.EventListener;
+
 /**
- * @version : 2016-12-16
+ * 当 AppContext 创建这个Bean时调用。
+ * @version : 2013-11-8
  * @author 赵永春 (zyc@hasor.net)
  */
-public class CheckBaseType0Interceptor implements MethodInterceptor {
-    @Override
-    public Object invoke(MethodInvocation invocation) throws Throwable {
-        List<?> proceed = (List<?>) invocation.proceed();
-        ArrayList<Object> result = new ArrayList<>();
-        result.add("Before");
-        result.addAll(proceed);
-        result.add("After");
-        return result;
-    }
+public interface CreaterProvisionListener<T> extends EventListener {
+    /**
+     * 注入AppContext。
+     * @param newObject 新对象。
+     * @param bindInfo 新对象的 BindInfo（可能为空）。
+     */
+    public void beanCreated(T newObject, BindInfo<? extends T> bindInfo) throws Throwable;
 }

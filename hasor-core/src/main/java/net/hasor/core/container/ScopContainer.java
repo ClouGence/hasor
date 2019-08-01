@@ -114,6 +114,10 @@ public class ScopContainer extends AbstractContainer {
      * @param bindInfo 参考的 BindInfo
      */
     public Supplier<Scope>[] collectScope(BindInfo<?> bindInfo) {
+        if (bindInfo == null) {
+            return null;
+        }
+        //
         DefaultBindInfoProviderAdapter<?> adapter = (DefaultBindInfoProviderAdapter<?>) bindInfo;
         Supplier<Scope>[] scopeProvider = adapter.getCustomerScopeProvider();
         if (scopeProvider != null) {

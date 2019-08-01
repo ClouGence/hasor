@@ -15,14 +15,9 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.*;
-import net.hasor.core.container.BeanContainer;
-import net.hasor.core.container.BindInfoContainer;
-import net.hasor.core.container.ScopContainer;
 import net.hasor.core.exts.aop.Matchers;
-import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.provider.InstanceProvider;
-import net.hasor.core.spi.BeanCreaterListener;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
@@ -30,10 +25,8 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.EventListener;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -62,7 +55,7 @@ public abstract class AbstractBinder implements ApiBinder {
     }
 
     @Override
-    public Set<Class<?>> findClass(Class<?> featureType, String... scanPackages) {
+    public Set<Class<?>> findClass(final Class<?> featureType, final String... scanPackages) {
         if (featureType == null || scanPackages == null || scanPackages.length == 0) {
             return null;
         }
@@ -76,40 +69,29 @@ public abstract class AbstractBinder implements ApiBinder {
     }
 
     @Override
-    public <T extends ApiBinder> T tryCast(Class<T> castApiBinder) {
+    public <T extends ApiBinder> T tryCast(final Class<T> castApiBinder) {
         //see : net.hasor.core.binder.ApiBinderInvocationHandler.invoke() 由动态代理的拦截器实现。
         throw new IllegalStateException("current state is not allowed.");
     }
 
     /*------------------------------------------------------------------------------------Binding*/
-    protected abstract BeanContainer getBeanContainer();
-
-    private BindInfoContainer getBindInfoContainer() {
-        return getBeanContainer().getBindInfoContainer();
-    }
-
-    private ScopContainer getScopContainer() {
-        return getBeanContainer().getScopContainer();
-    }
+    protected abstract BindInfoBuilderFactory containerFactory();
 
     //
     @Override
     public <T> NamedBindingBuilder<T> bindType(final Class<T> type) {
-        BindInfoBuilder<T> typeBuilder = getBindInfoContainer().createInfoAdapter(type);
+        BindInfoBuilder<T> typeBuilder = this.containerFactory().getBindInfoContainer().createInfoAdapter(type);
         return new BindingBuilderImpl<>(typeBuilder);
     }
 
     @Override
-    public <T> void bindToCreater(BindInfo<T> info, Supplier<? extends BeanCreaterListener<?>> listener) {
-        BindInfo<T> bindInfo = getBindInfo(Objects.requireNonNull(info).getBindID());
-        if (bindInfo instanceof AbstractBindInfoProviderAdapter) {
-            ((AbstractBindInfoProviderAdapter) bindInfo).addCreaterListener(Objects.requireNonNull(listener));
-        }
+    public <T extends EventListener> void bindSpiListener(final Class<T> spiType, final T listener) {
+        containerFactory().getSpiContainer().addListener(spiType, listener);
     }
 
     @Override
-    public <T extends Scope> Supplier<T> registerScope(String scopeName, Supplier<T> scopeProvider) {
-        return this.getScopContainer().registerScopeProvider(scopeName, scopeProvider);
+    public <T extends Scope> Supplier<T> bindScope(final String scopeName, final Supplier<T> scopeProvider) {
+        return this.containerFactory().getScopContainer().registerScopeProvider(scopeName, scopeProvider);
     }
 
     /*----------------------------------------------------------------------------------------Aop*/
@@ -140,28 +122,28 @@ public abstract class AbstractBinder implements ApiBinder {
     }
 
     @Override
-    public <T> List<BindInfo<T>> findBindingRegister(Class<T> bindType) {
+    public <T> List<BindInfo<T>> findBindingRegister(final Class<T> bindType) {
         Objects.requireNonNull(bindType, "bindType is null.");
-        return getBindInfoContainer().findBindInfoList(bindType);
+        return this.containerFactory().getBindInfoContainer().findBindInfoList(bindType);
     }
 
     @Override
-    public <T> BindInfo<T> findBindingRegister(String withName, Class<T> bindType) {
+    public <T> BindInfo<T> findBindingRegister(final String withName, final Class<T> bindType) {
         Objects.requireNonNull(withName, "withName is null.");
         Objects.requireNonNull(bindType, "bindType is null.");
-        return getBindInfoContainer().findBindInfo(withName, bindType);
+        return this.containerFactory().getBindInfoContainer().findBindInfo(withName, bindType);
     }
 
     @Override
-    public <T> BindInfo<T> getBindInfo(String bindID) {
+    public <T> BindInfo<T> getBindInfo(final String bindID) {
         Objects.requireNonNull(bindID, "bindID is null.");
-        return getBindInfoContainer().findBindInfo(bindID);
+        return this.containerFactory().getBindInfoContainer().findBindInfo(bindID);
     }
 
     @Override
-    public <T> BindInfo<T> getBindInfo(Class<T> bindType) {
+    public <T> BindInfo<T> getBindInfo(final Class<T> bindType) {
         Objects.requireNonNull(bindType, "bindType is null.");
-        return getBindInfoContainer().findBindInfo(null, bindType);
+        return this.containerFactory().getBindInfoContainer().findBindInfo(null, bindType);
     }
     //
     /*------------------------------------------------------------------------------------Binding*/
@@ -178,13 +160,13 @@ public abstract class AbstractBinder implements ApiBinder {
         }
 
         @Override
-        public LifeBindingBuilder<T> initMethod(String methodName) {
+        public LifeBindingBuilder<T> initMethod(final String methodName) {
             this.typeBuilder.initMethod(methodName);
             return this;
         }
 
         @Override
-        public LifeBindingBuilder<T> destroyMethod(String methodName) {
+        public LifeBindingBuilder<T> destroyMethod(final String methodName) {
             this.typeBuilder.destroyMethod(methodName);
             return this;
         }
@@ -196,40 +178,7 @@ public abstract class AbstractBinder implements ApiBinder {
         }
 
         @Override
-        public ScopedBindingBuilder<T> whenCreate(BeanCreaterListener<?> createrListener) {
-            if (createrListener != null) {
-                Supplier<? extends BeanCreaterListener<?>> listenerProvider = InstanceProvider.of(createrListener);
-                this.typeBuilder.addCreaterListener(listenerProvider);
-            }
-            return this;
-        }
-
-        @Override
-        public ScopedBindingBuilder<T> whenCreate(Supplier<? extends BeanCreaterListener<?>> createrListener) {
-            if (createrListener != null) {
-                this.typeBuilder.addCreaterListener(createrListener);
-            }
-            return this;
-        }
-
-        @Override
-        public ScopedBindingBuilder<T> whenCreate(Class<? extends BeanCreaterListener<?>> createrListener) {
-            if (createrListener != null) {
-                this.typeBuilder.addCreaterListener(getProvider(createrListener));
-            }
-            return this;
-        }
-
-        @Override
-        public ScopedBindingBuilder<T> whenCreate(BindInfo<? extends BeanCreaterListener<?>> createrListener) {
-            if (createrListener != null) {
-                this.typeBuilder.addCreaterListener(getProvider(createrListener));
-            }
-            return this;
-        }
-
-        @Override
-        public NamedBindingBuilder<T> idWith(String newID) {
+        public NamedBindingBuilder<T> idWith(final String newID) {
             if (!StringUtils.isBlank(newID)) {
                 this.typeBuilder.setBindID(newID);
             }
@@ -237,7 +186,7 @@ public abstract class AbstractBinder implements ApiBinder {
         }
 
         @Override
-        public NamedBindingBuilder<T> bothWith(String nameString) {
+        public NamedBindingBuilder<T> bothWith(final String nameString) {
             if (!StringUtils.isBlank(nameString)) {
                 this.typeBuilder.setBindID(nameString);
                 this.typeBuilder.setBindName(nameString);
@@ -281,19 +230,22 @@ public abstract class AbstractBinder implements ApiBinder {
         }
 
         @Override
-        public OptionPropertyBindingBuilder<T> toScope(final Supplier<Scope> scope) {
+        public OptionPropertyBindingBuilder<T> toScope(final Supplier<Scope>... scope) {
             Objects.requireNonNull(scope, "the Provider of Scope is null.");
             this.typeBuilder.addScopeProvider(scope);
             return this;
         }
 
         @Override
-        public OptionPropertyBindingBuilder<T> toScope(String scopeName) {
-            Supplier<Scope> scope = getScopContainer().findScope(scopeName);
-            if (scope == null) {
-                throw new IllegalStateException("scope '" + scopeName + "' Have not yet registered");
-            }
-            return this.toScope(scope);
+        public OptionPropertyBindingBuilder<T> toScope(final String... scopeName) {
+            Supplier[] supplierArrays = Arrays.stream(scopeName).map(name -> {
+                Supplier<Scope> scope = containerFactory().getScopContainer().findScope(name);
+                if (scope == null) {
+                    throw new IllegalStateException("scope '" + name + "' Have not yet registered");
+                }
+                return scope;
+            }).toArray(Supplier[]::new);
+            return this.toScope(supplierArrays);
         }
 
         @Override
@@ -323,7 +275,7 @@ public abstract class AbstractBinder implements ApiBinder {
         }
 
         @Override
-        public InjectPropertyBindingBuilder<T> inject(String property, Class<?> valueType) {
+        public InjectPropertyBindingBuilder<T> inject(final String property, final Class<?> valueType) {
             this.typeBuilder.addInject(property, bindType(valueType).toInfo());
             return this;
         }
@@ -348,7 +300,7 @@ public abstract class AbstractBinder implements ApiBinder {
         }
 
         @Override
-        public InjectConstructorBindingBuilder<T> inject(int index, Class<?> valueType) {
+        public InjectConstructorBindingBuilder<T> inject(final int index, final Class<?> valueType) {
             checkIndex(this.initParams, index);
             this.typeBuilder.setConstructor(index, this.initParams[index], bindType(valueType).toInfo());
             return this;
@@ -360,7 +312,7 @@ public abstract class AbstractBinder implements ApiBinder {
         }
     }
 
-    private void checkIndex(Class<?>[] length, int index) {
+    private void checkIndex(final Class<?>[] length, final int index) {
         if (index >= length.length) {
             throw new IndexOutOfBoundsException("index out of bounds.");
         }

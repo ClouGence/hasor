@@ -15,17 +15,22 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.*;
+import net.hasor.core.container.BeanContainer;
+import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import net.hasor.core.provider.ClassAwareProvider;
-import net.hasor.core.provider.InfoAwareProvider;
 import net.hasor.core.provider.InstanceProvider;
-import net.hasor.core.scope.SingletonScope;
+import net.hasor.core.spi.BindInfoProvisionListener;
+import net.hasor.test.beans.basic.pojo.PojoBean;
+import net.hasor.test.beans.basic.pojo.PojoBeanTestBeanC;
+import net.hasor.test.beans.basic.pojo.PojoBeanTestBeanP;
+import net.hasor.test.beans.basic.pojo.SampleBean;
+import net.hasor.test.beans.binder.TestBinder;
+import net.hasor.test.beans.scope.My;
+import net.hasor.test.beans.scope.MyScope;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
 import java.io.IOException;
@@ -37,8 +42,6 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
 /**
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
@@ -48,9 +51,9 @@ public class BinderDataTest extends AbstractBinderDataTest {
     public void beforeTest() throws IOException {
         super.beforeTest();
     }
-    //
+
     @Test
-    public void binderTest1() {
+    public void metaDataTest1() {
         binder.bindType(BinderDataTest.class);
         assert reference.get().getBindType() == BinderDataTest.class;
         //
@@ -58,24 +61,37 @@ public class BinderDataTest extends AbstractBinderDataTest {
         assert "value".equals(reference.get().getMetaData("test"));
         reference.get().removeMetaData("test");
     }
-    //
+
     @Test
-    public void binderTest2() {
+    public void metaDataTest2() {
+        binder.bindType(PojoBeanTestBeanP.class).metaData("metaKey", "metaValue");
+        assert "metaValue".equals(reference.get().getMetaData("metaKey"));
+    }
+
+    @Test
+    public void metaDataTest3() {
+        Method target = PowerMockito.mock(Method.class);
+        binder.bindType(PojoBeanTestBeanP.class).metaData("metaKey", target);
+        assert target == reference.get().getMetaData("metaKey");
+    }
+
+    @Test
+    public void bindTest1() {
         List<Object> list = new ArrayList<>();
         binder.bindType(List.class, list);
         assert reference.get().getBindType() == List.class;
         assert reference.get().getCustomerProvider().get() == list;
     }
-    //
+
     @Test
-    public void binderTest3() {
+    public void bindTest2() {
         binder.bindType(List.class, LinkedList.class);
         assert reference.get().getBindType() == List.class;
         assert reference.get().getSourceType() == LinkedList.class;
     }
-    //
+
     @Test
-    public void binderTest4() {
+    public void bindTest3() {
         Date self = new Date();
         Supplier<Date> selfProvider = new InstanceProvider<>(self);
         binder.bindType(Date.class, selfProvider);
@@ -84,34 +100,34 @@ public class BinderDataTest extends AbstractBinderDataTest {
         assert reference.get().getCustomerProvider() == selfProvider;
         assert reference.get().getCustomerProvider().get() == self;
     }
-    //
+
     @Test
-    public void binderTest5() {
+    public void bindTest4() {
         binder.bindType("abc", ArrayList.class);
         assert reference.get().getBindType() == ArrayList.class;
         assert !reference.get().getBindName().equals(reference.get().getBindID());
         assert reference.get().getBindName().equals("abc");
     }
-    //
+
     @Test
-    public void binderTest6() {
+    public void bindTest5() {
         List<Object> list = new ArrayList<>();
         binder.bindType("myList", List.class, list);
         assert reference.get().getBindType() == List.class;
         assert reference.get().getCustomerProvider().get() == list;
         assert reference.get().getBindName().equalsIgnoreCase("myList");
     }
-    //
+
     @Test
-    public void binderTest7() {
+    public void bindTest6() {
         binder.bindType("myLinkedList", List.class, LinkedList.class);
         assert reference.get().getBindType() == List.class;
         assert reference.get().getSourceType() == LinkedList.class;
         assert reference.get().getBindName().equalsIgnoreCase("myLinkedList");
     }
-    //
+
     @Test
-    public void binderTest8() {
+    public void bindTest7() {
         Date self = new Date();
         Supplier<Date> selfProvider = new InstanceProvider<>(self);
         binder.bindType("myDate", Date.class, selfProvider);
@@ -121,30 +137,66 @@ public class BinderDataTest extends AbstractBinderDataTest {
         assert reference.get().getCustomerProvider().get() == self;
         assert reference.get().getBindName().equalsIgnoreCase("myDate");
     }
-    //
+
     @Test
-    public void binderTest9() {
+    public void bindTest8() {
         binder.bindType(BinderDataTest.class).idWith("12345");
         assert reference.get().getBindType() == BinderDataTest.class;
         assert "12345".equals(reference.get().getBindID());
+        assert reference.get().getBindName() == null;
+        //
+        binder.bindType(BinderDataTest.class).bothWith("12345");
+        assert "12345".equals(reference.get().getBindID());
+        assert "12345".equals(reference.get().getBindName());
     }
-    //
+
     @Test
-    public void binderTest10() {
+    public void bindTest9() {
+        binder.getBindInfo("tttt");
+        binder.getBindInfo(TestBinder.class);
+        binder.findBindingRegister("", TestBinder.class);
+        binder.findBindingRegister(TestBinder.class);
+    }
+
+    @Test
+    public void lifeTest1() {
+        binder.bindType(PojoBeanTestBeanP.class).initMethod("doInit");
+        DefaultBindInfoProviderAdapter<?> adapter = reference.get();
+        Class<?> targetType = adapter.getSourceType() != null ? adapter.getSourceType() : adapter.getBindType();
+        assert adapter.getInitMethod(targetType) != null;
+    }
+
+    @Test
+    public void lifeTest2() {
+        binder.bindType(PojoBeanTestBeanP.class).destroyMethod("doDestroy");
+        DefaultBindInfoProviderAdapter<?> adapter = reference.get();
+        Class<?> targetType = adapter.getSourceType() != null ? adapter.getSourceType() : adapter.getBindType();
+        assert adapter.getDestroyMethod(targetType) != null;
+    }
+
+    @Test
+    public void injectTest1() throws Exception {
         try {
-            ignoreType.add(Date.class);
-            ignoreType.add(Timestamp.class);
+            ignoreMatcher = aClass -> {
+                return aClass != PojoBeanTestBeanP.class;
+            };
+            //
             BindInfo<?> valueInfo = PowerMockito.mock(BindInfo.class);
-            ApiBinder.InjectPropertyBindingBuilder<?> bindType = binder.bindType(TestBean.class);
-            InstanceProvider<Object> valProvider = new InstanceProvider<Object>("val");
-            bindType = bindType.inject("abc1", Timestamp.class);
-            bindType = bindType.injectValue("abc2", 123);
-            bindType = bindType.inject("abc3", valProvider);
-            bindType = bindType.inject("abc4", valueInfo);
+            InstanceProvider<Object> valProvider = new InstanceProvider<>("val");
+            //
+            //
             Field innerField = DefaultBindInfoProviderAdapter.class.getDeclaredField("injectProperty");
             innerField.setAccessible(true);
-            Map<String, Object> propertys = (Map<String, Object>) innerField.get(reference.get());
             Class<?> aClass = Thread.currentThread().getContextClassLoader().loadClass("net.hasor.core.info.ParamInfo");
+            //
+            {
+                ApiBinder.InjectPropertyBindingBuilder<?> bindType = binder.bindType(PojoBeanTestBeanP.class);
+                bindType.inject("abc1", Timestamp.class);
+                bindType.injectValue("abc2", 123);
+                bindType.inject("abc3", valProvider);
+                bindType.inject("abc4", valueInfo);
+            }
+            //
             Field paramTypeField = aClass.getField("paramType");
             Field useProviderField = aClass.getField("useProvider");
             Field valueInfoField = aClass.getField("valueInfo");
@@ -153,12 +205,15 @@ public class BinderDataTest extends AbstractBinderDataTest {
             useProviderField.setAccessible(true);
             valueInfoField.setAccessible(true);
             valueProviderField.setAccessible(true);
+            Map<String, Object> propertys = (Map<String, Object>) innerField.get(reference.get());
             //
-            assert reference.get().getBindType() == TestBean.class;
-            assert propertys.containsKey("abc1") &&//
-                    propertys.containsKey("abc2") &&//
-                    propertys.containsKey("abc3") && //
-                    propertys.containsKey("abc4");
+            {
+                assert reference.get().getBindType() == PojoBeanTestBeanP.class;
+                assert propertys.containsKey("abc1") &&//
+                        propertys.containsKey("abc2") &&//
+                        propertys.containsKey("abc3") && //
+                        propertys.containsKey("abc4");
+            }
             //
             assert paramTypeField.get(propertys.get("abc1")) == Date.class;
             assert ((DefaultBindInfoProviderAdapter) valueInfoField.get(propertys.get("abc1"))).getBindType() == Timestamp.class;
@@ -175,88 +230,35 @@ public class BinderDataTest extends AbstractBinderDataTest {
             assert paramTypeField.get(propertys.get("abc4")) == Method.class;
             assert !useProviderField.getBoolean(propertys.get("abc4"));
             assert valueInfoField.get(propertys.get("abc4")) == valueInfo;
-        } catch (Exception e) {
-            e.printStackTrace();
-            assert false;
         } finally {
-            ignoreType.clear();
+            ignoreMatcher = null;
         }
     }
-    //
+
     @Test
-    public void binderTest11() {
-        binder.bindType(TestBean.class).initMethod("doInit");
-        assert reference.get().getInitMethod() != null;
-    }
-    //
-    @Test
-    public void binderTest12() {
+    public void injectTest2() throws Exception {
         try {
-            Constructor<ArrayList> constructor = ArrayList.class.getConstructor(Integer.TYPE);
-            binder.bindType(List.class).toConstructor(constructor);
-            Constructor refConstructor = reference.get().getConstructor(mockApp);
-            assert refConstructor.equals(constructor); // 相同的构造方法，对象不相同（ Hasor 使用的是重找回方式）
-            assert refConstructor != constructor;      // 构造方法对象不相同
-        } catch (Exception e) {
-            e.printStackTrace();
-            assert false;
-        }
-    }
-    //
-    @Test
-    public void binderTest13() {
-        binder.bindType(TestBean.class).metaData("metaKey", "metaValue");
-        assert "metaValue".equals(reference.get().getMetaData("metaKey"));
-    }
-    //
-    @Test
-    public void binderTest14() {
-        Method target = PowerMockito.mock(Method.class);
-        binder.bindType(TestBean.class).metaData("metaKey", target);
-        assert target == reference.get().getMetaData("metaKey");
-    }
-    //
-    @Test
-    public void binderTest15() {
-        try {
-            Constructor<ArrayList> constructor = ArrayList.class.getConstructor(Integer.TYPE);
-            binder.bindType(List.class).toConstructor(constructor);
-            Constructor refConstructor = reference.get().getConstructor(ArrayList.class, mockApp);
-            assert refConstructor.equals(constructor); // 相同的构造方法，对象不相同（ Hasor 使用的是重找回方式）
-            assert refConstructor != constructor;      // 构造方法对象不相同
-        } catch (Exception e) {
-            e.printStackTrace();
-            assert false;
-        }
-    }
-    //
-    @Test
-    public void binderTest16() {
-        binder.bindType(BinderDataTest.class).asEagerSingleton();
-        assert reference.get().getSingletonMode() == SingletonMode.Singleton;
-        binder.bindType(BinderDataTest.class).asEagerPrototype();
-        assert reference.get().getSingletonMode() == SingletonMode.Prototype;
-        binder.bindType(BinderDataTest.class).asEagerAnnoClear();
-        assert reference.get().getSingletonMode() == SingletonMode.Clear;
-    }
-    //
-    @Test
-    public void binderTest17() {
-        try {
-            ignoreType.add(Date.class);
-            ignoreType.add(Timestamp.class);
+            ignoreMatcher = aClass -> {
+                return aClass != PojoBeanTestBeanC.class;
+            };
+            //
             BindInfo<?> valueInfo = PowerMockito.mock(BindInfo.class);
-            Constructor<? extends TestBean2> constructor = TestBean2.class.getConstructor(Date.class, Integer.TYPE, Object.class, Method.class);
-            ApiBinder.InjectConstructorBindingBuilder<TestBean2> bindType = binder.bindType(TestBean2.class).toConstructor(constructor);
             InstanceProvider<Object> valProvider = new InstanceProvider<>("val");
-            bindType = bindType.inject(0, Timestamp.class);
-            bindType = bindType.inject(2, valProvider);
-            bindType = bindType.injectValue(1, 123);
-            bindType = bindType.inject(3, valueInfo);
+            //
+            //
             Field innerField = DefaultBindInfoProviderAdapter.class.getDeclaredField("constructorParams");
             innerField.setAccessible(true);
-            Map<String, Object> propertys = (Map<String, Object>) innerField.get(reference.get());
             Class<?> aClass = Thread.currentThread().getContextClassLoader().loadClass("net.hasor.core.info.ParamInfo");
+            //
+            {
+                Constructor<PojoBeanTestBeanC> constructor = PojoBeanTestBeanC.class.getConstructor(Date.class, Integer.TYPE, Object.class, Method.class);
+                ApiBinder.InjectConstructorBindingBuilder<PojoBeanTestBeanC> bindType = binder.bindType(PojoBeanTestBeanC.class).toConstructor(constructor);
+                bindType.inject(0, Timestamp.class);
+                bindType.injectValue(1, 123);
+                bindType.inject(2, valProvider);
+                bindType.inject(3, valueInfo);
+            }
+            //
             Field paramTypeField = aClass.getField("paramType");
             Field useProviderField = aClass.getField("useProvider");
             Field valueInfoField = aClass.getField("valueInfo");
@@ -265,12 +267,15 @@ public class BinderDataTest extends AbstractBinderDataTest {
             useProviderField.setAccessible(true);
             valueInfoField.setAccessible(true);
             valueProviderField.setAccessible(true);
+            Map<String, Object> propertys = (Map<String, Object>) innerField.get(reference.get());
             //
-            assert reference.get().getBindType() == TestBean2.class;
-            assert propertys.containsKey(0) &&//
-                    propertys.containsKey(1) &&//
-                    propertys.containsKey(2) && //
-                    propertys.containsKey(3);
+            {
+                assert reference.get().getBindType() == PojoBeanTestBeanC.class;
+                assert propertys.containsKey(0) &&//
+                        propertys.containsKey(1) &&//
+                        propertys.containsKey(2) && //
+                        propertys.containsKey(3);
+            }
             //
             assert paramTypeField.get(propertys.get(0)) == Date.class;
             assert ((DefaultBindInfoProviderAdapter) valueInfoField.get(propertys.get(0))).getBindType() == Timestamp.class;
@@ -287,83 +292,13 @@ public class BinderDataTest extends AbstractBinderDataTest {
             assert paramTypeField.get(propertys.get(3)) == Method.class;
             assert !useProviderField.getBoolean(propertys.get(3));
             assert valueInfoField.get(propertys.get(3)) == valueInfo;
-        } catch (Exception e) {
-            e.printStackTrace();
-            assert false;
         } finally {
-            ignoreType.clear();
+            ignoreMatcher = null;
         }
     }
-    //
+
     @Test
-    public void binderTest18() {
-        Scope mockScope = PowerMockito.mock(Scope.class);
-        binder.bindType(TestBean.class).toScope(mockScope);
-        assert reference.get().getScopeProvider().get() == mockScope;
-    }
-    //
-    @Test
-    public void binderTest19() {
-        String scopeName1 = "my";
-        String scopeName2 = "my2";
-        final SingletonScope myScope = new SingletonScope();
-        PowerMockito.when(scopManager.findScope(anyString())).thenAnswer(invocationOnMock -> {
-            if ("my".equals(invocationOnMock.getArguments()[0])) {
-                return new InstanceProvider<Scope>(myScope);
-            }
-            return null;
-        });
-        binder.bindType(TestBean.class).toScope(scopeName1);
-        assert reference.get().getScopeProvider().get() == myScope;
-        try {
-            binder.bindType(TestBean.class).toScope(scopeName2);
-            assert false;
-        } catch (IllegalStateException e) {
-            assert e.getMessage().endsWith("scope '" + scopeName2 + "' Have not yet registered"); // scopeName2 尚未注册
-        }
-        //
-        //
-        final Map<String, Object> scopeMap = new HashMap<>();
-        PowerMockito.when(scopManager.registerScope(anyString(), anyObject())).thenAnswer((Answer<Supplier<Scope>>) invocationOnMock -> {
-            scopeMap.put((String) invocationOnMock.getArguments()[0], invocationOnMock.getArguments()[1]);
-            return (Supplier<Scope>) invocationOnMock.getArguments()[1];
-        });
-        Scope mockScope = PowerMockito.mock(Scope.class);
-        binder.registerScope("testScope", mockScope);
-        assert scopeMap.containsKey("testScope") && ((Supplier) scopeMap.get("testScope")).get() == mockScope; // Scope 注册
-        //
-        InstanceProvider<Scope> scopeProvider = new InstanceProvider<>(mockScope);
-        binder.registerScope("scopeProvider", scopeProvider);
-        assert scopeMap.containsKey("scopeProvider") && ((Supplier) scopeMap.get("scopeProvider")).get() == mockScope; // Scope 注册
-    }
-    //
-    @Test
-    public void binderTest20() {
-        try {
-            binder.installModule(PowerMockito.mock(Module.class));
-            assert false;
-        } catch (Throwable e) {
-            assert "current state is not allowed.".equals(e.getMessage());
-        }
-        //
-        try {
-            binder.tryCast(TestBinder.class);
-            assert false;
-        } catch (Throwable e) {
-            assert "current state is not allowed.".equals(e.getMessage());
-        }
-    }
-    //
-    @Test
-    public void binderTest21() {
-        binder.getBindInfo("tttt");
-        binder.getBindInfo(TestBinder.class);
-        binder.findBindingRegister("", TestBinder.class);
-        binder.findBindingRegister(TestBinder.class);
-    }
-    //
-    @Test
-    public void binderTest22() {
+    public void aopTest1() {
         MethodInterceptor interceptor = PowerMockito.mock(MethodInterceptor.class);
         //
         try {
@@ -398,35 +333,111 @@ public class BinderDataTest extends AbstractBinderDataTest {
             assert false;
         }
     }
-    //
+
     @Test
-    public void binderTest23() {
+    public void otherTest1() {
+        try {
+            binder.installModule(PowerMockito.mock(Module.class));
+            assert false;
+        } catch (Throwable e) {
+            assert "current state is not allowed.".equals(e.getMessage());
+        }
+        //
+        try {
+            binder.tryCast(TestBinder.class);
+            assert false;
+        } catch (Throwable e) {
+            assert "current state is not allowed.".equals(e.getMessage());
+        }
+    }
+
+    @Test
+    public void otherTest2() {
         assert binder.findClass(null) == null;
         assert !binder.findClass(ApiBinder.class).isEmpty();
         assert binder.findClass(null, (String) null) == null;
         assert !binder.findClass(ApiBinder.class, new String[] { "test.net.hasor.core._07_binder" }).isEmpty();
         assert binder.getEnvironment() != null;
     }
-    //
+
     @Test
-    public void binderTest24() {
-        BeanCreaterListener<Object> listener = PowerMockito.mock(BeanCreaterListener.class);
-        Supplier<? extends BeanCreaterListener<?>> createrProvider = InstanceProvider.of(listener);
-        BindInfo<? extends BeanCreaterListener<?>> createrInfo = PowerMockito.mock(BindInfo.class);
+    public void otherTest3() throws IOException {
+        Environment env = new StandardEnvironment(null);
+        BeanContainer container = new BeanContainer(env);
+        ApiBinderWrap binder = new ApiBinderWrap(new AbstractBinder(env) {
+            protected BindInfoBuilderFactory containerFactory() {
+                return container;
+            }
+        });
+        container.preInitialize();
         //
+        MyScope myScope1 = new MyScope();
+        binder.bindScope(My.class, myScope1);
+        binder.bindType(PojoBean.class).idWith("aa").toScope(My.class);
         //
-        binder.bindType(TestBean.class).whenCreate(listener);
-        assert ((Supplier) reference.get().getCreaterListener().get(0)).get() == listener;
+        MyScope myScope2 = new MyScope();
+        binder.bindType(SampleBean.class).idWith("bb").toScope(myScope2);
         //
-        binder.bindType(TestBean.class).whenCreate(createrProvider);
-        assert reference.get().getCreaterListener().get(0) == createrProvider;
+        container.init();
+        BindInfo<Object> bindInfo1 = container.getBindInfoContainer().findBindInfo("aa");
+        Supplier<Scope>[] collectScope1 = container.getScopContainer().collectScope(bindInfo1);
+        assert collectScope1[0].get() == myScope1;
         //
-        binder.bindType(TestBean.class).whenCreate(TestBeanCreaterListener.class);
-        assert reference.get().getCreaterListener().get(0) instanceof ClassAwareProvider;
-        assert ((ClassAwareProvider) reference.get().getCreaterListener().get(0)).getImplementation() == TestBeanCreaterListener.class;
+        BindInfo<Object> bindInfo2 = container.getBindInfoContainer().findBindInfo("bb");
+        Supplier<Scope>[] collectScope2 = container.getScopContainer().collectScope(bindInfo2);
+        assert collectScope2[0].get() == myScope2;
+    }
+
+    @Test
+    public void otherTest4() {
+        try {
+            new ApiBinderWrap(binder).installModule(apiBinder -> {
+                //
+            });
+            assert false;
+        } catch (Throwable e) {
+            assert e.getMessage().equals("current state is not allowed.");
+        }
+    }
+
+    @Test
+    public void otherTest5() throws IOException {
+        Environment env = new StandardEnvironment(null);
+        BeanContainer container = new BeanContainer(env);
+        ApiBinderWrap binder = new ApiBinderWrap(new AbstractBinder(env) {
+            protected BindInfoBuilderFactory containerFactory() {
+                return container;
+            }
+        });
+        container.preInitialize();
         //
-        binder.bindType(TestBean.class).whenCreate(createrInfo);
-        assert reference.get().getCreaterListener().get(0) instanceof InfoAwareProvider;
-        assert ((InfoAwareProvider) reference.get().getCreaterListener().get(0)).getInfo() == createrInfo;
+        BindInfoProvisionListener listener = PowerMockito.mock(BindInfoProvisionListener.class);
+        binder.bindSpiListener(BindInfoProvisionListener.class, listener);
+        //
+        List<BindInfoProvisionListener> list = container.getSpiContainer().getEventListenerList(BindInfoProvisionListener.class);
+        assert list.size() == 1;
+        assert list.get(0) == listener;
+    }
+
+    @Test
+    public void otherTest6() throws IOException {
+        Environment env = new StandardEnvironment(null);
+        BeanContainer container = new BeanContainer(env);
+        ApiBinderWrap binder = new ApiBinderWrap(new AbstractBinder(env) {
+            protected BindInfoBuilderFactory containerFactory() {
+                return container;
+            }
+        });
+        container.preInitialize();
+        //
+        MyScope myScope1 = new MyScope();
+        MyScope myScope2 = new MyScope();
+        binder.bindType(SampleBean.class).idWith("aa").toScope(myScope1, myScope2);
+        //
+        container.init();
+        BindInfo<Object> bindInfo = container.getBindInfoContainer().findBindInfo("aa");
+        Supplier<Scope>[] collectScope = container.getScopContainer().collectScope(bindInfo);
+        assert collectScope[0].get() == myScope1;
+        assert collectScope[1].get() == myScope2;
     }
 }

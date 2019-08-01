@@ -14,131 +14,331 @@
  * limitations under the License.
  */
 package net.hasor.core.aop;
-import net.hasor.core.AppContext;
-import net.hasor.core.Hasor;
-import net.hasor.core.Module;
-import net.hasor.core.aop.interceptor.TransparentInterceptor;
-import net.hasor.core.exts.aop.Aop;
-import net.hasor.core.exts.aop.AopModule;
-import net.hasor.core.setting.SettingsWrap;
-import org.junit.Before;
+import net.hasor.test.beans.aop.AopBeanInterceptor;
+import net.hasor.test.beans.aop.GenericsMethodAopBean;
+import net.hasor.test.beans.aop.ThrowAopBean;
+import net.hasor.test.beans.basic.inject.constructor.ConstructorBean;
+import net.hasor.test.beans.basic.inject.property.PropertyBean;
+import net.hasor.test.beans.enums.SelectEnum;
+import net.hasor.utils.CommonCodeUtils;
+import net.hasor.utils.io.IOUtils;
 import org.junit.Test;
+import org.powermock.api.mockito.PowerMockito;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.sql.Time;
-import java.util.*;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+
 public class AopTest {
-    private AppContext appContext;
-    @Before
-    public void testBefore() throws IOException {
-        appContext = Hasor.create().asTiny().build((Module) apiBinder -> {
-            apiBinder.installModule(new AopModule());
-        });
-    }
-    //
     @Test
-    public void aopTest0() throws IOException {
-        ArrayList<String> events = new ArrayList<>();
-        AopBean aopBean = this.appContext.getInstance(AopBean.class);
+    public void aopTest1() throws Exception {
+        AopBeanInterceptor aopInterceptor = new AopBeanInterceptor();
+        AopClassConfig classConfig = new AopClassConfig(PropertyBean.class);
+        classConfig.addAopInterceptor(aopInterceptor);
+        Class<?> buildClass = classConfig.buildClass();
+        PropertyBean instance = (PropertyBean) buildClass.newInstance();
         //
-        aopBean.doInit(events);
-        assert events.size() == 3;
-        assert events.get(0).equals("BEFORE") && events.get(1).equals("DO") && events.get(2).equals("AFTER");
         //
-        List<?> objects = aopBean.checkBaseType0(true, (byte) 1, (short) 2, 3, 4, 5.0f, 6.0d, 'c');
-        assert objects.size() == 10;
-        assert "Before".equals(objects.get(0));
-        assert (Boolean) objects.get(1);
-        assert (Byte) objects.get(2) == 1;
-        assert (Short) objects.get(3) == 2;
-        assert (Integer) objects.get(4) == 3;
-        assert (Long) objects.get(5) == 4;
-        assert (Float) objects.get(6) == 5.0f;
-        assert (Double) objects.get(7) == 6.0d;
-        assert (Character) objects.get(8) == 'c';
-        assert "After".equals(objects.get(9));
+        assert AopClassLoader.isDynamic(instance);
+        assert AopClassLoader.isDynamic(instance.getClass());
+        assert AopClassLoader.getPrototypeType(instance) == PropertyBean.class;
+        assert AopClassLoader.getPrototypeType(instance.getClass()) == PropertyBean.class;
         //
-        TransparentInterceptor.resetInit();
-        assert aopBean.aBooleanValue(true) && TransparentInterceptor.isCalled();
+        assert !AopClassLoader.isDynamic(PropertyBean.class);
+        assert !AopClassLoader.isDynamic(new PropertyBean());
         //
-        TransparentInterceptor.resetInit();
-        assert aopBean.aByteValue((byte) 1) == 1 && TransparentInterceptor.isCalled();
+        {
+            instance.setByteValue((byte) 1);
+            assert aopInterceptor.getCallInfo().get("setByteValue").size() == 2;
+            assert aopInterceptor.getCallInfo().get("setByteValue").contains("BEFORE");
+            assert aopInterceptor.getCallInfo().get("setByteValue").contains("AFTER");
+            assert instance.getByteValue() == 1;
+        }
         //
-        TransparentInterceptor.resetInit();
-        assert aopBean.aShort((short) 2) == 2 && TransparentInterceptor.isCalled();
         //
-        TransparentInterceptor.resetInit();
-        assert aopBean.aIntValue(3) == 3 && TransparentInterceptor.isCalled();
+        instance.setByteValue((byte) 1);
+        assert instance.getByteValue() == 1;
+        instance.setByteValue2(null);
+        assert instance.getByteValue2() == null;
+        instance.setByteValue2((byte) 2);
+        assert instance.getByteValue2() == 2;
         //
-        TransparentInterceptor.resetInit();
-        assert aopBean.aLongValue(4) == 4 && TransparentInterceptor.isCalled();
         //
-        TransparentInterceptor.resetInit();
-        assert aopBean.aFloatValue(5.0f) == 5.0f && TransparentInterceptor.isCalled();
+        instance.setShortValue((short) 2);
+        assert instance.getShortValue() == 2;
+        instance.setShortValue2((short) 2);
+        assert instance.getShortValue2() == 2;
+        instance.setShortValue2(null);
+        assert instance.getShortValue2() == null;
         //
-        TransparentInterceptor.resetInit();
-        assert aopBean.aDoubleValue(6.0d) == 6.0d && TransparentInterceptor.isCalled();
         //
-        TransparentInterceptor.resetInit();
-        assert aopBean.aCharValue('a') == 'a' && TransparentInterceptor.isCalled();
+        instance.setIntValue(3);
+        assert instance.getIntValue() == 3;
+        instance.setIntValue2(3);
+        assert instance.getIntValue2() == 3;
+        instance.setIntValue2(null);
+        assert instance.getIntValue2() == null;
         //
-        TransparentInterceptor.resetInit();
-        Map<String, Object> objectMap1 = aopBean.signatureMethod(new LinkedList<>(), new SettingsWrap(null));
-        assert objectMap1.size() == 2 && TransparentInterceptor.isCalled();
         //
-        List<? super Date> param1 = new ArrayList<Serializable>();
-        List<? extends Date> param2 = new ArrayList<Time>();
-        TransparentInterceptor.resetInit();
-        Map<String, Object> objectMap2 = aopBean.signatureMethod(param1, param2);
-        assert objectMap2.size() == 2 && TransparentInterceptor.isCalled();
+        instance.setLongValue(4);
+        assert instance.getLongValue() == 4;
+        instance.setLongValue2((long) 4);
+        assert instance.getLongValue2() == 4;
+        instance.setLongValue2(null);
+        assert instance.getLongValue2() == null;
         //
-        assert AopClassLoader.isDynamic(aopBean);
-        assert AopClassLoader.isDynamic(aopBean.getClass());
-        assert AopClassLoader.getPrototypeType(aopBean) == AopBean.class;
-        assert AopClassLoader.getPrototypeType(aopBean.getClass()) == AopBean.class;
         //
-        assert !AopClassLoader.isDynamic(AopBean.class);
-        assert !AopClassLoader.isDynamic(new AopBean());
+        instance.setFloatValue(5.5f);
+        assert instance.getFloatValue() == 5.5f;
+        instance.setFloatValue2(5.5f);
+        assert instance.getFloatValue2() == 5.5f;
+        instance.setFloatValue2(null);
+        assert instance.getFloatValue2() == null;
+        //
+        //
+        instance.setDoubleValue(6.6d);
+        assert instance.getDoubleValue() == 6.6d;
+        instance.setDoubleValue2(6.6d);
+        assert instance.getDoubleValue2() == 6.6d;
+        instance.setDoubleValue2(null);
+        assert instance.getDoubleValue2() == null;
+        //
+        //
+        instance.setBooleanValue(true);
+        assert instance.isBooleanValue();
+        instance.setBooleanValue2(true);
+        assert instance.getBooleanValue2();
+        instance.setBooleanValue2(null);
+        assert instance.getBooleanValue2() == null;
+        //
+        //
+        instance.setCharValue('$');
+        assert instance.getCharValue() == '$';
+        instance.setCharValue2('#');
+        assert instance.getCharValue2() == '#';
+        instance.setCharValue2(null);
+        assert instance.getCharValue2() == null;
+        //
+        //
+        instance.setStringValue("abc");
+        assert instance.getStringValue().equals("abc");
     }
-    //
+
     @Test
-    public void aopTest1() throws IOException, NoSuchMethodException, ClassNotFoundException, IllegalAccessException, InstantiationException {
-        AopClassConfig classConfig = new AopClassConfig(AopBean.class);
-        classConfig.debug(true, new File("target"));
-        classConfig.addAopInterceptor(target -> target.getName().equals("aBooleanValue"), new TransparentInterceptor());
-        Class<?> aClass = classConfig.buildClass();
-        AopBean o = (AopBean) aClass.newInstance();
+    public void aopTest2() throws Exception {
+        Class[] initTypes = new Class[] {   //
+                Byte.TYPE                   //
+                , Byte.class                //
+                , Short.TYPE                //
+                , Short.class               //
+                , Integer.TYPE              //
+                , Integer.class             //
+                , Long.TYPE                 //
+                , Long.class                //
+                , Float.TYPE                //
+                , Float.class               //
+                , Double.TYPE               //
+                , Double.class              //
+                , Boolean.TYPE              //
+                , Boolean.class             //
+                , Character.TYPE            //
+                , Character.class           //
+                , Date.class                //
+                , java.sql.Date.class       //
+                , Time.class                //
+                , Timestamp.class           //
+                , String.class              //
+                , SelectEnum.class          //
+        };
+        Object[] initParams = new Object[] {//
+                (byte) 1                    //
+                , (byte) 1                  //
+                , (short) 2                 //
+                , (short) 2                 //
+                , (int) 3                   //
+                , (int) 3                   //
+                , (long) 4                  //
+                , (long) 4                  //
+                , (float) 5.5               //
+                , (float) 5.5               //
+                , (double) 6.6              //
+                , (double) 6.6              //
+                , (boolean) true            //
+                , (boolean) true            //
+                , (char) 'a'                //
+                , (char) 'a'                //
+                , new Date()                //
+                , new java.sql.Date(System.currentTimeMillis())     //
+                , new Time(System.currentTimeMillis())              //
+                , new Timestamp(System.currentTimeMillis())         //
+                , "abc"                                             //
+                , SelectEnum.Three                                  //
+        };
+        //
+        AopBeanInterceptor aopInterceptor = new AopBeanInterceptor();
+        AopClassConfig classConfig = new AopClassConfig(ConstructorBean.class);
+        classConfig.addAopInterceptor(aopInterceptor);
+        Class<?> buildClass = classConfig.buildClass();
+        Constructor<?> constructor = buildClass.getConstructor(initTypes);
+        ConstructorBean instance = (ConstructorBean) constructor.newInstance(initParams);
         //
         //
-        TransparentInterceptor.resetInit();
-        assert o.aBooleanValue(true) && TransparentInterceptor.isCalled();
-        assert classConfig.getSimpleName().startsWith(AopBean.class.getSimpleName() + AopClassConfig.aopClassSuffix);
+        assert AopClassLoader.isDynamic(instance);
+        assert AopClassLoader.isDynamic(instance.getClass());
+        assert AopClassLoader.getPrototypeType(instance) == ConstructorBean.class;
+        assert AopClassLoader.getPrototypeType(instance.getClass()) == ConstructorBean.class;
+        //
+        assert !AopClassLoader.isDynamic(ConstructorBean.class);
+        assert !AopClassLoader.isDynamic(PowerMockito.mock(ConstructorBean.class));
+        //
+        {
+            assert instance.getByteValue() == 1;
+            assert aopInterceptor.getCallInfo().get("getByteValue").size() == 2;
+            assert aopInterceptor.getCallInfo().get("getByteValue").contains("BEFORE");
+            assert aopInterceptor.getCallInfo().get("getByteValue").contains("AFTER");
+        }
+        //
+        //
+        assert instance.getByteValue() == 1;
+        assert instance.getByteValue2() == 1;
+        //
+        //
+        assert instance.getShortValue() == 2;
+        assert instance.getShortValue2() == 2;
+        //
+        //
+        assert instance.getIntValue() == 3;
+        assert instance.getIntValue2() == 3;
+        //
+        //
+        assert instance.getLongValue() == 4;
+        assert instance.getLongValue2() == 4;
+        //
+        //
+        assert instance.getFloatValue() == 5.5f;
+        assert instance.getFloatValue2() == 5.5f;
+        //
+        //
+        assert instance.getDoubleValue() == 6.6d;
+        assert instance.getDoubleValue2() == 6.6d;
+        //
+        //
+        assert instance.isBooleanValue();
+        assert instance.getBooleanValue2();
+        //
+        //
+        assert instance.getCharValue() == 'a';
+        assert instance.getCharValue2() == 'a';
+        //
+        //
+        assert instance.getStringValue().equals("abc");
     }
-    //
+
     @Test
-    public void aopTest2() throws NoSuchMethodException, IOException, ClassNotFoundException, IllegalAccessException, InvocationTargetException, InstantiationException {
-        AopClassConfig classConfig = new AopClassConfig(ConstructorAopBean.class);
-        classConfig.debug(true, new File("target"));
-        classConfig.addAopInterceptor(new TransparentInterceptor());
-        Class<?> aClass = classConfig.buildClass();
-        //
-        Class[] initTypes = new Class[] { Byte.TYPE, Short.TYPE, Integer.TYPE, Long.TYPE, Float.TYPE, Double.TYPE, Boolean.TYPE, Character.TYPE };
-        Object[] initParams = new Object[] { (byte) 1, (short) 2, (int) 3, (long) 4, (float) 5, (double) 6, (boolean) true, (char) 'a' };
-        ConstructorAopBean o = (ConstructorAopBean) aClass.getConstructor(initTypes).newInstance(initParams);
+    public void aopTest3() throws Exception {
+        AopBeanInterceptor aopInterceptor = new AopBeanInterceptor();
+        AopClassConfig classConfig = new AopClassConfig(PropertyBean.class);
+        classConfig.addAopInterceptor(aopInterceptor);
+        Class<?> buildClass = classConfig.buildClass();
+        PropertyBean instance = (PropertyBean) buildClass.newInstance();
         //
         //
-        TransparentInterceptor.resetInit();
-        assert o.getByteValue() == 1;
-        assert o.getShortValue() == 2;
-        assert o.getIntValue() == 3;
-        assert o.getLongValue() == 4;
-        assert o.getFloatValue() == 5;
-        assert o.getDoubleValue() == 6;
-        assert o.isBooleanValue();
-        assert o.getCharValue() == 'a';
-        assert TransparentInterceptor.isCalled();
+        ClassLoader loader = instance.getClass().getClassLoader();
+        InputStream resourceAsStream = loader.getResourceAsStream(instance.getClass().getName().replace(".", "/") + ".class");
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        IOUtils.copy(resourceAsStream, out);
+        //
+        byte[] byteArray1 = out.toByteArray();
+        byte[] byteArray2 = classConfig.getBytes();
+        //
+        String encodeMD51 = CommonCodeUtils.MD5.encodeMD5(byteArray1);
+        String encodeMD52 = CommonCodeUtils.MD5.encodeMD5(byteArray2);
+        assert encodeMD51.equals(encodeMD52);
+        //
+        assert buildClass.getName().equals(instance.getClass().getName());
+        assert buildClass.getName().contains(PropertyBean.class.getName() + AopClassConfig.aopClassSuffix);
+    }
+
+    @Test
+    public void aopTest4() throws Exception {
+        AopBeanInterceptor aopInterceptor = new AopBeanInterceptor();
+        AopClassConfig classConfig = new AopClassConfig(PropertyBean.class);
+        classConfig.addAopInterceptor(aopInterceptor);
+        //
+        File templeFile = new File("target/tmp_" + System.currentTimeMillis());
+        templeFile.deleteOnExit();
+        templeFile.mkdirs();
+        classConfig.classWriteToPath(templeFile);
+        //
+        Class<?> buildClass = classConfig.buildClass();
+        PropertyBean instance = (PropertyBean) buildClass.newInstance();
+        //
+        ClassLoader loader = instance.getClass().getClassLoader();
+        InputStream resourceAsStream = loader.getResourceAsStream(instance.getClass().getName().replace(".", "/") + ".class");
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        IOUtils.copy(resourceAsStream, out);
+        //
+        byte[] byteArray1 = out.toByteArray();
+        byte[] byteArray2 = classConfig.getBytes();
+        //
+        String encodeMD51 = CommonCodeUtils.MD5.encodeMD5(byteArray1);
+        String encodeMD52 = CommonCodeUtils.MD5.encodeMD5(byteArray2);
+        assert encodeMD51.equals(encodeMD52);
+        //
+        assert buildClass.getName().equals(instance.getClass().getName());
+        assert buildClass.getName().contains(PropertyBean.class.getName() + AopClassConfig.aopClassSuffix);
+    }
+
+    @Test
+    public void aopTest5() throws Exception {
+        AopBeanInterceptor aopInterceptor = new AopBeanInterceptor();
+        AopClassConfig classConfig = new AopClassConfig(ThrowAopBean.class);
+        classConfig.addAopInterceptor(aopInterceptor);
+        //
+        Class<?> buildClass = classConfig.buildClass();
+        ThrowAopBean instance = (ThrowAopBean) buildClass.newInstance();
+        //
+        try {
+            instance.fooCall("abc");
+            assert false;
+        } catch (Exception e) {
+            assert e.getMessage().contains("abc");
+            assert e.getCause().getMessage().equals("abc");
+            assert !e.getMessage().equals("abc");
+        }
+        //
+        assert aopInterceptor.getCallInfo().get("fooCall").size() == 2;
+        assert aopInterceptor.getCallInfo().get("fooCall").contains("BEFORE");
+        assert aopInterceptor.getCallInfo().get("fooCall").contains("THROW");
+    }
+
+    @Test
+    public void aopTest6() throws Exception {
+        AopBeanInterceptor aopInterceptor = new AopBeanInterceptor();
+        AopClassConfig classConfig = new AopClassConfig(GenericsMethodAopBean.class);
+        classConfig.addAopInterceptor(aopInterceptor);
+        //
+        Class<?> buildClass = classConfig.buildClass();
+        GenericsMethodAopBean instance = (GenericsMethodAopBean) buildClass.newInstance();
+        //
+        instance.fooCall1("abc1", "abc2", "abc3");
+        assert aopInterceptor.getCallInfo().get("fooCall1").size() == 2;
+        assert aopInterceptor.getCallInfo().get("fooCall1").contains("BEFORE");
+        assert aopInterceptor.getCallInfo().get("fooCall1").contains("AFTER");
+        //
+        instance.fooCall2(new Date(), new ArrayList());
+        assert aopInterceptor.getCallInfo().get("fooCall2").size() == 2;
+        assert aopInterceptor.getCallInfo().get("fooCall2").contains("BEFORE");
+        assert aopInterceptor.getCallInfo().get("fooCall2").contains("AFTER");
+        //
+        instance.fooCall3(Date.class, new ArrayList<>());
+        assert aopInterceptor.getCallInfo().get("fooCall3").size() == 2;
+        assert aopInterceptor.getCallInfo().get("fooCall3").contains("BEFORE");
+        assert aopInterceptor.getCallInfo().get("fooCall3").contains("AFTER");
     }
 }

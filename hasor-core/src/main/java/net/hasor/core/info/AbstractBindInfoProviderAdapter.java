@@ -17,7 +17,6 @@ package net.hasor.core.info;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Scope;
 import net.hasor.core.binder.BindInfoBuilder;
-import net.hasor.core.spi.BeanCreaterListener;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,16 +33,15 @@ import java.util.function.Supplier;
  */
 public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter implements//
         BindInfoBuilder<T>, BindInfo<T>, CustomerProvider<T>, ScopeProvider {
-    protected static Logger                                           logger           = LoggerFactory.getLogger(AbstractBindInfoProviderAdapter.class);
+    protected static Logger                logger           = LoggerFactory.getLogger(AbstractBindInfoProviderAdapter.class);
     //1.基本属性
-    private          String                                           bindID           = null;
-    private          String                                           bindName         = null;
-    private          Class<T>                                         bindType         = null;
-    private          Class<? extends T>                               sourceType       = null;
+    private          String                bindID           = null;
+    private          String                bindName         = null;
+    private          Class<T>              bindType         = null;
+    private          Class<? extends T>    sourceType       = null;
     //2.系统属性
-    private          Supplier<? extends T>                            customerProvider = null;
-    private          List<Supplier<Scope>>                            scopeProvider    = null;
-    private          List<Supplier<? extends BeanCreaterListener<?>>> createrListener  = null;
+    private          Supplier<? extends T> customerProvider = null;
+    private          List<Supplier<Scope>> scopeProvider    = null;
 
     public String getBindID() {
         if (this.bindID == null) {
@@ -76,10 +74,6 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
             return this.scopeProvider.toArray(new Supplier[0]);
         }
         return null;
-    }
-
-    public List<Supplier<? extends BeanCreaterListener<?>>> getCreaterListener() {
-        return createrListener;
     }
 
     public BindInfo<T> toInfo() {
@@ -133,13 +127,5 @@ public abstract class AbstractBindInfoProviderAdapter<T> extends MetaDataAdapter
             this.notify(new NotifyData("scopeProvider", this.scopeProvider, scopeProvider));
             this.scopeProvider.clear();
         }
-    }
-
-    public void addCreaterListener(Supplier<? extends BeanCreaterListener<?>> createrListener) {
-        this.notify(new NotifyData("createrListener", this.createrListener, createrListener));
-        if (this.createrListener == null) {
-            this.createrListener = new ArrayList<>();
-        }
-        this.createrListener.add(createrListener);
     }
 }

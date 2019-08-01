@@ -13,20 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.beans;
-import net.hasor.core.ConstructorBy;
-import net.hasor.core.Init;
-import net.hasor.core.container.beans.CallInitBean;
-//
-public class ConstructorBean extends CallInitBean {
-    //
-    @ConstructorBy
-    public ConstructorBean(String paramName) {
-        this.setName(paramName);
-    }
-    //
-    @Init
-    public void aaa() {
-        this.setUuid("aaa");
+package net.hasor.test.beans.aop;
+/**
+ * @version : 2014-1-3
+ * @author 赵永春 (zyc@hasor.net)
+ */
+public class ThrowAopBean {
+    public String fooCall(String string) throws Exception {
+        throw new Exception(string);
     }
 }

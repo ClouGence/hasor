@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.core.spi;
-import net.hasor.core.BindInfo;
+import net.hasor.core.AppContext;
 
 /**
- * 当 AppContext 创建这个Bean时调用。
- * @version : 2013-11-8
- * @author 赵永春 (zyc@hasor.net)
+ * 用于容器启动事件接收
+ * @version : 2014-5-10
+ * @author 赵永春 (zyc@byshell.org)
  */
-public interface BeanCreaterListener<T> {
-    /**
-     * 注入AppContext。
-     * @param newObject 新对象。
-     * @param bindInfo 新对象的 BindInfo（可能为空）。
-     */
-    public void beanCreated(T newObject, BindInfo<? extends T> bindInfo) throws Throwable;
+public interface ContextStartListener extends java.util.EventListener {
+    /**开始进入容器启动过程。*/
+    public void doStart(AppContext appContext);
+
+    /**容器启动完成。*/
+    public void doStartCompleted(AppContext appContext);
 }

@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context.beans;
+package net.hasor.core.spi;
 import net.hasor.core.AppContext;
-import net.hasor.core.context.ContextShutdownListener;
-//
-public class ContextShutdownListenerBean implements ContextShutdownListener {
-    private int i = 0;
-    //
-    public int getI() {
-        return i;
-    }
-    //
-    @Override
-    public void doShutdown(AppContext appContext) {
-        i++;
-    }
-    @Override
-    public void doShutdownCompleted(AppContext appContext) {
-        i++;
-    }
+
+/**
+ * 用于容器销毁事件接收
+ * @version : 2014-5-10
+ * @author 赵永春 (zyc@byshell.org)
+ */
+public interface ContextShutdownListener extends java.util.EventListener {
+    /**开始进入容器销毁过程。*/
+    public void doShutdown(AppContext appContext);
+
+    /**容器销毁完成。*/
+    public void doShutdownCompleted(AppContext appContext);
 }

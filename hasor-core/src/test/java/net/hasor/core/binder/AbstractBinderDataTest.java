@@ -14,64 +14,53 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.AppContext;
-import net.hasor.core.container.BeanBuilder;
-import net.hasor.core.container.ScopManager;
+import net.hasor.core.container.BindInfoContainer;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Predicate;
 
 import static org.mockito.Matchers.anyObject;
+
 /**
- * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
+ * @version : 2016-12-16
  */
 public class AbstractBinderDataTest {
     protected Logger                                          logger = LoggerFactory.getLogger(getClass());
-    protected Set<Class<?>>                                   ignoreType;
+    protected Predicate<Class<?>>                             ignoreMatcher;
     protected AtomicReference<DefaultBindInfoProviderAdapter> reference;
-    protected AppContext                                      mockApp;
-    protected ScopManager                                     scopManager;
-    protected ApiBinder                                       binder;
+    protected ApiBinderWrap                                   binder;
+
     //
     public void beforeTest() throws IOException {
-        this.ignoreType = new HashSet<Class<?>>();
-        this.reference = new AtomicReference<DefaultBindInfoProviderAdapter>();
-        this.mockApp = PowerMockito.mock(AppContext.class);
-        this.scopManager = PowerMockito.mock(ScopManager.class);
-        StandardEnvironment env = new StandardEnvironment(null);
-        final BeanBuilder builder = PowerMockito.mock(BeanBuilder.class);
-        PowerMockito.when(builder.createInfoAdapter((Class<?>) anyObject())).thenAnswer(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                Class<Object> targetType = (Class<Object>) invocationOnMock.getArguments()[0];
-                if (ignoreType.contains(targetType)) {
-                    return new DefaultBindInfoProviderAdapter<Object>(targetType);
-                }
-                reference.set(new DefaultBindInfoProviderAdapter<Object>(targetType));
-                return reference.get();
+        this.reference = new AtomicReference<>();
+        //
+        BindInfoContainer bindInfoContainer = PowerMockito.mock(BindInfoContainer.class);
+        PowerMockito.when(bindInfoContainer.createInfoAdapter((Class<?>) anyObject())).thenAnswer((Answer<Object>) invocationOnMock -> {
+            Class<Object> targetType = (Class<Object>) invocationOnMock.getArguments()[0];
+            DefaultBindInfoProviderAdapter<Object> adapter = new DefaultBindInfoProviderAdapter<>(targetType);
+            Predicate<Class<?>> defaultMatcher = (ignoreMatcher == null) ? (aClass -> false) : ignoreMatcher;
+            if (defaultMatcher.test(targetType)) {
+                return adapter;
             }
+            reference.set(adapter);
+            return reference.get();
         });
         //
-        this.binder = new AbstractBinder(env) {
+        BindInfoBuilderFactory factory = PowerMockito.mock(BindInfoBuilderFactory.class);
+        PowerMockito.when(factory.getBindInfoContainer()).thenReturn(bindInfoContainer);
+        this.binder = new ApiBinderWrap(new AbstractBinder(new StandardEnvironment(null)) {
             @Override
-            protected BeanBuilder getBeanBuilder() {
-                return builder;
+            protected BindInfoBuilderFactory containerFactory() {
+                return factory;
             }
-            @Override
-            protected ScopManager getScopManager() {
-                return scopManager;
-            }
-        };
+        });
     }
 }

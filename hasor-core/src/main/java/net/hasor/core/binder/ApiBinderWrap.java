@@ -15,11 +15,11 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.*;
-import net.hasor.core.spi.BeanCreaterListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
+import java.util.EventListener;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -90,12 +90,11 @@ public class ApiBinderWrap implements ApiBinder {
         return this.apiBinder.bindType(type);
     }
 
-    @Override
-    public <T> void bindToCreater(BindInfo<T> info, Supplier<? extends BeanCreaterListener<?>> listener) {
-        this.apiBinder.bindToCreater(info, listener);
+    public <T extends EventListener> void bindSpiListener(Class<T> spiType, T listener) {
+        this.apiBinder.bindSpiListener(spiType, listener);
     }
 
-    public <T extends Scope> Supplier<T> registerScope(String scopeName, Supplier<T> scopeProvider) {
-        return this.apiBinder.registerScope(scopeName, scopeProvider);
+    public <T extends Scope> Supplier<T> bindScope(String scopeName, Supplier<T> scopeProvider) {
+        return this.apiBinder.bindScope(scopeName, scopeProvider);
     }
 }

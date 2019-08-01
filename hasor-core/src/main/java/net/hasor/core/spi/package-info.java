@@ -16,6 +16,4 @@
 /**
  * SPI 扩展点.
  */
-@AopIgnore
 package net.hasor.core.spi;
-import net.hasor.core.AopIgnore;

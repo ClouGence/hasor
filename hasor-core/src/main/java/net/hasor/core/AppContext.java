@@ -58,17 +58,21 @@ public interface AppContext extends MetaInfo {
      */
     public boolean isStart();
 
-    /** 发送停止通知 */
+    /** 发送停止通知（非线程安全） */
     public void shutdown();
 
     /** 阻塞当前线程的继续执行，直到 {@link AppContext#shutdown()} 被调用 */
-    public void join();
+    public default void join() {
+        this.join(0, null);
+    }
 
     /** 阻塞当前线程的继续执行，直到 {@link AppContext#shutdown()} 被调用 */
     public void join(long timeout, TimeUnit unit);
 
     /** 阻塞当前线程的继续执行，直到 {@link AppContext#shutdown()} 被调用或者接收到 kill -15 or kill -2 信号 */
-    public void joinSignal();
+    public default void joinSignal() {
+        this.joinSignal(0, null);
+    }
 
     /** 阻塞当前线程的继续执行，直到 {@link AppContext#shutdown()} 被调用或者接收到 kill -15 or kill -2 信号 */
     public void joinSignal(long timeout, TimeUnit unit);

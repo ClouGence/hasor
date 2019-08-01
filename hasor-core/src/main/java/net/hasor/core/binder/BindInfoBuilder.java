@@ -16,7 +16,6 @@
 package net.hasor.core.binder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Scope;
-import net.hasor.core.spi.BeanCreaterListener;
 
 import java.util.function.Supplier;
 
@@ -127,6 +126,4 @@ public interface BindInfoBuilder<T> {
      * @param methodName 方法名。
      */
     public void destroyMethod(String methodName);
-
-    public void addCreaterListener(Supplier<? extends BeanCreaterListener<?>> createrListener);
 }

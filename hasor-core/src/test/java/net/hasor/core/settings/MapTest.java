@@ -34,9 +34,9 @@ public class MapTest {
     // - 配置信息读取
     @Test
     public void mapTest() {
-        DecSpaceMap<String, String> spaceMap = new DecSpaceMap<String, String>();
-        spaceMap.putAll("aaa", new HashMap<String, String>());
-        spaceMap.putAll("bbb", new HashMap<String, String>());
+        DecSpaceMap<String, String> spaceMap = new DecSpaceMap<>();
+        spaceMap.putAll("aaa", new HashMap<>());
+        spaceMap.putAll("bbb", new HashMap<>());
         //
         spaceMap.put("aaa", "key_a", "k1");
         spaceMap.put("aaa", "key_b", "k2");

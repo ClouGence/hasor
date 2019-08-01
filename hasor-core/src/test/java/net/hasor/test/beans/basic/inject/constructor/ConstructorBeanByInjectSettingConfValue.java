@@ -59,7 +59,7 @@ public class ConstructorBeanByInjectSettingConfValue {
 
     //
     public ConstructorBeanByInjectSettingConfValue(//
-              @InjectSettings("byteValue") byte byteValue             //
+            @InjectSettings("byteValue") byte byteValue             //
             , @InjectSettings("byteValue") Byte byteValue2          //
             , @InjectSettings("shortValue") short shortValue        //
             , @InjectSettings("shortValue") Short shortValue2       //

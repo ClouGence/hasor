@@ -13,18 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context;
-import net.hasor.core.AppContext;
+package net.hasor.test.beans.basic.pojo;
+import java.lang.reflect.Method;
+import java.util.Date;
 
 /**
- * 用于容器启动事件接收
- * @version : 2014-5-10
- * @author 赵永春 (zyc@byshell.org)
+ * @version : 2016-12-16
+ * @author 赵永春 (zyc@hasor.net)
  */
-public interface ContextStartListener {
-    /**开始进入容器启动过程。*/
-    public void doStart(AppContext appContext);
+public class PojoBeanTestBeanC {
+    private Date   abc1;
+    private int    abc2;
+    private Object abc3;
+    private Method abc4;
 
-    /**容器启动完成。*/
-    public void doStartCompleted(AppContext appContext);
+    public PojoBeanTestBeanC(Date abc1, int abc2, Object abc3, Method abc4) {
+        this.abc1 = abc1;
+        this.abc2 = abc2;
+        this.abc3 = abc3;
+        this.abc4 = abc4;
+    }
+
+    public void doInit() {
+    }
+
+    public void doDestroy() {
+    }
 }

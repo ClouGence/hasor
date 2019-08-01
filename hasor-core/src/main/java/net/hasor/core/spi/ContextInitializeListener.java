@@ -13,18 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.context;
+package net.hasor.core.spi;
 import net.hasor.core.AppContext;
 
 /**
- * 用于容器销毁事件接收
+ * 用于容器初始化完成
  * @version : 2014-5-10
  * @author 赵永春 (zyc@byshell.org)
  */
-public interface ContextShutdownListener {
-    /**开始进入容器销毁过程。*/
-    public void doShutdown(AppContext appContext);
-
-    /**容器销毁完成。*/
-    public void doShutdownCompleted(AppContext appContext);
+public interface ContextInitializeListener extends java.util.EventListener {
+    /**初始化完成*/
+    public void doInitializeCompleted(AppContext templateAppContext);
 }

@@ -67,18 +67,8 @@ public class AppContextWarp implements AppContext {
     }
 
     @Override
-    public void join() {
-        this.getAppContext().join();
-    }
-
-    @Override
     public void join(long timeout, TimeUnit unit) {
         this.getAppContext().join(timeout, unit);
-    }
-
-    @Override
-    public void joinSignal() {
-        this.getAppContext().joinSignal();
     }
 
     @Override

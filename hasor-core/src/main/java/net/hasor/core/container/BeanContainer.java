@@ -18,6 +18,7 @@ import net.hasor.core.EventListener;
 import net.hasor.core.*;
 import net.hasor.core.aop.AopClassConfig;
 import net.hasor.core.aop.AsmTools;
+import net.hasor.core.binder.BindInfoBuilderFactory;
 import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.provider.InstanceProvider;
@@ -25,6 +26,7 @@ import net.hasor.core.provider.SingleProvider;
 import net.hasor.core.scope.PrototypeScope;
 import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.spi.BindInfoAware;
+import net.hasor.core.spi.CreaterProvisionListener;
 import net.hasor.core.spi.InjectMembers;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.BeanUtils;
@@ -49,7 +51,7 @@ import static net.hasor.core.container.ContainerUtils.*;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2015年11月25日
  */
-public class BeanContainer extends AbstractContainer {
+public class BeanContainer extends AbstractContainer implements BindInfoBuilderFactory {
     private Environment                                 environment        = null;
     private SpiCallerContainer                          spiCallerContainer = null;
     private BindInfoContainer                           bindInfoContainer  = null;
@@ -64,12 +66,24 @@ public class BeanContainer extends AbstractContainer {
         this.classEngineMap = new ConcurrentHashMap<>();
     }
 
-    public BindInfoContainer getBindInfoContainer() {
-        return bindInfoContainer;
+    @Override
+    public Environment getEnvironment() {
+        return environment;
     }
 
+    @Override
+    public BindInfoContainer getBindInfoContainer() {
+        return this.bindInfoContainer;
+    }
+
+    @Override
+    public SpiCallerContainer getSpiContainer() {
+        return this.spiCallerContainer;
+    }
+
+    @Override
     public ScopContainer getScopContainer() {
-        return scopContainer;
+        return this.scopContainer;
     }
 
     /*-------------------------------------------------------------------------------------------*/
@@ -293,6 +307,10 @@ public class BeanContainer extends AbstractContainer {
                 // .执行生命周期
                 doLife(targetObject, bindInfo, appContext);
                 //
+                T finalTargetObject = targetObject;
+                spiCallerContainer.callSpi(CreaterProvisionListener.class, listener -> {
+                    listener.beanCreated(finalTargetObject, bindInfo);
+                });
                 return targetObject;
             };
         }

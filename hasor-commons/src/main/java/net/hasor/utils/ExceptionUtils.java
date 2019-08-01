@@ -15,22 +15,31 @@
  */
 package net.hasor.utils;
 import java.lang.reflect.InvocationTargetException;
+import java.util.function.Function;
+
 /**
  * 异常工具类
  * @version : 2014年9月25日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ExceptionUtils {
-    /**将异常包装为 {@link RuntimeException}*/
     public static RuntimeException toRuntimeException(Throwable proxy) {
+        return toRuntimeException(proxy, throwable -> {
+            return new RuntimeException(throwable.getClass().getName() + " - " + throwable.getMessage(), throwable);
+        });
+    }
+
+    /**将异常包装为 {@link RuntimeException}*/
+    public static RuntimeException toRuntimeException(Throwable proxy, Function<Throwable, RuntimeException> conver) {
         if (proxy instanceof InvocationTargetException && ((InvocationTargetException) proxy).getTargetException() != null) {
             proxy = ((InvocationTargetException) proxy).getTargetException();
         }
         if (proxy instanceof RuntimeException) {
             return (RuntimeException) proxy;
         }
-        return new RuntimeException(proxy.getClass().getName() + " - " + proxy.getMessage(), proxy);
+        return conver.apply(proxy);
     }
+
     //
     public static Throwable toRuntimeException(Throwable proxy, Class<?>[] exceptionTypes) throws Throwable {
         if (exceptionTypes != null) {

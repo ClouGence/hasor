@@ -19,9 +19,12 @@ import net.hasor.core.*;
 import net.hasor.core.binder.AbstractBinder;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderInvocationHandler;
-import net.hasor.core.binder.BinderHelper;
+import net.hasor.core.binder.BindInfoBuilderFactory;
 import net.hasor.core.container.BeanContainer;
 import net.hasor.core.info.MetaDataAdapter;
+import net.hasor.core.spi.ContextInitializeListener;
+import net.hasor.core.spi.ContextShutdownListener;
+import net.hasor.core.spi.ContextStartListener;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.ClassUtils;
 import net.hasor.utils.ExceptionUtils;
@@ -194,47 +197,39 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         return moduleList.toArray(new Module[0]);
     }
 
-    /**开始进入初始化过程.*/
-    protected void doInitialize() throws Throwable {
-        //
-    }
-
     /**初始化过程完成.*/
     protected void doInitializeCompleted() {
-        //
+        getContainer().getSpiContainer().callSpi(ContextInitializeListener.class, listener -> {
+            listener.doInitializeCompleted(TemplateAppContext.this);
+        });
     }
 
     /**开始进入容器启动过程.*/
     protected void doStart() {
-        List<ContextStartListener> listenerList = findBindingBean(ContextStartListener.class);
-        for (ContextStartListener listener : listenerList) {
-            listener.doStart(this);
-        }
+        getContainer().getSpiContainer().callSpi(ContextStartListener.class, listener -> {
+            listener.doStart(TemplateAppContext.this);
+        });
     }
 
     /**容器启动完成。*/
     protected void doStartCompleted() {
-        List<ContextStartListener> listenerList = findBindingBean(ContextStartListener.class);
-        for (ContextStartListener listener : listenerList) {
-            listener.doStartCompleted(this);
-        }
+        getContainer().getSpiContainer().callSpi(ContextStartListener.class, listener -> {
+            listener.doStartCompleted(TemplateAppContext.this);
+        });
     }
 
     /**开始进入容器停止.*/
     protected void doShutdown() {
-        List<ContextShutdownListener> listenerList = findBindingBean(ContextShutdownListener.class);
-        for (ContextShutdownListener listener : listenerList) {
-            listener.doShutdown(this);
-        }
+        getContainer().getSpiContainer().callSpi(ContextShutdownListener.class, listener -> {
+            listener.doShutdown(TemplateAppContext.this);
+        });
     }
 
     /**容器启动停止。*/
     protected void doShutdownCompleted() {
-        List<ContextShutdownListener> listenerList = findBindingBean(ContextShutdownListener.class);
-        for (ContextShutdownListener listener : listenerList) {
-            listener.doShutdownCompleted(this);
-        }
-        this.getContainer().close();
+        getContainer().getSpiContainer().callSpi(ContextShutdownListener.class, listener -> {
+            listener.doShutdownCompleted(TemplateAppContext.this);
+        });
     }
 
     /*--------------------------------------------------------------------------------------Utils*/
@@ -284,7 +279,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         //
         // .创建扩展
         AbstractBinder binder = new AbstractBinder(this.getEnvironment()) {
-            protected BeanContainer getBeanContainer() {
+            protected BindInfoBuilderFactory containerFactory() {
                 return getContainer();
             }
         };
@@ -320,13 +315,17 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     /**当开始所有 Module 的 installModule 之前。*/
     protected void doBindBefore(ApiBinder apiBinder) {
         /*绑定Settings对象的Provider*/
-        apiBinder.bindType(Settings.class).toProvider(() -> getEnvironment().getSettings());
+        apiBinder.bindType(Settings.class).bothWith(Settings.class.getName())           //
+                .toProvider(() -> getEnvironment().getSettings());
         /*绑定EventContext对象的Provider*/
-        apiBinder.bindType(EventContext.class).toProvider(() -> getEnvironment().getEventContext());
+        apiBinder.bindType(EventContext.class).bothWith(EventContext.class.getName())   //
+                .toProvider(() -> getEnvironment().getEventContext());
         /*绑定Environment对象的Provider*/
-        apiBinder.bindType(Environment.class).toProvider(this::getEnvironment);
+        apiBinder.bindType(Environment.class).bothWith(Environment.class.getName())     //
+                .toProvider(this::getEnvironment);
         /*绑定AppContext对象的Provider*/
-        apiBinder.bindType(AppContext.class).toProvider(() -> TemplateAppContext.this);
+        apiBinder.bindType(AppContext.class).bothWith(AppContext.class.getName())       //
+                .toProvider(() -> TemplateAppContext.this);
     }
 
     /**当完成所有 Module 的 installModule 直呼。*/
@@ -345,19 +344,19 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     }
 
     /**获取环境接口。*/
-    public abstract Environment getEnvironment();
+    public Environment getEnvironment() {
+        return getContainer().getEnvironment();
+    }
 
     /**安装模块的工具方法。*/
     protected void installModule(ApiBinder apiBinder, Module module) throws Throwable {
-        if (this.isStart()) {
-            throw new IllegalStateException("AppContent is started.");
-        }
-        if (module == null) {
-            return;
-        }
         logger.info("loadModule " + module.getClass());
+        /*加载*/
         module.loadModule(apiBinder);
-        BinderHelper.onInstall(this.getEnvironment(), module);
+        /*启动*/
+        HasorUtils.pushStartListener(this.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> module.onStart(eventData));
+        /*停止*/
+        HasorUtils.pushShutdownListener(this.getEnvironment(), (EventListener<AppContext>) (event, eventData) -> module.onStop(eventData));
     }
 
     /**
@@ -367,8 +366,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
      */
     public synchronized final void start(Module... modules) throws Throwable {
         if (this.isStart()) {
-            logger.error("appContext is started.");
-            return;
+            throw new IllegalStateException("the container is already started");
         }
         /*1.findModules*/
         logger.info("appContext -> findModules.");
@@ -378,12 +376,13 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         /*2.doInitialize*/
         logger.info("appContext -> doInitialize.");
         this.getContainer().preInitialize();
-        doInitialize();
         /*3.Bind*/
         ApiBinder apiBinder = newApiBinder();
         doBindBefore(apiBinder);
         for (Module module : findModules) {
-            this.installModule(apiBinder, module);
+            if (module != null) {
+                this.installModule(apiBinder, module);
+            }
         }
         logger.info("appContext -> doBind.");
         doBindAfter(apiBinder);
@@ -409,9 +408,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
 
     /**发送停止通知*/
     public synchronized final void shutdown() {
-        if (!this.isStart()) {
-            return;
-        }
+        tryShutdown();
         EventContext ec = getEnvironment().getEventContext();
         /*1.Init*/
         logger.info("shutdown - doShutdown.");
@@ -425,6 +422,7 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         }
         logger.debug("shutdown - doShutdownCompleted.");
         doShutdownCompleted();
+        this.getContainer().close();
         logger.info("shutdown - finish.");
         try {
             Runtime.getRuntime().removeShutdownHook(shutdownHook);
@@ -435,14 +433,8 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         }
     }
 
-    public void join() {
-        this.join(0, null);
-    }
-
     public void join(long timeout, TimeUnit unit) {
-        if (!this.isStart()) {
-            return;
-        }
+        tryShutdown();
         // .当收到 Shutdown 事件时退出 join
         BasicFuture<Object> future = new BasicFuture<>();
         HasorUtils.pushShutdownListener(getEnvironment(), (EventListener<AppContext>) (event, eventData) -> {
@@ -453,14 +445,8 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         joinAt(future, timeout, unit);
     }
 
-    public void joinSignal() {
-        this.joinSignal(0, null);
-    }
-
     public void joinSignal(long timeout, TimeUnit unit) {
-        if (!this.isStart()) {
-            return;
-        }
+        tryShutdown();
         final BasicFuture<Object> future = new BasicFuture<>();
         //
         // .注册 shutdown 事件
@@ -490,14 +476,22 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     private void joinAt(BasicFuture<Object> future, long timeout, TimeUnit unit) {
         try {
             if (unit == null) {
+                logger.debug("joinAt none.");
                 future.get();
             } else {
+                logger.debug("joinAt unit=" + unit.name() + " ,timeout=" + timeout);
                 future.get(timeout, unit);
             }
         } catch (ExecutionException e) {
             throw ExceptionUtils.toRuntimeException(e.getCause());
         } catch (Exception e) {
             throw ExceptionUtils.toRuntimeException(e);
+        }
+    }
+
+    private void tryShutdown() {
+        if (!this.isStart()) {
+            throw new IllegalStateException("the container is not started yet.");
         }
     }
 }

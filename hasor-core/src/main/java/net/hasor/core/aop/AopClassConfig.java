@@ -39,19 +39,18 @@ import static net.hasor.utils.asm.Opcodes.*;
  */
 public class AopClassConfig {
     /**默认超类java.lang.Object。*/
-    private        Class<?>                           superClass        = null;
-    private        String                             className         = null;
-    private        byte[]                             classBytes        = null;
-    private        Class<?>                           classType         = null;
-    private        AopClassLoader                     parentLoader      = null;
-    private        List<InnerMethodInterceptorDefine> interceptorList   = null;
-    private        Map<String, MethodInterceptor[]>   interceptorMap    = null;
-    private        Map<String, Method>                interceptorMethod = null;
-    private static AtomicLong                         spinIndex         = new AtomicLong(0);
-    static         String                             aopMethodSuffix   = "aop$";
-    static         String                             aopClassSuffix    = "$Auto$";
-    private        boolean                            debug             = false;
-    private        File                               classWritePath;
+    private          Class<?>                           superClass        = null;
+    private          String                             className         = null;
+    private          byte[]                             classBytes        = null;
+    private          Class<?>                           classType         = null;
+    private          AopClassLoader                     parentLoader      = null;
+    private          List<InnerMethodInterceptorDefine> interceptorList   = null;
+    private          Map<String, MethodInterceptor[]>   interceptorMap    = null;
+    private          Map<String, Method>                interceptorMethod = null;
+    private static   AtomicLong                         spinIndex         = new AtomicLong(0);
+    protected static String                             aopMethodSuffix   = "aop$";
+    protected static String                             aopClassSuffix    = "$Auto$";
+    private          File                               classWritePath;
     //
     //
 
@@ -286,15 +285,21 @@ public class AopClassConfig {
                 mv.visitInsn(ICONST_1);
                 mv.visitMethodInsn(INVOKEVIRTUAL, AsmTools.replaceClassName(Method.class), "setAccessible", "(Z)V", false);
                 //
-                //
                 // propxyMethod[n] = superClass.getMethod("aop$" + "xxxx",new Class[] { xxx,xxx});
                 mv.visitFieldInsn(GETSTATIC, thisClassName, "proxyMethod", AsmTools.toAsmType(Method[].class));
                 mv.visitIntInsn(BIPUSH, i);
                 mv.visitVarInsn(ALOAD, thisClassIndex); // superClass
                 mv.visitLdcInsn(aopMethodSuffix + interceptorMethod.get(ent.getKey()).getName());
                 AsmTools.codeBuilder_2(mv, AsmTools.splitAsmType(AsmTools.toAsmType(parameterTypes)));
-                mv.visitMethodInsn(INVOKEVIRTUAL, AsmTools.replaceClassName(Class.class), "getMethod", getMethodDesc, false);
+                mv.visitMethodInsn(INVOKEVIRTUAL, AsmTools.replaceClassName(Class.class), "getDeclaredMethod", getMethodDesc, false);
                 mv.visitInsn(AASTORE);
+                //
+                // targetMethod[n].setAccessible(true);
+                mv.visitFieldInsn(GETSTATIC, thisClassName, "proxyMethod", AsmTools.toAsmType(Method[].class));
+                mv.visitIntInsn(BIPUSH, i);
+                mv.visitInsn(AALOAD);
+                mv.visitInsn(ICONST_1);
+                mv.visitMethodInsn(INVOKEVIRTUAL, AsmTools.replaceClassName(Method.class), "setAccessible", "(Z)V", false);
             }
             //
             mv.visitLabel(tryCacheLabel);
@@ -333,7 +338,7 @@ public class AopClassConfig {
                 }
             }
             //
-            MethodVisitor replacementVisitor = classWriter.visitMethod(ACC_PUBLIC, aopMethodSuffix + aopMethod.getName(), AsmTools.toAsmDesc(aopMethod), AsmTools.toAsmSignature(aopMethod), throwStrArray);
+            MethodVisitor replacementVisitor = classWriter.visitMethod(ACC_PRIVATE | ACC_FINAL, aopMethodSuffix + aopMethod.getName(), AsmTools.toAsmDesc(aopMethod), AsmTools.toAsmSignature(aopMethod), throwStrArray);
             replacementVisitor.visitCode();
             replacementVisitor.visitVarInsn(ALOAD, 0);
             for (int i = 0; i < asmParams.length; i++) {
@@ -444,12 +449,11 @@ public class AopClassConfig {
         //
         classWriter.visitEnd();
         this.classBytes = classWriter.toByteArray();
-        if (debug) {
+        if (this.classWritePath != null) {
             FileOutputStream fos = null;
             try {
-                File outFile = new File(classWritePath, thisClassName + ".class");
+                File outFile = new File(this.classWritePath, thisClassName + ".class");
                 outFile.getParentFile().mkdirs();
-                outFile.delete();
                 fos = new FileOutputStream(outFile, false);
                 fos.write(this.classBytes);
                 fos.flush();
@@ -464,12 +468,19 @@ public class AopClassConfig {
         return (Class<? extends T>) this.classType;
     }
 
-    public boolean isDebug() {
-        return debug;
+    /** 把生成的字节码数据写入到这个目录中。 */
+    public void classWriteToPath(File classWritePath) throws IOException {
+        Objects.requireNonNull(classWritePath);
+        if (!classWritePath.canWrite()) {
+            throw new IOException("path cannot be written.");
+        }
+        this.classWritePath = classWritePath;
     }
 
-    public void debug(boolean debug, File classWritePath) {
-        this.classWritePath = Objects.requireNonNull(classWritePath);
-        this.debug = debug;
+    public File getClassWriteFile() {
+        if (this.classWritePath == null) {
+            return null;
+        }
+        return new File(this.classWritePath, AsmTools.replaceClassName(this.getClassName()) + ".class");
     }
 }

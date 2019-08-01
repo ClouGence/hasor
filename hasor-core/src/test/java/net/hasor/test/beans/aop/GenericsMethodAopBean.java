@@ -13,25 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.core.binder;
-import net.hasor.core.*;
+package net.hasor.test.beans.aop;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
- *
- * @version : 2015年11月13日
+ * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public class BinderHelper {
-    public static Module onInstall(Environment env, final Module atModule) {
-        if (atModule == null) {
-            return null;
-        }
-        if (atModule instanceof LifeModule) {
-            /*启动*/
-            HasorUtils.pushStartListener(env, (EventListener<AppContext>) (event, eventData) -> ((LifeModule) atModule).onStart(eventData));
-            /*停止*/
-            HasorUtils.pushShutdownListener(env, (EventListener<AppContext>) (event, eventData) -> ((LifeModule) atModule).onStop(eventData));
-        }
-        return atModule;
+public class GenericsMethodAopBean {
+    public <T, V, Z> String fooCall1(T v1, V v2, Z v3) throws Exception {
+        return "abc";
+    }
+
+    //
+    public <T extends Date, V extends ArrayList> String fooCall2(T v1, V v2) throws Exception {
+        return "abc";
+    }
+
+    //
+    public String fooCall3(Class<? extends Date> v1, List<? extends Map<String, Date>> v2) throws Exception {
+        return "abc";
     }
 }

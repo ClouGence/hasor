@@ -14,81 +14,99 @@
  * limitations under the License.
  */
 package net.hasor.core.binder;
-import net.hasor.core.Environment;
-import net.hasor.core.EventContext;
-import net.hasor.core.EventListener;
+import net.hasor.core.*;
+import net.hasor.core.container.BeanContainer;
+import net.hasor.core.environment.StandardEnvironment;
+import net.hasor.test.beans.binder.TestBinder;
+import net.hasor.test.beans.binder.TestBinderCreater;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
+import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
-import static net.hasor.core.AppContext.ContextEvent_Shutdown;
-import static net.hasor.core.AppContext.ContextEvent_Started;
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
+
 /**
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ HasorUtils.class })
 public class InvocationHandlerTest {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    //
     @Test
-    public void apiBinderInvocationHandler_test() {
+    public void handlerTest() {
         Map<Class<?>, Object> supportMap = new HashMap<>();
-        new ApiBinderInvocationHandler(supportMap);
+        ApiBinderInvocationHandler handler1 = new ApiBinderInvocationHandler(supportMap);
+        assert handler1.supportMap().isEmpty();
         //
-        supportMap.put(Object.class, new Object());
-        new ApiBinderInvocationHandler(supportMap);
+        Object val = new Object();
+        supportMap.put(Object.class, val);
+        ApiBinderInvocationHandler handler2 = new ApiBinderInvocationHandler(supportMap);
+        assert handler2.supportMap().size() == 1;
+        assert handler2.supportMap().get(Object.class) == val;
         //
         try {
             supportMap.put(ApiBinderInvocationHandler.class, null);
             new ApiBinderInvocationHandler(supportMap);
             assert false;
         } catch (Exception e) {
-            assert true;
+            assert e.getMessage().startsWith("this method is not support -> ");
         }
     }
-    //
+
     @Test
-    public void binderHelperTest() {
-        final AtomicReference<Object> referenceStarted = new AtomicReference<>();
-        final AtomicReference<Object> referenceShutdown = new AtomicReference<>();
-        Answer<Object> answer = invocationOnMock -> {
-            if (ContextEvent_Started.equalsIgnoreCase(invocationOnMock.getArguments()[0].toString())) {
-                referenceStarted.set(invocationOnMock.getArguments()[1]);
-            }
-            if (ContextEvent_Shutdown.equalsIgnoreCase(invocationOnMock.getArguments()[0].toString())) {
-                referenceShutdown.set(invocationOnMock.getArguments()[1]);
-            }
+    public void binderTest() throws Throwable {
+        PowerMockito.mockStatic(HasorUtils.class);
+        ArrayList<Object> ref1 = new ArrayList<>();
+        ArrayList<Object> ref2 = new ArrayList<>();
+        PowerMockito.when(HasorUtils.pushStartListener(anyObject(), (EventListener) anyObject())).then(invocationOnMock -> {
+            ref1.add(invocationOnMock.getArguments()[1]);
             return null;
-        };
+        });
+        PowerMockito.when(HasorUtils.pushShutdownListener(anyObject(), (EventListener) anyObject())).then(invocationOnMock -> {
+            ref2.add(invocationOnMock.getArguments()[1]);
+            return null;
+        });
         //
-        EventContext event = PowerMockito.mock(EventContext.class);
-        PowerMockito.doAnswer(answer).when(event).pushListener(anyString(), anyObject());
-        PowerMockito.doAnswer(answer).when(event).pushListener(anyString(), anyObject());
-        Environment mock = PowerMockito.mock(Environment.class);
-        PowerMockito.when(mock.getEventContext()).thenReturn(event);
         //
-        EmptyLifeModule module = (EmptyLifeModule) BinderHelper.onInstall(mock, new EmptyLifeModule());
+        Environment env = new StandardEnvironment(null);
+        BeanContainer container = new BeanContainer(env);
+        ApiBinderWrap binder = new ApiBinderWrap(new AbstractBinder(env) {
+            protected BindInfoBuilderFactory containerFactory() {
+                return container;
+            }
+        });
+        container.preInitialize();
         //
-        assert referenceStarted.get() instanceof EventListener;
-        assert referenceShutdown.get() instanceof EventListener;
-        try {
-            ((EventListener) referenceStarted.get()).onEvent(null, null);
-            ((EventListener) referenceShutdown.get()).onEvent(null, null);
-            assert module.isDoStart() && module.isDoStop();
-        } catch (Throwable e) {
-            e.printStackTrace();
-            assert false;
-        }
+        Map<Class<?>, Object> supportMap = new HashMap<>();
+        supportMap.put(ApiBinder.class, binder);
+        supportMap.put(TestBinder.class, new TestBinderCreater().createBinder(binder));
         //
-        assert BinderHelper.onInstall(mock, null) == null;
+        ApiBinder binderProxy = (ApiBinder) Proxy.newProxyInstance(  //
+                Thread.currentThread().getContextClassLoader(), //
+                supportMap.keySet().toArray(new Class<?>[0]),   //
+                new ApiBinderInvocationHandler(supportMap)      //
+        );
+        //
+        binderProxy.installModule((Module) apiBinder -> {
+            apiBinder.tryCast(TestBinder.class).hello();
+            //
+            assert apiBinder.toString().startsWith("count = 2 - [");
+        });
+        //
+        container.init();
+        AppContext appContext = PowerMockito.mock(AppContext.class);
+        PowerMockito.when(appContext.getClassLoader()).thenReturn(Thread.currentThread().getContextClassLoader());
+        BindInfo<String> bindInfo = container.getBindInfoContainer().findBindInfo("", String.class);
+        String message = container.providerOnlyBindInfo(bindInfo, appContext).get();
+        assert "hello Binder".equals(message);
+        assert ref1.size() == 1;
+        assert ref2.size() == 1;
     }
 }
