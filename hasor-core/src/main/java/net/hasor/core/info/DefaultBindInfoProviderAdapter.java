@@ -34,6 +34,7 @@ import java.util.function.Supplier;
 public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderAdapter<T> {
     private Map<Integer, ParamInfo> constructorParams;
     private Map<String, ParamInfo>  injectProperty;
+    private boolean                 overwriteAnnotation;
     private String                  initMethod;
     private String                  destroyMethod;
 
@@ -145,6 +146,15 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
     @Override
     public void destroyMethod(String methodName) {
         this.destroyMethod = methodName;
+    }
+
+    @Override
+    public void overwriteAnnotation(boolean overwrite) {
+        this.overwriteAnnotation = overwrite;
+    }
+
+    public boolean isOverwriteAnnotation() {
+        return overwriteAnnotation;
     }
 
     private Class<?> lookupType() {

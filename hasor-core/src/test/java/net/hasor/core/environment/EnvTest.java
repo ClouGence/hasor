@@ -178,4 +178,16 @@ public class EnvTest {
             assert (java_home + "/bin/javac.exe").equals(env.evalString("%JAVA_HOME%/bin/javac.exe"));
         }
     }
+
+    @Test
+    public void envTest11() throws IOException {
+        EnvironmentWrap env = wrap(new StandardEnvironment());
+        //
+        assert !env.isSmaller();
+        //
+        env.addVariable("RUN_MODE", "smaller");
+        assert env.isSmaller();
+        //
+        assert "smaller".equals(env.getVariable("RUN_MODE"));
+    }
 }

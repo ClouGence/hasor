@@ -281,6 +281,12 @@ public abstract class AbstractBinder implements ApiBinder {
         }
 
         @Override
+        public InjectPropertyBindingBuilder<T> overwriteAnnotation() {
+            this.typeBuilder.overwriteAnnotation(true);
+            return this;
+        }
+
+        @Override
         public InjectConstructorBindingBuilder<T> injectValue(final int index, final Object value) {
             return this.inject(index, new InstanceProvider<>(value));
         }

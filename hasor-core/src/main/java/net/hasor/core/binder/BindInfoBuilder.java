@@ -126,4 +126,10 @@ public interface BindInfoBuilder<T> {
      * @param methodName 方法名。
      */
     public void destroyMethod(String methodName);
+
+    /**
+     * 是否强制忽略类的注解配置
+     * @param overwrite 如果为 true 表示覆盖，默认是 false
+     */
+    public void overwriteAnnotation(boolean overwrite);
 }

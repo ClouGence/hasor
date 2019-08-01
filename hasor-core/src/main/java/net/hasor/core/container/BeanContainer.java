@@ -190,7 +190,12 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
             return () -> appContext.getInstance(((ID) anno).value());
         }
         if (anno instanceof javax.inject.Named) {
-            return () -> appContext.findBindingBean(((Named) anno).value(), targetType);
+            BindInfo<T> bindInfo = getBindInfoContainer().findBindInfo(((Named) anno).value(), targetType);
+            if (bindInfo != null) {
+                return providerOnlyBindInfo(bindInfo, appContext);
+            } else {
+                return providerOnlyType(targetType, appContext, null);
+            }
         }
         throw new UnsupportedOperationException(anno.annotationType() + " Annotation is not support.");
     }
@@ -412,8 +417,11 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         }
         // a.配置注入
         Set<String> injectFileds = new HashSet<>();
+        boolean isOverwriteAnnotation = false;
         if (bindInfo instanceof DefaultBindInfoProviderAdapter) {
             DefaultBindInfoProviderAdapter<?> defBinder = (DefaultBindInfoProviderAdapter<?>) bindInfo;
+            isOverwriteAnnotation = defBinder.isOverwriteAnnotation();
+            //
             Map<String, Supplier<?>> propMaps = defBinder.getPropertys(appContext);
             for (Map.Entry<String, Supplier<?>> propItem : propMaps.entrySet()) {
                 String propertyName = propItem.getKey();
@@ -447,13 +455,16 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
             String name = field.getName();
             boolean hasInjected = injectFileds.contains(name);
             if (hasInjected) {
+                if (isOverwriteAnnotation) {
+                    continue;//如果强制覆盖注解配置启用了，那么这里遇到冲突的时候自动忽略即可。
+                }
                 throw new IllegalStateException("doInject , " + targetType + " , property '" + name + "' duplicate.");
             }
             //
             if (!field.isAccessible()) {
                 field.setAccessible(true);
             }
-            invokeField(field, targetBean, providerOnlyAnnotation(field.getDeclaringClass(), injectInfo, appContext).get());
+            invokeField(field, targetBean, providerOnlyAnnotation(field.getType(), injectInfo, appContext).get());
             injectFileds.add(field.getName());
         }
         // c.方法注入

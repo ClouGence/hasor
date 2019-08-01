@@ -456,6 +456,12 @@ public interface ApiBinder {
          * @return 返回属性注入接口，以继续其它属性注入。 - {@link InjectPropertyBindingBuilder}。
          */
         public InjectPropertyBindingBuilder<T> inject(String property, Class<?> valueType);
+
+        /**
+         * 是否强制覆盖类本身注解配置。
+         * @return 返回属性注入接口，以继续其它属性注入。 - {@link InjectPropertyBindingBuilder}。
+         */
+        public InjectPropertyBindingBuilder<T> overwriteAnnotation();
     }
 
     /**负责启动之后的生命周期方法映射。*/

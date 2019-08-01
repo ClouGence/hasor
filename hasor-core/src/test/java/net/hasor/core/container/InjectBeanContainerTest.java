@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
-import net.hasor.core.AppContext;
-import net.hasor.core.Environment;
-import net.hasor.core.Settings;
+import net.hasor.core.*;
+import net.hasor.core.context.StatusAppContext;
+import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.setting.InputStreamSettings;
+import net.hasor.test.beans.basic.inject.PropertyPojoBeanRef;
 import net.hasor.test.beans.basic.inject.constructor.BasicConstructorBean;
 import net.hasor.test.beans.basic.inject.constructor.ConstructorBean;
 import net.hasor.test.beans.basic.inject.constructor.ConstructorBeanByInjectSettingConfValue;
@@ -28,6 +29,7 @@ import net.hasor.test.beans.basic.inject.jsr330.Jsr330MethodRef;
 import net.hasor.test.beans.basic.inject.members.*;
 import net.hasor.test.beans.basic.inject.property.PropertyBean;
 import net.hasor.test.beans.basic.inject.property.PropertyBeanByByInjectSettingConfValue;
+import net.hasor.test.beans.basic.pojo.PojoBean;
 import net.hasor.test.beans.enums.SelectEnum;
 import org.junit.Before;
 import org.junit.Test;
@@ -316,5 +318,25 @@ public class InjectBeanContainerTest {
         Jsr330ConstructorRef bean2 = container.providerOnlyType(Jsr330ConstructorRef.class, appContext, null).get();
         assert bean1.getPojoBean() != null;
         assert bean2.getPojoBean() != null;
+    }
+
+    @Test
+    public void injectTest7() throws Throwable {
+        PojoBean mockBean1 = new PojoBean();
+        PojoBean mockBean2 = new PojoBean();
+        Environment env = new StandardEnvironment();
+        AppContext appContext3 = new AppContextWarp(new StatusAppContext(env));
+        appContext3.start((Module) apiBinder -> {
+            apiBinder.bindType(PojoBean.class).toInstance(mockBean1);
+            apiBinder.bindType(PropertyPojoBeanRef.class)//
+                    .injectValue("pojoBean", mockBean2);
+        });
+        PropertyPojoBeanRef ref = new PropertyPojoBeanRef();
+        try {
+            appContext3.justInject(ref);
+            assert false;
+        } catch (Exception e) {
+            assert e.getMessage().endsWith(" property 'pojoBean' duplicate.");
+        }
     }
 }
