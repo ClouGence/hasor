@@ -17,7 +17,6 @@ package net.hasor.core.exts.aop;
 import net.hasor.utils.ClassUtils;
 import net.hasor.utils.MatchUtils;
 import net.hasor.utils.MatchUtils.MatchTypeEnum;
-import net.hasor.utils.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -56,11 +55,6 @@ public class Matchers {
         return new MethodAnnotationOf(annotationType);
     }
 
-    /** 在类型所在的 package 和父 packages 中匹配， */
-    public static Predicate<Class<?>> annotatedWithPackageTree(Class<? extends Annotation> annotationType) {
-        return new PackageAnnotationOf(annotationType);
-    }
-
     /** 返回一个匹配器，匹配给定类型的子类（或实现了的接口） */
     public static Predicate<Class<?>> subClassesOf(final Class<?> superclass) {
         return new SubClassesOf(superclass);
@@ -86,20 +80,39 @@ public class Matchers {
      * @param matcherExpression 格式为“<code>&lt;返回值&gt;&nbsp;&lt;类名&gt;.&lt;方法名&gt;(&lt;参数签名列表&gt;)</code>”
      */
     public static Predicate<Method> expressionMethod(final String matcherExpression) {
-        return new MethodOf(matcherExpression);
+        return new MethodOf(MatchTypeEnum.Wild, matcherExpression);
     }
 
     /**匹配方法*/
     private static class MethodOf implements Predicate<Method> {
-        private final String matcherExpression;
+        private final MatchTypeEnum matchTypeEnum;
+        private final String        matcherExpression;
 
-        public MethodOf(String matcherExpression) {
+        public MethodOf(MatchTypeEnum matchTypeEnum, String matcherExpression) {
+            this.matchTypeEnum = matchTypeEnum;
             this.matcherExpression = matcherExpression;
         }
 
         public boolean test(Method target) {
             String methodStr = ClassUtils.getDescNameWithOutModifiers(target);
-            return MatchUtils.wildToRegex(matcherExpression, methodStr, MatchTypeEnum.Wild);
+            return MatchUtils.wildToRegex(matcherExpression, methodStr, this.matchTypeEnum);
+        }
+
+        public boolean equals(final Object other) {
+            if (other instanceof MethodOf) {
+                MatchTypeEnum otherMatchTypeEnum = ((MethodOf) other).matchTypeEnum;
+                String otherMatcherExpression = ((MethodOf) other).matcherExpression;
+                return this.matchTypeEnum.equals(otherMatchTypeEnum) && this.matcherExpression.equals(otherMatcherExpression);
+            }
+            return false;
+        }
+
+        public int hashCode() {
+            return 37 * this.matcherExpression.hashCode() * this.matchTypeEnum.hashCode();
+        }
+
+        public String toString() {
+            return "MethodOf(" + this.matchTypeEnum.name() + ")";
         }
     }
 
@@ -115,6 +128,23 @@ public class Matchers {
 
         public boolean test(Class<?> target) {
             return MatchUtils.wildToRegex(matcherExpression, target.getName(), this.matchTypeEnum);
+        }
+
+        public boolean equals(final Object other) {
+            if (other instanceof ClassOf) {
+                MatchTypeEnum otherMatchTypeEnum = ((ClassOf) other).matchTypeEnum;
+                String otherMatcherExpression = ((ClassOf) other).matcherExpression;
+                return this.matchTypeEnum.equals(otherMatchTypeEnum) && this.matcherExpression.equals(otherMatcherExpression);
+            }
+            return false;
+        }
+
+        public int hashCode() {
+            return 37 * this.matcherExpression.hashCode() * this.matchTypeEnum.hashCode();
+        }
+
+        public String toString() {
+            return "ClassOf(" + this.matchTypeEnum.name() + ")";
         }
     }
 
@@ -215,47 +245,6 @@ public class Matchers {
 
         public String toString() {
             return "MethodAnnotationOf(" + this.annotationType.getSimpleName() + ".class)";
-        }
-    }
-
-    /**匹配在 package 和父 packages 中的注解。*/
-    private static class PackageAnnotationOf implements Predicate<Class<?>> {
-        private Class<? extends Annotation> annotationType = null;
-
-        public PackageAnnotationOf(final Class<? extends Annotation> annotationType) {
-            this.annotationType = annotationType;
-        }
-
-        @Override
-        public boolean test(Class<?> target) {
-            return this.matches(target.getPackage());
-        }
-
-        public boolean matches(Package targetPackage) {
-            if (targetPackage == null) {
-                return false;
-            }
-            Annotation tran = targetPackage.getAnnotation(annotationType);
-            if (tran != null) {
-                return true;
-            }
-            //
-            String packageName = targetPackage.getName();
-            for (; ; ) {
-                if (packageName.indexOf('.') == -1) {
-                    break;
-                }
-                packageName = StringUtils.substringBeforeLast(packageName, ".");
-                if (StringUtils.isBlank(packageName)) {
-                    break;
-                }
-                Package supperPackage = Package.getPackage(packageName);
-                if (supperPackage == null) {
-                    continue;
-                }
-                return matches(targetPackage);
-            }
-            return false;
         }
     }
 }

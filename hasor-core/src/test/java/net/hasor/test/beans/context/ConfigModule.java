@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.beans.aop.custom;
+package net.hasor.test.beans.context;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Module;
+
 /**
- * 方法级别
- * @version : 2014-1-3
+ * 模块
+ * @version : 2015年11月9日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MyAopBean {
-    @MyAop()
-    public String fooCall(String string) {
-        System.out.println("fooCall");
-        return "call back : " + string;
+public class ConfigModule implements Module {
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
+        apiBinder.bindType(String.class).toInstance("config");
     }
 }

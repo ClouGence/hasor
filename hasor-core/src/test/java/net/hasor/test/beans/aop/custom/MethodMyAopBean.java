@@ -14,25 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.test.beans.aop.custom;
-import net.hasor.core.ApiBinder;
-import net.hasor.core.Module;
-import net.hasor.core.exts.aop.Matchers;
-
-import java.lang.reflect.Method;
-import java.util.function.Predicate;
-
 /**
- * 让自定义MyAop注解生效。
- * @version : 2015年11月9日
+ * 方法级别
+ * @version : 2014-1-3
  * @author 赵永春 (zyc@hasor.net)
  */
-public class MyAopSetup implements Module {
-    public void loadModule(ApiBinder apiBinder) throws Throwable {
-        //1.任意类
-        Predicate<Class<?>> atClass = Matchers.anyClass();
-        //2.有MyAop注解的方法
-        Predicate<Method> atMethod = Matchers.annotatedWithMethod(MyAop.class);
-        //3.让@MyAop注解生效
-        apiBinder.bindInterceptor(atClass, atMethod, new MyAopInterceptor());
+public class MethodMyAopBean {
+    @MyAop()
+    public String fooCall(String string) {
+        System.out.println("fooCall");
+        return "call back : " + string;
     }
 }

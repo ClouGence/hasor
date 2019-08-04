@@ -54,6 +54,7 @@ public class AopBeanContainerTest {
         DefaultBindInfoProviderAdapter<AopBindInfoAdapter> adapter = container.getBindInfoContainer().createInfoAdapter(AopBindInfoAdapter.class);
         Predicate<Class<?>> ma = aClass -> true;
         Predicate<Method> mb = aMethod -> true;
+        MyAopInterceptor.resetInit();
         MethodInterceptor interceptor = new MyAopInterceptor();
         adapter.setCustomerProvider(InstanceProvider.of(new AopBindInfoAdapter(ma, mb, interceptor)));
         //
@@ -76,6 +77,7 @@ public class AopBeanContainerTest {
         DefaultBindInfoProviderAdapter<AopBindInfoAdapter> adapter = container.getBindInfoContainer().createInfoAdapter(AopBindInfoAdapter.class);
         Predicate<Class<?>> ma = aClass -> false;
         Predicate<Method> mb = aMethod -> true;
+        MyAopInterceptor.resetInit();
         MethodInterceptor interceptor = new MyAopInterceptor();
         adapter.setCustomerProvider(InstanceProvider.of(new AopBindInfoAdapter(ma, mb, interceptor)));
         //
