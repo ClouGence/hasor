@@ -94,6 +94,39 @@ public class BasicContextTest {
         AppContext appContext = new AppContextWarp(new StatusAppContext(env));
         appContext.start();
         //
+        String name = ManagementFactory.getRuntimeMXBean().getName();
+        String pid = name.split("@")[0];
+        System.out.println("Pid is:" + pid);
+        //
+        Thread thread = new Thread(() -> {
+            try {
+                Thread.sleep(10000);
+                Runtime.getRuntime().exec("kill -15 " + pid);
+                Thread.sleep(10000);
+                if (appContext.isStart()) {
+                    appContext.shutdown();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        thread.start();
+        try {
+            appContext.joinSignal();
+            assert false;
+        } catch (RuntimeException e) {
+            assert e.getCause() instanceof java.util.concurrent.TimeoutException;
+            return;
+        }
+        assert false;
+    }
+
+    @Test
+    public void joinTest4() throws Throwable {
+        Environment env = new StandardEnvironment();
+        AppContext appContext = new AppContextWarp(new StatusAppContext(env));
+        appContext.start();
+        //
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
         Thread thread = new Thread(() -> {
             try {

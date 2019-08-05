@@ -241,7 +241,7 @@ public interface ApiBinder {
         Objects.requireNonNull(scopeType, "scopeType is null.");
         javax.inject.Scope scopeTypeAnno = scopeType.getAnnotation(javax.inject.Scope.class);
         if (scopeTypeAnno == null) {
-            throw new IllegalStateException("Annotation Type " + scopeType.getName() + " does not declare a Scope.");
+            throw new IllegalStateException("Annotation Type " + scopeType.getName() + " is not javax.inject.Scope");
         }
         return this.bindScope(scopeType.getName(), InstanceProvider.of(scope));
     }
@@ -478,7 +478,7 @@ public interface ApiBinder {
     /**Bean存在的作用域*/
     public interface ScopedBindingBuilder<T> extends OptionPropertyBindingBuilder<T> {
         /**
-         * 注册为原型模式。<p>
+         * 注册为原型模式(会覆盖类型上本身的作用域注释配置)。<p>
          * 原型模式：当类型被多个对象注入时，每个注入的类型实例都是全新的对象。
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
@@ -487,7 +487,7 @@ public interface ApiBinder {
         }
 
         /**
-         * 注册为单例模式。<p>
+         * 注册为单例模式(会覆盖类型上本身的作用域注释配置)。<p>
          * 单列模式：当类型被多个对象注入时，每个注入的类型实例都是同一个对象。
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
@@ -520,7 +520,7 @@ public interface ApiBinder {
                     })//
                     .map(aClass -> {
                         if (aClass.getAnnotation(javax.inject.Scope.class) == null) {
-                            throw new IllegalArgumentException(aClass.getName() + " are not declared as Scope.");
+                            throw new IllegalArgumentException(aClass.getName() + " is not javax.inject.Scope");
                         }
                         return aClass.getName();
                     }).toArray(String[]::new)//

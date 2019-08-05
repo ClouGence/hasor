@@ -151,12 +151,11 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
             return null;
         }
         DefaultBindInfoProviderAdapter<?> adapter = (DefaultBindInfoProviderAdapter) bindInfo;
+        // .如果指定了 SourceType 那么使用 SourceType 作为 targetType
+        Class<T> targetType = (Class<T>) (adapter.getSourceType() != null ? adapter.getSourceType() : adapter.getBindType());
         //
         // .（构造方法）确定创建 BindInfo 使用的构造方法，使用 Supplier 封装。
         Supplier<Executable> constructorSupplier = new SingleProvider<>(() -> {
-            //
-            // .如果指定了 SourceType 那么使用 SourceType 作为 targetType
-            Class<?> targetType = adapter.getSourceType() != null ? adapter.getSourceType() : adapter.getBindType();
             //
             // .targetType也许只是一个被标记了 ImplBy 注解的类型。因此需要找到真正需要创建的那个类型。
             Class<T> implClass = findImplClass(targetType);
@@ -173,7 +172,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         };
         //
         // .创建对象
-        return (Supplier<T>) () -> createObject(bindInfo.getBindType(), constructorSupplier, parameterSupplier, bindInfo, appContext);
+        return (Supplier<T>) () -> createObject(targetType, constructorSupplier, parameterSupplier, bindInfo, appContext);
     }
 
     /**
@@ -324,7 +323,7 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         if (ArrayUtils.isEmpty(scope)) {
             return targetSupplier.get();
         } else {
-            String key = (bindInfo != null) ? bindInfo.getBindID() : targetType.getName();
+            String key = (bindInfo != null) ? ("BIND-" + bindInfo.getBindID()) : ("TYPE-" + targetType.getName());
             return PrototypeScope.SINGLETON.chainScope(key, scope, targetSupplier).get();
         }
     }
