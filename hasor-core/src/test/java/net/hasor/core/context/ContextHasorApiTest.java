@@ -15,15 +15,21 @@
  */
 package net.hasor.core.context;
 import net.hasor.core.*;
+import net.hasor.core.aop.DynamicClass;
+import net.hasor.test.beans.aop.anno.AopBean;
 import net.hasor.test.beans.aop.ignore.types.GrandFatherBean;
 import net.hasor.test.beans.aop.ignore.types.JamesBean;
 import net.hasor.test.beans.aop.ignore.types.WilliamSonBean;
 import net.hasor.test.beans.basic.inject.constructor.NativeConstructorPojoBeanRef;
 import net.hasor.test.beans.basic.inject.constructor.SingleConstructorPojoBeanRef;
 import net.hasor.test.beans.basic.pojo.PojoBean;
+import net.hasor.utils.ResourcesUtils;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.util.HashMap;
 
 /**
  * @version : 2016-12-16
@@ -119,5 +125,65 @@ public class ContextHasorApiTest {
         assert "abc".equals(appContext.getMetaData("abc"));
         appContext.removeMetaData("abc");
         assert appContext.getMetaData("abc") == null;
+    }
+
+    @Test
+    public void hasorTest1() {
+        AppContext context = Hasor.create().asTiny().build();
+        assert context.getEnvironment().runMode() == Hasor.Level.Tiny;
+        assert context.getEnvironment().getVariable("RUN_MODE").equalsIgnoreCase(Hasor.Level.Tiny.name());
+        assert context.getEnvironment().getVariable("HASOR_LOAD_MODULE").equals("false");
+        assert context.getEnvironment().getVariable("HASOR_LOAD_EXTERNALBINDER").equals("false");
+        assert !(context.getInstance(AopBean.class) instanceof DynamicClass);
+    }
+
+    @Test
+    public void hasorTest2() {
+        AppContext context = Hasor.create().asCore().build();
+        assert context.getEnvironment().runMode() == Hasor.Level.Core;
+        assert context.getEnvironment().getVariable("RUN_MODE").equalsIgnoreCase(Hasor.Level.Core.name());
+        assert context.getEnvironment().getVariable("HASOR_LOAD_MODULE").equals("true");
+        assert context.getEnvironment().getVariable("HASOR_LOAD_EXTERNALBINDER").equals("true");
+        assert context.getInstance(AopBean.class) instanceof DynamicClass;
+    }
+
+    @Test
+    public void hasorTest3() {
+        AppContext context = Hasor.create().asFull().build();
+        assert context.getEnvironment().runMode() == Hasor.Level.Full;
+        assert context.getEnvironment().getVariable("RUN_MODE").equalsIgnoreCase(Hasor.Level.Full.name());
+        assert context.getEnvironment().getVariable("HASOR_LOAD_MODULE").equals("true");
+        assert context.getEnvironment().getVariable("HASOR_LOAD_EXTERNALBINDER").equals("true");
+        assert context.getInstance(AopBean.class) instanceof DynamicClass;
+    }
+
+    @Test
+    public void hasorTest4() {
+        AppContext context = Hasor.create().build();
+        assert context.getEnvironment().runMode() == Hasor.Level.Full;
+        assert context.getEnvironment().getVariable("RUN_MODE").equalsIgnoreCase(Hasor.Level.Full.name());
+        assert context.getEnvironment().getVariable("HASOR_LOAD_MODULE").equals("true");
+        assert context.getEnvironment().getVariable("HASOR_LOAD_EXTERNALBINDER").equals("true");
+        assert context.getInstance(AopBean.class) instanceof DynamicClass;
+    }
+
+    @Test
+    public void hasorTest5() throws IOException {
+        Hasor hasor = Hasor.create();
+        hasor.addVariable("var_a", "a");
+        hasor.addVariableMap(new HashMap<String, String>() {{
+            put("var_b", "b");
+            put("var_c", "c");
+        }});
+        hasor.loadVariables("/net_hasor_core_context/variable_1.properties");
+        hasor.loadVariables("utf-8", ResourcesUtils.getResourceAsStream("/net_hasor_core_context/variable_2.properties"));
+        hasor.loadVariables(new File("src/test/resources/net_hasor_core_context/variable_2.properties"));
+        //
+        AppContext appContext = hasor.build();
+        assert appContext.getEnvironment().getVariable("var_a").equalsIgnoreCase("a");
+        assert appContext.getEnvironment().getVariable("var_b").equalsIgnoreCase("b");
+        assert appContext.getEnvironment().getVariable("var_c").equalsIgnoreCase("c");
+        assert appContext.getEnvironment().getVariable("var_d").equalsIgnoreCase("d");
+        assert appContext.getEnvironment().getVariable("var_e").equalsIgnoreCase("e");
     }
 }

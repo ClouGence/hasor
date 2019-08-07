@@ -37,8 +37,8 @@ public interface Environment {
     /**在框架扫描包的范围内查找具有特征类集合。（特征可以是继承的类、标记的注解）*/
     public Set<Class<?>> findClass(Class<?> featureType);
 
-    /** @return 返回是否以 Hasor.asSmaller 方式启动的*/
-    public boolean isSmaller();
+    /** @return 返回启动Hasor 的方式*/
+    public Hasor.Level runMode();
 
     /**
      * 在框架扫描包的范围内查找具有特征类集合（特征可以是继承的类、标记的注解）。<br>

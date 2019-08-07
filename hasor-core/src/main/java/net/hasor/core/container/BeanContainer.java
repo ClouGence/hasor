@@ -143,16 +143,18 @@ public class BeanContainer extends AbstractContainer implements BindInfoBuilderF
         return (Supplier<T>) () -> createObject(targetConstructor.getDeclaringClass(), constructorSupplier, parameterSupplier, null, appContext);
     }
 
-    /**
-     * 通过 BindInfo 类型创建Bean
-     */
+    /** 通过 BindInfo 类型创建Bean */
     public <T> Supplier<? extends T> providerOnlyBindInfo(BindInfo<T> bindInfo, AppContext appContext) {
         if (bindInfo == null) {
             return null;
         }
-        DefaultBindInfoProviderAdapter<?> adapter = (DefaultBindInfoProviderAdapter) bindInfo;
+        DefaultBindInfoProviderAdapter<T> adapter = (DefaultBindInfoProviderAdapter) bindInfo;
+        if (adapter.getCustomerProvider() != null) {
+            return adapter.getCustomerProvider();
+        }
+        //
         // .如果指定了 SourceType 那么使用 SourceType 作为 targetType
-        Class<T> targetType = (Class<T>) (adapter.getSourceType() != null ? adapter.getSourceType() : adapter.getBindType());
+        Class<T> targetType = (adapter.getSourceType() != null ? (Class<T>) adapter.getSourceType() : adapter.getBindType());
         //
         // .（构造方法）确定创建 BindInfo 使用的构造方法，使用 Supplier 封装。
         Supplier<Executable> constructorSupplier = new SingleProvider<>(() -> {

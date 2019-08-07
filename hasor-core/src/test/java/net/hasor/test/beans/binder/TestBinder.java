@@ -21,5 +21,7 @@ import net.hasor.core.ApiBinder;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface TestBinder extends ApiBinder {
+    public String toString();
+
     public void hello();
 }

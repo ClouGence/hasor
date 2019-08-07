@@ -36,8 +36,8 @@ import java.lang.reflect.Constructor;
 import java.util.AbstractMap;
 import java.util.List;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyObject;
+import static org.mockito.ArgumentMatchers.anyString;
 
 public class BasicBeanContainerTest {
     private BeanContainer beanContainer = null;

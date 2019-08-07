@@ -116,24 +116,38 @@ public final class Hasor extends HashMap<String, String> {
         return this;
     }
 
-    public Hasor loadProperties(File resourceName) throws IOException {
-        return loadProperties(new FileReader(resourceName));
+    public Hasor loadVariables(File resourceName) throws IOException {
+        return loadVariables(new FileReader(resourceName));
     }
 
-    public Hasor loadProperties(String resourceName) throws IOException {
+    public Hasor loadVariables(String resourceName) throws IOException {
         InputStream inStream = ResourcesUtils.getResourceAsStream(resourceName);
-        return loadProperties(new InputStreamReader(inStream, Settings.DefaultCharset));
+        return loadVariables(new InputStreamReader(inStream, Settings.DefaultCharset));
     }
 
-    public Hasor loadProperties(String encodeing, InputStream inStream) throws IOException {
-        return loadProperties(new InputStreamReader(inStream, encodeing));
+    public Hasor loadVariables(String encodeing, InputStream inStream) throws IOException {
+        return loadVariables(new InputStreamReader(inStream, encodeing));
     }
 
-    public Hasor loadProperties(Reader propertiesReader) throws IOException {
+    public Hasor loadVariables(Reader propertiesReader) throws IOException {
         Properties properties = new Properties();
         properties.load(propertiesReader);
         for (Object key : properties.keySet()) {
             this.put(key.toString(), properties.getProperty(key.toString()));
+        }
+        return this;
+    }
+
+    public Hasor importVariablesToSettings() {
+        return importVariablesToSettings(Settings.DefaultNameSpace);
+    }
+
+    public Hasor importVariablesToSettings(String namespace) {
+        if (StringUtils.isBlank(namespace)) {
+            throw new IllegalArgumentException("namespace is not null.");
+        }
+        for (String key : this.keySet()) {
+            addSettings(namespace, key, get(key));
         }
         return this;
     }

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.core;
-import net.hasor.core.provider.SingleProvider;
 import net.hasor.core.spi.AppContextAware;
 
 import java.util.Objects;
@@ -29,37 +28,18 @@ import static net.hasor.core.AppContext.ContextEvent_Started;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class HasorUtils {
-    private static SingleProvider<AppContext> singletonHasor = null;
-
-    public AppContext asingleton(Supplier<AppContext> supplier) {
-        AppContext appContext = localAppContext();
-        if (appContext == null) {
-            singletonHasor = new SingleProvider<>(supplier);
-            return singletonHasor.get();
-        }
-        throw new IllegalStateException("Hasor has been initialized.");
-    }
-
-    public static AppContext localAppContext() {
-        if (singletonHasor != null) {
-            return singletonHasor.get();
-        }
-        return null;
-    }
-
     /**
      * 将{@link AppContextAware}接口实现类注册到容器中，Hasor 会在启动的第一时间为这些对象执行注入。
      * @param awareProvider 需要被注册的 AppContextAware 接口实现对象。
      * @return 返回 aware 参数本身。
      */
     public static <T extends AppContextAware> Supplier<T> autoAware(Environment env, final Supplier<T> awareProvider) {
-        if (awareProvider == null) {
-            return null;
-        }
         Objects.requireNonNull(env, "EventContext is null.");
-        env.getEventContext().pushListener(ContextEvent_Started, (EventListener<AppContext>) (event, eventData) -> {
-            awareProvider.get().setAppContext(eventData);
-        });
+        if (awareProvider != null) {
+            env.getEventContext().pushListener(ContextEvent_Started, (EventListener<AppContext>) (event, eventData) -> {
+                awareProvider.get().setAppContext(eventData);
+            });
+        }
         return awareProvider;
     }
 
@@ -69,13 +49,12 @@ public class HasorUtils {
      * @return 返回 aware 参数本身。
      */
     public static <T extends AppContextAware> T autoAware(Environment env, final T aware) {
-        if (aware == null) {
-            return null;
-        }
         Objects.requireNonNull(env, "EventContext is null.");
-        pushStartListener(env, (EventListener<AppContext>) (event, eventData) -> {
-            aware.setAppContext(eventData);
-        });
+        if (aware != null) {
+            pushStartListener(env, (EventListener<AppContext>) (event, eventData) -> {
+                aware.setAppContext(eventData);
+            });
+        }
         return aware;
     }
 
@@ -89,32 +68,12 @@ public class HasorUtils {
         return eventListener;
     }
 
-    public static <TD, T extends EventListener<TD>> T addStartListener(Environment env, T eventListener) {
-        env.getEventContext().addListener(ContextEvent_Started, eventListener);
-        return eventListener;
-    }
-
-    public static <TD, T extends EventListener<TD>> T addShutdownListener(Environment env, T eventListener) {
-        env.getEventContext().addListener(ContextEvent_Shutdown, eventListener);
-        return eventListener;
-    }
-
     public static <T extends EventListener<AppContext>> BindInfo<T> pushStartListener(Environment env, final BindInfo<T> eventListener) {
         env.getEventContext().pushListener(ContextEvent_Started, doLazyCallEvent(eventListener));
         return eventListener;
     }
 
     public static <T extends EventListener<AppContext>> BindInfo<T> pushShutdownListener(Environment env, final BindInfo<T> eventListener) {
-        env.getEventContext().pushListener(ContextEvent_Shutdown, doLazyCallEvent(eventListener));
-        return eventListener;
-    }
-
-    public static <T extends EventListener<AppContext>> BindInfo<T> addStartListener(Environment env, final BindInfo<T> eventListener) {
-        env.getEventContext().pushListener(ContextEvent_Started, doLazyCallEvent(eventListener));
-        return eventListener;
-    }
-
-    public static <T extends EventListener<AppContext>> BindInfo<T> addShutdownListener(Environment env, final BindInfo<T> eventListener) {
         env.getEventContext().pushListener(ContextEvent_Shutdown, doLazyCallEvent(eventListener));
         return eventListener;
     }

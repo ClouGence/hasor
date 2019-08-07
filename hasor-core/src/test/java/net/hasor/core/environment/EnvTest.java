@@ -16,6 +16,7 @@
 package net.hasor.core.environment;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
+import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.test.beans.mods.ErrorModule;
 import net.hasor.utils.StringUtils;
@@ -183,11 +184,11 @@ public class EnvTest {
     public void envTest11() throws IOException {
         EnvironmentWrap env = wrap(new StandardEnvironment());
         //
-        assert !env.isSmaller();
+        assert env.runMode() == null;// 因为未进行设置
         //
-        env.addVariable("RUN_MODE", "smaller");
-        assert env.isSmaller();
+        env.addVariable("RUN_MODE", Hasor.Level.Tiny.name());
+        assert env.runMode() == Hasor.Level.Tiny;
         //
-        assert "smaller".equals(env.getVariable("RUN_MODE"));
+        assert "Tiny".equalsIgnoreCase(env.getVariable("RUN_MODE"));
     }
 }

@@ -16,6 +16,7 @@
 package net.hasor.core.environment;
 import net.hasor.core.Environment;
 import net.hasor.core.EventContext;
+import net.hasor.core.Hasor;
 import net.hasor.core.Settings;
 
 import java.util.Set;
@@ -47,8 +48,8 @@ public class EnvironmentWrap implements Environment {
     }
 
     @Override
-    public boolean isSmaller() {
-        return this.getTarget().isSmaller();
+    public Hasor.Level runMode() {
+        return this.getTarget().runMode();
     }
 
     @Override

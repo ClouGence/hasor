@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.environment;
-import net.hasor.core.Environment;
-import net.hasor.core.EventContext;
-import net.hasor.core.Settings;
-import net.hasor.core.XmlNode;
+import net.hasor.core.*;
 import net.hasor.core.aop.AopClassLoader;
 import net.hasor.core.event.StandardEventManager;
 import net.hasor.core.setting.AbstractSettings;
@@ -94,11 +91,17 @@ public abstract class AbstractEnvironment implements Environment {
     }
 
     @Override
-    public boolean isSmaller() {
-        return "smaller".equalsIgnoreCase(this.evalString("%RUN_MODE%"));
+    public Hasor.Level runMode() {
+        String runMode = this.getVariable("RUN_MODE");
+        for (Hasor.Level level : Hasor.Level.values()) {
+            if (level.name().equalsIgnoreCase(runMode)) {
+                return level;
+            }
+        }
+        return null;
     }
-
     // ------------------------------------------------------------------------------- findClass */
+    
     @Override
     public Set<Class<?>> findClass(final Class<?> featureType) {
         return this.findClass(featureType, this.spanPackage);
