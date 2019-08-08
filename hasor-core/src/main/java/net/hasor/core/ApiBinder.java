@@ -72,6 +72,11 @@ public interface ApiBinder {
      */
     public void installModule(Module... module) throws Throwable;
 
+    /** 是否为单例 */
+    public boolean isSingleton(BindInfo<?> bindInfo);
+
+    /** 是否为单例 */
+    public boolean isSingleton(Class<?> targetType);
     /*----------------------------------------------------------------------------------------Aop*/
 
     /**

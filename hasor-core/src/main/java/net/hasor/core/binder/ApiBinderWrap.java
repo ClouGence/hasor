@@ -62,6 +62,16 @@ public class ApiBinderWrap implements ApiBinder {
         this.apiBinder.installModule(module);
     }
 
+    @Override
+    public boolean isSingleton(BindInfo<?> bindInfo) {
+        return this.apiBinder.isSingleton(bindInfo);
+    }
+
+    @Override
+    public boolean isSingleton(Class<?> targetType) {
+        return this.apiBinder.isSingleton(targetType);
+    }
+
     public void bindInterceptor(String matcherExpression, MethodInterceptor interceptor) {
         this.apiBinder.bindInterceptor(matcherExpression, interceptor);
     }

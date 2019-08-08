@@ -92,6 +92,16 @@ public class AppContextWarp implements AppContext {
     }
 
     @Override
+    public boolean isSingleton(BindInfo<?> bindInfo) {
+        return this.getAppContext().isSingleton(bindInfo);
+    }
+
+    @Override
+    public boolean isSingleton(Class<?> targetType) {
+        return this.getAppContext().isSingleton(targetType);
+    }
+
+    @Override
     public <T> BindInfo<T> getBindInfo(String bindID) {
         return this.getAppContext().getBindInfo(bindID);
     }

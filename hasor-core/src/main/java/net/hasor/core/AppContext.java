@@ -98,6 +98,12 @@ public interface AppContext extends MetaInfo {
     /** @return 判断是否存在某个 bindID */
     public boolean containsBindID(String bindID);
 
+    /** 是否为单例 */
+    public boolean isSingleton(BindInfo<?> bindInfo);
+
+    /** 是否为单例 */
+    public boolean isSingleton(Class<?> targetType);
+
     /** 根据 bindID 获取{@link BindInfo} */
     public <T> BindInfo<T> getBindInfo(String bindID);
 

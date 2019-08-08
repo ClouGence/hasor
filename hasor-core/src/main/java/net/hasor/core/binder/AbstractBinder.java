@@ -74,6 +74,21 @@ public abstract class AbstractBinder implements ApiBinder {
         throw new IllegalStateException("current state is not allowed.");
     }
 
+    @Override
+    public boolean isSingleton(BindInfo<?> bindInfo) {
+        return containerFactory().getScopContainer().isSingleton(bindInfo);
+    }
+
+    @Override
+    public boolean isSingleton(Class<?> targetType) {
+        BindInfo<?> bindInfo = containerFactory().getBindInfoContainer().findBindInfo("", targetType);
+        if (bindInfo != null) {
+            return containerFactory().getScopContainer().isSingleton(bindInfo);
+        } else {
+            return containerFactory().getScopContainer().isSingleton(targetType);
+        }
+    }
+
     /*------------------------------------------------------------------------------------Binding*/
     protected abstract BindInfoBuilderFactory containerFactory();
 

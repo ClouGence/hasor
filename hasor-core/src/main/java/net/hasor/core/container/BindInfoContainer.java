@@ -101,9 +101,7 @@ public class BindInfoContainer extends AbstractContainer implements Observer {
         return null;
     }
 
-    /**
-     * 获取所有ID。
-     */
+    /** 获取所有ID。 */
     public Collection<String> getBindInfoIDs() {
         return this.idDataSource.keySet();
     }
@@ -112,7 +110,6 @@ public class BindInfoContainer extends AbstractContainer implements Observer {
 
     /**
      * 创建{@link DefaultBindInfoProviderAdapter}，交给外层用于Bean定义。
-     *
      * @param bindType 声明的类型。
      */
     public <T> DefaultBindInfoProviderAdapter<T> createInfoAdapter(Class<T> bindType) {

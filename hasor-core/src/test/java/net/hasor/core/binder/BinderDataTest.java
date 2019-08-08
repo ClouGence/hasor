@@ -22,6 +22,8 @@ import net.hasor.core.info.AopBindInfoAdapter;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.spi.BindInfoProvisionListener;
+import net.hasor.test.beans.basic.init.SingletonPublicCallInitBean;
+import net.hasor.test.beans.basic.init.WithoutAnnoCallInitBean;
 import net.hasor.test.beans.basic.pojo.PojoBean;
 import net.hasor.test.beans.basic.pojo.PojoBeanTestBeanC;
 import net.hasor.test.beans.basic.pojo.PojoBeanTestBeanP;
@@ -439,5 +441,31 @@ public class BinderDataTest extends AbstractBinderDataTest {
         Supplier<Scope>[] collectScope = container.getScopContainer().collectScope(bindInfo);
         assert collectScope[0].get() == myScope1;
         assert collectScope[1].get() == myScope2;
+    }
+
+    @Test
+    public void singletonTest1() throws IOException {
+        Environment env = new StandardEnvironment(null);
+        BeanContainer container = new BeanContainer(env);
+        ApiBinderWrap binder = new ApiBinderWrap(new AbstractBinder(env) {
+            protected BindInfoBuilderFactory containerFactory() {
+                return container;
+            }
+        });
+        container.preInitialize();
+        //
+        assert binder.isSingleton(SingletonPublicCallInitBean.class);
+        assert !binder.isSingleton(WithoutAnnoCallInitBean.class);
+        //
+        BindInfo<?> bindInfo1 = binder.bindType(SampleBean.class).toInfo();
+        BindInfo<?> bindInfo2 = binder.bindType(SingletonPublicCallInitBean.class).toInfo();
+        BindInfo<?> bindInfo3 = binder.bindType(WithoutAnnoCallInitBean.class).asEagerSingleton().toInfo();
+        //
+        assert !binder.isSingleton(bindInfo1);
+        assert binder.isSingleton(bindInfo2);
+        assert binder.isSingleton(bindInfo3);
+        //
+        assert binder.isSingleton(SingletonPublicCallInitBean.class);
+        assert binder.isSingleton(WithoutAnnoCallInitBean.class);
     }
 }

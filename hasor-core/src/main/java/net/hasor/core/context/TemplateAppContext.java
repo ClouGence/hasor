@@ -83,6 +83,21 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         return getContainer().getBindInfoContainer().findBindInfo(bindID) != null;
     }
 
+    @Override
+    public boolean isSingleton(BindInfo<?> bindInfo) {
+        return getContainer().getScopContainer().isSingleton(bindInfo);
+    }
+
+    @Override
+    public boolean isSingleton(Class<?> targetType) {
+        BindInfo<?> bindInfo = getContainer().getBindInfoContainer().findBindInfo("", targetType);
+        if (bindInfo != null) {
+            return getContainer().getScopContainer().isSingleton(bindInfo);
+        } else {
+            return getContainer().getScopContainer().isSingleton(targetType);
+        }
+    }
+
     /*---------------------------------------------------------------------------------------Bean*/
 
     @Override
