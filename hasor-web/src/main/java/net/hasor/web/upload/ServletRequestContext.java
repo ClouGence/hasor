@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static java.lang.String.format;
+
 /**
  * <p>Provides access to the request information needed for a request made to an HTTP servlet.</p>
  * @since FileUpload 1.1
@@ -30,6 +31,7 @@ class ServletRequestContext {
     /** The request for which the context is being provided. */
     private final HttpServletRequest request;
     // ----------------------------------------------------------- Constructors
+
     /**
      * Construct a context for this request.
      * @param request The request to which this context applies.
@@ -38,6 +40,7 @@ class ServletRequestContext {
         this.request = request;
     }
     // --------------------------------------------------------- Public Methods
+
     /**
      * Retrieve the character encoding for the request.
      * @return The character encoding for the request.
@@ -45,6 +48,7 @@ class ServletRequestContext {
     public String getCharacterEncoding() {
         return request.getCharacterEncoding();
     }
+
     /**
      * Retrieve the content type of the request.
      * @return The content type of the request.
@@ -52,6 +56,7 @@ class ServletRequestContext {
     public String getContentType() {
         return request.getContentType();
     }
+
     /**
      * Retrieve the content length of the request.
      * @return The content length of the request.
@@ -66,6 +71,7 @@ class ServletRequestContext {
         }
         return size;
     }
+
     /**
      * Retrieve the input stream for the request.
      * @return The input stream for the request.
@@ -75,6 +81,7 @@ class ServletRequestContext {
     public InputStream getInputStream() throws IOException {
         return request.getInputStream();
     }
+
     /**
      * Returns a string representation of this object.
      * @return a string representation of this object.

@@ -20,6 +20,7 @@ import net.hasor.core.provider.InstanceProvider;
 
 import java.lang.reflect.Constructor;
 import java.util.function.Supplier;
+
 /**
  * TConsol 为您提供 telnet 下和应用程序交互的能力。
  * @author 赵永春 (zyc@hasor.net)
@@ -53,8 +54,7 @@ public interface ConsoleApiBinder extends ApiBinder {
 
     /** 添加 CommandExecutor */
     public CommandBindingBuilder addCommand(String... names);
-    //
-    //
+
     /**绑定元信息*/
     public interface CommandBindingBuilder {
         /**

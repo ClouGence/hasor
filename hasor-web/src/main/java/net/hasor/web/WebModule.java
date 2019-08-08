@@ -16,6 +16,7 @@
 package net.hasor.web;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
+
 /**
  * WebModule
  * @version : 2013-11-4
@@ -32,5 +33,5 @@ public interface WebModule extends Module {
         this.loadModule(webApiBinder);
     }
 
-    public abstract void loadModule(WebApiBinder apiBinder) throws Throwable;
+    public void loadModule(WebApiBinder apiBinder) throws Throwable;
 }

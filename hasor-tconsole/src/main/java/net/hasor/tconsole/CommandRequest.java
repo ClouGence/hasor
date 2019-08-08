@@ -1,7 +1,7 @@
 package net.hasor.tconsole;
 public interface CommandRequest {
-    String WITHOUT_AFTER_CLOSE_SESSION = "WithoutAfterCloseSession";
-    //
+    public static String WITHOUT_AFTER_CLOSE_SESSION = "WithoutAfterCloseSession";
+
     /**获取会话属性。*/
     public Object getSessionAttr(String key);
 

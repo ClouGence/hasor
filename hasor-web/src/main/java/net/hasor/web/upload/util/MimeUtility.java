@@ -21,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
 /**
  * Utility class to decode MIME texts.
  *
@@ -75,6 +76,7 @@ public final class MimeUtility {
     private MimeUtility() {
         // do nothing
     }
+
     /**
      * Decode a string of text obtained from a mail header into
      * its proper form.  The text generally will consist of a
@@ -164,6 +166,7 @@ public final class MimeUtility {
         }
         return decodedText.toString();
     }
+
     /**
      * Parse a string using the RFC 2047 rules for an "encoded-word"
      * type.  This encoding has the syntax:
@@ -222,6 +225,7 @@ public final class MimeUtility {
             throw new UnsupportedEncodingException("Invalid RFC 2047 encoding");
         }
     }
+
     /**
      * Translate a MIME standard character set name into the Java
      * equivalent.

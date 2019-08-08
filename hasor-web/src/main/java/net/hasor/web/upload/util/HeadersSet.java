@@ -18,6 +18,7 @@ package net.hasor.web.upload.util;
 import net.hasor.web.FileItemHeaders;
 
 import java.util.*;
+
 /**
  * Default implementation of the {@link FileItemHeaders} interface.
  * @since 1.2.1
@@ -29,6 +30,7 @@ public class HeadersSet implements FileItemHeaders {
      * <code>String</code> instances.
      */
     private final Map<String, List<String>> headerNameToValueListMap = new LinkedHashMap<String, List<String>>();
+
     /**
      * {@inheritDoc}
      */
@@ -40,12 +42,14 @@ public class HeadersSet implements FileItemHeaders {
         }
         return headerValueList.get(0);
     }
+
     /**
      * {@inheritDoc}
      */
     public Iterator<String> getHeaderNames() {
         return headerNameToValueListMap.keySet().iterator();
     }
+
     /**
      * {@inheritDoc}
      */
@@ -57,6 +61,7 @@ public class HeadersSet implements FileItemHeaders {
         }
         return headerValueList.iterator();
     }
+
     /**
      * Method to add header values to this instance.
      *

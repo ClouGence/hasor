@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@
 package net.hasor.web.upload.util;
 import java.io.IOException;
 import java.io.OutputStream;
+
 /**
  * An output stream which triggers an event when a specified number of bytes of
  * data have been written to it. The event can be used, for example, to throw
@@ -48,6 +49,7 @@ public abstract class ThresholdingOutputStream extends OutputStream {
      */
     private       boolean thresholdExceeded;
     // ----------------------------------------------------------- Constructors
+
     /**
      * Constructs an instance of this class which will trigger an event at the
      * specified threshold.
@@ -58,6 +60,7 @@ public abstract class ThresholdingOutputStream extends OutputStream {
         this.threshold = threshold;
     }
     // --------------------------------------------------- OutputStream methods
+
     /**
      * Writes the specified byte to this output stream.
      *
@@ -71,6 +74,7 @@ public abstract class ThresholdingOutputStream extends OutputStream {
         getStream().write(b);
         written++;
     }
+
     /**
      * Writes <code>b.length</code> bytes from the specified byte array to this
      * output stream.
@@ -85,6 +89,7 @@ public abstract class ThresholdingOutputStream extends OutputStream {
         getStream().write(b);
         written += b.length;
     }
+
     /**
      * Writes <code>len</code> bytes from the specified byte array starting at
      * offset <code>off</code> to this output stream.
@@ -101,6 +106,7 @@ public abstract class ThresholdingOutputStream extends OutputStream {
         getStream().write(b, off, len);
         written += len;
     }
+
     /**
      * Flushes this output stream and forces any buffered output bytes to be
      * written out.
@@ -111,6 +117,7 @@ public abstract class ThresholdingOutputStream extends OutputStream {
     public void flush() throws IOException {
         getStream().flush();
     }
+
     /**
      * Closes this output stream and releases any system resources associated
      * with this stream.
@@ -127,6 +134,7 @@ public abstract class ThresholdingOutputStream extends OutputStream {
         getStream().close();
     }
     // --------------------------------------------------------- Public methods
+
     /**
      * Returns the threshold, in bytes, at which an event will be triggered.
      *
@@ -135,6 +143,7 @@ public abstract class ThresholdingOutputStream extends OutputStream {
     public int getThreshold() {
         return threshold;
     }
+
     /**
      * Returns the number of bytes that have been written to this output stream.
      *
@@ -143,6 +152,7 @@ public abstract class ThresholdingOutputStream extends OutputStream {
     public long getByteCount() {
         return written;
     }
+
     /**
      * Determines whether or not the configured threshold has been exceeded for
      * this output stream.
@@ -154,6 +164,7 @@ public abstract class ThresholdingOutputStream extends OutputStream {
         return written > threshold;
     }
     // ------------------------------------------------------ Protected methods
+
     /**
      * Checks to see if writing the specified number of bytes would cause the
      * configured threshold to be exceeded. If so, triggers an event to allow
@@ -170,6 +181,7 @@ public abstract class ThresholdingOutputStream extends OutputStream {
             thresholdReached();
         }
     }
+
     /**
      * Resets the byteCount to zero.  You can call this from 
      * {@link #thresholdReached()} if you want the event to be triggered again. 
@@ -179,6 +191,7 @@ public abstract class ThresholdingOutputStream extends OutputStream {
         this.written = 0;
     }
     // ------------------------------------------------------- Abstract methods
+
     /**
      * Returns the underlying output stream, to which the corresponding
      * <code>OutputStream</code> methods in this class will ultimately delegate.

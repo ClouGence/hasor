@@ -15,7 +15,9 @@
  */
 package net.hasor.core.context;
 import net.hasor.core.*;
+import net.hasor.core.aop.AopClassLoader;
 import net.hasor.core.aop.DynamicClass;
+import net.hasor.core.setting.StreamType;
 import net.hasor.test.beans.aop.anno.AopBean;
 import net.hasor.test.beans.aop.ignore.types.GrandFatherBean;
 import net.hasor.test.beans.aop.ignore.types.JamesBean;
@@ -28,8 +30,13 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @version : 2016-12-16
@@ -185,5 +192,89 @@ public class ContextHasorApiTest {
         assert appContext.getEnvironment().getVariable("var_c").equalsIgnoreCase("c");
         assert appContext.getEnvironment().getVariable("var_d").equalsIgnoreCase("d");
         assert appContext.getEnvironment().getVariable("var_e").equalsIgnoreCase("e");
+    }
+
+    @Test
+    public void hasorTest6() throws IOException, URISyntaxException {
+        URL resource = ResourcesUtils.getResource("/net_hasor_core_context/variable_1.properties");
+        File file = new File("src/test/resources/net_hasor_core_context/variable_1.properties");
+        //
+        //
+        AppContext appContext1 = Hasor.create().mainSettingWith("/net_hasor_core_context/variable_1.properties").build();
+        assert appContext1.getEnvironment().getSettings().getString("var_d").equalsIgnoreCase("d");
+        //
+        AppContext appContext2 = Hasor.create().mainSettingWith(resource).build();
+        assert appContext2.getEnvironment().getSettings().getString("var_d").equalsIgnoreCase("d");
+        //
+        AppContext appContext3 = Hasor.create().mainSettingWith(resource.toURI()).build();
+        assert appContext3.getEnvironment().getSettings().getString("var_d").equalsIgnoreCase("d");
+        //
+        AppContext appContext4 = Hasor.create().mainSettingWith(file).build();
+        assert appContext4.getEnvironment().getSettings().getString("var_d").equalsIgnoreCase("d");
+        //
+        InputStreamReader reader = new InputStreamReader(ResourcesUtils.getResourceAsStream("/net_hasor_core_context/variable_1.properties"), "utf-8");
+        AppContext appContext5 = Hasor.create().mainSettingWith(reader, StreamType.Properties).build();
+        assert appContext5.getEnvironment().getSettings().getString("var_d").equalsIgnoreCase("d");
+        //
+        AppContext appContext6 = Hasor.create().addSettings("abc", "test_1", "t").build();
+        assert appContext6.getEnvironment().getSettings().getString("test_1").equalsIgnoreCase("t");
+    }
+
+    @Test
+    public void hasorTest7() {
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+        Hasor.create().addModules(new ArrayList<Module>() {{
+            add(apiBinder -> {
+                atomicBoolean.set(true);
+            });
+        }}).build();
+        //
+        assert atomicBoolean.get();
+    }
+
+    @Test
+    public void hasorTest8() {
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+        Hasor.create().addModules((Module) apiBinder -> {
+            atomicBoolean.set(true);
+        }).build();
+        //
+        assert atomicBoolean.get();
+    }
+
+    @Test
+    public void hasorTest9() {
+        Hasor hasor = Hasor.create();
+        hasor.put("abc", "abc");
+        AppContext build = hasor.importVariablesToSettings().build();
+        //
+        assert build.getEnvironment().getVariable("abc").equalsIgnoreCase("abc");
+        assert build.getEnvironment().getSettings().getString("abc").equalsIgnoreCase("abc");
+    }
+
+    @Test
+    public void hasorTest10() {
+        try {
+            Hasor.create().addSettings("", "abc", "abc");
+            assert false;
+        } catch (Exception e) {
+            assert e.getMessage().equalsIgnoreCase("namespace or key is null.");
+        }
+        //
+        try {
+            Hasor.create().importVariablesToSettings("");
+            assert false;
+        } catch (Exception e) {
+            assert e.getMessage().equalsIgnoreCase("namespace is not null.");
+        }
+        //
+        AopClassLoader loader = new AopClassLoader();
+        AppContext appContext = Hasor.create().parentClassLoaderWith(loader).build();
+        assert appContext.getClassLoader() == loader;
+        //
+        AopBean instance = appContext.getInstance(AopBean.class);
+        assert instance instanceof DynamicClass;
+        //
+        assert loader.findClassConfig(instance.getClass().getName()) != null;
     }
 }

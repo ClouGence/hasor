@@ -20,16 +20,18 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.Map;
+
 /**
  * @version : 2013-7-13
  * @author 赵永春 (zyc@byshell.org)
  */
 public class SaxXmlParser extends DefaultHandler {
     private Map<String, String> dataMap;
+
     public SaxXmlParser(Map<String, String> dataMap) {
         this.dataMap = dataMap;
     }
-    //
+
     public void startElement(final String uri, final String localName, final String qName, final Attributes attributes) throws SAXException {
         if (!"mime-mapping".equalsIgnoreCase(localName))
             return;

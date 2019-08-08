@@ -22,6 +22,7 @@ import net.hasor.utils.StringUtils;
 
 import java.io.StringWriter;
 import java.util.List;
+
 /**
  * 显示所有指令
  * @version : 2016年4月3日
@@ -37,10 +38,12 @@ public class HelpExecutor implements CommandExecutor {
                 + " - example : \r\n"//
                 + "       help quit  (show the 'quit' command help info.)";
     }
+
     @Override
     public boolean inputMultiLine(CommandRequest request) {
         return false;
     }
+
     @Override
     public String doCommand(CommandRequest request) throws Throwable {
         CommandFinder finder = request.getFinder();

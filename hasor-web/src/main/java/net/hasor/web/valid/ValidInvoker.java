@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
 /**
  * 表单验证框架Api接口
  * @version : 2017-01-10
@@ -46,7 +47,6 @@ public interface ValidInvoker extends Invoker {
 
     /**删除某个验证信息。*/
     public void clearValidErrors(String key);
-    //
 
     /**添加验证失败的消息。*/
     public default void addError(String key, String validString) {

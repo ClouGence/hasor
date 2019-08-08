@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 package net.hasor.tconsole;
-import net.hasor.core.*;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
 import net.hasor.tconsole.client.TelnetClient;
+import net.hasor.test.beans.HelloWordExecutor;
 import org.junit.Test;
+
+import java.net.InetSocketAddress;
+
 //
 public class LaunchTest {
     @Test
@@ -30,7 +36,7 @@ public class LaunchTest {
                     apiBinder.tryCast(ConsoleApiBinder.class).addCommand("test").to(HelloWordExecutor.class);
                 });
         //
-        String command = TelnetClient.executeCommand("127.0.0.1", 2222, "test");
+        String command = TelnetClient.executeCommand(new InetSocketAddress("127.0.0.1", 2222), "test");
         assert command.contains("you say -> hello");
         context.shutdown();
     }

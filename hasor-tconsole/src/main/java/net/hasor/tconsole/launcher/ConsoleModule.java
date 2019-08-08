@@ -43,6 +43,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+
 /**
  * RSF终端管理器插件。
  * @version : 2016年2月18日
@@ -55,10 +56,11 @@ public class ConsoleModule implements Module {
     private          EventLoopGroup    workerGroup    = null;
     private          InetSocketAddress bindAddress    = null;
     private          String[]          consoleInBound = null;
-    //
+
     private static InetAddress finalBindAddress(String hostString) throws UnknownHostException {
         return "local".equalsIgnoreCase(hostString) ? InetAddress.getLocalHost() : InetAddress.getByName(hostString);
     }
+
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         this.enable = apiBinder.tryCast(ConsoleApiBinder.class).isEnable();
@@ -106,6 +108,7 @@ public class ConsoleModule implements Module {
         consoleBinder.addCommand(new String[] { "help", "man" }, new HelpExecutor());
         consoleBinder.addCommand(new String[] { "quit", "exit" }, new QuitExecutor());
     }
+
     @Override
     public void onStart(final AppContext appContext) {
         if (!this.enable) {
@@ -144,6 +147,7 @@ public class ConsoleModule implements Module {
         }
         logger.info("tConsole -> - bindSocket at {}", this.bindAddress);
     }
+
     @Override
     public void onStop(AppContext appContext) {
         if (this.telnetChannel == null && this.workerGroup == null) {

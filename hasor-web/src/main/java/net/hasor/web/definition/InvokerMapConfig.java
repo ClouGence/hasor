@@ -23,6 +23,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+
 /**
  * Abstract implementation for all servlet module bindings
  * @version : 2013-4-12
@@ -30,27 +31,31 @@ import java.util.function.Supplier;
  */
 public class InvokerMapConfig extends HashMap<String, String> implements InvokerConfig {
     private Supplier<AppContext> appContext;
-    //
+
     public InvokerMapConfig(Map<String, String> initParams, Supplier<AppContext> appContext) {
         this.appContext = appContext;
         if (initParams != null) {
             this.putAll(initParams);
         }
     }
+
     public InvokerMapConfig(Map<String, String> initParams, AppContext appContext) {
         this.appContext = InstanceProvider.wrap(appContext);
         if (initParams != null) {
             this.putAll(initParams);
         }
     }
+
     @Override
     public String getInitParameter(String name) {
         return this.get(name);
     }
+
     @Override
     public Enumeration<String> getInitParameterNames() {
         return Iterators.asEnumeration(InvokerMapConfig.this.keySet().iterator());
     }
+
     @Override
     public AppContext getAppContext() {
         return this.appContext.get();

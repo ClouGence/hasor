@@ -22,6 +22,7 @@ import net.hasor.web.FileItemStream;
 import net.hasor.web.upload.util.Streams;
 
 import java.io.*;
+
 /**
  * <p> This class represents a file or form item that was received within a
  * <code>multipart/form-data</code> POST request.
@@ -40,7 +41,7 @@ public abstract class FileItemBase implements FileItem {
     private final String          fieldName;
     /** Whether the file item is a form field. */
     private final boolean         formField;
-    //
+
     public FileItemBase(FileItemStream stream) {
         this.headers = stream.getHeaders();
         this.contentType = stream.getContentType();
@@ -48,28 +49,32 @@ public abstract class FileItemBase implements FileItem {
         this.fieldName = stream.getFieldName();
         this.formField = stream.isFormField();
     }
-    //
+
     @Override
     public FileItemHeaders getHeaders() {
         return this.headers;
     }
+
     @Override
     public String getContentType() {
         return this.contentType;
     }
+
     @Override
     public String getName() {
         return this.name;
     }
+
     @Override
     public String getFieldName() {
         return this.fieldName;
     }
+
     @Override
     public boolean isFormField() {
         return this.formField;
     }
-    //
+
     @Override
     public byte[] get() throws IOException {
         InputStream inStream = this.openStream();
@@ -81,6 +86,7 @@ public abstract class FileItemBase implements FileItem {
         IOUtils.closeQuietly(inStream);
         return outStream.toByteArray();
     }
+
     @Override
     public String getString(String encoding) throws IOException {
         InputStream inStream = this.openStream();
@@ -91,6 +97,7 @@ public abstract class FileItemBase implements FileItem {
         IOUtils.closeQuietly(inStream);
         return asString;
     }
+
     @Override
     public String getString() throws IOException {
         InputStream inStream = this.openStream();
@@ -101,6 +108,7 @@ public abstract class FileItemBase implements FileItem {
         IOUtils.closeQuietly(inStream);
         return asString;
     }
+
     @Override
     public void writeTo(File outputFile) throws IOException {
         InputStream inStream = this.openStream();
@@ -122,6 +130,7 @@ public abstract class FileItemBase implements FileItem {
             IOUtils.closeQuietly(out);
         }
     }
+
     @Override
     public void writeTo(OutputStream outStream) throws IOException {
         InputStream inStream = this.openStream();

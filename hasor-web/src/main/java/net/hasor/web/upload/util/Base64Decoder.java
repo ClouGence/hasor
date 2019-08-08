@@ -17,6 +17,7 @@
 package net.hasor.web.upload.util;
 import java.io.IOException;
 import java.io.OutputStream;
+
 /**
  * @since 1.3
  */
@@ -69,6 +70,7 @@ final class Base64Decoder {
     private Base64Decoder() {
         // do nothing
     }
+
     /**
      * Decode the base 64 encoded byte data writing it to the given output stream, whitespace characters will be ignored.
      *

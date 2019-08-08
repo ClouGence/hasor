@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.StringWriter;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Handles a client-side channel.
  */
@@ -32,11 +33,13 @@ class TelnetClientHandler extends SimpleChannelInboundHandler<String> {
     private          BasicFuture<Object> closeFuture;
     private          AtomicBoolean       atomicBoolean;
     private          StringWriter        returnData;
+
     public TelnetClientHandler(BasicFuture<Object> closeFuture, AtomicBoolean atomicBoolean, StringWriter returnData) {
         this.closeFuture = closeFuture;
         this.atomicBoolean = atomicBoolean;
         this.returnData = returnData;
     }
+
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) {
         logger.debug(msg);
@@ -47,6 +50,7 @@ class TelnetClientHandler extends SimpleChannelInboundHandler<String> {
             this.atomicBoolean.set(true);
         }
     }
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         logger.error(cause.getMessage(), cause);
@@ -54,6 +58,7 @@ class TelnetClientHandler extends SimpleChannelInboundHandler<String> {
         this.closeFuture.completed(new Object());
         this.atomicBoolean.set(true);
     }
+
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);

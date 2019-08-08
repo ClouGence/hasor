@@ -34,6 +34,7 @@ import java.util.*;
 
 import static java.lang.String.format;
 import static net.hasor.web.upload.FileUploadException.UploadErrorCodes.*;
+
 /**
  * <p>High level API for processing file uploads.</p>
  *
@@ -65,6 +66,7 @@ public class FileUpload {
     /** Constant for HTTP POST method. */
     private static final String POST_METHOD         = "POST";
     // ---------------------------------------------------------- Class methods
+
     /**
      * Utility method that determines whether the request contains multipart content.
      * @param request The servlet request to be evaluated. Must be non-null.
@@ -91,14 +93,17 @@ public class FileUpload {
     private long   fileSizeMax = -1;
     /** The content encoding to use when reading part headers. */
     private String headerEncoding;
+
     // ----------------------------------------------------- Property accessors
     public FileUpload() {
     }
+
     public FileUpload(Settings settings) {
         this.setHeaderEncoding(Settings.DefaultCharset);
         this.setSizeMax(settings.getInteger("hasor.restful.fileupload.maxRequestSize", -1));
         this.setFileSizeMax(settings.getInteger("hasor.restful.fileupload.maxFileSize", -1));
     }
+
     /**
      * Returns the maximum allowed size of a complete request, as opposed to {@link #getFileSizeMax()}.
      * @return The maximum allowed size, in bytes. The default value of -1 indicates, that there is no limit.
@@ -107,6 +112,7 @@ public class FileUpload {
     public long getSizeMax() {
         return sizeMax;
     }
+
     /**
      * Sets the maximum allowed size of a complete request, as opposed to {@link #setFileSizeMax(long)}.
      * @param sizeMax The maximum allowed size, in bytes. The default value of -1 indicates, that there is no limit.
@@ -115,6 +121,7 @@ public class FileUpload {
     public void setSizeMax(long sizeMax) {
         this.sizeMax = sizeMax;
     }
+
     /**
      * Returns the maximum allowed size of a single uploaded file, as opposed to {@link #getSizeMax()}.
      * @see #setFileSizeMax(long)
@@ -123,6 +130,7 @@ public class FileUpload {
     public long getFileSizeMax() {
         return fileSizeMax;
     }
+
     /**
      * Sets the maximum allowed size of a single uploaded file, as opposed to {@link #getSizeMax()}.
      * @see #getFileSizeMax()
@@ -131,6 +139,7 @@ public class FileUpload {
     public void setFileSizeMax(long fileSizeMax) {
         this.fileSizeMax = fileSizeMax;
     }
+
     /**
      * Retrieves the character encoding used when reading the headers of an individual part. 
      * When not specified, or <code>null</code>, the request encoding is used.
@@ -140,6 +149,7 @@ public class FileUpload {
     public String getHeaderEncoding() {
         return headerEncoding;
     }
+
     /**
      * Specifies the character encoding to be used when reading the headers of individual part. 
      * When not specified, or <code>null</code>, the request encoding is used. 
@@ -150,6 +160,7 @@ public class FileUpload {
         headerEncoding = encoding;
     }
     // --------------------------------------------------------- Public methods
+
     /**
      * Processes an <a href="http://www.ietf.org/rfc/rfc1867.txt">RFC 1867</a> compliant <code>multipart/form-data</code> stream.
      * @param request The  request.
@@ -162,6 +173,7 @@ public class FileUpload {
     public Iterator<FileItemStream> getItemIterator(HttpServletRequest request) throws IOException {
         return new FileItemIteratorImpl(new ServletRequestContext(request));
     }
+
     /**
      * Processes an <a href="http://www.ietf.org/rfc/rfc1867.txt">RFC 1867</a> compliant <code>multipart/form-data</code> stream.
      * @param request the request.
@@ -196,6 +208,7 @@ public class FileUpload {
         }
     }
     // ------------------------------------------------------ Protected methods
+
     /**
      * Retrieves the boundary from the <code>Content-type</code> header.
      * @param contentType The value of the content type header from which to extract the boundary value.
@@ -218,6 +231,7 @@ public class FileUpload {
         }
         return boundary;
     }
+
     /**
      * Retrieves the file name from the <code>Content-disposition</code> header.
      * @param headers The HTTP headers object.
@@ -226,6 +240,7 @@ public class FileUpload {
     protected String getFileName(FileItemHeaders headers) {
         return getFileName(headers.getHeader(CONTENT_DISPOSITION));
     }
+
     /**
      * Returns the given content-disposition headers file name.
      * @param pContentDisposition The content-disposition headers value.
@@ -255,6 +270,7 @@ public class FileUpload {
         }
         return fileName;
     }
+
     /**
      * Retrieves the field name from the <code>Content-disposition</code> header.
      * @param headers A <code>Map</code> containing the HTTP request headers.
@@ -263,6 +279,7 @@ public class FileUpload {
     protected String getFieldName(FileItemHeaders headers) {
         return getFieldName(headers.getHeader(CONTENT_DISPOSITION));
     }
+
     /**
      * Returns the field name, which is given by the content-disposition header.
      * @param pContentDisposition The content-dispositions header value.
@@ -282,6 +299,7 @@ public class FileUpload {
         }
         return fieldName;
     }
+
     /**
      * <p> Parses the <code>header-part</code> and returns as key/value pairs.
      * <p> If there are multiple headers of the same names, the name will map to a comma-separated list containing the values.
@@ -321,6 +339,7 @@ public class FileUpload {
         }
         return headers;
     }
+
     /**
      * Skips bytes until the end of the current line.
      * @param headerPart The headers, which are being parsed.
@@ -340,6 +359,7 @@ public class FileUpload {
             index = offset + 1;
         }
     }
+
     /**
      * Reads the next header line.
      * @param headers String with all headers.
@@ -357,6 +377,7 @@ public class FileUpload {
     }
     //
     //
+
     /** The iterator, which is returned by {@link FileUpload#getItemIterator(HttpServletRequest)}. */
     public class FileItemIteratorImpl implements Iterator<FileItemStream> {
         class FileItemStreamImpl implements FileItemStream {
@@ -374,6 +395,7 @@ public class FileUpload {
             private       boolean         opened;
             /** The headers, if any. */
             private       FileItemHeaders headers;
+
             /**
              * Creates a new instance.
              * @param pName The items file name, or null.
@@ -406,6 +428,7 @@ public class FileUpload {
                 }
                 this.stream = istream;
             }
+
             /**
              * Returns the items content type, or null.
              *
@@ -414,6 +437,7 @@ public class FileUpload {
             public String getContentType() {
                 return contentType;
             }
+
             /**
              * Returns the items field name.
              *
@@ -422,6 +446,7 @@ public class FileUpload {
             public String getFieldName() {
                 return fieldName;
             }
+
             /**
              * Returns the items file name.
              *
@@ -434,6 +459,7 @@ public class FileUpload {
             public String getName() {
                 return Streams.checkFileName(name);
             }
+
             /**
              * Returns, whether this is a form field.
              *
@@ -443,6 +469,7 @@ public class FileUpload {
             public boolean isFormField() {
                 return formField;
             }
+
             /**
              * Returns an input stream, which may be used to
              * read the items contents.
@@ -459,6 +486,7 @@ public class FileUpload {
                 }
                 return stream;
             }
+
             /**
              * Closes the file item.
              *
@@ -467,6 +495,7 @@ public class FileUpload {
             void close() throws IOException {
                 stream.close();
             }
+
             /**
              * Returns the file item headers.
              * @return The items header object
@@ -475,6 +504,7 @@ public class FileUpload {
                 return headers;
             }
         }
+
         /** The multi part stream to process. */
         private final MultipartStream    multi;
         /** The boundary, which separates the various parts. */
@@ -489,6 +519,7 @@ public class FileUpload {
         private       boolean            itemValid;
         /** Whether we have seen the end of the file. */
         private       boolean            eof;
+
         /**
          * Creates a new instance.
          * @param ctx The request context.
@@ -538,6 +569,7 @@ public class FileUpload {
             skipPreamble = true;
             findNextItem();
         }
+
         /**
          * Called for finding the next item, if any.
          * @return True, if an next item was found, otherwise false.
@@ -597,6 +629,7 @@ public class FileUpload {
                 multi.discardBodyData();
             }
         }
+
         private long getContentLength(FileItemHeaders pHeaders) {
             try {
                 return Long.parseLong(pHeaders.getHeader(CONTENT_LENGTH));
@@ -604,10 +637,12 @@ public class FileUpload {
                 return -1;
             }
         }
+
         @Override
         public void remove() {
             throw new UnsupportedOperationException();
         }
+
         /**
          * Returns, whether another instance of {@link FileItemStream} is available.
          *
@@ -628,6 +663,7 @@ public class FileUpload {
                 throw ExceptionUtils.toRuntimeException(e);
             }
         }
+
         /**
          * Returns the next available {@link FileItemStream}.
          *

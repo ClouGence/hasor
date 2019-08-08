@@ -20,6 +20,7 @@ import net.hasor.web.upload.FileItemBase;
 import net.hasor.web.upload.util.DeferredFileOutputStream;
 
 import java.io.*;
+
 /**
  * 磁盘缓存,50KB以内的数据在内存中驻留,超过50KB的数据全部走磁盘缓存。
  * @version : 2016-08-31
@@ -29,10 +30,12 @@ public class DiskFileItem extends FileItemBase {
     public static final int                      DEFAULT_SIZE_THRESHOLD = 51200;// 50KB
     private             DeferredFileOutputStream dfos;
     private             File                     cacheFile;
+
     public DiskFileItem(FileItemStream stream, File cacheFile) throws IOException {
         super(stream);
         this.init(stream, cacheFile);
     }
+
     protected void init(FileItemStream stream, File cacheFile) throws IOException {
         this.cacheFile = cacheFile;
         File parent = cacheFile.getParentFile();
@@ -42,6 +45,7 @@ public class DiskFileItem extends FileItemBase {
         this.dfos = new DeferredFileOutputStream(DEFAULT_SIZE_THRESHOLD, cacheFile);
         IOUtils.copy(stream.openStream(), this.dfos);
     }
+
     @Override
     protected void finalize() throws Throwable {
         try {
@@ -50,6 +54,7 @@ public class DiskFileItem extends FileItemBase {
             super.finalize();
         }
     }
+
     @Override
     public long getSize() {
         if (this.dfos.isInMemory()) {
@@ -58,6 +63,7 @@ public class DiskFileItem extends FileItemBase {
             return this.dfos.getFile().length();
         }
     }
+
     @Override
     public void deleteOrSkip() {
         try {
@@ -68,6 +74,7 @@ public class DiskFileItem extends FileItemBase {
             e.printStackTrace();
         }
     }
+
     @Override
     public InputStream openStream() throws IOException {
         if (this.dfos.isInMemory()) {

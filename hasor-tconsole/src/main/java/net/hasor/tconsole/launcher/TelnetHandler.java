@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
+
 /**
  * Handles a server-side channel.
  */
@@ -42,10 +43,10 @@ class TelnetHandler extends SimpleChannelInboundHandler<String> {
     private static final AttributeKey<CmdRequest> RequestKEY = AttributeKey.newInstance("CommandRequest");
     private static final AttributeKey<CmdSession> SessionKEY = AttributeKey.newInstance("CommandSession");
     public static final  String                   CMD        = "tConsole>";
-    private CommandFinder            commandFinder;
-    private ScheduledExecutorService executor;
-    private String[]                 consoleInBound;
-    //
+    private              CommandFinder            commandFinder;
+    private              ScheduledExecutorService executor;
+    private              String[]                 consoleInBound;
+
     public TelnetHandler(CommandFinder finder, String[] consoleInBound) {
         this.commandFinder = finder;
         this.consoleInBound = consoleInBound;
@@ -59,6 +60,7 @@ class TelnetHandler extends SimpleChannelInboundHandler<String> {
         //
         logger.info("tConsole -> inBoundAddress is :{}.", StringUtils.join(consoleInBound, ","));
     }
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         InetSocketAddress inetAddress = (InetSocketAddress) ctx.channel().remoteAddress();
@@ -101,6 +103,7 @@ class TelnetHandler extends SimpleChannelInboundHandler<String> {
         ctx.write(CMD);
         ctx.flush();
     }
+
     @Override
     public void channelRead0(ChannelHandlerContext ctx, String request) throws Exception {
         request = request.trim();
@@ -138,22 +141,26 @@ class TelnetHandler extends SimpleChannelInboundHandler<String> {
             }
         }
     }
+
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
         ctx.flush();
     }
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         LoggerFactory.getLogger(TelnetHandler.class).error("tConsole error->" + cause.getMessage(), cause);
         clearAttr(ctx);
         ctx.close();
     }
+
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         logger.info("tConsole -> channelInactive.");
         clearAttr(ctx);
         super.channelInactive(ctx);
     }
+
     private void clearAttr(ChannelHandlerContext ctx) {
         Attribute<CmdSession> sessionAttr = ctx.attr(SessionKEY);
         Attribute<CmdRequest> attr = ctx.attr(RequestKEY);
@@ -166,6 +173,7 @@ class TelnetHandler extends SimpleChannelInboundHandler<String> {
             attr.remove();
         }
     }
+
     private CmdResponse doRequest(final Attribute<CmdRequest> cmdAttr, final ChannelHandlerContext ctx, final String inputString) {
         // .准备环境
         CmdRequest requestCmd = cmdAttr.get();

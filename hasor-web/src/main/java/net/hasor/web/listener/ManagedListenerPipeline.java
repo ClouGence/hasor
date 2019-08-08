@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 /**
  *
  * @version : 2013-4-12
@@ -35,8 +36,7 @@ import java.util.Map;
 public class ManagedListenerPipeline implements ListenerPipeline {
     private          Map<Class<?>, ArrayList<WebListenerDefinition>> webListeners = null;
     private volatile boolean                                         initialized  = false;
-    //
-    //
+
     @Override
     public void init(final AppContext appContext) {
         if (this.initialized) {
@@ -67,8 +67,7 @@ public class ManagedListenerPipeline implements ListenerPipeline {
         //everything was ok...
         this.initialized = true;
     }
-    //
-    //
+
     @Override
     public void contextInitialized(final ServletContextEvent event) {
         if (!this.initialized) {
@@ -78,6 +77,7 @@ public class ManagedListenerPipeline implements ListenerPipeline {
             contextListenerDefinition.getWebListener(ServletContextListener.class).contextInitialized(event);
         }
     }
+
     @Override
     public void contextDestroyed(final ServletContextEvent event) {
         if (!this.initialized) {
@@ -87,6 +87,7 @@ public class ManagedListenerPipeline implements ListenerPipeline {
             contextListenerDefinition.getWebListener(ServletContextListener.class).contextDestroyed(event);
         }
     }
+
     @Override
     public void sessionCreated(final HttpSessionEvent event) {
         if (!this.initialized) {
@@ -96,6 +97,7 @@ public class ManagedListenerPipeline implements ListenerPipeline {
             contextListenerDefinition.getWebListener(HttpSessionListener.class).sessionCreated(event);
         }
     }
+
     @Override
     public void sessionDestroyed(final HttpSessionEvent event) {
         if (!this.initialized) {
@@ -105,6 +107,7 @@ public class ManagedListenerPipeline implements ListenerPipeline {
             listener.getWebListener(HttpSessionListener.class).sessionDestroyed(event);
         }
     }
+
     @Override
     public void requestDestroyed(ServletRequestEvent sre) {
         if (!this.initialized) {
@@ -114,6 +117,7 @@ public class ManagedListenerPipeline implements ListenerPipeline {
             listener.getWebListener(ServletRequestListener.class).requestDestroyed(sre);
         }
     }
+
     @Override
     public void requestInitialized(ServletRequestEvent sre) {
         if (!this.initialized) {

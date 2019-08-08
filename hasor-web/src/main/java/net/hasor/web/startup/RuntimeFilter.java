@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * 入口Filter，同一个应用程序只能实例化一个 RuntimeFilter 对象。
  * @version : 2017-01-10
@@ -45,10 +46,9 @@ public class RuntimeFilter implements Filter {
     public static final String         HTTP_RESPONSE_ENCODING_KEY = "HTTP_RESPONSE_ENCODING";
     private             String         httpRequestEncoding        = null;
     private             String         httpResponseEncoding       = null;
-    //
     private             AppContext     appContext                 = null;
     private             InvokerContext invokerContext             = null;
-    //
+
     public void init(FilterConfig filterConfig) throws ServletException {
         if (!this.inited.compareAndSet(false, true)) {
             return;
@@ -82,11 +82,12 @@ public class RuntimeFilter implements Filter {
             logger.info("RuntimeFilter started, context at {}", filterConfig.getServletContext().getContextPath());
         }
     }
+
     @Override
     public void destroy() {
         this.invokerContext.destroyContext();
     }
-    //
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         //
@@ -114,6 +115,7 @@ public class RuntimeFilter implements Filter {
             this.afterResponse(this.appContext, httpReq, httpRes);
         }
     }
+
     private void doFilter(FilterChain chain, HttpServletRequest httpReq, HttpServletResponse httpRes) throws IOException, ServletException {
         try {
             ExceuteCaller caller = this.invokerContext.genCaller(httpReq, httpRes);
@@ -144,11 +146,11 @@ public class RuntimeFilter implements Filter {
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
-    //
+
     /**在filter请求处理之前。*/
     protected void beforeRequest(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
     }
-    //
+
     /**在filter请求处理之后。*/
     protected void afterResponse(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
     }

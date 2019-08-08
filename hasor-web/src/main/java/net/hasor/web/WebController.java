@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
+
 /**
  * Controller <br>
  * 昨夜西风凋碧树。独上高楼，望尽天涯路。 <br>
@@ -41,7 +42,7 @@ import java.util.*;
  */
 public class WebController implements Controller {
     private ThreadLocal<Invoker> invoker = new ThreadLocal<>();
-    //
+
     public void initController(Invoker renderData) {
         if (this.invoker.get() != null) {
             this.invoker.remove();
@@ -50,25 +51,27 @@ public class WebController implements Controller {
             this.invoker.set(renderData);
         }
     }
+
     protected Invoker getInvoker() {
         return this.invoker.get();
     }
-    //
+
     /** @return Return HttpServletRequest. Do not use HttpServletRequest Object in constructor of Controller */
     public HttpServletRequest getRequest() {
         return this.getInvoker().getHttpRequest();
     }
+
     /** @return Return HttpServletResponse. Do not use HttpServletResponse Object in constructor of Controller */
     public HttpServletResponse getResponse() {
         return this.getInvoker().getHttpResponse();
     }
+
     /** @return Return AppContext. */
     public AppContext getAppContext() {
         return RuntimeListener.getAppContext(this.getRequest().getSession().getServletContext());
     }
-    //
-    //
     //------------------------
+
     /**
      * 设置{@link HttpServletResponse}Header属性
      * @param key 参数 key
@@ -79,6 +82,7 @@ public class WebController implements Controller {
         this.getResponse().setHeader(key, value);
         return this;
     }
+
     /**
      * 设置{@link HttpServletResponse}Header属性
      * @param key 参数 key
@@ -89,8 +93,8 @@ public class WebController implements Controller {
         this.getResponse().addHeader(key, value);
         return this;
     }
-    //
     //------------------------
+
     /**
      * Returns the value of a request parameter as a String, or null if the parameter does not exist.
      * <p>
@@ -103,6 +107,7 @@ public class WebController implements Controller {
     protected String getPara(String name) {
         return this.getRequest().getParameter(name);
     }
+
     /**
      * Returns the value of a request parameter as a String, or default value if the parameter does not exist.
      * @param name a String specifying the name of the parameter
@@ -113,6 +118,7 @@ public class WebController implements Controller {
         String result = this.getRequest().getParameter(name);
         return result != null && !"".equals(result) ? result : defaultValue;
     }
+
     /**
      * Returns the values of the request parameters as a Map.
      * @return a Map contains all the parameters name and value
@@ -120,6 +126,7 @@ public class WebController implements Controller {
     protected Map<String, String[]> getParaMap() {
         return this.getRequest().getParameterMap();
     }
+
     /**
      * Returns an Enumeration of String objects containing the names of the parameters contained in this request. If the request has no parameters, the method returns an empty Enumeration.
      * @return an Enumeration of String objects, each String containing the name of a request parameter; or an empty Enumeration if the request has no parameters
@@ -127,6 +134,7 @@ public class WebController implements Controller {
     protected Enumeration<String> getParaNames() {
         return this.getRequest().getParameterNames();
     }
+
     /**
      * Returns an array of String objects containing all of the values the given request parameter has, or null if the parameter does not exist. If the parameter has a single value, the array has a length of 1.
      * @param name a String containing the name of the parameter whose value is requested
@@ -135,6 +143,7 @@ public class WebController implements Controller {
     protected String[] getParaValues(String name) {
         return this.getRequest().getParameterValues(name);
     }
+
     /**
      * Returns an array of Integer objects containing all of the values the given request parameter has, or null if the parameter does not exist. If the parameter has a single value, the array has a length of 1.
      * @param name a String containing the name of the parameter whose value is requested
@@ -149,8 +158,8 @@ public class WebController implements Controller {
             result[i] = Integer.parseInt(values[i]);
         return result;
     }
-    //
     //------------------------
+
     /**
      * Returns the value of a request parameter and convert to Integer.
      * @param name a String specifying the name of the parameter
@@ -159,6 +168,7 @@ public class WebController implements Controller {
     protected Integer getParaToInt(String name) {
         return toInt(this.getRequest().getParameter(name), null);
     }
+
     /**
      * Returns the value of a request parameter and convert to Integer with a default value if it is null.
      * @param name a String specifying the name of the parameter
@@ -168,6 +178,7 @@ public class WebController implements Controller {
     protected Integer getParaToInt(String name, Integer defaultValue) {
         return toInt(this.getRequest().getParameter(name), defaultValue);
     }
+
     /* 字符串转换为Integer */
     private Integer toInt(String value, Integer defaultValue) {
         if (value == null) {
@@ -178,6 +189,7 @@ public class WebController implements Controller {
         }
         return Integer.parseInt(value);
     }
+
     /**
      * Returns the value of a request parameter and convert to Long.
      * @param name a String specifying the name of the parameter
@@ -186,6 +198,7 @@ public class WebController implements Controller {
     protected Long getParaToLong(String name) {
         return toLong(this.getRequest().getParameter(name), null);
     }
+
     /**
      * Returns the value of a request parameter and convert to Long with a default value if it is null.
      * @param name a String specifying the name of the parameter
@@ -195,6 +208,7 @@ public class WebController implements Controller {
     protected Long getParaToLong(String name, Long defaultValue) {
         return toLong(this.getRequest().getParameter(name), defaultValue);
     }
+
     /* 字符串转换为long */
     private long toLong(String value, Long defaultValue) {
         if (value == null) {
@@ -205,6 +219,7 @@ public class WebController implements Controller {
         }
         return Long.parseLong(value);
     }
+
     /**
      * Returns the value of a request parameter and convert to Boolean.
      * @param name a String specifying the name of the parameter
@@ -223,6 +238,7 @@ public class WebController implements Controller {
         }
         return null;
     }
+
     /**
      * Returns the value of a request parameter and convert to Boolean with a default value if it is null.
      * @param name a String specifying the name of the parameter
@@ -233,12 +249,13 @@ public class WebController implements Controller {
         Boolean result = getParaToBoolean(name);
         return result != null ? result : defaultValue;
     }
-    //
     //------------------------
+
     /** @return Return HttpSession. */
     protected HttpSession getSession() {
         return getRequest().getSession();
     }
+
     /**
      * Return HttpSession.
      * @param create a boolean specifying create HttpSession if it not exists
@@ -247,6 +264,7 @@ public class WebController implements Controller {
     protected HttpSession getSession(boolean create) {
         return getRequest().getSession(create);
     }
+
     /**
      * Return a Object from session.
      * @param key a String specifying the key of the Object stored in session
@@ -256,6 +274,7 @@ public class WebController implements Controller {
         HttpSession session = this.getRequest().getSession(false);
         return session != null ? (T) session.getAttribute(key) : null;
     }
+
     /**
      * Store Object to session.
      * @param key a String specifying the key of the Object stored in session
@@ -266,6 +285,7 @@ public class WebController implements Controller {
         this.getRequest().getSession(true).setAttribute(key, value);
         return this;
     }
+
     /**
      * Remove Object in session.
      * @param key a String specifying the key of the Object stored in session
@@ -278,8 +298,8 @@ public class WebController implements Controller {
         }
         return this;
     }
-    //
     //------------------------
+
     /**
      * Get cookie value by cookie name.
      * @param name cookie name
@@ -290,6 +310,7 @@ public class WebController implements Controller {
         Cookie cookie = getCookieObject(name);
         return cookie != null ? cookie.getValue() : defaultValue;
     }
+
     /**
      * Get cookie value by cookie name.
      * @param name cookie name
@@ -298,6 +319,7 @@ public class WebController implements Controller {
     protected String getCookie(String name) {
         return getCookie(name, null);
     }
+
     /**
      * Get cookie value by cookie name and convert to Integer.
      * @param name cookie name
@@ -307,6 +329,7 @@ public class WebController implements Controller {
         String result = getCookie(name);
         return result != null ? Integer.parseInt(result) : null;
     }
+
     /**
      * Get cookie value by cookie name and convert to Integer.
      * @param name cookie name
@@ -317,6 +340,7 @@ public class WebController implements Controller {
         String result = getCookie(name);
         return result != null ? Integer.parseInt(result) : defaultValue;
     }
+
     /**
      * Get cookie value by cookie name and convert to Long.
      * @param name cookie name
@@ -326,6 +350,7 @@ public class WebController implements Controller {
         String result = getCookie(name);
         return result != null ? Long.parseLong(result) : null;
     }
+
     /**
      * Get cookie value by cookie name and convert to Long.
      * @param name cookie name
@@ -336,6 +361,7 @@ public class WebController implements Controller {
         String result = getCookie(name);
         return result != null ? Long.parseLong(result) : defaultValue;
     }
+
     /**
      * Get cookie object by cookie name.
      * @param name cookie name
@@ -352,11 +378,13 @@ public class WebController implements Controller {
         }
         return null;
     }
+
     /** @return Get all cookie objects. */
     protected Cookie[] getCookieObjects() {
         Cookie[] result = this.getRequest().getCookies();
         return result != null ? result : new Cookie[0];
     }
+
     /**
      * Set Cookie to response.
      * @param cookie new cookie.
@@ -366,6 +394,7 @@ public class WebController implements Controller {
         this.getResponse().addCookie(cookie);
         return this;
     }
+
     /**
      * Set Cookie to response.
      * @param name cookie name
@@ -378,6 +407,7 @@ public class WebController implements Controller {
         setCookie(name, value, maxAgeInSeconds, path, null);
         return this;
     }
+
     /**
      * Set Cookie to response.
      * @param name cookie name
@@ -397,6 +427,7 @@ public class WebController implements Controller {
         this.getResponse().addCookie(cookie);
         return this;
     }
+
     /**
      * Set Cookie with path = "/".
      * @param name cookie name
@@ -408,6 +439,7 @@ public class WebController implements Controller {
         setCookie(name, value, maxAgeInSeconds, "/", null);
         return this;
     }
+
     /**
      * Remove Cookie with path = "/".
      * @param name cookie name
@@ -417,6 +449,7 @@ public class WebController implements Controller {
         setCookie(name, null, 0, "/", null);
         return this;
     }
+
     /**
      * Remove Cookie.
      * @param name cookie name
@@ -427,6 +460,7 @@ public class WebController implements Controller {
         setCookie(name, null, 0, path, null);
         return this;
     }
+
     /**
      * Remove Cookie.
      * @param name cookie name
@@ -438,8 +472,8 @@ public class WebController implements Controller {
         setCookie(name, null, 0, path, domain);
         return this;
     }
-    //
     //------------------------
+
     /**
      * Returns the value of the named attribute as an Object, or null if no attribute of the given name exists.
      * @param name a String specifying the name of the attribute
@@ -448,6 +482,7 @@ public class WebController implements Controller {
     protected <T> T getAttr(String name) {
         return (T) this.getRequest().getAttribute(name);
     }
+
     /**
      * Stores an attribute in this request
      * @param name a String specifying the name of the attribute
@@ -458,6 +493,7 @@ public class WebController implements Controller {
         this.getRequest().setAttribute(name, value);
         return this;
     }
+
     /**
      * Removes an attribute from this request
      * @param name a String specifying the name of the attribute to remove
@@ -467,6 +503,7 @@ public class WebController implements Controller {
         this.getRequest().removeAttribute(name);
         return this;
     }
+
     /**
      * Stores attributes in this request, key of the map as attribute name and value of the map as attribute value
      * @param attrMap key and value as attribute of the map to be stored
@@ -478,6 +515,7 @@ public class WebController implements Controller {
         }
         return this;
     }
+
     /**
      * Returns an Enumeration containing the names of the attributes available to this request. This method returns an empty Enumeration if the request has no attributes available to it.
      * @return an Enumeration of strings containing the names of the request's attributes
@@ -485,8 +523,8 @@ public class WebController implements Controller {
     protected Enumeration<String> getAttrNames() {
         return this.getRequest().getAttributeNames();
     }
-    //
     //------------------------
+
     /**
      *  返回 Invoker 保存的数据。
      *  @return 返回数据
@@ -494,6 +532,7 @@ public class WebController implements Controller {
     protected <T> T getData(String name) {
         return (T) this.getInvoker().get(name);
     }
+
     /**
      *  设置 Invoker 保存的数据。
      *  @return 返回 this
@@ -502,6 +541,7 @@ public class WebController implements Controller {
         this.getInvoker().put(name, value);
         return this;
     }
+
     /**
      *  删除 Invoker 保存的数据。
      *  @return 返回 this
@@ -510,6 +550,7 @@ public class WebController implements Controller {
         this.getInvoker().remove(name);
         return this;
     }
+
     /**
      *  设置 Invoker 保存的数据。
      *  @return 返回 this
@@ -520,6 +561,7 @@ public class WebController implements Controller {
         }
         return this;
     }
+
     /**
      *  返回 Invoker 保存的数据keys。
      *  @return 返回数据
@@ -527,22 +569,24 @@ public class WebController implements Controller {
     protected Set<String> getDataNames() {
         return this.getInvoker().keySet();
     }
-    //
     //------------------------
+
     /** @return Get model from AppContext. */
     protected <T> T getInstance(Class<T> modelClass, String modelName) {
         return this.getAppContext().findBindingBean(modelName, modelClass);
     }
+
     /** @return Get model from AppContext. */
     protected <T> T getInstance(Class<T> modelClass) {
         return this.getAppContext().getInstance(modelClass);
     }
+
     /** @return Get model from AppContext. */
     protected Object getInstance(String bindID) {
         return this.getAppContext().getInstance(bindID);
     }
-    //
     //------------------------
+
     /** 更新渲染模版。*/
     protected void renderTo(String viewName) {
         Invoker invoker = getInvoker();
@@ -551,6 +595,7 @@ public class WebController implements Controller {
             render.renderTo(viewName);
         }
     }
+
     /**
      * 更新渲染模版。
      * @param renderType 如果注释了 {@link Produces}注解那么该参数将会失效。
@@ -563,8 +608,8 @@ public class WebController implements Controller {
             render.renderTo(renderType, viewName);
         }
     }
-    //
     //------------------------
+
     /**
      * 返回为 Multipart 请求,通常 Multipart 请求都包含一个或多个的文件上传。
      * @return 返回为 Multipart 请求,通常 Multipart 请求都包含一个或多个的文件上传。
@@ -573,12 +618,14 @@ public class WebController implements Controller {
     protected boolean isMultipart() {
         return FileUpload.isMultipartContent(this.getRequest());
     }
+
     /**
      * 将 multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表.
      */
     protected List<FileItem> getMultipartList() throws IOException {
         return this.getMultipartList((String) null, null, null);
     }
+
     /**
      * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表.
      * @param maxPostSize 最大单个 body 大小
@@ -586,6 +633,7 @@ public class WebController implements Controller {
     protected List<FileItem> getMultipartList(Integer maxPostSize) throws IOException {
         return this.getMultipartList((String) null, maxPostSize, null);
     }
+
     /**
      * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表.
      * @param cacheDirectory 缓存目录
@@ -594,6 +642,7 @@ public class WebController implements Controller {
     protected List<FileItem> getMultipartList(String cacheDirectory, Integer maxPostSize) throws IOException {
         return this.getMultipartList(cacheDirectory, maxPostSize, null);
     }
+
     /**
      * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表。
      * @param cacheDirectory 缓存目录(默认配置位于:"hasor.fileupload.cacheDirectory")
@@ -608,6 +657,7 @@ public class WebController implements Controller {
         }
         return this.getMultipartList(new DiskFileItemFactory(cacheDirectory), maxPostSize, encoding);
     }
+
     /**
      * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表。
      * @param factory 缓存策略
@@ -615,6 +665,7 @@ public class WebController implements Controller {
     protected List<FileItem> getMultipartList(FileItemFactory factory) throws IOException {
         return this.getMultipartList(factory, null, null);
     }
+
     /**
      * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表。
      * @param factory 缓存策略
@@ -623,6 +674,7 @@ public class WebController implements Controller {
     protected List<FileItem> getMultipartList(FileItemFactory factory, Integer maxPostSize) throws IOException {
         return this.getMultipartList(factory, maxPostSize, null);
     }
+
     /**
      * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表。
      * @param factory 缓存策略
@@ -636,6 +688,7 @@ public class WebController implements Controller {
         }
         return upload.parseRequest(this.getRequest(), factory);
     }
+
     /**
      * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表。
      * @param parameterName 要获取的制定参数表单名
@@ -643,6 +696,7 @@ public class WebController implements Controller {
     protected List<FileItem> getMultipart(String parameterName) throws IOException {
         return this.getMultipart(parameterName, null, null, null);
     }
+
     /**
      * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表,
      * @param parameterName 要获取的制定参数表单名
@@ -651,6 +705,7 @@ public class WebController implements Controller {
     protected List<FileItem> getMultipart(String parameterName, Integer maxPostSize) throws IOException {
         return this.getMultipart(parameterName, null, maxPostSize, null);
     }
+
     /**
      * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表.
      * @param parameterName 要获取的制定参数表单名
@@ -660,6 +715,7 @@ public class WebController implements Controller {
     protected List<FileItem> getMultipart(String parameterName, String cacheDirectory, Integer maxPostSize) throws IOException {
         return this.getMultipart(parameterName, cacheDirectory, maxPostSize, null);
     }
+
     /**
      * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem 列表。
      * @param parameterName 要获取的制定参数表单名
@@ -683,6 +739,7 @@ public class WebController implements Controller {
         }
         return resultData;
     }
+
     /**
      * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem。
      * @param parameterName 要获取的制定参数表单名
@@ -690,6 +747,7 @@ public class WebController implements Controller {
     protected FileItem getOneMultipart(String parameterName) throws IOException {
         return this.getOneMultipart(parameterName, null, null, null);
     }
+
     /**
      * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem。
      * @param parameterName 要获取的制定参数表单名
@@ -698,6 +756,7 @@ public class WebController implements Controller {
     protected FileItem getOneMultipart(String parameterName, Integer maxPostSize) throws IOException {
         return this.getOneMultipart(parameterName, null, maxPostSize, null);
     }
+
     /**
      * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem。
      * @param parameterName 要获取的制定参数表单名
@@ -707,6 +766,7 @@ public class WebController implements Controller {
     protected FileItem getOneMultipart(String parameterName, String cacheDirectory, Integer maxPostSize) throws IOException {
         return this.getOneMultipart(parameterName, cacheDirectory, maxPostSize, null);
     }
+
     /**
      * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem。
      * @param parameterName 要获取的制定参数表单名
@@ -730,12 +790,14 @@ public class WebController implements Controller {
         }
         return findItem;
     }
+
     /**
      * 返回流式处理文件上传的迭代器。
      */
     protected Iterator<FileItemStream> getMultipartIterator() throws IOException {
         return this.getMultipartIterator(null, null);
     }
+
     /**
      * 返回流式处理文件上传的迭代器。
      * @param maxPostSize 最大单个 body 大小
@@ -743,6 +805,7 @@ public class WebController implements Controller {
     protected Iterator<FileItemStream> getMultipartIterator(Integer maxPostSize) throws IOException {
         return this.getMultipartIterator(maxPostSize, null);
     }
+
     /**
      * 返回流式处理文件上传的迭代器。
      * @param maxPostSize 最大单个 body 大小
@@ -755,6 +818,7 @@ public class WebController implements Controller {
         }
         return upload.getItemIterator(this.getRequest());
     }
+
     /**
      * 创建原始的FileUpload对象。
      * @param maxPostSize 最大单个 body 大小

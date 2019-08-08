@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.web.definition;
-import net.hasor.core.spi.BeanCreaterListener;
 import net.hasor.core.BindInfo;
+import net.hasor.core.spi.CreaterProvisionListener;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
@@ -25,28 +25,36 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.util.Map;
+
 /**
  * Filter 定义
  * @version : 2013-4-11
  * @author 赵永春 (zyc@hasor.net)
  */
-public class FilterDefinition extends AbstractDefinition implements BeanCreaterListener<Filter> {
+public class FilterDefinition extends AbstractDefinition implements CreaterProvisionListener {
     private BindInfo<? extends Filter> bindInfo = null;
+
     //
     public FilterDefinition(int index, String pattern, UriPatternMatcher uriPatternMatcher,//
             BindInfo<? extends Filter> bindInfo, Map<String, String> initParams) {
         super(index, pattern, uriPatternMatcher, initParams);
         this.bindInfo = bindInfo;
     }
+
     //
     protected final Filter getTarget() throws ServletException {
         return this.getAppContext().getInstance(this.bindInfo);
     }
+
     @Override
-    public void beanCreated(Filter newObject, BindInfo<? extends Filter> bindInfo) throws Throwable {
+    public void beanCreated(Object newObject, BindInfo<?> bindInfo) throws Throwable {
+        if (bindInfo != this.bindInfo) {
+            return;
+        }
         final ServletContext servletContext = this.getAppContext().getInstance(ServletContext.class);
-        newObject.init(new J2eeMapConfig(bindInfo.getBindID(), this.getInitParams(), () -> servletContext));
+        ((Filter) newObject).init(new J2eeMapConfig(bindInfo.getBindID(), this.getInitParams(), () -> servletContext));
     }
+
     //
     /*--------------------------------------------------------------------------------------------------------*/
     public Object doInvoke(final Invoker invoker, final InvokerChain chain) throws Throwable {
@@ -68,6 +76,7 @@ public class FilterDefinition extends AbstractDefinition implements BeanCreaterL
         });
         return invoker.get(Invoker.RETURN_DATA_KEY);
     }
+
     public void destroy() {
         //        if (this.instance == null) {
         //            return;

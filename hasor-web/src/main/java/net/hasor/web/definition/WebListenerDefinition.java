@@ -15,10 +15,11 @@
  */
 package net.hasor.web.definition;
 import net.hasor.core.AppContext;
-import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.BindInfo;
+import net.hasor.core.spi.AppContextAware;
 
 import java.util.EventListener;
+
 /**
  *
  * @version : 2013-4-11
@@ -27,21 +28,23 @@ import java.util.EventListener;
 public class WebListenerDefinition implements AppContextAware {
     private BindInfo<? extends EventListener> listenerRegister = null;
     private EventListener                     target           = null;
-    //
+
     public WebListenerDefinition(final BindInfo<? extends EventListener> listenerRegister) {
         this.listenerRegister = listenerRegister;
     }
+
     @Override
     public String toString() {
         return String.format("type %s listenerKey=%s", WebListenerDefinition.class, this.listenerRegister);
     }
-    /**/
+
     @Override
     public void setAppContext(AppContext appContext) {
         this.target = appContext.getInstance(this.listenerRegister);
     }
+
     /*--------------------------------------------------------------------------------------------------------*/
-    /**/
+
     public <T extends EventListener> T getWebListener(Class<T> targetType) {
         if (this.target == null) {
             return null;

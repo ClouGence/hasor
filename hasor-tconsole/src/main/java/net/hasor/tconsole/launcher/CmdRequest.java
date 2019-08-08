@@ -26,6 +26,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
+
 /**
  *
  * @version : 2016年4月3日
@@ -44,7 +45,7 @@ public final class CmdRequest implements net.hasor.tconsole.CommandRequest {
     private          long                doStartTime;      //命令执行的开始时间
     private          boolean             doClose;
     private          Map<String, Object> attr;
-    //
+
     CmdRequest(String commandString, CmdSession telnetSession, CommandExecutor commandExecutor, String requestArgs) {
         this.commandString = commandString;
         this.telnetSession = telnetSession;
@@ -56,6 +57,7 @@ public final class CmdRequest implements net.hasor.tconsole.CommandRequest {
         this.inputMultiLine = commandExecutor.inputMultiLine(this);
         this.status = this.inputMultiLine ? RequestStatus.Prepare : RequestStatus.Ready;
     }
+
     void appendRequestBody(String requestBody) {
         if (this.inputMultiLine) {
             this.bodyBuffer.append(requestBody);
@@ -63,31 +65,39 @@ public final class CmdRequest implements net.hasor.tconsole.CommandRequest {
             this.status = RequestStatus.Prepare;
         }
     }
+
     void inReady() {
         if (this.status == RequestStatus.Prepare) {
             this.status = RequestStatus.Ready;
         }
     }
+
     void inStandBy() {
         if (this.status == RequestStatus.Ready) {
             this.status = RequestStatus.StandBy;
         }
     }
+
     RequestStatus getStatus() {
         return this.status;
     }
+
     boolean inputMultiLine() {
         return this.inputMultiLine;
     }
+
     void doCommand(Executor executor, Runnable callBack) {
         status = RequestStatus.Running;
         executor.execute(new CommandRun(callBack));
     }
+
     private class CommandRun implements Runnable {
         private Runnable callBack;
+
         public CommandRun(Runnable callBack) {
             this.callBack = callBack;
         }
+
         public void run() {
             try {
                 doStartTime = System.currentTimeMillis();
@@ -124,6 +134,7 @@ public final class CmdRequest implements net.hasor.tconsole.CommandRequest {
             }
         }
     }
+
     CmdResponse getResponse() {
         if (this.status != RequestStatus.Complete) {
             if (this.inputMultiLine) {
@@ -134,48 +145,57 @@ public final class CmdRequest implements net.hasor.tconsole.CommandRequest {
         }
         return new CmdResponse(this.result, true, false);
     }
-    //
-    //
+
     /**获取会话属性。*/
     public Object getSessionAttr(String key) {
         return this.telnetSession.getSessionAttr(key);
     }
+
     /**设置会话属性。*/
     public void setSessionAttr(String key, Object value) {
         this.telnetSession.setSessionAttr(key, value);
     }
+
     /**获取 Request 属性。*/
     public Object getCommandAttr(String key) {
         return this.attr.get(key.toLowerCase());
     }
+
     /**设置 Request 属性。*/
     public void setCommandAttr(String key, Object value) {
         this.attr.put(key.toLowerCase(), value);
     }
+
     /**获取命令行输入*/
     public String getCommandString() {
         return this.commandString;
     }
+
     /**获取App环境{@link CommandFinder}*/
     public CommandFinder getFinder() {
         return this.telnetSession.getFinder();
     }
+
     /**获取request*/
     public String[] getRequestArgs() {
         return this.requestArgs;
     }
+
     /**获取命令的内容部分。*/
     public String getRequestBody() {
         return this.bodyBuffer.toString();
     }
+
     /**关闭Telnet连接。*/
     public void closeSession() {
         this.doClose = true;
     }
+
     /**判断会话是否已经被关闭*/
     public boolean isSessionActive() {
         return this.telnetSession.isActive();
     }
+
     /**输出状态（带有换行）。*/
     public void writeMessageLine(String message) {
         try {
@@ -184,6 +204,7 @@ public final class CmdRequest implements net.hasor.tconsole.CommandRequest {
             logger.error(e.getMessage(), e);
         }
     }
+
     /**输出状态（不带换行）。*/
     public void writeMessage(String message) {
         try {

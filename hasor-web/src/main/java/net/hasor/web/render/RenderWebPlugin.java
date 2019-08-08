@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * 渲染器插件。
  * @version : 2017-01-10
@@ -49,12 +50,12 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
     private   Map<String, RenderEngine> engineMap          = new HashMap<>();
     private   String                    placeholder        = null;
     private   String                    defaultLayout      = null;
-    //
+
     @Override
     public void loadModule(WebApiBinder apiBinder) throws Throwable {
         apiBinder.filter("/*").through(Integer.MIN_VALUE, this);
     }
-    //
+
     @Override
     public void init(InvokerConfig config) throws Throwable {
         if (!this.inited.compareAndSet(false, true)) {
@@ -84,6 +85,7 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
         this.logger.info("RenderPlugin init -> useLayout={}, layoutPath={}, templatePath={}, placeholder={}, defaultLayout={}",//
                 this.useLayout, this.layoutPath, this.templatePath, this.placeholder, this.defaultLayout);
     }
+
     private void configContentType(RenderInvoker renderInvoker, String viewType) {
         if (StringUtils.isBlank(viewType)) {
             return;
@@ -103,6 +105,7 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
             httpResponse.setContentType(newMimeType);//用新的配置
         }
     }
+
     @Override
     public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
         // 在执行 Invoker 之前对 Invoker 的方法进行预分析，使其 @Produces 注解生效
@@ -143,7 +146,7 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
         }
         return returnData;
     }
-    //
+
     public boolean process(RenderInvoker render) throws Throwable {
         if (render == null) {
             return false;
@@ -199,7 +202,7 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
         }
         //
     }
-    //
+
     protected String findLayout(RenderEngine engine, String tempFile) throws IOException {
         if (engine == null) {
             return null;

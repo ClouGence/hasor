@@ -20,30 +20,38 @@ package net.hasor.web;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum ServletVersion {
-    V2_3(23), V2_4(24), V2_5(25), V3_0(30), V3_1(31),;
-    //
+    V2_3(23),   //
+    V2_4(24),   //
+    V2_5(25),   //
+    V3_0(30),   //
+    V3_1(31),   //
+    ;
     private int version;
+
     ServletVersion(int version) {
         this.version = version;
     }
+
     /**大于*/
     public boolean gt(ServletVersion otherVersion) {
         return this.version > otherVersion.version;
     }
+
     /**大于等于*/
     public boolean ge(ServletVersion otherVersion) {
         return this.version >= otherVersion.version;
     }
-    //
+
     /**等于*/
     public boolean eq(ServletVersion otherVersion) {
         return this.version == otherVersion.version;
     }
-    //
+
     /**小于*/
     public boolean lt(ServletVersion otherVersion) {
         return this.version < otherVersion.version;
     }
+
     /**小于等于*/
     public boolean le(ServletVersion otherVersion) {
         return this.version <= otherVersion.version;

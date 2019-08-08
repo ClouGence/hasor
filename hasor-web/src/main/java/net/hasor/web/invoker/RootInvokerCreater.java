@@ -29,6 +29,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 /**
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
@@ -36,7 +37,7 @@ import java.util.Map;
 class RootInvokerCreater implements InvokerCreater {
     protected Map<Class<?>, InvokerCreater> createrMap = new HashMap<>();
     protected Map<Class<?>, Class<?>>       extMapping = new HashMap<>();
-    //
+
     public RootInvokerCreater(AppContext appContext) throws Exception {
         Settings settings = appContext.getEnvironment().getSettings();
         ClassLoader classLoader = appContext.getClassLoader();
@@ -82,6 +83,7 @@ class RootInvokerCreater implements InvokerCreater {
             this.createrMap.put(createrType, creater);
         }
     }
+
     //
     @Override
     public Invoker createExt(Invoker dataContext) {
@@ -111,11 +113,14 @@ class RootInvokerCreater implements InvokerCreater {
         Class<?>[] apiArrays = supportMap.keySet().toArray(new Class<?>[0]);
         return (Invoker) Proxy.newProxyInstance(classLoader, apiArrays, new InvokerCreaterInvocationHandler(supportMap));
     }
+
     private static class InvokerCreaterInvocationHandler implements InvocationHandler {
         private Map<Class<?>, Object> supportMap;
+
         public InvokerCreaterInvocationHandler(Map<Class<?>, Object> supportMap) {
             this.supportMap = supportMap;
         }
+
         @Override
         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
             if (method.getName().equals("toString")) {

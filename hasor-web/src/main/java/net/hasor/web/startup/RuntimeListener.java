@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
+
 /**
  *
  * @version : 2017-01-10
@@ -43,7 +44,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     private             AppContext       appContext       = null;
     private             ListenerPipeline listenerPipeline = null;
     /*----------------------------------------------------------------------------------------------------*/
-    //
+
     /**创建{@link AppContext}对象*/
     protected Hasor newHasor(ServletContext sc, String configName, Properties properties) throws Throwable {
         Hasor webHasor = Hasor.create(sc);
@@ -61,7 +62,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         webHasor.addVariable("HASOR_WEBROOT", webContextDir);
         return webHasor;
     }
-    //
+
     /**获取启动模块*/
     protected Module newRootModule(ServletContext sc, String rootModule) throws Exception {
         if (StringUtils.isBlank(rootModule)) {
@@ -73,6 +74,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
             return startModuleClass.newInstance();
         }
     }
+
     /**加载属性文件*/
     protected Properties loadEnvProperties(ServletContext sc, String envPropertieName) throws IOException {
         if (StringUtils.isBlank(envPropertieName)) {
@@ -90,6 +92,7 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
             return prop;
         }
     }
+
     protected void doInit(ServletContext sc) {
         //1.create AppContext
         try {
@@ -111,38 +114,40 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         logger.info("ServletContext Attribut is " + RuntimeListener.AppContextName);
         sc.setAttribute(RuntimeListener.AppContextName, this.appContext);
     }
-    //
+
     /**获取{@link AppContext}*/
     public static AppContext getAppContext(ServletContext servletContext) {
         return (AppContext) servletContext.getAttribute(RuntimeListener.AppContextName);
     }
-    //
-    //
-    //
-    //
+
     @Override
     public void contextInitialized(final ServletContextEvent servletContextEvent) {
         this.doInit(servletContextEvent.getServletContext());
         this.listenerPipeline.contextInitialized(servletContextEvent);
     }
+
     @Override
     public void contextDestroyed(final ServletContextEvent servletContextEvent) {
         this.listenerPipeline.contextDestroyed(servletContextEvent);
         this.appContext.shutdown();
         this.logger.info("shutdown.");
     }
+
     @Override
     public void sessionCreated(final HttpSessionEvent se) {
         this.listenerPipeline.sessionCreated(se);
     }
+
     @Override
     public void sessionDestroyed(final HttpSessionEvent se) {
         this.listenerPipeline.sessionDestroyed(se);
     }
+
     @Override
     public void requestDestroyed(ServletRequestEvent sre) {
         this.listenerPipeline.requestDestroyed(sre);
     }
+
     @Override
     public void requestInitialized(ServletRequestEvent sre) {
         this.listenerPipeline.requestInitialized(sre);

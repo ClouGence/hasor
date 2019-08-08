@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.tconsole;
+package net.hasor.test.beans;
 import net.hasor.core.Singleton;
 import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.launcher.CmdRequest;
+import net.hasor.tconsole.CommandRequest;
+
 /**
  * Hello Word
  * @version : 2016年4月3日
@@ -28,10 +29,12 @@ public class HelloWordExecutor implements CommandExecutor {
     public String helpInfo() {
         return "hello help.";
     }
+
     @Override
     public boolean inputMultiLine(CommandRequest request) {
         return false;
     }
+
     @Override
     public String doCommand(CommandRequest request) throws Throwable {
         return "you say -> hello";

@@ -23,11 +23,11 @@ import java.util.EventListener;
  * @version : 2013-11-8
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface CreaterProvisionListener<T> extends EventListener {
+public interface CreaterProvisionListener extends EventListener {
     /**
      * 注入AppContext。
      * @param newObject 新对象。
      * @param bindInfo 新对象的 BindInfo（可能为空）。
      */
-    public void beanCreated(T newObject, BindInfo<? extends T> bindInfo) throws Throwable;
+    public void beanCreated(Object newObject, BindInfo<?> bindInfo) throws Throwable;
 }

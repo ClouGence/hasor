@@ -15,38 +15,44 @@
  */
 package net.hasor.web.definition;
 import net.hasor.core.AppContext;
-import net.hasor.core.spi.BeanCreaterListener;
 import net.hasor.core.BindInfo;
+import net.hasor.core.spi.CreaterProvisionListener;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerFilter;
 
 import java.util.Map;
+
 /**
  * InvokerFilter 定义
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InvokeFilterDefinition extends AbstractDefinition implements BeanCreaterListener<InvokerFilter> {
+public class InvokeFilterDefinition extends AbstractDefinition implements CreaterProvisionListener {
     private BindInfo<? extends InvokerFilter> bindInfo = null;
-    //
+
     public InvokeFilterDefinition(int index, String pattern, UriPatternMatcher uriPatternMatcher,//
             BindInfo<? extends InvokerFilter> bindInfo, Map<String, String> initParams) {
         super(index, pattern, uriPatternMatcher, initParams);
         this.bindInfo = bindInfo;
     }
-    //
+
     protected final InvokerFilter getTarget() {
         return this.getAppContext().getInstance(this.bindInfo);
     }
+
     @Override
-    public void beanCreated(InvokerFilter newObject, BindInfo<? extends InvokerFilter> bindInfo) throws Throwable {
+    public void beanCreated(Object newObject, BindInfo<?> bindInfo) throws Throwable {
+        if (bindInfo != this.bindInfo) {
+            return;
+        }
         Map<String, String> initParams = this.getInitParams();
         AppContext appContext = this.getAppContext();
-        newObject.init(new InvokerMapConfig(initParams, appContext));
+        ((InvokerFilter) newObject).init(new InvokerMapConfig(initParams, appContext));
     }
-    //
+
     /*--------------------------------------------------------------------------------------------------------*/
+
     public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
         InvokerFilter filter = this.getTarget();
         if (filter == null) {
@@ -54,6 +60,7 @@ public class InvokeFilterDefinition extends AbstractDefinition implements BeanCr
         }
         return filter.doInvoke(invoker, chain);
     }
+
     public void destroy() {
         //        if (this.instance == null) {
         //            return;

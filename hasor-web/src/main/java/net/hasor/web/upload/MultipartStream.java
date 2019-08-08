@@ -21,6 +21,7 @@ import java.io.*;
 
 import static java.lang.String.format;
 import static net.hasor.web.upload.FileUploadException.UploadErrorCodes.*;
+
 /**
  * <p> Low level API for processing file uploads.
  *
@@ -79,43 +80,44 @@ import static net.hasor.web.upload.FileUploadException.UploadErrorCodes.*;
 class MultipartStream {
     // ----------------------------------------------------- Manifest constants
     /** The Carriage Return ASCII character value. */
-    public static final    byte   CR                   = 0x0D;
+    public static final    byte        CR                   = 0x0D;
     /** The Line Feed ASCII character value. */
-    public static final    byte   LF                   = 0x0A;
+    public static final    byte        LF                   = 0x0A;
     /** The dash (-) ASCII character value. */
-    public static final    byte   DASH                 = 0x2D;
+    public static final    byte        DASH                 = 0x2D;
     /** The maximum length of <code>header-part</code> that will be processed (10 kilobytes = 10240 bytes.). */
-    public static final    int    HEADER_PART_SIZE_MAX = 10240;
+    public static final    int         HEADER_PART_SIZE_MAX = 10240;
     /** The default length of the buffer used for processing a request. */
-    protected static final int    DEFAULT_BUFSIZE      = 4096;
+    protected static final int         DEFAULT_BUFSIZE      = 4096;
     /** A byte sequence that marks the end of <code>header-part</code> (<code>CRLFCRLF</code>). */
-    protected static final byte[] HEADER_SEPARATOR     = { CR, LF, CR, LF };
+    protected static final byte[]      HEADER_SEPARATOR     = { CR, LF, CR, LF };
     /** A byte sequence that that follows a delimiter that will be followed by an encapsulation (<code>CRLF</code>). */
-    protected static final byte[] FIELD_SEPARATOR      = { CR, LF };
+    protected static final byte[]      FIELD_SEPARATOR      = { CR, LF };
     /** A byte sequence that that follows a delimiter of the last encapsulation in the stream (<code>--</code>). */
-    protected static final byte[] STREAM_TERMINATOR    = { DASH, DASH };
+    protected static final byte[]      STREAM_TERMINATOR    = { DASH, DASH };
     /** A byte sequence that precedes a boundary (<code>CRLF--</code>). */
-    protected static final byte[] BOUNDARY_PREFIX      = { CR, LF, DASH, DASH };
+    protected static final byte[]      BOUNDARY_PREFIX      = { CR, LF, DASH, DASH };
     // ----------------------------------------------------------- Data members
     /** The input stream from which data is read. */
-    private final InputStream input;
+    private final          InputStream input;
     /** The length of the boundary token plus the leading <code>CRLF--</code>. */
-    private       int         boundaryLength;
+    private                int         boundaryLength;
     /** The amount of data, in bytes, that must be kept in the buffer in order to detect delimiters reliably. */
-    private       int         keepRegion;
+    private                int         keepRegion;
     /** The byte sequence that partitions the stream. */
-    private       byte[]      boundary;
+    private                byte[]      boundary;
     /** The length of the buffer used for processing the request. */
-    private final int         bufSize;
+    private final          int         bufSize;
     /** The buffer used for processing the request. */
-    private final byte[]      buffer;
+    private final          byte[]      buffer;
     /** The index of first valid character in the buffer. <br> 0 <= head < bufSize */
-    private       int         head;
+    private                int         head;
     /** The index of last valid character in the buffer + 1. <br> 0 <= tail <= bufSize */
-    private       int         tail;
+    private                int         tail;
     /** The content encoding to use when reading headers. */
-    private       String      headerEncoding;
+    private                String      headerEncoding;
     // ----------------------------------------------------------- Constructors
+
     /**
      * <p> Constructs a <code>MultipartStream</code> with a custom size buffer.
      *
@@ -150,6 +152,7 @@ class MultipartStream {
         head = 0;
         tail = 0;
     }
+
     /**
      * <p> Constructs a <code>MultipartStream</code> with a default size buffer.
      * @param input    The <code>InputStream</code> to serve as a data source.
@@ -160,6 +163,7 @@ class MultipartStream {
         this(input, boundary, DEFAULT_BUFSIZE);
     }
     // --------------------------------------------------------- Public methods
+
     /**
      * Retrieves the character encoding used when reading the headers of an
      * individual part. When not specified, or <code>null</code>, the platform default encoding is used.
@@ -168,6 +172,7 @@ class MultipartStream {
     public String getHeaderEncoding() {
         return headerEncoding;
     }
+
     /**
      * Specifies the character encoding to be used when reading the headers of
      * individual parts. When not specified, or <code>null</code>, the platform
@@ -177,6 +182,7 @@ class MultipartStream {
     public void setHeaderEncoding(String encoding) {
         headerEncoding = encoding;
     }
+
     /**
      * Reads a byte from the <code>buffer</code>, and refills it as necessary.
      * @return The next byte from the input stream.
@@ -195,6 +201,7 @@ class MultipartStream {
         }
         return buffer[head++];
     }
+
     /**
      * Skips a <code>boundary</code> token, and checks whether more
      * <code>encapsulations</code> are contained in the stream.
@@ -224,6 +231,7 @@ class MultipartStream {
         }
         return nextChunk;
     }
+
     /**
      * <p>Changes the boundary token used for partitioning the stream.
      * <p>This method allows single pass processing of nested multipart streams.
@@ -238,6 +246,7 @@ class MultipartStream {
         }
         System.arraycopy(boundary, 0, this.boundary, BOUNDARY_PREFIX.length, boundary.length);
     }
+
     /**
      * <p>Reads the <code>header-part</code> of the current
      * <code>encapsulation</code>.
@@ -284,6 +293,7 @@ class MultipartStream {
         }
         return headers;
     }
+
     /**
      * <p>Reads <code>body-data</code> from the current <code>encapsulation</code> and writes its contents into the output <code>Stream</code>.
      * <p>Arbitrary large amounts of data can be processed by this method using a constant size buffer. 
@@ -296,6 +306,7 @@ class MultipartStream {
         final InputStream istream = newInputStream();
         return (int) Streams.copy(istream, output, false);
     }
+
     /**
      * Creates a new {@link ItemInputStream}.
      * @return A new instance of {@link ItemInputStream}.
@@ -303,6 +314,7 @@ class MultipartStream {
     ItemInputStream newInputStream() {
         return new ItemInputStream();
     }
+
     /**
      * <p> Reads <code>body-data</code> from the current
      * <code>encapsulation</code> and discards it.
@@ -316,6 +328,7 @@ class MultipartStream {
     public int discardBodyData() throws IOException {
         return readBodyData(null);
     }
+
     /**
      * Finds the beginning of the first <code>encapsulation</code>.
      * @return <code>true</code> if an <code>encapsulation</code> was found in the stream.
@@ -344,6 +357,7 @@ class MultipartStream {
             boundary[1] = LF;
         }
     }
+
     /**
      * Compares <code>count</code> first bytes in the arrays <code>a</code> and <code>b</code>.
      * @param a     The first array to compare.
@@ -361,6 +375,7 @@ class MultipartStream {
         }
         return true;
     }
+
     /**
      * Searches for a byte of specified value in the <code>buffer</code>,
      * starting at the specified <code>position</code>.
@@ -379,6 +394,7 @@ class MultipartStream {
         }
         return -1;
     }
+
     /**
      * Searches for the <code>boundary</code> in the <code>buffer</code>
      * region delimited by <code>head</code> and <code>tail</code>.
@@ -406,6 +422,7 @@ class MultipartStream {
         }
         return -1;
     }
+
     /** An {@link InputStream} for reading an items contents. */
     public class ItemInputStream extends InputStream implements net.hasor.web.upload.util.Closeable {
         /** The number of bytes, which have been read so far. */
@@ -416,10 +433,12 @@ class MultipartStream {
         private int     pos;
         /** Whether the stream is already closed. */
         private boolean closed;
+
         /** Creates a new instance. */
         ItemInputStream() {
             findSeparator();
         }
+
         /** Called for finding the separator. */
         private void findSeparator() {
             pos = MultipartStream.this.findSeparator();
@@ -431,12 +450,14 @@ class MultipartStream {
                 }
             }
         }
+
         /** Returns the number of bytes, which have been read by the stream.
          * @return Number of bytes, which have been read so far.
          */
         public long getBytesRead() {
             return total;
         }
+
         /**
          * Returns the number of bytes, which are currently available, without blocking.
          * @return Number of bytes in the buffer.
@@ -448,8 +469,10 @@ class MultipartStream {
             }
             return pos - head;
         }
+
         /** Offset when converting negative bytes to integers. */
         private static final int BYTE_POSITIVE_OFFSET = 256;
+
         /**
          * Returns the next byte in the stream.
          * @return The next byte in the stream, as a non-negative integer, or -1 for EOF.
@@ -470,6 +493,7 @@ class MultipartStream {
             }
             return b + BYTE_POSITIVE_OFFSET;
         }
+
         /**
          * Reads bytes into the given buffer.
          * @param b The destination buffer, where to write to.
@@ -499,6 +523,7 @@ class MultipartStream {
             total += res;
             return res;
         }
+
         /**
          * Closes the input stream.
          * @throws IOException An I/O error occurred.
@@ -507,6 +532,7 @@ class MultipartStream {
         public void close() throws IOException {
             close(false);
         }
+
         /**
          * Closes the input stream.
          * @param pCloseUnderlying Whether to close the underlying stream (hard close)
@@ -533,6 +559,7 @@ class MultipartStream {
             }
             closed = true;
         }
+
         /**
          * Skips the given number of bytes.
          * @param bytes Number of bytes to skip.
@@ -555,6 +582,7 @@ class MultipartStream {
             head += res;
             return res;
         }
+
         /**
          * Attempts to read more data.
          * @return Number of available bytes
@@ -585,6 +613,7 @@ class MultipartStream {
                 }
             }
         }
+
         /**
          * Returns, whether the stream is closed.
          * @return True, if the stream is closed, otherwise false.

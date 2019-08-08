@@ -15,6 +15,7 @@
  */
 package net.hasor.web.jstl.taglib;
 import javax.servlet.jsp.tagext.Tag;
+
 /**
  *
  * @version : 2013-12-24
@@ -22,6 +23,7 @@ import javax.servlet.jsp.tagext.Tag;
  */
 public class DefineBeanTag extends AbstractTag {
     private static final long serialVersionUID = 8066383523368039588L;
+
     @Override
     public int doStartTag() {
         verifyAttribute(AttributeNames.Var, AttributeNames.BeanID);

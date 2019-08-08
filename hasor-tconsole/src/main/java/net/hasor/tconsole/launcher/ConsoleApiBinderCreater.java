@@ -15,18 +15,19 @@
  */
 package net.hasor.tconsole.launcher;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.ApiBinder.InjectPropertyBindingBuilder;
+import net.hasor.core.ApiBinder.LifeBindingBuilder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.HasorUtils;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.tconsole.CommandExecutor;
 import net.hasor.tconsole.ConsoleApiBinder;
-import net.hasor.core.ApiBinder.InjectPropertyBindingBuilder;
-import net.hasor.core.ApiBinder.LifeBindingBuilder;
 import net.hasor.tconsole.ConsoleApiBinder.CommandBindingBuilder;
 
 import java.lang.reflect.Constructor;
 import java.util.function.Supplier;
+
 /**
  * DataQL 扩展接口。
  * @author 赵永春 (zyc@hasor.net)
@@ -37,11 +38,12 @@ public class ConsoleApiBinderCreater implements ApiBinderCreater<ConsoleApiBinde
     public ConsoleApiBinder createBinder(final ApiBinder apiBinder) {
         return new ConsoleApiBinderImpl(apiBinder);
     }
-    //
+
     private static class ConsoleApiBinderImpl extends ApiBinderWrap implements ConsoleApiBinder {
         public ConsoleApiBinderImpl(ApiBinder apiBinder) {
             super(apiBinder);
         }
+
         @Override
         public CommandBindingBuilder addCommand(String... names) {
             if (names == null || names.length == 0) {
@@ -50,14 +52,16 @@ public class ConsoleApiBinderCreater implements ApiBinderCreater<ConsoleApiBinde
             return new CommandBindingBuilderImpl(this, names);
         }
     }
+
     private static class CommandBindingBuilderImpl implements CommandBindingBuilder {
         private String[]  names;
         private ApiBinder apiBinder;
+
         public CommandBindingBuilderImpl(ApiBinder apiBinder, String[] names) {
             this.names = names;
             this.apiBinder = apiBinder;
         }
-        //
+
         @Override
         public <T extends CommandExecutor> InjectPropertyBindingBuilder<? extends CommandExecutor> to(Class<T> implementation) {
             InjectPropertyBindingBuilder<CommandExecutor> bindingBuilder = apiBinder//
@@ -68,6 +72,7 @@ public class ConsoleApiBinderCreater implements ApiBinderCreater<ConsoleApiBinde
             toInfo(bindingBuilder.toInfo());
             return bindingBuilder;
         }
+
         @Override
         public <T extends CommandExecutor> LifeBindingBuilder<CommandExecutor> toProvider(Supplier<T> supplier) {
             LifeBindingBuilder<CommandExecutor> bindingBuilder = apiBinder//
@@ -78,6 +83,7 @@ public class ConsoleApiBinderCreater implements ApiBinderCreater<ConsoleApiBinde
             toInfo(bindingBuilder.toInfo());
             return bindingBuilder;
         }
+
         @Override
         public <T extends CommandExecutor> LifeBindingBuilder<CommandExecutor> toConstructor(Constructor<T> constructor) {
             LifeBindingBuilder<CommandExecutor> bindingBuilder = apiBinder//
@@ -88,6 +94,7 @@ public class ConsoleApiBinderCreater implements ApiBinderCreater<ConsoleApiBinde
             toInfo(bindingBuilder.toInfo());
             return bindingBuilder;
         }
+
         public void toInfo(BindInfo<? extends CommandExecutor> bindInfo) {
             apiBinder.bindType(ExecutorDefine.class)    //
                     .uniqueName()                       //

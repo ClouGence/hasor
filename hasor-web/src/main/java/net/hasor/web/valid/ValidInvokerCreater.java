@@ -16,6 +16,7 @@
 package net.hasor.web.valid;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerCreater;
+
 /**
  * 表单验证器，Invoker扩展。
  * @version : 2017-01-10

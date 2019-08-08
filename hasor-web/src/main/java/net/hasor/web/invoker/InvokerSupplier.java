@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashSet;
 import java.util.Set;
+
 /**
  * {@link Invoker} 接口实现类。
  * @version : 2017-01-10
@@ -36,7 +37,7 @@ public class InvokerSupplier implements Invoker {
     private AppContext          appContext     = null;
     private MimeType            mimeType       = null;
     private Mapping             ownerInMapping = null;
-    //
+
     protected InvokerSupplier(Mapping ownerInMapping, AppContext appContext, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         //
         this.ownerInMapping = ownerInMapping;
@@ -53,27 +54,32 @@ public class InvokerSupplier implements Invoker {
         this.lockKey(REQUEST_KEY);  // response
         this.lockKey(RESPONSE_KEY); // request
     }
+
     @Override
     public AppContext getAppContext() {
         return appContext;
     }
-    //
+
     @Override
     public HttpServletRequest getHttpRequest() {
         return this.httpRequest;
     }
+
     @Override
     public HttpServletResponse getHttpResponse() {
         return this.httpResponse;
     }
+
     @Override
     public Mapping ownerMapping() {
         return this.ownerInMapping;
     }
+
     @Override
     public boolean isLockKey(String key) {
         return this.lockKeys.contains(key);
     }
+
     @Override
     public void lockKey(String key) {
         if (StringUtils.isBlank(key)) {
@@ -81,11 +87,12 @@ public class InvokerSupplier implements Invoker {
         }
         this.lockKeys.add(key);
     }
+
     @Override
     public String getMimeType(String suffix) {
         return this.mimeType.getMimeType(suffix);
     }
-    //
+
     @Override
     public <T> T fillForm(Class<? extends T> formType, T bean) {
         return new InvokerCallerParamsBuilder().getParamsParam(this, formType, bean);

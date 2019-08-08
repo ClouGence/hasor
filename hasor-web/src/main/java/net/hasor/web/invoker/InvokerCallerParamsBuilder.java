@@ -22,12 +22,12 @@ import java.net.URLDecoder;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-//
+
 public class InvokerCallerParamsBuilder {
     protected static Logger                    logger          = LoggerFactory.getLogger(InvokerCaller.class);
     private          Map<String, List<String>> queryParamLocal = null;
     private          Map<String, Object>       pathParamsLocal = null;
-    //
+
     public Object[] resolveParams(Invoker invoker, Method targetMethod) throws Throwable {
         //
         Class<?>[] targetParamClass = targetMethod.getParameterTypes();
@@ -42,6 +42,7 @@ public class InvokerCallerParamsBuilder {
         }
         return paramsArray.toArray();
     }
+
     /**/
     private Object resolveParam(Invoker invoker, Class<?> paramClass, Annotation[] paramAnno, boolean useDefault) {
         // .特殊类型参数
@@ -63,6 +64,7 @@ public class InvokerCallerParamsBuilder {
         }
         return null;
     }
+
     private Object resolveSpecialParam(Invoker invoker, Class<?> paramClass) {
         if (!paramClass.isInterface()) {
             return null;
@@ -85,6 +87,7 @@ public class InvokerCallerParamsBuilder {
         }
         return null; //return invoker.getAppContext().getInstance(paramClass);
     }
+
     private Object resolveParam(Invoker invoker, Class<?> paramClass, Annotation pAnno) {
         Object atData = null;
         //
@@ -111,6 +114,7 @@ public class InvokerCallerParamsBuilder {
         }
         return atData;
     }
+
     /**/
     public <T> T getParamsParam(Invoker invoker, Class<? extends T> paramClass, T paramObject) {
         if (paramObject == null) {
@@ -138,16 +142,19 @@ public class InvokerCallerParamsBuilder {
         }
         return paramObject;
     }
+
     /**/
     private Object getPathParam(Invoker invoker, PathParameter pAnno) {
         String paramName = pAnno.value();
         return StringUtils.isBlank(paramName) ? null : this.getPathParamMap(invoker).get(paramName);
     }
+
     /**/
     private Object getQueryParam(Invoker invoker, QueryParameter pAnno) {
         String paramName = pAnno.value();
         return StringUtils.isBlank(paramName) ? null : this.getQueryParamMap(invoker).get(paramName);
     }
+
     /**/
     private Object getHeaderParam(Invoker invoker, HeaderParameter pAnno) {
         String paramName = pAnno.value();
@@ -170,6 +177,7 @@ public class InvokerCallerParamsBuilder {
         }
         return null;
     }
+
     /**/
     private Object getCookieParam(Invoker invoker, CookieParameter pAnno) {
         String paramName = pAnno.value();
@@ -193,6 +201,7 @@ public class InvokerCallerParamsBuilder {
         }
         return cookieList;
     }
+
     /**/
     private Object getAttributeParam(Invoker invoker, AttributeParameter pAnno) {
         String paramName = pAnno.value();
@@ -209,6 +218,7 @@ public class InvokerCallerParamsBuilder {
         }
         return null;
     }
+
     /**/
     private Map<String, List<String>> getQueryParamMap(Invoker invoker) {
         if (this.queryParamLocal != null) {
@@ -250,6 +260,7 @@ public class InvokerCallerParamsBuilder {
         }
         return this.queryParamLocal;
     }
+
     /**/
     private Map<String, Object> getPathParamMap(Invoker invoker) {
         if (this.pathParamsLocal != null) {

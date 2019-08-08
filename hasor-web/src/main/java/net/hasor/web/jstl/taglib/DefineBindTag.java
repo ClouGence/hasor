@@ -19,6 +19,7 @@ import net.hasor.utils.ClassUtils;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
+
 /**
  *
  * @version : 2013-12-24
@@ -26,6 +27,7 @@ import javax.servlet.jsp.tagext.Tag;
  */
 public class DefineBindTag extends AbstractTag {
     private static final long serialVersionUID = -7899624524135156746L;
+
     @Override
     public int doStartTag() throws JspException {
         verifyAttribute(AttributeNames.Var, AttributeNames.BindType, AttributeNames.Name);

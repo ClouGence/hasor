@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * {@link MimeType} 接口实现。
  * @version : 2015年2月11日
@@ -40,14 +41,15 @@ public class MimeTypeSupplier extends ConcurrentHashMap<String, String> implemen
     private static final long           serialVersionUID = -8955832291109288048L;
     protected            Logger         logger           = LoggerFactory.getLogger(getClass());
     private              ServletContext content;
+
     public MimeTypeSupplier(ServletContext content) {
         this.content = content;
     }
-    //
+
     public ServletContext getContent() {
         return this.content;
     }
-    //
+
     /**根据扩展名获取meta类型。*/
     public String getMimeType(String suffix) {
         String mimeType = this.getContent().getMimeType(suffix);
@@ -56,12 +58,13 @@ public class MimeTypeSupplier extends ConcurrentHashMap<String, String> implemen
         }
         return this.get(suffix.toUpperCase());
     }
+
     public void addMimeType(String type, String mimeType) {
         if (StringUtils.isNotBlank(type) && StringUtils.isNotBlank(mimeType)) {
             put(type.toUpperCase(), mimeType);
         }
     }
-    //
+
     /**装载数据。*/
     public void loadResource(String resourceName) throws IOException {
         List<InputStream> inStreamList = ResourcesUtils.getResourcesAsStream(resourceName);
@@ -69,19 +72,21 @@ public class MimeTypeSupplier extends ConcurrentHashMap<String, String> implemen
             this.loadStream(inStream);
         }
     }
+
     public void loadReader(Reader reader) throws IOException {
         this.logger.debug("parsingReader...");
         prossParser(reader, saxParser -> {
             saxParser.parse(new InputSource(reader), new SaxXmlParser(MimeTypeSupplier.this));
         });
     }
+
     public void loadStream(InputStream inStream) throws IOException {
         logger.debug("parsingStream...");
         prossParser(inStream, saxParser -> {
             saxParser.parse(inStream, new SaxXmlParser(MimeTypeSupplier.this));
         });
     }
-    //
+
     private void prossParser(Closeable closeable, Call call) throws IOException {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -94,6 +99,7 @@ public class MimeTypeSupplier extends ConcurrentHashMap<String, String> implemen
             IOUtils.closeQuietly(closeable);
         }
     }
+
     private static interface Call {
         public void parser(SAXParser saxParser) throws Exception;
     }

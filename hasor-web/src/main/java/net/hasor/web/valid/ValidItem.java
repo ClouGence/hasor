@@ -15,6 +15,7 @@
  */
 package net.hasor.web.valid;
 import java.util.ArrayList;
+
 /**
  * 一个item下的验证信息
  * @version : 2014年8月27日
@@ -22,38 +23,40 @@ import java.util.ArrayList;
  */
 class ValidItem extends ArrayList<Message> {
     private String key;
-    //
+
     public ValidItem(String key) {
         this.key = key;
     }
+
     public ValidItem(String key, String error) {
         this(key);
         this.addError(error);
     }
+
     public ValidItem(String key, Message error) {
         this(key);
         this.add(error);
     }
-    //
+
     public String getKey() {
         return key;
     }
-    //
+
     public boolean isValid() {
         return this.isEmpty();
     }
-    //
+
     public String firstError() {
         if (this.isEmpty()) {
             return null;
         }
         return get(size() - 1).getMessage();
     }
-    //
+
     public void addError(String validString) {
         this.add(new Message(validString));
     }
-    //
+
     public String toString() {
         return this.firstError();
     }

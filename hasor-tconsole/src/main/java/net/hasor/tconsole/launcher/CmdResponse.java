@@ -23,17 +23,21 @@ class CmdResponse {
     private String  result;
     private boolean complete;
     private boolean closeConnection;
+
     public CmdResponse(String result, boolean complete, boolean closeConnection) {
         this.result = result;
         this.complete = complete;
         this.closeConnection = closeConnection;
     }
+
     public boolean isComplete() {
         return this.complete;
     }
+
     public boolean isCloseConnection() {
         return this.closeConnection;
     }
+
     public String getResult() {
         return this.result;
     }

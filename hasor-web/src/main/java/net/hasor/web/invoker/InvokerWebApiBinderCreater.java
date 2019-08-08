@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContext;
 import java.io.IOException;
+
 /**
  * 渲染插件，的ApiBinder扩展器。
  * 让 {@link ApiBinder} 支持 {@link WebApiBinder} 类型
@@ -36,6 +37,7 @@ import java.io.IOException;
  */
 public class InvokerWebApiBinderCreater implements ApiBinderCreater<WebApiBinder> {
     protected Logger logger = LoggerFactory.getLogger(getClass());
+
     @Override
     public WebApiBinder createBinder(final ApiBinder apiBinder) throws IOException {
         Environment environment = apiBinder.getEnvironment();
@@ -52,6 +54,7 @@ public class InvokerWebApiBinderCreater implements ApiBinderCreater<WebApiBinder
         }
         return newBinder(apiBinder);
     }
+
     //
     public static WebApiBinder newBinder(ApiBinder apiBinder) throws IOException {
         Environment environment = apiBinder.getEnvironment();
@@ -63,10 +66,8 @@ public class InvokerWebApiBinderCreater implements ApiBinderCreater<WebApiBinder
         //
         // .MimeType
         MimeTypeSupplier mimeTypeContext = new MimeTypeSupplier(servletContext);
-        if (!environment.isSmaller()) {
-            mimeTypeContext.loadResource("/META-INF/mime.types.xml");
-            mimeTypeContext.loadResource("mime.types.xml");
-        }
+        mimeTypeContext.loadResource("/META-INF/mime.types.xml");
+        mimeTypeContext.loadResource("mime.types.xml");
         apiBinder.bindType(MimeType.class, mimeTypeContext);
         //
         //.ServletVersion

@@ -15,10 +15,11 @@
  */
 package net.hasor.web.definition;
 import net.hasor.core.AppContext;
-import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.BindInfo;
+import net.hasor.core.spi.AppContextAware;
 import net.hasor.web.Mapping;
 import net.hasor.web.MappingDiscoverer;
+
 /**
  * WebPlugin 定义
  * @version : 2017-01-10
@@ -27,25 +28,27 @@ import net.hasor.web.MappingDiscoverer;
 public class MappingDiscovererDefinition implements MappingDiscoverer, AppContextAware {
     private BindInfo<? extends MappingDiscoverer> bindInfo   = null;
     private AppContext                            appContext = null;
-    //
+
     public MappingDiscovererDefinition(final BindInfo<? extends MappingDiscoverer> bindInfo) {
         this.bindInfo = bindInfo;
     }
-    //
+
     protected MappingDiscoverer getTarget() {
         return this.appContext.getInstance(this.bindInfo);
     }
-    //
+
     @Override
     public String toString() {
         return String.format("type %s listenerKey=%s", MappingDiscovererDefinition.class, this.bindInfo);
     }
-    //
+
     /*--------------------------------------------------------------------------------------------------------*/
+
     @Override
     public void setAppContext(AppContext appContext) {
         this.appContext = appContext;
     }
+
     @Override
     public void discover(Mapping mappingData) {
         MappingDiscoverer plugin = this.getTarget();

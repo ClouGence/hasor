@@ -21,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
 /**
  * A simple parser intended to parse sequences of name/value pairs.
  *
@@ -47,10 +48,12 @@ class ParameterParser {
     private int     i2             = 0;
     /** Whether names stored in the map should be converted to lower case. */
     private boolean lowerCaseNames = false;
+
     /** Default ParameterParser constructor. */
     public ParameterParser() {
         super();
     }
+
     /**
      * Are there any characters left to parse?
      * @return <tt>true</tt> if there are unparsed characters,
@@ -59,6 +62,7 @@ class ParameterParser {
     private boolean hasChar() {
         return this.pos < this.len;
     }
+
     /**
      * A helper method to process the parsed token. This method removes
      * leading and trailing blanks as well as enclosing quotation marks,
@@ -87,6 +91,7 @@ class ParameterParser {
         }
         return result;
     }
+
     /**
      * Tests if the given character is present in the array of characters.
      * @param ch the character to test for presense in the array of characters
@@ -104,6 +109,7 @@ class ParameterParser {
         }
         return result;
     }
+
     /**
      * Parses out a token until any of the given terminators is encountered.
      * @param terminators the array of terminating characters. Any of these characters when encountered signify the end of the token
@@ -123,6 +129,7 @@ class ParameterParser {
         }
         return getToken(false);
     }
+
     /**
      * Parses out a token until any of the given terminators is encountered outside the quotation marks.
      * @param terminators the array of terminating characters. Any of these characters when encountered outside the quotation marks signify the end of the token
@@ -148,12 +155,14 @@ class ParameterParser {
         }
         return getToken(true);
     }
+
     /**
      * @return <tt>true</tt> if parameter names are to be converted to lower case when name/value pairs are parsed. Otherwise returns <tt>false</tt>
      */
     public boolean isLowerCaseNames() {
         return this.lowerCaseNames;
     }
+
     /**
      * Sets the flag if parameter names are to be converted to lower case when name/value pairs are parsed.
      * @param b <tt>true</tt> if parameter names are to be converted to lower case when name/value pairs are parsed.
@@ -162,6 +171,7 @@ class ParameterParser {
     public void setLowerCaseNames(boolean b) {
         this.lowerCaseNames = b;
     }
+
     /**
      * Extracts a map of name/value pairs from the given string. Names are
      * expected to be unique. Multiple separators may be specified and
@@ -187,6 +197,7 @@ class ParameterParser {
         }
         return parse(str, separator);
     }
+
     /**
      * Extracts a map of name/value pairs from the given string. Names are expected to be unique.
      * @param str the string that contains a sequence of name/value pairs
@@ -199,6 +210,7 @@ class ParameterParser {
         }
         return parse(str.toCharArray(), separator);
     }
+
     /**
      * Extracts a map of name/value pairs from the given array of characters. Names are expected to be unique.
      * @param charArray the array of characters that contains a sequence of name/value pairs
@@ -211,6 +223,7 @@ class ParameterParser {
         }
         return parse(charArray, 0, charArray.length, separator);
     }
+
     /**
      * Extracts a map of name/value pairs from the given array of characters. Names are expected to be unique.
      *

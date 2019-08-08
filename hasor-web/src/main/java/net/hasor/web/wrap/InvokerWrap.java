@@ -20,6 +20,7 @@ import net.hasor.web.Mapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 /**
  * {@link Invoker} 接口包装器
  * @version : 2017-01-10
@@ -27,38 +28,46 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class InvokerWrap implements Invoker {
     private Invoker dataContext;
-    //
+
     public InvokerWrap(Invoker dataContext) {
         this.dataContext = dataContext;
     }
+
     @Override
     public AppContext getAppContext() {
         return this.dataContext.getAppContext();
     }
+
     @Override
     public HttpServletRequest getHttpRequest() {
         return this.dataContext.getHttpRequest();
     }
+
     @Override
     public HttpServletResponse getHttpResponse() {
         return this.dataContext.getHttpResponse();
     }
+
     @Override
     public Mapping ownerMapping() {
         return this.dataContext.ownerMapping();
     }
+
     @Override
     public <T> T fillForm(Class<? extends T> formType, T bean) {
         return this.dataContext.fillForm(formType, bean);
     }
+
     @Override
     public boolean isLockKey(String key) {
         return this.dataContext.isLockKey(key);
     }
+
     @Override
     public void lockKey(String key) {
         this.dataContext.lockKey(key);
     }
+
     @Override
     public String getMimeType(String suffix) {
         return this.dataContext.getMimeType(suffix);

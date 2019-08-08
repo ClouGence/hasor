@@ -19,6 +19,7 @@ import net.hasor.tconsole.CommandExecutor;
 import net.hasor.tconsole.CommandRequest;
 import net.hasor.tconsole.launcher.CmdRequest;
 import net.hasor.utils.StringUtils;
+
 /**
  * 在本次Telnet中设置环境变量，当Telnet连接断开变量失效
  * @version : 2016年4月3日
@@ -32,10 +33,12 @@ public class GetSetExecutor implements CommandExecutor {
                 + " - get variableName                (returns variable Value.)\r\n"// 
                 + " - set variableName variableValue  (set new values to variable.)";//
     }
+
     @Override
     public boolean inputMultiLine(CommandRequest request) {
         return false;
     }
+
     @Override
     public String doCommand(CommandRequest request) throws Throwable {
         request.setCommandAttr(CmdRequest.WITHOUT_AFTER_CLOSE_SESSION, true);//不关闭Session

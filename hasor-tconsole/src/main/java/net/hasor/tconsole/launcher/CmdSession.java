@@ -20,6 +20,7 @@ import net.hasor.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+
 /**
  *
  * @version : 2016年4月3日
@@ -29,15 +30,17 @@ public final class CmdSession {
     private CommandFinder         commandFinder;//环境
     private ChannelHandlerContext nettyContext; //网络套接字
     private Map<String, Object>   attr;
-    //
+
     CmdSession(CommandFinder commandFinder, ChannelHandlerContext nettyContext) {
         this.commandFinder = commandFinder;
         this.nettyContext = nettyContext;
-        this.attr = new HashMap<String, Object>();
+        this.attr = new HashMap<>();
     }
+
     void close() {
         this.nettyContext.close();
     }
+
     /**输出状态（带有换行）。*/
     void writeMessageLine(String message) throws InterruptedException {
         if (StringUtils.isBlank(message)) {
@@ -48,6 +51,7 @@ public final class CmdSession {
             this.nettyContext.writeAndFlush(outStr).sync();
         }
     }
+
     /**输出状态（不带换行）。*/
     void writeMessage(String message) throws InterruptedException {
         if (StringUtils.isBlank(message)) {
@@ -57,17 +61,19 @@ public final class CmdSession {
             this.nettyContext.writeAndFlush(message).sync();
         }
     }
-    //
-    //
+
     public boolean isActive() {
         return this.nettyContext.channel().isActive();
     }
+
     public CommandFinder getFinder() {
         return this.commandFinder;
     }
+
     public Object getSessionAttr(String key) {
         return this.attr.get(key.toLowerCase());
     }
+
     public void setSessionAttr(String key, Object value) {
         this.attr.put(key.toLowerCase(), value);
     }

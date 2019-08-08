@@ -15,14 +15,15 @@
  */
 package net.hasor.tconsole.launcher;
 import net.hasor.core.AppContext;
-import net.hasor.core.spi.AppContextAware;
 import net.hasor.core.BindInfo;
 import net.hasor.core.info.AbstractBindInfoProviderAdapter;
 import net.hasor.core.provider.InstanceProvider;
+import net.hasor.core.spi.AppContextAware;
 import net.hasor.tconsole.CommandExecutor;
 import net.hasor.tconsole.CommandRequest;
 
 import java.util.function.Supplier;
+
 /**
  * RSF命令
  * @version : 2016年4月3日
@@ -33,36 +34,43 @@ class ExecutorDefine implements CommandExecutor, AppContextAware {
     private BindInfo<? extends CommandExecutor> bindInfo;
     private AppContext                          appContext;
     private CommandExecutor                     executorTarget;
+
     public ExecutorDefine(String[] name, BindInfo<? extends CommandExecutor> bindInfo) {
         this.name = name;
         this.bindInfo = bindInfo;
     }
+
     public String[] getNames() {
         return this.name;
     }
+
     private CommandExecutor getTarget() {
         if (this.executorTarget == null) {
             this.executorTarget = this.appContext.getInstance(this.bindInfo);
         }
         return this.executorTarget;
     }
-    //
+
     @Override
     public String helpInfo() {
         return getTarget().helpInfo();
     }
+
     @Override
     public boolean inputMultiLine(CommandRequest request) {
         return getTarget().inputMultiLine(request);
     }
+
     @Override
     public String doCommand(CommandRequest request) throws Throwable {
         return getTarget().doCommand(request);
     }
+
     @Override
     public void setAppContext(AppContext appContext) {
         this.appContext = appContext;
     }
+
     public String getTargetClassName() {
         Class<?> sourceType = ((AbstractBindInfoProviderAdapter) this.bindInfo).getSourceType();
         if (sourceType != null) {

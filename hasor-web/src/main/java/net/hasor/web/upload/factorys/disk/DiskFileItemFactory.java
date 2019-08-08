@@ -22,6 +22,7 @@ import net.hasor.web.upload.FileItemBase;
 
 import java.io.*;
 import java.util.UUID;
+
 /**
  *
  * @version : 2015年2月11日
@@ -29,43 +30,46 @@ import java.util.UUID;
  */
 public class DiskFileItemFactory implements FileItemFactory {
     private File cacheDirectory;
-    //
+
     public DiskFileItemFactory() {
     }
+
     public DiskFileItemFactory(String cacheDirectory) {
         this.cacheDirectory = new File(cacheDirectory);
     }
-    //
-    //
+
     public File getCacheDirectory() {
         return cacheDirectory;
     }
+
     public void setCacheDirectory(File cacheDirectory) {
         this.cacheDirectory = cacheDirectory;
     }
+
     @Override
     public FileItem createItem(FileItemStream itemStream) throws IOException {
         String fid = UUID.randomUUID().toString() + ".tmp";
-        //
         if (itemStream.isFormField()) {
             return new MemoryFileItem(itemStream);
         } else {
             return createDiskFileItem(itemStream, fid);
         }
     }
+
     protected FileItem createDiskFileItem(FileItemStream itemStream, String fid) throws IOException {
         return new DiskFileItem(itemStream, new File(cacheDirectory, fid));
     }
-    //
-    //
+
     public static class MemoryFileItem extends FileItemBase {
         private byte[] cachedContent;
+
         public MemoryFileItem(FileItemStream stream) throws IOException {
             super(stream);
             ByteArrayOutputStream arrays = new ByteArrayOutputStream();
             IOUtils.copy(stream.openStream(), arrays);
             this.cachedContent = arrays.toByteArray();
         }
+
         @Override
         public long getSize() {
             if (this.cachedContent != null) {
@@ -74,9 +78,11 @@ public class DiskFileItemFactory implements FileItemFactory {
                 return 0;
             }
         }
+
         @Override
         public void deleteOrSkip() {
         }
+
         @Override
         public InputStream openStream() throws IOException {
             if (this.cachedContent == null) {

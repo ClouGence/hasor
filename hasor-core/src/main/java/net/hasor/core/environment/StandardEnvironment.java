@@ -78,7 +78,10 @@ public class StandardEnvironment extends AbstractEnvironment {
         if (loader == null) {
             loader = Thread.currentThread().getContextClassLoader();
         }
-        this.setRootLosder(new AopClassLoader(loader));
+        if (!(loader instanceof AopClassLoader)) {
+            loader = new AopClassLoader(loader);
+        }
+        this.setRootLosder(loader);
         this.initEnvironment(frameworkEnvConfig);
     }
 

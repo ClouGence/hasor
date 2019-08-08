@@ -16,6 +16,7 @@
  */
 package net.hasor.web.upload.util;
 import java.io.IOException;
+
 /**
  * Interface of an object, which may be closed.
  *

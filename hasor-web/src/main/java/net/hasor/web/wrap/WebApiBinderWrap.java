@@ -16,16 +16,18 @@
 package net.hasor.web.wrap;
 import net.hasor.core.BindInfo;
 import net.hasor.core.binder.ApiBinderWrap;
-import net.hasor.web.*;
+import net.hasor.web.InvokerFilter;
+import net.hasor.web.MappingDiscoverer;
+import net.hasor.web.ServletVersion;
+import net.hasor.web.WebApiBinder;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextListener;
-import javax.servlet.http.HttpSessionListener;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.EventListener;
 import java.util.Objects;
+
 /**
  * {@link WebApiBinder} 接口包装器
  * @version : 2017-01-10
@@ -33,69 +35,86 @@ import java.util.Objects;
  */
 public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
     private WebApiBinder webApiBinder;
+
     public WebApiBinderWrap(WebApiBinder apiBinder) {
         super(apiBinder);
         this.webApiBinder = Objects.requireNonNull(apiBinder);
     }
+
     public ServletContext getServletContext() {
         return this.webApiBinder.getServletContext();
     }
+
     @Override
     public String getMimeType(String suffix) {
         return this.webApiBinder.getMimeType(suffix);
     }
+
     @Override
     public WebApiBinder setRequestCharacter(String encoding) {
         return this.webApiBinder.setRequestCharacter(encoding);
     }
+
     @Override
     public WebApiBinder setResponseCharacter(String encoding) {
         return this.webApiBinder.setResponseCharacter(encoding);
     }
+
     @Override
     public ServletVersion getServletVersion() {
         return webApiBinder.getServletVersion();
     }
+
     @Override
     public FilterBindingBuilder<InvokerFilter> filter(String[] morePatterns) {
         return this.webApiBinder.filter(morePatterns);
     }
+
     @Override
     public FilterBindingBuilder<InvokerFilter> filterRegex(String[] regexes) {
         return this.webApiBinder.filterRegex(regexes);
     }
+
     @Override
     public FilterBindingBuilder<Filter> jeeFilter(String[] morePatterns) {
         return this.webApiBinder.jeeFilter(morePatterns);
     }
+
     @Override
     public FilterBindingBuilder<Filter> jeeFilterRegex(String[] regexes) {
         return this.webApiBinder.jeeFilterRegex(regexes);
     }
+
     @Override
     public void addWebListener(BindInfo<? extends EventListener> targetRegister) {
         this.webApiBinder.addWebListener(targetRegister);
     }
+
     @Override
     public ServletBindingBuilder jeeServlet(String[] moreMappingTo) {
         return this.webApiBinder.jeeServlet(moreMappingTo);
     }
+
     @Override
     public <T> MappingToBindingBuilder<T> mappingTo(String[] morePatterns) {
         return this.webApiBinder.mappingTo(morePatterns);
     }
+
     @Override
     public void addDiscoverer(BindInfo<? extends MappingDiscoverer> discoverer) {
         this.webApiBinder.addDiscoverer(discoverer);
     }
+
     @Override
     public void addMimeType(String type, String mimeType) {
         this.webApiBinder.addMimeType(type, mimeType);
     }
+
     @Override
     public void loadMimeType(Reader reader) throws IOException {
         this.webApiBinder.loadMimeType(reader);
     }
+
     @Override
     public RenderEngineBindingBuilder addRender(String renderName, String toMimeType) {
         return this.webApiBinder.addRender(renderName, toMimeType);

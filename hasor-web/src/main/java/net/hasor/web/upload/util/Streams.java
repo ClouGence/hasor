@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 /**
  * Utility class for working with streams.
  * @version $Id: Streams.java 1565332 2014-02-06 16:42:19Z ggregory $
@@ -34,11 +35,13 @@ public final class Streams {
     private Streams() {
         // Does nothing
     }
+
     /**
      * Default buffer size for use in
      * {@link #copy(InputStream, OutputStream, boolean)}.
      */
     private static final int DEFAULT_BUFFER_SIZE = 8192;
+
     /**
      * Copies the contents of the given {@link InputStream}
      * to the given {@link OutputStream}. Shortcut for
@@ -60,6 +63,7 @@ public final class Streams {
     public static long copy(InputStream inputStream, OutputStream outputStream, boolean closeOutputStream) throws IOException {
         return copy(inputStream, outputStream, closeOutputStream, new byte[DEFAULT_BUFFER_SIZE]);
     }
+
     /**
      * Copies the contents of the given {@link InputStream} to the given {@link OutputStream}.
      *
@@ -110,6 +114,7 @@ public final class Streams {
             }
         }
     }
+
     /**
      * This convenience method allows to read a {@link FileItemStream}'s
      * content into a string. The platform's default character encoding is used for converting bytes into characters.
@@ -123,6 +128,7 @@ public final class Streams {
         copy(inputStream, baos, true);
         return baos.toString();
     }
+
     /**
      * This convenience method allows to read a {@link FileItemStream}'s
      * content into a string, using the given character encoding.
@@ -138,6 +144,7 @@ public final class Streams {
         copy(inputStream, baos, true);
         return baos.toString(encoding);
     }
+
     /**
      * Checks, whether the given file name is valid in the sense, that it doesn't contain any NUL characters.
      * If the file name is valid, it will be returned without any modifications. Otherwise, an {@link IllegalArgumentException} is raised.

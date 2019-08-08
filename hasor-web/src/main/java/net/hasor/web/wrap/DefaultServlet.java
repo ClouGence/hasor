@@ -23,6 +23,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServlet;
 import java.io.IOException;
+
 /**
  * @version : 2017-01-08
  * @author 赵永春 (zyc@hasor.net)
@@ -32,6 +33,7 @@ public class DefaultServlet extends HttpServlet implements Controller {
     public void initController(Invoker renderData) {
         //
     }
+
     @Any
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {

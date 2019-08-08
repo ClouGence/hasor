@@ -21,6 +21,7 @@ import net.hasor.web.wrap.InvokerWrap;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
+
 /**
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
@@ -30,7 +31,7 @@ public class RenderInvokerSupplier extends InvokerWrap implements RenderInvoker 
     private String  viewType     = null;    //渲染引擎
     private boolean viewTypeLock = false;   //是否配置了Produces注解
     private boolean useLayout    = true;    //是否渲染布局
-    //
+
     protected RenderInvokerSupplier(Invoker invoker) {
         super(invoker);
         //
@@ -51,23 +52,28 @@ public class RenderInvokerSupplier extends InvokerWrap implements RenderInvoker 
             this.viewType("");
         }
     }
+
     @Override
     public String renderTo() {
         return this.viewName;
     }
+
     @Override
     public void renderTo(String viewName) {
         this.viewName = viewName;
     }
+
     @Override
     public void renderTo(String viewType, String viewName) {
         this.viewType(viewType);
         this.viewName = viewName;
     }
+
     @Override
     public String viewType() {
         return this.viewType;
     }
+
     @Override
     public void viewType(String viewType) {
         if (this.viewTypeLock) {
@@ -79,23 +85,26 @@ public class RenderInvokerSupplier extends InvokerWrap implements RenderInvoker 
             this.viewType = "";
         }
     }
+
     @Override
     public boolean layout() {
         return this.useLayout;
     }
+
     @Override
     public void layoutEnable() {
         this.useLayout = true;
     }
+
     @Override
     public void layoutDisable() {
         this.useLayout = false;
     }
-    //
+
     public void lockViewType() {
         this.viewTypeLock = true;
     }
-    //
+
     public boolean isLockViewType() {
         return this.viewTypeLock;
     }

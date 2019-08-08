@@ -29,25 +29,28 @@ import net.hasor.utils.future.BasicFuture;
 import java.io.BufferedReader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * simple telnet client.
  */
 public final class TelnetClient {
-    public static String executeCommand(String host, int port, String command) throws Exception {
+    public static String executeCommand(InetSocketAddress remoteAddress, String command) throws Exception {
         StringWriter returnData = new StringWriter();
-        doExecuteCommand(host, port, command, new HashMap<>(), returnData);
+        doExecuteCommand(remoteAddress, command, new HashMap<>(), returnData);
         return returnData.toString();
     }
-    public static String executeCommand(String host, int port, String command, Map<String, String> envMap) throws Exception {
+
+    public static String executeCommand(InetSocketAddress remoteAddress, String command, Map<String, String> envMap) throws Exception {
         StringWriter returnData = new StringWriter();
-        doExecuteCommand(host, port, command, envMap, returnData);
+        doExecuteCommand(remoteAddress, command, envMap, returnData);
         return returnData.toString();
     }
-    //
-    private static void doExecuteCommand(String host, int port, final String command, Map<String, String> envMap, StringWriter returnData) throws Exception {
+
+    private static void doExecuteCommand(InetSocketAddress remoteAddress, final String command, Map<String, String> envMap, StringWriter returnData) throws Exception {
         //
         StringWriter commands = new StringWriter();
         if (envMap != null) {
@@ -75,7 +78,7 @@ public final class TelnetClient {
                     pipeline.addLast(new TelnetClientHandler(closeFuture, atomicBoolean, returnData));
                 }
             });
-            Channel ch = b.connect(host, port).sync().channel();
+            Channel ch = b.connect(remoteAddress).sync().channel();
             ChannelFuture lastWriteFuture = null;
             BufferedReader commandReader = new BufferedReader(new StringReader(commands.toString()));
             for (; ; ) {

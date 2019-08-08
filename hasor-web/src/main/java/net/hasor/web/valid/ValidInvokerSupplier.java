@@ -20,6 +20,7 @@ import net.hasor.web.wrap.InvokerWrap;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
 /**
  * 表单验证器，Invoker 扩展实现类。
  * @version : 2017-01-10
@@ -27,22 +28,26 @@ import java.util.stream.Collectors;
  */
 public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker {
     private final Map<String, ValidItem> validData = new HashMap<>();
+
     protected ValidInvokerSupplier(Invoker context) {
         super(context);
     }
-    //
+
     protected Map<String, ValidItem> getValidData() {
         return this.validData;
     }
+
     @Override
     public List<String> validKeys() {
         return new ArrayList<>(this.validData.keySet());
     }
+
     @Override
     public List<String> validErrors(String key) {
         ValidItem data = this.validData.get(key);
         return data == null ? Collections.EMPTY_LIST : data.stream().map(Message::getMessage).collect(Collectors.toList());
     }
+
     @Override
     public boolean isValid() {
         for (ValidItem data : this.validData.values()) {
@@ -52,15 +57,18 @@ public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker {
         }
         return true;
     }
+
     @Override
     public boolean isValid(String key) {
         ValidItem data = this.validData.get(key);
         return data == null || data.isValid();
     }
+
     @Override
     public void clearValidErrors() {
         this.validData.clear();
     }
+
     @Override
     public void clearValidErrors(String key) {
         this.validData.remove(key);
@@ -73,6 +81,7 @@ public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker {
         }
         errors(new ValidItem(key, validMessage));
     }
+
     @Override
     public void addErrors(String key, List<Message> validMessage) {
         if (StringUtils.isBlank(key)) {
@@ -82,6 +91,7 @@ public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker {
         newDate.addAll(validMessage);
         errors(newDate);
     }
+
     protected void errors(ValidItem validItem) {
         if (validItem == null) {
             return;

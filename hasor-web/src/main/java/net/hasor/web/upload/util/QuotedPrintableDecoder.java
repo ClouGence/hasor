@@ -17,6 +17,7 @@
 package net.hasor.web.upload.util;
 import java.io.IOException;
 import java.io.OutputStream;
+
 /**
  * @since 1.3
  */
@@ -26,12 +27,14 @@ final class QuotedPrintableDecoder {
      * from the first of 2 byte values converted from ascii hex.
      */
     private static final int UPPER_NIBBLE_SHIFT = Byte.SIZE / 2;
+
     /**
      * Hidden constructor, this class must not be instantiated.
      */
     private QuotedPrintableDecoder() {
         // do nothing
     }
+
     /**
      * Decode the encoded byte data writing it to the given output stream.
      *
@@ -82,6 +85,7 @@ final class QuotedPrintableDecoder {
         }
         return bytesWritten;
     }
+
     /**
      * Convert a hex digit to the binary value it represents.
      *

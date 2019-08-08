@@ -25,10 +25,7 @@ import net.hasor.web.annotation.Render;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpSessionListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -38,6 +35,7 @@ import java.nio.charset.Charset;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
 /**
  * 提供了注册Servlet和Filter的方法。
  * @version : 2016-12-26
@@ -60,7 +58,6 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /**获取容器支持的Servlet版本。*/
     public ServletVersion getServletVersion();
-    //
 
     /**使用 MappingTo 表达式，创建一个{@link ServletBindingBuilder}。*/
     public default ServletBindingBuilder jeeServlet(String urlPattern, String... morePatterns) {
@@ -128,7 +125,6 @@ public interface WebApiBinder extends ApiBinder, MimeType {
             });
         }
     }
-    //
 
     /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
     public default FilterBindingBuilder<InvokerFilter> filter(String urlPattern, String... morePatterns) {
@@ -145,7 +141,6 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
     public FilterBindingBuilder<InvokerFilter> filterRegex(String[] regexes);
-    //
 
     /**使用传统表达式，创建一个{@link FilterBindingBuilder}。*/
     public default FilterBindingBuilder<Filter> jeeFilter(String urlPattern, String... morePatterns) {
@@ -162,7 +157,6 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
     /**使用正则表达式，创建一个{@link FilterBindingBuilder}。*/
     public FilterBindingBuilder<Filter> jeeFilterRegex(String[] regexes);
-    //
 
     /**
      * 注册一个 Web Listener
@@ -255,7 +249,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     }
 
     public void loadMimeType(Reader reader) throws IOException;
-    //
+
     /**负责配置Filter。*/
     public static interface FilterBindingBuilder<T> {
         public default void through(Class<? extends T> filterKey) {
@@ -317,6 +311,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
         public void through(int index, BindInfo<? extends T> filterRegister, Map<String, String> initParams);
     }
+
     /**负责配置Servlet。*/
     public static interface ServletBindingBuilder {
         public default void with(Class<? extends HttpServlet> targetKey) {
@@ -378,6 +373,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
         public void with(int index, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams);
     }
+
     /**负责配置MappingTo。*/
     public static interface MappingToBindingBuilder<T> {
         public default void with(Class<? extends T> targetKey) {
@@ -405,7 +401,6 @@ public interface WebApiBinder extends ApiBinder, MimeType {
 
         public void with(int index, BindInfo<? extends T> targetInfo);
     }
-    //
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     /** 加载@Render注解配置的渲染器。*/

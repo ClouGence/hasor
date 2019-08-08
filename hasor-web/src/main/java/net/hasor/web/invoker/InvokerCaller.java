@@ -27,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
+
 /**
  * 负责解析参数并执行调用。
  * @version : 2014年8月27日
@@ -36,11 +37,12 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller 
     protected static Logger               logger          = LoggerFactory.getLogger(InvokerCaller.class);
     private          AbstractDefinition[] filterArrays    = null;
     private          Supplier<Invoker>    invokerSupplier = null;
-    //
+
     public InvokerCaller(Supplier<Invoker> invokerSupplier, AbstractDefinition[] filterArrays) {
         this.invokerSupplier = invokerSupplier;
         this.filterArrays = (filterArrays == null) ? new AbstractDefinition[0] : filterArrays;
     }
+
     /**
      * 调用目标
      * @throws Throwable 异常抛出
@@ -71,6 +73,7 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller 
                     public void doWork(Method targetMethod) throws Throwable {
                         future.completed(invoke(targetMethod, invoker));
                     }
+
                     @Override
                     public void doWorkWhenError(Method targetMethod, Throwable e) {
                         future.failed(e);
@@ -89,6 +92,7 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller 
         }
         return future;
     }
+
     /** 执行调用 */
     private Object invoke(final Method targetMethod, Invoker invoker) throws Throwable {
         //

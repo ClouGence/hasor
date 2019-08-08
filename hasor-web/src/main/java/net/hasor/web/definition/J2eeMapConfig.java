@@ -23,6 +23,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+
 /**
  * Abstract implementation for all servlet module bindings
  * @version : 2013-4-12
@@ -31,7 +32,7 @@ import java.util.function.Supplier;
 public class J2eeMapConfig extends HashMap<String, String> implements FilterConfig, ServletConfig {
     private String                   resourceName;
     private Supplier<ServletContext> servletContext;
-    //
+
     public J2eeMapConfig(String resourceName, Map<String, String> initParams, Supplier<ServletContext> servletContext) {
         this.resourceName = resourceName;
         this.servletContext = servletContext;
@@ -39,15 +40,17 @@ public class J2eeMapConfig extends HashMap<String, String> implements FilterConf
             this.putAll(initParams);
         }
     }
-    //
+
     @Override
     public String getFilterName() {
         return this.resourceName;
     }
+
     @Override
     public String getServletName() {
         return this.resourceName;
     }
+
     @Override
     public ServletContext getServletContext() {
         if (this.servletContext != null) {
@@ -55,10 +58,12 @@ public class J2eeMapConfig extends HashMap<String, String> implements FilterConf
         }
         return null;
     }
+
     @Override
     public String getInitParameter(String name) {
         return this.get(name);
     }
+
     @Override
     public Enumeration<String> getInitParameterNames() {
         return Iterators.asEnumeration(J2eeMapConfig.this.keySet().iterator());

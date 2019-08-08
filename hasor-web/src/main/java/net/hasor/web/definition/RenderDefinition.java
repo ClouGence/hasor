@@ -20,6 +20,7 @@ import net.hasor.web.RenderEngine;
 import net.hasor.web.annotation.Render;
 
 import java.lang.annotation.Annotation;
+
 /**
  * 渲染引擎定义。
  * @version : 2017-01-10
@@ -28,17 +29,19 @@ import java.lang.annotation.Annotation;
 public class RenderDefinition {
     private Render                           renderInfo = null;
     private BindInfo<? extends RenderEngine> bindInfo   = null;
-    //
+
     public RenderDefinition(String renderName, String specialMimeType, BindInfo<? extends RenderEngine> bindInfo) {
         this.renderInfo = new Render() {
             @Override
             public Class<? extends Annotation> annotationType() {
                 return Render.class;
             }
+
             @Override
             public String name() {
                 return renderName;
             }
+
             @Override
             public String specialMimeType() {
                 return specialMimeType;
@@ -46,19 +49,21 @@ public class RenderDefinition {
         };
         this.bindInfo = bindInfo;
     }
-    //
+
     @Override
     public String toString() {
         return String.format("rendName=%s specialMimeType=%s ,toBindID=%s", //
                 this.renderInfo.name(), this.renderInfo.specialMimeType(), this.bindInfo.getBindID());
     }
-    //
+
     public String getID() {
         return this.bindInfo.getBindID();
     }
+
     public Render getRenderInfo() {
         return this.renderInfo;
     }
+
     public RenderEngine newEngine(AppContext appContext) throws Throwable {
         RenderEngine engine = appContext.getInstance(this.bindInfo);
         engine.initEngine(appContext);

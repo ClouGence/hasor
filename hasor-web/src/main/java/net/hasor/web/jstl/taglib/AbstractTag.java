@@ -21,6 +21,7 @@ import net.hasor.web.startup.RuntimeListener;
 import javax.servlet.ServletContext;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
+
 /**
  *
  * @version : 2013-12-23
@@ -32,39 +33,45 @@ public abstract class AbstractTag extends TagSupport {
     private              String beanID           = null;
     private              String name             = null;
     private              String bindType         = null;
+
     public String getVar() {
         return this.var;
     }
+
     public void setVar(final String var) {
         this.var = var;
     }
+
     public String getName() {
         return this.name;
     }
+
     public void setName(final String name) {
         this.name = name;
     }
+
     public String getBindType() {
         return this.bindType;
     }
+
     public void setBindType(final String bindType) {
         this.bindType = bindType;
     }
+
     public String getBeanID() {
         return beanID;
     }
+
     public void setBeanID(String beanID) {
         this.beanID = beanID;
     }
-    //
-    //
-    //
+
     public void release() {
         this.var = null;
         this.name = null;
         this.bindType = null;
     }
-    //
+
     protected void verifyAttribute(AttributeNames... attrArrays) {
         for (AttributeNames attr : attrArrays) {
             if (AttributeNames.Var == attr && StringUtils.isBlank(this.var)) {
@@ -81,7 +88,7 @@ public abstract class AbstractTag extends TagSupport {
             }
         }
     }
-    //
+
     protected AppContext getAppContext() {
         ServletContext sc = this.pageContext.getServletContext();
         AppContext appContext = RuntimeListener.getAppContext(sc);
@@ -90,11 +97,11 @@ public abstract class AbstractTag extends TagSupport {
         }
         throw new NullPointerException("AppContext is undefined.");
     }
-    //
+
     protected void storeToVar(Object targetBean) {
         this.pageContext.setAttribute(this.getVar(), targetBean);
     }
-    //
+
     @Override
     public abstract int doStartTag() throws JspException;
 }

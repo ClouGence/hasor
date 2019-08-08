@@ -18,6 +18,7 @@ package net.hasor.web.upload.util;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
 /**
  * An input stream, which limits its data size. This stream is used, if the content length is unknown.
  * @version $Id: LimitedInputStream.java 1565292 2014-02-06 14:51:59Z ggregory $
@@ -29,6 +30,7 @@ public abstract class LimitedInputStream extends FilterInputStream implements Cl
     private       long    count;
     /** Whether this stream is already closed. */
     private       boolean closed;
+
     /**
      * Creates a new instance.
      * @param inputStream The input stream, which shall be limited.
@@ -38,6 +40,7 @@ public abstract class LimitedInputStream extends FilterInputStream implements Cl
         super(inputStream);
         sizeMax = pSizeMax;
     }
+
     /**
      * Called to indicate, that the input streams limit has been exceeded.
      * @param pSizeMax The input streams limit, in bytes.
@@ -46,6 +49,7 @@ public abstract class LimitedInputStream extends FilterInputStream implements Cl
      *   to raise an IOException.
      */
     protected abstract void raiseError(long pSizeMax, long pCount) throws IOException;
+
     /**
      * Called to check, whether the input streams limit is reached.
      * @throws IOException The given limit is exceeded.
@@ -55,6 +59,7 @@ public abstract class LimitedInputStream extends FilterInputStream implements Cl
             raiseError(sizeMax, count);
         }
     }
+
     /**
      * Reads the next byte of data from this input stream. The value
      * byte is returned as an <code>int</code> in the range
@@ -80,6 +85,7 @@ public abstract class LimitedInputStream extends FilterInputStream implements Cl
         }
         return res;
     }
+
     /**
      * Reads up to <code>len</code> bytes of data from this input stream
      * into an array of bytes. If <code>len</code> is not zero, the method
@@ -112,6 +118,7 @@ public abstract class LimitedInputStream extends FilterInputStream implements Cl
         }
         return res;
     }
+
     /**
      * Returns, whether this stream is already closed.
      * @return True, if the stream is closed, otherwise false.
@@ -120,6 +127,7 @@ public abstract class LimitedInputStream extends FilterInputStream implements Cl
     public boolean isClosed() throws IOException {
         return closed;
     }
+
     /**
      * Closes this input stream and releases any system resources
      * associated with the stream. This

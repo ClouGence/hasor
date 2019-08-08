@@ -91,15 +91,9 @@ public final class Hasor extends HashMap<String, String> {
         return this;
     }
 
-    public Hasor mainSettingWith(String encoding, InputStream mainSettings, StreamType streamType) throws UnsupportedEncodingException {
-        this.mainSettings = new InputStreamReader(mainSettings, encoding);
-        this.mainSettingsStreamType = streamType;
-        return this;
-    }
-
     public Hasor addSettings(String namespace, String key, Object value) {
         if (StringUtils.isBlank(namespace) || StringUtils.isBlank(key)) {
-            return this;
+            throw new IllegalArgumentException("namespace or key is null.");
         }
         Map<String, Object> stringMap = this.initSettingMap.computeIfAbsent(namespace, k -> new HashMap<>());
         stringMap.put(key, value);

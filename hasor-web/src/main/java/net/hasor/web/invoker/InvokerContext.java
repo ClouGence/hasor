@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+
 /**
  * 上下文。
  * @version : 2017-01-10
@@ -36,7 +37,7 @@ public class InvokerContext {
     private          Mapping[]            invokeArray    = new Mapping[0];
     private          AbstractDefinition[] filters        = new AbstractDefinition[0];
     private          RootInvokerCreater   invokerCreater = null;
-    //
+
     public void initContext(final AppContext appContext, final Map<String, String> configMap) throws Throwable {
         this.appContext = Objects.requireNonNull(appContext);
         //
@@ -63,10 +64,12 @@ public class InvokerContext {
             public String getInitParameter(String name) {
                 return config.get(name);
             }
+
             @Override
             public Enumeration<String> getInitParameterNames() {
                 return Iterators.asEnumeration(config.keySet().iterator());
             }
+
             @Override
             public AppContext getAppContext() {
                 return appContext;
@@ -84,17 +87,17 @@ public class InvokerContext {
         // .creater
         this.invokerCreater = new RootInvokerCreater(appContext);
     }
-    //
+
     public void destroyContext() {
         for (InvokerFilter filter : this.filters) {
             filter.destroy();
         }
     }
-    //
+
     public Invoker newInvoker(Mapping define, HttpServletRequest request, HttpServletResponse response) {
         return this.invokerCreater.createExt(new InvokerSupplier(define, this.appContext, request, response));
     }
-    //
+
     public ExceuteCaller genCaller(HttpServletRequest httpReq, HttpServletResponse httpRes) {
         Mapping foundDefine = null;
         for (Mapping define : this.invokeArray) {

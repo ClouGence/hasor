@@ -15,6 +15,7 @@
  */
 package net.hasor.web.valid;
 import java.io.Serializable;
+
 /**
  * 消息。
  * @version : 2014年10月25日
@@ -24,20 +25,21 @@ public class Message implements Serializable {
     private static final long     serialVersionUID = -4678293554960623786L;
     private              String   messageTemplate  = null;
     private              Object[] messageParams    = null;
-    //
+
     public Message(String message) {
         this(message, (Object) null);
     }
+
     public Message(String messageTemplate, Object... messageParams) {
         this.messageTemplate = messageTemplate;
         this.messageParams = messageParams == null ? new Object[0] : messageParams;
     }
-    //
-    //
+
     /**获取消息模版信息。*/
     public String getMessageTemplate() {
         return this.messageTemplate;
     }
+
     /**获取消息*/
     public String getMessage() {
         try {
@@ -50,10 +52,12 @@ public class Message implements Serializable {
             return this.messageTemplate;
         }
     }
+
     /**获取参数*/
     public Object[] getParameters() {
         return this.messageParams;
     }
+
     public String toString() {
         return this.getMessage();
     }
