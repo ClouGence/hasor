@@ -17,10 +17,8 @@ package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
-import net.hasor.web.invoker.filters.Demo1CallerFilter;
-import net.hasor.web.invoker.filters.Demo2CallerFilter;
-import net.hasor.web.invoker.filters.Demo3CallerFilter;
-import net.hasor.web.invoker.params.QueryCallAction;
+import net.hasor.test.filters.SimpleInvokerFilter;
+import net.hasor.test.actions.args.QueryArgsAction;
 import net.hasor.web.wrap.DefaultServlet;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
@@ -40,24 +38,24 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
     public void chainTest1() throws Throwable {
         //
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).filter("*").through(Demo1CallerFilter.class);
+            apiBinder.tryCast(WebApiBinder.class).filter("*").through(SimpleInvokerFilter.class);
             apiBinder.tryCast(WebApiBinder.class).filter("*").through(Demo2CallerFilter.class);
             apiBinder.tryCast(WebApiBinder.class).filter("/abc/*").through(Demo3CallerFilter.class);
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
         });
-        Demo1CallerFilter.resetCalls();
+        SimpleInvokerFilter.resetCalls();
         Demo2CallerFilter.resetCalls();
         Demo3CallerFilter.resetCalls();
         //
         InvokerContext invokerContext = new InvokerContext();
         //
         //
-        assert !Demo1CallerFilter.isInitCall();
+        assert !SimpleInvokerFilter.isInitCall();
         assert !Demo2CallerFilter.isInitCall();
         assert !Demo3CallerFilter.isInitCall();
         invokerContext.initContext(appContext, new HashMap<String, String>() {{
         }});
-        assert Demo1CallerFilter.isInitCall();
+        assert SimpleInvokerFilter.isInitCall();
         assert Demo2CallerFilter.isInitCall();
         assert Demo3CallerFilter.isInitCall();
         //
@@ -66,11 +64,11 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
         HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
         ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
         //
-        assert !Demo1CallerFilter.isDoCall();
+        assert !SimpleInvokerFilter.isDoCall();
         assert !Demo2CallerFilter.isDoCall();
         assert !Demo3CallerFilter.isDoCall();
         Object o = caller.invoke(null).get();
-        assert Demo1CallerFilter.isDoCall();
+        assert SimpleInvokerFilter.isDoCall();
         assert Demo2CallerFilter.isDoCall();
         assert !Demo3CallerFilter.isDoCall();
         assert o instanceof Map;
@@ -81,24 +79,24 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
     public void chainTest2() throws Throwable {
         //
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).filter("*").through(Demo1CallerFilter.class);
+            apiBinder.tryCast(WebApiBinder.class).filter("*").through(SimpleInvokerFilter.class);
             apiBinder.tryCast(WebApiBinder.class).filter("*").through(Demo2CallerFilter.class);
             apiBinder.tryCast(WebApiBinder.class).filter("/abc/*").through(Demo3CallerFilter.class);
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
         });
-        Demo1CallerFilter.resetCalls();
+        SimpleInvokerFilter.resetCalls();
         Demo2CallerFilter.resetCalls();
         Demo3CallerFilter.resetCalls();
         //
         InvokerContext invokerContext = new InvokerContext();
         //
         //
-        assert !Demo1CallerFilter.isInitCall();
+        assert !SimpleInvokerFilter.isInitCall();
         assert !Demo2CallerFilter.isInitCall();
         assert !Demo3CallerFilter.isInitCall();
         invokerContext.initContext(appContext, new HashMap<String, String>() {{
         }});
-        assert Demo1CallerFilter.isInitCall();
+        assert SimpleInvokerFilter.isInitCall();
         assert Demo2CallerFilter.isInitCall();
         assert Demo3CallerFilter.isInitCall();
         //
@@ -107,11 +105,11 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
         HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
         ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
         //
-        assert !Demo1CallerFilter.isDoCall();
+        assert !SimpleInvokerFilter.isDoCall();
         assert !Demo2CallerFilter.isDoCall();
         assert !Demo3CallerFilter.isDoCall();
         Object o = caller.invoke(null).get();
-        assert Demo1CallerFilter.isDoCall();
+        assert SimpleInvokerFilter.isDoCall();
         assert Demo2CallerFilter.isDoCall();
         assert !Demo3CallerFilter.isDoCall();
         assert o == null;
@@ -130,7 +128,7 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
                 return chain.doNext(invoker);
             });
             //
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
         });
         //
         InvokerContext invokerContext = new InvokerContext();
@@ -160,7 +158,7 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
                 return chain.doNext(invoker);
             });
             //
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
         });
         //
         InvokerContext invokerContext = new InvokerContext();
@@ -192,7 +190,7 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
                 }
             });
             //
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
         });
         //
         InvokerContext invokerContext = new InvokerContext();
@@ -223,7 +221,7 @@ public class ChainTest extends AbstractWeb30BinderDataTest {
                 }
             });
             //
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
         });
         //
         InvokerContext invokerContext = new InvokerContext();

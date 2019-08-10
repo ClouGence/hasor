@@ -15,11 +15,9 @@
  */
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
-import net.hasor.web.Mapping;
-import net.hasor.web.MappingDiscoverer;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
-import net.hasor.web.invoker.params.QueryCallAction;
+import net.hasor.test.actions.args.QueryArgsAction;
 import net.hasor.web.wrap.DefaultServlet;
 import org.junit.Test;
 
@@ -37,7 +35,7 @@ public class DiscovererTest extends AbstractWeb30BinderDataTest {
             apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*.do").with(1, new DefaultServlet());
             apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*abc.do").with(0, new DefaultServlet());
             //
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
         });
         //
         InvokerContext invokerContext = new InvokerContext();

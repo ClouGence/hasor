@@ -17,7 +17,7 @@ package net.hasor.web.definition;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.web.RenderEngine;
-import net.hasor.web.definition.beans.TestRenderEngine;
+import net.hasor.test.beans.TestRenderEngine;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;

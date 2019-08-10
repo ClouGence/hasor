@@ -32,7 +32,7 @@ public class UtilsTest {
         initParams.put("a2", "a2v");
         initParams.put("a3", "a3v");
         //
-        J2eeMapConfig config = new J2eeMapConfig("resourceName", initParams, InstanceProvider.wrap(servletContext));
+        OneConfig config = new OneConfig("resourceName", initParams, InstanceProvider.wrap(servletContext));
         //
         assert config.getFilterName().equals(config.getServletName());
         assert config.getFilterName().equals("resourceName");
@@ -49,7 +49,7 @@ public class UtilsTest {
         //
         assert servletContext == config.getServletContext();
         //
-        config = new J2eeMapConfig("resourceName", initParams, null);
+        config = new OneConfig("resourceName", initParams, null);
         assert null == config.getServletContext();
     }
     //

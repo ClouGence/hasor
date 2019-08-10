@@ -18,10 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.web.Invoker;
-import net.hasor.web.InvokerChain;
 import net.hasor.web.InvokerFilter;
-import net.hasor.web.definition.beans.TestCallerFilter;
-import net.hasor.web.definition.beans.TestDoNextCallerFilter;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
@@ -31,6 +28,7 @@ import javax.servlet.ServletException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 //
 public class DefinitionTest {
     @Test
@@ -63,7 +61,7 @@ public class DefinitionTest {
         //
         new FilterDefinition(123, "abc", uriPatternMatcher, bindInfo, null);
     }
-    //
+
     @Test
     public void filterDefineTest1() throws Throwable {
         TestCallerFilter callerFilter = new TestCallerFilter();
@@ -87,7 +85,7 @@ public class DefinitionTest {
         filterDefine.destroy();
         assert !TestCallerFilter.isDestroyCall(); // 没有init 不会调用 destroy
     }
-    //
+
     @Test
     public void filterDefineTest2() throws Throwable {
         TestDoNextCallerFilter nextCallerFilter = new TestDoNextCallerFilter();
@@ -116,7 +114,7 @@ public class DefinitionTest {
         filterDefine.destroy();
         assert TestCallerFilter.isDestroyCall();
     }
-    //
+
     @Test
     public void filterDefineTest3() throws Throwable {
         //
@@ -168,8 +166,7 @@ public class DefinitionTest {
             assert false;
         }
     }
-    //
-    //
+
     @Test
     public void invokerDefineTest1() throws Throwable {
         TestCallerFilter callerFilter = new TestCallerFilter();
@@ -195,7 +192,7 @@ public class DefinitionTest {
         //
         assert TestCallerFilter.isInitCall();
     }
-    //
+
     @Test
     public void invokerDefineTest2() throws Throwable {
         //
@@ -225,7 +222,7 @@ public class DefinitionTest {
         filterDefine.destroy();
         assert TestCallerFilter.isDestroyCall();
     }
-    //
+
     @Test
     public void invokerDefineTest3() throws Throwable {
         //

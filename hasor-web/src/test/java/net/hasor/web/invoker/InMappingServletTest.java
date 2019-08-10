@@ -18,7 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.web.Invoker;
-import net.hasor.web.invoker.beans.TestServlet;
+import net.hasor.test._.TestServlet;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 

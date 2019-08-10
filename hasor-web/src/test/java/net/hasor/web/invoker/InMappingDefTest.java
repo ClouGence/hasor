@@ -17,10 +17,8 @@ package net.hasor.web.invoker;
 import net.hasor.core.BindInfo;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.web.Invoker;
-import net.hasor.web.invoker.beans.Async2TestAction;
-import net.hasor.web.invoker.beans.AsyncTestAction;
-import net.hasor.web.invoker.beans.BasicTestAction;
-import net.hasor.web.invoker.beans.HttpsTestAction;
+import net.hasor.test.actions.basic.BasicAction;
+import net.hasor.test._.HttpsTestAction;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
@@ -83,8 +81,8 @@ public class InMappingDefTest {
     //
     @Test
     public void basicTest() throws Throwable {
-        BindInfo<BasicTestAction> targetInfo = PowerMockito.mock(BindInfo.class);
-        PowerMockito.when(targetInfo.getBindType()).thenReturn(BasicTestAction.class);
+        BindInfo<BasicAction> targetInfo = PowerMockito.mock(BindInfo.class);
+        PowerMockito.when(targetInfo.getBindType()).thenReturn(BasicAction.class);
         //
         //
         InMappingDef mappingDef = new InMappingDef(1, targetInfo, "/execute.do", Matchers.anyMethod(), false);

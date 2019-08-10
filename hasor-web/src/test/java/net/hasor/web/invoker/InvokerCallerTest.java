@@ -19,9 +19,8 @@ import net.hasor.web.Invoker;
 import net.hasor.web.InvokerFilter;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
-import net.hasor.web.invoker.beans.TestServlet;
-import net.hasor.web.invoker.call.AsyncCallAction;
-import net.hasor.web.invoker.call.SyncCallAction;
+import net.hasor.test._.TestServlet;
+import net.hasor.test.actions.AnnoPostGetAction;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
@@ -78,35 +77,35 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
             Method targetMethod = invoker.ownerMapping().findMethod(invoker.getHttpRequest());
             try {
                 assert targetMethod.getName().equals("execute");
-                assert targetMethod.getDeclaringClass() == SyncCallAction.class;
+                assert targetMethod.getDeclaringClass() == AnnoPostGetAction.class;
                 assert targetMethod.getParameters().length == 0;
                 return chain.doNext(invoker);
             } finally {
                 assert targetMethod.getName().equals("execute");
-                assert targetMethod.getDeclaringClass() == SyncCallAction.class;
+                assert targetMethod.getDeclaringClass() == AnnoPostGetAction.class;
                 assert targetMethod.getParameters().length == 0;
             }
         };
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
             //
             apiBinder.filter("/*").through(webPluginCaller);
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(SyncCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AnnoPostGetAction.class);
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
         assert definitions.size() == 1;
         //
-        SyncCallAction.resetInit();
-        assert !SyncCallAction.isStaticCall();
+        AnnoPostGetAction.resetInit();
+        assert !AnnoPostGetAction.isStaticCall();
         Invoker invoker1 = newInvoker(definitions.get(0), mockRequest("POST", new URL("http://www.hasor.net/sync.do"), appContext), appContext);
         new InvokerCaller(() -> invoker1, null).invoke(null).get();
-        assert SyncCallAction.isStaticCall();
+        assert AnnoPostGetAction.isStaticCall();
         //
-        SyncCallAction.resetInit();
-        assert !SyncCallAction.isStaticCall();
+        AnnoPostGetAction.resetInit();
+        assert !AnnoPostGetAction.isStaticCall();
         Invoker invoker2 = newInvoker(definitions.get(0), mockRequest("GET", new URL("http://www.hasor.net/abcc.do"), appContext), appContext);
         new InvokerCaller(() -> invoker2, null).invoke(null).get();
-        assert !SyncCallAction.isStaticCall();
+        assert !AnnoPostGetAction.isStaticCall();
     }
     //
     @Test
@@ -191,19 +190,19 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
             apiBinder.bindType(HttpServletRequest.class).toInstance(servletRequest);
             apiBinder.bindType(HttpServletResponse.class).toInstance(httpServletResponse);
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(SyncCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AnnoPostGetAction.class);
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
         //
-        SyncCallAction.resetInit();
+        AnnoPostGetAction.resetInit();
         assert !asyncCall.get();
-        assert !SyncCallAction.isStaticCall();
+        assert !AnnoPostGetAction.isStaticCall();
         Invoker invoker = newInvoker(definitions.get(0), mockRequest("post", new URL("http://www.hasor.net/sync.do"), appContext), appContext);
         Object o = new InvokerCaller(() -> invoker, null).invoke(null).get();
         //
         assert !asyncCall.get();
-        assert SyncCallAction.isStaticCall();
+        assert AnnoPostGetAction.isStaticCall();
         assert "CALL".equals(o);
     }
     //
@@ -225,14 +224,14 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
             apiBinder.bindType(HttpServletRequest.class).toInstance(servletRequest);
             apiBinder.bindType(HttpServletResponse.class).toInstance(httpServletResponse);
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(SyncCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AnnoPostGetAction.class);
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
         //
-        SyncCallAction.resetInit();
+        AnnoPostGetAction.resetInit();
         assert !asyncCall.get();
-        assert !SyncCallAction.isStaticCall();
+        assert !AnnoPostGetAction.isStaticCall();
         Invoker invoker = newInvoker(definitions.get(0), mockRequest("get", new URL("http://www.hasor.net/sync.do"), appContext), appContext);
         try {
             new InvokerCaller(() -> invoker, null).invoke(null).get();
@@ -243,6 +242,6 @@ public class InvokerCallerTest extends AbstractWeb30BinderDataTest {
         }
         //
         assert !asyncCall.get();
-        assert SyncCallAction.isStaticCall();
+        assert AnnoPostGetAction.isStaticCall();
     }
 }

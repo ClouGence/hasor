@@ -17,10 +17,10 @@ package net.hasor.web.listener;
 import net.hasor.core.AppContext;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
-import net.hasor.web.definition.beans.TestHttpSessionListener;
-import net.hasor.web.definition.beans.TestServletContextListener;
+import net.hasor.test.spi.TestHttpSessionListener;
+import net.hasor.test.spi.TestServletContextListener;
 import net.hasor.web.invoker.AbstractWeb30BinderDataTest;
-import net.hasor.web.invoker.params.QueryCallAction;
+import net.hasor.test.actions.args.QueryArgsAction;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
@@ -34,7 +34,7 @@ public class ListenerTest extends AbstractWeb30BinderDataTest {
         HttpSessionEvent sessionEvent = PowerMockito.mock(HttpSessionEvent.class);
         //
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
             apiBinder.bindType(String.class).idWith("abc").toInstance("abcdefg");
             //
             apiBinder.addWebListener(new TestServletContextListener());

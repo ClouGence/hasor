@@ -16,8 +16,8 @@
 package net.hasor.web.definition;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.web.MappingDiscoverer;
-import net.hasor.web.definition.beans.TestMappingDiscoverer;
+import net.hasor.web.spi.MappingDiscoverer;
+import net.hasor.test.spi.TestMappingDiscoverer;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;

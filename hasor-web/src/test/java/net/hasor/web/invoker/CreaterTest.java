@@ -21,8 +21,8 @@ import net.hasor.core.setting.StreamType;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.web.Invoker;
 import net.hasor.web.MimeType;
-import net.hasor.web.invoker.beans.TestInvoker;
-import net.hasor.web.invoker.beans.TestInvoker2;
+import net.hasor.test.invoker.TestInvoker;
+import net.hasor.test.invoker.TestInvoker2;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 

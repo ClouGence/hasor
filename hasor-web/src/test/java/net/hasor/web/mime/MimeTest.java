@@ -20,7 +20,7 @@ import net.hasor.web.MimeType;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import net.hasor.web.invoker.AbstractWeb30BinderDataTest;
-import net.hasor.web.invoker.params.QueryCallAction;
+import net.hasor.test.actions.args.QueryArgsAction;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
@@ -33,7 +33,7 @@ public class MimeTest extends AbstractWeb30BinderDataTest {
     public void chainTest1() throws Throwable {
         //
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
             apiBinder.tryCast(WebApiBinder.class).addMimeType("afm", "abcdefg");
             apiBinder.tryCast(WebApiBinder.class).loadMimeType(NET_HASOR_WEB_MIME_MIME_TYPES_XML);
         });

@@ -16,8 +16,8 @@
 package net.hasor.web.definition;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.web.definition.beans.TestHttpSessionListener;
-import net.hasor.web.definition.beans.TestServletContextListener;
+import net.hasor.test.spi.TestHttpSessionListener;
+import net.hasor.test.spi.TestServletContextListener;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;

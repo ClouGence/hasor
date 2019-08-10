@@ -18,6 +18,10 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.provider.InstanceProvider;
+import net.hasor.test._.ErrorRenderEngine;
+import net.hasor.test._.HttpsTestAction;
+import net.hasor.test._.TestServlet;
+import net.hasor.test.actions.basic.BasicAction;
 import net.hasor.web.MimeType;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
@@ -25,11 +29,10 @@ import net.hasor.web.WebModule;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.annotation.Render;
 import net.hasor.web.definition.*;
-import net.hasor.web.definition.beans.TestCallerFilter;
-import net.hasor.web.definition.beans.TestHttpSessionListener;
-import net.hasor.web.definition.beans.TestMappingDiscoverer;
-import net.hasor.web.definition.beans.TestServletContextListener;
-import net.hasor.web.invoker.beans.*;
+import net.hasor.test.spi.TestHttpSessionListener;
+import net.hasor.test.spi.TestMappingDiscoverer;
+import net.hasor.test.spi.TestServletContextListener;
+import net.hasor.test.beans.beans.*;
 import net.hasor.web.startup.RuntimeFilter;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
@@ -222,7 +225,7 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
             apiBinder.tryCast(WebApiBinder.class).filter(urls).through(filterBindInfo2);            // 5
         });
         //
-        List<AbstractDefinition> definitions = appContext.findBindingBean(AbstractDefinition.class);
+        List<FilterDefinition> definitions = appContext.findBindingBean(FilterDefinition.class);
         assert definitions.size() == 10;
         for (int i = 0; i < 10; i++) {
             definitions.get(i).init(new InvokerMapConfig(null, appContext));
@@ -280,7 +283,7 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
             apiBinder.tryCast(WebApiBinder.class).filter(urls).through(5, filterBindInfo2);            // 5
         });
         //
-        List<AbstractDefinition> definitions = appContext.findBindingBean(AbstractDefinition.class);
+        List<FilterDefinition> definitions = appContext.findBindingBean(FilterDefinition.class);
         assert definitions.size() == 10;
         for (int i = 0; i < 10; i++) {
             definitions.get(i).init(new InvokerMapConfig(null, appContext));
@@ -348,7 +351,7 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
             apiBinder.tryCast(WebApiBinder.class).filter(urls).through(5, filterBindInfo2, params1);            // 5
         });
         //
-        List<AbstractDefinition> definitions = appContext.findBindingBean(AbstractDefinition.class);
+        List<FilterDefinition> definitions = appContext.findBindingBean(FilterDefinition.class);
         assert definitions.size() == 10;
         for (int i = 0; i < 10; i++) {
             definitions.get(i).init(new InvokerMapConfig(params2, appContext));
@@ -421,7 +424,7 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
             apiBinder.tryCast(WebApiBinder.class).filter(urls).through(filterBindInfo2, params1);            // 5
         });
         //
-        List<AbstractDefinition> definitions = appContext.findBindingBean(AbstractDefinition.class);
+        List<FilterDefinition> definitions = appContext.findBindingBean(FilterDefinition.class);
         assert definitions.size() == 10;
         for (int i = 0; i < 10; i++) {
             definitions.get(i).init(new InvokerMapConfig(params2, appContext));
@@ -481,7 +484,7 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
             apiBinder.tryCast(WebApiBinder.class).jeeFilterRegex(urls).through(testCallerFilter);// 4
         });
         //
-        List<AbstractDefinition> definitions = appContext.findBindingBean(AbstractDefinition.class);
+        List<FilterDefinition> definitions = appContext.findBindingBean(FilterDefinition.class);
         assert definitions.size() == 8;
         //
         assert "/abc.do".equals(definitions.get(0).getPattern());
@@ -1009,7 +1012,7 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         //
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
             try {
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(BasicTestAction.class);
+                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(BasicAction.class);
                 assert false;
             } catch (Exception e) {
                 assert e.getMessage().endsWith(" must be configure @MappingTo");
@@ -1021,7 +1024,7 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
                 assert e.getMessage().endsWith(" must be normal Bean");
             }
             //
-            Set<Class<?>> classSet = apiBinder.findClass(MappingTo.class, "net.hasor.web.invoker.beans");
+            Set<Class<?>> classSet = apiBinder.findClass(MappingTo.class, "net.hasor.test.beans.beans");
             assert classSet.size() == 2;
             apiBinder.tryCast(WebApiBinder.class).loadMappingTo(classSet);
         });
@@ -1122,7 +1125,7 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
         //
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
             try {
-                apiBinder.tryCast(WebApiBinder.class).loadRender(BasicTestAction.class);
+                apiBinder.tryCast(WebApiBinder.class).loadRender(BasicAction.class);
                 assert false;
             } catch (Exception e) {
                 assert e.getMessage().endsWith(" must be configure @Render");
@@ -1141,7 +1144,7 @@ public class WebBinderDataTest extends AbstractWeb24BinderDataTest {
                 assert e.getMessage().endsWith(" must be implements RenderEngine.");
             }
             //
-            Set<Class<?>> classSet = apiBinder.findClass(Render.class, "net.hasor.web.invoker.beans");
+            Set<Class<?>> classSet = apiBinder.findClass(Render.class, "net.hasor.test.beans.beans");
             assert classSet.size() == 2;
             classSet.remove(ErrorRenderEngine.class); // remove Error
             apiBinder.tryCast(WebApiBinder.class).loadRender(classSet);

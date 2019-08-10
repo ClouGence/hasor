@@ -18,14 +18,13 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.web.RenderEngine;
 import net.hasor.web.WebModule;
-import net.hasor.web.definition.AbstractDefinition;
-import net.hasor.web.definition.InvokeFilterDefinition;
-import net.hasor.web.definition.beans.TestRenderEngine;
+import net.hasor.web.definition.FilterDefinition;
+import net.hasor.test.beans.TestRenderEngine;
 import net.hasor.web.invoker.AbstractWeb30BinderDataTest;
 import net.hasor.web.invoker.ExceuteCaller;
 import net.hasor.web.invoker.InMappingDef;
 import net.hasor.web.invoker.InvokerContext;
-import net.hasor.web.render.produces.HtmlProduces;
+import net.hasor.test._.HtmlProduces;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
@@ -52,10 +51,10 @@ public class RenderPluginTest extends AbstractWeb30BinderDataTest {
             apiBinder.addRender("htm").toInstance(PowerMockito.mock(RenderEngine.class));
         });
         //
-        List<BindInfo<AbstractDefinition>> register = appContext.findBindingRegister(AbstractDefinition.class);
+        List<BindInfo<FilterDefinition>> register = appContext.findBindingRegister(FilterDefinition.class);
         assert register.size() == 1;
         //
-        AbstractDefinition instance = appContext.getInstance(register.get(0));
+        FilterDefinition instance = appContext.getInstance(register.get(0));
         assert instance instanceof InvokeFilterDefinition;
         InvokeFilterDefinition definition = (InvokeFilterDefinition) instance;
         assert definition.getIndex() == Integer.MIN_VALUE;

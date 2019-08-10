@@ -15,10 +15,13 @@
  */
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
+import net.hasor.test.actions.ParamsCallAction;
+import net.hasor.test.actions.SpecialTypeCallAction;
+import net.hasor.test.actions.args.*;
 import net.hasor.web.Invoker;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
-import net.hasor.web.invoker.params.*;
+import net.hasor.test.beans.params.*;
 import org.junit.Test;
 
 import javax.servlet.http.Cookie;
@@ -35,7 +38,7 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
     @Test
     public void queryParamTest() throws Throwable {
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
@@ -49,7 +52,7 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
     @Test
     public void pathParamTest() throws Throwable {
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(PathCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(PathArgsAction.class);
         });
         //
         List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
@@ -63,7 +66,7 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
     @Test
     public void cookieParamTest() throws Throwable {
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(CookieCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(CookieArgsAction.class);
         });
         //
         Cookie[] cookies = new Cookie[] {//
@@ -82,7 +85,7 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
     @Test
     public void attrParamTest() throws Throwable {
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AttrCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AttributeArgsAction.class);
         });
         //
         HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/attr_param.do"), appContext);
@@ -105,7 +108,7 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
                 put("floatParam", "321");
             }});
             //
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(HeaderCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(HeaderArgsAction.class);
         });
         //
         HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/header_param.do"), appContext);
@@ -121,7 +124,7 @@ public class CallerParamsTest extends AbstractWeb30BinderDataTest {
     @Test
     public void requestParamTest() throws Throwable {
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(RequestCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(RequestArgsAction.class);
         });
         //
         Map<String, String> requestMap = new HashMap<String, String>() {{

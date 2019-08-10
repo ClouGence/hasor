@@ -18,7 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.WebModule;
 import net.hasor.web.invoker.AbstractWeb30BinderDataTest;
-import net.hasor.web.invoker.params.QueryCallAction;
+import net.hasor.test.actions.args.QueryArgsAction;
 import net.hasor.web.jstl.taglib.DefineBeanTag;
 import net.hasor.web.startup.RuntimeListener;
 import org.junit.Before;
@@ -45,7 +45,7 @@ public class JstlBeanTest extends AbstractWeb30BinderDataTest {
     public void chainTest1() throws Throwable {
         //
         AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryCallAction.class);
+            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
             apiBinder.bindType(String.class).idWith("abc").toInstance("abcdefg");
         });
         //
