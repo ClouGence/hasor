@@ -233,7 +233,12 @@ public interface ApiBinder {
     }
 
     /** 添加SPI监听器 */
-    public <T extends EventListener> void bindSpiListener(Class<T> spiType, T listener);
+    public default <T extends EventListener> void bindSpiListener(Class<T> spiType, T listener) {
+        this.bindSpiListener(spiType, (Supplier<T>) () -> listener);
+    }
+
+    /** 添加SPI监听器 */
+    public <T extends EventListener> void bindSpiListener(Class<T> spiType, Supplier<T> listener);
 
     /**
      * 注册作用域。

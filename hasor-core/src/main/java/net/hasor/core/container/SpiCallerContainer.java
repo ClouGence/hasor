@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
@@ -28,17 +29,17 @@ import java.util.stream.Stream;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class SpiCallerContainer extends AbstractContainer {
-    private ConcurrentHashMap<Class<?>, List<? extends EventListener>> spiListener = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Class<?>, List<Supplier<EventListener>>> spiListener = new ConcurrentHashMap<>();
 
     /** 执行 SPI */
     public <T extends EventListener> void callSpi(Class<T> spiType, SpiCaller<T> spiCaller) {
-        List<? extends EventListener> listeners = this.spiListener.get(spiType);
+        List<Supplier<EventListener>> listeners = this.spiListener.get(spiType);
         if (listeners == null || listeners.isEmpty()) {
             return;
         }
-        for (EventListener listener : listeners) {
+        for (Supplier<EventListener> listener : listeners) {
             try {
-                spiCaller.doSpi((T) listener);
+                spiCaller.doSpi((T) listener.get());
             } catch (Throwable e) {
                 throw ExceptionUtils.toRuntimeException(e);
             }
@@ -46,8 +47,8 @@ public class SpiCallerContainer extends AbstractContainer {
     }
 
     /** 获取某个类型 SPI 下面的所有监听器。 */
-    public <T extends EventListener> List<T> getEventListenerList(Class<T> spiType) {
-        return (List<T>) this.spiListener.get(spiType);
+    public List<Supplier<EventListener>> getEventListenerList(Class<?> spiType) {
+        return this.spiListener.get(spiType);
     }
 
     /** 获取已经注册的 SPI 类型总数。 */
@@ -58,31 +59,34 @@ public class SpiCallerContainer extends AbstractContainer {
     /** 获取所有SPI总共注册的监听器数。 */
     public long getListenerSize() {
         return this.spiListener.entrySet().stream()//
-                .flatMap((Function<Map.Entry<Class<?>, List<? extends EventListener>>, Stream<?>>) classListEntry -> {
+                .flatMap((Function<Map.Entry<Class<?>, List<Supplier<EventListener>>>, Stream<?>>) classListEntry -> {
                     return classListEntry.getValue().stream();
                 }).count();
     }
 
     /** 注册一个 SPI 监听器 */
     public synchronized <T extends EventListener> void addListener(Class<T> spiType, T spiListener) {
+        this.addListener(spiType, (Supplier<T>) () -> spiListener);
+    }
+
+    /** 注册一个 SPI 监听器 */
+    public synchronized <T extends EventListener> void addListener(Class<T> spiType, Supplier<T> spiListener) {
         Objects.requireNonNull(spiType, "spiType is null.");
         Objects.requireNonNull(spiListener, "spiListener is null.");
         //
-        List<T> listenerList = (List<T>) this.spiListener.get(spiType);
-        if (listenerList == null) {
-            listenerList = new ArrayList<>(5);
-            this.spiListener.put(spiType, listenerList);
-        }
-        listenerList.add(spiListener);
+        List<Supplier<EventListener>> listenerList = this.spiListener.computeIfAbsent(spiType, k -> {
+            return new ArrayList<>(5);
+        });
+        listenerList.add((Supplier<EventListener>) spiListener);
     }
 
     /** 遍历所有 Listener */
     public void forEachListener(Consumer<Map.Entry<Class<?>, EventListener>> action) {
         Objects.requireNonNull(action);
-        for (Map.Entry<Class<?>, List<? extends EventListener>> entryList : spiListener.entrySet()) {
+        for (Map.Entry<Class<?>, List<Supplier<EventListener>>> entryList : spiListener.entrySet()) {
             Class<?> listenerKey = entryList.getKey();
-            for (EventListener entry : entryList.getValue()) {
-                action.accept(new MapEntry(listenerKey, entry));
+            for (Supplier<EventListener> entry : entryList.getValue()) {
+                action.accept(new MapEntry(listenerKey, entry.get()));
             }
         }
     }

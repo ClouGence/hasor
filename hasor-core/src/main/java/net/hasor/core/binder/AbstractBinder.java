@@ -100,7 +100,7 @@ public abstract class AbstractBinder implements ApiBinder {
     }
 
     @Override
-    public <T extends EventListener> void bindSpiListener(final Class<T> spiType, final T listener) {
+    public <T extends EventListener> void bindSpiListener(final Class<T> spiType, final Supplier<T> listener) {
         containerFactory().getSpiContainer().addListener(spiType, listener);
     }
 

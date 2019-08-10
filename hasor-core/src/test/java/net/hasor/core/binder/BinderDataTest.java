@@ -40,6 +40,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
+import java.util.EventListener;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -416,9 +417,9 @@ public class BinderDataTest extends AbstractBinderDataTest {
         BindInfoProvisionListener listener = PowerMockito.mock(BindInfoProvisionListener.class);
         binder.bindSpiListener(BindInfoProvisionListener.class, listener);
         //
-        List<BindInfoProvisionListener> list = container.getSpiContainer().getEventListenerList(BindInfoProvisionListener.class);
+        List<Supplier<EventListener>> list = container.getSpiContainer().getEventListenerList(BindInfoProvisionListener.class);
         assert list.size() == 1;
-        assert list.get(0) == listener;
+        assert list.get(0).get() == listener;
     }
 
     @Test
