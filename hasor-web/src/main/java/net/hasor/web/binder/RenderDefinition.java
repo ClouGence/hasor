@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.definition;
+package net.hasor.web.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.web.RenderEngine;

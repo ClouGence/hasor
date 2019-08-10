@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.invoker;
+package net.hasor.web.binder;
 import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.core.HasorUtils;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.provider.InstanceProvider;
-import net.hasor.core.spi.CreaterProvisionListener;
 import net.hasor.utils.CheckUtils;
 import net.hasor.utils.StringUtils;
-import net.hasor.web.*;
-import net.hasor.web.definition.*;
+import net.hasor.web.InvokerFilter;
+import net.hasor.web.RenderEngine;
+import net.hasor.web.ServletVersion;
+import net.hasor.web.WebApiBinder;
 import net.hasor.web.mime.MimeTypeSupplier;
 import net.hasor.web.startup.RuntimeFilter;
 
 import javax.servlet.Filter;
+import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServlet;
 import java.io.IOException;
@@ -96,20 +98,6 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
 
     // ------------------------------------------------------------------------------------------------------
     @Override
-    public void addDiscoverer(BindInfo<? extends MappingDiscoverer> discoverer) {
-        Objects.requireNonNull(discoverer);
-        MappingDiscovererDefinition definition = HasorUtils.autoAware(getEnvironment(), new MappingDiscovererDefinition(discoverer));
-        this.bindType(MappingDiscovererDefinition.class).toInstance(definition);
-    }
-
-    @Override
-    public void addWebListener(BindInfo<? extends EventListener> targetRegister) {
-        this.bindType(WebListenerDefinition.class).uniqueName()//
-                .toInstance(HasorUtils.autoAware(getEnvironment(), new WebListenerDefinition(targetRegister)));
-    }
-
-    // ------------------------------------------------------------------------------------------------------
-    @Override
     public FilterBindingBuilder<InvokerFilter> filter(String[] morePatterns) {
         List<String> uriPatterns = CheckUtils.checkEmpty(Arrays.asList(morePatterns), "Filter patterns is empty.");
         return new FiltersModuleBinder<InvokerFilter>(InvokerFilter.class, UriPatternType.SERVLET, uriPatterns) {
@@ -153,16 +141,23 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         };
     }
 
-    protected void filterThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> filterRegister, Map<String, String> initParams) {
-        InvokeFilterDefinition define = new InvokeFilterDefinition(index, pattern, matcher, filterRegister, initParams);
-        bindType(AbstractDefinition.class).uniqueName().toInstance(define).toInfo();
-        bindSpiListener(CreaterProvisionListener.class, define);
+    /** Filter 转换为 InvokerFilter */
+    protected void jeeFilterThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
+        if (!this.isSingleton(filterRegister)) {
+            throw new IllegalStateException("Filter must be Singleton.");
+        }
+        J2eeFilterAsFilter filterAsFilter = new J2eeFilterAsFilter(this.getProvider(filterRegister));
+        BindInfo<J2eeFilterAsFilter> bindInfo = bindType(J2eeFilterAsFilter.class).uniqueName().toInstance(filterAsFilter).toInfo();
+        this.filterThrough(index, pattern, matcher, bindInfo, initParams);
     }
 
-    protected void jeeFilterThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends Filter> filterRegister, Map<String, String> initParams) {
-        FilterDefinition define = new FilterDefinition(index, pattern, matcher, filterRegister, initParams);
-        bindType(AbstractDefinition.class).uniqueName().toInstance(define);
-        bindSpiListener(CreaterProvisionListener.class, define);
+    protected void filterThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends InvokerFilter> bindInfo, Map<String, String> initParams) {
+        if (!this.isSingleton(bindInfo)) {
+            throw new IllegalStateException("InvokerFilter must be Singleton.");
+        }
+        Supplier<AppContext> appContext = getProvider(AppContext.class);
+        FilterDef define = new FilterDef(index, pattern, matcher, initParams, bindInfo, appContext);
+        bindType(FilterDef.class).uniqueName().toInstance(define);
     }
 
     // ------------------------------------------------------------------------------------------------------
@@ -208,12 +203,16 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
 
         protected abstract void bindThrough(int index, String pattern, UriPatternMatcher matcher, BindInfo<? extends T> filterRegister, Map<String, String> initParams);
     }
-
     // ------------------------------------------------------------------------------------------------------
+
+    /** HttpServlet 转换为 MappingTo 形式 */
     protected void jeeServlet(int index, String pattern, BindInfo<? extends HttpServlet> servletRegister, Map<String, String> initParams) {
-        InMappingServlet define = new InMappingServlet(index, servletRegister, pattern, initParams, this.getServletContext());
-        bindType(InMappingDef.class).uniqueName().toInstance(define);/* InMappingServlet是单例 */
-        bindSpiListener(CreaterProvisionListener.class, define);
+        if (!this.isSingleton(servletRegister)) {
+            throw new IllegalStateException("HttpServlet must be Singleton.");
+        }
+        OneConfig oneConfig = new OneConfig(servletRegister.getBindID(), initParams, getProvider(AppContext.class));
+        Supplier<? extends Servlet> j2eeServlet = getProvider(servletRegister);
+        mappingTo(pattern).with(index, new J2eeServletAsMapping(oneConfig, j2eeServlet));
     }
 
     @Override
@@ -282,8 +281,8 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             @Override
             public void with(int index, BindInfo<? extends T> targetInfo) {
                 Arrays.stream(morePatterns).filter(StringUtils::isNotBlank).forEach(pattern -> {
-                    InMappingDef define = new InMappingDef(index, targetInfo, pattern, Matchers.anyMethod(), true);
-                    bindType(InMappingDef.class).uniqueName().toInstance(define);
+                    MappingDef define = new MappingDef(index, targetInfo, pattern, Matchers.anyMethod(), true);
+                    bindType(MappingDef.class).uniqueName().toInstance(define);
                 });
                 logger.info("mapingTo[Object] -> bindID ‘{}’ mappingTo: ‘{}’.", targetInfo.getBindID(), morePatterns);
             }

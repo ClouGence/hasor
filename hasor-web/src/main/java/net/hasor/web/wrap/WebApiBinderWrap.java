@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.web.wrap;
-import net.hasor.core.BindInfo;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.web.InvokerFilter;
-import net.hasor.web.MappingDiscoverer;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
 
@@ -25,7 +23,6 @@ import javax.servlet.Filter;
 import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.EventListener;
 import java.util.Objects;
 
 /**
@@ -86,11 +83,6 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
     }
 
     @Override
-    public void addWebListener(BindInfo<? extends EventListener> targetRegister) {
-        this.webApiBinder.addWebListener(targetRegister);
-    }
-
-    @Override
     public ServletBindingBuilder jeeServlet(String[] moreMappingTo) {
         return this.webApiBinder.jeeServlet(moreMappingTo);
     }
@@ -98,11 +90,6 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
     @Override
     public <T> MappingToBindingBuilder<T> mappingTo(String[] morePatterns) {
         return this.webApiBinder.mappingTo(morePatterns);
-    }
-
-    @Override
-    public void addDiscoverer(BindInfo<? extends MappingDiscoverer> discoverer) {
-        this.webApiBinder.addDiscoverer(discoverer);
     }
 
     @Override

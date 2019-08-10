@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.definition;
+package net.hasor.web.binder;
 /**
  * A general interface for matching a URI against a URI pattern. Guice-servlet provides regex and
  * servlet-style pattern matching out of the box.

@@ -13,25 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.invoker;
+package net.hasor.web.binder;
 import net.hasor.core.BindInfo;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Mapping;
 import net.hasor.web.annotation.Async;
 import net.hasor.web.annotation.HttpMethod;
+import net.hasor.web.invoker.AsyncSupported;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Predicate;
+
 /**
  * 一个请求地址只能是一个Action类进行处理，Action中的不同方法可以通过 @HttpMethod 等注解映射到 HTTP 协议中 GET、PUT 等行为上。
  * @version : 2013-6-5
  * @author 赵永春 (zyc@hasor.net)
  */
-public class InMappingDef implements Mapping {
+public class MappingDef implements Mapping {
     private final int                 index;
     private       BindInfo<?>         targetType;
     private       String              mappingTo;
@@ -39,11 +41,12 @@ public class InMappingDef implements Mapping {
     private       Map<String, Method> httpMapping;
     private       Set<Method>         asyncMethod;
     private       AsyncSupported      defaultAsync = AsyncSupported.no;
-    //
-    public InMappingDef(int index, BindInfo<?> targetType, String mappingTo, Predicate<Method> methodMatcher) {
+
+    public MappingDef(int index, BindInfo<?> targetType, String mappingTo, Predicate<Method> methodMatcher) {
         this(index, targetType, mappingTo, methodMatcher, true);
     }
-    public InMappingDef(int index, BindInfo<?> targetType, String mappingTo, Predicate<Method> methodMatcher, boolean needAnno) {
+
+    public MappingDef(int index, BindInfo<?> targetType, String mappingTo, Predicate<Method> methodMatcher, boolean needAnno) {
         this.targetType = Objects.requireNonNull(targetType, "targetType is null.");
         if (StringUtils.isBlank(mappingTo)) {
             throw new NullPointerException("'" + targetType.getBindType() + "' Service path is empty.");
@@ -96,6 +99,7 @@ public class InMappingDef implements Mapping {
             }
         }
     }
+
     private static String wildToRegex(String wild) {
         //'\\', '$', '^', '[', ']', '(', ')', '{', '|', '+', '.'
         wild = wild.replace("\\", "\\\\"); // <-- 必须放在前面
@@ -113,26 +117,29 @@ public class InMappingDef implements Mapping {
         wild = wild.replace("?", ".");
         return wild;
     }
-    //
-    //
+
     @Override
     public BindInfo<?> getTargetType() {
         return this.targetType;
     }
+
     /** 获取映射的地址 */
     public String getMappingTo() {
         return this.mappingTo;
     }
+
     public String getMappingToMatches() {
         return this.mappingToMatches;
     }
+
     public int getIndex() {
         return index;
     }
+
     public String[] getHttpMethodSet() {
         return this.httpMapping.keySet().toArray(new String[httpMapping.size()]);
     }
-    //
+
     /**
      * 首先测试路径是否匹配，然后判断Restful实例是否支持这个 请求方法。
      * @return 返回测试结果。
@@ -155,7 +162,7 @@ public class InMappingDef implements Mapping {
         }
         return false;
     }
-    //
+
     @Override
     public Method findMethod(String requestMethod) {
         Method targetMethod = this.httpMapping.get(requestMethod);
@@ -164,6 +171,7 @@ public class InMappingDef implements Mapping {
         }
         return targetMethod;
     }
+
     public boolean isAsync(HttpServletRequest request) {
         Method targetMethod = this.findMethod(request);
         if (targetMethod == null) {
@@ -172,13 +180,13 @@ public class InMappingDef implements Mapping {
         AsyncSupported async = this.asyncMethod.contains(targetMethod) ? AsyncSupported.yes : this.defaultAsync;
         return AsyncSupported.yes == async;
     }
-    //
+
     @Override
     public String toString() {
         return String.format("pattern=%s ,methodSet=%s ,type %s", //
                 this.mappingTo, StringUtils.join(this.httpMapping.keySet().toArray(), ","), this.getTargetType());
     }
-    //
+
     private String evalRequestPath(HttpServletRequest request) {
         String contextPath = request.getContextPath();
         String requestPath = request.getRequestURI();

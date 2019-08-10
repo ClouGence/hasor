@@ -15,16 +15,23 @@
  */
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
-import net.hasor.utils.Iterators;
+import net.hasor.core.spi.SpiTrigger;
 import net.hasor.utils.future.BasicFuture;
-import net.hasor.web.*;
-import net.hasor.web.definition.AbstractDefinition;
+import net.hasor.web.Invoker;
+import net.hasor.web.InvokerFilter;
+import net.hasor.web.Mapping;
+import net.hasor.web.binder.FilterDef;
+import net.hasor.web.binder.MappingDef;
+import net.hasor.web.binder.OneConfig;
+import net.hasor.web.spi.MappingDiscoverer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 上下文。
@@ -32,57 +39,38 @@ import java.util.*;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class InvokerContext {
-    protected static Logger               logger         = LoggerFactory.getLogger(InvokerContext.class);
-    private          AppContext           appContext     = null;
-    private          Mapping[]            invokeArray    = new Mapping[0];
-    private          AbstractDefinition[] filters        = new AbstractDefinition[0];
-    private          RootInvokerCreater   invokerCreater = null;
+    protected static Logger             logger         = LoggerFactory.getLogger(InvokerContext.class);
+    private          AppContext         appContext     = null;
+    private          Mapping[]          invokeArray    = new Mapping[0];
+    private          FilterDef[]        filters        = new FilterDef[0];
+    private          RootInvokerCreater invokerCreater = null;
 
-    public void initContext(final AppContext appContext, final Map<String, String> configMap) throws Throwable {
+    public void initContext(final AppContext appContext, final OneConfig configMap) throws Throwable {
         this.appContext = Objects.requireNonNull(appContext);
         //
         // .MappingData
-        List<InMappingDef> mappingList = appContext.findBindingBean(InMappingDef.class);
-        mappingList.sort(Comparator.comparingLong(InMappingDef::getIndex));
+        List<MappingDef> mappingList = appContext.findBindingBean(MappingDef.class);
+        mappingList.sort(Comparator.comparingLong(MappingDef::getIndex));
         this.invokeArray = mappingList.toArray(new Mapping[0]);
         for (Mapping inMapping : this.invokeArray) {
             logger.info("mapingTo -> type ‘{}’ mappingTo: ‘{}’.", inMapping.getTargetType().getBindType(), inMapping.getMappingTo());
         }
         //
         // .discover
-        List<MappingDiscoverer> setupList = appContext.findBindingBean(MappingDiscoverer.class);
-        for (MappingDiscoverer setup : setupList) {
-            for (Mapping mapping : this.invokeArray) {
-                setup.discover(mapping);
-            }
+        SpiTrigger spiTrigger = appContext.getInstance(SpiTrigger.class);
+        for (Mapping mapping : invokeArray) {
+            spiTrigger.callSpi(MappingDiscoverer.class, listener -> {
+                listener.discover(mapping);
+            });
         }
         //
-        // .Filter Config
-        final Map<String, String> config = Collections.unmodifiableMap(new HashMap<>(configMap));
-        final InvokerConfig filterConfig = new InvokerConfig() {
-            @Override
-            public String getInitParameter(String name) {
-                return config.get(name);
-            }
-
-            @Override
-            public Enumeration<String> getInitParameterNames() {
-                return Iterators.asEnumeration(config.keySet().iterator());
-            }
-
-            @Override
-            public AppContext getAppContext() {
-                return appContext;
-            }
-        };
-        //
         // .Filters
-        this.filters = appContext.findBindingBean(AbstractDefinition.class).stream()//
-                .sorted(Comparator.comparingLong(AbstractDefinition::getIndex))     //
-                .toArray(AbstractDefinition[]::new);                                //
+        this.filters = appContext.findBindingBean(FilterDef.class).stream()//
+                .sorted(Comparator.comparingLong(FilterDef::getIndex))     //
+                .toArray(FilterDef[]::new);                                //
         // .init
-        for (InvokerFilter filter : this.filters) {
-            filter.init(filterConfig);
+        for (FilterDef filter : this.filters) {
+            filter.init(configMap);
         }
         // .creater
         this.invokerCreater = new RootInvokerCreater(appContext);

@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.servlet.AsyncContext;
 import java.lang.reflect.Method;
+
 /**
  * Servlet 3 异步请求处理
  * @version : 2013-4-13
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AsyncInvocationWorker implements Runnable {
-    protected Logger       logger = LoggerFactory.getLogger(getClass());
-    private   AsyncContext asyncContext;
-    private   Method       targetMethod;
-    //
+    private AsyncContext asyncContext;
+    private Method       targetMethod;
+
     public AsyncInvocationWorker(AsyncContext asyncContext, Method targetMethod) {
         this.asyncContext = asyncContext;
         this.targetMethod = targetMethod;
     }
+
     @Override
     public void run() {
         try {
@@ -43,6 +41,7 @@ public abstract class AsyncInvocationWorker implements Runnable {
             this.asyncContext.complete();
         }
     }
+
     public abstract void doWork(Method targetMethod) throws Throwable;
 
     public abstract void doWorkWhenError(Method targetMethod, Throwable e);

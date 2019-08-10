@@ -20,7 +20,7 @@ import net.hasor.utils.StringUtils;
 import net.hasor.web.*;
 import net.hasor.web.annotation.Produces;
 import net.hasor.web.annotation.Render;
-import net.hasor.web.definition.RenderDefinition;
+import net.hasor.web.binder.RenderDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

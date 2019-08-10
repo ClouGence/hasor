@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.invoker;
+package net.hasor.web.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.web.MimeType;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.listener.ListenerPipeline;
-import net.hasor.web.listener.ManagedListenerPipeline;
 import net.hasor.web.mime.MimeTypeSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,12 +81,9 @@ public class InvokerWebApiBinderCreater implements ApiBinderCreater<WebApiBinder
             curVersion = ServletVersion.V3_1;
         } catch (Throwable e) { /* 忽略 */ }
         //
-        ManagedListenerPipeline pipeline = new ManagedListenerPipeline();
-        //
         // .Binder
         apiBinder.bindType(ServletContext.class).toInstance(servletContext);
         apiBinder.bindType(ServletVersion.class).toInstance(curVersion);
-        apiBinder.bindType(ListenerPipeline.class).toInstance(pipeline);
         //
         return new InvokerWebApiBinder(curVersion, mimeTypeContext, apiBinder);
     }

@@ -21,5 +21,5 @@ package net.hasor.web;
  */
 public interface Controller {
     /**在处理新请求之前，初始化这个控制器。*/
-    public void initController(Invoker renderData);
+    public void initController(Invoker invoker) throws Throwable;
 }

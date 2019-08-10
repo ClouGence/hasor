@@ -13,14 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
 /**
- * 控制器发现，每当发现一个控制器时都会调用这个接口。
- * @version : 2016-12-26
- * @author 赵永春 (zyc@hasor.net)
+ * Definitions。
  */
-@FunctionalInterface
-public interface MappingDiscoverer {
-    /** 发现控制器 */
-    public void discover(Mapping mappingData);
-}
+package net.hasor.web.binder;

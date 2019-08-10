@@ -16,7 +16,7 @@
 package net.hasor.web.invoker;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;
-import net.hasor.web.definition.AbstractDefinition;
+import net.hasor.web.binder.FilterDef;
 
 /**
  *
@@ -24,11 +24,11 @@ import net.hasor.web.definition.AbstractDefinition;
  * @author 赵永春 (zyc@hasor.net)
  */
 class InvokerChainInvocation implements InvokerChain {
-    private final AbstractDefinition[] filters;
-    private final InvokerChain         chain;
-    private       int                  index = -1;
+    private final FilterDef[]  filters;
+    private final InvokerChain chain;
+    private       int          index = -1;
 
-    public InvokerChainInvocation(final AbstractDefinition[] filters, final InvokerChain chain) {
+    public InvokerChainInvocation(final FilterDef[] filters, final InvokerChain chain) {
         this.filters = filters;
         this.chain = chain;
     }

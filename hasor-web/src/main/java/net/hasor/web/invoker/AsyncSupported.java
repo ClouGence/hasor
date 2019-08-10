@@ -20,5 +20,6 @@ package net.hasor.web.invoker;
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum AsyncSupported {
-    yes(), no(),;
+    yes(),  //
+    no(),   //
 }

@@ -18,10 +18,10 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.Settings;
+import net.hasor.core.spi.SpiTrigger;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.StringUtils;
-import net.hasor.web.listener.ListenerPipeline;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,10 +39,10 @@ import java.util.Properties;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RuntimeListener implements ServletContextListener, HttpSessionListener, ServletRequestListener {
-    protected           Logger           logger           = LoggerFactory.getLogger(getClass());
-    public static final String           AppContextName   = AppContext.class.getName();
-    private             AppContext       appContext       = null;
-    private             ListenerPipeline listenerPipeline = null;
+    protected           Logger     logger         = LoggerFactory.getLogger(getClass());
+    public static final String     AppContextName = AppContext.class.getName();
+    private             AppContext appContext     = null;
+    private             SpiTrigger spiTrigger     = null;
     /*----------------------------------------------------------------------------------------------------*/
 
     /**创建{@link AppContext}对象*/
@@ -103,14 +103,11 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
             Properties properties = this.loadEnvProperties(sc, envProperties);
             Module startModule = this.newRootModule(sc, rootModule);
             this.appContext = this.newHasor(sc, configName, properties).build(startModule);
+            this.spiTrigger = appContext.getInstance(SpiTrigger.class);
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
-        //2.获取SessionListenerPipeline
-        this.listenerPipeline = this.appContext.getInstance(ListenerPipeline.class);
-        this.listenerPipeline.init(this.appContext);
-        logger.info("sessionListenerPipeline created.");
-        //3.放入ServletContext环境。
+        //2.放入ServletContext环境。
         logger.info("ServletContext Attribut is " + RuntimeListener.AppContextName);
         sc.setAttribute(RuntimeListener.AppContextName, this.appContext);
     }
@@ -123,33 +120,33 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
     @Override
     public void contextInitialized(final ServletContextEvent servletContextEvent) {
         this.doInit(servletContextEvent.getServletContext());
-        this.listenerPipeline.contextInitialized(servletContextEvent);
+        this.spiTrigger.callSpi(ServletContextListener.class, listener -> listener.contextInitialized(servletContextEvent));
     }
 
     @Override
     public void contextDestroyed(final ServletContextEvent servletContextEvent) {
-        this.listenerPipeline.contextDestroyed(servletContextEvent);
+        this.spiTrigger.callSpi(ServletContextListener.class, listener -> listener.contextDestroyed(servletContextEvent));
         this.appContext.shutdown();
         this.logger.info("shutdown.");
     }
 
     @Override
     public void sessionCreated(final HttpSessionEvent se) {
-        this.listenerPipeline.sessionCreated(se);
+        this.spiTrigger.callSpi(HttpSessionListener.class, listener -> listener.sessionCreated(se));
     }
 
     @Override
     public void sessionDestroyed(final HttpSessionEvent se) {
-        this.listenerPipeline.sessionDestroyed(se);
+        this.spiTrigger.callSpi(HttpSessionListener.class, listener -> listener.sessionDestroyed(se));
     }
 
     @Override
     public void requestDestroyed(ServletRequestEvent sre) {
-        this.listenerPipeline.requestDestroyed(sre);
+        this.spiTrigger.callSpi(ServletRequestListener.class, listener -> listener.requestDestroyed(sre));
     }
 
     @Override
     public void requestInitialized(ServletRequestEvent sre) {
-        this.listenerPipeline.requestInitialized(sre);
+        this.spiTrigger.callSpi(ServletRequestListener.class, listener -> listener.requestInitialized(sre));
     }
 }

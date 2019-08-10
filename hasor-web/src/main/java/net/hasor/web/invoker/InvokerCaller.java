@@ -16,7 +16,7 @@
 package net.hasor.web.invoker;
 import net.hasor.utils.future.BasicFuture;
 import net.hasor.web.*;
-import net.hasor.web.definition.AbstractDefinition;
+import net.hasor.web.binder.FilterDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,13 +34,13 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller {
-    protected static Logger               logger          = LoggerFactory.getLogger(InvokerCaller.class);
-    private          AbstractDefinition[] filterArrays    = null;
-    private          Supplier<Invoker>    invokerSupplier = null;
+    protected static Logger            logger          = LoggerFactory.getLogger(InvokerCaller.class);
+    private          FilterDef[]       filterArrays    = null;
+    private          Supplier<Invoker> invokerSupplier = null;
 
-    public InvokerCaller(Supplier<Invoker> invokerSupplier, AbstractDefinition[] filterArrays) {
+    public InvokerCaller(Supplier<Invoker> invokerSupplier, FilterDef[] filterArrays) {
         this.invokerSupplier = invokerSupplier;
-        this.filterArrays = (filterArrays == null) ? new AbstractDefinition[0] : filterArrays;
+        this.filterArrays = (filterArrays == null) ? new FilterDef[0] : filterArrays;
     }
 
     /**

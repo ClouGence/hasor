@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.listener;
-import net.hasor.core.AppContext;
-
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletRequestListener;
-import javax.servlet.http.HttpSessionListener;
+package net.hasor.web.spi;
+import net.hasor.web.Mapping;
 
 /**
- *
- * @version : 2013-4-17
+ * 控制器发现，每当发现一个控制器时都会调用这个接口。
+ * @version : 2016-12-26
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface ListenerPipeline extends ServletContextListener, HttpSessionListener, ServletRequestListener {
-    /**初始化Servlet异常钩子。*/
-    public void init(AppContext appContext);
+@FunctionalInterface
+public interface MappingDiscoverer extends java.util.EventListener {
+    /** 发现控制器 */
+    public void discover(Mapping mappingData);
 }

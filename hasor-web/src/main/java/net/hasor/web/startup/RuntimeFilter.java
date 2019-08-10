@@ -18,6 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.ServletVersion;
+import net.hasor.web.binder.OneConfig;
 import net.hasor.web.invoker.ExceuteCaller;
 import net.hasor.web.invoker.InvokerContext;
 import org.slf4j.Logger;
@@ -27,9 +28,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -53,14 +51,6 @@ public class RuntimeFilter implements Filter {
         if (!this.inited.compareAndSet(false, true)) {
             return;
         }
-        Map<String, String> configMap = new HashMap<>();
-        Enumeration<?> names = filterConfig.getInitParameterNames();
-        if (names != null) {
-            while (names.hasMoreElements()) {
-                String name = names.nextElement().toString();
-                configMap.put(name, filterConfig.getInitParameter(name));
-            }
-        }
         // .编码
         AppContext appContext = RuntimeListener.getAppContext(filterConfig.getServletContext());
         this.httpRequestEncoding = appContext.findBindingBean(HTTP_REQUEST_ENCODING_KEY, String.class);
@@ -68,7 +58,7 @@ public class RuntimeFilter implements Filter {
         try {
             this.appContext = appContext;
             this.invokerContext = new InvokerContext();
-            this.invokerContext.initContext(appContext, configMap);
+            this.invokerContext.initContext(appContext, new OneConfig(filterConfig, () -> appContext));
         } catch (ServletException e) {
             throw (ServletException) e;
         } catch (Throwable e) {

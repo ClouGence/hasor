@@ -163,13 +163,10 @@ public interface WebApiBinder extends ApiBinder, MimeType {
      * @see javax.servlet.ServletContextListener
      * @see javax.servlet.http.HttpSessionListener
      * @see javax.servlet.ServletRequestListener
+     * @see #bindSpiListener(Class, EventListener)
      */
-    public default void addWebListener(Class<? extends EventListener> webListenerKey) {
-        BindInfo<EventListener> listenerRegister = bindType(EventListener.class)    //
-                .uniqueName()       //
-                .to(webListenerKey) //
-                .toInfo();          //
-        this.addWebListener(listenerRegister);
+    public default <T extends EventListener> void bindSpiListener(Class<T> spiType, T listener) {
+        this.bindSpiListener(spiType, (Supplier<T>) () -> listener);
     }
 
     /**
@@ -177,58 +174,9 @@ public interface WebApiBinder extends ApiBinder, MimeType {
      * @see javax.servlet.ServletContextListener
      * @see javax.servlet.http.HttpSessionListener
      * @see javax.servlet.ServletRequestListener
+     * @see #bindSpiListener(Class, Supplier)
      */
-    public default void addWebListener(EventListener webListener) {
-        BindInfo<EventListener> listenerRegister = bindType(EventListener.class)//
-                .toInstance(webListener)    //
-                .toInfo();                  //
-        this.addWebListener(listenerRegister);
-    }
-
-    /**
-     * 注册一个 Web Listener
-     * @see javax.servlet.ServletContextListener
-     * @see javax.servlet.http.HttpSessionListener
-     * @see javax.servlet.ServletRequestListener
-     */
-    public default void addWebListener(Supplier<? extends EventListener> targetProvider) {
-        BindInfo<EventListener> listenerRegister = bindType(EventListener.class)    //
-                .toProvider(targetProvider) //
-                .toInfo();                  //
-        this.addWebListener(listenerRegister);
-    }
-
-    /**
-     * 注册一个 Web Listener
-     * @see javax.servlet.ServletContextListener
-     * @see javax.servlet.http.HttpSessionListener
-     * @see javax.servlet.ServletRequestListener
-     */
-    public void addWebListener(BindInfo<? extends EventListener> targetRegister);
-
-    /**添加 MappingDiscoverer*/
-    public default void addDiscoverer(Class<? extends MappingDiscoverer> discoverer) {
-        this.addDiscoverer(this.bindType(MappingDiscoverer.class)   //
-                .to(Objects.requireNonNull(discoverer))             //
-                .toInfo());
-    }
-
-    /**添加 MappingDiscoverer*/
-    public default void addDiscoverer(MappingDiscoverer discoverer) {
-        this.addDiscoverer(this.bindType(MappingDiscoverer.class)   //
-                .toInstance(Objects.requireNonNull(discoverer))     //
-                .toInfo());
-    }
-
-    /**添加 MappingDiscoverer*/
-    public default void addDiscoverer(Supplier<? extends MappingDiscoverer> discoverer) {
-        this.addDiscoverer(this.bindType(MappingDiscoverer.class)   //
-                .toProvider(Objects.requireNonNull(discoverer))     //
-                .toInfo());
-    }
-
-    /**添加 MappingDiscoverer*/
-    public void addDiscoverer(BindInfo<? extends MappingDiscoverer> discoverer);
+    public <T extends EventListener> void bindSpiListener(Class<T> spiType, Supplier<T> listener);
 
     public void addMimeType(String type, String mimeType);
 
