@@ -25,6 +25,7 @@ import net.hasor.core.info.MetaDataAdapter;
 import net.hasor.core.spi.ContextInitializeListener;
 import net.hasor.core.spi.ContextShutdownListener;
 import net.hasor.core.spi.ContextStartListener;
+import net.hasor.core.spi.SpiTrigger;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.ClassUtils;
 import net.hasor.utils.ExceptionUtils;
@@ -341,6 +342,9 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         /*绑定AppContext对象的Provider*/
         apiBinder.bindType(AppContext.class).bothWith(AppContext.class.getName())       //
                 .toProvider(() -> TemplateAppContext.this);
+        /*绑定SpiTrigger对象的Provider*/
+        apiBinder.bindType(SpiTrigger.class).bothWith(SpiTrigger.class.getName())       //
+                .toProvider(() -> getContainer().getSpiContainer());
     }
 
     /**当完成所有 Module 的 installModule 直呼。*/

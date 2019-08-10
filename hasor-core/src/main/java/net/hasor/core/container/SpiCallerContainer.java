@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.core.container;
+import net.hasor.core.spi.SpiTrigger;
 import net.hasor.utils.ExceptionUtils;
 
 import java.util.*;
@@ -28,10 +29,11 @@ import java.util.stream.Stream;
  * @version : 2019年06月20日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class SpiCallerContainer extends AbstractContainer {
+public class SpiCallerContainer extends AbstractContainer implements SpiTrigger {
     private ConcurrentHashMap<Class<?>, List<Supplier<EventListener>>> spiListener = new ConcurrentHashMap<>();
 
     /** 执行 SPI */
+    @Override
     public <T extends EventListener> void callSpi(Class<T> spiType, SpiCaller<T> spiCaller) {
         List<Supplier<EventListener>> listeners = this.spiListener.get(spiType);
         if (listeners == null || listeners.isEmpty()) {
