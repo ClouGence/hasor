@@ -29,11 +29,12 @@ public class InjectContextTest {
         AppContext appContext1 = new AppContextWarp(Hasor.create().asTiny().build());
         //
         String[] bindIDs = appContext1.getBindIDs();
-        assert bindIDs.length == 4;
+        assert bindIDs.length == 5;
         assert bindIDs[0].equals("net.hasor.core.Environment");
         assert bindIDs[1].equals("net.hasor.core.AppContext");
         assert bindIDs[2].equals("net.hasor.core.EventContext");
         assert bindIDs[3].equals("net.hasor.core.Settings");
+        assert bindIDs[4].equals("net.hasor.core.spi.SpiTrigger");
         assert appContext1.getProvider(PojoBean.class).get() instanceof PojoBean;
         //
         Environment env = new StandardEnvironment();

@@ -225,7 +225,7 @@ public class BindInfoContainer extends AbstractContainer implements Observer {
                 BindInfo<?> bindInfo = idDataSource.get(bindID);
                 String name = StringUtils.isBlank(bindInfo.getBindName()) ? null : bindInfo.getBindName();
                 if (names.contains(name)) {
-                    throw new IllegalStateException("conflict definition of the same type" + (StringUtils.isBlank(name) ? "" : (" with name " + name)));
+                    throw new IllegalStateException("conflict type '" + key + "' of same name '" + (StringUtils.isBlank(name) ? "'" : (" with name '" + name + "'")));
                 } else {
                     names.add(name);
                 }

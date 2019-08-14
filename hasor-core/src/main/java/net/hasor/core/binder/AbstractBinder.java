@@ -218,8 +218,14 @@ public abstract class AbstractBinder implements ApiBinder {
         @Override
         public LinkedBindingBuilder<T> uniqueName() {
             String newID = UUID.randomUUID().toString().replace("-", "");
-            this.typeBuilder.setBindID(newID);
             this.typeBuilder.setBindName(newID);
+            return this;
+        }
+
+        @Override
+        public LinkedBindingBuilder<T> uniqueID() {
+            String newID = UUID.randomUUID().toString().replace("-", "");
+            this.typeBuilder.setBindID(newID);
             return this;
         }
 

@@ -123,7 +123,7 @@ public class BindInfoContainerTest {
             infoContainer.init();
             assert false;
         } catch (Exception e) {
-            assert e.getMessage().startsWith("conflict definition of the same type");
+            assert e.getMessage().equals("conflict type 'net.hasor.test.beans.basic.pojo.PojoBean' of same name ''");
         }
     }
 

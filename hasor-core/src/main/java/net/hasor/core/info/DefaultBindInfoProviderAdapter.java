@@ -45,7 +45,7 @@ public class DefaultBindInfoProviderAdapter<T> extends AbstractBindInfoProviderA
 
     public DefaultBindInfoProviderAdapter(Class<T> bindingType) {
         this();
-        this.setBindID(UUID.randomUUID().toString());
+        this.setBindID(UUID.randomUUID().toString().replace("-", ""));
         this.setBindType(bindingType);
     }
 

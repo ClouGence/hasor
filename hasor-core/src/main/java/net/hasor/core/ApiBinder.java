@@ -351,6 +351,12 @@ public interface ApiBinder {
         public LinkedBindingBuilder<T> uniqueName();
 
         /**
+         * 随机取一个不重复的ID(并同时设置ID,为随机ID)。
+         * @return 返回 - {@link LinkedBindingBuilder}。
+         */
+        public LinkedBindingBuilder<T> uniqueID();
+
+        /**
          * 设置一个ID标识符。
          * @param idString id标识符.
          * @return 返回 - {@link NamedBindingBuilder}。
