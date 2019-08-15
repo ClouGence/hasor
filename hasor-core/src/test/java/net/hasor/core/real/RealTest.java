@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.actions.mapping;
-import net.hasor.test.actions.servlet.SimpleServlet;
-import net.hasor.web.annotation.MappingTo;
+package net.hasor.core.real;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import org.junit.Test;
 
-import javax.inject.Singleton;
-
-/**
- * @version : 2017-01-08
- * @author 赵永春 (zyc@hasor.net)
- */
-@Singleton
-@MappingTo("/mappingto_a.do")
-public class MappingServlet extends SimpleServlet {
+public class RealTest {
+    @Test
+    public void realTest() {
+        AppContext appContext = Hasor.create().build();
+        assert appContext.getInstance(AppContext.class) == appContext;
+    }
 }

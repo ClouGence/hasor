@@ -186,7 +186,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
 
         @Override
         public void through(final int index, final Supplier<? extends T> filterProvider, Map<String, String> initParams) {
-            BindInfo<T> filterRegister = bindType(targetType).uniqueName().toProvider(filterProvider).toInfo();
+            BindInfo<T> filterRegister = bindType(targetType).uniqueName().toProvider(filterProvider).asEagerSingleton().toInfo();
             this.through(index, filterRegister, initParams);
         }
 
@@ -241,7 +241,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
 
         @Override
         public void with(final int index, final Supplier<? extends HttpServlet> servletProvider, Map<String, String> initParams) {
-            BindInfo<HttpServlet> servletRegister = bindType(HttpServlet.class).uniqueName().toProvider(servletProvider).toInfo();
+            BindInfo<HttpServlet> servletRegister = bindType(HttpServlet.class).uniqueName().toProvider(servletProvider).asEagerSingleton().toInfo();
             this.with(index, servletRegister, initParams);
         }
 

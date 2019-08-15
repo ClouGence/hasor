@@ -276,7 +276,12 @@ public interface ApiBinder {
 
     public default <T> Supplier<T> getProvider(Class<T> targetType) {
         class TargetSupplierByClass implements AppContextAware, Supplier<T> {
+            private Class<T>   targetType;
             private AppContext appContext = null;
+
+            public TargetSupplierByClass(Class<T> targetType) {
+                this.targetType = targetType;
+            }
 
             @Override
             public void setAppContext(AppContext appContext) {
@@ -288,15 +293,20 @@ public interface ApiBinder {
                 if (this.appContext == null) {
                     throw new IllegalStateException("the current state is not ready.");
                 }
-                return appContext.getInstance(targetType);
+                return appContext.getInstance(this.targetType);
             }
         }
-        return HasorUtils.autoAware(getEnvironment(), new TargetSupplierByClass());
+        return HasorUtils.autoAware(getEnvironment(), new TargetSupplierByClass(targetType));
     }
 
     public default <T> Supplier<T> getProvider(BindInfo<T> targetType) {
         class TargetSupplierByInfo implements AppContextAware, Supplier<T> {
-            private AppContext appContext = null;
+            private BindInfo<T> targetType = null;
+            private AppContext  appContext = null;
+
+            public TargetSupplierByInfo(BindInfo<T> targetType) {
+                this.targetType = targetType;
+            }
 
             @Override
             public void setAppContext(AppContext appContext) {
@@ -308,10 +318,10 @@ public interface ApiBinder {
                 if (this.appContext == null) {
                     throw new IllegalStateException("the current state is not ready.");
                 }
-                return appContext.getInstance(targetType);
+                return appContext.getInstance(this.targetType);
             }
         }
-        return HasorUtils.autoAware(getEnvironment(), new TargetSupplierByInfo());
+        return HasorUtils.autoAware(getEnvironment(), new TargetSupplierByInfo(targetType));
     }
 
     /*--------------------------------------------------------------------------------------Faces*/
@@ -386,7 +396,7 @@ public interface ApiBinder {
          * @return 返回 - {@link OptionPropertyBindingBuilder}。
          */
         public default OptionPropertyBindingBuilder<T> toInstance(final T instance) {
-            return this.toProvider(InstanceProvider.of(instance));
+            return this.toProvider(InstanceProvider.of(instance)).asEagerSingleton();
         }
 
         /**

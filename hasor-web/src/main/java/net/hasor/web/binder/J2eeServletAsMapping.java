@@ -37,7 +37,7 @@ import java.util.function.Supplier;
 public class J2eeServletAsMapping implements Controller {
     private final OneConfig                   initParams;
     private       AtomicBoolean               inited;
-    private       Supplier<? extends Servlet> targetServlet;
+    protected     Supplier<? extends Servlet> targetServlet;
 
     public J2eeServletAsMapping(OneConfig initParams, Supplier<? extends Servlet> j2eeServlet) {
         this.initParams = initParams;

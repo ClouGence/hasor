@@ -37,6 +37,7 @@ public class FilterDef implements InvokerFilter {
     private final OneConfig               initParams;
     //
     private       AtomicBoolean           inited;
+    private       BindInfo<?>             targetType;
     private       Supplier<InvokerFilter> targetFilter;
 
     public FilterDef(int index, UriPatternMatcher patternMatcher, Map<String, String> initParams,//
@@ -46,6 +47,7 @@ public class FilterDef implements InvokerFilter {
         this.patternMatcher = patternMatcher;
         this.initParams = new OneConfig(bindInfo.getBindID(), initParams, appContext);
         this.inited = new AtomicBoolean(false);
+        this.targetType = bindInfo;
         this.targetFilter = new SingleProvider<>(() -> appContext.get().getInstance(bindInfo));
     }
 
@@ -58,6 +60,18 @@ public class FilterDef implements InvokerFilter {
     public boolean matchesInvoker(Invoker invoker) {
         String url = invoker.getRequestPath();
         return this.patternMatcher.matches(url);
+    }
+
+    public BindInfo<?> getTargetType() {
+        return this.targetType;
+    }
+
+    public UriPatternMatcher getMatcher() {
+        return patternMatcher;
+    }
+
+    public InvokerConfig getInitParams() {
+        return initParams;
     }
 
     @Override

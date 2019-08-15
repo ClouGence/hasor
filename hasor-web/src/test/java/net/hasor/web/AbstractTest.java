@@ -13,81 +13,113 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.invoker;
+package net.hasor.web;
 import net.hasor.core.AppContext;
+import net.hasor.core.BindInfo;
+import net.hasor.core.Hasor;
 import net.hasor.core.setting.xml.DefaultXmlNode;
 import net.hasor.utils.Iterators;
 import net.hasor.utils.StringUtils;
-import net.hasor.web.Invoker;
-import net.hasor.web.Mapping;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.net.URL;
 import java.util.*;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.ArgumentMatchers.*;
+
 /**
  * @version : 2016-12-16
  * @author 赵永春 (zyc@hasor.net)
  */
-public class AbstractWebTest {
-    protected Set<AbstractWeb24BinderDataTest.LoadExtEnum> loadInvokerSet = new HashSet<AbstractWeb24BinderDataTest.LoadExtEnum>() {{
-        add(AbstractWeb24BinderDataTest.LoadExtEnum.Web);
-    }};
+public class AbstractTest {
     //
-    public enum LoadExtEnum {
+    public enum LoadModule {
         Web, Render, Valid
     }
-    //
-    //
-    public static DefaultXmlNode invokerWebApiBinderCreaterXmlNode() {
-        // .在禁用 web-hconfig.xml 下 模拟 apiBinderSet 的配置
-        DefaultXmlNode xmlNode = new DefaultXmlNode(null, "binder");
-        xmlNode.getAttributeMap().put("type", "net.hasor.web.WebApiBinder");
-        xmlNode.setText("net.hasor.web.invoker.InvokerWebApiBinderCreater");
-        return xmlNode;
+
+    protected BindInfo<?> bindInfo(Class<?> tClass) {
+        BindInfo targetType = PowerMockito.mock(BindInfo.class);
+        PowerMockito.when(targetType.getBindType()).thenReturn(tClass);
+        return targetType;
     }
-    public static DefaultXmlNode validInvokerCreaterXmlNode() {
-        // .在禁用 web-hconfig.xml 下 模拟 apiBinderSet 的配置
-        DefaultXmlNode xmlNode = new DefaultXmlNode(null, "invokerCreater");
-        xmlNode.getAttributeMap().put("type", "net.hasor.web.valid.ValidInvoker");
-        xmlNode.setText("net.hasor.web.valid.ValidInvokerCreater");
-        return xmlNode;
+
+    /** Mock 2.4 */
+    protected ServletContext servlet24(final String context) {
+        ServletContext servletContext = PowerMockito.mock(ServletContext.class);
+        PowerMockito.when(servletContext.getContextPath()).thenThrow(new UnsupportedOperationException());
+        return servletContext;
     }
-    public static DefaultXmlNode renderInvokerCreaterXmlNode() {
-        // .在禁用 web-hconfig.xml 下 模拟 apiBinderSet 的配置
-        DefaultXmlNode xmlNode = new DefaultXmlNode(null, "invokerCreater");
-        xmlNode.getAttributeMap().put("type", "net.hasor.web.RenderInvoker");
-        xmlNode.setText("net.hasor.web.render.RenderInvokerCreater");
-        return xmlNode;
+
+    /** Mock 2.5 */
+    protected ServletContext servlet25(final String context) {
+        ServletContext servletContext = PowerMockito.mock(ServletContext.class);
+        PowerMockito.when(servletContext.getContextPath()).thenReturn(context);
+        PowerMockito.when(servletContext.getEffectiveMajorVersion()).thenThrow(new UnsupportedOperationException());
+        return servletContext;
     }
-    //
-    //
-    public DefaultXmlNode defaultInvokerCreaterSetXmlNode() {
+
+    /** Mock 3.0 */
+    protected ServletContext servlet30(final String context) {
+        ServletContext servletContext = PowerMockito.mock(ServletContext.class);
+        PowerMockito.when(servletContext.getContextPath()).thenReturn(context);
+        PowerMockito.when(servletContext.getEffectiveMajorVersion()).thenReturn(123);
+        PowerMockito.when(servletContext.getVirtualServerName()).thenThrow(new UnsupportedOperationException());
+        return servletContext;
+    }
+
+    /** Mock 3.1 */
+    protected ServletContext servlet31(final String context) {
+        ServletContext servletContext = PowerMockito.mock(ServletContext.class);
+        PowerMockito.when(servletContext.getContextPath()).thenReturn(context);
+        PowerMockito.when(servletContext.getEffectiveMajorVersion()).thenReturn(123);
+        PowerMockito.when(servletContext.getVirtualServerName()).thenReturn("abc");
+        return servletContext;
+    }
+
+    private DefaultXmlNode defaultInvokerCreaterSetXmlNode(LoadModule... modules) {
         DefaultXmlNode xmlNode = new DefaultXmlNode(null, "invokerCreaterSet");
-        if (loadInvokerSet.contains(LoadExtEnum.Valid)) {
-            xmlNode.getChildren().add(validInvokerCreaterXmlNode());
+        List<LoadModule> moduleSet = Arrays.asList(modules);
+        if (moduleSet.contains(LoadModule.Valid)) {
+            DefaultXmlNode validInvoker = new DefaultXmlNode(null, "invokerCreater");
+            validInvoker.getAttributeMap().put("type", "net.hasor.web.valid.ValidInvoker");
+            validInvoker.setText("net.hasor.web.valid.ValidInvokerCreater");
+            xmlNode.getChildren().add(validInvoker);
         }
-        if (loadInvokerSet.contains(LoadExtEnum.Render)) {
-            xmlNode.getChildren().add(renderInvokerCreaterXmlNode());
+        if (moduleSet.contains(LoadModule.Render)) {
+            DefaultXmlNode renderInvoker = new DefaultXmlNode(null, "invokerCreater");
+            renderInvoker.getAttributeMap().put("type", "net.hasor.web.RenderInvoker");
+            renderInvoker.setText("net.hasor.web.render.RenderInvokerCreater");
+            xmlNode.getChildren().add(renderInvoker);
         }
         return xmlNode;
     }
-    public DefaultXmlNode defaultInnerApiBinderSetXmlNode() {
+
+    private DefaultXmlNode defaultInnerApiBinderSetXmlNode(LoadModule... modules) {
         DefaultXmlNode xmlNode = new DefaultXmlNode(null, "innerApiBinderSet");
-        if (loadInvokerSet.contains(LoadExtEnum.Web)) {
-            xmlNode.getChildren().add(invokerWebApiBinderCreaterXmlNode());
+        List<LoadModule> moduleSet = Arrays.asList(modules);
+        if (moduleSet.contains(LoadModule.Web)) {
+            DefaultXmlNode webBinder = new DefaultXmlNode(null, "binder");
+            webBinder.getAttributeMap().put("type", "net.hasor.web.WebApiBinder");
+            webBinder.setText("net.hasor.web.binder.InvokerWebApiBinderCreater");
+            xmlNode.getChildren().add(webBinder);
         }
         return xmlNode;
     }
-    //
-    //
+
+    protected AppContext buildWebAppContext(WebModule webModule, ServletContext servletContext, LoadModule... modules) {
+        Hasor settings = Hasor.create(servletContext).asCore()//
+                .addSettings("http://test.hasor.net", "hasor.innerApiBinderSet", defaultInnerApiBinderSetXmlNode(modules))//
+                .addSettings("http://test.hasor.net", "hasor.invokerCreaterSet", defaultInvokerCreaterSetXmlNode(modules))//
+                .addModules(webModule);
+        return settings.build();
+    }
+
     private String singleObjectFormMap(Map headerMap, String name) {
         Object[] objectFormMap = multipleObjectFormMap(headerMap, name);
         if (objectFormMap == null || objectFormMap.length == 0) {
@@ -96,6 +128,7 @@ public class AbstractWebTest {
             return objectFormMap[0].toString();
         }
     }
+
     private String[] multipleObjectFormMap(Map headerMap, String name) {
         if (headerMap == null) {
             return null;
@@ -117,11 +150,12 @@ public class AbstractWebTest {
         }
         return new String[] { o.toString() };
     }
-    //
-    protected HttpServletRequest mockRequest(String httpMethod, URL requestURL, AppContext appContext) {
-        return mockRequest(httpMethod, requestURL, appContext, null, null);
+
+    protected HttpServletRequest mockRequest(final String httpMethod, URL requestURL) {
+        return mockRequest(httpMethod, requestURL, null, null, null);
     }
-    protected HttpServletRequest mockRequest(final String httpMethod, URL requestURL, final AppContext appContext, Cookie[] cookies, final Map<String, String> postParams) {
+
+    protected HttpServletRequest mockRequest(final String httpMethod, URL requestURL, Map<String, String[]> headerMap, Cookie[] cookies, final Map<String, String> postParams) {
         //
         final HttpServletRequest request = PowerMockito.mock(HttpServletRequest.class);
         PowerMockito.when(request.getMethod()).thenReturn(httpMethod);
@@ -145,17 +179,9 @@ public class AbstractWebTest {
         PowerMockito.when(request.getRequestDispatcher(anyString())).thenReturn(PowerMockito.mock(RequestDispatcher.class));
         //
         PowerMockito.when(request.getHeader(anyString())).thenAnswer((Answer<String>) invocation -> {
-            if (appContext == null) {
-                return null;
-            }
-            Map headerMap = appContext.findBindingBean("http-header", Map.class);
             return singleObjectFormMap(headerMap, (String) invocation.getArguments()[0]);
         });
         PowerMockito.when(request.getHeaderNames()).thenAnswer((Answer<Enumeration<String>>) invocation -> {
-            if (appContext == null) {
-                return null;
-            }
-            Map headerMap = appContext.findBindingBean("http-header", Map.class);
             if (headerMap == null) {
                 return null;
             }
@@ -163,10 +189,9 @@ public class AbstractWebTest {
             return Iterators.asEnumeration(keySet.iterator());
         });
         PowerMockito.when(request.getHeaders(anyString())).thenAnswer((Answer<Enumeration<String>>) invocation -> {
-            if (appContext == null) {
+            if (headerMap == null) {
                 return null;
             }
-            Map headerMap = appContext.findBindingBean("http-header", Map.class);
             String[] objects = multipleObjectFormMap(headerMap, (String) invocation.getArguments()[0]);
             return Iterators.asEnumeration(Arrays.asList(objects).iterator());
         });
@@ -227,13 +252,5 @@ public class AbstractWebTest {
         }).when(request).removeAttribute(anyString());
         //
         return request;
-    }
-    //
-    //
-    protected Invoker newInvoker(Mapping mapping, HttpServletRequest request, AppContext appContext) {
-        return new InvokerSupplier(mapping, appContext, request, PowerMockito.mock(HttpServletResponse.class));
-    }
-    protected Invoker newInvoker(Mapping mapping, HttpServletRequest request, HttpServletResponse response, final AppContext appContext) {
-        return new InvokerSupplier(mapping, appContext, request, response);
     }
 }

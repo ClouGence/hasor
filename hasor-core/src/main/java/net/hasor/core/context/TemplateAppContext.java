@@ -331,19 +331,19 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
     /**当开始所有 Module 的 installModule 之前。*/
     protected void doBindBefore(ApiBinder apiBinder) {
         /*绑定Settings对象的Provider*/
-        apiBinder.bindType(Settings.class).bothWith(Settings.class.getName())           //
+        apiBinder.bindType(Settings.class).idWith(Settings.class.getName())           //
                 .toProvider(() -> getEnvironment().getSettings());
         /*绑定EventContext对象的Provider*/
-        apiBinder.bindType(EventContext.class).bothWith(EventContext.class.getName())   //
+        apiBinder.bindType(EventContext.class).idWith(EventContext.class.getName())   //
                 .toProvider(() -> getEnvironment().getEventContext());
         /*绑定Environment对象的Provider*/
-        apiBinder.bindType(Environment.class).bothWith(Environment.class.getName())     //
+        apiBinder.bindType(Environment.class).idWith(Environment.class.getName())     //
                 .toProvider(this::getEnvironment);
         /*绑定AppContext对象的Provider*/
-        apiBinder.bindType(AppContext.class).bothWith(AppContext.class.getName())       //
+        apiBinder.bindType(AppContext.class).idWith(AppContext.class.getName())       //
                 .toProvider(() -> TemplateAppContext.this);
         /*绑定SpiTrigger对象的Provider*/
-        apiBinder.bindType(SpiTrigger.class).bothWith(SpiTrigger.class.getName())       //
+        apiBinder.bindType(SpiTrigger.class).idWith(SpiTrigger.class.getName())       //
                 .toProvider(() -> getContainer().getSpiContainer());
     }
 

@@ -13,26 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.definition;
-import net.hasor.core.provider.InstanceProvider;
+package net.hasor.web.binder;
+import net.hasor.core.AppContext;
+import net.hasor.web.AbstractTest;
 import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
 
 import javax.servlet.ServletContext;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-//
-public class UtilsTest {
+
+public class UriPatternMatcherTest extends AbstractTest {
     @Test
-    public void j2eeMapConfigTest() throws Throwable {
-        ServletContext servletContext = PowerMockito.mock(ServletContext.class);
+    public void j2eeMapConfigTest() {
+        ServletContext servletContext = servlet30("/");
+        AppContext appContext = buildWebAppContext(apiBinder -> {
+            //
+        }, servletContext, LoadModule.Web);
+        //
         Map<String, String> initParams = new HashMap<>();
         initParams.put("a1", "a1v");
         initParams.put("a2", "a2v");
         initParams.put("a3", "a3v");
         //
-        OneConfig config = new OneConfig("resourceName", initParams, InstanceProvider.wrap(servletContext));
+        OneConfig config = new OneConfig("resourceName", initParams, () -> appContext);
         //
         assert config.getFilterName().equals(config.getServletName());
         assert config.getFilterName().equals("resourceName");
@@ -52,9 +56,9 @@ public class UtilsTest {
         config = new OneConfig("resourceName", initParams, null);
         assert null == config.getServletContext();
     }
-    //
+
     @Test
-    public void uriPatternMatcherTest1() throws Throwable {
+    public void uriPatternMatcherTest1() {
         UriPatternMatcher matcher = null;
         assert UriPatternType.get(null, null) == null;
         //
@@ -79,9 +83,9 @@ public class UtilsTest {
         assert !matcher.matches(null);
         assert matcher.getPatternType() == UriPatternType.SERVLET;
     }
-    //
+
     @Test
-    public void uriPatternMatcherTest2() throws Throwable {
+    public void uriPatternMatcherTest2() {
         UriPatternMatcher matcher = null;
         assert UriPatternType.get(null, null) == null;
         //

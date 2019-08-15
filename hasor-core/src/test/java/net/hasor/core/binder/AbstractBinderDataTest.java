@@ -15,6 +15,8 @@
  */
 package net.hasor.core.binder;
 import net.hasor.core.container.BindInfoContainer;
+import net.hasor.core.container.ScopContainer;
+import net.hasor.core.container.SpiCallerContainer;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
 import org.mockito.stubbing.Answer;
@@ -56,6 +58,11 @@ public class AbstractBinderDataTest {
         //
         BindInfoBuilderFactory factory = PowerMockito.mock(BindInfoBuilderFactory.class);
         PowerMockito.when(factory.getBindInfoContainer()).thenReturn(bindInfoContainer);
+        //
+        SpiCallerContainer spiContainer = new SpiCallerContainer();
+        ScopContainer scopFactory = new ScopContainer(spiContainer);
+        scopFactory.init();
+        PowerMockito.when(factory.getScopContainer()).thenReturn(scopFactory);
         this.binder = new ApiBinderWrap(new AbstractBinder(new StandardEnvironment(null)) {
             @Override
             protected BindInfoBuilderFactory containerFactory() {

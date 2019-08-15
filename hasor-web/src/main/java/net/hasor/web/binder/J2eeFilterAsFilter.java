@@ -31,7 +31,7 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class J2eeFilterAsFilter implements InvokerFilter, Filter {
-    private Supplier<? extends Filter> j2eeFilter = null;
+    protected Supplier<? extends Filter> j2eeFilter = null;
 
     public J2eeFilterAsFilter(Supplier<? extends Filter> j2eeFilter) {
         this.j2eeFilter = new SingleProvider<>(j2eeFilter);
