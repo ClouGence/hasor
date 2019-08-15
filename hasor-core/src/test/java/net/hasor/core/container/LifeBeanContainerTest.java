@@ -30,7 +30,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ HasorUtils.class })
@@ -63,7 +63,7 @@ public class LifeBeanContainerTest {
     public void lifeTest2() {
         PowerMockito.mockStatic(HasorUtils.class);
         ArrayList<Object> ref = new ArrayList<>();
-        PowerMockito.when(HasorUtils.pushShutdownListener(anyObject(), (EventListener) anyObject())).then(invocationOnMock -> {
+        PowerMockito.when(HasorUtils.pushShutdownListener(any(), (EventListener) any())).then(invocationOnMock -> {
             ref.add(invocationOnMock.getArguments()[1]);
             return null;
         });
@@ -96,7 +96,7 @@ public class LifeBeanContainerTest {
     public void lifeTest3() {
         PowerMockito.mockStatic(HasorUtils.class);
         ArrayList<Object> ref = new ArrayList<>();
-        PowerMockito.when(HasorUtils.pushStartListener(anyObject(), (EventListener) anyObject())).then(invocationOnMock -> {
+        PowerMockito.when(HasorUtils.pushStartListener(any(), (EventListener) any())).then(invocationOnMock -> {
             ref.add(invocationOnMock.getArguments()[1]);
             return null;
         });
@@ -118,7 +118,7 @@ public class LifeBeanContainerTest {
         assert !StaticPublicCallInitBean.isInit();
         //
         //
-        PowerMockito.when(appContext.getInstance((BindInfo) anyObject())).then(invocationOnMock -> {
+        PowerMockito.when(appContext.getInstance((BindInfo) any())).then(invocationOnMock -> {
             return container.providerOnlyBindInfo((BindInfo) invocationOnMock.getArguments()[0], appContext).get();
         });
         for (Object obj : ref) {

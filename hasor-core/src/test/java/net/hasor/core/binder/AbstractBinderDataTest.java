@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * @author 赵永春 (zyc@hasor.net)
@@ -45,7 +45,7 @@ public class AbstractBinderDataTest {
         this.reference = new AtomicReference<>();
         //
         BindInfoContainer bindInfoContainer = PowerMockito.mock(BindInfoContainer.class);
-        PowerMockito.when(bindInfoContainer.createInfoAdapter((Class<?>) anyObject())).thenAnswer((Answer<Object>) invocationOnMock -> {
+        PowerMockito.when(bindInfoContainer.createInfoAdapter((Class<?>) any())).thenAnswer((Answer<Object>) invocationOnMock -> {
             Class<Object> targetType = (Class<Object>) invocationOnMock.getArguments()[0];
             DefaultBindInfoProviderAdapter<Object> adapter = new DefaultBindInfoProviderAdapter<>(targetType);
             Predicate<Class<?>> defaultMatcher = (ignoreMatcher == null) ? (aClass -> false) : ignoreMatcher;

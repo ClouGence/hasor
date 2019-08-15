@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * @version : 2016-12-16
@@ -65,11 +65,11 @@ public class InvocationHandlerTest {
         PowerMockito.mockStatic(HasorUtils.class);
         ArrayList<Object> ref1 = new ArrayList<>();
         ArrayList<Object> ref2 = new ArrayList<>();
-        PowerMockito.when(HasorUtils.pushStartListener(anyObject(), (EventListener) anyObject())).then(invocationOnMock -> {
+        PowerMockito.when(HasorUtils.pushStartListener(any(), (EventListener) any())).then(invocationOnMock -> {
             ref1.add(invocationOnMock.getArguments()[1]);
             return null;
         });
-        PowerMockito.when(HasorUtils.pushShutdownListener(anyObject(), (EventListener) anyObject())).then(invocationOnMock -> {
+        PowerMockito.when(HasorUtils.pushShutdownListener(any(), (EventListener) any())).then(invocationOnMock -> {
             ref2.add(invocationOnMock.getArguments()[1]);
             return null;
         });

@@ -36,7 +36,7 @@ import java.lang.reflect.Constructor;
 import java.util.AbstractMap;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
 public class BasicBeanContainerTest {
@@ -269,7 +269,7 @@ public class BasicBeanContainerTest {
             return container.providerOnlyBindInfo(bindInfo, appContext).get();
         });
         //
-        PowerMockito.when(appContext.findBindingBean(anyString(), anyObject())).then(invoker -> {
+        PowerMockito.when(appContext.findBindingBean(anyString(), any())).then(invoker -> {
             String bindName = invoker.getArguments()[0].toString();
             Class<?> bindType = (Class<?>) invoker.getArguments()[1];
             BindInfo<?> bindInfo = container.getBindInfoContainer().findBindInfo(bindName, bindType);
