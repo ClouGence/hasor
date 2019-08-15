@@ -63,7 +63,7 @@ public class J2eeFilterAsFilter implements InvokerFilter, Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public final void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         this.j2eeFilter.get().doFilter(servletRequest, servletResponse, filterChain);
     }
 

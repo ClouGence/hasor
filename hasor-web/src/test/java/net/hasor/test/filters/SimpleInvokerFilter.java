@@ -20,9 +20,10 @@ import net.hasor.web.InvokerConfig;
 import net.hasor.web.InvokerFilter;
 
 public class SimpleInvokerFilter implements InvokerFilter {
-    private boolean init;
-    private boolean destroy;
-    private boolean doCall;
+    private boolean       init;
+    private boolean       destroy;
+    private boolean       doCall;
+    private InvokerConfig config;
 
     public boolean isInit() {
         return init;
@@ -36,8 +37,13 @@ public class SimpleInvokerFilter implements InvokerFilter {
         return doCall;
     }
 
-    public void init(InvokerConfig filterConfig) {
+    public InvokerConfig getConfig() {
+        return config;
+    }
+
+    public void init(InvokerConfig config) {
         this.init = true;
+        this.config = config;
     }
 
     @Override

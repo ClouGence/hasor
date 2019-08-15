@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.actions.basic;
-import net.hasor.web.annotation.HttpMethod;
+package net.hasor.test.actions.mapping;
+import net.hasor.web.annotation.MappingTo;
 
-public class AnnoDeleteAction {
-    private boolean doCall;
+import javax.inject.Singleton;
 
-    public boolean isDoCall() {
-        return doCall;
-    }
-
-    @HttpMethod("delete")
-    public void doDelete() {
-        doCall = true;
-    }
+/**
+ * @version : 2017-01-08
+ * @author 赵永春 (zyc@hasor.net)
+ */
+@Singleton
+@MappingTo("/mappingto_a.do")
+public class MappingServlet extends SimpleServlet {
 }

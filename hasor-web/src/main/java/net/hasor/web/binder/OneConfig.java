@@ -35,6 +35,11 @@ public class OneConfig extends HashMap<String, String> implements FilterConfig, 
     private String               resourceName;
     private Supplier<AppContext> appContext;
 
+    public OneConfig(String resourceName, Supplier<AppContext> appContext) {
+        this.resourceName = resourceName;
+        this.appContext = appContext;
+    }
+
     public OneConfig(String resourceName, Map<String, String> initParams, Supplier<AppContext> appContext) {
         this.resourceName = resourceName;
         this.appContext = appContext;

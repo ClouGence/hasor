@@ -156,7 +156,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
             throw new IllegalStateException("InvokerFilter must be Singleton.");
         }
         Supplier<AppContext> appContext = getProvider(AppContext.class);
-        FilterDef define = new FilterDef(index, pattern, matcher, initParams, bindInfo, appContext);
+        FilterDef define = new FilterDef(index, matcher, initParams, bindInfo, appContext);
         bindType(FilterDef.class).uniqueName().toInstance(define);
     }
 
@@ -284,7 +284,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
                     MappingDef define = new MappingDef(index, targetInfo, pattern, Matchers.anyMethod(), true);
                     bindType(MappingDef.class).uniqueName().toInstance(define);
                 });
-                logger.info("mapingTo[Object] -> bindID ‘{}’ mappingTo: ‘{}’.", targetInfo.getBindID(), morePatterns);
+                logger.info("mapingTo[{}] -> bindType ‘{}’ mappingTo: ‘{}’.", targetInfo.getBindID(), targetInfo.getBindType(), morePatterns);
             }
         };
     }

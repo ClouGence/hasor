@@ -33,18 +33,16 @@ import java.util.function.Supplier;
  */
 public class FilterDef implements InvokerFilter {
     private final int                     index;
-    private final String                  pattern;
     private final UriPatternMatcher       patternMatcher;
     private final OneConfig               initParams;
     //
     private       AtomicBoolean           inited;
     private       Supplier<InvokerFilter> targetFilter;
 
-    public FilterDef(int index, String pattern, UriPatternMatcher patternMatcher, Map<String, String> initParams,//
+    public FilterDef(int index, UriPatternMatcher patternMatcher, Map<String, String> initParams,//
             BindInfo<? extends InvokerFilter> bindInfo, Supplier<AppContext> appContext//
     ) {
         this.index = index;
-        this.pattern = pattern;
         this.patternMatcher = patternMatcher;
         this.initParams = new OneConfig(bindInfo.getBindID(), initParams, appContext);
         this.inited = new AtomicBoolean(false);
@@ -65,16 +63,18 @@ public class FilterDef implements InvokerFilter {
     @Override
     public String toString() {
         return String.format("pattern=%s ,uriPatternType=%s ,type %s ,initParams=%s ", //
-                this.pattern, this.patternMatcher, this.getClass(), this.initParams);
+                this.patternMatcher.getPattern(), this.patternMatcher, this.getClass(), this.initParams);
     }
 
     @Override
     public final void init(InvokerConfig config) throws Throwable {
-        if (this.inited.compareAndSet(false, true)) {
+        if (!this.inited.compareAndSet(false, true)) {
             return;
         }
-        this.initParams.putConfig(config, true);
-        this.targetFilter.get().init(this.initParams);
+        if (config != null) {
+            this.initParams.putConfig(config, true);
+        }
+        this.targetFilter().init(this.initParams);
     }
 
     public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
@@ -82,15 +82,19 @@ public class FilterDef implements InvokerFilter {
             throw new IllegalStateException("this Filter uninitialized.");
         }
         //
+        return this.targetFilter().doInvoke(invoker, chain);
+    }
+
+    private InvokerFilter targetFilter() {
         InvokerFilter filter = this.targetFilter.get();
         if (filter == null) {
             throw new NullPointerException("target InvokerFilter instance is null.");
         }
-        return filter.doInvoke(invoker, chain);
+        return filter;
     }
 
     public void destroy() {
-        if (this.inited.compareAndSet(true, false)) {
+        if (!this.inited.compareAndSet(true, false)) {
             return;
         }
         this.targetFilter.get().destroy();

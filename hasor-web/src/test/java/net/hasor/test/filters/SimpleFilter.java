@@ -18,9 +18,10 @@ import javax.servlet.*;
 import java.io.IOException;
 
 public class SimpleFilter implements Filter {
-    private boolean init;
-    private boolean destroy;
-    private boolean doCall;
+    private boolean      init;
+    private boolean      destroy;
+    private boolean      doCall;
+    private FilterConfig config;
 
     public boolean isInit() {
         return init;
@@ -34,9 +35,14 @@ public class SimpleFilter implements Filter {
         return doCall;
     }
 
+    public FilterConfig getConfig() {
+        return config;
+    }
+
     @Override
-    public void init(FilterConfig filterConfig) {
+    public void init(FilterConfig config) {
         this.init = true;
+        this.config = config;
     }
 
     @Override

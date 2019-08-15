@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.wrap;
-import net.hasor.web.Controller;
-import net.hasor.web.Invoker;
-import net.hasor.web.annotation.Any;
-
+package net.hasor.test.actions.mapping;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -28,14 +25,39 @@ import java.io.IOException;
  * @version : 2017-01-08
  * @author 赵永春 (zyc@hasor.net)
  */
-public class DefaultServlet extends HttpServlet implements Controller {
-    @Override
-    public void initController(Invoker renderData) {
-        //
+public class SimpleServlet extends HttpServlet {
+    private boolean       init;
+    private boolean       destroy;
+    private boolean       doCall;
+    private ServletConfig config;
+
+    public boolean isInit() {
+        return init;
     }
 
-    @Any
+    public boolean isDestroy() {
+        return destroy;
+    }
+
+    public boolean isDoCall() {
+        return doCall;
+    }
+
+    public ServletConfig getConfig() {
+        return config;
+    }
+
+    public void init(ServletConfig config) {
+        this.init = true;
+        this.config = config;
+    }
+
     @Override
+    public void destroy() {
+        this.destroy = true;
+    }
+
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
+        this.doCall = true;
     }
 }

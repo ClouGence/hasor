@@ -181,6 +181,10 @@ public class MappingDef implements Mapping {
         return AsyncSupported.yes == async;
     }
 
+    public Map<String, Method> getHttpMapping() {
+        return this.httpMapping;
+    }
+
     @Override
     public String toString() {
         return String.format("pattern=%s ,methodSet=%s ,type %s", //

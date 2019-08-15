@@ -29,4 +29,7 @@ public interface UriPatternMatcher {
 
     /** Returns the type of pattern this is. */
     public UriPatternType getPatternType();
+
+    /** Returns the type of pattern this is. */
+    public String getPattern();
 }

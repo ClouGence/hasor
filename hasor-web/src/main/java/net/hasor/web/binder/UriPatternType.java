@@ -81,6 +81,11 @@ public enum UriPatternType {
         public UriPatternType getPatternType() {
             return UriPatternType.SERVLET;
         }
+
+        @Override
+        public String getPattern() {
+            return pattern;
+        }
     }
 
     /**
@@ -102,6 +107,11 @@ public enum UriPatternType {
         @Override
         public UriPatternType getPatternType() {
             return UriPatternType.REGEX;
+        }
+
+        @Override
+        public String getPattern() {
+            return pattern.pattern();
         }
     }
 }

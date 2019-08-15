@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.invoker.beans;
+package net.hasor.test.actions.mapping;
 import net.hasor.web.annotation.Get;
 import net.hasor.web.annotation.HttpMethod;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.annotation.Post;
+
 /**
  * @version : 2017-01-08
  * @author 赵永春 (zyc@hasor.net)
  */
 @MappingTo("/mappingto_b.do")
-public class MappingToTestAction {
-    //
+public class MappingAction {
     @Get
     public void execute1() {
     }
-    //
+
     @Post
     public void execute2() {
     }
-    //
+
     @HttpMethod({ "ADD", HttpMethod.DELETE })
     public void execute3() {
     }

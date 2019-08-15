@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.actions;
-import net.hasor.web.annotation.Any;
-import net.hasor.web.annotation.ParameterGroup;
+package net.hasor.test.actions.async;
+import net.hasor.web.annotation.Async;
+import net.hasor.web.annotation.Get;
 
-import java.util.Map;
+@Async
+public class GetAsyncAction {
+    private boolean doCall;
 
-public class ParamsCallAction {
-    @Any
-    public Map<String, Object> execute(@ParameterGroup() ParamBean paramBean) {
-        return paramBean.buildParams();
+    public boolean isDoCall() {
+        return doCall;
+    }
+
+    @Get
+    public void doCall() {
+        doCall = true;
     }
 }

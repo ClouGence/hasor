@@ -22,6 +22,7 @@ import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Any;
 
 import javax.servlet.Servlet;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,9 +45,17 @@ public class J2eeServletAsMapping implements Controller {
         this.targetServlet = new SingleProvider<>(j2eeServlet);
     }
 
+    public Supplier<? extends Servlet> getTarget() {
+        return targetServlet;
+    }
+
+    public ServletConfig getInitParams() {
+        return initParams;
+    }
+
     @Override
     public void initController(Invoker invoker) throws ServletException {
-        if (this.inited.compareAndSet(false, true)) {
+        if (!this.inited.compareAndSet(false, true)) {
             return;
         }
         // 初始化
@@ -69,7 +78,7 @@ public class J2eeServletAsMapping implements Controller {
 
     /** 销毁过滤器。 */
     public void destroy() {
-        if (this.inited.compareAndSet(true, false)) {
+        if (!this.inited.compareAndSet(true, false)) {
             return;
         }
         this.targetServlet.get().destroy();

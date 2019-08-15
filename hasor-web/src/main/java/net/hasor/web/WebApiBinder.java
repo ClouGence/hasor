@@ -116,6 +116,9 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         if (HttpServlet.class.isAssignableFrom(mabeMappingType)) {
             Arrays.stream(annotationsByType).peek(mappingTo -> {
             }).forEach(mappingTo -> {
+                if (!isSingleton(mabeMappingType)) {
+                    throw new IllegalStateException("HttpServlet " + mabeMappingType + " must be Singleton.");
+                }
                 jeeServlet(mappingTo.value()).with((Class<? extends HttpServlet>) mabeMappingType);
             });
         } else {
