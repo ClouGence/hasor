@@ -23,6 +23,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+
 /**
  * An implementation of Map for JavaBeans which uses introspection to
  * get and put properties in the bean.
@@ -36,7 +37,7 @@ import java.util.*;
  * @author Stephen Colebourne
  */
 class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
-    private transient Object bean;
+    private transient    Object                     bean;
     private transient    HashMap<String, Method>    readMethods      = new HashMap<String, Method>();
     private transient    HashMap<String, Method>    writeMethods     = new HashMap<String, Method>();
     private transient    HashMap<String, Class<?>>  types            = new HashMap<String, Class<?>>();
@@ -48,55 +49,26 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
      * N.B. private & unmodifiable replacement for the (public & static) defaultTransformers instance.
      */
     private static final Map<Class<?>, Transformer> typeTransformers = Collections.unmodifiableMap(createTypeTransformers());
+
     private static Map<Class<?>, Transformer> createTypeTransformers() {
-        Map<Class<?>, Transformer> defaultTransformers = new HashMap<Class<?>, Transformer>();
-        defaultTransformers.put(Boolean.TYPE, new Transformer() {
-            public Object transform(Object input) {
-                return Boolean.valueOf(input.toString());
-            }
-        });
-        defaultTransformers.put(Character.TYPE, new Transformer() {
-            public Object transform(Object input) {
-                return new Character(input.toString().charAt(0));
-            }
-        });
-        defaultTransformers.put(Byte.TYPE, new Transformer() {
-            public Object transform(Object input) {
-                return Byte.valueOf(input.toString());
-            }
-        });
-        defaultTransformers.put(Short.TYPE, new Transformer() {
-            public Object transform(Object input) {
-                return Short.valueOf(input.toString());
-            }
-        });
-        defaultTransformers.put(Integer.TYPE, new Transformer() {
-            public Object transform(Object input) {
-                return Integer.valueOf(input.toString());
-            }
-        });
-        defaultTransformers.put(Long.TYPE, new Transformer() {
-            public Object transform(Object input) {
-                return Long.valueOf(input.toString());
-            }
-        });
-        defaultTransformers.put(Float.TYPE, new Transformer() {
-            public Object transform(Object input) {
-                return Float.valueOf(input.toString());
-            }
-        });
-        defaultTransformers.put(Double.TYPE, new Transformer() {
-            public Object transform(Object input) {
-                return Double.valueOf(input.toString());
-            }
-        });
+        Map<Class<?>, Transformer> defaultTransformers = new HashMap<>();
+        defaultTransformers.put(Boolean.TYPE, input -> Boolean.valueOf(input.toString()));
+        defaultTransformers.put(Character.TYPE, input -> input.toString().charAt(0));
+        defaultTransformers.put(Byte.TYPE, input -> Byte.valueOf(input.toString()));
+        defaultTransformers.put(Short.TYPE, input -> Short.valueOf(input.toString()));
+        defaultTransformers.put(Integer.TYPE, input -> Integer.valueOf(input.toString()));
+        defaultTransformers.put(Long.TYPE, input -> Long.valueOf(input.toString()));
+        defaultTransformers.put(Float.TYPE, input -> Float.valueOf(input.toString()));
+        defaultTransformers.put(Double.TYPE, input -> Double.valueOf(input.toString()));
         return defaultTransformers;
     }
     // Constructors
     //-------------------------------------------------------------------------
+
     /** Constructs a new empty <code>BeanMap</code>. */
     public InterBeanMap() {
     }
+
     /**
      * Constructs a new <code>BeanMap</code> that operates on the specified bean.
      * If the given bean is <code>null</code>, then this map will be empty.
@@ -108,6 +80,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
     }
     // Map interface
     //-------------------------------------------------------------------------
+
     /**
      * Renders a string representation of this object.
      * @return a <code>String</code> representation of this object
@@ -115,6 +88,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
     public String toString() {
         return "BeanMap<" + String.valueOf(bean) + ">";
     }
+
     /**
      * Clone this bean map using the following process: 
      * <ul>
@@ -173,6 +147,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
         }
         return newMap;
     }
+
     /**
      * Puts all of the writable properties from the given BeanMap into this
      * BeanMap. Read-only and Write-only properties will be ignored.
@@ -187,6 +162,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
             }
         }
     }
+
     /**
      * This method reinitializes the bean map to have default values for the
      * bean's properties.  This is accomplished by constructing a new instance
@@ -206,6 +182,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
             throw new UnsupportedOperationException("Could not create new instance of class: " + beanClass);
         }
     }
+
     /**
      * Returns true if the bean defines a property with the given name. <p>
      * The given name must be a <code>String</code>; if not, this method
@@ -222,6 +199,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
         Method method = getReadMethod(name);
         return method != null;
     }
+
     /**
      * Returns true if the bean defines a property whose current value is the given object.
      * @param value  the value to check
@@ -231,6 +209,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
         // use default implementation
         return super.containsValue(value);
     }
+
     /**
      * Returns the value of the bean's property with the given name. <p>
      * The given name must be a {@link String} and must not be 
@@ -261,6 +240,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
         }
         return null;
     }
+
     /**
      * Sets the bean property with the given name to the given value.
      * @param name  the name of the property to set
@@ -294,6 +274,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
         }
         return null;
     }
+
     /**
      * Returns the number of properties defined by the bean.
      * @return the number of properties defined by the bean
@@ -301,6 +282,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
     public int size() {
         return readMethods.size();
     }
+
     /**
      * Get the keys for this BeanMap. <p>
      * Write-only properties are <b>not</b> included in the returned set of
@@ -310,6 +292,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
     public Set<String> keySet() {
         return Collections.unmodifiableSet(readMethods.keySet());
     }
+
     /**
      * Gets a Set of MapEntry objects that are the mappings for this BeanMap. <p>
      * Each MapEntry can be set but not removed.
@@ -320,11 +303,13 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
             public Iterator<Map.Entry<String, Object>> iterator() {
                 return entryIterator();
             }
+
             public int size() {
                 return InterBeanMap.this.readMethods.size();
             }
         });
     }
+
     /**
      * Returns the values for the BeanMap.
      * @return values for the BeanMap. The returned collection is not modifiable.
@@ -338,6 +323,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
     }
     // Helper methods
     //-------------------------------------------------------------------------
+
     /**
      * Returns the type of the property with the given name.
      * @param name  the name of the property
@@ -346,6 +332,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
     public Class<?> getType(String name) {
         return types.get(name);
     }
+
     /**
      * Convenience method for getting an iterator over the keys. <p>
      * Write-only properties will not be returned in the iterator.
@@ -354,6 +341,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
     public Iterator<String> keyIterator() {
         return readMethods.keySet().iterator();
     }
+
     /**
      * Convenience method for getting an iterator over the values.
      * @return an iterator over the values
@@ -364,15 +352,18 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
             public boolean hasNext() {
                 return iter.hasNext();
             }
+
             public Object next() {
                 Object key = iter.next();
                 return get(key);
             }
+
             public void remove() {
                 throw new UnsupportedOperationException("remove() not supported for BeanMap");
             }
         };
     }
+
     /**
      * Convenience method for getting an iterator over the entries.
      * @return an iterator over the entries
@@ -383,11 +374,13 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
             public boolean hasNext() {
                 return iter.hasNext();
             }
+
             public Map.Entry<String, Object> next() {
                 String key = iter.next();
                 Object value = get(key);
                 return new Entry(InterBeanMap.this, key, value);
             }
+
             public void remove() {
                 throw new UnsupportedOperationException("remove() not supported for BeanMap");
             }
@@ -395,6 +388,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
     }
     // Properties
     //-------------------------------------------------------------------------
+
     /**
      * Returns the bean currently being operated on.  The return value may be null if this map is empty.
      * @return the bean being operated on by this map
@@ -402,6 +396,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
     public Object getBean() {
         return bean;
     }
+
     /**
      * Sets the bean to be operated on by this map.  The given value may be null, in which case this map will be empty.
      * @param newBean  the new bean to operate on
@@ -410,6 +405,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
         bean = newBean;
         reinitialise();
     }
+
     /**
      * Returns the accessor for the property with the given name.
      * @param name  the name of the property 
@@ -418,6 +414,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
     public Method getReadMethod(String name) {
         return (Method) readMethods.get(name);
     }
+
     /**
      * Returns the mutator for the property with the given name.
      * @param name  the name of the property
@@ -428,6 +425,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
     }
     // Implementation methods
     //-------------------------------------------------------------------------
+
     /**
      * Returns the accessor for the property with the given name.
      * @param name  the name of the property 
@@ -437,6 +435,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
     protected Method getReadMethod(Object name) {
         return (Method) readMethods.get(name);
     }
+
     /**
      * Returns the mutator for the property with the given name.
      * @param name  the name of the 
@@ -446,6 +445,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
     protected Method getWriteMethod(Object name) {
         return (Method) writeMethods.get(name);
     }
+
     /** Reinitializes this bean.  Called during {@link #setBean(Object)}. Does introspection to find properties. */
     protected void reinitialise() {
         readMethods.clear();
@@ -453,6 +453,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
         types.clear();
         initialise();
     }
+
     private void initialise() {
         if (getBean() == null) {
             return;
@@ -484,6 +485,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
             logWarn(e);
         }
     }
+
     /**
      * Called during a successful {@link #put(Object, Object)} operation.
      * Default implementation does nothing.  Override to be notified of
@@ -497,9 +499,11 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
     }
     // Implementation classes
     //-------------------------------------------------------------------------
+
     /** Map entry used by {@link InterBeanMap}. */
     protected static class Entry extends AbstractMapEntry<String, Object> {
         private InterBeanMap owner;
+
         /**
          * Constructs a new <code>Entry</code>.
          * @param owner  the BeanMap this entry belongs to
@@ -510,6 +514,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
             super(key, value);
             this.owner = owner;
         }
+
         /**
          * Sets the value.
          * @param value  the new value for the entry
@@ -523,6 +528,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
             return oldValue;
         }
     }
+
     /**
      * Creates an array of parameters to pass to the given mutator method.
      * If the given object is not the right type to pass to the method 
@@ -556,6 +562,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
+
     /**
      * Converts the given value to the given type.  First, reflection is
      * is used to find a public constructor declared by the given class 
@@ -602,6 +609,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
             return value;
         }
     }
+
     /**
      * Returns a transformer for the given primitive type.
      *
@@ -612,6 +620,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
     protected Transformer getTypeTransformer(Class<?> aType) {
         return typeTransformers.get(aType);
     }
+
     /**
      * Logs the given exception to <code>System.out</code>.  Used to display
      * warnings while accessing/mutating the bean.
@@ -622,6 +631,7 @@ class InterBeanMap extends AbstractMap<String, Object> implements Cloneable {
         // Deliberately do not use LOG4J or Commons Logging to avoid dependencies
         System.out.println("INFO: Exception: " + ex);
     }
+
     /**
      * Logs the given exception to <code>System.err</code>.  Used to display
      * errors while accessing/mutating the bean.

@@ -28,6 +28,7 @@ import net.hasor.utils.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+
 /**
  * ROU，寻值
  * --
@@ -45,11 +46,12 @@ class ROU implements InsetProcess {
         Type_4, // %
         Type_5, // &
     }
+
     @Override
     public int getOpcode() {
         return ROU;
     }
-    //
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         String rouPath = sequence.currentInst().getString(0);
@@ -99,6 +101,7 @@ class ROU implements InsetProcess {
         //
         throw new InvokerProcessException(getOpcode(), "does not support routing expressions -> " + routeExpression);
     }
+
     //
     protected Object routeByStack(String routePath, FindData local, int startDepth) throws InvokerProcessException {
         if (startDepth > local.getLayerDepth()) {
@@ -126,6 +129,7 @@ class ROU implements InsetProcess {
         //        memStack.findSelf();
         return useData;
     }
+
     public static Object readProperty(Object object, String fieldName) throws Exception {
         if (object == null) {
             return null;

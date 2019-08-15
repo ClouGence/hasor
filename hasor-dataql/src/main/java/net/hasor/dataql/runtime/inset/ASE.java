@@ -21,6 +21,7 @@ import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.dataql.runtime.struts.ResultStruts;
+
 /**
  * ASA、ASM、ASO 三个指令在处理数据时都是用 ResultStruts 进行封装。
  * ASE 指令的目的是拆除 ResultStruts 封装，还原真实结果。
@@ -33,6 +34,7 @@ class ASE implements InsetProcess {
     public int getOpcode() {
         return ASE;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         ResultStruts rs = (ResultStruts) memStack.pop();

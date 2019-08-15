@@ -16,6 +16,7 @@
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
 /**
  * 基础类型值，用于表示【String、Number、Null、Boolean】四种基本类型
  * @author 赵永春 (zyc@hasor.net)
@@ -25,26 +26,28 @@ public class PrimitiveExpression extends Expression {
     public static enum ValueType {
         Boolean, Number, String, Null
     }
-    //
+
     private Object    value;
     private ValueType valueType;
-    //
+
     public PrimitiveExpression(Object value, ValueType valueType) {
         this.value = value;
         this.valueType = valueType;
     }
+
     public Object getValue() {
         return this.value;
     }
+
     public ValueType getValueType() {
         return this.valueType;
     }
+
     @Override
     public String toString() {
         return "Primitive - '" + this.value + "'";
     }
-    //
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         if (this.valueType == ValueType.Boolean) {

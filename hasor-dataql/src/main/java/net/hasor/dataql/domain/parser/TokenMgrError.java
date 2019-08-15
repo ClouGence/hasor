@@ -25,9 +25,9 @@ public class TokenMgrError extends Error {
      */
     private static final long serialVersionUID      = 1L;
 
-  /*
-   * Ordinals for various reasons why an Error of this type can be thrown.
-   */
+    /*
+     * Ordinals for various reasons why an Error of this type can be thrown.
+     */
     /**
      * Lexical error occurred.
      */
@@ -49,6 +49,7 @@ public class TokenMgrError extends Error {
      * one of the above 4 values.
      */
     int errorCode;
+
     /**
      * Replaces unprintable characters by their escaped (or unicode escaped)
      * equivalents in the given string
@@ -96,6 +97,7 @@ public class TokenMgrError extends Error {
         }
         return retval.toString();
     }
+
     /**
      * Returns a detailed message for the Error when it is thrown by the
      * token manager to indicate a lexical error.
@@ -111,6 +113,7 @@ public class TokenMgrError extends Error {
     protected static String LexicalError(boolean EOFSeen, int lexState, int errorLine, int errorColumn, String errorAfter, char curChar) {
         return ("Lexical error at line " + errorLine + ", column " + errorColumn + ".  Encountered: " + (EOFSeen ? "<EOF> " : ("\"" + addEscapes(String.valueOf(curChar)) + "\"") + " (" + (int) curChar + "), ") + "after : \"" + addEscapes(errorAfter) + "\"");
     }
+
     /**
      * You can also modify the body of this method to customize your error messages.
      * For example, cases like LOOP_DETECTED and INVALID_LEXICAL_STATE are not
@@ -124,17 +127,20 @@ public class TokenMgrError extends Error {
         return super.getMessage();
     }
 
-  /*
-   * Constructors of various flavors follow.
-   */
+    /*
+     * Constructors of various flavors follow.
+     */
+
     /** No arg constructor. */
     public TokenMgrError() {
     }
+
     /** Constructor with message and reason. */
     public TokenMgrError(String message, int reason) {
         super(message);
         errorCode = reason;
     }
+
     /** Full Constructor. */
     public TokenMgrError(boolean EOFSeen, int lexState, int errorLine, int errorColumn, String errorAfter, char curChar, int reason) {
         this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);

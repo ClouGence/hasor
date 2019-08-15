@@ -22,6 +22,7 @@ import net.hasor.dataql.domain.compiler.Instruction;
 import net.hasor.dataql.runtime.*;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
+
 /**
  * CALL，指令是用于发起对 UDF 的调用。
  * @author 赵永春 (zyc@hasor.net)
@@ -32,6 +33,7 @@ class CALL implements InsetProcess {
     public int getOpcode() {
         return CALL;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         Instruction instruction = sequence.currentInst();

@@ -16,10 +16,8 @@
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.ProcessException;
-import net.hasor.dataql.domain.compiler.Instruction;
 import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.runtime.InsetProcess;
-import net.hasor.dataql.runtime.InstFilter;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
@@ -28,6 +26,7 @@ import net.hasor.dataql.runtime.struts.ObjectResultStruts;
 import net.hasor.utils.StringUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * ASM，指令处理器。用于将结果作为对象进行处理。如果结果是集合，那么按照对象处理。
  *
@@ -43,6 +42,7 @@ class ASM implements InsetProcess {
     public int getOpcode() {
         return ASM;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         //
@@ -68,23 +68,21 @@ class ASM implements InsetProcess {
         memStack.push(new ObjectResultStruts(toType));
         //
         // .圈定处理结果集的指令集
-        final AtomicInteger dogs = new AtomicInteger(0);
-        InstSequence subSequence = sequence.findSubSequence(new InstFilter() {
-            public boolean isExit(Instruction inst) {
-                //
-                if (ASM == inst.getInstCode() || ASA == inst.getInstCode()) {
-                    dogs.incrementAndGet();
-                    return false;
-                }
-                //
-                if (ASE == inst.getInstCode()) {
-                    dogs.decrementAndGet();
-                    if (dogs.get() == 0) {
-                        return true;
-                    }
-                }
+        final AtomicInteger dogs = new AtomicInteger(0); // <- 用于查找真正结束的那个 ASE
+        InstSequence subSequence = sequence.findSubSequence(inst -> {
+            //
+            if (ASM == inst.getInstCode() || ASA == inst.getInstCode()) {
+                dogs.incrementAndGet();
                 return false;
             }
+            //
+            if (ASE == inst.getInstCode()) {
+                dogs.decrementAndGet();
+                if (dogs.get() == 0) {
+                    return true;
+                }
+            }
+            return false;
         });
         //
         // .对结果集进行迭代处理

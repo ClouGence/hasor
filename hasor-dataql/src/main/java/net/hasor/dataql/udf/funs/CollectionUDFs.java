@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.udf.funs;
 import java.util.*;
+
 /**
  * 集合函数基类
  * @author 赵永春 (zyc@hasor.net)
@@ -25,11 +26,11 @@ public class CollectionUDFs {
     public static Collection<Object> foreach(Object collection) {
         Collection<Object> listData = null;
         if (collection == null) {
-            listData = new ArrayList<Object>();
+            listData = new ArrayList<>();
         } else {
             if (!(collection instanceof Collection)) {
                 if (collection.getClass().isArray()) {
-                    listData = new ArrayList<Object>();
+                    listData = new ArrayList<>();
                     for (Object obj : (Object[]) collection) {
                         listData.add(obj);
                     }
@@ -43,19 +44,20 @@ public class CollectionUDFs {
         //
         return listData;
     }
-    //
+
     /** 将一个对象添加到另外一个集合中 */
     public static Object addTo(Object newValue, Object collection) {
         if (collection == null) {
             return null;
         }
         //
-        List<Object> destList = new ArrayList<Object>(foreach(collection));
-        List<Object> srcList = new ArrayList<Object>(foreach(newValue));
+        List<Object> destList = new ArrayList<>(foreach(collection));
+        List<Object> srcList = new ArrayList<>(foreach(newValue));
         destList.addAll(srcList);
         //
         return destList;
     }
+
     /** 取第一个元素 */
     public static Object first(Object collection) {
         if (collection == null) {
@@ -69,6 +71,7 @@ public class CollectionUDFs {
         //
         return objects.iterator().next();
     }
+
     /** 取最后一个元素 */
     public static Object last(Object collection) {
         if (collection == null) {
@@ -92,6 +95,7 @@ public class CollectionUDFs {
             return curData;
         }
     }
+
     /** 截取一部分，返回一个集合 */
     public static List<Object> limit(Object collection, int startInt, int limitInt) {
         Collection<Object> objects = foreach(collection);

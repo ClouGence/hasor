@@ -22,21 +22,24 @@ package net.hasor.dataql.domain.compiler;
 public class Label {
     private String  labelID;
     private Integer index;
+
     Label(int labelID) {
         this.labelID = "label_" + labelID;
     }
-    //
+
     public String getID() {
         return this.labelID;
     }
+
     public Integer getIndex() {
         return this.index;
     }
-    //
+
     @Override
     public String toString() {
         return this.index == null ? "null" : this.index.toString();
     }
+
     void updateIndex(int index) {
         this.index = index;
     }

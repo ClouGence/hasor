@@ -16,6 +16,7 @@
 package net.hasor.dataql.binder;
 import net.hasor.dataql.Query;
 import net.hasor.dataql.domain.parser.ParseException;
+
 /**
  * DataQL 上下文。
  * @author 赵永春 (zyc@hasor.net)

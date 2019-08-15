@@ -16,21 +16,19 @@
 package net.hasor.dataql.runtime.inset;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.ProcessException;
-import net.hasor.dataql.domain.compiler.Instruction;
 import net.hasor.dataql.result.ObjectModel;
 import net.hasor.dataql.runtime.InsetProcess;
-import net.hasor.dataql.runtime.InstFilter;
 import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.dataql.runtime.struts.ListResultStruts;
+import net.hasor.dataql.udf.funs.CollectionUDFs;
 import net.hasor.utils.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * ASA，指令处理器。用于将结果作为 集合进行处理。如果结果是单条而非集合，那么结果会被先转换为 只有一个元素的 List 在进行处理。
  *
@@ -46,6 +44,7 @@ class ASA implements InsetProcess {
     public int getOpcode() {
         return ASA;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         //
@@ -71,27 +70,25 @@ class ASA implements InsetProcess {
         memStack.push(new ListResultStruts(toType));
         //
         // .圈定处理结果集的指令集
-        final AtomicInteger dogs = new AtomicInteger(0);
-        InstSequence subSequence = sequence.findSubSequence(new InstFilter() {
-            public boolean isExit(Instruction inst) {
-                //
-                if (ASM == inst.getInstCode() || ASA == inst.getInstCode()) {
-                    dogs.incrementAndGet();
-                    return false;
-                }
-                //
-                if (ASE == inst.getInstCode()) {
-                    dogs.decrementAndGet();
-                    if (dogs.get() == 0) {
-                        return true;
-                    }
-                }
+        final AtomicInteger dogs = new AtomicInteger(0); // <- 用于查找真正结束的那个 ASE
+        InstSequence subSequence = sequence.findSubSequence(inst -> {
+            //
+            if (ASM == inst.getInstCode() || ASA == inst.getInstCode()) {
+                dogs.incrementAndGet();
                 return false;
             }
+            //
+            if (ASE == inst.getInstCode()) {
+                dogs.decrementAndGet();
+                if (dogs.get() == 0) {
+                    return true;
+                }
+            }
+            return false;
         });
         //
         // .对结果集进行迭代处理
-        Collection<Object> dataSet = toCollection(result);
+        Collection<Object> dataSet = CollectionUDFs.foreach(result);
         for (Object obj : dataSet) {
             subSequence.reset();    // 重置执行序列
             local.push(obj);        // 设置DS数据源
@@ -101,26 +98,5 @@ class ASA implements InsetProcess {
         //
         // .处理完毕跳到出口
         sequence.jumpTo(subSequence.exitPosition());
-    }
-    private Collection<Object> toCollection(Object curData) {
-        Collection<Object> listData = null;
-        if (curData == null) {
-            listData = new ArrayList<Object>();
-        } else {
-            if (!(curData instanceof Collection)) {
-                if (curData.getClass().isArray()) {
-                    listData = new ArrayList<Object>();
-                    for (Object obj : (Object[]) curData) {
-                        listData.add(obj);
-                    }
-                } else {
-                    listData = Arrays.asList(curData);
-                }
-            } else {
-                listData = (Collection<Object>) curData;
-            }
-        }
-        //
-        return listData;
     }
 }

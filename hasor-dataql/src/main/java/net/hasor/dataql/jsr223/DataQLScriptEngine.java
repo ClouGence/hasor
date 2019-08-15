@@ -30,73 +30,84 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.util.List;
+
 /**
  * JSR223 引擎机制的实现。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-10-19
  */
 public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEngine, Compilable, UdfManager, Option {
-    private final OptionSet optionSet = new OptionSet();
+    private final OptionSet                 optionSet = new OptionSet();
     private final DataQLScriptEngineFactory engineFactory;
     private       ClassLoader               loader;
     private final UdfManager                udfManager;
+
     public DataQLScriptEngine(DataQLScriptEngineFactory engineFactory) {
         this.engineFactory = engineFactory;
         this.loader = getParentLoader();
         this.udfManager = new SimpleUdfManager();
     }
-    //
+
     public ClassLoader getLoader() {
         return loader;
     }
+
     public void setLoader(ClassLoader loader) {
         this.loader = loader;
     }
-    //
+
     // -------------------------------------------------------------------------------------------- Option
     @Override
     public String[] getOptionNames() {
         return this.optionSet.getOptionNames();
     }
+
     @Override
     public Object getOption(String optionKey) {
         return this.optionSet.getOption(optionKey);
     }
+
     @Override
     public void removeOption(String optionKey) {
         this.optionSet.removeOption(optionKey);
     }
+
     @Override
     public void setOptionSet(Option optionSet) {
         this.optionSet.setOptionSet(optionSet);
     }
+
     @Override
     public void setOption(String optionKey, String value) {
         this.optionSet.setOption(optionKey, value);
     }
+
     @Override
     public void setOption(String optionKey, Number value) {
         this.optionSet.setOption(optionKey, value);
     }
+
     @Override
     public void setOption(String optionKey, boolean value) {
         this.optionSet.setOption(optionKey, value);
     }
-    //
+
     // -------------------------------------------------------------------------------------------- UdfManager
     @Override
     public List<UdfSource> getSourceByName(String sourceName) {
         return this.udfManager.getSourceByName(sourceName);
     }
+
     @Override
     public List<String> getSourceNames() {
         return this.udfManager.getSourceNames();
     }
+
     @Override
     public void addSource(UdfSource udfSource) {
         this.udfManager.addSource(udfSource);
     }
-    //
+
     // -------------------------------------------------------------------------------------------- ScriptEngine
     @Override
     public CompiledScript compile(Reader queryString) throws ScriptException {
@@ -108,6 +119,7 @@ public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEn
             throw new ScriptException(e);
         }
     }
+
     @Override
     public CompiledScript compile(String queryString) throws ScriptException {
         try {
@@ -117,7 +129,7 @@ public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEn
             throw new ScriptException(e);
         }
     }
-    //
+
     // -------------------------------------------------------------------------------------------- ScriptEngine
     @Override
     public Object eval(Reader queryString, ScriptContext context) throws ScriptException {
@@ -129,10 +141,12 @@ public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEn
             throw new ScriptException(e);
         }
     }
+
     @Override
     public ScriptEngineFactory getFactory() {
         return this.engineFactory;
     }
+
     private static ClassLoader getParentLoader() {
         // check whether thread context loader can "see" Groovy Script class
         ClassLoader ctxtLoader = Thread.currentThread().getContextClassLoader();
@@ -147,12 +161,12 @@ public class DataQLScriptEngine extends AbstractScriptEngine implements ScriptEn
         // exception was thrown or we get wrong class
         return Query.class.getClassLoader();
     }
-    //
-    //
+
     @Override
     public Object eval(String queryString, ScriptContext context) throws ScriptException {
         return compile(queryString).eval(context);
     }
+
     @Override
     public Bindings createBindings() {
         return new SimpleBindings();

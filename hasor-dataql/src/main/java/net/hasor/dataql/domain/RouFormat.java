@@ -17,6 +17,7 @@ package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 import net.hasor.dataql.domain.compiler.Opcodes;
+
 /**
  * 返回值需要预先路由一下。
  * @author 赵永春 (zyc@hasor.net)
@@ -25,12 +26,13 @@ import net.hasor.dataql.domain.compiler.Opcodes;
 public class RouFormat extends Format {
     private String routePath;
     private Format realFormat;
+
     public RouFormat(String routePath, Format realFormat) {
         super();
         this.routePath = routePath;
         this.realFormat = realFormat;
     }
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         queue.inst(Opcodes.ROU, this.routePath);

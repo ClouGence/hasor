@@ -21,6 +21,7 @@ import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.dataql.runtime.struts.OriResultStruts;
+
 /**
  * ASO，指令处理器。用于将结果作为原封不动的进行返回。
  *
@@ -36,6 +37,7 @@ class ASO implements InsetProcess {
     public int getOpcode() {
         return ASO;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         Object result = memStack.pop();

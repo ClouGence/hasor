@@ -20,6 +20,7 @@ import net.hasor.dataql.UdfSource;
 import net.hasor.utils.StringUtils;
 
 import java.util.*;
+
 /**
  * Udf查找器。
  * @author 赵永春 (zyc@hasor.net)
@@ -28,7 +29,7 @@ import java.util.*;
 class UdfFinder extends HashMap<String, UDF> {
     private List<UdfSource>        sourceList                 = new ArrayList<UdfSource>();
     private Map<String, UdfSource> resourceMappingSourceCache = new HashMap<String, UdfSource>();
-    //
+
     public UdfFinder(UdfManager udfManager) {
         List<String> sourceNames = udfManager.getSourceNames();
         if (sourceNames == null || sourceNames.isEmpty()) {
@@ -62,9 +63,11 @@ class UdfFinder extends HashMap<String, UDF> {
             }
         }
     }
+
     public UDF loadUdf(Class<?> aClass) throws Throwable {
         return (UDF) aClass.newInstance();
     }
+
     public UDF loadResource(String resourceName, QueryEngineImpl sourceEngine) throws Throwable {
         UdfSource udfSource = this.resourceMappingSourceCache.get(resourceName);
         if (udfSource != null) {

@@ -16,6 +16,7 @@
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
 /**
  * return指令
  * @author 赵永春 (zyc@hasor.net)
@@ -23,11 +24,12 @@ import net.hasor.dataql.domain.compiler.InstQueue;
  */
 public class ReturnInst extends Inst {
     private Expression result;
+
     public ReturnInst(Expression result) {
         super();
         this.result = result;
     }
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         this.result.doCompiler(queue, stackTree);

@@ -27,6 +27,7 @@ import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.dataql.runtime.struts.LambdaCall;
 import net.hasor.utils.StringUtils;
+
 /**
  * LCALL，使用一个外部包来执行dataql。
  * @author 赵永春 (zyc@hasor.net)
@@ -37,6 +38,7 @@ class LCALL implements InsetProcess {
     public int getOpcode() {
         return LCALL;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         Instruction inst = sequence.currentInst();

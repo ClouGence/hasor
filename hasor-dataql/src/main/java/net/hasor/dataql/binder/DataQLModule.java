@@ -15,11 +15,10 @@
  */
 package net.hasor.dataql.binder;
 import net.hasor.core.*;
-import net.hasor.dataql.Query;
+import net.hasor.dataql.UdfManager;
 import net.hasor.dataql.UdfSource;
 import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.domain.compiler.QueryCompiler;
-import net.hasor.dataql.domain.parser.ParseException;
 import net.hasor.dataql.runtime.QueryEngineImpl;
 import net.hasor.dataql.udf.LoaderUdfSource;
 import net.hasor.dataql.udf.SimpleUdfManager;
@@ -29,55 +28,52 @@ import net.hasor.dataql.udf.source.TypeUdfSource;
 import net.hasor.utils.StringUtils;
 
 import java.util.List;
+
 /**
  * 提供 <code>DataQL</code> 初始化功能。
  * @version : 2017-6-08
  * @author 赵永春 (zyc@byshell.org)
  */
 public class DataQLModule implements Module {
-    public void loadModule(final ApiBinder apiBinder) throws Throwable {
-        final SimpleUdfManager udfManager = new SimpleUdfManager();
+    private void loadUDF(AppContext appContext, UdfManager udfManager) {
+        SimpleUdfSource simpleUdfSource = new SimpleUdfSource();
+        List<DefineUDF> udfList = appContext.findBindingBean(DefineUDF.class);
+        for (DefineUDF define : udfList) {
+            if (define == null || StringUtils.isBlank(define.getName())) {
+                continue;
+            }
+            simpleUdfSource.addUdf(define.getName(), define);
+        }
+        udfManager.addSource(simpleUdfSource);
+        //
+        List<DefineSource> udfSourceList = appContext.findBindingBean(DefineSource.class);
+        for (DefineSource define : udfSourceList) {
+            BindInfo<? extends UdfSource> bindInfo = define.getTarget();
+            if (bindInfo == null) {
+                continue;
+            }
+            UdfSource instance = appContext.getInstance(bindInfo);
+            if (instance == null) {
+                continue;
+            }
+            udfManager.addSource(instance);
+        }
+    }
+
+    public void loadModule(final ApiBinder apiBinder) {
+        SimpleUdfManager udfManager = new SimpleUdfManager();
         //
         // .启动过程
-        Hasor.addStartListener(apiBinder.getEnvironment(), new EventListener() {
-            @Override
-            public void onEvent(String event, Object eventData) throws Throwable {
-                AppContext appContext = (AppContext) eventData;
-                //
-                SimpleUdfSource simpleUdfSource = new SimpleUdfSource();
-                List<DefineUDF> udfList = appContext.findBindingBean(DefineUDF.class);
-                for (DefineUDF define : udfList) {
-                    if (define == null || StringUtils.isBlank(define.getName())) {
-                        continue;
-                    }
-                    simpleUdfSource.addUdf(define.getName(), define);
-                }
-                udfManager.addSource(simpleUdfSource);
-                //
-                List<DefineSource> udfSourceList = appContext.findBindingBean(DefineSource.class);
-                for (DefineSource define : udfSourceList) {
-                    BindInfo<? extends UdfSource> bindInfo = define.getTarget();
-                    if (bindInfo == null) {
-                        continue;
-                    }
-                    UdfSource instance = appContext.getInstance(bindInfo);
-                    if (instance == null) {
-                        continue;
-                    }
-                    udfManager.addSource(instance);
-                }
-            }
+        HasorUtils.pushStartListener(apiBinder.getEnvironment(), (event, eventData) -> {
+            loadUDF((AppContext) eventData, udfManager);
         });
         //
         // .初始化 DataQL
-        apiBinder.bindType(DataQL.class).toInstance(new DataQL() {
-            @Override
-            public Query createQuery(String qlString) throws ParseException {
-                QIL queryType = QueryCompiler.compilerQuery(qlString);
-                QueryEngineImpl queryEngine = new QueryEngineImpl(udfManager, queryType);
-                queryEngine.setClassLoader(apiBinder.getEnvironment().getClassLoader());
-                return queryEngine.newQuery();
-            }
+        apiBinder.bindType(DataQL.class).toInstance(qlString -> {
+            QIL queryType = QueryCompiler.compilerQuery(qlString);
+            QueryEngineImpl queryEngine = new QueryEngineImpl(udfManager, queryType);
+            queryEngine.setClassLoader(apiBinder.getEnvironment().getClassLoader());
+            return queryEngine.newQuery();
         });
         //
         // .UDFs(内置集合函数)
@@ -86,6 +82,6 @@ public class DataQLModule implements Module {
             return;
         }
         dataBinder.addUdfSource(new LoaderUdfSource(apiBinder.getEnvironment().getClassLoader()));
-        dataBinder.addUdfSource(new TypeUdfSource<CollectionUDFs>(CollectionUDFs.class, null, null));
+        dataBinder.addUdfSource(new TypeUdfSource<>(CollectionUDFs.class, null, null));
     }
 }

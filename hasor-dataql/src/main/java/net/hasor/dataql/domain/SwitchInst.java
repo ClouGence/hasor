@@ -20,6 +20,7 @@ import net.hasor.dataql.domain.compiler.Label;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * if指令
  * @author 赵永春 (zyc@hasor.net)
@@ -30,12 +31,14 @@ public class SwitchInst extends Inst {
         private Expression testExpression;
         private BlockSet   instBlockSet;
     }
+
     private List<SwitchExpression> testBlockSet;
     private BlockSet               elseBlockSet;
+
     public SwitchInst() {
-        this.testBlockSet = new ArrayList<SwitchExpression>();
+        this.testBlockSet = new ArrayList<>();
     }
-    //
+
     /** 添加条件分支 */
     public void addBlockSet(Expression testExp, BlockSet instBlockSet) {
         SwitchExpression se = new SwitchExpression();
@@ -43,12 +46,12 @@ public class SwitchInst extends Inst {
         se.instBlockSet = instBlockSet;
         this.testBlockSet.add(se);
     }
+
     /** 设置默认条件分支 */
     public void setElseBlockSet(BlockSet instBlockSet) {
         this.elseBlockSet = instBlockSet;
     }
-    //
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         if (this.testBlockSet.isEmpty()) {

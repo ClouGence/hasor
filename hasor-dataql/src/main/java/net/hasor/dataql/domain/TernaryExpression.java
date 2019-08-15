@@ -17,6 +17,7 @@ package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 import net.hasor.dataql.domain.compiler.Label;
+
 /**
  * 三元运算表达式
  * @author 赵永春 (zyc@hasor.net)
@@ -26,13 +27,14 @@ public class TernaryExpression extends Expression {
     private Expression testExpression;  //三元运算符，条件表达式
     private Expression thenExpression;  //第一个表达式
     private Expression elseExpression;  //第二个表达式
+
     public TernaryExpression(Expression testExp, Expression thenExp, Expression elseExp) {
         super();
         this.testExpression = testExp;
         this.thenExpression = thenExp;
         this.elseExpression = elseExp;
     }
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         Label elseEnterIn = queue.labelDef(); //

@@ -21,10 +21,12 @@ package net.hasor.dataql.domain.parser;
 public class DataQLParserTokenManager implements DataQLParserConstants {
     /** Debug output. */
     public java.io.PrintStream debugStream = System.out;
+
     /** Set debug output. */
     public void setDebugStream(java.io.PrintStream ds) {
         debugStream = ds;
     }
+
     private final int jjStopStringLiteralDfa_0(int pos, long active0, long active1) {
         switch (pos) {
         case 0:
@@ -87,14 +89,17 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
             return -1;
         }
     }
+
     private final int jjStartNfa_0(int pos, long active0, long active1) {
         return jjMoveNfa_0(jjStopStringLiteralDfa_0(pos, active0, active1), pos + 1);
     }
+
     private int jjStopAtPos(int pos, int kind) {
         jjmatchedKind = kind;
         jjmatchedPos = pos;
         return pos + 1;
     }
+
     private int jjMoveStringLiteralDfa0_0() {
         switch (curChar) {
         case 10:
@@ -186,6 +191,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
             return jjMoveNfa_0(0, 0);
         }
     }
+
     private int jjMoveStringLiteralDfa1_0(long active0, long active1) {
         try {
             curChar = input_stream.readChar();
@@ -256,6 +262,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         }
         return jjStartNfa_0(0, active0, active1);
     }
+
     private int jjMoveStringLiteralDfa2_0(long old0, long active0, long old1, long active1) {
         if (((active0 &= old0) | (active1 &= old1)) == 0L)
             return jjStartNfa_0(0, old0, old1);
@@ -297,6 +304,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         }
         return jjStartNfa_0(1, active0, active1);
     }
+
     private int jjMoveStringLiteralDfa3_0(long old0, long active0, long old1, long active1) {
         if (((active0 &= old0) | (active1 &= old1)) == 0L)
             return jjStartNfa_0(1, old0, old1);
@@ -337,6 +345,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         }
         return jjStartNfa_0(2, active0, 0L);
     }
+
     private int jjMoveStringLiteralDfa4_0(long old0, long active0) {
         if (((active0 &= old0)) == 0L)
             return jjStartNfa_0(2, old0, 0L);
@@ -368,6 +377,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         }
         return jjStartNfa_0(3, active0, 0L);
     }
+
     private int jjMoveStringLiteralDfa5_0(long old0, long active0) {
         if (((active0 &= old0)) == 0L)
             return jjStartNfa_0(3, old0, 0L);
@@ -401,6 +411,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         }
         return jjStartNfa_0(4, active0, 0L);
     }
+
     private int jjStartNfaWithStates_0(int pos, int kind, int state) {
         jjmatchedKind = kind;
         jjmatchedPos = pos;
@@ -411,6 +422,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         }
         return jjMoveNfa_0(state, pos + 1);
     }
+
     static final long[] jjbitVec0  = { 0xfffffffffffffffeL, 0xffffffffffffffffL, 0xffffffffffffffffL, 0xffffffffffffffffL };
     static final long[] jjbitVec2  = { 0x0L, 0x0L, 0xffffffffffffffffL, 0xffffffffffffffffL };
     static final long[] jjbitVec3  = { 0x1ff00000fffffffeL, 0xffffffffffffc000L, 0xffffffffL, 0x1600000000000000L };
@@ -423,6 +435,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
     static final long[] jjbitVec10 = { 0xffffffffffffffffL, 0xffffffffffffffffL, 0xffffffffffffffffL, 0x3fff000000ffffffL };
     static final long[] jjbitVec11 = { 0x0L, 0xffff000000000000L, 0xffffffffffffffffL, 0x1fffffffffffffffL };
     static final long[] jjbitVec12 = { 0x87ffffff80000000L, 0xfffffffe7fffffffL, 0x7fffffffffffffffL, 0x1cfcfcfcL };
+
     private int jjMoveNfa_0(int startState, int curPos) {
         int startsAt = 0;
         jjnewStateCnt = 49;
@@ -981,7 +994,9 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
             }
         }
     }
+
     static final int[] jjnextStates = { 34, 35, 36, 38, 26, 29, 43, 45, 47, 18, 19, 22, 9, 10, 12, 4, 5, 7, 35, 36, 38, 19, 21, 22, 23, 24, 27, 28, 30, 32, 39, 40, };
+
     private static final boolean jjCanMove_0(int hiByte, int i1, int i2, long l1, long l2) {
         switch (hiByte) {
         case 0:
@@ -992,6 +1007,7 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
             return false;
         }
     }
+
     private static final boolean jjCanMove_1(int hiByte, int i1, int i2, long l1, long l2) {
         switch (hiByte) {
         case 0:
@@ -1018,9 +1034,10 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
             return false;
         }
     }
+
     /** Token literal values. */
-    public static final String[] jjstrLiteralImages = { "", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "\151\146", "\145\154\163\145\151\146", "\145\154\163\145", "\145\156\144", "\162\145\164\165\162\156", "\164\150\162\157\167", "\145\170\151\164", "\166\141\162", "\154\141\155\142\144\141", "\164\162\165\145", "\146\141\154\163\145", "\156\165\154\154", "\157\160\164\151\157\156", "\151\155\160\157\162\164", "\141\163", "\54", "\72", "\77", "\73", "\75", "\47", "\42", "\50", "\51", "\133", "\135", "\173", null, "\175", "\41", "\53",
-            "\55", "\52", "\57", "\45", "\134", "\76", "\76\75", "\74", "\74\75", "\75\75", "\41\75", "\46", "\174", "\136", "\74\74", "\76\76", "\76\76\76", "\174\174", "\46\46", null, null, null, null, null, null, null, null, null, null, "\55\76", "\176", };
+    public static final String[] jjstrLiteralImages = { "", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, "\151\146", "\145\154\163\145\151\146", "\145\154\163\145", "\145\156\144", "\162\145\164\165\162\156", "\164\150\162\157\167", "\145\170\151\164", "\166\141\162", "\154\141\155\142\144\141", "\164\162\165\145", "\146\141\154\163\145", "\156\165\154\154", "\157\160\164\151\157\156", "\151\155\160\157\162\164", "\141\163", "\54", "\72", "\77", "\73", "\75", "\47", "\42", "\50", "\51", "\133", "\135", "\173", null, "\175", "\41", "\53", "\55", "\52", "\57", "\45", "\134", "\76", "\76\75", "\74", "\74\75", "\75\75", "\41\75", "\46", "\174", "\136", "\74\74", "\76\76", "\76\76\76", "\174\174", "\46\46", null, null, null, null, null, null, null, null, null, null, "\55\76", "\176", };
+
     protected Token jjFillToken() {
         final Token t;
         final String curTokenImage;
@@ -1041,12 +1058,14 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         t.endColumn = endColumn;
         return t;
     }
+
     int curLexState     = 0;
     int defaultLexState = 0;
     int jjnewStateCnt;
     int jjround;
     int jjmatchedPos;
     int jjmatchedKind;
+
     /** Get the next Token. */
     public Token getNextToken() {
         Token specialToken = null;
@@ -1116,37 +1135,44 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
             throw new TokenMgrError(EOFSeen, curLexState, error_line, error_column, error_after, curChar, TokenMgrError.LEXICAL_ERROR);
         }
     }
+
     private void jjCheckNAdd(int state) {
         if (jjrounds[state] != jjround) {
             jjstateSet[jjnewStateCnt++] = state;
             jjrounds[state] = jjround;
         }
     }
+
     private void jjAddStates(int start, int end) {
         do {
             jjstateSet[jjnewStateCnt++] = jjnextStates[start];
         } while (start++ != end);
     }
+
     private void jjCheckNAddTwoStates(int state1, int state2) {
         jjCheckNAdd(state1);
         jjCheckNAdd(state2);
     }
+
     private void jjCheckNAddStates(int start, int end) {
         do {
             jjCheckNAdd(jjnextStates[start]);
         } while (start++ != end);
     }
+
     /** Constructor. */
     public DataQLParserTokenManager(JavaCharStream stream) {
         if (JavaCharStream.staticFlag)
             throw new Error("ERROR: Cannot use a static CharStream class with a non-static lexical analyzer.");
         input_stream = stream;
     }
+
     /** Constructor. */
     public DataQLParserTokenManager(JavaCharStream stream, int lexState) {
         ReInit(stream);
         SwitchTo(lexState);
     }
+
     /** Reinitialise parser. */
     public void ReInit(JavaCharStream stream) {
         jjmatchedPos = jjnewStateCnt = 0;
@@ -1154,17 +1180,20 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         input_stream = stream;
         ReInitRounds();
     }
+
     private void ReInitRounds() {
         int i;
         jjround = 0x80000001;
         for (i = 49; i-- > 0; )
             jjrounds[i] = 0x80000000;
     }
+
     /** Reinitialise parser. */
     public void ReInit(JavaCharStream stream, int lexState) {
         ReInit(stream);
         SwitchTo(lexState);
     }
+
     /** Switch to specified lex state. */
     public void SwitchTo(int lexState) {
         if (lexState >= 1 || lexState < 0)
@@ -1172,13 +1201,14 @@ public class DataQLParserTokenManager implements DataQLParserConstants {
         else
             curLexState = lexState;
     }
+
     /** Lexer state names. */
-    public static final String[] lexStateNames = { "DEFAULT", };
-    static final        long[]   jjtoToken     = { 0xfffffffffffff001L, 0x7347L, };
-    static final        long[]   jjtoSkip      = { 0x1feL, 0x0L, };
-    static final        long[]   jjtoSpecial   = { 0x1c0L, 0x0L, };
-    protected JavaCharStream input_stream;
-    private final int[] jjrounds   = new int[49];
-    private final int[] jjstateSet = new int[2 * 49];
-    protected char curChar;
+    public static final String[]       lexStateNames = { "DEFAULT", };
+    static final        long[]         jjtoToken     = { 0xfffffffffffff001L, 0x7347L, };
+    static final        long[]         jjtoSkip      = { 0x1feL, 0x0L, };
+    static final        long[]         jjtoSpecial   = { 0x1c0L, 0x0L, };
+    protected           JavaCharStream input_stream;
+    private final       int[]          jjrounds      = new int[49];
+    private final       int[]          jjstateSet    = new int[2 * 49];
+    protected           char           curChar;
 }

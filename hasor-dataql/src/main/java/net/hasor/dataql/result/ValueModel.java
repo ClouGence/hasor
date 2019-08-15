@@ -16,6 +16,7 @@
 package net.hasor.dataql.result;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
 /**
  * 值类型结果
  * @author 赵永春 (zyc@hasor.net)
@@ -23,13 +24,15 @@ import java.math.BigInteger;
  */
 public class ValueModel implements DataModel {
     private Object value = null;
+
     public ValueModel(Object value) {
         this.value = value;
     }
-    //
+
     public Object getOriValue() {
         return this.value;
     }
+
     public Boolean asBoolean() {
         if (value == null) {
             return null;
@@ -58,9 +61,11 @@ public class ValueModel implements DataModel {
         }
         throw new ClassCastException("can not cast to boolean, value : " + value);
     }
+
     public String asString() {
         return this.value == null ? null : this.value.toString();
     }
+
     public Byte asByte() {
         if (value == null) {
             return null;
@@ -79,6 +84,7 @@ public class ValueModel implements DataModel {
         }
         throw new ClassCastException("can not cast to byte, value : " + value);
     }
+
     public Short asShort() {
         if (value == null) {
             return null;
@@ -97,6 +103,7 @@ public class ValueModel implements DataModel {
         }
         throw new ClassCastException("can not cast to short, value : " + value);
     }
+
     public Integer asInt() {
         if (value == null) {
             return null;
@@ -124,6 +131,7 @@ public class ValueModel implements DataModel {
         }
         throw new ClassCastException("can not cast to int, value : " + value);
     }
+
     public Long asLong() {
         if (value == null) {
             return null;
@@ -149,6 +157,7 @@ public class ValueModel implements DataModel {
         }
         throw new ClassCastException("can not cast to long, value : " + value);
     }
+
     public Float asFloat() {
         if (value == null) {
             return null;
@@ -170,6 +179,7 @@ public class ValueModel implements DataModel {
         }
         throw new ClassCastException("can not cast to float, value : " + value);
     }
+
     public Double asDouble() {
         if (value == null) {
             return null;
@@ -191,6 +201,7 @@ public class ValueModel implements DataModel {
         }
         throw new ClassCastException("can not cast to double, value : " + value);
     }
+
     public BigDecimal asBigDecimal() {
         if (value == null) {
             return null;
@@ -207,6 +218,7 @@ public class ValueModel implements DataModel {
         }
         return new BigDecimal(strVal);
     }
+
     public BigInteger asBigInteger() {
         if (value == null) {
             return null;

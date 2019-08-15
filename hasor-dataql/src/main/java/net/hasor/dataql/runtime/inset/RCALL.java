@@ -22,6 +22,7 @@ import net.hasor.dataql.runtime.LambdaCallProxy;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
+
 /**
  * RCALL，发起一个 lambda 的调用，调用会在一个全新的堆栈上运行。
  * @author 赵永春 (zyc@hasor.net)
@@ -32,6 +33,7 @@ class RCALL implements InsetProcess {
     public int getOpcode() {
         return RCALL;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         //

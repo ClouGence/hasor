@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql;
 import net.hasor.dataql.result.DataModel;
+
 /**
  * 结果集
  * @author 赵永春 (zyc@hasor.net)

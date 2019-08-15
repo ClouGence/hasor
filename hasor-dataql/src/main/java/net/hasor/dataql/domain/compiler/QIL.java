@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.domain.compiler;
 import net.hasor.utils.StringUtils;
+
 /**
  * Query intermediate language 中间查询语言
  * @author 赵永春 (zyc@hasor.net)
@@ -22,11 +23,11 @@ import net.hasor.utils.StringUtils;
  */
 public class QIL {
     private Instruction[][] queueSet;
-    //
+
     QIL(Instruction[][] queueSet) {
         this.queueSet = queueSet;
     }
-    //
+
     @Override
     public String toString() {
         StringBuilder strBuffer = new StringBuilder();
@@ -36,6 +37,7 @@ public class QIL {
         }
         return strBuffer.toString();
     }
+
     private static void printInstList(int name, Instruction[] instList, StringBuilder strBuffer) {
         strBuffer.append("[");
         strBuffer.append(name);
@@ -51,20 +53,22 @@ public class QIL {
         }
         strBuffer.append("\n");
     }
-    //
-    //
+
     /** 方法总数 */
     public int iqlPoolSize() {
         return this.queueSet.length;
     }
+
     /** 方法的指令序列长度 */
     public int iqlSize(int address) {
         return this.queueSet[address].length;
     }
+
     /** 获取指令 */
     public Instruction instOf(int address, int index) {
         return this.queueSet[address][index];
     }
+
     /** 获取方法指令序列的迭代器 */
     public Instruction[] iqlArrays(int address) {
         return this.queueSet[address].clone();

@@ -23,25 +23,28 @@ public class LambdaCall {
     private int      address;       // 指令序列 name
     private Object[] paramArrays;   // 本次调用传入的参数
     private Object   result;        // 本次调用的最终结果
-    //
+
     public LambdaCall(int address, Object[] paramArrays) {
         this.address = address;
         this.paramArrays = paramArrays;
     }
-    //
+
     public int getMethod() {
         return this.address;
     }
+
     public Object[] getArrays() {
         return this.paramArrays;
     }
+
     public void updateArrays(Object[] paramArrays) {
         this.paramArrays = paramArrays;
     }
-    //
+
     public Object getResult() {
         return this.result;
     }
+
     public void setResult(Object result) {
         this.result = result;
     }

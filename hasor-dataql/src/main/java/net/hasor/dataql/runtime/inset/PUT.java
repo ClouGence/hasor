@@ -27,6 +27,7 @@ import net.hasor.dataql.runtime.struts.ObjectResultStruts;
 import net.hasor.utils.BeanUtils;
 
 import java.util.Map;
+
 /**
  * PUT，将栈顶的数据 set 到结果集中。
  * @author 赵永春 (zyc@hasor.net)
@@ -37,6 +38,7 @@ class PUT implements InsetProcess {
     public int getOpcode() {
         return PUT;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         String filedName = sequence.currentInst().getString(0);

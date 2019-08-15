@@ -20,6 +20,7 @@ import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
+
 /**
  * IF，当前栈顶的表达式如果为 false，则跳转到 IF 指令上指定的位置上去。
  * @author 赵永春 (zyc@hasor.net)
@@ -30,6 +31,7 @@ class IF implements InsetProcess {
     public int getOpcode() {
         return IF;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         Object test = memStack.pop();

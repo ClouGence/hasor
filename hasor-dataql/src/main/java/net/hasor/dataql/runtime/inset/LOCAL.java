@@ -21,6 +21,7 @@ import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.dataql.runtime.struts.LambdaCall;
+
 /**
  * LOCAL，紧跟在 METHOD 指令后面可以有多个组成。
  * 作用是 将 METHOD 指令中纠正的参数数组存储到堆内存中。它的工作性质有点类似 STORE。
@@ -33,6 +34,7 @@ class LOCAL implements InsetProcess {
     public int getOpcode() {
         return LOCAL;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         LambdaCall callInfo = (LambdaCall) memStack.peek();

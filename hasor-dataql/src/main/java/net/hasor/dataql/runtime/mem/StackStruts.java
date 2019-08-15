@@ -15,28 +15,32 @@
  */
 package net.hasor.dataql.runtime.mem;
 import java.util.Stack;
+
 /**
  * 栈内存结构
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-19
  */
 public class StackStruts implements FindData, Cloneable {
-    protected Stack<Object> dataPool = new Stack<Object>();
-    //
+    protected Stack<Object> dataPool = new Stack<>();
+
     public void push(Object data) {
         this.dataPool.push(data);
     }
+
     public Object pop() {
         return this.dataPool.pop();
     }
+
     public Object peek() {
         return this.dataPool.empty() ? null : this.dataPool.peek();
     }
-    //
+
     @Override
     public int getLayerDepth() {
         return this.dataPool.size();
     }
+
     @Override
     public Object dataOfDepth(int depth) {
         if (depth < 0 || depth >= this.dataPool.size()) {
@@ -44,11 +48,13 @@ public class StackStruts implements FindData, Cloneable {
         }
         return this.dataPool.get(this.dataPool.size() - 1 - depth);
     }
+
     public StackStruts clone() throws CloneNotSupportedException {
         StackStruts localData = (StackStruts) super.clone();
         localData.dataPool = (Stack<Object>) this.dataPool.clone();
         return localData;
     }
+
     @Override
     public Object dataOfHead() {
         return this.peek();

@@ -20,6 +20,7 @@ import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
+
 /**
  * 指令池
  * @author 赵永春 (zyc@hasor.net)
@@ -27,11 +28,10 @@ import net.hasor.dataql.runtime.mem.StackStruts;
  */
 public class OpcodesPool {
     private InsetProcess[] processes = new InsetProcess[255];
-    //
+
     public static OpcodesPool newPool() {
         OpcodesPool pool = new OpcodesPool();
         {
-            //
             pool.addInsetProcess(new NO());
             pool.addInsetProcess(new NA());
             //
@@ -72,10 +72,11 @@ public class OpcodesPool {
         }
         return pool;
     }
+
     private void addInsetProcess(InsetProcess inst) {
         this.processes[inst.getOpcode()] = inst;
     }
-    //
+
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         //
         InsetProcess process = this.processes[sequence.currentInst().getInstCode()];

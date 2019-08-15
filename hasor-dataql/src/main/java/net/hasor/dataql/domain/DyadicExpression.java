@@ -18,6 +18,7 @@ import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 
 import java.util.Stack;
+
 /**
  * 二元运算表达式
  * @author 赵永春 (zyc@hasor.net)
@@ -27,17 +28,19 @@ public class DyadicExpression extends Expression {
     private Expression fstExpression;   //第一个表达式
     private String     dyadicSymbol;    //运算符
     private Expression secExpression;   //第二个表达式
+
     public DyadicExpression(Expression fstExpression, String dyadicSymbol, Expression secExpression) {
         super();
         this.fstExpression = fstExpression;
         this.dyadicSymbol = dyadicSymbol;
         this.secExpression = secExpression;
     }
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        this.doCompiler(queue, stackTree, new Stack<String>());
+        this.doCompiler(queue, stackTree, new Stack<>());
     }
+
     protected void doCompiler(final InstQueue queue, CompilerStack stackTree, Stack<String> last) {
         //
         //  优先级：
@@ -56,7 +59,7 @@ public class DyadicExpression extends Expression {
         //      a + b * c < d ^ 2   ->  a,b,c,*,+,d,2,^,<
         //
         //  算法说明：
-        //      算法的研发是在没有做参考任何资料情况下完全自主演算得出。
+        //      算法的研发是在没有做参考任何资料情况下完全自主演算得出。 后经社区讨论，此算法的思想和"逆波兰算法" 相同。
         //      另：该算法没有核实是否市面上存在类似算法，因此不能做独创性宣传。如确实属于独创那么保留算法独创的全部权利。
         //
         //  算法逻辑：
@@ -108,6 +111,7 @@ public class DyadicExpression extends Expression {
             }
         }
     }
+
     private static int priorityAt(String dyadicSymbol) {
         for (int symbolArraysIndex = 0; symbolArraysIndex < ComparePriorityKeys.length; symbolArraysIndex++) {
             String[] symbolArrays = ComparePriorityKeys[symbolArraysIndex];
@@ -119,6 +123,7 @@ public class DyadicExpression extends Expression {
         }
         throw new UnsupportedOperationException("symbol " + dyadicSymbol + " undefined priority.");
     }
+
     private static final String[][] ComparePriorityKeys = new String[][] {
             //      0st: ()                            括号
             //      1st: ->                            取值

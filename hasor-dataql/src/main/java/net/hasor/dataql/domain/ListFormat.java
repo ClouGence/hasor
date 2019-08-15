@@ -17,6 +17,7 @@ package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 import net.hasor.dataql.domain.compiler.Opcodes;
+
 /**
  * 函数调用的返回值处理格式，List格式。
  * @author 赵永春 (zyc@hasor.net)
@@ -24,11 +25,12 @@ import net.hasor.dataql.domain.compiler.Opcodes;
  */
 public class ListFormat extends Format {
     private ListExpression format;
+
     public ListFormat(ListExpression format) {
         super();
         this.format = format;
     }
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         queue.inst(Opcodes.ASA, "");

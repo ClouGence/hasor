@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime.operator;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+
 /**
  * 数学计算处理工具，提供：加、减、乘、除、整除、求余
  * 尽量考虑在保证性能的前提下不产生精度丢失问题。
@@ -29,6 +30,7 @@ public class OperatorUtils {
         }
         return object instanceof Number;
     }
+
     public static boolean isBoolean(Object object) {
         if (object == null) {
             return false;
@@ -36,6 +38,7 @@ public class OperatorUtils {
         Class<?> numberClass = object.getClass();
         return numberClass == Boolean.class || numberClass == Boolean.TYPE;
     }
+
     public static boolean isByteNumber(Object number) {
         if (number == null) {
             return false;
@@ -43,6 +46,7 @@ public class OperatorUtils {
         Class<?> numberClass = number.getClass();
         return numberClass == Byte.class || numberClass == Byte.TYPE;
     }
+
     public static boolean isShortNumber(Object number) {
         if (number == null) {
             return false;
@@ -50,6 +54,7 @@ public class OperatorUtils {
         Class<?> numberClass = number.getClass();
         return numberClass == Short.class || numberClass == Short.TYPE;
     }
+
     public static boolean isIntegerNumber(Object number) {
         if (number == null) {
             return false;
@@ -57,6 +62,7 @@ public class OperatorUtils {
         Class<?> numberClass = number.getClass();
         return numberClass == Integer.class || numberClass == Integer.TYPE;
     }
+
     public static boolean isCharacter(Object number) {
         if (number == null) {
             return false;
@@ -64,6 +70,7 @@ public class OperatorUtils {
         Class<?> numberClass = number.getClass();
         return numberClass == Character.class || numberClass == Character.TYPE;
     }
+
     public static boolean isLongNumber(Object number) {
         if (number == null) {
             return false;
@@ -71,6 +78,7 @@ public class OperatorUtils {
         Class<?> numberClass = number.getClass();
         return numberClass == Long.class || numberClass == Long.TYPE;
     }
+
     public static boolean isFloatNumber(Object number) {
         if (number == null) {
             return false;
@@ -78,6 +86,7 @@ public class OperatorUtils {
         Class<?> numberClass = number.getClass();
         return numberClass == Float.class || numberClass == Float.TYPE;
     }
+
     public static boolean isDoubleNumber(Object number) {
         if (number == null) {
             return false;
@@ -85,6 +94,7 @@ public class OperatorUtils {
         Class<?> numberClass = number.getClass();
         return numberClass == Double.class || numberClass == Double.TYPE;
     }
+
     //
     // ============================================================================================
     //
@@ -103,6 +113,7 @@ public class OperatorUtils {
     //
     private static final int NONE   = 0;
     //
+
     /** 对比两个数据类型，返回交大的那个类型作为载体。 */
     protected static int getNumericType(Number v1, Number v2) {
         int v1Type = getNumericType(v1);
@@ -130,6 +141,7 @@ public class OperatorUtils {
         boolean useDec = v1Type == FLOAT || v1Type == DOUBLE || v2Type == FLOAT || v2Type == DOUBLE;
         return useDec ? BIGDEC : BIGINT;
     }
+
     protected static int getNumericType(Object value) {
         if (OperatorUtils.isBoolean(value)) {
             return BOOL;
@@ -165,6 +177,7 @@ public class OperatorUtils {
     }
     //
     //
+
     /** 转换为：boolean */
     public static boolean booleanValue(Object value) {
         if (value == null) {
@@ -182,6 +195,7 @@ public class OperatorUtils {
         }
         return true;
     }
+
     /** 转换为：int */
     private static int intValue(Object value) {
         if (value == null) {
@@ -199,6 +213,7 @@ public class OperatorUtils {
         }
         return Integer.parseInt(value.toString().trim());
     }
+
     /** 转换为：long */
     private static long longValue(Object value) {
         if (value == null) {
@@ -216,6 +231,7 @@ public class OperatorUtils {
         }
         return Long.parseLong(value.toString().trim());
     }
+
     /** 转换为：BigInteger */
     private static BigInteger bigIntValue(Object value) {
         if (value == null) {
@@ -239,6 +255,7 @@ public class OperatorUtils {
         }
         return new BigInteger(value.toString().trim());
     }
+
     /** 转换为：float */
     private static float floatValue(Object value) {
         if (value == null) {
@@ -257,6 +274,7 @@ public class OperatorUtils {
         String s = value.toString().trim();
         return (s.length() == 0) ? 0.0f : Float.parseFloat(s);
     }
+
     /** 转换为：double */
     private static double doubleValue(Object value) {
         if (value == null) {
@@ -275,6 +293,7 @@ public class OperatorUtils {
         String s = value.toString().trim();
         return (s.length() == 0) ? 0.0 : Double.parseDouble(s);
     }
+
     /** 转换为：BigDecimal */
     private static BigDecimal bigDecimalValue(Object value) {
         if (value == null) {
@@ -300,6 +319,7 @@ public class OperatorUtils {
     }
     //
     // ============================================================================================
+
     /** 加 */
     public static Number add(Number obj1, Number obj2) {
         if (testDecimal(obj1) || testDecimal(obj2)) {
@@ -308,6 +328,7 @@ public class OperatorUtils {
             return integerAdd(obj1, obj2);
         }
     }
+
     /** 减 */
     public static Number subtract(Number obj1, Number obj2) {
         if (testDecimal(obj1) || testDecimal(obj2)) {
@@ -316,6 +337,7 @@ public class OperatorUtils {
             return integerSubtract(obj1, obj2);
         }
     }
+
     /** 乘 */
     public static Number multiply(Number obj1, Number obj2) {
         if (testDecimal(obj1) || testDecimal(obj2)) {
@@ -324,6 +346,7 @@ public class OperatorUtils {
             return integerMultiply(obj1, obj2);
         }
     }
+
     /** 除 */
     public static Number divide(Number obj1, Number obj2, int precision, RoundingEnum roundingEnum) {
         if (testDecimal(obj1) || testDecimal(obj2)) {
@@ -338,6 +361,7 @@ public class OperatorUtils {
             return integerDivide(obj1, obj2);
         }
     }
+
     /** 整除 */
     public static Number aliquot(Number obj1, Number obj2) {
         if (testDecimal(obj1) || testDecimal(obj2)) {
@@ -346,6 +370,7 @@ public class OperatorUtils {
             return integerDivide(obj1, obj2);
         }
     }
+
     /** 求余 */
     public static Number mod(Number obj1, Number obj2) {
         if (testDecimal(obj1) || testDecimal(obj2)) {
@@ -354,6 +379,7 @@ public class OperatorUtils {
             return integerMod(obj1, obj2);
         }
     }
+
     /** 取反，相当于：value * -1 */
     public static Number negate(Number obj) {
         if (testDecimal(obj)) {
@@ -362,6 +388,7 @@ public class OperatorUtils {
             return integerNegate(obj);
         }
     }
+
     //
     /* 测试是否为一个小数 */
     private static boolean testDecimal(Number tester) {
@@ -376,6 +403,7 @@ public class OperatorUtils {
         }
         return false;
     }
+
     private static Number newReal(int realType, long value) {
         switch (realType) {
         case BOOL:
@@ -391,6 +419,7 @@ public class OperatorUtils {
             return value;
         }
     }
+
     private static Number newReal(int realType, BigInteger value) {
         switch (realType) {
         case BOOL:
@@ -408,11 +437,13 @@ public class OperatorUtils {
             return value;
         }
     }
+
     private static Number newReal(int realType, double value) {
         if (realType == FLOAT)
             return (float) value;
         return value;
     }
+
     private static Number newReal(int realType, BigDecimal value) {
         if (realType == FLOAT)
             return value.floatValue();
@@ -421,6 +452,7 @@ public class OperatorUtils {
         return value;
     }
     //
+
     /** 整数，加 */
     private static Number integerAdd(Number obj1, Number obj2) {
         int maxType = getNumericType(obj1, obj2);
@@ -437,6 +469,7 @@ public class OperatorUtils {
             return newReal(maxType, bigIntValue(obj1).add(bigIntValue(obj2)));
         }
     }
+
     /** 整数，减 */
     private static Number integerSubtract(Number obj1, Number obj2) {
         int maxType = getNumericType(obj1, obj2);
@@ -453,6 +486,7 @@ public class OperatorUtils {
             return newReal(maxType, bigIntValue(obj1).subtract(bigIntValue(obj2)));
         }
     }
+
     /** 整数，乘 */
     private static Number integerMultiply(Number obj1, Number obj2) {
         int maxType = getNumericType(obj1, obj2);
@@ -469,6 +503,7 @@ public class OperatorUtils {
             return newReal(maxType, bigIntValue(obj1).multiply(bigIntValue(obj2)));
         }
     }
+
     /** 整数，除 or 整除 */
     private static Number integerDivide(Number obj1, Number obj2) {
         int maxType = getNumericType(obj1, obj2);
@@ -485,6 +520,7 @@ public class OperatorUtils {
             return newReal(maxType, bigIntValue(obj1).divide(bigIntValue(obj2)));
         }
     }
+
     /** 整数，求余 */
     private static Number integerMod(Number obj1, Number obj2) {
         int maxType = getNumericType(obj1, obj2);
@@ -501,6 +537,7 @@ public class OperatorUtils {
             return newReal(maxType, bigIntValue(obj1).mod(bigIntValue(obj2)));
         }
     }
+
     /** 整数，取反 */
     private static Number integerNegate(Number obj) {
         int maxType = getNumericType(obj);
@@ -518,6 +555,7 @@ public class OperatorUtils {
         }
     }
     //
+
     /** 小数，加 */
     private static Number decimalAdd(Number obj1, Number obj2) {
         int maxType = getNumericType(obj1, obj2);
@@ -530,6 +568,7 @@ public class OperatorUtils {
             return newReal(maxType, bigDecimalValue(obj1).add(bigDecimalValue(obj2)));
         }
     }
+
     /** 小数，减 */
     private static Number decimalSubtract(Number obj1, Number obj2) {
         int maxType = getNumericType(obj1, obj2);
@@ -542,6 +581,7 @@ public class OperatorUtils {
             return newReal(maxType, bigDecimalValue(obj1).subtract(bigDecimalValue(obj2)));
         }
     }
+
     /** 小数，乘 */
     private static Number decimalMultiply(Number obj1, Number obj2) {
         int maxType = getNumericType(obj1, obj2);
@@ -554,6 +594,7 @@ public class OperatorUtils {
             return newReal(maxType, bigDecimalValue(obj1).multiply(bigDecimalValue(obj2)));
         }
     }
+
     /** 小数，除 */
     private static Number decimalDivide(Number obj1, Number obj2, int precision, RoundingEnum roundingEnum) {
         int maxType = getNumericType(obj1, obj2);
@@ -566,6 +607,7 @@ public class OperatorUtils {
             return newReal(maxType, bigDecimalValue(obj1).divide(bigDecimalValue(obj2), precision, roundingEnum.getModeNum()));
         }
     }
+
     /** 小数，整除 */
     private static Number decimalAliquot(Number obj1, Number obj2) {
         int maxType = getNumericType(obj1, obj2);
@@ -578,6 +620,7 @@ public class OperatorUtils {
             return newReal(maxType, bigDecimalValue(obj1).divideToIntegralValue(bigDecimalValue(obj2)));
         }
     }
+
     /** 小数，求余 */
     private static Number decimalMod(Number obj1, Number obj2) {
         int maxType = getNumericType(obj1, obj2);
@@ -590,6 +633,7 @@ public class OperatorUtils {
             return newReal(maxType, bigDecimalValue(obj1).remainder(bigDecimalValue(obj2)));
         }
     }
+
     /** 小数，取反 */
     private static Number decimalNegate(Number obj) {
         int maxType = getNumericType(obj);
@@ -602,6 +646,7 @@ public class OperatorUtils {
             return newReal(maxType, bigDecimalValue(obj).negate());
         }
     }
+
     //
     // ============================================================================================
     //
@@ -612,6 +657,7 @@ public class OperatorUtils {
         }
         return numericType;
     }
+
     /** 相等 */
     public static boolean eq(Number obj1, Number obj2) {
         int numericType = getNumericTypeWithCompare(obj1, obj2);
@@ -629,6 +675,7 @@ public class OperatorUtils {
         }
         return obj1.doubleValue() == obj2.doubleValue();
     }
+
     /** 大于 */
     public static boolean gt(Number obj1, Number obj2) {
         int numericType = getNumericTypeWithCompare(obj1, obj2);
@@ -646,6 +693,7 @@ public class OperatorUtils {
         }
         return obj1.doubleValue() > obj2.doubleValue();
     }
+
     /** 大于等于 */
     public static boolean gteq(Number obj1, Number obj2) {
         int numericType = getNumericTypeWithCompare(obj1, obj2);
@@ -663,6 +711,7 @@ public class OperatorUtils {
         }
         return obj1.doubleValue() >= obj2.doubleValue();
     }
+
     /** 小于 */
     public static boolean lt(Number obj1, Number obj2) {
         int numericType = getNumericTypeWithCompare(obj1, obj2);
@@ -680,6 +729,7 @@ public class OperatorUtils {
         }
         return obj1.doubleValue() < obj2.doubleValue();
     }
+
     /** 小于等于 */
     public static boolean lteq(Number obj1, Number obj2) {
         int numericType = getNumericTypeWithCompare(obj1, obj2);
@@ -697,6 +747,7 @@ public class OperatorUtils {
         }
         return obj1.doubleValue() <= obj2.doubleValue();
     }
+
     //
     // ============================================================================================
     //
@@ -705,6 +756,7 @@ public class OperatorUtils {
             throw new NumberFormatException("value mast be int.");
         }
     }
+
     /** 与 */
     public static Number and(Number obj1, Number obj2) {
         checkDecimal(obj1, obj2);
@@ -715,6 +767,7 @@ public class OperatorUtils {
             return bigIntValue(obj1).and(bigIntValue(obj2));
         }
     }
+
     /** 或 */
     public static Number or(Number obj1, Number obj2) {
         checkDecimal(obj1, obj2);
@@ -725,6 +778,7 @@ public class OperatorUtils {
             return bigIntValue(obj1).or(bigIntValue(obj2));
         }
     }
+
     /** 异或 */
     public static Number xor(Number obj1, Number obj2) {
         checkDecimal(obj1, obj2);
@@ -735,6 +789,7 @@ public class OperatorUtils {
             return bigIntValue(obj1).xor(bigIntValue(obj2));
         }
     }
+
     /** 左位移 */
     public static Number shiftLeft(Number obj1, Number obj2) {
         checkDecimal(obj1, obj2);
@@ -745,6 +800,7 @@ public class OperatorUtils {
             return bigIntValue(obj1).shiftLeft(intValue(obj2));
         }
     }
+
     /** 右位移 */
     public static Number shiftRight(Number obj1, Number obj2) {
         checkDecimal(obj1, obj2);
@@ -755,6 +811,7 @@ public class OperatorUtils {
             return bigIntValue(obj1).shiftRight(intValue(obj2));
         }
     }
+
     /** 无符号右位移 */
     public static Number shiftRightWithUnsigned(Number obj1, Number obj2) {
         checkDecimal(obj1, obj2);

@@ -21,33 +21,37 @@ import net.hasor.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * 函数调用
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class CallerExpression extends Expression {
-    protected final String callName;
-    private boolean         justRule     = false;
-    private List<Variable>  varList      = null;
-    private Format          resultFormat = null;
-    private RouteExpression quickSelect  = null;
+    protected final String          callName;
+    private         boolean         justRule     = false;
+    private         List<Variable>  varList      = null;
+    private         Format          resultFormat = null;
+    private         RouteExpression quickSelect  = null;
+
     public CallerExpression(String callName) {
         super();
         this.callName = callName;
-        this.varList = new ArrayList<Variable>();
+        this.varList = new ArrayList<>();
     }
-    //
+
     /** 设置返回值处理格式 */
     public void setResultFormat(Format resultFormat) {
         this.resultFormat = resultFormat;
     }
+
     /** 添加参数 */
     public void addParam(Variable paramValue) {
         if (paramValue != null) {
             this.varList.add(paramValue);
         }
     }
+
     public void setQuickSelect(boolean justRule, String quickSelect) {
         this.justRule = justRule;
         if (StringUtils.isNotBlank(quickSelect)) {
@@ -55,7 +59,7 @@ public class CallerExpression extends Expression {
         }
         this.quickSelect = new RouteExpression(quickSelect);
     }
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         if (!this.justRule) {
@@ -99,6 +103,7 @@ public class CallerExpression extends Expression {
         }
         this.doCompilerFormat(queue, stackTree);
     }
+
     public void doCompilerFormat(InstQueue queue, CompilerStack stackTree) {
         this.resultFormat.doCompiler(queue, stackTree);
     }

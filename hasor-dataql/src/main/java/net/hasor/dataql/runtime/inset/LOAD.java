@@ -20,6 +20,7 @@ import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
+
 /**
  * LOAD，从堆中装载一个数据到栈。与其对应的指令为 STORE
  * @see net.hasor.dataql.runtime.inset.STORE
@@ -31,6 +32,7 @@ class LOAD implements InsetProcess {
     public int getOpcode() {
         return LOAD;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         // depth 小于 0 表示的是当前堆栈，常规编译模式下处理 lambda_25 用例时发现，在加载入参参数时。要加载的 depth 位置和实际堆栈位置有偏差。

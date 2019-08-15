@@ -16,11 +16,12 @@
 package net.hasor.dataql.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
-import net.hasor.core.Hasor;
+import net.hasor.core.HasorUtils;
 import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.core.binder.ApiBinderWrap;
 import net.hasor.dataql.UDF;
 import net.hasor.dataql.UdfSource;
+
 /**
  * DataQL 扩展接口。
  * @author 赵永春 (zyc@hasor.net)
@@ -31,19 +32,18 @@ public class DataApiBinderCreater implements ApiBinderCreater {
     public ApiBinder createBinder(final ApiBinder apiBinder) {
         return new DataApiBinderImpl(apiBinder);
     }
-    //
-    //
+
     private static class DataApiBinderImpl extends ApiBinderWrap implements DataApiBinder {
         public DataApiBinderImpl(ApiBinder apiBinder) {
             super(apiBinder);
         }
-        //
+
         @Override
         public void addUdf(String name, BindInfo<? extends UDF> udfInfo) {
-            DefineUDF define = Hasor.autoAware(getEnvironment(), new DefineUDF(null, name, udfInfo));
+            DefineUDF define = HasorUtils.autoAware(getEnvironment(), new DefineUDF(null, name, udfInfo));
             this.bindType(DefineUDF.class).uniqueName().toInstance(define);
         }
-        //
+
         @Override
         public void addUdfSource(BindInfo<? extends UdfSource> udfSource) {
             this.bindType(DefineSource.class).uniqueName().toInstance(new DefineSource(udfSource));

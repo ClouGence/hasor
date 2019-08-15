@@ -25,6 +25,7 @@ import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.dataql.runtime.struts.ListResultStruts;
 
 import java.util.Collection;
+
 /**
  * PUSH，将栈顶的数据 put 到结果集中。
  * @author 赵永春 (zyc@hasor.net)
@@ -35,6 +36,7 @@ class PUSH implements InsetProcess {
     public int getOpcode() {
         return PUSH;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         Object data = memStack.pop();

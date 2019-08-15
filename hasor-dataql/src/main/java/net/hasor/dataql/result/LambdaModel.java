@@ -16,6 +16,7 @@
 package net.hasor.dataql.result;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
+
 /**
  * Lambda 函数
  * @author 赵永春 (zyc@hasor.net)
@@ -23,10 +24,11 @@ import net.hasor.dataql.UDF;
  */
 public class LambdaModel implements DataModel, UDF {
     private UDF lambdaUdf = null;
+
     public LambdaModel(UDF lambdaUdf) {
         this.lambdaUdf = lambdaUdf;
     }
-    //
+
     @Override
     public Object call(Object[] values, Option readOnly) throws Throwable {
         return this.lambdaUdf.call(values, readOnly);

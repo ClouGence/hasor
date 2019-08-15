@@ -19,6 +19,7 @@ import net.hasor.dataql.domain.compiler.CompilerStack.ContainsIndex;
 import net.hasor.dataql.domain.compiler.InstQueue;
 import net.hasor.dataql.domain.compiler.Opcodes;
 import net.hasor.utils.StringUtils;
+
 /**
  * 值路由
  * @author 赵永春 (zyc@hasor.net)
@@ -26,11 +27,12 @@ import net.hasor.utils.StringUtils;
  */
 public class RouteExpression extends Expression {
     private String routeExpression;
+
     public RouteExpression(String routeExpression) {
         super();
         this.routeExpression = routeExpression;
     }
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         if (StringUtils.isBlank(this.routeExpression)) {

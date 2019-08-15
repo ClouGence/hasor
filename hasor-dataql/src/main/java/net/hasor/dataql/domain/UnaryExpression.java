@@ -17,6 +17,7 @@ package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 import net.hasor.dataql.domain.compiler.Opcodes;
+
 /**
  * 一元运算表达式
  * @author 赵永春 (zyc@hasor.net)
@@ -25,12 +26,13 @@ import net.hasor.dataql.domain.compiler.Opcodes;
 public class UnaryExpression extends Expression {
     private Expression target;      //表达式
     private String     dyadicSymbol;//操作符
+
     public UnaryExpression(Expression target, String dyadicSymbol) {
         super();
         this.target = target;
         this.dyadicSymbol = dyadicSymbol;
     }
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         this.target.doCompiler(queue, stackTree);

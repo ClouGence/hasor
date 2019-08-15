@@ -17,24 +17,27 @@ package net.hasor.dataql.domain.compiler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+
 /**
  * 编译器用到的栈结构。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class CompilerStack {
-    private Stack<List<String>> dataStack = new Stack<List<String>>();
+    private Stack<List<String>> dataStack = new Stack<>();
+
     public CompilerStack() {
-        this.dataStack.push(new ArrayList<String>());
+        this.dataStack.push(new ArrayList<>());
     }
-    //
+
     public void newFrame() {
-        this.dataStack.push(new ArrayList<String>());
+        this.dataStack.push(new ArrayList<>());
     }
+
     public void dropFrame() {
         this.dataStack.pop();
     }
-    //
+
     /** 当前栈中是否存在该元素，如果存在返回位置 */
     public int containsWithCurrent(String target) {
         if (this.dataStack.isEmpty()) {
@@ -43,7 +46,7 @@ public class CompilerStack {
             return this.dataStack.peek().indexOf(target);
         }
     }
-    //
+
     /** 当前栈中是否存在该元素，如果存在返回位置 */
     public ContainsIndex containsWithTree(String target) {
         ContainsIndex index = new ContainsIndex();
@@ -65,22 +68,24 @@ public class CompilerStack {
         index.depth = 0;
         return index;
     }
+
     /** 将 name 压入栈，并返回在栈中的位置 */
     public int push(String target) {
         List<String> nameStack = this.dataStack.peek();
         nameStack.add(target);
         return nameStack.indexOf(target);
     }
-    //
+
     /** 当前深度 */
     public int getDepth() {
         return this.dataStack.size() - 1;
     }
-    //
+
     public static class ContainsIndex {
         public int     depth   = 0;
         public int     index   = 0;
         public boolean current = false;
+
         //
         public boolean isValid() {
             return this.depth >= 0 && this.index >= 0;

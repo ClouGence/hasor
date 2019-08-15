@@ -23,6 +23,7 @@ import net.hasor.dataql.runtime.LambdaCallProxy;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
+
 /**
  * M_REF，定义一个 lambda 函数指针。（产生一个LambdaCallStruts）
  * @author 赵永春 (zyc@hasor.net)
@@ -33,6 +34,7 @@ class M_REF implements InsetProcess {
     public int getOpcode() {
         return M_REF;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         //

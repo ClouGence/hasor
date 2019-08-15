@@ -25,6 +25,7 @@ import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.utils.StringUtils;
 
 import java.util.Collection;
+
 /**
  * NO，创建一个集合对象
  * @author 赵永春 (zyc@hasor.net)
@@ -35,6 +36,7 @@ class NA implements InsetProcess {
     public int getOpcode() {
         return NA;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         String typeString = sequence.currentInst().getString(0);

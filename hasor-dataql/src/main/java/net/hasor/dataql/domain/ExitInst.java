@@ -16,6 +16,7 @@
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
 /**
  * exit指令
  * @author 赵永春 (zyc@hasor.net)
@@ -24,6 +25,7 @@ import net.hasor.dataql.domain.compiler.InstQueue;
 public class ExitInst extends Inst {
     private int        exitCode;
     private Expression exitData;
+
     public ExitInst(Number exitCode, Expression exitData) {
         if (exitCode == null) {
             exitCode = 0;
@@ -31,7 +33,7 @@ public class ExitInst extends Inst {
         this.exitCode = exitCode.intValue();
         this.exitData = exitData;
     }
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         queue.inst(LDC_D, this.exitCode);

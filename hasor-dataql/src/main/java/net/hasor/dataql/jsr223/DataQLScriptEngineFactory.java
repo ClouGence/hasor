@@ -19,6 +19,7 @@ import javax.script.ScriptEngineFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 /**
  * JSR223
  * @author 赵永春 (zyc@hasor.net)
@@ -28,49 +29,55 @@ public class DataQLScriptEngineFactory implements ScriptEngineFactory {
     private static final String VERSION       = "1.0";
     private static final String SHORT_NAME    = "dataql";
     private static final String LANGUAGE_NAME = "DataQL";
-    //
-    //
+
     @Override
     public String getEngineName() {
         return "DataQL Engine";
     }
+
     @Override
     public String getEngineVersion() {
         return VERSION;
     }
+
     @Override
     public String getLanguageName() {
         return LANGUAGE_NAME;
     }
+
     @Override
     public String getLanguageVersion() {
         return VERSION;
     }
+
     @Override
     public List<String> getExtensions() {
         return EXTENSIONS;
     }
+
     @Override
     public List<String> getMimeTypes() {
         return MIME_TYPES;
     }
+
     @Override
     public List<String> getNames() {
         return NAMES;
     }
+
     private static final List<String> NAMES;
     private static final List<String> EXTENSIONS;
     private static final List<String> MIME_TYPES;
 
     static {
-        List<String> n = new ArrayList<String>(2);
+        List<String> n = new ArrayList<>(2);
         n.add(SHORT_NAME);
         n.add(LANGUAGE_NAME);
         NAMES = Collections.unmodifiableList(n);
-        n = new ArrayList<String>(1);
+        n = new ArrayList<>(1);
         n.add("dql");
         EXTENSIONS = Collections.unmodifiableList(n);
-        n = new ArrayList<String>(1);
+        n = new ArrayList<>(1);
         n.add("application/x-dataql");
         MIME_TYPES = Collections.unmodifiableList(n);
     }
@@ -92,6 +99,7 @@ public class DataQLScriptEngineFactory implements ScriptEngineFactory {
         }
         return ret;
     }
+
     public String getOutputStatement(String toDisplay) {
         StringBuilder buf = new StringBuilder();
         buf.append("println(\"");
@@ -113,6 +121,7 @@ public class DataQLScriptEngineFactory implements ScriptEngineFactory {
         buf.append("\")");
         return buf.toString();
     }
+
     public String getProgram(String... statements) {
         StringBuilder ret = new StringBuilder();
         int len = statements.length;
@@ -122,7 +131,7 @@ public class DataQLScriptEngineFactory implements ScriptEngineFactory {
         }
         return ret.toString();
     }
-    //
+
     public Object getParameter(String key) {
         if (ScriptEngine.NAME.equals(key)) {
             return SHORT_NAME;
@@ -138,6 +147,7 @@ public class DataQLScriptEngineFactory implements ScriptEngineFactory {
             throw new IllegalArgumentException("Invalid key");
         }
     }
+
     @Override
     public ScriptEngine getScriptEngine() {
         return new DataQLScriptEngine(this);

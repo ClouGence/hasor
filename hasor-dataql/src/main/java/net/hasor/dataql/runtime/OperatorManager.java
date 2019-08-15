@@ -20,6 +20,7 @@ import net.hasor.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+
 /**
  * 用于管理 UDF。
  * @author 赵永春 (zyc@hasor.net)
@@ -64,14 +65,14 @@ class OperatorManager {
         DEFAULT.registryOperator(Symbol.Dyadic, "!=", Object.class, Object.class, new ObjectEqDOP());
     }
 
-    //
     private final Map<String, OperatorProcessManager> unaryProcessMap  = new HashMap<String, OperatorProcessManager>();
     private final Map<String, OperatorProcessManager> dyadicProcessMap = new HashMap<String, OperatorProcessManager>();
-    //
+
     /** 添加 操作符 实现 */
     public void registryOperator(Symbol symbolType, String symbolName, Class<?> opeType, OperatorProcess process) {
         this.registryOperator(symbolType, symbolName, opeType, Object.class, process);
     }
+
     /** 添加 操作符 实现 */
     private void registryOperator(Symbol symbolType, String symbolName, Class[] classSetA, Class[] classSetB, OperatorProcess process) {
         if (classSetA == null || classSetA.length == 0 || classSetB == null || classSetB.length == 0) {
@@ -83,15 +84,18 @@ class OperatorManager {
             }
         }
     }
+
     /** 添加 操作符 实现 */
     public void registryOperator(Symbol symbolType, String symbolName, Class<?> fstType, Class<?> secType, OperatorProcess process) {
-        if (symbolType == null || StringUtils.isBlank(symbolName))
+        if (symbolType == null || StringUtils.isBlank(symbolName)) {
             throw new NullPointerException("symbolType or symbolName is null.");
-        if (fstType == null || secType == null)
+        }
+        if (fstType == null || secType == null) {
             throw new NullPointerException("fstType or secType is null.");
-        if (process == null)
+        }
+        if (process == null) {
             throw new NullPointerException("OperatorProcess is null.");
-        //
+        }
         //
         // .确定ProcessMap
         Map<String, OperatorProcessManager> mapping = null;
@@ -110,6 +114,7 @@ class OperatorManager {
         // .注册或重载
         manager.rewrite(fstType, secType, process);
     }
+
     //
     public OperatorProcess findOperator(Symbol symbolType, String symbolName, Class<?> fstType, Class<?> secType) {
         // .一元
@@ -128,5 +133,4 @@ class OperatorManager {
         }
         return null;
     }
-    //
 }

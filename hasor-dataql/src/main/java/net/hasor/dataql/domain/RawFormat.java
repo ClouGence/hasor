@@ -16,6 +16,7 @@
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
 /**
  * 函数调用的返回值处理格式，原始格式
  * @author 赵永春 (zyc@hasor.net)

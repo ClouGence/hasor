@@ -22,6 +22,7 @@ import net.hasor.dataql.domain.PrimitiveExpression.ValueType;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
+
 /**
  * DSL 语法解析器
  * @author 赵永春 (zyc@hasor.net)
@@ -30,15 +31,18 @@ import java.util.Arrays;
 public class DataQLParser implements DataQLParserConstants {
     private DataQLParser() {
     }
+
     //
     public static BlockSet parserDataQL(String queryString) throws ParseException {
         DataQLParser parser = new DataQLParser(new ByteArrayInputStream(queryString.getBytes()));
         return parser.rootBlock();
     }
+
     public static BlockSet parserDataQL(InputStream inputStream, String encoding) throws ParseException {
         DataQLParser parser = new DataQLParser(inputStream, encoding);
         return parser.rootBlock();
     }
+
     public static Number automaticBigInteger(java.math.BigInteger bigInt) {
         int bitLength = bigInt.bitLength();
         if (bitLength < 8) {
@@ -55,6 +59,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return bigInt;
     }
+
     public static Number automaticBigDecimal(java.math.BigDecimal bigDec) {
         int precisionLength = bigDec.precision();
         if (precisionLength < 8) {
@@ -65,6 +70,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return bigDec;
     }
+
     public static String fixNumberValue(Token t) {
         boolean signBit = t.image.charAt(0) == '-';
         if (t.kind == HEX_NUM || t.kind == OCTAL_NUM || t.kind == BINARY_NUM) {
@@ -76,6 +82,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return t.image;
     }
+
     //-----------------------------------------------------------------------------
     // .标识符
     final public String identifier() throws ParseException {
@@ -107,6 +114,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // .带引号的字符串
     final public String stringValue() throws ParseException {
         Token dataToken = null;
@@ -135,6 +143,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // .空值
     final public Object nullValue() throws ParseException {
         jj_consume_token(NULL);
@@ -144,6 +153,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // .布尔
     final public Boolean booleanValue() throws ParseException {
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
@@ -170,6 +180,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // .数字
     final public Number numberValue() throws ParseException {
         Number number = null;
@@ -211,6 +222,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // .列表：[ ... ]
     final public ListExpression list() throws ParseException {
         ListExpression listExp = new ListExpression();
@@ -256,6 +268,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // .对象：
     final public ObjectExpression object() throws ParseException {
         ObjectExpression objExp = new ObjectExpression();
@@ -326,6 +339,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     //-----------------------------------------------------------------------------
     // .表达式 =   表达式 or 表达式 + 运算符
     final public Expression expression() throws ParseException {
@@ -441,6 +455,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     final public Expression unaryExpression() throws ParseException {
         Token symbol = null;
         Expression target = null;
@@ -465,6 +480,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     final public Expression extExpression(Expression fstExp) throws ParseException {
         Expression resultExp = null;
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
@@ -506,6 +522,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     final public DyadicExpression dyadicExpression(Expression fstExp) throws ParseException {
         Token symbol = null;
         Expression secExp = null;
@@ -602,6 +619,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     final public Expression ternaryExpression(Expression testExp) throws ParseException {
         Expression thenExp = null;
         Expression elseExp = null;
@@ -615,6 +633,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // .值
     final public Expression basicValue() throws ParseException {
         Expression finalExp = null;
@@ -669,6 +688,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     final public PrimitiveExpression primitiveValue() throws ParseException {
         Object value = null;
         switch ((jj_ntk == -1) ? jj_ntk_f() : jj_ntk) {
@@ -718,6 +738,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     //-----------------------------------------------------------------------------
     // .函数参数
     final public Variable callerParamItem() throws ParseException {
@@ -759,6 +780,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // .参数集：(xx , xx , xx)
     final public CallerExpression callerParamSet(String callName) throws ParseException {
         Variable atParam = null;
@@ -858,6 +880,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // .函数调用
     final public CallerExpression funCall(String callName) throws ParseException {
         CallerExpression callerExp = null;
@@ -893,6 +916,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // .Lambda函数： lambda : (obj,obj2) -> {}
     final public LambdaBlockSet lambdaDef() throws ParseException {
         LambdaBlockSet lambdaBlockSet = new LambdaBlockSet();
@@ -953,6 +977,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     //-----------------------------------------------------------------------------
     // .函数
     final public VariableInst varBlock() throws ParseException {
@@ -998,6 +1023,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // .反回
     final public ReturnInst returnBlock() throws ParseException {
         Expression result = null;
@@ -1009,6 +1035,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // .判断
     final public SwitchInst ifBlock() throws ParseException {
         SwitchInst switchInst = new SwitchInst();
@@ -1060,6 +1087,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // .异常 or 中断
     final public Inst breakBlock() throws ParseException {
         String typeClass = null;
@@ -1119,6 +1147,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     final public Number breakBlockStatus() throws ParseException {
         Number errorCode = null;
         errorCode = numberValue();
@@ -1129,6 +1158,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // .选项指令
     final public Inst optionBlock() throws ParseException {
         String optKey = null;
@@ -1143,6 +1173,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // .import指令
     final public Inst importBlock() throws ParseException {
         String packageName = null;
@@ -1157,6 +1188,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // .指令
     final public Inst block() throws ParseException {
         Inst inst = null;
@@ -1189,6 +1221,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // .块
     final public BlockSet blockSet() throws ParseException {
         BlockSet blockSet = new BlockSet();
@@ -1227,6 +1260,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     // 入口
     final public BlockSet rootBlock() throws ParseException {
         BlockSet rootBlockSet = new BlockSet();
@@ -1290,6 +1324,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         throw new Error("Missing return statement in function");
     }
+
     private boolean jj_2_1(int xla) {
         jj_la = xla;
         jj_lastpos = jj_scanpos = token;
@@ -1301,6 +1336,7 @@ public class DataQLParser implements DataQLParserConstants {
             jj_save(0, xla);
         }
     }
+
     private boolean jj_2_2(int xla) {
         jj_la = xla;
         jj_lastpos = jj_scanpos = token;
@@ -1312,6 +1348,7 @@ public class DataQLParser implements DataQLParserConstants {
             jj_save(1, xla);
         }
     }
+
     private boolean jj_2_3(int xla) {
         jj_la = xla;
         jj_lastpos = jj_scanpos = token;
@@ -1323,6 +1360,7 @@ public class DataQLParser implements DataQLParserConstants {
             jj_save(2, xla);
         }
     }
+
     private boolean jj_2_4(int xla) {
         jj_la = xla;
         jj_lastpos = jj_scanpos = token;
@@ -1334,6 +1372,7 @@ public class DataQLParser implements DataQLParserConstants {
             jj_save(3, xla);
         }
     }
+
     private boolean jj_2_5(int xla) {
         jj_la = xla;
         jj_lastpos = jj_scanpos = token;
@@ -1345,11 +1384,13 @@ public class DataQLParser implements DataQLParserConstants {
             jj_save(4, xla);
         }
     }
+
     private boolean jj_3R_74() {
         if (jj_3R_80())
             return true;
         return false;
     }
+
     private boolean jj_3R_23() {
         if (jj_scan_token(RETURN))
             return true;
@@ -1357,6 +1398,7 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_8() {
         Token xsp;
         xsp = jj_scanpos;
@@ -1369,11 +1411,13 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_36() {
         if (jj_3R_37())
             return true;
         return false;
     }
+
     private boolean jj_3R_57() {
         if (jj_3R_11())
             return true;
@@ -1383,26 +1427,31 @@ public class DataQLParser implements DataQLParserConstants {
             jj_scanpos = xsp;
         return false;
     }
+
     private boolean jj_3R_73() {
         if (jj_3R_80())
             return true;
         return false;
     }
+
     private boolean jj_3R_35() {
         if (jj_3R_54())
             return true;
         return false;
     }
+
     private boolean jj_3_4() {
         if (jj_3R_9())
             return true;
         return false;
     }
+
     private boolean jj_3R_56() {
         if (jj_3R_8())
             return true;
         return false;
     }
+
     private boolean jj_3R_21() {
         if (jj_scan_token(VAR))
             return true;
@@ -1419,6 +1468,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3R_79() {
         if (jj_scan_token(COLON))
             return true;
@@ -1426,11 +1476,13 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_72() {
         if (jj_3R_9())
             return true;
         return false;
     }
+
     private boolean jj_3R_37() {
         Token xsp;
         xsp = jj_scanpos;
@@ -1444,6 +1496,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3R_55() {
         if (jj_scan_token(OPAR))
             return true;
@@ -1457,6 +1510,7 @@ public class DataQLParser implements DataQLParserConstants {
             jj_scanpos = xsp;
         return false;
     }
+
     private boolean jj_3R_68() {
         if (jj_scan_token(COMMA))
             return true;
@@ -1468,6 +1522,7 @@ public class DataQLParser implements DataQLParserConstants {
             jj_scanpos = xsp;
         return false;
     }
+
     private boolean jj_3R_71() {
         if (jj_scan_token(OCBR))
             return true;
@@ -1477,6 +1532,7 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_67() {
         if (jj_scan_token(COLON))
             return true;
@@ -1484,6 +1540,7 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_70() {
         if (jj_scan_token(COMMA))
             return true;
@@ -1491,11 +1548,13 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_69() {
         if (jj_scan_token(IDENTIFIER))
             return true;
         return false;
     }
+
     private boolean jj_3R_53() {
         if (jj_scan_token(OCBR))
             return true;
@@ -1516,6 +1575,7 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_54() {
         if (jj_scan_token(LAMBDA))
             return true;
@@ -1546,6 +1606,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3_2() {
         if (jj_scan_token(OCBR))
             return true;
@@ -1553,6 +1614,7 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_66() {
         if (jj_scan_token(COMMA))
             return true;
@@ -1560,11 +1622,13 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_65() {
         if (jj_3R_34())
             return true;
         return false;
     }
+
     private boolean jj_3R_34() {
         Token xsp;
         xsp = jj_scanpos;
@@ -1575,16 +1639,19 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3R_64() {
         if (jj_3R_33())
             return true;
         return false;
     }
+
     private boolean jj_3R_63() {
         if (jj_scan_token(78))
             return true;
         return false;
     }
+
     private boolean jj_3R_52() {
         if (jj_scan_token(OBRA))
             return true;
@@ -1602,11 +1669,13 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_83() {
         if (jj_3R_59())
             return true;
         return false;
     }
+
     private boolean jj_3R_51() {
         if (jj_3R_62())
             return true;
@@ -1622,6 +1691,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3R_87() {
         if (jj_scan_token(COMMA))
             return true;
@@ -1629,6 +1699,7 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_82() {
         if (jj_scan_token(77))
             return true;
@@ -1636,6 +1707,7 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3_1() {
         if (jj_scan_token(OBRA))
             return true;
@@ -1643,6 +1715,7 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_78() {
         if (jj_scan_token(77))
             return true;
@@ -1652,6 +1725,7 @@ public class DataQLParser implements DataQLParserConstants {
             jj_scanpos = xsp;
         return false;
     }
+
     private boolean jj_3R_33() {
         Token xsp;
         xsp = jj_scanpos;
@@ -1662,6 +1736,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3R_81() {
         if (jj_3R_86())
             return true;
@@ -1677,31 +1752,37 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_29() {
         if (jj_scan_token(BINARY_NUM))
             return true;
         return false;
     }
+
     private boolean jj_3R_28() {
         if (jj_scan_token(OCTAL_NUM))
             return true;
         return false;
     }
+
     private boolean jj_3R_27() {
         if (jj_scan_token(HEX_NUM))
             return true;
         return false;
     }
+
     private boolean jj_3R_26() {
         if (jj_scan_token(INTEGER_NUM))
             return true;
         return false;
     }
+
     private boolean jj_3R_25() {
         if (jj_scan_token(DECIMAL_NUM))
             return true;
         return false;
     }
+
     private boolean jj_3R_77() {
         if (jj_scan_token(OPAR))
             return true;
@@ -1717,6 +1798,7 @@ public class DataQLParser implements DataQLParserConstants {
             jj_scanpos = xsp;
         return false;
     }
+
     private boolean jj_3R_16() {
         Token xsp;
         xsp = jj_scanpos;
@@ -1736,6 +1818,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3R_62() {
         Token xsp;
         xsp = jj_scanpos;
@@ -1746,21 +1829,25 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3R_76() {
         if (jj_scan_token(FALSE))
             return true;
         return false;
     }
+
     private boolean jj_3R_91() {
         if (jj_3R_37())
             return true;
         return false;
     }
+
     private boolean jj_3R_75() {
         if (jj_scan_token(TRUE))
             return true;
         return false;
     }
+
     private boolean jj_3R_58() {
         if (jj_3R_9())
             return true;
@@ -1770,6 +1857,7 @@ public class DataQLParser implements DataQLParserConstants {
             jj_scanpos = xsp;
         return false;
     }
+
     private boolean jj_3R_61() {
         Token xsp;
         xsp = jj_scanpos;
@@ -1780,16 +1868,19 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3R_60() {
         if (jj_scan_token(NULL))
             return true;
         return false;
     }
+
     private boolean jj_3R_90() {
         if (jj_3R_54())
             return true;
         return false;
     }
+
     private boolean jj_3R_38() {
         Token xsp;
         while (true) {
@@ -1801,6 +1892,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3R_86() {
         Token xsp;
         xsp = jj_scanpos;
@@ -1811,41 +1903,49 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3R_15() {
         if (jj_3R_24())
             return true;
         return false;
     }
+
     private boolean jj_3R_14() {
         if (jj_3R_23())
             return true;
         return false;
     }
+
     private boolean jj_3R_13() {
         if (jj_3R_22())
             return true;
         return false;
     }
+
     private boolean jj_3R_48() {
         if (jj_3R_16())
             return true;
         return false;
     }
+
     private boolean jj_3R_47() {
         if (jj_3R_61())
             return true;
         return false;
     }
+
     private boolean jj_3R_46() {
         if (jj_3R_60())
             return true;
         return false;
     }
+
     private boolean jj_3R_12() {
         if (jj_3R_21())
             return true;
         return false;
     }
+
     private boolean jj_3R_59() {
         Token xsp;
         xsp = jj_scanpos;
@@ -1859,11 +1959,13 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3R_32() {
         if (jj_3R_51())
             return true;
         return false;
     }
+
     private boolean jj_3R_50() {
         if (jj_scan_token(OCBREXT))
             return true;
@@ -1873,6 +1975,7 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_30() {
         Token xsp;
         xsp = jj_scanpos;
@@ -1889,11 +1992,13 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3R_45() {
         if (jj_3R_59())
             return true;
         return false;
     }
+
     private boolean jj_3R_9() {
         Token xsp;
         xsp = jj_scanpos;
@@ -1910,21 +2015,25 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3R_20() {
         if (jj_3R_34())
             return true;
         return false;
     }
+
     private boolean jj_3R_19() {
         if (jj_3R_33())
             return true;
         return false;
     }
+
     private boolean jj_3R_49() {
         if (jj_scan_token(IDENTIFIER))
             return true;
         return false;
     }
+
     private boolean jj_3R_31() {
         Token xsp;
         xsp = jj_scanpos;
@@ -1935,6 +2044,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3R_18() {
         if (jj_3R_31())
             return true;
@@ -1944,16 +2054,19 @@ public class DataQLParser implements DataQLParserConstants {
             jj_scanpos = xsp;
         return false;
     }
+
     private boolean jj_3R_17() {
         if (jj_3R_30())
             return true;
         return false;
     }
+
     private boolean jj_3_5() {
         if (jj_3R_10())
             return true;
         return false;
     }
+
     private boolean jj_3R_11() {
         Token xsp;
         xsp = jj_scanpos;
@@ -1970,6 +2083,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3R_10() {
         if (jj_3R_16())
             return true;
@@ -1977,11 +2091,13 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_44() {
         if (jj_3R_37())
             return true;
         return false;
     }
+
     private boolean jj_3R_89() {
         if (jj_scan_token(QUEM))
             return true;
@@ -1993,6 +2109,7 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_43() {
         if (jj_3R_10())
             return true;
@@ -2000,16 +2117,19 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_42() {
         if (jj_scan_token(THROW))
             return true;
         return false;
     }
+
     private boolean jj_3R_41() {
         if (jj_scan_token(EXIT))
             return true;
         return false;
     }
+
     private boolean jj_3R_24() {
         Token xsp;
         xsp = jj_scanpos;
@@ -2026,6 +2146,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3R_40() {
         if (jj_scan_token(ELSE))
             return true;
@@ -2033,6 +2154,7 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_88() {
         Token xsp;
         xsp = jj_scanpos;
@@ -2099,6 +2221,7 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_39() {
         if (jj_scan_token(ELSEIF))
             return true;
@@ -2112,11 +2235,13 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_85() {
         if (jj_3R_89())
             return true;
         return false;
     }
+
     private boolean jj_3R_22() {
         if (jj_scan_token(IF))
             return true;
@@ -2143,11 +2268,13 @@ public class DataQLParser implements DataQLParserConstants {
             return true;
         return false;
     }
+
     private boolean jj_3R_84() {
         if (jj_3R_88())
             return true;
         return false;
     }
+
     private boolean jj_3R_80() {
         Token xsp;
         xsp = jj_scanpos;
@@ -2158,11 +2285,13 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return false;
     }
+
     private boolean jj_3_3() {
         if (jj_3R_8())
             return true;
         return false;
     }
+
     /** Generated Token Manager. */
     public DataQLParserTokenManager token_source;
     JavaCharStream jj_input_stream;
@@ -2172,9 +2301,9 @@ public class DataQLParser implements DataQLParserConstants {
     public  Token jj_nt;
     private int   jj_ntk;
     private Token jj_scanpos, jj_lastpos;
-    private int jj_la;
-    private int jj_gen;
-    final private int[] jj_la1 = new int[42];
+    private        int   jj_la;
+    private        int   jj_gen;
+    final private  int[] jj_la1 = new int[42];
     static private int[] jj_la1_0;
     static private int[] jj_la1_1;
     static private int[] jj_la1_2;
@@ -2188,19 +2317,24 @@ public class DataQLParser implements DataQLParserConstants {
     private static void jj_la1_init_0() {
         jj_la1_0 = new int[] { 0x0, 0x0, 0xc000000, 0x1f000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1c01f000, 0x0, 0x0, 0x0, 0x0, 0x1c01f000, 0x1c01f000, 0x1e01f000, 0x0, 0x1e01f000, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1e01f000, 0x40000, 0x80000, 0xc00000, 0x1c01f000, 0x1e20000, 0x1e20000, 0x0, 0x60000000, 0x0, 0x0, 0x60000000, };
     }
+
     private static void jj_la1_init_1() {
         jj_la1_1 = new int[] { 0x1000, 0x0, 0x0, 0x0, 0x1, 0x200, 0x2, 0x1, 0x2, 0x800, 0xffff8004, 0xffff8004, 0x80, 0x1a00, 0x14000, 0xffff8004, 0xffff8000, 0x80, 0x1a00, 0x0, 0x15a80, 0x1, 0x15b80, 0x0, 0x0, 0x80, 0xa00, 0x0, 0x1, 0x800, 0x15a80, 0x0, 0x0, 0x0, 0x15a80, 0x0, 0x0, 0x8, 0x0, 0x8, 0x8, 0x0, };
     }
+
     private static void jj_la1_init_2() {
         jj_la1_2 = new int[] { 0x1000, 0x340, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x7, 0x7, 0x0, 0x1340, 0x0, 0x7, 0x7, 0x2000, 0x1340, 0x340, 0x1340, 0x0, 0x1340, 0x2000, 0x340, 0x2000, 0x4000, 0x1000, 0x0, 0x0, 0x1340, 0x0, 0x0, 0x0, 0x1340, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, };
     }
+
     final private JJCalls[] jj_2_rtns = new JJCalls[5];
     private       boolean   jj_rescan = false;
     private       int       jj_gc     = 0;
+
     /** Constructor with InputStream. */
     public DataQLParser(java.io.InputStream stream) {
         this(stream, null);
     }
+
     /** Constructor with InputStream and supplied encoding */
     public DataQLParser(java.io.InputStream stream, String encoding) {
         try {
@@ -2217,10 +2351,12 @@ public class DataQLParser implements DataQLParserConstants {
         for (int i = 0; i < jj_2_rtns.length; i++)
             jj_2_rtns[i] = new JJCalls();
     }
+
     /** Reinitialise. */
     public void ReInit(java.io.InputStream stream) {
         ReInit(stream, null);
     }
+
     /** Reinitialise. */
     public void ReInit(java.io.InputStream stream, String encoding) {
         try {
@@ -2237,6 +2373,7 @@ public class DataQLParser implements DataQLParserConstants {
         for (int i = 0; i < jj_2_rtns.length; i++)
             jj_2_rtns[i] = new JJCalls();
     }
+
     /** Constructor. */
     public DataQLParser(java.io.Reader stream) {
         jj_input_stream = new JavaCharStream(stream, 1, 1);
@@ -2249,6 +2386,7 @@ public class DataQLParser implements DataQLParserConstants {
         for (int i = 0; i < jj_2_rtns.length; i++)
             jj_2_rtns[i] = new JJCalls();
     }
+
     /** Reinitialise. */
     public void ReInit(java.io.Reader stream) {
         jj_input_stream.ReInit(stream, 1, 1);
@@ -2261,6 +2399,7 @@ public class DataQLParser implements DataQLParserConstants {
         for (int i = 0; i < jj_2_rtns.length; i++)
             jj_2_rtns[i] = new JJCalls();
     }
+
     /** Constructor with generated Token Manager. */
     public DataQLParser(DataQLParserTokenManager tm) {
         token_source = tm;
@@ -2272,6 +2411,7 @@ public class DataQLParser implements DataQLParserConstants {
         for (int i = 0; i < jj_2_rtns.length; i++)
             jj_2_rtns[i] = new JJCalls();
     }
+
     /** Reinitialise. */
     public void ReInit(DataQLParserTokenManager tm) {
         token_source = tm;
@@ -2283,6 +2423,7 @@ public class DataQLParser implements DataQLParserConstants {
         for (int i = 0; i < jj_2_rtns.length; i++)
             jj_2_rtns[i] = new JJCalls();
     }
+
     private Token jj_consume_token(int kind) throws ParseException {
         Token oldToken;
         if ((oldToken = token).next != null)
@@ -2309,10 +2450,13 @@ public class DataQLParser implements DataQLParserConstants {
         jj_kind = kind;
         throw generateParseException();
     }
+
     @SuppressWarnings("serial")
     static private final class LookaheadSuccess extends java.lang.Error {
     }
+
     final private LookaheadSuccess jj_ls = new LookaheadSuccess();
+
     private boolean jj_scan_token(int kind) {
         if (jj_scanpos == jj_lastpos) {
             jj_la--;
@@ -2340,6 +2484,7 @@ public class DataQLParser implements DataQLParserConstants {
             throw jj_ls;
         return false;
     }
+
     /** Get the next Token. */
     final public Token getNextToken() {
         if (token.next != null)
@@ -2350,6 +2495,7 @@ public class DataQLParser implements DataQLParserConstants {
         jj_gen++;
         return token;
     }
+
     /** Get the specific Token. */
     final public Token getToken(int index) {
         Token t = token;
@@ -2361,17 +2507,20 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return t;
     }
+
     private int jj_ntk_f() {
         if ((jj_nt = token.next) == null)
             return (jj_ntk = (token.next = token_source.getNextToken()).kind);
         else
             return (jj_ntk = jj_nt.kind);
     }
+
     private java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
-    private int[] jj_expentry;
-    private int   jj_kind       = -1;
-    private int[] jj_lasttokens = new int[100];
-    private int jj_endpos;
+    private int[]                 jj_expentry;
+    private int                   jj_kind       = -1;
+    private int[]                 jj_lasttokens = new int[100];
+    private int                   jj_endpos;
+
     private void jj_add_error_token(int kind, int pos) {
         if (pos >= 100)
             return;
@@ -2399,6 +2548,7 @@ public class DataQLParser implements DataQLParserConstants {
                 jj_lasttokens[(jj_endpos = pos) - 1] = kind;
         }
     }
+
     /** Generate ParseException. */
     public ParseException generateParseException() {
         jj_expentries.clear();
@@ -2438,12 +2588,15 @@ public class DataQLParser implements DataQLParserConstants {
         }
         return new ParseException(token, exptokseq, tokenImage);
     }
+
     /** Enable tracing. */
     final public void enable_tracing() {
     }
+
     /** Disable tracing. */
     final public void disable_tracing() {
     }
+
     private void jj_rescan_token() {
         jj_rescan = true;
         for (int i = 0; i < 5; i++) {
@@ -2478,6 +2631,7 @@ public class DataQLParser implements DataQLParserConstants {
         }
         jj_rescan = false;
     }
+
     private void jj_save(int index, int xla) {
         JJCalls p = jj_2_rtns[index];
         while (p.gen > jj_gen) {
@@ -2491,6 +2645,7 @@ public class DataQLParser implements DataQLParserConstants {
         p.first = token;
         p.arg = xla;
     }
+
     static final class JJCalls {
         int     gen;
         Token   first;

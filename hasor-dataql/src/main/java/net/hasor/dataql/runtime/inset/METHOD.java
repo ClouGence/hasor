@@ -21,6 +21,7 @@ import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.dataql.runtime.struts.LambdaCall;
+
 /**
  * METHOD，位于定义 lambda 函数的执行序列头部。该指令的目的是对发起调用的入参参数个数进行规整化。
  * 例：<pre>
@@ -39,6 +40,7 @@ class METHOD implements InsetProcess {
     public int getOpcode() {
         return METHOD;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         int paramCount = sequence.currentInst().getInt(0);

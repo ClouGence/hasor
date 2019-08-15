@@ -23,6 +23,7 @@ import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.utils.StringUtils;
+
 /**
  * NO，创建一个对象 or Map。
  * @author 赵永春 (zyc@hasor.net)
@@ -33,6 +34,7 @@ class NO implements InsetProcess {
     public int getOpcode() {
         return NO;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         String typeString = sequence.currentInst().getString(0);

@@ -23,6 +23,7 @@ import net.hasor.utils.convert.ConverterUtils;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
+
 /**
  * 支持把某个Bean的所有方法都注册成为 UDF。
  * @author 赵永春 (zyc@hasor.net)
@@ -35,6 +36,7 @@ public class TypeUdfSource<T> extends SimpleUdfSource {
             initMethod(provider, methodTypeMatcher, method);
         }
     }
+
     private void initMethod(TypeProvider<T> provider, TypeMatcher<Method> methodTypeMatcher, Method method) {
         int modifiers = method.getModifiers();
         // .必须是共有方法
@@ -64,7 +66,7 @@ public class TypeUdfSource<T> extends SimpleUdfSource {
             this.put(method.getName(), new ObjectUDF(method, provider));
         }
     }
-    //
+
     private static Object doInvoke(Method targetMethod, Object target, Object[] values, Option readOnly) {
         try {
             Class<?>[] parameterTypes = targetMethod.getParameterTypes();
@@ -84,24 +86,29 @@ public class TypeUdfSource<T> extends SimpleUdfSource {
             return null;
         }
     }
-    //
+
     private static class StaticUDF implements UDF {
         private Method target;
+
         public StaticUDF(Method target) {
             this.target = target;
         }
+
         @Override
         public Object call(Object[] values, Option readOnly) throws Throwable {
             return doInvoke(target, null, values, readOnly);
         }
     }
+
     private static class ObjectUDF implements UDF {
         private Method          target;
         private TypeProvider<?> provider;
+
         public ObjectUDF(Method target, TypeProvider<?> provider) {
             this.target = target;
             this.provider = provider;
         }
+
         @Override
         public Object call(Object[] values, Option readOnly) throws Throwable {
             Object targetObject = this.provider.get();

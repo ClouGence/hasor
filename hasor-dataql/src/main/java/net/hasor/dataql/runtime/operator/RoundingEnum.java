@@ -17,6 +17,7 @@ package net.hasor.dataql.runtime.operator;
 import net.hasor.utils.StringUtils;
 
 import java.math.RoundingMode;
+
 /**
  * 数值计算最大精度
  * @author 赵永春 (zyc@hasor.net)
@@ -52,12 +53,15 @@ public enum RoundingEnum {
     UNNECESSARY(RoundingMode.UNNECESSARY);
     //
     private RoundingMode modeNum;
+
     RoundingEnum(RoundingMode modeNum) {
         this.modeNum = modeNum;
     }
+
     public RoundingMode getModeNum() {
         return this.modeNum;
     }
+
     public static RoundingEnum find(String modeType) {
         if (StringUtils.isBlank(modeType))
             return HALF_UP;

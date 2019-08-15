@@ -28,7 +28,6 @@ public interface Option {
     public static final String MAX_DECIMAL_DIGITS = "MAX_DECIMAL_DIGITS";
     /**小数的舍入模式，参考 RoundingEnum 定义的舍入模式(一共八种)，默认为：四舍五入。详细配置参考：RoundingEnum 枚举。*/
     public static final String NUMBER_ROUNDING    = "NUMBER_ROUNDING";
-    //
 
     /** 获取选项参数 */
     public String[] getOptionNames();

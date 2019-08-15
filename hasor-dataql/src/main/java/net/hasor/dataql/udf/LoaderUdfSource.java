@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.dataql.udf;
-import net.hasor.dataql.*;
+import net.hasor.dataql.Query;
+import net.hasor.dataql.QueryEngine;
+import net.hasor.dataql.QueryResult;
+import net.hasor.dataql.UDF;
 import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.dataql.domain.compiler.QueryCompiler;
 import net.hasor.dataql.runtime.QueryEngineImpl;
@@ -27,6 +30,7 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.net.URL;
 import java.nio.charset.Charset;
+
 /**
  * 用于加载另一个 DataQL 并将其包装为 UDF。
  * DataQL 查询文件必须是以 .ql 结尾
@@ -35,11 +39,14 @@ import java.nio.charset.Charset;
  */
 public class LoaderUdfSource extends SimpleUdfSource {
     private ClassLoader classLoader;
+
     public LoaderUdfSource() {
     }
+
     public LoaderUdfSource(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
+
     @Override
     public UDF findUdf(String udfName, QueryEngine sourceEngine) throws Throwable {
         if (this.isIgnore(udfName)) {
@@ -70,22 +77,21 @@ public class LoaderUdfSource extends SimpleUdfSource {
             engine.setClassLoader(this.classLoader);
         }
         //
-        target = new UDF() {
-            public Object call(Object[] values, Option readOnly) throws Throwable {
-                Query query = engine.newQuery();
-                if (values != null) {
-                    for (int i = 0; i < values.length; i++) {
-                        query.addParameter("param" + i, values[i]);
-                    }
+        target = (values, readOnly) -> {
+            Query query = engine.newQuery();
+            if (values != null) {
+                for (int i = 0; i < values.length; i++) {
+                    query.addParameter("param" + i, values[i]);
                 }
-                QueryResult execute = query.execute();
-                return execute.getData();
             }
+            QueryResult execute = query.execute();
+            return execute.getData();
         };
         //
         super.put(udfName, target);
         return target;
     }
+
     /**是否忽略，用于检测目标资源名的格式是否符合要加载的范围。*/
     protected boolean isIgnore(String udfName) {
         return StringUtils.isBlank(udfName) || !udfName.endsWith(".ql");

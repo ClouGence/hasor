@@ -21,27 +21,31 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 /**
  * 用于集中管理 UDF。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class SimpleUdfManager implements UdfManager {
-    private final Map<String, List<UdfSource>> udfSourceMap = new HashMap<String, List<UdfSource>>();
+    private final Map<String, List<UdfSource>> udfSourceMap = new HashMap<>();
+
     @Override
     public List<UdfSource> getSourceByName(String sourceName) {
         return this.udfSourceMap.get(sourceName);
     }
+
     @Override
     public List<String> getSourceNames() {
-        return new ArrayList<String>(this.udfSourceMap.keySet());
+        return new ArrayList<>(this.udfSourceMap.keySet());
     }
+
     @Override
     public void addSource(UdfSource udfSource) {
         String sourceName = udfSource.getName();
         List<UdfSource> sourceList = this.udfSourceMap.get(sourceName);
         if (sourceList == null) {
-            sourceList = new ArrayList<UdfSource>();
+            sourceList = new ArrayList<>();
             this.udfSourceMap.put(sourceName, sourceList);
         }
         for (UdfSource atSource : sourceList) {

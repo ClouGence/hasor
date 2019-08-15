@@ -25,25 +25,25 @@ public class Token implements java.io.Serializable {
      * Increment only if the <i>serialized</i> form of the
      * class changes.
      */
-    private static final long serialVersionUID = 1L;
+    private static final long   serialVersionUID = 1L;
     /**
      * An integer that describes the kind of this token.  This numbering
      * system is determined by JavaCCParser, and a table of these numbers is
      * stored in the file ...Constants.java.
      */
-    public int    kind;
+    public               int    kind;
     /** The line number of the first character of this Token. */
-    public int    beginLine;
+    public               int    beginLine;
     /** The column number of the first character of this Token. */
-    public int    beginColumn;
+    public               int    beginColumn;
     /** The line number of the last character of this Token. */
-    public int    endLine;
+    public               int    endLine;
     /** The column number of the last character of this Token. */
-    public int    endColumn;
+    public               int    endColumn;
     /**
      * The string image of the token.
      */
-    public String image;
+    public               String image;
     /**
      * A reference to the next regular (non-special) token from the input
      * stream.  If this is the last token from the input stream, or if the
@@ -52,7 +52,7 @@ public class Token implements java.io.Serializable {
      * token.  Otherwise, see below for a description of the contents of
      * this field.
      */
-    public Token  next;
+    public               Token  next;
     /**
      * This field is used to access special tokens that occur prior to this
      * token, but after the immediately preceding regular (non-special) token.
@@ -65,7 +65,8 @@ public class Token implements java.io.Serializable {
      * immediately follow it (without an intervening regular token).  If there
      * is no such token, this field is null.
      */
-    public Token  specialToken;
+    public               Token  specialToken;
+
     /**
      * An optional attribute value of the Token.
      * Tokens which are not used as syntactic sugar will often contain
@@ -77,17 +78,20 @@ public class Token implements java.io.Serializable {
     public Object getValue() {
         return null;
     }
+
     /**
      * No-argument constructor
      */
     public Token() {
     }
+
     /**
      * Constructs a new token for the specified Image.
      */
     public Token(int kind) {
         this(kind, null);
     }
+
     /**
      * Constructs a new token for the specified Image and Kind.
      */
@@ -95,12 +99,14 @@ public class Token implements java.io.Serializable {
         this.kind = kind;
         this.image = image;
     }
+
     /**
      * Returns the image.
      */
     public String toString() {
         return image;
     }
+
     /**
      * Returns a new Token object, by default. However, if you want, you
      * can create and return subclass objects based on the value of ofKind.
@@ -119,6 +125,7 @@ public class Token implements java.io.Serializable {
             return new Token(ofKind, image);
         }
     }
+
     public static Token newToken(int ofKind) {
         return newToken(ofKind, null);
     }

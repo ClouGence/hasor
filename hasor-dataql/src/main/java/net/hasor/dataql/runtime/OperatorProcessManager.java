@@ -18,23 +18,26 @@ import net.hasor.dataql.OperatorProcess;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * 用于管理 UDF。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 class OperatorProcessManager {
-    private String symbolName;
-    private List<OperatorProcessItem> processList = new ArrayList<OperatorProcessItem>();
+    private String                    symbolName;
+    private List<OperatorProcessItem> processList = new ArrayList<>();
+
     public OperatorProcessManager(String symbolName) {
         this.symbolName = symbolName;
     }
-    //
+
     public void rewrite(Class<?> fstType, Class<?> secType, OperatorProcess process) {
         OperatorProcessItem item = new OperatorProcessItem(0, fstType, secType);
         item.process = process;
         this.processList.add(item);
     }
+
     public OperatorProcess findOnFst(Class<?> fstType) {
         if (fstType == null) {
             return null;
@@ -46,6 +49,7 @@ class OperatorProcessManager {
         }
         return null;
     }
+
     public OperatorProcess findOnBoth(Class<?> fstType, Class<?> secType) {
         if (fstType == null || secType == null) {
             return null;
@@ -57,18 +61,19 @@ class OperatorProcessManager {
         }
         return null;
     }
-    //
+
     private static class OperatorProcessItem {
         private int             priority;
         private Class<?>        fstType;
         private Class<?>        secType;
         public  OperatorProcess process;
-        //
+
         OperatorProcessItem(int priority, Class<?> fstType, Class<?> secType) {
             this.priority = priority;
             this.fstType = fstType;
             this.secType = secType;
         }
+
         public boolean testMatch(Class<?> fstType, Class<?> secType) {
             if (!this.fstType.isAssignableFrom(fstType))
                 return false;

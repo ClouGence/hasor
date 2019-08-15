@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime.struts;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * 用于 ASA 指令在处理方法返回值时。对数据的封装。
  * @author 赵永春 (zyc@hasor.net)
@@ -23,16 +24,16 @@ import java.util.List;
  */
 public class ListResultStruts implements ResultStruts {
     private List<Object> dataResult = null;
-    //
+
     public ListResultStruts(Object toType) {
-        this.dataResult = new ArrayList<Object>();
+        this.dataResult = new ArrayList<>();
     }
-    //
+
     /**添加结果*/
     public void addResult(Object data) {
         this.dataResult.add(data);
     }
-    //
+
     @Override
     public Object getResult() {
         return this.dataResult;

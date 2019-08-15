@@ -20,6 +20,7 @@ import net.hasor.dataql.UDF;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
 import net.hasor.dataql.runtime.struts.LambdaCall;
+
 /**
  * 代理 Lambda 使其成为 UDF.
  * @author 赵永春 (zyc@hasor.net)
@@ -31,7 +32,7 @@ public class LambdaCallProxy implements UDF {
     private MemStack      memStack;
     private StackStruts   localData;
     private ProcessContet context;
-    //
+
     public LambdaCallProxy(int methodAddress, InstSequence instSequence, MemStack memStack, StackStruts localData, ProcessContet context) throws Exception {
         this.methodAddress = methodAddress;
         this.instSequence = instSequence;
@@ -39,10 +40,11 @@ public class LambdaCallProxy implements UDF {
         this.localData = localData.clone();
         this.context = context;
     }
+
     public int getMethodAddress() {
         return this.methodAddress;
     }
-    //
+
     @Override
     public Object call(Object[] values, Option readOnly) throws ProcessException, CloneNotSupportedException {
         //

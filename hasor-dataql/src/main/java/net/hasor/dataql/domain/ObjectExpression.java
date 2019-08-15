@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 /**
  * 对象
  * @author 赵永春 (zyc@hasor.net)
@@ -32,12 +33,13 @@ public class ObjectExpression extends Expression {
     private List<String>            fieldSort;
     private String                  objectType;
     private Map<String, Expression> objectData;
+
     public ObjectExpression() {
-        this.fieldSort = new ArrayList<String>();
+        this.fieldSort = new ArrayList<>();
         this.objectType = "";
-        this.objectData = new HashMap<String, Expression>();
+        this.objectData = new HashMap<>();
     }
-    //
+
     /** 添加字段 */
     public void addField(String fieldName, Expression valueExp) {
         if (StringUtils.isBlank(fieldName) || this.fieldSort.contains(fieldName)) {
@@ -46,8 +48,7 @@ public class ObjectExpression extends Expression {
         this.fieldSort.add(fieldName);
         this.objectData.put(fieldName, valueExp);
     }
-    //
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         InstructionInfo instruction = queue.lastInst();

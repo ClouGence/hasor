@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.dataql;
-import net.hasor.dataql.Option;
-import net.hasor.dataql.UDF;
 import net.hasor.utils.json.JSON;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 /**
  * UDF集合
  * @version : 2014-7-12
@@ -34,6 +33,7 @@ public class FooManager {
             return null;
         }
     }
+
     /** UDF 作为参数传入 */
     public static class Filter implements UDF {
         public Object call(Object[] values, Option readOnly) throws Throwable {
@@ -41,6 +41,7 @@ public class FooManager {
             return ((UDF) values[1]).call(values, readOnly);
         }
     }
+
     /** 返回单个User Map结构 */
     public static class FindUserByID implements UDF {
         public Object call(Object[] values, Option readOnly) {
@@ -67,6 +68,7 @@ public class FooManager {
             return udfData;
         }
     }
+
     /** 返回 54321 */
     public static class Foo implements UDF {
         public Object call(Object[] values, Option readOnly) {
@@ -74,6 +76,7 @@ public class FooManager {
             return 54321;
         }
     }
+
     /** 返回一个List，包含订单列表 */
     public static class QueryOrder implements UDF {
         public Object call(Object[] values, Option readOnly) {
@@ -91,6 +94,7 @@ public class FooManager {
             return orderList;
         }
     }
+
     /** 返回单个User信息 */
     public static class UserInfo implements UDF {
         public Object call(Object[] values, Option readOnly) {

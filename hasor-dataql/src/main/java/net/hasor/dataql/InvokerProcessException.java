@@ -21,15 +21,16 @@ package net.hasor.dataql;
  */
 public class InvokerProcessException extends ProcessException {
     private int instOpcodes;
-    //
+
     public InvokerProcessException(int instOpcodes, String errorMessage) {
         this(instOpcodes, errorMessage, null);
     }
+
     public InvokerProcessException(int instOpcodes, String errorMessage, Throwable e) {
         super(errorMessage, e);
         this.instOpcodes = instOpcodes;
     }
-    //
+
     /**运行出错的指令*/
     public int getInstOpcodes() {
         return this.instOpcodes;

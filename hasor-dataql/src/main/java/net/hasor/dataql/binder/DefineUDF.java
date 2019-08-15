@@ -15,10 +15,11 @@
  */
 package net.hasor.dataql.binder;
 import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
 import net.hasor.core.BindInfo;
+import net.hasor.core.spi.AppContextAware;
 import net.hasor.dataql.Option;
 import net.hasor.dataql.UDF;
+
 /**
  * UDF 函数定义
  * @author 赵永春 (zyc@hasor.net)
@@ -29,22 +30,27 @@ class DefineUDF implements UDF, AppContextAware {
     private String                  name;
     private BindInfo<? extends UDF> udfInfo;
     private UDF                     target;
+
     //
     public DefineUDF(String parentName, String name, BindInfo<? extends UDF> udfInfo) {
         this.parentName = parentName;
         this.name = name;
         this.udfInfo = udfInfo;
     }
+
     @Override
     public void setAppContext(AppContext appContext) {
         this.target = appContext.getInstance(this.udfInfo);
     }
+
     public String getParentName() {
         return this.parentName;
     }
+
     public String getName() {
         return this.name;
     }
+
     @Override
     public Object call(Object[] values, Option readOnly) throws Throwable {
         return this.target.call(values, readOnly);

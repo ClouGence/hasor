@@ -19,6 +19,7 @@ import net.hasor.dataql.runtime.operator.OperatorUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+
 /**
  * 用于封装 Option。
  * @author 赵永春 (zyc@hasor.net)
@@ -26,29 +27,33 @@ import java.util.Map;
  */
 public class OptionSet implements Option {
     private Map<String, Object> optionMap;
-    //
+
     public OptionSet() {
-        this.optionMap = new HashMap<String, Object>();
+        this.optionMap = new HashMap<>();
     }
+
     public OptionSet(Option optionSet) {
-        this.optionMap = new HashMap<String, Object>();
+        this.optionMap = new HashMap<>();
         for (String name : optionSet.getOptionNames()) {
             this.optionMap.put(name, optionSet.getOption(name));
         }
     }
-    //
+
     @Override
     public String[] getOptionNames() {
-        return this.optionMap.keySet().toArray(new String[this.optionMap.size()]);
+        return this.optionMap.keySet().toArray(new String[0]);
     }
+
     /** 获取选项参数 */
     public Object getOption(String optionKey) {
         return this.optionMap.get(optionKey);
     }
+
     /** 删除选项参数 */
     public void removeOption(String key) {
         this.optionMap.remove(key);
     }
+
     @Override
     public void setOptionSet(Option optionSet) {
         if (optionSet == null) {
@@ -73,14 +78,17 @@ public class OptionSet implements Option {
             }
         }
     }
+
     /** 设置选项参数 */
     public void setOption(String key, String value) {
         this.optionMap.put(key, value);
     }
+
     /** 设置选项参数 */
     public void setOption(String key, Number value) {
         this.optionMap.put(key, value);
     }
+
     /** 设置选项参数 */
     public void setOption(String key, boolean value) {
         this.optionMap.put(key, value);

@@ -21,9 +21,11 @@ package net.hasor.dataql.runtime.struts;
  */
 public class OriResultStruts implements ResultStruts {
     private Object resultData;
+
     public OriResultStruts(Object resultData) {
         this.resultData = resultData;
     }
+
     @Override
     public Object getResult() {
         return this.resultData;

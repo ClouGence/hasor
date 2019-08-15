@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.Option;
+
 /**
  * 用于封装 Option。
  * @author 赵永春 (zyc@hasor.net)
@@ -22,34 +23,41 @@ import net.hasor.dataql.Option;
  */
 public class OptionReadOnly implements Option {
     private Option option;
-    //
+
     public OptionReadOnly(Option option) {
         this.option = option;
     }
+
     @Override
     public String[] getOptionNames() {
         return this.option.getOptionNames();
     }
+
     @Override
     public Object getOption(String optionKey) {
         return this.option.getOption(optionKey);
     }
+
     @Override
     public void removeOption(String optionKey) {
         throw new UnsupportedOperationException("readOnly.");
     }
+
     @Override
     public void setOptionSet(Option optionSet) {
         throw new UnsupportedOperationException("readOnly.");
     }
+
     @Override
     public void setOption(String optionKey, String value) {
         throw new UnsupportedOperationException("readOnly.");
     }
+
     @Override
     public void setOption(String optionKey, Number value) {
         throw new UnsupportedOperationException("readOnly.");
     }
+
     @Override
     public void setOption(String optionKey, boolean value) {
         throw new UnsupportedOperationException("readOnly.");

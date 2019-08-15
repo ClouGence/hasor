@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 /**
  * 用于封装和引发 QL 查询执行。
  * @author 赵永春 (zyc@hasor.net)
@@ -38,15 +39,14 @@ class QueryInstance extends OptionSet implements Query {
     private QIL                 instSequence;
     private QueryEngineImpl     queryEngine;
     private Map<String, Object> queryContext;
-    //
+
     QueryInstance(QueryEngineImpl queryEngine, QIL instSequence) {
         super(queryEngine);
         this.queryEngine = queryEngine;
         this.instSequence = instSequence;
-        this.queryContext = new HashMap<String, Object>();
+        this.queryContext = new HashMap<>();
     }
-    //
-    //
+
     @Override
     public void addParameter(String key, Object value) {
         if (StringUtils.isBlank(key)) {
@@ -54,6 +54,7 @@ class QueryInstance extends OptionSet implements Query {
         }
         this.queryContext.put(key, value);
     }
+
     @Override
     public void addParameterMap(Map<String, Object> queryData) {
         if (queryData == null || queryData.isEmpty()) {
@@ -61,6 +62,7 @@ class QueryInstance extends OptionSet implements Query {
         }
         this.queryContext.putAll(queryData);
     }
+
     @Override
     public QueryResult execute() throws InvokerProcessException {
         long startTime = System.currentTimeMillis();
@@ -97,10 +99,11 @@ class QueryInstance extends OptionSet implements Query {
         DataModel res = evalQueryResult(resultData);
         return new QueryResultImpl(0, executionTime(startTime), res);
     }
+
     private static long executionTime(long startTime) {
         return System.currentTimeMillis() - startTime;
     }
-    //
+
     private DataModel evalQueryResult(Object resultData) {
         if (resultData == null) {
             return null;
@@ -117,7 +120,7 @@ class QueryInstance extends OptionSet implements Query {
                 resultData instanceof Date || //
                 resultData instanceof Character ||//
                 resultData instanceof String//
-                ) {
+        ) {
             return new ValueModel(resultData);
         }
         //

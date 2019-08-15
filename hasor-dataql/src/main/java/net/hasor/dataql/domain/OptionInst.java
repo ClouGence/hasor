@@ -16,6 +16,7 @@
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
 /**
  * 查询选项
  * @author 赵永春 (zyc@hasor.net)
@@ -24,12 +25,13 @@ import net.hasor.dataql.domain.compiler.InstQueue;
 public class OptionInst extends Inst {
     private String              optKey;
     private PrimitiveExpression expression;
+
     public OptionInst(String optKey, PrimitiveExpression expression) {
         super();
         this.optKey = optKey;
         this.expression = expression;
     }
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         queue.inst(LDC_S, this.optKey);

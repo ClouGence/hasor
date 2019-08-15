@@ -16,6 +16,7 @@
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
 /**
  * var指令
  * @author 赵永春 (zyc@hasor.net)
@@ -24,12 +25,13 @@ import net.hasor.dataql.domain.compiler.InstQueue;
 public class VariableInst extends Inst {
     private String   varName; //变量名
     private Variable value;   //变量表达式
+
     public VariableInst(String varName, Variable value) {
         super();
         this.varName = varName;
         this.value = value;
     }
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         // .表达式指令

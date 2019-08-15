@@ -20,6 +20,7 @@ import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
+
 /**
  * LDC_D，输出一个 数值 到栈。
  * @author 赵永春 (zyc@hasor.net)
@@ -30,6 +31,7 @@ class LDC_D implements InsetProcess {
     public int getOpcode() {
         return LDC_D;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         Number number = sequence.currentInst().getNumber(0);

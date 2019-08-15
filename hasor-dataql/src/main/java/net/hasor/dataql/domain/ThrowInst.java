@@ -16,6 +16,7 @@
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
 /**
  * throw指令
  * @author 赵永春 (zyc@hasor.net)
@@ -24,13 +25,14 @@ import net.hasor.dataql.domain.compiler.InstQueue;
 public class ThrowInst extends Inst {
     private int        errorCode;
     private Expression throwData;
+
     public ThrowInst(Number errorCode, Expression throwData) {
         if (errorCode == null)
             errorCode = 0;
         this.errorCode = errorCode.intValue();
         this.throwData = throwData;
     }
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         queue.inst(LDC_D, this.errorCode);

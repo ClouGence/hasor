@@ -17,6 +17,7 @@ package net.hasor.dataql.runtime.operator;
 import net.hasor.dataql.InvokerProcessException;
 import net.hasor.dataql.OperatorProcess;
 import net.hasor.dataql.Option;
+
 /**
  * 字符串拼接
  * @author 赵永春 (zyc@hasor.net)

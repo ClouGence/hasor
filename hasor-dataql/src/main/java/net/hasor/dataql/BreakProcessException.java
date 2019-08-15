@@ -22,17 +22,18 @@ package net.hasor.dataql;
 public class BreakProcessException extends InvokerProcessException {
     private int    errorCode;
     private Object errorMsg;
-    //
+
     public BreakProcessException(int instOpcodes, int errorCode, Object errorMsg) {
         super(instOpcodes, "errorCode is " + errorCode);
         this.errorCode = errorCode;
         this.errorMsg = errorMsg;
     }
-    //
+
     /**错误码*/
     public int getErrorCode() {
         return this.errorCode;
     }
+
     /**错误信息*/
     public Object getErrorMsg() {
         return this.errorMsg;

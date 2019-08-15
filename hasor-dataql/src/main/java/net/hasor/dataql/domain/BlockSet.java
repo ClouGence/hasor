@@ -19,15 +19,18 @@ import net.hasor.dataql.domain.compiler.InstQueue;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * 指令序列
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
 public class BlockSet implements InstCompiler {
-    protected List<Inst> instList = new ArrayList<Inst>();
+    protected List<Inst> instList = new ArrayList<>();
+
     public BlockSet() {
     }
+
     public BlockSet(List<Inst> instList) {
         if (instList != null && !instList.isEmpty()) {
             for (Inst inst : instList) {
@@ -35,18 +38,19 @@ public class BlockSet implements InstCompiler {
             }
         }
     }
-    //
+
     /** 批量添加指令集 */
     public void addInstSet(BlockSet inst) {
         this.instList.addAll(inst.instList);
     }
+
     /** 添加一条指令 */
     public void addInst(Inst inst) {
         if (inst != null) {
             this.instList.add(inst);
         }
     }
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         if (this.instList == null || this.instList.isEmpty()) {

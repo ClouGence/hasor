@@ -16,6 +16,7 @@
 package net.hasor.dataql.binder;
 import net.hasor.core.BindInfo;
 import net.hasor.dataql.UdfSource;
+
 /**
  * UDF 函数定义
  * @author 赵永春 (zyc@hasor.net)
@@ -23,10 +24,12 @@ import net.hasor.dataql.UdfSource;
  */
 class DefineSource {
     private BindInfo<? extends UdfSource> target;
+
     //
     public DefineSource(BindInfo<? extends UdfSource> target) {
         this.target = target;
     }
+
     public BindInfo<? extends UdfSource> getTarget() {
         return target;
     }

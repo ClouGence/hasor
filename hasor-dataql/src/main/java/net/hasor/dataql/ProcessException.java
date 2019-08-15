@@ -23,6 +23,7 @@ public class ProcessException extends Exception {
     public ProcessException(String msg) {
         super(msg);
     }
+
     public ProcessException(String msg, Throwable e) {
         super(msg, e);
     }

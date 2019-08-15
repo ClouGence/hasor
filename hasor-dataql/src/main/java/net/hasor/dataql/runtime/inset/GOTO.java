@@ -20,6 +20,7 @@ import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
+
 /**
  * GOTO，跳转当前指令的执行指针到新的位置。
  * @author 赵永春 (zyc@hasor.net)
@@ -30,6 +31,7 @@ class GOTO implements InsetProcess {
     public int getOpcode() {
         return GOTO;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         int jumpTo = sequence.currentInst().getInt(0);

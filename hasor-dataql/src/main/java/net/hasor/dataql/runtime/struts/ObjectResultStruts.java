@@ -15,6 +15,7 @@
  */
 package net.hasor.dataql.runtime.struts;
 import java.util.HashMap;
+
 /**
  * 用于 ASM 指令在处理方法返回值时。对数据的封装。
  * @author 赵永春 (zyc@hasor.net)
@@ -22,16 +23,16 @@ import java.util.HashMap;
  */
 public class ObjectResultStruts implements ResultStruts {
     private HashMap<String, Object> dataResult = null;
-    //
+
     public ObjectResultStruts(Object toType) {
-        this.dataResult = new HashMap<String, Object>();
+        this.dataResult = new HashMap<>();
     }
-    //
+
     /** 添加结果 */
     public void addResultField(String filedName, Object data) {
         this.dataResult.put(filedName, data);
     }
-    //
+
     @Override
     public Object getResult() {
         return this.dataResult;

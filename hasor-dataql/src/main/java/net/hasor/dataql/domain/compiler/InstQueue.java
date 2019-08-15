@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * QL 指令序列
  * @author 赵永春 (zyc@hasor.net)
@@ -31,25 +32,26 @@ public class InstQueue {
     private final AtomicInteger                     labelIndex;
     private final AtomicInteger                     methodName;
     private final List<LinkedList<InstructionInfo>> instSet;
-    //
+
     public InstQueue() {
         this.name = 0;
         this.labelIndex = new AtomicInteger(0);
         this.methodName = new AtomicInteger(0);
-        this.instSet = new ArrayList<LinkedList<InstructionInfo>>();
-        this.instSet.add(new LinkedList<InstructionInfo>());
+        this.instSet = new ArrayList<>();
+        this.instSet.add(new LinkedList<>());
     }
+
     private InstQueue(int methodName, InstQueue dataPool) {
         this.name = methodName;
         this.labelIndex = dataPool.labelIndex;
         this.methodName = dataPool.methodName;
         this.instSet = dataPool.instSet;
     }
+
     public int getName() {
         return this.name;
     }
-    //
-    //
+
     /** 添加指令 */
     public int inst(byte inst, Object... param) {
         //
@@ -69,15 +71,16 @@ public class InstQueue {
         }
         return index;
     }
+
     /** 最后加入的那条指令 */
     public InstructionInfo lastInst() {
         LinkedList<InstructionInfo> instList = this.instSet.get(this.name);
         return instList.isEmpty() ? null : instList.getLast();
     }
-    //
+
     /**新函数指令集*/
     public InstQueue newMethodInst() {
-        LinkedList<InstructionInfo> instList = new LinkedList<InstructionInfo>();
+        LinkedList<InstructionInfo> instList = new LinkedList<>();
         this.instSet.add(instList);
         int name = -1;
         for (int i = 0; i < this.instSet.size(); i++) {
@@ -88,11 +91,11 @@ public class InstQueue {
         }
         return new InstQueue(name, this);
     }
-    //
+
     public Label labelDef() {
         return new Label(this.labelIndex.incrementAndGet());
     }
-    //
+
     public Instruction[][] buildArrays() throws ParseException {
         for (LinkedList<InstructionInfo> instList : this.instSet) {
             for (InstructionInfo inst : instList) {
@@ -105,12 +108,12 @@ public class InstQueue {
         InstructionInfo[][] buildDatas = new InstructionInfo[this.instSet.size()][];
         for (int i = 0; i < this.instSet.size(); i++) {
             LinkedList<InstructionInfo> instList = this.instSet.get(i);
-            InstructionInfo[] instSet = instList.toArray(new InstructionInfo[instList.size()]);
+            InstructionInfo[] instSet = instList.toArray(new InstructionInfo[0]);
             buildDatas[i] = instSet;
         }
         return buildDatas;
     }
-    //
+
     @Override
     public String toString() {
         StringBuilder strBuffer = new StringBuilder();
@@ -120,6 +123,7 @@ public class InstQueue {
         }
         return strBuffer.toString();
     }
+
     private static void printInstList(int name, LinkedList<InstructionInfo> instList, StringBuilder strBuffer) {
         strBuffer.append("[");
         strBuffer.append(name);

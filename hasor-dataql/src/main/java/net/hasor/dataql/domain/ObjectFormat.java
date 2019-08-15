@@ -16,6 +16,7 @@
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
 /**
  * 函数调用的返回值处理格式，Object格式。
  * @author 赵永春 (zyc@hasor.net)
@@ -23,11 +24,12 @@ import net.hasor.dataql.domain.compiler.InstQueue;
  */
 public class ObjectFormat extends Format {
     private ObjectExpression format;
+
     public ObjectFormat(ObjectExpression format) {
         super();
         this.format = format;
     }
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         queue.inst(ASM, "");

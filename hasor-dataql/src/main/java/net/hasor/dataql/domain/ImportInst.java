@@ -16,6 +16,7 @@
 package net.hasor.dataql.domain;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
+
 /**
  * import 语法
  * @author 赵永春 (zyc@hasor.net)
@@ -24,12 +25,13 @@ import net.hasor.dataql.domain.compiler.InstQueue;
 public class ImportInst extends Inst {
     private String packageName = null;
     private String udfName     = null;
+
     public ImportInst(String packageName, String udfName) {
         super();
         this.packageName = packageName;
         this.udfName = udfName;
     }
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         InstQueue instQueue = queue.newMethodInst();

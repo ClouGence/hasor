@@ -21,6 +21,7 @@ import net.hasor.utils.StringUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * 用于管理 UDF。
  * @author 赵永春 (zyc@hasor.net)
@@ -28,15 +29,19 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SimpleUdfSource extends ConcurrentHashMap<String, UDF> implements UdfSource {
     private String name = null;
+
     public SimpleUdfSource() {
         this(DefaultSource);
     }
+
     public SimpleUdfSource(Map<String, UDF> udfMap) {
         this(DefaultSource, udfMap);
     }
+
     public SimpleUdfSource(String name) {
         this(name, null);
     }
+
     public SimpleUdfSource(String name, Map<String, UDF> udfMap) {
         if (StringUtils.isBlank(name)) {
             name = DefaultSource;
@@ -46,16 +51,17 @@ public class SimpleUdfSource extends ConcurrentHashMap<String, UDF> implements U
             super.putAll(udfMap);
         }
     }
-    //
+
     @Override
     public String getName() {
         return this.name;
     }
-    //
+
     @Override
     public UDF findUdf(String udfName, QueryEngine sourceEngine) throws Throwable {
         return super.get(udfName);
     }
+
     public void addUdf(String udfName, UDF udf) {
         super.put(udfName, udf);
     }

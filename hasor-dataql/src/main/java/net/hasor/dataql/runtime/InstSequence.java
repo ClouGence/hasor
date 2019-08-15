@@ -20,6 +20,7 @@ import net.hasor.dataql.domain.compiler.QIL;
 import net.hasor.utils.StringUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * 指令序列集
  * @author 赵永春 (zyc@hasor.net)
@@ -31,8 +32,8 @@ public class InstSequence {
     private final int           startPosition;// 有效的起始位置
     private final int           endPosition;  // 有效的终止位置
     private final AtomicInteger sequenceIndex;// 当前指令指针指向的序列位置
-    private boolean jumpMark = false;
-    //
+    private       boolean       jumpMark = false;
+
     InstSequence(int address, QIL queueSet) {
         this.address = address;
         this.queueSet = queueSet;
@@ -40,6 +41,7 @@ public class InstSequence {
         this.endPosition = this.queueSet.iqlSize(address);
         this.sequenceIndex = new AtomicInteger(this.startPosition);
     }
+
     InstSequence(int address, QIL queueSet, int startPosition, int endPosition) {
         this.address = address;
         this.queueSet = queueSet;
@@ -47,15 +49,17 @@ public class InstSequence {
         this.endPosition = endPosition;
         this.sequenceIndex = new AtomicInteger(this.startPosition);
     }
-    //
+
     /** 当前指令序列的地址 */
     public int getAddress() {
         return this.address;
     }
+
     /** 克隆一个 */
     public InstSequence clone() {
         return new InstSequence(this.address, this.queueSet);
     }
+
     /** 当前指令 */
     public Instruction currentInst() {
         if (this.queueSet == null) {
@@ -64,6 +68,7 @@ public class InstSequence {
         //
         return this.queueSet.instOf(this.address, this.sequenceIndex.get());
     }
+
     /** 另一个方法序列 */
     public InstSequence methodSet(int address) {
         if (address < 0 || address > this.queueSet.iqlPoolSize()) {
@@ -71,6 +76,7 @@ public class InstSequence {
         }
         return new InstSequence(address, this.queueSet);
     }
+
     /** 根据 filter，来决定圈定  form to 范围的指令集。 */
     public InstSequence findSubSequence(InstFilter instFilter) {
         Instruction[] curInstSet = this.queueSet.iqlArrays(this.address);
@@ -84,11 +90,12 @@ public class InstSequence {
         }
         return new InstSequence(this.address, this.queueSet, startIndex + 1, endIndex);
     }
-    //
+
     /** 是否还有更多指令等待执行。 */
     public boolean hasNext() {
         return this.sequenceIndex.get() < this.endPosition;
     }
+
     /** 移动指令序列指针，到下一个位置。 */
     public boolean doNext(int nextSkip) throws InvokerProcessException {
         if (this.jumpMark) {
@@ -110,20 +117,23 @@ public class InstSequence {
         }
         return true;
     }
+
     /**指令集的出口地址*/
     public int exitPosition() {
         return this.endPosition;
     }
+
     /**重置执行指针到序列指定位置*/
     public void jumpTo(int position) {
         this.sequenceIndex.set(position);
         this.jumpMark = true;
     }
+
     /**重置执行指针到序列最开始*/
     public void reset() {
         this.sequenceIndex.set(this.startPosition);
     }
-    //
+
     @Override
     public String toString() {
         StringBuilder strBuffer = new StringBuilder();

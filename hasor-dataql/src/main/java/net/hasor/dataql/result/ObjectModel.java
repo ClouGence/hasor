@@ -17,6 +17,7 @@ package net.hasor.dataql.result;
 import net.hasor.utils.StringUtils;
 
 import java.util.*;
+
 /**
  * 对象结果
  * @author 赵永春 (zyc@hasor.net)
@@ -24,11 +25,11 @@ import java.util.*;
  */
 public class ObjectModel extends HashMap<String, Object> implements DataModel {
     private List<String> sortList;
-    //
-    //
+
     public ObjectModel() {
-        this.sortList = new ArrayList<String>();
+        this.sortList = new ArrayList<>();
     }
+
     public ObjectModel(Object dataItem) {
         this();
         if (dataItem instanceof Map) {
@@ -43,16 +44,18 @@ public class ObjectModel extends HashMap<String, Object> implements DataModel {
             this.putAll(beanMap);
         }
     }
+
     public ObjectModel(Collection<String> sortList) {
-        this.sortList = new ArrayList<String>(sortList);
+        this.sortList = new ArrayList<>(sortList);
     }
-    //
+
     public void addField(String field) {
         if (this.sortList.contains(field)) {
             return;
         }
         this.sortList.add(field);
     }
+
     @Override
     public Object put(String key, Object value) {
         if (StringUtils.isBlank(key) || !this.hasField(key)) {
@@ -60,6 +63,7 @@ public class ObjectModel extends HashMap<String, Object> implements DataModel {
         }
         return super.put(key, value);
     }
+
     @Override
     public void putAll(Map<? extends String, ?> m) {
         if (m == null || m.isEmpty()) {
@@ -69,20 +73,23 @@ public class ObjectModel extends HashMap<String, Object> implements DataModel {
             this.put(ent.getKey(), ent.getValue());
         }
     }
-    //
+
     public int getFieldSize() {
         return this.sortList.size();
     }
+
     public List<String> getFieldNames() {
         return Collections.unmodifiableList(this.sortList);
     }
+
     public boolean hasField(String fieldName) {
         return this.sortList.contains(fieldName);
     }
+
     public Object getOriResult(String fieldName) {
         return super.get(fieldName);
     }
-    //
+
     public ValueModel asValueModel(String fieldName) {
         Object dataItem = super.get(fieldName);
         if (dataItem instanceof ValueModel) {
@@ -90,6 +97,7 @@ public class ObjectModel extends HashMap<String, Object> implements DataModel {
         }
         return new ValueModel(dataItem);
     }
+
     public ListModel asListModel(String fieldName) {
         Object dataItem = super.get(fieldName);
         if (dataItem instanceof ListModel) {
@@ -97,6 +105,7 @@ public class ObjectModel extends HashMap<String, Object> implements DataModel {
         }
         return new ListModel(dataItem);
     }
+
     public ObjectModel asObjectModel(String fieldName) {
         Object dataItem = super.get(fieldName);
         if (dataItem instanceof ObjectModel) {

@@ -16,6 +16,7 @@
 package net.hasor.dataql.runtime;
 import net.hasor.dataql.QueryResult;
 import net.hasor.dataql.result.DataModel;
+
 /**
  * 结果
  * @author 赵永春 (zyc@hasor.net)
@@ -26,29 +27,35 @@ class QueryResultImpl implements QueryResult {
     private int       errorCode;
     private DataModel dataModel;
     private long      executionTime;
+
     public QueryResultImpl(int errorCode, long executionTime, DataModel dataModel) {
         this.isThrow = false;
         this.errorCode = errorCode;
         this.executionTime = executionTime;
         this.dataModel = dataModel;
     }
+
     public QueryResultImpl(boolean isThrow, int errorCode, long executionTime, DataModel dataModel) {
         this.isThrow = isThrow;
         this.errorCode = errorCode;
         this.executionTime = executionTime;
         this.dataModel = dataModel;
     }
+
     public boolean isThrow() {
         return isThrow;
     }
+
     @Override
     public int getCode() {
         return this.errorCode;
     }
+
     @Override
     public DataModel getData() {
         return this.dataModel;
     }
+
     @Override
     public long executionTime() {
         return this.executionTime;

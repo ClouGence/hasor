@@ -15,7 +15,10 @@
  */
 package net.hasor.dataql;
 import com.alibaba.fastjson.JSON;
-import net.hasor.core.*;
+import net.hasor.core.AppContext;
+import net.hasor.core.Hasor;
+import net.hasor.core.Module;
+import net.hasor.core.Settings;
 import net.hasor.dataql.binder.DataApiBinder;
 import net.hasor.dataql.binder.DataQL;
 import net.hasor.dataql.domain.compiler.QIL;
@@ -41,6 +44,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
+
 /**
  * 测试用例
  * @author 赵永春 (zyc@hasor.net)
@@ -75,6 +79,7 @@ public class TestProcessMain {
     }
 
     private static UdfSource udfSource = new SimpleUdfSource();
+
     @Before
     public void before() {
         udfSource.addUdf("findUserByID", new FooManager.FindUserByID());
@@ -85,6 +90,7 @@ public class TestProcessMain {
         udfSource.addUdf("filter", new FooManager.Filter());
         udfSource.addUdf("track", new FooManager.Track());
     }
+
     //
     private String getScript(String queryResource) throws IOException {
         InputStream inStream = ResourcesUtils.getResourceAsStream(queryResource);
@@ -102,6 +108,7 @@ public class TestProcessMain {
         System.out.println(buildQuery);
         return buildQuery;
     }
+
     private void printResult(QueryResult result) throws Throwable {
         Object data = result.getData();
         if (data instanceof LambdaModel) {
@@ -109,6 +116,7 @@ public class TestProcessMain {
         }
         System.out.println(" - " + JSON.toJSON(data).toString());
     }
+
     //
     // --------------------------------------------------------------------------------------------
     @Test
@@ -124,7 +132,7 @@ public class TestProcessMain {
         ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("dataql");
         ((UdfManager) scriptEngine).addSource(udfSource);
         ((UdfManager) scriptEngine).addSource(new LoaderUdfSource());
-        ((UdfManager) scriptEngine).addSource(new TypeUdfSource<CollectionUDFs>(CollectionUDFs.class, null, null));
+        ((UdfManager) scriptEngine).addSource(new TypeUdfSource<>(CollectionUDFs.class, null, null));
         SimpleScriptContext params = new SimpleScriptContext();
         params.setAttribute("uid", "uid form env", ScriptContext.ENGINE_SCOPE);
         params.setAttribute("sid", "sid form env", ScriptContext.ENGINE_SCOPE);
@@ -136,7 +144,7 @@ public class TestProcessMain {
         UdfManager udfManager = new SimpleUdfManager();
         udfManager.addSource(udfSource);
         udfManager.addSource(new LoaderUdfSource());
-        udfManager.addSource(new TypeUdfSource<CollectionUDFs>(CollectionUDFs.class, null, null));
+        udfManager.addSource(new TypeUdfSource<>(CollectionUDFs.class, null, null));
         QIL compilerQuery = QueryCompiler.compilerQuery(buildQuery);        //编译 DataQL 为 QIL
         Query query = new QueryEngineImpl(udfManager, compilerQuery).newQuery();//通过 QIL 构建 Query
         query.addParameter("uid", "uid form env");
@@ -146,10 +154,8 @@ public class TestProcessMain {
         //
         // --------------------------------------------------------------------------------------------------
         // .Hasor框架中使用DataQL（LoaderUdfSource、CollectionUDFs 都是内置加载）
-        AppContext appContext = Hasor.createAppContext(new Module() {
-            public void loadModule(ApiBinder apiBinder) throws Throwable {
-                apiBinder.tryCast(DataApiBinder.class).addUdfSource(udfSource);
-            }
+        AppContext appContext = Hasor.create().build((Module) apiBinder -> {
+            apiBinder.tryCast(DataApiBinder.class).addUdfSource(udfSource);
         });
         DataQL dataQL = appContext.getInstance(DataQL.class);
         Query qlQuery = dataQL.createQuery(buildQuery);
@@ -158,6 +164,7 @@ public class TestProcessMain {
         result = qlQuery.execute();
         printResult(result);
     }
+
     //
     @Test
     public void performanceALL() throws Throwable {
@@ -195,6 +202,7 @@ public class TestProcessMain {
             throw new RuntimeException(e);
         }
     }
+
     @Test
     public void testQL() throws Throwable {
         String buildQuery = getScript("/import/dataql_31.ql");
@@ -204,7 +212,7 @@ public class TestProcessMain {
         UdfManager udfManager = new SimpleUdfManager();
         udfManager.addSource(udfSource);
         udfManager.addSource(new LoaderUdfSource());
-        udfManager.addSource(new TypeUdfSource<CollectionUDFs>(CollectionUDFs.class, null, null));
+        udfManager.addSource(new TypeUdfSource<>(CollectionUDFs.class, null, null));
         //
         QIL compilerQuery = QueryCompiler.compilerQuery(buildQuery);        //编译 DataQL 为 QIL
         QueryEngineImpl engine = new QueryEngineImpl(udfManager, compilerQuery);    //通过 QIL 构建 Query

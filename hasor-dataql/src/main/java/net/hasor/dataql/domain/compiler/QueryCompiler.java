@@ -17,15 +17,14 @@ package net.hasor.dataql.domain.compiler;
 import net.hasor.dataql.domain.BlockSet;
 import net.hasor.dataql.domain.parser.DataQLParser;
 import net.hasor.dataql.domain.parser.ParseException;
+
 /**
  * DataQL 编译器。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-07-03
  */
 public class QueryCompiler {
-    //
     public static QIL compilerQuery(String queryString) throws ParseException {
-        //
         BlockSet queryModel = DataQLParser.parserDataQL(queryString);
         InstQueue queue = new InstQueue();
         queryModel.doCompiler(queue, new CompilerStack());

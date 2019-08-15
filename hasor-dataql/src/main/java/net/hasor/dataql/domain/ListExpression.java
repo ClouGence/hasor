@@ -20,6 +20,7 @@ import net.hasor.dataql.domain.compiler.InstructionInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * 列表
  * @author 赵永春 (zyc@hasor.net)
@@ -28,19 +29,19 @@ import java.util.List;
 public class ListExpression extends Expression {
     private String           listType;
     private List<Expression> expressionList;
+
     public ListExpression() {
         this.listType = "";
-        this.expressionList = new ArrayList<Expression>();
+        this.expressionList = new ArrayList<>();
     }
-    //
+
     /** 添加元素 */
     public void addItem(Expression valueExp) {
         if (valueExp != null) {
             this.expressionList.add(valueExp);
         }
     }
-    //
-    //
+
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         InstructionInfo instruction = queue.lastInst();

@@ -16,6 +16,7 @@
  */
 package net.hasor.dataql.result;
 import java.util.Map;
+
 /**
  * Abstract pair class to assist with creating <code>KeyValue</code>
  * and {@link Map.Entry Map.Entry} implementations.
@@ -33,6 +34,7 @@ abstract class AbstractMapEntry<T, V> implements Map.Entry<T, V> {
     protected T key;
     /** The value */
     protected V value;
+
     /**
      * Constructs a new pair with the specified key and given value.
      * @param key  the key for the entry, may be null
@@ -43,6 +45,7 @@ abstract class AbstractMapEntry<T, V> implements Map.Entry<T, V> {
         this.key = key;
         this.value = value;
     }
+
     /**
      * Gets the key from the pair.
      * @return the key 
@@ -50,6 +53,7 @@ abstract class AbstractMapEntry<T, V> implements Map.Entry<T, V> {
     public T getKey() {
         return key;
     }
+
     /**
      * Gets the value from the pair.
      * @return the value
@@ -57,6 +61,7 @@ abstract class AbstractMapEntry<T, V> implements Map.Entry<T, V> {
     public V getValue() {
         return value;
     }
+
     /**
      * Gets a debugging String view of the pair.
      * @return a String view of the entry

@@ -17,6 +17,7 @@ package net.hasor.dataql.result;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+
 /**
  * 集合类型结果集
  * @author 赵永春 (zyc@hasor.net)
@@ -25,12 +26,15 @@ import java.util.Collection;
 public class ListModel extends ArrayList<Object> implements DataModel {
     public ListModel() {
     }
+
     public ListModel(Object dataItem) {
         this.initData(dataItem);
     }
+
     public ListModel(Collection<Object> dataItem) {
         this.initData(dataItem);
     }
+
     private void initData(Object dataItem) {
         if (dataItem == null) {
             return;
@@ -47,6 +51,7 @@ public class ListModel extends ArrayList<Object> implements DataModel {
             super.addAll((Collection<Object>) dataItem);
         }
     }
+
     //
     public ValueModel asValueModel(int index) {
         Object dataItem = super.get(index);
@@ -55,6 +60,7 @@ public class ListModel extends ArrayList<Object> implements DataModel {
         }
         return new ValueModel(dataItem);
     }
+
     public ListModel asListModel(int index) {
         Object dataItem = super.get(index);
         if (dataItem instanceof ListModel) {
@@ -62,6 +68,7 @@ public class ListModel extends ArrayList<Object> implements DataModel {
         }
         return new ListModel(dataItem);
     }
+
     public ObjectModel asObjectModel(int index) {
         Object dataItem = super.get(index);
         if (dataItem instanceof ObjectModel) {

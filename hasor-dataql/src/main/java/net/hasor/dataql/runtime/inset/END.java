@@ -20,6 +20,7 @@ import net.hasor.dataql.runtime.InstSequence;
 import net.hasor.dataql.runtime.ProcessContet;
 import net.hasor.dataql.runtime.mem.MemStack;
 import net.hasor.dataql.runtime.mem.StackStruts;
+
 /**
  * END，正常结束指令，当执行该指令时，会将栈顶的元素作为 result。
  * 并且将执行指针设置到执行序列的末尾。
@@ -33,6 +34,7 @@ class END extends AbstractReturn implements InsetProcess {
     public int getOpcode() {
         return END;
     }
+
     @Override
     public void doWork(InstSequence sequence, MemStack memStack, StackStruts local, ProcessContet context) throws ProcessException {
         Object result = memStack.pop();
