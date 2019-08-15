@@ -213,19 +213,19 @@ public class MappingBinderTest extends AbstractTest {
             }
             //
             Set<Class<?>> classSet = apiBinder.findClass(MappingTo.class, "net.hasor.test.actions.mapping.*");
-            assert classSet.size() == 2;
+            assert classSet.size() == 3;
             apiBinder.tryCast(WebApiBinder.class).loadMappingTo(classSet);
         }, servlet30("/"), LoadModule.Web);
         //
         List<MappingDef> definitions = appContext.findBindingBean(MappingDef.class);
-        assert definitions.size() == 2;
+        assert definitions.size() == 3;
         //
         Set<String> mappingToSet = new HashSet<>();
-        mappingToSet.add(definitions.get(0).getMappingTo());
-        mappingToSet.add(definitions.get(1).getMappingTo());
+        definitions.forEach(mappingDef -> mappingToSet.add(mappingDef.getMappingTo()));
         //
         assert mappingToSet.contains("/mappingto_a.do");
         assert mappingToSet.contains("/mappingto_b.do");
+        assert mappingToSet.contains("/args_mapping_action.do");
     }
 
     @Test
@@ -520,124 +520,4 @@ public class MappingBinderTest extends AbstractTest {
             }
         }, servlet30("/"), LoadModule.Web);
     }
-    //    //
-    //    @Test
-    //    public void renderTest1() throws Throwable {
-    //        final TestRenderEngine testRenderEngine = new TestRenderEngine();
-    //        final Supplier<TestRenderEngine> testRenderEngineProvider = InstanceProvider.of(testRenderEngine);
-    //        //
-    //        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-    //            BindInfo<TestRenderEngine> engineBindInfo1 = apiBinder.bindType(TestRenderEngine.class).asEagerSingleton().toInfo();
-    //            BindInfo<TestRenderEngine> engineBindInfo2 = apiBinder.bindType(TestRenderEngine.class).toInfo();
-    //            //
-    //            apiBinder.tryCast(WebApiBinder.class).addRender("htm1").toInstance(testRenderEngine);           // 1
-    //            apiBinder.tryCast(WebApiBinder.class).addRender("htm2").toProvider(testRenderEngineProvider);   // 2
-    //            apiBinder.tryCast(WebApiBinder.class).addRender("htm3").to(TestRenderEngine.class);             // 3
-    //            apiBinder.tryCast(WebApiBinder.class).addRender("htm4").bindToInfo(engineBindInfo1);            // 4
-    //            apiBinder.tryCast(WebApiBinder.class).addRender("htm5").bindToInfo(engineBindInfo2);            // 5
-    //            try {
-    //                apiBinder.tryCast(WebApiBinder.class).addRender("htm5").bindToInfo(engineBindInfo2);        // duplicate
-    //                assert false;
-    //            } catch (IllegalStateException e) {
-    //                assert e.getMessage().startsWith("duplicate bind -> bindName 'htm5'");
-    //            }
-    //        });
-    //        //
-    //        List<RenderDefinition> definitions = appContext.findBindingBean(RenderDefinition.class);
-    //        assert definitions.size() == 5;
-    //        for (int i = 0; i < 5; i++) {
-    //            assert definitions.get(i).getClass() == RenderDefinition.class;
-    //        }
-    //        //
-    //        Object invoke1 = definitions.get(0).newEngine(appContext);     // 1
-    //        Object invoke2 = definitions.get(1).newEngine(appContext);     // 2
-    //        Object invoke3_1 = definitions.get(2).newEngine(appContext);   // 3
-    //        Object invoke3_2 = definitions.get(2).newEngine(appContext);   // 3
-    //        Object invoke4_1 = definitions.get(3).newEngine(appContext);   // 4
-    //        Object invoke4_2 = definitions.get(3).newEngine(appContext);   // 4
-    //        Object invoke5_1 = definitions.get(4).newEngine(appContext);   // 5
-    //        Object invoke5_2 = definitions.get(4).newEngine(appContext);   // 5
-    //        //
-    //        assert invoke1 == invoke2;
-    //        assert invoke3_1 != invoke3_2;
-    //        assert invoke4_1 == invoke4_2;
-    //        assert invoke5_1 != invoke5_2;
-    //    }
-    //    //
-    //    @Test
-    //    public void renderTest2() throws Throwable {
-    //        final TestRenderEngine testRenderEngine = new TestRenderEngine();
-    //        final Supplier<TestRenderEngine> testRenderEngineProvider = InstanceProvider.of(testRenderEngine);
-    //        //
-    //        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-    //            BindInfo<TestRenderEngine> engineBindInfo1 = apiBinder.bindType(TestRenderEngine.class).asEagerSingleton().toInfo();
-    //            BindInfo<TestRenderEngine> engineBindInfo2 = apiBinder.bindType(TestRenderEngine.class).toInfo();
-    //            //
-    //            apiBinder.tryCast(WebApiBinder.class).addRender("htm1").toInstance(testRenderEngine);           // 1
-    //            apiBinder.tryCast(WebApiBinder.class).addRender("htm2").toProvider(testRenderEngineProvider);   // 2
-    //            apiBinder.tryCast(WebApiBinder.class).addRender("htm3").to(TestRenderEngine.class);             // 3
-    //            apiBinder.tryCast(WebApiBinder.class).addRender("htm4").bindToInfo(engineBindInfo1);            // 4
-    //            apiBinder.tryCast(WebApiBinder.class).addRender("htm5").bindToInfo(engineBindInfo2);            // 5
-    //        });
-    //        //
-    //        List<RenderDefinition> definitions = appContext.findBindingBean(RenderDefinition.class);
-    //        assert definitions.size() == 5;
-    //        for (int i = 0; i < 5; i++) {
-    //            assert definitions.get(i).getClass() == RenderDefinition.class;
-    //        }
-    //        //
-    //        Object invoke1 = definitions.get(0).newEngine(appContext);     // 1
-    //        Object invoke2 = definitions.get(1).newEngine(appContext);     // 2
-    //        Object invoke3_1 = definitions.get(2).newEngine(appContext);   // 3
-    //        Object invoke3_2 = definitions.get(2).newEngine(appContext);   // 3
-    //        Object invoke4_1 = definitions.get(3).newEngine(appContext);   // 4
-    //        Object invoke4_2 = definitions.get(3).newEngine(appContext);   // 4
-    //        Object invoke5_1 = definitions.get(4).newEngine(appContext);   // 5
-    //        Object invoke5_2 = definitions.get(4).newEngine(appContext);   // 5
-    //        //
-    //        assert invoke1 == invoke2;
-    //        assert invoke3_1 != invoke3_2;
-    //        assert invoke4_1 == invoke4_2;
-    //        assert invoke5_1 != invoke5_2;
-    //    }
-    //    //
-    //    @Test
-    //    public void loadRenderTest1() throws Throwable {
-    //        //
-    //        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-    //            try {
-    //                apiBinder.tryCast(WebApiBinder.class).loadRender(BasicAction.class);
-    //                assert false;
-    //            } catch (Exception e) {
-    //                assert e.getMessage().endsWith(" must be configure @Render");
-    //            }
-    //            try {
-    //                apiBinder.tryCast(WebApiBinder.class).loadRender(AppContext.class);
-    //                assert false;
-    //            } catch (Exception e) {
-    //                assert e.getMessage().endsWith(" must be normal Bean");
-    //            }
-    //            //
-    //            try {
-    //                apiBinder.tryCast(WebApiBinder.class).loadRender(ErrorRenderEngine.class);
-    //                assert false;
-    //            } catch (Exception e) {
-    //                assert e.getMessage().endsWith(" must be implements RenderEngine.");
-    //            }
-    //            //
-    //            Set<Class<?>> classSet = apiBinder.findClass(Render.class, "net.hasor.test.beans.beans");
-    //            assert classSet.size() == 2;
-    //            classSet.remove(ErrorRenderEngine.class); // remove Error
-    //            apiBinder.tryCast(WebApiBinder.class).loadRender(classSet);
-    //        });
-    //        //
-    //        List<RenderDefinition> definitions = appContext.findBindingBean(RenderDefinition.class);
-    //        assert definitions.size() == 1;
-    //        //
-    //        Set<String> suffixSet = new HashSet<>();
-    //        suffixSet.add(definitions.get(0).getRenderInfo().name());
-    //        //
-    //        assert suffixSet.size() == 1;
-    //        assert suffixSet.contains("jspx");
-    //    }
 }

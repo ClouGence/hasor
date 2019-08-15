@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.mockito.ArgumentMatchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * @version : 2016-12-16
@@ -75,7 +75,7 @@ public class J2eeTest extends AbstractTest {
                 new InvocationTargetException(null) //
         };
         InvokerChain chain = PowerMockito.mock(InvokerChain.class);
-        PowerMockito.when(chain.doNext(anyObject())).thenAnswer(invocationOnMock -> {
+        PowerMockito.when(chain.doNext(any())).thenAnswer(invocationOnMock -> {
             throw exceptions[index.get()];
         });
         //

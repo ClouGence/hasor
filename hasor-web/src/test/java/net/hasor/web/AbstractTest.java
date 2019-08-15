@@ -246,7 +246,7 @@ public class AbstractTest {
         });
         PowerMockito.doAnswer(invocation -> {
             return attrMap.put((String) invocation.getArguments()[0], invocation.getArguments()[1]);
-        }).when(request).setAttribute(anyString(), anyObject());
+        }).when(request).setAttribute(anyString(), any());
         PowerMockito.doAnswer(invocation -> {
             return attrMap.remove(invocation.getArguments()[0]);
         }).when(request).removeAttribute(anyString());
