@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.Map.Entry;
+
 /**
  * 路由计算结果缓存<br/>
  * 接口级    方法级      参数级
@@ -29,15 +30,17 @@ import java.util.Map.Entry;
  * @author 赵永春 (zyc@hasor.net)
  */
 class AddressCacheResult {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected        Logger      logger = LoggerFactory.getLogger(getClass());
     //做引用切换
     private volatile CacheResult cacheResultRef;
     private final    AddressPool addressPool;
+
     //
     public AddressCacheResult(AddressPool addressPool) {
         this.addressPool = Hasor.assertIsNotNull(addressPool);
     }
     //
+
     /**从全部地址中计算执行动态计算并缓存计算结果.*/
     public List<InterAddress> getAddressList(String serviceID, String methodName, Object[] args) {
         if (this.cacheResultRef == null) {
@@ -76,6 +79,7 @@ class AddressCacheResult {
         }
         return result;
     }
+
     /**重置缓存结果*/
     public void reset() {
         this.logger.info("reset addressCache.");
@@ -133,6 +137,7 @@ class AddressCacheResult {
         logger.debug("switch cacheResultRef.");
         this.cacheResultRef = cacheResultRef;
     }
+
     //
     //
     //
@@ -147,6 +152,7 @@ class AddressCacheResult {
         }
         return result;
     }
+
     private static Map<String, List<InterAddress>> convertToAddressMethod(List<InterAddress> all, Map<String, List<String>> methodLevelResult) {
         Map<String, List<InterAddress>> result = new HashMap<String, List<InterAddress>>();
         for (Entry<String, List<String>> ent : methodLevelResult.entrySet()) {
@@ -158,6 +164,7 @@ class AddressCacheResult {
         }
         return result;
     }
+
     private static List<InterAddress> convertToAddress(List<InterAddress> all, List<String> serviceLevelResult) {
         List<InterAddress> result = new ArrayList<InterAddress>(serviceLevelResult.size());
         for (String evalResult : serviceLevelResult) {
@@ -169,6 +176,7 @@ class AddressCacheResult {
         }
         return result;
     }
+
     private static List<String> convertToStr(List<InterAddress> all) {
         List<String> result = new ArrayList<String>();
         for (InterAddress address : all) {
@@ -179,6 +187,7 @@ class AddressCacheResult {
     //
     //
     //
+
     /** 脚本说明：
      * <pre>入参：
      *  serviceID   （String）
@@ -214,6 +223,7 @@ class AddressCacheResult {
         }
     }
     //
+
     /** 脚本说明：
      * <pre>入参：
      *  serviceID   （String）
@@ -258,6 +268,7 @@ class AddressCacheResult {
         }
     }
     //
+
     /** 脚本说明：
      * <pre>入参：
      *  serviceID   （String）
@@ -306,11 +317,13 @@ class AddressCacheResult {
             return null;
         }
     }
+
     //
     private static class CacheResult {
         public final Map<String, List<InterAddress>>                           serviceLevel; //服务接口级
         public final Map<String, Map<String, List<InterAddress>>>              methodLevel;  //方法级
         public final Map<String, Map<String, Map<String, List<InterAddress>>>> argsLevel;    //参数级
+
         //
         public CacheResult() {
             this.serviceLevel = new HashMap<String, List<InterAddress>>(); //服务接口级

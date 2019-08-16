@@ -18,6 +18,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+
 /**
  *
  * @version : 2014年11月17日
@@ -29,6 +30,7 @@ public class NetworkUtils {
         s.bind(new InetSocketAddress(host, port));
         s.close();
     }
+
     /**测试端口是否被占用*/
     public static boolean isPortAvailable(int port) {
         try {
@@ -39,6 +41,7 @@ public class NetworkUtils {
             return false;
         }
     }
+
     /**根据IP字节数据转换为int.*/
     public static byte[] ipStrToBytes(String ipData) {
         byte[] ipParts = new byte[4];
@@ -48,16 +51,17 @@ public class NetworkUtils {
         }
         return ipParts;
     }
+
     /**根据名字获取地址，local代表本机（如果本机有多网卡那么请明确指定ip）*/
     public static InetAddress finalBindAddress(String hostString) throws UnknownHostException {
         return "local".equalsIgnoreCase(hostString) ? InetAddress.getLocalHost() : InetAddress.getByName(hostString);
     }
-    //
+
     /**根据掩码长度获取掩码字符串形式.*/
     public static String maskToStringByPrefixLength(int length) {
         return ipDataToString(ipDataByInt(maskByPrefixLength(length)));
     }
-    //
+
     /**根据掩码长度获取子网掩码值.*/
     public static int maskByPrefixLength(int length) {
         if (length > 32) {
@@ -65,7 +69,7 @@ public class NetworkUtils {
         }
         return -1 << (32 - length);
     }
-    //
+
     /**根据IP值分解IP为字节数组.*/
     public static byte[] ipDataByInt(int ipData) {
         byte ipParts[] = new byte[4];
@@ -75,6 +79,7 @@ public class NetworkUtils {
         }
         return ipParts;
     }
+
     /**根据IP字节数据转换为int.*/
     public static int ipDataByBytes(byte[] ipData) {
         int ipParts[] = new int[4];
@@ -88,11 +93,12 @@ public class NetworkUtils {
         }
         return intIP;
     }
-    //
+ 
     /**将分解的IP数据转换为字符串*/
     public static String ipDataToString(int ipData) {
         return ipDataToString(ipDataByInt(ipData));
     }
+
     /**将分解的IP数据转换为字符串*/
     public static String ipDataToString(byte[] ipData) {
         String result = "";
@@ -102,6 +108,7 @@ public class NetworkUtils {
         }
         return result;
     }
+
     private static String tostr(byte byteData) {
         return "" + ((byteData < 0) ? 256 + byteData : byteData);
     }

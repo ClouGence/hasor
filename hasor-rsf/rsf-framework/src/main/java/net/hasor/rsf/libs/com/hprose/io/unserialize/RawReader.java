@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public final class RawReader {
     private static void readBytesRaw(InputStream stream, OutputStream ostream) throws IOException {
         int len = 0;
@@ -41,6 +42,7 @@ public final class RawReader {
         ostream.write(b);
         ostream.write(stream.read());
     }
+
     private static void readGuidRaw(InputStream stream, OutputStream ostream) throws IOException {
         int len = 38;
         int off = 0;
@@ -50,6 +52,7 @@ public final class RawReader {
         }
         ostream.write(b);
     }
+
     private static void readUTF8CharRaw(InputStream stream, OutputStream ostream) throws IOException {
         int tag = stream.read();
         switch (tag >>> 4) {
@@ -77,6 +80,7 @@ public final class RawReader {
             throw ValueReader.badEncoding(tag);
         }
     }
+
     private static void readComplexRaw(InputStream stream, OutputStream ostream) throws IOException {
         int tag;
         do {
@@ -88,6 +92,7 @@ public final class RawReader {
         }
         ostream.write(tag);
     }
+
     private static void readNumberRaw(InputStream stream, OutputStream ostream) throws IOException {
         int tag;
         do {
@@ -95,6 +100,7 @@ public final class RawReader {
             ostream.write(tag);
         } while (tag != TagSemicolon);
     }
+
     private static void readDateTimeRaw(InputStream stream, OutputStream ostream) throws IOException {
         int tag;
         do {
@@ -102,6 +108,7 @@ public final class RawReader {
             ostream.write(tag);
         } while (tag != TagSemicolon && tag != TagUTC);
     }
+
     private static void readStringRaw(InputStream stream, OutputStream ostream) throws IOException {
         int count = 0;
         int tag = '0';
@@ -148,9 +155,11 @@ public final class RawReader {
         }
         ostream.write(stream.read());
     }
+
     private static void readRaw(InputStream stream, OutputStream ostream) throws IOException {
         readRaw(stream, ostream, stream.read());
     }
+
     final static void readRaw(InputStream stream, OutputStream ostream, int tag) throws IOException {
         ostream.write(tag);
         switch (tag) {

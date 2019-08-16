@@ -52,16 +52,18 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
 /**
  * Serializing an object for known object types.
  */
 @SuppressWarnings({ "unused" })
 public class BeanSerializer extends AbstractSerializer {
     private static final Object[] NULL_ARGS = new Object[0];
-    private Method[] _methods;
-    private String[] _names;
-    private Object   _writeReplaceFactory;
-    private Method   _writeReplace;
+    private              Method[] _methods;
+    private              String[] _names;
+    private              Object   _writeReplaceFactory;
+    private              Method   _writeReplace;
+
     public BeanSerializer(Class<?> cl, ClassLoader loader) {
         introspectWriteReplace(cl, loader);
         ArrayList<Method> primitiveMethods = new ArrayList<Method>();
@@ -110,6 +112,7 @@ public class BeanSerializer extends AbstractSerializer {
             _names[i] = name;
         }
     }
+
     private void introspectWriteReplace(Class<?> cl, ClassLoader loader) {
         try {
             String className = cl.getName() + "HessianSerializer";
@@ -128,6 +131,7 @@ public class BeanSerializer extends AbstractSerializer {
         }
         _writeReplace = getWriteReplace(cl);
     }
+
     /**
      * Returns the writeReplace method
      */
@@ -142,6 +146,7 @@ public class BeanSerializer extends AbstractSerializer {
         }
         return null;
     }
+
     /**
      * Returns the writeReplace method
      */
@@ -154,6 +159,7 @@ public class BeanSerializer extends AbstractSerializer {
         }
         return null;
     }
+
     public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
         if (out.addRef(obj))
             return;
@@ -207,6 +213,7 @@ public class BeanSerializer extends AbstractSerializer {
             }
         }
     }
+
     /**
      * Finds any matching setter.
      */
@@ -224,6 +231,7 @@ public class BeanSerializer extends AbstractSerializer {
         }
         return null;
     }
+
     static class MethodNameCmp implements Comparator<Method> {
         public int compare(Method a, Method b) {
             return a.getName().compareTo(b.getName());

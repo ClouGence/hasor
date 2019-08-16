@@ -19,8 +19,10 @@
 package net.hasor.rsf.libs.com.hprose.io.convert;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+
 public class BigDecimalConverter implements Converter<BigDecimal> {
     public final static BigDecimalConverter instance = new BigDecimalConverter();
+
     public BigDecimal convertTo(Object obj, Type type) {
         if (obj instanceof String) {
             return new BigDecimal((String) obj);

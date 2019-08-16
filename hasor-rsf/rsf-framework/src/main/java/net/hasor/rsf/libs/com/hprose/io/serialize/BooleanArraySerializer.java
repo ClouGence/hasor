@@ -21,8 +21,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 
 import java.io.IOException;
 import java.io.OutputStream;
+
 public final class BooleanArraySerializer extends ReferenceSerializer<boolean[]> {
     public final static BooleanArraySerializer instance = new BooleanArraySerializer();
+
     @Override
     public final void serialize(Writer writer, boolean[] array) throws IOException {
         super.serialize(writer, array);

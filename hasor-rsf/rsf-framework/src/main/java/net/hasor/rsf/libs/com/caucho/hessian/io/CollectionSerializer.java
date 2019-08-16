@@ -51,23 +51,27 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
 /**
  * Serializing a JDK 1.2 Collection.
  */
 public class CollectionSerializer extends AbstractSerializer {
     private boolean _sendJavaType = true;
+
     /**
      * Set true if the java type of the collection should be sent.
      */
     public void setSendJavaType(boolean sendJavaType) {
         _sendJavaType = sendJavaType;
     }
+
     /**
      * Return true if the java type of the collection should be sent.
      */
     public boolean getSendJavaType() {
         return _sendJavaType;
     }
+
     public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
         if (out.addRef(obj))
             return;

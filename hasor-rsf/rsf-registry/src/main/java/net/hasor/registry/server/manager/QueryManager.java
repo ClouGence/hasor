@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import static net.hasor.registry.server.utils.CenterUtils.getDataKey;
+
 /**
  * 提供服务的查询能力
  * @version : 2016年9月18日
@@ -39,10 +40,11 @@ import static net.hasor.registry.server.utils.CenterUtils.getDataKey;
  */
 @Singleton
 public class QueryManager {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger      logger = LoggerFactory.getLogger(getClass());
     @Inject
-    private DataAdapter dataAdapter;
+    private   DataAdapter dataAdapter;
     //
+
     /** 得到 Consumer 列表，用于异步推送服务的提供者列表 */
     public List<ConsumerPublishInfo> queryConsumerList(List<String> protocol, ServiceID serviceID) {
         String dataKey = getDataKey(serviceID) + "/Consumer/";
@@ -68,6 +70,7 @@ public class QueryManager {
         return resultList;
     }
     //
+
     /** 查询提供者列表 */
     public List<String> queryProviderList(List<String> protocol, ServiceID serviceID) {
         String dataKey = getDataKey(serviceID) + "/Provider/";

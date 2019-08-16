@@ -21,24 +21,24 @@ import net.hasor.rsf.libs.com.hprose.io.HproseWriter;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
 /**
  *
  * @version : 2017年1月12日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class HproseSerializeCoder implements SerializeCoder {
-    //
     @Override
     public void initCoder(Environment environment) {
     }
-    //
+
     public byte[] encode(Object object) throws IOException {
         ByteArrayOutputStream binary = new ByteArrayOutputStream();
         HproseWriter writer = new HproseWriter(binary);
         writer.serialize(object);
         return binary.toByteArray();
     }
-    //
+
     public Object decode(byte[] bytes, Class<?> returnType) throws IOException {
         if (bytes == null)
             return null;

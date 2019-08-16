@@ -20,6 +20,7 @@ import net.hasor.core.Settings;
 import net.hasor.rsf.SerializeCoder;
 
 import java.io.IOException;
+
 /**
  *
  * @version : 2014年9月19日
@@ -29,11 +30,12 @@ public class JsonSerializeCoder implements SerializeCoder {
     @Override
     public void initCoder(Environment environment) {
     }
+
     public byte[] encode(Object object) throws IOException {
         String text = JSON.toJSONString(object);
         return text.getBytes(Settings.DefaultCharset);
     }
-    //
+
     public Object decode(byte[] bytes, Class<?> returnType) throws IOException {
         return JSON.parseObject(new String(bytes), returnType);
     }

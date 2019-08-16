@@ -51,16 +51,20 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 @SuppressWarnings("unused")
 public class HessianInputFactory {
     public static final Logger         log      = LoggerFactory.getLogger(HessianInputFactory.class);
     private             HessianFactory _factory = new HessianFactory();
+
     public void setSerializerFactory(SerializerFactory factory) {
         _factory.setSerializerFactory(factory);
     }
+
     public SerializerFactory getSerializerFactory() {
         return _factory.getSerializerFactory();
     }
+
     public HeaderType readHeader(InputStream is) throws IOException {
         int code = is.read();
         int major = is.read();
@@ -81,6 +85,7 @@ public class HessianInputFactory {
             throw new IOException((char) code + " 0x" + Integer.toHexString(code) + " is an unknown Hessian message code.");
         }
     }
+
     public AbstractHessianInput open(InputStream is) throws IOException {
         int code = is.read();
         int major = is.read();
@@ -99,8 +104,10 @@ public class HessianInputFactory {
             throw new IOException((char) code + " is an unknown Hessian message code.");
         }
     }
+
     public enum HeaderType {
         CALL_1_REPLY_1, CALL_1_REPLY_2, HESSIAN_2, REPLY_1, REPLY_2;
+
         public boolean isCall1() {
             switch (this) {
             case CALL_1_REPLY_1:
@@ -110,6 +117,7 @@ public class HessianInputFactory {
                 return false;
             }
         }
+
         public boolean isCall2() {
             switch (this) {
             case HESSIAN_2:
@@ -118,6 +126,7 @@ public class HessianInputFactory {
                 return false;
             }
         }
+
         public boolean isReply1() {
             switch (this) {
             case CALL_1_REPLY_1:
@@ -126,6 +135,7 @@ public class HessianInputFactory {
                 return false;
             }
         }
+
         public boolean isReply2() {
             switch (this) {
             case CALL_1_REPLY_2:

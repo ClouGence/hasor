@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public final class OtherTypeSerializer extends ReferenceSerializer {
     public final static  OtherTypeSerializer                                              instance    = new OtherTypeSerializer();
     private final static EnumMap<HproseMode, ConcurrentHashMap<Class<?>, SerializeCache>> memberCache = new EnumMap<HproseMode, ConcurrentHashMap<Class<?>, SerializeCache>>(HproseMode.class);
@@ -39,10 +40,12 @@ public final class OtherTypeSerializer extends ReferenceSerializer {
         memberCache.put(HproseMode.PropertyMode, new ConcurrentHashMap<Class<?>, SerializeCache>());
         memberCache.put(HproseMode.MemberMode, new ConcurrentHashMap<Class<?>, SerializeCache>());
     }
+
     final static class SerializeCache {
         byte[] data;
         int    refcount;
     }
+
     private static void writeObject(Writer writer, Object object, Class<?> type) throws IOException {
         Map<String, MemberAccessor> members = Accessors.getMembers(type, writer.mode);
         for (Map.Entry<String, MemberAccessor> entry : members.entrySet()) {
@@ -50,6 +53,7 @@ public final class OtherTypeSerializer extends ReferenceSerializer {
             member.serialize(writer, object);
         }
     }
+
     private static int writeClass(Writer writer, Class<?> type) throws IOException {
         SerializeCache cache = memberCache.get(writer.mode).get(type);
         if (cache == null) {
@@ -80,6 +84,7 @@ public final class OtherTypeSerializer extends ReferenceSerializer {
         writer.classref.put(type, cr);
         return cr;
     }
+
     @Override
     @SuppressWarnings({ "unchecked" })
     public final void serialize(Writer writer, Object object) throws IOException {

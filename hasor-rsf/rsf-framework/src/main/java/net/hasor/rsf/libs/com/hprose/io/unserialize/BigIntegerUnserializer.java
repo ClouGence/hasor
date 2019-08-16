@@ -22,8 +22,10 @@ import java.lang.reflect.Type;
 import java.math.BigInteger;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public final class BigIntegerUnserializer extends BaseUnserializer<BigInteger> {
     public final static BigIntegerUnserializer instance = new BigIntegerUnserializer();
+
     @Override
     public BigInteger unserialize(Reader reader, int tag, Type type) throws IOException {
         if (tag >= '0' && tag <= '9')
@@ -50,6 +52,7 @@ public final class BigIntegerUnserializer extends BaseUnserializer<BigInteger> {
         }
         return super.unserialize(reader, tag, type);
     }
+
     public BigInteger read(Reader reader) throws IOException {
         return read(reader, BigInteger.class);
     }

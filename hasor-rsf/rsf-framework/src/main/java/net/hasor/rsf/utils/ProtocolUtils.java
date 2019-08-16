@@ -26,6 +26,7 @@ import net.hasor.rsf.domain.RsfRuntimeUtils;
 import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
+
 /**
  *
  * @version : 2015年3月28日
@@ -63,6 +64,7 @@ public class ProtocolUtils {
         //
         return info;
     }
+
     public static ResponseInfo buildResponseStatus(RsfEnvironment env, long requestID, short status, String errorInfo) {
         ResponseInfo info = new ResponseInfo();
         info.setRequestID(requestID);
@@ -72,6 +74,7 @@ public class ProtocolUtils {
         }
         return info;
     }
+
     /**将{@link RsfResponse},转换为{@link ResponseInfo}。*/
     public static ResponseInfo buildResponseInfo(RsfEnvironment env, RsfResponse rsfResponse) throws IOException {
         ResponseInfo info = new ResponseInfo();
@@ -87,6 +90,7 @@ public class ProtocolUtils {
         //
         return info;
     }
+
     /**创建ByteBuf*/
     public static ByteBuf newByteBuf() {
         return PooledByteBufAllocator.DEFAULT.directBuffer();

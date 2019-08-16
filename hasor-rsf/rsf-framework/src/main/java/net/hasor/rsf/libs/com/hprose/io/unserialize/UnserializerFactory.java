@@ -34,6 +34,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.*;
 import java.util.regex.Pattern;
+
 public final class UnserializerFactory {
     private final static ConcurrentHashMap<Class<?>, Unserializer> unserializers = new ConcurrentHashMap<Class<?>, Unserializer>();
 
@@ -152,6 +153,7 @@ public final class UnserializerFactory {
         }
         return unserializer;
     }
+
     public final static void register(Class<?> type, Unserializer unserializer) {
         unserializers.put(type, unserializer);
     }

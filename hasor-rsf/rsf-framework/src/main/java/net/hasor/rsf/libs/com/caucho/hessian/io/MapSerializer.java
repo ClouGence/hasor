@@ -50,24 +50,28 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 /**
  * Serializing a JDK 1.2 java.util.Map.
  */
 @SuppressWarnings("unchecked")
 public class MapSerializer extends AbstractSerializer {
     private boolean _isSendJavaType = true;
+
     /**
      * Set true if the java type of the collection should be sent.
      */
     public void setSendJavaType(boolean sendJavaType) {
         _isSendJavaType = sendJavaType;
     }
+
     /**
      * Return true if the java type of the collection should be sent.
      */
     public boolean getSendJavaType() {
         return _isSendJavaType;
     }
+
     public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
         if (out.addRef(obj))
             return;

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.function.Supplier;
+
 /**
  * 业务线程
  * @version : 2014年11月11日
@@ -32,7 +33,7 @@ public class ExecutesManager {
     private       Supplier<ThreadPoolExecutor>              defaultExecutorProvider;
     private       ThreadPoolExecutor                        defaultExecutor;
     private final ConcurrentMap<String, ThreadPoolExecutor> servicePoolCache;
-    //
+
     public ExecutesManager(final int minCorePoolSize, final int maxCorePoolSize, final int queueSize, final long keepAliveTime, final ClassLoader loader) {
         logger.info("executesManager init ->> minCorePoolSize ={}, maxCorePoolSize ={}, queueSize ={}, keepAliveTime ={}",//
                 minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime);
@@ -50,7 +51,7 @@ public class ExecutesManager {
         this.defaultExecutor = this.defaultExecutorProvider.get();
         this.servicePoolCache = new ConcurrentHashMap<>();
     }
-    //
+
     public Executor getExecute(String serviceUniqueName) {
         if (!this.servicePoolCache.isEmpty() && serviceUniqueName != null) {
             ThreadPoolExecutor executor = this.servicePoolCache.get(serviceUniqueName);
@@ -60,6 +61,7 @@ public class ExecutesManager {
         }
         return this.defaultExecutor;
     }
+
     /**停止应用服务。*/
     public void shutdown() {
         List<ThreadPoolExecutor> executorList = new ArrayList<>(this.servicePoolCache.values());

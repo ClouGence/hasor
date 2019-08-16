@@ -53,6 +53,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.HashMap;
+
 /**
  * Output stream for Hessian 2 requests.
  *
@@ -73,19 +74,20 @@ import java.util.HashMap;
  * </pre>
  */
 public class Hessian2Output extends AbstractHessianOutput implements Hessian2Constants {
-    public final static int SIZE = 4096;
+    public final static int                      SIZE       = 4096;
     // the output stream/
-    protected OutputStream _os;
+    protected           OutputStream             _os;
     // map of references
-    private final IdentityIntMap _refs = new IdentityIntMap(256);
-    private boolean _isCloseStreamOnClose;
+    private final       IdentityIntMap           _refs      = new IdentityIntMap(256);
+    private             boolean                  _isCloseStreamOnClose;
     // map of classes
-    private final IdentityIntMap _classRefs = new IdentityIntMap(256);
+    private final       IdentityIntMap           _classRefs = new IdentityIntMap(256);
     // map of types
-    private HashMap<String, Integer> _typeRefs;
-    private final byte[] _buffer = new byte[SIZE];
-    private int     _offset;
-    private boolean _isPacket;
+    private             HashMap<String, Integer> _typeRefs;
+    private final       byte[]                   _buffer    = new byte[SIZE];
+    private             int                      _offset;
+    private             boolean                  _isPacket;
+
     /**
      * Creates a new Hessian output stream, initialized with an
      * underlying output stream.
@@ -95,16 +97,20 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
     public Hessian2Output(OutputStream os) {
         init(os);
     }
+
     public void init(OutputStream os) {
         reset();
         _os = os;
     }
+
     public void setCloseStreamOnClose(boolean isClose) {
         _isCloseStreamOnClose = isClose;
     }
+
     public boolean isCloseStreamOnClose() {
         return _isCloseStreamOnClose;
     }
+
     /**
      * Writes a complete method call.
      */
@@ -118,6 +124,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         completeCall();
         flush();
     }
+
     /**
      * Starts the method call.  Clients would use <code>startCall</code>
      * instead of <code>call</code> if they wanted finer control over
@@ -142,6 +149,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         writeString(method);
         writeInt(length);
     }
+
     /**
      * Writes the call tag.  This would be followed by the
      * method and the arguments
@@ -156,6 +164,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         flushIfFull();
         _buffer[_offset++] = (byte) 'C';
     }
+
     /**
      * Starts an envelope.
      *
@@ -175,6 +184,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         _buffer[_offset++] = (byte) 'E';
         writeString(method);
     }
+
     /**
      * Completes an envelope.
      *
@@ -188,6 +198,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         flushIfFull();
         _buffer[_offset++] = (byte) 'Z';
     }
+
     /**
      * Writes the method tag.
      *
@@ -200,6 +211,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
     public void writeMethod(String method) throws IOException {
         writeString(method);
     }
+
     /**
      * Completes.
      *
@@ -214,6 +226,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         _buffer[_offset++] = (byte) 'Z';
         */
     }
+
     /**
      * Starts the reply
      *
@@ -228,12 +241,14 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         flushIfFull();
         _buffer[_offset++] = (byte) 'R';
     }
+
     public void writeVersion() throws IOException {
         flushIfFull();
         _buffer[_offset++] = (byte) 'H';
         _buffer[_offset++] = (byte) 2;
         _buffer[_offset++] = (byte) 0;
     }
+
     /**
      * Completes reading the reply
      *
@@ -245,6 +260,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
      */
     public void completeReply() throws IOException {
     }
+
     /**
      * Starts a packet
      *
@@ -260,6 +276,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         _buffer[_offset++] = (byte) 2;
         _buffer[_offset++] = (byte) 0;
     }
+
     /**
      * Completes reading the message
      *
@@ -273,6 +290,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         flushIfFull();
         _buffer[_offset++] = (byte) 'z';
     }
+
     /**
      * Writes a fault.  The fault will be written
      * as a descriptive string followed by an object:
@@ -315,6 +333,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         flushIfFull();
         _buffer[_offset++] = (byte) 'Z';
     }
+
     /**
      * Writes any object to the output stream.
      */
@@ -326,6 +345,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         Serializer serializer = findSerializerFactory().getObjectSerializer(object.getClass());
         serializer.writeObject(object, this);
     }
+
     /**
      * Writes the list header to the stream.  List writers will call
      * <code>writeListBegin</code> followed by the list contents and then
@@ -366,6 +386,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
             return false;
         }
     }
+
     /**
      * Writes the tail of the list to the stream for a variable-length list.
      */
@@ -373,6 +394,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         flushIfFull();
         _buffer[_offset++] = (byte) BC_END;
     }
+
     /**
      * Writes the map header to the stream.  Map writers will call
      * <code>writeMapBegin</code> followed by the map contents and then
@@ -392,6 +414,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         } else
             _buffer[_offset++] = BC_MAP_UNTYPED;
     }
+
     /**
      * Writes the tail of the map to the stream.
      */
@@ -400,6 +423,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
             flushBuffer();
         _buffer[_offset++] = (byte) BC_END;
     }
+
     /**
      * Writes the object definition
      *
@@ -429,17 +453,20 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
             return -1;
         }
     }
+
     /**
      * Writes the tail of the class definition to the stream.
      */
     public void writeClassFieldLength(int len) throws IOException {
         writeInt(len);
     }
+
     /**
      * Writes the tail of the object definition to the stream.
      */
     public void writeObjectEnd() throws IOException {
     }
+
     /**
      * <code><pre>
      * type ::= string
@@ -463,6 +490,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
             writeString(type);
         }
     }
+
     /**
      * Writes a boolean value to the stream.  The boolean will be written
      * with the following syntax:
@@ -482,6 +510,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         else
             _buffer[_offset++] = (byte) 'F';
     }
+
     /**
      * Writes an integer value to the stream.  The integer will be written
      * with the following syntax:
@@ -517,6 +546,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         }
         _offset = offset;
     }
+
     /**
      * Writes a long value to the stream.  The long will be written
      * with the following syntax:
@@ -564,6 +594,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         }
         _offset = offset;
     }
+
     /**
      * Writes a double value to the stream.  The double will be written
      * with the following syntax:
@@ -628,6 +659,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         buffer[offset + 8] = (byte) (bits);
         _offset = offset + 9;
     }
+
     /**
      * Writes a date to the stream.
      *
@@ -667,6 +699,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         buffer[offset++] = ((byte) (time));
         _offset = offset;
     }
+
     /**
      * Writes a null value to the stream.
      * The null will be written with the following syntax
@@ -687,6 +720,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         buffer[offset++] = 'N';
         _offset = offset;
     }
+
     /**
      * Writes a string value to the stream using UTF-8 encoding.
      * The string will be written with the following syntax:
@@ -754,6 +788,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
             printString(value, strOffset, length);
         }
     }
+
     /**
      * Writes a string value to the stream using UTF-8 encoding.
      * The string will be written with the following syntax:
@@ -806,6 +841,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
             printString(buffer, offset, length);
         }
     }
+
     /**
      * Writes a byte array to the stream.
      * The array will be written with the following syntax:
@@ -830,6 +866,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         } else
             writeBytes(buffer, 0, buffer.length);
     }
+
     /**
      * Writes a byte array to the stream.
      * The array will be written with the following syntax:
@@ -885,6 +922,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
             _offset += length;
         }
     }
+
     /**
      * Writes a byte buffer to the stream.
      *
@@ -893,6 +931,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
      */
     public void writeByteBufferStart() throws IOException {
     }
+
     /**
      * Writes a byte buffer to the stream.
      *
@@ -915,6 +954,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
             offset += sublen;
         }
     }
+
     /**
      * Writes a byte buffer to the stream.
      *
@@ -925,12 +965,14 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
     public void writeByteBufferEnd(byte[] buffer, int offset, int length) throws IOException {
         writeBytes(buffer, offset, length);
     }
+
     /**
      * Returns an output stream to write binary data.
      */
     public OutputStream getBytesOutputStream() throws IOException {
         return new BytesOutputStream();
     }
+
     /**
      * Writes a full output stream.
      */
@@ -953,6 +995,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
             _offset += len + 3;
         }
     }
+
     /**
      * Writes a reference.
      *
@@ -969,6 +1012,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         _buffer[_offset++] = (byte) BC_REF;
         writeInt(value);
     }
+
     /**
      * If the object has already been written, just write its ref.
      *
@@ -984,10 +1028,12 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
             return false;
         }
     }
+
     @Override
     public int getRef(Object obj) {
         return _refs.get(obj);
     }
+
     /**
      * Removes a reference.
      */
@@ -999,6 +1045,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         } else
             return false;
     }
+
     /**
      * Replaces a reference from one object to another.
      */
@@ -1011,6 +1058,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         } else
             return false;
     }
+
     /**
      * Starts the streaming message
      *
@@ -1025,6 +1073,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         writeObject(obj);
         endPacket();
     }
+
     /**
      * Starts a streaming packet
      *
@@ -1042,6 +1091,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         _buffer[1] = (byte) 0x55;
         _buffer[2] = (byte) 0x55;
     }
+
     public void endPacket() throws IOException {
         int offset = _offset;
         OutputStream os = _os;
@@ -1068,6 +1118,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
             }
         }
     }
+
     /**
      * Prints a string to the stream, encoded as UTF-8 with preceeding length
      *
@@ -1086,6 +1137,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
             printString(v, 0, len);
         }
     }
+
     /**
      * Prints a string to the stream, encoded as UTF-8
      *
@@ -1094,6 +1146,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
     public void printString(String v) throws IOException {
         printString(v, 0, v.length());
     }
+
     /**
      * Prints a string to the stream, encoded as UTF-8
      *
@@ -1122,6 +1175,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         }
         _offset = offset;
     }
+
     /**
      * Prints a string to the stream, encoded as UTF-8
      *
@@ -1150,17 +1204,20 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         }
         _offset = offset;
     }
+
     private final void flushIfFull() throws IOException {
         int offset = _offset;
         if (SIZE < offset + 32) {
             flushBuffer();
         }
     }
+
     public final void flush() throws IOException {
         flushBuffer();
         if (_os != null)
             _os.flush();
     }
+
     public final void flushBuffer() throws IOException {
         int offset = _offset;
         OutputStream os = _os;
@@ -1181,6 +1238,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
             _buffer[2] = (byte) 0x56;
         }
     }
+
     public void close() throws IOException {
         // hessian/3a8c
         flush();
@@ -1191,11 +1249,13 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
                 os.close();
         }
     }
+
     public void free() {
         reset();
         _os = null;
         _isCloseStreamOnClose = false;
     }
+
     /**
      * Resets the references for streaming.
      */
@@ -1204,6 +1264,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         if (_refs != null)
             _refs.clear();
     }
+
     /**
      * Resets all counters and references
      */
@@ -1215,8 +1276,10 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
         _offset = 0;
         _isPacket = false;
     }
+
     class BytesOutputStream extends OutputStream {
         private int _startOffset;
+
         BytesOutputStream() throws IOException {
             if (SIZE < _offset + 16) {
                 Hessian2Output.this.flushBuffer();
@@ -1224,6 +1287,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
             _startOffset = _offset;
             _offset += 3; // skip 'b' xNN xNN
         }
+
         @Override
         public void write(int ch) throws IOException {
             if (SIZE <= _offset) {
@@ -1237,6 +1301,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
             }
             _buffer[_offset++] = (byte) ch;
         }
+
         @Override
         public void write(byte[] buffer, int offset, int length) throws IOException {
             while (length > 0) {
@@ -1260,6 +1325,7 @@ public class Hessian2Output extends AbstractHessianOutput implements Hessian2Con
                 }
             }
         }
+
         @Override
         public void close() throws IOException {
             int startOffset = _startOffset;

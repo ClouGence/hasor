@@ -24,8 +24,10 @@ import java.io.OutputStream;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagSemicolon;
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagUTC;
+
 public final class HproseDateTimeSerializer extends ReferenceSerializer<DateTime> {
     public final static HproseDateTimeSerializer instance = new HproseDateTimeSerializer();
+
     @Override
     public final void serialize(Writer writer, DateTime dt) throws IOException {
         super.serialize(writer, dt);

@@ -20,6 +20,7 @@ import net.hasor.utils.future.FutureCallback;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
 /**
  * RSF Future
  * @version : 2014年11月14日
@@ -27,17 +28,21 @@ import java.util.concurrent.TimeoutException;
  */
 public class RsfFuture extends BasicFuture<RsfResponse> {
     private RsfRequest rsfRequest = null;
+
     public RsfFuture(RsfRequest rsfRequest) {
         this.rsfRequest = rsfRequest;
     }
+
     public RsfFuture(RsfRequest rsfRequest, FutureCallback<RsfResponse> listener) {
         super(listener);
         this.rsfRequest = rsfRequest;
     }
+
     /** @return 获取发起请求的Request*/
     public RsfRequest getRequest() {
         return this.rsfRequest;
     }
+
     /**
      * 获取响应的结果。
      * @return 获取响应的结果。
@@ -47,6 +52,7 @@ public class RsfFuture extends BasicFuture<RsfResponse> {
     public Object getData() throws InterruptedException, ExecutionException {
         return this.get().getData();
     }
+
     /**
      * 等待执行结果的返回。
      * @param timeout 超时时间

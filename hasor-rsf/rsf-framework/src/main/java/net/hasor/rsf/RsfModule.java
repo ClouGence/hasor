@@ -16,6 +16,7 @@
 package net.hasor.rsf;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
+
 /**
  * Rsf 制定 Hasor Module。
  * @version : 2014年11月12日

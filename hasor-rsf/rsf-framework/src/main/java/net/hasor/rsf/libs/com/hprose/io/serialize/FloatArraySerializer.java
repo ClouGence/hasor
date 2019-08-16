@@ -21,8 +21,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public final class FloatArraySerializer extends ReferenceSerializer<float[]> {
     public final static FloatArraySerializer instance = new FloatArraySerializer();
+
     @Override
     public final void serialize(Writer writer, float[] array) throws IOException {
         super.serialize(writer, array);

@@ -22,8 +22,10 @@ import java.lang.reflect.Type;
 import java.util.TreeMap;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public final class TreeMapUnserializer extends BaseUnserializer<TreeMap> {
     public final static TreeMapUnserializer instance = new TreeMapUnserializer();
+
     @Override
     public TreeMap unserialize(Reader reader, int tag, Type type) throws IOException {
         switch (tag) {
@@ -36,6 +38,7 @@ public final class TreeMapUnserializer extends BaseUnserializer<TreeMap> {
         }
         return super.unserialize(reader, tag, type);
     }
+
     public TreeMap read(Reader reader) throws IOException {
         return read(reader, TreeMap.class);
     }

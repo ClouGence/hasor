@@ -51,6 +51,7 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+
 /**
  * Output stream for Hessian requests.
  *
@@ -89,12 +90,14 @@ public class HessianSerializerOutput extends Hessian2Output {
     public HessianSerializerOutput(OutputStream os) {
         super(os);
     }
+
     /**
      * Creates an uninitialized Hessian output stream.
      */
     public HessianSerializerOutput() {
         super(null);
     }
+
     /**
      * Applications which override this can do custom serialization.
      *

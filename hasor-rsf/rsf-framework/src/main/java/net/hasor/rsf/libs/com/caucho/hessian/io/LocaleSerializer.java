@@ -48,14 +48,17 @@
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.util.Locale;
+
 /**
  * Serializing a locale.
  */
 public class LocaleSerializer extends AbstractSerializer {
     private static LocaleSerializer SERIALIZER = new LocaleSerializer();
+
     public static LocaleSerializer create() {
         return SERIALIZER;
     }
+
     public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
         if (obj == null)
             out.writeNull();

@@ -44,6 +44,7 @@ public class ByteStringCachelUtils {
         else
             return new String(stringByte);
     }
+
     public static byte[] fromCache(String string) {
         if (string == null) {
             return null;
@@ -57,8 +58,7 @@ public class ByteStringCachelUtils {
         return string.getBytes();
     }
 }
-//
-//
+
 class LRU<K, V> {
     /**链表元素*/
     private class LRU_Entity {
@@ -69,13 +69,11 @@ class LRU<K, V> {
         public K          key;   //Key
         public V          val;   //值
     }
-    //
+ 
     private LRU_Entity root     = null; //链表的起始点
     private int        linkSize = 0;
     private int        maxSize  = 400;
-    //
-    //
-    //
+
     private LRU_Entity entByKey(K key) {
         if (this.root == null) {
             return null;
@@ -98,7 +96,7 @@ class LRU<K, V> {
         //
         return null;
     }
-    //
+
     public V get(K key) {
         LRU_Entity valEnt = entByKey(key);
         if (valEnt != null) {
@@ -107,7 +105,7 @@ class LRU<K, V> {
         }
         return null;
     }
-    //
+
     public V put(K key, V val) {
         LRU_Entity valEnt = entByKey(key);
         if (valEnt != null) {
@@ -131,7 +129,7 @@ class LRU<K, V> {
             return null;
         }
     }
-    //
+
     /*将元素移动或添加到到冷端尾*/
     private void moveOrAdd(LRU_Entity valEnt) {
         weedOut();
@@ -156,7 +154,7 @@ class LRU<K, V> {
         realSize++;
         linkSize = realSize;
     }
-    //
+
     /*执行淘汰策略*/
     private void weedOut() {
         if (this.linkSize > this.maxSize) {

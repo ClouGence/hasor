@@ -23,8 +23,10 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public final class StringBuilderUnserializer extends BaseUnserializer<StringBuilder> {
     public final static StringBuilderUnserializer instance = new StringBuilderUnserializer();
+
     @Override
     public StringBuilder unserialize(Reader reader, int tag, Type type) throws IOException {
         StringBuilderConverter converter = StringBuilderConverter.instance;
@@ -62,6 +64,7 @@ public final class StringBuilderUnserializer extends BaseUnserializer<StringBuil
         }
         return super.unserialize(reader, tag, type);
     }
+
     public StringBuilder read(Reader reader) throws IOException {
         return read(reader, StringBuilder.class);
     }

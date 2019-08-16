@@ -56,37 +56,41 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 /**
  * Factory for returning serialization methods.
  */
 @SuppressWarnings({ "unused" })
 public class SerializerFactory extends AbstractSerializerFactory {
-    private static final Logger       log                 = Logger.getLogger(SerializerFactory.class.getName());
-    private static final Deserializer OBJECT_DESERIALIZER = new BasicDeserializer(BasicDeserializer.OBJECT);
-    private static final ClassLoader                   _systemClassLoader;
-    private static final HashMap<String, Deserializer> _staticTypeMap;
-    private static final WeakHashMap<ClassLoader, SoftReference<SerializerFactory>> _defaultFactoryRefMap = new WeakHashMap<ClassLoader, SoftReference<SerializerFactory>>();
-    private   ContextSerializerFactory _contextFactory;
-    private   ClassLoader              _loader;
-    protected Serializer               _defaultSerializer;
+    private static final Logger                                                     log                        = Logger.getLogger(SerializerFactory.class.getName());
+    private static final Deserializer                                               OBJECT_DESERIALIZER        = new BasicDeserializer(BasicDeserializer.OBJECT);
+    private static final ClassLoader                                                _systemClassLoader;
+    private static final HashMap<String, Deserializer>                              _staticTypeMap;
+    private static final WeakHashMap<ClassLoader, SoftReference<SerializerFactory>> _defaultFactoryRefMap      = new WeakHashMap<ClassLoader, SoftReference<SerializerFactory>>();
+    private              ContextSerializerFactory                                   _contextFactory;
+    private              ClassLoader                                                _loader;
+    protected            Serializer                                                 _defaultSerializer;
     // Additional factories
-    protected ArrayList<AbstractSerializerFactory> _factories = new ArrayList<AbstractSerializerFactory>();
-    protected CollectionSerializer                      _collectionSerializer;
-    protected MapSerializer                             _mapSerializer;
-    private   Deserializer                              _hashMapDeserializer;
-    private   Deserializer                              _arrayListDeserializer;
-    private   ConcurrentHashMap<Class<?>, Serializer>   _cachedSerializerMap;
-    private   ConcurrentHashMap<Class<?>, Deserializer> _cachedDeserializerMap;
-    private ConcurrentHashMap<String, Deserializer> _cachedTypeDeserializerMap = new ConcurrentHashMap<String, Deserializer>(8);
-    private boolean _isAllowNonSerializable;
-    private boolean _isEnableUnsafeSerializer = (UnsafeSerializer.isEnabled() && UnsafeDeserializer.isEnabled());
+    protected            ArrayList<AbstractSerializerFactory>                       _factories                 = new ArrayList<AbstractSerializerFactory>();
+    protected            CollectionSerializer                                       _collectionSerializer;
+    protected            MapSerializer                                              _mapSerializer;
+    private              Deserializer                                               _hashMapDeserializer;
+    private              Deserializer                                               _arrayListDeserializer;
+    private              ConcurrentHashMap<Class<?>, Serializer>                    _cachedSerializerMap;
+    private              ConcurrentHashMap<Class<?>, Deserializer>                  _cachedDeserializerMap;
+    private              ConcurrentHashMap<String, Deserializer>                    _cachedTypeDeserializerMap = new ConcurrentHashMap<String, Deserializer>(8);
+    private              boolean                                                    _isAllowNonSerializable;
+    private              boolean                                                    _isEnableUnsafeSerializer  = (UnsafeSerializer.isEnabled() && UnsafeDeserializer.isEnabled());
+
     public SerializerFactory() {
         this(Thread.currentThread().getContextClassLoader());
     }
+
     public SerializerFactory(ClassLoader loader) {
         _loader = loader;
         _contextFactory = ContextSerializerFactory.create(loader);
     }
+
     public static SerializerFactory createDefault() {
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
         synchronized (_defaultFactoryRefMap) {
@@ -102,9 +106,11 @@ public class SerializerFactory extends AbstractSerializerFactory {
             return factory;
         }
     }
+
     public ClassLoader getClassLoader() {
         return _loader;
     }
+
     /**
      * Set true if the collection serializer should send the java type.
      */
@@ -116,24 +122,28 @@ public class SerializerFactory extends AbstractSerializerFactory {
             _mapSerializer = new MapSerializer();
         _mapSerializer.setSendJavaType(isSendType);
     }
+
     /**
      * Adds a factory.
      */
     public void addFactory(AbstractSerializerFactory factory) {
         _factories.add(factory);
     }
+
     /**
      * If true, non-serializable objects are allowed.
      */
     public void setAllowNonSerializable(boolean allow) {
         _isAllowNonSerializable = allow;
     }
+
     /**
      * If true, non-serializable objects are allowed.
      */
     public boolean isAllowNonSerializable() {
         return _isAllowNonSerializable;
     }
+
     /**
      * Returns the serializer for a class.
      *
@@ -148,6 +158,7 @@ public class SerializerFactory extends AbstractSerializerFactory {
         else
             return serializer;
     }
+
     /**
      * Returns the serializer for a class.
      *
@@ -170,6 +181,7 @@ public class SerializerFactory extends AbstractSerializerFactory {
         _cachedSerializerMap.put(cl, serializer);
         return serializer;
     }
+
     protected Serializer loadSerializer(Class<?> cl) throws HessianProtocolException {
         Serializer serializer = null;
         for (int i = 0; _factories != null && i < _factories.size(); i++) {
@@ -225,6 +237,7 @@ public class SerializerFactory extends AbstractSerializerFactory {
             return new AnnotationSerializer(cl);
         return getDefaultSerializer(cl);
     }
+
     /**
      * Returns the default serializer for a class that isn't matched
      * directly.  Application can override this method to produce
@@ -245,6 +258,7 @@ public class SerializerFactory extends AbstractSerializerFactory {
         } else
             return JavaSerializer.create(cl);
     }
+
     /**
      * Returns the deserializer for a class.
      *
@@ -266,6 +280,7 @@ public class SerializerFactory extends AbstractSerializerFactory {
         _cachedDeserializerMap.put(cl, deserializer);
         return deserializer;
     }
+
     protected Deserializer loadDeserializer(Class<?> cl) throws HessianProtocolException {
         Deserializer deserializer = null;
         for (int i = 0; deserializer == null && _factories != null && i < _factories.size(); i++) {
@@ -307,6 +322,7 @@ public class SerializerFactory extends AbstractSerializerFactory {
             deserializer = getDefaultDeserializer(cl);
         return deserializer;
     }
+
     /**
      * Returns a custom serializer the class
      *
@@ -327,6 +343,7 @@ public class SerializerFactory extends AbstractSerializerFactory {
             return null;
         }
     }
+
     /**
      * Returns the default serializer for a class that isn't matched
      * directly.  Application can override this method to produce
@@ -344,6 +361,7 @@ public class SerializerFactory extends AbstractSerializerFactory {
         } else
             return new JavaDeserializer(cl);
     }
+
     /**
      * Reads the object as a list.
      */
@@ -354,6 +372,7 @@ public class SerializerFactory extends AbstractSerializerFactory {
         else
             return new CollectionDeserializer(ArrayList.class).readList(in, length);
     }
+
     /**
      * Reads the object as a map.
      */
@@ -368,6 +387,7 @@ public class SerializerFactory extends AbstractSerializerFactory {
             return _hashMapDeserializer.readMap(in);
         }
     }
+
     /**
      * Reads the object as a map.
      */
@@ -382,6 +402,7 @@ public class SerializerFactory extends AbstractSerializerFactory {
             return _hashMapDeserializer.readObject(in, fieldNames);
         }
     }
+
     /**
      * Reads the object as a map.
      */
@@ -395,6 +416,7 @@ public class SerializerFactory extends AbstractSerializerFactory {
         }
         return getDeserializer(cl);
     }
+
     /**
      * Reads the object as a map.
      */
@@ -409,6 +431,7 @@ public class SerializerFactory extends AbstractSerializerFactory {
             return _hashMapDeserializer;
         }
     }
+
     /**
      * Reads the object as a map.
      */
@@ -422,6 +445,7 @@ public class SerializerFactory extends AbstractSerializerFactory {
         }
         return getDeserializer(cl);
     }
+
     /**
      * Reads the object as a map.
      */
@@ -436,6 +460,7 @@ public class SerializerFactory extends AbstractSerializerFactory {
             return _arrayListDeserializer;
         }
     }
+
     /**
      * Returns a deserializer based on a string type.
      */
@@ -473,10 +498,12 @@ public class SerializerFactory extends AbstractSerializerFactory {
         }
         return deserializer;
     }
+
     private static void addBasic(Class<?> cl, String typeName, int type) {
         Deserializer deserializer = new BasicDeserializer(type);
         _staticTypeMap.put(typeName, deserializer);
     }
+
     static {
         _staticTypeMap = new HashMap<String, Deserializer>();
         addBasic(void.class, "void", BasicSerializer.NULL);

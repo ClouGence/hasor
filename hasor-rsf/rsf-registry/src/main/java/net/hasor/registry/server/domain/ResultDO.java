@@ -24,50 +24,63 @@ public class ResultDO<T> implements Result<T> {
     private transient Throwable throwable = null;
     private           ErrorCode errorInfo = null;
     private           boolean   success   = true;
+
     //
     public ResultDO() {
     }
+
     public ResultDO(Result<T> result) {
         this.result = result.getResult();
         this.throwable = result.getThrowable();
         this.success = result.isSuccess();
     }
+
     public ResultDO(T result) {
         this.result = result;
     }
+
     public ResultDO(boolean success) {
         this.success = success;
     }
+
     public ResultDO(Throwable throwable) {
         this.success = false;
         this.throwable = throwable;
     }
     //
+
     /**获取分页结果集。*/
     public T getResult() {
         return this.result;
     }
+
     public boolean isSuccess() {
         return this.success;
     }
+
     public Throwable getThrowable() {
         return this.throwable;
     }
+
     @Override
     public ErrorCode getErrorInfo() {
         return this.errorInfo;
     }
+
     public void setErrorInfo(ErrorCode errorInfo) {
         this.errorInfo = errorInfo;
     }
+
     public ResultDO<T> setResult(T result) {
         this.result = result;
         return this;
     }
+
     public ResultDO<T> setThrowable(Throwable throwable) {
         this.throwable = throwable;
         return this;
     }
+
     public ResultDO<T> setSuccess(boolean success) {
         this.success = success;
         return this;

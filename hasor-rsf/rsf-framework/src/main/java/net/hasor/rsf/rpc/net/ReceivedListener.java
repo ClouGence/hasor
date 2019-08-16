@@ -16,7 +16,6 @@
 package net.hasor.rsf.rpc.net;
 import net.hasor.rsf.domain.OptionInfo;
 
-import java.io.IOException;
 /**
  * 接受消息
  * @version : 2015年12月10日

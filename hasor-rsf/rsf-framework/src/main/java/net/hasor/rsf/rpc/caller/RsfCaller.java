@@ -27,6 +27,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.concurrent.*;
+
 /**
  * 通过包装RSF请求响应，提供（同步、异步、回调、接口代理）四种远程调用方式的实现。
  * @version : 2015年12月8日
@@ -34,14 +35,17 @@ import java.util.concurrent.*;
  */
 public class RsfCaller extends RsfRequestManager {
     private RsfBeanContainer rsfBeanContainer = null;
+
     public RsfCaller(RsfContext rsfContext, RsfBeanContainer rsfBeanContainer, SenderListener senderListener) {
         super(rsfContext, senderListener);
         this.rsfBeanContainer = rsfBeanContainer;
     }
+
     @Override
     public RsfBeanContainer getContainer() {
         return this.rsfBeanContainer;
     }
+
     /**
      * 根据服务注册的类型，将远程服务提供者包装成该类型表示的一个接口代理。<br>
      * 所有接口方法调用都映射为一个RPC请求响应。
@@ -57,6 +61,7 @@ public class RsfCaller extends RsfRequestManager {
         }
         return this.wrapper(target, bindInfo, bindInfo.getBindType());
     }
+
     /**
      * 根据服务注册的类型，将远程服务提供者包装成该类型表示的一个接口代理。<br>
      * 所有接口方法调用都映射为一个RPC请求响应。
@@ -74,6 +79,7 @@ public class RsfCaller extends RsfRequestManager {
         }
         return this.getRemote(target, bindInfo);
     }
+
     /**
      * 根据服务注册的类型，将远程服务提供者包装成该类型表示的一个接口代理。<br>
      * 所有接口方法调用都映射为一个RPC请求响应。
@@ -87,6 +93,7 @@ public class RsfCaller extends RsfRequestManager {
         }
         return this.wrapper(target, bindInfo, bindInfo.getBindType());
     }
+
     /**
      * 忽略服务元信息上对接口类型的定义，使用指定的接口类型包装远程服务提供者。<br>
      * 请注意：当出现调用远程不存在的方法时会引发异常。虽然如此，但是该方法仍然有着自己的魅力。
@@ -103,6 +110,7 @@ public class RsfCaller extends RsfRequestManager {
         }
         return this.wrapper(target, bindInfo, interFace);
     }
+
     /**
      * 忽略服务元信息上对接口类型的定义，使用指定的接口类型包装远程服务提供者。<br>
      * 请注意：当出现调用远程不存在的方法时会引发异常。虽然如此，但是该方法仍然有着自己的魅力。<p>
@@ -121,6 +129,7 @@ public class RsfCaller extends RsfRequestManager {
         }
         return this.wrapper(target, bindInfo, interFace);
     }
+
     /**
      * 忽略服务元信息上对接口类型的定义，使用指定的接口类型包装远程服务提供者。<br>
      * 请注意：当出现调用远程不存在的方法时会引发异常。虽然如此，但是该方法仍然有着自己的魅力。
@@ -137,8 +146,10 @@ public class RsfCaller extends RsfRequestManager {
             return null;
         return this.wrapper(target, bindInfo, interFace);
     }
+
     private final Object                                          LOCK_OBJECT = new Object();
     private final ConcurrentMap<String, Class<RsfServiceWrapper>> wrapperMap  = new ConcurrentHashMap<String, Class<RsfServiceWrapper>>();
+
     public <T> T wrapper(AddressProvider target, RsfBindInfo<?> bindInfo, Class<T> interFace) throws RsfException {
         if (bindInfo == null)
             throw new NullPointerException();
@@ -176,12 +187,15 @@ public class RsfCaller extends RsfRequestManager {
             throw new RsfException(e.getMessage(), e);
         }
     }
+
     private class ServiceMethodDelegateByProxy implements InvocationHandler {
         private RsfBindInfo<?>  bindInfo;
         private AddressProvider target;
+
         public ServiceMethodDelegateByProxy(RsfBindInfo<?> bindInfo) {
             this.bindInfo = bindInfo;
         }
+
         @Override
         public Object invoke(Object target, Method callMethod, Object[] params) throws Throwable {
             if ("getTarget".equals(callMethod.getName())) {
@@ -198,6 +212,7 @@ public class RsfCaller extends RsfRequestManager {
             }
         }
     }
+
     /**
      * 同步方式调用远程服务。
      * @param target 目标RSF服务提供者地址。
@@ -218,6 +233,7 @@ public class RsfCaller extends RsfRequestManager {
         //3.返回数据
         return rsfFuture.get(timeout, TimeUnit.MILLISECONDS).getData();
     }
+
     /**
      * 异步方式调用远程服务。
      * @param target 目标RSF服务提供者地址。
@@ -232,6 +248,7 @@ public class RsfCaller extends RsfRequestManager {
         //2.发起Request
         return doSendRequest(request, null);
     }
+
     /**
      * 回调方式调用远程服务，回调中返回的是结果。
      * @param target 目标RSF服务提供者地址。
@@ -246,11 +263,13 @@ public class RsfCaller extends RsfRequestManager {
             public void completed(RsfResponse result) {
                 listener.completed(result.getData());
             }
+
             public void failed(Throwable ex) {
                 listener.failed(ex);
             }
         });
     }
+
     /**
      * 回调方式调用远程服务，回调中返回的是{@link RsfResponse}。
      * @param target 目标RSF服务提供者地址。
@@ -266,12 +285,13 @@ public class RsfCaller extends RsfRequestManager {
         //2.发起Request
         doSendRequest(request, listener);
     }
-    //
+
     private int validateTimeout(int timeout) {
         if (timeout <= 0)
             timeout = this.getContext().getSettings().getDefaultTimeout();
         return timeout;
     }
+
     private RsfRequestFormLocal buildRsfRequestFormLocal(AddressProvider target, RsfBindInfo<?> bindInfo, String methodName, Class<?>[] parameterTypes, Object[] parameterObjects) {
         short flags = 0;
         if (target.isDistributed()) {

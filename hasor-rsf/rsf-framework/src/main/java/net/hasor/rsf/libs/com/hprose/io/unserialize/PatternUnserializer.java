@@ -23,8 +23,10 @@ import java.util.regex.Pattern;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagEmpty;
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagString;
+
 public final class PatternUnserializer extends BaseUnserializer<Pattern> {
     public final static PatternUnserializer instance = new PatternUnserializer();
+
     @Override
     public Pattern unserialize(Reader reader, int tag, Type type) throws IOException {
         switch (tag) {
@@ -35,6 +37,7 @@ public final class PatternUnserializer extends BaseUnserializer<Pattern> {
         }
         return super.unserialize(reader, tag, type);
     }
+
     public Pattern read(Reader reader) throws IOException {
         return read(reader, Pattern.class);
     }

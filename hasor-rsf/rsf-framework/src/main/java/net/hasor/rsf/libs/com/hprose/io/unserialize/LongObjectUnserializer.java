@@ -21,8 +21,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+
 public class LongObjectUnserializer extends BaseUnserializer<Long> {
     public final static LongObjectUnserializer instance = new LongObjectUnserializer();
+
     @Override
     public Long unserialize(Reader reader, int tag, Type type) throws IOException {
         if (tag >= '0' && tag <= '9')
@@ -49,6 +51,7 @@ public class LongObjectUnserializer extends BaseUnserializer<Long> {
         }
         return super.unserialize(reader, tag, type);
     }
+
     public Long read(Reader reader) throws IOException {
         return read(reader, Long.class);
     }

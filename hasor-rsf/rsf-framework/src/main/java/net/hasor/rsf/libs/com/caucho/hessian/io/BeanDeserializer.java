@@ -51,6 +51,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
+
 /**
  * Serializing an object for known object types.
  */
@@ -61,6 +62,7 @@ public class BeanDeserializer extends AbstractMapDeserializer {
     private Method                  _readResolve;
     private Constructor<?>          _constructor;
     private Object[]                _constructorArgs;
+
     public BeanDeserializer(Class<?> cl) {
         _type = cl;
         _methodMap = getMethodMap(cl);
@@ -82,9 +84,11 @@ public class BeanDeserializer extends AbstractMapDeserializer {
             }
         }
     }
+
     public Class<?> getType() {
         return _type;
     }
+
     public Object readMap(AbstractHessianInput in) throws IOException {
         try {
             Object obj = instantiate();
@@ -95,6 +99,7 @@ public class BeanDeserializer extends AbstractMapDeserializer {
             throw new IOExceptionWrapper(e);
         }
     }
+
     public Object readMap(AbstractHessianInput in, Object obj) throws IOException {
         try {
             int ref = in.addRef(obj);
@@ -119,6 +124,7 @@ public class BeanDeserializer extends AbstractMapDeserializer {
             throw new IOExceptionWrapper(e);
         }
     }
+
     private Object resolve(Object obj) {
         // if there's a readResolve method, call it
         try {
@@ -128,9 +134,11 @@ public class BeanDeserializer extends AbstractMapDeserializer {
         }
         return obj;
     }
+
     protected Object instantiate() throws Exception {
         return _constructor.newInstance(_constructorArgs);
     }
+
     /**
      * Returns the readResolve method
      */
@@ -145,6 +153,7 @@ public class BeanDeserializer extends AbstractMapDeserializer {
         }
         return null;
     }
+
     /**
      * Creates a map of the classes fields.
      */
@@ -185,6 +194,7 @@ public class BeanDeserializer extends AbstractMapDeserializer {
         }
         return methodMap;
     }
+
     /**
      * Finds any matching setter.
      */
@@ -202,6 +212,7 @@ public class BeanDeserializer extends AbstractMapDeserializer {
         }
         return null;
     }
+
     /**
      * Creates a map of the classes fields.
      */

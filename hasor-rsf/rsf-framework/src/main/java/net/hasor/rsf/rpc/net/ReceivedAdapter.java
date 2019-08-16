@@ -18,6 +18,7 @@ import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.domain.OptionInfo;
 import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
+
 /**
  *
  * @version : 2015年12月10日
@@ -41,6 +42,7 @@ public abstract class ReceivedAdapter implements ReceivedListener {
             return;
         }
     }
+
     /**从远端收到Response消息。*/
     public abstract void receivedMessage(InterAddress form, ResponseInfo response);
 

@@ -55,21 +55,24 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+
 /**
  * Serializing a Java annotation
  */
 @SuppressWarnings({ "unused" })
 public class AnnotationSerializer extends AbstractSerializer {
-    private static final Logger   log       = LoggerFactory.getLogger(AnnotationSerializer.class);
-    private static       Object[] NULL_ARGS = new Object[0];
-    private Class<?>           _annType;
-    private Method[]           _methods;
-    private MethodSerializer[] _methodSerializers;
+    private static final Logger             log       = LoggerFactory.getLogger(AnnotationSerializer.class);
+    private static       Object[]           NULL_ARGS = new Object[0];
+    private              Class<?>           _annType;
+    private              Method[]           _methods;
+    private              MethodSerializer[] _methodSerializers;
+
     public AnnotationSerializer(Class<?> annType) {
         if (!Annotation.class.isAssignableFrom(annType)) {
             throw new IllegalStateException(annType.getName() + " is invalid because it is not a java.lang.annotation.Annotation");
         }
     }
+
     public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
         if (out.addRef(obj)) {
             return;
@@ -86,6 +89,7 @@ public class AnnotationSerializer extends AbstractSerializer {
             writeInstance(obj, out);
         }
     }
+
     protected void writeObject10(Object obj, AbstractHessianOutput out) throws IOException {
         for (int i = 0; i < _methods.length; i++) {
             Method method = _methods[i];
@@ -94,6 +98,7 @@ public class AnnotationSerializer extends AbstractSerializer {
         }
         out.writeMapEnd();
     }
+
     private void writeDefinition20(AbstractHessianOutput out) throws IOException {
         out.writeClassFieldLength(_methods.length);
         for (int i = 0; i < _methods.length; i++) {
@@ -101,12 +106,14 @@ public class AnnotationSerializer extends AbstractSerializer {
             out.writeString(method.getName());
         }
     }
+
     public void writeInstance(Object obj, AbstractHessianOutput out) throws IOException {
         for (int i = 0; i < _methods.length; i++) {
             Method method = _methods[i];
             _methodSerializers[i].serialize(out, obj, method);
         }
     }
+
     private void init(Class<?> cl) {
         if (cl == null) {
             return;
@@ -136,6 +143,7 @@ public class AnnotationSerializer extends AbstractSerializer {
             }
         }
     }
+
     //    private Class<?> getAnnotationType(Class<?> cl) {
     //        if (cl == null)
     //            return null;
@@ -169,12 +177,15 @@ public class AnnotationSerializer extends AbstractSerializer {
         } else
             return MethodSerializer.SER;
     }
+
     static HessianException error(Method method, Throwable cause) {
         String msg = (method.getDeclaringClass().getSimpleName() + "." + method.getName() + "(): " + cause);
         throw new HessianMethodSerializationException(msg, cause);
     }
+
     static class MethodSerializer {
         static final MethodSerializer SER = new MethodSerializer();
+
         void serialize(AbstractHessianOutput out, Object obj, Method method) throws IOException {
             Object value = null;
             try {
@@ -191,8 +202,10 @@ public class AnnotationSerializer extends AbstractSerializer {
             }
         }
     }
+
     static class BooleanMethodSerializer extends MethodSerializer {
         static final MethodSerializer SER = new BooleanMethodSerializer();
+
         void serialize(AbstractHessianOutput out, Object obj, Method method) throws IOException {
             boolean value = false;
             try {
@@ -205,8 +218,10 @@ public class AnnotationSerializer extends AbstractSerializer {
             out.writeBoolean(value);
         }
     }
+
     static class IntMethodSerializer extends MethodSerializer {
         static final MethodSerializer SER = new IntMethodSerializer();
+
         void serialize(AbstractHessianOutput out, Object obj, Method method) throws IOException {
             int value = 0;
             try {
@@ -219,8 +234,10 @@ public class AnnotationSerializer extends AbstractSerializer {
             out.writeInt(value);
         }
     }
+
     static class LongMethodSerializer extends MethodSerializer {
         static final MethodSerializer SER = new LongMethodSerializer();
+
         void serialize(AbstractHessianOutput out, Object obj, Method method) throws IOException {
             long value = 0;
             try {
@@ -233,8 +250,10 @@ public class AnnotationSerializer extends AbstractSerializer {
             out.writeLong(value);
         }
     }
+
     static class DoubleMethodSerializer extends MethodSerializer {
         static final MethodSerializer SER = new DoubleMethodSerializer();
+
         void serialize(AbstractHessianOutput out, Object obj, Method method) throws IOException {
             double value = 0;
             try {
@@ -247,8 +266,10 @@ public class AnnotationSerializer extends AbstractSerializer {
             out.writeDouble(value);
         }
     }
+
     static class StringMethodSerializer extends MethodSerializer {
         static final MethodSerializer SER = new StringMethodSerializer();
+
         void serialize(AbstractHessianOutput out, Object obj, Method method) throws IOException {
             String value = null;
             try {
@@ -261,8 +282,10 @@ public class AnnotationSerializer extends AbstractSerializer {
             out.writeString(value);
         }
     }
+
     static class DateMethodSerializer extends MethodSerializer {
         static final MethodSerializer SER = new DateMethodSerializer();
+
         void serialize(AbstractHessianOutput out, Object obj, Method method) throws IOException {
             java.util.Date value = null;
             try {

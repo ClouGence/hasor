@@ -15,6 +15,7 @@
  */
 package net.hasor.registry.client;
 import net.hasor.rsf.RsfResult;
+
 /**
  * 消息发送的返回值。
  * @version : 2015年1月8日

@@ -22,8 +22,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.sql.Date;
+
 public final class DateUnserializer extends BaseUnserializer<Date> {
     public final static DateUnserializer instance = new DateUnserializer();
+
     @Override
     public Date unserialize(Reader reader, int tag, Type type) throws IOException {
         switch (tag) {
@@ -45,6 +47,7 @@ public final class DateUnserializer extends BaseUnserializer<Date> {
             return new Date(tag - '0');
         return super.unserialize(reader, tag, type);
     }
+
     public Date read(Reader reader) throws IOException {
         return read(reader, Date.class);
     }

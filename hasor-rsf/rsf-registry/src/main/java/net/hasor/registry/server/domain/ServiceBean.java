@@ -15,6 +15,7 @@
  */
 package net.hasor.registry.server.domain;
 import java.util.List;
+
 /**
  * 服务信息
  * @version : 2018年4月23日
@@ -29,28 +30,36 @@ public class ServiceBean {
     private String       version;
     /***/
     private List<String> methodSet;
+
     //
     public String getGroup() {
         return group;
     }
+
     public void setGroup(String group) {
         this.group = group;
     }
+
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
+
     public String getVersion() {
         return version;
     }
+
     public void setVersion(String version) {
         this.version = version;
     }
+
     public List<String> getMethodSet() {
         return methodSet;
     }
+
     public void setMethodSet(List<String> methodSet) {
         this.methodSet = methodSet;
     }

@@ -18,11 +18,11 @@
  \**********************************************************/
 package net.hasor.rsf.libs.com.hprose.utils;
 public abstract class JdkVersion {
-    public final static int JAVA_15 = 5;
-    public final static int JAVA_16 = 6;
-    public final static int JAVA_17 = 7;
-    public final static int JAVA_18 = 8;
-    public final static int JAVA_19 = 9;
+    public final static int    JAVA_15 = 5;
+    public final static int    JAVA_16 = 6;
+    public final static int    JAVA_17 = 7;
+    public final static int    JAVA_18 = 8;
+    public final static int    JAVA_19 = 9;
     public final static String javaVersion;
     public final static int    majorJavaVersion;
 

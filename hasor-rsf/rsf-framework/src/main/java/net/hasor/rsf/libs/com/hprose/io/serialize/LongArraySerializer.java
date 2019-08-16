@@ -21,8 +21,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 
 import java.io.IOException;
 import java.io.OutputStream;
+
 public final class LongArraySerializer extends ReferenceSerializer<long[]> {
     public final static LongArraySerializer instance = new LongArraySerializer();
+
     @Override
     public final void serialize(Writer writer, long[] array) throws IOException {
         super.serialize(writer, array);

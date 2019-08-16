@@ -26,7 +26,6 @@ public interface RsfEvent {
     public static final String Rsf_ConsumerService = "RsfEvent_ConsumerService";
     /**删除发布或订阅*/
     public static final String Rsf_DeleteService   = "RsfEvent_DeleteService";
-    //
     /**应用上线*/
     public static final String Rsf_Online          = "RsfEvent_Online";
     /**应用下线*/

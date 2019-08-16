@@ -35,6 +35,7 @@ import java.net.URLEncoder;
 import java.util.Collection;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.*;
+
 /**
  * Http Netty 请求处理器
  * @version : 2017年11月23日
@@ -43,20 +44,22 @@ import static io.netty.handler.codec.http.HttpHeaders.Names.*;
 public class HproseHttpHandler implements HttpHandler, HttpHandlerFactory {
     public HproseHttpHandler() {
     }
+
     @Override
     public HttpHandler newHandler(String contextPath, Connector connector, AppContext appContext) {
         return new HproseHttpHandler(contextPath, connector, appContext);
     }
-    //
+
     private String     contextPath;
     private Connector  connector;
     private RsfContext rsfContext;
+
     public HproseHttpHandler(String contextPath, Connector connector, AppContext appContext) {
         this.contextPath = contextPath;
         this.connector = connector;
         this.rsfContext = appContext.getInstance(RsfContext.class);
     }
-    //
+
     @Override
     public void receivedRequest(RsfHttpRequest httpRequest, RsfHttpResponse httpResponse, HttpResult outputTo) throws IOException {
         String requestURI = httpRequest.getRequestURI();
@@ -97,6 +100,7 @@ public class HproseHttpHandler implements HttpHandler, HttpHandlerFactory {
                 public void exception(RsfHttpResponse httpResponse, Throwable e) throws IOException {
                     onException(originString, httpResponse, e);
                 }
+
                 public void complete(RsfHttpResponse httpResponse, ResponseInfo info) throws IOException {
                     onComplete(originString, httpResponse, info);
                 }
@@ -106,6 +110,7 @@ public class HproseHttpHandler implements HttpHandler, HttpHandlerFactory {
         }
         throw new RsfException(ProtocolStatus.ProtocolError, "command error. -> " + aByte);
     }
+
     private void onException(String originString, RsfHttpResponse httpResponse, Throwable e) throws IOException {
         httpOrigin(originString, httpResponse);
         //
@@ -115,12 +120,14 @@ public class HproseHttpHandler implements HttpHandler, HttpHandlerFactory {
         new OutputStreamWriter(httpResponse.getOutputStream(), "UTF-8").write(sw.toString());
         //        }
     }
+
     private void onComplete(String originString, RsfHttpResponse httpResponse, ResponseInfo info) throws IOException {
         httpOrigin(originString, httpResponse);
         if (info != null) {
             HproseUtils.parseResponse(-1, info, httpResponse.getOutputStream());
         }
     }
+
     protected void httpOrigin(String originString, RsfHttpResponse httpResponse) {
         httpResponse.setContentType("application/hprose");
         if (originString != null && !originString.equals("null")) {
@@ -130,7 +137,7 @@ public class HproseHttpHandler implements HttpHandler, HttpHandlerFactory {
             httpResponse.setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
         }
     }
-    //
+
     @Override
     public void sendRequest(InterAddress server, RequestInfo info, SenderBuilder builder) throws Throwable {
         String group = URLEncoder.encode(info.getServiceGroup(), "UTF-8");
@@ -158,6 +165,7 @@ public class HproseHttpHandler implements HttpHandler, HttpHandlerFactory {
             }
         });
     }
+
     private ResponseInfo decodeResponseInfo(long requestID, RsfHttpResponseData httpResponse) throws IOException {
         short responseStatus = (short) httpResponse.getStatus();
         if (httpResponse.getStatus() != ProtocolStatus.OK) {

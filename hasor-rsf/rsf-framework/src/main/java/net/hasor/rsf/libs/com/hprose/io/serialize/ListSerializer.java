@@ -24,8 +24,10 @@ import java.util.List;
 import java.util.RandomAccess;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public final class ListSerializer<T> extends ReferenceSerializer<List<T>> {
     public final static ListSerializer instance = new ListSerializer();
+
     @Override
     public final void serialize(Writer writer, List<T> list) throws IOException {
         super.serialize(writer, list);

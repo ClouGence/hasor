@@ -22,8 +22,10 @@ import net.hasor.rsf.libs.com.hprose.utils.CaseInsensitiveMap;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+
 public final class CaseInsensitiveMapUnserializer extends BaseUnserializer<CaseInsensitiveMap> {
     public final static CaseInsensitiveMapUnserializer instance = new CaseInsensitiveMapUnserializer();
+
     @Override
     public CaseInsensitiveMap unserialize(Reader reader, int tag, Type type) throws IOException {
         switch (tag) {
@@ -36,6 +38,7 @@ public final class CaseInsensitiveMapUnserializer extends BaseUnserializer<CaseI
         }
         return super.unserialize(reader, tag, type);
     }
+
     public CaseInsensitiveMap read(Reader reader) throws IOException {
         return read(reader, CaseInsensitiveMap.class);
     }

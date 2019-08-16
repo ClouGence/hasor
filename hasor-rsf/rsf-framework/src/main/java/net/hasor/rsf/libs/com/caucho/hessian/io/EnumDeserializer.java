@@ -48,12 +48,14 @@
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.lang.reflect.Method;
+
 /**
  * Deserializing an enum valued object
  */
 public class EnumDeserializer extends AbstractDeserializer {
     private Class<?> _enumType;
     private Method   _valueOf;
+
     public EnumDeserializer(Class<?> cl) {
         // hessian/33b[34], hessian/3bb[78]
         if (cl.isEnum())
@@ -68,9 +70,11 @@ public class EnumDeserializer extends AbstractDeserializer {
             throw new RuntimeException(e);
         }
     }
+
     public Class<?> getType() {
         return _enumType;
     }
+
     public Object readMap(AbstractHessianInput in) throws IOException {
         String name = null;
         while (!in.isEnd()) {
@@ -85,6 +89,7 @@ public class EnumDeserializer extends AbstractDeserializer {
         in.addRef(obj);
         return obj;
     }
+
     @Override
     public Object readObject(AbstractHessianInput in, Object[] fields) throws IOException {
         String[] fieldNames = (String[]) fields;
@@ -99,6 +104,7 @@ public class EnumDeserializer extends AbstractDeserializer {
         in.addRef(obj);
         return obj;
     }
+
     private Object create(String name) throws IOException {
         if (name == null)
             throw new IOException(_enumType.getName() + " expects name.");

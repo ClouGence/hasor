@@ -21,27 +21,30 @@ package net.hasor.rsf.address;
  */
 public enum AddressTypeEnum {
     /***/
-    Dynamic(1, "dynamic", "D|"), /***/
-    Static(2, "static", "S|"),;
-    //
-    //
+    Dynamic(1, "dynamic", "D|"),
+    /***/
+    Static(2, "static", "S|"),
+    ;
     private int    type;
     private String desc;
     private String shortType;
+
     AddressTypeEnum(int type, String desc, String shortType) {
         this.type = type;
         this.desc = desc;
         this.shortType = shortType;
     }
+
     public String getDesc() {
         return desc;
     }
+
     public String getShortType() {
         return shortType;
     }
+
     @Override
     public String toString() {
         return "Enum[type = " + this.type + " , desc = " + this.desc + "]";
     }
-    //
 }

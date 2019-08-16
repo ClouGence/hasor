@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.rsf.bootstrap;
-import net.hasor.core.context.ContextShutdownListener;
-import net.hasor.core.context.ContextStartListener;
+import net.hasor.core.spi.ContextShutdownListener;
+import net.hasor.core.spi.ContextStartListener;
 import net.hasor.rsf.*;
 import net.hasor.rsf.filters.local.LocalPref;
 import net.hasor.rsf.filters.online.OnlineRsfFilter;
@@ -25,6 +25,7 @@ import net.hasor.rsf.filters.thread.RsfResponseLocal;
 import net.hasor.rsf.rpc.context.AbstractRsfContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * Rsf 框架启动入口。
  * @version : 2014年11月12日
@@ -32,6 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class RsfFrameworkModule implements RsfModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
+
     @Override
     public final void loadModule(RsfApiBinder apiBinder) throws Throwable {
         //
@@ -43,8 +45,8 @@ public final class RsfFrameworkModule implements RsfModule {
         };
         //
         //2.注册Hasor生命周期
-        apiBinder.bindType(ContextStartListener.class).toInstance(rsfContext);
-        apiBinder.bindType(ContextShutdownListener.class).toInstance(rsfContext);
+        apiBinder.bindSpiListener(ContextStartListener.class, rsfContext);
+        apiBinder.bindSpiListener(ContextShutdownListener.class, rsfContext);
         //
         //3.将重要的接口注册到 Hasor 提供依赖注入
         apiBinder.bindType(RsfSettings.class).toInstance(environment.getSettings());

@@ -20,6 +20,7 @@ import net.hasor.registry.client.domain.ServiceID;
 
 import java.util.Collection;
 import java.util.List;
+
 /**
  * 推送服务触发器
  * @version : 2016年3月1日
@@ -30,6 +31,7 @@ public class RsfPusher {
     @Inject
     private PushQueue pushQueue;
     //
+
     /** 推送服务路由脚本(服务级) */
     public boolean updateServiceRoute(ServiceID serviceID, String scriptBody, List<String> targets) {
         RsfCenterEventEnum centerEventEnum = RsfCenterEventEnum.UpdateServiceRouteEvent;
@@ -37,6 +39,7 @@ public class RsfPusher {
         eventData.setEventBody(scriptBody);
         return this.pushQueue.doPushEvent(eventData);
     }
+
     /** 推送服务路由脚本(方法级) */
     public boolean updateMethodRoute(ServiceID serviceID, String scriptBody, List<String> targets) {
         RsfCenterEventEnum centerEventEnum = RsfCenterEventEnum.UpdateMethodRouteEvent;
@@ -44,6 +47,7 @@ public class RsfPusher {
         eventData.setEventBody(scriptBody);
         return this.pushQueue.doPushEvent(eventData);
     }
+
     /** 推送服务路由脚本(参数级) */
     public boolean updateArgsRoute(ServiceID serviceID, String scriptBody, List<String> targets) {
         RsfCenterEventEnum centerEventEnum = RsfCenterEventEnum.UpdateArgsRouteEvent;
@@ -51,6 +55,7 @@ public class RsfPusher {
         eventData.setEventBody(scriptBody);
         return this.pushQueue.doPushEvent(eventData);
     }
+
     /** 推送服务流控规则 */
     public boolean updateFlowControl(ServiceID serviceID, String flowControl, List<String> targets) {
         RsfCenterEventEnum centerEventEnum = RsfCenterEventEnum.UpdateFlowControlEvent;
@@ -59,6 +64,7 @@ public class RsfPusher {
         return this.pushQueue.doPushEvent(eventData);
     }
     //
+
     /** 增量推送服务地址 */
     public boolean appendAddress(ServiceID serviceID, Collection<String> newHostSet, List<String> targets) {
         if (newHostSet == null || newHostSet.isEmpty()) {
@@ -75,6 +81,7 @@ public class RsfPusher {
         eventData.setEventBody(strBuilder.substring(1));
         return this.pushQueue.doPushEvent(eventData);
     }
+
     /** 全量推送服务地址 */
     public boolean refreshAddress(ServiceID serviceID, Collection<String> allHostSet, List<String> targets) {
         if (allHostSet == null || allHostSet.isEmpty()) {
@@ -91,6 +98,7 @@ public class RsfPusher {
         eventData.setEventBody(strBuilder.substring(1));
         return this.pushQueue.doPushEvent(eventData);
     }
+
     /** 删除服务地址 */
     public boolean removeAddress(ServiceID serviceID, Collection<String> invalidAddressSet, List<String> targets) {
         if (invalidAddressSet == null || invalidAddressSet.isEmpty()) {

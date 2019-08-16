@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 /**
  * 请求center重新推送地址。
  * @version : 2016年4月3日
@@ -47,10 +48,12 @@ public class PullRsfInstruct extends AbstractCenterInstruct {
                 + " - pull or request -all  (pull all services addressSet.)\r\n" //
                 + " - pull or request XXXX  (pull service addressSet of XXXX.)\r\n";
     }
+
     @Override
     public boolean inputMultiLine(CmdRequest request) {
         return false;
     }
+
     @Override
     public String doCommand(InstanceInfo instance, CmdRequest request) throws Throwable {
         StringWriter sw = new StringWriter();
@@ -114,6 +117,7 @@ public class PullRsfInstruct extends AbstractCenterInstruct {
         }
         return sw.toString();
     }
+
     //
     private void processPull(CmdRequest request, RsfCenterRegister register, RsfBindInfo<?> serviceInfo, InstanceInfo instance, RsfContext rsfContext) {
         // .1of4
@@ -147,6 +151,7 @@ public class PullRsfInstruct extends AbstractCenterInstruct {
         rsfContext.getUpdater().refreshAddress(serviceInfo.getBindID(), finalAddressList);
         request.writeMessageLine(" ->  (4of4) done.");
     }
+
     private void processRequest(CmdRequest request, RsfCenterRegister register, RsfBindInfo<?> serviceInfo, InstanceInfo instance, RsfContext rsfContext) {
         // .1of2
         String protocol = rsfContext.getDefaultProtocol();

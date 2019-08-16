@@ -20,6 +20,7 @@ import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 
 import java.util.function.Supplier;
+
 /**
  * 负责处理 RsfFilter 调用
  * @version : 2014年11月4日
@@ -30,12 +31,13 @@ public class RsfFilterHandler implements RsfFilterChain {
     private final        Supplier<RsfFilter>[] rsfFilter;
     private final        RsfFilterChain        rsfChain;
     private              int                   index;
-    //
+
     public RsfFilterHandler(final Supplier<RsfFilter>[] rsfFilter, final RsfFilterChain rsfChain) {
         this.rsfChain = rsfChain;
         this.index = -1;
         this.rsfFilter = (rsfFilter != null && rsfFilter.length != 0) ? rsfFilter : EMPTY_FILTER;
     }
+
     public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
         this.index++;
         if (this.index < this.rsfFilter.length) {

@@ -22,8 +22,10 @@ import java.lang.reflect.Type;
 import java.sql.Time;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public final class TimeUnserializer extends BaseUnserializer<Time> {
     public final static TimeUnserializer instance = new TimeUnserializer();
+
     @Override
     public Time unserialize(Reader reader, int tag, Type type) throws IOException {
         switch (tag) {
@@ -45,6 +47,7 @@ public final class TimeUnserializer extends BaseUnserializer<Time> {
             return new Time(tag - '0');
         return super.unserialize(reader, tag, type);
     }
+
     public Time read(Reader reader) throws IOException {
         return read(reader, Time.class);
     }

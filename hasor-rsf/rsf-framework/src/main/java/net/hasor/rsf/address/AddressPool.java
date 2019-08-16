@@ -19,7 +19,6 @@ import net.hasor.rsf.*;
 import net.hasor.rsf.address.route.rule.ArgsKey;
 import net.hasor.rsf.address.route.rule.DefaultArgsKey;
 import net.hasor.rsf.domain.RsfEvent;
-import net.hasor.rsf.utils.IOUtils;
 import net.hasor.utils.ClassUtils;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
@@ -36,6 +35,7 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
 /**
  * 服务地址池
  * <p>路由策略：随机选址
@@ -45,7 +45,6 @@ import java.util.zip.ZipOutputStream;
  */
 public class AddressPool implements RsfUpdater {
     protected final Logger                               logger = LoggerFactory.getLogger(getClass());
-    //
     private final   RsfEnvironment                       rsfEnvironment;
     private final   ConcurrentMap<String, AddressBucket> addressPool;
     private final   String                               unitName;
@@ -53,7 +52,7 @@ public class AddressPool implements RsfUpdater {
     private final   AddressCacheResult                   rulerCache;
     private final   ArgsKey                              argsKey;
     private final   Object                               poolLock;
-    //
+
     public AddressPool(RsfEnvironment rsfEnvironment) {
         String unitName = rsfEnvironment.getSettings().getUnitName();
         this.logger.info("AddressPool unitName at {}", unitName);
@@ -86,15 +85,11 @@ public class AddressPool implements RsfUpdater {
             }
         });
     }
-    //
+
     public AddressBucket getBucket(String serviceID) {
-        if (this.addressPool.containsKey(serviceID)) {
-            return this.addressPool.get(serviceID);
-        } else {
-            return null;
-        }
+        return this.addressPool.getOrDefault(serviceID, null);
     }
-    //
+
     /**
      * 获取本机所属单元（虚机房 or 集群）
      * @return 返回单元名（虚机房 or 集群）
@@ -102,12 +97,14 @@ public class AddressPool implements RsfUpdater {
     public String getUnitName() {
         return this.unitName;
     }
+
     /**
      * 获取所使用的RsfEnvironment
      */
     public RsfEnvironment getRsfEnvironment() {
         return rsfEnvironment;
     }
+
     /**
      * 所有服务地址快照功能，该接口获得的数据不可以进行写操作。通过这个接口可以获得到此刻地址池中所有服务的：
      * <ol>
@@ -131,18 +128,20 @@ public class AddressPool implements RsfUpdater {
         }
         return snapshot;
     }
+
     /**
      * 获取地址池中注册的服务列表。
      * @see net.hasor.rsf.RsfBindInfo#getBindID()
      * @return 返回地址池中注册的服务列表。
      */
     public Set<String> getBucketNames() {
-        Set<String> duplicate = new HashSet<String>();
+        Set<String> duplicate = new HashSet<>();
         synchronized (this.poolLock) {
             duplicate.addAll(this.addressPool.keySet());
         }
         return duplicate;
     }
+
     /**
      * 新增或追加更新服务地址信息。<p>
      * 如果追加的地址是已存在的失效地址，那么updateAddress方法将重新激活这些失效地址。
@@ -150,9 +149,10 @@ public class AddressPool implements RsfUpdater {
      * @param newHost 追加更新的地址。
      */
     public void appendStaticAddress(String serviceID, InterAddress newHost) {
-        List<InterAddress> newHostSet = Arrays.asList(newHost);
+        List<InterAddress> newHostSet = Collections.singletonList(newHost);
         this.appendStaticAddress(serviceID, newHostSet);
     }
+
     /**
      * 新增或追加更新服务地址信息。<p>
      * 如果追加的地址是已存在的失效地址，那么updateAddress方法将重新激活这些失效地址。
@@ -163,6 +163,7 @@ public class AddressPool implements RsfUpdater {
     public void appendStaticAddress(String serviceID, Collection<InterAddress> newHostSet) {
         this._appendAddress(serviceID, newHostSet, AddressTypeEnum.Static);
     }
+
     /**
      * 新增或追加更新服务地址信息。<p>
      * 如果追加的地址是已存在的失效地址，那么updateAddress方法将重新激活这些失效地址。
@@ -170,9 +171,10 @@ public class AddressPool implements RsfUpdater {
      * @param newHost 追加更新的地址。
      */
     public void appendAddress(String serviceID, InterAddress newHost) {
-        List<InterAddress> newHostSet = Arrays.asList(newHost);
+        List<InterAddress> newHostSet = Collections.singletonList(newHost);
         this.appendAddress(serviceID, newHostSet);
     }
+
     /**
      * 新增或追加更新服务地址信息。<p>
      * 如果追加的地址是已存在的失效地址，那么updateAddress方法将重新激活这些失效地址。
@@ -183,6 +185,7 @@ public class AddressPool implements RsfUpdater {
     public void appendAddress(String serviceID, Collection<InterAddress> newHostSet) {
         this._appendAddress(serviceID, newHostSet, AddressTypeEnum.Dynamic);
     }
+
     private void _appendAddress(String serviceID, Collection<InterAddress> newHostSet, AddressTypeEnum type) {
         String hosts = StringUtils.join(newHostSet.toArray(), ", ");
         this.logger.info("updateAddress of service {} , new Address set = {} ", serviceID, hosts);
@@ -205,6 +208,7 @@ public class AddressPool implements RsfUpdater {
         bucket.refreshAddress();//局部更新
         this.rulerCache.reset();
     }
+
     /**
      * 将服务的地址设置成临时失效状态。
      * 在{@link net.hasor.rsf.RsfSettings#getInvalidWaitTime()}毫秒之后，失效的地址会重新被列入备选地址池。
@@ -226,6 +230,7 @@ public class AddressPool implements RsfUpdater {
         }
         this.rulerCache.reset();
     }
+
     /**
      * 将服务的地址设置成临时失效状态，把地址从服务的地址本中彻底删除。
      * @param serviceID 服务ID。
@@ -233,8 +238,9 @@ public class AddressPool implements RsfUpdater {
      */
     @Override
     public void removeAddress(String serviceID, InterAddress invalidAddress) {
-        this.removeAddress(serviceID, Arrays.asList(invalidAddress));
+        this.removeAddress(serviceID, Collections.singletonList(invalidAddress));
     }
+
     /**
      * 将服务的地址设置成临时失效状态，把地址从服务的地址本中彻底删除。
      * @param serviceID 服务ID。
@@ -261,6 +267,7 @@ public class AddressPool implements RsfUpdater {
         long invalidWaitTime = rsfEnvironment.getSettings().getInvalidWaitTime();
         this.logger.info("serviceID ={} ,remove invalidAddress = {} ,wait {} -> active.", serviceID, strBuilder.toString(), invalidWaitTime);
     }
+
     @Override
     public void removeAddress(InterAddress address) {
         /*在并发情况下,newAddress和invalidAddress可能正在执行,因此要锁住poolLock*/
@@ -277,6 +284,7 @@ public class AddressPool implements RsfUpdater {
             this.rulerCache.reset();
         }
     }
+
     /**
      * 从地址池中，删除指定服务的地址本。
      * @param serviceID 服务ID。
@@ -290,6 +298,7 @@ public class AddressPool implements RsfUpdater {
         }
         return false;
     }
+
     //
     @Override
     public void refreshAddress(String serviceID, List<InterAddress> addressList) {
@@ -304,6 +313,7 @@ public class AddressPool implements RsfUpdater {
         }
         this.rulerCache.reset();
     }
+
     /**刷新地址缓存*/
     @Override
     public void refreshAddressCache() {
@@ -321,6 +331,7 @@ public class AddressPool implements RsfUpdater {
             this.rulerCache.reset();
         }
     }
+
     /**
      * 从服务地址本中获取一条可用的地址。<p>当一个服务具有多个地址的情况下，为了保证公平性地址池采取了随机选取的方式（路由策略：随机选址）
      * <ul>
@@ -362,11 +373,11 @@ public class AddressPool implements RsfUpdater {
         //
         return doCallAddress;
     }
-    //
-    //
+
     protected ArgsKey getArgsKey() {
         return this.argsKey;
     }
+
     /**获取地址路由规则引用。*/
     protected RuleRef getRefRule(String serviceID) {
         AddressBucket bucket = this.addressPool.get(serviceID);
@@ -376,25 +387,27 @@ public class AddressPool implements RsfUpdater {
         }
         return ruleRef;
     }
-    //
+
     @Override
     public String toString() {
         return "AddressPool[" + this.unitName + "]";
     }
-    //
+
     @Override
     public boolean updateServiceRoute(String serviceID, String scriptBody) {
         return this.updateRoute(serviceID, RouteTypeEnum.ServiceLevel, scriptBody);
     }
+
     @Override
     public boolean updateMethodRoute(String serviceID, String scriptBody) {
         return this.updateRoute(serviceID, RouteTypeEnum.MethodLevel, scriptBody);
     }
+
     @Override
     public boolean updateArgsRoute(String serviceID, String scriptBody) {
         return this.updateRoute(serviceID, RouteTypeEnum.ArgsLevel, scriptBody);
     }
-    //
+
     /**
      * 更新服务的流控规则。
      * @param serviceID 应用到的服务。
@@ -416,6 +429,7 @@ public class AddressPool implements RsfUpdater {
         this.refreshAddressCache();
         return true;
     }
+
     /**
      * 更新某个服务的路由规则脚本。
      * @param serviceID 要更新的服务。
@@ -434,8 +448,7 @@ public class AddressPool implements RsfUpdater {
         this.refreshAddressCache();
         return true;
     }
-    //
-    //
+
     @Override
     public String serviceRoute(String serviceID) {
         AddressBucket bucket = this.addressPool.get(serviceID);
@@ -444,6 +457,7 @@ public class AddressPool implements RsfUpdater {
         }
         return getServiceRouteByRef(bucket.getRuleRef());
     }
+
     @Override
     public String methodRoute(String serviceID) {
         AddressBucket bucket = this.addressPool.get(serviceID);
@@ -452,6 +466,7 @@ public class AddressPool implements RsfUpdater {
         }
         return getMethodRouteByRef(bucket.getRuleRef());
     }
+
     @Override
     public String argsRoute(String serviceID) {
         AddressBucket bucket = this.addressPool.get(serviceID);
@@ -460,6 +475,7 @@ public class AddressPool implements RsfUpdater {
         }
         return getArgsRouteByRef(bucket.getRuleRef());
     }
+
     @Override
     public String flowControl(String serviceID) {
         AddressBucket bucket = this.addressPool.get(serviceID);
@@ -468,6 +484,7 @@ public class AddressPool implements RsfUpdater {
         }
         return getFlowControlByRef(bucket.getFlowControlRef());
     }
+
     @Override
     public List<InterAddress> queryAllAddresses(String serviceID) {
         AddressBucket bucket = this.addressPool.get(serviceID);
@@ -476,6 +493,7 @@ public class AddressPool implements RsfUpdater {
         }
         return Collections.unmodifiableList(bucket.getAllAddresses());
     }
+
     @Override
     public List<InterAddress> queryAvailableAddresses(String serviceID) {
         AddressBucket bucket = this.addressPool.get(serviceID);
@@ -484,6 +502,7 @@ public class AddressPool implements RsfUpdater {
         }
         return Collections.unmodifiableList(bucket.getAvailableAddresses());
     }
+
     @Override
     public List<InterAddress> queryInvalidAddresses(String serviceID) {
         AddressBucket bucket = this.addressPool.get(serviceID);
@@ -492,6 +511,7 @@ public class AddressPool implements RsfUpdater {
         }
         return Collections.unmodifiableList(bucket.getInvalidAddresses());
     }
+
     @Override
     public List<InterAddress> queryLocalUnitAddresses(String serviceID) {
         AddressBucket bucket = this.addressPool.get(serviceID);
@@ -500,35 +520,36 @@ public class AddressPool implements RsfUpdater {
         }
         return Collections.unmodifiableList(bucket.getLocalUnitAddresses());
     }
+
     private static String getFlowControlByRef(FlowControlRef ruleRef) {
         if (ruleRef == null || ruleRef.flowControlScript == null) {
             return null;
         }
         return ruleRef.flowControlScript;
     }
+
     private static String getArgsRouteByRef(RuleRef ruleRef) {
         if (ruleRef == null || ruleRef.getArgsLevel() == null) {
             return null;
         }
         return ruleRef.getArgsLevel().getScript();
     }
+
     private static String getMethodRouteByRef(RuleRef ruleRef) {
         if (ruleRef == null || ruleRef.getMethodLevel() == null) {
             return null;
         }
         return ruleRef.getMethodLevel().getScript();
     }
+
     private static String getServiceRouteByRef(RuleRef ruleRef) {
         if (ruleRef == null || ruleRef.getServiceLevel() == null) {
             return null;
         }
         return ruleRef.getServiceLevel().getScript();
     }
-    //
-    //
     // --------------------------------------------------------------------------------------------
-    //
-    //
+
     /**保存地址列表到zip流中。*/
     public synchronized void storeConfig(OutputStream outStream) throws IOException {
         this.logger.info("rsf - saveAddress to stream.");
@@ -558,6 +579,7 @@ public class AddressPool implements RsfUpdater {
             }
         }
     }
+
     /**从保存的地址本中恢复数据。*/
     public synchronized void restoreConfig(InputStream inStream) throws IOException {
         ZipInputStream zipStream = new ZipInputStream(inStream);

@@ -29,6 +29,7 @@ import net.hasor.rsf.domain.RsfEvent;
 import net.hasor.tconsole.ConsoleApiBinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * Client模式
  * @version : 2016年2月18日
@@ -37,10 +38,12 @@ import org.slf4j.LoggerFactory;
 public class RegistryClientModule implements RsfModule {
     protected static Logger            logger = LoggerFactory.getLogger(RegistryClientModule.class);
     private          RsfCenterSettings centerSettings;
+
     //
     public RegistryClientModule(RsfCenterSettings centerSettings) {
         this.centerSettings = Hasor.assertIsNotNull(centerSettings);
     }
+
     //
     @Override
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
@@ -77,6 +80,7 @@ public class RegistryClientModule implements RsfModule {
         apiBinder.tryCast(ConsoleApiBinder.class).addCommand(new String[] { "pull", "request" }, PullRsfInstruct.class);
         logger.info("rsf center-client started.");
     }
+
     //
     private static StringBuilder buildLog(InterAddress[] centerList) {
         StringBuilder strBuilder = new StringBuilder("");

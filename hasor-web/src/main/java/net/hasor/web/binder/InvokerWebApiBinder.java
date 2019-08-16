@@ -295,7 +295,7 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
         return new RenderEngineBindingBuilderImpl(Objects.requireNonNull(renderName, "Render renderName is empty."), specialMimeType) {
             @Override
             protected void bindRender(String renderName, String specialMimeType, BindInfo<? extends RenderEngine> bindInfo) {
-                bindType(RenderDefinition.class).nameWith(renderName).toInstance(new RenderDefinition(renderName, specialMimeType, bindInfo));
+                bindType(RenderDef.class).nameWith(renderName).toInstance(new RenderDef(renderName, specialMimeType, bindInfo));
             }
         };
     }

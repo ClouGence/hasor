@@ -50,6 +50,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+
 /**
  * Abstract base class for Hessian requests.  Hessian users should only
  * need to use the methods in this class.
@@ -66,32 +67,38 @@ import java.io.Reader;
 abstract public class AbstractHessianInput {
     private HessianRemoteResolver resolver;
     private byte[]                _buffer;
+
     /**
      * Initialize the Hessian stream with the underlying input stream.
      */
     public void init(InputStream is) {
     }
+
     /**
      * Returns the call's method
      */
     abstract public String getMethod();
+
     /**
      * Sets the resolver used to lookup remote objects.
      */
     public void setRemoteResolver(HessianRemoteResolver resolver) {
         this.resolver = resolver;
     }
+
     /**
      * Sets the resolver used to lookup remote objects.
      */
     public HessianRemoteResolver getRemoteResolver() {
         return resolver;
     }
+
     /**
      * Sets the serializer factory.
      */
     public void setSerializerFactory(SerializerFactory ser) {
     }
+
     /**
      * Reads the call
      *
@@ -100,11 +107,13 @@ abstract public class AbstractHessianInput {
      * </pre>
      */
     abstract public int readCall() throws IOException;
+
     /**
      * For backward compatibility with HessianSkeleton
      */
     public void skipOptionalCall() throws IOException {
     }
+
     /**
      * Reads a header, returning null if there are no headers.
      *
@@ -124,6 +133,7 @@ abstract public class AbstractHessianInput {
      * </pre>
      */
     abstract public String readMethod() throws IOException;
+
     /**
      * Reads the number of method arguments
      *
@@ -132,6 +142,7 @@ abstract public class AbstractHessianInput {
     public int readMethodArgLength() throws IOException {
         return -1;
     }
+
     /**
      * Starts reading the call, including the headers.
      *
@@ -172,12 +183,14 @@ abstract public class AbstractHessianInput {
      * </pre>
      */
     abstract public void startReply() throws Throwable;
+
     /**
      * Starts reading the body of the reply, i.e. after the 'r' has been
      * parsed.
      */
     public void startReplyBody() throws Throwable {
     }
+
     /**
      * Completes reading the call
      *
@@ -253,6 +266,7 @@ abstract public class AbstractHessianInput {
      * </pre>
      */
     abstract public String readString() throws IOException;
+
     /**
      * Reads an XML node encoded in UTF-8
      *
@@ -264,6 +278,7 @@ abstract public class AbstractHessianInput {
     public org.w3c.dom.Node readNode() throws IOException {
         throw new UnsupportedOperationException(getClass().getSimpleName());
     }
+
     /**
      * Starts reading a string.  All the characters must be read before
      * calling the next method.  The actual characters will be read with
@@ -286,6 +301,7 @@ abstract public class AbstractHessianInput {
      * </pre>
      */
     abstract public InputStream readInputStream() throws IOException;
+
     /**
      * Reads data to an output stream.
      *
@@ -310,6 +326,7 @@ abstract public class AbstractHessianInput {
             is.close();
         }
     }
+
     /**
      * Reads a byte array.
      *
@@ -360,11 +377,13 @@ abstract public class AbstractHessianInput {
      * Sets an object reference.
      */
     abstract public void setRef(int i, Object obj) throws IOException;
+
     /**
      * Resets the references for streaming.
      */
     public void resetReferences() {
     }
+
     /**
      * Reads the start of a list
      */
@@ -404,6 +423,7 @@ abstract public class AbstractHessianInput {
      * Read the end byte
      */
     abstract public void readListEnd() throws IOException;
+
     public void close() throws IOException {
     }
 }

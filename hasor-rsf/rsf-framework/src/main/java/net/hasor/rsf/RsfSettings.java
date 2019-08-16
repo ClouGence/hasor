@@ -18,6 +18,7 @@ import net.hasor.core.Settings;
 
 import java.io.IOException;
 import java.util.Set;
+
 /**
  * RSF 配置。
  * @version : 2014年11月18日

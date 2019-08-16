@@ -20,8 +20,10 @@ package net.hasor.rsf.libs.com.hprose.io.convert;
 import net.hasor.rsf.libs.com.hprose.utils.DateTime;
 
 import java.lang.reflect.Type;
+
 public class LongConverter implements Converter<Long> {
     public final static LongConverter instance = new LongConverter();
+
     public Long convertTo(Object obj, Type type) {
         if (obj instanceof String) {
             return Long.parseLong((String) obj);

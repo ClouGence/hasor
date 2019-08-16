@@ -21,8 +21,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 
 import java.io.IOException;
 import java.io.OutputStream;
+
 public final class ByteArraySerializer extends ReferenceSerializer<byte[]> {
     public final static ByteArraySerializer instance = new ByteArraySerializer();
+
     @Override
     public final void serialize(Writer writer, byte[] bytes) throws IOException {
         super.serialize(writer, bytes);

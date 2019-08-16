@@ -31,12 +31,13 @@ import net.hasor.rsf.domain.RsfException;
 import net.hasor.rsf.rpc.net.Connector;
 import net.hasor.rsf.utils.IOUtils;
 import net.hasor.rsf.utils.ProtocolUtils;
-import net.hasor.utils.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Http Netty 请求处理器
  * @version : 2017年11月22日
@@ -51,13 +52,14 @@ public class HttpCoder extends ChannelDuplexHandler {
     private   RsfHttpRequestObject        httpRequest;
     private   RsfHttpResponseObject       httpResponse;
     private   HttpHandler.ResponseEncoder encoder;
-    //
+
     public HttpCoder(RsfContext rsfContext, Connector connector, HttpHandler httpHandler) {
         this.rsfContext = rsfContext;
         this.connector = connector;
         this.httpHandler = httpHandler;
         this.workStatus = WorkStatus.Idle;
     }
+
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
@@ -66,6 +68,7 @@ public class HttpCoder extends ChannelDuplexHandler {
         if (this.httpResponse != null)
             this.httpResponse.release();
     }
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ReferenceCounted referenceCounted = null;
@@ -80,6 +83,7 @@ public class HttpCoder extends ChannelDuplexHandler {
             IOUtils.releaseByteBuf(referenceCounted);
         }
     }
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable e) throws Exception {
         int errorCode = HttpResponseStatus.INTERNAL_SERVER_ERROR.code();
@@ -110,6 +114,7 @@ public class HttpCoder extends ChannelDuplexHandler {
         httpResponse = this.httpResponse.getHttpResponse();
         ctx.writeAndFlush(httpResponse).channel().close().sync();
     }
+
     private void readData(final ChannelHandlerContext ctx, Object msg) throws Throwable {
         // .请求头
         if (msg instanceof HttpRequest) {
@@ -148,8 +153,7 @@ public class HttpCoder extends ChannelDuplexHandler {
         //
         super.channelRead(ctx, msg);
     }
-    //
-    //
+
     private void doInvoker(final ChannelHandlerContext ctx) throws Throwable {
         final AtomicBoolean atomicBoolean = new AtomicBoolean(false);
         HttpHandler.HttpResult httpResult = new HttpHandler.HttpResult() {
@@ -164,6 +168,7 @@ public class HttpCoder extends ChannelDuplexHandler {
                 HttpCoder.this.encoder = encoder;
                 atomicBoolean.set(true);
             }
+
             @Override
             public void finishRPC() {
                 if (atomicBoolean.get()) {
@@ -207,8 +212,7 @@ public class HttpCoder extends ChannelDuplexHandler {
                 this.rsfContext.getEnvironment(), 0, ProtocolStatus.ProtocolError, "request has no invoker.");
         this.write(ctx, info, null);
     }
-    //
-    //
+
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof ResponseInfo) {

@@ -17,13 +17,14 @@ package net.hasor.rsf.tconsole;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
 import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.launcher.CmdRequest;
+import net.hasor.tconsole.CommandRequest;
 import net.hasor.utils.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+
 /**
  * 路由脚本的查看和更新指令。
  * @version : 2016年4月3日
@@ -31,7 +32,6 @@ import java.io.StringWriter;
  */
 @Singleton
 public class RuleRsfInstruct implements CommandExecutor {
-    //
     @Override
     public String helpInfo() {
         return "service rule script show/update.\r\n"//
@@ -48,8 +48,9 @@ public class RuleRsfInstruct implements CommandExecutor {
                 + " - rule -cm XXXX     (clean method Level rule info of XXXX.)\r\n"//
                 + " - rule -ca XXXX     (clean args Level rule info of XXXX.)";
     }
+
     @Override
-    public boolean inputMultiLine(CmdRequest request) {
+    public boolean inputMultiLine(CommandRequest request) {
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 0) {
             String mode = args[0];
@@ -57,8 +58,9 @@ public class RuleRsfInstruct implements CommandExecutor {
         }
         return false;
     }
+
     @Override
-    public String doCommand(CmdRequest request) throws Throwable {
+    public String doCommand(CommandRequest request) throws Throwable {
         RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();
@@ -101,6 +103,7 @@ public class RuleRsfInstruct implements CommandExecutor {
         }
         return sw.toString();
     }
+
     //
     //
     private void showArgsRule(StringWriter sw, String nameArg, RsfContext rsfContext) throws IOException {
@@ -113,6 +116,7 @@ public class RuleRsfInstruct implements CommandExecutor {
             writeBody(sw, body);
         }
     }
+
     private void showMethodRule(StringWriter sw, String nameArg, RsfContext rsfContext) throws IOException {
         //1.body
         String body = rsfContext.getUpdater().methodRoute(nameArg);
@@ -123,6 +127,7 @@ public class RuleRsfInstruct implements CommandExecutor {
             writeBody(sw, body);
         }
     }
+
     private void showServiceRule(StringWriter sw, String nameArg, RsfContext rsfContext) throws IOException {
         //1.body
         String body = rsfContext.getUpdater().serviceRoute(nameArg);
@@ -133,6 +138,7 @@ public class RuleRsfInstruct implements CommandExecutor {
             writeBody(sw, body);
         }
     }
+
     private void writeBody(StringWriter sw, String body) throws IOException {
         BufferedReader reader = new BufferedReader(new StringReader(body));
         for (; ; ) {
@@ -143,8 +149,9 @@ public class RuleRsfInstruct implements CommandExecutor {
             sw.write(line + "\r\n");
         }
     }
+
     //
-    private void updateArgsRule(StringWriter sw, String nameArg, CmdRequest request, RsfContext rsfContext) {
+    private void updateArgsRule(StringWriter sw, String nameArg, CommandRequest request, RsfContext rsfContext) {
         String scriptBody = request.getRequestBody();
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
@@ -155,7 +162,8 @@ public class RuleRsfInstruct implements CommandExecutor {
             return;
         }
     }
-    private void updateMethodRule(StringWriter sw, String nameArg, CmdRequest request, RsfContext rsfContext) {
+
+    private void updateMethodRule(StringWriter sw, String nameArg, CommandRequest request, RsfContext rsfContext) {
         String scriptBody = request.getRequestBody();
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
@@ -166,7 +174,8 @@ public class RuleRsfInstruct implements CommandExecutor {
             return;
         }
     }
-    private void updateServiceRule(StringWriter sw, String nameArg, CmdRequest request, RsfContext rsfContext) {
+
+    private void updateServiceRule(StringWriter sw, String nameArg, CommandRequest request, RsfContext rsfContext) {
         String scriptBody = request.getRequestBody();
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
@@ -177,8 +186,9 @@ public class RuleRsfInstruct implements CommandExecutor {
             return;
         }
     }
+
     //
-    private void cleanArgsRule(StringWriter sw, String nameArg, CmdRequest request, RsfContext rsfContext) {
+    private void cleanArgsRule(StringWriter sw, String nameArg, CommandRequest request, RsfContext rsfContext) {
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
             return;
@@ -188,7 +198,8 @@ public class RuleRsfInstruct implements CommandExecutor {
             return;
         }
     }
-    private void cleanMethodRule(StringWriter sw, String nameArg, CmdRequest request, RsfContext rsfContext) {
+
+    private void cleanMethodRule(StringWriter sw, String nameArg, CommandRequest request, RsfContext rsfContext) {
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
             return;
@@ -198,7 +209,8 @@ public class RuleRsfInstruct implements CommandExecutor {
             return;
         }
     }
-    private void cleanServiceRule(StringWriter sw, String nameArg, CmdRequest request, RsfContext rsfContext) {
+
+    private void cleanServiceRule(StringWriter sw, String nameArg, CommandRequest request, RsfContext rsfContext) {
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
             return;

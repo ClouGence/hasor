@@ -21,15 +21,17 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.utils.NameThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * Netty 线程组。
  * @version : 2017年01月16日
  * @author 赵永春 (zyc@hasor.net)
  */
 class NettyThreadGroup {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    private EventLoopGroup    workLoopGroup;    // I/O线程
-    private NioEventLoopGroup listenLoopGroup;  // 监听线程
+    protected Logger            logger = LoggerFactory.getLogger(getClass());
+    private   EventLoopGroup    workLoopGroup;    // I/O线程
+    private   NioEventLoopGroup listenLoopGroup;  // 监听线程
+
     //
     NettyThreadGroup(String protocol, RsfEnvironment rsfEnvironment) {
         RsfSettings rsfSettings = rsfEnvironment.getSettings();
@@ -42,15 +44,18 @@ class NettyThreadGroup {
         this.workLoopGroup = new NioEventLoopGroup(workerThread, new NameThreadFactory(preName + "-Nio-%s", rsfEnvironment.getClassLoader()));
         this.listenLoopGroup = new NioEventLoopGroup(listenerThread, new NameThreadFactory(preName + "-Listen-%s", rsfEnvironment.getClassLoader()));
     }
+
     public void shutdownGracefully() {
         this.logger.info("shutdownGracefully -> nioEventLoopGroup (listenLoopGroup and workLoopGroup).");
         this.listenLoopGroup.shutdownGracefully();
         this.workLoopGroup.shutdownGracefully();
     }
+
     //
     public EventLoopGroup getWorkLoopGroup() {
         return this.workLoopGroup;
     }
+
     public NioEventLoopGroup getListenLoopGroup() {
         return this.listenLoopGroup;
     }

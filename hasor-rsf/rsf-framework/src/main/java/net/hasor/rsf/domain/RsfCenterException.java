@@ -21,10 +21,11 @@ package net.hasor.rsf.domain;
  */
 public class RsfCenterException extends RsfException {
     private static final long serialVersionUID = 6625965825562561251L;
-    //
+
     public RsfCenterException(String string) {
         super(ProtocolStatus.InvokeError, string);
     }
+
     public RsfCenterException(Throwable e) {
         super(ProtocolStatus.InvokeError, e);
     }

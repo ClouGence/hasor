@@ -22,8 +22,10 @@ import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public final class LinkedHashMapUnserializer extends BaseUnserializer<LinkedHashMap> {
     public final static LinkedHashMapUnserializer instance = new LinkedHashMapUnserializer();
+
     @Override
     public LinkedHashMap unserialize(Reader reader, int tag, Type type) throws IOException {
         switch (tag) {
@@ -36,6 +38,7 @@ public final class LinkedHashMapUnserializer extends BaseUnserializer<LinkedHash
         }
         return super.unserialize(reader, tag, type);
     }
+
     public LinkedHashMap read(Reader reader) throws IOException {
         return read(reader, LinkedHashMap.class);
     }

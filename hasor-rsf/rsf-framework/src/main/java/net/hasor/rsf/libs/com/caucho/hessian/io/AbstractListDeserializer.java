@@ -47,6 +47,7 @@
  */
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
+
 /**
  * Deserializing a JDK 1.2 Collection.
  */

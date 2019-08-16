@@ -17,7 +17,6 @@ package net.hasor.rsf.container;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.EventContext;
-import net.hasor.core.Hasor;
 import net.hasor.rsf.*;
 import net.hasor.rsf.address.AddressPool;
 import net.hasor.rsf.address.RouteTypeEnum;
@@ -33,6 +32,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
+
 /**
  *
  * @version : 2015年12月6日
@@ -47,10 +47,11 @@ public class RsfBeanContainer {
     private final        Object                                               filterLock   = new Object();
     private final        ConcurrentMap<String, Supplier<RsfFilter>[]>         filterCache  = new ConcurrentHashMap<>();
     private final        AddressPool                                          addressPool;
-    //
+
     public RsfBeanContainer(AddressPool addressPool) {
         this.addressPool = addressPool;
     }
+
     /**
      * 计算指定服务上配置的过滤器。{@link RsfFilter}按照配置方式分为共有和私有。
      * 共有Filter的生效范围是所有Service，私有Filter的生效范围仅Service。
@@ -97,6 +98,7 @@ public class RsfBeanContainer {
         }
         return result;
     }
+
     /**
      * 根据服务id获取服务对象。如果服务未定义或者服务未声明提供者，则返回null。
      * @param rsfBindInfo 服务ID。
@@ -112,6 +114,7 @@ public class RsfBeanContainer {
         }
         return null;
     }
+
     /**
      * 根据服务id获取服务元信息。
      * @param serviceID 服务ID。
@@ -122,6 +125,7 @@ public class RsfBeanContainer {
             return null;
         return info.getDomain();
     }
+
     /**
      * 根据服务id获取服务元信息。
      * @param aliasType 名字分类。
@@ -138,6 +142,7 @@ public class RsfBeanContainer {
         }
         return this.serviceMap.get(serviceID);
     }
+
     /**
      * 根据类型获取服务元信息。如果类型上配置了{@link RsfService @RsfService}注解，则使用该注解的配置信息。
      * 否则将使用RSF默认配置下的Group、Version。
@@ -163,6 +168,7 @@ public class RsfBeanContainer {
         }
         return (RsfBindInfo<T>) getRsfBindInfo(serviceGroup, serviceName, serviceVersion);
     }
+
     /**
      * 根据服务坐标获取服务元信息。
      * @param group 组别
@@ -173,10 +179,12 @@ public class RsfBeanContainer {
         String serviceID = "[" + group + "]" + name + "-" + version;//String.format("[%s]%s-%s", group, name, version);
         return this.getRsfBindInfo(serviceID);
     }
+
     /**获取所有已经注册的服务名称。*/
     public List<String> getServiceIDs() {
         return new ArrayList<String>(this.serviceMap.keySet());
     }
+
     /**根据别名系统获取所有已经注册的服务名称。*/
     public List<String> getServiceIDs(String category) {
         ConcurrentMap<String, String> aliasNameMaps = this.aliasNameMap.get(category);
@@ -185,13 +193,14 @@ public class RsfBeanContainer {
         }
         return new ArrayList<>(aliasNameMaps.keySet());
     }
+
     /**获取环境对象。*/
     public RsfEnvironment getEnvironment() {
         return this.addressPool.getRsfEnvironment();
     }
-    //
+    
     /* ----------------------------------------------------------------------------------------- */
-    //
+
     /**创建{@link RsfApiBinder}。*/
     public RsfPublisher createPublisher(final RsfBeanContainer container, final RsfContext rsfContext) {
         return new ContextRsfBindBuilder() {
@@ -199,18 +208,20 @@ public class RsfBeanContainer {
             protected RsfBeanContainer getContainer() {
                 return container;
             }
+
             @Override
             protected RsfContext getRsfContext() {
                 return rsfContext;
             }
         };
     }
+
     /**
      * 添加一个全局服务过滤器。
      * @param define 过滤器对象。
      */
     public void publishFilter(FilterDefine define) {
-        String filterID = Hasor.assertIsNotNull(define.filterID());
+        String filterID = Objects.requireNonNull(define.filterID());
         synchronized (this.filterLock) {
             for (FilterDefine filter : this.filterList) {
                 if (filterID.equals(filter.filterID())) {
@@ -221,6 +232,7 @@ public class RsfBeanContainer {
             this.filterCache.clear();
         }
     }
+
     /**
      * 发布服务
      * @param serviceDefine 服务定义。
@@ -287,6 +299,7 @@ public class RsfBeanContainer {
         //
         return true;
     }
+
     /**
      * 回收发布的服务
      * @param serviceID 服务定义。
@@ -327,6 +340,7 @@ public class RsfBeanContainer {
     //
     /* ----------------------------------------------------------------------------------------- */
     //
+
     /**
      * 发布的服务
      * @param appContext 用于查找服务的容器上下文。

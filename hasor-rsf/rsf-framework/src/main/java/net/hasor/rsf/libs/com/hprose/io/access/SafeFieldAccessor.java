@@ -30,11 +30,13 @@ import net.hasor.rsf.libs.com.hprose.utils.ClassUtil;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+
 public final class SafeFieldAccessor implements MemberAccessor {
     private final Field        field;
     private final Type         fieldType;
     private final Serializer   serializer;
     private final Unserializer unserializer;
+
     public SafeFieldAccessor(Type type, Field field) {
         field.setAccessible(true);
         this.field = field;
@@ -43,6 +45,7 @@ public final class SafeFieldAccessor implements MemberAccessor {
         serializer = SerializerFactory.get(cls);
         unserializer = UnserializerFactory.get(cls);
     }
+
     @Override
     @SuppressWarnings({ "unchecked" })
     public void serialize(Writer writer, Object obj) throws IOException {
@@ -58,6 +61,7 @@ public final class SafeFieldAccessor implements MemberAccessor {
             serializer.write(writer, value);
         }
     }
+
     @Override
     public void unserialize(Reader reader, Object obj) throws IOException {
         Object value = unserializer.read(reader, reader.stream.read(), fieldType);

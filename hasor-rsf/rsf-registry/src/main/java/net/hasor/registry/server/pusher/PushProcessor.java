@@ -28,16 +28,18 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 /**
  * 执行处理器，该类的作用是将事件推送到指定的客户端中去。
  * @version : 2016年3月23日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class PushProcessor {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger                         logger = LoggerFactory.getLogger(getClass());
     @Inject
-    private RsfContext                     rsfContext;
-    private ThreadLocal<RsfCenterListener> rsfClientListener;
+    private   RsfContext                     rsfContext;
+    private   ThreadLocal<RsfCenterListener> rsfClientListener;
+
     //
     @Init
     public void init() {
@@ -47,6 +49,7 @@ public class PushProcessor {
             }
         };
     }
+
     //
     public final List<String> doProcessor(PushEvent event) {
         if (event == null || event.getTargetList() == null) {
@@ -73,6 +76,7 @@ public class PushProcessor {
         }
     }
     //
+
     /**
      * 向客户端推送数据,3次重试
      * @param rsfAddress 目标客户端
@@ -90,6 +94,7 @@ public class PushProcessor {
         //
         return result;
     }
+
     /** 数据推送 */
     private boolean sendEvent(String rsfAddress, PushEvent event, int times) {
         String eventType = event.getPushEventType().forCenterEvent();

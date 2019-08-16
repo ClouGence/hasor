@@ -49,19 +49,22 @@ package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
 /**
  * Serializing an object for known object types.
  */
 @SuppressWarnings({ "unused" })
 public class WriteReplaceSerializer extends AbstractSerializer {
-    private static Object[] NULL_ARGS = new Object[0];
-    private Object     _writeReplaceFactory;
-    private Method     _writeReplace;
-    private Serializer _baseSerializer;
+    private static Object[]   NULL_ARGS = new Object[0];
+    private        Object     _writeReplaceFactory;
+    private        Method     _writeReplace;
+    private        Serializer _baseSerializer;
+
     public WriteReplaceSerializer(Class<?> cl, ClassLoader loader, Serializer baseSerializer) {
         introspectWriteReplace(cl, loader);
         _baseSerializer = baseSerializer;
     }
+
     private void introspectWriteReplace(Class<?> cl, ClassLoader loader) {
         try {
             String className = cl.getName() + "HessianSerializer";
@@ -81,6 +84,7 @@ public class WriteReplaceSerializer extends AbstractSerializer {
         if (_writeReplace != null)
             _writeReplace.setAccessible(true);
     }
+
     /**
      * Returns the writeReplace method
      */
@@ -93,6 +97,7 @@ public class WriteReplaceSerializer extends AbstractSerializer {
         }
         return null;
     }
+
     /**
      * Returns the writeReplace method
      */
@@ -107,6 +112,7 @@ public class WriteReplaceSerializer extends AbstractSerializer {
         }
         return null;
     }
+
     public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
         int ref = out.getRef(obj);
         if (ref >= 0) {
@@ -131,6 +137,7 @@ public class WriteReplaceSerializer extends AbstractSerializer {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     protected Object writeReplace(Object obj) {
         try {

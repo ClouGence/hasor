@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
  */
 package net.hasor.rsf.protocol.rsf.v1;
 import java.lang.reflect.Array;
+
 /**
  * <p>Operations on {@link String} that are <code>null</code> safe.</p>
  */
@@ -46,6 +47,7 @@ public abstract class ArrayUtils {
         newArray[newArray.length - 1] = element;
         return newArray;
     }
+
     /**
      * Returns a copy of the given array of size 1 greater than the argument.
      * The last value of the array is left to the default value.

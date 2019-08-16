@@ -47,11 +47,13 @@
  */
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
+
 /**
  * Serializing a remote object.
  */
 public class ObjectHandleSerializer extends AbstractSerializer {
     public static final Serializer SER = new ObjectHandleSerializer();
+
     public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
         if (obj == null)
             out.writeNull();

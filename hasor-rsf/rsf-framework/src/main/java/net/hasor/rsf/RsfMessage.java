@@ -18,6 +18,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 /**
  * 宣布此接口为消息接口,RSF在处理该接口的 RPC 调用请求时会忽略远程机器的 response 。
  * 消息接口的工作方模式下,当确认 rpc 数据包投递到远程机器并进入调用队列之后，请求方会收到一个 ack 确认方法会立即返回成功。

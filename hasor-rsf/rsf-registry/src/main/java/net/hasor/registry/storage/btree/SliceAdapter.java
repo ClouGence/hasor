@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * B-Tree 索引操作类，保存机制为 copy on write。
  * @version : 2018年5月28日
@@ -41,6 +42,7 @@ public class SliceAdapter {
     private          int              sliceSize;            // 切块大小
     private          int              maxEchoSequence;      // slice 编号分配采用自旋序列，这个值是旋转的最大上限
     private          int              echoSequence;         // 当前自旋值
+
     //
     //
     //
@@ -49,6 +51,7 @@ public class SliceAdapter {
     //
     // ------------------------------------------------------------------------------------------------------ Block 存储和回收
     //
+
     /** 初始化一个全新的索引 */
     public static SliceAdapter initIndex(int sliceSize, int sliceAreaSize, BlockFileAdapter fileAdapter) throws IOException {
         if (sliceSize < 3 || sliceAreaSize < 1) {
@@ -76,6 +79,7 @@ public class SliceAdapter {
         return adapter;
     }
     //
+
     /** 从文件中读取一个索引 */
     public static SliceAdapter loadIndex(BlockFileAdapter fileAdapter) throws IOException {
         Block headerBlock = fileAdapter.firstBlock();
@@ -117,11 +121,13 @@ public class SliceAdapter {
         return adapter;
     }
     //
+
     /** 关闭索引文件 */
     public void close() throws IOException {
         this.fileAdapter.close();
     }
     //
+
     /** 递交所有操作到磁盘上（其实就是把头信息保存到磁盘上）*/
     public void submitToFile() throws IOException {
         //
@@ -159,14 +165,17 @@ public class SliceAdapter {
             this.deleteBlock.clear();
         }
     }
+
     //
     // ------------------------------------------------------------------------------------------------------ Block 存储和回收
     //
     // - 删除 Block 数据（真正的删除操作在 commit 环节进行）
     private List<Long> deleteBlock = new ArrayList<Long>(100);
+
     private void deleteBlock(long position) {
         this.deleteBlock.add(position);
     }
+
     //
     // - 读取 Block 数据
     private ByteBuffer readBlock(long position) {
@@ -189,6 +198,7 @@ public class SliceAdapter {
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
+
     //
     // - 保存 Block 数据
     private long writeBlock(ByteBuffer dataBufer) {
@@ -204,6 +214,7 @@ public class SliceAdapter {
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
+
     //
     // ------------------------------------------------------------------------------------------------------ Slice 存储和回收
     //
@@ -230,6 +241,7 @@ public class SliceAdapter {
             }
         }
     }
+
     //
     // - 释放一个 Slice
     private void releaseSlice(int sliceID) {
@@ -243,11 +255,13 @@ public class SliceAdapter {
         long position = this.getSlicePosition(sliceID);
         this.deleteBlock(position);
     }
+
     //
     // - 强制获取某个 Slice 的数据位置（该 Slice 有可能未被分配或者已经被释放）
     private long getSlicePosition(int sliceID) {
         return this.slicePositionPool.getLong(sliceID * 8);
     }
+
     //
     // - 强制更新某个 Slice 的数据位置（该 Slice 有可能未被分配或者已经被释放）
     private void setSlicePosition(int sliceID, long slicePosition) {
@@ -256,6 +270,7 @@ public class SliceAdapter {
     //
     // ------------------------------------------------------------------------------------------------------ 索引功能
     //
+
     /** 获取跟 Slice */
     public Slice getEntryPoint() {
         if (entryPoint != -1) {
@@ -270,12 +285,14 @@ public class SliceAdapter {
         //
         return root;
     }
+
     //
     // - 更新 entryPoint
     private void updataEntryPoint(int entryPoint) {
         this.entryPoint = entryPoint;
     }
     //
+
     /** 根据 sliceID 获取 Slice */
     public Slice getSlice(int sliceID) {
         // .根据 sliceID 计算slicePosition位置，然后取出 slice 的 Position
@@ -306,6 +323,7 @@ public class SliceAdapter {
         return slice;
     }
     //
+
     /** 保存 Slice 返回数据存储的位置，保存机制为 copy on write。 */
     protected long storeSlice(Slice sliceData) {
         // .计算 Slice 所需长度 (最大不过 512K)
@@ -332,11 +350,13 @@ public class SliceAdapter {
         return sliceData.getSliceID();
     }
     //
+
     /** 根据 hashKey 查找所处 Slice，或最接近的 Slice。 */
     public ResultSlice nearSlice(long hashKey) {
         Slice slice = this.getEntryPoint();
         return nearSlice(hashKey, slice, 0, -1);
     }
+
     //
     // - 根据 hashKey 查找最接近的 Slice 并以 ResultSlice 方式返回
     private ResultSlice nearSlice(long hashKey, Slice atSlice, int positionOfatSlice, int parentSliceID) {
@@ -366,6 +386,7 @@ public class SliceAdapter {
         return new ResultSlice(parentSliceID, atSlice, childrensNodes.length);
     }
     //
+
     /** 插入数据到索引中 */
     public ResultSlice insertData(DataNode dataSlice) throws IOException {
         // .找到最近的 Slice
@@ -384,6 +405,7 @@ public class SliceAdapter {
         //
         return splitAndStore(resultSlice, this.sliceSize);
     }
+
     //
     // - 将 treeNode 插入到 parentSlice 所表示的 parent 中。
     private void insertToParent(TreeNode treeNode, Slice parentSlice, int parentSliceID) {
@@ -407,6 +429,7 @@ public class SliceAdapter {
         //
         splitAndStore(new ResultSlice(parentSliceID, parentSlice, atPosition), this.sliceSize);
     }
+
     //
     // - 根据分裂因子进行分裂，分裂后返回依据的父节点
     private ResultSlice splitAndStore(ResultSlice sliceResult, int maxRecord) {

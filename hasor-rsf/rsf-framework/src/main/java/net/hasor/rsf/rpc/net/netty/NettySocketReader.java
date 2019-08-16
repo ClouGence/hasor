@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.Future;
+
 /**
  * RPC协议连接器，负责创建某个特定RPC协议的网络事件。
  * tips：传入的网络连接，交给{@link LinkPool}进行处理，{@link NettyConnector}本身不维护任何连接。
@@ -33,20 +34,23 @@ import java.util.concurrent.Future;
  * @author 赵永春 (zyc@hasor.net)
  */
 class NettySocketReader extends ChannelInboundHandlerAdapter {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    private NettyConnector connector;
-    //
+    protected Logger         logger = LoggerFactory.getLogger(getClass());
+    private   NettyConnector connector;
+
     private static String converToHostProt(ChannelHandlerContext ctx) {
         InetSocketAddress socketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
         return socketAddress.getAddress().getHostAddress() + ":" + socketAddress.getPort();
     }
+
     public NettySocketReader(NettyConnector connector) {
         this.connector = connector;
     }
+
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         this.exceptionCaught(ctx, null);
     }
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         String hostPort = converToHostProt(ctx);
@@ -57,6 +61,7 @@ class NettySocketReader extends ChannelInboundHandlerAdapter {
         }
         ctx.close();
     }
+
     /** 接收解析好的 RequestInfo、ResponseInfo 对象，并将它们转发到 {@link RsfChannel}接收事件中。 */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

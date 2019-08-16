@@ -21,8 +21,10 @@ import net.hasor.rsf.libs.com.hprose.utils.DateTime;
 
 import java.lang.reflect.Type;
 import java.math.BigInteger;
+
 public class BigIntegerConverter implements Converter<BigInteger> {
     public final static BigIntegerConverter instance = new BigIntegerConverter();
+
     public BigInteger convertTo(Object obj, Type type) {
         if (obj instanceof String) {
             return new BigInteger((String) obj);

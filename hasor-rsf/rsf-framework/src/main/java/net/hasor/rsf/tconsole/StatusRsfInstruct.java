@@ -17,9 +17,10 @@ package net.hasor.rsf.tconsole;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
 import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.launcher.CmdRequest;
+import net.hasor.tconsole.CommandRequest;
 
 import java.io.StringWriter;
+
 /**
  * RSF 服务框架状态查看和更新指令
  * @version : 2016年4月3日
@@ -27,7 +28,6 @@ import java.io.StringWriter;
  */
 @Singleton
 public class StatusRsfInstruct implements CommandExecutor {
-    //
     @Override
     public String helpInfo() {
         return "switching application service online/offline.\r\n"//
@@ -36,12 +36,14 @@ public class StatusRsfInstruct implements CommandExecutor {
                 + " - status on   (online application , publishing/subscription to registry.)\r\n"//
                 + " - status off  (offline application , remove publishing/subscription form registry.)";
     }
+
     @Override
-    public boolean inputMultiLine(CmdRequest request) {
+    public boolean inputMultiLine(CommandRequest request) {
         return false;
     }
+
     @Override
-    public String doCommand(CmdRequest request) throws Throwable {
+    public String doCommand(CommandRequest request) throws Throwable {
         RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();

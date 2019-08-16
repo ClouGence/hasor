@@ -21,8 +21,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 
 import java.io.IOException;
 import java.io.OutputStream;
+
 public final class ShortArraySerializer extends ReferenceSerializer<short[]> {
     public final static ShortArraySerializer instance = new ShortArraySerializer();
+
     @Override
     public final void serialize(Writer writer, short[] array) throws IOException {
         super.serialize(writer, array);

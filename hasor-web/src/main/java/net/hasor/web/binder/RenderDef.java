@@ -26,11 +26,11 @@ import java.lang.annotation.Annotation;
  * @version : 2017-01-10
  * @author 赵永春 (zyc@hasor.net)
  */
-public class RenderDefinition {
+public class RenderDef {
     private Render                           renderInfo = null;
     private BindInfo<? extends RenderEngine> bindInfo   = null;
 
-    public RenderDefinition(String renderName, String specialMimeType, BindInfo<? extends RenderEngine> bindInfo) {
+    public RenderDef(String renderName, String specialMimeType, BindInfo<? extends RenderEngine> bindInfo) {
         this.renderInfo = new Render() {
             @Override
             public Class<? extends Annotation> annotationType() {

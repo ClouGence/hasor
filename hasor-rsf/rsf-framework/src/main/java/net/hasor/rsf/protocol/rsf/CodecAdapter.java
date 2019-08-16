@@ -21,6 +21,7 @@ import net.hasor.rsf.protocol.rsf.v1.RequestBlock;
 import net.hasor.rsf.protocol.rsf.v1.ResponseBlock;
 
 import java.io.IOException;
+
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年11月4日

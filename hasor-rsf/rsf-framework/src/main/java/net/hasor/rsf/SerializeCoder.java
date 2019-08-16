@@ -17,6 +17,7 @@ package net.hasor.rsf;
 import net.hasor.core.Environment;
 
 import java.io.IOException;
+
 /**
  * 序列化（编码/解码）器
  * @version : 2014年9月19日

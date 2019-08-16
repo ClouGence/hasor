@@ -20,8 +20,10 @@ package net.hasor.rsf.libs.com.hprose.io.serialize;
 import net.hasor.rsf.libs.com.hprose.io.HproseException;
 
 import java.io.IOException;
+
 public final class ObjectSerializer implements Serializer {
     public final static ObjectSerializer instance = new ObjectSerializer();
+
     public final void write(Writer writer, Object obj) throws IOException {
         if (obj != null) {
             Class<?> cls = obj.getClass();

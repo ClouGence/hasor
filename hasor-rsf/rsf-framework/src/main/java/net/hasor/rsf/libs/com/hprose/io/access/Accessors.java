@@ -28,10 +28,12 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 public final class Accessors {
     private final static ConcurrentHashMap<Type, LinkedCaseInsensitiveMap<String, MemberAccessor>> propertiesCache = new ConcurrentHashMap<Type, LinkedCaseInsensitiveMap<String, MemberAccessor>>();
     private final static ConcurrentHashMap<Type, LinkedCaseInsensitiveMap<String, MemberAccessor>> membersCache    = new ConcurrentHashMap<Type, LinkedCaseInsensitiveMap<String, MemberAccessor>>();
     private final static ConcurrentHashMap<Type, LinkedCaseInsensitiveMap<String, MemberAccessor>> fieldsCache     = new ConcurrentHashMap<Type, LinkedCaseInsensitiveMap<String, MemberAccessor>>();
+
     private static sun.misc.Unsafe getUnsafe() {
         try {
             return sun.misc.Unsafe.getUnsafe();
@@ -50,7 +52,9 @@ public final class Accessors {
             return null;
         }
     }
+
     final static sun.misc.Unsafe unsafe = getUnsafe();
+
     public final static boolean isAndroid() {
         String vmName = System.getProperty("java.vm.name");
         if (vmName == null) {
@@ -59,6 +63,7 @@ public final class Accessors {
         String lowerVMName = vmName.toLowerCase();
         return lowerVMName.contains("dalvik") || lowerVMName.contains("lemur");
     }
+
     private static Method findGetter(Method[] methods, String name, Class<?> paramType) {
         String getterName = "get" + name;
         String isGetterName = "is" + name;
@@ -79,6 +84,7 @@ public final class Accessors {
         }
         return null;
     }
+
     private static Map<String, MemberAccessor> getProperties(Type type) {
         LinkedCaseInsensitiveMap<String, MemberAccessor> properties = propertiesCache.get(type);
         if (properties == null) {
@@ -113,6 +119,7 @@ public final class Accessors {
         }
         return properties;
     }
+
     private static MemberAccessor getFieldAccessor(Type type, Field field) {
         if (unsafe != null && !isAndroid()) {
             Class<?> cls = field.getType();
@@ -144,6 +151,7 @@ public final class Accessors {
         }
         return new SafeFieldAccessor(type, field);
     }
+
     private static Map<String, MemberAccessor> getFields(Type type) {
         LinkedCaseInsensitiveMap<String, MemberAccessor> fields = fieldsCache.get(type);
         if (fields == null) {
@@ -162,6 +170,7 @@ public final class Accessors {
         }
         return fields;
     }
+
     private static Map<String, MemberAccessor> getMembers(Type type) {
         LinkedCaseInsensitiveMap<String, MemberAccessor> members = membersCache.get(type);
         if (members == null) {
@@ -205,6 +214,7 @@ public final class Accessors {
         }
         return members;
     }
+
     public final static Map<String, MemberAccessor> getMembers(Type type, HproseMode mode) {
         Class<?> clazz = ClassUtil.toClass(type);
         return ((mode != HproseMode.MemberMode) && Serializable.class.isAssignableFrom(clazz)) ? (mode == HproseMode.FieldMode) ? getFields(type) : getProperties(type) : getMembers(type);

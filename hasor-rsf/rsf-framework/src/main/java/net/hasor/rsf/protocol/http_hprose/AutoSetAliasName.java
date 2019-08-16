@@ -24,6 +24,7 @@ import net.hasor.utils.StringUtils;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.LOCATION;
 import static io.netty.handler.codec.http.HttpHeaders.Names.ORIGIN;
+
 /**
  * Hprose 服务自动设定别名工具
  * @version : 2017年02月23日
@@ -47,6 +48,7 @@ public class AutoSetAliasName implements RsfModule, EventListener<Object> {
             }
         });
     }
+
     @Override
     public void onEvent(String event, Object eventData) throws Throwable {
         if (!(eventData instanceof RsfDomainProvider)) {

@@ -24,16 +24,17 @@ import net.hasor.rsf.domain.ResponseInfo;
 import net.hasor.rsf.utils.ProtocolUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * RSF 解码器
  * @version : 2014年10月10日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RsfDecoder extends LengthFieldBasedFrameDecoder implements ProtocolConstants {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    private RsfEnvironment rsfEnvironment;
-    private ClassLoader    classLoader;
-    //
+    protected Logger         logger = LoggerFactory.getLogger(getClass());
+    private   RsfEnvironment rsfEnvironment;
+    private   ClassLoader    classLoader;
+
     public RsfDecoder(RsfEnvironment rsfEnvironment, int maxBodyLength, ClassLoader classLoader) {
         // lengthFieldOffset   = 10
         // lengthFieldLength   = 3
@@ -43,7 +44,7 @@ public class RsfDecoder extends LengthFieldBasedFrameDecoder implements Protocol
         this.rsfEnvironment = rsfEnvironment;
         this.classLoader = classLoader;
     }
-    //
+
     /*解码*/
     protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
         ByteBuf frame = (ByteBuf) super.decode(ctx, in);
@@ -65,10 +66,11 @@ public class RsfDecoder extends LengthFieldBasedFrameDecoder implements Protocol
         //        }
         return null;
     }
+
     protected ByteBuf extractFrame(ChannelHandlerContext ctx, ByteBuf buffer, int index, int length) {
         return buffer.slice(index, length);
     }
-    //
+ 
     /**协议解析*/
     private short doDecode(byte rsfHead, ChannelHandlerContext ctx, ByteBuf frame) {
         CodecAdapter factory = CodecAdapterFactory.getCodecAdapterByVersion(this.rsfEnvironment, this.classLoader, (byte) (rsfHead & 0x0F));

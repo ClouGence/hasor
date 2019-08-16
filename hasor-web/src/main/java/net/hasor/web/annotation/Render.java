@@ -18,6 +18,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 /**
  * 渲染器,配置只为渲染器名字，通常配置成为请求的扩展名。
  * @version : 2017-01-10

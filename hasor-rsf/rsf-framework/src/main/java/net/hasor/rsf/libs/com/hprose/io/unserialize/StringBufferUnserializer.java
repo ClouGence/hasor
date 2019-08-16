@@ -22,8 +22,10 @@ import net.hasor.rsf.libs.com.hprose.io.convert.StringBufferConverter;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+
 public final class StringBufferUnserializer extends BaseUnserializer<StringBuffer> {
     public final static StringBufferUnserializer instance = new StringBufferUnserializer();
+
     @Override
     public StringBuffer unserialize(Reader reader, int tag, Type type) throws IOException {
         StringBufferConverter converter = StringBufferConverter.instance;
@@ -61,6 +63,7 @@ public final class StringBufferUnserializer extends BaseUnserializer<StringBuffe
         }
         return super.unserialize(reader, tag, type);
     }
+
     public StringBuffer read(Reader reader) throws IOException {
         return read(reader, StringBuffer.class);
     }

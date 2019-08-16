@@ -19,6 +19,7 @@ import net.hasor.rsf.RsfSettings;
 import net.hasor.utils.StringUtils;
 
 import java.lang.annotation.Annotation;
+
 /**
  * @version : 2014年11月10日
  * @author 赵永春 (zyc@hasor.net)
@@ -29,6 +30,7 @@ class AnnoRsfServiceValue implements RsfService {
     private String serviceVersion = null;
     private int    clientTimeout  = 0;
     private String serializeType  = null;
+
     //
     public AnnoRsfServiceValue(RsfSettings rsfSettings, Class<?> serviceType) {
         //1.真实值
@@ -67,27 +69,33 @@ class AnnoRsfServiceValue implements RsfService {
             this.clientTimeout = rsfSettings.getDefaultTimeout();
         }
     }
+
     //
     @Override
     public Class<? extends Annotation> annotationType() {
         return AnnoRsfServiceValue.class;
     }
+
     @Override
     public String name() {
         return this.serviceName;
     }
+
     @Override
     public String group() {
         return this.serviceGroup;
     }
+
     @Override
     public String version() {
         return this.serviceVersion;
     }
+
     @Override
     public int clientTimeout() {
         return this.clientTimeout;
     }
+
     @Override
     public String serializeType() {
         return this.serializeType;

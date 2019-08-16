@@ -22,8 +22,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.sql.Time;
+
 public final class TimeArrayUnserializer extends BaseUnserializer<Time[]> {
     public final static TimeArrayUnserializer instance = new TimeArrayUnserializer();
+
     @Override
     public Time[] unserialize(Reader reader, int tag, Type type) throws IOException {
         if (tag == HproseTags.TagList)
@@ -32,6 +34,7 @@ public final class TimeArrayUnserializer extends BaseUnserializer<Time[]> {
             return new Time[0];
         return super.unserialize(reader, tag, type);
     }
+
     public Time[] read(Reader reader) throws IOException {
         return read(reader, Time[].class);
     }

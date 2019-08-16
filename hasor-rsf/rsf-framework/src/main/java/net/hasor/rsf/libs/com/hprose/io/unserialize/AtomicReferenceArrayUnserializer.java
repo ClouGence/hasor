@@ -24,8 +24,10 @@ import java.lang.reflect.Type;
 import java.util.concurrent.atomic.AtomicReferenceArray;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagNull;
+
 public final class AtomicReferenceArrayUnserializer implements Unserializer<AtomicReferenceArray> {
     public final static AtomicReferenceArrayUnserializer instance = new AtomicReferenceArrayUnserializer();
+
     @SuppressWarnings({ "unchecked" })
     public AtomicReferenceArray read(Reader reader, int tag, Type type) throws IOException {
         if (tag == TagNull)

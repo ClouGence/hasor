@@ -49,12 +49,14 @@ package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+
 /**
  * Deserializing a Java array
  */
 public class ArrayDeserializer extends AbstractListDeserializer {
     private Class<?> _componentType;
     private Class<?> _type;
+
     public ArrayDeserializer(Class<?> componentType) {
         _componentType = componentType;
         if (_componentType != null) {
@@ -66,9 +68,11 @@ public class ArrayDeserializer extends AbstractListDeserializer {
         if (_type == null)
             _type = Object[].class;
     }
+
     public Class<?> getType() {
         return _type;
     }
+
     /**
      * Reads the array.
      */
@@ -102,6 +106,7 @@ public class ArrayDeserializer extends AbstractListDeserializer {
             return data;
         }
     }
+
     /**
      * Reads the array.
      */
@@ -117,12 +122,14 @@ public class ArrayDeserializer extends AbstractListDeserializer {
         }
         return data;
     }
+
     protected Object[] createArray(int length) {
         if (_componentType != null)
             return (Object[]) Array.newInstance(_componentType, length);
         else
             return new Object[length];
     }
+
     public String toString() {
         return "ArrayDeserializer[" + _componentType + "]";
     }

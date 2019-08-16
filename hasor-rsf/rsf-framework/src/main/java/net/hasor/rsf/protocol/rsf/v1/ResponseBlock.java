@@ -50,59 +50,72 @@ public class ResponseBlock extends PoolBlock {
     private short returnType    = 0;  //byte[2]  返回数据类型
     private short returnData    = 0;  //byte[2]  返回数据
     private int[] optionMap     = {}; //(attr-index,attr-index)
-    //
+ 
     /**获取协议版本。*/
     public byte getVersion() {
         return (byte) (this.rsfHead & 0x0F);
     }
+
     /**获取协议版本。*/
     public byte getHead() {
         return this.rsfHead;
     }
+
     /**设置协议版本。*/
     public void setHead(byte rsfHead) {
         this.rsfHead = rsfHead;
     }
+
     /**获取请求ID。*/
     public long getRequestID() {
         return this.requestID;
     }
+
     /**设置请求ID。*/
     public void setRequestID(long requestID) {
         this.requestID = requestID;
     }
+
     /**获取响应状态*/
     public short getStatus() {
         return this.status;
     }
+
     /**设置响应状态*/
     public void setStatus(short status) {
         this.status = status;
     }
+
     /**获取序列化类型*/
     public short getSerializeType() {
         return this.serializeType;
     }
+
     /**设置序列化类型*/
     public void setSerializeType(short serializeType) {
         this.serializeType = serializeType;
     }
+
     /**获取返回值类型*/
     public short getReturnType() {
         return this.returnType;
     }
+
     /**设置返回值类型*/
     public void setReturnType(short returnType) {
         this.returnType = returnType;
     }
+
     /**获取返回值数据*/
     public short getReturnData() {
         return returnData;
     }
+
     /**设置返回值数据*/
     public void setReturnData(short returnData) {
         this.returnData = returnData;
     }
+
     /**添加选项。*/
     public void addOption(short paramType, short paramData) {
         int pType = paramType << 16;
@@ -110,10 +123,12 @@ public class ResponseBlock extends PoolBlock {
         int mergeData = (pType | pData);
         this.addOption(mergeData);
     }
+
     /**添加选项。*/
     public void addOption(int mergeData) {
         this.optionMap = ArrayUtils.add(this.optionMap, mergeData);
     }
+
     /**获取选项Key集合。*/
     public short[] getOptionKeys() {
         short[] optKeys = new short[this.optionMap.length];
@@ -123,6 +138,7 @@ public class ResponseBlock extends PoolBlock {
         }
         return optKeys;
     }
+
     /**获取选项数据*/
     public short[] getOptionValues() {
         short[] optDatas = new short[this.optionMap.length];
@@ -131,6 +147,7 @@ public class ResponseBlock extends PoolBlock {
         }
         return optDatas;
     }
+
     /**获取Option。*/
     public int[] getOptions() {
         return this.optionMap;

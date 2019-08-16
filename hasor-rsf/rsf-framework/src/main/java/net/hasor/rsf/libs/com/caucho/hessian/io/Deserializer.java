@@ -47,6 +47,7 @@
  */
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
+
 /**
  * Deserializing an object. Custom deserializers should extend
  * from AbstractDeserializer to avoid issues with signature

@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  *
  * @version : 2014年11月12日
@@ -33,11 +34,12 @@ import java.util.List;
  */
 @Singleton
 public class RegistryCenterService implements RegistryCenter {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger            logger = LoggerFactory.getLogger(getClass());
     @Inject
-    private RsfContext        rsfContext;
-    private InstanceInfo      instance;
-    private RsfCenterSettings centerSettings;
+    private   RsfContext        rsfContext;
+    private   InstanceInfo      instance;
+    private   RsfCenterSettings centerSettings;
+
     //
     //
     @Init
@@ -55,10 +57,12 @@ public class RegistryCenterService implements RegistryCenter {
         //
         this.centerSettings = rsfContext.getAppContext().getInstance(RsfCenterSettings.class);
     }
+
     @Override
     public InstanceInfo getInstanceInfo() {
         return this.instance;
     }
+
     @Override
     public RsfCenterSettings getSettings() {
         return this.centerSettings;

@@ -18,6 +18,7 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 
 import java.net.URL;
+
 /**
  * Http 请求对象
  * @version : 2017年12月04日
@@ -28,21 +29,26 @@ public class RequestObject {
     private HttpHeaders headers;
     private URL         httpURL;
     private byte[]      bodyData;
+
     RequestObject(HttpMethod httpMethod, HttpHeaders headers, URL httpURL, byte[] bodyData) {
         this.httpMethod = httpMethod;
         this.headers = headers;
         this.httpURL = httpURL;
         this.bodyData = bodyData;
     }
+
     HttpHeaders headers() {
         return this.headers;
     }
+
     HttpMethod method() {
         return this.httpMethod;
     }
+
     URL requestFullPath() {
         return this.httpURL;
     }
+
     byte[] getBodyData() {
         return this.bodyData;
     }

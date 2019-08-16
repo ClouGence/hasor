@@ -58,11 +58,12 @@ public class IdentityIntMap {
      * Encoding of a null entry.  Since NULL is equal to Integer.MIN_VALUE,
      * it's impossible to distinguish between the two.
      */
-    public final static int NULL = 0xdeadbeef; // Integer.MIN_VALUE + 1;
-    private Object[] _keys;
-    private int[]    _values;
-    private int      _size;
-    private int      _prime;
+    public final static int      NULL = 0xdeadbeef; // Integer.MIN_VALUE + 1;
+    private             Object[] _keys;
+    private             int[]    _values;
+    private             int      _size;
+    private             int      _prime;
+
     /**
      * Create a new IntMap.  Default size is 16.
      */
@@ -72,6 +73,7 @@ public class IdentityIntMap {
         _prime = getBiggestPrime(_keys.length);
         _size = 0;
     }
+
     /**
      * Clear the hashmap.
      */
@@ -84,12 +86,14 @@ public class IdentityIntMap {
         }
         _size = 0;
     }
+
     /**
      * Returns the current number of entries in the map.
      */
     public final int size() {
         return _size;
     }
+
     /**
      * Puts a new value in the property table with the appropriate flags
      */
@@ -107,6 +111,7 @@ public class IdentityIntMap {
             hash = (hash + 1) % prime;
         }
     }
+
     /**
      * Puts a new value in the property table with the appropriate flags
      */
@@ -136,6 +141,7 @@ public class IdentityIntMap {
             }
         }
     }
+
     /**
      * Removes a value in the property table.
      */
@@ -144,6 +150,7 @@ public class IdentityIntMap {
             _size--;
         }
     }
+
     /**
      * Expands the property table
      */
@@ -161,9 +168,11 @@ public class IdentityIntMap {
             }
         }
     }
+
     protected int hashCode(Object value) {
         return System.identityHashCode(value);
     }
+
     public String toString() {
         StringBuffer sbuf = new StringBuffer();
         sbuf.append("IntMap[");
@@ -181,6 +190,7 @@ public class IdentityIntMap {
         sbuf.append("]");
         return sbuf.toString();
     }
+
     public static final int[] PRIMES = { 1, /* 1<< 0 = 1 */
             2, /* 1<< 1 = 2 */
             3, /* 1<< 2 = 4 */
@@ -210,6 +220,7 @@ public class IdentityIntMap {
             67108859, /* 1<<26 = 67108864 */
             134217689, /* 1<<27 = 134217728 */
             268435399, /* 1<<28 = 268435456 */ };
+
     public static int getBiggestPrime(int value) {
         for (int i = PRIMES.length - 1; i >= 0; i--) {
             if (PRIMES[i] <= value)

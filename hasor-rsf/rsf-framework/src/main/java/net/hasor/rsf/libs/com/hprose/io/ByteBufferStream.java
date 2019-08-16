@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.ByteChannel;
+
 public final class ByteBufferStream {
     final static class ByteBufferPool {
         private final        int            POOLNUM  = 12;
@@ -29,15 +30,18 @@ public final class ByteBufferStream {
         private final        ByteBuffer[][] pool     = new ByteBuffer[POOLNUM][];
         private final        int[]          position = new int[POOLNUM];
         private final static int[]          debruijn = new int[] { 0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17, 4, 8, 31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9 };
+
         private static int log2(int x) {
             return debruijn[(x & -x) * 0x077CB531 >>> 27];
         }
+
         private ByteBufferPool() {
             for (int i = 0; i < POOLNUM; ++i) {
                 pool[i] = new ByteBuffer[POOLSIZE];
                 position[i] = -1;
             }
         }
+
         private ByteBuffer allocate(int capacity) {
             capacity = pow2roundup(capacity);
             if (capacity < 1024) {
@@ -54,6 +58,7 @@ public final class ByteBufferStream {
             }
             return ByteBuffer.allocateDirect(capacity);
         }
+
         private void free(ByteBuffer buffer) {
             if (buffer.isDirect()) {
                 int capacity = buffer.capacity();
@@ -71,15 +76,17 @@ public final class ByteBufferStream {
             }
         }
     }
+
     private final static ThreadLocal<ByteBufferPool> byteBufferPool = new ThreadLocal<ByteBufferPool>() {
         @Override
         protected ByteBufferPool initialValue() {
             return new ByteBufferPool();
         }
     };
-    public ByteBuffer buffer;
+    public               ByteBuffer                  buffer;
     InputStream  istream;
     OutputStream ostream;
+
     private static int pow2roundup(int x) {
         --x;
         x |= x >> 1;
@@ -89,45 +96,56 @@ public final class ByteBufferStream {
         x |= x >> 16;
         return x + 1;
     }
+
     public final static ByteBuffer allocate(int capacity) {
         return byteBufferPool.get().allocate(capacity);
     }
+
     public final static void free(ByteBuffer buffer) {
         byteBufferPool.get().free(buffer);
     }
+
     public ByteBufferStream() {
         this(1024);
     }
+
     public ByteBufferStream(int capacity) {
         buffer = allocate(capacity);
     }
+
     public ByteBufferStream(ByteBuffer buffer) {
         this.buffer = buffer;
     }
+
     public final static ByteBufferStream wrap(byte[] array, int offset, int length) {
         return new ByteBufferStream(ByteBuffer.wrap(array, offset, length));
     }
+
     public final static ByteBufferStream wrap(byte[] array) {
         return new ByteBufferStream(ByteBuffer.wrap(array));
     }
+
     public final void close() {
         if (buffer != null) {
             free(buffer);
             buffer = null;
         }
     }
+
     public final InputStream getInputStream() {
         if (istream == null) {
             istream = new ByteBufferInputStream(this);
         }
         return istream;
     }
+
     public final OutputStream getOutputStream() {
         if (ostream == null) {
             ostream = new ByteBufferOutputStream(this);
         }
         return ostream;
     }
+
     public final int read() {
         if (buffer.hasRemaining()) {
             return buffer.get() & 0xff;
@@ -135,9 +153,11 @@ public final class ByteBufferStream {
             return -1;
         }
     }
+
     public final int read(byte b[]) {
         return read(b, 0, b.length);
     }
+
     public final int read(byte b[], int off, int len) {
         if (len <= 0) {
             return 0;
@@ -153,6 +173,7 @@ public final class ByteBufferStream {
         buffer.get(b, off, len);
         return len;
     }
+
     public final int read(ByteBuffer b) {
         int len = b.remaining();
         if (len <= 0) {
@@ -172,6 +193,7 @@ public final class ByteBufferStream {
         buffer.limit(oldlimit);
         return len;
     }
+
     public final long skip(long n) {
         if (n <= 0) {
             return 0;
@@ -187,18 +209,23 @@ public final class ByteBufferStream {
         buffer.position(buffer.position() + (int) n);
         return n;
     }
+
     public final int available() {
         return buffer.remaining();
     }
+
     public final boolean markSupported() {
         return true;
     }
+
     public final void mark(int readlimit) {
         buffer.mark();
     }
+
     public final void reset() {
         buffer.reset();
     }
+
     private void grow(int n) {
         if (buffer.remaining() < n) {
             int required = buffer.position() + n;
@@ -214,35 +241,43 @@ public final class ByteBufferStream {
             }
         }
     }
+
     public final void write(int b) {
         grow(1);
         buffer.put((byte) b);
     }
+
     public final void write(byte b[]) {
         write(b, 0, b.length);
     }
+
     public final void write(byte b[], int off, int len) {
         grow(len);
         buffer.put(b, off, len);
     }
+
     public final void write(ByteBuffer b) {
         grow(b.remaining());
         buffer.put(b);
     }
+
     public final void flip() {
         if (buffer.position() != 0) {
             buffer.flip();
         }
     }
+
     public final void rewind() {
         buffer.rewind();
     }
+
     public final byte[] toArray() {
         flip();
         byte[] data = new byte[buffer.limit()];
         buffer.get(data);
         return data;
     }
+
     public final void readFrom(InputStream istream) throws IOException {
         byte[] b = new byte[8192];
         for (; ; ) {
@@ -253,6 +288,7 @@ public final class ByteBufferStream {
             write(b, 0, n);
         }
     }
+
     public final void writeTo(OutputStream ostream) throws IOException {
         if (buffer.hasArray()) {
             ostream.write(buffer.array(), buffer.arrayOffset() + buffer.position(), buffer.remaining());
@@ -267,6 +303,7 @@ public final class ByteBufferStream {
             }
         }
     }
+
     public final void readFrom(ByteChannel channel, int length) throws IOException {
         int n = 0;
         grow(length);
@@ -282,6 +319,7 @@ public final class ByteBufferStream {
             throw new HproseException("Unexpected EOF");
         }
     }
+
     public final void writeTo(ByteChannel channel) throws IOException {
         while (buffer.hasRemaining()) {
             channel.write(buffer);

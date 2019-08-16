@@ -22,6 +22,7 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * 文件格式为：0 到多个 Block 序列。读写支持 NIO，堆外内存和流两种方式。
  * 单个 Block 格式为：<blockSize 8-Byte> + <dataSize 8-Byte> + <data bytes n-Byte>
@@ -36,11 +37,13 @@ public class BlockFileAdapter {
     private              FileChannel      isFileChannel  = null;
     private              AtomicLong       curentStreamID = null;
     private              Block            curentBlock    = null;
+
     //
     //
     public BlockFileAdapter(File blockFileName) throws IOException {
         this(blockFileName, 0);
     }
+
     public BlockFileAdapter(File blockFileName, int bufferSize) throws IOException {
         this.blockFileName = blockFileName;
         this.ioAccessFile = new RandomAccessFile(blockFileName, "rw");
@@ -49,21 +52,25 @@ public class BlockFileAdapter {
         this.curentBlock = null;
     }
     //
+
     /** 存储的文件 */
     public File getFile() {
         return this.blockFileName;
     }
     //
+
     /** 关闭 */
     public void close() throws IOException {
         this.ioClose();
     }
     //
+
     /** 文件大小 */
     public final long fileSize() throws IOException {
         return this.ioFileSize();
     }
     //
+
     /** 重置读取指针，curentBlock 会被置空。同时 nextBlock 会重头开始读文件 */
     public void reset() throws IOException {
         this.curentStreamID = new AtomicLong(0);
@@ -71,10 +78,12 @@ public class BlockFileAdapter {
         ioSeekTo(0);
     }
     //
+
     /** 释放任何可能存在的，读写流操作 */
     public boolean releaseStream() {
         return this.releaseStream(this.curentStreamID.get());
     }
+
     private boolean releaseStream(long streamID) {
         if (streamID <= 0 || this.curentStreamID.get() != streamID) {
             return false;
@@ -82,6 +91,7 @@ public class BlockFileAdapter {
         return curentStreamID.compareAndSet(streamID, 0);
     }
     //
+
     /** 获取第一个Block */
     public Block firstBlock() throws IOException {
         this.ioSeekTo(0);
@@ -89,17 +99,20 @@ public class BlockFileAdapter {
         return this.nextBlock();
     }
     //
+
     /** 获取用于表示文件尾的Block，基于这个 Block 进行写会以追加模式写入 */
     public Block eofBlock() throws IOException {
         long endPosition = this.fileSize();
         return new Block(endPosition, 0, -1, true, true);
     }
     //
+
     /** 基于 curentBlock 查找下一个最近的自由空间 */
     public Block findFreeSpace() throws IOException {
         return findFreeSpace(null);
     }
     //
+
     /** 基于 atBlock 查找下一个最近的自由空间 */
     public Block findFreeSpace(long blockPosition) throws IOException {
         //
@@ -111,6 +124,7 @@ public class BlockFileAdapter {
         return findFreeSpace(readBlock);
     }
     //
+
     /** 基于 atBlock 查找下一个最近的自由空间 */
     public Block findFreeSpace(Block atBlock) throws IOException {
         // .curent Block is Free ?
@@ -128,21 +142,25 @@ public class BlockFileAdapter {
         return this.eofBlock();
     }
     //
+
     /** 当前 Block 每一次调用 nextBlock 都会重置 curentBlock 为最新的 */
     public Block curentBlock() {
         return this.curentBlock;
     }
     //
+
     /** 基于 curentBlock 查找下一个Block */
     public Block nextBlock() throws IOException {
         return nextBlock(null);
     }
+
     /**  查找 blockPosition 位置之后的一个 Block */
     public Block nextBlock(long blockPosition) throws IOException {
         ioSeekTo(blockPosition);
         return nextBlock();
     }
     //
+
     /**  查找 atBlock 之后的一个 Block */
     public Block nextBlock(Block atBlock) throws IOException {
         // .release any curent stream
@@ -164,6 +182,7 @@ public class BlockFileAdapter {
         this.curentBlock = readBlock();
         return this.curentBlock();
     }
+
     private Block readBlock() throws IOException {
         if (this.ioFilePointer() == this.ioFileSize()) {
             return null;
@@ -181,6 +200,7 @@ public class BlockFileAdapter {
         return new Block(blockPosition, dataSize, blockSize, invalid, false);
     }
     //
+
     /**  查找 blockPosition 位置之后的一个 Block */
     public Block findBlock(long blockPosition) throws IOException {
         ioSeekTo(blockPosition);
@@ -190,6 +210,7 @@ public class BlockFileAdapter {
         }
         return readBlock();
     }
+
     /** 基于 refBlock 的信息，在当前 File 中查找对应的 Block */
     public Block findBlock(Block refBlock) throws IOException {
         long position = refBlock.getPosition();
@@ -208,6 +229,7 @@ public class BlockFileAdapter {
         return null;
     }
     //
+
     /** 判断是否具有下一个可以读取的 Block */
     public boolean hasNext() throws IOException {
         if (this.curentBlock != null) {
@@ -224,6 +246,7 @@ public class BlockFileAdapter {
         return true;
     }
     //
+
     /** 获取 Block 的读入流（同一个时间内只能有一个流进行读写操作）*/
     public InputStream getInputStream(Block block) throws IOException {
         long streamID = System.currentTimeMillis();
@@ -235,6 +258,7 @@ public class BlockFileAdapter {
         return null;
     }
     //
+
     /** 读取 Block 数据到 outStream（同一个时间内只能有一个流进行读写操作）*/
     public void readToStream(Block block, OutputStream outStream) throws IOException {
         InputStream inStream = this.getInputStream(block);
@@ -245,6 +269,7 @@ public class BlockFileAdapter {
         }
         throw new IOException("getInputStream failed.");
     }
+
     /** 删除 Block */
     public boolean deleteBlock(Block block) throws IOException {
         if (block == null) {
@@ -267,6 +292,7 @@ public class BlockFileAdapter {
         return true;
     }
     //
+
     /** 拆分 originBlock 为两个部分，被拆分的 Block 一定是被删除的 */
     public Block[] splitBlock(Block originBlock, long splitPosition) throws IOException {
         if (splitPosition < 0) {
@@ -303,6 +329,7 @@ public class BlockFileAdapter {
         return result;
     }
     //
+
     /** 安全的合并两个 Block ，被合并的 extendBlock 必须是删除状态 */
     public Block mergeBlock(Block block, Block extendBlock) throws IOException {
         block = this.findBlock(block);
@@ -336,6 +363,7 @@ public class BlockFileAdapter {
         return newBlock;
     }
     //
+
     /** 半安全的批量合并操作。半安全是指该方法当合并多个 Block 过程中如果遇到意外，不会回滚整个操作。
      * 但是已经合并的 Block 都是安全的。*/
     public Block halfSafeMergeBlock(Block[] blockArrays) throws IOException {
@@ -346,6 +374,7 @@ public class BlockFileAdapter {
         return block;
     }
     //
+
     /** 获取某个 Block 的输出流，数据写完之后一定要 close，否则会产生数据丢失。 */
     public OutputStream getOutputStream(Block block) throws IOException {
         long streamID = System.currentTimeMillis();
@@ -357,6 +386,7 @@ public class BlockFileAdapter {
         return null;
     }
     //
+
     /** 输出数据到某个输出流上。输出完毕之后一定要 close，否则会产生数据丢失。 */
     public void writeFromStream(Block block, InputStream inStream) throws IOException {
         OutputStream outStream = this.getOutputStream(block);
@@ -369,6 +399,7 @@ public class BlockFileAdapter {
         throw new IOException("getOutputStream failed.");
     }
     //
+
     /** 获取一个nio的输入输出管道。 */
     public BlockChannel getBlockChannel(Block block) throws IOException {
         long streamID = System.currentTimeMillis();
@@ -381,17 +412,20 @@ public class BlockFileAdapter {
     }
     //
     //
+
     /** -- */
     private class BlockOutputStream extends OutputStream {
         private long    streamID      = 0;
         private boolean isClose       = false;
         private Block   block         = null;
         private long    writePosition = 0;
+
         //
         public BlockOutputStream(long streamID, Block block) {
             this.streamID = streamID;
             this.block = block;
         }
+
         //
         public void reset() throws IOException {
             checkStreamClose(isClose, streamID);
@@ -403,6 +437,7 @@ public class BlockFileAdapter {
                 ioSkipBytes(Block.HEAD_LENGTH);//额外补偿 Block Head
             }
         }
+
         private void appendSize(int realSize) throws IOException {
             if (block.getBlockSize() >= 0) {
                 long afterDataSize = this.writePosition + realSize;
@@ -415,6 +450,7 @@ public class BlockFileAdapter {
             }
             this.writePosition += realSize;
         }
+
         @Override
         public void write(int b) throws IOException {
             checkStreamClose(isClose, streamID);
@@ -426,20 +462,24 @@ public class BlockFileAdapter {
                     (byte) ((b >>> 0) & 0xFF)   //
             });
         }
+
         @Override
         public void write(byte[] b) throws IOException {
             this.write(b, 0, b.length);
         }
+
         @Override
         public void write(byte[] b, int off, int len) throws IOException {
             checkStreamClose(isClose, streamID);
             appendSize(len);
             ioReadWrite(b, off, len);
         }
+
         @Override
         public void flush() throws IOException {
             ioSyncBuffer();
         }
+
         @Override
         public void close() throws IOException {
             checkStreamClose(isClose, streamID);
@@ -456,6 +496,7 @@ public class BlockFileAdapter {
             releaseStream(this.streamID);
         }
     }
+
     /** -- */
     private class BlockInputStream extends InputStream {
         private long    streamID      = 0;
@@ -463,11 +504,13 @@ public class BlockFileAdapter {
         private Block   block         = null;
         private long    position      = 0;
         private long    resetPosition = 0;
+
         //
         public BlockInputStream(long streamID, Block block) {
             this.streamID = streamID;
             this.block = block;
         }
+
         //
         @Override
         public int read(byte[] b, int off, int len) throws IOException {
@@ -482,6 +525,7 @@ public class BlockFileAdapter {
             this.position += readLength;
             return readLength;
         }
+
         @Override
         public int read() throws IOException {
             checkStreamClose(isClose, streamID);
@@ -492,6 +536,7 @@ public class BlockFileAdapter {
             this.position++;
             return data;
         }
+
         @Override
         public long skip(long n) throws IOException {
             checkStreamClose(isClose, streamID);
@@ -500,6 +545,7 @@ public class BlockFileAdapter {
             }
             return skipBytes(n);
         }
+
         @Override
         public int available() throws IOException {
             checkStreamClose(isClose, streamID);
@@ -510,11 +556,13 @@ public class BlockFileAdapter {
             }
             return (int) available;
         }
+
         @Override
         public void close() {
             this.isClose = true;
             releaseStream(this.streamID);
         }
+
         @Override
         public void reset() throws IOException {
             checkStreamClose(isClose, streamID);
@@ -522,6 +570,7 @@ public class BlockFileAdapter {
             ioSeekTo(this.block.getPosition() + this.position);
             ioSkipBytes(Block.HEAD_LENGTH); //跳过 Block Head
         }
+
         @Override
         public void mark(int readlimit) {
             if ((this.position + readlimit) > this.block.getDataSize()) {
@@ -529,11 +578,13 @@ public class BlockFileAdapter {
             }
             this.resetPosition = readlimit;
         }
+
         @Override
         public boolean markSupported() {
             return true;
         }
     }
+
     /** --*/
     private class NioBlockChannel extends BlockChannel {
         private long    streamID    = 0;
@@ -541,10 +592,12 @@ public class BlockFileAdapter {
         private Block   block       = null;
         private long    readerIndex = 0;
         private long    writerIndex = 0;
+
         public NioBlockChannel(long streamID, Block block) {
             this.streamID = streamID;
             this.block = block;
         }
+
         @Override
         public int read(ByteBuffer dst) throws IOException {
             checkStreamClose(isClose, streamID);
@@ -567,6 +620,7 @@ public class BlockFileAdapter {
             this.readerIndex += read;
             return read;
         }
+
         @Override
         public int write(ByteBuffer src) throws IOException {
             checkStreamClose(isClose, streamID);
@@ -590,14 +644,17 @@ public class BlockFileAdapter {
                 }
             }
         }
+
         public void reset() throws IOException {
             checkStreamClose(isClose, streamID);
             isFileChannel.position(block.getPosition() + Block.HEAD_LENGTH); //跳过 Block Head
         }
+
         @Override
         public boolean isOpen() {
             return isFileChannel.isOpen();
         }
+
         @Override
         public void close() throws IOException {
             checkStreamClose(isClose, streamID);
@@ -615,6 +672,7 @@ public class BlockFileAdapter {
             releaseStream(this.streamID);
         }
     }
+
     //
     private void checkStreamClose(boolean isClose, long streamID) throws IOException {
         // .关闭状态
@@ -627,6 +685,7 @@ public class BlockFileAdapter {
             throw new IOException("stream has expired.");
         }
     }
+
     private long skipBytes(long readSize) throws IOException {
         long skipLength = 0;
         while (readSize > Integer.MAX_VALUE) {
@@ -640,10 +699,12 @@ public class BlockFileAdapter {
         skipLength += this.ioSkipBytes((int) readSize);
         return skipLength;
     }
+
     //
     private int ioSkipBytes(int readSize) throws IOException {
         return this.ioAccessFile.skipBytes(readSize);
     }
+
     private void ioSeekTo(long atPosition) throws IOException {
         long nowPosition = this.ioAccessFile.getFilePointer();
         if (nowPosition == atPosition) {
@@ -651,40 +712,52 @@ public class BlockFileAdapter {
         }
         this.ioAccessFile.seek(atPosition);
     }
+
     private long ioFileSize() throws IOException {
         return this.ioAccessFile.length();
     }
+
     private long ioFilePointer() throws IOException {
         return this.ioAccessFile.getFilePointer();
     }
+
     private long ioReadLong() throws IOException {
         return ioAccessFile.readLong();
     }
+
     private int ioReadByte() throws IOException {
         return ioAccessFile.readByte();
     }
+
     private int ioReadBytes(byte b[], int off, int len) throws IOException {
         return ioAccessFile.read(b, off, len);
     }
+
     private void ioReadWrite(byte b[], int off, int len) throws IOException {
         ioAccessFile.write(b, off, len);
     }
+
     private int ioReadToByteBuffer(ByteBuffer dst) throws IOException {
         return this.isFileChannel.read(dst);
     }
+
     private void ioWriteHeader(long blockSize, long dataSize) throws IOException {
         ioAccessFile.writeLong(blockSize);
         ioAccessFile.writeLong(dataSize);
     }
+
     private int ioWriteToByteBuffer(ByteBuffer dst) throws IOException {
         return this.isFileChannel.write(dst);
     }
+
     private void ioExtendSize(long addSize) throws IOException {
         ioAccessFile.setLength(ioAccessFile.length() + addSize);
     }
+
     private void ioClose() throws IOException {
         this.ioAccessFile.close();
     }
+
     private void ioSyncBuffer() throws IOException {
         //
     }

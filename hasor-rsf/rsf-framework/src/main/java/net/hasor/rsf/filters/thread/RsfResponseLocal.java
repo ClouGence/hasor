@@ -16,6 +16,7 @@
 package net.hasor.rsf.filters.thread;
 import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.domain.warp.AbstractRsfResponseWarp;
+
 /**
  * {@link RsfResponse}接口包装器（当前线程绑定）。
  * @version : 2014年10月25日
@@ -23,16 +24,18 @@ import net.hasor.rsf.domain.warp.AbstractRsfResponseWarp;
  */
 public class RsfResponseLocal extends AbstractRsfResponseWarp {
     private static final ThreadLocal<RsfResponse> LOCAL_RESPONSE = new ThreadLocal<RsfResponse>();
+
     @Override
     protected final RsfResponse getRsfResponse() {
         return LOCAL_RESPONSE.get();
     }
-    //
+
     static void removeLocal() {
         if (LOCAL_RESPONSE.get() != null) {
             LOCAL_RESPONSE.remove();
         }
     }
+
     static void updateLocal(RsfResponse rsfResponse) {
         removeLocal();
         if (rsfResponse != null) {

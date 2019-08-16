@@ -49,6 +49,7 @@ package net.hasor.rsf.libs.com.caucho.hessian.io;
 import net.hasor.rsf.libs.com.caucho.hessian.HessianException;
 
 import javax.management.ObjectName;
+
 /**
  * Deserializing an ObjectName
  */
@@ -57,6 +58,7 @@ public class ObjectNameDeserializer extends AbstractStringValueDeserializer {
     public Class<?> getType() {
         return ObjectName.class;
     }
+
     @Override
     protected Object create(String value) {
         try {

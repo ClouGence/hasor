@@ -56,14 +56,17 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.*;
 import java.security.cert.X509Certificate;
+
 @SuppressWarnings("unused")
 public class X509Signature extends HessianEnvelope {
-    private String _algorithm = "HmacSHA256";
+    private String          _algorithm = "HmacSHA256";
     private X509Certificate _cert;
     private PrivateKey      _privateKey;
     private SecureRandom    _secureRandom;
+
     public X509Signature() {
     }
+
     /**
      * Sets the encryption algorithm for the content.
      */
@@ -72,48 +75,56 @@ public class X509Signature extends HessianEnvelope {
             throw new NullPointerException();
         _algorithm = algorithm;
     }
+
     /**
      * Gets the encryption algorithm for the content.
      */
     public String getAlgorithm() {
         return _algorithm;
     }
+
     /**
      * The X509 certificate to obtain the public key of the recipient.
      */
     public X509Certificate getCertificate() {
         return _cert;
     }
+
     /**
      * The X509 certificate to obtain the public key of the recipient.
      */
     public void setCertificate(X509Certificate cert) {
         _cert = cert;
     }
+
     /**
      * The key to obtain the private key of the recipient.
      */
     public PrivateKey getPrivateKey() {
         return _privateKey;
     }
+
     /**
      * The private key.
      */
     public void setPrivateKey(PrivateKey key) {
         _privateKey = key;
     }
+
     /**
      * The random number generator for the shared secrets.
      */
     public SecureRandom getSecureRandom() {
         return _secureRandom;
     }
+
     /**
      * The random number generator for the shared secrets.
      */
     public void setSecureRandom(SecureRandom random) {
         _secureRandom = random;
     }
+
     public Hessian2Output wrap(Hessian2Output out) throws IOException {
         if (_privateKey == null)
             throw new IOException("X509Signature.wrap requires a private key");
@@ -124,6 +135,7 @@ public class X509Signature extends HessianEnvelope {
         filterOut.setCloseStreamOnClose(true);
         return filterOut;
     }
+
     public Hessian2Input unwrap(Hessian2Input in) throws IOException {
         if (_cert == null)
             throw new IOException("X509Signature.unwrap requires a certificate");
@@ -133,6 +145,7 @@ public class X509Signature extends HessianEnvelope {
             throw new IOException("expected hessian Envelope method '" + getClass().getName() + "' at '" + method + "'");
         return unwrapHeaders(in);
     }
+
     public Hessian2Input unwrapHeaders(Hessian2Input in) throws IOException {
         if (_cert == null)
             throw new IOException("X509Signature.unwrap requires a certificate");
@@ -141,10 +154,12 @@ public class X509Signature extends HessianEnvelope {
         filter.setCloseStreamOnClose(true);
         return filter;
     }
+
     class SignatureOutputStream extends OutputStream {
         private Hessian2Output _out;
         private OutputStream   _bodyOut;
         private Mac            _mac;
+
         SignatureOutputStream(Hessian2Output out) throws IOException {
             try {
                 KeyGenerator keyGen = KeyGenerator.getInstance(_algorithm);
@@ -182,14 +197,17 @@ public class X509Signature extends HessianEnvelope {
                 throw new RuntimeException(e);
             }
         }
+
         public void write(int ch) throws IOException {
             _bodyOut.write(ch);
             _mac.update((byte) ch);
         }
+
         public void write(byte[] buffer, int offset, int length) throws IOException {
             _bodyOut.write(buffer, offset, length);
             _mac.update(buffer, offset, length);
         }
+
         public void close() throws IOException {
             Hessian2Output out = _out;
             _out = null;
@@ -204,11 +222,13 @@ public class X509Signature extends HessianEnvelope {
             out.close();
         }
     }
+
     class SignatureInputStream extends InputStream {
         private Hessian2Input     _in;
         private Mac               _mac;
         private InputStream       _bodyIn;
         private CipherInputStream _cipherIn;
+
         SignatureInputStream(Hessian2Input in) throws IOException {
             try {
                 _in = in;
@@ -244,6 +264,7 @@ public class X509Signature extends HessianEnvelope {
                 throw new RuntimeException(e);
             }
         }
+
         public int read() throws IOException {
             int ch = _bodyIn.read();
             if (ch < 0)
@@ -251,6 +272,7 @@ public class X509Signature extends HessianEnvelope {
             _mac.update((byte) ch);
             return ch;
         }
+
         public int read(byte[] buffer, int offset, int length) throws IOException {
             int len = _bodyIn.read(buffer, offset, length);
             if (len < 0)
@@ -258,6 +280,7 @@ public class X509Signature extends HessianEnvelope {
             _mac.update(buffer, offset, len);
             return len;
         }
+
         public void close() throws IOException {
             Hessian2Input in = _in;
             _in = null;

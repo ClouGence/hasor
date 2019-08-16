@@ -18,8 +18,10 @@
  \**********************************************************/
 package net.hasor.rsf.libs.com.hprose.io.convert;
 import java.lang.reflect.Type;
+
 public class IntConverter implements Converter<Integer> {
     public final static IntConverter instance = new IntConverter();
+
     public Integer convertTo(Object obj, Type type) {
         if (obj instanceof String) {
             return Integer.parseInt((String) obj);

@@ -16,6 +16,7 @@
 package net.hasor.rsf.domain.provider;
 import net.hasor.rsf.InterAddress;
 import net.hasor.rsf.address.AddressPool;
+
 /**
  *
  * @version : 2015年12月18日
@@ -23,18 +24,21 @@ import net.hasor.rsf.address.AddressPool;
  */
 public class PoolAddressProvider implements AddressProvider {
     private AddressPool pool;
+
     public PoolAddressProvider(AddressPool pool) {
         this.pool = pool;
     }
-    //
+
     @Override
     public InterAddress get(String serviceID, String methodName, Object[] args) {
         return this.pool.nextAddress(serviceID, methodName, args);
     }
+
     @Override
     public boolean isDistributed() {
         return true;
     }
+
     @Override
     public String toString() {
         return "AddressProvider[" + this.pool.toString() + "]";

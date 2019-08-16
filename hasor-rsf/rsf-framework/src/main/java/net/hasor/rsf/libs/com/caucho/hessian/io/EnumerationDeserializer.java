@@ -48,16 +48,19 @@
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.util.Vector;
+
 /**
  * Deserializing a JDK 1.2 Collection.
  */
 public class EnumerationDeserializer extends AbstractListDeserializer {
     private static EnumerationDeserializer _deserializer;
+
     public static EnumerationDeserializer create() {
         if (_deserializer == null)
             _deserializer = new EnumerationDeserializer();
         return _deserializer;
     }
+
     public Object readList(AbstractHessianInput in, int length) throws IOException {
         Vector<Object> list = new Vector<Object>();
         in.addRef(list);

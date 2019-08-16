@@ -29,22 +29,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * RSF 握手协议实现
  * @version : 2017年11月20日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ShakeHands extends ChannelInboundHandlerAdapter {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected     Logger         logger = LoggerFactory.getLogger(getClass());
     private final AtomicBoolean  atomicBoolean;
     private final InterAddress   bindAddress;
     private final RsfEnvironment rsfEnvironment;
+
     public ShakeHands(Connector connector) {
         this.atomicBoolean = new AtomicBoolean(false);
         this.rsfEnvironment = connector.getRsfEnvironment();
         this.bindAddress = connector.getBindAddress();
     }
-    //
+
     @Override
     public void channelActive(final ChannelHandlerContext ctx) throws Exception {
         this.atomicBoolean.set(false);
@@ -72,6 +74,7 @@ public class ShakeHands extends ChannelInboundHandlerAdapter {
         //
         super.channelActive(ctx);
     }
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (!this.atomicBoolean.get()) {

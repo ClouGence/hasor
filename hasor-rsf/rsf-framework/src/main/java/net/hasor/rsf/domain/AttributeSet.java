@@ -17,6 +17,7 @@ package net.hasor.rsf.domain;
 import net.hasor.utils.Iterators;
 
 import java.util.*;
+
 /**
  *
  * @version : 2015年1月24日
@@ -25,18 +26,22 @@ import java.util.*;
 public class AttributeSet extends OptionInfo {
     private final Map<String, Object> attributeMap = new HashMap<String, Object>();
     //
+
     /**获取属性*/
     public Object getAttribute(String attrKey) {
         return this.attributeMap.get(attrKey);
     }
+
     /**保存属性,属性会在请求完毕之后丢失。特性和 web 下的 request 属性类似。*/
     public void setAttribute(String attrKey, Object attrValue) {
         this.attributeMap.put(attrKey, attrValue);
     }
+
     /**删除属性*/
     public void removeAttribute(String attrKey) {
         this.attributeMap.remove(attrKey);
     }
+
     /**获取所有属性名。*/
     public Enumeration<String> getAttributeNames() {
         Iterator<String> keys = new ArrayList<String>(this.attributeMap.keySet()).iterator();

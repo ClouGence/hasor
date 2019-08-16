@@ -19,8 +19,10 @@
 package net.hasor.rsf.libs.com.hprose.io.convert;
 import java.lang.reflect.Type;
 import java.util.TimeZone;
+
 public class TimeZoneConverter implements Converter<TimeZone> {
     public final static TimeZoneConverter instance = new TimeZoneConverter();
+
     public TimeZone convertTo(Object obj, Type type) {
         if (obj instanceof String) {
             return TimeZone.getTimeZone((String) obj);

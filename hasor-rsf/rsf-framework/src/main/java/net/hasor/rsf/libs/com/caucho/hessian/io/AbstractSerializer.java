@@ -51,12 +51,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+
 /**
  * Serializing an object. 
  */
 abstract public class AbstractSerializer implements Serializer {
     public static final NullSerializer NULL = new NullSerializer();
     protected final     Logger         log  = LoggerFactory.getLogger(getClass());
+
     @Override
     public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
         if (out.addRef(obj)) {
@@ -88,21 +90,27 @@ abstract public class AbstractSerializer implements Serializer {
             writeInstance(obj, out);
         }
     }
+
     protected Object writeReplace(Object obj) {
         return null;
     }
+
     protected Class<?> getClass(Object obj) {
         return obj.getClass();
     }
+
     protected void writeObject10(Object obj, AbstractHessianOutput out) throws IOException {
         throw new UnsupportedOperationException(getClass().getName());
     }
+
     protected void writeDefinition20(Class<?> cl, AbstractHessianOutput out) throws IOException {
         throw new UnsupportedOperationException(getClass().getName());
     }
+
     protected void writeInstance(Object obj, AbstractHessianOutput out) throws IOException {
         throw new UnsupportedOperationException(getClass().getName());
     }
+
     /**
      * The NullSerializer exists as a marker for the factory classes so
      * they save a null result.

@@ -47,11 +47,13 @@
  */
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.util.Calendar;
+
 /**
  * Serializing a calendar.
  */
 public class CalendarSerializer extends AbstractSerializer {
     public static final Serializer SER = new CalendarSerializer();
+
     /**
      * java.util.Calendar serializes to com.caucho.hessian.io.CalendarHandle
      */

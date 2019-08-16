@@ -49,6 +49,7 @@ package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 /**
  * Abstract output stream for Hessian requests.
  *
@@ -68,12 +69,14 @@ abstract public class AbstractHessianOutput {
     // serializer factory
     protected SerializerFactory _serializerFactory;
     private   byte[]            _byteBuffer;
+
     /**
      * Sets the serializer factory.
      */
     public void setSerializerFactory(SerializerFactory factory) {
         _serializerFactory = factory;
     }
+
     /**
      * Gets the serializer factory.
      */
@@ -85,6 +88,7 @@ abstract public class AbstractHessianOutput {
         }
         return _serializerFactory;
     }
+
     /**
      * Gets the serializer factory.
      */
@@ -97,11 +101,13 @@ abstract public class AbstractHessianOutput {
         }
         return factory;
     }
+
     /**
      * Initialize the output with a new underlying stream.
      */
     public void init(OutputStream os) {
     }
+
     /**
      * Writes a complete method call.
      */
@@ -112,6 +118,7 @@ abstract public class AbstractHessianOutput {
             writeObject(args[i]);
         completeCall();
     }
+
     /**
      * Starts the method call:
      *
@@ -310,6 +317,7 @@ abstract public class AbstractHessianOutput {
      * </pre></code>
      */
     abstract public void writeByteBufferEnd(byte[] buffer, int offset, int length) throws IOException;
+
     /**
      * Writes a full output stream.
      */
@@ -332,6 +340,7 @@ abstract public class AbstractHessianOutput {
         }
         writeByteBufferEnd(buffer, 0, 0);
     }
+
     /**
      * Writes a reference.
      *
@@ -342,12 +351,14 @@ abstract public class AbstractHessianOutput {
      * @param value the integer value to write.
      */
     abstract protected void writeRef(int value) throws IOException;
+
     /**
      * Removes a reference.
      */
     public boolean removeRef(Object obj) throws IOException {
         return false;
     }
+
     /**
      * Replaces a reference from one object to another.
      */
@@ -373,11 +384,13 @@ abstract public class AbstractHessianOutput {
      * @return
      */
     abstract public int getRef(Object obj);
+
     /**
      * Resets the references for streaming.
      */
     public void resetReferences() {
     }
+
     /**
      * Writes a generic object to the output stream.
      */
@@ -420,6 +433,7 @@ abstract public class AbstractHessianOutput {
      * Writes the tail of the map to the stream.
      */
     abstract public void writeMapEnd() throws IOException;
+
     /**
      * Writes the object header to the stream (for Hessian 2.0), or a
      * Map for Hessian 1.0.  Object writers will call
@@ -437,29 +451,37 @@ abstract public class AbstractHessianOutput {
         writeMapBegin(type);
         return -2;
     }
+
     /**
      * Writes the end of the class.
      */
     public void writeClassFieldLength(int len) throws IOException {
     }
+
     /**
      * Writes the tail of the object to the stream.
      */
     public void writeObjectEnd() throws IOException {
     }
+
     public void writeReply(Object o) throws IOException {
         startReply();
         writeObject(o);
         completeReply();
     }
+
     public void startReply() throws IOException {
     }
+
     public void completeReply() throws IOException {
     }
+
     public void writeFault(String code, String message, Object detail) throws IOException {
     }
+
     public void flush() throws IOException {
     }
+
     public void close() throws IOException {
     }
 }

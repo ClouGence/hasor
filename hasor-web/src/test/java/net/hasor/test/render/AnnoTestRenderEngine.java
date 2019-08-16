@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.invoker.beans;
+package net.hasor.test.render;
 import net.hasor.web.annotation.Render;
-/**
- * @version : 2017-01-08
- * @author 赵永春 (zyc@hasor.net)
- */
-@Render(name = "html")
-public class ErrorRenderEngine {
+
+import java.util.List;
+
+@Render(name = "jspx")
+public class AnnoTestRenderEngine extends TestRenderEngine {
+    public AnnoTestRenderEngine(List<String> templateSet) {
+        super(templateSet);
+    }
 }

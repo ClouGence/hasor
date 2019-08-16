@@ -22,8 +22,10 @@ import java.io.OutputStream;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public final class AtomicIntegerArraySerializer extends ReferenceSerializer<AtomicIntegerArray> {
     public final static AtomicIntegerArraySerializer instance = new AtomicIntegerArraySerializer();
+
     @Override
     public final void serialize(Writer writer, AtomicIntegerArray array) throws IOException {
         super.serialize(writer, array);

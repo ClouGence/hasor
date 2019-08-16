@@ -24,8 +24,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.util.Calendar;
+
 public final class TimestampSerializer extends ReferenceSerializer<Timestamp> {
     public final static TimestampSerializer instance = new TimestampSerializer();
+
     @Override
     public final void serialize(Writer writer, Timestamp time) throws IOException {
         super.serialize(writer, time);

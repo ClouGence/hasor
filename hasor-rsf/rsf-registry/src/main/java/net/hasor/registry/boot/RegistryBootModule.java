@@ -24,6 +24,7 @@ import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * 注册中心启动入口。
  *
@@ -32,6 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RegistryBootModule implements RsfModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
+
     //
     @Override
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {

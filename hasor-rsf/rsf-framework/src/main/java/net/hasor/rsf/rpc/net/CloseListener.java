@@ -21,9 +21,11 @@ package net.hasor.rsf.rpc.net;
  */
 class CloseListener {
     private LinkPool linkPool;
+
     public CloseListener(LinkPool linkPool) {
         this.linkPool = linkPool;
     }
+
     public void doClose(RsfChannel rsfChannel) {
         this.linkPool.closeConnection(rsfChannel.getTarget().getHostPort());
     }

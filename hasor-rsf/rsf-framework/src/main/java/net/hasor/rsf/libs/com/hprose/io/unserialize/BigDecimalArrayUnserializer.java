@@ -23,8 +23,10 @@ import java.math.BigDecimal;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagEmpty;
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagList;
+
 public final class BigDecimalArrayUnserializer extends BaseUnserializer<BigDecimal[]> {
     public final static BigDecimalArrayUnserializer instance = new BigDecimalArrayUnserializer();
+
     @Override
     public BigDecimal[] unserialize(Reader reader, int tag, Type type) throws IOException {
         if (tag == TagList)
@@ -33,6 +35,7 @@ public final class BigDecimalArrayUnserializer extends BaseUnserializer<BigDecim
             return new BigDecimal[0];
         return super.unserialize(reader, tag, type);
     }
+
     public BigDecimal[] read(Reader reader) throws IOException {
         return read(reader, BigDecimal[].class);
     }

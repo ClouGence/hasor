@@ -17,6 +17,7 @@ package net.hasor.registry.common;
 import net.hasor.core.Settings;
 import net.hasor.registry.common.CenterMode;
 import net.hasor.rsf.InterAddress;
+
 /**
  *
  * @version : 2014年11月12日

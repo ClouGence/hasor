@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.function.Supplier;
+
 /**
  * 负责处理远程Request对象的请求调用，同时也负责将产生的Response对象写回客户端。
  * @version : 2014年11月4日
@@ -37,7 +38,7 @@ abstract class InvokerProcessing implements Runnable {
     private final RequestInfo     requestInfo;
     private final ClassLoader     classLoader;
     private final RsfEnvironment  rsfEnv;
-    //
+
     public InvokerProcessing(InterAddress target, RemoteRsfCaller rsfCaller, RequestInfo requestInfo) {
         this.target = target;
         this.rsfCaller = rsfCaller;
@@ -45,13 +46,15 @@ abstract class InvokerProcessing implements Runnable {
         this.classLoader = rsfCaller.getContext().getClassLoader();
         this.rsfEnv = rsfCaller.getContainer().getEnvironment();
     }
+
     public InterAddress getTarget() {
         return target;
     }
+
     public RemoteRsfCaller getRsfCaller() {
         return this.rsfCaller;
     }
-    //
+
     public void run() {
         //
         /*正确性检验。*/
@@ -153,6 +156,7 @@ abstract class InvokerProcessing implements Runnable {
             this.sendResponse(info);
         }
     }
+
     private int validateTimeout(int timeout, RsfBindInfo<?> bindInfo) {
         if (timeout <= 0) {
             timeout = this.rsfCaller.getContext().getSettings().getDefaultTimeout();
@@ -162,6 +166,7 @@ abstract class InvokerProcessing implements Runnable {
         }
         return timeout;
     }
+
     private void sendResponse(RsfResponseObject rsfResponse) {
         if (this.requestInfo.isMessage()) {
             return;/*如果是消息类型调用,则丢弃response*/
@@ -194,11 +199,13 @@ abstract class InvokerProcessing implements Runnable {
             this.sendResponse(info);
         }
     }
+
     protected final void sendResponse(ResponseInfo info) {
         if (this.requestInfo.isMessage()) {
             return;/*如果是消息类型调用,则丢弃response*/
         }
         doSendResponse(info);
     }
+
     protected abstract void doSendResponse(ResponseInfo info);
 }

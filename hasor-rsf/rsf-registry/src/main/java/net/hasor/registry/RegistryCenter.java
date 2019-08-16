@@ -16,6 +16,7 @@
 package net.hasor.registry;
 import net.hasor.registry.common.InstanceInfo;
 import net.hasor.registry.common.RsfCenterSettings;
+
 /**
  * 注册中心管理服务
  * @version : 2017年03月05日

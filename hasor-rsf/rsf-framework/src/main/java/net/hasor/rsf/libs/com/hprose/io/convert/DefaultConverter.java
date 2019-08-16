@@ -20,8 +20,10 @@ package net.hasor.rsf.libs.com.hprose.io.convert;
 import net.hasor.rsf.libs.com.hprose.utils.ClassUtil;
 
 import java.lang.reflect.Type;
+
 public class DefaultConverter implements Converter {
     public final static DefaultConverter instance = new DefaultConverter();
+
     public Object convertTo(Object obj, Type type) {
         if (type == null)
             return obj;

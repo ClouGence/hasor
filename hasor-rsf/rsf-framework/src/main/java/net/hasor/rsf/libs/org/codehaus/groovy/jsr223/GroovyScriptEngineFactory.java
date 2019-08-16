@@ -52,6 +52,7 @@ import javax.script.ScriptEngineFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 /**
  * A factory class conforming to JSR-223 which is used to instantiate
  * Groovy <code>ScriptEngines</code> and also exposes metadata describing
@@ -66,9 +67,11 @@ public class GroovyScriptEngineFactory implements ScriptEngineFactory {
     private static final String VERSION       = "2.0";
     private static final String SHORT_NAME    = "groovy-rsf";
     private static final String LANGUAGE_NAME = "Groovy-rsf";
+
     public String getEngineName() {
         return "Groovy Scripting Engine";
     }
+
     /**
      * Note that the scripting.dev.java.net engine had this backwards.
      * The engine version refers to this engine implementation.
@@ -78,6 +81,7 @@ public class GroovyScriptEngineFactory implements ScriptEngineFactory {
     public String getEngineVersion() {
         return VERSION;
     }
+
     /**
      * This is also different than scripting.dev.java.net which used an
      * initial lowercase.  But these are proper names and should be capitalized.
@@ -85,18 +89,23 @@ public class GroovyScriptEngineFactory implements ScriptEngineFactory {
     public String getLanguageName() {
         return LANGUAGE_NAME;
     }
+
     public String getLanguageVersion() {
         return GroovySystem.getVersion();
     }
+
     public List<String> getExtensions() {
         return EXTENSIONS;
     }
+
     public List<String> getMimeTypes() {
         return MIME_TYPES;
     }
+
     public List<String> getNames() {
         return NAMES;
     }
+
     public Object getParameter(String key) {
         if (ScriptEngine.NAME.equals(key)) {
             return SHORT_NAME;
@@ -114,9 +123,11 @@ public class GroovyScriptEngineFactory implements ScriptEngineFactory {
             throw new IllegalArgumentException("Invalid key");
         }
     }
+
     public ScriptEngine getScriptEngine() {
         return new GroovyScriptEngineImpl();
     }
+
     public String getMethodCallSyntax(String obj, String method, String... args) {
         String ret = obj + "." + method + "(";
         int len = args.length;
@@ -134,6 +145,7 @@ public class GroovyScriptEngineFactory implements ScriptEngineFactory {
         }
         return ret;
     }
+
     public String getOutputStatement(String toDisplay) {
         StringBuilder buf = new StringBuilder();
         buf.append("println(\"");
@@ -155,6 +167,7 @@ public class GroovyScriptEngineFactory implements ScriptEngineFactory {
         buf.append("\")");
         return buf.toString();
     }
+
     public String getProgram(String... statements) {
         StringBuilder ret = new StringBuilder();
         int len = statements.length;
@@ -164,6 +177,7 @@ public class GroovyScriptEngineFactory implements ScriptEngineFactory {
         }
         return ret.toString();
     }
+
     private static final List<String> NAMES;
     private static final List<String> EXTENSIONS;
     private static final List<String> MIME_TYPES;

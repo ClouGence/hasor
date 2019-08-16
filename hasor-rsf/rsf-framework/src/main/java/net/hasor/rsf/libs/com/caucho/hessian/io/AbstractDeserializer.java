@@ -47,17 +47,21 @@
  */
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
+
 /**
  * Deserializing an object. 
  */
 public class AbstractDeserializer implements Deserializer {
     public static final NullDeserializer NULL = new NullDeserializer();
+
     public Class<?> getType() {
         return Object.class;
     }
+
     public boolean isReadResolve() {
         return false;
     }
+
     public Object readObject(AbstractHessianInput in) throws IOException {
         Object obj = in.readObject();
         String className = getClass().getName();
@@ -66,12 +70,15 @@ public class AbstractDeserializer implements Deserializer {
         else
             throw error(className + ": unexpected null value");
     }
+
     public Object readList(AbstractHessianInput in, int length) throws IOException {
         throw new UnsupportedOperationException(String.valueOf(this));
     }
+
     public Object readLengthList(AbstractHessianInput in, int length) throws IOException {
         throw new UnsupportedOperationException(String.valueOf(this));
     }
+
     public Object readMap(AbstractHessianInput in) throws IOException {
         Object obj = in.readObject();
         String className = getClass().getName();
@@ -80,6 +87,7 @@ public class AbstractDeserializer implements Deserializer {
         else
             throw error(className + ": unexpected null value");
     }
+
     /**
      * Creates the field array for a class. The default
      * implementation returns a String[] array.
@@ -90,6 +98,7 @@ public class AbstractDeserializer implements Deserializer {
     public Object[] createFields(int len) {
         return new String[len];
     }
+
     /**
      * Creates a field value class. The default
      * implementation returns the String.
@@ -100,24 +109,29 @@ public class AbstractDeserializer implements Deserializer {
     public Object createField(String name) {
         return name;
     }
+
     public Object readObject(AbstractHessianInput in, String[] fieldNames) throws IOException {
         return readObject(in, (Object[]) fieldNames);
     }
+
     /**
      * Reads an object instance from the input stream
      */
     public Object readObject(AbstractHessianInput in, Object[] fields) throws IOException {
         throw new UnsupportedOperationException(toString());
     }
+
     protected HessianProtocolException error(String msg) {
         return new HessianProtocolException(msg);
     }
+
     protected String codeName(int ch) {
         if (ch < 0)
             return "end of file";
         else
             return "0x" + Integer.toHexString(ch & 0xff);
     }
+
     /**
      * The NullDeserializer exists as a marker for the factory classes so
      * they save a null result.

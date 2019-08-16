@@ -22,21 +22,25 @@ package net.hasor.rsf.domain;
 public class RsfException extends RuntimeException {
     private static final long  serialVersionUID = -2959224725202940531L;
     private              short status           = ProtocolStatus.Unknown;
-    //
+
     public RsfException(String string, Throwable e) {
         super(string, e);
     }
+
     public RsfException(short status, String string) {
         super("(" + status + ") - " + string);
         this.status = status;
     }
+
     public RsfException(short status, Throwable e) {
         this(status, e.getMessage(), e);
     }
+
     public RsfException(short status, String string, Throwable e) {
         super("(" + status + ") - " + string, e);
         this.status = status;
     }
+
     public short getStatus() {
         return this.status;
     }

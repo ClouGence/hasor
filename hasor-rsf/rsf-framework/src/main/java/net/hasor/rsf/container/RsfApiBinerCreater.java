@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
+
 /**
  *
  * @version : 2016-12-16
@@ -32,6 +33,7 @@ import java.util.List;
  */
 public class RsfApiBinerCreater implements ApiBinderCreater {
     protected Logger logger = LoggerFactory.getLogger(getClass());
+
     @Override
     public ApiBinder createBinder(ApiBinder apiBinder) throws IOException {
         Environment env = apiBinder.getEnvironment();
@@ -44,6 +46,7 @@ public class RsfApiBinerCreater implements ApiBinderCreater {
         RsfEnvironment rsfEnvironment = initAntGetEnvironment(apiBinder);
         return new InnerRsfApiBinder(apiBinder, rsfEnvironment);
     }
+
     private RsfEnvironment initAntGetEnvironment(ApiBinder apiBinder) throws IOException {
         List<BindInfo<RsfEnvironment>> rsfEnvList = apiBinder.findBindingRegister(RsfEnvironment.class);
         RsfEnvironment rsfEnv = null;

@@ -18,6 +18,7 @@ import net.hasor.registry.client.domain.ServiceID;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * 需要推送的事件对象
  * @version : 2016年3月23日
@@ -31,6 +32,7 @@ public class PushEvent {
     //
     private RsfCenterEventEnum pushEventType;   // 推送的事件类型 @see RsfCenterEvent枚举
     private String             eventBody;       // 内容体（真正推送的内容）
+
     //
     PushEvent(ServiceID serviceID, List<String> targets, RsfCenterEventEnum pushEventType) {
         this.group = serviceID.getBindGroup();
@@ -39,29 +41,37 @@ public class PushEvent {
         this.pushEventType = pushEventType;
         this.targetList = (targets != null) ? targets : new ArrayList<String>();
     }
+
     //
     //
     public String getGroup() {
         return group;
     }
+
     public String getName() {
         return name;
     }
+
     public String getVersion() {
         return version;
     }
+
     public List<String> getTargetList() {
         return targetList;
     }
+
     public RsfCenterEventEnum getPushEventType() {
         return pushEventType;
     }
+
     public String getEventBody() {
         return eventBody;
     }
+
     public void setEventBody(String eventBody) {
         this.eventBody = eventBody;
     }
+
     //
     //
     @Override

@@ -18,6 +18,7 @@ import net.hasor.core.Environment;
 import net.hasor.rsf.SerializeCoder;
 
 import java.io.*;
+
 /**
  *
  * @version : 2014年9月19日
@@ -27,7 +28,7 @@ public class JavaSerializeCoder implements SerializeCoder {
     @Override
     public void initCoder(Environment environment) {
     }
-    //
+
     public byte[] encode(Object object) throws IOException {
         ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
         ObjectOutputStream output = new ObjectOutputStream(byteArray);
@@ -36,7 +37,7 @@ public class JavaSerializeCoder implements SerializeCoder {
         output.close();
         return byteArray.toByteArray();
     }
-    //
+
     public Object decode(byte[] bytes, Class<?> returnType) throws IOException {
         try {
             ObjectInputStream objectIn = new ObjectInputStream(new ByteArrayInputStream(bytes));

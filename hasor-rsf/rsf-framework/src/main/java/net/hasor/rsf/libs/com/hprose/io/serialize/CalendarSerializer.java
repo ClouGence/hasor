@@ -24,8 +24,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.TimeZone;
+
 public final class CalendarSerializer extends ReferenceSerializer<Calendar> {
     public final static CalendarSerializer instance = new CalendarSerializer();
+
     @Override
     public final void serialize(Writer writer, Calendar calendar) throws IOException {
         super.serialize(writer, calendar);

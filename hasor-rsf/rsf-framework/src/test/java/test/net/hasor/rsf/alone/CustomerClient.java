@@ -16,9 +16,13 @@
 package test.net.hasor.rsf.alone;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.*;
+import net.hasor.rsf.InterAddress;
+import net.hasor.rsf.RsfClient;
+import net.hasor.rsf.RsfModule;
+import net.hasor.rsf.RsfResult;
 import test.net.hasor.rsf.services.EchoService;
 import test.net.hasor.rsf.services.MessageService;
+
 /**
  *
  * @version : 2014年9月12日
@@ -27,14 +31,11 @@ import test.net.hasor.rsf.services.MessageService;
 public class CustomerClient {
     public static void main(String[] args) throws Throwable {
         //Client
-        AppContext clientContext = Hasor.createAppContext("/alone/customer-config.xml", new RsfModule() {
-            @Override
-            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-                InterAddress localRsf = new InterAddress("rsf://127.0.0.1:2180/default");
-                InterAddress localHprose = null;// new InterAddress("http://127.0.0.1:2181/default");
-                apiBinder.rsfService(EchoService.class).bindAddress(localRsf, localHprose).register();
-                apiBinder.rsfService(MessageService.class).bindAddress(localRsf, localHprose).register();
-            }
+        AppContext clientContext = Hasor.create().mainSettingWith("/alone/customer-config.xml").build((RsfModule) apiBinder -> {
+            InterAddress localRsf = new InterAddress("rsf://127.0.0.1:2180/default");
+            InterAddress localHprose = null;// new InterAddress("http://127.0.0.1:2181/default");
+            apiBinder.rsfService(EchoService.class).bindAddress(localRsf, localHprose).register();
+            apiBinder.rsfService(MessageService.class).bindAddress(localRsf, localHprose).register();
         });
         System.out.println("server start.");
         //

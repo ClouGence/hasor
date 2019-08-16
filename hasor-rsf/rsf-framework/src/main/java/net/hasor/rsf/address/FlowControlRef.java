@@ -26,24 +26,26 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * 方便引用切换。
  * @version : 2014年9月12日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class FlowControlRef {
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
-    private static RuleParser ruleParser;
-    public String            flowControlScript = null;
-    public UnitFlowControl   unitFlowControl   = null; //单元规则
-    public RandomFlowControl randomFlowControl = null; //地址选取规则
-    public SpeedFlowControl  speedFlowControl  = null; //QoS速率规则
-    //
+    protected final Logger            logger            = LoggerFactory.getLogger(getClass());
+    private static  RuleParser        ruleParser;
+    public          String            flowControlScript = null;
+    public          UnitFlowControl   unitFlowControl   = null; //单元规则
+    public          RandomFlowControl randomFlowControl = null; //地址选取规则
+    public          SpeedFlowControl  speedFlowControl  = null; //QoS速率规则
+
     private FlowControlRef(RsfEnvironment rsfEnvironment) {
         if (ruleParser == null) {
             ruleParser = new RuleParser(rsfEnvironment);
         }
     }
+
     /**解析路由规则*/
     public void updateFlowControl(String flowControl) {
         if (StringUtils.isBlank(flowControl)) {
@@ -97,8 +99,7 @@ public class FlowControlRef {
         }
         return;
     }
-    //
-    //
+
     public static final FlowControlRef newRef(RsfEnvironment rsfEnvironment, FlowControlRef ref) {
         FlowControlRef newRef = defaultRef(rsfEnvironment);
         if (!StringUtils.isBlank(ref.flowControlScript)) {
@@ -115,6 +116,7 @@ public class FlowControlRef {
         }
         return newRef;
     }
+
     public static final FlowControlRef defaultRef(RsfEnvironment rsfEnvironment) {
         FlowControlRef flowControlRef = new FlowControlRef(rsfEnvironment);
         flowControlRef.randomFlowControl = new RandomFlowControl();

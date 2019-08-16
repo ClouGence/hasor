@@ -21,8 +21,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+
 public final class IntArrayUnserializer extends BaseUnserializer<int[]> {
     public final static IntArrayUnserializer instance = new IntArrayUnserializer();
+
     @Override
     public int[] unserialize(Reader reader, int tag, Type type) throws IOException {
         if (tag == HproseTags.TagList)
@@ -31,6 +33,7 @@ public final class IntArrayUnserializer extends BaseUnserializer<int[]> {
             return new int[0];
         return super.unserialize(reader, tag, type);
     }
+
     public int[] read(Reader reader) throws IOException {
         return read(reader, int[].class);
     }

@@ -22,6 +22,7 @@ import net.hasor.utils.MatchUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 /**
  * 单元流量控制规则，用来控制跨单元调用。<p>
  * <pre>例：
@@ -38,20 +39,22 @@ import java.util.List;
 public class UnitFlowControl extends AbstractRule {
     private float        threshold;
     private List<String> exclusions;
-    //
+
     public void paserControl(Settings settings) {
         this.enable(settings.getBoolean("flowControl.enable"));
         this.threshold = settings.getFloat("flowControl.threshold");
         String exclusions = settings.getString("flowControl.exclusions");
         this.exclusions = Arrays.asList(exclusions.split(","));
     }
+
     public float getThreshold() {
         return this.threshold;
     }
+
     public List<String> getExclusions() {
         return this.exclusions;
     }
-    //
+
     /**
      * 是否启用本地机房优先规则
      * @param allAmount 所有可用地址数量
@@ -67,13 +70,13 @@ public class UnitFlowControl extends AbstractRule {
         }
         return false;
     }
-    //
+
     /**筛选本机房地址*/
     public List<InterAddress> siftUnitAddress(String unitName, List<InterAddress> address) {
         if (address == null || address.isEmpty())
             return null;
         //
-        List<InterAddress> local = new ArrayList<InterAddress>();
+        List<InterAddress> local = new ArrayList<>();
         List<String> exclusions = getExclusions();
         for (InterAddress inter : address) {
             boolean appendMark = false;

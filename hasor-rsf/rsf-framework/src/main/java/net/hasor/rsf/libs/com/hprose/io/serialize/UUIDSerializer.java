@@ -22,8 +22,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.UUID;
+
 public final class UUIDSerializer extends ReferenceSerializer<UUID> {
     public final static UUIDSerializer instance = new UUIDSerializer();
+
     @Override
     public final void serialize(Writer writer, UUID uuid) throws IOException {
         super.serialize(writer, uuid);

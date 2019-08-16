@@ -48,6 +48,7 @@
 package net.hasor.rsf.libs.com.caucho.hessian.util;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReferenceArray;
+
 /**
  * FreeList provides a simple class to manage free objects.  This is useful
  * for large data structures that otherwise would gobble up huge GC time.
@@ -57,7 +58,8 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
  */
 public final class HessianFreeList<T> {
     private final AtomicReferenceArray<T> _freeStack;
-    private final AtomicInteger _top = new AtomicInteger();
+    private final AtomicInteger           _top = new AtomicInteger();
+
     /**
      * Create a new free list.
      *
@@ -66,6 +68,7 @@ public final class HessianFreeList<T> {
     public HessianFreeList(int size) {
         _freeStack = new AtomicReferenceArray<T>(size);
     }
+
     /**
      * Try to get an object from the free list.  Returns null if the free list
      * is empty.
@@ -79,6 +82,7 @@ public final class HessianFreeList<T> {
         else
             return null;
     }
+
     /**
      * Frees the object.  If the free list is full, the object will be garbage
      * collected.
@@ -94,9 +98,11 @@ public final class HessianFreeList<T> {
         } else
             return false;
     }
+
     public boolean allowFree(T obj) {
         return _top.get() < _freeStack.length();
     }
+
     /**
      * Frees the object.  If the free list is full, the object will be garbage
      * collected.
@@ -108,6 +114,7 @@ public final class HessianFreeList<T> {
             throw new IllegalStateException("tried to free object twice: " + obj);
         free(obj);
     }
+
     /**
      * Debugging to see if the object has already been freed.
      */

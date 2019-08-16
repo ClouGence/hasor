@@ -25,13 +25,14 @@ import net.hasor.rsf.RsfUpdater;
 import net.hasor.rsf.domain.RsfCenterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * 注册中心数据接收器，负责更新注册中心推送过来的配置信息。
  * @version : 2016年2月18日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RegistryClientReceiver implements RsfCenterListener {
-    protected Logger logger = LoggerFactory.getLogger(RegistryConstants.LoggerName_CenterReceiver);
+    protected            Logger       logger = LoggerFactory.getLogger(RegistryConstants.LoggerName_CenterReceiver);
     @Inject
     private              RsfContext   rsfContext;
     @Inject

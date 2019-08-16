@@ -17,6 +17,7 @@ package net.hasor.rsf.protocol.rsf.v1;
 import io.netty.buffer.ByteBuf;
 import net.hasor.rsf.utils.IOUtils;
 import net.hasor.rsf.utils.ProtocolUtils;
+
 /**
  * 池上限为 0~4095条数据，单条数据最大约16MB。
  * 下面是数据格式：<pre>
@@ -38,10 +39,11 @@ public class PoolBlock {
     public static       short   PoolMaxSize = 0x0FFF;     //池上限为 0~4095条
     private             int[]   poolMap     = {};
     private             ByteBuf poolData    = null;
-    //
+
     public PoolBlock() {
         this.poolData = ProtocolUtils.newByteBuf();
     }
+
     public void fillFrom(ByteBuf formData) {
         if (formData == null) {
             return;
@@ -54,6 +56,7 @@ public class PoolBlock {
         }
         this.poolData.writeBytes(formData);
     }
+
     public void fillTo(ByteBuf toData) {
         if (toData == null)
             return;
@@ -64,7 +67,7 @@ public class PoolBlock {
         }
         toData.writeBytes(this.poolData);
     }
-    //
+
     /**添加请求参数。*/
     public short pushData(byte[] dataArray) {
         if (this.poolMap.length >= PoolMaxSize) {
@@ -78,11 +81,12 @@ public class PoolBlock {
         }
         return (short) (this.poolMap.length - 1);
     }
-    //
+
     /**池长度*/
     public int getPoolLength() {
         return this.poolMap.length;
     }
+
     /**池大小*/
     public int getPoolSize() {
         int rawSize = 0;
@@ -94,10 +98,12 @@ public class PoolBlock {
         }
         return rawSize;
     }
+
     /**池数据*/
     public int[] getPoolData() {
         return this.poolMap;
     }
+
     /**内容所处起始位置*/
     public byte[] readPool(short attrIndex) {
         if (this.poolMap[attrIndex] == NULL_MARK) {
@@ -119,10 +125,12 @@ public class PoolBlock {
         this.poolData.getBytes(rawIndex, data, 0, readLength);
         return data;
     }
+
     public void release() {
         IOUtils.releaseByteBuf(this.poolData);
         this.poolMap = null;
     }
+
     @Override
     protected void finalize() throws Throwable {
         this.release();

@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+
 /**
  * 注册中心启动入口。
  *
@@ -35,14 +36,17 @@ import java.io.IOException;
 public class RegistryServerModule implements RsfModule, LifeModule {
     protected Logger         logger         = LoggerFactory.getLogger(getClass());
     protected ServerSettings serverSettings = null;
+
     public RegistryServerModule(RsfEnvironment rsfEnvironment, RsfCenterSettings settings) throws ClassNotFoundException {
         this.serverSettings = new ServerSettings(rsfEnvironment, settings);
     }
+
     //
     @Override
     public void loadModule(RsfApiBinder apiBinder) throws Throwable {
         apiBinder.bindType(ServerSettings.class).toInstance(this.serverSettings);
     }
+
     public final void onStart(AppContext appContext) throws Throwable {
         RsfContext rsfContext = appContext.getInstance(RsfContext.class);
         rsfContext.getAppContext().getInstance(AuthQuery.class);
@@ -53,6 +57,7 @@ public class RegistryServerModule implements RsfModule, LifeModule {
         rsfContext.online();    //切换上线，开始提供服务
         this.logger.info("rsfCenter online.");
     }
+
     /** Center启动 */
     protected void doStartCenter(RsfContext rsfContext) throws IOException {
         //
@@ -64,6 +69,7 @@ public class RegistryServerModule implements RsfModule, LifeModule {
                 .bindFilter("VerificationFilter", RsfCenterServerVerifyFilter.class)//
                 .register();
     }
+
     /** Center停止 */
     public void onStop(AppContext appContext) throws Throwable {
         /**/

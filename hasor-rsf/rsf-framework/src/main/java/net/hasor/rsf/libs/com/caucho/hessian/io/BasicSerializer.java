@@ -48,6 +48,7 @@
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.util.Date;
+
 /**
  * Serializing an object for known object types.
  */
@@ -82,10 +83,12 @@ public class BasicSerializer extends AbstractSerializer implements ObjectSeriali
     private static final BasicSerializer BYTE_HANDLE_SERIALIZER  = new BasicSerializer(BYTE_HANDLE);
     private static final BasicSerializer SHORT_HANDLE_SERIALIZER = new BasicSerializer(SHORT_HANDLE);
     private static final BasicSerializer FLOAT_HANDLE_SERIALIZER = new BasicSerializer(FLOAT_HANDLE);
-    private int _code;
+    private              int             _code;
+
     public BasicSerializer(int code) {
         _code = code;
     }
+
     public Serializer getObjectSerializer() {
         switch (_code) {
         case BYTE:
@@ -98,6 +101,7 @@ public class BasicSerializer extends AbstractSerializer implements ObjectSeriali
             return this;
         }
     }
+
     public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
         switch (_code) {
         case BOOLEAN:

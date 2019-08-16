@@ -30,13 +30,15 @@ import net.hasor.rsf.libs.com.hprose.utils.ClassUtil;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+
 public final class PropertyAccessor implements MemberAccessor {
-    private final static Object[] nullArgs = new Object[0];
-    private final Method       getter;
-    private final Method       setter;
-    private final Type         propType;
-    private final Serializer   serializer;
-    private final Unserializer unserializer;
+    private final static Object[]     nullArgs = new Object[0];
+    private final        Method       getter;
+    private final        Method       setter;
+    private final        Type         propType;
+    private final        Serializer   serializer;
+    private final        Unserializer unserializer;
+
     public PropertyAccessor(Type type, Method getter, Method setter) {
         getter.setAccessible(true);
         setter.setAccessible(true);
@@ -47,6 +49,7 @@ public final class PropertyAccessor implements MemberAccessor {
         serializer = SerializerFactory.get(cls);
         unserializer = UnserializerFactory.get(cls);
     }
+
     @Override
     @SuppressWarnings({ "unchecked" })
     public void serialize(Writer writer, Object obj) throws IOException {
@@ -62,6 +65,7 @@ public final class PropertyAccessor implements MemberAccessor {
             serializer.write(writer, value);
         }
     }
+
     @Override
     public void unserialize(Reader reader, Object obj) throws IOException {
         Object value = unserializer.read(reader, reader.stream.read(), propType);

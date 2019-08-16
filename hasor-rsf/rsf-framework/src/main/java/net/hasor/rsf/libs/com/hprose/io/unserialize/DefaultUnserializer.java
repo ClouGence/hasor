@@ -21,8 +21,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+
 public final class DefaultUnserializer extends BaseUnserializer {
     public final static DefaultUnserializer instance = new DefaultUnserializer();
+
     @Override
     public Object unserialize(Reader reader, int tag, Type type) throws IOException {
         switch (tag) {
@@ -83,6 +85,7 @@ public final class DefaultUnserializer extends BaseUnserializer {
         }
         return super.unserialize(reader, tag, type);
     }
+
     public Object read(Reader reader) throws IOException {
         return read(reader, Object.class);
     }

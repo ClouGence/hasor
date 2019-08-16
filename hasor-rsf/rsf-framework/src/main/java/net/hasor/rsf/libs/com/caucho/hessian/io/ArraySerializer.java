@@ -47,6 +47,7 @@
  */
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
+
 /**
  * Serializing a Java array.
  */
@@ -61,6 +62,7 @@ public class ArraySerializer extends AbstractSerializer {
         if (hasEnd)
             out.writeListEnd();
     }
+
     /**
      * Returns the &lt;type> name for a &lt;list>.
      */

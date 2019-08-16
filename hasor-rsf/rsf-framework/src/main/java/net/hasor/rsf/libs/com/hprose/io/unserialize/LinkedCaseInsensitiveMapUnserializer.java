@@ -23,8 +23,10 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public final class LinkedCaseInsensitiveMapUnserializer extends BaseUnserializer<LinkedCaseInsensitiveMap> {
     public final static LinkedCaseInsensitiveMapUnserializer instance = new LinkedCaseInsensitiveMapUnserializer();
+
     @Override
     public LinkedCaseInsensitiveMap unserialize(Reader reader, int tag, Type type) throws IOException {
         switch (tag) {
@@ -37,6 +39,7 @@ public final class LinkedCaseInsensitiveMapUnserializer extends BaseUnserializer
         }
         return super.unserialize(reader, tag, type);
     }
+
     public LinkedCaseInsensitiveMap read(Reader reader) throws IOException {
         return read(reader, LinkedCaseInsensitiveMap.class);
     }

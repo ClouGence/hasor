@@ -25,8 +25,10 @@ import java.util.Locale;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagEmpty;
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagString;
+
 public final class LocaleUnserializer extends BaseUnserializer<Locale> {
     public final static LocaleUnserializer instance = new LocaleUnserializer();
+
     @Override
     public Locale unserialize(Reader reader, int tag, Type type) throws IOException {
         if (tag == TagEmpty)
@@ -37,6 +39,7 @@ public final class LocaleUnserializer extends BaseUnserializer<Locale> {
         }
         return super.unserialize(reader, tag, type);
     }
+
     public Locale read(Reader reader) throws IOException {
         return read(reader, Locale.class);
     }

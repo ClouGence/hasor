@@ -21,22 +21,25 @@ package net.hasor.rsf.address;
  */
 public enum RouteTypeEnum {
     /***/
-    ServiceLevel(1, "服务级"), /***/
-    MethodLevel(2, "方法级"), /***/
-    ArgsLevel(3, "/参数级"),;
-    //
-    //
+    ServiceLevel(1, "服务级"),
+    /***/
+    MethodLevel(2, "方法级"),
+    /***/
+    ArgsLevel(3, "/参数级"),
+    ;
     private int    type;
     private String desc;
+
     RouteTypeEnum(int type, String desc) {
         this.type = type;
         this.desc = desc;
     }
+
     @Override
     public String toString() {
         return "Enum[type = " + this.type + " , desc = " + this.desc + "]";
     }
-    //
+
     static boolean updateScript(RouteTypeEnum routeType, String script, RuleRef ref) {
         /*  */
         if (RouteTypeEnum.ServiceLevel.equals(routeType)) {

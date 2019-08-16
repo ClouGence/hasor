@@ -17,12 +17,12 @@ package net.hasor.rsf.rpc.net;
 import net.hasor.core.AppContext;
 import net.hasor.rsf.RsfEnvironment;
 import net.hasor.rsf.RsfSettings;
-import net.hasor.rsf.domain.OptionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
+
 /**
  * RSF网络服务，并提供数据传出、传入，以及端口监听服务。
  * tips:支持多协议
@@ -35,26 +35,29 @@ public class RsfNetManager {
     private final ReceivedAdapter           receivedAdapter;    // 负责汇总所有来自底层网络的 RequestInfo、ResponseInfo消息
     private final Map<String, Connector>    protocolConnector;  // 不同协议都有自己独立的‘RPC协议连接器’
     private final Map<String, List<String>> sechmaMapping;      // 不同协议都有自己独立的‘RPC协议连接器’
-    //
+
     public RsfNetManager(RsfEnvironment rsfEnvironment, ReceivedAdapter receivedAdapter) {
-        this.protocolConnector = new HashMap<String, Connector>();
-        this.sechmaMapping = new HashMap<String, List<String>>();
+        this.protocolConnector = new HashMap<>();
+        this.sechmaMapping = new HashMap<>();
         this.rsfEnvironment = rsfEnvironment;
         this.receivedAdapter = receivedAdapter;
     }
-    //
+
     /** 环境对象 */
     public RsfEnvironment getRsfEnvironment() {
         return this.rsfEnvironment;
     }
+
     /**获取运行着哪些协议*/
     public Set<String> runProtocols() {
         return Collections.unmodifiableSet(this.protocolConnector.keySet());
     }
+
     /** 查找RPC连接器。 */
     public Connector findConnector(String protocol) {
         return this.protocolConnector.get(protocol);
     }
+
     public Connector findConnectorBySechma(String sechma) {
         if (!this.sechmaMapping.containsKey(sechma)) {
             return null;
@@ -62,7 +65,7 @@ public class RsfNetManager {
         List<String> protocolNames = this.sechmaMapping.get(sechma);
         return this.findConnector(protocolNames.get(0));
     }
-    //
+
     /** 启动RSF上配置的所有连接器(传入方向)。*/
     public void start(AppContext appContext) {
         //
@@ -76,7 +79,7 @@ public class RsfNetManager {
             String sechmaName = settings.getString(configKey + ".protocol");
             List<String> sechmaMapping = this.sechmaMapping.get(sechmaName);
             if (sechmaMapping == null) {
-                sechmaMapping = new ArrayList<String>();
+                sechmaMapping = new ArrayList<>();
                 this.sechmaMapping.put(sechmaName, sechmaMapping);
             }
             if (sechmaMapping.contains(protocol)) {
@@ -90,17 +93,7 @@ public class RsfNetManager {
                 String connectorFactory = settings.getString(configKey + ".factory");
                 Class<?> factoryClass = appContext.getClassLoader().loadClass(connectorFactory);
                 ConnectorFactory factory = (ConnectorFactory) appContext.getInstance(factoryClass);
-                Connector connector = factory.create(protocol, appContext, new ReceivedListener() {
-                    @Override
-                    public void receivedMessage(RsfChannel rsfChannel, OptionInfo info) {
-                        receivedAdapter.receivedMessage(rsfChannel, info);
-                    }
-                }, new ConnectionAccepter() {
-                    @Override
-                    public boolean acceptIn(RsfChannel rsfChannel) throws IOException {
-                        return acceptChannel(rsfChannel);
-                    }
-                });
+                Connector connector = factory.create(protocol, appContext, receivedAdapter, this::acceptChannel);
                 //
                 if (connector == null) {
                     this.logger.info("connector[{}] disable, connector is null.", protocol);
@@ -125,10 +118,11 @@ public class RsfNetManager {
             }
         }
     }
-    //
+
     protected boolean acceptChannel(RsfChannel rsfChannel) throws IOException {
         return true;
     }
+
     /** 销毁 */
     public void shutdown() {
         logger.info("rsfNetManager, shutdownGracefully.");

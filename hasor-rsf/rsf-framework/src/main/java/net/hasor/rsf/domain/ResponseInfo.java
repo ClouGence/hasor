@@ -28,21 +28,26 @@ public class ResponseInfo extends OptionInfo {
     private Object returnData    = null; //返回数据
     //
     //
+
     /**获取请求ID。*/
     public long getRequestID() {
         return this.requestID;
     }
+
     /**设置请求ID。*/
     public void setRequestID(long requestID) {
         this.requestID = requestID;
     }
+
     public void setReceiveTime(long receiveTime) {
         this.receiveTime = receiveTime;
     }
+
     /**数据包到达时间*/
     public long getReceiveTime() {
         return this.receiveTime;
     }
+
     /**
      * 获取响应状态
      * @see net.hasor.rsf.domain.ProtocolStatus
@@ -50,6 +55,7 @@ public class ResponseInfo extends OptionInfo {
     public short getStatus() {
         return this.status;
     }
+
     /**
      * 设置响应状态
      * @see net.hasor.rsf.domain.ProtocolStatus
@@ -57,26 +63,32 @@ public class ResponseInfo extends OptionInfo {
     public void setStatus(short status) {
         this.status = status;
     }
+
     /**获取序列化类型*/
     public String getSerializeType() {
         return this.serializeType;
     }
+
     /**设置序列化类型*/
     public void setSerializeType(String serializeType) {
         this.serializeType = serializeType;
     }
+
     /**获取返回数据类型*/
     public String getReturnType() {
         return returnType;
     }
+
     /**设置返回数据类型*/
     public void setReturnType(String returnType) {
         this.returnType = returnType;
     }
+
     /**获取返回值数据*/
     public Object getReturnData() {
         return this.returnData;
     }
+
     /**设置返回值数据*/
     public void setReturnData(Object returnData) {
         this.returnData = returnData;

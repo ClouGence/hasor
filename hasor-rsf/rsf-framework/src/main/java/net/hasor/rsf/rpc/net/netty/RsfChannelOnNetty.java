@@ -22,6 +22,7 @@ import net.hasor.rsf.domain.*;
 import net.hasor.rsf.rpc.net.LinkType;
 import net.hasor.rsf.rpc.net.RsfChannel;
 import net.hasor.rsf.rpc.net.SendCallBack;
+
 /**
  * 封装Netty网络连接。
  * @version : 2015年12月8日
@@ -29,16 +30,17 @@ import net.hasor.rsf.rpc.net.SendCallBack;
  */
 class RsfChannelOnNetty extends RsfChannel {
     private final Channel channel;
-    //
+
     RsfChannelOnNetty(InterAddress target, Channel channel, LinkType linkType) {
         super(target, linkType);
         this.channel = channel;
     }
-    //
+
     @Override
     public boolean isActive() {
         return this.channel.isActive();
     }
+
     @Override
     protected boolean equalsSameAs(RsfChannel rsfChannel) {
         if (rsfChannel instanceof RsfChannelOnNetty) {
@@ -46,35 +48,35 @@ class RsfChannelOnNetty extends RsfChannel {
         }
         return false;
     }
+
     @Override
     protected void closeChannel() {
         this.channel.close();
     }
+
     @Override
     protected void sendData(OptionInfo sendData, final SendCallBack sendCallBack) {
         final ChannelFuture future = this.channel.writeAndFlush(sendData);
         final long requestID = (sendData instanceof RequestInfo) ? ((RequestInfo) sendData).getRequestID() ://
                 (sendData instanceof ResponseInfo) ? ((ResponseInfo) sendData).getRequestID() : 0;
         /*为sendData添加侦听器，负责处理意外情况。*/
-        future.addListener(new ChannelFutureListener() {
-            public void operationComplete(ChannelFuture future) throws Exception {
-                if (future.isSuccess()) {
-                    if (sendCallBack != null) {
-                        sendCallBack.complete(requestID);
-                    }
-                    return;
+        future.addListener((ChannelFutureListener) future1 -> {
+            if (future1.isSuccess()) {
+                if (sendCallBack != null) {
+                    sendCallBack.complete(requestID);
                 }
-                RsfException e = null;
-                if (future.isCancelled()) {
-                    //用户取消
-                    if (sendCallBack != null) {
-                        sendCallBack.failed(requestID, new RsfException(ProtocolStatus.Unknown, "user Cancelled."));
-                    }
-                } else if (!future.isSuccess()) {
-                    //异常状况
-                    if (sendCallBack != null) {
-                        sendCallBack.failed(requestID, future.cause());
-                    }
+                return;
+            }
+            RsfException e = null;
+            if (future1.isCancelled()) {
+                //用户取消
+                if (sendCallBack != null) {
+                    sendCallBack.failed(requestID, new RsfException(ProtocolStatus.Unknown, "user Cancelled."));
+                }
+            } else if (!future1.isSuccess()) {
+                //异常状况
+                if (sendCallBack != null) {
+                    sendCallBack.failed(requestID, future1.cause());
                 }
             }
         });

@@ -21,8 +21,10 @@ import net.hasor.rsf.libs.com.hprose.utils.DateTime;
 
 import java.lang.reflect.Type;
 import java.sql.Time;
+
 public class TimeConverter implements Converter<Time> {
     public final static TimeConverter instance = new TimeConverter();
+
     public Time convertTo(Object obj, Type type) {
         if (obj instanceof DateTime) {
             return ((DateTime) obj).toTime();

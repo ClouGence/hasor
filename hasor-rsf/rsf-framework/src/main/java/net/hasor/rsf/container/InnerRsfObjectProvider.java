@@ -15,11 +15,12 @@
  */
 package net.hasor.rsf.container;
 import net.hasor.core.AppContext;
-import net.hasor.core.AppContextAware;
+import net.hasor.core.spi.AppContextAware;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 
 import java.util.function.Supplier;
+
 /**
  * RsfFilter的{@link Supplier}封装形式。
  * @version : 2014年7月8日
@@ -28,14 +29,16 @@ import java.util.function.Supplier;
 class InnerRsfObjectProvider<T> implements Supplier<T>, AppContextAware {
     private RsfBindInfo<T> bindInfo;
     private AppContext     appContext;
-    //
+
     public InnerRsfObjectProvider(RsfBindInfo<T> bindInfo) {
         this.bindInfo = bindInfo;
     }
+
     @Override
     public void setAppContext(AppContext appContext) {
         this.appContext = appContext;
     }
+
     @Override
     public T get() {
         RsfContext rsfCenter = this.appContext.getInstance(RsfContext.class);

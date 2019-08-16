@@ -25,12 +25,15 @@ import net.hasor.rsf.libs.com.hprose.io.unserialize.Reader;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+
 public final class BoolFieldAccessor implements MemberAccessor {
     private final long offset;
+
     public BoolFieldAccessor(Field accessor) {
         accessor.setAccessible(true);
         offset = Accessors.unsafe.objectFieldOffset(accessor);
     }
+
     @Override
     public final void serialize(Writer writer, Object obj) throws IOException {
         boolean value;
@@ -41,6 +44,7 @@ public final class BoolFieldAccessor implements MemberAccessor {
         }
         ValueWriter.write(writer.stream, value);
     }
+
     @Override
     public final void unserialize(Reader reader, Object obj) throws IOException {
         boolean value = BooleanUnserializer.instance.read(reader);

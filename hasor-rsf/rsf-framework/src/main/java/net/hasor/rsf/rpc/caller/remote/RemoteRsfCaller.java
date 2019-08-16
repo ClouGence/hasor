@@ -29,6 +29,7 @@ import net.hasor.rsf.utils.ProtocolUtils;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.RejectedExecutionException;
+
 /**
  * 扩展{@link RsfCaller}，用来支持远程机器发来的调用请求。
  * @version : 2015年12月8日
@@ -37,7 +38,7 @@ import java.util.concurrent.RejectedExecutionException;
 public class RemoteRsfCaller extends RsfCaller {
     private final ExecutesManager executesManager;
     private final SenderListener  senderListener;
-    // 
+
     public RemoteRsfCaller(RsfContext rsfContext, RsfBeanContainer rsfBeanContainer, SenderListener senderListener) {
         super(rsfContext, rsfBeanContainer, senderListener);
         //
@@ -49,11 +50,13 @@ public class RemoteRsfCaller extends RsfCaller {
         long keepAliveTime = rsfSettings.getQueueKeepAliveTime();
         this.executesManager = new ExecutesManager(minCorePoolSize, maxCorePoolSize, queueSize, keepAliveTime, rsfContext.getClassLoader());
     }
+
     /**销毁。*/
     public void shutdown() {
         logger.info("rsfCaller -> shutdown.");
         this.executesManager.shutdown();
     }
+
     /**
      * 收到Request请求，并将该请求安排进队列，由队列安排方法调用。
      * @param target 目标调用地址。
@@ -81,7 +84,7 @@ public class RemoteRsfCaller extends RsfCaller {
             this.senderListener.sendResponse(target, resp, null);
         }
     }
-    //
+
     /**获取消息监听器。*/
     SenderListener getSenderListener() {
         return this.senderListener;

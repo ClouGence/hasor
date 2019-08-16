@@ -19,8 +19,10 @@
 package net.hasor.rsf.libs.com.hprose.io.convert;
 import java.lang.reflect.Type;
 import java.util.UUID;
+
 public class UUIDConverter implements Converter<UUID> {
     public final static UUIDConverter instance = new UUIDConverter();
+
     public UUID convertTo(Object obj, Type type) {
         if (obj instanceof String) {
             return UUID.fromString((String) obj);

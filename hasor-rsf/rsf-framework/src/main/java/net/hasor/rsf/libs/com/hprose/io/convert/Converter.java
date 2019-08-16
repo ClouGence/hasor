@@ -18,6 +18,7 @@
  \**********************************************************/
 package net.hasor.rsf.libs.com.hprose.io.convert;
 import java.lang.reflect.Type;
+
 public interface Converter<T> {
     T convertTo(Object obj, Type type);
 }

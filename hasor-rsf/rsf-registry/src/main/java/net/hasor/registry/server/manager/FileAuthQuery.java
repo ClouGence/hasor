@@ -40,6 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 /**
  * 接口授权查询。
  * @version : 2016年2月22日
@@ -52,6 +53,7 @@ public class FileAuthQuery implements AuthQuery {
     @Inject
     private ServerSettings        rsfCenterSettings;
     private Map<String, AuthBean> keyPool = new HashMap<String, AuthBean>();
+
     //
     @Init
     public void init() throws IOException, XMLStreamException {
@@ -103,6 +105,7 @@ public class FileAuthQuery implements AuthQuery {
             throw new IOException(e);
         }
     }
+
     //
     @Override
     public Result<Boolean> checkKeySecret(AuthBean authInfo) {
@@ -125,6 +128,7 @@ public class FileAuthQuery implements AuthQuery {
         //
         return result;
     }
+
     @Override
     public Result<Boolean> checkPublish(AuthBean authInfo, ServiceID serviceInfo, RsfServiceType serviceType) {
         return this.checkKeySecret(authInfo);

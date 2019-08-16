@@ -17,13 +17,14 @@ package net.hasor.rsf.tconsole;
 import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfContext;
 import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.launcher.CmdRequest;
+import net.hasor.tconsole.CommandRequest;
 import net.hasor.utils.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+
 /**
  * 流量控制规则查看和更新指令。
  * @version : 2016年4月3日
@@ -31,7 +32,6 @@ import java.io.StringWriter;
  */
 @Singleton
 public class FlowRsfInstruct implements CommandExecutor {
-    //
     @Override
     public String helpInfo() {
         return "service flowControl show/update.\r\n"//
@@ -40,8 +40,9 @@ public class FlowRsfInstruct implements CommandExecutor {
                 + " - flow -u XXXX     (update service flowControl info of XXXX.)\r\n"//
                 + " - flow -c XXXX     (clean service flowControl info of XXXX.)";
     }
+
     @Override
-    public boolean inputMultiLine(CmdRequest request) {
+    public boolean inputMultiLine(CommandRequest request) {
         String[] args = request.getRequestArgs();
         if (args != null && args.length > 0) {
             String mode = args[0];
@@ -49,8 +50,9 @@ public class FlowRsfInstruct implements CommandExecutor {
         }
         return false;
     }
+
     @Override
-    public String doCommand(CmdRequest request) throws Throwable {
+    public String doCommand(CommandRequest request) throws Throwable {
         RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();
@@ -82,8 +84,7 @@ public class FlowRsfInstruct implements CommandExecutor {
         }
         return sw.toString();
     }
-    //
-    //
+
     private void showFlowControl(StringWriter sw, String nameArg, RsfContext rsfContext) throws IOException {
         //1.body
         String body = rsfContext.getUpdater().flowControl(nameArg);
@@ -101,8 +102,8 @@ public class FlowRsfInstruct implements CommandExecutor {
             }
         }
     }
-    //
-    private void updateFlowControl(StringWriter sw, String nameArg, CmdRequest request, RsfContext rsfContext) {
+
+    private void updateFlowControl(StringWriter sw, String nameArg, CommandRequest request, RsfContext rsfContext) {
         String scriptBody = request.getRequestBody();
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
@@ -113,8 +114,8 @@ public class FlowRsfInstruct implements CommandExecutor {
             return;
         }
     }
-    //
-    private void cleanFlowControl(StringWriter sw, String nameArg, CmdRequest request, RsfContext rsfContext) {
+
+    private void cleanFlowControl(StringWriter sw, String nameArg, CommandRequest request, RsfContext rsfContext) {
         if (rsfContext.getServiceInfo(nameArg) == null) {
             sw.write("[ERROR] serviceID is not exist.");
             return;

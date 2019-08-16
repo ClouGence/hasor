@@ -22,8 +22,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
+
 public final class CalendarArraySerializer extends ReferenceSerializer<Calendar[]> {
     public final static CalendarArraySerializer instance = new CalendarArraySerializer();
+
     @Override
     public final void serialize(Writer writer, Calendar[] array) throws IOException {
         super.serialize(writer, array);

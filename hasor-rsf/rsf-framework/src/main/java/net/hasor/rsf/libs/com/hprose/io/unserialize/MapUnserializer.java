@@ -23,8 +23,10 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 public final class MapUnserializer extends BaseUnserializer<Map> {
     public final static MapUnserializer instance = new MapUnserializer();
+
     @Override
     public Map unserialize(Reader reader, int tag, Type type) throws IOException {
         switch (tag) {
@@ -37,6 +39,7 @@ public final class MapUnserializer extends BaseUnserializer<Map> {
         }
         return super.unserialize(reader, tag, type);
     }
+
     public Map read(Reader reader) throws IOException {
         return read(reader, LinkedHashMap.class);
     }

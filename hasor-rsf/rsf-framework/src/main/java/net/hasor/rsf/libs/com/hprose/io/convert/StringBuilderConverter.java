@@ -20,11 +20,14 @@ package net.hasor.rsf.libs.com.hprose.io.convert;
 import net.hasor.rsf.libs.com.hprose.utils.DateTime;
 
 import java.lang.reflect.Type;
+
 public class StringBuilderConverter implements Converter<StringBuilder> {
     public final static StringBuilderConverter instance = new StringBuilderConverter();
+
     public StringBuilder convertTo(char[] chars) {
         return new StringBuilder(chars.length + 16).append(chars);
     }
+
     public StringBuilder convertTo(Object obj, Type type) {
         if (obj instanceof char[]) {
             return convertTo((char[]) obj);

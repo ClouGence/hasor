@@ -21,6 +21,7 @@ import net.hasor.rsf.libs.com.hprose.io.serialize.Writer;
 import net.hasor.rsf.libs.com.hprose.io.unserialize.Reader;
 
 import java.io.IOException;
+
 public interface MemberAccessor {
     void serialize(Writer writer, Object obj) throws IOException;
 

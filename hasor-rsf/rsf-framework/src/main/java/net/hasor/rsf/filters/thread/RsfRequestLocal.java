@@ -16,6 +16,7 @@
 package net.hasor.rsf.filters.thread;
 import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.domain.warp.AbstractRsfRequestWarp;
+
 /**
  * {@link RsfRequest}接口包装器（当前线程绑定）。
  * @version : 2014年10月25日
@@ -23,16 +24,18 @@ import net.hasor.rsf.domain.warp.AbstractRsfRequestWarp;
  */
 public class RsfRequestLocal extends AbstractRsfRequestWarp {
     private static final ThreadLocal<RsfRequest> LOCAL_REQUEST = new ThreadLocal<RsfRequest>();
+
     @Override
     protected final RsfRequest getRsfRequest() {
         return LOCAL_REQUEST.get();
     }
-    //
+
     static void removeLocal() {
         if (LOCAL_REQUEST.get() != null) {
             LOCAL_REQUEST.remove();
         }
     }
+
     static void updateLocal(RsfRequest rsfRequest) {
         removeLocal();
         if (rsfRequest != null) {

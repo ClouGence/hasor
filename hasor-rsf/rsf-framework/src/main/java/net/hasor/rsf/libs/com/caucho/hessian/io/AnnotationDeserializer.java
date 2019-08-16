@@ -53,19 +53,23 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
+
 /**
  * Deserializing a java annotation for known object types.
  */
 @SuppressWarnings({ "unused" })
 public class AnnotationDeserializer extends AbstractMapDeserializer {
-    private static final Logger log = LoggerFactory.getLogger(AnnotationDeserializer.class);
-    private Class<?> _annType;
+    private static final Logger   log = LoggerFactory.getLogger(AnnotationDeserializer.class);
+    private              Class<?> _annType;
+
     public AnnotationDeserializer(Class<?> annType) {
         _annType = annType;
     }
+
     public Class<?> getType() {
         return _annType;
     }
+
     public Object readMap(AbstractHessianInput in) throws IOException {
         try {
             int ref = in.addRef(null);
@@ -83,6 +87,7 @@ public class AnnotationDeserializer extends AbstractMapDeserializer {
             throw new IOExceptionWrapper(e);
         }
     }
+
     public Object readObject(AbstractHessianInput in, Object[] fields) throws IOException {
         String[] fieldNames = (String[]) fields;
         try {

@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
+
 /**
  *
  * @version : 2014年11月17日
@@ -30,16 +31,14 @@ import java.util.concurrent.atomic.AtomicLong;
 public class RsfRuntimeUtils {
     protected static Logger                                                 logger      = LoggerFactory.getLogger(RsfRuntimeUtils.class);
     private static   AtomicLong                                             requestID   = new AtomicLong(1);
-    private static   ConcurrentMap<String, Class<?>>                        classCache  = new ConcurrentHashMap<String, Class<?>>();
-    private static   ConcurrentMap<Class<?>, ConcurrentMap<String, Method>> methodCache = new ConcurrentHashMap<Class<?>, ConcurrentMap<String, Method>>();
-    //
-    //
+    private static   ConcurrentMap<String, Class<?>>                        classCache  = new ConcurrentHashMap<>();
+    private static   ConcurrentMap<Class<?>, ConcurrentMap<String, Method>> methodCache = new ConcurrentHashMap<>();
+
     /**生成一个新的RequestID*/
     public static long genRequestID() {
         return requestID.incrementAndGet();
     }
-    //
-    //
+
     /**使用指定的ClassLoader将一个asm类型转化为Class对象。*/
     public static Class<?> toJavaType(final String tType, final ClassLoader loader) throws ClassNotFoundException {
         char atChar = tType.charAt(0);
@@ -69,7 +68,7 @@ public class RsfRuntimeUtils {
                 }
                 length++;
             }
-            String arrayType = tType.substring(length, tType.length());
+            String arrayType = tType.substring(length);
             Class<?> returnType = toJavaType(arrayType, loader);
             for (int i = 0; i < length; i++) {
                 Object obj = Array.newInstance(returnType, length);
@@ -86,6 +85,7 @@ public class RsfRuntimeUtils {
         }
     }
     //
+
     /**将某一个类型转为asm形式的表述， int 转为 I，String转为 Ljava/lang/String。*/
     public static String toAsmType(final Class<?> classType) {
         if (classType == int.class) {
@@ -112,7 +112,7 @@ public class RsfRuntimeUtils {
             return classType.getName();
         }
     }
-    //
+
     public static Method getServiceMethod(Class<?> serviceType, String methodName, Class<?>[] parameterTypes) {
         StringBuilder oriStr = new StringBuilder(methodName);
         if (parameterTypes != null) {
@@ -148,7 +148,7 @@ public class RsfRuntimeUtils {
         }
         return method;
     }
-    //
+
     public static Class<?> getType(String typeName, ClassLoader classLoader) {
         Class<?> type = classCache.get(typeName);
         if (type == null) {

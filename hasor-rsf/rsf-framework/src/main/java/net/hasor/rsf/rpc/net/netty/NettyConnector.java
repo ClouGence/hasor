@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
+
 /**
  * RPC协议连接器，负责创建某个特定RPC协议的网络事件。
  * tips：传入的网络连接，交给{@link LinkPool}进行处理，{@link NettyConnector}本身不维护任何连接。
@@ -43,22 +44,24 @@ import java.util.Arrays;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class NettyConnector extends Connector {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    private RsfChannel             localListener;   // Socket监听器
-    private NettyThreadGroup       threadGroup;     // Netty 线程组
-    private ProtocolHandlerFactory handlerFactory;  // Netty ChannelHandler 组
-    private AppContext             appContext;      // App
-    //
+    protected Logger                 logger = LoggerFactory.getLogger(getClass());
+    private   RsfChannel             localListener;   // Socket监听器
+    private   NettyThreadGroup       threadGroup;     // Netty 线程组
+    private   ProtocolHandlerFactory handlerFactory;  // Netty ChannelHandler 组
+    private   AppContext             appContext;      // App
+
     public NettyConnector(String protocol, final AppContext appContext, final ReceivedListener receivedListener, ConnectionAccepter accepter) throws ClassNotFoundException {
         super(protocol, appContext.getInstance(RsfEnvironment.class), receivedListener, accepter);
         this.appContext = appContext;
     }
+
     /**获取work线程组*/
     public EventLoopGroup getWorkerGroup() {
         if (this.threadGroup == null)
             return null;
         return this.threadGroup.getWorkLoopGroup();
     }
+
     /**创建 ProtocolHandlerFactory 对象。*/
     protected ProtocolHandlerFactory createHandler(String protocol, AppContext appContext) throws ClassNotFoundException {
         String configKey = getRsfEnvironment().getSettings().getProtocolConfigKey(protocol);
@@ -66,7 +69,7 @@ public class NettyConnector extends Connector {
         Class<ProtocolHandlerFactory> handlerClass = (Class<ProtocolHandlerFactory>) appContext.getClassLoader().loadClass(nettyHandlerType);
         return appContext.getInstance(handlerClass);
     }
-    //
+
     /** 启动本地监听器 */
     public void startListener(AppContext appContext) throws Throwable {
         this.threadGroup = new NettyThreadGroup(this.getProtocol(), this.getRsfEnvironment());
@@ -105,6 +108,7 @@ public class NettyConnector extends Connector {
         }
         //
     }
+
     private ChannelHandler[] channelHandlerList() {
         //
         ArrayList<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
@@ -116,16 +120,18 @@ public class NettyConnector extends Connector {
         handlers.add(new NettySocketReader(this));
         return handlers.toArray(new ChannelHandler[handlers.size()]);
     }
+
     /**停止监听器*/
     public void shutdownListener() {
         this.localListener.close();
         this.threadGroup.shutdownGracefully();
     }
-    //
+
     /**接收到数据(方法public化)*/
     public void receivedData(RsfChannel target, OptionInfo object) {
         super.receivedData(target, object);
     }
+
     /** 连接到远程机器 */
     public void connectionTo(final InterAddress hostAddress, final BasicFuture<RsfChannel> result) {
         //
@@ -155,7 +161,7 @@ public class NettyConnector extends Connector {
             }
         });
     }
-    //
+
     /** IP黑名单实现(包内可见) */
     protected boolean acceptIn(ChannelHandlerContext ctx) throws Exception {
         InetSocketAddress socketAddress = (InetSocketAddress) ctx.channel().remoteAddress();
@@ -177,8 +183,7 @@ public class NettyConnector extends Connector {
         }
         return true;
     }
-    //
-    //
+
     private <T extends AbstractBootstrap<?, ?>> T configBoot(T boot) {
         boot.option(ChannelOption.SO_KEEPALIVE, true);
         // boot.option(ChannelOption.SO_BACKLOG, 128);

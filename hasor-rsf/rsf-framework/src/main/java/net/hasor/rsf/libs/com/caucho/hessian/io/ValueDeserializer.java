@@ -47,6 +47,7 @@
  */
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
+
 /**
  * Deserializing a string valued object
  */
@@ -63,6 +64,7 @@ abstract public class ValueDeserializer extends AbstractDeserializer {
         in.readMapEnd();
         return create(initValue);
     }
+
     public Object readObject(AbstractHessianInput in, String[] fieldNames) throws IOException {
         String initValue = null;
         for (int i = 0; i < fieldNames.length; i++) {
@@ -73,5 +75,6 @@ abstract public class ValueDeserializer extends AbstractDeserializer {
         }
         return create(initValue);
     }
+
     abstract Object create(String value) throws IOException;
 }

@@ -32,6 +32,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.*;
 import java.util.regex.Pattern;
+
 public final class SerializerFactory {
     private final static ConcurrentHashMap<Class<?>, Serializer> serializers = new ConcurrentHashMap<Class<?>, Serializer>();
 
@@ -149,6 +150,7 @@ public final class SerializerFactory {
         }
         return serializer;
     }
+
     public final static void register(Class<?> type, Serializer serializer) {
         serializers.put(type, serializer);
     }

@@ -48,6 +48,7 @@
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.util.HashMap;
+
 /**
  * Serializing an object for known object types.
  */
@@ -55,6 +56,7 @@ public class AbstractMapDeserializer extends AbstractDeserializer {
     public Class<?> getType() {
         return HashMap.class;
     }
+
     public Object readObject(AbstractHessianInput in) throws IOException {
         Object obj = in.readObject();
         if (obj != null)

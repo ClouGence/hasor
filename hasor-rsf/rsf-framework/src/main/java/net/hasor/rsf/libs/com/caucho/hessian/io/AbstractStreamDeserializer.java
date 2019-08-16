@@ -47,11 +47,13 @@
  */
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
+
 /**
  * Deserializing a byte stream
  */
 abstract public class AbstractStreamDeserializer extends AbstractDeserializer {
     abstract public Class<?> getType();
+
     /**
      * Reads the Hessian 1.0 style map.
      */
@@ -67,6 +69,7 @@ abstract public class AbstractStreamDeserializer extends AbstractDeserializer {
         in.readMapEnd();
         return value;
     }
+
     public Object readObject(AbstractHessianInput in, Object[] fields) throws IOException {
         String[] fieldNames = (String[]) fields;
         Object value = null;
@@ -78,5 +81,6 @@ abstract public class AbstractStreamDeserializer extends AbstractDeserializer {
         }
         return value;
     }
+
     abstract protected Object readStreamValue(AbstractHessianInput in) throws IOException;
 }

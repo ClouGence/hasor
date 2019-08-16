@@ -53,12 +53,14 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.logging.Level;
+
 /**
  * Debugging output stream for Hessian requests.
  */
 public class HessianDebugOutputStream extends OutputStream {
     private OutputStream      _os;
     private HessianDebugState _state;
+
     /**
      * Creates an uninitialized Hessian input stream.
      */
@@ -66,18 +68,22 @@ public class HessianDebugOutputStream extends OutputStream {
         _os = os;
         _state = new HessianDebugState(dbg);
     }
+
     /**
      * Creates an uninitialized Hessian input stream.
      */
     public HessianDebugOutputStream(OutputStream os, Logger log, Level level) {
         this(os, new PrintWriter(new LogWriter(log, level)));
     }
+
     public void startTop2() {
         _state.startTop2();
     }
+
     public void startStreaming() {
         _state.startStreaming();
     }
+
     /**
      * Writes a character.
      */
@@ -86,9 +92,11 @@ public class HessianDebugOutputStream extends OutputStream {
         _os.write(ch);
         _state.next(ch);
     }
+
     public void flush() throws IOException {
         _os.flush();
     }
+
     /**
      * closes the stream.
      */
@@ -101,14 +109,17 @@ public class HessianDebugOutputStream extends OutputStream {
         }
         _state.println();
     }
+
     static class LogWriter extends Writer {
-        private Logger _log;
-        private Level  _level;
+        private Logger        _log;
+        private Level         _level;
         private StringBuilder _sb = new StringBuilder();
+
         LogWriter(Logger log, Level level) {
             _log = log;
             _level = level;
         }
+
         private void write2Log(String msg) {
             /*  */
             if (Level.SEVERE.equals(_level)) {
@@ -125,6 +136,7 @@ public class HessianDebugOutputStream extends OutputStream {
                 _log.debug(msg);
             }
         }
+
         public void write(char ch) {
             if (ch == '\n' && _sb.length() > 0) {
                 write2Log(_sb.toString());
@@ -132,6 +144,7 @@ public class HessianDebugOutputStream extends OutputStream {
             } else
                 _sb.append((char) ch);
         }
+
         public void write(char[] buffer, int offset, int length) {
             for (int i = 0; i < length; i++) {
                 char ch = buffer[offset + i];
@@ -142,8 +155,10 @@ public class HessianDebugOutputStream extends OutputStream {
                     _sb.append((char) ch);
             }
         }
+
         public void flush() {
         }
+
         public void close() {
         }
     }

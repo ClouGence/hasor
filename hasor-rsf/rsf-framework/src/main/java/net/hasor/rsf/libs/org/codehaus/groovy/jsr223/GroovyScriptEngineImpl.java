@@ -45,7 +45,6 @@
  *  under the License.
  */
 package net.hasor.rsf.libs.org.codehaus.groovy.jsr223;
-import groovy.lang.*;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.runtime.InvokerHelper;
@@ -63,6 +62,7 @@ import java.io.Writer;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+
 /**
  * JSR-223 Engine implementation.
  *
@@ -73,18 +73,18 @@ import java.lang.reflect.Proxy;
  * @author Jochen Theodorou
  */
 public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Compilable, Invocable {
-    private static boolean                                    debug          = false;
+    private static   boolean                                    debug          = false;
     // script-string-to-generated Class map
-    private        ManagedConcurrentValueMap<String, Class>   classMap       = new ManagedConcurrentValueMap<String, Class>(ReferenceBundle.getSoftBundle());
+    private          ManagedConcurrentValueMap<String, Class>   classMap       = new ManagedConcurrentValueMap<String, Class>(ReferenceBundle.getSoftBundle());
     // global closures map - this is used to simulate a single
     // global functions namespace 
-    private        ManagedConcurrentValueMap<String, Closure> globalClosures = new ManagedConcurrentValueMap<String, Closure>(ReferenceBundle.getHardBundle());
+    private          ManagedConcurrentValueMap<String, Closure> globalClosures = new ManagedConcurrentValueMap<String, Closure>(ReferenceBundle.getHardBundle());
     // class loader for Groovy generated classes
-    private          GroovyClassLoader         loader;
+    private          GroovyClassLoader                          loader;
     // lazily initialized factory
-    private volatile GroovyScriptEngineFactory factory;
+    private volatile GroovyScriptEngineFactory                  factory;
     // counter used to generate unique global Script class names
-    private static   int                       counter;
+    private static   int                                        counter;
 
     static {
         counter = 0;
@@ -93,14 +93,17 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
     public GroovyScriptEngineImpl() {
         this(new GroovyClassLoader(getParentLoader(), new CompilerConfiguration()));
     }
+
     public GroovyScriptEngineImpl(GroovyClassLoader classLoader) {
         if (classLoader == null)
             throw new IllegalArgumentException("GroovyClassLoader is null");
         this.loader = classLoader;
     }
+
     public Object eval(Reader reader, ScriptContext ctx) throws ScriptException {
         return eval(readFully(reader), ctx);
     }
+
     public Object eval(String script, ScriptContext ctx) throws ScriptException {
         try {
             String val = (String) ctx.getAttribute("#jsr223.groovy.engine.keep.globals", ScriptContext.ENGINE_SCOPE);
@@ -129,9 +132,11 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
             throw new ScriptException(e);
         }
     }
+
     public Bindings createBindings() {
         return new SimpleBindings();
     }
+
     public ScriptEngineFactory getFactory() {
         if (factory == null) {
             synchronized (this) {
@@ -142,7 +147,8 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
         }
         return factory;
     }
-    // javax.script.Compilable methods 
+
+    // javax.script.Compilable methods
     public CompiledScript compile(String scriptSource) throws ScriptException {
         try {
             return new GroovyCompiledScript(this, getScriptClass(scriptSource));
@@ -154,28 +160,34 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
             throw new ScriptException(ee);
         }
     }
+
     public CompiledScript compile(Reader reader) throws ScriptException {
         return compile(readFully(reader));
     }
+
     // javax.script.Invokable methods.
     public Object invokeFunction(String name, Object... args) throws ScriptException, NoSuchMethodException {
         return invokeImpl(null, name, args);
     }
+
     public Object invokeMethod(Object thiz, String name, Object... args) throws ScriptException, NoSuchMethodException {
         if (thiz == null) {
             throw new IllegalArgumentException("script object is null");
         }
         return invokeImpl(thiz, name, args);
     }
+
     public <T> T getInterface(Class<T> clazz) {
         return makeInterface(null, clazz);
     }
+
     public <T> T getInterface(Object thiz, Class<T> clazz) {
         if (thiz == null) {
             throw new IllegalArgumentException("script object is null");
         }
         return makeInterface(thiz, clazz);
     }
+
     // package-privates
     Object eval(Class scriptClass, final ScriptContext ctx) throws ScriptException {
         // Bindings so script has access to this environment.
@@ -228,6 +240,7 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
                 }
                 throw new MissingPropertyException(name, getClass());
             }
+
             @Override
             public void setVariable(String name, Object value) {
                 synchronized (ctx) {
@@ -255,10 +268,10 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
                 }
                 MetaClass oldMetaClass = scriptObject.getMetaClass();
                 /*
-                * We override the MetaClass of this script object so that we can
-                * forward calls to global closures (of previous or future "eval" calls)
-                * This gives the illusion of working on the same "global" scope.
-                */
+                 * We override the MetaClass of this script object so that we can
+                 * forward calls to global closures (of previous or future "eval" calls)
+                 * This gives the illusion of working on the same "global" scope.
+                 */
                 scriptObject.setMetaClass(new DelegatingMetaClass(oldMetaClass) {
                     @Override
                     public Object invokeMethod(Object object, String name, Object args) {
@@ -274,6 +287,7 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
                             return invokeMethod(object, name, new Object[] { args });
                         }
                     }
+
                     @Override
                     public Object invokeMethod(Object object, String name, Object[] args) {
                         try {
@@ -282,6 +296,7 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
                             return callGlobal(name, args, ctx);
                         }
                     }
+
                     @Override
                     public Object invokeStaticMethod(Object object, String name, Object[] args) {
                         try {
@@ -303,6 +318,7 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
             ctx.removeAttribute("out", ScriptContext.ENGINE_SCOPE);
         }
     }
+
     Class getScriptClass(String script) throws SyntaxException, CompilationFailedException, IOException {
         Class clazz = classMap.get(script);
         if (clazz != null) {
@@ -312,12 +328,15 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
         classMap.put(script, clazz);
         return clazz;
     }
+
     public void setClassLoader(GroovyClassLoader classLoader) {
         this.loader = classLoader;
     }
+
     public GroovyClassLoader getClassLoader() {
         return this.loader;
     }
+
     //-- Internals only below this point
     // invokes the specified method/function on the given object.
     private Object invokeImpl(Object thiz, String name, Object... args) throws ScriptException, NoSuchMethodException {
@@ -336,10 +355,12 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
             throw new ScriptException(e);
         }
     }
+
     // call the script global function of the given name
     private Object callGlobal(String name, Object[] args) {
         return callGlobal(name, args, context);
     }
+
     private Object callGlobal(String name, Object[] args, ScriptContext ctx) {
         Closure closure = globalClosures.get(name);
         if (closure != null) {
@@ -354,10 +375,12 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
         }
         throw new MissingMethodException(name, getClass(), args);
     }
+
     // generate a unique name for top-level Script classes
     private synchronized String generateScriptName() {
         return "Script" + (++counter) + ".groovy";
     }
+
     @SuppressWarnings("unchecked")
     private <T> T makeInterface(Object obj, Class<T> clazz) {
         final Object thiz = obj;
@@ -370,6 +393,7 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
             }
         });
     }
+
     // determine appropriate class loader to serve as parent loader
     // for GroovyClassLoader instance
     private static ClassLoader getParentLoader() {
@@ -386,6 +410,7 @@ public class GroovyScriptEngineImpl extends AbstractScriptEngine implements Comp
         // exception was thrown or we get wrong class
         return Script.class.getClassLoader();
     }
+
     private String readFully(Reader reader) throws ScriptException {
         char[] arr = new char[8 * 1024]; // 8K at a time
         StringBuilder buf = new StringBuilder();

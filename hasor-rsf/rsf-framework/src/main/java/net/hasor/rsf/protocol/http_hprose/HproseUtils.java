@@ -34,6 +34,7 @@ import java.util.*;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.LOCATION;
 import static io.netty.handler.codec.http.HttpHeaders.Names.ORIGIN;
+
 /**
  * Hprose 工具
  * @version : 2017年1月28日
@@ -68,6 +69,7 @@ public class HproseUtils implements HproseConstants {
         }
         return allMethod.toArray(new String[allMethod.size()]);
     }
+
     /***/
     public static RequestInfo[] doCall(RsfContext rsfContext, InputStream content, String requestURI, String origin) throws RsfException, IOException {
         //
@@ -86,6 +88,7 @@ public class HproseUtils implements HproseConstants {
     }
     //
     //
+
     /***/
     private static void parseRequest(RsfContext rsfContext, HproseReader reader, List<RequestInfo> infoArrays) throws IOException {
         long requestID = 12345;
@@ -200,6 +203,7 @@ public class HproseUtils implements HproseConstants {
             throw new RsfException(ProtocolStatus.ProtocolError, "hprose ref param, is not support.");
         }
     }
+
     /***/
     public static void parseResponse(long requestID, ResponseInfo response, OutputStream output) throws IOException {
         if (response.getStatus() == ProtocolStatus.OK) {
@@ -228,8 +232,7 @@ public class HproseUtils implements HproseConstants {
             output.write(data.getBytes());
         }
     }
-    //
-    //
+
     /***/
     public static ByteBuf encodeRequest(RsfContext rsfContext, RequestInfo request) throws IOException {
         RsfBindInfo<?> bindInfo = rsfContext.getServiceInfo(request.getServiceGroup(), request.getServiceName(), request.getServiceVersion());
@@ -247,6 +250,7 @@ public class HproseUtils implements HproseConstants {
         outBuf.writeByte('z');
         return outBuf;
     }
+
     public static Object decodeResponse(InputStream inputStream) throws IOException {
         int aByte = inputStream.read();
         if ((char) aByte == 'R') {

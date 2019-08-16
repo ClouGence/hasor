@@ -49,6 +49,7 @@ package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.IdentityHashMap;
+
 /**
  * Output stream for Hessian requests, compatible with microedition
  * Java.  It only uses classes and types available in JDK.
@@ -74,7 +75,8 @@ public class HessianOutput extends AbstractHessianOutput {
     protected OutputStream                    os;
     // map of references
     private   IdentityHashMap<Object, Object> _refs;
-    private int _version = 1;
+    private   int                             _version = 1;
+
     /**
      * Creates a new Hessian output stream, initialized with an
      * underlying output stream.
@@ -84,11 +86,13 @@ public class HessianOutput extends AbstractHessianOutput {
     public HessianOutput(OutputStream os) {
         init(os);
     }
+
     /**
      * Creates an uninitialized Hessian output stream.
      */
     public HessianOutput() {
     }
+
     /**
      * Initializes the output
      */
@@ -98,12 +102,14 @@ public class HessianOutput extends AbstractHessianOutput {
         if (_serializerFactory == null)
             _serializerFactory = new SerializerFactory();
     }
+
     /**
      * Sets the client's version.
      */
     public void setVersion(int version) {
         _version = version;
     }
+
     /**
      * Writes a complete method call.
      */
@@ -114,6 +120,7 @@ public class HessianOutput extends AbstractHessianOutput {
             writeObject(args[i]);
         completeCall();
     }
+
     /**
      * Starts the method call.  Clients would use <code>startCall</code>
      * instead of <code>call</code> if they wanted finer control over
@@ -136,6 +143,7 @@ public class HessianOutput extends AbstractHessianOutput {
         os.write(len);
         printString(method, 0, len);
     }
+
     /**
      * Writes the call tag.  This would be followed by the
      * headers and the method tag.
@@ -149,6 +157,7 @@ public class HessianOutput extends AbstractHessianOutput {
         os.write(0);
         os.write(1);
     }
+
     /**
      * Writes the method tag.
      *
@@ -165,6 +174,7 @@ public class HessianOutput extends AbstractHessianOutput {
         os.write(len);
         printString(method, 0, len);
     }
+
     /**
      * Completes.
      *
@@ -175,6 +185,7 @@ public class HessianOutput extends AbstractHessianOutput {
     public void completeCall() throws IOException {
         os.write('z');
     }
+
     /**
      * Starts the reply
      *
@@ -189,6 +200,7 @@ public class HessianOutput extends AbstractHessianOutput {
         os.write(1);
         os.write(0);
     }
+
     /**
      * Completes reading the reply
      *
@@ -201,6 +213,7 @@ public class HessianOutput extends AbstractHessianOutput {
     public void completeReply() throws IOException {
         os.write('z');
     }
+
     /**
      * Writes a fault.  The fault will be written
      * as a descriptive string followed by an object:
@@ -239,6 +252,7 @@ public class HessianOutput extends AbstractHessianOutput {
         os.write('z');
         os.write('z');
     }
+
     /**
      * Writes any object to the output stream.
      */
@@ -251,6 +265,7 @@ public class HessianOutput extends AbstractHessianOutput {
         serializer = _serializerFactory.getSerializer(object.getClass());
         serializer.writeObject(object, this);
     }
+
     /**
      * Writes the list header to the stream.  List writers will call
      * <code>writeListBegin</code> followed by the list contents and then
@@ -277,12 +292,14 @@ public class HessianOutput extends AbstractHessianOutput {
         }
         return true;
     }
+
     /**
      * Writes the tail of the list to the stream.
      */
     public void writeListEnd() throws IOException {
         os.write('z');
     }
+
     /**
      * Writes the map header to the stream.  Map writers will call
      * <code>writeMapBegin</code> followed by the map contents and then
@@ -297,12 +314,14 @@ public class HessianOutput extends AbstractHessianOutput {
         os.write('t');
         printLenString(type);
     }
+
     /**
      * Writes the tail of the map to the stream.
      */
     public void writeMapEnd() throws IOException {
         os.write('z');
     }
+
     /**
      * Writes a remote object reference to the stream.  The type is the
      * type of the remote interface.
@@ -318,6 +337,7 @@ public class HessianOutput extends AbstractHessianOutput {
         os.write('S');
         printLenString(url);
     }
+
     /**
      * Writes a boolean value to the stream.  The boolean will be written
      * with the following syntax:
@@ -335,6 +355,7 @@ public class HessianOutput extends AbstractHessianOutput {
         else
             os.write('F');
     }
+
     /**
      * Writes an integer value to the stream.  The integer will be written
      * with the following syntax:
@@ -352,6 +373,7 @@ public class HessianOutput extends AbstractHessianOutput {
         os.write(value >> 8);
         os.write(value);
     }
+
     /**
      * Writes a long value to the stream.  The long will be written
      * with the following syntax:
@@ -373,6 +395,7 @@ public class HessianOutput extends AbstractHessianOutput {
         os.write((byte) (value >> 8));
         os.write((byte) (value));
     }
+
     /**
      * Writes a double value to the stream.  The double will be written
      * with the following syntax:
@@ -395,6 +418,7 @@ public class HessianOutput extends AbstractHessianOutput {
         os.write((byte) (bits >> 8));
         os.write((byte) (bits));
     }
+
     /**
      * Writes a date to the stream.
      *
@@ -415,6 +439,7 @@ public class HessianOutput extends AbstractHessianOutput {
         os.write((byte) (time >> 8));
         os.write((byte) (time));
     }
+
     /**
      * Writes a null value to the stream.
      * The null will be written with the following syntax
@@ -426,6 +451,7 @@ public class HessianOutput extends AbstractHessianOutput {
     public void writeNull() throws IOException {
         os.write('N');
     }
+
     /**
      * Writes a string value to the stream using UTF-8 encoding.
      * The string will be written with the following syntax:
@@ -467,6 +493,7 @@ public class HessianOutput extends AbstractHessianOutput {
             printString(value, offset, length);
         }
     }
+
     /**
      * Writes a string value to the stream using UTF-8 encoding.
      * The string will be written with the following syntax:
@@ -504,6 +531,7 @@ public class HessianOutput extends AbstractHessianOutput {
             printString(buffer, offset, length);
         }
     }
+
     /**
      * Writes a byte array to the stream.
      * The array will be written with the following syntax:
@@ -524,6 +552,7 @@ public class HessianOutput extends AbstractHessianOutput {
         else
             writeBytes(buffer, 0, buffer.length);
     }
+
     /**
      * Writes a byte array to the stream.
      * The array will be written with the following syntax:
@@ -558,6 +587,7 @@ public class HessianOutput extends AbstractHessianOutput {
             os.write(buffer, offset, length);
         }
     }
+
     /**
      * Writes a byte buffer to the stream.
      *
@@ -566,6 +596,7 @@ public class HessianOutput extends AbstractHessianOutput {
      */
     public void writeByteBufferStart() throws IOException {
     }
+
     /**
      * Writes a byte buffer to the stream.
      *
@@ -586,6 +617,7 @@ public class HessianOutput extends AbstractHessianOutput {
             offset += sublen;
         }
     }
+
     /**
      * Writes a byte buffer to the stream.
      *
@@ -596,6 +628,7 @@ public class HessianOutput extends AbstractHessianOutput {
     public void writeByteBufferEnd(byte[] buffer, int offset, int length) throws IOException {
         writeBytes(buffer, offset, length);
     }
+
     /**
      * Writes a reference.
      *
@@ -612,6 +645,7 @@ public class HessianOutput extends AbstractHessianOutput {
         os.write(value >> 8);
         os.write(value);
     }
+
     /**
      * Writes a placeholder.
      *
@@ -622,6 +656,7 @@ public class HessianOutput extends AbstractHessianOutput {
     public void writePlaceholder() throws IOException {
         os.write('P');
     }
+
     /**
      * If the object has already been written, just write its ref.
      *
@@ -640,6 +675,7 @@ public class HessianOutput extends AbstractHessianOutput {
             return false;
         }
     }
+
     @Override
     public int getRef(Object obj) {
         Integer value;
@@ -651,6 +687,7 @@ public class HessianOutput extends AbstractHessianOutput {
         else
             return value;
     }
+
     /**
      * Resets the references for streaming.
      */
@@ -658,6 +695,7 @@ public class HessianOutput extends AbstractHessianOutput {
         if (_refs != null)
             _refs.clear();
     }
+
     /**
      * Removes a reference.
      */
@@ -668,6 +706,7 @@ public class HessianOutput extends AbstractHessianOutput {
         } else
             return false;
     }
+
     /**
      * Replaces a reference from one object to another.
      */
@@ -679,6 +718,7 @@ public class HessianOutput extends AbstractHessianOutput {
         } else
             return false;
     }
+
     /**
      * Prints a string to the stream, encoded as UTF-8 with preceeding length
      *
@@ -695,6 +735,7 @@ public class HessianOutput extends AbstractHessianOutput {
             printString(v, 0, len);
         }
     }
+
     /**
      * Prints a string to the stream, encoded as UTF-8
      *
@@ -703,6 +744,7 @@ public class HessianOutput extends AbstractHessianOutput {
     public void printString(String v) throws IOException {
         printString(v, 0, v.length());
     }
+
     /**
      * Prints a string to the stream, encoded as UTF-8
      *
@@ -723,6 +765,7 @@ public class HessianOutput extends AbstractHessianOutput {
             }
         }
     }
+
     /**
      * Prints a string to the stream, encoded as UTF-8
      *
@@ -743,10 +786,12 @@ public class HessianOutput extends AbstractHessianOutput {
             }
         }
     }
+
     public void flush() throws IOException {
         if (this.os != null)
             this.os.flush();
     }
+
     public void close() throws IOException {
         if (this.os != null)
             this.os.flush();

@@ -15,6 +15,7 @@
  */
 package net.hasor.registry.server.domain;
 import java.util.Date;
+
 /**
  * 授权信息
  * @version : 2015年5月22日
@@ -24,22 +25,28 @@ public class AuthBean {
     private String appKey       = null; // Key
     private String appKeySecret = null; // Key秘钥
     private Date   expireTime   = null; // 过期时间
+
     //
     public String getAppKey() {
         return appKey;
     }
+
     public void setAppKey(String appKey) {
         this.appKey = appKey;
     }
+
     public String getAppKeySecret() {
         return appKeySecret;
     }
+
     public void setAppKeySecret(String appKeySecret) {
         this.appKeySecret = appKeySecret;
     }
+
     public Date getExpireTime() {
         return expireTime;
     }
+
     public void setExpireTime(Date expireTime) {
         this.expireTime = expireTime;
     }

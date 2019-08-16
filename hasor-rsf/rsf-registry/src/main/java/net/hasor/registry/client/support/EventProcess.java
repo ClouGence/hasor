@@ -15,6 +15,7 @@
  */
 package net.hasor.registry.client.support;
 import net.hasor.rsf.RsfUpdater;
+
 /**
  * 注册中心事件处理器接口
  * @version : 2016年2月18日

@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+
 /**
  * 客户端注册中心接口{@link RsfCenterRegister}实现类，负责接收来自客户端的请求调用。
  * (这个类做的最多的是输入输出校验)
@@ -41,27 +42,30 @@ import java.util.List;
  */
 @Singleton
 public class RsfCenterRegisterProvider implements RsfCenterRegister {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger         logger = LoggerFactory.getLogger(getClass());
     @Inject
-    private AuthQuery      authQuery;
+    private   AuthQuery      authQuery;
     @Inject
-    private RsfRequest     rsfRequest;
+    private   RsfRequest     rsfRequest;
     @Inject
-    private QueryManager   queryManager;    // 服务查询
+    private   QueryManager   queryManager;    // 服务查询
     @Inject
-    private PublishManager publishManager;  // 服务注册
+    private   PublishManager publishManager;  // 服务注册
     //
     //
+
     /**发布服务*/
     @Override
     public RsfCenterResult<Void> registerProvider(InstanceInfo instance, ServiceID serviceID, ProviderPublishInfo info) {
         return this.register(instance, serviceID, RsfServiceType.Provider, info);
     }
+
     /**订阅服务*/
     @Override
     public RsfCenterResult<Void> registerConsumer(InstanceInfo instance, ServiceID serviceID, ConsumerPublishInfo info) {
         return this.register(instance, serviceID, RsfServiceType.Consumer, info);
     }
+
     //
     //
     private RsfCenterResult<Void> register(InstanceInfo instance, ServiceID serviceID, RsfServiceType type, Object info) {
@@ -146,6 +150,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
     //
     //
     //
+
     /**服务下线*/
     @Override
     public RsfCenterResult<Void> unRegister(InstanceInfo instance, ServiceID serviceID) {
@@ -185,6 +190,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
         }
         return centerResult;
     }
+
     //
     @Override
     public RsfCenterResult<List<String>> pullProviders(InstanceInfo instance, ServiceID serviceID, List<String> runProtocol) {
@@ -211,6 +217,7 @@ public class RsfCenterRegisterProvider implements RsfCenterRegister {
         }
         return centerResult;
     }
+
     //
     @Override
     public RsfCenterResult<Boolean> requestPushProviders(InstanceInfo instance, ServiceID serviceID, List<String> runProtocol) {

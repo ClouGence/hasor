@@ -21,8 +21,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public final class DoubleArraySerializer extends ReferenceSerializer<double[]> {
     public final static DoubleArraySerializer instance = new DoubleArraySerializer();
+
     @Override
     public final void serialize(Writer writer, double[] array) throws IOException {
         super.serialize(writer, array);

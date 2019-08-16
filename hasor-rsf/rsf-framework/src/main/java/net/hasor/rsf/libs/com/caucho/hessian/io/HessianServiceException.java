@@ -51,14 +51,16 @@ package net.hasor.rsf.libs.com.caucho.hessian.io;
  * This exception is required for MicroHessianInput.
  */
 public class HessianServiceException extends Exception {
-    private static final long serialVersionUID = -4745317939227013095L;
-    private String code;
-    private Object detail;
+    private static final long   serialVersionUID = -4745317939227013095L;
+    private              String code;
+    private              Object detail;
+
     /**
      * Zero-arg constructor.
      */
     public HessianServiceException() {
     }
+
     /**
      * Create the exception.
      */
@@ -67,12 +69,14 @@ public class HessianServiceException extends Exception {
         this.code = code;
         this.detail = detail;
     }
+
     /**
      * Returns the code.
      */
     public String getCode() {
         return code;
     }
+
     /**
      * Returns the detail.
      */

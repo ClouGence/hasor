@@ -21,10 +21,11 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfSettings;
 import net.hasor.rsf.domain.RsfServiceType;
 import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.launcher.CmdRequest;
+import net.hasor.tconsole.CommandRequest;
 
 import java.io.StringWriter;
 import java.util.*;
+
 /**
  * RSF框架工作信息。
  * @version : 2016年4月3日
@@ -32,19 +33,20 @@ import java.util.*;
  */
 @Singleton
 public class InfoRsfInstruct implements CommandExecutor {
-    //
     @Override
     public String helpInfo() {
         return "show server info.\r\n"//
                 + " - info -h   (show help info.)\r\n"//
                 + " - info      (show server info.)";
     }
+
     @Override
-    public boolean inputMultiLine(CmdRequest request) {
+    public boolean inputMultiLine(CommandRequest request) {
         return false;
     }
+
     @Override
-    public String doCommand(CmdRequest request) throws Throwable {
+    public String doCommand(CommandRequest request) throws Throwable {
         RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();
@@ -57,14 +59,14 @@ public class InfoRsfInstruct implements CommandExecutor {
         }
         //
         Set<String> protocolSet = rsfContext.getSettings().getProtocos();
-        Map<String, InterAddress> bindAddressSet = new HashMap<String, InterAddress>();
+        Map<String, InterAddress> bindAddressSet = new HashMap<>();
         for (String protocol : protocolSet) {
             InterAddress interAddress = rsfContext.bindAddress(protocol);
             if (interAddress != null) {
                 bindAddressSet.put(protocol, interAddress);
             }
         }
-        List<String> arrays = new ArrayList<String>(bindAddressSet.keySet());
+        List<String> arrays = new ArrayList<>(bindAddressSet.keySet());
         Collections.sort(arrays);
         RsfSettings settings = rsfContext.getSettings();
         int providerCount = 0;

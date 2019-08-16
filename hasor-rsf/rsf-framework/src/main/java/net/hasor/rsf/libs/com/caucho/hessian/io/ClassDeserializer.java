@@ -50,18 +50,22 @@ import net.hasor.utils.ClassUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
+
 /**
  * Deserializing a JDK 1.2 Class.
  */
 public class ClassDeserializer extends AbstractMapDeserializer {
     private static final HashMap<String, Class<?>> _primClasses = new HashMap<String, Class<?>>();
     private              ClassLoader               _loader;
+
     public ClassDeserializer(ClassLoader loader) {
         _loader = loader;
     }
+
     public Class<?> getType() {
         return Class.class;
     }
+
     public Object readMap(AbstractHessianInput in) throws IOException {
         int ref = in.addRef(null);
         String name = null;
@@ -77,6 +81,7 @@ public class ClassDeserializer extends AbstractMapDeserializer {
         in.setRef(ref, value);
         return value;
     }
+
     public Object readObject(AbstractHessianInput in, Object[] fields) throws IOException {
         String[] fieldNames = (String[]) fields;
         int ref = in.addRef(null);
@@ -91,6 +96,7 @@ public class ClassDeserializer extends AbstractMapDeserializer {
         in.setRef(ref, value);
         return value;
     }
+
     Object create(String name) throws IOException {
         if (name == null)
             throw new IOException("Serialized Class expects name.");
@@ -103,6 +109,7 @@ public class ClassDeserializer extends AbstractMapDeserializer {
             throw new IOExceptionWrapper(e);
         }
     }
+
     static {
         _primClasses.put("void", void.class);
         _primClasses.put("boolean", boolean.class);

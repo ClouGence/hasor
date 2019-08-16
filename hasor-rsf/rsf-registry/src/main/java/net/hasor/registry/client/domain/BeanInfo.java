@@ -17,27 +17,32 @@ package net.hasor.registry.client.domain;
 import net.hasor.rsf.RsfBindInfo;
 
 import java.io.Serializable;
+
 /**
  * 发布的服务信息
  * @version : 2016年2月18日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class BeanInfo implements Serializable {
-    private static final long serialVersionUID = -7962837923093982098L;
+    private static final long   serialVersionUID = -7962837923093982098L;
     /** 唯一标识（客户端唯一标识,BeanID）*/
-    private String beanID;
+    private              String beanID;
     /** 注册的服务类型。*/
-    private String beanType;
+    private              String beanType;
+
     //
     public String getBeanID() {
         return beanID;
     }
+
     public String getBeanType() {
         return beanType;
     }
+
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
+
     //
     public static BeanInfo of(RsfBindInfo<?> domain) {
         BeanInfo info = new BeanInfo();

@@ -22,14 +22,17 @@ package net.hasor.registry.storage.btree;
 public class Slice {
     private int    sliceID       = 0;       // 位置
     private Node[] childrensKeys = null;    // data keys
+
     //
     Slice() {
     }
     //
+
     /** 索引中数据 */
     public Node[] getChildrensKeys() {
         return childrensKeys;
     }
+
     void setChildrensKeys(Node[] childrensKeys) {
         if (childrensKeys.length > Short.MAX_VALUE) {
             throw new ArrayIndexOutOfBoundsException("childrens keys size out of range.");
@@ -37,10 +40,12 @@ public class Slice {
         this.childrensKeys = childrensKeys;
     }
     //
+
     /** 索引节点的ID */
     public int getSliceID() {
         return sliceID;
     }
+
     void setSliceID(int sliceID) {
         this.sliceID = sliceID;
     }

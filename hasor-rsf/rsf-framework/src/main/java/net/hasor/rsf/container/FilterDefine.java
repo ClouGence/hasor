@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.rsf.container;
-import net.hasor.core.Hasor;
 import net.hasor.rsf.RsfFilter;
 
+import java.util.Objects;
 import java.util.function.Supplier;
+
 /**
  * 获取服务上配置有效的过滤器。
  * @version : 2014年11月12日
@@ -26,23 +27,28 @@ import java.util.function.Supplier;
 class FilterDefine implements Supplier<RsfFilter> {
     private String                        filterID;
     private Supplier<? extends RsfFilter> filterProvider;
+
     //
     public FilterDefine(String filterID, Supplier<? extends RsfFilter> provider) {
         this.filterID = filterID;
-        this.filterProvider = Hasor.assertIsNotNull(provider);
+        this.filterProvider = Objects.requireNonNull(provider);
     }
     //
+
     /**过滤器ID*/
     public String filterID() {
         return this.filterID;
     }
+
     @Override
     public RsfFilter get() {
         return filterProvider.get();
     }
+
     public Supplier<? extends RsfFilter> getProvider() {
         return filterProvider;
     }
+
     public String toString() {
         return "[" + filterID + "]";
     }

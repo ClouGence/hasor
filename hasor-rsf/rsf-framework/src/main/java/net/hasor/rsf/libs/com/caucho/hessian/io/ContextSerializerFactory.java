@@ -55,38 +55,42 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 /**
  * The classloader-specific Factory for returning serialization
  */
 @SuppressWarnings({ "unused" })
 public class ContextSerializerFactory {
-    private static final Logger                                                            log                 = Logger.getLogger(ContextSerializerFactory.class.getName());
-    private static       Deserializer                                                      OBJECT_DESERIALIZER = new BasicDeserializer(BasicDeserializer.OBJECT);
-    private static final WeakHashMap<ClassLoader, SoftReference<ContextSerializerFactory>> _contextRefMap      = new WeakHashMap<ClassLoader, SoftReference<ContextSerializerFactory>>();
-    private static final ClassLoader                   _systemClassLoader;
-    private static       HashMap<String, Serializer>   _staticSerializerMap;
-    private static       HashMap<String, Deserializer> _staticDeserializerMap;
-    private static       HashMap<String, Deserializer> _staticClassNameMap;
-    private              ContextSerializerFactory      _parent;
-    private              ClassLoader                   _loader;
-    private final HashSet<String>                         _serializerFiles          = new HashSet<String>();
-    private final HashSet<String>                         _deserializerFiles        = new HashSet<String>();
-    private final HashMap<String, Serializer>             _serializerClassMap       = new HashMap<String, Serializer>();
-    private final ConcurrentHashMap<String, Serializer>   _customSerializerMap      = new ConcurrentHashMap<String, Serializer>();
-    private final HashMap<Class<?>, Serializer>           _serializerInterfaceMap   = new HashMap<Class<?>, Serializer>();
-    private final HashMap<String, Deserializer>           _deserializerClassMap     = new HashMap<String, Deserializer>();
-    private final HashMap<String, Deserializer>           _deserializerClassNameMap = new HashMap<String, Deserializer>();
-    private final ConcurrentHashMap<String, Deserializer> _customDeserializerMap    = new ConcurrentHashMap<String, Deserializer>();
-    private final HashMap<Class<?>, Deserializer>         _deserializerInterfaceMap = new HashMap<Class<?>, Deserializer>();
+    private static final Logger                                                            log                       = Logger.getLogger(ContextSerializerFactory.class.getName());
+    private static       Deserializer                                                      OBJECT_DESERIALIZER       = new BasicDeserializer(BasicDeserializer.OBJECT);
+    private static final WeakHashMap<ClassLoader, SoftReference<ContextSerializerFactory>> _contextRefMap            = new WeakHashMap<ClassLoader, SoftReference<ContextSerializerFactory>>();
+    private static final ClassLoader                                                       _systemClassLoader;
+    private static       HashMap<String, Serializer>                                       _staticSerializerMap;
+    private static       HashMap<String, Deserializer>                                     _staticDeserializerMap;
+    private static       HashMap<String, Deserializer>                                     _staticClassNameMap;
+    private              ContextSerializerFactory                                          _parent;
+    private              ClassLoader                                                       _loader;
+    private final        HashSet<String>                                                   _serializerFiles          = new HashSet<String>();
+    private final        HashSet<String>                                                   _deserializerFiles        = new HashSet<String>();
+    private final        HashMap<String, Serializer>                                       _serializerClassMap       = new HashMap<String, Serializer>();
+    private final        ConcurrentHashMap<String, Serializer>                             _customSerializerMap      = new ConcurrentHashMap<String, Serializer>();
+    private final        HashMap<Class<?>, Serializer>                                     _serializerInterfaceMap   = new HashMap<Class<?>, Serializer>();
+    private final        HashMap<String, Deserializer>                                     _deserializerClassMap     = new HashMap<String, Deserializer>();
+    private final        HashMap<String, Deserializer>                                     _deserializerClassNameMap = new HashMap<String, Deserializer>();
+    private final        ConcurrentHashMap<String, Deserializer>                           _customDeserializerMap    = new ConcurrentHashMap<String, Deserializer>();
+    private final        HashMap<Class<?>, Deserializer>                                   _deserializerInterfaceMap = new HashMap<Class<?>, Deserializer>();
+
     public ContextSerializerFactory(ContextSerializerFactory parent, ClassLoader loader) {
         if (loader == null)
             loader = _systemClassLoader;
         _loader = loader;
         init();
     }
+
     public static ContextSerializerFactory create() {
         return create(Thread.currentThread().getContextClassLoader());
     }
+
     public static ContextSerializerFactory create(ClassLoader loader) {
         synchronized (_contextRefMap) {
             SoftReference<ContextSerializerFactory> factoryRef = _contextRefMap.get(loader);
@@ -104,9 +108,11 @@ public class ContextSerializerFactory {
             return factory;
         }
     }
+
     public ClassLoader getClassLoader() {
         return _loader;
     }
+
     /**
      * Returns the serializer for a given class.
      */
@@ -117,6 +123,7 @@ public class ContextSerializerFactory {
         else
             return serializer;
     }
+
     /**
      * Returns a custom serializer the class
      *
@@ -143,6 +150,7 @@ public class ContextSerializerFactory {
         _customSerializerMap.put(cl.getName(), AbstractSerializer.NULL);
         return null;
     }
+
     /**
      * Returns the deserializer for a given class.
      */
@@ -153,6 +161,7 @@ public class ContextSerializerFactory {
         else
             return deserializer;
     }
+
     /**
      * Returns a custom deserializer the class
      *
@@ -179,6 +188,7 @@ public class ContextSerializerFactory {
         _customDeserializerMap.put(cl.getName(), AbstractDeserializer.NULL);
         return null;
     }
+
     /**
      * Initialize the factory
      */
@@ -222,6 +232,7 @@ public class ContextSerializerFactory {
             }
         }
     }
+
     private void initSerializerFiles(String fileName, HashSet<String> fileList, HashMap<Class<?>, Class<?>> classMap, Class<?> type) {
         try {
             ClassLoader classLoader = getClassLoader();
@@ -274,12 +285,14 @@ public class ContextSerializerFactory {
             throw new HessianException(e);
         }
     }
+
     private static void addBasic(Class<?> cl, String typeName, int type) {
         _staticSerializerMap.put(cl.getName(), new BasicSerializer(type));
         Deserializer deserializer = new BasicDeserializer(type);
         _staticDeserializerMap.put(cl.getName(), deserializer);
         _staticClassNameMap.put(typeName, deserializer);
     }
+
     static {
         _staticSerializerMap = new HashMap<String, Serializer>();
         _staticDeserializerMap = new HashMap<String, Deserializer>();

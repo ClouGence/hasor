@@ -29,13 +29,16 @@ public enum CenterMode {
     //
     private String workType;
     private String desc;
+
     CenterMode(String workType, String desc) {
         this.workType = workType;
         this.desc = desc;
     }
+
     public String getWorkType() {
         return workType;
     }
+
     public String getDesc() {
         return desc;
     }

@@ -18,6 +18,7 @@ import net.hasor.core.BindInfo;
 import net.hasor.rsf.domain.RsfServiceType;
 
 import java.util.Set;
+
 /**
  * Rsf绑定信息。
  * @version : 2014年11月12日

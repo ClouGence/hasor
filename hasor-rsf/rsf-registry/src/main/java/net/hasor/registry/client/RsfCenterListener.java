@@ -15,6 +15,7 @@
  */
 package net.hasor.registry.client;
 import net.hasor.rsf.RsfService;
+
 /**
  * 接收来自注册中心的消息。
  * @version : 2016年2月18日

@@ -16,8 +16,8 @@
 package net.hasor.rsf.rpc.context;
 import net.hasor.core.AppContext;
 import net.hasor.core.EventContext;
-import net.hasor.core.context.ContextShutdownListener;
-import net.hasor.core.context.ContextStartListener;
+import net.hasor.core.spi.ContextShutdownListener;
+import net.hasor.core.spi.ContextStartListener;
 import net.hasor.rsf.*;
 import net.hasor.rsf.address.DiskCacheAddressPool;
 import net.hasor.rsf.container.RsfBeanContainer;
@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
+
 /**
  * 服务上下文，负责提供 RSF 运行环境的支持。
  *
@@ -54,7 +55,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
     private final PoolAddressProvider  poolProvider;     // 地址获取接口（addressPool的另一个形态）
     private final AtomicBoolean        onlineStatus;     // 在线状态
     private       AppContext           appContext;       // 上下文环境
-    //
+
     public AbstractRsfContext(RsfEnvironment rsfEnvironment) {
         this.addressPool = new DiskCacheAddressPool(rsfEnvironment);
         this.poolProvider = new PoolAddressProvider(this.addressPool);
@@ -65,8 +66,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         this.rsfCaller = new RemoteRsfCaller(this, this.rsfBeanContainer, transport);
         this.onlineStatus = new AtomicBoolean(false);
     }
-    //
-    //
+
     @Override
     public synchronized void doStart(AppContext appContext) {
         //
@@ -87,6 +87,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
             this.logger.info("rsfContext -> doStart , bindAddress : {}", interAddress.toHostSchema());
         }
     }
+
     @Override
     public void doStartCompleted(AppContext appContext) {
         //
@@ -99,6 +100,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         }
         this.logger.info("rsf framework started.");
     }
+
     @Override
     public void doShutdown(AppContext appContext) {
         this.logger.info("rsf framework shutdown.");
@@ -108,11 +110,11 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
         this.rsfNetManager.shutdown();
         this.addressPool.shutdownTimer();
     }
+
     @Override
     public void doShutdownCompleted(AppContext appContext) {
     }
-    //
-    //
+
     /**应用上线(先置为上线，在引发事件)*/
     @Override
     public synchronized void online() {
@@ -128,6 +130,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
             logger.error(e.getMessage(), e);
         }
     }
+
     /**应用下线(先置为下线，在引发事件)*/
     @Override
     public synchronized void offline() {
@@ -143,42 +146,50 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
             logger.error(e.getMessage(), e);
         }
     }
+
     @Override
     public boolean isOnline() {
         return this.onlineStatus.get();
     }
-    //
-    //
+
     @Override
     public String getInstanceID() {
         return this.rsfEnvironment.getInstanceID();
     }
+
     @Override
     public AppContext getAppContext() {
         return this.appContext;
     }
+
     /**获取运行着哪些协议*/
     @Override
     public Set<String> runProtocols() {
         return this.rsfNetManager.runProtocols();
     }
+
     @Override
     public String getDefaultProtocol() {
         return this.rsfEnvironment.getSettings().getDefaultProtocol();
     }
+
     @Override
     public RsfEnvironment getEnvironment() {
         return this.rsfEnvironment;
     }
+
     public RsfSettings getSettings() {
         return this.rsfEnvironment.getSettings();
     }
+
     public RsfUpdater getUpdater() {
         return this.addressPool;
     }
+
     public ClassLoader getClassLoader() {
         return this.rsfEnvironment.getClassLoader();
     }
+
     @Override
     public InterAddress bindAddress(String protocol) {
         Connector connector = this.rsfNetManager.findConnector(protocol);
@@ -186,57 +197,68 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
             return null;
         return connector.getBindAddress();
     }
-    //
+
     public RsfClient getRsfClient() {
         return new RpcRsfClient(this.poolProvider, this.rsfCaller);
     }
+
     public RsfClient getRsfClient(String targetStr) throws URISyntaxException {
         return this.getRsfClient(new InterAddress(targetStr));
     }
+
     public RsfClient getRsfClient(URI targetURL) {
         return this.getRsfClient(new InterAddress(targetURL));
     }
+
     public RsfClient getRsfClient(InterAddress target) {
         AddressProvider provider = new InstanceAddressProvider(target);
         return new RpcRsfClient(provider, this.rsfCaller);
     }
+
     public <T> RsfBindInfo<T> getServiceInfo(String serviceID) {
         return (RsfBindInfo<T>) this.rsfBeanContainer.getRsfBindInfo(serviceID);
     }
+
     public <T> RsfBindInfo<T> getServiceInfo(String aliasType, String aliasName) {
         return (RsfBindInfo<T>) this.rsfBeanContainer.getRsfBindInfo(aliasType, aliasName);
     }
+
     public <T> RsfBindInfo<T> getServiceInfo(Class<T> serviceType) {
         return this.rsfBeanContainer.getRsfBindInfo(serviceType);
     }
+
     public <T> RsfBindInfo<T> getServiceInfo(String group, String name, String version) {
         return (RsfBindInfo<T>) this.rsfBeanContainer.getRsfBindInfo(group, name, version);
     }
+
     public List<String> getServiceIDs() {
         return this.rsfBeanContainer.getServiceIDs();
     }
+
     public List<String> getServiceIDs(String aliasType) {
         return this.rsfBeanContainer.getServiceIDs(aliasType);
     }
+
     public <T> Supplier<T> getServiceProvider(RsfBindInfo<T> bindInfo) {
         return this.rsfBeanContainer.getProvider(bindInfo);
     }
+
     public RsfPublisher publisher() {
         return this.rsfBeanContainer.createPublisher(this.rsfBeanContainer, this);
     }
-    //
-    //
+
     /*接收到网络数据 & 发送网络数据*/
     private class Transport extends ReceivedAdapter implements SenderListener {
         @Override
         public void receivedMessage(InterAddress form, ResponseInfo response) {
             rsfCaller.putResponse(response);
         }
+
         @Override
         public void receivedMessage(InterAddress form, RequestInfo request) {
             rsfCaller.onRequest(form, request);
         }
-        //
+
         @Override
         public void sendRequest(InterAddress toAddress, RequestInfo info, SendCallBack callBack) {
             try {
@@ -253,6 +275,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
                 logger.error("sendRequest - " + e.getMessage());
             }
         }
+
         @Override
         public void sendResponse(InterAddress toAddress, ResponseInfo info, SendCallBack callBack) {
             try {
@@ -269,6 +292,7 @@ public abstract class AbstractRsfContext implements RsfContext, ContextStartList
             }
         }
     }
+
     private Connector findConnector(InterAddress target) {
         String sechma = target.getSechma();
         Connector connector = rsfNetManager.findConnectorBySechma(sechma);// tips：例如：如果本地都不支持 rsf 协议，那么也没有必要连接远程的 rsf 协议。

@@ -22,8 +22,10 @@ import java.lang.reflect.Type;
 import java.util.UUID;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public final class UUIDUnserializer extends BaseUnserializer<UUID> {
     public final static UUIDUnserializer instance = new UUIDUnserializer();
+
     @Override
     public UUID unserialize(Reader reader, int tag, Type type) throws IOException {
         switch (tag) {
@@ -38,6 +40,7 @@ public final class UUIDUnserializer extends BaseUnserializer<UUID> {
         }
         return super.unserialize(reader, tag, type);
     }
+
     public UUID read(Reader reader) throws IOException {
         return read(reader, UUID.class);
     }

@@ -52,6 +52,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
 /**
  * Deserializing a JDK 1.2 Map.
  */
@@ -59,6 +60,7 @@ import java.util.TreeMap;
 public class MapDeserializer extends AbstractMapDeserializer {
     private Class<?>       _type;
     private Constructor<?> _ctor;
+
     public MapDeserializer(Class<?> type) {
         if (type == null)
             type = HashMap.class;
@@ -76,12 +78,14 @@ public class MapDeserializer extends AbstractMapDeserializer {
             }
         }
     }
+
     public Class<?> getType() {
         if (_type != null)
             return _type;
         else
             return HashMap.class;
     }
+
     public Object readMap(AbstractHessianInput in) throws IOException {
         Map<Object, Object> map;
         if (_type == null)
@@ -104,6 +108,7 @@ public class MapDeserializer extends AbstractMapDeserializer {
         in.readEnd();
         return map;
     }
+
     @Override
     public Object readObject(AbstractHessianInput in, Object[] fields) throws IOException {
         String[] fieldNames = (String[]) fields;
@@ -115,6 +120,7 @@ public class MapDeserializer extends AbstractMapDeserializer {
         }
         return map;
     }
+
     private Map<Object, Object> createMap() throws IOException {
         if (_type == null)
             return new HashMap<Object, Object>();

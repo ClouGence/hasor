@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+
 /**
  * 注册中心事件响应实现
  * @version : 2016年2月18日
@@ -30,9 +31,11 @@ import java.util.*;
  */
 class EventProcessMapping {
     protected static Logger logger = LoggerFactory.getLogger(EventProcessMapping.class);
+
     private static String nowData() {
         return new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date());
     }
+
     private static List<InterAddress> convertTo(String addressSetBody) {
         String[] addressSet = StringUtils.isBlank(addressSetBody) ? null : addressSetBody.split(",");
         if (addressSet == null || addressSet.length == 0) {
@@ -48,6 +51,7 @@ class EventProcessMapping {
         }
         return addressList;
     }
+
     //
     private static final Map<String, EventProcess> eventProcessMap;
 
@@ -72,6 +76,7 @@ class EventProcessMapping {
     //
     //
     //
+
     /**追加或重新激活地址。*/
     private static class AppendAddressEvent implements EventProcess {
         @Override
@@ -86,6 +91,7 @@ class EventProcessMapping {
             return true;
         }
     }
+
     /**使用新的地址本替换已有的地址本。*/
     private static class RefreshAddressEvent implements EventProcess {
         @Override
@@ -100,6 +106,7 @@ class EventProcessMapping {
             return true;
         }
     }
+
     /**推送无效的地址，客户端对此地址进行删除操作。*/
     private static class RemoveAddressEvent implements EventProcess {
         @Override
@@ -114,6 +121,7 @@ class EventProcessMapping {
             return true;
         }
     }
+
     /**推送服务级路由规则*/
     private static class UpdateServiceRouteEvent implements EventProcess {
         @Override
@@ -127,6 +135,7 @@ class EventProcessMapping {
             return true;
         }
     }
+
     /**推送方法级路由规则*/
     private static class UpdateMethodRouteEvent implements EventProcess {
         @Override
@@ -140,6 +149,7 @@ class EventProcessMapping {
             return true;
         }
     }
+
     /**推送参数级路由规则*/
     private static class UpdateArgsRouteEvent implements EventProcess {
         @Override
@@ -153,6 +163,7 @@ class EventProcessMapping {
             return true;
         }
     }
+
     /**推送流控流控规则*/
     private static class UpdateFlowControlEvent implements EventProcess {
         @Override

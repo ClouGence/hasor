@@ -47,12 +47,14 @@
  */
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.util.HashMap;
+
 /**
  * Factory for returning serialization methods.
  */
 public class ExtSerializerFactory extends AbstractSerializerFactory {
     private HashMap<Class<?>, Serializer>   _serializerMap   = new HashMap<Class<?>, Serializer>();
     private HashMap<Class<?>, Deserializer> _deserializerMap = new HashMap<Class<?>, Deserializer>();
+
     /**
      * Adds a serializer.
      *
@@ -62,6 +64,7 @@ public class ExtSerializerFactory extends AbstractSerializerFactory {
     public void addSerializer(Class<?> cl, Serializer serializer) {
         _serializerMap.put(cl, serializer);
     }
+
     /**
      * Adds a deserializer.
      *
@@ -71,6 +74,7 @@ public class ExtSerializerFactory extends AbstractSerializerFactory {
     public void addDeserializer(Class<?> cl, Deserializer deserializer) {
         _deserializerMap.put(cl, deserializer);
     }
+
     /**
      * Returns the serializer for a class.
      *
@@ -81,6 +85,7 @@ public class ExtSerializerFactory extends AbstractSerializerFactory {
     public Serializer getSerializer(Class<?> cl) throws HessianProtocolException {
         return (Serializer) _serializerMap.get(cl);
     }
+
     /**
      * Returns the deserializer for a class.
      *

@@ -15,7 +15,6 @@
  */
 package net.hasor.rsf.rpc.caller;
 import io.netty.util.TimerTask;
-import net.hasor.core.Hasor;
 import net.hasor.rsf.*;
 import net.hasor.rsf.container.RsfBeanContainer;
 import net.hasor.rsf.domain.*;
@@ -26,10 +25,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+
 /**
  * 负责管理所有 RSF 发起的请求，Manager还提供了最大并发上限的配置.
  * @version : 2014年9月12日
@@ -42,25 +43,28 @@ public abstract class RsfRequestManager {
     private final    RsfContext                     rsfContext;
     private final    AtomicInteger                  requestCount;
     private final    SenderListener                 senderListener;
-    //
+
     public RsfRequestManager(RsfContext rsfContext, SenderListener senderListener) {
-        senderListener = Hasor.assertIsNotNull(senderListener, "not found SendData.");
+        senderListener = Objects.requireNonNull(senderListener, "not found SendData.");
         this.rsfContext = rsfContext;
         this.rsfResponse = new ConcurrentHashMap<>();
         this.requestCount = new AtomicInteger(0);
         this.senderListener = senderListener;
     }
+
     /**获取RSF容器对象。*/
     public RsfContext getContext() {
         return this.rsfContext;
     }
+
     /**获取{@link RsfBeanContainer}。*/
     public abstract RsfBeanContainer getContainer();
+
     /**发送数据包*/
     private void sendData(InterAddress toAddress, RequestInfo info, SendCallBack callBack) {
         this.senderListener.sendRequest(toAddress, info, callBack);
     }
-    //
+
     /**
      * 获取正在进行中的调用请求。
      * @param requestID 请求ID
@@ -69,6 +73,7 @@ public abstract class RsfRequestManager {
     public RsfFuture getRequest(long requestID) {
         return this.rsfResponse.get(requestID);
     }
+
     /**
      * 响应挂起的Request请求。
      * @param info 响应结果
@@ -145,6 +150,7 @@ public abstract class RsfRequestManager {
             return rsfFuture.failed(new RsfException(local.getStatus(), "status."));
         }
     }
+
     /**
      * 响应挂起的Request请求。
      * @param requestID 请求ID
@@ -159,6 +165,7 @@ public abstract class RsfRequestManager {
             invLogger.error("response({}) -> errorFailed, RsfFuture is not exist. -> maybe is timeout! ,error= {}.", requestID, e.getMessage(), e);
         }
     }
+
     private RsfFuture removeRsfFuture(long requestID) {
         RsfFuture rsfFuture = this.rsfResponse.remove(requestID);
         if (rsfFuture != null) {
@@ -166,6 +173,7 @@ public abstract class RsfRequestManager {
         }
         return rsfFuture;
     }
+
     /**
      * 发送RSF调用请求，处理RsfFilter
      * @param rsfRequest rsf请求
@@ -206,6 +214,7 @@ public abstract class RsfRequestManager {
         }
         return rsfFuture;
     }
+
     /**将请求发送到远端服务器。*/
     private void sendRequest(final RsfFuture rsfFuture) throws Throwable {
         /*1.远程目标机*/
@@ -256,6 +265,7 @@ public abstract class RsfRequestManager {
                 public void failed(long requestID, Throwable e) {
                     putResponse(requestID, e);                                          // <- 4.发送失败直接 failed
                 }
+
                 public void complete(long requestID) {
                     /* wait response data */
                 }
@@ -265,6 +275,7 @@ public abstract class RsfRequestManager {
             putResponse(rsfRequest.getRequestID(), e);
         }
     }
+
     /**
      * 负责客户端引发的超时逻辑。
      * @param rsfFuture 开始计时的请求。

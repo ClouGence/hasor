@@ -18,11 +18,12 @@ import net.hasor.core.Singleton;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.launcher.CmdRequest;
+import net.hasor.tconsole.CommandRequest;
 import net.hasor.utils.StringUtils;
 
 import java.io.StringWriter;
 import java.util.List;
+
 /**
  * 列出服务列表
  * @version : 2016年4月3日
@@ -37,12 +38,14 @@ public class ListRsfInstruct implements CommandExecutor {
                 + " - list      (show all service id list.)\r\n"// 
                 + " - list -h   (show help info.)\r\n";
     }
+
     @Override
-    public boolean inputMultiLine(CmdRequest request) {
+    public boolean inputMultiLine(CommandRequest request) {
         return false;
     }
+
     @Override
-    public String doCommand(CmdRequest request) throws Throwable {
+    public String doCommand(CommandRequest request) throws Throwable {
         RsfContext rsfContext = request.getFinder().getAppContext().getInstance(RsfContext.class);
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();

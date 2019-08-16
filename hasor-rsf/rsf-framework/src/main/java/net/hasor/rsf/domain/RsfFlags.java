@@ -23,16 +23,19 @@ public enum RsfFlags {
     P2PFlag((short) 0),      // 第0位，P2P调用
     ;
     private int flagMark;
+
     RsfFlags(short flagMark) {
         this.flagMark = flagMark;
     }
-    //
+
     public short addTag(short oldValue) {
         return (short) (1 << this.flagMark | oldValue);
     }
+
     public short removeTag(short oldValue) {
         return (short) (~(1 << this.flagMark) & oldValue);
     }
+
     public boolean testTag(short oldValue) {
         return addTag(oldValue) == oldValue;
     }

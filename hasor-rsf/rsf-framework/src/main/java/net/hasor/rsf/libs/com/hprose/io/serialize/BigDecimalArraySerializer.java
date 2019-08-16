@@ -22,8 +22,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+
 public final class BigDecimalArraySerializer extends ReferenceSerializer<BigDecimal[]> {
     public final static BigDecimalArraySerializer instance = new BigDecimalArraySerializer();
+
     @Override
     public final void serialize(Writer writer, BigDecimal[] array) throws IOException {
         super.serialize(writer, array);

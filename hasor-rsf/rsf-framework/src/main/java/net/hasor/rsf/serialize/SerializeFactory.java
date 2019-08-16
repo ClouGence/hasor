@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 /**
  * 序列化工厂
  * @version : 2014年9月20日
@@ -34,18 +35,18 @@ import java.util.Map;
  */
 public class SerializeFactory {
     protected static Logger                      logger   = LoggerFactory.getLogger(SerializeFactory.class);
-    private          Map<String, SerializeCoder> coderMap = new HashMap<String, SerializeCoder>();
-    //
+    private          Map<String, SerializeCoder> coderMap = new HashMap<>();
+
     /**获取序列化（编码/解码）器。*/
     public SerializeCoder getSerializeCoder(String codeName) {
         return this.coderMap.get(codeName);
     }
+
     /**注册序列化（编码/解码）器*/
     public void registerSerializeCoder(String codeName, SerializeCoder decoder) {
         this.coderMap.put(codeName, decoder);
     }
-    //
-    //
+
     public static SerializeFactory createFactory(RsfEnvironment environment) {
         SerializeFactory factory = new SerializeFactory();
         XmlNode[] atNode = environment.getSettings().getXmlNodeArray("hasor.rsfConfig.serializeType");
@@ -64,6 +65,7 @@ public class SerializeFactory {
         logger.info("SerializeFactory init. -> [{}]", types);
         return factory;
     }
+
     private static void initSerialize(SerializeFactory factory, XmlNode atNode, Environment environment) {
         String serializeType = atNode.getAttribute("name");
         String serializeCoder = atNode.getText().trim();

@@ -16,6 +16,7 @@
 package net.hasor.rsf.rpc.net.netty;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+
 /**
  * 网络接受器，负责判定网络连接是否接受。
  * @version : 2017年01月16日
@@ -23,9 +24,11 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  */
 class NettySocketAccept extends ChannelInboundHandlerAdapter {
     private NettyConnector connector;
+
     public NettySocketAccept(NettyConnector connector) {
         this.connector = connector;
     }
+
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         if (this.connector.acceptIn(ctx)) {
             super.channelActive(ctx);

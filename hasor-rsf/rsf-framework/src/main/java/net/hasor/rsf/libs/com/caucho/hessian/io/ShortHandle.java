@@ -47,24 +47,30 @@
  */
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.Serializable;
+
 /**
  * Handle for Java Short objects.
  */
 @SuppressWarnings({ "unused" })
 public class ShortHandle implements Serializable {
-    private static final long serialVersionUID = -775343009253609394L;
-    private short _value;
+    private static final long  serialVersionUID = -775343009253609394L;
+    private              short _value;
+
     private ShortHandle() {
     }
+
     public ShortHandle(short value) {
         _value = value;
     }
+
     public short getValue() {
         return _value;
     }
+
     public Object readResolve() {
         return new Short(_value);
     }
+
     public String toString() {
         return getClass().getSimpleName() + "[" + _value + "]";
     }

@@ -17,19 +17,21 @@ package net.hasor.registry.client.domain;
 import net.hasor.rsf.RsfBindInfo;
 
 import java.io.Serializable;
+
 /**
  * 服务ID
  * @version : 2018年4月23日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ServiceID implements Serializable {
-    private static final long serialVersionUID = 1617451556801258822L;
+    private static final long   serialVersionUID = 1617451556801258822L;
     /** 服务名称。*/
-    private String bindName;
+    private              String bindName;
     /** 服务分组。*/
-    private String bindGroup;
+    private              String bindGroup;
     /** 服务版本。*/
-    private String bindVersion;
+    private              String bindVersion;
+
     //
     public static ServiceID of(RsfBindInfo<?> domain) {
         ServiceID serviceID = new ServiceID();
@@ -38,13 +40,16 @@ public class ServiceID implements Serializable {
         serviceID.bindVersion = domain.getBindVersion();
         return serviceID;
     }
+
     //
     public String getBindName() {
         return bindName;
     }
+
     public String getBindGroup() {
         return bindGroup;
     }
+
     public String getBindVersion() {
         return bindVersion;
     }

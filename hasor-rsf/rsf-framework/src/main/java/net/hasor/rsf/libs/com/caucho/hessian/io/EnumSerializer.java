@@ -48,11 +48,13 @@
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.lang.reflect.Method;
+
 /**
  * Serializing an object for known object types.
  */
 public class EnumSerializer extends AbstractSerializer {
     private Method _name;
+
     public EnumSerializer(Class<?> cl) {
         // hessian/32b[12], hessian/3ab[23]
         if (!cl.isEnum() && cl.getSuperclass().isEnum())
@@ -63,6 +65,7 @@ public class EnumSerializer extends AbstractSerializer {
             throw new RuntimeException(e);
         }
     }
+
     public void writeObject(Object obj, AbstractHessianOutput out) throws IOException {
         if (out.addRef(obj))
             return;

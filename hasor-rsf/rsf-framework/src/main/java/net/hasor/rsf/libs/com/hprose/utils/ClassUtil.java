@@ -22,6 +22,7 @@ import net.hasor.utils.ClassUtils;
 
 import java.lang.reflect.*;
 import java.util.ArrayList;
+
 public final class ClassUtil {
     private static Class<?> getInnerClass(StringBuilder className, int[] pos, int i, char c) {
         if (i < pos.length) {
@@ -40,6 +41,7 @@ public final class ClassUtil {
             }
         }
     }
+
     public final static String getClassAlias(Class<?> type) {
         String className = HproseClassManager.getClassAlias(type);
         if (className == null) {
@@ -48,6 +50,7 @@ public final class ClassUtil {
         }
         return className;
     }
+
     private static Class<?> getClass(StringBuilder className, int[] pos, int i, char c) {
         if (i < pos.length) {
             int p = pos[i];
@@ -70,6 +73,7 @@ public final class ClassUtil {
             }
         }
     }
+
     public final static Class<?> getClass(String className) {
         Class<?> type = HproseClassManager.getClass(className);
         if (type == null) {
@@ -111,6 +115,7 @@ public final class ClassUtil {
         }
         return type;
     }
+
     private static Class<?> toClass(Type[] bounds) {
         if (bounds.length == 1) {
             Type boundType = bounds[0];
@@ -120,6 +125,7 @@ public final class ClassUtil {
         }
         return Object.class;
     }
+
     public final static Class<?> toClass(Type type) {
         if (type == null) {
             return null;
@@ -137,15 +143,19 @@ public final class ClassUtil {
             return Object.class;
         }
     }
+
     public final static Type getComponentType(Type type) {
         return (type instanceof GenericArrayType) ? ((GenericArrayType) type).getGenericComponentType() : (type instanceof ParameterizedType) ? ((ParameterizedType) type).getActualTypeArguments()[0] : ((Class<?>) type).isArray() ? ((Class<?>) type).getComponentType() : Object.class;
     }
+
     public final static Type getKeyType(Type type) {
         return (type instanceof ParameterizedType) ? ((ParameterizedType) type).getActualTypeArguments()[0] : Object.class;
     }
+
     public final static Type getValueType(Type type) {
         return (type instanceof ParameterizedType) ? ((ParameterizedType) type).getActualTypeArguments()[1] : Object.class;
     }
+
     public final static Type getActualType(Type type, Type paramType) {
         if ((type instanceof ParameterizedType) && (paramType instanceof TypeVariable)) {
             Type[] actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();

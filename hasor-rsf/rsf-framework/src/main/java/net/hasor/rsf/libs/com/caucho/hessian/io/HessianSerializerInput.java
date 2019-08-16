@@ -53,6 +53,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 /**
  * Input stream for Hessian requests, deserializing objects using the
  * java.io.Serialization protocol.
@@ -93,12 +94,14 @@ public class HessianSerializerInput extends Hessian2Input {
     public HessianSerializerInput(InputStream is) {
         super(is);
     }
+
     /**
      * Creates an uninitialized Hessian input stream.
      */
     public HessianSerializerInput() {
         super(null);
     }
+
     /**
      * Reads an object from the input stream.  cl is known not to be
      * a Map.
@@ -137,6 +140,7 @@ public class HessianSerializerInput extends Hessian2Input {
             throw new IOExceptionWrapper(e);
         }
     }
+
     /**
      * Creates a map of the classes fields.
      */

@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
 /**
  *
  * @version : 2014年11月12日
@@ -68,118 +69,142 @@ public class DefaultRsfSettings extends SettingsWrap implements RsfSettings {
     private   boolean                   localDiskCache        = true;
     private   long                      diskCacheTimeInterval = 3600000;
     private   boolean                   automaticOnline       = true;
-    //
-    //
+
     public DefaultRsfSettings(Settings settings) throws IOException {
         super(settings);
         this.refreshRsfConfig();
     }
-    //
+
     @Override
     public int getDefaultTimeout() {
         return this.defaultTimeout;
     }
+
     @Override
     public RsfOptionSet getServerOption() {
         return this.serverOptionManager;
     }
+
     @Override
     public RsfOptionSet getClientOption() {
         return this.clientOptionManager;
     }
+
     @Override
     public String getDefaultGroup() {
         return this.defaultGroup;
     }
+
     @Override
     public String getDefaultVersion() {
         return this.defaultVersion;
     }
+
     @Override
     public String getDefaultSerializeType() {
         return this.defaultSerializeType;
     }
+
     @Override
     public int getQueueMaxSize() {
         return this.queueMaxSize;
     }
+
     @Override
     public int getQueueMinPoolSize() {
         return this.queueMinPoolSize;
     }
+
     @Override
     public int getQueueMaxPoolSize() {
         return this.queueMaxPoolSize;
     }
+
     @Override
     public long getQueueKeepAliveTime() {
         return this.queueKeepAliveTime;
     }
+
     @Override
     public int getRequestTimeout() {
         return this.requestTimeout;
     }
+
     @Override
     public int getMaximumRequest() {
         return this.maximumRequest;
     }
+
     @Override
     public SendLimitPolicy getSendLimitPolicy() {
         return this.sendLimitPolicy;
     }
+
     @Override
     public int getConnectTimeout() {
         return this.connectTimeout;
     }
+
     @Override
     public String getBindAddress() {
         return this.bindAddress;
     }
+
     @Override
     public String getDefaultProtocol() {
         return this.defaultProtocol;
     }
+
     @Override
     public Set<String> getProtocos() {
         return Collections.unmodifiableSet(this.connectorSet.keySet());
     }
+
     @Override
     public InterAddress getBindAddressSet(String protocolName) {
         return this.bindAddressSet.get(protocolName);
     }
+
     @Override
     public String getProtocolConfigKey(String protocolName) {
         return this.connectorSet.get(protocolName);
     }
+
     @Override
     public String getUnitName() {
         return this.unitName;
     }
+
     @Override
     public long getInvalidWaitTime() {
         return this.invalidWaitTime;
     }
+
     @Override
     public long getRefreshCacheTime() {
         return this.refreshCacheTime;
     }
+
     @Override
     public long getDiskCacheTimeInterval() {
         return this.diskCacheTimeInterval;
     }
+
     @Override
     public boolean islocalDiskCache() {
         return this.localDiskCache;
     }
+
     @Override
     public boolean isAutomaticOnline() {
         return this.automaticOnline;
     }
-    //
+
     public void refresh() throws IOException {
         super.refresh();
         this.refreshRsfConfig();
     }
+
     public void refreshRsfConfig() throws IOException {
         this.defaultGroup = getString("hasor.rsfConfig.defaultServiceValue.group", "RSF");
         this.defaultVersion = getString("hasor.rsfConfig.defaultServiceValue.version", "1.0.0");

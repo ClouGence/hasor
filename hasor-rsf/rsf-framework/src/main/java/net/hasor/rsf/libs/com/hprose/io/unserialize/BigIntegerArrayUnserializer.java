@@ -23,8 +23,10 @@ import java.math.BigInteger;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagEmpty;
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagList;
+
 public final class BigIntegerArrayUnserializer extends BaseUnserializer<BigInteger[]> {
     public final static BigIntegerArrayUnserializer instance = new BigIntegerArrayUnserializer();
+
     @Override
     public BigInteger[] unserialize(Reader reader, int tag, Type type) throws IOException {
         if (tag == TagList)
@@ -33,6 +35,7 @@ public final class BigIntegerArrayUnserializer extends BaseUnserializer<BigInteg
             return new BigInteger[0];
         return super.unserialize(reader, tag, type);
     }
+
     public BigInteger[] read(Reader reader) throws IOException {
         return read(reader, BigInteger[].class);
     }

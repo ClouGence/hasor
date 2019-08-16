@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+
 /**
  * @version : 2016年1月10日
  * @author 赵永春 (zyc@hasor.net)
@@ -46,10 +47,12 @@ public class LogUtils {
     //
     //
     //
-    private String errorCode;
+    private String              errorCode;
     private Map<String, Object> map = new TreeMap<String, Object>();
+
     private LogUtils() {
     }
+
     private LogUtils(String errorCode) {
         if (errorCode != null) {
             this.errorCode = errorCode;
@@ -58,23 +61,28 @@ public class LogUtils {
             put("errorCodeMsg", value);
         }
     }
+
     //
     //
     public static LogUtils create() {
         return new LogUtils();
     }
+
     public static LogUtils create(String errorCode) {
         if (errorCode != null && !errorProp.containsKey(errorCode)) {
             logger.error("not found errorCode = " + errorCode);
         }
         return new LogUtils(errorCode);
     }
+
     public static LogUtils createSMS() {
         return createSMS(null);
     }
+
     public static LogUtils createSMS(String errorCode) {
         return create(errorCode).addLog("NEED_SMS", "NEED_SMS");
     }
+
     //
     private void put(String key, Object value) {
         if (key != null && map.get(key) != null) {
@@ -85,6 +93,7 @@ public class LogUtils {
             logger.error("NEED_SMS_NOTIFY map.key.size = " + map.keySet().size());
         }
     }
+
     public LogUtils addString(String message) {
         if (message == null) {
             message = "valueIsNull";
@@ -92,6 +101,7 @@ public class LogUtils {
         put("message", message);
         return this;
     }
+
     public LogUtils addLog(String key, Object value) {
         if (value == null) {
             value = "valueIsNull";
@@ -99,12 +109,14 @@ public class LogUtils {
         put(key, value);
         return this;
     }
+
     public LogUtils logException(Throwable ex) {
         if (ex != null) {
             put("exceptionMsg", ex.getMessage());
         }
         return this;
     }
+
     /**
      * 注意, 仅是为了方便日志输出及查看, 本方法未进行html转义, 所以切不可输出到客户页面.
      */

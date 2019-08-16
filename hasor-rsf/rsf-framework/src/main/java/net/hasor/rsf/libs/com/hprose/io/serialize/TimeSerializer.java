@@ -25,8 +25,10 @@ import java.sql.Time;
 import java.util.Calendar;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagSemicolon;
+
 public final class TimeSerializer extends ReferenceSerializer<Time> {
     public final static TimeSerializer instance = new TimeSerializer();
+
     @Override
     public final void serialize(Writer writer, Time time) throws IOException {
         super.serialize(writer, time);

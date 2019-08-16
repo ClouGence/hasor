@@ -56,16 +56,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.*;
 import java.security.cert.X509Certificate;
+
 @SuppressWarnings("unused")
 public class X509Encryption extends HessianEnvelope {
-    private String _algorithm = "AES";
+    private String          _algorithm = "AES";
     // certificate for encryption/decryption
     private X509Certificate _cert;
     // private key for decryption
     private PrivateKey      _privateKey;
     private SecureRandom    _secureRandom;
+
     public X509Encryption() {
     }
+
     /**
      * Sets the encryption algorithm for the content.
      */
@@ -74,48 +77,56 @@ public class X509Encryption extends HessianEnvelope {
             throw new NullPointerException();
         _algorithm = algorithm;
     }
+
     /**
      * Gets the encryption algorithm for the content.
      */
     public String getAlgorithm() {
         return _algorithm;
     }
+
     /**
      * The X509 certificate to obtain the public key of the recipient.
      */
     public X509Certificate getCertificate() {
         return _cert;
     }
+
     /**
      * The X509 certificate to obtain the public key of the recipient.
      */
     public void setCertificate(X509Certificate cert) {
         _cert = cert;
     }
+
     /**
      * The private key for decryption.
      */
     public PrivateKey getPrivateKey() {
         return _privateKey;
     }
+
     /**
      * The X509 certificate to obtain the public key of the recipient.
      */
     public void setPrivateKey(PrivateKey privateKey) {
         _privateKey = privateKey;
     }
+
     /**
      * The random number generator for the shared secrets.
      */
     public SecureRandom getSecureRandom() {
         return _secureRandom;
     }
+
     /**
      * The random number generator for the shared secrets.
      */
     public void setSecureRandom(SecureRandom random) {
         _secureRandom = random;
     }
+
     public Hessian2Output wrap(Hessian2Output out) throws IOException {
         if (_cert == null)
             throw new IOException("X509Encryption.wrap requires a certificate");
@@ -124,6 +135,7 @@ public class X509Encryption extends HessianEnvelope {
         filterOut.setCloseStreamOnClose(true);
         return filterOut;
     }
+
     public Hessian2Input unwrap(Hessian2Input in) throws IOException {
         if (_privateKey == null)
             throw new IOException("X509Encryption.unwrap requires a private key");
@@ -135,6 +147,7 @@ public class X509Encryption extends HessianEnvelope {
             throw new IOException("expected hessian Envelope method '" + getClass().getName() + "' at '" + method + "'");
         return unwrapHeaders(in);
     }
+
     public Hessian2Input unwrapHeaders(Hessian2Input in) throws IOException {
         if (_privateKey == null)
             throw new IOException("X509Encryption.unwrap requires a private key");
@@ -145,11 +158,13 @@ public class X509Encryption extends HessianEnvelope {
         filter.setCloseStreamOnClose(true);
         return filter;
     }
+
     class EncryptOutputStream extends OutputStream {
         private Hessian2Output     _out;
         private Cipher             _cipher;
         private OutputStream       _bodyOut;
         private CipherOutputStream _cipherOut;
+
         EncryptOutputStream(Hessian2Output out) throws IOException {
             try {
                 _out = out;
@@ -195,12 +210,15 @@ public class X509Encryption extends HessianEnvelope {
                 throw new RuntimeException(e);
             }
         }
+
         public void write(int ch) throws IOException {
             _cipherOut.write(ch);
         }
+
         public void write(byte[] buffer, int offset, int length) throws IOException {
             _cipherOut.write(buffer, offset, length);
         }
+
         public void close() throws IOException {
             Hessian2Output out = _out;
             _out = null;
@@ -213,11 +231,13 @@ public class X509Encryption extends HessianEnvelope {
             }
         }
     }
+
     class EncryptInputStream extends InputStream {
         private Hessian2Input     _in;
         private Cipher            _cipher;
         private InputStream       _bodyIn;
         private CipherInputStream _cipherIn;
+
         EncryptInputStream(Hessian2Input in) throws IOException {
             try {
                 _in = in;
@@ -254,12 +274,15 @@ public class X509Encryption extends HessianEnvelope {
                 throw new RuntimeException(e);
             }
         }
+
         public int read() throws IOException {
             return _cipherIn.read();
         }
+
         public int read(byte[] buffer, int offset, int length) throws IOException {
             return _cipherIn.read(buffer, offset, length);
         }
+
         public void close() throws IOException {
             Hessian2Input in = _in;
             _in = null;

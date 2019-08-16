@@ -22,8 +22,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.sql.Timestamp;
+
 public final class TimestampUnserializer extends BaseUnserializer<Timestamp> {
     public final static TimestampUnserializer instance = new TimestampUnserializer();
+
     @Override
     public Timestamp unserialize(Reader reader, int tag, Type type) throws IOException {
         switch (tag) {
@@ -45,6 +47,7 @@ public final class TimestampUnserializer extends BaseUnserializer<Timestamp> {
             return new Timestamp(tag - '0');
         return super.unserialize(reader, tag, type);
     }
+
     public Timestamp read(Reader reader) throws IOException {
         return read(reader, Timestamp.class);
     }

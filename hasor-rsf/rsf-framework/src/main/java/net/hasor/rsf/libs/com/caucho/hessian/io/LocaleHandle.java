@@ -47,15 +47,18 @@
  */
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.util.Locale;
+
 /**
  * Handle for a locale object.
  */
 public class LocaleHandle implements java.io.Serializable, HessianHandle {
-    private static final long serialVersionUID = 6147810818086064550L;
-    private String value;
+    private static final long   serialVersionUID = 6147810818086064550L;
+    private              String value;
+
     public LocaleHandle(String locale) {
         this.value = locale;
     }
+
     private Object readResolve() {
         String s = this.value;
         if (s == null)

@@ -49,20 +49,24 @@ package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
 /**
  * Handle for a calendar object.
  */
 public class CalendarHandle implements java.io.Serializable, HessianHandle {
-    private static final long serialVersionUID = 3950163942337889044L;
-    private Class<?> type;
-    private Date     date;
+    private static final long     serialVersionUID = 3950163942337889044L;
+    private              Class<?> type;
+    private              Date     date;
+
     public CalendarHandle() {
     }
+
     public CalendarHandle(Class<?> type, long time) {
         if (!GregorianCalendar.class.equals(type))
             this.type = type;
         this.date = new Date(time);
     }
+
     private Object readResolve() {
         try {
             Calendar cal;

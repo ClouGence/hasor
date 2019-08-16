@@ -21,10 +21,11 @@ package net.hasor.rsf.domain;
  */
 public class RsfTimeoutException extends RsfException {
     private static final long serialVersionUID = -445430836145251422L;
-    //
+
     public RsfTimeoutException(String string) {
         super(ProtocolStatus.Timeout, string);
     }
+
     public RsfTimeoutException(Throwable e) {
         super(ProtocolStatus.Timeout, e);
     }

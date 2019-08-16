@@ -21,6 +21,7 @@ import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.LastHttpContent;
 import net.hasor.utils.future.BasicFuture;
+
 /**
  * Http Netty 响应处理器
  * @version : 2017年11月22日
@@ -29,9 +30,11 @@ import net.hasor.utils.future.BasicFuture;
 class RsfChannelOnHttpClientHandler extends ChannelInboundHandlerAdapter {
     private RsfHttpResponseObject              httpResponse;
     private BasicFuture<RsfHttpResponseObject> responseFuture;
+
     public RsfChannelOnHttpClientHandler(BasicFuture<RsfHttpResponseObject> responseFuture) {
         this.responseFuture = responseFuture;
     }
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         // .请求头
@@ -58,6 +61,7 @@ class RsfChannelOnHttpClientHandler extends ChannelInboundHandlerAdapter {
         //
         super.channelRead(ctx, msg);
     }
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         this.responseFuture.failed(cause);

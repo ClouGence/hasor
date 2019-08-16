@@ -25,7 +25,6 @@ import net.hasor.test.filters.SimpleFilter;
 import net.hasor.test.filters.SimpleInvokerFilter;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.ServletVersion;
-import net.hasor.web.WebApiBinder;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.startup.RuntimeFilter;
 import org.junit.Test;
@@ -43,22 +42,22 @@ public class MappingBinderTest extends AbstractTest {
     @Test
     public void binder_0() {
         AppContext appContext1 = buildWebAppContext(apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).setEncodingCharacter("UTF-8-TTT", "UTF-8-AAA");
+            apiBinder.setEncodingCharacter("UTF-8-TTT", "UTF-8-AAA");
         }, servlet25("/"), LoadModule.Web);
         assert "UTF-8-TTT".equals(appContext1.findBindingBean(RuntimeFilter.HTTP_REQUEST_ENCODING_KEY, String.class));
         assert "UTF-8-AAA".equals(appContext1.findBindingBean(RuntimeFilter.HTTP_RESPONSE_ENCODING_KEY, String.class));
         //
         buildWebAppContext(apiBinder -> {
-            assert apiBinder.tryCast(WebApiBinder.class).getServletVersion() == ServletVersion.V2_4;
+            assert apiBinder.getServletVersion() == ServletVersion.V2_4;
         }, servlet24("/"), LoadModule.Web);
         buildWebAppContext(apiBinder -> {
-            assert apiBinder.tryCast(WebApiBinder.class).getServletVersion() == ServletVersion.V2_5;
+            assert apiBinder.getServletVersion() == ServletVersion.V2_5;
         }, servlet25("/"), LoadModule.Web);
         buildWebAppContext(apiBinder -> {
-            assert apiBinder.tryCast(WebApiBinder.class).getServletVersion() == ServletVersion.V3_0;
+            assert apiBinder.getServletVersion() == ServletVersion.V3_0;
         }, servlet30("/"), LoadModule.Web);
         buildWebAppContext(apiBinder -> {
-            assert apiBinder.tryCast(WebApiBinder.class).getServletVersion() == ServletVersion.V3_1;
+            assert apiBinder.getServletVersion() == ServletVersion.V3_1;
         }, servlet31("/"), LoadModule.Web);
     }
 
@@ -72,11 +71,11 @@ public class MappingBinderTest extends AbstractTest {
             BindInfo<AnnoGetAction> filterBindInfo1 = apiBinder.bindType(AnnoGetAction.class).uniqueName().asEagerSingleton().toInfo();
             BindInfo<AnnoGetAction> filterBindInfo2 = apiBinder.bindType(AnnoGetAction.class).uniqueName().toInfo();
             //
-            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(testCallerAction);          // 1
-            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(testCallerActionProvider);  // 2
-            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(AnnoGetAction.class);       // 3
-            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(filterBindInfo1);           // 4
-            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(filterBindInfo2);           // 5
+            apiBinder.mappingTo(urls).with(testCallerAction);          // 1
+            apiBinder.mappingTo(urls).with(testCallerActionProvider);  // 2
+            apiBinder.mappingTo(urls).with(AnnoGetAction.class);       // 3
+            apiBinder.mappingTo(urls).with(filterBindInfo1);           // 4
+            apiBinder.mappingTo(urls).with(filterBindInfo2);           // 5
         }, servlet30("/"), LoadModule.Web);
         //
         List<MappingDef> definitions = appContext.findBindingBean(MappingDef.class);
@@ -125,11 +124,11 @@ public class MappingBinderTest extends AbstractTest {
             BindInfo<AnnoGetAction> filterBindInfo1 = apiBinder.bindType(AnnoGetAction.class).uniqueName().asEagerSingleton().toInfo();
             BindInfo<AnnoGetAction> filterBindInfo2 = apiBinder.bindType(AnnoGetAction.class).uniqueName().toInfo();
             //
-            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(1, testCallerAction);          // 1
-            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(2, testCallerActionProvider);  // 2
-            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(3, AnnoGetAction.class);       // 3
-            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(4, filterBindInfo1);           // 4
-            apiBinder.tryCast(WebApiBinder.class).mappingTo(urls).with(5, filterBindInfo2);           // 5
+            apiBinder.mappingTo(urls).with(1, testCallerAction);          // 1
+            apiBinder.mappingTo(urls).with(2, testCallerActionProvider);  // 2
+            apiBinder.mappingTo(urls).with(3, AnnoGetAction.class);       // 3
+            apiBinder.mappingTo(urls).with(4, filterBindInfo1);           // 4
+            apiBinder.mappingTo(urls).with(5, filterBindInfo2);           // 5
         }, servlet30("/"), LoadModule.Web);
         //
         List<MappingDef> definitions = appContext.findBindingBean(MappingDef.class);
@@ -182,13 +181,13 @@ public class MappingBinderTest extends AbstractTest {
     public void mappingTest_3() {
         buildWebAppContext(apiBinder -> {
             try {
-                apiBinder.tryCast(WebApiBinder.class).mappingTo(new String[0]).with(AnnoGetAction.class);
+                apiBinder.mappingTo(new String[0]).with(AnnoGetAction.class);
                 assert false;
             } catch (Exception e) {
                 assert e.getMessage().equals("mappingTo patterns is empty.");
             }
             try {
-                apiBinder.tryCast(WebApiBinder.class).mappingTo(new String[] { "", null }).with(AnnoGetAction.class);
+                apiBinder.mappingTo(new String[] { "", null }).with(AnnoGetAction.class);
                 assert false;
             } catch (Exception e) {
                 assert e.getMessage().equals("mappingTo patterns is empty.");
@@ -200,13 +199,13 @@ public class MappingBinderTest extends AbstractTest {
     public void mappingTest_4() {
         AppContext appContext = buildWebAppContext(apiBinder -> {
             try {
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(BasicAction.class);
+                apiBinder.loadMappingTo(BasicAction.class);
                 assert false;
             } catch (Exception e) {
                 assert e.getMessage().endsWith(" must be configure @MappingTo");
             }
             try {
-                apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AppContext.class);
+                apiBinder.loadMappingTo(AppContext.class);
                 assert false;
             } catch (Exception e) {
                 assert e.getMessage().endsWith(" must be normal Bean");
@@ -214,7 +213,7 @@ public class MappingBinderTest extends AbstractTest {
             //
             Set<Class<?>> classSet = apiBinder.findClass(MappingTo.class, "net.hasor.test.actions.mapping.*");
             assert classSet.size() == 3;
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(classSet);
+            apiBinder.loadMappingTo(classSet);
         }, servlet30("/"), LoadModule.Web);
         //
         List<MappingDef> definitions = appContext.findBindingBean(MappingDef.class);
@@ -232,13 +231,13 @@ public class MappingBinderTest extends AbstractTest {
     public void mappingTest_5() {
         buildWebAppContext(apiBinder -> {
             try {
-                apiBinder.tryCast(WebApiBinder.class).mappingTo(new String[0]).with(AnnoGetAction.class);
+                apiBinder.mappingTo(new String[0]).with(AnnoGetAction.class);
                 assert false;
             } catch (Exception e) {
                 assert e.getMessage().equals("mappingTo patterns is empty.");
             }
             try {
-                apiBinder.tryCast(WebApiBinder.class).mappingTo(new String[] { "", null }).with(AnnoGetAction.class);
+                apiBinder.mappingTo(new String[] { "", null }).with(AnnoGetAction.class);
                 assert false;
             } catch (Exception e) {
                 assert e.getMessage().equals("mappingTo patterns is empty.");
@@ -256,11 +255,11 @@ public class MappingBinderTest extends AbstractTest {
             BindInfo<SimpleInvokerFilter> filterBindInfo1 = apiBinder.bindType(SimpleInvokerFilter.class).uniqueName().asEagerSingleton().toInfo();
             BindInfo<SimpleInvokerFilter> filterBindInfo2 = apiBinder.bindType(SimpleInvokerFilter.class).uniqueName().toInfo();
             //
-            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(1, testCallerFilter);           // 1
-            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(2, testCallerFilterProvider);   // 2
-            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(3, SimpleInvokerFilter.class);     // 3
-            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(4, filterBindInfo1);            // 4
-            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(5, filterBindInfo2);            // 5
+            apiBinder.filter(urls).through(1, testCallerFilter);           // 1
+            apiBinder.filter(urls).through(2, testCallerFilterProvider);   // 2
+            apiBinder.filter(urls).through(3, SimpleInvokerFilter.class);     // 3
+            apiBinder.filter(urls).through(4, filterBindInfo1);            // 4
+            apiBinder.filter(urls).through(5, filterBindInfo2);            // 5
         }, servlet30("/"), LoadModule.Web);
         //
         List<FilterDef> definitions = appContext.findBindingBean(FilterDef.class);
@@ -324,10 +323,10 @@ public class MappingBinderTest extends AbstractTest {
         final SimpleInvokerFilter invokerFilter = new SimpleInvokerFilter();
         //
         AppContext appContext = buildWebAppContext(apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).filter(urls).through(invokerFilter);          // 1
-            apiBinder.tryCast(WebApiBinder.class).filterRegex(urls).through(invokerFilter);     // 2
-            apiBinder.tryCast(WebApiBinder.class).jeeFilter(urls).through(simpleFilter);        // 3
-            apiBinder.tryCast(WebApiBinder.class).jeeFilterRegex(urls).through(simpleFilter);   // 4
+            apiBinder.filter(urls).through(invokerFilter);          // 1
+            apiBinder.filterRegex(urls).through(invokerFilter);     // 2
+            apiBinder.jeeFilter(urls).through(simpleFilter);        // 3
+            apiBinder.jeeFilterRegex(urls).through(simpleFilter);   // 4
         }, servlet30("/"), LoadModule.Web);
         //
         List<FilterDef> definitions = appContext.findBindingBean(FilterDef.class);
@@ -374,27 +373,13 @@ public class MappingBinderTest extends AbstractTest {
     public void filterTest_3() {
         buildWebAppContext(apiBinder -> {
             try {
-                apiBinder.tryCast(WebApiBinder.class).filter(new String[0]).through(SimpleInvokerFilter.class);
+                apiBinder.filter(new String[0]).through(SimpleInvokerFilter.class);
                 assert false;
             } catch (Exception e) {
                 assert e.getMessage().equals("Filter patterns is empty.");
             }
             try {
-                apiBinder.tryCast(WebApiBinder.class).filter(new String[] { "", null }).through(SimpleInvokerFilter.class);
-                assert false;
-            } catch (Exception e) {
-                assert e.getMessage().equals("Filter patterns is empty.");
-            }
-            //
-            //
-            try {
-                apiBinder.tryCast(WebApiBinder.class).filterRegex(new String[0]).through(SimpleInvokerFilter.class);
-                assert false;
-            } catch (Exception e) {
-                assert e.getMessage().equals("Filter patterns is empty.");
-            }
-            try {
-                apiBinder.tryCast(WebApiBinder.class).filterRegex(new String[] { "", null }).through(SimpleInvokerFilter.class);
+                apiBinder.filter(new String[] { "", null }).through(SimpleInvokerFilter.class);
                 assert false;
             } catch (Exception e) {
                 assert e.getMessage().equals("Filter patterns is empty.");
@@ -402,13 +387,13 @@ public class MappingBinderTest extends AbstractTest {
             //
             //
             try {
-                apiBinder.tryCast(WebApiBinder.class).jeeFilter(new String[0]).through(SimpleFilter.class);
+                apiBinder.filterRegex(new String[0]).through(SimpleInvokerFilter.class);
                 assert false;
             } catch (Exception e) {
                 assert e.getMessage().equals("Filter patterns is empty.");
             }
             try {
-                apiBinder.tryCast(WebApiBinder.class).jeeFilter(new String[] { "", null }).through(SimpleFilter.class);
+                apiBinder.filterRegex(new String[] { "", null }).through(SimpleInvokerFilter.class);
                 assert false;
             } catch (Exception e) {
                 assert e.getMessage().equals("Filter patterns is empty.");
@@ -416,13 +401,27 @@ public class MappingBinderTest extends AbstractTest {
             //
             //
             try {
-                apiBinder.tryCast(WebApiBinder.class).jeeFilterRegex(new String[0]).through(SimpleFilter.class);
+                apiBinder.jeeFilter(new String[0]).through(SimpleFilter.class);
                 assert false;
             } catch (Exception e) {
                 assert e.getMessage().equals("Filter patterns is empty.");
             }
             try {
-                apiBinder.tryCast(WebApiBinder.class).jeeFilterRegex(new String[] { "", null }).through(SimpleFilter.class);
+                apiBinder.jeeFilter(new String[] { "", null }).through(SimpleFilter.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().equals("Filter patterns is empty.");
+            }
+            //
+            //
+            try {
+                apiBinder.jeeFilterRegex(new String[0]).through(SimpleFilter.class);
+                assert false;
+            } catch (Exception e) {
+                assert e.getMessage().equals("Filter patterns is empty.");
+            }
+            try {
+                apiBinder.jeeFilterRegex(new String[] { "", null }).through(SimpleFilter.class);
                 assert false;
             } catch (Exception e) {
                 assert e.getMessage().equals("Filter patterns is empty.");
@@ -442,10 +441,10 @@ public class MappingBinderTest extends AbstractTest {
             oneConfig.put("arg_string1", "abc");
             oneConfig.put("arg_string2", "def");
             //
-            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(1, testCallerServlet, oneConfig);          // 1
-            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(2, testCallerServletProvider, oneConfig);  // 2
-            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(3, MappingServlet.class, oneConfig);       // 3
-            apiBinder.tryCast(WebApiBinder.class).jeeServlet(urls).with(4, filterBindInfo1, oneConfig);            // 4
+            apiBinder.jeeServlet(urls).with(1, testCallerServlet, oneConfig);          // 1
+            apiBinder.jeeServlet(urls).with(2, testCallerServletProvider, oneConfig);  // 2
+            apiBinder.jeeServlet(urls).with(3, MappingServlet.class, oneConfig);       // 3
+            apiBinder.jeeServlet(urls).with(4, filterBindInfo1, oneConfig);            // 4
         }, servlet30("/"), LoadModule.Web);
         //
         List<MappingDef> definitions = appContext.findBindingBean(MappingDef.class);
@@ -507,13 +506,13 @@ public class MappingBinderTest extends AbstractTest {
     public void servletTest_2() {
         buildWebAppContext(apiBinder -> {
             try {
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(new String[0]).with(SimpleServlet.class);
+                apiBinder.jeeServlet(new String[0]).with(SimpleServlet.class);
                 assert false;
             } catch (Exception e) {
                 assert e.getMessage().equals("Servlet patterns is empty.");
             }
             try {
-                apiBinder.tryCast(WebApiBinder.class).jeeServlet(new String[] { "", null }).with(SimpleServlet.class);
+                apiBinder.jeeServlet(new String[] { "", null }).with(SimpleServlet.class);
                 assert false;
             } catch (Exception e) {
                 assert e.getMessage().equals("Servlet patterns is empty.");

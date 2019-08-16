@@ -23,6 +23,7 @@ import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.RsfFlags;
 
 import java.lang.reflect.Method;
+
 /**
  * RSF请求(远程发起调用)
  * @version : 2014年10月25日
@@ -36,7 +37,7 @@ class RsfRequestFormRemote extends AttributeSet implements RsfRequest {
     private final Method          targetMethod;
     private final Class<?>[]      parameterTypes;
     private final Object[]        parameterObjects;
-    //
+
     public RsfRequestFormRemote(InterAddress target, RequestInfo requestInfo, RsfBindInfo<?> bindInfo, Method targetMethod, Object[] parameterObjects, RemoteRsfCaller rsfCaller) {
         this.target = target;
         this.requestInfo = requestInfo;
@@ -46,80 +47,99 @@ class RsfRequestFormRemote extends AttributeSet implements RsfRequest {
         this.parameterObjects = parameterObjects;
         this.rsfCaller = rsfCaller;
     }
+
     @Override
     public String toString() {
         return "requestID:" + this.getRequestID() + " from Remote," + this.bindInfo.toString();
     }
+
     @Override
     public boolean isLocal() {
         return false;
     }
+
     @Override
     public boolean isP2PCalls() {
         return RsfFlags.P2PFlag.testTag(this.requestInfo.getFlags());
     }
+
     @Override
     public boolean isMessage() {
         return this.requestInfo.isMessage();
     }
+
     @Override
     public Method getMethod() {
         return this.targetMethod;
     }
+
     @Override
     public Class<?>[] getParameterTypes() {
         return this.parameterTypes.clone();
     }
+
     @Override
     public Object[] getParameterObject() {
         return this.parameterObjects.clone();
     }
+
     @Override
     public RsfContext getContext() {
         return this.rsfCaller.getContext();
     }
+
     @Override
     public RsfBindInfo<?> getBindInfo() {
         return this.bindInfo;
     }
+
     @Override
     public long getRequestID() {
         return this.requestInfo.getRequestID();
     }
+
     @Override
     public String getSerializeType() {
         return this.requestInfo.getSerializeType();
     }
+
     @Override
     public long getReceiveTime() {
         return this.requestInfo.getReceiveTime();
     }
+
     @Override
     public int getTimeout() {
         int timeOut1 = requestInfo.getClientTimeout();
         int timeOut2 = this.bindInfo.getClientTimeout();
         return timeOut1 < timeOut2 ? timeOut1 : timeOut2;
     }
+
     @Override
     public String[] getOptionKeys() {
         return this.requestInfo.getOptionKeys();
     }
+
     @Override
     public String getOption(String key) {
         return this.requestInfo.getOption(key);
     }
+
     @Override
     public void addOption(String key, String value) {
         this.requestInfo.addOption(key, value);
     }
+
     @Override
     public void removeOption(String key) {
         this.requestInfo.removeOption(key);
     }
+
     @Override
     public InterAddress getRemoteAddress() {
         return this.target;
     }
+
     @Override
     public InterAddress getTargetAddress() {
         //根据远程来的请求协议，来从本地获取对应的地址端口

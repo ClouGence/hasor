@@ -19,6 +19,7 @@ import net.hasor.core.BindInfo;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.function.Supplier;
+
 /**
  * 服务配置器
  * @version : 2014年11月12日
@@ -104,6 +105,7 @@ public interface RsfPublisher {
     public <T> ConfigurationBuilder<T> rsfService(Class<T> type, Supplier<T> provider);
     //
     //
+
     /**处理类型和实现的绑定。*/
     public static interface LinkedBuilder<T> extends ConfigurationBuilder<T> {
         /**
@@ -134,6 +136,7 @@ public interface RsfPublisher {
          */
         public ConfigurationBuilder<T> toInfo(BindInfo<? extends T> bindInfo);
     }
+
     /**设置服务名。*/
     public static interface ConfigurationBuilder<T> extends FilterBindBuilder<T> {
         /**
@@ -187,6 +190,7 @@ public interface RsfPublisher {
          */
         public ConfigurationBuilder<T> protocol(String protocol, String... protocolArrays);
     }
+
     /**设置过滤器*/
     public static interface FilterBindBuilder<T> extends RegisterBuilder<T> {
         /**
@@ -221,6 +225,7 @@ public interface RsfPublisher {
          */
         public FilterBindBuilder<T> bindFilter(String subFilterID, BindInfo<RsfFilter> rsfFilterInfo);
     }
+
     /**发布地址*/
     public static interface RegisterBuilder<T> {
         /**更新服务地址本计算规则（服务级）*/

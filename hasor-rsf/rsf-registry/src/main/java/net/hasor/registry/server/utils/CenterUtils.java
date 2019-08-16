@@ -9,6 +9,7 @@ import net.hasor.utils.CommonCodeUtils;
 import net.hasor.utils.ExceptionUtils;
 
 import java.security.NoSuchAlgorithmException;
+
 public class CenterUtils {
     //
     /**/
@@ -19,6 +20,7 @@ public class CenterUtils {
         resultDO.setSuccess(true);
         return resultDO;
     }
+
     /**/
     public static <T> ResultDO<T> failedResult(ErrorCode errorCode) {
         ResultDO<T> resultDO = new ResultDO<T>();
@@ -29,14 +31,17 @@ public class CenterUtils {
         resultDO.setSuccess(false);
         return resultDO;
     }
+
     //
     //
     public static String getDataKey(ServiceBean serviceInfo) {
         return "/rsf-registry/" + serviceInfo.getGroup() + "/" + serviceInfo.getName() + "/" + serviceInfo.getVersion();
     }
+
     public static String getDataKey(ServiceID serviceInfo) {
         return "/rsf-registry/" + serviceInfo.getBindGroup() + "/" + serviceInfo.getBindName() + "/" + serviceInfo.getBindVersion();
     }
+
     public static String getDataKey(InstanceInfo instance, ServiceID serviceID, RsfServiceType serviceType) {
         if (RsfServiceType.Consumer == serviceType) {
             return getDataKey(serviceID) + "/Consumer/" + instance.getInstanceID();
@@ -46,6 +51,7 @@ public class CenterUtils {
         }
         return null;
     }
+
     public static String evalMD5(String dataValue) {
         try {
             return CommonCodeUtils.MD5.getMD5(dataValue);

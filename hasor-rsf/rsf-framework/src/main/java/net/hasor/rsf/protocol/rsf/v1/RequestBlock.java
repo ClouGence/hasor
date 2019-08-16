@@ -63,86 +63,105 @@ public class RequestBlock extends PoolBlock {
     private int   clientTimeout  = 0;  //byte[4]  远程客户端超时时间
     private int[] paramData      = {}; //(attr-index,attr-index)
     private int[] optionMap      = {}; //(attr-index,attr-index)
-    //
+
     public RequestBlock() {
     }
-    //
+
     public byte getVersion() {
         return (byte) (this.rsfHead & 0x0F);
     }
+
     /**获取协议版本。*/
     public byte getHead() {
         return this.rsfHead;
     }
+
     /**设置协议版本。*/
     public void setHead(byte rsfHead) {
         this.rsfHead = rsfHead;
     }
+
     /**获取请求ID。*/
     public long getRequestID() {
         return this.requestID;
     }
+
     /**设置请求ID。*/
     public void setRequestID(long requestID) {
         this.requestID = requestID;
     }
+
     /**获取flag*/
     public short getFlags() {
         return flags;
     }
+
     /**设置flag。*/
     public void setFlags(short flags) {
         this.flags = flags;
     }
+
     /**获取服务名*/
     public short getServiceName() {
         return this.serviceName;
     }
+
     /**设置服务名*/
     public void setServiceName(short serviceName) {
         this.serviceName = serviceName;
     }
+
     /**获取服务分组*/
     public short getServiceGroup() {
         return this.serviceGroup;
     }
+
     /**设置服务分组*/
     public void setServiceGroup(short serviceGroup) {
         this.serviceGroup = serviceGroup;
     }
+
     /**获取服务版本*/
     public short getServiceVersion() {
         return this.serviceVersion;
     }
+
     /**设置服务版本*/
     public void setServiceVersion(short serviceVersion) {
         this.serviceVersion = serviceVersion;
     }
+
     /**获取调用的方法名*/
     public short getTargetMethod() {
         return this.targetMethod;
     }
+
     /**设置调用的方法名*/
     public void setTargetMethod(short targetMethod) {
         this.targetMethod = targetMethod;
     }
+
     /**获取序列化类型*/
     public short getSerializeType() {
         return this.serializeType;
     }
+
     /**设置序列化类型*/
     public void setSerializeType(short serializeType) {
         this.serializeType = serializeType;
     }
+
     /**获取远程客户端调用超时时间。*/
     public int getClientTimeout() {
         return this.clientTimeout;
     }
+
     /**设置远程客户端调用超时时间。*/
     public void setClientTimeout(int clientTimeout) {
         this.clientTimeout = clientTimeout;
     }
     //
+
     /**添加请求参数。*/
     public void addParameter(short paramType, short paramData) {
         int pType = paramType << 16;
@@ -150,10 +169,12 @@ public class RequestBlock extends PoolBlock {
         int mergeData = (pType | pData);
         this.addParameter(mergeData);
     }
+
     /**添加请求参数。*/
     public void addParameter(int mergeData) {
         this.paramData = ArrayUtils.add(this.paramData, mergeData);
     }
+
     /**获取请求参数类型列表。*/
     public short[] getParameterTypes() {
         short[] pTypes = new short[this.paramData.length];
@@ -163,6 +184,7 @@ public class RequestBlock extends PoolBlock {
         }
         return pTypes;
     }
+
     /**获取请求参数类型列表。*/
     public short[] getParameterValues() {
         short[] pDatas = new short[this.paramData.length];
@@ -171,10 +193,12 @@ public class RequestBlock extends PoolBlock {
         }
         return pDatas;
     }
+
     /**获取请求参数类型列表。*/
     public int[] getParameters() {
         return this.paramData;
     }
+
     /**添加选项。*/
     public void addOption(short paramType, short paramData) {
         int pType = paramType << 16;
@@ -182,10 +206,12 @@ public class RequestBlock extends PoolBlock {
         int mergeData = (pType | pData);
         this.addOption(mergeData);
     }
+
     /**添加选项。*/
     public void addOption(int mergeData) {
         this.optionMap = ArrayUtils.add(this.optionMap, mergeData);
     }
+
     /**获取选项Key集合。*/
     public short[] getOptionKeys() {
         short[] optKeys = new short[this.optionMap.length];
@@ -195,6 +221,7 @@ public class RequestBlock extends PoolBlock {
         }
         return optKeys;
     }
+
     /**获取选项数据*/
     public short[] getOptionValues() {
         short[] optDatas = new short[this.optionMap.length];
@@ -203,6 +230,7 @@ public class RequestBlock extends PoolBlock {
         }
         return optDatas;
     }
+
     /**获取Option。*/
     public int[] getOptions() {
         return this.optionMap;

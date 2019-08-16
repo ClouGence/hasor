@@ -51,13 +51,16 @@ package net.hasor.rsf.libs.com.caucho.hessian.io;
  */
 public class RemoteDeserializer extends JavaDeserializer {
     public static final Deserializer DESER = new RemoteDeserializer();
+
     public RemoteDeserializer() {
         super(HessianRemote.class);
     }
+
     @Override
     public boolean isReadResolve() {
         return true;
     }
+
     @Override
     protected Object resolve(AbstractHessianInput in, Object obj) throws Exception {
         HessianRemote remote = (HessianRemote) obj;

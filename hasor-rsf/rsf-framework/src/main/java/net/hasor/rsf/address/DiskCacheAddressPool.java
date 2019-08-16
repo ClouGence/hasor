@@ -11,19 +11,20 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * 服务地址的辅助工具,负责读写本地地址本缓存。
  * @version : 2014年9月12日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DiskCacheAddressPool extends AddressPool {
-    protected final Logger        logger = LoggerFactory.getLogger(getClass());
-    private final   AtomicBoolean inited = new AtomicBoolean(false);
-    private final Thread timer;
-    private final File   snapshotHome;
-    private final File   indexFile;
-    private boolean exitThread = false;
-    //
+    protected final Logger        logger     = LoggerFactory.getLogger(getClass());
+    private final   AtomicBoolean inited     = new AtomicBoolean(false);
+    private final   Thread        timer;
+    private final   File          snapshotHome;
+    private final   File          indexFile;
+    private         boolean       exitThread = false;
+
     public DiskCacheAddressPool(final RsfEnvironment rsfEnvironment) {
         super(rsfEnvironment);
         File rsfHome = new File(rsfEnvironment.evalString("%RSF_DATA_HOME%/"));
@@ -41,8 +42,7 @@ public class DiskCacheAddressPool extends AddressPool {
         this.timer.setName("RSF-DiskCacheAddressPool-Timer");
         this.timer.setDaemon(true);
     }
-    //
-    //
+
     /** 启动定时器,定时进行地址本的磁盘缓存。*/
     public void startTimer() {
         if (this.inited.compareAndSet(false, true)) {
@@ -51,6 +51,7 @@ public class DiskCacheAddressPool extends AddressPool {
             this.timer.start();
         }
     }
+
     /** 停止定时器,停止定时进行地址本的磁盘缓存。*/
     public void shutdownTimer() {
         if (this.inited.compareAndSet(true, false)) {
@@ -58,7 +59,7 @@ public class DiskCacheAddressPool extends AddressPool {
             this.exitThread = true;
         }
     }
-    //
+
     private void doWork() {
         this.exitThread = false;
         RsfSettings rsfSettings = this.getRsfEnvironment().getSettings();
@@ -93,14 +94,11 @@ public class DiskCacheAddressPool extends AddressPool {
         }
         this.logger.info("AddressPool - Timer -> stop.");
     }
-    //
+
     /**清理缓存的地址数据*/
     public void clearCacheData() {
-        String[] fileNames = this.snapshotHome.list(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return MatchUtils.wildToRegex("address-[0-9]{8}-[0-9]{6}.zip", name, MatchUtils.MatchTypeEnum.Regex);
-            }
+        String[] fileNames = this.snapshotHome.list((dir, name) -> {
+            return MatchUtils.wildToRegex("address-[0-9]{8}-[0-9]{6}.zip", name, MatchUtils.MatchTypeEnum.Regex);
         });
         List<String> sortList = (fileNames == null) ? new ArrayList<String>(0) : Arrays.asList(fileNames);
         Collections.sort(sortList);
@@ -118,6 +116,7 @@ public class DiskCacheAddressPool extends AddressPool {
         }
     }
     //
+
     /**保存地址列表到zip流中(每小时保存一次)，当遇到保存的文件已存在时会重新生成新的文件名。*/
     public synchronized void storeConfig() throws IOException {
         File writeFile = null;
@@ -156,6 +155,7 @@ public class DiskCacheAddressPool extends AddressPool {
             }
         }
     }
+
     /**从保存的地址本中恢复数据。*/
     public synchronized void restoreConfig() {
         //1.校验
@@ -200,7 +200,7 @@ public class DiskCacheAddressPool extends AddressPool {
             }
         }
     }
-    //
+
     private static String nowTime() {
         return new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
     }

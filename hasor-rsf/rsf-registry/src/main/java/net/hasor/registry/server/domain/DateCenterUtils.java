@@ -16,12 +16,14 @@
 package net.hasor.registry.server.domain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * @version : 2015年7月6日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class DateCenterUtils {
     protected static Logger logger = LoggerFactory.getLogger(DateCenterUtils.class);
+
     //
     /* 处理失败的情况 */
     public static <T> Result<T> buildFailedResult(Result<?> resultInfo) {

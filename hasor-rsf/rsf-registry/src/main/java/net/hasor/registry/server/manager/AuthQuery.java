@@ -19,6 +19,7 @@ import net.hasor.registry.client.domain.ServiceID;
 import net.hasor.registry.server.domain.AuthBean;
 import net.hasor.registry.server.domain.Result;
 import net.hasor.rsf.domain.RsfServiceType;
+
 /**
  * 接口授权查询。
  * @version : 2016年2月22日

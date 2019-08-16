@@ -23,6 +23,7 @@ public class DataNode extends Node {
     public DataNode(long dataKey) {
         super(dataKey);
     }
+
     /** 返回是否为数据节点，DataNode 始终为 true */
     @Override
     public boolean isData() {

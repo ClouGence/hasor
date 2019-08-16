@@ -62,6 +62,7 @@ public class BeanSerializerFactory extends SerializerFactory {
     protected Serializer getDefaultSerializer(Class<?> cl) {
         return new BeanSerializer(cl, getClassLoader());
     }
+
     /**
      * Returns the default deserializer for a class that isn't matched
      * directly.  Application can override this method to produce

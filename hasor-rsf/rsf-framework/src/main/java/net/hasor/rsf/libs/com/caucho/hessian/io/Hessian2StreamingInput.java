@@ -51,13 +51,15 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 /**
  * Input stream for Hessian 2 streaming requests using WebSocket.
  */
 public class Hessian2StreamingInput {
-    private static final Logger log = LoggerFactory.getLogger(Hessian2StreamingInput.class);
-    private StreamingInputStream _is;
-    private Hessian2Input        _in;
+    private static final Logger               log = LoggerFactory.getLogger(Hessian2StreamingInput.class);
+    private              StreamingInputStream _is;
+    private              Hessian2Input        _in;
+
     /**
      * Creates a new Hessian input stream, initialized with an
      * underlying input stream.
@@ -68,13 +70,16 @@ public class Hessian2StreamingInput {
         _is = new StreamingInputStream(is);
         _in = new Hessian2Input(_is);
     }
+
     public void setSerializerFactory(SerializerFactory factory) {
         _in.setSerializerFactory(factory);
     }
+
     public boolean isDataAvailable() {
         StreamingInputStream is = _is;
         return is != null && is.isDataAvailable();
     }
+
     public Hessian2Input startPacket() throws IOException {
         if (_is.startPacket()) {
             _in.resetReferences();
@@ -83,13 +88,16 @@ public class Hessian2StreamingInput {
         } else
             return null;
     }
+
     public void endPacket() throws IOException {
         _is.endPacket();
         _in.resetBuffer(); // XXX:
     }
+
     public Hessian2Input getHessianInput() {
         return _in;
     }
+
     /**
      * Read the next object
      */
@@ -99,19 +107,23 @@ public class Hessian2StreamingInput {
         _is.endPacket();
         return obj;
     }
+
     /**
      * Close the output.
      */
     public void close() throws IOException {
         _in.close();
     }
+
     static class StreamingInputStream extends InputStream {
         private InputStream _is;
         private int         _length;
         private boolean     _isPacketEnd;
+
         StreamingInputStream(InputStream is) {
             _is = is;
         }
+
         public boolean isDataAvailable() {
             try {
                 return _is != null && _is.available() > 0;
@@ -120,6 +132,7 @@ public class Hessian2StreamingInput {
                 return true;
             }
         }
+
         public boolean startPacket() throws IOException {
             // skip zero-length packets
             do {
@@ -127,6 +140,7 @@ public class Hessian2StreamingInput {
             } while ((_length = readChunkLength(_is)) == 0);
             return _length > 0;
         }
+
         public void endPacket() throws IOException {
             while (!_isPacketEnd) {
                 if (_length <= 0)
@@ -135,6 +149,7 @@ public class Hessian2StreamingInput {
                     _is.skip(_length);
             }
         }
+
         public int read() throws IOException {
             if (_isPacketEnd)
                 throw new IllegalStateException();
@@ -147,6 +162,7 @@ public class Hessian2StreamingInput {
             _length--;
             return is.read();
         }
+
         public int read(byte[] buffer, int offset, int length) throws IOException {
             if (_isPacketEnd)
                 throw new IllegalStateException();
@@ -165,6 +181,7 @@ public class Hessian2StreamingInput {
             _length -= sublen;
             return sublen;
         }
+
         private int readChunkLength(InputStream is) throws IOException {
             if (_isPacketEnd)
                 return -1;

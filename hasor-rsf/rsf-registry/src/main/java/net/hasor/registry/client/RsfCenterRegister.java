@@ -21,6 +21,7 @@ import net.hasor.registry.common.InstanceInfo;
 import net.hasor.rsf.RsfService;
 
 import java.util.List;
+
 /**
  * 服务发布接口，该接口需要远端注册中心实现
  * @version : 2016年2月18日

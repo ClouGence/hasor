@@ -49,6 +49,7 @@ import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
+
 /**
  * Used to represent compiled Groovy scripts.  Such scripts may be executed repeatedly
  * by Groovy's <code>ScriptEngine</code> using the <code>eval</code> method without reparsing overheads.
@@ -59,13 +60,16 @@ import javax.script.ScriptException;
 public class GroovyCompiledScript extends CompiledScript {
     private final GroovyScriptEngineImpl engine;
     private final Class                  clasz;
+
     public GroovyCompiledScript(GroovyScriptEngineImpl engine, Class clazz) {
         this.engine = engine;
         this.clasz = clazz;
     }
+
     public Object eval(ScriptContext context) throws ScriptException {
         return engine.eval(clasz, context);
     }
+
     public ScriptEngine getEngine() {
         return engine;
     }

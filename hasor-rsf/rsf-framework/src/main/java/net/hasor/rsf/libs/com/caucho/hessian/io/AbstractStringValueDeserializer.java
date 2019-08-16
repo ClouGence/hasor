@@ -47,11 +47,13 @@
  */
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
+
 /**
  * Deserializes a string-valued object like BigDecimal.
  */
 abstract public class AbstractStringValueDeserializer extends AbstractDeserializer {
     abstract protected Object create(String value) throws IOException;
+
     @Override
     public Object readMap(AbstractHessianInput in) throws IOException {
         String value = null;
@@ -67,6 +69,7 @@ abstract public class AbstractStringValueDeserializer extends AbstractDeserializ
         in.addRef(object);
         return object;
     }
+
     @Override
     public Object readObject(AbstractHessianInput in, Object[] fields) throws IOException {
         String[] fieldNames = (String[]) fields;

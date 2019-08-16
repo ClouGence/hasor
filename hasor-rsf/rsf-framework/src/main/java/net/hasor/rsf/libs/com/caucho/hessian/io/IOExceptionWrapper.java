@@ -47,20 +47,24 @@
  */
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
+
 /**
  * Exception wrapper for IO.
  */
 public class IOExceptionWrapper extends IOException {
-    private static final long serialVersionUID = -7110860645460617174L;
-    private Throwable _cause;
+    private static final long      serialVersionUID = -7110860645460617174L;
+    private              Throwable _cause;
+
     public IOExceptionWrapper(Throwable cause) {
         super(cause.toString());
         _cause = cause;
     }
+
     public IOExceptionWrapper(String msg, Throwable cause) {
         super(msg);
         _cause = cause;
     }
+
     public Throwable getCause() {
         return _cause;
     }

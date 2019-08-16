@@ -18,8 +18,10 @@
  \**********************************************************/
 package net.hasor.rsf.libs.com.hprose.io.convert;
 import java.lang.reflect.Type;
+
 public class StringConverter implements Converter<String> {
     public final static StringConverter instance = new StringConverter();
+
     public String convertTo(Object obj, Type type) {
         if (obj instanceof char[]) {
             return new String((char[]) obj);

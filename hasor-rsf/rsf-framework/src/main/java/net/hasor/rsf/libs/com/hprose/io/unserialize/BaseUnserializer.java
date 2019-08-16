@@ -23,10 +23,12 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public abstract class BaseUnserializer<T> implements Unserializer<T> {
     public T unserialize(Reader reader, int tag, Type type) throws IOException {
         throw ValueReader.castError(reader.tagToString(tag), ClassUtil.toClass(type));
     }
+
     @SuppressWarnings({ "unchecked" })
     public T read(Reader reader, int tag, Type type) throws IOException {
         if (tag == TagNull)
@@ -39,6 +41,7 @@ public abstract class BaseUnserializer<T> implements Unserializer<T> {
         }
         return unserialize(reader, tag, type);
     }
+
     public T read(Reader reader, Type type) throws IOException {
         return read(reader, reader.stream.read(), type);
     }

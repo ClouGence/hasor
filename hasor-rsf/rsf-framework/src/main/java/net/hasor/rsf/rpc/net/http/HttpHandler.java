@@ -19,6 +19,7 @@ import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 
 import java.io.IOException;
+
 /**
  * Http 解码器组
  * @version : 2017年11月22日
@@ -46,6 +47,7 @@ public interface HttpHandler {
          */
         public void finishRPC();
     }
+
     /** Response 编码器 */
     public static interface ResponseEncoder {
         /** 发生异常 */
@@ -79,6 +81,7 @@ public interface HttpHandler {
          */
         public void finishRequest(ResponseInfo responseInfo) throws IOException;
     }
+
     /** Response 解码器 */
     public static interface ResponseDecoder {
         /** 完成调用 */

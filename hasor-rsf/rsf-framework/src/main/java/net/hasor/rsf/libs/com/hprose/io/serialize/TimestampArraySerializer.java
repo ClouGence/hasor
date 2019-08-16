@@ -22,8 +22,10 @@ import java.io.OutputStream;
 import java.sql.Timestamp;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public final class TimestampArraySerializer extends ReferenceSerializer<Timestamp[]> {
     public final static TimestampArraySerializer instance = new TimestampArraySerializer();
+
     @Override
     public final void serialize(Writer writer, Timestamp[] array) throws IOException {
         super.serialize(writer, array);

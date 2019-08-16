@@ -28,6 +28,7 @@ import net.hasor.utils.StringUtils;
 
 import java.io.IOException;
 import java.util.List;
+
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年11月4日
@@ -36,11 +37,12 @@ import java.util.List;
 public class CodecAdapterForV1 implements CodecAdapter, ProtocolConstants {
     private RsfEnvironment rsfEnvironment = null;
     private ClassLoader    classLoader    = null;
+
     public CodecAdapterForV1(RsfEnvironment rsfEnvironment, ClassLoader classLoader) {
         this.rsfEnvironment = rsfEnvironment;
         this.classLoader = classLoader;
     }
-    //
+
     @Override
     public RequestBlock buildRequestBlock(RequestInfo info) throws IOException {
         RequestBlock block = new RequestBlock();
@@ -88,6 +90,7 @@ public class CodecAdapterForV1 implements CodecAdapter, ProtocolConstants {
         //
         return block;
     }
+
     @Override
     public ResponseBlock buildResponseBlock(ResponseInfo info) throws IOException {
         ResponseBlock block = new ResponseBlock();
@@ -116,7 +119,7 @@ public class CodecAdapterForV1 implements CodecAdapter, ProtocolConstants {
         //
         return block;
     }
-    //
+
     /**将字节数据放入，PoolBlock*/
     private static short pushBytes(PoolBlock socketMessage, byte[] attrData) {
         if (attrData != null) {
@@ -125,6 +128,7 @@ public class CodecAdapterForV1 implements CodecAdapter, ProtocolConstants {
             return socketMessage.pushData(null);
         }
     }
+
     /**将字符串数据放入，PoolBlock*/
     private static short pushString(PoolBlock socketMessage, String attrData) {
         if (attrData != null) {
@@ -133,14 +137,15 @@ public class CodecAdapterForV1 implements CodecAdapter, ProtocolConstants {
             return socketMessage.pushData(null);
         }
     }
-    //
-    //
+
     private Protocol<RequestBlock>  requestProtocol  = new RpcRequestProtocolV1();
     private Protocol<ResponseBlock> responseProtocol = new RpcResponseProtocolV1();
+
     @Override
     public void wirteRequestBlock(RequestBlock block, ByteBuf out) throws IOException {
         this.requestProtocol.encode(block, out);
     }
+
     @Override
     public RequestInfo readRequestInfo(ByteBuf frame) throws Throwable {
         RequestBlock rsfBlock = this.requestProtocol.decode(frame);
@@ -210,10 +215,12 @@ public class CodecAdapterForV1 implements CodecAdapter, ProtocolConstants {
         }
         return info;
     }
+
     @Override
     public void wirteResponseBlock(ResponseBlock block, ByteBuf out) throws IOException {
         this.responseProtocol.encode(block, out);
     }
+
     @Override
     public ResponseInfo readResponseInfo(ByteBuf frame) throws Throwable {
         ResponseBlock rsfBlock = this.responseProtocol.decode(frame);

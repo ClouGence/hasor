@@ -54,6 +54,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+
 /**
  * Input stream for Hessian requests.
  *
@@ -72,7 +73,7 @@ import java.util.HashMap;
  */
 @SuppressWarnings("unused")
 public class HessianInput extends AbstractHessianInput {
-    private static int END_OF_DATA = -2;
+    private static int               END_OF_DATA = -2;
     private static Field             _detailMessageField;
     // factory for deserializing objects in the input stream
     protected      SerializerFactory _serializerFactory;
@@ -80,22 +81,24 @@ public class HessianInput extends AbstractHessianInput {
     // the underlying input stream
     private        InputStream       _is;
     // a peek character
-    protected int _peek = -1;
+    protected      int               _peek       = -1;
     // the method for a call
-    private String      _method;
-    private Reader      _chunkReader;
-    private InputStream _chunkInputStream;
-    private Throwable   _replyFault;
-    private StringBuffer _sbuf = new StringBuffer();
+    private        String            _method;
+    private        Reader            _chunkReader;
+    private        InputStream       _chunkInputStream;
+    private        Throwable         _replyFault;
+    private        StringBuffer      _sbuf       = new StringBuffer();
     // true if this is the last chunk
-    private boolean _isLastChunk;
+    private        boolean           _isLastChunk;
     // the chunk length
-    private int     _chunkLength;
+    private        int               _chunkLength;
+
     /**
      * Creates an uninitialized Hessian input stream.
      */
     public HessianInput() {
     }
+
     /**
      * Creates a new Hessian input stream, initialized with an
      * underlying input stream.
@@ -105,18 +108,21 @@ public class HessianInput extends AbstractHessianInput {
     public HessianInput(InputStream is) {
         init(is);
     }
+
     /**
      * Sets the serializer factory.
      */
     public void setSerializerFactory(SerializerFactory factory) {
         _serializerFactory = factory;
     }
+
     /**
      * Gets the serializer factory.
      */
     public SerializerFactory getSerializerFactory() {
         return _serializerFactory;
     }
+
     /**
      * Initialize the hessian stream with the underlying input stream.
      */
@@ -131,18 +137,21 @@ public class HessianInput extends AbstractHessianInput {
         if (_serializerFactory == null)
             _serializerFactory = new SerializerFactory();
     }
+
     /**
      * Returns the calls method
      */
     public String getMethod() {
         return _method;
     }
+
     /**
      * Returns any reply fault.
      */
     public Throwable getReplyFault() {
         return _replyFault;
     }
+
     /**
      * Starts reading the call
      *
@@ -158,6 +167,7 @@ public class HessianInput extends AbstractHessianInput {
         int minor = read();
         return (major << 16) + minor;
     }
+
     /**
      * For backward compatibility with HessianSkeleton
      */
@@ -169,6 +179,7 @@ public class HessianInput extends AbstractHessianInput {
         } else
             _peek = tag;
     }
+
     /**
      * Starts reading the call
      *
@@ -193,6 +204,7 @@ public class HessianInput extends AbstractHessianInput {
         _method = _sbuf.toString();
         return _method;
     }
+
     /**
      * Starts reading the call, including the headers.
      *
@@ -210,6 +222,7 @@ public class HessianInput extends AbstractHessianInput {
         }
         readMethod();
     }
+
     /**
      * Completes reading the call
      *
@@ -225,6 +238,7 @@ public class HessianInput extends AbstractHessianInput {
         } else
             throw error("expected end of call ('z') at " + codeName(tag) + ".  Check method arguments and ensure method overloading is enabled if necessary");
     }
+
     /**
      * Reads a reply as an object.
      * If the reply has a fault, throws the exception.
@@ -245,6 +259,7 @@ public class HessianInput extends AbstractHessianInput {
             return value;
         }
     }
+
     /**
      * Starts reading the reply
      *
@@ -262,6 +277,7 @@ public class HessianInput extends AbstractHessianInput {
         int minor = read();
         startReplyBody();
     }
+
     public void startReplyBody() throws Throwable {
         int tag = read();
         if (tag == 'f')
@@ -269,6 +285,7 @@ public class HessianInput extends AbstractHessianInput {
         else
             _peek = tag;
     }
+
     /**
      * Prepares the fault.
      */
@@ -291,6 +308,7 @@ public class HessianInput extends AbstractHessianInput {
             return _replyFault;
         }
     }
+
     /**
      * Completes reading the call
      *
@@ -305,6 +323,7 @@ public class HessianInput extends AbstractHessianInput {
         if (tag != 'z')
             error("expected end of reply at " + codeName(tag));
     }
+
     /**
      * Completes reading the call
      *
@@ -319,6 +338,7 @@ public class HessianInput extends AbstractHessianInput {
         if (tag != 'z')
             error("expected end of reply at " + codeName(tag));
     }
+
     /**
      * Reads a header, returning null if there are no headers.
      *
@@ -340,6 +360,7 @@ public class HessianInput extends AbstractHessianInput {
         _peek = tag;
         return null;
     }
+
     /**
      * Reads a null
      *
@@ -356,6 +377,7 @@ public class HessianInput extends AbstractHessianInput {
             throw expect("null", tag);
         }
     }
+
     /**
      * Reads a boolean
      *
@@ -397,6 +419,7 @@ public class HessianInput extends AbstractHessianInput {
       return (byte) readInt();
     }
     */
+
     /**
      * Reads a short
      *
@@ -407,6 +430,7 @@ public class HessianInput extends AbstractHessianInput {
     public short readShort() throws IOException {
         return (short) readInt();
     }
+
     /**
      * Reads an integer
      *
@@ -431,6 +455,7 @@ public class HessianInput extends AbstractHessianInput {
             throw expect("int", tag);
         }
     }
+
     /**
      * Reads a long
      *
@@ -455,6 +480,7 @@ public class HessianInput extends AbstractHessianInput {
             throw expect("long", tag);
         }
     }
+
     /**
      * Reads a float
      *
@@ -465,6 +491,7 @@ public class HessianInput extends AbstractHessianInput {
     public float readFloat() throws IOException {
         return (float) readDouble();
     }
+
     /**
      * Reads a double
      *
@@ -489,6 +516,7 @@ public class HessianInput extends AbstractHessianInput {
             throw expect("long", tag);
         }
     }
+
     /**
      * Reads a date.
      *
@@ -510,6 +538,7 @@ public class HessianInput extends AbstractHessianInput {
         long b8 = read();
         return ((b64 << 56) + (b56 << 48) + (b48 << 40) + (b40 << 32) + (b32 << 24) + (b24 << 16) + (b16 << 8) + b8);
     }
+
     /**
      * Reads a byte from the stream.
      */
@@ -545,6 +574,7 @@ public class HessianInput extends AbstractHessianInput {
             throw new IOException("expected 'S' at " + (char) tag);
         }
     }
+
     /**
      * Reads a byte array from the stream.
      */
@@ -606,6 +636,7 @@ public class HessianInput extends AbstractHessianInput {
             return readLength;
         }
     }
+
     /**
      * Reads a string
      *
@@ -639,6 +670,7 @@ public class HessianInput extends AbstractHessianInput {
             throw expect("string", tag);
         }
     }
+
     /**
      * Reads an XML node.
      *
@@ -662,6 +694,7 @@ public class HessianInput extends AbstractHessianInput {
             throw expect("string", tag);
         }
     }
+
     /**
      * Reads a byte array
      *
@@ -687,6 +720,7 @@ public class HessianInput extends AbstractHessianInput {
             throw expect("bytes", tag);
         }
     }
+
     /**
      * Reads a byte from the stream.
      */
@@ -718,6 +752,7 @@ public class HessianInput extends AbstractHessianInput {
             throw new IOException("expected 'B' at " + (char) tag);
         }
     }
+
     /**
      * Reads a byte array from the stream.
      */
@@ -775,6 +810,7 @@ public class HessianInput extends AbstractHessianInput {
             return readLength;
         }
     }
+
     /**
      * Reads a fault.
      */
@@ -792,6 +828,7 @@ public class HessianInput extends AbstractHessianInput {
             throw expect("fault", code);
         return map;
     }
+
     /**
      * Reads an object from the input stream with an expected type.
      */
@@ -842,6 +879,7 @@ public class HessianInput extends AbstractHessianInput {
         Object value = _serializerFactory.getDeserializer(cl).readObject(this);
         return value;
     }
+
     /**
      * Reads an arbitrary object from the input stream when the type
      * is unknown.
@@ -911,6 +949,7 @@ public class HessianInput extends AbstractHessianInput {
             throw error("unknown code for readObject at " + codeName(tag));
         }
     }
+
     /**
      * Reads a remote object.
      */
@@ -919,24 +958,28 @@ public class HessianInput extends AbstractHessianInput {
         String url = readString();
         return resolveRemote(type, url);
     }
+
     /**
      * Reads a reference.
      */
     public Object readRef() throws IOException {
         return _refs.get(parseInt());
     }
+
     /**
      * Reads the start of a list.
      */
     public int readListStart() throws IOException {
         return read();
     }
+
     /**
      * Reads the start of a list.
      */
     public int readMapStart() throws IOException {
         return read();
     }
+
     /**
      * Returns true if this is the end of a list or a map.
      */
@@ -945,6 +988,7 @@ public class HessianInput extends AbstractHessianInput {
         _peek = code;
         return (code < 0 || code == 'z');
     }
+
     /**
      * Reads the end byte.
      */
@@ -953,6 +997,7 @@ public class HessianInput extends AbstractHessianInput {
         if (code != 'z')
             throw error("unknown code at " + codeName(code));
     }
+
     /**
      * Reads the end byte.
      */
@@ -961,6 +1006,7 @@ public class HessianInput extends AbstractHessianInput {
         if (code != 'z')
             throw error("expected end of map ('z') at " + codeName(code));
     }
+
     /**
      * Reads the end byte.
      */
@@ -969,6 +1015,7 @@ public class HessianInput extends AbstractHessianInput {
         if (code != 'z')
             throw error("expected end of list ('z') at " + codeName(code));
     }
+
     /**
      * Adds a list/map reference.
      */
@@ -978,12 +1025,14 @@ public class HessianInput extends AbstractHessianInput {
         _refs.add(ref);
         return _refs.size() - 1;
     }
+
     /**
      * Adds a list/map reference.
      */
     public void setRef(int i, Object ref) {
         _refs.set(i, ref);
     }
+
     /**
      * Resets the references for streaming.
      */
@@ -991,6 +1040,7 @@ public class HessianInput extends AbstractHessianInput {
         if (_refs != null)
             _refs.clear();
     }
+
     /**
      * Resolves a remote object.
      */
@@ -1001,6 +1051,7 @@ public class HessianInput extends AbstractHessianInput {
         else
             return new HessianRemote(type, url);
     }
+
     /**
      * Parses a type from the stream.
      *
@@ -1022,6 +1073,7 @@ public class HessianInput extends AbstractHessianInput {
             _sbuf.append((char) ch);
         return _sbuf.toString();
     }
+
     /**
      * Parses the length for an array
      *
@@ -1037,6 +1089,7 @@ public class HessianInput extends AbstractHessianInput {
         }
         return parseInt();
     }
+
     /**
      * Parses a 32-bit integer value from the stream.
      *
@@ -1051,6 +1104,7 @@ public class HessianInput extends AbstractHessianInput {
         int b8 = read();
         return (b32 << 24) + (b24 << 16) + (b16 << 8) + b8;
     }
+
     /**
      * Parses a 64-bit long value from the stream.
      *
@@ -1069,6 +1123,7 @@ public class HessianInput extends AbstractHessianInput {
         long b8 = read();
         return ((b64 << 56) + (b56 << 48) + (b48 << 40) + (b40 << 32) + (b32 << 24) + (b24 << 16) + (b16 << 8) + b8);
     }
+
     /**
      * Parses a 64-bit double value from the stream.
      *
@@ -1088,9 +1143,11 @@ public class HessianInput extends AbstractHessianInput {
         long bits = ((b64 << 56) + (b56 << 48) + (b48 << 40) + (b40 << 32) + (b32 << 24) + (b24 << 16) + (b16 << 8) + b8);
         return Double.longBitsToDouble(bits);
     }
+
     org.w3c.dom.Node parseXML() throws IOException {
         throw new UnsupportedOperationException();
     }
+
     /**
      * Reads a character from the underlying stream.
      */
@@ -1117,6 +1174,7 @@ public class HessianInput extends AbstractHessianInput {
         _chunkLength--;
         return parseUTF8Char();
     }
+
     /**
      * Parses a single UTF8 character.
      */
@@ -1136,6 +1194,7 @@ public class HessianInput extends AbstractHessianInput {
         } else
             throw error("bad utf-8 encoding at " + codeName(ch));
     }
+
     /**
      * Reads a byte from the underlying stream.
      */
@@ -1161,6 +1220,7 @@ public class HessianInput extends AbstractHessianInput {
         _chunkLength--;
         return read();
     }
+
     /**
      * Reads bytes based on an input stream.
      */
@@ -1179,6 +1239,7 @@ public class HessianInput extends AbstractHessianInput {
         }
         return new InputStream() {
             boolean _isClosed = false;
+
             public int read() throws IOException {
                 if (_isClosed || _is == null)
                     return -1;
@@ -1187,6 +1248,7 @@ public class HessianInput extends AbstractHessianInput {
                     _isClosed = true;
                 return ch;
             }
+
             public int read(byte[] buffer, int offset, int length) throws IOException {
                 if (_isClosed || _is == null)
                     return -1;
@@ -1195,6 +1257,7 @@ public class HessianInput extends AbstractHessianInput {
                     _isClosed = true;
                 return len;
             }
+
             public void close() throws IOException {
                 while (read() >= 0) {
                 }
@@ -1202,6 +1265,7 @@ public class HessianInput extends AbstractHessianInput {
             }
         };
     }
+
     /**
      * Reads bytes from the underlying stream.
      */
@@ -1236,6 +1300,7 @@ public class HessianInput extends AbstractHessianInput {
         }
         return readLength;
     }
+
     final int read() throws IOException {
         if (_peek >= 0) {
             int value = _peek;
@@ -1245,27 +1310,33 @@ public class HessianInput extends AbstractHessianInput {
         int ch = _is.read();
         return ch;
     }
+
     public void close() {
         _is = null;
     }
+
     public Reader getReader() {
         return null;
     }
+
     protected IOException expect(String expect, int ch) {
         return error("expected " + expect + " at " + codeName(ch));
     }
+
     protected String codeName(int ch) {
         if (ch < 0)
             return "end of file";
         else
             return "0x" + Integer.toHexString(ch & 0xff) + " (" + (char) +ch + ")";
     }
+
     protected IOException error(String message) {
         if (_method != null)
             return new HessianProtocolException(_method + ": " + message);
         else
             return new HessianProtocolException(message);
     }
+
     static {
         try {
             _detailMessageField = Throwable.class.getDeclaredField("detailMessage");

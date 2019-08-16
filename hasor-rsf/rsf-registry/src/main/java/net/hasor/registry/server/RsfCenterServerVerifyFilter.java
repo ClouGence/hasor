@@ -25,6 +25,7 @@ import net.hasor.rsf.*;
 import net.hasor.rsf.domain.ProtocolStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * 检验来自Client的请求是否准许访问Cenrer。
  * @version : 2016年2月18日
@@ -32,9 +33,10 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class RsfCenterServerVerifyFilter implements RsfFilter {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger    logger = LoggerFactory.getLogger(getClass());
     @Inject
-    private AuthQuery authQuery;
+    private   AuthQuery authQuery;
+
     //
     private Result<Boolean> checkAuth(AuthBean authInfo, InterAddress remoteAddress) {
         LogUtils logUtils = LogUtils.create("INFO_200_00002")//
@@ -51,6 +53,7 @@ public class RsfCenterServerVerifyFilter implements RsfFilter {
         logger.info(logUtils.addLog("result", checkResult.getResult()).toJson());
         return CenterUtils.resultOK(checkResult.getResult());
     }
+
     //
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {

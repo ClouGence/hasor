@@ -50,12 +50,14 @@ import net.hasor.rsf.libs.com.caucho.hessian.HessianException;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+
 /**
  * Deserializing a string valued object
  */
 public class SqlDateDeserializer extends AbstractDeserializer {
     private Class<?>       _cl;
     private Constructor<?> _constructor;
+
     public SqlDateDeserializer(Class<?> cl) {
         try {
             _cl = cl;
@@ -64,9 +66,11 @@ public class SqlDateDeserializer extends AbstractDeserializer {
             throw new HessianException(e);
         }
     }
+
     public Class<?> getType() {
         return _cl;
     }
+
     public Object readMap(AbstractHessianInput in) throws IOException {
         int ref = in.addRef(null);
         long initValue = Long.MIN_VALUE;
@@ -82,6 +86,7 @@ public class SqlDateDeserializer extends AbstractDeserializer {
         in.setRef(ref, value);
         return value;
     }
+
     public Object readObject(AbstractHessianInput in, Object[] fields) throws IOException {
         String[] fieldNames = (String[]) fields;
         int ref = in.addRef(null);
@@ -97,6 +102,7 @@ public class SqlDateDeserializer extends AbstractDeserializer {
         in.setRef(ref, value);
         return value;
     }
+
     private Object create(long initValue) throws IOException {
         if (initValue == Long.MIN_VALUE)
             throw new IOException(_cl.getName() + " expects name.");

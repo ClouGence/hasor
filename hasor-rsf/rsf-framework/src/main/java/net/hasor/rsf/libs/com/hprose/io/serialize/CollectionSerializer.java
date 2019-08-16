@@ -23,8 +23,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Iterator;
+
 public final class CollectionSerializer<T> extends ReferenceSerializer<Collection<T>> {
     public final static CollectionSerializer instance = new CollectionSerializer();
+
     @Override
     public final void serialize(Writer writer, Collection<T> collection) throws IOException {
         super.serialize(writer, collection);

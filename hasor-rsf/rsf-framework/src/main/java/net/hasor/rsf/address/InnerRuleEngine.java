@@ -24,6 +24,7 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import java.util.List;
+
 /**
  *
  * @version : 2015年12月3日
@@ -34,11 +35,11 @@ class InnerRuleEngine {
     private volatile       String                  ruleScript = null; //规则脚本
     private volatile       String                  signature  = null; //脚本内容签名，用于校验是否发生变化
     private volatile       RuleGroovyScriptFace<?> runScript  = null; //调用程序
-    //
-    //
+
     public boolean isEnable() {
         return runScript != null;
     }
+
     public synchronized boolean update(String ruleScript) {
         //1.空内容判断
         if (StringUtils.isBlank(ruleScript)) {
@@ -59,7 +60,6 @@ class InnerRuleEngine {
         if (signature.equalsIgnoreCase(this.signature)) {
             return false;/*无变化*/
         }
-        //
         try {
             if (StringUtils.isBlank(ruleScript)) {
                 this.ruleScript = null;
@@ -85,10 +85,11 @@ class InnerRuleEngine {
             return false;
         }
     }
+
     public String getScript() {
         return this.ruleScript;
     }
-    //
+
     public Object runRule(String serviceID, List<String> allAddress) {
         if (this.runScript == null) {
             return null;

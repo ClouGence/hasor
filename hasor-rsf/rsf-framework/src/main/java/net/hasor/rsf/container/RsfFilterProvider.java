@@ -18,6 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.rsf.RsfFilter;
 
 import java.util.function.Supplier;
+
 /**
  * RsfFilter的{@link Supplier}封装形式。
  * @version : 2014年7月8日
@@ -26,11 +27,12 @@ import java.util.function.Supplier;
 public class RsfFilterProvider implements Supplier<RsfFilter> {
     private Class<? extends RsfFilter> rsfFilterType;
     private AppContext                 appContext;
-    //
+
     public RsfFilterProvider(AppContext appContext, Class<? extends RsfFilter> rsfFilterType) {
         this.appContext = appContext;
         this.rsfFilterType = rsfFilterType;
     }
+
     public RsfFilter get() {
         return this.appContext.getInstance(this.rsfFilterType);
     }

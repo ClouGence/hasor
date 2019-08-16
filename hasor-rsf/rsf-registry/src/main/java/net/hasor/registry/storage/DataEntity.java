@@ -25,23 +25,29 @@ public class DataEntity {
     //
     private long   dataPosition;
     private long   dataLength;
+
     //
     //
     public String getDataKey() {
         return dataKey;
     }
+
     public String getDataValue() {
         return null;
     }
+
     public long getTags() {
         return tags;
     }
+
     public String getMD5() {
         return null;
     }
+
     public String getTarget() {
         return null;
     }
+
     public boolean isLinkTo() {
         return false;
     }

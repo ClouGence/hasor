@@ -23,8 +23,10 @@ import net.hasor.rsf.libs.com.hprose.io.convert.URIConverter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
+
 public final class URIUnserializer extends BaseUnserializer<URI> {
     public final static URIUnserializer instance = new URIUnserializer();
+
     @Override
     public URI unserialize(Reader reader, int tag, Type type) throws IOException {
         if (tag == HproseTags.TagString) {
@@ -35,6 +37,7 @@ public final class URIUnserializer extends BaseUnserializer<URI> {
             return null;
         return super.unserialize(reader, tag, type);
     }
+
     public URI read(Reader reader) throws IOException {
         return read(reader, URI.class);
     }

@@ -13,23 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.invoker.beans;
-import net.hasor.web.annotation.Get;
-import net.hasor.web.annotation.Head;
-import net.hasor.web.annotation.HttpMethod;
-import net.hasor.web.annotation.Post;
-public class HttpsTestAction {
-    //
-    @Get
-    @Head
-    public void execute1() {
-    }
-    //
-    @Post
-    public void execute2() {
-    }
-    //
-    @HttpMethod({ "ADD", HttpMethod.DELETE })
-    public void execute3() {
-    }
+package net.hasor.test.render;
+import net.hasor.web.annotation.Render;
+
+/**
+ * @version : 2017-01-08
+ * @author 赵永春 (zyc@hasor.net)
+ */
+@Render(name = "html")
+public class ErrorRenderEngine {
 }

@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.domain.provider;
 import net.hasor.rsf.InterAddress;
+
 /**
  *
  * @version : 2015年12月18日
@@ -22,17 +23,21 @@ import net.hasor.rsf.InterAddress;
  */
 public class InstanceAddressProvider implements AddressProvider {
     private InterAddress interAddress;
+
     public InstanceAddressProvider(InterAddress interAddress) {
         this.interAddress = interAddress;
     }
+
     @Override
     public InterAddress get(String serviceID, String methodName, Object[] args) {
         return this.interAddress;
     }
+
     @Override
     public boolean isDistributed() {
         return false;
     }
+
     @Override
     public String toString() {
         return "AddressProvider[" + this.interAddress.toString() + "]";

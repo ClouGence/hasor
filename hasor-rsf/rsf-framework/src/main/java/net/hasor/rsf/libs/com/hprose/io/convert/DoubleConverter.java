@@ -20,8 +20,10 @@ package net.hasor.rsf.libs.com.hprose.io.convert;
 import net.hasor.rsf.libs.com.hprose.io.unserialize.ValueReader;
 
 import java.lang.reflect.Type;
+
 public class DoubleConverter implements Converter<Double> {
     public final static DoubleConverter instance = new DoubleConverter();
+
     public Double convertTo(Object obj, Type type) {
         if (obj instanceof String) {
             return ValueReader.parseDouble((String) obj);

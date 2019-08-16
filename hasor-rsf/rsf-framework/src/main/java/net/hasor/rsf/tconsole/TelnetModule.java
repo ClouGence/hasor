@@ -19,6 +19,7 @@ import net.hasor.rsf.RsfModule;
 import net.hasor.tconsole.ConsoleApiBinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * Rsf 框架 Telnet 命令模块。
  * @version : 2014年11月12日
@@ -26,6 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class TelnetModule implements RsfModule {
     protected Logger logger = LoggerFactory.getLogger(getClass());
+
     @Override
     public final void loadModule(RsfApiBinder apiBinder) throws Throwable {
         ConsoleApiBinder consoleApiBinder = apiBinder.tryCast(ConsoleApiBinder.class);

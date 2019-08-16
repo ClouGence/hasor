@@ -25,12 +25,15 @@ import net.hasor.rsf.libs.com.hprose.io.unserialize.Reader;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+
 public final class IntFieldAccessor implements MemberAccessor {
     private final long offset;
+
     public IntFieldAccessor(Field accessor) {
         accessor.setAccessible(true);
         offset = Accessors.unsafe.objectFieldOffset(accessor);
     }
+
     @Override
     @SuppressWarnings({ "unchecked" })
     public void serialize(Writer writer, Object obj) throws IOException {
@@ -42,6 +45,7 @@ public final class IntFieldAccessor implements MemberAccessor {
         }
         ValueWriter.write(writer.stream, value);
     }
+
     @Override
     public void unserialize(Reader reader, Object obj) throws IOException {
         int value = IntUnserializer.instance.read(reader);

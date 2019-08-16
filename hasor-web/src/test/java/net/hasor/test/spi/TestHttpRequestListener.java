@@ -13,30 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.invoker.beans;
-import net.hasor.core.AppContext;
-import net.hasor.web.RenderEngine;
-import net.hasor.web.RenderInvoker;
-import net.hasor.web.annotation.Render;
+package net.hasor.test.spi;
+import javax.servlet.ServletRequestEvent;
+import javax.servlet.ServletRequestListener;
 
-import java.io.IOException;
-import java.io.Writer;
-/**
- * @version : 2017-01-08
- * @author 赵永春 (zyc@hasor.net)
- */
-@Render(name = "jspx")
-public class TestRenderEngine implements RenderEngine {
-    @Override
-    public void initEngine(AppContext appContext) throws Throwable {
-        //
+public class TestHttpRequestListener implements ServletRequestListener {
+    private boolean requestDestroyed;
+    private boolean requestInitialized;
+
+    public boolean isRequestDestroyed() {
+        return requestDestroyed;
     }
-    @Override
-    public void process(RenderInvoker invoker, Writer writer) throws Throwable {
-        //
+
+    public boolean isRequestInitialized() {
+        return requestInitialized;
     }
+
     @Override
-    public boolean exist(String template) throws IOException {
-        return false;//
+    public void requestDestroyed(ServletRequestEvent servletRequestEvent) {
+        this.requestDestroyed = true;
+    }
+
+    @Override
+    public void requestInitialized(ServletRequestEvent servletRequestEvent) {
+        this.requestInitialized = true;
     }
 }

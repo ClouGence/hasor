@@ -16,13 +16,13 @@
 package test.net.hasor.rsf.alone;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.rsf.RsfApiBinder;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfModule;
 import test.net.hasor.rsf.services.EchoService;
 import test.net.hasor.rsf.services.EchoServiceImpl;
 import test.net.hasor.rsf.services.MessageService;
 import test.net.hasor.rsf.services.MessageServiceImpl;
+
 /**
  * 启动服务端
  * @version : 2014年9月12日
@@ -31,12 +31,9 @@ import test.net.hasor.rsf.services.MessageServiceImpl;
 public class ProviderServer {
     public static void main(String[] args) throws Throwable {
         //Server
-        AppContext appContext = Hasor.createAppContext("/alone/provider-config.xml", new RsfModule() {
-            @Override
-            public void loadModule(RsfApiBinder apiBinder) throws Throwable {
-                apiBinder.rsfService(EchoService.class).to(EchoServiceImpl.class).register();
-                apiBinder.rsfService(MessageService.class).to(MessageServiceImpl.class).register();
-            }
+        AppContext appContext = Hasor.create().mainSettingWith("/alone/provider-config.xml").build((RsfModule) apiBinder -> {
+            apiBinder.rsfService(EchoService.class).to(EchoServiceImpl.class).register();
+            apiBinder.rsfService(MessageService.class).to(MessageServiceImpl.class).register();
         });
         //
         System.out.println("server start.");

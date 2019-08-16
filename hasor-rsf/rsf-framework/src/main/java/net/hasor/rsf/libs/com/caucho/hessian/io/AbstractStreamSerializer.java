@@ -48,6 +48,7 @@
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.io.InputStream;
+
 /**
  * Serializing an object containing a byte stream.
  */
@@ -87,8 +88,10 @@ abstract public class AbstractStreamSerializer extends AbstractSerializer {
             }
         }
     }
+
     protected String getClassName(Object obj) {
         return obj.getClass().getName();
     }
+
     abstract protected InputStream getInputStream(Object obj) throws IOException;
 }

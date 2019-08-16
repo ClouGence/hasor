@@ -23,8 +23,10 @@ import java.util.Calendar;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagEmpty;
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagList;
+
 public final class CalendarArrayUnserializer extends BaseUnserializer<Calendar[]> {
     public final static CalendarArrayUnserializer instance = new CalendarArrayUnserializer();
+
     @Override
     public Calendar[] unserialize(Reader reader, int tag, Type type) throws IOException {
         if (tag == TagList)
@@ -33,6 +35,7 @@ public final class CalendarArrayUnserializer extends BaseUnserializer<Calendar[]
             return new Calendar[0];
         return super.unserialize(reader, tag, type);
     }
+
     public Calendar[] read(Reader reader) throws IOException {
         return read(reader, Calendar[].class);
     }

@@ -48,18 +48,22 @@
 package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.util.*;
+
 /**
  * Deserializing a JDK 1.2 Collection.
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class CollectionDeserializer extends AbstractListDeserializer {
     private Class<?> _type;
+
     public CollectionDeserializer(Class<?> type) {
         _type = type;
     }
+
     public Class<?> getType() {
         return _type;
     }
+
     public Object readList(AbstractHessianInput in, int length) throws IOException {
         Collection list = createList();
         in.addRef(list);
@@ -68,6 +72,7 @@ public class CollectionDeserializer extends AbstractListDeserializer {
         in.readEnd();
         return list;
     }
+
     public Object readLengthList(AbstractHessianInput in, int length) throws IOException {
         Collection list = createList();
         in.addRef(list);
@@ -75,6 +80,7 @@ public class CollectionDeserializer extends AbstractListDeserializer {
             list.add(in.readObject());
         return list;
     }
+
     private Collection<?> createList() throws IOException {
         Collection<?> list = null;
         if (_type == null)

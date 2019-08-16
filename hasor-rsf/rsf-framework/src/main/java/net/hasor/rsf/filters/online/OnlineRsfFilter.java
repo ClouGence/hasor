@@ -21,6 +21,7 @@ import net.hasor.rsf.RsfResponse;
 import net.hasor.rsf.domain.ProtocolStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * 一旦下线，所有远程的连入请求都被回绝：Forbidden
  * @version : 2016年3月23日
@@ -28,6 +29,7 @@ import org.slf4j.LoggerFactory;
  */
 public class OnlineRsfFilter implements RsfFilter {
     protected Logger logger = LoggerFactory.getLogger(getClass());
+
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         if (!request.isLocal() && !request.getContext().isOnline()) {

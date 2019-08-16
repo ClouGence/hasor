@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static net.hasor.rsf.domain.RsfEvent.*;
+
 /**
  * 负责侦听RSF框架发出的事件，并将事件转发到RsfCenter。
  * @version : 2016年2月18日
@@ -31,11 +32,13 @@ import static net.hasor.rsf.domain.RsfEvent.*;
 class RsfEventTransport implements EventListener<Object>, ContextStartListener {
     protected Logger                logger        = LoggerFactory.getLogger(getClass());
     private   RegistryClientManager centerManager = null;
+
     //
     @Override
     public void doStart(AppContext appContext) {
         //
     }
+
     @Override
     public void doStartCompleted(AppContext appContext) {
         // .
@@ -44,6 +47,7 @@ class RsfEventTransport implements EventListener<Object>, ContextStartListener {
         this.centerManager.run(null);
         this.logger.info("start the registration service processed.");
     }
+
     @Override
     public void onEvent(String event, Object eventData) throws Throwable {
         if (eventData == null || centerManager == null) {

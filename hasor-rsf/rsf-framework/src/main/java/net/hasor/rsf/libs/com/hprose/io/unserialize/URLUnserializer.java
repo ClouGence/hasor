@@ -25,8 +25,10 @@ import java.net.URL;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagEmpty;
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagString;
+
 public final class URLUnserializer extends BaseUnserializer<URL> {
     public final static URLUnserializer instance = new URLUnserializer();
+
     @Override
     public URL unserialize(Reader reader, int tag, Type type) throws IOException {
         if (tag == TagString) {
@@ -37,6 +39,7 @@ public final class URLUnserializer extends BaseUnserializer<URL> {
             return null;
         return super.unserialize(reader, tag, type);
     }
+
     public URL read(Reader reader) throws IOException {
         return read(reader, URL.class);
     }

@@ -22,6 +22,7 @@ import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.rpc.net.Connector;
 import net.hasor.rsf.rpc.net.netty.ProtocolHandlerFactory;
 import net.hasor.rsf.rpc.net.netty.RsfDuplexHandler;
+
 /**
  * Http 解码器
  * @version : 2017年11月22日
@@ -29,9 +30,11 @@ import net.hasor.rsf.rpc.net.netty.RsfDuplexHandler;
  */
 public class HttpProtocolHandler implements ProtocolHandlerFactory {
     private HttpHandler httpHandler;
+
     public HttpProtocolHandler(HttpHandler httpHandler) {
         this.httpHandler = httpHandler;
     }
+
     @Override
     public ChannelHandler[] channelHandler(Connector connector, AppContext appContext) {
         RsfContext rsfContext = appContext.getInstance(RsfContext.class);

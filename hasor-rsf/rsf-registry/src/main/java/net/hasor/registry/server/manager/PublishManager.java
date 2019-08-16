@@ -39,6 +39,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static net.hasor.registry.server.domain.ErrorCode.*;
 import static net.hasor.registry.server.utils.CenterUtils.*;
+
 /**
  * 提供服务的发布能力（注册、解除注册）
  * @version : 2016年9月18日
@@ -46,18 +47,19 @@ import static net.hasor.registry.server.utils.CenterUtils.*;
  */
 @Singleton
 public class PublishManager implements RsfCenterConstants {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger       logger = LoggerFactory.getLogger(getClass());
     @Inject
-    private DataAdapter  dataAdapter;
+    private   DataAdapter  dataAdapter;
     @Inject
-    private QueryManager queryManager;
+    private   QueryManager queryManager;
     @Inject
-    private RsfPusher    rsfPusher;
+    private   RsfPusher    rsfPusher;
     @Inject
-    private EventContext eventContext;
+    private   EventContext eventContext;
     //
     //
     //
+
     /** 发布服务 */
     public Result<Void> publishProvider(InstanceInfo instance, final ServiceID serviceID, final ProviderPublishInfo info) {
         // .服务是否存在，不存在的话新增
@@ -99,6 +101,7 @@ public class PublishManager implements RsfCenterConstants {
             return DateCenterUtils.buildFailedResult(failedResult(SystemTooBusy));
         }
     }
+
     public void asyncPushProviders(ServiceID serviceID, ProviderPublishInfo info, boolean isRemove) {
         // .Provider提供的不同协议
         List<String> protocolSet = new ArrayList<String>(info.getAddressMap().keySet());
@@ -127,6 +130,7 @@ public class PublishManager implements RsfCenterConstants {
         }
     }
     //
+
     /**订阅服务（不存在的服务不能订阅） */
     public Result<Void> publishConsumer(InstanceInfo instance, final ServiceID serviceID, final ConsumerPublishInfo info) {
         // .服务是否存在
@@ -157,12 +161,14 @@ public class PublishManager implements RsfCenterConstants {
             return DateCenterUtils.buildFailedResult(failedResult(SystemTooBusy));
         }
     }
+
     public void asyncPushProviders(ServiceID serviceID, ConsumerPublishInfo info) {
         List<String> providerList = this.queryManager.queryProviderList(info.getProtocol(), serviceID);
         List<String> targetList = Collections.singletonList(info.getCommunicationAddress());
         this.rsfPusher.refreshAddress(serviceID, providerList, targetList);
     }
     //
+
     /** 删除订阅 */
     public Result<Void> removeRegister(InstanceInfo instance, final ServiceID serviceID) throws Throwable {
         String[] dataKeys = new String[] {//
@@ -202,6 +208,7 @@ public class PublishManager implements RsfCenterConstants {
         }
     }
     //
+
     /** 请求推送地址 */
     public Result<Void> requestPushProviders(final InstanceInfo instance, final ServiceID serviceID, final List<String> protocol) {
         try {
@@ -218,6 +225,7 @@ public class PublishManager implements RsfCenterConstants {
             return DateCenterUtils.buildFailedResult(failedResult(SystemTooBusy));
         }
     }
+
     //
     //
     private boolean isNoChange(String dataKey, String dataValue) {

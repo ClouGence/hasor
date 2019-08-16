@@ -25,6 +25,7 @@ import net.hasor.rsf.RsfRequest;
 import net.hasor.rsf.RsfResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * 对Center请求的服务接口都加上AppCode和AuthCode隐式参数。
  * @version : 2016年2月18日
@@ -32,11 +33,12 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 public class RegistryClientVerifyFilter implements RsfFilter {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected Logger            logger    = LoggerFactory.getLogger(getClass());
     @Inject
-    private RsfCenterSettings centerSettings;
-    private String appKey    = null;    //key
-    private String keySecret = null;    //keySecret
+    private   RsfCenterSettings centerSettings;
+    private   String            appKey    = null;    //key
+    private   String            keySecret = null;    //keySecret
+
     //
     //
     @Init
@@ -44,6 +46,7 @@ public class RegistryClientVerifyFilter implements RsfFilter {
         this.appKey = this.centerSettings.getAppKeyID();
         this.keySecret = this.centerSettings.getAppKeySecret();
     }
+
     @Override
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         if (request.isLocal()) {

@@ -21,8 +21,10 @@ import net.hasor.rsf.libs.com.hprose.utils.DateTime;
 
 import java.lang.reflect.Type;
 import java.util.Date;
+
 public class DateTimeConverter implements Converter<Date> {
     public final static DateTimeConverter instance = new DateTimeConverter();
+
     @SuppressWarnings({ "deprecation" })
     public Date convertTo(Object obj, Type type) {
         if (obj instanceof DateTime) {

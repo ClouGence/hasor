@@ -33,17 +33,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+
 /**
  * 负责维护RSF客户端服务在注册中心上的信息。
  * @version : 2016年2月18日
  * @author 赵永春 (zyc@hasor.net)
  */
 class RegistryClientManager implements TimerTask {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected     Logger            logger = LoggerFactory.getLogger(getClass());
     private final RsfContext        rsfContext;
     private final TimerManager      timerManager;
     private final RsfCenterRegister centerRegister;
     private final RegistryCenter    registryCenter;
+
     //
     public RegistryClientManager(RsfContext rsfContext) {
         this.rsfContext = rsfContext;
@@ -52,6 +54,7 @@ class RegistryClientManager implements TimerTask {
         this.registryCenter = rsfContext.getAppContext().getInstance(RegistryCenter.class);
         this.timerManager = new TimerManager(this.registryCenter.getSettings().getHeartbeatTime(), "RsfCenter-BeatTimer", loader);
     }
+
     @Override
     public void run(Timeout timeout) {
         try {
@@ -61,6 +64,7 @@ class RegistryClientManager implements TimerTask {
         }
         this.timerManager.atTime(this);
     }
+
     private void run() throws Exception {
         if (!this.rsfContext.isOnline()) {
             return;
@@ -77,6 +81,7 @@ class RegistryClientManager implements TimerTask {
         }
     }
     //
+
     /**应用上线（所有服务都注册到中心）*/
     public synchronized void online() {
         logger.info("rsfCenterBeat-> received online signal.");
@@ -93,6 +98,7 @@ class RegistryClientManager implements TimerTask {
             this.onlineService(serviceInfo);
         }
     }
+
     /**应用下线（所有服务都解除注册）*/
     public synchronized void offline() {
         logger.info("rsfCenterBeat-> received online signal.");
@@ -110,10 +116,12 @@ class RegistryClientManager implements TimerTask {
         }
     }
     //
+
     /**注册服务到中心*/
     public void onlineService(RsfBindInfo<?> domain) {
         this.onlineService(domain, 1);
     }
+
     private void onlineService(RsfBindInfo<?> domain, int tryTimes) {
         if (domain == null) {
             return;
@@ -190,10 +198,12 @@ class RegistryClientManager implements TimerTask {
             this.onlineService(domain, tryTimes + 1); //重试
         }
     }
+
     /**解除服务注册*/
     public void offlineService(RsfBindInfo<?> domain) {
         this.offlineService(domain, 1);
     }
+
     private void offlineService(RsfBindInfo<?> domain, int tryTimes) {
         if (domain == null) {
             return;
@@ -229,6 +239,7 @@ class RegistryClientManager implements TimerTask {
         }
     }
     //
+
     /** 拉地址，三次失败之后改为异步请求一次全量推送 */
     private void pullAddress(RsfBindInfo<?> domain) {
         if (RsfServiceType.Consumer != domain.getServiceType()) {

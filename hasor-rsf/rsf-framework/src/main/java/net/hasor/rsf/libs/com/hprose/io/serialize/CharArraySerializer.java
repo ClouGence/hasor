@@ -21,8 +21,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 
 import java.io.IOException;
 import java.io.OutputStream;
+
 public final class CharArraySerializer extends ReferenceSerializer<char[]> {
     public final static CharArraySerializer instance = new CharArraySerializer();
+
     @Override
     public final void serialize(Writer writer, char[] s) throws IOException {
         super.serialize(writer, s);
@@ -30,6 +32,7 @@ public final class CharArraySerializer extends ReferenceSerializer<char[]> {
         stream.write(HproseTags.TagString);
         ValueWriter.write(stream, s);
     }
+
     @Override
     public final void write(Writer writer, char[] obj) throws IOException {
         OutputStream stream = writer.stream;

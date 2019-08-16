@@ -20,6 +20,7 @@ import net.hasor.rsf.address.route.rule.AbstractRule;
 
 import java.util.List;
 import java.util.Random;
+
 /**
  * 对于一组备选地址，通过随机的方式选取其中一个地址。
  * <pre>
@@ -32,12 +33,12 @@ import java.util.Random;
  */
 public class RandomFlowControl extends AbstractRule {
     private Random random = new Random();
-    //
+
     @Override
     public void paserControl(Settings settings) {
         this.random = new Random(System.currentTimeMillis());
     }
-    //
+
     /**使用随机规则选取备选地址中的一个地址。*/
     public InterAddress getServiceAddress(List<InterAddress> addresses) {
         if ((addresses == null) || (addresses.size() == 0)) {

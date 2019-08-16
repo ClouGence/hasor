@@ -24,8 +24,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Date;
+
 public final class DateTimeSerializer extends ReferenceSerializer<Date> {
     public final static DateTimeSerializer instance = new DateTimeSerializer();
+
     @Override
     public final void serialize(Writer writer, Date date) throws IOException {
         super.serialize(writer, date);

@@ -22,8 +22,10 @@ import java.io.OutputStream;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagEmpty;
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagString;
+
 public final class StringBufferSerializer extends ReferenceSerializer<StringBuffer> {
     public final static StringBufferSerializer instance = new StringBufferSerializer();
+
     @Override
     public final void serialize(Writer writer, StringBuffer s) throws IOException {
         super.serialize(writer, s);
@@ -31,6 +33,7 @@ public final class StringBufferSerializer extends ReferenceSerializer<StringBuff
         stream.write(TagString);
         ValueWriter.write(stream, s.toString());
     }
+
     @Override
     public final void write(Writer writer, StringBuffer obj) throws IOException {
         OutputStream stream = writer.stream;

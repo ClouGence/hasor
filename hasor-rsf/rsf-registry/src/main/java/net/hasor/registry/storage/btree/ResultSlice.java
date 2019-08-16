@@ -23,19 +23,23 @@ public class ResultSlice {
     private int   parentSlice = -1;    // 父亲 Slice
     private Slice atSlice     = null;    // 所处 Slice
     private int   atPosition  = 0;       // 位于 Slice 的位置
+
     ResultSlice(int parentSlice, Slice atSlice, int atPosition) {
         this.parentSlice = parentSlice;
         this.atSlice = atSlice;
         this.atPosition = atPosition;
     }
     //
+
     /**所处 Slice*/
     public Slice getAtSlice() {
         return this.atSlice;
     }
+
     public int getParentSlice() {
         return parentSlice;
     }
+
     /**位于 Slice 的位置*/
     public int getAtPosition() {
         return this.atPosition;

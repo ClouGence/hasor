@@ -16,6 +16,7 @@
 package net.hasor.registry.server.domain;
 import java.util.HashSet;
 import java.util.Set;
+
 /**
  * 错误码
  *
@@ -47,16 +48,20 @@ public enum ErrorCode {
     ;
     private final int    codeType;
     private final String message;
+
     ErrorCode(final int codeType, final String message) {
         this.codeType = codeType;
         this.message = message;
     }
+
     public int getCodeType() {
         return codeType;
     }
+
     public String getMessage() {
         return message;
     }
+
     static {
         checkErrorCode();
     }

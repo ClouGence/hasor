@@ -22,8 +22,10 @@ import java.lang.reflect.Type;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagEmpty;
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagList;
+
 public final class LongArrayUnserializer extends BaseUnserializer<long[]> {
     public final static LongArrayUnserializer instance = new LongArrayUnserializer();
+
     @Override
     public long[] unserialize(Reader reader, int tag, Type type) throws IOException {
         if (tag == TagList)
@@ -32,6 +34,7 @@ public final class LongArrayUnserializer extends BaseUnserializer<long[]> {
             return new long[0];
         return super.unserialize(reader, tag, type);
     }
+
     public long[] read(Reader reader) throws IOException {
         return read(reader, long[].class);
     }

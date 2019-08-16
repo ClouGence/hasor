@@ -26,13 +26,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Future;
+
 /**
  * RPC协议连接器，负责创建某个特定RPC协议的网络事件。
  * @version : 2017年01月16日
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class Connector {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected     Logger             logger = LoggerFactory.getLogger(getClass());
     private final String             protocol;        // 协议名，例如：RSF/1.0、Hprose/HTTP
     private final String             sechma;          // 协议头，例如：rsf、hprose
     private final RsfEnvironment     rsfEnvironment;  // Rsf环境
@@ -40,7 +41,7 @@ public abstract class Connector {
     private final LinkPool           linkPool;        // 连接池
     private final ReceivedListener   receivedListener;// 数据接收器
     private final ConnectionAccepter accepter;        // 连接接受器，用于IP黑名单实现
-    //
+
     public Connector(String protocol, RsfEnvironment rsfEnvironment, ReceivedListener receivedListener, ConnectionAccepter accepter) {
         this.protocol = protocol;
         this.rsfEnvironment = rsfEnvironment;
@@ -57,32 +58,36 @@ public abstract class Connector {
             throw new IllegalStateException("[" + protocol + "] the prot is zero.");
         }
     }
-    //
+
     @Override
     public String toString() {
         return "Connector{ protocol='" + protocol + "', bindAddress=" + this.bindAddress + '}';
     }
-    //
+
     /** 获取协议名 */
     public String getProtocol() {
         return this.protocol;
     }
+
     /** 获取协议头 */
     public String getSechma() {
         return this.sechma;
     }
+
     public RsfEnvironment getRsfEnvironment() {
         return rsfEnvironment;
     }
+
     /** 监听的本地端口号 */
     public InterAddress getBindAddress() {
         return this.bindAddress;
     }
-    //
+
     /**根据主机ip和端口号查找 RsfChannel*/
     public Future<RsfChannel> findRsfChannelByHostPort(String hostPort) {
         return this.linkPool.findChannel(hostPort);
     }
+
     /** 建立或获取和远程的连接(异步+回调) */
     public Future<RsfChannel> getOrConnectionTo(InterAddress target) throws InterruptedException {
         String protocol = target.getSechma();
@@ -123,14 +128,14 @@ public abstract class Connector {
         }
         return channelFuture;
     }
-    //
-    //
+
     /** 配置监听器 */
     protected RsfChannel configListener(RsfChannel rsfChannel) {
         rsfChannel.addListener(this.receivedListener);
         rsfChannel.onClose(new CloseListener(this.linkPool));
         return rsfChannel;
     }
+
     /** 是否允许接入，IP黑名单实现 */
     protected boolean acceptChannel(RsfChannel rsfChannel) throws Exception {
         // .检查当前连接是否被允许接入，如果不允许接入关闭这个连接
@@ -153,12 +158,13 @@ public abstract class Connector {
             return false;
         }
     }
-    //
+ 
     /**停止监听器*/
     public final void shutdown() {
         this.shutdownListener();
         this.linkPool.destroyPool();
     }
+
     /**
      * 启动本地监听器
      */
@@ -168,12 +174,14 @@ public abstract class Connector {
      * 停止本地监听器
      */
     public abstract void shutdownListener();
+
     /**
      * 接收到数据
      */
     protected void receivedData(RsfChannel rsfChannel, OptionInfo object) {
         rsfChannel.receivedData(object);
     }
+
     /**
      * 连接到远程机器
      */

@@ -21,8 +21,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagString;
+
 public final class ToStringSerializer extends ReferenceSerializer {
     public final static ToStringSerializer instance = new ToStringSerializer();
+
     @Override
     @SuppressWarnings({ "unchecked" })
     public final void serialize(Writer writer, Object obj) throws IOException {

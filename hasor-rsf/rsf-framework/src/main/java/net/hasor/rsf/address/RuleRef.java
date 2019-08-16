@@ -27,25 +27,31 @@ public class RuleRef {
             this.argsLevel = scriptResourcesRef.argsLevel;
         }
     }
+
     private InnerRuleEngine serviceLevel = new InnerRuleEngine(); //服务级
     private InnerRuleEngine methodLevel  = new InnerRuleEngine(); //方法级
     private InnerRuleEngine argsLevel    = new InnerRuleEngine(); //参数级
-    //
+
     public InnerRuleEngine getServiceLevel() {
         return serviceLevel;
     }
+
     public void setServiceLevel(InnerRuleEngine serviceLevel) {
         this.serviceLevel = serviceLevel;
     }
+
     public InnerRuleEngine getMethodLevel() {
         return methodLevel;
     }
+
     public void setMethodLevel(InnerRuleEngine methodLevel) {
         this.methodLevel = methodLevel;
     }
+
     public InnerRuleEngine getArgsLevel() {
         return argsLevel;
     }
+
     public void setArgsLevel(InnerRuleEngine argsLevel) {
         this.argsLevel = argsLevel;
     }

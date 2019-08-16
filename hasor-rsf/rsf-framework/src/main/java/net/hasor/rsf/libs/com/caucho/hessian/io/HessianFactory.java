@@ -53,25 +53,29 @@ import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
+
 /**
  * Factory for creating HessianInput and HessianOutput streams.
  */
 @SuppressWarnings({ "unused" })
 public class HessianFactory {
-    public static final Logger log = LoggerFactory.getLogger(HessianFactory.class);
-    private SerializerFactory _serializerFactory;
-    private SerializerFactory _defaultSerializerFactory;
-    private final HessianFreeList<Hessian2Output> _freeHessian2Output = new HessianFreeList<Hessian2Output>(32);
-    private final HessianFreeList<HessianOutput>  _freeHessianOutput  = new HessianFreeList<HessianOutput>(32);
-    private final HessianFreeList<Hessian2Input>  _freeHessian2Input  = new HessianFreeList<Hessian2Input>(32);
-    private final HessianFreeList<HessianInput>   _freeHessianInput   = new HessianFreeList<HessianInput>(32);
+    public static final Logger                          log                 = LoggerFactory.getLogger(HessianFactory.class);
+    private             SerializerFactory               _serializerFactory;
+    private             SerializerFactory               _defaultSerializerFactory;
+    private final       HessianFreeList<Hessian2Output> _freeHessian2Output = new HessianFreeList<Hessian2Output>(32);
+    private final       HessianFreeList<HessianOutput>  _freeHessianOutput  = new HessianFreeList<HessianOutput>(32);
+    private final       HessianFreeList<Hessian2Input>  _freeHessian2Input  = new HessianFreeList<Hessian2Input>(32);
+    private final       HessianFreeList<HessianInput>   _freeHessianInput   = new HessianFreeList<HessianInput>(32);
+
     public HessianFactory() {
         _defaultSerializerFactory = SerializerFactory.createDefault();
         _serializerFactory = _defaultSerializerFactory;
     }
+
     public void setSerializerFactory(SerializerFactory factory) {
         _serializerFactory = factory;
     }
+
     public SerializerFactory getSerializerFactory() {
         // the default serializer factory cannot be modified by external
         // callers
@@ -80,6 +84,7 @@ public class HessianFactory {
         }
         return _serializerFactory;
     }
+
     /**
      * Creates a new Hessian 2.0 deserializer.
      */
@@ -88,6 +93,7 @@ public class HessianFactory {
         in.setSerializerFactory(_serializerFactory);
         return in;
     }
+
     /**
      * Frees a Hessian 2.0 deserializer
      */
@@ -101,6 +107,7 @@ public class HessianFactory {
         _freeHessian2Input.free(in);
         */
     }
+
     /**
      * Creates a new Hessian 2.0 deserializer.
      */
@@ -109,17 +116,20 @@ public class HessianFactory {
         in.setSerializerFactory(_serializerFactory);
         return in;
     }
+
     /**
      * Frees a Hessian 2.0 deserializer
      */
     public void freeHessian2StreamingInput(Hessian2StreamingInput in) {
     }
+
     /**
      * Creates a new Hessian 1.0 deserializer.
      */
     public HessianInput createHessianInput(InputStream is) {
         return new HessianInput(is);
     }
+
     /**
      * Creates a new Hessian 2.0 serializer.
      */
@@ -132,6 +142,7 @@ public class HessianFactory {
         out.setSerializerFactory(_serializerFactory);
         return out;
     }
+
     /**
      * Frees a Hessian 2.0 serializer
      */
@@ -141,6 +152,7 @@ public class HessianFactory {
         out.free();
         _freeHessian2Output.free(out);
     }
+
     /**
      * Creates a new Hessian 2.0 serializer.
      */
@@ -148,6 +160,7 @@ public class HessianFactory {
         Hessian2Output out = createHessian2Output(os);
         return new Hessian2StreamingOutput(out);
     }
+
     /**
      * Frees a Hessian 2.0 serializer
      */
@@ -156,12 +169,14 @@ public class HessianFactory {
             return;
         freeHessian2Output(out.getHessian2Output());
     }
+
     /**
      * Creates a new Hessian 1.0 serializer.
      */
     public HessianOutput createHessianOutput(OutputStream os) {
         return new HessianOutput(os);
     }
+
     public OutputStream createHessian2DebugOutput(OutputStream os, Logger log, Level level) {
         HessianDebugOutputStream out = new HessianDebugOutputStream(os, log, level);
         out.startTop2();

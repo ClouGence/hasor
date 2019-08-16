@@ -22,8 +22,10 @@ import java.lang.reflect.Type;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagEmpty;
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.TagList;
+
 public final class StringBuilderArrayUnserializer extends BaseUnserializer<StringBuilder[]> {
     public final static StringBuilderArrayUnserializer instance = new StringBuilderArrayUnserializer();
+
     @Override
     public StringBuilder[] unserialize(Reader reader, int tag, Type type) throws IOException {
         if (tag == TagList)
@@ -32,6 +34,7 @@ public final class StringBuilderArrayUnserializer extends BaseUnserializer<Strin
             return new StringBuilder[0];
         return super.unserialize(reader, tag, type);
     }
+
     public StringBuilder[] read(Reader reader) throws IOException {
         return read(reader, StringBuilder[].class);
     }

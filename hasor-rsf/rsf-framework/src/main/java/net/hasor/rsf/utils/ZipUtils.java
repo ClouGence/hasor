@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
 /**
  * 业务线程
  * @version : 2014年11月11日
@@ -31,6 +32,7 @@ import java.util.zip.ZipOutputStream;
  */
 public class ZipUtils {
     protected final static Logger logger = LoggerFactory.getLogger(ZipUtils.class);
+
     public static void writeEntry(ZipOutputStream zipStream, String scriptBody, String entryName, String comment) throws IOException {
         ZipEntry entry = new ZipEntry(entryName);
         entry.setComment(comment);

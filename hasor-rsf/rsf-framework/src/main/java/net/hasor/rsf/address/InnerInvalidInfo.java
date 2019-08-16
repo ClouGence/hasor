@@ -22,17 +22,19 @@ package net.hasor.rsf.address;
 class InnerInvalidInfo {
     private long timeoutPoint;
     private int  tryCount;
-    //
+
     public InnerInvalidInfo(long timeout) {
         this.timeoutPoint = System.currentTimeMillis() + timeout;
         this.tryCount = 0;
     }
+
     public void invalid(long timeout) {
         if (this.timeoutPoint > System.currentTimeMillis()) {
             this.tryCount++;
         }
         this.timeoutPoint = System.currentTimeMillis() + timeout;
     }
+
     public boolean reTry() {
         if (this.timeoutPoint > System.currentTimeMillis()) {
             return false;
@@ -40,6 +42,7 @@ class InnerInvalidInfo {
         this.tryCount = 0;
         return true;
     }
+
     @Override
     public String toString() {
         return "InvalidInfo[tryCount = " + this.tryCount + " ]";

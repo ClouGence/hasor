@@ -20,8 +20,10 @@ package net.hasor.rsf.libs.com.hprose.io.convert;
 import net.hasor.rsf.libs.com.hprose.io.unserialize.ValueReader;
 
 import java.lang.reflect.Type;
+
 public class FloatConverter implements Converter<Float> {
     public final static FloatConverter instance = new FloatConverter();
+
     public Float convertTo(Object obj, Type type) {
         if (obj instanceof String) {
             return ValueReader.parseFloat((String) obj);

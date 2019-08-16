@@ -22,6 +22,7 @@ import net.hasor.rsf.address.route.rule.AbstractRule;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
 /**
  * 基于QoS的速率控制规则。
  * <pre>
@@ -36,13 +37,13 @@ import java.util.concurrent.ConcurrentMap;
  * 解释：根据action的配置决定RPC调用速率。
  */
 public class SpeedFlowControl extends AbstractRule {
-    private QoSActionEnum action;
-    private int rate       = 20;
-    private int peak       = 200;
-    private int timeWindow = 10;
+    private QoSActionEnum                    action;
+    private int                              rate       = 20;
+    private int                              peak       = 200;
+    private int                              timeWindow = 10;
     private QoSBucket                        defaultQoSBucket;
     private ConcurrentMap<String, QoSBucket> qosBucketMap;
-    //
+
     public void paserControl(Settings settings) {
         this.enable(settings.getBoolean("flowControl.enable"));
         this.action = settings.getEnum("flowControl.action", QoSActionEnum.class);
@@ -67,7 +68,7 @@ public class SpeedFlowControl extends AbstractRule {
         }
         defaultQoSBucket = qosBucket;
     }
-    //
+
     public boolean callCheck(String serviceID, String methodName, InterAddress doCallAddress) {
         if (!this.enable()) {
             return true;
@@ -96,13 +97,13 @@ public class SpeedFlowControl extends AbstractRule {
         }
         return qos.check();
     }
-    //
+
     protected QoSBucket createQoSBucket() {
         QoSBucket qosBucket = new QoSBucket(this.rate, this.peak, this.timeWindow);
         logger.info("create {}", qosBucket);
         return qosBucket;
     }
-    //
+
     public static SpeedFlowControl defaultControl(RsfEnvironment rsfEnvironment) {
         SpeedFlowControl flowControl = new SpeedFlowControl();
         RsfSettings rsfSettings = rsfEnvironment.getSettings();

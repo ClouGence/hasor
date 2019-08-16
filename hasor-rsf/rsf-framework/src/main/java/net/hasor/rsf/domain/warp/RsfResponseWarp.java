@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.domain.warp;
 import net.hasor.rsf.RsfResponse;
+
 /**
  * {@link RsfResponse}接口包装器。
  * @version : 2014年10月25日
@@ -22,9 +23,11 @@ import net.hasor.rsf.RsfResponse;
  */
 public class RsfResponseWarp extends AbstractRsfResponseWarp {
     private final RsfResponse response;
+
     public RsfResponseWarp(RsfResponse response) {
         this.response = response;
     }
+
     @Override
     protected RsfResponse getRsfResponse() {
         return this.response;

@@ -50,12 +50,14 @@ import net.hasor.rsf.libs.com.caucho.hessian.HessianException;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+
 /**
  * Deserializing a string valued object
  */
 public class StringValueDeserializer extends AbstractStringValueDeserializer {
     private Class<?>       _cl;
     private Constructor<?> _constructor;
+
     public StringValueDeserializer(Class<?> cl) {
         try {
             _cl = cl;
@@ -64,10 +66,12 @@ public class StringValueDeserializer extends AbstractStringValueDeserializer {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public Class<?> getType() {
         return _cl;
     }
+
     @Override
     protected Object create(String value) throws IOException {
         if (value == null)

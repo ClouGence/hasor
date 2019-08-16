@@ -20,8 +20,10 @@ package net.hasor.rsf.libs.com.hprose.io.convert;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 public class URLConverter implements Converter<URL> {
     public final static URLConverter instance = new URLConverter();
+
     private static URL convertTo(String s) {
         try {
             return new URL(s);
@@ -29,6 +31,7 @@ public class URLConverter implements Converter<URL> {
             throw new ClassCastException("String \"" + s + "\" cannot be cast to java.net.URL");
         }
     }
+
     public URL convertTo(Object obj, Type type) {
         if (obj instanceof String) {
             return convertTo((String) obj);

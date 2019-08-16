@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.rsf.container;
-import net.hasor.core.AppContextAware;
 import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfEnvironment;
+
 /**
  * 服务注册器
  * @version : 2014年11月12日
@@ -27,19 +27,17 @@ abstract class ContextRsfBindBuilder extends AbstractRsfBindBuilder {
     protected abstract RsfBeanContainer getContainer();
 
     protected abstract RsfContext getRsfContext();
+
     public RsfEnvironment getEnvironment() {
         return this.getRsfContext().getEnvironment();
     }
+
     protected <T> RsfBindInfo<T> addService(ServiceDefine<T> serviceDefine) {
         getContainer().publishService(serviceDefine);
         return serviceDefine;
     }
+
     protected void addShareFilter(FilterDefine filterDefine) {
         this.getContainer().publishFilter(filterDefine);
-    }
-    @Override
-    protected <T extends AppContextAware> T makeSureAware(T aware) {
-        aware.setAppContext(getRsfContext().getAppContext());
-        return aware;
     }
 }

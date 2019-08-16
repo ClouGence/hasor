@@ -23,6 +23,7 @@ import net.hasor.rsf.rpc.net.netty.ProtocolHandlerFactory;
 import net.hasor.rsf.rpc.net.netty.RsfDuplexHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * RSF 解码器
  * @version : 2014年10月10日
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RsfProtocolHandler implements ProtocolHandlerFactory {
     protected Logger logger = LoggerFactory.getLogger(getClass());
+
     @Override
     public ChannelHandler[] channelHandler(Connector connector, AppContext appContext) {
         RsfEnvironment env = appContext.getInstance(RsfEnvironment.class);

@@ -21,8 +21,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 
 import java.io.IOException;
 import java.io.OutputStream;
+
 public final class StringBufferArraySerializer extends ReferenceSerializer<StringBuffer[]> {
     public final static StringBufferArraySerializer instance = new StringBufferArraySerializer();
+
     @Override
     public final void serialize(Writer writer, StringBuffer[] array) throws IOException {
         super.serialize(writer, array);

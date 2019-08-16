@@ -23,8 +23,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Map;
+
 public final class MapSerializer<K, V> extends ReferenceSerializer<Map<K, V>> {
     public final static MapSerializer instance = new MapSerializer();
+
     @Override
     public final void serialize(Writer writer, Map<K, V> map) throws IOException {
         super.serialize(writer, map);

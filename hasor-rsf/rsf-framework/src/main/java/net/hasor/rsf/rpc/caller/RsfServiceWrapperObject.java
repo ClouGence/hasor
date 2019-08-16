@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.rpc.caller;
 import net.hasor.rsf.domain.provider.AddressProvider;
+
 /**
  * 服务对象基类。
  * @version : 2015年12月8日
@@ -22,9 +23,11 @@ import net.hasor.rsf.domain.provider.AddressProvider;
  */
 public class RsfServiceWrapperObject implements RsfServiceWrapper {
     private AddressProvider target;
+
     public AddressProvider getTarget() {
         return target;
     }
+
     public void setTarget(AddressProvider target) {
         this.target = target;
     }

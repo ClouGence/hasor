@@ -19,6 +19,7 @@ import net.hasor.rsf.protocol.rsf.Protocol;
 import net.hasor.rsf.utils.ProtocolUtils;
 
 import java.io.IOException;
+
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年11月4日
@@ -44,7 +45,7 @@ public class RpcResponseProtocolV1 implements Protocol<ResponseBlock> {
         buf.writeBytes(responseBody);
         //
     }
-    //
+
     private ByteBuf encodeResponse(ResponseBlock resMsg) {
         ByteBuf bodyBuf = ProtocolUtils.newByteBuf();
         //
@@ -71,9 +72,7 @@ public class RpcResponseProtocolV1 implements Protocol<ResponseBlock> {
         resMsg.fillTo(bodyBuf);
         return bodyBuf;
     }
-    //
-    //
-    //
+ 
     /**decode stream to object*/
     public ResponseBlock decode(ByteBuf buf) throws IOException {
         //* --------------------------------------------------------bytes =13

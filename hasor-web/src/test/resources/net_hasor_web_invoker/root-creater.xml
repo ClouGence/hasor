@@ -2,8 +2,8 @@
 <config xmlns="http://www.hasor.net/sechma/hasor-web">
     <hasor>
         <invokerCreaterSet>
-            <invokerCreater type="net.hasor.web.invoker.beans.TestInvoker">net.hasor.web.invoker.beans.TestInvokerCreater</invokerCreater>
-            <invokerCreater type="net.hasor.web.invoker.beans.TestInvoker2">net.hasor.web.invoker.beans.TestInvokerCreater</invokerCreater>
+            <invokerCreater type="net.hasor.test.invoker.TestInvoker">net.hasor.test.invoker.TestInvokerCreater</invokerCreater>
+            <invokerCreater type="net.hasor.test.invoker.TestInvoker2">net.hasor.test.invoker.TestInvokerCreater</invokerCreater>
         </invokerCreaterSet>
     </hasor>
 </config>

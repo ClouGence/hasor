@@ -15,12 +15,13 @@
  */
 package net.hasor.web.render;
 import net.hasor.core.AppContext;
+import net.hasor.core.BindInfo;
 import net.hasor.core.Settings;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.*;
 import net.hasor.web.annotation.Produces;
 import net.hasor.web.annotation.Render;
-import net.hasor.web.binder.RenderDefinition;
+import net.hasor.web.binder.RenderDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,8 +53,10 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
     private   String                    defaultLayout      = null;
 
     @Override
-    public void loadModule(WebApiBinder apiBinder) throws Throwable {
-        apiBinder.filter("/*").through(Integer.MIN_VALUE, this);
+    public void loadModule(WebApiBinder apiBinder) {
+        BindInfo<InvokerFilter> filterInfo = apiBinder.bindType(InvokerFilter.class)//
+                .idWith("render-filter").toInstance(this).toInfo();
+        apiBinder.filter("/*").through(Integer.MIN_VALUE, filterInfo);
     }
 
     @Override
@@ -63,8 +66,8 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
         }
         //
         AppContext appContext = config.getAppContext();
-        List<RenderDefinition> renderInfoList = appContext.findBindingBean(RenderDefinition.class);
-        for (RenderDefinition renderInfo : renderInfoList) {
+        List<RenderDef> renderInfoList = appContext.findBindingBean(RenderDef.class);
+        for (RenderDef renderInfo : renderInfoList) {
             if (renderInfo == null) {
                 continue;
             }

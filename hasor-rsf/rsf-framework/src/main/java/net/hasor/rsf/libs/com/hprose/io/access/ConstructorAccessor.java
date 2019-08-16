@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.concurrent.ConcurrentHashMap;
+
 public class ConstructorAccessor {
     private final static ConcurrentHashMap<Class<?>, Constructor<?>> ctorCache  = new ConcurrentHashMap<Class<?>, Constructor<?>>();
     private final static ConcurrentHashMap<Constructor<?>, Object[]> argsCache  = new ConcurrentHashMap<Constructor<?>, Object[]>();
@@ -36,8 +37,8 @@ public class ConstructorAccessor {
     private final static Integer                                     intZero    = 0;
     private final static Float                                       floatZero  = (float) 0;
     private final static Character                                   charZero   = (char) 0;
-    private final static Constructor<Object> nullCtor;
-    private final static Method              newInstance;
+    private final static Constructor<Object>                         nullCtor;
+    private final static Method                                      newInstance;
 
     static {
         Constructor<Object> _nullCtor;
@@ -58,11 +59,13 @@ public class ConstructorAccessor {
         assert (_newInstance != null);
         newInstance = _newInstance;
     }
+
     private static class ConstructorComparator implements Comparator<Constructor<?>> {
         public int compare(Constructor<?> o1, Constructor<?> o2) {
             return o1.getParameterTypes().length - o2.getParameterTypes().length;
         }
     }
+
     private static Object[] getArgs(Constructor<?> ctor) {
         Object[] args = argsCache.get(ctor);
         if (args == null) {
@@ -94,6 +97,7 @@ public class ConstructorAccessor {
         }
         return args;
     }
+
     @SuppressWarnings({ "unchecked" })
     public final static <T> T newInstance(Class<T> type) throws HproseException {
         Constructor<?> ctor = ctorCache.get(type);

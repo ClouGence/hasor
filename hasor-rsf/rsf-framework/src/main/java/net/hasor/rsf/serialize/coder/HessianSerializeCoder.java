@@ -23,6 +23,7 @@ import net.hasor.rsf.libs.com.caucho.hessian.io.SerializerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
 /**
  *
  * @version : 2014年9月19日
@@ -30,12 +31,12 @@ import java.io.IOException;
  */
 public class HessianSerializeCoder implements SerializeCoder {
     private SerializerFactory serializerFactory = null;
-    //
+
     @Override
     public void initCoder(Environment environment) {
         this.serializerFactory = new SerializerFactory(environment.getClassLoader());
     }
-    //
+
     @Override
     public byte[] encode(Object object) throws IOException {
         ByteArrayOutputStream binary = new ByteArrayOutputStream();
@@ -44,11 +45,12 @@ public class HessianSerializeCoder implements SerializeCoder {
         hout.writeObject(object);
         return binary.toByteArray();
     }
-    //
+
     @Override
     public Object decode(byte[] bytes, Class<?> returnType) throws IOException {
-        if (bytes == null)
+        if (bytes == null) {
             return null;
+        }
         HessianInput input = new HessianInput(new ByteArrayInputStream(bytes));
         input.setSerializerFactory(this.serializerFactory);
         return input.readObject(returnType);

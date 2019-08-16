@@ -19,6 +19,7 @@ import net.hasor.tconsole.CommandExecutor;
 import net.hasor.tconsole.launcher.CmdRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * Telnet扩展指令,只有通过 start.sh 形式启动时才可以使用这个指令。
  * @version : 2016年3月29日
@@ -26,14 +27,17 @@ import org.slf4j.LoggerFactory;
  */
 public class CenterAppShutdownInstruct implements CommandExecutor {
     protected static Logger logger = LoggerFactory.getLogger(CenterAppShutdownInstruct.class);
+
     @Override
     public String helpInfo() {
         return "shutdown center.";
     }
+
     @Override
     public boolean inputMultiLine(CmdRequest request) {
         return false;
     }
+
     @Override
     public String doCommand(CmdRequest request) throws Throwable {
         boolean killSelfValue = Boolean.valueOf((String) request.getSessionAttr("open_kill_self"));
@@ -65,6 +69,7 @@ public class CenterAppShutdownInstruct implements CommandExecutor {
                 appContext.shutdown();
                 System.exit(1);
             }
+
             ;
         };
         //

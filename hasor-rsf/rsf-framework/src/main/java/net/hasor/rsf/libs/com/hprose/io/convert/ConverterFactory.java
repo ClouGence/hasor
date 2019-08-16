@@ -30,6 +30,7 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
+
 public final class ConverterFactory {
     private final static ConcurrentHashMap<Class<?>, Converter> converters = new ConcurrentHashMap<Class<?>, Converter>();
 
@@ -78,6 +79,7 @@ public final class ConverterFactory {
     public final static Converter get(Class<?> type) {
         return converters.get(type);
     }
+
     public final static void register(Class<?> type, Converter converter) {
         converters.put(type, converter);
     }

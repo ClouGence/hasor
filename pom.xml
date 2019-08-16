@@ -15,7 +15,7 @@
         <!--<maven.test.skip>true</maven.test.skip>-->
         <!--<skipTests>true</skipTests>-->
         <jacoco.version>0.8.2</jacoco.version>
-        <powermock.version>1.6.5</powermock.version>
+        <powermock.version>2.0.2</powermock.version>
 
         <project.shortname>Hasor-</project.shortname>
         <project.website>http://www.hasor.net/</project.website>
@@ -93,8 +93,8 @@
         <module>hasor-db</module>
         <module>hasor-web</module>
         <module>hasor-tconsole</module>
-        <!--        <module>hasor-dataql</module>-->
-        <!--        <module>hasor-rsf/rsf-framework</module>-->
+        <module>hasor-dataql</module>
+        <!--                <module>hasor-rsf/rsf-framework</module>-->
         <!--        <module>hasor-rsf/rsf-registry</module>-->
         <!--        <module>hasor-plugins</module>-->
         <!--        <module>hasor-land</module>-->
@@ -139,7 +139,7 @@
                     <excludePackageNames>net.hasor.libs.*,org.*,</excludePackageNames>
                     <encoding>UTF-8</encoding>
                     <docencoding>UTF-8</docencoding>
-                    <bottom>${inner.javadocs_bottom}</bottom>
+                    <bottom>${javadocs.bottom}</bottom>
                 </configuration>
                 <executions>
                     <execution>
@@ -244,9 +244,6 @@
     <profiles>
         <profile>
             <id>release</id>
-            <properties>
-                <inner.javadocs_bottom>${javadocs.bottom}</inner.javadocs_bottom>
-            </properties>
             <build>
                 <plugins>
                     <!-- GPG -->
@@ -298,7 +295,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -309,7 +306,7 @@
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito</artifactId>
+            <artifactId>powermock-api-mockito2</artifactId>
             <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
@@ -317,13 +314,13 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.1.7</version>
+            <version>1.2.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.58</version>
+            <version>1.2.59</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -382,22 +379,12 @@
                 <artifactId>hasor-land</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>net.hasor</groupId>
-                <artifactId>hasor-boot-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>net.hasor</groupId>
-                <artifactId>hasor-boot-maven</artifactId>
-                <version>${project.version}</version>
-            </dependency>
 
             <!-- Log依赖 -->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.21</version>
+                <version>1.7.26</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

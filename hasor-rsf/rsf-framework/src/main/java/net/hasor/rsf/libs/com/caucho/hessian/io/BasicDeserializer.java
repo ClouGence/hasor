@@ -49,6 +49,7 @@ package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+
 /**
  * Serializing an object for known object types.
  */
@@ -78,10 +79,12 @@ public class BasicDeserializer extends AbstractDeserializer {
     public static final int CHARACTER_ARRAY  = BasicSerializer.CHARACTER_ARRAY;
     public static final int STRING_ARRAY     = BasicSerializer.STRING_ARRAY;
     public static final int OBJECT_ARRAY     = BasicSerializer.OBJECT_ARRAY;
-    private int _code;
+    private             int _code;
+
     public BasicDeserializer(int code) {
         _code = code;
     }
+
     public Class<?> getType() {
         switch (_code) {
         case NULL:
@@ -136,6 +139,7 @@ public class BasicDeserializer extends AbstractDeserializer {
             throw new UnsupportedOperationException();
         }
     }
+
     public Object readObject(AbstractHessianInput in) throws IOException {
         switch (_code) {
         case NULL:
@@ -231,6 +235,7 @@ public class BasicDeserializer extends AbstractDeserializer {
             throw new UnsupportedOperationException();
         }
     }
+
     public Object readList(AbstractHessianInput in, int length) throws IOException {
         switch (_code) {
         case BOOLEAN_ARRAY: {
@@ -397,6 +402,7 @@ public class BasicDeserializer extends AbstractDeserializer {
             throw new UnsupportedOperationException(String.valueOf(this));
         }
     }
+
     public Object readLengthList(AbstractHessianInput in, int length) throws IOException {
         switch (_code) {
         case BOOLEAN_ARRAY: {

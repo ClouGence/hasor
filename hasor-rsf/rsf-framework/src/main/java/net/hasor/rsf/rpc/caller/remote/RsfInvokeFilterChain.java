@@ -23,6 +23,7 @@ import net.hasor.rsf.domain.ProtocolStatus;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.Supplier;
+
 /**
  * 负责处理服务的调用。
  * @version : 2014年11月4日
@@ -30,7 +31,7 @@ import java.util.function.Supplier;
  */
 class RsfInvokeFilterChain implements RsfFilterChain {
     public static RsfFilterChain Default = new RsfInvokeFilterChain();
-    //
+
     //default invoke
     public void doFilter(RsfRequest request, RsfResponse response) throws Throwable {
         if (response.isResponse())

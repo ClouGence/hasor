@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Calendar;
+
 public final class ValueWriter {
     private final static byte[]              digits     = {//
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'//
@@ -65,6 +66,7 @@ public final class ValueWriter {
             return new byte[20];
         }
     };
+
     public final static void writeInt(OutputStream stream, int i) throws IOException {
         if ((i >= 0) && (i <= 9)) {
             stream.write((byte) ('0' + i));
@@ -100,6 +102,7 @@ public final class ValueWriter {
             stream.write(buf, off, 20 - off);
         }
     }
+
     public final static void writeInt(OutputStream stream, long i) throws IOException {
         if ((i >= 0) && (i <= 9)) {
             stream.write((byte) ('0' + i));
@@ -144,6 +147,7 @@ public final class ValueWriter {
             stream.write(buf, off, 20 - off);
         }
     }
+
     public final static void write(OutputStream stream, int i) throws IOException {
         if (i >= 0 && i <= 9) {
             stream.write(i + '0');
@@ -153,6 +157,7 @@ public final class ValueWriter {
             stream.write(HproseTags.TagSemicolon);
         }
     }
+
     public final static void write(OutputStream stream, long l) throws IOException {
         if (l >= 0 && l <= 9) {
             stream.write((int) l + '0');
@@ -162,9 +167,11 @@ public final class ValueWriter {
             stream.write(HproseTags.TagSemicolon);
         }
     }
+
     public final static void write(OutputStream stream, boolean b) throws IOException {
         stream.write(b ? HproseTags.TagTrue : HproseTags.TagFalse);
     }
+
     public final static void write(OutputStream stream, float f) throws IOException {
         if (Float.isNaN(f)) {
             stream.write(HproseTags.TagNaN);
@@ -177,6 +184,7 @@ public final class ValueWriter {
             stream.write(HproseTags.TagSemicolon);
         }
     }
+
     public final static void write(OutputStream stream, double d) throws IOException {
         if (Double.isNaN(d)) {
             stream.write(HproseTags.TagNaN);
@@ -189,16 +197,19 @@ public final class ValueWriter {
             stream.write(HproseTags.TagSemicolon);
         }
     }
+
     public final static void write(OutputStream stream, BigInteger bi) throws IOException {
         stream.write(HproseTags.TagLong);
         stream.write(getAscii(bi.toString()));
         stream.write(HproseTags.TagSemicolon);
     }
+
     public final static void write(OutputStream stream, BigDecimal bd) throws IOException {
         stream.write(HproseTags.TagDouble);
         stream.write(getAscii(bd.toString()));
         stream.write(HproseTags.TagSemicolon);
     }
+
     public final static void write(OutputStream stream, char c) throws IOException {
         stream.write(HproseTags.TagUTF8Char);
         if (c < 0x80) {
@@ -212,6 +223,7 @@ public final class ValueWriter {
             stream.write(0x80 | (c & 0x3f));
         }
     }
+
     public final static void write(OutputStream stream, char[] s) throws IOException {
         int length = s.length;
         if (length > 0) {
@@ -259,6 +271,7 @@ public final class ValueWriter {
 */
         stream.write(HproseTags.TagQuote);
     }
+
     public final static void write(OutputStream stream, String s) throws IOException {
         int length = s.length();
         if (length > 0) {
@@ -306,6 +319,7 @@ public final class ValueWriter {
 */
         stream.write(HproseTags.TagQuote);
     }
+
     public final static void writeDate(OutputStream stream, int year, int month, int day) throws IOException {
         stream.write(HproseTags.TagDate);
         stream.write((byte) ('0' + (year / 1000 % 10)));
@@ -317,9 +331,11 @@ public final class ValueWriter {
         stream.write((byte) ('0' + (day / 10 % 10)));
         stream.write((byte) ('0' + (day % 10)));
     }
+
     public final static void writeDateOfCalendar(OutputStream stream, Calendar calendar) throws IOException {
         writeDate(stream, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
     }
+
     public final static void writeTime(OutputStream stream, int hour, int minute, int second, int millisecond, boolean ignoreZero, boolean ignoreMillisecond) throws IOException {
         if (ignoreZero && hour == 0 && minute == 0 && second == 0 && millisecond == 0) {
             return;
@@ -338,9 +354,11 @@ public final class ValueWriter {
             stream.write((byte) ('0' + (millisecond % 10)));
         }
     }
+
     public final static void writeTimeOfCalendar(OutputStream stream, Calendar calendar, boolean ignoreZero, boolean ignoreMillisecond) throws IOException {
         writeTime(stream, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND), calendar.get(Calendar.MILLISECOND), ignoreZero, ignoreMillisecond);
     }
+
     public final static void writeNano(OutputStream stream, int nanosecond) throws IOException {
         if (nanosecond > 0) {
             stream.write(HproseTags.TagPoint);
@@ -359,6 +377,7 @@ public final class ValueWriter {
             }
         }
     }
+
     public final static byte[] getAscii(String s) {
         int size = s.length();
         byte[] b = new byte[size--];

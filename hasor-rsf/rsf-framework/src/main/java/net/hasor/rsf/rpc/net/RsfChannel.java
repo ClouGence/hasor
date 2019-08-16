@@ -21,13 +21,14 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * 封装网络连接，并且提供网络数据收发统计。
  * @version : 2015年12月8日
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class RsfChannel {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
+    protected        Logger                 logger = LoggerFactory.getLogger(getClass());
     private final    String                 protocol;       // 使用的协议
     private final    InterAddress           target;
     private final    LinkType               linkType;
@@ -37,33 +38,35 @@ public abstract class RsfChannel {
     private volatile long                   sendPacketsErr; //发送的数据包总数
     private          List<ReceivedListener> listenerList;   //
     private          CloseListener          closeListener;  //当关闭时
-    //
+
     public RsfChannel(InterAddress target, LinkType linkType) {
         this.protocol = target.getSechma();
         this.target = target;
         this.linkType = linkType;
-        this.listenerList = new CopyOnWriteArrayList<ReceivedListener>();
+        this.listenerList = new CopyOnWriteArrayList<>();
     }
+
     @Override
     public String toString() {
         return "RsfChannel{" + "protocol=" + this.getProtocol() +//
                 ", linkType=" + linkType.name() + '}';
     }
+
     /**运行的协议*/
     public String getProtocol() {
         return this.protocol;
     }
-    //
-    //
+
     /**将数据写入 Netty。*/
     public final void sendData(final RequestInfo info, final SendCallBack callBack) {
         this.sendData(info.getRequestID(), info, callBack);
     }
+
     /**将数据写入 Netty。*/
     public final void sendData(final ResponseInfo info, final SendCallBack callBack) {
         this.sendData(info.getRequestID(), info, callBack);
     }
-    //
+
     private void sendData(final long requestID, OptionInfo sendData, final SendCallBack callBack) {
         if (!this.isActive()) {
             RsfException e = new RsfException(ProtocolStatus.NetworkError, "send (" + requestID + ") an error, channel is not ready.");
@@ -77,6 +80,7 @@ public abstract class RsfChannel {
         this.lastSendTime = System.currentTimeMillis();
         this.sendData(sendData, new SendCallBack() {
             private boolean asked = false;
+
             @Override
             public void failed(long requestID, Throwable ex) {
                 if (asked) {
@@ -88,6 +92,7 @@ public abstract class RsfChannel {
                 }
                 this.asked = true;
             }
+
             @Override
             public void complete(long requestID) {
                 if (asked) {
@@ -101,6 +106,7 @@ public abstract class RsfChannel {
             }
         });
     }
+
     /**接收到数据（受保护的，只有包内可见）*/
     final void receivedData(OptionInfo object) {
         if (!isActive()) {
@@ -110,36 +116,42 @@ public abstract class RsfChannel {
             listener.receivedMessage(this, object);
         }
     }
+
     /**添加数据接收监听器（受保护的，只有包内可见）*/
     final void addListener(ReceivedListener receivedListener) {
         if (!this.listenerList.contains(receivedListener)) {
             this.listenerList.add(receivedListener);
         }
     }
-    //
-    //
+
     /**连接方向*/
     public LinkType getLinkType() {
         return this.linkType;
     }
+
     /**最后发送数据时间*/
     public long getLastSendTime() {
         return this.lastSendTime;
     }
+
     /**发送的数据包总数。*/
     public long getSendPackets() {
         return this.sendPackets;
     }
+
     /**发送的数据包成功数。*/
     public long getSendPacketsOk() {
         return this.sendPacketsOk;
     }
+
     /**发送的数据包失败数。*/
     public long getSendPacketsErr() {
         return this.sendPacketsErr;
     }
+
     /**测定连接是否处于激活的。*/
     public abstract boolean isActive();
+
     /**获取远程连接的地址*/
     public InterAddress getTarget() {
         if (this.target != null) {
@@ -147,6 +159,7 @@ public abstract class RsfChannel {
         }
         return null;
     }
+
     /**关闭连接。*/
     public void close() {
         if (this.isActive()) {
@@ -156,16 +169,16 @@ public abstract class RsfChannel {
             this.closeChannel();
         }
     }
+
     void onClose(CloseListener closeListener) {
         this.closeListener = closeListener;
     }
-    //
-    //
-    //
+
     /**判断两个数据通道是相同的*/
     protected boolean equalsSameAs(RsfChannel rsfChannel) {
         return this.target.getHostPort().equals(rsfChannel.target.getHostPort());
     }
+
     /**关闭网络连接*/
     protected abstract void closeChannel();
 

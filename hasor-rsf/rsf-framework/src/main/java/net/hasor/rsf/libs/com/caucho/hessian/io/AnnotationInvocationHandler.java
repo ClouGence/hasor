@@ -50,16 +50,19 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+
 /**
  * Proxy for a java annotation for known object types.
  */
 public class AnnotationInvocationHandler implements InvocationHandler {
     private Class<?>                _annType;
     private HashMap<String, Object> _valueMap;
+
     public AnnotationInvocationHandler(Class<?> annType, HashMap<String, Object> valueMap) {
         _annType = annType;
         _valueMap = valueMap;
     }
+
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         String name = method.getName();
         if (args != null && args.length != 0)
@@ -70,6 +73,7 @@ public class AnnotationInvocationHandler implements InvocationHandler {
             return toString();
         return _valueMap.get(method.getName());
     }
+
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("@");

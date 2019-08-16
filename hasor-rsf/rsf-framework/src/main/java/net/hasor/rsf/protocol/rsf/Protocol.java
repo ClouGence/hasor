@@ -17,6 +17,7 @@ package net.hasor.rsf.protocol.rsf;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
+
 /**
  * Protocol Interface,for custom network protocol
  * @version : 2014年11月4日

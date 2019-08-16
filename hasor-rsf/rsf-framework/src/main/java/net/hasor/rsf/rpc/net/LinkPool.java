@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * 维护RSF同其它RSF的连接。
  * tips：主要数据结构为 hostPort 和 RsfChannel 的映射关系。另外还维护了一个 别名关系，通过别名关系实现双向通信上的连接复用问题。
@@ -33,24 +34,25 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class LinkPool {
-    protected     Logger        logger = LoggerFactory.getLogger(getClass());
-    private final AtomicBoolean inited = new AtomicBoolean(false);
+    protected     Logger                                         logger = LoggerFactory.getLogger(getClass());
+    private final AtomicBoolean                                  inited = new AtomicBoolean(false);
     private final RsfEnvironment                                 environment;
     private final ConcurrentMap<String, BasicFuture<RsfChannel>> channelMap;
     //private final ConcurrentMap<String, String>                  channelAlias;
-    //
+
     public LinkPool(RsfEnvironment environment) {
         this.environment = environment;
-        this.channelMap = new ConcurrentHashMap<String, BasicFuture<RsfChannel>>();
+        this.channelMap = new ConcurrentHashMap<>();
         //this.channelAlias = new ConcurrentHashMap<String, String>();
     }
-    //
+
     /** 初始化连接池。*/
     public void initPool() {
         if (this.inited.compareAndSet(false, true)) {
             this.logger.info("init LinkPool.");
         }
     }
+
     /** 销毁连接池。*/
     public void destroyPool() {
         if (this.inited.compareAndSet(true, false)) {
@@ -68,8 +70,7 @@ public class LinkPool {
             }
         }
     }
-    //
-    //
+
     public synchronized BasicFuture<RsfChannel> preConnection(String hostPortKey) {
         if (!this.inited.get()) {
             throw new IllegalStateException("LinkPool not inited.");
@@ -93,6 +94,7 @@ public class LinkPool {
         }, timeout);
         return channel;
     }
+
     public void closeConnection(String hostPortKey) {
         BasicFuture<RsfChannel> future = this.findChannel(hostPortKey);
         if (future == null) {
@@ -105,6 +107,7 @@ public class LinkPool {
             } catch (Exception e) { /**/ }
         }
     }
+
     public void mappingTo(RsfChannel rsfChannel, String hostPort) {
         //        String address = rsfChannel.getTarget().getHostPort();
         //        BasicFuture<RsfChannel> channel = this.findChannel(address);
@@ -113,7 +116,7 @@ public class LinkPool {
         //        }
         //        this.channelAlias.put(hostPort, address);
     }
-    //
+
     /**
      * 查找连接
      * @param hostPortKey  liek this 127.0.0.1:2180

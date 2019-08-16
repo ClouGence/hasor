@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 /**
  *
  * @version : 2014年11月12日
@@ -40,35 +41,43 @@ class RsfCenterSettingsImpl extends SettingsWrap implements RsfCenterSettings {
     private   CenterMode     centerMode          = null;
     private   String         appKeyID            = null;
     private   String         appKeySecret        = null;
+
     //
     public RsfCenterSettingsImpl(RsfEnvironment rsfEnvironment) throws IOException {
         super(rsfEnvironment.getSettings());
         this.refreshRsfConfig();
     }
+
     @Override
     public CenterMode getMode() {
         return this.centerMode;
     }
+
     //
     @Override
     public InterAddress[] getCenterServerSet() {
         return this.centerServerSet.clone();
     }
+
     public int getCenterRsfTimeout() {
         return this.centerRsfTimeout;
     }
+
     @Override
     public int getHeartbeatTime() {
         return this.centerHeartbeatTime;
     }
+
     @Override
     public String getAppKeyID() {
         return this.appKeyID;
     }
+
     @Override
     public String getAppKeySecret() {
         return this.appKeySecret;
     }
+
     //
     //
     private void refreshRsfConfig() throws IOException {

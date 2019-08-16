@@ -19,6 +19,7 @@ import net.hasor.rsf.domain.RequestInfo;
 import net.hasor.rsf.domain.ResponseInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * 负责处理远程Request对象的请求调用，同时也负责将产生的Response对象写回客户端。
  * @version : 2014年11月4日
@@ -26,10 +27,11 @@ import org.slf4j.LoggerFactory;
  */
 class RemoteRsfCallerProcessing extends InvokerProcessing {
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    //
+
     public RemoteRsfCallerProcessing(InterAddress target, RemoteRsfCaller rsfCaller, RequestInfo requestInfo) {
         super(target, rsfCaller, requestInfo);
     }
+
     @Override
     protected void doSendResponse(ResponseInfo info) {
         this.getRsfCaller().getSenderListener().sendResponse(this.getTarget(), info, null);

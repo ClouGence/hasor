@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf.domain.warp;
 import net.hasor.rsf.RsfRequest;
+
 /**
  * {@link RsfRequest}接口包装器。
  * @version : 2014年10月25日
@@ -22,9 +23,11 @@ import net.hasor.rsf.RsfRequest;
  */
 public class RsfRequestWarp extends AbstractRsfRequestWarp {
     private final RsfRequest request;
+
     public RsfRequestWarp(RsfRequest request) {
         this.request = request;
     }
+
     @Override
     protected RsfRequest getRsfRequest() {
         return this.request;

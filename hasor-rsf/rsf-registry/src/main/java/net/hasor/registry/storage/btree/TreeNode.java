@@ -24,6 +24,7 @@ class TreeNode extends Node {
         super(dataKey);
         this.setPosition(sliceID);
     }
+
     /** 返回是否为数据节点，TreeNode 始终为 false */
     @Override
     public boolean isData() {

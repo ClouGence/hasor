@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
+
 /**
  * 推送服务触发器
  * @version : 2016年3月1日
@@ -36,14 +37,15 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 @Singleton
 public class PushQueue implements Runnable {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    private LinkedBlockingQueue<PushEvent>         dataQueue;
-    private ArrayList<Thread>                      threadPushQueue;
-    private Map<RsfCenterEventEnum, PushProcessor> processorMapping;
+    protected Logger                                 logger = LoggerFactory.getLogger(getClass());
+    private   LinkedBlockingQueue<PushEvent>         dataQueue;
+    private   ArrayList<Thread>                      threadPushQueue;
+    private   Map<RsfCenterEventEnum, PushProcessor> processorMapping;
     @Inject
-    private RsfContext                             rsfContext;
+    private   RsfContext                             rsfContext;
     @Inject
-    private ServerSettings                         rsfCenterCfg;
+    private   ServerSettings                         rsfCenterCfg;
+
     //
     @Init
     public void init() {
@@ -67,6 +69,7 @@ public class PushQueue implements Runnable {
             this.threadPushQueue.add(pushQueue);
         }
     }
+
     public void run() {
         logger.info("pushQueue Thread start. -> " + Thread.currentThread().getName());
         while (true) {
@@ -81,6 +84,7 @@ public class PushQueue implements Runnable {
             }
         }
     }
+
     //
     // - 立刻执行消息推送,返回推送失败的地址列表。
     private List<String> doPush(PushEvent pushEvent) {
@@ -94,6 +98,7 @@ public class PushQueue implements Runnable {
         }
         return pushEvent.getTargetList();
     }
+
     // - 将消息推送交给推送线程,执行异步推送。
     public boolean doPushEvent(PushEvent eventData) {
         if (this.dataQueue.size() > this.rsfCenterCfg.getQueueMaxSize()) {

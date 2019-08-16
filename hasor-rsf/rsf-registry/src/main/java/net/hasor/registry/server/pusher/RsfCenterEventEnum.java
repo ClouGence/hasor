@@ -15,6 +15,7 @@
  */
 package net.hasor.registry.server.pusher;
 import net.hasor.registry.client.RsfCenterEvent;
+
 /**
  * 注册中心下推送的事件类型，与枚举{@link RsfCenterEvent}为一对一映射关系。映射时增加了处理类。
  *
@@ -25,10 +26,12 @@ public enum RsfCenterEventEnum {
     /**
      * 追加或重新激活地址
      * 说明：每当新的提供者上线时，都会通过该事件推送给消费者端。*/
-    AppendAddressEvent(RsfCenterEvent.RsfCenter_AppendAddressEvent, PushProcessor.class), /**
+    AppendAddressEvent(RsfCenterEvent.RsfCenter_AppendAddressEvent, PushProcessor.class),
+    /**
      * 使用新的地址本替换已有的地址本。
      * 说明：废弃服务已有的地址本，使用全新的地址本加以替换。*/
-    RefreshAddressEvent(RsfCenterEvent.RsfCenter_RefreshAddressEvent, PushProcessor.class), /**
+    RefreshAddressEvent(RsfCenterEvent.RsfCenter_RefreshAddressEvent, PushProcessor.class),
+    /**
      * 推送无效的地址
      * 说明：当有服务下线时，注册中心会通过该事件将无效的地址推送给消费者。*/
     RemoveAddressEvent(RsfCenterEvent.RsfCenter_RemoveAddressEvent, PushProcessor.class),
@@ -36,10 +39,12 @@ public enum RsfCenterEventEnum {
     /**
      * 推送服务级路由规则
      * 说明：推送服务的路由规则给RSF客户端，该路由策略只会影响到特定的服务。*/
-    UpdateServiceRouteEvent(RsfCenterEvent.RsfCenter_UpdateServiceRouteEvent, PushProcessor.class), /**
+    UpdateServiceRouteEvent(RsfCenterEvent.RsfCenter_UpdateServiceRouteEvent, PushProcessor.class),
+    /**
      * 推送方法级路由规则。方法级路由是指：服务的路由策略可以为不同的方法做特殊配置
      * 说明：推送服务的路由规则给RSF客户端，该路由策略只会影响到特定的服务。*/
-    UpdateMethodRouteEvent(RsfCenterEvent.RsfCenter_UpdateMethodRouteEvent, PushProcessor.class), /**
+    UpdateMethodRouteEvent(RsfCenterEvent.RsfCenter_UpdateMethodRouteEvent, PushProcessor.class),
+    /**
      * 推送参数级路由规则。参数级路由是指：服务的路由策略可以细分到服务方法的参数上，例如根据userID散列不用的服务调用地址
      * 说明：推送服务的路由规则给RSF客户端，该路由策略只会影响到特定的服务。*/
     UpdateArgsRouteEvent(RsfCenterEvent.RsfCenter_UpdateArgsRouteEvent, PushProcessor.class),
@@ -54,17 +59,21 @@ public enum RsfCenterEventEnum {
     //
     private String                         rsfCenterEvent;
     private Class<? extends PushProcessor> processorType;
+
     RsfCenterEventEnum(String rsfCenterEvent, Class<? extends PushProcessor> processorType) {
         this.rsfCenterEvent = rsfCenterEvent;
         this.processorType = processorType;
     }
+
     public Class<? extends PushProcessor> getProcessorType() {
         return processorType;
     }
+
     @Override
     public String toString() {
         return this.name();
     }
+
     public String forCenterEvent() {
         return rsfCenterEvent;
     }

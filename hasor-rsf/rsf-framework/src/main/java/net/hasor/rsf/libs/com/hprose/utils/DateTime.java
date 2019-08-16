@@ -25,6 +25,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.TimeZone;
+
 public class DateTime {
     public int     year       = 1970;
     public int     month      = 1;
@@ -34,11 +35,13 @@ public class DateTime {
     public int     second     = 0;
     public int     nanosecond = 0;
     public boolean utc        = false;
+
     public final static Calendar toCalendar(java.util.Date date) {
         Calendar calendar = Calendar.getInstance(TimeZoneUtil.DefaultTZ);
         calendar.setTime(date);
         return calendar;
     }
+
     private void init(Calendar calendar) {
         TimeZone tz = calendar.getTimeZone();
         if (!(tz.hasSameRules(TimeZoneUtil.DefaultTZ) || tz.hasSameRules(TimeZoneUtil.UTC))) {
@@ -56,31 +59,38 @@ public class DateTime {
         this.nanosecond = calendar.get(Calendar.MILLISECOND) * 1000000;
         this.utc = tz.hasSameRules(TimeZoneUtil.UTC);
     }
+
     public DateTime() {
     }
+
     public DateTime(Calendar calendar) {
         init(calendar);
     }
+
     public DateTime(java.util.Date date) {
         init(toCalendar(date));
     }
+
     public DateTime(int year, int month, int day) {
         this.year = year;
         this.month = month;
         this.day = day;
     }
+
     public DateTime(int year, int month, int day, boolean utc) {
         this.year = year;
         this.month = month;
         this.day = day;
         this.utc = utc;
     }
+
     public DateTime(int hour, int minute, int second, int nanosecond) {
         this.hour = hour;
         this.minute = minute;
         this.second = second;
         this.nanosecond = nanosecond;
     }
+
     public DateTime(int hour, int minute, int second, int nanosecond, boolean utc) {
         this.hour = hour;
         this.minute = minute;
@@ -88,6 +98,7 @@ public class DateTime {
         this.nanosecond = nanosecond;
         this.utc = utc;
     }
+
     public DateTime(int year, int month, int day, int hour, int minute, int second) {
         this.year = year;
         this.month = month;
@@ -96,6 +107,7 @@ public class DateTime {
         this.minute = minute;
         this.second = second;
     }
+
     public DateTime(int year, int month, int day, int hour, int minute, int second, boolean utc) {
         this.year = year;
         this.month = month;
@@ -105,6 +117,7 @@ public class DateTime {
         this.second = second;
         this.utc = utc;
     }
+
     public DateTime(int year, int month, int day, int hour, int minute, int second, int nanosecond) {
         this.year = year;
         this.month = month;
@@ -114,6 +127,7 @@ public class DateTime {
         this.second = second;
         this.nanosecond = nanosecond;
     }
+
     public DateTime(int year, int month, int day, int hour, int minute, int second, int nanosecond, boolean utc) {
         this.year = year;
         this.month = month;
@@ -124,6 +138,7 @@ public class DateTime {
         this.nanosecond = nanosecond;
         this.utc = utc;
     }
+
     @Override
     public String toString() {
         String s;
@@ -142,6 +157,7 @@ public class DateTime {
             s = s + (char) HproseTags.TagUTC;
         return s;
     }
+
     public StringBuilder toStringBuilder() {
         StringBuilder s = new StringBuilder();
         if (year == 1970 && month == 1 && day == 1) {
@@ -159,6 +175,7 @@ public class DateTime {
             s.append((char) HproseTags.TagUTC);
         return s;
     }
+
     public StringBuffer toStringBuffer() {
         StringBuffer s = new StringBuffer();
         if (year == 1970 && month == 1 && day == 1) {
@@ -176,29 +193,36 @@ public class DateTime {
             s.append((char) HproseTags.TagUTC);
         return s;
     }
+
     public Calendar toCalendar() {
         Calendar calendar = Calendar.getInstance(utc ? TimeZoneUtil.UTC : TimeZoneUtil.DefaultTZ);
         calendar.set(year, month - 1, day, hour, minute, second);
         calendar.set(Calendar.MILLISECOND, nanosecond / 1000000);
         return calendar;
     }
+
     public Timestamp toTimestamp() {
         Timestamp timestamp = new Timestamp(toCalendar().getTimeInMillis());
         timestamp.setNanos(nanosecond);
         return timestamp;
     }
+
     public Date toDate() {
         return new Date(toCalendar().getTimeInMillis());
     }
+
     public Time toTime() {
         return new Time(toCalendar().getTimeInMillis());
     }
+
     public java.util.Date toDateTime() {
         return new java.util.Date(toCalendar().getTimeInMillis());
     }
+
     public BigInteger toBigInteger() {
         return BigInteger.valueOf(toCalendar().getTimeInMillis());
     }
+
     public long toLong() {
         return toCalendar().getTimeInMillis();
     }

@@ -43,8 +43,13 @@ public class AbstractTest {
         Web, Render, Valid
     }
 
-    protected BindInfo<?> bindInfo(Class<?> tClass) {
+    protected <T> BindInfo<T> bindInfo(Class<T> tClass) {
+        return bindInfo(UUID.randomUUID().toString().replace("-", ""), tClass);
+    }
+
+    protected <T> BindInfo<T> bindInfo(String bindID, Class<T> tClass) {
         BindInfo targetType = PowerMockito.mock(BindInfo.class);
+        PowerMockito.when(targetType.getBindID()).thenReturn(bindID);
         PowerMockito.when(targetType.getBindType()).thenReturn(tClass);
         return targetType;
     }
@@ -113,9 +118,14 @@ public class AbstractTest {
     }
 
     protected AppContext buildWebAppContext(WebModule webModule, ServletContext servletContext, LoadModule... modules) {
+        return buildWebAppContext(null, webModule, servletContext, modules);
+    }
+
+    protected AppContext buildWebAppContext(String mainconfig, WebModule webModule, ServletContext servletContext, LoadModule... modules) {
         Hasor settings = Hasor.create(servletContext).asCore()//
                 .addSettings("http://test.hasor.net", "hasor.innerApiBinderSet", defaultInnerApiBinderSetXmlNode(modules))//
                 .addSettings("http://test.hasor.net", "hasor.invokerCreaterSet", defaultInvokerCreaterSetXmlNode(modules))//
+                .mainSettingWith(mainconfig)//
                 .addModules(webModule);
         return settings.build();
     }

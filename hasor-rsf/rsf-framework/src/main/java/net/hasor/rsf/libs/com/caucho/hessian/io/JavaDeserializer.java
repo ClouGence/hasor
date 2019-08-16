@@ -49,6 +49,7 @@ package net.hasor.rsf.libs.com.caucho.hessian.io;
 import java.io.IOException;
 import java.lang.reflect.*;
 import java.util.HashMap;
+
 /**
  * Serializing an object for known object types.
  */
@@ -58,6 +59,7 @@ public class JavaDeserializer extends AbstractMapDeserializer {
     private Method                        _readResolve;
     private Constructor<?>                _constructor;
     private Object[]                      _constructorArgs;
+
     public JavaDeserializer(Class<?> cl) {
         _type = cl;
         _fieldMap = getFieldMap(cl);
@@ -102,14 +104,17 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             }
         }
     }
+
     @Override
     public Class<?> getType() {
         return _type;
     }
+
     @Override
     public boolean isReadResolve() {
         return _readResolve != null;
     }
+
     public Object readMap(AbstractHessianInput in) throws IOException {
         try {
             Object obj = instantiate();
@@ -122,16 +127,19 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             throw new IOExceptionWrapper(_type.getName() + ":" + e.getMessage(), e);
         }
     }
+
     @Override
     public Object[] createFields(int len) {
         return new FieldDeserializer[len];
     }
+
     public Object createField(String name) {
         Object reader = _fieldMap.get(name);
         if (reader == null)
             reader = NullFieldDeserializer.DESER;
         return reader;
     }
+
     @Override
     public Object readObject(AbstractHessianInput in, Object[] fields) throws IOException {
         try {
@@ -145,6 +153,7 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             throw new IOExceptionWrapper(_type.getName() + ":" + e.getMessage(), e);
         }
     }
+
     @Override
     public Object readObject(AbstractHessianInput in, String[] fieldNames) throws IOException {
         try {
@@ -158,6 +167,7 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             throw new IOExceptionWrapper(_type.getName() + ":" + e.getMessage(), e);
         }
     }
+
     /**
      * Returns the readResolve method
      */
@@ -172,6 +182,7 @@ public class JavaDeserializer extends AbstractMapDeserializer {
         }
         return null;
     }
+
     public Object readMap(AbstractHessianInput in, Object obj) throws IOException {
         try {
             int ref = in.addRef(obj);
@@ -194,6 +205,7 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             throw new IOExceptionWrapper(e);
         }
     }
+
     private Object readObject(AbstractHessianInput in, Object obj, FieldDeserializer[] fields) throws IOException {
         try {
             int ref = in.addRef(obj);
@@ -210,6 +222,7 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             throw new IOExceptionWrapper(obj.getClass().getName() + ":" + e, e);
         }
     }
+
     public Object readObject(AbstractHessianInput in, Object obj, String[] fieldNames) throws IOException {
         try {
             int ref = in.addRef(obj);
@@ -230,6 +243,7 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             throw new IOExceptionWrapper(obj.getClass().getName() + ":" + e, e);
         }
     }
+
     protected Object resolve(AbstractHessianInput in, Object obj) throws Exception {
         // if there's a readResolve method, call it
         try {
@@ -243,6 +257,7 @@ public class JavaDeserializer extends AbstractMapDeserializer {
         }
         return obj;
     }
+
     protected Object instantiate() throws Exception {
         try {
             if (_constructor != null)
@@ -253,6 +268,7 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             throw new HessianProtocolException("'" + _type.getName() + "' could not be instantiated", e);
         }
     }
+
     /**
      * Creates a map of the classes fields.
      */
@@ -304,6 +320,7 @@ public class JavaDeserializer extends AbstractMapDeserializer {
         }
         return fieldMap;
     }
+
     /**
      * Creates a map of the classes fields.
      */
@@ -329,20 +346,26 @@ public class JavaDeserializer extends AbstractMapDeserializer {
         else
             throw new UnsupportedOperationException();
     }
+
     abstract static class FieldDeserializer {
         abstract void deserialize(AbstractHessianInput in, Object obj) throws IOException;
     }
+
     static class NullFieldDeserializer {
         static NullFieldDeserializer DESER = new NullFieldDeserializer();
+
         void deserialize(AbstractHessianInput in, Object obj) throws IOException {
             in.readObject();
         }
     }
+
     static class ObjectFieldDeserializer extends FieldDeserializer {
         private final Field _field;
+
         ObjectFieldDeserializer(Field field) {
             _field = field;
         }
+
         void deserialize(AbstractHessianInput in, Object obj) throws IOException {
             Object value = null;
             try {
@@ -353,11 +376,14 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             }
         }
     }
+
     static class BooleanFieldDeserializer extends FieldDeserializer {
         private final Field _field;
+
         BooleanFieldDeserializer(Field field) {
             _field = field;
         }
+
         void deserialize(AbstractHessianInput in, Object obj) throws IOException {
             boolean value = false;
             try {
@@ -368,11 +394,14 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             }
         }
     }
+
     static class ByteFieldDeserializer extends FieldDeserializer {
         private final Field _field;
+
         ByteFieldDeserializer(Field field) {
             _field = field;
         }
+
         void deserialize(AbstractHessianInput in, Object obj) throws IOException {
             int value = 0;
             try {
@@ -383,11 +412,14 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             }
         }
     }
+
     static class ShortFieldDeserializer extends FieldDeserializer {
         private final Field _field;
+
         ShortFieldDeserializer(Field field) {
             _field = field;
         }
+
         void deserialize(AbstractHessianInput in, Object obj) throws IOException {
             int value = 0;
             try {
@@ -398,11 +430,14 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             }
         }
     }
+
     static class IntFieldDeserializer extends FieldDeserializer {
         private final Field _field;
+
         IntFieldDeserializer(Field field) {
             _field = field;
         }
+
         void deserialize(AbstractHessianInput in, Object obj) throws IOException {
             int value = 0;
             try {
@@ -413,11 +448,14 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             }
         }
     }
+
     static class LongFieldDeserializer extends FieldDeserializer {
         private final Field _field;
+
         LongFieldDeserializer(Field field) {
             _field = field;
         }
+
         void deserialize(AbstractHessianInput in, Object obj) throws IOException {
             long value = 0;
             try {
@@ -428,11 +466,14 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             }
         }
     }
+
     static class FloatFieldDeserializer extends FieldDeserializer {
         private final Field _field;
+
         FloatFieldDeserializer(Field field) {
             _field = field;
         }
+
         void deserialize(AbstractHessianInput in, Object obj) throws IOException {
             double value = 0;
             try {
@@ -443,11 +484,14 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             }
         }
     }
+
     static class DoubleFieldDeserializer extends FieldDeserializer {
         private final Field _field;
+
         DoubleFieldDeserializer(Field field) {
             _field = field;
         }
+
         void deserialize(AbstractHessianInput in, Object obj) throws IOException {
             double value = 0;
             try {
@@ -458,11 +502,14 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             }
         }
     }
+
     static class StringFieldDeserializer extends FieldDeserializer {
         private final Field _field;
+
         StringFieldDeserializer(Field field) {
             _field = field;
         }
+
         void deserialize(AbstractHessianInput in, Object obj) throws IOException {
             String value = null;
             try {
@@ -473,11 +520,14 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             }
         }
     }
+
     static class SqlDateFieldDeserializer extends FieldDeserializer {
         private final Field _field;
+
         SqlDateFieldDeserializer(Field field) {
             _field = field;
         }
+
         void deserialize(AbstractHessianInput in, Object obj) throws IOException {
             java.sql.Date value = null;
             try {
@@ -489,11 +539,14 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             }
         }
     }
+
     static class SqlTimestampFieldDeserializer extends FieldDeserializer {
         private final Field _field;
+
         SqlTimestampFieldDeserializer(Field field) {
             _field = field;
         }
+
         void deserialize(AbstractHessianInput in, Object obj) throws IOException {
             java.sql.Timestamp value = null;
             try {
@@ -505,11 +558,14 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             }
         }
     }
+
     static class SqlTimeFieldDeserializer extends FieldDeserializer {
         private final Field _field;
+
         SqlTimeFieldDeserializer(Field field) {
             _field = field;
         }
+
         void deserialize(AbstractHessianInput in, Object obj) throws IOException {
             java.sql.Time value = null;
             try {
@@ -521,6 +577,7 @@ public class JavaDeserializer extends AbstractMapDeserializer {
             }
         }
     }
+
     static void logDeserializeError(Field field, Object obj, Object value, Throwable e) throws IOException {
         String fieldName = (field.getDeclaringClass().getName() + "." + field.getName());
         if (e instanceof HessianFieldException)

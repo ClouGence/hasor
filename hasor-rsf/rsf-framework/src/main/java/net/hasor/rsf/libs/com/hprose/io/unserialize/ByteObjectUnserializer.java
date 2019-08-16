@@ -21,8 +21,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+
 public class ByteObjectUnserializer extends BaseUnserializer<Byte> {
     public final static ByteObjectUnserializer instance = new ByteObjectUnserializer();
+
     @Override
     public Byte unserialize(Reader reader, int tag, Type type) throws IOException {
         if (tag >= '0' && tag <= '9')
@@ -47,6 +49,7 @@ public class ByteObjectUnserializer extends BaseUnserializer<Byte> {
         }
         return super.unserialize(reader, tag, type);
     }
+
     public Byte read(Reader reader) throws IOException {
         return read(reader, Byte.class);
     }

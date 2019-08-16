@@ -21,8 +21,10 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public class ShortObjectUnserializer extends BaseUnserializer<Short> {
     public final static ShortObjectUnserializer instance = new ShortObjectUnserializer();
+
     @Override
     public Short unserialize(Reader reader, int tag, Type type) throws IOException {
         if (tag >= '0' && tag <= '9')
@@ -47,6 +49,7 @@ public class ShortObjectUnserializer extends BaseUnserializer<Short> {
         }
         return super.unserialize(reader, tag, type);
     }
+
     public Short read(Reader reader) throws IOException {
         return read(reader, Short.class);
     }

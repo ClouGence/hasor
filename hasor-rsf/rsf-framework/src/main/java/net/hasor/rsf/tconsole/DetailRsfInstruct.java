@@ -20,10 +20,11 @@ import net.hasor.rsf.RsfBindInfo;
 import net.hasor.rsf.RsfContext;
 import net.hasor.rsf.RsfUpdater;
 import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.launcher.CmdRequest;
+import net.hasor.tconsole.CommandRequest;
 
 import java.io.StringWriter;
 import java.util.List;
+
 /**
  * 查看服务详细信息
  * @version : 2016年4月3日
@@ -31,7 +32,6 @@ import java.util.List;
  */
 @Singleton
 public class DetailRsfInstruct implements CommandExecutor {
-    //
     @Override
     public String helpInfo() {
         return "show service info.\r\n"//
@@ -40,12 +40,14 @@ public class DetailRsfInstruct implements CommandExecutor {
                 + " - detail xxxx    (show service info of XXXX.)\r\n"//
                 + " - detail -a xxxx (show service info of XXXX. if service is Consumer then show Providers)";
     }
+
     @Override
-    public boolean inputMultiLine(CmdRequest request) {
+    public boolean inputMultiLine(CommandRequest request) {
         return false;
     }
+
     @Override
-    public String doCommand(CmdRequest request) throws Throwable {
+    public String doCommand(CommandRequest request) throws Throwable {
         StringWriter sw = new StringWriter();
         String[] args = request.getRequestArgs();
         // .help
@@ -92,6 +94,7 @@ public class DetailRsfInstruct implements CommandExecutor {
         }
         return sw.toString();
     }
+
     private static final String evalAddress(List<InterAddress> addressSet) {
         StringBuffer addrList = new StringBuffer("");
         for (InterAddress inter : addressSet) {

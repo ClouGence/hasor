@@ -25,6 +25,7 @@ import javax.script.ScriptException;
 import java.io.Reader;
 import java.util.Map;
 import java.util.Set;
+
 /**
  * This class defines new Java 6 specific groovy methods which extend the normal
  * JDK classes inside the Groovy environment. Static methods are used with the
@@ -52,6 +53,7 @@ public class ScriptExtensions {
         retrieveBindingVars(self, binding);
         return result;
     }
+
     /**
      * Same as <code>eval(ScriptEngine, Reader, Binding)</code> except that the
      * source of the script is provided as a <code>Reader</code>
@@ -71,12 +73,14 @@ public class ScriptExtensions {
         retrieveBindingVars(self, binding);
         return result;
     }
+
     private static void retrieveBindingVars(ScriptEngine self, Binding binding) {
         Set<Map.Entry<String, Object>> returnVars = self.getBindings(ScriptContext.ENGINE_SCOPE).entrySet();
         for (Map.Entry<String, Object> me : returnVars) {
             binding.setVariable(me.getKey(), me.getValue());
         }
     }
+
     @SuppressWarnings("unchecked")
     private static void storeBindingVars(ScriptEngine self, Binding binding) {
         Set<Map.Entry> vars = binding.getVariables().entrySet();

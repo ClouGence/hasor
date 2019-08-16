@@ -24,8 +24,10 @@ import java.lang.reflect.Type;
 import java.util.Calendar;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public final class CalendarUnserializer extends BaseUnserializer<Calendar> {
     public final static CalendarUnserializer instance = new CalendarUnserializer();
+
     @Override
     public Calendar unserialize(Reader reader, int tag, Type type) throws IOException {
         CalendarConverter converter = CalendarConverter.instance;
@@ -46,6 +48,7 @@ public final class CalendarUnserializer extends BaseUnserializer<Calendar> {
             return converter.convertTo((long) (tag - '0'));
         return super.unserialize(reader, tag, type);
     }
+
     public Calendar read(Reader reader) throws IOException {
         return read(reader, Calendar.class);
     }

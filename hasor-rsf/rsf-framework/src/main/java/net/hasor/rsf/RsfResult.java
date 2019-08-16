@@ -15,6 +15,7 @@
  */
 package net.hasor.rsf;
 import java.io.Serializable;
+
 /**
  * 用于RPC消息模式下,消息发送的返回值。
  * @version : 2015年1月8日

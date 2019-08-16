@@ -22,8 +22,10 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public final class BigDecimalUnserializer extends BaseUnserializer<BigDecimal> {
     public final static BigDecimalUnserializer instance = new BigDecimalUnserializer();
+
     @Override
     public BigDecimal unserialize(Reader reader, int tag, Type type) throws IOException {
         if (tag >= '0' && tag <= '9')
@@ -46,6 +48,7 @@ public final class BigDecimalUnserializer extends BaseUnserializer<BigDecimal> {
         }
         return super.unserialize(reader, tag, type);
     }
+
     public BigDecimal read(Reader reader) throws IOException {
         return read(reader, BigDecimal.class);
     }

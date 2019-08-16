@@ -22,8 +22,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
+
 public final class OtherTypeArraySerializer extends ReferenceSerializer {
     public final static OtherTypeArraySerializer instance = new OtherTypeArraySerializer();
+
     @Override
     @SuppressWarnings({ "unchecked" })
     public final void serialize(Writer writer, Object array) throws IOException {

@@ -18,18 +18,20 @@ import net.hasor.registry.common.RsfCenterSettings;
 import net.hasor.rsf.RsfEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * @version : 2015年8月19日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ServerSettings {
-    protected static final Logger logger = LoggerFactory.getLogger(ServerSettings.class);
-    private int     threadSize;
-    private int     queueMaxSize;
-    private int     sleepTime;
+    protected static final Logger  logger = LoggerFactory.getLogger(ServerSettings.class);
+    private                int     threadSize;
+    private                int     queueMaxSize;
+    private                int     sleepTime;
     //
-    private int     dataExpireTime;
-    private boolean allowAnonymous;
+    private                int     dataExpireTime;
+    private                boolean allowAnonymous;
+
     //
     //
     //
@@ -46,20 +48,25 @@ public class ServerSettings {
         this.allowAnonymous = settings.getBoolean("hasor.registry.auth.allowAnonymous", true);
         //
     }
+
     //
     public int getThreadSize() {
         return threadSize;
     }
+
     public int getQueueMaxSize() {
         return queueMaxSize;
     }
+
     public int getSleepTime() {
         return sleepTime;
     }
+
     //
     public int getDataExpireTime() {
         return dataExpireTime;
     }
+
     public boolean isAllowAnonymous() {
         return allowAnonymous;
     }

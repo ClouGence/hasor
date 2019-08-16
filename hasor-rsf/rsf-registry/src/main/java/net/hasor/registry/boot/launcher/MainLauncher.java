@@ -35,6 +35,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 /**
  *
  * @version : 2016年3月29日
@@ -42,6 +43,7 @@ import java.util.Map;
  */
 public class MainLauncher {
     protected static Logger logger = LoggerFactory.getLogger(MainLauncher.class);
+
     //
     public static void main(String[] args, ClassWorld world) throws Throwable {
         logger.info(">>>>>>>>>>>>>>>>> MainLauncher <<<<<<<<<<<<<<<<<");
@@ -55,6 +57,7 @@ public class MainLauncher {
             doVersion(args);
         }
     }
+
     //
     public static void doStart(String[] args) throws Throwable {
         logger.info(">>>>>>>>>>>>>>>>> doStart <<<<<<<<<<<<<<<<<");
@@ -76,6 +79,7 @@ public class MainLauncher {
         });
         future.get();
     }
+
     public static void doStop(String[] args) throws Throwable {
         logger.info(">>>>>>>>>>>>>>>>> doStop <<<<<<<<<<<<<<<<<");
         //
@@ -91,6 +95,7 @@ public class MainLauncher {
         envMap.put("open_kill_self", "true");//设置 open_kill_self 环境变量,该环境变量在执行 center_app_shutdown_command 命令时候可以让应用程序退出。
         TelnetClient.execCommand(addressHost, consolePort, "center_app_shutdown_command", envMap);
     }
+
     public static void doVersion(String[] args) {
         try {
             InputStream verIns = ResourcesUtils.getResourceAsStream("/META-INF/rsf-center.version");

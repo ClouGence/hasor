@@ -39,32 +39,38 @@ import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.*;
+
 public final class ReferenceReader {
     public final static DateTime readDateTime(Reader reader) throws IOException {
         DateTime datetime = ValueReader.readDateTime(reader);
         reader.setRef(datetime);
         return datetime;
     }
+
     public final static DateTime readTime(Reader reader) throws IOException {
         DateTime datetime = ValueReader.readTime(reader);
         reader.setRef(datetime);
         return datetime;
     }
+
     public final static UUID readUUID(Reader reader) throws IOException {
         UUID uuid = ValueReader.readUUID(reader);
         reader.setRef(uuid);
         return uuid;
     }
+
     public final static String readString(Reader reader) throws IOException {
         String str = ValueReader.readString(reader);
         reader.setRef(str);
         return str;
     }
+
     public final static char[] readChars(Reader reader) throws IOException {
         char[] chars = ValueReader.readChars(reader);
         reader.setRef(chars);
         return chars;
     }
+
     public final static char[] readCharArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         char[] a = new char[count];
@@ -76,6 +82,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static char[][] readCharsArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         char[][] a = new char[count][];
@@ -87,11 +94,13 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static byte[] readBytes(Reader reader) throws IOException {
         byte[] bytes = ValueReader.readBytes(reader);
         reader.setRef(bytes);
         return bytes;
     }
+
     public final static byte[] readByteArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         byte[] a = new byte[count];
@@ -103,6 +112,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static byte[][] readBytesArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         byte[][] a = new byte[count][];
@@ -114,6 +124,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static short[] readShortArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         short[] a = new short[count];
@@ -125,6 +136,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static int[] readIntArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         int[] a = new int[count];
@@ -136,6 +148,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static long[] readLongArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         long[] a = new long[count];
@@ -147,6 +160,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static boolean[] readBooleanArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         boolean[] a = new boolean[count];
@@ -158,6 +172,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static float[] readFloatArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         float[] a = new float[count];
@@ -169,6 +184,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static double[] readDoubleArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         double[] a = new double[count];
@@ -180,6 +196,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static BigDecimal[] readBigDecimalArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         BigDecimal[] a = new BigDecimal[count];
@@ -191,6 +208,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static BigInteger[] readBigIntegerArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         BigInteger[] a = new BigInteger[count];
@@ -202,6 +220,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static String[] readStringArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         String[] a = new String[count];
@@ -213,6 +232,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static StringBuilder[] readStringBuilderArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         StringBuilder[] a = new StringBuilder[count];
@@ -224,6 +244,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static StringBuffer[] readStringBufferArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         StringBuffer[] a = new StringBuffer[count];
@@ -235,6 +256,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static Calendar[] readCalendarArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         Calendar[] a = new Calendar[count];
@@ -246,6 +268,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static Date[] readDateArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         Date[] a = new Date[count];
@@ -257,6 +280,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static Time[] readTimeArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         Time[] a = new Time[count];
@@ -268,6 +292,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static java.util.Date[] readDateTimeArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         java.util.Date[] a = new java.util.Date[count];
@@ -279,6 +304,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static Timestamp[] readTimestampArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         Timestamp[] a = new Timestamp[count];
@@ -290,6 +316,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static UUID[] readUUIDArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         UUID[] a = new UUID[count];
@@ -301,6 +328,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     @SuppressWarnings({ "unchecked" })
     public final static <T> T[] readArray(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
@@ -318,6 +346,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static Object[] readArray(Reader reader, int count) throws IOException {
         Object[] a = new Object[count];
         reader.setRef(a);
@@ -327,10 +356,12 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     public final static Object[] readArray(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
         return readArray(reader, count);
     }
+
     public final static void readArray(Reader reader, Type[] types, Object[] a, int count) throws IOException {
         reader.setRef(a);
         for (int i = 0; i < count; ++i) {
@@ -338,6 +369,7 @@ public final class ReferenceReader {
         }
         reader.skip(HproseTags.TagClosebrace);
     }
+
     @SuppressWarnings({ "unchecked" })
     public final static ArrayList readArrayList(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
@@ -351,6 +383,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     @SuppressWarnings({ "unchecked" })
     public final static Collection readCollection(Reader reader, Class<? extends Collection> type, Type componentType) throws IOException {
         int count = ValueReader.readCount(reader);
@@ -367,6 +400,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return a;
     }
+
     @SuppressWarnings({ "unchecked" })
     public static void readCollection(Reader reader, Type type, Collection a, int count) throws IOException {
         reader.setRef(a);
@@ -381,30 +415,35 @@ public final class ReferenceReader {
         }
         reader.skip(HproseTags.TagClosebrace);
     }
+
     public final static ArrayList readArrayList(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
         ArrayList a = new ArrayList(count);
         readCollection(reader, type, a, count);
         return a;
     }
+
     public final static LinkedList readLinkedList(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
         LinkedList a = new LinkedList();
         readCollection(reader, type, a, count);
         return a;
     }
+
     public final static HashSet readHashSet(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
         HashSet a = new HashSet(count);
         readCollection(reader, type, a, count);
         return a;
     }
+
     public final static TreeSet readTreeSet(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
         TreeSet a = new TreeSet();
         readCollection(reader, type, a, count);
         return a;
     }
+
     @SuppressWarnings({ "unchecked" })
     public final static Collection readCollection(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
@@ -413,6 +452,7 @@ public final class ReferenceReader {
         readCollection(reader, type, a, count);
         return a;
     }
+
     @SuppressWarnings({ "unchecked" })
     public final static HashMap readHashMap(Reader reader) throws IOException {
         int count = ValueReader.readCount(reader);
@@ -428,6 +468,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return m;
     }
+
     @SuppressWarnings({ "unchecked" })
     public static void readListAsMap(Reader reader, Map m, Type keyType, Type valueType, int count) throws IOException {
         reader.setRef(m);
@@ -443,10 +484,12 @@ public final class ReferenceReader {
         }
         reader.skip(HproseTags.TagClosebrace);
     }
+
     @SuppressWarnings({ "unchecked" })
     public static void readListAsMap(Reader reader, Type type, Map m, int count) throws IOException {
         readListAsMap(reader, m, ClassUtil.getKeyType(type), ClassUtil.getValueType(type), count);
     }
+
     @SuppressWarnings({ "unchecked" })
     public static Map readListAsMap(Reader reader, Class<? extends Map> type, Type keyType, Type valueType) throws IOException {
         int count = ValueReader.readCount(reader);
@@ -454,36 +497,42 @@ public final class ReferenceReader {
         readListAsMap(reader, m, keyType, valueType, count);
         return m;
     }
+
     public final static HashMap readListAsHashMap(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
         HashMap m = new HashMap(count);
         readListAsMap(reader, type, m, count);
         return m;
     }
+
     public final static LinkedHashMap readListAsLinkedHashMap(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
         LinkedHashMap m = new LinkedHashMap(count);
         readListAsMap(reader, type, m, count);
         return m;
     }
+
     public final static LinkedCaseInsensitiveMap readListAsLinkedCaseInsensitiveMap(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
         LinkedCaseInsensitiveMap m = new LinkedCaseInsensitiveMap(count);
         readListAsMap(reader, type, m, count);
         return m;
     }
+
     public final static CaseInsensitiveMap readListAsCaseInsensitiveMap(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
         CaseInsensitiveMap m = new CaseInsensitiveMap(count);
         readListAsMap(reader, type, m, count);
         return m;
     }
+
     public final static TreeMap readListAsTreeMap(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
         TreeMap m = new TreeMap();
         readListAsMap(reader, type, m, count);
         return m;
     }
+
     @SuppressWarnings({ "unchecked" })
     public final static Map readListAsMap(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
@@ -492,6 +541,7 @@ public final class ReferenceReader {
         readListAsMap(reader, type, m, count);
         return m;
     }
+
     public static void readObjectAsMap(Reader reader, Map<String, Object> m, Map<String, Type> typeMap, String[] memberNames, int count) throws IOException {
         reader.setRef(m);
         if (count > 0) {
@@ -507,6 +557,7 @@ public final class ReferenceReader {
         }
         reader.skip(HproseTags.TagClosebrace);
     }
+
     @SuppressWarnings({ "unchecked" })
     public final static Map<String, Object> readObjectAsMap(Reader reader, Class<? extends Map> type, Map<String, Type> typeMap) throws IOException {
         String[] memberNames = reader.readMemberNames();
@@ -515,6 +566,7 @@ public final class ReferenceReader {
         readObjectAsMap(reader, m, typeMap, memberNames, count);
         return m;
     }
+
     @SuppressWarnings({ "unchecked" })
     public static void readObjectAsMap(Reader reader, Map m, Type keyType, Type valueType, int count, String[] memberNames) throws IOException {
         reader.setRef(m);
@@ -530,6 +582,7 @@ public final class ReferenceReader {
         }
         reader.skip(HproseTags.TagClosebrace);
     }
+
     @SuppressWarnings({ "unchecked" })
     public final static Map readObjectAsMap(Reader reader, Class<? extends Map> type, Type keyType, Type valueType) throws IOException {
         String[] memberNames = reader.readMemberNames();
@@ -538,10 +591,12 @@ public final class ReferenceReader {
         readObjectAsMap(reader, m, keyType, valueType, count, memberNames);
         return m;
     }
+
     @SuppressWarnings({ "unchecked" })
     public static void readObjectAsMap(Reader reader, Type type, Map m, int count, String[] memberNames) throws IOException {
         readObjectAsMap(reader, m, ClassUtil.getKeyType(type), ClassUtil.getValueType(type), count, memberNames);
     }
+
     public final static HashMap readObjectAsHashMap(Reader reader, Type type) throws IOException {
         String[] memberNames = reader.readMemberNames();
         int count = memberNames.length;
@@ -549,6 +604,7 @@ public final class ReferenceReader {
         readObjectAsMap(reader, type, m, count, memberNames);
         return m;
     }
+
     public final static LinkedHashMap readObjectAsLinkedHashMap(Reader reader, Type type) throws IOException {
         String[] memberNames = reader.readMemberNames();
         int count = memberNames.length;
@@ -556,6 +612,7 @@ public final class ReferenceReader {
         readObjectAsMap(reader, type, m, count, memberNames);
         return m;
     }
+
     public final static LinkedCaseInsensitiveMap readObjectAsLinkedCaseInsensitiveMap(Reader reader, Type type) throws IOException {
         String[] memberNames = reader.readMemberNames();
         int count = memberNames.length;
@@ -563,6 +620,7 @@ public final class ReferenceReader {
         readObjectAsMap(reader, type, m, count, memberNames);
         return m;
     }
+
     public final static CaseInsensitiveMap readObjectAsCaseInsensitiveMap(Reader reader, Type type) throws IOException {
         String[] memberNames = reader.readMemberNames();
         int count = memberNames.length;
@@ -570,6 +628,7 @@ public final class ReferenceReader {
         readObjectAsMap(reader, type, m, count, memberNames);
         return m;
     }
+
     public final static TreeMap readObjectAsTreeMap(Reader reader, Type type) throws IOException {
         String[] memberNames = reader.readMemberNames();
         int count = memberNames.length;
@@ -577,6 +636,7 @@ public final class ReferenceReader {
         readObjectAsMap(reader, type, m, count, memberNames);
         return m;
     }
+
     @SuppressWarnings({ "unchecked" })
     public final static Map readObjectAsMap(Reader reader, Type type) throws IOException {
         String[] memberNames = reader.readMemberNames();
@@ -586,6 +646,7 @@ public final class ReferenceReader {
         readObjectAsMap(reader, type, m, count, memberNames);
         return m;
     }
+
     public static void readMap(Reader reader, Map<String, Object> m, Map<String, Type> typeMap, int count) throws IOException {
         reader.setRef(m);
         if (count > 0) {
@@ -602,6 +663,7 @@ public final class ReferenceReader {
         }
         reader.skip(HproseTags.TagClosebrace);
     }
+
     @SuppressWarnings({ "unchecked" })
     public final static Map<String, Object> readMap(Reader reader, Class<? extends Map> type, Map<String, Type> typeMap) throws IOException {
         int count = ValueReader.readCount(reader);
@@ -609,6 +671,7 @@ public final class ReferenceReader {
         readMap(reader, m, typeMap, count);
         return m;
     }
+
     @SuppressWarnings({ "unchecked" })
     public static void readMap(Reader reader, Map m, Type keyType, Type valueType, int count) throws IOException {
         reader.setRef(m);
@@ -626,6 +689,7 @@ public final class ReferenceReader {
         }
         reader.skip(HproseTags.TagClosebrace);
     }
+
     @SuppressWarnings({ "unchecked" })
     public final static Map readMap(Reader reader, Class<? extends Map> type, Type keyType, Type valueType) throws IOException {
         int count = ValueReader.readCount(reader);
@@ -633,40 +697,47 @@ public final class ReferenceReader {
         readMap(reader, m, keyType, valueType, count);
         return m;
     }
+
     @SuppressWarnings({ "unchecked" })
     private static void readMap(Reader reader, Type type, Map m, int count) throws IOException {
         readMap(reader, m, ClassUtil.getKeyType(type), ClassUtil.getValueType(type), count);
     }
+
     public final static HashMap readHashMap(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
         HashMap m = new HashMap(count);
         readMap(reader, type, m, count);
         return m;
     }
+
     public final static LinkedHashMap readLinkedHashMap(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
         LinkedHashMap m = new LinkedHashMap(count);
         readMap(reader, type, m, count);
         return m;
     }
+
     public final static LinkedCaseInsensitiveMap readLinkedCaseInsensitiveMap(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
         LinkedCaseInsensitiveMap m = new LinkedCaseInsensitiveMap(count);
         readMap(reader, type, m, count);
         return m;
     }
+
     public final static CaseInsensitiveMap readCaseInsensitiveMap(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
         CaseInsensitiveMap m = new CaseInsensitiveMap(count);
         readMap(reader, type, m, count);
         return m;
     }
+
     public final static TreeMap readTreeMap(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
         TreeMap m = new TreeMap();
         readMap(reader, type, m, count);
         return m;
     }
+
     @SuppressWarnings({ "unchecked" })
     public final static Map readMap(Reader reader, Type type) throws IOException {
         int count = ValueReader.readCount(reader);
@@ -675,6 +746,7 @@ public final class ReferenceReader {
         readMap(reader, type, m, count);
         return m;
     }
+
     public final static Object readMapAsObject(Reader reader, Type type) throws IOException {
         Class<?> cls = ClassUtil.toClass(type);
         Object obj = ConstructorAccessor.newInstance(cls);
@@ -694,6 +766,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return obj;
     }
+
     private static Object readObject(Reader reader, String[] memberNames, Type type) throws HproseException, IOException {
         Class<?> cls = ClassUtil.toClass(type);
         Object obj = ConstructorAccessor.newInstance(cls);
@@ -711,6 +784,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return obj;
     }
+
     private static Object readObjectAsMap(Reader reader, String[] memberNames) throws IOException {
         int count = memberNames.length;
         LinkedCaseInsensitiveMap<String, Object> map = new LinkedCaseInsensitiveMap<String, Object>(count);
@@ -721,6 +795,7 @@ public final class ReferenceReader {
         reader.skip(HproseTags.TagClosebrace);
         return map;
     }
+
     public final static Object readObject(Reader reader, Type type) throws IOException {
         Object cr = reader.readClassRef();
         String[] memberNames = reader.getMemberNames(cr);
@@ -735,6 +810,7 @@ public final class ReferenceReader {
         }
         return readObject(reader, memberNames, type);
     }
+
     public final static Object readObject(Reader reader) throws IOException {
         Object cr = reader.readClassRef();
         String[] memberNames = reader.getMemberNames(cr);

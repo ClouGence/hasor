@@ -19,6 +19,7 @@ import net.hasor.rsf.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.function.Supplier;
+
 /**
  * 优先检查本地是否有服务提供（优先本地服务提供者的调用）。
  * 提示:如果是 p2p 调用则本地调用优先失效。
@@ -26,7 +27,6 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class LocalPref implements RsfFilter {
-    //
     public void doFilter(RsfRequest request, RsfResponse response, RsfFilterChain chain) throws Throwable {
         if (request.isLocal() && !request.isP2PCalls()) {
             RsfBindInfo<?> bindInfo = request.getBindInfo();
@@ -45,7 +45,6 @@ public class LocalPref implements RsfFilter {
                 return;
             }
         }
-        //
         chain.doFilter(request, response);
     }
 }

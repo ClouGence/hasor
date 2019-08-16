@@ -16,6 +16,7 @@
 package net.hasor.rsf;
 import java.util.Collection;
 import java.util.List;
+
 /**
  * 服务配置更新器。
  * @version : 2014年11月12日

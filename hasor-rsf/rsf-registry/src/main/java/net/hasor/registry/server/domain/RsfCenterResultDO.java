@@ -16,6 +16,7 @@
 package net.hasor.registry.server.domain;
 import net.hasor.registry.client.RsfCenterResult;
 import net.hasor.rsf.domain.RsfResultDO;
+
 /**
  * 结果
  * @version : 2014年10月25日
@@ -24,11 +25,13 @@ import net.hasor.rsf.domain.RsfResultDO;
 public class RsfCenterResultDO<T> extends RsfResultDO implements RsfCenterResult<T> {
     private static final long serialVersionUID = -4678893554960623786L;
     private              T    result           = null;
+
     //
     @Override
     public T getResult() {
         return this.result;
     }
+
     public void setResult(T result) {
         this.result = result;
     }

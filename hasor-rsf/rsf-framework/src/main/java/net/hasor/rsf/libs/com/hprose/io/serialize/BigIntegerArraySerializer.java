@@ -22,8 +22,10 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 
 import static net.hasor.rsf.libs.com.hprose.io.HproseTags.*;
+
 public final class BigIntegerArraySerializer extends ReferenceSerializer<BigInteger[]> {
     public final static BigIntegerArraySerializer instance = new BigIntegerArraySerializer();
+
     @Override
     public final void serialize(Writer writer, BigInteger[] array) throws IOException {
         super.serialize(writer, array);

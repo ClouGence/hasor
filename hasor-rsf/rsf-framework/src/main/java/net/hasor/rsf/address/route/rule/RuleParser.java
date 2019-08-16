@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 /**
  * 路由规则解析器
  * @version : 2015年3月29日
@@ -37,14 +38,15 @@ import java.util.Map;
 public class RuleParser {
     protected Logger                logger      = LoggerFactory.getLogger(getClass());
     private   Map<String, Class<?>> ruleTypeMap = null;
+
     public RuleParser(RsfEnvironment rsfEnvironment) {
-        this.ruleTypeMap = new HashMap<String, Class<?>>();
+        this.ruleTypeMap = new HashMap<>();
         RsfSettings rsfSettings = rsfEnvironment.getSettings();
         XmlNode[] flowcontrolNodes = rsfSettings.getXmlNodeArray("hasor.rsfConfig.route.flowcontrol");
         if (flowcontrolNodes != null) {
             for (XmlNode node : flowcontrolNodes) {
                 List<XmlNode> ruleTypes = node.getChildren();
-                ruleTypes = (ruleTypes == null) ? new ArrayList<XmlNode>(0) : ruleTypes;
+                ruleTypes = (ruleTypes == null) ? new ArrayList<>(0) : ruleTypes;
                 for (XmlNode ruleType : ruleTypes) {
                     String ruleID = ruleType.getName().trim().toLowerCase();
                     String ruleClassName = ruleType.getText().trim();
@@ -58,8 +60,7 @@ public class RuleParser {
             }
         }
     }
-    //
-    //
+
     /**解析规则文本为{@link Settings}*/
     public Rule ruleSettings(String rawRoute) {
         if (StringUtils.isBlank(rawRoute) || !rawRoute.startsWith("<flowControl") || !rawRoute.endsWith("</flowControl>")) {
@@ -77,6 +78,7 @@ public class RuleParser {
         }
         return null;
     }
+
     /**解析规则文本为{@link Settings}*/
     public Rule ruleSettings(Settings ruleSettings) {
         if (ruleSettings == null) {
@@ -113,6 +115,7 @@ public class RuleParser {
         }
         return ruleObject;
     }
+
     @Override
     public String toString() {
         return "RuleParser Types:" + ruleTypeMap.keySet();

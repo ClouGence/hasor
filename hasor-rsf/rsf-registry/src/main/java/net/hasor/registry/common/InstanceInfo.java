@@ -15,6 +15,7 @@
  */
 package net.hasor.registry.common;
 import java.util.List;
+
 /**
  * 实列信息。
  * @version : 2016年2月22日
@@ -26,34 +27,44 @@ public class InstanceInfo {
     private String       rsfAddress;
     private String       defaultProtocol;
     private List<String> runProtocols;
+
     //
     public String getInstanceID() {
         return this.instanceID;
     }
+
     public void setInstanceID(String instanceID) {
         this.instanceID = instanceID;
     }
+
     public String getUnitName() {
         return unitName;
     }
+
     public void setUnitName(String unitName) {
         this.unitName = unitName;
     }
+
     public String getRsfAddress() {
         return rsfAddress;
     }
+
     public void setRsfAddress(String rsfAddress) {
         this.rsfAddress = rsfAddress;
     }
+
     public String getDefaultProtocol() {
         return defaultProtocol;
     }
+
     public void setDefaultProtocol(String defaultProtocol) {
         this.defaultProtocol = defaultProtocol;
     }
+
     public void setRunProtocols(List<String> runProtocols) {
         this.runProtocols = runProtocols;
     }
+
     public List<String> getRunProtocols() {
         return this.runProtocols;
     }

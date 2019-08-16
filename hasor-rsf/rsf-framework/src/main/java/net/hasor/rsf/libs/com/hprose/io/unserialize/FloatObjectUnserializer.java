@@ -21,8 +21,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+
 public class FloatObjectUnserializer extends BaseUnserializer<Float> {
     public final static FloatObjectUnserializer instance = new FloatObjectUnserializer();
+
     @Override
     public Float unserialize(Reader reader, int tag, Type type) throws IOException {
         if (tag == HproseTags.TagDouble)
@@ -51,6 +53,7 @@ public class FloatObjectUnserializer extends BaseUnserializer<Float> {
         }
         return super.unserialize(reader, tag, type);
     }
+
     public Float read(Reader reader) throws IOException {
         return read(reader, Float.class);
     }

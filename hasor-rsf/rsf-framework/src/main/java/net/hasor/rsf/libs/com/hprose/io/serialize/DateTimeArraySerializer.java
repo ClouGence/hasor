@@ -22,8 +22,10 @@ import net.hasor.rsf.libs.com.hprose.io.HproseTags;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
+
 public final class DateTimeArraySerializer extends ReferenceSerializer<Date[]> {
     public final static DateTimeArraySerializer instance = new DateTimeArraySerializer();
+
     @Override
     public final void serialize(Writer writer, Date[] array) throws IOException {
         super.serialize(writer, array);

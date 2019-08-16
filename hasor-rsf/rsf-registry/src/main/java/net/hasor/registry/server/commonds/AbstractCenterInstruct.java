@@ -18,6 +18,7 @@ import net.hasor.registry.RegistryCenter;
 import net.hasor.registry.common.InstanceInfo;
 import net.hasor.tconsole.CommandExecutor;
 import net.hasor.tconsole.launcher.CmdRequest;
+
 /**
  * center 命令基类。
  * @version : 2016年4月3日
@@ -32,5 +33,6 @@ public abstract class AbstractCenterInstruct implements CommandExecutor {
         }
         return this.doCommand(center.getInstanceInfo(), request);
     }
+
     public abstract String doCommand(InstanceInfo instance, CmdRequest request) throws Throwable;
 }
