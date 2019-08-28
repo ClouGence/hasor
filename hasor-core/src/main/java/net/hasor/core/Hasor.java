@@ -219,6 +219,9 @@ public final class Hasor extends HashMap<String, String> {
                 logger.info("create AppContext ,mainSettings = {}", TemplateAppContext.DefaultSettings);
                 mainSettings = new StandardContextSettings(TemplateAppContext.DefaultSettings);
             } else if (this.mainSettings instanceof String) {
+                if (StringUtils.isBlank(this.mainSettings.toString())) {
+                    this.mainSettings = TemplateAppContext.DefaultSettings;
+                }
                 logger.info("create AppContext ,mainSettings = {}", this.mainSettings);
                 mainSettings = new StandardContextSettings((String) this.mainSettings);
             } else if (this.mainSettings instanceof File) {

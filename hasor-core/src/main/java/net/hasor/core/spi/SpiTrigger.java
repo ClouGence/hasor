@@ -15,8 +15,6 @@
  */
 
 package net.hasor.core.spi;
-import net.hasor.core.container.SpiCaller;
-
 import java.util.EventListener;
 
 /**
