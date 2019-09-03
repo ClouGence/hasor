@@ -142,7 +142,7 @@ public class RenderBinderTest extends AbstractTest {
         //
         List<FilterDef> defList = appContext.findBindingBean(FilterDef.class);
         assert defList.size() == 1;
-        assert defList.get(0).getTargetType().getBindID().equals("render-filter");
+        assert defList.get(0).getTargetType().getBindID().equals(RenderWebPlugin.class.getName());
         assert defList.get(0).getIndex() == Integer.MIN_VALUE;
     }
 }

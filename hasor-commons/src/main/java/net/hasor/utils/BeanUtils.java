@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
 /**
  *
  * @version : 2011-6-3
@@ -60,6 +61,7 @@ public class BeanUtils {
         }
         return null;
     }
+
     public static Object[] getDefaultValue(Class<?>[] paramArray) {
         if (paramArray == null) {
             return null;
@@ -70,6 +72,7 @@ public class BeanUtils {
         }
         return objs;
     }
+
     /**
      * 该方法的作用是反射的形式调用目标的方法。
      * @param target 被调用的对象
@@ -121,6 +124,7 @@ public class BeanUtils {
         }
     }
     /*----------------------------------------------------------------------------------------*/
+
     /**获取类定义的字段和继承父类中定义的字段以及父类的父类（子类重新定义同名字段也会被列入集合）。*/
     public static List<Field> findALLFields(final Class<?> target) {
         if (target == null) {
@@ -130,6 +134,7 @@ public class BeanUtils {
         BeanUtils.findALLFields(target, fList);
         return fList;
     }
+
     private static void findALLFields(final Class<?> target, final ArrayList<Field> fList) {
         if (target == null) {
             return;
@@ -150,6 +155,7 @@ public class BeanUtils {
         }
         BeanUtils.findALLFields(superType, fList);
     }
+
     /**获取类定义的方法和继承父类中定义的方法以及父类的父类（子类的重写方法也会被返回）。*/
     public static List<Method> findALLMethods(final Class<?> target) {
         if (target == null) {
@@ -159,6 +165,7 @@ public class BeanUtils {
         BeanUtils.findALLMethods(target, mList);
         return mList;
     }
+
     private static void findALLMethods(final Class<?> target, final ArrayList<Method> mList) {
         if (target == null) {
             return;
@@ -180,14 +187,17 @@ public class BeanUtils {
         BeanUtils.findALLMethods(superType, mList);
     }
     /*----------------------------------------------------------------------------------------*/
+
     /**查找一个可操作的字段列表。*/
     public static List<Field> getFields(final Class<?> type) {
         return Arrays.asList(type.getFields());
     }
+
     /**查找一个可操作的方法列表。*/
     public static List<Method> getMethods(final Class<?> type) {
         return Arrays.asList(type.getMethods());
     }
+
     /**查找一个可操作的字段。*/
     public static Field getField(final String fieldName, final Class<?> type) {
         if (fieldName == null || type == null) {
@@ -200,6 +210,7 @@ public class BeanUtils {
         }
         return null;
     }
+
     /**查找一个可操作的方法。*/
     public static Method getMethod(final Class<?> atClass, final String name, final Class<?>[] paramType) {
         try {
@@ -212,6 +223,7 @@ public class BeanUtils {
             }
         }
     }
+
     /**获取属性名集合，该方法是{@link #getPropertys(Class)}方法的升级版，通过该方法还可以同时返回可访问的字段作为属性。*/
     public static List<String> getPropertysAndFields(final Class<?> target) {
         List<String> mnames = BeanUtils.getPropertys(target);
@@ -224,6 +236,7 @@ public class BeanUtils {
         }
         return mnames;
     }
+
     /**获取属性名集合，被包含的属性可能有些只是只读属性，有些是只写属性。也有读写属性。*/
     public static List<String> getPropertys(final Class<?> target) {
         List<String> mnames = new ArrayList<String>();
@@ -246,6 +259,7 @@ public class BeanUtils {
         }
         return mnames;
     }
+
     /**获取属性名集合，被包含的属性可能有些只是只读属性，有些是只写属性。也有读写属性。*/
     public static PropertyDescriptor[] getPropertyDescriptors(final Class<?> defineType) {
         List<PropertyDescriptor> mnames = new ArrayList<PropertyDescriptor>();
@@ -258,6 +272,7 @@ public class BeanUtils {
         }
         return mnames.toArray(new PropertyDescriptor[mnames.size()]);
     }
+
     /**获取一个属性的读取方法。*/
     public static Method getReadMethod(final String property, final Class<?> target) {
         if (property == null || target == null) {
@@ -283,6 +298,7 @@ public class BeanUtils {
         }
         return null;
     }
+
     /**获取一个属性的写入方法。*/
     public static Method getWriteMethod(final String property, final Class<?> target) {
         if (property == null || target == null) {
@@ -298,6 +314,7 @@ public class BeanUtils {
         }
         return null;
     }
+
     /**测试是否具有propertyName所表示的属性，无论是读或写方法只要存在一个就表示存在该属性。*/
     public static boolean hasProperty(final String propertyName, final Class<?> target) {
         //get、set方法
@@ -308,6 +325,7 @@ public class BeanUtils {
         }
         return true;
     }
+
     /**测试是否具有fieldName所表示的字段，无论是读或写方法只要存在一个就表示存在该属性。*/
     public static boolean hasField(final String propertyName, final Class<?> target) {
         if (BeanUtils.getField(propertyName, target) == null) {
@@ -316,6 +334,7 @@ public class BeanUtils {
             return true;
         }
     }
+
     /**测试是否具有name所表示的属性，hasProperty或hasField有一个返回为true则返回true。*/
     public static boolean hasPropertyOrField(final String name, final Class<?> target) {
         if (!BeanUtils.hasProperty(name, target)) {
@@ -325,6 +344,7 @@ public class BeanUtils {
         }
         return true;
     }
+
     /**测试是否支持readProperty方法。返回true表示可以进行读取操作。*/
     public static boolean canReadProperty(final String propertyName, final Class<?> target) {
         Method readMethod = BeanUtils.getReadMethod(propertyName, target);
@@ -334,6 +354,7 @@ public class BeanUtils {
             return false;
         }
     }
+
     /**测试是否支持readPropertyOrField方法。*/
     public static boolean canReadPropertyOrField(final String propertyName, final Class<?> target) {
         if (!BeanUtils.canReadProperty(propertyName, target)) {
@@ -343,6 +364,7 @@ public class BeanUtils {
         }
         return true;
     }
+
     /**测试是否支持writeProperty方法。返回true表示可以进行写入操作。*/
     public static boolean canWriteProperty(final String propertyName, final Class<?> target) {
         Method writeMethod = BeanUtils.getWriteMethod(propertyName, target);
@@ -352,6 +374,7 @@ public class BeanUtils {
             return false;
         }
     }
+
     /**测试是否支持Field方法写。*/
     public static boolean canWriteField(final String propertyName, final Class<?> target) {
         Field field = getField(propertyName, target);
@@ -360,6 +383,7 @@ public class BeanUtils {
         }
         return true;
     }
+
     /**测试是否支持writePropertyOrField方法。*/
     public static boolean canWritePropertyOrField(final String propertyName, final Class<?> target) {
         if (!BeanUtils.canWriteProperty(propertyName, target)) {
@@ -370,6 +394,7 @@ public class BeanUtils {
         return true;
     }
     /*----------------------------------------------------------------------------------------*/
+
     /**执行属性注入，除了注入int,short,long,等基本类型之外该方法还支持注入枚举类型。返回值表示执行是否成功。注意：该方法会根据属性类型进行尝试类型转换。*/
     public static boolean writeProperty(final Object object, final String attName, final Object value) {
         if (object == null || attName == null) {
@@ -392,6 +417,7 @@ public class BeanUtils {
             return false;
         }
     }
+
     /**执行字段注入，除了注入int,short,long,等基本类型之外该方法还支持注入枚举类型。注意：该方法会根据属性类型进行尝试类型转换。*/
     public static boolean writeField(final Object object, final String fieldName, final Object value) {
         if (object == null || fieldName == null) {
@@ -414,6 +440,7 @@ public class BeanUtils {
             return false;
         }
     }
+
     /**执行注入，该方法首先会视图执行属性方法注入。如果失败则执行字段注入。注意：该方法会根据属性类型进行尝试类型转换。*/
     public static boolean writePropertyOrField(final Object object, final String attName, final Object value) {
         Class<?> defineType = object.getClass();
@@ -425,6 +452,7 @@ public class BeanUtils {
         }
         return false;
     }
+
     /**执行属性读取。*/
     public static Object readProperty(final Object object, final String attName) {
         if (object == null || attName == null) {
@@ -443,6 +471,7 @@ public class BeanUtils {
             return null;
         }
     }
+
     /**执行字段读取。*/
     public static Object readField(final Object object, final String fieldName) {
         if (object == null || fieldName == null) {
@@ -461,6 +490,7 @@ public class BeanUtils {
             return null;
         }
     }
+
     /**执行注入，该方法首先会视图执行属性方法注入。如果失败则执行字段注入。注意：该方法会根据属性类型进行尝试类型转换。*/
     public static Object readPropertyOrField(final Object object, final String attName) {
         Class<?> defineType = object.getClass();
@@ -472,6 +502,7 @@ public class BeanUtils {
         }
         return null;
     }
+
     /***/
     public static Class<?> getPropertyType(final Class<?> defineType, final String attName) {
         try {
@@ -481,6 +512,7 @@ public class BeanUtils {
             return null;
         }
     }
+
     /***/
     public static Class<?> getFieldType(final Class<?> defineType, final String attName) {
         Field readField = BeanUtils.getField(attName, defineType);
@@ -489,6 +521,7 @@ public class BeanUtils {
         }
         return null;
     }
+
     /***/
     public static Class<?> getPropertyOrFieldType(final Class<?> defineType, final String attName) {
         Class<?> propType = null;
@@ -503,6 +536,7 @@ public class BeanUtils {
         }
         return null;
     }
+
     /***/
     public static void copyProperties(final Object dest, final Object orig) {
         if (dest == null) {
@@ -512,7 +546,7 @@ public class BeanUtils {
             throw new IllegalArgumentException("orig is null");
         }
         //
-        List<String> propNames = new ArrayList<String>();
+        List<String> propNames = new ArrayList<>();
         if (orig instanceof Map) {
             for (Object key : ((Map) orig).keySet()) {
                 propNames.add(key.toString());
@@ -524,6 +558,7 @@ public class BeanUtils {
             BeanUtils.copyProperty(dest, orig, prop);
         }
     }
+
     /***/
     public static void copyProperty(final Object dest, final Object orig, final String propertyName) {
         if (dest == null) {

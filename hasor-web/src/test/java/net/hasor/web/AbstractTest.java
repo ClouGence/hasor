@@ -43,6 +43,10 @@ public class AbstractTest {
         Web, Render, Valid
     }
 
+    public interface BuildHasor {
+        public Hasor build(Object context);
+    }
+
     protected <T> BindInfo<T> bindInfo(Class<T> tClass) {
         return bindInfo(UUID.randomUUID().toString().replace("-", ""), tClass);
     }
@@ -118,11 +122,19 @@ public class AbstractTest {
     }
 
     protected AppContext buildWebAppContext(WebModule webModule, ServletContext servletContext, LoadModule... modules) {
-        return buildWebAppContext(null, webModule, servletContext, modules);
+        return buildWebAppContext(null, Hasor::create, webModule, servletContext, modules);
     }
 
     protected AppContext buildWebAppContext(String mainconfig, WebModule webModule, ServletContext servletContext, LoadModule... modules) {
-        Hasor settings = Hasor.create(servletContext).asCore()//
+        return buildWebAppContext(mainconfig, Hasor::create, webModule, servletContext, modules);
+    }
+
+    protected AppContext buildWebAppContext(BuildHasor buildHasor, WebModule webModule, ServletContext servletContext, LoadModule... modules) {
+        return buildWebAppContext(null, Hasor::create, webModule, servletContext, modules);
+    }
+
+    protected AppContext buildWebAppContext(String mainconfig, BuildHasor buildHasor, WebModule webModule, ServletContext servletContext, LoadModule... modules) {
+        Hasor settings = buildHasor.build(servletContext).asCore()//
                 .addSettings("http://test.hasor.net", "hasor.innerApiBinderSet", defaultInnerApiBinderSetXmlNode(modules))//
                 .addSettings("http://test.hasor.net", "hasor.invokerCreaterSet", defaultInvokerCreaterSetXmlNode(modules))//
                 .mainSettingWith(mainconfig)//

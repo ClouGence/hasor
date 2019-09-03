@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.render.produces;
+package net.hasor.test.actions.render;
 import net.hasor.web.annotation.Get;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.annotation.Post;
 import net.hasor.web.annotation.Produces;
-//
+
 @MappingTo("/abc.do")
 @MappingTo("/def.do")
 public class HtmlProduces {
@@ -26,6 +26,7 @@ public class HtmlProduces {
     @Produces("html")
     public void testProduces1() {
     }
+
     @Get
     @Produces("aabbcc")
     public void testProduces2() {

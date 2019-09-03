@@ -15,6 +15,7 @@
  */
 package net.hasor.utils.ref;
 import java.util.*;
+
 /**
  * 参照{@link java.util.HashSet}实现的WeakHashSet.详细介绍参看{@link java.util.Set}和{@link java.util.WeakHashMap}功能
  * @version : 2013-11-8
@@ -23,43 +24,54 @@ import java.util.*;
 public class WeakHashSet<E> extends AbstractSet<E> implements Set<E> {
     private transient    WeakHashMap<E, Object> map;
     private static final Object                 PRESENT = new Object();
+
     public WeakHashSet() {
-        this.map = new WeakHashMap<E, Object>();
+        this.map = new WeakHashMap<>();
     }
+
     public WeakHashSet(final Collection<? extends E> c) {
-        this.map = new WeakHashMap<E, Object>(Math.max((int) (c.size() / .75f) + 1, 16));
+        this.map = new WeakHashMap<>(Math.max((int) (c.size() / .75f) + 1, 16));
         this.addAll(c);
     }
+
     public WeakHashSet(final int initialCapacity, final float loadFactor) {
-        this.map = new WeakHashMap<E, Object>(initialCapacity, loadFactor);
+        this.map = new WeakHashMap<>(initialCapacity, loadFactor);
     }
+
     public WeakHashSet(final int initialCapacity) {
-        this.map = new WeakHashMap<E, Object>(initialCapacity);
+        this.map = new WeakHashMap<>(initialCapacity);
     }
+
     @Override
     public Iterator<E> iterator() {
         return this.map.keySet().iterator();
     }
+
     @Override
     public int size() {
         return this.map.size();
     }
+
     @Override
     public boolean isEmpty() {
         return this.map.isEmpty();
     }
+
     @Override
     public boolean contains(final Object o) {
         return this.map.containsKey(o);
     }
+
     @Override
     public boolean add(final E o) {
         return this.map.put(o, WeakHashSet.PRESENT) == null;
     }
+
     @Override
     public boolean remove(final Object o) {
         return this.map.remove(o) == WeakHashSet.PRESENT;
     }
+
     @Override
     public void clear() {
         this.map.clear();

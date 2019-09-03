@@ -71,9 +71,11 @@ public class MimeTest extends AbstractTest {
         }, servletContext, LoadModule.Web);
         PowerMockito.when(servletContext.getAttribute(RuntimeListener.AppContextName)).thenReturn(appContext);
         PowerMockito.when(servletContext.getMimeType("afm")).thenReturn("form_mock");
+        PowerMockito.when(servletContext.getMimeType("afmamf")).thenReturn("form_mock");
         //
         MimeType mimeType = appContext.getInstance(MimeType.class);
-        assert mimeType.getMimeType("afm").equals("form_mock");
+        assert mimeType.getMimeType("afm").equals("application/x-font-type1");
+        assert mimeType.getMimeType("afmamf").equals("form_mock");
         assert mimeType.getMimeType("3dml").equals("text/vnd.in3d.3dml");
         assert mimeType.getMimeType("7z").equals("7z7z7z");
         //

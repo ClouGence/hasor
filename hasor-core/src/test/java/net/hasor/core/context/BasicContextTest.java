@@ -216,7 +216,7 @@ public class BasicContextTest {
     public void test4() throws Throwable {
         Environment env = new StandardEnvironment(null, "/net_hasor_core_context/binder_exter.xml");
         AppContext appContext = new AppContextWarp(new StatusAppContext(env));
-        appContext.start((Module) apiBinder -> {
+        appContext.start(apiBinder -> {
             apiBinder.tryCast(TestBinder.class).hello();
         });
         //

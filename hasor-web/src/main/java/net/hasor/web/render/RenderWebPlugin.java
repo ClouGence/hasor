@@ -34,7 +34,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 渲染器插件。
@@ -43,7 +42,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class RenderWebPlugin implements WebModule, InvokerFilter {
     protected Logger                    logger             = LoggerFactory.getLogger(getClass());
-    private   AtomicBoolean             inited             = new AtomicBoolean(false);
     private   String                    layoutPath         = null;                    // 布局模版位置
     private   boolean                   useLayout          = true;
     private   String                    templatePath       = null;                    // 页面模版位置
@@ -55,22 +53,13 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
     @Override
     public void loadModule(WebApiBinder apiBinder) {
         BindInfo<InvokerFilter> filterInfo = apiBinder.bindType(InvokerFilter.class)//
-                .idWith("render-filter").toInstance(this).toInfo();
+                .idWith(RenderWebPlugin.class.getName()).toInstance(this).toInfo();
         apiBinder.filter("/*").through(Integer.MIN_VALUE, filterInfo);
     }
 
-    @Override
-    public void init(InvokerConfig config) throws Throwable {
-        if (!this.inited.compareAndSet(false, true)) {
-            return;
-        }
-        //
-        AppContext appContext = config.getAppContext();
+    public void onStart(AppContext appContext) throws Throwable {
         List<RenderDef> renderInfoList = appContext.findBindingBean(RenderDef.class);
         for (RenderDef renderInfo : renderInfoList) {
-            if (renderInfo == null) {
-                continue;
-            }
             Render renderData = renderInfo.getRenderInfo();
             logger.info("web -> renderName {} specialMimeType {}.", renderData.name(), renderData.specialMimeType());
             if (StringUtils.isNotBlank(renderData.specialMimeType())) {
@@ -112,21 +101,19 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
     @Override
     public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
         // 在执行 Invoker 之前对 Invoker 的方法进行预分析，使其 @Produces 注解生效
-        if (invoker instanceof RenderInvoker) {
+        if (invoker instanceof RenderInvoker && invoker.ownerMapping() != null) {
             RenderInvoker render = (RenderInvoker) invoker;
-            if (invoker.ownerMapping() != null) {
-                Method targetMethod = invoker.ownerMapping().findMethod(invoker.getHttpRequest());
-                if (targetMethod != null && targetMethod.isAnnotationPresent(Produces.class)) {
-                    Produces pro = targetMethod.getAnnotation(Produces.class);
-                    if (pro == null) {
-                        pro = targetMethod.getDeclaringClass().getAnnotation(Produces.class);
-                    }
-                    if (pro != null && !StringUtils.isBlank(pro.value())) {
-                        String proValue = pro.value();
-                        render.viewType(proValue);
-                        configContentType(render, proValue);
-                        render.lockViewType();
-                    }
+            Method targetMethod = invoker.ownerMapping().findMethod(invoker.getHttpRequest());
+            if (targetMethod != null && targetMethod.isAnnotationPresent(Produces.class)) {
+                Produces pro = targetMethod.getAnnotation(Produces.class);
+                if (pro == null) {
+                    pro = targetMethod.getDeclaringClass().getAnnotation(Produces.class);
+                }
+                if (pro != null && !StringUtils.isBlank(pro.value())) {
+                    String proValue = pro.value();
+                    render.viewType(proValue);
+                    configContentType(render, proValue);
+                    render.lockViewType();
                 }
             }
         }

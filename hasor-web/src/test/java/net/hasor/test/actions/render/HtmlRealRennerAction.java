@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.render.produces;
+package net.hasor.test.actions.render;
 import net.hasor.web.RenderInvoker;
 import net.hasor.web.annotation.*;
 
 import java.util.HashMap;
-//
+
 public class HtmlRealRennerAction {
     @Post
     public Object testProduces1(RenderInvoker invoker) {
@@ -29,6 +29,7 @@ public class HtmlRealRennerAction {
             put("viewType", invoker.viewType());
         }};
     }
+
     @Get
     public Object testProduces2(RenderInvoker invoker) {
         invoker.renderTo("json", "/my/my.data");
@@ -38,6 +39,7 @@ public class HtmlRealRennerAction {
             put("viewType", invoker.viewType());
         }};
     }
+
     @Head
     public Object testProduces3(RenderInvoker invoker) {
         invoker.renderTo("/my/my.abc");
@@ -48,6 +50,7 @@ public class HtmlRealRennerAction {
             put("viewType", invoker.viewType());
         }};
     }
+
     @Options
     @Produces("html")
     public Object testProduces4(RenderInvoker invoker) {
@@ -59,6 +62,7 @@ public class HtmlRealRennerAction {
             put("viewType", invoker.viewType());
         }};
     }
+
     @Put
     @Produces("html")
     public Object testProduces5(RenderInvoker invoker) {

@@ -52,11 +52,11 @@ public class MimeTypeSupplier extends ConcurrentHashMap<String, String> implemen
 
     /**根据扩展名获取meta类型。*/
     public String getMimeType(String suffix) {
-        String mimeType = this.getContent().getMimeType(suffix);
-        if (StringUtils.isNotBlank(mimeType)) {
-            return mimeType;
+        String mimeType = this.get(suffix.toUpperCase());
+        if (StringUtils.isBlank(mimeType)) {
+            return this.getContent().getMimeType(suffix);
         }
-        return this.get(suffix.toUpperCase());
+        return mimeType;
     }
 
     public void addMimeType(String type, String mimeType) {

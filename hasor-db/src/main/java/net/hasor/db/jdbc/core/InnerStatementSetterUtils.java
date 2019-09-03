@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.*;
 import java.util.*;
+
 /**
  *
  * @version : 2014-3-29
@@ -39,6 +40,7 @@ class InnerStatementSetterUtils {
         javaTypeToSqlTypeMap.put(Clob.class, Types.CLOB);
     }
     //
+
     /**根据 Java 类型Derive a default SQL type from the given Java type.*/
     public static int javaTypeToSqlParameterType(final Class<?> javaType) {
         Integer sqlType = javaTypeToSqlTypeMap.get(javaType);
@@ -56,6 +58,7 @@ class InnerStatementSetterUtils {
         }
         return TYPE_UNKNOWN;
     }
+
     /***/
     public static void setParameterValue(final PreparedStatement ps, final int parameterPosition, final Object inValue) throws SQLException {
         if (inValue == null) {
@@ -64,6 +67,7 @@ class InnerStatementSetterUtils {
             setValue(ps, parameterPosition, inValue);
         }
     }
+
     private static void setValue(final PreparedStatement ps, final int paramIndex, final Object inValue) throws SQLException {
         int sqlType = javaTypeToSqlParameterType(inValue.getClass());
         if (sqlType == Types.VARCHAR || sqlType == Types.LONGVARCHAR || sqlType == Types.CLOB && isStringValue(inValue.getClass())) {
@@ -144,22 +148,22 @@ class InnerStatementSetterUtils {
             ps.setObject(paramIndex, inValue, sqlType);//通用的参数设置方法
         }
     }
+
     /**
      * Clean up all resources held by parameter values which were passed to an execute method. This is for example important for closing LOB values.
      * @param paramValues parameter values supplied. May be <code>null</code>.
-     * @see DisposableSqlTypeValue#cleanup()
-     * @see org.noe.lib.jdbcorm.jdbc.core.support.SqlLobValue#cleanup()
+     * @see ParameterDisposer#cleanupParameters()
      */
     public static void cleanupParameters(final Object[] paramValues) {
         if (paramValues != null) {
             cleanupParameters(Arrays.asList(paramValues));
         }
     }
+
     /**
      * Clean up all resources held by parameter values which were passed to an execute method. This is for example important for closing LOB values.
      * @param paramValues parameter values supplied. May be <code>null</code>.
-     * @see DisposableSqlTypeValue#cleanup()
-     * @see org.noe.lib.jdbcorm.jdbc.core.support.SqlLobValue#cleanup()
+     * @see ParameterDisposer#cleanupParameters()
      */
     public static void cleanupParameters(final Collection<Object> paramValues) {
         if (paramValues == null) {
@@ -169,6 +173,7 @@ class InnerStatementSetterUtils {
             cleanupParameter(inValue);
         }
     }
+
     public static void cleanupParameter(final Object paramValue) {
         if (paramValue == null) {
             return;
@@ -177,11 +182,13 @@ class InnerStatementSetterUtils {
             ((ParameterDisposer) paramValue).cleanupParameters();
         }
     }
+
     /**Check whether the given value can be treated as a String value.*/
     private static boolean isStringValue(final Class<?> inValueType) {
         // Consider any CharSequence (including StringBuffer and StringBuilder) as a String.
         return CharSequence.class.isAssignableFrom(inValueType) || StringWriter.class.isAssignableFrom(inValueType);
     }
+
     /**Check whether the given value is a <code>java.util.Date</code>(but not one of the JDBC-specific subclasses).*/
     private static boolean isDateValue(final Class<?> inValueType) {
         return java.util.Date.class.isAssignableFrom(inValueType) && !(java.sql.Date.class.isAssignableFrom(inValueType) || java.sql.Time.class.isAssignableFrom(inValueType) || java.sql.Timestamp.class.isAssignableFrom(inValueType));
