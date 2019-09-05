@@ -14,46 +14,88 @@
  * limitations under the License.
  */
 package net.hasor.web.render;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.test.actions.render.HtmlProduces;
+import net.hasor.core.Module;
+import net.hasor.test.actions.render.DefaultLayoutHtmlAction;
+import net.hasor.test.actions.render.DisableLayoutHtmlAction;
+import net.hasor.test.actions.render.EnableLayoutHtmlAction;
 import net.hasor.test.render.SimpleRenderEngine;
+import net.hasor.test.render.TestRenderEngine;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.RenderEngine;
-import net.hasor.web.binder.MappingDef;
+import net.hasor.web.WebApiBinder;
 import net.hasor.web.binder.OneConfig;
 import net.hasor.web.invoker.ExceuteCaller;
 import net.hasor.web.invoker.InvokerContext;
 import org.junit.Test;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.net.URL;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import static org.mockito.ArgumentMatchers.anyString;
 
 public class RenderLayoutTest extends AbstractTest {
-    @Test
-    public void layoutTest_1() throws Throwable {
-        SimpleRenderEngine renderEngine = new SimpleRenderEngine();
-        //
-        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", context -> {
+    private AppContext renderAppContext(boolean enableLayout, RenderEngine renderEngine, Module... module) {
+        return buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", context -> {
             Hasor hasor = Hasor.create(context);
-            hasor.addVariable("HASOR_RESTFUL_LAYOUT", "true");
+            hasor.addVariable("HASOR_RESTFUL_LAYOUT", String.valueOf(enableLayout));
             hasor.addVariable("HASOR_RESTFUL_LAYOUT_PATH_LAYOUT", "/layout/mytest");
             hasor.addVariable("HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES", "/templates/myfiles");
             return hasor;
         }, apiBinder -> {
-            apiBinder.addRender("htm").toInstance(renderEngine);
+            apiBinder.addRender("html").toInstance(renderEngine);
+            apiBinder.installModule(module);
         }, servlet30("/"), LoadModule.Web, LoadModule.Render);
+    }
+
+    private String mockAndCallHttp(AppContext appContext) throws Throwable {
+        HttpServletRequest httpRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"));
+        HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
+        StringWriter stringWriter = new StringWriter();
+        PowerMockito.when(httpResponse.getWriter()).thenReturn(new PrintWriter(stringWriter));
         //
-        RenderWebPlugin renderPlugin = appContext.getInstance(RenderWebPlugin.class.getName());
+        InvokerContext invokerContext = new InvokerContext();
+        invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
+        //
+        ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
+        caller.invoke(null).get();
+        return stringWriter.toString();
+    }
+
+    private List<String> layoutFiles() {
+        return new ArrayList<String>() {{
+            add("/layout/mytest/default.html");
+            add("/layout/mytest/my/default.html");
+            //
+            add("/templates/myfiles/login.html");
+            add("/templates/myfiles/my/my.html");
+            add("/templates/myfiles/my/my.json");
+        }};
+    }
+
+    private List<String> noneLayoutFiles() {
+        return new ArrayList<String>() {{
+            add("/login.html");
+            add("/my/my.html");
+            add("/my/my.json");
+        }};
+    }
+
+    @Test
+    public void layoutTest_basicinfo() throws Throwable {
+        SimpleRenderEngine renderEngine = new SimpleRenderEngine();
+        AppContext appContext = renderAppContext(true, renderEngine, apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(DefaultLayoutHtmlAction.class);
+        });
         //
         Field layoutPathField = RenderWebPlugin.class.getDeclaredField("layoutPath");
         Field useLayoutField = RenderWebPlugin.class.getDeclaredField("useLayout");
@@ -64,6 +106,7 @@ public class RenderLayoutTest extends AbstractTest {
         templatePathField.setAccessible(true);
         engineMapField.setAccessible(true);
         //
+        RenderWebPlugin renderPlugin = appContext.getInstance(RenderWebPlugin.class.getName());
         String layoutPath = (String) layoutPathField.get(renderPlugin);
         boolean useLayout = (boolean) useLayoutField.get(renderPlugin);
         String templatePath = (String) templatePathField.get(renderPlugin);
@@ -73,53 +116,101 @@ public class RenderLayoutTest extends AbstractTest {
         assert useLayout;
         assert "/templates/myfiles".equals(templatePath);
         assert engineMap.size() == 1;
-        assert engineMap.get("HTM") == renderEngine;
+        assert engineMap.get("HTML") == renderEngine;
         assert renderEngine.isInitEngine();
     }
 
+    // 默认打开 layout
     @Test
-    public void layoutTest_2() throws Throwable {
-        SimpleRenderEngine renderEngine = new SimpleRenderEngine();
+    public void layoutTest_2_default() throws Throwable {
+        // 加载 layout 的站点资源路径
+        TestRenderEngine renderEngine = new TestRenderEngine(layoutFiles());
+        // 默认打开 layout
+        AppContext appContext = renderAppContext(true, renderEngine, apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(DefaultLayoutHtmlAction.class);
+        });
+        String stringWriter = mockAndCallHttp(appContext);
         //
-        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", context -> {
-            Hasor hasor = Hasor.create(context);
-            hasor.addVariable("HASOR_RESTFUL_LAYOUT", "true");
-            hasor.addVariable("HASOR_RESTFUL_LAYOUT_PATH_LAYOUT", "/layout/mytest");
-            hasor.addVariable("HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES", "/templates/myfiles");
-            return hasor;
-        }, apiBinder -> {
-            //
-            apiBinder.addRender("html").toInstance(renderEngine);
-            apiBinder.addMimeType("html", "javacc_jj");
-            //
-            apiBinder.loadMappingTo(HtmlProduces.class);
-            //
-        }, servlet30("/"), LoadModule.Web, LoadModule.Render);
-        //
-        //
-        List<MappingDef> definitions = appContext.findBindingBean(MappingDef.class);
-        assert definitions.size() == 2;
-        final Set<String> responseType = new HashSet<>();
-        HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
-        PowerMockito.doAnswer((Answer<Void>) invocation -> {
-            responseType.add(invocation.getArguments()[0].toString());
-            return null;
-        }).when(servletResponse).setContentType(anyString());
-        //
-        //
-        InvokerContext invokerContext = new InvokerContext();
-        invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
         {
-            ExceuteCaller caller = invokerContext.genCaller(mockRequest("post", new URL("http://www.hasor.net/abc.do")), servletResponse);
-            caller.invoke(null);
-            assert responseType.contains("javacc_jj");
+            JSONObject jsonObject = JSON.parseObject(stringWriter);
+            // 因为启用了 layout 而且会命中 layout，因此 placeholder 肯定有内容。
+            assert jsonObject.get("content_placeholder") != null;
+            // 最后一个渲染的是布局模板，因此展示印布局模板真实地址
+            assert jsonObject.get("engine_renderTo").equals("/layout/mytest/my/default.html");
+            // 要展示的页面真实位置
+            assert jsonObject.getJSONObject("content_placeholder").getString("engine_renderTo").equals("/templates/myfiles/my/my.html");
+            // 要展示的页面
+            assert jsonObject.getJSONObject("resultData") != null;
+            assert jsonObject.getJSONObject("resultData").getString("renderTo").equals("/my/my.html");
         }
+    }
+
+    // 默认打开 layout，但是单个 action 关闭了 layout
+    @Test
+    public void layoutTest_2_disable() throws Throwable {
+        // 加载没有 layout 的站点资源路径
+        TestRenderEngine renderEngine = new TestRenderEngine(noneLayoutFiles());
+        // 默认打开 layout
+        AppContext appContext = renderAppContext(true, renderEngine, apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(DisableLayoutHtmlAction.class);
+        });
+        String stringWriter = mockAndCallHttp(appContext);
         //
         {
-            responseType.clear();
-            ExceuteCaller caller = invokerContext.genCaller(mockRequest("get", new URL("http://www.hasor.net/abc.do")), servletResponse);
-            caller.invoke(null);
-            assert responseType.size() == 0;
+            JSONObject jsonObject = JSON.parseObject(stringWriter);
+            // 因为没有启用 layout 因此 placeholder 不会出现。
+            assert jsonObject.get("content_placeholder") == null;
+            // 最后一个渲染的是布局模板，因此展示印布局模板真实地址
+            assert jsonObject.get("engine_renderTo").equals("/my/my.html");
+            // 要展示的页面
+            assert jsonObject.getJSONObject("resultData") != null;
+            assert jsonObject.getJSONObject("resultData").getString("renderTo").equals("/my/my.html");
+        }
+    }
+
+    // 默认关闭 layout
+    @Test
+    public void layoutTest_3_default() throws Throwable {
+        // 加载没有 layout 的站点资源路径
+        TestRenderEngine renderEngine = new TestRenderEngine(noneLayoutFiles());
+        AppContext appContext = renderAppContext(false, renderEngine, apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(DefaultLayoutHtmlAction.class);
+        });
+        String stringWriter = mockAndCallHttp(appContext);
+        //
+        {
+            JSONObject jsonObject = JSON.parseObject(stringWriter);
+            // 因为没有启用 layout 因此 placeholder 不会出现。
+            assert jsonObject.get("content_placeholder") == null;
+            // 最后一个渲染的是布局模板，因此展示印布局模板真实地址
+            assert jsonObject.get("engine_renderTo").equals("/my/my.html");
+            // 要展示的页面
+            assert jsonObject.getJSONObject("resultData") != null;
+            assert jsonObject.getJSONObject("resultData").getString("renderTo").equals("/my/my.html");
+        }
+    }
+
+    // 默认关闭 layout，但是单个 action 打开了 layout
+    @Test
+    public void layoutTest_3_enable() throws Throwable {
+        // 加载 layout 的站点资源路径
+        TestRenderEngine renderEngine = new TestRenderEngine(layoutFiles());
+        AppContext appContext = renderAppContext(false, renderEngine, apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(EnableLayoutHtmlAction.class);
+        });
+        String stringWriter = mockAndCallHttp(appContext);
+        //
+        {
+            JSONObject jsonObject = JSON.parseObject(stringWriter);
+            // 因为启用了 layout 而且会命中 layout，因此 placeholder 肯定有内容。
+            assert jsonObject.get("content_placeholder") != null;
+            // 最后一个渲染的是布局模板，因此展示印布局模板真实地址
+            assert jsonObject.get("engine_renderTo").equals("/layout/mytest/my/default.html");
+            // 要展示的页面真实位置
+            assert jsonObject.getJSONObject("content_placeholder").getString("engine_renderTo").equals("/templates/myfiles/my/my.html");
+            // 要展示的页面
+            assert jsonObject.getJSONObject("resultData") != null;
+            assert jsonObject.getJSONObject("resultData").getString("renderTo").equals("/my/my.html");
         }
     }
 }

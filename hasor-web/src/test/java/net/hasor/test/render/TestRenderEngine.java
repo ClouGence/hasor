@@ -27,8 +27,8 @@ import java.io.Writer;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class TestRenderEngine implements RenderEngine {
-    private Set<String> templateSet = new HashSet<>();
+public class TestRenderEngine implements RenderEngine {//
+    private Set<String> templateSet = new HashSet<>(); //
 
     public TestRenderEngine(List<String> templateSet) {
         this.templateSet.addAll(templateSet.stream().filter(StringUtils::isNotBlank).collect(Collectors.toList()));
@@ -36,6 +36,7 @@ public class TestRenderEngine implements RenderEngine {
 
     @Override
     public void initEngine(AppContext appContext) throws Throwable {
+        //
     }
 
     @Override
@@ -48,27 +49,25 @@ public class TestRenderEngine implements RenderEngine {
                     !Invoker.RESPONSE_KEY.equalsIgnoreCase(s);          //
         }).peek(s -> {
             Object valueData = invoker.get(s);
-            try {
-                invokerData.put(s, JSON.parseObject((valueData == null) ? null : valueData.toString()));
-            } catch (Exception e) {
+            if (valueData == null) {
+                invokerData.put(s, null);
+            } else if (valueData instanceof String) {
+                try {
+                    invokerData.put(s, JSON.parseObject(valueData.toString()));
+                } catch (Throwable e) {
+                    invokerData.put(s, valueData);
+                }
+            } else {
                 invokerData.put(s, valueData);
             }
         }).forEach(s -> {
             //
         });
         //
-        Map<String, Object> jsonData = new HashMap<String, Object>() {{
-            put(Invoker.ROOT_DATA_KEY, invoker.get(Invoker.ROOT_DATA_KEY));
-            put(ValidInvoker.VALID_DATA_KEY, invoker.get(ValidInvoker.VALID_DATA_KEY));
-            put(Invoker.REQUEST_KEY, invoker.get(Invoker.REQUEST_KEY));
-            put(Invoker.RESPONSE_KEY, invoker.get(Invoker.RESPONSE_KEY));
-            //
-            put("invokerData", invokerData);
-            put("engine_renderTo", invoker.renderTo());
-            put("engine_viewType", invoker.viewType());
-        }};
+        invokerData.put("engine_renderTo", invoker.renderTo());
+        invokerData.put("engine_viewType", invoker.viewType());
         //
-        writer.write(JSON.toJSONString(jsonData));
+        writer.write(JSON.toJSONString(invokerData));
     }
 
     @Override

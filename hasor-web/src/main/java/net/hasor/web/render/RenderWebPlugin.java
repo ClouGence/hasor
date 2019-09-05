@@ -100,9 +100,23 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
 
     @Override
     public Object doInvoke(Invoker invoker, InvokerChain chain) throws Throwable {
+        if (invoker instanceof RenderInvoker) {
+            return doRenderInvoker((RenderInvoker) invoker, chain);
+        } else {
+            return chain.doNext(invoker);
+        }
+    }
+
+    public Object doRenderInvoker(RenderInvoker invoker, InvokerChain chain) throws Throwable {
+        // Layout 预设
+        if (this.useLayout) {
+            invoker.layoutEnable();
+        } else {
+            invoker.layoutDisable();
+        }
+        //
         // 在执行 Invoker 之前对 Invoker 的方法进行预分析，使其 @Produces 注解生效
-        if (invoker instanceof RenderInvoker && invoker.ownerMapping() != null) {
-            RenderInvoker render = (RenderInvoker) invoker;
+        if (invoker.ownerMapping() != null) {
             Method targetMethod = invoker.ownerMapping().findMethod(invoker.getHttpRequest());
             if (targetMethod != null && targetMethod.isAnnotationPresent(Produces.class)) {
                 Produces pro = targetMethod.getAnnotation(Produces.class);
@@ -111,28 +125,26 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
                 }
                 if (pro != null && !StringUtils.isBlank(pro.value())) {
                     String proValue = pro.value();
-                    render.viewType(proValue);
-                    configContentType(render, proValue);
-                    render.lockViewType();
+                    invoker.viewType(proValue);
+                    configContentType(invoker, proValue);
+                    invoker.lockViewType();
                 }
             }
         }
+        //
         // .执行过滤器
         Object returnData = chain.doNext(invoker);
         //
         // .处理渲染
-        if (invoker instanceof RenderInvoker) {
-            boolean process = this.process((RenderInvoker) invoker);
-            if (process) {
-                return returnData;
-            }
-            RenderInvoker renderInvoker = (RenderInvoker) invoker;
-            HttpServletRequest httpRequest = renderInvoker.getHttpRequest();
-            HttpServletResponse httpResponse = renderInvoker.getHttpResponse();
-            if (!httpResponse.isCommitted()) {
-                configContentType(renderInvoker, renderInvoker.viewType());
-                httpRequest.getRequestDispatcher(renderInvoker.renderTo()).forward(httpRequest, httpResponse);
-            }
+        boolean process = this.process(invoker);
+        if (process) {
+            return returnData;
+        }
+        HttpServletRequest httpRequest = invoker.getHttpRequest();
+        HttpServletResponse httpResponse = invoker.getHttpResponse();
+        if (!httpResponse.isCommitted()) {
+            configContentType(invoker, invoker.viewType());
+            httpRequest.getRequestDispatcher(invoker.renderTo()).forward(httpRequest, httpResponse);
         }
         return returnData;
     }
@@ -152,12 +164,12 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
         //
         String oriViewName = render.renderTo();
         String newViewName = render.renderTo();
-        if (this.useLayout) {
+        if (render.layout()) {
             newViewName = this.templatePath + ((oriViewName.charAt(0) != '/') ? "/" : "") + oriViewName;
         }
         //
         String layoutFile = null;
-        if (this.useLayout && render.layout()) {
+        if (render.layout()) {
             layoutFile = findLayout(engine, oriViewName);
         }
         //
@@ -190,13 +202,9 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
                 return false;//没有执行模版
             }
         }
-        //
     }
 
     protected String findLayout(RenderEngine engine, String tempFile) throws IOException {
-        if (engine == null) {
-            return null;
-        }
         File layoutFile = new File(this.layoutPath, tempFile);
         if (engine.exist(layoutFile.getPath())) {
             return layoutFile.getPath();
