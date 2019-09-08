@@ -16,10 +16,7 @@
 package net.hasor.web.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
-import net.hasor.web.RenderEngine;
-import net.hasor.web.annotation.Render;
-
-import java.lang.annotation.Annotation;
+import net.hasor.web.render.RenderEngine;
 
 /**
  * 渲染引擎定义。
@@ -27,41 +24,25 @@ import java.lang.annotation.Annotation;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RenderDef {
-    private Render                           renderInfo = null;
+    private String                           renderName = null;
     private BindInfo<? extends RenderEngine> bindInfo   = null;
 
-    public RenderDef(String renderName, String specialMimeType, BindInfo<? extends RenderEngine> bindInfo) {
-        this.renderInfo = new Render() {
-            @Override
-            public Class<? extends Annotation> annotationType() {
-                return Render.class;
-            }
-
-            @Override
-            public String name() {
-                return renderName;
-            }
-
-            @Override
-            public String specialMimeType() {
-                return specialMimeType;
-            }
-        };
+    public RenderDef(String renderName, BindInfo<? extends RenderEngine> bindInfo) {
+        this.renderName = renderName;
         this.bindInfo = bindInfo;
     }
 
     @Override
     public String toString() {
-        return String.format("rendName=%s specialMimeType=%s ,toBindID=%s", //
-                this.renderInfo.name(), this.renderInfo.specialMimeType(), this.bindInfo.getBindID());
+        return String.format("rendName=%s ,toBindID=%s", this.renderName, this.bindInfo.getBindID());
     }
 
     public String getID() {
         return this.bindInfo.getBindID();
     }
 
-    public Render getRenderInfo() {
-        return this.renderInfo;
+    public String getRenderName() {
+        return this.renderName;
     }
 
     public RenderEngine newEngine(AppContext appContext) throws Throwable {

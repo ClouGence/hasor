@@ -13,13 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.render;
-import net.hasor.web.annotation.Render;
+package net.hasor.web.render;
+import net.hasor.core.AppContext;
+
+import java.io.IOException;
+import java.io.Writer;
 
 /**
- * @version : 2017-01-08
+ * 渲染引擎
+ * @version : 2016年1月3日
  * @author 赵永春 (zyc@hasor.net)
  */
-@Render(name = "html")
-public class ErrorRenderEngine {
+public interface RenderEngine {
+    /** 初始化引擎 */
+    public void initEngine(AppContext appContext) throws Throwable;
+
+    /** 执行模版引擎 */
+    public void process(RenderInvoker invoker, Writer writer) throws Throwable;
+
+    /**
+     * exist 的作用是用来在 process 执行之前，让渲染器检查一下，要执行的 模板是否存在。如果不存在就不会执行 process。
+     */
+    public boolean exist(String template) throws IOException;
 }

@@ -35,12 +35,17 @@ public class OneConfig extends HashMap<String, String> implements FilterConfig, 
     private String               resourceName;
     private Supplier<AppContext> appContext;
 
+    public OneConfig() {
+    }
+
     public OneConfig(String resourceName, Supplier<AppContext> appContext) {
+        this();
         this.resourceName = resourceName;
         this.appContext = appContext;
     }
 
     public OneConfig(String resourceName, Map<String, String> initParams, Supplier<AppContext> appContext) {
+        this();
         this.resourceName = resourceName;
         this.appContext = appContext;
         if (initParams != null) {
@@ -49,18 +54,21 @@ public class OneConfig extends HashMap<String, String> implements FilterConfig, 
     }
 
     public OneConfig(FilterConfig config, Supplier<AppContext> appContext) {
+        this();
         this.resourceName = config.getFilterName();
         this.appContext = appContext;
         this.putConfig(config, true);
     }
 
     public OneConfig(ServletConfig config, Supplier<AppContext> appContext) {
+        this();
         this.resourceName = config.getServletName();
         this.appContext = appContext;
         this.putConfig(config, true);
     }
 
     public OneConfig(String resourceName, InvokerConfig config, Supplier<AppContext> appContext) {
+        this();
         this.resourceName = resourceName;
         this.appContext = appContext;
         this.putConfig(config, true);

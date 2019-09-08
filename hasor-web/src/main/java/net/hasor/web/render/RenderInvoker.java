@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web;
+package net.hasor.web.render;
+import net.hasor.web.Invoker;
+
 /**
  * 渲染插件 Api
  * @version : 2017-01-10
@@ -23,17 +25,17 @@ public interface RenderInvoker extends Invoker {
     /**要渲染的资源。*/
     public String renderTo();
 
-    /**指定要渲染的资源。*/
+    /**指定要渲染的资源，并指定渲染器。*/
     public void renderTo(String viewName);
 
     /**指定要渲染的资源，并指定渲染器。*/
-    public void renderTo(String viewType, String viewName);
+    public void renderTo(String renderType, String viewName);
 
     /**当前使用的渲染器。*/
-    public String viewType();
+    public String renderType();
 
     /**指定渲染器。*/
-    public void viewType(String viewType);
+    public void renderType(String renderType);
 
     /**是否启用布局功能。*/
     public boolean layout();
@@ -43,10 +45,4 @@ public interface RenderInvoker extends Invoker {
 
     /**禁用布局功能。*/
     public void layoutDisable();
-
-    /**锁定viewType不可修改，一旦锁上就不可以还原。*/
-    public void lockViewType();
-
-    /**判断viewType 是否被锁住。*/
-    public boolean isLockViewType();
 }

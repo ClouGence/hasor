@@ -17,10 +17,7 @@ package net.hasor.web.render;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Settings;
-import net.hasor.utils.StringUtils;
 import net.hasor.web.*;
-import net.hasor.web.annotation.Produces;
-import net.hasor.web.annotation.Render;
 import net.hasor.web.binder.RenderDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,18 +37,17 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RenderWebPlugin implements WebModule, InvokerFilter {
-    protected Logger                    logger             = LoggerFactory.getLogger(getClass());
-    private   String                    layoutPath         = null;                    // 布局模版位置
-    private   boolean                   useLayout          = true;
-    private   String                    templatePath       = null;                    // 页面模版位置
-    private   Map<String, String>       specialMimeTypeMap = new HashMap<>();
-    private   Map<String, RenderEngine> engineMap          = new HashMap<>();
-    private   String                    placeholder        = null;
-    private   String                    defaultLayout      = null;
+    private static Logger                    logger        = LoggerFactory.getLogger(RenderWebPlugin.class);
+    private        String                    layoutPath    = null;                    // 布局模版位置
+    private        boolean                   useLayout     = true;
+    private        String                    templatePath  = null;                    // 页面模版位置
+    private        Map<String, RenderEngine> engineMap     = new HashMap<>();
+    private        String                    placeholder   = null;
+    private        String                    defaultLayout = null;
 
     @Override
     public void loadModule(WebApiBinder apiBinder) {
-        BindInfo<InvokerFilter> filterInfo = apiBinder.bindType(InvokerFilter.class)//
+        BindInfo<InvokerFilter> filterInfo = apiBinder.bindType(InvokerFilter.class)  //
                 .idWith(RenderWebPlugin.class.getName()).toInstance(this).toInfo();
         apiBinder.filter("/*").through(Integer.MIN_VALUE, filterInfo);
     }
@@ -60,12 +55,9 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
     public void onStart(AppContext appContext) throws Throwable {
         List<RenderDef> renderInfoList = appContext.findBindingBean(RenderDef.class);
         for (RenderDef renderInfo : renderInfoList) {
-            Render renderData = renderInfo.getRenderInfo();
-            logger.info("web -> renderName {} specialMimeType {}.", renderData.name(), renderData.specialMimeType());
-            if (StringUtils.isNotBlank(renderData.specialMimeType())) {
-                this.specialMimeTypeMap.put(renderData.name().toUpperCase(), renderData.specialMimeType());
-            }
-            this.engineMap.put(renderData.name().toUpperCase(), renderInfo.newEngine(appContext));
+            String renderName = renderInfo.getRenderName();
+            logger.info("web -> renderName {}.", renderName);
+            this.engineMap.put(renderName.toUpperCase(), renderInfo.newEngine(appContext));
         }
         //
         Settings settings = appContext.getEnvironment().getSettings();
@@ -74,28 +66,8 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
         this.templatePath = settings.getString("hasor.layout.templatePath", "/templates");
         this.placeholder = settings.getString("hasor.layout.placeholder", "content_placeholder");
         this.defaultLayout = settings.getString("hasor.layout.defaultLayout", "default.htm");
-        this.logger.info("RenderPlugin init -> useLayout={}, layoutPath={}, templatePath={}, placeholder={}, defaultLayout={}",//
+        logger.info("RenderPlugin init -> useLayout={}, layoutPath={}, templatePath={}, placeholder={}, defaultLayout={}",//
                 this.useLayout, this.layoutPath, this.templatePath, this.placeholder, this.defaultLayout);
-    }
-
-    private void configContentType(RenderInvoker renderInvoker, String viewType) {
-        if (StringUtils.isBlank(viewType)) {
-            return;
-        }
-        //
-        HttpServletResponse httpResponse = renderInvoker.getHttpResponse();
-        String oldMimeType = httpResponse.getContentType();
-        String newMimeType = this.specialMimeTypeMap.get(viewType);
-        if (StringUtils.isBlank(newMimeType)) {
-            newMimeType = renderInvoker.getMimeType(viewType);
-            if (StringUtils.isBlank(newMimeType)) {
-                newMimeType = oldMimeType;
-            }
-        }
-        //
-        if (!StringUtils.equalsIgnoreCase(oldMimeType, newMimeType)) {
-            httpResponse.setContentType(newMimeType);//用新的配置
-        }
     }
 
     @Override
@@ -115,50 +87,29 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
             invoker.layoutDisable();
         }
         //
-        // 在执行 Invoker 之前对 Invoker 的方法进行预分析，使其 @Produces 注解生效
-        if (invoker.ownerMapping() != null) {
-            Method targetMethod = invoker.ownerMapping().findMethod(invoker.getHttpRequest());
-            if (targetMethod != null && targetMethod.isAnnotationPresent(Produces.class)) {
-                Produces pro = targetMethod.getAnnotation(Produces.class);
-                if (pro == null) {
-                    pro = targetMethod.getDeclaringClass().getAnnotation(Produces.class);
-                }
-                if (pro != null && !StringUtils.isBlank(pro.value())) {
-                    String proValue = pro.value();
-                    invoker.viewType(proValue);
-                    configContentType(invoker, proValue);
-                    invoker.lockViewType();
-                }
-            }
-        }
-        //
         // .执行过滤器
         Object returnData = chain.doNext(invoker);
-        //
-        // .处理渲染
-        boolean process = this.process(invoker);
-        if (process) {
+        if (invoker.getHttpResponse().isCommitted()) {
             return returnData;
         }
+        //
+        // .处理渲染
+        if (this.process(invoker)) {
+            return returnData;
+        }
+        // .如果处理渲染失败，但是isCommitted = false，那么做服务端转发 renderTo
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         HttpServletResponse httpResponse = invoker.getHttpResponse();
         if (!httpResponse.isCommitted()) {
-            configContentType(invoker, invoker.viewType());
             httpRequest.getRequestDispatcher(invoker.renderTo()).forward(httpRequest, httpResponse);
         }
         return returnData;
     }
 
     public boolean process(RenderInvoker render) throws Throwable {
-        if (render == null) {
-            return false;
-        }
-        String viewType = render.viewType();
-        RenderEngine engine = this.engineMap.get(viewType);
+        String renderType = render.renderType();
+        RenderEngine engine = this.engineMap.get(renderType);
         if (engine == null) {
-            return false;
-        }
-        if (render.getHttpResponse().isCommitted()) {
             return false;
         }
         //
@@ -186,7 +137,6 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
             render.put(this.placeholder, tmpWriter.toString());
             if (engine.exist(layoutFile)) {
                 render.renderTo(layoutFile);
-                configContentType(render, viewType);
                 engine.process(render, render.getHttpResponse().getWriter());
                 return true;
             } else {
@@ -195,7 +145,6 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
         } else {
             if (engine.exist(newViewName)) {
                 render.renderTo(newViewName);
-                configContentType(render, viewType);
                 engine.process(render, render.getHttpResponse().getWriter());
                 return true;
             } else {

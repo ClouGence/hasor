@@ -15,8 +15,8 @@
  */
 package net.hasor.test.render;
 import net.hasor.core.AppContext;
-import net.hasor.web.RenderEngine;
-import net.hasor.web.RenderInvoker;
+import net.hasor.web.render.RenderEngine;
+import net.hasor.web.render.RenderInvoker;
 
 import java.io.IOException;
 import java.io.Writer;

@@ -102,7 +102,7 @@ public class AbstractTest {
         }
         if (moduleSet.contains(LoadModule.Render)) {
             DefaultXmlNode renderInvoker = new DefaultXmlNode(null, "invokerCreater");
-            renderInvoker.getAttributeMap().put("type", "net.hasor.web.RenderInvoker");
+            renderInvoker.getAttributeMap().put("type", "net.hasor.web.render.RenderInvoker");
             renderInvoker.setText("net.hasor.web.render.RenderInvokerCreater");
             xmlNode.getChildren().add(renderInvoker);
         }

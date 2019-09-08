@@ -103,7 +103,7 @@ public class WebApiBinderWrap extends ApiBinderWrap implements WebApiBinder {
     }
 
     @Override
-    public RenderEngineBindingBuilder addRender(String renderName, String toMimeType) {
-        return this.webApiBinder.addRender(renderName, toMimeType);
+    public RenderEngineBindingBuilder addRender(String renderName) {
+        return this.webApiBinder.addRender(renderName);
     }
 }

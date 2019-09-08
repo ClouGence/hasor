@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.test.actions.render;
+import net.hasor.web.render.RenderInvoker;
 import net.hasor.web.annotation.Get;
 import net.hasor.web.annotation.MappingTo;
 import net.hasor.web.annotation.Post;
@@ -23,12 +24,13 @@ import net.hasor.web.annotation.Produces;
 @MappingTo("/def.do")
 public class HtmlProduces {
     @Post
-    @Produces("html")
+    @Produces("test/html")
     public void testProduces1() {
     }
 
     @Get
-    @Produces("aabbcc")
-    public void testProduces2() {
+    @Produces("text/javacc_jj")
+    public void testProduces2(RenderInvoker invoker) {
+        invoker.renderTo("/my/my.html");
     }
 }

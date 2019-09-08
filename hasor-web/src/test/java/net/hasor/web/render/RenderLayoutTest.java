@@ -25,7 +25,6 @@ import net.hasor.test.actions.render.EnableLayoutHtmlAction;
 import net.hasor.test.render.SimpleRenderEngine;
 import net.hasor.test.render.TestRenderEngine;
 import net.hasor.web.AbstractTest;
-import net.hasor.web.RenderEngine;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.binder.OneConfig;
 import net.hasor.web.invoker.ExceuteCaller;
@@ -44,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RenderLayoutTest extends AbstractTest {
-    private AppContext renderAppContext(boolean enableLayout, RenderEngine renderEngine, Module... module) {
+    protected AppContext renderAppContext(boolean enableLayout, RenderEngine renderEngine, Module... module) {
         return buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", context -> {
             Hasor hasor = Hasor.create(context);
             hasor.addVariable("HASOR_RESTFUL_LAYOUT", String.valueOf(enableLayout));
@@ -52,12 +51,14 @@ public class RenderLayoutTest extends AbstractTest {
             hasor.addVariable("HASOR_RESTFUL_LAYOUT_PATH_TEMPLATES", "/templates/myfiles");
             return hasor;
         }, apiBinder -> {
-            apiBinder.addRender("html").toInstance(renderEngine);
+            if (renderEngine != null) {
+                apiBinder.addRender("html").toInstance(renderEngine);
+            }
             apiBinder.installModule(module);
         }, servlet30("/"), LoadModule.Web, LoadModule.Render);
     }
 
-    private String mockAndCallHttp(AppContext appContext) throws Throwable {
+    protected String mockAndCallHttp(AppContext appContext) throws Throwable {
         HttpServletRequest httpRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"));
         HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
         StringWriter stringWriter = new StringWriter();
@@ -71,7 +72,7 @@ public class RenderLayoutTest extends AbstractTest {
         return stringWriter.toString();
     }
 
-    private List<String> layoutFiles() {
+    protected List<String> layoutFiles() {
         return new ArrayList<String>() {{
             add("/layout/mytest/default.html");
             add("/layout/mytest/my/default.html");
@@ -82,7 +83,7 @@ public class RenderLayoutTest extends AbstractTest {
         }};
     }
 
-    private List<String> noneLayoutFiles() {
+    protected List<String> noneLayoutFiles() {
         return new ArrayList<String>() {{
             add("/login.html");
             add("/my/my.html");

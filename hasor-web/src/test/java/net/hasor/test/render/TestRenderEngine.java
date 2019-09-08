@@ -18,8 +18,8 @@ import com.alibaba.fastjson.JSON;
 import net.hasor.core.AppContext;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
-import net.hasor.web.RenderEngine;
-import net.hasor.web.RenderInvoker;
+import net.hasor.web.render.RenderEngine;
+import net.hasor.web.render.RenderInvoker;
 import net.hasor.web.valid.ValidInvoker;
 
 import java.io.IOException;
@@ -65,7 +65,7 @@ public class TestRenderEngine implements RenderEngine {//
         });
         //
         invokerData.put("engine_renderTo", invoker.renderTo());
-        invokerData.put("engine_viewType", invoker.viewType());
+        invokerData.put("engine_viewType", invoker.renderType());
         //
         writer.write(JSON.toJSONString(invokerData));
     }

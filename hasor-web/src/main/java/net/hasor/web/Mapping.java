@@ -54,5 +54,7 @@ public interface Mapping {
 
     public Method findMethod(String requestMethod);
 
+    public String getSpecialContentType(String requestMethod);
+
     public boolean isAsync(HttpServletRequest request);
 }

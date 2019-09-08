@@ -41,7 +41,6 @@ public class InvokerBasicTest extends AbstractTest {
         AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", Hasor::create, apiBinder -> {
             //
             apiBinder.addRender("html").toInstance(renderEngine);
-            apiBinder.addMimeType("html", "javacc_jj");
             //
             apiBinder.loadMappingTo(HtmlProduces.class);
             //
@@ -63,14 +62,14 @@ public class InvokerBasicTest extends AbstractTest {
         {
             ExceuteCaller caller = invokerContext.genCaller(mockRequest("post", new URL("http://www.hasor.net/abc.do")), servletResponse);
             caller.invoke(null);
-            assert responseType.contains("javacc_jj");
+            assert responseType.contains("test/html");
         }
         //
         {
             responseType.clear();
             ExceuteCaller caller = invokerContext.genCaller(mockRequest("get", new URL("http://www.hasor.net/abc.do")), servletResponse);
             caller.invoke(null);
-            assert responseType.size() == 0;
+            assert responseType.contains("text/javacc_jj");
         }
     }
 }

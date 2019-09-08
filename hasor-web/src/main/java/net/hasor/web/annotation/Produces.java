@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.web.annotation;
-import net.hasor.web.MimeType;
-import net.hasor.web.RenderInvoker;
-
 import java.lang.annotation.*;
+
 /**
- * 标记在方法上用来设置一个 MimeType name。在 Controller 调用之前 RenderWebPlugin 会先得到这个值，
- * 然后通过 {@link MimeType#getMimeType(String)} 方式得到 ContentType ，之后设置到 response 上。
- * 最后才会调用用户的 Controller。
- * 注意：该注解只有预设置作用。在 Controller 执行过程中，可以通过 {@link RenderInvoker#renderTo(String, String)}
- * 和 {@link RenderInvoker#viewType(String)} 两个方法来改变 Produces 注解的行为。
+ * 标记在方法上用来设置 response 使用的 ContentType。如果没有配置该注解，那么 Hasor-web 会采用请求资源的后缀名，然后在 mime 中进行匹配。
  * @version : 2013-8-14
  * @author 赵永春 (zyc@hasor.net)
  */
@@ -31,6 +25,6 @@ import java.lang.annotation.*;
 @Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Produces {
-    /**响应的类型*/
+    /** 指定的内容响应类型 */
     public String value();
 }

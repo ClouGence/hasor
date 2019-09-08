@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.test.actions.render;
-import net.hasor.web.RenderInvoker;
 import net.hasor.web.annotation.*;
+import net.hasor.web.render.RenderInvoker;
 
 import java.util.HashMap;
 
@@ -26,7 +26,7 @@ public class HtmlRealRennerAction {
         return new HashMap<String, String>() {{
             put("data", "hello");
             put("renderTo", invoker.renderTo());
-            put("viewType", invoker.viewType());
+            put("viewType", invoker.renderType());
         }};
     }
 
@@ -36,7 +36,7 @@ public class HtmlRealRennerAction {
         return new HashMap<String, String>() {{
             put("data", "word");
             put("renderTo", invoker.renderTo());
-            put("viewType", invoker.viewType());
+            put("viewType", invoker.renderType());
         }};
     }
 
@@ -47,7 +47,7 @@ public class HtmlRealRennerAction {
         return new HashMap<String, String>() {{
             put("data", "word");
             put("renderTo", invoker.renderTo());
-            put("viewType", invoker.viewType());
+            put("viewType", invoker.renderType());
         }};
     }
 
@@ -59,7 +59,7 @@ public class HtmlRealRennerAction {
         return new HashMap<String, String>() {{
             put("data", "word");
             put("renderTo", invoker.renderTo());
-            put("viewType", invoker.viewType());
+            put("viewType", invoker.renderType());
         }};
     }
 
@@ -70,7 +70,7 @@ public class HtmlRealRennerAction {
         return new HashMap<String, String>() {{
             put("data", "word");
             put("renderTo", invoker.renderTo());
-            put("viewType", invoker.viewType());
+            put("viewType", invoker.renderType());
         }};
     }
 }

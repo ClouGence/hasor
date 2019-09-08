@@ -23,7 +23,7 @@ import net.hasor.core.provider.InstanceProvider;
 import net.hasor.utils.CheckUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.InvokerFilter;
-import net.hasor.web.RenderEngine;
+import net.hasor.web.render.RenderEngine;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.mime.MimeTypeSupplier;
@@ -291,11 +291,11 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
     // ------------------------------------------------------------------------------------------------------
 
     /** 拦截这些后缀的请求，这些请求会被渲染器渲染。*/
-    public WebApiBinder.RenderEngineBindingBuilder addRender(String renderName, String specialMimeType) {
-        return new RenderEngineBindingBuilderImpl(Objects.requireNonNull(renderName, "Render renderName is empty."), specialMimeType) {
+    public WebApiBinder.RenderEngineBindingBuilder addRender(String renderName) {
+        return new RenderEngineBindingBuilderImpl(Objects.requireNonNull(renderName, "Render renderName is empty.")) {
             @Override
-            protected void bindRender(String renderName, String specialMimeType, BindInfo<? extends RenderEngine> bindInfo) {
-                bindType(RenderDef.class).nameWith(renderName).toInstance(new RenderDef(renderName, specialMimeType, bindInfo));
+            protected void bindRender(String renderName, BindInfo<? extends RenderEngine> bindInfo) {
+                bindType(RenderDef.class).nameWith(renderName).toInstance(new RenderDef(renderName, bindInfo));
             }
         };
     }
@@ -303,28 +303,26 @@ public class InvokerWebApiBinder extends ApiBinderWrap implements WebApiBinder {
 
     private abstract class RenderEngineBindingBuilderImpl implements WebApiBinder.RenderEngineBindingBuilder {
         private String renderName;
-        private String specialMimeType;
 
-        public RenderEngineBindingBuilderImpl(String renderName, String specialMimeType) {
+        public RenderEngineBindingBuilderImpl(String renderName) {
             this.renderName = renderName;
-            this.specialMimeType = specialMimeType;
         }
 
         @Override
         public <T extends RenderEngine> void to(Class<T> renderEngineType) {
-            bindRender(this.renderName, this.specialMimeType, bindType(RenderEngine.class).uniqueName().to(renderEngineType).toInfo());
+            bindRender(this.renderName, bindType(RenderEngine.class).uniqueName().to(renderEngineType).toInfo());
         }
 
         @Override
         public void toProvider(Supplier<? extends RenderEngine> renderEngineProvider) {
-            bindRender(this.renderName, this.specialMimeType, bindType(RenderEngine.class).uniqueName().toProvider(renderEngineProvider).toInfo());
+            bindRender(this.renderName, bindType(RenderEngine.class).uniqueName().toProvider(renderEngineProvider).toInfo());
         }
 
         @Override
         public void bindToInfo(BindInfo<? extends RenderEngine> renderEngineInfo) {
-            bindRender(this.renderName, this.specialMimeType, Objects.requireNonNull(renderEngineInfo));
+            bindRender(this.renderName, Objects.requireNonNull(renderEngineInfo));
         }
 
-        protected abstract void bindRender(String renderName, String toMimeName, BindInfo<? extends RenderEngine> bindInfo);
+        protected abstract void bindRender(String renderName, BindInfo<? extends RenderEngine> bindInfo);
     }
 }

@@ -18,11 +18,11 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.test.actions.basic.BasicAction;
-import net.hasor.test.render.ErrorRenderEngine;
+import net.hasor.test.render.AnnoErrorRenderEngine;
 import net.hasor.test.render.SimpleRenderEngine;
 import net.hasor.web.AbstractTest;
-import net.hasor.web.RenderEngine;
-import net.hasor.web.annotation.Render;
+import net.hasor.web.render.Render;
+import net.hasor.web.render.RenderEngine;
 import net.hasor.web.render.RenderWebPlugin;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
@@ -40,14 +40,11 @@ public class RenderBinderTest extends AbstractTest {
     @Test
     public void renderTest_1() {
         String renderName = "name_name";
-        String specialMimeType = "mime_type";
         BindInfo<? extends RenderEngine> bindInfo = bindInfo("bind_id", SimpleRenderEngine.class);
-        RenderDef def = new RenderDef(renderName, specialMimeType, bindInfo);
+        RenderDef def = new RenderDef(renderName, bindInfo);
         //
         assert def.getID().equals("bind_id");
-        assert def.getRenderInfo().name().equals(renderName);
-        assert def.getRenderInfo().specialMimeType().equals(specialMimeType);
-        assert def.getRenderInfo().annotationType() == Render.class;
+        assert def.getRenderName().equals(renderName);
         assert def.toString().startsWith("rendName=" + renderName);
     }
 
@@ -111,7 +108,7 @@ public class RenderBinderTest extends AbstractTest {
             }
             //
             try {
-                apiBinder.loadRender(ErrorRenderEngine.class);
+                apiBinder.loadRender(AnnoErrorRenderEngine.class);
                 assert false;
             } catch (Exception e) {
                 assert e.getMessage().endsWith(" must be implements RenderEngine.");
@@ -119,7 +116,7 @@ public class RenderBinderTest extends AbstractTest {
             //
             Set<Class<?>> classSet = apiBinder.findClass(Render.class, "net.hasor.test.render.*");
             assert classSet.size() == 2;
-            classSet.remove(ErrorRenderEngine.class); // remove Error
+            classSet.remove(AnnoErrorRenderEngine.class); // remove Error
             apiBinder.loadRender(classSet);
         }, servlet30("/"), LoadModule.Web);
         //
@@ -127,7 +124,7 @@ public class RenderBinderTest extends AbstractTest {
         assert definitions.size() == 1;
         //
         Set<String> suffixSet = new HashSet<>();
-        suffixSet.add(definitions.get(0).getRenderInfo().name());
+        suffixSet.add(definitions.get(0).getRenderName());
         //
         assert suffixSet.size() == 1;
         assert suffixSet.contains("jspx");

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package net.hasor.web.invoker;
+import net.hasor.utils.StringUtils;
 import net.hasor.utils.future.BasicFuture;
 import net.hasor.web.*;
 import net.hasor.web.binder.FilterDef;
@@ -96,7 +97,20 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller 
     /** 执行调用 */
     private Object invoke(final Method targetMethod, Invoker invoker) throws Throwable {
         //
-        // .初始化WebController
+        // .初始化 contentType
+        String contentType = invoker.ownerMapping().getSpecialContentType(invoker.getHttpRequest().getMethod());
+        if (StringUtils.isBlank(contentType)) {
+            String viewName = invoker.getRequestPath();
+            int lastIndex = viewName.lastIndexOf(".");
+            if (lastIndex > 0) {
+                contentType = invoker.getMimeType(viewName.substring(lastIndex + 1));
+            }
+        }
+        if (StringUtils.isNotBlank(contentType)) {
+            invoker.getHttpResponse().setContentType(contentType);
+        }
+        //
+        // .初始化 Controller
         final Object targetObject = invoker.getAppContext().getInstance(invoker.ownerMapping().getTargetType());
         if (targetObject instanceof Controller) {
             ((Controller) targetObject).initController(invoker);

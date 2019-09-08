@@ -20,6 +20,7 @@ import net.hasor.utils.StringUtils;
 import net.hasor.web.Mapping;
 import net.hasor.web.annotation.Async;
 import net.hasor.web.annotation.HttpMethod;
+import net.hasor.web.annotation.Produces;
 import net.hasor.web.invoker.AsyncSupported;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +40,7 @@ public class MappingDef implements Mapping {
     private       String              mappingTo;
     private       String              mappingToMatches;
     private       Map<String, Method> httpMapping;
+    private       Map<String, String> contentTypeMapping;
     private       Set<Method>         asyncMethod;
     private       AsyncSupported      defaultAsync = AsyncSupported.no;
 
@@ -62,6 +64,7 @@ public class MappingDef implements Mapping {
         this.mappingTo = mappingTo;
         this.mappingToMatches = wildToRegex(mappingTo).replaceAll("\\{\\w{1,}\\}", "([^/]{1,})");
         this.httpMapping = new HashMap<>();
+        this.contentTypeMapping = new HashMap<>();
         this.asyncMethod = new HashSet<>();
         //
         List<Method> methodList = BeanUtils.getMethods(targetType.getBindType());
@@ -69,6 +72,19 @@ public class MappingDef implements Mapping {
             boolean matches = methodMatcher.test(targetMethod);
             if (!matches) {
                 continue;
+            }
+            // .MetaType
+            String metaType = null;
+            Produces pro = targetMethod.getAnnotation(Produces.class);
+            if (pro == null) {
+                pro = targetMethod.getDeclaringClass().getAnnotation(Produces.class);
+            }
+            if (pro != null) {
+                if (StringUtils.isBlank(pro.value())) {
+                    throw new IllegalStateException(" @Produces value is empty. of " + targetMethod.toString());
+                } else {
+                    metaType = pro.value();
+                }
             }
             // .HttpMethod
             Annotation[] annos = targetMethod.getAnnotations();
@@ -78,6 +94,9 @@ public class MappingDef implements Mapping {
                         String[] methodSet = ((HttpMethod) anno).value();
                         for (String http : methodSet) {
                             this.httpMapping.put(http.toUpperCase(), targetMethod);
+                            if (StringUtils.isNotBlank(metaType)) {
+                                this.contentTypeMapping.put(http.toUpperCase(), metaType);
+                            }
                         }
                     }
                     HttpMethod httpMethodAnno = anno.annotationType().getAnnotation(HttpMethod.class);
@@ -85,6 +104,9 @@ public class MappingDef implements Mapping {
                         String[] methodSet = httpMethodAnno.value();
                         for (String http : methodSet) {
                             this.httpMapping.put(http.toUpperCase(), targetMethod);
+                            if (StringUtils.isNotBlank(metaType)) {
+                                this.contentTypeMapping.put(http.toUpperCase(), metaType);
+                            }
                         }
                     }
                 }
@@ -92,6 +114,9 @@ public class MappingDef implements Mapping {
             // .Default (needAnno 为 true 表示，必须注释了 HttpMethod 注解的方法才可以被列为 Action)
             if (this.httpMapping.isEmpty() && !needAnno) {
                 this.httpMapping.put(HttpMethod.ANY, targetMethod);
+                if (StringUtils.isNotBlank(metaType)) {
+                    this.contentTypeMapping.put(HttpMethod.ANY, metaType);
+                }
             }
             // .Async
             if (targetMethod.getAnnotation(Async.class) != null) {
@@ -170,6 +195,15 @@ public class MappingDef implements Mapping {
             targetMethod = this.httpMapping.get(HttpMethod.ANY);
         }
         return targetMethod;
+    }
+
+    @Override
+    public String getSpecialContentType(String requestMethod) {
+        String specialMetaType = this.contentTypeMapping.get(requestMethod.toUpperCase());
+        if (specialMetaType == null) {
+            specialMetaType = this.contentTypeMapping.get(HttpMethod.ANY);
+        }
+        return specialMetaType;
     }
 
     public boolean isAsync(HttpServletRequest request) {

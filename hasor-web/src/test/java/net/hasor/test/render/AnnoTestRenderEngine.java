@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 package net.hasor.test.render;
-import net.hasor.web.annotation.Render;
+import net.hasor.web.render.Render;
 
 import java.util.List;
 
-@Render(name = "jspx")
+@Render("jspx")
 public class AnnoTestRenderEngine extends TestRenderEngine {
     public AnnoTestRenderEngine(List<String> templateSet) {
         super(templateSet);

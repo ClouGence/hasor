@@ -21,7 +21,8 @@ import net.hasor.core.provider.InstanceProvider;
 import net.hasor.utils.ArrayUtils;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.web.annotation.MappingTo;
-import net.hasor.web.annotation.Render;
+import net.hasor.web.render.Render;
+import net.hasor.web.render.RenderEngine;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletContext;
@@ -76,8 +77,8 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     public <T> MappingToBindingBuilder<T> mappingTo(String[] morePatterns);
 
     /** 加载带有 @MappingTo 注解的类。 */
-    public default void loadMappingTo(Set<Class<?>> mabeMappingToSet) {
-        this.loadMappingTo(mabeMappingToSet, aClass -> {
+    public default void loadMappingTo(Set<Class<?>> mappingTypeSet) {
+        this.loadMappingTo(mappingTypeSet, aClass -> {
             int modifier = aClass.getModifiers();
             if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || aClass.isArray() || aClass.isEnum()) {
                 return false;
@@ -102,29 +103,29 @@ public interface WebApiBinder extends ApiBinder, MimeType {
     }
 
     /** 加载带有 @MappingTo 注解的类。 */
-    public default void loadMappingTo(Class<?> mabeMappingType) {
-        Objects.requireNonNull(mabeMappingType, "class is null.");
-        int modifier = mabeMappingType.getModifiers();
-        if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || mabeMappingType.isArray() || mabeMappingType.isEnum()) {
-            throw new IllegalStateException(mabeMappingType.getName() + " must be normal Bean");
+    public default void loadMappingTo(Class<?> mappingType) {
+        Objects.requireNonNull(mappingType, "class is null.");
+        int modifier = mappingType.getModifiers();
+        if (AsmTools.checkOr(modifier, Modifier.INTERFACE, Modifier.ABSTRACT) || mappingType.isArray() || mappingType.isEnum()) {
+            throw new IllegalStateException(mappingType.getName() + " must be normal Bean");
         }
-        MappingTo[] annotationsByType = mabeMappingType.getAnnotationsByType(MappingTo.class);
+        MappingTo[] annotationsByType = mappingType.getAnnotationsByType(MappingTo.class);
         if (annotationsByType == null || annotationsByType.length == 0) {
-            throw new IllegalStateException(mabeMappingType.getName() + " must be configure @MappingTo");
+            throw new IllegalStateException(mappingType.getName() + " must be configure @MappingTo");
         }
         //
-        if (HttpServlet.class.isAssignableFrom(mabeMappingType)) {
+        if (HttpServlet.class.isAssignableFrom(mappingType)) {
             Arrays.stream(annotationsByType).peek(mappingTo -> {
             }).forEach(mappingTo -> {
-                if (!isSingleton(mabeMappingType)) {
-                    throw new IllegalStateException("HttpServlet " + mabeMappingType + " must be Singleton.");
+                if (!isSingleton(mappingType)) {
+                    throw new IllegalStateException("HttpServlet " + mappingType + " must be Singleton.");
                 }
-                jeeServlet(mappingTo.value()).with((Class<? extends HttpServlet>) mabeMappingType);
+                jeeServlet(mappingTo.value()).with((Class<? extends HttpServlet>) mappingType);
             });
         } else {
             Arrays.stream(annotationsByType).peek(mappingTo -> {
             }).forEach(mappingTo -> {
-                mappingTo(mappingTo.value()).with(mabeMappingType);
+                mappingTo(mappingTo.value()).with(mappingType);
             });
         }
     }
@@ -362,10 +363,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
                 return false;
             }
             Render[] annotationsByType = aClass.getAnnotationsByType(Render.class);
-            if (annotationsByType == null || annotationsByType.length == 0) {
-                return false;
-            }
-            return true;
+            return annotationsByType != null && annotationsByType.length != 0;
         });
     }
 
@@ -395,8 +393,10 @@ public interface WebApiBinder extends ApiBinder, MimeType {
         }
         //
         Render renderInfo = renderClass.getAnnotation(Render.class);
-        if (renderInfo != null) {
-            addRender(renderInfo.name(), renderInfo.specialMimeType()).to((Class<? extends RenderEngine>) renderClass);
+        if (renderInfo != null && renderInfo.value().length > 0) {
+            for (String renderName : renderInfo.value()) {
+                addRender(renderName).to((Class<? extends RenderEngine>) renderClass);
+            }
         }
     }
 
@@ -404,17 +404,7 @@ public interface WebApiBinder extends ApiBinder, MimeType {
      * 添加一个渲染器，用来将 Action 请求的结果渲染成页面。
      * @param renderName 渲染器名称
      */
-    public default RenderEngineBindingBuilder addRender(String renderName) {
-        return this.addRender(renderName, null);
-    }
-
-    /**
-     * 添加一个渲染器，用来将 Action 请求的结果渲染成页面。
-     * @param renderName 渲染器名称
-     * @param specialMimeType 渲染器使用的 response.ContentType 是什么，
-     *      如果没有特殊指定。那么会通过 renderName 在 mime.types.xml 中查找，如果找不到那么不进行特殊设置。
-     */
-    public RenderEngineBindingBuilder addRender(String renderName, String specialMimeType);
+    public RenderEngineBindingBuilder addRender(String renderName);
 
     /** 负责配置RenderEngine。*/
     public static interface RenderEngineBindingBuilder {

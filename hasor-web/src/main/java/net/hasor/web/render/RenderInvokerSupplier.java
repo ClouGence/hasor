@@ -16,7 +16,6 @@
 package net.hasor.web.render;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
-import net.hasor.web.RenderInvoker;
 import net.hasor.web.wrap.InvokerWrap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,10 +26,9 @@ import java.util.Enumeration;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class RenderInvokerSupplier extends InvokerWrap implements RenderInvoker {
-    private String  viewName     = null;    //模版名称
-    private String  viewType     = null;    //渲染引擎
-    private boolean viewTypeLock = false;   //是否配置了Produces注解
-    private boolean useLayout    = true;    //是否渲染布局
+    private String  viewName   = null;    //模版名称
+    private String  renderType = null;    //渲染引擎
+    private boolean useLayout  = true;    //是否渲染布局
 
     protected RenderInvokerSupplier(Invoker invoker) {
         super(invoker);
@@ -42,14 +40,6 @@ public class RenderInvokerSupplier extends InvokerWrap implements RenderInvoker 
             String key = paramKey.toString();
             String val = httpRequest.getParameter(key);
             httpRequest.setAttribute("req_" + key, val);
-        }
-        //
-        this.viewName = this.getRequestPath();
-        int lastIndex = this.viewName.lastIndexOf(".");
-        if (lastIndex > 0) {
-            this.viewType(this.viewName.substring(lastIndex + 1));
-        } else {
-            this.viewType("");
         }
     }
 
@@ -64,25 +54,22 @@ public class RenderInvokerSupplier extends InvokerWrap implements RenderInvoker 
     }
 
     @Override
-    public void renderTo(String viewType, String viewName) {
-        this.viewType(viewType);
+    public void renderTo(String renderType, String viewName) {
+        this.renderType(renderType);
         this.viewName = viewName;
     }
 
     @Override
-    public String viewType() {
-        return this.viewType;
+    public String renderType() {
+        return this.renderType;
     }
 
     @Override
-    public void viewType(String viewType) {
-        if (this.viewTypeLock) {
-            throw new UnsupportedOperationException("annotation @Produces already exists, or viewType is locked");
-        }
-        if (StringUtils.isNotBlank(viewType)) {
-            this.viewType = viewType.trim().toUpperCase();
+    public void renderType(String renderType) {
+        if (StringUtils.isBlank(renderType)) {
+            throw new IllegalStateException("renderType is null.");
         } else {
-            this.viewType = "";
+            this.renderType = renderType.trim().toUpperCase();
         }
     }
 
@@ -99,13 +86,5 @@ public class RenderInvokerSupplier extends InvokerWrap implements RenderInvoker 
     @Override
     public void layoutDisable() {
         this.useLayout = false;
-    }
-
-    public void lockViewType() {
-        this.viewTypeLock = true;
-    }
-
-    public boolean isLockViewType() {
-        return this.viewTypeLock;
     }
 }
