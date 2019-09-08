@@ -13,26 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.actions.args;
+package net.hasor.test.actions.render;
 import net.hasor.web.annotation.Any;
-import net.hasor.web.annotation.HeaderParameter;
+import net.hasor.web.render.RenderInvoker;
 
 import java.util.HashMap;
-import java.util.Map;
 
-public class HeaderArgsAction {
+public class ParentLayoutHtmlAction {
     @Any
-    public Map<String, Object> execute(//
-            @HeaderParameter("byteParam") byte byteParam, //
-            @HeaderParameter("intParam") int intParam,    //
-            @HeaderParameter("strParam") String strParam, //
-            @HeaderParameter("") String eptParam          //
-    ) {
-        return new HashMap<String, Object>() {{
-            put("byteParam", byteParam);
-            put("intParam", intParam);
-            put("strParam", strParam);
-            put("eptParam", eptParam);
+    public Object testProduces(RenderInvoker invoker) {
+        invoker.renderTo("html", "/my/abc/my.html");
+        return new HashMap<String, String>() {{
+            put("data", "hello");
+            put("renderTo", invoker.renderTo());
+            put("viewType", invoker.renderType());
         }};
     }
 }

@@ -1,4 +1,7 @@
 package net.hasor.web.invoker;
+import net.hasor.core.AppContext;
+import net.hasor.core.Environment;
+import net.hasor.core.Settings;
 import net.hasor.utils.BeanUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
@@ -84,6 +87,15 @@ public class InvokerCallerParamsBuilder {
         //
         if (paramClass == Invoker.class || paramClass.isInstance(invoker)) {
             return invoker;
+        }
+        if (paramClass == AppContext.class) {
+            return invoker.getAppContext();
+        }
+        if (paramClass == Environment.class) {
+            return invoker.getAppContext().getEnvironment();
+        }
+        if (paramClass == Settings.class) {
+            return invoker.getAppContext().getEnvironment().getSettings();
         }
         return null; //return invoker.getAppContext().getInstance(paramClass);
     }
@@ -191,9 +203,6 @@ public class InvokerCallerParamsBuilder {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 String cookieName = cookie.getName();
-                if (cookieName == null) {
-                    continue;
-                }
                 if (cookieName.equalsIgnoreCase(paramName)) {
                     cookieList.add(cookie.getValue());
                 }

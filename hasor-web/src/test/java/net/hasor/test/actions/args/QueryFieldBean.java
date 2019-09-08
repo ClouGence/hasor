@@ -23,6 +23,8 @@ public class QueryFieldBean {
     private int    intParam;
     @QueryParameter("strParam")
     private String strParam;
+    @QueryParameter("")
+    private String eptParam;
 
     public byte getByteParam() {
         return byteParam;
@@ -34,5 +36,9 @@ public class QueryFieldBean {
 
     public String getStrParam() {
         return strParam;
+    }
+
+    public String getEptParam() {
+        return eptParam;
     }
 }

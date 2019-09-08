@@ -27,6 +27,7 @@ public class HeaderFieldAction {
             put("byteParam", fieldBean.getByteParam());
             put("intParam", fieldBean.getIntParam());
             put("strParam", fieldBean.getStrParam());
+            put("eptParam", fieldBean.getEptParam());
         }};
     }
 }

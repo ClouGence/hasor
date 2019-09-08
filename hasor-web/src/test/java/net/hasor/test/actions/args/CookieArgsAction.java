@@ -25,12 +25,14 @@ public class CookieArgsAction {
     public Map<String, Object> execute(//
             @CookieParameter("byteParam") byte byteParam, //
             @CookieParameter("intParam") int intParam,    //
-            @CookieParameter("strParam") String strParam  //
+            @CookieParameter("strParam") String strParam, //
+            @CookieParameter("") String eptParam          //
     ) {
         return new HashMap<String, Object>() {{
             put("byteParam", byteParam);
             put("intParam", intParam);
             put("strParam", strParam);
+            put("eptParam", eptParam);
         }};
     }
 }

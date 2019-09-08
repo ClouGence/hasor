@@ -22,6 +22,7 @@ import net.hasor.web.binder.RenderDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -101,7 +102,10 @@ public class RenderWebPlugin implements WebModule, InvokerFilter {
         HttpServletRequest httpRequest = invoker.getHttpRequest();
         HttpServletResponse httpResponse = invoker.getHttpResponse();
         if (!httpResponse.isCommitted()) {
-            httpRequest.getRequestDispatcher(invoker.renderTo()).forward(httpRequest, httpResponse);
+            RequestDispatcher requestDispatcher = httpRequest.getRequestDispatcher(invoker.renderTo());
+            if (requestDispatcher != null) {
+                requestDispatcher.forward(httpRequest, httpResponse);
+            }
         }
         return returnData;
     }

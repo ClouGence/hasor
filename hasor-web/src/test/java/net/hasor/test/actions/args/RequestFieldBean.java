@@ -23,6 +23,8 @@ public class RequestFieldBean {
     private int    intParam;
     @RequestParameter("strParam")
     private String strParam;
+    @RequestParameter("")
+    private String eptParam;
 
     public byte getByteParam() {
         return byteParam;
@@ -34,5 +36,9 @@ public class RequestFieldBean {
 
     public String getStrParam() {
         return strParam;
+    }
+
+    public String getEptParam() {
+        return eptParam;
     }
 }

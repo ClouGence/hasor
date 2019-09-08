@@ -19,17 +19,22 @@ import net.hasor.core.Hasor;
 import net.hasor.test.actions.render.HtmlProduces;
 import net.hasor.test.render.SimpleRenderEngine;
 import net.hasor.web.AbstractTest;
+import net.hasor.web.Mapping;
 import net.hasor.web.binder.MappingDef;
 import net.hasor.web.binder.OneConfig;
 import org.junit.Test;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
+import javax.servlet.AsyncContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.mockito.ArgumentMatchers.anyString;
 
@@ -37,13 +42,9 @@ public class InvokerBasicTest extends AbstractTest {
     @Test
     public void contentType_1() throws Throwable {
         SimpleRenderEngine renderEngine = new SimpleRenderEngine();
-        //
         AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", Hasor::create, apiBinder -> {
-            //
             apiBinder.addRender("html").toInstance(renderEngine);
-            //
             apiBinder.loadMappingTo(HtmlProduces.class);
-            //
         }, servlet30("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
         //
         //
@@ -71,5 +72,90 @@ public class InvokerBasicTest extends AbstractTest {
             caller.invoke(null);
             assert responseType.contains("text/javacc_jj");
         }
+    }
+
+    @Test
+    public void asyncInvocationWorker_test_1() {
+        AsyncContext asyncContext = PowerMockito.mock(AsyncContext.class);
+        final Method targetMethod = PowerMockito.mock(Method.class);
+        //
+        AsyncInvocationWorker worker = new AsyncInvocationWorker(asyncContext, targetMethod) {
+            @Override
+            public void doWork(Method method) {
+                assert method == targetMethod;
+            }
+
+            @Override
+            public void doWorkWhenError(Method targetMethod, Throwable e) {
+                assert false;
+            }
+        };
+        //
+        final AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+        PowerMockito.doAnswer((Answer<Void>) invocationOnMock -> {
+            atomicBoolean.set(true);
+            return null;
+        }).when(asyncContext).complete();
+        //
+        worker.run();
+        assert atomicBoolean.get();
+    }
+
+    @Test
+    public void asyncInvocationWorker_test_2() {
+        AsyncContext asyncContext = PowerMockito.mock(AsyncContext.class);
+        final Method targetMethod = PowerMockito.mock(Method.class);
+        final Exception error = new Exception();
+        //
+        AsyncInvocationWorker worker = new AsyncInvocationWorker(asyncContext, targetMethod) {
+            @Override
+            public void doWork(Method method) throws Throwable {
+                throw error;
+            }
+
+            @Override
+            public void doWorkWhenError(Method targetMethod, Throwable e) {
+                assert error == e;
+            }
+        };
+        //
+        worker.run();
+    }
+
+    @Test
+    public void invokerSupplier_test_1() throws Throwable {
+        AppContext appContext = PowerMockito.mock(AppContext.class);
+        HttpServletRequest httpRequest = super.mockRequest("get", new URL("http://www.hasor.net/query_param.do?byteParam=123&bigInteger=321"));
+        HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
+        InvokerSupplier supplier = new InvokerSupplier(PowerMockito.mock(Mapping.class), appContext, httpRequest, httpResponse);
+        //
+        assert supplier.getHttpRequest() == httpRequest;
+        assert supplier.getHttpResponse() == httpResponse;
+        assert supplier.getAppContext() == appContext;
+        //
+        supplier.put("abc", "abc");
+        assert "abc".equals(supplier.get("abc"));
+        supplier.remove("abc");
+        assert supplier.get("abc") == null;
+        //
+        //
+        supplier.put("key", "kv");
+        assert "kv".equals(supplier.get("key"));
+        supplier.lockKey("key");
+        try {
+            supplier.put("key", "111");
+            assert false;
+        } catch (Exception e) {
+            assert e.getMessage().endsWith(" is lock key.");
+        }
+        try {
+            supplier.remove("key");
+            assert false;
+        } catch (Exception e) {
+            assert e.getMessage().endsWith(" is lock key.");
+        }
+        //
+        Set<String> strings = supplier.keySet();
+        assert strings.contains("key");
     }
 }

@@ -25,12 +25,14 @@ public class PathArgsAction {
     public Map<String, Object> execute(//
             @PathParameter("byteParam") byte byteParam, //
             @PathParameter("intParam") int intParam,    //
-            @PathParameter("strParam") String strParam  //
+            @PathParameter("strParam") String strParam, //
+            @PathParameter("") String eptParam          //
     ) {
         return new HashMap<String, Object>() {{
             put("byteParam", byteParam);
             put("intParam", intParam);
             put("strParam", strParam);
+            put("eptParam", eptParam);
         }};
     }
 }

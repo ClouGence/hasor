@@ -94,7 +94,7 @@ public class InvocationHandlerTest {
                 new ApiBinderInvocationHandler(supportMap)      //
         );
         //
-        binderProxy.installModule((Module) apiBinder -> {
+        binderProxy.installModule(apiBinder -> {
             apiBinder.tryCast(TestBinder.class).hello();
             //
             assert apiBinder.toString().startsWith("count = 2 - [");

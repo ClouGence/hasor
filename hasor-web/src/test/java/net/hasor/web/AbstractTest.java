@@ -20,6 +20,9 @@ import net.hasor.core.Hasor;
 import net.hasor.core.setting.xml.DefaultXmlNode;
 import net.hasor.utils.Iterators;
 import net.hasor.utils.StringUtils;
+import net.hasor.web.binder.OneConfig;
+import net.hasor.web.invoker.ExceuteCaller;
+import net.hasor.web.invoker.InvokerContext;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
@@ -27,7 +30,10 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.*;
 
@@ -274,5 +280,37 @@ public class AbstractTest {
         }).when(request).removeAttribute(anyString());
         //
         return request;
+    }
+
+    protected String mockAndCallHttp(String httpMethod, String callURL, AppContext appContext) throws Throwable {
+        return mockAndCallHttp(httpMethod, callURL, appContext, null, null);
+    }
+
+    protected String mockAndCallHttp(String httpMethod, String callURL, AppContext appContext, Set<String> responseType, Set<String> dispatcher) throws Throwable {
+        HttpServletRequest httpRequest = mockRequest(httpMethod, new URL(callURL));
+        HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
+        StringWriter stringWriter = new StringWriter();
+        PowerMockito.when(httpResponse.getWriter()).thenReturn(new PrintWriter(stringWriter));
+        //
+        PowerMockito.doAnswer((Answer<Void>) invocation -> {
+            if (responseType != null) {
+                responseType.add(invocation.getArguments()[0].toString());
+            }
+            return null;
+        }).when(httpResponse).setContentType(anyString());
+        //
+        PowerMockito.when(httpRequest.getRequestDispatcher(anyString())).then(invocation -> {
+            if (dispatcher != null) {
+                dispatcher.add(invocation.getArguments()[0].toString());
+            }
+            return PowerMockito.mock(RequestDispatcher.class);
+        });
+        //
+        InvokerContext invokerContext = new InvokerContext();
+        invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
+        //
+        ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
+        caller.invoke(null).get();
+        return stringWriter.toString();
     }
 }

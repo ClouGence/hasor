@@ -27,6 +27,7 @@ public class QueryFieldAction {
             put("byteParam", fieldBean.getByteParam());
             put("intParam", fieldBean.getIntParam());
             put("strParam", fieldBean.getStrParam());
+            put("eptParam", fieldBean.getEptParam());
         }};
     }
 }

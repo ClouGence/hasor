@@ -2,7 +2,7 @@
 ------------------------------------
 Hasor的渲染器是专门用来处理 Response 响应的，您可以根据不同的渲染器向客户端做出不同格式的响应，其地位相当于 MVC 中的 View。
 
-一个渲染器必须是实现了 net.hasor.web.RenderEngine 接口的具体类，Hasor 中所有内置渲染器都位于 hasor-plugins 中。您需要引入相关依赖才可以使用，如果您使用的是 Freemarker 渲染器那么还需要引入 freemarker 相关的 jar包。
+一个渲染器必须是实现了 net.hasor.web.render.RenderEngine 接口的具体类，Hasor 中所有内置渲染器都位于 hasor-plugins 中。您需要引入相关依赖才可以使用，如果您使用的是 Freemarker 渲染器那么还需要引入 freemarker 相关的 jar包。
 
 
 .. code-block:: xml

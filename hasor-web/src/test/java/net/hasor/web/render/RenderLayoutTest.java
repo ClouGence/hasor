@@ -22,22 +22,14 @@ import net.hasor.core.Module;
 import net.hasor.test.actions.render.DefaultLayoutHtmlAction;
 import net.hasor.test.actions.render.DisableLayoutHtmlAction;
 import net.hasor.test.actions.render.EnableLayoutHtmlAction;
+import net.hasor.test.actions.render.ParentLayoutHtmlAction;
 import net.hasor.test.render.SimpleRenderEngine;
 import net.hasor.test.render.TestRenderEngine;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.binder.OneConfig;
-import net.hasor.web.invoker.ExceuteCaller;
-import net.hasor.web.invoker.InvokerContext;
 import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.Field;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,26 +50,13 @@ public class RenderLayoutTest extends AbstractTest {
         }, servlet30("/"), LoadModule.Web, LoadModule.Render);
     }
 
-    protected String mockAndCallHttp(AppContext appContext) throws Throwable {
-        HttpServletRequest httpRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"));
-        HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
-        StringWriter stringWriter = new StringWriter();
-        PowerMockito.when(httpResponse.getWriter()).thenReturn(new PrintWriter(stringWriter));
-        //
-        InvokerContext invokerContext = new InvokerContext();
-        invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
-        //
-        ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
-        caller.invoke(null).get();
-        return stringWriter.toString();
-    }
-
     protected List<String> layoutFiles() {
         return new ArrayList<String>() {{
             add("/layout/mytest/default.html");
             add("/layout/mytest/my/default.html");
             //
             add("/templates/myfiles/login.html");
+            add("/templates/myfiles/my/abc/my.html");
             add("/templates/myfiles/my/my.html");
             add("/templates/myfiles/my/my.json");
         }};
@@ -86,6 +65,7 @@ public class RenderLayoutTest extends AbstractTest {
     protected List<String> noneLayoutFiles() {
         return new ArrayList<String>() {{
             add("/login.html");
+            add("/my/abc/my.html");
             add("/my/my.html");
             add("/my/my.json");
         }};
@@ -130,7 +110,7 @@ public class RenderLayoutTest extends AbstractTest {
         AppContext appContext = renderAppContext(true, renderEngine, apiBinder -> {
             apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(DefaultLayoutHtmlAction.class);
         });
-        String stringWriter = mockAndCallHttp(appContext);
+        String stringWriter = mockAndCallHttp("post", "http://www.hasor.net/abc.do", appContext);
         //
         {
             JSONObject jsonObject = JSON.parseObject(stringWriter);
@@ -155,7 +135,7 @@ public class RenderLayoutTest extends AbstractTest {
         AppContext appContext = renderAppContext(true, renderEngine, apiBinder -> {
             apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(DisableLayoutHtmlAction.class);
         });
-        String stringWriter = mockAndCallHttp(appContext);
+        String stringWriter = mockAndCallHttp("post", "http://www.hasor.net/abc.do", appContext);
         //
         {
             JSONObject jsonObject = JSON.parseObject(stringWriter);
@@ -177,7 +157,7 @@ public class RenderLayoutTest extends AbstractTest {
         AppContext appContext = renderAppContext(false, renderEngine, apiBinder -> {
             apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(DefaultLayoutHtmlAction.class);
         });
-        String stringWriter = mockAndCallHttp(appContext);
+        String stringWriter = mockAndCallHttp("post", "http://www.hasor.net/abc.do", appContext);
         //
         {
             JSONObject jsonObject = JSON.parseObject(stringWriter);
@@ -199,7 +179,7 @@ public class RenderLayoutTest extends AbstractTest {
         AppContext appContext = renderAppContext(false, renderEngine, apiBinder -> {
             apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(EnableLayoutHtmlAction.class);
         });
-        String stringWriter = mockAndCallHttp(appContext);
+        String stringWriter = mockAndCallHttp("post", "http://www.hasor.net/abc.do", appContext);
         //
         {
             JSONObject jsonObject = JSON.parseObject(stringWriter);
@@ -212,6 +192,30 @@ public class RenderLayoutTest extends AbstractTest {
             // 要展示的页面
             assert jsonObject.getJSONObject("resultData") != null;
             assert jsonObject.getJSONObject("resultData").getString("renderTo").equals("/my/my.html");
+        }
+    }
+
+    // 默认打开 layout，但是 布局模版需要递归匹配
+    @Test
+    public void layoutTest_4_parent() throws Throwable {
+        // 加载 layout 的站点资源路径
+        TestRenderEngine renderEngine = new TestRenderEngine(layoutFiles());
+        AppContext appContext = renderAppContext(true, renderEngine, apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(ParentLayoutHtmlAction.class);
+        });
+        String stringWriter = mockAndCallHttp("post", "http://www.hasor.net/abc.do", appContext);
+        //
+        {
+            JSONObject jsonObject = JSON.parseObject(stringWriter);
+            // 因为启用了 layout 而且会命中 layout，因此 placeholder 肯定有内容。
+            assert jsonObject.get("content_placeholder") != null;
+            // 最后一个渲染的是布局模板，因此展示印布局模板真实地址
+            assert jsonObject.get("engine_renderTo").equals("/layout/mytest/my/default.html");
+            // 要展示的页面真实位置
+            assert jsonObject.getJSONObject("content_placeholder").getString("engine_renderTo").equals("/templates/myfiles/my/abc/my.html");
+            // 要展示的页面
+            assert jsonObject.getJSONObject("resultData") != null;
+            assert jsonObject.getJSONObject("resultData").getString("renderTo").equals("/my/abc/my.html");
         }
     }
 }

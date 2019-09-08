@@ -23,6 +23,8 @@ public class CookieFieldBean {
     private int    intParam;
     @CookieParameter("strParam")
     private String strParam;
+    @CookieParameter("")
+    private String eptParam;
 
     public byte getByteParam() {
         return byteParam;
@@ -34,5 +36,9 @@ public class CookieFieldBean {
 
     public String getStrParam() {
         return strParam;
+    }
+
+    public String getEptParam() {
+        return eptParam;
     }
 }

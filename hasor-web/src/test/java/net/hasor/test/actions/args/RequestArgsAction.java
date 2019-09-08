@@ -25,12 +25,14 @@ public class RequestArgsAction {
     public Map<String, Object> execute(//
             @RequestParameter("byteParam") byte byteParam, //
             @RequestParameter("intParam") int intParam,    //
-            @RequestParameter("strParam") String strParam  //
+            @RequestParameter("strParam") String strParam, //
+            @RequestParameter("") String eptParam          //
     ) {
         return new HashMap<String, Object>() {{
             put("byteParam", byteParam);
             put("intParam", intParam);
             put("strParam", strParam);
+            put("eptParam", eptParam);
         }};
     }
 }

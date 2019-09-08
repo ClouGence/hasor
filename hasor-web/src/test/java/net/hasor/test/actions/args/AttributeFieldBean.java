@@ -23,6 +23,8 @@ public class AttributeFieldBean {
     private int    intParam;
     @AttributeParameter("strParam")
     private String strParam;
+    @AttributeParameter("")
+    private String eptParam;
 
     public byte getByteParam() {
         return byteParam;
@@ -34,5 +36,9 @@ public class AttributeFieldBean {
 
     public String getStrParam() {
         return strParam;
+    }
+
+    public String getEptParam() {
+        return eptParam;
     }
 }

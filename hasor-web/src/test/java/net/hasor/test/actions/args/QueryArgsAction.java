@@ -25,12 +25,14 @@ public class QueryArgsAction {
     public Map<String, Object> execute(//
             @QueryParameter("byteParam") byte byteParam, //
             @QueryParameter("intParam") int intParam,    //
-            @QueryParameter("strParam") String strParam  //
+            @QueryParameter("strParam") String strParam, //
+            @QueryParameter("") String eptParam          //
     ) {
         return new HashMap<String, Object>() {{
             put("byteParam", byteParam);
             put("intParam", intParam);
             put("strParam", strParam);
+            put("eptParam", eptParam);
         }};
     }
 }

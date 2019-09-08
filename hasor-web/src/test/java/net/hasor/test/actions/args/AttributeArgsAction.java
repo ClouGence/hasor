@@ -25,12 +25,14 @@ public class AttributeArgsAction {
     public Map<String, Object> execute(//
             @AttributeParameter("byteParam") byte byteParam, //
             @AttributeParameter("intParam") int intParam,    //
-            @AttributeParameter("strParam") String strParam  //
+            @AttributeParameter("strParam") String strParam, //
+            @AttributeParameter("") String eptParam          //
     ) {
         return new HashMap<String, Object>() {{
             put("byteParam", byteParam);
             put("intParam", intParam);
             put("strParam", strParam);
+            put("eptParam", eptParam);
         }};
     }
 }

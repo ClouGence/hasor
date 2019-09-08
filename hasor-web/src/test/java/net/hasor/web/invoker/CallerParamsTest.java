@@ -15,171 +15,259 @@
  */
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
-import net.hasor.test.actions.ParamsCallAction;
-import net.hasor.test.actions.SpecialTypeCallAction;
+import net.hasor.core.Environment;
+import net.hasor.core.Settings;
 import net.hasor.test.actions.args.*;
+import net.hasor.web.AbstractTest;
 import net.hasor.web.Invoker;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
-import net.hasor.test.beans.params.*;
+import net.hasor.web.binder.OneConfig;
+import net.hasor.web.render.RenderInvoker;
 import org.junit.Test;
+import org.powermock.api.mockito.PowerMockito;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.math.BigInteger;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-//
-public class CallerParamsTest extends AbstractWeb30BinderDataTest {
-    @Test
-    public void queryParamTest() throws Throwable {
-        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
-        });
-        //
-        List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
-        Invoker invoker = newInvoker(definitions.get(0), mockRequest("post", new URL("http://www.hasor.net/query_param.do?byteParam=123&bigInteger=321"), appContext), appContext);
-        InvokerCaller caller = new InvokerCaller(() -> invoker, null);
-        Object o = caller.invoke(null).get();
-        assert o instanceof Map;
-        assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
-        assert ((BigInteger) ((Map) o).get("bigInteger")).longValue() == 321;
+
+public class CallerParamsTest extends AbstractTest {
+    private Object callInvoker(AppContext appContext, HttpServletRequest request) throws Throwable {
+        InvokerContext invokerContext = new InvokerContext();
+        invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
+        ExceuteCaller caller = invokerContext.genCaller(request, PowerMockito.mock(HttpServletResponse.class));
+        return caller.invoke(null).get();
     }
+
     @Test
-    public void pathParamTest() throws Throwable {
-        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(PathArgsAction.class);
-        });
+    public void post_queryParam_test() throws Throwable {
+        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/query_param.do").with(QueryArgsAction.class);
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/query_field.do").with(QueryFieldAction.class);
+        }, servlet25("/"), LoadModule.Web);
         //
-        List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
-        Invoker invoker = newInvoker(definitions.get(0), mockRequest("post", new URL("http://www.hasor.net/123/321/path_param.do"), appContext), appContext);
-        InvokerCaller caller = new InvokerCaller(() -> invoker, null);
-        Object o = caller.invoke(null).get();
-        assert o instanceof Map;
-        assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
-        assert ((Float) ((Map) o).get("floatParam")).longValue() == 321;
+        {
+            HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/query_param.do?byteParam=123&intParam=321&strParam=5678"));
+            Object o = callInvoker(appContext, request);
+            assert o instanceof Map;
+            assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
+            assert ((Integer) ((Map) o).get("intParam")) == 321;
+            assert ((String) ((Map) o).get("strParam")).equals("5678");
+            assert ((String) ((Map) o).get("eptParam")) == null;
+        }
+        //
+        {
+            HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/query_field.do?byteParam=123&intParam=321&strParam=5678"));
+            Object o = callInvoker(appContext, request);
+            assert o instanceof Map;
+            assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
+            assert ((Integer) ((Map) o).get("intParam")) == 321;
+            assert ((String) ((Map) o).get("strParam")).equals("5678");
+            assert ((String) ((Map) o).get("eptParam")) == null;
+        }
+        //
+        {
+            HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/query_param.do"));
+            Object o = callInvoker(appContext, request);
+            assert o instanceof Map;
+            assert (Byte) ((Map) o).get("byteParam") == (byte) 0;
+            assert ((Integer) ((Map) o).get("intParam")) == 0;
+            assert ((String) ((Map) o).get("strParam")) == null;
+            assert ((String) ((Map) o).get("eptParam")) == null;
+        }
     }
+
     @Test
-    public void cookieParamTest() throws Throwable {
-        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(CookieArgsAction.class);
-        });
+    public void post_pathParam_test() throws Throwable {
+        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/{byteParam}/{intParam}/{strParam}/path_param.do").with(PathArgsAction.class);
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/{byteParam}/{intParam}/{strParam}/path_field.do").with(PathFieldAction.class);
+        }, servlet25("/"), LoadModule.Web);
+        //
+        {
+            HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/123/321/5678/path_param.do"));
+            Object o = callInvoker(appContext, request);
+            assert o instanceof Map;
+            assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
+            assert ((Integer) ((Map) o).get("intParam")) == 321;
+            assert ((String) ((Map) o).get("strParam")).equals("5678");
+            assert ((String) ((Map) o).get("eptParam")) == null;
+        }
+        //
+        {
+            HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/123/321/5678/path_field.do"));
+            Object o = callInvoker(appContext, request);
+            assert o instanceof Map;
+            assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
+            assert ((Integer) ((Map) o).get("intParam")) == 321;
+            assert ((String) ((Map) o).get("strParam")).equals("5678");
+            assert ((String) ((Map) o).get("eptParam")) == null;
+        }
+    }
+
+    @Test
+    public void post_cookieParam_test() throws Throwable {
+        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/cookie_param.do").with(CookieArgsAction.class);
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/cookie_field.do").with(CookieFieldAction.class);
+        }, servlet25("/"), LoadModule.Web);
         //
         Cookie[] cookies = new Cookie[] {//
                 new Cookie("byteParam", "123"),//
-                new Cookie("floatParam", "321"),//
+                new Cookie("intParam", "321"),//
+                new Cookie("strParam", "5678"),//
         };
         //
-        List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
-        Invoker invoker = newInvoker(definitions.get(0), mockRequest("post", new URL("http://www.hasor.net/cookie_param.do"), appContext, cookies, null), appContext);
-        InvokerCaller caller = new InvokerCaller(() -> invoker, null);
-        Object o = caller.invoke(null).get();
-        assert o instanceof Map;
-        assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
-        assert ((Float) ((Map) o).get("floatParam")).longValue() == 321;
+        {
+            HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/cookie_param.do"), null, cookies, null);
+            Object o = callInvoker(appContext, request);
+            assert o instanceof Map;
+            assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
+            assert ((Integer) ((Map) o).get("intParam")) == 321;
+            assert ((String) ((Map) o).get("strParam")).equals("5678");
+            assert ((String) ((Map) o).get("eptParam")) == null;
+        }
+        //
+        {
+            HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/cookie_field.do"), null, cookies, null);
+            Object o = callInvoker(appContext, request);
+            assert o instanceof Map;
+            assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
+            assert ((Integer) ((Map) o).get("intParam")) == 321;
+            assert ((String) ((Map) o).get("strParam")).equals("5678");
+            assert ((String) ((Map) o).get("eptParam")) == null;
+        }
     }
+
     @Test
-    public void attrParamTest() throws Throwable {
-        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(AttributeArgsAction.class);
-        });
+    public void post_headerParam_test() throws Throwable {
+        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/header_param.do").with(HeaderArgsAction.class);
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/header_field.do").with(HeaderFieldAction.class);
+        }, servlet25("/"), LoadModule.Web);
         //
-        HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/attr_param.do"), appContext);
-        request.setAttribute("byteParam", 123);
-        request.setAttribute("floatParam", 321);
-        //
-        List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
-        Invoker invoker = newInvoker(definitions.get(0), request, appContext);
-        InvokerCaller caller = new InvokerCaller(() -> invoker, null);
-        Object o = caller.invoke(null).get();
-        assert o instanceof Map;
-        assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
-        assert ((Float) ((Map) o).get("floatParam")).longValue() == 321;
-    }
-    @Test
-    public void headerParamTest() throws Throwable {
-        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.bindType(Map.class).nameWith("http-header").toInstance(new HashMap<String, String>() {{
-                put("byteParam", "123");
-                put("floatParam", "321");
-            }});
-            //
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(HeaderArgsAction.class);
-        });
-        //
-        HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/header_param.do"), appContext);
-        //
-        List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
-        Invoker invoker = newInvoker(definitions.get(0), request, appContext);
-        InvokerCaller caller = new InvokerCaller(() -> invoker, null);
-        Object o = caller.invoke(null).get();
-        assert o instanceof Map;
-        assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
-        assert ((Float) ((Map) o).get("floatParam")).longValue() == 321;
-    }
-    @Test
-    public void requestParamTest() throws Throwable {
-        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(RequestArgsAction.class);
-        });
-        //
-        Map<String, String> requestMap = new HashMap<String, String>() {{
-            put("byteParam", "123");
-            put("floatParam", "321");
+        Map<String, String[]> headerMap = new HashMap<String, String[]>() {{
+            put("byteParam", new String[] { "123" });//
+            put("intParam", new String[] { "321" }); //
+            put("strParam", new String[] { "5678" });//
         }};
-        HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/req_param.do?intParam=111"), appContext, null, requestMap);
         //
-        List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
-        Invoker invoker = newInvoker(definitions.get(0), request, appContext);
-        InvokerCaller caller = new InvokerCaller(() -> invoker, null);
-        Object o = caller.invoke(null).get();
-        assert o instanceof Map;
-        assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
-        assert ((Float) ((Map) o).get("floatParam")).longValue() == 321;
-        assert ((Integer) ((Map) o).get("intParam")).longValue() == 111;
+        {
+            HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/header_param.do"), headerMap, null, null);
+            Object o = callInvoker(appContext, request);
+            assert o instanceof Map;
+            assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
+            assert ((Integer) ((Map) o).get("intParam")) == 321;
+            assert ((String) ((Map) o).get("strParam")).equals("5678");
+            assert ((String) ((Map) o).get("eptParam")) == null;
+        }
+        //
+        {
+            HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/header_field.do"), headerMap, null, null);
+            Object o = callInvoker(appContext, request);
+            assert o instanceof Map;
+            assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
+            assert ((Integer) ((Map) o).get("intParam")) == 321;
+            assert ((String) ((Map) o).get("strParam")).equals("5678");
+            assert ((String) ((Map) o).get("eptParam")) == null;
+        }
     }
+
     @Test
-    public void beanParamTest() throws Throwable {
-        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(ParamsCallAction.class);
-        });
+    public void post_attrParam_test() throws Throwable {
+        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/attr_param.do").with(AttributeArgsAction.class);
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/attr_field.do").with(AttributeFieldAction.class);
+        }, servlet25("/"), LoadModule.Web);
         //
-        Map<String, String> requestMap = new HashMap<String, String>() {{
-            put("byteParam", "123");
-            put("floatParam", "321");
+        Map<String, String[]> attrMap = new HashMap<String, String[]>() {{
+            put("byteParam", new String[] { "123" });//
+            put("intParam", new String[] { "321" }); //
+            put("strParam", new String[] { "5678" });//
         }};
-        HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/bean_param.do?intParam=111"), appContext, null, requestMap);
         //
-        List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
-        Invoker invoker = newInvoker(definitions.get(0), request, appContext);
-        InvokerCaller caller = new InvokerCaller(() -> invoker, null);
-        Object o = caller.invoke(null).get();
-        assert o instanceof Map;
-        assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
-        assert ((Float) ((Map) o).get("floatParam")).longValue() == 321;
-        assert ((Integer) ((Map) o).get("intParam")).longValue() == 111;
+        {
+            HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/attr_param.do"), null, null, null);
+            attrMap.forEach(request::setAttribute);
+            Object o = callInvoker(appContext, request);
+            assert o instanceof Map;
+            assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
+            assert ((Integer) ((Map) o).get("intParam")) == 321;
+            assert ((String) ((Map) o).get("strParam")).equals("5678");
+            assert ((String) ((Map) o).get("eptParam")) == null;
+        }
+        //
+        {
+            HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/attr_field.do"), null, null, null);
+            attrMap.forEach(request::setAttribute);
+            Object o = callInvoker(appContext, request);
+            assert o instanceof Map;
+            assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
+            assert ((Integer) ((Map) o).get("intParam")) == 321;
+            assert ((String) ((Map) o).get("strParam")).equals("5678");
+            assert ((String) ((Map) o).get("eptParam")) == null;
+        }
     }
+
     @Test
-    public void specialParamTest() throws Throwable {
-        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(SpecialTypeCallAction.class);
-        });
+    public void post_requestParam_test() throws Throwable {
+        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/request_param.do").with(RequestArgsAction.class);
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/request_field.do").with(RequestFieldAction.class);
+        }, servlet25("/"), LoadModule.Web);
         //
-        HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/special_param.do"), appContext);
+        Map<String, String> postMap = new HashMap<String, String>() {{
+            put("byteParam", "123");//
+            put("intParam", "321"); //
+            put("strParam", "5678");//
+        }};
         //
-        List<InMappingDef> definitions = appContext.findBindingBean(InMappingDef.class);
-        Invoker invoker = newInvoker(definitions.get(0), request, appContext);
-        InvokerCaller caller = new InvokerCaller(() -> invoker, null);
-        Object o = caller.invoke(null).get();
-        assert o instanceof Map;
-        assert ((Map) o).get("request") instanceof HttpServletRequest;
-        assert ((Map) o).get("response") instanceof HttpServletResponse;
-        assert ((Map) o).get("session") instanceof HttpSession;
-        assert ((Map) o).get("invoker") instanceof Invoker;
-        assert ((Map) o).get("listData") == null;
+        {
+            HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/request_param.do"), null, null, postMap);
+            Object o = callInvoker(appContext, request);
+            assert o instanceof Map;
+            assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
+            assert ((Integer) ((Map) o).get("intParam")) == 321;
+            assert ((String) ((Map) o).get("strParam")).equals("5678");
+            assert ((String) ((Map) o).get("eptParam")) == null;
+        }
+        //
+        {
+            HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/request_field.do"), null, null, postMap);
+            Object o = callInvoker(appContext, request);
+            assert o instanceof Map;
+            assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
+            assert ((Integer) ((Map) o).get("intParam")) == 321;
+            assert ((String) ((Map) o).get("strParam")).equals("5678");
+            assert ((String) ((Map) o).get("eptParam")) == null;
+        }
+    }
+
+    @Test
+    public void post_specialParam_test() throws Throwable {
+        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/special_param.do").with(SpecialTypeArgsAction.class);
+        }, servlet25("/"), LoadModule.Web);
+        //
+        {
+            HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/special_param.do"));
+            Object o = callInvoker(appContext, request);
+            assert o instanceof Map;
+            assert ((Map) o).get("invoker") instanceof Invoker;
+            assert ((Map) o).get("renderInvoker") instanceof RenderInvoker;
+            assert ((Map) o).get("servletRequest") instanceof ServletRequest;
+            assert ((Map) o).get("httpServletRequest") instanceof HttpServletRequest;
+            assert ((Map) o).get("servletResponse") instanceof ServletResponse;
+            assert ((Map) o).get("httpServletResponse") instanceof HttpServletResponse;
+            assert ((Map) o).get("httpSession") instanceof HttpSession;
+            assert ((Map) o).get("appContext") instanceof AppContext;
+            assert ((Map) o).get("environment") instanceof Environment;
+            assert ((Map) o).get("settings") instanceof Settings;
+        }
     }
 }

@@ -23,6 +23,8 @@ public class HeaderFieldBean {
     private int    intParam;
     @HeaderParameter("strParam")
     private String strParam;
+    @HeaderParameter("eptParam")
+    private String eptParam;
 
     public byte getByteParam() {
         return byteParam;
@@ -34,5 +36,9 @@ public class HeaderFieldBean {
 
     public String getStrParam() {
         return strParam;
+    }
+
+    public String getEptParam() {
+        return eptParam;
     }
 }
