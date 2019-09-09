@@ -100,8 +100,8 @@ public class FileUpload {
 
     public FileUpload(Settings settings) {
         this.setHeaderEncoding(Settings.DefaultCharset);
-        this.setSizeMax(settings.getInteger("hasor.restful.fileupload.maxRequestSize", -1));
-        this.setFileSizeMax(settings.getInteger("hasor.restful.fileupload.maxFileSize", -1));
+        this.setSizeMax(settings.getInteger("hasor.fileupload.maxRequestSize", -1));
+        this.setFileSizeMax(settings.getInteger("hasor.fileupload.maxFileSize", -1));
     }
 
     /**

@@ -313,4 +313,11 @@ public class AbstractTest {
         caller.invoke(null).get();
         return stringWriter.toString();
     }
+
+    protected Object callInvoker(AppContext appContext, HttpServletRequest request) throws Throwable {
+        InvokerContext invokerContext = new InvokerContext();
+        invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
+        ExceuteCaller caller = invokerContext.genCaller(request, PowerMockito.mock(HttpServletResponse.class));
+        return caller.invoke(null).get();
+    }
 }

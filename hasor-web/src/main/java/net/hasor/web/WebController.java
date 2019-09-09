@@ -20,7 +20,6 @@ import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.FilenameUtils;
 import net.hasor.web.annotation.Produces;
 import net.hasor.web.render.RenderInvoker;
-import net.hasor.web.startup.RuntimeListener;
 import net.hasor.web.upload.FileUpload;
 import net.hasor.web.upload.factorys.disk.DiskFileItemFactory;
 
@@ -69,7 +68,7 @@ public class WebController implements Controller {
 
     /** @return Return AppContext. */
     public AppContext getAppContext() {
-        return RuntimeListener.getAppContext(this.getRequest().getSession().getServletContext());
+        return this.getInvoker().getAppContext();
     }
     //------------------------
 
@@ -730,7 +729,7 @@ public class WebController implements Controller {
         if (itemList == null || itemList.isEmpty()) {
             return null;
         }
-        List<FileItem> resultData = new ArrayList<FileItem>();
+        List<FileItem> resultData = new ArrayList<>();
         for (FileItem item : itemList) {
             if (parameterName.equals(item.getFieldName())) {
                 resultData.add(item);
@@ -739,57 +738,6 @@ public class WebController implements Controller {
             }
         }
         return resultData;
-    }
-
-    /**
-     * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem。
-     * @param parameterName 要获取的制定参数表单名
-     */
-    protected FileItem getOneMultipart(String parameterName) throws IOException {
-        return this.getOneMultipart(parameterName, null, null, null);
-    }
-
-    /**
-     * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem。
-     * @param parameterName 要获取的制定参数表单名
-     * @param maxPostSize 最大单个 body 大小
-     */
-    protected FileItem getOneMultipart(String parameterName, Integer maxPostSize) throws IOException {
-        return this.getOneMultipart(parameterName, null, maxPostSize, null);
-    }
-
-    /**
-     * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem。
-     * @param parameterName 要获取的制定参数表单名
-     * @param cacheDirectory 缓存目录
-     * @param maxPostSize 最大单个 body 大小
-     */
-    protected FileItem getOneMultipart(String parameterName, String cacheDirectory, Integer maxPostSize) throws IOException {
-        return this.getOneMultipart(parameterName, cacheDirectory, maxPostSize, null);
-    }
-
-    /**
-     * 将 Multipart 请求数据缓存到一个目录下,同时返回 FileItem。
-     * @param parameterName 要获取的制定参数表单名
-     * @param cacheDirectory 缓存目录
-     * @param maxPostSize 最大单个 body 大小
-     * @param encoding 字符编码。
-     */
-    protected FileItem getOneMultipart(String parameterName, String cacheDirectory, Integer maxPostSize, String encoding) throws IOException {
-        Objects.requireNonNull(parameterName);
-        List<FileItem> itemList = this.getMultipartList(cacheDirectory, maxPostSize, encoding);
-        if (itemList == null || itemList.isEmpty()) {
-            return null;
-        }
-        FileItem findItem = null;
-        for (FileItem item : itemList) {
-            if (findItem == null && parameterName.equals(item.getFieldName())) {
-                findItem = item;
-            } else {
-                item.deleteOrSkip();
-            }
-        }
-        return findItem;
     }
 
     /**

@@ -21,10 +21,8 @@ import net.hasor.test.actions.args.*;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.Invoker;
 import net.hasor.web.WebApiBinder;
-import net.hasor.web.binder.OneConfig;
 import net.hasor.web.render.RenderInvoker;
 import org.junit.Test;
-import org.powermock.api.mockito.PowerMockito;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -37,13 +35,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CallerParamsTest extends AbstractTest {
-    private Object callInvoker(AppContext appContext, HttpServletRequest request) throws Throwable {
-        InvokerContext invokerContext = new InvokerContext();
-        invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
-        ExceuteCaller caller = invokerContext.genCaller(request, PowerMockito.mock(HttpServletResponse.class));
-        return caller.invoke(null).get();
-    }
-
     @Test
     public void post_queryParam_test() throws Throwable {
         AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", apiBinder -> {
