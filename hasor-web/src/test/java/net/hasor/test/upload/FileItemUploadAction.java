@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class UploadAction extends WebController {
+public class FileItemUploadAction extends WebController {
     @Any
     public Map<String, String> execute() throws IOException, NoSuchAlgorithmException {
         Map<String, String> hashData = new HashMap<>();

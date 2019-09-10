@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package net.hasor.web.valid;
-import net.hasor.utils.StringUtils;
 import net.hasor.web.Invoker;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -30,73 +32,102 @@ import java.util.stream.Stream;
 public interface ValidInvoker extends Invoker {
     public static final String VALID_DATA_KEY = "validData";//
 
-    /**验证失败的验证keys。*/
+    /** 验证失败的验证keys */
     public List<String> validKeys();
 
-    /**获取某个key下验证失败信息。*/
-    public List<String> validErrors(String key);
+    /** Message of string */
+    public default List<String> validErrorsOfString() {
+        return validErrorsOfMessage()       //
+                .stream()                   //
+                .map(Message::toString)     //
+                .collect(Collectors.toList());
+    }
 
-    /**是否通过验证。*/
+    /** 获取某个key下验证失败信息 */
+    public default List<String> validErrorsOfString(String key) {
+        return validErrorsOfMessage(key)    //
+                .stream()                   //
+                .map(Message::toString)     //
+                .collect(Collectors.toList());
+    }
+
+    /** 获取某个key下验证失败信息 */
+    public default String firstValidErrorsOfString(String key) {
+        Message msg = firstValidErrorsOfMessage(key);
+        return (msg != null) ? msg.toString() : null;
+    }
+
+    /** 获取所有验证失败信息 */
+    public default List<Message> validErrorsOfMessage() {
+        List<Message> finalMessage = new ArrayList<>();
+        for (String key : validKeys()) {
+            finalMessage.addAll(validErrorsOfMessage(key));
+        }
+        return finalMessage;
+    }
+
+    /** 获取某个key下验证失败信息 */
+    public List<Message> validErrorsOfMessage(String key);
+
+    /** 获取某个key下验证失败信息 */
+    public Message firstValidErrorsOfMessage(String key);
+
+    /** 是否通过验证。*/
     public boolean isValid();
 
-    /**某个规则是否通过验证。*/
+    /** 某个规则是否通过验证 */
     public boolean isValid(String key);
 
-    /**删除所有验证信息。*/
-    public void clearValidErrors();
+    /** 删除所有验证信息 */
+    public default void clearValidErrors() {
+        for (String key : validKeys()) {
+            clearValidErrors(key);
+        }
+    }
 
-    /**删除某个验证信息。*/
+    /** 删除某个验证信息 */
     public void clearValidErrors(String key);
 
-    /**添加验证失败的消息。*/
+    /** 添加验证失败的消息 */
     public default void addError(String key, String validString) {
-        if (StringUtils.isBlank(key)) {
-            throw new NullPointerException("valid error message key is null.");
-        }
         this.addError(key, new Message(validString));
     }
 
-    /**添加验证失败的消息。*/
+    /** 添加验证失败的消息 */
     public default void addError(String key, String validString, Object... args) {
-        if (StringUtils.isBlank(key)) {
-            throw new NullPointerException("valid error message key is null.");
-        }
         this.addError(key, new Message(validString, args));
     }
 
-    /**添加验证失败的消息。*/
-    public void addError(String key, Message validMessage);
+    /** 添加验证失败的消息 */
+    public default void addError(String key, Message validMessage) {
+        addErrors(key, Collections.singletonList(validMessage));
+    }
 
-    /**添加验证失败的消息。*/
+    /** 添加验证失败的消息 */
     public void addErrors(String key, List<Message> validMessage);
 
-    public default void doValid(String scene, Object object) {
+    public default boolean doValid(String scene, Object object) {
         if (object == null) {
-            return;
+            return false;
         }
-        this.doValid(scene, object, object.getClass());
-    }
-
-    public default void doValid(String scene, Object object, Class<?> oriType) {
-        ValidBy[] byType = oriType.getAnnotationsByType(ValidBy.class);
+        ValidBy[] byType = object.getClass().getAnnotationsByType(ValidBy.class);
         if (byType == null || byType.length == 0) {
-            return;
+            return false;
         }
-        Class<?>[] collect = Arrays.stream(byType).flatMap((Function<ValidBy, Stream<Class<? extends Validation>>>) validBy -> {
+        Class<?>[] collect = Arrays.stream(byType).flatMap((Function<ValidBy, Stream<?>>) validBy -> {
             return Arrays.stream(validBy.value());
         }).toArray(Class<?>[]::new);
-        //
-        doValid(scene, object, (Class<? extends Validation>[]) collect);
+        return this.doValid(scene, object, (Class<? extends Validation>[]) collect);
     }
 
-    public default void doValid(String scene, Object object, Class<? extends Validation>... validArrays) {
+    public default boolean doValid(String scene, Object object, Class<? extends Validation>... validArrays) {
         for (Class<? extends Validation> validType : validArrays) {
             Validation validation = getAppContext().getInstance(validType);
             if (validation == null) {
                 throw new NullPointerException("create " + validType.getName() + " Validation failed , return null.");
             }
-            //
             validation.doValidation(scene, object, this);
         }
+        return this.isValid();
     }
 }

@@ -27,7 +27,7 @@ public class Message implements Serializable {
     private              Object[] messageParams    = null;
 
     public Message(String message) {
-        this(message, (Object) null);
+        this(message, new Object[0]);
     }
 
     public Message(String messageTemplate, Object... messageParams) {

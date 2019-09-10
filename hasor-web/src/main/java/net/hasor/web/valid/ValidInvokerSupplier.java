@@ -19,7 +19,6 @@ import net.hasor.web.Invoker;
 import net.hasor.web.wrap.InvokerWrap;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 表单验证器，Invoker 扩展实现类。
@@ -27,7 +26,7 @@ import java.util.stream.Collectors;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker {
-    private final Map<String, ValidItem> validData = new HashMap<>();
+    private final Map<String, ValidItem> validData = new LinkedHashMap<>();
 
     protected ValidInvokerSupplier(Invoker context) {
         super(context);
@@ -43,9 +42,15 @@ public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker {
     }
 
     @Override
-    public List<String> validErrors(String key) {
+    public List<Message> validErrorsOfMessage(String key) {
         ValidItem data = this.validData.get(key);
-        return data == null ? Collections.EMPTY_LIST : data.stream().map(Message::getMessage).collect(Collectors.toList());
+        return data == null ? Collections.EMPTY_LIST : new ArrayList<>(data);
+    }
+
+    @Override
+    public Message firstValidErrorsOfMessage(String key) {
+        ValidItem data = this.validData.get(key);
+        return data == null ? null : data.firstError();
     }
 
     @Override
@@ -63,23 +68,10 @@ public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker {
         ValidItem data = this.validData.get(key);
         return data == null || data.isValid();
     }
-
-    @Override
-    public void clearValidErrors() {
-        this.validData.clear();
-    }
-
+ 
     @Override
     public void clearValidErrors(String key) {
         this.validData.remove(key);
-    }
-
-    @Override
-    public void addError(String key, Message validMessage) {
-        if (StringUtils.isBlank(key)) {
-            throw new NullPointerException("valid error message key is null.");
-        }
-        errors(new ValidItem(key, validMessage));
     }
 
     @Override

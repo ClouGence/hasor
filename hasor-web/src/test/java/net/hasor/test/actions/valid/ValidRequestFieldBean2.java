@@ -13,19 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.valid;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.test.actions.valid;
+import net.hasor.test.valid.MaxValid;
+import net.hasor.web.valid.ValidBy;
 
-/**
- * 验证实现类
- * @version : 2017-01-10
- * @author 赵永春 (zyc@hasor.net)
- */
-@Target({ ElementType.TYPE })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ValidBy {
-    public Class<? extends Validation>[] value();
+@ValidBy(MaxValid.class)
+public class ValidRequestFieldBean2 extends ValidRequestFieldBean {
 }

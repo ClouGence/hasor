@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URL;
 
-public class ChainTest extends AbstractTest {
+public class FilterTest extends AbstractTest {
     @Test
     public void basic_filter_test_life() throws Throwable {
         QueryArgsAction action = new QueryArgsAction();

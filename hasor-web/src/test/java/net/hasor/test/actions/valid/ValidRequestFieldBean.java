@@ -13,30 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.valid;
-import java.util.ArrayList;
+package net.hasor.test.actions.valid;
+import net.hasor.web.annotation.RequestParameter;
 
-/**
- * 一个item下的验证信息
- * @version : 2014年8月27日
- * @author 赵永春 (zyc@hasor.net)
- */
-class ValidItem extends ArrayList<Message> {
-    private String key;
+public class ValidRequestFieldBean {
+    @RequestParameter("byteParam")
+    private byte   byteParam;
+    @RequestParameter("intParam")
+    private int    intParam;
+    @RequestParameter("strParam")
+    private String strParam;
+    @RequestParameter("")
+    private String eptParam;
 
-    public ValidItem(String key) {
-        this.key = key;
+    public byte getByteParam() {
+        return byteParam;
     }
 
-    public String getKey() {
-        return key;
+    public int getIntParam() {
+        return intParam;
     }
 
-    public boolean isValid() {
-        return this.isEmpty();
+    public String getStrParam() {
+        return strParam;
     }
 
-    public Message firstError() {
-        return (this.isEmpty()) ? null : get(0);
+    public String getEptParam() {
+        return eptParam;
     }
 }

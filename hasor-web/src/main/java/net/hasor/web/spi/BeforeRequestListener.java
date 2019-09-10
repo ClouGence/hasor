@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.web.valid;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package net.hasor.web.spi;
+import net.hasor.core.AppContext;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
- * 验证实现类
- * @version : 2017-01-10
- * @author 赵永春 (zyc@hasor.net)
+ * 在所有处理之前
+ * @version : 2019-09-10
+ * @author 赵永春 (zyc@byshell.org)
  */
-@Target({ ElementType.TYPE })
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ValidBy {
-    public Class<? extends Validation>[] value();
+public interface BeforeRequestListener extends java.util.EventListener {
+    /** 在所有处理之前 */
+    public void doListener(AppContext appContext, HttpServletRequest request, HttpServletResponse response);
 }

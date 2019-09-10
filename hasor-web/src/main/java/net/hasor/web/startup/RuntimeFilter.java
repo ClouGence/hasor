@@ -15,12 +15,15 @@
  */
 package net.hasor.web.startup;
 import net.hasor.core.AppContext;
+import net.hasor.core.spi.SpiTrigger;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.binder.OneConfig;
 import net.hasor.web.invoker.ExceuteCaller;
 import net.hasor.web.invoker.InvokerContext;
+import net.hasor.web.spi.AfterResponseListener;
+import net.hasor.web.spi.BeforeRequestListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +48,7 @@ public class RuntimeFilter implements Filter {
     private             String         httpRequestEncoding        = null;
     private             String         httpResponseEncoding       = null;
     private             AppContext     appContext                 = null;
+    private             SpiTrigger     spiTrigger                 = null;
     private             InvokerContext invokerContext             = null;
 
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -57,10 +61,11 @@ public class RuntimeFilter implements Filter {
         this.httpResponseEncoding = appContext.findBindingBean(HTTP_RESPONSE_ENCODING_KEY, String.class);
         try {
             this.appContext = appContext;
+            this.spiTrigger = this.appContext.getInstance(SpiTrigger.class);
             this.invokerContext = new InvokerContext();
             this.invokerContext.initContext(appContext, new OneConfig(filterConfig, () -> appContext));
         } catch (ServletException e) {
-            throw (ServletException) e;
+            throw e;
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
@@ -84,10 +89,12 @@ public class RuntimeFilter implements Filter {
         // .设置编码
         HttpServletRequest httpReq = (HttpServletRequest) request;
         HttpServletResponse httpRes = (HttpServletResponse) response;
-        if (StringUtils.isNotBlank(this.httpRequestEncoding))
+        if (StringUtils.isNotBlank(this.httpRequestEncoding)) {
             httpReq.setCharacterEncoding(this.httpRequestEncoding);
-        if (StringUtils.isNotBlank(this.httpResponseEncoding))
+        }
+        if (StringUtils.isNotBlank(this.httpResponseEncoding)) {
             httpRes.setCharacterEncoding(this.httpResponseEncoding);
+        }
         //
         // .执行
         try {
@@ -139,9 +146,11 @@ public class RuntimeFilter implements Filter {
 
     /**在filter请求处理之前。*/
     protected void beforeRequest(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
+        this.spiTrigger.callSpi(BeforeRequestListener.class, listener -> listener.doListener(appContext, httpReq, httpRes));
     }
 
     /**在filter请求处理之后。*/
     protected void afterResponse(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
+        this.spiTrigger.callSpi(AfterResponseListener.class, listener -> listener.doListener(appContext, httpReq, httpRes));
     }
 }

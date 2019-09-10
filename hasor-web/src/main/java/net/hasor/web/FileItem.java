@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 package net.hasor.web;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+
 /**
  * <p> This class represents a file or form item that was received within a
  * <code>multipart/form-data</code> POST request.
@@ -32,22 +32,7 @@ public interface FileItem extends FileItemStream {
      * @return The size of the file item, in bytes.
      */
     public long getSize();
-
-    /**
-     * A convenience method to write an uploaded item to disk. The client code
-     * is not concerned with whether or not the item is stored in memory, or on
-     * disk in a temporary location. They just want to write the uploaded item to a file.
-     * <p>
-     * This method is not guaranteed to succeed if called more than once for
-     * the same item. This allows a particular implementation to use, for
-     * example, file renaming, where possible, rather than copying all of the
-     * underlying data, thus gaining a significant performance benefit.
-     *
-     * @param file The <code>File</code> into which the uploaded item should be stored.
-     * @throws Exception if an error occurs.
-     */
-    public void writeTo(File file) throws IOException;
-
+ 
     /**
      * A convenience method to write an uploaded item to disk. The client code
      * is not concerned with whether or not the item is stored in memory, or on

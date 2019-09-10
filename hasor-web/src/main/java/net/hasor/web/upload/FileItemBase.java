@@ -21,7 +21,10 @@ import net.hasor.web.FileItemHeaders;
 import net.hasor.web.FileItemStream;
 import net.hasor.web.upload.util.Streams;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * <p> This class represents a file or form item that was received within a
@@ -108,29 +111,7 @@ public abstract class FileItemBase implements FileItem {
         IOUtils.closeQuietly(inStream);
         return asString;
     }
-
-    @Override
-    public void writeTo(File outputFile) throws IOException {
-        InputStream inStream = this.openStream();
-        if (inStream == null) {
-            throw new IOException("openStream result is null.");
-        }
-        BufferedInputStream in = null;
-        BufferedOutputStream out = null;
-        try {
-            File parentFile = outputFile.getParentFile();
-            if (!parentFile.exists()) {
-                parentFile.mkdirs();
-            }
-            in = new BufferedInputStream(inStream);
-            out = new BufferedOutputStream(new FileOutputStream(outputFile));
-            IOUtils.copy(in, out);
-        } finally {
-            IOUtils.closeQuietly(in);
-            IOUtils.closeQuietly(out);
-        }
-    }
-
+ 
     @Override
     public void writeTo(OutputStream outStream) throws IOException {
         InputStream inStream = this.openStream();
