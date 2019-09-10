@@ -20,12 +20,14 @@ import net.hasor.core.Hasor;
 import net.hasor.core.setting.xml.DefaultXmlNode;
 import net.hasor.utils.Iterators;
 import net.hasor.utils.StringUtils;
+import net.hasor.utils.future.BasicFuture;
 import net.hasor.web.binder.OneConfig;
 import net.hasor.web.invoker.ExceuteCaller;
 import net.hasor.web.invoker.InvokerContext;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
+import javax.servlet.AsyncContext;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.http.Cookie;
@@ -187,6 +189,7 @@ public class AbstractTest {
         //
         final HttpServletRequest request = PowerMockito.mock(HttpServletRequest.class);
         PowerMockito.when(request.getMethod()).thenReturn(httpMethod);
+        PowerMockito.when(request.getCharacterEncoding()).thenReturn("utf-8");
         //
         PowerMockito.when(request.getRequestURI()).thenReturn(requestURL.getPath());
         PowerMockito.when(request.getRequestURL()).thenReturn(new StringBuffer(requestURL.getPath()));
@@ -239,11 +242,7 @@ public class AbstractTest {
                 String[] kv = param.split("=");
                 String key = kv[0].trim();
                 String value = kv[1].trim();
-                List<String> strings = tmpQueryMap.get(key);
-                if (strings == null) {
-                    strings = new ArrayList<>();
-                    tmpQueryMap.put(key, strings);
-                }
+                List<String> strings = tmpQueryMap.computeIfAbsent(key, k -> new ArrayList<>());
                 strings.add(value);
             }
         }
@@ -278,6 +277,18 @@ public class AbstractTest {
         PowerMockito.doAnswer(invocation -> {
             return attrMap.remove(invocation.getArguments()[0]);
         }).when(request).removeAttribute(anyString());
+        //
+        AsyncContext asyncContext = PowerMockito.mock(AsyncContext.class);
+        PowerMockito.doAnswer(invocation -> {
+            BasicFuture<Object> future = new BasicFuture<>();
+            new Thread(() -> {
+                ((Runnable) invocation.getArguments()[0]).run();
+                future.completed(new Object());
+            }).start();
+            return future.get();
+        }).when(asyncContext).start(any());
+        PowerMockito.when(request.startAsync(any(), any())).thenReturn(asyncContext);
+        PowerMockito.when(request.startAsync()).thenReturn(asyncContext);
         //
         return request;
     }

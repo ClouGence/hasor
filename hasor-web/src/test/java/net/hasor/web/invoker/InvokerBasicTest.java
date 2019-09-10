@@ -16,10 +16,13 @@
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
+import net.hasor.test.actions.async.ErrorAsyncAction;
+import net.hasor.test.actions.async.MethodAsyncAction;
 import net.hasor.test.actions.render.HtmlProduces;
 import net.hasor.test.render.SimpleRenderEngine;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.Mapping;
+import net.hasor.web.WebApiBinder;
 import net.hasor.web.binder.MappingDef;
 import net.hasor.web.binder.OneConfig;
 import org.junit.Test;
@@ -74,6 +77,24 @@ public class InvokerBasicTest extends AbstractTest {
         }
     }
 
+    /* 无任何匹配的请求，不报错 */
+    @Test
+    public void none_matching_test_1() throws Throwable {
+        MethodAsyncAction action = new MethodAsyncAction();
+        //
+        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", Hasor::create, apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(action);
+        }, servlet25("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
+        //
+        HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abcefg.do"));
+        HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
+        //
+        InvokerContext invokerContext = new InvokerContext();
+        invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
+        ExceuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
+        caller.invoke(null).get();
+    }
+
     @Test
     public void asyncInvocationWorker_test_1() {
         AsyncContext asyncContext = PowerMockito.mock(AsyncContext.class);
@@ -123,6 +144,104 @@ public class InvokerBasicTest extends AbstractTest {
     }
 
     @Test
+    public void asyncAction_test_1() throws Throwable {
+        MethodAsyncAction action = new MethodAsyncAction();
+        //
+        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", Hasor::create, apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(action);
+        }, servlet30("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
+        //
+        HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"));
+        HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
+        //
+        Object obj = new Object();
+        action.getData().set(obj);
+        //
+        InvokerContext invokerContext = new InvokerContext();
+        invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
+        ExceuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
+        caller.invoke(null).get();
+        assert action.getData().get() == obj;
+    }
+
+    @Test
+    public void asyncAction_test_2() throws Throwable {
+        MethodAsyncAction action = new MethodAsyncAction();
+        //
+        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", Hasor::create, apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(action);
+        }, servlet25("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
+        //
+        HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"));
+        HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
+        //
+        Object obj = new Object();
+        action.getData().set(obj);
+        //
+        InvokerContext invokerContext = new InvokerContext();
+        invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
+        ExceuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
+        caller.invoke(null).get();
+        assert action.getData().get() != obj;
+    }
+
+    @Test
+    public void error_action_test_async() throws Throwable {
+        ErrorAsyncAction action = new ErrorAsyncAction();
+        //
+        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", Hasor::create, apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(action);
+        }, servlet30("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
+        //
+        HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"));
+        HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
+        //
+        Object obj = new Object();
+        action.getData().set(obj);
+        //
+        InvokerContext invokerContext = new InvokerContext();
+        invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
+        ExceuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
+        try {
+            caller.invoke(null).get();
+            assert false;
+        } catch (Exception e) {
+            assert e.getCause() instanceof IllegalStateException;
+            assert e.getCause().getMessage().equals("aaaa");
+        } finally {
+            assert action.getData().get() == obj; // 异步
+        }
+    }
+
+    @Test
+    public void error_action_test_sync() throws Throwable {
+        ErrorAsyncAction action = new ErrorAsyncAction();
+        //
+        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", Hasor::create, apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(action);
+        }, servlet25("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
+        //
+        HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"));
+        HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
+        //
+        Object obj = new Object();
+        action.getData().set(obj);
+        //
+        InvokerContext invokerContext = new InvokerContext();
+        invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
+        ExceuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
+        try {
+            caller.invoke(null).get();
+            assert false;
+        } catch (Exception e) {
+            assert e.getCause() instanceof IllegalStateException;
+            assert e.getCause().getMessage().equals("aaaa");
+        } finally {
+            assert action.getData().get() != obj; // 同步
+        }
+    }
+
+    @Test
     public void invokerSupplier_test_1() throws Throwable {
         AppContext appContext = PowerMockito.mock(AppContext.class);
         HttpServletRequest httpRequest = super.mockRequest("get", new URL("http://www.hasor.net/query_param.do?byteParam=123&bigInteger=321"));
@@ -137,7 +256,6 @@ public class InvokerBasicTest extends AbstractTest {
         assert "abc".equals(supplier.get("abc"));
         supplier.remove("abc");
         assert supplier.get("abc") == null;
-        //
         //
         supplier.put("key", "kv");
         assert "kv".equals(supplier.get("key"));

@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.test.actions.async;
-import net.hasor.web.annotation.Any;
-import net.hasor.web.annotation.Async;
+public abstract class AbstractAsyncAction {
+    private ThreadLocal<Object> data = new ThreadLocal<>();
 
-public class MethodAsyncAction extends AbstractAsyncAction {
-    private boolean execute;
-
-    public boolean isExecute() {
-        return execute;
+    public ThreadLocal<Object> getData() {
+        return data;
     }
 
-    @Any
-    @Async
-    public void execute() {
-        super.initLocalObject();
-        this.execute = true;
+    protected void initLocalObject() {
+        if (this.data.get() != null) {
+            this.data.remove();
+        }
+        this.data.set(new Object());
     }
 }

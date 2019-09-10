@@ -17,17 +17,11 @@ package net.hasor.test.actions.async;
 import net.hasor.web.annotation.Any;
 import net.hasor.web.annotation.Async;
 
-public class MethodAsyncAction extends AbstractAsyncAction {
-    private boolean execute;
-
-    public boolean isExecute() {
-        return execute;
-    }
-
+public class ErrorAsyncAction extends AbstractAsyncAction {
     @Any
     @Async
     public void execute() {
         super.initLocalObject();
-        this.execute = true;
+        throw new IllegalStateException("aaaa");
     }
 }

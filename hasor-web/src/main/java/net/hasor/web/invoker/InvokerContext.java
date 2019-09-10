@@ -108,6 +108,6 @@ public class InvokerContext {
             };
         }
         //
-        return new InvokerCaller(() -> invoker, this.filters);
+        return new InvokerCaller(foundDefine, () -> invoker, this.filters);
     }
 }

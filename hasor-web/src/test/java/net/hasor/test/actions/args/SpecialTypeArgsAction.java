@@ -19,8 +19,10 @@ import net.hasor.core.Environment;
 import net.hasor.core.Settings;
 import net.hasor.web.Invoker;
 import net.hasor.web.annotation.Any;
+import net.hasor.web.annotation.QueryParameter;
 import net.hasor.web.render.RenderInvoker;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -35,8 +37,9 @@ public class SpecialTypeArgsAction {
             Invoker invoker, RenderInvoker renderInvoker,    //
             ServletRequest servletRequest, HttpServletRequest httpServletRequest,  //
             ServletResponse servletResponse, HttpServletResponse httpServletResponse, //
-            HttpSession httpSession, //
-            AppContext appContext, Environment environment, Settings settings) {
+            HttpSession httpSession, ServletContext servletContext,//
+            AppContext appContext, Environment environment, Settings settings,//
+            boolean bool, @QueryParameter("string") String string) {
         return new HashMap<String, Object>() {{
             put("invoker", invoker);
             put("renderInvoker", renderInvoker);
@@ -45,9 +48,13 @@ public class SpecialTypeArgsAction {
             put("servletResponse", servletResponse);
             put("httpServletResponse", httpServletResponse);
             put("httpSession", httpSession);
+            put("servletContext", servletContext);
             put("appContext", appContext);
             put("environment", environment);
             put("settings", settings);
+            //
+            put("bool", bool);
+            put("string", string);
         }};
     }
 }

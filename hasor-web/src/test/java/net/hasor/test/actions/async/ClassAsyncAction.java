@@ -18,7 +18,7 @@ import net.hasor.web.annotation.Any;
 import net.hasor.web.annotation.Async;
 
 @Async
-public class ClassAsyncAction {
+public class ClassAsyncAction extends AbstractAsyncAction {
     private boolean execute;
 
     public boolean isExecute() {
@@ -27,6 +27,7 @@ public class ClassAsyncAction {
 
     @Any
     public void execute() {
+        super.initLocalObject();
         this.execute = true;
     }
 }

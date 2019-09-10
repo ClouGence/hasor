@@ -18,7 +18,7 @@ import net.hasor.web.annotation.Async;
 import net.hasor.web.annotation.Get;
 
 @Async
-public class GetAsyncAction {
+public class GetAsyncAction extends AbstractAsyncAction {
     private boolean doCall;
 
     public boolean isDoCall() {
@@ -27,6 +27,7 @@ public class GetAsyncAction {
 
     @Get
     public void doCall() {
+        super.initLocalObject();
         doCall = true;
     }
 }

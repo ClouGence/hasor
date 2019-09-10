@@ -15,225 +15,126 @@
  */
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
-import net.hasor.web.WebApiBinder;
-import net.hasor.web.WebModule;
-import net.hasor.test.filters.SimpleInvokerFilter;
+import net.hasor.core.Hasor;
 import net.hasor.test.actions.args.QueryArgsAction;
-import net.hasor.web.wrap.DefaultServlet;
+import net.hasor.test.filters.SimpleFilter;
+import net.hasor.test.filters.SimpleInvokerFilter;
+import net.hasor.web.AbstractTest;
+import net.hasor.web.WebApiBinder;
+import net.hasor.web.binder.OneConfig;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.math.BigInteger;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-//
-public class ChainTest extends AbstractWeb30BinderDataTest {
+
+public class ChainTest extends AbstractTest {
     @Test
-    public void chainTest1() throws Throwable {
+    public void basic_filter_test_life() throws Throwable {
+        QueryArgsAction action = new QueryArgsAction();
+        SimpleFilter j2eeFilter = new SimpleFilter();
+        SimpleInvokerFilter hasorFilter = new SimpleInvokerFilter();
         //
-        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).filter("*").through(SimpleInvokerFilter.class);
-            apiBinder.tryCast(WebApiBinder.class).filter("*").through(Demo2CallerFilter.class);
-            apiBinder.tryCast(WebApiBinder.class).filter("/abc/*").through(Demo3CallerFilter.class);
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
-        });
-        SimpleInvokerFilter.resetCalls();
-        Demo2CallerFilter.resetCalls();
-        Demo3CallerFilter.resetCalls();
+        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", Hasor::create, apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).jeeFilter("*").through(j2eeFilter);
+            apiBinder.tryCast(WebApiBinder.class).filter("*").through(hasorFilter);
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(action);
+        }, servlet25("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
+        //
+        HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"));
+        HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
+        //
+        assert !j2eeFilter.isInit();
+        assert !hasorFilter.isInit();
+        assert !j2eeFilter.isDoCall();
+        assert !hasorFilter.isDoCall();
+        assert !j2eeFilter.isDestroy();
+        assert !hasorFilter.isDestroy();
         //
         InvokerContext invokerContext = new InvokerContext();
+        invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
         //
+        assert j2eeFilter.isInit();
+        assert hasorFilter.isInit();
+        assert !j2eeFilter.isDoCall();
+        assert !hasorFilter.isDoCall();
+        assert !j2eeFilter.isDestroy();
+        assert !hasorFilter.isDestroy();
         //
-        assert !SimpleInvokerFilter.isInitCall();
-        assert !Demo2CallerFilter.isInitCall();
-        assert !Demo3CallerFilter.isInitCall();
-        invokerContext.initContext(appContext, new HashMap<String, String>() {{
-        }});
-        assert SimpleInvokerFilter.isInitCall();
-        assert Demo2CallerFilter.isInitCall();
-        assert Demo3CallerFilter.isInitCall();
-        //
-        //
-        HttpServletRequest httpRequest = mockRequest("post", new URL("http://www.hasor.net/query_param.do?byteParam=123&bigInteger=321"), appContext);
-        HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
-        ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
-        //
-        assert !SimpleInvokerFilter.isDoCall();
-        assert !Demo2CallerFilter.isDoCall();
-        assert !Demo3CallerFilter.isDoCall();
-        Object o = caller.invoke(null).get();
-        assert SimpleInvokerFilter.isDoCall();
-        assert Demo2CallerFilter.isDoCall();
-        assert !Demo3CallerFilter.isDoCall();
-        assert o instanceof Map;
-        assert (Byte) ((Map) o).get("byteParam") == (byte) 123;
-        assert ((BigInteger) ((Map) o).get("bigInteger")).longValue() == 321;
-    }
-    @Test
-    public void chainTest2() throws Throwable {
-        //
-        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).filter("*").through(SimpleInvokerFilter.class);
-            apiBinder.tryCast(WebApiBinder.class).filter("*").through(Demo2CallerFilter.class);
-            apiBinder.tryCast(WebApiBinder.class).filter("/abc/*").through(Demo3CallerFilter.class);
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
-        });
-        SimpleInvokerFilter.resetCalls();
-        Demo2CallerFilter.resetCalls();
-        Demo3CallerFilter.resetCalls();
-        //
-        InvokerContext invokerContext = new InvokerContext();
-        //
-        //
-        assert !SimpleInvokerFilter.isInitCall();
-        assert !Demo2CallerFilter.isInitCall();
-        assert !Demo3CallerFilter.isInitCall();
-        invokerContext.initContext(appContext, new HashMap<String, String>() {{
-        }});
-        assert SimpleInvokerFilter.isInitCall();
-        assert Demo2CallerFilter.isInitCall();
-        assert Demo3CallerFilter.isInitCall();
-        //
-        //
-        HttpServletRequest httpRequest = mockRequest("post", new URL("http://www.hasor.net/abc.html"), appContext);
-        HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
-        ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
-        //
-        assert !SimpleInvokerFilter.isDoCall();
-        assert !Demo2CallerFilter.isDoCall();
-        assert !Demo3CallerFilter.isDoCall();
-        Object o = caller.invoke(null).get();
-        assert SimpleInvokerFilter.isDoCall();
-        assert Demo2CallerFilter.isDoCall();
-        assert !Demo3CallerFilter.isDoCall();
-        assert o == null;
-    }
-    @Test
-    public void sortTest1() throws Throwable {
-        final ArrayList<String> sortData = new ArrayList<>();
-        //
-        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).filter("*").through(1, (invoker, chain) -> {
-                sortData.add("Filter_1");
-                return chain.doNext(invoker);
-            });
-            apiBinder.tryCast(WebApiBinder.class).filter("*").through(0, (invoker, chain) -> {
-                sortData.add("Filter_0");
-                return chain.doNext(invoker);
-            });
-            //
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
-        });
-        //
-        InvokerContext invokerContext = new InvokerContext();
-        invokerContext.initContext(appContext, new HashMap<String, String>() {{
-        }});
-        //
-        HttpServletRequest httpRequest = mockRequest("post", new URL("http://www.hasor.net/query_param.do?byteParam=123&bigInteger=321"), appContext);
-        HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
-        ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
-        //
+        ExceuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         caller.invoke(null).get();
-        assert sortData.size() == 2;
-        assert sortData.get(0).equalsIgnoreCase("Filter_0");
-        assert sortData.get(1).equalsIgnoreCase("Filter_1");
-    }
-    @Test
-    public void sortTest2() throws Throwable {
-        final ArrayList<String> sortData = new ArrayList<>();
         //
-        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).filter("*").through((invoker, chain) -> {
-                sortData.add("Filter_1");
-                return chain.doNext(invoker);
-            });
-            apiBinder.tryCast(WebApiBinder.class).filter("*").through((invoker, chain) -> {
-                sortData.add("Filter_0");
-                return chain.doNext(invoker);
-            });
-            //
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
-        });
+        assert j2eeFilter.isInit();
+        assert hasorFilter.isInit();
+        assert j2eeFilter.isDoCall();
+        assert hasorFilter.isDoCall();
+        assert !j2eeFilter.isDestroy();
+        assert !hasorFilter.isDestroy();
+        //
+        invokerContext.destroyContext();
+        //
+        assert j2eeFilter.isInit();
+        assert hasorFilter.isInit();
+        assert j2eeFilter.isDoCall();
+        assert hasorFilter.isDoCall();
+        assert j2eeFilter.isDestroy();
+        assert hasorFilter.isDestroy();
+    }
+
+    @Test
+    public void j2ee_filter_test_1() throws Throwable {
+        QueryArgsAction action = new QueryArgsAction();
+        SimpleFilter j2eeFilter1 = new SimpleFilter();
+        SimpleFilter j2eeFilter2 = new SimpleFilter();
+        SimpleFilter j2eeFilter3 = new SimpleFilter();
+        //
+        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", Hasor::create, apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).jeeFilter("*").through(j2eeFilter1);
+            apiBinder.tryCast(WebApiBinder.class).jeeFilter("*").through(j2eeFilter2);
+            apiBinder.tryCast(WebApiBinder.class).jeeFilter("/abc/*").through(j2eeFilter3);
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(action);
+        }, servlet25("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
+        //
+        HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abc.do"));
+        HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
         //
         InvokerContext invokerContext = new InvokerContext();
-        invokerContext.initContext(appContext, new HashMap<String, String>() {{
-        }});
+        invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
         //
-        HttpServletRequest httpRequest = mockRequest("post", new URL("http://www.hasor.net/query_param.do?byteParam=123&bigInteger=321"), appContext);
-        HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
-        ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
-        //
+        ExceuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         caller.invoke(null).get();
-        assert sortData.size() == 2;
-        assert sortData.get(0).equalsIgnoreCase("Filter_1");
-        assert sortData.get(1).equalsIgnoreCase("Filter_0");
-    }
-    @Test
-    public void sortTest3() throws Throwable {
-        final ArrayList<String> sortData = new ArrayList<>();
         //
-        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*.do").with(1, new DefaultServlet() {
-                public void service(ServletRequest req, ServletResponse res) {
-                    sortData.add("Servlet_1");
-                }
-            });
-            apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*abc.do").with(0, new DefaultServlet() {
-                public void service(ServletRequest req, ServletResponse res) {
-                    sortData.add("Servlet_0");
-                }
-            });
-            //
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
-        });
+        assert j2eeFilter1.isDoCall();
+        assert j2eeFilter2.isDoCall();
+        assert !j2eeFilter3.isDoCall();
+    }
+
+    @Test
+    public void j2ee_filter_test_2() throws Throwable {
+        QueryArgsAction action = new QueryArgsAction();
+        SimpleFilter j2eeFilter1 = new SimpleFilter();
+        SimpleFilter j2eeFilter2 = new SimpleFilter();
+        SimpleFilter j2eeFilter3 = new SimpleFilter();
+        //
+        AppContext appContext = buildWebAppContext("/META-INF/hasor-framework/web-hconfig.xml", Hasor::create, apiBinder -> {
+            apiBinder.tryCast(WebApiBinder.class).jeeFilter("*").through(j2eeFilter1);
+            apiBinder.tryCast(WebApiBinder.class).jeeFilter("*").through(j2eeFilter2);
+            apiBinder.tryCast(WebApiBinder.class).jeeFilter("/abc/*").through(j2eeFilter3);
+            apiBinder.tryCast(WebApiBinder.class).mappingTo("/abc.do").with(action);
+        }, servlet25("/"), AbstractTest.LoadModule.Web, AbstractTest.LoadModule.Render);
+        //
+        HttpServletRequest servletRequest = mockRequest("post", new URL("http://www.hasor.net/abc/abc.do"));
+        HttpServletResponse servletResponse = PowerMockito.mock(HttpServletResponse.class);
         //
         InvokerContext invokerContext = new InvokerContext();
-        invokerContext.initContext(appContext, new HashMap<String, String>() {{
-        }});
+        invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
         //
-        HttpServletRequest httpRequest = mockRequest("post", new URL("http://www.hasor.net/test_abc.do"), appContext);
-        HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
-        ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
-        //
+        ExceuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         caller.invoke(null).get();
-        assert sortData.size() == 1;
-        assert sortData.get(0).equalsIgnoreCase("Servlet_0");
-    }
-    @Test
-    public void sortTest4() throws Throwable {
-        final ArrayList<String> sortData = new ArrayList<>();
         //
-        AppContext appContext = hasor.build((WebModule) apiBinder -> {
-            apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*.do").with(0, new DefaultServlet() {
-                public void service(ServletRequest req, ServletResponse res) {
-                    sortData.add("Servlet_1");
-                }
-            });
-            apiBinder.tryCast(WebApiBinder.class).jeeServlet("/*abc.do").with(1, new DefaultServlet() {
-                public void service(ServletRequest req, ServletResponse res) {
-                    sortData.add("Servlet_0");
-                }
-            });
-            //
-            apiBinder.tryCast(WebApiBinder.class).loadMappingTo(QueryArgsAction.class);
-        });
-        //
-        InvokerContext invokerContext = new InvokerContext();
-        invokerContext.initContext(appContext, new HashMap<String, String>() {{
-        }});
-        //
-        HttpServletRequest httpRequest = mockRequest("post", new URL("http://www.hasor.net/test_abc.do"), appContext);
-        HttpServletResponse httpResponse = PowerMockito.mock(HttpServletResponse.class);
-        ExceuteCaller caller = invokerContext.genCaller(httpRequest, httpResponse);
-        //
-        caller.invoke(null).get();
-        assert sortData.size() == 1;
-        assert sortData.get(0).equalsIgnoreCase("Servlet_1");
+        assert j2eeFilter1.isDoCall();
+        assert j2eeFilter2.isDoCall();
+        assert j2eeFilter3.isDoCall();
     }
 }

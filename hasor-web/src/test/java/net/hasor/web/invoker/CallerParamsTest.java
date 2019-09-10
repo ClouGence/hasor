@@ -24,6 +24,7 @@ import net.hasor.web.WebApiBinder;
 import net.hasor.web.render.RenderInvoker;
 import org.junit.Test;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
@@ -31,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -245,20 +247,23 @@ public class CallerParamsTest extends AbstractTest {
             apiBinder.tryCast(WebApiBinder.class).mappingTo("/special_param.do").with(SpecialTypeArgsAction.class);
         }, servlet25("/"), LoadModule.Web);
         //
-        {
-            HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/special_param.do"));
-            Object o = callInvoker(appContext, request);
-            assert o instanceof Map;
-            assert ((Map) o).get("invoker") instanceof Invoker;
-            assert ((Map) o).get("renderInvoker") instanceof RenderInvoker;
-            assert ((Map) o).get("servletRequest") instanceof ServletRequest;
-            assert ((Map) o).get("httpServletRequest") instanceof HttpServletRequest;
-            assert ((Map) o).get("servletResponse") instanceof ServletResponse;
-            assert ((Map) o).get("httpServletResponse") instanceof HttpServletResponse;
-            assert ((Map) o).get("httpSession") instanceof HttpSession;
-            assert ((Map) o).get("appContext") instanceof AppContext;
-            assert ((Map) o).get("environment") instanceof Environment;
-            assert ((Map) o).get("settings") instanceof Settings;
-        }
+        String data = "a=b,c/1?2";
+        HttpServletRequest request = mockRequest("post", new URL("http://www.hasor.net/special_param.do?string=" + URLEncoder.encode(data, "utf-8")));
+        Object o = callInvoker(appContext, request);
+        assert o instanceof Map;
+        assert ((Map) o).get("invoker") instanceof Invoker;
+        assert ((Map) o).get("renderInvoker") instanceof RenderInvoker;
+        assert ((Map) o).get("servletRequest") instanceof ServletRequest;
+        assert ((Map) o).get("httpServletRequest") instanceof HttpServletRequest;
+        assert ((Map) o).get("servletResponse") instanceof ServletResponse;
+        assert ((Map) o).get("httpServletResponse") instanceof HttpServletResponse;
+        assert ((Map) o).get("httpSession") instanceof HttpSession;
+        assert ((Map) o).get("servletContext") instanceof ServletContext;
+        assert ((Map) o).get("appContext") instanceof AppContext;
+        assert ((Map) o).get("environment") instanceof Environment;
+        assert ((Map) o).get("settings") instanceof Settings;
+        //
+        assert ((Map) o).get("bool") == Boolean.FALSE;
+        assert ((Map) o).get("string").equals(data);
     }
 }

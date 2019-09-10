@@ -245,20 +245,16 @@ public class InvokerCallerParamsBuilder {
         for (String pData : params) {
             String oriData = pData;
             String encoding = httpRequest.getCharacterEncoding();
-            try {
-                if (encoding != null) {
-                    oriData = URLDecoder.decode(pData, encoding);
-                }
-            } catch (Exception e) {
-                logger.warn("use ‘{}’ decode ‘{}’ error.", encoding, pData);
-                continue;
-            }
             String[] kv = oriData.split("=");
             if (kv.length < 2) {
                 continue;
             }
             String k = kv[0].trim();
             String v = kv[1];
+            if (StringUtils.isNotBlank(encoding)) {
+                k = urlDecoder(encoding, k);
+                v = urlDecoder(encoding, v);
+            }
             //
             List<String> pArray = this.queryParamLocal.get(k);
             pArray = pArray == null ? new ArrayList<>() : pArray;
@@ -268,6 +264,18 @@ public class InvokerCallerParamsBuilder {
             this.queryParamLocal.put(k, pArray);
         }
         return this.queryParamLocal;
+    }
+
+    private static String urlDecoder(String encoding, String oriData) {
+        try {
+            if (StringUtils.isNotBlank(oriData)) {
+                encoding = URLDecoder.decode(oriData, encoding);
+            }
+            return encoding;
+        } catch (Exception e) {
+            logger.warn("use ‘{}’ decode ‘{}’ error.", encoding, oriData);
+            return encoding;
+        }
     }
 
     /**/

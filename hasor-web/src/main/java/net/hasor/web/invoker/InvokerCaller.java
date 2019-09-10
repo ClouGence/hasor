@@ -36,10 +36,12 @@ import java.util.function.Supplier;
  */
 class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller {
     protected static Logger            logger          = LoggerFactory.getLogger(InvokerCaller.class);
+    private          Mapping           foundDefine     = null;
     private          FilterDef[]       filterArrays    = null;
     private          Supplier<Invoker> invokerSupplier = null;
 
-    public InvokerCaller(Supplier<Invoker> invokerSupplier, FilterDef[] filterArrays) {
+    public InvokerCaller(Mapping foundDefine, Supplier<Invoker> invokerSupplier, FilterDef[] filterArrays) {
+        this.foundDefine = foundDefine;
         this.invokerSupplier = invokerSupplier;
         this.filterArrays = (filterArrays == null) ? new FilterDef[0] : filterArrays;
     }
@@ -52,37 +54,27 @@ class InvokerCaller extends InvokerCallerParamsBuilder implements ExceuteCaller 
         Invoker invoker = this.invokerSupplier.get();
         Mapping ownerMapping = invoker.ownerMapping();
         HttpServletRequest httpRequest = invoker.getHttpRequest();
-        //
-        final BasicFuture<Object> future = new BasicFuture<>();
         Method targetMethod = ownerMapping.findMethod(httpRequest);
-        if (targetMethod == null || !ownerMapping.matchingMapping(httpRequest)) {
-            if (chain != null) {
-                chain.doFilter(httpRequest, invoker.getHttpResponse());
-            }
-            future.completed(null);
-            return future;
-        }
         //
         // .异步调用
-        try {
-            boolean needAsync = ownerMapping.isAsync(httpRequest);
-            ServletVersion version = invoker.getAppContext().getInstance(ServletVersion.class);
-            if (version.ge(ServletVersion.V3_0) && needAsync) {
-                // .必须满足: Servlet3.x、环境支持异步Servlet、目标开启了Servlet3
-                AsyncContext asyncContext = httpRequest.startAsync();
-                asyncContext.start(new AsyncInvocationWorker(asyncContext, targetMethod) {
-                    public void doWork(Method targetMethod) throws Throwable {
-                        future.completed(invoke(targetMethod, invoker));
-                    }
+        final BasicFuture<Object> future = new BasicFuture<>();
+        boolean needAsync = ownerMapping.isAsync(httpRequest);
+        ServletVersion version = invoker.getAppContext().getInstance(ServletVersion.class);
+        if (version.ge(ServletVersion.V3_0) && needAsync) {
+            // .必须满足: Servlet3.x、环境支持异步Servlet、目标开启了Servlet3
+            AsyncContext asyncContext = httpRequest.startAsync(httpRequest, invoker.getHttpResponse());
+            asyncContext.start(new AsyncInvocationWorker(asyncContext, targetMethod) {
+                public void doWork(Method targetMethod) throws Throwable {
+                    future.completed(invoke(targetMethod, invoker));
+                }
 
-                    @Override
-                    public void doWorkWhenError(Method targetMethod, Throwable e) {
-                        future.failed(e);
-                    }
-                });
-                return future;
-            }
-        } catch (Throwable e) { /* 不支持异步 */ }
+                @Override
+                public void doWorkWhenError(Method targetMethod, Throwable e) {
+                    future.failed(e);
+                }
+            });
+            return future;
+        }
         //
         // .同步调用
         try {
