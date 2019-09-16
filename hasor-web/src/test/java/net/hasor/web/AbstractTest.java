@@ -34,10 +34,12 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.mockito.ArgumentMatchers.*;
 
@@ -73,12 +75,43 @@ public class AbstractTest {
         return servletContext;
     }
 
+    protected ServletContext basicServlet(ServletContext servletContext) {
+        PowerMockito.when(servletContext.getRealPath(anyString())).then(invocation -> {
+            return new File(invocation.getArguments()[0].toString()).getAbsolutePath();
+        });
+        //
+        final Map<String, Object> attrMap = new HashMap<>();
+        PowerMockito.when(servletContext.getAttributeNames()).thenAnswer((Answer<Enumeration<String>>) invocation -> {
+            return Iterators.asEnumeration(attrMap.keySet().iterator());
+        });
+        PowerMockito.when(servletContext.getAttribute(anyString())).thenAnswer(invocation -> {
+            return attrMap.get(invocation.getArguments()[0]);
+        });
+        PowerMockito.doAnswer(invocation -> {
+            return attrMap.put((String) invocation.getArguments()[0], invocation.getArguments()[1]);
+        }).when(servletContext).setAttribute(anyString(), any());
+        PowerMockito.doAnswer(invocation -> {
+            return attrMap.remove(invocation.getArguments()[0]);
+        }).when(servletContext).removeAttribute(anyString());
+        //
+        return servletContext;
+    }
+
+    protected ServletContext servletInitParams(final ServletContext servletContext, Map<String, String> contextParams) {
+        PowerMockito.when(servletContext.getInitParameterNames())//
+                .thenReturn(Iterators.asEnumeration(contextParams.keySet().iterator()));
+        PowerMockito.when(servletContext.getInitParameter(anyString())).then((Answer<String>) invocation -> {
+            return contextParams.get(invocation.getArguments()[0].toString());
+        });
+        return basicServlet(servletContext);
+    }
+
     /** Mock 2.5 */
     protected ServletContext servlet25(final String context) {
         ServletContext servletContext = PowerMockito.mock(ServletContext.class);
         PowerMockito.when(servletContext.getContextPath()).thenReturn(context);
         PowerMockito.when(servletContext.getEffectiveMajorVersion()).thenThrow(new UnsupportedOperationException());
-        return servletContext;
+        return basicServlet(servletContext);
     }
 
     /** Mock 3.0 */
@@ -87,7 +120,7 @@ public class AbstractTest {
         PowerMockito.when(servletContext.getContextPath()).thenReturn(context);
         PowerMockito.when(servletContext.getEffectiveMajorVersion()).thenReturn(123);
         PowerMockito.when(servletContext.getVirtualServerName()).thenThrow(new UnsupportedOperationException());
-        return servletContext;
+        return basicServlet(servletContext);
     }
 
     /** Mock 3.1 */
@@ -96,7 +129,7 @@ public class AbstractTest {
         PowerMockito.when(servletContext.getContextPath()).thenReturn(context);
         PowerMockito.when(servletContext.getEffectiveMajorVersion()).thenReturn(123);
         PowerMockito.when(servletContext.getVirtualServerName()).thenReturn("abc");
-        return servletContext;
+        return basicServlet(servletContext);
     }
 
     private DefaultXmlNode defaultInvokerCreaterSetXmlNode(LoadModule... modules) {
@@ -291,6 +324,33 @@ public class AbstractTest {
         PowerMockito.when(request.startAsync()).thenReturn(asyncContext);
         //
         return request;
+    }
+
+    protected void mockCharacterEncoding(HttpServletRequest request, HttpServletResponse response) {
+        if (request != null) {
+            try {
+                AtomicReference<String> reference = new AtomicReference<>();
+                PowerMockito.when(request.getCharacterEncoding()).then((Answer<String>) invocation -> reference.get());
+                PowerMockito.doAnswer((Answer<String>) invocation -> {
+                    reference.set((String) invocation.getArguments()[0]);
+                    return null;
+                }).when(request).setCharacterEncoding(anyString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (response != null) {
+            try {
+                AtomicReference<String> reference = new AtomicReference<>();
+                PowerMockito.when(response.getCharacterEncoding()).then((Answer<String>) invocation -> reference.get());
+                PowerMockito.doAnswer((Answer<String>) invocation -> {
+                    reference.set((String) invocation.getArguments()[0]);
+                    return null;
+                }).when(response).setCharacterEncoding(anyString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     protected String mockAndCallHttp(String httpMethod, String callURL, AppContext appContext) throws Throwable {

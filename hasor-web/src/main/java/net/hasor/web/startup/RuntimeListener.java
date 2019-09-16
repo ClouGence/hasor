@@ -52,11 +52,8 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         if (StringUtils.isNotBlank(configName)) {
             webHasor.mainSettingWith(configName);
         }
-        if (properties != null) {
-            properties.keySet().forEach(key -> {
-                String keyStr = key.toString();
-                webHasor.addVariable(keyStr, properties.getProperty(keyStr));
-            });
+        if (properties != null && !properties.isEmpty()) {
+            properties.forEach((key, val) -> webHasor.addVariable(key.toString(), val.toString()));
         }
         String webContextDir = sc.getRealPath("/");
         webHasor.addVariable("HASOR_WEBROOT", webContextDir);
@@ -93,23 +90,18 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
         }
     }
 
-    protected void doInit(ServletContext sc) {
-        //1.create AppContext
+    protected AppContext doInit(ServletContext sc) {
         try {
             String rootModule = sc.getInitParameter("hasor-root-module");       // 启动入口
             String configName = sc.getInitParameter("hasor-hconfig-name");      // 配置文件名
-            String envProperties = sc.getInitParameter("hasor-env-properties"); // 环境变量配置
+            String envProperties = sc.getInitParameter("hasor-envconfig-name"); // 环境变量配置
             //
             Properties properties = this.loadEnvProperties(sc, envProperties);
             Module startModule = this.newRootModule(sc, rootModule);
-            this.appContext = this.newHasor(sc, configName, properties).build(startModule);
-            this.spiTrigger = appContext.getInstance(SpiTrigger.class);
+            return this.newHasor(sc, configName, properties).build(startModule);
         } catch (Throwable e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
-        //2.放入ServletContext环境。
-        logger.info("ServletContext Attribut is " + RuntimeListener.AppContextName);
-        sc.setAttribute(RuntimeListener.AppContextName, this.appContext);
     }
 
     /**获取{@link AppContext}*/
@@ -119,7 +111,13 @@ public class RuntimeListener implements ServletContextListener, HttpSessionListe
 
     @Override
     public void contextInitialized(final ServletContextEvent servletContextEvent) {
-        this.doInit(servletContextEvent.getServletContext());
+        // 1. 初始化
+        this.appContext = this.doInit(servletContextEvent.getServletContext());
+        this.spiTrigger = appContext.getInstance(SpiTrigger.class);
+        // 2.放入ServletContext环境。
+        logger.info("ServletContext Attribut is " + RuntimeListener.AppContextName);
+        servletContextEvent.getServletContext().setAttribute(RuntimeListener.AppContextName, this.appContext);
+        //
         this.spiTrigger.callSpi(ServletContextListener.class, listener -> listener.contextInitialized(servletContextEvent));
     }
 

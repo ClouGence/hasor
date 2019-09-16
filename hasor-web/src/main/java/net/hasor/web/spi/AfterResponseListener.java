@@ -26,5 +26,5 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface AfterResponseListener extends java.util.EventListener {
     /** 在所有处理之后 */
-    public void doListener(AppContext appContext, HttpServletRequest request, HttpServletResponse response);
+    public void doListener(AppContext appContext, HttpServletRequest request, HttpServletResponse response, Object invokerResult);
 }

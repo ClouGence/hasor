@@ -13,16 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.invoker;
-import net.hasor.web.Invoker;
-import net.hasor.web.InvokerCreater;
-import org.powermock.api.mockito.PowerMockito;
-public class TestInvokerCreater implements InvokerCreater {
-    @Override
-    public Invoker createExt(Invoker invoker) {
-        TestInvoker2 inv = PowerMockito.mock(TestInvoker2.class);
-        PowerMockito.when(inv.hello()).thenReturn("hello");
-        PowerMockito.when(inv.word()).thenReturn("word");
-        return inv;
+package net.hasor.test.actions.throwerr;
+import net.hasor.web.annotation.Any;
+
+import java.io.IOException;
+
+public class ThrowIOErrorAction {
+    @Any
+    public void doPost() throws Exception {
+        throw new IOException("IOException - doPost");
     }
 }

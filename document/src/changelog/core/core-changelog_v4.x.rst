@@ -8,6 +8,7 @@ Hasor v4.0.7 (2019-06-?)
     - 新增 ServletRequestListener 支持。
 **改进**
     - WebApiBinder,接口中 addServletListener、addSessionListener 都合并到 addWebListener 方法。
+    - hasor-env-properties 参数更名为 hasor-envconfig-name
 **修复**
     - 修复 ResourcesUtils 和 ScanClassPath，IO 文件句柄泄露问题。
 

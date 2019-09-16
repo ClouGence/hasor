@@ -16,7 +16,6 @@
 package net.hasor.web.startup;
 import net.hasor.core.AppContext;
 import net.hasor.core.spi.SpiTrigger;
-import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.binder.OneConfig;
@@ -67,7 +66,7 @@ public class RuntimeFilter implements Filter {
         } catch (ServletException e) {
             throw e;
         } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw new ServletException(e);
         }
         //
         // .启动日志
@@ -80,7 +79,9 @@ public class RuntimeFilter implements Filter {
 
     @Override
     public void destroy() {
-        this.invokerContext.destroyContext();
+        if (this.inited.compareAndSet(true, false)) {
+            this.invokerContext.destroyContext();
+        }
     }
 
     @Override
@@ -97,51 +98,43 @@ public class RuntimeFilter implements Filter {
         }
         //
         // .执行
+        Object result = null;
         try {
             this.beforeRequest(this.appContext, httpReq, httpRes);
-            doFilter(chain, httpReq, httpRes);
+            result = doFilter(chain, httpReq, httpRes);
+        } finally {
+            this.afterResponse(this.appContext, httpReq, httpRes, result);
+        }
+    }
+
+    private Object doFilter(FilterChain chain, HttpServletRequest httpReq, HttpServletResponse httpRes) throws IOException, ServletException {
+        Object result = null;
+        try {
+            ExceuteCaller caller = this.invokerContext.genCaller(httpReq, httpRes);
+            if (caller != null) {
+                Future<Object> resultData = caller.invoke(chain);
+                if (resultData != null && resultData.isDone()) {
+                    result = resultData.get();
+                }
+            } else {
+                chain.doFilter(httpReq, httpRes);
+            }
         } catch (Throwable e) {
+            if (e instanceof ExecutionException) {
+                e = e.getCause();
+            }
             if (e instanceof IOException) {
                 throw (IOException) e;
             }
             if (e instanceof ServletException) {
                 throw (ServletException) e;
             }
-            throw ExceptionUtils.toRuntimeException(e);
-        } finally {
-            this.afterResponse(this.appContext, httpReq, httpRes);
-        }
-    }
-
-    private void doFilter(FilterChain chain, HttpServletRequest httpReq, HttpServletResponse httpRes) throws IOException, ServletException {
-        try {
-            ExceuteCaller caller = this.invokerContext.genCaller(httpReq, httpRes);
-            if (caller != null) {
-                Future<Object> resultData = caller.invoke(chain);
-                if (resultData != null && resultData.isDone()) {
-                    resultData.get();
-                }
-            } else {
-                chain.doFilter(httpReq, httpRes);
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
             }
-            //
-        } catch (ExecutionException e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof IOException)
-                throw (IOException) cause;
-            if (cause instanceof ServletException)
-                throw (ServletException) cause;
-            if (cause instanceof RuntimeException)
-                throw (RuntimeException) cause;
-            throw ExceptionUtils.toRuntimeException(cause);
-            //
-        } catch (IOException e) {
-            throw (IOException) e;
-        } catch (ServletException e) {
-            throw (ServletException) e;
-        } catch (Throwable e) {
-            throw ExceptionUtils.toRuntimeException(e);
+            throw new ServletException(e);
         }
+        return result;
     }
 
     /**在filter请求处理之前。*/
@@ -150,7 +143,7 @@ public class RuntimeFilter implements Filter {
     }
 
     /**在filter请求处理之后。*/
-    protected void afterResponse(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes) {
-        this.spiTrigger.callSpi(AfterResponseListener.class, listener -> listener.doListener(appContext, httpReq, httpRes));
+    protected void afterResponse(final AppContext appContext, final HttpServletRequest httpReq, final HttpServletResponse httpRes, Object result) {
+        this.spiTrigger.callSpi(AfterResponseListener.class, listener -> listener.doListener(appContext, httpReq, httpRes, result));
     }
 }

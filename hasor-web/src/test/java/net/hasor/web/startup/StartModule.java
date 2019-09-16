@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.test.invoker;
-import net.hasor.web.Invoker;
-import net.hasor.web.InvokerCreater;
-import org.powermock.api.mockito.PowerMockito;
-public class TestInvokerCreater implements InvokerCreater {
+package net.hasor.web.startup;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.Module;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @version : 2016-12-16
+ * @author 赵永春 (zyc@hasor.net)
+ */
+public class StartModule implements Module {
     @Override
-    public Invoker createExt(Invoker invoker) {
-        TestInvoker2 inv = PowerMockito.mock(TestInvoker2.class);
-        PowerMockito.when(inv.hello()).thenReturn("hello");
-        PowerMockito.when(inv.word()).thenReturn("word");
-        return inv;
+    public void loadModule(ApiBinder apiBinder) throws Throwable {
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.add("HelloWord");
+        apiBinder.bindType(List.class).toInstance(arrayList);
     }
 }

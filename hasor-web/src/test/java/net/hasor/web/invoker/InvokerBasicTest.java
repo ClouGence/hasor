@@ -93,6 +93,8 @@ public class InvokerBasicTest extends AbstractTest {
         invokerContext.initContext(appContext, new OneConfig("", () -> appContext));
         ExceuteCaller caller = invokerContext.genCaller(servletRequest, servletResponse);
         caller.invoke(null).get();
+        assert true;
+        assert !action.isExecute();
     }
 
     @Test
