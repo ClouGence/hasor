@@ -111,7 +111,7 @@ public abstract class FileItemBase implements FileItem {
         IOUtils.closeQuietly(inStream);
         return asString;
     }
- 
+
     @Override
     public void writeTo(OutputStream outStream) throws IOException {
         InputStream inStream = this.openStream();

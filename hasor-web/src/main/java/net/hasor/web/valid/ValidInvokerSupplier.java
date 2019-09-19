@@ -68,7 +68,7 @@ public class ValidInvokerSupplier extends InvokerWrap implements ValidInvoker {
         ValidItem data = this.validData.get(key);
         return data == null || data.isValid();
     }
- 
+
     @Override
     public void clearValidErrors(String key) {
         this.validData.remove(key);

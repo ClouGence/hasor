@@ -24,7 +24,6 @@ import java.util.Map;
 
 /**
  * Utility class to decode MIME texts.
- *
  * @since 1.3
  */
 public final class MimeUtility {

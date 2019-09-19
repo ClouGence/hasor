@@ -22,7 +22,7 @@ import java.lang.annotation.*;
  * @version : 2013-5-9
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.ANNOTATION_TYPE})
+@Target({ ElementType.ANNOTATION_TYPE })
 @Documented
 public @interface WebParameter {
 }

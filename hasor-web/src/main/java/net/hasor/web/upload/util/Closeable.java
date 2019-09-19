@@ -19,7 +19,6 @@ import java.io.IOException;
 
 /**
  * Interface of an object, which may be closed.
- *
  * @version $Id: Closeable.java 1454691 2013-03-09 12:15:54Z simonetripodi $
  */
 public interface Closeable extends java.io.Closeable {

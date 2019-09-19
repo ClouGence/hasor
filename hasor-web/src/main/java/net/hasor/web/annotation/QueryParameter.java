@@ -15,6 +15,7 @@
  */
 package net.hasor.web.annotation;
 import java.lang.annotation.*;
+
 /**
  * 查询参数
  * @version : 2013-5-9

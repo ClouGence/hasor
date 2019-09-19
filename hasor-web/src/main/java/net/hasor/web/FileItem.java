@@ -32,7 +32,7 @@ public interface FileItem extends FileItemStream {
      * @return The size of the file item, in bytes.
      */
     public long getSize();
- 
+
     /**
      * A convenience method to write an uploaded item to disk. The client code
      * is not concerned with whether or not the item is stored in memory, or on

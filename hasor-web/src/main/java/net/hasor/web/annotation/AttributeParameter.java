@@ -15,6 +15,7 @@
  */
 package net.hasor.web.annotation;
 import java.lang.annotation.*;
+
 /**
  * Request中的属性值
  * @version : 2013-5-9
