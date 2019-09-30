@@ -42,6 +42,10 @@ public class QuitExecutor implements TelExecutorVoid {
         int nextCommand = 0;
         if (args.length > 0) {
             for (String arg : args) {
+                if (arg.startsWith("-next")) {
+                    nextCommand = telCommand.getSession().curentCounter() + 1;
+                    continue;
+                }
                 if (arg.startsWith("-t")) {
                     parseInt = Integer.parseInt(arg.substring(2).trim());
                     continue;
@@ -52,9 +56,6 @@ public class QuitExecutor implements TelExecutorVoid {
                         nextCommand = telCommand.getSession().curentCounter() + nextInt;
                     }
                     continue;
-                }
-                if (arg.startsWith("-next")) {
-                    nextCommand = telCommand.getSession().curentCounter() + 1;
                 }
             }
         }

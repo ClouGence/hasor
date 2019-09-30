@@ -37,6 +37,7 @@ public class TelReaderTest {
                 i++;
             }
             //
+            readerObject.update();
             readerObject.reset();
             if (!arrayList.isEmpty() && readerObject.isEof()) {
                 break;
@@ -60,6 +61,7 @@ public class TelReaderTest {
         //
         ArrayList<String> arrayList = new ArrayList<>();
         while (true) {
+            readerObject.update();
             readerObject.reset();
             if (readerObject.isEof()) {
                 break;
@@ -73,4 +75,4 @@ public class TelReaderTest {
         assert arrayList.size() == 1;
         assert arrayList.get(0).equals("abcdefg abc\r\nabc");
     }
-}// set TEL_SILENT=true \n
+}

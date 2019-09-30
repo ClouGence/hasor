@@ -16,7 +16,6 @@
 package net.hasor.tconsole.launcher;
 import io.netty.channel.ChannelHandlerContext;
 import net.hasor.tconsole.AbstractTelTest;
-import net.hasor.tconsole.TelContext;
 import net.hasor.tconsole.commands.QuitExecutor;
 import net.hasor.test.beans.TestExecutor;
 import org.junit.Test;
@@ -39,7 +38,7 @@ public class TelNettyTest extends AbstractTelTest {
             }
         };
         //
-        TelContext telContext = mockTelContext(testExecutor);
+        TelConsoleServer telContext = mockTelContext(testExecutor);
         ChannelHandlerContext context = mockNetty(dataWriter);
         //
         //
@@ -64,7 +63,7 @@ public class TelNettyTest extends AbstractTelTest {
             }
         };
         //
-        TelContext telContext = mockTelContext(new QuitExecutor());
+        TelConsoleServer telContext = mockTelContext(new QuitExecutor());
         ChannelHandlerContext context = mockNetty(dataWriter);
         //
         //
@@ -90,7 +89,7 @@ public class TelNettyTest extends AbstractTelTest {
             }
         };
         //
-        TelContext telContext = mockTelContext(testExecutor);
+        TelConsoleServer telContext = mockTelContext(testExecutor);
         ChannelHandlerContext context = mockNetty(dataWriter);
         //
         //

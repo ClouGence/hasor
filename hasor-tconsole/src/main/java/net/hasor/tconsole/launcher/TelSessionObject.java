@@ -48,11 +48,11 @@ public abstract class TelSessionObject extends AttributeObject implements TelSes
     private        TelReaderObject  dataReader;    // 输入流
     private        Writer           dataWriter;    // 输出流
     //
-    private        TelContext       telContext;    //
+    private        TelConsoleServer telContext;    //
     private        TelCommandObject curentCommand; // 当前命令
     private        AtomicInteger    atomicInteger; // 指令计数器
 
-    TelSessionObject(TelContext telContext, ByteBuf dataReader, Writer dataWriter) {
+    TelSessionObject(TelConsoleServer telContext, ByteBuf dataReader, Writer dataWriter) {
         this.sessionID = UUID.randomUUID().toString().replace("-", "");
         this.telContext = telContext;
         this.dataReader = new TelReaderObject(telContext.getByteBufAllocator(), dataReader);
@@ -96,9 +96,16 @@ public abstract class TelSessionObject extends AttributeObject implements TelSes
     }
 
     public boolean tryReceiveEvent() {
-        // .重置读取索引
-        this.dataReader.reset();
+        // .更新读取区
+        this.dataReader.update();
         //
+        // .是否有跳出动作 ^C 字符
+        if (this.dataReader.expectChar(65533)) {
+            this.close(); // 清掉缓冲区，重新接收
+            return true;
+        } else {
+            this.dataReader.reset(); // 重置读取索引
+        }
         // .创造命令
         if (this.curentCommand == null) {
             boolean blankLine = this.dataReader.expectBlankLine();
@@ -112,11 +119,15 @@ public abstract class TelSessionObject extends AttributeObject implements TelSes
                     this.curentCommand.curentPhase(TelPhase.Prepare);
                 } catch (Exception e) {
                     this.dataReader.clear(); // 清掉缓冲区，重新接收
-                    writeMessage(e.getMessage());
+                    writeMessageLine(e.getMessage());
                     return true;
                 }
             }
+            if (this.curentCommand == null) {
+                return true;
+            }
         }
+        //
         // .命令如果还未结束那么继续等待输入
         if (!this.curentCommand.testReadly(this.dataReader)) {
             return false;
@@ -137,6 +148,7 @@ public abstract class TelSessionObject extends AttributeObject implements TelSes
                 listener.afterExecCommand(this.curentCommand);
             });
         }
+        this.curentCommand = null;
         return true;
     }
 
@@ -193,7 +205,11 @@ public abstract class TelSessionObject extends AttributeObject implements TelSes
         if (executor == null) {
             throw new UnsupportedOperationException("'" + requestCMD + "' is bad command.");
         }
-        return new TelCommandObject(this, executor, requestCMD, requestArgs.split(" "));
+        if (StringUtils.isBlank(requestArgs)) {
+            return new TelCommandObject(this, executor, requestCMD, new String[0]);
+        } else {
+            return new TelCommandObject(this, executor, requestCMD, requestArgs.split(" "));
+        }
     }
 
     @Override

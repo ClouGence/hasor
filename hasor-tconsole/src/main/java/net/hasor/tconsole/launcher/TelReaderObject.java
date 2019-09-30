@@ -69,9 +69,12 @@ public class TelReaderObject implements TelReader {
         return null;
     }
 
-    public void reset() {
-        // 把 dataReader copy 到 byteBuf，并重置 byteBuf 的读取索引
+    // 把 dataReader copy 到 byteBuf，并重置 byteBuf 的读取索引
+    public void update() {
         this.byteBuf.writeBytes(this.dataReader);
+    }
+
+    public void reset() {
         this.byteBuf.resetReaderIndex();
     }
 

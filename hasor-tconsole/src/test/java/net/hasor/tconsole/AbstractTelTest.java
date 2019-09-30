@@ -20,6 +20,7 @@ import io.netty.channel.ChannelHandlerContext;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.spi.SpiTrigger;
+import net.hasor.tconsole.launcher.TelConsoleServer;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
@@ -31,18 +32,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
 public class AbstractTelTest {
-    public TelContext mockTelContext() {
+    public TelConsoleServer mockTelContext() {
         return mockTelContext(null, false);
     }
 
-    public TelContext mockTelContext(TelExecutor executor) {
+    public TelConsoleServer mockTelContext(TelExecutor executor) {
         return mockTelContext(executor, true);
     }
 
-    private TelContext mockTelContext(TelExecutor executor, boolean hasExecutor) {
+    private TelConsoleServer mockTelContext(TelExecutor executor, boolean hasExecutor) {
         AppContext appContext = Hasor.create().asCore().build();
         //
-        TelContext telContext = PowerMockito.mock(TelContext.class);
+        TelConsoleServer telContext = PowerMockito.mock(TelConsoleServer.class);
         PowerMockito.when(telContext.getByteBufAllocator()).thenReturn(PooledByteBufAllocator.DEFAULT);
         PowerMockito.when(telContext.getSpiTrigger()).thenReturn(appContext.getInstance(SpiTrigger.class));
         PowerMockito.doAnswer(invocation -> {

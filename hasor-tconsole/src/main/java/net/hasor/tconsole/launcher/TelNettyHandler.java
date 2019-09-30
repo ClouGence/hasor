@@ -4,7 +4,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import net.hasor.tconsole.TelContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,14 +23,13 @@ public class TelNettyHandler extends SimpleChannelInboundHandler<String> {
     public static final String            CMD            = "tConsole>";
     //
     private             Predicate<String> inBoundMatcher = null;
-    private             TelContext        telContext     = null; // 环境
+    private             TelConsoleServer  telContext     = null; // 环境
     private             TelSessionObject  telSession     = null; // 会话
     private             ByteBuf           dataReader     = null; // 读取缓冲
 
-    public TelNettyHandler(TelContext telContext, Predicate<String> inBoundMatcher) {
+    TelNettyHandler(TelConsoleServer telContext, Predicate<String> inBoundMatcher) {
         this.inBoundMatcher = inBoundMatcher == null ? s -> true : inBoundMatcher;
         this.telContext = telContext;
-        this.dataReader = telContext.getByteBufAllocator().heapBuffer();
     }
 
     @Override
@@ -60,6 +58,7 @@ public class TelNettyHandler extends SimpleChannelInboundHandler<String> {
         //
         // .构造会话
         TelNettyWriter dataWriter = new TelNettyWriter(channel);
+        this.dataReader = telContext.getByteBufAllocator().heapBuffer();
         this.telSession = new TelSessionObject(telContext, dataReader, dataWriter) {
             public boolean isClose() {
                 return dataWriter.isClose();
@@ -69,7 +68,7 @@ public class TelNettyHandler extends SimpleChannelInboundHandler<String> {
         // .异步延迟 500ms 打印欢迎信息
         this.telContext.asyncExecute(() -> {
             try {
-                Thread.sleep(500);
+                Thread.sleep(200);
                 printWelcome(channel);
             } catch (Exception e) { /**/ }
         });
@@ -96,7 +95,7 @@ public class TelNettyHandler extends SimpleChannelInboundHandler<String> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) {
         // .数据丢入缓冲区缓冲区，然后尝试执行一次。
-        this.dataReader.writeCharSequence(msg, StandardCharsets.UTF_8);
+        this.dataReader.writeCharSequence(msg + "\n", StandardCharsets.UTF_8);
         int lastBufferSize = this.telSession.buffSize();
         //
         while (this.telSession.tryReceiveEvent()) {
@@ -106,7 +105,7 @@ public class TelNettyHandler extends SimpleChannelInboundHandler<String> {
             lastBufferSize = this.telSession.buffSize();
         }
         //
-        while (this.telSession.buffSize() == 0) {
+        if (this.telSession.buffSize() == 0) {
             ctx.channel().writeAndFlush(CMD);
         }
     }

@@ -30,7 +30,9 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import net.hasor.core.AppContext;
 import net.hasor.core.container.AbstractContainer;
+import net.hasor.core.spi.SpiCaller;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.tconsole.TelContext;
 import net.hasor.tconsole.TelExecutor;
@@ -40,11 +42,16 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static net.hasor.tconsole.launcher.TelUtils.finalBindAddress;
 
@@ -54,14 +61,16 @@ import static net.hasor.tconsole.launcher.TelUtils.finalBindAddress;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class TelConsoleServer extends AbstractContainer implements TelContext {
-    protected static Logger                   logger        = LoggerFactory.getLogger(TelConsoleServer.class);
-    private          ClassLoader              classLoader   = null;
+    protected static Logger                             logger         = LoggerFactory.getLogger(TelConsoleServer.class);
+    private final    ClassLoader                        classLoader;
+    private final    SpiTrigger                         spiTrigger;
+    private final    Map<String, Supplier<TelExecutor>> telExecutorMap = new ConcurrentHashMap<>();
     //
-    private final    InetSocketAddress        bindAddress;
-    private final    TelNettyHandler          nettyHandler;
-    private          EventLoopGroup           workerGroup   = null;
-    private          Channel                  telnetChannel = null;
-    private          ScheduledExecutorService executor      = null;
+    private final    InetSocketAddress                  bindAddress;
+    private final    TelNettyHandler                    nettyHandler;
+    private          EventLoopGroup                     workerGroup    = null;
+    private          Channel                            telnetChannel  = null;
+    private          ScheduledExecutorService           executor       = null;
 
     /**
      * 创建 tConsole 服务
@@ -71,32 +80,50 @@ public class TelConsoleServer extends AbstractContainer implements TelContext {
      * @throws UnknownHostException
      */
     public TelConsoleServer(String bindAddress, int bindPort, Predicate<String> inBoundMatcher) throws UnknownHostException {
+        this(bindAddress, bindPort, inBoundMatcher, null);
+    }
+
+    /**
+     * 创建 tConsole 服务
+     * @param bindAddress 监听的本地IP。
+     * @param bindPort 监听端口
+     * @param inBoundMatcher 允许联入的IP匹配器
+     * @throws UnknownHostException
+     */
+    public TelConsoleServer(String bindAddress, int bindPort, Predicate<String> inBoundMatcher, AppContext appContext) throws UnknownHostException {
         this.bindAddress = new InetSocketAddress(finalBindAddress(bindAddress), bindPort);
         this.nettyHandler = new TelNettyHandler(this, inBoundMatcher);
+        if (appContext != null) {
+            this.classLoader = appContext.getClassLoader();
+            this.spiTrigger = appContext.getInstance(SpiTrigger.class);
+        } else {
+            // .空实现，防止npe
+            this.classLoader = Thread.currentThread().getContextClassLoader();
+            this.spiTrigger = new SpiTrigger() {
+                @Override
+                public <T extends EventListener> void callSpi(Class<T> spiType, SpiCaller<T> spiCaller) {
+                }
+            };
+        }
     }
 
-    public ClassLoader getClassLoader() {
-        return (this.classLoader == null) ? Thread.currentThread().getContextClassLoader() : this.classLoader;
-    }
-
-    public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+    public ByteBufAllocator getByteBufAllocator() {
+        return this.telnetChannel.alloc();
     }
 
     @Override
     protected void doInitialize() {
         // .执行线程池
-        ClassLoader classLoader = getClassLoader();
         String shortName = "tConsole-Work";
         int workSize = 2;
-        this.executor = Executors.newScheduledThreadPool(workSize, new NameThreadFactory(shortName, classLoader));
+        this.executor = Executors.newScheduledThreadPool(workSize, new NameThreadFactory(shortName, this.classLoader));
         ThreadPoolExecutor threadPool = (ThreadPoolExecutor) this.executor;
         threadPool.setCorePoolSize(workSize);
         threadPool.setMaximumPoolSize(workSize);
         logger.info("tConsole -> create TelnetHandler , threadShortName={} , workThreadSize = {}.", shortName, workSize);
         //
         // .初始化常量配置
-        this.workerGroup = new NioEventLoopGroup(1, new NameThreadFactory("tConsole", classLoader));
+        this.workerGroup = new NioEventLoopGroup(1, new NameThreadFactory("tConsole", this.classLoader));
         logger.info("tConsole -> starting... at {}", this.bindAddress);
         //
         // .启动Telnet
@@ -140,28 +167,41 @@ public class TelConsoleServer extends AbstractContainer implements TelContext {
         }
     }
 
+    public void asyncExecute(Runnable runnable) {
+        if (!this.isInit()) {
+            throw new IllegalStateException("the Container need init.");
+        }
+        this.executor.execute(runnable);
+    }
+
+    public SpiTrigger getSpiTrigger() {
+        if (!this.isInit()) {
+            throw new IllegalStateException("the Container need init.");
+        }
+        return this.spiTrigger;
+    }
+
+    /** 添加命令 */
+    public void addCommand(String cmdName, TelExecutor telExecutor) {
+        this.addCommand(cmdName, () -> telExecutor);
+    }
+
+    /** 添加命令 */
+    public void addCommand(String cmdName, Supplier<TelExecutor> provider) {
+        this.telExecutorMap.put(cmdName, provider);
+    }
+
     @Override
     public TelExecutor findCommand(String cmdName) {
+        Supplier<TelExecutor> supplier = this.telExecutorMap.get(cmdName);
+        if (supplier != null) {
+            return supplier.get();
+        }
         return null;
     }
 
     @Override
     public List<String> getCommandNames() {
-        return null;
-    }
-
-    @Override
-    public ByteBufAllocator getByteBufAllocator() {
-        return ByteBufAllocator.DEFAULT;
-    }
-
-    @Override
-    public SpiTrigger getSpiTrigger() {
-        return null;
-    }
-
-    @Override
-    public void asyncExecute(Runnable runnable) {
-        this.executor.execute(runnable);
+        return new ArrayList<>(this.telExecutorMap.keySet());
     }
 }

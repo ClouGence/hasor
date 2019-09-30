@@ -25,10 +25,15 @@ public interface TelReader {
     public default boolean expectBlankLine() {
         return expectChar('\n');
     }
-
+ 
     /** 连续读取到两个换行符 */
     public default boolean expectDoubleBlankLines() {
         return expectString("\n\n");
+    }
+
+    /** 期待一个结束字符 */
+    public default boolean expectChar(int waitChar) {
+        return expectChar((char) waitChar);
     }
 
     /** 期待一个结束字符 */

@@ -14,26 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.tconsole;
-import io.netty.buffer.ByteBufAllocator;
-import net.hasor.core.spi.SpiTrigger;
-
 import java.util.List;
 
 /**
- * TConsol 为您提供 telnet 下和应用程序交互的能力。
+ * tConsol 为您提供 telnet 下和应用程序交互的能力。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2018-04-09
  */
 public interface TelContext {
-    /**查找命令。*/
+    /** 查找命令 */
     public TelExecutor findCommand(String cmdName);
 
-    /**获取所有命令。*/
+    /** 获取所有命令 */
     public List<String> getCommandNames();
-
-    public ByteBufAllocator getByteBufAllocator();
-
-    public SpiTrigger getSpiTrigger();
-
-    public void asyncExecute(Runnable runnable);
 }
