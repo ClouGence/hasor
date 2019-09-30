@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.utils.future;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
+
 /**
  * Basic implementation of the {@link Future} interface. <tt>BasicFuture<tt>
  * can be put into a completed state by invoking any of the following methods:
@@ -32,33 +30,39 @@ public class BasicFuture<T> implements Future<T>, Cancellable {
     private volatile boolean           cancelled;
     private volatile T                 result;
     private volatile Throwable         ex;
-    //
+
     public BasicFuture() {
         super();
         this.callback = null;
     }
+
     public BasicFuture(final FutureCallback<T> callback) {
         super();
         this.callback = callback;
     }
+
     public boolean isCancelled() {
         return this.cancelled;
     }
+
     public boolean isDone() {
         return this.completed;
     }
+
     private T getResult() throws ExecutionException {
         if (this.ex != null) {
             throw new ExecutionException(this.ex.getMessage(), this.ex);
         }
         return this.result;
     }
+
     public synchronized T get() throws InterruptedException, ExecutionException {
         while (!this.completed) {
             wait();
         }
         return getResult();
     }
+
     public synchronized T get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         if (unit == null) {
             throw new NullPointerException("Time unit");
@@ -84,6 +88,7 @@ public class BasicFuture<T> implements Future<T>, Cancellable {
             }
         }
     }
+
     public boolean completed(final T result) {
         synchronized (this) {
             if (this.completed) {
@@ -98,6 +103,7 @@ public class BasicFuture<T> implements Future<T>, Cancellable {
         }
         return true;
     }
+
     public boolean failed(final Throwable exception) {
         synchronized (this) {
             if (this.completed) {
@@ -112,6 +118,7 @@ public class BasicFuture<T> implements Future<T>, Cancellable {
         }
         return true;
     }
+
     public boolean cancel(final boolean mayInterruptIfRunning) {
         synchronized (this) {
             if (this.completed) {
@@ -121,11 +128,16 @@ public class BasicFuture<T> implements Future<T>, Cancellable {
             this.cancelled = true;
             notifyAll();
         }
-        if (this.callback != null && this.callback instanceof CancellFutureCallback) {
-            ((CancellFutureCallback) this.callback).cancelled();
+        if (this.callback != null) {
+            if (this.callback instanceof CancellFutureCallback) {
+                ((CancellFutureCallback) this.callback).cancelled();
+            } else {
+                this.failed(new CancellationException());
+            }
         }
         return true;
     }
+
     public boolean cancel() {
         return cancel(true);
     }
