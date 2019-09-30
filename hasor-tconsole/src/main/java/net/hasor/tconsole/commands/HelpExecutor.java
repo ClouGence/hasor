@@ -15,9 +15,9 @@
  */
 package net.hasor.tconsole.commands;
 import net.hasor.core.Singleton;
-import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.CommandFinder;
-import net.hasor.tconsole.CommandRequest;
+import net.hasor.tconsole.TelCommand;
+import net.hasor.tconsole.TelContext;
+import net.hasor.tconsole.TelExecutor;
 import net.hasor.utils.StringUtils;
 
 import java.io.StringWriter;
@@ -29,7 +29,7 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-public class HelpExecutor implements CommandExecutor {
+public class HelpExecutor implements TelExecutor {
     @Override
     public String helpInfo() {
         return "command help manual. the function like linux man.\r\n"//
@@ -40,22 +40,17 @@ public class HelpExecutor implements CommandExecutor {
     }
 
     @Override
-    public boolean inputMultiLine(CommandRequest request) {
-        return false;
-    }
-
-    @Override
-    public String doCommand(CommandRequest request) throws Throwable {
-        CommandFinder finder = request.getFinder();
+    public String doCommand(TelCommand telCommand) throws Throwable {
+        TelContext finder = telCommand.getSession().getTelContext();
         List<String> cmdNames = finder.getCommandNames();
         StringWriter sw = new StringWriter();
         if (cmdNames == null || cmdNames.isEmpty()) {
-            return "there is nothing  command to display information.";
+            return "there is nothing command to display information.";
         }
-        String[] args = request.getRequestArgs();
+        String[] args = telCommand.getCommandArgs();
         if (args != null && args.length > 0) {
             String cmdName = args[0];
-            CommandExecutor cmd = finder.findCommand(cmdName);
+            TelExecutor cmd = finder.findCommand(cmdName);
             if (cmd != null) {
                 sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + cmdName + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
                 sw.write(cmd.helpInfo() + "\r\n");
@@ -73,7 +68,7 @@ public class HelpExecutor implements CommandExecutor {
         }
         maxLength = maxLength + 2;
         for (String name : cmdNames) {
-            CommandExecutor cmd = finder.findCommand(name);
+            TelExecutor cmd = finder.findCommand(name);
             sw.write(" - " + StringUtils.rightPad(name, maxLength, " ") + cmd.helpInfo().split("\r\n")[0]);
             if (cmdNames.size() > 1) {
                 sw.write("\r\n");

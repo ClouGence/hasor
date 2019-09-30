@@ -13,32 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.tconsole.launcher;
+package net.hasor.test.beans;
+import net.hasor.core.Singleton;
+import net.hasor.tconsole.TelCommand;
+import net.hasor.tconsole.TelExecutor;
+
 /**
- *
+ * Hello Word
  * @version : 2016年4月3日
  * @author 赵永春 (zyc@hasor.net)
  */
-class CmdResponse {
-    private String  result;
-    private boolean complete;
-    private boolean closeConnection;
-
-    public CmdResponse(String result, boolean complete, boolean closeConnection) {
-        this.result = result;
-        this.complete = complete;
-        this.closeConnection = closeConnection;
+@Singleton
+public class EchoSessionIDExecutor implements TelExecutor {
+    @Override
+    public String helpInfo() {
+        return "hello help.";
     }
 
-    public boolean isComplete() {
-        return this.complete;
-    }
-
-    public boolean isCloseConnection() {
-        return this.closeConnection;
-    }
-
-    public String getResult() {
-        return this.result;
+    @Override
+    public String doCommand(TelCommand telCommand) throws Throwable {
+        return telCommand.getSession().getSessionID();
     }
 }

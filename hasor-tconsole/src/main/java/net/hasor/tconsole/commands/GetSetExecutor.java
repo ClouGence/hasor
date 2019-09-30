@@ -15,9 +15,8 @@
  */
 package net.hasor.tconsole.commands;
 import net.hasor.core.Singleton;
-import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.CommandRequest;
-import net.hasor.tconsole.launcher.CmdRequest;
+import net.hasor.tconsole.TelCommand;
+import net.hasor.tconsole.TelExecutor;
 import net.hasor.utils.StringUtils;
 
 /**
@@ -26,7 +25,7 @@ import net.hasor.utils.StringUtils;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-public class GetSetExecutor implements CommandExecutor {
+public class GetSetExecutor implements TelExecutor {
     @Override
     public String helpInfo() {
         return "set/get environment variables of console .\r\n"//
@@ -35,33 +34,27 @@ public class GetSetExecutor implements CommandExecutor {
     }
 
     @Override
-    public boolean inputMultiLine(CommandRequest request) {
-        return false;
-    }
-
-    @Override
-    public String doCommand(CommandRequest request) throws Throwable {
-        request.setCommandAttr(CmdRequest.WITHOUT_AFTER_CLOSE_SESSION, true);//不关闭Session
-        String[] args = request.getRequestArgs();
+    public String doCommand(TelCommand telCommand) throws Throwable {
+        String[] args = telCommand.getCommandArgs();
         String argsJoin = StringUtils.join(args, "");
         argsJoin = argsJoin.replace("\\s+", " ");
         args = argsJoin.split("=");
         //
         if (args.length > 0) {
-            String cmd = request.getCommandString();
+            String cmd = telCommand.getCommandName();
             String varName = args[0].trim();
             //
             if ("set".equalsIgnoreCase(cmd)) {
                 if (args.length > 1) {
                     String varValue = args[1].trim();
-                    request.setSessionAttr(varName, varValue);
-                    return "[SUCCEED] set the new value.";
+                    telCommand.getSession().setAttribute(varName, varValue);
+                    return "set the new value.";
                 } else {
-                    return "[ERROR] args count error.";
+                    throw new Exception("args count error.");
                 }
             }
             if ("get".equalsIgnoreCase(cmd)) {
-                Object obj = request.getSessionAttr(varName);
+                Object obj = telCommand.getSession().getAttribute(varName);
                 if (obj == null) {
                     return "";
                 } else {
@@ -69,9 +62,9 @@ public class GetSetExecutor implements CommandExecutor {
                 }
             }
             //
-            return "[ERROR] does not support command '" + request.getCommandString() + "'.";
+            throw new Exception("does not support command '" + telCommand.getCommandName() + "'.");
         } else {
-            return "[ERROR] args count error.";
+            throw new Exception("args count error.");
         }
     }
 }

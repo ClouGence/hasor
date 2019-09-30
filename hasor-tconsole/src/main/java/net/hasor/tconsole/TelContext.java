@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.tconsole;
-import net.hasor.core.AppContext;
+import io.netty.buffer.ByteBufAllocator;
+import net.hasor.core.spi.SpiTrigger;
 
 import java.util.List;
 
@@ -23,12 +24,16 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2018-04-09
  */
-public interface CommandFinder {
+public interface TelContext {
     /**查找命令。*/
-    public CommandExecutor findCommand(String cmdName);
+    public TelExecutor findCommand(String cmdName);
 
     /**获取所有命令。*/
     public List<String> getCommandNames();
 
-    public AppContext getAppContext();
+    public ByteBufAllocator getByteBufAllocator();
+
+    public SpiTrigger getSpiTrigger();
+
+    public void asyncExecute(Runnable runnable);
 }

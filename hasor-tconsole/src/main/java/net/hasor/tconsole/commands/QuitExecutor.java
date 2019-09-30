@@ -15,8 +15,9 @@
  */
 package net.hasor.tconsole.commands;
 import net.hasor.core.Singleton;
-import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.CommandRequest;
+import net.hasor.tconsole.TelCommand;
+import net.hasor.tconsole.TelExecutorVoid;
+import net.hasor.tconsole.TelOptions;
 
 /**
  *
@@ -24,20 +25,45 @@ import net.hasor.tconsole.CommandRequest;
  * @author 赵永春 (zyc@hasor.net)
  */
 @Singleton
-public class QuitExecutor implements CommandExecutor {
+public class QuitExecutor implements TelExecutorVoid {
     @Override
     public String helpInfo() {
-        return "out of console.";
+        return "out of console.\r\n"//
+                + " -t <n> (when n second after to close telnet.)\r\n"//
+                + " -n <n> (when n commands after to close telnet.)\r\n"//
+                + " -next  (when next commands after to close telnet.)\r\n"//
+                + "     Tips: If you set -n -t at the same time, then -t failure.";
     }
 
     @Override
-    public boolean inputMultiLine(CommandRequest request) {
-        return false;
-    }
-
-    @Override
-    public String doCommand(CommandRequest request) throws Throwable {
-        request.closeSession();
-        return "logout of console";
+    public void voidCommand(TelCommand telCommand) throws Throwable {
+        String[] args = telCommand.getCommandArgs();
+        int parseInt = 0;
+        int nextCommand = 0;
+        if (args.length > 0) {
+            for (String arg : args) {
+                if (arg.startsWith("-t")) {
+                    parseInt = Integer.parseInt(arg.substring(2).trim());
+                    continue;
+                }
+                if (arg.startsWith("-n")) {
+                    int nextInt = Integer.parseInt(arg.substring(2).trim());
+                    if (nextInt > 0) {
+                        nextCommand = telCommand.getSession().curentCounter() + nextInt;
+                    }
+                    continue;
+                }
+                if (arg.startsWith("-next")) {
+                    nextCommand = telCommand.getSession().curentCounter() + 1;
+                }
+            }
+        }
+        //
+        if (nextCommand > 0) {
+            telCommand.getSession().setAttribute(TelOptions.MAX_EXECUTOR_NUM, nextCommand);
+            return;
+        }
+        //
+        telCommand.getSession().close(parseInt);
     }
 }

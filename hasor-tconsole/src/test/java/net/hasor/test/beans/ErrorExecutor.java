@@ -14,29 +14,22 @@
  * limitations under the License.
  */
 package net.hasor.test.beans;
-import net.hasor.core.Singleton;
-import net.hasor.tconsole.CommandExecutor;
-import net.hasor.tconsole.CommandRequest;
+import net.hasor.tconsole.TelCommand;
+import net.hasor.tconsole.TelExecutor;
 
 /**
  * Hello Word
  * @version : 2016年4月3日
  * @author 赵永春 (zyc@hasor.net)
  */
-@Singleton
-public class HelloWordExecutor implements CommandExecutor {
+public class ErrorExecutor implements TelExecutor {
     @Override
     public String helpInfo() {
         return "hello help.";
     }
 
     @Override
-    public boolean inputMultiLine(CommandRequest request) {
-        return false;
-    }
-
-    @Override
-    public String doCommand(CommandRequest request) throws Throwable {
-        return "you say -> hello";
+    public String doCommand(TelCommand telCommand) throws Throwable {
+        throw new RuntimeException("error message form test");
     }
 }

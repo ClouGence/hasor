@@ -13,22 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.tconsole;
+package net.hasor.tconsole.launcher;
+import net.hasor.tconsole.TelAttribute;
+
+import java.util.HashMap;
+import java.util.Set;
+
 /**
- * Telnet指令执行器。
- *  - 无论是否设置了单例模式，执行器都是单例模式运行的。see: net.hasor.tconsole.binder.ExecutorDefine
+ *
  * @version : 2016年4月3日
  * @author 赵永春 (zyc@hasor.net)
  */
-public interface CommandExecutor {
-    public static final String AFTER_CLOSE_SESSION = "Session_AfterClose";
+public abstract class AttributeObject extends HashMap<String, Object> implements TelAttribute {
+    @Override
+    public Object getAttribute(String key) {
+        return super.get(key);
+    }
 
-    /**帮助信息.*/
-    public String helpInfo();
+    @Override
+    public void setAttribute(String key, Object value) {
+        super.put(key, value);
+    }
 
-    /**命令是否启用多行输入，启用多行输入之后。两次回车即可完成整个命令。*/
-    public boolean inputMultiLine(CommandRequest request);
-
-    /**执行命令*/
-    public String doCommand(CommandRequest request) throws Throwable;
+    @Override
+    public Set<String> getAttributeNames() {
+        return super.keySet();
+    }
 }
