@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.tconsole.launcher;
+package net.hasor.tconsole.launcher.telnet;
 import io.netty.channel.ChannelHandlerContext;
 import net.hasor.tconsole.AbstractTelTest;
 import net.hasor.tconsole.commands.QuitExecutor;
@@ -25,7 +25,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TelNettyTest extends AbstractTelTest {
+public class NettyHandlerTelTest extends AbstractTelTest {
     @Test
     public void allowTest_1() throws Exception {
         TestExecutor testExecutor = new TestExecutor();
@@ -38,9 +38,8 @@ public class TelNettyTest extends AbstractTelTest {
             }
         };
         //
-        TelConsoleServer telContext = mockTelContext(testExecutor);
+        TellnetTelService telContext = mockTelContext(testExecutor);
         ChannelHandlerContext context = mockNetty(dataWriter);
-        //
         //
         TelNettyHandler handler = new TelNettyHandler(telContext, null);
         handler.channelActive(context);
@@ -63,7 +62,7 @@ public class TelNettyTest extends AbstractTelTest {
             }
         };
         //
-        TelConsoleServer telContext = mockTelContext(new QuitExecutor());
+        TellnetTelService telContext = mockTelContext(new QuitExecutor());
         ChannelHandlerContext context = mockNetty(dataWriter);
         //
         //
@@ -89,7 +88,7 @@ public class TelNettyTest extends AbstractTelTest {
             }
         };
         //
-        TelConsoleServer telContext = mockTelContext(testExecutor);
+        TellnetTelService telContext = mockTelContext(testExecutor);
         ChannelHandlerContext context = mockNetty(dataWriter);
         //
         //

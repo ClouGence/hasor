@@ -1,4 +1,4 @@
-package net.hasor.tconsole.launcher;
+package net.hasor.tconsole.launcher.telnet;
 import io.netty.channel.Channel;
 
 import java.io.Writer;

@@ -43,16 +43,16 @@ import static net.hasor.tconsole.launcher.TelUtils.aInteger;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class TelSessionObject extends AttributeObject implements TelSession {
-    private static Logger           logger = LoggerFactory.getLogger(TelSessionObject.class);
-    private        String           sessionID;     //
-    private        TelReaderObject  dataReader;    // 输入流
-    private        Writer           dataWriter;    // 输出流
+    private static Logger             logger = LoggerFactory.getLogger(TelSessionObject.class);
+    private        String             sessionID;     //
+    private        TelReaderObject    dataReader;    // 输入流
+    private        Writer             dataWriter;    // 输出流
     //
-    private        TelConsoleServer telContext;    //
-    private        TelCommandObject curentCommand; // 当前命令
-    private        AtomicInteger    atomicInteger; // 指令计数器
+    private        AbstractTelService telContext;    //
+    private        TelCommandObject   curentCommand; // 当前命令
+    private        AtomicInteger      atomicInteger; // 指令计数器
 
-    TelSessionObject(TelConsoleServer telContext, ByteBuf dataReader, Writer dataWriter) {
+    public TelSessionObject(AbstractTelService telContext, ByteBuf dataReader, Writer dataWriter) {
         this.sessionID = UUID.randomUUID().toString().replace("-", "");
         this.telContext = telContext;
         this.dataReader = new TelReaderObject(telContext.getByteBufAllocator(), dataReader);
@@ -112,7 +112,7 @@ public abstract class TelSessionObject extends AttributeObject implements TelSes
             if (blankLine) {
                 String readData = this.dataReader.removeReadData();
                 try {
-                    this.curentCommand = createTelCommand(readData);
+                    this.curentCommand = createTelCommand(readData.trim());
                     if (this.curentCommand == null) {
                         return !this.dataReader.isEof();
                     }
@@ -153,6 +153,7 @@ public abstract class TelSessionObject extends AttributeObject implements TelSes
     }
 
     private void execCommand(TelCommandObject curentCommand) {
+        logger.info("exec " + curentCommand.getCommandName());
         long doStartTime = System.currentTimeMillis();
         String result = null;
         try {

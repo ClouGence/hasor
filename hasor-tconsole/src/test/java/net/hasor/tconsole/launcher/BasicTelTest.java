@@ -19,6 +19,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import net.hasor.tconsole.AbstractTelTest;
 import net.hasor.tconsole.commands.QuitExecutor;
+import net.hasor.tconsole.launcher.telnet.TellnetTelService;
 import net.hasor.test.beans.EchoSessionIDExecutor;
 import net.hasor.test.beans.ErrorExecutor;
 import net.hasor.test.beans.TestExecutor;
@@ -30,14 +31,14 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TelCommandTest extends AbstractTelTest {
+public class BasicTelTest extends AbstractTelTest {
     @Test
     public void basicRunCommand_1() throws Throwable {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("set name=abc age=13 \n aaa", StandardCharsets.UTF_8);
         //
         TestExecutor testExecutor = new TestExecutor();
-        TelConsoleServer telContext = mockTelContext(testExecutor);
+        TellnetTelService telContext = mockTelContext(testExecutor);
         //
         Writer dataWriter = new StringWriter();
         TelSessionObject sessionObject = new TelSessionObject(telContext, dataReader, dataWriter) {
@@ -62,7 +63,7 @@ public class TelCommandTest extends AbstractTelTest {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("set name=abc age=13 \n aaa", StandardCharsets.UTF_8);
         //
-        TelConsoleServer telContext = mockTelContext(new EchoSessionIDExecutor());
+        TellnetTelService telContext = mockTelContext(new EchoSessionIDExecutor());
         //
         Writer dataWriter = new StringWriter();
         TelSessionObject sessionObject = new TelSessionObject(telContext, dataReader, dataWriter) {
@@ -82,7 +83,7 @@ public class TelCommandTest extends AbstractTelTest {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("set name=abc age=13 \n aaa", StandardCharsets.UTF_8);
         //
-        TelConsoleServer telContext = mockTelContext(null);
+        TellnetTelService telContext = mockTelContext(null);
         //
         Writer dataWriter = new StringWriter();
         TelSessionObject sessionObject = new TelSessionObject(telContext, dataReader, dataWriter) {
@@ -102,7 +103,7 @@ public class TelCommandTest extends AbstractTelTest {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("\n\n\n\n", StandardCharsets.UTF_8);
         //
-        TelConsoleServer telContext = mockTelContext(null);
+        TellnetTelService telContext = mockTelContext(null);
         //
         Writer dataWriter = new StringWriter();
         TelSessionObject sessionObject = new TelSessionObject(telContext, dataReader, dataWriter) {
@@ -123,7 +124,7 @@ public class TelCommandTest extends AbstractTelTest {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("set name=abc age=13 \n aaa", StandardCharsets.UTF_8);
         //
-        TelConsoleServer telContext = mockTelContext(new ErrorExecutor());
+        TellnetTelService telContext = mockTelContext(new ErrorExecutor());
         //
         Writer dataWriter = new StringWriter();
         TelSessionObject sessionObject = new TelSessionObject(telContext, dataReader, dataWriter) {
@@ -144,7 +145,7 @@ public class TelCommandTest extends AbstractTelTest {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("close -t3 \n aaa", StandardCharsets.UTF_8);
         //
-        TelConsoleServer telContext = mockTelContext(new QuitExecutor());
+        TellnetTelService telContext = mockTelContext(new QuitExecutor());
         //
         AtomicBoolean closeTag = new AtomicBoolean(false);
         Writer dataWriter = new StringWriter() {
@@ -178,7 +179,7 @@ public class TelCommandTest extends AbstractTelTest {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("close -t-3 \n aaa", StandardCharsets.UTF_8);
         //
-        TelConsoleServer telContext = mockTelContext(new QuitExecutor());
+        TellnetTelService telContext = mockTelContext(new QuitExecutor());
         //
         AtomicBoolean closeTag = new AtomicBoolean(false);
         Writer dataWriter = new StringWriter() {

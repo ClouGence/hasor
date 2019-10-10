@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 package net.hasor.tconsole.commands;
-import net.hasor.core.Singleton;
 import net.hasor.tconsole.TelCommand;
-import net.hasor.tconsole.TelExecutor;
+import net.hasor.tconsole.TelExecutorVoid;
 import net.hasor.utils.StringUtils;
 
 /**
@@ -24,17 +23,16 @@ import net.hasor.utils.StringUtils;
  * @version : 2016年4月3日
  * @author 赵永春 (zyc@hasor.net)
  */
-@Singleton
-public class GetSetExecutor implements TelExecutor {
+public class GetSetExecutor implements TelExecutorVoid {
     @Override
     public String helpInfo() {
-        return "set/get environment variables of console .\r\n"//
-                + " - get variableName                (returns variable Value.)\r\n"// 
+        return "set/get environment variables of console.\n"//
+                + " - get variableName                (returns variable Value.)\n"// 
                 + " - set variableName variableValue  (set new values to variable.)";//
     }
 
     @Override
-    public String doCommand(TelCommand telCommand) throws Throwable {
+    public void voidCommand(TelCommand telCommand) throws Throwable {
         String[] args = telCommand.getCommandArgs();
         String argsJoin = StringUtils.join(args, "");
         argsJoin = argsJoin.replace("\\s+", " ");
@@ -48,7 +46,7 @@ public class GetSetExecutor implements TelExecutor {
                 if (args.length > 1) {
                     String varValue = args[1].trim();
                     telCommand.getSession().setAttribute(varName, varValue);
-                    return "set the new value.";
+                    return;
                 } else {
                     throw new Exception("args count error.");
                 }
@@ -56,9 +54,11 @@ public class GetSetExecutor implements TelExecutor {
             if ("get".equalsIgnoreCase(cmd)) {
                 Object obj = telCommand.getSession().getAttribute(varName);
                 if (obj == null) {
-                    return "";
+                    telCommand.writeMessageLine("");
+                    return;
                 } else {
-                    return obj.toString();//TODO may be is object
+                    telCommand.writeMessageLine(obj.toString());//TODO may be is object
+                    return;
                 }
             }
             //

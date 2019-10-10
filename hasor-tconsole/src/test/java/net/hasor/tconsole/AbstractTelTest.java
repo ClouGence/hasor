@@ -20,7 +20,7 @@ import io.netty.channel.ChannelHandlerContext;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.core.spi.SpiTrigger;
-import net.hasor.tconsole.launcher.TelConsoleServer;
+import net.hasor.tconsole.launcher.telnet.TellnetTelService;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
@@ -32,18 +32,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
 public class AbstractTelTest {
-    public TelConsoleServer mockTelContext() {
+    public TellnetTelService mockTelContext() {
         return mockTelContext(null, false);
     }
 
-    public TelConsoleServer mockTelContext(TelExecutor executor) {
+    public TellnetTelService mockTelContext(TelExecutor executor) {
         return mockTelContext(executor, true);
     }
 
-    private TelConsoleServer mockTelContext(TelExecutor executor, boolean hasExecutor) {
+    private TellnetTelService mockTelContext(TelExecutor executor, boolean hasExecutor) {
         AppContext appContext = Hasor.create().asCore().build();
         //
-        TelConsoleServer telContext = PowerMockito.mock(TelConsoleServer.class);
+        TellnetTelService telContext = PowerMockito.mock(TellnetTelService.class);
         PowerMockito.when(telContext.getByteBufAllocator()).thenReturn(PooledByteBufAllocator.DEFAULT);
         PowerMockito.when(telContext.getSpiTrigger()).thenReturn(appContext.getInstance(SpiTrigger.class));
         PowerMockito.doAnswer(invocation -> {

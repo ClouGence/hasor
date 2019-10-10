@@ -25,4 +25,12 @@ public class TelUtils {
     public static InetAddress finalBindAddress(String hostString) throws UnknownHostException {
         return "local".equalsIgnoreCase(hostString) ? InetAddress.getLocalHost() : InetAddress.getByName(hostString);
     }
+
+    public static String aString(TelAttribute telAttribute, String key) {
+        Object aInteger = telAttribute.getAttribute(key);
+        if (aInteger == null) {
+            aInteger = "";
+        }
+        return aInteger.toString();
+    }
 }

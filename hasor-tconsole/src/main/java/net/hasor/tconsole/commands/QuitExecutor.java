@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.tconsole.commands;
-import net.hasor.core.Singleton;
 import net.hasor.tconsole.TelCommand;
 import net.hasor.tconsole.TelExecutorVoid;
 import net.hasor.tconsole.TelOptions;
@@ -24,14 +23,13 @@ import net.hasor.tconsole.TelOptions;
  * @version : 2016年4月3日
  * @author 赵永春 (zyc@hasor.net)
  */
-@Singleton
 public class QuitExecutor implements TelExecutorVoid {
     @Override
     public String helpInfo() {
-        return "out of console.\r\n"//
-                + " -t <n> (when n second after to close telnet.)\r\n"//
-                + " -n <n> (when n commands after to close telnet.)\r\n"//
-                + " -next  (when next commands after to close telnet.)\r\n"//
+        return "out of console.\n"//
+                + " -t <n> (when n second after to close telnet.)\n"//
+                + " -n <n> (when n commands after to close telnet.)\n"//
+                + " -next  (when next commands after to close telnet.)\n"//
                 + "     Tips: If you set -n -t at the same time, then -t failure.";
     }
 

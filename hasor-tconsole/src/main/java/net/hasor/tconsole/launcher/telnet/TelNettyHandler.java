@@ -1,9 +1,12 @@
-package net.hasor.tconsole.launcher;
+package net.hasor.tconsole.launcher.telnet;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import net.hasor.tconsole.launcher.TelSessionObject;
+import net.hasor.tconsole.launcher.TelUtils;
+import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,22 +15,22 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.function.Predicate;
 
+import static net.hasor.tconsole.TelOptions.ENDCODE_OF_SILENT;
 import static net.hasor.tconsole.TelOptions.SILENT;
+import static net.hasor.tconsole.launcher.AbstractTelService.CMD;
 
 /**
  * Handles a server-side channel.
  */
 @ChannelHandler.Sharable
-public class TelNettyHandler extends SimpleChannelInboundHandler<String> {
-    protected static    Logger            logger         = LoggerFactory.getLogger(TelNettyHandler.class);
-    public static final String            CMD            = "tConsole>";
-    //
-    private             Predicate<String> inBoundMatcher = null;
-    private             TelConsoleServer  telContext     = null; // 环境
-    private             TelSessionObject  telSession     = null; // 会话
-    private             ByteBuf           dataReader     = null; // 读取缓冲
+class TelNettyHandler extends SimpleChannelInboundHandler<String> {
+    protected static Logger            logger         = LoggerFactory.getLogger(TelNettyHandler.class);
+    private          Predicate<String> inBoundMatcher = null;
+    private          TellnetTelService telContext     = null; // 环境
+    private          TelSessionObject  telSession     = null; // 会话
+    private          ByteBuf           dataReader     = null; // 读取缓冲
 
-    TelNettyHandler(TelConsoleServer telContext, Predicate<String> inBoundMatcher) {
+    TelNettyHandler(TellnetTelService telContext, Predicate<String> inBoundMatcher) {
         this.inBoundMatcher = inBoundMatcher == null ? s -> true : inBoundMatcher;
         this.telContext = telContext;
     }
@@ -95,7 +98,7 @@ public class TelNettyHandler extends SimpleChannelInboundHandler<String> {
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) {
         // .数据丢入缓冲区缓冲区，然后尝试执行一次。
-        this.dataReader.writeCharSequence(msg + "\n", StandardCharsets.UTF_8);
+        this.dataReader.writeCharSequence(msg + "\n", StandardCharsets.UTF_8);// 加 /n 是由于用了 DelimiterBasedFrameDecoder
         int lastBufferSize = this.telSession.buffSize();
         //
         while (this.telSession.tryReceiveEvent()) {
@@ -106,7 +109,15 @@ public class TelNettyHandler extends SimpleChannelInboundHandler<String> {
         }
         //
         if (this.telSession.buffSize() == 0) {
-            ctx.channel().writeAndFlush(CMD);
+            boolean noSilent = !TelUtils.aBoolean(this.telSession, SILENT);
+            if (noSilent) {
+                ctx.channel().writeAndFlush(CMD);
+            } else {
+                String codeOfSilent = TelUtils.aString(this.telSession, ENDCODE_OF_SILENT);
+                if (StringUtils.isNotBlank(codeOfSilent)) {
+                    ctx.channel().writeAndFlush(codeOfSilent + "\n");// 加 /n 是由于用了 DelimiterBasedFrameDecoder
+                }
+            }
         }
     }
 

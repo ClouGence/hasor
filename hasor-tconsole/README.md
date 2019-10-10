@@ -4,23 +4,26 @@
 
 &emsp;&emsp; 实现一个 命令。
 ```java
-public class HelloWordExecutor implements CommandExecutor {
+public class HelloWordExecutor implements TelExecutor {
     /** 命令的帮助信息，在 help <command> 时候输出这个信息 */
     public String helpInfo() {
         return "hello help.";  
     }
-    /** 命令输入时，是否接受多行输入？*/
-    public boolean inputMultiLine(CmdRequest request) {
-        return false; 
-    }
     /** 执行命令体 */
-    public String doCommand(CmdRequest request) throws Throwable {
-        return "you say ->" + request.getCommandString();
+    public String doCommand(TelCommand telCommand) throws Throwable {
+        return "you say ->" + telCommand.getCommandName();
     }
 }
 ```
 
-&emsp;&emsp; 注册命令，并设定命令的名为：hello。
+&emsp;&emsp; 启动Server。
+```java
+TelConsoleServer server = new TelConsoleServer("127.0.0.1", 8082, s -> true);
+server.addCommand("hello", new HelloWordExecutor());
+server.init();
+```
+
+&emsp;&emsp; 使用Hasor框架集成方式。
 ```java
 Hasor.createAppContext(new Module() {
     public void loadModule(ApiBinder apiBinder) throws Throwable {

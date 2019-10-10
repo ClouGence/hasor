@@ -21,7 +21,7 @@ import org.junit.Test;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-public class TelReaderTest {
+public class ReaderTelTest {
     @Test
     public void expectBlankLineTest() throws Throwable {
         ByteBuf byteBuf = PooledByteBufAllocator.DEFAULT.heapBuffer();

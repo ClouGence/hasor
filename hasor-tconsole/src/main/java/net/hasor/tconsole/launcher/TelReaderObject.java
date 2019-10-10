@@ -27,8 +27,8 @@ import java.nio.charset.StandardCharsets;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class TelReaderObject implements TelReader {
-    private ByteBuf byteBuf;
-    private ByteBuf dataReader;
+    private ByteBuf byteBuf;            // 处理数据的 buffpool
+    private ByteBuf dataReader;         // 数据源
     private int     lastExpectLength;
 
     public TelReaderObject(ByteBufAllocator byteBufAllocator, ByteBuf dataReader) {

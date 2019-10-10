@@ -14,40 +14,47 @@
  * under the License.
  */
 package net.hasor.tconsole.client;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import net.hasor.tconsole.TelOptions;
 import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.StringWriter;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Handles a client-side channel.
  */
 @Sharable
-class TelnetClientHandler extends SimpleChannelInboundHandler<String> {
-    protected static Logger              logger = LoggerFactory.getLogger(TelnetClientHandler.class);
-    private          BasicFuture<Object> closeFuture;
-    private          AtomicBoolean       atomicBoolean;
-    private          StringWriter        returnData;
+class TelClientHandler extends SimpleChannelInboundHandler<String> {
+    private static Logger              logger       = LoggerFactory.getLogger(TelClientHandler.class);
+    private        BasicFuture<Object> closeFuture;
+    private        ByteBuf             receiveDataBuffer;
+    private        String              endcodeOfSilent;
+    private        boolean             receiveReady = false;
 
-    public TelnetClientHandler(BasicFuture<Object> closeFuture, AtomicBoolean atomicBoolean, StringWriter returnData) {
+    public TelClientHandler(String endcodeOfSilent, BasicFuture<Object> closeFuture, ByteBuf receiveDataBuffer) {
+        this.endcodeOfSilent = endcodeOfSilent;
         this.closeFuture = closeFuture;
-        this.atomicBoolean = atomicBoolean;
-        this.returnData = returnData;
+        this.receiveDataBuffer = receiveDataBuffer;
+    }
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) {
+        ctx.channel().writeAndFlush(String.format("set %s=%s\n", TelOptions.SILENT, true)); //静默输出
+        ctx.channel().writeAndFlush(String.format("set %s=%s\n", TelOptions.ENDCODE_OF_SILENT, this.endcodeOfSilent)); //结束符
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String msg) {
-        logger.debug(msg);
-        if (returnData != null) {
-            returnData.write(msg + "\n");
+        if (this.receiveReady) {
+            this.receiveDataBuffer.writeCharSequence(msg + "\n", StandardCharsets.UTF_8);
         }
-        if (msg.startsWith("tConsole>[SUCCEED]")) {
-            this.atomicBoolean.set(true);
+        if (msg.equals(this.endcodeOfSilent)) {
+            this.receiveReady = true;//上面设置 ENDCODE_OF_SILENT 之后就会返回。
         }
     }
 
@@ -55,14 +62,12 @@ class TelnetClientHandler extends SimpleChannelInboundHandler<String> {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         logger.error(cause.getMessage(), cause);
         ctx.close();
-        this.closeFuture.completed(new Object());
-        this.atomicBoolean.set(true);
+        this.closeFuture.failed(cause);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
         this.closeFuture.completed(new Object());
-        this.atomicBoolean.set(true);
     }
 }

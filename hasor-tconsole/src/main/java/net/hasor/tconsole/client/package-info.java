@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 提供一个工具，可以连接远端并执行一条指令。
+ * 提供一个工具，可以连接远端 tConsole 并执行指令。
  */
 package net.hasor.tconsole.client;

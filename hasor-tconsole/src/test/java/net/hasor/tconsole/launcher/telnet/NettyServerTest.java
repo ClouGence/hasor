@@ -13,27 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.tconsole.launcher;
+package net.hasor.tconsole.launcher.telnet;
 import net.hasor.tconsole.AbstractTelTest;
-import net.hasor.tconsole.commands.GetSetExecutor;
-import net.hasor.tconsole.commands.HelpExecutor;
-import net.hasor.tconsole.commands.QuitExecutor;
+import net.hasor.tconsole.client.TelClient;
 import net.hasor.test.beans.TestExecutor;
 import org.junit.Test;
 
-public class TelServerTest extends AbstractTelTest {
+import java.net.InetSocketAddress;
+
+public class NettyServerTest extends AbstractTelTest {
     @Test
-    public void allowTest_1() throws Exception {
+    public void serverTest_1() throws Exception {
         //
-        TelConsoleServer server = new TelConsoleServer("127.0.0.1", 8082, s -> true);
-        server.addCommand("get", new GetSetExecutor());
-        server.addCommand("set", new GetSetExecutor());
-        server.addCommand("help", new HelpExecutor());
-        server.addCommand("quit", new QuitExecutor());
+        TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, s -> true);
         server.addCommand("test", new TestExecutor());
         //
         server.init();
+        //
+        TelClient client = new TelClient(new InetSocketAddress("127.0.0.1", 8082));
+        client.init();
+        //
+        String help = client.sendCommand("help");
+        assert help.contains("- exit  out of console.");
+        assert help.contains("- set   set/get environment variables of console.");
+        assert help.contains("- test  hello help.");
+        //
+        String exit = client.sendCommand("exit");
+        assert exit.equals("");
+        assert !client.isInit();
         server.close();
-        //Hasor.create().asCore().build().join(50, TimeUnit.SECONDS);
     }
 }
