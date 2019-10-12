@@ -75,7 +75,8 @@ public class TellnetTelService extends AbstractTelService {
     public TellnetTelService(String bindAddress, int bindPort, Predicate<String> inBoundMatcher, AppContext appContext) throws UnknownHostException {
         super(appContext);
         this.bindAddress = new InetSocketAddress(finalBindAddress(bindAddress), bindPort);
-        this.nettyHandler = new TelNettyHandler(this, inBoundMatcher);
+        Predicate<String> matcher = inBoundMatcher == null ? (s -> true) : inBoundMatcher;
+        this.nettyHandler = new TelNettyHandler(this, matcher);
     }
 
     public ByteBufAllocator getByteBufAllocator() {

@@ -1,7 +1,8 @@
 package net.hasor.tconsole.spi;
 import net.hasor.tconsole.TelCommand;
 
-public interface CloseListener extends java.util.EventListener {
+@FunctionalInterface
+public interface TelCloseEventListener extends java.util.EventListener {
     /**
      * 触发SessionClose，若想取消本次 session close，可以设置  trigger.getSession().setAttribute(CLOSE_SESSION, "false") 来取消
      * @param trigger 触发 close 的命令

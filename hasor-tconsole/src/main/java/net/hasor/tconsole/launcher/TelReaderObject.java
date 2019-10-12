@@ -41,30 +41,21 @@ public class TelReaderObject implements TelReader {
         if (waitString.length() == 0) {
             return false;
         }
-        int waitLength = waitString.length();
-        String dat = null;
-        while (this.byteBuf.readableBytes() > 0) {
-            dat = this.byteBuf.readCharSequence(waitLength, StandardCharsets.UTF_8).toString();
-            if (dat.equals("")) {
-                break;
-            }
-            if (dat.equals(waitString)) {
-                this.lastExpectLength = waitLength;
-                return true;
-            }
+        this.lastExpectLength = TelUtils.waitString(this.byteBuf, waitString);
+        if (this.lastExpectLength > -1) {
+            this.byteBuf.skipBytes(this.lastExpectLength + waitString.length());
+            return true;
         }
-        this.lastExpectLength = 0;
         return false;
     }
 
     // 读取数据
     public String removeReadData() {
-        int readCount = this.lastExpectLength;
-        if (readCount > 0) {
-            String dat = this.byteBuf.getCharSequence(0, this.byteBuf.readerIndex(), StandardCharsets.UTF_8).toString();
+        if (this.lastExpectLength > -1) {
+            String dat = this.byteBuf.getCharSequence(0, this.lastExpectLength, StandardCharsets.UTF_8).toString();
             this.byteBuf.discardReadBytes();// 释放已读的Buffer区域
-            this.lastExpectLength = 0;
-            return dat.substring(0, dat.length() - readCount);
+            this.lastExpectLength = -1;
+            return dat;
         }
         return null;
     }

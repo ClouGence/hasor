@@ -29,15 +29,17 @@ import java.nio.charset.StandardCharsets;
  * Handles a client-side channel.
  */
 @Sharable
-class TelClientHandler extends SimpleChannelInboundHandler<String> {
-    private static Logger              logger       = LoggerFactory.getLogger(TelClientHandler.class);
-    private        BasicFuture<Object> closeFuture;
-    private        ByteBuf             receiveDataBuffer;
-    private        String              endcodeOfSilent;
-    private        boolean             receiveReady = false;
+public class TelClientHandler extends SimpleChannelInboundHandler<String> {
+    private static Logger                 logger       = LoggerFactory.getLogger(TelClientHandler.class);
+    private        TelClientEventListener closeFuture;
+    private        BasicFuture<Object>    activeFuture;
+    private        ByteBuf                receiveDataBuffer;
+    private        String                 endcodeOfSilent;
+    private        boolean                receiveReady = false;
 
-    public TelClientHandler(String endcodeOfSilent, BasicFuture<Object> closeFuture, ByteBuf receiveDataBuffer) {
+    public TelClientHandler(String endcodeOfSilent, BasicFuture<Object> activeFuture, TelClientEventListener closeFuture, ByteBuf receiveDataBuffer) {
         this.endcodeOfSilent = endcodeOfSilent;
+        this.activeFuture = activeFuture;
         this.closeFuture = closeFuture;
         this.receiveDataBuffer = receiveDataBuffer;
     }
@@ -55,6 +57,7 @@ class TelClientHandler extends SimpleChannelInboundHandler<String> {
         }
         if (msg.equals(this.endcodeOfSilent)) {
             this.receiveReady = true;//上面设置 ENDCODE_OF_SILENT 之后就会返回。
+            this.activeFuture.completed(new Object());
         }
     }
 
@@ -62,12 +65,15 @@ class TelClientHandler extends SimpleChannelInboundHandler<String> {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         logger.error(cause.getMessage(), cause);
         ctx.close();
-        this.closeFuture.failed(cause);
+        this.closeFuture.onEventClient();
+        if (!this.activeFuture.isDone()) {
+            this.activeFuture.failed(cause);
+        }
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
-        this.closeFuture.completed(new Object());
+        this.closeFuture.onEventClient();
     }
 }

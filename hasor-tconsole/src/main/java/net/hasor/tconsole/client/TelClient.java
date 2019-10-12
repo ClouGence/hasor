@@ -29,37 +29,29 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import net.hasor.core.container.AbstractContainer;
+import net.hasor.tconsole.launcher.TelUtils;
 import net.hasor.utils.future.BasicFuture;
-import net.hasor.utils.future.FutureCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 /**
  * simple telnet client.
  */
 public class TelClient extends AbstractContainer {
-    private final BasicFuture<Object> closeFuture;
-    private final InetSocketAddress   remoteAddress;
-    private       EventLoopGroup      loopGroup;
-    private       Channel             channel;
-    private final ByteBuf             receiveDataBuffer;
-    private       String              endcodeOfSilent;
+    private static Logger            logger = LoggerFactory.getLogger(TelClient.class);
+    private final  InetSocketAddress remoteAddress;
+    private        EventLoopGroup    loopGroup;
+    private        Channel           channel;
+    private final  ByteBuf           receiveDataBuffer;
+    private        String            endcodeOfSilent;
 
     public TelClient(InetSocketAddress remoteAddress) {
         this.remoteAddress = remoteAddress;
-        this.closeFuture = new BasicFuture<>(new FutureCallback<Object>() {
-            @Override
-            public void completed(Object result) {
-                TelClient.this.close();
-            }
-
-            @Override
-            public void failed(Throwable ex) {
-                TelClient.this.close();
-            }
-        });
         this.receiveDataBuffer = ByteBufAllocator.DEFAULT.heapBuffer();
     }
 
@@ -73,22 +65,17 @@ public class TelClient extends AbstractContainer {
         if (!this.isInit()) {
             throw new IllegalStateException("the Container has been inited.");
         }
-        int waitLength = this.endcodeOfSilent.length();
         this.channel.writeAndFlush(message.trim() + "\n");
         while (this.isInit()) {
             this.receiveDataBuffer.resetReaderIndex();
             // 滑动窗口的机制
-            int loopCount = this.receiveDataBuffer.readableBytes() - waitLength;
-            if (loopCount > 0) {
-                for (int i = 0; i < loopCount; i++) {
-                    String dat = this.receiveDataBuffer.getCharSequence(i, waitLength, StandardCharsets.UTF_8).toString();
-                    if (dat.equals(this.endcodeOfSilent)) {
-                        dat = this.receiveDataBuffer.getCharSequence(0, i, StandardCharsets.UTF_8).toString();
-                        this.receiveDataBuffer.clear();// 完全释放
-                        this.receiveDataBuffer.discardReadBytes();
-                        return dat.trim();
-                    }
-                }
+            int readLength = TelUtils.waitString(this.receiveDataBuffer, this.endcodeOfSilent);
+            if (readLength > -1) {
+                this.receiveDataBuffer.skipBytes(readLength + endcodeOfSilent.length());
+                String dat = this.receiveDataBuffer.getCharSequence(0, readLength, StandardCharsets.UTF_8).toString();
+                this.receiveDataBuffer.clear();// 完全释放
+                this.receiveDataBuffer.discardReadBytes();
+                return dat.trim();
             }
             Thread.sleep(10);
         }
@@ -99,6 +86,7 @@ public class TelClient extends AbstractContainer {
 
     @Override
     protected void doInitialize() {
+        final BasicFuture<Object> activeFuture = new BasicFuture<>();
         this.endcodeOfSilent = "----" + UUID.randomUUID().toString().replace("-", "") + "----";
         this.loopGroup = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
@@ -110,10 +98,20 @@ public class TelClient extends AbstractContainer {
                 pipeline.addLast(new DelimiterBasedFrameDecoder(8192, Unpooled.wrappedBuffer(new byte[] { '\n' })));
                 pipeline.addLast(new StringDecoder());
                 pipeline.addLast(new StringEncoder());
-                pipeline.addLast(new TelClientHandler(endcodeOfSilent, closeFuture, receiveDataBuffer));
+                pipeline.addLast(new TelClientHandler(endcodeOfSilent, activeFuture, TelClient.this::close, receiveDataBuffer));
             }
         });
-        this.channel = b.connect(this.remoteAddress).syncUninterruptibly().channel();
+        this.channel = b.connect(this.remoteAddress).channel();
+        try {
+            activeFuture.get();
+            logger.info("TelClient initialize ok.");
+        } catch (Throwable e) {
+            if (e instanceof ExecutionException) {
+                e = e.getCause();
+            }
+            logger.error("TelClient initialize failed -> " + e.getMessage(), e);
+            this.close();
+        }
     }
 
     @Override

@@ -19,8 +19,8 @@ import net.hasor.tconsole.TelContext;
 import net.hasor.tconsole.TelExecutor;
 import net.hasor.tconsole.TelPhase;
 import net.hasor.tconsole.TelSession;
-import net.hasor.tconsole.spi.CloseListener;
-import net.hasor.tconsole.spi.ExecutorListener;
+import net.hasor.tconsole.spi.TelCloseEventListener;
+import net.hasor.tconsole.spi.TelExecutorListener;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;
 import org.slf4j.Logger;
@@ -139,12 +139,12 @@ public abstract class TelSessionObject extends AttributeObject implements TelSes
         //
         // .执行命令
         try {
-            this.telContext.getSpiTrigger().callSpi(ExecutorListener.class, listener -> {
+            this.telContext.getSpiTrigger().callSpi(TelExecutorListener.class, listener -> {
                 listener.beforeExecCommand(this.curentCommand);
             });
             this.execCommand(this.curentCommand);
         } finally {
-            this.telContext.getSpiTrigger().callSpi(ExecutorListener.class, listener -> {
+            this.telContext.getSpiTrigger().callSpi(TelExecutorListener.class, listener -> {
                 listener.afterExecCommand(this.curentCommand);
             });
         }
@@ -153,7 +153,7 @@ public abstract class TelSessionObject extends AttributeObject implements TelSes
     }
 
     private void execCommand(TelCommandObject curentCommand) {
-        logger.info("exec " + curentCommand.getCommandName());
+        logger.info("exec " + curentCommand.getCommandName() + " ,curentCounter =" + this.curentCounter());
         long doStartTime = System.currentTimeMillis();
         String result = null;
         try {
@@ -218,7 +218,7 @@ public abstract class TelSessionObject extends AttributeObject implements TelSes
         // .设置关闭状态
         this.setAttribute(CLOSE_SESSION, "true");
         // .触发SPI
-        this.telContext.getSpiTrigger().callSpi(CloseListener.class, listener -> {
+        this.telContext.getSpiTrigger().callSpi(TelCloseEventListener.class, listener -> {
             listener.onClose(curentCommand, afterSeconds);
         });
         // .倒计时

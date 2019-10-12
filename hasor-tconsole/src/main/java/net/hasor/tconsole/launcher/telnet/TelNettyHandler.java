@@ -6,6 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import net.hasor.tconsole.launcher.TelSessionObject;
 import net.hasor.tconsole.launcher.TelUtils;
+import net.hasor.tconsole.spi.TelSessionListener;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,24 +62,30 @@ class TelNettyHandler extends SimpleChannelInboundHandler<String> {
         //
         // .构造会话
         TelNettyWriter dataWriter = new TelNettyWriter(channel);
-        this.dataReader = telContext.getByteBufAllocator().heapBuffer();
-        this.telSession = new TelSessionObject(telContext, dataReader, dataWriter) {
+        this.dataReader = this.telContext.getByteBufAllocator().heapBuffer();
+        this.telSession = new TelSessionObject(this.telContext, dataReader, dataWriter) {
             public boolean isClose() {
                 return dataWriter.isClose();
             }
         };
         //
-        // .异步延迟 500ms 打印欢迎信息
+        // .异步延迟 200ms 打印欢迎信息
         this.telContext.asyncExecute(() -> {
             try {
                 Thread.sleep(200);
                 printWelcome(channel);
             } catch (Exception e) { /**/ }
         });
+        //
+        // .创建Session
+        this.telContext.getSpiTrigger().callSpi(TelSessionListener.class, listener -> {
+            listener.sessionCreated(this.telSession);
+        });
     }
 
     private void printWelcome(Channel channel) {
         if (TelUtils.aBoolean(this.telSession, SILENT)) {
+            logger.info("tConsole -> silent, ignore Welcome info.");
             return;
         }
         logger.info("tConsole -> send Welcome info.");
@@ -125,5 +132,12 @@ class TelNettyHandler extends SimpleChannelInboundHandler<String> {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         logger.error("tConsole error->" + cause.getMessage(), cause);
         ctx.close();
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) {
+        this.telContext.getSpiTrigger().callSpi(TelSessionListener.class, listener -> {
+            listener.sessionDestroyed(this.telSession); // .销毁Session
+        });
     }
 }
