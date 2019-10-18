@@ -18,13 +18,14 @@ package net.hasor.tconsole.launcher;
 import io.netty.buffer.ByteBufAllocator;
 import net.hasor.core.AppContext;
 import net.hasor.core.container.AbstractContainer;
-import net.hasor.core.spi.SpiCaller;
+import net.hasor.core.container.SpiCallerContainer;
 import net.hasor.core.spi.SpiTrigger;
 import net.hasor.tconsole.TelContext;
 import net.hasor.tconsole.TelExecutor;
 import net.hasor.tconsole.commands.GetSetExecutor;
 import net.hasor.tconsole.commands.HelpExecutor;
 import net.hasor.tconsole.commands.QuitExecutor;
+import net.hasor.tconsole.spi.TelContextListener;
 import net.hasor.utils.NameThreadFactory;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
@@ -61,16 +62,30 @@ public abstract class AbstractTelService extends AbstractContainer implements Te
         } else {
             // .空实现，防止npe
             this.classLoader = Thread.currentThread().getContextClassLoader();
-            this.spiTrigger = new SpiTrigger() {
-                @Override
-                public <T extends EventListener> void callSpi(Class<T> spiType, SpiCaller<T> spiCaller) {
-                }
-            };
+            this.spiTrigger = new SpiCallerContainer();
         }
+    }
+
+    /** 注册一个 SPI 监听器 */
+    public synchronized <T extends EventListener> void addListener(Class<T> spiType, T spiListener) {
+        this.addListener(spiType, (Supplier<T>) () -> spiListener);
+    }
+
+    /** 注册一个 SPI 监听器 */
+    public synchronized <T extends EventListener> void addListener(Class<T> spiType, Supplier<T> spiListener) {
+        if (!(this.spiTrigger instanceof SpiCallerContainer)) {
+            throw new IllegalStateException("spiTrigger is not SpiCallerContainer.");
+        }
+        ((SpiCallerContainer) this.spiTrigger).addListener(spiType, spiListener);
     }
 
     @Override
     protected void doInitialize() {
+        // .触发SPI
+        this.spiTrigger.callSpi(TelContextListener.class, listener -> {
+            listener.onStart(AbstractTelService.this);
+        });
+        //
         this.addCommand(new String[] { "get", "set" }, new GetSetExecutor());
         this.addCommand(new String[] { "quit", "exit" }, new QuitExecutor());
         this.addCommand(new String[] { "help" }, new HelpExecutor());
@@ -93,6 +108,10 @@ public abstract class AbstractTelService extends AbstractContainer implements Te
             this.executor = null;
         }
         this.telExecutorMap.clear();
+        // .触发SPI
+        this.spiTrigger.callSpi(TelContextListener.class, listener -> {
+            listener.onStop(AbstractTelService.this);
+        });
     }
 
     public void asyncExecute(Runnable runnable) {

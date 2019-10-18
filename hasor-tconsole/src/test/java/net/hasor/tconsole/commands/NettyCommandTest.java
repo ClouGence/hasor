@@ -24,7 +24,7 @@ import java.net.InetSocketAddress;
 
 public class NettyCommandTest extends AbstractTelTest {
     @Test
-    public void serverTest_1() throws Exception {
+    public void helpTest_1() throws Exception {
         try (TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, s -> true)) {
             server.addCommand("test", new TestExecutor());
             server.init();
@@ -45,25 +45,23 @@ public class NettyCommandTest extends AbstractTelTest {
     }
 
     @Test
-    public void helpTest_1() throws Exception {
+    public void getsetTest_1() throws Exception {
         //
-        TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, s -> true);
-        server.addCommand("test", new TestExecutor());
-        //
-        server.init();
-        //
-        TelClient client = new TelClient(new InetSocketAddress("127.0.0.1", 8082));
-        client.init();
-        Thread.sleep(500);
-        //
-        String help = client.sendCommand("help");
-        assert help.contains("- exit  out of console.");
-        assert help.contains("- set   set/get environment variables of console.");
-        assert help.contains("- test  hello help.");
-        //
-        String exit = client.sendCommand("exit");
-        assert exit.equals("");
-        assert !client.isInit();
-        server.close();
+        try (TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, s -> true)) {
+            server.addCommand("test", new TestExecutor());
+            //
+            server.init();
+            //
+            TelClient client = new TelClient(new InetSocketAddress("127.0.0.1", 8082));
+            client.init();
+            Thread.sleep(500);
+            //
+            String vat_a = client.sendCommand("get a");
+            assert vat_a.equals("");
+            client.sendCommand("set a=asd");
+            //
+            vat_a = client.sendCommand("get a");
+            assert vat_a.equals("asd");
+        }
     }
 }

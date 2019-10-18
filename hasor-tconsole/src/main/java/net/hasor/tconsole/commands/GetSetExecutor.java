@@ -26,8 +26,8 @@ import net.hasor.utils.StringUtils;
 public class GetSetExecutor implements TelExecutorVoid {
     @Override
     public String helpInfo() {
-        return "set/get environment variables of console.\n"//
-                + " - get variableName                (returns variable Value.)\n"// 
+        return "set/get environment variables of console.\r\n"//
+                + " - get variableName                (returns variable Value.)\r\n"//
                 + " - set variableName variableValue  (set new values to variable.)";//
     }
 

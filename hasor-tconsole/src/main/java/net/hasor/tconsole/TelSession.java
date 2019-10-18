@@ -48,7 +48,7 @@ public interface TelSession extends TelAttribute {
 
     /** 输出状态（带有换行）*/
     public default void writeMessageLine(String message) {
-        this.writeMessage(message + "\n");
+        this.writeMessage(message + "\r\n");
     }
 
     /**输出状态（不带换行）。*/

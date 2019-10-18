@@ -170,7 +170,7 @@ public class BasicTelTest extends AbstractTelTest {
         assert toString.contains("exit after 3 seconds.");
         assert toString.contains("exit after 2 seconds.");
         assert toString.contains("exit after 1 seconds.");
-        assert toString.contains("bye.\n");
+        assert toString.contains("bye.\r\n");
         assert sessionObject.curentCounter() == 1;
     }
 
@@ -204,7 +204,7 @@ public class BasicTelTest extends AbstractTelTest {
         assert !toString.contains("exit after 3 seconds.");
         assert !toString.contains("exit after 2 seconds.");
         assert !toString.contains("exit after 1 seconds.");
-        assert toString.contains("bye.\n");
+        assert toString.contains("bye.\r\n");
         assert sessionObject.curentCounter() == 1;
     }
 }

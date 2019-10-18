@@ -25,7 +25,7 @@ public interface TelReader {
     public default boolean expectBlankLine() {
         return expectChar('\n');
     }
- 
+
     /** 连续读取到两个换行符 */
     public default boolean expectDoubleBlankLines() {
         return expectString("\n\n");

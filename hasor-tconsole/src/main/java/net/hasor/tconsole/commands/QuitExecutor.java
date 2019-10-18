@@ -26,10 +26,10 @@ import net.hasor.tconsole.TelOptions;
 public class QuitExecutor implements TelExecutorVoid {
     @Override
     public String helpInfo() {
-        return "out of console.\n"//
-                + " -t <n> (when n second after to close telnet.)\n"//
-                + " -n <n> (when n commands after to close telnet.)\n"//
-                + " -next  (when next commands after to close telnet.)\n"//
+        return "out of console.\r\n"//
+                + " -t <n> (when n second after to close telnet.)\r\n"//
+                + " -n <n> (when n commands after to close telnet.)\r\n"//
+                + " -next  (when next commands after to close telnet.)\r\n"//
                 + "     Tips: If you set -n -t at the same time, then -t failure.";
     }
 

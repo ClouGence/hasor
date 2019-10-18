@@ -32,10 +32,10 @@ import java.util.List;
 public class HelpExecutor implements TelExecutor {
     @Override
     public String helpInfo() {
-        return "command help manual. the function like linux man.\n"//
-                + " - help       (show all commands help info.)\n"//
-                + " - help <cmd> (show <cmd> help detail info.)\n"//
-                + " - example : \n"//
+        return "command help manual. the function like linux man.\r\n"//
+                + " - help       (show all commands help info.)\r\n"//
+                + " - help <cmd> (show <cmd> help detail info.)\r\n"//
+                + " - example : \r\n"//
                 + "       help quit  (show the 'quit' command help info.)";
     }
 
@@ -52,10 +52,10 @@ public class HelpExecutor implements TelExecutor {
             String cmdName = args[0];
             TelExecutor cmd = finder.findCommand(cmdName);
             if (cmd != null) {
-                sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + cmdName + "  <<<<<<<<<<<<<<<<<<<<<<<<\n");
-                sw.write(cmd.helpInfo() + "\n");
+                sw.write(">>>>>>>>>>>>>>>>>>>>>>>>  " + cmdName + "  <<<<<<<<<<<<<<<<<<<<<<<<\r\n");
+                sw.write(cmd.helpInfo() + "\r\n");
             } else {
-                sw.write("[ERROR] command '" + cmdName + "' does not exist.\n");
+                sw.write("[ERROR] command '" + cmdName + "' does not exist.\r\n");
             }
             return sw.toString();
         }
@@ -69,9 +69,9 @@ public class HelpExecutor implements TelExecutor {
         maxLength = maxLength + 2;
         for (String name : cmdNames) {
             TelExecutor cmd = finder.findCommand(name);
-            sw.write(" - " + StringUtils.rightPad(name, maxLength, " ") + cmd.helpInfo().split("\n")[0]);
+            sw.write(" - " + StringUtils.rightPad(name, maxLength, " ") + cmd.helpInfo().split("\r\n")[0]);
             if (cmdNames.size() > 1) {
-                sw.write("\n");
+                sw.write("\r\n");
             }
         }
         return sw.toString();
