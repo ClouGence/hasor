@@ -22,31 +22,9 @@ import org.junit.Test;
 
 import java.net.InetSocketAddress;
 
-public class NettyCommandTest extends AbstractTelTest {
-    @Test
-    public void helpTest_1() throws Exception {
-        try (TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, s -> true)) {
-            server.addCommand("test", new TestExecutor());
-            server.init();
-            //
-            TelClient client = new TelClient(new InetSocketAddress("127.0.0.1", 8082));
-            client.init();
-            Thread.sleep(500);
-            //
-            String help = client.sendCommand("help");
-            assert help.contains("- exit  out of console.");
-            assert help.contains("- set   set/get environment variables of console.");
-            assert help.contains("- test  hello help.");
-            //
-            String exit = client.sendCommand("exit");
-            assert exit.equals("");
-            assert !client.isInit();
-        }
-    }
-
+public class GetSetCmdTest extends AbstractTelTest {
     @Test
     public void getsetTest_1() throws Exception {
-        //
         try (TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, s -> true)) {
             server.addCommand("test", new TestExecutor());
             //
@@ -54,7 +32,6 @@ public class NettyCommandTest extends AbstractTelTest {
             //
             TelClient client = new TelClient(new InetSocketAddress("127.0.0.1", 8082));
             client.init();
-            Thread.sleep(500);
             //
             String vat_a = client.sendCommand("get a");
             assert vat_a.equals("");
@@ -62,6 +39,27 @@ public class NettyCommandTest extends AbstractTelTest {
             //
             vat_a = client.sendCommand("get a");
             assert vat_a.equals("asd");
+        }
+    }
+
+    @Test
+    public void getsetTest_2() throws Exception {
+        try (TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, s -> true)) {
+            server.addCommand("test", new TestExecutor());
+            server.init();
+            TelClient client = new TelClient(new InetSocketAddress("127.0.0.1", 8082));
+            client.init();
+            //
+            String setResult = client.sendCommand("set a");
+            assert setResult.contains("java.lang.Exception: args count error.");
+            //
+            setResult = client.sendCommand("set");
+            assert setResult.contains("var name undefined.");
+            //
+            setResult = client.sendCommand("set a=asd");
+            assert setResult.equals("");
+            setResult = client.sendCommand("get a");
+            assert setResult.equals("asd");
         }
     }
 }

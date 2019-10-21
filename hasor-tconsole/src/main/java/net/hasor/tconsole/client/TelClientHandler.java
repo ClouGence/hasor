@@ -18,6 +18,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import net.hasor.tconsole.TelAttribute;
 import net.hasor.tconsole.TelOptions;
 import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
@@ -25,29 +26,33 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 
+import static net.hasor.tconsole.TelOptions.ENDCODE_OF_SILENT;
+
 /**
  * Handles a client-side channel.
  */
 @Sharable
-public class TelClientHandler extends SimpleChannelInboundHandler<String> {
+class TelClientHandler extends SimpleChannelInboundHandler<String> {
     private static Logger                 logger       = LoggerFactory.getLogger(TelClientHandler.class);
+    private        TelAttribute           telAttribute;
     private        TelClientEventListener closeFuture;
     private        BasicFuture<Object>    activeFuture;
     private        ByteBuf                receiveDataBuffer;
-    private        String                 endcodeOfSilent;
     private        boolean                receiveReady = false;
 
-    public TelClientHandler(String endcodeOfSilent, BasicFuture<Object> activeFuture, TelClientEventListener closeFuture, ByteBuf receiveDataBuffer) {
-        this.endcodeOfSilent = endcodeOfSilent;
+    TelClientHandler(TelAttribute telAttribute, BasicFuture<Object> activeFuture, TelClientEventListener closeFuture, ByteBuf receiveDataBuffer) {
         this.activeFuture = activeFuture;
         this.closeFuture = closeFuture;
         this.receiveDataBuffer = receiveDataBuffer;
+        this.telAttribute = telAttribute;
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        ctx.channel().writeAndFlush(String.format("set %s=%s\n", TelOptions.SILENT, true)); //静默输出
-        ctx.channel().writeAndFlush(String.format("set %s=%s\n", TelOptions.ENDCODE_OF_SILENT, this.endcodeOfSilent)); //结束符
+        // 2. 先设置成静默
+        ctx.channel().writeAndFlush(String.format("set %s=%s\n", TelOptions.SILENT, true));
+        // 3. 命令结束符
+        ctx.channel().writeAndFlush(String.format("set %s=%s\n", TelOptions.ENDCODE_OF_SILENT, this.telAttribute.getAttribute(ENDCODE_OF_SILENT)));
     }
 
     @Override
@@ -55,7 +60,7 @@ public class TelClientHandler extends SimpleChannelInboundHandler<String> {
         if (this.receiveReady) {
             this.receiveDataBuffer.writeCharSequence(msg + "\n", StandardCharsets.UTF_8);
         }
-        if (msg.equals(this.endcodeOfSilent)) {
+        if (msg.equals(this.telAttribute.getAttribute(ENDCODE_OF_SILENT))) {
             this.receiveReady = true;//上面设置 ENDCODE_OF_SILENT 之后就会返回。
             this.activeFuture.completed(new Object());
         }

@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BasicTelTest extends AbstractTelTest {
     @Test
-    public void basicRunCommand_1() throws Throwable {
+    public void basic_test_1() {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("set name=abc age=13 \n aaa", StandardCharsets.UTF_8);
         //
@@ -59,7 +59,7 @@ public class BasicTelTest extends AbstractTelTest {
     }
 
     @Test
-    public void basicRunCommand_2() throws Throwable {
+    public void echo_sessionID_test_1() {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("set name=abc age=13 \n aaa", StandardCharsets.UTF_8);
         //
@@ -79,7 +79,7 @@ public class BasicTelTest extends AbstractTelTest {
     }
 
     @Test
-    public void badCommand() throws Throwable {
+    public void bad_test_1() {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("set name=abc age=13 \n aaa", StandardCharsets.UTF_8);
         //
@@ -99,7 +99,7 @@ public class BasicTelTest extends AbstractTelTest {
     }
 
     @Test
-    public void emptyCommand() throws Throwable {
+    public void empty_test_1() {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("\n\n\n\n", StandardCharsets.UTF_8);
         //
@@ -115,12 +115,11 @@ public class BasicTelTest extends AbstractTelTest {
         //
         while (sessionObject.tryReceiveEvent()) {
         }
-        //
         assert dataWriter.toString().equals("");
     }
 
     @Test
-    public void errorCommand() throws Throwable {
+    public void error_test_1() {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("set name=abc age=13 \n aaa", StandardCharsets.UTF_8);
         //
@@ -141,7 +140,7 @@ public class BasicTelTest extends AbstractTelTest {
     }
 
     @Test
-    public void closeCommand_1() throws Throwable {
+    public void close_test_1() {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("close -t3 \n aaa", StandardCharsets.UTF_8);
         //
@@ -170,40 +169,6 @@ public class BasicTelTest extends AbstractTelTest {
         assert toString.contains("exit after 3 seconds.");
         assert toString.contains("exit after 2 seconds.");
         assert toString.contains("exit after 1 seconds.");
-        assert toString.contains("bye.\r\n");
-        assert sessionObject.curentCounter() == 1;
-    }
-
-    @Test
-    public void closeCommand_2() throws Throwable {
-        ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
-        dataReader.writeCharSequence("close -t-3 \n aaa", StandardCharsets.UTF_8);
-        //
-        TellnetTelService telContext = mockTelContext(new QuitExecutor());
-        //
-        AtomicBoolean closeTag = new AtomicBoolean(false);
-        Writer dataWriter = new StringWriter() {
-            @Override
-            public void close() throws IOException {
-                super.close();
-                closeTag.set(true);
-            }
-        };
-        TelSessionObject sessionObject = new TelSessionObject(telContext, dataReader, dataWriter) {
-            public boolean isClose() {
-                return closeTag.get();
-            }
-        };
-        //
-        long start_t = System.currentTimeMillis();
-        sessionObject.tryReceiveEvent();
-        long end_t = System.currentTimeMillis();
-        String toString = dataWriter.toString();
-        //
-        assert (end_t - start_t) < 3000;
-        assert !toString.contains("exit after 3 seconds.");
-        assert !toString.contains("exit after 2 seconds.");
-        assert !toString.contains("exit after 1 seconds.");
         assert toString.contains("bye.\r\n");
         assert sessionObject.curentCounter() == 1;
     }

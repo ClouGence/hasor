@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.tconsole.launcher.telnet;
+package net.hasor.tconsole.launcher.hosts;
 import net.hasor.tconsole.AbstractTelTest;
 import net.hasor.tconsole.client.TelClient;
+import net.hasor.tconsole.launcher.telnet.TellnetTelService;
 import net.hasor.test.beans.TestExecutor;
 import org.junit.Test;
 
 import java.net.InetSocketAddress;
 
-public class NettyServerTest extends AbstractTelTest {
+public class HostServerTest extends AbstractTelTest {
     @Test
     public void server_test_1() throws Exception {
         try (TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, s -> true)) {

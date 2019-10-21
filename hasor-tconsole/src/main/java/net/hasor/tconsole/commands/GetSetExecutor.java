@@ -41,6 +41,9 @@ public class GetSetExecutor implements TelExecutorVoid {
         if (args.length > 0) {
             String cmd = telCommand.getCommandName();
             String varName = args[0].trim();
+            if (StringUtils.isBlank(varName)) {
+                throw new Exception("var name undefined.");
+            }
             //
             if ("set".equalsIgnoreCase(cmd)) {
                 if (args.length > 1) {

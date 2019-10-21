@@ -79,6 +79,12 @@ public abstract class AbstractTelService extends AbstractContainer implements Te
         ((SpiCallerContainer) this.spiTrigger).addListener(spiType, spiListener);
     }
 
+    protected void applyCommand() {
+        this.addCommand(new String[] { "get", "set" }, new GetSetExecutor());
+        this.addCommand(new String[] { "quit", "exit" }, new QuitExecutor());
+        this.addCommand(new String[] { "help" }, new HelpExecutor());
+    }
+
     @Override
     protected void doInitialize() {
         // .触发SPI
@@ -86,9 +92,8 @@ public abstract class AbstractTelService extends AbstractContainer implements Te
             listener.onStart(AbstractTelService.this);
         });
         //
-        this.addCommand(new String[] { "get", "set" }, new GetSetExecutor());
-        this.addCommand(new String[] { "quit", "exit" }, new QuitExecutor());
-        this.addCommand(new String[] { "help" }, new HelpExecutor());
+        logger.info("tConsole -> applyCommand.");
+        this.applyCommand();
         //
         // .执行线程池
         String shortName = "tConsole-Work";
@@ -122,9 +127,6 @@ public abstract class AbstractTelService extends AbstractContainer implements Te
     }
 
     public SpiTrigger getSpiTrigger() {
-        if (!this.isInit()) {
-            throw new IllegalStateException("the Container need init.");
-        }
         return this.spiTrigger;
     }
 

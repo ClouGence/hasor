@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 public class ReaderTelTest {
     @Test
-    public void expectBlankLineTest() throws Throwable {
+    public void expectBlankLineTest() {
         ByteBuf byteBuf = PooledByteBufAllocator.DEFAULT.heapBuffer();
         TelReaderObject readerObject = new TelReaderObject(PooledByteBufAllocator.DEFAULT, byteBuf);
         int i = 1;
@@ -54,7 +54,7 @@ public class ReaderTelTest {
     }
 
     @Test
-    public void expectDoubleBlankLines() throws Throwable {
+    public void expectDoubleBlankLines() {
         ByteBuf byteBuf = PooledByteBufAllocator.DEFAULT.heapBuffer();
         TelReaderObject readerObject = new TelReaderObject(PooledByteBufAllocator.DEFAULT, byteBuf);
         byteBuf.writeCharSequence("abcdefg abc\r\nabc\n\n", StandardCharsets.UTF_8);

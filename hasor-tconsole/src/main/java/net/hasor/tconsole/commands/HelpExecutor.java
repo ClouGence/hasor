@@ -40,7 +40,7 @@ public class HelpExecutor implements TelExecutor {
     }
 
     @Override
-    public String doCommand(TelCommand telCommand) throws Throwable {
+    public String doCommand(TelCommand telCommand) {
         TelContext finder = telCommand.getSession().getTelContext();
         List<String> cmdNames = finder.getCommandNames();
         StringWriter sw = new StringWriter();

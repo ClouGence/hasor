@@ -16,26 +16,39 @@
 package net.hasor.tconsole.commands;
 import net.hasor.tconsole.launcher.hosts.HostTelService;
 import net.hasor.test.beans.TestExecutor;
-import net.hasor.utils.StringUtils;
+import org.junit.Test;
 
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 
 public class HostsCommandTest {
-    public static void main(String[] args) throws Exception {
+//    @Test
+    public void run() {
         HostTelService server = new HostTelService( //
                 new InputStreamReader(System.in),   //
                 new OutputStreamWriter(System.out, StandardCharsets.UTF_8)//
         );
         server.addCommand("test", new TestExecutor());
-        //
-        server.silent();
         server.init();
-        server.sendMessage("exit -next");
-        server.sendMessage(StringUtils.join(args, " "));
-        if (server.isInit()) {
-            server.close();
-        }
+        //
+        server.join();
+    }
+
+    public static void main(String[] args) throws Exception {
+        new HostsCommandTest().run();
+        //        HostTelService server = new HostTelService( //
+        //                new InputStreamReader(System.in),   //
+        //                new OutputStreamWriter(System.out, StandardCharsets.UTF_8)//
+        //        );
+        //        server.addCommand("test", new TestExecutor());
+        //        //
+        //        server.silent();
+        //        server.init();
+        //        server.sendMessage("exit -next");
+        //        server.sendMessage(StringUtils.join(args, " "));
+        //        if (server.isInit()) {
+        //            server.close();
+        //        }
     }
 }
