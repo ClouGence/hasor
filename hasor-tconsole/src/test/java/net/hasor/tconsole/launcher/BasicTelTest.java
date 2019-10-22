@@ -19,7 +19,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import net.hasor.tconsole.AbstractTelTest;
 import net.hasor.tconsole.commands.QuitExecutor;
-import net.hasor.tconsole.launcher.telnet.TellnetTelService;
+import net.hasor.tconsole.launcher.telnet.TelnetTelService;
 import net.hasor.test.beans.EchoSessionIDExecutor;
 import net.hasor.test.beans.ErrorExecutor;
 import net.hasor.test.beans.TestExecutor;
@@ -38,7 +38,7 @@ public class BasicTelTest extends AbstractTelTest {
         dataReader.writeCharSequence("set name=abc age=13 \n aaa", StandardCharsets.UTF_8);
         //
         TestExecutor testExecutor = new TestExecutor();
-        TellnetTelService telContext = mockTelContext(testExecutor);
+        TelnetTelService telContext = mockTelContext(testExecutor);
         //
         Writer dataWriter = new StringWriter();
         TelSessionObject sessionObject = new TelSessionObject(telContext, dataReader, dataWriter) {
@@ -63,7 +63,7 @@ public class BasicTelTest extends AbstractTelTest {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("set name=abc age=13 \n aaa", StandardCharsets.UTF_8);
         //
-        TellnetTelService telContext = mockTelContext(new EchoSessionIDExecutor());
+        TelnetTelService telContext = mockTelContext(new EchoSessionIDExecutor());
         //
         Writer dataWriter = new StringWriter();
         TelSessionObject sessionObject = new TelSessionObject(telContext, dataReader, dataWriter) {
@@ -83,7 +83,7 @@ public class BasicTelTest extends AbstractTelTest {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("set name=abc age=13 \n aaa", StandardCharsets.UTF_8);
         //
-        TellnetTelService telContext = mockTelContext(null);
+        TelnetTelService telContext = mockTelContext(null);
         //
         Writer dataWriter = new StringWriter();
         TelSessionObject sessionObject = new TelSessionObject(telContext, dataReader, dataWriter) {
@@ -103,7 +103,7 @@ public class BasicTelTest extends AbstractTelTest {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("\n\n\n\n", StandardCharsets.UTF_8);
         //
-        TellnetTelService telContext = mockTelContext(null);
+        TelnetTelService telContext = mockTelContext(null);
         //
         Writer dataWriter = new StringWriter();
         TelSessionObject sessionObject = new TelSessionObject(telContext, dataReader, dataWriter) {
@@ -123,7 +123,7 @@ public class BasicTelTest extends AbstractTelTest {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("set name=abc age=13 \n aaa", StandardCharsets.UTF_8);
         //
-        TellnetTelService telContext = mockTelContext(new ErrorExecutor());
+        TelnetTelService telContext = mockTelContext(new ErrorExecutor());
         //
         Writer dataWriter = new StringWriter();
         TelSessionObject sessionObject = new TelSessionObject(telContext, dataReader, dataWriter) {
@@ -144,7 +144,7 @@ public class BasicTelTest extends AbstractTelTest {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("close -t3 \n aaa", StandardCharsets.UTF_8);
         //
-        TellnetTelService telContext = mockTelContext(new QuitExecutor());
+        TelnetTelService telContext = mockTelContext(new QuitExecutor());
         //
         AtomicBoolean closeTag = new AtomicBoolean(false);
         Writer dataWriter = new StringWriter() {

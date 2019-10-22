@@ -1,57 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns="http://www.hasor.net/sechma/hasor-tconsole">
-
-    <!-- tConsole 框架环境变量 -->
-    <hasor.environmentVar>
-        <!-- 是否启用 tConsole，默认情况启用。 -->
-        <TCONSOLE_ENABLE>true</TCONSOLE_ENABLE>
-
-        <!-- 是否启用注解自动扫描器。 -->
-        <TCONSOLE_AUTO_SCAN>false</TCONSOLE_AUTO_SCAN>
-
-        <!-- 控制台工作端口 -->
-        <TCONSOLE_PORT>2180</TCONSOLE_PORT>
-
-        <!-- 控制台工作IP -->
-        <TCONSOLE_IP>0.0.0.0</TCONSOLE_IP>
-
-        <!-- 允许连入的客户端 IP 列表 -->
-        <TCONSOLE_IN_BOUND>local,127.0.0.1</TCONSOLE_IN_BOUND>
-
-    </hasor.environmentVar>
-
     <!-- 框架配置，包扫描范围 -->
     <hasor>
         <loadPackages>net.hasor.tconsole.*</loadPackages>
 
         <modules>
             <!-- tConsole 控制台插件 -->
-            <module>net.hasor.tconsole.launcher.ConsoleModule</module>
+            <module>net.hasor.tconsole.binder.ConsoleModule</module>
         </modules>
 
         <!-- Binder扩展 -->
         <apiBinderSet>
-            <binder type="net.hasor.tconsole.ConsoleApiBinder">net.hasor.tconsole.launcher.ConsoleApiBinderCreater</binder>
+            <binder type="net.hasor.core.binder.ApiBinderCreater">net.hasor.tconsole.binder.ConsoleApiBinderCreater</binder>
         </apiBinderSet>
     </hasor>
-
-    <!-- Hasor-tConsole ( 控制台工具 ) -->
-    <hasor.tConsole>
-
-        <!-- 是否启用 tConsole，默认情况启用 -->
-        <enable>${TCONSOLE_ENABLE}</enable>
-
-        <!-- 是否启用注解自动扫描器 -->
-        <autoScan>${TCONSOLE_AUTO_SCAN}</autoScan>
-
-        <!-- 工作端口 -->
-        <bindPort>${TCONSOLE_PORT}</bindPort>
-
-        <!-- 默认绑定所有网卡，您可以设定具体的网卡让 telnet 的工作更安全 -->
-        <bindAddress>${TCONSOLE_IP}</bindAddress>
-
-        <!-- 允许连入的客户端 IP 列表 -->
-        <inBound>${TCONSOLE_IN_BOUND}</inBound>
-
-    </hasor.tConsole>
 </config>

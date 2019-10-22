@@ -38,7 +38,7 @@ public class NettyHandlerTelTest extends AbstractTelTest {
             }
         };
         //
-        TellnetTelService telContext = mockTelContext(testExecutor);
+        TelnetTelService telContext = mockTelContext(testExecutor);
         ChannelHandlerContext context = mockNetty(dataWriter);
         //
         TelNettyHandler handler = new TelNettyHandler(telContext, null);
@@ -62,7 +62,7 @@ public class NettyHandlerTelTest extends AbstractTelTest {
             }
         };
         //
-        TellnetTelService telContext = mockTelContext(new QuitExecutor());
+        TelnetTelService telContext = mockTelContext(new QuitExecutor());
         ChannelHandlerContext context = mockNetty(dataWriter);
         //
         //
@@ -88,7 +88,7 @@ public class NettyHandlerTelTest extends AbstractTelTest {
             }
         };
         //
-        TellnetTelService telContext = mockTelContext(testExecutor);
+        TelnetTelService telContext = mockTelContext(testExecutor);
         ChannelHandlerContext context = mockNetty(dataWriter);
         //
         //

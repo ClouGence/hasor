@@ -19,7 +19,7 @@ import io.netty.buffer.PooledByteBufAllocator;
 import net.hasor.tconsole.AbstractTelTest;
 import net.hasor.tconsole.client.TelClient;
 import net.hasor.tconsole.launcher.TelSessionObject;
-import net.hasor.tconsole.launcher.telnet.TellnetTelService;
+import net.hasor.tconsole.launcher.telnet.TelnetTelService;
 import net.hasor.test.beans.TestExecutor;
 import org.junit.Test;
 
@@ -36,7 +36,7 @@ public class QuitCmdTest extends AbstractTelTest {
         ByteBuf dataReader = PooledByteBufAllocator.DEFAULT.heapBuffer();
         dataReader.writeCharSequence("close -t-3 \n aaa", StandardCharsets.UTF_8); // bad
         //
-        TellnetTelService telContext = mockTelContext(new QuitExecutor());
+        TelnetTelService telContext = mockTelContext(new QuitExecutor());
         //
         AtomicBoolean closeTag = new AtomicBoolean(false);
         Writer dataWriter = new StringWriter() {
@@ -67,7 +67,7 @@ public class QuitCmdTest extends AbstractTelTest {
 
     @Test
     public void autoexit_test_1() throws Exception {
-        try (TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, s -> true)) {
+        try (TelnetTelService server = new TelnetTelService("127.0.0.1", 8082, s -> true)) {
             server.addCommand("test", new TestExecutor());
             //
             server.init();
@@ -85,7 +85,7 @@ public class QuitCmdTest extends AbstractTelTest {
 
     @Test
     public void exit_n_test_1() throws Exception {
-        try (TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, s -> true)) {
+        try (TelnetTelService server = new TelnetTelService("127.0.0.1", 8082, s -> true)) {
             server.addCommand("test", new TestExecutor());
             server.init();
             TelClient client = new TelClient(new InetSocketAddress("127.0.0.1", 8082));

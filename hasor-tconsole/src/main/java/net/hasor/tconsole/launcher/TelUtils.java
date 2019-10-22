@@ -23,7 +23,7 @@ public class TelUtils {
         }
         return (Integer) ConverterUtils.convert(Integer.TYPE, aInteger);
     }
-
+ 
     public static InetAddress finalBindAddress(String hostString) throws UnknownHostException {
         return "local".equalsIgnoreCase(hostString) ? InetAddress.getLocalHost() : InetAddress.getByName(hostString);
     }

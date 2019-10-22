@@ -15,7 +15,7 @@
  */
 package net.hasor.tconsole.commands;
 import net.hasor.tconsole.client.TelClient;
-import net.hasor.tconsole.launcher.telnet.TellnetTelService;
+import net.hasor.tconsole.launcher.telnet.TelnetTelService;
 import net.hasor.test.beans.TestExecutor;
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ import java.net.InetSocketAddress;
 public class HelpCmdTest {
     @Test
     public void helpTest_1() throws Exception {
-        try (TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, s -> true)) {
+        try (TelnetTelService server = new TelnetTelService("127.0.0.1", 8082, s -> true)) {
             server.addCommand("test", new TestExecutor());
             server.init();
             //
@@ -44,7 +44,7 @@ public class HelpCmdTest {
     //
     @Test
     public void helpTest_2() throws Exception {
-        try (TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, s -> true)) {
+        try (TelnetTelService server = new TelnetTelService("127.0.0.1", 8082, s -> true)) {
             server.addCommand("test", new TestExecutor());
             server.init();
             //

@@ -18,7 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.tconsole.AbstractTelTest;
 import net.hasor.tconsole.client.TelClient;
-import net.hasor.tconsole.launcher.telnet.TellnetTelService;
+import net.hasor.tconsole.launcher.telnet.TelnetTelService;
 import net.hasor.test.beans.*;
 import org.junit.Test;
 
@@ -30,7 +30,7 @@ public class SpiTest extends AbstractTelTest {
         ExecutorListenerBean executorListener = new ExecutorListenerBean();
         InBoundMatcherBean inBoundMatcher = new InBoundMatcherBean();
         //
-        try (TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, inBoundMatcher)) {
+        try (TelnetTelService server = new TelnetTelService("127.0.0.1", 8082, inBoundMatcher)) {
             server.addListener(TelExecutorListener.class, executorListener);
             server.addCommand("test", new TestExecutor());
             server.init();
@@ -63,7 +63,7 @@ public class SpiTest extends AbstractTelTest {
     @Test
     public void close_listener_1() throws Exception {
         CloseListenerBean closeListener = new CloseListenerBean();
-        try (TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, s -> true)) {
+        try (TelnetTelService server = new TelnetTelService("127.0.0.1", 8082, s -> true)) {
             server.addCommand("test", new TestExecutor());
             server.addListener(TelCloseEventListener.class, closeListener);
             server.init();
@@ -85,7 +85,7 @@ public class SpiTest extends AbstractTelTest {
             apiBinder.bindSpiListener(TelContextListener.class, contextListener);
         });
         //
-        try (TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, s -> true, appContext)) {
+        try (TelnetTelService server = new TelnetTelService("127.0.0.1", 8082, s -> true, appContext)) {
             assert contextListener.getContextListener() == null;
             //
             server.init();
@@ -101,7 +101,7 @@ public class SpiTest extends AbstractTelTest {
             apiBinder.bindSpiListener(TelSessionListener.class, listenerBean);
         });
         //
-        try (TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, s -> true, appContext)) {
+        try (TelnetTelService server = new TelnetTelService("127.0.0.1", 8082, s -> true, appContext)) {
             server.addCommand("test", new TestExecutor());
             server.init();
             //

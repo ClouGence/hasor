@@ -2,7 +2,7 @@ package net.hasor.tconsole.client;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import net.hasor.tconsole.TelAttribute;
-import net.hasor.tconsole.launcher.telnet.TellnetTelService;
+import net.hasor.tconsole.launcher.telnet.TelnetTelService;
 import net.hasor.utils.future.BasicFuture;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
@@ -38,7 +38,7 @@ public class ClientTest {
     @Test
     public void attribute_test_1() throws UnknownHostException {
         //
-        try (TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, s -> true)) {
+        try (TelnetTelService server = new TelnetTelService("127.0.0.1", 8082, s -> true)) {
             server.init();
             //
             TelClient client = new TelClient(new InetSocketAddress("127.0.0.1", 8082));

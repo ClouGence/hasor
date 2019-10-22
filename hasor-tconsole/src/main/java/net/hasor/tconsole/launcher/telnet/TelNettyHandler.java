@@ -27,11 +27,11 @@ import static net.hasor.tconsole.launcher.AbstractTelService.CMD;
 class TelNettyHandler extends SimpleChannelInboundHandler<String> {
     protected static Logger            logger         = LoggerFactory.getLogger(TelNettyHandler.class);
     private          Predicate<String> inBoundMatcher = null;
-    private          TellnetTelService telContext     = null; // 环境
+    private          TelnetTelService  telContext     = null; // 环境
     private          TelSessionObject  telSession     = null; // 会话
     private          ByteBuf           dataReader     = null; // 读取缓冲
 
-    TelNettyHandler(TellnetTelService telContext, Predicate<String> inBoundMatcher) {
+    TelNettyHandler(TelnetTelService telContext, Predicate<String> inBoundMatcher) {
         this.inBoundMatcher = inBoundMatcher == null ? s -> true : inBoundMatcher;
         this.telContext = telContext;
     }

@@ -47,8 +47,8 @@ import static net.hasor.tconsole.launcher.TelUtils.finalBindAddress;
  * @version : 20169年09月20日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class TellnetTelService extends AbstractTelService {
-    protected static Logger            logger        = LoggerFactory.getLogger(TellnetTelService.class);
+public class TelnetTelService extends AbstractTelService {
+    protected static Logger            logger        = LoggerFactory.getLogger(TelnetTelService.class);
     private final    InetSocketAddress bindAddress;
     private final    TelNettyHandler   nettyHandler;
     private          EventLoopGroup    workerGroup   = null;
@@ -61,7 +61,7 @@ public class TellnetTelService extends AbstractTelService {
      * @param inBoundMatcher 允许联入的IP匹配器
      * @throws UnknownHostException
      */
-    public TellnetTelService(String bindAddress, int bindPort, Predicate<String> inBoundMatcher) throws UnknownHostException {
+    public TelnetTelService(String bindAddress, int bindPort, Predicate<String> inBoundMatcher) throws UnknownHostException {
         this(bindAddress, bindPort, inBoundMatcher, null);
     }
 
@@ -72,7 +72,7 @@ public class TellnetTelService extends AbstractTelService {
      * @param inBoundMatcher 允许联入的IP匹配器
      * @throws UnknownHostException
      */
-    public TellnetTelService(String bindAddress, int bindPort, Predicate<String> inBoundMatcher, AppContext appContext) throws UnknownHostException {
+    public TelnetTelService(String bindAddress, int bindPort, Predicate<String> inBoundMatcher, AppContext appContext) throws UnknownHostException {
         super(appContext);
         this.bindAddress = new InetSocketAddress(finalBindAddress(bindAddress), bindPort);
         Predicate<String> matcher = inBoundMatcher == null ? (s -> true) : inBoundMatcher;

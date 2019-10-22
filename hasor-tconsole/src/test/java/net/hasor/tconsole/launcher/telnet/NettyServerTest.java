@@ -24,7 +24,7 @@ import java.net.InetSocketAddress;
 public class NettyServerTest extends AbstractTelTest {
     @Test
     public void server_test_1() throws Exception {
-        try (TellnetTelService server = new TellnetTelService("127.0.0.1", 8082, s -> true)) {
+        try (TelnetTelService server = new TelnetTelService("127.0.0.1", 8082, s -> true)) {
             server.addCommand("test", new TestExecutor());
             server.init();
             assert server.isInit();
