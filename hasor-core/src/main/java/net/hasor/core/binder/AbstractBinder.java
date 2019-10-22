@@ -231,12 +231,14 @@ public abstract class AbstractBinder implements ApiBinder {
 
         @Override
         public InjectPropertyBindingBuilder<T> to(final Class<? extends T> implementation) {
+            Objects.requireNonNull(implementation, "implementation is null.");
             this.typeBuilder.setSourceType(implementation);
             return this;
         }
 
         @Override
         public InjectConstructorBindingBuilder<T> toConstructor(final Constructor<? extends T> constructor) {
+            Objects.requireNonNull(constructor, "constructor is null.");
             Class<? extends T> targetType = constructor.getDeclaringClass();
             //因为设置了构造方法因此重新设置SourceTypeF
             this.typeBuilder.setSourceType(targetType);

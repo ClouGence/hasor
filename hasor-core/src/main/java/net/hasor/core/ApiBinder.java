@@ -275,6 +275,7 @@ public interface ApiBinder {
     public <T extends Scope> Supplier<T> bindScope(String scopeName, Supplier<T> scopeSupplier);
 
     public default <T> Supplier<T> getProvider(Class<T> targetType) {
+        Objects.requireNonNull(targetType, "targetType is null.");
         class TargetSupplierByClass implements AppContextAware, Supplier<T> {
             private Class<T>   targetType;
             private AppContext appContext = null;
@@ -300,6 +301,7 @@ public interface ApiBinder {
     }
 
     public default <T> Supplier<T> getProvider(BindInfo<T> targetType) {
+        Objects.requireNonNull(targetType, "targetType is null.");
         class TargetSupplierByInfo implements AppContextAware, Supplier<T> {
             private BindInfo<T> targetType = null;
             private AppContext  appContext = null;
