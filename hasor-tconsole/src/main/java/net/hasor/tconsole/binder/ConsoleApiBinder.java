@@ -18,11 +18,14 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
 import net.hasor.tconsole.TelExecutor;
 
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -34,23 +37,31 @@ import static net.hasor.tconsole.launcher.TelUtils.finalBindAddress;
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface ConsoleApiBinder extends ApiBinder {
-    public ConsoleApiBinder asHost(Reader reader, Writer writer);
+    public default HostBuilder asHostWithSTDO() {
+        return asHost(new InputStreamReader(System.in), new OutputStreamWriter(System.out, StandardCharsets.UTF_8));
+    }
 
-    public default ConsoleApiBinder asTelnet(String host, int port) throws UnknownHostException {
+    public HostBuilder asHost(Reader reader, Writer writer);
+
+    public default TelnetBuilder asTelnet(String host, int port) throws UnknownHostException {
         return asTelnet(host, port, s -> true);
     }
 
-    public ConsoleApiBinder setHostSilent();
-
-    public ConsoleApiBinder setHostPreCommand(String... commands);
-
-    public default ConsoleApiBinder asTelnet(String host, int port, Predicate<String> inBoundMatcher) throws UnknownHostException {
+    public default TelnetBuilder asTelnet(String host, int port, Predicate<String> inBoundMatcher) throws UnknownHostException {
         return asTelnet(new InetSocketAddress(finalBindAddress(host), port), inBoundMatcher);
     }
 
-    public ConsoleApiBinder asTelnet(InetSocketAddress address, Predicate<String> inBoundMatcher);
+    public TelnetBuilder asTelnet(InetSocketAddress address, Predicate<String> inBoundMatcher);
 
-    public CommandBindingBuilder addExecutor(String... names);
+    public interface HostBuilder extends TelnetBuilder {
+        public HostBuilder silent();
+
+        public HostBuilder preCommand(String... commands);
+    }
+
+    public interface TelnetBuilder {
+        public CommandBindingBuilder addExecutor(String... names);
+    }
 
     public interface CommandBindingBuilder {
         public <T extends TelExecutor> void to(Class<? extends T> executorKey);

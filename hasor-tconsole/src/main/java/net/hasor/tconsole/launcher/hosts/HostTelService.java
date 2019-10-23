@@ -56,15 +56,24 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
     private          BufferedReader   sourceReader = null; // 源头
     private          ByteBuf          dataReader   = null; // 读取缓冲,把源头数据丢入这个 Reader
 
+    /** 内部构造方法，给予子类扩展使用不对外 */
+    HostTelService(AppContext appContext) {
+        super(appContext);
+    }
+
     /** 创建 tConsole 服务 */
     public HostTelService(Reader reader, Writer writer) {
-        this(reader, writer, null);
+        super(null);
+        this.initConstructor(reader, writer);
     }
 
     /** 创建 tConsole 服务 */
     public HostTelService(Reader reader, Writer writer, AppContext appContext) {
         super(appContext);
-        //
+        this.initConstructor(reader, writer);
+    }
+
+    void initConstructor(Reader reader, Writer writer) {
         Writer newWriter = new Writer() {
             @Override
             public void write(char[] cbuf, int off, int len) throws IOException {
@@ -204,20 +213,12 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
         return TelUtils.aBoolean(this, TelOptions.SILENT);//静默输出
     }
 
-    public void setEndcodeOfSilent(String endcode) {
+    public void endcodeOfSilent(String endcode) {
         this.setAttribute(TelOptions.ENDCODE_OF_SILENT, endcode);//结束符
     }
 
-    public String getEndcodeOfSilent() {
+    public String endcodeOfSilent() {
         return TelUtils.aString(this, TelOptions.ENDCODE_OF_SILENT);//结束符
-    }
-
-    public void sendMessage(String message) {
-        tryShutdown();
-        if (StringUtils.isNotBlank(message)) {
-            this.dataReader.writeCharSequence(message + "\n", StandardCharsets.UTF_8);
-            this.doWork();
-        }
     }
 
     private void tryShutdown() {

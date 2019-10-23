@@ -20,42 +20,44 @@ class InnerConsoleApiBinder extends ApiBinderWrap implements ConsoleApiBinder {
     }
 
     @Override
-    public ConsoleApiBinder asHost(Reader reader, Writer writer) {
+    public HostBuilder asHost(Reader reader, Writer writer) {
         this.executorManager.setTelMode(InnerTelMode.Host);
         this.executorManager.setHostReader(reader);
         this.executorManager.setHostWriter(writer);
-        return this;
+        return new TelnetBuilderImpl();
     }
 
     @Override
-    public ConsoleApiBinder setHostSilent() {
-        this.executorManager.setHostSilent(true);
-        return this;
-    }
-
-    @Override
-    public ConsoleApiBinder setHostPreCommand(String... commands) {
-        this.executorManager.setPreCommandSet(commands);
-        return this;
-    }
-
-    @Override
-    public ConsoleApiBinder asTelnet(InetSocketAddress address, Predicate<String> inBoundMatcher) {
+    public TelnetBuilder asTelnet(InetSocketAddress address, Predicate<String> inBoundMatcher) {
         this.executorManager.setTelMode(InnerTelMode.Telnet);
         this.executorManager.setTelnetSocket(address);
         this.executorManager.setTelnetInBoundMatcher(inBoundMatcher);
-        return this;
+        return new TelnetBuilderImpl();
     }
 
-    @Override
-    public CommandBindingBuilder addExecutor(String... names) {
-        if (names == null || names.length == 0) {
-            throw new NullPointerException("command names undefined.");
+    private class TelnetBuilderImpl implements HostBuilder, TelnetBuilder {
+        @Override
+        public HostBuilder silent() {
+            executorManager.setHostSilent(true);
+            return this;
         }
-        return new CommandBindingBuilderImpl(names);
+
+        @Override
+        public HostBuilder preCommand(String... commands) {
+            executorManager.setPreCommandSet(commands);
+            return this;
+        }
+
+        @Override
+        public CommandBindingBuilder addExecutor(String... names) {
+            if (names == null || names.length == 0) {
+                throw new NullPointerException("command names undefined.");
+            }
+            return new CommandBindingBuilderImpl(names);
+        }
     }
 
-    private class CommandBindingBuilderImpl implements ConsoleApiBinder.CommandBindingBuilder {
+    private class CommandBindingBuilderImpl implements CommandBindingBuilder {
         private String[] names;
 
         CommandBindingBuilderImpl(String[] names) {
