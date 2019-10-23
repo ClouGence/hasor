@@ -11,7 +11,7 @@
 
         <!-- Binder扩展 -->
         <apiBinderSet>
-            <binder type="net.hasor.core.binder.ApiBinderCreater">net.hasor.tconsole.binder.ConsoleApiBinderCreater</binder>
+            <binder type="net.hasor.tconsole.binder.ConsoleApiBinder">net.hasor.tconsole.binder.ConsoleApiBinderCreater</binder>
         </apiBinderSet>
     </hasor>
 </config>

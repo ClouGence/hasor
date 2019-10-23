@@ -73,8 +73,17 @@ public class TelnetTelService extends AbstractTelService {
      * @throws UnknownHostException
      */
     public TelnetTelService(String bindAddress, int bindPort, Predicate<String> inBoundMatcher, AppContext appContext) throws UnknownHostException {
+        this(new InetSocketAddress(finalBindAddress(bindAddress), bindPort), inBoundMatcher, appContext);
+    }
+
+    /**
+     * 创建 tConsole 服务
+     * @param telnetSocket 监听的本地Socket
+     * @param inBoundMatcher 允许联入的IP匹配器
+     */
+    public TelnetTelService(InetSocketAddress telnetSocket, Predicate<String> inBoundMatcher, AppContext appContext) {
         super(appContext);
-        this.bindAddress = new InetSocketAddress(finalBindAddress(bindAddress), bindPort);
+        this.bindAddress = telnetSocket;
         Predicate<String> matcher = inBoundMatcher == null ? (s -> true) : inBoundMatcher;
         this.nettyHandler = new TelNettyHandler(this, matcher);
     }
@@ -128,5 +137,10 @@ public class TelnetTelService extends AbstractTelService {
             this.workerGroup = null;
         }
         super.doClose();
+    }
+
+    @Override
+    public boolean isHost() {
+        return false;
     }
 }

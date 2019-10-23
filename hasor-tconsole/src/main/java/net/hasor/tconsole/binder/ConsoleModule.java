@@ -17,26 +17,38 @@ package net.hasor.tconsole.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Module;
+import net.hasor.core.spi.ContextStartListener;
 
 /**
  * RSF终端管理器插件。
  * @version : 2016年2月18日
  * @author 赵永春 (zyc@hasor.net)
  */
-public class ConsoleModule implements Module {
+public class ConsoleModule implements Module, ContextStartListener {
     private boolean enable;
 
     @Override
     public void loadModule(ApiBinder apiBinder) {
         this.enable = apiBinder.tryCast(ConsoleApiBinder.class) != null;
+        apiBinder.bindSpiListener(ContextStartListener.class, this);
     }
 
     @Override
-    public void onStart(final AppContext appContext) {
+    public void doStart(AppContext appContext) {
         if (!this.enable) {
             return;
         }
-        appContext.getInstance(InnerExecutorManager.class).init();
+        InnerExecutorManager manager = appContext.getInstance(InnerExecutorManager.class);
+        manager.setAppContext(appContext);
+        manager.init();
+    }
+
+    @Override
+    public void doStartCompleted(AppContext appContext) {
+        if (!this.enable) {
+            return;
+        }
+        appContext.getInstance(InnerExecutorManager.class).doPreCommand();
     }
 
     @Override

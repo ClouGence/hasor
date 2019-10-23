@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.net.InetSocketAddress;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -44,7 +45,13 @@ class InnerConsoleApiBinder extends ApiBinderWrap implements ConsoleApiBinder {
 
         @Override
         public HostBuilder preCommand(String... commands) {
-            executorManager.setPreCommandSet(commands);
+            executorManager.setHostPreCommandSet(commands);
+            return this;
+        }
+
+        @Override
+        public HostBuilder answerExit() {
+            executorManager.setHostAnswerExit(true);
             return this;
         }
 
@@ -54,6 +61,21 @@ class InnerConsoleApiBinder extends ApiBinderWrap implements ConsoleApiBinder {
                 throw new NullPointerException("command names undefined.");
             }
             return new CommandBindingBuilderImpl(names);
+        }
+
+        @Override
+        public Object getAttribute(String key) {
+            return executorManager.getAttributeObject().getAttribute(key);
+        }
+
+        @Override
+        public void setAttribute(String key, Object value) {
+            executorManager.getAttributeObject().setAttribute(key, value);
+        }
+
+        @Override
+        public Set<String> getAttributeNames() {
+            return executorManager.getAttributeObject().getAttributeNames();
         }
     }
 

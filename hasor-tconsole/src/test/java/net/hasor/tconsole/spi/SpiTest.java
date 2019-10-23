@@ -18,10 +18,12 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.tconsole.AbstractTelTest;
 import net.hasor.tconsole.client.TelClient;
+import net.hasor.tconsole.launcher.hosts.PipedHostTelService;
 import net.hasor.tconsole.launcher.telnet.TelnetTelService;
 import net.hasor.test.beans.*;
 import org.junit.Test;
 
+import java.io.StringWriter;
 import java.net.InetSocketAddress;
 
 public class SpiTest extends AbstractTelTest {
@@ -95,6 +97,23 @@ public class SpiTest extends AbstractTelTest {
     }
 
     @Test
+    public void context_listener_2() throws Exception {
+        TelContextListenerBean contextListener = new TelContextListenerBean();
+        AppContext appContext = Hasor.create().asCore().build(apiBinder -> {
+            apiBinder.bindSpiListener(TelContextListener.class, contextListener);
+        });
+        //
+        StringWriter stringWriter = new StringWriter();
+        PipedHostTelService pipedHostTelService = new PipedHostTelService(appContext, stringWriter);
+        //
+        assert contextListener.getContextListener() == null;
+        pipedHostTelService.init();
+        assert contextListener.getContextListener();
+        pipedHostTelService.close();
+        assert !contextListener.getContextListener();
+    }
+
+    @Test
     public void session_listener_1() throws Exception {
         TelSessionListenerBean listenerBean = new TelSessionListenerBean();
         AppContext appContext = Hasor.create().asCore().build(apiBinder -> {
@@ -113,6 +132,23 @@ public class SpiTest extends AbstractTelTest {
             assert !client.isInit();
         }
         //
+        assert listenerBean.size() == 0;
+    }
+
+    @Test
+    public void session_listener_2() throws Exception {
+        TelSessionListenerBean listenerBean = new TelSessionListenerBean();
+        AppContext appContext = Hasor.create().asCore().build(apiBinder -> {
+            apiBinder.bindSpiListener(TelSessionListener.class, listenerBean);
+        });
+        //
+        StringWriter stringWriter = new StringWriter();
+        PipedHostTelService pipedHostTelService = new PipedHostTelService(appContext, stringWriter);
+        //
+        assert listenerBean.size() == 0;
+        pipedHostTelService.init();
+        assert listenerBean.size() == 1;
+        pipedHostTelService.close();
         assert listenerBean.size() == 0;
     }
 }

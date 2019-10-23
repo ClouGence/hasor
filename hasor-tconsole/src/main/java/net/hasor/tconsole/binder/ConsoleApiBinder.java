@@ -16,6 +16,7 @@
 package net.hasor.tconsole.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.BindInfo;
+import net.hasor.tconsole.TelAttribute;
 import net.hasor.tconsole.TelExecutor;
 
 import java.io.InputStreamReader;
@@ -53,10 +54,12 @@ public interface ConsoleApiBinder extends ApiBinder {
 
     public TelnetBuilder asTelnet(InetSocketAddress address, Predicate<String> inBoundMatcher);
 
-    public interface HostBuilder extends TelnetBuilder {
+    public interface HostBuilder extends TelnetBuilder, TelAttribute {
         public HostBuilder silent();
 
         public HostBuilder preCommand(String... commands);
+
+        public HostBuilder answerExit();
     }
 
     public interface TelnetBuilder {

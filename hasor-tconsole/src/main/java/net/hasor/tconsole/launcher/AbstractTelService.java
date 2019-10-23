@@ -47,12 +47,12 @@ import java.util.function.Supplier;
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class AbstractTelService extends AbstractContainer implements TelContext {
-    public static final String                             CMD            = "tConsole>";
-    protected static    Logger                             logger         = LoggerFactory.getLogger(AbstractTelService.class);
-    protected final     ClassLoader                        classLoader;
-    private final       SpiTrigger                         spiTrigger;
-    private final       Map<String, Supplier<TelExecutor>> telExecutorMap = new ConcurrentHashMap<>();
-    private             ScheduledExecutorService           executor       = null;
+    public static final String                                       CMD            = "tConsole>";
+    protected static    Logger                                       logger         = LoggerFactory.getLogger(AbstractTelService.class);
+    protected final     ClassLoader                                  classLoader;
+    private final       SpiTrigger                                   spiTrigger;
+    private final       Map<String, Supplier<? extends TelExecutor>> telExecutorMap = new ConcurrentHashMap<>();
+    private             ScheduledExecutorService                     executor       = null;
 
     /** 创建 tConsole 服务 */
     public AbstractTelService(AppContext appContext) {
@@ -141,12 +141,12 @@ public abstract class AbstractTelService extends AbstractContainer implements Te
     }
 
     /** 添加命令 */
-    public void addCommand(String cmdName, Supplier<TelExecutor> provider) {
+    public void addCommand(String cmdName, Supplier<? extends TelExecutor> provider) {
         this.addCommand(new String[] { cmdName }, provider);
     }
 
     /** 添加命令 */
-    public void addCommand(String[] cmdName, Supplier<TelExecutor> provider) {
+    public void addCommand(String[] cmdName, Supplier<? extends TelExecutor> provider) {
         for (String name : cmdName) {
             if (StringUtils.isNotBlank(name)) {
                 this.telExecutorMap.put(name, provider);
@@ -156,7 +156,7 @@ public abstract class AbstractTelService extends AbstractContainer implements Te
 
     @Override
     public TelExecutor findCommand(String cmdName) {
-        Supplier<TelExecutor> supplier = this.telExecutorMap.get(cmdName);
+        Supplier<? extends TelExecutor> supplier = this.telExecutorMap.get(cmdName);
         if (supplier != null) {
             return supplier.get();
         }

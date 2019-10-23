@@ -32,10 +32,7 @@ import net.hasor.utils.future.BasicFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Set;
@@ -43,8 +40,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * tConsole 服务
- * @version : 20169年09月20日
+ * 提供一个可以基于本地模式使用的 Tel 命令工具。
+ * HostTelService 无需监听任何 Socket 端口， Tel 的命令交互是通过 Reader、Writer 来实现的。
+ * @version : 2019年10月23日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class HostTelService extends AbstractTelService implements TelOptions, TelAttribute {
@@ -52,7 +50,6 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
     private          TelSessionObject telSession   = null; // 会话
     //
     private          Thread           ioCopyThread = null; // IO拷贝线程
-    private          Thread           workThread   = null; // 工作线程
     private          BufferedReader   sourceReader = null; // 源头
     private          ByteBuf          dataReader   = null; // 读取缓冲,把源头数据丢入这个 Reader
 
@@ -61,13 +58,12 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
         super(appContext);
     }
 
-    /** 创建 tConsole 服务 */
+    /** 创建 Host 模式的 Tel 命令服务 */
     public HostTelService(Reader reader, Writer writer) {
-        super(null);
-        this.initConstructor(reader, writer);
+        this(reader, writer, null);
     }
 
-    /** 创建 tConsole 服务 */
+    /** 创建 Host 模式的 Tel 命令服务 */
     public HostTelService(Reader reader, Writer writer, AppContext appContext) {
         super(appContext);
         this.initConstructor(reader, writer);
@@ -124,10 +120,6 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
     protected void doInitialize() {
         super.doInitialize();
         //
-        this.workThread = new Thread(this::doWork);
-        this.workThread.setDaemon(true);
-        this.workThread.setName("tConsole-WorkEvent-Thread");
-        this.workThread.start();
         this.ioCopyThread = new Thread(this::doIoCopy);
         this.ioCopyThread.setDaemon(true);
         this.ioCopyThread.setName("tConsole-IoCopy-Thread");
@@ -150,10 +142,22 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
     @Override
     protected void doClose() {
         // .销毁Session
+        logger.info("callSpi sessionDestroyed.");
         this.getSpiTrigger().callSpi(TelSessionListener.class, listener -> {
             listener.sessionDestroyed(this.telSession);
         });
         super.doClose();
+        // .等待线程退出
+        logger.info("wait HostTelService exit.");
+        while (this.ioCopyThread.getState() != Thread.State.TERMINATED) {
+            if (this.ioCopyThread.getState() == Thread.State.TIMED_WAITING) {
+                this.ioCopyThread.interrupt();
+            }
+            try {
+                Thread.sleep(50);
+            } catch (Exception e) { /**/ }
+        }
+        logger.info("HostTelService exit done.");
     }
 
     private void doIoCopy() {
@@ -163,6 +167,9 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
                 dataReader.writeCharSequence(sourceReader.readLine() + "\n", StandardCharsets.UTF_8);
                 this.doWork();
             } catch (Exception e) {
+                if (!this.isInit() && e instanceof InterruptedIOException) {
+                    return;/* readLine阻塞情况下被中断 */
+                }
                 logger.error(e.getMessage(), e);
             }
         }
@@ -184,7 +191,7 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
             } else {
                 String codeOfSilent = TelUtils.aString(this.telSession, ENDCODE_OF_SILENT);
                 if (StringUtils.isNotBlank(codeOfSilent)) {
-                    this.telSession.writeMessage(codeOfSilent + "\n");// 加 /n 是由于用了 DelimiterBasedFrameDecoder
+                    this.telSession.writeMessageLine(codeOfSilent);
                 }
             }
         }
@@ -219,6 +226,14 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
 
     public String endcodeOfSilent() {
         return TelUtils.aString(this, TelOptions.ENDCODE_OF_SILENT);//结束符
+    }
+
+    public void sendCommand(String message) throws IOException {
+        tryShutdown();
+        if (StringUtils.isNotBlank(message)) {
+            this.dataReader.writeCharSequence(message + "\n", StandardCharsets.UTF_8);
+            this.doWork();
+        }
     }
 
     private void tryShutdown() {
@@ -265,5 +280,10 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
         } catch (Exception e) {
             throw ExceptionUtils.toRuntimeException(e);
         }
+    }
+
+    @Override
+    public boolean isHost() {
+        return true;
     }
 }

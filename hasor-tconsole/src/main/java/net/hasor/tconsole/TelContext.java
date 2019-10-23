@@ -27,4 +27,7 @@ public interface TelContext {
 
     /** 获取所有命令 */
     public List<String> getCommandNames();
+
+    /** 是否是 Host 模式 */
+    public boolean isHost();
 }

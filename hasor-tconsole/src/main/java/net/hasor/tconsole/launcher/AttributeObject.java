@@ -24,7 +24,7 @@ import java.util.Set;
  * @version : 2016年4月3日
  * @author 赵永春 (zyc@hasor.net)
  */
-public abstract class AttributeObject extends HashMap<String, Object> implements TelAttribute {
+public class AttributeObject extends HashMap<String, Object> implements TelAttribute {
     @Override
     public Object getAttribute(String key) {
         return super.get(key);
