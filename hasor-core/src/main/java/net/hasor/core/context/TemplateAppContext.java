@@ -412,17 +412,18 @@ public abstract class TemplateAppContext extends MetaDataAdapter implements AppC
         //
         //-------------------------------------------------------------------------------------------
         Runtime.getRuntime().addShutdownHook(shutdownHook);
-
         /*5.Start*/
         logger.info("appContext -> doStart");
         doStart();
         /*6.发送启动事件*/
         logger.info("appContext -> fireSyncEvent ,eventType = {}", ContextEvent_Started);
         getEnvironment().getEventContext().fireSyncEvent(ContextEvent_Started, this);
-        logger.info("appContext -> doStartCompleted");
-        doStartCompleted();/*用于扩展*/
-        //
         logger.info("Hasor Started!");
+        /*7.异步方式通知启动成功*/
+        getEnvironment().getEventContext().asyncTask(() -> {
+            logger.info("appContext -> doStartCompleted");
+            doStartCompleted();/*用于扩展*/
+        });
     }
 
     /**发送停止通知*/

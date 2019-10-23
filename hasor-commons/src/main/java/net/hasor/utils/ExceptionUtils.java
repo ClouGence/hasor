@@ -40,8 +40,7 @@ public class ExceptionUtils {
         return conver.apply(proxy);
     }
 
-    //
-    public static Throwable toRuntimeException(Throwable proxy, Class<?>[] exceptionTypes) throws Throwable {
+    public static Throwable toRuntimeException(Throwable proxy, Class<?>[] exceptionTypes) {
         if (exceptionTypes != null) {
             for (Class<?> e : exceptionTypes) {
                 if (e.isInstance(exceptionTypes)) {

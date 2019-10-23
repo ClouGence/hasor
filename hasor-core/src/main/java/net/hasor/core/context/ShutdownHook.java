@@ -39,7 +39,9 @@ class ShutdownHook extends Thread implements Runnable {
         try {
             Thread.currentThread().setContextClassLoader(newLoader);
             this.setName("Hasor-ShutdownHook");
-            this.appContext.shutdown();
+            if (this.appContext.isStart()) {
+                this.appContext.shutdown();
+            }
         } catch (Throwable e) {
             logger.error(e.getMessage(), e);
         } finally {
