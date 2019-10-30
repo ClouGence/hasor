@@ -16,6 +16,7 @@
 package net.hasor.db.jdbc;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 /**
  * 这个接口用来映射 JDBC 结果集中一行数据。
  * @version : 2013-10-9

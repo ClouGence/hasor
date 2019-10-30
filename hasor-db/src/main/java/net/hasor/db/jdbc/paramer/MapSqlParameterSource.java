@@ -18,6 +18,7 @@ import net.hasor.db.jdbc.SqlParameterSource;
 import net.hasor.db.jdbc.core.ParameterDisposer;
 
 import java.util.Map;
+
 /**
  *
  * @version : 2014-3-31
@@ -25,17 +26,21 @@ import java.util.Map;
  */
 public class MapSqlParameterSource implements SqlParameterSource, ParameterDisposer {
     private Map<String, ?> values;
+
     public MapSqlParameterSource(final Map<String, ?> values) {
         this.values = values;
     }
+
     @Override
     public boolean hasValue(final String paramName) {
         return this.values.containsKey(paramName);
     }
+
     @Override
     public Object getValue(final String paramName) throws IllegalArgumentException {
         return this.values.get(paramName);
     }
+
     @Override
     public void cleanupParameters() {
         for (Object val : this.values.values()) {

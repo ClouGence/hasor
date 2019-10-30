@@ -21,6 +21,7 @@ import net.hasor.db.transaction.TransactionStatus;
 
 import java.sql.SQLException;
 import java.sql.Savepoint;
+
 /**
  * 表示一个用于管理事务的状态点
  * @version : 2013-10-30
@@ -36,17 +37,16 @@ public class JdbcTransactionStatus implements TransactionStatus {
     private boolean           rollbackOnly  = false; //要求回滚（true表示回滚）
     private boolean           newConnection = false; //是否使用了一个全新的数据库连接开启事务（true表示新连接）
     private boolean           readOnly      = false; //只读模式（true表示只读）
-    //
+
     public JdbcTransactionStatus(final Propagation behavior, final Isolation level) {
         this.behavior = behavior;
         this.level = level;
     }
-    //
-    //
-    //
+
     private SavepointManager getSavepointManager() {
         return this.tranConn.getSavepointManager();
     }
+
     public void markHeldSavepoint() throws SQLException {
         if (this.hasSavepoint()) {
             throw new SQLException("TransactionStatus has Savepoint");
@@ -54,9 +54,9 @@ public class JdbcTransactionStatus implements TransactionStatus {
         if (!this.getSavepointManager().supportSavepoint()) {
             throw new SQLException("SavepointManager does not support Savepoint.");
         }
-        //
         this.savepoint = this.getSavepointManager().createSavepoint();
     }
+
     public void releaseHeldSavepoint() throws SQLException {
         if (!this.hasSavepoint()) {
             throw new SQLException("TransactionStatus has not Savepoint");
@@ -64,9 +64,9 @@ public class JdbcTransactionStatus implements TransactionStatus {
         if (!this.getSavepointManager().supportSavepoint()) {
             throw new SQLException("SavepointManager does not support Savepoint.");
         }
-        //
         this.getSavepointManager().releaseSavepoint(this.savepoint);
     }
+
     public void rollbackToHeldSavepoint() throws SQLException {
         if (!this.hasSavepoint()) {
             throw new SQLException("TransactionStatus has not Savepoint");
@@ -74,64 +74,75 @@ public class JdbcTransactionStatus implements TransactionStatus {
         if (!this.getSavepointManager().supportSavepoint()) {
             throw new SQLException("SavepointManager does not support Savepoint.");
         }
-        //
         this.getSavepointManager().rollbackToSavepoint(this.savepoint);
     }
+
     /*设置完成状态*/
     void setCompleted() {
         this.completed = true;
     }
+
     /*标记使用的是全新连接*/
     void markNewConnection() {
         this.newConnection = true;
     }
+
     TransactionObject getTranConn() {
         return this.tranConn;
     }
+
     void setTranConn(final TransactionObject tranConn) {
         this.tranConn = tranConn;
     }
+
     TransactionObject getSuspendConn() {
         return this.suspendConn;
     }
+
     void setSuspendConn(final TransactionObject suspendConn) {
         this.suspendConn = suspendConn;
     }
-    //
-    //
-    //
+
     @Override
     public Propagation getTransactionBehavior() {
         return this.behavior;
     }
+
     @Override
     public Isolation getIsolationLevel() {
         return this.level;
     }
+
     @Override
     public boolean isCompleted() {
         return this.completed;
     }
+
     @Override
     public boolean isRollbackOnly() {
         return this.rollbackOnly;
     }
+
     @Override
     public boolean isReadOnly() {
         return this.readOnly;
     }
+
     @Override
     public boolean isNewConnection() {
         return this.newConnection;
     }
+
     @Override
     public boolean isSuspend() {
         return this.suspendConn != null;
     }
+
     @Override
     public boolean hasSavepoint() {
         return this.savepoint != null;
     }
+
     @Override
     public void setRollbackOnly() throws SQLException {
         if (this.isCompleted()) {
@@ -139,6 +150,7 @@ public class JdbcTransactionStatus implements TransactionStatus {
         }
         this.rollbackOnly = true;
     }
+
     @Override
     public void setReadOnly() throws SQLException {
         if (this.isCompleted()) {

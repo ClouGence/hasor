@@ -17,6 +17,7 @@ package net.hasor.db.transaction.support;
 import net.hasor.db.transaction.TranManager;
 
 import javax.sql.DataSource;
+
 /**
  * @version : 2013-10-30
  * @author 赵永春 (zyc@hasor.net)
@@ -25,6 +26,7 @@ class SyncTransactionManager extends TranManager {
     public static void setSync(TransactionObject tranConn) {
         currentConnection(tranConn.getDataSource(), tranConn.getHolder());
     }
+
     public static void clearSync(DataSource dataSource) {
         currentConnection(dataSource, null);
     }

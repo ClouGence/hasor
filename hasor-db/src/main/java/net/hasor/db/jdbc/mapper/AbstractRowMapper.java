@@ -25,6 +25,7 @@ import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
+
 /**
  *
  * @version : 2014年5月23日
@@ -37,14 +38,13 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
         if (obj != null) {
             className = obj.getClass().getName();
         }
-        //
         if (obj instanceof Blob) {
             /*Blob 转换为 Bytes*/
             obj = rs.getBytes(index);
         } else if (obj instanceof Clob) {
             /*Clob 转换为 String*/
             obj = rs.getString(index);
-        } else if (className != null && ("oracle.sql.TIMESTAMP".equals(className) || "oracle.sql.TIMESTAMPTZ".equals(className))) {
+        } else if (("oracle.sql.TIMESTAMP".equals(className) || "oracle.sql.TIMESTAMPTZ".equals(className))) {
             /*oracle TIMESTAMP 转换为 Timestamp*/
             obj = rs.getTimestamp(index);
         } else if (className != null && className.startsWith("oracle.sql.DATE")) {
@@ -55,7 +55,7 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
             } else {
                 obj = rs.getDate(index);
             }
-        } else if (obj != null && obj instanceof java.sql.Date) {
+        } else if (obj instanceof java.sql.Date) {
             /*DATE 转换 Date*/
             if ("java.sql.Timestamp".equals(rs.getMetaData().getColumnClassName(index))) {
                 obj = rs.getTimestamp(index);
@@ -63,6 +63,7 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
         }
         return obj;
     }
+
     /**转换为单值的类型*/
     protected static Object convertValueToRequiredType(final Object value, final Class<?> requiredType) {
         if (value == null) {
@@ -80,6 +81,7 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
             return ConverterUtils.convert(requiredType, value);
         }
     }
+
     private static boolean isNumberPrimitive(Class<?> requiredType) {
         return Byte.TYPE == requiredType ||//
                 Short.TYPE == requiredType ||//
@@ -88,6 +90,7 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
                 Float.TYPE == requiredType ||//
                 Double.TYPE == requiredType;
     }
+
     /**
      * Parse the given text into a number instance of the given target class, using the corresponding <code>decode</code> / <code>valueOf</code> methods.
      * <p>Trims the input <code>String</code> before attempting to parse the number. Supports numbers in hex format (with leading "0x", "0X" or "#") as well.
@@ -128,6 +131,7 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
             throw new IllegalArgumentException("Cannot convert String [" + text + "] to target class [" + targetClass.getName() + "]");
         }
     }
+
     /**
      * Convert the given number into an instance of the given target class.
      * @param number the number to convert
@@ -153,21 +157,21 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
             if (value < Byte.MIN_VALUE || value > Byte.MAX_VALUE) {
                 AbstractRowMapper.raiseOverflowException(number, targetClass);
             }
-            return new Byte(number.byteValue());
+            return number.byteValue();
         } else if (targetClass.equals(Short.class) || targetClass.equals(Short.TYPE)) {
             long value = number.longValue();
             if (value < Short.MIN_VALUE || value > Short.MAX_VALUE) {
                 AbstractRowMapper.raiseOverflowException(number, targetClass);
             }
-            return new Short(number.shortValue());
+            return number.shortValue();
         } else if (targetClass.equals(Integer.class) || targetClass.equals(Integer.TYPE)) {
             long value = number.longValue();
             if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
                 AbstractRowMapper.raiseOverflowException(number, targetClass);
             }
-            return new Integer(number.intValue());
+            return number.intValue();
         } else if (targetClass.equals(Long.class) || targetClass.equals(Long.TYPE)) {
-            return new Long(number.longValue());
+            return number.longValue();
         } else if (targetClass.equals(BigInteger.class)) {
             if (number instanceof BigDecimal) {
                 // do not lose precision - use BigDecimal's own conversion
@@ -177,9 +181,9 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
                 return BigInteger.valueOf(number.longValue());
             }
         } else if (targetClass.equals(Float.class) || targetClass.equals(Float.TYPE)) {
-            return new Float(number.floatValue());
+            return number.floatValue();
         } else if (targetClass.equals(Double.class) || targetClass.equals(Double.TYPE)) {
-            return new Double(number.doubleValue());
+            return number.doubleValue();
         } else if (targetClass.equals(BigDecimal.class)) {
             // always use BigDecimal(String) here to avoid unpredictability of BigDecimal(double)
             // (see BigDecimal javadoc for details)
@@ -189,6 +193,7 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
                     number.getClass().getName() + "] to unknown target class [" + targetClass.getName() + "]");
         }
     }
+
     /**
      * Determine whether the given value String indicates a hex number, i.e. needs to be passed into 
      * <code>Integer.decode</code> instead of <code>Integer.valueOf</code> (etc).
@@ -197,6 +202,7 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
         int index = value.startsWith("-") ? 1 : 0;
         return value.startsWith("0x", index) || value.startsWith("0X", index) || value.startsWith("#", index);
     }
+
     /**
      * Raise an overflow exception for the given number and target class.
      * @param number the number we tried to convert
@@ -205,6 +211,7 @@ public abstract class AbstractRowMapper<T> implements RowMapper<T> {
     private static void raiseOverflowException(final Number number, final Class<?> targetClass) {
         throw new IllegalArgumentException("Could not convert number [" + number + "] of type [" + number.getClass().getName() + "] to target class [" + targetClass.getName() + "]: overflow");
     }
+
     /**
      * Decode a {@link java.math.BigInteger} from a {@link String} value. Supports decimal, hex and octal notation.
      * @see BigInteger#BigInteger(String, int)

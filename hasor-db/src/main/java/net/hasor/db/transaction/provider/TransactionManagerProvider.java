@@ -19,6 +19,7 @@ import net.hasor.db.transaction.TransactionManager;
 
 import javax.sql.DataSource;
 import java.util.function.Supplier;
+
 /**
  *
  * @version : 2015年11月10日
@@ -26,9 +27,11 @@ import java.util.function.Supplier;
  */
 public class TransactionManagerProvider implements Supplier<TransactionManager> {
     private Supplier<DataSource> dataSource;
+
     public TransactionManagerProvider(Supplier<DataSource> dataSource) {
         this.dataSource = dataSource;
     }
+
     public TransactionManager get() {
         return TranManager.getManager(this.dataSource.get());
     }

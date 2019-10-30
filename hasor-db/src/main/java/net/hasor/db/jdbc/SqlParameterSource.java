@@ -15,6 +15,7 @@
  */
 package net.hasor.db.jdbc;
 import net.hasor.db.jdbc.core.JdbcTemplate;
+
 /**
  * Interface that defines common functionality for objects that can
  * offer parameter values for named SQL parameters, serving as argument

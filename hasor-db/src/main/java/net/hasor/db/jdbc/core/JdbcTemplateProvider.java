@@ -18,6 +18,7 @@ import net.hasor.core.provider.InstanceProvider;
 
 import javax.sql.DataSource;
 import java.util.function.Supplier;
+
 /**
  *
  * @version : 2014年7月17日
@@ -25,12 +26,15 @@ import java.util.function.Supplier;
  */
 public class JdbcTemplateProvider implements Supplier<JdbcTemplate> {
     private Supplier<DataSource> dataSource;
+
     public JdbcTemplateProvider(DataSource dataSource) {
         this(new InstanceProvider<>(dataSource));
     }
+
     public JdbcTemplateProvider(Supplier<DataSource> dataSource) {
         this.dataSource = dataSource;
     }
+
     public JdbcTemplate get() {
         return new JdbcTemplate(this.dataSource.get());
     }

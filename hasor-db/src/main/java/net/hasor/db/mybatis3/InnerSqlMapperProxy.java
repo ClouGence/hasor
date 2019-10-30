@@ -28,6 +28,7 @@ import java.lang.reflect.Proxy;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.function.Supplier;
+
 /**
  *
  */
@@ -35,11 +36,12 @@ class InnerSqlMapperProxy<T> implements Supplier<T>, InvocationHandler {
     private Class<?>             mapperType   = null;
     private Object               mapperObject = null;
     private Supplier<AppContext> appContext;
+
     public InnerSqlMapperProxy(Class<?> mapperType, Supplier<AppContext> provider) {
         this.mapperType = Objects.requireNonNull(mapperType, "mapperType is null.");
         this.appContext = provider;
     }
-    //
+
     @Override
     public T get() {
         if (this.mapperObject != null) {
@@ -52,6 +54,7 @@ class InnerSqlMapperProxy<T> implements Supplier<T>, InvocationHandler {
             throw ExceptionUtils.toRuntimeException(e);
         }
     }
+
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         if (method.getName().equals("toString")) {

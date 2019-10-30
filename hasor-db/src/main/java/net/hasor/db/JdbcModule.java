@@ -41,6 +41,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
 /**
  * DB 模块。
  * @author 赵永春 (zyc@hasor.net)
@@ -51,28 +52,32 @@ public class JdbcModule implements Module {
     private   Set<Level>           loadLevel;
     private   String               dataSourceID;
     private   Supplier<DataSource> dataSource;
-    //
+
     /** 添加数据源 */
     public JdbcModule(Level loadLevel, DataSource dataSource) {
         this(new Level[] { loadLevel }, null, new InstanceProvider<>(Objects.requireNonNull(dataSource)));
     }
+
     /** 添加数据源 */
     public JdbcModule(Level loadLevel, Supplier<DataSource> dataSource) {
         this(new Level[] { loadLevel }, null, dataSource);
     }
+
     /** 添加数据源 */
     public JdbcModule(Level loadLevel, String name, DataSource dataSource) {
         this(new Level[] { loadLevel }, name, new InstanceProvider<>(Objects.requireNonNull(dataSource)));
     }
-    //
+
     /** 添加数据源 */
     public JdbcModule(Level[] loadLevel, DataSource dataSource) {
         this(loadLevel, null, new InstanceProvider<>(Objects.requireNonNull(dataSource)));
     }
+
     /** 添加数据源 */
     public JdbcModule(Level[] loadLevel, Supplier<DataSource> dataSource) {
         this(loadLevel, null, dataSource);
     }
+
     /** 添加数据源 */
     public JdbcModule(Level[] loadLevel, String name, Supplier<DataSource> dataSource) {
         Objects.requireNonNull(loadLevel, "loadLevel is null.");
@@ -81,8 +86,7 @@ public class JdbcModule implements Module {
         this.dataSourceID = name;
         this.dataSource = dataSource;
     }
-    //
-    //
+
     @Override
     public void loadModule(ApiBinder apiBinder) throws Throwable {
         boolean loadData = this.loadLevel.contains(Level.Full) || this.loadLevel.contains(Level.DataSource);

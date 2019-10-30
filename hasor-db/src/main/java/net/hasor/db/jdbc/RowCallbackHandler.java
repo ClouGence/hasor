@@ -16,6 +16,7 @@
 package net.hasor.db.jdbc;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 /**
  * JDBC 结果集行数据处理器。
  * @version : 2013-10-9

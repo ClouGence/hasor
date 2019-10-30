@@ -19,6 +19,7 @@ import net.hasor.db.transaction.TransactionTemplate;
 
 import javax.sql.DataSource;
 import java.util.function.Supplier;
+
 /**
  *
  * @version : 2015年11月10日
@@ -26,9 +27,11 @@ import java.util.function.Supplier;
  */
 public class TransactionTemplateProvider implements Supplier<TransactionTemplate> {
     private Supplier<DataSource> dataSource;
+
     public TransactionTemplateProvider(Supplier<DataSource> dataSource) {
         this.dataSource = dataSource;
     }
+
     public TransactionTemplate get() {
         return TranManager.getTemplate(this.dataSource.get());
     }

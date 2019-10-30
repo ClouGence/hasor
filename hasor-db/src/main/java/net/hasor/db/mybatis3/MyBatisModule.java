@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 package net.hasor.db.mybatis3;
-import net.hasor.core.*;
+import net.hasor.core.ApiBinder;
+import net.hasor.core.AppContext;
+import net.hasor.core.BindInfo;
+import net.hasor.core.Module;
 import net.hasor.core.provider.InstanceProvider;
 import net.hasor.core.provider.SingleProvider;
 import net.hasor.utils.StringUtils;
@@ -30,6 +33,7 @@ import java.io.Reader;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Supplier;
+
 /**
  * mybatis 插件
  * @version : 2016年1月10日
@@ -39,27 +43,32 @@ public class MyBatisModule implements Module {
     protected Logger                      logger         = LoggerFactory.getLogger(getClass());
     private   String                      dataSourceID   = null;
     private   Supplier<SqlSessionFactory> sessionFactory = null;
-    //
+
     public MyBatisModule(String sqlmapConfig) throws IOException {
         this(null, defaultSessionFactory(sqlmapConfig));
     }
+
     public MyBatisModule(SqlSessionFactory sessionFactory) {
         this(null, InstanceProvider.of(Objects.requireNonNull(sessionFactory, "sessionFactory is null.")));
     }
+
     public MyBatisModule(Supplier<SqlSessionFactory> sessionFactory) {
         this(null, sessionFactory);
     }
+
     public MyBatisModule(String dataSourceID, String sqlmapConfig) throws IOException {
         this(dataSourceID, defaultSessionFactory(sqlmapConfig));
     }
+
     public MyBatisModule(String dataSourceID, SqlSessionFactory sessionFactory) {
         this(dataSourceID, InstanceProvider.of(Objects.requireNonNull(sessionFactory, "sessionFactory is null.")));
     }
+
     public MyBatisModule(String dataSourceID, Supplier<SqlSessionFactory> sessionFactory) {
         this.dataSourceID = dataSourceID;
         this.sessionFactory = Objects.requireNonNull(sessionFactory, "sessionFactory is null.");
     }
-    //
+
     private static SingleProvider<SqlSessionFactory> defaultSessionFactory(final String sqlmapConfig) throws IOException {
         Objects.requireNonNull(sqlmapConfig, "sqlmapConfig is null.");
         ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -67,7 +76,7 @@ public class MyBatisModule implements Module {
         final Reader reader = Objects.requireNonNull(resourceAsReader, "could not find resource '" + sqlmapConfig + "'");
         return new SingleProvider<>(() -> new SqlSessionFactoryBuilder().build(reader));
     }
-    //
+
     public void loadModule(ApiBinder apiBinder) {
         if (StringUtils.isBlank(this.dataSourceID)) {
             // .检测依赖

@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
+
 /**
  * Connection 接口代理，目的是为了控制一些方法的调用。同时进行一些特殊类型的处理。
  * @version : 2013-10-30
@@ -25,10 +26,12 @@ import java.sql.Connection;
  */
 class CloseSuppressingInvocationHandler implements InvocationHandler {
     private final ConnectionHolder holder;
+
     CloseSuppressingInvocationHandler(ConnectionHolder holder) {
         this.holder = holder;
         this.holder.requested();//ref++
     }
+
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
         Connection connection = holder.getConnection();

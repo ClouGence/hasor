@@ -18,6 +18,7 @@ import net.hasor.db.jdbc.SqlParameterSource;
 
 import java.sql.SQLException;
 import java.util.*;
+
 /**
  * 编译的SQL
  * @version : 2013-10-16
@@ -30,38 +31,42 @@ public class ParsedSql {
     private int          totalParameterCount;
     private List<String> parameterNames;
     private List<int[]>  parameterIndexes;
-    //
+
     private ParsedSql(final String originalSql) {
         this.originalSql = originalSql;
     }
+
     public String getOriginalSql() {
         return this.originalSql;
     }
+
     public int getNamedParameterCount() {
         return this.namedParameterCount;
     }
+
     public int getUnnamedParameterCount() {
         return this.unnamedParameterCount;
     }
+
     public int getTotalParameterCount() {
         return this.totalParameterCount;
     }
+
     public List<String> getParameterNames() {
         return this.parameterNames;
     }
+
     public List<int[]> getParameterIndexes() {
         return this.parameterIndexes;
     }
-    //
-    //
-    //
-    //
+
     /**Set of characters that qualify as parameter separators, indicating that a parameter name in a SQL String has ended. */
     private static final char[]   PARAMETER_SEPARATORS = new char[] { '"', '\'', ':', '&', ',', ';', '(', ')', '|', '=', '+', '-', '*', '%', '/', '\\', '<', '>', '^' };
     /** Set of characters that qualify as comment or quotes starting characters.*/
     private static final String[] START_SKIP           = new String[] { "'", "\"", "--", "/*" };
     /**Set of characters that at are the corresponding comment or quotes ending characters. */
     private static final String[] STOP_SKIP            = new String[] { "'", "\"", "\n", "*/" };
+
     //-------------------------------------------------------------------------
     // Core methods used by NamedParameterJdbcTemplate and SqlQuery/SqlUpdate
     //-------------------------------------------------------------------------
@@ -122,6 +127,7 @@ public class ParsedSql {
         parSQL.parameterNames = parameterNames;
         return parSQL;
     }
+
     /** Skip over comments and quoted names present in an SQL statement */
     private static int skipCommentsAndQuotes(final char[] statement, final int position) {
         for (int i = 0; i < ParsedSql.START_SKIP.length; i++) {
@@ -160,6 +166,7 @@ public class ParsedSql {
         }
         return position;
     }
+
     /** Determine whether a parameter name ends at the current position, that is, whether the given character qualifies as a separator. */
     private static boolean isParameterSeparator(final char c) {
         if (Character.isWhitespace(c)) {
@@ -175,6 +182,7 @@ public class ParsedSql {
     //-------------------------------------------------------------------------
     // Core methods used by NamedParameterJdbcTemplate and SqlQuery/SqlUpdate
     //-------------------------------------------------------------------------
+
     /**生成SQL*/
     public static String buildSql(final ParsedSql parsedSql, final SqlParameterSource paramSource) {
         String originalSql = parsedSql.getOriginalSql();
@@ -222,9 +230,10 @@ public class ParsedSql {
             }
             lastIndex = endIndex;
         }
-        sqlToUse.append(originalSql.substring(lastIndex, originalSql.length()));
+        sqlToUse.append(originalSql.substring(lastIndex));
         return sqlToUse.toString();
     }
+
     /**生成Values*/
     public static Object[] buildSqlValues(final ParsedSql parsedSql, final SqlParameterSource paramSource) throws SQLException {
         String originalSql = parsedSql.getOriginalSql();

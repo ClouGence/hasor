@@ -17,6 +17,7 @@ package net.hasor.db.jdbc.mapper;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+
 /**
  *
  * @version : 2014年5月23日
@@ -24,9 +25,11 @@ import java.sql.SQLException;
  */
 public class SingleColumnRowMapper<T> extends AbstractRowMapper<T> {
     private Class<T> requiredType;
+
     /** Create a new SingleColumnRowMapper. */
     public SingleColumnRowMapper() {
     }
+
     /**
      * Create a new SingleColumnRowMapper.
      * @param requiredType the type that each result object is expected to match
@@ -34,11 +37,12 @@ public class SingleColumnRowMapper<T> extends AbstractRowMapper<T> {
     public SingleColumnRowMapper(final Class<T> requiredType) {
         this.requiredType = requiredType;
     }
+
     /** Set the type that each result object is expected to match. <p>If not specified, the column value will be exposed as returned by the JDBC driver. */
     public void setRequiredType(final Class<T> requiredType) {
         this.requiredType = requiredType;
     }
-    //
+
     /**将当前行的第一列的值转换为指定的类型。*/
     @Override
     public T mapRow(final ResultSet rs, final int rowNum) throws SQLException {
@@ -51,7 +55,7 @@ public class SingleColumnRowMapper<T> extends AbstractRowMapper<T> {
         //2.Extract column value from JDBC ResultSet.
         Object result = getResultSetValue(rs, 1);
         if (this.requiredType != null) {
-            if (result != null && this.requiredType != null && !this.requiredType.isInstance(result)) {
+            if (result != null && !this.requiredType.isInstance(result)) {
                 result = convertValueToRequiredType(result, this.requiredType);
             }
         }

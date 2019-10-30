@@ -18,15 +18,18 @@ import net.hasor.db.jdbc.PreparedStatementSetter;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 /**
  * Simple adapter for PreparedStatementSetter that applies a given array of arguments.
  * @author Juergen Hoeller
  */
 class InnerArgPreparedStatementSetter implements PreparedStatementSetter, ParameterDisposer {
     private final Object[] args;
+
     InnerArgPreparedStatementSetter(final Object[] args) {
         this.args = args;
     }
+
     @Override
     public void setValues(final PreparedStatement ps) throws SQLException {
         if (this.args != null) {
@@ -36,9 +39,11 @@ class InnerArgPreparedStatementSetter implements PreparedStatementSetter, Parame
             }
         }
     }
+
     protected void doSetValue(final PreparedStatement ps, final int parameterPosition, final Object argValue) throws SQLException {
         InnerStatementSetterUtils.setParameterValue(ps, parameterPosition, argValue);
     }
+
     @Override
     public void cleanupParameters() {
         InnerStatementSetterUtils.cleanupParameters(this.args);

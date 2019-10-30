@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Map;
+
 /**
  * {@link RowMapper} implementation that creates a <code>java.util.Map</code>
  * for each row, representing all columns as key-value pairs: one
@@ -56,6 +57,7 @@ public class ColumnMapRowMapper extends AbstractRowMapper<Map<String, Object>> {
         }
         return mapOfColValues;
     }
+
     private static String lookupColumnName(final ResultSetMetaData resultSetMetaData, final int columnIndex) throws SQLException {
         String name = resultSetMetaData.getColumnLabel(columnIndex);
         if (name == null || name.length() < 1) {
@@ -63,18 +65,19 @@ public class ColumnMapRowMapper extends AbstractRowMapper<Map<String, Object>> {
         }
         return name;
     }
-    //
-    //
+
     /**取得指定列的值*/
     protected Object getColumnValue(final ResultSet rs, final int index) throws SQLException {
         return getResultSetValue(rs, index);
     }
+
     /**讲列名转换为合理的格式。*/
     protected String getColumnKey(final String columnName) {
         return columnName;
     }
+
     /**创建一个 Map 用于存放数据*/
     protected Map<String, Object> createColumnMap(final int columnCount) {
-        return new LinkedCaseInsensitiveMap<Object>(columnCount);
+        return new LinkedCaseInsensitiveMap<>(columnCount);
     }
 }

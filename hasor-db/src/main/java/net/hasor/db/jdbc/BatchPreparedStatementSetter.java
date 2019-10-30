@@ -16,6 +16,7 @@
 package net.hasor.db.jdbc;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 /**
  * 批量更新时动态参数设置接口。
  * @version : 2013-10-9

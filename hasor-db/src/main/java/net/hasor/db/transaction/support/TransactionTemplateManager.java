@@ -15,6 +15,7 @@
  */
 package net.hasor.db.transaction.support;
 import net.hasor.db.transaction.*;
+
 /**
  *
  * @version : 2015年10月22日
@@ -22,17 +23,19 @@ import net.hasor.db.transaction.*;
  */
 class TransactionTemplateManager implements TransactionTemplate {
     private TransactionManager transactionManager;
-    //
+
     public TransactionTemplateManager(TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
     }
-    //
+
     public <T> T execute(TransactionCallback<T> callBack) throws Throwable {
         return this.execute(callBack, Propagation.REQUIRED, Isolation.DEFAULT);
     }
+
     public <T> T execute(TransactionCallback<T> callBack, Propagation behavior) throws Throwable {
         return this.execute(callBack, behavior, Isolation.DEFAULT);
     }
+
     public <T> T execute(TransactionCallback<T> callBack, Propagation behavior, Isolation level) throws Throwable {
         TransactionStatus tranStatus = null;
         try {

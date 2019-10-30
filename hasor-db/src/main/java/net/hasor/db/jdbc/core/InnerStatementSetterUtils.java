@@ -12,7 +12,7 @@ import java.util.*;
  */
 class InnerStatementSetterUtils {
     public static final int                    TYPE_UNKNOWN         = Integer.MIN_VALUE;
-    private static      Map<Class<?>, Integer> javaTypeToSqlTypeMap = new HashMap<Class<?>, Integer>(32);
+    private static      Map<Class<?>, Integer> javaTypeToSqlTypeMap = new HashMap<>(32);
 
     static {
         /* JDBC 3.0 only - not compatible with e.g. MySQL at present*/

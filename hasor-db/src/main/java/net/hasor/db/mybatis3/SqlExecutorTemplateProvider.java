@@ -18,6 +18,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import javax.sql.DataSource;
 import java.util.function.Supplier;
+
 /**
  * @version : 2014年7月17日
  * @author 赵永春 (zyc@hasor.net)
@@ -25,10 +26,12 @@ import java.util.function.Supplier;
 public class SqlExecutorTemplateProvider implements Supplier<SqlExecutorTemplate> {
     private Supplier<DataSource>        dataSource;
     private Supplier<SqlSessionFactory> sessionFactory;
+
     public SqlExecutorTemplateProvider(Supplier<SqlSessionFactory> sessionFactory, Supplier<DataSource> dataSource) {
         this.dataSource = dataSource;
         this.sessionFactory = sessionFactory;
     }
+
     public SqlExecutorTemplate get() {
         return new SqlExecutorTemplate(this.sessionFactory.get(), this.dataSource.get());
     }

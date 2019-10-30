@@ -20,6 +20,7 @@ import net.hasor.utils.BeanUtils;
 
 import java.util.List;
 import java.util.Objects;
+
 /**
  *
  * @version : 2014-3-31
@@ -28,18 +29,22 @@ import java.util.Objects;
 public class BeanSqlParameterSource implements SqlParameterSource, ParameterDisposer {
     private Object       dataBean;
     private List<String> dataNames;
+
     public BeanSqlParameterSource(Object dataBean) {
         this.dataBean = Objects.requireNonNull(dataBean);
-        dataNames = BeanUtils.getPropertysAndFields(dataBean.getClass());
+        this.dataNames = BeanUtils.getPropertysAndFields(dataBean.getClass());
     }
+
     @Override
     public boolean hasValue(final String paramName) {
         return this.dataNames.contains(paramName);
     }
+
     @Override
     public Object getValue(final String paramName) throws IllegalArgumentException {
         return BeanUtils.readPropertyOrField(this.dataBean, paramName);
     }
+
     @Override
     public void cleanupParameters() {
         if (this.dataBean instanceof ParameterDisposer) {

@@ -16,6 +16,7 @@
 package net.hasor.db.jdbc;
 import java.sql.SQLException;
 import java.sql.Statement;
+
 /**
  * 通用的回调接口。用来执行基于 JDBC {@link Statement}
  * 上的任意数量任意类型数据库操作。

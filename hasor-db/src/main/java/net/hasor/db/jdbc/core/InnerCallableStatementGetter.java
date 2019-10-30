@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 /**
  *
  * @version : 2014-3-31
@@ -11,9 +12,9 @@ import java.util.Map;
  */
 class InnerCallableStatementGetter {
     /** Maps primitive <code>Class</code>es to their corresponding wrapper <code>Class</code>. */
-    private static final Map<Class<?>, Class<?>> primitiveWrapperMap = new HashMap<Class<?>, Class<?>>();
+    private static final Map<Class<?>, Class<?>> primitiveWrapperMap = new HashMap<>();
     /** Maps wrapper <code>Class</code>es to their corresponding primitive types. */
-    private static final Map<Class<?>, Class<?>> wrapperPrimitiveMap = new HashMap<Class<?>, Class<?>>();
+    private static final Map<Class<?>, Class<?>> wrapperPrimitiveMap = new HashMap<>();
 
     static {
         primitiveWrapperMap.put(Boolean.TYPE, Boolean.class);
@@ -42,6 +43,7 @@ class InnerCallableStatementGetter {
         }
         return convertedClass;
     }
+
     //
     public static Object getValue(final CallableStatement cs, final int index, Class<?> requiredType) throws SQLException {
         Object value = null;

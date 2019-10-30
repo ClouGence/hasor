@@ -21,6 +21,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 /**
  * 可以标记在：方法、类 上面
  * @author 赵永春 (zyc@hasor.net)
@@ -29,7 +30,6 @@ import java.lang.annotation.Target;
 @Target({ ElementType.METHOD, ElementType.TYPE, ElementType.PACKAGE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Transactional {
-
     /**传播属性*/
     public Propagation propagation() default Propagation.REQUIRED;
 

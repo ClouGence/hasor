@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
 /**
  * {@link ResultSetExtractor} 接口实现类，该类会将结果集中的每一行进行处理，并返回一个 List 用以封装处理结果集。
  *
@@ -46,6 +47,7 @@ import java.util.Objects;
 public class RowMapperResultSetExtractor<T> implements ResultSetExtractor<List<T>> {
     private final RowMapper<T> rowMapper;
     private final int          rowsExpected;
+
     /**
      * 创建 {@link RowMapperResultSetExtractor} 对象
      * @param rowMapper 行映射器。
@@ -53,6 +55,7 @@ public class RowMapperResultSetExtractor<T> implements ResultSetExtractor<List<T
     public RowMapperResultSetExtractor(final RowMapper<T> rowMapper) {
         this(rowMapper, 0);
     }
+
     /**
      * 创建 {@link RowMapperResultSetExtractor} 对象
      * @param rowMapper 行映射器。
@@ -63,6 +66,7 @@ public class RowMapperResultSetExtractor<T> implements ResultSetExtractor<List<T
         this.rowMapper = rowMapper;
         this.rowsExpected = rowsExpected;
     }
+
     @Override
     public List<T> extractData(final ResultSet rs) throws SQLException {
         List<T> results = this.rowsExpected > 0 ? new ArrayList<T>(this.rowsExpected) : new ArrayList<T>();

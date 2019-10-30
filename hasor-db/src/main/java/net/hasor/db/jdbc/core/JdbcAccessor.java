@@ -19,27 +19,32 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+
 /**
  *
  * @version : 2013-10-16
  * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcAccessor {
-    protected Logger logger = LoggerFactory.getLogger(getClass());
-    private DataSource dataSource;
-    private Connection connection;
+    protected Logger     logger = LoggerFactory.getLogger(getClass());
+    private   DataSource dataSource;
+    private   Connection connection;
+
     /**Set the JDBC DataSource to obtain connections from.*/
     public void setDataSource(final DataSource dataSource) {
         this.dataSource = dataSource;
     }
+
     /**Return the DataSource used by this template.*/
     public DataSource getDataSource() {
         return this.dataSource;
     }
+
     /**Return the Connection used by this template.*/
     public Connection getConnection() {
         return this.connection;
     }
+
     /**Set the JDBC Connection to obtain connection from.*/
     public void setConnection(final Connection connection) {
         this.connection = connection;

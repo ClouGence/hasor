@@ -27,6 +27,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
+
 /**
  *
  * @version : 2013-10-16
@@ -42,7 +43,7 @@ public class JdbcConnection extends JdbcAccessor {
     /*从 JDBC 中可以查询的最大行数。
      * 如果这个变量被设置为非零值,它将被用于设置 statements 的 queryTimeout 属性。*/
     private int queryTimeout = 0;
-    //
+
     /**
      * Construct a new JdbcConnection for bean usage.
      * <p>Note: The DataSource has to be set before using the instance.
@@ -50,6 +51,7 @@ public class JdbcConnection extends JdbcAccessor {
      */
     public JdbcConnection() {
     }
+
     /**
      * Construct a new JdbcConnection, given a DataSource to obtain connections from.
      * <p>Note: This will not trigger initialization of the exception translator.
@@ -58,6 +60,7 @@ public class JdbcConnection extends JdbcAccessor {
     public JdbcConnection(final DataSource dataSource) {
         this.setDataSource(dataSource);
     }
+
     /**
      * Construct a new JdbcConnection, given a Connection to obtain connections from.
      * <p>Note: This will not trigger initialization of the exception translator.
@@ -66,31 +69,38 @@ public class JdbcConnection extends JdbcAccessor {
     public JdbcConnection(final Connection conn) {
         this.setConnection(conn);
     }
+
     //
     public int getFetchSize() {
         return this.fetchSize;
     }
+
     public void setFetchSize(final int fetchSize) {
         this.fetchSize = fetchSize;
     }
+
     public int getMaxRows() {
         return this.maxRows;
     }
+
     public void setMaxRows(final int maxRows) {
         this.maxRows = maxRows;
     }
+
     public int getQueryTimeout() {
         return this.queryTimeout;
     }
+
     public void setQueryTimeout(final int queryTimeout) {
         this.queryTimeout = queryTimeout;
     }
+
     public <T> T execute(final ConnectionCallback<T> action) throws SQLException {
         Objects.requireNonNull(action, "Callback object must not be null");
         //
         Connection localConn = this.getConnection();
         DataSource localDS = this.getDataSource();//获取数据源
-        boolean usingDS = localConn == null;
+        boolean usingDS = (localConn == null);
         if (logger.isDebugEnabled()) {
             logger.debug("database connection using DataSource = {}", usingDS);
         }
@@ -112,6 +122,7 @@ public class JdbcConnection extends JdbcAccessor {
             }
         }
     }
+
     /**对Statement的属性进行设置。设置 JDBC Statement 对象的 fetchSize、maxRows、Timeout等参数。*/
     protected void applyStatementSettings(final Statement stmt) throws SQLException {
         int fetchSize = this.getFetchSize();
@@ -127,20 +138,24 @@ public class JdbcConnection extends JdbcAccessor {
             stmt.setQueryTimeout(timeout);
         }
     }
+
     /**获取与本地线程绑定的数据库连接，JDBC 框架会维护这个连接的事务。开发者不必关心该连接的事务管理，以及资源释放操作。*/
     private ConnectionProxy newProxyConnection(final Connection target, final DataSource targetSource) {
         Objects.requireNonNull(target, "Connection is null.");
         CloseSuppressingInvocationHandler handler = new CloseSuppressingInvocationHandler(target, targetSource);
         return (ConnectionProxy) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] { ConnectionProxy.class }, handler);
     }
+
     /**Connection 接口代理，目的是为了控制一些方法的调用。同时进行一些特殊类型的处理。*/
     private class CloseSuppressingInvocationHandler implements InvocationHandler {
         private final Connection target;
         private final DataSource targetSource;
+
         public CloseSuppressingInvocationHandler(final Connection target, final DataSource targetSource) {
             this.target = target;
             this.targetSource = targetSource;
         }
+
         @Override
         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
             // Invocation on ConnectionProxy interface coming in...

@@ -15,6 +15,7 @@
  */
 package net.hasor.db.transaction;
 import java.sql.SQLException;
+
 /**
  * 数据源的事务管理器。
  * @version : 2013-10-30
@@ -37,7 +38,6 @@ public interface TransactionManager {
 
     /**回滚事务*/
     public void rollBack(TransactionStatus status) throws SQLException;
-    //
 
     /**是否存在未处理完的事务（包括被挂起的事务）。*/
     public boolean hasTransaction();

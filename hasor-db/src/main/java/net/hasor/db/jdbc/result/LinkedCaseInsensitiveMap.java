@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+
 /**
  * {@link LinkedHashMap} variant that stores String keys in a case-insensitive
  * manner, for example for key-based access in a results table.
@@ -31,9 +32,10 @@ import java.util.Map;
  * @since 3.0
  */
 public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
-    private static final long serialVersionUID = -2744548964742290311L;
-    private final Map<String, String> caseInsensitiveKeys;
-    private final Locale              locale;
+    private static final long                serialVersionUID = -2744548964742290311L;
+    private final        Map<String, String> caseInsensitiveKeys;
+    private final        Locale              locale;
+
     /**
      * Create a new LinkedCaseInsensitiveMap for the default Locale.
      * @see String#toLowerCase()
@@ -41,6 +43,7 @@ public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
     public LinkedCaseInsensitiveMap() {
         this(null);
     }
+
     /**
      * Create a new LinkedCaseInsensitiveMap that stores lower-case keys
      * according to the given Locale.
@@ -49,9 +52,10 @@ public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
      */
     public LinkedCaseInsensitiveMap(final Locale locale) {
         super();
-        this.caseInsensitiveKeys = new HashMap<String, String>();
+        this.caseInsensitiveKeys = new HashMap<>();
         this.locale = locale != null ? locale : Locale.getDefault();
     }
+
     /**
      * Create a new LinkedCaseInsensitiveMap that wraps a {@link LinkedHashMap}
      * with the given initial capacity and stores lower-case keys according
@@ -62,6 +66,7 @@ public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
     public LinkedCaseInsensitiveMap(final int initialCapacity) {
         this(initialCapacity, null);
     }
+
     /**
      * Create a new LinkedCaseInsensitiveMap that wraps a {@link LinkedHashMap}
      * with the given initial capacity and stores lower-case keys according
@@ -72,18 +77,21 @@ public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
      */
     public LinkedCaseInsensitiveMap(final int initialCapacity, final Locale locale) {
         super(initialCapacity);
-        this.caseInsensitiveKeys = new HashMap<String, String>(initialCapacity);
+        this.caseInsensitiveKeys = new HashMap<>(initialCapacity);
         this.locale = locale != null ? locale : Locale.getDefault();
     }
+
     @Override
     public V put(final String key, final V value) {
         this.caseInsensitiveKeys.put(this.convertKey(key), key);
         return super.put(key, value);
     }
+
     @Override
     public boolean containsKey(final Object key) {
         return key instanceof String && this.caseInsensitiveKeys.containsKey(this.convertKey((String) key));
     }
+
     @Override
     public V get(final Object key) {
         if (key instanceof String) {
@@ -92,6 +100,7 @@ public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
             return null;
         }
     }
+
     @Override
     public V remove(final Object key) {
         if (key instanceof String) {
@@ -100,11 +109,13 @@ public class LinkedCaseInsensitiveMap<V> extends LinkedHashMap<String, V> {
             return null;
         }
     }
+
     @Override
     public void clear() {
         this.caseInsensitiveKeys.clear();
         super.clear();
     }
+
     /**
      * Convert the given key to a case-insensitive key.
      * <p>The default implementation converts the key

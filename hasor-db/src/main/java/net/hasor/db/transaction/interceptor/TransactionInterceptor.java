@@ -22,6 +22,7 @@ import javax.sql.DataSource;
 import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.function.Supplier;
+
 /**
  * 某一个数据源的事务管理器
  * @version : 2015年11月10日
@@ -29,10 +30,11 @@ import java.util.function.Supplier;
  */
 public class TransactionInterceptor implements MethodInterceptor {
     private Supplier<DataSource> dataSource = null;
+
     public TransactionInterceptor(Supplier<DataSource> dataSource) {
         this.dataSource = Objects.requireNonNull(dataSource, "dataSource Provider is null.");
     }
-    //
+
     /*是否不需要回滚:true表示不要回滚*/
     private boolean testNoRollBackFor(Transactional tranAnno, Throwable e) {
         //1.test Class
@@ -52,7 +54,7 @@ public class TransactionInterceptor implements MethodInterceptor {
         }
         return false;
     }
-    //
+
     @Override
     public final Object invoke(final MethodInvocation invocation) throws Throwable {
         Method targetMethod = invocation.getMethod();
@@ -84,6 +86,7 @@ public class TransactionInterceptor implements MethodInterceptor {
             }
         }
     }
+
     /** 在方法上找 Transactional ，如果找不到在到 类上找 Transactional ，如果依然没有，那么在所处的包(包括父包)上找 Transactional。*/
     private Transactional tranAnnotation(Method targetMethod) {
         Transactional tran = targetMethod.getAnnotation(Transactional.class);

@@ -23,31 +23,35 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
 /**
  * 用于 POJO 的 RowMapper
  * @version : 2013-12-18
  * @author 赵永春 (zyc@hasor.net)
  */
 public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
-    private Class<T> requiredType;
+    private Class<T>            requiredType;
     private boolean             caseInsensitive = false;
     private Map<String, String> columnMapping   = new HashMap<>();
-    //
+
     /** Create a new BeanPropertyRowMapper.*/
     public BeanPropertyRowMapper() {
     }
+
     /** Create a new BeanPropertyRowMapper.*/
     public BeanPropertyRowMapper(final Class<T> requiredType) {
         Objects.requireNonNull(requiredType, "requiredType is null.");
         this.requiredType = requiredType;
         this.loadMapping();
     }
+
     /** Set the type that each result object is expected to match. <p>If not specified, the column value will be exposed as returned by the JDBC driver.*/
     public void setRequiredType(final Class<T> requiredType) {
         Objects.requireNonNull(requiredType, "requiredType is null.");
         this.requiredType = requiredType;
         this.loadMapping();
     }
+
     private void loadMapping() {
         /*借助用属性名统一大写，来实现属性感性。*/
         this.columnMapping.clear();
@@ -56,12 +60,15 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
             this.columnMapping.put(pName.toUpperCase(), pName);
         }
     }
+
     public boolean isCaseInsensitive() {
         return this.caseInsensitive;
     }
+
     public void setCaseInsensitive(final boolean caseInsensitive) {
         this.caseInsensitive = caseInsensitive;
     }
+
     @Override
     public T mapRow(final ResultSet rs, final int rowNum) throws SQLException {
         T targetObject;
@@ -74,6 +81,7 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
             throw new SQLException(e);
         }
     }
+
     private T tranResultSet(final ResultSet rs, final T targetObject) throws SQLException {
         ResultSetMetaData rsmd = rs.getMetaData();
         int nrOfColumns = rsmd.getColumnCount();
@@ -92,6 +100,7 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
         }
         return targetObject;
     }
+
     /**取得指定列的值*/
     protected Object getColumnValue(final ResultSet rs, final int index, final Class<?> requiredType) throws SQLException {
         Object resultData = getResultSetValue(rs, index);
@@ -101,6 +110,7 @@ public class BeanPropertyRowMapper<T> extends AbstractRowMapper<T> {
             return resultData;
         }
     }
+
     /**
      * Static factory method to create a new BeanPropertyRowMapper (with the mapped class specified only once).
      * @param mappedClass the class that each row should be mapped to

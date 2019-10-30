@@ -19,6 +19,7 @@ import net.hasor.db.jdbc.JdbcOperations;
 
 import javax.sql.DataSource;
 import java.util.function.Supplier;
+
 /**
  *
  * @version : 2014年7月17日
@@ -26,12 +27,15 @@ import java.util.function.Supplier;
  */
 public class JdbcOperationsProvider implements Supplier<JdbcOperations> {
     private Supplier<DataSource> dataSource;
+
     public JdbcOperationsProvider(DataSource dataSource) {
         this(new InstanceProvider<>(dataSource));
     }
+
     public JdbcOperationsProvider(Supplier<DataSource> dataSource) {
         this.dataSource = dataSource;
     }
+
     public JdbcOperations get() {
         return new JdbcTemplate(this.dataSource.get());
     }
