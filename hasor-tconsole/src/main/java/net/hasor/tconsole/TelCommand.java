@@ -17,7 +17,7 @@
 package net.hasor.tconsole;
 /**
  * 一个正在执行的命令
- * @version : 20169年09月20日
+ * @version : 2016年09月20日
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface TelCommand extends TelAttribute {

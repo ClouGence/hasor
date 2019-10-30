@@ -18,8 +18,8 @@ import java.util.List;
 
 /**
  * tConsol 为您提供 telnet 下和应用程序交互的能力。
+ * @version : 2016年09月20日
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2018-04-09
  */
 public interface TelContext {
     /** 查找命令 */

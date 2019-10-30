@@ -43,8 +43,8 @@ import java.util.function.Predicate;
 import static net.hasor.tconsole.launcher.TelUtils.finalBindAddress;
 
 /**
- * tConsole 服务
- * @version : 20169年09月20日
+ * tConsole 服务，提供 Telnet 形式的交互界面。
+ * @version : 2016年09月20日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class TelnetTelService extends AbstractTelService {

@@ -17,7 +17,7 @@
 package net.hasor.tconsole;
 /**
  * 读取一个完整命令。
- * @version : 20169年09月20日
+ * @version : 2019年10月30日
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface TelReader {

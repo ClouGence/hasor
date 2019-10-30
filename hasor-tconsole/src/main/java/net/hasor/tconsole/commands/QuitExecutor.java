@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.tconsole.commands;
+import net.hasor.core.Singleton;
 import net.hasor.tconsole.TelCommand;
 import net.hasor.tconsole.TelExecutorVoid;
 import net.hasor.tconsole.TelOptions;
 
 /**
- *
- * @version : 2016年4月3日
+ * 关闭 tConsole session。
+ * @version : 2019年10月30日
  * @author 赵永春 (zyc@hasor.net)
  */
+@Singleton
 public class QuitExecutor implements TelExecutorVoid {
     @Override
     public String helpInfo() {

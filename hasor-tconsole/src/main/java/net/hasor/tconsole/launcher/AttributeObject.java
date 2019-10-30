@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Set;
 
 /**
- *
- * @version : 2016年4月3日
+ * 基于 HashMap 的 TelAttribute 接口实现
+ * @version : 2016年09月20日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class AttributeObject extends HashMap<String, Object> implements TelAttribute {

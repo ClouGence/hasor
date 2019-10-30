@@ -20,8 +20,8 @@ import net.hasor.core.Module;
 import net.hasor.core.spi.ContextStartListener;
 
 /**
- * RSF终端管理器插件。
- * @version : 2016年2月18日
+ * tConsole Hasor 插件入口。
+ * @version : 2019年10月30日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class ConsoleModule implements Module, ContextStartListener {
@@ -48,7 +48,7 @@ public class ConsoleModule implements Module, ContextStartListener {
         if (!this.enable) {
             return;
         }
-        appContext.getInstance(InnerExecutorManager.class).doPreCommand();
+        appContext.getInstance(InnerExecutorManager.class).doPreCommand(appContext);
     }
 
     @Override

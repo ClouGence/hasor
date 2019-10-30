@@ -47,7 +47,9 @@ import static net.hasor.tconsole.TelOptions.ENDCODE_OF_SILENT;
 import static net.hasor.tconsole.TelOptions.SILENT;
 
 /**
- * simple telnet client.
+ * 可以连接远端 tConsole 并执行指令。
+ * @version : 2019年10月30日
+ * @author 赵永春 (zyc@hasor.net)
  */
 public class TelClient extends AbstractContainer implements TelAttribute {
     private static Logger            logger = LoggerFactory.getLogger(TelClient.class);
@@ -62,7 +64,6 @@ public class TelClient extends AbstractContainer implements TelAttribute {
         this.receiveDataBuffer = ByteBufAllocator.DEFAULT.heapBuffer();
         this.attributeObject = new AttributeObject() {
         };
-        //
         String endcodeOfSilent = "----" + UUID.randomUUID().toString().replace("-", "") + "----";
         this.attributeObject.setAttribute(SILENT, true);                       // 静默输出
         this.attributeObject.setAttribute(ENDCODE_OF_SILENT, endcodeOfSilent); // 结束符

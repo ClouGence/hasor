@@ -1,3 +1,18 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.hasor.tconsole.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.container.AbstractContainer;
@@ -25,6 +40,11 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+/**
+ * 负责搜集 ConsoleApiBinder 配置的各种参数，然后在doInitialize的时候进行初始化。
+ * @version : 2019年10月30日
+ * @author 赵永春 (zyc@hasor.net)
+ */
 class InnerExecutorManager extends AbstractContainer implements AppContextAware, Supplier<TelContext> {
     private static Logger                                       logger                 = LoggerFactory.getLogger(InnerExecutorManager.class);
     private        InnerTelMode                                 telMode;
@@ -87,18 +107,20 @@ class InnerExecutorManager extends AbstractContainer implements AppContextAware,
     }
 
     // .处理 Pre Command
-    public void doPreCommand() {
+    public void doPreCommand(AppContext appContext) {
         if (this.service instanceof HostTelService) {
-            for (String command : this.hostPreCommandSet) {
-                try {
-                    ((HostTelService) this.service).sendCommand(command);
-                } catch (IOException e) {
-                    throw ExceptionUtils.toRuntimeException(e);
+            if (this.hostPreCommandSet != null && this.hostPreCommandSet.length > 0) {
+                for (String command : this.hostPreCommandSet) {
+                    try {
+                        ((HostTelService) this.service).sendCommand(command);
+                    } catch (IOException e) {
+                        throw ExceptionUtils.toRuntimeException(e);
+                    }
                 }
+                logger.info("tConsole -> trigger TelHostPreFinishListener.onFinish");
+                service.getSpiTrigger().callSpi(TelHostPreFinishListener.class, listener -> listener.onFinish(appContext));
             }
         }
-        logger.info("tConsole -> trigger TelHostPreFinishListener.onFinish");
-        service.getSpiTrigger().callSpi(TelHostPreFinishListener.class, listener -> listener.onFinish(service));
     }
 
     @Override

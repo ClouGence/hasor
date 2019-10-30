@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * 内置指令集。
+ * tConsole 命令集
  */
 package net.hasor.tconsole.commands;

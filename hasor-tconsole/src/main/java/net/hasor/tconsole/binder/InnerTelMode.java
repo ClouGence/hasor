@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 package net.hasor.tconsole.binder;
+import net.hasor.tconsole.launcher.hosts.HostTelService;
+import net.hasor.tconsole.launcher.telnet.TelnetTelService;
+
 /**
- * RSF终端管理器插件。
- * @version : 2016年2月18日
+ * 启动模式定义。
+ * @version : 2019年10月30日
  * @author 赵永春 (zyc@hasor.net)
  */
 enum InnerTelMode {
-    Host, Telnet
+    /** Host 模式，能力基于 {@link HostTelService}实现。 */
+    Host,
+    /** Telnet 模式，能力基于 {@link TelnetTelService}实现。 */
+    Telnet
 }

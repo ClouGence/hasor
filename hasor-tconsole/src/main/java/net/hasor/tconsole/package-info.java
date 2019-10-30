@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Tenlet控制台框架，可以为应用程序提供简单的交互媒介。
+ * tConsole 框架，可以为应用程序提供简单的交互媒介。可以帮助构建一个命令行工具应用，也可以帮助应用开放一个基于 telnet 的命令行交互界面。
  */
 package net.hasor.tconsole;

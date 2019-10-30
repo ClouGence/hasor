@@ -23,7 +23,8 @@ import net.hasor.tconsole.TelOptions;
 import net.hasor.tconsole.launcher.AbstractTelService;
 import net.hasor.tconsole.launcher.TelSessionObject;
 import net.hasor.tconsole.launcher.TelUtils;
-import net.hasor.tconsole.spi.TelSessionListener;
+import net.hasor.tconsole.spi.TelSessionCreateListener;
+import net.hasor.tconsole.spi.TelSessionDestroyListener;
 import net.hasor.tconsole.spi.TelStopContextListener;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
@@ -128,7 +129,7 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
         //
         // .创建Session
         logger.info("tConsole -> trigger TelSessionListener.sessionCreated");
-        this.getSpiTrigger().callSpi(TelSessionListener.class, listener -> {
+        this.getSpiTrigger().callSpi(TelSessionCreateListener.class, listener -> {
             listener.sessionCreated(this.telSession);
         });
     }
@@ -136,8 +137,8 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
     @Override
     protected void doClose() {
         // .销毁Session
-        logger.info("tConsole -> trigger TelSessionListener.sessionDestroyed");
-        this.getSpiTrigger().callSpi(TelSessionListener.class, listener -> {
+        logger.info("tConsole -> trigger TelSessionDestroyListener.sessionDestroyed");
+        this.getSpiTrigger().callSpi(TelSessionDestroyListener.class, listener -> {
             listener.sessionDestroyed(this.telSession);
         });
         super.doClose();

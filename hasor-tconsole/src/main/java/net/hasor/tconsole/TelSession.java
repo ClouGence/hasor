@@ -17,7 +17,7 @@
 package net.hasor.tconsole;
 /**
  * 控制台会话
- * @version : 20169年09月20日
+ * @version : 2019年10月30日
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface TelSession extends TelAttribute {

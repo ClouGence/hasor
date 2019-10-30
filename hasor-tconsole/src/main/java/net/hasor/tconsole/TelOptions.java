@@ -16,14 +16,19 @@
  */
 package net.hasor.tconsole;
 /**
- * Telnet指令执行器。
- * @version : 20169年09月20日
+ * tConsole 可以用的一些 session 变量。
+ * @version : 2019年10月30日
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface TelOptions {
-    public static final String CLOSE_SESSION     = "TEL_CLOSE";             // 命令结束之后立刻关闭 session
-    public static final String SILENT            = "TEL_SILENT";            // 静默：只输出命令本身的返回信息，在TelClient上该配置始终是true
-    public static final String ENDCODE_OF_SILENT = "TEL_ENDCODE_OF_SILENT"; // 静默模式下的命令结束符。TelClient 上该配置始终有值。
-    public static final String COST              = "TEL_COST";              // 输出每条命令的成本时间
-    public static final String MAX_EXECUTOR_NUM  = "TEL_MAX_EXECUTOR_NUM";  // 当会话中执行命令数量达到设定值之后立刻关闭 session
+    /** 命令结束之后立刻关闭 session */
+    public static final String CLOSE_SESSION     = "TEL_CLOSE";
+    /** 静默：只输出命令本身的返回信息，在TelClient上该配置始终是true */
+    public static final String SILENT            = "TEL_SILENT";
+    /** 静默模式下的命令结束符。TelClient 上该配置始终有值 */
+    public static final String ENDCODE_OF_SILENT = "TEL_ENDCODE_OF_SILENT";
+    /** 输出每条命令的成本时间 */
+    public static final String COST              = "TEL_COST";
+    /** 当会话中执行命令数量达到设定值之后立刻关闭 session */
+    public static final String MAX_EXECUTOR_NUM  = "TEL_MAX_EXECUTOR_NUM";
 }

@@ -21,7 +21,6 @@ import net.hasor.tconsole.TelPhase;
 import net.hasor.tconsole.TelSession;
 import net.hasor.tconsole.spi.TelAfterExecutorListener;
 import net.hasor.tconsole.spi.TelBeforeExecutorListener;
-import net.hasor.tconsole.spi.TelCloseListener;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.io.IOUtils;
 import org.slf4j.Logger;
@@ -39,8 +38,8 @@ import static net.hasor.tconsole.launcher.TelUtils.aBoolean;
 import static net.hasor.tconsole.launcher.TelUtils.aInteger;
 
 /**
- *
- * @version : 2016年4月3日
+ * TelSession 接口实现
+ * @version : 2016年09月20日
  * @author 赵永春 (zyc@hasor.net)
  */
 public abstract class TelSessionObject extends AttributeObject implements TelSession {
@@ -219,10 +218,6 @@ public abstract class TelSessionObject extends AttributeObject implements TelSes
     public void close(int afterSeconds, boolean countdown) {
         // .设置关闭状态
         this.setAttribute(CLOSE_SESSION, "true");
-        // .触发SPI
-        this.telContext.getSpiTrigger().callSpi(TelCloseListener.class, listener -> {
-            listener.onClose(curentCommand, afterSeconds);
-        });
         // .倒计时
         if (afterSeconds > 0) {
             try {

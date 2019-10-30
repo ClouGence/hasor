@@ -1,10 +1,11 @@
 package net.hasor.test.beans;
 import net.hasor.tconsole.TelSession;
-import net.hasor.tconsole.spi.TelSessionListener;
+import net.hasor.tconsole.spi.TelSessionCreateListener;
+import net.hasor.tconsole.spi.TelSessionDestroyListener;
 
 import java.util.HashMap;
 
-public class TelSessionListenerBean extends HashMap<String, TelSession> implements TelSessionListener {
+public class TelSessionListenerBean extends HashMap<String, TelSession> implements TelSessionCreateListener, TelSessionDestroyListener {
     @Override
     public void sessionCreated(TelSession telSession) {
         this.put(telSession.getSessionID(), telSession);

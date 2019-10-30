@@ -29,7 +29,9 @@ import java.nio.charset.StandardCharsets;
 import static net.hasor.tconsole.TelOptions.ENDCODE_OF_SILENT;
 
 /**
- * Handles a client-side channel.
+ *
+ * @version : 2019年10月30日
+ * @author 赵永春 (zyc@hasor.net)
  */
 @Sharable
 class TelClientHandler extends SimpleChannelInboundHandler<String> {

@@ -22,8 +22,8 @@ import net.hasor.tconsole.TelReader;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Telnet指令执行器。
- * @version : 20169年09月20日
+ * TelReader 的接口实现
+ * @version : 2016年09月20日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class TelReaderObject implements TelReader {

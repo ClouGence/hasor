@@ -23,8 +23,8 @@ import java.io.PipedWriter;
 import java.io.Writer;
 
 /**
- * tConsole 服务
- * @version : 20169年09月20日
+ * 继承自 HostTelService 通过 PipedWriter 机制来简化 HostTelService 的操作。
+ * @version : 2019年10月23日
  * @author 赵永春 (zyc@hasor.net)
  */
 public class PipedHostTelService extends HostTelService {

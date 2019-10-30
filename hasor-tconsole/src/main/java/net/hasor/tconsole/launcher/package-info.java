@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 /**
- * Telnet 控制台框架主体代码。
+ * Telnet 控制台框架服务主体代码。
  */
 package net.hasor.tconsole.launcher;

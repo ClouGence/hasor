@@ -33,8 +33,8 @@ import java.util.function.Supplier;
 import static net.hasor.tconsole.launcher.TelUtils.finalBindAddress;
 
 /**
- * RSF终端管理器插件。
- * @version : 2016年2月18日
+ * tConsole 插件接口
+ * @version : 2019年10月30日
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface ConsoleApiBinder extends ApiBinder {
@@ -68,27 +68,35 @@ public interface ConsoleApiBinder extends ApiBinder {
     public TelnetBuilder asTelnet(InetSocketAddress address, Predicate<String> inBoundMatcher);
 
     public interface HostBuilder extends TelnetBuilder, TelAttribute {
+        /** 安静模式，安静模式下不会输"tConsole>" 提示符，也不会输出欢迎信息。 */
         public HostBuilder silent();
 
-        /** 预执行的命令，预执行命令最快会在容器启动 100 ms 之后开始执行。*/
+        /** 预执行的命令，预执行命令最快会在容器启动之后异步方式执行的。*/
         public HostBuilder preCommand(String... commands);
 
+        /** 响应 exit 指令自动退出容器 */
         public HostBuilder answerExit();
     }
 
     public interface TelnetBuilder {
+        /** 添加新命令 */
         public CommandBindingBuilder addExecutor(String... names);
     }
 
     public interface CommandBindingBuilder {
+        /** 绑定到一个实现类上 */
         public <T extends TelExecutor> void to(Class<? extends T> executorKey);
 
+        /** 绑定到一个构造方法上 */
         public <T extends TelExecutor> void toConstructor(Constructor<T> constructor);
 
+        /** 绑定到一个具体对象上 */
         public <T extends TelExecutor> void toInstance(T instance);
 
+        /** 绑定到一个提供者上 */
         public <T extends TelExecutor> void toProvider(Supplier<? extends T> executorProvider);
 
+        /** 绑定到一个 Info上 */
         public <T extends TelExecutor> void toInfo(BindInfo<? extends T> executorInfo);
     }
 }

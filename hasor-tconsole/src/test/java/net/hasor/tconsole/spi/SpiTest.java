@@ -64,24 +64,6 @@ public class SpiTest extends AbstractTelTest {
     }
 
     @Test
-    public void close_listener_1() throws Exception {
-        CloseListenerBean closeListener = new CloseListenerBean();
-        try (TelnetTelService server = new TelnetTelService("127.0.0.1", 8082, s -> true)) {
-            server.addCommand("test", new TestExecutor());
-            server.addListener(TelCloseListener.class, closeListener);
-            server.init();
-            //
-            TelClient client = new TelClient(new InetSocketAddress("127.0.0.1", 8082));
-            client.init();
-            assert client.remoteAddress().getPort() == 8082;
-            client.sendCommand("quit -t3");
-        }
-        //
-        assert closeListener.getTrigger() != null;
-        assert closeListener.getAfterSeconds() == 3;
-    }
-
-    @Test
     public void context_listener_1() throws Exception {
         TelContextListenerBean contextListener = new TelContextListenerBean();
         AppContext appContext = Hasor.create().asCore().build(apiBinder -> {
@@ -120,7 +102,7 @@ public class SpiTest extends AbstractTelTest {
     public void session_listener_1() throws Exception {
         TelSessionListenerBean listenerBean = new TelSessionListenerBean();
         AppContext appContext = Hasor.create().asCore().build(apiBinder -> {
-            apiBinder.bindSpiListener(TelSessionListener.class, listenerBean);
+            apiBinder.bindSpiListener(TelSessionCreateListener.class, listenerBean);
         });
         //
         try (TelnetTelService server = new TelnetTelService("127.0.0.1", 8082, s -> true, appContext)) {
@@ -142,7 +124,7 @@ public class SpiTest extends AbstractTelTest {
     public void session_listener_2() throws Exception {
         TelSessionListenerBean listenerBean = new TelSessionListenerBean();
         AppContext appContext = Hasor.create().asCore().build(apiBinder -> {
-            apiBinder.bindSpiListener(TelSessionListener.class, listenerBean);
+            apiBinder.bindSpiListener(TelSessionCreateListener.class, listenerBean);
         });
         //
         StringWriter stringWriter = new StringWriter();

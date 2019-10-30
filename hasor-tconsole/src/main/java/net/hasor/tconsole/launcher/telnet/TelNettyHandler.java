@@ -1,3 +1,18 @@
+/*
+ * Copyright 2008-2009 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.hasor.tconsole.launcher.telnet;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -6,7 +21,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import net.hasor.tconsole.launcher.TelSessionObject;
 import net.hasor.tconsole.launcher.TelUtils;
-import net.hasor.tconsole.spi.TelSessionListener;
+import net.hasor.tconsole.spi.TelSessionCreateListener;
+import net.hasor.tconsole.spi.TelSessionDestroyListener;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +38,8 @@ import static net.hasor.tconsole.launcher.AbstractTelService.CMD;
 
 /**
  * Handles a server-side channel.
+ * @version : 2016年09月20日
+ * @author 赵永春 (zyc@hasor.net)
  */
 @ChannelHandler.Sharable
 class TelNettyHandler extends SimpleChannelInboundHandler<String> {
@@ -79,7 +97,7 @@ class TelNettyHandler extends SimpleChannelInboundHandler<String> {
         //
         // .创建Session
         logger.info("tConsole -> trigger TelSessionListener.sessionCreated");
-        this.telContext.getSpiTrigger().callSpi(TelSessionListener.class, listener -> {
+        this.telContext.getSpiTrigger().callSpi(TelSessionCreateListener.class, listener -> {
             listener.sessionCreated(this.telSession);
         });
     }
@@ -137,7 +155,8 @@ class TelNettyHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        this.telContext.getSpiTrigger().callSpi(TelSessionListener.class, listener -> {
+        logger.info("tConsole -> trigger TelSessionDestroyListener.sessionDestroyed");
+        this.telContext.getSpiTrigger().callSpi(TelSessionDestroyListener.class, listener -> {
             listener.sessionDestroyed(this.telSession); // .销毁Session
         });
     }

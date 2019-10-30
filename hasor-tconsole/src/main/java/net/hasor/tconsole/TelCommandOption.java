@@ -16,11 +16,14 @@
  */
 package net.hasor.tconsole;
 /**
- *
- * @version : 20169年09月20日
+ * 提供命令在执行之前的取消操作。
+ * @version : 2016年09月20日
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface TelCommandOption extends TelCommand {
-    /** 取消本地调用 */
+    /** 是否被取消了 */
+    public boolean isCancel();
+
+    /** 取消本次调用 */
     public void cancel();
 }

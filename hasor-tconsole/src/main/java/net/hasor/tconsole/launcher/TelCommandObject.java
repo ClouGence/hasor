@@ -17,11 +17,11 @@ package net.hasor.tconsole.launcher;
 import net.hasor.tconsole.*;
 
 /**
- *
- * @version : 2016年4月3日
+ * 准备要执行的命令
+ * @version : 2016年09月20日
  * @author 赵永春 (zyc@hasor.net)
  */
-public final class TelCommandObject extends AttributeObject implements TelCommand, TelCommandOption {
+final class TelCommandObject extends AttributeObject implements TelCommand, TelCommandOption {
     private TelSession  parentSession;
     private TelExecutor executor;
     private TelPhase    telPhase;
@@ -82,6 +82,11 @@ public final class TelCommandObject extends AttributeObject implements TelComman
 
     void setCommandBody(String commandBody) {
         this.requestBody = commandBody;
+    }
+
+    @Override
+    public boolean isCancel() {
+        return this.cancel;
     }
 
     @Override

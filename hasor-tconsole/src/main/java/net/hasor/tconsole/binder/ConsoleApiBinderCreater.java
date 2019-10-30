@@ -19,9 +19,9 @@ import net.hasor.core.binder.ApiBinderCreater;
 import net.hasor.tconsole.TelContext;
 
 /**
- * DataQL 扩展接口。
+ * tConsole Hasor plugin 负责提供 ConsoleApiBinder。
+ * @version : 2019年10月30日
  * @author 赵永春 (zyc@hasor.net)
- * @version : 2017-03-23
  */
 public class ConsoleApiBinderCreater implements ApiBinderCreater<ConsoleApiBinder> {
     @Override

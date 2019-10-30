@@ -16,8 +16,8 @@
  */
 package net.hasor.tconsole;
 /**
- * Telnet指令执行器。
- * @version : 20169年09月20日
+ * tConsole 指令。
+ * @version : 2016年09月20日
  * @author 赵永春 (zyc@hasor.net)
  */
 public interface TelExecutor {

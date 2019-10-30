@@ -17,7 +17,7 @@
 package net.hasor.tconsole;
 /**
  * 命令生命周期定义
- * @version : 20169年09月20日
+ * @version : 2019年10月30日
  * @author 赵永春 (zyc@hasor.net)
  */
 public enum TelPhase {
@@ -25,7 +25,7 @@ public enum TelPhase {
     Prepare,    //
     /** 就绪，等待任务执行调度系统调度 */
     StandBy,    //
-    /** 运行中*/
+    /** 运行中 */
     Running,    //
     /** 执行完毕 */
     Complete    //
