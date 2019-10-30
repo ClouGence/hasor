@@ -103,6 +103,7 @@ public class SpiTest extends AbstractTelTest {
         TelSessionListenerBean listenerBean = new TelSessionListenerBean();
         AppContext appContext = Hasor.create().asCore().build(apiBinder -> {
             apiBinder.bindSpiListener(TelSessionCreateListener.class, listenerBean);
+            apiBinder.bindSpiListener(TelSessionDestroyListener.class, listenerBean);
         });
         //
         try (TelnetTelService server = new TelnetTelService("127.0.0.1", 8082, s -> true, appContext)) {
@@ -125,6 +126,7 @@ public class SpiTest extends AbstractTelTest {
         TelSessionListenerBean listenerBean = new TelSessionListenerBean();
         AppContext appContext = Hasor.create().asCore().build(apiBinder -> {
             apiBinder.bindSpiListener(TelSessionCreateListener.class, listenerBean);
+            apiBinder.bindSpiListener(TelSessionDestroyListener.class, listenerBean);
         });
         //
         StringWriter stringWriter = new StringWriter();
