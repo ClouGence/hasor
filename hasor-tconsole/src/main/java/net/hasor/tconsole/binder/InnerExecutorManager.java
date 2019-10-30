@@ -2,16 +2,18 @@ package net.hasor.tconsole.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.container.AbstractContainer;
 import net.hasor.core.spi.AppContextAware;
-import net.hasor.tconsole.TelCommand;
 import net.hasor.tconsole.TelContext;
 import net.hasor.tconsole.TelExecutor;
 import net.hasor.tconsole.launcher.AbstractTelService;
 import net.hasor.tconsole.launcher.AttributeObject;
 import net.hasor.tconsole.launcher.hosts.HostTelService;
 import net.hasor.tconsole.launcher.telnet.TelnetTelService;
-import net.hasor.tconsole.spi.TelCloseEventListener;
-import net.hasor.tconsole.spi.TelContextListener;
+import net.hasor.tconsole.spi.TelBeforeExecutorListener;
+import net.hasor.tconsole.spi.TelHostPreFinishListener;
+import net.hasor.tconsole.spi.TelStopContextListener;
 import net.hasor.utils.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -23,29 +25,25 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static net.hasor.tconsole.TelOptions.CLOSE_SESSION;
-
-class InnerExecutorManager extends AbstractContainer implements AppContextAware, TelCloseEventListener {
-    private InnerTelMode                                 telMode;
-    private Map<String, Supplier<? extends TelExecutor>> telExecutors         = new HashMap<>();
-    private AttributeObject                              attributeObject      = new AttributeObject();
-    private AppContext                                   appContext;
-    private AbstractTelService                           service              = null;
+class InnerExecutorManager extends AbstractContainer implements AppContextAware, Supplier<TelContext> {
+    private static Logger                                       logger                 = LoggerFactory.getLogger(InnerExecutorManager.class);
+    private        InnerTelMode                                 telMode;
+    private        Map<String, Supplier<? extends TelExecutor>> telExecutors           = new HashMap<>();
+    private        AttributeObject                              attributeObject        = new AttributeObject();
+    private        AppContext                                   appContext;
+    private        AbstractTelService                           service                = null;
+    private        TriggerOnStopToContext                       triggerOnStopToContext = null;
     //
-    private InetSocketAddress                            telnetSocket;
-    private Predicate<String>                            telnetInBoundMatcher = s -> true;
-    private boolean                                      hostAnswerExit       = false;
-    private Reader                                       hostReader;
-    private Writer                                       hostWriter;
-    private boolean                                      hostSilent;
-    private String[]                                     hostPreCommandSet;
+    private        InetSocketAddress                            telnetSocket;
+    private        Predicate<String>                            telnetInBoundMatcher   = s -> true;
+    private        boolean                                      hostAnswerExit         = false;
+    private        Reader                                       hostReader;
+    private        Writer                                       hostWriter;
+    private        boolean                                      hostSilent;
+    private        String[]                                     hostPreCommandSet;
 
     public void addProvider(String name, Supplier<? extends TelExecutor> provider) {
         this.telExecutors.put(name, provider);
-    }
-
-    @Override
-    public void onClose(TelCommand trigger, int afterSeconds) {
     }
 
     @Override
@@ -61,22 +59,20 @@ class InnerExecutorManager extends AbstractContainer implements AppContextAware,
                 ((HostTelService) this.service).setAttribute(key, this.attributeObject.getAttribute(key));
             }
             // 拦截 Close 命令，如果 hostAnswerExit 配置为 true 。那么遇到 exit 命令就执行它关闭服务。
-            this.service.addListener(TelCloseEventListener.class, (trigger, afterSeconds) -> {
-                if (!hostAnswerExit) {
-                    trigger.getSession().setAttribute(CLOSE_SESSION, "false");
+            String[] exitCmd = new String[] { "quit", "exit" };
+            this.service.addListener(TelBeforeExecutorListener.class, telCommand -> {
+                String cmdName = telCommand.getCommandName();
+                for (String item : exitCmd) {
+                    if (cmdName.equals(item) && !hostAnswerExit) {
+                        logger.info("tConsole -> Ignore close command.");
+                        telCommand.cancel();
+                        return;
+                    }
                 }
             });
-            // 监听容器关闭事件，去同步关闭 AppContext 容器
-            this.service.addListener(TelContextListener.class, new TelContextListener() {
-                @Override
-                public void onStart(TelContext telContext) {
-                }
-
-                @Override
-                public void onStop(TelContext telContext) {
-                    appContext.shutdown();
-                }
-            });
+            // 监听容器关闭事件，去同步关闭 AppContext 容器（如果appContext还在的话）
+            this.triggerOnStopToContext = new TriggerOnStopToContext(appContext);
+            this.service.addListener(TelStopContextListener.class, this.triggerOnStopToContext);
         }
         if (InnerTelMode.Telnet == this.telMode) {
             this.service = new TelnetTelService(this.telnetSocket, this.telnetInBoundMatcher, this.appContext);
@@ -101,10 +97,15 @@ class InnerExecutorManager extends AbstractContainer implements AppContextAware,
                 }
             }
         }
+        logger.info("tConsole -> trigger TelHostPreFinishListener.onFinish");
+        service.getSpiTrigger().callSpi(TelHostPreFinishListener.class, listener -> listener.onFinish(service));
     }
 
     @Override
     protected void doClose() {
+        if (this.triggerOnStopToContext != null) {
+            this.triggerOnStopToContext.disable();
+        }
         if (this.service.isInit()) {
             this.service.close();
         }
@@ -150,5 +151,10 @@ class InnerExecutorManager extends AbstractContainer implements AppContextAware,
 
     public AttributeObject getAttributeObject() {
         return attributeObject;
+    }
+
+    @Override
+    public TelContext get() {
+        return this.service;
     }
 }

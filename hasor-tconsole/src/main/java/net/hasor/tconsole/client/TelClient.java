@@ -119,7 +119,7 @@ public class TelClient extends AbstractContainer implements TelAttribute {
         this.channel = b.connect(this.remoteAddress).channel();
         try {
             //
-            logger.info("TelClient connect to " + this.remoteAddress);
+            logger.info("tConsole -> TelClient connect to " + this.remoteAddress);
             activeFuture.get();
             //
             // 1. 其它配置
@@ -133,12 +133,12 @@ public class TelClient extends AbstractContainer implements TelAttribute {
                 }
                 sendCommand(String.format("set %s=%s\n", key, attr));
             }
-            logger.info("TelClient initialize ok.");
+            logger.info("tConsole -> TelClient initialize ok.");
         } catch (Throwable e) {
             if (e instanceof ExecutionException) {
                 e = e.getCause();
             }
-            logger.error("TelClient initialize failed -> " + e.getMessage(), e);
+            logger.error("tConsole -> TelClient initialize failed -> " + e.getMessage(), e);
             this.close();
         }
     }

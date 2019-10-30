@@ -25,7 +25,8 @@ import net.hasor.tconsole.TelExecutor;
 import net.hasor.tconsole.commands.GetSetExecutor;
 import net.hasor.tconsole.commands.HelpExecutor;
 import net.hasor.tconsole.commands.QuitExecutor;
-import net.hasor.tconsole.spi.TelContextListener;
+import net.hasor.tconsole.spi.TelStartContextListener;
+import net.hasor.tconsole.spi.TelStopContextListener;
 import net.hasor.utils.NameThreadFactory;
 import net.hasor.utils.StringUtils;
 import org.slf4j.Logger;
@@ -80,20 +81,22 @@ public abstract class AbstractTelService extends AbstractContainer implements Te
     }
 
     protected void applyCommand() {
-        this.addCommand(new String[] { "get", "set" }, new GetSetExecutor());
-        this.addCommand(new String[] { "quit", "exit" }, new QuitExecutor());
-        this.addCommand(new String[] { "help" }, new HelpExecutor());
+        //
     }
 
     @Override
     protected void doInitialize() {
         // .触发SPI
-        this.spiTrigger.callSpi(TelContextListener.class, listener -> {
+        logger.info("tConsole -> trigger TelStartContextListener.onStart");
+        this.spiTrigger.callSpi(TelStartContextListener.class, listener -> {
             listener.onStart(AbstractTelService.this);
         });
         //
         logger.info("tConsole -> applyCommand.");
         this.applyCommand();
+        this.addCommand(new String[] { "get", "set" }, new GetSetExecutor());
+        this.addCommand(new String[] { "quit", "exit" }, new QuitExecutor());
+        this.addCommand(new String[] { "help" }, new HelpExecutor());
         //
         // .执行线程池
         String shortName = "tConsole-Work";
@@ -114,7 +117,8 @@ public abstract class AbstractTelService extends AbstractContainer implements Te
         }
         this.telExecutorMap.clear();
         // .触发SPI
-        this.spiTrigger.callSpi(TelContextListener.class, listener -> {
+        logger.info("tConsole -> trigger TelStopContextListener.onStop");
+        this.spiTrigger.callSpi(TelStopContextListener.class, listener -> {
             listener.onStop(AbstractTelService.this);
         });
     }

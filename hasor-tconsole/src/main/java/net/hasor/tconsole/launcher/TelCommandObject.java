@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 package net.hasor.tconsole.launcher;
-import net.hasor.tconsole.TelCommand;
-import net.hasor.tconsole.TelExecutor;
-import net.hasor.tconsole.TelPhase;
-import net.hasor.tconsole.TelSession;
+import net.hasor.tconsole.*;
 
 /**
  *
  * @version : 2016年4月3日
  * @author 赵永春 (zyc@hasor.net)
  */
-public final class TelCommandObject extends AttributeObject implements TelCommand {
+public final class TelCommandObject extends AttributeObject implements TelCommand, TelCommandOption {
     private TelSession  parentSession;
     private TelExecutor executor;
     private TelPhase    telPhase;
     private String      requestCommand;
     private String[]    requestArgs;
     private String      requestBody;
+    private boolean     cancel;
 
     TelCommandObject(TelSession parentSession, TelExecutor executor, String requestCommand, String[] requestArgs) {
         this.parentSession = parentSession;
@@ -39,6 +37,7 @@ public final class TelCommandObject extends AttributeObject implements TelComman
         this.requestCommand = requestCommand;
         this.requestArgs = requestArgs;
         this.requestBody = null;
+        this.cancel = false;
     }
 
     @Override
@@ -71,6 +70,9 @@ public final class TelCommandObject extends AttributeObject implements TelComman
     }
 
     String doCommand() throws Throwable {
+        if (this.cancel) {
+            return "";
+        }
         return this.executor.doCommand(this);
     }
 
@@ -80,5 +82,10 @@ public final class TelCommandObject extends AttributeObject implements TelComman
 
     void setCommandBody(String commandBody) {
         this.requestBody = commandBody;
+    }
+
+    @Override
+    public void cancel() {
+        this.cancel = true;
     }
 }

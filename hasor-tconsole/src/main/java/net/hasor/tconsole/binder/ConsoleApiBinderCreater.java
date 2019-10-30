@@ -16,6 +16,7 @@
 package net.hasor.tconsole.binder;
 import net.hasor.core.ApiBinder;
 import net.hasor.core.binder.ApiBinderCreater;
+import net.hasor.tconsole.TelContext;
 
 /**
  * DataQL 扩展接口。
@@ -27,6 +28,7 @@ public class ConsoleApiBinderCreater implements ApiBinderCreater<ConsoleApiBinde
     public ConsoleApiBinder createBinder(final ApiBinder apiBinder) {
         InnerExecutorManager executorManager = new InnerExecutorManager();
         apiBinder.bindType(InnerExecutorManager.class).toInstance(executorManager);
+        apiBinder.bindType(TelContext.class).toProvider(executorManager);
         return new InnerConsoleApiBinder(executorManager, apiBinder);
     }
 }

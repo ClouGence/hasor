@@ -1,11 +1,13 @@
 package net.hasor.test.beans;
 import net.hasor.tconsole.TelCommand;
-import net.hasor.tconsole.spi.TelExecutorListener;
+import net.hasor.tconsole.TelCommandOption;
+import net.hasor.tconsole.spi.TelAfterExecutorListener;
+import net.hasor.tconsole.spi.TelBeforeExecutorListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExecutorListenerBean implements TelExecutorListener {
+public class ExecutorListenerBean implements TelBeforeExecutorListener, TelAfterExecutorListener {
     private List<TelCommand> beforeExecCommand = new ArrayList<>();
     private List<TelCommand> afterExecCommand  = new ArrayList<>();
 
@@ -18,7 +20,7 @@ public class ExecutorListenerBean implements TelExecutorListener {
     }
 
     @Override
-    public void beforeExecCommand(TelCommand telCommand) {
+    public void beforeExecCommand(TelCommandOption telCommand) {
         beforeExecCommand.add(telCommand);
     }
 

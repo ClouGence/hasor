@@ -78,6 +78,7 @@ class TelNettyHandler extends SimpleChannelInboundHandler<String> {
         });
         //
         // .创建Session
+        logger.info("tConsole -> trigger TelSessionListener.sessionCreated");
         this.telContext.getSpiTrigger().callSpi(TelSessionListener.class, listener -> {
             listener.sessionCreated(this.telSession);
         });

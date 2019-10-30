@@ -1,8 +1,9 @@
 package net.hasor.test.beans;
 import net.hasor.tconsole.TelContext;
-import net.hasor.tconsole.spi.TelContextListener;
+import net.hasor.tconsole.spi.TelStartContextListener;
+import net.hasor.tconsole.spi.TelStopContextListener;
 
-public class TelContextListenerBean implements TelContextListener {
+public class TelContextListenerBean implements TelStartContextListener, TelStopContextListener {
     private Boolean contextListener;
 
     public Boolean getContextListener() {

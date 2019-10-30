@@ -1,8 +1,7 @@
 package net.hasor.tconsole.spi;
 import net.hasor.tconsole.TelCommand;
 
-public interface TelExecutorListener extends java.util.EventListener {
-    public void beforeExecCommand(TelCommand telCommand);
-
+@FunctionalInterface
+public interface TelAfterExecutorListener extends java.util.EventListener {
     public void afterExecCommand(TelCommand telCommand);
 }

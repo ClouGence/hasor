@@ -19,13 +19,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import net.hasor.core.AppContext;
 import net.hasor.tconsole.TelAttribute;
-import net.hasor.tconsole.TelContext;
 import net.hasor.tconsole.TelOptions;
 import net.hasor.tconsole.launcher.AbstractTelService;
 import net.hasor.tconsole.launcher.TelSessionObject;
 import net.hasor.tconsole.launcher.TelUtils;
-import net.hasor.tconsole.spi.TelContextListener;
 import net.hasor.tconsole.spi.TelSessionListener;
+import net.hasor.tconsole.spi.TelStopContextListener;
 import net.hasor.utils.ExceptionUtils;
 import net.hasor.utils.StringUtils;
 import net.hasor.utils.future.BasicFuture;
@@ -125,15 +124,10 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
         this.ioCopyThread.setName("tConsole-IoCopy-Thread");
         this.ioCopyThread.start();
         //
-        // .异步延迟 200ms 打印欢迎信息
-        this.asyncExecute(() -> {
-            try {
-                Thread.sleep(200);
-                printWelcome();
-            } catch (Exception e) { /**/ }
-        });
+        printWelcome();
         //
         // .创建Session
+        logger.info("tConsole -> trigger TelSessionListener.sessionCreated");
         this.getSpiTrigger().callSpi(TelSessionListener.class, listener -> {
             listener.sessionCreated(this.telSession);
         });
@@ -142,13 +136,13 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
     @Override
     protected void doClose() {
         // .销毁Session
-        logger.info("callSpi sessionDestroyed.");
+        logger.info("tConsole -> trigger TelSessionListener.sessionDestroyed");
         this.getSpiTrigger().callSpi(TelSessionListener.class, listener -> {
             listener.sessionDestroyed(this.telSession);
         });
         super.doClose();
         // .等待线程退出
-        logger.info("wait HostTelService exit.");
+        logger.info("tConsole -> wait HostTelService exit.");
         while (this.ioCopyThread.getState() != Thread.State.TERMINATED) {
             if (this.ioCopyThread.getState() == Thread.State.TIMED_WAITING) {
                 this.ioCopyThread.interrupt();
@@ -157,7 +151,7 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
                 Thread.sleep(50);
             } catch (Exception e) { /**/ }
         }
-        logger.info("HostTelService exit done.");
+        logger.info("tConsole -> HostTelService exit.");
     }
 
     private void doIoCopy() {
@@ -250,16 +244,7 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
         tryShutdown();
         // .当收到 Shutdown 事件时退出 join
         BasicFuture<Object> future = new BasicFuture<>();
-        this.addListener(TelContextListener.class, new TelContextListener() {
-            @Override
-            public void onStart(TelContext telSession) {
-            }
-
-            @Override
-            public void onStop(TelContext telSession) {
-                future.completed(new Object());
-            }
-        });
+        this.addListener(TelStopContextListener.class, telSession -> future.completed(new Object()));
         //
         // .阻塞进程
         joinAt(future, timeout, unit);
@@ -269,10 +254,10 @@ public class HostTelService extends AbstractTelService implements TelOptions, Te
     private void joinAt(BasicFuture<Object> future, long timeout, TimeUnit unit) {
         try {
             if (unit == null) {
-                logger.debug("joinAt none.");
+                logger.debug("tConsole -> joinAt none.");
                 future.get();
             } else {
-                logger.debug("joinAt unit=" + unit.name() + " ,timeout=" + timeout);
+                logger.debug("tConsole -> joinAt unit=" + unit.name() + " ,timeout=" + timeout);
                 future.get(timeout, unit);
             }
         } catch (ExecutionException e) {

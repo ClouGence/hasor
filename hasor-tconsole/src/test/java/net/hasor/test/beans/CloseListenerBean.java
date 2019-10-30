@@ -1,8 +1,8 @@
 package net.hasor.test.beans;
 import net.hasor.tconsole.TelCommand;
-import net.hasor.tconsole.spi.TelCloseEventListener;
+import net.hasor.tconsole.spi.TelCloseListener;
 
-public class CloseListenerBean implements TelCloseEventListener {
+public class CloseListenerBean implements TelCloseListener {
     private TelCommand trigger;
     private int        afterSeconds;
 

@@ -33,7 +33,8 @@ public class SpiTest extends AbstractTelTest {
         InBoundMatcherBean inBoundMatcher = new InBoundMatcherBean();
         //
         try (TelnetTelService server = new TelnetTelService("127.0.0.1", 8082, inBoundMatcher)) {
-            server.addListener(TelExecutorListener.class, executorListener);
+            server.addListener(TelBeforeExecutorListener.class, executorListener);
+            server.addListener(TelAfterExecutorListener.class, executorListener);
             server.addCommand("test", new TestExecutor());
             server.init();
             //
@@ -67,7 +68,7 @@ public class SpiTest extends AbstractTelTest {
         CloseListenerBean closeListener = new CloseListenerBean();
         try (TelnetTelService server = new TelnetTelService("127.0.0.1", 8082, s -> true)) {
             server.addCommand("test", new TestExecutor());
-            server.addListener(TelCloseEventListener.class, closeListener);
+            server.addListener(TelCloseListener.class, closeListener);
             server.init();
             //
             TelClient client = new TelClient(new InetSocketAddress("127.0.0.1", 8082));
@@ -84,7 +85,8 @@ public class SpiTest extends AbstractTelTest {
     public void context_listener_1() throws Exception {
         TelContextListenerBean contextListener = new TelContextListenerBean();
         AppContext appContext = Hasor.create().asCore().build(apiBinder -> {
-            apiBinder.bindSpiListener(TelContextListener.class, contextListener);
+            apiBinder.bindSpiListener(TelStartContextListener.class, contextListener);
+            apiBinder.bindSpiListener(TelStopContextListener.class, contextListener);
         });
         //
         try (TelnetTelService server = new TelnetTelService("127.0.0.1", 8082, s -> true, appContext)) {
@@ -100,7 +102,8 @@ public class SpiTest extends AbstractTelTest {
     public void context_listener_2() throws Exception {
         TelContextListenerBean contextListener = new TelContextListenerBean();
         AppContext appContext = Hasor.create().asCore().build(apiBinder -> {
-            apiBinder.bindSpiListener(TelContextListener.class, contextListener);
+            apiBinder.bindSpiListener(TelStartContextListener.class, contextListener);
+            apiBinder.bindSpiListener(TelStopContextListener.class, contextListener);
         });
         //
         StringWriter stringWriter = new StringWriter();

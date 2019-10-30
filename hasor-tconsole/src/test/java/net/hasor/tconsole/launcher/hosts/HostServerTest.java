@@ -25,14 +25,14 @@ import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
 public class HostServerTest extends AbstractTelTest {
-    private Thread createCopyThread(Writer writer) {
+    protected Thread createCopyThread(Writer writer) {
         LinkedList<String> preCommand = new LinkedList<String>() {{
             this.addAll(Arrays.asList("help", "test", "exit"));
         }};
         return new Thread(() -> {
             while (!preCommand.isEmpty()) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(200);
                     String pop = preCommand.pop();
                     if (StringUtils.isNotBlank(pop)) {
                         writer.write(pop + "\n");
@@ -49,7 +49,7 @@ public class HostServerTest extends AbstractTelTest {
         return new Thread(() -> {
             while (!preCommand.isEmpty()) {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(200);
                     String pop = preCommand.pop();
                     if (StringUtils.isNotBlank(pop)) {
                         service.sendCommand(pop);
