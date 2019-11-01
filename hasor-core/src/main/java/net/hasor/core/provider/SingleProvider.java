@@ -26,7 +26,6 @@ public class SingleProvider<T> implements Supplier<T> {
     private volatile T           instance = null;
     private final    Object      lock     = new Object();
 
-    //
     public SingleProvider(Supplier<T> provider) {
         this.provider = provider;
     }

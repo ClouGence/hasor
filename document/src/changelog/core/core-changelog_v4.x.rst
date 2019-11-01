@@ -9,6 +9,7 @@ Hasor v4.0.7 (2019-06-?)
 **改进**
     - WebApiBinder,接口中 addServletListener、addSessionListener 都合并到 addWebListener 方法。
     - hasor-env-properties 参数更名为 hasor-envconfig-name
+    - 删除 Hasor 默认提供的 JFinal 插件支持。理由是 JFinal 功能和 Hasor 体系重叠，若 JFinal 用户想使用 Hasor 的某一特殊功能例如 tConsole/rsf 可以独立使用它们而非一定要通过插件整合的方式。
 **修复**
     - 修复 ResourcesUtils 和 ScanClassPath，IO 文件句柄泄露问题。
 
