@@ -17,6 +17,8 @@ package net.hasor.db.jdbc.core;
 import net.hasor.db.datasource.ConnectionProxy;
 import net.hasor.db.jdbc.ConnectionCallback;
 import net.hasor.db.transaction.TranManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.lang.reflect.InvocationHandler;
@@ -34,15 +36,16 @@ import java.util.Objects;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcConnection extends JdbcAccessor {
+    private static Logger logger       = LoggerFactory.getLogger(JdbcConnection.class);
     /*JDBC查询和从结果集里面每次取设置行数，循环去取，直到取完。合理设置该参数可以避免内存异常。
      * 如果这个变量被设置为非零值,它将被用于设置 statements 的 fetchSize 属性。*/
-    private int fetchSize    = 0;
+    private        int    fetchSize    = 0;
     /*从 JDBC 中可以查询的最大行数。
      * 如果这个变量被设置为非零值,它将被用于设置 statements 的 maxRows 属性。*/
-    private int maxRows      = 0;
+    private        int    maxRows      = 0;
     /*从 JDBC 中可以查询的最大行数。
      * 如果这个变量被设置为非零值,它将被用于设置 statements 的 queryTimeout 属性。*/
-    private int queryTimeout = 0;
+    private        int    queryTimeout = 0;
 
     /**
      * Construct a new JdbcConnection for bean usage.

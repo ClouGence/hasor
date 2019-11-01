@@ -22,6 +22,8 @@ import net.hasor.db.jdbc.paramer.MapSqlParameterSource;
 import net.hasor.db.jdbc.result.LinkedCaseInsensitiveMap;
 import net.hasor.utils.ResourcesUtils;
 import net.hasor.utils.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.io.*;
@@ -35,11 +37,12 @@ import java.util.*;
  * @author 赵永春 (zyc@byshell.org)
  */
 public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
+    private static Logger  logger                 = LoggerFactory.getLogger(JdbcTemplate.class);
     /*是否忽略出现的 SQL 警告*/
-    private boolean ignoreWarnings         = true;
+    private        boolean ignoreWarnings         = true;
     /*当JDBC 结果集中如出现相同的列名仅仅大小写不同时。是否保留大小写列名敏感。
      * 如果为 true 表示敏感，并且结果集Map中保留两个记录。如果为 false 则表示不敏感，如出现冲突列名后者将会覆盖前者。*/
-    private boolean resultsCaseInsensitive = false;
+    private        boolean resultsCaseInsensitive = false;
 
     /**
      * Construct a new JdbcTemplate for bean usage.
@@ -334,7 +337,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
 
     @Override
     public <T> List<T> query(final String sql, final RowMapper<T> rowMapper, final Object... args) throws SQLException {
-        return this.query(sql, args, new RowMapperResultSetExtractor<T>(rowMapper));
+        return this.query(sql, args, new RowMapperResultSetExtractor<>(rowMapper));
     }
 
     @Override
@@ -344,7 +347,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
 
     @Override
     public <T> List<T> query(final String sql, final RowMapper<T> rowMapper) throws SQLException {
-        return this.query(sql, new RowMapperResultSetExtractor<T>(rowMapper));
+        return this.query(sql, new RowMapperResultSetExtractor<>(rowMapper));
     }
 
     @Override
@@ -394,7 +397,7 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
 
     @Override
     public <T> T queryForObject(final String sql, final Object[] args, final RowMapper<T> rowMapper) throws SQLException {
-        return JdbcTemplate.requiredSingleResult(this.query(sql, args, new RowMapperResultSetExtractor<T>(rowMapper, 1)));
+        return JdbcTemplate.requiredSingleResult(this.query(sql, args, new RowMapperResultSetExtractor<>(rowMapper, 1)));
     }
 
     @Override

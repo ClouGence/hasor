@@ -21,6 +21,7 @@ import net.hasor.utils.StringUtils;
 import net.hasor.utils.convert.ConverterUtils;
 
 import java.io.PrintStream;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.Map.Entry;
@@ -51,14 +52,29 @@ public abstract class AbstractDbTest {
         jdbcTemplate.executeUpdate(insertUser1_newData, newID());
     }
 
+    protected void insertData_4(JdbcTemplate jdbcTemplate) throws SQLException {
+        String insertUser1_newData = "insert into TB_User values(?,'吴广','wuguang','123','wuguang@hasor.net','2011-06-08 20:08:08');";
+        jdbcTemplate.executeUpdate(insertUser1_newData, newID());
+    }
+
+    protected int tableCountWithNew(JdbcTemplate jdbcTemplate) throws SQLException {
+        try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
+            return new JdbcTemplate(connection).queryForInt("select count(1) from TB_User");
+        }
+    }
+
+    protected int tableCountWithCurrent(JdbcTemplate jdbcTemplate) throws SQLException {
+        return jdbcTemplate.queryForInt("select count(1) from TB_User");
+    }
+
     /**打印列表内容*/
     public static <T> String printObjectList(final List<T> dataList) {
-        return AbstractDbTest.printObjectList(dataList, System.out);
+        return printObjectList(dataList, System.out);
     }
 
     /**打印列表内容*/
     public static String printMapList(final List<Map<String, Object>> dataList) {
-        return AbstractDbTest.printMapList(dataList, System.out);
+        return printMapList(dataList, System.out);
     }
 
     /**打印列表内容*/
@@ -73,7 +89,7 @@ public abstract class AbstractDbTest {
             //
             newDataList.add(newObj);
         }
-        return AbstractDbTest.printMapList(newDataList, out);
+        return printMapList(newDataList, out);
     }
 
     /**打印列表内容*/

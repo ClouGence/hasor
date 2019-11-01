@@ -44,6 +44,7 @@ public class TranManager extends DataSourceManager {
         return holder;
     }
 
+    /** 该方法会拿到一个当前 Connection 的引用，在使用完毕之后必须要 close 它。否则会产生引用泄漏。 */
     public static Connection currentConnection(DataSource dataSource) {
         ConnectionHolder holder = currentConnectionHolder(dataSource);
         return newProxyConnection(holder);

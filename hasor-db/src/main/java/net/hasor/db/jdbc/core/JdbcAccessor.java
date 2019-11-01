@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 package net.hasor.db.jdbc.core;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.sql.DataSource;
 import java.sql.Connection;
 
@@ -26,9 +23,8 @@ import java.sql.Connection;
  * @author 赵永春 (zyc@hasor.net)
  */
 public class JdbcAccessor {
-    protected Logger     logger = LoggerFactory.getLogger(getClass());
-    private   DataSource dataSource;
-    private   Connection connection;
+    private DataSource dataSource;
+    private Connection connection;
 
     /**Set the JDBC DataSource to obtain connections from.*/
     public void setDataSource(final DataSource dataSource) {

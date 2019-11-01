@@ -196,7 +196,7 @@ public class ParsedSql {
             int[] indexes = parameterIndexes.get(i);
             int startIndex = indexes[0];
             int endIndex = indexes[1];
-            sqlToUse.append(originalSql.substring(lastIndex, startIndex));
+            sqlToUse.append(originalSql, lastIndex, startIndex);
             if (paramSource != null && paramSource.hasValue(paramName)) {
                 Object value = paramSource.getValue(paramName);
                 if (value instanceof Collection) {
