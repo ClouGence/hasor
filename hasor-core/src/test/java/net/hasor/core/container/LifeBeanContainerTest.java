@@ -16,10 +16,10 @@
 package net.hasor.core.container;
 import net.hasor.core.*;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import net.hasor.test.beans.basic.destroy.PrototypePublicCallDestroyBean;
-import net.hasor.test.beans.basic.destroy.SingletonPublicCallDestroyBean;
-import net.hasor.test.beans.basic.init.PrototypePublicCallInitBean;
-import net.hasor.test.beans.basic.init.StaticPublicCallInitBean;
+import net.hasor.test.core.basic.destroy.PrototypePublicCallDestroyBean;
+import net.hasor.test.core.basic.destroy.SingletonPublicCallDestroyBean;
+import net.hasor.test.core.basic.init.PrototypePublicCallInitBean;
+import net.hasor.test.core.basic.init.StaticPublicCallInitBean;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

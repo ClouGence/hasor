@@ -16,13 +16,13 @@
 package net.hasor.web.binder;
 import net.hasor.core.BindInfo;
 import net.hasor.core.exts.aop.Matchers;
-import net.hasor.test.actions.AnnoPostGetAction;
-import net.hasor.test.actions.async.ClassAsyncAction;
-import net.hasor.test.actions.async.GetAsyncAction;
-import net.hasor.test.actions.async.MethodAsyncAction;
-import net.hasor.test.actions.basic.AnnoDeleteAction;
-import net.hasor.test.actions.basic.AnnoGetAction;
-import net.hasor.test.actions.basic.BasicAction;
+import net.hasor.test.web.actions.AnnoPostGetAction;
+import net.hasor.test.web.actions.async.ClassAsyncAction;
+import net.hasor.test.web.actions.async.GetAsyncAction;
+import net.hasor.test.web.actions.async.MethodAsyncAction;
+import net.hasor.test.web.actions.basic.AnnoDeleteAction;
+import net.hasor.test.web.actions.basic.AnnoGetAction;
+import net.hasor.test.web.actions.basic.BasicAction;
 import net.hasor.web.AbstractTest;
 import org.junit.Test;
 

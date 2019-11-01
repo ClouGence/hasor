@@ -16,7 +16,7 @@
 package net.hasor.tconsole.launcher.telnet;
 import net.hasor.tconsole.AbstractTelTest;
 import net.hasor.tconsole.client.TelClient;
-import net.hasor.test.beans.TestExecutor;
+import net.hasor.test.tconsole.TestExecutor;
 import org.junit.Test;
 
 import java.net.InetSocketAddress;

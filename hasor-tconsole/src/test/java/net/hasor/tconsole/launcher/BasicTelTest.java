@@ -20,9 +20,9 @@ import io.netty.buffer.PooledByteBufAllocator;
 import net.hasor.tconsole.AbstractTelTest;
 import net.hasor.tconsole.commands.QuitExecutor;
 import net.hasor.tconsole.launcher.telnet.TelnetTelService;
-import net.hasor.test.beans.EchoSessionIDExecutor;
-import net.hasor.test.beans.ErrorExecutor;
-import net.hasor.test.beans.TestExecutor;
+import net.hasor.test.tconsole.EchoSessionIDExecutor;
+import net.hasor.test.tconsole.ErrorExecutor;
+import net.hasor.test.tconsole.TestExecutor;
 import org.junit.Test;
 
 import java.io.IOException;

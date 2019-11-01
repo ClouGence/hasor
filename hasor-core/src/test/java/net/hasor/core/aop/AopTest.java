@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 package net.hasor.core.aop;
-import net.hasor.test.beans.aop.AopBeanInterceptor;
-import net.hasor.test.beans.aop.GenericsMethodAopBean;
-import net.hasor.test.beans.aop.ThrowAopBean;
-import net.hasor.test.beans.basic.inject.constructor.ConstructorBean;
-import net.hasor.test.beans.basic.inject.property.PropertyBean;
-import net.hasor.test.beans.enums.SelectEnum;
+import net.hasor.test.core.aop.AopBeanInterceptor;
+import net.hasor.test.core.aop.GenericsMethodAopBean;
+import net.hasor.test.core.aop.ThrowAopBean;
+import net.hasor.test.core.basic.inject.constructor.ConstructorBean;
+import net.hasor.test.core.basic.inject.property.PropertyBean;
+import net.hasor.test.core.enums.SelectEnum;
 import net.hasor.utils.CommonCodeUtils;
 import net.hasor.utils.io.IOUtils;
 import org.junit.Test;

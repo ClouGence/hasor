@@ -17,7 +17,7 @@ package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.core.Environment;
 import net.hasor.core.Settings;
-import net.hasor.test.actions.args.*;
+import net.hasor.test.web.actions.args.*;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.Invoker;
 import net.hasor.web.WebApiBinder;

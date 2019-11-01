@@ -15,7 +15,7 @@
  */
 package net.hasor.web.valid;
 import net.hasor.core.AppContext;
-import net.hasor.test.actions.valid.ValidRequestFieldAction;
+import net.hasor.test.web.actions.valid.ValidRequestFieldAction;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.WebApiBinder;
 import org.junit.Test;

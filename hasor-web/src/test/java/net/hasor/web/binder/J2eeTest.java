@@ -16,8 +16,8 @@
 package net.hasor.web.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.test.actions.servlet.SimpleServlet;
-import net.hasor.test.filters.SimpleFilter;
+import net.hasor.test.web.actions.servlet.SimpleServlet;
+import net.hasor.test.web.filters.SimpleFilter;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;

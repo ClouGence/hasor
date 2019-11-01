@@ -18,7 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
 import net.hasor.tconsole.client.TelClient;
 import net.hasor.tconsole.launcher.hosts.HostServerTest;
-import net.hasor.test.beans.TestExecutor;
+import net.hasor.test.tconsole.TestExecutor;
 import org.junit.Test;
 
 import java.io.PipedReader;

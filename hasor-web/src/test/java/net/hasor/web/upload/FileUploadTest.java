@@ -1,6 +1,6 @@
 package net.hasor.web.upload;
-import net.hasor.test.upload.FileItemStreamUploadAction;
-import net.hasor.test.upload.FileItemUploadAction;
+import net.hasor.test.web.upload.FileItemStreamUploadAction;
+import net.hasor.test.web.upload.FileItemUploadAction;
 import net.hasor.web.WebApiBinder;
 import org.junit.Test;
 

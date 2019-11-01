@@ -17,12 +17,11 @@ package net.hasor.core.context;
 import net.hasor.core.AppContext;
 import net.hasor.core.AppContextWarp;
 import net.hasor.core.Environment;
-import net.hasor.core.Module;
 import net.hasor.core.environment.StandardEnvironment;
 import net.hasor.core.spi.ContextInitializeListener;
 import net.hasor.core.spi.ContextShutdownListener;
 import net.hasor.core.spi.ContextStartListener;
-import net.hasor.test.beans.binder.TestBinder;
+import net.hasor.test.core.binder.TestBinder;
 import org.junit.Test;
 import org.powermock.api.mockito.PowerMockito;
 
@@ -152,7 +151,7 @@ public class BasicContextTest {
         AtomicInteger atomic2 = new AtomicInteger(0);
         AtomicInteger atomic3 = new AtomicInteger(0);
         //
-        appContext.start((Module) apiBinder -> {
+        appContext.start(apiBinder -> {
             apiBinder.bindSpiListener(ContextInitializeListener.class, templateAppContext -> {
                 atomic1.incrementAndGet();
             });
@@ -164,6 +163,9 @@ public class BasicContextTest {
 
                 @Override
                 public void doStartCompleted(AppContext appContext) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (Exception e) { /**/ }
                     atomic2.incrementAndGet();
                 }
             });
@@ -175,24 +177,32 @@ public class BasicContextTest {
 
                 @Override
                 public void doShutdownCompleted(AppContext appContext) {
+                    try {
+                        Thread.sleep(100);
+                    } catch (Exception e) { /**/ }
                     atomic3.incrementAndGet();
                 }
             });
         });
         //
         assert atomic1.get() == 1;
-        assert atomic2.get() == 2;
+        assert atomic2.get() == 1;  // 异步处理因此不会马上变成2
         assert atomic3.get() == 0;
+        //
+        Thread.sleep(200);
+        assert atomic2.get() == 2;
+        //
         appContext.shutdown();
         assert atomic1.get() == 1;
         assert atomic2.get() == 2;
-        assert atomic3.get() == 2;
+        assert atomic3.get() == 2;// 同步处理因此会马上变成2
     }
 
     @Test
     public void test1() {
         final AtomicInteger atomicInteger = new AtomicInteger(0);
         AppContext appContext = PowerMockito.mock(AppContext.class);
+        PowerMockito.when(appContext.isStart()).thenReturn(true);
         PowerMockito.doAnswer(invocationOnMock -> {
             if (atomicInteger.get() == 0) {
                 atomicInteger.set(1);
@@ -245,5 +255,4 @@ public class BasicContextTest {
             assert e.getMessage().equals("the container is not started yet.");
         }
     }
-
 }

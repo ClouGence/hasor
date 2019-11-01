@@ -15,8 +15,8 @@
  */
 package net.hasor.web.startup;
 import net.hasor.core.Module;
-import net.hasor.test.actions.args.QueryArgsAction;
-import net.hasor.test.actions.throwerr.*;
+import net.hasor.test.web.actions.args.QueryArgsAction;
+import net.hasor.test.web.actions.throwerr.*;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.WebModule;
 import net.hasor.web.binder.OneConfig;

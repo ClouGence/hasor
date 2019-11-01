@@ -16,9 +16,9 @@
 package net.hasor.core.aop;
 import net.hasor.core.exts.aop.Aop;
 import net.hasor.core.exts.aop.Matchers;
-import net.hasor.test.beans.aop.custom.MyAop;
-import net.hasor.test.beans.aop.ignore.types.GrandFatherBean;
-import net.hasor.test.beans.aop.ignore.types.JamesBean;
+import net.hasor.test.core.aop.custom.MyAop;
+import net.hasor.test.core.aop.ignore.types.GrandFatherBean;
+import net.hasor.test.core.aop.ignore.types.JamesBean;
 import org.junit.Test;
 
 import java.lang.reflect.Method;

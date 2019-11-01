@@ -20,7 +20,7 @@ import net.hasor.tconsole.AbstractTelTest;
 import net.hasor.tconsole.client.TelClient;
 import net.hasor.tconsole.launcher.TelSessionObject;
 import net.hasor.tconsole.launcher.telnet.TelnetTelService;
-import net.hasor.test.beans.TestExecutor;
+import net.hasor.test.tconsole.TestExecutor;
 import org.junit.Test;
 
 import java.io.IOException;

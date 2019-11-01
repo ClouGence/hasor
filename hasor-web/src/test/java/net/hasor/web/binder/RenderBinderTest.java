@@ -17,9 +17,9 @@ package net.hasor.web.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.provider.InstanceProvider;
-import net.hasor.test.actions.basic.BasicAction;
-import net.hasor.test.render.AnnoErrorRenderEngine;
-import net.hasor.test.render.SimpleRenderEngine;
+import net.hasor.test.web.actions.basic.BasicAction;
+import net.hasor.test.web.render.AnnoErrorRenderEngine;
+import net.hasor.test.web.render.SimpleRenderEngine;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.render.Render;
 import net.hasor.web.render.RenderEngine;
@@ -114,7 +114,7 @@ public class RenderBinderTest extends AbstractTest {
                 assert e.getMessage().endsWith(" must be implements RenderEngine.");
             }
             //
-            Set<Class<?>> classSet = apiBinder.findClass(Render.class, "net.hasor.test.render.*");
+            Set<Class<?>> classSet = apiBinder.findClass(Render.class, "net.hasor.test.web.render.*");
             assert classSet.size() == 2;
             classSet.remove(AnnoErrorRenderEngine.class); // remove Error
             apiBinder.loadRender(classSet);

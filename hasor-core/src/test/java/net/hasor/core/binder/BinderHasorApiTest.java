@@ -20,11 +20,11 @@ import net.hasor.core.Hasor;
 import net.hasor.core.Module;
 import net.hasor.core.exts.aop.Aop;
 import net.hasor.core.scope.SingletonScope;
-import net.hasor.test.beans.basic.pojo.PojoBean;
-import net.hasor.test.beans.basic.pojo.PojoBeanRef;
-import net.hasor.test.beans.basic.pojo.SingletonSampleBean;
-import net.hasor.test.beans.scope.AnnoMyBean;
-import net.hasor.test.beans.scope.My;
+import net.hasor.test.core.basic.pojo.PojoBean;
+import net.hasor.test.core.basic.pojo.PojoBeanRef;
+import net.hasor.test.core.basic.pojo.SingletonSampleBean;
+import net.hasor.test.core.scope.AnnoMyBean;
+import net.hasor.test.core.scope.My;
 import org.junit.Test;
 
 /**
@@ -72,7 +72,7 @@ public class BinderHasorApiTest {
         //
         assert pojoBean1 == pojoBean2;
         assert myScope.getSingletonData().size() == 1;
-        assert myScope.getSingletonData().get("TYPE-net.hasor.test.beans.scope.AnnoMyBean").get() == pojoBean1;
+        assert myScope.getSingletonData().get("TYPE-" + AnnoMyBean.class.getName()).get() == pojoBean1;
     }
 
     @Test

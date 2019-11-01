@@ -15,7 +15,7 @@
  */
 package net.hasor.web.jstl;
 import net.hasor.core.AppContext;
-import net.hasor.test.actions.mapping.ArgsMappingAction;
+import net.hasor.test.web.actions.mapping.ArgsMappingAction;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.WebApiBinder;
 import net.hasor.web.jstl.taglib.DefineBeanTag;

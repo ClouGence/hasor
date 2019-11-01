@@ -18,7 +18,7 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.Environment;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.test.beans.mods.ErrorModule;
+import net.hasor.test.core.mods.ErrorModule;
 import net.hasor.utils.StringUtils;
 import org.junit.Test;
 
@@ -81,7 +81,7 @@ public class EnvTest {
     public void envTest6() throws IOException {
         EnvironmentWrap env = wrap(new StandardEnvironment(null));
         //
-        ((StandardEnvironment) env.getTarget()).setSpanPackage(new String[] { "net.hasor.test.beans.mods" });
+        ((StandardEnvironment) env.getTarget()).setSpanPackage(new String[] { "net.hasor.test.core.mods" });
         assert env.findClass(ErrorModule.class).size() == 1;
         assert env.findClass(Module.class).size() == 5;
     }

@@ -16,10 +16,10 @@
 package net.hasor.web.invoker;
 import net.hasor.core.AppContext;
 import net.hasor.core.Hasor;
-import net.hasor.test.actions.async.ErrorAsyncAction;
-import net.hasor.test.actions.async.MethodAsyncAction;
-import net.hasor.test.actions.render.HtmlProduces;
-import net.hasor.test.render.SimpleRenderEngine;
+import net.hasor.test.web.actions.async.ErrorAsyncAction;
+import net.hasor.test.web.actions.async.MethodAsyncAction;
+import net.hasor.test.web.actions.render.HtmlProduces;
+import net.hasor.test.web.render.SimpleRenderEngine;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.Mapping;
 import net.hasor.web.WebApiBinder;

@@ -15,7 +15,7 @@
  */
 package net.hasor.web.render;
 import net.hasor.core.AppContext;
-import net.hasor.test.actions.render.HtmlProduces;
+import net.hasor.test.web.actions.render.HtmlProduces;
 import net.hasor.web.WebApiBinder;
 import org.junit.Test;
 

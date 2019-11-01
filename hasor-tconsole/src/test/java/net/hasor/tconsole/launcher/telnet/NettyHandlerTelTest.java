@@ -17,7 +17,7 @@ package net.hasor.tconsole.launcher.telnet;
 import io.netty.channel.ChannelHandlerContext;
 import net.hasor.tconsole.AbstractTelTest;
 import net.hasor.tconsole.commands.QuitExecutor;
-import net.hasor.test.beans.TestExecutor;
+import net.hasor.test.tconsole.TestExecutor;
 import org.junit.Test;
 
 import java.io.IOException;

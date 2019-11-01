@@ -15,7 +15,7 @@
  */
 package net.hasor.core.spi;
 import net.hasor.core.*;
-import net.hasor.test.beans.event.AppContextListener;
+import net.hasor.test.core.event.AppContextListener;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicReference;

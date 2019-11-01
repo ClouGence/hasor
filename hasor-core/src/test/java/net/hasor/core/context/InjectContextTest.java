@@ -16,9 +16,9 @@
 package net.hasor.core.context;
 import net.hasor.core.*;
 import net.hasor.core.environment.StandardEnvironment;
-import net.hasor.test.beans.basic.inject.PropertyPojoBeanRef;
-import net.hasor.test.beans.basic.inject.constructor.SingleConstructorPojoBeanRef;
-import net.hasor.test.beans.basic.pojo.PojoBean;
+import net.hasor.test.core.basic.inject.PropertyPojoBeanRef;
+import net.hasor.test.core.basic.inject.constructor.SingleConstructorPojoBeanRef;
+import net.hasor.test.core.basic.pojo.PojoBean;
 import org.junit.Test;
 
 import java.lang.reflect.Constructor;

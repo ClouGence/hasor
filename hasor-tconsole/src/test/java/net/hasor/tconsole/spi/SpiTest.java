@@ -20,7 +20,7 @@ import net.hasor.tconsole.AbstractTelTest;
 import net.hasor.tconsole.client.TelClient;
 import net.hasor.tconsole.launcher.hosts.PipedHostTelService;
 import net.hasor.tconsole.launcher.telnet.TelnetTelService;
-import net.hasor.test.beans.*;
+import net.hasor.test.tconsole.*;
 import org.junit.Test;
 
 import java.io.StringWriter;

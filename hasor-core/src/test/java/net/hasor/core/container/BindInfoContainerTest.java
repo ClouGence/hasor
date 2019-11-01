@@ -16,9 +16,9 @@
 package net.hasor.core.container;
 import net.hasor.core.binder.BindInfoBuilder;
 import net.hasor.core.info.DefaultBindInfoProviderAdapter;
-import net.hasor.test.beans.basic.pojo.PojoBean;
-import net.hasor.test.beans.basic.pojo.SampleBean;
-import net.hasor.test.beans.basic.pojo.SampleFace;
+import net.hasor.test.core.basic.pojo.PojoBean;
+import net.hasor.test.core.basic.pojo.SampleBean;
+import net.hasor.test.core.basic.pojo.SampleFace;
 import net.hasor.utils.BeanUtils;
 import org.junit.Test;
 
@@ -123,7 +123,7 @@ public class BindInfoContainerTest {
             infoContainer.init();
             assert false;
         } catch (Exception e) {
-            assert e.getMessage().equals("conflict type 'net.hasor.test.beans.basic.pojo.PojoBean' of same name ''");
+            assert e.getMessage().equals("conflict type '" + PojoBean.class.getName() + "' of same name ''");
         }
     }
 

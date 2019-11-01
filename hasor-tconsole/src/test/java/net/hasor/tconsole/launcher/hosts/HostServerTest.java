@@ -15,7 +15,7 @@
  */
 package net.hasor.tconsole.launcher.hosts;
 import net.hasor.tconsole.AbstractTelTest;
-import net.hasor.test.beans.TestExecutor;
+import net.hasor.test.tconsole.TestExecutor;
 import net.hasor.utils.StringUtils;
 import org.junit.Test;
 

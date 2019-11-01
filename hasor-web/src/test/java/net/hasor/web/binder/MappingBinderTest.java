@@ -17,12 +17,12 @@ package net.hasor.web.binder;
 import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.provider.InstanceProvider;
-import net.hasor.test.actions.basic.AnnoGetAction;
-import net.hasor.test.actions.basic.BasicAction;
-import net.hasor.test.actions.mapping.MappingServlet;
-import net.hasor.test.actions.servlet.SimpleServlet;
-import net.hasor.test.filters.SimpleFilter;
-import net.hasor.test.filters.SimpleInvokerFilter;
+import net.hasor.test.web.actions.basic.AnnoGetAction;
+import net.hasor.test.web.actions.basic.BasicAction;
+import net.hasor.test.web.actions.mapping.MappingServlet;
+import net.hasor.test.web.actions.servlet.SimpleServlet;
+import net.hasor.test.web.filters.SimpleFilter;
+import net.hasor.test.web.filters.SimpleInvokerFilter;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.ServletVersion;
 import net.hasor.web.annotation.MappingTo;
@@ -211,7 +211,7 @@ public class MappingBinderTest extends AbstractTest {
                 assert e.getMessage().endsWith(" must be normal Bean");
             }
             //
-            Set<Class<?>> classSet = apiBinder.findClass(MappingTo.class, "net.hasor.test.actions.mapping.*");
+            Set<Class<?>> classSet = apiBinder.findClass(MappingTo.class, "net.hasor.test.web.actions.mapping.*");
             assert classSet.size() == 3;
             apiBinder.loadMappingTo(classSet);
         }, servlet30("/"), LoadModule.Web);

@@ -18,7 +18,7 @@ import net.hasor.core.AppContext;
 import net.hasor.core.BindInfo;
 import net.hasor.core.Hasor;
 import net.hasor.core.Module;
-import net.hasor.test.filters.SimpleInvokerFilter;
+import net.hasor.test.web.filters.SimpleInvokerFilter;
 import net.hasor.web.AbstractTest;
 import net.hasor.web.Invoker;
 import net.hasor.web.InvokerChain;

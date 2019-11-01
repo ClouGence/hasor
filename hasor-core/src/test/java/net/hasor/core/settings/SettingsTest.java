@@ -18,7 +18,7 @@ import net.hasor.core.Settings;
 import net.hasor.core.setting.InputStreamSettings;
 import net.hasor.core.setting.SettingsWrap;
 import net.hasor.core.setting.StandardContextSettings;
-import net.hasor.test.beans.enums.SelectEnum;
+import net.hasor.test.core.enums.SelectEnum;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
