@@ -38,7 +38,7 @@ public class TranManager extends DataSourceManager {
         ConcurrentMap<DataSource, ConnectionHolder> localMap = currentMap.get();
         ConnectionHolder holder = localMap.get(dataSource);
         if (holder == null) {
-            holder = localMap.putIfAbsent(dataSource, genConnectionHolder(dataSource));
+            holder = localMap.putIfAbsent(dataSource, newConnectionHolder(dataSource));
             holder = localMap.get(dataSource);
         }
         return holder;

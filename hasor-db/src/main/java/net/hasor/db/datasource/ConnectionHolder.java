@@ -42,7 +42,7 @@ public class ConnectionHolder implements SavepointManager, ConnectionManager {
         if (!this.isOpen() && this.connection != null) {
             try {
                 this.savepointCounter = 0;
-                this.savepointsSupported = null;
+                this.savepointSupported = null;
                 this.connection.close();
             } finally {
                 this.connection = null;
@@ -105,16 +105,7 @@ public class ConnectionHolder implements SavepointManager, ConnectionManager {
 
     private static final String  SAVEPOINT_NAME_PREFIX = "SAVEPOINT_";
     private              int     savepointCounter      = 0;
-    private              Boolean savepointsSupported;
-
-    /**返回 JDBC 驱动是否支持保存点。*/
-    public boolean supportsSavepoints() throws SQLException {
-        Connection conn = this.checkConn(this.getConnection());
-        if (this.savepointsSupported == null) {
-            this.savepointsSupported = conn.getMetaData().supportsSavepoints();
-        }
-        return this.savepointsSupported;
-    }
+    private              Boolean savepointSupported;
 
     /**使用一个全新的名称创建一个保存点。*/
     @Override
@@ -139,6 +130,9 @@ public class ConnectionHolder implements SavepointManager, ConnectionManager {
     @Override
     public boolean supportSavepoint() throws SQLException {
         Connection conn = this.checkConn(this.getConnection());
-        return conn.getMetaData().supportsSavepoints();
+        if (this.savepointSupported == null) {
+            this.savepointSupported = conn.getMetaData().supportsSavepoints();
+        }
+        return this.savepointSupported;
     }
 }

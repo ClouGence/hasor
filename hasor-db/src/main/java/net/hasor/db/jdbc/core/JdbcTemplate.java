@@ -384,26 +384,22 @@ public class JdbcTemplate extends JdbcConnection implements JdbcOperations {
 
     @Override
     public <T> T queryForObject(final String sql, final RowMapper<T> rowMapper) throws SQLException {
-        List<T> results = this.query(sql, rowMapper);
-        return JdbcTemplate.requiredSingleResult(results);
+        return JdbcTemplate.requiredSingleResult(this.query(sql, rowMapper));
     }
 
     @Override
     public <T> T queryForObject(final String sql, final RowMapper<T> rowMapper, final Object... args) throws SQLException {
-        List<T> results = this.query(sql, args, new RowMapperResultSetExtractor<T>(rowMapper, 1));
-        return JdbcTemplate.requiredSingleResult(results);
+        return JdbcTemplate.requiredSingleResult(this.query(sql, args, new RowMapperResultSetExtractor<T>(rowMapper, 1)));
     }
 
     @Override
     public <T> T queryForObject(final String sql, final Object[] args, final RowMapper<T> rowMapper) throws SQLException {
-        List<T> results = this.query(sql, args, new RowMapperResultSetExtractor<T>(rowMapper, 1));
-        return JdbcTemplate.requiredSingleResult(results);
+        return JdbcTemplate.requiredSingleResult(this.query(sql, args, new RowMapperResultSetExtractor<T>(rowMapper, 1)));
     }
 
     @Override
     public <T> T queryForObject(final String sql, final SqlParameterSource paramSource, final RowMapper<T> rowMapper) throws SQLException {
-        List<T> results = this.query(this.getPreparedStatementCreator(sql, paramSource), rowMapper);
-        return JdbcTemplate.requiredSingleResult(results);
+        return JdbcTemplate.requiredSingleResult(this.query(this.getPreparedStatementCreator(sql, paramSource), rowMapper));
     }
 
     @Override

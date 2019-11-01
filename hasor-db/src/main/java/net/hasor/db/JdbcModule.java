@@ -18,8 +18,8 @@ import net.hasor.core.ApiBinder;
 import net.hasor.core.Module;
 import net.hasor.core.exts.aop.Matchers;
 import net.hasor.core.provider.InstanceProvider;
-import net.hasor.core.provider.SingleProvider;
 import net.hasor.db.jdbc.JdbcOperations;
+import net.hasor.db.jdbc.core.JdbcConnection;
 import net.hasor.db.jdbc.core.JdbcOperationsProvider;
 import net.hasor.db.jdbc.core.JdbcTemplate;
 import net.hasor.db.jdbc.core.JdbcTemplateProvider;
@@ -30,8 +30,6 @@ import net.hasor.db.transaction.interceptor.Transactional;
 import net.hasor.db.transaction.provider.TransactionManagerProvider;
 import net.hasor.db.transaction.provider.TransactionTemplateProvider;
 import net.hasor.utils.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
@@ -48,10 +46,9 @@ import java.util.function.Supplier;
  * @version : 2017-03-23
  */
 public class JdbcModule implements Module {
-    protected Logger               logger = LoggerFactory.getLogger(getClass());
-    private   Set<Level>           loadLevel;
-    private   String               dataSourceID;
-    private   Supplier<DataSource> dataSource;
+    private Set<Level>           loadLevel;
+    private String               dataSourceID;
+    private Supplier<DataSource> dataSource;
 
     /** 添加数据源 */
     public JdbcModule(Level loadLevel, DataSource dataSource) {
@@ -102,12 +99,16 @@ public class JdbcModule implements Module {
         }
         //
         if (loadJdbc) {
+            JdbcTemplateProvider tempProvider = new JdbcTemplateProvider(this.dataSource);
+            JdbcOperationsProvider operProvider = new JdbcOperationsProvider(this.dataSource);
             if (StringUtils.isBlank(this.dataSourceID)) {
-                apiBinder.bindType(JdbcTemplate.class).toProvider(new JdbcTemplateProvider(this.dataSource));
-                apiBinder.bindType(JdbcOperations.class).toProvider(new JdbcOperationsProvider(this.dataSource));
+                apiBinder.bindType(JdbcConnection.class).toProvider(tempProvider);
+                apiBinder.bindType(JdbcTemplate.class).toProvider(tempProvider);
+                apiBinder.bindType(JdbcOperations.class).toProvider(operProvider);
             } else {
-                apiBinder.bindType(JdbcTemplate.class).nameWith(this.dataSourceID).toProvider(new JdbcTemplateProvider(this.dataSource));
-                apiBinder.bindType(JdbcOperations.class).nameWith(this.dataSourceID).toProvider(new JdbcOperationsProvider(this.dataSource));
+                apiBinder.bindType(JdbcConnection.class).nameWith(this.dataSourceID).toProvider(tempProvider);
+                apiBinder.bindType(JdbcTemplate.class).nameWith(this.dataSourceID).toProvider(tempProvider);
+                apiBinder.bindType(JdbcOperations.class).nameWith(this.dataSourceID).toProvider(operProvider);
             }
         }
         //
@@ -115,11 +116,11 @@ public class JdbcModule implements Module {
             Supplier<TransactionManager> managerProvider = new TransactionManagerProvider(this.dataSource);
             Supplier<TransactionTemplate> templateProvider = new TransactionTemplateProvider(this.dataSource);
             if (StringUtils.isBlank(this.dataSourceID)) {
-                apiBinder.bindType(TransactionManager.class).toProvider(new SingleProvider<>(managerProvider));
-                apiBinder.bindType(TransactionTemplate.class).toProvider(new SingleProvider<>(templateProvider));
+                apiBinder.bindType(TransactionManager.class).toProvider(managerProvider);
+                apiBinder.bindType(TransactionTemplate.class).toProvider(templateProvider);
             } else {
-                apiBinder.bindType(TransactionManager.class).nameWith(this.dataSourceID).toProvider(new SingleProvider<>(managerProvider));
-                apiBinder.bindType(TransactionTemplate.class).nameWith(this.dataSourceID).toProvider(new SingleProvider<>(templateProvider));
+                apiBinder.bindType(TransactionManager.class).nameWith(this.dataSourceID).toProvider(managerProvider);
+                apiBinder.bindType(TransactionTemplate.class).nameWith(this.dataSourceID).toProvider(templateProvider);
             }
             TransactionInterceptor tranInter = new TransactionInterceptor(this.dataSource);
             Predicate<Class<?>> matcherClass = Matchers.annotatedWithClass(Transactional.class);

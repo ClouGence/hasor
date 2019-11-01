@@ -25,13 +25,13 @@ import java.sql.Connection;
  */
 public class DataSourceManager {
     /**申请连接*/
-    public static Connection genConnection(DataSource dataSource) {
-        ConnectionHolder holder = genConnectionHolder(dataSource);
+    public static Connection newConnection(DataSource dataSource) {
+        ConnectionHolder holder = newConnectionHolder(dataSource);
         return newProxyConnection(holder);
     }
 
     /**申请{@link ConnectionHolder}*/
-    protected static ConnectionHolder genConnectionHolder(DataSource dataSource) {
+    protected static ConnectionHolder newConnectionHolder(DataSource dataSource) {
         return new ConnectionHolder(dataSource);
     }
 
