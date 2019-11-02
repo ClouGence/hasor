@@ -15,6 +15,7 @@
  */
 package net.hasor.db.datasource;
 import javax.sql.DataSource;
+import java.io.Closeable;
 import java.lang.reflect.Proxy;
 import java.sql.Connection;
 
@@ -38,6 +39,6 @@ public class DataSourceManager {
     /**获取与本地线程绑定的数据库连接，JDBC 框架会维护这个连接的事务。开发者不必关心该连接的事务管理，以及资源释放操作。*/
     protected static ConnectionProxy newProxyConnection(ConnectionHolder holder) {
         CloseSuppressingInvocationHandler handler = new CloseSuppressingInvocationHandler(holder);
-        return (ConnectionProxy) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] { ConnectionProxy.class }, handler);
+        return (ConnectionProxy) Proxy.newProxyInstance(ConnectionProxy.class.getClassLoader(), new Class[] { ConnectionProxy.class, Closeable.class }, handler);
     }
 }
