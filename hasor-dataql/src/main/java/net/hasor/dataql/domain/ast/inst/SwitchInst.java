@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast.inst;
+import net.hasor.dataql.domain.ast.Expression;
+import net.hasor.dataql.domain.ast.Inst;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 import net.hasor.dataql.domain.compiler.Label;
@@ -29,26 +31,22 @@ import java.util.List;
 public class SwitchInst extends Inst {
     public static class SwitchExpression {
         private Expression testExpression;
-        private BlockSet   instBlockSet;
+        private InstSet    instBlockSet;
     }
 
-    private List<SwitchExpression> testBlockSet;
-    private BlockSet               elseBlockSet;
-
-    public SwitchInst() {
-        this.testBlockSet = new ArrayList<>();
-    }
+    private List<SwitchExpression> testBlockSet = new ArrayList<>();
+    private InstSet                elseBlockSet = null;
 
     /** 添加条件分支 */
-    public void addBlockSet(Expression testExp, BlockSet instBlockSet) {
+    public void addElseif(Expression testExp, InstSet blockSet) {
         SwitchExpression se = new SwitchExpression();
         se.testExpression = testExp;
-        se.instBlockSet = instBlockSet;
+        se.instBlockSet = blockSet;
         this.testBlockSet.add(se);
     }
 
     /** 设置默认条件分支 */
-    public void setElseBlockSet(BlockSet instBlockSet) {
+    public void setElseBlockSet(InstSet instBlockSet) {
         this.elseBlockSet = instBlockSet;
     }
 
@@ -111,7 +109,7 @@ public class SwitchInst extends Inst {
             queue.inst(IF, lastEnterIn);//如果判断失败，跳转到下一个Label
             //
             // .if的body
-            BlockSet instBlockSet = switchExp.instBlockSet;
+            InstSet instBlockSet = switchExp.instBlockSet;
             instBlockSet.doCompiler(queue, stackTree);
             queue.inst(GOTO, finalLabel);//执行完毕，跳转到总出口
             //

@@ -13,37 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast.value;
+import net.hasor.dataql.domain.ast.RouteVariable;
+import net.hasor.dataql.domain.ast.Variable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 
 /**
- * var指令
+ * 路由的入口，一切路由操作都要有一个入口
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class VariableInst extends Inst {
-    private String   varName; //变量名
-    private Variable value;   //变量表达式
+public class EnterRouteVariable implements RouteVariable {
+    public static enum RouteType {
+        Special_A,  // 特殊路由1，自定义
+        Special_B,  // 特殊路由2，自定义
+        Special_C,  // 特殊路由3，自定义
+        Context,    // 上下文中获取
+        Enter;      // 当前栈顶上找
+    }
 
-    public VariableInst(String varName, Variable value) {
-        super();
-        this.varName = varName;
-        this.value = value;
+    private RouteType routeType;
+    private Variable  context;
+
+    public EnterRouteVariable(RouteType routeType, Variable context) {
+        this.routeType = routeType;
+        this.context = context;
     }
 
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        // .表达式指令
-        this.value.doCompiler(queue, stackTree);
         //
-        // .如果当前堆栈中存在该变量的定义，那么直接覆盖
-        int index = stackTree.containsWithCurrent(this.varName);
-        if (index >= 0) {
-            queue.inst(STORE, index);
-        } else {
-            int storeIndex = stackTree.push(this.varName);
-            queue.inst(STORE, storeIndex);
-        }
     }
 }

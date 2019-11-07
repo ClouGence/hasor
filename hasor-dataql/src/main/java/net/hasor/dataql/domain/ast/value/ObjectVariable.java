@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast.value;
+import net.hasor.dataql.domain.ast.Variable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 import net.hasor.dataql.domain.compiler.InstructionInfo;
@@ -29,19 +30,19 @@ import java.util.Map;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ObjectExpression extends Expression {
-    private List<String>            fieldSort;
-    private String                  objectType;
-    private Map<String, Expression> objectData;
+public class ObjectVariable implements Variable {
+    private List<String>          fieldSort;
+    private String                objectType;
+    private Map<String, Variable> objectData;
 
-    public ObjectExpression() {
+    public ObjectVariable() {
         this.fieldSort = new ArrayList<>();
         this.objectType = "";
         this.objectData = new HashMap<>();
     }
 
     /** 添加字段 */
-    public void addField(String fieldName, Expression valueExp) {
+    public void addField(String fieldName, Variable valueExp) {
         if (StringUtils.isBlank(fieldName) || this.fieldSort.contains(fieldName)) {
             return;
         }
@@ -60,7 +61,7 @@ public class ObjectExpression extends Expression {
         //
         for (String fieldName : this.fieldSort) {
             //
-            Expression expression = this.objectData.get(fieldName);
+            Variable expression = this.objectData.get(fieldName);
             if (expression == null) {
                 continue;
             }

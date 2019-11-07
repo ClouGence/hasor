@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast;
 /**
- * 函数调用的返回值处理格式，基类
+ * 表达式，基类
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public abstract class Format implements InstCompiler {
+public abstract class Expression implements Variable {
 }

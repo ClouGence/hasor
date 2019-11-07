@@ -13,30 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast.value;
+import net.hasor.dataql.domain.ast.RouteVariable;
+import net.hasor.dataql.domain.ast.Variable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 
 /**
- * throw指令
+ * 函数调用 - 之所以是 Variable 是由于 FunctionCall 的最终结果是 函数调用的返回值。而返回值是属于 Variable 的
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ThrowInst extends Inst {
-    private int        errorCode;
-    private Expression throwData;
+public class NameRouteVariable implements Variable, RouteVariable {
+    private RouteVariable parent;
+    private String        name;
 
-    public ThrowInst(Number errorCode, Expression throwData) {
-        if (errorCode == null)
-            errorCode = 0;
-        this.errorCode = errorCode.intValue();
-        this.throwData = throwData;
+    public NameRouteVariable(RouteVariable parent, String name) {
+        this.parent = parent;
+        this.name = name;
     }
 
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        queue.inst(LDC_D, this.errorCode);
-        this.throwData.doCompiler(queue, stackTree);
-        queue.inst(ERR);
+        //
     }
 }

@@ -13,26 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast.format;
+import net.hasor.dataql.domain.ast.Format;
+import net.hasor.dataql.domain.ast.RouteVariable;
+import net.hasor.dataql.domain.ast.value.ObjectVariable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 
 /**
- * return指令
+ * 函数调用的返回值处理格式，Object格式。
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ReturnInst extends Inst {
-    private Expression result;
+public class ObjectFormat extends Format {
+    private RouteVariable  form;
+    private ObjectVariable formatTo;
 
-    public ReturnInst(Expression result) {
-        super();
-        this.result = result;
+    public ObjectFormat(RouteVariable form, ObjectVariable formatTo) {
+        this.form = form;
+        this.formatTo = formatTo;
     }
 
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        this.result.doCompiler(queue, stackTree);
-        queue.inst(END);
+        queue.inst(ASM, "");
+        //        this.format.doCompiler(queue, stackTree);
+        queue.inst(ASE);
     }
 }

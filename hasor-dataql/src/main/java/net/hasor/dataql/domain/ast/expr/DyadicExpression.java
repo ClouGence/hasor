@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast.expr;
+import net.hasor.dataql.domain.ast.Expression;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 
@@ -30,7 +31,6 @@ public class DyadicExpression extends Expression {
     private Expression secExpression;   //第二个表达式
 
     public DyadicExpression(Expression fstExpression, String dyadicSymbol, Expression secExpression) {
-        super();
         this.fstExpression = fstExpression;
         this.dyadicSymbol = dyadicSymbol;
         this.secExpression = secExpression;
@@ -60,7 +60,6 @@ public class DyadicExpression extends Expression {
         //
         //  算法说明：
         //      算法的研发是在没有做参考任何资料情况下完全自主演算得出。 后经社区讨论，此算法的思想和"逆波兰算法" 相同。
-        //      另：该算法没有核实是否市面上存在类似算法，因此不能做独创性宣传。如确实属于独创那么保留算法独创的全部权利。
         //
         //  算法逻辑：
         //      put fstExpression

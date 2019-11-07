@@ -13,41 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast.inst;
+import net.hasor.dataql.domain.InstCompiler;
+import net.hasor.dataql.domain.ast.Inst;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 
+import java.util.ArrayList;
+
 /**
- * import 语法
+ * 指令序列
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ImportInst extends Inst {
-    private String packageName = null;
-    private String udfName     = null;
+public class InstSet extends ArrayList<Inst> implements InstCompiler {
+    /** 批量添加指令集 */
+    public void addInstSet(InstSet inst) {
+        this.addAll(inst);
+    }
 
-    public ImportInst(String packageName, String udfName) {
-        super();
-        this.packageName = packageName;
-        this.udfName = udfName;
+    /** 添加一条指令 */
+    public void addInst(Inst inst) {
+        if (inst != null) {
+            this.add(inst);
+        }
     }
 
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        InstQueue instQueue = queue.newMethodInst();
-        instQueue.inst(LCALL, this.packageName);
-        //
-        // .指向函数的指针
-        int methodAddress = instQueue.getName();
-        queue.inst(M_REF, methodAddress);
-        //
-        // .如果当前堆栈中存在该变量的定义，那么直接覆盖
-        int index = stackTree.containsWithCurrent(this.udfName);
-        if (index >= 0) {
-            queue.inst(STORE, index);
-        } else {
-            int storeIndex = stackTree.push(this.udfName);
-            queue.inst(STORE, storeIndex);
+        if (this.isEmpty()) {
+            return;
+        }
+        for (Inst inst : this) {
+            inst.doCompiler(queue, stackTree);
         }
     }
 }

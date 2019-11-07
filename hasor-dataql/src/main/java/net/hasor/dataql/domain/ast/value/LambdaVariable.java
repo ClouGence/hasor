@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast.value;
+import net.hasor.dataql.domain.ast.Variable;
+import net.hasor.dataql.domain.ast.inst.InstSet;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 
@@ -21,12 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * lambda 函数定义
+ * lambda 函数对象
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class LambdaBlockSet extends BlockSet implements Variable {
-    private List<String> paramList = new ArrayList<String>();
+public class LambdaVariable extends InstSet implements Variable {
+    private List<String> paramList = new ArrayList<>();
 
     /** 添加入参 */
     public void addParam(String name) {
@@ -35,17 +37,7 @@ public class LambdaBlockSet extends BlockSet implements Variable {
         }
         this.paramList.add(name);
     }
-
-    /** 添加函数指令集 */
-    public void addToBody(BlockSet instList) {
-        if (instList == null || instList.instList.isEmpty()) {
-            return;
-        }
-        for (Inst inst : instList.instList) {
-            this.addInst(inst);
-        }
-    }
-
+ 
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
         //

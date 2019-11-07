@@ -13,31 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
-import net.hasor.dataql.domain.compiler.CompilerStack;
-import net.hasor.dataql.domain.compiler.InstQueue;
+package net.hasor.dataql.domain.ast;
+import net.hasor.dataql.domain.InstCompiler;
 
 /**
- * exit指令
+ * 变量，用于表示一切 QL 中的表达式，可定义序列块（序列块 = BlockSet，可定义 = 使用 var 指令定义 lambda）
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ExitInst extends Inst {
-    private int        exitCode;
-    private Expression exitData;
-
-    public ExitInst(Number exitCode, Expression exitData) {
-        if (exitCode == null) {
-            exitCode = 0;
-        }
-        this.exitCode = exitCode.intValue();
-        this.exitData = exitData;
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        queue.inst(LDC_D, this.exitCode);
-        this.exitData.doCompiler(queue, stackTree);
-        queue.inst(EXIT);
-    }
+public interface RouteVariable extends InstCompiler, Variable {
 }

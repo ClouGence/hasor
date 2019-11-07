@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast.value;
+import net.hasor.dataql.domain.ast.Variable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 import net.hasor.dataql.domain.compiler.InstructionInfo;
@@ -26,17 +27,17 @@ import java.util.List;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ListExpression extends Expression {
-    private String           listType;
-    private List<Expression> expressionList;
+public class ListVariable implements Variable {
+    private String         listType;
+    private List<Variable> expressionList;
 
-    public ListExpression() {
+    public ListVariable() {
         this.listType = "";
         this.expressionList = new ArrayList<>();
     }
 
     /** 添加元素 */
-    public void addItem(Expression valueExp) {
+    public void addItem(Variable valueExp) {
         if (valueExp != null) {
             this.expressionList.add(valueExp);
         }
@@ -51,7 +52,7 @@ public class ListExpression extends Expression {
             instruction.setCompilerMark(true);
         }
         //
-        for (Expression exp : this.expressionList) {
+        for (Variable exp : this.expressionList) {
             exp.doCompiler(queue, stackTree);
             queue.inst(PUSH);
         }

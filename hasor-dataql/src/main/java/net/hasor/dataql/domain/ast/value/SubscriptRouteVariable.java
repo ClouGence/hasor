@@ -13,28 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast.value;
+import net.hasor.dataql.domain.ast.RouteVariable;
+import net.hasor.dataql.domain.ast.Variable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
-import net.hasor.dataql.domain.compiler.Opcodes;
 
 /**
- * 函数调用的返回值处理格式，List格式。
+ * 对 RouteVariable 的下标操作
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class ListFormat extends Format {
-    private ListExpression format;
+public class SubscriptRouteVariable implements Variable, RouteVariable {
+    public static enum SubType {
+        String, Integer
+    }
 
-    public ListFormat(ListExpression format) {
-        super();
-        this.format = format;
+    private RouteVariable parent;
+    private SubType       subType;
+    private String        subValue;
+
+    public SubscriptRouteVariable(SubType subType, RouteVariable parent, String subValue) {
+        this.subType = subType;
+        this.parent = parent;
+        this.subValue = subValue;
     }
 
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        queue.inst(Opcodes.ASA, "");
-        this.format.doCompiler(queue, stackTree);
-        queue.inst(Opcodes.ASE);
+        //
     }
 }

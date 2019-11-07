@@ -13,51 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast.expr;
+import net.hasor.dataql.domain.ast.Expression;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * 指令序列
+ * 权限提升，用于表示表达式中的括号
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class BlockSet implements InstCompiler {
-    protected List<Inst> instList = new ArrayList<>();
+public class PrivilegeExpression extends Expression {
+    private Expression expression;
 
-    public BlockSet() {
+    public PrivilegeExpression(Expression expression) {
+        this.expression = expression;
     }
 
-    public BlockSet(List<Inst> instList) {
-        if (instList != null && !instList.isEmpty()) {
-            for (Inst inst : instList) {
-                this.addInst(inst);
-            }
-        }
-    }
-
-    /** 批量添加指令集 */
-    public void addInstSet(BlockSet inst) {
-        this.instList.addAll(inst.instList);
-    }
-
-    /** 添加一条指令 */
-    public void addInst(Inst inst) {
-        if (inst != null) {
-            this.instList.add(inst);
-        }
+    @Override
+    public String toString() {
+        return "( " + this.expression.toString() + " )";
     }
 
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        if (this.instList == null || this.instList.isEmpty()) {
-            return;
-        }
-        for (Inst inst : this.instList) {
-            inst.doCompiler(queue, stackTree);
-        }
+        this.expression.doCompiler(queue, stackTree);
     }
 }

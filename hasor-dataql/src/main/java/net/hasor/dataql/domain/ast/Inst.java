@@ -13,30 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
-import net.hasor.dataql.domain.compiler.CompilerStack;
-import net.hasor.dataql.domain.compiler.InstQueue;
+package net.hasor.dataql.domain.ast;
+import net.hasor.dataql.domain.InstCompiler;
 
 /**
- * 权限提升，用于表示表达式中的括号
+ * 指令，基类
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class PrivilegeExpression extends Expression {
-    private Expression expression;
-
-    public PrivilegeExpression(Expression expression) {
-        super();
-        this.expression = expression;
-    }
-
-    @Override
-    public String toString() {
-        return "( " + this.expression.toString() + " )";
-    }
-
-    @Override
-    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        this.expression.doCompiler(queue, stackTree);
-    }
+public abstract class Inst implements InstCompiler {
 }

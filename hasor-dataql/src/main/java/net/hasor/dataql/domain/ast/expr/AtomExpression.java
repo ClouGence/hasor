@@ -13,11 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast.expr;
+import net.hasor.dataql.domain.ast.Expression;
+import net.hasor.dataql.domain.ast.Variable;
+import net.hasor.dataql.domain.compiler.CompilerStack;
+import net.hasor.dataql.domain.compiler.InstQueue;
+
 /**
- * 表达式，基类
+ * Variable 类型的 Expression 形态
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public abstract class Expression implements Variable {
+public class AtomExpression extends Expression {
+    private Variable variableExpression; // 把值类型转换为表达式
+
+    public AtomExpression(Variable variableExpression) {
+        this.variableExpression = variableExpression;
+    }
+
+    @Override
+    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
+        this.variableExpression.doCompiler(queue, stackTree);
+    }
 }

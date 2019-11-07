@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast.value;
+import net.hasor.dataql.domain.ast.Variable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 
@@ -22,7 +23,7 @@ import net.hasor.dataql.domain.compiler.InstQueue;
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class PrimitiveExpression extends Expression {
+public class PrimitiveVariable implements Variable {
     public static enum ValueType {
         Boolean, Number, String, Null
     }
@@ -30,19 +31,11 @@ public class PrimitiveExpression extends Expression {
     private Object    value;
     private ValueType valueType;
 
-    public PrimitiveExpression(Object value, ValueType valueType) {
+    public PrimitiveVariable(Object value, ValueType valueType) {
         this.value = value;
         this.valueType = valueType;
     }
-
-    public Object getValue() {
-        return this.value;
-    }
-
-    public ValueType getValueType() {
-        return this.valueType;
-    }
-
+ 
     @Override
     public String toString() {
         return "Primitive - '" + this.value + "'";

@@ -13,11 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast.inst;
+import net.hasor.dataql.domain.ast.Inst;
+import net.hasor.dataql.domain.ast.Variable;
+import net.hasor.dataql.domain.compiler.CompilerStack;
+import net.hasor.dataql.domain.compiler.InstQueue;
+
 /**
- * 指令，基类
+ * exit指令
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public abstract class Inst implements InstCompiler {
+public class ExitInst extends Inst {
+    private int      exitCode;
+    private Variable exitData;
+
+    public ExitInst(int exitCode, Variable exitData) {
+        this.exitCode = exitCode;
+        this.exitData = exitData;
+    }
+
+    @Override
+    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
+        queue.inst(LDC_D, this.exitCode);
+        this.exitData.doCompiler(queue, stackTree);
+        queue.inst(EXIT);
+    }
 }

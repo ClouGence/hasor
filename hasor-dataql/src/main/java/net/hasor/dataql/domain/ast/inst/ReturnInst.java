@@ -13,11 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast.inst;
+import net.hasor.dataql.domain.ast.Inst;
+import net.hasor.dataql.domain.ast.Variable;
+import net.hasor.dataql.domain.compiler.CompilerStack;
+import net.hasor.dataql.domain.compiler.InstQueue;
+
 /**
- * 变量，用于表示一切 QL 中的表达式，可定义序列块（序列块 = BlockSet，可定义 = 使用 var 指令定义 lambda）
+ * return指令
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public interface Variable extends InstCompiler {
+public class ReturnInst extends Inst {
+    private int      returnCode;
+    private Variable resultData;
+
+    public ReturnInst(int returnCode, Variable resultData) {
+        this.returnCode = returnCode;
+        this.resultData = resultData;
+    }
+
+    @Override
+    public void doCompiler(InstQueue queue, CompilerStack stackTree) {
+        this.resultData.doCompiler(queue, stackTree);
+        queue.inst(END);
+    }
 }

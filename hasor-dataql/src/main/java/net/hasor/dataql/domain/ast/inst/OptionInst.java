@@ -13,29 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast.inst;
+import net.hasor.dataql.domain.ast.Inst;
+import net.hasor.dataql.domain.ast.value.PrimitiveVariable;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
-import net.hasor.dataql.domain.compiler.Opcodes;
 
 /**
- * 一元运算表达式
+ * 查询选项
  * @author 赵永春 (zyc@hasor.net)
  * @version : 2017-03-23
  */
-public class UnaryExpression extends Expression {
-    private Expression target;      //表达式
-    private String     dyadicSymbol;//操作符
+public class OptionInst extends Inst {
+    private String            optKey;
+    private PrimitiveVariable optValue;
 
-    public UnaryExpression(Expression target, String dyadicSymbol) {
-        super();
-        this.target = target;
-        this.dyadicSymbol = dyadicSymbol;
+    public OptionInst(String optKey, PrimitiveVariable optValue) {
+        this.optKey = optKey;
+        this.optValue = optValue;
     }
-
+ 
     @Override
     public void doCompiler(InstQueue queue, CompilerStack stackTree) {
-        this.target.doCompiler(queue, stackTree);
-        queue.inst(Opcodes.UO, this.dyadicSymbol);
+        //        queue.inst(LDC_S, this.optKey);
+        //        this.optValue.doCompiler(queue, stackTree);
+        //        queue.inst(OPT);
     }
 }

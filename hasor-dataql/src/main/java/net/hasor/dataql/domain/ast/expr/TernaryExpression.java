@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.hasor.dataql.domain;
+package net.hasor.dataql.domain.ast.expr;
+import net.hasor.dataql.domain.ast.Expression;
 import net.hasor.dataql.domain.compiler.CompilerStack;
 import net.hasor.dataql.domain.compiler.InstQueue;
 import net.hasor.dataql.domain.compiler.Label;
@@ -29,7 +30,6 @@ public class TernaryExpression extends Expression {
     private Expression elseExpression;  //第二个表达式
 
     public TernaryExpression(Expression testExp, Expression thenExp, Expression elseExp) {
-        super();
         this.testExpression = testExp;
         this.thenExpression = thenExp;
         this.elseExpression = elseExp;
